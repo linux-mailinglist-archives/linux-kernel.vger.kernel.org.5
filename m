@@ -1,131 +1,104 @@
-Return-Path: <linux-kernel+bounces-134338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E7989B078
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:34:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 624A989B07A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A7351F219C6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D2E82817B3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCBC1CAA4;
-	Sun,  7 Apr 2024 10:34:40 +0000 (UTC)
-Received: from fgw22-4.mail.saunalahti.fi (fgw22-4.mail.saunalahti.fi [62.142.5.109])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30AD1CFAF;
+	Sun,  7 Apr 2024 10:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="Nn+4xQw3"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2776E171D8
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.109
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22A4225A8;
+	Sun,  7 Apr 2024 10:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712486080; cv=none; b=ZYClg8Efyzd1Xo6z8p2u90eIRaPzxhEhngIwwztDVoQh2BbCzhtl/DzJiCI4MChUgQ37WeKynKlYrLqb1yu+/C7UG2SjiOo02ytwwpB1kn6Lb5nOVwgwvmwyeWs2W353D1M9kXxFZ9wmhmr393Ju0v7E2q+h/SXy7V1ydRUzJIc=
+	t=1712486102; cv=none; b=YY799/JIznk+yWe3YZ93cn6lsulCk8xDhItuScAV5xJ8p0zcjT1cX7Wqj1SKl92M1VjOdZU1t5s0Cia4/ANqGTF+VZV6fX9urzVaLclyqIQtGNjVbSMSkv4m2159Mg6kzFq9rhuyrAC5FSsgY7Z+JUX3bPTWQBVmryfSP+YBf0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712486080; c=relaxed/simple;
-	bh=5J19MuH65/krdnVcg9I72ISYfhsvRosLHd5HirI23Tk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkBPZF7ZyzQwUKvxHiK6/wmo6YIU/twMPlGtsZfcZ2UNejxnxYIx/CbQZyjuP+aecjmuMpZuoL+bwxr12IEIVU+EvpMNrGC+hezJR4OZkIm0upA9QPh36673is67RYSepaBqlR2Hmfec4SAL5BNDqxHMYqjcTImhxq6a2jzG05s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=fail smtp.mailfrom=iki.fi; arc=none smtp.client-ip=62.142.5.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=iki.fi
-Received: from ydin.reaktio.net (unknown [85.76.255.15])
-	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
-	id 6d285837-f4ca-11ee-a9de-005056bdf889;
-	Sun, 07 Apr 2024 13:34:35 +0300 (EEST)
-Received: by ydin.reaktio.net (Postfix, from userid 1001)
-	id 9815F20089; Sun,  7 Apr 2024 13:34:34 +0300 (EEST)
-Date: Sun, 7 Apr 2024 13:34:34 +0300
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-kernel@vger.kernel.org, Norbert Preining <norbert@preining.info>,
-	stable@vger.kernel.org, regressions@leemhuis.info
-Subject: Re: Regression in kernel 6.8.2 fails in various ways (USB, BT, ...)
-Message-ID: <20240407103434.GA31628@reaktio.net>
-References: <ZgvkIZFN23rkYhtS@burischnitzel>
- <6139700.lOV4Wx5bFT@natalenko.name>
- <20240406182943.GG1099@reaktio.net>
- <2724514.mvXUDI8C0e@natalenko.name>
- <20240407093931.GA28090@reaktio.net>
- <20240407094458.GB28090@reaktio.net>
+	s=arc-20240116; t=1712486102; c=relaxed/simple;
+	bh=VL1e8azOM16bAEF6tCIMCeW2TuGuy/DHc1aHDl6mU20=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=FFZSNiFZh5xMctNZLyVhSCvZS8gWBK7zMt6GIOVsJyRt6wWwkwYV6ATUEWtOYDZujHt2OnVnbmnswVMWMdOl1gZrmGZSQYR34iYP1pylf2H0RFUFdN/voTS+r9p20Pp8GqqIPko4s4FHUyqwfffaQ84XE/+uXJRQxyfsII4lf1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=Nn+4xQw3; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240407094458.GB28090@reaktio.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1712486097;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nnkgjIAGlSsg32B6HsyGYPTLxAnBFcSJIms9CJisy9s=;
+	b=Nn+4xQw3yv23dlcKZOZ6Ve/hbS9IzxAqXaAJwREqZ4veh/oceQyKaB2e6qr3AQYnJdp8p/
+	oCQ3r2AhXkqxg+GituD+jyl8ScN2g3DyQPYuucPhkEE0xP8JlfnjvBE3ULmXs1/0RQ4k/Y
+	2Dwk2X3l5u5BNllRUKGo8c/zhZbkIRFfydWNgBiTqbnHxWlMXtlW53S/eqze3vSBAMWlcN
+	DQlwvukxpvETalmwV7v5ZVeTqhIfMcZxsjqSicPzzt79jW52aH4BxcE7rgtR83ogP4gb0P
+	SxapiRGdDB4M3oKBSD3QTpKazV0nPRHNl5AczVDiH0k2ltmDXPmtxaIBhKhiTg==
+Date: Sun, 07 Apr 2024 12:34:57 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] arm64: dts: rockchip: drop redundant
+ bus-scan-delay-ms in Pinebook
+In-Reply-To: <20240407102854.38672-2-krzysztof.kozlowski@linaro.org>
+References: <20240407102854.38672-1-krzysztof.kozlowski@linaro.org>
+ <20240407102854.38672-2-krzysztof.kozlowski@linaro.org>
+Message-ID: <87f751ad473b0fb221357bafff00d462@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Sun, Apr 07, 2024 at 12:44:58PM +0300, Pasi Kärkkäinen wrote:
-> On Sun, Apr 07, 2024 at 12:39:31PM +0300, Pasi Kärkkäinen wrote:
-> > > > 
-> > > > I noticed possible related USB problem/regression also with Linux 6.7.11, eg. my USB headset is not detected at all anymore when running Linux 6.7.11. USB headset works OK with Linux 6.7.9, so the regression is included/backported to also either in 6.7.10 or in 6.7.11.
-> > > 
-> > > It wound be nice to narrow this range down even further with bisection because there are too many changes between v6.7.9 and v6.7.11 that could cause this.
-> > > 
-> > 
-> > I just tested more Fedora kernel rpms, and it seems Linux 6.7.10 still works OK,
-> > but 6.7.11 has the regression (eg. USB devices not detected, laptop does not reboot 
-> > as it gets stuck before resetting the machine).
-> > 
-> > So the regression was backported to Linux 6.7.11.
-> > 
+Hello Krzysztof,
+
+On 2024-04-07 12:28, Krzysztof Kozlowski wrote:
+> There is no "bus-scan-delay-ms" property in the PCI bindings or Linux
+> driver, so assume this was copied from downstream.  This fixes
+> dtbs_check warning:
 > 
-> And with more testing interestingly it seems Linux 6.7.12 already fixes the problem.
+>   rk3399-pinebook-pro.dtb: pcie@f8000000: Unevaluated properties are
+> not allowed ('bus-scan-delay-ms' was unexpected)
+
+Please note that it's been already deleted. [1]
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=43853e843aa6c3d47ff2b0cce898318839483d05
+
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> I tried multiple times: 6.7.10 works, 6.7.11 doesn't, and 6.7.12 again works.
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+> b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+> index 054c6a4d1a45..294eb2de263d 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+> @@ -779,7 +779,6 @@ &pcie_phy {
+>  };
 > 
-
-Looking at the Linux 6.7.x changelogs I'm *guessing* it's these commits:
-
-
-6.7.11 (broken):
-
-commit 963b977bc4204cc1dcc0c190d1ba255aa5c5dd19
-Author: Sean Anderson <sean.anderson@seco.com>
-Date:   Tue Jan 23 17:51:09 2024 -0500
-
-    usb: phy: generic: Get the vbus supply
-    
-    [ Upstream commit 75fd6485cccef269ac9eb3b71cf56753341195ef ]
-    
-    While support for working with a vbus was added, the regulator was never
-    actually gotten (despite what was documented). Fix this by actually
-    getting the supply from the device tree.
-    
-    Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
-    Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-    Link: https://lore.kernel.org/r/20240123225111.1629405-3-sean.anderson@seco.com
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-
-6.7.12 (working):
-
-commit fc3b5406b75472e1353073d1f410421aed62b793
-Author: Alexander Stein <alexander.stein@ew.tq-group.com>
-Date:   Thu Mar 14 10:26:27 2024 +0100
-
-    Revert "usb: phy: generic: Get the vbus supply"
-    
-    commit fdada0db0b2ae2addef4ccafe50937874dbeeebe upstream.
-    
-    This reverts commit 75fd6485cccef269ac9eb3b71cf56753341195ef.
-    This patch was applied twice by accident, causing probe failures.
-    Revert the accident.
-    
-    Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-    Fixes: 75fd6485ccce ("usb: phy: generic: Get the vbus supply")
-    Cc: stable <stable@kernel.org>
-    Reviewed-by: Sean Anderson <sean.anderson@seco.com>
-    Link: https://lore.kernel.org/r/20240314092628.1869414-1-alexander.stein@ew.tq-group.com
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
-
--- Pasi
-
+>  &pcie0 {
+> -	bus-scan-delay-ms = <1000>;
+>  	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+>  	num-lanes = <4>;
+>  	pinctrl-names = "default";
 
