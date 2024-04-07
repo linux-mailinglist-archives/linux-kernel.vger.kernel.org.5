@@ -1,50 +1,79 @@
-Return-Path: <linux-kernel+bounces-134572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3107F89B324
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:42:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D093689B2ED
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:27:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E03D828105C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:42:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D99B1F223CB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279873A8C2;
-	Sun,  7 Apr 2024 16:41:59 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F320C3A1CF;
+	Sun,  7 Apr 2024 16:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="rACQ1qYj"
+Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A425E34CDE
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 16:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1AD8485;
+	Sun,  7 Apr 2024 16:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712508118; cv=none; b=Csn3uDV3kI6xcVbZqN/iUkju4OXTHpge01uMdg64pkMmkL5FUHZzFEmW8Mo8HG/Geb68G+CXmphnAsjRQOwVvoxuQDGvDUi5V/so2VbaLXOeMrvvapg4EXsMZgAwUBfVcf2ErE5q0t1BxDR2aiH83/rkcSD2xrpFQpCTxpo+PDc=
+	t=1712507251; cv=none; b=Pdja0btM9i0GyO6BZAvlkBqpgEvcjrZmqPf1WgIBTsJpFY2bS8154ZuI5kknZetEx9SWkIdXPt/A0jntoCtx49fQwXu7MkF9wAqWvkFAAT/y74vLP0xGshvJmgvJjh1x8qEKTQoxhUSJx8ghNXm3KRA6fijYSJm23WxjRSKxotE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712508118; c=relaxed/simple;
-	bh=P1n2NBhL+CGNTEY95t/4arqBbPgfZEhAo9PFvDy5JBA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IYwapuiA/XtfPW6+9t9E0O8ZebAwwcMgkQHuN8pKSrKOJvomtb2HLHVD30Eih7CmrTlypo2WFBKXDns+5ORxcUImqczugtcTVm0rGHvMZ9bkxEUds2Lk98WbiPGli7sOvaMdCZPYanhc12xnlO9Jf5TRrdZpNBOZjqOJBMmpUJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Apr
- 2024 19:41:51 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 7 Apr 2024
- 19:26:49 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Ian Abbott <abbotti@mev.co.uk>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, H Hartley Sweeten
-	<hsweeten@visionengravers.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
-	<syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
-Subject: [PATCH] comedi: vmk80xx: fix incomplete endpoint checking
-Date: Sun, 7 Apr 2024 09:26:46 -0700
-Message-ID: <20240407162646.27486-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712507251; c=relaxed/simple;
+	bh=T8OwOOVKfWiqgdRaYqfMZmwwXk9ZpJJklZsyw3+08qs=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=u67oVAukfLn1wPTpGEq0+L2uUE8CQImJ82IKXDKAY90QwSH+o6z+BNH7CvJuPMk82dVSzv7ZA8m4LE3edkRMFgIjWerMiWQPqQ4rYfHDq0CyeQ9YFPZ+OvilArOfTl0LBKZtvuypa7MZMHfNXerUPCICKC+mZhRXdNMrdhUKCAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=rACQ1qYj; arc=none smtp.client-ip=203.205.221.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712507238; bh=8u+cV9KILSoHh+LKeRuUnoqayiOf2plCmWOJHizy47E=;
+	h=From:To:Cc:Subject:Date;
+	b=rACQ1qYjJT/I+e7iHeHJQS1pAwgN4v3P+MM8P8muw+Mx8P8cunLP8vZ4axddqQEDZ
+	 vX9bdvoRFZTXw7EB5lgQwDCQd3DBMpUAx+zI5vN0d32QHj0hLu1k4YmKs+VmxcRE/z
+	 tIa3Cd7oQeJCw9Iqupq6cHOOHtEMSwnfAdLxZUUU=
+Received: from cyy-pc.lan ([240e:379:225a:6d00:f878:7a6f:5832:7f4d])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 6CE08642; Mon, 08 Apr 2024 00:27:14 +0800
+X-QQ-mid: xmsmtpt1712507234t2l6iwczm
+Message-ID: <tencent_22BA0425B4DF1CA1713B62E4423C1BFBF809@qq.com>
+X-QQ-XMAILINFO: Md8NwmqZYy3fDy3ETQuYENYYYUvQVOi8ulHLChbgsiQjywXmCazVr5/wXMezX+
+	 ZIVZ16anZUcYC/VT70cPfByk7LRdQrl/vE+RS1n6EHK6BzHzEwAlgEGPX2O4Oru6AYE5DxkOzccZ
+	 WhQUeYfjlUzLFMqjVXGddS2YnSK6tjYOrQs+AQsPbs4fX3gIvMxvcj+daf6tEjYlapEQGjJgcigQ
+	 SSyRojB4O+yOu9xseyY7QvM83OWr+e6ajLPNx6WxEyAjkJdXyFOJJ6Deo/Cbb75PL8lPVgoUnpid
+	 pFjpr6TlyLTkzwb4eSvQJZfoqiMnSGnjIKeAJu+6OxM1kQh3MlqhLwi1fGW87mZ3/AfmBNt5RJQa
+	 r1n2f9C9GjxK5/J0eX0cIAtC6XN8cFysZSzkYphgZywYxCwNj0ERDKImGw3BvzLS+438eUGtyver
+	 WQqoENcCJZwSScCYhF042MQN+KxHSdUpRDWUaax3AcTatqqWjVgMxSNv/qWpiqpi7I6QjZCNechE
+	 f7zEbKqVpBwLJSVPwC8hi/JPbxeAGEYEATAKj8B15rv2/AgJYqar0gWRS5bXXVguQhAw/IvCcQ3y
+	 HRk2JoJ+QsFteUvqf80NmcJlgmiHLhuHxu6x8p7AFdq8WOEdMuuNKsOsdvJE5SBff7I7SiYiIApU
+	 Av2xwZFWZeEDcM7h+fPnQIKTQqrHQtCPWlyQqbsaqjtsfh5oW5IKvYjCFcc6Ekg5O/BuMw3s++zq
+	 9NAhMKDpAf4mi6b4LkZl7eMDiDi0wmjiaaPoJleVJeVc7rsie637zIHg3Bks+/+PBWXEDuTaO7bo
+	 UfRiQZ1n6l39Yw9q2qGxYgpQa5O1p8KQtXwWqIq5KiDkHH15OGfgAbeZiGPfTl1ElXLtxRszNvkL
+	 vCIKqohNonf6XbHomSmwwZn4nXPyVQiiYaAR9Zo34La2sIdO7TlaL3HMFJC/rR2B7DczRiSU6Xo8
+	 CBbc7hkffK8fF63m6v0BA+rdtw32uTiSxzTQt0iT2RHzPb2jhb+57POjfkq9Y2RHzYaRjH4Qe63t
+	 JKTyDuCA==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Guo Ren <guoren@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH RESEND v8 0/6] riscv: add initial support for Canaan Kendryte K230
+Date: Mon,  8 Apr 2024 00:26:58 +0800
+X-OQ-MSGID: <20240407162658.3199215-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,95 +81,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
 
-While vmk80xx does have endpoint checking implemented, some things
-can fall through the cracks. Depending on the hardware model,
-URBs can have either bulk or interrupt type, and current version
-of vmk80xx_find_usb_endpoints() function does not take that fully
-into account. While this warning does not seem to be too harmful,
-at the very least it will crash systems with 'panic_on_warn' set on
-them.
+K230 is an ideal chip for RISC-V Vector 1.0 evaluation now. Add initial
+support for it to allow more people to participate in building drivers
+to mainline for it.
 
-Fix the issue found by Syzkaller [1] by somewhat simplifying the
-endpoint checking process with usb_find_common_endpoints() and
-ensuring that only expected endpoint types are present.
+This kernel has been tested upon factory SDK [1] with
+k230_evb_only_linux_defconfig and patched mainline opensbi [2] to skip
+locked pmp and successfully booted to busybox on initrd with this log [3].
 
-This patch has not been tested on real hardware.
+Changes in resend v8:
+- Add missing cc to lkml and linux-dt list and correct Krzysztof's address
+- No change in content
 
-[1] Syzkaller report:
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 781 at drivers/usb/core/urb.c:504 usb_submit_urb+0xc4e/0x18c0 drivers/usb/core/urb.c:503
-..
-Call Trace:
- <TASK>
- usb_start_wait_urb+0x113/0x520 drivers/usb/core/message.c:59
- vmk80xx_reset_device drivers/comedi/drivers/vmk80xx.c:227 [inline]
- vmk80xx_auto_attach+0xa1c/0x1a40 drivers/comedi/drivers/vmk80xx.c:818
- comedi_auto_config+0x238/0x380 drivers/comedi/drivers.c:1067
- usb_probe_interface+0x5cd/0xb00 drivers/usb/core/driver.c:399
-..
+v8: https://lore.kernel.org/linux-riscv/tencent_9F423E3DC13F6D5FC7415C89988490F04607@qq.com/
 
-Similar issue also found by Syzkaller:
-Link: https://syzkaller.appspot.com/bug?extid=5205eb2f17de3e01946e
+Changes since v7:
+- Add missing riscv,cbop-block-size and riscv,cboz-block-size in dts
 
-Reported-and-tested-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
-Fixes: 49253d542cc0 ("staging: comedi: vmk80xx: factor out usb endpoint detection")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
- drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+v7: https://lore.kernel.org/linux-riscv/tencent_F6392EE11AC6A485C43406F1BD09C268DB0A@qq.com/
 
-diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-index 4536ed43f65b..476885403c61 100644
---- a/drivers/comedi/drivers/vmk80xx.c
-+++ b/drivers/comedi/drivers/vmk80xx.c
-@@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
- 	struct vmk80xx_private *devpriv = dev->private;
- 	struct usb_interface *intf = comedi_to_usb_interface(dev);
- 	struct usb_host_interface *iface_desc = intf->cur_altsetting;
--	struct usb_endpoint_descriptor *ep_desc;
--	int i;
-+	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
-+	int i, ret;
- 
--	if (iface_desc->desc.bNumEndpoints != 2)
--		return -ENODEV;
--
--	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
--		ep_desc = &iface_desc->endpoint[i].desc;
--
--		if (usb_endpoint_is_int_in(ep_desc) ||
--		    usb_endpoint_is_bulk_in(ep_desc)) {
--			if (!devpriv->ep_rx)
--				devpriv->ep_rx = ep_desc;
--			continue;
--		}
--
--		if (usb_endpoint_is_int_out(ep_desc) ||
--		    usb_endpoint_is_bulk_out(ep_desc)) {
--			if (!devpriv->ep_tx)
--				devpriv->ep_tx = ep_desc;
--			continue;
--		}
--	}
-+	if (devpriv->model == VMK8061_MODEL)
-+		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
-+						&ep_tx_desc, NULL, NULL);
-+	else
-+		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
-+						&ep_rx_desc, &ep_tx_desc);
- 
--	if (!devpriv->ep_rx || !devpriv->ep_tx)
-+	if (ret)
- 		return -ENODEV;
- 
-+	devpriv->ep_rx = ep_rx_desc;
-+	devpriv->ep_tx = ep_tx_desc;
-+
- 	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
- 		return -EINVAL;
- 
+Changes since v6:
+- Split SOC_CANAAN clean up to a separate patch [4]
+- Add zicbop and zicboz in dts
+- Rebase to riscv-dt-for-next branch
+
+v6: https://lore.kernel.org/linux-riscv/tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com/
+
+Changes since v5:
+- Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210 SoCs
+- Modify existing K210 drivers depends on SOC_CANAAN_K210 symbol
+- Reword dts commit message
+- Modify dts to use Full 512MB memory
+- Rebase to linux mainline master
+
+v5: https://lore.kernel.org/linux-riscv/tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com/
+
+Changes since v4:
+- Reword commit message on dts that the B-ext version of c908 is 1.0 rather
+  than 1.0-rc1
+
+v4: https://lore.kernel.org/linux-riscv/tencent_587730262984A011834F42D0563BC6B10405@qq.com/
+
+Changes since v3:
+- Refactor Kconfig.soc which uses ARCH_CANAAN for regular Canaan SoCs and
+  rename SOC_CANAAN to SOC_CANAAN_K210 for K210 in patch [5/7]
+- Sort dt-binding stings on Cannan SoCs in alphanumerical order
+
+v3: https://lore.kernel.org/linux-riscv/tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com/
+
+Changes since v2:
+- Add MIT License to dts file
+- Sort dt-binding stings in alphanumerical order
+- Sort filename in dts Makefile in alphanumerical order
+- Rename canmv-k230.dts to k230-canmv.dts
+
+v2: https://lore.kernel.org/linux-riscv/tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com/
+
+Changes since v1:
+- Patch dt-bindings in clint and plic
+- Use enum in K230 compatible dt bindings
+- Fix dts to pass `make dtbs_check`
+- Add more details in commit message
+
+v1: https://lore.kernel.org/linux-riscv/tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com/
+
+[1] https://github.com/kendryte/k230_sdk
+[2] https://github.com/cyyself/opensbi/tree/k230
+[3] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
+[4] https://lore.kernel.org/linux-riscv/tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com/
+
+Yangyu Chen (6):
+  dt-bindings: riscv: Add T-HEAD C908 compatible
+  dt-bindings: add Canaan K230 boards compatible strings
+  dt-bindings: timer: Add Canaan K230 CLINT
+  dt-bindings: interrupt-controller: Add Canaan K230 PLIC
+  riscv: dts: add initial canmv-k230 and k230-evb dts
+  riscv: config: enable ARCH_CANAAN in defconfig
+
+ .../sifive,plic-1.0.0.yaml                    |   1 +
+ .../devicetree/bindings/riscv/canaan.yaml     |   8 +-
+ .../devicetree/bindings/riscv/cpus.yaml       |   1 +
+ .../bindings/timer/sifive,clint.yaml          |   1 +
+ arch/riscv/boot/dts/canaan/Makefile           |   2 +
+ arch/riscv/boot/dts/canaan/k230-canmv.dts     |  24 +++
+ arch/riscv/boot/dts/canaan/k230-evb.dts       |  24 +++
+ arch/riscv/boot/dts/canaan/k230.dtsi          | 142 ++++++++++++++++++
+ arch/riscv/configs/defconfig                  |   1 +
+ 9 files changed, 203 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/boot/dts/canaan/k230-canmv.dts
+ create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
+ create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
+
+base-commit: 0eea987088a22d73d81e968de7347cdc7e594f72
+-- 
+2.43.0
+
 
