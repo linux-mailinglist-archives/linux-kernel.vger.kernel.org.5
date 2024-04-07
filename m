@@ -1,134 +1,101 @@
-Return-Path: <linux-kernel+bounces-134579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275E889B334
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:03:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01C8789B335
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D31611F21B29
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:03:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 714A9B2180C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41C73BB47;
-	Sun,  7 Apr 2024 17:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC22E3B799;
+	Sun,  7 Apr 2024 17:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLHAbAiB"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SVm6pSkV"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8F43A1A2;
-	Sun,  7 Apr 2024 17:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32E239AFA
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 17:06:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712509405; cv=none; b=t6h1Z70tIm3W30ogGIMeksUeWYpTdiECIXIML5XRbpE0Cwy2TGUYhjZYDKjNTsVWKEXxZkh+96DOTxlBdZkwmmamHJafMUOIXusQt0+e/1JSPS/jQhxeDUDPpBmhF/iBH4TBEjwrB+VAnrk9cLjcbcX8KoDZtWebUkt6cGrRHM8=
+	t=1712509571; cv=none; b=MaMCvjkvIqEPsMhbDaO7fL6UHPvYL9VAiQ32p74SKyI11jYb18n/OBETuFrvmfl4HOfHAOAlb5oUR/+q8l2lWL4WQH5DPuPZ9iUxrMLeediryHo9FaD6GeR9YyvyxGjCBGKH5X65ZKa6ysRzEKdiI/i60r9DWbarn86aPz7sCwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712509405; c=relaxed/simple;
-	bh=fRM90mJoop7mHkTq4lHxrtHPapUGNNrALtNHT2ImE9s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HGs9i2i3Dd+0xUiE7FP37ezZA7eLYdnewd9QqTtX8YQhid9SLIcVUOAnXyvjxPEcs44rlZVUqwByrOnxbbHOWE6zOZDKQVtR790tdgo0WxbSojIyB/9+wWOv4tf6Rl6CjkIidU8mvVUvUjSquhd0bns1cjk1rroJ+5T4aApWsk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLHAbAiB; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-343bccc0b2cso2642851f8f.1;
-        Sun, 07 Apr 2024 10:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712509402; x=1713114202; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cRL6F0Y7GWiKLw5ZjSnTgJyOyz7w6uvipEUuFAhRYQ8=;
-        b=TLHAbAiBjkxCQqqIv72Pvae8oWQd0rj/Lf8HocKJs7CeanGr+d+nlH4l3Ly5XCjxo+
-         bkrQkzdn+k+Um1D7bGCExHx0LOJqgex6f1PSW8t7tpVRYpRff13ZUZ6QmkLFOZ2I4CHR
-         ZGpzxHLfxFWvlYwIqQlQVhXVC6SHCwre7b0RIyAHUsZOnb2b3dpDjU1iLm32WiDk89JV
-         8CQAiOwLr3ikzg4yxQL6eG85W+gufoQYxOVkvCazGQCZyKPwrOZYwI6LyADWolj26/pA
-         0g4DNyXQiW5VIhVqxswLj01OVllsKMENi/Fx0EG5iQI1EvxsmGbH3TT28Ywcc1L9vP6g
-         4DuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712509402; x=1713114202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cRL6F0Y7GWiKLw5ZjSnTgJyOyz7w6uvipEUuFAhRYQ8=;
-        b=gPh/GmsP5sMaTYgI8bGww2o1RvpaRz4CjBkbwYLMJm8v9yt1ZeA8bJFuEXLN98Wd5u
-         nAh5aDWQVAyyxCcG94YMTUrteaj4dvHMO6uJoMZYypTijei3v+ihxiltFRA/GZwJAnYM
-         qdjol6Okc9PbSfnoXvHWaOHkjd+klnaGtYG+2m3v2u8l+0P9g1FVO/Ldi1/3e7cQclpA
-         dnJ7kQmbknaEQ5951GMyWWNFv2XtlYo6IbGgyOIpKV627bwdnYA0E5CA00aJZ7ftzy4e
-         ldVeN5S76gEoMri2uBxtgpmxPVKiX7I+n1NZfkF06y3FkEPZv+w1O/ZD0L67W8ZTQMYm
-         XnUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqIoWJZ02dzRvoAVr8hvc+vSpoX+94S6c3KUZPWUsCdiWg7NLJE6DbIwwmFcH5BUD2LVdlL5o0VBRALF0wGBS+HIUnTdOffJAjCS4jt30uaGAl2wfYf16cly/oCJ1Eo1o3YZqE4iH0AIvEggZzVtrrtH/G5ReZg2ji
-X-Gm-Message-State: AOJu0YwzMOJdEyrm5PNdphMqPCH87563bpvIhVl6z4XGGHdOemmXKArN
-	FfsVtusjD+CEvt/rdS92c68h5p78bjGXeAAhJqn31/dNTFFdAwesm0DrcETbSALMT3aKGjz45Dp
-	EkLVz8GpR13sSeEOpkrYcT9qUMmA=
-X-Google-Smtp-Source: AGHT+IHJQxJHl+wPj51rspPjpYHaysfsWlIxLTCgpIveJzPwDf+CTy65VL1Y+YNaoJwGVL0dTTu913oNCo9Ck2pbQtI=
-X-Received: by 2002:a5d:6c64:0:b0:345:8c1b:32f with SMTP id
- r4-20020a5d6c64000000b003458c1b032fmr1847452wrz.26.1712509401720; Sun, 07 Apr
- 2024 10:03:21 -0700 (PDT)
+	s=arc-20240116; t=1712509571; c=relaxed/simple;
+	bh=GHuwQxDsODWyAsnhwuYEm/YFbIlCe0NcnF/r7zWb4Ak=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PZAR8LzT2Zrp/uKyNeiVbp3gZBFFSpTPSGsOvGRpERnThttFOLZp0nMdSc2vC1dDxtYpbtiCIUggf85eObdmL7kH3icUWEke5hFfKcqeGcw9yROw6sj71SnyRS09PiTFQq1jMtBYAczcYvxMElh+rw8ySriBvbIHbmPr425sopM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SVm6pSkV; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=tkE7wjg7mEGHR9RcR4gH0ugAtFUzXk4D+Was2qIvbLE=; b=SVm6pSkVlTE5UJVoUMgD2nXMo1
+	BqgIZu2vUFNEv/SR44z4E5R8PEZCWNSGKX5bXDeaGm4hv1wRgPTgWGVPyBd7joZcfuzNDDweW+R4C
+	NlAnHmBI9sFYLc9K9Lim67mjHuBxbF9ZzBNg+Mvca8NM0EcddTnIdlbBKrne5UBOZcimVcAvCbgmh
+	klV1kcEyg/4+Lh26NQhpyn4cMSELphoHm5iw6bZSifo4dXrnRmEfBufOV0tjpLWIan9tPOJRxyk2u
+	/mroZOPpSzBe9mAk1umxEq7HhrdUuHeke6dgPUjKXaW15SljM/Jj+7r/VvkLQ28mS+qhFryP/mIv2
+	cG/s/VRQ==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rtVxw-0000000D6gH-0VGA;
+	Sun, 07 Apr 2024 17:06:00 +0000
+Message-ID: <70b22ecf-7d02-4b90-ada7-ccef659e115f@infradead.org>
+Date: Sun, 7 Apr 2024 10:05:59 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407130850.19625-1-linyunsheng@huawei.com>
-In-Reply-To: <20240407130850.19625-1-linyunsheng@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Sun, 7 Apr 2024 10:02:45 -0700
-Message-ID: <CAKgT0Uex+e_g9nyqk6DiB03U4zs_A1z2LoztHnpYbJ9LPm=NFA@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 00/12] First try to replace page_frag with page_frag_cache
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 1/3] powerpc: boot: Fix a typo in
+ partial_decompress() comment
+To: Yang Li <yang.lee@linux.alibaba.com>, arnd@arndb.de, mpe@ellerman.id.au,
+ npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+ naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20240407063952.36270-1-yang.lee@linux.alibaba.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240407063952.36270-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Apr 7, 2024 at 6:10=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> After [1], Only there are two implementations for page frag:
->
-> 1. mm/page_alloc.c: net stack seems to be using it in the
->    rx part with 'struct page_frag_cache' and the main API
->    being page_frag_alloc_align().
-> 2. net/core/sock.c: net stack seems to be using it in the
->    tx part with 'struct page_frag' and the main API being
->    skb_page_frag_refill().
->
-> This patchset tries to unfiy the page frag implementation
-> by replacing page_frag with page_frag_cache for sk_page_frag()
-> first. net_high_order_alloc_disable_key for the implementation
-> in net/core/sock.c doesn't seems matter that much now have
-> have pcp support for high-order pages in commit 44042b449872
-> ("mm/page_alloc: allow high-order pages to be stored on the
-> per-cpu lists").
->
-> As the related change is mostly related to networking, so
-> targeting the net-next. And will try to replace the rest
-> of page_frag in the follow patchset.
->
-> After this patchset, we are not only able to unify the page
-> frag implementation a little, but seems able to have about
-> 0.5+% performance boost testing by using the vhost_net_test
-> introduced in [1] and page_frag_test.ko introduced in this
-> patch.
 
-One question that jumps out at me for this is "why?". No offense but
-this is a pretty massive set of changes with over 1400 additions and
-500+ deletions and I can't help but ask why, and this cover page
-doesn't give me any good reason to think about accepting this set.
-What is meant to be the benefit to the community for adding this? All
-I am seeing is a ton of extra code to have to review as this
-unification is adding an additional 1000+ lines without a good
-explanation as to why they are needed.
 
-Also I wouldn't bother mentioning the 0.5+% performance gain as a
-"bonus". Changes of that amount usually mean it is within the margin
-of error. At best it likely means you haven't introduced a noticeable
-regression.
+On 4/6/24 11:39 PM, Yang Li wrote:
+> This commit adds kernel-doc style comments with complete parameter
+> descriptions for the function partial_decompress().
+> 
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  arch/powerpc/boot/decompress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/boot/decompress.c b/arch/powerpc/boot/decompress.c
+> index 977eb15a6d17..6835cb53f034 100644
+> --- a/arch/powerpc/boot/decompress.c
+> +++ b/arch/powerpc/boot/decompress.c
+> @@ -101,7 +101,7 @@ static void print_err(char *s)
+>   * @input_size:  length of the input buffer
+>   * @outbuf:      output buffer
+>   * @output_size: length of the output buffer
+> - * @skip         number of output bytes to ignore
+> + * @_skip:       number of output bytes to ignore
+>   *
+>   * This function takes compressed data from inbuf, decompresses and write it to
+>   * outbuf. Once output_size bytes are written to the output buffer, or the
+
+-- 
+#Randy
 
