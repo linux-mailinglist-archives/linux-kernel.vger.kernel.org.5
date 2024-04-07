@@ -1,51 +1,56 @@
-Return-Path: <linux-kernel+bounces-134309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C332D89B023
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:46:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1386789B027
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:49:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F07021C20C7E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:46:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F7871F2159C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BF817554;
-	Sun,  7 Apr 2024 09:46:12 +0000 (UTC)
-Received: from fgw22-4.mail.saunalahti.fi (fgw22-4.mail.saunalahti.fi [62.142.5.109])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D69317554;
+	Sun,  7 Apr 2024 09:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="S9AcafR3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6249F13AF9
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 09:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.109
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4916FC3;
+	Sun,  7 Apr 2024 09:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712483172; cv=none; b=JmPTiOrAl35dgnb6LbBwTPMVt3q5t6izHCxZFFqs08DOgbl7d3L0sZxox/akx1MkYe4MT+9Q6XZT3mZrDeJtcWvMJ80JPnjTKSxK+NFwu08kEFZOUAB8oHqYY7/xxilIPAgB4cUnRQorLFvzxEBmydpFKBM6hQhJwxAZIxpWUIQ=
+	t=1712483334; cv=none; b=QFnKANKWzXnyUdi+dd9jjrkz9adO35mp4ED04zoqYTYx3brDYjeLIUFEpwW1BbnicVZssgk4wxIfC1g6/PIXgteEER/e6HnEvMpsZYmpedZpsQQaaQQH+epw92/4ZO6vhBIXFBxnH3oSHMsVCx7AcExi01Ci9QfDKkVCpGzAU7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712483172; c=relaxed/simple;
-	bh=MO/qmJcezZj5tAJgWw3Dh9g/o6Eajzx5fxXnsevPDng=;
+	s=arc-20240116; t=1712483334; c=relaxed/simple;
+	bh=ZE35ZxdAKiX+2gavtrBx6xOGuGY/CHR9DeTkciZNrRM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dVWHaTgggKerTu8vDZgEec4ZKI73YdtmYoWMD9yhKzg1acLnmYqoJM4368I7SpOjP1SbFX69Dsz3Jw5jMzNxpA7WLD6KcvS8tvqrLIPzlP8V1JeILwmQwd/AvvMK/y+8JajfauwYNTUW9RRrdZ+tac3EovwU0Q3k8mp7wskxCvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=fail smtp.mailfrom=iki.fi; arc=none smtp.client-ip=62.142.5.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=iki.fi
-Received: from ydin.reaktio.net (unknown [85.76.255.15])
-	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
-	id 7f66dd16-f4c3-11ee-a9de-005056bdf889;
-	Sun, 07 Apr 2024 12:44:59 +0300 (EEST)
-Received: by ydin.reaktio.net (Postfix, from userid 1001)
-	id C050420089; Sun,  7 Apr 2024 12:44:58 +0300 (EEST)
-Date: Sun, 7 Apr 2024 12:44:58 +0300
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-kernel@vger.kernel.org, Norbert Preining <norbert@preining.info>,
-	stable@vger.kernel.org, regressions@leemhuis.info
-Subject: Re: Regression in kernel 6.8.2 fails in various ways (USB, BT, ...)
-Message-ID: <20240407094458.GB28090@reaktio.net>
-References: <ZgvkIZFN23rkYhtS@burischnitzel>
- <6139700.lOV4Wx5bFT@natalenko.name>
- <20240406182943.GG1099@reaktio.net>
- <2724514.mvXUDI8C0e@natalenko.name>
- <20240407093931.GA28090@reaktio.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y93SRvByWjoIEik4yYv33PaSLlsbVOj7VL6bh2IFMlxT6+fyxQwhTsOcGgibV2cO5ooSPgO/yNp56DiWec+oS+KDo3xaRWgG7pnhSn8eAJwOKUSi6K4980bh1eR5ZkAQXydmb9ix3dQtnhRtO+jYskq8tEmeJoU2Br17ZQ/2hKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=S9AcafR3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5163C433C7;
+	Sun,  7 Apr 2024 09:48:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712483334;
+	bh=ZE35ZxdAKiX+2gavtrBx6xOGuGY/CHR9DeTkciZNrRM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S9AcafR3hP6kSR3JKuxWIDVULcV/9VXE5ihDW12p/INmOXzrY9mapu1wJj2cJTPz6
+	 MD/6B01+iXxxnfLO06TwHMY8PIEWQFyoCFBOCUWW88r86k7P+gbrvhDdmFHo1OSN5q
+	 lelQxkaSd47p3iYjjsAZZjDvYwdDPgXgsGwnltFM=
+Date: Sun, 7 Apr 2024 11:48:50 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: =?iso-8859-1?Q?Fran=E7ois?= Valenduc <francoisvalenduc@gmail.com>
+Cc: torvalds@linux-foundation.org, lwn@lwn.net, jslaby@suse.cz,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	stable@vger.kernel.org
+Subject: Re: Linux 6.8.4
+Message-ID: <2024040734-tattling-bubbling-fcf0@gregkh>
+References: <2024040409-attentive-raffle-d9bc@gregkh>
+ <2024040409-disliking-mammogram-096d@gregkh>
+ <41c2bdd3-9b66-404a-aecb-8633d4aa98fb@gmail.com>
+ <762f7ace-7fee-4f61-823b-54a1b7d5bdce@gmail.com>
+ <2024040629-bullfight-wind-54f0@gregkh>
+ <0a716f53-5c88-42e7-b183-fb8ae4d4959c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,28 +60,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240407093931.GA28090@reaktio.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0a716f53-5c88-42e7-b183-fb8ae4d4959c@gmail.com>
 
-On Sun, Apr 07, 2024 at 12:39:31PM +0300, Pasi Kärkkäinen wrote:
-> > > 
-> > > I noticed possible related USB problem/regression also with Linux 6.7.11, eg. my USB headset is not detected at all anymore when running Linux 6.7.11. USB headset works OK with Linux 6.7.9, so the regression is included/backported to also either in 6.7.10 or in 6.7.11.
-> > 
-> > It wound be nice to narrow this range down even further with bisection because there are too many changes between v6.7.9 and v6.7.11 that could cause this.
-> > 
-> 
-> I just tested more Fedora kernel rpms, and it seems Linux 6.7.10 still works OK,
-> but 6.7.11 has the regression (eg. USB devices not detected, laptop does not reboot 
-> as it gets stuck before resetting the machine).
-> 
-> So the regression was backported to Linux 6.7.11.
-> 
+On Sun, Apr 07, 2024 at 11:36:23AM +0200, François Valenduc wrote:
+> While bisecting, I noticed there is now a new configuration option in
+> KVM (support for Microsoft hyper v emulation) which is thus needed for
+> Windows guests.
 
-And with more testing interestingly it seems Linux 6.7.12 already fixes the problem.
+What config option is now needed?  So there's no problem anymore, right?
 
-I tried multiple times: 6.7.10 works, 6.7.11 doesn't, and 6.7.12 again works.
+thanks,
 
-
--- Pasi
-
+greg k-h
 
