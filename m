@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-134479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE7F89B1FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:36:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E712C89B201
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4766A1C21233
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:36:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CEDF1F210F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0E4C132490;
-	Sun,  7 Apr 2024 13:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A83513541E;
+	Sun,  7 Apr 2024 13:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2P7G1PX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Aqe9npec"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A13A1332AD;
-	Sun,  7 Apr 2024 13:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E221350DA;
+	Sun,  7 Apr 2024 13:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495636; cv=none; b=OQ8n6ZEhgbcx3X2qQtRsGma2bN2nBIbtPcv113oie8Jd1GYkLHkuTLQARWIhezk2AFNJaUdLSqB2+pJnMI9hVkguW1sfrZZG3gGOktamxkM1JfSQUWvBzDe1wFxsED6FIQowaz7j1zweICkbELI9P97pYGV+YRosdakFLsqUb54=
+	t=1712495637; cv=none; b=l/9u1JXuk7u1tVpwSb9bHgs6VJxbWQj/o8v+i3gYuV0X8CN8rP7mCA+XkyBFYVNwxgqAf89zGk1mdx61BJ9cXGOr3hDbsUM6od7+jwl1imcTUkKl+RsTKPHKW/hm6lqHVUpCpDdONd87CqJzQhPp4f7ux3d49kTxnTPp4Zu1xns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495636; c=relaxed/simple;
-	bh=j93m5rRcB0ZwVVF22P855CDkTz/uCdJAY2FUZZCWVP0=;
+	s=arc-20240116; t=1712495637; c=relaxed/simple;
+	bh=M55eIr8YY923zpvoeCETl20KqAT1p4JYqMDrkBauwig=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SBiUfp4H9fPqS0lLRutIBFb7XeED7RqRaGSsAVAFFytg2nacMeIk0RtabXhfYceB8TzbxoxOoLxb8qQmyxZcj3JJqNO4/tV/sVFdgvWK8cZzMWTfiqQUtE1AqpnirFsjZgPDk46uv9yqrbVHCd6qzGgEHna67wZ3dP1DjW4d5sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2P7G1PX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC152C433F1;
-	Sun,  7 Apr 2024 13:13:54 +0000 (UTC)
+	 MIME-Version; b=kgW1RtDUlpN9xDO9NNO2E6M0B9tPeJFuXEW1Hhfce7Au1KE8MkYLaz9Dy0QrUaehI1az4Lkk8KY0dHLPuK0N3hgocbXnV1jGt8a4ztYqrNdJt3O98f1wXiWwqjtLqxHtsizfX6zDk+Njbzu5SRb4tG+S1GGQR0AtnXpcb8tlhC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Aqe9npec; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8F3C43394;
+	Sun,  7 Apr 2024 13:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495635;
-	bh=j93m5rRcB0ZwVVF22P855CDkTz/uCdJAY2FUZZCWVP0=;
+	s=k20201202; t=1712495637;
+	bh=M55eIr8YY923zpvoeCETl20KqAT1p4JYqMDrkBauwig=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O2P7G1PXHYkmWEh7WYhWdxFck8U8poSJa0j7lRBhdAEk2AzFBx0rK3leCpm83D4xb
-	 xNiOYiLGRQwff+nmkYWcL0NSI0Xd1CBzv/A/QCwJHfllXU9x29Gnkw17dZgOdjPamN
-	 blcT83eB1vCi24lQV0YcjodyO37Pg0ajwY3eqU+jVXdMc+BBzOroBNm76zplmoA9t+
-	 y3DAPxljh1g7VL/CaXGrFyylHhf6zr5ctS/xwv9Sw2S9JF+RotHAZhMq03wP9991Fc
-	 zEk1j4iM3fMTLQmD3EgfxO0h/tRf/P1Gdv0Il7yTJS/BC4dLzfMYgpQLFJ4NSwUddJ
-	 lfnlg/rBtgm1A==
+	b=Aqe9npec8482V1ADit1uyAs5zyQJoEXQMAb9kGEAOHxccklfIK9/XuxBvGw1YQJ67
+	 8nzMHzEbsQjLWN2TCCNLe/7qPiNLqPX1KXmhO9NYvZbPnFZ4eKPcx5ykbmQXM8Vsg3
+	 IDqurLUYZt1UCm9WuNJFUz++xvsVwHTNX1z1LXDBrYsoUOnwJ8in4/XOZZdWQFLWR1
+	 IrPBIpFR7Hv6ZjZ1kUghTWspQAprKPwM3jNcXggZYEhI/EPXoCRpxMQ53HxVRZK2jm
+	 DPNxbjxceoSLIZjL2GcjJzULYly7K1IL3YlKhjTbND9DIKXhsx+oJaMPumEQgGZtUs
+	 IAFTB71crXtFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anand Jain <anand.jain@oracle.com>,
-	Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>,
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	Marco Elver <elver@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 09/10] btrfs: return accurate error code on open failure in open_fs_devices()
-Date: Sun,  7 Apr 2024 09:13:39 -0400
-Message-ID: <20240407131341.1052960-9-sashal@kernel.org>
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 10/10] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
+Date: Sun,  7 Apr 2024 09:13:40 -0400
+Message-ID: <20240407131341.1052960-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131341.1052960-1-sashal@kernel.org>
 References: <20240407131341.1052960-1-sashal@kernel.org>
@@ -67,73 +67,98 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Anand Jain <anand.jain@oracle.com>
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-[ Upstream commit 2f1aeab9fca1a5f583be1add175d1ee95c213cfa ]
+[ Upstream commit 54babdc0343fff2f32dfaafaaa9e42c4db278204 ]
 
-When attempting to exclusive open a device which has no exclusive open
-permission, such as a physical device associated with the flakey dm
-device, the open operation will fail, resulting in a mount failure.
+When KCSAN and CONSTRUCTORS are enabled, one can trigger the
 
-In this particular scenario, we erroneously return -EINVAL instead of the
-correct error code provided by the bdev_open_by_path() function, which is
--EBUSY.
+  "Unpatched return thunk in use. This should not happen!"
 
-Fix this, by returning error code from the bdev_open_by_path() function.
-With this correction, the mount error message will align with that of
-ext4 and xfs.
+catch-all warning.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Usually, when objtool runs on the .o objects, it does generate a section
+return_sites which contains all offsets in the objects to the return
+thunks of the functions present there. Those return thunks then get
+patched at runtime by the alternatives.
+
+KCSAN and CONSTRUCTORS add this to the object file's .text.startup
+section:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  ...
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+which, if it is built as a module goes through the intermediary stage of
+creating a <module>.mod.c file which, when translated, receives a second
+constructor:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+
+  ...
+
+  0000000000000030 <_sub_I_00099_0>:
+    30:   f3 0f 1e fa             endbr64
+    34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+                          35: R_X86_64_PLT32      __tsan_init-0x4
+    39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
+                          3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+in the .ko file.
+
+Objtool has run already so that second constructor's return thunk cannot
+be added to the .return_sites section and thus the return thunk remains
+unpatched and the warning rightfully fires.
+
+Drop KCSAN flags from the mod.c generation stage as those constructors
+do not contain data races one would be interested about.
+
+Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+Borisov <nik.borisov@suse.com>.
+
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Closes: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de> # Dell XPS 13
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ scripts/Makefile.modfinal | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index cc18ba50a61cf..79541c5b3d752 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1260,25 +1260,32 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- 	struct btrfs_device *device;
- 	struct btrfs_device *latest_dev = NULL;
- 	struct btrfs_device *tmp_device;
-+	int ret = 0;
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 47f047458264f..dce4cf55a4b68 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
+ part-of-module = y
  
- 	flags |= FMODE_EXCL;
+ quiet_cmd_cc_o_c = CC [M]  $@
+-      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
++      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
  
- 	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
- 				 dev_list) {
--		int ret;
-+		int ret2;
- 
--		ret = btrfs_open_one_device(fs_devices, device, flags, holder);
--		if (ret == 0 &&
-+		ret2 = btrfs_open_one_device(fs_devices, device, flags, holder);
-+		if (ret2 == 0 &&
- 		    (!latest_dev || device->generation > latest_dev->generation)) {
- 			latest_dev = device;
--		} else if (ret == -ENODATA) {
-+		} else if (ret2 == -ENODATA) {
- 			fs_devices->num_devices--;
- 			list_del(&device->dev_list);
- 			btrfs_free_device(device);
- 		}
-+		if (ret == 0 && ret2 != 0)
-+			ret = ret2;
- 	}
--	if (fs_devices->open_devices == 0)
-+
-+	if (fs_devices->open_devices == 0) {
-+		if (ret)
-+			return ret;
- 		return -EINVAL;
-+	}
- 
- 	fs_devices->opened = 1;
- 	fs_devices->latest_dev = latest_dev;
+ %.mod.o: %.mod.c FORCE
+ 	$(call if_changed_dep,cc_o_c)
 -- 
 2.43.0
 
