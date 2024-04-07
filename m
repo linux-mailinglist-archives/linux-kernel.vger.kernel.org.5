@@ -1,813 +1,283 @@
-Return-Path: <linux-kernel+bounces-134171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCEBE89AE99
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:50:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25CDC89AE9B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:52:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43B7E1F22AB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:50:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 173131C22115
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71FD747F;
-	Sun,  7 Apr 2024 04:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37CA1879;
+	Sun,  7 Apr 2024 04:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="OWZNvuvP"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xfgOrlJI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Q6YUqoR1";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SxSc0Nzi";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="MDTGqn+l"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7751879
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 04:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD88A35
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 04:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712465421; cv=none; b=iet/ajoKAaw+F3WZrBYgqfukwRIteVGfuVCJ2PmQam7w9nt0eZJzqE6IxZjmdq6H4L0ykiAat4qLzhYOh4qUmr2Mltyuz+r6RjzKZ/zUVgv97WzkVrfLHb6BpzT82fdh4qvQLmPu0j/ldGjQ5uu8fNmACeLQk2b6KjlenryN5Zw=
+	t=1712465522; cv=none; b=IpNh4hh9AyXQPLIRezgJ6U7Evrqnxxd6MGUGQsSQlPoJHKzyMwLVL+LA2ufO4+IcawI3HPo2nLxLeIcYzVzEuGppsl3eLIBgHT/4/iStL+PgGsUJBPHP/iQ+C50PoaLLGjDMc0F9w/Wy7u8BBVBA5JUgc5EQgUgmopK3Qa9MlvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712465421; c=relaxed/simple;
-	bh=CXKG7CR6Ad1RcyWyUm4BVZcLZ7MtFfDf+m7AFdG7I/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bu/Adpre+hZglw6FC9wht6248ZNEZq6VQnbRQqjz9T8KKDYr4uRH9N6aHC+cqZZxFyjU2Gr/EJNfsugAsKyAcx6w+NManStDa1zJS2dTmHew7M0VM54AO7rL6gH7AWUY5d2g421NTVuxk9WpiJ231u3jWrDOfAy23qYVN5cpEPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=OWZNvuvP; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a0e43afd8so7741835ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 21:50:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1712465417; x=1713070217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eSOyMWuiKoh8+FxVm+reFs1vh/ly1S0wriyHj88dOco=;
-        b=OWZNvuvPQW8HGhNfub1MHk+k4RzsMqTywjtr0PhK5V6w1lBNNf8e8W59a9j6Tt7zSj
-         /3ZrTZM0S/WcnG16W3swkFJ9LBys+ivusb2saYSyc5Vh3eoaJCJFJHt8DEoRjHKDAP94
-         NgSy1eR0ydJu4KlJtKxjZ+h1/t0KU6wG0oHNTZy6V36InmMnhqJ58ul/nEdaVqTlj2CC
-         SqBvzsZurQ3y8KIl1lxVgbUiK1IcXjKBm0qMUVSPJrkZU6e0Aa1HCS0/0XWTTgMgvADV
-         W+djfAumvHwRDIGXoH/tlY8mrSuhG/yabCVI8XWSSN3zkVJxZ6Uyyv5yr3RvzdaI1zgk
-         2VHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712465417; x=1713070217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eSOyMWuiKoh8+FxVm+reFs1vh/ly1S0wriyHj88dOco=;
-        b=Id0PtyYDRZweydZ7bYxcr5ETy1Q6DQnQZ0g/C2aZ2/YeRUnXQHIzWPH5ybL6wh3u+g
-         BFVA3zg5m+tG0gwD/HXe2EVNK1bwgQhcV5ViFXhQr4isMuGedaAN2Xq9mALSc7w/3jjM
-         bUrvXnuf7+kiJ6KX3tpSAIjIQq5a24E47ARp9anDYKOa9Y3brWMvt2+wnLmgiNKtQ4RV
-         or1AVsSkPZFshfdNA/hpOf3aMbYWlgVwib6jMQiApGVOY1FDzgUTHcGmNLnF0Qooum6E
-         aNZZKYIBZoSakdaPsEyP0iMBdoH5fjis39fmyxQiW9xdOgSLTL/KdUKx4oIOYNpq6yDI
-         VJfQ==
-X-Gm-Message-State: AOJu0YxUX8ADuDf4bIHrxGxz2vpJygNvb2F3zPSpsKU9SQ6dVnS7oD5B
-	taEMv2BLe8+OGZS0IxglALNrXHUmW1IManmcSSsoVLzuQS6/Z4vCLRAu+gsQO8q8GFv77MjieyJ
-	wFzU/Gmskv1lYXY+C9lGw9VGliFW5fMVT4qkCcQ==
-X-Google-Smtp-Source: AGHT+IEziIiZJFv2t0jKP6V2qifN/y4SuoxWAqldWlR3rrZlBX9Z/5AfdEzJNFyrwauRwTlIhTShFzey1rao1yYt3Lc=
-X-Received: by 2002:a05:6e02:1cae:b0:369:f8b7:f5a6 with SMTP id
- x14-20020a056e021cae00b00369f8b7f5a6mr6303460ill.8.1712465416867; Sat, 06 Apr
- 2024 21:50:16 -0700 (PDT)
+	s=arc-20240116; t=1712465522; c=relaxed/simple;
+	bh=8cyo8L0GhE9DQ/ubrE0w2ks7IUFrZQw5ljpsc1FWl4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cu+3mzkNlZADkOjqHk/k9X0hqdGnB+DvH+pzU2KKs9Sw/c+Kj3brL0hWHot06mvIJjof4DmDY8xTt/crIiOmdZV8bjrmOvVjaH8dVq/jFkBJ3iFajq31GhMqRHyEIORNwlPcE26+I66MbGxJpQCNtiEGfyXq6HFlOEsmIKOVtr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xfgOrlJI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Q6YUqoR1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SxSc0Nzi; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=MDTGqn+l; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8D89221B12;
+	Sun,  7 Apr 2024 04:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712465518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
+	b=xfgOrlJID0g/nHPtrmPZ96OM3qgpzum4nHDfrosR5/jtNkGb/mxdXBuH0I9R+4DByJaBUy
+	8O9Fj+uJicQ2TWz8Te7vpumnJH5tYH+z5CW0FSs3ChWnF4ih5jDi6e9p4wSmcQKp1V23kU
+	rUv8hP8JeH45W6+PH5ZWFsU2YMKaZt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712465518;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
+	b=Q6YUqoR1A+5sAH+FvWzsn+xbX7vgZLrrqCDZP9PQIud9UudaZxlhaoxtjioyLj8n62rM/Q
+	qiI9UeApFZ8jZcBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=SxSc0Nzi;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=MDTGqn+l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712465517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
+	b=SxSc0NzixFvARdW/eNzWfg7k1mih2NPOl6Idm0efJNYYxbVFp2JFkIWyfWFdbaDFLdYo9p
+	kg8hBxb+CtQLBmS4okSnmTo1+jY9fEFRH74sXd1456RAIkdN9cjyh0XQixDBScM8dVMtLo
+	n8Y+s+8luDySDrc18z4UrQr3VQOoSRA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712465517;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
+	b=MDTGqn+lES5vnX7xHbDoxgQJu5tf68v7a4lx0SZvNUkNRv1FB/DbSUOI2sOoaiwyl/C8a+
+	jz4v2FzGfetDmHDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 06970132FF;
+	Sun,  7 Apr 2024 04:51:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id UNIeOmwmEmZhDwAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Sun, 07 Apr 2024 04:51:56 +0000
+Date: Sun, 7 Apr 2024 06:51:51 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: David Hildenbrand <david@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Machine check recovery broken in v6.9-rc1
+Message-ID: <ZhImZwKhp-CZ0MFN@localhost.localdomain>
+References: <Zg8kLSl2yAlA3o5D@agluck-desk3>
+ <1e943439-6044-4aa4-8c41-747e9e4dca27@redhat.com>
+ <SJ1PR11MB6083AB3E55B7DE0D3FBE185EFC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZhCQPwgMWo9w3LlO@agluck-desk3>
+ <ZhCxAZy-Iuz2XR7A@localhost.localdomain>
+ <ZhDHh_W1WZuFhsfg@localhost.localdomain>
+ <ZhDMBZ2I9M72D87F@localhost.localdomain>
+ <SJ1PR11MB608323D7E6113B78A35F4999FC012@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405115815.3226315-1-pbonzini@redhat.com> <20240405115815.3226315-2-pbonzini@redhat.com>
-In-Reply-To: <20240405115815.3226315-2-pbonzini@redhat.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Sun, 7 Apr 2024 10:20:05 +0530
-Message-ID: <CAAhSdy0rmUPaQhKd_iuv805th4oUB3e5PYw8io3evKAhcrjSXw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin <npiggin@gmail.com>, 
-	Atish Patra <atishp@atishpatra.org>, Sean Christopherson <seanjc@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB608323D7E6113B78A35F4999FC012@SJ1PR11MB6083.namprd11.prod.outlook.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.de:dkim,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8D89221B12
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -5.51
 
-On Fri, Apr 5, 2024 at 5:28=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
->
-> The .change_pte() MMU notifier callback was intended as an
-> optimization. The original point of it was that KSM could tell KVM to fli=
-p
-> its secondary PTE to a new location without having to first zap it. At
-> the time there was also an .invalidate_page() callback; both of them were
-> *not* bracketed by calls to mmu_notifier_invalidate_range_{start,end}(),
-> and .invalidate_page() also doubled as a fallback implementation of
-> .change_pte().
->
-> Later on, however, both callbacks were changed to occur within an
-> invalidate_range_start/end() block.
->
-> In the case of .change_pte(), commit 6bdb913f0a70 ("mm: wrap calls to
-> set_pte_at_notify with invalidate_range_start and invalidate_range_end",
-> 2012-10-09) did so to remove the fallback from .invalidate_page() to
-> .change_pte() and allow sleepable .invalidate_page() hooks.
->
-> This however made KVM's usage of the .change_pte() callback completely
-> moot, because KVM unmaps the sPTEs during .invalidate_range_start()
-> and therefore .change_pte() has no hope of finding a sPTE to change.
-> Drop the generic KVM code that dispatches to kvm_set_spte_gfn(), as
-> well as all the architecture specific implementations.
->
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+On Sun, Apr 07, 2024 at 12:08:30AM +0000, Luck, Tony wrote:
+> Oscar.
+> 
+> Both the 6.1 and 6.9-rc2 patches make the BUG (and subsequent issues) go away.
 
-For KVM RISC-V:
-Acked-by: Anup Patel <anup@brainfault.org>
+Thanks for the switf test Tony!
 
-Regards,
-Anup
+> Here's what's happening.
+> 
+> When the machine check occurs there's a scramble from various subsystems
+> to report the memory error.
+> 
+> ghes_do_memory_failure() calls memory_failure_queue() which later
+> calls memory_failure() from a kernel thread. Side note: this happens TWICE
+> for each error. Not sure yet if this is a BIOS issue logging more than once.
+> or some Linux issues in acpi/apei/ghes.c code.
+> 
+> uc_decode_notifier() [called from a different kernel thread] also calls
+> do_memory_failure()
+> 
+> Finally kill_me_maybe() [called from task_work on return to the application
+> when returning from the machine check handler] also calls memory_failure()
+> 
+> do_memory_failure() is somewhat prepared for multiple reports of the same
+> error. It uses an atomic test and set operation to mark the page as poisoned.
+> 
+> First called to report the error does all the real work. Late arrivals take a
+> shorter path, but may still take some action(s) depending on the "flags"
+> passed in:
+> 
+>         if (TestSetPageHWPoison(p)) {
+>                 pr_err("%#lx: already hardware poisoned\n", pfn);
+>                 res = -EHWPOISON;
+>                 if (flags & MF_ACTION_REQUIRED)
+>                         res = kill_accessing_process(current, pfn, flags);
+>                 if (flags & MF_COUNT_INCREASED)
+>                         put_page(p);
+>                 goto unlock_mutex;
+>         }
 
-> ---
->  arch/arm64/kvm/mmu.c                  | 34 -----------------
->  arch/loongarch/include/asm/kvm_host.h |  1 -
->  arch/loongarch/kvm/mmu.c              | 32 ----------------
->  arch/mips/kvm/mmu.c                   | 30 ---------------
->  arch/powerpc/include/asm/kvm_ppc.h    |  1 -
->  arch/powerpc/kvm/book3s.c             |  5 ---
->  arch/powerpc/kvm/book3s.h             |  1 -
->  arch/powerpc/kvm/book3s_64_mmu_hv.c   | 12 ------
->  arch/powerpc/kvm/book3s_hv.c          |  1 -
->  arch/powerpc/kvm/book3s_pr.c          |  7 ----
->  arch/powerpc/kvm/e500_mmu_host.c      |  6 ---
->  arch/riscv/kvm/mmu.c                  | 20 ----------
->  arch/x86/kvm/mmu/mmu.c                | 54 +--------------------------
->  arch/x86/kvm/mmu/spte.c               | 16 --------
->  arch/x86/kvm/mmu/spte.h               |  2 -
->  arch/x86/kvm/mmu/tdp_mmu.c            | 46 -----------------------
->  arch/x86/kvm/mmu/tdp_mmu.h            |  1 -
->  include/linux/kvm_host.h              |  2 -
->  include/trace/events/kvm.h            | 15 --------
->  virt/kvm/kvm_main.c                   | 43 ---------------------
->  20 files changed, 2 insertions(+), 327 deletions(-)
->
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index dc04bc767865..ff17849be9f4 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -1768,40 +1768,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct k=
-vm_gfn_range *range)
->         return false;
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       kvm_pfn_t pfn =3D pte_pfn(range->arg.pte);
-> -
-> -       if (!kvm->arch.mmu.pgt)
-> -               return false;
-> -
-> -       WARN_ON(range->end - range->start !=3D 1);
-> -
-> -       /*
-> -        * If the page isn't tagged, defer to user_mem_abort() for saniti=
-sing
-> -        * the MTE tags. The S2 pte should have been unmapped by
-> -        * mmu_notifier_invalidate_range_end().
-> -        */
-> -       if (kvm_has_mte(kvm) && !page_mte_tagged(pfn_to_page(pfn)))
-> -               return false;
-> -
-> -       /*
-> -        * We've moved a page around, probably through CoW, so let's trea=
-t
-> -        * it just like a translation fault and the map handler will clea=
-n
-> -        * the cache to the PoC.
-> -        *
-> -        * The MMU notifiers will have unmapped a huge PMD before calling
-> -        * ->change_pte() (which in turn calls kvm_set_spte_gfn()) and
-> -        * therefore we never need to clear out a huge PMD through this
-> -        * calling path and a memcache is not required.
-> -        */
-> -       kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, range->start << PAGE_SH=
-IFT,
-> -                              PAGE_SIZE, __pfn_to_phys(pfn),
-> -                              KVM_PGTABLE_PROT_R, NULL, 0);
-> -
-> -       return false;
-> -}
-> -
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->         u64 size =3D (range->end - range->start) << PAGE_SHIFT;
-> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/inclu=
-de/asm/kvm_host.h
-> index 2d62f7b0d377..69305441f40d 100644
-> --- a/arch/loongarch/include/asm/kvm_host.h
-> +++ b/arch/loongarch/include/asm/kvm_host.h
-> @@ -203,7 +203,6 @@ void kvm_flush_tlb_all(void);
->  void kvm_flush_tlb_gpa(struct kvm_vcpu *vcpu, unsigned long gpa);
->  int kvm_handle_mm_fault(struct kvm_vcpu *vcpu, unsigned long badv, bool =
-write);
->
-> -void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
->  int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned l=
-ong end, bool blockable);
->  int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)=
-;
->  int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
-> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
-> index a556cff35740..98883aa23ab8 100644
-> --- a/arch/loongarch/kvm/mmu.c
-> +++ b/arch/loongarch/kvm/mmu.c
-> @@ -494,38 +494,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm=
-_gfn_range *range)
->                         range->end << PAGE_SHIFT, &ctx);
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       unsigned long prot_bits;
-> -       kvm_pte_t *ptep;
-> -       kvm_pfn_t pfn =3D pte_pfn(range->arg.pte);
-> -       gpa_t gpa =3D range->start << PAGE_SHIFT;
-> -
-> -       ptep =3D kvm_populate_gpa(kvm, NULL, gpa, 0);
-> -       if (!ptep)
-> -               return false;
-> -
-> -       /* Replacing an absent or old page doesn't need flushes */
-> -       if (!kvm_pte_present(NULL, ptep) || !kvm_pte_young(*ptep)) {
-> -               kvm_set_pte(ptep, 0);
-> -               return false;
-> -       }
-> -
-> -       /* Fill new pte if write protected or page migrated */
-> -       prot_bits =3D _PAGE_PRESENT | __READABLE;
-> -       prot_bits |=3D _CACHE_MASK & pte_val(range->arg.pte);
-> -
-> -       /*
-> -        * Set _PAGE_WRITE or _PAGE_DIRTY iff old and new pte both suppor=
-t
-> -        * _PAGE_WRITE for map_page_fast if next page write fault
-> -        * _PAGE_DIRTY since gpa has already recorded as dirty page
-> -        */
-> -       prot_bits |=3D __WRITEABLE & *ptep & pte_val(range->arg.pte);
-> -       kvm_set_pte(ptep, kvm_pfn_pte(pfn, __pgprot(prot_bits)));
-> -
-> -       return true;
-> -}
-> -
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->         kvm_ptw_ctx ctx;
-> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-> index 467ee6b95ae1..c17157e700c0 100644
-> --- a/arch/mips/kvm/mmu.c
-> +++ b/arch/mips/kvm/mmu.c
-> @@ -444,36 +444,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm=
-_gfn_range *range)
->         return true;
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       gpa_t gpa =3D range->start << PAGE_SHIFT;
-> -       pte_t hva_pte =3D range->arg.pte;
-> -       pte_t *gpa_pte =3D kvm_mips_pte_for_gpa(kvm, NULL, gpa);
-> -       pte_t old_pte;
-> -
-> -       if (!gpa_pte)
-> -               return false;
-> -
-> -       /* Mapping may need adjusting depending on memslot flags */
-> -       old_pte =3D *gpa_pte;
-> -       if (range->slot->flags & KVM_MEM_LOG_DIRTY_PAGES && !pte_dirty(ol=
-d_pte))
-> -               hva_pte =3D pte_mkclean(hva_pte);
-> -       else if (range->slot->flags & KVM_MEM_READONLY)
-> -               hva_pte =3D pte_wrprotect(hva_pte);
-> -
-> -       set_pte(gpa_pte, hva_pte);
-> -
-> -       /* Replacing an absent or old page doesn't need flushes */
-> -       if (!pte_present(old_pte) || !pte_young(old_pte))
-> -               return false;
-> -
-> -       /* Pages swapped, aged, moved, or cleaned require flushes */
-> -       return !pte_present(hva_pte) ||
-> -              !pte_young(hva_pte) ||
-> -              pte_pfn(old_pte) !=3D pte_pfn(hva_pte) ||
-> -              (pte_dirty(old_pte) && !pte_dirty(hva_pte));
-> -}
-> -
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->         return kvm_mips_mkold_gpa_pt(kvm, range->start, range->end);
-> diff --git a/arch/powerpc/include/asm/kvm_ppc.h b/arch/powerpc/include/as=
-m/kvm_ppc.h
-> index 3281215097cc..ca3829d47ab7 100644
-> --- a/arch/powerpc/include/asm/kvm_ppc.h
-> +++ b/arch/powerpc/include/asm/kvm_ppc.h
-> @@ -287,7 +287,6 @@ struct kvmppc_ops {
->         bool (*unmap_gfn_range)(struct kvm *kvm, struct kvm_gfn_range *ra=
-nge);
->         bool (*age_gfn)(struct kvm *kvm, struct kvm_gfn_range *range);
->         bool (*test_age_gfn)(struct kvm *kvm, struct kvm_gfn_range *range=
-);
-> -       bool (*set_spte_gfn)(struct kvm *kvm, struct kvm_gfn_range *range=
-);
->         void (*free_memslot)(struct kvm_memory_slot *slot);
->         int (*init_vm)(struct kvm *kvm);
->         void (*destroy_vm)(struct kvm *kvm);
-> diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
-> index 8acec144120e..0d0624088e6b 100644
-> --- a/arch/powerpc/kvm/book3s.c
-> +++ b/arch/powerpc/kvm/book3s.c
-> @@ -899,11 +899,6 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gf=
-n_range *range)
->         return kvm->arch.kvm_ops->test_age_gfn(kvm, range);
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       return kvm->arch.kvm_ops->set_spte_gfn(kvm, range);
-> -}
-> -
->  int kvmppc_core_init_vm(struct kvm *kvm)
->  {
->
-> diff --git a/arch/powerpc/kvm/book3s.h b/arch/powerpc/kvm/book3s.h
-> index 58391b4b32ed..4aa2ab89afbc 100644
-> --- a/arch/powerpc/kvm/book3s.h
-> +++ b/arch/powerpc/kvm/book3s.h
-> @@ -12,7 +12,6 @@ extern void kvmppc_core_flush_memslot_hv(struct kvm *kv=
-m,
->  extern bool kvm_unmap_gfn_range_hv(struct kvm *kvm, struct kvm_gfn_range=
- *range);
->  extern bool kvm_age_gfn_hv(struct kvm *kvm, struct kvm_gfn_range *range)=
-;
->  extern bool kvm_test_age_gfn_hv(struct kvm *kvm, struct kvm_gfn_range *r=
-ange);
-> -extern bool kvm_set_spte_gfn_hv(struct kvm *kvm, struct kvm_gfn_range *r=
-ange);
->
->  extern int kvmppc_mmu_init_pr(struct kvm_vcpu *vcpu);
->  extern void kvmppc_mmu_destroy_pr(struct kvm_vcpu *vcpu);
-> diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3=
-s_64_mmu_hv.c
-> index 2b1f0cdd8c18..1b51b1c4713b 100644
-> --- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
-> +++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
-> @@ -1010,18 +1010,6 @@ bool kvm_test_age_gfn_hv(struct kvm *kvm, struct k=
-vm_gfn_range *range)
->                 return kvm_test_age_rmapp(kvm, range->slot, range->start)=
-;
->  }
->
-> -bool kvm_set_spte_gfn_hv(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       WARN_ON(range->start + 1 !=3D range->end);
-> -
-> -       if (kvm_is_radix(kvm))
-> -               kvm_unmap_radix(kvm, range->slot, range->start);
-> -       else
-> -               kvm_unmap_rmapp(kvm, range->slot, range->start);
-> -
-> -       return false;
-> -}
-> -
->  static int vcpus_running(struct kvm *kvm)
->  {
->         return atomic_read(&kvm->arch.vcpus_running) !=3D 0;
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 8e86eb577eb8..35cb014a0c51 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -6364,7 +6364,6 @@ static struct kvmppc_ops kvm_ops_hv =3D {
->         .unmap_gfn_range =3D kvm_unmap_gfn_range_hv,
->         .age_gfn =3D kvm_age_gfn_hv,
->         .test_age_gfn =3D kvm_test_age_gfn_hv,
-> -       .set_spte_gfn =3D kvm_set_spte_gfn_hv,
->         .free_memslot =3D kvmppc_core_free_memslot_hv,
->         .init_vm =3D  kvmppc_core_init_vm_hv,
->         .destroy_vm =3D kvmppc_core_destroy_vm_hv,
-> diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
-> index 5b92619a05fd..a7d7137ea0c8 100644
-> --- a/arch/powerpc/kvm/book3s_pr.c
-> +++ b/arch/powerpc/kvm/book3s_pr.c
-> @@ -461,12 +461,6 @@ static bool kvm_test_age_gfn_pr(struct kvm *kvm, str=
-uct kvm_gfn_range *range)
->         return false;
->  }
->
-> -static bool kvm_set_spte_gfn_pr(struct kvm *kvm, struct kvm_gfn_range *r=
-ange)
-> -{
-> -       /* The page will get remapped properly on its next fault */
-> -       return do_kvm_unmap_gfn(kvm, range);
-> -}
-> -
->  /*****************************************/
->
->  static void kvmppc_set_msr_pr(struct kvm_vcpu *vcpu, u64 msr)
-> @@ -2071,7 +2065,6 @@ static struct kvmppc_ops kvm_ops_pr =3D {
->         .unmap_gfn_range =3D kvm_unmap_gfn_range_pr,
->         .age_gfn  =3D kvm_age_gfn_pr,
->         .test_age_gfn =3D kvm_test_age_gfn_pr,
-> -       .set_spte_gfn =3D kvm_set_spte_gfn_pr,
->         .free_memslot =3D kvmppc_core_free_memslot_pr,
->         .init_vm =3D kvmppc_core_init_vm_pr,
->         .destroy_vm =3D kvmppc_core_destroy_vm_pr,
-> diff --git a/arch/powerpc/kvm/e500_mmu_host.c b/arch/powerpc/kvm/e500_mmu=
-_host.c
-> index ccb8f16ffe41..c664fdec75b1 100644
-> --- a/arch/powerpc/kvm/e500_mmu_host.c
-> +++ b/arch/powerpc/kvm/e500_mmu_host.c
-> @@ -747,12 +747,6 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gf=
-n_range *range)
->         return false;
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       /* The page will get remapped properly on its next fault */
-> -       return kvm_e500_mmu_unmap_gfn(kvm, range);
-> -}
-> -
->  /*****************************************/
->
->  int e500_mmu_host_init(struct kvmppc_vcpu_e500 *vcpu_e500)
-> diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-> index a9e2fd7245e1..b63650f9b966 100644
-> --- a/arch/riscv/kvm/mmu.c
-> +++ b/arch/riscv/kvm/mmu.c
-> @@ -550,26 +550,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm=
-_gfn_range *range)
->         return false;
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       int ret;
-> -       kvm_pfn_t pfn =3D pte_pfn(range->arg.pte);
-> -
-> -       if (!kvm->arch.pgd)
-> -               return false;
-> -
-> -       WARN_ON(range->end - range->start !=3D 1);
-> -
-> -       ret =3D gstage_map_page(kvm, NULL, range->start << PAGE_SHIFT,
-> -                             __pfn_to_phys(pfn), PAGE_SIZE, true, true);
-> -       if (ret) {
-> -               kvm_debug("Failed to map G-stage page (error %d)\n", ret)=
-;
-> -               return true;
-> -       }
-> -
-> -       return false;
-> -}
-> -
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->         pte_t *ptep;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 0049d49aa913..87ba2a9da196 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -432,8 +432,8 @@ static u64 __update_clear_spte_slow(u64 *sptep, u64 s=
-pte)
->   * The idea using the light way get the spte on x86_32 guest is from
->   * gup_get_pte (mm/gup.c).
->   *
-> - * An spte tlb flush may be pending, because kvm_set_pte_rmap
-> - * coalesces them and we are running out of the MMU lock.  Therefore
-> + * An spte tlb flush may be pending, because they are coalesced and
-> + * we are running out of the MMU lock.  Therefore
->   * we need to protect against in-progress updates of the spte.
->   *
->   * Reading the spte while an update is in progress may get the old value
-> @@ -1454,43 +1454,6 @@ static bool kvm_zap_rmap(struct kvm *kvm, struct k=
-vm_rmap_head *rmap_head,
->         return __kvm_zap_rmap(kvm, rmap_head, slot);
->  }
->
-> -static bool kvm_set_pte_rmap(struct kvm *kvm, struct kvm_rmap_head *rmap=
-_head,
-> -                            struct kvm_memory_slot *slot, gfn_t gfn, int=
- level,
-> -                            pte_t pte)
-> -{
-> -       u64 *sptep;
-> -       struct rmap_iterator iter;
-> -       bool need_flush =3D false;
-> -       u64 new_spte;
-> -       kvm_pfn_t new_pfn;
-> -
-> -       WARN_ON_ONCE(pte_huge(pte));
-> -       new_pfn =3D pte_pfn(pte);
-> -
-> -restart:
-> -       for_each_rmap_spte(rmap_head, &iter, sptep) {
-> -               need_flush =3D true;
-> -
-> -               if (pte_write(pte)) {
-> -                       kvm_zap_one_rmap_spte(kvm, rmap_head, sptep);
-> -                       goto restart;
-> -               } else {
-> -                       new_spte =3D kvm_mmu_changed_pte_notifier_make_sp=
-te(
-> -                                       *sptep, new_pfn);
-> -
-> -                       mmu_spte_clear_track_bits(kvm, sptep);
-> -                       mmu_spte_set(sptep, new_spte);
-> -               }
-> -       }
-> -
-> -       if (need_flush && kvm_available_flush_remote_tlbs_range()) {
-> -               kvm_flush_remote_tlbs_gfn(kvm, gfn, level);
-> -               return false;
-> -       }
-> -
-> -       return need_flush;
-> -}
-> -
->  struct slot_rmap_walk_iterator {
->         /* input fields. */
->         const struct kvm_memory_slot *slot;
-> @@ -1596,19 +1559,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct k=
-vm_gfn_range *range)
->         return flush;
->  }
->
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> -{
-> -       bool flush =3D false;
-> -
-> -       if (kvm_memslots_have_rmaps(kvm))
-> -               flush =3D kvm_handle_gfn_range(kvm, range, kvm_set_pte_rm=
-ap);
-> -
-> -       if (tdp_mmu_enabled)
-> -               flush |=3D kvm_tdp_mmu_set_spte_gfn(kvm, range);
-> -
-> -       return flush;
-> -}
-> -
->  static bool kvm_age_rmap(struct kvm *kvm, struct kvm_rmap_head *rmap_hea=
-d,
->                          struct kvm_memory_slot *slot, gfn_t gfn, int lev=
-el,
->                          pte_t unused)
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 318135daf685..283af5b90016 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -322,22 +322,6 @@ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disable=
-d)
->         return spte;
->  }
->
-> -u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_p=
-fn)
-> -{
-> -       u64 new_spte;
-> -
-> -       new_spte =3D old_spte & ~SPTE_BASE_ADDR_MASK;
-> -       new_spte |=3D (u64)new_pfn << PAGE_SHIFT;
-> -
-> -       new_spte &=3D ~PT_WRITABLE_MASK;
-> -       new_spte &=3D ~shadow_host_writable_mask;
-> -       new_spte &=3D ~shadow_mmu_writable_mask;
-> -
-> -       new_spte =3D mark_spte_for_access_track(new_spte);
-> -
-> -       return new_spte;
-> -}
-> -
->  u64 mark_spte_for_access_track(u64 spte)
->  {
->         if (spte_ad_enabled(spte))
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index 1a163aee9ec6..92da4c419171 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -511,8 +511,6 @@ static inline u64 restore_acc_track_spte(u64 spte)
->         return spte;
->  }
->
-> -u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_p=
-fn);
-> -
->  void __init kvm_mmu_spte_module_init(void);
->  void kvm_mmu_reset_all_pte_masks(void);
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 3627744fcab6..fbb86932b766 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1250,52 +1250,6 @@ bool kvm_tdp_mmu_test_age_gfn(struct kvm *kvm, str=
-uct kvm_gfn_range *range)
->         return kvm_tdp_mmu_handle_gfn(kvm, range, test_age_gfn);
->  }
->
-> -static bool set_spte_gfn(struct kvm *kvm, struct tdp_iter *iter,
-> -                        struct kvm_gfn_range *range)
-> -{
-> -       u64 new_spte;
-> -
-> -       /* Huge pages aren't expected to be modified without first being =
-zapped. */
-> -       WARN_ON_ONCE(pte_huge(range->arg.pte) || range->start + 1 !=3D ra=
-nge->end);
-> -
-> -       if (iter->level !=3D PG_LEVEL_4K ||
-> -           !is_shadow_present_pte(iter->old_spte))
-> -               return false;
-> -
-> -       /*
-> -        * Note, when changing a read-only SPTE, it's not strictly necess=
-ary to
-> -        * zero the SPTE before setting the new PFN, but doing so preserv=
-es the
-> -        * invariant that the PFN of a present * leaf SPTE can never chan=
-ge.
-> -        * See handle_changed_spte().
-> -        */
-> -       tdp_mmu_iter_set_spte(kvm, iter, SHADOW_NONPRESENT_VALUE);
-> -
-> -       if (!pte_write(range->arg.pte)) {
-> -               new_spte =3D kvm_mmu_changed_pte_notifier_make_spte(iter-=
->old_spte,
-> -                                                                 pte_pfn=
-(range->arg.pte));
-> -
-> -               tdp_mmu_iter_set_spte(kvm, iter, new_spte);
-> -       }
-> -
-> -       return true;
-> -}
-> -
-> -/*
-> - * Handle the changed_pte MMU notifier for the TDP MMU.
-> - * data is a pointer to the new pte_t mapping the HVA specified by the M=
-MU
-> - * notifier.
-> - * Returns non-zero if a flush is needed before releasing the MMU lock.
-> - */
-> -bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *ran=
-ge)
-> -{
-> -       /*
-> -        * No need to handle the remote TLB flush under RCU protection, t=
-he
-> -        * target SPTE _must_ be a leaf SPTE, i.e. cannot result in freei=
-ng a
-> -        * shadow page. See the WARN on pfn_changed in handle_changed_spt=
-e().
-> -        */
-> -       return kvm_tdp_mmu_handle_gfn(kvm, range, set_spte_gfn);
-> -}
-> -
->  /*
->   * Remove write access from all SPTEs at or above min_level that map GFN=
-s
->   * [start, end). Returns true if an SPTE has been changed and the TLBs n=
-eed to
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 6e1ea04ca885..58b55e61bd33 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -31,7 +31,6 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struc=
-t kvm_gfn_range *range,
->                                  bool flush);
->  bool kvm_tdp_mmu_age_gfn_range(struct kvm *kvm, struct kvm_gfn_range *ra=
-nge);
->  bool kvm_tdp_mmu_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *ran=
-ge);
-> -bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *ran=
-ge);
->
->  bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
->                              const struct kvm_memory_slot *slot, int min_=
-level);
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index ab439706ea2f..8dea11701ab2 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -259,7 +259,6 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
->
->  #ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
->  union kvm_mmu_notifier_arg {
-> -       pte_t pte;
->         unsigned long attributes;
->  };
->
-> @@ -273,7 +272,6 @@ struct kvm_gfn_range {
->  bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->  bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
-> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->  #endif
->
->  enum {
-> diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
-> index 011fba6b5552..74e40d5d4af4 100644
-> --- a/include/trace/events/kvm.h
-> +++ b/include/trace/events/kvm.h
-> @@ -456,21 +456,6 @@ TRACE_EVENT(kvm_unmap_hva_range,
->                   __entry->start, __entry->end)
->  );
->
-> -TRACE_EVENT(kvm_set_spte_hva,
-> -       TP_PROTO(unsigned long hva),
-> -       TP_ARGS(hva),
-> -
-> -       TP_STRUCT__entry(
-> -               __field(        unsigned long,  hva             )
-> -       ),
-> -
-> -       TP_fast_assign(
-> -               __entry->hva            =3D hva;
-> -       ),
-> -
-> -       TP_printk("mmu notifier set pte hva: %#016lx", __entry->hva)
-> -);
-> -
->  TRACE_EVENT(kvm_age_hva,
->         TP_PROTO(unsigned long start, unsigned long end),
->         TP_ARGS(start, end),
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 4eb8afd0b961..2fcd9979752a 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -717,48 +717,6 @@ static __always_inline int kvm_handle_hva_range_no_f=
-lush(struct mmu_notifier *mn
->         return __kvm_handle_hva_range(kvm, &range).ret;
->  }
->
-> -static bool kvm_change_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *r=
-ange)
-> -{
-> -       /*
-> -        * Skipping invalid memslots is correct if and only change_pte() =
-is
-> -        * surrounded by invalidate_range_{start,end}(), which is current=
-ly
-> -        * guaranteed by the primary MMU.  If that ever changes, KVM need=
-s to
-> -        * unmap the memslot instead of skipping the memslot to ensure th=
-at KVM
-> -        * doesn't hold references to the old PFN.
-> -        */
-> -       WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
-> -
-> -       if (range->slot->flags & KVM_MEMSLOT_INVALID)
-> -               return false;
-> -
-> -       return kvm_set_spte_gfn(kvm, range);
-> -}
-> -
-> -static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
-> -                                       struct mm_struct *mm,
-> -                                       unsigned long address,
-> -                                       pte_t pte)
-> -{
-> -       struct kvm *kvm =3D mmu_notifier_to_kvm(mn);
-> -       const union kvm_mmu_notifier_arg arg =3D { .pte =3D pte };
-> -
-> -       trace_kvm_set_spte_hva(address);
-> -
-> -       /*
-> -        * .change_pte() must be surrounded by .invalidate_range_{start,e=
-nd}().
-> -        * If mmu_invalidate_in_progress is zero, then no in-progress
-> -        * invalidations, including this one, found a relevant memslot at
-> -        * start(); rechecking memslots here is unnecessary.  Note, a fal=
-se
-> -        * positive (count elevated by a different invalidation) is sub-o=
-ptimal
-> -        * but functionally ok.
-> -        */
-> -       WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
-> -       if (!READ_ONCE(kvm->mmu_invalidate_in_progress))
-> -               return;
-> -
-> -       kvm_handle_hva_range(mn, address, address + 1, arg, kvm_change_sp=
-te_gfn);
-> -}
-> -
->  void kvm_mmu_invalidate_begin(struct kvm *kvm)
->  {
->         lockdep_assert_held_write(&kvm->mmu_lock);
-> @@ -976,7 +934,6 @@ static const struct mmu_notifier_ops kvm_mmu_notifier=
-_ops =3D {
->         .clear_flush_young      =3D kvm_mmu_notifier_clear_flush_young,
->         .clear_young            =3D kvm_mmu_notifier_clear_young,
->         .test_young             =3D kvm_mmu_notifier_test_young,
-> -       .change_pte             =3D kvm_mmu_notifier_change_pte,
->         .release                =3D kvm_mmu_notifier_release,
->  };
->
-> --
-> 2.43.0
->
->
+Thanks for the detailed explanation.
+
+> In this case the last to arrive has MF_ACTION_REQUIRED set, so calls
+> kill_accessing_process() ... which is in the stack trace that led to the:
+> 
+>    kernel BUG at include/linux/swapops.h:88!
+> 
+> I'm not sure that I fully understand your patch. I guess that it is making sure to
+> handle the case that the page has already been marked as poisoned?
+
+Basically what is happening is:
+
+1) We mark the page as HWPoison
+2) We see that the page is mapped by someone
+3) We try to unmap it, and in the process we create a hwpoison swap entry.
+   See the following chunk from try_to_unmap_one():
+
+   "
+    if (PageHWPoison(subpage) && (flags & TTU_HWPOISON)) {
+            pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
+            if (folio_test_hugetlb(folio)) {
+                    hugetlb_count_sub(folio_nr_pages(folio), mm);
+                    set_huge_pte_at(mm, address, pvmw.pte, pteval,
+                                    hsz);
+            } else {
+                    dec_mm_counter(mm, mm_counter(folio));
+                    set_pte_at(mm, address, pvmw.pte, pteval);
+            }
+	    ...
+    }
+   "
+4) Now there is a second memory event (maybe the previous one has
+   already finished, I do not think it matters for the sake of this
+   problem)
+5) The second event sees that the page has already been marked as
+   HWPoison but since it has MF_ACTION_REQUIRED specified, it
+   goes to kill_accessing_process() to do what its name says.
+6) We walk the page tables of the accessing process to see if it has
+   the poisoned pfn.
+7) check_hwpoisoned_entry()
+   (which is called from
+   walk_page_range()->walk_{pgd,p4d,pud,pmd}_range()->ops->pmd_entry())
+   checks whether any of the ptes is poisoned.
+8) Since the previous MCE event unmapped the page, pte_present() == 0,
+   so we want to get the swap entry, and this is where it falls off the
+   cliff.
+   See check_hwpoisoned_entry()
+
+   static int check_hwpoisoned_entry(pte_t pte, unsigned long addr, short shift,
+                                     unsigned long poisoned_pfn, struct to_kill *tk)
+   {
+          unsigned long pfn = 0;
+
+          if (pte_present(pte)) {
+                  pfn = pte_pfn(pte);
+          } else {
+                  swp_entry_t swp = pte_to_swp_entry(pte);
+
+                  if (is_hwpoison_entry(swp))
+			pfn = swp_offset_pfn(swp);
+         }
+	 ...
+   }
+
+is_hwpoison_entry() returns true (remember the make_hwpoison_entry()
+call we did?)
+But when we try to get the pfn from the swap entry, we stumble upon the
+VM_BUG_ON(), because is_pfn_swap_entry() only checks for:
+ is_migration_entry()
+ is_device_private_entry()
+ is_device_exclusive_entry()
+
+but it should also check for is_hwpoison_entry().
+Since it does not, is_pfn_swap_entry() returns false in our case,
+leading to the VM_BUG_ON.
+
+Note that this should only matter in environments where CONFIG_DEBUG_VM
+is set.
+
+I hope I shed some light in here.
+
+> Anyway ... thanks for the quick fix. I hope the above helps write a good
+> commit message to get this applied and backported to stable.
+> 
+> Tested-by: Tony Luck <tony.luck@intel.com>
+
+Thanks again Tony, much appreciated.
+
+I will write the patch and most likely send it out either today in the
+afternoon or tomorrow early in the
+morning.
+
+
+-- 
+Oscar Salvador
+SUSE Labs
 
