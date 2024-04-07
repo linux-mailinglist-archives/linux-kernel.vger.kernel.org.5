@@ -1,181 +1,217 @@
-Return-Path: <linux-kernel+bounces-134142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5220D89AE2C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:13:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6721F89AE31
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:14:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75D91F22904
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:13:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00041F22951
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1281A1C0DCC;
-	Sun,  7 Apr 2024 03:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nEsTCdnZ"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EAD111A8;
+	Sun,  7 Apr 2024 03:13:49 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AA81849
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 03:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD6F10A0A;
+	Sun,  7 Apr 2024 03:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712459572; cv=none; b=WOdTGCa70MaNZcnA+LiNiw6SkqqWTSKncrjtqbFUS4PvfJWyprdkLJRAwBuIy8h0U2MZI7UIrEOIg++RFpphm5IzWLB9mBYSTLENxDgZRjWYrXy1oRYCnn2shkRKdbtumFI+b1pdL/MPR2GAjlsOWVPkiQT/Lt2NOrEktW0RjCE=
+	t=1712459629; cv=none; b=NYoMrM+WiFNgNPq8sMAUOPbxopKIQSKODY8v8jK0UbPe2zXUguUdIocdLllZnO+oMEXIMZrs9DQ0xDTDRG3C2vTMOrbb3yS9A+U5mFIBZDBURwLaNbhfP2JcBzo8hvC3c26T3eoUwoRCh2xZ0ghv7kH3I5i/GEeRFtxpfvC39gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712459572; c=relaxed/simple;
-	bh=Rc61LzNdTZPfPgNdAA45w0QSG+0bHjA+F0vyslCayLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J1bUDluOPr4eh28scaNBr8vX0cOpDy5dF7xQCkznnyldV/yBdj4rLxynUZqXti70L227+E6NVQzIwdmjPjkLvmTDdlbMI96lhmrautPUs0la+/kv8e5v/ImWKJWfXdcLb54mBSt1r8SrPhwAqA1HKF0RHDkhDgVEy/RHuIqgIG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nEsTCdnZ; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 6 Apr 2024 23:12:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712459568;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VGaVxMBPzojr3QEvcEsSTcQ874uMtXte1lfsEYDwdcI=;
-	b=nEsTCdnZCB27a6kMWxaRR+KGaCwwkNWTVVHiOnCP3INe/yOd+NhfZGDMkYjcj5oqaZMaDb
-	ZQX7Puz3FOBEEvNdKWQUjnPmUTo4GeDGTatjvw7eh136k3/LKyog9osYjOCxZ58pExgkFN
-	MXCn7js6CYHAzbqPET86iaGcXNd47eE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Optimize eytzinger0_sort() with bottom-up
- heapsort
-Message-ID: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
-References: <20240407013349.672667-1-visitorckw@gmail.com>
- <3vvrirq3yljcuhjj5muvuk7quihllyfhzmygbb7rrchbgh7hzj@7psuth5ctxd5>
- <ZhIK9gcY4ptAHUq6@visitorckw-System-Product-Name>
+	s=arc-20240116; t=1712459629; c=relaxed/simple;
+	bh=yJe8X8J68cHa2gvIMU5bJdS9Gcj3O1sw/lxHUWoIo+g=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=OepkQlXiNTT9iz+G/olJYF7BkgBGhJsef9vIFXKCofjYuz5QttdF7ltBauoUtRhWn5t3PrhIaJfVuQepXyWDAHD2KFL3vI7OzCnNSpRpKtJSGgMCDDAc8Uu/hYRj+w/sO5mLZXzAiEMpINMuVU0Q5ViaHxZ+eYAnv/2fWvkiu54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBy3f3Gxbz4f3lgF;
+	Sun,  7 Apr 2024 11:13:34 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id F07051A0568;
+	Sun,  7 Apr 2024 11:13:42 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgAnRQ5lDxJmd0M4JQ--.28098S2;
+	Sun, 07 Apr 2024 11:13:42 +0800 (CST)
+Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
+ writeback stats of bdi
+To: Jan Kara <jack@suse.cz>, Brian Foster <bfoster@redhat.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, tj@kernel.org,
+ dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-4-shikemeng@huaweicloud.com> <Zga937dR5UgtSVaz@bfoster>
+ <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
+ <Zg1wGvTeQxjqjYUG@bfoster> <20240404090753.q3iugmqeeqig64db@quack3>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <6bf2280d-bce1-c1c5-3b25-8cfc7e1fa81d@huaweicloud.com>
+Date: Sun, 7 Apr 2024 11:13:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhIK9gcY4ptAHUq6@visitorckw-System-Product-Name>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240404090753.q3iugmqeeqig64db@quack3>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAnRQ5lDxJmd0M4JQ--.28098S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw1xCF48ZF1rKw4Duw43trb_yoW7AryUp3
+	Wqg3W7Kr4DXw1IkwnFv34jv34IyrZ5JryUXr9rG345CF90qFn3ZF4rGFW5uFy5ZrW8Aw4U
+	Zw4jyrZxW3y5tFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Sun, Apr 07, 2024 at 10:54:46AM +0800, Kuan-Wei Chiu wrote:
-> On Sat, Apr 06, 2024 at 10:05:44PM -0400, Kent Overstreet wrote:
-> > On Sun, Apr 07, 2024 at 09:33:49AM +0800, Kuan-Wei Chiu wrote:
-> > > This optimization reduces the average number of comparisons required
-> > > from 2*n*log2(n) - 3*n + o(n) to n*log2(n) + 0.37*n + o(n). When n is
-> > > sufficiently large, it results in approximately 50% fewer comparisons.
-> > > 
-> > > Currently, eytzinger0_sort employs the textbook version of heapsort,
-> > > where during the heapify process, each level requires two comparisons
-> > > to determine the maximum among three elements. In contrast, the
-> > > bottom-up heapsort, during heapify, only compares two children at each
-> > > level until reaching a leaf node. Then, it backtracks from the leaf
-> > > node to find the correct position. Since heapify typically continues
-> > > until very close to the leaf node, the standard heapify requires about
-> > > 2*log2(n) comparisons, while the bottom-up variant only needs log2(n)
-> > > comparisons.
-> > > 
-> > > The experimental data presented below is based on an array generated
-> > > by get_random_u32().
-> > > 
-> > > |   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
-> > > |-------|------------------|------------------|-----------|-----------|
-> > > | 10000 |     235381       |     136615       |  25545 us |  20366 us |
-> > > | 20000 |     510694       |     293425       |  31336 us |  18312 us |
-> > > | 30000 |     800384       |     457412       |  35042 us |  27386 us |
-> > > | 40000 |    1101617       |     626831       |  48779 us |  38253 us |
-> > > | 50000 |    1409762       |     799637       |  62238 us |  46950 us |
-> > > | 60000 |    1721191       |     974521       |  75588 us |  58367 us |
-> > > | 70000 |    2038536       |    1152171       |  90823 us |  68778 us |
-> > > | 80000 |    2362958       |    1333472       | 104165 us |  78625 us |
-> > > | 90000 |    2690900       |    1516065       | 116111 us |  89573 us |
-> > > | 100000|    3019413       |    1699879       | 133638 us | 100998 us |
-> > > 
-> > > Refs:
-> > >   BOTTOM-UP-HEAPSORT, a new variant of HEAPSORT beating, on an average,
-> > >   QUICKSORT (if n is not very small)
-> > >   Ingo Wegener
-> > >   Theoretical Computer Science, 118(1); Pages 81-98, 13 September 1993
-> > >   https://doi.org/10.1016/0304-3975(93)90364-Y
-> > > 
-> > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > > ---
-> > > 
-> > > This is the same as the patch I submitted previously [1]. Since we
-> > > decided not to move eytzinger.h to generic library code, I resubmitted
-> > > this patch.
-> > > 
-> > > This patch has undergone unit testing and micro benchmarking using the
-> > > following code [2].
-> > > 
-> > > [1]: https://lore.kernel.org/lkml/20240121153649.2733274-2-visitorckw@gmail.com/
-> > > [2]:
-> > > static u64 cmp_count = 0;
-> > > 
-> > > static int mycmp(const void *a, const void *b)
-> > > {
-> > > 	u32 _a = *(u32 *)a;
-> > > 	u32 _b = *(u32 *)b;
-> > > 
-> > > 	cmp_count++;
-> > > 	if (_a < _b)
-> > > 		return -1;
-> > > 	else if (_a > _b)
-> > > 		return 1;
-> > > 	else
-> > > 		return 0;
-> > > }
-> > > 
-> > > static int test(void)
-> > > {
-> > > 	size_t N, i, L, R;
-> > > 	ktime_t start, end;
-> > > 	s64 delta;
-> > > 	u32 *arr;
-> > > 
-> > > 	for (N = 10000; N <= 100000; N += 10000) {
-> > > 		arr = kmalloc_array(N, sizeof(u32), GFP_KERNEL);
-> > > 		cmp_count = 0;
-> > > 
-> > > 		for (i = 0; i < N; i++)
-> > > 			arr[i] = get_random_u32();
-> > > 		
-> > > 		start = ktime_get();
-> > > 		eytzinger0_sort(arr, N, sizeof(u32), mycmp, NULL);
-> > > 		end = ktime_get();
-> > > 
-> > > 		delta = ktime_us_delta(end, start);
-> > > 		printk(KERN_INFO "time: %lld\n", delta);
-> > > 		printk(KERN_INFO "comparisons: %lld\n", cmp_count);
-> > > 
-> > > 		for (int i = 0; i < N; i++) {
-> > > 			L = 2 * i + 1;
-> > > 			R = 2 * i + 2;
-> > > 			if (L < N && arr[i] < arr[L])
-> > > 				goto err;
-> > > 			if (R < N && arr[i] > arr[R])
-> > > 				goto err;
-> > > 		}
-> > 
-> > Use eytzinger0_for_each() to just compare every element against the
-> > previous element, and check in the test code.
-> >
-> 
-> I rewrote the testing part as follows:
-> 
-> 	u32 prev = 0;
-> 	eytzinger0_for_each(i, N) {
-> 		if (prev > arr[i])
-> 			goto err;
-> 		prev = arr[i];
-> 	}
-> 
-> And the test still passed.
 
-Great, can you include that? I'd be fine with it #if 0'd out, I just
-want it there.
+
+on 4/4/2024 5:07 PM, Jan Kara wrote:
+> On Wed 03-04-24 11:04:58, Brian Foster wrote:
+>> On Wed, Apr 03, 2024 at 04:49:42PM +0800, Kemeng Shi wrote:
+>>> on 3/29/2024 9:10 PM, Brian Foster wrote:
+>>>> On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
+>>>>> +		collect_wb_stats(&stats, wb);
+>>>>> +
+>>>>
+>>>> Also, similar question as before on whether you'd want to check
+>>>> WB_registered or something here..
+>>> Still prefer to keep full debug info and user could filter out on
+>>> demand.
+>>
+>> Ok. I was more wondering if that was needed for correctness. If not,
+>> then that seems fair enough to me.
+>>
+>>>>> +		if (mem_cgroup_wb_domain(wb) == NULL) {
+>>>>> +			wb_stats_show(m, wb, &stats);
+>>>>> +			continue;
+>>>>> +		}
+>>>>
+>>>> Can you explain what this logic is about? Is the cgwb_calc_thresh()
+>>>> thing not needed in this case? A comment might help for those less
+>>>> familiar with the implementation details.
+>>> If mem_cgroup_wb_domain(wb) is NULL, then it's bdi->wb, otherwise,
+>>> it's wb in cgroup. For bdi->wb, there is no need to do wb_tryget
+>>> and cgwb_calc_thresh. Will add some comment in next version.
+>>>>
+>>>> BTW, I'm also wondering if something like the following is correct
+>>>> and/or roughly equivalent:
+>>>> 	
+>>>> 	list_for_each_*(wb, ...) {
+>>>> 		struct wb_stats stats = ...;
+>>>>
+>>>> 		if (!wb_tryget(wb))
+>>>> 			continue;
+>>>>
+>>>> 		collect_wb_stats(&stats, wb);
+>>>>
+>>>> 		/*
+>>>> 		 * Extra wb_thresh magic. Drop rcu lock because ... . We
+>>>> 		 * can do so here because we have a ref.
+>>>> 		 */
+>>>> 		if (mem_cgroup_wb_domain(wb)) {
+>>>> 			rcu_read_unlock();
+>>>> 			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
+>>>> 			rcu_read_lock();
+>>>> 		}
+>>>>
+>>>> 		wb_stats_show(m, wb, &stats)
+>>>> 		wb_put(wb);
+>>>> 	}
+>>> It's correct as wb_tryget to bdi->wb has no harm. I have considered
+>>> to do it in this way, I change my mind to do it in new way for
+>>> two reason:
+>>> 1. Put code handling wb in cgroup more tight which could be easier
+>>> to maintain.
+>>> 2. Rmove extra wb_tryget/wb_put for wb in bdi.
+>>> Would this make sense to you?
+>>
+>> Ok, well assuming it is correct the above logic is a bit more simple and
+>> readable to me. I think you'd just need to fill in the comment around
+>> the wb_thresh thing rather than i.e. having to explain we don't need to
+>> ref bdi->wb even though it doesn't seem to matter.
+>>
+>> I kind of feel the same on the wb_stats file thing below just because it
+>> seems more consistent and available if wb_stats eventually grows more
+>> wb-specific data.
+>>
+>> That said, this is subjective and not hugely important so I don't insist
+>> on either point. Maybe wait a bit and see if Jan or Tejun or somebody
+>> has any thoughts..? If nobody else expresses explicit preference then
+>> I'm good with it either way.
+> 
+> No strong opinion from me really.
+> 
+>>>>> +static void cgwb_debug_register(struct backing_dev_info *bdi)
+>>>>> +{
+>>>>> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
+>>>>> +			    &cgwb_debug_stats_fops);
+>>>>> +}
+>>>>> +
+>>>>>  static void bdi_collect_stats(struct backing_dev_info *bdi,
+>>>>>  			      struct wb_stats *stats)
+>>>>>  {
+>>>>> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
+>>>>>  {
+>>>>>  	collect_wb_stats(stats, &bdi->wb);
+>>>>>  }
+>>>>> +
+>>>>> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
+>>>>
+>>>> Could we just create the wb_stats file regardless of whether cgwb is
+>>>> enabled? Obviously theres only one wb in the !CGWB case and it's
+>>>> somewhat duplicative with the bdi stats file, but that seems harmless if
+>>>> the same code can be reused..? Maybe there's also a small argument for
+>>>> dropping the state info from the bdi stats file and moving it to
+>>>> wb_stats.In backing-dev.c, there are a lot "#ifdef CGWB .. #else .. #endif" to
+>>> avoid unneed extra cost when CGWB is not enabled.
+>>> I think it's better to avoid extra cost from wb_stats when CGWB is not
+>>> enabled. For now, we only save cpu cost to create and destroy wb_stats
+>>> and save memory cost to record debugfs file, we could save more in
+>>> future when wb_stats records more debug info.
+> 
+> Well, there's the other side that you don't have to think whether the
+> kernel has CGWB enabled or not when asking a customer to gather the
+> writeback debug info - you can always ask for wb_stats. Also if you move
+> the wb->state to wb_stats only it will become inaccessible with CGWB
+> disabled. So I agree with Brian that it is better to provide wb_stats also
+> with CGWB disabled (and we can just implement wb_stats for !CGWB case with
+> the same function as bdi_stats).
+> 
+> That being said all production kernels I have seen do have CGWB enabled so
+> I don't care that much about this...
+It's acceptable to me if the extra cost is tolerable.
+> 
+>>> Move state info from bdi stats to wb_stats make senses to me. The only
+>>> concern would be compatibility problem. I will add a new patch to this
+>>> to make this more noticeable and easier to revert.
+> 
+> Yeah, I don't think we care much about debugfs compatibility but I think
+> removing state from bdi_stats is not worth the inconsistency between
+> wb_stats and bdi_stats in the !CGWB case.
+OK, I will simply keep wb_stats even CGWB is not enabled while keep state
+in both bdi_stats and wb_stats if Braian doesn't against in recent dasy.
+
+Kemeng
+> 
+> 								Honza
+> 
+
 
