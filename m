@@ -1,214 +1,192 @@
-Return-Path: <linux-kernel+bounces-134245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A6289AF6F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:09:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB0F89AF72
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:10:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AFB4282BDA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:09:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74AE52828F9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:10:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF98111711;
-	Sun,  7 Apr 2024 08:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16CC111A1;
+	Sun,  7 Apr 2024 08:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="eHA8wJQ9"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="b9p9hNm0"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E9B10A0E
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 08:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46400107A8
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 08:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712477371; cv=none; b=exr01fm+j6xlIKcUpZr6fQtc9q3HYI0Cb364O+88bzcz9QFVAfiNC5TCVFyVA2KNDGm0IkWdI8QQyXdUa27dCG0w+jLkduf7WrkInjwuKBCjzye4zXkeGVYx7lMPgx8eV/xFcYXS74jT4hu4L16/wMTg6HFg3N3lpGROkaLkHbw=
+	t=1712477410; cv=none; b=QX0S3Xa1qSXJ0D5SlIC3GOCgvyCa/oehhN9FSHEChJtqVjDKc7qn5+Izu2Fr8NC+V7G5+F12zxRPcC7zo2IG05JbqZoElkXbTsSFk7X7YMSv5wIZ2GGM04nNBDV7H14PFZwsTAZpwWIRYJkGq9m0ISjbFKuwLCFSBfFmUGnP2f8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712477371; c=relaxed/simple;
-	bh=L5AAMQbSoF0YudkIwfBHSSHgJwFQtAS3w22mcBvp7F0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FTPzfxg/w3ZKT2YURq4n3vNNRJOeN4gO0lJdcWri3MuKdzDZAWPBnRN8xLfHfN+VLJVS5QKtE6wpoQO3GKrlqDQOYqg4dVktBheVJzZeRk3edd1aGei1U+gNZvvjw2i2B7PSJ1eEAQqZi+zBIQXqbguUllMGF6EO/z0A2M6XL+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=eHA8wJQ9; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d487659bso2729349e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 01:09:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1712477368; x=1713082168; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RoR1pZo3Vw2aL2foO6O0rlclxwNL4uebAWFaAlNYhYo=;
-        b=eHA8wJQ9uOAlvgGF9crKXIBujUfFI8vSlRUb1ZXHo3GQ403c345zGzNuEzJjtl0lkS
-         twuQpNRAPaL8yMG4zvdDC/7b/Q2hjCoAwWe0IoPdJMH75O1Du3ghN24qYwe+3GkyL4gI
-         c32clIHqfHTSxpfc9EedsOyEeVagsWZRD85h0F/NpYN9Rvxgj8iG+B8tzia8hHCru6zU
-         rNXvZwRUuM63hW7PQBls++jCIjEky/wARmijlYSqLPdz6AgMLl9mOpTpe+FA/VPngoe3
-         RjACHjgtnz2fwps8NEuvxms7f3NUKPt0Lpfjkaf5QBy4JJtkpODtCYGOjEZe6iODF7b0
-         soWQ==
+	s=arc-20240116; t=1712477410; c=relaxed/simple;
+	bh=VBnMmaY/jSdSTkC4TB/mxJq/6u5SVhMScG2xHkwOpHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TU4dNV+9t3vAxnnR/b5F1PSpE9zqf4WaNbeTaXAJeh5LO6DSLiPeHAX72eTYP/K01b18totEMvf6FwcjESYD+uHMo/DQDucm31jT09/eU33CDIsu1cmK3Id7S7qe0+utJ3tZLIpgkFVWATWMsiYWVMnHwFF551IT6o5pp1PpQ9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=b9p9hNm0; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C4D7E3FE51
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 08:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712477400;
+	bh=MRAOR6NXs+WDh7P3Pk4nsf9IHt46kV2t0C6KeL8Xd0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=b9p9hNm0mjZX6AOvcv6/CZTiNMgZ68/IlpQlXKJraDA4sV2vZnbuKpZAr4Jxy3nXU
+	 qwfPk4IREfZk/yQmCi2dpTWhZ2FGPhLlnMN8GqeqxkJcEcId052qJUN5IGwk6jXXRp
+	 sO/x78hgUw6aSNs4bcLEQSc9KKo/xc6L6BL3M3JNTKOvBAC075NQM2Q99Dpa87eb2H
+	 DeJl9Fz+D1pBZO3IljJ1UAwdc1v7YLLH/iT0CSjb4J9NvBWojIaIGmGO++xfFSleW7
+	 Cdct/kBvB0yqxEJF1kQtwxoG+BqN914Bf/OfFlSNvC7+onGa1VrypNU9b532WnMFnv
+	 E8rWtdfjMzdjQ==
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343da0a889dso1826763f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 01:10:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712477368; x=1713082168;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
+        d=1e100.net; s=20230601; t=1712477399; x=1713082199;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RoR1pZo3Vw2aL2foO6O0rlclxwNL4uebAWFaAlNYhYo=;
-        b=fds50cEq1o3ZWhk4/DesBlYamfFRjFMIly9NJoJPywqCjHj+WQygkVxP7aeAVwRGlr
-         DEM74XXAuj2ePJgbmdB00myS4RUU3fzBjZoAtEwPOdHz7G3jNojZbyRu9yIBHzihsbGr
-         pjmjQwHmLftz5BGWQkCs3foqHhOhqXWdOUUd0bHy2Fda8/zTnHM2aPc7ghHx3rI/DAAt
-         X94jE8QSBo6jzcAeh5RAHz4R5NXspzdJNbRMMwO84LLuqWTAax8ouN5KJ9C0UrQNZIhk
-         VP+aoXtss3Jka7lesYQrphFKaUL0A5k0VueXjycWUAP7BOmo4AKDrn6GqC6IgQydLOc9
-         /Ypg==
-X-Gm-Message-State: AOJu0YxqxwpvYsV7lbdGm8OgD1DFAqSnZ1TVeKM4TM7yQ8QsNgncufaX
-	oNz+F2EZ+jgqKnNVkrlBNEfLljVlo9c/YyzzLx71faQ5s0rnazqaxZHJkloLiKA=
-X-Google-Smtp-Source: AGHT+IH0P9sWNMW1yyWdHET4wFxBLnPE44dQ6iyO/SJlklsjpRQZxUghb+32SdG+wT+lEVbRaNVwUg==
-X-Received: by 2002:ac2:4c3c:0:b0:516:d482:d720 with SMTP id u28-20020ac24c3c000000b00516d482d720mr3681790lfq.30.1712477368029;
-        Sun, 07 Apr 2024 01:09:28 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (ip-185-104-138-24.ptr.icomera.net. [185.104.138.24])
-        by smtp.gmail.com with ESMTPSA id s7-20020adfea87000000b0033e7de97214sm6144093wrm.40.2024.04.07.01.09.05
+        bh=MRAOR6NXs+WDh7P3Pk4nsf9IHt46kV2t0C6KeL8Xd0c=;
+        b=OFMg9lJG1dwVY4gLOyr4nnJFKVwmR5AxJFksZZFhfprIdiDqkwcVTlXMSqpOVip4kY
+         LJEXOb5J8J2ap1b9pob/FDK22m1E15ntsF0AgcxevmwnbXPmqUJxLZ3KbXU368lLDWaG
+         m1ceAU4JfnCZ8JXkuuHwSpGyV+a45YiEtm6ekSgilHU/QKVHmNN27D2wB53r+q5AHXrf
+         GMPevF9xQQZYFcNPW4EEUBOrtCC9mqDjY6kbIWohrXfrf6vYECVqh/z8c0ck6I9AJovI
+         dH8b0613h1KAe0qiETU08IbfjGAu4lnHCS1eDXo9T14GLr5O3irDjGe2X6EiiEqv08xN
+         s6kA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpMjCFASoPHZNtK+Gq3vW65BgHYCPPhDgtNfAXInfWxVskmb23GoRmdjCFfTxThRT0geNkBDad3Yvqwf49FxKFfIAQo6YpPz1xM5CV
+X-Gm-Message-State: AOJu0Yzls3XhXZFBM5fa3Y4XXVIoQAUMxDqa+SoNsR5+J1B+bKKTWaHx
+	6kk9EJbEpxwTuuYgLh6J4xlr3h3VBKGHIdY5yoPjNTvM7xC7mBjfAwZEEc7OxMjOj1gno8RnJgP
+	+Eez9pe6xh/d1/PixSLonYqxX7GwlT99mbvNbs/dGNWD775+gETZB0t3F3CzOg8x42LAaXQcder
+	QnHg==
+X-Received: by 2002:adf:fed1:0:b0:343:a183:4218 with SMTP id q17-20020adffed1000000b00343a1834218mr4431409wrs.52.1712477394381;
+        Sun, 07 Apr 2024 01:09:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE7O+B0XCMESRc4pHeuqRzfZFND+/CmarJwhrJTwar81zScxLL0MtBoOtKhKPuUzsu2gsRPkA==
+X-Received: by 2002:adf:fed1:0:b0:343:a183:4218 with SMTP id q17-20020adffed1000000b00343a1834218mr4431370wrs.52.1712477393487;
+        Sun, 07 Apr 2024 01:09:53 -0700 (PDT)
+Received: from localhost (net-2-39-142-110.cust.vodafonedsl.it. [2.39.142.110])
+        by smtp.gmail.com with ESMTPSA id q13-20020a056000136d00b00343e3023fbasm5866411wrz.34.2024.04.07.01.09.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 01:09:27 -0700 (PDT)
-Message-ID: <ed0b32ec6da10f46ff5d820612bfe700388fae1e.camel@ndufresne.ca>
-Subject: Re: [PATCH v2 0/2] Enable JPEG encoding on rk3588
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Link Mauve <linkmauve@linkmauve.fr>
-Cc: linux-kernel@vger.kernel.org, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Philipp Zabel <p.zabel@pengutronix.de>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Heiko Stuebner <heiko@sntech.de>, Joerg Roedel
- <joro@8bytes.org>, Will Deacon <will@kernel.org>,  Robin Murphy
- <robin.murphy@arm.com>, Sebastian Reichel
- <sebastian.reichel@collabora.com>, Cristian Ciocaltea
- <cristian.ciocaltea@collabora.com>, Dragan Simic <dsimic@manjaro.org>,
- Shreeya Patel <shreeya.patel@collabora.com>, Chris Morgan
- <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, Nicolas
- Frattaroli <frattaroli.nicolas@gmail.com>,  linux-media@vger.kernel.org,
- linux-rockchip@lists.infradead.org,  devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,  iommu@lists.linux.dev
-Date: Sun, 07 Apr 2024 10:08:58 +0200
-In-Reply-To: <ZhAI6tQZTD7BTosI@desktop>
-References: <20240327134115.424846-1-linkmauve@linkmauve.fr>
-	 <bbcb66e9499120a86b367e7abdac2d8e2e704bfb.camel@ndufresne.ca>
-	 <ZhAI6tQZTD7BTosI@desktop>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Sun, 07 Apr 2024 01:09:52 -0700 (PDT)
+Date: Sun, 7 Apr 2024 10:09:47 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] selftests/bpf: Add tests for ring__consume_n and
+ ring_buffer__consume_n
+Message-ID: <ZhJUy6nWFOFi8oT_@gpd>
+References: <20240406092005.92399-1-andrea.righi@canonical.com>
+ <20240406092005.92399-5-andrea.righi@canonical.com>
+ <CAEf4BzanzbBaVgP7Qu8v4jnfsWt+9vJqB6D9G7NjE5QL+3iKXQ@mail.gmail.com>
+ <CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com>
 
-Le vendredi 05 avril 2024 =C3=A0 16:21 +0200, Link Mauve a =C3=A9crit=C2=A0=
-:
-> On Thu, Apr 04, 2024 at 01:41:15PM -0400, Nicolas Dufresne wrote:
-> > Hi,
->=20
-> Hi,
->=20
-> >=20
-> > Le mercredi 27 mars 2024 =C3=A0 14:41 +0100, Emmanuel Gil Peyrot a =C3=
-=A9crit=C2=A0:
-> > > Only the JPEG encoder is available for now, although there are patche=
-s
-> > > for the undocumented VP8 encoder floating around[0].
-> >=20
-> > [0] seems like a broken link. The VP8 encoder RFC is for RK3399 (and Ha=
-ntro H1
-> > posted by ST more recently). The TRM says "VEPU121(JPEG encoder only)",=
- which
-> > suggest that the H.264 and VP8 encoders usually found on the VEPU121 ar=
-e
-> > removed. As Rockchip have remove the synthesize register while modifyin=
-g the H1
-> > IP, it is difficult to verify. Confusingly the H.264 specific registers=
- are
-> > documented in the TRM around VEPU121.
->=20
-> Ah, the link became, and was indeed ST=E2=80=99s series:
-> https://patchwork.kernel.org/project/linux-rockchip/list/?series=3D789885=
-&archive=3Dboth
->=20
-> But the TRM part 1 says the VEPU121 supports H.264 encoding (page 367),
-> and it=E2=80=99s likely they didn=E2=80=99t remove just VP8 support since=
- the codec
-> features are pretty close to H.264=E2=80=99s.
->=20
-> >=20
-> > >=20
-> > > This has been tested on a rock-5b, resulting in four /dev/video*
-> > > encoders.  The userspace program I=E2=80=99ve been using to test them=
- is
-> > > Onix[1], using the jpeg-encoder example, it will pick one of these fo=
-ur
-> > > at random (but displays the one it picked):
-> > > % ffmpeg -i <input image> -pix_fmt yuvj420p temp.yuv
-> > > % jpeg-encoder temp.yuv <width> <height> NV12 <quality> output.jpeg
-> >=20
-> > I don't like that we exposing each identical cores a separate video nod=
-es. I
-> > think we should aim for 1 device, and then multi-plex and schedule de c=
-ores from
-> > inside the Linux kernel.
->=20
-> I agree, but this should be handled in the driver not in the device
-> tree, and it can be done later.
+On Sat, Apr 06, 2024 at 10:52:10AM -0700, Andrii Nakryiko wrote:
+> On Sat, Apr 6, 2024 at 10:39 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sat, Apr 6, 2024 at 2:20 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+> > >
+> > > Add tests for new API ring__consume_n() and ring_buffer__consume_n().
+> > >
+> > > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/prog_tests/ringbuf.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > > index 48c5695b7abf..33aba7684ab9 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > > @@ -304,10 +304,18 @@ static void ringbuf_subtest(void)
+> > >         err = ring_buffer__consume(ringbuf);
+> > >         CHECK(err < 0, "rb_consume", "failed: %d\b", err);
+> > >
+> > > +       /* try to consume up to one item */
+> > > +       err = ring_buffer__consume_n(ringbuf, 1);
+> > > +       CHECK(err < 0 || err > 1, "rb_consume_n", "failed: %d\b", err);
+> > > +
+> > >         /* also consume using ring__consume to make sure it works the same */
+> > >         err = ring__consume(ring);
+> > >         ASSERT_GE(err, 0, "ring_consume");
+> > >
+> > > +       /* try to consume up to one item */
+> > > +       err = ring__consume_n(ring, 1);
+> > > +       CHECK(err < 0 || err > 1, "ring_consume_n", "failed: %d\b", err);
+> > > +
+> >
+> > Did you actually run this test? There is ring_buffer__consume() and
+> > ring__consume() calls right before your added calls, so consume_n will
+> > return zero.
+> >
+> > I dropped this broken patch. Please send a proper test as a follow up.
+> 
+> Sorry, technically, it's not broken, it just doesn't test much (CHECK
+> conditions confused me, I didn't realize you allow zero initially). We
+> will never consume anything and the result will be zero, which isn't
+> very meaningful.
+> 
+> "Interesting" test would set up things so that we have >1 item in
+> ringbuf and we consume exactly one at a time, because that's the new
+> logic you added.
+> 
+> I think it will be simpler to add a dedicated and simpler ringbuf test
+> for this, where you can specify how many items to submit, and then do
+> a bunch of consume/consume_n invocations, checking exact results.
+> 
+> Plus, please don't add new CHECK() uses, use ASSERT_XXX() ones instead.
+> 
+> I've applied first three patches because they look correct and it's
+> good to setup libbpf 1.5 dev cycle, but please do follow up with a
+> better test. Thanks.
 
-As the behaviour we want is that these cores becomes a group and get schedu=
-le
-together, its certainly a good time to slow down and evaluate if that part =
-needs
-to be improve in the DT too.
+Yeah, sorry, I tried to add a minimal test to the existing one, but I
+agree that it not very meaningful.
 
-Hantro G1/H1 and VEPU/VDPU121 combos originally shared the same sram region=
- Its
-not clear if any of these cores have this limitation and if this should be
-expressed in the DT / driver.
+I already have a better dedicated test case for this
+(https://github.com/arighi/ebpf-maps/blob/libbpf-consume-n/src/main.c#L118),
+I just need to integrate it in the kselftest properly (and maybe
+pre-generate more than N records in the ring buffer, so that we can
+better test if the limit works as expected).
 
->=20
-> >=20
-> > Not doing this now means we'll never have an optimal hardware usage
-> > distribution. Just consider two userspace software wanting to do jpeg e=
-ncoding.
-> > If they both take a guess, they may endup using a single core. Where wi=
-th proper
-> > scheduling in V4L2, the kernel will be able to properly distribute the =
-load. I
-> > insist on this, since if we merge you changes it becomes an ABI and we =
-can't
-> > change it anymore.
->=20
-> Will it really become ABI just like that?  Userspace should always
-> discover the video nodes and their capabilities and not hardcode e.g. a
-> specific /dev/videoN file for a specific codec.  I would argue that this
-> series would let userspace do JPEG encoding right away, even if in a
-> less optimal way than if the driver would round-robin them through a
-> single video node, but that can always be added in a future version.
+I'll send another patch to add a proper test case.
 
-Might be on the gray side, but there is good chances software written for y=
-our
-specific board can stop working after te grouping is done.
+Thanks for applying the other patches!
+-Andrea
 
->=20
-> >=20
-> > I understand that this impose a rework of the mem2mem framework so that=
- we can
-> > run multiple jobs, but this will be needed anyway on RK3588, since the =
-rkvdec2,
-> > which we don't have a driver yet is also multi-core, but you need to us=
-e 2 cores
-> > when the resolution is close to 8K.
->=20
-> I think the mediatek JPEG driver already supports that, would it be ok
-> to do it the same way?
-
-I don't know for JPEG, the MTK vcoder do support cascading cores. This is
-different from concurrent cores. In MTK architecture, for some of the codec=
-,
-there is LAT (entropy decoder) and CORE (the reconstruction block) that are
-split.
-
-Nicolas
+> 
+> >
+> > >         /* 3 rounds, 2 samples each */
+> > >         cnt = atomic_xchg(&sample_cnt, 0);
+> > >         CHECK(cnt != 6, "cnt", "exp %d samples, got %d\n", 6, cnt);
+> > > --
+> > > 2.43.0
+> > >
 
