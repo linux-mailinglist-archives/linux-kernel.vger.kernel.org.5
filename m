@@ -1,120 +1,111 @@
-Return-Path: <linux-kernel+bounces-134633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D064989B3E5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:04:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EACBF89B3F2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:08:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71BFB1F214AC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:04:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00F1281141
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669643F8C3;
-	Sun,  7 Apr 2024 20:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rz+iIqt7"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F071F3D988;
+	Sun,  7 Apr 2024 20:08:28 +0000 (UTC)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DA23D988;
-	Sun,  7 Apr 2024 20:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016443D3BA
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 20:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712520212; cv=none; b=BUlT1+muV1y1u0oL74gZgHVb2kOyAMnn5Yeu90xHN4nzwc8NMMa1154Eulg/r1MkBFN4QUzUsLE16NVeIz7gV7zFLdJ9EZMm3YEQ8vsi5M9d+Jw9nZNteo4zkqp0+r7QfRL3kdGPcHT21ZwYbPmckQt4d5l3orfIeE/OHqI5Wp8=
+	t=1712520508; cv=none; b=K/n3mON9T8dCHpaFT+x44LI5QNA0d7yZWPCmPLCP/BYLh+ie1r3XyQAyD7cJ0B6NG8/9E3ZceOs60lKR0LU4r+j6hke/G2ZKf5ruSNgupguwi17OvPuh7dWXxCLdK9rHNrwHjUWJYa5O4JyoJsXrKTuawNfBpNVSm6w9ppMsLgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712520212; c=relaxed/simple;
-	bh=zzYff9yQtgJXPQgk/ATjyS1y8lhCcN/zh2bqNrpQlq0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bTnQoS/Mqx6OzCNkQB+NDIIWkFF4KB3IJinCLaGC07nCfjlw/23VXaqaJ4HQoC1mm7GMvelq7UmrRSxXZFfte9Kip4tIRtaVpaM89r4DwMACjiaauv+AwqLY3d4J1f4Ct0dcFlsv43HKYKj9xadzXDkFzZ6HFyAcFT5wjUIq3R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rz+iIqt7; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712520508; c=relaxed/simple;
+	bh=GbnSwLmnptyRkcjn6p8Yi9zoYP+iIoTU6qIYYZ2FN0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WO01qjAU0I+q4IX1+nAjb2P2Fs2leSKSirWBqiFq+aw5mB5tyVVFkCfc73EUG0dbje9nl2F4EcMdfMFOHog1OrHORQ0Fj3j9G87UkAqO7y3NgzQRs6oPBBBo86Q4qlK1mPBGJTGKMf4/YrNxb6dJJ1EMIQGF9p0EWenNwsidR/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a4bdef3d8eso511209a91.1;
-        Sun, 07 Apr 2024 13:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712520210; x=1713125010; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yfMh48UYa1lhTnaBkcMEl7zleuPMjILYPz6KbF68Au8=;
-        b=Rz+iIqt77VMsFA2kA24zP2sI+lF2ahNvmzO2Y73uclmnTzfVvs/TheyeWfSFyzncGd
-         sidu3lYxMk0n4rQfOXpQ4yr3J6Xt6OlFQKq0BGWO76lkp4wqRC3xIvVIfnXADosyq9Xx
-         H1nu3iJR14XxVh1mFiNbzAAZq0/c0PQ3AnyMvbSfZI/cyfjOwg5L7e6Zrl3rZBRjvjw0
-         HvuHZSLbBiGDvfegcxPUQicWgAq9VspLZU7SN3K17urkMORclNip9axr6arCulQa/Zff
-         1/SVu5hO05cRUdxnXTYRQ+TSetEcUlrOT6btJh13/apj9Tghfrse5X5pzgpr2P9J82Qa
-         ebaA==
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4167082dabdso181245e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 13:08:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712520210; x=1713125010;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yfMh48UYa1lhTnaBkcMEl7zleuPMjILYPz6KbF68Au8=;
-        b=Tcurf4/yuc0fAEnTOQ63MQ2e6QMUiOmgL34EmybXq97hIMYPL4/1w9+Suh6hNBeW+r
-         FbghTqpj0QaJtkwcKoZcS9kgBg9v47JnbxcEru8uCN54QtzrvOnaGFTXYjFRIKtsDkbH
-         aBRYusSMBcIqJN+Kc/kO+OSfyjFJPJjwLh+l/xd4MlktrOfeXdPkTZor5g7tbGHE1SLz
-         o7BtsaBqYBrvVlpugzAt5lCUIvtR6a0Acql42ndDHxkUAX40ozrMyay0CTYtz39OyQmx
-         ZYtlCenEttdtd4+qcNWjN2gqZ/kmg9SwTRpB4HPHdGy6R0cR9uEkgJ5PzW3sF1lNkD4L
-         z8GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVEAVGKNBvKFt5FgpVEKGh96BOuwrTpSpU81pB8GtkwaDzp52ji4BUhnJUviy5teyXRHbPpfqy1Y44gMFQ7YpJ6WSUCz6bxTNad6wPiWoee2xvPpKK2+NlR3U2GjkfIiPBUgYTwa0Qg6ZQM9LNEVXjNl6JF9NrxpOSZpZXfpq1AfB5OFFM=
-X-Gm-Message-State: AOJu0YwxWE64tqqnUckTbvxqfj+A+hxImuPlEMzaEO+PHpm6FVYQWj1e
-	WMHMs//PhK+HnrCDCWBchHO7jgwr1sjhDhFKg13jTaRSX5ETybpIf9Fj+eJ+L1UVsOgwp3VOnMd
-	dpxKtHA7ZV5KRg/Wt4zUVJtn/sRM=
-X-Google-Smtp-Source: AGHT+IEIt1Lru4k/Tnepu4IBYtQBsXst4gyHMFJlhgjYVHRQdcRfEYeE8aY/BvrRmgDuYCRzjKItROgB6OPb0gkL7mQ=
-X-Received: by 2002:a17:90a:4dc6:b0:2a4:f53d:e732 with SMTP id
- r6-20020a17090a4dc600b002a4f53de732mr810440pjl.13.1712520210362; Sun, 07 Apr
- 2024 13:03:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712520505; x=1713125305;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z59eKGisbG/GVwZ41NOAkympydkJlAvl6JclA5ptAW4=;
+        b=a09b+QbmkXDCH888aIX1eWi6aTDmYdJvubBZU7Nh+hqGF6IfBXmlc7WfHW/hqf4Rms
+         xGLFkzqCXB8YjZjJ4Rx553dNmssUHuliJ8/jGISVFA0FSbVBC+kO24gcS4br4huzFOWH
+         b01vBoJN8R4HQxEGD8K0LJ0XceLMq/e4iJyLqI/9yp8KDRg03kinuSoyE6hHzgJF4l64
+         K32tjtlFESLLtJza8aIqlXJMxxTK0tSKsV73jmMQqp9e55MCoAUnXjBiIf7xHIk4Z2Su
+         NyzYFyyCMwAj5cpOH+tGgrYYlPITJhzxUnCtQGZ8CeHy5D8vlpDyz1rlPHdazh1vl4hg
+         oqJg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+DP4+metKeziK7iWohgQbIXpfMcIlLVM3snpYgn88mg3em/cuzpHkGtPCsfGM5+J0gBld15S8iFrHpBYSQRgLJotQb9hcZ04waxjz
+X-Gm-Message-State: AOJu0YwMiYcNw7x+7Bq4DLm3aSm4V7e+vVZRazwj7xBWNtPN+x8ySrB7
+	5gel3IvD6Q5SCc/PFPi205mdIzWjxVYk3FXJ06yOAlalnCGA1EMm
+X-Google-Smtp-Source: AGHT+IFbPIOq5EP4wvRPLUOjCwF64ufM0/+5/bxWBDsG82CRtuWR0RyEFHCnmSXszVXn3J9JBlOD7Q==
+X-Received: by 2002:a05:600c:3b26:b0:416:3de5:1367 with SMTP id m38-20020a05600c3b2600b004163de51367mr3432106wms.3.1712520505315;
+        Sun, 07 Apr 2024 13:08:25 -0700 (PDT)
+Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b004162a9f03a6sm14000449wmb.7.2024.04.07.13.08.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Apr 2024 13:08:25 -0700 (PDT)
+Message-ID: <f5d57e3b-8168-41af-8e36-c7a21ef3a475@grimberg.me>
+Date: Sun, 7 Apr 2024 23:08:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404-providing-emporium-e652e359c711@spud>
-In-Reply-To: <20240404-providing-emporium-e652e359c711@spud>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Sun, 7 Apr 2024 22:02:46 +0200
-Message-ID: <CANiq72mUGAXj+ajfojfMgOD7S22Q0Y0Y4QCTxNLoNxwCSpksdg@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor.dooley@microchip.com>, 
-	stable@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>, 
-	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: WQ_UNBOUND workqueue warnings from multiple drivers
+To: Kamaljit Singh <Kamaljit.Singh1@wdc.com>,
+ Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Cc: "kbusch@kernel.org" <kbusch@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+References: <BYAPR04MB41513F04DB2ECDC3601CC36ABC2D2@BYAPR04MB4151.namprd04.prod.outlook.com>
+ <c4057654-97bd-4721-9bed-9dd5ef8b3f8d@grimberg.me>
+ <6d3af8dd-30c3-48d4-9083-7f00ea21ff8c@nvidia.com>
+ <BYAPR04MB415196EC84756BA1876463DABC3E2@BYAPR04MB4151.namprd04.prod.outlook.com>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <BYAPR04MB415196EC84756BA1876463DABC3E2@BYAPR04MB4151.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 4, 2024 at 4:17=E2=80=AFPM Conor Dooley <conor@kernel.org> wrot=
-e:
+
+
+On 03/04/2024 2:50, Kamaljit Singh wrote:
+> Sagi, Chaitanya,
+>   
+> Sorry for the delay, found your replies in the junk folder :(
+>   
+>>   Was the test you were running read-heavy?
+> No, most of the failing fio tests were doing heavy writes. All were with 8 Controllers and 32 NS each. io-specs are below.
 >
-> From: Conor Dooley <conor.dooley@microchip.com>
+> [1] bs=16k, iodepth=16, rwmixread=0, numjobs=16
+> Failed in ~1 min
 >
-> On RISC-V and arm64, and presumably x86, if CFI_CLANG is enabled,
-> loading a rust module will trigger a kernel panic. Support for
-> sanitisers, including kcfi (CFI_CLANG), is in the works, but for now
-> they're nightly-only options in rustc. Make RUST depend on !CFI_CLANG
-> to prevent configuring a kernel without symmetrical support for kfi.
->
-> Fixes: 2f7ab1267dc9 ("Kbuild: add Rust support")
-> cc: stable@vger.kernel.org
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> Some others were:
+> [2] bs=8k, iodepth=16, rwmixread=5, numjobs=16
+> [3] bs=8k, iodepth=16, rwmixread=50, numjobs=16
 
-[ Matthew Maurer writes [1]:
+Interesting, that is the opposite of what I would suspect (I thought that
+the workload would be read-only or read-mostly).
 
-    This patch is fine by me - the last patch needed for KCFI to be
-    functional in Rust just landed upstream last night, so we should
-    revisit this (in the form of enabling it) once we move to
-    `rustc-1.79.0` or later.
+Does this happen with a 90-%100% read workload?
 
-  Ramon de C Valle also gave feedback [2] on the status of KCFI for
-  Rust and created a tracking issue [3] in upstream Rust.   - Miguel ]
+If we look at nvme_tcp_io_work() it is essentially looping
+doing send() and recv() and every iteration checks if a 1ms
+deadline elapsed. The fact that it happens on a 100% write
+workload leads me to conclude that the only way this can
+happen if sending a single 16K request to a controller on its
+own takes more than 10ms, which is unexpected...
 
-[ Added feedback from the list, links, and used Cc for the tag. ]
-
-Applied to `rust-fixes` -- thanks everyone! Please feel free to send
-more tags for this one.
-
-Cheers,
-Miguel
+Question, are you working with a Linux controller? what
+is the ctrl ioccsz?
 
