@@ -1,271 +1,270 @@
-Return-Path: <linux-kernel+bounces-134622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 741AC89B3C5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 21:13:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3EBA89B3C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 21:15:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 978451C20FAA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:13:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58A6DB2262E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2CC3D3AC;
-	Sun,  7 Apr 2024 19:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD55E3D541;
+	Sun,  7 Apr 2024 19:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IeBRP9gX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QlYBdHDC"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC7E1E889
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 19:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712517198; cv=fail; b=f1nLrOmTaPLo9j3A00wpU4WbDuO0tBTUJsdkRPL8pRwYu7AG43CKGR1yauuIpveB0HN802ZXl0RFkeZ/kcBOF0Ae3AaqCMcBmdGgqpPnXBxbfsNw17IuslE1O6+KZYnp2t8JbonvwOQStV+gJL56JEAxhcLSTkUXvUnhN7X89bQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712517198; c=relaxed/simple;
-	bh=+CN76UaTvzHHeArUu6x1qlxL/JGge9cD3TNXV0RxTPc=;
-	h=Message-ID:Date:From:Subject:To:CC:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dggUfpBTRXhUq8V1i0VuGAEiX+KAVJX+SywhexRpSbeA79CHUIB/rsmFXniqShn9LhgV2wLF2QXK8yTw6FukVsYsZU+IMZVcTw37OaAffczf380qqL43kSe444ndjNsRBpZjXlhJXyLcQhEp5WsgU8k8YmsSeMOeOwqIIILr8Tc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IeBRP9gX; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712517197; x=1744053197;
-  h=message-id:date:from:subject:to:cc:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=+CN76UaTvzHHeArUu6x1qlxL/JGge9cD3TNXV0RxTPc=;
-  b=IeBRP9gXE5cQYmp3/REalCsOpx5BxHou9W/0e3wJ3cG9upBpWXDRM+sn
-   mN3EdZG5xDB8Q7cnbxVLkex4GzjG5KcX3+M7oPLiL9EwQA4GoEepbqJNW
-   5yfB4IONO8grwGWuflMxo0wza8CM/Lsurhw/p49HodXkfbyuiT0r9ucO4
-   9noEvX461NnFxVpnFWFRLnS5FkJrgCp3+GDKTYiLyKEvqhUCdYm9fGch1
-   6QorerEgh+rGSNRezjcjUNSPt2cRffEYLyqHUfvKFv1cm3WOh0PdjpBxJ
-   mhWRX/gS8FX99T24jU/w6fuxVq5pfUZFh5tBnbs/HkfnwMD3sR3EWDryC
-   A==;
-X-CSE-ConnectionGUID: U7VrCYWGRECpbOh95/tZQg==
-X-CSE-MsgGUID: kIMhhP/cRO25ub/EIqjV9w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="8016884"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="8016884"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 12:13:16 -0700
-X-CSE-ConnectionGUID: dKz8rVMAQ5GdGemywEPA/Q==
-X-CSE-MsgGUID: +hxk41lQRFShciKBSocNtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="19624355"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Apr 2024 12:13:16 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 7 Apr 2024 12:13:15 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 7 Apr 2024 12:13:14 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 7 Apr 2024 12:13:14 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 7 Apr 2024 12:13:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JX+icidqf5WzN0p747heeksxwnU5vCUGg9e8uuDyheYr6PdTOwUOBFRY9arR3bwJzWn8EEcfwD0SxWCc1RvHvL+rXGs9pLLze/IIMOXXcU3f459lVpC8wj9xPAY9MRk/uB/fmM/daaIyPKm1gT3nG/WC49hhPucPL4QVANqh8Vc+TbxB7WgRQ6A73cFZ57ki3+yWFlpRzlXrF67SvYmzq3C8qQq9PkR49T5VB1Y4/3n6SyZdipg/U1u+u+miTww/HLgI2EZKEw7o1nF6pVuWu33a8/KyWRs+crB/i+JCg5TfoDLVotdSP7Ti5uyuOdmdq9/K/Z8srxFEC7qUIJ3Qvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Cde50UJGxB7tN0rtr4mQ7A80cZ68Qm5otE4kNW8vdgs=;
- b=hrs6GNUaFHn5lIq3nSYRaxZ5DrK5tYd1pCBYa0/qI1MmGSRO5GtVgv5bbyOL7atWw7emgdU6DuWBBKywdAWSWCv8GwC92VxZT+ebtwdAwTGVPYVPhlTcPIVRJV8pY0lAx6DcEwMLtVRj/lwPonw+osDQAKsZNgf2IcrB3cPyFQN3MfDOLdqrodfIG1OASw1Br2MF3HwaFrOSYW9cUDpnbzKIemT+O2zG0komDlcfrI2MXgEtwWTv232sgnTBrpNHPUDxIeegxVPC/9AwRIfgxKxKV3ex8LKorKLQ/wSodlEWwbxawFJelgEseiEji2Lh6oKB2JGdKHh02EcQj4mlBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by PH7PR11MB7569.namprd11.prod.outlook.com (2603:10b6:510:273::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Sun, 7 Apr
- 2024 19:13:12 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.019; Sun, 7 Apr 2024
- 19:13:12 +0000
-Message-ID: <98b3144d-4519-4378-9121-c1538b4c5b68@intel.com>
-Date: Sun, 7 Apr 2024 12:13:09 -0700
-User-Agent: Mozilla Thunderbird
-From: Reinette Chatre <reinette.chatre@intel.com>
-Subject: Re: [PATCH v1 0/6] x86/resctrl: Avoid searching tasklist during
- mongrp_reparent
-To: Peter Newman <peternewman@google.com>
-CC: Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>,
-	Stephane Eranian <eranian@google.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli
-	<juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
-	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, "Valentin
- Schneider" <vschneid@redhat.com>, Uros Bizjak <ubizjak@gmail.com>, "Mike
- Rapoport" <rppt@kernel.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Rick Edgecombe
-	<rick.p.edgecombe@intel.com>, Xin Li <xin3.li@intel.com>, Babu Moger
-	<babu.moger@amd.com>, Shaopeng Tan <tan.shaopeng@fujitsu.com>, "Maciej
- Wieczor-Retman" <maciej.wieczor-retman@intel.com>, Jens Axboe
-	<axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, Oleg Nesterov
-	<oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Tycho Andersen
-	<tandersen@netflix.com>, Nicholas Piggin <npiggin@gmail.com>, Beau Belgrave
-	<beaub@linux.microsoft.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240325172707.73966-1-peternewman@google.com>
- <4681c9c5-3364-4628-a581-0366d0024211@intel.com>
- <CALPaoCh0SbG1+VbbgcxjubE7Cc2Pb6QqhG3NH6X=WwsNfqNjtA@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CALPaoCh0SbG1+VbbgcxjubE7Cc2Pb6QqhG3NH6X=WwsNfqNjtA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0257.namprd04.prod.outlook.com
- (2603:10b6:303:88::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0206A3E46D;
+	Sun,  7 Apr 2024 19:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712517300; cv=none; b=iHe8ZhuNzS3n3CiqNSOyVGzrTEAmaPdlT6P7jgaU6B5OmNgWSA61u4GefAFzztb3lM0pKjb7mNSfqEUPEGvOwMOtqpjma7DGxW56gQPjDtBuakX7Z8mIotHBFg46ln2Wv+cRAxD1cuJilM2cr67T9gMVEUFITuFEs7oaWhWt+Mk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712517300; c=relaxed/simple;
+	bh=9RWWgQeSaVZMIAeu/qiCqa6+4hSN9vLPiol43n48sp0=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i76l5pUCLdbfHUicz07/LBpvd6SbkEzAxRltpT5JaFbLgmxjUmFfggylbgKDOcciVwKg17yeaaL45I3TppmFH6idSa0+a1iFQLEq/91D1KNYHkhV/w1MB6CctEz3JC2rBVmGtxoS4aPb4Aruc8osFIuon3CSFZy6loZPW/Hu3Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QlYBdHDC; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-343b7c015a8so2359836f8f.1;
+        Sun, 07 Apr 2024 12:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712517297; x=1713122097; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q+gdPiUUIiUQITPAoo0ks+ZsORrAf0MHk7pXFtNSkrc=;
+        b=QlYBdHDC3f2/lHlHnrsx30UW4wzPPdg0nZmx4xrlMXfGWttIpzE5hbq/8Y08nPLS3+
+         8lFGezKUm6nwWCUUszrRgcdxItvUdDjLXZYq6qkF1o8zQWHWEAgP6dFbZLH4PN0bdvAn
+         zGWgYz6NQeg8X5b1da7jyilnmfXFifGKJbyqOLhGr0ywnuhi0XT6f0cQ7Z8b05/piB7E
+         le52Z6zOKaxQbwWe2k0a3S7N+udffhPeXTtJqHevJjRo0LGdisSd0rbRtwze1DsUX8z+
+         iiwiXAlYM7SxFPuGjsbhEqRBV7/HacFr4YWlLjr8xHWluHVcyrDElcjPyKKthqgSkwHO
+         CEGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712517297; x=1713122097;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q+gdPiUUIiUQITPAoo0ks+ZsORrAf0MHk7pXFtNSkrc=;
+        b=uYsfQqLuh9hCsnmp12vayuiPoFa67EatvOrJ1HEm6MJuZN9RZfra4L53wAtqPTGdGb
+         q7GP0AceOsWzrtDrXxf05OYH9yIg6FymioeEx/kL4tq7Sfa1jDSTlbRpJ85cg/f3NLZu
+         3QnEI72tKQzgmWpHPKBX4nZKm5hp0xCpJ5UDlqxdkvNTE04TkxaAThLTz3GzoCV3nnWg
+         0hRjpF8nkSGE4r7ey83cxfgCbTqjfwT28xjpMgsCoYRFqbYwInzLu88hgakubJLnXNPD
+         fluIEE0/p4s/S+m8gRplljr7ns2kKuBMbddvUqeAtwIp1zeTS0r735EHwpbn6j6e0aut
+         ZgNg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFsecmjV8YL5cvjdd11CaMt/vSKKvAbGsqHISMnE9cOtn3JTYVa354EN1J4oK5Nxy7cr4EvaiNssQ+CC64yz3AoVm4fl8ukUwhxVjG
+X-Gm-Message-State: AOJu0Yy02+AtUcNOPZvgkgB+3p/Zm2xAYPJQ58v1r2/qLWa4fIP3ey94
+	ku1OzeV/c2hrHyQ3+4Ck6HdBXe7sH4GRtZnvJoiyPHL8K7yGYxiiBsWvO2q7zUYMREu0QvIPncT
+	Lag1a3+7WIh8npMFw0V+sJ6nMT6M=
+X-Google-Smtp-Source: AGHT+IFpFV4CXXbf/0k5lILYcg76tGfFvrf4I2cakorGM8W7mFWzxGK5+sHDHDKzohgyHkXBFNn/T9z93yhsz2rHuic=
+X-Received: by 2002:a5d:6a09:0:b0:343:79e8:a4d6 with SMTP id
+ m9-20020a5d6a09000000b0034379e8a4d6mr3932188wru.25.1712517296930; Sun, 07 Apr
+ 2024 12:14:56 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 7 Apr 2024 12:14:56 -0700
+From: Oliver Crumrine <ozlinuxc@gmail.com>
+In-Reply-To: <CAK1VsR210nrqtxWaVbQh00t_=7rhq9bwucFygGZaT=7N-t7E5Q@mail.gmail.com>
+References: <cover.1712268605.git.ozlinuxc@gmail.com> <b1a047a1b2d55c1c245a78ca9772c31a9b3ceb12.1712268605.git.ozlinuxc@gmail.com>
+ <6850f08d-0e89-4eb3-bbfb-bdcc5d4e1b78@gmail.com> <CAK1VsR17Ea6cmks7BcdvS4ZHQMRz_kWd1NhPh8J1fUpsgC7WFg@mail.gmail.com>
+ <c2e63753-5901-47b2-8def-1a98d8fcdd41@gmail.com> <CAK1VsR210nrqtxWaVbQh00t_=7rhq9bwucFygGZaT=7N-t7E5Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB7569:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T5RgLz2wxXqF/pSeOI7ZNddUNpAhCuordYoaSGxoXc8izsVjVtWh6Ma9UD6KXxE8KZp1vdbHQB4GbM61O7sg0FkG/GCb51ssfwkHqz2K9SP9ZIDzIL2YYLZPRPKLF0DnBElBo+LC9tQthZG6Vl48/xqRek6RUoV/hxm++6JV4nrMY0kdhYtPLVmltVPAeeeX5ZsILHMcG6yxqENqbsmjOVBiUvD06nSKa7lzuiElX1t1JYT+OwyNV+iGWjaPIzumES9YjLXxhSztCwfDUZeRXolXQDZ5TvW5iM0C1cd55OS/qrsFLOjyH9BRYI1tY5zKJP5aftOnMpmtD4qSc+WqrJTrRcVAgQHmp416cWNFGuGSEPLol4r5GVVAF/QIwpDjP7hATTidP4q30quJvAX5f33hmmpKh2uBUXSM3AaTrF88BNmAdZklyBF4RgWKe8KtUQ+fwiVYy3U0WkoMNZMZ13rbO9pMi1gJFIA2xEH5uuAPeRGj2yR2u7Q6UqSHwNkpA26EK5ZxVTZ4Djrz7KLE8nTxn496iDWBXJzQLBOQg6paCKm3brQ9Bw08tEXdfxc0GUe3uA32eU5E8Qxgt4VsyE628Ev8Ia0z4Uynga+2B9e157fQTwwM/g5YMEsnmV24PKUxSgC2wrE/SQ4lth0qhfH/sy59fSR3lcgw2g+J1KU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXRNVU1ES1lpYUgwYW1DTnVmMU8vdGRBYUhCRnBMRW1PbW1mNzFwTVNSRmRF?=
- =?utf-8?B?K2MvTTZURkJJMGp0Vm5mc1ZQZjhSSzF1QkVpTDhUMG1CVGxBdGQzZFhRK0Z0?=
- =?utf-8?B?Uk1tVkFqZzF6ditNRStPMjhISDhvZUtOTzdaV1lOcnp1SnRlb2NPSStYaktW?=
- =?utf-8?B?OHFvSnlsZHVQdjRtOFErWG5pa1RPeExOZTZQRDByRUFpUDBCcGFkblc0Y2ZQ?=
- =?utf-8?B?c0dhL1JGUUhqZDR4dVBOenhMaXI1S2dHSzFJNlBzUm52L2lEeWpsREN0TVRL?=
- =?utf-8?B?UTVVZmNDYjdYY0labDFJVFd1YXlRUGZldlhkYTZ0M3hJZmpWZEU4ek5WQW9a?=
- =?utf-8?B?dTdxS2h2eEpjbFh0MGJQa2RkSmpNbFBEeEE2Q1UzWW4yZzVMN3ZJUXI3YVR6?=
- =?utf-8?B?UG1uWmdHeWVIK2tpV213cG1Gbkt6amN5TDFRbGFTVkhua0lQZHVOa01TN3Fi?=
- =?utf-8?B?eVAyNXNWT1p4RU9HeDNkTDNBOVpyTnlibFNheFJqTkpUUm94aHpCbVBwMlJI?=
- =?utf-8?B?cHVlYmdvMkZ1M0pXQUl4b1VTTXovSWx5Tk9tVFQ2SGRkajBQcFU5U2ZLY1NU?=
- =?utf-8?B?OHdKbnNEamNKNnBpOUw5RE9sc2FHemtCMmQ0YWxoUWw3ODE0ZXhJbDZKaUQ4?=
- =?utf-8?B?VHZDbVYydkZSVkMvVUROM2FBbTgxV3RFL3hYcFpTM1h1dGN2U3cvWWxuSnZu?=
- =?utf-8?B?Q3E1NVI0WU4zRzFZNEFTc1grSVdnWnVsU3FlNnN1Zmo0YU9vQ0drN0RKSjlJ?=
- =?utf-8?B?QlNwNWx2SzY3a2tkK0Z5dWRKTWpMT0JCMEtiMGNjNkZ6dGZxZndNd0lyMUwv?=
- =?utf-8?B?WlRvc1lkTGxhMzFNSzhVOGl5b2NGSWVCUUdiKzdYMDN3VUxBRkFPeUIxUWM2?=
- =?utf-8?B?N05QYm1pWjlMd2Q4b2phSjArUWRSSFFOMkU4a2pqeWlRbS9nS0pvWS9Hbnh5?=
- =?utf-8?B?MUQrOWNrK0t4dmJxN05HNjlWOU9oNlQxSDJxTjBDdGxDRW5RUTAyU2xSNDg1?=
- =?utf-8?B?Rk1pNGZBMFF5dE5tbGpWNmQvYXJBcGFKaEFrQU1UbXVFMVlRdy9kcFllNWJL?=
- =?utf-8?B?MWJZblN5UnVvckQ0akdJbUk4cGk4ZFIrOFhnUGlxL2dRU25jek9ZdXF2c2Fn?=
- =?utf-8?B?ZUlLVGk5YTM4R1duQlJHNVplZHBJVWZjZUt0MkM0UnJ2WHpMT04xWUEya2Rl?=
- =?utf-8?B?SjkreHVGTmhQNEpmUnA0QXhUOFlWWVRMWEdmSExwTlRNWFUrd21rUU9hMXlq?=
- =?utf-8?B?cVUxMjZ6bGdOZ1A3bGp3RnhieWZ1dVdZRFlSSlVYL21zL1JKdU1xdGdJRm5t?=
- =?utf-8?B?UThuQU1RcDY5dHRFTVpYNEpIS2F5MlIzZ2dTL05Od1F4ZTlvek9iNysxWmRh?=
- =?utf-8?B?cVFIdGZnNU9wU2p3dWtNelZOK2tBMGZKcUJZVGpDSFhUTlhXbkE3L2xJUGRP?=
- =?utf-8?B?Ry9lYWlWdjJmUStTZE1MRzh4L0c2R1RhNmhzNDJkYWw3VnRkRlY4Z2FRbW0r?=
- =?utf-8?B?N3dvcGxKWXNZdHc1R0FJS2s5WFN4OFRJWHRqU2cvN29CSStyVUhkZll1NTN2?=
- =?utf-8?B?OFp5ekZ6bzVvTDZWTG9RWnIzM2lyMjJpUUhwS1BVRjIyMEthQXV3aEV3K093?=
- =?utf-8?B?MXNOUCtMNS83bDZPeUtIOThLZk5idCt1UlZ6SWUvbDlzamNTd2lLa2M5N1h4?=
- =?utf-8?B?SDd0OEZoK0haZ2pRNDFOMXZheXJBcEhDbWYwNElpU2dPYlBTOVJxTHdDcXFJ?=
- =?utf-8?B?WXovdlZJRThzVmFkck1ROUJmYUpTMGJPNDVBL2N1Q3B0TXFnNFI4T3RVeXlT?=
- =?utf-8?B?Z1FRUmUyNlQzdWN1RGsxOXRhQ3dsU2U0U1NVSzZ0elVhY0ZKRFRwY0JTcFJE?=
- =?utf-8?B?bytIWGEwS1h5ZUZVMVBma3hKY0QrMlpkNUdJaEs1Y2J2bDE4UWVkUmdLZDNO?=
- =?utf-8?B?eXZ6NUUwT0xqTkpFdDg5MjBCaWVicTQ0em1McGxqeWx6TEpJUFhUMElIWFFC?=
- =?utf-8?B?Mi9LRVY4cnFlWlh5S2xpSWZqY1QyQkhNa0UxaEtMd29YUUtkUzJEL2tlRUM3?=
- =?utf-8?B?cVlRTmRGRTB0K1c4dmlHVFFjNHlaUDJteXBtb0dZMEtPdUVZTHlmRFl4ZUpy?=
- =?utf-8?B?OXRJNjB4dnBYRUkzVnh3eHRNeUFkQXhuWVp4S1RIT3dZRmZHT1UxUzVaNkFo?=
- =?utf-8?B?QlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd4eb9ea-d57e-43f7-9d1c-08dc5736c4df
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2024 19:13:12.4279
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6zPbtB46t4yTDqsC/fMG1vy+ob6uQ8d9H/NBpWLuEMdySyTPvmmoLubP7oNP8rESnDi4XprOvG1jKvJ17pCqOawAiS5nL7Cy37oQc5z58e8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7569
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+Date: Sun, 7 Apr 2024 12:14:56 -0700
+Message-ID: <CAK1VsR1b-dbAa8pMqGvfcAAcVP3ZkTYZdyqcaK4wJdbuAZtJsA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] io_uring: Add REQ_F_CQE_SKIP support for io_uring zerocopy
+To: Pavel Begunkov <asml.silence@gmail.com>, Oliver Crumrine <ozlinuxc@gmail.com>, axboe@kernel.dk
+Cc: io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Peter,
-
-On 4/5/2024 2:30 PM, Peter Newman wrote:
-> Hi Reinette,
-> 
-> On Thu, Apr 4, 2024 at 4:09 PM Reinette Chatre
-> <reinette.chatre@intel.com> wrote:
->> On 3/25/2024 10:27 AM, Peter Newman wrote:
->>> I've been working with users of the recently-added mongroup rename
->>> operation[1] who have observed the impact of back-to-back operations on
->>> latency-sensitive, thread pool-based services. Because changing a
->>> resctrl group's CLOSID (or RMID) requires all task_structs in the system
->>> to be inspected with the tasklist_lock read-locked, a series of move
->>> operations can block out thread creation for long periods of time, as
->>> creating threads needs to write-lock the tasklist_lock.
->>
->> Could you please give some insight into the delays experienced? "long
->> periods of time" mean different things to different people and this
->> series seems to get more ominous as is progresses with the cover letter
->> starting with "long periods of time" and by the time the final patch
->> appears it has become "disastrous".
-> 
-> There was an incident where 99.999p tail latencies of a service
-> increased from 100 milliseconds to over 2 seconds when the container
-> manager switched from our legacy downstream CLOSID-reuse technique[1]
-> to mongrp_rename().
-> 
-> A more focused study benchmarked creating 128 threads with
-> pthread_create() on a production host found that moving mongroups
-> unrelated to any of the benchmark threads increased the completion cpu
-> time from 30ms to 183ms. Profiling the contention on the tasklist_lock
-> showed that the average contention time on the tasklist_lock was about
-> 70ms when mongroup move operations were taking place.
-> 
-> It's difficult for me to access real production workloads, but I
-> estimated a crude figure by measuring the task time of "wc -l
-> /sys/fs/resctrl" with perf stat on a relatively idle Intel(R) Xeon(R)
-> Platinum 8273CL CPU @ 2.20GHz. As I increased the thread count, it
-> converged to a line where every additional 1000 threads added about 1
-> millisecond.
-
-Thank you very much for capturing this. Could you please include this in
-next posting? This data motivates this work significantly more than
-terms that are not measurable.
-
-> Incorporating kernfs_rename() into the solution for changing a group's
-> class of service also contributes a lot of overhead (about 90% of a
-> mongroup rename seems to be spent here), but the global impact is far
-> less than that of the tasklist_lock contention.
-
-Is the kernfs_rename() overhead in an acceptable range?
-
->>> context switch. Updating a group's ID then only requires the current
->>> task to be switched back in on all CPUs. On server hosts with very large
->>> thread counts, this is much less disruptive than making thread creation
->>> globally unavailable. However, this is less desirable on CPU-isolated,
->>> realtime workloads, so I am interested in suggestions on how to reach a
->>> compromise for the two use cases.
->>
->> As I understand this only impacts moving a monitor group? To me this sounds
->> like a user space triggered event associated with a particular use case that
->> may not be relevant to the workloads that you refer to. I think this could be
->> something that can be documented for users with this type of workloads.
->> (please see patch #6)
-> 
-> All of the existing rmdir cases seem to have the same problem, but
-> they must not be used frequently enough for any concerns to be raised.
-> 
-> It seems that it's routine for the workload of hosts to be increased
-> until memory bandwidth saturation, so applying and unapplying
-> allocation restrictions happens rather frequently.
-
-Thank you. 
-
-Reinette
+Oliver Crumrine wrote:
+> Pavel Begunkov wrote:
+> > On 4/5/24 21:04, Oliver Crumrine wrote:
+> > > Pavel Begunkov wrote:
+> > >> On 4/4/24 23:17, Oliver Crumrine wrote:
+> > >>> In his patch to enable zerocopy networking for io_uring, Pavel Begunkov
+> > >>> specifically disabled REQ_F_CQE_SKIP, as (at least from my
+> > >>> understanding) the userspace program wouldn't receive the
+> > >>> IORING_CQE_F_MORE flag in the result value.
+> > >>
+> > >> No. IORING_CQE_F_MORE means there will be another CQE from this
+> > >> request, so a single CQE without IORING_CQE_F_MORE is trivially
+> > >> fine.
+> > >>
+> > >> The problem is the semantics, because by suppressing the first
+> > >> CQE you're loosing the result value. You might rely on WAITALL
+> > > That's already happening with io_send.
+> >
+> > Right, and it's still annoying and hard to use
+> Another solution might be something where there is a counter that stores
+> how many CQEs with REQ_F_CQE_SKIP have been processed. Before exiting,
+> userspace could call a function like: io_wait_completions(int completions)
+> which would wait until everything is done, and then userspace could peek
+> the completion ring.
+> >
+> > >> as other sends and "fail" (in terms of io_uring) the request
+> > >> in case of a partial send posting 2 CQEs, but that's not a great
+> > >> way and it's getting userspace complicated pretty easily.
+> > >>
+> > >> In short, it was left out for later because there is a
+> > >> better way to implement it, but it should be done carefully
+> > > Maybe we could put the return values in the notifs? That would be a
+> > > discrepancy between io_send and io_send_zc, though.
+> >
+> > Yes. And yes, having a custom flavour is not good. It'd only
+> > be well usable if apart from returning the actual result
+> > it also guarantees there will be one and only one CQE, then
+> > the userspace doesn't have to do the dancing with counting
+> > and checking F_MORE. In fact, I outlined before how a generic
+> > solution may looks like:
+> >
+> > https://github.com/axboe/liburing/issues/824
+> >
+> > The only interesting part, IMHO, is to be able to merge the
+> > main completion with its notification. Below is an old stash
+> > rebased onto for-6.10. The only thing missing is relinking,
+> > but maybe we don't even care about it. I need to cover it
+> > well with tests.
+> The patch looks pretty good. The only potential issue is that you store
+> the res of the normal CQE into the notif CQE. This overwrites the
+> IORING_CQE_F_NOTIF with IORING_CQE_F_MORE. This means that the notif would
+> indicate to userspace that there will be another CQE, of which there
+> won't.
+I was wrong here; Mixed up flags and result value.
+> >
+> >
+> >
+> >
+> > commit ca5e4fb6d105b5dfdf3768d46ce01529b7bb88c5
+> > Author: Pavel Begunkov <asml.silence@gmail.com>
+> > Date:   Sat Apr 6 15:46:38 2024 +0100
+> >
+> >      io_uring/net: introduce single CQE send zc mode
+> >
+> >      IORING_OP_SEND[MSG]_ZC requests are posting two completions, one to
+> >      notify that the data was queued, and later a second, usually referred
+> >      as "notification", to let the user know that the buffer used can be
+> >      reused/freed. In some cases the user might not care about the main
+> >      completion and would be content getting only the notification, which
+> >      would allow to simplify the userspace.
+> >
+> >      One example is when after a send the user would be waiting for the other
+> >      end to get the message and reply back not pushing any more data in the
+> >      meantime. Another case is unreliable protocols like UDP, which do not
+> >      require a confirmation from the other end before dropping buffers, and
+> >      so the notifications are usually posted shortly after the send request
+> >      is queued.
+> >
+> >      Add a flag merging completions into a single CQE. cqe->res will store
+> >      the send's result as usual, and it will have IORING_CQE_F_NOTIF set if
+> >      the buffer was potentially used. Timewise, it would be posted at the
+> >      moment when the notification would have been originally completed.
+> >
+> >      Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> >
+> > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+> > index 7bd10201a02b..e2b528c341c9 100644
+> > --- a/include/uapi/linux/io_uring.h
+> > +++ b/include/uapi/linux/io_uring.h
+> > @@ -356,6 +356,7 @@ enum io_uring_op {
+> >   #define IORING_RECV_MULTISHOT		(1U << 1)
+> >   #define IORING_RECVSEND_FIXED_BUF	(1U << 2)
+> >   #define IORING_SEND_ZC_REPORT_USAGE	(1U << 3)
+> > +#define IORING_SEND_ZC_COMBINE_CQE	(1U << 4)
+> >
+> >   /*
+> >    * cqe.res for IORING_CQE_F_NOTIF if
+> > diff --git a/io_uring/net.c b/io_uring/net.c
+> > index a74287692071..052f030ab8f8 100644
+> > --- a/io_uring/net.c
+> > +++ b/io_uring/net.c
+> > @@ -992,7 +992,19 @@ void io_send_zc_cleanup(struct io_kiocb *req)
+> >   	}
+> >   }
+> >
+> > -#define IO_ZC_FLAGS_COMMON (IORING_RECVSEND_POLL_FIRST | IORING_RECVSEND_FIXED_BUF)
+> > +static inline void io_sendzc_adjust_res(struct io_kiocb *req)
+> > +{
+> > +	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
+> > +
+> > +	if (sr->flags & IORING_SEND_ZC_COMBINE_CQE) {
+> > +		sr->notif->cqe.res = req->cqe.res;
+> > +		req->flags |= REQ_F_CQE_SKIP;
+> > +	}
+> > +}
+> > +
+> > +#define IO_ZC_FLAGS_COMMON (IORING_RECVSEND_POLL_FIRST | \
+> > +			    IORING_RECVSEND_FIXED_BUF | \
+> > +			    IORING_SEND_ZC_COMBINE_CQE)
+> >   #define IO_ZC_FLAGS_VALID  (IO_ZC_FLAGS_COMMON | IORING_SEND_ZC_REPORT_USAGE)
+> >
+> >   int io_send_zc_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+> > @@ -1022,6 +1034,8 @@ int io_send_zc_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+> >   		if (zc->flags & ~IO_ZC_FLAGS_VALID)
+> >   			return -EINVAL;
+> >   		if (zc->flags & IORING_SEND_ZC_REPORT_USAGE) {
+> > +			if (zc->flags & IORING_SEND_ZC_COMBINE_CQE)
+> > +				return -EINVAL;
+> >   			io_notif_set_extended(notif);
+> >   			io_notif_to_data(notif)->zc_report = true;
+> >   		}
+> > @@ -1197,6 +1211,9 @@ int io_send_zc(struct io_kiocb *req, unsigned int issue_flags)
+> >   	else if (zc->done_io)
+> >   		ret = zc->done_io;
+> >
+> > +	io_req_set_res(req, ret, IORING_CQE_F_MORE);
+> > +	io_sendzc_adjust_res(req);
+> > +
+> >   	/*
+> >   	 * If we're in io-wq we can't rely on tw ordering guarantees, defer
+> >   	 * flushing notif to io_send_zc_cleanup()
+> > @@ -1205,7 +1222,6 @@ int io_send_zc(struct io_kiocb *req, unsigned int issue_flags)
+> >   		io_notif_flush(zc->notif);
+> >   		io_req_msg_cleanup(req, 0);
+> >   	}
+> > -	io_req_set_res(req, ret, IORING_CQE_F_MORE);
+> >   	return IOU_OK;
+> >   }
+> >
+>
+> >   	else if (sr->done_io)
+> >   		ret = sr->done_io;
+> >
+> > +	io_req_set_res(req, ret, IORING_CQE_F_MORE);
+> > +	io_sendzc_adjust_res(req);
+> > +
+> >   	/*
+> >   	 * If we're in io-wq we can't rely on tw ordering guarantees, defer
+> >   	 * flushing notif to io_send_zc_cleanup()
+> > @@ -1266,7 +1285,6 @@ int io_sendmsg_zc(struct io_kiocb *req, unsigned int issue_flags)
+> >   		io_notif_flush(sr->notif);
+> >   		io_req_msg_cleanup(req, 0);
+> >   	}
+> > -	io_req_set_res(req, ret, IORING_CQE_F_MORE);
+> >   	return IOU_OK;
+> >   }
+> >
+> > @@ -1278,8 +1296,10 @@ void io_sendrecv_fail(struct io_kiocb *req)
+> >   		req->cqe.res = sr->done_io;
+> >
+> >   	if ((req->flags & REQ_F_NEED_CLEANUP) &&
+> > -	    (req->opcode == IORING_OP_SEND_ZC || req->opcode == IORING_OP_SENDMSG_ZC))
+> > +	    (req->opcode == IORING_OP_SEND_ZC || req->opcode == IORING_OP_SENDMSG_ZC)) {
+> >   		req->cqe.flags |= IORING_CQE_F_MORE;
+> > +		io_sendzc_adjust_res(req);
+> > +	}
+> >   }
+> >
+> >   int io_accept_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+> >
+> >
+> > --
+> > Pavel Begunkov
+>
+>
 
