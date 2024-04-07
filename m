@@ -1,84 +1,91 @@
-Return-Path: <linux-kernel+bounces-134215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB70F89AF0D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:18:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 040F689AF19
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:21:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73A38283E25
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:18:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BEC628144B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58003101D4;
-	Sun,  7 Apr 2024 07:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A845C10A22;
+	Sun,  7 Apr 2024 07:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d8N3c70a"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FjvdKdRp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A886CE56A
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 07:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E31E610795;
+	Sun,  7 Apr 2024 07:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712474324; cv=none; b=Oub4F1MwabY/lP/zSAD4KzgXbUVGifu7ksruv72Y+8DO/KrdThB+6RDe8LSNyC8XaNS7XpVZF9XMwaaigrQvfC6fePErKRXhqm+P6FatSfinZ8psHsGDh6eg9wNjxQR61EPCPUGxtZMOfTzMiAkIQqMPpJ5kMZsWpNs12WPBK3E=
+	t=1712474485; cv=none; b=X8pDz4tdRwenruakVsAi7GLKFLOK41vKO9Noz93Etxu23ANdwnzHeLvr4epRR9cJrmYNG9KrCGNngGz+FOGPe5KvwiwWUOU+YOkqT+Ue92N7VTc2Kw3xzM/Yxjjrn0Dc9Y8Qjb9q+9ImKl+JtLB2nCsoGEZnW724QTF3rgm4lp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712474324; c=relaxed/simple;
-	bh=c34tb701YjyYGcV+qxQdrUEneQB34k6REaRDFAgcgJY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=QuEZofk5mweCgliRbSqqNM1qgofEPtvlpgI4eDteaTlwzux/aOaFuyrnj+6lhG3Sn3aqrJ1qMig1ViTI6YvY670xavVLWlXJpJ12VhGxnnJ9MVknwrPiOdsVceFSgFmuU0cJWsVGGI2VTTUsTiKShH48iiL44EY0UPQ3pdqP3g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d8N3c70a; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712474319;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c34tb701YjyYGcV+qxQdrUEneQB34k6REaRDFAgcgJY=;
-	b=d8N3c70aoPRRLJO4ZmGU42POIOcIrDWMUKgwOjP46ChvV1oAQiWO3HAXp1ZramcNnc34zH
-	JQvEPjUBKHafoLeBoikdwan6e2eZAsnfqnTzA9cQAoTgjm26BDiO1/yfaDD05W85831eSX
-	p/+PwdDDiW/wHSSHzB00py/CzlxF8rw=
+	s=arc-20240116; t=1712474485; c=relaxed/simple;
+	bh=tph3+lKvTIUbkttbE7aDjD1u5DS+286zExnPJ//j268=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=OBgfRoOj+Sn/nKa+vo+pKRsVwtq2Q9mcwnJlHGSJonnkCb5kWwbABDvKSIqa/O5gRCqPMKXOmcTpOJDwavs2hdivsxeY2aBbyZ0G9pAhZV9/OMW7lPdKuetJXj/ufm622VuJ9FDZz5aLbRbbhPBjH3dpOvj06Gh7bb9K8iyrexk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FjvdKdRp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D9F4C433F1;
+	Sun,  7 Apr 2024 07:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712474484;
+	bh=tph3+lKvTIUbkttbE7aDjD1u5DS+286zExnPJ//j268=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=FjvdKdRp9o11+I1IP+QEuRz/CEJ/x85LYg3c6XcRkkOo3ajs2FqLtpe3+lf8ife2L
+	 Vuau5xPvgQGAwxikfPKfYXam4KoZMdPxGrO7cljirliaEuzu4IDkeShcTvpc8A/+MQ
+	 q2YOdClUBeEu02fCSP479qwrJc/IVK3yyvdGgQ09tTyYMBDJMF+KUs3L622TFz3p0w
+	 FOS2nHG79FrRiAnPX/Sg5ff8ICjOumEfHCZVaiBTxfik9JeYuBCertspTRWRARvaj7
+	 2tLHYHu+3HYKgoyL6vBHE3sqb/7jvtfw2BQ+W2C1sjDDvUeqaxdTWgn9elzxQ0lJeF
+	 1I5UZ0333rnSg==
+From: Vinod Koul <vkoul@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Gabor Juhos <j4g8y7@gmail.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240220-phy-qcom-m31-regulator-fix-v1-1-7675b4a916b3@gmail.com>
+References: <20240220-phy-qcom-m31-regulator-fix-v1-1-7675b4a916b3@gmail.com>
+Subject: Re: [PATCH] phy: qcom: m31: match requested regulator name with dt
+ schema
+Message-Id: <171247448113.375090.4211885215588548227.b4-ty@kernel.org>
+Date: Sun, 07 Apr 2024 12:51:21 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH v2 1/3] hugetlb: Convert hugetlb_fault() to use struct
- vm_fault
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240401202651.31440-2-vishal.moola@gmail.com>
-Date: Sun, 7 Apr 2024 15:18:00 +0800
-Cc: Linux-MM <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- akpm@linux-foundation.org,
- willy@infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AB9CCE6F-0247-4B13-BFE7-93F48342D19C@linux.dev>
-References: <20240401202651.31440-1-vishal.moola@gmail.com>
- <20240401202651.31440-2-vishal.moola@gmail.com>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 
 
+On Tue, 20 Feb 2024 20:13:47 +0100, Gabor Juhos wrote:
+> According to the 'qcom,ipq5332-usb-hsphy.yaml' schema, the 5V
+> supply regulator must be defined via the 'vdd-supply' property.
+> The driver however requests for the 'vdda-phy' regulator which
+> results in the following message when the driver is probed on
+> a IPQ5018 based board with a device tree matching to the schema:
+> 
+>   qcom-m31usb-phy 5b000.phy: supply vdda-phy not found, using dummy regulator
+>   qcom-m31usb-phy 5b000.phy: Registered M31 USB phy
+> 
+> [...]
 
-> On Apr 2, 2024, at 04:26, Vishal Moola (Oracle) =
-<vishal.moola@gmail.com> wrote:
->=20
-> Now that hugetlb_fault() has a vm_fault available for fault tracking, =
-use
-> it throughout. This cleans up the code by removing 2 variables, and
-> prepares hugetlb_fault() to take in a struct vm_fault argument.
->=20
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Applied, thanks!
 
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
+[1/1] phy: qcom: m31: match requested regulator name with dt schema
+      commit: 47b3e2f3914ae5e8d9025d65ae5cffcbb54bc9c3
 
-Thanks.
+Best regards,
+-- 
+~Vinod
+
 
 
