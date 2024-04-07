@@ -1,47 +1,53 @@
-Return-Path: <linux-kernel+bounces-134389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB0A89B0EA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:01:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 495BB89B0EB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CDEC1F21818
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCDB9281F8E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BBC374F1;
-	Sun,  7 Apr 2024 13:00:59 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D71374FB;
+	Sun,  7 Apr 2024 13:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akv/2Iv9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7BA1CAA6
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6AB2BAE8
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712494859; cv=none; b=sYNE/4ftiw304F23fv7XqFjIn0B99RZnbTz6ThlAzylTlUdtcovGXgWm5MDEOOQIpn18igDfqB1Ayx4p4YNLn9CKKhK+Zfj6TgBZlxoulTsPbMZAm1Xx52gHI6RZqMgwHqEZA+NBPy1QW5kpafbuyJBenmHr2QCck5MyF6ISlQs=
+	t=1712494921; cv=none; b=TBGzh5eiJ51V1eHmhXfbDDyLWgj++AynBQBcoHFW/b7q1z+9NTvVwk+Q7DbTGaW7huGfviJGwyHTLHAROcpVFJGahJP1K0dBgeWP45XtFYqOo0yXamOacR9o6rCBSInuY5riWeXbtdUQHG2VNoNeolobdU6ltClTAR1nC1dIzSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712494859; c=relaxed/simple;
-	bh=yB3fltJjfqKtJrRsWXRaHOyShhCGZSvJldPfo81ZYCI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i78Xja8WVXcWFmEYYevUZW3DYoSQOaJYINoebMeB01j9pPWv38Jvrx8UFmVnIWXKj0ctqgpWiEPyPhDN+84ESEYsUvbnjNOluuccgIMopJGtSFNUML869ByKQ6TapaxH8/shBZuczPv3V3RttPC/e3UkXcy/32DJOj5dIc9yvRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Apr
- 2024 16:00:47 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 7 Apr 2024
- 16:00:46 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	<syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
-Subject: WARNING in ar5523_cmd/usb_submit_urb
-Date: Sun, 7 Apr 2024 06:00:42 -0700
-Message-ID: <20240407130042.26015-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712494921; c=relaxed/simple;
+	bh=83E515a2nO7sRb4gFRv6JWkPvQiwSgf/9QRVASfeg24=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=esNmTPye+j7m7Zp3fBSae+4F56ABCVT1OpCXb4qWLSYF7PAOu8+ITbOvNXdFmsXbeF04ATgGLUhftgwqOJoPQik/JgG230LIUt+yTAmrF98wpg+K/F/hjq2mGj+7j787GYrrpA5r+COxtzMm1RMgzg9iBBNgY4lPQnK/9vpOWVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akv/2Iv9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A97C433C7;
+	Sun,  7 Apr 2024 13:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712494921;
+	bh=83E515a2nO7sRb4gFRv6JWkPvQiwSgf/9QRVASfeg24=;
+	h=From:To:Cc:Subject:Date:From;
+	b=akv/2Iv9tOQN9h9nheDTrnyaoqEAJVxBglrU0gpJtOIebqXXkg/adFuM68hRzfiQ2
+	 ioXnCXgGAg8OQlmyQuAaKaGIKLJzD/v4SZ4h3RSVujiS7knJ7D6oVD/AUb6/pQJSIq
+	 NkA/MnwxzWnvlVDT2J395YklxKlLJNcnaTD6yzy0qtgtVyCVp/YX3d91HnM2bLeMsR
+	 3ISX11LLmkX5CGMwunJMXjzf1MPVzPpBecFSVZiC6UXLyZQpQiWXtRwLNDxBIcw6Nc
+	 U+j9F1LP0Q5W6qqRrQmQdcCVN+b5yAFTuvC+8l2w7FwmUFOZGbbLcVjFPe0HAuuvc7
+	 ObMcskCm7RnKg==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH 1/2] f2fs: use per-log target_bitmap to improve lookup performace of ssr allocation
+Date: Sun,  7 Apr 2024 21:01:54 +0800
+Message-Id: <20240407130155.3602415-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,40 +55,112 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
 
-Enable endpoint checking.
+After commit 899fee36fac0 ("f2fs: fix to avoid data corruption by
+forbidding SSR overwrite"), valid block bitmap of current openned
+segment is fixed, let's introduce a per-log bitmap instead of temp
+bitmap to avoid unnecessary calculation overhead whenever allocating
+free slot w/ SSR allocator.
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- drivers/net/wireless/ath/ar5523/ar5523.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ fs/f2fs/segment.c | 30 ++++++++++++++++++++++--------
+ fs/f2fs/segment.h |  1 +
+ 2 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ar5523/ar5523.c b/drivers/net/wireless/ath/ar5523/ar5523.c
-index 815f8f599f5d..5cac4a6452db 100644
---- a/drivers/net/wireless/ath/ar5523/ar5523.c
-+++ b/drivers/net/wireless/ath/ar5523/ar5523.c
-@@ -1594,6 +1594,20 @@ static int ar5523_probe(struct usb_interface *intf,
- 	struct ar5523 *ar;
- 	int error = -ENOMEM;
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 4a3cf2888faf..ecb9ee80d5e0 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2840,31 +2840,39 @@ static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
+ 	return 0;
+ }
  
-+	static u8 bulk_ep_addr[] = {
-+		AR5523_CMD_TX_PIPE | USB_DIR_OUT,
-+		AR5523_DATA_TX_PIPE | USB_DIR_OUT,
-+		AR5523_CMD_RX_PIPE | USB_DIR_IN,
-+		AR5523_DATA_RX_PIPE | USB_DIR_IN,
-+		0};
+-static int __next_free_blkoff(struct f2fs_sb_info *sbi,
+-					int segno, block_t start)
++static void __get_segment_bitmap(struct f2fs_sb_info *sbi,
++					unsigned long *target_map,
++					int segno)
+ {
+ 	struct seg_entry *se = get_seg_entry(sbi, segno);
+ 	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
+-	unsigned long *target_map = SIT_I(sbi)->tmp_map;
+ 	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
+ 	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
+ 	int i;
+ 
+ 	for (i = 0; i < entries; i++)
+ 		target_map[i] = ckpt_map[i] | cur_map[i];
++}
 +
-+	if (!usb_check_bulk_endpoints(intf, bulk_ep_addr)) {
-+		dev_err(&dev->dev,
-+			"Could not find all expected endpoints\n");
-+		error = -ENODEV;
-+		goto out;
-+	}
-+
- 	/*
- 	 * Load firmware if the device requires it.  This will return
- 	 * -ENXIO on success and we'll get called back afer the usb
++static int __next_free_blkoff(struct f2fs_sb_info *sbi, unsigned long *bitmap,
++					int segno, block_t start)
++{
++	__get_segment_bitmap(sbi, bitmap, segno);
+ 
+-	return __find_rev_next_zero_bit(target_map, BLKS_PER_SEG(sbi), start);
++	return __find_rev_next_zero_bit(bitmap, BLKS_PER_SEG(sbi), start);
+ }
+ 
+ static int f2fs_find_next_ssr_block(struct f2fs_sb_info *sbi,
+-		struct curseg_info *seg)
++					struct curseg_info *seg)
+ {
+-	return __next_free_blkoff(sbi, seg->segno, seg->next_blkoff + 1);
++	return __find_rev_next_zero_bit(seg->target_map,
++				BLKS_PER_SEG(sbi), seg->next_blkoff + 1);
+ }
+ 
+ bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
+ {
+-	return __next_free_blkoff(sbi, segno, 0) < BLKS_PER_SEG(sbi);
++	return __next_free_blkoff(sbi, SIT_I(sbi)->tmp_map, segno, 0) <
++							BLKS_PER_SEG(sbi);
+ }
+ 
+ /*
+@@ -2890,7 +2898,8 @@ static int change_curseg(struct f2fs_sb_info *sbi, int type)
+ 
+ 	reset_curseg(sbi, type, 1);
+ 	curseg->alloc_type = SSR;
+-	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->segno, 0);
++	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->target_map,
++							curseg->segno, 0);
+ 
+ 	sum_page = f2fs_get_sum_page(sbi, new_segno);
+ 	if (IS_ERR(sum_page)) {
+@@ -4652,6 +4661,10 @@ static int build_curseg(struct f2fs_sb_info *sbi)
+ 				sizeof(struct f2fs_journal), GFP_KERNEL);
+ 		if (!array[i].journal)
+ 			return -ENOMEM;
++		array[i].target_map = f2fs_kzalloc(sbi, SIT_VBLOCK_MAP_SIZE,
++								GFP_KERNEL);
++		if (!array[i].target_map)
++			return -ENOMEM;
+ 		if (i < NR_PERSISTENT_LOG)
+ 			array[i].seg_type = CURSEG_HOT_DATA + i;
+ 		else if (i == CURSEG_COLD_DATA_PINNED)
+@@ -5470,6 +5483,7 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
+ 	for (i = 0; i < NR_CURSEG_TYPE; i++) {
+ 		kfree(array[i].sum_blk);
+ 		kfree(array[i].journal);
++		kfree(array[i].target_map);
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 		if (f2fs_sb_has_blkzoned(sbi)) {
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 855978ca869f..08d667e6a36f 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -293,6 +293,7 @@ struct curseg_info {
+ 	struct f2fs_summary_block *sum_blk;	/* cached summary block */
+ 	struct rw_semaphore journal_rwsem;	/* protect journal area */
+ 	struct f2fs_journal *journal;		/* cached journal info */
++	unsigned long *target_map;		/* bitmap for SSR allocator */
+ 	unsigned char alloc_type;		/* current allocation type */
+ 	unsigned short seg_type;		/* segment type like CURSEG_XXX_TYPE */
+ 	unsigned int segno;			/* current segment number */
+-- 
+2.40.1
+
 
