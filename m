@@ -1,158 +1,161 @@
-Return-Path: <linux-kernel+bounces-134536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F47789B2B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:27:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CFD89B2B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB63E1F21C89
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0423A1F2146D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8105E39FC3;
-	Sun,  7 Apr 2024 15:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B299A3A1C7;
+	Sun,  7 Apr 2024 15:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEBsYuHx"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qSha4Hyp"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1717F1EF03
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 15:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ED18485;
+	Sun,  7 Apr 2024 15:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712503633; cv=none; b=PxJb2BmGKSi1ZgaVYHCVo44l056Cc9AE31riM7IrjvjenN8YRo9MJHr4k4VpTFTYtHsm9LYbFpYyCC3yvtnB1t6XY0pF7+h6iB/Uopa7BPH6/nvow6SonZc5lcpPAxDMX6EFLd/4FXTu3prJSiLaccfIbcm72/QLMpcdJCDPwis=
+	t=1712503983; cv=none; b=K7Av1UtgiCl9J2vrO7vLEdv09e23+GH+QbHd5076O5gD67PUs5d6DiqJUJ9BEISAVyOjhqwfD87uM0Mlh2qV1VL4Fo9ldmJ0A7qBtjU/wpMcgN3pYDwH5fLdIamsXqpcrWWHNcp9dAO+0SuV31B/2+g/aK/+pSyLIxmNLKzCd74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712503633; c=relaxed/simple;
-	bh=FURRWrHSgX80uBiDSafgZNT2fkaTyb3bovkxas4UjKQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eGkJVv4GEpoC9GZopxk1zcF5ykfqeBGzZYDeQKKyBepehZiTgYongq2/X0RQUVqnWF5W4aQmsrQ0ykZNIS/j0BGnjIutffVf8UnYC8FLL/vgN4g+RR/1+KMh+3AoZH0wVRBv3/7Q4Qskpdy0ttH6ltPLjuILkDnXjh6InUjH69o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cEBsYuHx; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a51c35a1b7eso104837466b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 08:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712503630; x=1713108430; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SuBrWZuzMdfV2ubuf1lp4gVv+r9cyyPK0cIRWvRywLk=;
-        b=cEBsYuHx8M+7Kr0D28ZuDpsKwq/DLtPtbTUZiDfp5SIEv0r9jfwnROiPHwj22rV2go
-         3urzwppgOq072HOc4y1tiaa9liIa/NQ1n97zODvns89vfg/EbLDMGxnAzn1y8Vau6d/f
-         PGY4ucLSO5KmcBGq3S6+MRmBEo+AV13dmog4XjE2YuX1JGt8QJF7vAtnoeAda3nQPcw/
-         s6bd74qBQThaAiiAsbQeHa8zSslGApZfjgiZbXfSclDtEQNfAkZ3X0tvtt35KWCiySA0
-         P2nqJ0ynWQV/DSe2OZCkFfLLJJnGu/k1EB4qUZS/+tcf6dtJv0VvdpcNIMs1sL1yTTeb
-         Vofg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712503630; x=1713108430;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SuBrWZuzMdfV2ubuf1lp4gVv+r9cyyPK0cIRWvRywLk=;
-        b=XTsDuVs7exWl3/+yTPjWfq89kw+ovtwBiFiP3ntmWkhIONXvGC+EXelZPWzNvrmJNu
-         c5IZiIVN3/UlcyQ0oKWUzeIuJVdwM0oG6TtQDvTc0F9aGRNNPtYjExfY89UITRgAkLtI
-         rJOv+abSlwmyHjuFN2nvXt+Uqh1MF+slQAqNgHa2j4vmfF9qLsPLSHTN+nxGu7XcCehq
-         OT9NUXUFFKxU2DK+zQyvuWJxwMvLQXmqD+wvWrwAh8HANSE1ZdpHGEXjb+5Z7ybyjk50
-         miivVIIyMLb2+HKJyokCaAupWhJlXPwjGc8A1oageA/1BJmYBVWP/QOu07hQ0/9WVIwi
-         bA8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUx6RbXoqw5Y8WsRXuN3XG5kyOnLOrzX59Z1JlH+yZd6JG++QBkunoHemXYW4nK+j1u8+V6zH1AVWew9VpjFpEg7RFqsznvbvpJBaf0
-X-Gm-Message-State: AOJu0YzeToxNyNNOB5B2/xReQqt4CYRuNJbgabWEcmrOk5Bt7jLZfiVG
-	q+Ic+V5CkKe8XFUWryM4mEV1i38XKWye2EpKU1AG7jG9VYqb3+Y=
-X-Google-Smtp-Source: AGHT+IE7X7pS0UU+V/gQ4l3LEd34xTkYN3rspMbVlnt1E+AbKxN89MiOyng+4a3NNquz7xbZaLT6gw==
-X-Received: by 2002:a17:906:4a81:b0:a51:885a:c0a with SMTP id x1-20020a1709064a8100b00a51885a0c0amr4253599eju.61.1712503630102;
-        Sun, 07 Apr 2024 08:27:10 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.251.6])
-        by smtp.gmail.com with ESMTPSA id sd15-20020a170906ce2f00b00a518debfd49sm3269440ejb.116.2024.04.07.08.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 08:27:09 -0700 (PDT)
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: tglx@linutronix.de
-Cc: adobriyan@gmail.com,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	linux-kernel@vger.kernel.org,
-	peterz@infradead.org,
-	Jonathan.Cameron@huawei.com,
-	linuxarm@huawei.com,
-	linux@roeck-us.net,
-	Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Subject: [PATCH 1/2] x86/cpu/topology: don't write to immutable cpu_present_mask
-Date: Sun,  7 Apr 2024 18:26:43 +0300
-Message-ID: <20240407152643.3245-1-adobriyan@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712503983; c=relaxed/simple;
+	bh=AvRYUhFInEf5FxUp/Xb5Vz8WYz3KdPlt9mAh9CIAq7Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f/XLlDcjgdwD969C0rcTSlzEWIUUA74IeYjYkt0wkMFjdfsU3SvPuMQlJTzZ8sXHKnXvtvBBjizhRT4yCKJQrrLW4wOb55hjJ1v10KcFtd19s8SgRbAI8Y48b9iL7GorfLUj5sJioCsO5HK5Y3m5dqBqZG6IPicId2U15YI4kbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qSha4Hyp; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=MLm6iC4WNTdIn+XgL/qIwT01bSJfAFu6/aMBhdI31mM=; b=qSha4Hyp47jW+Iw55N4ejDVPWe
+	R50J4MZBkjl1ljsl8lmbCyXXeRCtIkvr9H8+MhKWL1RqgS0YadiGyTeVkQtJaLxMBUmny++XLamZo
+	naMhlFfBA9Wj1dQyIMiwAlars/PfCZtyAe8Qt8T38x8MmzZhs7Y1Ke7WKWdMmJ+2iKSuM9sTd8kWc
+	ti03BmHsO/GPxs1BL3ZrhSW3dzRvZi1ubQEIkPXTCog0N0uUXnTD9dbqqZoA4UhU85Rav2dPWANty
+	RjPUjL9YjSqCk29sHdsFWuEV0tSwNWrASf/6aoPtQvkCY0ATh+zI1NiDBPE0hrxAeAGIGnclSDIPv
+	c5aq+uNQ==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rtUVo-0000000CuIr-3hLx;
+	Sun, 07 Apr 2024 15:32:52 +0000
+Message-ID: <7a8bc242-d41e-425b-9a62-36835aca7721@infradead.org>
+Date: Sun, 7 Apr 2024 08:32:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] include/linux/suspend.h: Only show pm_pr_dbg
+ messages at suspend/resume
+To: xiongxin <xiongxin@kylinos.cn>, mario.limonciello@amd.com,
+ Rafael Wysocki <rafael@kernel.org>, hdegoede@redhat.com,
+ linus.walleij@linaro.org
+Cc: Basavaraj.Natikar@amd.com, Shyam-sundar.S-k@amd.com,
+ linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-gpio@vger.kernel.org
+References: <20230602073025.22884-1-mario.limonciello@amd.com>
+ <20230602073025.22884-1-mario.limonciello@amd.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230602073025.22884-1-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Workaround the following oops:
 
-	topology_hotplug_apic
-	topo_set_cpuids
-		set_cpu_possible(cpu, true);
-		// write to __ro_after_init section after init
 
-adobriyan: I'm not sure what's going on, can it set unset bit here?
-If not, then why does it repeat the job and set already set bits.
+On 4/7/24 5:49 AM, xiongxin wrote:
+> From: Mario Limonciello <mario.limonciello@amd.com>
+> 
+> All uses in the kernel are currently already oriented around
+> suspend/resume. As some other parts of the kernel may also use these
+> messages in functions that could also be used outside of
+> suspend/resume, only enable in suspend/resume path.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v3->v4:
+>  * add back do/while as it wasn't pointless.  It fixes a warning.
+> ---
+>  include/linux/suspend.h | 8 +++++---
+>  kernel/power/main.c     | 6 ++++++
+>  2 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/suspend.h b/include/linux/suspend.h
+> index 1a0426e6761c..74f406c53ac0 100644
+> --- a/include/linux/suspend.h
+> +++ b/include/linux/suspend.h
+> @@ -555,6 +555,7 @@ static inline void unlock_system_sleep(unsigned int flags) {}
+>  #ifdef CONFIG_PM_SLEEP_DEBUG
+>  extern bool pm_print_times_enabled;
+>  extern bool pm_debug_messages_on;
+> +extern bool pm_debug_messages_should_print(void);
+>  static inline int pm_dyn_debug_messages_on(void)
+>  {
+>  #ifdef CONFIG_DYNAMIC_DEBUG
+> @@ -568,14 +569,14 @@ static inline int pm_dyn_debug_messages_on(void)
+>  #endif
+>  #define __pm_pr_dbg(fmt, ...)					\
+>  	do {							\
+> -		if (pm_debug_messages_on)			\
+> +		if (pm_debug_messages_should_print())		\
+>  			printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__);	\
+>  		else if (pm_dyn_debug_messages_on())		\
+>  			pr_debug(fmt, ##__VA_ARGS__);	\
+>  	} while (0)
+>  #define __pm_deferred_pr_dbg(fmt, ...)				\
+>  	do {							\
+> -		if (pm_debug_messages_on)			\
+> +		if (pm_debug_messages_should_print())		\
+>  			printk_deferred(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__);	\
+>  	} while (0)
+>  #else
+> @@ -593,7 +594,8 @@ static inline int pm_dyn_debug_messages_on(void)
+>  /**
+>   * pm_pr_dbg - print pm sleep debug messages
+>   *
+> - * If pm_debug_messages_on is enabled, print message.
+> + * If pm_debug_messages_on is enabled and the system is entering/leaving
+> + *      suspend, print message.
+>   * If pm_debug_messages_on is disabled and CONFIG_DYNAMIC_DEBUG is enabled,
+>   *	print message only from instances explicitly enabled on dynamic debug's
+>   *	control.
+> diff --git a/kernel/power/main.c b/kernel/power/main.c
+> index 3113ec2f1db4..daa535012e51 100644
+> --- a/kernel/power/main.c
+> +++ b/kernel/power/main.c
+> @@ -556,6 +556,12 @@ power_attr_ro(pm_wakeup_irq);
+>  
+>  bool pm_debug_messages_on __read_mostly;
+>  
+> +bool pm_debug_messages_should_print(void)
+> +{
+> +	return pm_debug_messages_on && pm_suspend_target_state != PM_SUSPEND_ON;
+> 
+>> hibernate processes also mostly use the pm_pr_dbg() function, which
+>> results in hibernate processes only being able to output such logs
+>> through dynamic debug, which is unfriendly to kernels without
+>> CONFIG_DYNAMIC_DEBUG configuration.
 
-Anyhow, let's not oops peoples' machines for now.
+This part of the patch doesn't look so good. ^^^^^^^^^^^^^^^^^^^^
 
-Reported-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
- arch/x86/kernel/cpu/topology.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> +}
+> +EXPORT_SYMBOL_GPL(pm_debug_messages_should_print);
+> +
+>  static ssize_t pm_debug_messages_show(struct kobject *kobj,
+>  				      struct kobj_attribute *attr, char *buf)
+>  {
+> 
 
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index aaca8d235dc2..42f4a17f8019 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -117,13 +117,18 @@ static __init int topo_get_cpunr(u32 apic_id)
- 	return topo_info.nr_assigned_cpus++;
- }
- 
--static void topo_set_cpuids(unsigned int cpu, u32 apic_id, u32 acpi_id)
-+static void topo_set_cpuids(unsigned int cpu, u32 apic_id, u32 acpi_id, bool from_init)
- {
- #if defined(CONFIG_SMP) || defined(CONFIG_X86_64)
- 	early_per_cpu(x86_cpu_to_apicid, cpu) = apic_id;
- 	early_per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
- #endif
--	set_cpu_possible(cpu, true);
-+	if (from_init) {
-+		set_cpu_possible(cpu, true);
-+	} else {
-+		/* cpu_possible_mask is supposed to be fixed by now. */
-+		WARN_ON(!cpumask_test_cpu(cpu, cpu_possible_mask));
-+	}
- 	set_cpu_present(cpu, true);
- }
- 
-@@ -191,7 +196,7 @@ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
- 			cpu = topo_get_cpunr(apic_id);
- 
- 		cpuid_to_apicid[cpu] = apic_id;
--		topo_set_cpuids(cpu, apic_id, acpi_id);
-+		topo_set_cpuids(cpu, apic_id, acpi_id, true);
- 	} else {
- 		u32 pkgid = topo_apicid(apic_id, TOPO_PKG_DOMAIN);
- 
-@@ -343,7 +348,7 @@ int topology_hotplug_apic(u32 apic_id, u32 acpi_id)
- 		return -ENOSPC;
- 
- 	set_bit(apic_id, phys_cpu_present_map);
--	topo_set_cpuids(cpu, apic_id, acpi_id);
-+	topo_set_cpuids(cpu, apic_id, acpi_id, false);
- 	cpu_mark_primary_thread(cpu, apic_id);
- 	return cpu;
- }
 -- 
-2.43.2
-
+#Randy
 
