@@ -1,130 +1,139 @@
-Return-Path: <linux-kernel+bounces-134521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E61C689B276
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:24:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5808589B279
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B1A2B2104B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:24:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3C601F2182A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7460F38F91;
-	Sun,  7 Apr 2024 14:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 004681E529;
+	Sun,  7 Apr 2024 14:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BNx4sn9d"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=poczta.fm header.i=@poczta.fm header.b="FUhRh9QW"
+Received: from smtpo52.interia.pl (smtpo52.interia.pl [217.74.67.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2627737703;
-	Sun,  7 Apr 2024 14:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D37428377;
+	Sun,  7 Apr 2024 14:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.74.67.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712499880; cv=none; b=sKCzdpfTg9Fm7AZ1gsjb9/MzCSPapNPjYz/Qb1UQWyko742wyuy2VhiaTE915CEGf/JJNL5HlvBl+a3vpOUX6nNoD/pApLxgBWSpytoZby5oXb97xNlUj2M/BMpF5QC+iaKvPn3Fr2TqH8p5CWEKqtPVPgrI7KxfVMY76pP2jDQ=
+	t=1712500222; cv=none; b=gU8ilYzlOi2+dppP+h/vsz/MU4Y7j6UBOPNWF9bbP60+JhooG2V17cks6GsAfR1xNhw8/6l6Rs8Hrdx7Y41C0h6ZWKWVlzlS7wEZRNo9VICPrRXQBy93KScxL3Y5MKbEZI4uWVGx19VwUu3u+ou5l9Yo/lpMVvGrMCYr3iaA3MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712499880; c=relaxed/simple;
-	bh=057EjmkWBMVcK9xKGnWCFqyiyABAvqqe5E02u7dyYAg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sUx72VSBWx/O3yqeQyqLjIpyBVx+cNwNfgnoeVhsICVZSjNzIwW8JUyZB8gu5Zml5wuDmt4faiXHbXBAneMVPCfkFnV41iewUp+0vBhG8iExggr1Hxmsjgmb1aBm70tZJ5b4zHRojnwbekxe2k/TF3PZTs2Z9tB5vHQ1lA0qDy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BNx4sn9d; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4156c4fe401so23403795e9.1;
-        Sun, 07 Apr 2024 07:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712499877; x=1713104677; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZJYGJMn0SoZv7X1gCRhWkduuUEvK/yiFWdRu8bhp/fI=;
-        b=BNx4sn9dBzxsu9zaOZGT88a9vflbpVGiWMSHAkCZAMMWf9JjsgqYxqDrd9c/TP0rdC
-         9Wf2o+wWcNk5Qz9MCuQjYYxQWNK2FAgengeJDRfJwuwffM9W6K8VYY0mHHpFwHQj+jdT
-         tMFjYnmt+tvSvvMj/Ks9M539ST48zTExvyidlu7Ukrgoaj2x3SOzZYzzRFppSU2zKFIn
-         OTflMTzD9unSukT2MLH+9rsrKmLbynS4HrTzKLnW6XdSY3AYvretlDgdGeulMcjI66mr
-         gkZS1kKyWYf2JwbLdeirxpOTtcRgK1kn2NrfeGGFd3rrobPpbp7q/LnvZ7R00ecgLGmK
-         c2Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712499877; x=1713104677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZJYGJMn0SoZv7X1gCRhWkduuUEvK/yiFWdRu8bhp/fI=;
-        b=xAAWtVaWtW1B2Osp4Z0TtUbQbEnJvOIdfeLGRBJF1jpBBeNZS5DSLnxxM5wM0RbRLO
-         Y5CSCgRj34ExUzwpVsWYNWjT6Mr5WYqCMTAMMfLrV5y/Ldi5SEaxyiey1Pg9dIv8I3RJ
-         cc867balHjR7YaRqffFm6ZT6TFq82O/aisk7jOxnZQUF59J3vQADxrTTTwhs1uLSgxqc
-         f/q4KesOTZ5+m7wigkh/5Xq14CW9f9s8TIUM/ZG1yWggxSeuHewotXa6gyrWBIsLCZCX
-         sf3q3MWUSoYfJ6fErVqoaw9OnNH7oz8R6mnd1LJ0osuonPCA5ToJS3BawGrKGDb/ykix
-         os6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVS4Q093Y1HRhs7QXuxxihklz467xkSffKd8TaHmIqxUiM1hBmbkom15UtG3hXbhDZCereFf3EcpPXyDzaUKD/11PorNUFKEmseK7KD9wl8iIRsSgVWpiAoNDTtbIYM+S27q8W4IhCeK9Ouh2VzMFvGRz3q/r+A2T2d
-X-Gm-Message-State: AOJu0Yyj937tc/45ct0UKzVikI/0yC1Hd4D3zjxHceKFkaBaTw2nM0rA
-	vp1obCcIhh0t59dkTnC4yEUiSZy7/xYAF1p+Vgd1cOrV69nW3N8jElTU5FlxMhIziSzbA7zT0BO
-	V7cxW2eKlUXu73Zp7XLRIpR3dA3U=
-X-Google-Smtp-Source: AGHT+IGc8WCDaSVuw98k/nsa9KO1MD8OoUYVDAuzf2YYUvHO5mTm6E79lqePVBMzaAMumy0KDIe2R4KMCw3ArQe9s08=
-X-Received: by 2002:a05:600c:34cb:b0:416:5192:a30 with SMTP id
- d11-20020a05600c34cb00b0041651920a30mr1649236wmq.3.1712499877213; Sun, 07 Apr
- 2024 07:24:37 -0700 (PDT)
+	s=arc-20240116; t=1712500222; c=relaxed/simple;
+	bh=q6ZKLD0/3PttaudyNoTRoIEre1rVHe5MQL1qF1V5O40=;
+	h=Date:From:Subject:To:Cc:Message-Id:MIME-Version:Content-Type; b=ZOsvO746bjIJht4zBK4Dg6taB/5clBuauLZD17FjVvX8zGlS7o1RIftW9CUMhKFRgC/XCUQA+sFLd2TmDr+sSyC4xXz/uyNZxklVXpFNNS628F1ccs7mBP1nU980wZotJCOwv6HC4LMXZAMR2L1iRaaE+jelkW13Gq8HwoC4tZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=poczta.fm; spf=pass smtp.mailfrom=poczta.fm; dkim=pass (1024-bit key) header.d=poczta.fm header.i=@poczta.fm header.b=FUhRh9QW; arc=none smtp.client-ip=217.74.67.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=poczta.fm
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=poczta.fm
+Date: Sun, 07 Apr 2024 16:27:35 +0200
+From: Robert <777777@poczta.fm>
+Subject: [bug report] [spi-mt65xx.c] Kernel panic - not syncing: Asynchronous
+ SError Interrupt
+To: matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: interia.pl/pf09
+Message-Id: <ayfsrumlsnahjdwqaxup@toma>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000b97fba06156dc57b@google.com> <b764fde2-cbf3-6446-d437-45af0964b062@huaweicloud.com>
-In-Reply-To: <b764fde2-cbf3-6446-d437-45af0964b062@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 7 Apr 2024 07:24:25 -0700
-Message-ID: <CAADnVQJ4BRO_85By7T7bJkxgN8tmzJkS3TvP2JMiFU3WwRT7yA@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] KASAN: stack-out-of-bounds Read in hash
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: syzbot <syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com>, 
-	bpf <bpf@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, 
-	Network Development <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, 
-	Hao Luo <haoluo@google.com>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=poczta.fm; s=dk;
+	t=1712500059; bh=JXD+odRD32hULhTBzmjEZPvRxgaOdSJKnC5mTIPZrdw=;
+	h=Date:From:Subject:To:Message-Id:MIME-Version:Content-Type;
+	b=FUhRh9QWANhQrKGTyqn6fMNTU6wcGSnMhn9MkUeeJTWuJrxhmAvP3KFKOlUOitF9p
+	 L/Vjy2FGbGJYMGWcN0PEKdNn0eQvIIiGrFYtj12qkH9RtzPKXkSSZxMR3KnP+PG1A5
+	 ieKuY0ApmNmv6vQd57DdlAc0jsbOTWCxafFHNTjQ=
 
-On Sun, Apr 7, 2024 at 2:09=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 4/6/2024 9:44 PM, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompati=
-bil..
-> > git tree:       bpf
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D148ad855180=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fb1be60a19=
-3d440
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D9459b5d7fab77=
-4cf182f
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13d867951=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D143eff76180=
-000
->
-> According to the reproducer, it passes a big value_size (0xfffffe00)
-> when creating bloom filter map. The big value_size bypasses the check in
-> check_stack_access_within_bounds(). I think a proper fix needs to add
-> these following two checks:
-> (1) in check_stack_access_within_bounds()  add check for negative
-> access_size
-> (2) in bloom_map_alloc() limit the max value of bloom_map_alloc().
->
-> Will post a patch to fix the syzbot report. Will also check whether or
-> not there are similar problems for other bpf maps.
+Working on OpenWrt kernel 6.6.23 with enabling/checking SPI 
 
-Isn't it fixed by
-https://lore.kernel.org/all/20240327024245.318299-2-andreimatei1@gmail.com/
+root@BPI-R4:/# echo "help" > /dev/spidev1.0
+[ 131.681610] SError Interrupt on CPU3, code 0x00000000bf000002 -- SError
+[ 131.681623] CPU: 3 PID: 1306 Comm: ash Tainted: G O 6.6.23 #0
+[ 131.681630] Hardware name: Bananapi BPI-R4 (DT)
+[ 131.681632] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 131.681637] pc : mtk_spi_hw_init (/home/openwrt66/openwrt/build_dir/target-aarch64_cortex-a53_musl/linux-mediatek_filogic/linux-6.6.23/drivers/spi/spi-mt65xx.c:356) >>>>> >>>> if (spi->mode & SPI_LOOP)
+[ 131.681646] lr : mtk_spi_prepare_message (/home/openwrt66/openwrt/build_dir/target-aarch64_cortex-a53_musl/linux-mediatek_filogic/linux-6.6.23/drivers/spi/spi-mt65xx.c:450) >>>>>>>> static void spi_remove(struct device *dev) {
+[ 131.681649] sp : ffffffc081d7bb10
+[ 131.681651] x29: ffffffc081d7bb10 x28: ffffff80c1b46780 x27: 0000000000000000
+[ 131.681659] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+[ 131.681664] x23: ffffff80c112a000 x22: ffffffc081d7bc20 x21: 0000000000000000
+[ 131.681668] x20: ffffff80c112a000 x19: ffffffffffffffff x18: 0000000000000000
+[ 131.681673] x17: 0000000000000000 x16: 0000000000000000 x15: 0000007fabeef6c0
+[ 131.681677] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+[ 131.681681] x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000004
+[ 131.681685] x8 : 0000000000000002 x7 : 0000000000000001 x6 : 0000000000000001
+[ 131.681689] x5 : 0000000000000001 x4 : ffffffc0808df408 x3 : ffffff80c112a540
+[ 131.681693] x2 : 0000000000000000 x1 : ffffff80c0966000 x0 : 0000000000000001
+[ 131.681699] Kernel panic - not syncing: Asynchronous SError Interrupt
+[ 131.681701] SMP: stopping secondary CPUs
+[ 131.681706] Kernel Offset: disabled
+[ 131.681707] CPU features: 0x0,00000000,20000000,1000400b
+[ 131.681710] Memory Limit: none
+[ 131.689561] pstore: backend (ramoops) writing error (-28)
+PANIC at PC : 0x00000000430048a8
+
+root@BPI-R4:/nvme/work/oled# spidev_test -D /dev/spidev1.0 -v
+[ 117.280573] SError Interrupt on CPU2, code 0x00000000bf000002 -- SError
+[ 117.280587] CPU: 2 PID: 4597 Comm: spidev_test Tainted: G O 6.6.23 #0
+[ 117.280593] Hardware name: Bananapi BPI-R4 (DT)
+[ 117.280595] pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 117.280600] pc : mtk_spi_set_cs (/home/openwrt66/openwrt/build_dir/target-aarch64_cortex-a53_musl/linux-mediatek_filogic/linux-6.6.23/drivers/spi/spi-mt65xx.c:453) >>>>>>> static void mtk_spi_set_cs(struct spi_device *spi, bool enable) {
+[ 117.280610] lr : spi_set_cs (/home/openwrt66/openwrt/build_dir/target-aarch64_cortex-a53_musl/linux-mediatek_filogic/linux-6.6.23/drivers/spi/spi.c:996 (discriminator 1)) >>>>> if (spi_get_csgpiod(spi, 0) || !spi->controller->set_cs_timing) {
+[ 117.280616] sp : ffffffc085ecbc00
+[ 117.280618] x29: ffffffc085ecbc00 x28: ffffff80ca3d2280 x27: 0000000000000000
+[ 117.280625] x26: 0000000000000000 x25: ffffff80c1fe21c0 x24: ffffff80c1fe2188
+[ 117.280630] x23: ffffff80c0d9e800 x22: 0000000000000000 x21: 0000000000000000
+[ 117.280634] x20: 0000000000000000 x19: ffffff80c0d9e800 x18: 0000000000000000
+[ 117.280639] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[ 117.280643] x14: 02971e346eefd562 x13: 0140fc4c1b8dc750 x12: 0000000000000002
+[ 117.280648] x11: 0000000000000000 x10: 0000000000000400 x9 : 000000021a0d78ed
+[ 117.280652] x8 : 0000000000000800 x7 : ffffff80c0f9dcd0 x6 : 0000000000000000
+[ 117.280657] x5 : 000000021a2fcdfd x4 : ffffff80c0e2a800 x3 : 0000000000000000
+[ 117.280661] x2 : 0000000000000000 x1 : 0000000000000001 x0 : ffffff80c0e2ad40
+[ 117.280667] Kernel panic - not syncing: Asynchronous SError Interrupt
+[ 117.280669] SMP: stopping secondary CPUs
+[ 117.280677] Kernel Offset: disabled
+[ 117.280678] CPU features: 0x0,00000000,20000000,1000400b
+[ 117.280681] Memory Limit: none
+[ 117.2885p2] pstore: backend (ramoops) writing error (-28)
+PANIC at PC : 0x00000000430048a8
+
+
+root@BPI-R4:~# spi-config -d /dev/spidev1.0 --speed=1000000
+[  409.674045] SError Interrupt on CPU0, code 0x00000000bf000002 -- SError
+[  409.674059] CPU: 0 PID: 5583 Comm: spi-config Tainted: G           O       6.6.23 #0
+[  409.674066] Hardware name: Bananapi BPI-R4 (DT)
+[  409.674068] pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  409.674072] pc : mtk_spi_set_cs+0x54/0x80
+[  409.674082] lr : spi_set_cs+0x88/0x1dc
+[  409.674088] sp : ffffffc08738bc00
+[  409.674089] x29: ffffffc08738bc00 x28: ffffff80ce051700 x27: 0000000000000000
+[  409.674097] x26: 0000000000000000 x25: ffffff80c1679040 x24: ffffff80c1679008
+[  409.674102] x23: ffffff80c0be9800 x22: 0000000000000000 x21: 0000000000000000
+[  409.674106] x20: 0000000000000000 x19: ffffff80c0be9800 x18: 0000000000000000
+[  409.674111] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[  409.674115] x14: 02d06a0f57810356 x13: 01683736ecc24756 x12: 0000000001683736
+[  409.674120] x11: 00000000fa83b2da x10: 000000000000b67e x9 : 0000000000000009
+[  409.674124] x8 : ffffff80ff76f400 x7 : ffffff80c0d66850 x6 : 0000000000000002
+[  409.674128] x5 : 0000000620ecf26e x4 : ffffff80c0d7c000 x3 : 0000000000000000
+[  409.674133] x2 : 0000000000000000 x1 : 0000000000000001 x0 : ffffff80c0d7c540
+[  409.674139] Kernel panic - not syncing: Asynchronous SError Interrupt
+[  409.674142] SMP: stopping secondary CPUs
+[  409.674147] Kernel Offset: disabled
+[  409.674148] CPU features: 0x0,00000000,20000000,1000400b
+[  409.674152] Memory Limit: none
+[  409.682019] pstore: backend (ramoops) writing error (-28)
+PANIC at PC : 0x00000000430048a8
+
+
+Regards
+Robert
 
