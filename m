@@ -1,176 +1,365 @@
-Return-Path: <linux-kernel+bounces-134294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31D8D89B002
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:10:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F5589B005
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E0E9B20EEC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:10:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719771F22BCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4494618622;
-	Sun,  7 Apr 2024 09:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64C9B14A8F;
+	Sun,  7 Apr 2024 09:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Fr29uEdu"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2109.outbound.protection.outlook.com [40.107.15.109])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ovpYySem"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBC5182C5;
-	Sun,  7 Apr 2024 09:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.109
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712480986; cv=fail; b=Fpr3wB8wjhy4PBbel2IMNBJYfxYcxsmHajEN/xv0nfHLHM/Nv5ib/lGN8m14cnvAo9exxBHvKHmXGOkEBpG63u3R5/cU9VuLCDCMH7ERZ0l9jp4FW2WKDVAAdsOOebWZotM5SxLUS95GjUznabhg4pUd6iOFNXwLMbe22FzEmhw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712480986; c=relaxed/simple;
-	bh=erSbJal/hRImVyNAaZW0cAevQRUYCbRlXc2PaWPgdqc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=B7IyBCQ1PDt+aZ7+jVhYz0/BCIuR3LzhvnbQHLoBRWgy49nqGI7Iew1PG20fWIJ/DcXinEEjNPLr2cnfozn1TbPRPlCcsujq3xf7BFhNDegs/JU75iDCt0ubkGYpRME4+vH9hJWp4DBZ5ELs+fBn3g/V9zoKft2RBlUj976LBW8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Fr29uEdu; arc=fail smtp.client-ip=40.107.15.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ksuAbTK8SpllRIBCS92Bnp+2AYntxrz8XajyEX6feGpGPKB9P+fJWpKU2qEz9C4Z7YKoRlf6yzb5sL2wkWE4STvDyNQuRC1s/G4nIq3SLO45c9y8TQHLsApSQB8Xgyfjqfz8EDBkElwHjfLZRmbn48zKnPI/bTwDFq1NW2jNXHL6TRoVRByBuFJRNy98FCXa6R49sKGJaEFgZ9Qv7eqvPev/HvLG7+6XRZPkVjelMTHkH4achbnJk0rGv68AxMEE73F96dCQ6k3MEAY9Ohd3W1xAZEC7CyrrarW+Ft77KjijAJFkj4XEyv+CAn6A91aLZOPVuOPR/onddIXPQOm2FA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=erSbJal/hRImVyNAaZW0cAevQRUYCbRlXc2PaWPgdqc=;
- b=mpLCTZbuTb++Flkj5GJXisDi/IlSdZjcNVoKi8U9Os4vgEOSq6Pb45pypUj6LM5/VoyTwhhvW+RXgCi4+hUnEmKinS7Ko+fMKSEb7+h3FGtEJXQo6GLawzH+qxQOMG5i+3Z/GfCy+TTrTHnfU1J7aBTNN8Au05xLNIwfCTUb/n4IsSVi/+BKZqEv7b4rhL4rGrUO+M27uKpbNR5j2JISR7JJYN2U25iioDsJnva3enuJcddyRsVRdYXgS4y+/LRqQWMn2k6/gdDd7BLnLoJxLnsXCOWiiIAD6Z6ZV99+DGIa+c+LW1BdB6GEVR+HY6FWKdiIouSSesNupUiBULlFYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=erSbJal/hRImVyNAaZW0cAevQRUYCbRlXc2PaWPgdqc=;
- b=Fr29uEduqnGwhi5DQO+J6nM17ROyCFLMifPjcbi4W0KswBYwGedWUe7NhzyPZhUJEDC0Av5b+lYugSbstcuypxVG9bHbugeg230ILyWlZBVL4XiAeUkW4elli5UA4kF3DRmc5OcJgshWZOdZ4l4Sj44hQ/IIloUtfrddUaYkRsQ=
-Received: from AS4PR04MB9386.eurprd04.prod.outlook.com (2603:10a6:20b:4e9::8)
- by PAXPR04MB8640.eurprd04.prod.outlook.com (2603:10a6:102:21f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sun, 7 Apr
- 2024 09:09:41 +0000
-Received: from AS4PR04MB9386.eurprd04.prod.outlook.com
- ([fe80::4f24:3f44:d5b1:70ba]) by AS4PR04MB9386.eurprd04.prod.outlook.com
- ([fe80::4f24:3f44:d5b1:70ba%7]) with mapi id 15.20.7409.042; Sun, 7 Apr 2024
- 09:09:41 +0000
-From: Joy Zou <joy.zou@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Jacky Bai
-	<ping.bai@nxp.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "shawnguo@kernel.org"
-	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-CC: "kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com"
-	<festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v1 1/1] arm64: dts: imx93-11x11-evk: add rtc
- PCF2131 support
-Thread-Topic: [EXT] Re: [PATCH v1 1/1] arm64: dts: imx93-11x11-evk: add rtc
- PCF2131 support
-Thread-Index: AQHaiKoUV5sWK7guV0m5MBzFERT0Z7Fcg9GAgAAA4QA=
-Date: Sun, 7 Apr 2024 09:09:41 +0000
-Message-ID:
- <AS4PR04MB9386C629F898A8417AE57506E1012@AS4PR04MB9386.eurprd04.prod.outlook.com>
-References: <20240407051913.1989364-1-joy.zou@nxp.com>
- <20240407051913.1989364-2-joy.zou@nxp.com>
- <f019690a-2397-4bf8-9472-ec38f4b94c1d@linaro.org>
-In-Reply-To: <f019690a-2397-4bf8-9472-ec38f4b94c1d@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS4PR04MB9386:EE_|PAXPR04MB8640:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 1rU4hhfW1D/+j6UcW7MmU8DNLKWol/7jA4b1QdJvoT6KPaihLY2cMA+Y0CIkaiLSdt+yZEn5qd3G4t3Zw7+uSG04AKAQT1xZlUC/A/rsTpW8+LHaNdREVNjtHtK2v0CavKDA4tL0C+0IwOlbia3+NlAAWsYL5WQAEMN9Om/wbnWxNOZ4ny0ujSoKSlkDARDy+CjhJZyFonrsRaupXcLhm769OYv9R5amu5R179RR70YpY0Hc2+RfZ4WOFVlPfrr7p85M/o516oKQ8uWkvQqgneQ8zqjz9YSNkwn0AlP5cOZFDRIYfj828twTfN3c/vN2iSwIG2WnNOOk4ZPAXl7umd8ISPXPHOUow69p25Z4GVEMVgruoimq/R6MIT7nKi3fT1NO0QOv/z7kWVSJPhj+aftewZRcIAnYGdquaY4A/JZLyDCHsylN16TLuYEP8uMM2GM3ioDe/DltNITpEiqnmIyFwF0PeGZEhKELI4Ma20c2xI8NhS3GMJN5BLftQTKejOeIVLv8sxJFzG+HK6JhJLmcVciE3YqZmretvyq+jxKEaTEKczcHQe/8gU8TefDR2pwYmw1TgGOym631i+j4d+hDIoYWtdPqRbY5qX6wogAUFnP9LJ2e7lp8oHd64vFMEGuHvfZbclXiDArx0WuWwAWnhloy/g8nQKmaZt6RuYw=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR04MB9386.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?a3VnNWhWVlhXenMvSW00QkhCeG5QMkdETnJDL3g2Q1VXQ21VUjlPMVZuQzBY?=
- =?utf-8?B?MzJzRHplNmtKS1c3QjhWVFREUzJPNHFxeWg4WnNMaGRzaDdMWGw1OThYZ2FB?=
- =?utf-8?B?QTh2RG82a09uMnN6eFVsVCtEMDZ5K0ROUnFRM0FoR2FCUmE4bU52R3BNZnZs?=
- =?utf-8?B?dVN0TUJtT3hiakZXWEtZQ1FnenN4WVNBaFFCYUNoQ1A1NUpPZ1NaYTh6cUE4?=
- =?utf-8?B?aS9TNXJxcDRudjFTWmQxdVJxeDI2VlhzeWw4cVBPdTVldi9BS0pwWFZnWXFk?=
- =?utf-8?B?dkNjTnZIUlR5ZXRjSzFnd3F0RkU0MFA4aGx2NWg0OHpma2NYT3NBNGVsWGY5?=
- =?utf-8?B?VG1QLzR3TXhDNWhKaTJmVXVhQm9HZEFOZ2JmR1llTkRoMCsvdXdhQkFhWGN0?=
- =?utf-8?B?OFZKYnN2enZiODRMSXV4eVlCbFZxeHVNdFYvSXdqcFNCeURKT2JXd1dieklO?=
- =?utf-8?B?K2VNWCtZSW1Dd0ZRTW5nSFRDM2MzcnR3WERIeVkwN3dkNmx6UUdLYnpkeEFX?=
- =?utf-8?B?UzhVN3BXRFA2Q0JURmhGNWFpMEJLY2lndUU4ckdnamdtUGFjY3IrRC8wbFFp?=
- =?utf-8?B?ZFpHRGllWEp1MSsvOHVoOUpiSkJGbTJZajE5a201bzljdUNDWXM1WFRST0Vl?=
- =?utf-8?B?Vm9EeWt2QzgzWE9nZENkRTh0eDdWNzRQNGFiL3ZaeXNVNTVzV005UXZuL3hC?=
- =?utf-8?B?b2pzQ2NiK2NocGg2UEpiVTdwWDlyS1l5TXhGTzRQUlZVQVk1NUlTZVRtOWFu?=
- =?utf-8?B?L1YxZEU1UVhWaFk5RFkxR1dyM3FwT1BSN2NUSVlycjJTU3IwcWVrUVpkc1Y1?=
- =?utf-8?B?YU84L3hYTnNIK0xXSDF6V1VlcVZ3SGZSY2N5c3JXTG14dStoTFQrWnZsS2dZ?=
- =?utf-8?B?RFMrRWR4SWNjaWI0TWRoSkxrdlY3SUdWQnVDOEFLcEdJVlM4cCtGZWFQSCs1?=
- =?utf-8?B?SktUYzM1R1lWbHBVSTJWOUlrci80b1AwYkhNSVFTNGdBRXU1QnFQSml0Ny9U?=
- =?utf-8?B?akJjQ2l6b2dwUWhoQVhiTTJhZDZJOUg3Q1RMdzVncWJ2YVFIcjlUdU5xU3Vn?=
- =?utf-8?B?ZDR4U3lxS1JERHh5YzlaNkc1WHBKV0V4NEdicW5rbTE0L0FzdjlXK040bW9S?=
- =?utf-8?B?VlpBaVg1ZFN4S0NyT2l2N3k5WFF5bnhwVHVyNXhYeUpaRlE1SGtwOEdzRkJX?=
- =?utf-8?B?eGNmdWxwQ3RwU0hBSGd0YXlqd1VKQ2kwLzRZcWVoVTVhUVJZWjdBTm42ZUIr?=
- =?utf-8?B?UGMzRHpzbjFsY3RKayswUTJUcWptdE1TVUxsQXdyYlg1ZmsvWkw1cDVkR2xO?=
- =?utf-8?B?U0hodTBEMklyUUNUVmpUMDJDTmRNT0VZbE5uekoxVnZKMytocGd3TXhxdVlF?=
- =?utf-8?B?VUNieEpwOVZkdktnQ0ZYQm10YVhralZkeWxHZ1lPaXhJeG1ObkhSZ3MrTnVI?=
- =?utf-8?B?V09HVEoyOVJMaFZvU2Q3VUoxNWliSklkZWNYL0FwQzM2RHpjdk1jME1Gbkhr?=
- =?utf-8?B?QzFWNmFVK0UyTkdTVjZhSndBb1Nta2d5aTdBNDROaWlMRlp6Z1lwa3JPUmZv?=
- =?utf-8?B?S1VIcHhKQUtsMTMwSzhTbzJVejl6OGhvMlREVE1IdXo3ckJKUXN4am5FSXAr?=
- =?utf-8?B?a2xHSzVBUDJwdzZKKzl2dW9EcnQ0SDNTRDI3SkVqS3lRZGRqUmFSS1FvR21N?=
- =?utf-8?B?SEZPNFRhR3NtQk9xVjg1T3JSbzJpMExxc2swZGNSSzBUTjZ1WjJDb3p3QlhB?=
- =?utf-8?B?RitZUVFDeEFDQk1qZGN2N0xjbVlqclkwd21OWFZvK1ZzL0RMN0N0MnY0c2hF?=
- =?utf-8?B?UE1NS2wwU2RRWk5wSWhrV3lGS25Nc2hzOUZONlZkdnVGMExMaEFoKzlZbldJ?=
- =?utf-8?B?bFF1N1pYaFhOMWpBdEVNdDIrUmw5bUxpNm1LN1ViR0RFVDFpN3lDOFd6a1JD?=
- =?utf-8?B?RDhWV2dORkZzb1VDckVhQjNHRFZYTVIreDhhNmsybW1vL1hSWkdTZjR5Y2Z1?=
- =?utf-8?B?RFFKdENTVndUUXNYV1RPcDUwY2o4MkdGL1B2L1pUQ0UvTDBHQVZCTDVsTW02?=
- =?utf-8?B?aWczckxJdXovM3BPVWxrc1luUEtadjFCdUtLSFFvMHNrRnVnUGJLN0RsUWR0?=
- =?utf-8?Q?FrJI=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DCB12B7D
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 09:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712481087; cv=none; b=mBdSf+AzKOH2GcAGj6Mc10GbElz4WSpy5rqtGG0fryaibF0WqZWLY9g5Okf/uioZwHT/Jv7jlYLwhnHRDyh6qxlPXID+u8amz2P7Ay3U8vD0SgPYcQ6mpfCYbP07K7rs0QFIM3bR3zXmDFos+CPf8D1lA6Cn5Os6LqfWX9zN39Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712481087; c=relaxed/simple;
+	bh=lXul3KyzGjRuiUvtWHlr7bqBlU2M6CPHl9ZLwiyZbGE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eNNDxwVOiOzhQdI7nutxMVzfIGS2yDCMIIdySPV7CAHkRAWIQpimf7vnLr5oBq0wYfuzk7ZW9DbD5r+P4dj7RHqB+X4DfK0duc6ZiBo/e0FjYNMh2SvgH5fdmSK5DBpJ+8r1IAMZHi5MuZUzzqN35sb4r2WJNmxOpv0jswut3to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ovpYySem; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51a80b190bso148282266b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 02:11:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712481084; x=1713085884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=P4+Ds6zMskgTtFTucouK+9QjpIsEysLLyxn6ITWVq4w=;
+        b=ovpYySemNLD0G4T6Lu54xvQ9rgNsAJjrTN8Yzcm5a21FpcltuCh9u5GHTeSvbHG0Q8
+         pIvBqRUMbp/PyUwqMRtjYPAg1mHwqlZWaoSkXFDTj+JsNHk7rJmXYP7IrkvtgN6rRGoK
+         TUKydj0aFgK5Fnaul1fiXVnU8E2kIozHrk5n/bYKmvQDO8vQ7p/Pq3MxFS9RpJf/sRM9
+         mPFPJjkl/ccgk3Z0tXnvzHTb+AZarKMG/pzoicm64swDqrBXGqk9wOCRZBy9xLeP+JaN
+         ul0ZFTtkA0Fzfn9P/TZHei3Zu1Zqa/r7YJTUkDZFBJez3in6jM+/A4oPEFBG80DmTi/Z
+         aTYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712481084; x=1713085884;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P4+Ds6zMskgTtFTucouK+9QjpIsEysLLyxn6ITWVq4w=;
+        b=iCaKaNQkvy/jFDCIG8AOglpgrZDkLl4m2UvZMvhdGcnk8cP/Rg3mTtHgvIDA8YekL+
+         ZnCEEmR5Nnb4NzpfIRXKkA/iK3dM1JpuDKkhHf2c3z77isP/FRGLDdQuXgYhhhohqom9
+         jQ1qAe/daQmV1mGMBwakldaNjHja0bp7zzAVgKrDfguwFLyoz7KKgiYMUytr1WUGBom7
+         y7H+mEhf08rEkeczT6kDsUWx0wuoR5/lhAwGxPrD6pBakGjKZy1ABK9hJuIxL6YAVa32
+         I/ub1z1WpEYRWpVfnl3GrS1nES3rZLKTCn2xC/qAgswdDrLB66AVI9XchByK8jBhJrRq
+         seqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXehlYkNRi48vai0VZ20aCpoYeKQQVjOeAWAGrAhtpp0lYl2BJ1ft39EF52nqBCxn0+VcuEUOxgiVtNtev73sQFI27qdBHj0hfYqX4n
+X-Gm-Message-State: AOJu0YyMyWK9ymWngTQAsuttV6jUQbHJzV9r1NPTGLWnnO3sWoFjxm5s
+	uIVuqBGcLzIWe2stuiBiSn4fI/WvWXyV7EqGZ+/HjZ1TzpUu768iPiA33LQlpeA=
+X-Google-Smtp-Source: AGHT+IHW3MCBV9fAzKY313gU9vtRgWeCJoixZyjUuRHZHYE5Ty5D2Xu17vGhgWSq7U8DnloBWGqJFg==
+X-Received: by 2002:a50:8ad1:0:b0:56b:d1c2:9b42 with SMTP id k17-20020a508ad1000000b0056bd1c29b42mr5907261edk.29.1712481083695;
+        Sun, 07 Apr 2024 02:11:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id eo9-20020a056402530900b0056c1380a972sm2703802edb.74.2024.04.07.02.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Apr 2024 02:11:23 -0700 (PDT)
+Message-ID: <2ece9ac2-899c-4185-b0f3-8ab939afc1e5@linaro.org>
+Date: Sun, 7 Apr 2024 11:11:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR04MB9386.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec84a673-d2e0-462a-e895-08dc56e275c2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2024 09:09:41.7741
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0MWadtFS6qbZkPYHDk4KpXwTPbyGXg32HB8Vumq6YaAqbEI1HvYOTsmwNjMzQfFQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8640
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: PCI: altera: Convert to YAML
+To: matthew.gerlach@linux.intel.com, bhelgaas@google.com,
+ lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240405145322.3805828-1-matthew.gerlach@linux.intel.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240405145322.3805828-1-matthew.gerlach@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEtyenlzenRvZiBLb3psb3dz
-a2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4NCj4gU2VudDogMjAyNOW5tDTmnIg3
-5pelIDE3OjA0DQo+IFRvOiBKb3kgWm91IDxqb3kuem91QG54cC5jb20+OyBKYWNreSBCYWkgPHBp
-bmcuYmFpQG54cC5jb20+Ow0KPiByb2JoK2R0QGtlcm5lbC5vcmc7IGtyenlzenRvZi5rb3psb3dz
-a2krZHRAbGluYXJvLm9yZzsNCj4gY29ub3IrZHRAa2VybmVsLm9yZzsgc2hhd25ndW9Aa2VybmVs
-Lm9yZzsgcy5oYXVlckBwZW5ndXRyb25peC5kZQ0KPiBDYzoga2VybmVsQHBlbmd1dHJvbml4LmRl
-OyBmZXN0ZXZhbUBnbWFpbC5jb207IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+
-OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgaW14QGxpc3RzLmxpbnV4LmRldjsNCj4gbGlu
-dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnDQo+IFN1YmplY3Q6IFtFWFRdIFJlOiBbUEFUQ0ggdjEgMS8xXSBhcm02NDogZHRzOiBp
-bXg5My0xMXgxMS1ldms6IGFkZCBydGMNCj4gUENGMjEzMSBzdXBwb3J0DQo+ID4gKyZscGkyYzMg
-ew0KPiA+ICsgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICNzaXplLWNlbGxz
-ID0gPDA+Ow0KPiA+ICsgICAgIGNsb2NrLWZyZXF1ZW5jeSA9IDw0MDAwMDA+Ow0KPiA+ICsgICAg
-IHBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCIsICJzbGVlcCI7DQo+ID4gKyAgICAgcGluY3RybC0w
-ID0gPCZwaW5jdHJsX2xwaTJjMz47DQo+ID4gKyAgICAgcGluY3RybC0xID0gPCZwaW5jdHJsX2xw
-aTJjMz47DQo+ID4gKyAgICAgc3RhdHVzID0gIm9rYXkiOw0KPiA+ICsNCj4gPiArICAgICBwY2Yy
-MTMxOiBydGNANTMgew0KPiA+ICsgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm54
-cCxwY2YyMTMxIjsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDB4NTM+Ow0KPiA+
-ICsgICAgICAgICAgICAgICAgICAgICBpbnRlcnJ1cHQtcGFyZW50ID0gPCZwY2FsNjUyND47DQo+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMgPSA8MSBJUlFfVFlQRV9FREdFX0ZB
-TExJTkc+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICBzdGF0dXMgPSAib2theSI7DQo+IA0K
-PiBSZWFsbHksIGp1c3QgZHJvcC4uLg0KT2ssIHdpbGwgZHJvcCB0aGUgc3RhdHVzIGluIG5leHQg
-dmVyc2lvbi4NClRoYW5rcyBmb3IgeW91ciBjb21tZW50IQ0KQlINCkpveSBab3UNCj4gDQo+IA0K
-PiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQo=
+On 05/04/2024 16:53, matthew.gerlach@linux.intel.com wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> 
+> Convert the device tree bindings for the Altera Root Port PCIe controller
+> from text to YAML.
+> 
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+> v2:
+>  - Move allOf: to bottom of file, just like example-schema is showing
+
+No, just open it and you will see it is placed differently...
+
+>  - add constraint for reg and reg-names
+
+Not complete...
+
+>  - remove unneeded device_type
+>  - drop #address-cells and #size-cells
+>  - change minItems to maxItems for interrupts:
+>  - change msi-parent to just "msi-parent: true"
+>  - cleaned up required:
+>  - make subject consistent with other commits coverting to YAML
+>  - s/overt/onvert/g
+> ---
+>  .../devicetree/bindings/pci/altera-pcie.txt   |  50 ---------
+>  .../bindings/pci/altr,pcie-root-port.yaml     | 106 ++++++++++++++++++
+>  2 files changed, 106 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
+> deleted file mode 100644
+> index 816b244a221e..000000000000
+> --- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -* Altera PCIe controller
+> -
+> -Required properties:
+> -- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
+> -- reg:		a list of physical base address and length for TXS and CRA.
+> -		For "altr,pcie-root-port-2.0", additional HIP base address and length.
+> -- reg-names:	must include the following entries:
+> -		"Txs": TX slave port region
+> -		"Cra": Control register access region
+> -		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
+> -- interrupts:	specifies the interrupt source of the parent interrupt
+> -		controller.  The format of the interrupt specifier depends
+> -		on the parent interrupt controller.
+> -- device_type:	must be "pci"
+> -- #address-cells:	set to <3>
+> -- #size-cells:		set to <2>
+> -- #interrupt-cells:	set to <1>
+> -- ranges:	describes the translation of addresses for root ports and
+> -		standard PCI regions.
+> -- interrupt-map-mask and interrupt-map: standard PCI properties to define the
+> -		mapping of the PCIe interface to interrupt numbers.
+> -
+> -Optional properties:
+> -- msi-parent:	Link to the hardware entity that serves as the MSI controller
+> -		for this PCIe controller.
+> -- bus-range:	PCI bus numbers covered
+> -
+> -Example
+> -	pcie_0: pcie@c00000000 {
+> -		compatible = "altr,pcie-root-port-1.0";
+> -		reg = <0xc0000000 0x20000000>,
+> -			<0xff220000 0x00004000>;
+> -		reg-names = "Txs", "Cra";
+> -		interrupt-parent = <&hps_0_arm_gic_0>;
+> -		interrupts = <0 40 4>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -		bus-range = <0x0 0xFF>;
+> -		device_type = "pci";
+> -		msi-parent = <&msi_to_gic_gen_0>;
+> -		#address-cells = <3>;
+> -		#size-cells = <2>;
+> -		interrupt-map-mask = <0 0 0 7>;
+> -		interrupt-map = <0 0 0 1 &pcie_0 1>,
+> -			            <0 0 0 2 &pcie_0 2>,
+> -			            <0 0 0 3 &pcie_0 3>,
+> -			            <0 0 0 4 &pcie_0 4>;
+> -		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
+> -			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+> new file mode 100644
+> index 000000000000..999dcda05f55
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+> @@ -0,0 +1,106 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (C) 2024, Intel Corporation
+
+This is derivative of previous work, which is easily visible by doing
+the same mistakes in DTS as they were before.
+
+You now added fresh copyrights ignoring all previous work, even though
+you copied it. I don't agree.
+
+If you want to ignore previous copyrights, then at least don't copy
+existing code... although even that would not be sufficient.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/altr,pcie-root-port.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Altera PCIe Root Port
+> +
+> +maintainers:
+> +  - Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+
+Drop items.
+
+> +      - enum:
+> +          - altr,pcie-root-port-1.0
+> +          - altr,pcie-root-port-2.0
+> +
+
+Missing reg with constraints.
+
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-map-mask:
+> +    items:
+> +      - const: 0
+> +      - const: 0
+> +      - const: 0
+> +      - const: 7
+> +
+> +  interrupt-map:
+> +    maxItems: 4
+> +
+> +  "#interrupt-cells":
+> +    const: 1
+> +
+> +  msi-parent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - device_type
+> +  - interrupts
+> +  - interrupt-map
+> +  - interrupt-map-mask
+> +
+> +unevaluatedProperties: false
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+
+That's deprecated, as explained in its description.  You should use
+pci-host-bridge.yaml.
+
+
+
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - altr,pcie-root-port-1.0
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: TX slave port region
+> +            - description: Control register access region
+> +
+> +        reg-names:
+> +          items:
+> +            - const: Txs
+> +            - const: Cra
+> +
+> +    else:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: Hard IP region
+> +            - description: TX slave port region
+> +            - description: Control register access region
+> +
+> +        reg-names:
+> +          items:
+> +            - const: Hip
+> +            - const: Txs
+> +            - const: Cra
+> +
+
+unevaluated goes here, just like example-schema.
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    pcie_0: pcie@c00000000 {
+> +        compatible = "altr,pcie-root-port-1.0";
+> +        reg = <0xc0000000 0x20000000>,
+> +              <0xff220000 0x00004000>;
+> +        reg-names = "Txs", "Cra";
+> +        interrupt-parent = <&hps_0_arm_gic_0>;
+> +        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+> +        #interrupt-cells = <1>;
+> +        bus-range = <0x0 0xff>;
+> +        device_type = "pci";
+> +        msi-parent = <&msi_to_gic_gen_0>;
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        interrupt-map-mask = <0 0 0 7>;
+> +        interrupt-map = <0 0 0 1 &pcie_intc 1>,
+> +                        <0 0 0 2 &pcie_intc 2>,
+> +                        <0 0 0 3 &pcie_intc 3>,
+> +                        <0 0 0 4 &pcie_intc 4>;
+> +        ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
+> +                  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
+
+That's two entries.
+
+Best regards,
+Krzysztof
+
 
