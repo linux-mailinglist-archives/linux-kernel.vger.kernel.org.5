@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-134468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A12C89B1DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:33:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA3BA89B1DF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA311F21125
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:33:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71885B22691
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1536D12FF78;
-	Sun,  7 Apr 2024 13:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A2C1304B5;
+	Sun,  7 Apr 2024 13:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dOztTaYb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgngkJMr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543D512FB3C;
-	Sun,  7 Apr 2024 13:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523F212FF9C;
+	Sun,  7 Apr 2024 13:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495615; cv=none; b=t8F3hDi9Bher+oxVmkVxDS8umFFxgUebhTZAZQ6H7YY5KnQa/fwJ/7uPsjPHBeMVH51xNH9UEhdWtnoZT0fi8onS1gV+ZeP0B3dXxZK190uooLUYX8BM0Yu9wOUMFSUKO9z6Z9SJnBQOirK2cubqX3khPzRt7JXhSFmsuMUONX0=
+	t=1712495617; cv=none; b=KD2XgNGj7H4Y4784/6pgr1vnOHHQvIrWrnPSwpliCfVoQ79VuIcrPre4oyesywQmpWtqtxCP5fBV1qNPB9FgIHMGibOwY1OlowdFelEWvUx9ZYD40jmM/Y913KdFSC+VvlwUtSf/JEcX/So4tyzwxutFa/2m3qpYFA7Vn3AfTCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495615; c=relaxed/simple;
-	bh=l3LLm6PiuBl9fYukzhmGZIc8CCpsaX4qL55yeK5J/YA=;
+	s=arc-20240116; t=1712495617; c=relaxed/simple;
+	bh=c8XQeQwtEltbFX6HkBYB9bg5rHyG3/SpOdtdE31OSls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pf4cRJlk9bpoI2i0HJiLNsm17CbDxjLVFi3NlskSiDL1yNue8hRZmrGcOpbSPRBRAuqHbcXAaSr/0oEaYllN97S2k6VelvSg+3+ZqUPoewQxErV1nyzO8WuB8en06TL3YzfGlPsfLYwFhz4MO78BYobNwR2DNfQbuC0OO9odaRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dOztTaYb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27F3C433C7;
-	Sun,  7 Apr 2024 13:13:33 +0000 (UTC)
+	 MIME-Version; b=cdKV7rqup8XEZY9DwAiG5Pf7UkuSmF3YmZWHHCDGQ9o3YTdu7PTfwA+Mad0gTxKxhtQjQdfvdre0gAQlP90KuSMvWlybnxYii8T2s5QLPQ55N8Gf0fgbXqpafpHlJDQmCz1Rw0OSzsZsjY35/NSA2t4/iWRV+DCLLpfwjxbR7DE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgngkJMr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0E7C433F1;
+	Sun,  7 Apr 2024 13:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495615;
-	bh=l3LLm6PiuBl9fYukzhmGZIc8CCpsaX4qL55yeK5J/YA=;
+	s=k20201202; t=1712495617;
+	bh=c8XQeQwtEltbFX6HkBYB9bg5rHyG3/SpOdtdE31OSls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dOztTaYbeU0YOj2eG4JdBOT+ms9VYt2/R4iWpPVxsOAxH3pLZaw3ZkiUjCw42v8kW
-	 Q84mZCwJ/IfGxQAjocjxNf8s8iRnqa8Y6rrXtj9KDg7eNAEd3nq1XpIcBuJMizE2/K
-	 Z7NAH/VrmF7AxAFLuvWY+JbAf3JbRsy75EMuQ0zN5FbiatHbIOG+2UwwQVIrVz9tmR
-	 5JC6+WBlEyYYXLbksIiBtJ8uTasjhFvzB0ouM8G12WKHSJq9AlFdlYHgDzrsY7ySfj
-	 cQ3mwNZBq9vdjkvJR9Ihu97iieBW/kmq8z/yYam5M3JgIJGxCMx3J6y4aOU+uxEXC9
-	 sptYFZm0EowMA==
+	b=sgngkJMrLMz3SCoa0HajWFAbNyv6O8uOr3bYSQMxs4it+J68qDyvLBLZ4rgEKMSjZ
+	 wyVZJB9d3ZTBQTlM3EYFUG6hN55fJxJVohCESczt3kfEED1C8oMYvHAJqlK9PQBr84
+	 Jf5ZTgHAfqt9y02DrbZDOeByDKM8FgrNyIeey96erk1z73QVqieAiJ/nU56TedVBqw
+	 xrNtHN08riQGjIJwye6I3ki4bMWtaARZKCTyZ80kTetojoVyzq73y2qC1/TIkBo+Q1
+	 p1p24jK/yM2SPAmOmvPwZ0Wn0d5+jzFuF4mkpRnjfeXK0JODsAo8w2dCA0IiZVYaId
+	 m2+EE8lxuiLWw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anand Jain <anand.jain@oracle.com>,
-	Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>,
+Cc: Andrei Matei <andreimatei1@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/13] btrfs: return accurate error code on open failure in open_fs_devices()
-Date: Sun,  7 Apr 2024 09:13:10 -0400
-Message-ID: <20240407131316.1052393-11-sashal@kernel.org>
+	daniel@iogearbox.net,
+	shuah@kernel.org,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 12/13] bpf: Check bloom filter map value size
+Date: Sun,  7 Apr 2024 09:13:11 -0400
+Message-ID: <20240407131316.1052393-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131316.1052393-1-sashal@kernel.org>
 References: <20240407131316.1052393-1-sashal@kernel.org>
@@ -67,73 +69,83 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.84
 Content-Transfer-Encoding: 8bit
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Andrei Matei <andreimatei1@gmail.com>
 
-[ Upstream commit 2f1aeab9fca1a5f583be1add175d1ee95c213cfa ]
+[ Upstream commit a8d89feba7e54e691ca7c4efc2a6264fa83f3687 ]
 
-When attempting to exclusive open a device which has no exclusive open
-permission, such as a physical device associated with the flakey dm
-device, the open operation will fail, resulting in a mount failure.
+This patch adds a missing check to bloom filter creating, rejecting
+values above KMALLOC_MAX_SIZE. This brings the bloom map in line with
+many other map types.
 
-In this particular scenario, we erroneously return -EINVAL instead of the
-correct error code provided by the bdev_open_by_path() function, which is
--EBUSY.
+The lack of this protection can cause kernel crashes for value sizes
+that overflow int's. Such a crash was caught by syzkaller. The next
+patch adds more guard-rails at a lower level.
 
-Fix this, by returning error code from the bdev_open_by_path() function.
-With this correction, the mount error message will align with that of
-ext4 and xfs.
-
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20240327024245.318299-2-andreimatei1@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ kernel/bpf/bloom_filter.c                           | 13 +++++++++++++
+ .../selftests/bpf/prog_tests/bloom_filter_map.c     |  6 ++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6fc2d99270c18..a9b44755fc6f0 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1233,25 +1233,32 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- 	struct btrfs_device *device;
- 	struct btrfs_device *latest_dev = NULL;
- 	struct btrfs_device *tmp_device;
-+	int ret = 0;
+diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
+index 48ee750849f25..78e810f49c445 100644
+--- a/kernel/bpf/bloom_filter.c
++++ b/kernel/bpf/bloom_filter.c
+@@ -88,6 +88,18 @@ static int bloom_map_get_next_key(struct bpf_map *map, void *key, void *next_key
+ 	return -EOPNOTSUPP;
+ }
  
- 	flags |= FMODE_EXCL;
- 
- 	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
- 				 dev_list) {
--		int ret;
-+		int ret2;
- 
--		ret = btrfs_open_one_device(fs_devices, device, flags, holder);
--		if (ret == 0 &&
-+		ret2 = btrfs_open_one_device(fs_devices, device, flags, holder);
-+		if (ret2 == 0 &&
- 		    (!latest_dev || device->generation > latest_dev->generation)) {
- 			latest_dev = device;
--		} else if (ret == -ENODATA) {
-+		} else if (ret2 == -ENODATA) {
- 			fs_devices->num_devices--;
- 			list_del(&device->dev_list);
- 			btrfs_free_device(device);
- 		}
-+		if (ret == 0 && ret2 != 0)
-+			ret = ret2;
- 	}
--	if (fs_devices->open_devices == 0)
++/* Called from syscall */
++static int bloom_map_alloc_check(union bpf_attr *attr)
++{
++	if (attr->value_size > KMALLOC_MAX_SIZE)
++		/* if value_size is bigger, the user space won't be able to
++		 * access the elements.
++		 */
++		return -E2BIG;
 +
-+	if (fs_devices->open_devices == 0) {
-+		if (ret)
-+			return ret;
- 		return -EINVAL;
-+	}
++	return 0;
++}
++
+ static struct bpf_map *bloom_map_alloc(union bpf_attr *attr)
+ {
+ 	u32 bitset_bytes, bitset_mask, nr_hash_funcs, nr_bits;
+@@ -196,6 +208,7 @@ static int bloom_map_check_btf(const struct bpf_map *map,
+ BTF_ID_LIST_SINGLE(bpf_bloom_map_btf_ids, struct, bpf_bloom_filter)
+ const struct bpf_map_ops bloom_filter_map_ops = {
+ 	.map_meta_equal = bpf_map_meta_equal,
++	.map_alloc_check = bloom_map_alloc_check,
+ 	.map_alloc = bloom_map_alloc,
+ 	.map_free = bloom_map_free,
+ 	.map_get_next_key = bloom_map_get_next_key,
+diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+index d2d9e965eba59..f79815b7e951b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2021 Facebook */
  
- 	fs_devices->opened = 1;
- 	fs_devices->latest_dev = latest_dev;
+ #include <sys/syscall.h>
++#include <limits.h>
+ #include <test_progs.h>
+ #include "bloom_filter_map.skel.h"
+ 
+@@ -21,6 +22,11 @@ static void test_fail_cases(void)
+ 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value size 0"))
+ 		close(fd);
+ 
++	/* Invalid value size: too big */
++	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, INT32_MAX, 100, NULL);
++	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value too large"))
++		close(fd);
++
+ 	/* Invalid max entries size */
+ 	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, sizeof(value), 0, NULL);
+ 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid max entries size"))
 -- 
 2.43.0
 
