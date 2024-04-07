@@ -1,283 +1,252 @@
-Return-Path: <linux-kernel+bounces-134172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25CDC89AE9B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:52:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5428589AEA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:18:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 173131C22115
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC07F2826C9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37CA1879;
-	Sun,  7 Apr 2024 04:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xfgOrlJI";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Q6YUqoR1";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SxSc0Nzi";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="MDTGqn+l"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D01B6AC2;
+	Sun,  7 Apr 2024 05:18:28 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD88A35
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 04:52:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F33A17F0
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 05:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712465522; cv=none; b=IpNh4hh9AyXQPLIRezgJ6U7Evrqnxxd6MGUGQsSQlPoJHKzyMwLVL+LA2ufO4+IcawI3HPo2nLxLeIcYzVzEuGppsl3eLIBgHT/4/iStL+PgGsUJBPHP/iQ+C50PoaLLGjDMc0F9w/Wy7u8BBVBA5JUgc5EQgUgmopK3Qa9MlvU=
+	t=1712467107; cv=none; b=WEsbz0B/oCQ+y6fhqhGEmgW3JJ1wq/AqdWX759Oa21IipFoGsb+uXnSoLeooDRdnGAETJrYmbpzmR4KOOB27znFfPqyMQBEHjtrBpcOCUdbuleiqBFSHgdEjCzDblQj5Mh+vOJBrFOmjY3L+6uE5UegrFJo6bO6EMg2zksobY+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712465522; c=relaxed/simple;
-	bh=8cyo8L0GhE9DQ/ubrE0w2ks7IUFrZQw5ljpsc1FWl4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cu+3mzkNlZADkOjqHk/k9X0hqdGnB+DvH+pzU2KKs9Sw/c+Kj3brL0hWHot06mvIJjof4DmDY8xTt/crIiOmdZV8bjrmOvVjaH8dVq/jFkBJ3iFajq31GhMqRHyEIORNwlPcE26+I66MbGxJpQCNtiEGfyXq6HFlOEsmIKOVtr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xfgOrlJI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Q6YUqoR1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SxSc0Nzi; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=MDTGqn+l; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8D89221B12;
-	Sun,  7 Apr 2024 04:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712465518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
-	b=xfgOrlJID0g/nHPtrmPZ96OM3qgpzum4nHDfrosR5/jtNkGb/mxdXBuH0I9R+4DByJaBUy
-	8O9Fj+uJicQ2TWz8Te7vpumnJH5tYH+z5CW0FSs3ChWnF4ih5jDi6e9p4wSmcQKp1V23kU
-	rUv8hP8JeH45W6+PH5ZWFsU2YMKaZt0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712465518;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
-	b=Q6YUqoR1A+5sAH+FvWzsn+xbX7vgZLrrqCDZP9PQIud9UudaZxlhaoxtjioyLj8n62rM/Q
-	qiI9UeApFZ8jZcBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=SxSc0Nzi;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=MDTGqn+l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712465517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
-	b=SxSc0NzixFvARdW/eNzWfg7k1mih2NPOl6Idm0efJNYYxbVFp2JFkIWyfWFdbaDFLdYo9p
-	kg8hBxb+CtQLBmS4okSnmTo1+jY9fEFRH74sXd1456RAIkdN9cjyh0XQixDBScM8dVMtLo
-	n8Y+s+8luDySDrc18z4UrQr3VQOoSRA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712465517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TOC31N0dUOY57cqlivIP5Wt1ycysMDUSGgir8PPvt98=;
-	b=MDTGqn+lES5vnX7xHbDoxgQJu5tf68v7a4lx0SZvNUkNRv1FB/DbSUOI2sOoaiwyl/C8a+
-	jz4v2FzGfetDmHDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 06970132FF;
-	Sun,  7 Apr 2024 04:51:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id UNIeOmwmEmZhDwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Sun, 07 Apr 2024 04:51:56 +0000
-Date: Sun, 7 Apr 2024 06:51:51 +0200
-From: Oscar Salvador <osalvador@suse.de>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: David Hildenbrand <david@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Miaohe Lin <linmiaohe@huawei.com>,
-	Naoya Horiguchi <naoya.horiguchi@nec.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Machine check recovery broken in v6.9-rc1
-Message-ID: <ZhImZwKhp-CZ0MFN@localhost.localdomain>
-References: <Zg8kLSl2yAlA3o5D@agluck-desk3>
- <1e943439-6044-4aa4-8c41-747e9e4dca27@redhat.com>
- <SJ1PR11MB6083AB3E55B7DE0D3FBE185EFC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZhCQPwgMWo9w3LlO@agluck-desk3>
- <ZhCxAZy-Iuz2XR7A@localhost.localdomain>
- <ZhDHh_W1WZuFhsfg@localhost.localdomain>
- <ZhDMBZ2I9M72D87F@localhost.localdomain>
- <SJ1PR11MB608323D7E6113B78A35F4999FC012@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1712467107; c=relaxed/simple;
+	bh=MlmTbqDCXZmzQ8g8iy/EAy7eKiq1xs3qaAP7fvLBjbA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=G2pgroruhoZIHOEdXhwUe4M4xs9qZqlVQ3ofqdMiX4+yR45CoQUkJmePORP6+oyzstPETwAidVfBLzOWzmsc/a1OdGJVfgcIaUeLQDYTMgu4kI2+ZLjxtU3AWCkXriI5PTtcxSzeyJLkWXwp88VHNlcf0+RD+y7NkqpM/uYOa18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5e487d194so2556339f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 22:18:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712467105; x=1713071905;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MH8LCDUm7YgevgRehOESoxCJDka7u1fwHf2mJqhbyBc=;
+        b=q1zUn6z/XdHQM8yV4djnGMiKp2n/NN+ZT20eDZZGyGU2Ij7KlFTkIzvsnMtCH8XgDE
+         F8bGwzO7dtXzqJsOoWxLBiiYYILrREqJlvR+L1Cu2oOMx+WUJ+ImS6LYlRrqTzoLxVeF
+         p6ja+ELJe3eQT/Y1lgFd24Ll9i8yC7c9Pxv11nUf1tLOi+mDQ+TJ8ciNXJxagW0be93X
+         TQUyScl1AHp6Tqly3BqVTL8yLxOU83fCD/bR6FniCECzgKPIDUs/kJjz40rPednza7JT
+         D/HBSxef6xsPaFeNrxPB4L5OMgogsaXmFyXlpg9p53PA3TyHFzhFnmc9C4U0FRg+1wkW
+         PrOA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7+K1nf1HVoubpEVLW2L67K0vMocW8zhy6YQtIPkhrva9WA1MWBOQW4FZJGJd8TPqg98NQUcIoD7EXr+TVk0B07ZDk/qOzzgx4nNub
+X-Gm-Message-State: AOJu0YydiW0L0TiSSduC8Tfvhtvt5S1V2LewCa5VmeQa4dowi6iK54yT
+	cT1QD0x5oJQTQPdYP5yUSrx+PtyrHgvkYWkqLcs+yMWwSJCJIjKmqK5bN1atBosNSrOjmEb6QkS
+	lfxhy1YMcDRvXCghZVTXdIWJUsR6IOegvR3O/rO3NRXjhG7iPIj/HnD0=
+X-Google-Smtp-Source: AGHT+IFdLLzlKY5AWQR5Ou5hh1jTnjMqczmCfF4ygNKuMZt6ZcFQRq02Uqqt1yFcrxKtT7RhBzzpokKaDR0nflXrDWGZUH+1WzPL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB608323D7E6113B78A35F4999FC012@SJ1PR11MB6083.namprd11.prod.outlook.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.de:dkim,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 8D89221B12
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -5.51
+X-Received: by 2002:a05:6638:2999:b0:480:4e6a:bf00 with SMTP id
+ eh25-20020a056638299900b004804e6abf00mr105863jab.2.1712467105172; Sat, 06 Apr
+ 2024 22:18:25 -0700 (PDT)
+Date: Sat, 06 Apr 2024 22:18:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e66d506157ad1bc@google.com>
+Subject: [syzbot] [gfs2?] possible deadlock in do_qc
+From: syzbot <syzbot+8ef337b733667f9a7ec8@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Apr 07, 2024 at 12:08:30AM +0000, Luck, Tony wrote:
-> Oscar.
-> 
-> Both the 6.1 and 6.9-rc2 patches make the BUG (and subsequent issues) go away.
+Hello,
 
-Thanks for the switf test Tony!
+syzbot found the following issue on:
 
-> Here's what's happening.
-> 
-> When the machine check occurs there's a scramble from various subsystems
-> to report the memory error.
-> 
-> ghes_do_memory_failure() calls memory_failure_queue() which later
-> calls memory_failure() from a kernel thread. Side note: this happens TWICE
-> for each error. Not sure yet if this is a BIOS issue logging more than once.
-> or some Linux issues in acpi/apei/ghes.c code.
-> 
-> uc_decode_notifier() [called from a different kernel thread] also calls
-> do_memory_failure()
-> 
-> Finally kill_me_maybe() [called from task_work on return to the application
-> when returning from the machine check handler] also calls memory_failure()
-> 
-> do_memory_failure() is somewhat prepared for multiple reports of the same
-> error. It uses an atomic test and set operation to mark the page as poisoned.
-> 
-> First called to report the error does all the real work. Late arrivals take a
-> shorter path, but may still take some action(s) depending on the "flags"
-> passed in:
-> 
->         if (TestSetPageHWPoison(p)) {
->                 pr_err("%#lx: already hardware poisoned\n", pfn);
->                 res = -EHWPOISON;
->                 if (flags & MF_ACTION_REQUIRED)
->                         res = kill_accessing_process(current, pfn, flags);
->                 if (flags & MF_COUNT_INCREASED)
->                         put_page(p);
->                 goto unlock_mutex;
->         }
+HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15db6719180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+dashboard link: https://syzkaller.appspot.com/bug?extid=8ef337b733667f9a7ec8
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-Thanks for the detailed explanation.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> In this case the last to arrive has MF_ACTION_REQUIRED set, so calls
-> kill_accessing_process() ... which is in the stack trace that led to the:
-> 
->    kernel BUG at include/linux/swapops.h:88!
-> 
-> I'm not sure that I fully understand your patch. I guess that it is making sure to
-> handle the case that the page has already been marked as poisoned?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
 
-Basically what is happening is:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8ef337b733667f9a7ec8@syzkaller.appspotmail.com
 
-1) We mark the page as HWPoison
-2) We see that the page is mapped by someone
-3) We try to unmap it, and in the process we create a hwpoison swap entry.
-   See the following chunk from try_to_unmap_one():
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc7-syzkaller-g707081b61156 #0 Not tainted
+------------------------------------------------------
+syz-executor.3/6998 is trying to acquire lock:
+ffff0000ccd04ae8 (&sdp->sd_quota_mutex){+.+.}-{3:3}, at: do_qc+0xac/0x5c8 fs/gfs2/quota.c:720
 
-   "
-    if (PageHWPoison(subpage) && (flags & TTU_HWPOISON)) {
-            pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
-            if (folio_test_hugetlb(folio)) {
-                    hugetlb_count_sub(folio_nr_pages(folio), mm);
-                    set_huge_pte_at(mm, address, pvmw.pte, pteval,
-                                    hsz);
-            } else {
-                    dec_mm_counter(mm, mm_counter(folio));
-                    set_pte_at(mm, address, pvmw.pte, pteval);
-            }
-	    ...
-    }
-   "
-4) Now there is a second memory event (maybe the previous one has
-   already finished, I do not think it matters for the sake of this
-   problem)
-5) The second event sees that the page has already been marked as
-   HWPoison but since it has MF_ACTION_REQUIRED specified, it
-   goes to kill_accessing_process() to do what its name says.
-6) We walk the page tables of the accessing process to see if it has
-   the poisoned pfn.
-7) check_hwpoisoned_entry()
-   (which is called from
-   walk_page_range()->walk_{pgd,p4d,pud,pmd}_range()->ops->pmd_entry())
-   checks whether any of the ptes is poisoned.
-8) Since the previous MCE event unmapped the page, pte_present() == 0,
-   so we want to get the swap entry, and this is where it falls off the
-   cliff.
-   See check_hwpoisoned_entry()
+but task is already holding lock:
+ffff0000db995688 (&ip->i_rw_mutex){++++}-{3:3}, at: sweep_bh_for_rgrps fs/gfs2/bmap.c:1529 [inline]
+ffff0000db995688 (&ip->i_rw_mutex){++++}-{3:3}, at: punch_hole+0x1f58/0x2f7c fs/gfs2/bmap.c:1852
 
-   static int check_hwpoisoned_entry(pte_t pte, unsigned long addr, short shift,
-                                     unsigned long poisoned_pfn, struct to_kill *tk)
-   {
-          unsigned long pfn = 0;
-
-          if (pte_present(pte)) {
-                  pfn = pte_pfn(pte);
-          } else {
-                  swp_entry_t swp = pte_to_swp_entry(pte);
-
-                  if (is_hwpoison_entry(swp))
-			pfn = swp_offset_pfn(swp);
-         }
-	 ...
-   }
-
-is_hwpoison_entry() returns true (remember the make_hwpoison_entry()
-call we did?)
-But when we try to get the pfn from the swap entry, we stumble upon the
-VM_BUG_ON(), because is_pfn_swap_entry() only checks for:
- is_migration_entry()
- is_device_private_entry()
- is_device_exclusive_entry()
-
-but it should also check for is_hwpoison_entry().
-Since it does not, is_pfn_swap_entry() returns false in our case,
-leading to the VM_BUG_ON.
-
-Note that this should only matter in environments where CONFIG_DEBUG_VM
-is set.
-
-I hope I shed some light in here.
-
-> Anyway ... thanks for the quick fix. I hope the above helps write a good
-> commit message to get this applied and backported to stable.
-> 
-> Tested-by: Tony Luck <tony.luck@intel.com>
-
-Thanks again Tony, much appreciated.
-
-I will write the patch and most likely send it out either today in the
-afternoon or tomorrow early in the
-morning.
+which lock already depends on the new lock.
 
 
--- 
-Oscar Salvador
-SUSE Labs
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ip->i_rw_mutex){++++}-{3:3}:
+       down_read+0x58/0x2fc kernel/locking/rwsem.c:1526
+       __gfs2_iomap_get+0x138/0x1058 fs/gfs2/bmap.c:859
+       gfs2_iomap_get+0xd8/0x154 fs/gfs2/bmap.c:1413
+       bh_get+0x1ec/0x690 fs/gfs2/quota.c:417
+       qdsb_get+0x1c8/0x30c fs/gfs2/quota.c:566
+       gfs2_quota_hold+0x16c/0x560 fs/gfs2/quota.c:646
+       punch_hole+0xc10/0x2f7c fs/gfs2/bmap.c:1813
+       gfs2_iomap_end+0x448/0x618 fs/gfs2/bmap.c:1174
+       iomap_iter+0x1f4/0x1018 fs/iomap/iter.c:79
+       iomap_file_buffered_write+0x968/0xb30 fs/iomap/buffered-io.c:976
+       gfs2_file_buffered_write+0x468/0x76c fs/gfs2/file.c:1059
+       gfs2_file_write_iter+0x79c/0xdb0 fs/gfs2/file.c:1163
+       call_write_iter include/linux/fs.h:2087 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0x968/0xc3c fs/read_write.c:590
+       ksys_write+0x15c/0x26c fs/read_write.c:643
+       __do_sys_write fs/read_write.c:655 [inline]
+       __se_sys_write fs/read_write.c:652 [inline]
+       __arm64_sys_write+0x7c/0x90 fs/read_write.c:652
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #0 (&sdp->sd_quota_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       do_qc+0xac/0x5c8 fs/gfs2/quota.c:720
+       gfs2_quota_change+0x238/0x728 fs/gfs2/quota.c:1315
+       punch_hole+0x2a30/0x2f7c fs/gfs2/bmap.c:1953
+       gfs2_iomap_end+0x448/0x618 fs/gfs2/bmap.c:1174
+       iomap_iter+0x1f4/0x1018 fs/iomap/iter.c:79
+       iomap_file_buffered_write+0x968/0xb30 fs/iomap/buffered-io.c:976
+       gfs2_file_buffered_write+0x468/0x76c fs/gfs2/file.c:1059
+       gfs2_file_write_iter+0x79c/0xdb0 fs/gfs2/file.c:1163
+       call_write_iter include/linux/fs.h:2087 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0x968/0xc3c fs/read_write.c:590
+       ksys_write+0x15c/0x26c fs/read_write.c:643
+       __do_sys_write fs/read_write.c:655 [inline]
+       __se_sys_write fs/read_write.c:652 [inline]
+       __arm64_sys_write+0x7c/0x90 fs/read_write.c:652
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ip->i_rw_mutex);
+                               lock(&sdp->sd_quota_mutex);
+                               lock(&ip->i_rw_mutex);
+  lock(&sdp->sd_quota_mutex);
+
+ *** DEADLOCK ***
+
+6 locks held by syz-executor.3/6998:
+ #0: ffff0000d5936348 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x218/0x2a4 fs/file.c:1191
+ #1: ffff0000f2b02420 (sb_writers#24){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2794 [inline]
+ #1: ffff0000f2b02420 (sb_writers#24){.+.+}-{0:0}, at: vfs_write+0x368/0xc3c fs/read_write.c:586
+ #2: ffff0000db9951f0 (&sb->s_type->i_mutex_key#27){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:804 [inline]
+ #2: ffff0000db9951f0 (&sb->s_type->i_mutex_key#27){+.+.}-{3:3}, at: gfs2_file_write_iter+0x2ac/0xdb0 fs/gfs2/file.c:1114
+ #3: ffff0000f2b02610 (sb_internal#6){.+.+}-{0:0}, at: gfs2_trans_begin+0x8c/0x100 fs/gfs2/trans.c:118
+ #4: ffff0000ccd05060 (&sdp->sd_log_flush_lock){++++}-{3:3}, at: __gfs2_trans_begin+0x510/0x908 fs/gfs2/trans.c:87
+ #5: ffff0000db995688 (&ip->i_rw_mutex){++++}-{3:3}, at: sweep_bh_for_rgrps fs/gfs2/bmap.c:1529 [inline]
+ #5: ffff0000db995688 (&ip->i_rw_mutex){++++}-{3:3}, at: punch_hole+0x1f58/0x2f7c fs/gfs2/bmap.c:1852
+
+stack backtrace:
+CPU: 0 PID: 6998 Comm: syz-executor.3 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:291
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:298
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+ __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+ __mutex_lock kernel/locking/mutex.c:752 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+ do_qc+0xac/0x5c8 fs/gfs2/quota.c:720
+ gfs2_quota_change+0x238/0x728 fs/gfs2/quota.c:1315
+ punch_hole+0x2a30/0x2f7c fs/gfs2/bmap.c:1953
+ gfs2_iomap_end+0x448/0x618 fs/gfs2/bmap.c:1174
+ iomap_iter+0x1f4/0x1018 fs/iomap/iter.c:79
+ iomap_file_buffered_write+0x968/0xb30 fs/iomap/buffered-io.c:976
+ gfs2_file_buffered_write+0x468/0x76c fs/gfs2/file.c:1059
+ gfs2_file_write_iter+0x79c/0xdb0 fs/gfs2/file.c:1163
+ call_write_iter include/linux/fs.h:2087 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x968/0xc3c fs/read_write.c:590
+ ksys_write+0x15c/0x26c fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __arm64_sys_write+0x7c/0x90 fs/read_write.c:652
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
