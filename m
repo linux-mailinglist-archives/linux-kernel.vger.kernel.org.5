@@ -1,574 +1,665 @@
-Return-Path: <linux-kernel+bounces-134604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89A7E89B37D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:11:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0D3189B380
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:14:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EAAE28293A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:11:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F3961F21960
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C1F3BBE8;
-	Sun,  7 Apr 2024 18:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657723C485;
+	Sun,  7 Apr 2024 18:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WoifntrH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C0C11bwZ"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9553BBF2;
-	Sun,  7 Apr 2024 18:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDE7208B4;
+	Sun,  7 Apr 2024 18:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712513501; cv=none; b=U4hb6IEC/QBZV5p1TfHavKQBPJ3LF5q755WPf9nI8dIOzOlYXWQrFbFYbZOenXVhy8j0POiF2zajpX1ZXZBbeJz+pE1uWS+LJWFK9+MOCaH8pZZq359Wk1nVXWbPp/pfjWpz+8VlnJjCIWVKQLAIeq2Ty0r9zyfN9XVwB6Oh7t4=
+	t=1712513636; cv=none; b=cDJ+ynAktloxK6ARM5Fb+fprd7wd2eTYpOmqw7fcDn4N1Yp5C6JcUv117XRak+anUfWt/DBUZL6C3/nc7cqrxoa4FQRWQAhykKJMgDMvGijU4Ky4c+E3TvMkP8dEcW8NXE7O84MhgAHoKezvs8wQCdluNCQVi/FDmIhLHFesmAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712513501; c=relaxed/simple;
-	bh=Q4/B9kHHblgJc7C4bORObz49GboICVc7MJQ++gfPBXc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fqeyqr6AhwoN4IUR/ECztkB+eJwRu1kFe0zkvqYeHvhb23SURt//7bEnNgiX/R/YT1WEjxLPRw4wwBfdlh1CVYIrRkv6CU4qyPCc7uUcf5hx104sm0/sngrZL6pJ4dmZ0R2U62HtltOkmLQfxS4jYmzGGLKaoEH8Xkg3i+lD/TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WoifntrH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E19BAC433C7;
-	Sun,  7 Apr 2024 18:11:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712513500;
-	bh=Q4/B9kHHblgJc7C4bORObz49GboICVc7MJQ++gfPBXc=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=WoifntrH4mzMHxzxfQO4D5B88M5c4mNqwbBQepYmooTPs+pzH48M7k5Uogx4gEAsh
-	 L99uMV0Cnu0MlKHmhE5406s1atzFDjpUTUHBkCbUb0qyW58lZ7SWd7OabS3ChRlxrr
-	 m0oSnER6OKMJBfadW9c+rRE3woHcVKvgNTyMvB9LDbo3XHAYn+ZVR8lju+xz5yDwVK
-	 F+kcs8ZAdMYL0rnHctR/yUXleTMult3bGjy/R5M8l8tfAXLdZ/HIgls5UrNYjhnye8
-	 4QSB1NaVq0FzQaMR4vNjxwIQNbQ8v/lEvJoSVvKenxy3gbAq97OchxmWCvpz0SDAxm
-	 NnQ/6BeiUQGfw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC25FCD128A;
-	Sun,  7 Apr 2024 18:11:40 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Sun, 07 Apr 2024 21:11:11 +0300
-Subject: [PATCH net] net: dsa: mt7530: trap link-local frames regardless of
- ST Port State
+	s=arc-20240116; t=1712513636; c=relaxed/simple;
+	bh=C3lzz2qWADSIRZRzEPYxeirmiQor6X/4VlJG8pPv2wI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sVqu630mxc/9Ulxz4mg+aj9fgX+Rej3C/NdmL/ibwEXuET2j1N26wwB+mteo9JdVsmwv7GRNvuprTsu2JGP5jHkmeP2Zn6hq+Hy+TFVnrxmZl0AYuxhxV/0X31w68d08XXWDS/B0tbQU6gW7qw9G9gerdi13vkP19la+ZXLFtgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C0C11bwZ; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0b889901bso30143035ad.1;
+        Sun, 07 Apr 2024 11:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712513634; x=1713118434; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZtJnMNwHzxikHYjykB/GY7nEV6wsfE+2OgxVsxLdeII=;
+        b=C0C11bwZCwaPsc+y9rcfXy1ZMYVDMqxKsao+xbSGxL1OkKeL+WgmFknC3T7vZivdl4
+         NgmP4gVUDvIMy17GMmDTEdS+pBUjCTOUGWBLziH7g7Ujm2xK6Y722OINEjfyHV9183df
+         1aA+Uzt7vzeb6xXo8L1QV5/iWQYxRLKrD0Iln+1TivvH715PXiRdZ5MGVmTH2jVmHc9w
+         xCUYX5POqapNV3R+6HnfmhtaI7VLQQxJoGKs0o1CXqRizjPz3kowCzHP+FXn7pXY4cko
+         2l6C9jxzF790kPMUrmlv+3tRvdkBI6DwI2mGhcP/RKL2m9wquuQ0xk6X9PsjOSLSXMnl
+         jsHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712513634; x=1713118434;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZtJnMNwHzxikHYjykB/GY7nEV6wsfE+2OgxVsxLdeII=;
+        b=n7astu3krezBmTBaL++5AFSue+4SQOytsG+hY5nriV5lzDrAkuKjMYVmyOXeiZTiIj
+         r4tSxawx1hQk/rE9xFs5wudrd2MkB+G2Qc2zSNITJk6cgTyhBjlQpWFvNhhqABH3i1LM
+         HPcfSgOFngUjTAYnz1oXROHqmvM+Gr0gkWNSuUnds6gbwyXze+cS0elXawHaCv0hjUNm
+         55IxagDfmHYjhcP6433yWHeXttnp3EVYhJi4IMjWrZ/o/w26Ttu3grP4oirpevohx5Xa
+         9t25rCEyR7fn1OhtGaz0jWWxyRbXZUSv31Jg0F+eksFTPngKkd97jawLNoMipDHB+6xL
+         G0xw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0C1rc52HiXq66pfdRgmez7s8JiwPBLpPR0rAdwp9A7Hr1hoq5DpLhzr34eR58xObm3/ZDvy/Yc7MErZpb/AHJvcFrenVgjYcAf6APUrcYWAIN4yWsnj405Rpjc7d20I7HymhP7IyI
+X-Gm-Message-State: AOJu0Yxg/nkfvkXxDRc5h6PzRsl3Xm5McAOPsaph2kJtdr5IdZ5cfJQd
+	8bKr1j95stNFKOXiJuicz7OIyOmd1pVuJXzg2Fhkv44rLVlMdYuZ
+X-Google-Smtp-Source: AGHT+IET5oBcO8FtFTpMtjFiIRu2bVEMqhrlGRPF/GsdWU5LEdWfSN661CCxSrUQyltISrvD1SYSkw==
+X-Received: by 2002:a17:902:ce84:b0:1e4:196b:bb77 with SMTP id f4-20020a170902ce8400b001e4196bbb77mr1068715plg.69.1712513633875;
+        Sun, 07 Apr 2024 11:13:53 -0700 (PDT)
+Received: from ?IPv6:2605:59c8:43f:400:82ee:73ff:fe41:9a02? ([2605:59c8:43f:400:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id a13-20020a170902eccd00b001e3e0a6e76csm2765125plh.99.2024.04.07.11.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 11:13:53 -0700 (PDT)
+Message-ID: <b5c5866e626f6c90657a32b5e9adff724d5896db.camel@gmail.com>
+Subject: Re: [PATCH net-next v1 12/12] mm: page_frag: update documentation
+ and maintainer for page_frag
+From: Alexander H Duyck <alexander.duyck@gmail.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org,  pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jonathan Corbet
+ <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
+ linux-mm@kvack.org,  linux-doc@vger.kernel.org
+Date: Sun, 07 Apr 2024 11:13:52 -0700
+In-Reply-To: <20240407130850.19625-13-linyunsheng@huawei.com>
+References: <20240407130850.19625-1-linyunsheng@huawei.com>
+	 <20240407130850.19625-13-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240407-b4-for-net-mt7530-fix-link-local-when-stp-discarding-v1-1-b4b20ac93457@arinc9.com>
-X-B4-Tracking: v=1; b=H4sIAL7hEmYC/x2NQQ7CIBQFr9L8tS+hFFvjVYwLhN/2R4QGiJo0v
- bvE5SxmZqfCWbjQtdsp81uKpNigP3XkVhsXhvjGpJU2yqgeD4M5ZUSueNXpPCjM8kWQ+ERIzgZ
- 8Vo4odYOX4mz2EheMrK3hgS/jZKmlt8zN+m9v1FJ0P44fNwIjJIsAAAA=
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>, 
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712513497; l=25358;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=HkHsmgHn7WJ2yviXCM6gQkQGKw7s2grLJMPqxVTH3kg=;
- b=2pLAnipqyiSzcLc06Gdbtf3K/UJKeDJAR5BGZb6fUCjmwFqfCnTInz1t34jfOUjiqEzV22m9t
- tQ82IvQIlDlAnVsl57W7ys0cRB3Zu7VCozWOKJqrTA0xiYFRoXwnYHA
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Sun, 2024-04-07 at 21:08 +0800, Yunsheng Lin wrote:
+> Update documentation about design, implementation and API usages
+> for page_frag.
+>=20
+> Also update MAINTAINERS for page_frag. Alexander seems to be the
+> orginal author for page_frag, we can add him to the MAINTAINERS
+> later if we have an ack from him.
+>=20
+> CC: Alexander Duyck <alexander.duyck@gmail.com>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
-In Clause 5 of IEEE Std 802-2014, two sublayers of the data link layer
-(DLL) of the Open Systems Interconnection basic reference model (OSI/RM)
-are described; the medium access control (MAC) and logical link control
-(LLC) sublayers. The MAC sublayer is the one facing the physical layer.
+Again, this seems more like 2 different pathches at least. One for the
+Documentation and MAINTAINERS changes, and one for the function
+documentation.
 
-In 8.2 of IEEE Std 802.1Q-2022, the Bridge architecture is described. A
-Bridge component comprises a MAC Relay Entity for interconnecting the Ports
-of the Bridge, at least two Ports, and higher layer entities with at least
-a Spanning Tree Protocol Entity included.
+> ---
+>  Documentation/mm/page_frags.rst | 115 ++++++++++++++++++----------
+>  MAINTAINERS                     |  10 +++
+>  include/linux/page_frag_cache.h | 128 ++++++++++++++++++++++++++++++++
+>  mm/page_frag_cache.c            |  51 ++++++++++---
+>  4 files changed, 256 insertions(+), 48 deletions(-)
+>=20
+> diff --git a/Documentation/mm/page_frags.rst b/Documentation/mm/page_frag=
+s.rst
+> index 503ca6cdb804..77256dfb58bf 100644
+> --- a/Documentation/mm/page_frags.rst
+> +++ b/Documentation/mm/page_frags.rst
+> @@ -1,43 +1,80 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  Page fragments
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> -A page fragment is an arbitrary-length arbitrary-offset area of memory
+> -which resides within a 0 or higher order compound page.  Multiple
+> -fragments within that page are individually refcounted, in the page's
+> -reference counter.
+> -
+> -The page_frag functions, page_frag_alloc and page_frag_free, provide a
+> -simple allocation framework for page fragments.  This is used by the
+> -network stack and network device drivers to provide a backing region of
+> -memory for use as either an sk_buff->head, or to be used in the "frags"
+> -portion of skb_shared_info.
+> -
+> -In order to make use of the page fragment APIs a backing page fragment
+> -cache is needed.  This provides a central point for the fragment allocat=
+ion
+> -and tracks allows multiple calls to make use of a cached page.  The
+> -advantage to doing this is that multiple calls to get_page can be avoide=
+d
+> -which can be expensive at allocation time.  However due to the nature of
+> -this caching it is required that any calls to the cache be protected by
+> -either a per-cpu limitation, or a per-cpu limitation and forcing interru=
+pts
+> -to be disabled when executing the fragment allocation.
+> -
+> -The network stack uses two separate caches per CPU to handle fragment
+> -allocation.  The netdev_alloc_cache is used by callers making use of the
+> -netdev_alloc_frag and __netdev_alloc_skb calls.  The napi_alloc_cache is
+> -used by callers of the __napi_alloc_frag and napi_alloc_skb calls.  The
+> -main difference between these two calls is the context in which they may=
+ be
+> -called.  The "netdev" prefixed functions are usable in any context as th=
+ese
+> -functions will disable interrupts, while the "napi" prefixed functions a=
+re
+> -only usable within the softirq context.
+> -
+> -Many network device drivers use a similar methodology for allocating pag=
+e
+> -fragments, but the page fragments are cached at the ring or descriptor
+> -level.  In order to enable these cases it is necessary to provide a gene=
+ric
+> -way of tearing down a page cache.  For this reason __page_frag_cache_dra=
+in
+> -was implemented.  It allows for freeing multiple references from a singl=
+e
+> -page via a single call.  The advantage to doing this is that it allows f=
+or
+> -cleaning up the multiple references that were added to a page in order t=
+o
+> -avoid calling get_page per allocation.
+> -
+> -Alexander Duyck, Nov 29, 2016.
 
-Each Bridge Port also functions as an end station and shall provide the MAC
-Service to an LLC Entity. Each instance of the MAC Service is provided to a
-distinct LLC Entity that supports protocol identification, multiplexing,
-and demultiplexing, for protocol data unit (PDU) transmission and reception
-by one or more higher layer entities.
+What is the point of removing this just to add it to a C file further
+down in the diff? Honestly I am not a fan of all the noise this is
+adding to these diffs. Can we do a little less moving of lines for the
+sake of moving them? All it does is pollute the git blame if you try to
+figure out the origin of the lines.
 
-It is described in 8.13.9 of IEEE Std 802.1Q-2022 that in a Bridge, the LLC
-Entity associated with each Bridge Port is modeled as being directly
-connected to the attached Local Area Network (LAN).
+> +.. kernel-doc:: mm/page_frag_cache.c
+> +   :doc: page_frag allocator
+> +
+> +Architecture overview
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. code-block:: none
+> +
+> +    +----------------------+
+> +    | page_frag API caller |
+> +    +----------------------+
+> +            ^
+> +            |
+> +            |
+> +            |
+> +            v
+> +    +----------------------------------------------+
+> +    |          request page fragment               |
+> +    +----------------------------------------------+
+> +        ^                                        ^
+> +        |                                        |
+> +        | Cache empty or not enough              |
+> +        |                                        |
+> +        v                                        |
+> +    +--------------------------------+           |
+> +    | refill cache with order 3 page |           |
+> +    +--------------------------------+           |
+> +     ^                  ^                        |
+> +     |                  |                        |
+> +     |                  | Refill failed          |
+> +     |                  |                        | Cache is enough
+> +     |                  |                        |
+> +     |                  v                        |
+> +     |    +----------------------------------+   |
+> +     |    |  refill cache with order 0 page  |   |
+> +     |    +----------------------------------+   |
+> +     |                       ^                   |
+> +     | Refill succeed        |                   |
+> +     |                       | Refill succeed    |
+> +     |                       |                   |
+> +     v                       v                   v
+> +    +----------------------------------------------+
+> +    |       allocate fragment from cache           |
+> +    +----------------------------------------------+
+> +
 
-On the switch with CPU port architecture, CPU port functions as Management
-Port, and the Management Port functionality is provided by software which
-functions as an end station. Software is connected to an IEEE 802 LAN that
-is wholly contained within the system that incorporates the Bridge.
-Software provides access to the LLC Entity associated with each Bridge Port
-by the value of the source port field on the special tag on the frame
-received by software.
++1 for the simple visualization of how this works.
 
-We call frames that carry control information to determine the active
-topology and current extent of each Virtual Local Area Network (VLAN),
-i.e., spanning tree or Shortest Path Bridging (SPB) and Multiple VLAN
-Registration Protocol Data Units (MVRPDUs), and frames from other link
-constrained protocols, such as Extensible Authentication Protocol over LAN
-(EAPOL) and Link Layer Discovery Protocol (LLDP), link-local frames. They
-are not forwarded by a Bridge. Permanently configured entries in the
-filtering database (FDB) ensure that such frames are discarded by the
-Forwarding Process. In 8.6.3 of IEEE Std 802.1Q-2022, this is described in
-detail:
+> +API interface
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +As the design and implementation of page_frag API, the allocation side d=
+oes not
+> +allow concurrent calling, it is assumed that the caller must ensure ther=
+e is not
+> +concurrent alloc calling to the same page_frag_cache instance by using i=
+t's own
+> +lock or rely on some lockless guarantee like NAPI softirq.
+> +
+> +Depending on different use cases, callers expecting to deal with va, pag=
+e or
+> +both va and page for them may call page_frag_alloc_va(), page_frag_alloc=
+_pg(),
+> +or page_frag_alloc() accordingly.
+> +
 
-Each of the reserved MAC addresses specified in Table 8-1
-(01-80-C2-00-00-[00,01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F]) shall be
-permanently configured in the FDB in C-VLAN components and ERs.
+So the new documentation is good up to here.
 
-Each of the reserved MAC addresses specified in Table 8-2
-(01-80-C2-00-00-[01,02,03,04,05,06,07,08,09,0A,0E]) shall be permanently
-configured in the FDB in S-VLAN components.
+> +There is also a use case that need minimum memory in order for forward
+> +progressing, but can do better if there is more memory available. Introd=
+uce
+> +page_frag_alloc_prepare() and page_frag_alloc_commit() related API, the =
+caller
+> +requests the minimum memory it need and the prepare API will return the =
+maximum
+> +size of the fragment returned, caller need to report back to the page_fr=
+ag core
+> +how much memory it actually use by calling commit API, or not calling th=
+e commit
+> +API if deciding to not use any memory.
+> +
 
-Each of the reserved MAC addresses specified in Table 8-3
-(01-80-C2-00-00-[01,02,04,0E]) shall be permanently configured in the FDB
-in TPMR components.
+This part is as clear as mud to me. It sounds like kind of a convoluted
+setup where you are having the caller have to know a fair bit about the
+internal structure of the cache and it is essentially checking the
+state and then performing a commit. Not a huge fan. I would almost
+prefer to see something more like what we used to do with msix where
+you just had a range you could request and if it can't give you at
+least the minimum it fails.
 
-The FDB entries for reserved MAC addresses shall specify filtering for all
-Bridge Ports and all VIDs. Management shall not provide the capability to
-modify or remove entries for reserved MAC addresses.
+I assume the patch is somewhere here in the set. Will take a look at it
+later.
 
-The addresses in Table 8-1, Table 8-2, and Table 8-3 determine the scope of
-propagation of PDUs within a Bridged Network, as follows:
+> +.. kernel-doc:: include/linux/page_frag_cache.h
+> +   :identifiers: page_frag_cache_init page_frag_cache_is_pfmemalloc
+> +                 page_frag_alloc_va __page_frag_alloc_va_align
+> +                 page_frag_alloc_va_align page_frag_alloc_va_prepare
+> +                 page_frag_alloc_va_prepare_align page_frag_alloc_pg_pre=
+pare
+> +                 page_frag_alloc_prepare page_frag_alloc_commit
+> +                 page_frag_alloc_commit_noref page_frag_free_va
+> +
+> +.. kernel-doc:: mm/page_frag_cache.c
+> +   :identifiers: page_frag_cache_drain
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4745ea94d463..2f84aba59428 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16683,6 +16683,16 @@ F:	mm/page-writeback.c
+>  F:	mm/readahead.c
+>  F:	mm/truncate.c
+> =20
+> +PAGE FRAG
+> +M:	Yunsheng Lin <linyunsheng@huawei.com>
+> +L:	linux-mm@kvack.org
+> +L:	netdev@vger.kernel.org
+> +S:	Supported
+> +F:	Documentation/mm/page_frags.rst
+> +F:	include/linux/page_frag_cache.h
+> +F:	mm/page_frag_cache.c
+> +F:	mm/page_frag_test.c
+> +
 
-  The Nearest Bridge group address (01-80-C2-00-00-0E) is an address that
-  no conformant Two-Port MAC Relay (TPMR) component, Service VLAN (S-VLAN)
-  component, Customer VLAN (C-VLAN) component, or MAC Bridge can forward.
-  PDUs transmitted using this destination address, or any other addresses
-  that appear in Table 8-1, Table 8-2, and Table 8-3
-  (01-80-C2-00-00-[00,01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F]), can
-  therefore travel no further than those stations that can be reached via a
-  single individual LAN from the originating station.
+I would appreciate it if you could add me as I usually am having to
+deal with issues people have with this anyway. You can probably just go
+with:
+Alexander Duyck <alexander.duyck@gmail.com>
 
-  The Nearest non-TPMR Bridge group address (01-80-C2-00-00-03), is an
-  address that no conformant S-VLAN component, C-VLAN component, or MAC
-  Bridge can forward; however, this address is relayed by a TPMR component.
-  PDUs using this destination address, or any of the other addresses that
-  appear in both Table 8-1 and Table 8-2 but not in Table 8-3
-  (01-80-C2-00-00-[00,03,05,06,07,08,09,0A,0B,0C,0D,0F]), will be relayed
-  by any TPMRs but will propagate no further than the nearest S-VLAN
-  component, C-VLAN component, or MAC Bridge.
+>  PAGE POOL
+>  M:	Jesper Dangaard Brouer <hawk@kernel.org>
+>  M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_ca=
+che.h
+> index 28185969cd2c..d8edbecdd179 100644
+> --- a/include/linux/page_frag_cache.h
+> +++ b/include/linux/page_frag_cache.h
+> @@ -31,11 +31,23 @@ struct page_frag_cache {
+>  #endif
+>  };
+> =20
+> +/**
+> + * page_frag_cache_init() - Init page_frag cache.
+> + * @nc: page_frag cache from which to init
+> + *
+> + * Inline helper to init the page_frag cache.
+> + */
+>  static inline void page_frag_cache_init(struct page_frag_cache *nc)
+>  {
+>  	nc->va =3D NULL;
+>  }
+> =20
+> +/**
+> + * page_frag_cache_is_pfmemalloc() - Check for pfmemalloc.
+> + * @nc: page_frag cache from which to check
+> + *
+> + * Used to check if the current page in page_frag cache is pfmemalloc'ed=
+.
+> + */
+>  static inline bool page_frag_cache_is_pfmemalloc(struct page_frag_cache =
+*nc)
+>  {
+>  	return !!nc->pfmemalloc;
+> @@ -46,6 +58,17 @@ void __page_frag_cache_drain(struct page *page, unsign=
+ed int count);
+>  void *page_frag_cache_refill(struct page_frag_cache *nc, unsigned int fr=
+agsz,
+>  			     gfp_t gfp_mask);
+> =20
+> +/**
+> + * page_frag_alloc_va() - Alloc a page fragment.
+> + * @nc: page_frag cache from which to allocate
+> + * @fragsz: the requested fragment size
+> + * @gfp_mask: the allocation gfp to use when cache need to be refilled
+> + *
+> + * Get a page fragment from page_frag cache.
+> + *
+> + * Return:
+> + * Return va of the page fragment, otherwise return NULL.
+> + */
+>  static inline void *page_frag_alloc_va(struct page_frag_cache *nc,
+>  				       unsigned int fragsz, gfp_t gfp_mask)
+>  {
+> @@ -63,6 +86,19 @@ static inline void *page_frag_alloc_va(struct page_fra=
+g_cache *nc,
+>  	return va + offset;
+>  }
+> =20
+> +/**
+> + * __page_frag_alloc_va_align() - Alloc a page fragment with aligning
+> + * requirement.
+> + * @nc: page_frag cache from which to allocate
+> + * @fragsz: the requested fragment size
+> + * @gfp_mask: the allocation gfp to use when cache need to be refilled
+> + * @align: the requested aligning requirement
+> + *
+> + * Get a page fragment from page_frag cache with aligning requirement.
+> + *
+> + * Return:
+> + * Return va of the page fragment, otherwise return NULL.
+> + */
+>  static inline void *__page_frag_alloc_va_align(struct page_frag_cache *n=
+c,
+>  					       unsigned int fragsz,
+>  					       gfp_t gfp_mask,
+> @@ -75,6 +111,19 @@ static inline void *__page_frag_alloc_va_align(struct=
+ page_frag_cache *nc,
+>  	return page_frag_alloc_va(nc, fragsz, gfp_mask);
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_va_align() - Alloc a page fragment with aligning requ=
+irement.
+> + * @nc: page_frag cache from which to allocate
+> + * @fragsz: the requested fragment size
+> + * @gfp_mask: the allocation gfp to use when cache need to be refilled
+> + * @align: the requested aligning requirement
+> + *
+> + * WARN_ON_ONCE() checking for align and fragsz before getting a page fr=
+agment
+> + * from page_frag cache with aligning requirement.
+> + *
+> + * Return:
+> + * Return va of the page fragment, otherwise return NULL.
+> + */
+>  static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
+>  					     unsigned int fragsz,
+>  					     gfp_t gfp_mask,
+> @@ -86,6 +135,19 @@ static inline void *page_frag_alloc_va_align(struct p=
+age_frag_cache *nc,
+>  	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, align);
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_va_prepare() - Prepare allocing a page fragment.
+> + * @nc: page_frag cache from which to prepare
+> + * @offset: out as the offset of the page fragment
+> + * @size: in as the requested size, out as the available size
+> + * @gfp_mask: the allocation gfp to use when cache need to be refilled
+> + *
+> + * Prepare a page fragment with minimum size of =E2=80=98size=E2=80=99, =
+'size' is also used to
+> + * report the maximum size of the page fragment the caller can use.
+> + *
+> + * Return:
+> + * Return va of the page fragment, otherwise return NULL.
+> + */
+>  static inline void *page_frag_alloc_va_prepare(struct page_frag_cache *n=
+c,
+>  					       unsigned int *offset,
+>  					       unsigned int *size,
+> @@ -108,6 +170,21 @@ static inline void *page_frag_alloc_va_prepare(struc=
+t page_frag_cache *nc,
+>  	return va + *offset;
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_va_prepare_align() - Prepare allocing a page fragment=
+ with
+> + * aligning requirement.
+> + * @nc: page_frag cache from which to prepare
+> + * @offset: out as the offset of the page fragment
+> + * @size: in as the requested size, out as the available size
+> + * @align: the requested aligning requirement
+> + * @gfp_mask: the allocation gfp to use when cache need to be refilled
+> + *
+> + * Prepare an aligned page fragment with minimum size of =E2=80=98size=
+=E2=80=99, 'size' is also
+> + * used to report the maximum size of the page fragment the caller can u=
+se.
+> + *
+> + * Return:
+> + * Return va of the page fragment, otherwise return NULL.
+> + */
+>  static inline void *page_frag_alloc_va_prepare_align(struct page_frag_ca=
+che *nc,
+>  						     unsigned int *offset,
+>  						     unsigned int *size,
+> @@ -144,6 +221,19 @@ static inline void *__page_frag_alloc_pg_prepare(str=
+uct page_frag_cache *nc,
+>  	return va;
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_pg_prepare - Prepare allocing a page fragment.
+> + * @nc: page_frag cache from which to prepare
+> + * @offset: out as the offset of the page fragment
+> + * @size: in as the requested size, out as the available size
+> + * @gfp: the allocation gfp to use when cache need to be refilled
+> + *
+> + * Prepare a page fragment with minimum size of =E2=80=98size=E2=80=99, =
+'size' is also used to
+> + * report the maximum size of the page fragment the caller can use.
+> + *
+> + * Return:
+> + * Return the page fragment, otherwise return NULL.
+> + */
+>  #define page_frag_alloc_pg_prepare(nc, offset, size, gfp)		\
+>  ({									\
+>  	struct page *__page =3D NULL;					\
+> @@ -179,6 +269,21 @@ static inline void *__page_frag_alloc_prepare(struct=
+ page_frag_cache *nc,
+>  	return nc_va;
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_prepare - Prepare allocing a page fragment.
+> + * @nc: page_frag cache from which to prepare
+> + * @offset: out as the offset of the page fragment
+> + * @size: in as the requested size, out as the available size
+> + * @va: out as the va of the returned page fragment
+> + * @gfp: the allocation gfp to use when cache need to be refilled
+> + *
+> + * Prepare a page fragment with minimum size of =E2=80=98size=E2=80=99, =
+'size' is also used to
+> + * report the maximum size of the page fragment. Return both 'page' and =
+'va' of
+> + * the fragment to the caller.
+> + *
+> + * Return:
+> + * Return the page fragment, otherwise return NULL.
+> + */
+>  #define page_frag_alloc_prepare(nc, offset, size, va, gfp)		\
+>  ({									\
+>  	struct page *__page =3D NULL;					\
+> @@ -191,6 +296,14 @@ static inline void *__page_frag_alloc_prepare(struct=
+ page_frag_cache *nc,
+>  	__page;								\
+>  })
+> =20
+> +/**
+> + * page_frag_alloc_commit - Commit allocing a page fragment.
+> + * @nc: page_frag cache from which to commit
+> + * @offset: offset of the page fragment
+> + * @size: size of the page fragment has been used
+> + *
+> + * Commit the alloc preparing by passing offset and the actual used size=
+.
+> + */
+>  static inline void page_frag_alloc_commit(struct page_frag_cache *nc,
+>  					  unsigned int offset,
+>  					  unsigned int size)
+> @@ -199,6 +312,17 @@ static inline void page_frag_alloc_commit(struct pag=
+e_frag_cache *nc,
+>  	nc->offset =3D offset + size;
+>  }
+> =20
+> +/**
+> + * page_frag_alloc_commit_noref - Commit allocing a page fragment withou=
+t taking
+> + * page refcount.
+> + * @nc: page_frag cache from which to commit
+> + * @offset: offset of the page fragment
+> + * @size: size of the page fragment has been used
+> + *
+> + * Commit the alloc preparing by passing offset and the actual used size=
+, but
+> + * not taking page refcount. Mostly used for fragmemt coaleasing case wh=
+en the
+> + * current fragmemt can share the same refcount with previous fragmemt.
+> + */
+>  static inline void page_frag_alloc_commit_noref(struct page_frag_cache *=
+nc,
+>  						unsigned int offset,
+>  						unsigned int size)
+> @@ -206,6 +330,10 @@ static inline void page_frag_alloc_commit_noref(stru=
+ct page_frag_cache *nc,
+>  	nc->offset =3D offset + size;
+>  }
+> =20
+> +/**
+> + * page_frag_free_va - Free a page fragment by va.
+> + * @addr: va of page fragment to be freed
+> + */
+>  void page_frag_free_va(void *addr);
+> =20
+>  #endif
+> diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
+> index cbd0ed82a596..0c76ec006c22 100644
+> --- a/mm/page_frag_cache.c
+> +++ b/mm/page_frag_cache.c
+> @@ -1,15 +1,44 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/* Page fragment allocator
+> +
+> +/**
+> + * DOC: page_frag allocator
+> + *
+> + * A page fragment is an arbitrary-length arbitrary-offset area of memor=
+y which
+> + * resides within a 0 or higher order compound page.  Multiple fragments=
+ within
+> + * that page are individually refcounted, in the page's reference counte=
+r.
+> + *
+> + * The page_frag functions, page_frag_alloc* and page_frag_free*, provid=
+e a
+> + * simple allocation framework for page fragments.  This is used by the =
+network
+> + * stack and network device drivers to provide a backing region of memor=
+y for
+> + * use as either an sk_buff->head, or to be used in the "frags" portion =
+of
+> + * skb_shared_info.
+>   *
+> - * Page Fragment:
+> - *  An arbitrary-length arbitrary-offset area of memory which resides wi=
+thin a
+> - *  0 or higher order page.  Multiple fragments within that page are
+> - *  individually refcounted, in the page's reference counter.
+> + * In order to make use of the page fragment APIs a backing page fragmen=
+t cache
+> + * is needed.  This provides a central point for the fragment allocation=
+ and
+> + * tracks allows multiple calls to make use of a cached page.  The advan=
+tage to
+> + * doing this is that multiple calls to get_page can be avoided which ca=
+n be
+> + * expensive at allocation time.  However due to the nature of this cach=
+ing it
+> + * is required that any calls to the cache be protected by either a per-=
+cpu
+> + * limitation, or a per-cpu limitation and forcing interrupts to be disa=
+bled
+> + * when executing the fragment allocation.
+>   *
+> - * The page_frag functions provide a simple allocation framework for pag=
+e
+> - * fragments.  This is used by the network stack and network device driv=
+ers to
+> - * provide a backing region of memory for use as either an sk_buff->head=
+, or to
+> - * be used in the "frags" portion of skb_shared_info.
+> + * The network stack uses two separate caches per CPU to handle fragment
+> + * allocation.  The netdev_alloc_cache is used by callers making use of =
+the
+> + * netdev_alloc_frag and __netdev_alloc_skb calls.  The napi_alloc_cache=
+ is
+> + * used by callers of the __napi_alloc_frag and napi_alloc_skb calls.  T=
+he
+> + * main difference between these two calls is the context in which they =
+may be
+> + * called.  The "netdev" prefixed functions are usable in any context as=
+ these
+> + * functions will disable interrupts, while the "napi" prefixed function=
+s are
+> + * only usable within the softirq context.
+> + *
+> + * Many network device drivers use a similar methodology for allocating =
+page
+> + * fragments, but the page fragments are cached at the ring or descripto=
+r
+> + * level.  In order to enable these cases it is necessary to provide a g=
+eneric
+> + * way of tearing down a page cache.  For this reason __page_frag_cache_=
+drain
+> + * was implemented.  It allows for freeing multiple references from a si=
+ngle
+> + * page via a single call.  The advantage to doing this is that it allow=
+s for
+> + * cleaning up the multiple references that were added to a page in orde=
+r to
+> + * avoid calling get_page per allocation.
+>   */
+> =20
 
-  The Nearest Customer Bridge group address (01-80-C2-00-00-00) is an
-  address that no conformant C-VLAN component, MAC Bridge can forward;
-  however, it is relayed by TPMR components and S-VLAN components. PDUs
-  using this destination address, or any of the other addresses that appear
-  in Table 8-1 but not in either Table 8-2 or Table 8-3
-  (01-80-C2-00-00-[00,0B,0C,0D,0F]), will be relayed by TPMR components and
-  S-VLAN components but will propagate no further than the nearest C-VLAN
-  component or MAC Bridge.
+Again, not a huge fan of moving this. It would be better to just leave
+it where it was and add your documentation onto it.
 
-Because the LLC Entity associated with each Bridge Port is provided via CPU
-port, we must not filter these frames but forward them to CPU port.
-
-In a Bridge, the transmission Port is majorly decided by ingress and egress
-rules, FDB, and spanning tree Port State functions of the Forwarding
-Process. For link-local frames, only CPU port should be designated as
-destination port in the FDB, and the other functions of the Forwarding
-Process must not interfere with the decision of the transmission Port. We
-call this process trapping frames to CPU port.
-
-Therefore, on the switch with CPU port architecture, link-local frames must
-be trapped to CPU port, and certain link-local frames received by a Port of
-a Bridge comprising a TPMR component or an S-VLAN component must be
-excluded from it.
-
-A Bridge of the switch with CPU architecture cannot comprise a non-Two-Port
-MAC Relay (TPMR) component as TPMR component is only supposed to support a
-subset of the functionality of a MAC Bridge. A Bridge comprising two ports
-(Management Port doesn't count) of this architecture will either function
-as a standard MAC Bridge or a standard VLAN Bridge.
-
-Therefore, a Bridge of this architecture can only comprise S-VLAN
-components, C-VLAN components, or MAC Bridge components. Since there's no
-TPMR component, we don't need to relay PDUs using the destination addresses
-specified on the Nearest non-TPMR section, and the proportion of the
-Nearest Customer Bridge section where they must be relayed by TPMR
-components.
-
-One option to trap link-local frames to CPU port is to add static FDB
-entries with CPU port designated as destination port. However, because that
-Independent VLAN Learning (IVL) is being used on every VID, each entry only
-applies to a single VLAN Identifier (VID). For a Bridge comprising a MAC
-Bridge component or a C-VLAN component, there would have to be 16 times
-4096 entries. This switch intellectual property can only hold a maximum of
-2048 entries. Using this option, there also isn't a mechanism to prevent
-link-local frames from being discarded when the spanning tree Port State of
-the reception Port is discarding.
-
-The remaining option is to utilise the BPC, RGAC1, RGAC2, RGAC3, and RGAC4
-registers. Whilst this applies to every VID, it doesn't contain all of the
-reserved MAC addresses without affecting the remaining Standard Group MAC
-Addresses. The REV_UN frame tag utilised using the RGAC4 register covers
-the remaining 01-80-C2-00-00-[04,05,06,07,08,09,0A,0B,0C,0D,0F] destination
-addresses. It also includes the 01-80-C2-00-00-22 to 01-80-C2-00-00-FF
-destination addresses which may be relayed by MAC Bridges or VLAN Bridges.
-The latter option provides better but not complete conformance.
-
-This switch intellectual property also does not provide a mechanism to trap
-link-local frames with specific destination addresses to CPU port by
-Bridge, to conform to the filtering rules for the distinct Bridge
-components.
-
-Therefore, regardless of the type of the Bridge component, link-local
-frames with these destination addresses will be trapped to CPU port:
-
-01-80-C2-00-00-[00,01,02,03,0E]
-
-In a Bridge comprising a MAC Bridge component or a C-VLAN component:
-
-  Link-local frames with these destination addresses won't be trapped to
-  CPU port which won't conform to IEEE Std 802.1Q-2022:
-
-  01-80-C2-00-00-[04,05,06,07,08,09,0A,0B,0C,0D,0F]
-
-In a Bridge comprising an S-VLAN component:
-
-  Link-local frames with these destination addresses will be trapped to CPU
-  port which won't conform to IEEE Std 802.1Q-2022:
-
-  01-80-C2-00-00-00
-
-  Link-local frames with these destination addresses won't be trapped to
-  CPU port which won't conform to IEEE Std 802.1Q-2022:
-
-  01-80-C2-00-00-[04,05,06,07,08,09,0A]
-
-Currently on this switch intellectual property, if the spanning tree Port
-State of the reception Port is discarding, link-local frames will be
-discarded.
-
-To trap link-local frames regardless of the spanning tree Port State, make
-the switch regard them as BPDU. This switch intellectual property only lets
-the frames regarded as BPDU bypass the spanning tree Port State function of
-the Forwarding Process.
-
-With this change, the only remaining interference left is the ingress
-rules. When the reception Port has no PVID assigned on software,
-VLAN-untagged frames won't be allowed in. There doesn't seem to be a
-mechanism on the switch intellectual property to have link-local frames
-bypass this function of the Forwarding Process.
-
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.c | 229 ++++++++++++++++++++++++++++++++++++++++-------
- drivers/net/dsa/mt7530.h |   5 ++
- 2 files changed, 200 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 1035820c2377..254501f63731 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -950,20 +950,173 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
--/* On page 205, section "8.6.3 Frame filtering" of the active standard, IEEE Std
-- * 802.1Q™-2022, it is stated that frames with 01:80:C2:00:00:00-0F as MAC DA
-- * must only be propagated to C-VLAN and MAC Bridge components. That means
-- * VLAN-aware and VLAN-unaware bridges. On the switch designs with CPU ports,
-- * these frames are supposed to be processed by the CPU (software). So we make
-- * the switch only forward them to the CPU port. And if received from a CPU
-- * port, forward to a single port. The software is responsible of making the
-- * switch conform to the latter by setting a single port as destination port on
-- * the special tag.
-+/* In Clause 5 of IEEE Std 802-2014, two sublayers of the data link layer (DLL)
-+ * of the Open Systems Interconnection basic reference model (OSI/RM) are
-+ * described; the medium access control (MAC) and logical link control (LLC)
-+ * sublayers. The MAC sublayer is the one facing the physical layer.
-  *
-- * This switch intellectual property cannot conform to this part of the standard
-- * fully. Whilst the REV_UN frame tag covers the remaining :04-0D and :0F MAC
-- * DAs, it also includes :22-FF which the scope of propagation is not supposed
-- * to be restricted for these MAC DAs.
-+ * In 8.2 of IEEE Std 802.1Q-2022, the Bridge architecture is described. A
-+ * Bridge component comprises a MAC Relay Entity for interconnecting the Ports
-+ * of the Bridge, at least two Ports, and higher layer entities with at least a
-+ * Spanning Tree Protocol Entity included.
-+ *
-+ * Each Bridge Port also functions as an end station and shall provide the MAC
-+ * Service to an LLC Entity. Each instance of the MAC Service is provided to a
-+ * distinct LLC Entity that supports protocol identification, multiplexing, and
-+ * demultiplexing, for protocol data unit (PDU) transmission and reception by
-+ * one or more higher layer entities.
-+ *
-+ * It is described in 8.13.9 of IEEE Std 802.1Q-2022 that in a Bridge, the LLC
-+ * Entity associated with each Bridge Port is modeled as being directly
-+ * connected to the attached Local Area Network (LAN).
-+ *
-+ * On the switch with CPU port architecture, CPU port functions as Management
-+ * Port, and the Management Port functionality is provided by software which
-+ * functions as an end station. Software is connected to an IEEE 802 LAN that is
-+ * wholly contained within the system that incorporates the Bridge. Software
-+ * provides access to the LLC Entity associated with each Bridge Port by the
-+ * value of the source port field on the special tag on the frame received by
-+ * software.
-+ *
-+ * We call frames that carry control information to determine the active
-+ * topology and current extent of each Virtual Local Area Network (VLAN), i.e.,
-+ * spanning tree or Shortest Path Bridging (SPB) and Multiple VLAN Registration
-+ * Protocol Data Units (MVRPDUs), and frames from other link constrained
-+ * protocols, such as Extensible Authentication Protocol over LAN (EAPOL) and
-+ * Link Layer Discovery Protocol (LLDP), link-local frames. They are not
-+ * forwarded by a Bridge. Permanently configured entries in the filtering
-+ * database (FDB) ensure that such frames are discarded by the Forwarding
-+ * Process. In 8.6.3 of IEEE Std 802.1Q-2022, this is described in detail:
-+ *
-+ * Each of the reserved MAC addresses specified in Table 8-1
-+ * (01-80-C2-00-00-[00,01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F]) shall be
-+ * permanently configured in the FDB in C-VLAN components and ERs.
-+ *
-+ * Each of the reserved MAC addresses specified in Table 8-2
-+ * (01-80-C2-00-00-[01,02,03,04,05,06,07,08,09,0A,0E]) shall be permanently
-+ * configured in the FDB in S-VLAN components.
-+ *
-+ * Each of the reserved MAC addresses specified in Table 8-3
-+ * (01-80-C2-00-00-[01,02,04,0E]) shall be permanently configured in the FDB in
-+ * TPMR components.
-+ *
-+ * The FDB entries for reserved MAC addresses shall specify filtering for all
-+ * Bridge Ports and all VIDs. Management shall not provide the capability to
-+ * modify or remove entries for reserved MAC addresses.
-+ *
-+ * The addresses in Table 8-1, Table 8-2, and Table 8-3 determine the scope of
-+ * propagation of PDUs within a Bridged Network, as follows:
-+ *
-+ *   The Nearest Bridge group address (01-80-C2-00-00-0E) is an address that no
-+ *   conformant Two-Port MAC Relay (TPMR) component, Service VLAN (S-VLAN)
-+ *   component, Customer VLAN (C-VLAN) component, or MAC Bridge can forward.
-+ *   PDUs transmitted using this destination address, or any other addresses
-+ *   that appear in Table 8-1, Table 8-2, and Table 8-3
-+ *   (01-80-C2-00-00-[00,01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F]), can
-+ *   therefore travel no further than those stations that can be reached via a
-+ *   single individual LAN from the originating station.
-+ *
-+ *   The Nearest non-TPMR Bridge group address (01-80-C2-00-00-03), is an
-+ *   address that no conformant S-VLAN component, C-VLAN component, or MAC
-+ *   Bridge can forward; however, this address is relayed by a TPMR component.
-+ *   PDUs using this destination address, or any of the other addresses that
-+ *   appear in both Table 8-1 and Table 8-2 but not in Table 8-3
-+ *   (01-80-C2-00-00-[00,03,05,06,07,08,09,0A,0B,0C,0D,0F]), will be relayed by
-+ *   any TPMRs but will propagate no further than the nearest S-VLAN component,
-+ *   C-VLAN component, or MAC Bridge.
-+ *
-+ *   The Nearest Customer Bridge group address (01-80-C2-00-00-00) is an address
-+ *   that no conformant C-VLAN component, MAC Bridge can forward; however, it is
-+ *   relayed by TPMR components and S-VLAN components. PDUs using this
-+ *   destination address, or any of the other addresses that appear in Table 8-1
-+ *   but not in either Table 8-2 or Table 8-3 (01-80-C2-00-00-[00,0B,0C,0D,0F]),
-+ *   will be relayed by TPMR components and S-VLAN components but will propagate
-+ *   no further than the nearest C-VLAN component or MAC Bridge.
-+ *
-+ * Because the LLC Entity associated with each Bridge Port is provided via CPU
-+ * port, we must not filter these frames but forward them to CPU port.
-+ *
-+ * In a Bridge, the transmission Port is majorly decided by ingress and egress
-+ * rules, FDB, and spanning tree Port State functions of the Forwarding Process.
-+ * For link-local frames, only CPU port should be designated as destination port
-+ * in the FDB, and the other functions of the Forwarding Process must not
-+ * interfere with the decision of the transmission Port. We call this process
-+ * trapping frames to CPU port.
-+ *
-+ * Therefore, on the switch with CPU port architecture, link-local frames must
-+ * be trapped to CPU port, and certain link-local frames received by a Port of a
-+ * Bridge comprising a TPMR component or an S-VLAN component must be excluded
-+ * from it.
-+ *
-+ * A Bridge of the switch with CPU architecture cannot comprise a non-Two-Port
-+ * MAC Relay (TPMR) component as TPMR component is only supposed to support a
-+ * subset of the functionality of a MAC Bridge. A Bridge comprising two ports
-+ * (Management Port doesn't count) of this architecture will either function as
-+ * a standard MAC Bridge or a standard VLAN Bridge.
-+ *
-+ * Therefore, a Bridge of this architecture can only comprise S-VLAN components,
-+ * C-VLAN components, or MAC Bridge components. Since there's no TPMR component,
-+ * we don't need to relay PDUs using the destination addresses specified on the
-+ * Nearest non-TPMR section, and the proportion of the Nearest Customer Bridge
-+ * section where they must be relayed by TPMR components.
-+ *
-+ * One option to trap link-local frames to CPU port is to add static FDB entries
-+ * with CPU port designated as destination port. However, because that
-+ * Independent VLAN Learning (IVL) is being used on every VID, each entry only
-+ * applies to a single VLAN Identifier (VID). For a Bridge comprising a MAC
-+ * Bridge component or a C-VLAN component, there would have to be 16 times 4096
-+ * entries. This switch intellectual property can only hold a maximum of 2048
-+ * entries. Using this option, there also isn't a mechanism to prevent
-+ * link-local frames from being discarded when the spanning tree Port State of
-+ * the reception Port is discarding.
-+ *
-+ * The remaining option is to utilise the BPC, RGAC1, RGAC2, RGAC3, and RGAC4
-+ * registers. Whilst this applies to every VID, it doesn't contain all of the
-+ * reserved MAC addresses without affecting the remaining Standard Group MAC
-+ * Addresses. The REV_UN frame tag utilised using the RGAC4 register covers the
-+ * remaining 01-80-C2-00-00-[04,05,06,07,08,09,0A,0B,0C,0D,0F] destination
-+ * addresses. It also includes the 01-80-C2-00-00-22 to 01-80-C2-00-00-FF
-+ * destination addresses which may be relayed by MAC Bridges or VLAN Bridges.
-+ * The latter option provides better but not complete conformance.
-+ *
-+ * This switch intellectual property also does not provide a mechanism to trap
-+ * link-local frames with specific destination addresses to CPU port by Bridge,
-+ * to conform to the filtering rules for the distinct Bridge components.
-+ *
-+ * Therefore, regardless of the type of the Bridge component, link-local frames
-+ * with these destination addresses will be trapped to CPU port:
-+ *
-+ * 01-80-C2-00-00-[00,01,02,03,0E]
-+ *
-+ * In a Bridge comprising a MAC Bridge component or a C-VLAN component:
-+ *
-+ *   Link-local frames with these destination addresses won't be trapped to CPU
-+ *   port which won't conform to IEEE Std 802.1Q-2022:
-+ *
-+ *   01-80-C2-00-00-[04,05,06,07,08,09,0A,0B,0C,0D,0F]
-+ *
-+ * In a Bridge comprising an S-VLAN component:
-+ *
-+ *   Link-local frames with these destination addresses will be trapped to CPU
-+ *   port which won't conform to IEEE Std 802.1Q-2022:
-+ *
-+ *   01-80-C2-00-00-00
-+ *
-+ *   Link-local frames with these destination addresses won't be trapped to CPU
-+ *   port which won't conform to IEEE Std 802.1Q-2022:
-+ *
-+ *   01-80-C2-00-00-[04,05,06,07,08,09,0A]
-+ *
-+ * To trap link-local frames to CPU port as conformant as this switch
-+ * intellectual property can allow, link-local frames are made to be regarded as
-+ * BPDU. This is because this switch intellectual property only lets the frames
-+ * regarded as BPDU bypass the spanning tree Port State function of the
-+ * Forwarding Process.
-+ *
-+ * The only remaining interference left is the ingress rules. When the reception
-+ * Port has no PVID assigned on software, VLAN-untagged frames won't be allowed
-+ * in. There doesn't seem to be a mechanism on the switch intellectual property
-+ * to have link-local frames bypass this function of the Forwarding Process.
-  */
- static void
- mt753x_trap_frames(struct mt7530_priv *priv)
-@@ -971,35 +1124,43 @@ mt753x_trap_frames(struct mt7530_priv *priv)
- 	/* Trap 802.1X PAE frames and BPDUs to the CPU port(s) and egress them
- 	 * VLAN-untagged.
- 	 */
--	mt7530_rmw(priv, MT753X_BPC, MT753X_PAE_EG_TAG_MASK |
--		   MT753X_PAE_PORT_FW_MASK | MT753X_BPDU_EG_TAG_MASK |
--		   MT753X_BPDU_PORT_FW_MASK,
--		   MT753X_PAE_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_PAE_PORT_FW(MT753X_BPDU_CPU_ONLY) |
--		   MT753X_BPDU_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_BPDU_CPU_ONLY);
-+	mt7530_rmw(priv, MT753X_BPC,
-+		   MT753X_PAE_BPDU_FR | MT753X_PAE_EG_TAG_MASK |
-+			   MT753X_PAE_PORT_FW_MASK | MT753X_BPDU_EG_TAG_MASK |
-+			   MT753X_BPDU_PORT_FW_MASK,
-+		   MT753X_PAE_BPDU_FR |
-+			   MT753X_PAE_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_PAE_PORT_FW(MT753X_BPDU_CPU_ONLY) |
-+			   MT753X_BPDU_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_BPDU_CPU_ONLY);
- 
- 	/* Trap frames with :01 and :02 MAC DAs to the CPU port(s) and egress
- 	 * them VLAN-untagged.
- 	 */
--	mt7530_rmw(priv, MT753X_RGAC1, MT753X_R02_EG_TAG_MASK |
--		   MT753X_R02_PORT_FW_MASK | MT753X_R01_EG_TAG_MASK |
--		   MT753X_R01_PORT_FW_MASK,
--		   MT753X_R02_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_R02_PORT_FW(MT753X_BPDU_CPU_ONLY) |
--		   MT753X_R01_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_BPDU_CPU_ONLY);
-+	mt7530_rmw(priv, MT753X_RGAC1,
-+		   MT753X_R02_BPDU_FR | MT753X_R02_EG_TAG_MASK |
-+			   MT753X_R02_PORT_FW_MASK | MT753X_R01_BPDU_FR |
-+			   MT753X_R01_EG_TAG_MASK | MT753X_R01_PORT_FW_MASK,
-+		   MT753X_R02_BPDU_FR |
-+			   MT753X_R02_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_R02_PORT_FW(MT753X_BPDU_CPU_ONLY) |
-+			   MT753X_R01_BPDU_FR |
-+			   MT753X_R01_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_BPDU_CPU_ONLY);
- 
- 	/* Trap frames with :03 and :0E MAC DAs to the CPU port(s) and egress
- 	 * them VLAN-untagged.
- 	 */
--	mt7530_rmw(priv, MT753X_RGAC2, MT753X_R0E_EG_TAG_MASK |
--		   MT753X_R0E_PORT_FW_MASK | MT753X_R03_EG_TAG_MASK |
--		   MT753X_R03_PORT_FW_MASK,
--		   MT753X_R0E_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY) |
--		   MT753X_R03_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_BPDU_CPU_ONLY);
-+	mt7530_rmw(priv, MT753X_RGAC2,
-+		   MT753X_R0E_BPDU_FR | MT753X_R0E_EG_TAG_MASK |
-+			   MT753X_R0E_PORT_FW_MASK | MT753X_R03_BPDU_FR |
-+			   MT753X_R03_EG_TAG_MASK | MT753X_R03_PORT_FW_MASK,
-+		   MT753X_R0E_BPDU_FR |
-+			   MT753X_R0E_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY) |
-+			   MT753X_R03_BPDU_FR |
-+			   MT753X_R03_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+			   MT753X_BPDU_CPU_ONLY);
- }
- 
- static void
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index d17b318e6ee4..2deffe741484 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -65,6 +65,7 @@ enum mt753x_id {
- 
- /* Registers for BPDU and PAE frame control*/
- #define MT753X_BPC			0x24
-+#define  MT753X_PAE_BPDU_FR		BIT(25)
- #define  MT753X_PAE_EG_TAG_MASK		GENMASK(24, 22)
- #define  MT753X_PAE_EG_TAG(x)		FIELD_PREP(MT753X_PAE_EG_TAG_MASK, x)
- #define  MT753X_PAE_PORT_FW_MASK	GENMASK(18, 16)
-@@ -75,20 +76,24 @@ enum mt753x_id {
- 
- /* Register for :01 and :02 MAC DA frame control */
- #define MT753X_RGAC1			0x28
-+#define  MT753X_R02_BPDU_FR		BIT(25)
- #define  MT753X_R02_EG_TAG_MASK		GENMASK(24, 22)
- #define  MT753X_R02_EG_TAG(x)		FIELD_PREP(MT753X_R02_EG_TAG_MASK, x)
- #define  MT753X_R02_PORT_FW_MASK	GENMASK(18, 16)
- #define  MT753X_R02_PORT_FW(x)		FIELD_PREP(MT753X_R02_PORT_FW_MASK, x)
-+#define  MT753X_R01_BPDU_FR		BIT(9)
- #define  MT753X_R01_EG_TAG_MASK		GENMASK(8, 6)
- #define  MT753X_R01_EG_TAG(x)		FIELD_PREP(MT753X_R01_EG_TAG_MASK, x)
- #define  MT753X_R01_PORT_FW_MASK	GENMASK(2, 0)
- 
- /* Register for :03 and :0E MAC DA frame control */
- #define MT753X_RGAC2			0x2c
-+#define  MT753X_R0E_BPDU_FR		BIT(25)
- #define  MT753X_R0E_EG_TAG_MASK		GENMASK(24, 22)
- #define  MT753X_R0E_EG_TAG(x)		FIELD_PREP(MT753X_R0E_EG_TAG_MASK, x)
- #define  MT753X_R0E_PORT_FW_MASK	GENMASK(18, 16)
- #define  MT753X_R0E_PORT_FW(x)		FIELD_PREP(MT753X_R0E_PORT_FW_MASK, x)
-+#define  MT753X_R03_BPDU_FR		BIT(9)
- #define  MT753X_R03_EG_TAG_MASK		GENMASK(8, 6)
- #define  MT753X_R03_EG_TAG(x)		FIELD_PREP(MT753X_R03_EG_TAG_MASK, x)
- #define  MT753X_R03_PORT_FW_MASK	GENMASK(2, 0)
-
----
-base-commit: 365af7ace014ef3fc6f5d0a373c96cc7193db4ce
-change-id: 20240401-b4-for-net-mt7530-fix-link-local-when-stp-discarding-6e2a4e3e867a
-
-Best regards,
--- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
-
+>  #include <linux/export.h>
+> @@ -57,6 +86,10 @@ static bool __page_frag_cache_refill(struct page_frag_=
+cache *nc,
+>  	return true;
+>  }
+> =20
+> +/**
+> + * page_frag_cache_drain - Drain the current page from page_frag cache.
+> + * @nc: page_frag cache from which to drain
+> + */
+>  void page_frag_cache_drain(struct page_frag_cache *nc)
+>  {
+>  	if (!nc->va)
 
 
