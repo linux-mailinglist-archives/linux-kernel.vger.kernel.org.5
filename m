@@ -1,138 +1,139 @@
-Return-Path: <linux-kernel+bounces-134594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCAC89B358
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:37:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4487189B35A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 435E11C21179
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:37:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60BF8B22181
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E62F3BBCF;
-	Sun,  7 Apr 2024 17:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCD33BBE5;
+	Sun,  7 Apr 2024 17:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AEEROaIn"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LcFI3LPO"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1591E864;
-	Sun,  7 Apr 2024 17:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07D426AE3;
+	Sun,  7 Apr 2024 17:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712511455; cv=none; b=oSJhfyNurQ7ZayKF534HL8k1ZZhkAD//RGz5TlpR9aYaFPigFq/DWrE8TvAFmkAhAynN4+JS8oDOG2YC9S8eDfBY5b3Pz29wjz8R1e6dzhAJm3E8KDSoFajcj+4ix13p13tTtn9f6FwSY+LQpBIcWIMotegrCOIg8uGKunTlylM=
+	t=1712511746; cv=none; b=OXa7CInY3bjLZO2VJZtlKlz8xt6Sjv6ynG7KMihs3FZaZWm+g92v8NmgzFn+LCGgYJfSolf80SXe+VA1p5Z87XHkzArGqZGUw3kWO+smPo6i+TEe0NGtfJzZPuS0xOfGPxbnOm3EbSViF+zZa7dIxwo0qhOwGn/PVXORnY4nhFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712511455; c=relaxed/simple;
-	bh=5E3I208ZRfLfnXBiRp3HidYhlnwHD8M9uL2fwenzHlo=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=ci6aiuuSc9s0NxbXFTYNu1HwU6zEGv9a6BzvfyU6t5HjR4axlbKrkUEpzbCgPKJR9tlYprLFCvDkLdfJ63QC37RTC+7BIV3CyLgxOLRd4mHDVjQ3Q36KnEBOHqZJRLNEArkIe7xyj0iVpZaHvEezXXXUaprz5V3HqFzANtfeeU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AEEROaIn; arc=none smtp.client-ip=209.85.167.43
+	s=arc-20240116; t=1712511746; c=relaxed/simple;
+	bh=etAp7UXfJ/WJy4+nHdOhLIJ6jju/rYBGIvpVABAbLBI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CDRXzyRteDUfWdQOHZUi6dIJcjy46XwyKp2XzjT3gJTOjRC4mUXADXv3q5RBMuJ0Ed5HJb7i9smGIrtgxPExIJz1hjNTuUvKunCjp3vuhHgO+zbWywx4cdEQPA/2XJpUC4dqNlT5ijksTV9uBNh/jMVHumIM2hLf1WaTon/+OL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LcFI3LPO; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516f2e0edb7so677085e87.1;
-        Sun, 07 Apr 2024 10:37:33 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ed32341906so70598b3a.1;
+        Sun, 07 Apr 2024 10:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712511452; x=1713116252; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fiAuzQn2Z2TB48wpHO151bWpj2tXPyvASblLxy16+ls=;
-        b=AEEROaIn9FjOQDIEpv8qzoRfdQhvZCGVClBD6KlpyLjl4cBCLpdk+YLZ40zZmYzc2Y
-         ublM+4Yu/8Pw3Sf/9TN1aC4FnDQ1sxu3KFOXKX6dWgp7j1cPecWo+FxafTQfcB4lDPD5
-         lDmQZBt1WY9q8pyX5kBXcnQEdNitdpTT/DGFwcnSVlkS4N39No/HGp8/0b632jeS5wuv
-         /cyX8D5oW+osTSds8g9DiOR7tjle1auYa7KsxVJhesmHF0vkv6JXkciska+rBjWnzE+i
-         8GGT8jLMM9++WA3uHz5uGnGS6uHyp28a7cyUZFQn6NSoiMXMuz44bEqIvTv6M6WXysBz
-         fv9A==
+        d=gmail.com; s=20230601; t=1712511744; x=1713116544; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zmJXrKQQ8NYLGkWMPvSbi6f9GIaPx/v82cnS8xblnmU=;
+        b=LcFI3LPOas/lUuhq9sMvIAk71Kav6viCqL9DnHvpM9w1qpMgQAN52BoOk/gqd6Ypan
+         inUA+Rfgfid/6Rf5Qy1VlSKzrS6n2njyXU1b92p1DBYB5196P43wxJkbGVbSijiWDVhX
+         AiEuqtMNzumP1jfm67/V1mi+vWb0IZaUBnAtMgrZ+RQRVgXKSLCI/eHoHLWhBAk70HNC
+         GPoPZXBY6eHs2Ru8v98mjFYU9v/uG+4RIerkVKbsxvg0nCia2rUdNkA5SturvbmeaMTf
+         Pt2eQOenVNqLfLxSW5zzG7Yb6HazwPx7nFu3/W3y9o14Hu091tLNp+4JHf7e7WdSmKUJ
+         Wm1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712511452; x=1713116252;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fiAuzQn2Z2TB48wpHO151bWpj2tXPyvASblLxy16+ls=;
-        b=ED5FXTNktC17S5kgE5qvA6jyU559z8x2y47Vdo4i7+9qeoAFoqlA+rph63FELnu+p+
-         MjnfaKAubslxBaqcvxMiOgTyUL6S8oIlNOBk3LkYDzmkWrKgK7f3q+jeIaMUdsgnlPJb
-         tbmgjBwLkv9wQX4Y1O7z0iaLRsBB0sbRDfEY2sXvMNGpkCnr9XP83JYxz4aG9zt1EpWY
-         R9m0LnHlpvc60PXnfbeO8PRcjxHZvOKmQ4FMUxZE+33s8lIvXOwI+ncDWycGxRTdvVS5
-         9oqPcB0spB77s3Z7BCbxZYPikofz+hrwk54reqQ2TdSCPEgdkpmBfrsIYCsgZuICr6Tz
-         aoCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVAT6ZkoDkGtIoQPLWTnMc/d11KSmUmQfL6tgKa+8gsEZ2/u8n3RI1Ja0IbXBXV1X+BJccJFBhMwgfPcue+pP486ORV2pv3a06jUQDzFoiygAMvUXcYmv9duMKu9G4n/opiPDW/1m4=
-X-Gm-Message-State: AOJu0YybtcGnCk7jmvNO3D4ILs015PBJ61qSaLFBR3dGzbtRoP3U5QxE
-	1Meh7bB3f4QkxZA95TzEcPFakNAHs62qK/GSzkV67Z9wvWOnscUQ
-X-Google-Smtp-Source: AGHT+IG29g68C2NTBORFcpoM+CsYGHQEH7u1c7R6m+exnck9GhHNuVs6qlv3W6w3fNSnAGwG+0GVGA==
-X-Received: by 2002:a05:6512:4015:b0:516:a6ff:2467 with SMTP id br21-20020a056512401500b00516a6ff2467mr5800058lfb.0.1712511451821;
-        Sun, 07 Apr 2024 10:37:31 -0700 (PDT)
-Received: from smtpclient.apple (2a01-036d-0103-8d29-0484-7a18-3936-0af1.pool6.digikabel.hu. [2a01:36d:103:8d29:484:7a18:3936:af1])
-        by smtp.gmail.com with ESMTPSA id xi1-20020a170906dac100b00a51d3785c7bsm508799ejb.196.2024.04.07.10.37.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 07 Apr 2024 10:37:31 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1712511744; x=1713116544;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zmJXrKQQ8NYLGkWMPvSbi6f9GIaPx/v82cnS8xblnmU=;
+        b=CV39Kf/ck86rmbAMVO5jz9OEXON7aTw8m42nzJ/2Ugr6XMvhpWxXeDKtMAgktf9Pbr
+         dttBx4ZDV62sRTmTBce+Evml+kDdxejFi9TpAdhxiL7Kpjv2UFpMeL6lFPdOz9wM+ERv
+         0lxtQObsekreYTpaoJUGZbpM881FOkv+2Iagbl4X25xMi/uWrNLPmCmaZAQuECv5EkHO
+         g7A0aPswk8e9kEGF5maF+ShlzTb2dRhhiB5uAc5F8I8ozhuH30bPZDnSn4gJRZxw8j8m
+         KUJ8/4OCIxOg9yKwaNsFC2ohFCAKOBqMgcizPLA/uO4lt5w9SOsHUgfL2cj9msTr2OPh
+         PHUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVHl9ao48exBSHutfWcR3LZY8u6BQHHswSYnuL068hAMNndxsqEmHDkE59Y6Fv2HBugugAo96mQDw3hGET21ybcQZbd3nFQg0Ma+k8
+X-Gm-Message-State: AOJu0Yy2iXnTjjZVIrqKviNML6yF06QmmdTBY3BCW6fmVpJ998QsUgG4
+	QDJ4Fywf7PC453+BuKl50rxhz0lp7NhvXJcB7g8H6ZUXaSSmQQCx
+X-Google-Smtp-Source: AGHT+IGmD7uuv7daOdFGh7EVoXMeD8DUhS3yBr0tHuJyG+U1xgkotgOsXcTORKS876xd2wFGkcWeGA==
+X-Received: by 2002:a05:6a00:6908:b0:6eb:1ea:52ed with SMTP id hs8-20020a056a00690800b006eb01ea52edmr4889908pfb.1.1712511743899;
+        Sun, 07 Apr 2024 10:42:23 -0700 (PDT)
+Received: from ?IPv6:2605:59c8:43f:400:82ee:73ff:fe41:9a02? ([2605:59c8:43f:400:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id g24-20020a63dd58000000b005d66caee3d0sm4902477pgj.22.2024.04.07.10.42.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 10:42:23 -0700 (PDT)
+Message-ID: <30a6635dedf305e23e623c501e614e55bca1ab41.camel@gmail.com>
+Subject: Re: [PATCH net-next v1 01/12] mm: Move the page fragment allocator
+ from page_alloc into its own file
+From: Alexander H Duyck <alexander.duyck@gmail.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org,  pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, David Howells
+	 <dhowells@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org
+Date: Sun, 07 Apr 2024 10:42:22 -0700
+In-Reply-To: <20240407130850.19625-2-linyunsheng@huawei.com>
+References: <20240407130850.19625-1-linyunsheng@huawei.com>
+	 <20240407130850.19625-2-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] intel_idle: Add RaptorLake support
-From: =?utf-8?B?TMOhc3psw7MgUMOpdGVy?= <peter.laszlo2@gmail.com>
-In-Reply-To: <7e2c1da24b48217045e8ad95b739ec96cdce5931.camel@intel.com>
-Date: Sun, 7 Apr 2024 19:37:19 +0200
-Cc: "smarter3@gmail.com" <smarter3@gmail.com>,
- "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
- "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
- "noltari@gmail.com" <noltari@gmail.com>,
- "lenb@kernel.org" <lenb@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Bityutskiy, Artem" <artem.bityutskiy@intel.com>,
- "Kumar, Vinay" <vinay.kumar@intel.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BCBB0027-F0E9-42EE-BB43-D50091D9115F@gmail.com>
-References: <20230119070205.90047-1-noltari@gmail.com>
- <c79904e98b86b68c87add286aa1487b3f81712b6.camel@intel.com>
- <c7d1eced-d77b-aca7-1422-6eefaf704f3e@gmail.com>
- <7e2c1da24b48217045e8ad95b739ec96cdce5931.camel@intel.com>
-To: "Zhang, Rui" <rui.zhang@intel.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
 
+On Sun, 2024-04-07 at 21:08 +0800, Yunsheng Lin wrote:
+> Inspired by [1], but use free_unref_page() to replace free_the_page()
+> instead of __free_pages(), use VM_BUG_ON() to catch that we can use
+> free_unref_page() directly, also add its own header file.
 
+Instead of doing this all as one patch it would be better to split this
+into 2. Make the refactor first, and then move the code. Don't do it
+all in one patch.
 
-> On 20 Aug 2023, at 11:20, Zhang, Rui <rui.zhang@intel.com> wrote:
+Adding a refactor that changes out functions called in addition to
+moving the functions makes it very difficult to provide useful feedback
+and review.
+
+One of the big things with free_unref_page vx free_the_page is a check
+to see how costly it is to free the page. Right now the page frags are
+on the verge of crossing that threshold with defaulting to order 3
+pages.
+
+> As the API is only used by the networking, it may make sense to
+> move it to the networking directory like the page_pool does in the
+> future if we can make the free_unref_page() callable outside of the
+> mm subsystem. And we can utilize that to decouple the 'struct page'
+> in the networking subsystem in the future.
 >=20
-> This is still work in progress because there are still some open
-> questions that we cannot answer from our measurement, and the table is
-> not finalized yet.
->=20
-> thanks,
-> rui
->=20
->=20
+> 1. https://lore.kernel.org/all/20230411160902.4134381-3-dhowells@redhat.c=
+om/
 
-Hi,
+The problem with moving this out to networking is the fact that this is
+memory allocation. In my opinion it would better for it to live there.
 
-I also just stumbled upon this patch series as I was wondering about the =
-lack of specific support for RaptorLake in intel_idle. The AlderLake =
-specific part of the intel_idle.c code mentions that "On AlderLake C1 =
-has to be disabled if C1E is enabled, and vice versa =E2=80=A6. By =
-default we enable C1E and disable C1 by marking it with...=E2=80=9D.   =
-Without a patch on RaptorLake (which I assume works the same way) this =
-cannot be controlled with the preferred_cstates kernel parameter. Also =
-on my NUC 13 Pro i5-1340P the latency for C10 looks suspiciously large =
-compared to the AlderLake cstates table.
+> CC: David Howells <dhowells@redhat.com>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+>  include/linux/gfp.h             |  22 -----
+>  include/linux/mm_types.h        |  18 ----
+>  include/linux/page_frag_cache.h |  47 ++++++++++
+>  include/linux/skbuff.h          |   1 +
+>  mm/Makefile                     |   1 +
+>  mm/page_alloc.c                 | 136 -----------------------------
+>  mm/page_frag_cache.c            | 149 ++++++++++++++++++++++++++++++++
+>  7 files changed, 198 insertions(+), 176 deletions(-)
+>  create mode 100644 include/linux/page_frag_cache.h
+>  create mode 100644 mm/page_frag_cache.c
 
-grep . /sys/devices/system/cpu/cpu0/cpuidle/state*/desc
-/sys/devices/system/cpu/cpu0/cpuidle/state0/desc:CPUIDLE CORE POLL IDLE
-/sys/devices/system/cpu/cpu0/cpuidle/state1/desc:ACPI FFH MWAIT 0x0
-/sys/devices/system/cpu/cpu0/cpuidle/state2/desc:ACPI FFH MWAIT 0x21
-/sys/devices/system/cpu/cpu0/cpuidle/state3/desc:ACPI FFH MWAIT 0x60
-
-grep . /sys/devices/system/cpu/cpu0/cpuidle/state*/latency
-/sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
-/sys/devices/system/cpu/cpu0/cpuidle/state1/latency:1
-/sys/devices/system/cpu/cpu0/cpuidle/state2/latency:127
-/sys/devices/system/cpu/cpu0/cpuidle/state3/latency:1048
-
-Thanks,
-Peter
-
+I would add comments inline below about the changes you made but it is
+hard to keep them in any sort of context since what is contained in the
+"-" block is well spaced out from the "+" block.
 
