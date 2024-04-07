@@ -1,256 +1,389 @@
-Return-Path: <linux-kernel+bounces-134135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F17D789AE18
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:40:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACBDC89AE20
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:48:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C8A61C211FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:40:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18863B218D4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CF91C0DC3;
-	Sun,  7 Apr 2024 02:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="HpwPuxLc"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2107.outbound.protection.outlook.com [40.107.13.107])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2E817FF;
+	Sun,  7 Apr 2024 02:48:17 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0908780C;
-	Sun,  7 Apr 2024 02:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.107
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712457627; cv=fail; b=XquQ2nh33w3v7pOnSSnyiERccFe3WXZ0fq52zyDkZ+bhBkSOV6zXDXDqCXJlvIGueDFSTcfVA7D3XdFe9xvTwx41oI63rPa/MEPdFcZm8ctUle1uFv9JnM4DDa5oA/vTsyL+K7bGe0xUY/DGZlOSmzcc46Q91COkYDG7Oyn3wXw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712457627; c=relaxed/simple;
-	bh=2MmauUQI8UJe0pDNjdzkzJ11zOBqXZeDuK3kBUhsElw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=bRyyKtXDBoyWgqX5yDtzbBwAp3nIIgM1no6MaTVbGLnc2B2gfSiy6D1seg7XuNvNXmCg3VNGWlhtZ2GBQ15Bw5uAHgIH0u2pcwG2OL3m9NPBWiMLRtB3D79tUB1EH6CXDcDoWOGXyXW9Gde96VCcMhvBE1KUtrSFCUQPX4KGZ6M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=HpwPuxLc; arc=fail smtp.client-ip=40.107.13.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dXbo0pjVEgSGS/HoIf7OzeT7TUaI0X+oQB/2QABQRyobp1eaIgqL4e6i17LKR6JDxM9MvwtO7cLxaJ1sH3JZthu2+xHSbLO84uRRe/mgnAJuZnTkmOCE+yK6lVNLJNVogUytgr9Fy9Fo6s2BA33o2IXZ/DWaGXbL0meC2Edrj7x1GEc+CClqvn8WXocEioB9+1mKfKR/OMQOXrOr9oNp7e0YZrp7WlkDGHXYOvkq1z/8PZvv7XKKIzgggW679wolhAVzKLNpAGIu1p+ukfnd2CjxR7RtAX6oRdrh31CbIr9DKjNLgEnEZnUBo/20AKNVOCJGBY6+fISmnZD8RLg0Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VUMTTNGHwgtysAUyHMCYfpuXI9BdjDneIKaZ77cQQQg=;
- b=CdwxFHdS638Xhfei90VNlIExFJHbX6BEyu3QkSWrU7PmVrWdpAJmtbOdls8IOC6O48JyPS9GZvpBkzpEFOysOP9xQ5s0BXSPXTy+S69NQNfoBhFwOdpYFNWUhjdgwxEySbVmrTDvog3Z2ljpSRp0HJRFZZdeEOBibrHXdXLlVoWBt+/WO7eKsOypqEOV7aooQgBp482GHclegZVLjjN5cQxAj5H42HJd2WnJ/BdgIrcpC5sW6nWhOscVNjmq6jCfl2MnArliXZHJ6DaFySr2YzhoGqZQlFODixcHB3dsHjV2cNR+GdCjP5K7Zli97CuHt4KxkFUIbTIveb+b5jhaew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VUMTTNGHwgtysAUyHMCYfpuXI9BdjDneIKaZ77cQQQg=;
- b=HpwPuxLcDhBeZYIPV7BOuVvc+Qt8lw4mKIPcnWookkCw34vdWZsh5YAIuFcqlp2hMff4en1030vVKvafoFjHlDFMvwrI01uIN2wNGaEVckA/GuCWFctJYGuqDQBUVss0cwe1XHQXEOm9vedecJXfmEydwZF5f5zAl4TkPvlTcFs=
-Received: from PAXPR04MB8254.eurprd04.prod.outlook.com (2603:10a6:102:1cd::24)
- by PA4PR04MB7662.eurprd04.prod.outlook.com (2603:10a6:102:f2::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.47; Sun, 7 Apr
- 2024 02:40:21 +0000
-Received: from PAXPR04MB8254.eurprd04.prod.outlook.com
- ([fe80::da55:641a:a6f2:6e4e]) by PAXPR04MB8254.eurprd04.prod.outlook.com
- ([fe80::da55:641a:a6f2:6e4e%6]) with mapi id 15.20.7409.042; Sun, 7 Apr 2024
- 02:40:21 +0000
-Message-ID: <e3049f42-400b-4b86-9f9c-c90a89559f78@oss.nxp.com>
-Date: Sun, 7 Apr 2024 10:43:38 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] media: v4l2-ctrls: Add average qp control
-To: Nicolas Dufresne <nicolas@ndufresne.ca>, Ming Qian <ming.qian@nxp.com>,
- mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
- kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
- xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
- imx@lists.linux.dev, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240329092352.2648837-1-ming.qian@nxp.com>
- <5fc25468198cb3a228b91160dcc490600e1197d4.camel@ndufresne.ca>
-Content-Language: en-US
-From: ming qian <ming.qian@oss.nxp.com>
-In-Reply-To: <5fc25468198cb3a228b91160dcc490600e1197d4.camel@ndufresne.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR01CA0159.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:aa::28) To PAXPR04MB8254.eurprd04.prod.outlook.com
- (2603:10a6:102:1cd::24)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DFC15C0;
+	Sun,  7 Apr 2024 02:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712458096; cv=none; b=EY4Kv+thLGMaHQCGJgLmusc42yL52JjKy7M8M13rv/Bb/7kItCN2d/hxwgzFeSrntLylud8YPV0Glm3T2jTS3LOJdP9QpJzlC+e2MD/rJ/WEQ+HTRfQFrkdwcR7Pcv2b4+noRCsS6AJQiAsLLZJNwRxJmD4+892kB5avdtsmwdo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712458096; c=relaxed/simple;
+	bh=Xicg4ksnZvNtAayzEIyLqhMBd1X4QEvw9mbwLMGJ+ag=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=btPfeZhcP8HOFKE0cW3t6LXCfY1A9jrnO3rMq47bkHfCtS4+dPpvpYY7n8zPZFSJXQ4zfB1r7gzSYiNV9ydA5Bi4TVD/v0ngMyROstQqTOhUM+/SC+22ERWkTAK09Lw7PwDwTxO7t00AzfirZDKF0yayM8vwHQCRSrqbj+uSu0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBxV81rpJz4f3l1r;
+	Sun,  7 Apr 2024 10:48:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id C164A1A0DE6;
+	Sun,  7 Apr 2024 10:48:08 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgBnuWtnCRJmITLdJQ--.25183S2;
+	Sun, 07 Apr 2024 10:48:08 +0800 (CST)
+Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
+ writeback stats of bdi
+To: Brian Foster <bfoster@redhat.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+ tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-4-shikemeng@huaweicloud.com> <Zga937dR5UgtSVaz@bfoster>
+ <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
+ <Zg1wGvTeQxjqjYUG@bfoster>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <7f5a90cc-d6c5-0bb9-825a-7be15bc80878@huaweicloud.com>
+Date: Sun, 7 Apr 2024 10:48:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB8254:EE_|PA4PR04MB7662:EE_
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fM4nS4pbZvhiHZ1CDp019LNNqtiHwe6Bgn2RJm4D5FceJ7rKg4oNRcovG7VZZ0uBZre/x2H7M60uEgf+LECdiglSA7OLmrUF4Rocu5WeKV4eO0YRzcQYcAsPwJZUee1046hMuOUbYcTNQNKtv8vnugHbtLz0AQp5gdbY7ZYTdSLFv7m+3DYHfPBSu2iAvjfrBto5rUwqvPssdBQ1Xz6LhjhUu79k9z9xHzwQmCRUYFontPNHeN/qYAHGOJbui2cMDCatDza/sAg9Bot88eMqF+7znvDvpKi30Ga56kwfpgHlaDSxSKM1EYyEnhS2rtoMmNo0Lx/C4by7W8LllkiucUwoDWjQqU9Xye4Dru9eyAjt00c30vmz4iF9fs9d2Sg+x+HuP7HNmRl6ZfE63l4t0T1xcnCXZQY2c6suTPB9jbrpj21SDnxfqcswAqO3raas/TOkNay+exT1LEbtc7v5c+/T+ATU+8aL8FSJYzREGMNqFIYT9n9KasSMrMapFIUpf9hKWjf6T4yq5affiRquYHpTLV+BxlqVAaLLlR7QfauEwRt3n0KqdSs03Fi1a/9WpC3pomUweRz30UGeNcKiFt7/W/0e7VLAJIjwyd+HcXk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8254.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?L05CeWZPQVJYS3A3blJLRk9ZQUVOQnB0NTA4ZGgzTWVPbUp2TFRoZUhnUEFC?=
- =?utf-8?B?TXJueENrdWRCTDBpZTk2K0M3WWd5VjNDaW1PbktlOEM0M255bVI1UTg1OGxl?=
- =?utf-8?B?UVRQVzZvNHFPbER4dXZDY0tiYlNTY1lDUEZCTHhmNFZuelZZZXZTUWJqMDNu?=
- =?utf-8?B?b0VtcmJZbkNpRFY5NjhLMDNFTGFVTWowajlxTFF0dmdvQWVobWYxYU45Y3lj?=
- =?utf-8?B?RHlKdnhOU1U1UVltNWhTRDhxZHJrZ3Y1a3JLd0lLR3JreHRoQUVFV2RhbDFy?=
- =?utf-8?B?bi9UeXI0Q2xQd2NTc3FQdGt0dHZLZTgvak81d3d0NmZicllNS3BNRWRYOE5W?=
- =?utf-8?B?NWx5ZSt6SkpZSk1GUExraVNkN0syWTl3Sll4R0labndBRUd4d2NzUW91YURt?=
- =?utf-8?B?Z08zbWZsOW1tdFRiV0JqbE9kZm5tWHZJNDRpNnRsWFBvcURNUWo4YmxLRXRp?=
- =?utf-8?B?Z3c4NGtJMmlMUXZtZUZLK0NQeEhOTGhhODVLdTV0ZU53cjRKKzVMV2k2U2hi?=
- =?utf-8?B?R0Y2Vm5hVmVjdElpYytNNGtmRHNra21vK1E4MGgxVDBFK1dZVlV3aWFXa2Zx?=
- =?utf-8?B?b2tMQW5DbDFGYzRjKzRXRCtZaXJmVzhXL2hSbDhSbkdYZFRDaDZjN2t5R2Q0?=
- =?utf-8?B?ekpJT2ZxK0ZXWEVxUmFWdWtpMXFlY3RtVUJJK0c2RHVaU0I4OFNoY1I0eUht?=
- =?utf-8?B?aXg3aDd2dkxZYWR3VTNsaHFBcmZqM0RqV3ZocGRHSVUwQkVSazJwbS8yQzV2?=
- =?utf-8?B?OFpDZDh2NFhwT2s4TCtPcnZrSlVQdzh0aGlsYWU1ZUp1NW5hekN4QmJVcitu?=
- =?utf-8?B?K3AveXVjTTd0NzlWRnBvdzNJQTNrU2xUSXd3RHFLM0R1Z1pMSDZ3cExvVTJ4?=
- =?utf-8?B?K21sOXViY2NHc25jSHEzQk0wVkRvdEhndyswTGtkT3FEODAySUZaRm5tcXdJ?=
- =?utf-8?B?bCt0c1hFQWdkRnkyOVpGM2RBQmFEUjF3Kzd3cFU5bXNWS1VFT0J1cFBoSXRI?=
- =?utf-8?B?dmIwaWhxRXZ0Z0lhUUFhYWN0aWlKMUF6RmhrSCtVQ0piWFoySG90aXBwQXJS?=
- =?utf-8?B?UFJjQVE4RGhrYk9MNVpmMDF2cmVsM2tOQXRCRW1CVDFvZjkzNUE1OTVaVmth?=
- =?utf-8?B?V1k5YzZRLzNBbUY2a0QrOGdtcGdBeVFOMG51T3YzMlRYRnNlcFE1OXNVRnBH?=
- =?utf-8?B?YUZFaXRIME5EWUNUaUUwbmFrd2UzTjd4NFl5aWpFWEtMU1ptYVFUS2xweW9x?=
- =?utf-8?B?NVg2WUw3dnlZNDJTamQraG9zZ2RaV2FTV0F0NFBaSUh5djZTeHZXN0xtdUVL?=
- =?utf-8?B?WkVoVHh5b1l2cG50VThBdDRkemUwZzU2L1FRVysxazQzRWhGeEFmc01nTkpZ?=
- =?utf-8?B?Ym8vVCtUZzdlRXE1a1B6YzMrNS90OWxsWGNwSVlFUTRhOEZGTzl3OERFS0k4?=
- =?utf-8?B?d2ZVbUM0RmJZRHg3aDlPVVdZQmgzOUdJUTBpYUI5ekNKV3VJUm0zazJlOXA0?=
- =?utf-8?B?cEYrQ1lrTFpIWm14b3ZCYkwxQVZ2aTZ5anduNng1SGx5V254L2JwcFpGUXd1?=
- =?utf-8?B?ZWZJMlNZNEI1cXlQYk50Vk54bi9Vc0lVakFoMlAxTitZRm91eDlVdVFxbEJU?=
- =?utf-8?B?Z2lmMkdnOXBIQ1AyNVNxUDJzOTNmeWlGK1A0VEkra2VpSHlBUmw1UUpLa0Y1?=
- =?utf-8?B?M0l0SmQ4bU1ISkw1dERNRy9QREJ0L3N2MkpOV3NyQmNpMnNZdVJLY2pxaFNE?=
- =?utf-8?B?Uy85L3pFN2pRbzQ3MHdoeURINkprR2lSR0lhcFhMeU9UVEZvYjd2UU1Ebjhz?=
- =?utf-8?B?TURQTENMZGpvT0dVL2V6bTlWRytQM2VvRjVDUkhid2NVcWN4Vmdtd2ZPQzVl?=
- =?utf-8?B?RjlZdW1tOHp3SEdXdU1FRjBTTmVCS0VKd3gzTGlFTkVVRnlMbXRoWkViSjN2?=
- =?utf-8?B?NzROK3hlb1Q4QzRHZFlsQ1lCaEoySU41bGx4STB5U1JzVSttMEpFUVBQWWZ3?=
- =?utf-8?B?WHZqTTVCRFMyWnRySnRodmZoREhmb0hxNjBJeUZuRlg3M2plZ1NDTjREcXRV?=
- =?utf-8?B?VzkvSDFuZytoajg5TzR1UmI3dldwZ2xqem1NWVpHMjVZQTBrKzN2dXdxRE5n?=
- =?utf-8?Q?2gj0oab0j3NxKFSGvvux9V4Fn?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65489b8c-365c-4084-1607-08dc56ac11df
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8254.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2024 02:40:21.6620
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aU1WXAdOS4iimoMZB8lumhgq3uH/ccKuQFFQTCcJpQyMZGCVG/oeElf43LpjkUb5lZ0XF1QQtg+ErkpzvEmCuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7662
+In-Reply-To: <Zg1wGvTeQxjqjYUG@bfoster>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBnuWtnCRJmITLdJQ--.25183S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4kXFyDCw17uFW7uFy3Jwb_yoWDGw1xpF
+	W5J3W5Kr4UXr129rnIv3Wjqr9Iy395try7XF97A345CryDtr13tFyrGrWYkryrAryrAryU
+	Za1YyrZ7urZ0yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Hi Nicolas,
 
-On 4/5/24 02:14, Nicolas Dufresne wrote:
-> Hi,
-> 
-> Le vendredi 29 mars 2024 à 18:23 +0900, Ming Qian a écrit :
->> Add a control V4L2_CID_MPEG_VIDEO_AVERAGE_QP to report the average qp
->> value of current encoded frame.
+
+on 4/3/2024 11:04 PM, Brian Foster wrote:
+> On Wed, Apr 03, 2024 at 04:49:42PM +0800, Kemeng Shi wrote:
 >>
->> Signed-off-by: Ming Qian <ming.qian@nxp.com>
->> ---
->>   Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++++
->>   drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 5 +++++
->>   include/uapi/linux/v4l2-controls.h                        | 2 ++
->>   3 files changed, 11 insertions(+)
 >>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 2a165ae063fb..cef20b3f54ca 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -1653,6 +1653,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
->>       Quantization parameter for a P frame for FWHT. Valid range: from 1
->>       to 31.
->>   
->> +``V4L2_CID_MPEG_VIDEO_AVERAGE_QP (integer)``
->> +    This read-only control returns the average qp value of the currently
->> +    encoded frame. Applicable to the H264 and HEVC encoders.
+>> on 3/29/2024 9:10 PM, Brian Foster wrote:
+>>> On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
+>>>> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
+>>>> of bdi.
+>>>>
+>>>
+>>> Hi Kemeng,
+>> Hello Brian,
+>>>
+>>> Just a few random thoughts/comments..
+>>>
+>>>> Following domain hierarchy is tested:
+>>>>                 global domain (320G)
+>>>>                 /                 \
+>>>>         cgroup domain1(10G)     cgroup domain2(10G)
+>>>>                 |                 |
+>>>> bdi            wb1               wb2
+>>>>
+>>>> /* per wb writeback info of bdi is collected */
+>>>> cat /sys/kernel/debug/bdi/252:16/wb_stats
+>>>> WbCgIno:                    1
+>>>> WbWriteback:                0 kB
+>>>> WbReclaimable:              0 kB
+>>>> WbDirtyThresh:              0 kB
+>>>> WbDirtied:                  0 kB
+>>>> WbWritten:                  0 kB
+>>>> WbWriteBandwidth:      102400 kBps
+>>>> b_dirty:                    0
+>>>> b_io:                       0
+>>>> b_more_io:                  0
+>>>> b_dirty_time:               0
+>>>> state:                      1
+>>>
+>>> Maybe some whitespace or something between entries would improve
+>>> readability?
+>> Sure, I will add a whitespace in next version.
+>>>
+>>>> WbCgIno:                 4094
+>>>> WbWriteback:            54432 kB
+>>>> WbReclaimable:         766080 kB
+>>>> WbDirtyThresh:        3094760 kB
+>>>> WbDirtied:            1656480 kB
+>>>> WbWritten:             837088 kB
+>>>> WbWriteBandwidth:      132772 kBps
+>>>> b_dirty:                    1
+>>>> b_io:                       1
+>>>> b_more_io:                  0
+>>>> b_dirty_time:               0
+>>>> state:                      7
+>>>> WbCgIno:                 4135
+>>>> WbWriteback:            15232 kB
+>>>> WbReclaimable:         786688 kB
+>>>> WbDirtyThresh:        2909984 kB
+>>>> WbDirtied:            1482656 kB
+>>>> WbWritten:             681408 kB
+>>>> WbWriteBandwidth:      124848 kBps
+>>>> b_dirty:                    0
+>>>> b_io:                       1
+>>>> b_more_io:                  0
+>>>> b_dirty_time:               0
+>>>> state:                      7
+>>>>
+>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>> ---
+>>>>  include/linux/writeback.h |  1 +
+>>>>  mm/backing-dev.c          | 88 +++++++++++++++++++++++++++++++++++++++
+>>>>  mm/page-writeback.c       | 19 +++++++++
+>>>>  3 files changed, 108 insertions(+)
+>>>>
+>>> ...
+>>>> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+>>>> index 8daf950e6855..e3953db7d88d 100644
+>>>> --- a/mm/backing-dev.c
+>>>> +++ b/mm/backing-dev.c
+>>>> @@ -103,6 +103,91 @@ static void collect_wb_stats(struct wb_stats *stats,
+>>>>  }
+>>>>  
+>>>>  #ifdef CONFIG_CGROUP_WRITEBACK
+>>> ...
+>>>> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
+>>>> +{
+>>>> +	struct backing_dev_info *bdi;
+>>>> +	unsigned long background_thresh;
+>>>> +	unsigned long dirty_thresh;
+>>>> +	struct bdi_writeback *wb;
+>>>> +	struct wb_stats stats;
+>>>> +
+>>>> +	rcu_read_lock();
+>>>> +	bdi = lookup_bdi(m);
+>>>> +	if (!bdi) {
+>>>> +		rcu_read_unlock();
+>>>> +		return -EEXIST;
+>>>> +	}
+>>>> +
+>>>> +	global_dirty_limits(&background_thresh, &dirty_thresh);
+>>>> +
+>>>> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
+>>>> +		memset(&stats, 0, sizeof(stats));
+>>>> +		stats.dirty_thresh = dirty_thresh;
+>>>
+>>> If you did something like the following here, wouldn't that also zero
+>>> the rest of the structure?
+>>>
+>>> 		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
+>>>
+>> Suer, will do it in next version.
+>>>> +		collect_wb_stats(&stats, wb);
+>>>> +
+>>>
+>>> Also, similar question as before on whether you'd want to check
+>>> WB_registered or something here..
+>> Still prefer to keep full debug info and user could filter out on
+>> demand.
 > 
-> That seems ambiguous at best. What does it mean the "currently encoded frame" ?
-> The OUTPUT and CAPTURE queue can be holding multiple frames. For "per frame"
-> accurate reporting, I feel like we'd need something like Hans' read-only
-> requests proposal [0]. Its basically a mechanism that let you attach request FD
-> to capture buffer, so that supported controls can be saved per v4l2-buffer and
-> read later on.
+> Ok. I was more wondering if that was needed for correctness. If not,
+> then that seems fair enough to me.
+For bdi->wb, it's unavailable after release_bdi. As bdi_debug_unregister
+will block bdi_unregister, then release_bdi must not be reached yet and
+it's safe to collect bdi->wb info.
+For wb in cgroup, it's unavailable after cgwb_release_workfn, we could
+prevent this with wb_tryget before collection.
+So it's correct for per-wb stats but we add a extra wb_trget in
+bdi stats in patch 2 and will do it in next version.
 > 
-> https://patches.linaro.org/project/linux-media/patch/20210610113615.785359-12-hverkuil-cisco@xs4all.nl/
+>>>
+>>>> +		if (mem_cgroup_wb_domain(wb) == NULL) {
+>>>> +			wb_stats_show(m, wb, &stats);
+>>>> +			continue;
+>>>> +		}
+>>>
+>>> Can you explain what this logic is about? Is the cgwb_calc_thresh()
+>>> thing not needed in this case? A comment might help for those less
+>>> familiar with the implementation details.
+>> If mem_cgroup_wb_domain(wb) is NULL, then it's bdi->wb, otherwise,
+>> it's wb in cgroup. For bdi->wb, there is no need to do wb_tryget
+>> and cgwb_calc_thresh. Will add some comment in next version.
+>>>
+>>> BTW, I'm also wondering if something like the following is correct
+>>> and/or roughly equivalent:
+>>> 	
+>>> 	list_for_each_*(wb, ...) {
+>>> 		struct wb_stats stats = ...;
+>>>
+>>> 		if (!wb_tryget(wb))
+>>> 			continue;
+>>>
+>>> 		collect_wb_stats(&stats, wb);
+>>>
+>>> 		/*
+>>> 		 * Extra wb_thresh magic. Drop rcu lock because ... . We
+>>> 		 * can do so here because we have a ref.
+>>> 		 */
+>>> 		if (mem_cgroup_wb_domain(wb)) {
+>>> 			rcu_read_unlock();
+>>> 			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
+>>> 			rcu_read_lock();
+>>> 		}
+>>>
+>>> 		wb_stats_show(m, wb, &stats)
+>>> 		wb_put(wb);
+>>> 	}
+>> It's correct as wb_tryget to bdi->wb has no harm. I have considered
+>> to do it in this way, I change my mind to do it in new way for
+>> two reason:
+>> 1. Put code handling wb in cgroup more tight which could be easier
+>> to maintain.
+>> 2. Rmove extra wb_tryget/wb_put for wb in bdi.
+>> Would this make sense to you?
 > 
-> If this isn't what you wanted, we'll need a better definition. It might be
-> helpful to explain what this is used for.
+> Ok, well assuming it is correct the above logic is a bit more simple and
+> readable to me. I think you'd just need to fill in the comment around
+> the wb_thresh thing rather than i.e. having to explain we don't need to
+> ref bdi->wb even though it doesn't seem to matter.
 > 
-> Nicolas
+> I kind of feel the same on the wb_stats file thing below just because it
+> seems more consistent and available if wb_stats eventually grows more
+> wb-specific data.
+> 
+> That said, this is subjective and not hugely important so I don't insist
+> on either point. Maybe wait a bit and see if Jan or Tejun or somebody
+> has any thoughts..? If nobody else expresses explicit preference then
+> I'm good with it either way.
+Sure, I will wait for someday and decide the way used in next version.
+
+Thanks so much for all the advise.
+
+Kemeng
+> 
+> Brian
+> 
+>>>
+>>>> +
+>>>> +		/*
+>>>> +		 * cgwb_release will destroy wb->memcg_completions which
+>>>> +		 * will be ued in cgwb_calc_thresh. Use wb_tryget to prevent
+>>>> +		 * memcg_completions destruction from cgwb_release.
+>>>> +		 */
+>>>> +		if (!wb_tryget(wb))
+>>>> +			continue;
+>>>> +
+>>>> +		rcu_read_unlock();
+>>>> +		/* cgwb_calc_thresh may sleep in cgroup_rstat_flush */
+>>>> +		stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
+>>>> +		wb_stats_show(m, wb, &stats);
+>>>> +		rcu_read_lock();
+>>>> +		wb_put(wb);
+>>>> +	}
+>>>> +	rcu_read_unlock();
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +DEFINE_SHOW_ATTRIBUTE(cgwb_debug_stats);
+>>>> +
+>>>> +static void cgwb_debug_register(struct backing_dev_info *bdi)
+>>>> +{
+>>>> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
+>>>> +			    &cgwb_debug_stats_fops);
+>>>> +}
+>>>> +
+>>>>  static void bdi_collect_stats(struct backing_dev_info *bdi,
+>>>>  			      struct wb_stats *stats)
+>>>>  {
+>>>> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
+>>>>  {
+>>>>  	collect_wb_stats(stats, &bdi->wb);
+>>>>  }
+>>>> +
+>>>> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
+>>>
+>>> Could we just create the wb_stats file regardless of whether cgwb is
+>>> enabled? Obviously theres only one wb in the !CGWB case and it's
+>>> somewhat duplicative with the bdi stats file, but that seems harmless if
+>>> the same code can be reused..? Maybe there's also a small argument for
+>>> dropping the state info from the bdi stats file and moving it to
+>>> wb_stats.In backing-dev.c, there are a lot "#ifdef CGWB .. #else .. #endif" to
+>> avoid unneed extra cost when CGWB is not enabled.
+>> I think it's better to avoid extra cost from wb_stats when CGWB is not
+>> enabled. For now, we only save cpu cost to create and destroy wb_stats
+>> and save memory cost to record debugfs file, we could save more in
+>> future when wb_stats records more debug info.
+>> Move state info from bdi stats to wb_stats make senses to me. The only
+>> concern would be compatibility problem. I will add a new patch to this
+>> to make this more noticeable and easier to revert.
+>> Thanks a lot for review!
+>>
+>> Kemeng
+>>>
+>>> Brian
+>>>
+>>>>  #endif
+>>>>  
+>>>>  static int bdi_debug_stats_show(struct seq_file *m, void *v)
+>>>> @@ -182,6 +269,7 @@ static void bdi_debug_register(struct backing_dev_info *bdi, const char *name)
+>>>>  
+>>>>  	debugfs_create_file("stats", 0444, bdi->debug_dir, bdi,
+>>>>  			    &bdi_debug_stats_fops);
+>>>> +	cgwb_debug_register(bdi);
+>>>>  }
+>>>>  
+>>>>  static void bdi_debug_unregister(struct backing_dev_info *bdi)
+>>>> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+>>>> index 0e20467367fe..3724c7525316 100644
+>>>> --- a/mm/page-writeback.c
+>>>> +++ b/mm/page-writeback.c
+>>>> @@ -893,6 +893,25 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
+>>>>  	return __wb_calc_thresh(&gdtc, thresh);
+>>>>  }
+>>>>  
+>>>> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb)
+>>>> +{
+>>>> +	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
+>>>> +	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
+>>>> +	unsigned long filepages, headroom, writeback;
+>>>> +
+>>>> +	gdtc.avail = global_dirtyable_memory();
+>>>> +	gdtc.dirty = global_node_page_state(NR_FILE_DIRTY) +
+>>>> +		     global_node_page_state(NR_WRITEBACK);
+>>>> +
+>>>> +	mem_cgroup_wb_stats(wb, &filepages, &headroom,
+>>>> +			    &mdtc.dirty, &writeback);
+>>>> +	mdtc.dirty += writeback;
+>>>> +	mdtc_calc_avail(&mdtc, filepages, headroom);
+>>>> +	domain_dirty_limits(&mdtc);
+>>>> +
+>>>> +	return __wb_calc_thresh(&mdtc, mdtc.thresh);
+>>>> +}
+>>>> +
+>>>>  /*
+>>>>   *                           setpoint - dirty 3
+>>>>   *        f(dirty) := 1.0 + (----------------)
+>>>> -- 
+>>>> 2.30.0
+>>>>
+>>>
+>>>
+>>
+> 
 > 
 
-Yes, I want to report the qp value for every frame.
-I thought the request FD is only used for stateless decoder, but I want
-to add a read-only ctrl for the stateful encoder. So I checked the
-defined read-only ctrls, I think it's similar with
-V4L2_CID_MPEG_VIDEO_DEC_PTS.
-(https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/ext-ctrls-codec.html?highlight=v4l2_cid_mpeg_video_dec_pts)
-
-then back to your question about the "currently encoded frame", it's the
-last dequeued capture buffer of the encoder, the capture queue can hold
-multiple frames, each frame will have a qp value in this case, and this
-ctrl only report the qp value of the last dequeued frame, when user has
-dequeued an encoded frame from the capture queue, he can get the ctrl
-value of V4L2_CID_MPEG_VIDEO_AVERAGE_QP immediately to get the qp value
-of the currently dequeued frame. If user doesn't care about this
-parameter, he doesn't need to do anything, it's just the same as before.
-so I think this ctrl is backward compatible.
-
-Maybe the request FD is a better and more intuitive way to suggest a
-one-to-one correspondence between ctrl and frame. I'm just not sure if
-it just applies to the stateless decoder. I did find any stateful
-decoder or encoder to use them.
-If we use the request FD for this stateful encoder, I'm not sure if it
-will break the original flow.
-
-best regards,
-Ming
-
->> +
->>   .. raw:: latex
->>   
->>       \normalsize
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> index 8696eb1cdd61..88e86e4e539d 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> @@ -972,6 +972,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>   	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
->>   	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
->>   	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
->> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:			return "Average QP value";
->>   
->>   	/* VPX controls */
->>   	case V4L2_CID_MPEG_VIDEO_VPX_NUM_PARTITIONS:		return "VPX Number of Partitions";
->> @@ -1507,6 +1508,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>   		*max = 0xffffffffffffLL;
->>   		*step = 1;
->>   		break;
->> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
->> +		*type = V4L2_CTRL_TYPE_INTEGER;
->> +		*flags |= V4L2_CTRL_FLAG_VOLATILE | V4L2_CTRL_FLAG_READ_ONLY;
->> +		break;
->>   	case V4L2_CID_PIXEL_RATE:
->>   		*type = V4L2_CTRL_TYPE_INTEGER64;
->>   		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
->> index 99c3f5e99da7..974fd254e573 100644
->> --- a/include/uapi/linux/v4l2-controls.h
->> +++ b/include/uapi/linux/v4l2-controls.h
->> @@ -898,6 +898,8 @@ enum v4l2_mpeg_video_av1_level {
->>   	V4L2_MPEG_VIDEO_AV1_LEVEL_7_3 = 23
->>   };
->>   
->> +#define V4L2_CID_MPEG_VIDEO_AVERAGE_QP  (V4L2_CID_CODEC_BASE + 657)
->> +
->>   /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
->>   #define V4L2_CID_CODEC_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
->>   #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_CODEC_CX2341X_BASE+0)
-> 
 
