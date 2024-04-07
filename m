@@ -1,132 +1,96 @@
-Return-Path: <linux-kernel+bounces-134230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32B6589AF46
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:55:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8EA89AF59
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:04:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1B411F21F6F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:55:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8FBA1F21D95
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A503F9CC;
-	Sun,  7 Apr 2024 07:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OyoiW8Px"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2429712B7D;
+	Sun,  7 Apr 2024 08:04:35 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308106FC3
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 07:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC31748F;
+	Sun,  7 Apr 2024 08:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712476533; cv=none; b=aexVEGkQ2b68LccpZYGhRGc6zWmmts9V9qyJxRNBVboknKFy1MTm5Gd3rjF/8OtqjnFmOuF1CgPke/zKaS6MMZ8b9+AVcl/U7da0xW44BN6WEIZ/iEzlYQEOawB1Z/F9LgL+kSz68JZTzcC+EGvXGQNcRTIZ0su2T4sE2pBlc68=
+	t=1712477074; cv=none; b=tGnBtNP4uMA3TTrea/Pq9DvOTBWUSqikkabQx2hmbmkm6Ra0x2PDJNoGO+WKPEpwILmdjJHP2kpQlqB+RWjs4LEbGnfu4HoEWdmbwByS01icTVggU+1z15tw67WUUHTC8yNWUQuzqXbR+OcJ+C0XUiBFD6hXoJScM+HSq6p2+C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712476533; c=relaxed/simple;
-	bh=+B8d/wmf1YxZiAa4fbdsDHljotFFId2D8bExhgkmTFk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Bz/RCgs9FX4xNLoVBD6X+9TwUBSVZVhQr7KEP9WKodQuoAmtiTjw5r27TmMIHvRm3R0s1cgO6BCu3Y3JSgfxtmxhRFJcRxs+Y4GErSLLGLA63HtPlA1clvQrShnTFooYvFmFUH6aM//xpBqx0p51eCYYxH6jLWNEYPVWRIjThjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OyoiW8Px; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-343e46ec237so1643933f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 00:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712476530; x=1713081330; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=g3MTv1Idd5V8ahBC+akHFcdn0CaAt9Plz28mXNpxS2Y=;
-        b=OyoiW8PxzcfBbRcR4SlqocWzgaawyzu7HD9m+2HApDaSPFaI4Am+wIVkWMZPFRljO4
-         OjGgAWChjueSgOrbOaacitwEV+Sl6QK12zL92lKFE2RWOWiQyMZ43ZBsbf2D647wemO0
-         m2YUtakiFRtt6JSca/Zgdf2kqygDXrfV9eQBpskyx2VW7KGuCN1FoBmZiJnGwojqjM4f
-         LYmKGHboeM+3lzR8LuVB0L/e9Y7CfEhlhicZMi6RuV4KuqmmI56xM2DGiS2SW0GcCsSF
-         KaUvZ2H6Bk4IV6yWrvmdOKVV5pvxNhov/ZFHTYcbdmR0cHpu9w9/ONXhYc7A1EqcRD2g
-         iSrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712476530; x=1713081330;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g3MTv1Idd5V8ahBC+akHFcdn0CaAt9Plz28mXNpxS2Y=;
-        b=nuez1KpYonESwOXYOcRvxW9m2FNLi6Zq5Uq0pbeNhjZxKgTAyMBkgE8RVs1Ag2lcz9
-         bj0Ggpzqk+wV6yLFPgf7VFDx8Meujx9THajox8evelruv+Mujc98MlT4J6fW/Pu40d/x
-         P4YvS+rkujyaCBipk3F5FInhsj9LswGb0E4ji4YI27EGY1HkPwyRafdlY45oFfrv8g6E
-         hxHNG1NT6KzyuHVRfPzCIoGxV0XqCIN4RhgIFWDgIZDuYRESBs7/ogGWatoKRg7EhHxl
-         9zScqKx1P1sALBH2FdXCP+9TZDxXgpgNiLGk6lkU85jcfPKTjUibj4HpNrJQ2nkfRWsp
-         opAA==
-X-Gm-Message-State: AOJu0YwE135xSWH2GMpT3Nejt6keoQhl+JGKZBTNKrSSsu+2cV1HIscV
-	Kc4kiUZsJHz+wobZKE39FjxkKgcjfMPfNljx6QhRmD+L3/zJU7KW
-X-Google-Smtp-Source: AGHT+IHHYgL/8qifd/w5Lh+AI03DdF4/WJsH9k/EPGUJ7XTe8esElIx635OUsBPWpW4Y7t0p+fylFg==
-X-Received: by 2002:adf:e50f:0:b0:343:3a38:d934 with SMTP id j15-20020adfe50f000000b003433a38d934mr4444416wrm.19.1712476529986;
-        Sun, 07 Apr 2024 00:55:29 -0700 (PDT)
-Received: from gmail.com (84-236-113-28.pool.digikabel.hu. [84.236.113.28])
-        by smtp.gmail.com with ESMTPSA id x8-20020adfffc8000000b00343c1cd5aedsm6084796wrs.52.2024.04.07.00.55.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 00:55:29 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 7 Apr 2024 09:55:27 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] perf fix
-Message-ID: <ZhJRb8TBJOLEEES5@gmail.com>
+	s=arc-20240116; t=1712477074; c=relaxed/simple;
+	bh=WuVmlcXEI6ienjeI1ef3w79EoIsbGXDctKG2kz3xZZM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q/7lUGIH6R7WzcOUwS7RtIchw3VTI326/aAPiOMP1+ywoHtBU5rQoICd5BhGu7E3w6Dj5WB8sXYzo//3gxRkWPIuIxnwQAHOL2Ql0BsFu8vL7Gq8Jx95t0HW61d25FzVRCUw+l2/73MdGh5mCv5Tw2gEnTfO3QpB7trVPc8x4Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VC4SF35Blz1QCVb;
+	Sun,  7 Apr 2024 16:01:49 +0800 (CST)
+Received: from kwepemi500025.china.huawei.com (unknown [7.221.188.170])
+	by mail.maildlp.com (Postfix) with ESMTPS id A25E21402C7;
+	Sun,  7 Apr 2024 16:04:28 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500025.china.huawei.com (7.221.188.170) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 7 Apr 2024 16:04:27 +0800
+From: Chenghai Huang <huangchenghai2@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <shenyang39@huawei.com>,
+	<songzhiqi1@huawei.com>, <qianweili@huawei.com>, <liushangbin@hisilicon.com>,
+	<linwenkai6@hisilicon.com>, <taoqi10@huawei.com>, <wangzhou1@hisilicon.com>,
+	<huangchenghai2@huawei.com>
+Subject: [PATCH v2 0/9] crypto: hisilicon - Optimize and fix some driver processes
+Date: Sun, 7 Apr 2024 15:59:51 +0800
+Message-ID: <20240407080000.673435-1-huangchenghai2@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500025.china.huawei.com (7.221.188.170)
 
+This patch series is mainly used to fix and optimize some
+problems of hisilicon.
 
-Linus,
+v1 -> v2
+- fixed codecheck warnings about unused variable
+  | Reported-by: kernel test robot <lkp@intel.com>
+  | Closes: https://lore.kernel.org/oe-kbuild-all/202404040616.cF0Pvb9M-lkp@intel.com/
 
-Please pull the latest perf/urgent Git tree from:
+Chenghai Huang (9):
+  crypto: hisilicon/sec - Add the condition for configuring the sriov
+    function
+  crypto: hisilicon/debugfs - Fix debugfs uninit process issue
+  crypto: hisilicon/sgl - Delete redundant parameter verification
+  crypto: hisilicon/debugfs - Fix the processing logic issue in the
+    debugfs creation
+  crypto: hisilicon/qm - Add the default processing branch
+  crypto: hisilicon - Adjust debugfs creation and release order
+  crypto: hisilicon/sec - Fix memory leak for sec resource release
+  crypto: hisilicon/debugfs - Resolve the problem of applying for
+    redundant space in sq dump
+  crypto: hisilicon/qm - Add the err memory release process to qm uninit
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2024-04-07
+ drivers/crypto/hisilicon/debugfs.c         | 38 +++++++++++++++-------
+ drivers/crypto/hisilicon/hpre/hpre_main.c  | 21 ++++++------
+ drivers/crypto/hisilicon/qm.c              |  8 ++---
+ drivers/crypto/hisilicon/sec2/sec_crypto.c |  4 ++-
+ drivers/crypto/hisilicon/sec2/sec_main.c   | 26 +++++++--------
+ drivers/crypto/hisilicon/sgl.c             |  5 +--
+ drivers/crypto/hisilicon/zip/zip_main.c    | 24 +++++++-------
+ 7 files changed, 68 insertions(+), 58 deletions(-)
 
-   # HEAD: 312be9fc2234c8acfb8148a9f4c358b70d358dee perf/x86/intel/ds: Don't clear ->pebs_data_cfg for the last PEBS event
+-- 
+2.30.0
 
-Fix a combined PEBS events bug on x86 Intel CPUs.
-
- Thanks,
-
-	Ingo
-
------------------->
-Kan Liang (1):
-      perf/x86/intel/ds: Don't clear ->pebs_data_cfg for the last PEBS event
-
-
- arch/x86/events/intel/ds.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 2641ba620f12..e010bfed8417 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1237,11 +1237,11 @@ pebs_update_state(bool needed_cb, struct cpu_hw_events *cpuc,
- 	struct pmu *pmu = event->pmu;
- 
- 	/*
--	 * Make sure we get updated with the first PEBS
--	 * event. It will trigger also during removal, but
--	 * that does not hurt:
-+	 * Make sure we get updated with the first PEBS event.
-+	 * During removal, ->pebs_data_cfg is still valid for
-+	 * the last PEBS event. Don't clear it.
- 	 */
--	if (cpuc->n_pebs == 1)
-+	if ((cpuc->n_pebs == 1) && add)
- 		cpuc->pebs_data_cfg = PEBS_UPDATE_DS_SW;
- 
- 	if (needed_cb != pebs_needs_sched_cb(cpuc)) {
 
