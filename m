@@ -1,429 +1,300 @@
-Return-Path: <linux-kernel+bounces-134368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFC389B0BC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:22:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A50789B0BE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CA18281D6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:22:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4B83B20C5C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D99225D0;
-	Sun,  7 Apr 2024 12:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A517F22F0A;
+	Sun,  7 Apr 2024 12:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cTjpVKpu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hE6MSKNL"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6478F22075;
-	Sun,  7 Apr 2024 12:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D301773A;
+	Sun,  7 Apr 2024 12:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712492558; cv=none; b=I80YIS9uiwdtXjZebuH31/qnS3a7N35Lp+nh0rxLuSaQgaZkR15ANpfBBZ6ExHwANCGvXU3ouNEPD4zPwCKDBTT5VK2VEma6EpQ2wO1iYweeRVj/wWlQq9hwykVXmOlIG07/V5GB4xOOwkjYSz6LBV6sZUaCn67zKabT8UgFRvg=
+	t=1712492751; cv=none; b=GCwombKwvBq66MxbXYcnowwIFXVSnJgrdYBK4I1Y/+YIkJK3bcvac7OvOSmRU0KoqCt6qOt0duLsya+ufMuJoAPc/ylPZPlEnRM/+bencICmBWTy/p43znuuYrttS71skPkZrj2YNtnthKEkR4dtV3gFGEyJLjzwlMwRx8yuIEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712492558; c=relaxed/simple;
-	bh=8Xw0AGyl1GOfO56/UoE8rVpgRMawT9/2wW8YndZPGQM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u4d/IB/Ueo/Bc3FThxWmIA+yBrjIa8ZvwRL0wwcK+lcxZBtzrFcktrOKYTWvxu5pRYF+8xC/tM6D9wYe4mcqXMJ8u2noMYNWeXn2zZTy+XwN+nSow01sGuNiN00w1FuUnIYQqE1cq+aj6Cges/b3tpBRsdxSujrm4cFsRrfmxxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cTjpVKpu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B775C433F1;
-	Sun,  7 Apr 2024 12:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712492557;
-	bh=8Xw0AGyl1GOfO56/UoE8rVpgRMawT9/2wW8YndZPGQM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cTjpVKpuCERRKBkcYzZBXb8TVedlO74p79AenJsfQ8qsWPanFI7Pb02iTs9L7ziq1
-	 62iq5l9vcZR8FABDPhR/+urKov7LAQgr9wT5UGmZWN0bG7u4NDq0khzLPPXHtLd4+8
-	 WrzdLRT5Opy2KsjR1ZyqR9i0lKM2HBcCKXEJi4UzT1Gk9U2kYRK96KzWJUdeTgPv9K
-	 vREYFeKfkKlf3rDfmTnpOpe9GsNzYNDiLD95942G9VZhrlhL3CwZCMR/Zee/XTuWnz
-	 l+5wp7waFkobLsHTRrjjXFoVb2GupL+3Wse5kL1eKJBJ0iqJQMDJN+LRdv5cNPdwdh
-	 MoH5NrWi+LmZg==
-Date: Sun, 7 Apr 2024 17:52:33 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH 4/4] dmaengine: fsl-dpaa2-qdma: Update DPDMAI interfaces
- to version 3
-Message-ID: <ZhKQCego3QV_fkeW@matsya>
-References: <20240320-dpaa2-v1-0-eb56e47c94ec@nxp.com>
- <20240320-dpaa2-v1-4-eb56e47c94ec@nxp.com>
+	s=arc-20240116; t=1712492751; c=relaxed/simple;
+	bh=f15ijHKHL5tTNVMipWgkIcV3zDfQTQtbh4GNUzVRy5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h/uIDo7QOLahuHxDDNI4hOUqjdkMTQwxTE/PhjQbrC3NJ+/WCwQrS0Ey+cRdum3Z8OvqEb2TQAvVvvX/nmmHb/ebirlgoe5ivGKkNuMcm9maP4M8fbvsU6Qlx1t9qq+knubA1CLg02eIDHYWM3VQRDItTsJA/0O7NiRJ+RUmnmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hE6MSKNL; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46a7208eedso519214066b.0;
+        Sun, 07 Apr 2024 05:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712492748; x=1713097548; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLfoLTNekMPUU0C0Mf4nAFwbPI/B7C9TuC2nTj1WHg4=;
+        b=hE6MSKNLMppNl0eOgIS+LNZW7fg0eEDBugy2Ltz4TLgNGWhWfvWpPnOeOAShQab2AS
+         u1johE2AfyYL04aKWR2fI94Y5g4gR/SlnA8g6jM1YO07IAp2OgsrRNKNkwbj5AODM2M3
+         TgtmHkM9KzB00E72vUnNAHk837oStXRifziplTu8OLdC+EihO3F8tnj0JgWHlYeOmR4n
+         dTs/viFTfu3zX1x0MVusENGvacDL44J8XvPvODoXGtqVnJ2k02dbRCRuX/zdHh42V4lW
+         fFtVFnqGgYrI+fCnB+p+8z4AG1TIOoeadoMD9ZOq7i2LdFRq6c1IK7iOSgJIwDodkTCF
+         B5uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712492748; x=1713097548;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLfoLTNekMPUU0C0Mf4nAFwbPI/B7C9TuC2nTj1WHg4=;
+        b=nM4BJuLZBk9atz8YEDN6z2LmRmy4t1qv5jo4KR9ACutFIfePzPFjw2XyUgGFtGkvFE
+         ChWNeHy9GiEY+/R6jY0U2YHl6tgve2+Ds7Yw8qpHYnVkv0sOl7O7J3VWVv7SX4Qprr/9
+         cU5Ude8GRBKKxvDn/jmqc9h7bpmXteh5uaYB486CXOFRzVulhNA6XdRxNv8GQ+S8zxAk
+         DdAB4UcpFiKubO4l+0HTrdv6RJG09R9qtjTtsLN9op5oCPSoZrJqueIuRYSEmHYjU5YE
+         JOkZQUV9YyFAcw/xtPEjkBBepe8IVyTxtmYclrwCRlFwgnQv8Y62pqgyhbFdOM4zpE7F
+         b09A==
+X-Forwarded-Encrypted: i=1; AJvYcCWBYsVuy0BD39vACBibFYhxeR84QYP12fxWaCPgxCAjySbLBMiRbiasvif21vWpzxEa9wcoRAIIoIRMy2nQ9P8R/Io9Jex4KXqeyvkdTzNKqNDcAGdPWfV9u3x8Kuhu/nHZb41BtMn8
+X-Gm-Message-State: AOJu0Yy7RWSBaq1fcgrozB3+sRYpS1Ub50O9IFAhM8QPztHKuT9xJQmH
+	Aml4PA+bn077QZb9nsccAN1N7ulaHBv1zr+9jBdnNpz8aNQG2AEV
+X-Google-Smtp-Source: AGHT+IFDhmySNpY/v5TYJy78dIkbM10HsrYvBaKocJEoFGa3ZXCFwvTA8xvta4KZIzPmTgRtWt/V+Q==
+X-Received: by 2002:a17:906:f745:b0:a51:c553:81c1 with SMTP id jp5-20020a170906f74500b00a51c55381c1mr1669558ejb.26.1712492747695;
+        Sun, 07 Apr 2024 05:25:47 -0700 (PDT)
+Received: from foxbook (acgm220.neoplus.adsl.tpnet.pl. [83.9.240.220])
+        by smtp.gmail.com with ESMTPSA id lv27-20020a170906bc9b00b00a51a67f08d0sm2968824ejb.77.2024.04.07.05.25.46
+        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
+        Sun, 07 Apr 2024 05:25:47 -0700 (PDT)
+Date: Sun, 7 Apr 2024 14:25:42 +0200
+From: =?UTF-8?B?TWljaGHFgg==?= Pecio <michal.pecio@gmail.com>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Mathias Nyman <mathias.nyman@intel.com>, LKML
+ <linux-kernel@vger.kernel.org>, linux-usb@vger.kernel.org
+Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not
+ part of current TD ep_index 1 comp_code 1
+Message-ID: <20240407142542.036fb02f@foxbook>
+In-Reply-To: <c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
+References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
+	<20240405113247.743e34b2@foxbook>
+	<7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
+	<20240406183659.3daf4fa0@foxbook>
+	<c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="MP_/wWorqfnujcpmJC.mAxy2oYy"
+
+--MP_/wWorqfnujcpmJC.mAxy2oYy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20240320-dpaa2-v1-4-eb56e47c94ec@nxp.com>
 
-On 20-03-24, 15:39, Frank Li wrote:
-> Update the DPDMAI interfaces to support MC firmware up to 10.1x.x.
+This (and the absence of any earlier errors on the endpoint) looks
+like the hardware may be confirming a "successful" transfer twice or
+the driver may be processing one such confirmation twice.
 
-and what are these changes? Pls add them to log here...
+[   94.088594] usb 1-2: USB disconnect, device number 8
+[   94.089370] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+[   94.089403] xhci_hcd 0000:00:14.0: Looking for event-dma 00000001250310f0 trb-start 0000000125031100 trb-end 0000000125031100 seg-start 0000000125031000 seg-end 0000000125031ff0
+[   94.089427] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 1250310f0 last_dma 1250310f0 status -115 from finish_td
 
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 14 ++++-----
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |  5 ++--
->  drivers/dma/fsl-dpaa2-qdma/dpdmai.c     | 53 ++++++++++++++++++++++++---------
->  drivers/dma/fsl-dpaa2-qdma/dpdmai.h     | 35 ++++++++++++++--------
->  4 files changed, 72 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> index 5a8061a307cda..36384d0192636 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> @@ -362,7 +362,7 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  
->  	for (i = 0; i < priv->num_pairs; i++) {
->  		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, &priv->rx_queue_attr[i]);
-> +					  i, 0, &priv->rx_queue_attr[i]);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
->  			goto exit;
-> @@ -370,13 +370,13 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
->  
->  		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, &priv->tx_fqid[i]);
-> +					  i, 0, &priv->tx_queue_attr[i]);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
->  			goto exit;
->  		}
-> -		ppriv->req_fqid = priv->tx_fqid[i];
-> -		ppriv->prio = i;
-> +		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
-> +		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
->  		ppriv->priv = priv;
->  		ppriv++;
->  	}
-> @@ -542,7 +542,7 @@ static int __cold dpaa2_dpdmai_bind(struct dpaa2_qdma_priv *priv)
->  		rx_queue_cfg.dest_cfg.dest_id = ppriv->nctx.dpio_id;
->  		rx_queue_cfg.dest_cfg.priority = ppriv->prio;
->  		err = dpdmai_set_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  rx_queue_cfg.dest_cfg.priority,
-> +					  rx_queue_cfg.dest_cfg.priority, 0,
->  					  &rx_queue_cfg);
->  		if (err) {
->  			dev_err(dev, "dpdmai_set_rx_queue() failed\n");
-> @@ -642,7 +642,7 @@ static int dpaa2_dpdmai_init_channels(struct dpaa2_qdma_engine *dpaa2_qdma)
->  	for (i = 0; i < dpaa2_qdma->n_chans; i++) {
->  		dpaa2_chan = &dpaa2_qdma->chans[i];
->  		dpaa2_chan->qdma = dpaa2_qdma;
-> -		dpaa2_chan->fqid = priv->tx_fqid[i % num];
-> +		dpaa2_chan->fqid = priv->tx_queue_attr[i % num].fqid;
->  		dpaa2_chan->vchan.desc_free = dpaa2_qdma_free_desc;
->  		vchan_init(&dpaa2_chan->vchan, &dpaa2_qdma->dma_dev);
->  		spin_lock_init(&dpaa2_chan->queue_lock);
-> @@ -802,7 +802,7 @@ static void dpaa2_qdma_shutdown(struct fsl_mc_device *ls_dev)
->  	dpdmai_disable(priv->mc_io, 0, ls_dev->mc_handle);
->  	dpaa2_dpdmai_dpio_unbind(priv);
->  	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
-> -	dpdmai_destroy(priv->mc_io, 0, ls_dev->mc_handle);
-> +	dpdmai_destroy(priv->mc_io, 0, priv->dpqdma_id, ls_dev->mc_handle);
->  }
->  
->  static const struct fsl_mc_device_id dpaa2_qdma_id_table[] = {
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> index 03e2f4e0baca8..2c80077cb7c0a 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> @@ -6,6 +6,7 @@
->  
->  #define DPAA2_QDMA_STORE_SIZE 16
->  #define NUM_CH 8
-> +#define DPAA2_QDMA_DEFAULT_PRIORITY 0
->  
->  struct dpaa2_qdma_sd_d {
->  	u32 rsv:32;
-> @@ -122,8 +123,8 @@ struct dpaa2_qdma_priv {
->  	struct dpaa2_qdma_engine	*dpaa2_qdma;
->  	struct dpaa2_qdma_priv_per_prio	*ppriv;
->  
-> -	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_PRIO_NUM];
-> -	u32 tx_fqid[DPDMAI_PRIO_NUM];
-> +	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
-> +	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
->  };
->  
->  struct dpaa2_qdma_priv_per_prio {
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> index 610f6231835a8..7fbe925831b8b 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> @@ -1,42 +1,58 @@
->  // SPDX-License-Identifier: GPL-2.0
->  // Copyright 2019 NXP
->  
-> +#include <linux/bitfield.h>
->  #include <linux/module.h>
->  #include <linux/types.h>
->  #include <linux/io.h>
->  #include <linux/fsl/mc.h>
->  #include "dpdmai.h"
->  
-> +#define DEST_TYPE_MASK 0xF
-> +
->  struct dpdmai_rsp_get_attributes {
->  	__le32 id;
->  	u8 num_of_priorities;
-> -	u8 pad0[3];
-> +	u8 num_of_queues;
-> +	u8 pad0[2];
->  	__le16 major;
->  	__le16 minor;
->  };
->  
->  struct dpdmai_cmd_queue {
->  	__le32 dest_id;
-> -	u8 priority;
-> -	u8 queue;
-> +	u8 dest_priority;
-> +	union {
-> +		u8 queue;
-> +		u8 pri;
-> +	};
->  	u8 dest_type;
-> -	u8 pad;
-> +	u8 queue_idx;
->  	__le64 user_ctx;
->  	union {
->  		__le32 options;
->  		__le32 fqid;
->  	};
-> -};
-> +} __packed;
->  
->  struct dpdmai_rsp_get_tx_queue {
->  	__le64 pad;
->  	__le32 fqid;
->  };
->  
-> +struct dpdmai_rsp_is_enabled {
-> +	/* only the LSB bit */
-> +	u8 en;
-> +} __packed;
-> +
->  struct dpdmai_cmd_open {
->  	__le32 dpdmai_id;
->  } __packed;
->  
-> +struct dpdmai_cmd_destroy {
-> +	__le32 dpdmai_id;
-> +} __packed;
-> +
->  static inline u64 mc_enc(int lsoffset, int width, u64 val)
->  {
->  	return (val & MAKE_UMASK64(width)) << lsoffset;
-> @@ -113,18 +129,23 @@ EXPORT_SYMBOL_GPL(dpdmai_close);
->   * dpdmai_destroy() - Destroy the DPDMAI object and release all its resources.
->   * @mc_io:      Pointer to MC portal's I/O object
->   * @cmd_flags:  Command flags; one or more of 'MC_CMD_FLAG_'
-> + * @dpdmai_id:	The object id; it must be a valid id within the container that created this object;
->   * @token:      Token of DPDMAI object
->   *
->   * Return:      '0' on Success; error code otherwise.
->   */
-> -int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
-> +int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u32 dpdmai_id, u16 token)
->  {
-> +	struct dpdmai_cmd_destroy *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
->  
->  	/* prepare command */
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_DESTROY,
->  					  cmd_flags, token);
->  
-> +	cmd_params = (struct dpdmai_cmd_destroy *)&cmd.params;
-> +	cmd_params->dpdmai_id = cpu_to_le32(dpdmai_id);
-> +
->  	/* send command to mc*/
->  	return mc_send_command(mc_io, &cmd);
->  }
-> @@ -224,6 +245,7 @@ int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  	attr->version.major = le16_to_cpu(rsp_params->major);
->  	attr->version.minor = le16_to_cpu(rsp_params->minor);
->  	attr->num_of_priorities = rsp_params->num_of_priorities;
-> +	attr->num_of_queues = rsp_params->num_of_queues;
->  
->  	return 0;
->  }
-> @@ -240,7 +262,7 @@ EXPORT_SYMBOL_GPL(dpdmai_get_attributes);
->   *
->   * Return:	'0' on Success; Error code otherwise.
->   */
-> -int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> +int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token, u8 queue_idx,
->  			u8 priority, const struct dpdmai_rx_queue_cfg *cfg)
->  {
->  	struct dpdmai_cmd_queue *cmd_params;
-> @@ -252,11 +274,12 @@ int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
->  
->  	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
->  	cmd_params->dest_id = cpu_to_le32(cfg->dest_cfg.dest_id);
-> -	cmd_params->priority = cfg->dest_cfg.priority;
-> -	cmd_params->queue = priority;
-> +	cmd_params->dest_priority = cfg->dest_cfg.priority;
-> +	cmd_params->pri = priority;
->  	cmd_params->dest_type = cfg->dest_cfg.dest_type;
->  	cmd_params->user_ctx = cpu_to_le64(cfg->user_ctx);
->  	cmd_params->options = cpu_to_le32(cfg->options);
-> +	cmd_params->queue_idx = queue_idx;
->  
->  	/* send command to mc*/
->  	return mc_send_command(mc_io, &cmd);
-> @@ -274,7 +297,7 @@ EXPORT_SYMBOL_GPL(dpdmai_set_rx_queue);
->   *
->   * Return:	'0' on Success; Error code otherwise.
->   */
-> -int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> +int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token, u8 queue_idx,
->  			u8 priority, struct dpdmai_rx_queue_attr *attr)
->  {
->  	struct dpdmai_cmd_queue *cmd_params;
-> @@ -287,6 +310,7 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
->  
->  	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
->  	cmd_params->queue = priority;
-> +	cmd_params->queue_idx = queue_idx;
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -295,8 +319,8 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
->  
->  	/* retrieve response parameters */
->  	attr->dest_cfg.dest_id = le32_to_cpu(cmd_params->dest_id);
-> -	attr->dest_cfg.priority = cmd_params->priority;
-> -	attr->dest_cfg.dest_type = cmd_params->dest_type;
-> +	attr->dest_cfg.priority = cmd_params->dest_priority;
-> +	attr->dest_cfg.dest_type = FIELD_GET(DEST_TYPE_MASK, cmd_params->dest_type);
->  	attr->user_ctx = le64_to_cpu(cmd_params->user_ctx);
->  	attr->fqid = le32_to_cpu(cmd_params->fqid);
->  
-> @@ -316,7 +340,7 @@ EXPORT_SYMBOL_GPL(dpdmai_get_rx_queue);
->   * Return:	'0' on Success; Error code otherwise.
->   */
->  int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -			u16 token, u8 priority, u32 *fqid)
-> +			u16 token, u8 queue_idx, u8 priority, struct dpdmai_tx_queue_attr *attr)
->  {
->  	struct dpdmai_rsp_get_tx_queue *rsp_params;
->  	struct dpdmai_cmd_queue *cmd_params;
-> @@ -329,6 +353,7 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  
->  	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
->  	cmd_params->queue = priority;
-> +	cmd_params->queue_idx = queue_idx;
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -338,7 +363,7 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  	/* retrieve response parameters */
->  
->  	rsp_params = (struct dpdmai_rsp_get_tx_queue *)cmd.params;
-> -	*fqid = le32_to_cpu(rsp_params->fqid);
-> +	attr->fqid = le32_to_cpu(rsp_params->fqid);
->  
->  	return 0;
->  }
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> index 3f2db582509a1..1efca2a305334 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> @@ -5,14 +5,19 @@
->  #define __FSL_DPDMAI_H
->  
->  /* DPDMAI Version */
-> -#define DPDMAI_VER_MAJOR	2
-> -#define DPDMAI_VER_MINOR	2
-> +#define DPDMAI_VER_MAJOR	3
-> +#define DPDMAI_VER_MINOR	3
->  
-> -#define DPDMAI_CMD_BASE_VERSION	0
-> +#define DPDMAI_CMD_BASE_VERSION	1
->  #define DPDMAI_CMD_ID_OFFSET	4
->  
-> -#define DPDMAI_CMDID_FORMAT(x)	(((x) << DPDMAI_CMD_ID_OFFSET) | \
-> -				DPDMAI_CMD_BASE_VERSION)
-> +/*
-> + * Maximum number of Tx/Rx queues per DPDMAI object
-> + */
-> +#define DPDMAI_MAX_QUEUE_NUM	8
-> +
-> +#define DPDMAI_CMDID_FORMAT_V(x, v)	(((x) << DPDMAI_CMD_ID_OFFSET) | (v))
-> +#define DPDMAI_CMDID_FORMAT(x)		DPDMAI_CMDID_FORMAT_V(x, DPDMAI_CMD_BASE_VERSION)
->  
->  /* Command IDs */
->  #define DPDMAI_CMDID_CLOSE		DPDMAI_CMDID_FORMAT(0x800)
-> @@ -26,9 +31,9 @@
->  #define DPDMAI_CMDID_RESET              DPDMAI_CMDID_FORMAT(0x005)
->  #define DPDMAI_CMDID_IS_ENABLED         DPDMAI_CMDID_FORMAT(0x006)
->  
-> -#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMDID_FORMAT(0x1A0)
-> -#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A1)
-> -#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A2)
-> +#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMDID_FORMAT_V(0x1A0, 2)
-> +#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMDID_FORMAT_V(0x1A1, 2)
-> +#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMDID_FORMAT_V(0x1A2, 2)
->  
->  #define MC_CMD_HDR_TOKEN_O 32  /* Token field offset */
->  #define MC_CMD_HDR_TOKEN_S 16  /* Token field size */
-> @@ -64,6 +69,7 @@
->   *	should be configured with 0
->   */
->  struct dpdmai_cfg {
-> +	u8 num_queues;
->  	u8 priorities[DPDMAI_PRIO_NUM];
->  };
->  
-> @@ -85,6 +91,7 @@ struct dpdmai_attr {
->  		u16 minor;
->  	} version;
->  	u8 num_of_priorities;
-> +	u8 num_of_queues;
->  };
->  
->  /**
-> @@ -149,20 +156,24 @@ struct dpdmai_rx_queue_attr {
->  	u32 fqid;
->  };
->  
-> +struct dpdmai_tx_queue_attr {
-> +	u32 fqid;
-> +};
-> +
->  int dpdmai_open(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  		int dpdmai_id, u16 *token);
->  int dpdmai_close(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
-> -int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
-> +int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u32 dpdmai_id, u16 token);
->  int dpdmai_enable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_reset(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  			  u16 token, struct dpdmai_attr	*attr);
->  int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, const struct dpdmai_rx_queue_cfg *cfg);
-> +			u8 queue_idx, u8 priority, const struct dpdmai_rx_queue_cfg *cfg);
->  int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, struct dpdmai_rx_queue_attr *attr);
-> +			u8 queue_idx, u8 priority, struct dpdmai_rx_queue_attr *attr);
->  int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -			u16 token, u8 priority, u32 *fqid);
-> +			u16 token, u8 queue_idx, u8 priority, struct dpdmai_tx_queue_attr *attr);
->  
->  #endif /* __FSL_DPDMAI_H */
-> 
-> -- 
-> 2.34.1
+(I say "successful" but it really isn't - the device is no longer
+listening. But there is no delivery confirmation on isochronous OUT
+endpoints so the xHC doesn't suspect anything.)
 
--- 
-~Vinod
+Could you try again with this updated debug patch to get more info?
+
+Regards,
+Michal
+
+--MP_/wWorqfnujcpmJC.mAxy2oYy
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=xhci-noise-v2.patch
+
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 52278afea94b..21886ef303db 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -843,11 +843,16 @@ static void xhci_unmap_td_bounce_buffer(struct xhci_hcd *xhci,
+ 	seg->bounce_offs = 0;
+ }
+ 
+-static int xhci_td_cleanup(struct xhci_hcd *xhci, struct xhci_td *td,
+-			   struct xhci_ring *ep_ring, int status)
++static int __xhci_td_cleanup(struct xhci_hcd *xhci, struct xhci_td *td,
++			   struct xhci_ring *ep_ring, int status, const char *from)
+ {
+ 	struct urb *urb = NULL;
+ 
++	ep_ring->cleanup_first_dma = xhci_trb_virt_to_dma(ep_ring->deq_seg, td->first_trb);
++	ep_ring->cleanup_last_dma = xhci_trb_virt_to_dma(ep_ring->deq_seg, td->last_trb);
++	ep_ring->cleanup_status = status;
++	ep_ring->cleanup_from = from;
++
+ 	/* Clean up the endpoint's TD list */
+ 	urb = td->urb;
+ 
+@@ -891,6 +896,8 @@ static int xhci_td_cleanup(struct xhci_hcd *xhci, struct xhci_td *td,
+ 	return 0;
+ }
+ 
++#define xhci_td_cleanup(xhci, td, ep_ring, status) __xhci_td_cleanup(xhci, td, ep_ring, status, __func__)
++
+ 
+ /* Complete the cancelled URBs we unlinked from td_list. */
+ static void xhci_giveback_invalidated_tds(struct xhci_virt_ep *ep)
+@@ -2179,6 +2186,15 @@ static int finish_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
+ 		     u32 trb_comp_code)
+ {
+ 	struct xhci_ep_ctx *ep_ctx;
++	struct urb_priv *urb_priv;
++	struct usb_iso_packet_descriptor *frame;
++
++	urb_priv = td->urb->hcpriv;
++	frame = &td->urb->iso_frame_desc[urb_priv->num_tds_done];
++
++	if (ep_ring->interesting)
++		xhci_info(xhci, "finish_td td_status %d comp_code %d frame_status %d frame_actual_length %d\n",
++				td->status, trb_comp_code, frame->status, frame->actual_length);
+ 
+ 	ep_ctx = xhci_get_ep_ctx(xhci, ep->vdev->out_ctx, ep->ep_index);
+ 
+@@ -2391,12 +2407,17 @@ static int process_isoc_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
+ 	short_framestatus = td->urb->transfer_flags & URB_SHORT_NOT_OK ?
+ 		-EREMOTEIO : 0;
+ 
++	if (ep_ring->interesting)
++		xhci_info(xhci, "process_isoc_td event %px requested %u ep_trb_len %u remaining %u\n", event, requested, ep_trb_len, remaining);
++
+ 	/* handle completion code */
+ 	switch (trb_comp_code) {
+ 	case COMP_SUCCESS:
+ 		/* Don't overwrite status if TD had an error, see xHCI 4.9.1 */
+-		if (td->error_mid_td)
++		if (td->error_mid_td) {
++			xhci_info(xhci, "Got SUCCESS after mid TD error\n");
+ 			break;
++		}
+ 		if (remaining) {
+ 			frame->status = short_framestatus;
+ 			if (xhci->quirks & XHCI_TRUST_TX_LENGTH)
+@@ -2462,7 +2483,7 @@ static int process_isoc_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
+ finish_td:
+ 	/* Don't give back TD yet if we encountered an error mid TD */
+ 	if (td->error_mid_td && ep_trb != td->last_trb) {
+-		xhci_dbg(xhci, "Error mid isoc TD, wait for final completion event\n");
++		xhci_info(xhci, "Error mid isoc TD, wait for final completion event\n");
+ 		td->urb_length_set = true;
+ 		return 0;
+ 	}
+@@ -2597,6 +2618,11 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 	trb_comp_code = GET_COMP_CODE(le32_to_cpu(event->transfer_len));
+ 	ep_trb_dma = le64_to_cpu(event->buffer);
+ 
++	bool interesting = trb_comp_code != COMP_SUCCESS && trb_comp_code != COMP_SHORT_PACKET;
++	if (interesting)
++		xhci_info(xhci, "handle_tx_event event %px ep_trb_dma %llx comp_code %d len %u slot %u ep %d\n",
++				event, ep_trb_dma, trb_comp_code, EVENT_TRB_LEN(le32_to_cpu(event->transfer_len)), slot_id, ep_index);
++
+ 	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
+ 	if (!ep) {
+ 		xhci_err(xhci, "ERROR Invalid Transfer event\n");
+@@ -2606,6 +2632,11 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 	ep_ring = xhci_dma_to_transfer_ring(ep, ep_trb_dma);
+ 	ep_ctx = xhci_get_ep_ctx(xhci, ep->vdev->out_ctx, ep_index);
+ 
++	snprintf(&ep_ring->log_b[ep_ring->log_i++][0], 100,
++			"event %px ep_trb_dma %llx comp_code %d len %u slot %u ep %d",
++			event, ep_trb_dma, trb_comp_code, EVENT_TRB_LEN(le32_to_cpu(event->transfer_len)), slot_id, ep_index);
++	ep_ring->log_i %= 5;
++
+ 	if (GET_EP_CTX_STATE(ep_ctx) == EP_STATE_DISABLED) {
+ 		xhci_err(xhci,
+ 			 "ERROR Transfer event for disabled endpoint slot %u ep %u\n",
+@@ -2640,6 +2671,11 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 		}
+ 	}
+ 
++	if (!interesting && ep_ring->interesting)
++		xhci_info(xhci, "handle_tx_event event %px ep_trb_dma %llx comp_code %d len %u slot %u ep %d\n",
++				event, ep_trb_dma, trb_comp_code, EVENT_TRB_LEN(le32_to_cpu(event->transfer_len)), slot_id, ep_index);
++	ep_ring->interesting |= interesting;
++
+ 	/* Count current td numbers if ep->skip is set */
+ 	if (ep->skip)
+ 		td_num += list_count_nodes(&ep_ring->td_list);
+@@ -2831,6 +2867,12 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 		ep_seg = trb_in_td(xhci, td->start_seg, td->first_trb,
+ 				td->last_trb, ep_trb_dma, false);
+ 
++		if (ep_ring->interesting)
++			xhci_info(xhci, "handle_tx_event event %px first_trb %llx last_trb %llx ep_seg %llx\n", event,
++					xhci_trb_virt_to_dma(ep_ring->deq_seg, td->first_trb),
++					xhci_trb_virt_to_dma(ep_ring->deq_seg, td->last_trb),
++					ep_seg? ep_seg->dma: -1);
++
+ 		/*
+ 		 * Skip the Force Stopped Event. The event_trb(event_dma) of FSE
+ 		 * is not in the current TD pointed by ep_ring->dequeue because
+@@ -2880,7 +2922,7 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 						   td_next->last_trb, ep_trb_dma, false);
+ 				if (ep_seg) {
+ 					/* give back previous TD, start handling new */
+-					xhci_dbg(xhci, "Missing TD completion event after mid TD error\n");
++					xhci_info(xhci, "Missing TD completion event after mid TD error\n");
+ 					ep_ring->dequeue = td->last_trb;
+ 					ep_ring->deq_seg = td->last_trb_seg;
+ 					inc_deq(xhci, ep_ring);
+@@ -2898,9 +2940,16 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 					trb_comp_code);
+ 				trb_in_td(xhci, td->start_seg, td->first_trb,
+ 					  td->last_trb, ep_trb_dma, true);
++				xhci_info(xhci, "last xhci_td_cleanup: first_dma %llx last_dma %llx status %d from %s\n",
++						ep_ring->cleanup_first_dma, ep_ring->cleanup_last_dma,
++						ep_ring->cleanup_status, ep_ring->cleanup_from);
++				for (int i = 0; i < 5; i++)
++					xhci_info(xhci, "handle_tx_event log %2d: %s\n", i-4, &ep_ring->log_b[(ep_ring->log_i + i) % 5][0]);
++				ep_ring->interesting = true;
+ 				return -ESHUTDOWN;
+ 			}
+ 		}
++
+ 		if (trb_comp_code == COMP_SHORT_PACKET)
+ 			ep_ring->last_td_was_short = true;
+ 		else
+@@ -2958,6 +3007,8 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 	 */
+ 	} while (handling_skipped_tds);
+ 
++	ep_ring->interesting = interesting;
++
+ 	return 0;
+ 
+ err_out:
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 6f4bf98a6282..7e2c83e3b9e9 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1360,7 +1360,16 @@ struct xhci_ring {
+ 	unsigned int		bounce_buf_len;
+ 	enum xhci_ring_type	type;
+ 	bool			last_td_was_short;
++	bool			interesting;
+ 	struct radix_tree_root	*trb_address_map;
++
++	dma_addr_t		cleanup_first_dma;
++	dma_addr_t		cleanup_last_dma;
++	const char		*cleanup_from;
++	int			cleanup_status;
++
++	int			log_i;
++	char			log_b[5][100];
+ };
+ 
+ struct xhci_erst_entry {
+
+--MP_/wWorqfnujcpmJC.mAxy2oYy--
 
