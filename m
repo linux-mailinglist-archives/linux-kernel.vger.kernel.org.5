@@ -1,342 +1,196 @@
-Return-Path: <linux-kernel+bounces-134340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F4689B07C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:48:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032E489B082
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:55:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C48281EAD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:48:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DB1D1C210F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182E32033E;
-	Sun,  7 Apr 2024 10:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795FD23768;
+	Sun,  7 Apr 2024 10:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Haca364Q"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V18iottp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE091171C2;
-	Sun,  7 Apr 2024 10:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712486887; cv=none; b=IaCP+x1pR48eGEeisMCBjCDqqw3z7YnBDoX5hjpEnDgieQt/Sj41wJ90pFFLHI+OUNTrivMhGK5F0C9j2q/PBRaV3whfX18hqT/0vkk5e3LIyC+26eIDZhXpSLimD7hydaMYo3/BebCAO0H+dsC1Xi8xj4/cSUf+pIFcpnw1AR0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712486887; c=relaxed/simple;
-	bh=WND8nqTcqtozkSVRBjArMr9u2PcKBRM5bXkY7L2qFKE=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=J6fWN2t1vQRJ23dW+UtXo4J2azccj3VPBfoYudGAN2saOdxQnPqL7OBi09ySj2rrjY7Qa0CZH+JtvbmgN4iLZtTnH1FJRJpJOkCo0QhNqefNJx81KNGP16wNC0cF8kOoIjcjasFIIzs4pm3m7Y7cdH4eb2n4mlV+tGQuDMZlCoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=Haca364Q; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1712486882; x=1712746082;
-	bh=ctndbIi1qNMHTZQx+z4WPGIuPrEjGdHDgyx+DX7ko64=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=Haca364QpPCjNbR4xVAXDq/EZ4DZMie6arChYuh+7jxME1O2Z5KTSG5JoQwoYuYLk
-	 cLBSsuKDtcVUhz5DbRl8JzTRodoHTwqxy7HDXVBcuHFwLifNQnrbGhvIUxhxe6B0tr
-	 fdaIFp4emb0UG6zbB5SGt9xWlOklBG1/+xXbaLVUpZ2oSc6psBgIVSwtMY6BgXcPMu
-	 0MGQzvP0kLzjf66c+pXobqJa5yUbYW6UOgeHY/Cg8zigrosXaVYlo+xhQDxceBiJvC
-	 6rt2lCxE/hOsHlKvnCLxvu5/JTiePG9n/XRd8Kq9hGbdw2GLCJTT9ZTRDKpkuNhm9W
-	 rqxHd+850hPAQ==
-Date: Sun, 07 Apr 2024 10:47:54 +0000
-To: syzbot+f3a09670f3d2a55b89b2@syzkaller.appspotmail.com
-From: "xrivendell7@protonmail.com" <xrivendell7@protonmail.com>
-Cc: dhowells@redhat.com, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, netfs@lists.linux.dev, syzkaller-bugs@googlegroups.com, samsun1006219@gmail.com
-Subject: Re: [syzbot] [netfs?] divide error in netfs_submit_writethrough
-Message-ID: <35BF4F4E-C41B-442A-B542-8DFE1846449C@protonmail.com>
-Feedback-ID: 80993288:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1563F225A8;
+	Sun,  7 Apr 2024 10:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712487315; cv=fail; b=Mfc/LIoJSyjENW5qRQn+XGmTVdO3lNn80UWY9jXancLvGqlgOramjQ8VDeEl7Cp1Zszd4FWchKmM/gYr+t2XgQ27Z9ECMXqJShddMKJhJfFRlsn/yrGJI9jowViCfkPXa2/JFs/Tyz2x51QNi+JD6S/J1+jm3r3dQSMIN4eUzEU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712487315; c=relaxed/simple;
+	bh=2OYU2oF3VGflVK/JdrjY8LoumYbs7cmjs6YN8VdSHe8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=uLK4KgZY8vrAw5+tzA5uhH6T8mMEHP9zj7dmT0CwEgvhLw+v/RCTfdEZoYteeG2mLGJtpUbqVwEMB1s6X0dxXS3VJxrrZCRHXmtBCQKiQj120U5k3RCm0eu8D8RevLJnGiq9i7SV386pV8LLFeQBE+wwnkQuTfsWek8WCZ51vQM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V18iottp; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712487313; x=1744023313;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=2OYU2oF3VGflVK/JdrjY8LoumYbs7cmjs6YN8VdSHe8=;
+  b=V18iottp+8HHhwlGtxs9Eads/bYEU0oOMNgLeeCt907dngTL2Jh07cGE
+   aHCiVSieB19KfhY/EklaA7xOCTVaMMOx3aH31w2mwbVagvcVN811QB7/f
+   xIdzI9ORcY9ft93FQz4QBxSzxI75HXXzn+3FHcCTFBKpUvPgkS1X4UlaS
+   KctwJmRFB17YjNDVLVi47cddU/Ttks4vDSW+wcP1n5Y86qtNIzH+poqax
+   +Brs1pneJsmYVfnvy6DFptp5kcisATX+K1Ecld2F6gUThRv5NA6cGFXVE
+   hyolEuz7zT5UQRAE1zPyjzhfidk6dko1IItey7E4rKy01aydKNpGGSfB5
+   A==;
+X-CSE-ConnectionGUID: pxtxflFQRMOr1YafVZbQUg==
+X-CSE-MsgGUID: P3ljBFvlSZKmbyhECi3AVQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="18390015"
+X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
+   d="scan'208";a="18390015"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 03:55:00 -0700
+X-CSE-ConnectionGUID: bnS0PBImQ/+uxRHcjkHB8w==
+X-CSE-MsgGUID: mTjcjgaPRE+hiVRgJwPyKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
+   d="scan'208";a="19534102"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Apr 2024 03:54:57 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 7 Apr 2024 03:54:55 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 7 Apr 2024 03:54:55 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 7 Apr 2024 03:54:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AZOT8jF6GqfH7fVmXs9AkIEKeaaWU61M6TlmRywUOnTmrgbJSeid/xTPQHlFP/1xIrEejzYao1WoHboYR+wjitZWgA+n2KGj24lclZE4IU+o/XRVMX4a71pXTb0N93/gJGgGysHISSoNxXMrWG4muF8l28JSp9mJOt75RQ+OeG06ndYgwPMEhYmJe/g0HCdzlJNoOwwyPFkefMDLtBkMzy3EniHshmIqBDBzRS0Zs4QLa9HU3+8cjlnrqIesRRaaSgXaaUOx2COUZ0aYsKrQpf8n6+913l/dUCvjQs0I57DDeuvJwzp8ff3z8d9/8qHpIGByRq4MTu+G//KqGqJm5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Hr9nmO/sfc76cJ5E5JehsO7jOKoHyns2Ur6wSwJ9/QE=;
+ b=ltezBYA6UlJcOFmSafN2ATLZbRYKTFbC/cbqtsa4QD98zLRyRJ7/DdFwCckJMLhLnPpUBeGwkSxgSw+Yn3cM9cFflB73Ik9VubN+Z+I1EXJhvVirfPb832pG6QcoP06RkQFrHvvM3OG7/+d6S00Ts9MAZUVAsqPiFD1xgWBS7q5W+tAO3Zs3IBUsZzgHYCgbyAfl6VxcaZmGykLNxD+wyN0PA7YNp8cU7wY3Wrae8wbtF+XCYvjWBC4/IoAg1ws7cjLz7aDQPmM8wvCpRGhU3wmz98F2X0X23bxuIoASm7K2B8KTYCvs6oBiNxIEl1U59pGJxrN0ygqxxARv8l1rYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by PH7PR11MB7961.namprd11.prod.outlook.com (2603:10b6:510:244::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Sun, 7 Apr
+ 2024 10:54:53 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::3637:7937:fc13:5077]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::3637:7937:fc13:5077%7]) with mapi id 15.20.7409.039; Sun, 7 Apr 2024
+ 10:54:53 +0000
+Date: Sun, 7 Apr 2024 18:50:13 +0800
+From: Pengfei Xu <pengfei.xu@intel.com>
+To: Alexander Wetzel <alexander@wetzel-home.de>
+CC: syzbot <syzbot+93cdc797590ffc710918@syzkaller.appspotmail.com>,
+	<dgilbert@interlog.com>, <jejb@linux.ibm.com>,
+	<linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<martin.petersen@oracle.com>, <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [scsi?] WARNING in sg_remove_sfp_usercontext
+Message-ID: <ZhJ6ZQc8KkOX01CW@xpf.sh.intel.com>
+References: <000000000000a6e0450614b960ac@google.com>
+ <00000000000007e8290614c036a6@google.com>
+ <Zg6HlGO8ZyRQZSUA@xpf.sh.intel.com>
+ <0c2ee56a-13a6-4d93-8c45-f43f551bf1da@wetzel-home.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <0c2ee56a-13a6-4d93-8c45-f43f551bf1da@wetzel-home.de>
+X-ClientProxiedBy: SGBP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::13)
+ To PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|PH7PR11MB7961:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 482jrdzeujcYW3wofnWV3G3I+THzh2D14Y2K89ppnTXh6da0WkY+5llRsfjJyPbb2u7+4aOyFQ3MQKmKVYZS8IaEJ4zDIMmaKfXVzgPpActagEPimgRy6W9xRnzRmFubWeF10ZXrseXUavAmDyeFAXEMAM+Jv6SJh1EatgqYrq3xO8BBs+CaAS9bXnxGsaP+IQwAfS8Sgyc13cSqUGVy61AS4n7kiJ9T4eLzXuy0m2bo9JIrfEBC7kqTGMHMIIhBAv/q35vZPGPaejGuaVrEVpYnmFRWWZqYar4l5uZlN/C08y3rjx95TRtOTEEKPDsYABJzwYjxufugc7wLxZECRZJHU+F8D+P1HrW/gdgdwAmswWViQwmBWZNMW8UIcxnpEyAIUk7PpCq9SoNswn4+s/29WRaF34WZ2YivHkOz5pNMlT+TAG6WVwViEUoG8jSVBDDZge/qDAtnGVyBB74JCR8PQxh2RoVtTiq+h6fDhJR8aOent9FJfx7cgKYdB5ZhrW2JrncVk/PdUcYkRfebn2dJZ0tdRg56r/bQYpdT6NKpBOfYZiReLdjuob3juh51a6RnEktJ1IcqGlOdm4P1N0qkAD1GGHhDEv73xiMMzh0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4839.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ta4rNUbgsipHWiPNh7S3AQZ8vu2bsCCdjxgCppABzGRV0nTiWODMksnhb9MV?=
+ =?us-ascii?Q?vYBdDKrr+gj7vJNKLVxeAF7DyW5ai+KviRRp6ILc1XWj1+KK04/ihh9wUieI?=
+ =?us-ascii?Q?+vFKBElzW5XJy8VeAeW0Tcy5RlwwwI8OZygaeh6y1YLh0G9RvwNt+Jqg1Lk2?=
+ =?us-ascii?Q?86Q2NoPYFOGLDHtxGWjHIV2/3d85Vj40/lgtcU+Y0f0uR6BJe08TrIB0b0Yp?=
+ =?us-ascii?Q?jP6Eba7gm36iKGMjCcxJBfKylJXAmOW/+gw9MzfnHn6WsR98BQZCPtdQVzeb?=
+ =?us-ascii?Q?3dUunLjTfDHUk+Lb6crkQc7HxAIWRG/TsGv4/Rx8nFXhM+mrOETQh9jU03Xb?=
+ =?us-ascii?Q?NiO2qYPgDZ5m/nXnHazerTeYEDCo2CHkQ2N4Q6Juyq3JdUOGZ+ziqMjlqLhj?=
+ =?us-ascii?Q?J7EyQfXRRzHy4derW+7/wUdrFPGE77jIU1Tgv6f5HNhyzh/MBIxDVjBwTbD6?=
+ =?us-ascii?Q?kN/QnADBjwluYWdZvdke5kuw4kOpy6bLFXklQQpvizdPSmxBo511zLOzGmQE?=
+ =?us-ascii?Q?Kpg9le5El22/70c7mVXF2fXep7vC9Oe/VUWGHY+/TK33uAo36Blts2EhFg0a?=
+ =?us-ascii?Q?DfEYEirYmVxMYFF9CkY+RLUjMxzoN3OF8F5zvjIILHjlJxN5skvHX4vq9voj?=
+ =?us-ascii?Q?XcAUGD2+VYpeM9rUpjtZHbSrk1ie+9nRCey1oY1X2JSwxhBhQzbuy4ZP/Iam?=
+ =?us-ascii?Q?RIeKzrVQU72LGRkDxzUgkVHJ9/iD9uO6brEMiRYXAkRyopMdUgOaeYcKP9XW?=
+ =?us-ascii?Q?NmjUvTBgITQ+Z+gG5Lp3CR61YUcUYzYT+JhIo/mLbYy+ah8DJ7yEP/1OwNQu?=
+ =?us-ascii?Q?iZ/IipL62VOZchWBRzERm8e0KtxmEJlhujOiMUVuK2uKq8ARMNmIl/odrwSj?=
+ =?us-ascii?Q?h7ikOSjr65y2lggsN6nu0/rmmDJIaLSZ7ghLT9/oHRnIjvHQQsIGFAu4+Le0?=
+ =?us-ascii?Q?Jq9YbHAR0UwVhI1exqwfKBbQyZbBNcpWG+5UdUSStBlPMa2KSYnDVLZ6ydVs?=
+ =?us-ascii?Q?d5gt2u/27Y2IM1zJfpzPW+zXySuwrx4h/QTwWmM5qLiMqBGdN66T7briBfoD?=
+ =?us-ascii?Q?TghcK6NfRc/are/cj2xdiRWFWRX907DDWxoKH/x/vdcM9SLgRdTy/3xERiNx?=
+ =?us-ascii?Q?j10fqzvcDkcmASZZClUIU4OVtHh3EITpgB05KLUVe4VXJe5tK1ERUV0loROY?=
+ =?us-ascii?Q?To8gtXrMyH14LQOP3tAo57Zi2M5Ixy+uZnNHTR0VH4jZ/6Eh2YdtjnCZRBQ3?=
+ =?us-ascii?Q?wdsIGppOkooWdDbLj3cRzMbmvYoOKNLxKJ0J5p3QeiRrmqQs3+7s2YWqcxrD?=
+ =?us-ascii?Q?m2kw66Bp4Y77fflxubgdsfmVUB0LpP5T4aCjbO4duPxZVaOPdBx+9ZlUkzF6?=
+ =?us-ascii?Q?KLZ5eMditvpeSrd6ZcuPI4sXi3XyAnjbA5XqkLPp41dVlZCHYCV1kO+9Ws4T?=
+ =?us-ascii?Q?23wW6PKU23/nkbv+7m1NYFrb7I4SPc3sUPlDio/oc84Lehznq+zo952FGL9F?=
+ =?us-ascii?Q?pgKuZfvoJnXfv1346s5xaEPq6OFsLgEvH6cxHQbVjdwOXSpT7cFYqyAZ/Eme?=
+ =?us-ascii?Q?R4+aLnJZACrDZKgcyPr/VryZaabWj84AeAiHKyWd?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dfda5da-5c09-48eb-4901-08dc56f127ff
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2024 10:54:53.8945
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HUTjjpWtApL9E7lAVRR2FTlwnF29ifv0Y5ECD/HxlZvsVd/LdzMqlDH+aO8DrqP/RuLB9gxbmOg6tqbeablktg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7961
+X-OriginatorOrg: intel.com
 
-Hello, I reproduced this bug and comfired in the latest upstream with the s=
-ame config with syzbot instance.
+Hi Alexander,
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei lee <xrivendell7@gmail.com>
-Reported-by: yue sun <samsun1006219@gmail.com>
+On 2024-04-04 at 14:05:12 +0200, Alexander Wetzel wrote:
+> On 04.04.24 12:57, Pengfei Xu wrote:
+> > cc Alexander Wetzel,
+> > 
+> > I used syzkaller and found the similar problem.
+> > 
+> > And bisected and found the related commit:
+> > 27f58c04a8f4 scsi: sg: Avoid sg device teardown race
+> > Reverted the commit on top of v6.9-rc2, this issue was gone.
+> 
+> There were now multiple reports about the issue. The first (main) discussion
+> and fix is here:
+> https://lore.kernel.org/all/20240401191038.18359-1-Alexander@wetzel-home.de/
+> 
+> In a nutshell:
+> The new WARN_ON_ONCE() was a (very) stupid idea and must be undone.
+> It's ok to just drop the line with the WARN_ON_ONCE(). The rest of the
+> proposed patch fixes a much less urgent issue.
 
-kernel version: upstream 39cd87c4eb2b893354f3b850f916353f2658ae6f
-kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D8c=
-2c72b264636e25 with KASAN enabled
-compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.4=
-0
+  Got it, thanks for your description!
 
-BTW, I can only trigger this bug with repro.txt as follows:
+> 
+> Of course I can also break the fix into two patches, when this speeds up the
+> merge...
 
-root@syzkaller:~/linux_amd64# ./syz-execprog -repeat 0 ../6c9-0.txt
-TITLE: divide error in netfs_submit_writethrough
-divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 PID: 12946 Comm: syz-executor Not tainted 6.9.0-rc2-00413-gf2f80ac80=
-987-dirty #25
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 0=
-4/01/2014
-RIP: 0010:netfs_submit_writethrough+0x20e/0x290 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 =
-38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> ff
-RSP: 0018:ffffc9000f88f760 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff8880564c2c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff823ceef6 RDI: ffff8880564c2d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff88806caa0008 R14: ffff8880564c2d20 R15: 0000000000000000
-FS: 00007f5d8dfa06c0(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000059e98000 CR4: 0000000000750ef0
-PKRU: 55555554
-Call Trace:
-<TASK>
-netfs_advance_writethrough+0x14a/0x180 fs/netfs/output.c:449
-netfs_perform_write+0x1c70/0x27e0 fs/netfs/buffered_write.c:385
-netfs_buffered_write_iter_locked+0x232/0x2f0 fs/netfs/buffered_write.c:454
-netfs_file_write_iter+0x1f3/0x480 fs/netfs/buffered_write.c:493
-v9fs_file_write_iter+0xa8/0x110 fs/9p/vfs_file.c:407
-call_write_iter include/linux/fs.h:2110 [inline]
-do_iter_readv_writev+0x53a/0x7c0 fs/read_write.c:741
-vfs_writev+0x386/0xe10 fs/read_write.c:971
-do_pwritev+0x1c1/0x280 fs/read_write.c:1072
-__do_sys_pwritev2 fs/read_write.c:1131 [inline]
-__se_sys_pwritev2 fs/read_write.c:1122 [inline]
-__x64_sys_pwritev2+0xf6/0x160 fs/read_write.c:1122
-do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
-entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f5d8e4a5559
-Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 38
-RSP: 002b:00007f5d8df9fd58 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 00000000004bbf80 RCX: 00007f5d8e4a5559
-RDX: 0000000000000001 RSI: 0000000020000780 RDI: 0000000000000007
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000016
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004bbf8c
-R13: 000000000000000b R14: 00000000004bbf80 R15: 00007f5d8df80000
-</TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:netfs_submit_writethrough+0x20e/0x290 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 =
-38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> ff
-RSP: 0018:ffffc9000f88f760 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff8880564c2c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff823ceef6 RDI: ffff8880564c2d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff88806caa0008 R14: ffff8880564c2d20 R15: 0000000000000000
-FS: 00007f5d8dfa06c0(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000059e98000 CR4: 0000000000750ef0
-PKRU: 55555554
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-0: df 48 89 fisttps -0x77(%rax)
-3: fa cli
-4: 48 c1 ea 03 shr $0x3,%rdx
-8: 0f b6 14 02 movzbl (%rdx,%rax,1),%edx
-c: 48 89 f8 mov %rdi,%rax
-f: 83 e0 07 and $0x7,%eax
-12: 83 c0 03 add $0x3,%eax
-15: 38 d0 cmp %dl,%al
-17: 7c 04 jl 0x1d
-19: 84 d2 test %dl,%dl
-1b: 75 1a jne 0x37
-1d: 8b 8b 0c 01 00 00 mov 0x10c(%rbx),%ecx
-23: 48 89 e8 mov %rbp,%rax
-26: 31 d2 xor %edx,%edx
-* 28: 48 rex.W <-- trapping instruction
-29: ff .byte 0xff
-TITLE: kernel panic: Fatal exception
-CORRUPTED: true (report format is marked as corrupted)
-MAINTAINERS (TO): []
-MAINTAINERS (CC): []
-CPU: 0 PID: 12946 Comm: syz-executor Not tainted 6.9.0-rc2-00413-gf2f80ac80=
-987-dirty #25
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 0=
-4/01/2014
-RIP: 0010:netfs_submit_writethrough+0x20e/0x290 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 =
-38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> ff
-RSP: 0018:ffffc9000f88f760 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff8880564c2c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff823ceef6 RDI: ffff8880564c2d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff88806caa0008 R14: ffff8880564c2d20 R15: 0000000000000000
-FS: 00007f5d8dfa06c0(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000059e98000 CR4: 0000000000750ef0
-PKRU: 55555554
-Call Trace:
-<TASK>
-netfs_advance_writethrough+0x14a/0x180 fs/netfs/output.c:449
-netfs_perform_write+0x1c70/0x27e0 fs/netfs/buffered_write.c:385
-netfs_buffered_write_iter_locked+0x232/0x2f0 fs/netfs/buffered_write.c:454
-netfs_file_write_iter+0x1f3/0x480 fs/netfs/buffered_write.c:493
-v9fs_file_write_iter+0xa8/0x110 fs/9p/vfs_file.c:407
-call_write_iter include/linux/fs.h:2110 [inline]
-do_iter_readv_writev+0x53a/0x7c0 fs/read_write.c:741
-vfs_writev+0x386/0xe10 fs/read_write.c:971
-do_pwritev+0x1c1/0x280 fs/read_write.c:1072
-__do_sys_pwritev2 fs/read_write.c:1131 [inline]
-__se_sys_pwritev2 fs/read_write.c:1122 [inline]
-__x64_sys_pwritev2+0xf6/0x160 fs/read_write.c:1122
-do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
-entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f5d8e4a5559
-Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 38
-RSP: 002b:00007f5d8df9fd58 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 00000000004bbf80 RCX: 00007f5d8e4a5559
-RDX: 0000000000000001 RSI: 0000000020000780 RDI: 0000000000000007
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000016
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004bbf8c
-R13: 000000000000000b R14: 00000000004bbf80 R15: 00007f5d8df80000
-</TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:netfs_submit_writethrough+0x20e/0x290 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 =
-38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> ff
-RSP: 0018:ffffc9000f88f760 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff8880564c2c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff823ceef6 RDI: ffff8880564c2d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff88806caa0008 R14: ffff8880564c2d20 R15: 0000000000000000
-FS: 00007f5d8dfa06c0(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000059e98000 CR4: 0000000000750ef0
-PKRU: 55555554
-Kernel panic - not syncing: Fatal exception
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Thank you, if it makes sense and accelerates the merge process.
 
+Best Regards,
+Thanks1
 
-=3D* repro.c =3D*
-#define _GNU_SOURCE
-
-#include <endian.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#ifndef __NR_pwritev2
-#define __NR_pwritev2 328
-#endif
-
-uint64_t r[4] =3D {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffff=
-ff,
-                 0xffffffffffffffff};
-
-int main(void) {
-  syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*prot=3D=
-*/0ul,
-          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
-  syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul, /*prot=
-=3D*/7ul,
-          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
-  syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=3D=
-*/0ul,
-          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
-  intptr_t res =3D 0;
-  memcpy((void*)0x20000240, "./file0\000", 8);
-  syscall(__NR_creat, /*file=3D*/0x20000240ul, /*mode=3D*/0ul);
-  res =3D syscall(__NR_pipe2, /*pipefd=3D*/0x20001900ul, /*flags=3D*/0ul);
-  if (res !=3D -1) {
-    r[0] =3D *(uint32_t*)0x20001900;
-    r[1] =3D *(uint32_t*)0x20001904;
-  }
-  memcpy((void*)0x20000480,
-         "\x15\x00\x00\x00\x65\xff\xff\x01\x80\x00\x00\x08\x00\x39\x50\x32\=
-x30"
-         "\x30\x30",
-         19);
-  syscall(__NR_write, /*fd=3D*/r[1], /*data=3D*/0x20000480ul, /*size=3D*/0x=
-15ul);
-  res =3D syscall(__NR_dup, /*oldfd=3D*/r[1]);
-  if (res !=3D -1)
-    r[2] =3D res;
-  *(uint32_t*)0x20000100 =3D 0x18;
-  *(uint32_t*)0x20000104 =3D 0;
-  *(uint64_t*)0x20000108 =3D 0;
-  *(uint64_t*)0x20000110 =3D 0;
-  syscall(__NR_write, /*fd=3D*/r[2], /*arg=3D*/0x20000100ul, /*len=3D*/0x18=
-ul);
-  *(uint32_t*)0x200000c0 =3D 0x14c;
-  *(uint32_t*)0x200000c4 =3D 5;
-  *(uint64_t*)0x200000c8 =3D 0;
-  *(uint64_t*)0x200000d0 =3D 0;
-  *(uint64_t*)0x200000d8 =3D 0;
-  *(uint64_t*)0x200000e0 =3D 0;
-  *(uint32_t*)0x200000e8 =3D 0;
-  *(uint32_t*)0x200000ec =3D 0;
-  syscall(__NR_write, /*fd=3D*/r[2], /*arg=3D*/0x200000c0ul, /*len=3D*/0x13=
-7ul);
-  memcpy((void*)0x20000080, "./file0\000", 8);
-  memcpy((void*)0x20000040, "9p\000", 3);
-  memcpy((void*)0x20000280, "trans=3Dfd,", 9);
-  memcpy((void*)0x20000289, "rfdno", 5);
-  *(uint8_t*)0x2000028e =3D 0x3d;
-  sprintf((char*)0x2000028f, "0x%016llx", (long long)r[0]);
-  *(uint8_t*)0x200002a1 =3D 0x2c;
-  memcpy((void*)0x200002a2, "wfdno", 5);
-  *(uint8_t*)0x200002a7 =3D 0x3d;
-  sprintf((char*)0x200002a8, "0x%016llx", (long long)r[2]);
-  *(uint8_t*)0x200002ba =3D 0x2c;
-  memcpy((void*)0x200002bb, "cache=3Dmmap", 10);
-  *(uint8_t*)0x200002c5 =3D 0x2c;
-  *(uint8_t*)0x200002c6 =3D 0x6b;
-  syscall(__NR_mount, /*src=3D*/0ul, /*dst=3D*/0x20000080ul, /*type=3D*/0x2=
-0000040ul,
-          /*flags=3D*/0ul, /*opts=3D*/0x20000280ul);
-  memcpy((void*)0x20000140, "./file0\000", 8);
-  syscall(__NR_chmod, /*file=3D*/0x20000140ul, /*mode=3D*/0ul);
-  memcpy((void*)0x20000300, "./file0\000", 8);
-  res =3D syscall(__NR_creat, /*file=3D*/0x20000300ul, /*mode=3D*/0ul);
-  if (res !=3D -1)
-    r[3] =3D res;
-  *(uint64_t*)0x20000780 =3D 0x20000180;
-  memset((void*)0x20000180, 142, 1);
-  *(uint64_t*)0x20000788 =3D 0xfdef;
-  syscall(__NR_pwritev2, /*fd=3D*/r[3], /*vec=3D*/0x20000780ul, /*vlen=3D*/=
-1ul,
-          /*off_low=3D*/0, /*off_high=3D*/0, /*flags=3D*/0x16ul);
-  return 0;
-}
-
-remember to run it syz-execprog -repeat 0 ./repro.txt
-
-=3D* repro.txt =3D*
-creat(&(0x7f0000000240)=3D'./file0\x00', 0x0)
-pipe2$9p(&(0x7f0000001900)=3D{<r0=3D>0xffffffffffffffff, <r1=3D>0xfffffffff=
-fffffff}, 0x0)
-write$P9_RVERSION(r1, &(0x7f0000000480)=3DANY=3D[@ANYBLOB=3D"1500000065ffff=
-018000000800395032303030"], 0x15)
-r2 =3D dup(r1)
-write$FUSE_BMAP(r2, &(0x7f0000000100)=3D{0x18}, 0x18)
-write$FUSE_NOTIFY_RETRIEVE(r2, &(0x7f00000000c0)=3D{0x14c}, 0x137)
-mount$9p_fd(0x0, &(0x7f0000000080)=3D'./file0\x00', &(0x7f0000000040), 0x0,=
- &(0x7f0000000280)=3D{'trans=3Dfd,', {'rfdno', 0x3d, r0}, 0x2c, {'wfdno', 0=
-x3d, r2}, 0x2c, {[{@cache_mmap}], [], 0x6b}})
-chmod(&(0x7f0000000140)=3D'./file0\x00', 0x0)
-r3 =3D creat(&(0x7f0000000300)=3D'./file0\x00', 0x0)
-pwritev2(r3, &(0x7f0000000780)=3D[{&(0x7f0000000180)=3D"8e", 0xfdef}], 0x1,=
- 0x0, 0x0, 0x16)
-
-and see also in https://gist.github.com/xrivendell7/8a65b0e5c5109d1ce87acfd=
-56f713544
-
-I hope it helps.
-Best regards
+> 
+> Alexander
 
