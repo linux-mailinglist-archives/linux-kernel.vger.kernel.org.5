@@ -1,103 +1,119 @@
-Return-Path: <linux-kernel+bounces-134602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A49389B370
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:53:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD42C89B374
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:56:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6021F2121E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:53:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C244B20C15
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:56:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB21E3C08D;
-	Sun,  7 Apr 2024 17:53:15 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD553C064;
+	Sun,  7 Apr 2024 17:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="1hcwIUJ0"
+Received: from ms11p00im-qufo17282001.me.com (ms11p00im-qufo17282001.me.com [17.58.38.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7043BBE0
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 17:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813B13BBE2
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 17:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.38.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712512395; cv=none; b=lJljLkDPOF61r+SQLl3MGnmg5pObP/7jPSSJJ03wx9O4DqzYRdrLJ5UUXOP7vxCCqgkJMTpwrAZIa1eXMqw6/SoUfh4QN7lZduxH/Yp1W6OwHRwjkoCIrEW7t9eZY/b1nbkPFxM0jj3FjsLXvrkKRcKZUheQ9Vcm7Rq8r/IiZHc=
+	t=1712512565; cv=none; b=nEaSx647fZW3n9m2zj2ZASUOR+wFbxydvE9se+frIgcJvL2kgv/cRnuoOkP2K+0sRaGseFCbskd6wMFoQ8ssei63YmxDOG6OQc3Bng0iOGRaHkahhhiasMqS0qB7tfvP7PRZit2bxzdC4dTZZrEItfl9TpRtCNxZ7ppLP5DHR5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712512395; c=relaxed/simple;
-	bh=m7xjJrsZsamBvH244i4AhQh7nkrbLwZAUnx45zvG9jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UJXA1EFWn9ogzeW3tm2CFjpH++fFBxihp6qL9zC1tWIjkrkJ2Hx2FlxxIJhGtO8yHWl/Eaoze3/NBxtn8aXfs5BKGy+2DBjcCMn2Nat/SHGPNj6OrRASGCuXLCx968wfVlWroRpmY+UUqEWb49y/QGEK92+zmdn8dzMQMuOg9xE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rtWhS-0006UL-6v; Sun, 07 Apr 2024 19:53:02 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rtWhR-00AxlK-Q8; Sun, 07 Apr 2024 19:53:01 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rtWhR-001Gre-2I;
-	Sun, 07 Apr 2024 19:53:01 +0200
-Date: Sun, 7 Apr 2024 19:53:01 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Bryan Whitehead <bryan.whitehead@microchip.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] net: lan743x: Fixup EEE
-Message-ID: <ZhLdfavmCRXO-XAH@pengutronix.de>
-References: <20240406-lan78xx-eee-v1-0-2993b14b849c@lunn.ch>
- <20240406-lan78xx-eee-v1-2-2993b14b849c@lunn.ch>
+	s=arc-20240116; t=1712512565; c=relaxed/simple;
+	bh=UQxU8jMJyYiRRgiZP1/TGp9KcB4J3dMChQI1iPB7laM=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=bno3jiUFAfJfKEF54nDLbux5o4rE0zkeXYiY8yXLR6uQXNb/KtERiA41x5DGWHe00YQ0P1HqbI7n7yfYaVBeoxDPjd8fvUb1mlJZG0hNgKikYGEL2dGpKB/2wN3Weeyt6BsVfpUY2VzgFj2lfXi7sp0AYKSMoF0hCKrd+iz0We4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=1hcwIUJ0; arc=none smtp.client-ip=17.58.38.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	t=1712512561; bh=1L55z9HgcsBeCtGk8EKGjwew88mtrI15AkRnFNg6k6k=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:To;
+	b=1hcwIUJ0Ru5XygPZsAYM7oeJlg35Jghl99W8h6j/2q3fuhXklLry9m0n1G4b0D/TA
+	 pMGCOjk/5x8yz41Brzvo48/+ShiUuNkyoq/276HvwmzVBZ+bFAXMKDK/m4YOUF0ROd
+	 V3UUUY+mTv2HSzX6zwnOhHQ/2xO4zzQyXEBJFOJoWxIUepG4bW2xXPP4vP17FtbvUj
+	 GAiUY3nOB36u3hmZFsmuGH+wIvH2m93ADS1R2ZdiQY5k9GErMG6hmysXAOjPn7sd//
+	 uKsZa5nfjj0LU9b0fhzmKtQex95Xp1eEKlHDyVTL0n4Y7i3z0dBFT0EPhPz7jxBns9
+	 LIy3YAAUeRyzQ==
+Received: from smtpclient.apple (ms11p00im-dlb-asmtpmailmevip.me.com [17.57.154.19])
+	by ms11p00im-qufo17282001.me.com (Postfix) with ESMTPSA id 203561E0230;
+	Sun,  7 Apr 2024 17:56:01 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Laine Taffin Altman <alexanderaltman@me.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240406-lan78xx-eee-v1-2-2993b14b849c@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v4] rust: init: remove impl Zeroable for Infallible
+Date: Sun, 7 Apr 2024 10:55:49 -0700
+Message-Id: <37A7EC35-7889-4378-A30C-126B1AD668C8@me.com>
+References: <3ecba34f-95a2-4f18-9729-f9cb3a4366c0@proton.me>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+ Alex Gaynor <alex.gaynor@gmail.com>, rust-for-linux@vger.kernel.org,
+ Wedson Almeida Filho <wedsonaf@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+ lkml <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+In-Reply-To: <3ecba34f-95a2-4f18-9729-f9cb3a4366c0@proton.me>
+To: Benno Lossin <benno.lossin@proton.me>
+X-Mailer: iPhone Mail (21F5048f)
+X-Proofpoint-ORIG-GUID: Iezh0l9YPBfilfTXNVUoheAnYZ2BgIsK
+X-Proofpoint-GUID: Iezh0l9YPBfilfTXNVUoheAnYZ2BgIsK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-07_11,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1015
+ mlxlogscore=821 bulkscore=0 adultscore=0 mlxscore=0 spamscore=0
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2308100000 definitions=main-2404070145
 
-On Sat, Apr 06, 2024 at 03:16:00PM -0500, Andrew Lunn wrote:
-> The enabling/disabling of EEE in the MAC should happen as a result of
-> auto negotiation. So move the enable/disable into
-> lan743x_phy_link_status_change() which gets called by phylib when
-> there is a change in link status.
-> 
-> lan743x_ethtool_set_eee() now just programs the hardware with the LTI
-> timer value, and passed everything else to phylib, so it can correctly
-> setup the PHY.
-> 
-> lan743x_ethtool_get_eee() relies on phylib doing most of the work, the
-> MAC driver just adds the LTI timer value.
-> 
-> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+On Apr 7, 2024, at 1:56=E2=80=AFAM, Benno Lossin <benno.lossin@proton.me> wr=
+ote:
+> =EF=BB=BFOn 04.04.24 19:28, Laine Taffin Altman wrote:
+>>> On Apr 4, 2024, at 4:03=E2=80=AFAM, Miguel Ojeda <miguel.ojeda.sandonis@=
+gmail.com> wrote:
+>>>=20
+>>> =EF=BB=BFOn Thu, Apr 4, 2024 at 11:01=E2=80=AFAM Benno Lossin <benno.los=
+sin@proton.me> wrote:
+>>>>=20
+>>>> I don't see this commit in the kernel tree, what did you specify as
+>>>> `--base` when running `git format`?
+>>>=20
+>>> Yeah, I don't have it either, but it seems to apply cleanly.
+>>>=20
+>>> Cheers,
+>>> Miguel
+>>=20
+>> I ran `git format-patch origin/master --base=3Dorigin/master`.  I
+>> can=E2=80=99t imagine how that could have resulted in a nonexistent commi=
+t
+>> hash?
+>=20
+> That heavily depends on what `origin/master` is. Is `origin` pointing to
+> Torvald's git? In that case it would explain why we don't have that
+> commit hash yet.
+> Normally you should base your work on the tree listed in the `T:` entry
+> of the subsystem in the MAINTAINERS file. In our case it is `rust-next`.
+> But no worries, since it applies cleanly it should be fine for this
+> patch. Just something to keep in mind if you submit any future patches.
+>=20
+> --
+> Cheers,
+> Benno
 
-Probably same as lan78xx - if something is wrong, it was before this
-patch.
+Ah, that makes sense!  Indeed it was pointing there.  I=E2=80=99ll remember f=
+or next time!
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks,
+Laine=
 
