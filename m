@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-134463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAA8F89B1CB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:32:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4E889B1CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55037281D42
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:32:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFD121F21231
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E2C3FB39;
-	Sun,  7 Apr 2024 13:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD4012EBFB;
+	Sun,  7 Apr 2024 13:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="To4kqDTN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l7Ym0JV7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E42412E1C6;
-	Sun,  7 Apr 2024 13:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E83F12EBD4;
+	Sun,  7 Apr 2024 13:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495605; cv=none; b=Ot9d2qcWy16aF5Q1a8hSbBQC5PWO0uko2GRjCr6gDJiJO2frT+x1Yw04bLZ6mnC9evWedviao0KeMBAV3J1y8CoCTmgJMLpXJUm5gZxGUwt7o6f4MrFgkoJq0WYzx7BJmkPMZ1JvlRYfdBbnQfyR1J6p9Xldf1xTWbWQOAkPdQY=
+	t=1712495607; cv=none; b=QgxhdL2JilJCF28bZP+4rwPwSmdWbHIP4QVP4zKt8TCsPFFuVo6H4Xnji/58OssoqwpKfrpc+vo92ZsaBPOvR8On9Ctihs9ndVR2fSkO4aHjQt23Wa+oFB//7MSrC5qeSk0HjWpKmgkuZJtkmhU28G8/xN7X+N3J+u8g6D+s0ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495605; c=relaxed/simple;
-	bh=64vWe5CBIQmeZPfSYXbVoTRfmze5W6UKNJFOeHC74UU=;
+	s=arc-20240116; t=1712495607; c=relaxed/simple;
+	bh=GWLDa1uF55cdQb1ecNtNFSKFq+lJSnlzpJT7fuHUTQ4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KT0zKmEousjPxs94DF4rLzSh7quwXON0XChlD7Hk4vVfgf8gQrOeuoTsd713Mmev0T1e7S0eoelOqJYjxlTByelEPgGrgXhqPyHm6Bs8Dmr7eaUO5xhO7GK9tezj66LlGqIjujzoBMpGCNFATF3TOyvVEY81aXl6hFo9qYL+Vqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=To4kqDTN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F4D1C433F1;
-	Sun,  7 Apr 2024 13:13:23 +0000 (UTC)
+	 MIME-Version; b=qc9IJXNYWk3hS+cMqOefS4OBbTivoQxVZWHO5C//GT32xPftaNqYDbAZb6gQb2zB3aWZrmnqyojz8aPzrqNx5EfQ76kWYxRepUz2pW4DSzFpICqGkryNJWXUufZ1Oh9l8xGW4UTjIUYgdArfa158Br/7FUShBNVMTJs7pSpwFRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l7Ym0JV7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3642C433A6;
+	Sun,  7 Apr 2024 13:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495605;
-	bh=64vWe5CBIQmeZPfSYXbVoTRfmze5W6UKNJFOeHC74UU=;
+	s=k20201202; t=1712495607;
+	bh=GWLDa1uF55cdQb1ecNtNFSKFq+lJSnlzpJT7fuHUTQ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=To4kqDTNAetP+9w/PMcXDC8FW6it97+WY4ztWfMvJADctRBgFSMb63xFS+mfgMNcQ
-	 lwrvjCFXoxmJfm0ZJEKKrnbhaFC84skldSVH5xQGrltbVk1Nv89JhsEVJIUTs3jVkw
-	 SWdiac5O3adiC5q3vV7cLMxBVsHHz5onF400WhBI3BKya8z2ZK5p5zedgG6bMmD6UU
-	 psQy8nVg2HI122W3IRkSb/qrevcz3oC7QjcUiIVTOmcCpxolu8TdJlUXK0a5WzfOOz
-	 qDKlSl20L0K+ztFkEgmKGyYe1XJt0biDhaRgSUtV2GorUciMq30rScESMmqTPXmcrN
-	 CkXCWJTFWdBiw==
+	b=l7Ym0JV7w4UX1cZ2Q0enAtOqfNVwjeRUuu9caJMIis8/3BtgjYTQlx6c2UXC5j26g
+	 wh9dLdLS/lwqCVX7Yjua9+G/vzukvdUHLcBBVwVLz8k369Th7qWkMoUVNZJBQI0o2r
+	 zIG1KO9/1VFTX2GSpyMhZhXMZihMHMkAeyP2YN5TBPvjqATtJmXikgnv3PmIBo97wa
+	 tGwuSCWPI55eW1B8sn7j+f2DUEo/HpwfSs56nkxLr8iYXI4A8GvSFngQIL9Ziibm6F
+	 dRq/Iea1SEl9Ip3s5f7hqzSnYC/W7euc5tBStHAsQ97VjwFqwljIFRbubsBklfo+xr
+	 yIxCf4Uh/HOmw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Simon Horman <horms@kernel.org>,
+Cc: Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
 	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	johannes@sipsolutions.net,
@@ -54,9 +53,9 @@ Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
 	pabeni@redhat.com,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/13] wifi: mac80211: fix ieee80211_bss_*_flags kernel-doc
-Date: Sun,  7 Apr 2024 09:13:05 -0400
-Message-ID: <20240407131316.1052393-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 07/13] wifi: cfg80211: fix rdev_dump_mpp() arguments order
+Date: Sun,  7 Apr 2024 09:13:06 -0400
+Message-ID: <20240407131316.1052393-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131316.1052393-1-sashal@kernel.org>
 References: <20240407131316.1052393-1-sashal@kernel.org>
@@ -71,47 +70,36 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.84
 Content-Transfer-Encoding: 8bit
 
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
+From: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
 
-[ Upstream commit 774f8841f55d7ac4044c79812691649da203584a ]
+[ Upstream commit ec50f3114e55406a1aad24b7dfaa1c3f4336d8eb ]
 
-Running kernel-doc on ieee80211_i.h flagged the following:
-net/mac80211/ieee80211_i.h:145: warning: expecting prototype for enum ieee80211_corrupt_data_flags. Prototype was for enum ieee80211_bss_corrupt_data_flags instead
-net/mac80211/ieee80211_i.h:162: warning: expecting prototype for enum ieee80211_valid_data_flags. Prototype was for enum ieee80211_bss_valid_data_flags instead
+Fix the order of arguments in the TP_ARGS macro
+for the rdev_dump_mpp tracepoint event.
 
-Fix these warnings.
+Found by Linux Verification Center (linuxtesting.org).
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://msgid.link/20240314-kdoc-ieee80211_i-v1-1-72b91b55b257@quicinc.com
+Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+Link: https://msgid.link/20240311164519.118398-1-Igor.A.Artemiev@mcst.ru
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/ieee80211_i.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/wireless/trace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index d5dd2d9e89b48..3e14d5c9aa1b4 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -120,7 +120,7 @@ struct ieee80211_bss {
- };
- 
- /**
-- * enum ieee80211_corrupt_data_flags - BSS data corruption flags
-+ * enum ieee80211_bss_corrupt_data_flags - BSS data corruption flags
-  * @IEEE80211_BSS_CORRUPT_BEACON: last beacon frame received was corrupted
-  * @IEEE80211_BSS_CORRUPT_PROBE_RESP: last probe response received was corrupted
-  *
-@@ -133,7 +133,7 @@ enum ieee80211_bss_corrupt_data_flags {
- };
- 
- /**
-- * enum ieee80211_valid_data_flags - BSS valid data flags
-+ * enum ieee80211_bss_valid_data_flags - BSS valid data flags
-  * @IEEE80211_BSS_VALID_WMM: WMM/UAPSD data was gathered from non-corrupt IE
-  * @IEEE80211_BSS_VALID_RATES: Supported rates were gathered from non-corrupt IE
-  * @IEEE80211_BSS_VALID_ERP: ERP flag was gathered from non-corrupt IE
+diff --git a/net/wireless/trace.h b/net/wireless/trace.h
+index a405c3edbc47e..cb5c3224e038a 100644
+--- a/net/wireless/trace.h
++++ b/net/wireless/trace.h
+@@ -1018,7 +1018,7 @@ TRACE_EVENT(rdev_get_mpp,
+ TRACE_EVENT(rdev_dump_mpp,
+ 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev, int _idx,
+ 		 u8 *dst, u8 *mpp),
+-	TP_ARGS(wiphy, netdev, _idx, mpp, dst),
++	TP_ARGS(wiphy, netdev, _idx, dst, mpp),
+ 	TP_STRUCT__entry(
+ 		WIPHY_ENTRY
+ 		NETDEV_ENTRY
 -- 
 2.43.0
 
