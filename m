@@ -1,151 +1,114 @@
-Return-Path: <linux-kernel+bounces-134345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5C289B083
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:58:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B4F89B086
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CE80281EF6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75EA02827AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E461CFAF;
-	Sun,  7 Apr 2024 10:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E92200DB;
+	Sun,  7 Apr 2024 10:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oIJfe4Zp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aKsbdN24"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D97017577
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB5417577;
+	Sun,  7 Apr 2024 10:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712487492; cv=none; b=GF+vbCS5IdzqUUi6GhZd1GBBbmIUgSua5EHefsidjcWXhwSGoGTP78kOQSZ33XoeqI21X5pv9BsmPudcshBNBiPXFMOf3boy6uEYr5tcRZyEeD/iPXlmwwsy4hehfPrRDtqHJmCiqJveYVWiuGU/Rw+06X/XlVLrxl4OqP+Xcok=
+	t=1712487570; cv=none; b=DD0DyDYqHiRJ6/VlPcBpq7PuXlM3H/euXbXNyGJhNTPMmowJHWiqE7EINAJMZFnL2WOcZ7EIrNJyo1kNCFIy++ygf7LhqcU9m/Q48ZDFen0ktOTVAbXb9a/oVpXtJKH1X42hZfZ1dfkHvA0bBKFZ5C/Qf7SsU3ZfVM6i7VmKdvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712487492; c=relaxed/simple;
-	bh=hjTKP6fZ9KKik1egs72yhVaDTZdwdmePeVPd40HuwJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=CO7J1dH9D70BVuw5TbnYfXQS0UfqIXBrarV5noGR4ZoFni4uGLmQvTnyUWQY3jT8CmHfUc6csHUvoUdG9Ijj4D82TOThRHzP/8V1gl4/a/YZwA/KAkck6mwPaOHxrOnSF14b4s9+ApBJobevU8Gvq/MCo34t2gMeFBJRw8ebfjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oIJfe4Zp; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712487489; x=1744023489;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hjTKP6fZ9KKik1egs72yhVaDTZdwdmePeVPd40HuwJQ=;
-  b=oIJfe4ZpKlleNnVFrzs7UTGtIe1yrdpqFl9b8YXI2MNft7vP+tNwfSAL
-   muHi6qEOkvC1CkqvEJx3iQy+PeXv0Kg5lKxZVUeV8P0kpc4NVIninHOzg
-   TenSQj4jZN6lhMuxvQreC0MtCqGB3bzN4vqUH036XJOHbChoDChcKmh1H
-   hZMUB5czWbxAsRk9GkT88lsw3ticxzEf7AxzNiM+vcXO0lKFInkcK+Zo5
-   SkVcPOSMbkcNxuYu1fBDKcyDhgfzP7HXJ6sXe2sDFCpJarlBZ5tAnOmCq
-   Y9TGtM9nODUIs/qmG/cnHfR6WjGXVdfmrEN+f+ZsI+mtu41WxUJuy+woi
-   A==;
-X-CSE-ConnectionGUID: Pxfho+gSRUi0jOOugfbPhg==
-X-CSE-MsgGUID: ngvOk+OfQBa2rpgxMeX63Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="7999076"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="7999076"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 03:58:08 -0700
-X-CSE-ConnectionGUID: pCi6pWYxR8SQRwjnA1i7WA==
-X-CSE-MsgGUID: y76nr7A5RoCeOj08xX1vlQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="24340114"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 07 Apr 2024 03:58:07 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rtQDs-0004JC-2l;
-	Sun, 07 Apr 2024 10:58:04 +0000
-Date: Sun, 7 Apr 2024 18:57:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Subject: include/linux/compiler_types.h:357:45: error: call to
- '__compiletime_assert_304' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(priv_tbl->probs) % 16
-Message-ID: <202404071853.zF9y90RI-lkp@intel.com>
+	s=arc-20240116; t=1712487570; c=relaxed/simple;
+	bh=mUqwJvMwwddQUj3/Op3ujtR7UUXWdIvM3MJCfhjD1tE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SAcJiX7olEMOPzxxpEFt0EV6hL2HM+0Y42DkejoImb0cLrgv+pq/qcMHyQrGZ3i5v/kzaifmS7uywerMwhab6/flYfaRfs+HotyAX/zx0Ow2PWxTM1rwNdAPVHQCTVCGmJtg467+XwthZLMCc1ioSrJuiHaRKjY8PgxwE3Q5EOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aKsbdN24; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C51AC433F1;
+	Sun,  7 Apr 2024 10:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712487570;
+	bh=mUqwJvMwwddQUj3/Op3ujtR7UUXWdIvM3MJCfhjD1tE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aKsbdN24NetxsdAUdftzcQGHZxeRaoDejGMt7iJYzfdfSBOJW/NvlcrebKEceshmz
+	 htEB+uslSRnpbNWvN//HFjN7AyG4NbtQtgUAR5rGmXSiXGHC89STlACMQQW9BdBTjD
+	 eoyvlkR5FmpwUVF9dq5Fpwb1hs5dyfbyTo23+RlF6+2FlAGyb3E8RJHhDej8EsucF9
+	 0VF1f2+fYuh0/tAk3+VtocRAVvG9cTdeLa4yWGdbY71DpEi1w9TVTQoXUo6SI9EYJk
+	 22nqltABbRh5r4k1uQhqU4yQ+RhKOK88AVgssP7i3/OHJ3UyTfyOw4Xrx/qE5Bwz9d
+	 FHvtFiZ+vpQhw==
+Date: Sun, 7 Apr 2024 11:59:25 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] dt-bindings: kbuild: Add separate
+ target/dependency for processed-schema.json
+Message-ID: <20240407-other-widow-399ec7ca8c8f@spud>
+References: <20240405-dt-kbuild-rework-v2-0-3a035caee357@kernel.org>
+ <20240405-dt-kbuild-rework-v2-3-3a035caee357@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LrPBrqQ2Jt21+wkW"
+Content-Disposition: inline
+In-Reply-To: <20240405-dt-kbuild-rework-v2-3-3a035caee357@kernel.org>
+
+
+--LrPBrqQ2Jt21+wkW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andrzej,
+On Fri, Apr 05, 2024 at 05:56:03PM -0500, Rob Herring wrote:
+> Running dtbs_check and dt_compatible_check targets really only depend
+> on processed-schema.json, but the dependency is 'dt_binding_check'. That
+> was sort worked around with the CHECK_DT_BINDING variable in order to
+> skip some of the work that 'dt_binding_check' does. It still runs the
+> full checks of the schemas which is not necessary and adds 10s of
+> seconds to the build time. That's significant when checking only a few
+> DTBs and with recent changes that have improved the validation time by
+> 6-7x.
+>=20
+> Add a new target, dt_binding_schema, which just builds
+> processed-schema.json and can be used as the dependency for other
+> targets. The scripts_dtc dependency isn't needed either as the examples
+> aren't built for it.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-FYI, the error/warning still remains.
+Yoo, that's pretty nice. 20 seconds cut off my dtbs_check build time on
+riscv with this change :) As you point out, when you're not checking all
+that many it is pretty significant - 48 seconds before and 28 seconds now
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2f80ac809875855ac843f9e5e7480604b5cbff5
-commit: 00c47aa85bb26450edc6059c3d245de062e60b5d media: rkvdec: Add required padding
-date:   1 year, 5 months ago
-config: arm-randconfig-r132-20240407 (https://download.01.org/0day-ci/archive/20240407/202404071853.zF9y90RI-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240407/202404071853.zF9y90RI-lkp@intel.com/reproduce)
+Thanks,
+Conor.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404071853.zF9y90RI-lkp@intel.com/
+--LrPBrqQ2Jt21+wkW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All errors (new ones prefixed by >>):
+-----BEGIN PGP SIGNATURE-----
 
-   In file included from <command-line>:
-   drivers/staging/media/rkvdec/rkvdec-vp9.c: In function 'rkvdec_vp9_start':
->> include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_304' declared with attribute error: BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
-     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:338:25: note: in definition of macro '__compiletime_assert'
-     338 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:357:9: note: in expansion of macro '_compiletime_assert'
-     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   drivers/staging/media/rkvdec/rkvdec-vp9.c:1011:9: note: in expansion of macro 'BUILD_BUG_ON'
-    1011 |         BUILD_BUG_ON(sizeof(priv_tbl->probs) % 16); /* ensure probs size is 128-bit aligned */
-         |         ^~~~~~~~~~~~
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhJ8jQAKCRB4tDGHoIJi
+0jngAP9fiiu62rotgAy0KbbE5nvYcdXtnLZ30d8vRNvq0TJFegEAlR0OmWLZUSHx
+bsiXSS4PqQRiXrr6DDj0IaPJS2n/qw4=
+=p86i
+-----END PGP SIGNATURE-----
 
-
-vim +/__compiletime_assert_304 +357 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  343  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  344  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  346  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  348   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  349   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  350   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  351   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  352   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  353   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  354   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  355   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  356  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @357  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  358  
-
-:::::: The code at line 357 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--LrPBrqQ2Jt21+wkW--
 
