@@ -1,105 +1,110 @@
-Return-Path: <linux-kernel+bounces-134161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74FA889AE67
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:12:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A893289AE75
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:36:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B1E1C21D02
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:12:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A542281CC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647025240;
-	Sun,  7 Apr 2024 04:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3C7EDC;
+	Sun,  7 Apr 2024 04:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UeQyHtIc"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bmsVQ4VO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622E7184D
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 04:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3E57460
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 04:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712463150; cv=none; b=arzsDZSjGYxFL4wINj3PCKjqDgs6BXOzTKnLuoLee1SPpoJjfFrkfqP0HLU+TnPQ4cpR/PX4ePwyQisxdHFzYDCsHuLVF0bMe/WoKS5sFPqh95rQk4LthwcBf4vz91pHh3fJsBB/RRXSJclP/OpKAw6D0i7ss7hSQHTISBNRPTQ=
+	t=1712464572; cv=none; b=GsT3RYfqv6Lu4ZR/UtxhfRowDBXwO5MF3ikgWO7RkOB3tclbogWfN9Lh3ZuAeiI5+E/kmNIdk5cOnXapch0GLA3SWv3SvISln8En6fqV7p5muCCNpP10QgHEVVRyGh8EBsPiWE9gvKA8RK2+vY7mA1i0Q8yit/D6RXoRoHt7pf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712463150; c=relaxed/simple;
-	bh=Z4KqCREDgBjK4L8+1jCUewIR3d1elGDVnhZBpRAtp2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFnvHsYeY3TmScKOrInBlR/nBNrn7Qky2e2x1zAyuAyujf/2hwym+25FA7sA3aLpFnYb7jB6cjo/WBx/+N1EBvXwAEOO/4iMnum4Rb7qfPMsK5iRyFCtIGlOloy1KKWEM+q8+ToZBKwIeIIe9JSzwvjhXA+DurHTOL2PWNExOkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UeQyHtIc; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 7 Apr 2024 00:12:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712463145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Akf+5PjShga/Knr2bfSD++VsHqynTRQPRIszKrS9DM=;
-	b=UeQyHtIcV8Lc9NLfxaHwq2NA4kugPQURyVr0yc8mvtcEdG89Mx3lf4G5NShmKMKMlpE89B
-	S1N2HFQiycv1UV2Hu/oGKV0I0fJfG3GjA2TmLEJiL+088ODm4rOHH+Sn6UAUkQxbSwyRbD
-	Vhzo++NSvrLpOtgtlCfaAgqwlGuAcmE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: Optimize eytzinger0_sort() with bottom-up
- heapsort
-Message-ID: <jx6yufij6gygb6ypsoq2yhw3eb3nobr4ytnb7phgmbpn5gmtws@23hu2rwhm4mt>
-References: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
- <20240407033904.719773-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1712464572; c=relaxed/simple;
+	bh=7LtA2O4jNW0QEKqaE7GEt/9iEp+LnlPXIzfTbvAjKeM=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=MoJL9b9i6zSgMdv/bxTOx1jubiAjqqqzQgBNx+uwcQa0DyBOEt+0K1nEVga0lKH8CHVRmkNBNSLYz6dsA+kQ9WSDU02zHZHFGsmPeEJHsD4YaGinqySOaPU55YbhjplTt81v2PAx/Q4WDiiQq6jWIrwT6+VSm6Hp83QtF4hHhgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bmsVQ4VO; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712464570; x=1744000570;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7LtA2O4jNW0QEKqaE7GEt/9iEp+LnlPXIzfTbvAjKeM=;
+  b=bmsVQ4VO/xH80+jFvfFj4rI5lxF5Sxq21wLybie7XP6P+VffMoFByDwn
+   MN+okvR9s/0+YDP0NHyUvS9cIYQKmx8QrTwl9quO4U4ddgnjxLJdzD2xf
+   dDDh1yjacH64gpczzmZzlfAAzziPYhR0fFNd3gsudwX5FoQgB1z9T9GAi
+   qSj5ebuaxTZF/Dk4qQZ/qsXnmGBDKT1/HTjzq8H5MmupavUmzfIUaYyd0
+   yQ/uxjz3z5An/WcViabTBKG6aKRLlfHJdaeEmIYXo6dgDOSrWF95uJtcQ
+   2ePQCDzwHPpCTtWRzoblFpx3XLAjJOnbesl+HU5W18ZLa504UZSLpkCtS
+   g==;
+X-CSE-ConnectionGUID: ltLHnwpHQ5KIdUpp/FY4sw==
+X-CSE-MsgGUID: VYOeFyWNTJOuRlY4dsPs3A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="7987594"
+X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
+   d="scan'208";a="7987594"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 21:36:09 -0700
+X-CSE-ConnectionGUID: NmBd8fijQGa2dgnngkSc1A==
+X-CSE-MsgGUID: 6hc9UWefTuKuY3t3i2iRag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
+   d="scan'208";a="24305028"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa005.jf.intel.com with ESMTP; 06 Apr 2024 21:36:07 -0700
+Message-ID: <ae40a717-5a16-4872-a4fd-69c792905a0e@linux.intel.com>
+Date: Sun, 7 Apr 2024 12:35:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407033904.719773-1-visitorckw@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
+ "Liu, Yi L" <yi.l.liu@intel.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/12] iommu/vt-d: Add cache tag assignment interface
+To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240325021705.249769-1-baolu.lu@linux.intel.com>
+ <20240325021705.249769-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB5276A6DDE82623A32FF80F4F8C3B2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <bc76bb64-8304-4fdf-ae16-03f3e545fd67@linux.intel.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <bc76bb64-8304-4fdf-ae16-03f3e545fd67@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 07, 2024 at 11:39:04AM +0800, Kuan-Wei Chiu wrote:
-> This optimization reduces the average number of comparisons required
-> from 2*n*log2(n) - 3*n + o(n) to n*log2(n) + 0.37*n + o(n). When n is
-> sufficiently large, it results in approximately 50% fewer comparisons.
+On 4/6/24 8:55 PM, Baolu Lu wrote:
+>>
+>>> @@ -4607,10 +4623,11 @@ static void
+>>> intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
+>>>        */
+>>>       if (domain->type == IOMMU_DOMAIN_SVA) {
+>>>           intel_svm_remove_dev_pasid(dev, pasid);
+>>> +        cache_tag_unassign_domain(dmar_domain,
+>>> +                      FLPT_DEFAULT_DID, dev, pasid);
+>>
+>> is it correct to destroy the tag before teardown completes, e.g. iotlb 
+>> still
+>> needs to be flushed in intel_pasid_tear_down_entry()?
 > 
-> Currently, eytzinger0_sort employs the textbook version of heapsort,
-> where during the heapify process, each level requires two comparisons
-> to determine the maximum among three elements. In contrast, the
-> bottom-up heapsort, during heapify, only compares two children at each
-> level until reaching a leaf node. Then, it backtracks from the leaf
-> node to find the correct position. Since heapify typically continues
-> until very close to the leaf node, the standard heapify requires about
-> 2*log2(n) comparisons, while the bottom-up variant only needs log2(n)
-> comparisons.
-> 
-> The experimental data presented below is based on an array generated
-> by get_random_u32().
-> 
-> |   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
-> |-------|------------------|------------------|-----------|-----------|
-> | 10000 |     235381       |     136615       |  25545 us |  20366 us |
-> | 20000 |     510694       |     293425       |  31336 us |  18312 us |
-> | 30000 |     800384       |     457412       |  35042 us |  27386 us |
-> | 40000 |    1101617       |     626831       |  48779 us |  38253 us |
-> | 50000 |    1409762       |     799637       |  62238 us |  46950 us |
-> | 60000 |    1721191       |     974521       |  75588 us |  58367 us |
-> | 70000 |    2038536       |    1152171       |  90823 us |  68778 us |
-> | 80000 |    2362958       |    1333472       | 104165 us |  78625 us |
-> | 90000 |    2690900       |    1516065       | 116111 us |  89573 us |
-> | 100000|    3019413       |    1699879       | 133638 us | 100998 us |
-> 
-> Refs:
->   BOTTOM-UP-HEAPSORT, a new variant of HEAPSORT beating, on an average,
->   QUICKSORT (if n is not very small)
->   Ingo Wegener
->   Theoretical Computer Science, 118(1); Pages 81-98, 13 September 1993
->   https://doi.org/10.1016/0304-3975(93)90364-Y
-> 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> You are right. iotlb still needs to be there until the teardown
+> completes. I will investigate this more later.
 
-Thanks - applied
+I reviewed this again. Cache tags are designed specifically for mapping
+and unmapping paths. Therefore, there is no required order for attaching
+and detaching paths.
+
+Best regards,
+baolu
 
