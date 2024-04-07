@@ -1,64 +1,60 @@
-Return-Path: <linux-kernel+bounces-134454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED0589B1AF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:29:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B63C89B1B3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:29:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5426AB2253C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF6B21F22113
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE638612E;
-	Sun,  7 Apr 2024 13:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6B31272C4;
+	Sun,  7 Apr 2024 13:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nuv96dqY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daBV+8YH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB5485C44;
-	Sun,  7 Apr 2024 13:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9398662A;
+	Sun,  7 Apr 2024 13:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495585; cv=none; b=Q6CG/AnhFsl5CQP4Au9U12MiXnLvscvtEuaaw1HUMGtCseTFTZgpq3//LTH6uB7VmeWjLBy8KBuVYOgFXtMuiCy5xA+FJ6tmiFzPde+c5eUeXEpIWoKXjnfgEKT3Clo9TM0J/Gqmaed1KsASVKob5qmZgFWo8WBuXzotQEx0y+w=
+	t=1712495587; cv=none; b=ipN6V1CstPp+/BD/jIxYzoqFGqe53IscSi60Os6jSpRX8tPwmsBF1MZKbNGVPempgZkk+84W0r9e/antH6Il1jqwPcwTICeD426exHcgMD1aMrsOQS7o3D4N14Ooaz1aExrGOBLEvhJHycK8MWZ7Tdf6h77yAscLHidpw/uarJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495585; c=relaxed/simple;
-	bh=oWCzXN+vCCpyVNvZ5+D/zJUDwJXHUttz1Y7S2CW20QA=;
+	s=arc-20240116; t=1712495587; c=relaxed/simple;
+	bh=9CJNlSm7UdFGd3F3/J22Rexp6lW1kYdcgxWT5Q7WTEg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MyPBE0iqBLTHb98cqGwv+OsvIKNaXJMUQ8ovB8NboZ5Nu8D59BgD6WQk5rpG5w+ZkI+egaIhm3LzALf0Ey3hXnOII0/XM6MKt6vTqI71VL42U2p8EQJvSevMQz6pOERCGP9yR1ftATKfNvJt7oZzprFn9fxvI8UyuUScGF/ErbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nuv96dqY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F14EC43390;
-	Sun,  7 Apr 2024 13:13:03 +0000 (UTC)
+	 MIME-Version; b=qZ1zLOf2QVQ5PsI4AHzwxsVRSLghuT1wYw6tOjkwiqIW/mBoX8Abw8az6WHCTE232Mu5pMhZqgbU3xe2bOegDPGbJ9CGBqgsIo7vVF4tq3LO5ofTq+6OmwAU236EBWDZidAnh7UGEt25lJtywuCn3jmqRGsFAbgsikKvthoazT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daBV+8YH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA633C433C7;
+	Sun,  7 Apr 2024 13:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495584;
-	bh=oWCzXN+vCCpyVNvZ5+D/zJUDwJXHUttz1Y7S2CW20QA=;
+	s=k20201202; t=1712495587;
+	bh=9CJNlSm7UdFGd3F3/J22Rexp6lW1kYdcgxWT5Q7WTEg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Nuv96dqYDUMBjFLenYi3+hNkO8RbpZayPFxsoCGbGOfw0gZoGKuyiNssoOnnVs13b
-	 Tpo4LB1bYJVoYFePIzKY0My65PtxldWt8UqZRzRRKRBaeAjsc/f+UZzAg+Wm1AMVI8
-	 9158ECT6WaWMoDPujaoejQ8UK90zcq02R7v/KhJRrsUI5qaASyYNTiH90AwxDQhzpj
-	 m5Xqrlupn5q9CCE8yFlOcbunODsoOPEDMdBas5FP3U/77nbIrXLMWvemItStQEQPdI
-	 RQTWTe0S7hM1Jh0/CL1qEbfAlJwRh1zL2xAax14cdAkTc88yaeJ9bA+YOPEqAr8Eg6
-	 f58jN06aUD8aQ==
+	b=daBV+8YHCVPAb/i5ufo92Xboixqi09Q2Axd1nZOmQBk3KMUBPu6qTpUw4aFdoN/jh
+	 WLA9qje0faRaKDhjZgMwEhQot5ypQhL2dRGjnjHqfkewfbCgiN/pBkRSnpyrytPhr4
+	 lOA/mu/F9vdNiSkf8aFwUMjQ6uESqhOUhO5NuMDdTxLiumgnIrMcYepkgeu7wGbdnv
+	 aqq8FBQgqk5IBQYP+CO7OrJvbR/mjff5wIUT+yzlhiP2mPDf67HqoIBucZElvuJVJF
+	 SIvsrzoqzc556ZMGMCcWTDgX8OauMLKAcOE1rNUAS4apHJixq7C0QxV/GmTBvOcdTA
+	 3jA+C1+Y5bJcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jonathan Kim <Jonathan.Kim@amd.com>,
-	Jonathan Kim <jonathan.kim@amd.com>,
-	Jesse Zhang <jesse.zhang@amd.com>,
-	Felix Kuehling <felix.kuehling@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Andrei Matei <andreimatei1@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	Felix.Kuehling@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 19/22] drm/amdkfd: range check cp bad op exception interrupts
-Date: Sun,  7 Apr 2024 09:12:18 -0400
-Message-ID: <20240407131231.1051652-19-sashal@kernel.org>
+	daniel@iogearbox.net,
+	shuah@kernel.org,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 20/22] bpf: Check bloom filter map value size
+Date: Sun,  7 Apr 2024 09:12:19 -0400
+Message-ID: <20240407131231.1051652-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131231.1051652-1-sashal@kernel.org>
 References: <20240407131231.1051652-1-sashal@kernel.org>
@@ -73,102 +69,83 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.25
 Content-Transfer-Encoding: 8bit
 
-From: Jonathan Kim <Jonathan.Kim@amd.com>
+From: Andrei Matei <andreimatei1@gmail.com>
 
-[ Upstream commit 0cac183b98d8a8c692c98e8dba37df15a9e9210d ]
+[ Upstream commit a8d89feba7e54e691ca7c4efc2a6264fa83f3687 ]
 
-Due to a CP interrupt bug, bad packet garbage exception codes are raised.
-Do a range check so that the debugger and runtime do not receive garbage
-codes.
-Update the user api to guard exception code type checking as well.
+This patch adds a missing check to bloom filter creating, rejecting
+values above KMALLOC_MAX_SIZE. This brings the bloom map in line with
+many other map types.
 
-Signed-off-by: Jonathan Kim <jonathan.kim@amd.com>
-Tested-by: Jesse Zhang <jesse.zhang@amd.com>
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+The lack of this protection can cause kernel crashes for value sizes
+that overflow int's. Such a crash was caught by syzkaller. The next
+patch adds more guard-rails at a lower level.
+
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20240327024245.318299-2-andreimatei1@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/amdkfd/kfd_int_process_v10.c    |  3 ++-
- .../gpu/drm/amd/amdkfd/kfd_int_process_v11.c    |  3 ++-
- drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c |  3 ++-
- include/uapi/linux/kfd_ioctl.h                  | 17 ++++++++++++++---
- 4 files changed, 20 insertions(+), 6 deletions(-)
+ kernel/bpf/bloom_filter.c                           | 13 +++++++++++++
+ .../selftests/bpf/prog_tests/bloom_filter_map.c     |  6 ++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v10.c b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v10.c
-index a7697ec8188e0..f85ca6cb90f56 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v10.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v10.c
-@@ -336,7 +336,8 @@ static void event_interrupt_wq_v10(struct kfd_node *dev,
- 				break;
- 			}
- 			kfd_signal_event_interrupt(pasid, context_id0 & 0x7fffff, 23);
--		} else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE) {
-+		} else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE &&
-+			   KFD_DBG_EC_TYPE_IS_PACKET(KFD_DEBUG_CP_BAD_OP_ECODE(context_id0))) {
- 			kfd_set_dbg_ev_from_interrupt(dev, pasid,
- 				KFD_DEBUG_DOORBELL_ID(context_id0),
- 				KFD_EC_MASK(KFD_DEBUG_CP_BAD_OP_ECODE(context_id0)),
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v11.c b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v11.c
-index 2a65792fd1162..3ca9c160da7c2 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v11.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v11.c
-@@ -325,7 +325,8 @@ static void event_interrupt_wq_v11(struct kfd_node *dev,
- 		/* CP */
- 		if (source_id == SOC15_INTSRC_CP_END_OF_PIPE)
- 			kfd_signal_event_interrupt(pasid, context_id0, 32);
--		else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE)
-+		else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE &&
-+			 KFD_DBG_EC_TYPE_IS_PACKET(KFD_CTXID0_CP_BAD_OP_ECODE(context_id0)))
- 			kfd_set_dbg_ev_from_interrupt(dev, pasid,
- 				KFD_CTXID0_DOORBELL_ID(context_id0),
- 				KFD_EC_MASK(KFD_CTXID0_CP_BAD_OP_ECODE(context_id0)),
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c
-index 27cdaea405017..8a6729939ae55 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c
-@@ -385,7 +385,8 @@ static void event_interrupt_wq_v9(struct kfd_node *dev,
- 				break;
- 			}
- 			kfd_signal_event_interrupt(pasid, sq_int_data, 24);
--		} else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE) {
-+		} else if (source_id == SOC15_INTSRC_CP_BAD_OPCODE &&
-+			   KFD_DBG_EC_TYPE_IS_PACKET(KFD_DEBUG_CP_BAD_OP_ECODE(context_id0))) {
- 			kfd_set_dbg_ev_from_interrupt(dev, pasid,
- 				KFD_DEBUG_DOORBELL_ID(context_id0),
- 				KFD_EC_MASK(KFD_DEBUG_CP_BAD_OP_ECODE(context_id0)),
-diff --git a/include/uapi/linux/kfd_ioctl.h b/include/uapi/linux/kfd_ioctl.h
-index eeb2fdcbdcb70..cd924c959d732 100644
---- a/include/uapi/linux/kfd_ioctl.h
-+++ b/include/uapi/linux/kfd_ioctl.h
-@@ -909,14 +909,25 @@ enum kfd_dbg_trap_exception_code {
- 				 KFD_EC_MASK(EC_DEVICE_NEW))
- #define KFD_EC_MASK_PROCESS	(KFD_EC_MASK(EC_PROCESS_RUNTIME) |	\
- 				 KFD_EC_MASK(EC_PROCESS_DEVICE_REMOVE))
-+#define KFD_EC_MASK_PACKET	(KFD_EC_MASK(EC_QUEUE_PACKET_DISPATCH_DIM_INVALID) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_DISPATCH_GROUP_SEGMENT_SIZE_INVALID) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_DISPATCH_CODE_INVALID) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_RESERVED) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_UNSUPPORTED) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_DISPATCH_WORK_GROUP_SIZE_INVALID) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_DISPATCH_REGISTER_INVALID) |	\
-+				 KFD_EC_MASK(EC_QUEUE_PACKET_VENDOR_UNSUPPORTED))
+diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
+index addf3dd57b59b..35e1ddca74d21 100644
+--- a/kernel/bpf/bloom_filter.c
++++ b/kernel/bpf/bloom_filter.c
+@@ -80,6 +80,18 @@ static int bloom_map_get_next_key(struct bpf_map *map, void *key, void *next_key
+ 	return -EOPNOTSUPP;
+ }
  
- /* Checks for exception code types for KFD search */
-+#define KFD_DBG_EC_IS_VALID(ecode) (ecode > EC_NONE && ecode < EC_MAX)
- #define KFD_DBG_EC_TYPE_IS_QUEUE(ecode)					\
--			(!!(KFD_EC_MASK(ecode) & KFD_EC_MASK_QUEUE))
-+			(KFD_DBG_EC_IS_VALID(ecode) && !!(KFD_EC_MASK(ecode) & KFD_EC_MASK_QUEUE))
- #define KFD_DBG_EC_TYPE_IS_DEVICE(ecode)				\
--			(!!(KFD_EC_MASK(ecode) & KFD_EC_MASK_DEVICE))
-+			(KFD_DBG_EC_IS_VALID(ecode) && !!(KFD_EC_MASK(ecode) & KFD_EC_MASK_DEVICE))
- #define KFD_DBG_EC_TYPE_IS_PROCESS(ecode)				\
--			(!!(KFD_EC_MASK(ecode) & KFD_EC_MASK_PROCESS))
-+			(KFD_DBG_EC_IS_VALID(ecode) && !!(KFD_EC_MASK(ecode) & KFD_EC_MASK_PROCESS))
-+#define KFD_DBG_EC_TYPE_IS_PACKET(ecode)				\
-+			(KFD_DBG_EC_IS_VALID(ecode) && !!(KFD_EC_MASK(ecode) & KFD_EC_MASK_PACKET))
++/* Called from syscall */
++static int bloom_map_alloc_check(union bpf_attr *attr)
++{
++	if (attr->value_size > KMALLOC_MAX_SIZE)
++		/* if value_size is bigger, the user space won't be able to
++		 * access the elements.
++		 */
++		return -E2BIG;
++
++	return 0;
++}
++
+ static struct bpf_map *bloom_map_alloc(union bpf_attr *attr)
+ {
+ 	u32 bitset_bytes, bitset_mask, nr_hash_funcs, nr_bits;
+@@ -191,6 +203,7 @@ static u64 bloom_map_mem_usage(const struct bpf_map *map)
+ BTF_ID_LIST_SINGLE(bpf_bloom_map_btf_ids, struct, bpf_bloom_filter)
+ const struct bpf_map_ops bloom_filter_map_ops = {
+ 	.map_meta_equal = bpf_map_meta_equal,
++	.map_alloc_check = bloom_map_alloc_check,
+ 	.map_alloc = bloom_map_alloc,
+ 	.map_free = bloom_map_free,
+ 	.map_get_next_key = bloom_map_get_next_key,
+diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+index d2d9e965eba59..f79815b7e951b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2021 Facebook */
  
+ #include <sys/syscall.h>
++#include <limits.h>
+ #include <test_progs.h>
+ #include "bloom_filter_map.skel.h"
  
- /* Runtime enable states */
+@@ -21,6 +22,11 @@ static void test_fail_cases(void)
+ 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value size 0"))
+ 		close(fd);
+ 
++	/* Invalid value size: too big */
++	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, INT32_MAX, 100, NULL);
++	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value too large"))
++		close(fd);
++
+ 	/* Invalid max entries size */
+ 	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, sizeof(value), 0, NULL);
+ 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid max entries size"))
 -- 
 2.43.0
 
