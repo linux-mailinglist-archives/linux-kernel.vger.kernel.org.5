@@ -1,95 +1,124 @@
-Return-Path: <linux-kernel+bounces-134516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9435C89B269
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ACDB89B26B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C54D61C20C2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:59:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5500C1C20A6F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527B839AC4;
-	Sun,  7 Apr 2024 13:59:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9DE374F1;
+	Sun,  7 Apr 2024 14:06:51 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6B039ACC
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4823D69
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 14:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712498344; cv=none; b=bEJre4rN2+s6TA5JavCHlpAs6y4mP2O8havXISKZxLtcNSqGD69pQAYczaiyP9FDIJBYUnXSoTH2DeAydgS54RTgkdDwScz0Fl3HoVnxWsSqTgcE0uWVRp+jYQSiZ2Rw3vARsQR0v2hqkQTedjlsQpkFCZsje/49WnbuyGn2D2w=
+	t=1712498810; cv=none; b=nhwBfMqJRwPiEz/4F8S6RhqxqD2rQZEEU0zrWOYknu5oBM4YdKwW7wqhPvKnsYHljRCLNY5ebYZzgSuY50aOTBCN/TgTW+DV3lAIblKS9l0GpdXWWkld+DjFnLzIu5tJZAEG3vCnaDA5POvH96GYmF4hHdTYgIVo3q4f6BfQV0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712498344; c=relaxed/simple;
-	bh=G3SuHFbHFzh8ypZatqs8OpXqZOj87aatW9KjH+JX3+A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=oZqUkyEIrn8BdSfyMhNC4zAKsTdk2ZgEjD3fJpMeKA2DX0ZCnBpyNddMB6hrdAwnAotGFt5SsHCJDLs5mGMAkEdoNsEpdOeLIF0VQJrLjFJHgOP1uA/G+4s1znP6duk6cdZsSJu2O8WdNOnHOltttAeIIjv8YHEg1Bgvg0u3pC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso397125039f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 06:59:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712498342; x=1713103142;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h8th6mi8YZ4SsK+AiWToLd2PxMqZqV+eb1WyXiyTunM=;
-        b=upv86iB3KoBd3wZx1YXokc0Crzbi6REo4cSuGiZLRNLa1gbUnBhmP78nr7Tvf7wzvv
-         x58bqp9cbn4toLUD/79GIXvXTo9TJ8A2bj8m5StX1oocQYWw5GekE4KageJUqKNs7QWd
-         Wv/Q1CfKsMcbxr8cDw4beHbVhvqeWQ0K2xi6sd9Q5mWHbajcz3Jfc4iNM1On1/A7jr8x
-         B6FoC19RMYXolNMwyTr9mmgf85gsitp8SniX9yiMmqnLfd+ypR5MPaLns62SCaoto/D6
-         1lMtet+BkrTeILiab8LDjTHOzHdwpkteE/n2DqAnA+LaTk0fXjfraSNU+NZNMlPtqqyN
-         /Ddg==
-X-Forwarded-Encrypted: i=1; AJvYcCUA2T1qticuScKU8cLFYJzAFlJg90EhuC+pF1jvYOWpKyfwZGc0QncCPw9T7x4pFBUuzD2sIDQDgqc+9tew0NaQUFLtKVPtrlhVsv2v
-X-Gm-Message-State: AOJu0YweG+iX7VpR/n/kg1TVQF+RHve+v7lXXPHs8WwE+FunUz17xycK
-	y3lMEPOwK2cvxsuB8qPiOvb3t1WJUOOHTb+MHtal6zTgeOxjd5QDnOMEiPdlwclFjfoqHo4xAEm
-	R1HrYbprV4INB1olXtvkZLAjipD5HAIDI6yoJ7y73weJnSL3iTpTVaX8=
-X-Google-Smtp-Source: AGHT+IFRKc+gPnyLAxAH5+XQEeRuYzDRDNS0sDrq8v2ttGi7NqWFtGQeCgDhZmSWhznz4tsckWDm4Cdcag1QA6QB0dcB1gsjCuuz
+	s=arc-20240116; t=1712498810; c=relaxed/simple;
+	bh=Kii0gY/EBW6uAwevm92uivZAwYfIo7iVJfu2f8inU+8=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=OcdB/yiWbuGirODAjwwNGuQhtbmo+bOBmgXXHSmM2Pe/SBD5KfauWHftQh9fYYtc7Mb5ZPFrbR6sz9MsrhXQvRIm1Oe7BkXSpM4DMG5tKpmF5k6Bj125RLALe4Wgcrlf2/nr/YPjPhz27F9X8ylZvcgc5fkewtP2/3zU/oydm8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VCDXF64xdz1wqRh;
+	Sun,  7 Apr 2024 22:05:49 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (unknown [7.185.36.162])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0EF4B1A0172;
+	Sun,  7 Apr 2024 22:06:44 +0800 (CST)
+Received: from [10.67.110.25] (10.67.110.25) by dggpemm500022.china.huawei.com
+ (7.185.36.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sun, 7 Apr
+ 2024 22:06:43 +0800
+Message-ID: <47b4a790-9a27-2fc5-f2aa-f9981c6da015@huawei.com>
+Date: Sun, 7 Apr 2024 22:06:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1646:b0:368:efa4:be00 with SMTP id
- v6-20020a056e02164600b00368efa4be00mr555322ilu.3.1712498342650; Sun, 07 Apr
- 2024 06:59:02 -0700 (PDT)
-Date: Sun, 07 Apr 2024 06:59:02 -0700
-In-Reply-To: <000000000000dd84650615800e67@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000647e5f06158217d9@google.com>
-Subject: Re: [syzbot] [bluetooth?] BUG: sleeping function called from invalid
- context in hci_le_create_big_complete_evt
-From: syzbot <syzbot+2fb0835e0c9cefc34614@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, hdanton@sina.com, 
-	iulia.tanasescu@nxp.com, johan.hedberg@gmail.com, kuba@kernel.org, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	luiz.dentz@gmail.com, luiz.von.dentz@intel.com, marcel@holtmann.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+From: "zhaowenhui (A)" <zhaowenhui8@huawei.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
+ Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>, "open list:SCHEDULER"
+	<linux-kernel@vger.kernel.org>
+Subject: [bug report] WARNING: CPU: 0 PID: 49573 at kernel/sched/rt.c:802
+ rq_offline_rt+0x24d/0x260
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
 
-syzbot has bisected this issue to:
+Hello,
+Recently, our machine triggered a warning in __disable_runtime. The 
+dmesg are as follow:
+[  991.697692] WARNING: CPU: 0 PID: 49573 at kernel/sched/rt.c:802 
+rq_offline_rt+0x24d/0x260
+[  991.697795] CPU: 0 PID: 49573 Comm: kworker/1:0 Kdump: loaded Not 
+tainted 6.9.0-rc1+ #4
+[  991.697798] Hardware name: SuperCloud R5210 G12/X12DPi-N6, BIOS 1.1c 
+08/30/2021
+[  991.697800] Workqueue: events cpuset_hotplug_workfn
+[  991.697803] RIP: 0010:rq_offline_rt+0x24d/0x260
+[  991.697825] Call Trace:
+[  991.697827]  <TASK>
+[  991.697830]  ? __warn+0x7c/0x130
+[  991.697835]  ? rq_offline_rt+0x24d/0x260
+[  991.697837]  ? report_bug+0xf8/0x1e0
+[  991.697842]  ? handle_bug+0x3f/0x70
+[  991.697858]  set_rq_offline.part.125+0x2d/0x70
+[  991.697864]  rq_attach_root+0xda/0x110
+[  991.697867]  cpu_attach_domain+0x433/0x860
+[  991.697870]  ? psi_task_switch+0x11d/0x260
+[  991.697873]  ? __kmalloc_node+0x1dc/0x390
+[  991.697877]  ? alloc_cpumask_var_node+0x1b/0x30
+[  991.697880]  partition_sched_domains_locked+0x2a8/0x3a0
+[  991.697883]  ? css_next_child+0x61/0x80
+[  991.697885]  rebuild_sched_domains_locked+0x608/0x800
+[  991.697890]  ? percpu_rwsem_wait+0x160/0x160
+[  991.697895]  rebuild_sched_domains+0x1b/0x30
+[  991.697897]  cpuset_hotplug_workfn+0x4b6/0x1160
+[  991.697899]  ? balance_push+0x4e/0x120
+[  991.697903]  ? finish_task_switch+0x8d/0x2d0
+[  991.697905]  ? __switch_to+0x126/0x4f0
+[  991.697909]  process_scheduled_works+0xad/0x430
+[  991.697917]  worker_thread+0x105/0x270
+[  991.697922]  kthread+0xde/0x110
+[  991.697928]  ret_from_fork+0x2d/0x50
+[  991.697935]  ret_from_fork_asm+0x11/0x20
+[  991.697940]  </TASK>
+[  991.697941] ---[ end trace 0000000000000000 ]---
 
-commit a0bfde167b506423111ddb8cd71930497a40fc54
-Author: Iulia Tanasescu <iulia.tanasescu@nxp.com>
-Date:   Tue May 30 14:21:59 2023 +0000
+The corresponding code is :
+802    WARN_ON_ONCE(want);
+Because this WARN_ON_ONCE hasn’t changed from BUG_ON under linux-6.1, it 
+will trigger panic in those version.
 
-    Bluetooth: ISO: Add support for connecting multiple BISes
+More information:
+1. RT_RUNTIME_SHARE is enabled.
+2. We continuously create and remove cpu cgroups. We use cgexec to do 
+some tasks like "tree" or "ps" in these cgroups and the rt_runtime_us in 
+these cgroups are set to 2000~6000.
+3. There are frequent cpu offline/online operations, so it will trigger 
+__disable_runtime.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=146c679d180000
-start commit:   8568bb2ccc27 Add linux-next specific files for 20240405
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=166c679d180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=126c679d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=48ca5acf8d2eb3bc
-dashboard link: https://syzkaller.appspot.com/bug?extid=2fb0835e0c9cefc34614
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1338efc5180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15428f4b180000
+Every time we run these operations after reboot, this warning will 
+happen easily.
 
-Reported-by: syzbot+2fb0835e0c9cefc34614@syzkaller.appspotmail.com
-Fixes: a0bfde167b50 ("Bluetooth: ISO: Add support for connecting multiple BISes")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+---
+Regards
+Zhao Wenhui
 
