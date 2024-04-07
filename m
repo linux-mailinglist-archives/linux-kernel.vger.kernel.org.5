@@ -1,511 +1,212 @@
-Return-Path: <linux-kernel+bounces-134413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CEE89B133
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35EBF89B0F8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:11:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F5C21F219CC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:16:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4DE1F21765
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10664F898;
-	Sun,  7 Apr 2024 13:11:37 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF634376E4;
+	Sun,  7 Apr 2024 13:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XgT6VCuh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2162487BF;
-	Sun,  7 Apr 2024 13:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482302BAE8
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495496; cv=none; b=Y7jM1zv5vVOriL5pra2kB1JRCdV/T3tNT45rQJLLcayvFQCtNXzvqgOxq+HFvZCSj4+EnJIFiQoSgwtx7cP2yOFavSDAOkdEnFJ2NNCUaJTFeeIA+p0KutXfyqr0EP4/mdtSUy/0apQ2G0/kDUkieczdywWsDhPom512oKkm3jw=
+	t=1712495456; cv=none; b=GfoS/kFxsv14yKNqmtIVwR4fFt8rvy2IOOwAzl0yFKB6z/fM2akjyVYxPdUNT0wK8+vrqTn7aqoTw1pTHT6vJFyt965RJI7ZMnsnbxzufw5T1bLbX82DFc4+POzlmaNtxPQqtLhDTIsYYwFdtFnIIQKXBNBNq670xQzHOUdhitw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495496; c=relaxed/simple;
-	bh=SEey+bss8z2u+WwX2dsVTGkvGPe6bvz4cljBhfIUzAs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k5gfHIh0fTzjAqOMq2UYsicwtdXukLNRExguLzEw+n9gVJj2wImKSUnVfb/Dj9nHMZ3622EotGCecSdv/03pk0i8rh6lNJUSq6iAfwpMhlLe7+ye/lmdsruLtXRlze0pYwAEp83nexGBcNPQR1PhPat2V02VE/uv/grBerYHfO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VCCGF5qDXzwQcX;
-	Sun,  7 Apr 2024 21:08:37 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 27C061404F7;
-	Sun,  7 Apr 2024 21:11:30 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 7 Apr 2024 21:11:29 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
-	<linux-mm@kvack.org>, <linux-doc@vger.kernel.org>
-Subject: [PATCH net-next v1 12/12] mm: page_frag: update documentation and maintainer for page_frag
-Date: Sun, 7 Apr 2024 21:08:49 +0800
-Message-ID: <20240407130850.19625-13-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240407130850.19625-1-linyunsheng@huawei.com>
-References: <20240407130850.19625-1-linyunsheng@huawei.com>
+	s=arc-20240116; t=1712495456; c=relaxed/simple;
+	bh=9PXGMNAgOACqNin9bgdIyvcpskUTE+lFjxIcvvOoZeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCuIIePoByLcCgBkr6e/zK8bEVyAi3WRCuOrNlLSOowif+mZgnnkjwknvSyz4+Lnzee7vXuSGR4+GjqbYgHmblVYZaoxFQMvCONND7Fmj3N8Jc5IiZsVwJcMU/HBAUAXpkHz4PPVjDSWGAJcrFJp8FyqRP9Fo/Ifje/hF3NNrkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XgT6VCuh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712495453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a6vxxG5xgzXX9R/YtKyD3zzQDfQBIezrwLJQElkxb28=;
+	b=XgT6VCuhMZ2oKkG81sb9IwUe33R5O9iwnDqJYCqNSZMri/aTA0qyRQOR++RQky/xR31bn1
+	nOpT4258yYm9S8MVIgMZYp15qTpvuO1fzY23MYymUrMkQJvO8GArfI/cNHjSMKNlAdpQZh
+	4wTdYHJjYbxAmjjEGjHDbqyz6Q+1I6U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-288-n62oceUmPRWuQNZU-k7Xmw-1; Sun,
+ 07 Apr 2024 09:10:48 -0400
+X-MC-Unique: n62oceUmPRWuQNZU-k7Xmw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9CEA629AB3F7;
+	Sun,  7 Apr 2024 13:10:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.79])
+	by smtp.corp.redhat.com (Postfix) with SMTP id BB260200B3C6;
+	Sun,  7 Apr 2024 13:10:44 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sun,  7 Apr 2024 15:09:22 +0200 (CEST)
+Date: Sun, 7 Apr 2024 15:09:14 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Nick Piggin <npiggin@gmail.com>, Tejun Heo <tj@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: Re: Nohz_full on boot CPU is broken (was: Re: [PATCH v2 1/1] wq:
+ Avoid using isolated cpus' timers on queue_delayed_work)
+Message-ID: <20240407130914.GA10796@redhat.com>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <Zg2qFinSkAOmRHcM@slm.duckdns.org>
+ <20240403203814.GD31764@redhat.com>
+ <20240405140449.GB22839@redhat.com>
+ <ZhByg-xQv6_PC3Pd@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+In-Reply-To: <ZhByg-xQv6_PC3Pd@localhost.localdomain>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Update documentation about design, implementation and API usages
-for page_frag.
+On 04/05, Frederic Weisbecker wrote:
+>
+> +Cc Nick
+>
+> Le Fri, Apr 05, 2024 at 04:04:49PM +0200, Oleg Nesterov a �crit :
+> > On 04/03, Oleg Nesterov wrote:
+> > >
+> > > > > OTOH, Documentation/timers/no_hz.rst says
+> > > > >
+> > > > > 	Therefore, the
+> > > > > 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
+> > > > > 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
+> > > > > 	error message, and the boot CPU will be removed from the mask.
+> > > > >
+> > > > > and this doesn't match the reality.
+> > > >
+> > > > Don't some archs allow the boot CPU to go down too tho? If so, this doesn't
+> > > > really solve the problem, right?
+> > >
+> > > I do not know. But I thought about this too.
+> > >
+> > > In the context of this discussion we do not care if the boot CPU goes down.
+> > > But we need at least one housekeeping CPU after cpu_down(). The comment in
+> > > cpu_down_maps_locked() says
+> > >
+> > > 	Also keep at least one housekeeping cpu onlined
+> > >
+> > > but it checks HK_TYPE_DOMAIN, and I do not know (and it is too late for me
+> > > to try to read the code ;) if housekeeping.cpumasks[HK_TYPE_TIMER] can get
+> > > empty or not.
+> >
+> > This nearly killed me, but I managed to convince myself we shouldn't worry
+> > about cpu_down().
+> >
+> > HK_FLAG_TIMER implies HK_FLAG_TICK.
+> >
+> > HK_FLAG_TICK implies tick_nohz_full_setup() which sets
+> > tick_nohz_full_mask = non_housekeeping_mask.
+> >
+> > When tick_setup_device() is called on a housekeeping CPU it does
+> >
+> > 	else if (tick_do_timer_boot_cpu != -1 &&
+> > 					!tick_nohz_full_cpu(cpu)) {
+> > 		tick_take_do_timer_from_boot();
+> > 		tick_do_timer_boot_cpu = -1;
+> >
+> >
+> > 	and this sets tick_do_timer_cpu = first-housekeeping-cpu.
+> >
+> > cpu_down(tick_do_timer_cpu) will fail, tick_nohz_cpu_down() will nack it.
+> >
+> > So cpu_down() can't make housekeeping.cpumasks[HK_FLAG_TIMER] empty and I
+> > still think that the change below is the right approach.
+> >
+> > But probably WARN_ON() in housekeeping_any_cpu() makes sense anyway.
+> >
+> > What do you think?
+>
+> Good analysis on this nasty housekeeping VS tick code. I promised so many
+> times to cleanup this mess but things keep piling up.
+>
+> It is indeed possible for the boot CPU to be a nohz_full CPU and as
+> you can see, it's only half-working. This is so ever since:
+>
+>     08ae95f4fd3b (nohz_full: Allow the boot CPU to be nohz_full)
 
-Also update MAINTAINERS for page_frag. Alexander seems to be the
-orginal author for page_frag, we can add him to the MAINTAINERS
-later if we have an ack from him.
+Thanks... So this is intentional. I was confused by
 
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- Documentation/mm/page_frags.rst | 115 ++++++++++++++++++----------
- MAINTAINERS                     |  10 +++
- include/linux/page_frag_cache.h | 128 ++++++++++++++++++++++++++++++++
- mm/page_frag_cache.c            |  51 ++++++++++---
- 4 files changed, 256 insertions(+), 48 deletions(-)
+	Therefore, the
+	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
+	"nohz_full=" mask that includes the boot CPU will result in a boot-time
+	error message, and the boot CPU will be removed from the mask.
 
-diff --git a/Documentation/mm/page_frags.rst b/Documentation/mm/page_frags.rst
-index 503ca6cdb804..77256dfb58bf 100644
---- a/Documentation/mm/page_frags.rst
-+++ b/Documentation/mm/page_frags.rst
-@@ -1,43 +1,80 @@
-+.. SPDX-License-Identifier: GPL-2.0
+from Documentation/timers/no_hz.rst
+
+> I would love
+> to revert that now but I don't know if anyone uses this and have it working
+> by chance somewhere... Should we continue to support a broken feature? Can we
+> break user ABI if it's already half-broken?
+
+Well, the changelog says
+
+    nohz_full has been trialed at a large supercomputer site and found to
+    significantly reduce jitter. In order to deploy it in production, they
+    need CPU0 to be nohz_full
+
+so I guess this feature has users.
+
+But after the commit aae17ebb53cd3da ("workqueue: Avoid using isolated cpus'
+timers on queue_delayed_work") the kernel will crash at boot time if the boot
+CPU is nohz_full.
+
+So we need a workaround at least. I am starting to think I will send a trivial
+patch which changes __queue_delayed_work() to validate the cpu returned by
+housekeeping_any_cpu(HK_TYPE_TIMER).
+
+But perhaps something like below makes more sense as a (stupid) workaround?
+
+Oleg.
+
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -46,7 +46,15 @@ int housekeeping_any_cpu(enum hk_type type)
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+ 
+-			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			if (cpu < nr_cpu_ids)
++				return cpu;
 +
- ==============
- Page fragments
- ==============
- 
--A page fragment is an arbitrary-length arbitrary-offset area of memory
--which resides within a 0 or higher order compound page.  Multiple
--fragments within that page are individually refcounted, in the page's
--reference counter.
--
--The page_frag functions, page_frag_alloc and page_frag_free, provide a
--simple allocation framework for page fragments.  This is used by the
--network stack and network device drivers to provide a backing region of
--memory for use as either an sk_buff->head, or to be used in the "frags"
--portion of skb_shared_info.
--
--In order to make use of the page fragment APIs a backing page fragment
--cache is needed.  This provides a central point for the fragment allocation
--and tracks allows multiple calls to make use of a cached page.  The
--advantage to doing this is that multiple calls to get_page can be avoided
--which can be expensive at allocation time.  However due to the nature of
--this caching it is required that any calls to the cache be protected by
--either a per-cpu limitation, or a per-cpu limitation and forcing interrupts
--to be disabled when executing the fragment allocation.
--
--The network stack uses two separate caches per CPU to handle fragment
--allocation.  The netdev_alloc_cache is used by callers making use of the
--netdev_alloc_frag and __netdev_alloc_skb calls.  The napi_alloc_cache is
--used by callers of the __napi_alloc_frag and napi_alloc_skb calls.  The
--main difference between these two calls is the context in which they may be
--called.  The "netdev" prefixed functions are usable in any context as these
--functions will disable interrupts, while the "napi" prefixed functions are
--only usable within the softirq context.
--
--Many network device drivers use a similar methodology for allocating page
--fragments, but the page fragments are cached at the ring or descriptor
--level.  In order to enable these cases it is necessary to provide a generic
--way of tearing down a page cache.  For this reason __page_frag_cache_drain
--was implemented.  It allows for freeing multiple references from a single
--page via a single call.  The advantage to doing this is that it allows for
--cleaning up the multiple references that were added to a page in order to
--avoid calling get_page per allocation.
--
--Alexander Duyck, Nov 29, 2016.
-+.. kernel-doc:: mm/page_frag_cache.c
-+   :doc: page_frag allocator
++			cpu = READ_ONCE(tick_do_timer_boot_cpu);
++			if (cpu >= 0)
++				return cpu;
 +
-+Architecture overview
-+=====================
-+
-+.. code-block:: none
-+
-+    +----------------------+
-+    | page_frag API caller |
-+    +----------------------+
-+            ^
-+            |
-+            |
-+            |
-+            v
-+    +----------------------------------------------+
-+    |          request page fragment               |
-+    +----------------------------------------------+
-+        ^                                        ^
-+        |                                        |
-+        | Cache empty or not enough              |
-+        |                                        |
-+        v                                        |
-+    +--------------------------------+           |
-+    | refill cache with order 3 page |           |
-+    +--------------------------------+           |
-+     ^                  ^                        |
-+     |                  |                        |
-+     |                  | Refill failed          |
-+     |                  |                        | Cache is enough
-+     |                  |                        |
-+     |                  v                        |
-+     |    +----------------------------------+   |
-+     |    |  refill cache with order 0 page  |   |
-+     |    +----------------------------------+   |
-+     |                       ^                   |
-+     | Refill succeed        |                   |
-+     |                       | Refill succeed    |
-+     |                       |                   |
-+     v                       v                   v
-+    +----------------------------------------------+
-+    |       allocate fragment from cache           |
-+    +----------------------------------------------+
-+
-+API interface
-+=============
-+As the design and implementation of page_frag API, the allocation side does not
-+allow concurrent calling, it is assumed that the caller must ensure there is not
-+concurrent alloc calling to the same page_frag_cache instance by using it's own
-+lock or rely on some lockless guarantee like NAPI softirq.
-+
-+Depending on different use cases, callers expecting to deal with va, page or
-+both va and page for them may call page_frag_alloc_va(), page_frag_alloc_pg(),
-+or page_frag_alloc() accordingly.
-+
-+There is also a use case that need minimum memory in order for forward
-+progressing, but can do better if there is more memory available. Introduce
-+page_frag_alloc_prepare() and page_frag_alloc_commit() related API, the caller
-+requests the minimum memory it need and the prepare API will return the maximum
-+size of the fragment returned, caller need to report back to the page_frag core
-+how much memory it actually use by calling commit API, or not calling the commit
-+API if deciding to not use any memory.
-+
-+.. kernel-doc:: include/linux/page_frag_cache.h
-+   :identifiers: page_frag_cache_init page_frag_cache_is_pfmemalloc
-+                 page_frag_alloc_va __page_frag_alloc_va_align
-+                 page_frag_alloc_va_align page_frag_alloc_va_prepare
-+                 page_frag_alloc_va_prepare_align page_frag_alloc_pg_prepare
-+                 page_frag_alloc_prepare page_frag_alloc_commit
-+                 page_frag_alloc_commit_noref page_frag_free_va
-+
-+.. kernel-doc:: mm/page_frag_cache.c
-+   :identifiers: page_frag_cache_drain
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4745ea94d463..2f84aba59428 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16683,6 +16683,16 @@ F:	mm/page-writeback.c
- F:	mm/readahead.c
- F:	mm/truncate.c
- 
-+PAGE FRAG
-+M:	Yunsheng Lin <linyunsheng@huawei.com>
-+L:	linux-mm@kvack.org
-+L:	netdev@vger.kernel.org
-+S:	Supported
-+F:	Documentation/mm/page_frags.rst
-+F:	include/linux/page_frag_cache.h
-+F:	mm/page_frag_cache.c
-+F:	mm/page_frag_test.c
-+
- PAGE POOL
- M:	Jesper Dangaard Brouer <hawk@kernel.org>
- M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
-diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_cache.h
-index 28185969cd2c..d8edbecdd179 100644
---- a/include/linux/page_frag_cache.h
-+++ b/include/linux/page_frag_cache.h
-@@ -31,11 +31,23 @@ struct page_frag_cache {
- #endif
- };
- 
-+/**
-+ * page_frag_cache_init() - Init page_frag cache.
-+ * @nc: page_frag cache from which to init
-+ *
-+ * Inline helper to init the page_frag cache.
-+ */
- static inline void page_frag_cache_init(struct page_frag_cache *nc)
- {
- 	nc->va = NULL;
- }
- 
-+/**
-+ * page_frag_cache_is_pfmemalloc() - Check for pfmemalloc.
-+ * @nc: page_frag cache from which to check
-+ *
-+ * Used to check if the current page in page_frag cache is pfmemalloc'ed.
-+ */
- static inline bool page_frag_cache_is_pfmemalloc(struct page_frag_cache *nc)
- {
- 	return !!nc->pfmemalloc;
-@@ -46,6 +58,17 @@ void __page_frag_cache_drain(struct page *page, unsigned int count);
- void *page_frag_cache_refill(struct page_frag_cache *nc, unsigned int fragsz,
- 			     gfp_t gfp_mask);
- 
-+/**
-+ * page_frag_alloc_va() - Alloc a page fragment.
-+ * @nc: page_frag cache from which to allocate
-+ * @fragsz: the requested fragment size
-+ * @gfp_mask: the allocation gfp to use when cache need to be refilled
-+ *
-+ * Get a page fragment from page_frag cache.
-+ *
-+ * Return:
-+ * Return va of the page fragment, otherwise return NULL.
-+ */
- static inline void *page_frag_alloc_va(struct page_frag_cache *nc,
- 				       unsigned int fragsz, gfp_t gfp_mask)
- {
-@@ -63,6 +86,19 @@ static inline void *page_frag_alloc_va(struct page_frag_cache *nc,
- 	return va + offset;
- }
- 
-+/**
-+ * __page_frag_alloc_va_align() - Alloc a page fragment with aligning
-+ * requirement.
-+ * @nc: page_frag cache from which to allocate
-+ * @fragsz: the requested fragment size
-+ * @gfp_mask: the allocation gfp to use when cache need to be refilled
-+ * @align: the requested aligning requirement
-+ *
-+ * Get a page fragment from page_frag cache with aligning requirement.
-+ *
-+ * Return:
-+ * Return va of the page fragment, otherwise return NULL.
-+ */
- static inline void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
- 					       unsigned int fragsz,
- 					       gfp_t gfp_mask,
-@@ -75,6 +111,19 @@ static inline void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
- 	return page_frag_alloc_va(nc, fragsz, gfp_mask);
- }
- 
-+/**
-+ * page_frag_alloc_va_align() - Alloc a page fragment with aligning requirement.
-+ * @nc: page_frag cache from which to allocate
-+ * @fragsz: the requested fragment size
-+ * @gfp_mask: the allocation gfp to use when cache need to be refilled
-+ * @align: the requested aligning requirement
-+ *
-+ * WARN_ON_ONCE() checking for align and fragsz before getting a page fragment
-+ * from page_frag cache with aligning requirement.
-+ *
-+ * Return:
-+ * Return va of the page fragment, otherwise return NULL.
-+ */
- static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
- 					     unsigned int fragsz,
- 					     gfp_t gfp_mask,
-@@ -86,6 +135,19 @@ static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
- 	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, align);
- }
- 
-+/**
-+ * page_frag_alloc_va_prepare() - Prepare allocing a page fragment.
-+ * @nc: page_frag cache from which to prepare
-+ * @offset: out as the offset of the page fragment
-+ * @size: in as the requested size, out as the available size
-+ * @gfp_mask: the allocation gfp to use when cache need to be refilled
-+ *
-+ * Prepare a page fragment with minimum size of ‘size’, 'size' is also used to
-+ * report the maximum size of the page fragment the caller can use.
-+ *
-+ * Return:
-+ * Return va of the page fragment, otherwise return NULL.
-+ */
- static inline void *page_frag_alloc_va_prepare(struct page_frag_cache *nc,
- 					       unsigned int *offset,
- 					       unsigned int *size,
-@@ -108,6 +170,21 @@ static inline void *page_frag_alloc_va_prepare(struct page_frag_cache *nc,
- 	return va + *offset;
- }
- 
-+/**
-+ * page_frag_alloc_va_prepare_align() - Prepare allocing a page fragment with
-+ * aligning requirement.
-+ * @nc: page_frag cache from which to prepare
-+ * @offset: out as the offset of the page fragment
-+ * @size: in as the requested size, out as the available size
-+ * @align: the requested aligning requirement
-+ * @gfp_mask: the allocation gfp to use when cache need to be refilled
-+ *
-+ * Prepare an aligned page fragment with minimum size of ‘size’, 'size' is also
-+ * used to report the maximum size of the page fragment the caller can use.
-+ *
-+ * Return:
-+ * Return va of the page fragment, otherwise return NULL.
-+ */
- static inline void *page_frag_alloc_va_prepare_align(struct page_frag_cache *nc,
- 						     unsigned int *offset,
- 						     unsigned int *size,
-@@ -144,6 +221,19 @@ static inline void *__page_frag_alloc_pg_prepare(struct page_frag_cache *nc,
- 	return va;
- }
- 
-+/**
-+ * page_frag_alloc_pg_prepare - Prepare allocing a page fragment.
-+ * @nc: page_frag cache from which to prepare
-+ * @offset: out as the offset of the page fragment
-+ * @size: in as the requested size, out as the available size
-+ * @gfp: the allocation gfp to use when cache need to be refilled
-+ *
-+ * Prepare a page fragment with minimum size of ‘size’, 'size' is also used to
-+ * report the maximum size of the page fragment the caller can use.
-+ *
-+ * Return:
-+ * Return the page fragment, otherwise return NULL.
-+ */
- #define page_frag_alloc_pg_prepare(nc, offset, size, gfp)		\
- ({									\
- 	struct page *__page = NULL;					\
-@@ -179,6 +269,21 @@ static inline void *__page_frag_alloc_prepare(struct page_frag_cache *nc,
- 	return nc_va;
- }
- 
-+/**
-+ * page_frag_alloc_prepare - Prepare allocing a page fragment.
-+ * @nc: page_frag cache from which to prepare
-+ * @offset: out as the offset of the page fragment
-+ * @size: in as the requested size, out as the available size
-+ * @va: out as the va of the returned page fragment
-+ * @gfp: the allocation gfp to use when cache need to be refilled
-+ *
-+ * Prepare a page fragment with minimum size of ‘size’, 'size' is also used to
-+ * report the maximum size of the page fragment. Return both 'page' and 'va' of
-+ * the fragment to the caller.
-+ *
-+ * Return:
-+ * Return the page fragment, otherwise return NULL.
-+ */
- #define page_frag_alloc_prepare(nc, offset, size, va, gfp)		\
- ({									\
- 	struct page *__page = NULL;					\
-@@ -191,6 +296,14 @@ static inline void *__page_frag_alloc_prepare(struct page_frag_cache *nc,
- 	__page;								\
- })
- 
-+/**
-+ * page_frag_alloc_commit - Commit allocing a page fragment.
-+ * @nc: page_frag cache from which to commit
-+ * @offset: offset of the page fragment
-+ * @size: size of the page fragment has been used
-+ *
-+ * Commit the alloc preparing by passing offset and the actual used size.
-+ */
- static inline void page_frag_alloc_commit(struct page_frag_cache *nc,
- 					  unsigned int offset,
- 					  unsigned int size)
-@@ -199,6 +312,17 @@ static inline void page_frag_alloc_commit(struct page_frag_cache *nc,
- 	nc->offset = offset + size;
- }
- 
-+/**
-+ * page_frag_alloc_commit_noref - Commit allocing a page fragment without taking
-+ * page refcount.
-+ * @nc: page_frag cache from which to commit
-+ * @offset: offset of the page fragment
-+ * @size: size of the page fragment has been used
-+ *
-+ * Commit the alloc preparing by passing offset and the actual used size, but
-+ * not taking page refcount. Mostly used for fragmemt coaleasing case when the
-+ * current fragmemt can share the same refcount with previous fragmemt.
-+ */
- static inline void page_frag_alloc_commit_noref(struct page_frag_cache *nc,
- 						unsigned int offset,
- 						unsigned int size)
-@@ -206,6 +330,10 @@ static inline void page_frag_alloc_commit_noref(struct page_frag_cache *nc,
- 	nc->offset = offset + size;
- }
- 
-+/**
-+ * page_frag_free_va - Free a page fragment by va.
-+ * @addr: va of page fragment to be freed
-+ */
- void page_frag_free_va(void *addr);
- 
- #endif
-diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
-index cbd0ed82a596..0c76ec006c22 100644
---- a/mm/page_frag_cache.c
-+++ b/mm/page_frag_cache.c
-@@ -1,15 +1,44 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Page fragment allocator
-+
-+/**
-+ * DOC: page_frag allocator
-+ *
-+ * A page fragment is an arbitrary-length arbitrary-offset area of memory which
-+ * resides within a 0 or higher order compound page.  Multiple fragments within
-+ * that page are individually refcounted, in the page's reference counter.
-+ *
-+ * The page_frag functions, page_frag_alloc* and page_frag_free*, provide a
-+ * simple allocation framework for page fragments.  This is used by the network
-+ * stack and network device drivers to provide a backing region of memory for
-+ * use as either an sk_buff->head, or to be used in the "frags" portion of
-+ * skb_shared_info.
-  *
-- * Page Fragment:
-- *  An arbitrary-length arbitrary-offset area of memory which resides within a
-- *  0 or higher order page.  Multiple fragments within that page are
-- *  individually refcounted, in the page's reference counter.
-+ * In order to make use of the page fragment APIs a backing page fragment cache
-+ * is needed.  This provides a central point for the fragment allocation and
-+ * tracks allows multiple calls to make use of a cached page.  The advantage to
-+ * doing this is that multiple calls to get_page can be avoided which can be
-+ * expensive at allocation time.  However due to the nature of this caching it
-+ * is required that any calls to the cache be protected by either a per-cpu
-+ * limitation, or a per-cpu limitation and forcing interrupts to be disabled
-+ * when executing the fragment allocation.
-  *
-- * The page_frag functions provide a simple allocation framework for page
-- * fragments.  This is used by the network stack and network device drivers to
-- * provide a backing region of memory for use as either an sk_buff->head, or to
-- * be used in the "frags" portion of skb_shared_info.
-+ * The network stack uses two separate caches per CPU to handle fragment
-+ * allocation.  The netdev_alloc_cache is used by callers making use of the
-+ * netdev_alloc_frag and __netdev_alloc_skb calls.  The napi_alloc_cache is
-+ * used by callers of the __napi_alloc_frag and napi_alloc_skb calls.  The
-+ * main difference between these two calls is the context in which they may be
-+ * called.  The "netdev" prefixed functions are usable in any context as these
-+ * functions will disable interrupts, while the "napi" prefixed functions are
-+ * only usable within the softirq context.
-+ *
-+ * Many network device drivers use a similar methodology for allocating page
-+ * fragments, but the page fragments are cached at the ring or descriptor
-+ * level.  In order to enable these cases it is necessary to provide a generic
-+ * way of tearing down a page cache.  For this reason __page_frag_cache_drain
-+ * was implemented.  It allows for freeing multiple references from a single
-+ * page via a single call.  The advantage to doing this is that it allows for
-+ * cleaning up the multiple references that were added to a page in order to
-+ * avoid calling get_page per allocation.
-  */
- 
- #include <linux/export.h>
-@@ -57,6 +86,10 @@ static bool __page_frag_cache_refill(struct page_frag_cache *nc,
- 	return true;
- }
- 
-+/**
-+ * page_frag_cache_drain - Drain the current page from page_frag cache.
-+ * @nc: page_frag cache from which to drain
-+ */
- void page_frag_cache_drain(struct page_frag_cache *nc)
- {
- 	if (!nc->va)
--- 
-2.33.0
++			WARN_ON_ONCE(1);
+ 		}
+ 	}
+ 	return smp_processor_id();
 
 
