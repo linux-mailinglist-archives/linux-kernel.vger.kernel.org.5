@@ -1,62 +1,64 @@
-Return-Path: <linux-kernel+bounces-134497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8B689B235
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:41:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BAF89B238
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:41:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32981F2150F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:41:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83566287087
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C8913AD07;
-	Sun,  7 Apr 2024 13:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA7013B28A;
+	Sun,  7 Apr 2024 13:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naN1NnPk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9o4XVmA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD5813AA36;
-	Sun,  7 Apr 2024 13:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070E113AD30;
+	Sun,  7 Apr 2024 13:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495671; cv=none; b=mWTyW3+Ue4Fa5xEsNlTNZTxsRNhHkz24V/cF7B13eFZyYaPlX94UtwMoKI8OzspD1052UPfkNwXn1nwH1omWF9XRai+XVzFMa5SLvm4lSJwjEnzKzTRmHs4i+q0zQfOU1lggjgZGUWcXRmj4uefHe4zdBp8YQva3KPZnTjq9OrE=
+	t=1712495674; cv=none; b=fg2e+rrBLNN7NHNkkAJjCNRR8HBUx1K/4acWbU5kv2B/a1gxlwXxfKpK94mw+e/JVZNkCE/Rtb/9pe2U12K4HRYre2SzLKwX6m/zV4yyGP7YivxcejfxWPErgYvHeUFjPffy85Mqnx4W2NJ9GQH36GFqPlKla1XNoPQdlheKp9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495671; c=relaxed/simple;
-	bh=YxIujKVnzSUSImom4LlU7xoR5Ebj6raYtFyq7DGEMG4=;
+	s=arc-20240116; t=1712495674; c=relaxed/simple;
+	bh=Y1SZ2ijBW5TH0lgerbHNx/oxlDKk8wXv5m5mQBVO9pY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kyNHUd1rhgjObHc5HzINRnNBIswg5JaNm64DofFspq4CfSBqVF2WcxM4tn4ufsDS6Web7eYd/DF8Pz2YumLZjDGCvmdwVlETgQDRzHckO9DTke07u8ZXrKE1oaDmNQBoLvYVsBHm5Hs9lXfT2BMu5L9nrquQCOnZc5jox24no8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=naN1NnPk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA11AC433C7;
-	Sun,  7 Apr 2024 13:14:29 +0000 (UTC)
+	 MIME-Version; b=AafTaMTAgqLxpOfQezHD4RxLPVgJ/Ntbkl9EtVRbOuipyJFgzb+YvO/GciG3G+cqvPp+193BuR9AOHwIM11tvWkik7qxk584zcWSsllUH6K//+EvHW/Wjz95aF9JVFiTwsQsaTnKUTLYjfArB+CenE0/QFp55YIyoDun7WDO4G4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9o4XVmA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A94C433F1;
+	Sun,  7 Apr 2024 13:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495671;
-	bh=YxIujKVnzSUSImom4LlU7xoR5Ebj6raYtFyq7DGEMG4=;
+	s=k20201202; t=1712495673;
+	bh=Y1SZ2ijBW5TH0lgerbHNx/oxlDKk8wXv5m5mQBVO9pY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=naN1NnPkryaTZPNMv9b46LG7f4ioMJm9g5u8RgQBJiE0zI43s5iijb+FKpIcH9sYn
-	 iYBH5yK/DDjurW5zUMt5C91mUEzxAipjYEJ5jh6PrVXr4DHe9fHLCw2zYyozv1vpl9
-	 EBNxIR9GS4B6p09BPnZb3JzbVjNJDVWLuIHpWkwnBXPYqojyFmXEPxT/+j7B0dIEmT
-	 uWRdcB+XnAcp6oWwpT9XsJtzFkZQA0Qic+82urh+QvP6dzH8VcRazNZ/aguRssv/45
-	 nEH9b6H+yH1LR9Yg5peFhgSuCtB37ExJ2vxDciTCmiTq4QLnv6gume+WWIzCH2gG6q
-	 S7hdd0/Aqk8RA==
+	b=s9o4XVmAKEmDh4rD3cJLWCZWiMDHYmQMRAQxl45GTiEGIkIHoxL9tfR5jOOvApkdo
+	 Ig0GbLwHCdBOqxJyOszCwa4/5Wo+aAP21i8gRv3JdjuMurV/IT6KGVYZRcUgq+En3C
+	 rK9dEHxSTcG+0v90EBO6ckK2i+oqOnLip/8uQoweUIQkquh1Q9VAlpHe46gN8P6/uR
+	 rVle6id2gyVXJUWB9utvTqKYNcAp7zwLm/npfy27SsFHPo+X0qrTbmMixXmGk0aEBK
+	 nsCaEfTJmxsWFooNPBP4Gh2uCN0XQjch8BTD6OKcya5usfqQjjpqYiIvtaU0uMfd2u
+	 G5365wSqx/4ug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Simon Horman <horms@kernel.org>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: linke li <lilinke99@qq.com>,
+	Eric Dumazet <edumazet@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	davem@davemloft.net,
-	edumazet@google.com,
 	kuba@kernel.org,
 	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
+	kuniyu@amazon.com,
+	willemb@google.com,
+	wuyun.abel@bytedance.com,
+	leitao@debian.org,
+	alexander@mihalicyn.com,
+	dhowells@redhat.com,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 3/5] wifi: mac80211: fix ieee80211_bss_*_flags kernel-doc
-Date: Sun,  7 Apr 2024 09:14:23 -0400
-Message-ID: <20240407131426.1053736-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/5] net: mark racy access on sk->sk_rcvbuf
+Date: Sun,  7 Apr 2024 09:14:24 -0400
+Message-ID: <20240407131426.1053736-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131426.1053736-1-sashal@kernel.org>
 References: <20240407131426.1053736-1-sashal@kernel.org>
@@ -71,47 +73,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.311
 Content-Transfer-Encoding: 8bit
 
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
+From: linke li <lilinke99@qq.com>
 
-[ Upstream commit 774f8841f55d7ac4044c79812691649da203584a ]
+[ Upstream commit c2deb2e971f5d9aca941ef13ee05566979e337a4 ]
 
-Running kernel-doc on ieee80211_i.h flagged the following:
-net/mac80211/ieee80211_i.h:145: warning: expecting prototype for enum ieee80211_corrupt_data_flags. Prototype was for enum ieee80211_bss_corrupt_data_flags instead
-net/mac80211/ieee80211_i.h:162: warning: expecting prototype for enum ieee80211_valid_data_flags. Prototype was for enum ieee80211_bss_valid_data_flags instead
+sk->sk_rcvbuf in __sock_queue_rcv_skb() and __sk_receive_skb() can be
+changed by other threads. Mark this as benign using READ_ONCE().
 
-Fix these warnings.
+This patch is aimed at reducing the number of benign races reported by
+KCSAN in order to focus future debugging effort on harmful races.
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://msgid.link/20240314-kdoc-ieee80211_i-v1-1-72b91b55b257@quicinc.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: linke li <lilinke99@qq.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/ieee80211_i.h | 4 ++--
+ net/core/sock.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index c5e5e978d3ede..3f17f2797acc9 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -113,7 +113,7 @@ struct ieee80211_bss {
- };
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 62d169bcfcfa1..dd7cee54b66cc 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -404,7 +404,7 @@ int __sock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+ 	unsigned long flags;
+ 	struct sk_buff_head *list = &sk->sk_receive_queue;
  
- /**
-- * enum ieee80211_corrupt_data_flags - BSS data corruption flags
-+ * enum ieee80211_bss_corrupt_data_flags - BSS data corruption flags
-  * @IEEE80211_BSS_CORRUPT_BEACON: last beacon frame received was corrupted
-  * @IEEE80211_BSS_CORRUPT_PROBE_RESP: last probe response received was corrupted
-  *
-@@ -126,7 +126,7 @@ enum ieee80211_bss_corrupt_data_flags {
- };
+-	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf) {
++	if (atomic_read(&sk->sk_rmem_alloc) >= READ_ONCE(sk->sk_rcvbuf)) {
+ 		atomic_inc(&sk->sk_drops);
+ 		trace_sock_rcvqueue_full(sk, skb);
+ 		return -ENOMEM;
+@@ -456,7 +456,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
  
- /**
-- * enum ieee80211_valid_data_flags - BSS valid data flags
-+ * enum ieee80211_bss_valid_data_flags - BSS valid data flags
-  * @IEEE80211_BSS_VALID_WMM: WMM/UAPSD data was gathered from non-corrupt IE
-  * @IEEE80211_BSS_VALID_RATES: Supported rates were gathered from non-corrupt IE
-  * @IEEE80211_BSS_VALID_ERP: ERP flag was gathered from non-corrupt IE
+ 	skb->dev = NULL;
+ 
+-	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
++	if (sk_rcvqueues_full(sk, READ_ONCE(sk->sk_rcvbuf))) {
+ 		atomic_inc(&sk->sk_drops);
+ 		goto discard_and_relse;
+ 	}
 -- 
 2.43.0
 
