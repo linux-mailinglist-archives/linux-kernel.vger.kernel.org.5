@@ -1,279 +1,256 @@
-Return-Path: <linux-kernel+bounces-134136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C2C789AE1B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:41:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17D789AE18
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:40:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5D51F21C60
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:41:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C8A61C211FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40771C0DC0;
-	Sun,  7 Apr 2024 02:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CF91C0DC3;
+	Sun,  7 Apr 2024 02:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fRnwqjXX"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="HpwPuxLc"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2107.outbound.protection.outlook.com [40.107.13.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0415EA935;
-	Sun,  7 Apr 2024 02:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712457669; cv=none; b=N4S8gq8YwJl2QzCDXQmR2KDWDknJWzcGp2GvIFTD8OUArjNWo5Z5lrpZInS5usbDluFQ3QwAOhV87pJRWcmLric0lZyR6QBEFNJM32QGgyMX192eoWHmfEt5We3aqdVmjh4e4iYdOGOEplIls8k59bijNJLtLafuT4cF6qqjT0A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712457669; c=relaxed/simple;
-	bh=jE8wYV7ClylQm1BWuzREFYyBRBC/QLEWOZoJ5AuIi5c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SwHGC6Rj/sk8PKVCJPNkm6Fs1KlOROZH+V4JW1i7Xz3E4FOhSiCdxdIjDnluQ01dmDrTcKj+8xfqs/rZ2009vuKlEyII9VpANFeaoC1GeFy1PtCBWiEDvOnfHpIuNYcIyPCszDsZEDDmQha/FiEcBSrzgr4+u70iEvyYH5k9FSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fRnwqjXX; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d47ce662so3050071e87.1;
-        Sat, 06 Apr 2024 19:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712457666; x=1713062466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svi7IG4j1NCRd7Qsuibjxz4QatOdbrOlqhYRp4ynUhA=;
-        b=fRnwqjXX9bBprzYPn4eqjndNI88CTqWYjLBipZ2c87woM1vBOpGDFiubr2BrPT7JwO
-         Hq3p1obCTou4ee+ri6ho6rhYoyb8WpBpcVEFxcFUIbkBQSWTpzmOw7IvzBEG2BQYymuK
-         9Ab9goZGU1cG6w626tPvVVi87lcbsC9MS++C/qd9sEwDy6Tf0EbXi2WR0wz68r9V0zoE
-         A6bOzvmidJsmY+/XpYUcChJkrbxAvVGE+TAJakZ1lvPhwxmmQ/G/eiXaMMj7ma5xBdTi
-         5mOxGoCTIesbwvzRFdG8ahAbu0pvxWsmi88jrVDIHOhix54qB4EMbPQd7fg5nu4Qebhq
-         RKrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712457666; x=1713062466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=svi7IG4j1NCRd7Qsuibjxz4QatOdbrOlqhYRp4ynUhA=;
-        b=ey+PFsEzZnKdjRaTa4pUxI4Ye435rCqQ3hUodLK55AeeXX3d45Rt0E3yJTC5gTO6a3
-         SETsu5DeYHlVG/61m651WLgLSSjsov34/tHMVLIfAP940h5DtiqACvzCh71Vah3giShe
-         CTAbADHfElq+wnNfL/GeopN9pou0TvmbZPJr55lRXIz04wTIg/fn2w6kMAFMxPxU550E
-         L+QGtM0RxNAngSnwjFO8dCBkavlUvmC3tYTxWGWFZ022RaKg32rmShMlSUbNWso+dyIv
-         rLF1SHLi8B0QQvMkf/kB18+EUPpN1psMqy17Upk7QOOuNz4cDrsqZx/IgN3yKNXkGEd8
-         PNbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8FXPXzAIGMnuPyxp/1FUNjwNilmjwdbFGbXukVQWdrJzEAeEYb0kJ1mKI6iP9tSQLnmIqrgrFAf6L7Yp99HkxJylqBtYn8AoPK6B1YYKKcrat7u9dQRHypOD+yLNNqFD3Agbhy4AP9ASCU6vuMSGT6vz+TOyub0A237oA0wlJgtm4
-X-Gm-Message-State: AOJu0YxnijzEDXMbX5Gh/7U6q/pqOMNMPm45wyED5odbKpBcOEQyRO3n
-	Dy52n8Wo0BsfWOBxWJ2DMWIzmvTvu6nzJ4L0f9ZcUrZA0w5Dy0NlN58t14rKpPEfq45++oZPhCK
-	dfr+QtXqHRkK3p4a/riQ4+iWX31o=
-X-Google-Smtp-Source: AGHT+IGWhN1NiFvJL3wo1zaH/XA3X0sToWCJylJisJevqvEm+O++z85W13bqOe6L/e+DrbufZDhUvIpgKc3pOrd4vSU=
-X-Received: by 2002:ac2:5612:0:b0:513:ebb5:d9b0 with SMTP id
- v18-20020ac25612000000b00513ebb5d9b0mr4104722lfd.52.1712457665721; Sat, 06
- Apr 2024 19:41:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0908780C;
+	Sun,  7 Apr 2024 02:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.107
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712457627; cv=fail; b=XquQ2nh33w3v7pOnSSnyiERccFe3WXZ0fq52zyDkZ+bhBkSOV6zXDXDqCXJlvIGueDFSTcfVA7D3XdFe9xvTwx41oI63rPa/MEPdFcZm8ctUle1uFv9JnM4DDa5oA/vTsyL+K7bGe0xUY/DGZlOSmzcc46Q91COkYDG7Oyn3wXw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712457627; c=relaxed/simple;
+	bh=2MmauUQI8UJe0pDNjdzkzJ11zOBqXZeDuK3kBUhsElw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=bRyyKtXDBoyWgqX5yDtzbBwAp3nIIgM1no6MaTVbGLnc2B2gfSiy6D1seg7XuNvNXmCg3VNGWlhtZ2GBQ15Bw5uAHgIH0u2pcwG2OL3m9NPBWiMLRtB3D79tUB1EH6CXDcDoWOGXyXW9Gde96VCcMhvBE1KUtrSFCUQPX4KGZ6M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=HpwPuxLc; arc=fail smtp.client-ip=40.107.13.107
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dXbo0pjVEgSGS/HoIf7OzeT7TUaI0X+oQB/2QABQRyobp1eaIgqL4e6i17LKR6JDxM9MvwtO7cLxaJ1sH3JZthu2+xHSbLO84uRRe/mgnAJuZnTkmOCE+yK6lVNLJNVogUytgr9Fy9Fo6s2BA33o2IXZ/DWaGXbL0meC2Edrj7x1GEc+CClqvn8WXocEioB9+1mKfKR/OMQOXrOr9oNp7e0YZrp7WlkDGHXYOvkq1z/8PZvv7XKKIzgggW679wolhAVzKLNpAGIu1p+ukfnd2CjxR7RtAX6oRdrh31CbIr9DKjNLgEnEZnUBo/20AKNVOCJGBY6+fISmnZD8RLg0Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VUMTTNGHwgtysAUyHMCYfpuXI9BdjDneIKaZ77cQQQg=;
+ b=CdwxFHdS638Xhfei90VNlIExFJHbX6BEyu3QkSWrU7PmVrWdpAJmtbOdls8IOC6O48JyPS9GZvpBkzpEFOysOP9xQ5s0BXSPXTy+S69NQNfoBhFwOdpYFNWUhjdgwxEySbVmrTDvog3Z2ljpSRp0HJRFZZdeEOBibrHXdXLlVoWBt+/WO7eKsOypqEOV7aooQgBp482GHclegZVLjjN5cQxAj5H42HJd2WnJ/BdgIrcpC5sW6nWhOscVNjmq6jCfl2MnArliXZHJ6DaFySr2YzhoGqZQlFODixcHB3dsHjV2cNR+GdCjP5K7Zli97CuHt4KxkFUIbTIveb+b5jhaew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VUMTTNGHwgtysAUyHMCYfpuXI9BdjDneIKaZ77cQQQg=;
+ b=HpwPuxLcDhBeZYIPV7BOuVvc+Qt8lw4mKIPcnWookkCw34vdWZsh5YAIuFcqlp2hMff4en1030vVKvafoFjHlDFMvwrI01uIN2wNGaEVckA/GuCWFctJYGuqDQBUVss0cwe1XHQXEOm9vedecJXfmEydwZF5f5zAl4TkPvlTcFs=
+Received: from PAXPR04MB8254.eurprd04.prod.outlook.com (2603:10a6:102:1cd::24)
+ by PA4PR04MB7662.eurprd04.prod.outlook.com (2603:10a6:102:f2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.47; Sun, 7 Apr
+ 2024 02:40:21 +0000
+Received: from PAXPR04MB8254.eurprd04.prod.outlook.com
+ ([fe80::da55:641a:a6f2:6e4e]) by PAXPR04MB8254.eurprd04.prod.outlook.com
+ ([fe80::da55:641a:a6f2:6e4e%6]) with mapi id 15.20.7409.042; Sun, 7 Apr 2024
+ 02:40:21 +0000
+Message-ID: <e3049f42-400b-4b86-9f9c-c90a89559f78@oss.nxp.com>
+Date: Sun, 7 Apr 2024 10:43:38 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] media: v4l2-ctrls: Add average qp control
+To: Nicolas Dufresne <nicolas@ndufresne.ca>, Ming Qian <ming.qian@nxp.com>,
+ mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240329092352.2648837-1-ming.qian@nxp.com>
+ <5fc25468198cb3a228b91160dcc490600e1197d4.camel@ndufresne.ca>
+Content-Language: en-US
+From: ming qian <ming.qian@oss.nxp.com>
+In-Reply-To: <5fc25468198cb3a228b91160dcc490600e1197d4.camel@ndufresne.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM0PR01CA0159.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::28) To PAXPR04MB8254.eurprd04.prod.outlook.com
+ (2603:10a6:102:1cd::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401082019.2318193-1-haibo1.xu@intel.com> <20240402-7bd2b9ed00094befa6927b60@orel>
-In-Reply-To: <20240402-7bd2b9ed00094befa6927b60@orel>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Sun, 7 Apr 2024 10:40:54 +0800
-Message-ID: <CAJve8onPGb_ZqXaU7t50893PKS=9mrbzqvthc8dYMHDFKJdUAg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: riscv: selftests: Add SBI base extension test
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Haibo Xu <haibo1.xu@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB8254:EE_|PA4PR04MB7662:EE_
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fM4nS4pbZvhiHZ1CDp019LNNqtiHwe6Bgn2RJm4D5FceJ7rKg4oNRcovG7VZZ0uBZre/x2H7M60uEgf+LECdiglSA7OLmrUF4Rocu5WeKV4eO0YRzcQYcAsPwJZUee1046hMuOUbYcTNQNKtv8vnugHbtLz0AQp5gdbY7ZYTdSLFv7m+3DYHfPBSu2iAvjfrBto5rUwqvPssdBQ1Xz6LhjhUu79k9z9xHzwQmCRUYFontPNHeN/qYAHGOJbui2cMDCatDza/sAg9Bot88eMqF+7znvDvpKi30Ga56kwfpgHlaDSxSKM1EYyEnhS2rtoMmNo0Lx/C4by7W8LllkiucUwoDWjQqU9Xye4Dru9eyAjt00c30vmz4iF9fs9d2Sg+x+HuP7HNmRl6ZfE63l4t0T1xcnCXZQY2c6suTPB9jbrpj21SDnxfqcswAqO3raas/TOkNay+exT1LEbtc7v5c+/T+ATU+8aL8FSJYzREGMNqFIYT9n9KasSMrMapFIUpf9hKWjf6T4yq5affiRquYHpTLV+BxlqVAaLLlR7QfauEwRt3n0KqdSs03Fi1a/9WpC3pomUweRz30UGeNcKiFt7/W/0e7VLAJIjwyd+HcXk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8254.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?L05CeWZPQVJYS3A3blJLRk9ZQUVOQnB0NTA4ZGgzTWVPbUp2TFRoZUhnUEFC?=
+ =?utf-8?B?TXJueENrdWRCTDBpZTk2K0M3WWd5VjNDaW1PbktlOEM0M255bVI1UTg1OGxl?=
+ =?utf-8?B?UVRQVzZvNHFPbER4dXZDY0tiYlNTY1lDUEZCTHhmNFZuelZZZXZTUWJqMDNu?=
+ =?utf-8?B?b0VtcmJZbkNpRFY5NjhLMDNFTGFVTWowajlxTFF0dmdvQWVobWYxYU45Y3lj?=
+ =?utf-8?B?RHlKdnhOU1U1UVltNWhTRDhxZHJrZ3Y1a3JLd0lLR3JreHRoQUVFV2RhbDFy?=
+ =?utf-8?B?bi9UeXI0Q2xQd2NTc3FQdGt0dHZLZTgvak81d3d0NmZicllNS3BNRWRYOE5W?=
+ =?utf-8?B?NWx5ZSt6SkpZSk1GUExraVNkN0syWTl3Sll4R0labndBRUd4d2NzUW91YURt?=
+ =?utf-8?B?Z08zbWZsOW1tdFRiV0JqbE9kZm5tWHZJNDRpNnRsWFBvcURNUWo4YmxLRXRp?=
+ =?utf-8?B?Z3c4NGtJMmlMUXZtZUZLK0NQeEhOTGhhODVLdTV0ZU53cjRKKzVMV2k2U2hi?=
+ =?utf-8?B?R0Y2Vm5hVmVjdElpYytNNGtmRHNra21vK1E4MGgxVDBFK1dZVlV3aWFXa2Zx?=
+ =?utf-8?B?b2tMQW5DbDFGYzRjKzRXRCtZaXJmVzhXL2hSbDhSbkdYZFRDaDZjN2t5R2Q0?=
+ =?utf-8?B?ekpJT2ZxK0ZXWEVxUmFWdWtpMXFlY3RtVUJJK0c2RHVaU0I4OFNoY1I0eUht?=
+ =?utf-8?B?aXg3aDd2dkxZYWR3VTNsaHFBcmZqM0RqV3ZocGRHSVUwQkVSazJwbS8yQzV2?=
+ =?utf-8?B?OFpDZDh2NFhwT2s4TCtPcnZrSlVQdzh0aGlsYWU1ZUp1NW5hekN4QmJVcitu?=
+ =?utf-8?B?K3AveXVjTTd0NzlWRnBvdzNJQTNrU2xUSXd3RHFLM0R1Z1pMSDZ3cExvVTJ4?=
+ =?utf-8?B?K21sOXViY2NHc25jSHEzQk0wVkRvdEhndyswTGtkT3FEODAySUZaRm5tcXdJ?=
+ =?utf-8?B?bCt0c1hFQWdkRnkyOVpGM2RBQmFEUjF3Kzd3cFU5bXNWS1VFT0J1cFBoSXRI?=
+ =?utf-8?B?dmIwaWhxRXZ0Z0lhUUFhYWN0aWlKMUF6RmhrSCtVQ0piWFoySG90aXBwQXJS?=
+ =?utf-8?B?UFJjQVE4RGhrYk9MNVpmMDF2cmVsM2tOQXRCRW1CVDFvZjkzNUE1OTVaVmth?=
+ =?utf-8?B?V1k5YzZRLzNBbUY2a0QrOGdtcGdBeVFOMG51T3YzMlRYRnNlcFE1OXNVRnBH?=
+ =?utf-8?B?YUZFaXRIME5EWUNUaUUwbmFrd2UzTjd4NFl5aWpFWEtMU1ptYVFUS2xweW9x?=
+ =?utf-8?B?NVg2WUw3dnlZNDJTamQraG9zZ2RaV2FTV0F0NFBaSUh5djZTeHZXN0xtdUVL?=
+ =?utf-8?B?WkVoVHh5b1l2cG50VThBdDRkemUwZzU2L1FRVysxazQzRWhGeEFmc01nTkpZ?=
+ =?utf-8?B?Ym8vVCtUZzdlRXE1a1B6YzMrNS90OWxsWGNwSVlFUTRhOEZGTzl3OERFS0k4?=
+ =?utf-8?B?d2ZVbUM0RmJZRHg3aDlPVVdZQmgzOUdJUTBpYUI5ekNKV3VJUm0zazJlOXA0?=
+ =?utf-8?B?cEYrQ1lrTFpIWm14b3ZCYkwxQVZ2aTZ5anduNng1SGx5V254L2JwcFpGUXd1?=
+ =?utf-8?B?ZWZJMlNZNEI1cXlQYk50Vk54bi9Vc0lVakFoMlAxTitZRm91eDlVdVFxbEJU?=
+ =?utf-8?B?Z2lmMkdnOXBIQ1AyNVNxUDJzOTNmeWlGK1A0VEkra2VpSHlBUmw1UUpLa0Y1?=
+ =?utf-8?B?M0l0SmQ4bU1ISkw1dERNRy9QREJ0L3N2MkpOV3NyQmNpMnNZdVJLY2pxaFNE?=
+ =?utf-8?B?Uy85L3pFN2pRbzQ3MHdoeURINkprR2lSR0lhcFhMeU9UVEZvYjd2UU1Ebjhz?=
+ =?utf-8?B?TURQTENMZGpvT0dVL2V6bTlWRytQM2VvRjVDUkhid2NVcWN4Vmdtd2ZPQzVl?=
+ =?utf-8?B?RjlZdW1tOHp3SEdXdU1FRjBTTmVCS0VKd3gzTGlFTkVVRnlMbXRoWkViSjN2?=
+ =?utf-8?B?NzROK3hlb1Q4QzRHZFlsQ1lCaEoySU41bGx4STB5U1JzVSttMEpFUVBQWWZ3?=
+ =?utf-8?B?WHZqTTVCRFMyWnRySnRodmZoREhmb0hxNjBJeUZuRlg3M2plZ1NDTjREcXRV?=
+ =?utf-8?B?VzkvSDFuZytoajg5TzR1UmI3dldwZ2xqem1NWVpHMjVZQTBrKzN2dXdxRE5n?=
+ =?utf-8?Q?2gj0oab0j3NxKFSGvvux9V4Fn?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65489b8c-365c-4084-1607-08dc56ac11df
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8254.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2024 02:40:21.6620
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aU1WXAdOS4iimoMZB8lumhgq3uH/ccKuQFFQTCcJpQyMZGCVG/oeElf43LpjkUb5lZ0XF1QQtg+ErkpzvEmCuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7662
 
-On Tue, Apr 2, 2024 at 10:12=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Mon, Apr 01, 2024 at 04:20:18PM +0800, Haibo Xu wrote:
-> > This is the first patch to enable the base extension selftest
-> > for the SBI implementation in KVM. Test for other extensions
-> > will be added later.
->
-> I'm not sure we want SBI tests in KVM selftests since we already
-> plan to add them to kvm-unit-tests, where they can be used to
-> test both KVM's SBI implementation and M-mode firmware implementations.
-> If we also have them here, then we'll end up duplicating that effort.
->
+Hi Nicolas,
 
-Thanks for the information, Andrew!
+On 4/5/24 02:14, Nicolas Dufresne wrote:
+> Hi,
+> 
+> Le vendredi 29 mars 2024 à 18:23 +0900, Ming Qian a écrit :
+>> Add a control V4L2_CID_MPEG_VIDEO_AVERAGE_QP to report the average qp
+>> value of current encoded frame.
+>>
+>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+>> ---
+>>   Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++++
+>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 5 +++++
+>>   include/uapi/linux/v4l2-controls.h                        | 2 ++
+>>   3 files changed, 11 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index 2a165ae063fb..cef20b3f54ca 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -1653,6 +1653,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>>       Quantization parameter for a P frame for FWHT. Valid range: from 1
+>>       to 31.
+>>   
+>> +``V4L2_CID_MPEG_VIDEO_AVERAGE_QP (integer)``
+>> +    This read-only control returns the average qp value of the currently
+>> +    encoded frame. Applicable to the H264 and HEVC encoders.
+> 
+> That seems ambiguous at best. What does it mean the "currently encoded frame" ?
+> The OUTPUT and CAPTURE queue can be holding multiple frames. For "per frame"
+> accurate reporting, I feel like we'd need something like Hans' read-only
+> requests proposal [0]. Its basically a mechanism that let you attach request FD
+> to capture buffer, so that supported controls can be saved per v4l2-buffer and
+> read later on.
+> 
+> https://patches.linaro.org/project/linux-media/patch/20210610113615.785359-12-hverkuil-cisco@xs4all.nl/
+> 
+> If this isn't what you wanted, we'll need a better definition. It might be
+> helpful to explain what this is used for.
+> 
+> Nicolas
+> 
 
-The SBI KVM selftest was planned last year when I talked with Anup about
-KVM selftest support on RISC-V. Since the kvm-unit-tests has already covere=
-d
-it, I'm fine to drop the support in KVM selftest.
+Yes, I want to report the qp value for every frame.
+I thought the request FD is only used for stateless decoder, but I want
+to add a read-only ctrl for the stateful encoder. So I checked the
+defined read-only ctrls, I think it's similar with
+V4L2_CID_MPEG_VIDEO_DEC_PTS.
+(https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/ext-ctrls-codec.html?highlight=v4l2_cid_mpeg_video_dec_pts)
 
-Regards,
-Haibo
+then back to your question about the "currently encoded frame", it's the
+last dequeued capture buffer of the encoder, the capture queue can hold
+multiple frames, each frame will have a qp value in this case, and this
+ctrl only report the qp value of the last dequeued frame, when user has
+dequeued an encoded frame from the capture queue, he can get the ctrl
+value of V4L2_CID_MPEG_VIDEO_AVERAGE_QP immediately to get the qp value
+of the currently dequeued frame. If user doesn't care about this
+parameter, he doesn't need to do anything, it's just the same as before.
+so I think this ctrl is backward compatible.
 
-> I do like the approach of only checking for an error, rather than
-> also for a value, for these ID getters. In kvm-unit-tests we're
-> currently requiring that the expected value be passed in, otherwise
-> the whole test is skipped. We could fallback to only checking for
-> an error instead, as is done here.
->
-> Thanks,
-> drew
->
-> >
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > ---
-> >  tools/testing/selftests/kvm/Makefile          |  1 +
-> >  .../selftests/kvm/include/riscv/processor.h   |  8 +-
-> >  tools/testing/selftests/kvm/riscv/sbi_test.c  | 95 +++++++++++++++++++
-> >  3 files changed, 103 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/kvm/riscv/sbi_test.c
-> >
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selft=
-ests/kvm/Makefile
-> > index 741c7dc16afc..a6acbbcad757 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -189,6 +189,7 @@ TEST_GEN_PROGS_s390x +=3D rseq_test
-> >  TEST_GEN_PROGS_s390x +=3D set_memory_region_test
-> >  TEST_GEN_PROGS_s390x +=3D kvm_binary_stats_test
-> >
-> > +TEST_GEN_PROGS_riscv +=3D riscv/sbi_test
-> >  TEST_GEN_PROGS_riscv +=3D arch_timer
-> >  TEST_GEN_PROGS_riscv +=3D demand_paging_test
-> >  TEST_GEN_PROGS_riscv +=3D dirty_log_test
-> > diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/to=
-ols/testing/selftests/kvm/include/riscv/processor.h
-> > index ce473fe251dd..df530ac751c4 100644
-> > --- a/tools/testing/selftests/kvm/include/riscv/processor.h
-> > +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
-> > @@ -178,7 +178,13 @@ enum sbi_ext_id {
-> >  };
-> >
-> >  enum sbi_ext_base_fid {
-> > -     SBI_EXT_BASE_PROBE_EXT =3D 3,
-> > +     SBI_EXT_BASE_GET_SPEC_VERSION =3D 0,
-> > +     SBI_EXT_BASE_GET_IMP_ID,
-> > +     SBI_EXT_BASE_GET_IMP_VERSION,
-> > +     SBI_EXT_BASE_PROBE_EXT,
-> > +     SBI_EXT_BASE_GET_MVENDORID,
-> > +     SBI_EXT_BASE_GET_MARCHID,
-> > +     SBI_EXT_BASE_GET_MIMPID,
-> >  };
-> >
-> >  struct sbiret {
-> > diff --git a/tools/testing/selftests/kvm/riscv/sbi_test.c b/tools/testi=
-ng/selftests/kvm/riscv/sbi_test.c
-> > new file mode 100644
-> > index 000000000000..b9378546e3b6
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/riscv/sbi_test.c
-> > @@ -0,0 +1,95 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * sbi_test - SBI API test for KVM's SBI implementation.
-> > + *
-> > + * Copyright (c) 2024 Intel Corporation
-> > + *
-> > + * Test cover the following SBI extentions:
-> > + *  - Base: All functions in this extension should be supported
-> > + */
-> > +
-> > +#include "kvm_util.h"
-> > +#include "processor.h"
-> > +#include "test_util.h"
-> > +
-> > +/*
-> > + * Test that all functions in the base extension must be supported
-> > + */
-> > +static void base_ext_guest_code(void)
-> > +{
-> > +     struct sbiret ret;
-> > +
-> > +     /*
-> > +      * Since the base extension was introduced in SBI Spec v0.2,
-> > +      * assert if the implemented SBI version is below 0.2.
-> > +      */
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_SPEC_VERSION, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error && ret.value >=3D 2, "Get Spec Version =
-Error: ret.error=3D%ld, "
-> > +                     "ret.value=3D%ld\n", ret.error, ret.value);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_IMP_ID, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error && ret.value =3D=3D 3, "Get Imp ID Erro=
-r: ret.error=3D%ld, "
-> > +                     "ret.value=3D%ld\n",
-> > +                     ret.error, ret.value);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_IMP_VERSION, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error, "Get Imp Version Error: ret.error=3D%l=
-d\n", ret.error);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_PROBE_EXT, SBI_EXT_B=
-ASE,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error && ret.value =3D=3D 1, "Probe ext Error=
-: ret.error=3D%ld, "
-> > +                     "ret.value=3D%ld\n",
-> > +                     ret.error, ret.value);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MVENDORID, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error, "Get Machine Vendor ID Error: ret.erro=
-r=3D%ld\n", ret.error);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MARCHID, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error, "Get Machine Arch ID Error: ret.error=
-=3D%ld\n", ret.error);
-> > +
-> > +     ret =3D sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MIMPID, 0,
-> > +                     0, 0, 0, 0, 0);
-> > +     __GUEST_ASSERT(!ret.error, "Get Machine Imp ID Error: ret.error=
-=3D%ld\n", ret.error);
-> > +
-> > +     GUEST_DONE();
-> > +}
-> > +
-> > +static void sbi_base_ext_test(void)
-> > +{
-> > +     struct kvm_vm *vm;
-> > +     struct kvm_vcpu *vcpu;
-> > +     struct ucall uc;
-> > +
-> > +     vm =3D vm_create_with_one_vcpu(&vcpu, base_ext_guest_code);
-> > +     while (1) {
-> > +             vcpu_run(vcpu);
-> > +             TEST_ASSERT(vcpu->run->exit_reason =3D=3D UCALL_EXIT_REAS=
-ON,
-> > +                         "Unexpected exit reason: %u (%s),",
-> > +                         vcpu->run->exit_reason, exit_reason_str(vcpu-=
->run->exit_reason));
-> > +
-> > +             switch (get_ucall(vcpu, &uc)) {
-> > +             case UCALL_DONE:
-> > +                     goto done;
-> > +             case UCALL_ABORT:
-> > +                     fprintf(stderr, "Guest assert failed!\n");
-> > +                     REPORT_GUEST_ASSERT(uc);
-> > +             default:
-> > +                     TEST_FAIL("Unexpected ucall %lu", uc.cmd);
-> > +             }
-> > +     }
-> > +
-> > +done:
-> > +     kvm_vm_free(vm);
-> > +}
-> > +
-> > +int main(void)
-> > +{
-> > +     sbi_base_ext_test();
-> > +
-> > +     return 0;
-> > +}
-> > --
-> > 2.34.1
-> >
+Maybe the request FD is a better and more intuitive way to suggest a
+one-to-one correspondence between ctrl and frame. I'm just not sure if
+it just applies to the stateless decoder. I did find any stateful
+decoder or encoder to use them.
+If we use the request FD for this stateful encoder, I'm not sure if it
+will break the original flow.
+
+best regards,
+Ming
+
+>> +
+>>   .. raw:: latex
+>>   
+>>       \normalsize
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> index 8696eb1cdd61..88e86e4e539d 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> @@ -972,6 +972,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>   	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
+>>   	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
+>>   	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
+>> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:			return "Average QP value";
+>>   
+>>   	/* VPX controls */
+>>   	case V4L2_CID_MPEG_VIDEO_VPX_NUM_PARTITIONS:		return "VPX Number of Partitions";
+>> @@ -1507,6 +1508,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>   		*max = 0xffffffffffffLL;
+>>   		*step = 1;
+>>   		break;
+>> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
+>> +		*type = V4L2_CTRL_TYPE_INTEGER;
+>> +		*flags |= V4L2_CTRL_FLAG_VOLATILE | V4L2_CTRL_FLAG_READ_ONLY;
+>> +		break;
+>>   	case V4L2_CID_PIXEL_RATE:
+>>   		*type = V4L2_CTRL_TYPE_INTEGER64;
+>>   		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+>> index 99c3f5e99da7..974fd254e573 100644
+>> --- a/include/uapi/linux/v4l2-controls.h
+>> +++ b/include/uapi/linux/v4l2-controls.h
+>> @@ -898,6 +898,8 @@ enum v4l2_mpeg_video_av1_level {
+>>   	V4L2_MPEG_VIDEO_AV1_LEVEL_7_3 = 23
+>>   };
+>>   
+>> +#define V4L2_CID_MPEG_VIDEO_AVERAGE_QP  (V4L2_CID_CODEC_BASE + 657)
+>> +
+>>   /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+>>   #define V4L2_CID_CODEC_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
+>>   #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_CODEC_CX2341X_BASE+0)
+> 
 
