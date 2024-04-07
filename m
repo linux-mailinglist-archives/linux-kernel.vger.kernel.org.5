@@ -1,116 +1,158 @@
-Return-Path: <linux-kernel+bounces-134392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BFF389B0EF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:02:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DBB89B0F2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75B61F216F0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBD3728198D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1638A1CAA6;
-	Sun,  7 Apr 2024 13:02:22 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B226374FB;
+	Sun,  7 Apr 2024 13:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCL8egCB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EFB39AC4
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72B525745;
+	Sun,  7 Apr 2024 13:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712494941; cv=none; b=f6rWjYsR9Q4Z0zVezR7FWe7YwmyUG4KskEC/X72Y8q5M91unwWiEllq3cQFetWDVEqfnlbnc4SpAaIjjytvGQ8dh+f1ZFqtaaj0DaKoGYrdWvSVW3anQnWKVpOGwzBciIIzXVFs8Yft6hv92X2Yq9cFY2owppKimEVhhnJlmzIo=
+	t=1712495047; cv=none; b=k7tfhrIiGOKK99gSVn7Gl8XvZo93KnMeHmN2jK4mp2LgX+zpmgMX5dQ+oFMKlSyI/ZHPr4lUE7Ky18o0FFv9Z/LeqFqPHLvMCc5yItnCxJMDnsOlWr9U9oY3vhuwjzYKNK30cSbPjovwWZaX8A/mm3ceGGbg0iNgCHMsCflnhL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712494941; c=relaxed/simple;
-	bh=3pqHA7mAJkE3zICXhWRu2GMgmHuXniWVnScTIuiKkOw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HYhQZEdZq5YKdJr7TA5+K7iPeqFRmqoBsRsohc43r0/rocRRrutCelWYF0K+ZwHrpXh/oBU1cfNyVSQN2QKgM/jorIq02hqDnqRPxVZstAheNZNDjQjV0/qqRfxi1v7QzK1ZpsKYqhrIHqwnxj6iSvQ9zknfvRezH94yWWCVKaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Apr
- 2024 16:02:16 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 7 Apr 2024
- 16:02:15 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	<syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
-Date: Sun, 7 Apr 2024 06:02:03 -0700
-Message-ID: <20240407130203.26091-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712495047; c=relaxed/simple;
+	bh=yF0em7+RzPDN0jJHxiei/K8GcHR0GT2K/oI/lhIRxSw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EtljpQNv+xCEYIzf3IomeyPMbFNcTcgKw8VL+bVb3lm+JqJ/OIKz1Zw/Ot3RjRl3ir+Ccg6WIna/rnK82gQRlWr+Kk5xsRm4N9DWMqbNrFYJpQbwLoCmNzlWRw31reREK9QayURp54wQXr0PseehtxoPLwmLSo8JPSv/OcHHz5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCL8egCB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7832AC43390;
+	Sun,  7 Apr 2024 13:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712495047;
+	bh=yF0em7+RzPDN0jJHxiei/K8GcHR0GT2K/oI/lhIRxSw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QCL8egCBveInAmu0WP7u8xyNuTdFsyngB8kNXAfScBREoTjnK6XtvU3ZLkz58r0Lq
+	 CEHoot0bCboYCUy71YbXTRxeiQeTOkx0TSF9heLS5XQcFJrARSWwZIJlU9eil/gA/f
+	 ZupuS7lNBqaObti3V3tMPQ1qWyjjhc7/2rNkRrGXV3qhUoInZLGT8Kqvu+3wjJgi3n
+	 TEJmgyBu3euBByeUohu+nzpWopL0vn/2XGqHLYdoxjmvSvmmfwp1aQ5I/gNXAOueJw
+	 k2KB3KHNqUzJffo8DD0FPWRLmtg8sk99G3xQaBnBNKq+OVeMOQ+L6y2hIPnXwb9DTr
+	 Y0fiWTDW3zrtw==
+Date: Sun, 7 Apr 2024 18:34:02 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Viresh Kumar <vireshk@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dma: snps,dma-spear1340: Fix data{-,_}width
+ schema
+Message-ID: <ZhKZwp4n7RYlprP-@matsya>
+References: <20240311222522.1939951-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311222522.1939951-1-robh@kernel.org>
 
-Refactor endpoint checks to ensure there is no ambivalence
-about endpoint types.
+On 11-03-24, 16:25, Rob Herring wrote:
+> 'data-width' and 'data_width' properties are defined as arrays, but the
+> schema is defined as a matrix. That works currently since everything gets
+> decoded in to matrices, but that is internal to dtschema and could change.
 
-Try a specific branch to mitigate unrelated issues with boot/build.
+This fails to apply on dmaengine/next.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
----
- drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+Can you please rebase?
 
-diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-index 4536ed43f65b..476885403c61 100644
---- a/drivers/comedi/drivers/vmk80xx.c
-+++ b/drivers/comedi/drivers/vmk80xx.c
-@@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
- 	struct vmk80xx_private *devpriv = dev->private;
- 	struct usb_interface *intf = comedi_to_usb_interface(dev);
- 	struct usb_host_interface *iface_desc = intf->cur_altsetting;
--	struct usb_endpoint_descriptor *ep_desc;
--	int i;
-+	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
-+	int i, ret;
- 
--	if (iface_desc->desc.bNumEndpoints != 2)
--		return -ENODEV;
--
--	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
--		ep_desc = &iface_desc->endpoint[i].desc;
--
--		if (usb_endpoint_is_int_in(ep_desc) ||
--		    usb_endpoint_is_bulk_in(ep_desc)) {
--			if (!devpriv->ep_rx)
--				devpriv->ep_rx = ep_desc;
--			continue;
--		}
--
--		if (usb_endpoint_is_int_out(ep_desc) ||
--		    usb_endpoint_is_bulk_out(ep_desc)) {
--			if (!devpriv->ep_tx)
--				devpriv->ep_tx = ep_desc;
--			continue;
--		}
--	}
-+	if (devpriv->model == VMK8061_MODEL)
-+		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
-+						&ep_tx_desc, NULL, NULL);
-+	else
-+		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
-+						&ep_rx_desc, &ep_tx_desc);
- 
--	if (!devpriv->ep_rx || !devpriv->ep_tx)
-+	if (ret)
- 		return -ENODEV;
- 
-+	devpriv->ep_rx = ep_rx_desc;
-+	devpriv->ep_tx = ep_tx_desc;
-+
- 	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
- 		return -EINVAL;
- 
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/dma/snps,dma-spear1340.yaml      | 38 +++++++++----------
+>  1 file changed, 17 insertions(+), 21 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+> index 5da8291a7de0..7b0ff4afcaa1 100644
+> --- a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+> +++ b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+> @@ -93,10 +93,9 @@ properties:
+>    data-width:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>      description: Data bus width per each DMA master in bytes.
+> +    maxItems: 4
+>      items:
+> -      maxItems: 4
+> -      items:
+> -        enum: [4, 8, 16, 32]
+> +      enum: [4, 8, 16, 32]
+>  
+>    data_width:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+> @@ -106,28 +105,26 @@ properties:
+>        deprecated. It' usage is discouraged in favor of data-width one. Moreover
+>        the property incorrectly permits to define data-bus width of 8 and 16
+>        bits, which is impossible in accordance with DW DMAC IP-core data book.
+> +    maxItems: 4
+>      items:
+> -      maxItems: 4
+> -      items:
+> -        enum:
+> -          - 0 # 8 bits
+> -          - 1 # 16 bits
+> -          - 2 # 32 bits
+> -          - 3 # 64 bits
+> -          - 4 # 128 bits
+> -          - 5 # 256 bits
+> -        default: 0
+> +      enum:
+> +        - 0 # 8 bits
+> +        - 1 # 16 bits
+> +        - 2 # 32 bits
+> +        - 3 # 64 bits
+> +        - 4 # 128 bits
+> +        - 5 # 256 bits
+> +      default: 0
+>  
+>    multi-block:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>      description: |
+>        LLP-based multi-block transfer supported by hardware per
+>        each DMA channel.
+> +    maxItems: 8
+>      items:
+> -      maxItems: 8
+> -      items:
+> -        enum: [0, 1]
+> -        default: 1
+> +      enum: [0, 1]
+> +      default: 1
+>  
+>    snps,max-burst-len:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+> @@ -138,11 +135,10 @@ properties:
+>        will be from 1 to max-burst-len words. It's an array property with one
+>        cell per channel in the units determined by the value set in the
+>        CTLx.SRC_TR_WIDTH/CTLx.DST_TR_WIDTH fields (data width).
+> +    maxItems: 8
+>      items:
+> -      maxItems: 8
+> -      items:
+> -        enum: [4, 8, 16, 32, 64, 128, 256]
+> -        default: 256
+> +      enum: [4, 8, 16, 32, 64, 128, 256]
+> +      default: 256
+>  
+>    snps,dma-protection-control:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+> -- 
+> 2.43.0
+
+-- 
+~Vinod
 
