@@ -1,200 +1,101 @@
-Return-Path: <linux-kernel+bounces-135938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD6389CD8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:23:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C2B89CD8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:25:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29BB11F23A2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:23:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F901C22423
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21321487CE;
-	Mon,  8 Apr 2024 21:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C8C1487CF;
+	Mon,  8 Apr 2024 21:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nEgWtIEP"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QOOdY4eR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6596C495CB;
-	Mon,  8 Apr 2024 21:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7301474DB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712611427; cv=none; b=jIKMQEhKKJl7tRJx3OafGPKslOJr9LGgKxhwpbQZTCrU1AR8Mm5io205d90gV8yDIV6mt42BPF8KtwazjU6AVyZ3XefXfeXkG8FE5pJR1k0C8HDnNbYm+mdWZ7jII7shKXk7jIG29zNL/4HI0px5vo8TAEgtFKcXvu1auQNJIKk=
+	t=1712611508; cv=none; b=hccJ9S0H7NrqpwGfZBlqkyXz95pvyThjgjtX9SCQM0juGVsB8sOnWxDLQGiinEGtCrMkSxmkR5Pv+09pvBBdp+/EZ7SvldjgmyHwQnbU4bJpeHiUefhs/Yquc3RFpvRyLg9f6BOwm1vkqtFdpN8z679nt4n5cN6V7R62Co2n/+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712611427; c=relaxed/simple;
-	bh=lTcY1BGvyp+f9cnlJMnCikKqaBw7Y9GaPghtI7Sf0GE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RIiqHXFzGxBs9TsxZB9Otokb8qnfB0nQ1N3iOSZbfQr3uk2hgPSiVGfLoo8xTlRR3UBQas3uqVUQXVMQ5EfbZMyZ3Vw0YzHsQctEbXUYh3FpMHeQNYv6BmTJBfmDBlvANTY1Oi/Ov9vfwLfBrT+lblWaP8km9k8E6wHzzxYR3Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nEgWtIEP; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438KhqgH008534;
-	Mon, 8 Apr 2024 21:23:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=W8p0/s1UgB3N8CYG7Fp+xe/u8df/dP5sgIH3czhokHc=; b=nE
-	gWtIEPH2RTi0H5RcaLb38CvFJSxe4hGp9vDcFSl3hW6ybKbh903OyyILClpIHlO0
-	XdLyvJsLiRsVZy0q+J/FSw1guP0i89mugyIOQnCgPq/zep7s20aPKjlB/dXRXcY3
-	Zc2Q2rT1iBhAxZUsxhoKdi1B1NsY1rQ2lyPikduUCSZBuLg8gzHhlY6Lk6gj+6Pk
-	qPh+Kkdo6wfCTPAKYm7LenIc9VKXbP0FUYz8jVvKsGkFWDgk9RSFjvwTf1QSueq2
-	No1Dlg4aY6liyWhNZ1a5Z1IZOTOG0njRKEQHvS0peY2mAPlz4QAf2jsQTYCSUlwX
-	oU/kabNcXkZmu9Fw7dyw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg01vnw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 21:23:35 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438LNZLX031220
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Apr 2024 21:23:35 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
- 14:23:33 -0700
-Message-ID: <905222ad-612a-3eaf-d966-23c89c99e1f0@quicinc.com>
-Date: Mon, 8 Apr 2024 14:23:32 -0700
+	s=arc-20240116; t=1712611508; c=relaxed/simple;
+	bh=Cq3DsQlqiV7ail5ix0XUsou1KwHuNKNIe9gx3ewKcIg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=LoMYb11CFJdXKs9K6iaOj4jaXATNzy5S+q8nLrvxTrs/NDDWnKjIrkmnLqtnZV1DFOFj2SCh4d71BeFJ4b6PRD/ka/sRMEDauxHtgTRdSTJoJ3MJeiu3QtgM7K78YD7A83F4Md09Jr6+44tbRKFPK7xuLmIkzVU98y25MJQcwj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QOOdY4eR; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712611506; x=1744147506;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Cq3DsQlqiV7ail5ix0XUsou1KwHuNKNIe9gx3ewKcIg=;
+  b=QOOdY4eRg8XcOZrRBMQO6jVAKfdscrtVz5ptMG4Yd2yPWd6WAaESrZJc
+   HbWpm4Zu67+9GwMdXob34uEY+e8Vi1h/5n6bhWNNcrJ7VsyVmWSLJKk2l
+   8++B8VZC1c1hVynnobr0bhY/DGLg6C1iUH9O5rDTAju69uYxj9RTdZNuB
+   znKR6zmfXJ5KGJei+yUbpxicgCA3SiDTw+jzU3HYQuY7S9HdvweWFYGU7
+   o5TXs5zxatXz8lv/znpJzRh6Yqg6Uv8dYNe8fAw8UuNDmHS4l3juAmIlp
+   fL/aaN2HONT6CveJeDnUywjdRfA41vskJVSi4tSoCiF0NEx2SCl/nI1P0
+   Q==;
+X-CSE-ConnectionGUID: 11+8utkkTIqGuv7CsvTz8Q==
+X-CSE-MsgGUID: jrovb+FdQaO71+lcbnytbQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7777032"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="7777032"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 14:25:05 -0700
+X-CSE-ConnectionGUID: rx0GHVBCTt+TDmIf4tTpFg==
+X-CSE-MsgGUID: snlLtfdoSHKM6YuRWS5zaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="20446909"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 08 Apr 2024 14:25:04 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rtwU9-0005VE-2m;
+	Mon, 08 Apr 2024 21:25:01 +0000
+Date: Tue, 9 Apr 2024 05:24:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Vinod Koul <vkoul@kernel.org>, Algea Cao <algea.cao@rock-chips.com>
+Subject: phy-rockchip-samsung-hdptx.c:undefined reference to
+ `rational_best_approximation'
+Message-ID: <202404090540.2l1TEkDF-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
- directly for external HPD
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, <freedreno@lists.freedesktop.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <quic_jesszhan@quicinc.com>,
-        <quic_bjorande@quicinc.com>, <johan@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
- <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
- <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
- <CAA8EJprzH0LiWNx9Udt6og3G063odY6ccvaAgsNS1r3zG8TmdA@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJprzH0LiWNx9Udt6og3G063odY6ccvaAgsNS1r3zG8TmdA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pU5XtUu0P-MOXzfD0nHXKiswY9p_So5N
-X-Proofpoint-ORIG-GUID: pU5XtUu0P-MOXzfD0nHXKiswY9p_So5N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_17,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080163
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fec50db7033ea478773b159e0e2efb135270e3b7
+commit: 553be2830c5f33308483e8118de748a2c69fe593 phy: rockchip: Add Samsung HDMI/eDP Combo PHY driver
+date:   8 weeks ago
+config: sh-randconfig-002-20240409 (https://download.01.org/0day-ci/archive/20240409/202404090540.2l1TEkDF-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240409/202404090540.2l1TEkDF-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404090540.2l1TEkDF-lkp@intel.com/
 
-On 4/8/2024 2:12 PM, Dmitry Baryshkov wrote:
-> On Mon, 8 Apr 2024 at 22:43, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
->>> On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
->>>> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>> [..]
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> index d80f89581760..bfb6dfff27e8 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> @@ -1665,7 +1665,7 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
->>>>               return;
->>>>
->>>>       if (!dp_display->link_ready && status == connector_status_connected)
->>>> -            dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
->>>> +            dp_hpd_plug_handle(dp, 0);
->>>
->>> If I read the code correctly, and we get an external connect event
->>> inbetween a previous disconnect and the related disable call, this
->>> should result in a PLUG_INT being injected into the queue still.
->>>
->>> Will that not cause the same problem?
->>>
->>> Regards,
->>> Bjorn
->>>
->>
->> Yes, your observation is correct and I had asked the same question to
->> kuogee before taking over this change and posting.
-> 
-> Should it then have the Co-developed-by trailers?
-> 
+All errors (new ones prefixed by >>):
 
-hmmm, perhaps but that didnt result in any code change between v2 and 
-v3, so I didnt add it.
+   sh4-linux-ld: drivers/phy/rockchip/phy-rockchip-samsung-hdptx.o: in function `rk_hdptx_ropll_tmds_cmn_config':
+>> phy-rockchip-samsung-hdptx.c:(.text+0x950): undefined reference to `rational_best_approximation'
 
->> We will have to handle that case separately. I don't have a good
->> solution yet for it without requiring further rework or we drop the
->> below snippet.
->>
->>           if (state == ST_DISCONNECT_PENDING) {
->>                   /* wait until ST_DISCONNECTED */
->>                   dp_add_event(dp, EV_HPD_PLUG_INT, 0, 1); /* delay = 1 */
->>                   mutex_unlock(&dp->event_mutex);
->>                   return 0;
->>           }
->>
->> I will need sometime to address that use-case as I need to see if we can
->> handle that better and then drop the the DISCONNECT_PENDING state to
->> address this fully. But it needs more testing.
->>
->> But, we will need this patch anyway because without this we will not be
->> able to fix even the most regular and commonly seen case of basic
->> connect/disconnect receiving complementary events.
-> 
-> Hmm, no. We need to drop the HPD state machine, not to patch it. Once
-> the driver has proper detect() callback, there will be no
-> complementary events. That is a proper way to fix the code, not these
-> kinds of band-aids patches.
-> 
-
-I had discussed this part too :)
-
-I totally agree we should fix .detect()'s behavior to just match cable 
-connect/disconnect and not link_ready status.
-
-But that alone would not have fixed this issue. If HPD thread does not 
-get scheduled and plug_handle() was not executed, .detect() would have 
-still returned old status as we will update the cable status only in 
-plug_handle() / unplug_handle() to have a common API between internal 
-and external hpd execution.
-
-So we need to do both, make .detect() return correct status AND drop hpd 
-event thread processing.
-
-But, dropping the hpd event thread processing alone was fixing the 
-complimentary events issue. So kuogee had only this part in this patch.
-
-
->>>>       else if (dp_display->link_ready && status == connector_status_disconnected)
->>>> -            dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
->>>> +            dp_hpd_unplug_handle(dp, 0);
->>>>    }
->>>> --
->>>> 2.43.2
->>>>
-> 
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
