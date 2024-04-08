@@ -1,195 +1,147 @@
-Return-Path: <linux-kernel+bounces-135968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB7589CE52
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:12:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D07089CE53
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 865FDB23567
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:11:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260901F23152
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D38149C5C;
-	Mon,  8 Apr 2024 22:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA9D149C5C;
+	Mon,  8 Apr 2024 22:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DjyYts4d"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b1xNyWHo"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C32A148833;
-	Mon,  8 Apr 2024 22:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7AB7E8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 22:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712614312; cv=none; b=lUIrwrEV2qqHdnFdJP8WUeEtYFoOdOO/MYdDJaXkOLnVGVgcedgsVN2G797UEzqxaRXaIWsjxurJWrJfncV1SX3vuPIE7xIZe+6vyNkWNV3LE58Dye70dtjjHQ0mS2gv6z7w95aLiVmaG8TgeZToi91uUbBhJ4i1WxGkUPWDK3Q=
+	t=1712614379; cv=none; b=bAq9n8064xZnxzxq5ztYl6Ua4gUEvckhC3nt+l5cEcSgYllOlDijFgWw04gLMrGFHAj0FKEImfWpPGPO3Asr+suS0A57S0S0iM7wcE/BxyFA8lM6FjOMHM/EUOAsD7/NiCuBnjXgpGx7J0caAaME18Ce2OFrYXNsV/kMW9Gc+IM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712614312; c=relaxed/simple;
-	bh=6CaajjRMxU6ExyUiP+Js6IlPxZ2GuFI6Ls3pLbonWcE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FWrunVklkDB3eEOEyJBgDbNQZdx4g5bck8s8noq3lBuFiwETOKG5AU+WJ9F2z01H1H2IIyAGk1EIyOq3Abfe5/s98jJnLs1M94NbKzoKU0KbAOmiouU8FDCWfJM0QfIIAxOC7ncIuV7upnDzHa0skMWQ32CnUYQqzr6kRUsPgN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DjyYts4d; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712614310; x=1744150310;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=6CaajjRMxU6ExyUiP+Js6IlPxZ2GuFI6Ls3pLbonWcE=;
-  b=DjyYts4dTbN1dK0Rnax6HOyeLfN7G+Ew1aohXwlrhFUmctOrAo2Vn6lZ
-   OXorVh5CsO7Oq034tLedDnN/xbL1mzZKfmWeo6NVH4qn0tjhphkF4GoxC
-   31uLdWebCxf3cSebH0aw9p6RXOALdLGk6p4XQ2mJXs/To96vEHg2YPyZy
-   IfJBAwwfSlS6NYHurNxBUwLDVJOYxSqCXCsfRUWo/dmI2UR/tvSxo2+Nu
-   6CRq0CcPZvv7oUs14nzDRzvbFMxubBsNttYgIg0wPKF9xAqck+zxjbT14
-   sutmHKt2z7BwNpco3AZX5mdfO2U24Inr53ogLi496TgLDwmPjxetglR+H
-   A==;
-X-CSE-ConnectionGUID: PKfbBqHpRlSh7ziMjsFZUw==
-X-CSE-MsgGUID: yUBsJBneTCyrPQBAR9EFjQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19295153"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19295153"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 15:11:49 -0700
-X-CSE-ConnectionGUID: K12hbKsiTNO36vICOUR9Hw==
-X-CSE-MsgGUID: blluMDKCSC+LZjBHiSH3xA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="57483734"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 15:11:49 -0700
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-	by linux.intel.com (Postfix) with ESMTP id 2D3FF20B573A;
-	Mon,  8 Apr 2024 15:11:49 -0700 (PDT)
-Message-ID: <41b41cfbd79d8f9d0a9dfd187710015021fae252.camel@linux.intel.com>
-Subject: Re: [PATCH V3 8/9] platform/x86/intel/sdsi: Simplify ascii printing
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
- platform-driver-x86@vger.kernel.org,  LKML <linux-kernel@vger.kernel.org>,
- sathyanarayanan.kuppuswamy@linux.intel.com
-Date: Mon, 08 Apr 2024 15:11:49 -0700
-In-Reply-To: <6dd8b2c0-1c89-43f0-0426-df8d483a7b1e@linux.intel.com>
-References: <20240405032507.2637311-1-david.e.box@linux.intel.com>
-	 <20240405032507.2637311-9-david.e.box@linux.intel.com>
-	 <6dd8b2c0-1c89-43f0-0426-df8d483a7b1e@linux.intel.com>
-Autocrypt: addr=david.e.box@linux.intel.com; prefer-encrypt=mutual;
- keydata=mQENBF2w2YABCACw5TpqmFTR6SgsrNqZE8ro1q2lUgVZda26qIi8GeHmVBmu572RfPydisEpCK246rYM5YY9XAps810ZxgFlLyBqpE/rxB4Dqvh04QePD6fQNui/QCSpyZ6j9F8zl0zutOjfNTIQBkcar28hazL9I8CGnnMko21QDl4pkrq1dgLSgl2r2N1a6LJ2l8lLnQ1NJgPAev4BWo4WAwH2rZ94aukzAlkFizjZXmB/6em+lhinTR9hUeXpTwcaAvmCHmrUMxeOyhx+csO1uAPUjxL7olj2J83dv297RrpjMkDyuUOv8EJlPjvVogJF1QOd5MlkWdj+6vnVDRfO8zUwm2pqg25DABEBAAG0KkRhdmlkIEUuIEJveCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPokBTgQTAQgAOBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEH7Mry1gl3p/NusIAK9z1xnXphedgZMGNzifGUs2UUw/xNl91Q9qRaYGyNYATI6E7zBYmynsUL/4yNFnXK8P/I7WMffiLoMqmUvNp9pG6oYYj8ouvbCexS21jgw54I3m61M+wTokieRIO/GettVlCGhz7YHlHtGGqhzzWB3CGPSJMwsouDPvyFFE+28p5d2v9l6rXSb7T297Kh50VX9Ele8QEKngrG+Z/u2lr/bHEhvx24vI8ka22cuTaZvThYMwLTSC4kq9L9WgRv31JBSa1pcbcHLOCoUl0RaQwe6J8w9hN2uxCssHrrfhSA4YjxKNIIp3YH4IpvzuDR3AadYz1klFTnEOxIM7fvQ2iGu5AQ0EXbDZgAEIAPGbL3wvbYUDGMoBSN89GtiC6ybWo28JSiYIN5N9LhDTwfWROenkRvmTESaE5fAM24sh8S0h+F+eQ7j/E/RF3pM31gSovTKw0Pxk7GorK
-	FSa25CWemxSV97zV8fVegGkgfZkBMLUId+AYCD1d2R+tndtgjrHtVq/AeN0N09xv/d3a+Xzc4ib/SQh9mM50ksqiDY70EDe8hgPddYH80jHJtXFVA7Ar1ew24TIBF2rxYZQJGLe+Mt2zAzxOYeQTCW7WumD/ZoyMm7bg46/2rtricKnpaACM7M0r7g+1gUBowFjF4gFqY0tbLVQEB/H5e9We/C2zLG9r5/Lt22dj7I8A6kAEQEAAYkBNgQYAQgAIBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsMAAoJEH7Mry1gl3p/Z/AH/Re8YwzY5I9ByPM56B3Vkrh8qihZjsF7/WB14Ygl0HFzKSkSMTJ+fvZv19bk3lPIQi5lUBuU5rNruDNowCsnvXr+sFxFyTbXw0AQXIsnX+EkMg/JO+/V/UszZiqZPkvHsQipCFVLod/3G/yig9RUO7A/1efRi0E1iJAa6qHrPqE/kJANbz/x+9wcx1VfFwraFXbdT/P2JeOcW/USW89wzMRmOo+AiBSnTI4xvb1s/TxSfoLZvtoj2MR+2PW1zBALWYUKHOzhfFKs3cMufwIIoQUPVqGVeH+u6Asun6ZpNRxdDONop+uEXHe6q6LzI/NnczqoZQLhM8d1XqokYax/IZ4=
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712614379; c=relaxed/simple;
+	bh=r8LH63MyqaiZndA+R9wXcNBq11U4EVs+sATq36XLBnQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=QQXaxFKDOHzyLgxc4U95016azfgdNiL4qx0bMi6rgCT/aGoFsxlasL4dADqHfTDSdt9fUXinLUyv9zXRZ3FZe1CDfFmABR6rUGFYtvcYdWlvGfDcKPX8GKJTs2k6we8KPxkiLdMYQGYbQYhe2lOYnLCSw+xGOHCoA9LE6eVn0ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b1xNyWHo; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <64666a8e-97fe-49b2-82f1-6469e3411746@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712614374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=reSuF8rvIjBX3uwVzXDJibVe3ZtGBxFw95faajSbTY0=;
+	b=b1xNyWHooh7wC+N2p+YHlpjUO/eJv5Ms49Y29/UwHC88QDq9Y7B3xHhsNG7R6aXtrAqw8/
+	IANxVUGiXiGm3a14jqrP1mSkmhkvXHV3bj7l05d6eqvXEmfgOKTuJb9vwgdQ3ous6iaP25
+	mML6v5CxLUMj3xt7QC8YSK/jzpNsoFM=
+Date: Mon, 8 Apr 2024 15:12:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
+ htab_lru_percpu_map_lookup_elem
+To: syzbot <syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com>
+References: <0000000000002e2b130615707e3c@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, sdf@google.com, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+In-Reply-To: <0000000000002e2b130615707e3c@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 2024-04-08 at 20:22 +0300, Ilpo J=C3=A4rvinen wrote:
-> On Thu, 4 Apr 2024, David E. Box wrote:
->=20
-> > Use printf width specifier to set the display length of encoded feature
-> > names.
-> >=20
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Reviewed-by: Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > ---
-> >=20
-> > V3 - Add FEAT_LEN #def
-> >=20
-> > V2 - Split of V1 patch 7
-> >=20
-> > =C2=A0tools/arch/x86/intel_sdsi/intel_sdsi.c | 13 ++++++-------
-> > =C2=A01 file changed, 6 insertions(+), 7 deletions(-)
-> >=20
-> > diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> > b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> > index 45bc69e6718e..0c9670ba1f15 100644
-> > --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> > +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> > @@ -43,6 +43,7 @@
-> > =C2=A0#define METER_CERT_MAX_SIZE	4096
-> > =C2=A0#define STATE_MAX_NUM_LICENSES	16
-> > =C2=A0#define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
-> > +#define FEAT_LEN		4
-> > =C2=A0
-> > =C2=A0#define __round_mask(x, y) ((__typeof__(x))((y) - 1))
-> > =C2=A0#define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
-> > @@ -409,11 +410,10 @@ static int sdsi_meter_cert_show(struct sdsi_dev *=
-s)
-> > =C2=A0
-> > =C2=A0	printf("Number of Feature Counters:=C2=A0=C2=A0 %ld\n", BUNDLE_C=
-OUNT(mc-
-> > >bundle_length));
-> > =C2=A0	while (count < BUNDLE_COUNT(mc->bundle_length)) {
-> > -		char feature[5];
-> > +		char feature[FEAT_LEN];
-> > =C2=A0
-> > -		feature[4] =3D '\0';
-> > =C2=A0		get_feature(bec[count].encoding, feature);
-> > -		printf("=C2=A0=C2=A0=C2=A0 %s:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 %d\n", feature,
-> > bec[count].counter);
-> > +		printf("=C2=A0=C2=A0=C2=A0 %.4s:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 %d\n", feature,
-> > bec[count].counter);
-> > =C2=A0		++count;
-> > =C2=A0	}
-> > =C2=A0
-> > @@ -494,7 +494,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
-> > =C2=A0			sizeof(*lki) +			// size of the
-> > license key info
-> > =C2=A0			offset;				// offset
-> > to this blob content
-> > =C2=A0		struct bundle_encoding *bundle =3D (void *)(lbc) +
-> > sizeof(*lbc);
-> > -		char feature[5];
-> > +		char feature[FEAT_LEN];
-> > =C2=A0		uint32_t i;
-> > =C2=A0
-> > =C2=A0		printf("=C2=A0=C2=A0=C2=A0=C2=A0 Blob %d:\n", count - 1);
-> > @@ -507,11 +507,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s=
-)
-> > =C2=A0		printf("=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Blob revisio=
-n ID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 %u\n", lb=
-c-
-> > >rev_id);
-> > =C2=A0		printf("=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Number of Fe=
-atures:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 %u\n", lbc-
-> > >num_bundles);
-> > =C2=A0
-> > -		feature[4] =3D '\0';
-> > -
-> > =C2=A0		for (i =3D 0; i < min(lbc->num_bundles,
-> > STATE_MAX_NUM_IN_BUNDLE); i++) {
-> > =C2=A0			get_feature(bundle[i].encoding, feature);
-> > -			printf("=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Feature %d:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 %s\n",
-> > i, feature);
-> > +			printf("=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Feature %d:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0
-> > %.4s\n", i, feature);
-> > =C2=A0		}
-> > =C2=A0
-> > =C2=A0		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
-> >=20
->=20
-> Hi,
->=20
-> After staring this for a while, I cannot get rid of the feeling that the=
-=20
-> removal of NUL termination is a step into wrong direction. But IMO,=20
-> instead of the caller side, the NUL termination could be added inside=20
-> get_feature().
+On 4/6/24 9:59 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=173c55e5180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b8d77b9bb107fa1bd641
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1495512d180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143c2415180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/3b5659d2008c/disk-026e680b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/7fd1552fafde/vmlinux-026e680b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/ba622b1b0ec4/bzImage-026e680b.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+> BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+>   __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+>   htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+>   ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+>   bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+>   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+>   __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>   __bpf_prog_run include/linux/filter.h:657 [inline]
+>   bpf_prog_run include/linux/filter.h:664 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>   bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+>   __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+>   trace_kfree include/trace/events/kmem.h:94 [inline]
+>   kfree+0x6a5/0xa30 mm/slub.c:4377
+>   kvfree+0x69/0x80 mm/util.c:680
+>   __bpf_prog_put_rcu+0x37/0xf0 kernel/bpf/syscall.c:2232
+>   rcu_do_batch kernel/rcu/tree.c:2196 [inline]
+>   rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
+>   rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
+>   __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
+>   invoke_softirq kernel/softirq.c:428 [inline]
+>   __irq_exit_rcu kernel/softirq.c:633 [inline]
+>   irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
+>   instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+>   sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
+>   asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
+>   __preempt_count_dec_and_test arch/x86/include/asm/preempt.h:94 [inline]
+>   flush_tlb_mm_range+0x294/0x320 arch/x86/mm/tlb.c:1036
+>   flush_tlb_page arch/x86/include/asm/tlbflush.h:254 [inline]
+>   ptep_clear_flush+0x166/0x1c0 mm/pgtable-generic.c:101
+>   wp_page_copy mm/memory.c:3329 [inline]
+>   do_wp_page+0x419d/0x66e0 mm/memory.c:3660
+>   handle_pte_fault mm/memory.c:5316 [inline]
+>   __handle_mm_fault mm/memory.c:5441 [inline]
+>   handle_mm_fault+0x5b76/0xce00 mm/memory.c:5606
+>   do_user_addr_fault arch/x86/mm/fault.c:1362 [inline]
+>   handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>   exc_page_fault+0x419/0x730 arch/x86/mm/fault.c:1563
+>   asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
+> 
+> Local variable stack created at:
+>   __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>   __bpf_prog_run include/linux/filter.h:657 [inline]
+>   bpf_prog_run include/linux/filter.h:664 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>   bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+> 
+> CPU: 1 PID: 5015 Comm: syz-executor232 Not tainted 6.9.0-rc2-syzkaller-00002-g026e680b0a08 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> =====================================================
 
-Yeah, you're right. I'll make this change.
-
-David
->=20
+#syz dup: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
 
 
