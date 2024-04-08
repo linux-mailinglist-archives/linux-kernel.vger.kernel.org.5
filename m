@@ -1,109 +1,109 @@
-Return-Path: <linux-kernel+bounces-135902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A693489CCE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:19:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60AD989CCEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:20:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45E811F234C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B1531C21C75
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7390E146A70;
-	Mon,  8 Apr 2024 20:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3816D146A8C;
+	Mon,  8 Apr 2024 20:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="gDabHaWJ"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7588738DD6;
-	Mon,  8 Apr 2024 20:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKhoxQPo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738F7146596;
+	Mon,  8 Apr 2024 20:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712607542; cv=none; b=q33G/nEjzPUp9aua9xF160/EUtEEBE6u6vDQoCD/ti7i1Zikgijp5BmAZImFIVf2ME8wl9vAI2eri9njwvN0RI6EMEwtFkJxBD7xT228fTfnEwxwlUlGVNRYIv6ovtfdAAYTk73IBEqtCknOthodzJIcJhUZfH2MY4kMrxchng4=
+	t=1712607631; cv=none; b=c6Juh6Em/Kw/6PqWmLvMzjH4BxqxBF5aSp2gcYkyClsQ8qeJWXmrpdKYur/B2u8HNWqTgEvbMsV/CQY82Ac2zh0PZgXt2lG1oTo6tC3JRl2GepbZdghV3TyHHMYIvRcSgLfCAiybNDj4KFX4TQ5VXkfQCRj1aZAIV6qeDFUvqN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712607542; c=relaxed/simple;
-	bh=NyGs5314UvkFHv1BlockzhAUPYtZOtClRMMt7esdDqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HVV3NoVZiLTK2MmyY93Uj8EeHA66QSrGYKnz8ansq8WoGBV7DXeR2i460av/RONOWiFu3UqBh1O5xMeyXn9cTjZULEiZl/qOUxOMu+RhLGRcywnNuSKqBFfYo3dcoIqwf6CNWAtRN7+WoRoncXOx9Y8Ak31R77wrO0OHydOLXx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=gDabHaWJ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.192.9.210] (unknown [167.220.77.82])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 263C420EA446;
-	Mon,  8 Apr 2024 13:19:01 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 263C420EA446
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712607541;
-	bh=9CF14shWGmvFsYBJo5BENhzax76hIR6cw6nC81BBl28=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gDabHaWJXTKV4YaGT3f+cIScqkWv1ydP++c3PyNvWXyg9ElLEh78f7AzvkTlRrLHz
-	 hJowEX//MygT3PwRWBh1mip8XfJAb/3g4QFDMZNFh/ERQegcIUwCU4ZD7TVgk06nSK
-	 9WF8lvgAyA8WqV6AIWm62PIvvU9YEnzT+bKoR+bc=
-Message-ID: <365b430b-d91c-4391-bfc4-ea6a3444cb43@linux.microsoft.com>
-Date: Mon, 8 Apr 2024 13:19:00 -0700
+	s=arc-20240116; t=1712607631; c=relaxed/simple;
+	bh=fMWbEIfqpElLex0+WVwRKS2fcQkne1Z6iZmaYL1f1Pk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2nV1S/guPX7oex+4nVeqMF3Py7VmZ4lGmrX8Xtzde//0ZFyQnUQ/l9QhszdOxQUBpL7mb/qDPx5j03d33FNvCrR/5A/ADHyt+blHo3ZOCWT3p9c72/tIU/ZQApgO/c2ab9QXE68N1vu8T5/qzX8tvNQD3g0sgi5S8Cj9oiZyvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKhoxQPo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E554C433C7;
+	Mon,  8 Apr 2024 20:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712607631;
+	bh=fMWbEIfqpElLex0+WVwRKS2fcQkne1Z6iZmaYL1f1Pk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IKhoxQPo21g0SByjZ2E69k0VeN1f5f7D8eGYt64qmcAAmgl3Aqgo0mSEWeWNkt45p
+	 r85T2jr0G0yfSKV6JkYwwRXeN3RO/C+MeksNAfG8xy2lNpyWPLzG8ytNw/R7fNw8wT
+	 /TdWHE4YEJWI6/zj95JBGq76XK964L+aGWw41XkpgJJQrmNa7RlW5dY3PA8k78zxgX
+	 rHDVQttScyVhyorlf/9qEPeIPUZp2e7vVhPR+sM+6LL/n9guBLrbv7E91YyimuPcCo
+	 6dqDA++QnEw/Ci827q+U1vFPBqqzWOhNr6aOOQ8aYP7gRHqtWrLZCM8HEHIJaxthMT
+	 GEgPu6R5w/jog==
+Date: Mon, 8 Apr 2024 17:20:27 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Ian Rogers <irogers@google.com>, LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/4] perf: Fix leaked events when sigtrap = 1
+Message-ID: <ZhRRi0KENKnV5o7_@x1>
+References: <20240329235812.18917-1-frederic@kernel.org>
+ <CAP-5=fVwT1FPTps=i=hG2O0sWr9DH92VSt66Co=Rhf9dyZX7ag@mail.gmail.com>
+ <ZhRI7WfjgkCTK9aK@pavilion.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] ACPI: CPPC: Fix access width used for PCC
- registers
-To: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
- Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240329220054.1205596-1-vanshikonda@os.amperecomputing.com>
- <eecf5b00-0b61-46a8-82d9-a3c113f2d956@linux.microsoft.com>
- <m2m7qytrlhdvht7ro6hee2msi2bd5j733yagdakyjfxi2su46i@nj77lj3ulqp7>
-Content-Language: en-CA
-From: Jarred White <jarredwhite@linux.microsoft.com>
-In-Reply-To: <m2m7qytrlhdvht7ro6hee2msi2bd5j733yagdakyjfxi2su46i@nj77lj3ulqp7>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhRI7WfjgkCTK9aK@pavilion.home>
 
-On 4/1/2024 10:45 AM, Vanshidhar Konda wrote:
-> On Mon, Apr 01, 2024 at 09:48:28AM -0700, Easwar Hariharan wrote:
->> Hi Vanshi,
->>
->> Thanks for testing and catching this. One comment below, but Jarred is 
->> OOF for a couple days so
->> we'll get back again after testing on our platform.
->>
->> On 3/29/2024 3:00 PM, Vanshidhar Konda wrote:
->>> Commit 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for
->>> system memory accesses") modified cpc_read/cpc_write to use 
->>> access_width to
->>> read CPC registers. For PCC registers the access width field in the ACPI
->>> register macro specifies the PCC subspace id. For non-zero PCC 
->>> subspace id
->>> the access width is incorrectly treated as access width. This causes 
->>> errors
->>> when reading from PCC registers in the CPPC driver.
->>>
->>> For PCC registers base the size of read/write on the bit width field.
->>> The debug message in cpc_read/cpc_write is updated to print relevant
->>> information for the address space type used to read the register.
->>>
->>> Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for 
->>> system memory accesses")
->>> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->>> ---
+On Mon, Apr 08, 2024 at 09:43:41PM +0200, Frederic Weisbecker wrote:
+> Le Fri, Mar 29, 2024 at 08:23:49PM -0700, Ian Rogers a écrit :
+> > On Fri, Mar 29, 2024 at 4:58 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> > >
+> > > While looking at task_work users I just noticed that perf doesn't flush
+> > > its own upon event exiting. This looks especially problematic with child
+> > > events. Please have a thourough look at the last patch, I may easily
+> > > have missed something within the maze.
+> > >
+> > > Frederic Weisbecker (4):
+> > >   task_work: s/task_work_cancel()/task_work_cancel_func()/
+> > >   task_work: Introduce task_work_cancel() again
+> > >   perf: Fix event leak upon exit
+> > >   perf: Fix event leak upon exec and file release
+> > >
+> > >  include/linux/perf_event.h |  1 +
+> > >  include/linux/task_work.h  |  3 ++-
+> > >  kernel/events/core.c       | 40 +++++++++++++++++++++++++++++++-------
+> > >  kernel/irq/manage.c        |  2 +-
+> > >  kernel/task_work.c         | 34 +++++++++++++++++++++++++++-----
+> > >  security/keys/keyctl.c     |  2 +-
+> > >  6 files changed, 67 insertions(+), 15 deletions(-)
+> > 
+> > Thanks for this! I wonder if this relates to fuzzing failures like:
+> > https://lore.kernel.org/linux-perf-users/CAP-5=fUa+-Tj2b_hxk96Qg5=Qu7jYHgHREbsmBa2ZmuF-X9QaA@mail.gmail.com/
+> > "[ 2519.138665] unexpected event refcount: 2; ptr=000000009c56b097"
+> 
+> Probably not since those seem to happen on perf_event_open() failures. This
+> looks different.
 
-Hi Vanshi,
+Probably clashes with this one?
 
-The patch is good.
+"[PATCH v3 0/4] perf: Make SIGTRAP and __perf_pending_irq() work on RT."
 
-You can add,
-Reviewed-by: Jarred White <jarredwhite@linux.microsoft.com>
-Tested-by: Jarred White <jarredwhite@linux.microsoft.com>
+https://lore.kernel.org/all/20240322065208.60456-1-bigeasy@linutronix.de/T/#u
 
-We also found another bug in the process of testing, which we will 
-submitting a patch for.
-
-
-Thanks,
-Jarred
-
+- Arnaldo
 
