@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-134819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3642089B761
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:59:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1752189B766
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:00:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4631281873
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:59:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA621F21822
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881358C04;
-	Mon,  8 Apr 2024 05:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906B3D2F5;
+	Mon,  8 Apr 2024 06:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EjgM95Bf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwjMqRSo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD80D79E0;
-	Mon,  8 Apr 2024 05:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E117470;
+	Mon,  8 Apr 2024 06:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555971; cv=none; b=s9uRnkDevDnFZvZrlVxUs599TsZfAKG0du4QNPFT96ilFG3Fa//UT/4AYx0kDXZRb4MWk5AceuMnsmwQbbNEqLHPjjAXx4RwBvK+BHsjcWKaGPxFCsRbvN1xmgEn69vr5VvrpBQj94kbDeIN3YAAD4ljVyVAwsO8rQdOFO8hkUY=
+	t=1712556011; cv=none; b=Nirj1aDXUnHBhNYJgVB+ohvUzRce6HK8tGTEs89cfTLYh1Q0MVMIebQcstl7XkFS09A4vOuTcauH+k+XVF6g5t7FsZa48fQG+i7GxVinCI/shkvJ1kSNST4ykq+gY68kon8Oln4b2ZoKCforydD0QVx/A1HA8hoUu/xZhwNr5Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555971; c=relaxed/simple;
-	bh=qFGxPLXPXy1ZDJkBAE9VknEGeEy8LUMKThmv2dRJ/dE=;
+	s=arc-20240116; t=1712556011; c=relaxed/simple;
+	bh=j9uvs+9f8xh+cg+3sTpoShgeccdOhjZsmAXr4AUaKL0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NcLI593PKEpyA/20SeePWBPuCSiBuud0b3erM5hGE/+iuANit2D2FL+NAzNn5u66WlP6luHbaEd3tdODiT5ZFD9B9H0oVxc63Fyg/qXxo0czhNYEUNRrYsmZrVXdKMvDtUUZ8vOvpBmlYUF024zpyLZdSBho81SN7fWPjQVS6BI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EjgM95Bf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B470C433F1;
-	Mon,  8 Apr 2024 05:59:26 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=JjAlpb+eZyBtXwhClpsvE69M+Q1NbQlJjlyciayAZfaUOCM8smBGbhPKRYxCBngGWwLBGIkRbsU3/hh17BRhrpXrGCZ76hdJhW8UFIPuveH81TXDFfxvwRB96CKkv46ItjybitBc6oy6OJ4Kc3pmzR1rlAw6tM5v7n4ZtqBV0z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwjMqRSo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BBD6C433C7;
+	Mon,  8 Apr 2024 06:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712555971;
-	bh=qFGxPLXPXy1ZDJkBAE9VknEGeEy8LUMKThmv2dRJ/dE=;
+	s=k20201202; t=1712556011;
+	bh=j9uvs+9f8xh+cg+3sTpoShgeccdOhjZsmAXr4AUaKL0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EjgM95BfOZKbXNX0Qw7/el566K/udZO2AJXJBYKKHhoeBQA4+xi9H/nvDOKt8C3fK
-	 sXlx1hmwwc7FXOxjJxXLMyw+G/vzfMJzaMHuJzuqOBoQejF3EBTmtVrr1HrDsFz/sY
-	 MxsByDC3+oNK6IFrrm8QI6+uJrnta1TqQ+ilDh2dBj4pyRfPB5jqUjyVr4amAQKYXg
-	 VE4aEYK+bbNcYjbsqBf0fshAwu1XkyssctBh9gF406wyv3uEqEMjCSpP+f9olbnoOC
-	 KsrgH444IQLbrcsz8hBEFBAO+Q9AitUepyz6uoB96M0s1BUbq5boyX4oGn1T/au8xa
-	 b1wkAdy9YFbwA==
-Message-ID: <4a99c6af-c536-4ad2-8af4-877b83ac1c26@kernel.org>
-Date: Mon, 8 Apr 2024 07:59:24 +0200
+	b=EwjMqRSoOEy16fWn51FE5VAieqkDlB3aHwR5OMEmOsk7Y+ctxWinw73hRoGWQ3kHR
+	 qzwELMqPGgvQGo+T00mtlPdqmIWOYYdid8JGpd7w5OqumRYFSlgI2uh9cvbuzG1Oyd
+	 AikBGAJEMVAYB59TaBWlumpqL4tCGVl1vBzC+ENJzdHg2MNkAjlEcNdWm9J65aMHqb
+	 dm1MuljDr9CPPdEpGrzBdbMRF6Zn9Cf6+NG3gliinj2oriB1z+Vf40Si0B9uuuTZuS
+	 /L7oens58Z+9hqrDCVr8LpZvNt21roy8Q1P7TQuxmq0A0F4er5NqAsOYYxQTuZ5Pze
+	 AA7dZ7iwkllzA==
+Message-ID: <6b1f4602-a6d1-41dc-9dfd-8af738612680@kernel.org>
+Date: Mon, 8 Apr 2024 08:00:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: qcom,sc7280-wpss-pil: Fix
+Subject: Re: [PATCH 3/3] dt-bindings: remoteproc: qcom,sdm845-adsp-pil: Fix
  qcom,halt-regs definition
 To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
  phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
@@ -58,7 +58,7 @@ To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
 Cc: linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240407-qcom-halt-regs-fixup-v1-0-a0ea4e2c178e@z3ntu.xyz>
- <20240407-qcom-halt-regs-fixup-v1-2-a0ea4e2c178e@z3ntu.xyz>
+ <20240407-qcom-halt-regs-fixup-v1-3-a0ea4e2c178e@z3ntu.xyz>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,7 +104,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240407-qcom-halt-regs-fixup-v1-2-a0ea4e2c178e@z3ntu.xyz>
+In-Reply-To: <20240407-qcom-halt-regs-fixup-v1-3-a0ea4e2c178e@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
@@ -114,6 +114,9 @@ On 07/04/2024 11:58, Luca Weiss wrote:
 > 
 > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 > ---
+>  .../devicetree/bindings/remoteproc/qcom,sdm845-adsp-pil.yaml        | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+
 
 Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
