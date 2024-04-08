@@ -1,143 +1,124 @@
-Return-Path: <linux-kernel+bounces-135976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFA089CE7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:36:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00ACC89CE81
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:36:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D88E2817A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:36:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F2EC1F2364C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D439928389;
-	Mon,  8 Apr 2024 22:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE8F2AF14;
+	Mon,  8 Apr 2024 22:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SH145i7H"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="duLf6SKb"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FF01A5A2;
-	Mon,  8 Apr 2024 22:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E7817745
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 22:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712615761; cv=none; b=DwFLerX3ZBn5/4xunAB+6kloDfOMjANgY8xMvFHP4Ihd0qAayPZe0fVFCwnCnysxBP5iwDiuJKQKgL0I/pJ6GvP/WNn7sGqrGcoHxyU14W+lYnGKvGnhZcik6F99OXm2eK/lKPmfcaaOQkCUrNSQxexZBIimX2k7zZcnaQVfMQU=
+	t=1712615775; cv=none; b=Qfk7txuCsWPnkXCh/aBBxEwLMb1zMMFzhvtoP2fcsqtgOBsomclN54/Zz4bEdQnJudpqmX/hmPpN9SG1l5Xyjd8VStnCFnRjP67VrBLs1XFW39K0uYG3jWmyA+8Ng63Ulu2z4DR74bdinSMrtF+RAOJLWbiPqYdWSWNfjVyg6MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712615761; c=relaxed/simple;
-	bh=3cPal0PcyBF+aiN/zwbK05iiWVn1zNZFAKQzLfq3x8M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iPNo9onvc0HgXqsTZ2cQGZaPUsYBXPOr7O8Nw8lmohiwLfQC9ls9KEtAPeHV/yUmJnlxmoqVhymRX9a4C0L4Ul2WV4ywDSnP+fejnkDNpVB6qdhvj0aRP+xVCkZ61iQyOmFfhKmYwkgUztq4BYxZprp0zEdDSvIcIXzjarFYFt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SH145i7H; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6fd3cfaa6so63890291fa.2;
-        Mon, 08 Apr 2024 15:35:59 -0700 (PDT)
+	s=arc-20240116; t=1712615775; c=relaxed/simple;
+	bh=wd9auWj6neAH4mwPBANg9G0rtjJL6aqclc7lajDKiYg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hma8U7ZKjL8EW85naVTW3zsSiHR8tMk1Q9Ihndpysa0ffTZuTnFLfV06//6h4rrrL2conQtN74/Q9uTHr8y0MkhqJz8l9N6LF2tSqMnohxlGtKLaQ5Hyiyw4k6yieWpPX4mXcJNbqrZ09Af742EJuAX1A4ZeZ5rkOJe+tWGv8Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=duLf6SKb; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e278ebfea1so46377745ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 15:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712615758; x=1713220558; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QzaOLKxDboX4yOy570vjmU1pifeDoG6kHY2U+WBIbU8=;
-        b=SH145i7H7u3jMlfuRViGkC3qVhnfzU6dMU67780b0vMT/VI03e4bdhG/uasohW+lfh
-         5E54Y8IxlmRrRZhx+NFmZbSOZtiKgbwHnHtda9gRfVlsJv6jEWKQNlHlS3NL1AuC14RW
-         NlXx30rm7zPjHqX6+J4hInEO7H1IVUE7EzH6A0ZT6+k8uwyJST9hMdFaeUSLykppupnv
-         C4ZsaGbtgzfgYE4OzGrLLQGZyHUoJsAvCKVHoIac8XdPydlT6Yu7XkchJlga5j9V2kV9
-         3PenCoCzkknqXqGxbE90N8b8iZkMmreKbfWcnCPYHnW2gjFcugFcUA8t0BrKWZKNV6bK
-         TQjg==
+        d=google.com; s=20230601; t=1712615773; x=1713220573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H3IyoUWCaMuOsrSmdtiAaHOAeX0T2/iesX+PuEFhG/o=;
+        b=duLf6SKbk9ruf+aEZLiUtDpW0RGBgbPH30ZOBaR1wAaybjARXGQUQ994/OaZmZlOid
+         A18DKxs3nd0A340wmKgBZtU91VKnlhAw6uVCEhX1Iiu5EU0Nki9wRrrackSe5N50PZXq
+         C7t6A8xTtYI2WeJB1AgNG09I5lHnzle3OfURmBgupr2/J9/W6tePa0lyMdePy1a5gdWZ
+         L+Dm9Ky8eH7M39zwMiSmCiB2dnepn7Az6sqQ5wHDaSJcm5lW9nndKlUmWlRcRsrLNgri
+         EYMqD9BzrRyOC00KTabTi3ZmbQCuu9Vk4R++CnXpHRB7ijewPsQs7BJNBiaswKhD8OKN
+         GN0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712615758; x=1713220558;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QzaOLKxDboX4yOy570vjmU1pifeDoG6kHY2U+WBIbU8=;
-        b=InNFDKxDzCYh1QAlX+cOmjb6wD7dbZRDLQhpNEj8Bd+qN+vSR7fFYgXrS5l9eOuXMO
-         vLaOmJeDe2iADvboKujpGFaM7EXHIG7D9mDrRIv6U8tzP0O2f0vg9v/cr5L9D+wGdyGO
-         m44CH1OUqSYijd+5tdaZOuWteb80xZ5KxuJ9aWmXADeLMRagIwoWI6RYtPKMeoyaCTUf
-         hftcOgavHr539zDcistY4P1PjZlxwKrZDgjBkgDEut2/YWVKcm7NhQPPpbuJIZnOaOlQ
-         hv08YDS17AE4BXR4zDTbLz19jqnXqV0yFuB+C1ODftnlMif5UvEmiokOoVhwRqWqtbVM
-         l//Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV6yIv7Gm3hcpCxHrfy3BG0MYv23jRiYK2ssskH5V0oq+TYBqBql4OOgvekqyhWg/m7pM1Q2B4dMTBlKRGhLyRAo9bRGtYASzXwf6wvQkwzmhodqq4A4QoEaqBxDeYSuAB4Sd9Mz9+BXv6tizdI
-X-Gm-Message-State: AOJu0YyF5pMpp5FhEK41HiU0mfHPuPIA40nq/M4Nxcth03rXb4gW7pZn
-	z8sY/dYNcI3w2/WUH4evV8wQ7ZEQkBUduoxRQyQZlCiiZMcJw+t0
-X-Google-Smtp-Source: AGHT+IGabQPjHusP4qbbSVnEnDijSEaS8p5kQFlyVxZmC1rm5CusvbY7EOQoWozQ0qabJMQARqfekQ==
-X-Received: by 2002:a05:651c:1422:b0:2d8:6467:1a13 with SMTP id u34-20020a05651c142200b002d864671a13mr5848323lje.30.1712615757343;
-        Mon, 08 Apr 2024 15:35:57 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id y13-20020a056402358d00b0056e031bb5efsm4544308edc.47.2024.04.08.15.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 15:35:56 -0700 (PDT)
-Message-ID: <db1f8413ef4ebc57b9ddc586e48acf3fad19ebf2.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v6 4/6] bpf/helpers: mark the callback of
- bpf_timer_set_sleepable_cb() as sleepable
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Tue, 09 Apr 2024 01:35:55 +0300
-In-Reply-To: <20240408-hid-bpf-sleepable-v6-4-0499ddd91b94@kernel.org>
-References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
-	 <20240408-hid-bpf-sleepable-v6-4-0499ddd91b94@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+        d=1e100.net; s=20230601; t=1712615773; x=1713220573;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=H3IyoUWCaMuOsrSmdtiAaHOAeX0T2/iesX+PuEFhG/o=;
+        b=U93hJ3sMsyomfyDRMuDgGR5D6ge2X7DBWphxFFchUmKkRU8Dk8RLfS50Yz2oVLEX1B
+         ePAo9NHgWE6pdjtZOrZpUFmdN0b9nc8jw3sWrbWofULpDwUDHex58Qp5M4PUJc1tkv4E
+         qM+WgYsT9L3jRy7fUIITO1ywiPA5TkYft/62bdEFnxbLrYiTuVehWfrmAKOab4LtNal1
+         TWqqAtIJIF7MzzP6wqzotb1fTdutZP8+OHT+pHvVXS/CbxVp91cRy42DSukimzQqI8ar
+         zXoIL+HdmgiQuSPni15oxXuQlcWYMOrX+J1JCPkrdbFWPWc2iKVpqdTuLyOhsrHc5fyV
+         BHcw==
+X-Forwarded-Encrypted: i=1; AJvYcCVk2V9bbupCFl8n3bHc582GPxsSejK9fHnHIeEJ+oVch6TMl6Jjgj/D2gjlrb4CL3rlF8akaWsV96rJY6NNdpOJyTIeHh25DFfFj0oK
+X-Gm-Message-State: AOJu0YxpFntcLan6Ac6qX19kH1OEeex/QvcDjhuivmkA/aK9AbXA02yA
+	CHP70HRb2Des+l0wWSHzbbuy3I7DpD4Urxi+A+a7nrYvshmgb9qAdZtE3TzWUgwXjEkTQyRzNXW
+	yDA==
+X-Google-Smtp-Source: AGHT+IGA02QPgUvTHLSjG35tJY/y8cz2zBR88FLhWwtJO2ItlMMNLpk97KO76IwFPepitjBhAf8k/cmoAGo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ea01:b0:1e2:b75e:37b5 with SMTP id
+ s1-20020a170902ea0100b001e2b75e37b5mr352811plg.2.1712615772902; Mon, 08 Apr
+ 2024 15:36:12 -0700 (PDT)
+Date: Mon, 8 Apr 2024 15:36:11 -0700
+In-Reply-To: <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20240405165844.1018872-1-seanjc@google.com> <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
+ <ZhQZYzkDPMxXe2RN@google.com> <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
+ <ZhQ8UCf40UeGyfE_@google.com> <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
+Message-ID: <ZhRxWxRLbnrqwQYw@google.com>
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+From: Sean Christopherson <seanjc@google.com>
+To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Cc: "davidskidmore@google.com" <davidskidmore@google.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"srutherford@google.com" <srutherford@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"pankaj.gupta@amd.com" <pankaj.gupta@amd.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Wei W Wang <wei.w.wang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
-> Now that we have bpf_timer_set_sleepable_cb() available and working, we
-> can tag the attached callback as sleepable, and let the verifier check
-> in the correct context the calls and kfuncs.
+On Mon, Apr 08, 2024, Rick P Edgecombe wrote:
+> On Mon, 2024-04-08 at 18:51 +0000, Sean Christopherson wrote:
+> > > I'm not following the code examples involving struct kvm_vcpu. Since =
+TDX
+> > > configures these at a VM level, there isn't a vcpu.
+> >=20
+> > Ah, I take it GPAW is a VM-scope knob?
 >=20
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> Yea.
 >=20
-> ---
+> > I forget where we ended up with the ordering of TDX commands vs. creati=
+ng
+> > vCPUs.=C2=A0 Does KVM allow creating vCPU structures in advance of the =
+TDX INIT
+> > call?=C2=A0 If so, the least awful solution might be to use vCPU0's CPU=
+ID.
+>=20
+> Currently the values for the directly settable CPUID leafs come via a TDX
+> specific init VM userspace API.
 
-I think this patch is fine with one nit regarding in_sleepable().
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Is guest.MAXPHYADDR one of those?  If so, use that.
 
-> @@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifier_=
-env *env,
-> =20
->  static bool in_sleepable(struct bpf_verifier_env *env)
->  {
-> -	return env->prog->sleepable;
-> +	return env->prog->sleepable ||
-> +	       (env->cur_state && env->cur_state->in_sleepable);
->  }
+> So should we look at making the TDX side follow a
+> KVM_GET_SUPPORTED_CPUID/KVM_SET_CPUID pattern for feature enablement? Or =
+am I
+> misreading general guidance out of this specific suggestion around GPAW?=
+=20
 
-Sorry, I already raised this before.
-As far as I understand the 'env->cur_state' check is needed because
-this function is used from do_misc_fixups():
-
-		if (is_storage_get_function(insn->imm)) {
-			if (!in_sleepable(env) ||
-			    env->insn_aux_data[i + delta].storage_get_func_atomic)
-				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
-			else
-				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
-			insn_buf[1] =3D *insn;
-			cnt =3D 2;
-			...
-		}
-
-For a timer callback function 'env->prog->sleepable' would be false.
-Which means that inside sleepable callback function GFP_ATOMIC would
-be used in cases where GFP_KERNEL would be sufficient.
-An alternative would be to check (and set) sleepable flag not for a
-full program but for a subprogram.
-
-Whether or not this is something worth addressing I don't know.
-
-[...]
+No?  Where I was going with that, is _if_ vCPUs can be created (in KVM) bef=
+ore
+the GPAW is set (in the TDX module), then using vCPU0's guest.MAXPHYADDR to
+compute the desired GPAW may be the least awful solution, all things consid=
+ered.
 
