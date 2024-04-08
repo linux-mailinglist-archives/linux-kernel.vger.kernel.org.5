@@ -1,82 +1,82 @@
-Return-Path: <linux-kernel+bounces-135475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383C789C5A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:59:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A62C89C5BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:00:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CDDC1C2128F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:59:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B161F20CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CF87F7F5;
-	Mon,  8 Apr 2024 13:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C3E7F467;
+	Mon,  8 Apr 2024 13:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="D9JTJa7f"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="IpyLp1h3"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569957E112
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928957D3E8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712584726; cv=none; b=TH2vuG9fD3/svtYnMXUpIlgccStgre8Y6cJfzbpb7VvFVPAXaPD67Wsb1ctNn0z8YyZ5Vw3uDivrTqXjvbTVAjpYHn9i2Wz+1yjDZr8YjTq7vreiyRgNk1ReCDygkTcA6l6ml7NbwC0bT04BSggdph1xbFuz+4succzgZQeyub4=
+	t=1712584784; cv=none; b=GWXBZ4cnklUgBjQU4xKUVgB5TLVrOBi27LO6xqo/ik05pVXfk2uDS6oG4aWq9ANRapH9Ksc1QqIguQJpuFHsDYQRXmTtdaD2zv2VLndHpZ7Ys2aUxLjAufzj9IsqCZxRRkeSlqzEc9OKYsIOwqx2tvJ/ACtb45pUbhg8P3g/dlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712584726; c=relaxed/simple;
-	bh=JwKbHyDdJqKkWIrXnGAqf8zmpkXLprKnjLhDbuicsmY=;
+	s=arc-20240116; t=1712584784; c=relaxed/simple;
+	bh=lbVTY91IwFFIb6sbUTf2Z6WUddRDSgvFYfQik2bdU5s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rtz72OikQoPdqBJY+osuiw1RKZZbrtkfRf9hpi09+AYX/J10F8W0kuYyt5TIjh4NVfSawITB9bVKgSLMQLc46h8W0fTvgYwjygRxMB3ae0M+W52amAkDQAVFNJTcfr2Xg/sp3ycrQAub2ByW+E15WqE9NLiaEdB0Otpdb7kboa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=D9JTJa7f; arc=none smtp.client-ip=209.85.219.176
+	 To:Cc:Content-Type; b=EeKKzlrksqqfFVaXNHbaag4rQAFvPfgEa+7HyW0UJOeISGHiysrRuREBOgdcV/c0La7qdERzdWhbgBShYVRBtK9uqP58zPVf7TuhpnKigDNcMynD6zlpMVMsI73fDuWVLSpXoy2ESuAjrkT6tubVKDfat1cJP/c8WPufeUcyleI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=IpyLp1h3; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3876003276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:58:44 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso4340833276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:59:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1712584723; x=1713189523; darn=vger.kernel.org;
+        d=bitbyteword.org; s=google; t=1712584781; x=1713189581; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=exi1tZ25M8U9KJRZYlm9vl7tg5u6eSxfy3YOWCKZkMU=;
-        b=D9JTJa7fp33VftzKU0Ja2w2rioAQJcvY+SSfdjXoedKbvYIBel53p0aRyyRgfyIgpA
-         Af6Fd7O5vAh8C3PXBjB0VRuqhYm+Ym8ZYopFsBsdOYMmJHgd6SNfNNo+IM4o2vpIwesK
-         vZa7a/1X9DH2FsW9ISknam/kJ4gEvL4jmqOy2zfp2+WFEsNUoQZX53z0P4GwB36a5twW
-         D63wJETKisafGXxocvrZquHeMPbprQv6dBbpDrWpBB8BLJYPKk8bZSHnOraQ0eglp3V5
-         dDGFnqoGUqrRb7GjuuscCwxxDt7fFO+kAoW2obC0jEco2z+ymyJzJ3HaW55I/vVZ8yc3
-         kmvg==
+        bh=2coaQxB0F90mD/VO/63txYCW7fbnXdz4Og49R0bnS0Q=;
+        b=IpyLp1h3XLmltMszTAcxVWHS6ZFLH/1mNbEnJhbxRzfgDqnuBZix6GaXxkPbZRn++j
+         GwSzUc0K42qlfV9ozuQ2trE3fpz6b4LFuXTDSaNdIsbZgJGQEpZjZin8pCdRFaHOem7n
+         xcrOU/UFn4zxyjB3RodCT5zMwLFQ4ii06grSDEf7iJUtOq5JDnDq0DPeWAvKrrtDZKg9
+         nfvmDX8R3vNBjIFBgCZYHb2dmWPA5F9Ag46LO03n5wACybE+mebMDc7g7rseMNC79Gxc
+         B7/picFwhBGPBUsUmWXe2q4hKHMuvPLfJpIbnnj3fA5BpqAiQttD7Bw9rLwo10EepvvK
+         uleA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712584723; x=1713189523;
+        d=1e100.net; s=20230601; t=1712584781; x=1713189581;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=exi1tZ25M8U9KJRZYlm9vl7tg5u6eSxfy3YOWCKZkMU=;
-        b=e8D4awNP7N/zp34rUdMNb+hzK780vzFEPLWgCbJSUet5zpDbW606qgOzscxbSfYloD
-         pnW9cGWkrx9gYXXjiU7TulG6X1AV9tXPwiQlaaQEyTRQtQCHkLq7v7EZIk3/Dy0ZG7eG
-         rbOjlrjNwzmweB/yZ8B2yYWIg1W3cn2Y1roq8aONol63k394Toa6qCl/AjZJp3lKT1tg
-         8nVDKeVRXvrDWCFCLbqN/DN2QDOuY7/2791ugrd6txo7+3v3HcnHyA7UM5yRcP8wcpR0
-         KqlBTqEBpDhuKJqGyDiuMhNOqwKsx3g5o0F+Q6ZHvLB8F/Bf27tdcpjXRCX75KhcMYlf
-         ufBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNr07An5JluZRPWQ3KzbZNwKr0hFn+eYvoDqIakzn3tuiq9bgoCU5S2FiMlQ8/8QVOAYFwBoTgWSi3RyCJ8weMAQXc4wLoA3M78TqL
-X-Gm-Message-State: AOJu0YxX+F0Yez2U6LkN/EqMzheZbbSKVDu+iR/mEa1M5NTxdNQFnAoP
-	C7+xwg/dHHXiwssGWutFir4F5RwuiHOCbZlTcq+bKN0+jnwHgnKpF4uLWvQ2BGeyDzHNacwqQTl
-	WqiiKeyFTEXuxhQVse7QzdgYDdSOgkaIQxtAH/w==
-X-Google-Smtp-Source: AGHT+IGuCCcfELaEOafnUyIzlkMVIzGa0/nrDZhXkl+wn5FhYnjaxiCaNzwtpX4RKKNoJ+7mdJmoFf2L2rUt90SG/xA=
-X-Received: by 2002:a25:b107:0:b0:dc6:9ea9:8154 with SMTP id
- g7-20020a25b107000000b00dc69ea98154mr7557910ybj.13.1712584723316; Mon, 08 Apr
- 2024 06:58:43 -0700 (PDT)
+        bh=2coaQxB0F90mD/VO/63txYCW7fbnXdz4Og49R0bnS0Q=;
+        b=E5oRpMYX7/Gbn98r0Syw05UUtTPwaIXXwf55CgY2PDATrxvouu7ZMTq4DRubJywR9E
+         Pqkv2eLILwivGO90moG7K1NmrB3hHHXTuzXSeGkeGPOj6i+aAwWXr63Zz6AA9NUlSqFH
+         WZC9ecM0Jc8N1DfJJS9R9IFna8qjJTyjXFn7o32XkKOMJkUSxumBGYX/wr1OgGNiYTeP
+         BBdoIFDrUjDnc1UE1hy9Aem3q0r1UJgDSjDgmUuApyt8ZUQ3dOkqhVfkYiQIsHnd8ri7
+         lvjynlUazy+w2QIOHtqzlhhLtdtefHz7yyHewXte7/QEAuAnfdQtqqsoHw+h/iS5HSP1
+         HqxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQP40k4Myqxu3RUTuVfIreGafuOf2AE6DGJYd0oYxYxC5AnspSn+wgUiQUxy4psmV02Xh4V9l7T7u48x4SZfABzHuNJLSWyNnR3gwC
+X-Gm-Message-State: AOJu0YwwNkQhCXH7sAq9RBYAkID/4qIQzx0P7IQfRpK1smkwvENnfn6d
+	Ej0eh9LoDhwab3NT/65NNK7TdA32TD4MtPMyJpGus5FQ2JlM1eAlFOJepflNmpxbVC5NM0ZF27y
+	ZZWI6s72o/EhFQFDGimTzD3Wpg/zo4cwVlLY63rT8lXhE22YGK80=
+X-Google-Smtp-Source: AGHT+IHnQETxLjZU27DkaVuL2NPrz1AKM7HMA3QiyMhApsYgRMKp85PK/KLql+aHldblJDUfaYizBvoO1T3a4j8BLmw=
+X-Received: by 2002:a5b:843:0:b0:dcd:af3f:c7fc with SMTP id
+ v3-20020a5b0843000000b00dcdaf3fc7fcmr6978574ybq.9.1712584781543; Mon, 08 Apr
+ 2024 06:59:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403140116.3002809-1-vineeth@bitbyteword.org> <20240403140116.3002809-3-vineeth@bitbyteword.org>
-In-Reply-To: <20240403140116.3002809-3-vineeth@bitbyteword.org>
+References: <20240403140116.3002809-1-vineeth@bitbyteword.org> <20240403140116.3002809-4-vineeth@bitbyteword.org>
+In-Reply-To: <20240403140116.3002809-4-vineeth@bitbyteword.org>
 From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
-Date: Mon, 8 Apr 2024 09:58:32 -0400
-Message-ID: <CAO7JXPhDKXWkSpkQU=bXJ2GuXn=Eyd0=vk4M2XWrqHmp9roqQw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/5] kvm: Implement the paravirt sched framework
- for kvm
+Date: Mon, 8 Apr 2024 09:59:31 -0400
+Message-ID: <CAO7JXPjwEBPqCLcz8ErpgZU5VYdMnz4YORwbuMPM5=qRjOZBBQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/5] kvm: interface for managing pvsched driver for
+ guest VMs
 To: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
 	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
 	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
@@ -89,8 +89,8 @@ To: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
 Cc: Steven Rostedt <rostedt@goodmis.org>, Joel Fernandes <joel@joelfernandes.org>, 
 	Suleiman Souhlal <suleiman@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, himadrics@inria.fr, 
 	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
-	David Vernet <dvernet@meta.com>
+	Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
+	Josh Don <joshdon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -99,339 +99,188 @@ Adding sched_ext folks
 On Wed, Apr 3, 2024 at 10:01=E2=80=AFAM Vineeth Pillai (Google)
 <vineeth@bitbyteword.org> wrote:
 >
-> kvm uses the kernel's paravirt sched framework to assign an available
-> pvsched driver for a guest. guest vcpus registers with the pvsched
-> driver and calls into the driver callback to notify the events that the
-> driver is interested in.
+> Implement ioctl for assigning and unassigning pvsched driver for a
+> guest. VMMs would need to adopt this ioctls for supporting the feature.
+> Also add a temporary debugfs interface for managing this.
 >
-> This PoC doesn't do the callback on interrupt injection yet. Will be
-> implemented in subsequent iterations.
+> Ideally, the hypervisor would be able to determine the pvsched driver
+> based on the information received from the guest. Guest VMs with the
+> feature enabled would request hypervisor to select a pvsched driver.
+> ioctl api is an override mechanism to give more control to the admin.
 >
 > Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
 > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  arch/x86/kvm/Kconfig     |  13 ++++
->  arch/x86/kvm/x86.c       |   3 +
->  include/linux/kvm_host.h |  32 +++++++++
->  virt/kvm/kvm_main.c      | 148 +++++++++++++++++++++++++++++++++++++++
->  4 files changed, 196 insertions(+)
+>  include/uapi/linux/kvm.h |   6 ++
+>  virt/kvm/kvm_main.c      | 117 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 123 insertions(+)
 >
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index 65ed14b6540b..c1776cdb5b65 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -189,4 +189,17 @@ config KVM_MAX_NR_VCPUS
->           the memory footprint of each KVM guest, regardless of how many =
-vCPUs are
->           created for a given VM.
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index c3308536482b..4b29bdad4188 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -2227,4 +2227,10 @@ struct kvm_create_guest_memfd {
+>         __u64 reserved[6];
+>  };
 >
-> +config PARAVIRT_SCHED_KVM
-> +       bool "Enable paravirt scheduling capability for kvm"
-> +       depends on KVM
-> +       default n
-> +       help
-> +         Paravirtualized scheduling facilitates the exchange of scheduli=
-ng
-> +         related information between the host and guest through shared m=
-emory,
-> +         enhancing the efficiency of vCPU thread scheduling by the hyper=
-visor.
-> +         An illustrative use case involves dynamically boosting the prio=
-rity of
-> +         a vCPU thread when the guest is executing a latency-sensitive w=
-orkload
-> +         on that specific vCPU.
-> +         This config enables paravirt scheduling in the kvm hypervisor.
+> +struct kvm_pvsched_ops {
+> +       __u8 ops_name[32]; /* PVSCHED_NAME_MAX */
+> +};
 > +
->  endif # VIRTUALIZATION
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ffe580169c93..d0abc2c64d47 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10896,6 +10896,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu=
-)
->
->         preempt_disable();
->
-> +       kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_VMENTER);
-> +
->         static_call(kvm_x86_prepare_switch_to_guest)(vcpu);
->
->         /*
-> @@ -11059,6 +11061,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu=
-)
->         guest_timing_exit_irqoff();
->
->         local_irq_enable();
-> +       kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_VMEXIT);
->         preempt_enable();
->
->         kvm_vcpu_srcu_read_lock(vcpu);
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 179df96b20f8..6381569f3de8 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -45,6 +45,8 @@
->  #include <asm/kvm_host.h>
->  #include <linux/kvm_dirty_ring.h>
->
-> +#include <linux/pvsched.h>
-> +
->  #ifndef KVM_MAX_VCPU_IDS
->  #define KVM_MAX_VCPU_IDS KVM_MAX_VCPUS
->  #endif
-> @@ -832,6 +834,11 @@ struct kvm {
->         bool vm_bugged;
->         bool vm_dead;
->
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +       spinlock_t pvsched_ops_lock;
-> +       struct pvsched_vcpu_ops __rcu *pvsched_ops;
-> +#endif
-> +
->  #ifdef CONFIG_HAVE_KVM_PM_NOTIFIER
->         struct notifier_block pm_notifier;
->  #endif
-> @@ -2413,4 +2420,29 @@ static inline int kvm_gmem_get_pfn(struct kvm *kvm=
-,
->  }
->  #endif /* CONFIG_KVM_PRIVATE_MEM */
->
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 events);
-> +int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu);
-> +void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu);
-> +
-> +int kvm_replace_pvsched_ops(struct kvm *kvm, char *name);
-> +#else
-> +static inline int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 eve=
-nts)
-> +{
-> +       return 0;
-> +}
-> +static inline int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu)
-> +{
-> +       return 0;
-> +}
-> +static inline void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu)
-> +{
-> +}
-> +
-> +static inline int kvm_replace_pvsched_ops(struct kvm *kvm, char *name)
-> +{
-> +       return 0;
-> +}
-> +#endif
-> +
->  #endif
+> +#define KVM_GET_PVSCHED_OPS            _IOR(KVMIO, 0xe4, struct kvm_pvsc=
+hed_ops)
+> +#define KVM_REPLACE_PVSCHED_OPS                _IOWR(KVMIO, 0xe5, struct=
+ kvm_pvsched_ops)
+>  #endif /* __LINUX_KVM_H */
 > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 0f50960b0e3a..0546814e4db7 100644
+> index 0546814e4db7..b3d9c362d2e3 100644
 > --- a/virt/kvm/kvm_main.c
 > +++ b/virt/kvm/kvm_main.c
-> @@ -170,6 +170,142 @@ bool kvm_is_zone_device_page(struct page *page)
->         return is_zone_device_page(page);
+> @@ -1223,6 +1223,79 @@ static void kvm_destroy_vm_debugfs(struct kvm *kvm=
+)
+>         }
 >  }
 >
 > +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +typedef enum {
-> +       PVSCHED_CB_REGISTER =3D 1,
-> +       PVSCHED_CB_UNREGISTER =3D 2,
-> +       PVSCHED_CB_NOTIFY =3D 3
-> +} pvsched_vcpu_callback_t;
-> +
-> +/*
-> + * Helper function to invoke the pvsched driver callback.
-> + */
-> +static int __vcpu_pvsched_callback(struct kvm_vcpu *vcpu, u32 events,
-> +               pvsched_vcpu_callback_t action)
+> +static int pvsched_vcpu_ops_show(struct seq_file *m, void *data)
 > +{
-> +       int ret =3D 0;
-> +       struct pid *pid;
+> +       char ops_name[PVSCHED_NAME_MAX];
 > +       struct pvsched_vcpu_ops *ops;
+> +       struct kvm *kvm =3D (struct kvm *) m->private;
 > +
 > +       rcu_read_lock();
-> +       ops =3D rcu_dereference(vcpu->kvm->pvsched_ops);
-> +       if (!ops) {
-> +               ret =3D -ENOENT;
-> +               goto out;
-> +       }
-> +
-> +       pid =3D rcu_dereference(vcpu->pid);
-> +       if (WARN_ON_ONCE(!pid)) {
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +       get_pid(pid);
-> +       switch(action) {
-> +               case PVSCHED_CB_REGISTER:
-> +                       ops->pvsched_vcpu_register(pid);
-> +                       break;
-> +               case PVSCHED_CB_UNREGISTER:
-> +                       ops->pvsched_vcpu_unregister(pid);
-> +                       break;
-> +               case PVSCHED_CB_NOTIFY:
-> +                       if (ops->events & events) {
-> +                               ops->pvsched_vcpu_notify_event(
-> +                                       NULL, /* TODO: Pass guest allocat=
-ed sharedmem addr */
-> +                                       pid,
-> +                                       ops->events & events);
-> +                       }
-> +                       break;
-> +               default:
-> +                       WARN_ON_ONCE(1);
-> +       }
-> +       put_pid(pid);
-> +
-> +out:
+> +       ops =3D rcu_dereference(kvm->pvsched_ops);
+> +       if (ops)
+> +               strncpy(ops_name, ops->name, PVSCHED_NAME_MAX);
 > +       rcu_read_unlock();
-> +       return ret;
+> +
+> +       seq_printf(m, "%s\n", ops_name);
+> +
+> +       return 0;
 > +}
 > +
-> +int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 events)
+> +static ssize_t
+> +pvsched_vcpu_ops_write(struct file *filp, const char __user *ubuf,
+> +               size_t cnt, loff_t *ppos)
 > +{
-> +       return __vcpu_pvsched_callback(vcpu, events, PVSCHED_CB_NOTIFY);
-> +}
+> +       int ret;
+> +       char *cmp;
+> +       char buf[PVSCHED_NAME_MAX];
+> +       struct inode *inode;
+> +       struct kvm *kvm;
 > +
-> +int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu)
-> +{
-> +       return __vcpu_pvsched_callback(vcpu, 0, PVSCHED_CB_REGISTER);
-> +       /*
-> +        * TODO: Action if the registration fails?
-> +        */
-> +}
+> +       if (cnt > PVSCHED_NAME_MAX)
+> +               return -EINVAL;
 > +
-> +void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu)
-> +{
-> +       __vcpu_pvsched_callback(vcpu, 0, PVSCHED_CB_UNREGISTER);
-> +}
+> +       if (copy_from_user(&buf, ubuf, cnt))
+> +               return -EFAULT;
 > +
-> +/*
-> + * Replaces the VM's current pvsched driver.
-> + * if name is NULL or empty string, unassign the
-> + * current driver.
-> + */
-> +int kvm_replace_pvsched_ops(struct kvm *kvm, char *name)
-> +{
-> +       int ret =3D 0;
-> +       unsigned long i;
-> +       struct kvm_vcpu *vcpu =3D NULL;
-> +       struct pvsched_vcpu_ops *ops =3D NULL, *prev_ops;
+> +       cmp =3D strstrip(buf);
 > +
-> +
-> +       spin_lock(&kvm->pvsched_ops_lock);
-> +
-> +       prev_ops =3D rcu_dereference(kvm->pvsched_ops);
-> +
-> +       /*
-> +        * Unassign operation if the passed in value is
-> +        * NULL or an empty string.
-> +        */
-> +       if (name && *name) {
-> +               ops =3D pvsched_get_vcpu_ops(name);
-> +               if (!ops) {
-> +                       ret =3D -EINVAL;
-> +                       goto out;
-> +               }
-> +       }
-> +
-> +       if (prev_ops) {
-> +               /*
-> +                * Unregister current pvsched driver.
-> +                */
-> +               kvm_for_each_vcpu(i, vcpu, kvm) {
-> +                       kvm_vcpu_pvsched_unregister(vcpu);
-> +               }
-> +
-> +               pvsched_put_vcpu_ops(prev_ops);
-> +       }
-> +
-> +
-> +       rcu_assign_pointer(kvm->pvsched_ops, ops);
-> +       if (ops) {
-> +               /*
-> +                * Register new pvsched driver.
-> +                */
-> +               kvm_for_each_vcpu(i, vcpu, kvm) {
-> +                       WARN_ON_ONCE(kvm_vcpu_pvsched_register(vcpu));
-> +               }
-> +       }
-> +
-> +out:
-> +       spin_unlock(&kvm->pvsched_ops_lock);
+> +       inode =3D file_inode(filp);
+> +       inode_lock(inode);
+> +       kvm =3D (struct kvm *)inode->i_private;
+> +       ret =3D kvm_replace_pvsched_ops(kvm, cmp);
+> +       inode_unlock(inode);
 > +
 > +       if (ret)
 > +               return ret;
 > +
-> +       synchronize_rcu();
+> +       *ppos +=3D cnt;
+> +       return cnt;
+> +}
 > +
-> +       return 0;
+> +static int pvsched_vcpu_ops_open(struct inode *inode, struct file *filp)
+> +{
+> +       return single_open(filp, pvsched_vcpu_ops_show, inode->i_private)=
+;
+> +}
+> +
+> +static const struct file_operations pvsched_vcpu_ops_fops =3D {
+> +       .open           =3D pvsched_vcpu_ops_open,
+> +       .write          =3D pvsched_vcpu_ops_write,
+> +       .read           =3D seq_read,
+> +       .llseek         =3D seq_lseek,
+> +       .release        =3D single_release,
+> +};
+> +
+> +static void kvm_create_vm_pvsched_debugfs(struct kvm *kvm)
+> +{
+> +       debugfs_create_file("pvsched_vcpu_ops", 0644, kvm->debugfs_dentry=
+, kvm,
+> +                           &pvsched_vcpu_ops_fops);
+> +}
+> +#else
+> +static void kvm_create_vm_pvsched_debugfs(struct kvm *kvm)
+> +{
 > +}
 > +#endif
 > +
->  /*
->   * Returns a 'struct page' if the pfn is "valid" and backed by a refcoun=
-ted
->   * page, NULL otherwise.  Note, the list of refcounted PG_reserved page =
-types
-> @@ -508,6 +644,8 @@ static void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
->         kvm_arch_vcpu_destroy(vcpu);
->         kvm_dirty_ring_free(&vcpu->dirty_ring);
->
-> +       kvm_vcpu_pvsched_unregister(vcpu);
-> +
->         /*
->          * No need for rcu_read_lock as VCPU_RUN is the only place that c=
-hanges
->          * the vcpu->pid pointer, and at destruction time all file descri=
-ptors
-> @@ -1221,6 +1359,10 @@ static struct kvm *kvm_create_vm(unsigned long typ=
-e, const char *fdname)
->
->         BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
->
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +       spin_lock_init(&kvm->pvsched_ops_lock);
-> +#endif
-> +
->         /*
->          * Force subsequent debugfs file creations to fail if the VM dire=
-ctory
->          * is not created (by kvm_create_vm_debugfs()).
-> @@ -1343,6 +1485,8 @@ static void kvm_destroy_vm(struct kvm *kvm)
->         int i;
->         struct mm_struct *mm =3D kvm->mm;
->
-> +       kvm_replace_pvsched_ops(kvm, NULL);
-> +
->         kvm_destroy_pm_notifier(kvm);
->         kvm_uevent_notify_change(KVM_EVENT_DESTROY_VM, kvm);
->         kvm_destroy_vm_debugfs(kvm);
-> @@ -3779,6 +3923,8 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
->                 if (kvm_vcpu_check_block(vcpu) < 0)
->                         break;
->
-> +               kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_HALT);
-> +
->                 waited =3D true;
->                 schedule();
+>  static int kvm_create_vm_debugfs(struct kvm *kvm, const char *fdname)
+>  {
+>         static DEFINE_MUTEX(kvm_debugfs_lock);
+> @@ -1288,6 +1361,8 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, c=
+onst char *fdname)
+>                                     &stat_fops_per_vm);
 >         }
-> @@ -4434,6 +4580,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
->                         /* The thread running this VCPU changed. */
->                         struct pid *newpid;
 >
-> +                       kvm_vcpu_pvsched_unregister(vcpu);
->                         r =3D kvm_arch_vcpu_run_pid_change(vcpu);
->                         if (r)
->                                 break;
-> @@ -4442,6 +4589,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
->                         rcu_assign_pointer(vcpu->pid, newpid);
->                         if (oldpid)
->                                 synchronize_rcu();
-> +                       kvm_vcpu_pvsched_register(vcpu);
->                         put_pid(oldpid);
->                 }
->                 r =3D kvm_arch_vcpu_ioctl_run(vcpu);
+> +       kvm_create_vm_pvsched_debugfs(kvm);
+> +
+>         ret =3D kvm_arch_create_vm_debugfs(kvm);
+>         if (ret)
+>                 goto out_err;
+> @@ -5474,6 +5549,48 @@ static long kvm_vm_ioctl(struct file *filp,
+>                 r =3D kvm_gmem_create(kvm, &guest_memfd);
+>                 break;
+>         }
+> +#endif
+> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
+> +       case KVM_REPLACE_PVSCHED_OPS:
+> +               struct pvsched_vcpu_ops *ops;
+> +               struct kvm_pvsched_ops in_ops, out_ops;
+> +
+> +               r =3D -EFAULT;
+> +               if (copy_from_user(&in_ops, argp, sizeof(in_ops)))
+> +                       goto out;
+> +
+> +               out_ops.ops_name[0] =3D 0;
+> +
+> +               rcu_read_lock();
+> +               ops =3D rcu_dereference(kvm->pvsched_ops);
+> +               if (ops)
+> +                       strncpy(out_ops.ops_name, ops->name, PVSCHED_NAME=
+_MAX);
+> +               rcu_read_unlock();
+> +
+> +               r =3D kvm_replace_pvsched_ops(kvm, (char *)in_ops.ops_nam=
+e);
+> +               if (r)
+> +                       goto out;
+> +
+> +               r =3D -EFAULT;
+> +               if (copy_to_user(argp, &out_ops, sizeof(out_ops)))
+> +                       goto out;
+> +
+> +               r =3D 0;
+> +               break;
+> +       case KVM_GET_PVSCHED_OPS:
+> +               out_ops.ops_name[0] =3D 0;
+> +               rcu_read_lock();
+> +               ops =3D rcu_dereference(kvm->pvsched_ops);
+> +               if (ops)
+> +                       strncpy(out_ops.ops_name, ops->name, PVSCHED_NAME=
+_MAX);
+> +               rcu_read_unlock();
+> +
+> +               r =3D -EFAULT;
+> +               if (copy_to_user(argp, &out_ops, sizeof(out_ops)))
+> +                       goto out;
+> +
+> +               r =3D 0;
+> +               break;
+>  #endif
+>         default:
+>                 r =3D kvm_arch_vm_ioctl(filp, ioctl, arg);
 > --
 > 2.40.1
 >
