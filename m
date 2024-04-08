@@ -1,149 +1,194 @@
-Return-Path: <linux-kernel+bounces-134898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6EF289B860
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:25:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E630A89B862
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F231C21F3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:25:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 123811C21F75
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CE425622;
-	Mon,  8 Apr 2024 07:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD7825624;
+	Mon,  8 Apr 2024 07:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rxzfYrcW"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="cZUQlKLt"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB3C22F19
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C01525760;
+	Mon,  8 Apr 2024 07:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712561149; cv=none; b=nP9jfqYuTBdvAlYXSPt6VPBN1y1MZFGNsn3BALAXpd6of6237Ky0BoCPgdjtqZcZYEaYdEuN/CoLHb2quVlDYvZvh2MNRSE7hgl1+gw+KKEBFiarb/LqRgGid5FyvJnU9KXjFDKlVCT4tEV90xeMAZGj4KrzuANbu5j7IpN0NTI=
+	t=1712561216; cv=none; b=qLwsRWUzgSYmLJZcyA1r6fzauwHiCKCfoF6MfsTOyYc4c3in/45XgaeZuA7iTxykrt5EWN7ZSTbr8fS+KIkm2OCPE/3WEgn8W2LgZ8nIU2hV7vfapEUnFo/eY3930A5NepDuvnnIC30gQ7xDYb9sas5GytWpK+28RpQ/GuVVpFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712561149; c=relaxed/simple;
-	bh=VbT/A40Ubo7g7MabIvxJKDydnfh8Vdxmhzgse+IHSR8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=k5eIi9/5T+utMmwITKP/h9xygmjTh50vOXdprEx5M/w1PDnLfmD8/AdO6IU2Vxq/Bi3LEvien0b0IbCfOf1VNOMMaIsf2bWXo1N0975557RvJG+oa7Xo5swGB0Z9B5G9rb3WQMrHjX45gc0HHl9GZ6aC6H4bTQXHPCzMW8wOcRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rxzfYrcW; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d895138ce6so4988431fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:25:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712561146; x=1713165946; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dXMkQ2zcoMNxNvEVqKP1HSxUwToLynCHZCFHwNRa77M=;
-        b=rxzfYrcWk8ybmdTGSyydUVSRNRdlSI4HSLFF8u4fYOPfkUUxgBbI0CCiwH88Iwe04T
-         WyqhRRKCB0DHqg79fyxrrXsypX5vmv6rp+Zlp9lniNOJpjU3vZtmCzIb6Z9CGX2cvPBh
-         xQ5bKQCibHP6riXzx1QJ1/nXEUb/qcz3YWSnELKIkK9xEKJREDXQhAoqFweyGO4rNsqY
-         JXcgaXWty2z8JTaDpv1MYyTLw+N3amyKgrp59wCpswtZOjB1RBGK6gJTa7Tp6qrC7lgd
-         /WLgjfCNiapCRNQigFZdoIfuU5++efOmCdWl9s1yGii+xs1NQFAzYbtneNcZEflvS1Vz
-         KwHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712561146; x=1713165946;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dXMkQ2zcoMNxNvEVqKP1HSxUwToLynCHZCFHwNRa77M=;
-        b=pm8BpAjy8HDrWYN6DnKPdLmjeZ4qAfjSU2TTRz9BcqJo7wBHG5JhxY+EAb2TBOHhGd
-         dUSjQTE/e0DnCgQTKmnSDQmVLyAc+9emSKAjZVi+N0doXI3WE7lCn/W8xUZrgp2tno92
-         2iVloO5xYO30KMhXLONgGzoFgTQm1Yfi7y9ycIRVRPlLx/35ZmG1R4HZvI3QnIZtHFOa
-         CFCStJgK7O++C+f0ZDkAXv6xQFJA3ZbENGbRi8DnM5atv8k/pnjMDiO2S7z8WObdkOn+
-         cjFrljYyoSft0CL52w7nPgRuxdi2AxhqRrCmLfiWRvCL8c0A0rM6v5CaT2cywEIm4/zX
-         NyLA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCTWOWhnghOyb9KX87eKd9ZFIXNGthhDhVUAC/Bkhg2YCcW/ZC1HCwEXIPQSRJMod4L07Jl0Taw6hOH5reK8sGjFHURLYaVO3+5x+6
-X-Gm-Message-State: AOJu0Yyb/6mO2AdpfAc98fjZsla0ATp9NWPXFBIXfs0HR07q9Tk7TTov
-	uH7La36Sk7C5oLAJqdt6Sj4BOvmYrNeUizrYZEzIk5gx5wLdyEEKE0wOuIV9meI=
-X-Google-Smtp-Source: AGHT+IEH9OEtqRgXnnlh5lI3WDQNzMdno2gWXaVziNOe/zFGBAa7BDTURbCXKMKSChrhts+2vpt4Sg==
-X-Received: by 2002:a2e:be91:0:b0:2d8:f3b:d026 with SMTP id a17-20020a2ebe91000000b002d80f3bd026mr6482907ljr.14.1712561145408;
-        Mon, 08 Apr 2024 00:25:45 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b0c8:7091:4315:491e? ([2a01:e0a:982:cbb0:b0c8:7091:4315:491e])
-        by smtp.gmail.com with ESMTPSA id f10-20020adff58a000000b0034349225fbcsm8188638wro.114.2024.04.08.00.25.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:25:45 -0700 (PDT)
-Message-ID: <ed8ab2f0-92d7-4ff1-a020-bf3696b32c58@linaro.org>
-Date: Mon, 8 Apr 2024 09:25:44 +0200
+	s=arc-20240116; t=1712561216; c=relaxed/simple;
+	bh=rXoFAdo1tTS0PjGUrKhn6mS1KcUdpcQU1e2XnCLLWNA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=m+LNkOa68P0zKO3FLiIVCbt8zMWYD5QgbntP5nrGoFue7Lf6PUSJJno3dsPg8kPzqg/xrezJScAcqjpkFKZx9e5jw1ClUOCT0qyXdvcN8a/h+k5cckNSDNy2FKnZPmeWg7p6Argji3RkcY9Y2uOr0CauQiTHAlz3tjc9P6NP6zQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=cZUQlKLt; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 437MmxQn020481;
+	Mon, 8 Apr 2024 00:26:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=6sU5GxlK76ndUKi2361U/O6LtYlGS3aaQIWSH2fN1ig=; b=cZU
+	QlKLtSznz32i401snNT/U8oPTFe0ZKXTsVFaVwTYpCNgYEAaRLg37AJKdkOvmwLL
+	GjikeTZX7lb3bW9OeWT6DEeNI+vjXiaIZGw3ehg73MiNATxaTHGeFJlh3zb3uGHt
+	0TwR50ISx3QOvoerYNhsOQWjGDUcrCkc5MlzlsV/+rMmzbhIHEubdnnPNooKPJyG
+	z+FVU033hDFv2ZQ21B34fbFSU0hRbBTtxIdNxo6XEqs6iUdzuPLgUB4HG+HPjiE/
+	7wLMDx5ipGWdthVAr1czDASc8A/tItF2VdQlh+f8Pa549vptZn+SDh5oqeGvDw6+
+	g+Rk56CbZbcT/erpPtg==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xbdd4b44a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 00:26:43 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Mon, 8 Apr 2024 00:26:43 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Mon, 8 Apr 2024 00:26:43 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id 010203F70C8;
+	Mon,  8 Apr 2024 00:26:39 -0700 (PDT)
+From: Geetha sowjanya <gakula@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net-next PATCH] octeontx2-pf: Add support for offload tc with skbedit mark action
+Date: Mon, 8 Apr 2024 12:56:38 +0530
+Message-ID: <20240408072638.26674-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 0/4] arm64: dts: qcom: add USB-C orientation GPIOs
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mmLFfOFjflRvFx5rlpVuQ519ACqI2HvK
+X-Proofpoint-GUID: mmLFfOFjflRvFx5rlpVuQ519ACqI2HvK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_05,2024-04-05_02,2023-05-22_02
 
-On 08/04/2024 04:33, Dmitry Baryshkov wrote:
-> Populate orientation GPIOs for some of the PMIC-GLINK-based devices.
-> This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP CRD
-> without the orientation GPIOs declared.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
-> Dmitry Baryshkov (4):
->        arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
->        arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
->        arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C orientation GPIOs
->        arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientation GPIOs
-> 
->   arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        | 2 ++
->   arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 ++
->   arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    | 1 +
->   arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    | 1 +
->   4 files changed, 6 insertions(+)
-> ---
-> base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
-> change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
-> 
-> Best regards,
+Support offloading of skbedit mark action.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
+interface:
 
-Thanks !
+ # tc qdisc add dev eth2 ingress
+ # tc filter add dev eth2 ingress protocol ip flower \
+      dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
 
-Neil
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c  |  2 ++
+ .../ethernet/marvell/octeontx2/nic/otx2_common.h    |  2 ++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c    | 13 +++++++++++++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c  |  3 +++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h  |  3 +++
+ 5 files changed, 23 insertions(+)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index c75669c8fde7..6188921e9a20 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -1183,6 +1183,8 @@ static int npc_update_rx_entry(struct rvu *rvu, struct rvu_pfvf *pfvf,
+ 			action.pf_func = target;
+ 			action.op = NIX_RX_ACTIONOP_UCAST;
+ 		}
++		if (req->match_id)
++			action.match_id = req->match_id;
+ 	}
+ 
+ 	entry->action = *(u64 *)&action;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 06910307085e..815ae13c371c 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -363,6 +363,7 @@ struct otx2_flow_config {
+ 	struct list_head	flow_list;
+ 	u32			dmacflt_max_flows;
+ 	u16                     max_flows;
++	u16			mark_flows;
+ 	struct list_head	flow_list_tc;
+ 	bool			ntuple;
+ };
+@@ -465,6 +466,7 @@ struct otx2_nic {
+ #define OTX2_FLAG_DMACFLTR_SUPPORT		BIT_ULL(14)
+ #define OTX2_FLAG_PTP_ONESTEP_SYNC		BIT_ULL(15)
+ #define OTX2_FLAG_ADPTV_INT_COAL_ENABLED BIT_ULL(16)
++#define OTX2_FLAG_TC_MARK_ENABLED		BIT_ULL(17)
+ 	u64			flags;
+ 	u64			*cq_op_addr;
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index 4fd44b6eecea..fd1d78601811 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -511,7 +511,15 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
+ 			nr_police++;
+ 			break;
+ 		case FLOW_ACTION_MARK:
++			if (act->mark & ~OTX2_RX_MATCH_ID_MASK) {
++				NL_SET_ERR_MSG_MOD(extack, "Bad flow mark, only 16 bit supported");
++				return -EOPNOTSUPP;
++			}
+ 			mark = act->mark;
++			req->match_id = mark & 0xFFFFULL;
++			req->op = NIX_RX_ACTION_DEFAULT;
++			nic->flags |= OTX2_FLAG_TC_MARK_ENABLED;
++			nic->flow_cfg->mark_flows++;
+ 			break;
+ 
+ 		case FLOW_ACTION_RX_QUEUE_MAPPING:
+@@ -1173,6 +1181,11 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
+ 		return -EINVAL;
+ 	}
+ 
++	/* Disable TC MARK flag if they are no rules with skbedit mark action */
++	if (flow_node->req.match_id)
++		if (!(--flow_cfg->mark_flows))
++			nic->flags &= ~OTX2_FLAG_TC_MARK_ENABLED;
++
+ 	if (flow_node->is_act_police) {
+ 		__clear_bit(flow_node->rq, &nic->rq_bmap);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 4d519ea833b2..d3c9759c9f06 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -380,6 +380,9 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 	if (pfvf->netdev->features & NETIF_F_RXCSUM)
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 
++	if (pfvf->flags & OTX2_FLAG_TC_MARK_ENABLED)
++		skb->mark = parse->match_id;
++
+ 	skb_mark_for_recycle(skb);
+ 
+ 	napi_gro_frags(napi);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
+index a82ffca8ce1b..3f1d2655ff77 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
+@@ -62,6 +62,9 @@
+ #define CQ_OP_STAT_OP_ERR       63
+ #define CQ_OP_STAT_CQ_ERR       46
+ 
++/* Packet mark mask */
++#define OTX2_RX_MATCH_ID_MASK 0x0000ffff
++
+ struct queue_stats {
+ 	u64	bytes;
+ 	u64	pkts;
+-- 
+2.25.1
+
 
