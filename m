@@ -1,148 +1,195 @@
-Return-Path: <linux-kernel+bounces-135417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D37D89C171
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F2589C198
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06F79B21D91
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:18:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51E5CB23446
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8581C12A173;
-	Mon,  8 Apr 2024 13:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF4E7FBCE;
+	Mon,  8 Apr 2024 13:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SbAvpY6G"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dXP7Fm4E"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316457F7F4;
-	Mon,  8 Apr 2024 13:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB41B7FBB5
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712581983; cv=none; b=j4qVs8meEzXJyYEc5yugwfh8AQgbi6/9iqPzFUaoObN1BAiiDEMcpQP7aDhFCkxf3XJRpXwQQdTrrs4dasIyM9Nf1s3E+aVFA/t8miUevvRLFFyobcBPA/jgINs7sKgt8G3+VoI7n6B2yJ8o34HsT0Bft21GCetXUFhJmAjbAd8=
+	t=1712581992; cv=none; b=Zk24F/JWXt4T/bGkHV7Sp0NBpwKXjFuruFiU8JkSYocpB6i8dU+M6f6MadCQTbfEKQRTV19k7UA0AMKGbZgxqtCFdyrq0eyfkA4e/GaT7CG7VhWv0kVfcIFX1W3imuZFhCLAABPjCAsmHnWYJggYV5pDhlFmu9sUfsnLSE9yAD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712581983; c=relaxed/simple;
-	bh=7RkPM/B3kyuIbM7d4ylNyUS9GTpKxgWSh/D/2nwJB98=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=De8ISP9uhO9YbY0kGI8pbiIs7t+kEUhLv5vpRN638TCEmPcvjBBEkOEfDouKoDyt//RhiZ/TsEeFiBa9NVw0CvYulwUCbFQI6/Lf7vm8ixiwf9Pa77Mt4ubyNiQdkqFpn8vpoYiTmk1A1x/UPR1sy9hV/pBE46tMtwccjpGuS9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SbAvpY6G; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 387722000E;
-	Mon,  8 Apr 2024 13:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712581979;
+	s=arc-20240116; t=1712581992; c=relaxed/simple;
+	bh=cws8BVNEPRn5vqjkb25rCS0YNKXfJAj1B9nMxiEmNto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jwxTH1lqg+tJ7+ySZBdnjZFPwB6uImg0GTrnvVOBl0HeKezlBc5VcUv+QCzkmErhcLfuMXJ0cLrYLy4lkmRXvHAHKd+2tr6yCEpJ2iatu8qynhGg4fO0zk3VAQ+VvcckVPuOwYsbYocnnj1jwqWQzBen8D/Sqb6U5mkzCeA4N74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dXP7Fm4E; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712581989;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L4sGAvmu2WBKS9a+UuFTscURHh9GQY36xbMpg8VE/qc=;
-	b=SbAvpY6GdmVqtZm5zIx/MJnsKYTBK80BbSFPrRKsf8rOFXc1oMQNf57pDfMHtnvpglsmUV
-	inR/QwyzN/FYbONPm7jSXTf2+r/LcJ5/FJxPEBDHvsj/c3TUv6678/svHAzhs/U/MtWm+p
-	67kv5aYW+6m3QoUEZcFP70nABj61YgnlecopboIetW6NIYdPBvjlzTpgEgcX44shEbiHE9
-	zWZHpyRJQ/wRrx+Ov2BCWV7XuZ6SS1/xomPw1cwqUkswa3azEdI0sfrrm6dMxmUxPQNrQS
-	3dulRr1e59hbrVyUzJlH8x/nmH495ChGooqWHSEu4/ZIpLAy18tx7kke1MAA5A==
-Date: Mon, 8 Apr 2024 15:12:56 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle
- <michael@walle.cc>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4] mtd: limit OTP NVMEM Cell parse to non Nand devices
-Message-ID: <20240408151256.11d4e69c@xps-13>
-In-Reply-To: <20240402212331.27328-1-ansuelsmth@gmail.com>
-References: <20240402212331.27328-1-ansuelsmth@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	bh=7ck6h7oGqY5cwfuLDZYTXRLzHj6mfJjTZhLoQldbd3c=;
+	b=dXP7Fm4EVnnj6wLFF4IktP47reD9TWMKB0UYyKLkJJjydydrHpAY+afSQUANpaLEYn1GcV
+	9GpB8gYFdem0e06004NhAkAU8VQjmOTkIQobpduwx+sHCyYpD3IaLoslH2wakvanwE8eNK
+	4PL8NM47THeokW5JuyPo0SluVcKhnjM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-168-y0bwKuZENQ622z9JGrGW7g-1; Mon, 08 Apr 2024 09:13:08 -0400
+X-MC-Unique: y0bwKuZENQ622z9JGrGW7g-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78a6dd7a9e7so556341585a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:13:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712581988; x=1713186788;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ck6h7oGqY5cwfuLDZYTXRLzHj6mfJjTZhLoQldbd3c=;
+        b=VZssNK1nNKiAaxwbZs7FyQdGatugTtq2Qf/WCB7OXKvuT0Z3j11KrFNj9/pqy0yo5w
+         KJmLdU/OCuKmHsjXypT3y37IYhpaFAEOwzZfe2uuVHgkiqsR3po9QkP67EHYCa8r7yfu
+         RjdYl2SLZA7BI0UgAjrzah4DyT3eSQiwk6Hid8x9kilTXDUB9tn4JI3F/l8EsdPVOSFJ
+         zO71NlHVA9p9k3oF/e3SFXvU7DzQ1IvmtlPnc2L0rAq1FTgZHUO8SqAU2v5G/jGw2RbY
+         tCcFp5eOtbKW+5RfOjDyEb6DqPzfxK5zkPBjuAbi/3cOgfXGvYFR8QDs3LsmLUgvRp02
+         /lTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUu6Agebp0AlILe8tWG9JA4u/QCUmv9NnvoIYd3SJSxzUAVsWrNsehyMxoU5I0JJzyaNlFLzpb9elzmql47ZGMgp0unW/Nz/d/C5Yb
+X-Gm-Message-State: AOJu0YzwPY9mephZ524NdDLE41RtZuXjziKW+1yM+40+nkzEz6+68bTQ
+	x91mW9gPY8n4zeLSyToUZ+VxbBPz9lODafKMuLJqYA4VsQJpO2bu5Lrs6VUa+3+4BVleyAiobBl
+	xAgm4mD+xzdWAgyZ/vP1MmFVd+R1KC1MQrmnlRoArJPK+oJUaGr1zbpi1ElsHxA==
+X-Received: by 2002:a05:620a:4d14:b0:78d:6b3d:9a34 with SMTP id wa20-20020a05620a4d1400b0078d6b3d9a34mr314380qkn.43.1712581987912;
+        Mon, 08 Apr 2024 06:13:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFaaNdf0+aehQaiEaOUOB91zwM2iwnImBi5etNoZRMALgRd/jitUy/yEBySE/LqXxJmVF3lrQ==
+X-Received: by 2002:a05:620a:4d14:b0:78d:6b3d:9a34 with SMTP id wa20-20020a05620a4d1400b0078d6b3d9a34mr314361qkn.43.1712581987632;
+        Mon, 08 Apr 2024 06:13:07 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id y27-20020a05620a09db00b0078d623428c5sm1471784qky.88.2024.04.08.06.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 06:13:07 -0700 (PDT)
+Message-ID: <3f49d41e-649d-4a07-9a1a-301a2f52613c@redhat.com>
+Date: Mon, 8 Apr 2024 15:13:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] platform/x86: thinkpad_acpi: Support hotkey to
+ disable trackpoint doubletap
+To: Mark Pearson <mpearson-lenovo@squebb.ca>
+Cc: ilpo.jarvinen@linux.intel.com, hmh@hmh.eng.br, dmitry.torokhov@gmail.com,
+ ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ njoshi1@lenovo.com, vsankar@lenovo.com, peter.hutterer@redhat.com
+References: <mpearson-lenovo@squebb.ca>
+ <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
+ <20240324210817.192033-5-mpearson-lenovo@squebb.ca>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240324210817.192033-5-mpearson-lenovo@squebb.ca>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-Hi Christian,
+Hi,
 
-ansuelsmth@gmail.com wrote on Tue,  2 Apr 2024 23:23:19 +0200:
-
-> MTD OTP logic is very fragile on parsing NVMEM Cell and can be
-> problematic with some specific kind of devices.
->=20
-> The problem was discovered by e87161321a40 ("mtd: rawnand: macronix:
-> OTP access for MX30LFxG18AC") where OTP support was added to a NAND
-> device. With the case of NAND devices, it does require a node where ECC
-> info are declared and all the fixed partitions, and this cause the OTP
-> codepath to parse this node as OTP NVMEM Cells, making probe fail and
-> the NAND device registration fail.
->=20
-> MTD OTP parsing should have been limited to always using compatible to
-> prevent this error by using node with compatible "otp-user" or
-> "otp-factory".
->=20
-> NVMEM across the years had various iteration on how Cells could be
-> declared in DT, in some old implementation, no_of_node should have been
-> enabled but now add_legacy_fixed_of_cells should be used to disable
-> NVMEM to parse child node as NVMEM Cell.
->=20
-> To fix this and limit any regression with other MTD that makes use of
-> declaring OTP as direct child of the dev node, disable
-> add_legacy_fixed_of_cells if we detect the MTD type is Nand.
->=20
-> With the following logic, the OTP NVMEM entry is correctly created with
-> no Cells and the MTD Nand is correctly probed and partitions are
-> correctly exposed.
->=20
-> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> Cc: <stable@vger.kernel.org> # v6.7+
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-
-Feels okay to me, but I'd like to get validation from Rafa=C5=82 as well who
-extensively worked on this aspect and must have a sharpened eyed for
-this kind of issue :-)
-
+On 3/24/24 10:08 PM, Mark Pearson wrote:
+> The hotkey combination FN+G can be used to disable the trackpoint
+> doubletap feature on Windows.
+> Add matching functionality for Linux.
+> 
+> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+> Signed-off-by: Vishnu Sankar <vsankar@lenovo.com>
 > ---
->=20
-> To backport this to v6.6 and previous,
->=20
-> config.no_of_node =3D mtd_type_is_nand(mtd);
->=20
-> should be used as it does pose the same usage of
-> add_legacy_fixed_of_cells.
->=20
-> Changes v4:
-> - Add info on how to backport this to previous kernel
-> - Fix Fixes tag
-> - Reformat commit description as it was unprecise and
->   had false statement
-> Changes v3:
-> - Fix commit description
-> Changes v2:
-> - Use mtd_type_is_nand instead of node name check
->=20
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 5887feb347a4..0de87bc63840 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -900,7 +900,7 @@ static struct nvmem_device
-> *mtd_otp_nvmem_register(struct mtd_info *mtd, config.name =3D
-> compatible; config.id =3D NVMEM_DEVID_AUTO;
->  	config.owner =3D THIS_MODULE;
-> -	config.add_legacy_fixed_of_cells =3D true;
-> +	config.add_legacy_fixed_of_cells =3D !mtd_type_is_nand(mtd);
->  	config.type =3D NVMEM_TYPE_OTP;
->  	config.root_only =3D true;
->  	config.ignore_wp =3D true;
+>  drivers/platform/x86/thinkpad_acpi.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index 854ce971bde2..21756aa3d28d 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -167,6 +167,7 @@ enum tpacpi_hkey_event_t {
+>  	TP_HKEY_EV_VOL_MUTE		= 0x1017, /* Mixer output mute */
+>  	TP_HKEY_EV_PRIVACYGUARD_TOGGLE	= 0x130f, /* Toggle priv.guard on/off */
+>  	TP_HKEY_EV_AMT_TOGGLE		= 0x131a, /* Toggle AMT on/off */
+> +	TP_HKEY_EV_DOUBLETAP_TOGGLE	= 0x131c, /* Toggle trackpoint doubletap on/off */
+>  	TP_HKEY_EV_PROFILE_TOGGLE	= 0x131f, /* Toggle platform profile */
+>  
+>  	/* Reasons for waking up from S3/S4 */
+> @@ -354,6 +355,7 @@ static struct {
+>  	u32 hotkey_poll_active:1;
+>  	u32 has_adaptive_kbd:1;
+>  	u32 kbd_lang:1;
+> +	u32 trackpoint_doubletap:1;
+>  	struct quirk_entry *quirks;
+>  } tp_features;
+>  
+> @@ -3598,6 +3600,9 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
+>  
+>  	hotkey_poll_setup_safe(true);
+>  
+> +	/* Enable doubletap by default */
+> +	tp_features.trackpoint_doubletap = 1;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -3739,6 +3744,7 @@ static bool hotkey_notify_extended_hotkey(const u32 hkey)
+>  	case TP_HKEY_EV_PRIVACYGUARD_TOGGLE:
+>  	case TP_HKEY_EV_AMT_TOGGLE:
+>  	case TP_HKEY_EV_PROFILE_TOGGLE:
+> +	case TP_HKEY_EV_DOUBLETAP_TOGGLE:
+>  		tpacpi_driver_event(hkey);
+>  		return true;
+>  	}
+> @@ -4092,13 +4098,15 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
+>  				send_acpi_ev = true;
+>  				ignore_acpi_ev = false;
+>  				known_ev = true;
+> -				/* Send to user space */
+> -				mutex_lock(&tpacpi_inputdev_send_mutex);
+> -				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 1);
+> -				input_sync(tpacpi_inputdev);
+> -				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 0);
+> -				input_sync(tpacpi_inputdev);
+> -				mutex_unlock(&tpacpi_inputdev_send_mutex);
+> +				if (tp_features.trackpoint_doubletap) {
+> +					/* Send to user space */
+> +					mutex_lock(&tpacpi_inputdev_send_mutex);
+> +					input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 1);
+> +					input_sync(tpacpi_inputdev);
+> +					input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 0);
+> +					input_sync(tpacpi_inputdev);
+> +					mutex_unlock(&tpacpi_inputdev_send_mutex);
+> +				}
+>  				break;
+>  			}
+>  			fallthrough;	/* to default */
+
+This chunk will need to change after incorporating my review comments into
+patch 2/4. With that said this looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
 
 
-Thanks,
-Miqu=C3=A8l
+> @@ -11228,6 +11236,8 @@ static void tpacpi_driver_event(const unsigned int hkey_event)
+>  		/* Notify user space the profile changed */
+>  		platform_profile_notify();
+>  	}
+> +	if (hkey_event == TP_HKEY_EV_DOUBLETAP_TOGGLE)
+> +		tp_features.trackpoint_doubletap = !tp_features.trackpoint_doubletap;
+>  }
+>  
+>  static void hotkey_driver_event(const unsigned int scancode)
+
 
