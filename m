@@ -1,66 +1,62 @@
-Return-Path: <linux-kernel+bounces-134711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A5989B5DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:17:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9803989B5E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:17:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1846AB212FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:17:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA29B1C20DE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DEC1851;
-	Mon,  8 Apr 2024 02:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AF74A2F;
+	Mon,  8 Apr 2024 02:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ff4S64A1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xw31DAgP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FC215A8;
-	Mon,  8 Apr 2024 02:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3731869;
+	Mon,  8 Apr 2024 02:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712542643; cv=none; b=fZZwLE6cgGi7h/4L4uUIeeL4Z4398yEkCwBRRxSf9FXaS7lxsXcSnq0eVvdONwf2HyzDbOQhg/wK6Y7R3swHoIDkjIsSRhbQAN5DONuiwnPbyvbYE3XNtyVv/jRhHtfkN1flXCP26LmuL3kBcwSFjAIoJVGk8Iuzy4hYfz4Wuyw=
+	t=1712542644; cv=none; b=MEvqzDIvcSyRNvUW010O7UCwELqvZ4E1AA1hFowZ7B8ky0tIjBBpcCG0qkftFL7kt7JkdYwrXA9oMX5gRgwxU2wfV0Y2fDHIxpGA5S1wsagtbEkuVocxtnv2dOsCwXJuy+AG544Vcz7BJ7J+9tmw4mu31WVNNkyQSeoIthblVmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712542643; c=relaxed/simple;
-	bh=yJuepVpMjUwLu6XbshdhD5Hzhlu9+k7u+KmtjHp3Y3Q=;
+	s=arc-20240116; t=1712542644; c=relaxed/simple;
+	bh=WtDgvDlc+GbWPmB0QumOcolOX2UmdmYlul8RYNISVpI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PT0ZSe4JTYmlf/a8iXqjgsBcw/El3+Cd5IlFuyjBO7etW6rNadRLPzDaZW1qEjLjXD15Gw2cKRJHMFqxhYyrPityBSDGhJ6lsB/pXb+7sRIcRjM4kslAXUmjaQmDcP1XKSSsuMbUdEHVpnzcY8PgbLbbOKrwW/iFwFvFXQ+fKE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ff4S64A1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 321B8C433C7;
-	Mon,  8 Apr 2024 02:17:22 +0000 (UTC)
+	 MIME-Version:Content-Type; b=shNQm0AHHKmu/PEShUjP++saPknjB1lPPuqoLtc1MCLPh4txnfHnEc0AnZ6PSKfr2tZkxfGzspKvfkQ1KBCBaSLpEtffEFfUEdbT6Ns3GN4vBXpxE/T658HujGaYFw05UR9LxX9r1TK0xzWTNr2I+AtCmtpQZn5KNAHcHmssEsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xw31DAgP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A2A4C43399;
+	Mon,  8 Apr 2024 02:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712542643;
-	bh=yJuepVpMjUwLu6XbshdhD5Hzhlu9+k7u+KmtjHp3Y3Q=;
+	s=k20201202; t=1712542644;
+	bh=WtDgvDlc+GbWPmB0QumOcolOX2UmdmYlul8RYNISVpI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ff4S64A1+qGX78fzVSVvdgfRWdfpuO4uFpZhcfcFgAMz/VIea1PCuKUuC7cKL7c3t
-	 C0X5/l4Ul0TJs+svDA3xOIDcHMK4PqaqoGi+2neDoc2LADNYnx4dYi5ZiyWMm/9ivn
-	 9e5oj+3O9reW0uSB2cp34mflyRpbbCvpREioFNBio7UXlUsZ22B5a92Xy6hd2z33xs
-	 iqdLU3IcphT2iRXLK0i2KXE/VPUGLC9T6zzx9hSFFxTgc7sd31midwFUat2z1Nwgyz
-	 ku9J73WYZibOQMLQecHdUpVldLjgIHDlvG/1qTDicAwp15jhG8qJomcuQggHoWCsBH
-	 38GM9a95MRcdQ==
+	b=Xw31DAgPanrT9nhvRsg0hn1X2EkGJU3ITfExpWCi7zbB1Vz2IQLY9JHisrUjk+Wkt
+	 q3DC1/JfrfkoifnpctylGBu/v5gHEK4XwPb8K3JKDrywovGGWou2vznQBS9MtSwFyN
+	 LDWCu2QBaxNknniJUBW8JcKf+bYot2fTkHalxl3Yfltp9lydflvtixF1/da+OaYPTV
+	 il0ESQRwU+NHBUbAbTTMIzbY8tfLTVofP+N/R6ciq3/EDOkX9lRNaSvP+sSyhX/DZc
+	 wfFDU2SOoM+3iZ93ZBRc1uIIJFNid0MwRcndz1S8aIsUrglwiOpj4Tv2M6t/1joSli
+	 Wn47U3+ZUTgig==
 From: Bjorn Andersson <andersson@kernel.org>
-To: konrad.dybcio@linaro.org,
-	vkoul@kernel.org,
-	kishon@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	cros-qcom-dts-watchers@chromium.org,
-	manivannan.sadhasivam@linaro.org,
-	davidwronek@gmail.com,
-	Danila Tikhonov <danila@jiaxyga.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc: linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/2] phy: qcom-qmp-ufs: Fix PHY QMP clocks for SC7180
-Date: Sun,  7 Apr 2024 21:17:19 -0500
-Message-ID: <171254262028.648987.14757754032979156647.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64: dts: qcom: Fix the msi-map entries
+Date: Sun,  7 Apr 2024 21:17:20 -0500
+Message-ID: <171254262026.648987.5589442883549909128.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240401182240.55282-1-danila@jiaxyga.com>
-References: <20240401182240.55282-1-danila@jiaxyga.com>
+In-Reply-To: <20240318-pci-bdf-sid-fix-v1-0-acca6c5d9cf1@linaro.org>
+References: <20240318-pci-bdf-sid-fix-v1-0-acca6c5d9cf1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,23 +67,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 01 Apr 2024 21:22:38 +0300, Danila Tikhonov wrote:
-> This series of patches is based on the series from Manivannan:
-> https://lore.kernel.org/all/20240131-ufs-phy-clock-v3-0-58a49d2f4605@linaro.org/
+On Mon, 18 Mar 2024 12:49:02 +0530, Manivannan Sadhasivam wrote:
+> While adding the GIC ITS MSI support, it was found that the msi-map entries
+> needed to be swapped to receive MSIs from the endpoint.
 > 
-> Patch from David adding a UFS nodes for SC7180(SM7125):
-> https://lore.kernel.org/all/20240121-sm7125-upstream-v4-6-f7d1212c8ebb@gmail.com/
-> 
-> The patch submitted by David and a series of patches submitted by Manivannan
-> were both applied at approximately the same time. As a result, David's patch
-> did not include this change.
+> But later it was identified that the swapping was needed due to a bug in
+> the Qualcomm PCIe controller driver. And since the bug is now fixed with
+> commit bf79e33cdd89 ("PCI: qcom: Enable BDF to SID translation properly"),
+> let's fix the msi-map entries also to reflect the actual mapping in the
+> hardware.
 > 
 > [...]
 
 Applied, thanks!
 
-[2/2] arm64: dts: qcom: sc7180: Fix UFS PHY clocks
-      commit: 32198408f825a8ca3da4784d4c280847075990e9
+[1/3] arm64: dts: qcom: sm8450: Fix the msi-map entries
+      commit: d6c0602429490ff90d3f79a431aec1be779650b7
+[2/3] arm64: dts: qcom: sm8550: Fix the msi-map entries
+      commit: 398b7c7dda6792c2646a2208a6cbab02da97d6e5
+[3/3] arm64: dts: qcom: sm8650: Fix the msi-map entries
+      commit: 3ac680a514b6e63428481b1e6fb069383e5b7add
 
 Best regards,
 -- 
