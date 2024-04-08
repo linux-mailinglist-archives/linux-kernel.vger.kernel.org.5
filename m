@@ -1,200 +1,211 @@
-Return-Path: <linux-kernel+bounces-134760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6229C89B67C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:42:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9CF89B67F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97073B21D13
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:42:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5988C1F221C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CF94A3D;
-	Mon,  8 Apr 2024 03:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="UIS5XuI2";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="acQSHpNU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5EFF5250;
+	Mon,  8 Apr 2024 03:43:28 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1FA1869;
-	Mon,  8 Apr 2024 03:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712547739; cv=fail; b=Cupf2CDTrr4PabkNBRyskbgdvaHpM9K5ocufOViQktR37coicrrvYwFCFQC4g71/YPmR7L9L5ISqi8xmuf62xnXC443EK0G+DQeAG+AfGn8eQZ8xckvIB6opcY/jmP5JzGWBWmrtgIz5em8L28oyYZZRAfvZvsES89ciX01t7Bo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712547739; c=relaxed/simple;
-	bh=opefP7tcZzjRad5UdSOkfi9SwEDKX7D3tX+fvE6y63c=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Puid1HoDgA+03g0H1Mzyy0Ht0LO/jeHXRofmEeBj/7pm4Wki0pjGFUWl0wmZSEJJ5lvvJA26fD0g6XKXJKLRYU+ls6gmDgifrPNj3PxJfgbJ239dzreoBhGtOEHRjeXC7nQVeBIImp2eMbqSs7cFZVanv2utyOtJ/hXJPowMKLs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=UIS5XuI2; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=acQSHpNU; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712547737; x=1744083737;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=opefP7tcZzjRad5UdSOkfi9SwEDKX7D3tX+fvE6y63c=;
-  b=UIS5XuI2DrAbjkGZ6jwJ7gY7Y+gCLuCHMLk2yYbEp+spRI4E1Ik+Yxol
-   dvZtZirKvSZQOqwv4SsvXxkFyKMsrHUswtWFZ1quzAyym6Qzb2IhCTfHW
-   UQ8lBJl3wiyiX1W7vAsMhCS8PewR3xfx1tTMpoiY5TwZRG5oIk6xbOnyf
-   xzhR+pQxAHH1dmsQOKiIcVqmZx60mKejUlKaIwwqK2sjj7NbSg7vUKODv
-   JcxFFjYNZrlY+vcKyJsXBswlDhqbv1/Vs/p9p7AR17TNcar5FfAZoIEEe
-   Tx6D4jvKkgSNYr+0jgpXBbWMFC1mjIorRA2qQ1QTPp4pYithsscN7h1ao
-   Q==;
-X-CSE-ConnectionGUID: OMAQjfAfQaOlbQTD/1k5AA==
-X-CSE-MsgGUID: VME6Z+o2SpWbR6I7HoAT1w==
-X-IronPort-AV: E=Sophos;i="6.07,186,1708412400"; 
-   d="scan'208";a="187241422"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Apr 2024 20:42:15 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 7 Apr 2024 20:41:48 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 7 Apr 2024 20:41:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dd1+h6zcwNeckdWKgNsN51BesQdarrb3Y9JAAT9uazJ1UCxOZBHtIjT34gtgyEo2BGfstgYDKKyBT0/goMZKZyxehNRB9AEIfgHLWvwRKE4WpMsN4CvFDy0Fr9CeFy+1L9wZCzwdW2NtTuoy8hh99OaB0QdGmZ1khovVtD1iB+Zi2/KYcgd246yN7o05TAUYdJr3kNOXTtad/6JORwi4f4TFGKHiC8ZDn2Ls9Uj05aw/2TVJG1ZySdNUbN2Q4bQxw8ODlArq5iUTKteEa+I+CcQ45/d37cu/NH4f+kTcQLuwaUOtSkrFBqHd2YYz3KWd5TNX57V8uz5Yiz2+0bWM+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=opefP7tcZzjRad5UdSOkfi9SwEDKX7D3tX+fvE6y63c=;
- b=ZMtRaxrRVTfZ7xYp2ucQ4XKOBu3wxhSPmwHDTMPEiKLOkS0HeH6vtdcAW2iVS7DZOGRP4oWh7zHZkkFW/VMt8kpiwmJlwd6Bng559tKuZRoPEn1czN6N8GbtU5FjKFb5XhrHJHijolzhl5PLMLJlzqbm2ZTMhAQZrz4fQywmfSTaFJwNNsU6ip2Ute2P+QpyUV1phPr96ud4xQMYByefKfG68dGQYEr85PBvnyo+I2WAvLBp+wmx59FBZGKKqUKY7bnpXuARqTusoDpxWhCPz/HW4V2qlMAK9Gd/8LHcZmP03CM8PYPDhcAtqb3UJQPvAHAhlBy0STDyO4mfHlUJZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=opefP7tcZzjRad5UdSOkfi9SwEDKX7D3tX+fvE6y63c=;
- b=acQSHpNUckaY63+STvC+K2YSoC6L/SaCuunTzhS/Qy77HOBtYfskMNFR/U+XlzbkzOo/5QrXNgVUcqSb/yVr+hW5ezsb+x61fmbK4GlfC9k2ket1gIx4w80ux2pb03G4KdY6rr0UsW2UUViqr99SkobdAhVm1i4NaG8Yco9vEmkt/Ih+Q5cl1NHbYG0AQCeSLawjxZ580iBWJPshcOJdqY1E4xfhPzDwhq/28WlfRZ0cqcLUPEx8UIMOo9PM5wAhdvk8xmNUTDeYcv9fLmR9xyynN4VoKqWNCBMORRdkSH42VCVY06pvcjipIUiI4jEnFL7lCP1r/C8iavVqlQo2YQ==
-Received: from PH7PR11MB8033.namprd11.prod.outlook.com (2603:10b6:510:246::12)
- by CY5PR11MB6534.namprd11.prod.outlook.com (2603:10b6:930:42::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Mon, 8 Apr
- 2024 03:41:46 +0000
-Received: from PH7PR11MB8033.namprd11.prod.outlook.com
- ([fe80::d529:f716:6630:2a1d]) by PH7PR11MB8033.namprd11.prod.outlook.com
- ([fe80::d529:f716:6630:2a1d%3]) with mapi id 15.20.7430.045; Mon, 8 Apr 2024
- 03:41:46 +0000
-From: <Arun.Ramadoss@microchip.com>
-To: <andrew@lunn.ch>, <olteanv@gmail.com>, <davem@davemloft.net>,
-	<Woojung.Huh@microchip.com>, <pabeni@redhat.com>, <o.rempel@pengutronix.de>,
-	<edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>
-CC: <kernel@pengutronix.de>, <dsahern@kernel.org>, <san@skov.dk>,
-	<willemb@google.com>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <horms@kernel.org>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v3 8/9] net: dsa: microchip: init predictable IPV
- to queue mapping for all non KSZ8xxx variants
-Thread-Topic: [PATCH net-next v3 8/9] net: dsa: microchip: init predictable
- IPV to queue mapping for all non KSZ8xxx variants
-Thread-Index: AQHahz8ZTS23qhPLcEmVfUcG2EgKIrFdv0sA
-Date: Mon, 8 Apr 2024 03:41:46 +0000
-Message-ID: <39a736262d87b06ad65e67753c440a1d489c8f8c.camel@microchip.com>
-References: <20240405095216.353829-1-o.rempel@pengutronix.de>
-	 <20240405095216.353829-9-o.rempel@pengutronix.de>
-In-Reply-To: <20240405095216.353829-9-o.rempel@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.36.5-0ubuntu1 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB8033:EE_|CY5PR11MB6534:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hiq9D0Gva86MjcupHzcbloFjbBKBcHkXS6mddco3JxA013moGk4SBLXzgbnFbm89pYW90QVxfC1SwCQHv9aH8le/YJ8j/xY6Q6YRZ1A7ajuFROdIIQX0uBHciU6HuhLTY7AD8serE4b5Fgj0/xbtrdoz6BhD8/EPDegC1SUt5YKJMhpqlVVeQU0byPJu1Tpdc0pM/ejkHjtd1r62GD2M1yRI45z1Vp3FIOzWQ2nzHwA50uJDqnrbqjfhpzXRKaZPpIrWoyiXXuP90fmaCEs4B7ODxEtPKcHTjeCmuPeAkfuBfgpKKzBNx9XSK9sH+oKxQSfDtNWxBuJguAOe5AYpGiRmj2EqVZX24GjjiyxTFDIdsAO9ShIJ2YCUL4igdCFw1/3DRbFqpjK74oSLR11wcUY/098Js8mVJ8enndXGips3k/J4BHWZKuokFJ8uy2EVSZ4XrHjkIP/BxqM1wK5qLnBYugM6puZD+dpVgsI5j30CHQIbrEZTvt2Dhu0hTGoVFLwNUXy9nPRriwWQuqtRt54JgV6AWQlyd/TEQJsn6nsSHQf7N3AQMp2Vdxs9QCLbgez34LWVIt1hHB55bhOYKDK0bcJGfeDetX52V5z/AJRmq7iDe1jNh/WO0WykcU4OymOGnqg2EmxUUnOmh94OP1il48DuZgMJUhc83RYhVPI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB8033.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U2R3eHl2NW9LaURjWlU2WWMxZW1uYXNSdCtmOTh5ZVBhYnFnSDNidFNnRjdS?=
- =?utf-8?B?UzhUb3pJSWRVeUtFRU0xTVdkK05TK1dWTU5NdE9TQUNNRHQ5bDNoM2NCeHBx?=
- =?utf-8?B?SHBlbmJYUnFnRXdsbjNxb282VW9yV0tIY0FadEYwV3dON2hmb2tlOTZzWTRP?=
- =?utf-8?B?WmxVenBYZ1pzMzhWdnN5Y2RoaWNrT3NTTDJWNXpZdnFVUDFSQUNMMWhoTTZj?=
- =?utf-8?B?dGgyNjlyMmEzNzhCNkdHN1QySXpVTk1UeVpOa0JGTExUTThpSWZNZmhjaG52?=
- =?utf-8?B?R0Y4UUJ0ZnhaV0M1ZzlGS0lCaDQycVhsRTlZSUEzQm1QbU1ZOHQvWHJ5K3dE?=
- =?utf-8?B?WlhaSStjdis0TWNvM2pzOVZyWUswTzhZK0sxWWExc3AwaVAvRWhCT1VaNEtM?=
- =?utf-8?B?SkZSU2pIdjYvdkhIdG9BcmdRNS9KK2hnSXBrQWhjVUs4aHVZMFJMSmxNdlFU?=
- =?utf-8?B?T0tkaUV6MzhVYXN4MHdVRWM4bTQ1endhVW9ZMTRReVM1WXVwNlVvK1hORlRa?=
- =?utf-8?B?Mk0xaXVEOWdZVWpLUkVNdWpXR2lLTjc1WE4xWjhKd2xaaEdLVDBUUVVpR0c1?=
- =?utf-8?B?eWhKWWxueFVXRlpIZEtXNERnUnl1QzkvQzhYZU5EMmJzTURxNERacVZJUmJj?=
- =?utf-8?B?K1ZBVDdQajcvK0NxblpRcU9jeXcrL2Q5bXJBQjV4LzF4Q0NyZ25XUW4xaGlL?=
- =?utf-8?B?UjZBSWlXVHltT3hGazBSejY1VnVWV1lWNWkvYmZBYWprZklucUdFRUJ4c01O?=
- =?utf-8?B?TFRKY0NnZVErTXkvYklMZnduY1ZyTTllc1gzVzJaOEk4bjZEY29mdktnNDFX?=
- =?utf-8?B?YUN1d2tObzhydXZuMVp5ODZUdk9RRERTVGFQSzhrWmlSSUF6Vm5JcnVHZUdx?=
- =?utf-8?B?SldxUUpRandkeVBxempXbVNJL3VwN0RUczhDcXFnK1Q0NzBCRFQxdm5SQkdt?=
- =?utf-8?B?M295V254dlpjaENMZ1dJLy9BL0ZVTU1pdHgwZmR1QTZ2cXR6RXQ0c3paeTR6?=
- =?utf-8?B?QnU5WjZOK0xycGNCWUNkYjlNdWJvRDBrcXp6VnhCUWRjTXZTT0FudnoyWGs4?=
- =?utf-8?B?aXZNNWNXZmxLc1RKVUdEQ2F3QUJZZ1lab2Y0aUFmQjFIV2N5eTA0cXU2c0FQ?=
- =?utf-8?B?dENML3luVlUvZ3JZc0FTUlN0YXE0ZUhyRHo0V3dEMUlHZ3J0SFhFSmxtN3B3?=
- =?utf-8?B?TWlVc2V4UUlkMDA2T1NZNmtmb21YZ0ZFR2Q4VW5xTUhzMEVCcDBqeTExT3VD?=
- =?utf-8?B?S0ZxNWh0TUVXWEhIc1g0VVk2WlNPbGRRQW1wb1BZRUdTUWhXWDFYeGhtRDA1?=
- =?utf-8?B?VXAvMWlLSWJlUnJUMGFWUzJxbkIyQW5DWW5IMDFnU2ZRN1FIcE9MeUdFczZz?=
- =?utf-8?B?MlhZN0ZXbDlRTWZMaXRDL042cTB3bXRlNjdTdkNCUHEwVUowY2NpZGRRSFpJ?=
- =?utf-8?B?dUEwR2Z2M2YrTVkrZUhDeDhPczVUWUJxOTRUNUw4RnhFcWY5UjZ4c3FlT0JG?=
- =?utf-8?B?cjEzK3dCaGF6eS9mZytoZEw5RWU4U1A0bloyZWt0MThsMXQycmhZZVpuVjJ0?=
- =?utf-8?B?Mm1VbHdWMHp5Ymp2UDVSd1hvS3U5Nkh2QnZpR3UzZGNzamxFRkJuQzNCK1ZY?=
- =?utf-8?B?cU5RNGJ5SndCNXliRkZTZ05mN2hFU2RwN0crSXoyZXBRTDhxSEdzWkhmSzl2?=
- =?utf-8?B?SmprQkN3SnM2V29rcTNDWUF3VlgveFhiV1JXVUFwTWVSR3g0MFhhQm9FT29W?=
- =?utf-8?B?akFTUUpBU3BLSGJoZVkvWmpWdG55Q0VqM0tHTnMvTFBIdWFqZy9SZzVuaW5U?=
- =?utf-8?B?Zy9Nb0ZZNlZTdUd2Y2c0SmtGaDBkS1ROZTgzQ29OT2E4Zy9BNTVVNXg5UGhZ?=
- =?utf-8?B?cUJtWmE3NDBlS3Y2UTYxL2pDcWtnVGMxeVpXTXFSem1SNUp0REduQlUrL3dF?=
- =?utf-8?B?cTREV1dEaTVzTUVpbU1ncVoyd0lUS1htdmk3ZWFqSHdqZTlqbisweENpUGJV?=
- =?utf-8?B?eVJvb3JoSmkzQ3JvT0JkRGZrZkFOZW03WlBBRy9BMXgyOE9zU1RpYnZtcHRO?=
- =?utf-8?B?cUlLcVlxWmJIL2NER2NpcitST3IreWk4NGFFR3dIVm8yT1NsYi9YSkwvUEtm?=
- =?utf-8?B?WGphYVZ0UHFvLzA1SFNsNUFzaG1vN1luUldRN21xbnFrekYyWGgxb01PNlVa?=
- =?utf-8?B?SFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <07C89B4B3EA705488BC14335FE3F5AF2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647DC1C0DEB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 03:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712547808; cv=none; b=mzaZcjErp2dfM0HluR+beI/z7S+y3hNVeHnl0dx4j9DkvLada6lNF+0+Qme4mQTyA4pxctitTZkpNgKPjyGXHWYQQm1ffEGvMiS8Qsxu8yyDjipyAL2fgB/EW/GyQyY+d4TZgifpbUN1vsj579q3iPPmZV/gkzIkJ07Jd9pua0c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712547808; c=relaxed/simple;
+	bh=IxQPgxQQuozm5K7b4uLnW7UluWY3q4CDq7keAKK6uEk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=lUUAfTIs9ncuOlyRNRYszw4KP6dsBDrRtgoD2OrYbluiBQCC3TQp9uie5AXWKEcoRjCB2LzMRwZj1tSrcBDX2qDy70i13tvuHZ5X4DFNCXcAzn3+WQBI7S3tmXdbcuf7m97pEULsppKO7zjuFiyft9olW7wHX5gzqyrK3nnmD8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc74ea9c20so477287539f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 20:43:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712547805; x=1713152605;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UeZjjyufBBCXJMQAU+69EimZ0gey0i6TVwzsAoVWQGg=;
+        b=wjr/GgEXB+y+dljonWGG6enNurOpmFB/dWD4sQZiIBDv7oH/tv1og/uAqDY0F5QYaR
+         h9sRufRK5g3bOl8r+KeGlA9qcVthVc5wBK+cJOfAz61Erp+FWaxvx8tdaCZYVO4jkGew
+         Vu8FkOgqQ01eRcFw+TXDSPpNvsnbSbwnL+P/zmsDGXWXIhmNtSWNFpvuEzZNUNwPFJ0d
+         1Qr4cqVbsPaf25xlOvcrVleOawq65uvf82/f9trVykmFjULJkDLYNNR2cUAFosXRArLD
+         ENDPsRKd5o/+QVvs45YJoFk9H1WgqfwUlryX3bObuadRPBteEUqlqXF7St5hTUVq2jZy
+         XTtg==
+X-Forwarded-Encrypted: i=1; AJvYcCVaxdGerHdrNf20xu62//frh4Pd8jZKTd5Mit1B0VjhUWyBB5wPaoHDJnGTnSB3zuK8CNJ8FCO48fKLhgVO38Jgkrg2Q0fN4XRkBu++
+X-Gm-Message-State: AOJu0YxlilPxwafpaqkYK21NBXbEsZ4p/Elv3l1lAFjLvHSOFBjaRpJJ
+	bEzq5utCFK9icAbvJb4mBms1wlPDAzJpfAlqW8GV+LJcHp1fYI7zYbWyPnlCyfETc55occOZRVu
+	EL6XKOTyEC6FM7hw8n+22MOAErIF1B+tsxh0zz7zc93urFZuDPl1X+Aw=
+X-Google-Smtp-Source: AGHT+IG4nQNDMHWD/MdLp06RF3H7xd52i7cSljL0k6808+tB09j17eMaQJtjMGE0osbn50LxBcAKx/RwQDpkxgy+0Xna6zQievBB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB8033.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: acd8d18a-7461-4ae8-aaa1-08dc577dd0a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2024 03:41:46.1926
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: caZdLtqNgYXpAfyBTc3VfgPbdckz+Wm0H/ANclL9cHXeLchidxv90rU6XtgbTXO4F217tf4RfwXNKeDGeNK87i7W4nfEFt668gB7dSod1+I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6534
+X-Received: by 2002:a05:6638:1302:b0:47c:829:32ad with SMTP id
+ r2-20020a056638130200b0047c082932admr263356jad.0.1712547805638; Sun, 07 Apr
+ 2024 20:43:25 -0700 (PDT)
+Date: Sun, 07 Apr 2024 20:43:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009dbe1f06158d9b2c@google.com>
+Subject: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in dev_map_generic_redirect
+From: syzbot <syzbot+aa38edb98c8bd20d2915@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-SGkgT2xla3NpaiwNCg0KPiArc3RhdGljIGludCBrc3o5NDc3X3NldF9kZWZhdWx0X3ByaW9fcXVl
-dWVfbWFwcGluZyhzdHJ1Y3Qga3N6X2RldmljZQ0KPiAqZGV2LA0KPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludCBwb3J0KQ0KPiArew0KPiArICAg
-ICAgIHUzMiBxdWV1ZV9tYXAgPSAwOw0KPiArICAgICAgIGludCBpcHY7DQoNCkp1c3QgYSBzdWdn
-ZXN0aW9uIGZvciByZWFkYWJpbGl0eTogaWYgeW91IGNhbiB1c2UgY29tbW9uIHZhcmlhYmxlIGZv
-cg0KY291bnRlciB2YXJpYWJsZSBsaWtlIGNudCBvciBuIHNpbWlsYXIgdG8gcmV0dXJuIHZhcmlh
-YmxlIHJldCwgaXQgd2lsbA0KYmUgZWFzaWVyIHRvIGZvbGxvdyBpbnN0ZWFkIG9mIGlwdiBoZXJl
-LCBxdWV1ZSBpbiBvdGhlciBmdW5jdGlvbi4gDQoNCj4gKw0KPiArICAgICAgIGZvciAoaXB2ID0g
-MDsgaXB2IDwgZGV2LT5pbmZvLT5udW1faXB2czsgaXB2KyspIHsNCj4gKyAgICAgICAgICAgICAg
-IGludCBxdWV1ZTsNCj4gKw0KPiArICAgICAgICAgICAgICAgLyogVHJhZmZpYyBUeXBlIChUVCkg
-aXMgY29ycmVzcG9uZGluZyB0byB0aGUgSW50ZXJuYWwNCj4gUHJpb3JpdHkNCj4gKyAgICAgICAg
-ICAgICAgICAqIFZhbHVlIChJUFYpIGluIHRoZSBzd2l0Y2guIFRyYWZmaWMgQ2xhc3MgKFRDKSBp
-cw0KPiArICAgICAgICAgICAgICAgICogY29ycmVzcG9uZGluZyB0byB0aGUgcXVldWUgaW4gdGhl
-IHN3aXRjaC4NCj4gKyAgICAgICAgICAgICAgICAqLw0KPiArICAgICAgICAgICAgICAgcXVldWUg
-PSBpZWVlODAyMXFfdHRfdG9fdGMoaXB2LCBkZXYtPmluZm8tDQo+ID5udW1fdHhfcXVldWVzKTsN
-Cj4gKyAgICAgICAgICAgICAgIGlmIChxdWV1ZSA8IDApDQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIHJldHVybiBxdWV1ZTsNCg0Kd2hhdCBoYXBwZW5zIGlmIHRoZSBudW1fdHhfcXVldWVzIHZh
-bHVlIHBhc3NlZCBpcyBvdGhlciB0aGFuIDEgdG8gOC4NCkZvciBleDogaWYgaXQgaXMgOSwgdGhl
-biBpZWVlODAyMXFfdHRfdG9fdGMoICkgZ2VuZXJhdGVzIHByX3dhcm4gYXMNCmludmFsaWQgbnVt
-YmVyIG9mIHF1ZXVlIGFuZCByZXR1cm4gcXVldWUgYXMgMC4gaWYgd2lsbCBub3QgZXhlY3V0ZSwg
-c28NCnF1ZXVlX21hcCB3aWxsIGJlIHVwZGF0ZWQuIERvIHdlIG5lZWQgY2hlY2sgZm9yIHZhbGlk
-IHJhbmdlIG9mIHZhbHVlcw0KaW5zdGVhZCBvZiBqdXN0IHF1ZXVlIDwgMC4gDQoNCk5vdCBzdXJl
-IHRoaXMgc2NlbmFyaW8gY2FuIG9jY3VyLiAgDQoNCj4gKw0KPiArICAgICAgICAgICAgICAgcXVl
-dWVfbWFwIHw9IHF1ZXVlIDw8IChpcHYgKiBLU1o5NDc3X1BPUlRfVENfTUFQX1MpOw0KPiArICAg
-ICAgIH0NCj4gKw0KPiArICAgICAgIHJldHVybiBrc3pfcHdyaXRlMzIoZGV2LCBwb3J0LCBLU1o5
-NDc3X1BPUlRfTVJJX1RDX01BUF9fNCwNCj4gcXVldWVfbWFwKTsNCj4gK30NCj4gKw0KPiANCg==
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17dc5d5e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10acd270ef193b93
+dashboard link: https://syzkaller.appspot.com/bug?extid=aa38edb98c8bd20d2915
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-026e680b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/085338135a57/vmlinux-026e680b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4b6e5889af37/zImage-026e680b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aa38edb98c8bd20d2915@syzkaller.appspotmail.com
+
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 0000008d when read
+[0000008d] *pgd=85442003, *pmd=fc491003
+Internal error: Oops: 207 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 1 PID: 13298 Comm: syz-executor.0 Not tainted 6.9.0-rc2-syzkaller #0
+Hardware name: ARM-Versatile Express
+PC is at xdp_ok_fwd_dev include/linux/filter.h:1009 [inline]
+PC is at dev_map_generic_redirect+0x24/0x23c kernel/bpf/devmap.c:681
+LR is at xdp_do_generic_redirect_map net/core/filter.c:4463 [inline]
+LR is at xdp_do_generic_redirect+0x1d8/0x4d4 net/core/filter.c:4520
+pc : [<803f2e70>]    lr : [<813e318c>]    psr: 60000013
+sp : dfa41d00  ip : dfa41d58  fp : dfa41d54
+r10: 0000fdef  r9 : 83641800  r8 : dfa43000
+r7 : 00000001  r6 : 841bb400  r5 : 855c8a80  r4 : 824b3560
+r3 : 00000000  r2 : dfa43000  r1 : 855c8a80  r0 : 841bb400
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 30c5387d  Table: 85104f00  DAC: 00000000
+Register r0 information: slab kmalloc-cg-64 start 841bb400 pointer offset 0 size 64
+Register r1 information: slab skbuff_head_cache start 855c8a80 pointer offset 0 size 192
+Register r2 information: 1-page vmalloc region starting at 0xdfa43000 allocated at bpf_prog_alloc_no_stats+0x38/0x1cc kernel/bpf/core.c:103
+Register r3 information: NULL pointer
+Register r4 information: non-slab/vmalloc memory
+Register r5 information: slab skbuff_head_cache start 855c8a80 pointer offset 0 size 192
+Register r6 information: slab kmalloc-cg-64 start 841bb400 pointer offset 0 size 64
+Register r7 information: non-paged memory
+Register r8 information: 1-page vmalloc region starting at 0xdfa43000 allocated at bpf_prog_alloc_no_stats+0x38/0x1cc kernel/bpf/core.c:103
+Register r9 information: slab task_struct start 83641800 pointer offset 0 size 3072
+Register r10 information: non-paged memory
+Register r11 information: 2-page vmalloc region starting at 0xdfa40000 allocated at kernel_clone+0xac/0x3cc kernel/fork.c:2796
+Register r12 information: 2-page vmalloc region starting at 0xdfa40000 allocated at kernel_clone+0xac/0x3cc kernel/fork.c:2796
+Process syz-executor.0 (pid: 13298, stack limit = 0xdfa40000)
+Stack: (0xdfa41d00 to 0xdfa42000)
+1d00: 804a6614 8027b0a4 855c8a80 dfa41da4 854a0102 854afef1 dfa43000 0000000e
+1d20: dfa41d3c dfa41d30 824b3560 824b3560 855c8a80 84c46000 dfa41da4 0000000e
+1d40: 00000024 5b930000 dfa41d9c dfa41d58 813e318c 803f2e58 dfa41d9c dfa41d68
+1d60: 0000aaaa 00000000 841bb400 dfa43000 dfa41db4 dfa41e40 00000004 0000000e
+1d80: dfa43000 83641800 83404800 00000000 dfa41dec dfa41da0 813ae474 813e2fc0
+1da0: dfa41ef0 854a0102 854afef1 854a0102 854a0000 85060400 00000000 00020000
+1dc0: 00000000 d2f4c1d4 84c46660 00000001 855e52cc 84c47660 00000ebe 855c8a80
+1de0: dfa41ea4 dfa41df0 80c29b04 813ae204 00000000 00000400 00000000 00000eb0
+1e00: 00000000 83641800 dfa41ea4 dfa41e18 8031cb08 00010040 00000000 83641800
+1e20: 00000000 0000ef31 0000fdef 00000000 855e5000 0000fdef 00000000 00080000
+1e40: 855c8a80 00000000 00000000 00000000 00000000 00000000 00000400 00000000
+1e60: 00000000 d2f4c1d4 8219b2bc 84c46660 84c46000 d2f4c1d4 83641800 dfa41f08
+1e80: dfa41ef0 00000000 84c46660 855e5000 20000040 81b6cbe4 dfa41ed4 dfa41ea8
+1ea0: 80c2acb8 80c290c4 00000001 00000000 00000008 80c2ac58 846f6d80 0000fdef
+1ec0: 83641800 dfa41f68 dfa41f64 dfa41ed8 804f7298 80c2ac64 dfa41f04 dfa41ee8
+1ee0: 8020c17c 8020d138 00000000 00000000 00010000 0000fdef 20000040 00000000
+1f00: 00000001 00000000 846f6d80 00000000 0000002a 00000000 00000000 00000000
+1f20: 00000000 00000000 00000000 00000000 0000fdef d2f4c1d4 83641800 846f6d81
+1f40: 846f6d80 0000002a 00000000 80200288 83641800 00000004 dfa41f94 dfa41f68
+1f60: 804f75e0 804f7030 0000002a 00000000 80203054 d2f4c1d4 0000fdef 20000040
+1f80: 000000c8 00000004 dfa41fa4 dfa41f98 804f7670 804f7574 00000000 dfa41fa8
+1fa0: 80200060 804f766c 0000fdef 20000040 000000c8 20000040 0000fdef 00000000
+1fc0: 0000fdef 20000040 000000c8 00000004 7ed4d32e 7ed4d32f 003d0f00 76b160fc
+1fe0: 0000005c 76b15ef0 00091154 0004f04c 40000010 000000c8 00000000 00000000
+Call trace: 
+[<803f2e4c>] (dev_map_generic_redirect) from [<813e318c>] (xdp_do_generic_redirect_map net/core/filter.c:4463 [inline])
+[<803f2e4c>] (dev_map_generic_redirect) from [<813e318c>] (xdp_do_generic_redirect+0x1d8/0x4d4 net/core/filter.c:4520)
+ r10:5b930000 r9:00000024 r8:0000000e r7:dfa41da4 r6:84c46000 r5:855c8a80
+ r4:824b3560
+[<813e2fb4>] (xdp_do_generic_redirect) from [<813ae474>] (do_xdp_generic+0x27c/0x440 net/core/dev.c:5021)
+ r10:00000000 r9:83404800 r8:83641800 r7:dfa43000 r6:0000000e r5:00000004
+ r4:dfa41e40
+[<813ae1f8>] (do_xdp_generic) from [<80c29b04>] (tun_get_user+0xa4c/0x13f4 drivers/net/tun.c:1924)
+ r9:855c8a80 r8:00000ebe r7:84c47660 r6:855e52cc r5:00000001 r4:84c46660
+[<80c290b8>] (tun_get_user) from [<80c2acb8>] (tun_chr_write_iter+0x60/0xc8 drivers/net/tun.c:2048)
+ r10:81b6cbe4 r9:20000040 r8:855e5000 r7:84c46660 r6:00000000 r5:dfa41ef0
+ r4:dfa41f08
+[<80c2ac58>] (tun_chr_write_iter) from [<804f7298>] (call_write_iter include/linux/fs.h:2108 [inline])
+[<80c2ac58>] (tun_chr_write_iter) from [<804f7298>] (new_sync_write fs/read_write.c:497 [inline])
+[<80c2ac58>] (tun_chr_write_iter) from [<804f7298>] (vfs_write+0x274/0x438 fs/read_write.c:590)
+ r8:dfa41f68 r7:83641800 r6:0000fdef r5:846f6d80 r4:80c2ac58
+[<804f7024>] (vfs_write) from [<804f75e0>] (ksys_write+0x78/0xf8 fs/read_write.c:643)
+ r10:00000004 r9:83641800 r8:80200288 r7:00000000 r6:0000002a r5:846f6d80
+ r4:846f6d81
+[<804f7568>] (ksys_write) from [<804f7670>] (__do_sys_write fs/read_write.c:655 [inline])
+[<804f7568>] (ksys_write) from [<804f7670>] (sys_write+0x10/0x14 fs/read_write.c:652)
+ r7:00000004 r6:000000c8 r5:20000040 r4:0000fdef
+[<804f7660>] (sys_write) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
+Exception stack(0xdfa41fa8 to 0xdfa41ff0)
+1fa0:                   0000fdef 20000040 000000c8 20000040 0000fdef 00000000
+1fc0: 0000fdef 20000040 000000c8 00000004 7ed4d32e 7ed4d32f 003d0f00 76b160fc
+1fe0: 0000005c 76b15ef0 00091154 0004f04c
+Code: ee1d9f70 e1a08002 e591a054 e1a06000 (e597508c) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	ee1d9f70 	mrc	15, 0, r9, cr13, cr0, {3}
+   4:	e1a08002 	mov	r8, r2
+   8:	e591a054 	ldr	sl, [r1, #84]	@ 0x54
+   c:	e1a06000 	mov	r6, r0
+* 10:	e597508c 	ldr	r5, [r7, #140]	@ 0x8c <-- trapping instruction
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
