@@ -1,288 +1,121 @@
-Return-Path: <linux-kernel+bounces-135513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283F789C700
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:24:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDBD89C706
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 947391F224CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:24:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BDCC285532
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C018C6A35A;
-	Mon,  8 Apr 2024 14:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D541127B7B;
+	Mon,  8 Apr 2024 14:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ZyY5WZFX"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxE2bPgR"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C0E224C9
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D26F1CD21;
+	Mon,  8 Apr 2024 14:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586274; cv=none; b=aOKV/Z4Ceo9+b1exN3+bzAMCbcBAvYfmZiIFmkVvErrTSnwMdobuxegdVLHuRMUHNcuMnk8oFVYlwDBYxMYEQxWNelwWx5IwXymBZeW2R8CP4IqL0pnqABa9rk/lJ6PjnRzIpmiBM8cugx9DkYuMrdOwmFg3jDPRv1HknobLRUE=
+	t=1712586307; cv=none; b=SuwLYuAO7hur2+R5YJSE+JgC/Pk52ZM0CyR+roelZK7Fqj4k3gxc7oJLBo7urScNXm5h98xd0zNH6gUHf/5+QU0W69y6Ap6WrqyewPI9TT0jbLAI1GBRCp/LI3X38pB3rh/MPa0pnCRIQOxAi0V2E1ugPS2lWKsg+YbhN700RIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586274; c=relaxed/simple;
-	bh=DRRsSsdh87AyhU63jrqEjjT6TMJZvrs8mwrr76ORlCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qr9GUJyUe91vf5Wj0M93T+9Uv5iZBlUnIgY4BDClHrCyd6aRAw4co2Lj9CS9CYzCRe23FyI8c9w/Fhcm4zyb0j8fXDCrZvcmmmSM1cVBtP5mxRuesKjjWnNwPIpYZOwBlS9LuPxqXVa6OeH7GLQO95boqImt1QdUDQHMspe/JGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ZyY5WZFX; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-434c695ec3dso1347631cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:24:30 -0700 (PDT)
+	s=arc-20240116; t=1712586307; c=relaxed/simple;
+	bh=vs3XBmNffGkP+0cG+4YcsNFdxxYDgMGq8O2+X1Zb9Vo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pFfKgQB1CugkIMPnsN4r9Tn/O2yGENO6K8rC3famannlJMlkNhWmRwqs3eaHKonOZq0LnLoVAW7GNVmiXPHvCOXjgwMRLGIM+LoJid0xPuiSxmTO0InAbBkE7cXCIoyA4gjxVVP0xMaGjYiaUUNOZZJASPmHCdltRxgJmhdVTXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxE2bPgR; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a47385a4379so1019907566b.0;
+        Mon, 08 Apr 2024 07:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1712586270; x=1713191070; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mM3HlXibHde6dfGNZ/+FJQMKM2kpdnoL2/GBgVQzivI=;
-        b=ZyY5WZFXFMcH3+vzaQ/9NmQMlCxgOTroprsSPdSWSzvJOGedHnEd/G7g38wLG1ru/5
-         7grrEI72MpmwNyNMDIBD/hPgdhv5HnpSUt78hWPQZr3jYCSatX5jeB+Ufv795Q/6uv1P
-         77QVb5PA0edjMPzpNMg4LQnNFTB30OuetDn9FtvKsrpqrYgGTUoOSlxgod+MwunilGh5
-         neFviuh62Ey6gFCKD7/gZNBaULaG5sA4IFHdFKkyY/cc4TIUiiptAPK45Zjp5+nChrXZ
-         lQAZMi9povszcqVpV9wvGfgoi9WbiO8PszgMPe0iNA6NqBhMFTE9SdXCsh1tVJacMRa6
-         svew==
+        d=gmail.com; s=20230601; t=1712586304; x=1713191104; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
+        b=QxE2bPgRFF/0FH43bYbgxuiApsO6WZLg/rgVUHCanLedOtKN4sG1LtdpQbs416ulOa
+         5brihBK4Oyz+wo5CfDhXdH1XlOGue4K55kvotAz2aK4Xm2ka/jYNbEv9WWzaRfHhDFcb
+         W497Q4yQkXjEXgX2EcIAgfIYfhpkG+Caeq/oUrXu64/hpwOoAA/1mq+VTI9enKVWiwN4
+         kQZh//CEGBZoewO/nL/rTYpWm8CzC7TperXoptCSH+F4yT5UPael5JxUxyw6tQ23TbGr
+         P55atkVwPgIRO2NFKqasvd6zl5PP0DskkQNz0Ow8xI4mBFYk5vnjOKuUAS2Flfp6mtn3
+         H+sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712586270; x=1713191070;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mM3HlXibHde6dfGNZ/+FJQMKM2kpdnoL2/GBgVQzivI=;
-        b=cK+uF91lvK+Ebu4M3XMvvVloE3NBfoppUIxQiQCL4747sAMiAjfrjgxi3YbLKY4Ua4
-         XZJT3EKTG8uPmE0ohXsLVZdvkYs9v+bu4yMj6VmQaA2u04YHBfAgFQECCstuNlTfJtXb
-         dU0NUPkwmqayH2iuKBFStkkCDrjodGUKVwzN2Vbgmr6ntzbavvjuP+jnK/AYSwM31V3l
-         S0soj4vdCFcII0u8Oi6YBte6MER6No1Pj6ZO3yAazH/jkCLqIu/9SM5GRsHx+Zqq3Fwk
-         gvKuHJ+gUFF7qnIw9P5ITPxETRcN75+oBr+Kx8hKUwHStdMHRugdVU0Ai7uF7xLJEPKO
-         xQBA==
-X-Forwarded-Encrypted: i=1; AJvYcCX1G2Alux+1iFRI0Jt3b4Rs6gWN8nTXb9pi2i7UpOeixkolnNal8a+BjzWoXeJJsiSVh4T8xIJtQIPvxLbvBmROpJ67QbGaULa/Oo4+
-X-Gm-Message-State: AOJu0YxABcW6YXkqHFaDS+ctIbY1Of/+glwfeSnFJgmftCqBhurmqTtI
-	vvNt78eg2BqYbAX8/xGmmVb0JvymdmZalEWUqHmWWZ0adyM+ZV8Plqt2S6NcCIw=
-X-Google-Smtp-Source: AGHT+IGm6eZ4TZTFNTURMocDGjN9HCSdhKu1DzXouNFTIE0s9becXKt8jIx+Nz//Tp9Jhb2FOkejyQ==
-X-Received: by 2002:ac8:5703:0:b0:432:e6db:583c with SMTP id 3-20020ac85703000000b00432e6db583cmr10070278qtw.54.1712586269869;
-        Mon, 08 Apr 2024 07:24:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:3ad2])
-        by smtp.gmail.com with ESMTPSA id y19-20020ac87093000000b0043489c1f916sm1571708qto.15.2024.04.08.07.24.29
+        d=1e100.net; s=20230601; t=1712586304; x=1713191104;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
+        b=CRhfYR0ff6ViLiLzxAhFsTWK8O2zd3R90T+UZhoHYvpmq/oA0bRX9jE0w+KT4J+ay4
+         72CC0MoCrnltF/CdzxB2Ed+eb0I97yzG38hZVKf8u/v/ytyq2UNJvhZD4Vp7LcsiZT9o
+         rPLhqCGaMJGkMw2t0M5L34ko0CiX/Xx5AxnZ5yiYkFQoFfyRye5F9wQufbOJCOJXGqpR
+         QnheGICRpAEcoiVVzEq2rlqRnxjbK7gDWBiB+J3CdC+wrlF4p0QQALP2BA+iq8TjAhc5
+         WBqhu1f1l0pO8hrcE5+EEjjm4nE/9cgsNBSSZCeWllDMeErcBxmRRTYcJTK6VP2m0Pv3
+         X53Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW68jXqYq5TTzqyqPGcJFAJwQkybz6VbgLallx9oUmNo+Z6F0yN0tai9zaiZ9hVfpE+jwGbqQNeCUvELyXXYyH8XIGqFduqFRjEtXMnSMbSzogELvhRFuNJ4jzB9hOmFCkdKxfsgH2VgjXKMvJx
+X-Gm-Message-State: AOJu0Yx0CW/iX5mwpnQD5s1r5WtQd9cILtRtjABu2V/DvLiWtdDwaBjU
+	oN6JhZzQya72bCj1oM23RMDaiNpwbsCYyvduk5kIQ6C5YoskIbVv
+X-Google-Smtp-Source: AGHT+IGaq+ZAlXpk9YTgf4/RHBm1Pbf2Q7kE8VkemDhXnN6qOn8H3/zT0wzSorfvRUiTWwzaW7mkBQ==
+X-Received: by 2002:a17:906:7949:b0:a51:d48e:52a0 with SMTP id l9-20020a170906794900b00a51d48e52a0mr3012741ejo.27.1712586304338;
+        Mon, 08 Apr 2024 07:25:04 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id lx26-20020a170906af1a00b00a4e440989f5sm4487554ejb.159.2024.04.08.07.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 07:24:29 -0700 (PDT)
-Date: Mon, 8 Apr 2024 10:24:28 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 00/10] mm: page_alloc: freelist migratetype hygiene
-Message-ID: <20240408142428.GB1057805@cmpxchg.org>
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <bf92e3a5-35cb-4dfc-9e41-04df7ea5e14f@linux.alibaba.com>
+        Mon, 08 Apr 2024 07:25:03 -0700 (PDT)
+Message-ID: <ed027c1d54cb588914602a84fa12dfb2a9a403bd.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 3/6] bpf/helpers: introduce
+ bpf_timer_set_sleepable_cb() kfunc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Mon, 08 Apr 2024 17:25:02 +0300
+In-Reply-To: <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+	 <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf92e3a5-35cb-4dfc-9e41-04df7ea5e14f@linux.alibaba.com>
 
-On Mon, Apr 08, 2024 at 05:30:04PM +0800, Baolin Wang wrote:
-> 
-> 
-> On 2024/3/21 02:02, Johannes Weiner wrote:
-> > V4:
-> > - fixed !pcp_order_allowed() case in free_unref_folios()
-> > - reworded the patch 0 changelog a bit for the git log
-> > - rebased to mm-everything-2024-03-19-23-01
-> > - runtime-tested again with various CONFIG_DEBUG_FOOs enabled
-> > 
-> > ---
-> > 
-> > The page allocator's mobility grouping is intended to keep unmovable
-> > pages separate from reclaimable/compactable ones to allow on-demand
-> > defragmentation for higher-order allocations and huge pages.
-> > 
-> > Currently, there are several places where accidental type mixing
-> > occurs: an allocation asks for a page of a certain migratetype and
-> > receives another. This ruins pageblocks for compaction, which in turn
-> > makes allocating huge pages more expensive and less reliable.
-> > 
-> > The series addresses those causes. The last patch adds type checks on
-> > all freelist movements to prevent new violations being introduced.
-> > 
-> > The benefits can be seen in a mixed workload that stresses the machine
-> > with a memcache-type workload and a kernel build job while
-> > periodically attempting to allocate batches of THP. The following data
-> > is aggregated over 50 consecutive defconfig builds:
-> > 
-> >                                                          VANILLA                 PATCHED
-> > Hugealloc Time mean                      165843.93 (    +0.00%)  113025.88 (   -31.85%)
-> > Hugealloc Time stddev                    158957.35 (    +0.00%)  114716.07 (   -27.83%)
-> > Kbuild Real time                            310.24 (    +0.00%)     300.73 (    -3.06%)
-> > Kbuild User time                           1271.13 (    +0.00%)    1259.42 (    -0.92%)
-> > Kbuild System time                          582.02 (    +0.00%)     559.79 (    -3.81%)
-> > THP fault alloc                           30585.14 (    +0.00%)   40853.62 (   +33.57%)
-> > THP fault fallback                        36626.46 (    +0.00%)   26357.62 (   -28.04%)
-> > THP fault fail rate %                        54.49 (    +0.00%)      39.22 (   -27.53%)
-> > Pagealloc fallback                         1328.00 (    +0.00%)       1.00 (   -99.85%)
-> > Pagealloc type mismatch                  181009.50 (    +0.00%)       0.00 (  -100.00%)
-> > Direct compact stall                        434.56 (    +0.00%)     257.66 (   -40.61%)
-> > Direct compact fail                         421.70 (    +0.00%)     249.94 (   -40.63%)
-> > Direct compact success                       12.86 (    +0.00%)       7.72 (   -37.09%)
-> > Direct compact success rate %                 2.86 (    +0.00%)       2.82 (    -0.96%)
-> > Compact daemon scanned migrate          3370059.62 (    +0.00%) 3612054.76 (    +7.18%)
-> > Compact daemon scanned free             7718439.20 (    +0.00%) 5386385.02 (   -30.21%)
-> > Compact direct scanned migrate           309248.62 (    +0.00%)  176721.04 (   -42.85%)
-> > Compact direct scanned free              433582.84 (    +0.00%)  315727.66 (   -27.18%)
-> > Compact migrate scanned daemon %             91.20 (    +0.00%)      94.48 (    +3.56%)
-> > Compact free scanned daemon %                94.58 (    +0.00%)      94.42 (    -0.16%)
-> > Compact total migrate scanned           3679308.24 (    +0.00%) 3788775.80 (    +2.98%)
-> > Compact total free scanned              8152022.04 (    +0.00%) 5702112.68 (   -30.05%)
-> > Alloc stall                                 872.04 (    +0.00%)    5156.12 (  +490.71%)
-> > Pages kswapd scanned                     510645.86 (    +0.00%)    3394.94 (   -99.33%)
-> > Pages kswapd reclaimed                   134811.62 (    +0.00%)    2701.26 (   -98.00%)
-> > Pages direct scanned                      99546.06 (    +0.00%)  376407.52 (  +278.12%)
-> > Pages direct reclaimed                    62123.40 (    +0.00%)  289535.70 (  +366.06%)
-> > Pages total scanned                      610191.92 (    +0.00%)  379802.46 (   -37.76%)
-> > Pages scanned kswapd %                       76.36 (    +0.00%)       0.10 (   -98.58%)
-> > Swap out                                  12057.54 (    +0.00%)   15022.98 (   +24.59%)
-> > Swap in                                     209.16 (    +0.00%)     256.48 (   +22.52%)
-> > File refaults                             17701.64 (    +0.00%)   11765.40 (   -33.53%)
-> > 
-> > Huge page success rate is higher, allocation latencies are shorter and
-> > more predictable.
-> > 
-> > Stealing (fallback) rate is drastically reduced. Notably, while the
-> > vanilla kernel keeps doing fallbacks on an ongoing basis, the patched
-> > kernel enters a steady state once the distribution of block types is
-> > adequate for the workload. Steals over 50 runs:
-> > 
-> > VANILLA         PATCHED
-> > 1504.0		227.0
-> > 1557.0		6.0
-> > 1391.0		13.0
-> > 1080.0		26.0
-> > 1057.0		40.0
-> > 1156.0		6.0
-> > 805.0		46.0
-> > 736.0		20.0
-> > 1747.0		2.0
-> > 1699.0		34.0
-> > 1269.0		13.0
-> > 1858.0		12.0
-> > 907.0		4.0
-> > 727.0		2.0
-> > 563.0		2.0
-> > 3094.0		2.0
-> > 10211.0		3.0
-> > 2621.0		1.0
-> > 5508.0		2.0
-> > 1060.0		2.0
-> > 538.0		3.0
-> > 5773.0		2.0
-> > 2199.0		0.0
-> > 3781.0		2.0
-> > 1387.0		1.0
-> > 4977.0		0.0
-> > 2865.0		1.0
-> > 1814.0		1.0
-> > 3739.0		1.0
-> > 6857.0		0.0
-> > 382.0		0.0
-> > 407.0		1.0
-> > 3784.0		0.0
-> > 297.0		0.0
-> > 298.0		0.0
-> > 6636.0		0.0
-> > 4188.0		0.0
-> > 242.0		0.0
-> > 9960.0		0.0
-> > 5816.0		0.0
-> > 354.0		0.0
-> > 287.0		0.0
-> > 261.0		0.0
-> > 140.0		1.0
-> > 2065.0		0.0
-> > 312.0		0.0
-> > 331.0		0.0
-> > 164.0		0.0
-> > 465.0		1.0
-> > 219.0		0.0
-> > 
-> > Type mismatches are down too. Those count every time an allocation
-> > request asks for one migratetype and gets another. This can still
-> > occur minimally in the patched kernel due to non-stealing fallbacks,
-> > but it's quite rare and follows the pattern of overall fallbacks -
-> > once the block type distribution settles, mismatches cease as well:
-> > 
-> > VANILLA:        PATCHED:
-> > 182602.0	268.0
-> > 135794.0	20.0
-> > 88619.0		19.0
-> > 95973.0		0.0
-> > 129590.0	0.0
-> > 129298.0	0.0
-> > 147134.0	0.0
-> > 230854.0	0.0
-> > 239709.0	0.0
-> > 137670.0	0.0
-> > 132430.0	0.0
-> > 65712.0		0.0
-> > 57901.0		0.0
-> > 67506.0		0.0
-> > 63565.0		4.0
-> > 34806.0		0.0
-> > 42962.0		0.0
-> > 32406.0		0.0
-> > 38668.0		0.0
-> > 61356.0		0.0
-> > 57800.0		0.0
-> > 41435.0		0.0
-> > 83456.0		0.0
-> > 65048.0		0.0
-> > 28955.0		0.0
-> > 47597.0		0.0
-> > 75117.0		0.0
-> > 55564.0		0.0
-> > 38280.0		0.0
-> > 52404.0		0.0
-> > 26264.0		0.0
-> > 37538.0		0.0
-> > 19671.0		0.0
-> > 30936.0		0.0
-> > 26933.0		0.0
-> > 16962.0		0.0
-> > 44554.0		0.0
-> > 46352.0		0.0
-> > 24995.0		0.0
-> > 35152.0		0.0
-> > 12823.0		0.0
-> > 21583.0		0.0
-> > 18129.0		0.0
-> > 31693.0		0.0
-> > 28745.0		0.0
-> > 33308.0		0.0
-> > 31114.0		0.0
-> > 35034.0		0.0
-> > 12111.0		0.0
-> > 24885.0		0.0
-> > 
-> > Compaction work is markedly reduced despite much better THP rates.
-> > 
-> > In the vanilla kernel, reclaim seems to have been driven primarily by
-> > watermark boosting that happens as a result of fallbacks. With those
-> > all but eliminated, watermarks average lower and kswapd does less
-> > work. The uptick in direct reclaim is because THP requests have to
-> > fend for themselves more often - which is intended policy right
-> > now. Aggregate reclaim activity is lowered significantly, though.
-> > 
-> > ---
-> 
-> With my 2 fixes, the whole series works well on my platform, so please 
-> feel free to add:
-> Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
+[...]
 
-Very much appreciate your testing and the two fixes. Thank you!
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index fd05d4358b31..d6528359b3f4 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+
+[...]
+
+> @@ -2726,6 +2764,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+>  BTF_ID_FLAGS(func, bpf_dynptr_size)
+>  BTF_ID_FLAGS(func, bpf_dynptr_clone)
+> +BTF_ID_FLAGS(func, bpf_timer_set_sleepable_cb_impl)
+
+Note:
+this hunk does not apply cleanly on top of current master.
+The line 'BTF_ID_FLAGS(func, bpf_modify_return_test_tp)'
+was added to the list since last time current patch-set was merged.
+
+>  BTF_KFUNCS_END(common_btf_ids)
+> =20
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
 
