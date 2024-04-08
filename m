@@ -1,100 +1,123 @@
-Return-Path: <linux-kernel+bounces-135346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A84889BF49
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:45:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6525789BF4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:45:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B57371C21FF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:45:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F042830EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B660762CD;
-	Mon,  8 Apr 2024 12:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ACD7C08F;
+	Mon,  8 Apr 2024 12:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UfnYN5dG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="P39HssVx"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFDB73528;
-	Mon,  8 Apr 2024 12:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5776C7BAF7;
+	Mon,  8 Apr 2024 12:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580194; cv=none; b=s4SYEfJt5D0e9ngMvSi/WiNqe/4Kx0Gg6C4vabdNoM4roUEvUkEjKwbsT+vxkTDSa2vT8hRiqfCkd/xfDCdMJ7IGzz5ZnWOA28KlV+yXT0K3vDrefCvEzhouyI+NAYnxy71r57pnwc+JpvJXvBSRKcCxCploFVzj4S1MJFERvyw=
+	t=1712580221; cv=none; b=fVDxnpo4DOHywN2cgif/mkinq+8VGyAERYHplLr4tswAdW8oQu78rKWsH2RJzxvx6bOk73ovStqHv/2axqQtT1ygZEym3YJendHRoyquV4pLBwJURB7XKrvpGQ+S2kBOvlzpEJeHWrJRhbCUniKTimE86+DVooDkrFRrrRvUbxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580194; c=relaxed/simple;
-	bh=o/n/XAccFgkV88Qr6FGsWOys2YM7DrCPsQ3Jhs046CA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ni8NfMjaSWAJJkCoztRDWiz77ci3H5ln0fsq8XcG6ToG6aI5Ijf5i6w+oU/18ZeaevvJRKaeDLTWKLbNr65rSmNLTcheAJk/yNs/g8JuLlrlIBKZtXBa49S9drN/I8+5/MNb/y5Qhij2x0ylP+JTb5G3QFYzdVoQYjFKUW/lXcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UfnYN5dG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 524EFC43390;
-	Mon,  8 Apr 2024 12:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712580194;
-	bh=o/n/XAccFgkV88Qr6FGsWOys2YM7DrCPsQ3Jhs046CA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UfnYN5dG9atj25XdUli0yLnXOk6I6s2dpUmII/5SkH8ba38vp7aNeHO2xbJqK+fps
-	 sJ9NLYw8oXcjFWoI+4AIF+DC/PgfSq66WgXrFYFAMAhjOFA78jTi8Znq4ACGF+nwk/
-	 T4UG8o25SS0L2scTMoCVtdeRrtV9UmJeH/PIo14w0s8MYhScGevnfZXkuwDNU3+hkk
-	 yCn96Q95g1T5k5WnMPgPfJK+Cg9EVo+mnTfxo+KnDLn6PnF2lcml+8YQu/x4Unblw/
-	 DQvI7O4qlrhfmqCkil47MVQjOQ76zZbhJdRbc9DtDjfjGSmKW/u3zVkHPgHGauS/KN
-	 g49JeLf3Sh8mg==
-Date: Mon, 8 Apr 2024 13:43:09 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: soc-card: Fix a reversed if condition
-Message-ID: <25771b56-8564-42c1-9a2d-408d91f23618@sirena.org.uk>
-References: <155bb76e-dc57-4a5c-b0eb-acee5ebde9f4@moroto.mountain>
+	s=arc-20240116; t=1712580221; c=relaxed/simple;
+	bh=EHeLp8BG4YmTJLnNGQoteg6h/bg34plAh2da3ELzups=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IyVBOjsObLAHZY5VCuZIEXwXaRZbMaae0sDJ6L2CN2ghg+4/FlzmeaIUhvG+UoGcfPT0p4VXrPSCRBHMLjFAHJIYC23O2VA2mAFIghXTTDZ5xh46BtQB4IlErAZG/lg7+NAEahCaHBieBKkWUDooUNsCImmvyGxkJTa1YYGTxwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=P39HssVx; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3D7FE1BF20A;
+	Mon,  8 Apr 2024 12:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712580217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EGb9QvvQMCEnKLy7lBueRK3Kn722zA1+bA5mCoVE8rc=;
+	b=P39HssVxYttUmscR0T1RCbh+Ar5Zyp6gJsubxF/YeXwhBAOewcWkqNvdfiixNBpB3RAXEf
+	aDgp7/CyW/dlEdtQIcERESZbyIPT91AEsoRNCS7CLdAbHVjTTpDRFQwMX8N/sdZEibqisa
+	yRfe7jHJ+YXRpfujhylFClFi0Otsiir1CMhIC43a6WBn+eF0Jh3VkmWHR2J6xlUymaLac1
+	Yp1jC8akzBD/l3MO4WQ85R4RQgdmlsS1/qHvZ4uKxEQ+RERtX9JI5lqyVte5fxD/wGZNyQ
+	N1vA0A8Jw+mPRwvXTayIpPZpOkJ5aNK7QTaXzIUbv9fZ72IwV2D/Pf8gHY5XLg==
+Date: Mon, 8 Apr 2024 14:43:35 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou
+ <lizhi.hou@amd.com>, Rob Herring <robh@kernel.org>
+Cc: Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+ Stefano Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@Huawei.com>, Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?=
+ <kwilczynski@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20240408144335.5e9b6a2b@bootlin.com>
+In-Reply-To: <20240325153919.199337-1-herve.codina@bootlin.com>
+References: <20240325153919.199337-1-herve.codina@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UBthYBJrUXVgQDT2"
-Content-Disposition: inline
-In-Reply-To: <155bb76e-dc57-4a5c-b0eb-acee5ebde9f4@moroto.mountain>
-X-Cookie: Drive defensively.  Buy a tank.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
+Hi,
 
---UBthYBJrUXVgQDT2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 25 Mar 2024 16:39:13 +0100
+Herve Codina <herve.codina@bootlin.com> wrote:
 
-On Mon, Apr 08, 2024 at 10:38:02AM +0300, Dan Carpenter wrote:
+> Hi,
+> 
+> The commit 407d1a51921e ("PCI: Create device tree node for bridge")
+> creates of_node for PCI devices.
+> 
+> During the insertion handling of these new DT nodes done by of_platform,
+> new devices (struct device) are created. For each PCI devices a struct
+> device is already present (created and handled by the PCI core).
+> 
+> Creating a new device from a DT node leads to some kind of wrong struct
+> device duplication to represent the exact same PCI device.
+> 
+> This patch series first introduces device_{add,remove}_of_node() in
+> order to add or remove a newly created of_node to an already existing
+> device. Then it fixes the DT node creation for PCI devices to add or
+> remove the created node to the existing PCI device without any new
+> device creation.
+> 
+> Compared to the previous iteration:
+>   https://lore.kernel.org/all/20231130165700.685764-1-herve.codina@bootlin.com/
+> this v3 series rewrap commit log.
+> 
+> The potential issue related to the sysfs of_node symlink added after the
+> sysfs PCI device is visible from user-space (raised during the v2
+> review) is maybe not a problem according to Bjorn:
+>   https://lore.kernel.org/all/20240319165430.GA1233494@bhelgaas/
+> 
+> IMHO, the discussions started with Rob around the interrupt-controller
+> during the v2 review are out of the issue this specific series tries to
+> fix. Some modifications are needed for the interrupt-controller topic
+> but should be done in a specific series.
+> 
+> Best regards,
+> Hervé
+> 
 
->  	ret =3D snd_soc_register_card(priv->card);
-> -	if (!ret)
-> +	if (ret)
->  		return ret;
-> =20
->  	return 0;
+I have received no feedback on this v3 series.
+I know maintainers are busy but I would like to be sure that this series was
+not simply missed.
 
-Clearly a better fix here would just be to remove the conditional
-entirely.
-
---UBthYBJrUXVgQDT2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYT5lwACgkQJNaLcl1U
-h9BdVgf9Gspq62woabsu/dxrXY/4ffmusjwWnUNxtVs9udrENILi2P80owdU/EAZ
-/bEa1yhMg3mZrA0JkXwUkWwDE0ZEeH+e2mSmSsfxDiwlkgGhvuHo61fyuU/mql+n
-0v4LLqn9eOcT+B5+m+CU5cKkmUY2+zo7j5k06McNS+NK39PxXJxNX6OEZfTB+mTK
-JSQqCDkYV7R8UXe0WNIE2IkfrMcSMP7EHVt8itGe0P3J+1WtqR/ch/CmkrIZtYyn
-ca8u3XpfLWyiLu+lON4vs0QzLvTN1b2UId7XS+gZO4SteUiv3NqUOuABKl6Kgkoh
-Cz7Es53alHDgiEFj1/TZ8VkvzmhaRQ==
-=I361
------END PGP SIGNATURE-----
-
---UBthYBJrUXVgQDT2--
+Best regards,
+Hervé
 
