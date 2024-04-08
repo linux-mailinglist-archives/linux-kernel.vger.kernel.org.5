@@ -1,82 +1,85 @@
-Return-Path: <linux-kernel+bounces-135511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B7089C6E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7AC89C6ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:23:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15DB28118E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:22:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 251D9284F27
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960FA1272C4;
-	Mon,  8 Apr 2024 14:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202581272C4;
+	Mon,  8 Apr 2024 14:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="C8yRrVg6"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="P+xK2Ycj"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277BD8061F;
-	Mon,  8 Apr 2024 14:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B085A126F07
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586164; cv=none; b=HdqFjvh3sVU9kmCKQsjFHBZQgiqkLHj+/KKAYNyL0UDbndKqvjiGgVCNmIBA0NUfP23//MuUAUkmRH7tK9cDmYZSMguUP5cEUARNi3cdgWz2Jf/ACXsN7nvvd/scN2p7LIj38TJKQXpl51DfKqmzo2fHeyBuY5mz28MVOr14Ts0=
+	t=1712586231; cv=none; b=OfsAnRFBClvMe/jxPB8eunR8F/ELI6XYEC/iKAISKV/YTu6lVIAnfjxmmrXmnJ0+rpcUm+YjBpY3lLSawdgJqxpeszoMkQVECiiGcNYXY/3UHKlcx1XdCBWoc3K7ruquYgMpa4XZS3MvgAGyOri6uXJwUmgdeD8PnMYsKGHF0K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586164; c=relaxed/simple;
-	bh=J1/fqstbM5sABZsuP5LWcr7jv6Ko56PfgEUWHAOq6+s=;
+	s=arc-20240116; t=1712586231; c=relaxed/simple;
+	bh=QiwfYNDaU4WTrNIkSJltExXeAK0+rZy9Z02cd6twh10=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ot3JKJVIZvXUB+862JOOnHy4h5vxFU8fXXVWmaP+XgMO9oE+uX4aLqps5/tWISs/YqLA2pehy8vRZWDes5USAYsARDxQf/fq17ghzKZE+82a4Ds47EMWbdljETkZJPXopntVIG+4k7jAEsUc27KxVdIm5MT8Me9/w0NrguVqQBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=C8yRrVg6; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438Dq4Jx026068;
-	Mon, 8 Apr 2024 14:22:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=lUVGF3u8yqzsf9tOwSFu7MTvf+cbSRWHzIgwMIHLc0c=;
- b=C8yRrVg6AoxzingXHiy/NZdvSvUrHrw/YaHKNn+adwLZAnKNyFecJqBT6Sg8EQFCxbSn
- NWupffX6HRFuK/5nqmKqsB+e5h23r7UFcsPdQPsHOi2FMEOGVVCNbXy98qLF56XwwQQk
- AXhz5D7P8qQ50Fozc6xeLfynbzzSEcXaWMo5FrDbVNK7wXzlSmRueKKh1GaACQ2YwYZk
- BEAxCPMvDlg3+EvnvqfmGMBEFYjLr/SjLRZXr87SyfP5DwUNpIsXEh+fAq3ndZX8NV7N
- 915C2RGNidUPVAyVu+gmreXDGyIHuGjtODKLKKEd6U8KvsQd0y5UA3eo50igmfZEPZeA Tw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xchuc03s5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 14:22:41 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 438Bmp0Y022627;
-	Mon, 8 Apr 2024 14:22:39 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqnrgtr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 14:22:39 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 438EMYA538666574
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Apr 2024 14:22:36 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 07DDB2004D;
-	Mon,  8 Apr 2024 14:22:34 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C0C7620049;
-	Mon,  8 Apr 2024 14:22:33 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  8 Apr 2024 14:22:33 +0000 (GMT)
-Date: Mon, 8 Apr 2024 16:22:32 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: "Jason J. Herne" <jjherne@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasic@linux.ibm.com, akrowiak@linux.ibm.com, borntraeger@de.ibm.com,
-        gor@linux.ibm.com, hca@linux.ibm.com,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-Subject: Re: [PATCH v4 4/5] s390/vfio-ap: Add write support to sysfs attr
- ap_config
-Message-ID: <ZhP9qHs6tjPbh1/J@tuxmaker.boeblingen.de.ibm.com>
-References: <20240326164706.29167-1-jjherne@linux.ibm.com>
- <20240326164706.29167-5-jjherne@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jj4Mefz0gTD4sMfYgmRLSjIqMa6n2v12oBVt1/KaWS/tSa0EzCo50u6yEgWz4RurKBRTnN/7Nd7sPCCY0r5viUMS4UqGNutrYqrCizajiFK2H1SodxHTadnw8w0DPbYdMidAMxp+VJ3D/J8eAeO0lZJzsdM8hDd3/qVSiaPxRUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=P+xK2Ycj; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4347dadc2cfso9557741cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1712586226; x=1713191026; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KEVpmUFr/QX1uwVzNDuqt+LyFWtd2iR3AzPxRhcceaY=;
+        b=P+xK2Ycj5X/fEuKKbmD1E7Y/LlSZyBg42w+dBS0WlB5SH2apq5oSxI0KHy1J8qeYkY
+         9nN6FhidUYcu8LYQRFvIO2BBznwz32yzhtdoyH33vFpwwLMK5QDBV2nawX33jQnMzHMJ
+         MtmRVKJIBLhOE/vxCXijplsVurC3MS4VMrOs8AV9w2aGUyeiN0HsxxerTJi+XaOL3BUt
+         hw32iNO0ej2sV6FR1hPjphnBKfAMtHUzOV2nfbtEYBarUqx8Sqa5Xnbbi2REwN0t9EyI
+         KKRvnr01kpGbcluCk81jaILn42sYnMTnkzZaQVso2d+e4wpdYHC4wizNL6jiNHP7/eie
+         NvMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712586226; x=1713191026;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KEVpmUFr/QX1uwVzNDuqt+LyFWtd2iR3AzPxRhcceaY=;
+        b=kCFTr4tz1ce5Qzq+38vDXI6WhSLcKDS5tb2eSZjXXK5KiOv+ebYHmWqfS643r7WiVQ
+         g+QoM11aDPMrfVXe8bD3f/Pq3ULXIpoADroPD9LtQlbDKSW2nzo93DtE8B4Qmbayw6GR
+         3K9M2dPQ8gBa6KgJvEzJaWI/oxR2ayCbX4pfoq7ngHvaUXD2vdYSVVhJDTinSrchpRFU
+         7YkhUKFHiysNqlQ/MmF6ZH96BkvGS4HGSVmnoOCp+v5C3uj4IXkcxUzfBaWbNzu4Gxn5
+         YJ5ofm50O28BNvwK5Fl4pjL5DKOBpLftrgl6KZD22m7l0PmB4TCFowZaS5Bu9zcVyg3n
+         2Ixg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNpFxdyARCFPk/fh4V52Aubz+5F96FSxNncyrWzkcUqvlQyhYK3wUOEERGgdbozuO19Hu9mkWIa2hG++iVqRmH//+j+kAZpGVi8BSg
+X-Gm-Message-State: AOJu0YwEt3xl9eNxN8gAxvpQP2oW3KAmRKZ1xblV522TUErMrj9BwXg6
+	dmJRvVb/WmPdVE+GFIxZQ7JSZvucdEcBF0M1uFcz/8uzomgZqyerlQXUQmmsva0=
+X-Google-Smtp-Source: AGHT+IHhi7atJ1Hb/6KDmXmfIEnnCqao5WVXm8HXjj+8zwQJy6VWOp26z68yRrf8ADPs5t31dI2GtQ==
+X-Received: by 2002:ac8:738f:0:b0:434:7dbe:9549 with SMTP id t15-20020ac8738f000000b004347dbe9549mr4758485qtp.39.1712586226346;
+        Mon, 08 Apr 2024 07:23:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:3ad2])
+        by smtp.gmail.com with ESMTPSA id bz7-20020a05622a1e8700b00430a67b3437sm3724002qtb.17.2024.04.08.07.23.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 07:23:45 -0700 (PDT)
+Date: Mon, 8 Apr 2024 10:23:40 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
+	"Huang, Ying" <ying.huang@intel.com>,
+	David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
+Message-ID: <20240408142340.GA1057805@cmpxchg.org>
+References: <20240320180429.678181-1-hannes@cmpxchg.org>
+ <20240320180429.678181-11-hannes@cmpxchg.org>
+ <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
+ <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,46 +88,117 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326164706.29167-5-jjherne@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nZCmbvNW4oYQi_YX7IiFYqSRUNTitnZD
-X-Proofpoint-GUID: nZCmbvNW4oYQi_YX7IiFYqSRUNTitnZD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_12,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- spamscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404080111
+In-Reply-To: <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
 
-On Tue, Mar 26, 2024 at 12:47:05PM -0400, Jason J. Herne wrote:
+On Mon, Apr 08, 2024 at 09:38:20AM +0200, Vlastimil Babka wrote:
+> On 4/7/24 12:19 PM, Baolin Wang wrote:
+> > On 2024/3/21 02:02, Johannes Weiner wrote:
+> >>   
+> >> +	account_freepages(page, zone, 1 << order, migratetype);
+> >> +
+> >>   	while (order < MAX_PAGE_ORDER) {
+> >> -		if (compaction_capture(capc, page, order, migratetype)) {
+> >> -			__mod_zone_freepage_state(zone, -(1 << order),
+> >> -								migratetype);
+> >> +		int buddy_mt = migratetype;
+> >> +
+> >> +		if (compaction_capture(capc, page, order, migratetype))
+> >>   			return;
+> >> -		}
+> > 
+> > IIUC, if the released page is captured by compaction, then the 
+> > statistics for free pages should be correspondingly decreased, 
+> > otherwise, there will be a slight regression for my thpcompact benchmark.
+> > 
+> > thpcompact Percentage Faults Huge
+> >                            k6.9-rc2-base        base + patch10 + 2 fixes	
+> > Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
+> > Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
+> > Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
+> > Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
+> > Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
+> > Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
+> > Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
+> > Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
+> > Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
+> > 
+> > I add below fix based on your fix 2, then the thpcompact Percentage 
+> > looks good. How do you think for the fix?
+> 
+> Yeah another well spotted, thanks. "slight regression" is an understatement,
+> this affects not just a "statistics" but very important counter
+> NR_FREE_PAGES which IIUC would eventually become larger than reality, make
+> the watermark checks false positive and result in depleted reserves etc etc.
+> Actually wondering why we're not seeing -next failures already (or maybe I
+> just haven't noticed).
 
-Hi Jason,
+Good catch indeed.
 
-This series still has some issues.
+Trying to understand why I didn't notice this during testing, and I
+think it's because I had order-10 pageblocks in my config. There is
+this in compaction_capture():
 
-> +	newbuf = rest = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
+	if (order < pageblock_order && migratetype == MIGRATE_MOVABLE)
+		return false;
 
-This line triggers a checkpatch warning. Would it make sense
-to turn it into below instead?
+Most compaction is for order-9 THPs on movable blocks, so I didn't get
+much capturing in practice in order for that leak to be noticable.
 
-	newbuf = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
-> +	if (!newbuf)
-> +		return -ENOMEM;
-	rest = newbuf;
+In earlier versions of the patches I had more aggressive capturing,
+but also did the accounting in add_page_to/del_page_from_freelist(),
+so capturing only steals what's already accounted to be off list.
 
-Also, please address other checkpatch suggestions.
+With the __add/__del and the consolidated account_freepages()
+optimization, compaction_capture() needs explicit accounting again.
 
-> +	/* Save old state */
-> +	/* The volatile cast here is to work around a gcc false positive
-> +	 * Wstringop-overread-warning.
-> +	 */
-> +	ap_matrix_copy(&m_old, (*(struct ap_matrix * volatile *)(&matrix_mdev->matrix)));
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 8330c5c2de6b..2facf844ef84 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+> >          while (order < MAX_PAGE_ORDER) {
+> >                  int buddy_mt = migratetype;
+> > 
+> > -               if (compaction_capture(capc, page, order, migratetype))
+> > +               if (compaction_capture(capc, page, order, migratetype)) {
+> > +                       account_freepages(zone, -(1 << order), migratetype);
+> >                          return;
+> > +               }
+> > 
+> >                  buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+> >                  if (!buddy)
+> > 
+> > With my fix, the THP percentage looks better:
+> >                        k6.9-rc2-base          base + patch10 + 2 fixes	+ 
+> > my fix
+> > Percentage huge-1        78.18 (   0.00%)       82.83 (   5.94%)
+> > Percentage huge-3        86.70 (   0.00%)       93.47 (   7.81%)
+> > Percentage huge-5        90.26 (   0.00%)       94.73 (   4.95%)
+> > Percentage huge-7        92.34 (   0.00%)       95.22 (   3.12%)
+> > Percentage huge-12       91.18 (   0.00%)       92.40 (   1.34%)
+> > Percentage huge-18       89.00 (   0.00%)       85.39 (  -4.06%)
+> > Percentage huge-24       90.52 (   0.00%)       94.70 (   4.61%)
+> > Percentage huge-30       94.44 (   0.00%)       97.00 (   2.71%)
+> > Percentage huge-32       93.09 (   0.00%)       92.87 (  -0.24%)
 
-Could you please come up with a different workaround? This issue has already
-been resolved in the past in different ways. See commit 34186b48d29b ("ARM:
-sharpsl_param: work around -Wstringop-overread warning") for example.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Thanks!
+With fixed indentation:
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 70f82635f650..96815e3c22f2 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+ 	while (order < MAX_PAGE_ORDER) {
+ 		int buddy_mt = migratetype;
+ 
+-		if (compaction_capture(capc, page, order, migratetype))
++		if (compaction_capture(capc, page, order, migratetype)) {
++			account_freepages(zone, -(1 << order), migratetype);
+ 			return;
++		}
+ 
+ 		buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+ 		if (!buddy)
 
