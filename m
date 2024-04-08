@@ -1,139 +1,100 @@
-Return-Path: <linux-kernel+bounces-135688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F79189C9BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:37:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F5D189C9DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:40:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C641C24639
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:37:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4CB01F21B78
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31573142E8F;
-	Mon,  8 Apr 2024 16:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA431142E64;
+	Mon,  8 Apr 2024 16:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GCgEgaAZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="FiCu9vjF"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103BE142E85
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A6113A258;
+	Mon,  8 Apr 2024 16:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594103; cv=none; b=VGH4lclL+AzIQnNAb3V44DBmRjZiuUSxnueZTipWGIJ7BIdU70pFzEIY7n2UyE2geWVAF43YYC8S1ALEC13zn+YBjaWZZKiTOkS0kgXPDgLlL/5J5sqqwfCV64ifVeK7sknXJxSWGFPJSes9iVaUfZYp/xrdX0DTYqXQWsKj6Rs=
+	t=1712594397; cv=none; b=j4baIyAW2+37liqFqbtJeJAoS0ZfWEN3DiHI4ZUCNXsJ4nWQYSZ9J/xi8xvW2efNTlpoYaGdR9y93apCrm8ZAi4/19g89oJCpv3c55i0bspIeV6InLiMmo7E8RbUwK2N7lvs36I1Iu9E34xtsBrMl4bbZS41/kLyZau/6tuJJAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594103; c=relaxed/simple;
-	bh=MwPlIh32++bFzV6p+9AvCTR3WEciP8K3VR75lLJlj6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GK+nE1rLM7cxF4/psDaFhFdyRNL1nWcp9scrRbQrBSwweaLgrOd8MmLJnLOmBiWvc74arkeV9VSIlXw9ktsGe7Ar72UVP27tk2WL23KPC5mhJn54MoTYWMSTKKr+MI43wPfimDJooQSiBQRQ5eanPRjCIk9DiiJzqE8wBmHfN38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GCgEgaAZ; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712594103; x=1744130103;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MwPlIh32++bFzV6p+9AvCTR3WEciP8K3VR75lLJlj6U=;
-  b=GCgEgaAZIlAFM/JfLXxMN0e1qy7q3Z7zqGe3BFNn9K2c2opu5qKPIjzt
-   WEUoAjmzMp64laCPoqcBkYrsH93rG7zWbJuOzirBkkSaITC+VrjPBT+XL
-   79o18CsSLajfHeRPhYBjVaH1K2ev7kF1fETiNzFrLBbzBj3umA882A8m2
-   BKP09XK2ZaWpSOyRiK0GQA6SpDdeGwNTPNPOfibTtiS8ZyGGTcKEVZUfM
-   9cdBSWJkE6vCJaZM6lXyfHrhQsrRzdcLqP5fO7KA3vxGNOTimN2tgIBFQ
-   lV6UFocQ0pG5DIcNP521heSll+PipzWDcH4OZzCx6HfZ6miTh5dgoo27x
-   w==;
-X-CSE-ConnectionGUID: zDuqMu2PTEGDBgAEYRVX5w==
-X-CSE-MsgGUID: 1vxK5uwhRuWVfftkmYKQvQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19315636"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19315636"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:35:02 -0700
-X-CSE-ConnectionGUID: 3aJmJTHiTKCgnbKS8eC6EA==
-X-CSE-MsgGUID: scKAYNiSRYObcLzhJQ55sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="43113931"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:35:01 -0700
-Date: Mon, 8 Apr 2024 09:39:30 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: Baolu Lu <baolu.lu@linux.intel.com>, Dimitri Sivanich
- <sivanich@hpe.com>, Thomas Gleixner <tglx@linutronix.de>, Joerg Roedel
- <joro@8bytes.org>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, David
- Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>, Peter
- Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, YueHaibing
- <yuehaibing@huawei.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Steve Wahl
- <steve.wahl@hpe.com>, "Anderson, Russ" <russ.anderson@hpe.com>,
- jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2] iommu/vt-d: Allocate DMAR fault interrupts locally
-Message-ID: <20240408093930.45422bc1@jacob-builder>
-In-Reply-To: <BN9PR11MB527627689CCBBFEAFC6745568C002@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <Zfydpp2Hm+as16TY@hpe.com>
-	<BN9PR11MB52765241E3261B58BE93E8A88C002@BN9PR11MB5276.namprd11.prod.outlook.com>
-	<ec0ff625-855c-4dba-b19f-db050671fbfb@linux.intel.com>
-	<BN9PR11MB527627689CCBBFEAFC6745568C002@BN9PR11MB5276.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712594397; c=relaxed/simple;
+	bh=UgqILHngj6Gyw5PQr/uALS4Jpv9WIiH3QtFphCP3HAA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=I8/Xv3C8v4Mcw3XDtylQTNVH0gNWd6ImcZp+yiGRTFGVXFDSU7tks6fos0U5vpT5obtsOAsfLJTsroBAulAY39I1dsAcKeJfl64gH1X1egNifvQGgPVCdiGovjYu6+xCNRTSdXLwlJirDBzegs+LtlGutyevh1D70QOBqJMvjfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=FiCu9vjF; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1712594393; bh=UgqILHngj6Gyw5PQr/uALS4Jpv9WIiH3QtFphCP3HAA=;
+	h=From:Subject:Date:To:Cc;
+	b=FiCu9vjF3qnliNr6J7kDXTVgw4ZUjuyxet11KkcsoxK006s+4Cl/3UDaXdND+UAx2
+	 OrFo1up+S+LqQPu5j2CSR1EzcGyQ6HiAvBc/iU3j4Kg/CFkiKipQxgtEjbIX9s+fiX
+	 MTiu34V2k1NmUMiffVs2vM9w31hPaeZ23990sFDk=
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH 0/2] Allow gpio-hog nodes in qcom,pmic-gpio bindings (& dt
+ fixup)
+Date: Mon, 08 Apr 2024 18:39:46 +0200
+Message-Id: <20240408-qcom-pmic-gpio-hog-v1-0-f61fc5323110@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANIdFGYC/x3MQQqAIBBA0avErBtQs4iuEi3KJp2FaQoRSHdPW
+ r7F/wUyJaYMU1Mg0c2Zw1kh2waMW09LyHs1KKG00GLEywSP0bNBGzmgCxbVpk1/SNFJNUANY6K
+ Dn386L+/7ATEtFuZkAAAA
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=619; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=UgqILHngj6Gyw5PQr/uALS4Jpv9WIiH3QtFphCP3HAA=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBmFB3WpBhApA+Bhim0b2gEEMYkGswaVpLvw7sZl
+ DxKiS3Z4vSJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZhQd1gAKCRBy2EO4nU3X
+ VnQBD/9g+/Uuv1wZPvIkIaFcDmxaE+/dARx7wyPgzaWfRPB/99QqnEhgbfsGZvLof9AMCTL4A2L
+ VLYEBykzCR1QVCPUhYjlVEXHmZ54oNNTuO6gZKVIbwaBsHcWpM6dpyHrxdgGzvWW0gp8pxy3DiL
+ RaWrx9rixRiYD9uMB5PVBeF7WYbuguNvAGqRiOy7Vp2OlHDpMkvMptI5M/lFqqPbrEQlvXfvVQq
+ aMuhC0VKJ7hKKnx9jO+cbyMWwLWE6gXvWGTshTmX4uM+iOjDQy4XHB19b2gDpv8o/6LzUs5GC0F
+ ON1qBfx4ZUjmg7/+8h50HGjlAgnKpofY9o6CIXq2AlBg4b/guPJg5XwKl21Ll11xpdviR25rfn1
+ 72h2Q8DiFsP7KznV4F6lpJBE1S/shScVsc2Z+SC8UhWcaMgVuMAbNevTyJWj9HrZIbC+E5J1wm4
+ KioIpL4n+yxapp84PUF/qL3sf55faDyhzKgr8no/fo1E6pTRSIgqU4FGucaGVEKOoieyiGgaHWv
+ Ba8fjXtmT4wRgvb2XzqgrO3du7uYd/PAg9Fopc1X+Smp5fVF1R0GNiurlcP4scARo2klqxwHK7k
+ aerv/MzVEGq5U0ppJ7xvnTTMl2iPKBGg2NyR/eGJFZPof29CZlMWNd1l2652PubsCTWqbJjD9Tj
+ xRsFkbo5g6nmedg==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-Hi Kevin,
+Resolve the dt validation failure on Nexus 5.
 
-On Mon, 8 Apr 2024 09:00:05 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-wrote:
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Luca Weiss (2):
+      dt-bindings: pinctrl: qcom,pmic-gpio: Allow gpio-hog nodes
+      ARM: dts: qcom: msm8974-hammerhead: Update gpio hog node name
 
-> > From: Baolu Lu <baolu.lu@linux.intel.com>
-> > Sent: Monday, April 8, 2024 3:22 PM
-> > 
-> > On 2024/4/8 14:54, Tian, Kevin wrote:  
-> > >> From: Dimitri Sivanich <sivanich@hpe.com>
-> > >> Sent: Friday, March 22, 2024 4:51 AM
-> > >>
-> > >> The Intel IOMMU code currently tries to allocate all DMAR fault
-> > >> interrupt vectors on the boot cpu.  On large systems with high DMAR
-> > >> counts this results in vector exhaustion, and most of the vectors
-> > >> are not initially allocated socket local.
-> > >>
-> > >> Instead, have a cpu on each node do the vector allocation for the
-> > >> DMARs  
-> > on  
-> > >> that node.  The boot cpu still does the allocation for its node
-> > >> during its boot sequence.
-> > >>
-> > >> Signed-off-by: Dimitri Sivanich <sivanich@hpe.com>  
-> > >
-> > > Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> > >  
-> > 
-> > Kevin,
-> > 
-> > Jacob has another proposal which shares the irq among all IOMMUs.
-> > 
-> > https://lore.kernel.org/linux-iommu/20240403234548.989061-1-
-> > jacob.jun.pan@linux.intel.com/
-> > 
-> > How do you like this?
-> >   
-> 
-> I'm a bit concerning about the need of looping all IOMMU's in DMAR
-> irqchip mask/unmask handlers. this one sounds simpler to me.
-The difference is that with this patch, we still burn a few vectors on BSP
-and the leading CPU of each socket.
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml          | 12 ++++++++++++
+ .../arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts |  2 +-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+---
+base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+change-id: 20240408-qcom-pmic-gpio-hog-2b4c5f103126
 
-e.g. on sapphire rapids, we lose 8 vectors to DMAR fault IRQ on BSP.
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
 
-Thanks,
-
-Jacob
 
