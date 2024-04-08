@@ -1,188 +1,130 @@
-Return-Path: <linux-kernel+bounces-134943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDE189B92A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3B089B93B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:51:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A09EE1C21EDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:50:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F4BE1C2205B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6401A524C6;
-	Mon,  8 Apr 2024 07:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="irilo2Ty"
-Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [83.166.143.168])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8DB446B7;
+	Mon,  8 Apr 2024 07:48:12 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5924EB51
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9612C69C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562428; cv=none; b=ELYvVWTEFTx3tErLhCOrkMU3LFsvOqr+W+Wh7kCNneskf93P/jBNlVfoglxusV6Xq0qBbrnR0fuVRTh9yr560eL9M7Yov4rKNkYRH1dzb2WH8Jw99HkQQSKviRhZOXYaIvT0rQPGZsY8Ly/xfUwr432kR72h3yqxSxPkrQ0UnXc=
+	t=1712562491; cv=none; b=CGukvQ1UIdYWry8I67hjnSA8MvwOmSrRXAEXy+rzZiWoMPoZZvHe/RSfM354mm9z5F6Yyd87IEI5e1DcVTadoV7MoG/sIxVb7gXqLNWWQHvqCSzWO/3GhA9EyEoJOSHT31ITK/QgUcOLfTIi61jFBgg3PEEKFEODvoleO8rcLGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562428; c=relaxed/simple;
-	bh=bZ6LYvtmVQg7V+57TeHLNvjsThrxUvXCCbMFN4WIJOA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h0n+bEL9Je6X6E8jw+futkxRQ4CJCInEmtTgVJ8Fqm8YJjq6bzopG4cHRIGOm82sV/ehHwD0fAThRTMa+1/dtJsG6aSvtO8C3wHOhsIBlQU8Mfkg5zvRfYvLa5LW0NqiGdTfjorZ9IIW8XD+n/m2ESntE0Xn6AwiDUJwmkgp1hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=irilo2Ty; arc=none smtp.client-ip=83.166.143.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VCh4g4LNJzDj5;
-	Mon,  8 Apr 2024 09:46:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1712562419;
-	bh=bZ6LYvtmVQg7V+57TeHLNvjsThrxUvXCCbMFN4WIJOA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=irilo2TyXHxH1HmjWzd5ma96hKDCpOPWki4uN2ph3nDS7pWaaIj92Q972R3WxyM6k
-	 XhwQ1VQbAPWBHBxCkKYmZbAOk+BD/75YzXVGHjteeuVW09LgY1gkf0LC1mK7inHsp9
-	 qFr9Bj6/nr68DCEodak6KjYhKUJEH+So8MYTUDr8=
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VCh4f732zzS7b;
-	Mon,  8 Apr 2024 09:46:58 +0200 (CEST)
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Kees Cook <keescook@chromium.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>,
-	kunit-dev@googlegroups.com,
-	kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
+	s=arc-20240116; t=1712562491; c=relaxed/simple;
+	bh=375ZQU7H5Hl/5eWt24TNsxPSHukiT82neLAMvXsnZcY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QJukbDrzyhw76Pv+7G3SF+AOuM8UgAE3bQUFYIgIaNHhLdGHdouL2MsjkNcAWnxiKV/CrK+4gfjiEZRTsnyN9+zrwdamVlhji0S1KaZegcsOUj5kkUfEoSEEVUDXmC7o7yMNco3CD+UFgewe+o+GMb3XQwS0xlsxOUXXJZGzMUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rtjjY-0005Ia-4e; Mon, 08 Apr 2024 09:48:04 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rtjjU-00B4Jn-UE; Mon, 08 Apr 2024 09:48:00 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rtjjU-007ewx-2n;
+	Mon, 08 Apr 2024 09:48:00 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
 	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v4 RESEND 7/7] kunit: Add tests for fault
-Date: Mon,  8 Apr 2024 09:46:25 +0200
-Message-ID: <20240408074625.65017-8-mic@digikod.net>
-In-Reply-To: <20240408074625.65017-1-mic@digikod.net>
-References: <20240408074625.65017-1-mic@digikod.net>
+	netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	David Ahern <dsahern@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
+Subject: [PATCH net-next v4 0/9] Enhanced DCB and DSCP Support for KSZ Switches
+Date: Mon,  8 Apr 2024 09:47:49 +0200
+Message-Id: <20240408074758.1825674-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Add a test case to check NULL pointer dereference and make sure it would
-result as a failed test.
+This patch series is aimed at improving support for DCB (Data Center
+Bridging) and DSCP (Differentiated Services Code Point) on KSZ switches.
 
-The full kunit_fault test suite is marked as skipped when run on UML
-because it would result to a kernel panic.
+The main goal is to introduce global DSCP and PCP (Priority Code Point)
+mapping support, addressing the limitation of KSZ switches not having
+per-port DSCP priority mapping. This involves extending the DSA
+framework with new callbacks for managing trust settings for global DSCP
+and PCP maps. Additionally, we introduce IEEE 802.1q helpers for default
+configurations, benefiting other drivers too.
 
-Tested with:
-/tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-/tools/testing/kunit/kunit.py run --arch arm64 \
-  --cross_compile=aarch64-linux-gnu- kunit_fault
+Change logs are in separate patches.
 
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240408074625.65017-8-mic@digikod.net
----
+Oleksij Rempel (9):
+  net: dsa: add support for DCB get/set apptrust configuration
+  net: dsa: microchip: add IPV information support
+  net: add IEEE 802.1q specific helpers
+  net: dsa: microchip: add multi queue support for KSZ88X3 variants
+  net: dsa: microchip: add support for different DCB app configurations
+  net: dsa: microchip: dcb: add special handling for KSZ88X3 family
+  net: dsa: microchip: enable ETS support for KSZ989X variants
+  net: dsa: microchip: init predictable IPV to queue mapping for all non
+    KSZ8xxx variants
+  net: dsa: microchip: let DCB code do PCP and DSCP policy configuration
 
-Changes since v2:
-* Add David's Reviewed-by.
+ drivers/net/dsa/microchip/Kconfig       |   2 +
+ drivers/net/dsa/microchip/Makefile      |   2 +-
+ drivers/net/dsa/microchip/ksz8.h        |   1 +
+ drivers/net/dsa/microchip/ksz8795.c     | 105 ++--
+ drivers/net/dsa/microchip/ksz8795_reg.h |   9 +-
+ drivers/net/dsa/microchip/ksz9477.c     |   6 -
+ drivers/net/dsa/microchip/ksz_common.c  | 100 ++--
+ drivers/net/dsa/microchip/ksz_common.h  |   8 +-
+ drivers/net/dsa/microchip/ksz_dcb.c     | 727 ++++++++++++++++++++++++
+ drivers/net/dsa/microchip/ksz_dcb.h     |  21 +
+ include/net/dsa.h                       |   4 +
+ include/net/dscp.h                      |  76 +++
+ include/net/ieee8021q.h                 |  51 ++
+ net/Kconfig                             |   4 +
+ net/core/Makefile                       |   1 +
+ net/core/ieee8021q_helpers.c            | 171 ++++++
+ net/dsa/user.c                          |  28 +
+ 17 files changed, 1230 insertions(+), 86 deletions(-)
+ create mode 100644 drivers/net/dsa/microchip/ksz_dcb.c
+ create mode 100644 drivers/net/dsa/microchip/ksz_dcb.h
+ create mode 100644 include/net/dscp.h
+ create mode 100644 include/net/ieee8021q.h
+ create mode 100644 net/core/ieee8021q_helpers.c
 
-Changes since v1:
-* Remove the rodata and const test cases for now.
-* Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
-  references.
----
- lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-index f7980ef236a3..0fdca5fffaec 100644
---- a/lib/kunit/kunit-test.c
-+++ b/lib/kunit/kunit-test.c
-@@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
- 
-+#ifndef CONFIG_UML
-+
-+static void kunit_test_null_dereference(void *data)
-+{
-+	struct kunit *test = data;
-+	int *null = NULL;
-+
-+	*null = 0;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_null_dereference(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_null_dereference,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+#endif /* !CONFIG_UML */
-+
-+static struct kunit_case kunit_fault_test_cases[] = {
-+#ifndef CONFIG_UML
-+	KUNIT_CASE(kunit_test_fault_null_dereference),
-+#endif /* !CONFIG_UML */
-+	{}
-+};
-+
-+static struct kunit_suite kunit_fault_test_suite = {
-+	.name = "kunit_fault",
-+	.init = kunit_try_catch_test_init,
-+	.test_cases = kunit_fault_test_cases,
-+};
-+
- /*
-  * Context for testing test managed resources
-  * is_resource_initialized is used to test arbitrary resources
-@@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite = {
- 
- kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
- 		  &kunit_log_test_suite, &kunit_status_test_suite,
--		  &kunit_current_test_suite, &kunit_device_test_suite);
-+		  &kunit_current_test_suite, &kunit_device_test_suite,
-+		  &kunit_fault_test_suite);
- 
- MODULE_LICENSE("GPL v2");
 -- 
-2.44.0
+2.39.2
 
 
