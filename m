@@ -1,176 +1,335 @@
-Return-Path: <linux-kernel+bounces-135096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052B489BB1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:02:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D12A289BB20
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71AD01F21DCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:02:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A7D1F21A09
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D103BB20;
-	Mon,  8 Apr 2024 09:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C24A3BB22;
+	Mon,  8 Apr 2024 09:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DylO+5hu"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NHK5iYx6"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9B5446A9;
-	Mon,  8 Apr 2024 09:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ED83FB2C;
+	Mon,  8 Apr 2024 09:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712566957; cv=none; b=fpAoEHtt+RHM085UJ4uU6NL2d3dm+tK8Hxo546ocsi45ZE34qEn5yvcj2/m6tmTbSsgAaqUI++3CXexduvEjmDkHXJ8dWdbX73bJsbBP1SVoQ8f2t/nvubeynWtTJiFsH8f6cnAXxi4OpC1IpeAcLnPxNZ8eSXhUym0u6icSYww=
+	t=1712566964; cv=none; b=vAIq/LUMZOb0BOLLVgy5W3cgURNYlLUzMAyFoxZ+ibSUMuhMna8eFJCm/QaPjhAu0GkwRdydX6Mw6K5ZjHXch3q8jS2uSRTTVYEw8oHWswAgagAfqr8+46cd3QNE7bHBO0ZvEP5hLT8r5MPCjwOaOy6f+AvDogQhVN/lkysRxF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712566957; c=relaxed/simple;
-	bh=TDGauOcLG2BfMc6m3cUVshzIqhFm4EOci2WhmMVSP5I=;
+	s=arc-20240116; t=1712566964; c=relaxed/simple;
+	bh=0aNBd9zisQqXxBIaoFkcYdj26S5EKA61Nkf5X3bcjf4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aqz82Wft1KC5bfcCZ22gKvH7tFqksR98J2UKaBYbAD3a7p08LKfelo20NidHtIwH+pook6ln0R4zs6JvwtaXqWKb76HBXS2XxB9cQ8CTttP9ZeBWPHLeBylUNAlvAG51N5naP++hwtVzbjDFdwvrc08SHtTB34yx+ahn42FRNjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DylO+5hu; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:Content-Type; b=NpX8MHjXvvVINo6mtOhpqv66DKf6AJx0U1FmeDKZB8ljRA4i7dHTdSP3ul/3ga5U0XSyutRs8odh0C5PcEWN/KYEUCybjHFfdrvw2hRDyBsZfMMoOGByrg1IY+hxhCTxASrNSOObZ+9UOUqQVz8gEMe69gTH9DuePwLq7LB4QYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NHK5iYx6; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386cNop003343;
-	Mon, 8 Apr 2024 09:02:31 GMT
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386cf12031108;
+	Mon, 8 Apr 2024 09:02:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nvdyCAqfLU/2Ca51uzFJ00kFxRtGfYw+A+Q3K6kXutk=; b=Dy
-	lO+5hun45wjmWmbeUJsIui1AoDKgFXW1f/dX/4+1dGinLnGzWJDls2G2J4xhRUHE
-	aeORdIyZbkUidNgU3wvGRnbxegqGSZDHWGGKgjdd2uYkm44LxB/ywdKtLjgAxhVR
-	3BuyOrnUaPVln8FV6WTQPlxiCuhvdHnbdFuDZ5BLA2JRcl0zE6dS/JckYuM0umrv
-	NvEQYs6k7kgDY5hVAc5fUskLL3aS0p3px56DQhx7jRIHrfCbIbNcP10IbLOT+XD5
-	yGC7Q2midjrGwicp6T6nV7AUoSetCkZb9lz6wmKL8co9r1B1C/Kp/AXJOdCtKw3s
-	fEflLi2I1L+JgN16HLyg==
+	qcppdkim1; bh=F/OW5DE1hnqTJO6f0QTP3IDZETZqVELNL792BdSC0Hs=; b=NH
+	K5iYx6C1tOeTMhHGLS8Uk3yRG0d/qAeRWPiGChLKqKZMOZ1xT1WEuNu+inuHyFJj
+	t2T/VQHUc1pOs61pQiG1o5TuKHnYMfeke8UmfEKHugm6KbABFbY/I+oozHeYAnQ1
+	H6ftKGa4942I+s178fBdl5uCdnU58TfNag4MOZXhLWC/7GLN0oDSgmQNOkd/dKtz
+	3PBobNW45kwX8Bx8OSXQ3fqOfb8+K9XwulEN5GtTIkK5bchE4cLJhrtPm+RvXGjv
+	yyHdrjpULyYrI9Zf9fHgUmx/VlS10wC0EcnlgNkVg6t2ZXCqV0NeyBOiuZTgoqyV
+	ciX+oaONbpZbKlZCnBJA==
 Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg3g8dn-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg008xa-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 09:02:30 +0000 (GMT)
+	Mon, 08 Apr 2024 09:02:34 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43892SUt030143
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43892WCA030199
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Apr 2024 09:02:28 GMT
-Received: from [10.238.176.241] (10.80.80.8) by nalasex01a.na.qualcomm.com
+	Mon, 8 Apr 2024 09:02:32 GMT
+Received: from [10.216.26.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
- 02:02:26 -0700
-Message-ID: <9ef5318a-e198-9a91-6538-2afa8196d66a@quicinc.com>
-Date: Mon, 8 Apr 2024 17:01:57 +0800
+ 02:02:24 -0700
+Message-ID: <6e9b4379-5849-73cd-4d89-5e809b4c71a4@quicinc.com>
+Date: Mon, 8 Apr 2024 14:32:18 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V4 1/2] rtc-pm8xxx: clear the triggered alarm interrupt
- during driver probe
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v9 6/6] PCI: qcom: Add OPP support to scale performance
+ state of power domain
 Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 CC: Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio
 	<konrad.dybcio@linaro.org>,
-        Alexandre Belloni
-	<alexandre.belloni@bootlin.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-0-aab2cd6ddab8@quicinc.com>
- <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-1-aab2cd6ddab8@quicinc.com>
- <Zg9l0cTBgoibIaDQ@hu-bjorande-lv.qualcomm.com>
-From: jianbin zhang <quic_jianbinz@quicinc.com>
-In-Reply-To: <Zg9l0cTBgoibIaDQ@hu-bjorande-lv.qualcomm.com>
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas
+	<bhelgaas@google.com>, <johan+linaro@kernel.org>,
+        <bmasney@redhat.com>, <djakov@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_parass@quicinc.com>, <krzysztof.kozlowski@linaro.org>
+References: <20240407-opp_support-v9-0-496184dc45d7@quicinc.com>
+ <20240407-opp_support-v9-6-496184dc45d7@quicinc.com>
+ <20240407150048.GE2679@thinkpad>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240407150048.GE2679@thinkpad>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 30um-g3cfX74Awa8Jre72435khMk0rTi
-X-Proofpoint-ORIG-GUID: 30um-g3cfX74Awa8Jre72435khMk0rTi
+X-Proofpoint-GUID: i-PlhEQAnee6g3UntA013vT1Hl92-9Yz
+X-Proofpoint-ORIG-GUID: i-PlhEQAnee6g3UntA013vT1Hl92-9Yz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080068
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080069
 
 
-On 4/5/24 10:45, Bjorn Andersson wrote:
-> On Mon, Apr 01, 2024 at 09:56:29AM +0800, jianbin zhang wrote:
->
-> Sorry, I think the patch looks good now, but the subject prefix
-> (rtc-pm8xxx) does not match other changes to this file.
->
-Sure, thanks for reviewing, I will update the subject prefix to "rtc: 
-pm8xxx:" as other changes to this file.
->> If the alarm is triggered before the driver gets probed, the alarm interrupt
->> will be missed and it won't be detected, and the stale alarm settings will
->> be still retained because of not being cleared.
+
+On 4/7/2024 8:30 PM, Manivannan Sadhasivam wrote:
+> On Sun, Apr 07, 2024 at 10:07:39AM +0530, Krishna chaitanya chundru wrote:
+>> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+>> maintains hardware state of a regulator by performing max aggregation of
+>> the requests made by all of the clients.
 >>
->> Issue reproduce step:
->> (1) set the alarm and poweroff the device
->> (2) alarm happens and the device boots
->> (3) poweroff the device again
->> (4) alarm irq not be cleard, device boots again
+>> PCIe controller can operate on different RPMh performance state of power
+>> domain based on the speed of the link. And this performance state varies
+>> from target to target, like some controllers support GEN3 in NOM (Nominal)
+>> voltage corner, while some other supports GEN3 in low SVS (static voltage
+>> scaling).
 >>
->> the fixing here is clear the interrupt during the step(3) unconditionally.
+>> The SoC can be more power efficient if we scale the performance state
+>> based on the aggregate PCIe link bandwidth.
 >>
->> Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
+>> Add Operating Performance Points (OPP) support to vote for RPMh state based
+>> on the aggregate link bandwidth.
+>>
+>> OPP can handle ICC bw voting also, so move ICC bw voting through OPP
+>> framework if OPP entries are present.
+>>
+>> Different link configurations may share the same aggregate bandwidth,
+>> e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
+>> and share the same OPP entry.
+>>
+> 
+> This info should be part of the dts change.
+> 
+ok I will move this to dts patch in next patch series.
+>> As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
+>> is supported.
+>>
+>> Before PCIe link is initialized vote for highest OPP in the OPP table,
+>> so that we are voting for maximum voltage corner for the link to come up
+>> in maximum supported speed.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 >> ---
->> Changes in v4:
->> - add the cover letter
->> - modify the patch to conform to the specification
+>>   drivers/pci/controller/dwc/pcie-qcom.c | 72 +++++++++++++++++++++++++++-------
+>>   1 file changed, 58 insertions(+), 14 deletions(-)
 >>
->> Changes in v3:
->> - clear the interrupt in driver probe unconditionally
->> - link: https://lore.kernel.org/linux-rtc/20240319191037.GA3796206@hu-bjorande-lv.qualcomm.com/T/#t
-> These are expected to be links to the previous revisions of your patch,
-> not people's answers.
->
-> Please consult go/upstream and switch to b4 for the future, which does
-> this automatically for you. Please also use the internal review list!
->
-> Regards,
-> Bjorn
-Yeah, will use the internal review list in next patch version and will 
-switch to b4 in the future.
->> Changes in v2:
->> - Adapt the V1 patch according to the newest rtc-pm8xxx
->> - link: https://lore.kernel.org/linux-rtc/20240124024023df15ef6e@mail.local/
->>
->> Changes in v1:
->> - fixing is as below logic, During driver probe: read ALARM_EN, read ALARM_DATA, read RTC_RDATA,
->>    if (ALARM_DATA < RTC_DATA), Trigger the alarm event and clear the alarm settins
->> - link: https://lore.kernel.org/linux-rtc/20220321090514.4523-1-quic_jianbinz@quicinc.com/
->>
->> Changes in original:
->> - link to original: https://lore.kernel.org/linux-rtc/YTusgJlMUdXOKQaL@piout.net/
->> ---
->>   drivers/rtc/rtc-pm8xxx.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
->> index f6b779c12ca7..e4e2307445cf 100644
->> --- a/drivers/rtc/rtc-pm8xxx.c
->> +++ b/drivers/rtc/rtc-pm8xxx.c
->> @@ -527,6 +527,11 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
->>   	if (rc)
->>   		return rc;
->>   
->> +	rc = regmap_update_bits(rtc_dd->regmap, rtc_dd->regs->alarm_ctrl2,
->> +					  PM8xxx_RTC_ALARM_CLEAR, 1);
->> +	if (rc)
->> +		return rc;
->> +
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index b4893214b2d3..4ad5ef3bf8fc 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -22,6 +22,7 @@
+>>   #include <linux/of.h>
+>>   #include <linux/of_gpio.h>
+>>   #include <linux/pci.h>
+>> +#include <linux/pm_opp.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/phy/pcie.h>
+>> @@ -1442,15 +1443,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
 >>   	return 0;
 >>   }
 >>   
+>> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
+>>   {
+>>   	struct dw_pcie *pci = pcie->pci;
+>> -	u32 offset, status;
+>> +	u32 offset, status, freq;
+>> +	struct dev_pm_opp *opp;
+>>   	int speed, width;
+>> -	int ret;
+>> -
+>> -	if (!pcie->icc_mem)
+>> -		return;
+>> +	int ret, mbps;
+>>   
+>>   	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+>>   	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+>> @@ -1462,10 +1461,26 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>>   	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+>>   	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+>>   
+>> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+>> -	if (ret) {
+>> -		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
+>> -			ret);
+>> +	if (pcie->icc_mem) {
+>> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+>> +		if (ret) {
+>> +			dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
+> 
+> s/failed/Failed
+> 
+>> +				ret);
+>> +		}
+>> +	} else {
+>> +		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
+>> +		if (mbps < 0)
+>> +			return;
+>> +
+>> +		freq = mbps * 1000;
+>> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
+> 
+> As per the API documentation, dev_pm_opp_put() should be called for both success
+> and failure case.
+> 
+ACK.
+>> +		if (!IS_ERR(opp)) {
+> 
+> So what is the action if OPP is not found for the freq?
+> 
+There is already a vote for maximum freq in the probe, so if it fails
+here we can continue here.
+If you feel otherwise let me know I Can make changes as suggested.
+>> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
+>> +			if (ret)
+>> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
+> 
+> 'Failed to set OPP for freq (%ld): %d'
+> 
+>> +					dev_pm_opp_get_freq(opp), ret);
+>> +			dev_pm_opp_put(opp);
+>> +		}
+>>   	}
+>>   }
+>>   
+>> @@ -1509,8 +1524,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+>>   static int qcom_pcie_probe(struct platform_device *pdev)
+>>   {
+>>   	const struct qcom_pcie_cfg *pcie_cfg;
+>> +	unsigned long max_freq = INT_MAX;
+>>   	struct device *dev = &pdev->dev;
+>>   	struct qcom_pcie *pcie;
+>> +	struct dev_pm_opp *opp;
+>>   	struct dw_pcie_rp *pp;
+>>   	struct resource *res;
+>>   	struct dw_pcie *pci;
+>> @@ -1577,9 +1594,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>>   		goto err_pm_runtime_put;
+>>   	}
+>>   
+>> -	ret = qcom_pcie_icc_init(pcie);
+>> -	if (ret)
+>> +	/* OPP table is optional */
+>> +	ret = devm_pm_opp_of_add_table(dev);
+>> +	if (ret && ret != -ENODEV) {
+>> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
+>>   		goto err_pm_runtime_put;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Use highest OPP here if the OPP table is present. At the end of
+> 
+> I believe I asked you to add the information justifying why the highest OPP
+> should be used.
+>
+I added the info in the commit message, I will add as the comment in the
+next patch.
+
+>> +	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
+>> +	 */
+>> +	if (!ret) {
+>> +		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
+> 
+> Same comment as dev_pm_opp_find_freq_exact().
+> 
+>> +		if (!IS_ERR(opp)) {
+>> +			ret = dev_pm_opp_set_opp(dev, opp);
+>> +			if (ret)
+>> +				dev_err_probe(pci->dev, ret,
+>> +					      "Failed to set OPP: freq %ld\n",
+> 
+> Same comment as above.
+> 
+>> +					      dev_pm_opp_get_freq(opp));
+>> +			dev_pm_opp_put(opp);
+> 
+> So you want to continue even in the case of failure?
+> 
+I wil make changes to fallback to driver voting for icc bw if it fails here.
+- Krishna chaitanya,
+> - Mani
+> 
+>> +		}
+>> +	} else {
+>> +		/* Skip ICC init if OPP is supported as it is handled by OPP */
+>> +		ret = qcom_pcie_icc_init(pcie);
+>> +		if (ret)
+>> +			goto err_pm_runtime_put;
+>> +	}
+>>   
+>>   	ret = pcie->cfg->ops->get_resources(pcie);
+>>   	if (ret)
+>> @@ -1599,7 +1640,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>>   		goto err_phy_exit;
+>>   	}
+>>   
+>> -	qcom_pcie_icc_update(pcie);
+>> +	qcom_pcie_icc_opp_update(pcie);
+>>   
+>>   	if (pcie->mhi)
+>>   		qcom_pcie_init_debugfs(pcie);
+>> @@ -1658,6 +1699,9 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>   	if (ret)
+>>   		dev_err(dev, "failed to disable icc path of CPU-PCIe: %d\n", ret);
+>>   
+>> +	if (!pcie->icc_mem)
+>> +		dev_pm_opp_set_opp(pcie->pci->dev, NULL);
+>> +
+>>   	return ret;
+>>   }
+>>   
+>> @@ -1680,7 +1724,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+>>   		pcie->suspended = false;
+>>   	}
+>>   
+>> -	qcom_pcie_icc_update(pcie);
+>> +	qcom_pcie_icc_opp_update(pcie);
+>>   
+>>   	return 0;
+>>   }
 >>
 >> -- 
->> 2.43.2
+>> 2.42.0
 >>
+> 
 
