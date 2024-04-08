@@ -1,124 +1,104 @@
-Return-Path: <linux-kernel+bounces-135103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCC489BB34
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A203289BB36
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:07:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD7AFB223C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:07:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 169AAB22F6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E479B40847;
-	Mon,  8 Apr 2024 09:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5406047F4A;
+	Mon,  8 Apr 2024 09:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8sH5GE+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="k58Mc4ES"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A273FB83
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7E945949
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567222; cv=none; b=PcnkThy2oYNgI2xH4mQGYLHkv9UJY9yJObJDUEgCE71ZiZ2KJbGfgkW/nwmIBqhdeKTRfJgC5AuwFKvaEmuXPaJPrlNE3dzu4lnm6UPeRIhW0IYIKWFBC/ngbPDmYkaCzSUk27LlGAvQCMsUs2VPVJekg/Tgu92qOQ+kVGeJ08c=
+	t=1712567244; cv=none; b=eXJheLgQtTVN8Ycek3eHFNOZJHmqssvXdO8GR9cVcKBv/D775LBBcik7NNa6b3HJpwVzldWpITJTd4Td3bpSpREvHxyT4Q37xtV22H9AZ+oNY9KTPzSTVAJ/IuMQ4gIjcc0H9hc4CDuzWa3IHPUH/Yx+PFsufp+R1y1fIjbN4+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567222; c=relaxed/simple;
-	bh=akQc+U5hAZwoLZiwB/CcAXYMfBwyVM+4OQW51zKEobo=;
+	s=arc-20240116; t=1712567244; c=relaxed/simple;
+	bh=GjWa/RjkkGafcaWjEusibbphCAEig66tgMiPpSQdNps=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkUGCQLO2CXhUbVTIox1e24FxOlLjKatk5DGF7EcBUp5ECzZ2Lie4oCaEUk6jafzPhJtC/jjcdJhWEy3cUponiZBcO5YtyQ0dIe7rA5hcZ/EmrsxW7pqHipkUVatU/LbLFhddtULHnVupyKFl9lU9IwyH0EJA+8Dg+pZ4ThvJ30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8sH5GE+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDFE1C433C7;
-	Mon,  8 Apr 2024 09:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712567221;
-	bh=akQc+U5hAZwoLZiwB/CcAXYMfBwyVM+4OQW51zKEobo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S8sH5GE+JsA1VWNrJMzYWSLpVutU1kiQTnwhqQ4Hy+1zE3J4QWlo0i5FgfCDgrzX8
-	 eY9ROiD7UO9GQiQ9TCHGXw8R2cUkT8qEaO9ZjnIVDS9ZJK/y4n1gQ9+vn0EegYLMoC
-	 tc6Eup9+UFqvbF32/eR/nXfHBcsdedvaY0k13/5BZtJ0+Lu2CDY8slo7VeriKhF2SE
-	 H3ShBmFOgG6HPXpOsiGtCwnV+XfD534/sqNojdcUcJQlZJXBAmruX7fRb/phMyWIv4
-	 /EpUfqSL2hNN9/+HXH3/afVp9dRycz++zI3hbXjj94C1+qymhRfEXJCXqAJ/ALfLZJ
-	 orKjEBzubdnMg==
-Date: Mon, 8 Apr 2024 10:06:55 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: Christoph =?iso-8859-1?Q?M=FCllner?= <christoph.muellner@vrull.eu>,
-	ajones@ventanamicro.com, alex@ghiti.fr, alistair.francis@wdc.com,
-	Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	cooper.qu@linux.alibaba.com, dbarboza@ventanamicro.com,
-	Qingfang Deng <dqfext@gmail.com>, eric.huang@linux.alibaba.com,
-	heiko@sntech.de, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>, philipp.tomsich@vrull.eu,
-	samuel.holland@sifive.com, zhiwei_liu@linux.alibaba.com,
-	Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 2/2] riscv: T-Head: Test availability bit before
- enabling MAE errata
-Message-ID: <20240408-semisweet-class-39239c279adc@spud>
-References: <20240407213236.2121592-3-christoph.muellner@vrull.eu>
- <tencent_CF232CDF85208DF6BFA3076E73CC4E087306@qq.com>
- <CAEg0e7h0F_LaeMoS6Co1UjgLM6ML8SXtTfHW5+OQS6yedjdZPQ@mail.gmail.com>
- <tencent_459BC09115173E0624A4A0F19D2F43704F05@qq.com>
- <CAEg0e7jW=Sfc3tcc0eJwbTx=vb0HM49ZWpda972E-t=Fj1PG+g@mail.gmail.com>
- <20240408-dispersal-foster-49c4e269216e@spud>
- <tencent_D6D1043732E63644A4B1838F4210499BCF05@qq.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t9CZaNhMn7JopstSt7IOXE0te9cHXZouzuYTDAm0sCre+n6jTsxjA3wC0MqwuiXJvudmAjR4vs0Hr668xBcOUpZpFEPiyfGBF7DAt6Yz6x+0/mT/NRb5hje/iBUIG6wXV4wi0qMdYne2tDNwaMETbUVWKwL3o8qwut2pA6GqEjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=k58Mc4ES; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=GjWa
+	/RjkkGafcaWjEusibbphCAEig66tgMiPpSQdNps=; b=k58Mc4ESW9MYcPvf8eX8
+	27Ln7o20ylZXGKvSxE//2f5SIVEH1hYzvuOIE8fCTS9vZPJZ8Lr3ERKHdpfR/YOm
+	NXmgZUi0szsgdjUnMrB7XdX2uQj6Lnnx/Ps4kE6cWbaFHDSkFYdXjWRt2SBKFm4g
+	VQfB13EvseL6f8jI/BGSuQwOAiLgRTXXNpVH0BSXTsTw5NjQ+L4KRcV2wCHO1drB
+	q/OIW0wIIMD1CQr8WiRQpnj8kmB+74Cpnj5BtR9gnvt0NXk2kwB+Cig/h4/20JEH
+	gV5Gtwc0sYUuzdbrsmHWGAd+lOvit1JHuWYX6h1DNMoPRf2Qve7ksaNh58VLfqGr
+	aA==
+Received: (qmail 714219 invoked from network); 8 Apr 2024 11:07:20 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Apr 2024 11:07:20 +0200
+X-UD-Smtp-Session: l3s3148p1@4V0DIpIVSqIgAwDPXwE9APSWg5D5lDs4
+Date: Mon, 8 Apr 2024 11:07:20 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 22/64] i2c: highlander: reword according to newest
+ specification
+Message-ID: <w5jl3r2ta5qebzt76jkkszqkxlycp4d4sriyz7kxyotpza7q45@sq4kkk723uzz>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-23-wsa+renesas@sang-engineering.com>
+ <u4dtq2ii3kjvwj5hhxogcqje27adpoxxlr7y6bkqo2suqcumxb@p5vsjp3m2rop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Jkvao9Yo3z8s7tYF"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2h2j7mvrz3bhlw7z"
 Content-Disposition: inline
-In-Reply-To: <tencent_D6D1043732E63644A4B1838F4210499BCF05@qq.com>
+In-Reply-To: <u4dtq2ii3kjvwj5hhxogcqje27adpoxxlr7y6bkqo2suqcumxb@p5vsjp3m2rop>
 
 
---Jkvao9Yo3z8s7tYF
+--2h2j7mvrz3bhlw7z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 04:21:24PM +0800, Yangyu Chen wrote:
->=20
-> So the solution might be to have some property like `xtheadmae` and test
-> th.sxstatus whether it has MAEE bit set when we have this in ISA string in
-> the DT rather than have MAE enabled for sure if `xtheadmae` exists as
-> discussed before. This will require changing the DT.
 
-Yeah, I think I don't mind what you propose, as long as we define in the
-binding that "xtheadmae" means the hardware supports it ***AND*** the bit
-in the CSR. That's easier on firmware and taps into the existing
-support in the kernel. I think it's more consistent with how we handle
-the standard extensions to do it that way than to assume "xtheadmae"
-being present means that it is enabled.
+> I'm just noticing... what do you mean with client/target? Can you
+> please be a bit more specific?
 
-> However, since the
-> C908, the first core released by T-Head that supports MAE with non-zero
-> arch_id and imp_id hasn't merged to mainline yet. It's time to add this
-> dt-binding and some code to probe it. I can have it tested on K230
-> recently. Whatever, this patch can go first.
+I described it somewhere (and Easwar mentioned it in another thread by
+now), but, yes, it needs to be better described. This will be also in my
+updates to the I2C docs.
 
-I don't think adding something like this should block merging the
-initial c908 support though, can easily be follow-up work. I'll apply
-the k230 stuff Wednesday if nothing has come in on it by then.
 
-Cheers,
-Conor.
-
---Jkvao9Yo3z8s7tYF
+--2h2j7mvrz3bhlw7z
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhOzrwAKCRB4tDGHoIJi
-0oB+AQCPgg96W0VvHOZrVatTzvKo8Ks06TKzM+xecKegEiQXkQD/YVqMa3ZG0Q+h
-USez/WU6aoulSTP1+1Aj3u0FXiWhUwM=
-=2F4L
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYTs8gACgkQFA3kzBSg
+KbaxQg/+JMkEn9CKK37sz/CQ/cn33B9pHhSv2bHRmjt23CixmbSPlheW3IHWL3Uz
+WFMOYhdCvJ+Vfp2y303gbjch798trmxJsJ7dKxQNh6WXA4Hz6yV5ULYBgZxLoyBJ
+ArhtOj08+Bl5Tjb1cjJj8G/1kx0YO1V4ejdVtXQuIgMGaXUvl9koV41gbW4NGd/x
+TNExmkBJ4sJd2EtUqCyBv4CyfQu3fybM+nmTcWoYW6JgkRSk9s6zlbsSvrCQcUuW
+jc0tC+I7DBj7F5fKXqLY5RJH1AJw3H7Oe2iP6X5YKrT9nlNIaMN5zkSiEhiBcuNy
+BBNYrrZ1Usq+FZLGyyXyzCHxwshgyXrYgea0esqyEeOXTezsxkfdjs2D6JkFlThA
+Q99PDv5RySpRdMJ8YAlUAmWr1rpIytfcGbUVABTSmLfzX+N5hUMiHK0yFR6IZ4nZ
+DnRcus0PHc+YAXdp9MnREERqUMSYDf8Cv6edJO1ACJ4U8gKuUxk4cKCBXCIWUb2F
+j+rr2xUsIq8L2yKyrWnEgxjkMl9LDOZRvzRVL/0QVMBfrpGyj8bthxwPpIRqqjdi
+m0HC5kZ0srQltSHEd1zdn0YLVKCDJUBq/5Y9y2e99/3UOKSJ5CdAQeBB+EGt9l7A
+d1P+ubfO3uSCM0R1p/NFuZF5+QqwxcswzO/jC99dGytnZ+QN4Xk=
+=LvVQ
 -----END PGP SIGNATURE-----
 
---Jkvao9Yo3z8s7tYF--
+--2h2j7mvrz3bhlw7z--
 
