@@ -1,110 +1,103 @@
-Return-Path: <linux-kernel+bounces-135792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C125289CB5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB7989CB65
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:02:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005EC1C21758
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0C81C21896
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AAF14430D;
-	Mon,  8 Apr 2024 17:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407C3144306;
+	Mon,  8 Apr 2024 18:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVkqRQs+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k77n1JSQ"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E741E489;
-	Mon,  8 Apr 2024 17:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227E014387A;
+	Mon,  8 Apr 2024 18:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712599144; cv=none; b=RvgO0nP55dlkAtj51PQJo3vm/85t5ETcvYJEY+44YGSSXLvupEKZwojsjfbgNjSHWy9HUkSeVwxKsEiGsFSD7FRyAKCwnfDHqPsbuWVqU/x8bCFFSuROgutCP14q3fPLWwajhj7rGEOkiQ7DTLV9UuRNsDSj5glWPuC4pmsgbRI=
+	t=1712599326; cv=none; b=khghV1IKJ/2piD//7yI7MAWdhTXqvTIifn8B0BnOm5qz3v4AujiKL5i05WusQMiPz1VoBaOSvTdH6wOEs072NO8/IPVUUxS0YGK+gCH4USRjvIVRgSpVi4icrwUiNU3onWZYgLjhQG3I+CkGDEzlkGmslhy59KhaoLHiDsHNx84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712599144; c=relaxed/simple;
-	bh=DMDhTUddn0z/kT6115csMSz16dwSMlBikZA7r7PGvHc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=g4K6x/8JjiZf4SEWc1aeY+qOh7J+UjnC0UScNpLzloaHX/ih7yKXsz1eJ8MGhNTLK6B73mMEoJAkkzhAo+B0GAkQYDhnSv0Hh5aIwoNKCgzf5j3t2lXD/7LK5O2uc1N4CRQ1OhCm0ZEQeM7jx2dP9c5VcGqkaLPF7sqNVcL1DJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WVkqRQs+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31482C433C7;
-	Mon,  8 Apr 2024 17:59:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712599144;
-	bh=DMDhTUddn0z/kT6115csMSz16dwSMlBikZA7r7PGvHc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WVkqRQs+vE4iD1ZVjoNt5CwtkG0CGRrhP0Hon1ObKqaA/c0aX+A0fRpnhk9wD2pto
-	 LZsrjdJ2pgn8XVTzms+dHEuCBG4bBaTvx/JHdj++E2CBj+vOw2VCKjvsS6WhDypNoq
-	 wFZk+gimyZFlScbJPL3AODFCVQ1gDAJSr1jNESSAC9nBf8us8t+HaEBGtfwhJN4ozy
-	 wtnLCVgG2hiIGgOBUIC+l03/jBSYTXa7JCA36D6D+zgkB7zVvOJD6I4PpSfBafVMB0
-	 8Q17gDfX6MGxzHj4N7BpwLFgjTFG/n/O/ZPv+R4A2C46n7IRHiNuoASeuXwEaQcddW
-	 w3T7EJTuWE/7Q==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com
-In-Reply-To: <20240408042331.403103-1-quic_mohs@quicinc.com>
-References: <20240408042331.403103-1-quic_mohs@quicinc.com>
-Subject: Re: [RESEND v3 0/2] Add support for QCM6490 and QCS6490
-Message-Id: <171259914092.121643.12184524914448906569.b4-ty@kernel.org>
-Date: Mon, 08 Apr 2024 18:59:00 +0100
+	s=arc-20240116; t=1712599326; c=relaxed/simple;
+	bh=vkBaDTcUBTrefxXYlzFyE1aOMi1WQ5AbdAKrTQt3pWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aSJC7EaN0QeCzgxaCaqkj5tvNf40Xl3S+Ey8sZiFxNUpEigMBMvNYfrbBnI0lesXPQcOaejr1NsUHyBFKRGlEUc/CPLiONb1vbmLLNb4dWEZWMSKXT8L7JT6Okq4RiHSLdz3BNMSTDzRyZBIJVCrbwSKI5Ivxno1nJLhrJAowNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k77n1JSQ; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ecf3f001c5so3921004b3a.1;
+        Mon, 08 Apr 2024 11:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712599324; x=1713204124; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LfwqzK+afBMY9Zy8h33Ym+tRlLN7tPH7S1iHp5xkDtU=;
+        b=k77n1JSQsE4xNwmflCwCAUaVGoXXEC8XuFiWbg9oTW55E0U9AP7HHVlRDW7BczKmfg
+         mRMGzdSKCpngrzwMf9L+qdfiLJVMAJ20sTwdn+zNapiFo5NCgOAbJXbx+AR6LsqayiYl
+         PPjoYKmQeyDzClBMXKUcyi+V9q8+dYRIFCuYb52W+H0Yy9RT+bYwOV/A06NRNJogR+66
+         IkdFflonFsS/iMYTFZgdkrKmEE5p3mpubG5X72olJEKUIOwroOd1AIqJK6n7QKs0vuSx
+         8EDu1vcSmAUPUgOz0RNajqjMsOz4AU2vvTmYF6Qhp1fOrWhCVQ7Bx2/VJntI7yvDm/kj
+         N9OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712599324; x=1713204124;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LfwqzK+afBMY9Zy8h33Ym+tRlLN7tPH7S1iHp5xkDtU=;
+        b=qNvjunLL1xCPZeB5k6ZHCdJFMRKufZJhjtHn/pmTPHsQBZGrINglb+Jl02iVGnc/cN
+         50JA6NbANZlZ55ad3EPiJjQ/7G2GiLZREPvZjVVATOJq2O0fIIQJWkYuuBKUaQOQ/Tts
+         d6cQAK24uCE3484roXPAxeP6aTD1H1qIPaEAnkWW+L1UB5sdqjxQG3sv4th3rdhq51ZE
+         Z5QwTuUju+JHqlABsAHXQ+6Hj7MwQLZnmXOuedXAQ7QWHa90kaF7E2aV8jXQ8MsFQxln
+         slZiJ5hMxvKXGWl3DLTqzC83JceCFqMnMhxD91+rE4SN5O5x3+5Svq2OtIucWdWsE4iq
+         POzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYZdE2B+uVpSIN2TrimTEkiiMSd/q4I4gBC9EHzqbtPpJzV/IQyrxIF5OCMOvUt6/gWx2C+Aip4syPmFs06jlN4VtA0RV+TzXMUeaE+4Cp9g5QtJMshtJapt9UzUoqz9LduVEfvu5UINzCj9t/W4UT7puqFrBaDyZjTZPyNseSNw==
+X-Gm-Message-State: AOJu0Yz0woIsEwzz7yButLBQ6923x0IKnKvhNHKmkPBrLcrmCDW/k6l1
+	zOzgc+gaoQT0ZZ+r+95jiNeJ7SmNIUJklngKMOonkO0uDuUResOj
+X-Google-Smtp-Source: AGHT+IFE0N9ybTKgUYJ7RoYqHLChlg+pN28+lWShPpbkU2HLYdnAgjjiMQ6pm+hporQuV7Jb9r1q8Q==
+X-Received: by 2002:a05:6a00:2341:b0:6ec:ee7c:141c with SMTP id j1-20020a056a00234100b006ecee7c141cmr8743216pfj.16.1712599324354;
+        Mon, 08 Apr 2024 11:02:04 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:a5f4])
+        by smtp.gmail.com with ESMTPSA id p4-20020a056a000b4400b006ed06399e0csm5830538pfo.72.2024.04.08.11.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 11:02:04 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 8 Apr 2024 08:02:02 -1000
+From: Tejun Heo <tj@kernel.org>
+To: I Hsin Cheng <richard120310@gmail.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: cgroup-v1: Fix description for css_online
+Message-ID: <ZhQxGgVo_Lox0EVD@slm.duckdns.org>
+References: <20240408035329.5175-1-richard120310@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408035329.5175-1-richard120310@gmail.com>
 
-On Mon, 08 Apr 2024 09:53:29 +0530, Mohammad Rafi Shaik wrote:
-> This patchset adds support for sound card on Qualcomm QCM6490 IDP and
-> QCS6490 RB3Gen2 boards.
+On Mon, Apr 08, 2024 at 11:53:29AM +0800, I Hsin Cheng wrote:
+> The original description refers to the comment on
+> cgroup_for_each_descendant_pre() for more details. However, the macro
+> cgroup_for_each_descendant_pre() no longer exist, we replace it with the
+> corresponding macro cgroup_for_each_live_descendant_pre().
 > 
-> Changes since v2:
-> 	- Modify qcm6490 compatible name as qcm6490-idp. Suggested by Dmitry
-> 
-> Changes since v1:
-> 	- Use existing sc8280xp machine driver instead of separate driver.
-> 	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
-> 
-> [...]
+> Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
 
-Applied to
+Applied to cgroup/for-6.10.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Thanks.
 
-Thanks!
-
-[1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd QCS6490 sound card
-      commit: c64c4e3f789123e82ffae3404d108cf826c9599a
-[2/2] ASoC: qcom: sc8280xp: Add support for QCM6490 and QCS6490
-      commit: 5485c3fa96f78314207a30e81dbe270424d70ede
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+tejun
 
