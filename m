@@ -1,189 +1,163 @@
-Return-Path: <linux-kernel+bounces-135912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B55689CCFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:39:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABBD89CD01
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD8C01F218AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:39:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ED2DB219E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D53E1474A3;
-	Mon,  8 Apr 2024 20:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874D51474A5;
+	Mon,  8 Apr 2024 20:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OObW6Wdb"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EhlCUVlm"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E955A146D60
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 20:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57697482
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 20:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712608735; cv=none; b=eY/X3aATUqEip7Dp6z8XviYmhPcNInsBwRc8ANQuIOUmKszFmLSbFG8yZSdHl59lCIMmizzu3AFew/WeVTaPeF32+RGuIYZgRojdHjjDHTw6PeoWXLqoboC3FHp7PPt+bvoXSkkz/Yp6qKlPGYgnfErwcGETGjHdy8Dd0UNZCoM=
+	t=1712608830; cv=none; b=iEXO7ripZvrMLU0L+ZqOFDQgBJmnKYcVTR8u0vEuMOJcFGM6xTBfpRY110ZmmGXBD6Gd074lhcZi8ZXTi1QMpH/ltecP6SNGhSBgQCkkcPK5ugvXTNjduaHwuDd/QEIeC+3kbnZ0MLR8EfppjDOVuvCWlFuCrpzhTKh0cKDINrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712608735; c=relaxed/simple;
-	bh=lEHoPN6gYhfk4UDi8utcR6Ihx3SZ138a1bYEvCHbXMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NrD/PLMhbuyA4Sn2+hURdNSpyo1jL7bK++FxJk2hgt9/n4lo27lgR8N0lyEqI9MK1866pqqQVc8drH26+LZizZ6C8Z7j62llLdmDvuyogImeDnkANU7Dt9r1XKlnysGeI1UEfXYv2ur6QREubKw2hh5B9Uu0CdvAWPJjjOIYcNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OObW6Wdb; arc=none smtp.client-ip=209.85.166.41
+	s=arc-20240116; t=1712608830; c=relaxed/simple;
+	bh=/lzVzbK8GfEZQ9NiAPI6LOYjttXFw3I14FUKkVXEWbI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eLvcxbrx0lK09+KDTLic920OSDpPrUrAZpb9oEqWvbHr1a2ZElUshc9jHJQ6QVR4YeRNslqpdc1+thBfuCKbReKCIzhsQmcLKA1fy2LA36ScW9kgYdQ97uS+vDlUQagDbwXNO2dAINLIdTO3R5v0d9h3Gv3/QjyLf8XaL8Vab6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EhlCUVlm; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c8d2e0e9cfso130160339f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 13:38:53 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-345e1c64695so550749f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 13:40:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712608733; x=1713213533; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=66EhmBXE+6opbYU7Qf+U0TLJ3Vt1siSvg3UxG+2mUhg=;
-        b=OObW6Wdb+TvkxrnblWzHDYlvvMafuDv/+yq1WTT482DhRd/8inGAEAD8TsdaZQk8Ms
-         uUw16OicIR0AOpQ9YpPUXB+dw3MHLZy6JXISccKWyMrpD1WI6iah4wZvsdTIMObx8RZ9
-         hLwiCaoV9GCGQbtLZGIS+GsgQNiPnYNISKDrVoERaLJICu33NAJSW1+l2+5ekmHWXsht
-         HDylvuN0+rSTza5rp+CumdmpBQIV0rMppDE8/X+5rgzGVj7mrPJFNAkj82rLXBFkhPdT
-         1pUK2vZImq9BlVC2egucGsKDnHp1Hjru0RVRlRr1OLGwJbxFqiyDyC2P7LDM6px7XkMJ
-         7nHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712608733; x=1713213533;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1712608827; x=1713213627; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=66EhmBXE+6opbYU7Qf+U0TLJ3Vt1siSvg3UxG+2mUhg=;
-        b=vj7c6sxsgg0wdLsvdLzOPV542YJRROofyvm7jZtng25xcm21p3dPkc3bFhupo1EqjQ
-         q2Onrdu7aqC0M6IS3G4LqaINAhQ+e54DEtuqYeBhn2vYCCP262brx30f/fmSfsugQNbw
-         Ji3oNEiaEE+zk06seI1Wse8EYdlMwog39ZIk9OunBLmBsuKXXku8RuIz9eLNy0s26Kbx
-         Z3NjyDXsx4oxhiEaieVanUbplWZ3sTG45OogSqd8Bwpm7PKviRhR8NymoIhPbu0k7rs8
-         NpCalvKga6DA2YikC14m99Be0enHCI8bbp6zY1CV9YyesrzH1LKSqeLHbm1arlCuaCWW
-         VMXg==
-X-Forwarded-Encrypted: i=1; AJvYcCXobrC+Yjp0uGwPx97YjF67d6L6zO/WZqm4WYsiwwdmr2HYznLBeXUgfkfvGuiL3jOzyGkiD6F3weer/CGIpFFjV+zKvNdR1A0odz3v
-X-Gm-Message-State: AOJu0YwgN2OEMBVdi4BnYY6CbahJ7RNQGT5earDncJVpCVlxtTQp4gND
-	748zaPXsNz2erADLQtRYwif8neA5b2J4hb5FuPB/yJF6aPb2KfrsnTTsYZE6Wg==
-X-Google-Smtp-Source: AGHT+IE345TzGH9Fq0etBCi6wkGO3vYGKyR4fYGiq6aa+SdZJ1rKU5+HgSIED7L9Bjx9H4TLIj8esA==
-X-Received: by 2002:a05:6602:4898:b0:7d5:f78f:ab1c with SMTP id ee24-20020a056602489800b007d5f78fab1cmr3626178iob.2.1712608733081;
-        Mon, 08 Apr 2024 13:38:53 -0700 (PDT)
-Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
-        by smtp.gmail.com with ESMTPSA id bv24-20020a056638449800b0047be26df380sm2795121jab.2.2024.04.08.13.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 13:38:52 -0700 (PDT)
-Date: Mon, 8 Apr 2024 20:38:49 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] [v2] staging: greybus: change strncpy() to
- strscpy_pad()
-Message-ID: <xuqmx35li5pwktklh2rds7zqmsieletfzhkerdvw2agv5zjpnb@2qr5oh7ktdv3>
-References: <20240408194821.3183462-1-arnd@kernel.org>
- <20240408194821.3183462-3-arnd@kernel.org>
+        bh=YH7O1NXdJC03aNqvzATcinYdpPQ1XTxhwnXgM4me0RQ=;
+        b=EhlCUVlmUbhtFvx2FLjFMTRJAaOjGs//k9n6ku0vbawnPbLgm1/qiw2FfNVn4WOczP
+         CqaYJ6pWzNoezaZf8Q3MFTTF244F9pzPqck78JRsNCzLKiHeeHm5hLf7BeJlk71BPQBa
+         NA8mgoTOAZ0egfbAUYCJnDgS3UD2dxIyhYjTBrsenZlyP3dQgmbN94/LY2sezW3y+5Pw
+         lYt6HoAO+k2GTsanVew5K4X5WsEH59tAbLj1P4HtXM/3tn1E2+/2A2AqqdtErtJYonuR
+         kwmsi5QQ1jvTMrdYWfkqrozCi5w7zs4BN5KH0x9os9zHJ45uEU22NiQ5WaLXvfrZlE1/
+         qtNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712608827; x=1713213627;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YH7O1NXdJC03aNqvzATcinYdpPQ1XTxhwnXgM4me0RQ=;
+        b=AeDzi5FuoNeZ6f57MXUjMcU00nh8MxYvCkshz0z1+0pEX3VldHZah0xWH6VjbGfAs0
+         C2ZTDmW1NMm7qcf9XDmoN9k7ZqHt8WHE13S278ESdtIOK7ZUQ89nxBsu2vd4Q8NM79Sg
+         WTituTMyl3bUDKsF3RXyBFZISIMy7PQVSXc2DwwUCjXegHMmzD/A1XFVzAWa8UXLljZT
+         Ayx/PH9rPK0zWcMZ5hqZ0pjKt14qrrKa+8faayyP53VILevFE+TJI0/+CfBJ+9yctxYt
+         bRMLKCKbaxgFfy+8Uhsa86EGJdr3cRnps7dr/5dUPdXv+B64ZHODBlo4BgWAiKZx+X4F
+         G2/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXutPzDJiy/kUdSFfZkf9PXz0QKOsG5UIdQmVZDSNdqm3gp6FfLPG8C3C0Vxxnkjj2RB95I2qkTcfDN2IxY7mBVNtV2ewrNl8IIU9hd
+X-Gm-Message-State: AOJu0YwO0/dbHocL3m4cJa7+Wwj5EfoBBKo7SWwK0YY/YBVBbQwJDprY
+	QP30rAmaVpWmPuexdd81eh9X+dRv9/G4Zjdvz5cDhPkoIdUs0RQkYIcwqMH5/mXSjjcA6PLSxl3
+	yzL0Qy1z+3EIdRK8yVxTEyGTg5ow8SgnF0TIp
+X-Google-Smtp-Source: AGHT+IFxhfE/RzvX7+ulq0KbAkf7P5D6w45kxMVxgPiuAeYPn2IilZSRtVlEKwNMRCb0uRiYGJdYkTguNKiF7lfjQRE=
+X-Received: by 2002:a5d:4811:0:b0:343:d06e:51cb with SMTP id
+ l17-20020a5d4811000000b00343d06e51cbmr6748896wrq.19.1712608827286; Mon, 08
+ Apr 2024 13:40:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408194821.3183462-3-arnd@kernel.org>
+References: <20240405231920.1772199-1-peterx@redhat.com> <151c1981-f2ed-43fd-bec3-5ed63efe1c13@redhat.com>
+In-Reply-To: <151c1981-f2ed-43fd-bec3-5ed63efe1c13@redhat.com>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Mon, 8 Apr 2024 13:39:49 -0700
+Message-ID: <CAJHvVchiY9v2jkdFzbYukbiUYADCrZcAO-4pW-RwdbLetW8w7w@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: Allow hugetlb change protection upon
+ poison entry
+To: David Hildenbrand <david@redhat.com>
+Cc: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-stable <stable@vger.kernel.org>, 
+	syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
 
-On Mon, Apr 08, 2024 at 09:48:11PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc-10 warns about a strncpy() that does not enforce zero-termination:
-> 
-> In file included from include/linux/string.h:369,
->                  from drivers/staging/greybus/fw-management.c:9:
-> In function 'strncpy',
->     inlined from 'fw_mgmt_backend_fw_update_operation' at drivers/staging/greybus/fw-management.c:306:2:
-> include/linux/fortify-string.h:108:30: error: '__builtin_strncpy' specified bound 10 equals destination size [-Werror=stringop-truncation]
->   108 | #define __underlying_strncpy __builtin_strncpy
->       |                              ^
-> include/linux/fortify-string.h:187:9: note: in expansion of macro '__underlying_strncpy'
->   187 |  return __underlying_strncpy(p, q, size);
->       |         ^~~~~~~~~~~~~~~~~~~~
-> 
-> For some reason, I cannot reproduce this with gcc-9 or gcc-11, and I only
-> get a warning for one of the four related strncpy()s, so I'm not
-> sure what's going on.
-> 
-> Change all four to strscpy_pad(), which is the safest replacement here,
-> as it avoids ending up with uninitialized stack data in the tag name.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Thanks for the fix, Peter!
 
-This patch helps out with [1].
 
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-
-> ---
-> v2
->  - use strscpy_pad()
->  - use two-argument form
->  - change all four instances, not just the one that produced the warning
-> ---
->  drivers/staging/greybus/fw-management.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/fw-management.c b/drivers/staging/greybus/fw-management.c
-> index 3054f084d777..a47385175582 100644
-> --- a/drivers/staging/greybus/fw-management.c
-> +++ b/drivers/staging/greybus/fw-management.c
-> @@ -123,8 +123,7 @@ static int fw_mgmt_interface_fw_version_operation(struct fw_mgmt *fw_mgmt,
->  	fw_info->major = le16_to_cpu(response.major);
->  	fw_info->minor = le16_to_cpu(response.minor);
->  
-> -	strncpy(fw_info->firmware_tag, response.firmware_tag,
-> -		GB_FIRMWARE_TAG_MAX_SIZE);
-> +	strscpy_pad(fw_info->firmware_tag, response.firmware_tag);
->  
->  	/*
->  	 * The firmware-tag should be NULL terminated, otherwise throw error but
-> @@ -153,7 +152,7 @@ static int fw_mgmt_load_and_validate_operation(struct fw_mgmt *fw_mgmt,
->  	}
->  
->  	request.load_method = load_method;
-> -	strncpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
-> +	strscpy_pad(request.firmware_tag, tag);
->  
->  	/*
->  	 * The firmware-tag should be NULL terminated, otherwise throw error and
-> @@ -249,8 +248,7 @@ static int fw_mgmt_backend_fw_version_operation(struct fw_mgmt *fw_mgmt,
->  	struct gb_fw_mgmt_backend_fw_version_response response;
->  	int ret;
->  
-> -	strncpy(request.firmware_tag, fw_info->firmware_tag,
-> -		GB_FIRMWARE_TAG_MAX_SIZE);
-> +	strscpy_pad(request.firmware_tag, fw_info->firmware_tag);
->  
->  	/*
->  	 * The firmware-tag should be NULL terminated, otherwise throw error and
-> @@ -303,13 +301,13 @@ static int fw_mgmt_backend_fw_update_operation(struct fw_mgmt *fw_mgmt,
->  	struct gb_fw_mgmt_backend_fw_update_request request;
->  	int ret;
->  
-> -	strncpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
-> +	ret = strscpy_pad(request.firmware_tag, tag);
->  
->  	/*
->  	 * The firmware-tag should be NULL terminated, otherwise throw error and
->  	 * fail.
->  	 */
-> -	if (request.firmware_tag[GB_FIRMWARE_TAG_MAX_SIZE - 1] != '\0') {
-> +	if (ret == -E2BIG) {
->  		dev_err(fw_mgmt->parent, "backend-update: firmware-tag is not NULL terminated\n");
->  		return -EINVAL;
->  	}
-> -- 
-> 2.39.2
-> 
+On Mon, Apr 8, 2024 at 11:59=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-
-Link: https://github.com/KSPP/linux/issues/90 [1]
-
-Thanks
-Justin
+> On 06.04.24 01:19, peterx@redhat.com wrote:
+> > From: Peter Xu <peterx@redhat.com>
+> >
+> > After UFFDIO_POISON, there can be two kinds of hugetlb pte markers, eit=
+her
+> > the POISON one or UFFD_WP one.
+> >
+> > Allow change protection to run on a poisoned marker just like !hugetlb
+> > cases, ignoring the marker irrelevant of the permission.
+> >
+> > Here the two bits are mutual exclusive. For example, when install a
+> > poisoned entry it must not be UFFD_WP already (by checking pte_none()
+> > before such install).  And it also means if UFFD_WP is set there must h=
+ave
+> > no POISON bit set.  It makes sense because UFFD_WP is a bit to reflect
+> > permission, and permissions do not apply if the pte is poisoned and
+> > destined to sigbus.
+> >
+> > So here we simply check uffd_wp bit set first, do nothing otherwise.
+> >
+> > Attach the Fixes to UFFDIO_POISON work, as before that it should not be
+> > possible to have poison entry for hugetlb (e.g., hugetlb doesn't do swa=
+p,
+> > so no chance of swapin errors).
+> >
+> > Cc: Axel Rasmussen <axelrasmussen@google.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: linux-stable <stable@vger.kernel.org> # 6.6+
+> > Link: https://lore.kernel.org/r/000000000000920d5e0615602dd1@google.com
+> > Reported-by: syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
+> > Fixes: fc71884a5f59 ("mm: userfaultfd: add new UFFDIO_POISON ioctl")
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >   mm/hugetlb.c | 10 +++++++---
+> >   1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 8267e221ca5d..ba7162441adf 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -6960,9 +6960,13 @@ long hugetlb_change_protection(struct vm_area_st=
+ruct *vma,
+> >                       if (!pte_same(pte, newpte))
+> >                               set_huge_pte_at(mm, address, ptep, newpte=
+, psize);
+> >               } else if (unlikely(is_pte_marker(pte))) {
+> > -                     /* No other markers apply for now. */
+> > -                     WARN_ON_ONCE(!pte_marker_uffd_wp(pte));
+> > -                     if (uffd_wp_resolve)
+> > +                     /*
+> > +                      * Do nothing on a poison marker; page is
+> > +                      * corrupted, permissons do not apply.  Here
+> > +                      * pte_marker_uffd_wp()=3D=3Dtrue implies !poison
+> > +                      * because they're mutual exclusive.
+> > +                      */
+> > +                     if (pte_marker_uffd_wp(pte) && uffd_wp_resolve)
+> >                               /* Safe to modify directly (non-present->=
+none). */
+> >                               huge_pte_clear(mm, address, ptep, psize);
+> >               } else if (!huge_pte_none(pte)) {
+>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
