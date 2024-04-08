@@ -1,117 +1,101 @@
-Return-Path: <linux-kernel+bounces-135786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FC189CB3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C02C89CB43
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2876F1F27D01
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:54:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EA2F1F22541
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD8B14600C;
-	Mon,  8 Apr 2024 17:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B0B1442F1;
+	Mon,  8 Apr 2024 17:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JYtx2mPX"
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VU9qvBGB"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8727D145B17
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914031E489
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712598803; cv=none; b=pWaitTf4uREZeQjty2hwTV7GWvzDQxDzFwVIw/ehxQ99grbNqfVvLOMomP60o2jH9ew0+yZTyD1MhInQ5vslNSq4c9FhIrsd4fQ1dZDxng4mXa+bJr5IZY+7JIVmmIhtk+OyaBItuMCSGzmEevlQL1/Dw/eCZ0ADk9JP3NiE98Q=
+	t=1712598939; cv=none; b=I2s4srn2YMj1UdOLPo0L27OF1B2T5Y+yRLrWy2PK+Epv5As+/Ooz/qAvSFPwUJbvW3+6qYJEHpsIaIs6wtogt7pD7LHAkU0s3QZ8ZscqKQgFsk07L2OpF3MgEQKgqINPcbPmjCj974gKpHY31HWCHsuVBfGr5Cz+LhfHUMIqunY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712598803; c=relaxed/simple;
-	bh=g25hNBF6/2ZvrUwCgI3AgRwG2o0NcE1IyQw6SZQaZ7Y=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=Y+NCtB86UsOkF2OLKc8WvOhQqcxOqh3krn/dk+9mTBhX3J1UCzX1diCUsX0rfsGkZ1vi4y4xAWFDf+JMAWO5a0uvcTD+7EEtfLZsFoBaIeoNs9Cklt6dhh+uXC59i9Iw9DmhU1aMZGomxgS+T3NNchhYr/lYlJu6psu8WDNJlmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=JYtx2mPX; arc=none smtp.client-ip=203.205.221.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712598797; bh=Pps4HsLgFHLx122khZoFNB9+hWAVJVChvnEPFqxgolA=;
-	h=From:To:Cc:Subject:Date;
-	b=JYtx2mPX006rbKJCRQWpi9GkBT+wNuv9zVL7RvY7dy33IOLN1QavdCokPVshyu2IC
-	 fItR6fwVQ7/LrS9IrjLZFP0Slj24ueib9Ti9x0AmocHtIK2vs9rtPnRs9YBJgKE7W5
-	 6o1cZgYRiLadM0Sm3nBoDfzo5j9F4DLw4V+kgrIo=
-Received: from b.. ([111.45.33.200])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id D2B0006C; Tue, 09 Apr 2024 01:52:43 +0800
-X-QQ-mid: xmsmtpt1712598763t0rn2vgkn
-Message-ID: <tencent_9949E2F260D801549611A452B52FC112F009@qq.com>
-X-QQ-XMAILINFO: OdDhBiKk1LgMmeqTxzAoEjqQRh7T+DCyVeh1exnmT20HYw7qVIcrsV/TyrhQyI
-	 aJr1NuytaezlNYKp2TA2+EAII7aItDvhhtimtfLvM8L7re7Es292gZ2JmBzd7hEK1K1WJyjbHlZC
-	 6Onka8U2lusbJ0AxUv2ts2r6aTko1Ca2flXNy726IsuheoO1e7W8Gpj8xTyCkHAtelestFOiwDRa
-	 X15GZA6kJPkZXwVqPYR5EuRQ8egv7PiYDeMewZAUTntzfCgMzAQnOHKY7whkvVIzyWSeiOiOo8BH
-	 yMxJNKLNMFyUNFI1B49dCiANMF56Bs9FTHG/yC0MwbSWBBBq3lHhaNJTO6r9hzW6OYcXJzLfq56f
-	 XTfWZJtzjn169mx+TL5tZnwr6p4RUXxqeNasqzcJO65as9I8DCY1p/tiP15RvAOOLG3ZsmZcUT8y
-	 3P+ijqDHbq9N90GkJU+dSSaR1TNRoKeBRQGKsrbUoHvJOSUdXv/5XHJlkjFoltTxwnfJcfAu71Kv
-	 +EPHNTmyPmCLBeqyYaJOwm8y2n7vAxXuFsjjmoVMCZ7tm6JwWXJC/lFiqRz7txWVyf8XLob2JUIm
-	 kOFNrna82bari7KP/tMeRPLkLt1ttdg+7o3E3BhKDyHViASfUenLn5vMbnUS9AK9KDdgBZdiXr3B
-	 udP0XDKhCrbwDB8kLSnnXC1wrDDLRJBc6PM89mLMFVXzLg9OlbCI+KqLCYuvIqqJwWNXVLwc1+cd
-	 1rqRgYjMdg5LT1lEAbqneYKv/yoMSeN1V7aiTf8jPJSnFnYyLnU1NWqFvtMSx1eKTTmnx4ihI19I
-	 zkKwBjt9kOTkDjJolOXZc/iZzbZjsJVm3xOUOK+IHYhw6NDrVCblw5ikOLs0vNI+WVjROpPb4HKd
-	 zrHxBmO537uus/rcVOthfz4oFC2d20Eq0S9ojyDOEjsFlf00m59PtWKoLy6ekVOrm1ZZ3XHpvDo9
-	 dJ0xKdPqQ=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: brolerliew <575705195@qq.com>
-To: alexander.deucher@amd.com
-Cc: christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	luben.tuikov@amd.com,
-	brolerliew <brolerliew@gmail.com>,
-	brolerliew <575705195@qq.com>
-Subject: [PATCH] drm/amdgpu: remove "num_pages" local variable in amdgpu_gtt_mgr_new
-Date: Tue,  9 Apr 2024 01:52:42 +0800
-X-OQ-MSGID: <20240408175242.613724-1-575705195@qq.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712598939; c=relaxed/simple;
+	bh=qniWEKwNE35bzfapSfWb242LZ3enrNguNfhPcNyKSlY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tbYXT81UFrTIb4brLCEFXwpoGEEQCbtI2HD52cogeV47nmp7eg/te8NY6hLxv0vQ1dr1V/fc5fgzZax7CarhKIodjtR6Q1CpWQjVFmKywK3nQPlPud8nW9KMJd51uxEWo2cqWx56qmGEQ0mpUvfUcHefZMbGVH15rVFwaLHMPLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VU9qvBGB; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Vprri69ntE5tXl2ejHYWa++Fhx4661tQjtCllU5TZfM=; b=VU9qvBGBmxEoWgYzjI8zdCVZ/6
+	SvoD7Tq9v8jBXn+Wjn1JYHI/t6YLeXlfa2sDpK7JF9a6C66vG7M/Irt+HBmihjAKAcKbuIit21MUF
+	rzsqWVD4B5ABo3JISbVk0vo/VUzuqhJwK6PSgarQMfwOaMmNGyi80sPG9R8tFQNfhM7y8BydZvGvS
+	PvJ9QBUv2LK4kS/9COxpsn+IB8YH/5fUd5is5JJ+xc3IRme7C9yVtNlgv9hZvzS01yL6N6eHGeNYA
+	3J+yYo5Ud9v+mhXcOUglBFzw963SKO5VBTVk2jAoEn83BFrZt2l+bn7nAEJCwI6Gr/FwHfRE1l12J
+	zRT3JBAA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rttDS-00000000Kgm-3C1L;
+	Mon, 08 Apr 2024 17:55:34 +0000
+Date: Mon, 8 Apr 2024 18:55:34 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Vishal Moola <vishal.moola@gmail.com>
+Cc: Muchun Song <muchun.song@linux.dev>, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 3/3] hugetlb: Convert hugetlb_wp() to use struct
+ vm_fault
+Message-ID: <ZhQvlpOETGxXO_MG@casper.infradead.org>
+References: <20240401202651.31440-1-vishal.moola@gmail.com>
+ <20240401202651.31440-4-vishal.moola@gmail.com>
+ <7d001108-157d-4139-bfa9-5b4102166f17@linux.dev>
+ <ZhQtoFNZBNwBCeXn@fedora>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhQtoFNZBNwBCeXn@fedora>
 
-From: brolerliew <brolerliew@gmail.com>
+On Mon, Apr 08, 2024 at 10:47:12AM -0700, Vishal Moola wrote:
+> -static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+> -		       struct folio *pagecache_folio,
+> +static vm_fault_t hugetlb_wp(struct folio *pagecache_folio,
+>  		       struct vm_fault *vmf)
+>  {
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	struct mm_struct *mm = vma->vm_mm;
 
-amdgpu_gtt_mgr_new and ttm_range_man_alloc share similar logic, but
-"num_pages" in amdgpu_gtt_mgr_new is defined as local variable which
-is calculate directly in ttm_range_man_alloc.
+I think 'vmf' should be the first parameter, not the second.
+Compare:
 
-Signed-off-by: brolerliew <575705195@qq.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+static vm_fault_t do_page_mkwrite(struct vm_fault *vmf, struct folio *folio)
+static inline void wp_page_reuse(struct vm_fault *vmf, struct folio *folio)
+static vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf, struct folio *folio)
+static vm_fault_t wp_page_shared(struct vm_fault *vmf, struct folio *folio)
+vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+void set_pte_range(struct vm_fault *vmf, struct folio *folio,
+                struct page *page, unsigned int nr, unsigned long addr)
+int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
+                      unsigned long addr, int page_nid, int *flags)
+static void numa_rebuild_single_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
+                                        unsigned long fault_addr, pte_t *fault_pte,
+                                        bool writable)
+static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
+                                       struct folio *folio, pte_t fault_pte,
+                                       bool ignore_writable, bool pte_write_upgrade)
+static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-index 44367f03316f..0c56e4057d85 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-@@ -116,7 +116,6 @@ static int amdgpu_gtt_mgr_new(struct ttm_resource_manager *man,
- 			      struct ttm_resource **res)
- {
- 	struct amdgpu_gtt_mgr *mgr = to_gtt_mgr(man);
--	uint32_t num_pages = PFN_UP(tbo->base.size);
- 	struct ttm_range_mgr_node *node;
- 	int r;
- 
-@@ -134,7 +133,7 @@ static int amdgpu_gtt_mgr_new(struct ttm_resource_manager *man,
- 	if (place->lpfn) {
- 		spin_lock(&mgr->lock);
- 		r = drm_mm_insert_node_in_range(&mgr->mm, &node->mm_nodes[0],
--						num_pages, tbo->page_alignment,
-+						PFN_UP(node->base.size), tbo->page_alignment,
- 						0, place->fpfn, place->lpfn,
- 						DRM_MM_INSERT_BEST);
- 		spin_unlock(&mgr->lock);
--- 
-2.40.1
-
+numa_migrate_prep() is the only one which doesn't have vmf as the first
+param.  It's a subtle inconsistency, but one you notice after a while
+.. then wish you'd done right the first time, but can't quite bring
+yourself to submit a patch to fix ;-)
 
