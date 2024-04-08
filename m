@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-134815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D05F89B752
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:56:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AA3C89B755
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:56:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC1BF281A24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43D811C20FE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990AB8C04;
-	Mon,  8 Apr 2024 05:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7F58C04;
+	Mon,  8 Apr 2024 05:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sviIvLK8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KMbvupMp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAC379D2;
-	Mon,  8 Apr 2024 05:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBF314294;
+	Mon,  8 Apr 2024 05:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555799; cv=none; b=FyUR+qfhgbA8GlaOn4tgrx6ERtQA3tEki+5TL9efPP8zzyDvS24ss0arQQdsPTPiEveu7EWNyDfxscwi6JEt9xdB272LFqlXBCklo4LemHcjfR7oHKm2pKYuXnYtHs09956aVNud7byDgi+NGeeLdWwTJy1mPcFccRMO6nMAScE=
+	t=1712555806; cv=none; b=XVaH913R94LpPAKiAJaIOcd4pKEVmYTjf1dKTK0NSTe8nwVWLoFw/re4Wq+rqHFMtO8IZBrJuhS+49rddLPe4Zb9IvGqqGep9/9Ar+g+1EwRF+M850pJX2klQQbABLVcoNdOJteB2odstL1NufUiQ7gpZybDk4fHfBTVeNig9Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555799; c=relaxed/simple;
-	bh=+ZnrNv4vW5/x1rpaIq+iT7fbeNGAlBuKr0XPju3wIuM=;
+	s=arc-20240116; t=1712555806; c=relaxed/simple;
+	bh=ELERn9z7UVJVqAQqBnZjr6HtxOQ+/5+MEqddAZiFo4s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BeYTneaCYDOI9zzzalheSPYx9yXwdFY+JB6QP8d/3vPBR/tVfsj/lP/YmvmE1EnzIN+nE1SIV6nRj9jr0DTwXCiBjJTr/IbtZ5vr9JRx/8vYrZ547r1RL8/1uqVV7eUsy6WNEldDwYK4LnfI/bP6aGcAmz1suBu5ywMnWosiPaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sviIvLK8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F46C433F1;
-	Mon,  8 Apr 2024 05:56:30 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=tLep/hgR/lJtzlDnDwFdaSK4c/LspNfPGDgaACJnGOY55gWQsuWN9pgdjZ9PtcOX/8GoW83AX5942s1F4TwfdxJs4TG4w2ZrI3SSvO0R69vN9Y3wei0vAAl4dNDpee54lJlsYm9gEUY3WrxmpqmasGnEYX7lGurauGTkv8GTOS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KMbvupMp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B83C43390;
+	Mon,  8 Apr 2024 05:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712555799;
-	bh=+ZnrNv4vW5/x1rpaIq+iT7fbeNGAlBuKr0XPju3wIuM=;
+	s=k20201202; t=1712555806;
+	bh=ELERn9z7UVJVqAQqBnZjr6HtxOQ+/5+MEqddAZiFo4s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sviIvLK8dz4OGlOKa/TN9AmSCVEndDvBQFxaxRE5zVXefgoUOyLiTcPyd9jxJJ0LW
-	 omE0FJC9OFIyTxZUWWumXNkhYXmmsnhecovJw8PRzwICCVNt3BtRm7BjWQNT0ZWtdb
-	 Asft9gNS12Guviz6TpHxs7l0D7uiuzQ7wkJ2WaZa0hBP5M/iNZz57GNB964n3z3W83
-	 wz3JnIXGMb9JHBqWeVR1BsKnOYCuP/HR2LZn/KGJy1ZuD85JO6XiS/kAWylsWe5oYH
-	 Mt4gvr4L8fYsH+UyUUkqE4dFuRaY2S71lc1iq2TjIJh3d/L9v9VS5vVNJsQPMrdOCY
-	 iwdv2o/Y9yenw==
-Message-ID: <67ca18b4-0904-41e4-8218-ecb2016d532d@kernel.org>
-Date: Mon, 8 Apr 2024 07:56:27 +0200
+	b=KMbvupMpi0c75dd5qW5fkIraRqi2SUOOC80O5q2D9HXTifSn3Y7n25y29QMyC6enZ
+	 p0cXbUgyr2tdNLx/6k/ZepEYjwtING688cMGvV1IiVS0OWdR9WlBtGaQHywaFui0U4
+	 GM0mMWzOOiZYlBhiKKR7eIy8nNM0vsYKjWdZ/JNIuSGl2PP9FqmJegoEH/yYkdkYHz
+	 hlzNS5jAGrIHtCx2vow4u4sDEqCA4A9ojWDEnKYODZwgsgKDu8eVDxEIxOenS4yhtS
+	 ihIWXQF1kt+sAhzoF69DKPc/apanitXtxrPSjxS2z977j1jniiSI/GhOdLU/Qtl3PV
+	 rDwmyvhGNn3CA==
+Message-ID: <ff5fc4c2-de74-4a6b-a70c-a5f1bd0b5343@kernel.org>
+Date: Mon, 8 Apr 2024 07:56:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND v3 0/2] Add support for QCM6490 and QCS6490
+Subject: Re: [RESEND v3 1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd
+ QCS6490 sound card
 To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -61,6 +62,7 @@ Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com
 References: <20240408042331.403103-1-quic_mohs@quicinc.com>
+ <20240408042331.403103-2-quic_mohs@quicinc.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -106,23 +108,23 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240408042331.403103-1-quic_mohs@quicinc.com>
+In-Reply-To: <20240408042331.403103-2-quic_mohs@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 08/04/2024 06:23, Mohammad Rafi Shaik wrote:
-> This patchset adds support for sound card on Qualcomm QCM6490 IDP and
-> QCS6490 RB3Gen2 boards.
+> Document the bindings for the Qualcomm QCM6490 IDP and QCS6490 RB3Gen2
+> board specific sound card.
 > 
-> Changes since v2:
-> 	- Modify qcm6490 compatible name as qcm6490-idp. Suggested by Dmitry
+> The bindings are the same as for other newer Qualcomm ADSP sound cards,
+> thus keep them in existing qcom,sm8250.yaml file, even though Linux driver
+> is separate.
 > 
-> Changes since v1:
-> 	- Use existing sc8280xp machine driver instead of separate driver.
-> 	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
-> 
+> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> ---
 
-Why are you resending 15 minutes after previous round?
+
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
