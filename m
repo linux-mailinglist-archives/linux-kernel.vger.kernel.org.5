@@ -1,114 +1,116 @@
-Return-Path: <linux-kernel+bounces-135199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C6489BCA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:05:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7491989BCA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:05:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B23B4B22AE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F8D6284037
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BD652F85;
-	Mon,  8 Apr 2024 10:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63BB252F83;
+	Mon,  8 Apr 2024 10:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="MsQeusz7"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="Ba7RVx2n"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1144524B7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 10:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8B5524B7
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 10:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712570691; cv=none; b=cOgMoDmBxOM1U+90GKfU79LLwbNGPfGmTOLgK9Tt8yAc2Iz0v5aOnXEYtYNXuPNFX3BfX62JuUO8pENJRo+ZJIuqVGNpAr1Q4CYuu4DoKc7P7p2IUqtvsi+Y1YLxQDbilAlRMxg3ig3dlEaWHi3Q9wR9Dfbto38E006XzsfWLC0=
+	t=1712570737; cv=none; b=FMm3QVW5OYgclquPOlUA1bb+Un6c9YE1JALBiscTe9pm/vD+VW7zeZrJTmNsuT3k/aO0wH878dupTD8/LKTRtesHitJ4b/rE+RCFZ5Pkf7qBjDpHz4qnSkrIwvyQion+rZfe1cnkrfniien/qnrJvODkOxarDK4A6Cl9z9tm6WA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712570691; c=relaxed/simple;
-	bh=IPQr5DBVIqmQjiMPRP9fQJbEY+9iIM4NqcF2fUQwx+Y=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=jxnW2zMqZPFjgXRJMBKyarsQ2kp/x/C6Xq8Wp2ZJKtor/FBlT7o60HqvjTL0RAAnfVjqaSDBmWUEr0u42Ml2sq3Eq4aIBWdjzWyl3XnFy4kaZ5qRRn9GQ2DDyHSaqQxF1hPgIboHIOqY3DZymzbIUSlwU9QQ728XlMGICio5sh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=MsQeusz7; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51abd0d7c2so367939666b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 03:04:49 -0700 (PDT)
+	s=arc-20240116; t=1712570737; c=relaxed/simple;
+	bh=OsJTelcc7tlBV2QwkwR67SVR5ZBOd+QZDuhUnZw4FFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CFf9zB/RpX5nZXHCobBJuLXqAfuAyUQ+ki7ZdsYnCr/85U/OaxEfkpzvnh7bChBthO+iOl1rFe0o/wZxJGBgwxZEafAJCewAP6+z2FJo158rL9Hksi/DntZ4f05Y+ODTFta0DLSGK2rWRoV3LI/p/L9fM7A7dQpXQX21jUZJjwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=Ba7RVx2n; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-229d01e81f1so2503416fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 03:05:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712570688; x=1713175488; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IPQr5DBVIqmQjiMPRP9fQJbEY+9iIM4NqcF2fUQwx+Y=;
-        b=MsQeusz7E8s563WyEiqyVREI2y/4W/rKdYvH1mAfhft6xwCelgS3gJtr5tX41j16U3
-         ONxlPl6+QpdbeFydnZc5HcrQiBC0WSIKHaqulvp5XYr3y3zNCtWpIidIv84e/22zgefq
-         Kzf4WLfQvzCKY0vQKiOJfuxNuBSLWaGaAESU/z1z4bNkTlx/eytlIjWBPgxPMY4EtdZp
-         ktYN/9hYfn4CJHFjKaBg6hKkoQZeya8ODjnHGWtzGSnasVsg+6gxW582LU5tR3B8yTEo
-         6shUkF6srpLlb6QKVs2wN2NmYtYC1yaq5eqliTVYkY3MyqifQojrx3eCRXiNmmxdvQh7
-         G/vQ==
+        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1712570734; x=1713175534; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eBLG7eQZNN9ZhfgeoyOekEyjLAkk752YA5M9Sq+ECMQ=;
+        b=Ba7RVx2nkMlPZYV1qgmwM//g6czFp8lPWZLAJt3JoO+pv7iEgbCGEsHksV9F4/qMBi
+         N3EuTdaWJVh+GFE46PZOK6TFYOInI2t7Q0mJexjgsUn7ycpyejoVHpXjUhhObShY9Lmh
+         9EYPdQ0vp40up4vZnEn3Dri/ExXsZ5tIbwis51XvKHcJumPBfBv7JChsu5FOdPUmigeD
+         ZjdLjBfeJcmFL9s/AJ+syajnnZnNm7PFR52WEpgpVvtMrpzI+v4pJBKf05z32zrWKygD
+         F9z/7M//CiK6irQ4ihrSRRQcbeDG3LwZQz12o2Ylz4XxdZEwqVR7KnpqhEAvI+Rzeyrj
+         pI4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712570688; x=1713175488;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IPQr5DBVIqmQjiMPRP9fQJbEY+9iIM4NqcF2fUQwx+Y=;
-        b=XJazsu/4zGhDvopsYs5fg2Pew3rKxlB+GCmPaYS9WTOrl2tzPlpoy5Y9DsFmdjuAco
-         cV9MTIOKzVCzF8CzicScJghDU5GtSuUAVAjh/6uhsRsLrP6umKk+9qlOEUtVzIZ78/Bb
-         SUBUFIlYahLdBq/xAj3nKSDy23hnu1p7ByiUin5Mu5JWIn4QRdvnh1sP8nYJb4uiEVLt
-         Z8mTML94M4VcrQVubH+JOp68MMjnxkkRWM5TMavsbDOWsYlYr/qbwxRzxVA1K9Mo7+t1
-         qEqdxKrKtK1CuzInTL15bQPJBukoTpAv/WI1ku4vxDi2mvfVrCSoHOhddzsS5LwAnsWr
-         0WAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWCGE1iMqyVGXDWwYAdKq7nPJDL3FA/NvxRKUoxcVQQ9fIOzoHy3vyF1WzBDiz0CYrX2SrM09T7TLXNZ8lDsPIU4o7rRJpSAddcDKQ2
-X-Gm-Message-State: AOJu0Yx4fppAvrot3DiZ/fe2b01yMotUkbxSjAe1CkGvE3+sMNCwUwcb
-	RnNNhnt67pcGpm+lRA99zZft8XNXGIXji8SDEmD26ZHomO+/8/2Fvws/2YOZwCH9o8nnHLPcF/y
-	M
-X-Google-Smtp-Source: AGHT+IFApRzGDXPEnWJrIkuXggzqiy7GiiA3NwloDSeO5yZx0JiS9EZ/CR/qAyApezteLvp7g4NGuA==
-X-Received: by 2002:a17:906:7316:b0:a51:d23e:c53 with SMTP id di22-20020a170906731600b00a51d23e0c53mr2191454ejc.31.1712570687880;
-        Mon, 08 Apr 2024 03:04:47 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:10c6:ce01:bd98:da4e:9b4c:75b3])
-        by smtp.gmail.com with ESMTPSA id m8-20020a1709061ec800b00a46d2e9fd73sm4242441ejj.222.2024.04.08.03.04.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Apr 2024 03:04:47 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1712570734; x=1713175534;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eBLG7eQZNN9ZhfgeoyOekEyjLAkk752YA5M9Sq+ECMQ=;
+        b=UE9kHHOeC1iJ6GcfNTv081DUATdD+IIqrLiZaULpBSCzO6tlxrokfPetyqe/JZw4Ix
+         cBGh/xu/+TDxPzSzvMD/NsSqImaUUlFvkcdVzFg2ReIEW1nRhye8PcoopNsc0aMJOFzE
+         2JKkPCrOMIdi5Oqb3wUNkuXR5woUh4V+Zb4ccEAT8pAhTsACvOR0w+K9NCuC2tygdwEJ
+         lHRZuBA1lUPsLRSScyMY00tn9eRRfQGZo01em/0f5K3DUKbCz+qc0t1tIpqo0QiS0aCL
+         q0sCpybQfU9OgqMRwFHPTrwbFoSBpWSc3a5OYBEfs45jvIsaZ4gjMw911LcS0+/WmJgr
+         yZZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUoqNXo5VFrOWXMWN52YTomilJ57WDakOCaL+gKjf745uKciX4yZJRPZz/kXB2V78bx/zjwgczO3vjBX1QbzsVUOoFZbUY+Lml3eyk8
+X-Gm-Message-State: AOJu0Yw+Q/rCap5X7IX5izU2csbtNVEErhHM/Hr6dGjoB+6E7irIrmFe
+	WASUe72DZLOV8XhHQvPb20DxDB4j7FS0+bWXf3mKUF8sO/7s1C8wEy1rgBkEheo=
+X-Google-Smtp-Source: AGHT+IEx7VTx0K0yOwbxPA8x0d94YSdl3SQSAKztRAl4yW5VnRP8hMQdfy/b/azX8aClfP0obPVdAQ==
+X-Received: by 2002:a05:6870:f70a:b0:22e:7460:d2a8 with SMTP id ej10-20020a056870f70a00b0022e7460d2a8mr9628681oab.42.1712570733497;
+        Mon, 08 Apr 2024 03:05:33 -0700 (PDT)
+Received: from localhost.localdomain ([103.172.41.206])
+        by smtp.googlemail.com with ESMTPSA id fe15-20020a056a002f0f00b006ea8cc9250bsm6144272pfb.44.2024.04.08.03.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 03:05:33 -0700 (PDT)
+From: Lei Chen <lei.chen@smartx.com>
+To: Kashyap Desai <kashyap.desai@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Lei Chen <lei.chen@smartx.com>,
+	megaraidlinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] scsi: megaraid_sas: make module parameter scmd_timeout writable
+Date: Mon,  8 Apr 2024 06:05:03 -0400
+Message-ID: <20240408100505.1732370-1-lei.chen@smartx.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] zonefs: Use str_plural() to fix Coccinelle warning
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <99a8d3ec-1028-44c5-9fcd-01598a40a014@kernel.org>
-Date: Mon, 8 Apr 2024 12:04:36 +0200
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
- Johannes Thumshirn <jth@kernel.org>,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9AAAD718-D1D7-416E-87A9-3CA2BA20C93B@toblux.com>
-References: <20240402101715.226284-2-thorsten.blum@toblux.com>
- <99a8d3ec-1028-44c5-9fcd-01598a40a014@kernel.org>
-To: Damien Le Moal <dlemoal@kernel.org>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On 8. Apr 2024, at 03:48, Damien Le Moal <dlemoal@kernel.org> wrote:
->=20
-> Looking at this function definition:
->=20
-> static inline const char *str_plural(size_t num)
-> {
-> return num =3D=3D 1 ? "" : "s";
-> }
->=20
-> It is wrong: num =3D=3D 0 should not imply plural. This function needs =
-to be fixed.
+When an scmd times out, block layer calls megasas_reset_timer to
+make further decisions. scmd_timeout indicates when an scmd is really
+timed-out. If we want to make this process more fast, we can decrease
+this value. This patch allows users to change this value in run-time.
 
-I think the function is correct because in English it's:
+Signed-off-by: Lei Chen <lei.chen@smartx.com>
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-0 files
-1 file (every number but 1 is plural in English)
-2 files
-..
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 3d4f13da1ae8..2a165e5dc7a3 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -91,7 +91,7 @@ module_param(dual_qdepth_disable, int, 0444);
+ MODULE_PARM_DESC(dual_qdepth_disable, "Disable dual queue depth feature. Default: 0");
+ 
+ static unsigned int scmd_timeout = MEGASAS_DEFAULT_CMD_TIMEOUT;
+-module_param(scmd_timeout, int, 0444);
++module_param(scmd_timeout, int, 0644);
+ MODULE_PARM_DESC(scmd_timeout, "scsi command timeout (10-90s), default 90s. See megasas_reset_timer.");
+ 
+ int perf_mode = -1;
+-- 
+2.44.0
 
-Best,
-Thorsten=
 
