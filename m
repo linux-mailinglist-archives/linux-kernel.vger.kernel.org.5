@@ -1,302 +1,405 @@
-Return-Path: <linux-kernel+bounces-135183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E3F89BC60
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:53:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A26F889BC66
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A199E1F2289C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:53:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7C99B21BE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732204DA15;
-	Mon,  8 Apr 2024 09:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CD54DA03;
+	Mon,  8 Apr 2024 09:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="l8N/kCju"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CfmJXQ22"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9064EB3D;
-	Mon,  8 Apr 2024 09:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45304CE09;
+	Mon,  8 Apr 2024 09:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569971; cv=none; b=jlzRheZkjUuLaLN5584fj4jmXrsod1W0gWz65LekJmbB5L6YM13f/Lc3VxlBa5I2dLNl/HJMTQrlYGPDKG+Fr+BLOueBUBQb406s2vE5J9ZT4VnroyuTBmU4C8midnpR4A5NgUtekozuo5bUKzpByO/hGZ+/YrbU39ulc3MVD3o=
+	t=1712569995; cv=none; b=TzZA/FAaR3h6+FaSfij+7kMoYvlFkcYAb6GkOnLkkzR6QEkfg07J8xOJbLDprf7mEasSXL6gdYF9uWnKu8N2VK0BkgOPAZ8ArXWq4wJnKFuY/SS8ICwM5RLUYYZxeUu4dOC/E7kvBWMzOcQ40iqxeVtEBsx4H3cjKAAn2rp3zcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569971; c=relaxed/simple;
-	bh=/VOELRbH4plEYJOGwePqrosJ6i7I1OteBbFhhfratW8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=P+tiFdjSPyQ+Nb6bg9h3NXnhR+O2dUP2DKIc9J9b6BS0o/CXtIlIVi6dBRiaANTFpNHk6G+mGwJC6MtopoJtP62yWiGPeic7w0xQJfNM8+KD+h663GyaYN3pxMKw7D035CHY+P9QcNY+aROZhqgGACTUmOnE1ss//Cg2sJ9b9w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=l8N/kCju; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386e931026786;
-	Mon, 8 Apr 2024 09:52:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=a867BXPNAL7S1LSZKB6Z1PPmPo7m27VujxgxS1VpLfg=; b=l8
-	N/kCjuySa8CK9vHmhgCxnEyT/9c5XGzT0NxWp76ulpDoSb+UGv42m+sUW638XoP2
-	N8n9WAL+slsj0h4OC5TUNRa4akrmbobVAOlTwlGc3p86y+pMZ40SQfyVVvTidLA7
-	1WMvzgoR1L8lYlrDi40HS9xUltqabxbylbokGQu0tgNnC9kCbCW5hdbikmscGOSV
-	iM5XYylLc7FnxiEtVRwdKO3d7cy47JuUQSTSeC4cxXM7oQuHYL9y0yOmyWsv3iCm
-	TyjEs1KZ3LBNQY+lG9bQL2kSnTaqLP+jHJD2PMji1UxBTzmfteVnnBhETIigyXTz
-	xr4quzBFUDD6DHedxkkA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg00bcc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 09:52:40 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4389qd3Y018645
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Apr 2024 09:52:39 GMT
-Received: from [10.216.26.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
- 02:52:30 -0700
-Message-ID: <2a579464-b66b-0186-9e7d-723aaf304a89@quicinc.com>
-Date: Mon, 8 Apr 2024 15:22:25 +0530
+	s=arc-20240116; t=1712569995; c=relaxed/simple;
+	bh=3dqG+MDn1fmztumZBMOjS1/9HGAOWrrlqo4qQcvep5s=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUfUqSNMNT2eN0dcSnYMG2XNlHSTWdSQ7Qb+ADr8mE/aQbMAw2m5AyUptp3tMerbO1fbwoZtlbwBvx1NVe2j99WNzlIZXctoiiGO0Yn+b7Z8R2eXKILvIkKoj2UoXAGQtguWAJAfQ085ji8wY3+mTZBEn8B2DLAHM6gy3JNdv8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=CfmJXQ22; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4389qdT0076431;
+	Mon, 8 Apr 2024 04:52:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712569959;
+	bh=Ekb1pkDDGqHOyOnzyNQhFpv72C8vwJHWI0nwrs8xuaw=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=CfmJXQ22AeV3y3eBhVd7WzQrE4X0cCy8BZxAB5eoQUr1m1U/l/QIAE8F3WtckYkQt
+	 U7zxLvisfTaPA/Wx1SNGOxiQ9ASCntZH3no72mtcGcbzz/0BkvV1V72Pmv8kVWzMaJ
+	 ZyNLlthbehUHvJlEcSlqitggMbQjklkKbMzBYL84=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4389qdjH128840
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 8 Apr 2024 04:52:39 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
+ Apr 2024 04:52:38 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 8 Apr 2024 04:52:38 -0500
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4389qbNk039561;
+	Mon, 8 Apr 2024 04:52:38 -0500
+Date: Mon, 8 Apr 2024 15:22:37 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC: Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi
+	<cristian.marussi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dan
+ Carpenter <dan.carpenter@linaro.org>,
+        Andy Shevchenko
+	<andy.shevchenko@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Oleksii Moisieiev
+	<oleksii_moisieiev@epam.com>,
+        Tony Lindgren <tony@atomide.com>, Kevin Hilman
+	<khilman@baylibre.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v8 4/4] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+Message-ID: <20240408095237.fc7dldg5qrlsoojt@dhruva>
+References: <20240405-pinctrl-scmi-v8-0-5fc8e33871bf@nxp.com>
+ <20240405-pinctrl-scmi-v8-4-5fc8e33871bf@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v9 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas
-	<bhelgaas@google.com>, <johan+linaro@kernel.org>,
-        <bmasney@redhat.com>, <djakov@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>, <krzysztof.kozlowski@linaro.org>
-References: <20240407-opp_support-v9-0-496184dc45d7@quicinc.com>
- <20240407-opp_support-v9-6-496184dc45d7@quicinc.com>
- <20240407150048.GE2679@thinkpad>
- <6e9b4379-5849-73cd-4d89-5e809b4c71a4@quicinc.com>
- <20240408094525.GB5727@thinkpad>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240408094525.GB5727@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -LSZ8ZKRg0_NcZCM9_z_wNg8r0d0qRsr
-X-Proofpoint-ORIG-GUID: -LSZ8ZKRg0_NcZCM9_z_wNg8r0d0qRsr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_08,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- impostorscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080076
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240405-pinctrl-scmi-v8-4-5fc8e33871bf@nxp.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+On Apr 05, 2024 at 09:59:35 +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> scmi-pinctrl driver implements pinctrl driver interface and using
+> SCMI protocol to redirect messages from pinctrl subsystem SDK to
+> SCMI platform firmware, which does the changes in HW.
+> 
+> Co-developed-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  MAINTAINERS                    |   1 +
+>  drivers/pinctrl/Kconfig        |  11 +
+>  drivers/pinctrl/Makefile       |   1 +
+>  drivers/pinctrl/pinctrl-scmi.c | 564 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 577 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4b511a55101c..d8270ac6651a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21457,6 +21457,7 @@ F:	drivers/cpufreq/sc[mp]i-cpufreq.c
+>  F:	drivers/firmware/arm_scmi/
+>  F:	drivers/firmware/arm_scpi.c
+>  F:	drivers/hwmon/scmi-hwmon.c
+> +F:	drivers/pinctrl/pinctrl-scmi.c
+>  F:	drivers/pmdomain/arm/
+>  F:	drivers/powercap/arm_scmi_powercap.c
+>  F:	drivers/regulator/scmi-regulator.c
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index d45657aa986a..4e6f65cf0e76 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -450,6 +450,17 @@ config PINCTRL_ROCKCHIP
+>  	help
+>            This support pinctrl and GPIO driver for Rockchip SoCs.
+>  
+> +config PINCTRL_SCMI
+> +	tristate "Pinctrl driver using SCMI protocol interface"
+> +	depends on ARM_SCMI_PROTOCOL || COMPILE_TEST
+> +	select PINMUX
+> +	select GENERIC_PINCONF
+> +	help
+> +	  This driver provides support for pinctrl which is controlled
+> +	  by firmware that implements the SCMI interface.
+> +	  It uses SCMI Message Protocol to interact with the
+> +	  firmware providing all the pinctrl controls.
+> +
+>  config PINCTRL_SINGLE
+>  	tristate "One-register-per-pin type device tree based pinctrl driver"
+>  	depends on OF
+> diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
+> index 2152539b53d5..cc809669405a 100644
+> --- a/drivers/pinctrl/Makefile
+> +++ b/drivers/pinctrl/Makefile
+> @@ -45,6 +45,7 @@ obj-$(CONFIG_PINCTRL_PIC32)	+= pinctrl-pic32.o
+>  obj-$(CONFIG_PINCTRL_PISTACHIO)	+= pinctrl-pistachio.o
+>  obj-$(CONFIG_PINCTRL_RK805)	+= pinctrl-rk805.o
+>  obj-$(CONFIG_PINCTRL_ROCKCHIP)	+= pinctrl-rockchip.o
+> +obj-$(CONFIG_PINCTRL_SCMI)	+= pinctrl-scmi.o
+>  obj-$(CONFIG_PINCTRL_SINGLE)	+= pinctrl-single.o
+>  obj-$(CONFIG_PINCTRL_ST) 	+= pinctrl-st.o
+>  obj-$(CONFIG_PINCTRL_STMFX) 	+= pinctrl-stmfx.o
+> diff --git a/drivers/pinctrl/pinctrl-scmi.c b/drivers/pinctrl/pinctrl-scmi.c
+> new file mode 100644
+> index 000000000000..0f55f000a679
+> --- /dev/null
+> +++ b/drivers/pinctrl/pinctrl-scmi.c
+> @@ -0,0 +1,564 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * System Control and Power Interface (SCMI) Protocol based pinctrl driver
+> + *
+> + * Copyright (C) 2024 EPAM
+> + * Copyright 2024 NXP
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/dev_printk.h>
+> +#include <linux/err.h>
+> +#include <linux/module.h>
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +#include <linux/pinctrl/machine.h>
+> +#include <linux/pinctrl/pinconf.h>
+> +#include <linux/pinctrl/pinconf-generic.h>
+> +#include <linux/pinctrl/pinctrl.h>
+> +#include <linux/pinctrl/pinmux.h>
+> +
+> +#include "pinctrl-utils.h"
+> +#include "core.h"
+> +#include "pinconf.h"
+> +
+> +#define DRV_NAME "scmi-pinctrl"
+> +
+> +/* Define num configs, if not large than 4 use stack, else use kcalloc */
+> +#define SCMI_NUM_CONFIGS	4
+> +
+> +static const struct scmi_pinctrl_proto_ops *pinctrl_ops;
+> +
+> +struct scmi_pinctrl {
+> +	struct device *dev;
+> +	struct scmi_protocol_handle *ph;
+> +	struct pinctrl_dev *pctldev;
+> +	struct pinctrl_desc pctl_desc;
+> +	struct pinfunction *functions;
+> +	unsigned int nr_functions;
+> +	struct pinctrl_pin_desc *pins;
+> +	unsigned int nr_pins;
+> +};
+> +
+> +static int pinctrl_scmi_get_groups_count(struct pinctrl_dev *pctldev)
+> +{
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pinctrl_ops->count_get(pmx->ph, GROUP_TYPE);
+> +}
+> +
+> +static const char *pinctrl_scmi_get_group_name(struct pinctrl_dev *pctldev,
+> +					       unsigned int selector)
+> +{
+> +	int ret;
+> +	const char *name;
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	ret = pinctrl_ops->name_get(pmx->ph, selector, GROUP_TYPE, &name);
+> +	if (ret) {
+> +		dev_err(pmx->dev, "get name failed with err %d", ret);
+> +		return NULL;
+> +	}
+> +
+> +	return name;
+> +}
+> +
+> +static int pinctrl_scmi_get_group_pins(struct pinctrl_dev *pctldev,
+> +				       unsigned int selector,
+> +				       const unsigned int **pins,
+> +				       unsigned int *num_pins)
+> +{
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pinctrl_ops->group_pins_get(pmx->ph, selector, pins, num_pins);
+> +}
+> +
+> +static const struct pinctrl_ops pinctrl_scmi_pinctrl_ops = {
+> +	.get_groups_count = pinctrl_scmi_get_groups_count,
+> +	.get_group_name = pinctrl_scmi_get_group_name,
+> +	.get_group_pins = pinctrl_scmi_get_group_pins,
+> +#ifdef CONFIG_OF
+> +	.dt_node_to_map = pinconf_generic_dt_node_to_map_all,
+> +	.dt_free_map = pinconf_generic_dt_free_map,
+> +#endif
+> +};
+> +
+> +static int pinctrl_scmi_get_functions_count(struct pinctrl_dev *pctldev)
+> +{
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pinctrl_ops->count_get(pmx->ph, FUNCTION_TYPE);
+> +}
+> +
+> +static const char *pinctrl_scmi_get_function_name(struct pinctrl_dev *pctldev,
+> +						  unsigned int selector)
+> +{
+> +	int ret;
+> +	const char *name;
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	ret = pinctrl_ops->name_get(pmx->ph, selector, FUNCTION_TYPE, &name);
+> +	if (ret) {
+> +		dev_err(pmx->dev, "get name failed with err %d", ret);
+> +		return NULL;
+> +	}
+> +
+> +	return name;
+> +}
+> +
+> +static int pinctrl_scmi_get_function_groups(struct pinctrl_dev *pctldev,
+> +					    unsigned int selector,
+> +					    const char * const **p_groups,
+> +					    unsigned int * const p_num_groups)
+> +{
+> +	struct pinfunction *func;
+> +	const unsigned int *group_ids;
+> +	unsigned int num_groups;
+> +	const char **groups;
+> +	int ret, i;
 
+Just a nit maybe, but I would be more comfortable making i with
+num_groups as unsigned, because you're comparing them after all in the
+loop. Also, I don't see a reason for i to become negative in any case.
 
-On 4/8/2024 3:15 PM, Manivannan Sadhasivam wrote:
-> On Mon, Apr 08, 2024 at 02:32:18PM +0530, Krishna Chaitanya Chundru wrote:
->>
->>
->> On 4/7/2024 8:30 PM, Manivannan Sadhasivam wrote:
->>> On Sun, Apr 07, 2024 at 10:07:39AM +0530, Krishna chaitanya chundru wrote:
->>>> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
->>>> maintains hardware state of a regulator by performing max aggregation of
->>>> the requests made by all of the clients.
->>>>
->>>> PCIe controller can operate on different RPMh performance state of power
->>>> domain based on the speed of the link. And this performance state varies
->>>> from target to target, like some controllers support GEN3 in NOM (Nominal)
->>>> voltage corner, while some other supports GEN3 in low SVS (static voltage
->>>> scaling).
->>>>
->>>> The SoC can be more power efficient if we scale the performance state
->>>> based on the aggregate PCIe link bandwidth.
->>>>
->>>> Add Operating Performance Points (OPP) support to vote for RPMh state based
->>>> on the aggregate link bandwidth.
->>>>
->>>> OPP can handle ICC bw voting also, so move ICC bw voting through OPP
->>>> framework if OPP entries are present.
->>>>
->>>> Different link configurations may share the same aggregate bandwidth,
->>>> e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
->>>> and share the same OPP entry.
->>>>
->>>
->>> This info should be part of the dts change.
->>>
->> ok I will move this to dts patch in next patch series.
->>>> As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
->>>> is supported.
->>>>
->>>> Before PCIe link is initialized vote for highest OPP in the OPP table,
->>>> so that we are voting for maximum voltage corner for the link to come up
->>>> in maximum supported speed.
->>>>
->>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->>>> ---
->>>>    drivers/pci/controller/dwc/pcie-qcom.c | 72 +++++++++++++++++++++++++++-------
->>>>    1 file changed, 58 insertions(+), 14 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->>>> index b4893214b2d3..4ad5ef3bf8fc 100644
->>>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->>>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->>>> @@ -22,6 +22,7 @@
->>>>    #include <linux/of.h>
->>>>    #include <linux/of_gpio.h>
->>>>    #include <linux/pci.h>
->>>> +#include <linux/pm_opp.h>
->>>>    #include <linux/pm_runtime.h>
->>>>    #include <linux/platform_device.h>
->>>>    #include <linux/phy/pcie.h>
->>>> @@ -1442,15 +1443,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->>>>    	return 0;
->>>>    }
->>>> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->>>> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
->>>>    {
->>>>    	struct dw_pcie *pci = pcie->pci;
->>>> -	u32 offset, status;
->>>> +	u32 offset, status, freq;
->>>> +	struct dev_pm_opp *opp;
->>>>    	int speed, width;
->>>> -	int ret;
->>>> -
->>>> -	if (!pcie->icc_mem)
->>>> -		return;
->>>> +	int ret, mbps;
->>>>    	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->>>>    	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
->>>> @@ -1462,10 +1461,26 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->>>>    	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
->>>>    	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
->>>> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
->>>> -	if (ret) {
->>>> -		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
->>>> -			ret);
->>>> +	if (pcie->icc_mem) {
->>>> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
->>>> +		if (ret) {
->>>> +			dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
->>>
->>> s/failed/Failed
->>>
->>>> +				ret);
->>>> +		}
->>>> +	} else {
->>>> +		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
->>>> +		if (mbps < 0)
->>>> +			return;
->>>> +
->>>> +		freq = mbps * 1000;
->>>> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
->>>
->>> As per the API documentation, dev_pm_opp_put() should be called for both success
->>> and failure case.
->>>
->> ACK.
->>>> +		if (!IS_ERR(opp)) {
->>>
->>> So what is the action if OPP is not found for the freq?
->>>
->> There is already a vote for maximum freq in the probe, so if it fails
->> here we can continue here.
->> If you feel otherwise let me know I Can make changes as suggested.
-> 
-> You should just log the error and continue.
-> 
->>>> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
->>>> +			if (ret)
->>>> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
->>>
->>> 'Failed to set OPP for freq (%ld): %d'
->>>
->>>> +					dev_pm_opp_get_freq(opp), ret);
->>>> +			dev_pm_opp_put(opp);
->>>> +		}
->>>>    	}
->>>>    }
->>>> @@ -1509,8 +1524,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
->>>>    static int qcom_pcie_probe(struct platform_device *pdev)
->>>>    {
->>>>    	const struct qcom_pcie_cfg *pcie_cfg;
->>>> +	unsigned long max_freq = INT_MAX;
->>>>    	struct device *dev = &pdev->dev;
->>>>    	struct qcom_pcie *pcie;
->>>> +	struct dev_pm_opp *opp;
->>>>    	struct dw_pcie_rp *pp;
->>>>    	struct resource *res;
->>>>    	struct dw_pcie *pci;
->>>> @@ -1577,9 +1594,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->>>>    		goto err_pm_runtime_put;
->>>>    	}
->>>> -	ret = qcom_pcie_icc_init(pcie);
->>>> -	if (ret)
->>>> +	/* OPP table is optional */
->>>> +	ret = devm_pm_opp_of_add_table(dev);
->>>> +	if (ret && ret != -ENODEV) {
->>>> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
->>>>    		goto err_pm_runtime_put;
->>>> +	}
->>>> +
->>>> +	/*
->>>> +	 * Use highest OPP here if the OPP table is present. At the end of
->>>
->>> I believe I asked you to add the information justifying why the highest OPP
->>> should be used.
->>>
->> I added the info in the commit message, I will add as the comment in the
->> next patch.
->>
->>>> +	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
->>>> +	 */
->>>> +	if (!ret) {
->>>> +		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
->>>
->>> Same comment as dev_pm_opp_find_freq_exact().
->>>
->>>> +		if (!IS_ERR(opp)) {
->>>> +			ret = dev_pm_opp_set_opp(dev, opp);
->>>> +			if (ret)
->>>> +				dev_err_probe(pci->dev, ret,
->>>> +					      "Failed to set OPP: freq %ld\n",
->>>
->>> Same comment as above.
->>>
->>>> +					      dev_pm_opp_get_freq(opp));
->>>> +			dev_pm_opp_put(opp);
->>>
->>> So you want to continue even in the case of failure?
->>>
->> I wil make changes to fallback to driver voting for icc bw if it fails here.
-> 
-> That's not needed. If the OPP table is present, then failure to set OPP should
-> be treated as a hard failure.
-> 
-Sure, I will make changes to fail the probe then
+> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	if (!p_groups || !p_num_groups)
+> +		return -EINVAL;
+> +
+> +	if (selector >= pmx->nr_functions)
+> +		return -EINVAL;
+> +
+> +	func = &pmx->functions[selector];
+> +	if (func->ngroups)
+> +		goto done;
+> +
+> +	ret = pinctrl_ops->function_groups_get(pmx->ph, selector, &num_groups,
+> +					       &group_ids);
+> +	if (ret) {
+> +		dev_err(pmx->dev, "Unable to get function groups, err %d", ret);
+> +		return ret;
+> +	}
+> +	if (!num_groups)
+> +		return -EINVAL;
+> +
+> +	groups = kcalloc(num_groups, sizeof(*groups), GFP_KERNEL);
+> +	if (!groups)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_groups; i++) {
+> +		groups[i] = pinctrl_scmi_get_group_name(pctldev, group_ids[i]);
+> +		if (!groups[i]) {
+> +			ret = -EINVAL;
+> +			goto err_free;
+> +		}
+> +	}
+> +
+> +	func->ngroups = num_groups;
+> +	func->groups = groups;
+> +done:
+> +	*p_groups = func->groups;
+> +	*p_num_groups = func->ngroups;
+> +
+> +	return 0;
+> +
+> +err_free:
+> +	kfree(groups);
+> +
+> +	return ret;
+> +}
+> +
+[...]
+> +
+> +static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
+> +				 struct pinctrl_desc *desc)
+> +{
+> +	struct pinctrl_pin_desc *pins;
+> +	unsigned int npins;
+> +	int ret, i;
 
-- Krishna Chaitanya.
-> - Mani
-> 
+better unsigned i?
+
+> +
+> +	npins = pinctrl_ops->count_get(pmx->ph, PIN_TYPE);
+> +	/*
+> +	 * npins will never be zero, the scmi pinctrl driver has bailed out
+> +	 * if npins is zero.
+> +	 */
+> +	pins = devm_kmalloc_array(pmx->dev, npins, sizeof(*pins), GFP_KERNEL);
+> +	if (!pins)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < npins; i++) {
+> +		pins[i].number = i;
+> +		/*
+> +		 * The memory for name is handled by the scmi firmware driver,
+> +		 * no need free here
+> +		 */
+> +		ret = pinctrl_ops->name_get(pmx->ph, i, PIN_TYPE, &pins[i].name);
+> +		if (ret)
+> +			return dev_err_probe(pmx->dev, ret,
+> +					     "Can't get name for pin %d", i);
+> +	}
+> +
+> +	desc->npins = npins;
+> +	desc->pins = pins;
+> +	dev_dbg(pmx->dev, "got pins %u", npins);
+> +
+> +	return 0;
+> +}
+> +
+[...]
+
+Unrelated and beyond scope of this patch series, but would've loved to
+see concept of wakeup enable and wakeup event bits inside the pinctrl
+SCMI spec like we have in pinctrl-single kernel driver. There are SOC's
+out there that support wakeup IRQ's from their padconfig controllers
+itself... But this is more of a feedback for the SCMI spec. Maybe a
+future revision can take care of this.
+
+The reason this needs to be
+standard and not something vendor specific is because the kernel does
+support a wake IRQ framework, and we will need to make this driver have
+wake IRQ support if a device that supports pinctrl wakeup need to use
+scmi to configure it.
+Look at Table 6-2045. Description Of The Pad Configuration Register Bit
+in [0] for further details for an example of a padconfig wakeup config
+specially bits 29,30.
+
+No major comments otherwise,
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+
+[0] https://www.ti.com/lit/pdf/SPRUIV7
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
 
