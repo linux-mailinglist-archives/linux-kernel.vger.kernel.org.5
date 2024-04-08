@@ -1,300 +1,287 @@
-Return-Path: <linux-kernel+bounces-135915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3388689CD09
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:45:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3F089CD0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD2AE2843CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:45:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A6811F24138
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420D3147C60;
-	Mon,  8 Apr 2024 20:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCAD1474AF;
+	Mon,  8 Apr 2024 20:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d2GMRjY/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m7Gf5GXb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1081B5FB8F;
-	Mon,  8 Apr 2024 20:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712609130; cv=fail; b=PUCq0ukt2iyD7u1HFnbxRXxExoXQnCy8fnhLAEsUu2RxmmgOLuIck77QE53V0AkcK7GVaA0LuDy+U7D2lYf5qhQEw55CZfbbw+ehOAqjWlB//NRxQwiY8t+lczJWkghFk5UCD7LFM7z0To5AKgUS8L5IlQU7WvUwNgQSkhBgUE0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712609130; c=relaxed/simple;
-	bh=IguVjPHhdPzyLg97u/gnGOE62s60FErOlyBfQDV3904=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ZvbSVv6Bu709Z5t+bBNJJ35L1j3P3/4QdsSdXYimkbRd/FHDy52lWWrP8+/A+Veq5J/Lp04T6XlIfLJplPBitXh0IGQO+dxrx5t1Ge3LcqprN+UJQhojkyWMe7LIjv+ixgOPj0RVItYyoG2wz7Fxupt6vtYA0mnRjixsVhKHBUA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d2GMRjY/; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712609128; x=1744145128;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=IguVjPHhdPzyLg97u/gnGOE62s60FErOlyBfQDV3904=;
-  b=d2GMRjY/jvZScRD3LtmlynUZYU0Qx8GV6k/c6DrM22wNhT7l5bSgRKvR
-   u5qsHIOhZDW//WL7zSTyzFrNIRwNsAQXEaKFm+j91Ef1N6tNyIHPfii3S
-   bepZRTfyWwO5KPh8vNvbsFVy3U2HSueYdC2tbWhOBybP1xmLGJrykQYGZ
-   4gION/qzztkZNoN2i5Wv+aCIZYBX+dC5ulO67n88U1HEbt9O51qrBENiC
-   RK/f/XQH1LwDWQoZ/fUw8N7hc4ETpLANvfpy8WcUOd7C5cmjmkd/HfEju
-   KWD6f8RWs4NNV/1RYzO+RqryAcmHrbGq2Yi1AOlfmU2nG4v37Z/kuiHRI
-   A==;
-X-CSE-ConnectionGUID: GnibU8ovR3urVv2zoeCewA==
-X-CSE-MsgGUID: N8TYVy7QRXObUrBI/wHubw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7778460"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="7778460"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 13:45:27 -0700
-X-CSE-ConnectionGUID: F3RaqTKHRaiEr+kNwqLfTg==
-X-CSE-MsgGUID: uVzxuaj0RJyc+dSkK/3+Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19915286"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Apr 2024 13:45:27 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 8 Apr 2024 13:45:26 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 8 Apr 2024 13:45:26 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 8 Apr 2024 13:45:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R84yF+PShgZvouxGFWrfwzeb4daMF2iYh+lB+B9M+Cqe+f7o2hJ0qwTqJlUeakpVIe7aTBleBZEd+frjMRT+zFxBfekCAWUPPGYamfw0XOEUNE678hCQxQ9KOs0oTJCENhtAe1OhaZKqCB+LbhLIZOp+PYI/am3uMTUwZ924K2Er1B7rXvbGsTH/z5whKbuPHXd0jGWftNwdeI4dw3P5LH3D/iS2JWkh6EktysKnHcsTX4hdXW5vtyEnajGsVBmLhrIXMsM49X2L6odtsS4GmbZWx0fTwRMzuLtKM6YkfXN8wVWjGWgUiJkcvflt53ZKvyMhquRHpxiveNMJnRJsCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xkk97vrvoyAAGLTc4JdFtqq0p/oKPSQkVD7gmm2EmMg=;
- b=Y/6V4ldcyvFBt7i1CUFcBk52GsDPw2fN9TcMmnwad/WbuR7LBDY2An4MPrjSppdl/TK3QYfKrY4/P25DHTMTnWKlACGvGRQ5Rnce0rf5b2DTE4NhgXeskC1PtjYLZ8HVE4/Rp5MdwzTxyixmcgFUbbFCrL+OWf58f0C8DtWQGHCZZWo+A7A88mR1Htm19fHqQWJCpp/9atRa457ngfD8789pY6TJg8xYUIVXWbHE3chIsrSB1Mc30BV/OJDe65ZpzoOnps6+E5bzspZ5BVU7ogcr4jx3DH3wzXlUwWx/a1eICBoYZryFo7XyxamxsIGkRzrgd3cWx+CjrH/ndikYeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by PH7PR11MB8456.namprd11.prod.outlook.com (2603:10b6:510:2fe::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Mon, 8 Apr
- 2024 20:45:17 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7430.045; Mon, 8 Apr 2024
- 20:45:16 +0000
-Date: Mon, 8 Apr 2024 13:45:14 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: PJ Waskiewicz <ppwaskie@kernel.org>, Jonathan Cameron
-	<Jonathan.Cameron@huawei.com>
-CC: Lukas Wunner <lukas@wunner.de>, Dan Williams <dan.j.williams@intel.com>,
-	<linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] cxl/acpi.c: Add buggy BIOS hint for CXL ACPI lookup
- failure
-Message-ID: <6614575a1c15c_2583ad29476@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20240407210526.8500-1-ppwaskie@kernel.org>
- <ZhMP-NBMb387KD4Y@wunner.de>
- <ZhNQa8wAflycciNA@snoopy>
- <20240408093422.000062d9@Huawei.com>
- <ZhRFsUiDieY+HhfV@snoopy>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZhRFsUiDieY+HhfV@snoopy>
-X-ClientProxiedBy: MW3PR05CA0014.namprd05.prod.outlook.com
- (2603:10b6:303:2b::19) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5CB5FB8F;
+	Mon,  8 Apr 2024 20:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712609184; cv=none; b=E5FBbg8V4goq3gsJyis3Yl+MCM/2nxDA6MMhebTlc6ZszIlfvLPmFGqqbO4rG6ipp85/xxGKhyIN477CxJKMPbUwJb6SQvVT54lOaPZdEoO+McEE3zAVAnmCspM3ddXZ2TDDcu8+7DXUXnVkyN+4UHAl1P/peU6g513seATgKW0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712609184; c=relaxed/simple;
+	bh=bawdjiIKxvS+NQAyajiRxWqDPypoasRV2+XE1wBqy8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IDQDaMXQNCTrv1/M762jRnjC5te2WcsZWcez+O14vOUPxKL7WSuVq3mkbcnHVVea3YS44XgfP6qYWJOXmHsr884zDPG5ah3P7RgUnWuyU3oReD6naS77mAT3e4UEyZ1yKDAtui0S5q7Yj+uCEE4JOnImB3X95slcPbbDyrDEuPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m7Gf5GXb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B5B0C433C7;
+	Mon,  8 Apr 2024 20:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712609183;
+	bh=bawdjiIKxvS+NQAyajiRxWqDPypoasRV2+XE1wBqy8Q=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=m7Gf5GXb6iK22KgIcBH3SH58M9klBxgKQVofhd+Nb8m3rH6B1E64AmjDkXDTjJtpV
+	 KMDbW9bJQ62vDPXXM++pnfd3qQm9H3iXL8If0Q+UOObnO5nHmEmh5F4f7/IzWPPJkg
+	 31GiIpqQRGIpmWwd/++NpVLOljDPHxSZ6B3nEk3jpFrjF1kcmKD/rzCwUBtbLGA/bN
+	 DgQnkFZCKnOwufxw+6nR/vn74S+9QPrYEKuXtzaKddQdYs7ApwVt0ngMZnLwNcHYwN
+	 9u2AY9GyWBJGsrWPwhAjb/OsLVeHj2WAxFnhPCaujLG9zKiTdhxG0MPMftAOnmb4Tz
+	 gJh9CVCrMkPBA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1CAD5CE126C; Mon,  8 Apr 2024 13:46:23 -0700 (PDT)
+Date: Mon, 8 Apr 2024 13:46:23 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	kernel-team@meta.com, mingo@kernel.org, stern@rowland.harvard.edu,
+	will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+	npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+	luc.maranget@inria.fr, akiyks@gmail.com,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH memory-model 2/3] Documentation/litmus-tests: Demonstrate
+ unordered failing cmpxchg
+Message-ID: <88b71a34-3d50-40a8-b4b6-c2d29a5d93a5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <8550daf1-4bfd-4607-8325-bfb7c1e2d8c7@paulmck-laptop>
+ <20240404192649.531112-2-paulmck@kernel.org>
+ <Zg/M141yzwnwPbCi@andrea>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|PH7PR11MB8456:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0HJeYLHtkuUyphyjhXAi3LlFjiMprvvogTcd+7fTP8wFs9HZ4A6oIFrveAhGJWzgk8X4W2QxOyfdKkKyPOm8Up6OpiDaYkKlJzHZz4KJu8eQODYE5Oo+YiwY8YHytfy743ei6z2E3T4ySB9iwFQAe2xTRrbey57QEC0/s6zZtu+Tl4fkm2thz7AGqpvabPDDKVoHQColE2KHxBcOBlkfEbiNgYV3JtFDUncHlOK7K2VPv8Oem0mUB7IVbml22BQomTB48z6rIToA2Xd9Jc29iNotzas4qa0fXYsk1RrzntZON5J/5XayWB1YTnsXfgKjQdiRTpscHP0npaj3CzTwrXgAj4umqUgLty+e54UitL6hkVnNWl6Tvhsdgzdma9TEVpGvVbNQg9DncOL3KzFp5u4FIo/lXe56ZIyyFV6cLFFpnjcqJSFy+c9pDo2Gr6etifW3U/ILL8Z4oSGsMJdUugg+1qEQ/H58bKz8SJANGp5f0mROy0zM0xuKS2n2/ZsJS7wGcsYhzE7DyonzwPiRBXJC9PNip1OUbLW1VbXYV/YHG+OtHJZzXZwrXHpuqQfPo1b2AVDYKl+IYUTk9GgHp/c97efXngVA4/RhnttYsM8VQ4GaA+IBeshdKAljaLIrNTWgXXHzF/KEpzAL1bBgwKEZXiqAP5nq5cminHz4I78=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qbzErlEW8kj/za9P3Cev7NHvceuXfpFEW17uX83hDDdxYaaBefx8YgGqLNYE?=
- =?us-ascii?Q?VQ2WoboFgqF4+Q9rpWLmJyu3ms84ljmelpUXqCIb4FZERb155iHvzh7907CS?=
- =?us-ascii?Q?1x9UU/SYLKfxC/NjTV+UvnmnQ92lfU+x7jRlkTVstk3fMgl6Hyo8s0VEqeew?=
- =?us-ascii?Q?6LM0cemPYzKdtkffTkWRxk3WtfXCFA5dQi18OmA66sBryCDDcJLA3GcUgf6G?=
- =?us-ascii?Q?+wn9iGVo3Jl2ZY9gDntjWkuPnesVgpCkzyaOftASeImXsBhUG83f6lwINCcg?=
- =?us-ascii?Q?Fqkq1otuMbQp4PN8EMrVBLzwK0ZJRsTknDUA7Ad5jlp/QMsf4fgxSY7nH+YY?=
- =?us-ascii?Q?cUylYl3zX/oRyKW45DvBSKUHoUbqDaa7iBhH/9DekcSt5vq37Rjc4pjnfcBD?=
- =?us-ascii?Q?Lxl6hvbqQCaDHZdgoGSsoxc8eU/Soxrvud8cQ2wLHf/pFAxKZYBiOp/O1a6E?=
- =?us-ascii?Q?p7hgZ+SNAb2by7wB6dz4xCX18HwX65vVnQC4QHEqvGhN4MErbjuFTsDZwUD4?=
- =?us-ascii?Q?2HTqQ82UNGrMgl0MP8HWC7jDJ5rc94cyRSx3GWzRUYQ7umLJ6rfs4X9AU6jd?=
- =?us-ascii?Q?Yw+j7XBOpHD21kGZ5sLyesR1GyrzW9VkwLDjf5kbaQLdXmB+5xKmrpjW2y/g?=
- =?us-ascii?Q?YWM6/LEXx1dzXiARdoXkichBM8ywhqacJimTAvbGs3jtvMNbbeNwOhU3GeLd?=
- =?us-ascii?Q?ODns55t5wno4Sp0gRIUOSUti6Kvq+zhKQe3zWc0ZFdWkpS5GUAfsMkeyU+qp?=
- =?us-ascii?Q?wI7bIGGc08uF7YE/oI6YoYvztUji0iZ9d8cjceWe+K8uXHbifgj29yYS6Yl2?=
- =?us-ascii?Q?tLe57zA/uCYc4AL9Fq0fTLPivt2yLwNwpO+w79ZN/YkBC6irbFWzZP87KMFM?=
- =?us-ascii?Q?/7Sa2EYfN1HT7WRpsccJeHFf3q8Ff52C8rCyeNuGgELO97PISGgTMuuyR6Oi?=
- =?us-ascii?Q?I89zHzOomQ3biE73AJGcRmAMGibK0RBboo1lLc5pCysqGLRcfQgOEY20jzhH?=
- =?us-ascii?Q?qAUrV6YpNxgALOzCA9TeOh0RHu1VKSQebk9kqPoecJdTrzDyuyFIeoJPdnX2?=
- =?us-ascii?Q?qrN0deuOV2G4nhV6A0MmrUm+hUXUWhNlXiD2z6QS+wVhGZsNToPiCMnPQQ17?=
- =?us-ascii?Q?eqrgnTD+xyv5eSdD4R9hcCQDF4q7mPI419Hbt9IK/PpCh0nIGDa9Pa2D4psz?=
- =?us-ascii?Q?pveicfDDfgqMKK0r74JPypbY3D3bx+id8UUVE8gFe+6hrpJeer1Aj3FvObrX?=
- =?us-ascii?Q?Y+s56n3k7E59j0s3CP2rw0DvQtZka1NPGTAN3vpea7HLzKjXas78un8jJvNa?=
- =?us-ascii?Q?ZFFFID/jzj+2fpd4ceRZBetkkkcHD+6TuQiqJ/958hyzAuZL1hIktOwwURU2?=
- =?us-ascii?Q?mNcmDaktZJyc10t24+nDxw9ejN7gvhWK1AzhpF/pNR/3b1RBucNgkiAx+mCc?=
- =?us-ascii?Q?Lp8MckIboZPfv0/iWPqwALK1FvhzNP5DOyxZII4I0WEBs9CsbQ9SKCp0F1Xd?=
- =?us-ascii?Q?c/1HTc0NHDd/HEUyKcRK5Boy7vzYzW7TOxDHDTpi7WuEi8PH7veHHBaPyWiL?=
- =?us-ascii?Q?IKuvNxOvbSe/nPl7rfY4map2UpHBu418b1vAAYunhGH74tRFAZlcFcOJt2ZN?=
- =?us-ascii?Q?DQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60bcb3d1-9b6c-4c78-ae7f-08dc580ccbd6
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 20:45:16.3792
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +9tXYTLhXXXyDgCdGoZ29CIyv1RKXVFOCAzledDqe3nkm6FUFzUL4ZYF3WKeFEM5jcFNFnud+vCduA1OYRLJw1Hntc+Dyhj+t9A9og+nrN8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8456
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg/M141yzwnwPbCi@andrea>
 
-PJ Waskiewicz wrote:
-[..]
-> > Other than that seems reasonable to hint it is probably a bios
-> > bug - however I wonder how many other cases we should do this for and
-> > whether it is worth the effort of marking them all?
+On Fri, Apr 05, 2024 at 12:05:11PM +0200, Andrea Parri wrote:
+> >  DCL-broken.litmus
+> > -	Demonstrates that double-checked locking needs more than just
+> > -	the obvious lock acquisitions and releases.
+> > +    Demonstrates that double-checked locking needs more than just
+> > +    the obvious lock acquisitions and releases.
+> >  
+> >  DCL-fixed.litmus
+> > -	Demonstrates corrected double-checked locking that uses
+> > -	smp_store_release() and smp_load_acquire() in addition to the
+> > -	obvious lock acquisitions and releases.
+> > +    Demonstrates corrected double-checked locking that uses
+> > +    smp_store_release() and smp_load_acquire() in addition to the
+> > +    obvious lock acquisitions and releases.
+> >  
+> >  RM-broken.litmus
+> > -	Demonstrates problems with "roach motel" locking, where code is
+> > -	freely moved into lock-based critical sections.  This example also
+> > -	shows how to use the "filter" clause to discard executions that
+> > -	would be excluded by other code not modeled in the litmus test.
+> > -	Note also that this "roach motel" optimization is emulated by
+> > -	physically moving P1()'s two reads from x under the lock.
+> > +    Demonstrates problems with "roach motel" locking, where code is
+> > +    freely moved into lock-based critical sections.  This example also
+> > +    shows how to use the "filter" clause to discard executions that
+> > +    would be excluded by other code not modeled in the litmus test.
+> > +    Note also that this "roach motel" optimization is emulated by
+> > +    physically moving P1()'s two reads from x under the lock.
+> >  
+> > -	What is a roach motel?	This is from an old advertisement for
+> > -	a cockroach trap, much later featured in one of the "Men in
+> > -	Black" movies.	"The roaches check in.	They don't check out."
+> > +    What is a roach motel?  This is from an old advertisement for
+> > +    a cockroach trap, much later featured in one of the "Men in
+> > +    Black" movies.  "The roaches check in.  They don't check out."
+> >  
+> >  RM-fixed.litmus
+> > -	The counterpart to RM-broken.litmus, showing P0()'s two loads from
+> > -	x safely outside of the critical section.
+> > +    The counterpart to RM-broken.litmus, showing P0()'s two loads from
+> > +    x safely outside of the critical section.
 > 
-> I can confirm this was definitely a BIOS bug in this particular case.
-> The vendor spun a quick test BIOS for us to test on an EMR and SPR host,
-> and the _UID's were finally correct.  I could successfully walk the CEDT
-> and get to the CAPS structs I was after (link speed, bus width, etc.).
+> AFAIU, the changes above belong to patch #1.  Looks like you realigned
+> the text, but forgot to integrate the changes in #1?
 
-Oh, in that case I think there's no need to worry about a Linux quirk.
+Good eyes!  I will catch this in my next rebase.
 
-I do think cxl_acpi has multiple overlapping failure cases when what you
-really want to know is whether:
+> > +C cmpxchg-fail-ordered-1
+> > +
+> > +(*
+> > + * Result: Never
+> > + *
+> > + * Demonstrate that a failing cmpxchg() operation will act as a full
+> > + * barrier when followed by smp_mb__after_atomic().
+> > + *)
+> > +
+> > +{}
+> > +
+> > +P0(int *x, int *y, int *z)
+> > +{
+> > +	int r0;
+> > +	int r1;
+> > +
+> > +	WRITE_ONCE(*x, 1);
+> > +	r1 = cmpxchg(z, 1, 0);
+> > +	smp_mb__after_atomic();
+> > +	r0 = READ_ONCE(*y);
+> > +}
+> > +
+> > +P1(int *x, int *y, int *z)
+> > +{
+> > +	int r0;
+> > +
+> > +	WRITE_ONCE(*y, 1);
+> > +	r1 = cmpxchg(z, 1, 0);
+> 
+> P1's r1 is undeclared (so klitmus7 will complain).
+> 
+> The same observation holds for cmpxchg-fail-unordered-1.litmus.
 
-   "CXL host bridge can be found in CEDT.CHBS"
+Good catch in all four tests, thank you!
 
-Turns out that straightforward message is aleady a driver message, but
-it gets skipped in this case. So, I am thinking of cleanup /
-clarification along the following lines:
+Does the patch shown at the end of this email clear things up for you?
 
-1/ Lean on the existing cxl_get_chbs() validation paths to report on
-errors
+							Thanx, Paul
 
-2/ Include the device-name rather than the UID since if UID is
-unreliable it does not help you communicate with your BIOS vendor. I.e.
-give a breadcrumb for the BIOS engineer to match the AML device name
-with the CEDT content.
+> > +	smp_mb__after_atomic();
+> > +	r0 = READ_ONCE(*x);
+> > +}
+> > +
+> > +locations[0:r1;1:r1]
+> > +exists (0:r0=0 /\ 1:r0=0)
+> 
+> 
+> > +C cmpxchg-fail-ordered-2
+> > +
+> > +(*
+> > + * Result: Never
+> > + *
+> > + * Demonstrate use of smp_mb__after_atomic() to make a failing cmpxchg
+> > + * operation have acquire ordering.
+> > + *)
+> > +
+> > +{}
+> > +
+> > +P0(int *x, int *y)
+> > +{
+> > +	int r0;
+> > +	int r1;
+> > +
+> > +	WRITE_ONCE(*x, 1);
+> > +	r1 = cmpxchg(y, 0, 1);
+> > +}
+> > +
+> > +P1(int *x, int *y)
+> > +{
+> > +	int r0;
+> > +
+> > +	r1 = cmpxchg(y, 0, 1);
+> > +	smp_mb__after_atomic();
+> > +	r2 = READ_ONCE(*x);
+> 
+> P1's r1 and r2 are undeclared.  P0's r0 and P1's r0 are unused.
+> 
+> Same for cmpxchg-fail-unordered-2.litmus.
+> 
+>   Andrea
 
-3/ Do not fail driver load on a single host-bridge parsing failure
+------------------------------------------------------------------------
 
-4/ These are all cxl_acpi driver init events, so consistently use the
-ACPI0017 device, and the cxl_acpi driver, as the originator of the error
-message.
+commit 5ce4d0efe11fd101ff938f6116cdd9b6fe46a98c
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Mon Apr 8 13:41:22 2024 -0700
 
-Would this clarification have saved you time with the debug?
+    Documentation/litmus-tests: Make cmpxchg() tests safe for klitmus
+    
+    The four litmus tests in Documentation/litmus-tests/atomic do not
+    declare all of their local variables.  Although this is just fine for LKMM
+    analysis by herd7, it causes build failures when run in-kernel by klitmus.
+    This commit therefore adjusts these tests to declare all local variables.
+    
+    Reported-by: Andrea Parri <parri.andrea@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-index 32091379a97b..5a70d7312c64 100644
---- a/drivers/cxl/acpi.c
-+++ b/drivers/cxl/acpi.c
-@@ -511,29 +511,26 @@ static int cxl_get_chbs_iter(union acpi_subtable_headers *header, void *arg,
- 	return 0;
- }
- 
--static int cxl_get_chbs(struct device *dev, struct acpi_device *hb,
--			struct cxl_chbs_context *ctx)
-+static void cxl_get_chbs(struct device *dev, struct acpi_device *hb,
-+			 struct cxl_chbs_context *ctx)
+diff --git a/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-1.litmus b/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-1.litmus
+index 3df1d140b189b..c0f93dc07105e 100644
+--- a/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-1.litmus
++++ b/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-1.litmus
+@@ -23,6 +23,7 @@ P0(int *x, int *y, int *z)
+ P1(int *x, int *y, int *z)
  {
--	unsigned long long uid;
- 	int rc;
+ 	int r0;
++	int r1;
  
--	rc = acpi_evaluate_integer(hb->handle, METHOD_NAME__UID, NULL, &uid);
--	if (rc != AE_OK) {
--		dev_err(dev, "unable to retrieve _UID\n");
--		return -ENOENT;
--	}
--
--	dev_dbg(dev, "UID found: %lld\n", uid);
--	*ctx = (struct cxl_chbs_context) {
-+	*ctx = (struct cxl_chbs_context){
- 		.dev = dev,
--		.uid = uid,
- 		.base = CXL_RESOURCE_NONE,
- 		.cxl_version = UINT_MAX,
- 	};
+ 	WRITE_ONCE(*y, 1);
+ 	r1 = cmpxchg(z, 1, 0);
+diff --git a/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-2.litmus b/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-2.litmus
+index 54146044a16f6..5c06054f46947 100644
+--- a/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-2.litmus
++++ b/Documentation/litmus-tests/atomic/cmpxchg-fail-ordered-2.litmus
+@@ -11,7 +11,6 @@ C cmpxchg-fail-ordered-2
  
--	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CHBS, cxl_get_chbs_iter, ctx);
-+	rc = acpi_evaluate_integer(hb->handle, METHOD_NAME__UID, NULL,
-+				   &ctx->uid);
-+	if (rc != AE_OK) {
-+		dev_dbg(dev, "unable to retrieve _UID\n");
-+		return;
-+	}
- 
--	return 0;
-+	dev_dbg(dev, "UID found: %lld\n", ctx->uid);
-+	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CHBS, cxl_get_chbs_iter, ctx);
- }
- 
- static int get_genport_coordinates(struct device *dev, struct cxl_dport *dport)
-@@ -561,7 +558,6 @@ static int get_genport_coordinates(struct device *dev, struct cxl_dport *dport)
- static int add_host_bridge_dport(struct device *match, void *arg)
+ P0(int *x, int *y)
  {
- 	int ret;
--	acpi_status rc;
- 	struct device *bridge;
- 	struct cxl_dport *dport;
- 	struct cxl_chbs_context ctx;
-@@ -573,19 +569,16 @@ static int add_host_bridge_dport(struct device *match, void *arg)
- 	if (!hb)
- 		return 0;
+-	int r0;
+ 	int r1;
  
--	rc = cxl_get_chbs(match, hb, &ctx);
--	if (rc)
--		return rc;
--
-+	cxl_get_chbs(match, hb, &ctx);
- 	if (ctx.cxl_version == UINT_MAX) {
--		dev_warn(match, "No CHBS found for Host Bridge (UID %lld)\n",
--			 ctx.uid);
-+		dev_err(host, FW_BUG "No CHBS found for Host Bridge (%s)\n",
-+			dev_name(match));
- 		return 0;
- 	}
+ 	WRITE_ONCE(*x, 1);
+@@ -20,7 +19,8 @@ P0(int *x, int *y)
  
- 	if (ctx.base == CXL_RESOURCE_NONE) {
--		dev_warn(match, "CHBS invalid for Host Bridge (UID %lld)\n",
--			 ctx.uid);
-+		dev_err(host, FW_BUG "CHBS invalid for Host Bridge (%s)\n",
-+			dev_name(match));
- 		return 0;
- 	}
+ P1(int *x, int *y)
+ {
+-	int r0;
++	int r1;
++	int r2;
  
-@@ -650,13 +643,11 @@ static int add_host_bridge_uport(struct device *match, void *arg)
- 		return 0;
- 	}
+ 	r1 = cmpxchg(y, 0, 1);
+ 	smp_mb__after_atomic();
+diff --git a/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-1.litmus b/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-1.litmus
+index a727ce23b1a6e..39ea1f56a28d2 100644
+--- a/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-1.litmus
++++ b/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-1.litmus
+@@ -23,6 +23,7 @@ P0(int *x, int *y, int *z)
+ P1(int *x, int *y, int *z)
+ {
+ 	int r0;
++	int r1;
  
--	rc = cxl_get_chbs(match, hb, &ctx);
--	if (rc)
--		return rc;
--
-+	cxl_get_chbs(match, hb, &ctx);
- 	if (ctx.cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) {
--		dev_warn(bridge,
--			 "CXL CHBS version mismatch, skip port registration\n");
-+		dev_err(host,
-+			FW_BUG "CXL CHBS version mismatch, skip port registration for %s\n",
-+			dev_name(match));
- 		return 0;
- 	}
+ 	WRITE_ONCE(*y, 1);
+ 	r1 = cmpxchg(z, 1, 0);
+diff --git a/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-2.litmus b/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-2.litmus
+index a245bac55b578..61aab24a4a643 100644
+--- a/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-2.litmus
++++ b/Documentation/litmus-tests/atomic/cmpxchg-fail-unordered-2.litmus
+@@ -12,7 +12,6 @@ C cmpxchg-fail-unordered-2
  
+ P0(int *x, int *y)
+ {
+-	int r0;
+ 	int r1;
+ 
+ 	WRITE_ONCE(*x, 1);
+@@ -21,7 +20,8 @@ P0(int *x, int *y)
+ 
+ P1(int *x, int *y)
+ {
+-	int r0;
++	int r1;
++	int r2;
+ 
+ 	r1 = cmpxchg(y, 0, 1);
+ 	r2 = READ_ONCE(*x);
 
