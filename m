@@ -1,145 +1,161 @@
-Return-Path: <linux-kernel+bounces-135478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B524389C5DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:01:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813D789C5EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:02:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E70AC1C22044
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:01:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 382FD283B3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52307F7F4;
-	Mon,  8 Apr 2024 14:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772317F7C6;
+	Mon,  8 Apr 2024 14:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M67WO3MO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="dhpGhW4A"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB667F47E;
-	Mon,  8 Apr 2024 14:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4EA7E105
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712584860; cv=none; b=HH6glVVfF0dTCSfTwjEVvuw0O2Xy5qGMTrfl0HVauhTVeH3H+0dIMJYlaMwtqlby+kA4nY0Z/yJy8+zihICR2OntpuJjomLmE30VDa/vRIcdtPc5POYvwtInHUqHXpC6xO3punFUq1rD7UPwnZAqrALVkVneeWN1KOcQLmA7R3k=
+	t=1712584908; cv=none; b=fsPBHfvoIjQKyKnD5ylQqLLvZ4l+EWNBxtwsx38g1NY7b9eIEkZooEwMCPVrZ012PqzMQzfgGGsKALEU9xeL4P0hxckw006CzXyiUtRbKnM3hD3oltDDWi+2Jhl+9+3fUrCk5gP5wjFYds4xqj7e69SxG8qpTlj1rWgKPA6WvG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712584860; c=relaxed/simple;
-	bh=LRkUGtbdysI7/tiFWsFk0skJui/QKklnMkcGgNPr+6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a9X+5MIZ/vvDOTZIm12zn1Mn8ReQuioOztoUpYRL/BccLxn5UtfjmyrzLVvQOWWCsTFFHd8x8gEhcegaEuBDeXGJvne/KRyHwtOObo6U1/AxJFGtZruV7DAOf2dqma3+z9ISub/NrMKLcG3p0+/NhyhXSOygMPX3BIQXxrfSceo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M67WO3MO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60730C433B2;
-	Mon,  8 Apr 2024 14:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712584859;
-	bh=LRkUGtbdysI7/tiFWsFk0skJui/QKklnMkcGgNPr+6s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M67WO3MO0MT2zVXUR1oJb50r0ESEjtLzRA4KqexN2iQUrs4lX9EEjjnwoQ7T3iuo9
-	 967pWN9c0uup1rjOl3TRrWLV1XxCDsgMtSIQoJmqgjOM1e4ni91pUN1SAAiLjTgb6h
-	 7wbrxE2MWafJ7nJ9AwsXSG2hXE2FqmB4ptdM+o7eExNvxndFJ9k3v9kz48y2IK0vpk
-	 ucl5sZsBQT/03NK3C6EDV2OfsSeoCTM+S6QhJ85J/7tAAEBEGARNw/ksf2m4STgAXL
-	 ZVnuEB5CpYwLdFDPG1UcoV/KpKeMQKC/HjhGBKZYYbqzT24R2BNL6T85ZMrtktJZ2j
-	 N2fgUWgIlu68Q==
-Date: Mon, 8 Apr 2024 17:00:55 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v4 0/4] Define and use mana queues for CQs and
- WQs
-Message-ID: <20240408140055.GH8764@unreal>
-References: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240408112533.GF8764@unreal>
- <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
- <20240408130024.GG8764@unreal>
- <PAXPR83MB05573802DE8859318A7B1435B4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+	s=arc-20240116; t=1712584908; c=relaxed/simple;
+	bh=UzqjiQxC9DO10jx1lYBKM8CUcdUiln6e7HY1avvUJQ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c0RMdPjxnRDOiuv5939Wt7HurOmfiXgPCBj3+jfzGQNlxNgCVO/tGCP9hmNUznuR7j9cwNpXtl/o7arVdoQzxIE5nrHANjbuTL+gxS733ZPTNnuvBURg/AS8WrRi9BbNVeb1W0ukjrFfui4aE9F0t3exBh4ggpR8RWH/DO4W1lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=dhpGhW4A; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3880905276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitbyteword.org; s=google; t=1712584905; x=1713189705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PZIVt49hrGpaSXZb3Y7BwY7k2PHPt4HOP+2QhXBFS9k=;
+        b=dhpGhW4Afe1sitMlNJzYN9HpbCi/K6lx1zANG/rnVLm0neuJ4MqYxF+E69VHK+eEzQ
+         pyh2ZwSwoRNtNZY+sU2viY4M4UDtiH0lGhNWf89YEO6eVss22zKelf5AHG7tH1Yekjkz
+         pvYIRGyoxCHAc0YVj11iy7wRjdZMBrT5Da8FDFsdD0e5LL3Iyly6ux1kOqhWRTwoNSlN
+         FZczqrjnMhnCSaQsRa34SWki+RIUnfYtxj1dEuUrpWJYsk5RscCbMyxpHKYgrSCtThsF
+         duxxpwqSIHy9ym5F832KMhHIbK175cZ6MN04HMBggwFcXsFJ/bk4A/+/6kRsW/yddeTg
+         Ys9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712584905; x=1713189705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PZIVt49hrGpaSXZb3Y7BwY7k2PHPt4HOP+2QhXBFS9k=;
+        b=Fz5zXLPuPXohXqGf/sesGIjapjaTyIN1WYFe85HC+panzzeODXxva2kwggulbE33jQ
+         kTfhIDFdqspOOE+6DE0LiNfQ+Ej4p6unfD/8wet3yfa0EBmTqBvKzdKquW+dn+kBhPAY
+         9Oe/0ImjJ+yeFLtv/2Dew0PIaQSp7Aj7/xb7cZEyxg7ZRhHcixyMhMJwRgLoWWp4DbFm
+         59tfeqbVXKaGG7C03CEDzbaFvE3S9bAoixZ33HLws6+GvCzCUwq5cM8YAl6jPRmEwChZ
+         OelSMB1yrEF/YKnRa5og6uwUXk7qX0db+PGmMRb9BUmk5KFNgzEUDHrLLGLgaCz1G8W+
+         Dgog==
+X-Forwarded-Encrypted: i=1; AJvYcCXFneB1ho3R+Ry/riCClXJUHE0DLgTr3nLI5ucAacU2rrowMDBErcal1Abcdf3xGg7bi7rQIUvM17Ge8r+Ss8c+UT0iM0c5+4Jwn2x0
+X-Gm-Message-State: AOJu0Yxqm1TqzXxqJ96GtWr6ae73GfVRWQvjP57hrHBB+PjTrhSI1L1l
+	akQ3GEqdp7Pde9zDHW7liUuQ1Sh/OabB+iVOJG0Ipyas/0wUghPHIn5mEGUFr2baMdYzIMkW0O3
+	to09IrgQwNzwwz/IqclCC1Qna5OhyfQK49IrNHA==
+X-Google-Smtp-Source: AGHT+IGE6HrRmYX7o9hiPGxuhVfSDqTpIN+FVF3dbND3l8qGamKfkvccfJGt2PpEhpPV8Ksj0onzetgE4GoC1C/LZr8=
+X-Received: by 2002:a05:6902:1005:b0:dcb:ce4a:bc2b with SMTP id
+ w5-20020a056902100500b00dcbce4abc2bmr8201909ybt.51.1712584905211; Mon, 08 Apr
+ 2024 07:01:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR83MB05573802DE8859318A7B1435B4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+References: <20240403140116.3002809-1-vineeth@bitbyteword.org> <20240403140116.3002809-6-vineeth@bitbyteword.org>
+In-Reply-To: <20240403140116.3002809-6-vineeth@bitbyteword.org>
+From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
+Date: Mon, 8 Apr 2024 10:01:34 -0400
+Message-ID: <CAO7JXPh=g2psw_ziw2vAZH8e_Hd_bOtBTsKW1uaBANo7RoQSXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 5/5] selftests/bpf: sample implementation of a bpf
+ pvsched driver.
+To: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Sean Christopherson <seanjc@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Suleiman Souhlal <suleiman@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, himadrics@inria.fr, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
+	David Vernet <dvernet@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 01:47:45PM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > On Mon, Apr 08, 2024 at 12:50:12PM +0000, Konstantin Taranov wrote:
-> > > > From: Leon Romanovsky <leon@kernel.org> On Mon, Apr 08, 2024 at
-> > > > 02:14:02AM -0700, Konstantin Taranov wrote:
-> > > > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > > > >
-> > > > > This patch series aims to reduce code duplication by introducing a
-> > > > > notion of mana ib queues and corresponding helpers to create and
-> > > > > destroy them.
-> > > > >
-> > > > > v3->v4:
-> > > > > * Removed debug prints in patches, as asked by Leon
-> > > > >
-> > > > > v2->v3:
-> > > > > * [in 4/4] Do not define an additional struct for a raw qp
-> > > > >
-> > > > > v1->v2:
-> > > > > * [in 1/4] Added a comment about the ignored return value
-> > > > > * [in 2/4] Replaced RDMA:mana_ib to RDMA/mana_ib in the subject
-> > > > > * [in 4/4] Renamed mana_ib_raw_qp to mana_ib_raw_sq
-> > > > >
-> > > > > Konstantin Taranov (4):
-> > > > >   RDMA/mana_ib: Introduce helpers to create and destroy mana queues
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for CQs
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for WQs
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-> > > > >
-> > > > >  drivers/infiniband/hw/mana/cq.c      | 52 +++-------------
-> > > > >  drivers/infiniband/hw/mana/main.c    | 39 ++++++++++++
-> > > > >  drivers/infiniband/hw/mana/mana_ib.h | 26 ++++----
-> > > > >  drivers/infiniband/hw/mana/qp.c      | 93 +++++++++-------------------
-> > > > >  drivers/infiniband/hw/mana/wq.c      | 33 ++--------
-> > > > >  5 files changed, 96 insertions(+), 147 deletions(-)
-> > > >
-> > > > It doesn't apply.
-> > > >
-> > >
-> > > I guess there was some mis-synchronisation between us.
-> > > I see that you have already applied the patch 6 days ago:
-> > > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.
-> > >
-> > kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Frdma%2Frdma.git%2
-> > Flog%
-> > >
-> > 2F&data=05%7C02%7Ckotaranov%40microsoft.com%7C09ea6de381194295c
-> > 4ae08dc
-> > >
-> > 57cbe121%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C63848178
-> > 04102717
-> > >
-> > 33%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMz
-> > IiLCJBTiI
-> > >
-> > 6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7C%7C%7C&sdata=jwGGhmatHqdN4bW
-> > Xc%2FtyXtubD
-> > > ZxxCXpnyL26S5lEKd0%3D&reserved=0
-> > >
-> > > I am sorry for sending a newer version after the patch has been applied.
-> > > I have not checked this before sending.
-> > > I can take care of useless debug prints in a future cleanup patch.
-> > 
-> > Please rebase your series, and resend.
-> 
-> Sorry for a confusion. I mean you have already applied this patch series (v3) 6 days ago.
-> See commits:
-> 46f5be7cd4bceb3a503c544b3dab7b75fe4bb96b
-> 60a7ac0b8bec5df9764b7460ffee91fc981e8a31
-> 688bac28e3dc9eb795ae8ea5aa40cb637e289faa
-> f10242b3da908dc9d4bfa040e6511a5b86522499
-> 
-> As a result, I cannot rebase. I could send a completely new patch that removes some debug prints.
+Adding sched_ext folks
 
-Yes, sorry for not being clear. Please send a cleanup patch.
-
-Thanks
+On Wed, Apr 3, 2024 at 10:01=E2=80=AFAM Vineeth Pillai (Google)
+<vineeth@bitbyteword.org> wrote:
+>
+> A dummy skeleton of a bpf pvsched driver. This is just for demonstration
+> purpose and would need more work to be included as a test for this
+> feature.
+>
+> Not-Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> ---
+>  .../testing/selftests/bpf/progs/bpf_pvsched.c | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_pvsched.c
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_pvsched.c b/tools/test=
+ing/selftests/bpf/progs/bpf_pvsched.c
+> new file mode 100644
+> index 000000000000..a653baa3034b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_pvsched.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2019 Facebook */
+> +
+> +#include "vmlinux.h"
+> +#include "bpf_tracing_net.h"
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> +
+> +SEC("struct_ops/pvsched_vcpu_reg")
+> +int BPF_PROG(pvsched_vcpu_reg, struct pid *pid)
+> +{
+> +       bpf_printk("pvsched_vcpu_reg: pid: %p", pid);
+> +       return 0;
+> +}
+> +
+> +SEC("struct_ops/pvsched_vcpu_unreg")
+> +void BPF_PROG(pvsched_vcpu_unreg, struct pid *pid)
+> +{
+> +       bpf_printk("pvsched_vcpu_unreg: pid: %p", pid);
+> +}
+> +
+> +SEC("struct_ops/pvsched_vcpu_notify_event")
+> +void BPF_PROG(pvsched_vcpu_notify_event, void *addr, struct pid *pid, __=
+u32 event)
+> +{
+> +       bpf_printk("pvsched_vcpu_notify: pid: %p, event:%u", pid, event);
+> +}
+> +
+> +SEC(".struct_ops")
+> +struct pvsched_vcpu_ops pvsched_ops =3D {
+> +       .pvsched_vcpu_register          =3D (void *)pvsched_vcpu_reg,
+> +       .pvsched_vcpu_unregister        =3D (void *)pvsched_vcpu_unreg,
+> +       .pvsched_vcpu_notify_event      =3D (void *)pvsched_vcpu_notify_e=
+vent,
+> +       .events                         =3D 0x6,
+> +       .name                           =3D "bpf_pvsched_ops",
+> +};
+> --
+> 2.40.1
+>
 
