@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-135984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBA789CE92
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:51:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F096489CE91
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58308B221F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:51:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5A71F2373F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBCB143890;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAE71448DD;
 	Mon,  8 Apr 2024 22:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="H4zl7AiH"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="I2ejRLU1"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CB91D558;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E517E26ACE;
 	Mon,  8 Apr 2024 22:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712616674; cv=none; b=bYfUs43fX5CmZ41RoyRvvzxc/Ut22+jZtMZwS4xWR9zqDHgsRFrRtIqWu7+qBOLcEh/meJ3Vn7BwbE4xSvZgbE9Pqj8vbmyMq/D2XMfMO90khXgdODuOkxEQ0pHUUmRKQkLhHMbA3003qzn/miwb8Uf/EgQMgaxytiO2nFiAq2g=
+	t=1712616674; cv=none; b=U0FXxBgaI1IniWybwKSJpeIKJgoZPV4aOikSAmdu77bkoKmiTU6WwMZK8nnbelWUh6UCwuJNQhGr0aBafQw1fvmrbGGd7dk0OdvvYdFoQXAg0tn/qupBPLSc6Va721FLTV6fJiQeIfFjyKt/KrUYvJ0YoXPTS8vRR//b0fmdz5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712616674; c=relaxed/simple;
-	bh=DOQyBmJqMcgpGS+w7kqQ0AoLHI+zmLPm0WGY9FVt1ao=;
+	bh=T9MvklJg6UVFRQrF868mATr8p8Rs4R1YsfG32amYaZw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cfsWCoJSDwGdHURzTn2z522+CnUTy2NG10+kjd7CAD6+ZB/0Xm6DTpQMldBumPsVgZ3sTAxbbMWuZ5AoZmcY+DSk9IL+d0XGBZSd96GBme7q9UTOKKT/Fr9r+TTvguGlSHMfbY6Q7KD6RVvGTmze9zS0xBd0cA6LT6x7zY8COU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=H4zl7AiH; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=vDk+lgyRfGXfKLUgRQ0ynIjO+jwT8u48qhA9SNC+1AhsPfDhdBwbk+GB+RSdnznndvEJO+QPI1xLTfHdbLg9yMMA4HDcE2LuGFMhiSYSv+uou9S/F7u0Ug/JbWE4FsJNo+Ts+oIFgV7FHvCP0x87MQb19nm6Dx8X9ndWWqXYQj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=I2ejRLU1; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712616670;
-	bh=DOQyBmJqMcgpGS+w7kqQ0AoLHI+zmLPm0WGY9FVt1ao=;
+	s=mail; t=1712616671;
+	bh=T9MvklJg6UVFRQrF868mATr8p8Rs4R1YsfG32amYaZw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H4zl7AiHRZ7NMYdl/m7szepNLfoAtnnMjNiJH13JnLSGq1LGW0rTFeURfBvJ3lXCF
-	 zqmxCLpQ9iu6cV+xSiJBzN3+Od9d0RYLDdhsJTeQH5rUB1e5P/J31qWzXlxuEHQ49l
-	 Ly05X/F7P6nAQglkJDSol/wjfzUEofEc362EI0Achdw0U8zDzJsZBawsiJ5IMFY/7D
-	 bjCBL/k4Fyx1IzG5+HPZrgWVvDpppNghUG8qMcZVBUvgVsqTSDKnzceXLdwIZLOkVW
-	 pwYbTC7MDxkBWur6euQ4oBWH9JUGtJkreYsZz8OcQguZ5UlrgEnGYP+f0uIDv3qI0t
-	 JS5whFyo1Xgyw==
+	b=I2ejRLU13wcmnddPrg5UBm+VBx9/zQOCXH4x1NIlyiNcYvdYPpizilQvr4ETSqs4j
+	 3Zh13fJk84Kgms4ZDi4pJPWfrftmYJzp4Us04EVD6oF3nQ+98eP7/0IBRzjtZTBZXb
+	 PEmjWYTcVLfE8SMYod7VZeHbFkMc7efou2L/lg+Vkx7dKlcheGzAIshICUk4FECK/Y
+	 QgyyqMKPJ0WweIK6l/Z/+erE/nzdryscesam+s2h17Z+IdItAinFKQiOt3RzpNbf2L
+	 8v5B040uj+0ni1cihUidQaWEp11NjL392mMKOHVqy3VIlLyIV+mp44Q9tvFzEUzHzV
+	 6wu8PSEkxGzSQ==
 Received: from jupiter.universe (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
 	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B6D4837820AD;
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C03F137820CD;
 	Mon,  8 Apr 2024 22:51:10 +0000 (UTC)
 Received: by jupiter.universe (Postfix, from userid 1000)
-	id 3FAC14800D0; Tue,  9 Apr 2024 00:51:10 +0200 (CEST)
+	id 41AC84800D1; Tue,  9 Apr 2024 00:51:10 +0200 (CEST)
 From: Sebastian Reichel <sebastian.reichel@collabora.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Vinod Koul <vkoul@kernel.org>,
@@ -64,9 +64,9 @@ Cc: Rob Herring <robh+dt@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Sebastian Reichel <sebastian.reichel@collabora.com>,
 	kernel@collabora.com
-Subject: [PATCH v5 03/10] arm64: defconfig: enable Rockchip Samsung USBDP PHY
-Date: Tue,  9 Apr 2024 00:50:30 +0200
-Message-ID: <20240408225109.128953-4-sebastian.reichel@collabora.com>
+Subject: [PATCH v5 04/10] arm64: dts: rockchip: fix usb2phy nodename for rk3588
+Date: Tue,  9 Apr 2024 00:50:31 +0200
+Message-ID: <20240408225109.128953-5-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240408225109.128953-1-sebastian.reichel@collabora.com>
 References: <20240408225109.128953-1-sebastian.reichel@collabora.com>
@@ -78,27 +78,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The USBDP Phy is used by RK3588 to handle the Dual-Role USB3
-controllers. The Phy also supports Displayport Alt-Mode, but
-the necessary DRM driver has not yet been merged.
+usb2-phy should be named usb2phy according to the DT binding,
+so let's fix it up accordingly.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 2c30d617e180..364795edb94b 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1517,6 +1517,7 @@ CONFIG_PHY_ROCKCHIP_PCIE=m
- CONFIG_PHY_ROCKCHIP_SAMSUNG_HDPTX=m
- CONFIG_PHY_ROCKCHIP_SNPS_PCIE3=y
- CONFIG_PHY_ROCKCHIP_TYPEC=y
-+CONFIG_PHY_ROCKCHIP_USBDP=m
- CONFIG_PHY_SAMSUNG_UFS=y
- CONFIG_PHY_UNIPHIER_USB2=y
- CONFIG_PHY_UNIPHIER_USB3=y
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+index 87b83c87bd55..5ed0d8c95427 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+@@ -543,7 +543,7 @@ usb2phy2_grf: syscon@fd5d8000 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 
+-		u2phy2: usb2-phy@8000 {
++		u2phy2: usb2phy@8000 {
+ 			compatible = "rockchip,rk3588-usb2phy";
+ 			reg = <0x8000 0x10>;
+ 			interrupts = <GIC_SPI 391 IRQ_TYPE_LEVEL_HIGH 0>;
+@@ -568,7 +568,7 @@ usb2phy3_grf: syscon@fd5dc000 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 
+-		u2phy3: usb2-phy@c000 {
++		u2phy3: usb2phy@c000 {
+ 			compatible = "rockchip,rk3588-usb2phy";
+ 			reg = <0xc000 0x10>;
+ 			interrupts = <GIC_SPI 392 IRQ_TYPE_LEVEL_HIGH 0>;
 -- 
 2.43.0
 
