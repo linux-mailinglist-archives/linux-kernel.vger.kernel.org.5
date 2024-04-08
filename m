@@ -1,49 +1,60 @@
-Return-Path: <linux-kernel+bounces-135313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C9D389BEE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:23:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD9A189BEE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7FC1C221D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:23:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5071C2313A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71DCC6F06F;
-	Mon,  8 Apr 2024 12:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA9E6BFC8;
+	Mon,  8 Apr 2024 12:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTd9wbmP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="cJUnpV9A"
+Received: from mx0a-00176a03.pphosted.com (mx0a-00176a03.pphosted.com [67.231.149.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28016A340;
-	Mon,  8 Apr 2024 12:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFEA6BB22;
+	Mon,  8 Apr 2024 12:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712578902; cv=none; b=C/ap8xeIg+MRm8UrrCLh/4rlnYyg5Ct0m2fH/XK0xTN2oTDrJIjKOFsv5TBNT3uemyFZWR43yeAQDoHoN3775+lcetDxLDDwHvIK+c/xag2wC5bMXXIiyhPCnbZjurKqr+FmXCTV6UXBjBZYQQ4mqs4Jpi3SRZ0ZCuk8W7Dz48w=
+	t=1712579054; cv=none; b=DCThYP6cayKfOOQidL0cYFUvo9ITKVl5JVCo+4hk2Dtu5TosZlrmyd6cAW29zf4O/zRPuR0z6AEvAX626Wka2zBhQEOBAeC8lRXLIfcS5Pt4iKOyPqt+gdo7UqsC2/rnU6RsE4sJbOo+fbm8UhnTVVHI0bF92aX4AEb565hcgEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712578902; c=relaxed/simple;
-	bh=+wmN/AnzNilENyp3GYrx7rTjEa+yyO+OkP6khikeb00=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YjVpVfveYHgdDnAe2/FnKP7uxmNtOnKbTopwkghi78jHbultYuppwPs1pZfAP/8TmZQw0xv0F3Z/ys1H1g4mU6il6F21UKtLorhqPDe4pSyfwaQYWDQ0880pO6Rx0opszujixmlm+ixF5pEhL7ucH38XIWlb/2qBlprV8Q+fH0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KTd9wbmP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 55198C433C7;
-	Mon,  8 Apr 2024 12:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712578902;
-	bh=+wmN/AnzNilENyp3GYrx7rTjEa+yyO+OkP6khikeb00=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KTd9wbmPduTyZXyrIYvaQYFFRLAQNuqGHUL5ND6geRMNjr7MH951K+cQ8+iR8zFV3
-	 23Z00JD8b2u0xWH0WtmVE+FJ9ttpIRN55YE/XBnmp5QnixSoKbyMv7B5GMMxG6von/
-	 9sHrX3zKEyb817dO+Inn7hsFaQagkr25lYkK3wv54FYApLtrscxEKSnDS9b6zCcXxC
-	 b0C+tUqdaY1cM7GVSirblamQaJSYZ2lpkrQrzBFKs2t1Ym3dgG0Ji4XWmixm+pxJJU
-	 IDq5CHEqh8HsqTbA9XIUw/ZshTdMBTp00EuaDQ4lLfsonagTnp8bs23XlVhErnoWuF
-	 IRyZWP80lpYig==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44E9EC54BD3;
-	Mon,  8 Apr 2024 12:21:42 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712579054; c=relaxed/simple;
+	bh=GpnFs2t5w2IroOlrRJ01bHIpoZ/Lyml1s7LCsMB/URE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g/iA+9k1/fTMVC6RPgG+UYSv8g93vc3pg+EJs7Qs8xNfZndG6pG8YWzQ4K7Ei0gpOUlkOtViyxNYyIaLlpKIHp827nRuPsixxypVk8TGfwqik7Gj3ZIVA4R07dPaxCmzitXG+d2rAtGOPt75k2iGiKm9/FU2aWtOeH5v+oOOE8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com; spf=pass smtp.mailfrom=gehealthcare.com; dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b=cJUnpV9A; arc=none smtp.client-ip=67.231.149.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
+Received: from pps.filterd (m0048275.ppops.net [127.0.0.1])
+	by m0048275.ppops.net-00176a03. (8.17.1.24/8.17.1.24) with ESMTP id 438AFiuJ045351;
+	Mon, 8 Apr 2024 08:24:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	gehealthcare.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=outbound; bh=lceKTOV2
+	r6mmdYTSBe6CCsGlaOpiBawAq4xmDcAYVHU=; b=cJUnpV9A/+uNMoYMGXxn+/Jz
+	m17rOTVcLURAJWs+E1nekE9xqPbEYo1j9xWodi/5dE7NnmG+hrsAN5mucdb2f+Dv
+	hTT000kT3DCIUMjazoXemplOWLliDVQqPA78qsD5XSEA7w+T0/FOcxQYrEPP1mBV
+	bQejhkLdWe4MIRrUjwcJcFK+/LRqHcGqKYUm3Tp3ivb0gk8M3Nqwqu/FVR3J2Gwf
+	ntIdUlluoRUYhMAL9ifF9jwK2ho+OlVjOKdePxYUuwQxtE/1nkRfx1Nf/JJqFtPN
+	o9MgOU4XDnHmzlbrkwEqgt/VqkNjv432yDI3cEkXyX5Fgrhj2u69pNcjFbJ5fQ==
+From: Ian Ray <ian.ray@gehealthcare.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>
+Cc: Ian Ray <ian.ray@gehealthcare.com>, devicetree@vger.kernel.org,
+        imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/2] arm64: dts: imx8mp-msc-sm2s: do not write i2c pinctrl reserved bit
+Date: Mon,  8 Apr 2024 15:23:20 +0300
+Message-Id: <20240408122321.464-1-ian.ray@gehealthcare.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,41 +62,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] ipvlan: handle NETDEV_DOWN event
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171257890227.8472.5712754967060706726.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Apr 2024 12:21:42 +0000
-References: <1712340972-13643-1-git-send-email-venkat.x.venkatsubra@oracle.com>
-In-Reply-To: <1712340972-13643-1-git-send-email-venkat.x.venkatsubra@oracle.com>
-To: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- maheshb@google.com, edumazet@google.com, kuba@kernel.org,
- gia-khanh.nguyen@oracle.com
+X-Proofpoint-GUID: MKMn7oxtkMDGUD-yYKVygExIrMIc25R3
+X-Proofpoint-ORIG-GUID: MKMn7oxtkMDGUD-yYKVygExIrMIc25R3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_11,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=939 clxscore=1015
+ impostorscore=0 mlxscore=0 adultscore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080095
 
-Hello:
+Better not to write to the reserved bit.
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Ian Ray <ian.ray@gehealthcare.com>
+---
+ .../boot/dts/freescale/imx8mp-msc-sm2s.dtsi   | 24 +++++++++----------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-On Fri,  5 Apr 2024 11:16:12 -0700 you wrote:
-> In case of stacked devices, to help propagate the down
-> link state from the parent/root device (to this leaf device),
-> handle NETDEV_DOWN event like it is done now for NETDEV_UP.
-> 
-> In the below example, ens5 is the host interface which is the
-> parent of the ipvlan interface eth0 in the container.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v2] ipvlan: handle NETDEV_DOWN event
-    https://git.kernel.org/netdev/net-next/c/229783970838
-
-You are awesome, thank you!
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
+index 61c2a63efc6d..940bdbe115a3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
+@@ -602,38 +602,38 @@ pinctrl_flexspi0: flexspi0grp {
+ 
+ 	pinctrl_i2c1: i2c1grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_I2C1_SCL__I2C1_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_I2C1_SDA__I2C1_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_I2C1_SCL__I2C1_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_I2C1_SDA__I2C1_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_i2c2: i2c2grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_I2C2_SCL__I2C2_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_I2C2_SDA__I2C2_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_I2C2_SCL__I2C2_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_I2C2_SDA__I2C2_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_i2c3: i2c3grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_I2C3_SCL__I2C3_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_I2C3_SDA__I2C3_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_I2C3_SCL__I2C3_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_I2C3_SDA__I2C3_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_i2c4: i2c4grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_I2C4_SCL__I2C4_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_I2C4_SDA__I2C4_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_I2C4_SCL__I2C4_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_I2C4_SDA__I2C4_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_i2c5: i2c5grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_SPDIF_TX__I2C5_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_SPDIF_RX__I2C5_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_SPDIF_TX__I2C5_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_SPDIF_RX__I2C5_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_i2c6: i2c6grp {
+ 		fsl,pins =
+-			<MX8MP_IOMUXC_SAI5_RXFS__I2C6_SCL		0x400001c3>,
+-			<MX8MP_IOMUXC_SAI5_RXC__I2C6_SDA		0x400001c3>;
++			<MX8MP_IOMUXC_SAI5_RXFS__I2C6_SCL		0x400001c2>,
++			<MX8MP_IOMUXC_SAI5_RXC__I2C6_SDA		0x400001c2>;
+ 	};
+ 
+ 	pinctrl_lcd0_backlight: lcd0-backlightgrp {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.2
 
 
