@@ -1,162 +1,131 @@
-Return-Path: <linux-kernel+bounces-135071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035DA89BAB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B114789BACB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35663B231E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:47:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DC81B239C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D0F3B7A0;
-	Mon,  8 Apr 2024 08:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDD53FBBE;
+	Mon,  8 Apr 2024 08:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H4CxYqMZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UAVjRcBe"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A7A4F208
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B44535B4;
+	Mon,  8 Apr 2024 08:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565895; cv=none; b=tOaneb3FWiEQ+9NywKTP5OGwhYla7AWHOO8bFsMyS8ZyCRMFen+e4uvsZuZYP8gBpgIQRZcjHA2s12RVJfK0jeqQkEIwLN2w1OIoF9baxQLpbBiepzVDNwNNoTlbRV0TZI1ENGY8q8MZQNMp7Pnq8Mkxqg03s0GzcbhhSgyJtsU=
+	t=1712565923; cv=none; b=X+c3srxOT0idB5EQpJZMCWrSU9s2MIjIMnQXRtGrvsLkB3KNCUSWjq1L/CNLtNCT6fDn63x/MAsKTKe9BGiO2z2BggeYqjnyxjMKZvcl2W0smAHSf8zB3Ch2hbAL4thZ7QhhuZZrFKfloBVWmuyS9RpaeJC+PoFmnC+uweH4Dnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565895; c=relaxed/simple;
-	bh=seKAVIenEEwbzM3Iic5g38ri/d9lXst00U0PHR2Zy28=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ci5iBrLnsG/px1vFnbEfDF95/Jlv8LY3QWbAdooWwmswA9rM/Ks4YE83tl8MDORIFXDlkqea23oBbLMFzrbgv3EeTpV+U++vkjjH6rbyk3gh8DalCNjVwcpRRAxFkac0db7qT+NdGx5tLEng2kUHD0ml54Zql/+UHvtzKlCtBEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H4CxYqMZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712565893;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OnmS+ZQ70OmsHKGyqstMbXO2wKO+H5ag8eg75yEHt7A=;
-	b=H4CxYqMZBMw5yYeMYh6f1zpNx/ZgBz5gceGCNMXbBcdNSFGdZmPVLgSMGeCKNaSVClBsTU
-	J8N5wed0HM82E2dMm9m13JOsPV4NOSeKkbAqmbmjY3L8rPlLMDmV4TH1S8EYJcht2XcS9W
-	KP770ZvaNc4kkzEjLsb9mhwQk2wKjuw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516--C0vef43NF-9Kyx5Mpd4qA-1; Mon, 08 Apr 2024 04:44:51 -0400
-X-MC-Unique: -C0vef43NF-9Kyx5Mpd4qA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78a5e62931cso55282285a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:44:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712565891; x=1713170691;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OnmS+ZQ70OmsHKGyqstMbXO2wKO+H5ag8eg75yEHt7A=;
-        b=uzOKt1CKvl3ycEdRrGXP4xDlA17H0Lm2eSAyz+NIklZDeQ9jhB0x3HRP9fFyRJBKJq
-         hk+zp6CvZiflf3ukg+8L3RU3rQsP8SRw3QMXIcjaOjB36eB+WkIBVkEfjdSnGIDHVN9/
-         vXlEVS+so7XZWMfPxhFKrdATBpZYeV+RWhAMmLo/PfsRvE2wHFJitUaJ5m3KJ/mwklu1
-         yDLAXjSF9F4BU9z46YtsGads4NlPGTpkpmOXG7q85mL7zPA6NO9KHr4pvPngNiNUJ0CC
-         PwAO6amUdqor39CoGlfvExnGDtRwH4+RbOugOY98HUjzCiMw9meocOaSg8onc1hTXsnT
-         N3pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMSxyNUd7opqJJBMcuQBLFR9juf/RYYuDKyO2NGxjAiffPpLJ1t8P2u7U6/ETWK7g9oewrnEsqxpHkSpSNjTNgCYYTk9/8CMJMpri7
-X-Gm-Message-State: AOJu0Yz07j3zuASwqoYwTxNhTSqPRzoym7oZJYpsAwYKvnBfEYJW2osr
-	OPU68m3SE/iqPHinngbzD1ZzjbfHtYTIMjMX5veZqLnOMYxLYpR9YRywIqY827bu9OZQHH3MXsV
-	q2zctbLlQ6H1YQkvHFJalAoPy/mwBpVXtaGx73FXNyZIKYVq90JyQd9hLmzNiDA==
-X-Received: by 2002:a05:620a:319e:b0:78d:5fd5:9254 with SMTP id bi30-20020a05620a319e00b0078d5fd59254mr5644004qkb.5.1712565890759;
-        Mon, 08 Apr 2024 01:44:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHsVOxGIi2Iuj/AVIRSbBNaD6COng8+R3PpINEdp5/DQW+HcEotDsruGHbTospw6yxnsP+ZjA==
-X-Received: by 2002:a05:620a:319e:b0:78d:5fd5:9254 with SMTP id bi30-20020a05620a319e00b0078d5fd59254mr5643989qkb.5.1712565890518;
-        Mon, 08 Apr 2024 01:44:50 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id oo15-20020a05620a530f00b0078d54e39f6csm2036989qkn.23.2024.04.08.01.44.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 01:44:50 -0700 (PDT)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Hans de Goede <hdegoede@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	dakr@redhat.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>
-Subject: [PATCH v6 10/10] drm/vboxvideo: fix mapping leaks
-Date: Mon,  8 Apr 2024 10:44:22 +0200
-Message-ID: <20240408084423.6697-11-pstanner@redhat.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240408084423.6697-1-pstanner@redhat.com>
-References: <20240408084423.6697-1-pstanner@redhat.com>
+	s=arc-20240116; t=1712565923; c=relaxed/simple;
+	bh=nIn/zPewsG9q+wrG7O743ZFUtC6bgOwv5+buBPM+YFQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=EspLQ1jwGVI0ehFb9IIKIvBYZRhUUb44/D9S9cbwBURx4B85YzSVjzH2afYrfmfpOY3CRrrBEW28X5iMW5dxIXhPu5tY0SUDvw53Q8IaoC97mut0qtg5rhu5rsFGSIDPZCVtGVFwBRgtu/gRKqJ3C5AAfGD8u/NlL74oz9p/9IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UAVjRcBe; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386dMxB009177;
+	Mon, 8 Apr 2024 08:45:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=wkPa/yuRBAbkzPtrxt9b+AV06OSilI8lIKaafg+mXV0=; b=UA
+	VjRcBeGe437/rmaw+JYZDjRpTQO7nPJVgLvp+NP1YzoZ5OVLk1UiFl25iTbAOKsc
+	fSY+kCxaBQ0iaNug+r+R2xrbzHTGfmBun4B6TKYnWk6SvFohYiSf/3TS8grLQDgo
+	941tT7rgXjCGFPtpe9dgtkfskgEZSlY0eKmsWnjsTisxGsgLKusNkznxdzRzTpry
+	J7LH4UF54xRxlpKGnx7h5mhuEfahR+xtF0QacxU+I2BUVjKOB7m16mnbITPbeOw8
+	pU/8uqyD2LXj8Z3/dQ7ShwY///bJ1UimqIF0xwWI/Yvb93o6CFZR+2a/OhiZDRHM
+	SO3VQofAdYgP54lEey1w==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg307e0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 08:45:06 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4388j4fo010728
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 08:45:04 GMT
+Received: from [10.216.2.95] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
+ 01:44:58 -0700
+Message-ID: <c2708201-64ae-0e5a-edcc-08b8ad0e999d@quicinc.com>
+Date: Mon, 8 Apr 2024 14:14:52 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [RESEND v3 0/2] Add support for QCM6490 and QCS6490
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>
+CC: <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>
+References: <20240408042331.403103-1-quic_mohs@quicinc.com>
+ <67ca18b4-0904-41e4-8218-ecb2016d532d@kernel.org>
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+In-Reply-To: <67ca18b4-0904-41e4-8218-ecb2016d532d@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4T7kCvwu9m1rGFpH5T2dTAgYnEKoJnZb
+X-Proofpoint-GUID: 4T7kCvwu9m1rGFpH5T2dTAgYnEKoJnZb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxlogscore=772 impostorscore=0 lowpriorityscore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080067
 
-When the PCI devres API was introduced to this driver, it was wrongly
-assumed that initializing the device with pcim_enable_device() instead
-of pci_enable_device() will make all PCI functions managed.
+On 4/8/2024 11:26 AM, Krzysztof Kozlowski wrote:
+> On 08/04/2024 06:23, Mohammad Rafi Shaik wrote:
+>> This patchset adds support for sound card on Qualcomm QCM6490 IDP and
+>> QCS6490 RB3Gen2 boards.
+>>
+>> Changes since v2:
+>> 	- Modify qcm6490 compatible name as qcm6490-idp. Suggested by Dmitry
+>>
+>> Changes since v1:
+>> 	- Use existing sc8280xp machine driver instead of separate driver.
+>> 	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
+>>
+> 
+> Why are you resending 15 minutes after previous round?
+> 
+> Best regards,
+> Krzysztof
+> 
+Found one mistake in cover-letter.
+Instead of qcm6490-idp given qcs6490-idp.
 
-This is wrong and was caused by the quite confusing PCI devres API in
-which some, but not all, functions become managed that way.
+Modified the cover-letter and reposted.
 
-The function pci_iomap_range() is never managed.
-
-Replace pci_iomap_range() with the actually managed function
-pcim_iomap_range().
-
-Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/gpu/drm/vboxvideo/vbox_main.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c b/drivers/gpu/drm/vboxvideo/vbox_main.c
-index 42c2d8a99509..d4ade9325401 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_main.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
-@@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private *vbox)
- 	/* Take a command buffer for each screen from the end of usable VRAM. */
- 	vbox->available_vram_size -= vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE;
- 
--	vbox->vbva_buffers = pci_iomap_range(pdev, 0,
--					     vbox->available_vram_size,
--					     vbox->num_crtcs *
--					     VBVA_MIN_BUFFER_SIZE);
--	if (!vbox->vbva_buffers)
--		return -ENOMEM;
-+	vbox->vbva_buffers = pcim_iomap_range(
-+			pdev, 0, vbox->available_vram_size,
-+			vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
-+	if (IS_ERR(vbox->vbva_buffers))
-+		return PTR_ERR(vbox->vbva_buffers);
- 
- 	for (i = 0; i < vbox->num_crtcs; ++i) {
- 		vbva_setup_buffer_context(&vbox->vbva_info[i],
-@@ -116,11 +115,10 @@ int vbox_hw_init(struct vbox_private *vbox)
- 	DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
- 
- 	/* Map guest-heap at end of vram */
--	vbox->guest_heap =
--	    pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
--			    GUEST_HEAP_SIZE);
--	if (!vbox->guest_heap)
--		return -ENOMEM;
-+	vbox->guest_heap = pcim_iomap_range(pdev, 0,
-+			GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
-+	if (IS_ERR(vbox->guest_heap))
-+		return PTR_ERR(vbox->guest_heap);
- 
- 	/* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
- 	vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4, -1,
--- 
-2.44.0
-
+Thanks & Regards,
+Rafi.
 
