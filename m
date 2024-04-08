@@ -1,230 +1,116 @@
-Return-Path: <linux-kernel+bounces-135236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76F2A89BD8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:51:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C3689BD91
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:53:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0E02B21AFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:51:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9BB1B2332C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1612C612F5;
-	Mon,  8 Apr 2024 10:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E77760262;
+	Mon,  8 Apr 2024 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="VBdEizzH"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="gWjvX8kn"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92915FB8B;
-	Mon,  8 Apr 2024 10:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC1E5FB95
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 10:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712573481; cv=none; b=iJnlUzjNwLvbJlkt4hvnioXvivA93Vmi/KKsnH9M6p3oCoC8F3w2ayc1jJNv4qvBvq2HROzlMdGGSmBcOUWW/5Np8uIHMwOEXBxdZkLucNdR4FHa9RkXFmRwIjoNxC6ffk2s7HDS5IbUfa7nD4obWcbbiQtgHzfoYjFn8Ql6xlE=
+	t=1712573578; cv=none; b=pYh2EomCp8syqvc0BMgpoxWLk9bbhAK4fnZCcQpu2nh3g7obLChmqFUBUOsZbkHG2T9jUzpoeXvSiVnajW2TnCQOWOeRzsoBLpxYrE/+CCVooPaYp2GhiC82uHf6dtulnyArC7XCK6x1ye9QDQVC04T5UxfTRnBANaxN9dmJy6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712573481; c=relaxed/simple;
-	bh=WCt2au2ZHY2lqv9a2qevWMjPXZlFwu+U1pZdrhlWZ/4=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=P2IkxXuVClvxglx+kobLBPsJYagMMmeEwA2lFS6cQVLnWYMPGgmTuTEHpvgUlm2CICBQFj7upBN3IK5Zdn08NpmtpL7RsjocOAMtVvc1m14mqfSabggZzjLzeDwbeV5yWecB0Jl01epsP2YiV3qWiPAT/MWpXjBMTRp1q+KXtCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=VBdEizzH; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id C83911C006B; Mon,  8 Apr 2024 12:51:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1712573469;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=XBw/jDn4s4DjiSKc+Ep3ZJbj4oQ2UwIt92I3I0JXo18=;
-	b=VBdEizzHot8G11ote0krnF1J/1eA1pWrJwgzLkjhBqkkeEp4a0gqrQcYGAFJDK4hCxVmgm
-	hJnkLZEJEC3tEONpdsX1LnLSDlnnvttVYdsMyt9oVm/QT00Bb46b/UxYq1JMZc+Yd9TUQC
-	FNVLJgNRKZykJmykyEfL0zEmexmrXVk=
-Date: Mon, 8 Apr 2024 12:51:09 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
-	fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org,
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-	linux-usb@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
-	megi@xff.cz
-Subject: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
- document
-Message-ID: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+	s=arc-20240116; t=1712573578; c=relaxed/simple;
+	bh=aF/W46UoLp2taMYWzXVCLlW68M9W3n2oWkNKNWSuY7A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W26fichbpgeApATiTaP18EEilYWTKyEIzMqA3baxoYloIzsGazKKLZurf7CyWQgyIIkU/X/Ljo5YWyoKpUdC3HLmEPngouTkYYlz7245mDPK8eP9s9UZuNHX/nIwlYCYsitNO/cImxTJMSWEKYwUs27rOb61FiBVj8E9/nPlEss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=gWjvX8kn; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51a7d4466bso316127866b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 03:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712573573; x=1713178373; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c+6FLVqqHt8Puy85HABB6phKSAnHTOaWceMatcPamvE=;
+        b=gWjvX8knPeP5lAuTtc5pkOU7gKGKBK4a6gsdE+UzCEpIAPbSIGGCuVW+zGGkRbIz4B
+         2cHMdu8RdnEXacrIZZCCaK6yHj1fDj4DUNkL78X/TAjVpRo7TRGsLAYVHzXgU7kGjlcZ
+         RFcoVKA59Olsh4Czgk9NcqUGGSY8YvaZ4u6WPH6BaVo0NAY1zinpZl1wWqPJi0Z3C0yn
+         x75XIvAGsRvLn5sGUIdfghFBnTW23xn2OqhvJ2KQOAH1RgIdLBg/jmGTHTkjJtJwsMB5
+         HlegJhSPQFtKdf5Ii3XtmyJAYQGJzyAvBbGfg4a0m67KDyDfCPLWk8VbnSOVTWlA5aOA
+         YcbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712573573; x=1713178373;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c+6FLVqqHt8Puy85HABB6phKSAnHTOaWceMatcPamvE=;
+        b=iie/YcEfFkqRbwa2/PcA3LUzIOtojCfYElV97bZM//b1HgY9kkRF/nU+5YEkVQtGTy
+         LgKepTUAnCrZtXGqk7jJjLJXkC8YBprNNpSWffDqDmxWS1ZNVLJBLKptek1NMiyzSrq3
+         MZHzjMYF7VEauQ6mo9O9AcQuSSJPfC/UQBz1xxocmnMnRdCr1UzdsKRpvGRZtCrozYRp
+         IL2lbBk2F254xUiJDMGXRtg9YQX1J7kVkGkXF5QIfL5igkv4x7dpVnS2q4lvuDqgvuAx
+         Wy6WkHpJxWUed1l8kIJWaxJALRbxco9h71bQeqL0uKVoqDlhGMLjvFqRPi1hO2l/ibRb
+         8pkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZY/2eHFKg7l3ipE9RLuCWly/hZJ3DYl3yIB9t5V+T4cvBJfo6E2+YfsgW7xVks3CB+cIXykb4Yf7CdZtb0IQKuoFgronVSiM7XYM3
+X-Gm-Message-State: AOJu0YzBDiC2MIpE4P8vJGHiyA/Krj7u2ksQNUP+C0UXIVb1b/njr4Dt
+	lSGqPvwHd+0i4jcV287/x/nW9GllJXsbAc8hAKDG97E7m9VQNRVciakR1bBIaKY=
+X-Google-Smtp-Source: AGHT+IHtnHD0iZGBcOLtZepHusEAfnU6WYK0+W/v7TX2d8AXCJpOSAKOKV0P/Fas9oUdy52dsQXIyg==
+X-Received: by 2002:a17:906:c104:b0:a51:aad5:8c62 with SMTP id do4-20020a170906c10400b00a51aad58c62mr6350921ejc.60.1712573573514;
+        Mon, 08 Apr 2024 03:52:53 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id gx12-20020a1709068a4c00b00a4e03c28fd5sm4310119ejc.43.2024.04.08.03.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 03:52:53 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] s390/smp: Use min() to fix Coccinelle warning
+Date: Mon,  8 Apr 2024 12:51:25 +0200
+Message-ID: <20240408105124.2162-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xcc0rfiKI+Y+ldks"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
+Fixes the following Coccinelle/coccicheck warning reported by
+minmax.cocci:
 
---xcc0rfiKI+Y+ldks
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	WARNING opportunity for min()
 
-Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
-but I did best I could.
-
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2: implement review feedback
-v3: fix single character pointed by robot
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 0324649aae0a..d69cf2475744 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -1205,7 +1205,7 @@ static int __init s390_smp_init(void)
+ 
+ 	rc = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "s390/smp:online",
+ 			       smp_cpu_online, smp_cpu_pre_down);
+-	rc = rc <= 0 ? rc : 0;
++	rc = min(rc, 0);
+ out:
+ 	return rc;
+ }
+-- 
+2.44.0
 
-diff --git a/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml b/=
-Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
-new file mode 100644
-index 000000000000..48b9ae936cb5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
-@@ -0,0 +1,127 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/analogix,anx7688.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+# Pin names can be deduced from
-+# https://files.pine64.org/doc/PinePhone/PinePhone%20v1.2b%20Released%20Sc=
-hematic.pdf
-+
-+title: Analogix ANX7688 Type-C controller
-+
-+maintainers:
-+  - Pavel Machek <pavel@ucw.cz>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - analogix,anx7688
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description: GPIO controlling RESET_N (B7) pin.
-+
-+  enable-gpios:
-+    maxItems: 1
-+    description: GPIO controlling POWER_EN (D2) pin.
-+
-+  cabledet-gpios:
-+    maxItems: 1
-+    description: GPIO controlling CABLE_DET (C3) pin.
-+
-+  avdd10-supply:
-+    description: 1.0V power supply going to AVDD10 (A4, ...) pins
-+
-+  dvdd10-supply:
-+    description: 1.0V power supply going to DVDD10 (D6, ...) pins
-+
-+  avdd18-supply:
-+    description: 1.8V power supply going to AVDD18 (E3, ...) pins
-+
-+  dvdd18-supply:
-+    description: 1.8V power supply going to DVDD18 (G4, ...) pins
-+
-+  avdd33-supply:
-+    description: 3.3V power supply going to AVDD33 (C4, ...) pins
-+
-+  i2c-supply: true
-+  vconn-supply: true
-+  hdmi-vt-supply: true
-+  vbus-supply: true
-+  vbus-in-supply: true
-+
-+  connector:
-+    type: object
-+    $ref: /schemas/connector/usb-connector.yaml
-+
-+    description:
-+      Properties for usb c connector.
-+
-+    properties:
-+      compatible:
-+        const: usb-c-connector
-+
-+required:
-+  - compatible
-+  - reg
-+  - connector
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        typec@2c {
-+            compatible =3D "analogix,anx7688";
-+            reg =3D <0x2c>;
-+            interrupts =3D <8 IRQ_TYPE_EDGE_FALLING>;
-+            interrupt-parent =3D <&gpio0>;
-+
-+            enable-gpios =3D <&pio 3 10 GPIO_ACTIVE_LOW>; /* PD10 */
-+            reset-gpios =3D <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+            cabledet-gpios =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
-+
-+            avdd10-supply =3D <&reg_anx1v0>;
-+            dvdd10-supply =3D <&reg_anx1v0>;
-+            avdd18-supply =3D <&reg_ldo_io1>;
-+            dvdd18-supply =3D <&reg_ldo_io1>;
-+            avdd33-supply =3D <&reg_dcdc1>;
-+            i2c-supply =3D <&reg_ldo_io0>;
-+            vconn-supply =3D <&reg_vconn5v0>;
-+            hdmi-vt-supply =3D <&reg_dldo1>;
-+
-+            vbus-supply =3D <&reg_usb_5v>;
-+            vbus-in-supply =3D <&usb_power_supply>;
-+
-+            typec_con: connector {
-+                compatible =3D "usb-c-connector";
-+                power-role =3D "dual";
-+                data-role =3D "dual";
-+                try-power-role =3D "source";
-+
-+                ports {
-+                    #address-cells =3D <1>;
-+                    #size-cells =3D <0>;
-+                    port@0 {
-+                        reg =3D <0>;
-+                        typec_con_ep: endpoint {
-+                            remote-endpoint =3D <&usbotg_hs_ep>;
-+                        };
-+                    };
-+                };
-+            };
-+        };
-+    };
-+...
-
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---xcc0rfiKI+Y+ldks
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhPMHQAKCRAw5/Bqldv6
-8mgEAKCH0WaaYBpVAsICPL+hNTVY03fJUQCeJnxEc/yyn0UbqcQhtLbCTmOMLPw=
-=jiaK
------END PGP SIGNATURE-----
-
---xcc0rfiKI+Y+ldks--
 
