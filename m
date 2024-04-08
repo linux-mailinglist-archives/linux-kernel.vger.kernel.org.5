@@ -1,149 +1,136 @@
-Return-Path: <linux-kernel+bounces-135683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7AC89C9B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:36:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95AB489C9B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE2E1C2475D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:36:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38F4D1F26B4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E40A144D0A;
-	Mon,  8 Apr 2024 16:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7640E145B3F;
+	Mon,  8 Apr 2024 16:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTU+IVz7"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="h4AmvDjp"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C5C1442F3;
-	Mon,  8 Apr 2024 16:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75CB145B0C;
+	Mon,  8 Apr 2024 16:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594075; cv=none; b=dErg0lcdWQ7cDOhzAC12FDmUSSJqWTrdpe6mz8h9q/DYgFQnjbLZA2BGGTtj/yUKBmwab02Uc8gSuPr8YeNljgRO2LOUJa3Ki+cBZZ5sBNlm8yQs5vGToO+LjOfEqPpphCnMelDnYYMyPzV76k47v3WIfjOJ1m9Zhvg896SBtDQ=
+	t=1712594090; cv=none; b=oaI7SKe83bCFQuNIERxAvnN/gzqFTU5u39o4iZDpm29JReDr8XPklNnSjUwQh+UXd7VyW5LiWj78Gl1KPIpD9G2HB1J3PwzJ5Ff39U+iaz1vpJYoxrqCcwwkD9BZXANagH/xbremmIicjcDeE3efSuguBcgA1v5qm8lH7EsaoRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594075; c=relaxed/simple;
-	bh=GDjg6EBXUVwAARwkkfl8HCARLRaI322ITo8J7xf4XpE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kgVbKgNqFb+5c5UnJ81yzx0OzQeZ5UcVuGtgFu2a9rE7AIO68vhhZFMsA0kDkBrTSfxHwGzT6DXpiT6DPeQ4UqBSETJ3X4F2ho2K29L6PgQVVoZtr40Kjynlr4CWRokeHzjKyO8gLerfBtYDvWALuBjcTqiHfhZLo9X6S0iWNtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTU+IVz7; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e2a7b5ef7bso38330425ad.1;
-        Mon, 08 Apr 2024 09:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712594073; x=1713198873; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y8W6JiQXMJlyRVh6G0P1/xRBUWDgR2AudHru0aHPOuY=;
-        b=QTU+IVz7TvT4wffdmtolLM28ZZb8ERtTjT/kTEDBsVVH2aoQZ9eWX3OSkfDLON+mGP
-         /Lrn9e42beiGPwNv+84wjKjHyd5NIzeLw1buAo+hW8BBYpQe5QxKQM8dnxtE/kl97i5K
-         CY7hJgkjCZwN2ZeA4zyiraBAuwTg/sBSf7swHSmIWj4BASDX0op1Uz8gOCFBEqeklzc4
-         6eJ1JqUYGwVmHMIMM+YA6wjdCABihemlv5VV6PTZkTqU798GI0PnA+74OFO/HJPzpjdT
-         ECmZ5qWTbxDqj6lxmfcNQ/ubQY0WVxl6EkpMTnHSnYHPdC4Pik2wo24m76VmzfOW6CB0
-         1r6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712594073; x=1713198873;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y8W6JiQXMJlyRVh6G0P1/xRBUWDgR2AudHru0aHPOuY=;
-        b=XZsIVtTfROBGgTF8bkH7xuslGiQveQFFpW+MkELO0Q1KRbiTqkoq2S4Sl7ZdZmoHdt
-         hv24XE6DTwzylS9buL7r/dFpiTfMv+Wd243pM0YXdmyiBmvuH74hXaB+B2EY5TpoNBiv
-         8XgQyphGQIVPhnrvT4TSQAeTSHkoD+zz0hHUwZ96Exq2MMLogo/pH+F2yEwc5UsQXosU
-         qBuEkkLmPZlYxn0NHfkiivkP2K5eOs8uEpSPKw1dGReWRzL4VNBKStBNubUJpAyQrkA+
-         npnsNMy3ZDHRjHx0BstNkrvgMPTGQUYMuGDgxVomclN/gd/fb6PS39TNtZEXyPr+WMZ/
-         oFYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnetRmlnnE+4xixXAqICi8M0WxLstu4JIkfqweDjTDz1AeRzgRh7W5sA//BnBU+ty4CaIxLeg0ftA+DK7Tjtxn0GE9AGmWbQAl/27XWFbjRNGAigeYDCC3Jhthv6q09AdIfmKx6mLdCsd3xYqeb4sST7fWg3FJKwVJzC9fe8GBBvU8zm1H8669dfQYJHqiyG3jsjVqhsH1qIV44h4JagHdy5JUe6WangRv73lX53880zGhtP4FLdKm/1rkwHT+zkbsPYDH9Dua2GvcSTiyqNf3bJ1r3XkqTjT4QCovQ5seOxpMD53H1NuMdDhEwWOonw==
-X-Gm-Message-State: AOJu0Yyz+0MsWPjyUrus+EYJJKcHeisIGo3v82FzoD6e3BWYJ0kzVg4t
-	yl6iu1in7rdMr8aLYmTQAPmmOENonDswAlFItDpZieG8kh7MU/A5
-X-Google-Smtp-Source: AGHT+IHjgwPwZy3e5AEopzEIQpEcmD2hcpsHcoA+sLwIBYMIqqkK3bLGAgIh/jDVDgJdWRaZ9xWs0g==
-X-Received: by 2002:a17:902:cec7:b0:1e3:f911:22b2 with SMTP id d7-20020a170902cec700b001e3f91122b2mr6050960plg.7.1712594073047;
-        Mon, 08 Apr 2024 09:34:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n4-20020a170902e54400b001e2b36d0c8esm7189331plf.7.2024.04.08.09.34.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 09:34:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 8 Apr 2024 09:34:26 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, x86@kernel.org,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
-	Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH v3 06/15] net: kunit: Suppress lock warning noise at end
- of dev_addr_lists tests
-Message-ID: <9e8718bf-da81-463b-9436-6c8b0881a045@roeck-us.net>
-References: <20240403131936.787234-1-linux@roeck-us.net>
- <20240403131936.787234-7-linux@roeck-us.net>
- <20240403183412.16254318@kernel.org>
+	s=arc-20240116; t=1712594090; c=relaxed/simple;
+	bh=qvnGOQ4wjXBKzINryA0Oef5MwTy2fQxVBq/S+8Agw2Y=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=adus7K+JDy+7tTjTvxVqV4ICM1zqyaaOqvc0PTgOQpiL7dHdqxy+hhiQMebOvAmt1+KR9rAUNWKUJl1cx2WyfbidgEVMKskoTdWUqOE6BBnEglbMYGvhitf7pUEF2t5AHHTZAuqAFkAXJW9hXw8noHY81w3WM75RViCQGLH1AEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=h4AmvDjp; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1712594080; bh=qvnGOQ4wjXBKzINryA0Oef5MwTy2fQxVBq/S+8Agw2Y=;
+	h=From:Date:Subject:To:Cc;
+	b=h4AmvDjprPpaCHFC3VFnqEHkF7s0Izxi6UkKUa8nRGM76eTH2Zvp/mdeOiiGBPWnI
+	 ki6MUrN+CLCDX05zi7cK0Lutay3A3kuVdCH/Ih9JLxPWIZR3P7yT/1bilyOO1SIc8Z
+	 Gpa81Itt+BzcId5pj/mhNvuqm4ATMxiUuRHX4s5s=
+From: Luca Weiss <luca@z3ntu.xyz>
+Date: Mon, 08 Apr 2024 18:34:33 +0200
+Subject: [PATCH] dt-bindings: iio: imu: mpu6050: Improve i2c-gate disallow
+ list
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403183412.16254318@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240408-mpu6050-i2c-gate-v1-1-621f051ce7de@z3ntu.xyz>
+X-B4-Tracking: v=1; b=H4sIAJgcFGYC/x3MSQqAMAxA0atI1gZijeNVxEXRqFk40KoI0rtbX
+ L7F/y94cSoe2uQFJ7d63beILE1gWOw2C+oYDYYME1ON63GVVBCqGXC2pyCL5SoXbszEELPDyaT
+ Pv+z6ED62G1XZYgAAAA==
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2368; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=qvnGOQ4wjXBKzINryA0Oef5MwTy2fQxVBq/S+8Agw2Y=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBmFBycxBKS0t7+PhZbuZ4QPqgAnd1HaVGlCHuGC
+ oHmew1B+IqJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZhQcnAAKCRBy2EO4nU3X
+ Vv0ZD/9JNUtWSrR42AK5CKQoOxnEa2zSvCXJu2h3oOeeXjg1UFx7CSH7gG5jm4vd0vHzngHqpYH
+ 0nRKJ4IyQSLcEIVZjugNvHsSha7qhhoFLPX9iHEVD9RNf+aWrERd1qDVsEfUWhtKkDYVnKkamA2
+ ZniDBuGMfnB53mqSG7gUfqqmArP06/lOI2cjC3qfINdz9IOLdZaKy7I7G4cHPEM3Avy29n6GZ+V
+ Yg38AdMkwBXvEPEwWsLRq+AwARZWlti9GHuISrEijRD9GOjS3MP5WgoYv620Q25T3ry71BmnfZ3
+ PUNHjod7CpUxGHgmwDJyBPepbmK8TbTgly3anKaxWwmKkwDY4bWZwRqevu6KulBGoUbHAqZRc9b
+ Vh7Tz7Ku9yo+vABOI2T5umZFj3dsl2QzDpiKEPUJuGawHEqhVkgKo4Lt3b6FxwTJYwk7B1MV2VE
+ 842q0AJXfmDBY2Y4PtpuIYhBt5NpqIWzKcLt2dP2qyziCywwQI6PTqlWkyT6tSBA+e6GKgfZhef
+ d2kb+KaSnm6aKqMiFIpQGS11Z4HkbQQCJhwegvF04EWNwBYSwj49V3lqJi6OGK74XR3M0UqMUlV
+ x2686vNZLejkPcVbpHfFvTVKiZRmDuoZHMMjl0SR5/SRBSdWiM7q/X8u6imN1Jy/B4fMthhexSH
+ 35oIqKaQ69TEaRg==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-On Wed, Apr 03, 2024 at 06:34:12PM -0700, Jakub Kicinski wrote:
-> On Wed,  3 Apr 2024 06:19:27 -0700 Guenter Roeck wrote:
-> > dev_addr_lists_test generates lock warning noise at the end of tests
-> > if lock debugging is enabled. There are two sets of warnings.
-> > 
-> > WARNING: CPU: 0 PID: 689 at kernel/locking/mutex.c:923 __mutex_unlock_slowpath.constprop.0+0x13c/0x368
-> > DEBUG_LOCKS_WARN_ON(__owner_task(owner) != __get_current())
-> > 
-> > WARNING: kunit_try_catch/1336 still has locks held!
-> > 
-> > KUnit test cleanup is not guaranteed to run in the same thread as the test
-> > itself. For this test, this means that rtnl_lock() and rtnl_unlock() may
-> > be called from different threads. This triggers the warnings.
-> > Suppress the warnings because they are irrelevant for the test and just
-> > confusing and distracting.
-> > 
-> > The first warning can be suppressed by using START_SUPPRESSED_WARNING()
-> > and END_SUPPRESSED_WARNING() around the call to rtnl_unlock(). To suppress
-> > the second warning, it is necessary to set debug_locks_silent while the
-> > rtnl lock is held.
-> 
-> Is it okay if I move the locking into the tests, instead?
-> It's only 4 lines more and no magic required, seems to work fine.
+Before all supported sensors except for MPU{9150,9250,9255} were not
+allowed to use i2c-gate in the bindings which excluded quite a few
+supported sensors where this functionality is supported.
 
-I don't think it is that simple. Unit tests run in a kernel thread
-and exit immediately if a test fails. While the unit test code _looks_
-sequential, that isn't really the case. Every instance of KUNIT_ASSERT_x
-or KUNIT_FAIL() results in immediate kernel thread termination. If
-that happens, any rtnl_unlock() in the failed function would not be
-executed. I am not aware of an equivalent of atexit() for kernel threads
-which would fix the problem. My understanding is that the kunit system
-doesn't support an equivalent either, but at least sometimes executes
-the exit function in a different thread context.
+Switch the list of sensors to ones where the Linux driver explicitly
+disallows support for the auxiliary bus ("inv_mpu_i2c_aux_bus"). Since
+the driver is also based on "default: return true" this should scale
+better into the future.
 
-Guenter
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+This fixes dt validation error on qcom-msm8974-lge-nexus5-hammerhead
+which uses mpu6515
+
+arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dtb: mpu6515@68: i2c-gate: False schema does not allow {'#address-cells': [[1]], '#size-cells': [[0]], 'ak8963@f': {'compatible': ['asahi-kasei,ak8963'], 'reg': [[15]], 'gpios': [[40, 67, 0]], 'vid-supply': [[50]], 'vdd-supply': [[49]]}, 'bmp280@76': {'compatible': ['bosch,bmp280'], 'reg': [[118]], 'vdda-supply': [[50]], 'vddd-supply': [[49]]}}
+        from schema $id: http://devicetree.org/schemas/iio/imu/invensense,mpu6050.yaml#
+---
+ .../devicetree/bindings/iio/imu/invensense,mpu6050.yaml | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
+index 297b8a1a7ffb..587ff2bced2d 100644
+--- a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
++++ b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
+@@ -62,14 +62,15 @@ properties:
+ allOf:
+   - $ref: /schemas/spi/spi-peripheral-props.yaml#
+   - if:
+-      not:
+-        properties:
+-          compatible:
+-            contains:
+-              enum:
+-                - invensense,mpu9150
+-                - invensense,mpu9250
+-                - invensense,mpu9255
++      properties:
++        compatible:
++          contains:
++            enum:
++              - invensense,iam20680
++              - invensense,icm20602
++              - invensense,icm20608
++              - invensense,icm20609
++              - invensense,icm20689
+     then:
+       properties:
+         i2c-gate: false
+
+---
+base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+change-id: 20240408-mpu6050-i2c-gate-4ea473e492f4
+
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
+
 
