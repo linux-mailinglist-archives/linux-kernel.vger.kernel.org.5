@@ -1,140 +1,238 @@
-Return-Path: <linux-kernel+bounces-135809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF7989CBA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:23:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1284B89CBA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:24:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AEE6B25D1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:23:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA2812808B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F431448EE;
-	Mon,  8 Apr 2024 18:23:41 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F09B1448C4
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08971448E6;
+	Mon,  8 Apr 2024 18:24:03 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFA91448C4;
+	Mon,  8 Apr 2024 18:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712600621; cv=none; b=Ac0sDOy5ghjc8Cb1vyRkO8v8dGyMoZV7CmqDwpJHqdub/MF+jm5zE8in2gs3ZRZA5V1BAYcmUNafWKB72Z1A2SLl1U1yDnQsM+qHjl8kYg55mx8Nr9ZMUPRbMGf/mvtenjL5eTBCskJ7ICj903QeStbPX9p7dePx9c/Xs0X6WSQ=
+	t=1712600643; cv=none; b=qxd6orPogHn5tkid+QJ2vTkwsLqs8SV8o8lGt86qZC0TWTCCHxov57Me68+JDEXzwIbKsmXqyXoEyVYbgpqbhzD6+uQiR1MYH3hZ7Ab3WRnGC89JYrYV/UjCiCd4GwO1T5OG9k/PJCGg1xXp8HDCixVdJwQlh5vC3HtEydTpXZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712600621; c=relaxed/simple;
-	bh=x2xQ03RwcRicVcyi3bVOr60CFQMQ3fMcfL4Inmck6d8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DDfrsIDd6mEeTjHu4M69q8Fbp2zfe044klIgXcIfeRirAshFkL2ki5TTRqxcqD8Ndt5OyZzBTMn3rZX1Rt95vW2gAhSuc2zoQrghiyGKkVCGHfu/fnzJE9aj/jaN6jouJZUYZqCRV+BCNCch4fgg9t9mC+JgC6JhDUODDBdamQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5ea080228so87525639f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 11:23:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712600618; x=1713205418;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UUm+szSw9U0u1lY4JPbXO6oWA47+/M/JaLciS0pEX4E=;
-        b=wvM78w1ZWcSJG0b1UpS2TFv0x8up2qmOSTrhfJeGdUOlfcZ1QxW7Cyy9MOEY2Ew2O8
-         SGgjUYMQJ2d0KgCEtQU/y5zN1Ggl0O9XNsH99mvXqmrNkiZYPJBa3Li0Is0h1N+Ayba7
-         wjZMKT5vZHzoIf5tozbx+wtAMoWYs9KaZPCv8WWAkfWv2ECdyTYH1UyrL7vyI0bAMYd+
-         UoNOEoPbjlS4ulB++siBPazD/sua+k5/JLz08PxBJWBgmOVXPoAXWR5vIFCE1Bvu0m/x
-         o5ptp/fh6Jlx9ZJ7haln6KMBf1vySzdYpTeI0HS6VcNQyXvikUm1esoz5VDVdaG132D4
-         9Cog==
-X-Forwarded-Encrypted: i=1; AJvYcCUHapjTCugB/DnZYYMlpbQnexXNvECQb3GmcJHT8/lhjxlMNZeBssweDk3ZtjJEQQKG26AavIiG4hrgzWG7Duh4GwQL9+i7fOOtBeSC
-X-Gm-Message-State: AOJu0Yym3dOrhoCQMDVu/1qYCyLMaHxqdxbvJmHK2IE1TFUs5CLXvRIo
-	KveAKKvi84iOPhvHOOv3hBXwVWYb4V+DTRvm4KNhQe5Ycu0bI/0c2oW5VNrxKjTZ7iNDWEJuEGU
-	bvkKr0FimdIfIwSQyjicNais8lvklhs4GonK4rJcDEMKuiXF5zguAE/g=
-X-Google-Smtp-Source: AGHT+IHdjussmaRyBPs04lU7GBZ+PrtUKgjd+cUrfJsMAVsMdC+0EmkTXDfvReJM3rOZuGh+P149w/69p1SsPv3AYNkODL9CXpXP
+	s=arc-20240116; t=1712600643; c=relaxed/simple;
+	bh=4SE1XiIqPsJ1L/kqgo8ct8w8uCtcg5bu7UGU+uxZsoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ac5AzEHz884t47engb5D3k32HR4aCWmjXKFXcHYuPXwU+XhLKomEhgMK+/mu42SBm3AjnurduQnPIA6EEx5zp1NQkGX8X7hl+ylITUp2zYjOhbqwug8KV1ffx6EOpnLYMHXs3+5f64DBk1BNtUrNqYqZQVyqVjrj3gGQkHCxAm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1391CDA7;
+	Mon,  8 Apr 2024 11:24:31 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A25423F766;
+	Mon,  8 Apr 2024 11:23:58 -0700 (PDT)
+Date: Mon, 8 Apr 2024 19:23:55 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+	james.quinlan@broadcom.com, f.fainelli@gmail.com,
+	vincent.guittot@linaro.org, peng.fan@oss.nxp.com,
+	michal.simek@amd.com, quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+	mturquette@baylibre.com
+Subject: Re: [PATCH v2 1/5] clk: scmi: Allocate CLK operations dynamically
+Message-ID: <ZhQ2Ow4vz1F9qBFl@pluto>
+References: <20240325210025.1448717-1-cristian.marussi@arm.com>
+ <20240325210025.1448717-2-cristian.marussi@arm.com>
+ <7027a28723d2597d9f620f4e0e1da97e.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1691:b0:7c8:264d:5e98 with SMTP id
- s17-20020a056602169100b007c8264d5e98mr16146iow.0.1712600618673; Mon, 08 Apr
- 2024 11:23:38 -0700 (PDT)
-Date: Mon, 08 Apr 2024 11:23:38 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000084b9dd061599e789@google.com>
-Subject: [syzbot] [erofs?] BUG: using smp_processor_id() in preemptible code
- in z_erofs_get_gbuf
-From: syzbot <syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com>
-To: chao@kernel.org, dhavale@google.com, huyue2@coolpad.com, 
-	jefflexu@linux.alibaba.com, linux-erofs@lists.ozlabs.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, xiang@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7027a28723d2597d9f620f4e0e1da97e.sboyd@kernel.org>
 
-Hello,
+On Sun, Apr 07, 2024 at 09:38:46PM -0700, Stephen Boyd wrote:
+> Quoting Cristian Marussi (2024-03-25 14:00:21)
+> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> > index 8cbe24789c24..d5d369b052bd 100644
+> > --- a/drivers/clk/clk-scmi.c
+> > +++ b/drivers/clk/clk-scmi.c
+> > @@ -16,6 +16,14 @@
+> >  #define NOT_ATOMIC     false
+> >  #define ATOMIC         true
+> >  
 
-syzbot found the following issue on:
+Hi, 
 
-HEAD commit:    2b3d5988ae2c Add linux-next specific files for 20240404
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=150f9d29180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c48fd2523cdee5e
-dashboard link: https://syzkaller.appspot.com/bug?extid=27cc650ef45b379dfe5a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a60955180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d08115180000
+thanks for the review.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/136270ed2c7b/disk-2b3d5988.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/466d2f7c1952/vmlinux-2b3d5988.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7dfaf3959891/bzImage-2b3d5988.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2026b83172a2/mount_0.gz
+> > +enum scmi_clk_feats {
+> > +       SCMI_CLK_ATOMIC_SUPPORTED,
+> > +       SCMI_CLK_MAX_FEATS
+> > +};
+> > +
+> > +#define SCMI_MAX_CLK_OPS       (1 << SCMI_CLK_MAX_FEATS)
+> > +
+> > +static const struct clk_ops *clk_ops_db[SCMI_MAX_CLK_OPS];
+> 
+> Can it be 'scmi_clk_ops_db' for some name spacing?
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com
+Yes.
 
-BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u9:1/4483
-caller is z_erofs_gbuf_id fs/erofs/zutil.c:31 [inline]
-caller is z_erofs_get_gbuf+0x2c/0xd0 fs/erofs/zutil.c:39
-CPU: 0 PID: 4483 Comm: kworker/u9:1 Not tainted 6.9.0-rc2-next-20240404-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: erofs_worker z_erofs_decompressqueue_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_preemption_disabled+0x10e/0x120 lib/smp_processor_id.c:49
- z_erofs_gbuf_id fs/erofs/zutil.c:31 [inline]
- z_erofs_get_gbuf+0x2c/0xd0 fs/erofs/zutil.c:39
- z_erofs_lz4_handle_overlap fs/erofs/decompressor.c:162 [inline]
- z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:234 [inline]
- z_erofs_lz4_decompress+0xe42/0x17b0 fs/erofs/decompressor.c:307
- z_erofs_decompress_pcluster fs/erofs/zdata.c:1260 [inline]
- z_erofs_decompress_queue+0x1e30/0x3960 fs/erofs/zdata.c:1345
- z_erofs_decompressqueue_work+0x99/0xe0 fs/erofs/zdata.c:1360
- process_one_work kernel/workqueue.c:3218 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
+> >  static const struct scmi_clk_proto_ops *scmi_proto_clk_ops;
+> >  
+> >  struct scmi_clk {
+> > @@ -230,6 +202,106 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
+> >         return ret;
+> >  }
+> >  
+> > +/**
+> > + * scmi_clk_ops_alloc() - Alloc and configure clock operations
+> > + * @dev: A device reference for devres
+> > + * @feats_key: A bitmap representing the desired clk_ops capabilities.
+> 
+> Drop the period please because it's not consistent with the previous
+> argument descriptor.
+>
 
+Ok.
+ 
+> > + *
+> > + * Allocate and configure a proper set of clock operations depending on the
+> > + * specifically required SCMI clock features.
+> > + *
+> > + * Return: A pointer to the allocated and configured clk_ops on Success,
+> 
+> Lowercase 'Success'.
+>
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Ok.
+ 
+> > +
+> > +/**
+> > + * scmi_clk_ops_select() - Select a proper set of clock operations
+> > + * @sclk: A reference to an SCMI clock descriptor
+> > + * @atomic_capable: A flag to indicate if atomic mode is supported by the
+> > + *                 transport
+> > + * @atomic_threshold: Platform atomic threshold value
+> 
+> Is this in nanoseconds, microseconds, or ??? Maybe a better description is
+> "clk_ops are atomic when clk enable_latency is less than X [time unit]" 
+>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+It is micro, I will comment better.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> > + *
+> > + * After having built a bitmap descriptor to represent the set of features
+> > + * needed by this SCMI clock, at first use it to lookup into the set of
+> > + * previously allocated clk_ops to check if a suitable combination of clock
+> > + * operations was already created; when no match is found allocate a brand new
+> > + * set of clk_ops satisfying the required combination of features and save it
+> > + * for future references.
+> > + *
+> > + * In this way only one set of clk_ops is ever created for each different
+> > + * combination that is effectively needed.
+> > + *
+> > + * Return: A pointer to the allocated and configured clk_ops on Success, or
+> 
+> Lowercase 'Success'.
+>
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Ok.
+ 
+> > + *        NULL otherwise.
+> > + */
+> > +static const struct clk_ops *
+> > +scmi_clk_ops_select(struct scmi_clk *sclk, bool atomic_capable,
+> > +                   unsigned int atomic_threshold)
+> > +{
+> > +       const struct scmi_clock_info *ci = sclk->info;
+> > +       unsigned int feats_key = 0;
+> > +       const struct clk_ops *ops;
+> > +
+> > +       /*
+> > +        * Note that when transport is atomic but SCMI protocol did not
+> > +        * specify (or support) an enable_latency associated with a
+> > +        * clock, we default to use atomic operations mode.
+> > +        */
+> > +       if (atomic_capable && ci->enable_latency <= atomic_threshold)
+> > +               feats_key |= BIT(SCMI_CLK_ATOMIC_SUPPORTED);
+> > +
+> 
+> Can we have a static_assert() here that makes sure 'feats_key' isn't
+> larger than the size of clk_ops_db?
+> 
+> 	static_assert(ARRAY_SIZE(clk_ops_db) >= feats_key);
+> 
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Ok.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+> > +       /* Lookup previously allocated ops */
+> > +       ops = clk_ops_db[feats_key];
+> > +       if (!ops) {
+> > +               ops = scmi_clk_ops_alloc(sclk->dev, feats_key);
+> > +               if (!ops)
+> > +                       return NULL;
+> 
+> This could be less nested if the first lookup is put in
+> scmi_clk_ops_alloc() and the store below is folded in. Or an early
+> return if found.
+> 
+> 	ops = clk_ops_db[feats_key];
+> 	if (ops)
+> 		return ops;
+> 
+> 	/* Didn't find one */
+> 	ops = scmi_clk_ops_alloc(...)
+> 	if (!ops)
+> 		return NULL;
+> 
+> 	clk_ops_db[feats_key] = ops;
+> 	return ops;
+> 
 
-If you want to undo deduplication, reply with:
-#syz undup
+ok.
+		
+> > +
+> > +               /* Store new ops combinations */
+> > +               clk_ops_db[feats_key] = ops;
+> > +       }
+> > +
+> > +       return ops;
+> > +}
+> > +
+> >  static int scmi_clocks_probe(struct scmi_device *sdev)
+> >  {
+> >         int idx, count, err;
+> > @@ -285,16 +357,10 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
+> >                 sclk->ph = ph;
+> >                 sclk->dev = dev;
+> >  
+> > -               /*
+> > -                * Note that when transport is atomic but SCMI protocol did not
+> > -                * specify (or support) an enable_latency associated with a
+> > -                * clock, we default to use atomic operations mode.
+> > -                */
+> > -               if (is_atomic &&
+> > -                   sclk->info->enable_latency <= atomic_threshold)
+> > -                       scmi_ops = &scmi_atomic_clk_ops;
+> > -               else
+> > -                       scmi_ops = &scmi_clk_ops;
+> > +               scmi_ops = scmi_clk_ops_select(sclk, is_atomic,
+> 
+> 'is_atomic' should probably be 'transport_is_atomic' so this reads
+> easier.
+> 
+
+Ok.
+
+Thanks,
+Cristian
 
