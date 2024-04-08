@@ -1,243 +1,130 @@
-Return-Path: <linux-kernel+bounces-135510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D4A89C6E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:21:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B7089C6E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:22:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443862814F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:21:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15DB28118E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEDA129E6B;
-	Mon,  8 Apr 2024 14:20:43 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960FA1272C4;
+	Mon,  8 Apr 2024 14:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="C8yRrVg6"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8466F126F0A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277BD8061F;
+	Mon,  8 Apr 2024 14:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586042; cv=none; b=IM2Un6UVjnBrVqG9OhStar6M6ImRqm89c+i0q8yugYZGeuCxdeJYZepZXFbJLvSEsRYO0Th9eOJNPCIEcYo3SiNgQ0nLSIaNb3835x6T7z+yHgibuZmA1uT6txpkcaM3uBnVbX4XDXa7UZcPLXce1Hs4q71J4KcjC3R5aJ7gPtM=
+	t=1712586164; cv=none; b=HdqFjvh3sVU9kmCKQsjFHBZQgiqkLHj+/KKAYNyL0UDbndKqvjiGgVCNmIBA0NUfP23//MuUAUkmRH7tK9cDmYZSMguUP5cEUARNi3cdgWz2Jf/ACXsN7nvvd/scN2p7LIj38TJKQXpl51DfKqmzo2fHeyBuY5mz28MVOr14Ts0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586042; c=relaxed/simple;
-	bh=wHjZHYR3/8O8GuYPcxt1x8c3tVmjG7kKcy2Y0MmiRpM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=RkPCOGnl6Pyd8g1KCnieRvmlZRozIL4VE8B/PJxNJnq90L2i9Df0XTIs7aZroh/1Sy+36wx57ohdG2imm7Agb1YDaeZz3S16wS/W6sDREIXrOtBwp/kC/af9bsi/OAtgrnzECZGPm5+EHLlvfIk4skf3gINj6t4CewEmN4pQ64Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5db4db531so171136439f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:20:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712586039; x=1713190839;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DV+zzZ18HjL9UnlRbefaSkDDW4UVKzv6pk2khBr+yYU=;
-        b=AXQeFqFbmqzlb6Q2JqiHefIEdsx79NHnLHa8VoWSFZUYO3mAz0fi/rKTgrUzpebPdF
-         d27brJgTAeo1gczRro8Swe9683nvZVdd5zUnDWTRHVX7k0C5OPUWocmC43uOWIDPM1Mb
-         hsNHyrcymYwbcaDdrY4LLU66oRJF26gNpUejoiLANj3016YcOfUS6279BOVNnRkM7RF1
-         je5fY24qIAODkKV1wdd48LbZ7edZBMYabn2mB+Im46Sc5J6UvnVIUVOh8e+Gpt3tTuOx
-         Nn8WLxf1JRdC0H2fImfVSr3yJKThxrDzo0bUkE/lDzfbYUj8CW/WHezTHCWy80BWzYQ/
-         6/kA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyu3DvPD6QB/DetjdqD7cpqXtEguSqNU553rl6BoKoLKggi9cw/9f5vijbT0o83ZZL+qs6DaBmZSL1tpLtxgw0Y2xq1p/+yBHDnW3n
-X-Gm-Message-State: AOJu0YwPvQjtO0pAVV39AU6Kz+BBszX8CB6YiskLsodQUBFdvpgjNmYp
-	ea+qss3Gq2oB8DKauH49+DDfBTCV/1nsO97SOesgda3Odybkls0B0BUiSN89QsMWznBO518Or3A
-	OqNWsx8FG9UfSdNQ3yDtVUm3pavuIcKcTPZA+RfZUJwmUumQXQeunfSI=
-X-Google-Smtp-Source: AGHT+IFbKIY7V9lOGfkD/JpFzkz+BG36cIzrXfIu/CghYNaazAHp1lFkj5tSKXU0nPp9stNR9fEPUnH+6et5vurVHyQLxbCwyFHO
+	s=arc-20240116; t=1712586164; c=relaxed/simple;
+	bh=J1/fqstbM5sABZsuP5LWcr7jv6Ko56PfgEUWHAOq6+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ot3JKJVIZvXUB+862JOOnHy4h5vxFU8fXXVWmaP+XgMO9oE+uX4aLqps5/tWISs/YqLA2pehy8vRZWDes5USAYsARDxQf/fq17ghzKZE+82a4Ds47EMWbdljETkZJPXopntVIG+4k7jAEsUc27KxVdIm5MT8Me9/w0NrguVqQBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=C8yRrVg6; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438Dq4Jx026068;
+	Mon, 8 Apr 2024 14:22:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=lUVGF3u8yqzsf9tOwSFu7MTvf+cbSRWHzIgwMIHLc0c=;
+ b=C8yRrVg6AoxzingXHiy/NZdvSvUrHrw/YaHKNn+adwLZAnKNyFecJqBT6Sg8EQFCxbSn
+ NWupffX6HRFuK/5nqmKqsB+e5h23r7UFcsPdQPsHOi2FMEOGVVCNbXy98qLF56XwwQQk
+ AXhz5D7P8qQ50Fozc6xeLfynbzzSEcXaWMo5FrDbVNK7wXzlSmRueKKh1GaACQ2YwYZk
+ BEAxCPMvDlg3+EvnvqfmGMBEFYjLr/SjLRZXr87SyfP5DwUNpIsXEh+fAq3ndZX8NV7N
+ 915C2RGNidUPVAyVu+gmreXDGyIHuGjtODKLKKEd6U8KvsQd0y5UA3eo50igmfZEPZeA Tw== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xchuc03s5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 14:22:41 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 438Bmp0Y022627;
+	Mon, 8 Apr 2024 14:22:39 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqnrgtr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 14:22:39 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 438EMYA538666574
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Apr 2024 14:22:36 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 07DDB2004D;
+	Mon,  8 Apr 2024 14:22:34 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C0C7620049;
+	Mon,  8 Apr 2024 14:22:33 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  8 Apr 2024 14:22:33 +0000 (GMT)
+Date: Mon, 8 Apr 2024 16:22:32 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: "Jason J. Herne" <jjherne@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, akrowiak@linux.ibm.com, borntraeger@de.ibm.com,
+        gor@linux.ibm.com, hca@linux.ibm.com,
+        Matthew Rosato <mjrosato@linux.ibm.com>
+Subject: Re: [PATCH v4 4/5] s390/vfio-ap: Add write support to sysfs attr
+ ap_config
+Message-ID: <ZhP9qHs6tjPbh1/J@tuxmaker.boeblingen.de.ibm.com>
+References: <20240326164706.29167-1-jjherne@linux.ibm.com>
+ <20240326164706.29167-5-jjherne@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2713:b0:482:9be9:6fa3 with SMTP id
- m19-20020a056638271300b004829be96fa3mr50652jav.6.1712586039654; Mon, 08 Apr
- 2024 07:20:39 -0700 (PDT)
-Date: Mon, 08 Apr 2024 07:20:39 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a882a061596826d@google.com>
-Subject: [syzbot] [bpf?] [net?] possible deadlock in sock_map_unref
-From: syzbot <syzbot+850ca6a3ba35c8699832@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326164706.29167-5-jjherne@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: nZCmbvNW4oYQi_YX7IiFYqSRUNTitnZD
+X-Proofpoint-GUID: nZCmbvNW4oYQi_YX7IiFYqSRUNTitnZD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_12,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404080111
 
-Hello,
+On Tue, Mar 26, 2024 at 12:47:05PM -0400, Jason J. Herne wrote:
 
-syzbot found the following issue on:
+Hi Jason,
 
-HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1363aaa9180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=850ca6a3ba35c8699832
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+This series still has some issues.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> +	newbuf = rest = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
+This line triggers a checkpatch warning. Would it make sense
+to turn it into below instead?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+850ca6a3ba35c8699832@syzkaller.appspotmail.com
+	newbuf = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
+> +	if (!newbuf)
+> +		return -ENOMEM;
+	rest = newbuf;
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
-------------------------------------------------------
-syz-executor.4/21902 is trying to acquire lock:
-ffff88804ec83bf0 (clock-AF_UNIX){++..}-{2:2}, at: sock_map_del_link net/core/sock_map.c:163 [inline]
-ffff88804ec83bf0 (clock-AF_UNIX){++..}-{2:2}, at: sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
+Also, please address other checkpatch suggestions.
 
-but task is already holding lock:
-ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:490
+> +	/* Save old state */
+> +	/* The volatile cast here is to work around a gcc false positive
+> +	 * Wstringop-overread-warning.
+> +	 */
+> +	ap_matrix_copy(&m_old, (*(struct ap_matrix * volatile *)(&matrix_mdev->matrix)));
 
-which lock already depends on the new lock.
+Could you please come up with a different workaround? This issue has already
+been resolved in the past in different ways. See commit 34186b48d29b ("ARM:
+sharpsl_param: work around -Wstringop-overread warning") for example.
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&stab->lock){+.-.}-{2:2}:
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
-       spin_lock_bh include/linux/spinlock.h:356 [inline]
-       __sock_map_delete net/core/sock_map.c:414 [inline]
-       sock_map_delete_elem+0x97/0x140 net/core/sock_map.c:446
-       0xffffffffa00048e6
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
-       trace_kfree include/trace/events/kmem.h:94 [inline]
-       kfree+0x291/0x380 mm/slub.c:4396
-       __bpf_prog_put_noref+0xd7/0x310 kernel/bpf/syscall.c:2244
-       bpf_prog_put_deferred+0x2f3/0x3e0 kernel/bpf/syscall.c:2270
-       __bpf_prog_put kernel/bpf/syscall.c:2282 [inline]
-       bpf_prog_put+0x264/0x2a0 kernel/bpf/syscall.c:2289
-       psock_set_prog include/linux/skmsg.h:475 [inline]
-       sk_psock_stop_strp net/core/skmsg.c:1156 [inline]
-       sk_psock_drop+0xe0/0x500 net/core/skmsg.c:841
-       sk_psock_put include/linux/skmsg.h:459 [inline]
-       sock_map_close+0x209/0x2d0 net/core/sock_map.c:1648
-       unix_release+0x85/0xc0 net/unix/af_unix.c:1048
-       __sock_release net/socket.c:659 [inline]
-       sock_close+0xbc/0x240 net/socket.c:1421
-       __fput+0x429/0x8a0 fs/file_table.c:423
-       __do_sys_close fs/open.c:1557 [inline]
-       __se_sys_close fs/open.c:1542 [inline]
-       __x64_sys_close+0x7f/0x110 fs/open.c:1542
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
--> #0 (clock-AF_UNIX){++..}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __raw_write_lock_bh include/linux/rwlock_api_smp.h:202 [inline]
-       _raw_write_lock_bh+0x35/0x50 kernel/locking/spinlock.c:334
-       sock_map_del_link net/core/sock_map.c:163 [inline]
-       sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
-       sock_map_update_common+0x4f0/0x5b0 net/core/sock_map.c:503
-       sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:579
-       map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1641
-       __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5619
-       __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
-       __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
-       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&stab->lock);
-                               lock(clock-AF_UNIX);
-                               lock(&stab->lock);
-  lock(clock-AF_UNIX);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.4/21902:
- #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1671 [inline]
- #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_sk_acquire net/core/sock_map.c:117 [inline]
- #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x1cc/0x910 net/core/sock_map.c:575
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_sk_acquire net/core/sock_map.c:118 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_update_elem_sys+0x1d8/0x910 net/core/sock_map.c:575
- #2: ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
- #2: ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:490
-
-stack backtrace:
-CPU: 1 PID: 21902 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __raw_write_lock_bh include/linux/rwlock_api_smp.h:202 [inline]
- _raw_write_lock_bh+0x35/0x50 kernel/locking/spinlock.c:334
- sock_map_del_link net/core/sock_map.c:163 [inline]
- sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
- sock_map_update_common+0x4f0/0x5b0 net/core/sock_map.c:503
- sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:579
- map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1641
- __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5619
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f9934c7de69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9935a7c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f9934dac120 RCX: 00007f9934c7de69
-RDX: 0000000000000020 RSI: 0000000020000880 RDI: 0000000000000002
-RBP: 00007f9934cca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f9934dac120 R15: 00007fffdd7d6668
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks!
 
