@@ -1,320 +1,180 @@
-Return-Path: <linux-kernel+bounces-135832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7450689CBDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:43:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A445989CBF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2E171F26ECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:43:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7C7E1C216DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43AED1448FD;
-	Mon,  8 Apr 2024 18:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B77142658;
+	Mon,  8 Apr 2024 18:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/Parmi+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="3DtYl5ac"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1C4F51B;
-	Mon,  8 Apr 2024 18:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1E41419A9
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712601771; cv=none; b=GRVNpkRdqhsq4W0Trp1frvnfdjRv32jSfgj6OU2xNP4SxTQdkjdPxqYvoxvQZbgq/a6mkprL0r15Rm8D06IeDZ7083+z7Oy6/r9Nz3T7n6d3NfuN/pinhOcTTBxAHG+iE07gQQ0pDTkFMbCKg8IPhN30bBaADaHITse9vuKh6Gk=
+	t=1712602138; cv=none; b=hl26060Dip5bVhZNQ1RSOTuQWTrHei7k9xdmdslY96X0VpRYT9Euwkz1mZNdy+1hpVC+92OwfZQzbruQbtE130II4uQKYP3oJ8XCE1EX4O/RevEXjGg61NoIfvkOvU12nXScbrU1fQDSznEx4Mjf2Km/FrxMSwRNDaKBMXWecOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712601771; c=relaxed/simple;
-	bh=0yVcPh6jQemtqyf3pVMKTuzquslNkgOsytj52m1E4yI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XPyPBfnXjNspbhUmkFe21vofkXgU7xCNgSPe6Z86L6BSVkrgcsSaHaZXxlFzotjOPGhLsxLveMxHhZv38vl3LT8O7mg9QzfOXrb4/V2k2TayRpv/FcUzQUgW2JMMgqqyH/StllM20AwGRV/TcPGhxlY0rA/T8u1dIc+3gOelODQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/Parmi+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E07C433C7;
-	Mon,  8 Apr 2024 18:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712601770;
-	bh=0yVcPh6jQemtqyf3pVMKTuzquslNkgOsytj52m1E4yI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=V/Parmi+bnfDse6/WIy/AZTXDq7tM///tp2rcTx+UvSLiQS6IRjkgidPKy3EXXCfN
-	 g3+3H7kYg6bbGrV1Agp6dbL4qSPQfUwgf8XrSkjYGASSMk6dp1yAyQhqFxgAkxHz+r
-	 KN0NFN0eEB34+CLBi8S16HftMysjUy6+95qXDmEaj8W4Tb8fbcTvqqPwiSbF2Cwzt3
-	 wvu+2AXgwigLnjsr070sHG1F1hKqM43mLF7xIzbbOCja4RiI2Va/EJxYHKQSTprdUS
-	 iTk5caK9IphRbleDCca+0lPf0Y62fyZRoN/n/HF574rOBCImUfoLJ/0CATnfkvJ+gc
-	 pB3vARJ0KTK2Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3D9B9CE126C; Mon,  8 Apr 2024 11:42:50 -0700 (PDT)
-Date: Mon, 8 Apr 2024 11:42:50 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240328171949.743211-1-leobras@redhat.com>
- <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
+	s=arc-20240116; t=1712602138; c=relaxed/simple;
+	bh=qtrTZPVJnDWvjZ/bNpqt1kAPUsC/tYujbJUF4w+jUBw=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=Qdgektd+Y2im9/zoU+9X7KRfYmII4NGwli5p747FOnuRvMggKwUyvZQmFpa1zN7EbgKmoHv7mXzveIFMER0e5RMd3xYO4D4JWU4480Ei0ZUoY6wgd1yDKs9V6JpkxQUBhGY2wlToqdlSBs8Z88rdP/frruAE4jqaadBCCHiDHWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=3DtYl5ac; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-343c891bca5so3092663f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 11:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712602135; x=1713206935; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=/5O9U718NHGvhBsjamAS1sHo9zrNE6S5TEc1aVEiLaU=;
+        b=3DtYl5ac1yoh7J8kHGQOF0ZM90DGc6yvJynBnaGtrxL7yOaYG+02GXrgDj37MxKpFA
+         ev/FSvvixxDjpxczZXNitqWSgCdBtYj6q4TwDDRfxO990a6WW0t53s05ZL24ZH7nEJ4u
+         P/2+7KlMXUyO6lQsqG7i9wfksxCeEDkyEauTNAzHa9GUBrAFKeKu6ofUkP9ShE6B+xjP
+         l4hNhheAAXTN3gdRD8jywiRw1uORSa/yPciFQwU3KzJmPxdthb6ey0BMVANECf7VWiXw
+         0kIhWcgxz9dbF0jG5xdtnfQCtwyxURX5afOBtfd+XYBw8moctxc3r8kTh/lM3xq0DqjH
+         w7aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712602135; x=1713206935;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/5O9U718NHGvhBsjamAS1sHo9zrNE6S5TEc1aVEiLaU=;
+        b=VZIogtXH7jc1ezur1fLVTIZWqctSyWfquPdQsBvK+ZVJdWBTmZ5DNU9hEavHWCjuEN
+         4W4V+IXcWFQzL699jD1TW0klLkLtQO8NaCGoav1pdvZwrx3TpSDyjkgkEwzySKSIAzaM
+         pYd6ddapfNbouzupsAJEErHHqVH2T87q083EFFnZTCB3k5qkKCsX0L80BspU1ufBW0ye
+         6RkhSg2rm/spO36t2n8cjqGKz06YpZsej/3xSy63Zha10+voBBrAWEuWC2zYuxWwfTkT
+         CLSvCAQM+Qaajgdc+RzP4Pp0DS17/pfYhGAhnPVpT1iqwC4pxfyn6V3uaxEzCEPAuxKm
+         w61w==
+X-Forwarded-Encrypted: i=1; AJvYcCW0EGrtlPJIglRAgXUSsAXVJFcJMBTl4qShhBQymqmycTyxUh3hVNfUB63HxLigVQkDGN5uHv2Ksa0COM/uP5V+N8X1ikCl0Nei661K
+X-Gm-Message-State: AOJu0YweJcERg9gwwA81sCsKsC6gqgdjBqFAnKb83q8r9FwVbyWGp+gZ
+	lqh6mJHzOY+RZLpcKU2fiRCWhgEQmL7WsTpFG1sDce9lQQYPjKTYqWDjG3VgdQA=
+X-Google-Smtp-Source: AGHT+IG3Lg7mm8hPe5LwKDEb0DtuBWPIrOCUnl2T2Z41lBT6Pyv73n0DcdIqqnsFwOJp3c6VQ0kGmA==
+X-Received: by 2002:a5d:64cf:0:b0:341:d7b5:27 with SMTP id f15-20020a5d64cf000000b00341d7b50027mr8950388wri.6.1712602134884;
+        Mon, 08 Apr 2024 11:48:54 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:90bc:1f0d:aae2:3c66])
+        by smtp.gmail.com with ESMTPSA id m6-20020adff386000000b00343300a4eb8sm9561770wro.49.2024.04.08.11.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 11:48:54 -0700 (PDT)
+References: <20240408164947.30717-1-ddrokosov@salutedevices.com>
+ <20240408164947.30717-2-ddrokosov@salutedevices.com>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: neil.armstrong@linaro.org, lgirdwood@gmail.com, jbrunet@baylibre.com,
+ broonie@kernel.org, conor+dt@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, perex@perex.cz, tiwai@suse.com,
+ khilman@baylibre.com, martin.blumenstingl@googlemail.com,
+ kernel@salutedevices.com, rockosov@gmail.com,
+ linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 1/2] ASoC: dt-bindings: meson: introduce link-name
+ optional property
+Date: Mon, 08 Apr 2024 20:44:36 +0200
+In-reply-to: <20240408164947.30717-2-ddrokosov@salutedevices.com>
+Message-ID: <1jsezvofl5.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhQmaEXPCqmx1rTW@google.com>
+Content-Type: text/plain
 
-On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
-> On Fri, Apr 05, 2024, Paul E. McKenney wrote:
-> > On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
-> > > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
-> > > > rcuc wakes up (which might exceed the allowed latency threshold
-> > > > for certain realtime apps).
-> > > 
-> > > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
-> > > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
-> > > enter a guest, but the CPU never does (at least, not in the immediate future).
-> > > 
-> > > Or am I just not understanding how RCU's kthreads work?
-> > 
-> > It is quite possible that the current rcu_pending() code needs help,
-> > given the possibility of vCPU preemption.  I have heard of people doing
-> > nested KVM virtualization -- or is that no longer a thing?
-> 
-> Nested virtualization is still very much a thing, but I don't see how it is at
-> all unique with respect to RCU grace periods and quiescent states.  More below.
 
-When the hypervisor runs on bare metal, the existing checks have
-interrupts disables.  Yes, you can still get added delays from NMIs and
-SMIs, but excessively long NMI/SMI handlers are either considered to be
-bugs or happen when the system is already in trouble (backtrace NMIs,
-for an example of the latter).
+On Mon 08 Apr 2024 at 19:49, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
 
-But if the hypervisor is running on top of another hypervisor, then
-the scheduling-clock interrupt handler is subject to vCPU preemption,
-which can unduly delay reporting of RCU quiescent states.
+> The 'link-name' property is an optional DT property that allows for the
+> customization of the name associated with the DAI link and PCM stream.
+> This functionality mirrors the approach commonly utilized in Qualcomm
+> audio cards, providing flexibility in DAI naming conventions for
+> improved system integration and userspace experience.
 
-And no, this is not exactly new, but your patch reminded me of it.
+As explained in patch #2, I think this change is wrong.
+The names below describe a possible userspace usage of the interface,
+not HW. This does not belong in DT.
 
-> > But the help might well involve RCU telling the hypervisor that a given
-> > vCPU needs to run.  Not sure how that would go over, though it has been
-> > prototyped a couple times in the context of RCU priority boosting.
-> >
-> > > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> > > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> > > > > >     grace period started over than a second ago. If this value is bad,
-> > > > > >     I have no issue changing it.
-> > > > > 
-> > > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> > > > > of what magic time threshold is used.  
-> > > > 
-> > > > Why? It works for this particular purpose.
-> > > 
-> > > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
-> > > against edge cases, and I'm pretty sure we can do better with about the same amount
-> > > of effort/churn.
-> > 
-> > Beyond a certain point, we have no choice.  How long should RCU let
-> > a CPU run with preemption disabled before complaining?  We choose 21
-> > seconds in mainline and some distros choose 60 seconds.  Android chooses
-> > 20 milliseconds for synchronize_rcu_expedited() grace periods.
-> 
-> Issuing a warning based on an arbitrary time limit is wildly different than using
-> an arbitrary time window to make functional decisions.  My objection to the "assume
-> the CPU will enter a quiescent state if it exited a KVM guest in the last second"
-> is that there are plenty of scenarios where that assumption falls apart, i.e. where
-> _that_ physical CPU will not re-enter the guest.
-> 
-> Off the top of my head:
-> 
->  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
->    will get false positives, and the *new* pCPU will get false negatives (though
->    the false negatives aren't all that problematic since the pCPU will enter a
->    quiescent state on the next VM-Enter.
-> 
->  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
->    won't re-enter the guest.  And so the pCPU will get false positives until the
->    vCPU gets a wake event or the 1 second window expires.
-> 
->  - If the VM terminates, the pCPU will get false positives until the 1 second
->    window expires.
-> 
-> The false positives are solvable problems, by hooking vcpu_put() to reset
-> kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
-> scheduled in on a different pCPU, KVM would hook vcpu_load().
+The only valid name for the interface is one that helps map the PCM
+interface and the kcontrols exposed in userspace.
 
-Here you are arguing against the heuristic in the original patch, correct?
-As opposed to the current RCU heuristic that ignores certain quiescent
-states for nohz_full CPUs until the grace period reaches an age of
-one second?
+This information is already available through dai_name, prefixes, etc.
 
-If so, no argument here.  In fact, please consider my ack cancelled.
+Using DT for this is bad, in the context of these particular sound
+cards at least.
 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index d9642dd06c25..303ae9ae1c53 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3937,8 +3937,13 @@ static int rcu_pending(int user)
-> > >  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
-> > >  		return 1;
-> > >  
-> > > -	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-> > > -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
-> > > +	/*
-> > > +	 * Is this a nohz_full CPU in userspace, idle, or likely to enter a
-> > > +	 * guest in the near future?  (Ignore RCU if so.)
-> > > +	 */
-> > > +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
-> > > +	     __this_cpu_read(context_tracking.in_guest_run_loop)) &&
-> > 
-> > In the case of (user || rcu_is_cpu_rrupt_from_idle()), this CPU was in
-> > a quiescent just before the current scheduling-clock interrupt and will
-> > again be in a quiescent state right after return from this interrupt.
-> > This means that the grace-period kthread will be able to remotely sense
-> > this quiescent state, so that the current CPU need do nothing.
-> >
-> > In constrast, it looks like context_tracking.in_guest_run_loop instead
-> > means that when we return from this interrupt, this CPU will still be
-> > in a non-quiescent state.
-> > 
-> > Now, in the nested-virtualization case, your point might be that the
-> > lower-level hypervisor could preempt the vCPU in the interrupt handler
-> > just as easily as in the .in_guest_run_loop code.  Which is a good point.
-> > But I don't know of a way to handle this other than heuristics and maybe
-> > hinting to the hypervisor (which has been prototyped for RCU priority
-> > boosting).
-> 
-> Regarding nested virtualization, what exactly is your concern?  IIUC, you are
-> worried about this code running at L1, i.e. as a nested hypervisor, and L0, i.e.
-> the bare metal hypervisor, scheduling out the L1 CPU.  And because the L1 CPU
-> doesn't get run "soon", it won't enter a quiescent state as expected by RCU.
+>
+> It allows userspace program to easy determine PCM stream purpose, e.g.:
+>     ~ # cat /proc/asound/pcm
+>     00-00: speaker (*) :  : playback 1
+>     00-01: mics (*) :  : capture 1
+>     00-02: loopback (*) :  : capture 1
+>
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> ---
+>  .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml   | 6 ++++++
+>  .../devicetree/bindings/sound/amlogic,gx-sound-card.yaml    | 6 ++++++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+> index 492b41cc8ccd..46774a3e4b1d 100644
+> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+> @@ -66,6 +66,11 @@ patternProperties:
+>          maxItems: 1
+>          description: phandle of the CPU DAI
+>  
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+>      patternProperties:
+>        "^dai-tdm-slot-(t|r)x-mask-[0-3]$":
+>          $ref: /schemas/types.yaml#/definitions/uint32-array
+> @@ -137,6 +142,7 @@ examples:
+>  
+>          dai-link-0 {
+>              sound-dai = <&frddr_a>;
+> +            link-name = "speaker";
+>          };
+>  
+>          dai-link-1 {
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> index d4277d342e69..975c148f9712 100644
+> --- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> +++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> @@ -52,6 +52,11 @@ patternProperties:
+>          maxItems: 1
+>          description: phandle of the CPU DAI
+>  
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+>      patternProperties:
+>        "^codec(-[0-9]+)?$":
+>          type: object
+> @@ -89,6 +94,7 @@ examples:
+>  
+>          dai-link-0 {
+>                 sound-dai = <&i2s_fifo>;
+> +               link-name = "speaker";
+>          };
+>  
+>          dai-link-1 {
 
-I don't believe that I have any additional concerns over and above
-those for the current situation for nested virtualization.  But see my
-additional question on your patch below for non-nested virtualization.
 
-> But that's 100% the case with RCU in a VM in general.  If an L1 CPU gets scheduled
-> out by L0, that L1 CPU won't participate in any RCU stuff until it gets scheduled
-> back in by L0.
-> 
-> E.g. throw away all of the special case checks for rcu_nohz_full_cpu() in
-> rcu_pending(), and the exact same problem exists.  The L1 CPU could get scheduled
-> out while trying to run the RCU core kthread just as easily as it could get
-> scheduled out while trying to run the vCPU task.  Or the L1 CPU could get scheduled
-> out while it's still in the IRQ handler, before it even completes it rcu_pending().
-> 
-> And FWIW, it's not just L0 scheduling that is problematic.  If something in L0
-> prevents an L1 CPU (vCPU from L0's perspective) from making forward progress, e.g.
-> due to a bug in L0, or severe resource contention, from the L1 kernel's perspective,
-> the L1 CPU will appear stuck and trigger various warnings, e.g. soft-lockup,
-> need_resched, RCU stalls, etc.
-
-Indeed, there was a USENIX paper on some aspects of this topic some years back.
-https://www.usenix.org/conference/atc17/technical-sessions/presentation/prasad
-
-> > Maybe the time for such hinting has come?
-> 
-> That's a largely orthogonal discussion.  As above, boosting the scheduling priority
-> of a vCPU because that vCPU is in critical section of some form is not at all
-> unique to nested virtualization (or RCU).
-> 
-> For basic functional correctness, the L0 hypervisor already has the "hint" it 
-> needs.  L0 knows that the L1 CPU wants to run by virtue of the L1 CPU being
-> runnable, i.e. not halted, not in WFS, etc.
-
-And if the system is sufficiently lightly loaded, all will be well, as is
-the case with my rcutorture usage.  However, if the system is saturated,
-that basic functional correctness might not be enough.  I haven't heard
-many complaints, other than research work, so I have been assuming that
-we do not yet need hinting.  But you guys tell me.  ;-)
-
-> > > +	    rcu_nohz_full_cpu())
-> > 
-> > And rcu_nohz_full_cpu() has a one-second timeout, and has for quite
-> > some time.
-> 
-> That's not a good reason to use a suboptimal heuristic for determining whether
-> or not a CPU is likely to enter a KVM guest, it simply mitigates the worst case
-> scenario of a false positive.
-
-Again, are you referring to the current RCU code, or the original patch
-that started this email thread?
-
-> > >  		return 0;
-> > >  
-> > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > index bfb2b52a1416..5a7efc669a0f 100644
-> > > --- a/virt/kvm/kvm_main.c
-> > > +++ b/virt/kvm/kvm_main.c
-> > > @@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
-> > >  {
-> > >  	int cpu = get_cpu();
-> > >  
-> > > +	if (vcpu->wants_to_run)
-> > > +		context_tracking_guest_start_run_loop();
-> > 
-> > At this point, if this is a nohz_full CPU, it will no longer report
-> > quiescent states until the grace period is at least one second old.
-> 
-> I don't think I follow the "will no longer report quiescent states" issue.  Are
-> you saying that this would prevent guest_context_enter_irqoff() from reporting
-> that the CPU is entering a quiescent state?  If so, that's an issue that would
-> need to be resolved regardless of what heuristic we use to determine whether or
-> not a CPU is likely to enter a KVM guest.
-
-Please allow me to start over.  Are interrupts disabled at this point,
-and, if so, will they remain disabled until the transfer of control to
-the guest has become visible to RCU via the context-tracking code?
-
-Or has the context-tracking code already made the transfer of control
-to the guest visible to RCU?
-
-> > >  	__this_cpu_write(kvm_running_vcpu, vcpu);
-> > >  	preempt_notifier_register(&vcpu->preempt_notifier);
-> > >  	kvm_arch_vcpu_load(vcpu, cpu);
-> > > @@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
-> > >  	kvm_arch_vcpu_put(vcpu);
-> > >  	preempt_notifier_unregister(&vcpu->preempt_notifier);
-> > >  	__this_cpu_write(kvm_running_vcpu, NULL);
-> > > +
-> > 
-> > And also at this point, if this is a nohz_full CPU, it will no longer
-> > report quiescent states until the grace period is at least one second old.
-
-And here, are interrupts disabled at this point, and if so, have they
-been disabled since the time that the exit from the guest become
-visible to RCU via the context-tracking code?
-
-Or will the context-tracking code make the transfer of control to the
-guest visible to RCU at some later time?
-
-							Thanx, Paul
-
-> > > +	if (vcpu->wants_to_run)
-> > > +		context_tracking_guest_stop_run_loop();
-> > > +
-> > >  	preempt_enable();
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(vcpu_put);
-> > > 
-> > > base-commit: 619e56a3810c88b8d16d7b9553932ad05f0d4968
-> > 
-> > All of which might be OK.  Just checking as to whether all of that was
-> > in fact the intent.
-> > 
-> > 							Thanx, Paul
+-- 
+Jerome
 
