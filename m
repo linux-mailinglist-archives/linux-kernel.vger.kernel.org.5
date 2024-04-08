@@ -1,369 +1,207 @@
-Return-Path: <linux-kernel+bounces-135963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D76D89CE44
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A48D89CE45
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5984B243F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:08:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F998B247C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA2A14B080;
-	Mon,  8 Apr 2024 22:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C12F14BF8B;
+	Mon,  8 Apr 2024 22:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="L/awBl//"
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WPWkWxYP"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B303148854;
-	Mon,  8 Apr 2024 22:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA981494BD
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 22:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712614090; cv=none; b=kDtrmafRU8rDj4rik0sc5y6AgUnJDSCUk+vebbccrDgKSYOvw1rhhCpS+eyXVpXP7gUmrTXJNgsS1qN2Eh7szibsM2Dn4HA/qt/zOTgfVScQCidovDVVkZW1j1HweIxRKQaVz7jT4pQyDhJvqq5LZ7A3vpsKdV4mdPaX9yLpsKA=
+	t=1712614091; cv=none; b=YUVS/a4fGxQ9YwjNUwRZkBqlQ2UQqC0MiJ/zDBLl629yJ6cKpD7JSZdL3WApAnSWRlO0ZzMxTUy4g44/X6dtrcCVWsoYo9Z6jvsfwx+ap2qCh0fP7Ha8e1JAk6E/YSsGlB5yT6H1WoKd2a1bpuiNagh1ntMDbxVtCPsRVIuaqU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712614090; c=relaxed/simple;
-	bh=6mi6jakl+vhCGrJBzcTDV5CynKVnsfEKynhyvw4ZIDo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dASbqCJKUADgIzljlOmcYCYdc6auJVnuGyxkyWb32cDPdTBJ4FJSV4aPOy+2Vvgi6UGEQkHamPvzcBUvs7H3ZUzz98XQi4r6uInID5GomJDHOW85vZgIMhMXqFzs0J9u/ixBTH8jhjs9wpuQ2hUmTcNHjn5Es8DvZ4mXl6Iphoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=L/awBl//; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+	s=arc-20240116; t=1712614091; c=relaxed/simple;
+	bh=xxk1gyjbeyUL4zHAyBUPW/iHNjor9ToFngoeLDD2W4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N7/XRuW/6iIOc6+qc8lI6Ae5Ub3kO3u/MltXIG792vV5GXG2gUGx3ky9aAiW4VvmqHDVkVU3v43ICooGev97V/LOFndBzFQsKmhE6qcAtTLoisfykzOSKpB3pw6hXI5vMUKak65Dq7PCN2u/nsf0hSiBqrHKSqcIctQG2/ul4s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WPWkWxYP; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso4416407276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 15:08:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712614089; x=1744150089;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DvVGnq9BylvqxGBtmGF6jdpkEtxi98A9Ndid/G/EBM0=;
-  b=L/awBl//QGb1Q1HlNwZLYh+88tvWWQEKzIbdFH/v6eSCa2sIKGP4THDz
-   i5Ei6xaaO0FKBVDCt8de4Kjro4z8JujvHwcbGegWlxCt2UVtd+MC5hqr5
-   koyRqJNLavRZocMLHjqN8d0lNeMtzxFD3+vHzJGHKBrhbKc9dx4R5joG2
-   E=;
-X-IronPort-AV: E=Sophos;i="6.07,187,1708387200"; 
-   d="scan'208";a="646453268"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 22:08:05 +0000
-Received: from EX19MTAEUA001.ant.amazon.com [10.0.17.79:64060]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.5.247:2525] with esmtp (Farcaster)
- id 4bf308e4-6f56-4b76-8126-c5904501e6ab; Mon, 8 Apr 2024 22:08:03 +0000 (UTC)
-X-Farcaster-Flow-ID: 4bf308e4-6f56-4b76-8126-c5904501e6ab
-Received: from EX19D033EUB003.ant.amazon.com (10.252.61.76) by
- EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 8 Apr 2024 22:08:03 +0000
-Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
- EX19D033EUB003.ant.amazon.com (10.252.61.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 8 Apr 2024 22:08:02 +0000
-Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
- (10.13.244.142) by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28 via Frontend Transport; Mon, 8 Apr 2024 22:08:01 +0000
-From: Jack Allister <jalliste@amazon.com>
-To: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>
-CC: David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>, "Jack
- Allister" <jalliste@amazon.com>, <kvm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: [PATCH 2/2] KVM: selftests: Add KVM/PV clock selftest to prove timer drift correction
-Date: Mon, 8 Apr 2024 22:07:04 +0000
-Message-ID: <20240408220705.7637-3-jalliste@amazon.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240408220705.7637-1-jalliste@amazon.com>
-References: <20240408220705.7637-1-jalliste@amazon.com>
+        d=linaro.org; s=google; t=1712614088; x=1713218888; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VMPTa7YZG9SFezIxNc9hWe537aXkTHEaz4nODnhs3/4=;
+        b=WPWkWxYPUGqy5S1EXVgropEHY/dP5eKtu32DDDXQE8knDID7VcPhk/5d1dSv/VUtPs
+         pfda3hFZGzHo5hU50IPE3qN7gsdnz4SXfd6U+wFq2IGj1og3zh1k/KHK99FasFXgyrYM
+         cHvSHT1fuh6rLEQyWAJEAZDYBp5lhuGiSNpsXZushk9ubvLe5HgDyQOfyoDuJUfkE8zd
+         qQ1vs8sEGzP86C5Kg8U81QJ+HyBf/YvsBL5Z6mP9gH4GJRY6odfT2McaV1miLAxjLY6F
+         jL8P30quyCY+qPLokhxTtfqJBOBf6VABqtc8JMiAAgsVN2pexn3thtq+5+bOXZwYrVsS
+         4XFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712614088; x=1713218888;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VMPTa7YZG9SFezIxNc9hWe537aXkTHEaz4nODnhs3/4=;
+        b=mGxoV4r3nwkoKHreMxFRFGgcufwsZbNoTldc5vW/oN0kTAwWrtE3rSNazr05dCO+o/
+         GE6+Gdu5WkL2P0Bwsrs/qfO1alMcb1LkrLjAt6tTNFvN1s2UiH8Wj+lmqEvJaB8Gknqp
+         uX5lE6fj5ayQxYOa3dEjY6Nnydn/endMzeP/h6+t87+EHSVabFytcm98X+D4pef57dLH
+         balr1KDa0zC33n4hjX/cDZ/pRlA0WN31lEavBN9PN9Zpb73NfOfl/NaJmzM6dE8IKL/N
+         nIAUHdJrJ7LO/GvXEQXNau6ajCmc5naXkzKfLxO3uKVhAZttImX6lxyKi5wTuQ1iQ3Kg
+         Ia5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWP9CGRtE6B+oMu2wq9HXjVLkO+NIYo6xex6mpkGfzgQGU6EFm/VLj0esXcmbkap8ht+zKr3JMCmDxTob9yMppmBpXK34HKL43MHJSf
+X-Gm-Message-State: AOJu0Yy21aFJxpijUaUjeHyarBl+FwuR2gCZzCAsienIfAtrdTfNXfA3
+	d7gTQ07Bc3p8W4Bkok4g2q7FF+XD9naLW4D4Q6R1eSpdVPSZXWWDH5OjOHfkMwBYwIjZIPdTH6H
+	r0X4sIYfX+W0gjeBRQsMThupBpSDKOMHHWT6C5A==
+X-Google-Smtp-Source: AGHT+IHnwDBFmtmInPRd6q4lnmrUf3qgd9ZdW3vy7JyOs/HLpkeABlYPfLgTMEPSv4mYhPXpglVRbif+gfL2zsRQTqA=
+X-Received: by 2002:a25:48ca:0:b0:dc6:9daf:35c7 with SMTP id
+ v193-20020a2548ca000000b00dc69daf35c7mr7528021yba.28.1712614088530; Mon, 08
+ Apr 2024 15:08:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
+ <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
+ <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com> <CAA8EJprzH0LiWNx9Udt6og3G063odY6ccvaAgsNS1r3zG8TmdA@mail.gmail.com>
+ <905222ad-612a-3eaf-d966-23c89c99e1f0@quicinc.com>
+In-Reply-To: <905222ad-612a-3eaf-d966-23c89c99e1f0@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 9 Apr 2024 01:07:57 +0300
+Message-ID: <CAA8EJpp6Lc7sc5fnKp+O8TYdaywiE+dZ=YJin351s=r5rxi+Kw@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, freedreno@lists.freedesktop.org, 
+	Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
+	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
 
-This test proves that there is an inherent KVM/PV clock drift away from the
-guest TSC when KVM decides to update the PV time information structure due
-to a KVM_REQ_MASTERCLOCK_UPDATE. This drift is exascerbated when a guest is
-using TSC scaling and running at a different frequency to the host TSC [1].
-It also proves that KVM_[GS]ET_CLOCK_GUEST API is working to mitigate the
-drift from TSC to within ±1ns.
+On Tue, 9 Apr 2024 at 00:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 4/8/2024 2:12 PM, Dmitry Baryshkov wrote:
+> > On Mon, 8 Apr 2024 at 22:43, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
+> >>> On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
+> >>>> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >>> [..]
+> >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> index d80f89581760..bfb6dfff27e8 100644
+> >>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> @@ -1665,7 +1665,7 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
+> >>>>               return;
+> >>>>
+> >>>>       if (!dp_display->link_ready && status == connector_status_connected)
+> >>>> -            dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+> >>>> +            dp_hpd_plug_handle(dp, 0);
+> >>>
+> >>> If I read the code correctly, and we get an external connect event
+> >>> inbetween a previous disconnect and the related disable call, this
+> >>> should result in a PLUG_INT being injected into the queue still.
+> >>>
+> >>> Will that not cause the same problem?
+> >>>
+> >>> Regards,
+> >>> Bjorn
+> >>>
+> >>
+> >> Yes, your observation is correct and I had asked the same question to
+> >> kuogee before taking over this change and posting.
+> >
+> > Should it then have the Co-developed-by trailers?
+> >
+>
+> hmmm, perhaps but that didnt result in any code change between v2 and
+> v3, so I didnt add it.
 
-The test simply records the PVTI (PV time information) at time of guest
-creation, after KVM has updated it's mapped PVTI structure and once the
-correction has taken place.
+So who authored v0 of it? From your text I had an impression that it
+was Kuogee. Please excuse me if I was wrong.
 
-A singular point in time is then recorded via the guest TSC and is used to
-calculate the a PV clock value using each of the 3 PVTI structures.
+>
+> >> We will have to handle that case separately. I don't have a good
+> >> solution yet for it without requiring further rework or we drop the
+> >> below snippet.
+> >>
+> >>           if (state == ST_DISCONNECT_PENDING) {
+> >>                   /* wait until ST_DISCONNECTED */
+> >>                   dp_add_event(dp, EV_HPD_PLUG_INT, 0, 1); /* delay = 1 */
+> >>                   mutex_unlock(&dp->event_mutex);
+> >>                   return 0;
+> >>           }
+> >>
+> >> I will need sometime to address that use-case as I need to see if we can
+> >> handle that better and then drop the the DISCONNECT_PENDING state to
+> >> address this fully. But it needs more testing.
+> >>
+> >> But, we will need this patch anyway because without this we will not be
+> >> able to fix even the most regular and commonly seen case of basic
+> >> connect/disconnect receiving complementary events.
+> >
+> > Hmm, no. We need to drop the HPD state machine, not to patch it. Once
+> > the driver has proper detect() callback, there will be no
+> > complementary events. That is a proper way to fix the code, not these
+> > kinds of band-aids patches.
+> >
+>
+> I had discussed this part too :)
+>
+> I totally agree we should fix .detect()'s behavior to just match cable
+> connect/disconnect and not link_ready status.
+>
+> But that alone would not have fixed this issue. If HPD thread does not
+> get scheduled and plug_handle() was not executed, .detect() would have
+> still returned old status as we will update the cable status only in
+> plug_handle() / unplug_handle() to have a common API between internal
+> and external hpd execution.
 
-As seen below a drift of ~3500ns is observed if no correction has taken
-place after KVM has updated the PVTI via master clock update. However,
-after the correction a delta of at most 1ns can be seen.
+I think there should be just hpd_notify, which if the HPD is up,
+attempts to read the DPCD. No need for separate plug/unplug_handle.
+The detect() can be as simple as !drm_dp_is_branch() || sink_count != 0.
 
-* selftests: kvm: pvclock_test
-* scaling tsc from 2999999KHz to 1499999KHz
-* before=5038374946 uncorrected=5038371437 corrected=5038374945
-* delta_uncorrected=3509 delta_corrected=1
+>
+> So we need to do both, make .detect() return correct status AND drop hpd
+> event thread processing.
+>
+> But, dropping the hpd event thread processing alone was fixing the
+> complimentary events issue. So kuogee had only this part in this patch.
 
-Clocksource check code has been borrowed from [2].
+I'd prefer to wait for the final patchset then. Which has the HPD
+thread completely removed.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=451a707813ae
-[2]: https://lore.kernel.org/kvm/20240106083346.29180-1-dongli.zhang@oracle.com/
+>
+>
+> >>>>       else if (dp_display->link_ready && status == connector_status_disconnected)
+> >>>> -            dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+> >>>> +            dp_hpd_unplug_handle(dp, 0);
+> >>>>    }
+> >>>> --
+> >>>> 2.43.2
+> >>>>
+> >
+> >
+> >
 
-Signed-off-by: Jack Allister <jalliste@amazon.com>
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: Paul Durrant <paul@xen.org>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/pvclock_test.c       | 223 ++++++++++++++++++
- 2 files changed, 224 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/pvclock_test.c
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 741c7dc16afc..02ee1205bbed 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -87,6 +87,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/pmu_counters_test
- TEST_GEN_PROGS_x86_64 += x86_64/pmu_event_filter_test
- TEST_GEN_PROGS_x86_64 += x86_64/private_mem_conversions_test
- TEST_GEN_PROGS_x86_64 += x86_64/private_mem_kvm_exits_test
-+TEST_GEN_PROGS_x86_64 += x86_64/pvclock_test
- TEST_GEN_PROGS_x86_64 += x86_64/set_boot_cpu_id
- TEST_GEN_PROGS_x86_64 += x86_64/set_sregs_test
- TEST_GEN_PROGS_x86_64 += x86_64/smaller_maxphyaddr_emulation_test
-diff --git a/tools/testing/selftests/kvm/x86_64/pvclock_test.c b/tools/testing/selftests/kvm/x86_64/pvclock_test.c
-new file mode 100644
-index 000000000000..172ef4d19c60
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/pvclock_test.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright © 2024, Amazon.com, Inc. or its affiliates.
-+ *
-+ * Tests for pvclock API
-+ * KVM_SET_CLOCK_GUEST/KVM_GET_CLOCK_GUEST
-+ */
-+#include <asm/pvclock.h>
-+#include <asm/pvclock-abi.h>
-+#include <sys/stat.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+enum {
-+	STAGE_FIRST_BOOT,
-+	STAGE_UNCORRECTED,
-+	STAGE_CORRECTED,
-+	NUM_STAGES
-+};
-+
-+#define KVMCLOCK_GPA 0xc0000000ull
-+#define KVMCLOCK_SIZE sizeof(struct pvclock_vcpu_time_info)
-+
-+static void trigger_pvti_update(vm_paddr_t pvti_pa)
-+{
-+	/*
-+	 * We need a way to trigger KVM to update the fields
-+	 * in the PV time info. The easiest way to do this is
-+	 * to temporarily switch to the old KVM system time
-+	 * method and then switch back to the new one.
-+	 */
-+	wrmsr(MSR_KVM_SYSTEM_TIME, pvti_pa | KVM_MSR_ENABLED);
-+	wrmsr(MSR_KVM_SYSTEM_TIME_NEW, pvti_pa | KVM_MSR_ENABLED);
-+}
-+
-+static void guest_code(vm_paddr_t pvti_pa)
-+{
-+	struct pvclock_vcpu_time_info *pvti_va =
-+		(struct pvclock_vcpu_time_info *)pvti_pa;
-+
-+	struct pvclock_vcpu_time_info pvti_boot;
-+	struct pvclock_vcpu_time_info pvti_uncorrected;
-+	struct pvclock_vcpu_time_info pvti_corrected;
-+	uint64_t cycles_boot;
-+	uint64_t cycles_uncorrected;
-+	uint64_t cycles_corrected;
-+	uint64_t tsc_guest;
-+
-+	/*
-+	 * Setup the KVMCLOCK in the guest & store the original
-+	 * PV time structure that is used.
-+	 */
-+	wrmsr(MSR_KVM_SYSTEM_TIME_NEW, pvti_pa | KVM_MSR_ENABLED);
-+	pvti_boot = *pvti_va;
-+	GUEST_SYNC(STAGE_FIRST_BOOT);
-+
-+	/*
-+	 * Trigger an update of the PVTI, if we calculate
-+	 * the KVM clock using this structure we'll see
-+	 * a drift from the TSC.
-+	 */
-+	trigger_pvti_update(pvti_pa);
-+	pvti_uncorrected = *pvti_va;
-+	GUEST_SYNC(STAGE_UNCORRECTED);
-+
-+	/*
-+	 * The test should have triggered the correction by this
-+	 * point in time. We have a copy of each of the PVTI structs
-+	 * at each stage now.
-+	 *
-+	 * Let's sample the timestamp at a SINGLE point in time and
-+	 * then calculate what the KVM clock would be using the PVTI
-+	 * from each stage.
-+	 *
-+	 * Then return each of these values to the tester.
-+	 */
-+	pvti_corrected = *pvti_va;
-+	tsc_guest = rdtsc();
-+
-+	cycles_boot = __pvclock_read_cycles(&pvti_boot, tsc_guest);
-+	cycles_uncorrected = __pvclock_read_cycles(&pvti_uncorrected, tsc_guest);
-+	cycles_corrected = __pvclock_read_cycles(&pvti_corrected, tsc_guest);
-+
-+	GUEST_SYNC_ARGS(STAGE_CORRECTED, cycles_boot, cycles_uncorrected,
-+			cycles_corrected, 0);
-+}
-+
-+static void run_test(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-+{
-+	struct ucall uc;
-+	uint64_t ucall_reason;
-+	struct pvclock_vcpu_time_info pvti_before;
-+	uint64_t before, uncorrected, corrected;
-+	int64_t delta_uncorrected, delta_corrected;
-+
-+	/* Loop through each stage of the test. */
-+	while (true) {
-+
-+		/* Start/restart the running vCPU code. */
-+		vcpu_run(vcpu);
-+		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
-+
-+		/* Retrieve and verify our stage. */
-+		ucall_reason = get_ucall(vcpu, &uc);
-+		TEST_ASSERT(ucall_reason == UCALL_SYNC,
-+			    "Unhandled ucall reason=%lu",
-+			    ucall_reason);
-+
-+		/* Run host specific code relating to stage. */
-+		switch (uc.args[1]) {
-+		case STAGE_FIRST_BOOT:
-+			/* Store the KVM clock values before an update. */
-+			vm_ioctl(vm, KVM_GET_CLOCK_GUEST, &pvti_before);
-+
-+			/* Sleep for a set amount of time to induce drift. */
-+			sleep(5);
-+			break;
-+
-+		case STAGE_UNCORRECTED:
-+			/* Restore the KVM clock values. */
-+			vm_ioctl(vm, KVM_SET_CLOCK_GUEST, &pvti_before);
-+			break;
-+
-+		case STAGE_CORRECTED:
-+			/* Query the clock information and verify delta. */
-+			before = uc.args[2];
-+			uncorrected = uc.args[3];
-+			corrected = uc.args[4];
-+
-+			delta_uncorrected = before - uncorrected;
-+			delta_corrected = before - corrected;
-+
-+			pr_info("before=%lu uncorrected=%lu corrected=%lu\n",
-+				before, uncorrected, corrected);
-+
-+			pr_info("delta_uncorrected=%ld delta_corrected=%ld\n",
-+				delta_uncorrected, delta_corrected);
-+
-+			TEST_ASSERT((delta_corrected <= 1) && (delta_corrected >= -1),
-+				    "larger than expected delta detected = %ld", delta_corrected);
-+			return;
-+		}
-+	}
-+}
-+
-+#define CLOCKSOURCE_PATH "/sys/devices/system/clocksource/clocksource0/current_clocksource"
-+
-+static void check_clocksource(void)
-+{
-+	char *clk_name;
-+	struct stat st;
-+	FILE *fp;
-+
-+	fp = fopen(CLOCKSOURCE_PATH, "r");
-+	if (!fp) {
-+		pr_info("failed to open clocksource file: %d; assuming TSC.\n",
-+			errno);
-+		return;
-+	}
-+
-+	if (fstat(fileno(fp), &st)) {
-+		pr_info("failed to stat clocksource file: %d; assuming TSC.\n",
-+			errno);
-+		goto out;
-+	}
-+
-+	clk_name = malloc(st.st_size);
-+	TEST_ASSERT(clk_name, "failed to allocate buffer to read file\n");
-+
-+	if (!fgets(clk_name, st.st_size, fp)) {
-+		pr_info("failed to read clocksource file: %d; assuming TSC.\n",
-+			ferror(fp));
-+		goto out;
-+	}
-+
-+	TEST_ASSERT(!strncmp(clk_name, "tsc\n", st.st_size),
-+		    "clocksource not supported: %s", clk_name);
-+out:
-+	fclose(fp);
-+}
-+
-+static void configure_pvclock(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-+{
-+	unsigned int gpages;
-+
-+	gpages = vm_calc_num_guest_pages(VM_MODE_DEFAULT, KVMCLOCK_SIZE);
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+				    KVMCLOCK_GPA, 1, gpages, 0);
-+	virt_map(vm, KVMCLOCK_GPA, KVMCLOCK_GPA, gpages);
-+
-+	vcpu_args_set(vcpu, 1, KVMCLOCK_GPA);
-+}
-+
-+static void configure_scaled_tsc(struct kvm_vcpu *vcpu)
-+{
-+	uint64_t tsc_khz;
-+
-+	tsc_khz =  __vcpu_ioctl(vcpu, KVM_GET_TSC_KHZ, NULL);
-+	pr_info("scaling tsc from %ldKHz to %ldKHz\n", tsc_khz, tsc_khz / 2);
-+	tsc_khz /= 2;
-+	vcpu_ioctl(vcpu, KVM_SET_TSC_KHZ, (void *)tsc_khz);
-+}
-+
-+int main(void)
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_vcpu *vcpu;
-+
-+	check_clocksource();
-+
-+	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
-+
-+	configure_pvclock(vm, vcpu);
-+	configure_scaled_tsc(vcpu);
-+
-+	run_test(vm, vcpu);
-+
-+	return 0;
-+}
--- 
-2.40.1
 
+--
+With best wishes
+Dmitry
 
