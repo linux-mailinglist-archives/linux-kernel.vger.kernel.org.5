@@ -1,118 +1,151 @@
-Return-Path: <linux-kernel+bounces-135716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D681289CA2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:58:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E13FF89CA2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:59:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40991B291B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:58:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F9C31C23AD6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF45D142E80;
-	Mon,  8 Apr 2024 16:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E5D142E7F;
+	Mon,  8 Apr 2024 16:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gbI0WAGv"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N3C+4eVX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584C44642D;
-	Mon,  8 Apr 2024 16:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5E363CB;
+	Mon,  8 Apr 2024 16:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712595504; cv=none; b=UeVp+9oCnCJk8WyMkDt9gBqfRohqAV1NvVQdxPyzurYaTSa2fMCofRSfwB+8Fkj28GWyMg6DWymhrPsZoVpr58TH0diLVMVjh+McUc+LrdrB4uBXrXoi0z6gFXQ34YyWiKipSpAM3w0kuuxGsuzAomzBjRBRKSZvczSAGppFpwY=
+	t=1712595575; cv=none; b=i8Cg5BdDgP1Da9vJcZly3n9M6fHBoh81odEBeZ6Nui4MCIAnalvEFwg2dLp9iXNJhPMo0fmNXB6A6zk0f0wyz72EGlift8mgs2vTTgNRbLnr35zYy024qCAM5M9AU26NDvdR7+acxgwomejeGEGbXW4W8yq1blfWbMbwtLDbT3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712595504; c=relaxed/simple;
-	bh=2mpYaM2tfVauCSeEat8zUBHKTSVbf0NpD7/aepH7HXE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lvBRtvK/QL+Ct7ebTyCFtbwZDylT4v4FNPkYYHksNV45Lq1EILNCfHlVhdcK5atARx7B0k/U5BJMaNMpe7ffu9lpEl54ajH77ccPcZcT9Mu3fFU1yogdS/TnjNBt/Ki0bTj8floBsvgxGvn3ak9nSbh/9/y684j+nE23YLfMCKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gbI0WAGv; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516dc51bb72so2639389e87.1;
-        Mon, 08 Apr 2024 09:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712595500; x=1713200300; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wc9viR696ZI19kXAelRwb6zKJ1jpvFavY5x4ls6Ezhk=;
-        b=gbI0WAGvSxxgr6Yf5b96sCAyyDQ4cCgqgc3O6MsTgS9AIQAiJoeXcc/ft8aTtXOE6s
-         SgOw5H3SzwygtD2Xz4rMC2Ub2eUBx7L4wnPGdGUL1M8G0dhpWGCSikR/90gv2/uNs/Mk
-         NavuV9O1cH/YGsV2m52AEdvBbQD9CRwzls9glslSct62kPv5UAbNXLyDBpUzTyEBDC27
-         /jhJGxCgbCQCydxXMC8ouW0TTBAuJ70ZK4C050/XJ4Kb3nfhTbPGdlPwYjdduZP5tMXZ
-         BOleECWjyF/FBADu/Q96wuFnIDHk5B5TAbV2RXSCPpugzp6wWyThCT4WfURSqCOUxDcZ
-         1a5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712595500; x=1713200300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wc9viR696ZI19kXAelRwb6zKJ1jpvFavY5x4ls6Ezhk=;
-        b=Tpur1nE1J1xL/VHu4LiHI3vT4r/BWvXyFhlO1ggpfGr+CHDjTCGmM9ClrNFqMqFzTO
-         9wJEE9zdEGoMDcWQg5+EAyq/dryWyjBGsesP/FHeL1GlPVmr0dwR0qXymd36tYWT3Frd
-         T8OeUrJC2Ntr1gPbtoUhwJJ11+uRxXosJJ1uZRACEGWi1xjyPYmlPHanzp7639ZP3d2X
-         W52e07Jw7zFfaCaE57ZjAkpTU3YZShbBYZzZYAINW6hokLljxOVSYSx3PZ1ZWuWScQ4j
-         mj87BsscT/z7blYE7gzgcFgy6x/EQxxwOU468eMgpQYcD+BMq4WN+45+Qg7q+mYCJnE8
-         M47Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVOLkt/wJOXKQChCAtGx+jiM8AgBtIiKB9p61HTp03ogXtnrBzmDo1yPdh+zdKHeAD44n8dqbFtp29CRmKRt4kxy8O9QVXWv0cfbC/qEeSWM7CyhS7khdKEB3wm88aigeLK/C/g5wiF
-X-Gm-Message-State: AOJu0Yz0HZP7U4UbpSV2iUTeRknx81Wu/Fe7End7TA1ivJBvUQa8Z9Gf
-	u1RhcNQtGS9pUHF3Rsiamd5tr4D12A94hzJ3wOv6w6n7GoypU0aT
-X-Google-Smtp-Source: AGHT+IGFOBmY3+FLdBVIEJTXWo+YdncGJhky7kJVomz6BuHWIydeZZp+5jYQGfOoGVKcFpC6V2nyIg==
-X-Received: by 2002:a05:651c:a06:b0:2d8:45ff:d606 with SMTP id k6-20020a05651c0a0600b002d845ffd606mr8454085ljq.50.1712595500212;
-        Mon, 08 Apr 2024 09:58:20 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:10c1:3571:11ad:946])
-        by smtp.gmail.com with ESMTPSA id g7-20020a05600c310700b0041649f850e7sm7742385wmo.32.2024.04.08.09.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 09:58:19 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Mon, 8 Apr 2024 18:58:17 +0200
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Angel Iglesias <ang.iglesiasg@gmail.com>,
-	Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
-	lars@metafoo.de, mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
-	u.kleine-koenig@pengutronix.de, biju.das.jz@bp.renesas.com,
-	linus.walleij@linaro.org, semen.protsenko@linaro.org,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] Driver cleanup and series to add triggered buffer
-Message-ID: <20240408165817.GA4576@vamoiridPC>
-References: <20240407172920.264282-1-vassilisamir@gmail.com>
- <57fe9ec305efff58a2ef1e2ba6e334f042a2ad77.camel@gmail.com>
- <ZhQG41ZhHprOvgsH@smile.fi.intel.com>
+	s=arc-20240116; t=1712595575; c=relaxed/simple;
+	bh=uwXlCBe6K4+2PaB3ZfeXMcVLosXA2aNykan3/vlb37k=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=bNYubD0GtRZBE15c/uT9Fnq6Ifz1QJ0qGs2ULKUFQPz9U0dJg6AsXeZDYAMnv45KLStOwepYjw9rBSC1O+E3stFSrFYuqV/6RL0qN+30kxmLiKH/OzTXHeLLkPkiU87i8pSo9HbuDk1wEeGwO4XHpSOp8PmTXtNoM/llDH4glw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N3C+4eVX; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712595573; x=1744131573;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uwXlCBe6K4+2PaB3ZfeXMcVLosXA2aNykan3/vlb37k=;
+  b=N3C+4eVXf92JB9+24EaEHynxujro+n2ME76cPNVDvwVq4Mk5D7waeG+r
+   Rf+OyiSPZzHh4PMRuI5eX9mapOwjfnDNFFp/EDA+TtBd1V1+bdXIfmgTt
+   iRtMZRSKzqHqNHVX9ixTRAOti6DVBOUIVBCQ6hTr7jEFBBb/AlIsl1r1a
+   7pqV1galXNxuKsljxWipkFLTBmmiW2VCHLfu/+fF/rjnOKLEfWFJ9v3J2
+   RPT4wygo3gPrpnmHKcYs1Mgw9SimfhC313CEu7+yXCS4t/HrHJhKlN5PL
+   A9wZtj2JOOC/qSN6O/9hT34kTA379qGcjd5g6HAew9ttG0e2J5YC41Scd
+   Q==;
+X-CSE-ConnectionGUID: AS9aNaIwRO+xA52xQUTQ2A==
+X-CSE-MsgGUID: eem4xkAOQxSPXfo+mIULag==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="11722535"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="11722535"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:59:32 -0700
+X-CSE-ConnectionGUID: TzzGoOctSsaLZy/24nIypQ==
+X-CSE-MsgGUID: 0zOBaai+S8+fzaRhr9e0XQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="20034937"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.28])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:59:30 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 8 Apr 2024 19:59:27 +0300 (EEST)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH V3 5/9] tools/arch/x86/intel_sdsi: Fix maximum meter
+ bundle length
+In-Reply-To: <20240405032507.2637311-6-david.e.box@linux.intel.com>
+Message-ID: <fee4a547-721d-5a69-68b9-98e4aa57d3ba@linux.intel.com>
+References: <20240405032507.2637311-1-david.e.box@linux.intel.com> <20240405032507.2637311-6-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhQG41ZhHprOvgsH@smile.fi.intel.com>
+Content-Type: multipart/mixed; boundary="8323328-1243666691-1712595567=:14302"
 
-On Mon, Apr 08, 2024 at 06:01:55PM +0300, Andy Shevchenko wrote:
-> On Sun, Apr 07, 2024 at 11:51:22PM +0200, Angel Iglesias wrote:
-> > On Sun, 2024-04-07 at 19:29 +0200, Vasileios Amoiridis wrote:
-> > > Based on next-20240405.
-> > 
-> > Hi there! Small tip, with git's format-patch, you can include this information
-> > for the people applying the patches with the argument --base=<commit or branch>.
-> > This will point to git the base commit from which the series build the
-> > changeset.
-> 
-> Moreover, CIs will be able to properly test it.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Hi guys!
+--8323328-1243666691-1712595567=:14302
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Thank you very much for the info, I will use it for the next version!
+On Thu, 4 Apr 2024, David E. Box wrote:
 
-Cheers,
-Vasilis
+> The maximum number of bundles in the meter certificate was set to 8 which
+> is much less than the maximum. Instead, since the bundles appear at the e=
+nd
+> of the file, set it based on the remaining file size from the bundle star=
+t
+> position.
+>=20
+> Fixes: 7fdc03a7370f ("tools/arch/x86: intel_sdsi: Add support for reading=
+ meter certificates")
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>=20
+> V3 - Add suggested macros for the number of bundles and bundle size.
+>=20
+> V2 - Split of V1 patch 7
+>=20
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/inte=
+l_sdsi/intel_sdsi.c
+> index 2cd92761f171..7eaffcbff788 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -43,7 +43,6 @@
+>  #define METER_CERT_MAX_SIZE=094096
+>  #define STATE_MAX_NUM_LICENSES=0916
+>  #define STATE_MAX_NUM_IN_BUNDLE=09(uint32_t)8
+> -#define METER_MAX_NUM_BUNDLES=098
+> =20
+>  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+>  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+> @@ -167,6 +166,11 @@ struct bundle_encoding_counter {
+>  =09uint32_t encoding;
+>  =09uint32_t counter;
+>  };
+> +#define METER_BUNDLE_SIZE sizeof(struct bundle_encoding_counter)
+> +#define BUNDLE_COUNT(length) ((length) / METER_BUNDLE_SIZE)
+> +#define METER_MAX_NUM_BUNDLES=09=09=09=09=09=09=09\
+> +=09=09((METER_CERT_MAX_SIZE - sizeof(struct meter_certificate)) /=09\
+> +=09=09 sizeof(struct bundle_encoding_counter))
+> =20
+>  struct sdsi_dev {
+>  =09struct sdsi_regs regs;
+> @@ -386,9 +390,9 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  =09=09return -1;
+>  =09}
+> =20
+> -=09if (mc->bundle_length > METER_MAX_NUM_BUNDLES * 8)  {
+> -=09=09fprintf(stderr, "More than %d bundles: %d\n",
+> -=09=09=09METER_MAX_NUM_BUNDLES, mc->bundle_length / 8);
+> +=09if (mc->bundle_length > METER_MAX_NUM_BUNDLES * METER_BUNDLE_SIZE)  {
+> +=09=09fprintf(stderr, "More than %ld bundles: actual %ld\n",
+> +=09=09=09METER_MAX_NUM_BUNDLES, BUNDLE_COUNT(mc->bundle_length));
+>  =09=09return -1;
+>  =09}
+
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+--=20
+ i.
+
+--8323328-1243666691-1712595567=:14302--
 
