@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-135372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB29489BFA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:58:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4A589BFA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:58:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B5DAB25C59
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:58:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5FBC281CFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3B17F466;
-	Mon,  8 Apr 2024 12:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3ACB7F49F;
+	Mon,  8 Apr 2024 12:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cN9I1UP3"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2041.outbound.protection.outlook.com [40.107.220.41])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LEGrnBo5"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2079.outbound.protection.outlook.com [40.107.237.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154C17EEF4;
-	Mon,  8 Apr 2024 12:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B1E7BB17;
+	Mon,  8 Apr 2024 12:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.79
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580920; cv=fail; b=HOD5OUR+JefltFSAuF98LC5qzMpvdq04hyF7tLPwFBj5Z9MsZtbCNKKv4ieKlK+e1qh/Au3e2Sri3L2zlj3rtWWLkynrSqzZJwzj4NgUhzJGvJOVBm3iKcdF3mdAj4mPK7NeRmSpOlLCHU2uC7m4P+YIv+rJ9soKb9J2VzaDqPs=
+	t=1712580930; cv=fail; b=QHaE9E033ZllutVtkVmkRdw0Wx4kshy3OFk6HYnYePHax9CAQUIKtsZ90UVyesJ3nVOSBMvlu3xRD9SYnDAUO9FkowaG27iLQy3tD/d+MbnbAw10OPwWZ7g5Mhu5XyfomRoPqlAfqkHxeBh1p04sAJAzM2Vd3Jj4tqZVv6ERvUw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580920; c=relaxed/simple;
-	bh=JTac1z5ELy9SrBBxysMSelD9e9piJV439+U4bYaGNxk=;
+	s=arc-20240116; t=1712580930; c=relaxed/simple;
+	bh=2doBOBTQ8z3ejTl86DoaiwlRV2rt1/67GsARTAPPH34=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KXw/OieV0kUXEJoeaEypgo4Lx31bzrMQ30kOoZu8fEpwMBL5y/nSGRqxSBKU1Pz8rQMjW1bkVNZOIfEbkCU4c8/LCKfMMo378y9Dc5nD3jg5RJol+eJzr6N9uBZA55gGYz6upl5FOUfATtt0OR0f7AuqaQHqHYAJUYNaQQDfxl8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cN9I1UP3; arc=fail smtp.client-ip=40.107.220.41
+	 MIME-Version:Content-Type; b=kbaChfxcG1ZhbfATxN/xO9mf4lofpG0RpTlcH9aIe1jG1+aHoo9RLqy7sGbC4V2LsHMLgdlfifcKTLqh09j4NRkwlttWGjzOJCz2k2vMcmYf6F3eykngZ+XwkmyqlZpCg7VVu9G8TI73zfAvHGuD/FXKeeNzO+0za+mhgFlyosM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LEGrnBo5; arc=fail smtp.client-ip=40.107.237.79
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iTcNknIMZ89/DoyuJg/JxrDHaKJbRCOy/Ld1sPlLQ8r8mE6kEbNIAJT1bldLnaSjrNE9XnJyHkDdjU+u4gY4nUuSgeCln+c8YFWd/f0wXw6/ARX9iaR0b7Dp/d3HfJXH9+sGBdj8GaTZFZFGUJZrB5CpCxMv9SkItn3hsovX91xfLRGBHUrntogey9CLkWyZMG/B0q3Q9D/pRDeXwBw2a/FenjN+IiEdH/jPjYKMajtwoBwibUSOnqMFt2Y+FC2fP2yVnpCE2SzECUuM9bfEaMwFvDmIDUpy/TFjWrn5IR0L7FbFlLi5mbiLTX2W+/bqvdrICK5/rgHfJCy4p0K9UQ==
+ b=BmpgNDBgTgxvrVzJwjK4pP7PSh+A/grcRIuDCAEjj8rVtNfCKVjcxwR08ARYUrwvaOlN1BndD57W/XRFA+ajxT2Bxv3/OSLoYRLNoHik4lrPxs3HJc9EiLXhtc1XQHJ3BiUOzUAWN3YqKNUQPIBz9PxqF/3Ae3eLc1j547ALYCuVwM75Q3U2uMSmJbp0TqHa6MPurjDPkBYYZelbBBP+0TdzuABXLFjW7z61hIpXmpPwiQ+njaIEjJqm7yKM8J6cKEcnSRT2G+LkMW/0Vsk5DvhfDO8UFaTLDgr3S4+OoaAB0akJHdw2h1et2BbSbU75y8CIfYBcBJnSL20DCYHzjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ms7mswfQOwtcGKOeOaA76fDWr6OcMeb2MRz0PyOcP+0=;
- b=m2txtqt27tkKk3iA5ZDNcOX8ZBsyzIYzwjpqXXoICxWM3vUKeS3OBzQa2/8H2sKbAdBeRPRi0e6z1SakG5HQLO3JubLR8a+qS6vQ/QY2lbIqf9X3JeWcN/tiuethBko3TYWtk8qUj/SDGyRcjVHfZS3a0rSvak1rYoWuO3GRi9kYq779xu/QQSG5niUPDk5285gZWmg6+LeePqOrua2+62w0mZ8vqEQIUwSgFO11e2RQ34dChn+OQrCtfH+evtK36lI3IzyCvfdOztQ0+XPXBdtEEbVICcy+bUCDJZ+KWrY7FNY9JARur4E/kojrqtH/ZJbgH/GsxluUbeVeVHrn/g==
+ bh=NOqJCwPLuj1gpmcS1UA5YpBf2yKoNYs/QMXHqyoWrvw=;
+ b=jD9AR868SMGZNhSbZdlWXGPBHAtO9XHW1W7K/Zc9toZJldox8uCSn/X/a0DbyDjQP22XokEkgcFDMhTxXcjb3MQTbB4Bv5VB/ENCFbXnJzMkTzN6pzVIdMiSv3v3tx/Wbg3smY0Wj/2YofPtgMQYGXGrPSoLtUflIvTTatQzw7afbMLRWnFmeuho7w6cJMs+3GXfHh5EoxuKUAHktiXT5fCZxsH3Ixd6LbMEVjtQVnYrdmR+T+yGXeCXDVEXSFw1LNVWQluY4DOILMLEXqDxXln8hEJWgCwJTk7uX2xK4Y87bugzamhpiEb8QwuJ0Pu5QxaPjJjz6h8NYPAOkjF+cA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ms7mswfQOwtcGKOeOaA76fDWr6OcMeb2MRz0PyOcP+0=;
- b=cN9I1UP3fwv5J2ciH2S7wOgdvA9SuWpm64qw/G9Cm5EVZqBD1iMCdlAw7WD6z8Q+H7g8KM+ipKhCmPEXA1ZLknrW36bnl4nM3bMNw8fJsEGrLVgnu1FfNOjt+sP6gtRnV6x52SAHe4jAMRYcGckf33MYqYoYyt9MGizN3BsThD3khGkE9XuXdtMh7H4zNV2FUPGGLtp3yeNId7UYnTfZo0YYxALjGLEellPhSNwWQiN9/JAWK5IMPqF7nmoDb5jgyMegi3f5HXEWgS3ulYu6B4eD+nSWC/o+Nw5DVM//WyyOCwvPHw9PdPBgAGN4Ibuky+xjk8yzB039J428KB61OQ==
-Received: from SA9PR03CA0004.namprd03.prod.outlook.com (2603:10b6:806:20::9)
- by IA1PR12MB7711.namprd12.prod.outlook.com (2603:10b6:208:421::12) with
+ bh=NOqJCwPLuj1gpmcS1UA5YpBf2yKoNYs/QMXHqyoWrvw=;
+ b=LEGrnBo5Q0+AJI1pDytjZggasTtQGj8skKgYEgsGVCu91uoycdsHNOWx5HAMQHZijElK/LzGlykvMh1o0czX1w5GFCe9h65sGgZxcsZPurE2EhicolTZC7AQMCa2TgR9SsTyh/jL7LzpmbDYhZf81Cd+z4GM9uIZ3/rxQIavDGezqRjoW0Dqgs8eJ0nKiOVD1zG8+854QOYidbUuAMPd/hwc//ebz4YmJQWrKB7h8tpxvTDErWwPwxTQ+BZgSVIA5dhHX17igM90+a7zsbTL8+6OkEAkgpScn+2ra0mlOkV/Brzs0ajYs2D7OIhzCnKoER905LXsUV+QRSjjiIFBNw==
+Received: from BN9P223CA0026.NAMP223.PROD.OUTLOOK.COM (2603:10b6:408:10b::31)
+ by MW6PR12MB8957.namprd12.prod.outlook.com (2603:10b6:303:23a::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 12:55:16 +0000
-Received: from SN1PEPF00036F41.namprd05.prod.outlook.com
- (2603:10b6:806:20:cafe::16) by SA9PR03CA0004.outlook.office365.com
- (2603:10b6:806:20::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.36 via Frontend
- Transport; Mon, 8 Apr 2024 12:55:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 2024 12:55:25 +0000
+Received: from BN1PEPF00004689.namprd05.prod.outlook.com
+ (2603:10b6:408:10b:cafe::7f) by BN9P223CA0026.outlook.office365.com
+ (2603:10b6:408:10b::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Mon, 8 Apr 2024 12:55:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SN1PEPF00036F41.mail.protection.outlook.com (10.167.248.25) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BN1PEPF00004689.mail.protection.outlook.com (10.167.243.134) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Mon, 8 Apr 2024 12:55:15 +0000
+ 15.20.7452.22 via Frontend Transport; Mon, 8 Apr 2024 12:55:24 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 8 Apr 2024
- 05:54:56 -0700
+ 05:55:02 -0700
 Received: from dev-r-vrt-155.mtr.labs.mlnx (10.126.230.35) by
  rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Mon, 8 Apr 2024 05:54:50 -0700
+ 15.2.1258.12; Mon, 8 Apr 2024 05:54:56 -0700
 From: Danielle Ratson <danieller@nvidia.com>
 To: <netdev@vger.kernel.org>
 CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -85,9 +85,9 @@ CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<jiri@resnulli.us>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <mlxsw@nvidia.com>, <petrm@nvidia.com>,
 	<idosch@nvidia.com>, Danielle Ratson <danieller@nvidia.com>
-Subject: [PATCH net-next 09/10] ethtool: Add ability to flash transceiver modules' firmware
-Date: Mon, 8 Apr 2024 15:53:39 +0300
-Message-ID: <20240408125340.2084269-10-danieller@nvidia.com>
+Subject: [PATCH net-next 10/10] ethtool: Veto some operations during firmware flashing process
+Date: Mon, 8 Apr 2024 15:53:40 +0300
+Message-ID: <20240408125340.2084269-11-danieller@nvidia.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240408125340.2084269-1-danieller@nvidia.com>
 References: <20240408125340.2084269-1-danieller@nvidia.com>
@@ -103,291 +103,231 @@ X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00036F41:EE_|IA1PR12MB7711:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1fd94e81-52b8-413d-d20a-08dc57cb2309
+X-MS-TrafficTypeDiagnostic: BN1PEPF00004689:EE_|MW6PR12MB8957:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a550b31-ec86-4a42-10af-08dc57cb2838
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	3TXigLxUfWIm2eON6nSFJDMP3T/Ei8XwLR9r2EwYzW1yPWGeF0S0Qwg1JKsmBVSFU5Ioql9Z9+c/RD5fT9nmwOJEmVJcRSXQCxjrFFExpk0lmZAD/B3u/XoF23w2zFk1I+TpTUMbNC9g+SN8fb70xCGNYwOEzEaXEyaKC6pr9mJuN+2WziPeh7YS+OHn/PquNlLoSlBq+xLQhvg+jcsKWNdceMhHKED7kQwXTmIM4HeBG1ztQWgK7hfdJGATI9X3x4yzQqobRrRA9t7s5bwu8ZpfrPf2XC+f0MuW+V2p0wjGmXQ/0mlwRD8GE+NZK1qkJrVbXHjkt82J/BFKTOHK8kFuBCjyEpJ2lLwy6kskkda9m8qOqvDrxUc/VSmv/kks+IdPNh5bCppMZdWURV6jwFagHtyyLnZdoC8F7WCVp5oHb7a4/2r2NsEt0yDlC32KQl7hMA3iPkz0dxnE3WvpDq34HV2WEOopEmlvqttJboLUda3ggHgSZuto1TxV7oZ9X/kyR+hqZdmzpKuW89qo1bvU/PQLIPGvGCtyQJMqk9n/vlY6+z5BCdgEXg7axXJJAj5GpZ11DOcuMKDaOwdpM+S7cNeTT7ZB6cLhugNJmyA+bqfytR/raIqew3ZhWeIxo1XXeU63REcVhbZPhXt1mTinopiGwaE4TTMXyPBLzPH4tvxPG4BW5k7bCK9s2tjUjaHxpt4NjJRME3YUg3e63UmJk7pMAJI10kR0fXFZ3quKgXlxs4suki5TjvLSk3QZ
+	DfK3x+EJ+TZRDZ5VhWJatcW1bgLURsyntPxXbeGwoQPBnq4yIo+63cKIpy6opNqVnUA2MUwc2SWA+YtZwk7l0PH1K9f3PbgqERpz2hkFV4Oqljg5vWDRG1v9Osc8QJeFFBAkHMSSeqeFM59K8Tyi0NFn/quNOKcRXRapnaT0iqwigic5T14k8w3uqnh/2Y1YKDGLLKVqyitNJz4OG4oKIw/rSOSaT1HgdeW4V6GEgfuuuGAm73EAJ2J4AHAX2FVHm7UIDeIx6eJYlNfl8W+qGwvC0RBT0ZdWlD6t5nUpxGVsjhfdW5IJXaEZ3bBG05W6CfoPc/wSMQhhxvxDuSZ8y5MCQPCSsSscQ8NdxwbzsQP+GMkwsEDjO70PiLWd2qEGfstNM820Q90s95hElPUq1RGgNBsy09bxWGEwThpLb0ds8RvmrIqo4p6GpolDBFapnPfv5fH1ESdjm4SrgVRRHhS/Jn4A7uqzSebuL96kpoQUPvOq39F/RhXTnxQWNzRObiT/0VyX2maHA9Ytt3Z+0xItmbl+/GNGyxCUCBLG9XXq0NrI/sh5CZv2ttlL6ndeYrozqu0Alez3S0sdF7S744Veoym9EoCQMQxl/o9F1EP7vUj+QPi1+R/ynafP0WjB9Yg8YUhLwYFbOdgWuYxO7iTkyrVZ+zT/lJZKAU9FOw3zF9KlpsrS6RkzNeH+/Y9swjGxvjBlniParYmoBwFIDOQ8/lzNzfYm6wJYaIsXrFcSx7EXlXQ0OVKWO00c0h4w
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 12:55:15.6185
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 12:55:24.2477
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fd94e81-52b8-413d-d20a-08dc57cb2309
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a550b31-ec86-4a42-10af-08dc57cb2838
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00036F41.namprd05.prod.outlook.com
+	BN1PEPF00004689.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7711
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8957
 
-Add the ability to flash the modules' firmware by implementing the
-interface between the user space and the kernel.
+Some operations cannot be performed during the firmware flashing process.
 
-Example from a succeeding implementation:
+For example:
 
- # ethtool --flash-module-firmware swp40 file test.bin
+- Port must be down during the whole flashing process to avoid packet loss
+  while committing reset for example.
 
- Transceiver module firmware flashing started for device eth0
+- Writing to EEPROM interrupts the flashing process, so operations like
+  ethtool dump, module reset, get and set power mode should be vetoed.
 
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 0%
+- Split port firmware flashing should be vetoed.
 
- [...]
+- Flashing firmware on a device which is already in a flashing process
+  should be forbidden.
 
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 50%
-
- [...]
-
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 100%
-
- Transceiver module firmware flashing completed for device eth0
+Use the 'module_fw_flashing_in_progress' flag introduced in a previous
+patch to veto those operations and prevent interruptions while preforming
+module firmware flash.
 
 Signed-off-by: Danielle Ratson <danieller@nvidia.com>
 ---
- net/ethtool/module.c  | 174 ++++++++++++++++++++++++++++++++++++++++++
- net/ethtool/netlink.c |   7 ++
- net/ethtool/netlink.h |   2 +
- 3 files changed, 183 insertions(+)
+ net/ethtool/eeprom.c  |  6 ++++++
+ net/ethtool/ioctl.c   | 12 ++++++++++++
+ net/ethtool/module.c  | 29 +++++++++++++++++++++++++++++
+ net/ethtool/netlink.c | 30 +++++++++++++++++++++++++++++-
+ 4 files changed, 76 insertions(+), 1 deletion(-)
 
+diff --git a/net/ethtool/eeprom.c b/net/ethtool/eeprom.c
+index 6209c3a9c8f7..f36811b3ecf1 100644
+--- a/net/ethtool/eeprom.c
++++ b/net/ethtool/eeprom.c
+@@ -91,6 +91,12 @@ static int get_module_eeprom_by_page(struct net_device *dev,
+ {
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 
++	if (dev->module_fw_flash_in_progress) {
++		NL_SET_ERR_MSG(extack,
++			       "Module firmware flashing is in progress");
++		return -EBUSY;
++	}
++
+ 	if (dev->sfp_bus)
+ 		return sfp_get_module_eeprom_by_page(dev->sfp_bus, page_data, extack);
+ 
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 317308bdbda9..ff9df2ee083a 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -658,6 +658,9 @@ static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
+ 	if (!dev->ethtool_ops->get_link_ksettings)
+ 		return -EOPNOTSUPP;
+ 
++	if (dev->module_fw_flash_in_progress)
++		return -EBUSY;
++
+ 	memset(&link_ksettings, 0, sizeof(link_ksettings));
+ 	err = dev->ethtool_ops->get_link_ksettings(dev, &link_ksettings);
+ 	if (err < 0)
+@@ -1449,6 +1452,9 @@ static int ethtool_reset(struct net_device *dev, char __user *useraddr)
+ 	if (!dev->ethtool_ops->reset)
+ 		return -EOPNOTSUPP;
+ 
++	if (dev->module_fw_flash_in_progress)
++		return -EBUSY;
++
+ 	if (copy_from_user(&reset, useraddr, sizeof(reset)))
+ 		return -EFAULT;
+ 
+@@ -2467,6 +2473,9 @@ int ethtool_get_module_info_call(struct net_device *dev,
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 	struct phy_device *phydev = dev->phydev;
+ 
++	if (dev->module_fw_flash_in_progress)
++		return -EBUSY;
++
+ 	if (dev->sfp_bus)
+ 		return sfp_get_module_info(dev->sfp_bus, modinfo);
+ 
+@@ -2504,6 +2513,9 @@ int ethtool_get_module_eeprom_call(struct net_device *dev,
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 	struct phy_device *phydev = dev->phydev;
+ 
++	if (dev->module_fw_flash_in_progress)
++		return -EBUSY;
++
+ 	if (dev->sfp_bus)
+ 		return sfp_get_module_eeprom(dev->sfp_bus, ee, data);
+ 
 diff --git a/net/ethtool/module.c b/net/ethtool/module.c
-index 34e2f75c9e2d..ea3b4db9847a 100644
+index ea3b4db9847a..33d5b39a1c60 100644
 --- a/net/ethtool/module.c
 +++ b/net/ethtool/module.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
- 
+@@ -3,6 +3,7 @@
  #include <linux/ethtool.h>
-+#include <linux/firmware.h>
-+#include <linux/sfp.h>
+ #include <linux/firmware.h>
+ #include <linux/sfp.h>
++#include <net/devlink.h>
  
  #include "netlink.h"
  #include "common.h"
-@@ -160,6 +162,178 @@ const struct ethnl_request_ops ethnl_module_request_ops = {
- 	.set_ntf_cmd		= ETHTOOL_MSG_MODULE_NTF,
- };
+@@ -36,6 +37,12 @@ static int module_get_power_mode(struct net_device *dev,
+ 	if (!ops->get_module_power_mode)
+ 		return 0;
  
-+/* MODULE_FW_FLASH_ACT */
-+
-+const struct nla_policy
-+ethnl_module_fw_flash_act_policy[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD + 1] = {
-+	[ETHTOOL_A_MODULE_FW_FLASH_HEADER] =
-+		NLA_POLICY_NESTED(ethnl_header_policy),
-+	[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME] = { .type = NLA_NUL_STRING },
-+	[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD] = { .type = NLA_U32 },
-+};
-+
-+#define MODULE_EEPROM_PHYS_ID_PAGE	0
-+#define MODULE_EEPROM_PHYS_ID_I2C_ADDR	0x50
-+
-+static int module_flash_fw_work_init(struct ethtool_module_fw_flash *module_fw,
-+				     struct net_device *dev,
-+				     struct netlink_ext_ack *extack)
-+{
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+	struct ethtool_module_eeprom page_data = {};
-+	u8 phys_id;
-+	int err;
-+
-+	/* Fetch the SFF-8024 Identifier Value. For all supported standards, it
-+	 * is located at I2C address 0x50, byte 0. See section 4.1 in SFF-8024,
-+	 * revision 4.9.
-+	 */
-+	page_data.page = MODULE_EEPROM_PHYS_ID_PAGE;
-+	page_data.offset = SFP_PHYS_ID;
-+	page_data.length = sizeof(phys_id);
-+	page_data.i2c_address = MODULE_EEPROM_PHYS_ID_I2C_ADDR;
-+	page_data.data = &phys_id;
-+
-+	err = ops->get_module_eeprom_by_page(dev, &page_data, extack);
-+	if (err < 0)
-+		return err;
-+
-+	switch (phys_id) {
-+	case SFF8024_ID_QSFP_DD:
-+	case SFF8024_ID_OSFP:
-+	case SFF8024_ID_DSFP:
-+	case SFF8024_ID_QSFP_PLUS_CMIS:
-+	case SFF8024_ID_SFP_DD_CMIS:
-+	case SFF8024_ID_SFP_PLUS_CMIS:
-+		INIT_WORK(&module_fw->work, ethtool_cmis_fw_update);
-+		break;
-+	default:
++	if (dev->module_fw_flash_in_progress) {
 +		NL_SET_ERR_MSG(extack,
-+			       "Module type does not support firmware flashing");
-+		return -EOPNOTSUPP;
++			       "Module firmware flashing is in progress");
++		return -EBUSY;
 +	}
 +
-+	return 0;
-+}
-+
-+static int __module_flash_fw_schedule(struct net_device *dev,
-+				      struct netlink_ext_ack *extack)
-+{
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+
-+	if (!ops->set_module_eeprom_by_page ||
-+	    !ops->get_module_eeprom_by_page) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Flashing module firmware is not supported by this device");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (!ops->reset) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Reset module is not supported by this device, so flashing is not permitted");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int
-+module_flash_fw_schedule(struct net_device *dev, const char *file_name,
-+			 struct ethtool_module_fw_flash_params *params,
-+			 struct netlink_ext_ack *extack)
-+{
-+	struct ethtool_module_fw_flash *module_fw;
-+	int err;
-+
-+	err = __module_flash_fw_schedule(dev, extack);
-+	if (err < 0)
-+		return err;
-+
-+	module_fw = kzalloc(sizeof(*module_fw), GFP_KERNEL);
-+	if (!module_fw)
-+		return -ENOMEM;
-+
-+	module_fw->params = *params;
-+	err = request_firmware_direct(&module_fw->fw, file_name, &dev->dev);
-+	if (err) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Failed to request module firmware image");
-+		goto err_request_firmware;
-+	}
-+
-+	err = module_flash_fw_work_init(module_fw, dev, extack);
-+	if (err < 0) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Flashing module firmware is not supported by this device");
-+		goto err_work_init;
-+	}
-+
-+	dev->module_fw_flash_in_progress = true;
-+	netdev_hold(dev, &module_fw->dev_tracker, GFP_KERNEL);
-+	module_fw->dev = dev;
-+
-+	schedule_work(&module_fw->work);
-+
-+	return 0;
-+
-+err_work_init:
-+	release_firmware(module_fw->fw);
-+err_request_firmware:
-+	kfree(module_fw);
-+	return err;
-+}
-+
-+static int module_flash_fw(struct net_device *dev, struct nlattr **tb,
-+			   struct genl_info *info)
-+{
-+	struct ethtool_module_fw_flash_params params = {};
-+	const char *file_name;
-+	struct nlattr *attr;
-+
-+	if (GENL_REQ_ATTR_CHECK(info, ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME))
-+		return -EINVAL;
-+
-+	file_name = nla_data(tb[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME]);
-+
-+	attr = tb[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD];
-+	if (attr) {
-+		params.password = cpu_to_be32(nla_get_u32(attr));
-+		params.password_valid = true;
-+	}
-+
-+	return module_flash_fw_schedule(dev, file_name, &params, info->extack);
-+}
-+
-+int ethnl_act_module_fw_flash(struct sk_buff *skb, struct genl_info *info)
-+{
-+	struct ethnl_req_info req_info = {};
-+	struct nlattr **tb = info->attrs;
-+	struct net_device *dev;
-+	int ret;
-+
-+	ret = ethnl_parse_header_dev_get(&req_info,
-+					 tb[ETHTOOL_A_MODULE_FW_FLASH_HEADER],
-+					 genl_info_net(info), info->extack,
-+					 true);
-+	if (ret < 0)
-+		return ret;
-+	dev = req_info.dev;
-+
-+	rtnl_lock();
-+	ret = ethnl_ops_begin(dev);
-+	if (ret < 0)
-+		goto out_rtnl;
-+
-+	ret = module_flash_fw(dev, tb, info);
-+
-+	ethnl_ops_complete(dev);
-+
-+out_rtnl:
-+	rtnl_unlock();
-+	ethnl_parse_header_dev_put(&req_info);
-+	return ret;
-+}
-+
- /* MODULE_FW_FLASH_NTF */
+ 	return ops->get_module_power_mode(dev, &data->power, extack);
+ }
  
- static void
+@@ -112,6 +119,12 @@ ethnl_set_module_validate(struct ethnl_req_info *req_info,
+ 	if (!tb[ETHTOOL_A_MODULE_POWER_MODE_POLICY])
+ 		return 0;
+ 
++	if (req_info->dev->module_fw_flash_in_progress) {
++		NL_SET_ERR_MSG(info->extack,
++			       "Module firmware flashing is in progress");
++		return -EBUSY;
++	}
++
+ 	if (!ops->get_module_power_mode || !ops->set_module_power_mode) {
+ 		NL_SET_ERR_MSG_ATTR(info->extack,
+ 				    tb[ETHTOOL_A_MODULE_POWER_MODE_POLICY],
+@@ -219,6 +232,7 @@ static int module_flash_fw_work_init(struct ethtool_module_fw_flash *module_fw,
+ static int __module_flash_fw_schedule(struct net_device *dev,
+ 				      struct netlink_ext_ack *extack)
+ {
++	struct devlink_port *devlink_port = dev->devlink_port;
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 
+ 	if (!ops->set_module_eeprom_by_page ||
+@@ -234,6 +248,21 @@ static int __module_flash_fw_schedule(struct net_device *dev,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if (dev->module_fw_flash_in_progress) {
++		NL_SET_ERR_MSG(extack, "Module firmware flashing already in progress");
++		return -EBUSY;
++	}
++
++	if (dev->flags & IFF_UP) {
++		NL_SET_ERR_MSG(extack, "Netdevice is up, so flashing is not permitted");
++		return -EBUSY;
++	}
++
++	if (devlink_port && devlink_port->attrs.split) {
++		NL_SET_ERR_MSG(extack, "Can't perform firmware flashing on a split port");
++		return -EOPNOTSUPP;
++	}
++
+ 	return 0;
+ }
+ 
 diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index bd04f28d5cf4..dc3e208f5a75 100644
+index dc3e208f5a75..00406ce3f7ac 100644
 --- a/net/ethtool/netlink.c
 +++ b/net/ethtool/netlink.c
-@@ -1125,6 +1125,13 @@ static const struct genl_ops ethtool_genl_ops[] = {
- 		.policy = ethnl_mm_set_policy,
- 		.maxattr = ARRAY_SIZE(ethnl_mm_set_policy) - 1,
- 	},
-+	{
-+		.cmd	= ETHTOOL_MSG_MODULE_FW_FLASH_ACT,
-+		.flags	= GENL_UNS_ADMIN_PERM,
-+		.doit	= ethnl_act_module_fw_flash,
-+		.policy	= ethnl_module_fw_flash_act_policy,
-+		.maxattr = ARRAY_SIZE(ethnl_module_fw_flash_act_policy) - 1,
-+	},
+@@ -1150,6 +1150,29 @@ static struct genl_family ethtool_genl_family __ro_after_init = {
+ 	.n_mcgrps	= ARRAY_SIZE(ethtool_nl_mcgrps),
  };
  
- static const struct genl_multicast_group ethtool_nl_mcgrps[] = {
-diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
-index 9a333a8d04c1..46712c9531ae 100644
---- a/net/ethtool/netlink.h
-+++ b/net/ethtool/netlink.h
-@@ -441,6 +441,7 @@ extern const struct nla_policy ethnl_plca_set_cfg_policy[ETHTOOL_A_PLCA_MAX + 1]
- extern const struct nla_policy ethnl_plca_get_status_policy[ETHTOOL_A_PLCA_HEADER + 1];
- extern const struct nla_policy ethnl_mm_get_policy[ETHTOOL_A_MM_HEADER + 1];
- extern const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1];
-+extern const struct nla_policy ethnl_module_fw_flash_act_policy[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD + 1];
++static int module_netdev_pre_up_event(struct notifier_block *this,
++				      unsigned long event, void *ptr)
++{
++	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
++	struct netdev_notifier_info *info = ptr;
++	struct netlink_ext_ack *extack;
++
++	extack = netdev_notifier_info_to_extack(info);
++
++	if (event == NETDEV_PRE_UP) {
++		if (dev->module_fw_flash_in_progress) {
++			NL_SET_ERR_MSG(extack, "Can't set port up while flashing module firmware");
++			return NOTIFY_BAD;
++		}
++	}
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block ethtool_module_netdev_pre_up_notifier = {
++	.notifier_call = module_netdev_pre_up_event,
++};
++
+ /* module setup */
  
- int ethnl_set_features(struct sk_buff *skb, struct genl_info *info);
- int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info);
-@@ -448,6 +449,7 @@ int ethnl_act_cable_test_tdr(struct sk_buff *skb, struct genl_info *info);
- int ethnl_tunnel_info_doit(struct sk_buff *skb, struct genl_info *info);
- int ethnl_tunnel_info_start(struct netlink_callback *cb);
- int ethnl_tunnel_info_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
-+int ethnl_act_module_fw_flash(struct sk_buff *skb, struct genl_info *info);
+ static int __init ethnl_init(void)
+@@ -1162,7 +1185,12 @@ static int __init ethnl_init(void)
+ 	ethnl_ok = true;
  
- extern const char stats_std_names[__ETHTOOL_STATS_CNT][ETH_GSTRING_LEN];
- extern const char stats_eth_phy_names[__ETHTOOL_A_STATS_ETH_PHY_CNT][ETH_GSTRING_LEN];
+ 	ret = register_netdevice_notifier(&ethnl_netdev_notifier);
+-	WARN(ret < 0, "ethtool: net device notifier registration failed");
++	if (WARN(ret < 0, "ethtool: net device notifier registration failed"))
++		return ret;
++
++	ret = register_netdevice_notifier(&ethtool_module_netdev_pre_up_notifier);
++	WARN(ret < 0, "ethtool: net device port up notifier registration failed");
++
+ 	return ret;
+ }
+ 
 -- 
 2.43.0
 
