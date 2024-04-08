@@ -1,196 +1,150 @@
-Return-Path: <linux-kernel+bounces-135860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB1E89CC24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:00:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 607A689CC02
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:55:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291C21C21E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:00:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD687284D09
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C401DDD6;
-	Mon,  8 Apr 2024 19:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E92144D03;
+	Mon,  8 Apr 2024 18:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="khSkZkZh"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SR/xGlkO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFCD1448FA
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 19:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFF75B04F;
+	Mon,  8 Apr 2024 18:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712602827; cv=none; b=kVETU2gHProQ+Mk2wMabpQCcdGO73n3nFnnVKvvJMdajSeaoyWBcE5JRRVn8AUBIJYcsBLm9ejNf73AG8yFg6x/6NHJIEETb7dXVHgJ6QZC5Kw1WlQ0g+OWcqAD8UcaPWdyj+20u7XeR4KVYsSeStJjliV96Wcu3k65CIZ2SeD0=
+	t=1712602522; cv=none; b=Flwbgg/4SaN5guO0P1qHmIXKMwNpA/d4f9AEnTliPdiyp6b4mTRHm9rforEO1kzDbTs8G2TlvwItnyHuplCLLpXPSrZH08HfHXXtAp9hX7e7uAaokyKuEeSqu32TeMrOSnIYrYn4XTsvg44x3RMwnGhRLZ0MXOn4Gd9L63IABYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712602827; c=relaxed/simple;
-	bh=MmTPLttEIByz3LcD95QHq50+7IMTnEiOpGvyK2OjXoU=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=JxPO3V1UFtAqfZdk51E+v9fnRYKIWfWQxyHd/dciRL35joHEkgWJnQHIVnlIyHCkKmdU+AMVlrwqnsuzJNvKtXioWbw9jGRNRaSgCV2VWESfzLzuGBW3a59L3k7NlqkCArws4epMCqHl0CY7NLhYIarGWJYithEMB2rUNCTJhN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=khSkZkZh; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4163de295f9so10979495e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 12:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712602823; x=1713207623; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+B+dIHSb8yRhnSvIGZyYqGXJXmpVr8yjlKl3yu6l4I=;
-        b=khSkZkZht7W5D7HHEZ02e6lzCmKDIDWCOV8BlisozybXgkVco/nvHkS1U/+k4x0O4o
-         wr3i0U5WLnmCjHELVFKs0dfn4Uw/oNA/KBKbrWWGBr4IJAv1iHePvf8gWk/V5WrawvwK
-         QAUTHOHq/EOmThUtKy18w1cIi/j0iV/BjbGPbFz2XHzR/pRVY5Rut1V2eihT9aTt9clP
-         RjNDIRp9Pkexs3Mvm8QEFcCORJ4Zyejoaj2qK07EdwH6a4JXI3XKvQck1CJ+H/8kZ6qy
-         rLlveklq2C+hNMD/qQkL+NezsOrPUr2qHn7HuzKAjUW5k8OUmHy3+tM0izKvNP0hi92L
-         Tn0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712602823; x=1713207623;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+B+dIHSb8yRhnSvIGZyYqGXJXmpVr8yjlKl3yu6l4I=;
-        b=pmQJxits21wrill9n96KGoMBXu5qY5WOa3uOS/nRRYfCaQsR8mB9OIPqaX/QZUc8gf
-         FkdqQxZ6PhhijG0N79GnLE+DCLgN7s03kWub00MTZM1SFd4w23fSCNiaI4D8XgARwTpf
-         g3VRKjSVby+JjUy4FwUhCju+aJUKhUASFf+9beboOdA+FrVdKBZhHviJHZy6r/IAzayU
-         6MKPgEg/8YhlEn7PNYx33gK6bsZvIq7egJgFg5W0gpIwc6RkMfQ7oftl3TOiIp/UgKcp
-         tyqEalDyfP1MVeOs36KZgR0FvEglMBC9k/CC66l83HuF2n0H3gGwOytaGAzQA+tX9aP6
-         NrQw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvTntqoUrWSlM7CSmY50c9ViX9YdJLnlDP1KDUSrv82xL76Y3Gx/1H8/boBRs1DxTA6PA2S80D2TccUYNEOc9IfhxsRKK+8SjjcfkM
-X-Gm-Message-State: AOJu0YyR7smn0SOUCe7PQffET1aZD0SN3QUbv3E++pC1bYubCTXr7aoF
-	SKcalr/gjTa1q8YXhUXWf09TQjbjGdwgbTB7WlZEfbwNyqApg5VSGeU+MWEk19A=
-X-Google-Smtp-Source: AGHT+IGP2XX1WCI1/h92HKpEVxqSPYGzlO2h896WkQD9sJo7lY2DOrCu08c0YYaiv8QAmxpQYmTAyg==
-X-Received: by 2002:a05:600c:1c8a:b0:415:666e:9438 with SMTP id k10-20020a05600c1c8a00b00415666e9438mr7600760wms.3.1712602822639;
-        Mon, 08 Apr 2024 12:00:22 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:90bc:1f0d:aae2:3c66])
-        by smtp.gmail.com with ESMTPSA id j22-20020a05600c1c1600b004165315d885sm7177799wms.11.2024.04.08.12.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 12:00:22 -0700 (PDT)
-References: <20240408164947.30717-1-ddrokosov@salutedevices.com>
- <20240408164947.30717-3-ddrokosov@salutedevices.com>
- <1j1q7fpv1n.fsf@starbuckisacylon.baylibre.com>
- <20240408184041.3jcav5tabxiblpn4@CAB-WSD-L081021>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, neil.armstrong@linaro.org,
- lgirdwood@gmail.com, broonie@kernel.org, conor+dt@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, perex@perex.cz,
- tiwai@suse.com, khilman@baylibre.com, martin.blumenstingl@googlemail.com,
- kernel@salutedevices.com, rockosov@gmail.com,
- linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 2/2] ASoC: meson: implement link-name optional
- property in meson card utils
-Date: Mon, 08 Apr 2024 20:53:42 +0200
-In-reply-to: <20240408184041.3jcav5tabxiblpn4@CAB-WSD-L081021>
-Message-ID: <1jo7ajof22.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1712602522; c=relaxed/simple;
+	bh=9yWJNhAIPwTeysb1Fo3AduyH0ICpz7q82RX1/sR8Foc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AARkEexeJcZfQlZwsW/5mWD5270JDFFVfuJwuIcjegNT2Fvj9XJ3GP/90DDr7noXaCcPwEbe8qQ9FWoiRGnCqERdsklGjczgiNVHp38bWf8HzJAz2DifN3VqVP0+uvmIgccxBW/V9mZP5Ul58odsloF57C1x208n2vgxtxxmsKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SR/xGlkO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F4054C433F1;
+	Mon,  8 Apr 2024 18:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712602521;
+	bh=9yWJNhAIPwTeysb1Fo3AduyH0ICpz7q82RX1/sR8Foc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SR/xGlkO50rXg1tBwhJwBjN8cIZJLBPW2bXEEPQyu1k/bsLHQF5QV/0lIZ8biHfby
+	 cN262i/7LX+TrYCQkdvGi0ASVSlrgXgQKprmO6dlcz+iCYx61ZSYgfl56xs3+sGvm/
+	 aAFWM8zgxPA7KhV4X5I1eAk93HU669Oib82NlzpW2pEaHPI1xY1CY2tE7cY6TmdFQN
+	 D+UHMgZkknMA19YW+Ny4aOL1QgwoMWiwI9jaHvAWyoS4m5t42AeAxKuLhxYo4XDb64
+	 apNtZJ+51YjuSujgoMOw389gjC/nmhScVvd+3udzO6epWxYj915lKBaOB21C9VYlIz
+	 Vk2AQlKl60IIA==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCHSET 0/9] Sync tools headers with the kernel source
+Date: Mon,  8 Apr 2024 11:55:11 -0700
+Message-ID: <20240408185520.1550865-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+
+Hello,
+
+I'm gonna carry these changes on the perf tools tree.  I'll update the
+vhost.h once it lands on the mainline.
+
+This is the full explanation from Arnaldo:
+
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
+
+The way these headers are used in perf are not restricted to just
+including them to compile something.
+
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
+
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+        [0] = "NORMAL",
+        [1] = "RANDOM",
+        [2] = "SEQUENTIAL",
+        [3] = "WILLNEED",
+        [4] = "DONTNEED",
+        [5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
 
 
-On Mon 08 Apr 2024 at 21:40, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
-
-> On Mon, Apr 08, 2024 at 08:15:54PM +0200, Jerome Brunet wrote:
->> 
->> On Mon 08 Apr 2024 at 19:49, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
->> 
->> > The 'link-name' property presents an optional DT feature that empowers
->> > users to customize the name associated with the DAI link and PCM stream.
->> > This functionality reflects the approach often employed in Qualcomm
->> > audio cards, providing enhanced flexibility in DAI naming conventions
->> > for improved system integration and userspace experience.
->> >
->> > It allows userspace program to easy determine PCM stream purpose, e.g.:
->> >     ~ # cat /proc/asound/pcm
->> >     00-00: speaker (*) :  : playback 1
->> >     00-01: mics (*) :  : capture 1
->> >     00-02: loopback (*) :  : capture 1
->> 
->> The example above is exactly what you should not do with link names, at
->> least with the amlogic audio system.
->> 
->> Userspace pcm, otherwise known as DPCM frontend, are merely that:
->> frontends. What they do is entirely defined by the routing defined by
->> the userspace (amixer and friends)
->> 
->> So naming the interface in DT (the FW describing the HW) after what the
->> the userspace SW could possibly set later on is wrong.
->> 
->> Bottom line: I have mixed feeling about this change. It could allow all
->> sort of bad names to be set.
->> 
->> The only way it could make sense HW wise is if the only allowed names
->> where (fr|to)ddr_[abcd], which could help maps the interface and the
->> kcontrol.
->> 
->> Such restriction should be documented in the binding doc.
->> 
->
-> The link-name is an optional parameter. Yes, you are right, it can be
-> routed in a way that it no longer functions as a speaker in most cases.
-> However, if you plan to use your board's dt for common purposes, you
-> should not change the common names for DAI links. But if you know that
-> you have a static setup for speakers, microphones, loopback, or other
-> references (you 100% know it, because you are HW developer of this
-> board), why not help the user understand the PCM device assignment in
-> the easiest way?
->
-> Ultimately, it is the responsibility of the DT board developer to define
-> specific DAIs and name them based on their own knowledge about HW and
-> understanding of the board's usage purposes.
-
-Speaker and mics are NOT statically tied to a frontend. They are tied to a
-codec (... possibly). The routing from the frontend to the backend is
-dynamic, even while streaming.
-
-So defining FW names based on usage in wrong.
-As Mark pointed out as well, DT is not the place for this.
-
->
->> >
->> > The previous naming approach using auto-generated fe or be strings
->> > continues to be utilized as a fallback.
->> >
->> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
->> > ---
->> >  sound/soc/meson/meson-card-utils.c | 12 ++++++++----
->> >  1 file changed, 8 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
->> > index ed6c7e2f609c..7bae72905a9b 100644
->> > --- a/sound/soc/meson/meson-card-utils.c
->> > +++ b/sound/soc/meson/meson-card-utils.c
->> > @@ -94,10 +94,14 @@ static int meson_card_set_link_name(struct snd_soc_card *card,
->> >  				    struct device_node *node,
->> >  				    const char *prefix)
->> >  {
->> > -	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
->> > -				    prefix, node->full_name);
->> > -	if (!name)
->> > -		return -ENOMEM;
->> > +	const char *name;
->> > +
->> > +	if (of_property_read_string(node, "link-name", &name)) {
->> > +		name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
->> > +				      prefix, node->full_name);
->> > +		if (!name)
->> > +			return -ENOMEM;
->> > +	}
->> >  
->> >  	link->name = name;
->> >  	link->stream_name = name;
->> 
->> 
->> -- 
->> Jerome
+Thanks,
+Namhyung
 
 
+Namhyung Kim (9):
+  tools/include: Sync uapi/drm/i915_drm.h with the kernel sources
+  tools/include: Sync uapi/linux/fs.h with the kernel sources
+  tools/include: Sync uapi/linux/kvm.h and asm/kvm.h with the kernel
+    sources
+  tools/include: Sync uapi/sound/asound.h with the kernel sources
+  tools/include: Sync x86 CPU feature headers with the kernel sources
+  tools/include: Sync x86 asm/irq_vectors.h with the kernel sources
+  tools/include: Sync x86 asm/msr-index.h with the kernel sources
+  tools/include: Sync asm-generic/bitops/fls.h with the kernel sources
+  tools/include: Sync arm64 asm/cputype.h with the kernel sources
+
+ tools/arch/arm64/include/asm/cputype.h        |   4 +
+ tools/arch/arm64/include/uapi/asm/kvm.h       |  15 +-
+ tools/arch/powerpc/include/uapi/asm/kvm.h     |  45 +-
+ tools/arch/s390/include/uapi/asm/kvm.h        | 315 +++++++-
+ tools/arch/x86/include/asm/cpufeatures.h      |  17 +-
+ .../arch/x86/include/asm/disabled-features.h  |  11 +-
+ tools/arch/x86/include/asm/irq_vectors.h      |   2 -
+ tools/arch/x86/include/asm/msr-index.h        |  74 +-
+ .../arch/x86/include/asm/required-features.h  |   3 +-
+ tools/arch/x86/include/uapi/asm/kvm.h         | 308 +++++++-
+ tools/include/asm-generic/bitops/__fls.h      |   8 +-
+ tools/include/asm-generic/bitops/fls.h        |   8 +-
+ tools/include/uapi/drm/i915_drm.h             |  16 +
+ tools/include/uapi/linux/fs.h                 |  30 +-
+ tools/include/uapi/linux/kvm.h                | 689 +-----------------
+ tools/include/uapi/sound/asound.h             |   4 +-
+ 16 files changed, 809 insertions(+), 740 deletions(-)
+
+
+base-commit: 25e973a0e077da585e472b4cadb1d2f4c1113285
 -- 
-Jerome
+2.44.0.478.gd926399ef9-goog
+
 
