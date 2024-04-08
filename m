@@ -1,145 +1,130 @@
-Return-Path: <linux-kernel+bounces-134872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FCF489B816
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:02:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7B689B818
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:03:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14801282ED2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:02:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 677251F22498
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209F32232A;
-	Mon,  8 Apr 2024 07:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179F2225CF;
+	Mon,  8 Apr 2024 07:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SlHQUBf+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OfoIxj3J"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kRzoHkQ3"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDD42BB0D;
-	Mon,  8 Apr 2024 07:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D099D2032A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712559753; cv=none; b=cKOPYQSIXQcnqaq8dUukNwT0uXxfT9IGK5SPCDTOVVp9zNWdAiACwbB1XwetcncIkTaRHJ1zAQVGaDj4uhthGBDNTBw3FA6+GR26zDyoigRMm/B85ESvzPizInMxK9S0djGTLGZFxlPhUhBuQ0JKUGKf40teDKIAwV7+ZqbK7wo=
+	t=1712559816; cv=none; b=VtKccm9tRtH+50KZliJOtxZyQgJfbH+CR7b394nMm4cyCsatij6kxZoDXXNt99jjloaCCL4DuBfGC+LVVM4y7MQTkX+8JW5gAxHO1GBmgga67xT9vN8jEwl7xkwa4Fi9RT1z9fdj2e9uYUoHQjWl1xixUv92gm4CD9vzpyEXwdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712559753; c=relaxed/simple;
-	bh=QOSh4rAjt7EpTH6eCTMkOk4R42jH2WV4EIL3hGsapBo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OMNu84uRU+qr2rq7hQVtX7bxNjmqPWTcI6Kv388vgoyUMzrddnn2tcK1V3T0uzJdIj7AmhWEn9gGUJg7uw/GwTiCHN0hSuZySCu8Ecnpj0R4pgYAR3ijxQo211GV2MULQIjraCGF4lokYQxPB93pNpAQZnvb4K6d24jPGLFxL0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SlHQUBf+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OfoIxj3J; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712559744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UUwDtrm53vQQRYnp3vpMLTiNe30BZmkb/pL6DAKCU3I=;
-	b=SlHQUBf+iLS0zQeNnLeKKal+9XI5fo5ofz1fxfsruZ/klXptQfEKLKPCO3f4pgpBFr3zTx
-	5Ke3hhnnCxp38F2OKPLmvqsS1fWN8uh9RpFKTj8zx9e/PxGm2nx7zMpmc3KCmvJCjT5zsV
-	NZF6nRxBSPZ35m2T/AvtWO7vgsKk/SbPrKjpRdfXG52PhaGD4JVMKosGRLpv3CbmzjRjHr
-	b5S40nbIf/iueTmG0Px+epcMK7WUINuWVUPXQWkWPZwJQh8IXThpLiZqVh0y1ta3xLS1PN
-	qkt/QDGyBMRwf7yVx8WSWyfrDO1ghtxgURHJJfmbU+hEqWq9EkwXEQ7gXozSDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712559744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UUwDtrm53vQQRYnp3vpMLTiNe30BZmkb/pL6DAKCU3I=;
-	b=OfoIxj3Jc/K3eeNw1pc1uUcUA1y75B5si0ZQfK1tEDQiiRp4ODpmFNH3Mi8yvrZSve35CV
-	MQswu7qoP+7eUbAQ==
-To: linux-kernel@vger.kernel.org
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
- Len Brown <len.brown@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>,
- linux-pm@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, Mario Limonciello
- <mario.limonciello@amd.com>, stable@kernel.org
-Subject: [PATCH v2] PM: s2idle: Make sure CPUs will wakeup directly on resume
-In-Reply-To: <20240405083410.4896-1-anna-maria@linutronix.de>
-References: <20240405083410.4896-1-anna-maria@linutronix.de>
-Date: Mon, 08 Apr 2024 09:02:23 +0200
-Message-ID: <87r0fg5ocg.fsf@somnus>
+	s=arc-20240116; t=1712559816; c=relaxed/simple;
+	bh=w9WoH+wgUPFBZU7v5FMV/NBbq3FVqAgJaP5B6SvPbuY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SBsFSf1KfOhQiLCDo2JPB7MCAhClerIdNYdwsLoSmHl6sesmRvm7+Cie0r4uTXBmpwkneNlQ3NHIxhbIrONduYEj/YIyK3CdoCXoaitXYNLycrzp7gj2x0f7C+YjQaltB5qQ+dn0IoWu5nQHX3Sykuv+/P03/8PDUaPyDrijExA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kRzoHkQ3; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3526103276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712559814; x=1713164614; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PfF2zkgsBDIRWN7+tKxmHFe+kf7e/YHcSIbplWB0Y1g=;
+        b=kRzoHkQ3+68wO2DWj4Nd0incYVzjHGsyWLstH6rYHfCop880AAjD5aCO9BLvm0goQG
+         i66oNVKNufULbTO+XUO9vPENmN97YEaypEsbOPs+EhfbWPmuQ+KzJwgvNluQCZFJqO72
+         3MPquX69g1LrkQ4yJEbdVMRUNZpwpLdf8iIMIVLXPCyTAtQcmfZ9N7DnFaFubVO0uZqI
+         SFyVGE+V/2C0cSM7YI8HCo2hJfU3OqBflA/ZE0YouP/uidZZsVimndGGB/K93wJyhsxV
+         Kc2KQq79OlTKJl08zLgD0uGe0tSUXj5uS9AryQ3o+jzu8fIsqWkbuiVZDOuLbIenGmEb
+         uoBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712559814; x=1713164614;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PfF2zkgsBDIRWN7+tKxmHFe+kf7e/YHcSIbplWB0Y1g=;
+        b=Cj9Sdy2tN9T6l6CLqxq9cCt+Ll3/PZrJQeJgyKdKxCWk4/Jm43JnnsiwI6nm5YQi4x
+         d6a4hMU4ZpRuv41OLgbp1p1X0VllN9ldjS6k4QNBpbVbX3uLgzsKvVsFfHew7u0cEgQ9
+         vxa6aALLa5eLgjpRPkrTjERlCOxpzM37FAvOWUik8wO7u1DW+33Jh/NyzcYXcl/mwRX0
+         XNwAtThPfj7lEABH2fAnFxr733ZMS68KcebW9Qv2LTpxIUOqNxIX6tDJEckw1//BRMJ7
+         34zQ7nPHSZ+McO50TZ5iBCN3zaQF9f3B5Pu35kb0atEokVfevH824NBKAxG4Ca/llZZe
+         +sBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVnPfdNyyiZqrwCOekcy863JxFQlKfdsIvr4vRuFnsmd5Qdc7y7B3fPdcGeZ7ThdpDkOYEvDs9+niWspKexEu1XWtE8poegvR1EkIr
+X-Gm-Message-State: AOJu0Yw+osGq1SGbJKAK9QR5cU0ygUX49aNGmOtj7hRcB7nBfLfkCyoH
+	itNx61hHbQmwtYGBHgtjCZnPdxCjdiRHmLrI6qgjs/7i5am1ReK4ULIYA0fUpqJL/mnD/gfSNMm
+	/OQgrncO8ZC21oSH1pl+DrEHgDy9TLV3LSgpmyA==
+X-Google-Smtp-Source: AGHT+IHV2PTT8QQKFc4m9lOlmGvjeL/Q7PLVOM0UT/1P6BmeSpQc0oUBrTAPHJtWuy+A0W1owqvUsstkFOCku0qEqLk=
+X-Received: by 2002:a25:d312:0:b0:dcc:7af5:97b4 with SMTP id
+ e18-20020a25d312000000b00dcc7af597b4mr5982654ybf.12.1712559813815; Mon, 08
+ Apr 2024 00:03:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org> <D0EJR77G6HF0.2LUJ3XY1YFG65@fairphone.com>
+In-Reply-To: <D0EJR77G6HF0.2LUJ3XY1YFG65@fairphone.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 8 Apr 2024 10:03:22 +0300
+Message-ID: <CAA8EJpqUz8anQ9V_Ht67DMrMXw49u9R01mHKDMxnGf-UpXrrUw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] arm64: dts: qcom: add USB-C orientation GPIOs
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-s2idle works like a regular suspend with freezing processes and freezing
-devices. All CPUs except the control CPU go into idle. Once this is
-completed the control CPU kicks all other CPUs out of idle, so that they
-reenter the idle loop and then enter s2idle state. The control CPU then
-issues an swait() on the suspend state and therefore enters the idle loop
-as well.
+On Mon, 8 Apr 2024 at 10:02, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>
+> On Mon Apr 8, 2024 at 4:33 AM CEST, Dmitry Baryshkov wrote:
+> > Populate orientation GPIOs for some of the PMIC-GLINK-based devices.
+> > This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP CRD
+> > without the orientation GPIOs declared.
+>
+> Hi Dmitry,
+>
+> How would I find this GPIO on the schematics, or downstream devicetree?
+> I scanned over some relevant areas but nothing jumped out at me except
+> for the USB_PHY_PS signal coming from PM7250B CC_OUT and going into
+> GPIO_140 of the QCM6490 - but I'm guessing this is something else?
 
-Due to being kicked out of idle, the other CPUs leave their NOHZ states,
-which means the tick is active and the corresponding hrtimer is programmed
-to the next jiffie.
+It is exactly that GPIO.
 
-On entering s2idle the CPUs shut down their local clockevent device to
-prevent wakeups. The last CPU which enters s2idle shuts down its local
-clockevent and freezes timekeeping.
+>
+> Regards
+> Luca
+>
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> > Dmitry Baryshkov (4):
+> >       arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
+> >       arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
+> >       arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C orientation GPIOs
+> >       arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientation GPIOs
+> >
+> >  arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        | 2 ++
+> >  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 ++
+> >  arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    | 1 +
+> >  arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    | 1 +
+> >  4 files changed, 6 insertions(+)
+> > ---
+> > base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+> > change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
+> >
+> > Best regards,
+>
 
-On resume, one of the CPUs receives the wakeup interrupt, unfreezes
-timekeeping and its local clockevent and starts the resume process. At that
-point all other CPUs are still in s2idle with their clockevents switched
-off. They only resume when they are kicked by another CPU or after resuming
-devices and then receiving a device interrupt.
 
-That means there is no guarantee that all CPUs will wakeup directly on
-resume. As a consequence there is no guarantee that timers which are queued
-on those CPUs and should expire directly after resume, are handled. Also
-timer list timers which are remotely queued to one of those CPUs after
-resume will not result in a reprogramming IPI as the tick is
-active. Queueing a hrtimer will also not result in a reprogramming IPI
-because the first hrtimer event is already in the past.
-
-The recent introduction of the timer pull model (7ee988770326 ("timers:
-Implement the hierarchical pull model")) amplifies this problem, if the
-current migrator is one of the non woken up CPUs. When a non pinned timer
-list timer is queued and the queuing CPU goes idle, it relies on the still
-suspended migrator CPU to expire the timer which will happen by chance.
-
-The problem exists since commit 8d89835b0467 ("PM: suspend: Do not pause
-cpuidle in the suspend-to-idle path"). There the cpuidle_pause() call which
-in turn invoked a wakeup for all idle CPUs was moved to a later point in
-the resume process. This might not be reached or reached very late because
-it waits on a timer of a still suspended CPU.
-
-Address this by kicking all CPUs out of idle after the control CPU returns
-from swait() so that they resume their timers and restore consistent system
-state.
-
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218641
-Fixes: 8d89835b0467 ("PM: suspend: Do not pause cpuidle in the suspend-to-idle path")
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mario Limonciello <mario.limonciello@amd.com>
-Cc: stable@kernel.org
----
-v2: Fix typos in commit message
----
- kernel/power/suspend.c |    6 ++++++
- 1 file changed, 6 insertions(+)
-
---- a/kernel/power/suspend.c
-+++ b/kernel/power/suspend.c
-@@ -106,6 +106,12 @@ static void s2idle_enter(void)
- 	swait_event_exclusive(s2idle_wait_head,
- 		    s2idle_state == S2IDLE_STATE_WAKE);
- 
-+	/*
-+	 * Kick all CPUs to ensure that they resume their timers and restore
-+	 * consistent system state.
-+	 */
-+	wake_up_all_idle_cpus();
-+
- 	cpus_read_unlock();
- 
- 	raw_spin_lock_irq(&s2idle_lock);
+-- 
+With best wishes
+Dmitry
 
