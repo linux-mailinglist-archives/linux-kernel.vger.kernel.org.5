@@ -1,110 +1,135 @@
-Return-Path: <linux-kernel+bounces-135239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C57889BD93
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:53:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E6389BCDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:18:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6041C21B28
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:53:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 511E8B22DE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6B3651B4;
-	Mon,  8 Apr 2024 10:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72335338F;
+	Mon,  8 Apr 2024 10:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nd7vMODY"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K9Nv+sTO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IWbytI7n"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2792E612F5;
-	Mon,  8 Apr 2024 10:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC4A52F83;
+	Mon,  8 Apr 2024 10:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712573580; cv=none; b=oIKqspciKnVW+w35r2+Cd7N8MTyLBSfsCV3vW7LtD+PFCXbnWKGFGgs6tzQ45N94E95l/NW2CsGnCMpj91AGvLDtslN4SV/mLOKZWS3AO5uaY8ITiNHupBtwNzY9yAoL+hcBgFVKQD28xUyy2o9Tf5fnfg6qfItVmhBEkVaMqBM=
+	t=1712571484; cv=none; b=XWxUGJUE8x2ekoY46Bb6ElgKIsOrxH9kudJU0LFVCYMICSRsi5+fFMaObc1riWOgE7r9p9x25IW80kfYhFQafwFMFR7jAj4feGanu9/mCRoGrgDAn//+2+2ijnR3rva196wsftFdTvu2e68WqAuqPw5D4knPpc5/DEKUiFymFdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712573580; c=relaxed/simple;
-	bh=Ud0GI2flSvHcXw7VWyujx4h4/Y6ogZjhOy0fklopGM8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oc+plKWcso7QVPVme0LboA0VXRXiOiMp9BDM4PESkgj1MbZuC+eGbWLboDpGAD398Ua7d244C06di6BSCoYfe27Yi/+8wEyBxEcBuvsp220xOXyXiD5UkYSQ5kocwTIxlo035SzqmoGTuxosp+ySIAVOe+5bhhYJKuAeIAOYiCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=nd7vMODY; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385o0CU020277;
-	Mon, 8 Apr 2024 05:24:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=S
-	r7C9ozK7GY64+rWeoWTEytRlN75UgieuR9uJAm3Bpg=; b=nd7vMODYwFhmoPd/n
-	S+8tQkjyghOADqycT/Ql8dJZmI8aCqSpW+czmpdXFVA6A41kDuXRaOpJf0uOdBOc
-	nOrutklC/IYisxvYFiDJAQOWRpzx/cpUQli94/rCkJfDJOOPDla87cqLpVR4jW9f
-	ETRN+5KGcytFHyjMbCyDSgRfMTPXRCHo+SqGmP5SYYv13D5SthsgvQohDsjPtj8k
-	MmK9sHO9Rey2T8vRqyhyb2aPngY/BEgMedOa/YkQ3yqu+s2CRofUFG3DW39mDhLb
-	m2YjU+u0kQdG4uadsYTrflchULb6XIc8Gb4Be5GszBdk2akZ5s26KxJYrnDQQZ+o
-	Bo16w==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xb2tjhp0e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 05:24:18 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
- 11:24:16 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Mon, 8 Apr 2024 11:24:16 +0100
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 25413820242;
-	Mon,  8 Apr 2024 10:18:03 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 0/4] ASoC: cs35l56: Fixes to handling of ASP1 config registers
-Date: Mon, 8 Apr 2024 11:17:59 +0100
-Message-ID: <20240408101803.43183-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712571484; c=relaxed/simple;
+	bh=ndnxWBaDMIoX9SuwF9xmE9J0d9iLYQgbIKQaVs/ewVE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=M1L7mTYKDLnBG744Rnsv095+p2jGhV3NEd5RPswODE1ghflWG2xzmnMAciZDQplKeL9hffwW58rV1u3AiVHkIi2UVkx3TjR0MXWkMLH9WzFGrprjOLaGYBfHHJWA5i4A+4qqznsaj/kwE32puaL8N3yz6V3KmXBdgJ6KkUKjKtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K9Nv+sTO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IWbytI7n; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 08 Apr 2024 10:18:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712571481;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VY5Yn0pEVsFL1jcTs8xAw+j/ArLb8o13dUUPeJ/7V+A=;
+	b=K9Nv+sTOiDNRcDQgtkOjepl0ofJGfpH8gdU4HXxgEJ1EHPVpmu4gQV+KS4KrMrwpBetpSZ
+	oEQHM8IfEgyCS2iesBenKpCuYlgiYiRK45CKYdkZ/+KZ5EHCB54lC4PRX/jil5A0QLp19P
+	lemcMu3L/tPfXbA0so7KCpUfBKz7morV/GZqCjYG7oWmJEdk7pobEH6IAGg0PGt3j0SitU
+	uD434tdjRAh06iu9ugVSNfDWSw/vRsMwewJ+uHlrQF1t3Pd290F9VdDcWYjy6cH6hHI5I9
+	yqVLJzeD8ZBFqqTVp9BKG47btTjfToe9FbzEWmJRrGjvoS6X74rveNdb5TQjjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712571481;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VY5Yn0pEVsFL1jcTs8xAw+j/ArLb8o13dUUPeJ/7V+A=;
+	b=IWbytI7nCCwmK4afyeY+qbH10yuUD635NOqJ4hDQemh7SgQnX/B+CrGj6T0ADc1i8yVuCD
+	LXnnThtyxy1stSCQ==
+From: "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irqdomain: Check virq for 0 before use in
+ irq_dispose_mapping()
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240405190105.3932034-1-andriy.shevchenko@linux.intel.com>
+References: <20240405190105.3932034-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: WqCasWKkO3re0xRWNkShxb2S27Q2THeC
-X-Proofpoint-GUID: WqCasWKkO3re0xRWNkShxb2S27Q2THeC
-X-Proofpoint-Spam-Reason: safe
+Message-ID: <171257148005.10875.12889492362507316257.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-This chain fixes some problems with some previous patches for handling
-the ASP1 config registers. The root of the problem is that the ownership
-of these registers can be either with the firmware or the driver, and that
-the chip has to be soft-reset after downloading the firmware.
+The following commit has been merged into the irq/core branch of tip:
 
-This chain adds and uses a regmap_read_bypassed() function so that the
-driver can leave the regmap in cache-only until the chip has rebooted,
-but still poll a register to detect when the chip has rebooted.
+Commit-ID:     a2ea3cd78317ae8995b65b52299158bbae52a77f
+Gitweb:        https://git.kernel.org/tip/a2ea3cd78317ae8995b65b52299158bbae52a77f
+Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+AuthorDate:    Fri, 05 Apr 2024 22:01:05 +03:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 08 Apr 2024 12:08:58 +02:00
 
-Richard Fitzgerald (4):
-  regmap: Add regmap_read_bypassed()
-  ALSA: hda: cs35l56: Exit cache-only after
-    cs35l56_wait_for_firmware_boot()
-  ASoC: cs35l56: Fix unintended bus access while resetting amp
-  ASoC: cs35l56: Prevent overwriting firmware ASP config
+irqdomain: Check virq for 0 before use in irq_dispose_mapping()
 
- drivers/base/regmap/regmap.c      | 37 ++++++++++++++
- include/linux/regmap.h            |  8 +++
- include/sound/cs35l56.h           |  2 +
- sound/pci/hda/cs35l56_hda.c       |  4 ++
- sound/soc/codecs/cs35l56-sdw.c    |  2 -
- sound/soc/codecs/cs35l56-shared.c | 83 ++++++++++++++++++++-----------
- sound/soc/codecs/cs35l56.c        | 26 +++++++++-
- 7 files changed, 130 insertions(+), 32 deletions(-)
+It's a bit hard to read the logic since the virq is used before checking it
+for 0. Rearrange the code to make it better to understand.
 
--- 
-2.39.2
+This, in particular, should clearly answer the question whether the caller
+needs to perform this check or not, and there are plenty of places for both
+variants, confirming a confusion.
 
+Fun fact that the new code is shorter:
+
+  Function                                     old     new   delta
+  irq_dispose_mapping                          278     271      -7
+  Total: Before=11625, After=11618, chg -0.06%
+
+when compiled by GCC on Debian for x86_64.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240405190105.3932034-1-andriy.shevchenko@linux.intel.com
+
+---
+ kernel/irq/irqdomain.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 3dd1c87..aadc889 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -909,10 +909,11 @@ EXPORT_SYMBOL_GPL(irq_create_of_mapping);
+  */
+ void irq_dispose_mapping(unsigned int virq)
+ {
+-	struct irq_data *irq_data = irq_get_irq_data(virq);
++	struct irq_data *irq_data;
+ 	struct irq_domain *domain;
+ 
+-	if (!virq || !irq_data)
++	irq_data = virq ? irq_get_irq_data(virq) : NULL;
++	if (!irq_data)
+ 		return;
+ 
+ 	domain = irq_data->domain;
 
