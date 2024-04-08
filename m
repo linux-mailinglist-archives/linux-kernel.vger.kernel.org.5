@@ -1,129 +1,119 @@
-Return-Path: <linux-kernel+bounces-135121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49E2189BB62
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:15:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B90F89BB64
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:16:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6D511F22C5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB643B2173C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5174F1F2;
-	Mon,  8 Apr 2024 09:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8C44086F;
+	Mon,  8 Apr 2024 09:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="D7b7JHh1"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lxude+Sn"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DA44E1C8
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F95C4F88E;
+	Mon,  8 Apr 2024 09:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567668; cv=none; b=Edgty0xOouPw//8C8Dzt65PqS6/GS+9L8YZPFURCdJH/vr3v40aBLfcRNViNfKtoQQxYnxy/QIX/wlczqxH3GMvH+BnzWQjW7RpmwPZ53tvIKqtbRKHcVLXQKvFRvChtN3Lal+fjByQBP3SrAD4aXCgmsfPbke1aoz2whCT2r7w=
+	t=1712567714; cv=none; b=umlpWp+5x6ynx3BcF9KX6Pz2bKLxqYOUVoFIY6La+5HQZRIaW1t1qNyCtGuYjEVTyPMuhqna3NzMtcPmjh90QCA0WEE6V6LfaJPeSD1cf+8TAZsCUHnlUVLiqd9kxdjRF1uMzoU+RwIQGHS8Q59SUsoDiRz7sN7z/vqHIMQKXsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567668; c=relaxed/simple;
-	bh=z4CDEMFIMTjvOLif5sUmisJHGO9R4pf0qmsvsjOnpUs=;
+	s=arc-20240116; t=1712567714; c=relaxed/simple;
+	bh=KGD3W6aq68+NPokgw+0+sWAPCU/hHUxMf8/mo80TM78=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CK/W+nuUnSncJFwTUqUpyhFyewkHOW78oM//WNEQWuNOhMT56T0Cla0EzGI02X08ttpemCO7BmBXxVlbtITSG5A0QC0dJMVeMs+ADbfuf+OfTNJ3swu1dwIOguoo1ouyWXDZ2ozVozPxmcnEKcMnJxFQEEE1PjK67Vi4F1mhzgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=D7b7JHh1; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=B1xU
-	GkiU6dmYPsBjCTtb6mRNv0nuvWzUMFCwA7SNs6U=; b=D7b7JHh1oY0gpZfVrcWm
-	bVLPU9k9q3DbofnpH/OfhR3aO1Pu7vm5BC95ccqnukqiFFrq8C8rPxn+wKmX3yhe
-	BeF1G4lEhOejWaSv785LLOpfbA2CXkv1tFklvdZHYUEIBrQu1f4Ov4LfTvbfJ8FQ
-	srPASuPZeYyzeQCSkLa4XimHy9jV7libC24ca6Cm23+2VCkgt5bO/P6hWlEPimz2
-	kB3OLKKsljxZDx4L5vzs51QWIhBGtq16LdG5EmnAQf8bwUuO/BWDKyrP3N7GQHUL
-	ShiqM5VjAaxQdgLg/BpK6XAgAO/ji5/Ms71bCFHMNseI49LHGHg5d8N/hxz4Dxk3
-	/g==
-Received: (qmail 716288 invoked from network); 8 Apr 2024 11:14:24 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Apr 2024 11:14:24 +0200
-X-UD-Smtp-Session: l3s3148p1@3RREO5IVVpwgAwDPXwE9APSWg5D5lDs4
-Date: Mon, 8 Apr 2024 11:14:23 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: linux-i2c@vger.kernel.org, 
-	Patrice Chotard <patrice.chotard@foss.st.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 53/64] i2c: st: reword according to newest specification
-Message-ID: <zpaizt3dhjbabotqylxph6hti7z4o4oq3mjqy4zmxjk74lpzdf@apnyh6m2fjst>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Easwar Hariharan <eahariha@linux.microsoft.com>, linux-i2c@vger.kernel.org, 
-	Patrice Chotard <patrice.chotard@foss.st.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-54-wsa+renesas@sang-engineering.com>
- <f94f293c-4756-458e-8ffa-a10baa8379d0@linux.microsoft.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RtYyzz7GEVu6rgFwtRB1XdxgKrBbcPh4S7JUA3Wc+/ZXIAY2LYpnDGJR51W7AQIxSlT7jiAz4LTTSy99zyXgtTzLMCLv4t5Q3ztjXoBpUxyzBtuF1E69fOt/F2E8MbwwF5eCMlbHI1hUsFwH4yqRxOvNXqUhQP7qC/OA1vCBp9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lxude+Sn; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3544868a12.1;
+        Mon, 08 Apr 2024 02:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712567712; x=1713172512; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SODhvkyPr8ZXgSMnOcyIX8Jn66g5MUzZsrQq4BDBvik=;
+        b=Lxude+Snbomur48czUwZ/ZSGbfbue0wkhm2cuEZjfSxxPDV9ogqxaCyruT3oCZVcKj
+         isXFQuik82Ek8gho8JGXKs3o5PgKinH73Xh4hHlfDv7uYUZQppOQLVBHcj+0JrJR87DH
+         NgxJsThzz6m1HY2VIiWMXMNWEwSKPZIiZ9TQEfKJooVcokVOHZGU2fNzQfURJcKtVoP8
+         rp8bJ0RqO7OoTI7IzadtQBjd/WYJbQqngcz6mCIzLv1Dj3NwBJqUB6meJjbj0j7aXb7+
+         iMl/AyyfiaYCZi1QRZTeykLpHPvcwixNZEegS4q4EfleZi4idy1fw7wE+Z/aCJPCG4Cq
+         ZCMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712567712; x=1713172512;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SODhvkyPr8ZXgSMnOcyIX8Jn66g5MUzZsrQq4BDBvik=;
+        b=f1lZ2jbvqGrR5ZboYWKV3/dTFUPibjJfBycXj4NROwDqspKUWwySZBKFJ5FMOfeD0A
+         oC1LM0+PApdzIEzEoXkpUThh3WxjrKWXnuRdmCBJILgdyZRPT93c2pVHR1EPLCI6WNF5
+         J9IRUulNsJ7vR5Kwjh6SUK6sOj0rkSvBG/8/VQON9v/cxSZbzmpag4Rd0IFmLb6Hytoo
+         sgxRdd+D/y8lnMeIGwAN+AOt1BAOAITnvvQtmnmzHf/rbiMzaJgMpdIKJczUxWRKWo7x
+         Z2byTePjKWmy5ZIY5x6iuwSZCBUPrlRyxU0kH0Jdn8phV3tlSiznvs3A1XkqgLnyrVES
+         aK6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVizLE2KwrM3S9cSkXbt99jM3F/UAotSEAOOK0+Hqv2+c3Tz/hKfDIF7RGlWUEW3tKj30JZtPVBMBxZF7WOQ/W9wEJvZhu21o1++jAagCQfUKb3MEWXp0z9Vc4EO2nJMqFw881y
+X-Gm-Message-State: AOJu0YxuT8XYkgWngUrt/q1WZjgwCcWx4+Mkkxd4E+HZbHYt7de8tKiV
+	01jKbji4ZlLtlN16BLxSCktK0MTBv13MABvmrQdR3ZutjCunM7IE
+X-Google-Smtp-Source: AGHT+IE7+14HQRa0mb17vd6OZ8hOiE6B2jP3CDkq3cOHzcHSDFQg4qVWBhArFH6l6rGKBVbFqP3sKg==
+X-Received: by 2002:a05:6a21:3a94:b0:1a7:7620:2bd1 with SMTP id zv20-20020a056a213a9400b001a776202bd1mr2282653pzb.44.1712567711775;
+        Mon, 08 Apr 2024 02:15:11 -0700 (PDT)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id r14-20020a17090a560e00b002a46c730a5csm5646262pjf.39.2024.04.08.02.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 02:15:11 -0700 (PDT)
+Date: Mon, 8 Apr 2024 17:15:07 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: syzbot <syzbot+ecd7e07b4be038658c9f@syzkaller.appspotmail.com>,
+	davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: global-out-of-bounds Read in
+ __nla_validate_parse
+Message-ID: <ZhO1m9aSxElXTvri@Laptop-X1>
+References: <000000000000c30be606158f33db@google.com>
+ <CANn89iLq3PdiuS=qYAtUKFcrd24z2Kw8k=gMNcBcaEFkTWpd0g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zc6r4szvuyukhmxj"
-Content-Disposition: inline
-In-Reply-To: <f94f293c-4756-458e-8ffa-a10baa8379d0@linux.microsoft.com>
-
-
---zc6r4szvuyukhmxj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CANn89iLq3PdiuS=qYAtUKFcrd24z2Kw8k=gMNcBcaEFkTWpd0g@mail.gmail.com>
 
-> > -	unsigned long timeout;
-> > +	unsigned long time_left;
->=20
-> Thanks for doing this. Is the timeout v/s time_left language also due to =
-the specification change?
-> A link to the specification(s) in the commit message would be nice to have
+On Mon, Apr 08, 2024 at 07:40:00AM +0200, Eric Dumazet wrote:
+> Probably caused by
+> 
+> commit 948dbafc15da900b13c2bc9e244b9e109303907b
+> Author: Hangbin Liu <liuhangbin@gmail.com>
+> Date:   Mon Apr 1 11:10:03 2024 +0800
+> 
+>     net: team: use policy generated by YAML spec
+> 
+>     generated with:
+> 
+>      $ ./tools/net/ynl/ynl-gen-c.py --mode kernel \
+>      > --spec Documentation/netlink/specs/team.yaml --source \
+>      > -o drivers/net/team/team_nl.c
+>      $ ./tools/net/ynl/ynl-gen-c.py --mode kernel \
+>      > --spec Documentation/netlink/specs/team.yaml --header \
+>      > -o drivers/net/team/team_nl.h
+> 
+>     The TEAM_ATTR_LIST_PORT in team_nl_policy is removed as it is only in the
+>     port list reply attributes.
+> 
+>     Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>     Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+>     Link: https://lore.kernel.org/r/20240401031004.1159713-4-liuhangbin@gmail.com
+>     Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-I admit it is probably a seperate change...
+Thanks for the report, I will check what I missed.
 
-> > -	if (!timeout) {
-> > -		dev_err(i2c_dev->dev, "Write to slave 0x%x timed out\n",
-> > -				c->addr);
-
-=2E.. motivated by this "if (!timeout) dev_err("timeout!")" which is super
-confusing to read because the logic is paradox.
-
-
-> > +	if (!time_left)
-> >  		ret =3D -ETIMEDOUT;
-> > -	}
->=20
-> Why did we lost the dev_err() here?
-
-Agreed. Another seperate change. A timeout is not something the user
-need to be aware of. It can regularly happen while an EEPROM is erasing
-a page. The client driver will probably handle it correctly by trying
-again. Only if the client driver sees a problem, then the user should be
-notified. But not in the controller driver.
-
-
---zc6r4szvuyukhmxj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYTtW8ACgkQFA3kzBSg
-KbaxqxAAqwfl+isJvw+Tbn4zWASNYgUCF88fdAOUyScMYpiIlRk2c7CR4M4BipLs
-ppKwIrsKht9D++ljltU34nnMNsirMRI+QBRVrOubmvln130b6d5PzLvw0LmL92BR
-9sBawa9Ow1y14b6htJXMB0fjmbUtubcB4vn0vgPNl9DwOyZXGawSQbEDW7eB9Dag
-FePIO6KW1d01J54d3B0R+nBdbhB4Lr23Q99EEiO2N/f/Oa7cb6wc7nuqUkg1ymgG
-4sTRUK95w+FQd2DhaAsXhjzRy1AqCCaW8O6RVDDhR71q808K+L+R4G/Ip/OvuPKS
-nEd1r9HEG4jOVhNNbjtE8vILhIYU0bwdHR45YNCUQDXWNdfvkXa5A3THpfpE0iF/
-D1dsp030Ogwex0OFYtEcUOT9nMeE1Io46sTIwfhO/kmAx5zaZqNB/u0Duv5i6zPA
-vbG5yO6VEOU5wiJR97RTu1kzCs+UenOXSQ3mRjT3MJM5X8XvS/jQR6SSJflUsc7e
-E1tj9COegSg9APc+i0kMeJdqk6wV6JGS3XzYI5fOwaHaEK8eDORj/Al95Y/g1F3W
-yIYZbkL/TAV60Y4Z/VHYqblRa/eFvgzvyrkmZ3jjsTi7Zsh/2r8Dknx5l/tRiN6I
-Vi+ogc1ZQL8awmqdG2FR8V3hrTEQNp/QxphmSJ5M79Dv8t7iIcU=
-=4MpW
------END PGP SIGNATURE-----
-
---zc6r4szvuyukhmxj--
+Hangbin
 
