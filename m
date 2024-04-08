@@ -1,193 +1,145 @@
-Return-Path: <linux-kernel+bounces-135385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 631B189C010
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:05:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C719589C016
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881611C212B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:05:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 837A42860E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A607C6C9;
-	Mon,  8 Apr 2024 13:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D457D3E3;
+	Mon,  8 Apr 2024 13:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e4F/VKth"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V6V/JtZx"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B2D7C6C8
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390FB7D096
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712581469; cv=none; b=pcFlhO3RGStG7l+FFS2kPEKOxn0Ru7mKgYGJb8q0wFqI/ClW2Iq2Rs5RiBmdcXUY8FkzISpnVrpxuFHtO2dqZt/0i2puwx0aOmd+bn2xXGTkDxLJy05831t/DSFkgl6kIwSThop8y6gD3wCyB8q0jMvRvkKm+wmuFeyWqvAKjOw=
+	t=1712581479; cv=none; b=D8XYiplVYeWjEn/Tf4vFMSXf4shKZ5w3CPLaazeam4AyuQr5l6a4I26FRJPIHN6dxl/eU7cxNwZjLGDGPzn7bF0p5mqz8lBF41fQAcEA2yESI1EjVwYr35KM76M7g0jztxaCgFcDmeIhamZZANAzkzTULgxsaucMaWVwhA0FKyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712581469; c=relaxed/simple;
-	bh=yMYg0GAX8ig5QTjA2q7Q+0ralBaGGpY5ED1olsise54=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=erekjSGjhFQeyh2ucVdP/lWEcy7LBR3EgXZJq7IC3jZDGot5Pdt7JoZtBg2Ft/Jq2YgqCxoGyGQyXTAIOFoV9j5LOFwQAKlt9kAUKjCILnSEHuOqkJf7QHjKLMIgCf63yB1Du6/jjDKQwroQn73U+lmIRn1ZkNXorWCu/sW/ihI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e4F/VKth; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712581466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYsEbh/lFBGC7LmhffRxYV+mBnuUn8I4RfVy+AtiIJ0=;
-	b=e4F/VKth0B3f2BA4XCcymNSYwPgNZonVsfBurjauLjFdepwFBE2yaI7slejy3s13GiTFEe
-	Sy48NxnZn1mn4esdm0TvV77Eny/Xo3t1m1lcVvBHQvGQQkxgtI7WhPueQX4rcT3WvKdSqM
-	eH1aB/NLIxJ70DkLfzpoc7Tc7bdXcl0=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-235-tzjOB3O-PhKlsUYCTVtPRQ-1; Mon, 08 Apr 2024 09:04:24 -0400
-X-MC-Unique: tzjOB3O-PhKlsUYCTVtPRQ-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-516ddd6d66fso1459473e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:04:24 -0700 (PDT)
+	s=arc-20240116; t=1712581479; c=relaxed/simple;
+	bh=7bpRSGGPDQCS7wFqBB78vDQoO6pcgett9EASBZ5btWM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kreP4RidDVCafM9ON+lTX0bKbHmRKGg4K8B/LbDCemu8J0gEf9f2nJbDR/Hqj0Z9R0dnNY7Gw8p6HzMqH6LIfxejjfl0HHYIj9wA14KIsswvcqvKSvebWSEde1E7uuviajZi1plsS2CSz0AbviVlJOvLg2uojKVGmYlxrb0x1mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V6V/JtZx; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-434b5abbb0dso144071cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712581477; x=1713186277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVioy9EMNQnc5SXcQapeY7Z9K+iAa8Z5L7a/jg+l4cY=;
+        b=V6V/JtZxF+/LndpdhRmbOuo/U1EUSxttljOGzrE+EYarMRJhqEEIgiDu4CsM1Rtzgc
+         Bn4ku4kJdDrpz3KiK4Ie+zt0mKIB/PTxj5/LDT9Ijr4jydu/cCGGmGNhnaAEtyqn3Jqx
+         OAsgszri7Xgg4E4q5vSKJ9TK8odjahLuUIrdoUIicGTlf2snFgCpWJEfYItZSkk8JmhW
+         hb72eE2ANh9jW4ca6uH5jCx20bmxaOPzi2kTZcLWCovCiW0lri6J0lOWG46jNZTnsU+a
+         /TakSItP2mKngyv4cbTTctHtPLKHRhaE5+J++vrA6fe4dtZ76iWAL2f/rtjUOOJGTvJJ
+         Z67w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712581463; x=1713186263;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eYsEbh/lFBGC7LmhffRxYV+mBnuUn8I4RfVy+AtiIJ0=;
-        b=qjYoYIVpeAvmtjf9vH5xONFUq+wCdP4966PZQ2ITyMsLaetN79zNKCdZPp0OCeRpFI
-         PJHERDo5Txo2TbyRHiKj9MBK+LaD4F9UQ1uSKsE4YooR2g+GCP/LPwWdqAatMVgv9XBX
-         RwCY81d0jAN3vE4OoQuUWQv9wZu2QY4/sCLqSQ+nFPbrxvTdPc5LGhKyOHE34AiTMofM
-         EhNbX4xM9+fIq621mDiGY9w220Ba+vc2t17YUXjvvcIswsfHAa/1dT2kFEBYP0mnbJFY
-         e4aITlFpubgNUGXzmYi4ZiPZjQn5l4DBpmdWf9VFq/ODWYbMvZwAm396swqp6FqEWjdI
-         JzDw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZztir37Ms8moSlM0OFf0U15oXfpxcaQWKGq6/T0/bI0hKNI9UQx8PqgHjmXCEE/pUGX5iP4Gh745kSDNjayN23q8rQLMlSL8cOU0U
-X-Gm-Message-State: AOJu0Yx+M+Cibw/nA63XbEhVbRTlEfqs8DwZOghicn60zR0/3RsWH2+f
-	1Mai6zAOCMy9PGl7o1wYC2ZoNoT6gwKiXaNArSBOwxp3RG4QHNzyGOBEhNF8/Hde2ddFvrelzB0
-	vLy+qQz8n52x8RzrvuGaOLQ2iloBrRiwnxB2UgDaCRlPGOPP/oj4yOZMKoU873w==
-X-Received: by 2002:a05:6512:285:b0:516:d18b:eaea with SMTP id j5-20020a056512028500b00516d18beaeamr5852668lfp.33.1712581463103;
-        Mon, 08 Apr 2024 06:04:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVbN23MbRWpoFmVMF8qzJBUpAHXZlNsgr5ChUftbP9Us3ZW5wqEVHzzpFcU5atACDir8I7+g==
-X-Received: by 2002:a05:6512:285:b0:516:d18b:eaea with SMTP id j5-20020a056512028500b00516d18beaeamr5852651lfp.33.1712581462739;
-        Mon, 08 Apr 2024 06:04:22 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id di19-20020a056402319300b0056b7ed75a46sm4178873edb.27.2024.04.08.06.04.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 06:04:16 -0700 (PDT)
-Message-ID: <e1ccf281-5c77-4447-a6c7-5b0b008c7c56@redhat.com>
-Date: Mon, 8 Apr 2024 15:04:13 +0200
+        d=1e100.net; s=20230601; t=1712581477; x=1713186277;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TVioy9EMNQnc5SXcQapeY7Z9K+iAa8Z5L7a/jg+l4cY=;
+        b=kz4ModCiMVla1At+wusxsdAbdOIWfDGyxDTUqpVQSpaIrEK5h6nEjkiCGNV0PJj3qp
+         v6ATL6tA7n3jPRIWI/yc8lGLxZEHzbgbnSPnWFu1BBFkWXrX+mUrL7Y+V+rFd0ufOzsj
+         diztGiq/2hmtWN5wi52uBy6izsMWJdAj9I3A6oBAhFHkTPSWGotyNr5fXoU5E8tV7BP6
+         H48V5pxaud+DHS1Q8z/7cdTPJ86WP5+Xyr3gBLFvuJDtKTw8cgdTdv2ddqx4KEjly+jb
+         TXqdQFXjvnhWQhft385bGAQedhYB3ygrmN92Pj4ucLwV20CGiZXo10Lb1zxhpgBw24ZE
+         ZNFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWv8RsN5dXgPtHhLeK2d6o1Q6xnPgps/Zlk+BYc/Ry8D902/C0YbJ8tx2I9JD08PA/WAZ9XAhoXrFDTNAgYoCivwfTVPs/gkSV/HEyW
+X-Gm-Message-State: AOJu0YyV40mYEwjp1GBMahYpRHz9IawylSad2fJW0snIM/pTqFyNyRgu
+	TeYT9cLLL37FtMPn0+aPJtd+A16bozZfPsBFcYxTCtJfVmHNxK5kDPoY7f+ifohLx+mvP7WpLW0
+	lXmU/xRujOaUjk3wqUYfokxhx0DtpqpRmlYO1
+X-Google-Smtp-Source: AGHT+IFZaV9W1guyCiCFvlxL0Tuf2HLr1fiYCHIb/nvtokprZt499aOhX2wlCRAmDZ6qHpx8t/vS6dcU4G703dCeYVM=
+X-Received: by 2002:a05:622a:4812:b0:434:7bb9:f231 with SMTP id
+ fb18-20020a05622a481200b004347bb9f231mr343464qtb.12.1712581476934; Mon, 08
+ Apr 2024 06:04:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] platform/x86: thinkpad_acpi: Support for trackpoint
- doubletap
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: ilpo.jarvinen@linux.intel.com, hmh@hmh.eng.br, dmitry.torokhov@gmail.com,
- ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- njoshi1@lenovo.com, vsankar@lenovo.com, peter.hutterer@redhat.com
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-3-mpearson-lenovo@squebb.ca>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240324210817.192033-3-mpearson-lenovo@squebb.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240403-public-ucsi-h-v3-0-f848e18c8ed2@chromium.org>
+ <20240403-public-ucsi-h-v3-2-f848e18c8ed2@chromium.org> <3ezjocthsigo3t746slmgzffnmpxw7wwf3s535basiaf2qy6io@7ocxva6ndsbt>
+ <2024040449-average-foyer-defa@gregkh> <oi3bwdyvyaezpmyxfdtsbiwwprxi2ufc3hlzoz23d5rxdkperl@cxpd7enatg7h>
+ <2024040422-ripcord-bladder-bdda@gregkh>
+In-Reply-To: <2024040422-ripcord-bladder-bdda@gregkh>
+From: Guenter Roeck <groeck@google.com>
+Date: Mon, 8 Apr 2024 06:04:22 -0700
+Message-ID: <CABXOdTeqz5Kza5tYXbCdTyPT66xtezai4C5TFkqmOpQc+1r8Xg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] usb: typec: ucsi: Implement ChromeOS UCSI driver
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Pavan Holla <pholla@chromium.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, 
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mark,
+On Thu, Apr 4, 2024 at 6:30=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+[ ... ]
 
-On 3/24/24 10:07 PM, Mark Pearson wrote:
-> Lenovo trackpoints are adding the ability to generate a doubletap event.
-> This handles the doubletap event and sends the KEY_DOUBLECLICK event to
-> userspace.
-> 
-> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> Signed-off-by: Vishnu Sankar <vsankar@lenovo.com>
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index 82429e59999d..2bbb32c898e9 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -232,6 +232,7 @@ enum tpacpi_hkey_event_t {
->  
->  	/* Misc */
->  	TP_HKEY_EV_RFKILL_CHANGED	= 0x7000, /* rfkill switch changed */
-> +	TP_HKEY_EV_TRACKPOINT_DOUBLETAP = 0x8036, /* doubletap on Trackpoint*/
->  };
->  
->  /****************************************************************************
-> @@ -4081,6 +4082,22 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
->  				break;
->  			}
->  			fallthrough;	/* to default */
+> > > > if (WARN_ON_ONCE(val_len > MAX_EC_DATA_SIZE))
+> > > >   return -EINVAL;
+> > >
+> > > So if you trigger this, you just rebooted all boxes that have
+> > > panic-on-warn enabled (hint, the HUGE majority in quantity of Linux
+> > > systems out there.)
+> > >
+> > > So don't do that, just handle it like this.
+> >
+> > Does that mean that we should not use WARN at all? What is the best
+> > current practice for WARN usage?
+>
+> To never use it.  Handle the issue and recover properly.
+>
+> > I'm asking because for me this looks like a perfect usecase. If I were
+> > at the positiion of the driver developer, I'd like to know the whole
+> > path leading to the bad call, not just the fact that the function was
+> > called with the buffer being too big.
+>
+> Then use ftrace if you are a driver developer, don't crash users boxes
+> please.
+>
+> If you REALLY need a traceback, then provide that, but do NOT use WARN()
+> for just normal debugging calls that you want to leave around in the
+> system for users to trip over.
+>
 
-This now no longer fallsthrough to default. IMHO the best thing to do
-here is add a new preparation patch which initializes known_ev to false
-inside the while before the switch-case (together with the send_acpi_ev
-and ignore_acpi_ev init). and then change this fallthrough to a break
-in the preparation patch. You can then also remove the default case
-altogether in this prep patch.
+That is not common practice.
 
-> +		case 8:
-> +			/* 0x8036: Trackpoint doubletaps */
-> +			if (hkey == TP_HKEY_EV_TRACKPOINT_DOUBLETAP) {
-> +				send_acpi_ev = true;
-> +				ignore_acpi_ev = false;
+$ git grep WARN_ON drivers/gpu | wc
+   3004   11999  246545
+$ git grep WARN_ON drivers/net/ | wc
+   3679   14564  308230
+$ git grep WARN_ON drivers/net/wireless | wc
+   1985    8112  166081
 
-These 2 values are set as the default above the switch-case, please
-drop these 2 lines.
+We get hundreds of thousands of reports with warning backtraces from
+Chromebooks in the field _every single day_. Most of those are from
+drm and wireless subsystems. We even had to scale back the percentage
+of reported warning backtraces because the large volume overwhelmed
+the reporting system. When approached about it, developers usually
+respond with "this backtrace is absolutely necessary", but nothing
+ever happens to fix the reported problems. In practice, they are just
+ignored.
 
-> +				known_ev = true;
-> +				/* Send to user space */
-> +				mutex_lock(&tpacpi_inputdev_send_mutex);
-> +				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 1);
-> +				input_sync(tpacpi_inputdev);
-> +				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 0);
-> +				input_sync(tpacpi_inputdev);
-> +				mutex_unlock(&tpacpi_inputdev_send_mutex);
+This means that any system using drm or wireless interfaces just can
+not really enable panic-on-warn because that would crash the system
+all the time.
 
-This code duplicates tpacpi_input_send_key(), what you want to do here
-is define a hotkey_keycode_map scancode range for new 0x8xxx codes like how this
-was done when extended scancodes where added to deal with the new 0x13xx hotkey
-event codes for the 2017+ models.
-
-See commit 696c6523ec8f ("platform/x86: thinkpad_acpi: add mapping for new hotkeys")
-
-Despite re-using tpacpi_input_send_key() there are 2 reasons why we want
-scancodes for these new "keys".
-
-1. By adding the keys to the hotkey_keycode_map they automatically
-also get input_set_capability(tpacpi_inputdev, EV_KEY, hotkey_keycode_map[i]);
-called on them advertising to userspace that tpacpi_inputdev can actually
-generate these keypresses. Something which is currently lacking from your
-patch. Related to this did you test this with evtest? I think that the input
-core will suppress the events when you do not set the capability ?
-
-2. This allows remapping scancodes to different KEY_foo values with hwdb
-entries.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-
-
-> +				break;
-> +			}
-> +			fallthrough;	/* to default */
->  		default:
->  			known_ev = false;
->  		}
-
+Guenter
 
