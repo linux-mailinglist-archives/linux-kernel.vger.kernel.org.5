@@ -1,123 +1,127 @@
-Return-Path: <linux-kernel+bounces-135531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F36089C73E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:40:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0514889C742
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07041C21681
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84189285984
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED89613EFF3;
-	Mon,  8 Apr 2024 14:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E9013F003;
+	Mon,  8 Apr 2024 14:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DvciASTP"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Rc/hsJsx"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C65613CFAF;
-	Mon,  8 Apr 2024 14:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE9E13E8AB;
+	Mon,  8 Apr 2024 14:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712587241; cv=none; b=F2314xs8XmhCU4FTsZEIe5XlRIMQYYFi/HLtWgPmhKbwENXeluBte9ldYx67ibNKfskAmrEtoGRZanIOzldmTmT2I+Rzm5MuvqD99zq0jc6n2lFhbqKncQqJCki7KlzWu75BHlTFhE/IYgp9f94JkM9Sa1h12K48rRIlBxw7W94=
+	t=1712587268; cv=none; b=HTbXixyb6jF5UNVYscLyv5UkFahJdZJyktcRwc0553JQi4W0MkxWfrcvtrpwW0Mz79oSfRHKOswf3qY9B/NCHbxjx6eslSiZ1skcwv3/ccomLK5cH3xHEuBPzMQ49gbm9USZ7a+sCMt0qSStBmVsZP2Jc+3XDDq4NcG2YIOEvZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712587241; c=relaxed/simple;
-	bh=8X0MVOWlSi+HfrtqF9UetPVZ+u7e6t0GGlZGIkUh+fk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Bjae0jqq1p6PbtJt2NPuMiz+dMZO64+KrVv22oNzLuwMQ15o29FlerLxep3GbpPdHCHsJE302vto9RvvYA+liTsNPsqDGsamNpR1j7DmbaBLGSoil9dQta8ZNUvigCYO9fwL1sOYMrJgU9IdjSYbsO/I0DJNs3FrHOBdxgDtc1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DvciASTP; arc=none smtp.client-ip=217.70.178.240
+	s=arc-20240116; t=1712587268; c=relaxed/simple;
+	bh=0jHV2atfMCFH7kbPbCAtT4ZpB0B4fwpk/IZxZ+9Ny+c=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=j83DyGqye9Je/KKDMBw7faWVbg9fdGDrq22xVjC/uDlbMtID23xYZdGiBTUw5sJTknWpjEFwl5Ss4pga4YlK2UIpAXH6ZUMv+hjbjjS+fURg9CJgYEgibKbfv09b4TFfuMAwCeMn3lx+POVAeroR9NAImJ+ElT04Buk7i99gXA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Rc/hsJsx; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay2-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::222])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id DDD8EC21C2;
-	Mon,  8 Apr 2024 14:40:30 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B7B040007;
-	Mon,  8 Apr 2024 14:40:22 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EEE2D2000B;
+	Mon,  8 Apr 2024 14:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712587223;
+	t=1712587263;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zzXXIjVTOW/GVigtP+lIc6F2DTSKnHcKv5KIDE8o188=;
-	b=DvciASTPrZ7p7Twm4rU2E4rW4lwWEthuTrCWrALitdoFetUariBc6YaLP5P1QuXkTH72o8
-	lFgYvuKSTDWF86pLjBeklcMgY1o7Rule2Ql2sLReXfJDQRxHNdurKAwxB0fiAugeGi9AyK
-	7XNEnw5JOfyLxFe5+khimRumVJUNQQWd35/VXJgTxinocaGKvxPOw3PE+skzhNmQKQejst
-	ljkO6IEcgNx6EictOEMWWBeN+rYwocHW28XKzo+lUTexugKjee92FovMPgiO7qgpvGZtnZ
-	MsEESdrndAf6HcAnMgljkhI+oUl8L2FJh0K6kaEF9T/sxaY+od6OXu2B0KSTfQ==
-Date: Mon, 8 Apr 2024 16:40:21 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Wolfram Sang
- <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, Android Kernel Team
- <kernel-team@android.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier
- when created from phandles
-Message-ID: <20240408164021.6f13bf66@bootlin.com>
-In-Reply-To: <CAGETcx-oMbjtgW-sqzP6GPuM9BwgQrYJawpui3QMf1A-ETHpvg@mail.gmail.com>
-References: <20240220111044.133776-1-herve.codina@bootlin.com>
-	<20240220111044.133776-3-herve.codina@bootlin.com>
-	<CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
-	<20240221095137.616d2aaa@bootlin.com>
-	<CAGETcx9eFuqwJTSrGz9Or8nfHCN3=kNO5KpXwdUxQ4Z7FxHZug@mail.gmail.com>
-	<20240321125904.3ed99eb5@bootlin.com>
-	<CAGETcx-oMbjtgW-sqzP6GPuM9BwgQrYJawpui3QMf1A-ETHpvg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	bh=LdjuZYzz4AD6KxgkM3stOzUQbhIkDEUieomkwHFI+Js=;
+	b=Rc/hsJsxK+KTTl/IdGpI6oT2jlCuaQ1aZufQzrUctxKP8DN0AGcmgL1wYgkjsteFF1pD2Q
+	F3gDv2fgc9264wJD0pfwQcBx//HMp0qIR3ndhg7MNv9hYw6DcI2iXKjpogYEH4IWmYbVTj
+	ri2gAvVz8ZZPqssjOUEC9Q5j7kEXkpOKiDRwpyLgSJToSqFOu8I0EwexvJuVs6BKaAwWtE
+	kGsY9GpvY3nj0/BhFPFfxhBnyGOzRWlleQua6GIGjGbcydJY9rZukcFIULgyuYONhYVduz
+	+075Yc8mFs0MNr53QYSW/7nuJB5i+3ypSZgo/QD0S3oBXKkgC6vBPENhJyIPSw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Date: Mon, 08 Apr 2024 16:41:02 +0200
+Message-Id: <D0ETINAEWXQP.2VIPSSSM1PTMD@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v2 02/11] spi: dt-bindings: cdns,qspi-nor: sort
+ compatibles alphabetically
+Cc: "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Vaishnav Achath" <vaishnav.a@ti.com>, "Thomas Bogendoerfer"
+ <tsbogend@alpha.franken.de>, "Rob Herring" <robh@kernel.org>,
+ <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>, "Vladimir
+ Kondratiev" <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Mark Brown" <broonie@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
+ <20240405-cdns-qspi-mbly-v2-2-956679866d6d@bootlin.com>
+ <37d89b59-d94e-47aa-8841-f2758b8e18b2@sirena.org.uk>
+In-Reply-To: <37d89b59-d94e-47aa-8841-f2758b8e18b2@sirena.org.uk>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi Sarava,
+Hello,
 
-On Fri, 22 Mar 2024 19:00:03 -0700
-Saravana Kannan <saravanak@google.com> wrote:
+On Mon Apr 8, 2024 at 4:14 PM CEST, Mark Brown wrote:
+> On Fri, Apr 05, 2024 at 05:02:12PM +0200, Th=C3=A9o Lebrun wrote:
+> > Compatibles are ordered by date of addition.
+> > Switch to (deterministic) alphabetical ordering.
+> >=20
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b=
+/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> > index 5509c126b1cf..e53d443c6f93 100644
+> > --- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> > @@ -79,13 +79,13 @@ properties:
+> >        - items:
+> >            - enum:
+> >                - amd,pensando-elba-qspi
+> > -              - mobileye,eyeq5-ospi
+> > -              - ti,k2g-qspi
+> > -              - ti,am654-ospi
+> >                - intel,lgm-qspi
+> > -              - xlnx,versal-ospi-1.0
+> >                - intel,socfpga-qspi
+> > +              - mobileye,eyeq5-ospi
+> >                - starfive,jh7110-qspi
+> > +              - ti,am654-ospi
+> > +              - ti,k2g-qspi
+> > +              - xlnx,versal-ospi-1.0
+>
+> In general it's better to sort trivial cleanup patches like this before
+> new functionality in order to avoid spurious dependencies.
 
-> On Thu, Mar 21, 2024 at 4:59 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> >
-> > Hi Saravana,
-> >
-> > On Mon, 4 Mar 2024 23:14:13 -0800
-> > Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > ...  
-> > >
-> > > Thanks for the example. Let me think about this a bit on how we could
-> > > fix this and get back to you.
-> > >
-> > > Please do ping me if I don't get back in a week or two.
-> > >  
-> >
-> > This is my ping.
-> > Do you move forward ?  
-> 
-> Thanks for the ping. I thought about it a bit. I think the right fix
-> it to undo the overlay fix I had suggested to Geert and then make the
-> overlay code call __fw_devlink_pickup_dangling_consumers() on the
-> parent device of the top level overlay nodes that get added that don't
-> have a device created for them.
-> 
-> I'll try to wrap up a patch for this on Monday. But if you want to
-> take a shot at this, that's ok too.
-> 
+It wasn't clear to me if this patch was desired. I therefore put it
+afterwards to avoid conflicts if "spi: dt-bindings: cdns,qspi-nor: add
+mobileye,eyeq5-ospi compatible" was applied.
 
-I didn't see anything on this topic. Maybe I missed the related modifications.
-Did you move forward on that patch ?
+Now that I know it is desired, I'll move it first in the series.
 
-Best regards,
-Hervé
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
