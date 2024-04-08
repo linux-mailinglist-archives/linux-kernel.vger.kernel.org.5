@@ -1,129 +1,110 @@
-Return-Path: <linux-kernel+bounces-135215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F5689BCD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:17:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C57889BD93
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:53:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549561F22135
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:17:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6041C21B28
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219A65339B;
-	Mon,  8 Apr 2024 10:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6B3651B4;
+	Mon,  8 Apr 2024 10:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rvKU2GoZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nd7vMODY"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683A3524AD
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 10:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2792E612F5;
+	Mon,  8 Apr 2024 10:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712571462; cv=none; b=qIEyZmoatXd0654MHfNtOn9th3RtMAL/8sIdb441EGcL543CTF8rzq5Qou+K/PuW0N/vaYniEAaJmphpnpisn8U/UZrXykXz4KAJrmLbiY6+uCTSDYkCtX9CYz+LsaugfrV1Q4enDedwGMJpGtnNdWSW0AVrmEZOHv2kjwpTCC8=
+	t=1712573580; cv=none; b=oIKqspciKnVW+w35r2+Cd7N8MTyLBSfsCV3vW7LtD+PFCXbnWKGFGgs6tzQ45N94E95l/NW2CsGnCMpj91AGvLDtslN4SV/mLOKZWS3AO5uaY8ITiNHupBtwNzY9yAoL+hcBgFVKQD28xUyy2o9Tf5fnfg6qfItVmhBEkVaMqBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712571462; c=relaxed/simple;
-	bh=OG9cNKuW5LqEoaNK3TpF1vRBrzAoC6dHxwMeVlrmYwk=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=M1SDkOaGURqkwzX/K18g7skwep3LLFe69sRLFUnxU8HypHk29Tj4vtfl4GXDNHggMmBu7fTCNPfnD5+eFxs1vqmiLK53AWFkf+2i1XcDmeuqMdi0YL91yecnLyToOE6vLBehWflDXcm6DNsjKReBrphQanO/QUJjr3O6quamSR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rvKU2GoZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C66E9C43399;
-	Mon,  8 Apr 2024 10:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712571462;
-	bh=OG9cNKuW5LqEoaNK3TpF1vRBrzAoC6dHxwMeVlrmYwk=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=rvKU2GoZyRcnmUQC6I5QcNLol4ltbN43mN908IkVPTkRzrbhzbMCk23uo9Ggd4N6Z
-	 5J3ny7gOZmeOGpWDXUXiKl72V0qUBosunju6XK7c7xCAfrsnYUI/mv6LoWfEbclkrB
-	 CabtOpETgsDZ1Ty+xrCI7O09f+54S/H1Gg5OUSVXj7y6EarRWRZzerfnK/FgzmmBF6
-	 EotvhUS9LO+z74cEVHbOi+MvNM+13oMn8Fdp5Xbpi2d6RDTk0aw7+cRhGswBYgtYa1
-	 z5yhslDnxNU81okjLWme3mGQZUOXPxycLAkO8UcSVvs2xEZZmm1KoCkuqXfSgYpS7Y
-	 d2D6PftNbxQqA==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id DE6371200032;
-	Mon,  8 Apr 2024 06:17:40 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 08 Apr 2024 06:17:40 -0400
-X-ME-Sender: <xms:RMQTZhvjfL83qhCd2GU_ETsiMg40OoKqUFwstf1AW8Ut7xLxONl59A>
-    <xme:RMQTZqcQEcuQtDs_bJGOEqNoBwfsKvPxQdcZz-XIY7TtvOlxCaVemOcxYaFxG6Eop
-    oBczHKsS7PcWAfUqnk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
-    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
-    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
-    druggv
-X-ME-Proxy: <xmx:RMQTZkx5ju5gpobZgFR8FVpj5E41Gdvwap84jlBI0D2r0A3jAsCQoQ>
-    <xmx:RMQTZoNZl5IuWlGdOZTq1LEe75nV_jMa7w2oRRj161m9WXyBw7H-2A>
-    <xmx:RMQTZh-T5L8NzLGr69g-BX6dDea3rOXCIjbLAr5rFOxLfDwHCVVbnw>
-    <xmx:RMQTZoUa-xMGeRHODc5ituxuH9M5NJDS8kjIxaZYlbkoEBdXPXCayw>
-    <xmx:RMQTZida91ZjUK0cXg1N6T1yaIQnrzUXPzzGJtpwkFEMHrRf3pjcK5Fj>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 97B6BB6008D; Mon,  8 Apr 2024 06:17:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
+	s=arc-20240116; t=1712573580; c=relaxed/simple;
+	bh=Ud0GI2flSvHcXw7VWyujx4h4/Y6ogZjhOy0fklopGM8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oc+plKWcso7QVPVme0LboA0VXRXiOiMp9BDM4PESkgj1MbZuC+eGbWLboDpGAD398Ua7d244C06di6BSCoYfe27Yi/+8wEyBxEcBuvsp220xOXyXiD5UkYSQ5kocwTIxlo035SzqmoGTuxosp+ySIAVOe+5bhhYJKuAeIAOYiCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=nd7vMODY; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385o0CU020277;
+	Mon, 8 Apr 2024 05:24:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=S
+	r7C9ozK7GY64+rWeoWTEytRlN75UgieuR9uJAm3Bpg=; b=nd7vMODYwFhmoPd/n
+	S+8tQkjyghOADqycT/Ql8dJZmI8aCqSpW+czmpdXFVA6A41kDuXRaOpJf0uOdBOc
+	nOrutklC/IYisxvYFiDJAQOWRpzx/cpUQli94/rCkJfDJOOPDla87cqLpVR4jW9f
+	ETRN+5KGcytFHyjMbCyDSgRfMTPXRCHo+SqGmP5SYYv13D5SthsgvQohDsjPtj8k
+	MmK9sHO9Rey2T8vRqyhyb2aPngY/BEgMedOa/YkQ3yqu+s2CRofUFG3DW39mDhLb
+	m2YjU+u0kQdG4uadsYTrflchULb6XIc8Gb4Be5GszBdk2akZ5s26KxJYrnDQQZ+o
+	Bo16w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xb2tjhp0e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 05:24:18 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
+ 11:24:16 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 8 Apr 2024 11:24:16 +0100
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 25413820242;
+	Mon,  8 Apr 2024 10:18:03 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH 0/4] ASoC: cs35l56: Fixes to handling of ASP1 config registers
+Date: Mon, 8 Apr 2024 11:17:59 +0100
+Message-ID: <20240408101803.43183-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <80c20c7b-4e7a-43af-8b59-7f2a98272e99@app.fastmail.com>
-In-Reply-To: <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
-References: <20240405152924.252598-1-schnelle@linux.ibm.com>
- <20240405152924.252598-2-schnelle@linux.ibm.com>
- <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
-Date: Mon, 08 Apr 2024 12:17:19 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Jiri Slaby" <jirislaby@kernel.org>,
- linux-serial <linux-serial@vger.kernel.org>,
- "Heiko Carstens" <hca@linux.ibm.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] tty: serial: handle HAS_IOPORT dependencies
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: WqCasWKkO3re0xRWNkShxb2S27Q2THeC
+X-Proofpoint-GUID: WqCasWKkO3re0xRWNkShxb2S27Q2THeC
+X-Proofpoint-Spam-Reason: safe
 
-On Mon, Apr 8, 2024, at 11:54, Ilpo J=C3=A4rvinen wrote:
-> On Fri, 5 Apr 2024, Niklas Schnelle wrote:
+This chain fixes some problems with some previous patches for handling
+the ASP1 config registers. The root of the problem is that the ownership
+of these registers can be either with the firmware or the driver, and that
+the chip has to be soft-reset after downloading the firmware.
 
->>  config SERIAL_8250_CS
->>  	tristate "8250/16550 PCMCIA device support"
->> -	depends on PCMCIA && SERIAL_8250
->> +	depends on PCMCIA && SERIAL_8250 && HAS_IOPORT
->>  	help
->>  	  Say Y here to enable support for 16-bit PCMCIA serial devices,
->>  	  including serial port cards, modems, and the modem functions of
->
-> What about drivers that use SERIAL8250_PORT()?
+This chain adds and uses a regmap_read_bypassed() function so that the
+driver can leave the regmap in cache-only until the chip has rebooted,
+but still poll a register to detect when the chip has rebooted.
 
-It probably makes sense to hide these, since they won't ever
-work. I probably missed them in my initial series because they
-don't cause a compile-time error, but I agree that there is no
-use in showing the options here.
+Richard Fitzgerald (4):
+  regmap: Add regmap_read_bypassed()
+  ALSA: hda: cs35l56: Exit cache-only after
+    cs35l56_wait_for_firmware_boot()
+  ASoC: cs35l56: Fix unintended bus access while resetting amp
+  ASoC: cs35l56: Prevent overwriting firmware ASP config
 
-> Also port provided in 8250_PNP might expect it I think.
+ drivers/base/regmap/regmap.c      | 37 ++++++++++++++
+ include/linux/regmap.h            |  8 +++
+ include/sound/cs35l56.h           |  2 +
+ sound/pci/hda/cs35l56_hda.c       |  4 ++
+ sound/soc/codecs/cs35l56-sdw.c    |  2 -
+ sound/soc/codecs/cs35l56-shared.c | 83 ++++++++++++++++++++-----------
+ sound/soc/codecs/cs35l56.c        | 26 +++++++++-
+ 7 files changed, 130 insertions(+), 32 deletions(-)
 
-I don't think these need any change: 8250_pnp.c supports
-both IORESOURCE_IO and IORESOURCE_MEM based ports. It will
-still create a 8250 port for the I/O based ones but they
-will now correctly fail to probe in the main driver rather
-than crashing the kernel. PNP devices that only use
-memory BARs will keep working as before, on both machines
-with and without CONFIG_HAS_IOPORT.
+-- 
+2.39.2
 
-I think that most 8250_pnp variants are probably used only
-with ISAPNP or PNPBIOS, neither of which exists without
-HAS_IOPORT, but you could certainly have PNPACPI on arm
-or riscv machines that don't have port I/O but come with
-a memory-mapped 8250 port described by firmware.
-
-    Arnd
 
