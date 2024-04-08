@@ -1,182 +1,120 @@
-Return-Path: <linux-kernel+bounces-135574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1D889C7C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:06:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47C089C818
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:22:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 131AB283A75
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A7C8284131
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE4213F44D;
-	Mon,  8 Apr 2024 15:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA2D140381;
+	Mon,  8 Apr 2024 15:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vCRYj0Zo"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="HoUXJp6S";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="yjqDBG6G"
+Received: from fallback13.i.mail.ru (fallback13.i.mail.ru [79.137.243.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E22313F440
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE4313F45E;
+	Mon,  8 Apr 2024 15:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712588788; cv=none; b=PezYfkz9QN7+jxO/DSUoPsHHHeW5QwckCZlwQBBws2UZS/i4SZMYu/7gqXCEWNro2yC5uoQzmXkwL3ZV3Oo57aJnML6FwPYzJtQvyRpfHygX1X2GZKt018lB09TzA7G14unqlZeoTzju9FH8Eabk6YccrVaJmjxma4Ww1oD7NPw=
+	t=1712589745; cv=none; b=Y9I72atoNvvlC2G+6Csm4y503ASbeXsFPBSvJn77mvA9x8pcsfVHpTMlgVV9F0vIUxGacxt2VRVPcd9uSB8mF4llMjJ4oVYq4ByQZ4n37cI/qRhR9glSVa6Ykwqr/NYt1m8339c8Bv0c4mLKj6+7AZzDj84LVej6IQu6UVeM8FQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712588788; c=relaxed/simple;
-	bh=MsNpVO9pB/7MMcibh2I88NHwGOLe1uSWzf4L7HJ0tE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b7on60fzrxgTqvC6zTc+u86/9y5M8N1nZh5OsqNJJGoQ5fBSSONrS7z2HJ6pwK/pdA1ST/JKhCdGZOQ4uFPZC1jETevS+BYQ+R82pWF/RCvYb3epQBIkvsMGuS8F1tgW0404qmyukMOYIDUJtb+IsIv7wDtOiaQSwr38dRaG4Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vCRYj0Zo; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4165805e158so10399725e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712588784; x=1713193584; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dxs6cIQGM15UBhBDso3tA3kUyIdNuLINVbFD4GzTI/Q=;
-        b=vCRYj0Zo/VI9J8iHKRgyZJeNxW+CL7ZduogXCThyoMGKjHS0zyapKDeJ/mnZ9w5RLM
-         EITe3YeyXDofQ9m3U+4b8VBeGqGA4lAmD9B5RVNqD9Um8dwWgcT3PDg92UCKFeN9Mppn
-         JvSZCBZzYplhqELjw+kjDCFPYMlUFsCWAtiIt/ZdG705IiGTLf/LuePAv+y8LvirQlJI
-         VOHxNq9Z+eQlk+2rUZXeyZswzn6yAynjc5VYKCfU5/uUFfen2NRL3ccxMV3pyrKMm/s3
-         gHFFl77qyeMQpskKZrtBej35SeNW3UDNp5wOPwyMn5jWCrwmOJ8smHrY7OLlXuPwA4nA
-         WpWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712588784; x=1713193584;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dxs6cIQGM15UBhBDso3tA3kUyIdNuLINVbFD4GzTI/Q=;
-        b=AbVMkO0uTFw7QX3wCaE4hdKNmYV4AWNo8tUt/idxxxR+atyTAJ9HFVzby+4+LJ23oR
-         7LEjHDqlBCnH49yofi1cIQR2Jp02oiQtg0sCIKA/yArYCbcyEqxe0OesJuBhJOm9uYqy
-         bJWkBFxA+Du0+fWXScTyD3LdI2LdfLFqkdZoN2a6cC1C1Y5PQc6j9cTsHsksncxDhuJl
-         lpJp7x/EYTyVei7ER6j35JKv+kbdQnQPOflcnQScim3eQHzDR+L+R3Opef3lN3qGCpxt
-         GJMnbsOQVNXwlM7OdhNGOIsVUmKgPCpLMdh3hIOekupcwP4gaq4vyoUX2iwO8tQZHxHz
-         Q20Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVTo5GMdJm85wjUXxdC/pBenJDgAEL1+xax8EuqTzeKJGPjmm0lkdQmLSiOEHD0VoBOy9oARUy5Z7tWe/W3/NaIGzZcIpoUz3kP/2SW
-X-Gm-Message-State: AOJu0YzHbM8GD1rX6UhHPfqgDT+Q4XxUMVX12K2UUGAdA0nNIurmdql/
-	Ne13RrE/qfjtmFmBJH3K2X/ThfDAgRqb26pTubm1ZwAsOfBzKPzBh/2foNCyy0U=
-X-Google-Smtp-Source: AGHT+IFnASuk0b7wQuK6k5VWyqkLb542+HkDjKIZIid0oTGMKzSJn6440x/462PKUtK4PX7NzyAtfA==
-X-Received: by 2002:a5d:6086:0:b0:343:d06e:51fe with SMTP id w6-20020a5d6086000000b00343d06e51femr6955094wrt.20.1712588784285;
-        Mon, 08 Apr 2024 08:06:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id n6-20020a5d6606000000b0033e745b8bcfsm9165815wru.88.2024.04.08.08.06.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 08:06:23 -0700 (PDT)
-Message-ID: <69ab2bd9-401a-42ff-90fa-6600dd071722@linaro.org>
-Date: Mon, 8 Apr 2024 17:06:21 +0200
+	s=arc-20240116; t=1712589745; c=relaxed/simple;
+	bh=p3uqGizp9xIMGF6CjhHwqsqD088dKF3LY0AdqM5qQiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qq7rG6g6x6UyRiRE8C0PWuOCEpzuPSdcajUKtR5mWBZl/ZD8bGSepzcaheLzy7jNRyHAZDceshtJPK+hVsY//2a0KfXmX52fGMy3fBLAwByXogC9DYNSLY0sAdkcGHkV7eqIOc9lF7CwSUR7FYBW/oCZbbonwShRceCZ1btnu38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=HoUXJp6S; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=yjqDBG6G; arc=none smtp.client-ip=79.137.243.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
+	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=wx+/Kt3SIcMw3DZo1mkGE7FX70+jMpgo7G/HwD3+K2o=;
+	t=1712589742;x=1712679742; 
+	b=HoUXJp6SeqVinIgCUBN52+/roPTJLzz2FJjeVhKtjKZddGdr2I0O8zDlLsM7FYxP/226b/GAXAGwRdlaGhDUWxNWVdGCXcFWMelc1C1scfJPzANjZS+6bV4HufizFmONdSZx11pnivn0lYeuZw5riIzh0e/tk864cP4pzyxQTEiIrg3Iy8EkHSKTYl2GsFDlqvMr2xAM4Ruv6q2E8aKBVnrfXMpYeUv8X4YcE9zF6Yj6l6JOT1E05VvaskijyYEU9ALTws/O4BUNxPqxax0rzT2yCyG/iZqdPa10BFe9V7CZH59zYAMkP/fbOeSmcH2XIajKKdB8r/U/gPJTTf83sQ==;
+Received: from [10.12.4.14] (port=36942 helo=smtp39.i.mail.ru)
+	by fallback13.i.mail.ru with esmtp (envelope-from <end.to.start@mail.ru>)
+	id 1rtqdF-000xdo-ME; Mon, 08 Apr 2024 18:10:01 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:
+	To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=wx+/Kt3SIcMw3DZo1mkGE7FX70+jMpgo7G/HwD3+K2o=; t=1712589001; x=1712679001; 
+	b=yjqDBG6G0J5L2MHnjxjVOoKN7xNAN7I5ksll1/A0v1aaK9FTZ8MhOX/P+CP7cPSFp/R9ZX87sTR
+	NVFE21oW+67Iw8zEJPChONI2S3VTJQx3AeQ6xFGBHW1JIx4Dz1qRQFKnBv3oH7GDgUxSaKypFvjNo
+	muXDT4WaLcs0EEeSBz/eF0NsPRACa3Uby2QOvIupqq1BJHBata63LpDzV4Ddh0H6/kArHI+/h7SeJ
+	gs1DkFNXZtkq1p8f511xWhUKVlegivV5+CnjIEqHzLW0a4aKdk94WtS/Q6UH6C6B1uqtwHdSObUsi
+	2p8xWKsHJfA/SPV8R7qp+eXYJ/jgmjQGqTLw==;
+Received: by smtp39.i.mail.ru with esmtpa (envelope-from <end.to.start@mail.ru>)
+	id 1rtqd2-000000009jk-20tw; Mon, 08 Apr 2024 18:09:48 +0300
+From: "end.to.start" <end.to.start@mail.ru>
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"end . to . start" <end.to.start@mail.ru>
+Subject: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
+Date: Mon,  8 Apr 2024 18:09:05 +0300
+Message-ID: <20240408150905.43407-1-end.to.start@mail.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ASoC: dt-bindings: imx-audio-spdif: convert to YAML
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
- festevam@gmail.com, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-References: <1712561233-27250-1-git-send-email-shengjiu.wang@nxp.com>
- <01734d96-bed2-4f7e-bbba-7068f14c822b@linaro.org>
- <CAA+D8ANiKH7Oc+KAjD_BMp9P2EVeM8Q6dLGFCC8a83bJXUpPEA@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAA+D8ANiKH7Oc+KAjD_BMp9P2EVeM8Q6dLGFCC8a83bJXUpPEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-4EC0790: 1
+X-7564579A: B8F34718100C35BD
+X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D31116567C8E3CFDFF0E1C6585A2586D0D182A05F53808504030E86D195FBFA14D3DE06ABAFEAF6705ECCA9D1F5DDEDF42BBAA07CA003C8BA6BC0FEE398BF55443
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7492D3E4238663367EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637DEEC83A7CF8598608638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D805961545C5C777FD9EB30F61FB181D1959AD1E186B66E7AF20879F7C8C5043D14489FFFB0AA5F4BFA417C69337E82CC2CC7F00164DA146DAFE8445B8C89999728AA50765F79006372A3B24BF85B2E607389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8A9FF340AA05FB58CF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C0085B890FD2717DA302FCEF25BFAB3454AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C34B26726BD97DF1CFBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CFB73CFAAED92B6E131DD303D21008E298D5E8D9A59859A8B6D082881546D9349175ECD9A6C639B01B78DA827A17800CE796B81110D3CD4288731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A56F17E783356658EC5002B1117B3ED6960CA70ABAE5EA647230E4A65F242F5898823CB91A9FED034534781492E4B8EEADABF80F987DAEDACBC79554A2A72441328621D336A7BC284946AD531847A6065A27ED053E960B195EBDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0AD93B9BA3C444D644977DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF45B00B261A430CA5BBCEDE6F76895AB947921DF39F88E614015E91357665F65FE98901B1639BBD631CFDFDFCAF5E4A4B417BCEB617B21AD3031AFA059D85FBFFD5C9CA713F8CFD3936DDF96CB8D31E6A913E6812662D5F2A65982B5FD154E7DC8F0ECD54AF826900C3981EEBE9DB10F943082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojabKNeIbMV3uh7/WLBVO8nQ==
+X-Mailru-Sender: F34414D909EE10BD7829694AFAC1E9592C6A313979055771B951B70A5BD4BD8E35E73068979AA8954C683740FFAD31F6C773E5EF782A67EF9314192DE98EED7FA9800083D4B72A528C9769C13AF3BBAE440A67913D6ED084D7A14DD9E34ECE7467EA787935ED9F1B
+X-Mras: Ok
+X-4EC0790: 1
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B4DB7CCFC93CF1872E8DC4F42B55D8A582718B3D7011F544C268F3CF0E9FE49B695C3EC5CDC8399ABC44D82FE0EB9EC2B801A36E2F7E7FBFCD39401918445667E6
+X-7FA49CB5: 0D63561A33F958A5889B563FAA9B3D83BE5021A100EE5A3BCF32B16F353EAC16CACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F79006378E5B25976F539216389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8C824672CB62AFFF2F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7535881B9F39D4165731C566533BA786AA5CC5B56E945C8DA
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojabKNeIbMV3txdPNMKTGzKQ==
+X-Mailru-MI: 8002000000000800
+X-Mras: Ok
 
-On 08/04/2024 10:01, Shengjiu Wang wrote:
->>> +
->>> +anyOf:
->>> +  - required:
->>> +      - spdif-in
->>> +  - required:
->>> +      - spdif-out
->>> +  - required:
->>> +      - spdif-out
->>> +      - spdif-in
->>
->> Do you need the last required block?
-> 
-> Yes,  one of them or both are required.
+This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
 
-And? It's already there: that's the meaning of any. It is not oneOf...
-Before answering please test your changes and ideas. I pointed issue
-here and you responded just to close my comment. That does not make me
-happy, just wastes my time.
+Signed-off-by: end.to.start <end.to.start@mail.ru>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> 
->>
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    sound {
->>
->> That's a random change...
->>
->> Instead of sending two patches per day, please carefully address the
->> feedback.
-> 
-> In v1 you suggest to change it to spdif?  but spdif may conflict
-> with the fsl,spdif.yaml.   so which name I should use?
-
-I don't understand where is the conflict. That's a different binding.
-
-Best regards,
-Krzysztof
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 69c68d8e7..1760b5d42 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -430,6 +430,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "MRID6"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "MDC"),
++			DMI_MATCH(DMI_BOARD_NAME, "Herbag_MDU"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.44.0
 
 
