@@ -1,283 +1,364 @@
-Return-Path: <linux-kernel+bounces-135461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0245689C3E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:45:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5B4B89C408
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:46:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70BE51F23285
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 462BE284211
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB47F80603;
-	Mon,  8 Apr 2024 13:39:49 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2366279F0;
-	Mon,  8 Apr 2024 13:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9DA81751;
+	Mon,  8 Apr 2024 13:41:37 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF88D6A35A;
+	Mon,  8 Apr 2024 13:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712583589; cv=none; b=W3zRT5EscCa8Vs6RsgKWyN2OYpqI297rNS8CMEiZUN0ujEA4ER7qG3jk6GYInzbYMCqlkU7ruyiujdlUD1fVI+sKoWNY3/Wi6fyrSZRJDBf1Or1SyWcITZqBftcikBoVsL6plQiyFmYOklcnq9/v4igIaF96RiDasnQNcFZRECs=
+	t=1712583696; cv=none; b=S3cUHHCRDorVItQ1IKFhrFtbxYKXcFyf6/yuQn6ZSrJaXV848RfROhC4Za6X7URclHJbolHxgB7iixtXGeiteRArL7dbnubcrlNTFrUyRO2CjbMCUUMjPwoOO54E/nvUX4ZK5J2nD3jTChcy6mC0yATUsGug2atI/HD2zxDMmx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712583589; c=relaxed/simple;
-	bh=HBiOHkqW/9TipkYoD4a9v0jztvyOEos6tX06fqvWb6s=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MwekOagle4r6vXBdXfas35sCQtdDpqR2shMwOFfS98pifAl7LcEHIMxEospMiiSV0y+IrsC+a2li013yANGeNADdyKEZcLENJCl7HiFZwURJ3gESA7HIhBgGoJdXcKLSLzs7iwDdLxj9wfX0wHOJpw9L/wMyqgS8KAXRPfyt33A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VCqs70pSLz1ymQ9;
-	Mon,  8 Apr 2024 21:37:31 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id BA03B1401E0;
-	Mon,  8 Apr 2024 21:39:44 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 8 Apr
- 2024 21:39:44 +0800
-Subject: Re: [PATCH net-next v1 12/12] mm: page_frag: update documentation and
- maintainer for page_frag
-To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jonathan Corbet
-	<corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
-	<linux-mm@kvack.org>, <linux-doc@vger.kernel.org>
-References: <20240407130850.19625-1-linyunsheng@huawei.com>
- <20240407130850.19625-13-linyunsheng@huawei.com>
- <b5c5866e626f6c90657a32b5e9adff724d5896db.camel@gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <c1f5a78a-3040-0cc7-f113-d5ec82c6010f@huawei.com>
-Date: Mon, 8 Apr 2024 21:39:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1712583696; c=relaxed/simple;
+	bh=zTxukDcymNLo4kdv3AYB9kakG77M4JYjFvwcAVkrN1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=A+UeCeebfNlMXGCTSKzodjRynneJ0G6aNvla1xRi1gsMcJM6IL03jDG04vEjc8YURmYxxg0/A1EEuTKmwLvBe08drtPS2ksi3agiiz6KvBVvRDs3hwteWtH3KY0BqTKc6b4afIL7rMRk1GjWGaw7uObVQX+RKHbXdmOBmbEcs2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-66-6613f40876fb
+From: Honggyu Kim <honggyu.kim@sk.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: sj@kernel.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	42.hyeyoo@gmail.com,
+	art.jeongseob@gmail.com
+Subject: Re: [RFC PATCH v3 0/7] DAMON based tiered memory management for CXL
+Date: Mon,  8 Apr 2024 22:41:04 +0900
+Message-ID: <20240408134108.2970-1-honggyu.kim@sk.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <ZhAtLhcU3KfT/9i7@memverge.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b5c5866e626f6c90657a32b5e9adff724d5896db.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsXC9ZZnoS7HF+E0g7Y9GhYTewws5qxfw2ax
+	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLBqaHrFYdH5fymJxedccNot7a/6zWhxZf5bFYvPZ
+	M8wWi5erWezreMBkcfjrGyaLyZcWsFm8mHKG0eLkrMksFrOP3mN3EPFYevoNm8eGJiCxc9Zd
+	do+WfbfYPRZsKvVoOfKW1WPxnpdMHptWdbJ5bPo0id3jxIzfLB47H1p6vNg8k9Fj48f/7B69
+	ze/YPD5vkgvgj+KySUnNySxLLdK3S+DK2H56AWvB9LKKg/NusTUwngvuYuTkkBAwkThzfD8L
+	jH1g0XYwm01ATeLKy0lMXYwcHCICehIf/3t2MXJxMAusZJHYfncXG0iNsICPxJQ5HewgNouA
+	qsSHGRBxXgEziffTljNDzNSUeLz9J1gNp4COxOlf18FsIQEeiVcb9jNC1AtKnJz5BGwvs4C8
+	RPPW2cwgyyQETrFLzJ4xDeo4SYmDK26wTGDkn4WkZxaSngWMTKsYhTLzynITM3NM9DIq8zIr
+	9JLzczcxAmNxWe2f6B2Mny4EH2IU4GBU4uG1uCqcJsSaWFZcmXuIUYKDWUmEN9hUME2INyWx
+	siq1KD++qDQntfgQozQHi5I4r9G38hQhgfTEktTs1NSC1CKYLBMHp1QD4zrmT5OzT66YnNbz
+	ZuV7lh/bGfm8Vqo9MLhx95X6Fs//H79ZWZlpNpxrXGS24dxeqUl681dNq3i5qvp/aMz3z4oL
+	zHYyfJr0tuqdZzkHexdH9opVq87WKtSpP79QVJVw51/170RN/6AVv+Xq09XORiwKncv1MMX8
+	x13htCPpYZm+TexTzX0KApRYijMSDbWYi4oTAc9/WVTBAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsXCNUNLT5fji3CawcYvghYTewws5qxfw2ax
+	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLBqaHrFYdD75zmhxeO5JVovO70tZLC7vmsNmcW/N
+	f1aLI+vPslhsPnuG2WLxcjWLQ9ees1rs63jAZHH46xsmi8mXFrBZvJhyhtHi5KzJLBazj95j
+	dxD3WHr6DZvHhiYgsXPWXXaPln232D0WbCr1aDnyltVj8Z6XTB6bVnWyeWz6NInd48SM3ywe
+	Ox9aerzYPJPRY+PH/+wevc3v2Dy+3fbwWPziA1OAYBSXTUpqTmZZapG+XQJXxvbTC1gLppdV
+	HJx3i62B8VxwFyMnh4SAicSBRdtZQGw2ATWJKy8nMXUxcnCICOhJfPzv2cXIxcEssJJFYvvd
+	XWwgNcICPhJT5nSwg9gsAqoSH2ZAxHkFzCTeT1vODDFTU+Lx9p9gNZwCOhKnf10Hs4UEeCRe
+	bdjPCFEvKHFy5hOwvcwC8hLNW2czT2DkmYUkNQtJagEj0ypGkcy8stzEzBxTveLsjMq8zAq9
+	5PzcTYzAaFtW+2fiDsYvl90PMQpwMCrx8DrcEU4TYk0sK67MPcQowcGsJMIbbCqYJsSbklhZ
+	lVqUH19UmpNafIhRmoNFSZzXKzw1QUggPbEkNTs1tSC1CCbLxMEp1cAY80VYyexGv8H9yw2v
+	3xytYXvV1h+o9ass/OqMX1388zNvOfRqRvxPmrE5+8dl9pmMa3XOp/y4efKK0NLAxvdn7syR
+	X+qxQEM/d5PK+6Av4vstm8L+1h381i4s9bJBqnqtm+aOBZf9DxRdjfz45/ibJUn2kYaVgiUH
+	T105F5c27QD3ootXfSValFiKMxINtZiLihMBXWtiZLICAAA=
+X-CFilter-Loop: Reflected
 
-On 2024/4/8 2:13, Alexander H Duyck wrote:
-> On Sun, 2024-04-07 at 21:08 +0800, Yunsheng Lin wrote:
->> Update documentation about design, implementation and API usages
->> for page_frag.
->>
->> Also update MAINTAINERS for page_frag. Alexander seems to be the
->> orginal author for page_frag, we can add him to the MAINTAINERS
->> later if we have an ack from him.
->>
->> CC: Alexander Duyck <alexander.duyck@gmail.com>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> 
-> Again, this seems more like 2 different pathches at least. One for the
-> Documentation and MAINTAINERS changes, and one for the function
-> documentation.
+Hi Gregory,
 
-Sure.
+On Fri, 5 Apr 2024 12:56:14 -0400 Gregory Price <gregory.price@memverge.com> wrote:
+> On Fri, Apr 05, 2024 at 03:08:49PM +0900, Honggyu Kim wrote:
+> > There was an RFC IDEA "DAMOS-based Tiered-Memory Management" previously
+> > posted at [1].
+> > 
+> >   1. YCSB zipfian distribution read only workload
+> >   memory pressure with cold memory on node0 with 512GB of local DRAM.
+> >   =============+================================================+=========
+> >                |       cold memory occupied by mmap and memset  |
+> >                |   0G  440G  450G  460G  470G  480G  490G  500G |
+> >   =============+================================================+=========
+> >   Execution time normalized to DRAM-only values                 | GEOMEAN
+> >   -------------+------------------------------------------------+---------
+> >   DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+> >   CXL-only     | 1.22     -     -     -     -     -     -     - | 1.22
+> >   default      |    -  1.12  1.13  1.14  1.16  1.19  1.21  1.21 | 1.17 
+> >   DAMON tiered |    -  1.04  1.03  1.04  1.06  1.05  1.05  1.05 | 1.05 
+> >   =============+================================================+=========
+> >   CXL usage of redis-server in GB                               | AVERAGE
+> >   -------------+------------------------------------------------+---------
+> >   DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+> >   CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+> >   default      |    -  20.4  27.0  33.1  39.5  45.6  50.5  50.3 | 38.1
+> >   DAMON tiered |    -   0.1   0.3   0.8   0.6   0.7   1.3   0.9 |  0.7
+> >   =============+================================================+=========
+> > 
+> > Each test result is based on the exeuction environment as follows.
+> > 
+> >   DRAM-only   : redis-server uses only local DRAM memory.
+> >   CXL-only    : redis-server uses only CXL memory.
+> >   default     : default memory policy(MPOL_DEFAULT).
+> >                 numa balancing disabled.
+> >   DAMON tiered: DAMON enabled with DAMOS_MIGRATE_COLD for DRAM nodes and
+> >                 DAMOS_MIGRATE_HOT for CXL nodes.
+> > 
+> > The above result shows the "default" execution time goes up as the size
+> > of cold memory is increased from 440G to 500G because the more cold
+> > memory used, the more CXL memory is used for the target redis workload
+> > and this makes the execution time increase.
+> > 
+> > However, "DAMON tiered" result shows less slowdown because the
+> > DAMOS_MIGRATE_COLD action at DRAM node proactively demotes pre-allocated
+> > cold memory to CXL node and this free space at DRAM increases more
+> > chance to allocate hot or warm pages of redis-server to fast DRAM node.
+> > Moreover, DAMOS_MIGRATE_HOT action at CXL node also promotes hot pages
+> > of redis-server to DRAM node actively.
+> > 
+> > As a result, it makes more memory of redis-server stay in DRAM node
+> > compared to "default" memory policy and this makes the performance
+> > improvement.
+> > 
+> > The following result of latest distribution workload shows similar data.
+> > 
+> >   2. YCSB latest distribution read only workload
+> >   memory pressure with cold memory on node0 with 512GB of local DRAM.
+> >   =============+================================================+=========
+> >                |       cold memory occupied by mmap and memset  |
+> >                |   0G  440G  450G  460G  470G  480G  490G  500G |
+> >   =============+================================================+=========
+> >   Execution time normalized to DRAM-only values                 | GEOMEAN
+> >   -------------+------------------------------------------------+---------
+> >   DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+> >   CXL-only     | 1.18     -     -     -     -     -     -     - | 1.18
+> >   default      |    -  1.18  1.19  1.18  1.18  1.17  1.19  1.18 | 1.18 
+> >   DAMON tiered |    -  1.04  1.04  1.04  1.05  1.04  1.05  1.05 | 1.04 
+> >   =============+================================================+=========
+> >   CXL usage of redis-server in GB                               | AVERAGE
+> >   -------------+------------------------------------------------+---------
+> >   DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+> >   CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+> >   default      |    -  20.5  27.1  33.2  39.5  45.5  50.4  50.5 | 38.1
+> >   DAMON tiered |    -   0.2   0.4   0.7   1.6   1.2   1.1   3.4 |  1.2
+> >   =============+================================================+=========
+> > 
+> > In summary of both results, our evaluation shows that "DAMON tiered"
+> > memory management reduces the performance slowdown compared to the
+> > "default" memory policy from 17~18% to 4~5% when the system runs with
+> > high memory pressure on its fast tier DRAM nodes.
+> > 
+> > Having these DAMOS_MIGRATE_HOT and DAMOS_MIGRATE_COLD actions can make
+> > tiered memory systems run more efficiently under high memory pressures.
+> > 
+> 
+> Hi,
+> 
+> It's hard to determine from your results whether the performance
+> mitigation is being caused primarily by MIGRATE_COLD freeing up space
+> for new allocations, or from some combination of HOT/COLD actions
+> occurring during execution but after the database has already been
+> warmed up.
+
+Thanks for the question.  I didn't include all the details for the
+evaluation result, but this is a chance to share more in details.
+
+I would say the mitigation comes from both.  DAMOS_MIGRATE_COLD demotes
+some cold data to CXL so redis can allocate more data on the fast DRAM
+during launching time as the mmap+memset and redis launching takes
+several minutes.  But it also promotes some redis data while running.
+
+> Do you have test results which enable only DAMOS_MIGRATE_COLD actions
+> but not DAMOS_MIGRATE_HOT actions? (and vice versa)
+> 
+> The question I have is exactly how often is MIGRATE_HOT actually being
+> utilized, and how much data is being moved. Testing MIGRATE_COLD only
+> would at least give a rough approximation of that.
+
+To explain this, I better share more test results.  In the section of
+"Evaluation Workload", the test sequence can be summarized as follows.
+
+  *. "Turn on DAMON."
+  1. Allocate cold memory(mmap+memset) at DRAM node, then make the
+     process sleep.
+  2. Launch redis-server and load prebaked snapshot image, dump.rdb.
+     (85GB consumed: 52GB for anon and 33GB for file cache)
+  3. Run YCSB to make zipfian distribution of memory accesses to
+     redis-server, then measure execution time.
+  4. Repeat 4 over 50 times to measure the average execution time for
+     each run.
+  5. Increase the cold memory size then repeat goes to 2.
+
+I didn't want to make the evaluation too long in the cover letter, but
+I have also evaluated another senario, which lazyly enabled DAMON just
+before YCSB run at step 4.  I will call this test as "DAMON lazy".  This
+is missing part from the cover letter.
+
+  1. Allocate cold memory(mmap+memset) at DRAM node, then make the
+     process sleep.
+  2. Launch redis-server and load prebaked snapshot image, dump.rdb.
+     (85GB consumed: 52GB for anon and 33GB for file cache)
+  *. "Turn on DAMON."
+  4. Run YCSB to make zipfian distribution of memory accesses to
+     redis-server, then measure execution time.
+  5. Repeat 4 over 50 times to measure the average execution time for
+     each run.
+  6. Increase the cold memory size then repeat goes to 2.
+
+In the "DAMON lazy" senario, DAMON started monitoring late so the
+initial redis-server placement is same as "default", but started to
+demote cold data and promote redis data just before YCSB run.
+
+The full test result is as follows.
+
+  1. YCSB zipfian distribution read only workload
+  memory pressure with cold memory on node0 with 512GB of local DRAM.
+  =============+================================================+=========
+               |       cold memory occupied by mmap and memset  |
+               |   0G  440G  450G  460G  470G  480G  490G  500G |
+  =============+================================================+=========
+  Execution time normalized to DRAM-only values                 | GEOMEAN
+  -------------+------------------------------------------------+---------
+  DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+  CXL-only     | 1.22     -     -     -     -     -     -     - | 1.22
+  default      |    -  1.12  1.13  1.14  1.16  1.19  1.21  1.21 | 1.17
+  DAMON tiered |    -  1.04  1.03  1.04  1.06  1.05  1.05  1.05 | 1.05
+  DAMON lazy   |    -  1.04  1.05  1.05  1.06  1.06  1.07  1.07 | 1.06
+  =============+================================================+=========
+  CXL usage of redis-server in GB                               | AVERAGE
+  -------------+------------------------------------------------+---------
+  DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+  CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+  default      |    -  20.4  27.0  33.1  39.5  45.6  50.5  50.3 | 38.1
+  DAMON tiered |    -   0.1   0.3   0.8   0.6   0.7   1.3   0.9 |  0.7
+  DAMON lazy   |    -   2.9   3.1   3.7   4.7   6.6   8.2   9.7 |  5.6
+  =============+================================================+=========
+  Migration size in GB by DAMOS_MIGRATE_COLD(demotion) and      |
+  DAMOS_MIGRATE_HOT(promotion)                                  | AVERAGE
+  -------------+------------------------------------------------+---------
+  DAMON tiered |                                                |
+  - demotion   |    -   522   510   523   520   513   558   558 |  529
+  - promotion  |    -   0.1   1.3   6.2   8.1   7.2    22    17 |  8.8
+  DAMON lazy   |                                                |
+  - demotion   |    -   288   277   322   343   315   312   320 |  311
+  - promotion  |    -    33    44    41    55    73    89   101 |  5.6
+  =============+================================================+=========
+
+I have included "DAMON lazy" result and also the migration size by new
+DAMOS migrate actions.  Please note that demotion size is way higher
+than promotion because promotion target is only for redis data, but
+demotion target includes huge cold memory allocated by mmap + memset.
+(there could be some ping-pong issue though.)
+
+As you mentioned, "DAMON tiered" case gets more benefit because new
+redis allocations go to DRAM more than "default", but it also gets
+benefit from promotion when it is under higher memory pressure as shown
+in 490G and 500G cases.  It promotes 22GB and 17GB of redis data to DRAM
+from CXL.
+
+In the case of "DAMON lazy", it shows more promotion size as expected
+and it gets increases as memory pressure goes higher from left to right.
+
+I will share "latest" workload result as well and it shows similar
+tendency.
+
+  2. YCSB latest distribution read only workload
+  memory pressure with cold memory on node0 with 512GB of local DRAM.
+  =============+================================================+=========
+               |       cold memory occupied by mmap and memset  |
+               |   0G  440G  450G  460G  470G  480G  490G  500G |
+  =============+================================================+=========
+  Execution time normalized to DRAM-only values                 | GEOMEAN
+  -------------+------------------------------------------------+---------
+  DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+  CXL-only     | 1.18     -     -     -     -     -     -     - | 1.18
+  default      |    -  1.18  1.19  1.18  1.18  1.17  1.19  1.18 | 1.18 
+  DAMON tiered |    -  1.04  1.04  1.04  1.05  1.04  1.05  1.05 | 1.04 
+  DAMON lazy   |    -  1.05  1.05  1.06  1.06  1.07  1.06  1.07 | 1.06
+  =============+================================================+=========
+  CXL usage of redis-server in GB                               | AVERAGE
+  -------------+------------------------------------------------+---------
+  DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+  CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+  default      |    -  20.5  27.1  33.2  39.5  45.5  50.4  50.5 | 38.1
+  DAMON tiered |    -   0.2   0.4   0.7   1.6   1.2   1.1   3.4 |  1.2
+  DAMON lazy   |    -   5.3   4.1   3.9   6.4   8.8  10.1  11.3 |  7.1
+  =============+================================================+=========
+  Migration size in GB by DAMOS_MIGRATE_COLD(demotion) and      |
+  DAMOS_MIGRATE_HOT(promotion)                                  | AVERAGE
+  -------------+------------------------------------------------+---------
+  DAMON tiered |                                                |
+  - demotion   |    -   493   478   487   516   510   540   512 |  505
+  - promotion  |    -   0.1   0.2   8.2   5.6   4.0   5.9    29 |  7.5
+  DAMON lazy   |                                                |
+  - demotion   |    -   315   318   293   290   308   322   286 |  305
+  - promotion  |    -    36    45    38    56    74    91    99 |   63
+  =============+================================================+=========
+
+> Additionally, do you have any data on workloads that exceed the capacity
+> of the DRAM tier?  Here you say you have 512GB of local DRAM, but only
+> test a workload that caps out at 500G.  Have you run a test of, say,
+> 550GB to see the effect of DAMON HOT/COLD migration actions when DRAM
+> capacity is exceeded?
+
+I didn't want to remove DRAM from my server so kept using 512GB of DRAM,
+but I couldn't make a single workload that consumes more than the DRAM
+size.
+
+I wanted to use more realistic workload rather than micro benchmarks.
+And the core concept of this test is to cover realisitic senarios with
+the system wide view.  I think if the system has 512GB of local DRAM,
+then it wouldn't be possible to make the entire 512GB of DRAM hot and
+it'd have some amount of cold memory, which can be the target of
+demotion.  Then we can find some workload that is actively used and
+promote it as much as possible.  That's why I made the promotion policy
+aggressively.
+
+> Can you also provide the DRAM-only results for each test?  Presumably,
+> as workload size increases from 440G to 500G, the system probably starts
+> using some amount of swap/zswap/whatever.  It would be good to know how
+> this system compares to swap small amounts of overflow.
+
+It looks like my explanation doesn't correctly inform you.   The size
+from 440GB to 500GB is for pre allocated cold data to give memory
+pressure on the system so that redis-server cannot be fully allocated at
+fast DRAM, then partially allocated at CXL memory as well.
+
+And my evaluation environment doesn't have swap space to focus on
+migration rather than swap.
 
 > 
->> ---
->>  Documentation/mm/page_frags.rst | 115 ++++++++++++++++++----------
->>  MAINTAINERS                     |  10 +++
->>  include/linux/page_frag_cache.h | 128 ++++++++++++++++++++++++++++++++
->>  mm/page_frag_cache.c            |  51 ++++++++++---
->>  4 files changed, 256 insertions(+), 48 deletions(-)
->>
->> diff --git a/Documentation/mm/page_frags.rst b/Documentation/mm/page_frags.rst
->> index 503ca6cdb804..77256dfb58bf 100644
->> --- a/Documentation/mm/page_frags.rst
->> +++ b/Documentation/mm/page_frags.rst
->> @@ -1,43 +1,80 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->>  ==============
->>  Page fragments
->>  ==============
->>  
->> -A page fragment is an arbitrary-length arbitrary-offset area of memory
->> -which resides within a 0 or higher order compound page.  Multiple
->> -fragments within that page are individually refcounted, in the page's
->> -reference counter.
->> -
->> -The page_frag functions, page_frag_alloc and page_frag_free, provide a
->> -simple allocation framework for page fragments.  This is used by the
->> -network stack and network device drivers to provide a backing region of
->> -memory for use as either an sk_buff->head, or to be used in the "frags"
->> -portion of skb_shared_info.
->> -
->> -In order to make use of the page fragment APIs a backing page fragment
->> -cache is needed.  This provides a central point for the fragment allocation
->> -and tracks allows multiple calls to make use of a cached page.  The
->> -advantage to doing this is that multiple calls to get_page can be avoided
->> -which can be expensive at allocation time.  However due to the nature of
->> -this caching it is required that any calls to the cache be protected by
->> -either a per-cpu limitation, or a per-cpu limitation and forcing interrupts
->> -to be disabled when executing the fragment allocation.
->> -
->> -The network stack uses two separate caches per CPU to handle fragment
->> -allocation.  The netdev_alloc_cache is used by callers making use of the
->> -netdev_alloc_frag and __netdev_alloc_skb calls.  The napi_alloc_cache is
->> -used by callers of the __napi_alloc_frag and napi_alloc_skb calls.  The
->> -main difference between these two calls is the context in which they may be
->> -called.  The "netdev" prefixed functions are usable in any context as these
->> -functions will disable interrupts, while the "napi" prefixed functions are
->> -only usable within the softirq context.
->> -
->> -Many network device drivers use a similar methodology for allocating page
->> -fragments, but the page fragments are cached at the ring or descriptor
->> -level.  In order to enable these cases it is necessary to provide a generic
->> -way of tearing down a page cache.  For this reason __page_frag_cache_drain
->> -was implemented.  It allows for freeing multiple references from a single
->> -page via a single call.  The advantage to doing this is that it allows for
->> -cleaning up the multiple references that were added to a page in order to
->> -avoid calling get_page per allocation.
->> -
->> -Alexander Duyck, Nov 29, 2016.
-> 
-> What is the point of removing this just to add it to a C file further
-> down in the diff? Honestly I am not a fan of all the noise this is
-> adding to these diffs. Can we do a little less moving of lines for the
-> sake of moving them? All it does is pollute the git blame if you try to
-> figure out the origin of the lines.
+> ~Gregory
 
-I was thinking about move the doc related code to file where code is related,
-so that author will remember to update the doc when changing the code.
-Maybe above does not matter that much?
+I hope my explanation is helpful for you to understand.  Please let me
+know if you have more questions.
 
-> 
->> +.. kernel-doc:: mm/page_frag_cache.c
->> +   :doc: page_frag allocator
->> +
->> +Architecture overview
->> +=====================
->> +
->> +.. code-block:: none
->> +
->> +    +----------------------+
->> +    | page_frag API caller |
->> +    +----------------------+
->> +            ^
->> +            |
->> +            |
->> +            |
->> +            v
->> +    +----------------------------------------------+
->> +    |          request page fragment               |
->> +    +----------------------------------------------+
->> +        ^                                        ^
->> +        |                                        |
->> +        | Cache empty or not enough              |
->> +        |                                        |
->> +        v                                        |
->> +    +--------------------------------+           |
->> +    | refill cache with order 3 page |           |
->> +    +--------------------------------+           |
->> +     ^                  ^                        |
->> +     |                  |                        |
->> +     |                  | Refill failed          |
->> +     |                  |                        | Cache is enough
->> +     |                  |                        |
->> +     |                  v                        |
->> +     |    +----------------------------------+   |
->> +     |    |  refill cache with order 0 page  |   |
->> +     |    +----------------------------------+   |
->> +     |                       ^                   |
->> +     | Refill succeed        |                   |
->> +     |                       | Refill succeed    |
->> +     |                       |                   |
->> +     v                       v                   v
->> +    +----------------------------------------------+
->> +    |       allocate fragment from cache           |
->> +    +----------------------------------------------+
->> +
-> 
-> +1 for the simple visualization of how this works.
-> 
->> +API interface
->> +=============
->> +As the design and implementation of page_frag API, the allocation side does not
->> +allow concurrent calling, it is assumed that the caller must ensure there is not
->> +concurrent alloc calling to the same page_frag_cache instance by using it's own
->> +lock or rely on some lockless guarantee like NAPI softirq.
->> +
->> +Depending on different use cases, callers expecting to deal with va, page or
->> +both va and page for them may call page_frag_alloc_va(), page_frag_alloc_pg(),
->> +or page_frag_alloc() accordingly.
->> +
-> 
-> So the new documentation is good up to here.
-> 
->> +There is also a use case that need minimum memory in order for forward
->> +progressing, but can do better if there is more memory available. Introduce
->> +page_frag_alloc_prepare() and page_frag_alloc_commit() related API, the caller
->> +requests the minimum memory it need and the prepare API will return the maximum
->> +size of the fragment returned, caller need to report back to the page_frag core
->> +how much memory it actually use by calling commit API, or not calling the commit
->> +API if deciding to not use any memory.
->> +
-> 
-> This part is as clear as mud to me. It sounds like kind of a convoluted
-> setup where you are having the caller have to know a fair bit about the
-> internal structure of the cache and it is essentially checking the
-> state and then performing a commit. Not a huge fan. I would almost
-> prefer to see something more like what we used to do with msix where
-> you just had a range you could request and if it can't give you at
-> least the minimum it fails.>
-> I assume the patch is somewhere here in the set. Will take a look at it
-> later.
+Thanks,
+Honggyu
 
-Yes, the API is introduced in patch 9 and used in patch 10.
-
-> 
->> +.. kernel-doc:: include/linux/page_frag_cache.h
->> +   :identifiers: page_frag_cache_init page_frag_cache_is_pfmemalloc
->> +                 page_frag_alloc_va __page_frag_alloc_va_align
->> +                 page_frag_alloc_va_align page_frag_alloc_va_prepare
->> +                 page_frag_alloc_va_prepare_align page_frag_alloc_pg_prepare
->> +                 page_frag_alloc_prepare page_frag_alloc_commit
->> +                 page_frag_alloc_commit_noref page_frag_free_va
->> +
->> +.. kernel-doc:: mm/page_frag_cache.c
->> +   :identifiers: page_frag_cache_drain
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 4745ea94d463..2f84aba59428 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -16683,6 +16683,16 @@ F:	mm/page-writeback.c
->>  F:	mm/readahead.c
->>  F:	mm/truncate.c
->>  
->> +PAGE FRAG
->> +M:	Yunsheng Lin <linyunsheng@huawei.com>
->> +L:	linux-mm@kvack.org
->> +L:	netdev@vger.kernel.org
->> +S:	Supported
->> +F:	Documentation/mm/page_frags.rst
->> +F:	include/linux/page_frag_cache.h
->> +F:	mm/page_frag_cache.c
->> +F:	mm/page_frag_test.c
->> +
-> 
-> I would appreciate it if you could add me as I usually am having to
-> deal with issues people have with this anyway. You can probably just go
-> with:
-> Alexander Duyck <alexander.duyck@gmail.com>
-
-Sure, good to your ack here.
-
-> 
->>  PAGE POOL
->>  M:	Jesper Dangaard Brouer <hawk@kernel.org>
->>  M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
->> diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_cache.h
->> index 28185969cd2c..d8edbecdd179 100644
 
