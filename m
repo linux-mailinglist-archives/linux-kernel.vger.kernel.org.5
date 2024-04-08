@@ -1,163 +1,149 @@
-Return-Path: <linux-kernel+bounces-135913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABBD89CD01
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:40:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD47F89CD03
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:42:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ED2DB219E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:40:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065091C2225E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874D51474A5;
-	Mon,  8 Apr 2024 20:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1871474A5;
+	Mon,  8 Apr 2024 20:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EhlCUVlm"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g833Jq0J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57697482
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 20:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD845FB8F;
+	Mon,  8 Apr 2024 20:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712608830; cv=none; b=iEXO7ripZvrMLU0L+ZqOFDQgBJmnKYcVTR8u0vEuMOJcFGM6xTBfpRY110ZmmGXBD6Gd074lhcZi8ZXTi1QMpH/ltecP6SNGhSBgQCkkcPK5ugvXTNjduaHwuDd/QEIeC+3kbnZ0MLR8EfppjDOVuvCWlFuCrpzhTKh0cKDINrk=
+	t=1712608917; cv=none; b=c/+tIJnQ6Q9ZrmVb+2yeFjMhtov2o6NMx2m0Cc8BZE9+RkFmS2c8YwZuvA7rXA4+GEGJ7KjHvslbWkOLe+hntIA0FtJ/xgGPRUklhD7+yFN7aqZ8liCxQlxb0sfOuzIQVgCntSi9OBiYolmnALIXhQuiPGF4KaxS7Tg9FGdOSJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712608830; c=relaxed/simple;
-	bh=/lzVzbK8GfEZQ9NiAPI6LOYjttXFw3I14FUKkVXEWbI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eLvcxbrx0lK09+KDTLic920OSDpPrUrAZpb9oEqWvbHr1a2ZElUshc9jHJQ6QVR4YeRNslqpdc1+thBfuCKbReKCIzhsQmcLKA1fy2LA36ScW9kgYdQ97uS+vDlUQagDbwXNO2dAINLIdTO3R5v0d9h3Gv3/QjyLf8XaL8Vab6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EhlCUVlm; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-345e1c64695so550749f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 13:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712608827; x=1713213627; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YH7O1NXdJC03aNqvzATcinYdpPQ1XTxhwnXgM4me0RQ=;
-        b=EhlCUVlmUbhtFvx2FLjFMTRJAaOjGs//k9n6ku0vbawnPbLgm1/qiw2FfNVn4WOczP
-         CqaYJ6pWzNoezaZf8Q3MFTTF244F9pzPqck78JRsNCzLKiHeeHm5hLf7BeJlk71BPQBa
-         NA8mgoTOAZ0egfbAUYCJnDgS3UD2dxIyhYjTBrsenZlyP3dQgmbN94/LY2sezW3y+5Pw
-         lYt6HoAO+k2GTsanVew5K4X5WsEH59tAbLj1P4HtXM/3tn1E2+/2A2AqqdtErtJYonuR
-         kwmsi5QQ1jvTMrdYWfkqrozCi5w7zs4BN5KH0x9os9zHJ45uEU22NiQ5WaLXvfrZlE1/
-         qtNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712608827; x=1713213627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YH7O1NXdJC03aNqvzATcinYdpPQ1XTxhwnXgM4me0RQ=;
-        b=AeDzi5FuoNeZ6f57MXUjMcU00nh8MxYvCkshz0z1+0pEX3VldHZah0xWH6VjbGfAs0
-         C2ZTDmW1NMm7qcf9XDmoN9k7ZqHt8WHE13S278ESdtIOK7ZUQ89nxBsu2vd4Q8NM79Sg
-         WTituTMyl3bUDKsF3RXyBFZISIMy7PQVSXc2DwwUCjXegHMmzD/A1XFVzAWa8UXLljZT
-         Ayx/PH9rPK0zWcMZ5hqZ0pjKt14qrrKa+8faayyP53VILevFE+TJI0/+CfBJ+9yctxYt
-         bRMLKCKbaxgFfy+8Uhsa86EGJdr3cRnps7dr/5dUPdXv+B64ZHODBlo4BgWAiKZx+X4F
-         G2/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXutPzDJiy/kUdSFfZkf9PXz0QKOsG5UIdQmVZDSNdqm3gp6FfLPG8C3C0Vxxnkjj2RB95I2qkTcfDN2IxY7mBVNtV2ewrNl8IIU9hd
-X-Gm-Message-State: AOJu0YwO0/dbHocL3m4cJa7+Wwj5EfoBBKo7SWwK0YY/YBVBbQwJDprY
-	QP30rAmaVpWmPuexdd81eh9X+dRv9/G4Zjdvz5cDhPkoIdUs0RQkYIcwqMH5/mXSjjcA6PLSxl3
-	yzL0Qy1z+3EIdRK8yVxTEyGTg5ow8SgnF0TIp
-X-Google-Smtp-Source: AGHT+IFxhfE/RzvX7+ulq0KbAkf7P5D6w45kxMVxgPiuAeYPn2IilZSRtVlEKwNMRCb0uRiYGJdYkTguNKiF7lfjQRE=
-X-Received: by 2002:a5d:4811:0:b0:343:d06e:51cb with SMTP id
- l17-20020a5d4811000000b00343d06e51cbmr6748896wrq.19.1712608827286; Mon, 08
- Apr 2024 13:40:27 -0700 (PDT)
+	s=arc-20240116; t=1712608917; c=relaxed/simple;
+	bh=tfdC6IUIDOInprI5HAyhCtD8GrE4tlPMNfZeyK0mQ5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GB+dYPAX+QA/2+bYR4yg6m+loV2WAEAShSRkkdHa12yht9ToTrlGsvuGtYbmfakFBoweUsLwVcRB/sTC8jYzRcxh1NXT3cTfA93NF9tBhf/LIs6ALqBvSmCe0Dq7IZxXgQ08nnKFFcutExmzDcK8yWBLsU9Q6tnyiLilqdJc7N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g833Jq0J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA163C433F1;
+	Mon,  8 Apr 2024 20:41:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712608917;
+	bh=tfdC6IUIDOInprI5HAyhCtD8GrE4tlPMNfZeyK0mQ5c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g833Jq0JM+10ZJ+ETjg9N7wqx+vDkgbHh+qPxlWZPM58bhix0xse+CvnYjZEAJ++t
+	 ZFIiPv7TdMTA5Wi8avhKDi/+PR756//shV3JnFWMXBHdJiV+Z0w+JQVtD64wmOoW+n
+	 SMF7812fbkYYd3tQLWxC0ylgTYtLfVpUSCzaoYWo27MkBuAxdJf5m1EP83d1Ql9WQ8
+	 DEJ7UyVK3LeleDrUhD4LdRccUYPhuH0nnjxczEJWfuos3fdRYcnKBEwbkNcseFHs2F
+	 HGQb5Bb40e6779tzRaCnRMb7JOyj+89tz9ddkkRkQOyXYXnPfQNvV9WiNOI+f8xTRk
+	 rBpQo1p9UuNYQ==
+Date: Mon, 8 Apr 2024 15:41:54 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
+	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+Message-ID: <k7f22hyltul4h4o4vqe6prc2yx3mm2q4dzk66j3xrsdpdtqllb@3c6ul4fpimwz>
+References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
+ <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
+ <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405231920.1772199-1-peterx@redhat.com> <151c1981-f2ed-43fd-bec3-5ed63efe1c13@redhat.com>
-In-Reply-To: <151c1981-f2ed-43fd-bec3-5ed63efe1c13@redhat.com>
-From: Axel Rasmussen <axelrasmussen@google.com>
-Date: Mon, 8 Apr 2024 13:39:49 -0700
-Message-ID: <CAJHvVchiY9v2jkdFzbYukbiUYADCrZcAO-4pW-RwdbLetW8w7w@mail.gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: Allow hugetlb change protection upon
- poison entry
-To: David Hildenbrand <david@redhat.com>
-Cc: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-stable <stable@vger.kernel.org>, 
-	syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
 
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+On Mon, Apr 08, 2024 at 12:43:34PM -0700, Abhinav Kumar wrote:
+> 
+> 
+> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
+> > On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
+> > > From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> > [..]
+> > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > index d80f89581760..bfb6dfff27e8 100644
+> > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > @@ -1665,7 +1665,7 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
+> > >   		return;
+> > >   	if (!dp_display->link_ready && status == connector_status_connected)
+> > > -		dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+> > > +		dp_hpd_plug_handle(dp, 0);
+> > 
+> > If I read the code correctly, and we get an external connect event
+> > inbetween a previous disconnect and the related disable call, this
+> > should result in a PLUG_INT being injected into the queue still.
+> > 
+> > Will that not cause the same problem?
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> 
+> Yes, your observation is correct and I had asked the same question to kuogee
+> before taking over this change and posting.
+> 
+> We will have to handle that case separately. I don't have a good solution
+> yet for it without requiring further rework or we drop the below snippet.
+> 
+>         if (state == ST_DISCONNECT_PENDING) {
+>                 /* wait until ST_DISCONNECTED */
+>                 dp_add_event(dp, EV_HPD_PLUG_INT, 0, 1); /* delay = 1 */
+>                 mutex_unlock(&dp->event_mutex);
+>                 return 0;
+>         }
+> 
+> I will need sometime to address that use-case as I need to see if we can
+> handle that better and then drop the the DISCONNECT_PENDING state to address
+> this fully. But it needs more testing.
+> 
+> But, we will need this patch anyway because without this we will not be able
+> to fix even the most regular and commonly seen case of basic
+> connect/disconnect receiving complementary events.
+> 
 
-Thanks for the fix, Peter!
+I did some more testing on this patch. Connecting and disconnecting the
+cable while in fbcon works reliably, except for:
+- edid/modes are not read before we bring up the link so I always end up
+  with 640x480
 
+- if I run modetest -s <id>:<mode> the link is brought up with the new
+  resolution and I get my test image on the screen.
+  But as we're shutting down the link for the resolution chance I end up
+  in dp_bridge_hpd_notify() with link_ready && state = disconnected.
+  This triggers an unplug which hangs on the event_mutex, such that as
+  soon as I get the test image, the state machine enters
+  DISCONNECT_PENDING. This is immediately followed by another
+  !link_ready && status = connected, which attempts to perform the plug
+  operation, but as we're in DISCONNECT_PENDING this is posted on the
+  event queue. From there I get a log entry from my PLUG_INT, every
+  100ms stating that we're still in DISCONNECT_PENDING. If I exit
+  modetest the screen goes black, and no new mode can be selected,
+  because we're in DISCONNECT_PENDING. The only way out is to disconnect
+  the cable to complete the DISCONNECT_PENDING.
 
-On Mon, Apr 8, 2024 at 11:59=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 06.04.24 01:19, peterx@redhat.com wrote:
-> > From: Peter Xu <peterx@redhat.com>
-> >
-> > After UFFDIO_POISON, there can be two kinds of hugetlb pte markers, eit=
-her
-> > the POISON one or UFFD_WP one.
-> >
-> > Allow change protection to run on a poisoned marker just like !hugetlb
-> > cases, ignoring the marker irrelevant of the permission.
-> >
-> > Here the two bits are mutual exclusive. For example, when install a
-> > poisoned entry it must not be UFFD_WP already (by checking pte_none()
-> > before such install).  And it also means if UFFD_WP is set there must h=
-ave
-> > no POISON bit set.  It makes sense because UFFD_WP is a bit to reflect
-> > permission, and permissions do not apply if the pte is poisoned and
-> > destined to sigbus.
-> >
-> > So here we simply check uffd_wp bit set first, do nothing otherwise.
-> >
-> > Attach the Fixes to UFFDIO_POISON work, as before that it should not be
-> > possible to have poison entry for hugetlb (e.g., hugetlb doesn't do swa=
-p,
-> > so no chance of swapin errors).
-> >
-> > Cc: Axel Rasmussen <axelrasmussen@google.com>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: linux-stable <stable@vger.kernel.org> # 6.6+
-> > Link: https://lore.kernel.org/r/000000000000920d5e0615602dd1@google.com
-> > Reported-by: syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
-> > Fixes: fc71884a5f59 ("mm: userfaultfd: add new UFFDIO_POISON ioctl")
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >   mm/hugetlb.c | 10 +++++++---
-> >   1 file changed, 7 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 8267e221ca5d..ba7162441adf 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -6960,9 +6960,13 @@ long hugetlb_change_protection(struct vm_area_st=
-ruct *vma,
-> >                       if (!pte_same(pte, newpte))
-> >                               set_huge_pte_at(mm, address, ptep, newpte=
-, psize);
-> >               } else if (unlikely(is_pte_marker(pte))) {
-> > -                     /* No other markers apply for now. */
-> > -                     WARN_ON_ONCE(!pte_marker_uffd_wp(pte));
-> > -                     if (uffd_wp_resolve)
-> > +                     /*
-> > +                      * Do nothing on a poison marker; page is
-> > +                      * corrupted, permissons do not apply.  Here
-> > +                      * pte_marker_uffd_wp()=3D=3Dtrue implies !poison
-> > +                      * because they're mutual exclusive.
-> > +                      */
-> > +                     if (pte_marker_uffd_wp(pte) && uffd_wp_resolve)
-> >                               /* Safe to modify directly (non-present->=
-none). */
-> >                               huge_pte_clear(mm, address, ptep, psize);
-> >               } else if (!huge_pte_none(pte)) {
->
-> Reviewed-by: David Hildenbrand <david@redhat.com>
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Regards,
+Bjorn
+
+> 
+> > >   	else if (dp_display->link_ready && status == connector_status_disconnected)
+> > > -		dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+> > > +		dp_hpd_unplug_handle(dp, 0);
+> > >   }
+> > > -- 
+> > > 2.43.2
+> > > 
 
