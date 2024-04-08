@@ -1,106 +1,124 @@
-Return-Path: <linux-kernel+bounces-135690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E521789C9C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:37:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08BE689C9CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4681C24880
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:37:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA99F28AA43
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0703D31A83;
-	Mon,  8 Apr 2024 16:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="Y8Eqia0E"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE84142E6C;
+	Mon,  8 Apr 2024 16:38:04 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2855142640;
-	Mon,  8 Apr 2024 16:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3225E142645;
+	Mon,  8 Apr 2024 16:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594118; cv=none; b=MHN78tdbr1nV/pBZ6FpNmAfKM6Lotd5N4yyizeaUe7nl3hgwGybszfwtZ5YQcno4uWfbctw2XwaUej/DpVTVEWNUlZ+Zn7AQdYmCFOXj6TYLpzpK5FXqtbfkumNwrsfdi7RQLf+VYH+VWoxAEhlyMV3zU7lUEfSmg2qocxduQ/k=
+	t=1712594283; cv=none; b=ZEgsmDFh51gZEWRTtjdG40sOmOhYyi17hQs9L24JiFVCJRrOOzosySXJDQSsEd4LwCbhVDb+m8HyojHlqXp6aCs4zFICgaIjamkS+LdaQEzXbR0pXGK9qw0KcJ4mV1L7d+8J7zQnNTSxlxs2FPQgFSc0Z9OnsJYfaJOGf/4MKYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594118; c=relaxed/simple;
-	bh=Ol3OuCOs0qz0p2kk34C2mb8GJuxPZ0RRneOwfjXA/qw=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EGKEwYMe1uvd8Dian+qHc6CkQI6s8vrgrtEN8FBEr6fb2KzkDloUwJ6bjWyMH2BQlpqpAARWv1x0t9qUhahXhGk+h9XDaw6I8+rAYn9OZPS7Ad0OAsqOk2TBFwmApfoQlcyF91eS8ZNcVwvzZKEwMNFcOfvmNiS3Lb04Uzu9v1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=Y8Eqia0E; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=LgugAqDes5DUfL9jH3DtDqEBiyAQfB08J/y6lFBdf+c=;
-	t=1712594115; x=1713803715; b=Y8Eqia0E3zDCF8ygCKiMooMyyfIAh1c3nJ/Acw6/xx2Sp8k
-	kr+Puz/mBf5gKqNCpWsz2200QiQEHycvjFis/0e7MBSqGTTLAs2p9y5evuDnDo8sYHUOtEYIRH//V
-	YJ+YUZk8TUsx9tc6XQcrOe1VP4N+DJ6K5oOtiIAZtVM+cZujvxx9XjoU4hVPeUCsI7zVfoHJHrB2J
-	muImTrP7AYhxAb42QpQqPl8IXz2HlbFwWWbhlY2ZdJYzcwdGJaj5FuXHcymB1E5Av8jfP3XW5VQWA
-	iH49+KWTAp1AyDM1GZEXVJTv83CCHM8yF2+Zqq2QRSQXbVPStwX+3penVJPqrNog==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rtrxg-0000000GMsP-2sSt;
-	Mon, 08 Apr 2024 18:35:12 +0200
-Message-ID: <05545ecdd2b05223b9204131b0ce9ba33460f44c.camel@sipsolutions.net>
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Ben Greear <greearb@candelatech.com>, LKML
- <linux-kernel@vger.kernel.org>,  linux-leds@vger.kernel.org
-Date: Mon, 08 Apr 2024 18:35:11 +0200
-In-Reply-To: <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
-	 <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
-	 <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712594283; c=relaxed/simple;
+	bh=tHxJ3krplcWnanw+f2gs+vuLQSJPq5GNtNrhO6CiBXk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fqIWgjiVOb9mjkdblnx2OQ1EIOmCF2n4U+9I3A2mPr8KSGzCgs+dWdzYU4IQUq+1924BVGy5hKy6k8edX9s9HYF4BEA1gSmCBT+O+IGPdWbPratfjr5F04C/0Mdfa4I4gWz0l33y6z6isyiJEm3WVmLn+SNVv+uzTuUSHvd+JOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.2] (ip5f5af0ad.dynamic.kabel-deutschland.de [95.90.240.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2DF9361E5FE01;
+	Mon,  8 Apr 2024 18:37:23 +0200 (CEST)
+Message-ID: <bd4bdabc-2d83-4022-87f4-8c599009d9f5@molgen.mpg.de>
+Date: Mon, 8 Apr 2024 18:37:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part
+ of current TD ep_index 1 comp_code 1
+To: Mathias Nyman <mathias.nyman@linux.intel.com>,
+ =?UTF-8?Q?Micha=C5=82_Pecio?= <michal.pecio@gmail.com>
+Cc: Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
+ <20240405113247.743e34b2@foxbook>
+ <7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
+ <20240406183659.3daf4fa0@foxbook>
+ <c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
+ <20240407142542.036fb02f@foxbook>
+ <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-04-03 at 12:35 -0700, Ben Greear wrote:
-> >=20
-> > So, deadlock I guess....
-> >=20
-> >  =C2=A0INFO: task kworker/5:13:648 blocked for more than 180 seconds.
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Not tainted 6.9.0-rc2+ #23
-> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this messag=
-e.
-> > task:kworker/5:13=C2=A0=C2=A0=C2=A0 state:D stack:0=C2=A0=C2=A0=C2=A0=
-=C2=A0 pid:648=C2=A0=C2=A0 tgid:648=C2=A0=C2=A0 ppid:2=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 flags:0x00004000
-> > Workqueue: events deferred_probe_timeout_work_func
-> > Call Trace:
-> >  =C2=A0<TASK>
-> >  =C2=A0__schedule+0x43d/0xe20
-> >  =C2=A0schedule+0x31/0x130
-> >  =C2=A0schedule_timeout+0x1b9/0x1d0
-> >  =C2=A0? mark_held_locks+0x49/0x70
-> >  =C2=A0? lockdep_hardirqs_on_prepare+0xd6/0x170
-> >  =C2=A0__wait_for_common+0xb9/0x1d0
-> >  =C2=A0? usleep_range_state+0xb0/0xb0
-> >  =C2=A0? __flush_work+0x1ff/0x460
-> >  =C2=A0__flush_work+0x287/0x460
-> >  =C2=A0? flush_workqueue_prep_pwqs+0x120/0x120
-> >  =C2=A0deferred_probe_timeout_work_func+0x2b/0xa0
+Dear Mathias, dear Michał,
 
 
-This seems ... complex.
+Thank you very much for your assistance.
 
-Does changing iwlwifi's request_module() to request_module_nowait() in
-iwl_req_fw_callback() (only) fix it? I think we can do that, we don't
-really care at that point, and the issue here seems to be waiting for it
-while also other modules are loading and due to the hashing in
-idempotent() (kernel/module/main.c) it can't make progress.
 
-johannes
+Am 08.04.24 um 09:17 schrieb Mathias Nyman:
+> On 7.4.2024 15.25, Michał Pecio wrote:
+>> This (and the absence of any earlier errors on the endpoint) looks
+>> like the hardware may be confirming a "successful" transfer twice or
+>> the driver may be processing one such confirmation twice.
+> 
+> It's also possible this TD/TRB was cancelled due to the disconnect.
+> Could be that even if driver removes the TD from the list and cleans out 
+> the TRB from the ring buffer (turns TRB to no-op) hardware may have read
+> ahead and cached the TRB, and process it anyway.
+> 
+>> [   94.088594] usb 1-2: USB disconnect, device number 8
+>> [   94.089370] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+>> [   94.089403] xhci_hcd 0000:00:14.0: Looking for event-dma 00000001250310f0 trb-start 0000000125031100 trb-end 0000000125031100 seg-start 0000000125031000 seg-end 0000000125031ff0
+>> [   94.089427] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 1250310f0 last_dma 1250310f0 status -115 from finish_td
+>>
+>> (I say "successful" but it really isn't - the device is no longer
+>> listening. But there is no delivery confirmation on isochronous OUT
+>> endpoints so the xHC doesn't suspect anything.)
+>>
+>> Could you try again with this updated debug patch to get more info?
+> 
+> Would also be helpful to add xhci dynamic debug and xhci tracing (two 
+> separate logs). These will show in detail everything that is going on.
+> 
+> Steps:
+> 
+> mount -t debugfs none /sys/kernel/debug
+> echo 'module xhci_hcd =p' >/sys/kernel/debug/dynamic_debug/control
+> echo 'module usbcore =p' >/sys/kernel/debug/dynamic_debug/control
+> echo 81920 > /sys/kernel/debug/tracing/buffer_size_kb
+> echo 1 > /sys/kernel/debug/tracing/events/xhci-hcd/enable
+> echo 1 > /sys/kernel/debug/tracing/tracing_on
+> < Reproduce issue >
+> Send output of dmesg
+> Send content of /sys/kernel/debug/tracing/trace
+> 
+> please copy the /sys/kernel/debug/tracing/trace file somewhere as soon
+> as possible after reproducing the issue. It grows fast.
 
+For posterity I created Linux Kernel Bugzilla issue #218695 [1], and 
+attached the files there. Hopefully everything was captured, that you 
+need. The discussion could continue on this list, but do as it suits you 
+best.
+
+
+Kind regards,
+
+Paul
+
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218695
 
