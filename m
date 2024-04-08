@@ -1,207 +1,142 @@
-Return-Path: <linux-kernel+bounces-135591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F1689C80F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F75689C829
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:23:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98C041C23DEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:20:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61AC61C23FDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65E114037F;
-	Mon,  8 Apr 2024 15:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4573E1411C7;
+	Mon,  8 Apr 2024 15:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CI2SvqdP"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q4kInhAj"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B0013FD82
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DED140E5C;
+	Mon,  8 Apr 2024 15:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589651; cv=none; b=cY2QRHJlgiw2yI3X8ShQDqYb9IbYViGHszFPQ/Mqsz9ia0PADxlgUvvr12/d1e8okiGM18sSkz1GI85EMY/1qqr5YkLldXE5ZsP0Na3c4V/0+FIrhnQzfG5cyjoAIlI/HeHc6iK1PoZwQEi6w7qmgs7Mn9vP+Jmf7PjtuPTbf5s=
+	t=1712589811; cv=none; b=GBR7NaaH0Pb3OIQ6ftLBpPRWBXWL9uEFYOujtK4dLTM2djxfMLFJyIaPpdMz8/AjEC6HHWCPC76YmEPjguKksUCb+uraFCr72gf+rhRAhADOLhyF5xgZqQvNOgXwOTknB+b2up8719eCTIcTwU1tu8CP53qgA6C4cwvgv98vujM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712589651; c=relaxed/simple;
-	bh=EG+aMzZWPqXZP7pzqVNCG494GIdBKoJ8HRXzj3U/2Kc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p2jd1lleysNxpvoEZwWcK0oBDwWNBEbXh41kTP4voQWItpd4Lh8DlW18gVxc4Lw/jyVXVyfRD24Y04JvNs8jNgIuK/i+JtSmR1c1R4qLJzjjKmhUxMEEUYl+pdRsIYqf6q60qyISNcbu3TGT0FatJUjB1j7c/oJLA0V4eouXKfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CI2SvqdP; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4168a0d113cso4071155e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:20:48 -0700 (PDT)
+	s=arc-20240116; t=1712589811; c=relaxed/simple;
+	bh=YE2/eJwGtOKC270Pf6AD/gnWZLqa2aC+ZVpjLPeWt6o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EPT3LbWRHIRHlh+DvpXQZoOewF/7VoImhHmaq7Ch70YHrheV0YF0TcN58YVBZBoumGWtNf6YVItl+PI1ZJFXvUfwy4Fsc08kIHO0nyBvtNjVlL7QzPEMI5gkE4qzictJB6BMt0HsYqIWSR1XjNAVvFcux1y6L1acj0y3Pa+QcrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q4kInhAj; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso1817968a12.2;
+        Mon, 08 Apr 2024 08:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712589647; x=1713194447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BlOCHrfesqm1a/UwNqzCRqzi7tcuVj6qUjpVgZMf4pQ=;
-        b=CI2SvqdPoXYRJVtOTGy+nJI8kVpO4LtyVgJF7a8atV98zjtQ7qtMROy/2la4lw9Mnq
-         8iv/bAh1uQh/CkjAEAMYDgj6PkyDTBpau0zcstj30xufD0LlWgAVx+F+KejqpAGdF+KD
-         NW1yycYeODfJeTm+0+mEr3XofICeJiQbzpbSNsNyzry7mpVkORqljgsiY8OgjdFZPOT6
-         QdOYmtiteza+SqHWqeXxwOpoJEgWgnomYLIFvSw6IZWSCCzUnPbpJyXjvkJZ/kmYUt2Z
-         8+i6zNdMFSNoka+enf+wu6cISp1+8L2tbd1U/UQFncgl8FMyHJD7FXyfhGIgZhrBPJzZ
-         nKqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712589647; x=1713194447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712589808; x=1713194608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BlOCHrfesqm1a/UwNqzCRqzi7tcuVj6qUjpVgZMf4pQ=;
-        b=YneRl2WWirTeaAn6jLrWNXDVF6znGNspylKwbJY5qLiL7wOHe7jH6nnkiyCkz9AkCB
-         tv0PD79bR08vewAI+BecQckyFDcwlk3Lx+c8baXSwKVjBEHRwmmzX5ldA26dXZCTeHKE
-         TQ/sKR4aquWsm5w39vhR34A1BcSmOUkLhF7gA4rm5IDSqoVkv8PcN/ohs/ARuhtvw1+I
-         z/3eNh+36B5/nleOp7f5u76D0ByzJyeOpM6s7uMkB5RDoFJijrmEdYRAowDXBEbFkt92
-         DOu91zCKatP8mqGTy3uwIz1bYTehA7Dk5rJhBnBG6eqkiTP2mKWBu2CS3UV8QtmC1ufP
-         66ow==
-X-Forwarded-Encrypted: i=1; AJvYcCWF7Cgb1489ORg6E/tKwqLKFhlQVqS5aP/WFa3hI7P/qWXl4TshuWQQEbMPQqO4TXT8Yh3xovPv/NtJX85o7nmYJHXK8vjz8b5DILc9
-X-Gm-Message-State: AOJu0YxGuzM/pWWhma22JEvEv+Q+2QxirNHEKnLoV8TilpysajETpwiE
-	Ykcz09mzNBVinpzwYJi3zqixTZOIEftF+40Tm8ogwvhN4Il39IZqWKLYxgM55ZGB/Z/A8Y5l7sP
-	B
-X-Google-Smtp-Source: AGHT+IGAQbEMWzyEkxGRWbLPrmdCENpYufKXYHYCKztk7Thbx6l1DgCJTGo7NH/kY1OWvxn6gcarUQ==
-X-Received: by 2002:a05:600c:4ece:b0:416:3365:b9c7 with SMTP id g14-20020a05600c4ece00b004163365b9c7mr5491546wmq.13.1712589646805;
-        Mon, 08 Apr 2024 08:20:46 -0700 (PDT)
-Received: from localhost.localdomain ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id fl14-20020a05600c0b8e00b004166d303d6fsm4352595wmb.25.2024.04.08.08.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 08:20:46 -0700 (PDT)
-Date: Mon, 8 Apr 2024 17:20:45 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v4 05/27] printk: nbcon: Add detailed doc for
- write_atomic()
-Message-ID: <ZhQLTet7he6B3ChF@localhost.localdomain>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-6-john.ogness@linutronix.de>
+        bh=YE2/eJwGtOKC270Pf6AD/gnWZLqa2aC+ZVpjLPeWt6o=;
+        b=Q4kInhAjPNSLPl8GBvfT2+gjLlxLpEp9SIAZm6hd7VxxY2dg/YlLc0JNngbtGh3UqN
+         YEA88vUE9drO1dWiis5cxwTSRzPIBECdp1HxnMQh1mLXUnZlaCYDZi+/9Qgafm/8Cgck
+         U1XnuCWLFf4qRkitCWJxc3CjFyuFhn8moHJT/LdHwVnGahfugAED2rGieueo1jWnKH3t
+         HssxXWKoGcxLWV1UCczuC1+P3zrL9fa83+YgV7aEaGICLUxyoqSDqTVcRrCjqBYwXyOc
+         zMfT6ZtvNzVatTDDx58r55F7KwiHgBSWiUUaeO2sdBZ4GYRJMJDvoIDaebPtQRy2BgQg
+         6Ncw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712589808; x=1713194608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YE2/eJwGtOKC270Pf6AD/gnWZLqa2aC+ZVpjLPeWt6o=;
+        b=bGABpB+VTiJvF+yGWAVCVEAJ1vwv91GlLvpTiUkf3eGuK6PBft/LXO8B9XXwJTZh2H
+         MVdPLfp7goRv3Y5959AMg99BTA2aAOC2bYZt56Hc76h/753gHqr9QGUa+pOR5rDI5/xD
+         YtIS53r6lA9lrjRojQvrWxKsEO3ArqZ2920WXcT6TOpwBimWa3Jdk08QK1LPDp/jbbJL
+         06iYO82Iy3ELsKfL4Kw1fFvxCAwdRmO2B6xli2LiuBRMAG6Z8HYmva1XXgCj/Nds46gI
+         FQW1xGox65wKWutFMHmzszzYT0yXkfOBawPGtLzwTgDRMGGiQn9pfljIj/YjHqfaEsdT
+         MgPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXleMFBCP4/VWQicLEDhmzOdU3rrewP8zu2RQxw3Aq5g3gGesuOKAW+sNxmZ3+ECgb4X3gGV72dtfXad5fo9pJqmwE+xjKzxQymbCOeYTXpOXPHrrYoilaCpZOcuwSBZecc2no0Gd5GdgFxUD0=
+X-Gm-Message-State: AOJu0YzpOFzaO/YaMwoFLRqx940MwJuJbCeaX/sWnc7AicxKlj8bIzVf
+	Ma1S82mhQAh2oRVRKqoHQy1f9ASmJTUIoKhu71jXC1MrL5O4CLCDLejLYHFf0n9dle8NQPE2wPW
+	OB61PNE1jyl0G1sG686R1Rjbwo9h7n7SqjF0=
+X-Google-Smtp-Source: AGHT+IEJvbxzuNcQXgeFuh8Ke1Vj6bw5Qs2GP3BPuhWpp9IRpSdKAmcs1TpqyhEdrxoRqqjjfJIzAib9+6pfN5hwvYs=
+X-Received: by 2002:a50:d59b:0:b0:56b:cfef:b2de with SMTP id
+ v27-20020a50d59b000000b0056bcfefb2demr7217258edi.26.1712589807970; Mon, 08
+ Apr 2024 08:23:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402221129.2613843-6-john.ogness@linutronix.de>
+References: <CANiq72meap5C9bkj5rNDE=0U5gb5OKwDrrTSrVRwJbkAPWgUsg@mail.gmail.com>
+ <d912f0e0-19d5-4cde-a548-10db94da15a9@yahoo.de>
+In-Reply-To: <d912f0e0-19d5-4cde-a548-10db94da15a9@yahoo.de>
+From: =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>
+Date: Mon, 8 Apr 2024 17:22:49 +0200
+Message-ID: <CAA76j92Sd-YN=UYET7jyMyBuzyhET+rwqF-Rxo-0S_60+TUX1Q@mail.gmail.com>
+Subject: Re: [PATCH] x86/insn_decoder_test: allow longer symbol-names
+To: Danilo Krummrich <danilokrummrich@yahoo.de>
+Cc: miguel.ojeda.sandonis@gmail.com, tglx@linutronix.de, x86@kernel.org, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, 
+	david@readahead.eu, davidgow@google.com, hpa@zytor.com, 
+	john.m.baublitz@gmail.com, linux-kernel@vger.kernel.org, mhiramat@kernel.org, 
+	mingo@kernel.org, rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 2024-04-03 00:17:07, John Ogness wrote:
-> The write_atomic() callback has special requirements and is
-> allowed to use special helper functions. Provide detailed
-> documentation of the callback so that a developer has a
-> chance of implementing it correctly.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+Hello,
 
-I have re-read the text and found a mistake.
+I was just waiting in case there was feedback from David Rheinsberg.
 
----
->  include/linux/console.h | 31 +++++++++++++++++++++++++++----
->  1 file changed, 27 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> index 54b98e4f0544..e4028d4079e1 100644
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -285,7 +285,7 @@ struct nbcon_write_context {
->  /**
->   * struct console - The console descriptor structure
->   * @name:		The name of the console driver
-> - * @write:		Write callback to output messages (Optional)
-> + * @write:		Legacy write callback to output messages (Optional)
->   * @read:		Read callback for console input (Optional)
->   * @device:		The underlying TTY device driver (Optional)
->   * @unblank:		Callback to unblank the console (Optional)
-> @@ -302,7 +302,6 @@ struct nbcon_write_context {
->   * @data:		Driver private data
->   * @node:		hlist node for the console list
->   *
-> - * @write_atomic:	Write callback for atomic context
->   * @nbcon_state:	State for nbcon consoles
->   * @nbcon_seq:		Sequence number of the next record for nbcon to print
->   * @pbufs:		Pointer to nbcon private buffer
-> @@ -327,8 +326,32 @@ struct console {
->  	struct hlist_node	node;
->  
->  	/* nbcon console specific members */
-> -	void			(*write_atomic)(struct console *con,
-> -						struct nbcon_write_context *wctxt);
-> +
-> +	/**
-> +	 * @write_atomic:
-> +	 *
-> +	 * NBCON callback to write out text in any context.
-> +	 *
-> +	 * This callback is called with the console already acquired. The
-> +	 * callback can use nbcon_can_proceed() at any time to verify that
-> +	 * it is still the owner of the console. In the case that it has
-> +	 * lost ownership, it is no longer allowed to go forward. In this
-> +	 * case it must back out immediately and carefully. The buffer
-> +	 * content is also no longer trusted since it no longer belongs to
-> +	 * the context.
-> +	 *
-> +	 * If the callback needs to perform actions where ownership is not
-> +	 * allowed to be taken over, nbcon_enter_unsafe() and
-> +	 * nbcon_exit_unsafe() can be used to mark such sections.
+Cheers!
 
-IMHO, the word 'can' is wrong. The callback has to enter unsafe state
-when the ownership is not allowed to be taken over.
-
-We should probably be more clear what this exactly means.
-
-Thinking more about this. We should also be more clear about when
-to use nbcon_can_proceed() and what it guarantees. Is it actually
-useful to call it directly in practice?
-
-
-> +	 * functions are also points of possible ownership transfer. If
-> +	 * either function returns false, ownership has been lost.
-> +	 *
-> +	 * This callback can be called from any context (including NMI).
-> +	 * Therefore it must avoid usage of any locking and instead rely
-> +	 * on the console ownership for synchronization.
-> +	 */
-
-My proposal:
-
-	/**
-	 * @write_atomic:
-	 *
-	 * NBCON callback to write out text in any context.
-	 *
-	 * This callback is called with the nbcon context acquired. But
-	 * a higher priority context is allowed to take over it by default.
-	 *
-	 * The callback has to call nbcon_enter_unsafe() and nbcon_exit_unsafe()
-	 * around any code where the takeover is not safe, for example, when
-	 * manipulating the serial port registers.
-	 *
-	 * nbcon_enter_unsafe() might fail when the context has lost
-	 * the console ownership in the meantime. In this case, the callback
-	 * is no longer allowed to go forward. It must back out immediately and
-	 * carefully. The buffer content is also no longer trusted since it
-	 * no longer belongs to the context.
-	 *
-	 * The callback should allow the takeover whenever it is safe.
-	 * It increases the chance to see messages when the system is
-	 * in troubles.
-	 *
-	 * The callback is called from any context (including NMI).
-	 * Therefore it must avoid usage of any locking and instead rely
-	 * on the console ownership for synchronization.
-	 */
-
-> +	void (*write_atomic)(struct console *con, struct nbcon_write_context *wctxt);
-> +
->  	atomic_t		__private nbcon_state;
->  	atomic_long_t		__private nbcon_seq;
->  	struct printk_buffers	*pbufs;
-
-
-Best Regards,
-Petr
+On Mon, 8 Apr 2024 at 14:52, Danilo Krummrich <danilokrummrich@yahoo.de> wr=
+ote:
+>
+> On 2/20/24 18:07, Miguel Ojeda wrote:
+> >
+> > On Fri, Jan 27, 2023 at 11:39=E2=80=AFAM David Rheinsberg <david@readah=
+ead.eu> wrote:
+> >>
+> >> The current workaround is to just disable CONFIG_X86_DECODER_SELFTEST,=
+ which I thought is a sad state. I can gladly use `256 + KSYM_NAME_LEN` and=
+ add a comment ala "room for insn-encoding and a symbol name". Would that b=
+e acceptable? The alternative would be to try to dyn-alloc a buffer and inc=
+rease it to the actual line-length?
+> >
+> > John independently hit this issue again. Could we fix this? Going for
+> > the `256 + KSYM_NAME_LEN` sounds good enough for the moment since it
+> > would be a clear improvement, though I agree this could be cleaned up
+> > further.
+>
+> I hit this independently as well. Miguel pointed me on this mail thread
+> when I sent another fix for this in [1].
+>
+> >
+> > Sergio took the approach David suggested in a related patch [1], but
+> > perhaps it is best to submit the fix on its own so that it is easier
+> > to put it in. David, would you be so kind as to submit a v2 with that?
+> > Hopefully x86 can pick it up, otherwise with an Acked-by I am happy to
+> > take it too; and then Sergio can submit his patch on top again.
+>
+> Sergio, David: Do you intend to follow up on this? Otherwise, I can also
+> pick this up and re-submit.
+>
+> - Danilo
+>
+> >
+> > Thanks!
+> >
+> > (Cc'ing also Masami who wrote this originally)
+> >
+> > [1] https://lore.kernel.org/rust-for-linux/20231119180145.157455-1-serg=
+io.collado@gmail.com/
+> >
+> > Cheers,
+> > Miguel
+>
+> [1] https://lore.kernel.org/rust-for-linux/20240325174924.95899-2-dakr@re=
+dhat.com/
 
