@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-135427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650B189C1D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:24:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D93E589C217
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:26:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983A11C215BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F519B25D2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFC085C44;
-	Mon,  8 Apr 2024 13:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218F8823AE;
+	Mon,  8 Apr 2024 13:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="ukQgap4V"
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Gkp+lPA1"
 Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1135862148;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1144E81754;
 	Mon,  8 Apr 2024 13:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712582416; cv=none; b=BNXvUscJdEzUTPwk+dnyV0BoR6CLODkKllcD4AVFruV9EhPId+vfQ3RPfgASMWboLHnIIduYjEmw36iFKQeGh5kxoS4a7XligT2u8o682tFWTYAnsyWpVUSxoy2m9zeydAreFrz3yAU0j4MBLvQ5N9P1h1uidZd06+/rfHkbH1w=
+	t=1712582415; cv=none; b=uydI1X2bS4ds1Al7uDVqLIGffnlRR2TIQA9emJ8J0i+Oq8UjzrINHHCr3hOSyhIAJns+HTJNyM9XY+lNCSTPvagpbZ2jCFOUye3BMOF/YMza6RBIUY6ojbK9615L+OpNCzqZ2ZeHHZYC7K4oLLNHN9gwSnPm+rM0yMstXT/MhlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712582416; c=relaxed/simple;
-	bh=Lg7MpZIv/xYXPJQLm776tfjlApa0oKTGhqiiIowID+0=;
+	s=arc-20240116; t=1712582415; c=relaxed/simple;
+	bh=NQlO1jgsVllyqjrKVAx0V+IBXpfLP2/7zeKLGvcmncY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PbD0TLboJpL0GLu77qyOSojNH53xGPEkU2D830PCAwUUCHeU8rg2CuoLrYsQ8O2+X8Hcr+0fmGXWnJNSki+mhpfEckX6PtLXKdqQWTSJvpjiLpZdSfjadyVkuzFu7K0ZW01ExVTQqvhX7E2tilRNpMYfyK6bjd04G4lIBGUjWCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=ukQgap4V; arc=none smtp.client-ip=193.104.135.124
+	 MIME-Version:Content-Type; b=Ygur8/1PQR+bpnyrp/gSgO8EJpFQm1cSE5neAHWbrswD9lVpobLHjvtrWke3VM6+IoYQtxrBcjcO6QmE5RmfKgzGYiqLt0GOuwOsObdOgJ3XTRBOXgiMw8OgF3IEwzZMGES4IHf0rj1QNtyyBJ5EMXvQnLv0+cpZreXKRkfxzCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Gkp+lPA1; arc=none smtp.client-ip=193.104.135.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
 Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 7791E600A2;
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 8E9C0600AF;
 	Mon,  8 Apr 2024 13:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
 	s=202008; t=1712581838;
-	bh=Lg7MpZIv/xYXPJQLm776tfjlApa0oKTGhqiiIowID+0=;
+	bh=NQlO1jgsVllyqjrKVAx0V+IBXpfLP2/7zeKLGvcmncY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ukQgap4VNE/vEA18w+LsctfzZJVVbH5993hCpyEXFwbO5RsxzLSdiYuvYQdSZSSBr
-	 0Zwu+kMItoPPBwuiVadpvYwGoAyGRfMwC62RwOIMI6Vr14reFCwrdT4iqYeo3z31ek
-	 lrpFvy8acFixr7vXWudQheEMb4t3ZaIzkKLTevsFUgej9H/l6x6ZqrRlG+eMmBgm8L
-	 X3d5xObHrLSUacMgbYs3fYwQ87bCWJsYjIgPvQJUJ/xpv7kd+5IQOBvppvgq7rB3OL
-	 44KJjW1ifhYrLrm2/uX4n7kdckW1L/D2o9p34JkeUKkyVGd7BEJRMDS0IH28O7WadB
-	 kPdBkZjsvE+Ww==
+	b=Gkp+lPA16aDUfsw0EDjURxoxWbcqt1X/Sf1wfddELRWDfzqvTQ5/WhCiOJHS/SLXI
+	 YsANT4PVAnjTBzu20h/0Ex/RX2HHVSrguydZepBs9gbh+j1sJxOuHArPzeFmE+wYO/
+	 kaR2fA2kGH/CouPssyceK5eumXTQb/zzgQGl7NyvE5Wd+PC4s56NGxxPlHLqc10T1i
+	 UPfRYL06BJaXTHeJRuoNMlwJCsdwa9jflF/NuJuuZtKguh27H31Z6dhM8VXiLuTHyh
+	 KzKTCtoeJkgoBmhcDxqIYLnfH36wlc53dcMcOCLzm6h/CH5cgSfySCjFQyJeuBsO+m
+	 FOVEwS3cX/L7Q==
 Received: by x201s (Postfix, from userid 1000)
-	id F02F5205049; Mon, 08 Apr 2024 13:09:39 +0000 (UTC)
+	id EC22120B99F; Mon, 08 Apr 2024 13:09:40 +0000 (UTC)
 From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -66,9 +66,9 @@ Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
 	Jamal Hadi Salim <jhs@mojatatu.com>,
 	Cong Wang <xiyou.wangcong@gmail.com>,
 	Jiri Pirko <jiri@resnulli.us>
-Subject: [PATCH net-next 3/6] flow_offload: add flow_rule_no_control_flags()
-Date: Mon,  8 Apr 2024 13:09:21 +0000
-Message-ID: <20240408130927.78594-4-ast@fiberby.net>
+Subject: [PATCH net-next 4/6] net: prestera: flower: validate control flags
+Date: Mon,  8 Apr 2024 13:09:22 +0000
+Message-ID: <20240408130927.78594-5-ast@fiberby.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240408130927.78594-1-ast@fiberby.net>
 References: <20240408130927.78594-1-ast@fiberby.net>
@@ -81,44 +81,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This helper can be used by drivers, that doesn't support
-any control flags, to reject any attempt to install rules
-with control flags.
+Add check for unsupported control flags.
 
-This is aimed at drivers, which uses flow_rule_match_control(),
-but doesn't implement any control flags.
-
-Only compile-tested.
+Only compile-tested, no access to HW.
 
 Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 ---
- include/net/flow_offload.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/ethernet/marvell/prestera/prestera_flower.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-index c1317b14da08c..415d225204a1f 100644
---- a/include/net/flow_offload.h
-+++ b/include/net/flow_offload.h
-@@ -471,6 +471,19 @@ static inline bool flow_rule_no_unsupp_control_flags(const u32 supp_flags,
- 	return false;
- }
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_flower.c b/drivers/net/ethernet/marvell/prestera/prestera_flower.c
+index 8b9455d8a4f7a..075aed847913d 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_flower.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_flower.c
+@@ -229,6 +229,10 @@ static int prestera_flower_parse(struct prestera_flow_block *block,
  
-+/**
-+ * flow_rule_no_control_flags() - check for presence of any control flags
-+ * @flags: flags present in rule
-+ * @extack: The netlink extended ACK for reporting errors.
-+ *
-+ * Returns true if no control flags are set, false otherwise.
-+ */
-+static inline bool flow_rule_no_control_flags(const u32 flags,
-+					      struct netlink_ext_ack *extack)
-+{
-+	return flow_rule_no_unsupp_control_flags(0, flags, extack);
-+}
+ 		flow_rule_match_control(f_rule, &match);
+ 		addr_type = match.key->addr_type;
 +
- struct flow_stats {
- 	u64	pkts;
- 	u64	bytes;
++		if (!flow_rule_no_control_flags(match.mask->flags,
++						f->common.extack))
++			return -EOPNOTSUPP;
+ 	}
+ 
+ 	if (flow_rule_match_key(f_rule, FLOW_DISSECTOR_KEY_BASIC)) {
 -- 
 2.43.0
 
