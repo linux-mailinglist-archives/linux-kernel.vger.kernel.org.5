@@ -1,241 +1,126 @@
-Return-Path: <linux-kernel+bounces-135305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AAF489BEA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:08:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B24E89BEB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF5A1C22575
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:08:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 851F3B22426
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8991D6CDA6;
-	Mon,  8 Apr 2024 12:07:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACC86A333
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2E96A347;
+	Mon,  8 Apr 2024 12:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vl5tW+US"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA8769E07;
+	Mon,  8 Apr 2024 12:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712578069; cv=none; b=UHSm81FcImiGx6xtajl/c8WKo+k0aNcnMOeU9e5DzOISG+1k0WS0DOlG+K2P4baMg12ikfi77oFNUh8pmcGrzUUMqu9HMt9ulGAzPnG7i9IZzmfvd165dx/xDjqm+enSJW4eFGofFG1wqCCajzWn+nGgpxRg7Fzx681WA0p9tzA=
+	t=1712578347; cv=none; b=eyKuS9qjDWndhAAOwywxG3F9gTYmAsDdkHPNzam1U+mzeL8BUMpk93IlUsLpPCgdv8fxGldiztPlaIado6VnQf2+v/re/ulsjaiMq1qfMkEmdCyzMVE563wL2+1UMC6AajG7P+39exRHFd1KiY1AptuKNySJED8uMqlyBU9ilI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712578069; c=relaxed/simple;
-	bh=b8pWrBbsgVx0W4YG0AiioljQVukONKMHKcEisvgp6Ig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oQUE+EreTL0v4qmSC39XkxZALYBAGvA0lg4s7aW2wRq26k1MdkikmNlsEVT4ikXnH5MBNGz8imVSeFJ7Om6gM+BV+Koy0VBaL4YrchMKXOUkcXHoZySxBdE6s/8O6Qv44LfIhgzh7LUd9jpuiWV6JwAgVdzi36GaY4R8hFVWlUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED007DA7;
-	Mon,  8 Apr 2024 05:08:15 -0700 (PDT)
-Received: from [10.57.73.169] (unknown [10.57.73.169])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A01823F64C;
-	Mon,  8 Apr 2024 05:07:43 -0700 (PDT)
-Message-ID: <4110bb1d-65e5-4cf0-91ad-62749975829d@arm.com>
-Date: Mon, 8 Apr 2024 13:07:42 +0100
+	s=arc-20240116; t=1712578347; c=relaxed/simple;
+	bh=vMSCjQT2myET9suDYZEPUOmwcRvfB4t+Bz0J1v9ExsE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=raHcgTWCqSrIMOrh+QhNePzymdPpPsBUD8eNeVcWJhlFLa+XYN1D4YffPvFqQgHVwpLFu0VyX+G8bEPdqkFZhKdu/VfuOZSk+w0eX9ADaoULjRGJVfEzYeocXDlGz4NWk7TXCEVH1jjKWZVQOQQqphi6ALTrq11bfsl4QyHdFsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vl5tW+US; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 419B3C433F1;
+	Mon,  8 Apr 2024 12:12:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712578347;
+	bh=vMSCjQT2myET9suDYZEPUOmwcRvfB4t+Bz0J1v9ExsE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vl5tW+USe5BvdmV9SiYYIe5EsZpjpNVcWf0jbWr503WM7zUifY49LcCKCKS+zjQVj
+	 1csscUtgIq486b42/UbxdrA+bWgmFqGCOz9iwkAJ1Uhoopk4QOOruopsFivzir/Yrl
+	 6I1p5/Jd/ngDk71tDTBVrP0RSjRfzEeeCcCWgikAgm17pRxPBHwLoGsNpvga/wEu1r
+	 cFER3AQF+kgCxi4M00h/ODs6CGnho3jn54xsBIJe/hZnrHbq2joLHmlZWnrvdC2Pjw
+	 ay+9i5KHG7od/6/EioJh44kqV5E1XJnGLJFfRVfKsIxJb9mqy6tTxir8R84kpYXsSJ
+	 KD687eAWpfZ0A==
+Date: Mon, 8 Apr 2024 13:12:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Dev Jain <dev.jain@arm.com>, shuah@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Anshuman.Khandual@arm.com, suzuki.poulose@arm.com,
+	ryan.roberts@arm.com, rob.herring@arm.com, Catalin.Marinas@arm.com,
+	will@kernel.org, mark.rutland@arm.com
+Subject: Re: [PATCH 2/4] selftests/arm: Add signal tests
+Message-ID: <f673314c-3a22-4a62-a994-ce6262593914@sirena.org.uk>
+References: <20240405084410.256788-1-dev.jain@arm.com>
+ <20240405084410.256788-3-dev.jain@arm.com>
+ <1ce0e9c7-0bd3-47c1-893c-3ea5aa95fef5@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/6] mm: swap: free_swap_and_cache_nr() as batched
- free_swap_and_cache()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
- Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240403114032.1162100-1-ryan.roberts@arm.com>
- <20240403114032.1162100-3-ryan.roberts@arm.com>
- <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qZP1wOhkGWh/mDjB"
+Content-Disposition: inline
+In-Reply-To: <1ce0e9c7-0bd3-47c1-893c-3ea5aa95fef5@collabora.com>
+X-Cookie: Drive defensively.  Buy a tank.
 
-[...]
-> 
-> [...]
-> 
->> +
->> +/**
->> + * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
->> + * @start_ptep: Page table pointer for the first entry.
->> + * @max_nr: The maximum number of table entries to consider.
->> + * @entry: Swap entry recovered from the first table entry.
->> + *
->> + * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
->> + * containing swap entries all with consecutive offsets and targeting the same
->> + * swap type.
->> + *
-> 
-> Likely you should document that any swp pte bits are ignored? ()
 
-Now that I understand what swp pte bits are, I think the simplest thing is to
-just make this function always consider the pte bits by using pte_same() as you
-suggest below? I don't think there is ever a case for ignoring the swp pte bits?
-And then I don't need to do anything special for uffd-wp either (below you
-suggested not doing batching when the VMA has uffd enabled).
+--qZP1wOhkGWh/mDjB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Any concerns?
+On Sun, Apr 07, 2024 at 02:28:06AM +0500, Muhammad Usama Anjum wrote:
+> On 4/5/24 1:44 PM, Dev Jain wrote:
 
-> 
->> + * max_nr must be at least one and must be limited by the caller so scanning
->> + * cannot exceed a single page table.
->> + *
->> + * Return: the number of table entries in the batch.
->> + */
->> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
->> +                 swp_entry_t entry)
->> +{
->> +    const pte_t *end_ptep = start_ptep + max_nr;
->> +    unsigned long expected_offset = swp_offset(entry) + 1;
->> +    unsigned int expected_type = swp_type(entry);
->> +    pte_t *ptep = start_ptep + 1;
->> +
->> +    VM_WARN_ON(max_nr < 1);
->> +    VM_WARN_ON(non_swap_entry(entry));
->> +
->> +    while (ptep < end_ptep) {
->> +        pte_t pte = ptep_get(ptep);
->> +
->> +        if (pte_none(pte) || pte_present(pte))
->> +            break;
->> +
->> +        entry = pte_to_swp_entry(pte);
->> +
->> +        if (non_swap_entry(entry) ||
->> +            swp_type(entry) != expected_type ||
->> +            swp_offset(entry) != expected_offset)
->> +            break;
->> +
->> +        expected_offset++;
->> +        ptep++;
->> +    }
->> +
->> +    return ptep - start_ptep;
->> +}
-> 
-> Looks very clean :)
-> 
-> I was wondering whether we could similarly construct the expected swp PTE and
-> only check pte_same.
-> 
-> expected_pte = __swp_entry_to_pte(__swp_entry(expected_type, expected_offset));
+> > +	ksft_print_msg("%s :: %s\n", current->name, current->descr);
+> > +	if (test_setup(current) && test_init(current)) {
+> > +		test_run(current);
+> > +		test_cleanup(current);
+> > +	}
+> > +	test_result(current);
+> > +
+> > +	return current->result;
+> > +}
 
-So planning to do this.
+> This test isn't TAP compliant. Please make this and all tests TAP
+> compilant. The 1/4 patch has example of TAP usage.
 
-> 
-> ... or have a variant to increase only the swp offset for an existing pte. But
-> non-trivial due to the arch-dependent format.
+It's based on the 64 bit version of these tests which are also not TAP
+compliant.  TBH I'm not sure how worthwile it is to fix at all given
+that they're all single test executables anyway, if it does get fixed
+it'd be good to do the arm64 ones as well.
 
-not this - I agree this will be difficult due to per-arch changes. I'd rather
-just do the generic version and leave the compiler to do the best it can to
-simplify and optimize.
+> > +	} else {
+> > +		fprintf(stdout, "==>> completed. FAIL(0)\n");
+> > +		td->result = KSFT_FAIL;
+> > +	}
+> > +
+> > +	if (force_exit)
+> > +		exit(td->result);
+> > +}
+> > +
 
-> 
-> But then, we'd fail on mismatch of other swp pte bits.
-> 
-> 
-> On swapin, when reusing this function (likely!), we'll might to make sure that
-> the PTE bits match as well.
-> 
-> See below regarding uffd-wp.
-> 
-> 
->>   #endif /* CONFIG_MMU */
->>     void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
->> diff --git a/mm/madvise.c b/mm/madvise.c
->> index 1f77a51baaac..070bedb4996e 100644
->> --- a/mm/madvise.c
->> +++ b/mm/madvise.c
->> @@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
->> long addr,
->>       struct folio *folio;
->>       int nr_swap = 0;
->>       unsigned long next;
->> +    int nr, max_nr;
->>         next = pmd_addr_end(addr, end);
->>       if (pmd_trans_huge(*pmd))
->> @@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
->> long addr,
->>           return 0;
->>       flush_tlb_batched_pending(mm);
->>       arch_enter_lazy_mmu_mode();
->> -    for (; addr != end; pte++, addr += PAGE_SIZE) {
->> +    for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
->> +        nr = 1;
->>           ptent = ptep_get(pte);
->>             if (pte_none(ptent))
->> @@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
->> long addr,
->>                 entry = pte_to_swp_entry(ptent);
->>               if (!non_swap_entry(entry)) {
->> -                nr_swap--;
->> -                free_swap_and_cache(entry);
->> -                pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
->> +                max_nr = (end - addr) / PAGE_SIZE;
->> +                nr = swap_pte_batch(pte, max_nr, entry);
->> +                nr_swap -= nr;
->> +                free_swap_and_cache_nr(entry, nr);
->> +                clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
->>               } else if (is_hwpoison_entry(entry) ||
->>                      is_poisoned_swp_entry(entry)) {
->>                   pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 7dc6c3d9fa83..ef2968894718 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -1637,12 +1637,13 @@ static unsigned long zap_pte_range(struct mmu_gather
->> *tlb,
->>                   folio_remove_rmap_pte(folio, page, vma);
->>               folio_put(folio);
->>           } else if (!non_swap_entry(entry)) {
->> -            /* Genuine swap entry, hence a private anon page */
->> +            max_nr = (end - addr) / PAGE_SIZE;
->> +            nr = swap_pte_batch(pte, max_nr, entry);
->> +            /* Genuine swap entries, hence a private anon pages */
->>               if (!should_zap_cows(details))
->>                   continue;
->> -            rss[MM_SWAPENTS]--;
->> -            if (unlikely(!free_swap_and_cache(entry)))
->> -                print_bad_pte(vma, addr, ptent, NULL);
->> +            rss[MM_SWAPENTS] -= nr;
->> +            free_swap_and_cache_nr(entry, nr);
->>           } else if (is_migration_entry(entry)) {
->>               folio = pfn_swap_entry_folio(entry);
->>               if (!should_zap_folio(details, folio))
->> @@ -1665,8 +1666,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>               pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
->>               WARN_ON_ONCE(1);
->>           }
->> -        pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
->> -        zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
->> +        clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
-> 
-> For zap_install_uffd_wp_if_needed(), the uffd-wp bit has to match.
-> 
-> zap_install_uffd_wp_if_needed() will use the uffd-wp information in
-> ptent->pteval to make a decision whether to place PTE_MARKER_UFFD_WP markers.
-> 
-> On mixture, you either lose some or place too many markers.
-> 
-> A simple workaround would be to disable any such batching if the VMA does have
-> uffd-wp enabled.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-Rather than this, I'll just consider all the swp pte bits when batching.
+--qZP1wOhkGWh/mDjB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
->> +        zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
->>       } while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+-----BEGIN PGP SIGNATURE-----
 
-[...]
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYT3yQACgkQJNaLcl1U
+h9DmvQf+LUmNX3wMgRZgOE8R5TMnKhRAImfgyCZZmViWqco8+Iqo5qlwkW+t3Rfv
+xoKtvMzrLCdMKSu1w7tUCufvf+US2FnAicHbeZkvkssDbORrrWLRm25AH4K0ooCp
+du0W9s6tJJQa9+cEnPtPQEdu3SbZ9WdPdUIEVBhboyGpLLkFCNFjppiP5x6MMnE4
+QNDoEMXIqwD/ycfVpEMTHmV5yz/fJGyiIeLJ/++wRthcHhXihuAA0pz0WEIuqwtU
+ZMfcjNQM2EZtduAefDtoQIW8SITEifs2eLkkpzRH2cKm3sSnurQO/4Ofl74lCEkD
+JXVCD3PQpvxS1v37IxUn+vXbT3mztg==
+=tYml
+-----END PGP SIGNATURE-----
 
+--qZP1wOhkGWh/mDjB--
 
