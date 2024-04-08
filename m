@@ -1,107 +1,113 @@
-Return-Path: <linux-kernel+bounces-134838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA2689B7AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:34:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5AE89B7AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:35:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37E951F22093
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:34:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A897128191D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513E312B75;
-	Mon,  8 Apr 2024 06:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED87D182DA;
+	Mon,  8 Apr 2024 06:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RCbma+kb"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i+OSYLn4"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F497462
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B857E1D540
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712558054; cv=none; b=u7TNeLAs+TwwXxDQfAezhuMYYrcAZJTakUjX4lwyTHOrGD+lMa1owuFVmptax+u5R1f+Qp49fEhSwuMijM86NZJbLKZ5NAdZpJV3Yg2gxtKa3nffMVlI2zxekBUIjLR5k6KB0FJcRE8m3W3wtPPCFbcyFclbHHyr/aDV132XPtY=
+	t=1712558127; cv=none; b=bKNRxkm/3BbEi29iVfc6hsGkfMeBBlpVHCV0QHptpslcOwHmUJo4EekJRMNF/DID0rkJbr4PcyejcMub7ACCDiC2ydCMTubG7TaeM93m7Md34rTow9A01kJU/9MVBritopb9eH2Sevvr6QfsS1K3eyP7j9u1m5H26SDO6/F/QoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712558054; c=relaxed/simple;
-	bh=InO9y535hmAp+zZGrgC2s8JRJgehKGr1Ign5e90h1os=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sllQNRM8KzVzGhInI301GCkWzlVjtZfoL546fgbJsKYtCL8LbGRPGVeRTJjWMKYJWJy9my5sdsXH/cke+SpfZO+bsuotI3X3kCajBS2yb6ra1mK+XUgiPakJMdbtXl0oqEzz15vGMm61VX0Uz9XQ2tpcLc67lE9YW1vV74aKgDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RCbma+kb; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1712558127; c=relaxed/simple;
+	bh=/a3dQF9z2JQVz9cciOeh+y8wRKyVwnn+yO0CdzhrgHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WchaYv7HNSuPWE+EancYgPp5nDnrZYSEtFNa5RteXY71J8O1jK1AB6IEIOI2R1TDyRsL6X0ymp6uvRuCkJQcWgjJmGb+15vNz3T2LDTnAWBLWnFuY2RE6QkA0GhgBenER/9xNTrJBC939rDeyYoKer0Q3E1PpHqgq+/k8G8KWVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i+OSYLn4; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51c6e91793so171304366b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:34:12 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51d05c50b2so98476066b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712558051; x=1713162851; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GUwtvhieMotVAHxF3wc6NLXp0AjuJvjChK7bI4AfjRY=;
-        b=RCbma+kbs4Ni4bsRDZ+onRZGZr7t8JEoRGX9LfBuQp1z6lItGyW+WWqq+fIIRXsKwe
-         kCXIUih2A8MC5fVDXqBUZkbvyTYO4coxQWnk76quPUheNJ9LTOu2Vb55tbJX0bH9paZ/
-         eynYotND/zApbN+3Ie4cJ3CJHtcSafPTppQtBltBr/uOfW8/dK7WvcR5YXLbVMO06dxk
-         9DmDfuuPT2M7r90bSvgyU4PjGrSYUElxl2etZaK1ivlPAe7a6HR9klj2eTgABP5qWpWx
-         JTMQDn+ixhrdIa47FeI1nXiiY4Cgz/dwcuR0maS37iAEnA77iJXdk8QTIIWoO7478hrI
-         C2Ug==
+        d=linaro.org; s=google; t=1712558124; x=1713162924; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgLtq4Q2TlcP1vQLZpHaRdv1skB8tG59UvbmyPM0V6M=;
+        b=i+OSYLn4mZmdJnMZ5pZA2PyU6zqUHRebwArdxncaSGr3tk/yMEH3aBP8uifGQ8XQFV
+         saVhD686lKd1hIihM2MGct1FfN9dlbLNhfZJkHR2YzNExRsDU0AX0ILAu8qbxMlG344I
+         jchjduM1GY60PIUym5L4xrYw583Fma07u8klFPnCXHhdwEl1sxHGHhtX0QhvwZ4+BGa1
+         wQhxonENWSQgAgpzXx0UcfQUon7H4Nv4vGag7stVF8zKdn00W9vyeaFrpls5rcVUvLBH
+         CWgthrttMXXlR021QC9P3kOw6DikzrduJVJctJPtKzERkMPruMTZY6nbTqsdf7ApOnyr
+         DM0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712558051; x=1713162851;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GUwtvhieMotVAHxF3wc6NLXp0AjuJvjChK7bI4AfjRY=;
-        b=rUqsLk/ARIm1q3Kgbir7n0Rtr1xNoo+hrovSp3ULwyRV2j7aSVUbvc6koQsDXMR1yo
-         5HLqAChev/CBmlkiperMQk5twdnDA3F6MFdw9L5J8hWcDV4jFjFOvkfOku7/4r2Z0j+C
-         IGLKOvPPL38ffZ0zkZayC4hOc4N7D36RJB7JacoUd6TFby210dvi0fNydRnBLnQuryAy
-         y2lQwzlcrv8m5hBV3wtA2mjZOpb5wR4JCX3v51EvL+GMZnjLWJ4I/5lDw0RfPUamOF9u
-         9G/fXYSBoqmcqvdM6C2Bjsykxb4fjAtWL4S4XqAuiiIMFqUnk5xPY0iKYBeIB6f97YRO
-         dp9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUlzlygOU2pLXVmwt0MHKv/YDsp16MGIHLHM7UpDRkCiSesYhqHS3oa01Hvk29CynZghKp35JHKs1cQG7qt3n/eRZKnL6zQgg56XjvY
-X-Gm-Message-State: AOJu0Yx/ayZLDcn1Y6VRyj4CjXM58VWDF76NsdIzyfG/yAAE3qWTo5ud
-	sAu9aqbAcj4xPtdBNRb33kUNtHv/pRHB1hN7xcm1urh5WX6PXG7bLGMKoHNXj8w3Xdv8G7z2bWC
-	E
-X-Google-Smtp-Source: AGHT+IHG8bE24wXvm47nxKr4eoHH3TtnxjuiPlw7M2h4OqpeEGSygZA6mbIWF6EGaIvJSYizSqvJTA==
-X-Received: by 2002:a17:906:f20d:b0:a4e:df0:e9e with SMTP id gt13-20020a170906f20d00b00a4e0df00e9emr6745650ejb.24.1712558050824;
-        Sun, 07 Apr 2024 23:34:10 -0700 (PDT)
-Received: from [192.168.69.100] ([176.176.144.67])
-        by smtp.gmail.com with ESMTPSA id n2-20020a1709062bc200b00a517e505e3bsm3980587ejg.204.2024.04.07.23.34.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 23:34:10 -0700 (PDT)
-Message-ID: <8bc35ca3-cd07-4130-952b-448acbd689d5@linaro.org>
-Date: Mon, 8 Apr 2024 08:34:08 +0200
+        d=1e100.net; s=20230601; t=1712558124; x=1713162924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FgLtq4Q2TlcP1vQLZpHaRdv1skB8tG59UvbmyPM0V6M=;
+        b=WGhmoYTTDCeEZcuE3bgsQTH93VKU6lzy9iKEkZAj/YgjXjQuEbx1Hf4FOhSNSjyRdT
+         C6mQQf4PbvBL8j6qv+eH5HnckCOseao06Uap63kNJA8SqiR2JFDDb+FF+xfgaz6nsLAE
+         AYc2pbPl6K0Z0R4b0BOlRM2njP4JeeFnECAHd/bh1hWfRtrWcvVG8l7YgQ/x5FGMfXVi
+         14heEQ5DwgbsG70HrL/0Ix6bj1+o0wBDJLEM/+jxJyNwirpyggkUuLaM3uqnqNfPj4gp
+         2iNyyaT07Ko1AVxQ6YvcvpVrBP8XK22XrBPMWwsKAcnR1pDa9JbyLtiVY01m8lwiDE2V
+         KuQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0F8Gi2fim1upIu9/18JGLaofZtm9ejw6/b3uD4h4ZDo2bcBCtHb/2P+rBC3wYFyxSpk5H4XMfd/bQc23tIW2gDRgyzj0JOb5dknr3
+X-Gm-Message-State: AOJu0YxAZnLme9K+l++q22s24aYplZvSnFYYWLzv42xy4QhIiGuPbMcs
+	hNgoVGqyATObMbrAS+kOfRTTTMZPFGb+ScmsBtgxfPG5XgXwqy0W5qUf2NEkklY=
+X-Google-Smtp-Source: AGHT+IF4EKTTmquAMoLVkOL3W63bmhNdWh38zIYl5ZaMdc7DqN4H52hPc5f4R3mNWxMKNOJbOZxeIw==
+X-Received: by 2002:a17:906:3752:b0:a4e:23a1:9ede with SMTP id e18-20020a170906375200b00a4e23a19edemr5078782ejc.36.1712558123980;
+        Sun, 07 Apr 2024 23:35:23 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id i21-20020a170906a29500b00a51a2711177sm4054925ejz.13.2024.04.07.23.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 23:35:23 -0700 (PDT)
+Date: Mon, 8 Apr 2024 09:35:18 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Jackson Chui <jacksonchui.qwerty@gmail.com>
+Cc: Alex Elder <elder@ieee.org>, Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: Clear up precedence for gcam logging
+ macros
+Message-ID: <e037e303-47b3-4758-914c-980ebe88d450@moroto.mountain>
+References: <20240404001627.94858-1-jacksonchui.qwerty@gmail.com>
+ <658e1f40-d1eb-4ba7-9ba3-0aa05a1ed06e@ieee.org>
+ <ZhBrff8qkkmum4wc@jc-ubuntu-dev-korn-1>
+ <5eb3afe2-da7b-4f98-aac2-bff529a02cea@moroto.mountain>
+ <5e1c5156-d906-4473-970b-bff71e4dcd96@ieee.org>
+ <ZhHOKkqVIdsuZ-4Q@mba15m2.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MIPS: Guard some macros with __ASSEMBLY__ in asm.h
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20240326-asm-guard-v1-1-fe0c140a5aea@flygoat.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-In-Reply-To: <20240326-asm-guard-v1-1-fe0c140a5aea@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhHOKkqVIdsuZ-4Q@mba15m2.local>
 
-On 26/3/24 12:41, Jiaxun Yang wrote:
-> There are some assembly macros with very generic naming
-> being defined asm.h. They are clashing with other macros
-> from C code.
+On Sat, Apr 06, 2024 at 06:35:22PM -0400, Jackson Chui wrote:
+> > 					-Alex
 > 
-> Guard them with __ASSEMBLY__ to prevent futher clashes.
+> Dan, Alex I think both of you are spot on.
 > 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Link: https://lore.kernel.org/linux-mips/8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org/
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->   arch/mips/include/asm/asm.h | 3 +++
->   1 file changed, 3 insertions(+)
+> I like the suggestion of adding 'gcam_dev()' as an accessor
+> function and directly calling to 'dev_*'. I'm busy this weekend
+> but will send out a new patch with this change next week.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Nah, don't bother with adding the gcam_dev() function.  Like Alex says,
+it's only 4 characters shorter.  Just get rid of the macros and do:
+
+                dev_err(&gcam->bundle->dev,
+                        "Unsupported unsolicited event: %u\n", op->type);
+
+regards,
+dan carpenter
 
 
