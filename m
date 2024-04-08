@@ -1,127 +1,243 @@
-Return-Path: <linux-kernel+bounces-135509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C0489C6E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:21:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D4A89C6E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:21:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8978E1F240F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:21:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443862814F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD8B12AAEA;
-	Mon,  8 Apr 2024 14:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KDvfgvJg"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEDA129E6B;
+	Mon,  8 Apr 2024 14:20:43 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CAA128362
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8466F126F0A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712585991; cv=none; b=fPA7M2j4W3BUeXyUM3C8b4FazunwsYzEz7w+RPYwvskhwd3WDxoHvAOoBMa7WFwWetKZ2tMPL4xdof1pp0D4iAARb7msGuo2VHIkCQgPHRx4XHtoGox3c/+lpXL3o+uCkIV4cuerW4quipzT7GRKUVFlLa2w2xajDw6UPrGa91o=
+	t=1712586042; cv=none; b=IM2Un6UVjnBrVqG9OhStar6M6ImRqm89c+i0q8yugYZGeuCxdeJYZepZXFbJLvSEsRYO0Th9eOJNPCIEcYo3SiNgQ0nLSIaNb3835x6T7z+yHgibuZmA1uT6txpkcaM3uBnVbX4XDXa7UZcPLXce1Hs4q71J4KcjC3R5aJ7gPtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712585991; c=relaxed/simple;
-	bh=aOckf8npwbeO73onf1zvZsoS3mECBJj89vWb1uXTPPg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eAhbfpZbRydtW8xTJVYgo1Zf7kawuoeUyYo5CP4FDv4nJU5saqvl3PiUNinWvYKfGVesyvRq4FmOFor6+CLphXl+J8cXbxHkZyvjpn/D7ADcthyXfj+L8afM3lQbyWXFYN/UruE7GtJWFadBy2o5YS8jo73v+g/Pq10slBG2vog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=KDvfgvJg; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78d61a716ddso106752985a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1712585988; x=1713190788; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8/gkgj06mHoGEBTKOjzdrcRyFw1djs3fy2Wv1GZpCOs=;
-        b=KDvfgvJgbaWHfY6VdI2+wyGvavxHUwKKqWqBD7LI/zGz8p9WFRT2qox7zkAai3lQa1
-         8ZdV8Pf2w+15UFNFtmCGGaDNPBaSAJwdLTHYejIvpvcCNca5XUvVr/ojb2QnueM8PTTv
-         RAVejASnjWtl7eI30QLdTtbKdMwwkB+pV6tWjRo2FE3yco1XtAp5sov8Jg2gW2TemHXi
-         1jrYcn0XTXnAjwAZI+1+zuq3jdlsi7lUcusTb7lzqGlA0KfeiT/mq1mqHf4ygx1ZCQPb
-         9P+5FVcdJrMrw/hfZN7wPmoXimJ8iYyREFa4FqJwXaKH4VkveWI8EeeO/vlgqqC2O7EP
-         l36w==
+	s=arc-20240116; t=1712586042; c=relaxed/simple;
+	bh=wHjZHYR3/8O8GuYPcxt1x8c3tVmjG7kKcy2Y0MmiRpM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=RkPCOGnl6Pyd8g1KCnieRvmlZRozIL4VE8B/PJxNJnq90L2i9Df0XTIs7aZroh/1Sy+36wx57ohdG2imm7Agb1YDaeZz3S16wS/W6sDREIXrOtBwp/kC/af9bsi/OAtgrnzECZGPm5+EHLlvfIk4skf3gINj6t4CewEmN4pQ64Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5db4db531so171136439f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 07:20:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712585988; x=1713190788;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/gkgj06mHoGEBTKOjzdrcRyFw1djs3fy2Wv1GZpCOs=;
-        b=N573U5lUWfCkmZWOsgJfvtmvOogtV23tYCzfdCanlwak08rpi+NZfWd19/l0uVrD//
-         /lyjgOWT0oH85GhCa67asr3A+jsBfDN9PUbW0vy+CSZIw450mJ7fUxmwb5anqxLeHRhR
-         dYZtzfOhwAzDNB8h1D7RJYzyzSlqUAgMriO3J9VP7RLYKEgF5scnO4j33bnnQZntGCyp
-         rC/7oYE2wbCF8YJAE4DPSY6m0cZXGJvSoOaHp948GDc2KfrhEJtP8wBFa3urjT/WsT4q
-         bqpqSVLjPGXFVX/xo7I10y+fNjR5rUPPXgkUkkO3xfbCBPfPcZ8HEsxhjfMcjo3QmIhe
-         pBJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVu1cXvZKVD60qA0Xf20M1s+3RztyBeo6CsagjXRqktrbuRkckF5YWKeEhhUXiB5QXtBLXn9bq1doppH3tlTXaK7r9XAcbpqrFZdkZ4
-X-Gm-Message-State: AOJu0YxY2RrmVD5lPjlZ/NtZPI4nF9S+ZOastmLLtbZJ36yme1o99vpj
-	QKUulgAdWnAerLxe9FOWQCiuJP23iZuor9hkO86Y0GPGkh1nbInJy08lsZeeeCc=
-X-Google-Smtp-Source: AGHT+IE8Gxhq268X4xisT4dmVwJbupLs0jwAwPMQeWGGRMXB87HiENKFwyhJYlQDe1J23nu23fbpaw==
-X-Received: by 2002:ad4:5763:0:b0:696:9df4:58e5 with SMTP id r3-20020ad45763000000b006969df458e5mr10787694qvx.1.1712585988440;
-        Mon, 08 Apr 2024 07:19:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id p4-20020a0cf684000000b0069b215adb5csm410376qvn.25.2024.04.08.07.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 07:19:47 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rtpqc-005GwN-7j;
-	Mon, 08 Apr 2024 11:19:46 -0300
-Date: Mon, 8 Apr 2024 11:19:46 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Baolu Lu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/9] iommu: Replace sva_iommu with iommu_attach_handle
-Message-ID: <20240408141946.GB223006@ziepe.ca>
-References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
- <20240403011519.78512-3-baolu.lu@linux.intel.com>
- <20240403115913.GC1363414@ziepe.ca>
- <e3f526e3-6474-49ff-b8d6-995aaf1c1830@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712586039; x=1713190839;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DV+zzZ18HjL9UnlRbefaSkDDW4UVKzv6pk2khBr+yYU=;
+        b=AXQeFqFbmqzlb6Q2JqiHefIEdsx79NHnLHa8VoWSFZUYO3mAz0fi/rKTgrUzpebPdF
+         d27brJgTAeo1gczRro8Swe9683nvZVdd5zUnDWTRHVX7k0C5OPUWocmC43uOWIDPM1Mb
+         hsNHyrcymYwbcaDdrY4LLU66oRJF26gNpUejoiLANj3016YcOfUS6279BOVNnRkM7RF1
+         je5fY24qIAODkKV1wdd48LbZ7edZBMYabn2mB+Im46Sc5J6UvnVIUVOh8e+Gpt3tTuOx
+         Nn8WLxf1JRdC0H2fImfVSr3yJKThxrDzo0bUkE/lDzfbYUj8CW/WHezTHCWy80BWzYQ/
+         6/kA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyu3DvPD6QB/DetjdqD7cpqXtEguSqNU553rl6BoKoLKggi9cw/9f5vijbT0o83ZZL+qs6DaBmZSL1tpLtxgw0Y2xq1p/+yBHDnW3n
+X-Gm-Message-State: AOJu0YwPvQjtO0pAVV39AU6Kz+BBszX8CB6YiskLsodQUBFdvpgjNmYp
+	ea+qss3Gq2oB8DKauH49+DDfBTCV/1nsO97SOesgda3Odybkls0B0BUiSN89QsMWznBO518Or3A
+	OqNWsx8FG9UfSdNQ3yDtVUm3pavuIcKcTPZA+RfZUJwmUumQXQeunfSI=
+X-Google-Smtp-Source: AGHT+IFbKIY7V9lOGfkD/JpFzkz+BG36cIzrXfIu/CghYNaazAHp1lFkj5tSKXU0nPp9stNR9fEPUnH+6et5vurVHyQLxbCwyFHO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3f526e3-6474-49ff-b8d6-995aaf1c1830@linux.intel.com>
+X-Received: by 2002:a05:6638:2713:b0:482:9be9:6fa3 with SMTP id
+ m19-20020a056638271300b004829be96fa3mr50652jav.6.1712586039654; Mon, 08 Apr
+ 2024 07:20:39 -0700 (PDT)
+Date: Mon, 08 Apr 2024 07:20:39 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a882a061596826d@google.com>
+Subject: [syzbot] [bpf?] [net?] possible deadlock in sock_map_unref
+From: syzbot <syzbot+850ca6a3ba35c8699832@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Apr 06, 2024 at 02:09:34PM +0800, Baolu Lu wrote:
-> On 4/3/24 7:59 PM, Jason Gunthorpe wrote:
-> > On Wed, Apr 03, 2024 at 09:15:12AM +0800, Lu Baolu wrote:
-> > > +	/* A bond already exists, just take a reference`. */
-> > > +	handle = iommu_attach_handle_get(group, iommu_mm->pasid);
-> > > +	if (handle) {
-> > > +		mutex_unlock(&iommu_sva_lock);
-> > > +		return handle;
-> > >   	}
-> > At least in this context this is not enough we need to ensure that the
-> > domain on the PASID is actually an SVA domain and it was installed by
-> > this mechanism, not an iommufd domain for instance.
-> > 
-> > ie you probably need a type field in the iommu_attach_handle to tell
-> > what the priv is.
-> > 
-> > Otherwise this seems like a great idea!
-> 
-> Yes, you are right. For the SVA case, I will add the following changes.
-> The IOMMUFD path will also need such enhancement. I will update it in
-> the next version.
+Hello,
 
-The only use for this is the PRI callbacks right? Maybe instead of
-adding a handle type let's just check domain->iopf_handler  ?
+syzbot found the following issue on:
 
-Ie SVA will pass &ommu_sva_iopf_handler as its "type"
+HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1363aaa9180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=850ca6a3ba35c8699832
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Jason
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+850ca6a3ba35c8699832@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
+------------------------------------------------------
+syz-executor.4/21902 is trying to acquire lock:
+ffff88804ec83bf0 (clock-AF_UNIX){++..}-{2:2}, at: sock_map_del_link net/core/sock_map.c:163 [inline]
+ffff88804ec83bf0 (clock-AF_UNIX){++..}-{2:2}, at: sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
+
+but task is already holding lock:
+ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:490
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&stab->lock){+.-.}-{2:2}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+       spin_lock_bh include/linux/spinlock.h:356 [inline]
+       __sock_map_delete net/core/sock_map.c:414 [inline]
+       sock_map_delete_elem+0x97/0x140 net/core/sock_map.c:446
+       0xffffffffa00048e6
+       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+       __bpf_prog_run include/linux/filter.h:657 [inline]
+       bpf_prog_run include/linux/filter.h:664 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+       bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+       trace_kfree include/trace/events/kmem.h:94 [inline]
+       kfree+0x291/0x380 mm/slub.c:4396
+       __bpf_prog_put_noref+0xd7/0x310 kernel/bpf/syscall.c:2244
+       bpf_prog_put_deferred+0x2f3/0x3e0 kernel/bpf/syscall.c:2270
+       __bpf_prog_put kernel/bpf/syscall.c:2282 [inline]
+       bpf_prog_put+0x264/0x2a0 kernel/bpf/syscall.c:2289
+       psock_set_prog include/linux/skmsg.h:475 [inline]
+       sk_psock_stop_strp net/core/skmsg.c:1156 [inline]
+       sk_psock_drop+0xe0/0x500 net/core/skmsg.c:841
+       sk_psock_put include/linux/skmsg.h:459 [inline]
+       sock_map_close+0x209/0x2d0 net/core/sock_map.c:1648
+       unix_release+0x85/0xc0 net/unix/af_unix.c:1048
+       __sock_release net/socket.c:659 [inline]
+       sock_close+0xbc/0x240 net/socket.c:1421
+       __fput+0x429/0x8a0 fs/file_table.c:423
+       __do_sys_close fs/open.c:1557 [inline]
+       __se_sys_close fs/open.c:1542 [inline]
+       __x64_sys_close+0x7f/0x110 fs/open.c:1542
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #0 (clock-AF_UNIX){++..}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_write_lock_bh include/linux/rwlock_api_smp.h:202 [inline]
+       _raw_write_lock_bh+0x35/0x50 kernel/locking/spinlock.c:334
+       sock_map_del_link net/core/sock_map.c:163 [inline]
+       sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
+       sock_map_update_common+0x4f0/0x5b0 net/core/sock_map.c:503
+       sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:579
+       map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1641
+       __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5619
+       __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&stab->lock);
+                               lock(clock-AF_UNIX);
+                               lock(&stab->lock);
+  lock(clock-AF_UNIX);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.4/21902:
+ #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1671 [inline]
+ #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_sk_acquire net/core/sock_map.c:117 [inline]
+ #0: ffff88804ec85a58 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x1cc/0x910 net/core/sock_map.c:575
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_sk_acquire net/core/sock_map.c:118 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_update_elem_sys+0x1d8/0x910 net/core/sock_map.c:575
+ #2: ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #2: ffff888066451200 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:490
+
+stack backtrace:
+CPU: 1 PID: 21902 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __raw_write_lock_bh include/linux/rwlock_api_smp.h:202 [inline]
+ _raw_write_lock_bh+0x35/0x50 kernel/locking/spinlock.c:334
+ sock_map_del_link net/core/sock_map.c:163 [inline]
+ sock_map_unref+0x442/0x5e0 net/core/sock_map.c:180
+ sock_map_update_common+0x4f0/0x5b0 net/core/sock_map.c:503
+ sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:579
+ map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1641
+ __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5619
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f9934c7de69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9935a7c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f9934dac120 RCX: 00007f9934c7de69
+RDX: 0000000000000020 RSI: 0000000020000880 RDI: 0000000000000002
+RBP: 00007f9934cca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f9934dac120 R15: 00007fffdd7d6668
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
