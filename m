@@ -1,183 +1,98 @@
-Return-Path: <linux-kernel+bounces-134703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D5B89B5BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:59:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095C089B5C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C747B2813E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 01:59:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B65A1C209DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 01:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7165715CB;
-	Mon,  8 Apr 2024 01:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="HBLhlmvO"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF5A4C63;
+	Mon,  8 Apr 2024 01:59:46 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5641366
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 01:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6724685;
+	Mon,  8 Apr 2024 01:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712541537; cv=none; b=P7np+D7666Qs/B0RHgEcDv2seMgTOj2MaOQSdIaEazp2PZUT48IZ5oJVGBg9vF0pIfsTwiaSuYXWWHWvVJ2KS5PFjiDRGoXRZX9fP64LujXevYkQ9jkGbDRbcGs22Ng1CNhRT8D6VOneQZEdtjAKn/HRJSNNHe5iPorrZjUWTeg=
+	t=1712541585; cv=none; b=EQmnlmK1ataAEW8Km/qlUdoZ4saTKAxMj+63JzbWGEYBL0P1SCljjTqJHztSZ8zylg72IzVJPex79J+/lGIvRL9aHmyZfd11rZQ+1mr/Txxm8NKPNX6yGR17QCTc6MLmv9x20t6SinaUIymGiIBx9hWg7uqtcj+dGCamJbwzGGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712541537; c=relaxed/simple;
-	bh=NogsxUnEAdj90yc3/f77xUk7fjnNwWsfaH/oJdNsVsQ=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b2W0A1p5iR3j3Gwqry2hTrmJNL92oSyXDpmFJbuxGk8TN2WDQaLjkyKugHjt+B3biwNLhE9ueCnSNawvRkWmpV7nL0OeHK1VokvQcF0o6aJXI//OP5fUh2oIATLDUJtUUtlDmEO+7zoH3wcMSb9Gu495sjdL92YPNO2UmadkftE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=HBLhlmvO; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712541515; bh=CBUFjmQH02WIVVvbnA0sbD5Cd/bzgRPVp2hhqoRa7fY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=HBLhlmvO6PZnfmMOivNFPuND7pVhM4ZgrVSVLfmwXQ6z8pAsOeJcmU+uf85K2x3k7
-	 DV0w6aD6HfnBKYVK/4AqHG9urHKsUPJPgw4iDp6w1ONoioP3vkpbxvFrPcgLmJCznM
-	 JwOCP9X88CJgUHVVpzNzC++YeJ0qt1GKxFwbp8Pk=
-Received: from Yangyus-MBP.lan ([2406:840:f99a:b03c:2d0c:df10:d60b:b517])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id E94B6A38; Mon, 08 Apr 2024 09:58:20 +0800
-X-QQ-mid: xmsmtpt1712541500t8xhrqula
-Message-ID: <tencent_CF232CDF85208DF6BFA3076E73CC4E087306@qq.com>
-X-QQ-XMAILINFO: N89bjyf9tBCObQqorC6TmpG61JDRuwj2CWcRR7S5bVfN11Qe4R28wWfHwuCwqB
-	 UKfETuVhFAulq5d1gWbEgv/UqCrVQD8I71NoR/8HzpHppqoEuUXdZ7i7ftgSAG0WtV+i0OlTFLf9
-	 elMnuaFi/jeBIIvWair+MENdAtmXfpCzAjC9EkyewF3zh9B9HfgIk7eV3B5UUPjLRqYaiqbTR0DB
-	 qwwfgkgfFHEMJA3f0M+GYsjq1GOoV0+66vfS01X2IFlDHILV0uF54i06aE0h7bZx8xw0iKkWvcus
-	 1rrZAoXL7lcHTXpSShHg6OZbcnVeRrO6EMeiwUJI7IIEcKC6fpVYQcM8VmOS76kpMsKMDCNrPfQp
-	 lJlHw/OHfhSw8EC+dsDavmCHlnRaJ8BWB1/dOCLx2+Ye/MPwvAzy+qTJI6UpwTKKRfqIh/tYfkLQ
-	 BKwb+Lku1LX4MlP7pHbvaRg0wM5EY/HmilJjYwhbphJMuNAYQzDZUMSriZSWccjR/uIlsOC6PNM1
-	 3CddQGegYlMD1sf1Y/s/2hR4JyD6ypESJ+X+l8dshg35Igw3+po2Jbnc1gwEJCKqGVw12Qc4Bor0
-	 hqELX097YW30mJun5j0U6Hxw/iuIkHtyLxsFJf6b/6UJYc5hprm7A5w3IifwM3GKtwFlAMxSo6Jb
-	 gmV7F7MlZoE2wlChRhHZ+JjGWWCirZEL24MbNRY/LDlnhchKY5/JQ6OwBBE0HoyCdYxaZdd129ju
-	 Bn5fVHNYkwLBkIEqeq42pGM0BW7friLnl4r14KBLmKZnYD+yp5FupfjvulVaUDRXOMVJNK7eE4Dh
-	 ZUBFoHJEJf8hmVCTI9wv2olGqXgajDpzZbnA6gs/eDgRGR1nBAICsdhgdYVevNCbzI95nyHEkTWb
-	 tL7spMtzPLrGIwsT3ZcyhGefg/1C/0d3s3sRKgCXv8Ql6tc4OszG/UldUo8KOWmGuDEjQlgw+Xwc
-	 epZ80ENHYnAGKFFDEOwnuIpKt6GVqXt9Ro1UIMtme7R1y1eWCEIT6MXdJOd8DA
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Yangyu Chen <cyy@cyyself.name>
-To: christoph.muellner@vrull.eu
-Cc: ajones@ventanamicro.com,
-	alex@ghiti.fr,
-	alistair.francis@wdc.com,
-	aou@eecs.berkeley.edu,
-	bjorn@kernel.org,
-	conor.dooley@microchip.com,
-	conor@kernel.org,
-	cooper.qu@linux.alibaba.com,
-	dbarboza@ventanamicro.com,
-	dqfext@gmail.com,
-	eric.huang@linux.alibaba.com,
-	heiko@sntech.de,
+	s=arc-20240116; t=1712541585; c=relaxed/simple;
+	bh=sli3/TCFWRGVSpVR5wJVjxZdHOFloeqWexzt3SqrmLk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tHd/cNk0JLk+fhESt3LinMFGh8GUj4T5MGNCxLLXivDI4QUUxVjwXUdCBK7FF/SWZHLqOu3dbdX6+Q4tTYSS+irusY9Z36UHmrTY955HwDVeTqlEa8r1Qzn+ZDEcjtkenux8LSL6d/NJJGdbH3hqCtM0D9/JG+Xmz8OoPAgp0YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowAB3HRB5TxNm0lQgAg--.10496S2;
+	Mon, 08 Apr 2024 09:59:22 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: bbrezillon@kernel.org,
+	arno@natisbad.org,
+	schalla@marvell.com,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net
+Cc: linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	philipp.tomsich@vrull.eu,
-	samuel.holland@sifive.com,
-	zhiwei_liu@linux.alibaba.com,
-	guoren@kernel.org
-Subject: Re: [PATCH v3 2/2] riscv: T-Head: Test availability bit before enabling MAE errata
-Date: Mon,  8 Apr 2024 09:58:17 +0800
-X-OQ-MSGID: <20240408015817.19081-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240407213236.2121592-3-christoph.muellner@vrull.eu>
-References: <20240407213236.2121592-3-christoph.muellner@vrull.eu>
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] crypto: octeontx2 - add missing check for dma_map_single
+Date: Mon,  8 Apr 2024 01:59:14 +0000
+Message-Id: <20240408015914.101442-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAB3HRB5TxNm0lQgAg--.10496S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1UWF4UJF13KFW8Zry7KFg_yoWftFb_Cr
+	ZrCr17Xr1rWanFya1jvrWvqr95u34FqrWqqrs7t343KFyjvanrury2qF98A3yxWw4FgFyD
+	Ar4xCrWSyr12qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbz8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On 2024/4/8 05:32, Christoph Müllner wrote:
-> T-Head's memory attribute extension (XTheadMae) (non-compatible
-> equivalent of RVI's Svpbmt) is currently assumed for all T-Head harts.
-> However, QEMU recently decided to drop acceptance of guests that write
-> reserved bits in PTEs.
-> As XTheadMae uses reserved bits in PTEs and Linux applies the MAE errata
-> for all T-Head harts, this broke the Linux startup on QEMU emulations
-> of the C906 emulation.
-> 
-> This patch attempts to address this issue by testing the MAE-enable bit
-> in the th.sxstatus CSR. This CSR is available in HW and can be
-> emulated in QEMU.
-> 
-> This patch also makes the XTheadMae probing mechanism reliable, because
-> a test for the right combination of mvendorid, marchid, and mimpid
-> is not sufficient to enable MAE.
-> 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
-> ---
->   arch/riscv/errata/thead/errata.c | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-> index 6e7ee1f16bee..bf6a0a6318ee 100644
-> --- a/arch/riscv/errata/thead/errata.c
-> +++ b/arch/riscv/errata/thead/errata.c
-> @@ -19,6 +19,9 @@
->   #include <asm/patch.h>f
->   #include <asm/vendorid_list.h>
->   
-> +#define CSR_TH_SXSTATUS		0x5c0
-> +#define SXSTATUS_MAEE		_AC(0x200000, UL)
-> +
->   static bool errata_probe_mae(unsigned int stage,
->   			     unsigned long arch_id, unsigned long impid)
->   {
-> @@ -28,11 +31,14 @@ static bool errata_probe_mae(unsigned int stage,
->   	if (arch_id != 0 || impid != 0)
->   		return false;
->   
+Add check for dma_map_single() and return error if it fails in order
+to avoid invalid dma address.
 
-I would raise a little concern about keeping this "if" statement for
-arch_id and imp_id after we have probed it in this CSR way. I would like to
-remove it and move the CSR probe earlier than RISCV_ALTERNATIVES.
+Fixes: e92971117c2c ("crypto: octeontx2 - add ctx_val workaround")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/crypto/marvell/octeontx2/cn10k_cpt.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I added CC to guoren for more opinions.
-
-Even T-Head C908 comes in 2023, which supports RVV 1.0 and also keeps MAEE.
-But it also supports Svpbmt, and we can perform the switch by clearing the
-MAEE bit in CSR_TH_MXSTATUS in M-Mode Software.
-
-Moreover, T-Head MAEE may not be removed in the future of T-Head CPUs. We
-can see something from the T-Head C908 User Manual that adds a Security bit
-to MAEE. So, it might used in their own TEE implementation and will not be
-removed.
-
-However, C908 has arch_id and impid, which are not equal to zero. You can
-see it from the C908 boot log [2] from my patch to support K230 [3]. So, if
-we have probed MAEE using CSR, you confirmed that this bit will also be set
-in the C906 core. We can only probe it this way and no longer use arch_id
-and imp_id. And if the arch_id and imp_id probes get removed, we should
-also move the csr probe earlier than riscv alternatives.
-
-[1] https://occ-intl-prod.oss-ap-southeast-1.aliyuncs.com/resource//1699268369347/XuanTie-C908-UserManual.pdf
-[2] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
-[3] https://lore.kernel.org/linux-riscv/tencent_D1180541B4B31C0371DB634A42681A5BF809@qq.com/
-
-Thanks,
-Yangyu Chen
-
-> -	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT ||
-> -	    stage == RISCV_ALTERNATIVES_MODULE)
-> -		return true;
-> +	if (stage != RISCV_ALTERNATIVES_EARLY_BOOT &&
-> +	    stage != RISCV_ALTERNATIVES_MODULE)
-> +		return false;
->   
-> -	return false;
-> +	if (!(csr_read(CSR_TH_SXSTATUS) & SXSTATUS_MAEE))
-> +		return false;
-> +
-> +	return true;
->   }
->   
->   /*
+diff --git a/drivers/crypto/marvell/octeontx2/cn10k_cpt.c b/drivers/crypto/marvell/octeontx2/cn10k_cpt.c
+index 79b4e74804f6..6bfc59e67747 100644
+--- a/drivers/crypto/marvell/octeontx2/cn10k_cpt.c
++++ b/drivers/crypto/marvell/octeontx2/cn10k_cpt.c
+@@ -138,6 +138,10 @@ int cn10k_cpt_hw_ctx_init(struct pci_dev *pdev,
+ 		return -ENOMEM;
+ 	cptr_dma = dma_map_single(&pdev->dev, hctx, CN10K_CPT_HW_CTX_SIZE,
+ 				  DMA_BIDIRECTIONAL);
++	if (dma_mapping_error(&pdev->dev, cptr_dma)) {
++		kfree(hctx);
++		return -ENOMEM;
++	}
+ 
+ 	cn10k_cpt_hw_ctx_set(hctx, 1);
+ 	er_ctx->hw_ctx = hctx;
+-- 
+2.25.1
 
 
