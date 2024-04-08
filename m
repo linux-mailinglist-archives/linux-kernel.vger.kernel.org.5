@@ -1,120 +1,166 @@
-Return-Path: <linux-kernel+bounces-135643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BD3189C919
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:56:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA1F89C928
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E708AB226EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:56:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 022D2B232F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9D31422B0;
-	Mon,  8 Apr 2024 15:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D23F1422D6;
+	Mon,  8 Apr 2024 15:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SFqy9yCM"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TrzSNofB"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6D1411EA
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDF913E8AB;
+	Mon,  8 Apr 2024 15:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712591773; cv=none; b=JhG4PIf/7U6/Iyd/Me2BNwG8vWeoGMepeR5FoCeU83hgE0eZJYfaX51zamzq7CoL2WcObXxPgeJ/qI4I22Oh8k9bdL5MhJ/utaVCMv14zs39cqrRth7MOb6gvAe4HGjK9UwufowLD7/0JFP925D7XIP5dWKIu85NCbS6eAgrcqE=
+	t=1712591875; cv=none; b=PQywnX5uztTVx9AI0iExlBcQNFRTCMK+tBcYC6yxbJ+sZq/y8aqC2igGy4QhuWL4q14iyuT4Mv15pnMP0ND4DLtu36TRDpTuoCK2JMyyPzW6Gh7L3MG/MmMBE0HPzmJgkycEXq1GxdT9sRRVbsnyXkFywPKwFCXJiSNkpZjh8SM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712591773; c=relaxed/simple;
-	bh=vjjTYogJRZ/cNJXchl4GhHqilSsjZWJ6M7hg9rSsNCk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Bx9WMyU52wDal6vHpfEx+YloudIibi2jpDtpjwBM2tjR3vF0V7XBzErEeSQZeqCYOiwRhrWkOciW5SnrxDz4cYBATIwKNNJ5Ntbass3r8judpyjPnu9gCdhvqtXbTQg77X+yaLq3ITIJ4cwWFOvn5A2Ad+sTctnuoQjNc5CRg0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SFqy9yCM; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed20fb620fso1229369b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:56:11 -0700 (PDT)
+	s=arc-20240116; t=1712591875; c=relaxed/simple;
+	bh=untIyZUBolJmBC+haXZFudxoskemR2WDjgQpB/oOF7s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RAhNUrixkYqgxk2QY20ZvekhYMobftoLrmhVzYKVELwU+qDx7DRtdaUNPIhRTJZ4FZ+HgmypCMZjqT8vwKOYIgkT7THIh5MJFVtXcZQCFzrshdRGeQkDV24MEksvuAvaJZ0NWNokb+j6EzHRcCmdzSAGBCBz56FAAglruVA41to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TrzSNofB; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2a2dd2221d3so2964693a91.0;
+        Mon, 08 Apr 2024 08:57:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1712591771; x=1713196571; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A3S+sayV8Xb4fBOHSM111duhifwyMfUVXCb44YuSt5A=;
-        b=SFqy9yCMU11Y/NOlXu4XY3CFKOEZ8WkcdkYXKYakmRU4B6aTeGV3fmpLFgBXiPmaZJ
-         uWF2u4uvxR+e6ldINRP5LBMNld8Zn1J+IZ+tYZYv+1FX9fDenRvxtA5rLmjr2rJlZ7RS
-         rsLKY/DhEPLanfGC++OnquK3nCoYl/Qf14yYs=
+        d=gmail.com; s=20230601; t=1712591873; x=1713196673; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=untIyZUBolJmBC+haXZFudxoskemR2WDjgQpB/oOF7s=;
+        b=TrzSNofB/+7iwz1qwxJ1kx0l5z5mdAWXGOBXrFX0/7cCpJd56VBWD77mwheGgmZXka
+         x/bkuUA47B7QKpQNp27XN05H2RS7obfhlX6q79Uy7QOCbxxGBRnu/8dQgJPAaeBfHDij
+         d9b7GrCih5KNDBgz8KQd09ZF66VWfxTDDLhR1QAFn7l2qA2yCJwJci9KMa21ysJAyonc
+         0kK9/Q1Hzvrmsd/NNt+3ZrWR7dCvOsuGJERt6rMBWKbFJytsE5iSl2LQWF6Cy/puXDn5
+         IGqpGy5FYYbmIdMlgclBw3TAuAalaLPliQTaKsN1jvtFJalCo1Uk29ywbrF95rph4zEa
+         Ab8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712591771; x=1713196571;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A3S+sayV8Xb4fBOHSM111duhifwyMfUVXCb44YuSt5A=;
-        b=s+974cSP56zShmRzZGF/UTtRd34CkEkEapb82xd+J5Jxxx/S/OKsA69vrAQtXy9pH+
-         Ow5Ai+iFhAjDsvkBfmKBNpkyFUlkRN7nFHXFAz4MjcpL1vaD9y0trc5fp+ipMKO3gIgu
-         bKyehPArlLYum33Pk8pAPQkDJg3mc4K2PvSXJ8aepOsbgdcN2l9yPvHnbEtPZvMKalWE
-         FVwYLZkGZlqxyPbtn5/y59sV7UOkfd7l5MadFMKl29LzS8jAX8TeHeRYXFJBtS8fNcy/
-         sC8nN2IXbOU0mfBAHdeiYC7QuJ9x3Ater16tPWymcWP1eIIqwxW40dM0S4jcVWr2viiH
-         9jQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsSL+Q0wJGvLLrV0YHOO6vnUfRP7uT6FyP1GOxijOCjOH8/z4wmZQHxwPrvuRYm3NorIR3CItW22XUQS8WGB1Mc24hIyd6vZMg4oAX
-X-Gm-Message-State: AOJu0YwEU70or2cC4ooFLnNnOU8/u0eEXL9LrjPQLb/Nj6Oo3ZYxBk8A
-	As72kr0cylvOcnhM4SU6BeOFL8ZOJ1nfXW+YAXbA9S9qyVAylZm18EhxzfMGkQ==
-X-Google-Smtp-Source: AGHT+IFSU94hghksr4pU6DSn3YL0aeuWM0Ki29quuWZaYCGHog3UR5UilX0eyDeTOKdJQAO2AB9Zrg==
-X-Received: by 2002:a05:6a20:c889:b0:1a7:a067:63f9 with SMTP id hb9-20020a056a20c88900b001a7a06763f9mr38586pzb.33.1712591771221;
-        Mon, 08 Apr 2024 08:56:11 -0700 (PDT)
-Received: from vertex.vmware.com (pool-173-49-113-140.phlapa.fios.verizon.net. [173.49.113.140])
-        by smtp.gmail.com with ESMTPSA id i4-20020aa787c4000000b006e64c9bc2b3sm6912402pfo.11.2024.04.08.08.56.09
+        d=1e100.net; s=20230601; t=1712591873; x=1713196673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=untIyZUBolJmBC+haXZFudxoskemR2WDjgQpB/oOF7s=;
+        b=lVuarr2uS2MH6lsfPCn6zLOuWVoko2A3PPf5Zc69DJogpOnpHeLeDP5dO2qBBPN5ya
+         11TXycCdMsVPXwofEXHKMsRq6ILjaiCDHp84/dShSk34KMSANBPS8JJ4Wof4m0HAlGSm
+         wiebhAp8RAxADqV/PQSkNV0C0cSCVT940s+Azz2x4PdVPczGZa6lKzt2Ao4mW+GQgITZ
+         HKKJAubI4TFOldsBt9Q3xHusQ6Cv+PDrvrpGUdAbqzIOCIyIvbKd0UXJYK4DtS3dOlcj
+         CGISW2uckWR/2TPAgStAaLk2oI3fbjR75r37njFswkeGfiopgFVsAD/VF11TRcfcPRbH
+         29YA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNso1C0Ns8zo1jhEyzhhtO74YZHqpNsZ/trlLewZmZwA8OAT6d7dgMFxa1YoQ99j3lexpRp+qwhVJntQx7q2/BhW4+m5fiATA/fTcFgfrKzUAvy4eWyk8DSr05BTwVXcO7FaZbwZkc4pyArUDvqRE23nM+UG0DqCyUsuVkEmOjb62mF6FgqZ44zG/rddngL+NHUWGpZvPaQXSwTK4KX53BfEDOxPMO2FRju/0Q+E4Sm/kNO8jz5OYlgRxCirRFtf5AxRpv0NPQY3K5c0vxJ13mTA/7I8ZDbDzXZ5Iy2Ll+Om8NwzHYlAuN8OmxF3IQ454PKvxs3daX21Imr0NoijRlDwIlJsUectnnMC97qrj5IZzQpQtPvUgA5/edslVDkxXGYEygawhsNWSr2i9USbDtzOOk5vEahcNx0+n6VS+0v2dkpPo/gbdO1kbBmyUE+gKssjdT0JOGXB1ZxfnAD1z+OhSN3tPTATeoRC+WtQ==
+X-Gm-Message-State: AOJu0YyXWuQctnrMCEUojAFSK1BQfSW5IAp/oDstMbA8vc7dZ6DwaeB4
+	FC+8NkTMNiO0moavdL5qhWZM8bBWyfRQVR52u1gFmrH+FmV3wcZ8
+X-Google-Smtp-Source: AGHT+IGJbb2MaWRtYADIA840woW+fg7lVmIt69WB4JS2RPl12DQD69jPbBmSk/iEenJzneHNW7DHjg==
+X-Received: by 2002:a17:90a:ab0d:b0:2a5:513:921e with SMTP id m13-20020a17090aab0d00b002a50513921emr2739861pjq.31.1712591873008;
+        Mon, 08 Apr 2024 08:57:53 -0700 (PDT)
+Received: from localhost ([2601:647:6881:9060:13a8:4fe8:4da1:7ea2])
+        by smtp.gmail.com with ESMTPSA id z24-20020a17090ab11800b002a2559fe52esm6580894pjq.56.2024.04.08.08.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 08:56:10 -0700 (PDT)
-From: Zack Rusin <zack.rusin@broadcom.com>
-To: dri-devel@lists.freedesktop.org
-Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	ian.forbes@broadcom.com,
-	martin.krastev@broadcom.com,
-	maaz.mombasawala@broadcom.com,
-	Zack Rusin <zack.rusin@broadcom.com>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] drm/ttm: Print the memory decryption status just once
-Date: Mon,  8 Apr 2024 11:56:05 -0400
-Message-Id: <20240408155605.1398631-1-zack.rusin@broadcom.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 08 Apr 2024 08:57:52 -0700 (PDT)
+Date: Mon, 8 Apr 2024 08:57:51 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 14/14] selftests: add ncdevmem, netcat
+ for devmem TCP
+Message-ID: <ZhQT/4RpKIkUmWut@pop-os.localdomain>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-15-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403002053.2376017-15-almasrymina@google.com>
 
-Stop printing the TT memory decryption status info each time tt is created
-and instead print it just once.
+On Tue, Apr 02, 2024 at 05:20:51PM -0700, Mina Almasry wrote:
+> +static char *server_ip = "192.168.1.4";
+> +static char *client_ip = "192.168.1.2";
+> +static char *port = "5201";
+> +static size_t do_validation;
+> +static int start_queue = 8;
+> +static int num_queues = 8;
+> +static char *ifname = "eth1";
+> +static unsigned int ifindex = 3;
+> +static char *nic_pci_addr = "0000:06:00.0";
 
-Reduces the spam in the system logs when running guests with SEV enabled.
+It seems this is set but never used.
 
-Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
-Fixes: 71ce046327cf ("drm/ttm: Make sure the mapped tt pages are decrypted when needed")
-Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Cc: <stable@vger.kernel.org> # v5.14+
----
- drivers/gpu/drm/ttm/ttm_tt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
-index 578a7c37f00b..d776e3f87064 100644
---- a/drivers/gpu/drm/ttm/ttm_tt.c
-+++ b/drivers/gpu/drm/ttm/ttm_tt.c
-@@ -92,7 +92,7 @@ int ttm_tt_create(struct ttm_buffer_object *bo, bool zero_alloc)
- 	 */
- 	if (bdev->pool.use_dma_alloc && cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT)) {
- 		page_flags |= TTM_TT_FLAG_DECRYPTED;
--		drm_info(ddev, "TT memory decryption enabled.");
-+		drm_info_once(ddev, "TT memory decryption enabled.");
- 	}
- 
- 	bo->ttm = bdev->funcs->ttm_tt_create(bo, page_flags);
--- 
-2.40.1
-
+Thanks.
 
