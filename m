@@ -1,121 +1,122 @@
-Return-Path: <linux-kernel+bounces-135290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3489289BE79
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:53:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3073B89BE76
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:53:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 659291C21469
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:53:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91177B23641
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0636A8CF;
-	Mon,  8 Apr 2024 11:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="CBmEiw7h"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BFC6A328;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4C76A332;
 	Mon,  8 Apr 2024 11:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LOVQ3p/3"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F48657CB;
+	Mon,  8 Apr 2024 11:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712577171; cv=none; b=J8y9BFtTLjCI6iRC3LAvs8qKs8xHP4nTFfMGdQ4wt8qiMJ+7DQkBfcw3vEqtz7wPssMHtW3PeFcxVCvuAu6M9AqyZYE8UwDnMwnF9Il8x3pj+PuJWmC0EE712wpVmqTG1uPHD7whquTbtbAwWuGonnhP+rgWBxktlRym8tfHqMQ=
+	t=1712577168; cv=none; b=gbeGS662RWZiAAmiweNb8DeA+Ngw9w5f8Ner2IdAVRCRKN+yxrReVAI15PDP3eJkmc57M5YNbhJW/swibM6ykYJwN7eqOJeO2gHgNmCcI6rehrPm9cpPwtoz8uDHAl0/odIqqZcAq6NbnaToA7KfvYfOZF4OYxSIUTWRUwEjWts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712577171; c=relaxed/simple;
-	bh=XnOP/Yo4Ki+3xP7wAvLN+cYpAm2XEbcV9ngJZcqHHvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ibdCNobrC7Mal6m3yEc3oA18w5+DYoSQ04ut631+PellM9xa6GZd8KCjVBL70oHz9aW36YImLa8P9+RVnK2dJKZvoFXiaxaly4flHzdsDQHOnlj3bPNH39ghQG7F/i9Dy+z/ktQWcBcuH2oIqxO/ii8DnVXmzF6sTe1pLd3g3ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=CBmEiw7h; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1712577166; bh=XnOP/Yo4Ki+3xP7wAvLN+cYpAm2XEbcV9ngJZcqHHvI=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=CBmEiw7het+I/nBCvFK1K120++eabgAV16YDUplp8qcAiOsrMvqf0YorPW5pTS/4i
-	 uNUY+cAbyDvjkfxkP/lXsLxXnUpOSTNa3il3AHG77S3w+TCIGF4JXJ0Ihu8A69d6y9
-	 sSAUJ9UA0WMj+kUn3Lydae0Ecl+Ng3Yee15nF7Kg=
-Date: Mon, 8 Apr 2024 13:52:46 +0200
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
-Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
- document
-Message-ID: <e6vvuttix5k5fioy7q44ick5wj6u5gleh7mht36s4zjjcym7vy@bziejyohtc4b>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
- <ab9affc8-de68-4ec9-bdfc-02131191bc3a@linaro.org>
- <ZhPTTxI4oTF3pgrk@duo.ucw.cz>
- <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
+	s=arc-20240116; t=1712577168; c=relaxed/simple;
+	bh=9TcqgVCdebpUEtPloXV2xwkuH5UyaU8oSE1S2N9IZMw=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uKeDazVsSghEC63BCw31/7Wn9t0cto6tPzGUl0B95IVinuBtRPeMP9j+K1W0nTZCEkMuShjjm7zzB6UbAmC7nOOoTAjB7M9MYmTjZnDYHMQn1yfpchh/JyZgpLErtGnxSHkS3ADymcq2UGtuDF83j+PxRq5xamwNbRaX5lXqVF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LOVQ3p/3; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712577164;
+	bh=9TcqgVCdebpUEtPloXV2xwkuH5UyaU8oSE1S2N9IZMw=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=LOVQ3p/31BEegWocwBzMmKRuGOXUjKNbDGMyX1aUKsjGFNyGJH0UFM8mCzKZb6dbz
+	 AWa3bMlprII5kWnXhjSM0u6BwoHzrQGrK+YN0qvLbunMm6sntZMW3uBVTtgtvsvpku
+	 TtmscyRlvZvz0a7X0jePsuQNa+6ckn5O8gxBVRM0Fx2vRYeQ7RZHLFI8yL13yr1ofl
+	 ekda8FQp4FMAyocuhVl5Ai2fXshSvbqBgbaVRjf5cjqUQd2Fgkr29ugbzl5A8cizsb
+	 YT0jJXE3PcAUcUFz4XuRaZYIgkLtcD7xWU0aj0nqlx1+SiqDW9wo1WyDps9brkjqLD
+	 QLD9QUOmaBUUQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6E5753780894;
+	Mon,  8 Apr 2024 11:52:39 +0000 (UTC)
+Message-ID: <41dd9c5a-0e07-4b98-9dfb-fb57eaa74fa2@collabora.com>
+Date: Mon, 8 Apr 2024 16:53:11 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [RFC PATCH v3 6/9] selftests: cgroup: Add basic tests for pids
+ controller
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+References: <20240405170548.15234-1-mkoutny@suse.com>
+ <20240405170548.15234-7-mkoutny@suse.com>
+ <a45c2ece-acb4-4cff-9d53-f5c007c9b905@collabora.com>
+ <qweowkm4wlfzovp3qhtkzbybeampodtwmpbp2kbtiqcrhmjtdt@syk4itfkpmfr>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <qweowkm4wlfzovp3qhtkzbybeampodtwmpbp2kbtiqcrhmjtdt@syk4itfkpmfr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 08, 2024 at 01:24:03PM GMT, Krzysztof Kozlowski wrote:
-> On 08/04/2024 13:21, Pavel Machek wrote:
-> > Hi!
-> > 
-> >>> Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
-> >>> but I did best I could.
-> >>>
-> >>> Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> >>
-> >> ...
-> >>
-> >>> +  cabledet-gpios:
-> >>> +    maxItems: 1
-> >>> +    description: GPIO controlling CABLE_DET (C3) pin.
-> >>> +
-> >>> +  avdd10-supply:
-> >>> +    description: 1.0V power supply going to AVDD10 (A4, ...) pins
-> >>> +
-> >>> +  dvdd10-supply:
-> >>> +    description: 1.0V power supply going to DVDD10 (D6, ...) pins
-> >>> +
-> >>> +  avdd18-supply:
-> >>> +    description: 1.8V power supply going to AVDD18 (E3, ...) pins
-> >>> +
-> >>> +  dvdd18-supply:
-> >>> +    description: 1.8V power supply going to DVDD18 (G4, ...) pins
-> >>> +
-> >>> +  avdd33-supply:
-> >>> +    description: 3.3V power supply going to AVDD33 (C4, ...) pins
-> >>> +
-> >>> +  i2c-supply: true
-> >>> +  vconn-supply: true
-> >>
-> >> There are no such supplies like i2c and vconn on the schematics.
-> >>
-> >> I think this represents some other part of component which was added
-> >> here only for convenience.
-> > 
-> > Can you give me pointer to documentation you are looking at?
+On 4/8/24 4:29 PM, Michal Koutný wrote:
+> On Sun, Apr 07, 2024 at 02:37:44AM +0500, Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+>> The
+>> 	ksft_print_header();
+>> 	ksft_set_plan(total_number_of_tests);
+>> are missing. Please use all of the ksft APIs to make the test TAP compliant.
 > 
-> The schematics you linked in the document at the beginning. Page 13. Do
-> you see these pins there? I saw only VCONN1_EN, but that's not a supply.
-
-The supply is U1308.
-
-regards,
-	o.
-
-> Best regards,
-> Krzysztof
+> Will do.
 > 
+>>> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+>>> +		switch (tests[i].fn(root)) {
+>>> +		case KSFT_PASS:
+>>> +			ksft_test_result_pass("%s\n", tests[i].name);
+>>> +			break;
+>>> +		case KSFT_SKIP:
+>>> +			ksft_test_result_skip("%s\n", tests[i].name);
+>>> +			break;
+>>> +		default:
+>>> +			ret = EXIT_FAILURE;
+>>> +			ksft_test_result_fail("%s\n", tests[i].name);
+>>> +			break;
+>> Use ksft_test_result_report() instead of swith-case here.
+> 
+> Do you mean ksft_test_result()? That one cannot distinguish the
+> KSFT_SKIP case.
+> Or ksft_test_result_code(tests[i].fn(root), tests[i].name)?
+No, this doesn't seem useful here.
+
+> 
+> Would the existing ksft_test_resul_*() calls inside switch-case still
+> TAP-work?
+This part of your switch-case are correct. It just that by using
+ksft_test_result_report you can achieve the same thing. It has has SKIP
+support.
+
+ksft_test_result_report(tests[i].fn(root), tests[i].name)
+
+> 
+> Thanks,
+> Michal
+
+-- 
+BR,
+Muhammad Usama Anjum
 
