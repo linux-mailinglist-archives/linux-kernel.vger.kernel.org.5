@@ -1,234 +1,200 @@
-Return-Path: <linux-kernel+bounces-134879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 818D089B82B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FC489B82C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62C941C2188D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:15:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 152851C21931
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE9B29409;
-	Mon,  8 Apr 2024 07:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577232260A;
+	Mon,  8 Apr 2024 07:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="McDUH0wr"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g2LCcLqP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3707828DC1
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB0F2BAE1
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:15:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712560499; cv=none; b=LHlNnCiJTFUARORAnZKFJpqgqUKojU7C+y82Kl9ulK39NYPNqemw07wwMka+WZAX9m+m1etv/3U5MLOJGQ5FamtA0qEJYcxp61WjNi9PR0dQcqel1z8GL9q7CgJWkVzqh4dNT6/olW3+6NzjTEmzwNih6miiTIDQIIJrVv60qT0=
+	t=1712560529; cv=none; b=BaipgIc8rme5Fr3sjyNtl1nePDVsXjVjRNn8QiUY6xlWsXHxTL4IJiWpOORttYsuucjqA0SIohaY4g0MQlXNq2+fmIahMcfGt0LILa+SwWbFDX92VCYh0okykJC0lfMcw5DGPInWJ+K7Yrx3rJJzcJJZQLZ2WNCnbUzoQmaBjZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712560499; c=relaxed/simple;
-	bh=C2xhL0nI23QjPQklQsKuF/VubFAsgzG7gnv/H3QRaQw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EcGMnhKmAXBXdXUmKVt5gMVmcR7QedYsTWDhkw29eibTdbvOsPuQL/+zZtKnUmmRu7j7wQAqLgQx/6CDo29WMYPXjEO/jOTh4sebyG1SpBu5je4kJEiWXVt6q13yMf4TH+8DxbAy7cNTzaDVrJ1nL3ctMlsTWEKSSoifFno2UFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=McDUH0wr; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3180423a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712560497; x=1713165297; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Raaf3+85+lHTOV/l8VlFH54Y4HifOW4cP581Tiah58A=;
-        b=McDUH0wrWldbFPsI7H24ykCcHSoAcCwcPpHWsKk5TjaeEfRTod98H+pMvjbEzJigk7
-         G985THMcCpT1us5mMroACka14H6t7i2hfD37dpU55Q9QuX2561W19HCuF0SA8ejS5l5N
-         2KqW7MnBPW8k2E2UlJ4d7NndukoNvtyv/KOZGte0gOplmA3eniET8Rc/H+EpdET8/9+k
-         duoD3TNkAPV79HThXz6XKCUpcKf6OtHKQ0/Bu8ElawnFb1W9qe31SmOWi/MHmEsEs8PY
-         BI5S4nkTwwLkmUZkbv/pMwy9OVIJhwEaCdYG/o/z0tfXbJHHg1/xildqt4cyKRnpGYOR
-         VTSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712560497; x=1713165297;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Raaf3+85+lHTOV/l8VlFH54Y4HifOW4cP581Tiah58A=;
-        b=J0fYyd+h1FNUMLXHXnylie/B0+fsowfAgPs7459Xi79ERXOg5DlQ7PN1m1vTnzFcfh
-         QVCHoq7WjI9Lf6XniE86oxNCJW7J+UWHwoCXC8NFxICZpoibQEC8hHxgJ6JL9XvNJ3tu
-         yO3hJDCstAPmOGjRtsl8OC3FsxEY2J5jpe9VDTmTNtYs5Ne+LOvwPm//dJiwn/2lulak
-         fxsQnY5REhh8WcRm3TBA8eDFd+sIpRvWOB2G0sLMMh1RYuo2qtmCduDcFkY4voaQmpWi
-         VTraV/HePUhNPIWrrk+bpG7RLOfRLFDCij9k88S9ddoQw1oh4p9o+S9zw5bRoyblEMLf
-         Oqbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWl3xOuvUrvYSAYesdiw+/jrpJOC2Nujrwv/Jfz51vpmKJBaWoOzf4e84/aBjJQPE6HoOqsPkKg6VMdeatrS/HbvmQ8bmXWawi5Zj0N
-X-Gm-Message-State: AOJu0YwxnHF7iWkYWx4zo0IxvC4tF2Ns6x+6YRlYsp53yCLQpimsodcz
-	cqxt2790xK1l3UPYrxch3dQ+OAm/aW05hIDt5AG9YyhfGinLohLsTXOY60ITD5gc0JIWUD0dRlI
-	5vPYxmzXewoPgvoFKUxPU80/tOxktFx28JQikig==
-X-Google-Smtp-Source: AGHT+IHvZobSCyEEjgJaLd9q6CHlKfzTREVwg+AeG24Frt11z1635zSMOJh+VqzPj92a+Xt5pPyqh+8dAlohONZn2eY=
-X-Received: by 2002:a17:902:d486:b0:1e3:e87b:423f with SMTP id
- c6-20020a170902d48600b001e3e87b423fmr4225323plg.65.1712560497500; Mon, 08 Apr
- 2024 00:14:57 -0700 (PDT)
+	s=arc-20240116; t=1712560529; c=relaxed/simple;
+	bh=qxQSGhtB7OI4pZbUFVPKG7+Mc0Mv8CgmSkdT8Oakzfo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=s7wlE9Oap0ONwF4SA+bH50/a8jyBtPQrorvGBJgDAwKHjd4+pJmyIeXLsi80jBnlP3+JMDtHwNtoz45MnXaAN89g9SD440JWfWBUpcKpudWY24QN6zeJoAr0VauUo6snlY0whznl7HW0dRfKy4ckVRe4FeX0ygT+kykVsj5tHGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g2LCcLqP; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712560527; x=1744096527;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qxQSGhtB7OI4pZbUFVPKG7+Mc0Mv8CgmSkdT8Oakzfo=;
+  b=g2LCcLqPOwotoseSGTN++Y2o04UzKH2s/FbzQC6rwW1eCa9wzgfjQysk
+   aFAkLLv5oZMVDmdSFncxqCXodS96WRVbqVVI/4QmPK8flp/4CC7KK2WHX
+   4LkmSzzQaWMZdcxrhjGf9eq1obW/UhIIa95Mldvfh1uuzyhPVQPEu03Hp
+   S8e2ZmtIX39CRScAEQ7XEDU2FNlcbtg5HHOKEdbESzzUPY/YcZs1D6Fz7
+   uhC8zQXnbu0X58oHK3+bIEXFCkNbd/6IwgXPPbP1e5f9wB67iZi2+VQ8w
+   Kr5pMDhm3Zax+aUYvAKJSE8KnK3V7P8VqRxd3GtM0iRvLYR2T/yjGsOtf
+   g==;
+X-CSE-ConnectionGUID: Ni2D/Z7FQw6Ojlwgb/4aEA==
+X-CSE-MsgGUID: CGYpdi3XR2S/Cp5Ope+BTw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="18394883"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="18394883"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:15:27 -0700
+X-CSE-ConnectionGUID: lLCUzcysTSmruEBJE7PNUA==
+X-CSE-MsgGUID: CYDVEzm/S4ulUdJQNa41kQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="24476823"
+Received: from penghuan-mobl.ccr.corp.intel.com (HELO [10.254.211.109]) ([10.254.211.109])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:15:24 -0700
+Message-ID: <fafddce6-155b-4a50-b63e-46005364181e@linux.intel.com>
+Date: Mon, 8 Apr 2024 15:15:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu> <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu>
-In-Reply-To: <20240405171653.boxbylrdak5fopjv@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Mon, 8 Apr 2024 09:14:46 +0200
-Message-ID: <CAKfTPtAKV0B5VUizN=ks_u1DZBkYm9VFSk2PttUfbBNm_OnxJQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	John Stultz <jstultz@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] iommu/vt-d: Fix WARN_ON in iommu probe path
+To: "Tian, Kevin" <kevin.tian@intel.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>
+References: <20240407011429.136282-1-baolu.lu@linux.intel.com>
+ <BN9PR11MB52760913F36DACBC612088668C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52760913F36DACBC612088668C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 5 Apr 2024 at 19:16, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 04/05/24 14:15, Vincent Guittot wrote:
-> > On Fri, 5 Apr 2024 at 00:05, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 04/03/24 15:11, Vincent Guittot wrote:
-> > > > On Wed, 3 Apr 2024 at 02:59, Qais Yousef <qyousef@layalina.io> wrote:
-> > > > >
-> > > > > For fair tasks inheriting the priority (nice) without reweighting is
-> > > > > a NOP as the task's share won't change.
-> > > >
-> > > > AFAICT, there is no nice priority inheritance with rt_mutex; All nice
-> > >
-> > > Hmm from what I see there is
-> > >
-> > > > tasks are sorted with the same "default prio" in the rb waiter tree.
-> > > > This means that the rt top waiter is not the cfs with highest prio but
-> > > > the 1st cfs waiting for the mutex.
-> > >
-> > > This is about the order on which tasks contending for the lock more than the
-> > > effective priority the task holding the lock should run at though, no?
-> >
-> > No, they are ordered by priority in the rb tree so you can get the
-> > priority of the top waiter and apply it to the owner of the lock
->
-> I think I see what you're getting at now. There's no guarantee the top waiter
-> is the higher priority fair task. Yes.
->
-> >
-> > >
-> > > >
-> > > > >
-> > > > > This is visible when running with PTHREAD_PRIO_INHERIT where fair tasks
-> > > > > with low priority values are susceptible to starvation leading to PI
-> > > > > like impact on lock contention.
-> > > > >
-> > > > > The logic in rt_mutex will reset these low priority fair tasks into nice
-> > > > > 0, but without the additional reweight operation to actually update the
-> > > > > weights, it doesn't have the desired impact of boosting them to allow
-> > > > > them to run sooner/longer to release the lock.
-> > > > >
-> > > > > Apply the reweight for fair_policy() tasks to achieve the desired boost
-> > > > > for those low nice values tasks. Note that boost here means resetting
-> > > > > their nice to 0; as this is what the current logic does for fair tasks.
-> > > >
-> > > > But you can at the opposite decrease the cfs prio of a task
-> > > > and even worse with the comment :
-> > > > /* XXX used to be waiter->prio, not waiter->task->prio */
-> > > >
-> > > > we use the prio of the top cfs waiter (ie the one waiting for the
-> > > > lock) not the default 0 so it can be anything in the range [-20:19]
-> > > >
-> > > > Then, a task with low prio (i.e. nice > 0) can get a prio boost even
-> > > > if this task and the waiter are low priority tasks
-> > >
-> > > I don't see this effect. The only change I am doing here
-> > > is that when we set the prio that we are supposed to be inheriting, instead of
-> > > simply changing prio, I also ensure we reweight so that we run at the inherited
-> > > nice value. I am not changing how the waiter logic works.
-> >
-> > But if you look more deeply in the code, you will see that all cfs are
-> > sorted with the same default prio so cfs tasks are not sorted and are
-> > considered to be the same.
->
-> Yes I saw that. We can potentially revert 715f7f9ece46 ("locking/rtmutex:
-> Squash !RT tasks to DEFAULT_PRIO") ;-)
->
-> /hides
->
-> >
-> > All that to say that I think the weight is not applied on purpose.
-> > This might work for your particular case but there are more changes to
-> > be done if you want to apply prio inheritance between cfs tasks.
-> >
-> > As an example, what about the impact of cgroup on the actual weight
-> > and the inherited priority of a task ? If the owner and the waiter
-> > don't belong to the same cgroup their own prio is meaningless... task
-> > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
-> > in a group with a weight equals to nice -20
->
-> That is on my mind actually. But I thought it's a separate problem. That has to
-> do with how we calculate the effective priority of the pi_task. And probably
-> the sorting order to if we agree we need to revert the above. If that is done
-> appropriately, I hope the current reweight approach could be used as-is. Hmm
-> but but as I write this I realize the compound weight will still be different.
-> Maybe we should inherit the weight rather than the prio, which IIUC should
-> already be the effective weight taking cgroup into account?
->
-> Just to put it out on the clear, you don't think the issue is wrong, but just
-> that we need to look further for a proper fix, right? ie: it is a problem we
-> should fix, but we need to nail down more details IIUC.
+On 2024/4/8 11:52, Tian, Kevin wrote:
+>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>> Sent: Sunday, April 7, 2024 9:14 AM
+>>
+>> Commit 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed
+>> devices") adds all devices probed by the iommu driver in a rbtree
+>> indexed by the source ID of each device. It assumes that each device
+>> has a unique source ID. This assumption is incorrect and the VT-d
+>> spec doesn't state this requirement either.
+>>
+>> The reason for using a rbtree to track devices is to look up the device
+>> with PCI bus and devfunc in the paths of handling ATS invalidation time
+>> out error and the PRI I/O page faults. Both are PCI ATS feature related.
+>>
+>> Only track the devices that have PCI ATS capabilities in the rbtree to
+>> avoid unnecessary WARN_ON in the iommu probe path. Otherwise, on some
+>> platforms below kernel splat will be displayed and the iommu probe results
+>> in failure.
+> Just be curious. What about two ATS capable devices putting behind
+> a PCI-to-PCIe bridge?
 
-Yes, I agree about your problem but your current proposal is not
-correct because there are more things to consider and fix
+I don't think ATS capable device putting behind a PCI-to-PCIe bridge is
+a right configuration for the ATS service. The PCIe spec requires this
+in section 10.1.1, that
 
->
-> If that's the case it'd be good to know what else beside sorting order and
-> handling cgroup I need to take into account to make this more correct.
->
-> There's the obvious SCHED_IDLE case of course that needs a policy promotion,
-> beside weight adjustment.
->
-> >
-> >
-> > >
-> > > Here's my test app FWIW
-> > >
-> > >         https://github.com/qais-yousef/pi_test
-> > >
-> > > When I run
-> > >
-> > >         pi_test --lp-nice 0 --lp-nice 10
-> > >
-> > > the lp thread runs at 0 still
-> > >
-> > > If I do
-> > >
-> > >         pi_test --lp-nice 10 --lp-nice 5
-> > >
-> > > low priority thread runs at 5
-> > >
-> > > What combination are you worried about? I can give it a try. I use
-> > > sched-analyzer-pp [1] to see the division of runnable/running or you can
-> > > monitor them on top
-> > >
-> > >         #!/bin/bash
-> > >         set -eux
-> > >
-> > >         sudo sched-analyzer &
-> > >
-> > >         ./pi_test --lp-nice ${1:-10} --hp-nice ${2:-0} --affine-cpu ${3:-0} &
-> > >
-> > >         sleep 10
-> > >
-> > >         pkill -SIGKILL pi_test
-> > >
-> > >         sudo pkill -SIGINT sched-analyzer
-> > >
-> > >         sched-analyzer-pp --sched-states pi_test sched-analyzer.perfetto-trace
-> > >
-> > > Picutres of output is attached for before and after
-> > >
-> > >         pi_test --lp-nice 10 --hp-nice 0
-> > >
-> > > [1] https://github.com/qais-yousef/sched-analyzer
+"
+ATS requires the following:
+- ATS capable components must interoperate with [PCIe-1.1] compliant
+   components.
+..
+"
+
+My understanding is that PCI-to-PCIe bridge is not a PCIe compliant
+device.
+
+> 
+>>   WARNING: CPU: 3 PID: 166 at drivers/iommu/intel/iommu.c:158
+>> intel_iommu_probe_device+0x319/0xd90
+>>   Call Trace:
+>>    <TASK>
+>>    ? __warn+0x7e/0x180
+>>    ? intel_iommu_probe_device+0x319/0xd90
+>>    ? report_bug+0x1f8/0x200
+>>    ? handle_bug+0x3c/0x70
+>>    ? exc_invalid_op+0x18/0x70
+>>    ? asm_exc_invalid_op+0x1a/0x20
+>>    ? intel_iommu_probe_device+0x319/0xd90
+>>    ? debug_mutex_init+0x37/0x50
+>>    __iommu_probe_device+0xf2/0x4f0
+>>    iommu_probe_device+0x22/0x70
+>>    iommu_bus_notifier+0x1e/0x40
+>>    notifier_call_chain+0x46/0x150
+>>    blocking_notifier_call_chain+0x42/0x60
+>>    bus_notify+0x2f/0x50
+>>    device_add+0x5ed/0x7e0
+>>    platform_device_add+0xf5/0x240
+>>    mfd_add_devices+0x3f9/0x500
+>>    ? preempt_count_add+0x4c/0xa0
+>>    ? up_write+0xa2/0x1b0
+>>    ? __debugfs_create_file+0xe3/0x150
+>>    intel_lpss_probe+0x49f/0x5b0
+>>    ? pci_conf1_write+0xa3/0xf0
+>>    intel_lpss_pci_probe+0xcf/0x110 [intel_lpss_pci]
+>>    pci_device_probe+0x95/0x120
+>>    really_probe+0xd9/0x370
+>>    ? __pfx___driver_attach+0x10/0x10
+>>    __driver_probe_device+0x73/0x150
+>>    driver_probe_device+0x19/0xa0
+>>    __driver_attach+0xb6/0x180
+>>    ? __pfx___driver_attach+0x10/0x10
+>>    bus_for_each_dev+0x77/0xd0
+>>    bus_add_driver+0x114/0x210
+>>    driver_register+0x5b/0x110
+>>    ? __pfx_intel_lpss_pci_driver_init+0x10/0x10 [intel_lpss_pci]
+>>    do_one_initcall+0x57/0x2b0
+>>    ? kmalloc_trace+0x21e/0x280
+>>    ? do_init_module+0x1e/0x210
+>>    do_init_module+0x5f/0x210
+>>    load_module+0x1d37/0x1fc0
+>>    ? init_module_from_file+0x86/0xd0
+>>    init_module_from_file+0x86/0xd0
+>>    idempotent_init_module+0x17c/0x230
+>>    __x64_sys_finit_module+0x56/0xb0
+>>    do_syscall_64+0x6e/0x140
+>>    entry_SYSCALL_64_after_hwframe+0x71/0x79
+>>
+>> Fixes: 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed
+>> devices")
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index 50eb9aed47cc..a7ecd90303dc 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -4299,9 +4299,11 @@ static struct iommu_device
+>> *intel_iommu_probe_device(struct device *dev)
+>>   	}
+>>
+>>   	dev_iommu_priv_set(dev, info);
+>> -	ret = device_rbtree_insert(iommu, info);
+>> -	if (ret)
+>> -		goto free;
+>> +	if (pdev && pci_ats_supported(pdev)) {
+>> +		ret = device_rbtree_insert(iommu, info);
+>> +		if (ret)
+>> +			goto free;
+>> +	}
+> probably replace device_rbtree with ats_rbtree?
+
+It makes sense. Probably I need a follow-up patch to do such cleanup.
+
+Best regards,
+baolu
 
