@@ -1,108 +1,117 @@
-Return-Path: <linux-kernel+bounces-135089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798DD89BAFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:56:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A48D89BAEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18CD61F2288D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:56:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F3ABB21FEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37933A267;
-	Mon,  8 Apr 2024 08:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C6E3D3BA;
+	Mon,  8 Apr 2024 08:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="dC8TND7a"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K464V8ZJ"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7813D964;
-	Mon,  8 Apr 2024 08:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFB13A1CF;
+	Mon,  8 Apr 2024 08:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712566590; cv=none; b=uKS5eyJXhm/Ln4buSdAcAKiM/FxkrtdABIjt3m15DQvPQWxsutwNwWvLaRlZwkRrAl5MQzYKybf7vZLRsv4UmpYheN38Jpdml2mR+3XaaY2t1KGnzbdUNX3DCTAlPjfFBfsgJ/EDnHwrcu7pt8/rT2RG1iwsJNZAp8yFqFF17vA=
+	t=1712566413; cv=none; b=Xe9pIBk5JM4npTW6cJgAbKQja3k4E65EMu/GNdgs6UtUcGFK52dmEojkCg5WWqBE/6ONXDPm0cSUZTiNtLdvmyzap2ri4PwhPiLTV0k+Cu2RsWpz1DVn/TLeNl+tGXL4fczezc3gQhnezlY2mWsOHDKJb3TkfQuFFXAtacJoczc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712566590; c=relaxed/simple;
-	bh=qzK+0wT9Cyf1NitkqrySMGpyo8anNQHWIeU6cKIpYWY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RLAPSvIYso7OxUQJIZtbNcmMzQO992KZaLzKrxQZ2WuJz7P0cuDNt9SN3cIe+cHvKkMissS3yWRlj9bo7sXKb54iLiSqNjpO7XzTX4GW9tr92xArwVrnDd8DYLztHn3bFFX80MJzUNGpkVcTpcpHZonEkAcPXiEciZgUTnPaBbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=dC8TND7a; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=qzK+0wT9Cyf1NitkqrySMGpyo8anNQHWIeU6cKIpYWY=; b=dC8TND7agfDyNYALvE97sUKUio
-	LEBwCQM2OmTmz54MJ5kWzG6Dej7Q8WFmAE/WabcvYrjSyCWxiOMs3VMccEYEsDtFG0ad3fm971gYq
-	VNPrkXCZYr30YxsDDqoMgfra5jQ3aq2bwt2FFE7LKJDacliBtpSRjQeXQqOAECWQaDUm/7PVyZJq5
-	skPZiFu9BhLMOIdq6Er+Q7mc7pgRikOrvNUK1qrFgX9nMttGNAc8tVN7MKD2n3j0sFqM/mkVFPYIO
-	OXVp6pSA0GXy+XfRnhoHNFpKpVoR5lX6n6KAvLyIdnVZY8ozLfLbTcnpstTEeHopPW5EXzwSQIjQj
-	N9ikHv6Q==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rtknZ-0007O7-Ml; Mon, 08 Apr 2024 10:56:17 +0200
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <esben@geanix.com>)
-	id 1rtknY-000H9m-SJ; Mon, 08 Apr 2024 10:56:16 +0200
-From: Esben Haabendal <esben@geanix.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,  Jiri Slaby
- <jirislaby@kernel.org>,  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
- <s.hauer@pengutronix.de>,  Pengutronix Kernel Team
- <kernel@pengutronix.de>,  Marc Kleine-Budde <mkl@pengutronix.de>,
-  linux-kernel@vger.kernel.org,  linux-serial@vger.kernel.org,
-  imx@lists.linux.dev,  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] serial: imx: Introduce timeout when waiting on
- transmitter empty
-In-Reply-To: <CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
-	(Fabio Estevam's message of "Fri, 5 Apr 2024 14:38:48 -0300")
-References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
-	<CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
-Date: Mon, 08 Apr 2024 10:56:16 +0200
-Message-ID: <87ttkckzbj.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712566413; c=relaxed/simple;
+	bh=a7LF604e+4hmNrL5catfHm3kSLy8ZWHDYu3j/rUYFeU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fw9LZAos//bznnPNkM2cXlL4L53ZW4mcsJphCBvyl8J10t+6Y9kYH1LoP7xREGUMqvPSJbNO8prrYGI7jExbayhCYLuNOqm0yC8qOXI2yIJuH2tcU2zrWRgDGl9KfcHnR62QMhiNotf2PBS0geIWGZOVmbRvuiHWJPMba5nvJrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K464V8ZJ; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46a7208eedso610574266b.0;
+        Mon, 08 Apr 2024 01:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712566410; x=1713171210; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Awkwoea29RMtqJqGnNUMzoUB24pkT0CE3c1C+yMH/hw=;
+        b=K464V8ZJJvGhd9sakgD4kwjxqyRHE1J7pZe2hA96bHixabY8uoOYcFuMpInPc7pyUC
+         KVD2cfRxuQSSJ+gOXWTwMBwgPiL7AbSbBb/YQ4Wb8k2/ItSjRMsqKAwVwqwQicHtpPn2
+         wcD/csyXwn362n7mwYailB6HjGlfsOyr7+2hj6EWSHBN7cgiYMNHVL2rayHZPI/OIH2s
+         Spr2m3LQE/EOumW3ckuYUNfI9DP2GTGLGPR338ovhHjo2miIi3B6ScI6ZApFF1Xaqp6e
+         5ObX8+2RozippPVNePSYZ7YCGkm8iLX/zS8yiTkOkq1LaSU8856qM9PCTbcSM8NQOJ9J
+         pK9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712566410; x=1713171210;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Awkwoea29RMtqJqGnNUMzoUB24pkT0CE3c1C+yMH/hw=;
+        b=r5V3V0ls+S7xoTkEcmcI+q6ZHNi2x1nQi0McnSebI98ri9BKqWB0ZpmGHJQvzCM3By
+         IwIhnLAZz2L3i8qM68NIZh0/ZznsFmC2vFJ3tImaMWFOrPExnygQKzkvQRUUGoQWp1UP
+         TrB5rYjmcXyVbZcao1xoBXtFIUoJdmzJuzweXhNj+WvoFLZYD6I3Z27X0akZJ4gIOZsL
+         GUVO9hETHKECJakkyLh7Pyp53dJsO3L8M6YuaYy2nepAeJtVdo+gR/Iqtfpv30/5lXOw
+         Bq2uT4DwGsiCceNfqXGbx1dCl2WSU/SaC/lmFI/SPHcs+FOfKuqrso8WVYZSgOAEOpXt
+         TVBw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMYLKeya0+g+KGwOb/TC1YYB0fLQgvYnsArrVo/xBxSg59WDHAPCndasyF13roDyL9/8jXPl/OOL40HPYy7rNhl25sHQx0GfXNKSkvfzixK4KJ2Wm0byIHEOAMQYn/H7H3cz5Iwj9H
+X-Gm-Message-State: AOJu0YxhXpd3L3xDi01USkZO+2EJst9Q40qQokac9u2Z9fTF+q6y4WGn
+	3NCjESRrerRvdUI6wtjHElcMPPmL6Gs+WHAExcqZSYk9vc0WXiGQ
+X-Google-Smtp-Source: AGHT+IHJL/CYDQQRtL0JdSS3jv/On97DV882M0J5RJxo4BMr9UHxiQxxrGSIM+xAHMcXyXlMD2F4uw==
+X-Received: by 2002:a17:907:7293:b0:a51:aebf:7e4c with SMTP id dt19-20020a170907729300b00a51aebf7e4cmr5711487ejc.9.1712566409885;
+        Mon, 08 Apr 2024 01:53:29 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1c:c500:ee59:d953:f148:40ba? (p200300f6ef1cc500ee59d953f14840ba.dip0.t-ipconnect.de. [2003:f6:ef1c:c500:ee59:d953:f148:40ba])
+        by smtp.gmail.com with ESMTPSA id g15-20020a170906198f00b00a4e2bf2f743sm4141159ejd.184.2024.04.08.01.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 01:53:29 -0700 (PDT)
+Message-ID: <a13678652cf7f06bb40d78182b02c1398ef06119.camel@gmail.com>
+Subject: Re: [PATCH 1/4] dev_printk: add new dev_errp_probe() helper
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Andi Shyti <andi.shyti@kernel.org>, Nuno Sa <nuno.sa@analog.com>
+Cc: Petr Mladek <pmladek@suse.com>, Jonathan Cameron <jic23@kernel.org>, 
+ Lars-Peter Clausen <lars@metafoo.de>, Olivier Moysan
+ <olivier.moysan@foss.st.com>, Jyoti Bhayana <jbhayana@google.com>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>,  Chris Down
+ <chris@chrisdown.name>, John Ogness <john.ogness@linutronix.de>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, 
+ linux-iio@vger.kernel.org
+Date: Mon, 08 Apr 2024 10:57:02 +0200
+In-Reply-To: <42sw4ugekugyqzjylsci6tvw5zfxlwz6ypnetnau6dyqnrqfiq@5jde2w4etpfh>
+References: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
+	 <20240404-dev-add_dev_errp_probe-v1-1-d18e3eb7ec3f@analog.com>
+	 <42sw4ugekugyqzjylsci6tvw5zfxlwz6ypnetnau6dyqnrqfiq@5jde2w4etpfh>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27239/Mon Apr  8 10:26:06 2024)
 
-Fabio Estevam <festevam@gmail.com> writes:
+On Sat, 2024-04-06 at 20:35 +0200, Andi Shyti wrote:
+> Hi Nuno,
+>=20
+> ...
+>=20
+> > +/* Simple helper for dev_err_probe() when ERR_PTR() is to be returned.=
+ */
+> > +#define dev_errp_probe(dev, ___err, fmt, ...)	({		\
+> > +	ERR_PTR(dev_err_probe(dev, ___err, fmt, ##__VA_ARGS__));	\
+> > +})
+>=20
+> I have a whole series adding a set of error oriente printk's. But
+> for the time being this looks OK.
+>=20
+> I just don't like the name, the 'p' is an important detail, but
+> a bit hidden... how about dev_err_ptr_probe(...)?
+>=20
 
-> On Fri, Apr 5, 2024 at 6:25=E2=80=AFAM Esben Haabendal <esben@geanix.com>=
- wrote:
->>
->> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potentit=
-al
->
-> s/potentital/potential
+Agreed, not a very good name indeed.
 
-Thanks, fixing.
+- Nuno S=C3=A1
 
-> Could you elaborate on this deadlock? Have you seen it in practice?
-
-I cannot say for sure if I have seen it. But in some cases, that is
-exactly what you would see. Nothing.
-
-If it would occur during shutdown, the console would simply stop/block,
-and you would see nothing.
-
-> Should a Fixes tag be added?
-
-Which commit should I add to that tag? The polling without timeout dates
-back to at least 2.6.12-rc2.
-
-/Esben
 
