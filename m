@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-135440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB32689C2BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:33:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA4289C2C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619F0283BF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DE7C1F2513D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8B182D99;
-	Mon,  8 Apr 2024 13:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC79685273;
+	Mon,  8 Apr 2024 13:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P9RQk8Og"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CUsTirKJ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B87481A6;
-	Mon,  8 Apr 2024 13:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5A682D7A;
+	Mon,  8 Apr 2024 13:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712582992; cv=none; b=RT/B2Z32Da3YsQMOHvclEK57IAaMZufh5/lDBtDEFLapuBvMPyYkVILA/dvbzuFWOXWyx8V4JtZux/QmJqa+h7hnBGNUfrCt9g6OOJMgjIqD4YT4+aPm+txqK9E7rM7DBydFlYxA8+qsQjArF99p2xNWt0VPfIxJ4jXLyT3qyxw=
+	t=1712582998; cv=none; b=kh3W33kexcuOCpwwumCi/f0afcjyDMLHJ7LtWfzTMeOU55zlAj4JoqxKFcu6bcwm0eNpkSt3tUWSGidNkcjK7neILR60g3sOj8wYC335lCjL8AaBgdGogdLJ05vmEJubm9oUf6m6Olzpb4xtNnIgfMEfcj7kRkq3nqz9O4sclSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712582992; c=relaxed/simple;
-	bh=GMPWbprIxp/w/Aq9F/i6/+o5zxEc4QGdo7Dwd6O63zk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dZ0og5XZy6uDTiDsviFn4xfFUPToqgjtPZ4UoRzq7d7m8cQrs1juKCitVewH8sCwlIHO1U7FLBgRAQK3aXjZ2wdO+ShAH/bGEKEW1o5c9060vAST+UdE1zp3eRicefQ/ih8I8CtSk5Xw3+aPkI6teTid0ASFWu2rqXundGYtt9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=P9RQk8Og; arc=none smtp.client-ip=205.220.180.131
+	s=arc-20240116; t=1712582998; c=relaxed/simple;
+	bh=ukeaZj+EJjB94scvGyBQtfYtRiuShb1IbJClhnMZurY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fJR/NQNLTW+Lql+yPXYGyABznf6L/UEOrq8C8ej+rgNoCYlXHOU16EY0lliMRYG+IC02SMD4swA3OYfdEXuSx6YGoqUT6A5PU342TYl1oZTibES/NWy3tcgRcZGgOvQ42Xd/9IrJkcnqbhp4vLXWSlDK3/XwnR3om8hpvEj0p7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CUsTirKJ; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386ciuR007671;
-	Mon, 8 Apr 2024 13:29:44 GMT
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438CQevI020922;
+	Mon, 8 Apr 2024 13:29:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=uOJyGIL
-	AbX/DCfIqZSQJVsDqmzVAAYRPNl5Gb0eSHfA=; b=P9RQk8OgEkiwdqdI1M1Z/g5
-	rWKfaja0ooIKnlaSsPrViC2g2IgLaTomqE7k6CKyWompHJo3zPS7L+6knM+jVgOL
-	5Z8pvnQrX9CIP/QowIsLbuQSXHU+y9JTJLta5C7x/dZIaDWxzTxkxLmdK/0Pk9S4
-	OPaxpRf9TGXSHvAxiz+NLEEX9V3hIS/UD7Mdr+n7xqUMr6J24P9dRIJksUP5CvCp
-	f8mOUK5MPl6UAoT2tx5E5qY36b7geT1ZDqQGHasRCj/ok/K8HpoNKW+bBpPm3faM
-	/wnEhlbr2cuvuFwj6lvuAtHhc82S1EottWOqZfCRqWutSUoN8jcwp4dDEwxBpJA=
-	=
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg30vm6-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=LFRg6Eiw/Nwzjx+zDP1JorEUwmL0hSvPD3//lEJp0co=; b=CU
+	sTirKJVJcbLp9la/dLG2/5NP8WPxm8ZR8BVEDx6y95oyFFZi6HP2iiGlgC3rwwK0
+	DQlBHkM2TUCdb1/idafj97Bi2yvW1OCy4Fjh1ZKV2eowxzxhdzuWxg8WgXysUxrj
+	vTxaOcx8y5kEgQ9cYOtLU81qwgYqJtzoAvjL/TloTHKZNLCaoD0mwxkcXGe4f7DU
+	s3W/M35pVkjrCZNZUa/R/GdLwPZiN/XQdNz/fopNUQB/wqQI14Dpuw4+etfwiiqs
+	MZZvdKaqXzuAesX0stK3vUg/A68MfmCdYD9PJ3Bu7Elf/p1CvsSkA2OGFZyU2W+Z
+	dPbUWQ2OzCPcM4xS3n2w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbfygw2d-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 13:29:43 +0000 (GMT)
+	Mon, 08 Apr 2024 13:29:49 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438DTgN5022791
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438DTn7v022405
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Apr 2024 13:29:42 GMT
+	Mon, 8 Apr 2024 13:29:49 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 8 Apr 2024 06:29:37 -0700
+ 15.2.1544.4; Mon, 8 Apr 2024 06:29:43 -0700
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -72,11 +73,14 @@ CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v20 0/9] Add multiport support for DWC3 controllers
-Date: Mon, 8 Apr 2024 18:59:16 +0530
-Message-ID: <20240408132925.1880571-1-quic_kriskura@quicinc.com>
+	<quic_kriskura@quicinc.com>,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH v20 1/9] dt-bindings: usb: Add bindings for multiport properties on DWC3 controller
+Date: Mon, 8 Apr 2024 18:59:17 +0530
+Message-ID: <20240408132925.1880571-2-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240408132925.1880571-1-quic_kriskura@quicinc.com>
+References: <20240408132925.1880571-1-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,224 +93,55 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4TREov16amAhpR_SPPrrxnjedPvctZC0
-X-Proofpoint-GUID: 4TREov16amAhpR_SPPrrxnjedPvctZC0
+X-Proofpoint-ORIG-GUID: VJpXeOdmYboGOMHk2l-QDi_zq6pdFcRM
+X-Proofpoint-GUID: VJpXeOdmYboGOMHk2l-QDi_zq6pdFcRM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-08_11,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080103
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 suspectscore=0
+ impostorscore=0 spamscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080104
 
-Currently the DWC3 driver supports only single port controller which
-requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
-DWC3 controller with multiple ports that can operate in host mode.
-Some of the port supports both SS+HS and other port supports only HS
-mode.
+Add bindings to indicate properties required to support multiport
+on Synopsys DWC3 controller.
 
-This change primarily refactors the Phy logic in core driver to allow
-multiport support with Generic Phy's.
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ .../devicetree/bindings/usb/snps,dwc3.yaml          | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
-are HS+SS capable and 2 are HS only capable).
-
-Changes in v20:
-Modified return check in get_num_ports call.
-Code re-verified internally and added Bjorn.A RB Tag in patch (2/9)
-from internal review.
-
-Changes in v19:
-Replaced IS_ERR(ptr) with a NULL check.
-Modified name of function reading the port num in core file.
-
-Changes in v18:
-Updated variable names in patch-7 for setup_port_irq and
-find_num_ports calls.
-
-Changes in v17:
-Modified DT handling patch by checking if dp_hs_phy_1 is present
-or not and then going for DT parsing.
-
-Changes in v16:
-Removing ACPI has simplified the interrupt reading in wrapper. Also
-the logic to find number of ports is based on dp_hs_phy interrupt check
-in DT. Enabling and disabling interrupts is now done per port. Added
-info on power event irq in commit message.
-
-Changes in v15:
-Added minItems property in qcom,dwc3 bindings as suggested by Rob.
-Retained all RB's/ACK's got in v14.
-
-Changes in v14:
-Moved wrapper binding update to 5th patch in the series as it deals
-with only wakeup and not enumeration. The first part of the series
-deals with enumeration and the next part deals with wakeup.
-Updated commit text for wrapper driver patches.
-Added error checks in get_port_index and setup_irq call which were
-missing in v13.
-Added SOB and CDB tags appropriately for the patches.
-Rebased code on top of latest usb next.
-DT changes have been removed and will be sent as a separate series.
-
-Changes in v13:
-This series is a subset of patches in v11 as the first 3 patches in v11
-have been mereged into usb-next.
-Moved dr_mode property from platform specific files to common sc8280xp DT.
-Fixed function call wrapping, added comments and replaced #defines with
-enum in dwc3-qcom for identifying IRQ index appropriately.
-Fixed nitpicks pointed out in v11 for suspend-resume handling.
-Added reported-by tag for phy refactoring patch as a compile error was
-found by kernel test bot [1].
-Removed reviewed-by tag of maintainer for phy refactoring patch as a minor
-change of increasing phy-names array size by 2-bytes was done to fix
-compilation issue mentioned in [1].
-
-Changes in v12:
-Pushed as a subset of acked but no-yet-merged patches of v11 with intent
-of making rebase of other patches easy. Active reviewers from community
-suggested that it would be better to push the whole series in one go as it
-would give good clarity and context for all the patches in the series.
-So pushed v13 for the same addressing comments received in v11.
-
-Changes in v11:
-Implemented port_count calculation by reading interrupt-names from DT.
-Refactored IRQ handling in dwc3-qcom.
-Moving of macros to xhci-ext-caps.h made as a separate patch.
-Names of interrupts to be displayed on /proc/interrupts set to the ones
-present in DT.
-
-Changes in v10:
-Refactored phy init/exit/power-on/off functions in dwc3 core
-Refactored dwc3-qcom irq registration and handling
-Implemented wakeup for multiport irq's
-Moved few macros from xhci.h to xhci-ext-caps.h
-Fixed nits pointed out in v9
-Fixed Co-developed by and SOB tags in patches 5 and 11
-
-Changes in v9:
-Added IRQ support for DP/DM/SS MP Irq's of SC8280
-Refactored code to read port count by accessing xhci registers
-
-Changes in v8:
-Reorganised code in patch-5
-Fixed nitpicks in code according to comments received on v7
-Fixed indentation in DT patches
-Added drive strength for pinctrl nodes in SA8295 DT
-
-Changes in v7:
-Added power event irq's for Multiport controller.
-Udpated commit text for patch-9 (adding DT changes for enabling first
-port of multiport controller on sa8540-ride).
-Fixed check-patch warnings for driver code.
-Fixed DT binding errors for changes in snps,dwc3.yaml
-Reabsed code on top of usb-next
-
-Changes in v6:
-Updated comments in code after.
-Updated variables names appropriately as per review comments.
-Updated commit text in patch-2 and added additional info as per review
-comments.
-The patch header in v5 doesn't have "PATHCH v5" notation present. Corrected
-it in this version.
-
-Changes in v5:
-Added DT support for first port of Teritiary USB controller on SA8540-Ride
-Added support for reading port info from XHCI Extended Params registers.
-
-Changes in RFC v4:
-Added DT support for SA8295p.
-
-Changes in RFC v3:
-Incase any PHY init fails, then clear/exit the PHYs that
-are already initialized.
-
-Changes in RFC v2:
-Changed dwc3_count_phys to return the number of PHY Phandles in the node.
-This will be used now in dwc3_extract_num_phys to increment num_usb2_phy 
-and num_usb3_phy.
-Added new parameter "ss_idx" in dwc3_core_get_phy_ny_node and changed its
-structure such that the first half is for HS-PHY and second half is for
-SS-PHY.
-In dwc3_core_get_phy, for multiport controller, only if SS-PHY phandle is
-present, pass proper SS_IDX else pass -1.
-
-Tested enumeration interrupt registration on Tertiary controller of
-SA8295 ADP:
-
-/ # lsusb
-Bus 001 Device 001: ID 1d6b:0002
-Bus 002 Device 001: ID 1d6b:0003
-Bus 001 Device 002: ID 046d:c06a
-/ #
-/ # dmesg  | grep ports
-[    0.066250] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    0.154668] dwc3 a400000.usb: K: hs-ports: 4 ss-ports: 2
-[    0.223137] xhci-hcd xhci-hcd.0.auto: Host supports USB 3.1 Enhanced SuperSpeed
-[    0.227795] hub 1-0:1.0: 4 ports detected
-[    0.233724] hub 2-0:1.0: 2 ports detected
-
-Tested interrupt registration for all 4 ports of SA8295 ADP:
-
-/ # cat /proc/interrupts  |grep phy
-162: 0 0 0 0 0 0 0 0       PDC 127 Edge      dp_hs_phy_1
-163: 0 0 0 0 0 0 0 0       PDC 129 Edge      dp_hs_phy_2
-164: 0 0 0 0 0 0 0 0       PDC 131 Edge      dp_hs_phy_3
-165: 0 0 0 0 0 0 0 0       PDC 133 Edge      dp_hs_phy_4
-166: 0 0 0 0 0 0 0 0       PDC 126 Edge      dm_hs_phy_1
-167: 0 0 0 0 0 0 0 0       PDC  16 Level     ss_phy_1
-168: 0 0 0 0 0 0 0 0       PDC 128 Edge      dm_hs_phy_2
-169: 0 0 0 0 0 0 0 0       PDC  17 Level     ss_phy_2
-170: 0 0 0 0 0 0 0 0       PDC 130 Edge      dm_hs_phy_3
-171: 0 0 0 0 0 0 0 0       PDC 132 Edge      dm_hs_phy_4
-173: 0 0 0 0 0 0 0 0       PDC  14 Edge      dp_hs_phy_irq
-174: 0 0 0 0 0 0 0 0       PDC  15 Edge      dm_hs_phy_irq
-175: 0 0 0 0 0 0 0 0       PDC 138 Level     ss_phy_irq
-
-Tested working of ADB on SM8550 MTP.
-
-Links to previous versions:
-Link to v19: https://lore.kernel.org/all/20240404051229.3082902-1-quic_kriskura@quicinc.com/
-Link to v18: https://lore.kernel.org/all/20240326113253.3010447-1-quic_kriskura@quicinc.com/
-Link to v17: https://lore.kernel.org/all/20240326102809.2940123-1-quic_kriskura@quicinc.com/
-Link to v16: https://lore.kernel.org/all/20240307062052.2319851-1-quic_kriskura@quicinc.com/
-Link to v15: https://lore.kernel.org/all/20240216005756.762712-1-quic_kriskura@quicinc.com/
-Link to v14: https://lore.kernel.org/all/20240206051825.1038685-1-quic_kriskura@quicinc.com/
-Link to v13: https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
-Link to v12: https://lore.kernel.org/all/20231004165922.25642-1-quic_kriskura@quicinc.com/
-Link to v11: https://lore.kernel.org/all/20230828133033.11988-1-quic_kriskura@quicinc.com/
-Link to v10: https://lore.kernel.org/all/20230727223307.8096-1-quic_kriskura@quicinc.com/
-Link to v9: https://lore.kernel.org/all/20230621043628.21485-1-quic_kriskura@quicinc.com/
-Link to v8: https://lore.kernel.org/all/20230514054917.21318-1-quic_kriskura@quicinc.com/
-Link to v7: https://lore.kernel.org/all/20230501143445.3851-1-quic_kriskura@quicinc.com/
-Link to v6: https://lore.kernel.org/all/20230405125759.4201-1-quic_kriskura@quicinc.com/
-Link to v5: https://lore.kernel.org/all/20230310163420.7582-1-quic_kriskura@quicinc.com/
-Link to RFC v4: https://lore.kernel.org/all/20230115114146.12628-1-quic_kriskura@quicinc.com/
-Link to RFC v3: https://lore.kernel.org/all/1654709787-23686-1-git-send-email-quic_harshq@quicinc.com/#r
-Link to RFC v2: https://lore.kernel.org/all/1653560029-6937-1-git-send-email-quic_harshq@quicinc.com/#r
-
-Krishna Kurapati (9):
-  dt-bindings: usb: Add bindings for multiport properties on DWC3
-    controller
-  usb: dwc3: core: Access XHCI address space temporarily to read port
-    info
-  usb: dwc3: core: Skip setting event buffers for host only controllers
-  usb: dwc3: core: Refactor PHY logic to support Multiport Controller
-  dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport
-  usb: dwc3: qcom: Add helper function to request wakeup interrupts
-  usb: dwc3: qcom: Refactor IRQ handling in glue driver
-  usb: dwc3: qcom: Enable wakeup for applicable ports of multiport
-  usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
-
- .../devicetree/bindings/usb/qcom,dwc3.yaml    |  34 ++
- .../devicetree/bindings/usb/snps,dwc3.yaml    |  13 +-
- drivers/usb/dwc3/core.c                       | 325 +++++++++++++-----
- drivers/usb/dwc3/core.h                       |  19 +-
- drivers/usb/dwc3/drd.c                        |  15 +-
- drivers/usb/dwc3/dwc3-qcom.c                  | 251 +++++++++-----
- 6 files changed, 482 insertions(+), 175 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+index 203a1eb66691..bfac0a37d0e4 100644
+--- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+@@ -85,15 +85,16 @@ properties:
+ 
+   phys:
+     minItems: 1
+-    maxItems: 2
++    maxItems: 8
+ 
+   phy-names:
+     minItems: 1
+-    maxItems: 2
+-    items:
+-      enum:
+-        - usb2-phy
+-        - usb3-phy
++    maxItems: 8
++    oneOf:
++      - items:
++          enum: [ usb2-phy, usb3-phy ]
++      - items:
++          pattern: "^usb[23]-[0-3]$"
+ 
+   power-domains:
+     description:
 -- 
 2.34.1
 
