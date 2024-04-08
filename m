@@ -1,162 +1,202 @@
-Return-Path: <linux-kernel+bounces-135927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419CA89CD27
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:59:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9834C89CD38
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81071F22BBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:59:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9E39283E74
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89ADA1474A4;
-	Mon,  8 Apr 2024 20:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BA7148835;
+	Mon,  8 Apr 2024 21:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CC4fYGAo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YbtLE+/O"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF3D1EB46
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 20:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2BCB147C6D;
+	Mon,  8 Apr 2024 21:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712609942; cv=none; b=JdnZGhzYDmM6t4ruzM5QdN0vbdG/cAY7H3D2yKZnR7cHjbfw7PQMCQrExAwO/4vJ/35jRA5U0f2qLXM9NirwePI9Z1jn+Bi/PNE34VAgKbDVcAj7eOUtrZzU4uYmUBAih99evEuFXXJP4Gmh/4F4NihJataokzeOElVfg9GC5p0=
+	t=1712610544; cv=none; b=OZk9VFAZ2u6fxhJ3gB5hm867QXZ8pHP8QKha2ZCwkT5RZZ4bF1nCxKpPVa5v0FMlj4uvs1WF2dH/tnTGkdZFQAD7jKOMKqhy4bsmJdprHCHtlucnJ8pgRTrTn48vhHMFd+EQyeGtcFh+f0YHsBU2wAGvFaLmPiVLpRL5NX6KzYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712609942; c=relaxed/simple;
-	bh=Sp8ULhDiuUc9igWncb9vXY5dJILFO+9U0kIAbBLTpnI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kfz1weL5L3G2/fg3rZ62YC5B0cb02jDGWXtXvr/W1yRYapIkg7yW+8kXKOWx6kfbIEqa4IXG9NVka6X1grbM0Dopx1HX/V0+g3hE2i7scdPb29cyN1l6vNRN301ngwR9kToKfOhAldn7CSICpPCkJcXzkMNOFJk6JEsS0w3q7jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CC4fYGAo; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712609941; x=1744145941;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Sp8ULhDiuUc9igWncb9vXY5dJILFO+9U0kIAbBLTpnI=;
-  b=CC4fYGAoUcsXwQ5Opdww9fsC4u6JsacTv1I9hHCkvMDIGtzvEb4AlTkT
-   roY4ZYxMeIw6diMOPTdSeDKZMEpyE6xkOrFKF7CZNW8RuGeHgm8FxK8t7
-   dfu97PWfVks3J8G8AxCQ6dCVt7/SOGWoOo1G2tNzybIFgnluF9MO8WUsK
-   88cckYt+eAdCyBw+4+sOeXnqeKGDAbmB6U98zDomK3k1OCOUDBsH+XTJ5
-   FPrgnLwDFqiYadlvqDdIygG5+VGI2GW2XXqtE4mSRQjsJzu/w46+r+kob
-   vvhT6GXljqFUX8Oe2vGjqrUdGGoKEiwxGN2y/1AqLUfG08yL/yC4yjEGP
-   w==;
-X-CSE-ConnectionGUID: VB6vMlwtR0WMHeL8D7enjw==
-X-CSE-MsgGUID: a5/gBSsHQayFCQyfQeaGwA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19289633"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19289633"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 13:59:00 -0700
-X-CSE-ConnectionGUID: yhOEEWpNTwC+KnlTevbKCQ==
-X-CSE-MsgGUID: zYNBIbgvRQi+m5Cu9bJqdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="20055284"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 13:59:00 -0700
-Date: Mon, 8 Apr 2024 14:03:29 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: iommu@lists.linux.dev, Kevin Tian <kevin.tian@intel.com>, Yi Liu
- <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
- <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- linux-kernel@vger.kernel.org, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 2/2] iommu/vt-d: Remove caching mode check before devtlb
- flush
-Message-ID: <20240408140329.6290377f@jacob-builder>
-In-Reply-To: <20240407144232.190355-2-baolu.lu@linux.intel.com>
-References: <20240407144232.190355-1-baolu.lu@linux.intel.com>
-	<20240407144232.190355-2-baolu.lu@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712610544; c=relaxed/simple;
+	bh=wfTZT5SpEZFUpySIG2Jh4yfcuf+pABe9fL7mPC4B+co=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fPwUNqhwdF/8nPrE7L5XSzng1gDjY5xaEQTg5f+H/1L9mSzlj/441lZpEIZMvfgrefr4AVdtZQ3R8ZTB59CUK041oewxvC+B0zz4fS218sJZAIXLt4GsPzN6znuZPG36Sz7RTVrLnUCzxn5YVTAsCYCYRPcBEmtuDY7GMaWRcyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YbtLE+/O; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438KTIdL029154;
+	Mon, 8 Apr 2024 21:08:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=DqxIk1V1v4JeK29xmds8hYaX8RXaQn1HmtY9KAfza1Y=; b=Yb
+	tLE+/OHSvSLa2X0+4CskXApWRsX7ltRMPH2J11CoHLXTCixABs1QarFCqARPDAVf
+	8RwHG9cProXj5k1Yo6ADwD2XDp1OtP+cTwCoj8m1a/p0UVOkt0I9hVs0pvGZ1X4P
+	zhPyvcuoO+1VcXcKLcmC+G0lxv7StnsGhzycTmgS53r2guA74bSl+vR9zg99CBR1
+	Juva4ZCjaBfMdsrWz4t2GET7OH6FtcQ9JusMhQ0lB5cb7QZ7je0IetWOIQbFg8aE
+	gRiN6+FlnFXoVb+gVwe22dtN9bl4vTUv1G4o3Z5p7DdUxbJHWMGv5TupNqQ/Iix8
+	E/6QDMqjWlMDlWj6oC6w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg2sujh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 21:08:51 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438L8nXi011985
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 21:08:49 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
+ 14:08:48 -0700
+Message-ID: <b7ed299d-4cf7-8829-fd7f-e518aef05fb2@quicinc.com>
+Date: Mon, 8 Apr 2024 14:08:47 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>
+CC: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
+        Sean Paul
+	<sean@poorly.run>,
+        "Marijn Suijten" <marijn.suijten@somainline.org>,
+        David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <seanpaul@chromium.org>,
+        <swboyd@chromium.org>, <quic_jesszhan@quicinc.com>,
+        <quic_bjorande@quicinc.com>, <johan@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
+ <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
+ <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
+ <k7f22hyltul4h4o4vqe6prc2yx3mm2q4dzk66j3xrsdpdtqllb@3c6ul4fpimwz>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <k7f22hyltul4h4o4vqe6prc2yx3mm2q4dzk66j3xrsdpdtqllb@3c6ul4fpimwz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: aJrDRQIIij3iCRMFqeQcq4BXfIBIAjNI
+X-Proofpoint-GUID: aJrDRQIIij3iCRMFqeQcq4BXfIBIAjNI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_17,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 impostorscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080162
 
-Hi Lu,
 
-On Sun,  7 Apr 2024 22:42:32 +0800, Lu Baolu <baolu.lu@linux.intel.com>
-wrote:
 
-> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
-> implementation caches not-present or erroneous translation-structure
-> entries except the first-stage translation. The caching mode is
-> unrelated to the device TLB , therefore there is no need to check
-> it before a device TLB invalidation operation.
+On 4/8/2024 1:41 PM, Bjorn Andersson wrote:
+> On Mon, Apr 08, 2024 at 12:43:34PM -0700, Abhinav Kumar wrote:
+>>
+>>
+>> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
+>>> On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
+>>>> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>> [..]
+>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> index d80f89581760..bfb6dfff27e8 100644
+>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> @@ -1665,7 +1665,7 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
+>>>>    		return;
+>>>>    	if (!dp_display->link_ready && status == connector_status_connected)
+>>>> -		dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+>>>> +		dp_hpd_plug_handle(dp, 0);
+>>>
+>>> If I read the code correctly, and we get an external connect event
+>>> inbetween a previous disconnect and the related disable call, this
+>>> should result in a PLUG_INT being injected into the queue still.
+>>>
+>>> Will that not cause the same problem?
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>
+>> Yes, your observation is correct and I had asked the same question to kuogee
+>> before taking over this change and posting.
+>>
+>> We will have to handle that case separately. I don't have a good solution
+>> yet for it without requiring further rework or we drop the below snippet.
+>>
+>>          if (state == ST_DISCONNECT_PENDING) {
+>>                  /* wait until ST_DISCONNECTED */
+>>                  dp_add_event(dp, EV_HPD_PLUG_INT, 0, 1); /* delay = 1 */
+>>                  mutex_unlock(&dp->event_mutex);
+>>                  return 0;
+>>          }
+>>
+>> I will need sometime to address that use-case as I need to see if we can
+>> handle that better and then drop the the DISCONNECT_PENDING state to address
+>> this fully. But it needs more testing.
+>>
+>> But, we will need this patch anyway because without this we will not be able
+>> to fix even the most regular and commonly seen case of basic
+>> connect/disconnect receiving complementary events.
+>>
 > 
-> Before the scalable mode is introduced, caching mode is treated as
-> an indication that the driver is running in a VM guest. This is just
-> a software contract as shadow page table is the only way to implement
-> a virtual IOMMU. But the VT-d spec doesn't state this anywhere. After
-> the scalable mode is introduced, this doesn't stand for anymore, as
-> caching mode is not relevant for the first-stage translation. A virtual
-> IOMMU implementation is free to support first-stage translation only
-> with caching mode cleared.
+> I did some more testing on this patch. Connecting and disconnecting the
+> cable while in fbcon works reliably, except for:
+
+Thanks for the tests !
+
+> - edid/modes are not read before we bring up the link so I always end up
+>    with 640x480
 > 
-> Remove the caching mode check before device TLB invalidation to ensure
-> compatibility with the scalable mode use cases.
+
+hmmm, I wonder why this should be affected due to this patch. We always 
+read the EDID during hpd_connect() and the selected resolution will be 
+programmed with the modeset. We will retry this with our x1e80100 and see.
+
+> - if I run modetest -s <id>:<mode> the link is brought up with the new
+>    resolution and I get my test image on the screen.
+>    But as we're shutting down the link for the resolution chance I end up
+>    in dp_bridge_hpd_notify() with link_ready && state = disconnected.
+>    This triggers an unplug which hangs on the event_mutex, such that as
+>    soon as I get the test image, the state machine enters
+>    DISCONNECT_PENDING. This is immediately followed by another
+>    !link_ready && status = connected, which attempts to perform the plug
+>    operation, but as we're in DISCONNECT_PENDING this is posted on the
+>    event queue. From there I get a log entry from my PLUG_INT, every
+>    100ms stating that we're still in DISCONNECT_PENDING. If I exit
+>    modetest the screen goes black, and no new mode can be selected,
+>    because we're in DISCONNECT_PENDING. The only way out is to disconnect
+>    the cable to complete the DISCONNECT_PENDING.
 > 
-I agree with the changes below, what about this CM check:
 
-/* Notification for newly created mappings */
-static void __mapping_notify_one(struct intel_iommu *iommu, struct dmar_domain *domain,
-				 unsigned long pfn, unsigned int pages)
-{
-	/*
-	 * It's a non-present to present mapping. Only flush if caching mode
-	 * and second level.
-	 */
-	if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
-		iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
+I am going to run this test-case and see what we can do.
 
-We are still tying devTLB flush to CM=1, no?
-
-If we are running in the guest with second level page table (shadowed), can
-we decide if devTLB flush is needed based on ATS enable just as the rest of
-the cases?
-
-
-> Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by
-> default") Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel/iommu.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Regards,
+> Bjorn
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 493b6a600394..681789b1258d 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -1501,7 +1501,7 @@ static void iommu_flush_iotlb_psi(struct
-> intel_iommu *iommu, else
->  		__iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
->  
-> -	if (!cap_caching_mode(iommu->cap) && !map)
-> +	if (!map)
->  		iommu_flush_dev_iotlb(domain, addr, mask);
->  }
->  
-> @@ -1575,8 +1575,7 @@ static void intel_flush_iotlb_all(struct
-> iommu_domain *domain) iommu->flush.flush_iotlb(iommu, did, 0, 0,
->  						 DMA_TLB_DSI_FLUSH);
->  
-> -		if (!cap_caching_mode(iommu->cap))
-> -			iommu_flush_dev_iotlb(dmar_domain, 0,
-> MAX_AGAW_PFN_WIDTH);
-> +		iommu_flush_dev_iotlb(dmar_domain, 0,
-> MAX_AGAW_PFN_WIDTH); }
->  
->  	if (dmar_domain->nested_parent)
-
-
-Thanks,
-
-Jacob
+>>
+>>>>    	else if (dp_display->link_ready && status == connector_status_disconnected)
+>>>> -		dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+>>>> +		dp_hpd_unplug_handle(dp, 0);
+>>>>    }
+>>>> -- 
+>>>> 2.43.2
+>>>>
 
