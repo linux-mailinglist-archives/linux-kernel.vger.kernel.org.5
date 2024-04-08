@@ -1,75 +1,49 @@
-Return-Path: <linux-kernel+bounces-134828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A2C89B787
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:17:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7779C89B791
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:20:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A21D2B21DDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:17:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C7AA2827B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78C81A5A2;
-	Mon,  8 Apr 2024 06:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECA0F9E6;
+	Mon,  8 Apr 2024 06:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X6F4gv4b"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KN65rF1f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F36BFBF3;
-	Mon,  8 Apr 2024 06:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B641C3E;
+	Mon,  8 Apr 2024 06:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557039; cv=none; b=H5ov3A1FQfp6VO/lYvzEbx0sHzwtqMLqIpB36H5ZeX1ZRQI8IszUdaqLYVYSZJEIaUsU6qnR9vKNs2QOlrMA8hJkVadlc3MQOurcGeWgKRmlMnI7IqRmDfWBzS4BAhlMEvXi+g1sLBYQE5Ix98dxxZHvrObzuFQfYOhXP/ibjj0=
+	t=1712557226; cv=none; b=aK4SN8bwG7KSE9l7uuoBpMpHaBf+v4rppAuk0D3zRfBEatGkAh6Vemvk0bbD7YTh9cJQ9qLB+2l2C3gRawIHlMgPckql4dV56f58WWOPfgrDDtdzgNJ8tHnmDXY34ti1g+WTS7YajbnLU/so2+Q2HXp8EQdyNTP3+LzAImFBKnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557039; c=relaxed/simple;
-	bh=HayizR85O3Km2MOiVmMTORWLWeXez6YbxUFmVO85i3w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p+QYHyMxVQOT/hQihLADPv4HX/qDW5EsHoyMEGLJR+57Qpaur30irrqlCVa9W7GdRgwHWIH7AL7TlnrPxbl139eRve3z/yWYJfC3cAnsvb6LrA+5XW3pq5Si4RDYRvijnzvdIJ3RxL0Q/4VHLyyszJZawazP6ItAtM56oetBr3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X6F4gv4b; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712557037; x=1744093037;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HayizR85O3Km2MOiVmMTORWLWeXez6YbxUFmVO85i3w=;
-  b=X6F4gv4b7FcfErTfW9MFUddpZgQ4LjECy1/EXNtP7y0YWev8MByCHLmS
-   VGs4usFFiPVVIffgbRAFcj1/oDmjEe6Wv6gj37HmNTS/+WiDIIsSbJt5f
-   9FPRqNrWuMNAtSzL01zaERhXAdqfplpBQ4G9VOfQzE0GipLcHkqGOXbOg
-   74VADHFgSWtwRdTdKbzhZ/qSFlyTFIvzVMp4k2kGW6/aYrd10IY4ItnVV
-   oYojipd8VxPu5Xk6ayjIIMjBZKIw2BI97cuhaJuHVILftMUAnI5lHsekx
-   LR3N5ib693rAnA2x5agXy1IqjG26PkJmgpjAIY1a4whdZ68Uzl1P9gWx9
-   Q==;
-X-CSE-ConnectionGUID: CqJn3q24To2RaSY48s5AmA==
-X-CSE-MsgGUID: KZiW/GmlSmWs5GArKCeeyA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7675333"
-X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="7675333"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 23:17:14 -0700
-X-CSE-ConnectionGUID: 50Sc3ctCTwOJGyhsxU6fxg==
-X-CSE-MsgGUID: XcvWTN2aRCaFRshX/rQfnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="24511959"
-Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 23:17:13 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: linux-sound@vger.kernel.org,
-	vkoul@kernel.org
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH 2/2] soundwire: intel_ace2x: simplify check_wake()
-Date: Mon,  8 Apr 2024 06:16:43 +0000
-Message-Id: <20240408061643.420916-3-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240408061643.420916-1-yung-chuan.liao@linux.intel.com>
-References: <20240408061643.420916-1-yung-chuan.liao@linux.intel.com>
+	s=arc-20240116; t=1712557226; c=relaxed/simple;
+	bh=BeeYTLf5wFLpqYh+8yiJHCtgyzZdlshb4mu0aF5x7dg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=KnN/AP2uyl/KI5Nb+GKldtn/mR7ZCh7yc5mhCDDwYlVN7otSss/OnNs6JLJiMQfRgx1VZ2zuFQHUajVBVCeTBDl0HE9AH62h2kOGCMvqpFaW2cyq68Sx4DQ7MomF1gUJ09vODiaBfgolvR/J9VJXNo1huJuG4eHk+vtrdjwDjho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KN65rF1f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F2522C433C7;
+	Mon,  8 Apr 2024 06:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712557226;
+	bh=BeeYTLf5wFLpqYh+8yiJHCtgyzZdlshb4mu0aF5x7dg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KN65rF1ftf3clzoddmDvvthkw4itsWlKuPTSL9hq257lvB/60G19rQrAzfw8I4YxZ
+	 IWfjLpTWmiQ6/tf4iP8tEIa0kQJ/XX2C+/VVBsdYqlweDEaqTIMrYp3PDcX4S6oENH
+	 HzDRB+TbqKI1HpnxqKYZ38c2t5eU2twDD9x2zg3Uxyoj7rlYzbaaKPothD7TE9QTPZ
+	 y9GzPQHU7uNq0SumZHWnwlwJu5YIUIf6cblDWiojWSewaChEgtpI0e2aTwKLuI6/00
+	 RgmyC6m2+clsHS8oWo2n/AFHut375d1FL1t5IBGQTQ4FJTNv3G5gpuKT9m7ggdX+SJ
+	 9nQ3NYX0oCIFA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E31BCD7982C;
+	Mon,  8 Apr 2024 06:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,60 +51,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/1] platform: Handle HAS_IOPORT dependencies
+From: patchwork-bot+chrome-platform@kernel.org
+Message-Id: 
+ <171255722592.606.18199441888717456715.git-patchwork-notify@kernel.org>
+Date: Mon, 08 Apr 2024 06:20:25 +0000
+References: <20240405134151.5560-1-schnelle@linux.ibm.com>
+In-Reply-To: <20240405134151.5560-1-schnelle@linux.ibm.com>
+To: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: bleung@chromium.org, tzungbi@kernel.org, chrome-platform@lists.linux.dev,
+ arnd@kernel.org, hca@linux.ibm.com, linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hello:
 
-Since LunarLake, we use the HDadio WAKEEN/WAKESTS to detect wakes for
-SoundWire codecs. This patch follows the HDaudio example and
-simplifies the behavior on wake-up by unconditionally waking up all
-links.
+This patch was applied to chrome-platform/linux.git (for-kernelci)
+by Tzung-Bi Shih <tzungbi@kernel.org>:
 
-This behavior makes a lot of sense when removing the jack, which may
-signal that the user wants to start rendering audio using the local
-amplifiers. Resuming all links helps make sure the amplifiers are
-ready to be used. Worst case, the pm_runtime suspend would kick-in
-after several seconds of inactivity.
+On Fri,  5 Apr 2024 15:41:50 +0200 you wrote:
+> Hi Benson, Tzung-Bi,
+> 
+> This is a follow up in my ongoing effort of making inb()/outb() and
+> similar I/O port accessors compile-time optional. Previously I sent this
+> as a treewide series titled "treewide: Remove I/O port accessors for
+> HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+> subset of patches merged I've changed over to per-subsystem series. These
+> series are stand alone and should be merged via the relevant tree such
+> that with all subsystems complete we can follow this up with the final
+> patch that will make the I/O port accessors compile-time optional.
+> 
+> [...]
 
-Closes: https://github.com/thesofproject/linux/issues/4687
-Co-developed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Keqiao Zhang <keqiao.zhang@intel.com>
----
- drivers/soundwire/intel_ace2x.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+Here is the summary with links:
+  - [1/1] platform: add HAS_IOPORT dependencies
+    https://git.kernel.org/chrome-platform/c/3b89336c9ccf
 
-diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
-index f26d4e5c2c7a..4910cab22273 100644
---- a/drivers/soundwire/intel_ace2x.c
-+++ b/drivers/soundwire/intel_ace2x.c
-@@ -51,22 +51,12 @@ static void intel_shim_vs_set_clock_source(struct sdw_intel *sdw, u32 source)
- 
- static int intel_shim_check_wake(struct sdw_intel *sdw)
- {
--	u16 lsdiid = 0;
--	u16 wake_sts;
--	int ret;
--
--	/* find out which bits are set in LSDIID for this sublink */
--	ret = hdac_bus_eml_sdw_get_lsdiid_unlocked(sdw->link_res->hbus, sdw->instance, &lsdiid);
--	if (ret < 0)
--		return ret;
--
- 	/*
--	 * we need to use the global HDaudio WAKEEN/STS to be able to detect
--	 * wakes in low-power modes
-+	 * We follow the HDaudio example and resume unconditionally
-+	 * without checking the WAKESTS bit for that specific link
- 	 */
--	wake_sts = snd_hdac_chip_readw(sdw->link_res->hbus, STATESTS);
- 
--	return wake_sts & lsdiid;
-+	return 1;
- }
- 
- static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
