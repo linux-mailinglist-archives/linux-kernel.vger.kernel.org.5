@@ -1,105 +1,174 @@
-Return-Path: <linux-kernel+bounces-134998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D69BA89B9C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:10:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27EF89B9D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1358E1C2209F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:10:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27D05B20A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DB83A27E;
-	Mon,  8 Apr 2024 08:10:01 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874A74595C;
+	Mon,  8 Apr 2024 08:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aCjsAwN5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4B637714;
-	Mon,  8 Apr 2024 08:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B779644C71;
+	Mon,  8 Apr 2024 08:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563800; cv=none; b=FrUPMcbTjQyHxejL4wtXkMrlswtb5rc/14fOyGFJY0bwqEaJn24555RPsMx95SgxUAZhGj5E52yOzlQJB3JTwtYnZJXUw/Nx++0NFplQ1aKeJnjHP75jih4rUkUTv8oUqFuubLQR4kNVXjjFUTikp1xDRnUb33/VzJmWH/jBcFQ=
+	t=1712563806; cv=none; b=j/bn6K2b1hpOrnifKkysof6lV3sep8ASb1TGs+aKFdDHcomPV/kFr9jHjJwQJVnjBj+jEW6AI2dFOkbHCRIdOkf4cExwKI5T5qLwr6JDKZOGaJrPHgVKyIdNNU7uG7pb5MVyDigSM1HGxc4T9Umr2/eHMEepnwY/q6UlqNPJ+0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563800; c=relaxed/simple;
-	bh=pWtcmGsxyIKVFZBiCnrSuEFJOUkya1JEC0H7DAF8vzc=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type; b=ijHfR3o7kch56DXpkiqeUFZeoOrS25o69Rq7Nig67DHcuiWNCuSMXu1xjahoE2WHs/hbHMQ9Fvwi3Y1HmIiqz3IyoCvILnhXoiQvRLs/xRBNS+a+pYz0Yq1g3T2hosvz9T3FQfxXdpKszRP30hjjYbhJjNZWZFwUdiO3vKAbuTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VChWw6bXzztS00;
-	Mon,  8 Apr 2024 16:07:08 +0800 (CST)
-Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
-	by mail.maildlp.com (Postfix) with ESMTPS id 985B31401E9;
-	Mon,  8 Apr 2024 16:09:49 +0800 (CST)
-Received: from [10.67.121.2] (10.67.121.2) by kwepemd500014.china.huawei.com
- (7.221.188.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 8 Apr
- 2024 16:09:48 +0800
-Message-ID: <6613A639.1070009@hisilicon.com>
-Date: Mon, 8 Apr 2024 16:09:29 +0800
-From: Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+	s=arc-20240116; t=1712563806; c=relaxed/simple;
+	bh=F6xXyYbfZDX1T1rGuNQBL+pHxwN2Kf/niVJyhWfdoQU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=m6I7j8P5Jp1rcWqu9F0X5w5qOgHA5z53hEIhuFGcK/YRnruYQerqpixDOS2VW5ydncRgmYssR7JX3IPD/RpZZAAohUS1sENfmPFkbIB9/5VSuSlQo5T7i37yViakpkeImFZmZ4GmdRPN2Hfz2PDh3wROfiG7Z6Im4IDHHXxcnHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCjsAwN5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 364F8C433C7;
+	Mon,  8 Apr 2024 08:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712563806;
+	bh=F6xXyYbfZDX1T1rGuNQBL+pHxwN2Kf/niVJyhWfdoQU=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=aCjsAwN5fiGJQ66awNc9vEq9aXNcRHSp8sO5tM2TRsvsyLVwhsxAT9N82VNcy02Ja
+	 VgY17UNED+3hgLMj7M8i1qCK96KuA6dW3ryz9ssOi6JqKTIogKtmTAMtn6B/KxZA7e
+	 ucE2eVewBtuYhigcL949wiHKgPYcCNISbOeYklyvOUWYUpVptj3BGpmzmG64w4SYaU
+	 WbAFO4DmMWEuDi5NVFNz8qrQq9sSrLifLJKFkfRXoZlrwo9KuVN5D1BGeM9XGsqzM8
+	 K2J+70xJ8NdEPvw4wO1oCp99glFytyDsFTIyywmqP2cl3qr1w3CohaELUPEgSmfEtc
+	 bOeLFvepiJ6GA==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Mon, 08 Apr 2024 10:09:29 +0200
+Subject: [PATCH RFC bpf-next v6 4/6] bpf/helpers: mark the callback of
+ bpf_timer_set_sleepable_cb() as sleepable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Jiancheng Xue <xuejiancheng@hisilicon.com>, Alex Elder <elder@linaro.org>,
-	Peter Griffin <peter.griffin@linaro.org>, Yang Xiwen
-	<forbidden405@outlook.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] arm64: dts: hi3798cv200: fix GICR size, add cache
- info, maintenance irq and GICH, GICV spaces
-References: <20240219-cache-v3-0-a33c57534ae9@outlook.com> <171256140981.12523.5652563259173425537.b4-ty@linaro.org>
-In-Reply-To: <171256140981.12523.5652563259173425537.b4-ty@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd500014.china.huawei.com (7.221.188.63)
+Message-Id: <20240408-hid-bpf-sleepable-v6-4-0499ddd91b94@kernel.org>
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+In-Reply-To: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712563787; l=3425;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=F6xXyYbfZDX1T1rGuNQBL+pHxwN2Kf/niVJyhWfdoQU=;
+ b=r5nlEnLIcuh7ege37WQb6PvbynSZjHTTOu1bMBt4RMC5kwYK0dCnCNKZF/rGk7SLnVvuz4gTH
+ FlWCkTvU3IXA/m+YrkTpbYYyIJVmVn3Dw/np1qSvmAHxM7Hjdx/v1re
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-Hi Krzysztof,
+Now that we have bpf_timer_set_sleepable_cb() available and working, we
+can tag the attached callback as sleepable, and let the verifier check
+in the correct context the calls and kfuncs.
 
-On 2024/4/8 15:31, Krzysztof Kozlowski wrote:
-> 
-> On Mon, 19 Feb 2024 23:05:25 +0800, Yang Xiwen wrote:
->> The patchset fixes some warnings reported by the kernel during boot.
->>
->> The cache size info is from Processor_Datasheet_v2XX.pdf [1], Section
->> 2.2.1 Master Processor.
->>
->> The cache line size and the set-associative info are from Cortex-A53
->> Documentation [2].
->>
->> [...]
-> 
-> It's rc3 and almost one month after last ping/talk, so apparently these got
-> lost. I'll take them, but let me know if this should go via different tree.
-> 
-> 
-> Applied, thanks!
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 
-Thanks!
-Fine to me.
+---
 
-Best Regards,
-Wei
+no changes in v6
 
-> 
-> [1/3] arm64: dts: hi3798cv200: fix the size of GICR
->       https://git.kernel.org/krzk/linux-dt/c/428a575dc9038846ad259466d5ba109858c0a023
-> [2/3] arm64: dts: hi3798cv200: add GICH, GICV register space and irq
->       https://git.kernel.org/krzk/linux-dt/c/f00a6b9644a5668e25ad9ca5aff53b6de4b0aaf6
-> [3/3] arm64: dts: hi3798cv200: add cache info
->       https://git.kernel.org/krzk/linux-dt/c/c7a3ad884d1dc1302dcc3295baa18917180b8bec
-> 
-> Best regards,
-> 
+no changes in v5
+
+changes in v4:
+- use a function parameter to forward the sleepable information
+
+new in v3 (split from v2 02/10)
+---
+ include/linux/bpf_verifier.h |  1 +
+ kernel/bpf/verifier.c        | 13 ++++++++++---
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 7cb1b75eee38..14e4ee67b694 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -426,6 +426,7 @@ struct bpf_verifier_state {
+ 	 * while they are still in use.
+ 	 */
+ 	bool used_as_loop_entry;
++	bool in_sleepable;
+ 
+ 	/* first and last insn idx of this verifier state */
+ 	u32 first_insn_idx;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 00ac3a3a5f01..b75a8aca6ec9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1434,6 +1434,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	}
+ 	dst_state->speculative = src->speculative;
+ 	dst_state->active_rcu_lock = src->active_rcu_lock;
++	dst_state->in_sleepable = src->in_sleepable;
+ 	dst_state->curframe = src->curframe;
+ 	dst_state->active_lock.ptr = src->active_lock.ptr;
+ 	dst_state->active_lock.id = src->active_lock.id;
+@@ -2407,7 +2408,7 @@ static void init_func_state(struct bpf_verifier_env *env,
+ /* Similar to push_stack(), but for async callbacks */
+ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 						int insn_idx, int prev_insn_idx,
+-						int subprog)
++						int subprog, bool is_sleepable)
+ {
+ 	struct bpf_verifier_stack_elem *elem;
+ 	struct bpf_func_state *frame;
+@@ -2434,6 +2435,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 	 * Initialize it similar to do_check_common().
+ 	 */
+ 	elem->st.branches = 1;
++	elem->st.in_sleepable = is_sleepable;
+ 	frame = kzalloc(sizeof(*frame), GFP_KERNEL);
+ 	if (!frame)
+ 		goto err;
+@@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+ 
+ static bool in_sleepable(struct bpf_verifier_env *env)
+ {
+-	return env->prog->sleepable;
++	return env->prog->sleepable ||
++	       (env->cur_state && env->cur_state->in_sleepable);
+ }
+ 
+ /* The non-sleepable programs and sleepable programs with explicit bpf_rcu_read_lock()
+@@ -9497,7 +9500,8 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+ 		/* there is no real recursion here. timer callbacks are async */
+ 		env->subprog_info[subprog].is_async_cb = true;
+ 		async_cb = push_async_cb(env, env->subprog_info[subprog].start,
+-					 insn_idx, subprog);
++					 insn_idx, subprog,
++					 is_bpf_timer_set_sleepable_cb_impl_kfunc(insn->imm));
+ 		if (!async_cb)
+ 			return -EFAULT;
+ 		callee = async_cb->frame[0];
+@@ -16947,6 +16951,9 @@ static bool states_equal(struct bpf_verifier_env *env,
+ 	if (old->active_rcu_lock != cur->active_rcu_lock)
+ 		return false;
+ 
++	if (old->in_sleepable != cur->in_sleepable)
++		return false;
++
+ 	/* for states to be equal callsites have to be the same
+ 	 * and all frame states need to be equivalent
+ 	 */
+
+-- 
+2.44.0
+
 
