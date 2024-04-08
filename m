@@ -1,35 +1,46 @@
-Return-Path: <linux-kernel+bounces-135114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2018F89BB53
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:13:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E45D89BB54
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87BD5B230B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:13:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC79E28184E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB3B40866;
-	Mon,  8 Apr 2024 09:13:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930493FB83;
+	Mon,  8 Apr 2024 09:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sskiNhnO"
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCFC34CDE;
-	Mon,  8 Apr 2024 09:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B1234CDE
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567617; cv=none; b=ToV+d1F6kFmFC9jKQLWn+khNuUeCV9I+dUI6xNJu2IOTL1M2i4JOuzUrUV/IAja9UYoO0GGuyoJOJepuPymVsodwHrjbfxnZtJiUy7AzsqwfIb5F2OmSqHA+V4/PjL9sjJ830eQ0Z1puyGf1LMQWofa2ZsRythOfB6P17wyZj40=
+	t=1712567646; cv=none; b=Xy+2NTI2QnLEFOI274W+9DgedNvglpmdw38ms+/61dBTHuYIyv6W2HdA5RquvLab7f7gD2ML/hE6jybDI/3vqSF/d8a+oBC45Nu96MBRy8myIm3QyPT2rdeGgibStrdzC8CDt3Y1mRo/6t58YnSBJqUm8D712+ksF3aVZPF6x28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567617; c=relaxed/simple;
-	bh=yTqsvhBCkSc78Imgw8E+ZDntOPJsWlkyEET4fsR9Q6k=;
+	s=arc-20240116; t=1712567646; c=relaxed/simple;
+	bh=8+I33Q7W7iw315CemMmiCzk+goWkzaVeSs5DNZuhE5g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OBZRGBS3HCuXUGTq6fzhbI8OJUMjuNh3O4L+8aD47HGgZY1WTM/FBR8o4QbQATYi4d2h8j6pptUfdJ9b6M55bVtVwrT2aKxzKG/ew4n19QG5kIKHTyByRx4jysUQefj8yM/kOxAD/1MoerJSOAN1DKEXkhfyjdi7x0/qYKfttZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10ED0C433C7;
-	Mon,  8 Apr 2024 09:13:35 +0000 (UTC)
-Message-ID: <b7ed772f-f66b-48cf-a419-0826777df974@xs4all.nl>
-Date: Mon, 8 Apr 2024 11:13:34 +0200
+	 In-Reply-To:Content-Type; b=imZROLSlgV80Qwv5StBdpwEkoe3kFp+4mFR6qIaHc5QKl+HuTjqs3yEsJIUjA/75hA1/E1eZqUWrnVc1C2b2QmFDH6OEOj1hkL77UKFElVWq5Acv/yCE2Om/afPvBV62EnNA2hS6slvkcTlYYeubE4kH3w6kaFXsIYjTeAx6+0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sskiNhnO; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712567635; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=K6qk+9ggjcNMTTz30BtXi3bL/FtbPiUNAq+6RisDvL0=;
+	b=sskiNhnOELfdDhMzxz1CxYeQmMeTKW/ZTmd9BzUWBuaUz5N+AGe83ppE/SC001zvvErfghgujJpGL73i+hs4nRTyon+COn767kOJZKtsjxAdrM00fL0XMjSSrPwMYL3yOh0kmSIBCKob6WrxkdFRm/eFWrrSCu3I9IfgUm/pUcM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W46vhRi_1712567634;
+Received: from 30.97.56.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W46vhRi_1712567634)
+          by smtp.aliyun-inc.com;
+          Mon, 08 Apr 2024 17:13:55 +0800
+Message-ID: <8c811ea8-f4ea-4f0f-91f8-3bc798a19407@linux.alibaba.com>
+Date: Mon, 8 Apr 2024 17:13:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,119 +48,98 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: v4l2-tpg: Fix division by zero error in
- color_to_hsv
-Content-Language: en-US, nl
-To: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240301170838.57421-1-m.lobanov@rosalinux.ru>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20240301170838.57421-1-m.lobanov@rosalinux.ru>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
+To: Vlastimil Babka <vbabka@suse.cz>, Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
+ "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240320180429.678181-1-hannes@cmpxchg.org>
+ <20240320180429.678181-11-hannes@cmpxchg.org>
+ <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
+ <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 01/03/2024 18:08, Mikhail Lobanov wrote:
-> In the color_to_hsv function, division by zero is possible due to
-> attributes r,g,b are equal so diff_rgb = 0.
+
+
+On 2024/4/8 15:38, Vlastimil Babka wrote:
+> On 4/7/24 12:19 PM, Baolin Wang wrote:
+>> On 2024/3/21 02:02, Johannes Weiner wrote:
+>>>    
+>>> +	account_freepages(page, zone, 1 << order, migratetype);
+>>> +
+>>>    	while (order < MAX_PAGE_ORDER) {
+>>> -		if (compaction_capture(capc, page, order, migratetype)) {
+>>> -			__mod_zone_freepage_state(zone, -(1 << order),
+>>> -								migratetype);
+>>> +		int buddy_mt = migratetype;
+>>> +
+>>> +		if (compaction_capture(capc, page, order, migratetype))
+>>>    			return;
+>>> -		}
+>>
+>> IIUC, if the released page is captured by compaction, then the
+>> statistics for free pages should be correspondingly decreased,
+>> otherwise, there will be a slight regression for my thpcompact benchmark.
+>>
+>> thpcompact Percentage Faults Huge
+>>                             k6.9-rc2-base        base + patch10 + 2 fixes	
+>> Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
+>> Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
+>> Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
+>> Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
+>> Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
+>> Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
+>> Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
+>> Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
+>> Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
+>>
+>> I add below fix based on your fix 2, then the thpcompact Percentage
+>> looks good. How do you think for the fix?
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> Yeah another well spotted, thanks. "slight regression" is an understatement,
+
+Thanks for helping to confirm.
+
+> this affects not just a "statistics" but very important counter
+> NR_FREE_PAGES which IIUC would eventually become larger than reality, make
+> the watermark checks false positive and result in depleted reserves etc etc.
+
+Right, agree.
+
+> Actually wondering why we're not seeing -next failures already (or maybe I
+> just haven't noticed).
 > 
-> Fixes: 54fb15348385 ("[media] vivid: Add support for HSV formats")
-> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-
-With this patch I get this compiler warning:
-
-drivers/media/common/v4l2-tpg/v4l2-tpg-core.c: In function 'precalculate_color':
-drivers/media/common/v4l2-tpg/v4l2-tpg-core.c:1004:35: warning: 'h' may be used uninitialized [-Wmaybe-uninitialized]
- 1004 |                 tpg->colors[k][0] = h;
-      |                 ~~~~~~~~~~~~~~~~~~^~~
-drivers/media/common/v4l2-tpg/v4l2-tpg-core.c:1001:21: note: 'h' was declared here
- 1001 |                 int h, s, v;
-      |                     ^
-
-In any case, I think this patch is wrong.
-
-Based on this formula:
-
-https://www.rapidtables.com/convert/color/rgb-to-hsv.html
-
-The bug is in:
-
-        *s = aux;
-        if (!aux) {
-                *h = 0;
-                return;
-        }
-
-'if (!aux)' should be 'if (!diff_rgb)'.
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> index a366566f22c3..943aab3ad97c 100644
-> --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> @@ -597,6 +597,11 @@ static void color_to_hsv(struct tpg_data *tpg, int r, int g, int b,
->  		third = third_size * 2;
->  	}
->  
-> +	if (!diff_rgb) {
-> +		*s = 0;
-> +		return;
-> +	}
-> +
->  	aux *= third_size / 2;
->  	aux += diff_rgb / 2;
->  	aux /= diff_rgb;
-
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 8330c5c2de6b..2facf844ef84 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+>>           while (order < MAX_PAGE_ORDER) {
+>>                   int buddy_mt = migratetype;
+>>
+>> -               if (compaction_capture(capc, page, order, migratetype))
+>> +               if (compaction_capture(capc, page, order, migratetype)) {
+>> +                       account_freepages(zone, -(1 << order), migratetype);
+>>                           return;
+>> +               }
+>>
+>>                   buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+>>                   if (!buddy)
+>>
+>> With my fix, the THP percentage looks better:
+>>                         k6.9-rc2-base          base + patch10 + 2 fixes	+
+>> my fix
+>> Percentage huge-1        78.18 (   0.00%)       82.83 (   5.94%)
+>> Percentage huge-3        86.70 (   0.00%)       93.47 (   7.81%)
+>> Percentage huge-5        90.26 (   0.00%)       94.73 (   4.95%)
+>> Percentage huge-7        92.34 (   0.00%)       95.22 (   3.12%)
+>> Percentage huge-12       91.18 (   0.00%)       92.40 (   1.34%)
+>> Percentage huge-18       89.00 (   0.00%)       85.39 (  -4.06%)
+>> Percentage huge-24       90.52 (   0.00%)       94.70 (   4.61%)
+>> Percentage huge-30       94.44 (   0.00%)       97.00 (   2.71%)
+>> Percentage huge-32       93.09 (   0.00%)       92.87 (  -0.24%)
 
