@@ -1,124 +1,139 @@
-Return-Path: <linux-kernel+bounces-135693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08BE689C9CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:38:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F79189C9BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA99F28AA43
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:38:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C641C24639
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE84142E6C;
-	Mon,  8 Apr 2024 16:38:04 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31573142E8F;
+	Mon,  8 Apr 2024 16:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GCgEgaAZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3225E142645;
-	Mon,  8 Apr 2024 16:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103BE142E85
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594283; cv=none; b=ZEgsmDFh51gZEWRTtjdG40sOmOhYyi17hQs9L24JiFVCJRrOOzosySXJDQSsEd4LwCbhVDb+m8HyojHlqXp6aCs4zFICgaIjamkS+LdaQEzXbR0pXGK9qw0KcJ4mV1L7d+8J7zQnNTSxlxs2FPQgFSc0Z9OnsJYfaJOGf/4MKYA=
+	t=1712594103; cv=none; b=VGH4lclL+AzIQnNAb3V44DBmRjZiuUSxnueZTipWGIJ7BIdU70pFzEIY7n2UyE2geWVAF43YYC8S1ALEC13zn+YBjaWZZKiTOkS0kgXPDgLlL/5J5sqqwfCV64ifVeK7sknXJxSWGFPJSes9iVaUfZYp/xrdX0DTYqXQWsKj6Rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594283; c=relaxed/simple;
-	bh=tHxJ3krplcWnanw+f2gs+vuLQSJPq5GNtNrhO6CiBXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fqIWgjiVOb9mjkdblnx2OQ1EIOmCF2n4U+9I3A2mPr8KSGzCgs+dWdzYU4IQUq+1924BVGy5hKy6k8edX9s9HYF4BEA1gSmCBT+O+IGPdWbPratfjr5F04C/0Mdfa4I4gWz0l33y6z6isyiJEm3WVmLn+SNVv+uzTuUSHvd+JOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.2] (ip5f5af0ad.dynamic.kabel-deutschland.de [95.90.240.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2DF9361E5FE01;
-	Mon,  8 Apr 2024 18:37:23 +0200 (CEST)
-Message-ID: <bd4bdabc-2d83-4022-87f4-8c599009d9f5@molgen.mpg.de>
-Date: Mon, 8 Apr 2024 18:37:22 +0200
+	s=arc-20240116; t=1712594103; c=relaxed/simple;
+	bh=MwPlIh32++bFzV6p+9AvCTR3WEciP8K3VR75lLJlj6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GK+nE1rLM7cxF4/psDaFhFdyRNL1nWcp9scrRbQrBSwweaLgrOd8MmLJnLOmBiWvc74arkeV9VSIlXw9ktsGe7Ar72UVP27tk2WL23KPC5mhJn54MoTYWMSTKKr+MI43wPfimDJooQSiBQRQ5eanPRjCIk9DiiJzqE8wBmHfN38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GCgEgaAZ; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712594103; x=1744130103;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=MwPlIh32++bFzV6p+9AvCTR3WEciP8K3VR75lLJlj6U=;
+  b=GCgEgaAZIlAFM/JfLXxMN0e1qy7q3Z7zqGe3BFNn9K2c2opu5qKPIjzt
+   WEUoAjmzMp64laCPoqcBkYrsH93rG7zWbJuOzirBkkSaITC+VrjPBT+XL
+   79o18CsSLajfHeRPhYBjVaH1K2ev7kF1fETiNzFrLBbzBj3umA882A8m2
+   BKP09XK2ZaWpSOyRiK0GQA6SpDdeGwNTPNPOfibTtiS8ZyGGTcKEVZUfM
+   9cdBSWJkE6vCJaZM6lXyfHrhQsrRzdcLqP5fO7KA3vxGNOTimN2tgIBFQ
+   lV6UFocQ0pG5DIcNP521heSll+PipzWDcH4OZzCx6HfZ6miTh5dgoo27x
+   w==;
+X-CSE-ConnectionGUID: zDuqMu2PTEGDBgAEYRVX5w==
+X-CSE-MsgGUID: 1vxK5uwhRuWVfftkmYKQvQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19315636"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="19315636"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:35:02 -0700
+X-CSE-ConnectionGUID: 3aJmJTHiTKCgnbKS8eC6EA==
+X-CSE-MsgGUID: scKAYNiSRYObcLzhJQ55sg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="43113931"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:35:01 -0700
+Date: Mon, 8 Apr 2024 09:39:30 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Baolu Lu <baolu.lu@linux.intel.com>, Dimitri Sivanich
+ <sivanich@hpe.com>, Thomas Gleixner <tglx@linutronix.de>, Joerg Roedel
+ <joro@8bytes.org>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, David
+ Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>, Peter
+ Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, YueHaibing
+ <yuehaibing@huawei.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Steve Wahl
+ <steve.wahl@hpe.com>, "Anderson, Russ" <russ.anderson@hpe.com>,
+ jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2] iommu/vt-d: Allocate DMAR fault interrupts locally
+Message-ID: <20240408093930.45422bc1@jacob-builder>
+In-Reply-To: <BN9PR11MB527627689CCBBFEAFC6745568C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <Zfydpp2Hm+as16TY@hpe.com>
+	<BN9PR11MB52765241E3261B58BE93E8A88C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+	<ec0ff625-855c-4dba-b19f-db050671fbfb@linux.intel.com>
+	<BN9PR11MB527627689CCBBFEAFC6745568C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part
- of current TD ep_index 1 comp_code 1
-To: Mathias Nyman <mathias.nyman@linux.intel.com>,
- =?UTF-8?Q?Micha=C5=82_Pecio?= <michal.pecio@gmail.com>
-Cc: Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>
-References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
- <20240405113247.743e34b2@foxbook>
- <7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
- <20240406183659.3daf4fa0@foxbook>
- <c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
- <20240407142542.036fb02f@foxbook>
- <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Dear Mathias, dear Michał,
+Hi Kevin,
 
+On Mon, 8 Apr 2024 09:00:05 +0000, "Tian, Kevin" <kevin.tian@intel.com>
+wrote:
 
-Thank you very much for your assistance.
-
-
-Am 08.04.24 um 09:17 schrieb Mathias Nyman:
-> On 7.4.2024 15.25, Michał Pecio wrote:
->> This (and the absence of any earlier errors on the endpoint) looks
->> like the hardware may be confirming a "successful" transfer twice or
->> the driver may be processing one such confirmation twice.
+> > From: Baolu Lu <baolu.lu@linux.intel.com>
+> > Sent: Monday, April 8, 2024 3:22 PM
+> > 
+> > On 2024/4/8 14:54, Tian, Kevin wrote:  
+> > >> From: Dimitri Sivanich <sivanich@hpe.com>
+> > >> Sent: Friday, March 22, 2024 4:51 AM
+> > >>
+> > >> The Intel IOMMU code currently tries to allocate all DMAR fault
+> > >> interrupt vectors on the boot cpu.  On large systems with high DMAR
+> > >> counts this results in vector exhaustion, and most of the vectors
+> > >> are not initially allocated socket local.
+> > >>
+> > >> Instead, have a cpu on each node do the vector allocation for the
+> > >> DMARs  
+> > on  
+> > >> that node.  The boot cpu still does the allocation for its node
+> > >> during its boot sequence.
+> > >>
+> > >> Signed-off-by: Dimitri Sivanich <sivanich@hpe.com>  
+> > >
+> > > Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> > >  
+> > 
+> > Kevin,
+> > 
+> > Jacob has another proposal which shares the irq among all IOMMUs.
+> > 
+> > https://lore.kernel.org/linux-iommu/20240403234548.989061-1-
+> > jacob.jun.pan@linux.intel.com/
+> > 
+> > How do you like this?
+> >   
 > 
-> It's also possible this TD/TRB was cancelled due to the disconnect.
-> Could be that even if driver removes the TD from the list and cleans out 
-> the TRB from the ring buffer (turns TRB to no-op) hardware may have read
-> ahead and cached the TRB, and process it anyway.
-> 
->> [   94.088594] usb 1-2: USB disconnect, device number 8
->> [   94.089370] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
->> [   94.089403] xhci_hcd 0000:00:14.0: Looking for event-dma 00000001250310f0 trb-start 0000000125031100 trb-end 0000000125031100 seg-start 0000000125031000 seg-end 0000000125031ff0
->> [   94.089427] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 1250310f0 last_dma 1250310f0 status -115 from finish_td
->>
->> (I say "successful" but it really isn't - the device is no longer
->> listening. But there is no delivery confirmation on isochronous OUT
->> endpoints so the xHC doesn't suspect anything.)
->>
->> Could you try again with this updated debug patch to get more info?
-> 
-> Would also be helpful to add xhci dynamic debug and xhci tracing (two 
-> separate logs). These will show in detail everything that is going on.
-> 
-> Steps:
-> 
-> mount -t debugfs none /sys/kernel/debug
-> echo 'module xhci_hcd =p' >/sys/kernel/debug/dynamic_debug/control
-> echo 'module usbcore =p' >/sys/kernel/debug/dynamic_debug/control
-> echo 81920 > /sys/kernel/debug/tracing/buffer_size_kb
-> echo 1 > /sys/kernel/debug/tracing/events/xhci-hcd/enable
-> echo 1 > /sys/kernel/debug/tracing/tracing_on
-> < Reproduce issue >
-> Send output of dmesg
-> Send content of /sys/kernel/debug/tracing/trace
-> 
-> please copy the /sys/kernel/debug/tracing/trace file somewhere as soon
-> as possible after reproducing the issue. It grows fast.
+> I'm a bit concerning about the need of looping all IOMMU's in DMAR
+> irqchip mask/unmask handlers. this one sounds simpler to me.
+The difference is that with this patch, we still burn a few vectors on BSP
+and the leading CPU of each socket.
 
-For posterity I created Linux Kernel Bugzilla issue #218695 [1], and 
-attached the files there. Hopefully everything was captured, that you 
-need. The discussion could continue on this list, but do as it suits you 
-best.
+e.g. on sapphire rapids, we lose 8 vectors to DMAR fault IRQ on BSP.
 
+Thanks,
 
-Kind regards,
-
-Paul
-
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218695
+Jacob
 
