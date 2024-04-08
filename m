@@ -1,120 +1,137 @@
-Return-Path: <linux-kernel+bounces-135750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF4889CAC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:27:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C711A89CAC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09EF328AD8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:27:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D132B25B89
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265131448D2;
-	Mon,  8 Apr 2024 17:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857A8143C7D;
+	Mon,  8 Apr 2024 17:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V0Owr5Gd"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="DrXmJZ+v"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A255143C4F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46ED5142915;
+	Mon,  8 Apr 2024 17:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712597215; cv=none; b=NY7wZYPNvaPdXWLzqUnprd+ObDQICQvaEkqkYyi2sumdqAR8XwNaawHFigk535ihTTcisMGmqNQlWnYpDypFrZpu9bk5q5W0FMMtfLHbt/xTVjYvtoDkRNW9rved0zgUo+Jg5O1It9QIepNRJ6eW77D3ZRD0qe4UIv1Ep0ApYgw=
+	t=1712597249; cv=none; b=PFPoKiMcZ02W0LYXCTWFyzV0SnOrsDRUZMn7Em2qQc/HmKyOi5TJP0ZsM4e7LtEPms41KG5XpEVLIpLWNbgdN3JOQy/eiNqzPRiw3J7LcwceWRPzfiI4dQnDV2xg2u1IUm1YI7YyTYBURb9rsnlokeQg6FkDJwXJwAhVKUGb9Wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712597215; c=relaxed/simple;
-	bh=di1fZE/NdPgQEly4hs4vKPLsKw0xKFpHQOpERMLkIqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aNqYGNA2aulH1fZ//NAuYDoNBJn2bmrXhKmm4ZKMuElvjQcvEh6h19ck1P86Zrh+WpZtgIbvoFl8/4R7apDhni1durZmJXkzFoJjiORjBDeGB8s1CpGblLZ5lIbm1akbc3YL2p9ax18n1LWb3auNLGCp55fiBOXQLqss8zZd//o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V0Owr5Gd; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5171a529224so1402824e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:26:52 -0700 (PDT)
+	s=arc-20240116; t=1712597249; c=relaxed/simple;
+	bh=ycEuq9XAYdjVqKjZxvsc1TztcD1hPiLm41bxXcMv5Ho=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q29KI0EruEKLi2GH23TFPM2FDaxmvI9M+hyrkVFcmbZhB3kzoXUdfLsR8MTOpDfhmLbT2T3jGIkbfQFUP7ow24xoUpJ14BnNZY5h3TrYBEVI3O8OqvdSATaQRDShA/Tm6PxESkdlNxWYz/nSar2+PNCSJ/sq7/uKjBY2SUjj+M0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=DrXmJZ+v; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e455b630acso4850865ad.1;
+        Mon, 08 Apr 2024 10:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712597211; x=1713202011; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YnWxjGpHsquU6yu3iiYYdxaEux1iqzEpGys5Zu0Xiy4=;
-        b=V0Owr5GdYDgKciyt+03vDpMucyvb9nGRXNJGDeKX99C4Mr2pajPzGWvh+1aH1huDFc
-         Sehj8/3rgW66T9hIruGPDaKZtVXLJiFYDCEtSdKCEW+7JGDK1WN1VeCYB634SQ8tpgAi
-         EBRxL4/RFA0CTgK4+wfDGQqx9E+Sw7XGDf0mdTT2FEvOE6+GBAzC9T48tZknpymfmXin
-         eTNPS9/eJAHBfKEH2Ocq4jfPMYXT7KVT+4q8l6Ex4vy10I2paChTTP14KN1Vw0Fg34HT
-         sXIlBnsT30SEGV1SttOga/kSVRexBVUi7oSWNP7N56CoCtQcvn6uRg3hPXgDFjisKXdf
-         eX6A==
+        d=googlemail.com; s=20230601; t=1712597247; x=1713202047; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pOjeDfz9E4F+jzvWRXwUZXbYmoM8nTnojNtQIe47BUs=;
+        b=DrXmJZ+vl/pr8I8yyh4TeoI4BvhFJeHbJDRArp0Gmn+8r3kt3hvFW+x7Btz9stRgBJ
+         6ekmB8D6FV4Hl7itWZh08cXTGZxD/IjrBVPBgZvBkKhASlPTXRQbbX+38VtJD2C8OEiU
+         dVZbF7CYunrrxjTA/Z44Dm2IOEVyJuoxi95TJNBa6IiNAWHNEG20cckzcaKFzLYPybxq
+         5vH0Dnffn2j5nvAo3AogW7QhFalQJogWtwW/0/xu3Eb6+uUaIrqqQtQ4sTcc4lcfyqrj
+         bQekUHzYAdvUwL4/gk1rzd9YcC9Ws7+33f4SOhnCvymwHt5UYdHCAa4mbRO7dFAav4nY
+         GsRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712597211; x=1713202011;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YnWxjGpHsquU6yu3iiYYdxaEux1iqzEpGys5Zu0Xiy4=;
-        b=R7gr0PZQiBC5+h8saUFG46QxRS24iRSqWxs6aJH1O6tTGyF+GCZK5E5aTKzFGeB+3h
-         rGRJ+xJaqHAsmfEcLm399gMiH6C60L/yVhaZvYHtjk+kFxzemLujILFgUDVwqdYRtKWn
-         y9cVUE6aoTDgnz8WdSaZc10DcGfehwlINDmynWd4pCsiKsAk2fNE5hNoJrrXHGR2xOqF
-         5yQlQGC/YXxg6xSPJ0q4ircsQep2XoQ/hNxG0LnCduvQ3OnUULwHSef7Tq4MdBMeuF+e
-         ANPxlbxRQHaWwqPaKZRBBp69cL46cKI+R6CHediaAHHnKkvT0z6s/lYZUAuxnvrjxLyn
-         vz/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7weWjHdGq3qkLY8GCjeY3Tlv/Aevj/8tdiJdi1qyJo7iGLypgeXY68zgw857JUIu9s1t4k+XpsUe2ZRc83GSBzWipTDHr/d4gaNZl
-X-Gm-Message-State: AOJu0Yz7OUgcAJnG6GIwRCcNXO5ReuYvxmfsTzckRGE/cbsV/YfF6mcH
-	c22xhIwUFS4VyzySVSeB4rafO0wbI63k2i8QJ0IbvsQzIWp2SB6/6ej2oUv/Qs+E1cIfQr1wVJh
-	zaZo=
-X-Google-Smtp-Source: AGHT+IEnJUAo3DBmpf41CIoTlZWQyHmNHUulRSi6MOsB78hKpauHf1ARPbItv9kKkKMQ0/XCs5RmLA==
-X-Received: by 2002:ac2:545b:0:b0:516:c3e1:15c5 with SMTP id d27-20020ac2545b000000b00516c3e115c5mr5703479lfn.69.1712597211312;
-        Mon, 08 Apr 2024 10:26:51 -0700 (PDT)
-Received: from [172.30.204.25] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v22-20020a056512349600b00515cbf19fe2sm1247477lfr.142.2024.04.08.10.26.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 10:26:50 -0700 (PDT)
-Message-ID: <794f7e3c-6467-4da1-bc9f-3853459bbd78@linaro.org>
-Date: Mon, 8 Apr 2024 19:26:49 +0200
+        d=1e100.net; s=20230601; t=1712597247; x=1713202047;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pOjeDfz9E4F+jzvWRXwUZXbYmoM8nTnojNtQIe47BUs=;
+        b=lYWx1MELgIAZI3rMBYkZLRr+JRpq/gPU5ZQzs7Npj6C3lOeid9BJWhL0b1ymYJMOsM
+         KUzuXyq329FvhOErk9pOmPgQyt4XIGizIXw6rMnRiGLok4kICPd6eQtNymFwC5UgbGXw
+         GyOrj98D6yzx6j1l0aUGNTjXuotLTsksfxSXeZepsOD7SQ0cLBbYa7tmhtoeyG89ABdE
+         ldYCEbNvXLBeP/BlwqRMW9lmdYNklrvjoL1xKRPVk50TZ/790PRQGhLiaih7GyRAmWFd
+         oJ1l12Tl06taPYFw2jD888i931+YFbb/JT1vrSz4MKJfVKifnERZGTMXSyxARcL8PD3x
+         wuVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhnJOYOiMIvn+LyY8YqO6txEt2kpVZU5KQcnOXKCB4tTSbqKPBPwsLE45PCcI3C0Fb0rfCmKqgOLl4YFy9Vm9fhXKC35gBTn0i6i4fbz7tpWwWVNL1RK7uryDeCAClfuY3b0YnzSGrGA==
+X-Gm-Message-State: AOJu0YzHsVDWJPYAE19KmzxwsjZlPUTTcIk5TSHY4oBsalM6mektbVgw
+	cznebOinOvMVN9GhL/YG4FZvbgsrdUU41sBH/ZJdZFKRX1z2Chg8vv+N6KUSs8qlZE+hW7nAiLd
+	aNb8NFQH3dQCWs6ZyXKywqh+nIrA=
+X-Google-Smtp-Source: AGHT+IF8o23by08vrZR2GEbNpBf73nw0zhurJP4dptDChRyKgoq8H4Ozt0jNcKGtNTZll6pvAIltKtH5CZD77UZgbDw=
+X-Received: by 2002:a17:902:c946:b0:1e4:24bc:48e with SMTP id
+ i6-20020a170902c94600b001e424bc048emr3348565pla.22.1712597247611; Mon, 08 Apr
+ 2024 10:27:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom,pmic-gpio: Allow gpio-hog
- nodes
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240408-qcom-pmic-gpio-hog-v1-0-f61fc5323110@z3ntu.xyz>
- <20240408-qcom-pmic-gpio-hog-v1-1-f61fc5323110@z3ntu.xyz>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240408-qcom-pmic-gpio-hog-v1-1-f61fc5323110@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com>
+In-Reply-To: <20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 8 Apr 2024 19:27:15 +0200
+Message-ID: <CAFBinCD=xWuhoX9cWcKU3bSGcsDShKbxnMVTdyfD84AFZQn8aw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: fix S4 power-controller node
+To: xianwei.zhao@amlogic.com
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
+	Jerome Brunet <jbrunet@baylibre.com>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Apr 8, 2024 at 5:26=E2=80=AFAM Xianwei Zhao via B4 Relay
+<devnull+xianwei.zhao.amlogic.com@kernel.org> wrote:
+>
+> From: Xianwei Zhao <xianwei.zhao@amlogic.com>
+>
+> The power-controller module works well by adding its parent
+> node secure-monitor.
+>
 
-
-On 4/8/24 18:39, Luca Weiss wrote:
-> Allow specifying a GPIO hog, as already used on
-> qcom-msm8974-lge-nexus5-hammerhead.dts.
-> 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Please add a Fixes tag here with the original commit where the
+incorrectly placed node was added.
+> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
 > ---
->   .../devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml          | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-> index a786357ed1af..510a05369dbb 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-> @@ -424,6 +424,10 @@ patternProperties:
->               $ref: "#/$defs/qcom-pmic-gpio-state"
->           additionalProperties: false
->   
-> +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+>  arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/=
+dts/amlogic/meson-s4.dtsi
+> index ce90b35686a2..24d00dce4969 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+> @@ -65,10 +65,13 @@ xtal: xtal-clk {
+>                 #clock-cells =3D <0>;
+>         };
+>
+> -       pwrc: power-controller {
+> -               compatible =3D "amlogic,meson-s4-pwrc";
+> -               #power-domain-cells =3D <1>;
+> -               status =3D "okay";
+> +       sm: secure-monitor {
+> +               compatible =3D "amlogic,meson-gxbb-sm";
+> +
+> +               pwrc: power-controller {
+> +                       compatible =3D "amlogic,meson-s4-pwrc";
+> +                       #power-domain-cells =3D <1>;
+> +               };
+In Documentation/devicetree/bindings/firmware/amlogic,meson-gxbb-sm.yaml
+the hierarchy is:
+firmware {
+  secure-monitor {
+     power-controller {
+       ...
+     }
+  }
+}
 
-I see a couple bindings do this, but I'm not sure if we want two
-allow two styles for no reason.. Rob?
-
-Konrad
+Is this patch correct (and the documentation needs to be adapted) or
+is the documentation correct (and this patch has to be adapted)?
 
