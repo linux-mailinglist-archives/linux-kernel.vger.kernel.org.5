@@ -1,242 +1,153 @@
-Return-Path: <linux-kernel+bounces-135971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EB189CE60
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:17:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265E089CE67
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:28:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D00928310C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:17:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E24F1F2357C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE7D149C70;
-	Mon,  8 Apr 2024 22:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A48A149C78;
+	Mon,  8 Apr 2024 22:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HQn0DlXC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2tsU0bRX"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bX5ftAe6"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041C0148FE3;
-	Mon,  8 Apr 2024 22:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F346814884C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 22:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712614640; cv=none; b=Dgq3iD0b8qGzpG4z16HPnkhttgeUHEnwfqJ8B0wGFeSdg3Oes77Zn6x0LR3IK7aYbMCDaHeyzDXCUmsiLhKLyIb+1Prdbhg2VyCyh+EW2NsyHQm3LQAr3SWCiayk/Soa93NiVFi4J61jGO3Rg67BW4PSjCimn7i1ipapwd0QiCA=
+	t=1712615308; cv=none; b=KbFV2wnt057/+WVMuEMeH0U7c1uygWPyqLWlYpD5wlinEF64uZs0JjklGr0XJMOw7Kru/3V6UDbodA2HFAVI8jqmRzRtBm2WOgqIhFNky+WkI4Ds6jQq2twluLfu8o9+KKq3TMFhtkA9EO8LCMmWeUnASgyzKrOZSh0j9C0tBIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712614640; c=relaxed/simple;
-	bh=whQdxiq0EcWkxnnWUTp+6cxyZsM42KKWCB84lKtU8d0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rkEUb+8Ky+hkONSJRcWrbYbAI13xziCnozYZs/WPxmWBiDzDpFmf8mD83XIPZ7lia+lC7IrDf6XnvBCxNPF7JwccVRtwBnUm5LJfX4EfdIgXhzMz3eR4j4jC64lzrObgBVhzqiYHoCI1qD6mTmkj+9aY8jJRNYm3xvnOiDEICCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HQn0DlXC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2tsU0bRX; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712614636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mmbn5DsA9ubK+0jZ4PQnylXNHi12qhjspWzNa9zKp8Q=;
-	b=HQn0DlXCU8VSOIC30XSbmso5sXg0l225Uki7Vl+M20aIEvF9KkWjo6In6VrbRrfdmijDUz
-	OscXcKvbdP24s7cumZJt+yanfArOKRDxAjB7TRxVu7GAyyen9SgfpgpwMjdPrKInsAOiaV
-	350rax9nHGT+Dq8zbJkXQMIjzLQ+FLpNUJCQBenPLrGGnFCceoZSNteKDlmD+kJO2c+2YI
-	vRnE8+YX7KHtuhg79ZQpc0aW7I1UcwlSSGdAkudwVnX/Smp5ZLTYWr5Q25dvIbnzel5K5H
-	nWvcigoxriS6yD0jTWzzUBQBMcuJWZvtJ/qs6yZKOfrBh2xSmXovPwg0YGExew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712614636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mmbn5DsA9ubK+0jZ4PQnylXNHi12qhjspWzNa9zKp8Q=;
-	b=2tsU0bRXVb9M89ctOJ/7UxL8bF9gx83mqL04zlDseQBw8ToliZXoI1z0RZwNkNhBVIDhuZ
-	cybOcN/doI2DqRDg==
-To: Oleg Nesterov <oleg@redhat.com>, Dmitry Vyukov <dvyukov@google.com>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
- Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kasan-dev@googlegroups.com, Edward Liaw
- <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
- check_timer_distribution()
-In-Reply-To: <20240408184957.GD25058@redhat.com>
-References: <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx> <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx> <20240406150950.GA3060@redhat.com>
- <20240406151057.GB3060@redhat.com>
- <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
- <20240408102639.GA25058@redhat.com> <20240408184957.GD25058@redhat.com>
-Date: Tue, 09 Apr 2024 00:17:15 +0200
-Message-ID: <87il0r7b4k.ffs@tglx>
+	s=arc-20240116; t=1712615308; c=relaxed/simple;
+	bh=ujKTRH85yegZIc7K7n1h7eI+5YSehLJ3E5k5mZXbXqM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oo/zrYUbgpo9995Io5Svt5XuxmA089/8VIMyDHRMhO72cJqXShbcq4YXmadcivI+P2ovafTIGJk/CysswICPmyvJ+km+p6W/La+v6eDy1jA1FrxM+lxp359UYlBr0Mz/m/AVwC0UGuz9D6jy6MDYHBVybXrupyt/7QHklUP6rEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bX5ftAe6; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e67286bf5so1831310a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 15:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712615305; x=1713220105; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QGCVo4CTXBLwTYH+iiI/NIF2pRRvzU2RZ76rFTzzLEo=;
+        b=bX5ftAe6e8woZ2ekjwPeA7L3gpUiLLIpol10mUBYBhUqbbtQmS+slvIxpafGcn5dQM
+         JpqEciYZCBhrZkWqQfzV1gFP9iS719QI9uS8604hVzwtMT/TwHm98zCAzfcWMYxrhZhp
+         912yLJtuFKSUv1DxfPGvqil01bQcXUOzYoaYjN8wlaNivSTVKqx/l92frZp4hAExRg84
+         YPBhP11aBIUFxDwHq0VpGZAE6HXUWxRzpxI+35m8IUJLPGvhoyN89rz7Q5rfBuarjSuY
+         DoFKfES7Zk3fbG/HhxrpT8tiTYvpzMkKVucR6DmI3Nh3X8n75skVqeJzPxpaUfYB3Yru
+         iF7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712615305; x=1713220105;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QGCVo4CTXBLwTYH+iiI/NIF2pRRvzU2RZ76rFTzzLEo=;
+        b=m/v5dguDEvJ7nP6PBeIxEHENaTzbOX2CiklM6PdYb+MuNIE/HkBTCoNmH26Ax2QU3x
+         oW6N+8sIBlEq25mQXQXy1PvpTuqHzBHX2ycf3Pjrx1Luqp8WbNYhw90RM1WymS14GT1O
+         Alq+NV0AWu+IoVuIPDjJDxF7tOtK7CnAwRljYOYOn8qU3cH8dD14rsCRyR0pP6kD3qsb
+         8N/qdnJsAgOPlf9yo7mjh/xEgsqgKswm72W4m7lAMckVEe0l0K/Gd67bsll3xP8aaaFP
+         w3yxrQWapsxs9RupGjUftfXmxNnNBD8wSA3TDIKFc12MoSi+MrcHkv8DFLQPffJQxSlS
+         UfLA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9bYOEcQESel9LlueerCUunI6MV4Z5elHgyPqeRrKNG4KtC4d1dfoKHsGDuHOHICubPmYO620R2BAcD7nkB0AbVWuLLjXxT6FQIJbz
+X-Gm-Message-State: AOJu0YyRLodmQbsgdWx2ayscSXiTV+7zLnHVz+VXlR2F37bnn8uxQy2W
+	/EU6FMEQu6F4QMYv+HfegW2d12xZ8xtJMOfx50V/s92HkfXOGuDLAswQoAI5oU17Tv+1RaJQcrL
+	i9n4tDAN2hfMzuNfAXLe6fZnQ4y0=
+X-Google-Smtp-Source: AGHT+IGEgHggUKRJS6kEApnOO0TdYyJ8yYoQMQXYMTy+aSEO7rQgl7Xwa4KDmwUZYs+d9EYIdW7qHtqfjtn0F9QggOw=
+X-Received: by 2002:a50:9fc9:0:b0:56d:f29d:c80d with SMTP id
+ c67-20020a509fc9000000b0056df29dc80dmr762183edf.5.1712615304926; Mon, 08 Apr
+ 2024 15:28:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240404233736.7946-1-lyude@redhat.com> <20240404233736.7946-2-lyude@redhat.com>
+In-Reply-To: <20240404233736.7946-2-lyude@redhat.com>
+From: Dave Airlie <airlied@gmail.com>
+Date: Tue, 9 Apr 2024 08:28:11 +1000
+Message-ID: <CAPM=9twXXx9c9O7GFBHMhANOuMqt_tUKr97-2cPCwzZoJFtH0g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/nouveau/kms/nv50-: Disable AUX bus for
+ disconnected DP ports
+To: Lyude Paul <lyude@redhat.com>
+Cc: nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	Karol Herbst <kherbst@redhat.com>, Danilo Krummrich <dakr@redhat.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 08 2024 at 20:49, Oleg Nesterov wrote:
-> To me this test should simply do
+On Fri, 5 Apr 2024 at 09:37, Lyude Paul <lyude@redhat.com> wrote:
 >
-> 	ksft_test_result(!ctd_failed, "check signal distribution\n");
-> 	return 0;
+> GSP has its own state for keeping track of whether or not a given display
+> connector is plugged in or not, and enforces this state on the driver. In
+> particular, AUX transactions on a DisplayPort connector which GSP says is
+> disconnected can never succeed - and can in some cases even cause
+> unexpected timeouts, which can trickle up to cause other problems. A good
+> example of this is runtime power management: where we can actually get
+> stuck trying to resume the GPU if a userspace application like fwupd tries
+> accessing a drm_aux_dev for a disconnected port. This was an issue I hit a
+> few times with my Slimbook Executive 16 - where trying to offload something
+> to the discrete GPU would wake it up, and then potentially cause it to
+> timeout as fwupd tried to immediately access the dp_aux_dev nodes for
+> nouveau.
+>
+> Likewise: we don't really have any cases I know of where we'd want to
+> ignore this state and try an aux transaction anyway - and failing pointless
+> aux transactions immediately can even speed things up. So - let's start
+> enabling/disabling the aux bus in nouveau_dp_detect() to fix this. We
+> enable the aux bus during connector probing, and leave it enabled if we
+> discover something is actually on the connector. Otherwise, we just shut it
+> off.
+>
+> This should fix some people's runtime PM issues (like myself), and also get
+> rid of quite of a lot of GSP error spam in dmesg.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-Right.
 
-> but I am not familiar with tools/testing/selftests/ and I am not sure
-> I understand the last email from Thomas.
+For the two patches,
 
-The discussion started about running new tests on older kernels. As this
-is a feature and not a bug fix that obviously fails on older kernels.
+Reviewed-by: Dave Airlie <airlied@redhat.com>
 
-So something like the uncompiled below should work.
-
-Thanks,
-
-        tglx
----
---- a/tools/testing/selftests/timers/posix_timers.c
-+++ b/tools/testing/selftests/timers/posix_timers.c
-@@ -184,80 +184,83 @@ static int check_timer_create(int which)
- 	return 0;
- }
- 
--int remain;
--__thread int got_signal;
-+static pthread_t ctd_thread;
-+static volatile int ctd_count, ctd_failed;
- 
--static void *distribution_thread(void *arg)
-+static void ctd_sighandler(int sig)
- {
--	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
--	return NULL;
--}
--
--static void distribution_handler(int nr)
--{
--	if (!__atomic_exchange_n(&got_signal, 1, __ATOMIC_RELAXED))
--		__atomic_fetch_sub(&remain, 1, __ATOMIC_RELAXED);
-+	if (pthread_self() != ctd_thread)
-+		ctd_failed = 1;
-+	ctd_count--;
- }
- 
--/*
-- * Test that all running threads _eventually_ receive CLOCK_PROCESS_CPUTIME_ID
-- * timer signals. This primarily tests that the kernel does not favour any one.
-- */
--static int check_timer_distribution(void)
-+static void *ctd_thread_func(void *arg)
- {
--	int err, i;
--	timer_t id;
--	const int nthreads = 10;
--	pthread_t threads[nthreads];
- 	struct itimerspec val = {
- 		.it_value.tv_sec = 0,
- 		.it_value.tv_nsec = 1000 * 1000,
- 		.it_interval.tv_sec = 0,
- 		.it_interval.tv_nsec = 1000 * 1000,
- 	};
-+	timer_t id;
- 
--	remain = nthreads + 1;  /* worker threads + this thread */
--	signal(SIGALRM, distribution_handler);
--	err = timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
--	if (err < 0) {
--		ksft_perror("Can't create timer");
--		return -1;
--	}
--	err = timer_settime(id, 0, &val, NULL);
--	if (err < 0) {
--		ksft_perror("Can't set timer");
--		return -1;
--	}
-+	/* 1/10 seconds to ensure the leader sleeps */
-+	usleep(10000);
- 
--	for (i = 0; i < nthreads; i++) {
--		err = pthread_create(&threads[i], NULL, distribution_thread,
--				     NULL);
--		if (err) {
--			ksft_print_msg("Can't create thread: %s (%d)\n",
--				       strerror(errno), errno);
--			return -1;
--		}
--	}
-+	ctd_count = 100;
-+	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id))
-+		return "Can't create timer";
-+	if (timer_settime(id, 0, &val, NULL))
-+		return "Can't set timer";
- 
--	/* Wait for all threads to receive the signal. */
--	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
-+	while (ctd_count > 0 && !ctd_failed)
-+		;
- 
--	for (i = 0; i < nthreads; i++) {
--		err = pthread_join(threads[i], NULL);
--		if (err) {
--			ksft_print_msg("Can't join thread: %s (%d)\n",
--				       strerror(errno), errno);
--			return -1;
--		}
--	}
-+	if (timer_delete(id))
-+		return "Can't delete timer";
- 
--	if (timer_delete(id)) {
--		ksft_perror("Can't delete timer");
-+	return NULL;
-+}
-+
-+static bool check_kernel_version(unsigned int min_major, unsigned int min_minor)
-+{
-+	unsigned int major, minor;
-+	struct utsname info;
-+
-+	uname(&info);
-+	if (sscanf(info.release, "%u.%u.", &major, &minor) != 2)
-+		ksft_exit_fail();
-+	return major > min_major || (major == min_major && minor >= min_minor);
-+}
-+
-+/*
-+ * Test that only the running thread receives the timer signal.
-+ */
-+static int check_timer_distribution(void)
-+{
-+	const char *errmsg;
-+
-+	if (!check_kernel_version(6, 3)) {
-+		ksft_test_result_skip("check signal distribution (old kernel)\n");
- 		return 0;
- 	}
- 
--	ksft_test_result_pass("check_timer_distribution\n");
-+	signal(SIGALRM, ctd_sighandler);
-+
-+	errmsg = "Can't create thread";
-+	if (pthread_create(&ctd_thread, NULL, ctd_thread_func, NULL))
-+		goto err;
-+
-+	errmsg = "Can't join thread";
-+	if (pthread_join(ctd_thread, (void **)&errmsg) || errmsg)
-+		goto err;
-+
-+	ksft_test_result(!ctd_failed, "check signal distribution\n");
- 	return 0;
-+
-+err:
-+	ksft_print_msg(errmsg);
-+	return -1;
- }
- 
- int main(int argc, char **argv)
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_dp.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> index fb06ee17d9e54..8b1be7dd64ebe 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> @@ -232,6 +232,9 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
+>             dpcd[DP_DPCD_REV] != 0)
+>                 return NOUVEAU_DP_SST;
+>
+> +       // Ensure that the aux bus is enabled for probing
+> +       drm_dp_dpcd_set_powered(&nv_connector->aux, true);
+> +
+>         mutex_lock(&nv_encoder->dp.hpd_irq_lock);
+>         if (mstm) {
+>                 /* If we're not ready to handle MST state changes yet, just
+> @@ -293,6 +296,13 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
+>         if (mstm && !mstm->suspended && ret != NOUVEAU_DP_MST)
+>                 nv50_mstm_remove(mstm);
+>
+> +       /* GSP doesn't like when we try to do aux transactions on a port it considers disconnected,
+> +        * and since we don't really have a usecase for that anyway - just disable the aux bus here
+> +        * if we've decided the connector is disconnected
+> +        */
+> +       if (ret == NOUVEAU_DP_NONE)
+> +               drm_dp_dpcd_set_powered(&nv_connector->aux, false);
+> +
+>         mutex_unlock(&nv_encoder->dp.hpd_irq_lock);
+>         return ret;
+>  }
+> --
+> 2.44.0
+>
 
