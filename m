@@ -1,170 +1,273 @@
-Return-Path: <linux-kernel+bounces-134908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79EED89B88C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 753E989B890
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:37:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DF0C1C21CB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:36:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98F931C22148
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174822B9C7;
-	Mon,  8 Apr 2024 07:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CDB25778;
+	Mon,  8 Apr 2024 07:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z1D1bkMW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="eb86c3M7"
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08412576E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D4836AFB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712561805; cv=none; b=cWlwFgIgM/w1gh9MNQsLJMROujq77S07Hb7SPduu3D3j3QfcRlux++qjasp8Vpk8SnMy5ELIJwUU4hrt7SQS4cC//doL9y+v0NpiAllqeEIxKrec2Bw089OjmWEnTEJ4sQ14FN87mngxQA2RUVjE4dVjUaVazlWDIjaX+Zln/gs=
+	t=1712561835; cv=none; b=JBYnEkOO6t8Jx+lSEdelatSxlwJxuLtZlj6C9JRkoJ1xT5U+mAYlA3lkt85NV4zHt/EsVUDlv/6GrlNTeMfjj06YzsZQYpq4tlRn8UQItQWU7uTpt36RJl4OMEGuVIs5A5iDvBFxLpofBlsW6TGWbwUUEkNu7DgvE3qHzNawg14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712561805; c=relaxed/simple;
-	bh=Px5BRqX0d1S4QkhBS9TZflqU7FFIrXPMnhSiTWMdLx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IfhyZ9MowL7SBnYVRGGWeAjnYsuEnYJ8QDqG0IxOTjmzf+t0cQUOBI+K8oJxGcav1/Q7qYnU1nlSRV1r/Zn0NOPf0QOCeo0HNdr0/B6boRcIC3Y+eiF/yisyYxhGSSRCqBHNZYuFiWb/EAZK2m1GDvFGHLmRX3v2pe5izhrkGlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z1D1bkMW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712561802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=si7yJK42Z2mZYAabXm2bLCAnwyhavot+uGq3e+m8mfg=;
-	b=Z1D1bkMW96r5iPhCfTmVwYKnUZ/5MBCu4qiKVdU4Jq9bTPuIE47ox6lJkCJIIIJuKfdI1F
-	b+wbfGGYO1oUkBiavU41gARjJLX1I9ZL7UIy4l121mheT1K8dIQtrxSWFX2nqVI0Gn0PHq
-	XCiZ9uBjkkp0y1wgVpVf0rirWS1ooyE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-pDxCeuseOzeCSO20OfkUpg-1; Mon, 08 Apr 2024 03:36:40 -0400
-X-MC-Unique: pDxCeuseOzeCSO20OfkUpg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4154b265b93so18307015e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:36:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712561799; x=1713166599;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=si7yJK42Z2mZYAabXm2bLCAnwyhavot+uGq3e+m8mfg=;
-        b=T6lgV7JHKVUIBGr/MwVcBzyHSIJwc3AeAps6aO+xtHnvbt7N32rGcCrW2C+MqqnDfL
-         TCg5DsIk0oK19sLS4IwMAPbMXH69Ybp8zET7zDC3zDAtaYhjW2JXbw6WPndOyL0kPxJ2
-         s5NfsnkGJ4tLgr5Y48p/BUZuqqC9+Kwl3waNXxLB6SXlu3v3ZxCRnuEqXM5zsI/4Za6D
-         L3eraw+zX6jnTKyzPhyiIFhhcu+USDMy7g55QDq0buYgEmP2VnSWz/4oFTChI+DLdYZD
-         dlrYg2RHAjqtDkOqtI7vlD6W7XElpuI8GCD/iSd/k58dv2ky1D4GydXQvsG0Gc0VOFvu
-         NP7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVJhMJMNRLwvhY9BkxNHMlsXsP36bejlLJzzweqp0ZqFEEv6oPfCxLCqJUEqUKTLJT0ds8pU2vBznlFEf9Hze5j35X+dPN7pMwlgt87
-X-Gm-Message-State: AOJu0Yz+vm/6nTWvVFJ6gDoFzdz5WKl5AGgOo0mBLZH+hLFhKbQ6Tac9
-	W7KPnhI8rIx50f/32nMUkjZJBit8ZgVXqn/faRvnH6Zuqbdpx16rntFve7fPe4NOXmuqmJMCS6n
-	sSNFZmQIDS06MGpU24A8XGhBQd+l1FIyHAwBQKg/4jwMrW3cY+c5SG72k1KwJtXw5P4NLpw==
-X-Received: by 2002:a05:600c:154c:b0:414:610b:13c3 with SMTP id f12-20020a05600c154c00b00414610b13c3mr5692676wmg.27.1712561799413;
-        Mon, 08 Apr 2024 00:36:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHMF/mJT7VmyvOfZP2wNJanQ7CydvAoWGwctBFe1iIdlIRCOMjrgJPMDYTawpM1YL4HfZjXbw==
-X-Received: by 2002:a05:600c:154c:b0:414:610b:13c3 with SMTP id f12-20020a05600c154c00b00414610b13c3mr5692661wmg.27.1712561799039;
-        Mon, 08 Apr 2024 00:36:39 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c718:1300:9860:66a2:fe4d:c379? (p200300cbc7181300986066a2fe4dc379.dip0.t-ipconnect.de. [2003:cb:c718:1300:9860:66a2:fe4d:c379])
-        by smtp.gmail.com with ESMTPSA id c2-20020a05600c0a4200b004162bac1393sm12370535wmq.43.2024.04.08.00.36.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:36:38 -0700 (PDT)
-Message-ID: <fb525c6b-4284-4cb2-b3e1-20275fc3c4f3@redhat.com>
-Date: Mon, 8 Apr 2024 09:36:37 +0200
+	s=arc-20240116; t=1712561835; c=relaxed/simple;
+	bh=tqjwV+JDRwoTV4kKpmTw+sycK/8TTzP8wfXnwKx+/Rk=;
+	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
+	 Date:Cc:References:To; b=A0lOGzrOAxY34vZNEoRYoQaV1Fpsz+7HUJWTdCFdDcUmRe4duvd6c6Op2BYtaRGPcy+08Wqq1ltspkXgX+A33x0akL4NN98Pfh4WjwL7bkm77M0bCyTxTSVXvlITJie8+CZHS6vIIHmF9bt4rh7MaVor50o87t/tAk6Zwhe7sVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=eb86c3M7; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712561821; bh=XCQn5D2df8HC5dzPf32j41h6MB+QW4OTGuJoooVhLpc=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=eb86c3M7iCDh1rTwMPu+O53C9cC8gjRnFytPCz5+y6+pTCSxVmSsVYE1mnHPJx9It
+	 mrTYHGWbPKPPrTSnorzwgCtgoyG5o3pevIOV+Enfo/zda7f1FAuq7h2mhOySrsJ5VO
+	 oCNYgVlepb1ND/3E1ev+gp37M7S657DTqlM+Xd7U=
+Received: from smtpclient.apple ([219.141.235.82])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 9370704C; Mon, 08 Apr 2024 15:36:55 +0800
+X-QQ-mid: xmsmtpt1712561815tr819vea5
+Message-ID: <tencent_459BC09115173E0624A4A0F19D2F43704F05@qq.com>
+X-QQ-XMAILINFO: MyIXMys/8kCtlgG7Ygfvzh+AL8VVzyWhZSnZowU8V3XrXi3UlrROSxg5qNDyxE
+	 06nDHjonLffCrAFF/78r/HochHUntjXhwB7lMZd5Jex438cQUCHQY08ksjZBtMUeFasQVgY25DaA
+	 GHgz9fF4U0xBh7BDnSlBntV0sngMzHS7sErh9hhG4Q5LnrXAWEcxWeFR9YjVkTc/mwWhZDUMJU6n
+	 uLkOa8iP+UVi17NgEF+PBxVCuDYk/fdUs0mQQNUdsqhD/dZ4tl9ga0Qg3P+a/0zM4IEm/zTBVf/U
+	 H1x+lmQmwao5hFYm0j0CMYoI3od2NEEb1lJTksSvCC1365LBwNtF6uSgdlSm9E6V3n1LfZEW2Gi0
+	 C6GjPn8y3TdWcnU/1dcjIWA38beQCwf2Ul/u9EovD5O12nFjHoW0fPXauIz9VfJT5GDC0FrXQ7AF
+	 U8xScZuNotRjCH0qTemceOBbny482dEmoKy5I5NoQRxIQmyqxJGW0cXDUJtnqr6YZCWFkAZfUR4U
+	 xePLy0s0/Jq9ppMGvOG3dtXKg2x+Td41ZxYXRmPqYN20kpx2phWRJKYAoKngxlU76SLIFelSTgWV
+	 frgJ0iJgWuehP0sePnrz1dFn/pIUiYNylxQr4aQJoO+gOmjeoRv2av2tYzjJTtHyCw7QhhwCDP60
+	 T69gL7oKslpzTtnc793p2Esd83KZQ0PgpoulbT5AIlLdt7gw5je3RnfeeeqrM5HUvB6mDlnP0fpM
+	 wIz8HrL34jtvv5NTIdmlhTG7LJd2gSABY6eZ2adPvSCVQ2d210dfb4noJFo9g8fAX2ckzjm0UzDf
+	 OE8wErXN2fiTonzEtLoncH4yc7nN1vvBYUqkCiuUJw2Owc4TDfUC8/RfMZL6DVDkbJm00UU2bWr0
+	 9pI85KOLzico8ppL1nfp4CIquo2oxnGFHN1dtwCM1JSSbjQU4HXTUoTMzNzycvI8mocRQAh8eTDL
+	 RJNMoXXd8vTvUMp98M/5iJw+Lkx3F6yQvyrgjy/rXKT3YQecndkJQCNKYxP+6S
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] mm: replace set_pte_at_notify() with just
- set_pte_at()
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Nicholas Piggin <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>,
- Atish Patra <atishp@atishpatra.org>, Sean Christopherson
- <seanjc@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
- linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20240405115815.3226315-1-pbonzini@redhat.com>
- <20240405115815.3226315-5-pbonzini@redhat.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240405115815.3226315-5-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v3 2/2] riscv: T-Head: Test availability bit before
+ enabling MAE errata
+From: Yangyu Chen <cyy@cyyself.name>
+In-Reply-To: <CAEg0e7h0F_LaeMoS6Co1UjgLM6ML8SXtTfHW5+OQS6yedjdZPQ@mail.gmail.com>
+Date: Mon, 8 Apr 2024 15:36:44 +0800
+Cc: ajones@ventanamicro.com,
+ alex@ghiti.fr,
+ alistair.francis@wdc.com,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ bjorn@kernel.org,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Conor Dooley <conor@kernel.org>,
+ cooper.qu@linux.alibaba.com,
+ dbarboza@ventanamicro.com,
+ Qingfang Deng <dqfext@gmail.com>,
+ eric.huang@linux.alibaba.com,
+ heiko@sntech.de,
+ linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ philipp.tomsich@vrull.eu,
+ samuel.holland@sifive.com,
+ zhiwei_liu@linux.alibaba.com,
+ Guo Ren <guoren@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+X-OQ-MSGID: <347E5675-332A-4AF4-8A16-64FBB65445E1@cyyself.name>
+References: <20240407213236.2121592-3-christoph.muellner@vrull.eu>
+ <tencent_CF232CDF85208DF6BFA3076E73CC4E087306@qq.com>
+ <CAEg0e7h0F_LaeMoS6Co1UjgLM6ML8SXtTfHW5+OQS6yedjdZPQ@mail.gmail.com>
+To: =?utf-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On 05.04.24 13:58, Paolo Bonzini wrote:
-> With the demise of the .change_pte() MMU notifier callback, there is no
-> notification happening in set_pte_at_notify().  It is a synonym of
-> set_pte_at() and can be replaced with it.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
 
-A real joy seeing that gone
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+> On Apr 8, 2024, at 14:00, Christoph M=C3=BCllner =
+<christoph.muellner@vrull.eu> wrote:
+>=20
+> On Mon, Apr 8, 2024 at 3:58=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> =
+wrote:
+>>=20
+>> On 2024/4/8 05:32, Christoph M=C3=BCllner wrote:
+>>> T-Head's memory attribute extension (XTheadMae) (non-compatible
+>>> equivalent of RVI's Svpbmt) is currently assumed for all T-Head =
+harts.
+>>> However, QEMU recently decided to drop acceptance of guests that =
+write
+>>> reserved bits in PTEs.
+>>> As XTheadMae uses reserved bits in PTEs and Linux applies the MAE =
+errata
+>>> for all T-Head harts, this broke the Linux startup on QEMU =
+emulations
+>>> of the C906 emulation.
+>>>=20
+>>> This patch attempts to address this issue by testing the MAE-enable =
+bit
+>>> in the th.sxstatus CSR. This CSR is available in HW and can be
+>>> emulated in QEMU.
+>>>=20
+>>> This patch also makes the XTheadMae probing mechanism reliable, =
+because
+>>> a test for the right combination of mvendorid, marchid, and mimpid
+>>> is not sufficient to enable MAE.
+>>>=20
+>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>> Signed-off-by: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
+>>> ---
+>>>  arch/riscv/errata/thead/errata.c | 14 ++++++++++----
+>>>  1 file changed, 10 insertions(+), 4 deletions(-)
+>>>=20
+>>> diff --git a/arch/riscv/errata/thead/errata.c =
+b/arch/riscv/errata/thead/errata.c
+>>> index 6e7ee1f16bee..bf6a0a6318ee 100644
+>>> --- a/arch/riscv/errata/thead/errata.c
+>>> +++ b/arch/riscv/errata/thead/errata.c
+>>> @@ -19,6 +19,9 @@
+>>>  #include <asm/patch.h>f
+>>>  #include <asm/vendorid_list.h>
+>>>=20
+>>> +#define CSR_TH_SXSTATUS              0x5c0
+>>> +#define SXSTATUS_MAEE                _AC(0x200000, UL)
+>>> +
+>>>  static bool errata_probe_mae(unsigned int stage,
+>>>                           unsigned long arch_id, unsigned long =
+impid)
+>>>  {
+>>> @@ -28,11 +31,14 @@ static bool errata_probe_mae(unsigned int stage,
+>>>      if (arch_id !=3D 0 || impid !=3D 0)
+>>>              return false;
+>>>=20
+>>=20
+>> I would raise a little concern about keeping this "if" statement for
+>> arch_id and imp_id after we have probed it in this CSR way. I would =
+like to
+>> remove it and move the CSR probe earlier than RISCV_ALTERNATIVES.
+>>=20
+>> I added CC to guoren for more opinions.
+>>=20
+>> Even T-Head C908 comes in 2023, which supports RVV 1.0 and also keeps =
+MAEE.
+>> But it also supports Svpbmt, and we can perform the switch by =
+clearing the
+>> MAEE bit in CSR_TH_MXSTATUS in M-Mode Software.
+>>=20
+>> Moreover, T-Head MAEE may not be removed in the future of T-Head =
+CPUs. We
+>> can see something from the T-Head C908 User Manual that adds a =
+Security bit
+>> to MAEE. So, it might used in their own TEE implementation and will =
+not be
+>> removed.
+>>=20
+>> However, C908 has arch_id and impid, which are not equal to zero. You =
+can
+>> see it from the C908 boot log [2] from my patch to support K230 [3]. =
+So, if
+>> we have probed MAEE using CSR, you confirmed that this bit will also =
+be set
+>> in the C906 core. We can only probe it this way and no longer use =
+arch_id
+>> and imp_id. And if the arch_id and imp_id probes get removed, we =
+should
+>> also move the csr probe earlier than riscv alternatives.
+>=20
+> We keep the probing via arch_id=3D=3D0&&impid=3D=3D0 because we had =
+that
+> already in the kernel and don't want to break existing functionality.
+>=20
+> =46rom the discussions that we had about the v1 and v2 of this series,
+> my impression is that we should use DT properties instead of probing
+> arch_id and impid. So, if C908 support is needed, this should probably
+> be introduced using DT properties. The logic would then be:
+> * if arch_id =3D=3D 0 and impid =3D=3D 0 then decide based on =
+th.sxstatus.MAEE
+> * else test if "xtheadmae" is in the DT
+>=20
+>=20
 
--- 
-Cheers,
+I know about it, and Conor also mentioned adding this property to DT a =
+few
+months ago. I agree with this at that time. But for now, you have found =
+the
+T-Head document description about this, and we can probe MAE using CSR =
+even
+on C906. I think only probing in CSR will be a better way to do that. It
+can maintain compatibility with some early cores, such as C906. And will
+also support some new cores with non-zero arch_id and impl_id but may =
+have
+MAE enabled, such as C908.
 
-David / dhildenb
+For future concerns, T-Head said from their documentation that
+"Availability: The th.sxstatus CSR is available on all systems whose
+mvendorid CSR holds a value of 0x5B7." [1] and this extension is frozen =
+and
+stable. I think it's okay to have MAE errara for some cpus whose impl_id
+and arch_id are non-zero. And T-Head may have used this for their TEE, =
+so
+it might never be removed.
+
+Since it might never be removed, if some vendor uses it and makes it =
+hard
+to run the mainline kernel since it requires setting CSR in M-Mode =
+software
+or changing the DT, they may be hard to change for some security reasons
+for TEE, I think it's not right.
+
+I'm also waiting for Conor's opinion about this.
+
+[1] =
+https://github.com/T-head-Semi/thead-extension-spec/blob/master/xtheadsxst=
+atus.adoc
+
+Thanks,
+Yangyu Chen
+
+>=20
+>=20
+>>=20
+>> [1] =
+https://occ-intl-prod.oss-ap-southeast-1.aliyuncs.com/resource//1699268369=
+347/XuanTie-C908-UserManual.pdf
+>> [2] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
+>> [3] =
+https://lore.kernel.org/linux-riscv/tencent_D1180541B4B31C0371DB634A42681A=
+5BF809@qq.com/
+>>=20
+>> Thanks,
+>> Yangyu Chen
+>>=20
+>>> -     if (stage =3D=3D RISCV_ALTERNATIVES_EARLY_BOOT ||
+>>> -         stage =3D=3D RISCV_ALTERNATIVES_MODULE)
+>>> -             return true;
+>>> +     if (stage !=3D RISCV_ALTERNATIVES_EARLY_BOOT &&
+>>> +         stage !=3D RISCV_ALTERNATIVES_MODULE)
+>>> +             return false;
+>>>=20
+>>> -     return false;
+>>> +     if (!(csr_read(CSR_TH_SXSTATUS) & SXSTATUS_MAEE))
+>>> +             return false;
+>>> +
+>>> +     return true;
+>>>  }
+>>>=20
+>>>  /*
+>>=20
 
 
