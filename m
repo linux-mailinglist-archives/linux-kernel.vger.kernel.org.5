@@ -1,115 +1,107 @@
-Return-Path: <linux-kernel+bounces-135576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7220D89C7D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:10:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A14E189C7DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43301C2243C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:10:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D9002847E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE1813FD80;
-	Mon,  8 Apr 2024 15:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1239D13F45D;
+	Mon,  8 Apr 2024 15:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bDBnwG0i"
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZtetUDyW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6961CD21
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F2413F44D;
+	Mon,  8 Apr 2024 15:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589009; cv=none; b=P9FB9qhezL+iawdF+8YAEZu33EMvhrK+u9+QHbKIAyfkYpj+hCaEdnhy9S/YoWv+kvO1vq8+vccUQXzFLwXzezzMKw6yjtRz24yAn7hiNEWzbwnhbN6YxkApSYmtG4NN8rh6TWZupyi1WTPIb9w/gIU5GK989CkfQkloF1lnk8Y=
+	t=1712589022; cv=none; b=LZZopLIjCstQ4qqWbX6QtiZ8lQq4CEQCHF19qvzWHrlxrKBYMLDH8mienoeLCssJ5GJvlUdFyB5cv1lOUdtS1y+7koYHsDQ/sTSkS/XIMPRpl9PbuHvPBTuT/PCAmvLjMAIDiv5TjAKPpWwq+HLKvnGBN1INESweqFLmW5QcWec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712589009; c=relaxed/simple;
-	bh=O1GMpv6U3bMpWegdyahz7zYDEcDjAVdDHz0mxZQn8uA=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=stwRLoRtrB4hYOsErSsAOWgdoul/IGVyR1Crjv2MAudslbmVm74KcNKe6NtZIs+mEPac85HmTemfOYzA+/Ha9X2qZ+bjf37nRGWRYTAWtUGExYg2u2c46xsm2lADZ/LUdAlbIcJy3PqsjGNWUatAguiF4YKqULX84mZpWcCSOrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bDBnwG0i; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4147de378b9so23066875e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712589006; x=1713193806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yi/uhABnlcTj8gbmFZY62AYsFukjoKviscCUG5WiDB4=;
-        b=bDBnwG0i8F+UFm+KU/IxneJ1To3SidWDc8exyhNYmUlMql/8909k0wSl9L7JA/BZeB
-         1ixzAPbwmmJGtF6aUfR8PMluPzV6erhQC6wvTOnZY78KezrQq4A2Tj189o33k6TeDSn+
-         cWqZKIetB0+x1WnOQiWHGJbsrA3Tco9L14NLHn+ZMrfEYTOF/PWtfCmGz4dZe5TJyXb4
-         DGItmu4gAEwmO6DoRxHApMIC5kXZEh34uJAv5J/TPcFep33QxA9jHWtwbFhczaXaHXIB
-         ozRZka7UT/BSTjYInHGSn9JiLcOe4aj//WxYAhNPdZTnVoXkpjPTIGci+1F6MW1sdJf0
-         K1pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712589006; x=1713193806;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yi/uhABnlcTj8gbmFZY62AYsFukjoKviscCUG5WiDB4=;
-        b=Olq/lNscziFcAkO+Z9fnH5CnDCHMCGbrcz7QANuvqHtgFnoi9wIWrtI+KOn4mRjBae
-         mdM5gZOd8OhV6AvN7PSEVrC/urKIe5xtvKD+fVxH+RgWdR5gjNNKr7bdHXV+IInCbRRK
-         F4Z9C/TEfkd2ND0foDLOGWk7OY6pXlBtJmw4OuS9nbmb7YkgEgK1/VFhbb5yRLICd/qG
-         25P04ccvxWwDxZPwUHxfsHtzgduRi/qrKI9zdlJhQavv0dn9r3gWJRhU3NcK9w4T+xoc
-         wEztBOBybmNpq7dZZEBuAyyUsCE5ENjMrGk34/DczjDKAUrTlL3ybNHmAJ/EX17Hmzv8
-         KypQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1LoRsI48i9+TUGE1UBAKJ7xLeC7u5CNwm71n5Oa9IXqXzT68NN6vbVxqouGmVOrJ8a9xlU01X6nX2dX5aWrd4eL8v4dWIXZhiSvsn
-X-Gm-Message-State: AOJu0YzymFcdVofnBr0TG6RRG4cjGaB2CEX3eUgM28iT2SB7QHN48sQ+
-	vypjUiLE2m5yI4sqHRg3Xoke7lQh+70ihjWN3f/KcDuu+8EzffOKE3hGrp69QuerNAFpev4n8OR
-	LhMfosjT3MQ==
-X-Google-Smtp-Source: AGHT+IEj6+9O6AsYPRrE4sDXih3UjVlzc8R/gTi9MA/Rcp6Esze+SIQ0OaemxfVs/sEeTnu5OTi30izBkY9Zgg==
-X-Received: from szatan.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2d83])
- (user=panikiel job=sendgmr) by 2002:a05:600c:3ca6:b0:414:1390:57a2 with SMTP
- id bg38-20020a05600c3ca600b00414139057a2mr24707wmb.4.1712589006133; Mon, 08
- Apr 2024 08:10:06 -0700 (PDT)
-Date: Mon,  8 Apr 2024 15:10:02 +0000
+	s=arc-20240116; t=1712589022; c=relaxed/simple;
+	bh=mnk5b7SUUNV6f4nzqYibLo6ZQdrF+bcVjTjj/K4cdaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MFJheE/wzJgZs2955DbNXfNPNnIWodtoY3VeFnXzya/xGpervo8V//V/0ZDuGRH5Rhw7NH5UgG3RhZoDY4dW5HZB+gm3qu4rDBoDv3XK0nBCDcfKUOJpd+mMGGccwrwPEdage9VGSY43zNeu7EddYrCMiI8IRyNEz0zuwzfAAPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZtetUDyW; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712589020; x=1744125020;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mnk5b7SUUNV6f4nzqYibLo6ZQdrF+bcVjTjj/K4cdaY=;
+  b=ZtetUDyWYXu6eQve7C+DMHSKj8PCZAHhoz6Rt3rhGGM2h1wLhPXQLYxi
+   XrrrLJ/f468+X/QIWeQsPbtbWOeQP+2eS+7YTYRNx5T+zP3A/CeylQmDM
+   njTVnmoYJN2X1Xy9aewJ61KigrwVY5fikJCueRc37U6UJf+9/lPzUmub7
+   AqbyYWnDTH7OutCo7nbZ/65WVUTLSxfn9tbelOsG71wQMUVhmRgtOE7kx
+   2NyhGhGUSGAKObPTpWfoF3eTQvlY+obE9EfinBwpqctccUUbLM1pL4p1E
+   paTlFonYzyLcylEcAPENBnURT8csdZhk3omt8k7ipeQKhlVao5zvQ2eNv
+   Q==;
+X-CSE-ConnectionGUID: CMp8XJpQQA6kYvUrcCezlQ==
+X-CSE-MsgGUID: NLwcRJT+QW6+kFXIW83Duw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7728586"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="7728586"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:10:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915368199"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="915368199"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:10:16 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rtqdR-00000002Yg8-1ePm;
+	Mon, 08 Apr 2024 18:10:13 +0300
+Date: Mon, 8 Apr 2024 18:10:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Guanbing Huang <albanhuang@outlook.com>
+Cc: gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
+	linux-acpi@vger.kernel.org, tony@atomide.com,
+	john.ogness@linutronix.de, yangyicong@hisilicon.com,
+	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, lvjianmin@loongson.cn,
+	albanhuang@tencent.com, tombinfan@tencent.com
+Subject: Re: [PATCH v5 0/3] serial: 8250_pnp: Support configurable reg shift
+ property
+Message-ID: <ZhQI1RgQtQuctUuL@smile.fi.intel.com>
+References: <PSAPR06MB4952B86F64A6CEB853114EA4C9002@PSAPR06MB4952.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240408151002.2283184-1-panikiel@google.com>
-Subject: [PATCH 14.5/16] media: vpif_display: Use pad variant of dv timing
- subdev calls
-From: "=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
-To: kieran.bingham@ideasonboard.com, mchehab@kernel.org, 
-	hverkuil-cisco@xs4all.nl, tharvey@gateworks.com, 
-	niklas.soderlund@ragnatech.se, prabhakar.csengg@gmail.com, 
-	charles-antoine.couret@nexvision.fr, thierry.reding@gmail.com, 
-	jonathanh@nvidia.com, skomatineni@nvidia.com, luca.ceresoli@bootlin.com
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	chromeos-krk-upstreaming@google.com, 
-	"=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PSAPR06MB4952B86F64A6CEB853114EA4C9002@PSAPR06MB4952.apcprd06.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Use the pad variant for all (s|g|query)_dv_timings subdev calls, which
-includes a pad argument.
+On Mon, Apr 08, 2024 at 11:36:21AM +0800, Guanbing Huang wrote:
+> From: Guanbing Huang <albanhuang@tencent.com>
+> 
+> The 16550a serial port based on the ACPI table requires obtaining the
+> reg-shift attribute. In the ACPI scenario, If the reg-shift property
+> is not configured like in DTS, the 16550a serial driver cannot read or
+> write controller registers properly during initialization.
+> 
+> To address the issue of configuring the reg-shift property, the 
+> __uart_read_properties() universal interface is called to implement it.
+> Adaptation of PNP devices is done in the __uart_read_properties() function.
 
-Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
----
- drivers/media/platform/ti/davinci/vpif_display.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Seems okay to me now,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/drivers/media/platform/ti/davinci/vpif_display.c b/drivers/med=
-ia/platform/ti/davinci/vpif_display.c
-index 02ede1fe12cb..76d8fa8ad088 100644
---- a/drivers/media/platform/ti/davinci/vpif_display.c
-+++ b/drivers/media/platform/ti/davinci/vpif_display.c
-@@ -934,7 +934,7 @@ static int vpif_s_dv_timings(struct file *file, void *p=
-riv,
- 	}
-=20
- 	/* Configure subdevice timings, if any */
--	ret =3D v4l2_subdev_call(ch->sd, video, s_dv_timings, timings);
-+	ret =3D v4l2_subdev_call(ch->sd, pad, s_dv_timings, 0, timings);
- 	if (ret =3D=3D -ENOIOCTLCMD || ret =3D=3D -ENODEV)
- 		ret =3D 0;
- 	if (ret < 0) {
---=20
-2.44.0.478.gd926399ef9-goog
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
