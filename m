@@ -1,103 +1,124 @@
-Return-Path: <linux-kernel+bounces-135861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4602789CC28
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC4F89CC2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:05:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD391C22120
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:03:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F329F1C221D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA208144D39;
-	Mon,  8 Apr 2024 19:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88337144D3A;
+	Mon,  8 Apr 2024 19:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a9pnsVpg"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rhSntl8j"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4361420D8
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 19:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692AAF51B
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 19:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712603013; cv=none; b=VsW4mD++tfUsGnQeKmWtPIeX8qEpArQr9c9Bf7oudHBeBQpwxIIOPw2DJNsHJaOrh2UCmioWwBrtk7jdYHOPCZmEIZUYjCz71t9ftiQeNw+LTOAKYnDtx2vAJguI8lSlH2rZc8QsB73Wr3eMr6nt6c1Z+xLG24EcaiV7+9xSVKo=
+	t=1712603142; cv=none; b=lL1twnSL+bPdVhOpxg4JbVxN320I32JodPSZoD35zUVCM7hAi0ZCEZKbG+ds+rOOQVJe1cFdptsqZnJxG16O3RzISO92b+YDpPakxL08T1A4rNgJ3W+WooKQlrvXAHG+KoRUorUuiNx2+AJnqwxooZLXEXZwyR/x9a6jwC7+uwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712603013; c=relaxed/simple;
-	bh=0HC5mYPHz5gVrurl6w8jOAjdNy8i7VxysBO3RpMEL/s=;
+	s=arc-20240116; t=1712603142; c=relaxed/simple;
+	bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k3Pn1p/ZrCbgO+OuMgWnnnzwyk+GZ69snassvg2kaoNoaZtAOCs1U0dLIIZPWOlingfLC3srjO5ffPfoMd8aT1S857KUxJRQ0r7xhe2ITp+Bhk4m8Nmn7El9E5aRxZwJcXA6eNyWZsGehQQG1kKXwN1ylvKFrfJ+U9utsSQb4FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a9pnsVpg; arc=none smtp.client-ip=209.85.128.54
+	 To:Cc:Content-Type; b=gDgVWqlc/iHMvbJkzjpeYooCsdxm0l8aoYbkooHnRQCVgHnIdshdWdgoysyS/fqdvJmjw4KPTR0Pz17Y1R49oYmYKBp3l7c2pXm62osWGNw9dEHEhNCgyS3s2cs4J3BNzO9uY+MJHxn7bQEAc+c7FgkFwsmxJofqzzTvTuRH/L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rhSntl8j; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41641a889ccso12835e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 12:03:31 -0700 (PDT)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36a0c8c5f18so27795ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 12:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712603010; x=1713207810; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712603140; x=1713207940; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0HC5mYPHz5gVrurl6w8jOAjdNy8i7VxysBO3RpMEL/s=;
-        b=a9pnsVpgg8Mk2yMnmZVUEnrdl4DdUCNE3o7lfskWNlCNK6+7zLoNisztIHiUhXTrM7
-         ITVh5QMijQaIYHLsKPcbdc1+cRL1BjhLts/NhlxUOw3Mw3kfHvfu2dOzDp6tsFnj9oO/
-         p/ZeFrb8CHHNk/QkHuWF6jjWxOAWLykgPVM2nveaxAnYhXv1zVIvZ648YZ9SpsgjOGb6
-         s3gRWYJkuvL4ld3Z4r5UFf1jwl8dyglGl1WmkcCZdNwA7ukDXYMnpJGNvTl4AL7xwwfc
-         MgSovzJ9GttpdG06K/I0HET6lBGyl0zfbsb4mrSahENloM+3GDdqMI9WXc9kJ0TzGmNo
-         CcnA==
+        bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
+        b=rhSntl8jtQv6pcCjzJaiPNUmQ0hI6KkwSjcc8FfoI2EN/r9zIJxAF+gFO8Umr7umv4
+         PoBqFzjSjBKwZgSk34sv8szOPMDmzpXmLh5/lt2PN3+bRhT3ZtXqsyKYxFbG37b7n8lZ
+         Z1E1BwuI8jAnMua43tHBpA+8+gH4YKZ4Imhb4U5zMcPJ4KtRzAqwWer/RyeEnHIOV/np
+         qhyzuL/i1sScRSGgudr7emjjLkZxwTWbyAZr8Hu/z8Cprb1RYcJANfgi7+5Z8h5zU3xr
+         Ue8+j9fbnr8y/EDoO/89+lAnI9tNTqD0lrejwD/kxi1zqIUrFrix+wK7XWFE/lrbK2t0
+         1BeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712603010; x=1713207810;
+        d=1e100.net; s=20230601; t=1712603140; x=1713207940;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0HC5mYPHz5gVrurl6w8jOAjdNy8i7VxysBO3RpMEL/s=;
-        b=vstvKpeNscQMlGMySVWeCfbhgaXVwi+x8LgfWeTPO8AqGzNjv2C5Y+lD8Ic+szE4zt
-         EhWMWsEiJize0bUb40emYLh06RMkP1tOfy03ibs2LThHKVEUlgqHGeR2TzIYWoD9RhBi
-         zekDRyJR+g/1xO+U/TMTyYa8ON8MdXI690USyQqS0JHVcEUBKHmZQm5CieERQdMjry2/
-         tXmbQsA4VXJ5kbUG8L5a1So4aHyyKSNFSTG0jTf7gFfikNSEQ2uueNAInYiXguLJMYcg
-         dtDDU35OW4yaZ6muzVyWTlh4ea+yBwpgMB0pOKkn9Ujw93KgAPMPH0wzy2/Bo3D/43iZ
-         YNbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWn61lz0dJ4jh6cBxGEw+XgoPbpGeXzLvaK0TPyWlA/08a7VdoBmzLKXYg8/3mgnZ3vPdFh+Kno9buVDo9uQmlfeWRQEqZA0bntjFJk
-X-Gm-Message-State: AOJu0Yxjzhr+TNQYy3PA+bjGUkhZSobeTXK8Jvh5mzIYRWVIb2NmO+d/
-	yjLp0PhCfH4cZnQBECm/v4ZN0tWLqmL7SenjuCpo5RDuNRFppvLaK9fv6evBf1Hf4ltc2HrFWkr
-	KFfGgKe/9pxHqkgHAiM8twJx40dsiApqCam0=
-X-Google-Smtp-Source: AGHT+IHjsReJwNnZwcwrj3ergbDNsoJTfOha25CxepNLW75WyxCSLMT2cP9EuT5lY9Lza3LOIM0cQDaEt8uc2pT6tK0=
-X-Received: by 2002:a05:600c:4f8a:b0:416:6d90:38fe with SMTP id
- n10-20020a05600c4f8a00b004166d9038femr22455wmq.4.1712603009646; Mon, 08 Apr
- 2024 12:03:29 -0700 (PDT)
+        bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
+        b=J4BLNoR3gh63Teq0qmwNS6L3zc7mkjSrWX+FEUkhXX/ANtVF6G0B5xm95KGnuomcTi
+         cCGf+RV56TaSBgyrv9xSJDKMBtBTVflNlPOfEcJo0o2/zexUqqhTRbhk7eYjCgiSmJ1d
+         T5ZUhiCl6IehmMd48R1Zh4IFPq2cgzAT5X+wNxzgVBZMgOY7O5VUNr12FzDf1x/xoIG0
+         9aWRTG0pDOBybgKgQL8gzapdvNUadDSgvQK30awdFGWEjOhMh8GmZvLAnQFDK4kdPH31
+         iqqU3FxOpx929xDXUrp9qdm5tCmxi5FGkgulMgl0MTtwY/XSFCku6AFDdYTvQ/udu9sQ
+         irAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVgOUQiYe7BE04VpR8lf5T/8Gf32Oeg7g6zYzFet0DOsS2NQsg8NPnGJzGwR6cx/PeKWQyLomLoMSDJvRlG9kQ5WPRAjA0BjqU3LLYt
+X-Gm-Message-State: AOJu0Yz7ymx9+3t31Gj1jcaFQv9OwAYOEENPkHhkRHL9Pamlytm/bhp8
+	6ro3t4fENamT3/uHysIH3t+zcKeaZ94B+Adp5wWtPzj10pXVV6LTmo9f6Xv+10tLcxBmmNSutkx
+	E60zWOTDvs5jESKzC1UXT+Zbm1aTYV8fZ+XBX
+X-Google-Smtp-Source: AGHT+IGR+FIKzI/wcrtDoU0xKLEuaSNo1Pi6seLc7A+z/6gARPeaAQ5FJJk+MjgyeXeKOmhZJkn1XSHB3RlSgGvlpsE=
+X-Received: by 2002:a92:b70c:0:b0:368:4204:7bf2 with SMTP id
+ k12-20020a92b70c000000b0036842047bf2mr33697ili.12.1712603140332; Mon, 08 Apr
+ 2024 12:05:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220710164026.541466-1-r.stratiienko@gmail.com>
- <CANDhNCpAhtgdwpSUTJ2jo2J5L6rHzQHVB9q+kkZ3ouTt12b-uw@mail.gmail.com> <CAGphcdnK8Hx-YsA-HukRKbvC-HpnLktCtq8qFicQUL-8ZHC+1w@mail.gmail.com>
-In-Reply-To: <CAGphcdnK8Hx-YsA-HukRKbvC-HpnLktCtq8qFicQUL-8ZHC+1w@mail.gmail.com>
-From: John Stultz <jstultz@google.com>
-Date: Mon, 8 Apr 2024 12:03:18 -0700
-Message-ID: <CANDhNCpN-MGXswfFV=mbMJBbHh919iTv9BMYFsk7bMgbZa1gVQ@mail.gmail.com>
-Subject: Re: [RFC] thermal/core: Disable uevent messages for cooling devices
-To: Roman Stratiienko <r.stratiienko@gmail.com>
-Cc: linux-pm@vger.kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org, 
-	amitk@kernel.org, rui.zhang@intel.com, linux-kernel@vger.kernel.org, 
-	megi@xff.cz
+References: <20240325172707.73966-1-peternewman@google.com>
+ <20240325172707.73966-2-peternewman@google.com> <e2c479b6-43f0-4e2c-9ccd-2e5f322d1974@intel.com>
+ <CALPaoCjWDKM9VYXexDt2+zh2srTotuaErFHXkWzH1w0c_KWDjw@mail.gmail.com> <d3ef1a5a-a7ee-477c-8697-d64b91726d91@intel.com>
+In-Reply-To: <d3ef1a5a-a7ee-477c-8697-d64b91726d91@intel.com>
+From: Peter Newman <peternewman@google.com>
+Date: Mon, 8 Apr 2024 12:05:28 -0700
+Message-ID: <CALPaoCieXQfgEL-7CK2pB5xgrRzTTWBkbic7OXxdKbh-ipWTpw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] x86/resctrl: Move __resctrl_sched_in() out-of-line
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>, 
+	Stephane Eranian <eranian@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
+	Uros Bizjak <ubizjak@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Xin Li <xin3.li@intel.com>, 
+	Babu Moger <babu.moger@amd.com>, Shaopeng Tan <tan.shaopeng@fujitsu.com>, 
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, Jens Axboe <axboe@kernel.dk>, 
+	Christian Brauner <brauner@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tycho Andersen <tandersen@netflix.com>, 
+	Nicholas Piggin <npiggin@gmail.com>, Beau Belgrave <beaub@linux.microsoft.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 8, 2024 at 11:59=E2=80=AFAM Roman Stratiienko
-<r.stratiienko@gmail.com> wrote:
->
-> I haven't worked on it since I posted it initially. But it looks like
-> there's an alternative patch already upstreamed and backported into
-> stable:
->
-> https://lore.kernel.org/linux-kernel/CAJZ5v0hHTuEXmQA=3D0D90eR_KUsOsfcxYb=
-TS=3DzQYDTXuY6o_K_Q@mail.gmail.com/T/
+Hi Reinette,
 
-Ah! Many thanks for the link! I'll check in with folks to better
-understand if there is a functionality gap between what you submitted
-and what landed upstream.
+On Sun, Apr 7, 2024 at 12:21=E2=80=AFPM Reinette Chatre
+<reinette.chatre@intel.com> wrote:
+>
+> I think this needs more thought. rdt_enable_key is x86 specific now and s=
+hould not
+> be in the fs code. Every architecture will have its own task switch code,=
+ with
+> __resctrl_sched_in() belonging to x86 and thus not something to be direct=
+ly called
+> from the fs code.
 
-Thanks again!
--john
+I think we will need to discuss whether __resctrl_sched_in() is really
+arch or FS code following the changes in this series. This series
+removes the explicit MSR access and James has already provided inline
+wrappers for the mon and alloc enable keys[1], so I can only assume
+they are architecture-independent in concept.
+
+Thanks!
+-Peter
+
+https://lore.kernel.org/r/20240213184438.16675-18-james.morse@arm.com
 
