@@ -1,146 +1,139 @@
-Return-Path: <linux-kernel+bounces-135709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D38CC89CA11
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:50:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 747AD89CA1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:52:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 325C4B22921
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 152DC1F26FCA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F0D143860;
-	Mon,  8 Apr 2024 16:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400941428F5;
+	Mon,  8 Apr 2024 16:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Mbjhu4jU"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gKv71u3F"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4BE1428F7;
-	Mon,  8 Apr 2024 16:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39B6140E2B;
+	Mon,  8 Apr 2024 16:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712595001; cv=none; b=amN41hCq9QE1549vGhjMYUjrZFam/j7nD+YN/0T8/9ck9t+ouIvAkfMZscsEkpFeFTKcA02PvYjZDL83EiX50//6/dR3VMNiNJzTirNluBheEE0oyNvu5aBdC6CHrWYRb7SxwP2bCSPncU4vmoRXwEICDKSA+QLaZZC5AD6pCY4=
+	t=1712595148; cv=none; b=S8Q9WQyGBAenV8g+QN+xVayDceVNO2Qm5UeFjTCWFxD5GLX1QPobIwLiY0NrtpDffkB5k4wI1Ry4y6ZtHvKyWe3gU63Vmb/j3bNfGm15/+6qkUi8nTpPCwpu6GjVvGohh5i+REFCe2ZB3RvjYYV4jQJ4HFBUkpZWYiYObfr+tmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712595001; c=relaxed/simple;
-	bh=33ya6iAIdhOO+qGkv/GeYEfF192TQ7WZCShCQ0XLBNo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k7Q96WkUhICVga2E3pigWA1j63+RUvLkjoglR+f4VyxOA0C7/Lk83QHy3YDwv5aBQPWYXPkbrh0YzcW7DPhOSJND0kwEdNPJJ9sBNyWR2k2tDVivna8g0IYqgJM4vS04RAZgHlalFN9rO6Tl2Rn+SH9eKVwd+lmr2qx0q0XQbcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Mbjhu4jU; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id AD415120027;
-	Mon,  8 Apr 2024 19:49:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AD415120027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712594996;
-	bh=HZCeDqOWZRFrRmmJb31Zwudz+k5V9qwLfzuWrQFrCr0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Mbjhu4jURZzp+med9MOYEhZqXIgEyuvptRXXUaggCCEGe0qvFQqtxIECPMCb09o4e
-	 9U+RLqL4qYCNn5WhVgap/l44esWXeH78j+mYbOz68RQ/ty1a9IVMOSnflfPJhuiMUH
-	 USz3kmZn5u++K7n//jZRMP27/O+bEQHRQI56/FB86sk6gOmkichtCluqUd89Xsy59p
-	 OwQJIP/K5BoU4biD4gdHOxLYzSvewd+E5QbMu+3M+cxoHVZg1q3AR3FCh5izEt4dss
-	 mplv84t39KGU4/ZQIK1PKZFy9sA2b0iRa2Wp9eHlMcJfD3VsesvN70pEe5X3O5yQyt
-	 odkf53me/OI+A==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  8 Apr 2024 19:49:56 +0300 (MSK)
-Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Apr 2024 19:49:56 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: <neil.armstrong@linaro.org>, <lgirdwood@gmail.com>,
-	<jbrunet@baylibre.com>, <broonie@kernel.org>, <conor+dt@kernel.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>,
-	<tiwai@suse.com>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>
-CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-amlogic@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v1 2/2] ASoC: meson: implement link-name optional property in meson card utils
-Date: Mon, 8 Apr 2024 19:49:40 +0300
-Message-ID: <20240408164947.30717-3-ddrokosov@salutedevices.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240408164947.30717-1-ddrokosov@salutedevices.com>
-References: <20240408164947.30717-1-ddrokosov@salutedevices.com>
+	s=arc-20240116; t=1712595148; c=relaxed/simple;
+	bh=rpdGJCQPvlNkkuBKRpcPSOuxjIzClGbODgjz4Pmvkz8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SeQIbFdO4IBUjgn8bdkgEUGMR3pCDO/J3MV0Il2fr16cBTrtVqFmLMuJvLjpPL+JIFq0RDoJogmfmMPFO1fbA1BAxAhpPtsrq1uO3aBY2ToE5R00ByHbOMOO+Zc9O10hrRCzUoXRupFmV+ytdocqv5TLBhlDrDhN5xy8rQqa5qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=gKv71u3F; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4388hHxc013808;
+	Mon, 8 Apr 2024 16:51:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=a1QJLqWuwPzGF5QAUwxhsbEny+tlCv61X+cklcIfyF0=; b=gK
+	v71u3Fi6dkLxoEvG0nMlvF2O2+KEQLRFhq+XWGFyaB/Qlv7D3JQrnuoesTZK9TC9
+	vAxNfRyxVn/ClIpFnjZXJ2v7sW/v01F4rVOgIbitvHyMNC82UZB2ahfKypCFKIXs
+	Q4DxhRlBlvdLXf+m4arLFJY54BpAtYSHAGilAuhhQxLGTa2WfG58TFiVH2lHg+tk
+	CZlxQ2KjmSSrgh6Pfa93lxNgfvmrsnPYrbKGYSN1GCVGw5EiQJNYA0x+VdysAoME
+	HX5z9qdJmiasM3rg5JeNN+mCCo8ndy6yVoWMKuQZaAKTlpXkChX+vPLHf0SQNJHc
+	sBae3uM7X1COxLnw4oPA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbfyhe9j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 16:51:46 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438Gpjae002976
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 16:51:45 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
+ 09:51:44 -0700
+Message-ID: <c2c3b573-0e62-4452-e657-fbef9abb9430@quicinc.com>
+Date: Mon, 8 Apr 2024 09:51:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184624 [Apr 08 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/08 12:02:00 #24709100
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/msm/dpu: Add callback function pointer check before
+ its call
+Content-Language: en-US
+To: Aleksandr Mishin <amishin@t-argos.ru>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+References: <20240408085523.12231-1-amishin@t-argos.ru>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240408085523.12231-1-amishin@t-argos.ru>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HD90BD7yqFpJf_WK5d0r9NlZFaV_FghS
+X-Proofpoint-GUID: HD90BD7yqFpJf_WK5d0r9NlZFaV_FghS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_15,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 phishscore=0 clxscore=1011
+ mlxlogscore=659 malwarescore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080130
 
-The 'link-name' property presents an optional DT feature that empowers
-users to customize the name associated with the DAI link and PCM stream.
-This functionality reflects the approach often employed in Qualcomm
-audio cards, providing enhanced flexibility in DAI naming conventions
-for improved system integration and userspace experience.
 
-It allows userspace program to easy determine PCM stream purpose, e.g.:
-    ~ # cat /proc/asound/pcm
-    00-00: speaker (*) :  : playback 1
-    00-01: mics (*) :  : capture 1
-    00-02: loopback (*) :  : capture 1
 
-The previous naming approach using auto-generated fe or be strings
-continues to be utilized as a fallback.
+On 4/8/2024 1:55 AM, Aleksandr Mishin wrote:
+> In dpu_core_irq_callback_handler() callback function pointer is compared to NULL,
+> but then callback function is unconditionally called by this pointer.
+> Fix this bug by adding conditional return.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
 
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
----
- sound/soc/meson/meson-card-utils.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Yes , as dmitry wrote, this should be Reported-by.
 
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index ed6c7e2f609c..7bae72905a9b 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -94,10 +94,14 @@ static int meson_card_set_link_name(struct snd_soc_card *card,
- 				    struct device_node *node,
- 				    const char *prefix)
- {
--	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
--				    prefix, node->full_name);
--	if (!name)
--		return -ENOMEM;
-+	const char *name;
-+
-+	if (of_property_read_string(node, "link-name", &name)) {
-+		name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
-+				      prefix, node->full_name);
-+		if (!name)
-+			return -ENOMEM;
-+	}
- 
- 	link->name = name;
- 	link->stream_name = name;
--- 
-2.43.0
+But rest LGTM.
 
+> Fixes: c929ac60b3ed ("drm/msm/dpu: allow just single IRQ callback")
+> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+> index 946dd0135dff..03a16fbd4c99 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+> @@ -223,9 +223,11 @@ static void dpu_core_irq_callback_handler(struct dpu_kms *dpu_kms, unsigned int
+>   
+>   	VERB("IRQ=[%d, %d]\n", DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
+>   
+> -	if (!irq_entry->cb)
+> +	if (!irq_entry->cb) {
+>   		DRM_ERROR("no registered cb, IRQ=[%d, %d]\n",
+>   			  DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
+> +		return;
+> +	}
+>   
+>   	atomic_inc(&irq_entry->count);
+>   
 
