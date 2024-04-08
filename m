@@ -1,79 +1,39 @@
-Return-Path: <linux-kernel+bounces-135350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE50889BF58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:46:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ABD489BF5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:47:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84473280F31
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:46:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F6A01C215B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656A16F065;
-	Mon,  8 Apr 2024 12:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FIllcz5A"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2015A6D1C7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F166D1C7;
+	Mon,  8 Apr 2024 12:47:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516C32D057
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580364; cv=none; b=jpD+IoNzgPSqu+9bnKXOB+VGmfIhhJcKgvI8DIjpMSrkbnwf1zvfiXH49nXxxIMJAoMMmRtxEf1sLJfDQo1XujDkpGleCN+b9Wp1EIkJc1KJJ/kBr30HeE3vZaPeXdFnPU03xFdp9RTybIWTBCmamkyYW4yoPbR1NKmArGPmWg4=
+	t=1712580452; cv=none; b=bsDtE8fO6aMuH/vo2wZ6DzBoFtVpu0n2BpGP4bHxAAiR0e5xOGg7kgVEIa1EVCDU7A/0c0uS8YfqA8W2XO8P9RNweNrxCLdk2I/H1Ep9HZzHGWcJG+A+PaCSo91aWxmuDiBQhMWY3IS3rHHJqMAjX4lQZxNCbn2ZL6DE5K4D6Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580364; c=relaxed/simple;
-	bh=4f3UaY0SQf8Ijcwk4KQ6V3GH86m2/eSeNdDdmV3Y56c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m5t9tmbK8qZV9uquHN7LBdZ8oadsEjs2wuUYUpvdNyN3XRLZ/i5NzmRwwYCFRGnb0VHflLD95IDuvDqcaLCL/XqVPHjCSYNSuG/4Zwie4FDsO8xmUXzNQg9Ieep2iyASXVgGqpl1rfG4CNp7U5XNDspV0U5iZUVrEk1IsuzZTPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FIllcz5A; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712580362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oa0dQJ1NfzkDJ58Nm3G99Pr4wnpg2bxLGHQnIfyvxPo=;
-	b=FIllcz5AT/e+iGrg55MU+t96qWikN8RecNp/r2BRWmbVp2Glw9+W0mqn9uhzBDzhT1FakA
-	rlLguk7FQjtTZomKhdC5Kl5kFDta+hcT0l2oZem6l0KRuuqwm3oGvuujy1niKl6gebbHDt
-	AOzkDwHfUa63ExJe/UlUUif7ipMxDEc=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-473-syBdrn9pMmmiPTCQx-SFTQ-1; Mon, 08 Apr 2024 08:46:00 -0400
-X-MC-Unique: syBdrn9pMmmiPTCQx-SFTQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a466c7b0587so273523466b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 05:46:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712580359; x=1713185159;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oa0dQJ1NfzkDJ58Nm3G99Pr4wnpg2bxLGHQnIfyvxPo=;
-        b=vT6007CSaftV9ofVcfe76d0oOAZlTeueW3tNqDwW9wobeeOAtVcwaUGt4zlcFKb+0a
-         Q8habhJrp8Sc3BsWfrN92537qD9N7h1DR4b8xo/cdDYA682fEu2KZ1FCOnf4wU2NXlqH
-         eyWzbRtk0HIeTn8c8C6KS9W5qUrDaCLTtv5UHYGxIVU/rqErD560QMk0WO8RV/7QZSdL
-         jNLHyYQKEWIg9ps2IpVn4L0QBB5qbYc0YFZLTwcPNnSCoDB1PGOHEHniNXDoSv48YRU8
-         8TC82WgIZmvKiKX7lFY5oWMjJATVbvoPI5cYftIGWoUWrdl0P16eXmRmQqq4ygT95Ac6
-         Ht2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWRIzu3OXTCcnnCcJO+dh0cTcoZB6POcd7qtVpdP0iaC6b5mQMobGZ7N6TeSMcS2dyRzPBEHQooLTShtUm9t63hphUsIeQZcaMIjI1u
-X-Gm-Message-State: AOJu0Yx1lYfga5dY3WzyOh1+hoV257hcXhf+rmcpEw+ROkMmvM2l3JYS
-	/hCJziq7Mfw9yO2VsgU9bj4IGH+vY6+pLHfR537Gjn9sXCR/C0dWrSEbu4VM7iN0cjyh2NDBiF3
-	v1HEwBOeVBbVcJEwdCwJrNxOJ+bKI1RC2urwsjVbiNDwr0JAgl3lXIzm+dZlQqg==
-X-Received: by 2002:a17:907:3da8:b0:a51:dc1f:a44b with SMTP id he40-20020a1709073da800b00a51dc1fa44bmr1478664ejc.29.1712580359461;
-        Mon, 08 Apr 2024 05:45:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGEkiynBLyuS7R8ea5n9gdwWhf7wBEZd2/uGpnUdhbhQ06ApoM00sS+9w3QyJnVOqX1gm8maA==
-X-Received: by 2002:a17:907:3da8:b0:a51:dc1f:a44b with SMTP id he40-20020a1709073da800b00a51dc1fa44bmr1478641ejc.29.1712580359092;
-        Mon, 08 Apr 2024 05:45:59 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ag13-20020a1709069a8d00b00a51ab065bf0sm3955072ejc.202.2024.04.08.05.45.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 05:45:58 -0700 (PDT)
-Message-ID: <027b14ff-a6fe-456c-b3b5-187fd435ac3f@redhat.com>
-Date: Mon, 8 Apr 2024 14:45:57 +0200
+	s=arc-20240116; t=1712580452; c=relaxed/simple;
+	bh=fsMY0OVX++jA3VyuUlzyJln1lLArqvSTAaBLWoH/BPw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jmRpFid96Wc107+2T1qdEQupr/sBLhUD6fKMM+o7MoYJxYh+Wjl8+Ll9+yyFeM0GG2NUg41ssaLH+k9/b3RuBSQ8b3tX2BRCS2OSyw9gpcOZCUIvoaFUvalFj+Kho8j4pQBW1aoHRWgwpVEabJYMGkbJl1bQJf5oPS9uS1qSjhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E7D8DA7;
+	Mon,  8 Apr 2024 05:48:00 -0700 (PDT)
+Received: from [10.57.73.169] (unknown [10.57.73.169])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD26E3F64C;
+	Mon,  8 Apr 2024 05:47:27 -0700 (PDT)
+Message-ID: <be096120-4dd1-4a10-b283-779d23c2811b@arm.com>
+Date: Mon, 8 Apr 2024 13:47:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,71 +41,261 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug info
- keycodes
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: ilpo.jarvinen@linux.intel.com, hmh@hmh.eng.br, dmitry.torokhov@gmail.com,
- ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- njoshi1@lenovo.com, vsankar@lenovo.com, peter.hutterer@redhat.com
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
+Subject: Re: [PATCH v6 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240403114032.1162100-1-ryan.roberts@arm.com>
+ <20240403114032.1162100-3-ryan.roberts@arm.com>
+ <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
+ <4110bb1d-65e5-4cf0-91ad-62749975829d@arm.com>
+In-Reply-To: <4110bb1d-65e5-4cf0-91ad-62749975829d@arm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
-
-On 3/24/24 10:07 PM, Mark Pearson wrote:
-> Add support for new input events on Lenovo laptops that need exporting to
-> user space.
+On 08/04/2024 13:07, Ryan Roberts wrote:
+> [...]
+>>
+>> [...]
+>>
+>>> +
+>>> +/**
+>>> + * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
+>>> + * @start_ptep: Page table pointer for the first entry.
+>>> + * @max_nr: The maximum number of table entries to consider.
+>>> + * @entry: Swap entry recovered from the first table entry.
+>>> + *
+>>> + * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
+>>> + * containing swap entries all with consecutive offsets and targeting the same
+>>> + * swap type.
+>>> + *
+>>
+>> Likely you should document that any swp pte bits are ignored? ()
 > 
-> Lenovo trackpoints are adding the ability to generate a doubletap event.
-> Add a new keycode to allow this to be used by userspace.
+> Now that I understand what swp pte bits are, I think the simplest thing is to
+> just make this function always consider the pte bits by using pte_same() as you
+> suggest below? I don't think there is ever a case for ignoring the swp pte bits?
+> And then I don't need to do anything special for uffd-wp either (below you
+> suggested not doing batching when the VMA has uffd enabled).
 > 
-> Lenovo support is using FN+N with Windows to collect needed details for
-> support cases. Add a keycode so that we'll be able to provide similar
-> support on Linux.
+> Any concerns?
 > 
-> Suggested-by: Peter Hutterer <peter.hutterer@redhat.com>
+>>
+>>> + * max_nr must be at least one and must be limited by the caller so scanning
+>>> + * cannot exceed a single page table.
+>>> + *
+>>> + * Return: the number of table entries in the batch.
+>>> + */
+>>> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
+>>> +                 swp_entry_t entry)
+>>> +{
+>>> +    const pte_t *end_ptep = start_ptep + max_nr;
+>>> +    unsigned long expected_offset = swp_offset(entry) + 1;
+>>> +    unsigned int expected_type = swp_type(entry);
+>>> +    pte_t *ptep = start_ptep + 1;
+>>> +
+>>> +    VM_WARN_ON(max_nr < 1);
+>>> +    VM_WARN_ON(non_swap_entry(entry));
+>>> +
+>>> +    while (ptep < end_ptep) {
+>>> +        pte_t pte = ptep_get(ptep);
+>>> +
+>>> +        if (pte_none(pte) || pte_present(pte))
+>>> +            break;
+>>> +
+>>> +        entry = pte_to_swp_entry(pte);
+>>> +
+>>> +        if (non_swap_entry(entry) ||
+>>> +            swp_type(entry) != expected_type ||
+>>> +            swp_offset(entry) != expected_offset)
+>>> +            break;
+>>> +
+>>> +        expected_offset++;
+>>> +        ptep++;
+>>> +    }
+>>> +
+>>> +    return ptep - start_ptep;
+>>> +}
+>>
+>> Looks very clean :)
+>>
+>> I was wondering whether we could similarly construct the expected swp PTE and
+>> only check pte_same.
+>>
+>> expected_pte = __swp_entry_to_pte(__swp_entry(expected_type, expected_offset));
 > 
-> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> Signed-off-by: Nitin Joshi <njoshi1@lenovo.com>
-> Signed-off-by: Vishnu Sankar <vsankar@lenovo.com>
+> So planning to do this.
 
-Thanks, patch looks good to me:
+Of course this clears all the swp pte bits in expected_pte. So need to do something a bit more complex.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+If we can safely assume all offset bits are contiguous in every per-arch representation then we can do:
 
-Dmitry, can I have your ack for merging this change through the pdx86
-tree (since the first driver using these is a pdx86 driver) ?
+static inline pte_t pte_next_swp_offset(pte_t pte)
+{
+	pte_t offset_inc = __swp_entry_to_pte(__swp_entry(0, 1));
 
-Regards,
+	return __pte(pte_val(pte) + pte_val(offset_inc));
+}
 
-Hans
+Or if not:
+
+static inline pte_t pte_next_swp_offset(pte_t pte)
+{
+	swp_entry_t entry = pte_to_swp_entry(pte);
+	pte_t new = __swp_entry_to_pte(__swp_entry(swp_type(entry), swp_offset(entry) + 1));
+
+	if (pte_swp_soft_dirty(pte))
+		new = pte_swp_mksoft_dirty(new);
+	if (pte_swp_exclusive(pte))
+		new = pte_swp_mkexclusive(new);
+	if (pte_swp_uffd_wp(pte))
+		new = pte_swp_mkuffd_wp(new);
+
+	return new;
+}
+
+Then swap_pte_batch() becomes:
+
+static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
+{
+	pte_t expected_pte = pte_next_swp_offset(pte);
+	const pte_t *end_ptep = start_ptep + max_nr;
+	pte_t *ptep = start_ptep + 1;
+
+	VM_WARN_ON(max_nr < 1);
+	VM_WARN_ON(!is_swap_pte(pte));
+	VM_WARN_ON(non_swap_entry(pte_to_swp_entry(pte)));
+
+	while (ptep < end_ptep) {
+		pte = ptep_get(ptep);
+
+		if (!pte_same(pte, expected_pte))
+			break;
+
+		expected_pte = pte_next_swp_offset(expected_pte);
+		ptep++;
+	}
+
+	return ptep - start_ptep;
+}
+
+Would you be happy with either of these? I'll go look if we can assume the offset bits are always contiguous.
 
 
-
-
-> ---
->  include/uapi/linux/input-event-codes.h | 2 ++
->  1 file changed, 2 insertions(+)
 > 
-> diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-> index 03edf2ccdf6c..bd3baca95749 100644
-> --- a/include/uapi/linux/input-event-codes.h
-> +++ b/include/uapi/linux/input-event-codes.h
-> @@ -686,6 +686,8 @@
->  #define KEY_SIDEVU_SONAR               0x287
->  #define KEY_NAV_INFO                   0x288
->  #define KEY_BRIGHTNESS_MENU            0x289
-> +#define KEY_DOUBLECLICK                0x28a
-> +#define KEY_SYS_DEBUG_INFO             0x28b
->  
->  /*
->   * Some keyboards have keys which do not have a defined meaning, these keys
+>>
+>> ... or have a variant to increase only the swp offset for an existing pte. But
+>> non-trivial due to the arch-dependent format.
+> 
+> not this - I agree this will be difficult due to per-arch changes. I'd rather
+> just do the generic version and leave the compiler to do the best it can to
+> simplify and optimize.
+> 
+>>
+>> But then, we'd fail on mismatch of other swp pte bits.
+>>
+>>
+>> On swapin, when reusing this function (likely!), we'll might to make sure that
+>> the PTE bits match as well.
+>>
+>> See below regarding uffd-wp.
+>>
+>>
+>>>   #endif /* CONFIG_MMU */
+>>>     void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>>> diff --git a/mm/madvise.c b/mm/madvise.c
+>>> index 1f77a51baaac..070bedb4996e 100644
+>>> --- a/mm/madvise.c
+>>> +++ b/mm/madvise.c
+>>> @@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>> long addr,
+>>>       struct folio *folio;
+>>>       int nr_swap = 0;
+>>>       unsigned long next;
+>>> +    int nr, max_nr;
+>>>         next = pmd_addr_end(addr, end);
+>>>       if (pmd_trans_huge(*pmd))
+>>> @@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>> long addr,
+>>>           return 0;
+>>>       flush_tlb_batched_pending(mm);
+>>>       arch_enter_lazy_mmu_mode();
+>>> -    for (; addr != end; pte++, addr += PAGE_SIZE) {
+>>> +    for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
+>>> +        nr = 1;
+>>>           ptent = ptep_get(pte);
+>>>             if (pte_none(ptent))
+>>> @@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>> long addr,
+>>>                 entry = pte_to_swp_entry(ptent);
+>>>               if (!non_swap_entry(entry)) {
+>>> -                nr_swap--;
+>>> -                free_swap_and_cache(entry);
+>>> -                pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>> +                max_nr = (end - addr) / PAGE_SIZE;
+>>> +                nr = swap_pte_batch(pte, max_nr, entry);
+>>> +                nr_swap -= nr;
+>>> +                free_swap_and_cache_nr(entry, nr);
+>>> +                clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>>               } else if (is_hwpoison_entry(entry) ||
+>>>                      is_poisoned_swp_entry(entry)) {
+>>>                   pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index 7dc6c3d9fa83..ef2968894718 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -1637,12 +1637,13 @@ static unsigned long zap_pte_range(struct mmu_gather
+>>> *tlb,
+>>>                   folio_remove_rmap_pte(folio, page, vma);
+>>>               folio_put(folio);
+>>>           } else if (!non_swap_entry(entry)) {
+>>> -            /* Genuine swap entry, hence a private anon page */
+>>> +            max_nr = (end - addr) / PAGE_SIZE;
+>>> +            nr = swap_pte_batch(pte, max_nr, entry);
+>>> +            /* Genuine swap entries, hence a private anon pages */
+>>>               if (!should_zap_cows(details))
+>>>                   continue;
+>>> -            rss[MM_SWAPENTS]--;
+>>> -            if (unlikely(!free_swap_and_cache(entry)))
+>>> -                print_bad_pte(vma, addr, ptent, NULL);
+>>> +            rss[MM_SWAPENTS] -= nr;
+>>> +            free_swap_and_cache_nr(entry, nr);
+>>>           } else if (is_migration_entry(entry)) {
+>>>               folio = pfn_swap_entry_folio(entry);
+>>>               if (!should_zap_folio(details, folio))
+>>> @@ -1665,8 +1666,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>>               pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+>>>               WARN_ON_ONCE(1);
+>>>           }
+>>> -        pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>> -        zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
+>>> +        clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>
+>> For zap_install_uffd_wp_if_needed(), the uffd-wp bit has to match.
+>>
+>> zap_install_uffd_wp_if_needed() will use the uffd-wp information in
+>> ptent->pteval to make a decision whether to place PTE_MARKER_UFFD_WP markers.
+>>
+>> On mixture, you either lose some or place too many markers.
+>>
+>> A simple workaround would be to disable any such batching if the VMA does have
+>> uffd-wp enabled.
+> 
+> Rather than this, I'll just consider all the swp pte bits when batching.
+> 
+>>
+>>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
+>>>       } while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+> 
+> [...]
+> 
 
 
