@@ -1,157 +1,139 @@
-Return-Path: <linux-kernel+bounces-135555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B49F289C782
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:51:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8617789D47C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:35:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 709882848FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397401F27610
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA1B13F01A;
-	Mon,  8 Apr 2024 14:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79D57FBC1;
+	Tue,  9 Apr 2024 08:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QP+n2FXG"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cFSU5Z2q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B381CD21;
-	Mon,  8 Apr 2024 14:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090D07EEF0;
+	Tue,  9 Apr 2024 08:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712587893; cv=none; b=iWLOEHyjBW5whBckIpG2tf2x3CToaSl80EoFOCE+zug9zJSdOzJz3CoE1gkGb52EAIUojRZ5tdqd1jYWuU/UpT7h5M5/uCv6F431+7bJUhc266eyNQLtFZ8JnFqWlMO3Ij15kNApQmfsmoh6pqMCrEey74+gjO//jxlRyRxuAWg=
+	t=1712651287; cv=none; b=bnDRijvZbzsxLS2t9wjHSYlk2lRd24FadDdatAnOYwdyBn80z4yErdDAAoVhfZgwIRtahCc0SiC0yKXDPa/lLLKqFc6YB8BJ4Ie5jikjZOVScx2M4YLuWKSPEIFHPG3BerrHWKK0Lwkh17c/h0XaGcqjHR5JXf5FdagusA4OtLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712587893; c=relaxed/simple;
-	bh=Q72eGkMQIkbUraoQjSqOSGcDf1l8YhSQtcDUSUpsuyo=;
+	s=arc-20240116; t=1712651287; c=relaxed/simple;
+	bh=vXLhv3zRRAGARN7FCvEx72w/juFJMhiiJABz8Y2uhpo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mkoTnIR3DmMIRgMhonrc7oqmDuoVl3S+kRB/x00sBW8vjIVdoVNZEAoRosjRgsMqL7qHI2Y7QL8LCQ32ZrGnp85+2v4ob6kfpR/POlcWkWcDQb1AEOhgSXhJWpL1z8yfHRWq51CrKTdzYtVRDEvWls6uUHd1Fvq5GDsNLBFDLcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QP+n2FXG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 818A7C433F1;
-	Mon,  8 Apr 2024 14:51:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712587892;
-	bh=Q72eGkMQIkbUraoQjSqOSGcDf1l8YhSQtcDUSUpsuyo=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=HATGumx1f/4lsPe/mBhWD/cCwpFUgaLfyZBkOTsO38vLc4/BwE2AA50jzzvZoTvQwTGBcKxEK04LsShxwvzQDV03I+sq86y5bX0QzfVclNfQflyhqE6tHcdDG0fR5kavZLgi/GLvjh+X1m18XeWsZ8KlKJxManLCK5l2o+tlaDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cFSU5Z2q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 122C0C433C7;
+	Tue,  9 Apr 2024 08:28:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712651286;
+	bh=vXLhv3zRRAGARN7FCvEx72w/juFJMhiiJABz8Y2uhpo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QP+n2FXG8CIeuo6RXVpKpHkZfGE+1aDoiNTNwH+a1ISHlWe2VGLtqnc8FJUHN/5tj
-	 22ni8Jhd0P7gioR8Ojv9m4wUqvV3wLxVtv5Hd6lDo9tnkzhuUYpejfbnamTk8MUji1
-	 GV2zYsfxceR8NjliZ++hnXAQnU4WUAAXOwM8mm06QVDnan+RluzQjJ18F9kS3FzBxQ
-	 vEsm9XoO+1trbI36nvYhnjbKzEJacE5MNTqFeFy+u4zH/gymoE3juoAF5qR8wkrVfJ
-	 2zTc9uqC5tWxu1nd9vDR8KX9tso1DvjstI40v4/ojGXSpzkxG3/y0m4fvTgriDVyGw
-	 4FDd6OCZTILZA==
-Date: Mon, 8 Apr 2024 15:51:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vaishnav Achath <vaishnav.a@ti.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Rob Herring <robh@kernel.org>, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 05/11] spi: cadence-qspi: add FIFO depth detection
- quirk
-Message-ID: <66bf7d58-a726-49ba-9765-f769f6189310@sirena.org.uk>
-References: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
- <20240405-cdns-qspi-mbly-v2-5-956679866d6d@bootlin.com>
- <551bea0a-1c9e-4e04-87db-c643fdaee85e@sirena.org.uk>
- <D0ETH1AG1ONG.1M1FPSZM69H0Z@bootlin.com>
+	b=cFSU5Z2qfdVdK0o/GuxUXrBP2h/PUY8ju+Skd8KKXKk/0KrzHj3fVi3su+QG2p9xx
+	 aznJ/3k9pcJsMJe6HfAePAFoc9RNRMLLMcm2hgp4wJUHRMvWajD9yvztKTRpDHiV8W
+	 ne9M/bKIWuVmvm1hUCJg3x2/Hmq3WvbASQdCwzns=
+Date: Mon, 8 Apr 2024 16:51:57 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Guenter Roeck <groeck@google.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Pavan Holla <pholla@chromium.org>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	chrome-platform@lists.linux.dev
+Subject: Re: [PATCH v3 2/2] usb: typec: ucsi: Implement ChromeOS UCSI driver
+Message-ID: <2024040837-negligee-expert-bc37@gregkh>
+References: <20240403-public-ucsi-h-v3-0-f848e18c8ed2@chromium.org>
+ <20240403-public-ucsi-h-v3-2-f848e18c8ed2@chromium.org>
+ <3ezjocthsigo3t746slmgzffnmpxw7wwf3s535basiaf2qy6io@7ocxva6ndsbt>
+ <2024040449-average-foyer-defa@gregkh>
+ <oi3bwdyvyaezpmyxfdtsbiwwprxi2ufc3hlzoz23d5rxdkperl@cxpd7enatg7h>
+ <2024040422-ripcord-bladder-bdda@gregkh>
+ <CABXOdTeqz5Kza5tYXbCdTyPT66xtezai4C5TFkqmOpQc+1r8Xg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Md8nckiub8eKqQle"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <D0ETH1AG1ONG.1M1FPSZM69H0Z@bootlin.com>
-X-Cookie: Drive defensively.  Buy a tank.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABXOdTeqz5Kza5tYXbCdTyPT66xtezai4C5TFkqmOpQc+1r8Xg@mail.gmail.com>
 
+On Mon, Apr 08, 2024 at 06:04:22AM -0700, Guenter Roeck wrote:
+> On Thu, Apr 4, 2024 at 6:30 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> [ ... ]
+> 
+> > > > > if (WARN_ON_ONCE(val_len > MAX_EC_DATA_SIZE))
+> > > > >   return -EINVAL;
+> > > >
+> > > > So if you trigger this, you just rebooted all boxes that have
+> > > > panic-on-warn enabled (hint, the HUGE majority in quantity of Linux
+> > > > systems out there.)
+> > > >
+> > > > So don't do that, just handle it like this.
+> > >
+> > > Does that mean that we should not use WARN at all? What is the best
+> > > current practice for WARN usage?
+> >
+> > To never use it.  Handle the issue and recover properly.
+> >
+> > > I'm asking because for me this looks like a perfect usecase. If I were
+> > > at the positiion of the driver developer, I'd like to know the whole
+> > > path leading to the bad call, not just the fact that the function was
+> > > called with the buffer being too big.
+> >
+> > Then use ftrace if you are a driver developer, don't crash users boxes
+> > please.
+> >
+> > If you REALLY need a traceback, then provide that, but do NOT use WARN()
+> > for just normal debugging calls that you want to leave around in the
+> > system for users to trip over.
+> >
+> 
+> That is not common practice.
+> 
+> $ git grep WARN_ON drivers/gpu | wc
+>    3004   11999  246545
+> $ git grep WARN_ON drivers/net/ | wc
+>    3679   14564  308230
+> $ git grep WARN_ON drivers/net/wireless | wc
+>    1985    8112  166081
+> 
+> We get hundreds of thousands of reports with warning backtraces from
+> Chromebooks in the field _every single day_. Most of those are from
+> drm and wireless subsystems. We even had to scale back the percentage
+> of reported warning backtraces because the large volume overwhelmed
+> the reporting system. When approached about it, developers usually
+> respond with "this backtrace is absolutely necessary", but nothing
+> ever happens to fix the reported problems. In practice, they are just
+> ignored.
 
---Md8nckiub8eKqQle
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then push back on the developers please, this isn't ok.  WARN_ON
+triggers so many automated systems it's not funny.  And if a trace back
+is really needed, there is a function for that, but really, just fix the
+issue and handle it properly.
 
-On Mon, Apr 08, 2024 at 04:38:56PM +0200, Th=E9o Lebrun wrote:
-> On Mon Apr 8, 2024 at 4:10 PM CEST, Mark Brown wrote:
-> > On Fri, Apr 05, 2024 at 05:02:15PM +0200, Th=E9o Lebrun wrote:
+> This means that any system using drm or wireless interfaces just can
+> not really enable panic-on-warn because that would crash the system
+> all the time.
 
-> > > +	if (ddata && ddata->quirks & CQSPI_DETECT_FIFO_DEPTH) {
-> > > +		cqspi->fifo_depth =3D fifo_depth;
-> > > +		dev_dbg(dev, "using FIFO depth of %u\n", fifo_depth);
-> > > +	} else if (fifo_depth !=3D cqspi->fifo_depth) {
-> > > +		dev_warn(dev, "detected FIFO depth (%u) different from config (%u)=
-\n",
-> > > +			 fifo_depth, cqspi->fifo_depth);
-> > > +	}
+I guess Android doesn't use wireless or drm :)
 
-> > It's not obvious to me that we should ignore an explicitly specified
-> > property if the quirk is present
+Again, billions of systems in the world has this enabled, let's learn to
+live with it and fix up our coding practices to not be lazy.
 
-> DT value isn't expected for compatibles with CQSPI_DETECT_FIFO_DEPTH
-> quirk, therefore we do not ignore a specified property. Bindings agree:
-> prop is false with EyeQ5 compatible.
+thanks,
 
-Sure, but it's not obvious that that is the most helpful or constructive
-way to handle things.
-
-> > - if anything I'd more expect to see
-> > the new warning in that case, possibly with a higher severity if we're
-> > saying that the quirk means we're more confident that the data reported
-> > by the hardware is reliable.  I think what I'd expect is that we always
-> > use an explicitly specified depth (hopefully the user was specifying it
-> > for a reason?).
-
-> The goal was a simpler devicetree on Mobileye platform. This is why we
-> add this behavior flag. You prefer the property to be always present?
-> This is a only a nice-to-have, you tell me what you prefer.
-
-I would prefer that the property is always optional, or only required on
-platforms where we know that the depth isn't probeable.
-
-> I wasn't sure all HW behaved in the same way wrt read-only bits in
-> SRAMPARTITION, and I do not have access to other platforms exploiting
-> this driver. This is why I kept behavior reserved for EyeQ5-integrated
-> IP block.
-
-Well, if there's such little confidence that the depth is reported then
-we shouldn't be logging an error.
-
-> > Pulling all the above together can we just drop the quirk and always do
-> > the detection, or leave the quirk as just controlling the severity with
-> > which we log any difference between detected and explicitly configured
-> > depths?
-
-> If we do not simplify devicetree, then I'd vote for dropping this patch
-> entirely. Adding code for detecting such an edge-case doesn't sound
-> useful. Especially since this kind of error should only occur to people
-> adding new hardware support; those probably do not need a nice
-> user-facing error message. What do you think?
-
-I'm confused why you think dropping the patch is a good idea?
-
---Md8nckiub8eKqQle
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYUBG4ACgkQJNaLcl1U
-h9AL0Af/U7DCdZKJHDJmT8nlFD+XSvXWPLfX3HQFd2vtIKE3B0P62gaA4Y0k2PYv
-AenR0tZ8/6pQ+1Vgc3jfiS7rteofgsrHjw9OK/h4thSLtXP3GdVCssNFxuS2ue5n
-khD+CU8XXcUDzcSdwIF6O08/td5vVhTZIwk6VH3K4RgbVew3CzNOGZfxa8Tl5iRP
-hTvjIBi8jURysKSBVkhTi8S7v1tvEmW3F841jIUESMaZ9rD/mOaQPnFc6f9f4eHW
-rgvXHkoII7vrdVCtKTgCpXMB0xPu6J0wTWdS1z+7gFrR+elfQLJqU9QW/OspLpLT
-ztkc6DBUNfEJW4GV+qjZ+lBaOmflpg==
-=jfLC
------END PGP SIGNATURE-----
-
---Md8nckiub8eKqQle--
+greg k-h
 
