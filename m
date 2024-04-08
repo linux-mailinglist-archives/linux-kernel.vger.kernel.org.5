@@ -1,290 +1,145 @@
-Return-Path: <linux-kernel+bounces-135866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C8489CC4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B819C89CC53
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:21:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABD3B1C219EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:18:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42511C21D26
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC27145359;
-	Mon,  8 Apr 2024 19:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89ED814533E;
+	Mon,  8 Apr 2024 19:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYHJJqTC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bABV0/JD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s9nHUdfU"
+Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091471DA3A;
-	Mon,  8 Apr 2024 19:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60D1143C59
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 19:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712603900; cv=none; b=okBLbGI0bN5sijUMGym7xcSYt0mNDak8KD4sh+EI/G4u/ZO7fCdEX8hBaV00QJIwwBriBJWt5AgKR1e/u4QJTbq+EBRLgJHWmvo0wWEqBY5eEB+RIX8yDRk9XxgZPPf7ZKcoi0viuv+16YT3EfF+NDAf4x7jOvkbGwfsFWnZD50=
+	t=1712604054; cv=none; b=S8eGkTrkhK/9uo0EwnLtyX2xB7qjGiztXk52u9Nr4zJ7zuGXmiS/xBatDrZYgalJdYLz5mEtdJa8sOCmeD7V3hmHg/v7jLjxBDSAbADiIfaTIjOpbsuNHUYR+Hau3HgQwJSoshMcDmwXtqROjoMPEJD4FLyCueJtRpnhYmOORPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712603900; c=relaxed/simple;
-	bh=uTL1RCFqXuZrvuMFNTFaPljJBiS4C9X8lbpI85lnIQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uOOuU+Ln5QtkFKcIiupwc6TpAxupj/L/aT852+7JqnYDQR7ibg7cDzmUGSmoF6xYYTKt/Va8iGjhXtJlQJv9MTmrVI+Nt8MsACB0trRkOcCGorfnzVI7sGP9u9N5+vbTXstfBemd9ddUyveCQ8TVl9UPdcKn0rY06RTfZFza5Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYHJJqTC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95872C433C7;
-	Mon,  8 Apr 2024 19:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712603899;
-	bh=uTL1RCFqXuZrvuMFNTFaPljJBiS4C9X8lbpI85lnIQ0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hYHJJqTC/eATgYbXiyZA5cRVECP+jC0W5FFUbj758Kt14LQd4PsZOlfSFaYGhi9r+
-	 XLEpetPas53xQzLEgQ2ZyizueOX1zqPz9j6Nkf0Vjyf2IXYt68hQQnPYwemSL11Gzl
-	 rxHuLwvU+AAt3ZStaRpmK46Q+SCBXqjW7cqHH0AU2BEzjM2zVMCa2LoPaexA3G9myq
-	 MWrhNFuUP9jnr/gesNCa93tK/ghdiH0HumDwgmha1+SxdPLkiedGZ708euXg1kN+v+
-	 13DIatbypQajnMGqE62giAAE+GAtzr5ih5y8XzadP4nfkLbe8tvZvJpukpMjpk2L2W
-	 XH3xJAq3I636g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2AEBECE126C; Mon,  8 Apr 2024 12:18:19 -0700 (PDT)
-Date: Mon, 8 Apr 2024 12:18:19 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
- /proc/bootconfig
-Message-ID: <bacfd3b9-5a2a-43ee-8169-4d8bf5a3ddc8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
- <20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
- <26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
- <20240405102324.b7bb9fa052754d352cd2708e@kernel.org>
- <20240405115745.9b95679aa3ac516995d4d885@kernel.org>
- <ef8cf3e7-9684-4495-a70e-c8f13ad188c5@paulmck-laptop>
- <20240406111108.e9a8b8c4cb8f44a8fb95b541@kernel.org>
+	s=arc-20240116; t=1712604054; c=relaxed/simple;
+	bh=l/9NaRSN7Lj0BWe71GtBBKD+0KLY6lT3ekZ1kX65dMg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=HQWCoUrLs0Qei/zHRgo7nQKpC9uJ0KiFsLIbu9j2oXrCox69/jerbFYVgxJHR/Nky5BvvlIQbyIyPQfz39HTvuW6C56tCseagzoCGzZSzAx+PWxb1YKwr6x9P0KoMjCD/ww3E6x4JuHx139DK+G6Df7YRK1th7prvsokxBmyYqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bABV0/JD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=s9nHUdfU; arc=none smtp.client-ip=64.147.123.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 7DB1518000F9;
+	Mon,  8 Apr 2024 15:20:50 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 08 Apr 2024 15:20:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1712604050; x=1712690450; bh=CJdJSJ9hqf
+	ff0ogua6mplEDET1TsT3kx5yGSs3bTW+g=; b=bABV0/JDgEHSMqz3QJ6eUm4zmY
+	cO4nxZd3AX7G+X+FtEE/wdy/Ha+pX3M9AXJfz0frw9vvDIIrMnmwIT1mhojc3pjW
+	AUVFJohUIVIylRDfggSTq2DnL0anFxM24aKDfMCF9GFC6Y3YNVPyUc2J6vHaZ42j
+	a9lIkbqyVFWjmP9SQzpUjKvNk9W1nyVl7SHcBgtAIFpKA5n8wP8g9wQcJjc3dHcC
+	D3vQ407kQ+IFJFySLotyY7lMcM85DaNhV1vvG4yv/c4x4l8fiGzDR8AxUTh22B1c
+	PUqan9IkfH042oSceCnGz4iP4GUhW5H7q3dAHu286uZJ/Qqe/ko8lJ1fYotA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712604050; x=1712690450; bh=CJdJSJ9hqfff0ogua6mplEDET1Ts
+	T3kx5yGSs3bTW+g=; b=s9nHUdfUV2i2cnbzc9yXOsWJlzcPsi5bbYfAE7F9zVcT
+	lZAK6m83S7BgMs6udpCelvzXXsg5l7qWyiT9FaSjV5pu/hTiAWpJU/Te4p5PNURL
+	tUVmjaIfhl8J8FKIvwWMEB3XFQhYpQ4T6n6GS5SMmW1feapFfRy4NF+gSc8nAbSF
+	93untM5v7bo1b3+EHGhaDzaDkScG4UVX0RMyjGZLflfb6EEMcX5c4hpcUJvptqem
+	nSP0DG8RuSBQ0WXi6xUHZOcvwaW1Q2GtH8PMDsXoCX4tOceKOH73+tNtP/IjeQ+S
+	jbWitDWSCC2gxia1X5dSLN18LQkPk8xBwvOFDCYj+g==
+X-ME-Sender: <xms:kUMUZmKeRu0TNtmb8G46MgD2CzdCl6tXvU3csePhL_OuyRO-fu7gDQ>
+    <xme:kUMUZuKXq79VdFTT6twyknTtAVwhO2oKi47krCVOl6I0MxZI01-CLcfjptP2RdiaU
+    U4svhNzz4cjU5rhQeM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:kUMUZmsPPb50_gHeAXSqsrid4zYpZtsPk91ONqdkKZL99Jn97DxxDg>
+    <xmx:kUMUZrYeYSHaUlBRFswa3lqib_bIRHrunfVFlPwphoIhb7oT4wr5Fw>
+    <xmx:kUMUZtZb_dci5OgeGDYn8Fke1Jayyoc10Zffe52Ue-lGNiyPGKTijQ>
+    <xmx:kUMUZnD6kFUUS1k8SapoBi8xd1-EzPT-YPekKu6LCo-M_9GpEFjYhA>
+    <xmx:kUMUZiNgAPxm9Rqc-Y-rvHL4EfWM8ipZgCVKaZTDSmjY-KLSU_zARDIj>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8F766B6008F; Mon,  8 Apr 2024 15:20:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240406111108.e9a8b8c4cb8f44a8fb95b541@kernel.org>
+Message-Id: <88009872-377b-4155-aceb-88d36f4a44e4@app.fastmail.com>
+In-Reply-To: <948ab982-cb4d-46d4-a3c4-cc1c6369eb92@moroto.mountain>
+References: <20240328140512.4148825-1-arnd@kernel.org>
+ <20240328140512.4148825-4-arnd@kernel.org>
+ <695be581-548f-4e5e-a211-5f3b95568e77@moroto.mountain>
+ <d8ee72ec-c16f-443a-b9c1-555dcbc69182@app.fastmail.com>
+ <948ab982-cb4d-46d4-a3c4-cc1c6369eb92@moroto.mountain>
+Date: Mon, 08 Apr 2024 21:20:25 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Dan Carpenter" <dan.carpenter@linaro.org>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ "Kees Cook" <keescook@chromium.org>, "Daniel Micay" <danielmicay@gmail.com>,
+ linux-staging@lists.linux.dev
+Subject: Re: [PATCH 03/11] staging: replace weird strncpy() with memcpy()
+Content-Type: text/plain
 
-On Sat, Apr 06, 2024 at 11:11:08AM +0900, Masami Hiramatsu wrote:
-> On Thu, 4 Apr 2024 21:25:41 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > On Fri, Apr 05, 2024 at 11:57:45AM +0900, Masami Hiramatsu wrote:
-> > > On Fri, 5 Apr 2024 10:23:24 +0900
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > > 
-> > > > On Thu, 4 Apr 2024 10:43:14 -0700
-> > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > 
-> > > > > On Thu, Apr 04, 2024 at 08:55:22AM +0900, Masami Hiramatsu wrote:
-> > > > > > On Wed, 3 Apr 2024 12:16:28 -0700
-> > > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > > > 
-> > > > > > > commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
-> > > > > > > /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
-> > > > > > > 
-> > > > > > > /proc/bootconfig shows boot_command_line[] multiple times following
-> > > > > > > every xbc key value pair, that's duplicated and not necessary.
-> > > > > > > Remove redundant ones.
-> > > > > > > 
-> > > > > > > Output before and after the fix is like:
-> > > > > > > key1 = value1
-> > > > > > > *bootloader argument comments*
-> > > > > > > key2 = value2
-> > > > > > > *bootloader argument comments*
-> > > > > > > key3 = value3
-> > > > > > > *bootloader argument comments*
-> > > > > > > ...
-> > > > > > > 
-> > > > > > > key1 = value1
-> > > > > > > key2 = value2
-> > > > > > > key3 = value3
-> > > > > > > *bootloader argument comments*
-> > > > > > > ...
-> > > > > > > 
-> > > > > > > Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
-> > > > > > > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> > > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > > > > Cc: <linux-trace-kernel@vger.kernel.org>
-> > > > > > > Cc: <linux-fsdevel@vger.kernel.org>
-> > > > > > 
-> > > > > > OOps, good catch! Let me pick it.
-> > > > > > 
-> > > > > > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > 
-> > > > > Thank you, and I have applied your ack and pulled this into its own
-> > > > > bootconfig.2024.04.04a.
-> > > > > 
-> > > > > My guess is that you will push this via your own tree, and so I will
-> > > > > drop my copy as soon as yours hits -next.
-> > > > 
-> > > > Thanks! I would like to make PR this soon as bootconfig fixes for v6.9-rc2.
-> > > 
-> > > Hmm I found that this always shows the command line comment in
-> > > /proc/bootconfig even without "bootconfig" option.
-> > > I think that is easier for user-tools but changes the behavior and
-> > > a bit redundant.
-> > > 
-> > > We should skip showing this original argument comment if bootconfig is
-> > > not initialized (no "bootconfig" in cmdline) as it is now.
-> > 
-> > So something like this folded into that patch?
-> 
-> Hm, I expected just checking it in the loop as below.
-> 
-> ------------------------------------------------------------------------
-> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> index e5635a6b127b..98e0780f7e07 100644
-> --- a/fs/proc/bootconfig.c
-> +++ b/fs/proc/bootconfig.c
-> @@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
->  {
->  	struct xbc_node *leaf, *vnode;
->  	char *key, *end = dst + size;
-> +	bool empty = true;
->  	const char *val;
->  	char q;
->  	int ret = 0;
-> @@ -62,8 +63,9 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
->  				break;
->  			dst += ret;
->  		}
-> +		empty = false;
->  	}
-> -	if (ret >= 0 && boot_command_line[0]) {
-> +	if (!empty && ret >= 0 && boot_command_line[0]) {
->  		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
->  			       boot_command_line);
->  		if (ret > 0)
-> 
-> ------------------------------------------------------------------------
-> 
-> The difference is checking "bootconfig" cmdline option or checking
-> the "bootconfig" is actually empty. So the behaviors are different
-> when the "bootconfig" is specified but there is no bootconfig data.
+On Mon, Apr 8, 2024, at 17:59, Dan Carpenter wrote:
+> On Mon, Apr 08, 2024 at 04:45:55PM +0200, Arnd Bergmann wrote:
+>> On Thu, Mar 28, 2024, at 17:35, Dan Carpenter wrote:
+>> >>  	if (sendbytes > 8) {
+>> >>  		memcpy(buf, inquiry_buf, 8);
+>> >> -		strncpy(buf + 8, inquiry_string, sendbytes - 8);
+>> >> +		memcpy(buf + 8, inquiry_string, min(sendbytes, 36) - 8);
+>> >
+>> > I think your math is off.  The string is 29 characters + NUL.  So it
+>> > should be "min(sendbytes, 38) - 8".  You're chopping off the space and
+>> > the NUL terminator.
+>> >
+>> > This only affects pro_formatter_flag code...
+>> 
+>> The extra two bytes were clearly a mistake in the original version
+>> at the time it got added to drivers/staging. Note how the code
+>> immediately below it would overwrite the space and NUL byte again:
+>> 
+>>         if (pro_formatter_flag) {
+>>                 if (sendbytes > 36)
+>>                         memcpy(buf + 36, formatter_inquiry_str, sendbytes - 36);
+>>         }
+>> 
+>
+> Ah.  Okay.  Fair enough.
+>
+> I do think this code is really suspect...  What is the point of allowing
+> sendbytes < 36?  But that's not related to your patch.
 
-Ah, understood, the point is to avoid the comment in cases where its
-content would be identical to /proc/cmdline.
+As far as I can tell, the driver tries to emulate the behavior
+or normal scsi commands that could be issued from userspace through
+SGIO with a short length. drivers/ata/libata-scsi.c has code to
+handle INQUIRY as well that is somewhat similar but also different
+enough that I don't trust the rts5208 version of it.
 
-> Another idea is to check whether the cmdline is actually updated by
-> bootconfig and show original one only if it is updated.
-> (I think this fits the purpose of the original patch better.)
-> 
-> ------------------------------------------------------------------------
-> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> index e5635a6b127b..95d6a231210c 100644
-> --- a/fs/proc/bootconfig.c
-> +++ b/fs/proc/bootconfig.c
-> @@ -10,6 +10,9 @@
->  #include <linux/bootconfig.h>
->  #include <linux/slab.h>
->  
-> +/* defined in main/init.c */
-> +bool __init cmdline_has_extra_options(void);
-> +
->  static char *saved_boot_config;
->  
->  static int boot_config_proc_show(struct seq_file *m, void *v)
-> @@ -63,7 +66,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
->  			dst += ret;
->  		}
->  	}
-> -	if (ret >= 0 && boot_command_line[0]) {
-> +	if (cmdline_has_extra_options() && ret >= 0 && boot_command_line[0]) {
->  		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
->  			       boot_command_line);
->  		if (ret > 0)
-> diff --git a/init/main.c b/init/main.c
-> index 2ca52474d0c3..881f6230ee59 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -487,6 +487,11 @@ static int __init warn_bootconfig(char *str)
->  
->  early_param("bootconfig", warn_bootconfig);
->  
-> +bool __init cmdline_has_extra_options(void)
-> +{
-> +	return extra_command_line || extra_init_args;
-> +}
-> +
->  /* Change NUL term back to "=", to make "param" the whole string. */
->  static void __init repair_env_string(char *param, char *val)
->  {
-> ------------------------------------------------------------------------
+On a separate note, I just noticed that I forgot to put
+the driver name into the subject line, which I've fixed
+up for v2 as well now.
 
-This one looks good to me!
-
-I had to move the declaration from /fs/proc/bootconfig.c to
-include/linux/bootconfig.h in order to avoid a build error.  (The
-build system wants the declaration and definition to be visible as
-a cross-check.)
-
-Does the resulting patch below work for you?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 8d95b50c523fba7133368650b3b5f71b169c76b5
-Author: Masami Hiramatsu <mhiramat@kernel.org>
-Date:   Mon Apr 8 12:10:38 2024 -0700
-
-    fs/proc: Skip bootloader comment if no embedded kernel parameters
-    
-    If the "bootconfig" kernel command-line argument was specified or if
-    the kernel was built with CONFIG_BOOT_CONFIG_FORCE, but if there are
-    no embedded kernel parameter, omit the "# Parameters from bootloader:"
-    comment from the /proc/bootconfig file.  This will cause automation
-    to fall back to the /proc/cmdline file, which will be identical to the
-    comment in this no-embedded-kernel-parameters case.
-    
-    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-index e5635a6b127b0..87dcaae32ff87 100644
---- a/fs/proc/bootconfig.c
-+++ b/fs/proc/bootconfig.c
-@@ -63,7 +63,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
- 			dst += ret;
- 		}
- 	}
--	if (ret >= 0 && boot_command_line[0]) {
-+	if (cmdline_has_extra_options() && ret >= 0 && boot_command_line[0]) {
- 		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
- 			       boot_command_line);
- 		if (ret > 0)
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index ca73940e26df8..e5ee2c694401e 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -10,6 +10,7 @@
- #ifdef __KERNEL__
- #include <linux/kernel.h>
- #include <linux/types.h>
-+bool __init cmdline_has_extra_options(void);
- #else /* !__KERNEL__ */
- /*
-  * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
-diff --git a/init/main.c b/init/main.c
-index 2ca52474d0c30..881f6230ee59e 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -487,6 +487,11 @@ static int __init warn_bootconfig(char *str)
- 
- early_param("bootconfig", warn_bootconfig);
- 
-+bool __init cmdline_has_extra_options(void)
-+{
-+	return extra_command_line || extra_init_args;
-+}
-+
- /* Change NUL term back to "=", to make "param" the whole string. */
- static void __init repair_env_string(char *param, char *val)
- {
+    Arnd
 
