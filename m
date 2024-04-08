@@ -1,145 +1,128 @@
-Return-Path: <linux-kernel+bounces-135115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E45D89BB54
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:14:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371CE89BB67
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC79E28184E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:14:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D8FCB22749
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930493FB83;
-	Mon,  8 Apr 2024 09:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD3648787;
+	Mon,  8 Apr 2024 09:15:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sskiNhnO"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X0yCv5LR"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B1234CDE
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9250B47F62
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567646; cv=none; b=Xy+2NTI2QnLEFOI274W+9DgedNvglpmdw38ms+/61dBTHuYIyv6W2HdA5RquvLab7f7gD2ML/hE6jybDI/3vqSF/d8a+oBC45Nu96MBRy8myIm3QyPT2rdeGgibStrdzC8CDt3Y1mRo/6t58YnSBJqUm8D712+ksF3aVZPF6x28=
+	t=1712567754; cv=none; b=orB5TWqNE6BKLIDmzTJcp2FaWqqTPhiatFucuhb35Qwe2wvYPPQr0zh6kiARuYb09/gQBoFPtHmdckR2LvOF1GE6vz2W79IAWdOnZZbPj/kq/kWmeyic0tOWlvEt81/4EnNjDiuVkqiXdt7YJZVh6eWgIoK86B8qvEZT1/ZAYHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567646; c=relaxed/simple;
-	bh=8+I33Q7W7iw315CemMmiCzk+goWkzaVeSs5DNZuhE5g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=imZROLSlgV80Qwv5StBdpwEkoe3kFp+4mFR6qIaHc5QKl+HuTjqs3yEsJIUjA/75hA1/E1eZqUWrnVc1C2b2QmFDH6OEOj1hkL77UKFElVWq5Acv/yCE2Om/afPvBV62EnNA2hS6slvkcTlYYeubE4kH3w6kaFXsIYjTeAx6+0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sskiNhnO; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712567635; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=K6qk+9ggjcNMTTz30BtXi3bL/FtbPiUNAq+6RisDvL0=;
-	b=sskiNhnOELfdDhMzxz1CxYeQmMeTKW/ZTmd9BzUWBuaUz5N+AGe83ppE/SC001zvvErfghgujJpGL73i+hs4nRTyon+COn767kOJZKtsjxAdrM00fL0XMjSSrPwMYL3yOh0kmSIBCKob6WrxkdFRm/eFWrrSCu3I9IfgUm/pUcM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W46vhRi_1712567634;
-Received: from 30.97.56.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W46vhRi_1712567634)
-          by smtp.aliyun-inc.com;
-          Mon, 08 Apr 2024 17:13:55 +0800
-Message-ID: <8c811ea8-f4ea-4f0f-91f8-3bc798a19407@linux.alibaba.com>
-Date: Mon, 8 Apr 2024 17:13:53 +0800
+	s=arc-20240116; t=1712567754; c=relaxed/simple;
+	bh=JEigFgZtlDcpBgMnwJRvjSwQEXnr/LWBGj9+c6wAxB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EgyCpcSVTgsaUM+y0bbvEAxw7ePCUtKFViCajJ5wbhMJJbqWF8g6zw0hvyHfN2G5p3LIZkpvsDRQHjWflGwmGbewQZoTq6ktHREJIFWYJbwCUUbOA8ICBOrfpSDSUel7sX+q56LutKUx2LVqUw2vjWEUc17IIomy/jmHEan5HV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X0yCv5LR; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e2e09fc27so5340062a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712567751; x=1713172551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKQ4ssH0Vp8aO7T3dWiKeARcFGoFUU64A/KjThpMFOU=;
+        b=X0yCv5LRGhSFOL5va9Ns7PWKTMor/xEkEmcCgxu0nnIz3d2ISKs6nsjl+DVb9ponse
+         A3FadXiuTRxIsdEC5xf3JWOtTPslA2Xc0ipH8vh31WkojQCQC0oeJz+0lgdX91S0tbqu
+         6rYK1f+y8IpCj6xuW3IAiL+b7POY1WyG2axKbgrHjU44EMyJFDbwp36FbBIzXimu/6tf
+         Hb5D50Cu1spR+Z/VGynPDFe89E844whsdalw1wraHNlRmXHGpCZVZXhohb/2rfR2xoLb
+         qy3NQKP33ay5mO30fTzEB0NGN2nW4leScOXnQl3t6r11YfR6OT/zUpeaPnd2zqHKGCyd
+         rGHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712567751; x=1713172551;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eKQ4ssH0Vp8aO7T3dWiKeARcFGoFUU64A/KjThpMFOU=;
+        b=UyaL0D4XViuKP0T0Zk3/df/Pki4HDN74kk2UQqppe5Wb3PA2U9TAecjabQa0wrrtGu
+         ivEwx5qfdP4D/Ask84u+x8e6wc27T1YxeTtzFVrs967B3a/bBjR1+YUrhqtMw/EcmKpM
+         pc1D4V7g/vP8pRmiIbUF0M0Akg/NmLc0mSzM3/It/zXec4iYMF4BtVu4+06Q1/H8gu0T
+         uhRNq3zkZ9JHVGH2HAYwG+LKwvjcT6Gxq3UbNitG1ii4OM3A0uUjygSs7AwRKB2K/8wo
+         9Mizs+93rbwq+gMoM9RdSixgxS6kOogQbiyDwghNSVGZtdV7jtWGfm6nGTOTJQiS/RJ7
+         cYmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTPVFBNqy3JOnT2CQP2jrpci64+Htb1V2zD3RzVKs6d45vJnk8AJVTPjMJmdje6oi2MwELMVv4khq1b7ev96Sy6h7BQG2V2TzgWqmy
+X-Gm-Message-State: AOJu0YyCQEimQdMOJclo5H5OMKnOiSrEAYOAlUaIQDu6Xfj9ZF2eAZLY
+	BqFIVRXxmNdZKz792eX2CwhNuADuv47QFVw7278RXjpW2z13Yzxc
+X-Google-Smtp-Source: AGHT+IFKe5rDA9zFhVkP8K2kKoI+k6OLDvU3aBwxBekiRsRiZJ5fEVegJJgq/AR4ZBT4CeF9aBIz0w==
+X-Received: by 2002:a05:6402:4027:b0:568:d6a2:716 with SMTP id d39-20020a056402402700b00568d6a20716mr8995305eda.7.1712567750642;
+        Mon, 08 Apr 2024 02:15:50 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id n2-20020a056402434200b0056de7bee45bsm3854201edc.18.2024.04.08.02.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 02:15:50 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/3] locking/atomic/x86: Improve arch_cmpxchg64() and friends for x86_32
+Date: Mon,  8 Apr 2024 11:13:55 +0200
+Message-ID: <20240408091547.90111-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
-To: Vlastimil Babka <vbabka@suse.cz>, Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
- "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <20240320180429.678181-11-hannes@cmpxchg.org>
- <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
- <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Following patch series improves arch_cmpxchg64() family
+of functions and rewrites arch_cmpxchg64() family in a
+similar way as was recently done for arch_cmpxchg128() family.
 
+The improvements builds on recent improvement of emulated
+cmpxchg8b_emu() library function and introduce
+arch_try_cmpxchg64() also for !CONFIG_X86_CMPXCHG64 targets.
 
-On 2024/4/8 15:38, Vlastimil Babka wrote:
-> On 4/7/24 12:19 PM, Baolin Wang wrote:
->> On 2024/3/21 02:02, Johannes Weiner wrote:
->>>    
->>> +	account_freepages(page, zone, 1 << order, migratetype);
->>> +
->>>    	while (order < MAX_PAGE_ORDER) {
->>> -		if (compaction_capture(capc, page, order, migratetype)) {
->>> -			__mod_zone_freepage_state(zone, -(1 << order),
->>> -								migratetype);
->>> +		int buddy_mt = migratetype;
->>> +
->>> +		if (compaction_capture(capc, page, order, migratetype))
->>>    			return;
->>> -		}
->>
->> IIUC, if the released page is captured by compaction, then the
->> statistics for free pages should be correspondingly decreased,
->> otherwise, there will be a slight regression for my thpcompact benchmark.
->>
->> thpcompact Percentage Faults Huge
->>                             k6.9-rc2-base        base + patch10 + 2 fixes	
->> Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
->> Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
->> Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
->> Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
->> Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
->> Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
->> Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
->> Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
->> Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
->>
->> I add below fix based on your fix 2, then the thpcompact Percentage
->> looks good. How do you think for the fix?
-> 
-> Yeah another well spotted, thanks. "slight regression" is an understatement,
+While the patch series enables impressive assembly code
+reductions for somehow obsolete !CONFIG_X86_CMPXCHG64 targets,
+the true reason for the changes will be evident from the
+follow-up patch series, where this series enables unification
+of several atomic functions between x86_64 and x86_32 targets.
 
-Thanks for helping to confirm.
+OTOH, by adopting the same approach and similar structure of
+arch_cmpxchg64() macros to arch_cmpxchg128() macros, these
+patches lower future maintenace burden and technical debt
+of the source code.
 
-> this affects not just a "statistics" but very important counter
-> NR_FREE_PAGES which IIUC would eventually become larger than reality, make
-> the watermark checks false positive and result in depleted reserves etc etc.
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 
-Right, agree.
+Uros Bizjak (3):
+  locking/atomic/x86: Correct the definition of __arch_try_cmpxchg128()
+  locking/atomic/x86: Modernize x86_32 arch_{,try_}_cmpxchg64{,_local}()
+  locking/atomic/x86: Introduce arch_try_cmpxchg64() for
+    !CONFIG_X86_CMPXCHG64
 
-> Actually wondering why we're not seeing -next failures already (or maybe I
-> just haven't noticed).
-> 
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 8330c5c2de6b..2facf844ef84 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
->>           while (order < MAX_PAGE_ORDER) {
->>                   int buddy_mt = migratetype;
->>
->> -               if (compaction_capture(capc, page, order, migratetype))
->> +               if (compaction_capture(capc, page, order, migratetype)) {
->> +                       account_freepages(zone, -(1 << order), migratetype);
->>                           return;
->> +               }
->>
->>                   buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
->>                   if (!buddy)
->>
->> With my fix, the THP percentage looks better:
->>                         k6.9-rc2-base          base + patch10 + 2 fixes	+
->> my fix
->> Percentage huge-1        78.18 (   0.00%)       82.83 (   5.94%)
->> Percentage huge-3        86.70 (   0.00%)       93.47 (   7.81%)
->> Percentage huge-5        90.26 (   0.00%)       94.73 (   4.95%)
->> Percentage huge-7        92.34 (   0.00%)       95.22 (   3.12%)
->> Percentage huge-12       91.18 (   0.00%)       92.40 (   1.34%)
->> Percentage huge-18       89.00 (   0.00%)       85.39 (  -4.06%)
->> Percentage huge-24       90.52 (   0.00%)       94.70 (   4.61%)
->> Percentage huge-30       94.44 (   0.00%)       97.00 (   2.71%)
->> Percentage huge-32       93.09 (   0.00%)       92.87 (  -0.24%)
+ arch/x86/include/asm/cmpxchg_32.h | 207 ++++++++++++++++++------------
+ arch/x86/include/asm/cmpxchg_64.h |   2 +-
+ 2 files changed, 129 insertions(+), 80 deletions(-)
+
+-- 
+2.44.0
+
 
