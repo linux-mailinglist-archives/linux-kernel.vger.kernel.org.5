@@ -1,137 +1,140 @@
-Return-Path: <linux-kernel+bounces-135727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FF989CA71
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:10:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D0789CA72
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773091F23153
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C45F6288076
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C0514387E;
-	Mon,  8 Apr 2024 17:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101EC143882;
+	Mon,  8 Apr 2024 17:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jduS4//O"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uKa3+5XH"
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037E5142906;
-	Mon,  8 Apr 2024 17:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97383142E9F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596225; cv=none; b=S2Awch2LXy6xS3FerIrUgt1fPeydxP5Bs0yli8TaRjkxpqSk9UM9UTr3lsI4oHg6TBaH286NinwMRCob5MUOInhp0aLlwirYc3UWtXJ0L82q7euJr+a8XmonTTAAyDLiwgFGIpNDmNRVpddfwC17/zQH0zW+0oEBHuYfoJJMRkc=
+	t=1712596248; cv=none; b=RGGPtv9hZcVkhrejGdjKoKPVsHzj+H5ito+MYcyNBm2I13Jjn+1ptPvRJto+VhWoPEHKN8Q1WA7/L3DG4IeH7iqwpc5o4rjuMAgi9nJ3blHwBBD1K25boBPqbgQhg4QiecMNqJU+zcXDp4lxFQqCive3EWesZFfFV+z1uuwYdfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596225; c=relaxed/simple;
-	bh=qB02tO0c11oTDoGkptLF9S44KzrfXCWpSzxS13m35GA=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=raLTy9j0c5IFQv5Csj87BWMJbWWDTBD81FONIOSv38OtUqXI/F8Jrc3N2eZWKPWNXhqNyMEAw8T3ey4n5kJq3UQ03tDXfQxXoPX9eq2dZF5QHydK9AWx+VQqR+iPP84V29lSIrOI3vAxagf4i7NkqpDum2tTv3gqWcVzbiCi8AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jduS4//O; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712596224; x=1744132224;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=qB02tO0c11oTDoGkptLF9S44KzrfXCWpSzxS13m35GA=;
-  b=jduS4//OMiC71tK2mwlg/ZZYB2Cyl8HywMkjie+o0lXHoqsfthdgL/dp
-   Z2YrPkCOJb7MNwrFRhY20k6S9vmMzzjPupGi7vDJVLqlHMMVbndxzSE3U
-   bc5J12bKvXzJonuquswkh1r3JIxFfh8W4jcT0c4rOUQi9lQ9yWkU9lGDt
-   Ic95Vwj1eKiPKN5uZeUvrZywjuuCy18Ky1wtIjbE1rv59enRnC3aVfshD
-   jx/knl7w0sFOZBn7k1zQ1ym205yqOP4esw0tO+90VmWmObsgej5b027gb
-   qYLTCgEN3IQP79Zo57MO5+2wZNNAYEytpSQjpfWOU44TDJyOjXNvSibt0
-   g==;
-X-CSE-ConnectionGUID: EJlnlxQTQ9+binjwE18Xsg==
-X-CSE-MsgGUID: K8mxhO8qTWu160/4TmpfiA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="33285774"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="33285774"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:10:23 -0700
-X-CSE-ConnectionGUID: 7rD6KCJESBGEq2pgugLXIA==
-X-CSE-MsgGUID: Vo9e1p9GSHKfBP7XuibKdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="50949697"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.28])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:10:22 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 8 Apr 2024 20:10:16 +0300 (EEST)
-To: "David E. Box" <david.e.box@linux.intel.com>
-cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH V3 7/9] tools/arch/x86/intel_sdsi: Fix meter_certificate
- decoding
-In-Reply-To: <20240405032507.2637311-8-david.e.box@linux.intel.com>
-Message-ID: <5fa57609-fc49-c499-b2c7-ec9400696619@linux.intel.com>
-References: <20240405032507.2637311-1-david.e.box@linux.intel.com> <20240405032507.2637311-8-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1712596248; c=relaxed/simple;
+	bh=cylWH1nnV2bxqs+WbEQuW213MzLnqSLV8ZuKW654Nsc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kq2TkxlsFt4G1CCJPjzgz2aAcfH31Io8FMgRmYURGyh01iY1V5JoBNS+xa2SP05VrersrYKf/q1063mDcpkZPcGWPo8f0+Dcm0yMPfu/lzuGH9y5WiCMMWZY3LaBg+JWwp7Tpbu4LkXgTi0L493wJtRZDW8076cAGoq8pUqnoKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uKa3+5XH; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-479c9c2d2b0so1379153137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712596245; x=1713201045; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dgNLDg69yxbLlzA2rtbGSv5XoBTDQC7WuQwQX8jNXm4=;
+        b=uKa3+5XH9/wqnndhQovMxVcKGitMuVXwcJbN41BDJpfFUJrYqQ6CXYNVYRIV7jjABC
+         enBwsUBy0qpqqzHZ8O0Yvzpx2RIxx5adVAG/oNiBsilolZwzopxpwL+fvCXe07Y0OyXN
+         whh61H4HZ0JKpx9ehnWd9eHd47aiD6Rrv5uU3fn8ht6OPh0oG9FqHlg+rpePYu2DIdhJ
+         45K4itBOC7V6DhoHyHbXbQ+NWiy53q91Umk4MgsBPbbulwD3Q/nxZwB9W5D3uLGheg00
+         LrVtZoBNH7gT25BturHv/WEAB8qAnFatS/V2OmSIqNSCoDZXlD7hwx+LETdUhpSmU2PG
+         JxiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712596245; x=1713201045;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dgNLDg69yxbLlzA2rtbGSv5XoBTDQC7WuQwQX8jNXm4=;
+        b=HF4dsnS4JHNPDHIi8Wb9xsSP8ZJYSYQKUu87Dx+KMRS/SoLe6QkeG0bs5wWmacJ87h
+         1lt0QGQYwTU6cWkl704SXzoRzCTDa/B1vAd2iUHCbyx3EqsTl93DxNynjf0MO5WDulrk
+         h2uPBWiJeGXdVuOb+56K88cEjHXEQmEKAdlaqA3CVm3T7CYzSXqSHPYarEqbTd4KvRBO
+         /vorh/JwxbairaCMd/FxkiVl/sDYdbZ+Q/SqVgeChetPLjewVuyc4/ZX6LLg39AoDOBj
+         hikMbOLN1S9HiiTdXvtiAkuQs39Z3Hr3vU4dPXHYMK61OCWas5xrc7MUYovzcQWS0hPR
+         3XtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlYVF7ZzsPigzuZk4KcuOu1C1crLcoEOh3czpZNcfh4FxxkiWMVW/0v3mS2tLs3eYYwGjt50wyxq1ZudMJIjJ8o+18f3m+vO3jb0tY
+X-Gm-Message-State: AOJu0YwepEkhSi3QI9Fo+4dXJtBgWhqzUDetgBG9cjijsRpbYuZAHgxF
+	nb93XY14O6VDaeOz5CyVZ4t328M1cPpAriSP7COumLSL3vgjzo0UM4gohukF423eUNGVBH54oxX
+	3CPH+6oXNLaDfRwNbfJAm6lPIZaKzUd81upFHCw==
+X-Google-Smtp-Source: AGHT+IE4rZuhK6L+sff4J6NG4CwRQVKSfgKAx18voJzxhLCWPvTOZ87xJxM9RoHsSuBANnjuKv9ClsQST7QStSFG6TU=
+X-Received: by 2002:a1f:eec2:0:b0:4da:9aa1:dd5e with SMTP id
+ m185-20020a1feec2000000b004da9aa1dd5emr6423714vkh.10.1712596245531; Mon, 08
+ Apr 2024 10:10:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240408125256.218368873@linuxfoundation.org>
+In-Reply-To: <20240408125256.218368873@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 8 Apr 2024 22:40:34 +0530
+Message-ID: <CA+G9fYvt2MTfghC9OtdV-bFF+dN9sY3MzgpcQ608tSTt3XUBNQ@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/138] 6.1.85-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Thomas Richter <tmricht@linux.ibm.com>, 
+	Sumanth Korikkar <sumanthk@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 4 Apr 2024, David E. Box wrote:
+On Mon, 8 Apr 2024 at 18:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.85 release.
+> There are 138 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.85-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Fix errors in the calculation of the start position of the counters and in
-> the display loop. While here, use a #define for the bundle count and size.
-> 
-> Fixes: 7fdc03a7370f ("tools/arch/x86: intel_sdsi: Add support for reading meter certificates")
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
-> 
-> V3 - Use macros for bundle size and count
-> 
-> V2 - Split of V1 patch 7
-> 
->  tools/arch/x86/intel_sdsi/intel_sdsi.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> index a0711177e1bb..45bc69e6718e 100644
-> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> @@ -394,7 +394,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  	printf("MMRC encoding:                %.4s\n", name);
->  
->  	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
-> -	if (mc->bundle_length % 8) {
-> +	if (mc->bundle_length % METER_BUNDLE_SIZE) {
->  		fprintf(stderr, "Invalid bundle length\n");
->  		return -1;
->  	}
-> @@ -405,15 +405,16 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  		return -1;
->  	}
->  
-> -	bec = (void *)(mc) + sizeof(mc);
-> +	bec = (void *)(mc) + sizeof(*mc);
+The s390 defconfig build failed with gcc-13 and clang-17 due following
+build warning / errors on Linux stable-rc linux-6.1.y.
 
-The first (mc) doesn't need parenthesis. But this could be rewritten to 
-avoid void * entirely:
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-	bec = (struct bundle_encoding_counter *)(mc + 1);
+Build error:
+--------
+arch/s390/kernel/perf_pai_crypto.c:40:26: error: field 'mode' has
+incomplete type
+   40 |         enum paievt_mode mode;          /* Type of event */
+      |                          ^~~~
 
--- 
- i.
 
->  	printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle_length));
-> -	while (count++ < mc->bundle_length / 8) {
-> +	while (count < BUNDLE_COUNT(mc->bundle_length)) {
->  		char feature[5];
->  
->  		feature[4] = '\0';
->  		get_feature(bec[count].encoding, feature);
->  		printf("    %s:          %d\n", feature, bec[count].counter);
-> +		++count;
->  	}
->  
->  	return 0;
-> 
+Commit detail,
+  s390/pai: rework pai_crypto mapped buffer reference count
+  [ Upstream commit d3db4ac3c761def3d3a8e5ea6d05d1636c44c2ba ]
+
+Steps to reproduce:
+# tuxmake --runtime podman --target-arch s390 --toolchain gcc-13
+--kconfig defconfig
+
+
+Links:
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.84-139-g76e1877fe563/testrun/23349327/suite/build/test/gcc-13-defconfig/log
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.84-139-g76e1877fe563/testrun/23349327/suite/build/test/gcc-13-defconfig/details/
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
