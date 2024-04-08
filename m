@@ -1,288 +1,231 @@
-Return-Path: <linux-kernel+bounces-135174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C890689BC32
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:45:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CFA389BC3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:47:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD021F229AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:45:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33DD42840C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B164C61F;
-	Mon,  8 Apr 2024 09:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96894CDEB;
+	Mon,  8 Apr 2024 09:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j9Rd7gd3"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gaUkAHY1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7AD481DF
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569536; cv=none; b=mUszU9JH6jJT9nIT53IGN0NRHuw/pC+dvYP+qWVZiD+nDQCiTlGfJTmp0IfkygMLt+RM8rizKcDwyKQoVCPfVs5Vc23kZC7xOsuxlY38qPjKw+VUwtYqbpj3ppApLCIe6KjHxvlz8wcDvyQdmlpBoQOwIR2ThHdasGmeGSR7fvA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569536; c=relaxed/simple;
-	bh=KY+DAHNx6+UCJpVv+nk+LdbiIGFKX8pqW1DulvmcSWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P1cTKLTYTGdgpdLAcqHCMD8W3wFsDKpWi8kQIQVwDWn9GnH6zmWRaKbbWnf/lQ3h0mbucCS8ScGjMBc5kB9i/M/RAkP05A0PXpPPzkmRVO/pVpK7zgUdJl5m+UAeQ1zFnHikeeLCLD5YM+fOMisqdk6vTUZPDCXO1YcBwg1RoY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j9Rd7gd3; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ecf3943040so2642413b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:45:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712569534; x=1713174334; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GjKlG7HFcBFXYjqt93Kouw6TrmHnSbztf52UQV+WNvY=;
-        b=j9Rd7gd3HQNLtmkDH2+m16kpFYUxPEX781pCeZYWTowoJEnk1TnzNiUmcXuLj84eWz
-         UoRcPEg3iAwjlMZEVTA4Nzl79OlTYuXYaALJPEmPEHwYOZ8tg8WSb54sKZtv4hCFuOTx
-         f8pVrfRHodr5KdwYmJUX2cx0kc5OjLc4izYYapo/M5awN/8Rx4JIHcBQ78H4CJ1r9kdB
-         gVThax/Nu1rnyZSqatnX34cPlEwBzChyRYgurzFLMZEtNOkRCj5SIBXfQuQiJM9xNMaI
-         hsikzb/Jzbg+ow9iKGZbDB9Nj+DuuW6OipdYClZOVxgQi1ZQ151yhrmOvOmgvS1giExh
-         LyQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712569534; x=1713174334;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GjKlG7HFcBFXYjqt93Kouw6TrmHnSbztf52UQV+WNvY=;
-        b=mBCUXJ8rxxQ2rGFsgTDth3qdzOugYQnw7CCLc49kkie7Ok4F1mEMk3bqy+wInr/MKA
-         r//FzFr7eUDw2OFpICTO9m0kLB/l1XhkSaYvvpJWTVoxKzbF8z9m4QE7qJoky4zaQ9tH
-         FKVK/boZJxuEq8jU3mSStt320sqnBW7jsTsXy9OnA8y87+3d6uvJfa+Gg8Gdz51+l+23
-         V7HdH21CHS6xkxjRP1Nrcq0TTYkTNa7RhmL7Ez0GdorNNSirN7lB6ka5ZMqzdc6l2TcW
-         PB9fyOu4B24CLyf25Y41Hx7d4GS+zJ8BiVc5ulZ+L9soVkIS4ufVEb4Cwpo9kvs/9i5z
-         ckAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Y4gEhI5k+mKOswN85PlfQqDFAkhK19yXHWhtWSFJSlvO7jiUDHBx8yPpTPGvBAa5535ubYIlTOAadVAykEyP73egAMrQKa4gV44/
-X-Gm-Message-State: AOJu0Ywuc3YuYJP15rPdFphSGXvRD5pjgjNgnihq/M8R3/nOt9lrFR0U
-	V0iQOPI6mrEi2cX7nnQyqT7UfTM058/mTsRqKByH1fNliF2aVuteUz8rvpu23w==
-X-Google-Smtp-Source: AGHT+IEpuPiBFF2BDKbO8Rj7UX6Mr8oBg8nEkULvtOlVWNQJKZV0+AUoUnZ5PB8ldF3fIK+w/tzffw==
-X-Received: by 2002:a05:6a21:189:b0:1a7:63ce:84d6 with SMTP id le9-20020a056a21018900b001a763ce84d6mr3117465pzb.42.1712569533467;
-        Mon, 08 Apr 2024 02:45:33 -0700 (PDT)
-Received: from thinkpad ([120.56.198.211])
-        by smtp.gmail.com with ESMTPSA id ju2-20020a170903428200b001e23e8fd808sm6541055plb.217.2024.04.08.02.45.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 02:45:33 -0700 (PDT)
-Date: Mon, 8 Apr 2024 15:15:25 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, johan+linaro@kernel.org,
-	bmasney@redhat.com, djakov@kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v9 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240408094525.GB5727@thinkpad>
-References: <20240407-opp_support-v9-0-496184dc45d7@quicinc.com>
- <20240407-opp_support-v9-6-496184dc45d7@quicinc.com>
- <20240407150048.GE2679@thinkpad>
- <6e9b4379-5849-73cd-4d89-5e809b4c71a4@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE46F29CE0;
+	Mon,  8 Apr 2024 09:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712569652; cv=fail; b=h3/eyqHytBXuglAngX+pwWs8zhDFAZepOq8ja6krrnShrCNIduRV0uuhik8mhTSjZf5eg73skPE84s2C3a4VQApCsiJNeJHneTPzqZ95Eps8L/vV68pXPv0DhbL34cRxG96mbiaLX6ZzAAqCSwHG04oTpvaArP+hnOMDELnKOYQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712569652; c=relaxed/simple;
+	bh=s1tC1pukuaijnvqnHTyMXaFh72wjvDKJ59D2iaTbeaY=;
+	h=Message-ID:Date:Subject:From:To:CC:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=PRdLB556ED6bVr6uj6qQ9Ui/MeIQUsb7TYhydQiXtgzsGyUWW8aB9Q3wxMf5ublNFQRnISeFc/uvkwEEdiujOdlEzqcvAhL5VJBp9WnSO1dcuAG4Sy+V4T/K8JvJjmL4kgjzmpN8fZGh1yFT+Bk4PxueioVZ7krYrbV2RoaKL2Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gaUkAHY1; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712569651; x=1744105651;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=s1tC1pukuaijnvqnHTyMXaFh72wjvDKJ59D2iaTbeaY=;
+  b=gaUkAHY1/iDPiNtsZY18RmLzkBVSNZQuk9g+XR9FhU5NrFisLaGqvcXG
+   naK9d3bSsgaQldG9VMplv5aiGuA15T4NI2cSnIiGfE//zYX8z9QeGXjJc
+   ZDDoT0VGgILEYV0MAR5uC6Q8UoDKH598fxUifK9Be4hRabLBMCNYR3s2C
+   F2ocQeHTWDVc+bdbpFBVBXXw/NXmLIdFlsdBrrTazGOsJEwr9EXEyLxUq
+   mlG2uERJjbAIll/GI8/vailljZHVEsy9zkyXMR+P2TKfFleW+ppOTXiFu
+   1o2RK3rgfBUn7xjMAztJG4CipCYcw038e2MNNeajxYIMcHf0neP3gMr15
+   w==;
+X-CSE-ConnectionGUID: iMGWDIf4R2qpAuq8hthYuQ==
+X-CSE-MsgGUID: reitgozgRhOIBS61STLkTg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7939764"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="7939764"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 02:47:30 -0700
+X-CSE-ConnectionGUID: itBeR800TGSiOvVigtylQg==
+X-CSE-MsgGUID: Z1T7v/TjQdigjYaU2PXbvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="19782800"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Apr 2024 02:47:29 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Apr 2024 02:47:28 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Apr 2024 02:47:28 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 8 Apr 2024 02:47:28 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 8 Apr 2024 02:47:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g39rvE8t5qiqr3XezzTdXcaumo15nRy/rsMaFlj2Q4HOj/uVjVn9i+flqxQ0j1/p4wSpcaniNRHmyyfwka4nN0i0+kkQNW/j44nKPGIyanW/MsDjKmgMMX5VnLJU6aHpbAnjFxFRtclfuGb7mxOuN0shSbUlO0nVhmz0PdsAOwOkc0KFBwx7nOwlZxyNfuMnHlVKMSXkKRAZ8we95C4O7PnBYXF25Mu2duyZuO61N7EEOQaJtQi8JbaTG6NnRSoAO1FO62AaypZVifidtbvc8IXQE1R/U/8uJE8D/NQth2U6kUT4LVFBicnh70NArPgKOw5DXqvrSFUbWhY1hkeouw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ia6S9HD5jhk4fto5/+z9wWZTVsmkk3xnAAWmLAoOtUw=;
+ b=XEMNefcNvAC50TfZwlPRl2+xVXyEqMZ+jSiaDMoie//wdz5c9hXF0pNs1sTfPeYLLEorczb/SjkceNZz7zGNk7uyp5VmS7yi7oLJENCa9rnOqgZXxxpzmWkW/2VOCVrgITsSbiXgOaxnO3xAOw4hr89VbFSkHyaM9+19lcnVOJRT6h4V1AColNU+llkWUbxTik+z4BnTVxyLq2GCUtcW5B7G7RWpZUJvzXezZqBKo/+nwZOjXn5DmixfJYbhNzoR0UX97/QjZRVqQYKzTimody20rRLJikflbaGHo6Dvkgl2d0Za7iQ4DS4oF7VOcJtu6s2V+9Gt/ySMELnRWdmA5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by MW4PR11MB5774.namprd11.prod.outlook.com (2603:10b6:303:182::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Mon, 8 Apr
+ 2024 09:47:25 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::654c:d66a:ec8e:45e9]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::654c:d66a:ec8e:45e9%6]) with mapi id 15.20.7452.019; Mon, 8 Apr 2024
+ 09:47:25 +0000
+Message-ID: <755c17b2-0ec2-49dd-9352-63e5d2f1ba4c@intel.com>
+Date: Mon, 8 Apr 2024 11:45:32 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 7/9] libeth: add Rx buffer management
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Kees Cook <keescook@chromium.org>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, Alexander Duyck <alexanderduyck@fb.com>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Jesper Dangaard Brouer <hawk@kernel.org>, "Ilias
+ Apalodimas" <ilias.apalodimas@linaro.org>, Christoph Lameter <cl@linux.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+	<nex.sw.ncis.osdt.itp.upstreaming@intel.com>, <netdev@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240404154402.3581254-1-aleksander.lobakin@intel.com>
+ <20240404154402.3581254-8-aleksander.lobakin@intel.com>
+ <20240405212513.0d189968@kernel.org>
+ <1dda8fd5-233b-4b26-95cc-f4eb339a7f88@intel.com>
+Content-Language: en-US
+In-Reply-To: <1dda8fd5-233b-4b26-95cc-f4eb339a7f88@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI0P293CA0015.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:44::8) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6e9b4379-5849-73cd-4d89-5e809b4c71a4@quicinc.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|MW4PR11MB5774:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bx3VU46w+jYyPne/6/VDFGIUb+WkiC6QKSRg3bKyMQKqIAm/nqH2AZaV1BI+YVUu4P+dBakb9nIxO/azcF7K/K6BHP2UMmG3qcl5AD0NburgStBb4+RjwrAakDKDWRYr3f04mI827pNCkw4zZgZo2ohRxreefREs22JlMc+YaV4+cdgIPwRbp9sUweZrhJzVU96c7aYban8FYbY/OK5lehier30E1R8btmCo2O2n4pOWB7D6O7pQyoXp0aUdS/EDTMmt96vHjAIvfUbXC0YpKNaT910+7mGqf55Aov/WBXHr0dCoE8kWdPfJnpAYe5KTCN27Y9xFTdqXhGWbva710gMSThIqILMBVSInQzImRpmAb/capTvdptACfXsoebbYmPrSHPj87oREjoycTlfFkDed2Fw9gQCdOBz8mACOfgo1xP1FkH6sTVXy9Fa/9wabKZh4VjqlSfmOZ4Kl2snGVhvDSN3bafaxsLZhTmm9GessDd99nJAoKdsfVo0xiWYqBe/y89Rrbbb3m5tnCPyfj1jjI2j/4EZsOABulMBEXxZ/SsUguSmK/Y4Pr+NI4NteKUurCylNIjQsaXqhF+PB5/45QBjcexNNQslT2Z9AS2iVzUm1zciIzBkGdhgStqH03yEVva/frG22m4cwOoGrMSuZzNjyeFu+0lKJ3l7E2QI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eWJoWmN5LzdXUFREWmZlTVoxWEdGK1NySTJlL3l2SDhVNnNMWExpbHQrUzk3?=
+ =?utf-8?B?cHhoZmNPd2VVWk9IT2sxdjF0UTVrb2lYODMxMUNmUHlzSG4yaHBKbG0rd2RV?=
+ =?utf-8?B?bmdVQmJnTGRrMloya3d3QkdZVStIQ3FLbGRJOXNvVDRmY21CNUlTb1FwVUtB?=
+ =?utf-8?B?YXg4WnZpaVhDbnA0TkRIc2tpVjBCSmFvZThPb3hUdkpRUjdXbDhrTkxvOFFv?=
+ =?utf-8?B?b1NpVDdLY2tDYUVOVEp1SnJVNXM3QWFqOUVSUEZNWXE0OEhUTGVrUlN3ejRs?=
+ =?utf-8?B?blhjZXhaNUYwRHI1WXdOejZabTQ2RW45WXc0aTgyQWVUZW9qWXQ4blpMK3F0?=
+ =?utf-8?B?K0NQZXJLQ0xhUG5FTkFKSnVnWGRNNDN5QVU1VTNwQlF4bHlzZWtDTEpPRkts?=
+ =?utf-8?B?clgzNGxzWmQwQmRlanZkTGRVVWVMQUNWamFGOWdmWUpqRHpqTldQN2ZQVGdI?=
+ =?utf-8?B?OEYwKzVWSVFMSFI3Qy8wbTBMZGRVYjMvSkh1bURibUtyMU1wSWtCYmJZMWlO?=
+ =?utf-8?B?cG1sbStHdVFlTFhUNmplWkdzVDBLTnYxdFRsMElSQXJMc09kWmp3UnB6SjFz?=
+ =?utf-8?B?VGEyV1dlVnZ3dHVZY2RSU01nMmpuNmNLYkJQdXV0RVR6VGxhODN4enp3TXpX?=
+ =?utf-8?B?aFhhbHdrbUFtcWUzeWpjeVdJTU1Rb0x1blJZZm9VUTV1L2lHQ1QwcnVOM2wv?=
+ =?utf-8?B?WXM0d1JFMG8xeVRFY2pKMzdTVkZpVURoRFJOTS9QQ0owWnRaUm9kSGJPckda?=
+ =?utf-8?B?WWl4Z3FZK1NtT3AvSlRjbkRhVFpwZGZMRkhsUndRQUJSek5NRkZxWmgrNThh?=
+ =?utf-8?B?R3dicHBiSWVGc0NTaGVyb1k5TWZaRDlESGpaZzFtclM3VFhzS0ZGTGRCdzRB?=
+ =?utf-8?B?MXVMbzE2SHlvT1RWSkwzV0xXSkh4TWZTOTlxTVNRLzRuRjZlS3BzaFRaUE5w?=
+ =?utf-8?B?Si90cWI2MTU2R0FhcStHS1VWSGs1Z09WQnFuM21FdDkwRjFKOU1tMlJ2WHVE?=
+ =?utf-8?B?aktHdFBoMjFaNUEzUVdpMUJsblFTT3FySU85ekt2T3BtUXNod0wvb0w5enFO?=
+ =?utf-8?B?Z01YZTBrS3BxQU1sUklSQzFublV1VE5MdXRUbnRDK3ZkVzJvd1VjcU0vNVBY?=
+ =?utf-8?B?Vy82ZDhYYUxsby9OdE1GWHZLRFF2WE52UkFwaUpoWGdrR1ROaEFuelh2UHMv?=
+ =?utf-8?B?dWtqZ01KKytRcjhIUzN6cEozOFplTzYveVBnSDFKeFJxdmpydWJJbnNRSHc1?=
+ =?utf-8?B?UUlpZzhtaXZJT3pheDRSS3lhNnc3Y3E5YTIrRzJ2cFE3eXJOZnV4VFNBb0xz?=
+ =?utf-8?B?MjRkU1FaL1RFOE1OcFovSU9hbVNsaDV5QUlxMXhGa1VmR0VsaFJpUTJ0dllE?=
+ =?utf-8?B?cWh4MFBZZmhiTkR2dStoZjJPWnpYNkpuYlNoRXlpNzBsTkpvOHh6Ym1oR2N2?=
+ =?utf-8?B?SmhabmJUQ2tBWjkzQTVsUkNPdXp6N3dHK3BLMnVzRE5TNU9xZkJpRjduNUVL?=
+ =?utf-8?B?N1dWWVF1cHorQVJsdEQ1ZHhCbGpQZWJ4dE5jeDZwYjlBVFlnSWorZzlQbWly?=
+ =?utf-8?B?Wk5nUllaNTA0TEhBcWdzdnlyOFJqdkhsUHpGTFRpa2xBZ2xtczJPR3VvZ0tL?=
+ =?utf-8?B?M3VjQVBHbHdQMnUyRWtJSXQ5dVVoaE1saG5UMTRHOVRwcm5mZHhBeHFRcS9s?=
+ =?utf-8?B?ZUttMlhlcFcxajFWWXpmMFZGdldhY2thOUd4Z2l6RGhSVzB4VFhSMW1GMEth?=
+ =?utf-8?B?Q2JDLzRCSTYyTWU3V1FXWkxGWGRTVUVENUgwVEFpaE5XZ2NXS3Iva1B4MGR3?=
+ =?utf-8?B?Q2x0NC8wa04vWko3TFRSN0RXQjBSNlFvUnBtTm1GdEE5bmpNQ0tyYkFyS0VO?=
+ =?utf-8?B?bmY5ajZTMHIvUWxWM2NSNHFjeGZMZGdac04yYlhtdm1rQmpvbE1CeTMybDRZ?=
+ =?utf-8?B?YTFsdUF2U3VhOVNGNWhzZGpHK2J2eCtTSXNvMXA3bUpOdzczeEMxSlNlN3Fj?=
+ =?utf-8?B?dWNycng2ODc5VUk0QUlyRjF1S2dsMzUwQjBLYnhyWDViK0hRRmRGOWU4NDMx?=
+ =?utf-8?B?RXQrQXBJVGk0VTFUQmNmalpxeTRPcVQzbGI0OEtjaUdKNmpmbzBRbHJYS21D?=
+ =?utf-8?B?RnRadzNqZ01PYTc2MWtCdWxSTXBIUlNRN2wrTGZzdHU5K0xFVVJRK3h6WjR2?=
+ =?utf-8?B?M2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14b80e2f-93c7-4356-8274-08dc57b0e544
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 09:47:25.4222
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DKYmllRdpc5nExvZ3zWP6cd5uYdnM8l+li6ob1HGM+ZJUsmjIK4UR4tl4ZbIwjtY6XxYdARlGHprEnLrkEH7Vr9U/Vp9BlL4bCF4NS3a5Hk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5774
+X-OriginatorOrg: intel.com
 
-On Mon, Apr 08, 2024 at 02:32:18PM +0530, Krishna Chaitanya Chundru wrote:
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Date: Mon, 8 Apr 2024 11:11:12 +0200
+
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Fri, 5 Apr 2024 21:25:13 -0700
 > 
+>> On Thu,  4 Apr 2024 17:44:00 +0200 Alexander Lobakin wrote:
+>>> +/**
+>>> + * struct libeth_fq - structure representing a buffer queue
+>>> + * @fp: hotpath part of the structure
+>>
+>> Second time this happens this week, so maybe some tooling change in 6.9
+>> but apparently kdoc does not want to know about the tagged struct:
+>>
+>> include/net/libeth/rx.h:69: warning: Excess struct member 'fp' description in 'libeth_fq'
 > 
-> On 4/7/2024 8:30 PM, Manivannan Sadhasivam wrote:
-> > On Sun, Apr 07, 2024 at 10:07:39AM +0530, Krishna chaitanya chundru wrote:
-> > > QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> > > maintains hardware state of a regulator by performing max aggregation of
-> > > the requests made by all of the clients.
-> > > 
-> > > PCIe controller can operate on different RPMh performance state of power
-> > > domain based on the speed of the link. And this performance state varies
-> > > from target to target, like some controllers support GEN3 in NOM (Nominal)
-> > > voltage corner, while some other supports GEN3 in low SVS (static voltage
-> > > scaling).
-> > > 
-> > > The SoC can be more power efficient if we scale the performance state
-> > > based on the aggregate PCIe link bandwidth.
-> > > 
-> > > Add Operating Performance Points (OPP) support to vote for RPMh state based
-> > > on the aggregate link bandwidth.
-> > > 
-> > > OPP can handle ICC bw voting also, so move ICC bw voting through OPP
-> > > framework if OPP entries are present.
-> > > 
-> > > Different link configurations may share the same aggregate bandwidth,
-> > > e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
-> > > and share the same OPP entry.
-> > > 
-> > 
-> > This info should be part of the dts change.
-> > 
-> ok I will move this to dts patch in next patch series.
-> > > As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
-> > > is supported.
-> > > 
-> > > Before PCIe link is initialized vote for highest OPP in the OPP table,
-> > > so that we are voting for maximum voltage corner for the link to come up
-> > > in maximum supported speed.
-> > > 
-> > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > ---
-> > >   drivers/pci/controller/dwc/pcie-qcom.c | 72 +++++++++++++++++++++++++++-------
-> > >   1 file changed, 58 insertions(+), 14 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > index b4893214b2d3..4ad5ef3bf8fc 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > @@ -22,6 +22,7 @@
-> > >   #include <linux/of.h>
-> > >   #include <linux/of_gpio.h>
-> > >   #include <linux/pci.h>
-> > > +#include <linux/pm_opp.h>
-> > >   #include <linux/pm_runtime.h>
-> > >   #include <linux/platform_device.h>
-> > >   #include <linux/phy/pcie.h>
-> > > @@ -1442,15 +1443,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
-> > >   	return 0;
-> > >   }
-> > > -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> > > +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
-> > >   {
-> > >   	struct dw_pcie *pci = pcie->pci;
-> > > -	u32 offset, status;
-> > > +	u32 offset, status, freq;
-> > > +	struct dev_pm_opp *opp;
-> > >   	int speed, width;
-> > > -	int ret;
-> > > -
-> > > -	if (!pcie->icc_mem)
-> > > -		return;
-> > > +	int ret, mbps;
-> > >   	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> > >   	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-> > > @@ -1462,10 +1461,26 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> > >   	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
-> > >   	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
-> > > -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> > > -	if (ret) {
-> > > -		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
-> > > -			ret);
-> > > +	if (pcie->icc_mem) {
-> > > +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> > > +		if (ret) {
-> > > +			dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
-> > 
-> > s/failed/Failed
-> > 
-> > > +				ret);
-> > > +		}
-> > > +	} else {
-> > > +		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
-> > > +		if (mbps < 0)
-> > > +			return;
-> > > +
-> > > +		freq = mbps * 1000;
-> > > +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
-> > 
-> > As per the API documentation, dev_pm_opp_put() should be called for both success
-> > and failure case.
-> > 
-> ACK.
-> > > +		if (!IS_ERR(opp)) {
-> > 
-> > So what is the action if OPP is not found for the freq?
-> > 
-> There is already a vote for maximum freq in the probe, so if it fails
-> here we can continue here.
-> If you feel otherwise let me know I Can make changes as suggested.
+> Oh no, maybe we should teach kdoc to parse struct_group*()?
 
-You should just log the error and continue.
+scripts/kernel-doc apparently can handle them...
 
-> > > +			ret = dev_pm_opp_set_opp(pci->dev, opp);
-> > > +			if (ret)
-> > > +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
-> > 
-> > 'Failed to set OPP for freq (%ld): %d'
-> > 
-> > > +					dev_pm_opp_get_freq(opp), ret);
-> > > +			dev_pm_opp_put(opp);
-> > > +		}
-> > >   	}
-> > >   }
-> > > @@ -1509,8 +1524,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
-> > >   static int qcom_pcie_probe(struct platform_device *pdev)
-> > >   {
-> > >   	const struct qcom_pcie_cfg *pcie_cfg;
-> > > +	unsigned long max_freq = INT_MAX;
-> > >   	struct device *dev = &pdev->dev;
-> > >   	struct qcom_pcie *pcie;
-> > > +	struct dev_pm_opp *opp;
-> > >   	struct dw_pcie_rp *pp;
-> > >   	struct resource *res;
-> > >   	struct dw_pcie *pci;
-> > > @@ -1577,9 +1594,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
-> > >   		goto err_pm_runtime_put;
-> > >   	}
-> > > -	ret = qcom_pcie_icc_init(pcie);
-> > > -	if (ret)
-> > > +	/* OPP table is optional */
-> > > +	ret = devm_pm_opp_of_add_table(dev);
-> > > +	if (ret && ret != -ENODEV) {
-> > > +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
-> > >   		goto err_pm_runtime_put;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Use highest OPP here if the OPP table is present. At the end of
-> > 
-> > I believe I asked you to add the information justifying why the highest OPP
-> > should be used.
-> > 
-> I added the info in the commit message, I will add as the comment in the
-> next patch.
++ Kees
+
 > 
-> > > +	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
-> > > +	 */
-> > > +	if (!ret) {
-> > > +		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
-> > 
-> > Same comment as dev_pm_opp_find_freq_exact().
-> > 
-> > > +		if (!IS_ERR(opp)) {
-> > > +			ret = dev_pm_opp_set_opp(dev, opp);
-> > > +			if (ret)
-> > > +				dev_err_probe(pci->dev, ret,
-> > > +					      "Failed to set OPP: freq %ld\n",
-> > 
-> > Same comment as above.
-> > 
-> > > +					      dev_pm_opp_get_freq(opp));
-> > > +			dev_pm_opp_put(opp);
-> > 
-> > So you want to continue even in the case of failure?
-> > 
-> I wil make changes to fallback to driver voting for icc bw if it fails here.
+>>
+>>> + * @pp: &page_pool for buffer management
+>>> + * @fqes: array of Rx buffers
+>>> + * @truesize: size to allocate per buffer, w/overhead
+>>> + * @count: number of descriptors/buffers the queue has
+>>> + * @buf_len: HW-writeable length per each buffer
+>>> + * @nid: ID of the closest NUMA node with memory
+>>> + */
+>>> +struct libeth_fq {
+>>> +	struct_group_tagged(libeth_fq_fp, fp,
+>>> +		struct page_pool	*pp;
+>>> +		struct libeth_fqe	*fqes;
+>>> +
+>>> +		u32			truesize;
+>>> +		u32			count;
+>>> +	);
+>>> +
+>>> +	/* Cold fields */
+>>> +	u32			buf_len;
+>>> +	int			nid;
+>>> +};
 
-That's not needed. If the OPP table is present, then failure to set OPP should
-be treated as a hard failure.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks,
+Olek
 
