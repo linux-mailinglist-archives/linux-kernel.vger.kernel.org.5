@@ -1,85 +1,149 @@
-Return-Path: <linux-kernel+bounces-135491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B343489C6A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:15:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E84A89C6A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:15:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E650C1C21BC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:15:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529571C21D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137D085939;
-	Mon,  8 Apr 2024 14:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="agSuONB/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB3485C59;
+	Mon,  8 Apr 2024 14:15:52 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556128564E;
-	Mon,  8 Apr 2024 14:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EC48173C;
+	Mon,  8 Apr 2024 14:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712585738; cv=none; b=aR/qyWSZfb2AWsPnnZn8NWs2crlV7jOyt61LVLq+LLNhrB1cgO3CwFYYBe6svYbkz4/+IovoHqGJafXbLqJsEK7wdpuEw3hCpCm4ohxy570kCrkD/i+9+QJ/zeThCMbzUO+fp1OnRVf9fEeDS+S+vM++xxfUvEcagWgocVtnI34=
+	t=1712585752; cv=none; b=nCeA1ropioSolXUc6jRQpOmVVIXek+k75bn1hI+qG1TFKxFu27mQ9lamUsY3iSIRmpOaJ6oBwBhiuKPug2ewuHR+wKJ2oB8k1xZUDuUkLR8xZmYdSttLjJrd6hgR6T1+tCwRQnboRnnYVBSnmtQvxYMhsjUjnjZ8ExmsJuG2lSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712585738; c=relaxed/simple;
-	bh=uGAyf8hbUzFZhn6hO+6/TbFvwKdd+ftBukqq+4D8pHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pAENubTFajeuNniX+qZRiNisbbeKqQ91BcPc3I9DMZphulNBVnf1JhI0yvb6BRXLgxdiN72OckzTP3AhKTtdYe/t4FReZwretgF91KT1++PxlYSqYS/Cu+6tt4CED/Ir6PSNF1VqTeGFBBa28CcclyQdTFEdpTpKxbg50xIBNJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=agSuONB/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EE48C433F1;
-	Mon,  8 Apr 2024 14:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712585738;
-	bh=uGAyf8hbUzFZhn6hO+6/TbFvwKdd+ftBukqq+4D8pHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=agSuONB/gh4uhRRAvIAMCWT5aX0LpJfs7T7ty2R92xMfaMzyEHDq6Z7uPUOGMweOv
-	 xL+t/Gds9o+MDffDujhKtft/1wftFS5tf9FAriGJXHWyVXMckgSIUD1r2ruZ5/RfLj
-	 daD/VigkmJmPvtwsF2SvRVgpKy4hdFOADWBG4rcoJcB97qT6mhHTDUWz3kDeT1lsDP
-	 uEWq6PwJ7xi/CZlp/j/SD3X6Z1B/9Edz+aLiCCN7ZUsoe1OA/kmHRLCHZrU4JuwUpy
-	 fIiI0HstYvm+RlwvSKPdYNSLU2g0Uhjb9aqGfJ7tSB/nN32bH/hA3tvB+pGBKLI7Fx
-	 GXy1AxdpaTBjA==
-Date: Mon, 8 Apr 2024 11:15:34 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Namhyung Kim <namhyung@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 0/4] perf annotate-data: small random fixes and updates
-Message-ID: <ZhP8BgVBDrl-HgEb@x1>
-References: <20240405211800.1412920-1-namhyung@kernel.org>
- <CAP-5=fUhngjbL3Q7a3EuBSGdDKg8PFjRzpe5yHTDdeLmz4oWDg@mail.gmail.com>
+	s=arc-20240116; t=1712585752; c=relaxed/simple;
+	bh=ndtFkXhiMI1+U5ZvN9rd5fvDB8VZwSNk7BZK129wwSw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nQEuAXCSoPaTR+8eAfweLF7t+OJbzi7gNzTr9BCoOcGt9moi4jIHvCh+QLie9lNrxsuf3+lTew4opTn4fro7ALZbW5C61mfgnarsnqF5qxxmqtfTGKQ9k3gmAfagC0RHl2vhScwE/5iYGx2B3Rz9whgFZMqNyWCDB+ie2qtt2WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B79C43390;
+	Mon,  8 Apr 2024 14:15:48 +0000 (UTC)
+Message-ID: <6027dacf-549e-4855-97d9-dd02e65fd94a@xs4all.nl>
+Date: Mon, 8 Apr 2024 16:15:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/16] Switch subdev dv timing callbacks to pad ops
+Content-Language: en-US, nl
+To: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>,
+ kieran.bingham@ideasonboard.com, mchehab@kernel.org, tharvey@gateworks.com,
+ niklas.soderlund@ragnatech.se, prabhakar.csengg@gmail.com,
+ charles-antoine.couret@nexvision.fr, thierry.reding@gmail.com,
+ jonathanh@nvidia.com, skomatineni@nvidia.com, luca.ceresoli@bootlin.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ chromeos-krk-upstreaming@google.com
+References: <20240405141411.1807189-1-panikiel@google.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20240405141411.1807189-1-panikiel@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUhngjbL3Q7a3EuBSGdDKg8PFjRzpe5yHTDdeLmz4oWDg@mail.gmail.com>
 
-On Fri, Apr 05, 2024 at 05:02:20PM -0700, Ian Rogers wrote:
-> On Fri, Apr 5, 2024 at 2:18 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > I found some problems in the data type profiling with perf annotate.
-> > The patch 1 should go to perf-tools and others can go to perf-tools-next.
-
-> > Namhyung Kim (4):
-> >   perf annotate: Make sure to call symbol__annotate2() in TUI
-> >   perf annotate-data: Fix global variable lookup
-> >   perf annotate-data: Do not delete non-asm lines
-> >   perf annotate: Get rid of symbol__ensure_annotate()
+On 05/04/2024 16:13, Paweł Anikiel wrote:
+> Currently, subdev dv timing calls (i.e. g/s/query_dv_timings) are video
+> ops without a pad argument. This is a problem if the subdevice can have
+> different dv timings for each pad (e.g. a DisplayPort receiver with
+> multiple virtual channels).
 > 
-> Reviewed-by: Ian Rogers <irogers@google.com>
+> This patchset changes subdev dv timing callbacks to include a pad
+> argument, and moves them from video to pad ops. All the affected
+> drivers are updated to use the new pad ops version.
+> 
+> The affected drivers were updated in a way that mathes how they deal
+> with the pad argument in other callbacks (mainly enum_dv_timings,
+> dv_timings_cap, get/set_edid).
+> 
+> This was originally a part of a larger patchset:
+> https://lore.kernel.org/lkml/20240221160215.484151-2-panikiel@google.com/
+> 
+> Paweł Anikiel (16):
+>   media: v4l2-subdev: Add pad versions of dv timing subdev calls
+>   media: i2c: adv748x: Switch dv timing callbacks to pad ops
+>   media: i2c: adv7511: Switch dv timing callbacks to pad ops
+>   media: i2c: adv7604: Switch dv timing callbacks to pad ops
+>   media: i2c: adv7842: Switch dv timing callbacks to pad ops
+>   media: i2c: tc358743: Switch dv timing callbacks to pad ops
+>   media: i2c: tda1997x: Switch dv timing callbacks to pad ops
+>   media: i2c: ths7303: Switch dv timing callbacks to pad ops
+>   media: i2c: ths8200: Switch dv timing callbacks to pad ops
+>   media: i2c: tvp7002: Switch dv timing callbacks to pad ops
+>   media: spi: gs1662: Switch dv timing callbacks to pad ops
+>   media: cobalt: Use pad variant of dv timing subdev calls
+>   media: rcar-vin: Use pad variant of dv timing subdev calls
+>   media: vpif_capture: Use pad variant of dv timing subdev calls
+>   media: tegra-video: Use pad variant of dv timing subdev calls
+>   media: v4l2-subdev: Remove non-pad dv timing callbacks
 
-Applied 2-4 to perf-tools-next,
+You missed one:
 
-Thanks,
+In file included from include/media/v4l2-device.h:13,
+                 from drivers/media/platform/ti/davinci/vpif_display.h:13,
+                 from drivers/media/platform/ti/davinci/vpif_display.c:26:
+drivers/media/platform/ti/davinci/vpif_display.c: In function 'vpif_s_dv_timings':
+include/media/v4l2-subdev.h:1816:56: error: 'const struct v4l2_subdev_video_ops' has no member named 's_dv_timings'
+ 1816 |                 else if (!(__sd->ops->o && __sd->ops->o->f))            \
+      |                                                        ^~
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expansion of macro 'v4l2_subdev_call'
+  937 |         ret = v4l2_subdev_call(ch->sd, video, s_dv_timings, timings);
+      |               ^~~~~~~~~~~~~~~~
+include/media/v4l2-subdev.h:1819:53: error: 'const struct v4l2_subdev_video_ops' has no member named 's_dv_timings'
+ 1819 |                          v4l2_subdev_call_wrappers.o->f)                \
+      |                                                     ^~
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expansion of macro 'v4l2_subdev_call'
+  937 |         ret = v4l2_subdev_call(ch->sd, video, s_dv_timings, timings);
+      |               ^~~~~~~~~~~~~~~~
+include/media/v4l2-subdev.h:1820:63: error: 'const struct v4l2_subdev_video_ops' has no member named 's_dv_timings'
+ 1820 |                         __result = v4l2_subdev_call_wrappers.o->f(      \
+      |                                                               ^~
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expansion of macro 'v4l2_subdev_call'
+  937 |         ret = v4l2_subdev_call(ch->sd, video, s_dv_timings, timings);
+      |               ^~~~~~~~~~~~~~~~
+include/media/v4l2-subdev.h:1823:48: error: 'const struct v4l2_subdev_video_ops' has no member named 's_dv_timings'
+ 1823 |                         __result = __sd->ops->o->f(__sd, ##args);       \
+      |                                                ^~
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expansion of macro 'v4l2_subdev_call'
+  937 |         ret = v4l2_subdev_call(ch->sd, video, s_dv_timings, timings);
+      |               ^~~~~~~~~~~~~~~~
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no member 's_dv_timings' in struct v4l2_subdev_video_ops
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no member 's_dv_timings' in struct v4l2_subdev_video_ops
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no member 's_dv_timings' in struct v4l2_subdev_video_ops
+drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no member 's_dv_timings' in struct v4l2_subdev_video_ops
 
-- Arnaldo
+Regards,
+
+	Hans
+
+> 
+>  drivers/media/i2c/adv748x/adv748x-hdmi.c      | 16 ++++----
+>  drivers/media/i2c/adv7511-v4l2.c              | 14 +++++--
+>  drivers/media/i2c/adv7604.c                   | 14 +++----
+>  drivers/media/i2c/adv7842.c                   | 25 ++++++++----
+>  drivers/media/i2c/tc358743.c                  | 23 +++++++----
+>  drivers/media/i2c/tda1997x.c                  | 12 +++---
+>  drivers/media/i2c/ths7303.c                   |  8 +++-
+>  drivers/media/i2c/ths8200.c                   | 14 +++++--
+>  drivers/media/i2c/tvp7002.c                   | 26 +++++++++----
+>  drivers/media/pci/cobalt/cobalt-v4l2.c        | 12 +++---
+>  .../platform/renesas/rcar-vin/rcar-v4l2.c     |  9 +++--
+>  .../media/platform/ti/davinci/vpif_capture.c  |  4 +-
+>  drivers/media/spi/gs1662.c                    | 21 +++++++---
+>  drivers/media/v4l2-core/v4l2-subdev.c         | 39 +++++++++++++++++--
+>  drivers/staging/media/tegra-video/vi.c        | 12 +++---
+>  include/media/v4l2-subdev.h                   | 28 ++++++-------
+>  16 files changed, 183 insertions(+), 94 deletions(-)
+> 
+
 
