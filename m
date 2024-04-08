@@ -1,152 +1,128 @@
-Return-Path: <linux-kernel+bounces-134871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 924BB89B813
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:02:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7345989B812
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:02:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C37311C203A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:02:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B798EB226F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CEC2561D;
-	Mon,  8 Apr 2024 07:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3DF224D1;
+	Mon,  8 Apr 2024 07:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QE9LnlOy"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="0uDQ1s6b"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32841F93E;
-	Mon,  8 Apr 2024 07:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382D51CD38
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712559729; cv=none; b=jGAb9TtG2JV3Q8/LC158rh8WpUmjM5CsUMzVG7ISTLh/H9vzzF2D1Y8EQXNIwcmK60RrLU/BU6TUOIPI8+BJXK5avuXZ4xlaq92jU7qYwaTx3WLJxajidEgTzl4yeFadhlPuSszxpcRnZBFLAJmCa9ezFq/TVIbkJzVap+KZmdQ=
+	t=1712559728; cv=none; b=M8DTHPfzzOFe3I5S6G6a29b5Mw7rSJrWGxLbAZvEZAtoB+L/q1ED+Il/H8e6FTiQn/ESuhhaHh2fHXtVr1hVPFBT+qJ+mPs9ULBi/c/en+wgc6cpN/zq7swSKvIfTmBN3ZD8+EEgze4Letynba3w4XEqBc+nwNBXxL90iBU2CgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712559729; c=relaxed/simple;
-	bh=nSEOvxxKA2GkiOTXh/bLCcoY5ImyTca4m0G6OJ/4FZE=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=PRWVhq6ToJbQZTQiPT5mao9C9WbZgL2CKiDOMaNOIMRnRrYJWT0eoTHDzMd1wq1R1ztxIYag6nmvmOk5TixABYlnUJX4MZmHLUOeV2xk8jHSOCtJv2iuVf2HgpJGwN62XGFGHElztWytc650CGA+jmKA2gH9uQvFrkoMlA+mYLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QE9LnlOy; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712559728; x=1744095728;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=nSEOvxxKA2GkiOTXh/bLCcoY5ImyTca4m0G6OJ/4FZE=;
-  b=QE9LnlOy1yWboM1VC5fQEOhtf3fD0rN6RXMnbwXhGa69zrtWV6NWAtEm
-   vAn26S6Dq95anlODCRoKT9KPiMS+icnD4lzTJxA502LpjP6jcdjXTcqeD
-   DFBx4jxh/awyPKqkfDEy9qlc3ewzk5mOviv99Vw3Av3tW3NA8kxu8cAlv
-   2nm70igRP+TZ0hVs++ARNQXyAHSfkZF1ON0Ylb7HvwZNs139GiDX9LuYP
-   RaA1lmPRfDm3BWZfNMBQkIU7sJNTX2+4Ch6BfvJcHkHslU8xagNhlRbtR
-   8Sw835QcpmZpm24tAAeANA0G+ndYZ2vIZpt1Q1lw+Dp5tFV5jYy0tPsAg
-   A==;
-X-CSE-ConnectionGUID: uH8S54TpT429xTOulJO1cQ==
-X-CSE-MsgGUID: JXIgCJOPQC6L9USWNnRcnQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="8006073"
-X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="8006073"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:02:02 -0700
-X-CSE-ConnectionGUID: zfaBaHyORCWFLPcV9OMNXw==
-X-CSE-MsgGUID: 1Pttfa8xS8mIEGJNZBiH8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="24526398"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.9.252]) ([10.238.9.252])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:01:58 -0700
-Message-ID: <2c62889c-2978-48bc-accb-8b83183bd1fa@linux.intel.com>
-Date: Mon, 8 Apr 2024 15:01:55 +0800
+	s=arc-20240116; t=1712559728; c=relaxed/simple;
+	bh=+J3hXyNpUJmooVXir9znvQFZPVRcR4aW/rauvt6w34U=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=KsKOHGZEUzZym7dvhri7ssrSjHMjsuZT/dUzDbgogSuD+smu1hzv3m8WKP1iZKlg/Yvb7DwqQAneKoRDvSPdd9sGZMN+CerZ6yRe8SSyDCe+zFVGz+JplmvLPFOK/iPjE4AupbVB+gAbeUuFkp/CGjf+YA3sXAcBxSilimOsHfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=0uDQ1s6b; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51a20a6041so308824966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1712559723; x=1713164523; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=offh16ke5+BtPn8lxdjzqkvHVyx4akkldH1viry0sBk=;
+        b=0uDQ1s6bAlCt3EwH+WhXaX2W8xvEGRwUA0M/gspvsa4fCoN7s4v3cu8sOVYULAntZw
+         x3V2vImDwgzlO2tpc2AtYmqUsmKcKIi63Gy4jG0ep25c8Diyuq1ASikkO4ipFcXJh3G2
+         msHR4Ohi4ZPGsw7n8MSp46OxrEik94QytSUzZ2mySO+v1muOxWiyoGqm6LZ/32SQPHZv
+         RRWff9CNC+s8bNkH3Yep4AWGOstyx/fVQUvKVA7iOqCY6CbFDzrWXeIJk1CvjHZTTHUn
+         h8uajPR0gxjVsG58BCCl2r6h4zPskgI6VVGLtmd5xkPTluhodX1a11bSsxILmbzz27D+
+         5XRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712559723; x=1713164523;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=offh16ke5+BtPn8lxdjzqkvHVyx4akkldH1viry0sBk=;
+        b=t1VD03Pja8X5V3HYIKw4ios8qq7LuG7MMt4x7mTGSMqigdMnatukwzdG/hMgViFA4o
+         58AmiFUF0/dWR7gb4spDKj+E34FPjKHXDXTP2/g2wFNRwOQQAGs7/1Xl03lS9GMhZDFV
+         r45Zp/MW6WJCzPgTTTZxV57htrkFRny4XWfQIFqs7P4XzhAi7L79aP2oGH6xPaKGgi9y
+         6S1kPD7FGaRf/myDyTvQj0FU0eln8Jts2MH9LrxzlEjEoa0fP57pK56l6jgWIReFdnTl
+         uALmsBZvzxTSY1Tpm3TjlteLx5lippQuUa/x/nhHzEqvfTbuRhsNs17695SgT1BydsbS
+         Q+pg==
+X-Forwarded-Encrypted: i=1; AJvYcCVgL8ECkcOs3pY8VP5O9sj9t9PUKiEYkp7Mqe+rZsxdDEiXdlyqxxLRrRHFTbqkKamL5+y/tpv8JCRM1CNlEnt/touTmjmsqnioVWoK
+X-Gm-Message-State: AOJu0YyE7dEwVb+3taBSD3CxFD2cLjE/GAlFhPMYI15OLRj/qE5ekvbq
+	pw05Qby+WeZY2cA5YtaBLL9l+1+anH1Btd4Vj5XNYoS48b40xUeuqt5il8i9CVg=
+X-Google-Smtp-Source: AGHT+IGx9XWjPlhTGwhQaw4YbPMUv+UviHwS/hf5jfRvCaR11azYOCmvOEGSZXxsXF/fHOKZQMqw2A==
+X-Received: by 2002:a17:907:6d0e:b0:a51:cdef:f7a7 with SMTP id sa14-20020a1709076d0e00b00a51cdeff7a7mr2608583ejc.54.1712559722617;
+        Mon, 08 Apr 2024 00:02:02 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id og9-20020a1709071dc900b00a4ea067f6f8sm4055003ejc.161.2024.04.08.00.02.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 00:02:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v19 092/130] KVM: TDX: Implement interrupt injection
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b2d9539b23f155b95864db3eacce55e0e24eed4d.1708933498.git.isaku.yamahata@intel.com>
-In-Reply-To: <b2d9539b23f155b95864db3eacce55e0e24eed4d.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 08 Apr 2024 09:02:01 +0200
+Message-Id: <D0EJR77G6HF0.2LUJ3XY1YFG65@fairphone.com>
+Cc: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] arm64: dts: qcom: add USB-C orientation GPIOs
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>, "Bjorn Andersson"
+ <andersson@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Rob
+ Herring" <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
+ "Conor Dooley" <conor+dt@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
+In-Reply-To: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
 
+On Mon Apr 8, 2024 at 4:33 AM CEST, Dmitry Baryshkov wrote:
+> Populate orientation GPIOs for some of the PMIC-GLINK-based devices.
+> This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP CRD
+> without the orientation GPIOs declared.
 
+Hi Dmitry,
 
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata<isaku.yamahata@intel.com>
+How would I find this GPIO on the schematics, or downstream devicetree?
+I scanned over some relevant areas but nothing jumped out at me except
+for the USB_PHY_PS signal coming from PM7250B CC_OUT and going into
+GPIO_140 of the QCM6490 - but I'm guessing this is something else?
+
+Regards
+Luca
+
 >
-> TDX supports interrupt inject into vcpu with posted interrupt.  Wire up the
-> corresponding kvm x86 operations to posted interrupt.  Move
-> kvm_vcpu_trigger_posted_interrupt() from vmx.c to common.h to share the
-> code.
->
-> VMX can inject interrupt by setting interrupt information field,
-> VM_ENTRY_INTR_INFO_FIELD, of VMCS.  TDX supports interrupt injection only
-> by posted interrupt.  Ignore the execution path to access
-> VM_ENTRY_INTR_INFO_FIELD.
->
-> As cpu state is protected and apicv is enabled for the TDX guest, VMM can
-> inject interrupt by updating posted interrupt descriptor.  Treat interrupt
-> can be injected always.
->
-> Signed-off-by: Isaku Yamahata<isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini<pbonzini@redhat.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->   arch/x86/kvm/vmx/common.h      | 71 ++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/main.c        | 93 ++++++++++++++++++++++++++++++----
->   arch/x86/kvm/vmx/posted_intr.c |  2 +-
->   arch/x86/kvm/vmx/posted_intr.h |  2 +
->   arch/x86/kvm/vmx/tdx.c         | 25 +++++++++
->   arch/x86/kvm/vmx/vmx.c         | 67 +-----------------------
->   arch/x86/kvm/vmx/x86_ops.h     |  7 ++-
->   7 files changed, 190 insertions(+), 77 deletions(-)
+> Dmitry Baryshkov (4):
+>       arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
+>       arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
+>       arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C orientat=
+ion GPIOs
+>       arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientation GPI=
+Os
 >
-[...]
->   
-> +static void vt_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
-> +{
-> +	if (is_td_vcpu(vcpu))
-> +		return;
+>  arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        | 2 ++
+>  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 ++
+>  arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    | 1 +
+>  arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    | 1 +
+>  4 files changed, 6 insertions(+)
+> ---
+> base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+> change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
+>
+> Best regards,
 
-Please add a blank line.
-
-> +	vmx_set_interrupt_shadow(vcpu, mask);
-> +}
-> +
-[...]
->   
-> @@ -848,6 +853,12 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
->   
->   	trace_kvm_entry(vcpu);
->   
-> +	if (pi_test_on(&tdx->pi_desc)) {
-> +		apic->send_IPI_self(POSTED_INTR_VECTOR);
-> +
-> +		kvm_wait_lapic_expire(vcpu);
-As Chao pointed out, APIC timer change shouldn't be included in this patch.
-
-Maybe better to put the splitted patch closer to patch
-"KVM: x86: Assume timer IRQ was injected if APIC state is proteced"
-becasue they are related.
-
-> +	}
-> +
->   	tdx_vcpu_enter_exit(tdx);
->   
->   	tdx_user_return_update_cache(vcpu);
-> @@ -1213,6 +1224,16 @@ static int tdx_sept_remove_private_spte(struct kvm *kvm, gfn_t gfn,
->   	return tdx_sept_drop_private_spte(kvm, gfn, level, pfn);
->   }
->   
-[...]
 
