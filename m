@@ -1,175 +1,226 @@
-Return-Path: <linux-kernel+bounces-135072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF6F89BAC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:48:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3AC89BA86
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7442F281B02
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:48:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668491F21D26
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8836452F6C;
-	Mon,  8 Apr 2024 08:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A18D39FDD;
+	Mon,  8 Apr 2024 08:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="H0Hz8koo"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cQ3k0ZzT"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2095.outbound.protection.outlook.com [40.107.236.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65E83BB3D;
-	Mon,  8 Apr 2024 08:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565915; cv=none; b=iab7RC4ZR62zkaq94fSNdm8gUQt/AI9D2EyWEeNmhVwH5ligwAqW7jHW8V2cpVb6/Te74+zkmO4sMuqobJA7WpGEVXDhyLo8ugncddc5gZ4dl0yMnogIEPvAP16Oe9YtcWzXsYdZTFIEmNqLgkUEFZiPjRLQFr0ZgeQRIninmo4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565915; c=relaxed/simple;
-	bh=vJ9C9ICtmHohArhbC1wa6KFi5aR/p0VT/SWDNweoaAs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ijTG/Zev4+IewAS92WQMcGoe4B9xBz9m+AhR7/9mdIZ2k3mJOnRMCT/k6RGPcorXc7r2+0v9D0OpCeKmo+/6i7CW96zACIF487FjVd8CLNHqPnGuwtGLdusth+1KaJagAL9ABXv8f15Q/gLANwrllJwXEFjFAMBOfOOIV0xpxUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=H0Hz8koo; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4387SNEk009700;
-	Mon, 8 Apr 2024 10:44:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=p9CMLavhVsATyBEL2PMrrzwDGq1Q/Uy83NePUSe/nV8=; b=H0
-	Hz8kooN+RWyeLVNT5G6PnWy8ULfDSW6CpoagsFb+J3M0DtuXTtnHqwuFRioi3gAA
-	z5t7reJ8TsDXoNyseC06fx94TQCm6ALfyu6bsdF56llYVodLg9zaUIGjwFgk8DmE
-	zXqWHU2YrzgiaVhWnsN82v10SkaVMrvQJ80OkoBuvJLqZ+Kpqac574MQ8DF/PNQk
-	FZ7K4mrgNckGiIqwFgGzwaEUM/92Kh75C09Nbbz1efURqgiAW/I7HKGkw+Rcqd5J
-	lc1lWbYAnp3PuE8qyX64hAyomATyqJvNHG1wh159HfLOx5KBBLJVFOjc6Rg6NG0V
-	F9DOJvtck291a9gQZoMA==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xaw9cnmn1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 10:44:21 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id F2D0D40059;
-	Mon,  8 Apr 2024 10:44:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2018E211978;
-	Mon,  8 Apr 2024 10:43:02 +0200 (CEST)
-Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 8 Apr
- 2024 10:42:59 +0200
-Message-ID: <61608010-fbce-46c6-a83d-94c04d0f000d@foss.st.com>
-Date: Mon, 8 Apr 2024 10:42:59 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD89D2A8DA;
+	Mon,  8 Apr 2024 08:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712565808; cv=fail; b=N6KeHRpE1D4XWq9qh+a6fVkQkK+5VaI8TfxBfsWuRs2uFXjBZnPEKbjO+iRJ+Oq4k5zsjCZU3k4MoSHRIvCyxH/pDUFYU3gQrl3fC4TfXO7eg5l3YftTq+apjIXNKP+uTk9YagdgECkt83Q36dppg3PEs9ENCPmWGVx+eDQjaNQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712565808; c=relaxed/simple;
+	bh=6lIqZuHBV1YRTmjLpoGP8s3rN26mEBXYQJem7o3WVOY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Mm2AA3ibgbQ7jOhQyUrnGY7Px+WX10ORxwOakHkyTHu57dIorbo5fcGyueQ+IHNGsIGbaFtfmf1QPoev5HkHV8HIHqrWNzw0ViNp5Kw0jzErjS5PlVA9Ed5l1tKPxWbkecG4PWrWSrRLdgtAudDH+nILsohODuD9Ey/D00nleJI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cQ3k0ZzT; arc=fail smtp.client-ip=40.107.236.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dKYv4IsepqckQ9HxUf1gclikXAtIh1cQmZNYaOTELA9tiOrxLd00PKAQuKStT6/jiEidg5NA0znUjH0vYjtVnfE+AxYLDVwRc8HWS0HvwRU4NV9ntb2VL3cA8T8Mj+NNzm2PwnRKGLAUqoCxbd79XChOU0/L2yOt8ODR2obFr1Y76yorFVY7wPg0u76A677NZ8JiJh2B6LXfvajluKqIEcQwcSN5a+VFE1fSH6myOIUglivmjnKTVL07Kg1zVlLbUnJMWXB8QuwU7jt5C9waC5D94CWB55PFGIWRDgcoRpWpTvvIBGnSsYOCFEiz51cuIB5uViQuWpKIWm//H5wP7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nAqnrhvvUlTviXfZ2vkxXgeuyJukZ4bmMYL5KYZ9f6A=;
+ b=l7WtH8f7SiVH6R7HFvr75VZdpcaqYmbNcvDLRdUaPd0A7sX8o04r952ulmCqo4Oh5iYKhHC/vt8PuFfcx4kUVuQ5KkPBraZGW074E1T+1ZYbVVMktemzsH2U0GNppdBZ8+DWxs/fontlnSbtE2FkN32t7Yqx5v8PDYZkzwaaKKXUPzYxtjou9JXlMWm+GVH7mLXNK8X+T/R+Fv2Lk4/0vGLoSnRwCOIQ6zySHWrLPMt3eYdUqO1vIug7i2vpjbIGrnrNfjY8W5J8cR4ZMccjCFeK649gzxWmK916tbVkcPVkuEIuggujSlktT8cikjj56Dpiilrhya9q9NuapLC32w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nAqnrhvvUlTviXfZ2vkxXgeuyJukZ4bmMYL5KYZ9f6A=;
+ b=cQ3k0ZzT5TqMMHNDTGp2ipBOvYO3oSh2vANlEsm5MHpdLM/QOsZi5sSc19il/dqOwZWDcbUgu8WeCW1K/vcNvOJ5AUvEQBTuGzBRvIsmtL78/wBx2k9c4AwfZChnRoHK+PJoEEkNU/PrUipV9EpVThPXtFNy364+2PQhGUopT4s=
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
+ SJ2PR12MB8012.namprd12.prod.outlook.com (2603:10b6:a03:4c7::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Mon, 8 Apr 2024 08:43:24 +0000
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::af7d:5f4f:2139:ebd1]) by DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::af7d:5f4f:2139:ebd1%4]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
+ 08:43:23 +0000
+Message-ID: <39de903d-384c-4e4d-b020-3f9f0c7c2c0e@amd.com>
+Date: Mon, 8 Apr 2024 14:13:14 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] KVM: x86: Print names of apicv inhibit reasons in
+ traces
+To: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>, kvm@vger.kernel.org
+Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+ joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+ suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
+References: <20240214223554.1033154-1-alejandro.j.jimenez@oracle.com>
+Content-Language: en-US
+From: Vasant Hegde <vashegde@amd.com>
+In-Reply-To: <20240214223554.1033154-1-alejandro.j.jimenez@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0154.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:c8::7) To DS7PR12MB6048.namprd12.prod.outlook.com
+ (2603:10b6:8:9f::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 00/13] Introduce STM32 Firewall framework
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>,
-        <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <vkoul@kernel.org>, <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
-        <wg@grandegger.com>, <mkl@pengutronix.de>
-CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
-Content-Language: en-US
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|SJ2PR12MB8012:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9vLccw4/YIEyKFeehFy+YksgzDzi+EXolGWQT33zWay9gNmStjfUg2ST9N5SMh591/9wO26Xx9m5PP6fYvGbQJ076WZaqsoRD3aSu/kcr0qC9RjyfSgdgi/TKt62C8LXEreLV+Z+8ukEoIEvzARwKc28W8B1X1Rh8m2wfmIm3YYBh1h3aQbGvg/G3YNOqGawP3x2G9sggymwfjrdDdbSn8p6//O2rbF0X40Puq0CSrLJpqbXFeOv0s7xoKtpJwcmcCc08QipSjBma/uQjwKlXYMA5hVwDA2Y3hrgD6kfeZv/wVBt0huJ/MXjxuNTyqWa/cEKNOsLIleC85dJbuYLSnZaUL3/PMp9ePjtgyEpp/rf+eqolhxy7e5joi/Ts3ykWDDqo1pM+JrVcmz7odQOmMLkjn61+HErOzluBwFCjxVgQRkO5XvEanje6co0PKWvNnJnzp0behLxGjze2cwe7EaC933AeE6I255epbHbX740YpoEoMLe8ykTtBPEaAsZGBggpEdOJC/r9JoBtrAI6PeJFGaX4BJwvakt+zv0ZehxHgiaJC+qspRoAOqhZTbf6MKFWZF1vU9cA3VaKJFrv5kG/FKT+TwR+wD4i79YFxRSLVrfIZkQTBs8iceJ53Lp6qigZTXbK78ue4iJzkb/F30SI5yVj4YS/Ow+jiwpl04=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZlhrNWE2U2kvVkpoQnRhc1RlM3NsNTN4NzgydXMxeHBWVkxLVzNBdVV5c0F5?=
+ =?utf-8?B?OGRKZDVLUkJMT3B0cys1UEpXNW9weWt1YnRFVTdsZjBDeTA4dU5XMllRaWhG?=
+ =?utf-8?B?bHlaY3gzUnhBamMzRi8wMG5NVVpnNk9LLzVQKzBIRlFjeTUvVmpPcDk1WVEr?=
+ =?utf-8?B?TUo2RUt6Rm9ESS82TzhtMG1NQ1NrbnZ0WjlMRTJsRmJuYmJHUlRuWDRGbUlI?=
+ =?utf-8?B?UjRGbnNaWE16QVgrVUk3eUpWbXhZUWZRRnR0UlZVTDZpL1kzV1FheEk3N1FQ?=
+ =?utf-8?B?R0NOWkViTGhLSHo2N2J1Si9TY2lmMGxTL2JrQTJBeVBvaEd0disyaU9lUHEy?=
+ =?utf-8?B?K3lQTVM5N2ZseXFzb0JiWW91R1Y5L0JQcVUvYzJudDZENy9mWW1oSjZadFVW?=
+ =?utf-8?B?SWJnMklHMkFZUlVmVklpYWVUWXNnV29IRzlTK3hCRWpXRUVQS1ppYWdTdC9B?=
+ =?utf-8?B?SUlNWDY0eW5Vemg5U1FGUlZURjF4MzhuRTByR1RsaWhDRGwwelhsdkNuSXk3?=
+ =?utf-8?B?T3pKTXYrSzZvVitrZDRDcmR5aTUzZ04vUitRY2lUNVpNV1hwTHQ3RUtTWngx?=
+ =?utf-8?B?YmdkRWltRzBaa2wzeHB4ZHM2aEV0cDBVUHJ3dEtUM0Y4dENvbVQ4U0J3cWpy?=
+ =?utf-8?B?d2VLNHVLamJWK3JvZ1YvQzNPa1B3WUthSkpURHR4VXZpY3JMekFiWE9oQ1h2?=
+ =?utf-8?B?aW9OaG9LNWxhbWtQUGFjYjdaWGRvdGszbTk0eXZSR1NrYVc4NmhQVXc3WjBs?=
+ =?utf-8?B?VzMyUkFnRWd4aUh3Sm5INlk1aUtQNjJQMVVETk9aOGNvNXBTbFQzbmRQdHZV?=
+ =?utf-8?B?M3R4SVJSTEVROHZVMG1IUTlkNzAwV2l2VVJyQ2QxWnRiWG1nQ2c4eSs4NWZv?=
+ =?utf-8?B?SmJVdFdJUkN3Z0hncXBxOHNGa3RkZ3RmeWw4blZ6emhoN25Ic1BKUGJXOEFu?=
+ =?utf-8?B?RUtYZEdCSGErUEJMbVVjSjFLeXJ6eWdEWDA2ZitmaG5mdmRnWFJrZStKd0Nq?=
+ =?utf-8?B?RzQ5SVhvVFFlK0dZWFZWUXUvcHczZDhUMEp6cVJrS2hDdlZBd2xFalZ0RzNw?=
+ =?utf-8?B?TFNVUTEvQ01iMFhhTE1EcDR6WmtjUEl6cnVjNElVazRZdTFnS2hJVE52VGhh?=
+ =?utf-8?B?VlZzN1pxL1F0d25WUi9hT21qalAzREp4aDVoL0NzQmZXbnVrcHVMbTgydVpz?=
+ =?utf-8?B?UTQzT1VWNVFabEIvc01makdyWWxIb2sxWGlsUE1sSitZYXdmLzIzYVNKMkxV?=
+ =?utf-8?B?cW9aUFJpU0Rvbm9KRkxNMUlCK2l0LzFvcjFQL3VIYktOVTNLM0pmNUREcFlS?=
+ =?utf-8?B?Y3JqajRNM3IyVStJNDdIRjFRbGJwUmhvYTNGTjBQUERGTFgxQ3g1WXFacUN5?=
+ =?utf-8?B?T1dPM2VLbWRJVEpGMXJtbkpDUG1SVlB0SlBLeDhudEMrdTBiRkN5THhJQ0Z3?=
+ =?utf-8?B?S0JSVlZKR0NKd2UybWQwb0ZTZHFobmJBaVVlcXgrMFZhdUFHUVJORTBRak9Q?=
+ =?utf-8?B?N0pKbHlFZmdzM0hzTGs2TGJ1anlJamR5M1l5SFZHbVNZY0NzN2hUdWdVWFFY?=
+ =?utf-8?B?L3pONGVkdHE3cjhYZ2lNQVozd2lleVlqOEhLck5EU3UzcFloSmNNUFpPZDg1?=
+ =?utf-8?B?clR3bFJ2UExoUVVoalkvdHphZXJkS0Z6cncwcVVWeGdhZFVsTmJ2ZC9DRm9o?=
+ =?utf-8?B?NkF2T0NYSThXeXo5RW85bXNMVDdvSUkvQ2NrUTFjTHBxWU1kUEttbjd6S29N?=
+ =?utf-8?B?VnltUUs5aytMMGlnZ1dRQVlLeFdEVzBhQ1M5S3FjcHNTUUlMQ1VYTGJua29q?=
+ =?utf-8?B?R1lBZ2h1ODRzbWhNOGtOREFaSnBRN0FHbjNBbG0rc2t3c1dJd3YranpOK3p3?=
+ =?utf-8?B?SHowbkQwUnNESlNpaURHZFZsVkdLL2FlWnlDbllBMUhsQWdOUG93cWxjMG5P?=
+ =?utf-8?B?dThGRUlCTzNuZklRZWFjTjlsTHkyZU5sbVROdjFvOW1lSEMxRGdyS3NPY1NL?=
+ =?utf-8?B?cWFQMWY2bnFULzd3QVZJMTBMR2lZblZaeWhjekkwTEloeHozcWdxRU42aVdn?=
+ =?utf-8?B?SVhHUnU2QkI4UExQeUY1OXJCZWR4M0VCUm9HdkVZVENLd21RZi9KWEdSRFdo?=
+ =?utf-8?Q?Kp0BAlR+TlTBqqLdyzXDOgr2M?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fda206d-8b9e-4f93-fa18-08dc57a7f345
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 08:43:23.8328
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X96r2EOU4A+AeGlZl0DFAV+adzwE1ANkQGufuy3Ou3FdsudSFuAzfyS5/NJ1TE91QRyvrzR8kemojBtf9Cdnvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8012
 
-Hi Gatien,
+On 2/15/2024 4:05 AM, Alejandro Jimenez wrote:
+> Use the tracing infrastructure helper __print_flags() for printing flag
+> bitfields, to enhance the trace output by displaying a string describing
+> each of the inhibit reasons set.
+> 
+> The kvm_apicv_inhibit_changed tracepoint currently shows the raw bitmap
+> value, requiring the user to consult the source file where the inhbit
+> reasons are defined to decode the trace output.
+> 
+> Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
 
-On 1/5/24 14:03, Gatien Chevallier wrote:
-> Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
-> platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
-> register to the framework to offer firewall services such as access
-> granting.
-> 
-> This series of patches is a new approach on the previous STM32 system
-> bus, history is available here:
-> https://lore.kernel.org/lkml/20230127164040.1047583/
-> 
-> The need for such framework arises from the fact that there are now
-> multiple hardware firewalls implemented across multiple products.
-> Drivers are shared between different products, using the same code.
-> When it comes to firewalls, the purpose mostly stays the same: Protect
-> hardware resources. But the implementation differs, and there are
-> multiple types of firewalls: peripheral, memory, ...
-> 
-> Some hardware firewall controllers such as the RIFSC implemented on
-> STM32MP2x platforms may require to take ownership of a resource before
-> being able to use it, hence the requirement for firewall services to
-> take/release the ownership of such resources.
-> 
-> On the other hand, hardware firewall configurations are becoming
-> more and more complex. These mecanisms prevent platform crashes
-> or other firewall-related incoveniences by denying access to some
-> resources.
-> 
-> The stm32 firewall framework offers an API that is defined in
-> firewall controllers drivers to best fit the specificity of each
-> firewall.
-> 
-> For every peripherals protected by either the ETZPC or the RIFSC, the
-> firewall framework checks the firewall controlelr registers to see if
-> the peripheral's access is granted to the Linux kernel. If not, the
-> peripheral is configured as secure, the node is marked populated,
-> so that the driver is not probed for that device.
-> 
-> The firewall framework relies on the access-controller device tree
-> binding. It is used by peripherals to reference a domain access
-> controller. In this case a firewall controller. The bus uses the ID
-> referenced by the access-controller property to know where to look
-> in the firewall to get the security configuration for the peripheral.
-> This allows a device tree description rather than a hardcoded peripheral
-> table in the bus driver.
-> 
-> The STM32 ETZPC device is responsible for filtering accesses based on
-> security level, or co-processor isolation for any resource connected
-> to it.
-> 
-> The RIFSC is responsible for filtering accesses based on Compartment
-> ID / security level / privilege level for any resource connected to
-> it.
-> 
-> STM32MP13/15/25 SoC device tree files are updated in this series to
-> implement this mecanism.
-> 
+I have reviewed and tested this patch on AMD Genoa system. It looks good 
+to me.
 
-..
+Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
 
-After minor cosmetic fixes, series applied on stm32-next.
-Seen with Arnd: it will be part on my next PR and will come through 
-arm-soc tree.
+-Vasant
 
-Thanks
-Alex
-
-
+> 
+> ---
+> checkpatch reports an error:
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 
+> but that seems common for other patches that also use a macro to define an array
+> of struct trace_print_flags used by __print_flags().
+> 
+> I did not include an example of the new traces in the commit message since they
+> are longer than 80 columns, but perhaps that is desirable. e.g.:
+> 
+> qemu-system-x86-6961    [055] .....  1779.344065: kvm_apicv_inhibit_changed: set reason=2, inhibits=0x4 ABSENT
+> qemu-system-x86-6961    [055] .....  1779.356710: kvm_apicv_inhibit_changed: cleared reason=2, inhibits=0x0
+> 
+> qemu-system-x86-9912    [137] ..... 57106.196107: kvm_apicv_inhibit_changed: set reason=8, inhibits=0x300 IRQWIN|PIT_REINJ
+> qemu-system-x86-9912    [137] ..... 57106.196115: kvm_apicv_inhibit_changed: cleared reason=8, inhibits=0x200 PIT_REINJ
+> ---
+>   arch/x86/kvm/trace.h | 28 ++++++++++++++++++++++++++--
+>   1 file changed, 26 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index b82e6ed4f024..8469e59dfce2 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -1372,6 +1372,27 @@ TRACE_EVENT(kvm_hv_stimer_cleanup,
+>   		  __entry->vcpu_id, __entry->timer_index)
+>   );
+>   
+> +/*
+> + * The inhibit flags in this flag array must be kept in sync with the
+> + * kvm_apicv_inhibit enum members in <asm/kvm_host.h>.
+> + */
+> +#define APICV_INHIBIT_FLAGS \
+> +	{ BIT(APICV_INHIBIT_REASON_DISABLE),		 "DISABLED" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_HYPERV),		 "HYPERV" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_ABSENT),		 "ABSENT" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_BLOCKIRQ),		 "BLOCKIRQ" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_PHYSICAL_ID_ALIASED), "PHYS_ID_ALIASED" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_APIC_ID_MODIFIED),	 "APIC_ID_MOD" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_APIC_BASE_MODIFIED),	 "APIC_BASE_MOD" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_NESTED),		 "NESTED" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_IRQWIN),		 "IRQWIN" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_PIT_REINJ),		 "PIT_REINJ" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_SEV),		 "SEV" }, \
+> +	{ BIT(APICV_INHIBIT_REASON_LOGICAL_ID_ALIASED),	 "LOG_ID_ALIASED" } \
+> +
+> +#define show_inhibit_reasons(inhibits) \
+> +	__print_flags(inhibits, "|", APICV_INHIBIT_FLAGS)
+> +
+>   TRACE_EVENT(kvm_apicv_inhibit_changed,
+>   	    TP_PROTO(int reason, bool set, unsigned long inhibits),
+>   	    TP_ARGS(reason, set, inhibits),
+> @@ -1388,9 +1409,12 @@ TRACE_EVENT(kvm_apicv_inhibit_changed,
+>   		__entry->inhibits = inhibits;
+>   	),
+>   
+> -	TP_printk("%s reason=%u, inhibits=0x%lx",
+> +	TP_printk("%s reason=%u, inhibits=0x%lx%s%s",
+>   		  __entry->set ? "set" : "cleared",
+> -		  __entry->reason, __entry->inhibits)
+> +		  __entry->reason, __entry->inhibits,
+> +		  __entry->inhibits ? " " : "",
+> +		  __entry->inhibits ?
+> +		  show_inhibit_reasons(__entry->inhibits) : "")
+>   );
+>   
+>   TRACE_EVENT(kvm_apicv_accept_irq,
+> 
+> base-commit: 7455665a3521aa7b56245c0a2810f748adc5fdd4
 
 
