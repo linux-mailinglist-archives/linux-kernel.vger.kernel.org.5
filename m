@@ -1,79 +1,39 @@
-Return-Path: <linux-kernel+bounces-135136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED5A89BB85
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:21:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B51F89BB87
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:23:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16A69280E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:21:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEE7B1C218F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3D34595C;
-	Mon,  8 Apr 2024 09:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TtvdTwny"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF764176B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9D14594B;
+	Mon,  8 Apr 2024 09:22:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0743838FB9
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712568068; cv=none; b=HEhuDlZ7J45sO/LP1GRq6mABJA+/knZ87L7PiMITOrtt955LBqNd+yCt11vf0cqBqDYkjNbGOc41u1uTmDWCXYMl/Dvpth3TcFSXoqa0nb5FW5NIRG1Y605/5Eidw6k4XIhO7U/48blAaoxkiFH3kEIPUuiEKjOfl0yi+cuMASs=
+	t=1712568177; cv=none; b=gTTziBult5x920hzAA5VAcGOt5hHknwLq+gRaCQYN6TDdv61N/u9Ax14JG/qigaigvxn58iXT3urX5keU748gj0mqWNGz18/obTm3ao4uwd00wiv1dW5QGuUimaTe1Q8tllg/ICDJ6k3OHTsC8CjCAJtOCKwn9Wii0oAvqV2X08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712568068; c=relaxed/simple;
-	bh=LlWw5D5iq3eRsOKi/6cRekmwRU6E2z6fXUzoAVyRkgI=;
+	s=arc-20240116; t=1712568177; c=relaxed/simple;
+	bh=rE/1OcXIoHWzQDFcMGMuib77Zv9TNp8ruHC1sXZ4mO0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s6scoGbD1irnNcn8KkfkEjxcHUE2TO4q09yjX4hvPJBECrXDn/LYZx7U88TeUYj4BefLMC4m2iYrgdu3C3l3Q85LycW6yz5ytfWgeMTsBxZqxSN473rJVtNNerf4iSIWSe+HMXS03aP1aFyRfiGOQnnqn6giujI8g8iVq1dsaKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TtvdTwny; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712568066;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vXql7UyGB0xfCaYsiXkmotNqC4Ch89jqlagi6eSTNP4=;
-	b=TtvdTwnyeE8jL6BVawSrz3gj74oxe8k3jfOgLkJcgowRAVf7k7RwV00wl0B3Zna+/wxo1Z
-	NyzEoaQB1TyRTeiccznsA7su9rJ7YCH1E9xqLklTonVrlyySr2MS2DW7D20214tA5qTWgs
-	oH5yq0DcR0MB4c7c6+G6l0agMF6Fmtg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-sgBduvWiPtiIjsbqHDM2uA-1; Mon, 08 Apr 2024 05:21:02 -0400
-X-MC-Unique: sgBduvWiPtiIjsbqHDM2uA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51abd0d7c6so183969866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:21:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712568061; x=1713172861;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vXql7UyGB0xfCaYsiXkmotNqC4Ch89jqlagi6eSTNP4=;
-        b=B/XHuW6mxNeIdjoFlzhY38bhHWspI5ihzCGDPR10ht++SyT+yQXtWykeXWYhR9Vp2a
-         JChD+5hTR5aUL5ZQMx+CBy2ItU+cpbdinVzeZXOCKfcwXpu2gpEJkvZUby/n9bAXMRei
-         Ynw/zlrjCUASZ/OjgnC6ryuYqR6j6fXjo591uIlzaL7jn3NcgIQILOH4U83rSzLRj+Zf
-         kAaSAesqKmvRWNMgSdy5EXv+0zbHNg9SmcSobiRq/uLxjOTsy4grGBGaRc2xbRq5ZUTr
-         wflYOFpEQOZcPMJ4NJDV5bzHP6Go38rMe2GtwFOT/7b/+fMA18rneVGzgPaB+TirMfi8
-         DljA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAov4lSBLvRujivBtzDgECahnjvvK54jSQRR4XZ1KuRzGgOW/QGECoQFqIsIAmWSPO8YPIsz7xuRyQ8e2C6meJGMvlZ7wnD6ecxkxl
-X-Gm-Message-State: AOJu0YzRL2YjGbBC/krQiEJJDq13UsHV39K1VNUwKWqrilOyPBKso7ZY
-	R5u/B1q12ITUtBHhiM5VwwiomIngiEZk+OPy39PA4veKUr1fmbeLh28+42iJ/jEkTjLZr7ue8q0
-	ftSV1xi0yxhZoX4DkKiwDaE3xBVTt/KEpYt81y5+xlAZmu4Gssjw+5NAy2+RuBw==
-X-Received: by 2002:a17:906:af7b:b0:a46:1d4b:d81 with SMTP id os27-20020a170906af7b00b00a461d4b0d81mr5221302ejb.62.1712568061725;
-        Mon, 08 Apr 2024 02:21:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGWOk6NEUrk9lnCfVbhMKNrjuoMqwfAbqHURxAw52jR4biGZq5z+GiQk0FKFdfGm0nyfmNnwA==
-X-Received: by 2002:a17:906:af7b:b0:a46:1d4b:d81 with SMTP id os27-20020a170906af7b00b00a461d4b0d81mr5221290ejb.62.1712568061420;
-        Mon, 08 Apr 2024 02:21:01 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id o12-20020a170906358c00b00a51d0690052sm1617988ejb.124.2024.04.08.02.21.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 02:21:01 -0700 (PDT)
-Message-ID: <2dd4f820-8b94-4e9b-909c-b43cb40bfc99@redhat.com>
-Date: Mon, 8 Apr 2024 11:21:00 +0200
+	 In-Reply-To:Content-Type; b=GQk2RLrup2eS5ZwTADKiz6mH3VtM98CKtfD7mPZ7WevXCILhLpjZ7biXpwVlUnjcZhpWjboHE+1aKiUcITaTe/5N3xQaV7OmQCzwGEvldrak3LYWkhW2jVo0MRoblKTHF69YPZAfAHtXDo4IOBonidwNpWMHX0lVReJX73E91Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB4181007;
+	Mon,  8 Apr 2024 02:23:24 -0700 (PDT)
+Received: from [10.57.73.169] (unknown [10.57.73.169])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CB373F766;
+	Mon,  8 Apr 2024 02:22:52 -0700 (PDT)
+Message-ID: <73adae65-4429-41d7-bbb6-4c58156060d3@arm.com>
+Date: Mon, 8 Apr 2024 10:22:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,117 +41,481 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: quickstart: Fix race condition when
- reporting input event
-To: Armin Wolf <W_Armin@gmx.de>, ilpo.jarvinen@linux.intel.com
-Cc: rafael@kernel.org, linux-acpi@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240327214524.123935-1-W_Armin@gmx.de>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240327214524.123935-1-W_Armin@gmx.de>
+Subject: Re: [PATCH v6 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240403114032.1162100-1-ryan.roberts@arm.com>
+ <20240403114032.1162100-3-ryan.roberts@arm.com>
+ <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Andrew, Looks like there are a few niggles for me to address below. So please
+don't let v6 (currently in mm-unstable) progress to mm-stable. I'll aim to get a
+new version out (or patch for this depending on how discussion lands) in the
+next couple of days.
 
-On 3/27/24 10:45 PM, Armin Wolf wrote:
-> Since commit e2ffcda16290 ("ACPI: OSL: Allow Notify () handlers to run
-> on all CPUs"), the ACPI core allows multiple notify calls to be active
-> at the same time. This means that two instances of quickstart_notify()
-> running at the same time can mess which each others input sequences.
+
+On 05/04/2024 11:13, David Hildenbrand wrote:
+> On 03.04.24 13:40, Ryan Roberts wrote:
+>> Now that we no longer have a convenient flag in the cluster to determine
+>> if a folio is large, free_swap_and_cache() will take a reference and
+>> lock a large folio much more often, which could lead to contention and
+>> (e.g.) failure to split large folios, etc.
+>>
+>> Let's solve that problem by batch freeing swap and cache with a new
+>> function, free_swap_and_cache_nr(), to free a contiguous range of swap
+>> entries together. This allows us to first drop a reference to each swap
+>> slot before we try to release the cache folio. This means we only try to
+>> release the folio once, only taking the reference and lock once - much
+>> better than the previous 512 times for the 2M THP case.
+>>
+>> Contiguous swap entries are gathered in zap_pte_range() and
+>> madvise_free_pte_range() in a similar way to how present ptes are
+>> already gathered in zap_pte_range().
+>>
+>> While we are at it, let's simplify by converting the return type of both
+>> functions to void. The return value was used only by zap_pte_range() to
+>> print a bad pte, and was ignored by everyone else, so the extra
+>> reporting wasn't exactly guaranteed. We will still get the warning with
+>> most of the information from get_swap_device(). With the batch version,
+>> we wouldn't know which pte was bad anyway so could print the wrong one.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   include/linux/pgtable.h | 28 ++++++++++++++
+>>   include/linux/swap.h    | 12 ++++--
+>>   mm/internal.h           | 48 +++++++++++++++++++++++
+>>   mm/madvise.c            | 12 ++++--
+>>   mm/memory.c             | 13 ++++---
+>>   mm/swapfile.c           | 86 ++++++++++++++++++++++++++++++++---------
+>>   6 files changed, 167 insertions(+), 32 deletions(-)
+>>
+>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>> index a3fc8150b047..0278259f7078 100644
+>> --- a/include/linux/pgtable.h
+>> +++ b/include/linux/pgtable.h
+>> @@ -708,6 +708,34 @@ static inline void pte_clear_not_present_full(struct
+>> mm_struct *mm,
+>>   }
+>>   #endif
+>>   +#ifndef clear_not_present_full_ptes
+>> +/**
+>> + * clear_not_present_full_ptes - Clear consecutive not present PTEs.
 > 
-> Fix this by protecting the input sequence with a mutex.
 > 
-> Compile-tested only.
+> Consecutive only in the page table or also in some other sense?
 > 
-> Fixes: afd66f2a739e ("platform/x86: Add ACPI quickstart button (PNP0C32) driver")
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> I suspect: just unrelated non-present entries of any kind (swp, nonswp) and any
+> offset/pfn.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+yes.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+> 
+> Consider document that.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
+How about: "Clear multiple not present PTEs which are consecutive in the pgtable"?
 
 
+> 
+>> + * @mm: Address space the ptes represent.
+>> + * @addr: Address of the first pte.
+>> + * @ptep: Page table pointer for the first entry.
+>> + * @nr: Number of entries to clear.
+>> + * @full: Whether we are clearing a full mm.
+>> + *
+>> + * May be overridden by the architecture; otherwise, implemented as a simple
+>> + * loop over pte_clear_not_present_full().
+>> + *
+>> + * Context: The caller holds the page table lock.  The PTEs are all not present.
+>> + * The PTEs are all in the same PMD.
+>> + */
+>> +static inline void clear_not_present_full_ptes(struct mm_struct *mm,
+>> +        unsigned long addr, pte_t *ptep, unsigned int nr, int full)
+>> +{
+>> +    for (;;) {
+>> +        pte_clear_not_present_full(mm, addr, ptep, full);
+>> +        if (--nr == 0)
+>> +            break;
+>> +        ptep++;
+>> +        addr += PAGE_SIZE;
+>> +    }
+>> +}
+>> +#endif
+>> +
+>>   #ifndef __HAVE_ARCH_PTEP_CLEAR_FLUSH
+>>   extern pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>>                     unsigned long address,
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index f6f78198f000..5737236dc3ce 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -471,7 +471,7 @@ extern int swap_duplicate(swp_entry_t);
+>>   extern int swapcache_prepare(swp_entry_t);
+>>   extern void swap_free(swp_entry_t);
+>>   extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>> -extern int free_swap_and_cache(swp_entry_t);
+>> +extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+>>   int swap_type_of(dev_t device, sector_t offset);
+>>   int find_first_swap(dev_t *device);
+>>   extern unsigned int count_swap_pages(int, int);
+>> @@ -520,8 +520,9 @@ static inline void put_swap_device(struct swap_info_struct
+>> *si)
+>>   #define free_pages_and_swap_cache(pages, nr) \
+>>       release_pages((pages), (nr));
+>>   
+> 
+> 
+> [...]
+> 
+>> +
+>> +/**
+>> + * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
+>> + * @start_ptep: Page table pointer for the first entry.
+>> + * @max_nr: The maximum number of table entries to consider.
+>> + * @entry: Swap entry recovered from the first table entry.
+>> + *
+>> + * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
+>> + * containing swap entries all with consecutive offsets and targeting the same
+>> + * swap type.
+>> + *
+> 
+> Likely you should document that any swp pte bits are ignored? ()
 
-> ---
-> This applies on the branch "review-hans". Maybe we could somehow
-> document the concurrency rules for ACPI notify handlers?
-> ---
->  drivers/platform/x86/quickstart.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+Sorry I don't understand this comment. I thought any non-none, non-present PTE
+was always considered to contain only a "swap entry" and a swap entry consists
+of a "type" and an "offset" only. (and its a special "non-swap" swap entry if
+type > SOME_CONSTANT) Are you saying there are additional fields in the PTE that
+are not part of the swap entry?
+
+
 > 
-> diff --git a/drivers/platform/x86/quickstart.c b/drivers/platform/x86/quickstart.c
-> index ba3a7a25dda7..e40f852d42c1 100644
-> --- a/drivers/platform/x86/quickstart.c
-> +++ b/drivers/platform/x86/quickstart.c
-> @@ -18,6 +18,7 @@
->  #include <linux/input/sparse-keymap.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> +#include <linux/mutex.h>
->  #include <linux/platform_device.h>
->  #include <linux/sysfs.h>
->  #include <linux/types.h>
-> @@ -35,6 +36,7 @@
+>> + * max_nr must be at least one and must be limited by the caller so scanning
+>> + * cannot exceed a single page table.
+>> + *
+>> + * Return: the number of table entries in the batch.
+>> + */
+>> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
+>> +                 swp_entry_t entry)
+>> +{
+>> +    const pte_t *end_ptep = start_ptep + max_nr;
+>> +    unsigned long expected_offset = swp_offset(entry) + 1;
+>> +    unsigned int expected_type = swp_type(entry);
+>> +    pte_t *ptep = start_ptep + 1;
+>> +
+>> +    VM_WARN_ON(max_nr < 1);
+>> +    VM_WARN_ON(non_swap_entry(entry));
+>> +
+>> +    while (ptep < end_ptep) {
+>> +        pte_t pte = ptep_get(ptep);
+>> +
+>> +        if (pte_none(pte) || pte_present(pte))
+>> +            break;
+>> +
+>> +        entry = pte_to_swp_entry(pte);
+>> +
+>> +        if (non_swap_entry(entry) ||
+>> +            swp_type(entry) != expected_type ||
+>> +            swp_offset(entry) != expected_offset)
+>> +            break;
+>> +
+>> +        expected_offset++;
+>> +        ptep++;
+>> +    }
+>> +
+>> +    return ptep - start_ptep;
+>> +}
 > 
->  struct quickstart_data {
->  	struct device *dev;
-> +	struct mutex input_lock;	/* Protects input sequence during notify */
->  	struct input_dev *input_device;
->  	char input_name[32];
->  	char phys[32];
-> @@ -73,7 +75,10 @@ static void quickstart_notify(acpi_handle handle, u32 event, void *context)
+> Looks very clean :)
 > 
->  	switch (event) {
->  	case QUICKSTART_EVENT_RUNTIME:
-> +		mutex_lock(&data->input_lock);
->  		sparse_keymap_report_event(data->input_device, 0x1, 1, true);
-> +		mutex_unlock(&data->input_lock);
-> +
->  		acpi_bus_generate_netlink_event(DRIVER_NAME, dev_name(data->dev), event, 0);
->  		break;
->  	default:
-> @@ -147,6 +152,13 @@ static void quickstart_notify_remove(void *context)
->  	acpi_remove_notify_handler(handle, ACPI_DEVICE_NOTIFY, quickstart_notify);
->  }
+> I was wondering whether we could similarly construct the expected swp PTE and
+> only check pte_same.
 > 
-> +static void quickstart_mutex_destroy(void *data)
-> +{
-> +	struct mutex *lock = data;
-> +
-> +	mutex_destroy(lock);
-> +}
-> +
->  static int quickstart_probe(struct platform_device *pdev)
->  {
->  	struct quickstart_data *data;
-> @@ -165,6 +177,11 @@ static int quickstart_probe(struct platform_device *pdev)
->  	data->dev = &pdev->dev;
->  	dev_set_drvdata(&pdev->dev, data);
+> expected_pte = __swp_entry_to_pte(__swp_entry(expected_type, expected_offset));
 > 
-> +	mutex_init(&data->input_lock);
-> +	ret = devm_add_action_or_reset(&pdev->dev, quickstart_mutex_destroy, &data->input_lock);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	/* We have to initialize the device wakeup before evaluating GHID because
->  	 * doing so will notify the device if the button was used to wake the machine
->  	 * from S5.
-> --
-> 2.39.2
+> ... or have a variant to increase only the swp offset for an existing pte. But
+> non-trivial due to the arch-dependent format.
 > 
+> But then, we'd fail on mismatch of other swp pte bits.
+
+Hmm, perhaps I have a misunderstanding regarding "swp pte bits"...
+
+> 
+> 
+> On swapin, when reusing this function (likely!), we'll might to make sure that
+> the PTE bits match as well.
+> 
+> See below regarding uffd-wp.
+> 
+> 
+>>   #endif /* CONFIG_MMU */
+>>     void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>> diff --git a/mm/madvise.c b/mm/madvise.c
+>> index 1f77a51baaac..070bedb4996e 100644
+>> --- a/mm/madvise.c
+>> +++ b/mm/madvise.c
+>> @@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>       struct folio *folio;
+>>       int nr_swap = 0;
+>>       unsigned long next;
+>> +    int nr, max_nr;
+>>         next = pmd_addr_end(addr, end);
+>>       if (pmd_trans_huge(*pmd))
+>> @@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>           return 0;
+>>       flush_tlb_batched_pending(mm);
+>>       arch_enter_lazy_mmu_mode();
+>> -    for (; addr != end; pte++, addr += PAGE_SIZE) {
+>> +    for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
+>> +        nr = 1;
+>>           ptent = ptep_get(pte);
+>>             if (pte_none(ptent))
+>> @@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>                 entry = pte_to_swp_entry(ptent);
+>>               if (!non_swap_entry(entry)) {
+>> -                nr_swap--;
+>> -                free_swap_and_cache(entry);
+>> -                pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> +                max_nr = (end - addr) / PAGE_SIZE;
+>> +                nr = swap_pte_batch(pte, max_nr, entry);
+>> +                nr_swap -= nr;
+>> +                free_swap_and_cache_nr(entry, nr);
+>> +                clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>               } else if (is_hwpoison_entry(entry) ||
+>>                      is_poisoned_swp_entry(entry)) {
+>>                   pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 7dc6c3d9fa83..ef2968894718 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -1637,12 +1637,13 @@ static unsigned long zap_pte_range(struct mmu_gather
+>> *tlb,
+>>                   folio_remove_rmap_pte(folio, page, vma);
+>>               folio_put(folio);
+>>           } else if (!non_swap_entry(entry)) {
+>> -            /* Genuine swap entry, hence a private anon page */
+>> +            max_nr = (end - addr) / PAGE_SIZE;
+>> +            nr = swap_pte_batch(pte, max_nr, entry);
+>> +            /* Genuine swap entries, hence a private anon pages */
+>>               if (!should_zap_cows(details))
+>>                   continue;
+>> -            rss[MM_SWAPENTS]--;
+>> -            if (unlikely(!free_swap_and_cache(entry)))
+>> -                print_bad_pte(vma, addr, ptent, NULL);
+>> +            rss[MM_SWAPENTS] -= nr;
+>> +            free_swap_and_cache_nr(entry, nr);
+>>           } else if (is_migration_entry(entry)) {
+>>               folio = pfn_swap_entry_folio(entry);
+>>               if (!should_zap_folio(details, folio))
+>> @@ -1665,8 +1666,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>               pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+>>               WARN_ON_ONCE(1);
+>>           }
+>> -        pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> -        zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
+>> +        clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+> 
+> For zap_install_uffd_wp_if_needed(), the uffd-wp bit has to match.
+> 
+> zap_install_uffd_wp_if_needed() will use the uffd-wp information in
+> ptent->pteval to make a decision whether to place PTE_MARKER_UFFD_WP markers.
+> 
+> On mixture, you either lose some or place too many markers.
+
+What path are you concerned about here? I don't get how what you describe can
+happen? swap_pte_batch() will only give me a batch of actual swap entries and
+actual swap entries don't contain uffd-wp info, IIUC. If the function gets to a
+"non-swap" swap entry, it bails. I thought the uffd-wp info was populated based
+on the VMA state at swap-in? I think you are telling me that it's persisted
+across the swap per-pte?
+
+> 
+> A simple workaround would be to disable any such batching if the VMA does have
+> uffd-wp enabled.
+> 
+>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
+>>       } while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+>>         add_mm_rss_vec(mm, rss);
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 0d44ee2b4f9c..d059de6896c1 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -130,7 +130,11 @@ static inline unsigned char swap_count(unsigned char ent)
+>>   /* Reclaim the swap entry if swap is getting full*/
+>>   #define TTRS_FULL        0x4
+>>   -/* returns 1 if swap entry is freed */
+>> +/*
+>> + * returns number of pages in the folio that backs the swap entry. If positive,
+>> + * the folio was reclaimed. If negative, the folio was not reclaimed. If 0, no
+>> + * folio was associated with the swap entry.
+>> + */
+>>   static int __try_to_reclaim_swap(struct swap_info_struct *si,
+>>                    unsigned long offset, unsigned long flags)
+>>   {
+>> @@ -155,6 +159,7 @@ static int __try_to_reclaim_swap(struct swap_info_struct *si,
+>>               ret = folio_free_swap(folio);
+>>           folio_unlock(folio);
+>>       }
+>> +    ret = ret ? folio_nr_pages(folio) : -folio_nr_pages(folio);
+>>       folio_put(folio);
+>>       return ret;
+>>   }
+>> @@ -895,7 +900,7 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>>           swap_was_freed = __try_to_reclaim_swap(si, offset, TTRS_ANYWAY);
+>>           spin_lock(&si->lock);
+>>           /* entry was freed successfully, try to use this again */
+>> -        if (swap_was_freed)
+>> +        if (swap_was_freed > 0)
+>>               goto checks;
+>>           goto scan; /* check next one */
+>>       }
+>> @@ -1572,32 +1577,75 @@ bool folio_free_swap(struct folio *folio)
+>>       return true;
+>>   }
+>>   -/*
+>> - * Free the swap entry like above, but also try to
+>> - * free the page cache entry if it is the last user.
+>> - */
+>> -int free_swap_and_cache(swp_entry_t entry)
+> 
+> Can we have some documentation what this function expects? How does nr relate to
+> entry?
+> 
+> i.e., offset range defined by [entry.offset, entry.offset + nr).
+
+Yep, will add something along these lines.
+
+> 
+>> +void free_swap_and_cache_nr(swp_entry_t entry, int nr)
+>>   {
+>> -    struct swap_info_struct *p;
+> 
+> It might be easier to get if you do
+> 
+> const unsigned long start_offset = swp_offset(entry);
+> const unsigned long end_offset = start_offset + nr;
+
+OK will do this.
+
+> 
+>> +    unsigned long end = swp_offset(entry) + nr;
+>> +    unsigned int type = swp_type(entry);
+>> +    struct swap_info_struct *si;
+>> +    bool any_only_cache = false;
+>> +    unsigned long offset;
+>>       unsigned char count;
+>>         if (non_swap_entry(entry))
+>> -        return 1;
+>> +        return;
+>>   -    p = get_swap_device(entry);
+>> -    if (p) {
+>> -        if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
+>> -            put_swap_device(p);
+>> -            return 0;
+>> +    si = get_swap_device(entry);
+>> +    if (!si)
+>> +        return;
+>> +
+>> +    if (WARN_ON(end > si->max))
+>> +        goto out;
+>> +
+>> +    /*
+>> +     * First free all entries in the range.
+>> +     */
+>> +    for (offset = swp_offset(entry); offset < end; offset++) {
+>> +        if (!WARN_ON(data_race(!si->swap_map[offset]))) {
+> 
+> Ouch "!(!)). Confusing.
+> 
+> I'm sure there is a better way to write that, maybe using more lines
+> 
+> if (data_race(si->swap_map[offset])) {
+>     ...
+> } else {
+>     WARN_ON_ONCE(1);
+> }
+
+OK, I thought it was kinda neat myself. I'll change it.
+
+> 
+> 
+>> +            count = __swap_entry_free(si, swp_entry(type, offset));
+>> +            if (count == SWAP_HAS_CACHE)
+>> +                any_only_cache = true;
+>>           }
+>> +    }
+>> +
+>> +    /*
+>> +     * Short-circuit the below loop if none of the entries had their
+>> +     * reference drop to zero.
+>> +     */
+>> +    if (!any_only_cache)
+>> +        goto out;
+>>   -        count = __swap_entry_free(p, entry);
+>> -        if (count == SWAP_HAS_CACHE)
+>> -            __try_to_reclaim_swap(p, swp_offset(entry),
+>> +    /*
+>> +     * Now go back over the range trying to reclaim the swap cache. This is
+>> +     * more efficient for large folios because we will only try to reclaim
+>> +     * the swap once per folio in the common case. If we do
+>> +     * __swap_entry_free() and __try_to_reclaim_swap() in the same loop, the
+>> +     * latter will get a reference and lock the folio for every individual
+>> +     * page but will only succeed once the swap slot for every subpage is
+>> +     * zero.
+>> +     */
+>> +    for (offset = swp_offset(entry); offset < end; offset += nr) {
+>> +        nr = 1;
+>> +        if (READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) {
+> 
+> Here we use READ_ONCE() only, above data_race(). Hmmm.
+
+Yes. I think this is correct.
+
+READ_ONCE() is a "marked access" which KCSAN understands, so it won't complain
+about it. So data_race() isn't required when READ_ONCE() (or WRITE_ONCE()) is
+used. I believe READ_ONCE() is required here because we don't have a lock and we
+want to make sure we read it in a non-tearing manner.
+
+We don't need the READ_ONCE() above since we don't care about the exact value -
+only that it's not 0 (because we should be holding a ref). So do a plain access
+to give the compiler a bit more freedom. But we need to mark that with
+data_race() to stop KCSAN from complaining.
+
+> 
+>> +            /*
+>> +             * Folios are always naturally aligned in swap so
+>> +             * advance forward to the next boundary. Zero means no
+>> +             * folio was found for the swap entry, so advance by 1
+>> +             * in this case. Negative value means folio was found
+>> +             * but could not be reclaimed. Here we can still advance
+>> +             * to the next boundary.
+>> +             */
+>> +            nr = __try_to_reclaim_swap(si, offset,
+>>                             TTRS_UNMAPPED | TTRS_FULL);
+>> -        put_swap_device(p);
+>> +            if (nr == 0)
+>> +                nr = 1;
+>> +            else if (nr < 0)
+>> +                nr = -nr;
+>> +            nr = ALIGN(offset + 1, nr) - offset;
+>> +        }
+> 
+> Apart from that nothing jumped at me.
+
+Thanks for the review!
+
 
 
