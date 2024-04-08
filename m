@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-135852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A70C89CC0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7FC89CC0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:57:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D54F3284E30
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:57:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C272284E0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A676D14884B;
-	Mon,  8 Apr 2024 18:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA4C149C49;
+	Mon,  8 Apr 2024 18:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zi04pRXS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EzBTMfx3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59FA147C9F;
-	Mon,  8 Apr 2024 18:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E01148835;
+	Mon,  8 Apr 2024 18:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712602526; cv=none; b=Wz9aAbD+SP3V+pXvputaeh7y6/mpQa75p078tiickigOZO3pPO9zR7LNAYb3ftAh7jTt59NM/YrTBOktsBxtNAhrBW3V3UXNDIbHP2/2cIC3Gt0F04HQ5LxPAiT76wETzHLWfimrcD1095YZ4uQC0kksM71DJkd6DPQJOFSZxOg=
+	t=1712602527; cv=none; b=pkoKst4hQyQkZRr2Gd/hxZbfy4wBVad9SOmcoPkj6f29vTQxURK2stFE9i9X0Kf9ri22blyIa2hryyTosz0A26xSdrWdfLa2sBDJZpfnD/VQ9NzmJHa6LaCxO/cXGqBZR3bxOhixnklTAjONztT80Apxc1aDL2pqk/WiGp32oxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712602526; c=relaxed/simple;
-	bh=6IP15GRrvoLWh+SkcnFaIq4Jq+IWeRLFF0e6voiaEoM=;
+	s=arc-20240116; t=1712602527; c=relaxed/simple;
+	bh=BvHgZcFAUDVTBrBRbiRaDYjdO4l4T3ZRwoMXPA6BMQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jEdOu78rp3pl7Ua5zJ7e4d4I5pm6USLFcQ7bivwBVlaQdNM8/JSNPkK/2IR1rVgo5ffIC013ahmg4AbwrM2Qt52Y2EDkQt3ROI9SVaXRY3s177U/ZHXCZT33UxJs2Nx/hPyGYAva43+EZxPIZh5Nr0yJyTKbgU9WeRo59BvaNlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zi04pRXS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E37DC433A6;
+	 MIME-Version; b=aWltg7frMU05UPwsMDnsuWrK3KWZbq7EOjndEcT1qy1scnItFLGd0H1vz0eJ8yJE6bDyggXX9R9XW6SMtvA3Y5L1gBZzEgtOs8g75GpSsHvvgHZbNmR/5T0dKH/HhU3F20wQwHLDG/DhB1xdhJjjUSK+rQ/Y0uC95ydpMsqgrnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EzBTMfx3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB06EC433C7;
 	Mon,  8 Apr 2024 18:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712602526;
-	bh=6IP15GRrvoLWh+SkcnFaIq4Jq+IWeRLFF0e6voiaEoM=;
+	s=k20201202; t=1712602527;
+	bh=BvHgZcFAUDVTBrBRbiRaDYjdO4l4T3ZRwoMXPA6BMQk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Zi04pRXSNJM5LcEtZVPcOcxUMaCTLL4pxB6O4fqD6TkkJFEJxsd17dTOgXSYenG1u
-	 dj/l8g51Dw5KXwcRxwP97wX+tXuq1O/EhkhelbctuW0dxvHmAEPnpK6vfykTfAbT6P
-	 wv5ORA4MOYaRzLN550SCGqCBzUOTiAlh/o6r4fEa9wBmwCWrzrlFgKD+7OmDt2XouZ
-	 yQ9jZ03/lnP3I/fpL54zNhlNbYIswSd95jrPso4lYBi3zZHKXkAya28RHIWT7ZWMrS
-	 m31luBCIshtkxKdbrCjdCisRQjlnyvBnyyu1nI8F8L8+SFlJr94yg5Cul9nySQKHfM
-	 KXFY8FFfsWlOA==
+	b=EzBTMfx3rwiLU0W2aX9wWUyhTBaWz8dCWK1EzV/EnvzsHz3Nd2thn6M96J7zpmzmC
+	 fnxpCzSKtT4aojVmgTDApEZjvrIU23q8AS36rpJAYggyoz5tC+Js+e1Xreb5B4hHGC
+	 sjUJLk/LsYzTkkN4dNda7Ka3n/CwWbcvoO5OIT/Ve/4TNOsGuo0m/uqqM/T8pCblsV
+	 8P4pWQNgQre8cdPR9gbFt4lyu0edvSWJUqyY11t6SDAHJBRsyV7J4ygqNM6YDZbT7V
+	 a/k1oTb6ZZe8gp0ewJk15NBYvMqwC+MDm5+skXK19QtQMPDCWKNbciVQJ/k6af9I90
+	 a8oP1UOACEB1A==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,13 +50,12 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH 8/9] tools/include: Sync asm-generic/bitops/fls.h with the kernel sources
-Date: Mon,  8 Apr 2024 11:55:19 -0700
-Message-ID: <20240408185520.1550865-9-namhyung@kernel.org>
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 9/9] tools/include: Sync arm64 asm/cputype.h with the kernel sources
+Date: Mon,  8 Apr 2024 11:55:20 -0700
+Message-ID: <20240408185520.1550865-10-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240408185520.1550865-1-namhyung@kernel.org>
 References: <20240408185520.1550865-1-namhyung@kernel.org>
@@ -70,82 +69,50 @@ Content-Transfer-Encoding: 8bit
 
 To pick up the changes from:
 
-  cb4ede926134 ("riscv: Avoid code duplication with generic bitops implementation")
+  fb091ff39479 ("arm64: Subscribe Microsoft Azure Cobalt 100 to ARM Neoverse N2 errata")
 
 This should address these tools/perf build warnings:
 
   Warning: Kernel ABI header differences:
-    diff -u tools/include/asm-generic/bitops/__fls.h include/asm-generic/bitops/__fls.h
-    diff -u tools/include/asm-generic/bitops/fls.h include/asm-generic/bitops/fls.h
+    diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Palmer Dabbelt <palmer@rivosinc.com>
-Cc: linux-arch@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/include/asm-generic/bitops/__fls.h | 8 ++++++--
- tools/include/asm-generic/bitops/fls.h   | 8 ++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ tools/arch/arm64/include/asm/cputype.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/include/asm-generic/bitops/__fls.h b/tools/include/asm-generic/bitops/__fls.h
-index 03f721a8a2b1..54ccccf96e21 100644
---- a/tools/include/asm-generic/bitops/__fls.h
-+++ b/tools/include/asm-generic/bitops/__fls.h
-@@ -5,12 +5,12 @@
- #include <asm/types.h>
+diff --git a/tools/arch/arm64/include/asm/cputype.h b/tools/arch/arm64/include/asm/cputype.h
+index 7c7493cb571f..52f076afeb96 100644
+--- a/tools/arch/arm64/include/asm/cputype.h
++++ b/tools/arch/arm64/include/asm/cputype.h
+@@ -61,6 +61,7 @@
+ #define ARM_CPU_IMP_HISI		0x48
+ #define ARM_CPU_IMP_APPLE		0x61
+ #define ARM_CPU_IMP_AMPERE		0xC0
++#define ARM_CPU_IMP_MICROSOFT		0x6D
  
- /**
-- * __fls - find last (most-significant) set bit in a long word
-+ * generic___fls - find last (most-significant) set bit in a long word
-  * @word: the word to search
-  *
-  * Undefined if no set bit exists, so code should check against 0 first.
-  */
--static __always_inline unsigned long __fls(unsigned long word)
-+static __always_inline unsigned long generic___fls(unsigned long word)
- {
- 	int num = BITS_PER_LONG - 1;
+ #define ARM_CPU_PART_AEM_V8		0xD0F
+ #define ARM_CPU_PART_FOUNDATION		0xD00
+@@ -135,6 +136,8 @@
  
-@@ -41,4 +41,8 @@ static __always_inline unsigned long __fls(unsigned long word)
- 	return num;
- }
+ #define AMPERE_CPU_PART_AMPERE1		0xAC3
  
-+#ifndef __HAVE_ARCH___FLS
-+#define __fls(word) generic___fls(word)
-+#endif
++#define MICROSOFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
 +
- #endif /* _ASM_GENERIC_BITOPS___FLS_H_ */
-diff --git a/tools/include/asm-generic/bitops/fls.h b/tools/include/asm-generic/bitops/fls.h
-index b168bb10e1be..26f3ce1dd6e4 100644
---- a/tools/include/asm-generic/bitops/fls.h
-+++ b/tools/include/asm-generic/bitops/fls.h
-@@ -3,14 +3,14 @@
- #define _ASM_GENERIC_BITOPS_FLS_H_
+ #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
+ #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
+ #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
+@@ -193,6 +196,7 @@
+ #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
+ #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
+ #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
++#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MICROSOFT_CPU_PART_AZURE_COBALT_100)
  
- /**
-- * fls - find last (most-significant) bit set
-+ * generic_fls - find last (most-significant) bit set
-  * @x: the word to search
-  *
-  * This is defined the same way as ffs.
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
- 
--static __always_inline int fls(unsigned int x)
-+static __always_inline int generic_fls(unsigned int x)
- {
- 	int r = 32;
- 
-@@ -39,4 +39,8 @@ static __always_inline int fls(unsigned int x)
- 	return r;
- }
- 
-+#ifndef __HAVE_ARCH_FLS
-+#define fls(x) generic_fls(x)
-+#endif
-+
- #endif /* _ASM_GENERIC_BITOPS_FLS_H_ */
+ /* Fujitsu Erratum 010001 affects A64FX 1.0 and 1.1, (v0r0 and v1r0) */
+ #define MIDR_FUJITSU_ERRATUM_010001		MIDR_FUJITSU_A64FX
 -- 
 2.44.0.478.gd926399ef9-goog
 
