@@ -1,277 +1,150 @@
-Return-Path: <linux-kernel+bounces-135738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0762489CA97
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:16:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67B4C89CA99
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:16:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CA381C241FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:16:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2CC72892AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC75D14388F;
-	Mon,  8 Apr 2024 17:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lid8DAZl"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87680143893;
+	Mon,  8 Apr 2024 17:16:45 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49E1142E68
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD13D142E68
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596588; cv=none; b=QGnKgEak/izMm0yepyqgGrnjK2qIu2tKlyUpJfKFS2UrVmmCqDysPQ9RyQBFhJCIWjha6CKhzfmF569xg0ULoBWfEahgxNgblayT2ZR399AGrlXYhETS3XpfvgaPEeDWDtn1KOeDvgGcEdR3cbv9OPgH8B/4JM0wAcxnjGWx7Jw=
+	t=1712596605; cv=none; b=aYFs4Ngi54aFHTgTH7bNIc9rLVc7Pvxby9BV/Lr7p+2mbr38nlcLx7MzoIkG8RIW7plQRf/UmCNXjtoFvwZy1kzWwW91xmUDtDqWFeYf9TB2IRbDvhK2ficjk6kNOBZCeH+DBODHuKY9h6yET0fT6DECn6E4ywY9ykGMeJOgnaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596588; c=relaxed/simple;
-	bh=vmPDnU2rbQte5MXl0eNshZbSVgsEa6yKXoSEo0wMagw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=p1WxqpKvnJjbvwK7RmkyEhDQN+FNNAEOThJVoCusUxXQuo7mHq2jDKe9lC/N170k5sfhs42p8cJFh1O2tagXUCGXjAOPWFZXNTS4Z14MXBzmGJezsFoVL73b8rl16Tpm9xH/rvBMOMDwyzBUaYnlhSvp5bTVmkoIpgRzKr9hnXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lid8DAZl; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8bdadc79cso4129665a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712596586; x=1713201386; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XYkMSUzqJlpjQtSfhn57aIvoeBGIOTZt8KfeTsbtdM8=;
-        b=lid8DAZl+MQvmnSl6vAZQSIOyYwV20ybesJgzgN7BdSGtkm27tg8n3AoinKX72nytQ
-         ZPBperwVtyZV1qS5v4LsUfx8xK84t+mt1q7nSaArMv3hQbRxzmrL1nRQQN35kSTmIHtY
-         BS9GkMYzDexKnHFCxmXk+T+vyLMQ0bSGfELkNKZYgIePvcgYPrUAcHtB/fXsXzWDfEJp
-         88hqDUf7tOVMS3C8QwsV6VEHCeF/GvsYPMSj4JjHPvaORSo0Hh4bYOpSSSOJWz++omPB
-         RBWB8RWzdwwfKMj7vCb+jf1+A6Qj8b9KpxpAGWlwhmxqP7RaP4/V8pe8gXWD83LQ9Rh/
-         LWZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596586; x=1713201386;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XYkMSUzqJlpjQtSfhn57aIvoeBGIOTZt8KfeTsbtdM8=;
-        b=YFoT/vYPa7Q41pqEs/6NqIabcIuA1FVqIFwQMQLq8ik1Xz/SmQcj1FPhcvwzezkgMZ
-         YObBmtUQJyMgUdk230yAyAcnsg/SR50NaVUHRv/ljLYOx376xIY9BA9dcDs9TTsbsWOZ
-         Otsiw3Bx1aBj4mmI0kvc6drpHbyH8KHaRRuI86BhLCkL3vx2a+VLmAKijecj3pFaYRp0
-         gBu2FV12iD1ElcFCxzj8X5G5/AQGfGkEGdzpk6qZlF41W8fhCE18TdoNyldTdW5sHXqt
-         lnrJS0y0VEl3yuh/+ZUpceHDLeSpDQRYTyaTdQy9NP5ypTdavLD4CG/u4g3SavP0fjfD
-         wUSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXDMN1u2+XSGyQlTU+uA5vKsyKkvd0R+oGBCaLZ+hJanQyeN2Y/kun7KOXIKlOudyL4HsBnzyKCrmPQvswm+NbuNUF/bZHhoM/gqSJs
-X-Gm-Message-State: AOJu0Yw+xYS7Oo9Bsmdu1RwEWqxQ/pQ9FfdrGOa9u7AeN8ACWCHM4zaM
-	bXfKCvpsYQx+VqCuoUygAgTgT5wwt62XhOJ0c/LM2MhTCp/64Y8KF9/RERUAhuNPA5vKseQIroH
-	/Ww==
-X-Google-Smtp-Source: AGHT+IEJYPlJPYnaeEaKqg0inn5SvyUCCTx+EH/Fky3KdSYu/p528FxN5PdXbtyKRmTaVnUYnuZwfQUNgeg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:5006:0:b0:5dc:af76:f57d with SMTP id
- e6-20020a635006000000b005dcaf76f57dmr30599pgb.7.1712596586030; Mon, 08 Apr
- 2024 10:16:26 -0700 (PDT)
-Date: Mon, 8 Apr 2024 10:16:24 -0700
-In-Reply-To: <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+	s=arc-20240116; t=1712596605; c=relaxed/simple;
+	bh=s81tOdRKg0MWtUzX7+hk49va1Z3UzIw6hgqY5JtFMI0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qgix10OuzlBT06/JW5TsLecS7k8sI6/detu6kBptmzXzx9gJB3ZY6iDjLyfGiRncwCOLlfM9Fvx7/gWiT6gFV1WjXw9c6Jl+J8r5Bjq/oJRkLpHyzCMVXq/6JMKiH2/qDiv+PGfOrGco43zPmG8uO9myFD20emxPhe9ZPgAWgkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 8 Apr
+ 2024 20:16:37 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 8 Apr 2024
+ 20:16:36 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Ian Abbott <abbotti@mev.co.uk>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, H Hartley Sweeten
+	<hsweeten@visionengravers.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+	<syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
+Subject: [PATCH v2] comedi: vmk80xx: fix incomplete endpoint checking
+Date: Mon, 8 Apr 2024 10:16:33 -0700
+Message-ID: <20240408171633.31649-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad> <ZhAN28BcMsfl4gm-@google.com> <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
-Message-ID: <ZhQmaEXPCqmx1rTW@google.com>
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-From: Sean Christopherson <seanjc@google.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>, Leonardo Bras <leobras@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Fri, Apr 05, 2024, Paul E. McKenney wrote:
-> On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
-> > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
-> > > rcuc wakes up (which might exceed the allowed latency threshold
-> > > for certain realtime apps).
-> > 
-> > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
-> > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
-> > enter a guest, but the CPU never does (at least, not in the immediate future).
-> > 
-> > Or am I just not understanding how RCU's kthreads work?
-> 
-> It is quite possible that the current rcu_pending() code needs help,
-> given the possibility of vCPU preemption.  I have heard of people doing
-> nested KVM virtualization -- or is that no longer a thing?
+While vmk80xx does have endpoint checking implemented, some things
+can fall through the cracks. Depending on the hardware model,
+URBs can have either bulk or interrupt type, and current version
+of vmk80xx_find_usb_endpoints() function does not take that fully
+into account. While this warning does not seem to be too harmful,
+at the very least it will crash systems with 'panic_on_warn' set on
+them.
 
-Nested virtualization is still very much a thing, but I don't see how it is at
-all unique with respect to RCU grace periods and quiescent states.  More below.
+Fix the issue found by Syzkaller [1] by somewhat simplifying the
+endpoint checking process with usb_find_common_endpoints() and
+ensuring that only expected endpoint types are present.
 
-> But the help might well involve RCU telling the hypervisor that a given
-> vCPU needs to run.  Not sure how that would go over, though it has been
-> prototyped a couple times in the context of RCU priority boosting.
->
-> > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> > > > >     grace period started over than a second ago. If this value is bad,
-> > > > >     I have no issue changing it.
-> > > > 
-> > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> > > > of what magic time threshold is used.  
-> > > 
-> > > Why? It works for this particular purpose.
-> > 
-> > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
-> > against edge cases, and I'm pretty sure we can do better with about the same amount
-> > of effort/churn.
-> 
-> Beyond a certain point, we have no choice.  How long should RCU let
-> a CPU run with preemption disabled before complaining?  We choose 21
-> seconds in mainline and some distros choose 60 seconds.  Android chooses
-> 20 milliseconds for synchronize_rcu_expedited() grace periods.
+This patch has not been tested on real hardware.
 
-Issuing a warning based on an arbitrary time limit is wildly different than using
-an arbitrary time window to make functional decisions.  My objection to the "assume
-the CPU will enter a quiescent state if it exited a KVM guest in the last second"
-is that there are plenty of scenarios where that assumption falls apart, i.e. where
-_that_ physical CPU will not re-enter the guest.
+[1] Syzkaller report:
+usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+WARNING: CPU: 0 PID: 781 at drivers/usb/core/urb.c:504 usb_submit_urb+0xc4e/0x18c0 drivers/usb/core/urb.c:503
+..
+Call Trace:
+ <TASK>
+ usb_start_wait_urb+0x113/0x520 drivers/usb/core/message.c:59
+ vmk80xx_reset_device drivers/comedi/drivers/vmk80xx.c:227 [inline]
+ vmk80xx_auto_attach+0xa1c/0x1a40 drivers/comedi/drivers/vmk80xx.c:818
+ comedi_auto_config+0x238/0x380 drivers/comedi/drivers.c:1067
+ usb_probe_interface+0x5cd/0xb00 drivers/usb/core/driver.c:399
+..
 
-Off the top of my head:
+Similar issue also found by Syzkaller:
+Link: https://syzkaller.appspot.com/bug?extid=5205eb2f17de3e01946e
 
- - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
-   will get false positives, and the *new* pCPU will get false negatives (though
-   the false negatives aren't all that problematic since the pCPU will enter a
-   quiescent state on the next VM-Enter.
+Reported-and-tested-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+Fixes: 49253d542cc0 ("staging: comedi: vmk80xx: factor out usb endpoint detection")
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+v2: removed unused variable 'i' to silence compiler warning per
+Ian Abbott's <abbotti@mev.co.uk> helpful suggestion.
 
- - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
-   won't re-enter the guest.  And so the pCPU will get false positives until the
-   vCPU gets a wake event or the 1 second window expires.
+ drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
 
- - If the VM terminates, the pCPU will get false positives until the 1 second
-   window expires.
-
-The false positives are solvable problems, by hooking vcpu_put() to reset
-kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
-scheduled in on a different pCPU, KVM would hook vcpu_load().
-
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d9642dd06c25..303ae9ae1c53 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3937,8 +3937,13 @@ static int rcu_pending(int user)
-> >  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
-> >  		return 1;
-> >  
-> > -	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-> > -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
-> > +	/*
-> > +	 * Is this a nohz_full CPU in userspace, idle, or likely to enter a
-> > +	 * guest in the near future?  (Ignore RCU if so.)
-> > +	 */
-> > +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
-> > +	     __this_cpu_read(context_tracking.in_guest_run_loop)) &&
-> 
-> In the case of (user || rcu_is_cpu_rrupt_from_idle()), this CPU was in
-> a quiescent just before the current scheduling-clock interrupt and will
-> again be in a quiescent state right after return from this interrupt.
-> This means that the grace-period kthread will be able to remotely sense
-> this quiescent state, so that the current CPU need do nothing.
->
-> In constrast, it looks like context_tracking.in_guest_run_loop instead
-> means that when we return from this interrupt, this CPU will still be
-> in a non-quiescent state.
-> 
-> Now, in the nested-virtualization case, your point might be that the
-> lower-level hypervisor could preempt the vCPU in the interrupt handler
-> just as easily as in the .in_guest_run_loop code.  Which is a good point.
-> But I don't know of a way to handle this other than heuristics and maybe
-> hinting to the hypervisor (which has been prototyped for RCU priority
-> boosting).
-
-Regarding nested virtualization, what exactly is your concern?  IIUC, you are
-worried about this code running at L1, i.e. as a nested hypervisor, and L0, i.e.
-the bare metal hypervisor, scheduling out the L1 CPU.  And because the L1 CPU
-doesn't get run "soon", it won't enter a quiescent state as expected by RCU.
-
-But that's 100% the case with RCU in a VM in general.  If an L1 CPU gets scheduled
-out by L0, that L1 CPU won't participate in any RCU stuff until it gets scheduled
-back in by L0.
-
-E.g. throw away all of the special case checks for rcu_nohz_full_cpu() in
-rcu_pending(), and the exact same problem exists.  The L1 CPU could get scheduled
-out while trying to run the RCU core kthread just as easily as it could get
-scheduled out while trying to run the vCPU task.  Or the L1 CPU could get scheduled
-out while it's still in the IRQ handler, before it even completes it rcu_pending().
-
-And FWIW, it's not just L0 scheduling that is problematic.  If something in L0
-prevents an L1 CPU (vCPU from L0's perspective) from making forward progress, e.g.
-due to a bug in L0, or severe resource contention, from the L1 kernel's perspective,
-the L1 CPU will appear stuck and trigger various warnings, e.g. soft-lockup,
-need_resched, RCU stalls, etc.
+diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
+index 4536ed43f65b..84dce5184a77 100644
+--- a/drivers/comedi/drivers/vmk80xx.c
++++ b/drivers/comedi/drivers/vmk80xx.c
+@@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+ 	struct vmk80xx_private *devpriv = dev->private;
+ 	struct usb_interface *intf = comedi_to_usb_interface(dev);
+ 	struct usb_host_interface *iface_desc = intf->cur_altsetting;
+-	struct usb_endpoint_descriptor *ep_desc;
+-	int i;
+-
+-	if (iface_desc->desc.bNumEndpoints != 2)
+-		return -ENODEV;
+-
+-	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
+-		ep_desc = &iface_desc->endpoint[i].desc;
+-
+-		if (usb_endpoint_is_int_in(ep_desc) ||
+-		    usb_endpoint_is_bulk_in(ep_desc)) {
+-			if (!devpriv->ep_rx)
+-				devpriv->ep_rx = ep_desc;
+-			continue;
+-		}
++	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
++	int ret;
  
-> Maybe the time for such hinting has come?
-
-That's a largely orthogonal discussion.  As above, boosting the scheduling priority
-of a vCPU because that vCPU is in critical section of some form is not at all
-unique to nested virtualization (or RCU).
-
-For basic functional correctness, the L0 hypervisor already has the "hint" it 
-needs.  L0 knows that the L1 CPU wants to run by virtue of the L1 CPU being
-runnable, i.e. not halted, not in WFS, etc.
-
-> > +	    rcu_nohz_full_cpu())
-> 
-> And rcu_nohz_full_cpu() has a one-second timeout, and has for quite
-> some time.
-
-That's not a good reason to use a suboptimal heuristic for determining whether
-or not a CPU is likely to enter a KVM guest, it simply mitigates the worst case
-scenario of a false positive.
-
-> >  		return 0;
-> >  
-> >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index bfb2b52a1416..5a7efc669a0f 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
-> >  {
-> >  	int cpu = get_cpu();
-> >  
-> > +	if (vcpu->wants_to_run)
-> > +		context_tracking_guest_start_run_loop();
-> 
-> At this point, if this is a nohz_full CPU, it will no longer report
-> quiescent states until the grace period is at least one second old.
-
-I don't think I follow the "will no longer report quiescent states" issue.  Are
-you saying that this would prevent guest_context_enter_irqoff() from reporting
-that the CPU is entering a quiescent state?  If so, that's an issue that would
-need to be resolved regardless of what heuristic we use to determine whether or
-not a CPU is likely to enter a KVM guest.
-
-> >  	__this_cpu_write(kvm_running_vcpu, vcpu);
-> >  	preempt_notifier_register(&vcpu->preempt_notifier);
-> >  	kvm_arch_vcpu_load(vcpu, cpu);
-> > @@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
-> >  	kvm_arch_vcpu_put(vcpu);
-> >  	preempt_notifier_unregister(&vcpu->preempt_notifier);
-> >  	__this_cpu_write(kvm_running_vcpu, NULL);
-> > +
-> 
-> And also at this point, if this is a nohz_full CPU, it will no longer
-> report quiescent states until the grace period is at least one second old.
-> 
-> > +	if (vcpu->wants_to_run)
-> > +		context_tracking_guest_stop_run_loop();
-> > +
-> >  	preempt_enable();
-> >  }
-> >  EXPORT_SYMBOL_GPL(vcpu_put);
-> > 
-> > base-commit: 619e56a3810c88b8d16d7b9553932ad05f0d4968
-> 
-> All of which might be OK.  Just checking as to whether all of that was
-> in fact the intent.
-> 
-> 							Thanx, Paul
+-		if (usb_endpoint_is_int_out(ep_desc) ||
+-		    usb_endpoint_is_bulk_out(ep_desc)) {
+-			if (!devpriv->ep_tx)
+-				devpriv->ep_tx = ep_desc;
+-			continue;
+-		}
+-	}
++	if (devpriv->model == VMK8061_MODEL)
++		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
++						&ep_tx_desc, NULL, NULL);
++	else
++		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
++						&ep_rx_desc, &ep_tx_desc);
+ 
+-	if (!devpriv->ep_rx || !devpriv->ep_tx)
++	if (ret)
+ 		return -ENODEV;
+ 
++	devpriv->ep_rx = ep_rx_desc;
++	devpriv->ep_tx = ep_tx_desc;
++
+ 	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
+ 		return -EINVAL;
+ 
 
