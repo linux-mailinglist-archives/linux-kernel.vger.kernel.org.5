@@ -1,222 +1,241 @@
-Return-Path: <linux-kernel+bounces-135304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D6789BEA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AAF489BEA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC64C1C217F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:08:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF5A1C22575
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD9F6A35D;
-	Mon,  8 Apr 2024 12:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="AKIG5uw5"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42346A340
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:07:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8991D6CDA6;
+	Mon,  8 Apr 2024 12:07:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACC86A333
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712578057; cv=none; b=ja8eAxQjG+c7DhZPLODxCEQ+zES+mRvhDXE3R3ri76n0ADOnYV6v681TlzrVhmyAjOEzLcEDu8enk9PEH0ZbCpBTWQXvw2u+L+vMt0Z12tVjRKbfG9BX5diNl0+FIkdu6uO/LgBkd7DPObTZuQI1+2/1p4HD12ROhbSMbp8/ObI=
+	t=1712578069; cv=none; b=UHSm81FcImiGx6xtajl/c8WKo+k0aNcnMOeU9e5DzOISG+1k0WS0DOlG+K2P4baMg12ikfi77oFNUh8pmcGrzUUMqu9HMt9ulGAzPnG7i9IZzmfvd165dx/xDjqm+enSJW4eFGofFG1wqCCajzWn+nGgpxRg7Fzx681WA0p9tzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712578057; c=relaxed/simple;
-	bh=ceBSqJ4HrDGpuiUBK8Miv6Kqwd6mxdCXZsrKQfo/3Fo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DG5/2RZoZHjoNn1Vpsd5nB4VUo8E/Zy+KNU6+qiS06fv1gdhvTRC01NEojTPGCwU6UYsU3PwNgqfoHTdoLYooYf0e8Jkb4X70yLaUISd0njCYrLQq+QWERY2v/ySyUPFBFADjVwjQ8ptJSnYHKV39iqkjLICnkaZYGNRtMPDuJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=AKIG5uw5; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36a205e0f16so4753915ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 05:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1712578055; x=1713182855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ysPdkHofn0SsqVjUlorA7HM2PSEU9x+PNO7DRN4CxYo=;
-        b=AKIG5uw5rtwhEwoCyvfgGm5l8PoazjC89SKQX84++eIYOjvuYK3WS8+nl1ZaSyzDSt
-         oxPZ97fh4LOk/IHS95qfiwFLuUDlEogd09xNhPIgQ3sRWKM/vpFb6apkq8y4Bcf8RF/B
-         xDJR5keEwZg7g0IpbYLXwSOys8T2ZA+taRmS+o/wBldvMgp8ydJTiVlq59MqoP7emzrW
-         LNfMVi8FDvIVtqtVdJNGPQAlYTePX+yt6PIKTz1aqCzIPei7RuzzdTjX9kVbTzAQs8dr
-         zLPLHpj3f+8Gy6j34S1vfsbCXol+RYNVvUKhYwiduDMtvIkDMkPNzl+4YfzTGP2339/+
-         D3pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712578055; x=1713182855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ysPdkHofn0SsqVjUlorA7HM2PSEU9x+PNO7DRN4CxYo=;
-        b=ATw/wKqv7GRd7UWc+LJo0scAkAXYKzEGlWgS+VVayOwHYC/CXudBzYhYhskH47priE
-         JfmWXgI40GWaaoupq18h/xAncKwR29CJSFi+yldAkSmKvtltvddtewcHJvPqXLQVwCyI
-         eBW2zbYluwuBsQd80jUp358a4YynsjWxTAPYRcCNzNz+7lhqjG6INKz+LWsCC8HywiMm
-         +8rbuhg1NtZgGSxTw0/iorUFlUa/2uumKTdn9pVXRzvIR/davr10LeHJhR1gz3gkIpWG
-         1a84o1feNk/BhYxX8X9syz1C1h5XslF275biQkzFuCMsHGTDUju3jH/8xZxHNs1IId4D
-         BflA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/X21mUqS4MvJxHpeZq4kWoPH5rffRMG6onqNAf336+rVn5tx2iNq4WVr4ISg/Hn9S8w5I9DU8bWVyLGT9oIj0PcEAeV25a5NGgiPm
-X-Gm-Message-State: AOJu0YxwJRyplNkES60pgddVAadfzRiPV4lLwUE8BjgS44I4gMCQ7jXi
-	Ss1KNqwJIXUlnckM4dwM408GDFLA/KAwWy5TNX2TmRwYkimQZk9uXBbuU4jybCDCrlg3NOPaz1c
-	ePQme8bzxk8HQw2RQwL5ho5HbgsNS6jlOLGKKEA==
-X-Google-Smtp-Source: AGHT+IHUq83zNBHTpl7MmDd5GJ1Gg5JdecBzvdbUwm0GbS2BKl2pv80jCI4+BNP4aYrjw+ttNoV+f0bZ5iomvms7YJo=
-X-Received: by 2002:a05:6e02:1568:b0:36a:2872:90d4 with SMTP id
- k8-20020a056e02156800b0036a287290d4mr1779608ilu.26.1712578054731; Mon, 08 Apr
- 2024 05:07:34 -0700 (PDT)
+	s=arc-20240116; t=1712578069; c=relaxed/simple;
+	bh=b8pWrBbsgVx0W4YG0AiioljQVukONKMHKcEisvgp6Ig=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oQUE+EreTL0v4qmSC39XkxZALYBAGvA0lg4s7aW2wRq26k1MdkikmNlsEVT4ikXnH5MBNGz8imVSeFJ7Om6gM+BV+Koy0VBaL4YrchMKXOUkcXHoZySxBdE6s/8O6Qv44LfIhgzh7LUd9jpuiWV6JwAgVdzi36GaY4R8hFVWlUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED007DA7;
+	Mon,  8 Apr 2024 05:08:15 -0700 (PDT)
+Received: from [10.57.73.169] (unknown [10.57.73.169])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A01823F64C;
+	Mon,  8 Apr 2024 05:07:43 -0700 (PDT)
+Message-ID: <4110bb1d-65e5-4cf0-91ad-62749975829d@arm.com>
+Date: Mon, 8 Apr 2024 13:07:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328031220.1287-1-liangshenlin@eswincomputing.com> <20240328031220.1287-2-liangshenlin@eswincomputing.com>
-In-Reply-To: <20240328031220.1287-2-liangshenlin@eswincomputing.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Mon, 8 Apr 2024 17:37:23 +0530
-Message-ID: <CAAhSdy0DgW055iV7=_D6iOLr1iVeK9SZmG8hqBG0_hb1z=+07g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] RISCV: KVM: add tracepoints for entry and exit events
-To: Shenlin Liang <liangshenlin@eswincomputing.com>
-Cc: atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
-	irogers@google.com, adrian.hunter@intel.com, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240403114032.1162100-1-ryan.roberts@arm.com>
+ <20240403114032.1162100-3-ryan.roberts@arm.com>
+ <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 28, 2024 at 8:49=E2=80=AFAM Shenlin Liang
-<liangshenlin@eswincomputing.com> wrote:
->
-> Like other architectures, RISCV KVM also needs to add these event
-> tracepoints to count the number of times kvm guest entry/exit.
->
-> Signed-off-by: Shenlin Liang <liangshenlin@eswincomputing.com>
-> ---
->  arch/riscv/kvm/trace_riscv.h | 60 ++++++++++++++++++++++++++++++++++++
->  arch/riscv/kvm/vcpu.c        |  7 +++++
->  2 files changed, 67 insertions(+)
->  create mode 100644 arch/riscv/kvm/trace_riscv.h
->
-> diff --git a/arch/riscv/kvm/trace_riscv.h b/arch/riscv/kvm/trace_riscv.h
-> new file mode 100644
-> index 000000000000..5848083c7a5e
-> --- /dev/null
-> +++ b/arch/riscv/kvm/trace_riscv.h
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Tracepoints for RISC-V KVM
-> + *
-> + * Copyright 2024 Beijing ESWIN Computing Technology Co., Ltd.
-> + *
-> + */
-> +#if !defined(_TRACE_RSICV_KVM_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_RSICV_KVM_H
+[...]
+> 
+> [...]
+> 
+>> +
+>> +/**
+>> + * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
+>> + * @start_ptep: Page table pointer for the first entry.
+>> + * @max_nr: The maximum number of table entries to consider.
+>> + * @entry: Swap entry recovered from the first table entry.
+>> + *
+>> + * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
+>> + * containing swap entries all with consecutive offsets and targeting the same
+>> + * swap type.
+>> + *
+> 
+> Likely you should document that any swp pte bits are ignored? ()
 
-s/_RSICV_/_RISCV_/
+Now that I understand what swp pte bits are, I think the simplest thing is to
+just make this function always consider the pte bits by using pte_same() as you
+suggest below? I don't think there is ever a case for ignoring the swp pte bits?
+And then I don't need to do anything special for uffd-wp either (below you
+suggested not doing batching when the VMA has uffd enabled).
 
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM kvm
-> +
-> +TRACE_EVENT(kvm_entry,
-> +       TP_PROTO(struct kvm_vcpu *vcpu),
-> +       TP_ARGS(vcpu),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(unsigned long, pc)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->pc     =3D vcpu->arch.guest_context.sepc;
-> +       ),
-> +
-> +       TP_printk("PC: 0x%016lx", __entry->pc)
-> +);
-> +
-> +TRACE_EVENT(kvm_exit,
-> +       TP_PROTO(struct kvm_vcpu *vcpu, unsigned long exit_reason,
-> +                       unsigned long scause),
-> +       TP_ARGS(vcpu, exit_reason, scause),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(unsigned long, pc)
-> +               __field(unsigned long, exit_reason)
-> +               __field(unsigned long, scause)
+Any concerns?
 
-This is not the right contents describing a KVM exit.
+> 
+>> + * max_nr must be at least one and must be limited by the caller so scanning
+>> + * cannot exceed a single page table.
+>> + *
+>> + * Return: the number of table entries in the batch.
+>> + */
+>> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
+>> +                 swp_entry_t entry)
+>> +{
+>> +    const pte_t *end_ptep = start_ptep + max_nr;
+>> +    unsigned long expected_offset = swp_offset(entry) + 1;
+>> +    unsigned int expected_type = swp_type(entry);
+>> +    pte_t *ptep = start_ptep + 1;
+>> +
+>> +    VM_WARN_ON(max_nr < 1);
+>> +    VM_WARN_ON(non_swap_entry(entry));
+>> +
+>> +    while (ptep < end_ptep) {
+>> +        pte_t pte = ptep_get(ptep);
+>> +
+>> +        if (pte_none(pte) || pte_present(pte))
+>> +            break;
+>> +
+>> +        entry = pte_to_swp_entry(pte);
+>> +
+>> +        if (non_swap_entry(entry) ||
+>> +            swp_type(entry) != expected_type ||
+>> +            swp_offset(entry) != expected_offset)
+>> +            break;
+>> +
+>> +        expected_offset++;
+>> +        ptep++;
+>> +    }
+>> +
+>> +    return ptep - start_ptep;
+>> +}
+> 
+> Looks very clean :)
+> 
+> I was wondering whether we could similarly construct the expected swp PTE and
+> only check pte_same.
+> 
+> expected_pte = __swp_entry_to_pte(__swp_entry(expected_type, expected_offset));
 
-The fields over here should be aligned with "struct kvm_cpu_trap"
-so we should have following fields:
-    __field(unsigned long, sepc)
-    __field(unsigned long, scause)
-    __field(unsigned long, stval)
-    __field(unsigned long, htval)
-    __field(unsigned long, htinst)
+So planning to do this.
 
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->pc             =3D vcpu->arch.guest_context.sepc=
-;
-> +               __entry->exit_reason    =3D exit_reason;
-> +               __entry->scause         =3D scause;
-> +       ),
-> +
-> +       TP_printk("EXIT_REASON:0x%lx,PC: 0x%016lx,SCAUSE:0x%lx",
-> +                       __entry->exit_reason, __entry->pc, __entry->scaus=
-e)
-> +);
-> +
-> +#endif /* _TRACE_RSICV_KVM_H */
-> +
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH .
-> +#undef TRACE_INCLUDE_FILE
-> +#define TRACE_INCLUDE_FILE trace_riscv
-> +
-> +/* This part must be outside protection */
-> +#include <trace/define_trace.h>
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index b5ca9f2e98ac..ed0932f0d514 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -21,6 +21,9 @@
->  #include <asm/cacheflush.h>
->  #include <asm/kvm_vcpu_vector.h>
->
-> +#define CREATE_TRACE_POINTS
-> +#include "trace_riscv.h"
-> +
->  const struct _kvm_stats_desc kvm_vcpu_stats_desc[] =3D {
->         KVM_GENERIC_VCPU_STATS(),
->         STATS_DESC_COUNTER(VCPU, ecall_exit_stat),
-> @@ -782,6 +785,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->                  */
->                 kvm_riscv_local_tlb_sanitize(vcpu);
->
-> +               trace_kvm_entry(vcpu);
-> +
->                 guest_timing_enter_irqoff();
->
->                 kvm_riscv_vcpu_enter_exit(vcpu);
-> @@ -820,6 +825,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->
->                 local_irq_enable();
->
-> +               trace_kvm_exit(vcpu, run->exit_reason, trap.scause);
-> +
->                 preempt_enable();
->
->                 kvm_vcpu_srcu_read_lock(vcpu);
-> --
-> 2.37.2
->
+> 
+> ... or have a variant to increase only the swp offset for an existing pte. But
+> non-trivial due to the arch-dependent format.
 
-Regards,
-Anup
+not this - I agree this will be difficult due to per-arch changes. I'd rather
+just do the generic version and leave the compiler to do the best it can to
+simplify and optimize.
+
+> 
+> But then, we'd fail on mismatch of other swp pte bits.
+> 
+> 
+> On swapin, when reusing this function (likely!), we'll might to make sure that
+> the PTE bits match as well.
+> 
+> See below regarding uffd-wp.
+> 
+> 
+>>   #endif /* CONFIG_MMU */
+>>     void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>> diff --git a/mm/madvise.c b/mm/madvise.c
+>> index 1f77a51baaac..070bedb4996e 100644
+>> --- a/mm/madvise.c
+>> +++ b/mm/madvise.c
+>> @@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>       struct folio *folio;
+>>       int nr_swap = 0;
+>>       unsigned long next;
+>> +    int nr, max_nr;
+>>         next = pmd_addr_end(addr, end);
+>>       if (pmd_trans_huge(*pmd))
+>> @@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>           return 0;
+>>       flush_tlb_batched_pending(mm);
+>>       arch_enter_lazy_mmu_mode();
+>> -    for (; addr != end; pte++, addr += PAGE_SIZE) {
+>> +    for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
+>> +        nr = 1;
+>>           ptent = ptep_get(pte);
+>>             if (pte_none(ptent))
+>> @@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>> long addr,
+>>                 entry = pte_to_swp_entry(ptent);
+>>               if (!non_swap_entry(entry)) {
+>> -                nr_swap--;
+>> -                free_swap_and_cache(entry);
+>> -                pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> +                max_nr = (end - addr) / PAGE_SIZE;
+>> +                nr = swap_pte_batch(pte, max_nr, entry);
+>> +                nr_swap -= nr;
+>> +                free_swap_and_cache_nr(entry, nr);
+>> +                clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>               } else if (is_hwpoison_entry(entry) ||
+>>                      is_poisoned_swp_entry(entry)) {
+>>                   pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 7dc6c3d9fa83..ef2968894718 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -1637,12 +1637,13 @@ static unsigned long zap_pte_range(struct mmu_gather
+>> *tlb,
+>>                   folio_remove_rmap_pte(folio, page, vma);
+>>               folio_put(folio);
+>>           } else if (!non_swap_entry(entry)) {
+>> -            /* Genuine swap entry, hence a private anon page */
+>> +            max_nr = (end - addr) / PAGE_SIZE;
+>> +            nr = swap_pte_batch(pte, max_nr, entry);
+>> +            /* Genuine swap entries, hence a private anon pages */
+>>               if (!should_zap_cows(details))
+>>                   continue;
+>> -            rss[MM_SWAPENTS]--;
+>> -            if (unlikely(!free_swap_and_cache(entry)))
+>> -                print_bad_pte(vma, addr, ptent, NULL);
+>> +            rss[MM_SWAPENTS] -= nr;
+>> +            free_swap_and_cache_nr(entry, nr);
+>>           } else if (is_migration_entry(entry)) {
+>>               folio = pfn_swap_entry_folio(entry);
+>>               if (!should_zap_folio(details, folio))
+>> @@ -1665,8 +1666,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>               pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+>>               WARN_ON_ONCE(1);
+>>           }
+>> -        pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>> -        zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
+>> +        clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+> 
+> For zap_install_uffd_wp_if_needed(), the uffd-wp bit has to match.
+> 
+> zap_install_uffd_wp_if_needed() will use the uffd-wp information in
+> ptent->pteval to make a decision whether to place PTE_MARKER_UFFD_WP markers.
+> 
+> On mixture, you either lose some or place too many markers.
+> 
+> A simple workaround would be to disable any such batching if the VMA does have
+> uffd-wp enabled.
+
+Rather than this, I'll just consider all the swp pte bits when batching.
+
+> 
+>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
+>>       } while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+
+[...]
+
 
