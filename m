@@ -1,96 +1,155 @@
-Return-Path: <linux-kernel+bounces-135742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E4A89CAA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:21:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD4D189CAAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:23:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 873162893AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:21:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E45C1F27375
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAE4143860;
-	Mon,  8 Apr 2024 17:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825961442FB;
+	Mon,  8 Apr 2024 17:23:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="d2eeQuXj"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y8Tggwn2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A314143893;
-	Mon,  8 Apr 2024 17:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3192F143860;
+	Mon,  8 Apr 2024 17:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596898; cv=none; b=cqTN7ipigq2edQeAE0SdSa7Q7tP6/WR7EA/RBD9U6gn7QmyAlVuuyZLHVzFqiq+xHuAcdY/bOD4GBhcZwUKTq3hk1D0msStjJyp5uKYJFHzs7H41SZknCn3uYSsRbVz292bQk5Vdn0lN3RPExcB+dURe9DjkM5SG03rzOllLyyk=
+	t=1712596985; cv=none; b=SC1CiHo8IQkeX9TJDFBw5Bi72iyhJAZ3/WE4N3ZTdyzJP6Oo3esoG5yY7WGVmaqoCrUajeLja+iUyh0Fko7HY+qXQPcofdcmKzrzfKFCKdQ9oecMg+KrO6OaWZ+KkQteEtVHsIdx2C5g+hylmwr2ULLtFgcIo3AvpSIhk9aIGaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596898; c=relaxed/simple;
-	bh=CD+KxDHqdUb5j2VIVvwfKn0QC5O9nZf/3mXOmaOeTAw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eCPpSKOFab6f7f3oqn2Od/eO47i0CxqbrQ40Mq0VDax/8HtgyvJ3NPHFvAqmuAuzF+78ifEbmweFFRnDgVzXgwR0IIPVWBqFAsHH1JEF3C7Yokl6VluTkycB+qUzJXN48xb/V9OfatrCUsJ2hJ5+jjAg0MglRR3ZOLI0mcCp7n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=d2eeQuXj; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e403dd3995so6812005ad.2;
-        Mon, 08 Apr 2024 10:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1712596897; x=1713201697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CD+KxDHqdUb5j2VIVvwfKn0QC5O9nZf/3mXOmaOeTAw=;
-        b=d2eeQuXjqbnnas27VijjflZI4zO+CKojp2N84SQYWWhOaEj31IA/lDvrrqqTcGex4M
-         Bc9McgPsh8h0GPW/taOkTIUitViVWZk60OA9rH7UVXWuHSXLJWJti6f3vcdYt3e6jhZS
-         Z+QP2ORysebrq9v9JyV5QlQflSY21Tn3odvT2l3Tyc6qUbLzeAHDvXaqa3AwHpFJx4sS
-         swU9+cH1tZ6v78UQBCvrK0/3PJdbKkuGXSbsoausQW2yGjAtaEsMU1iVfKCIfVTAKrZI
-         AgswTewCp9d2tu0mvtMeZGgkAEq0otq8fakyW/tw0qCALv7bZeqMCQ4OZnPQ0SZbZmDQ
-         WKtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596897; x=1713201697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CD+KxDHqdUb5j2VIVvwfKn0QC5O9nZf/3mXOmaOeTAw=;
-        b=uOAUEjf30kEKonguEOcaLMJfLSvRkmcKEgfrTLMdMJ4yVOzDq79dL0hku18PTXzhiP
-         rNB4wDWRe0P7oZh4ARjLWlE8nIZKZ6Cbubde5sGXcXsRbYxG+7ZJuEfAZ2PEC6LraR/X
-         UbfXv9kTavO7MGXGc+XtROiinYQq3WYhrhGasIJIUldyF7a6MiZHFelcb8awoJCPuKbk
-         eGJ4kh/BbTxqoKsaZ0hl2d8ph2Mlm+EpgtNuwL28f5STK8t7IntyrmBVUZaPR1PmRKt6
-         vCAITDaHSDeSHqE4yC+fqlsA+XYM8rAm8LQ8eFiZthTrCzpBt9vgKvnd2U5XpHWWb0R/
-         UcmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWaQc21Mm74sKXF2kO76uz20cWWd86qA1Sl6jqx8DDIcIjsCFO91poYwEYMYt5U62U+9HkVBph3HM2YRVtJWapKT/e4jyUqLgXwnMg05/DoV3fCCPd2W1Rn54Rm43AwuvOLiNPIqbQ4
-X-Gm-Message-State: AOJu0Yz+7JIH2a/90Bckiw61wZUIZtvhQeTl+lFKPMowRQNrncAGNINH
-	E4Gp8gas0CS2SNpI3IAIRbLNofURQTpKxm84rEU6Y0WS+/wXc3q/L+u4cJCofD3PnIHLXKOOetG
-	HKkOx0iDFjd+W6LTN1Es71F1myMo=
-X-Google-Smtp-Source: AGHT+IHKVZXmaxUYg2//3d3GkHNXzmwnMizOwlMUFZ14NDcEJmhIn3JkJUCLgsKZlmTC21ybmfXcgXIAwiaCdHNERgA=
-X-Received: by 2002:a17:903:32cb:b0:1e4:fd4:48cf with SMTP id
- i11-20020a17090332cb00b001e40fd448cfmr3779134plr.41.1712596896729; Mon, 08
- Apr 2024 10:21:36 -0700 (PDT)
+	s=arc-20240116; t=1712596985; c=relaxed/simple;
+	bh=Pqh3pyoAGMUHh7oj7/eiymnpIKVlFY2rZB4bG8dyHWI=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=h2Z7pwoAq6mjMYC49hTFyaqBCF2fWX+Dy0cAYQYdkNJFzcHSwMRWHS0itms9jHX50xn4C9gYQdO/gkwloX7wpncEn3Lm2Hq60wpmSsfLYEEfmwELIWlN32sK6miN69O3awyS1zaKjULXBN/4RCeRmEpIAH8V22HgxkRbluGQb7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y8Tggwn2; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712596984; x=1744132984;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Pqh3pyoAGMUHh7oj7/eiymnpIKVlFY2rZB4bG8dyHWI=;
+  b=Y8Tggwn2E7nnZ1xEP3lOhSfcO5IQl55ssMdB9lmfsvtabS/SaD3w2Fg2
+   2YDzTP6HkbXcA7PsP1TvgPb/2YriqvotGmnqtdUoYqI1DSG+Em62MkUUl
+   K8qeId8RUHRHk4I9Ero5joK95uaAAfd/9xxVWyQKecWyPEEWMLvQQ1Nql
+   kjig9jAWMWETSwO/acKzxNy1AHQ62mtpu79BA2C/NHv5IywQfT2edSURm
+   zhVyjlKRn15h3H85c/iZCxgQH6yDzhBPZZUBLUivc5cjgqot50daENG0a
+   tAI+GKrS/YjC1aepISY441jjDIAI5dfvBFlOEESzXhQusYt5YeTXicG5c
+   w==;
+X-CSE-ConnectionGUID: KOw7q+nwSz674k2fFXtLIA==
+X-CSE-MsgGUID: dSR1qco2TPCnPOT6mhfGdw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8112054"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="8112054"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:23:03 -0700
+X-CSE-ConnectionGUID: axvwqU3gQVOpapr20X6fPA==
+X-CSE-MsgGUID: JxHFW/8+Qwm9nS4h3K8IXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="19877439"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.28])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:23:02 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 8 Apr 2024 20:22:57 +0300 (EEST)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH V3 8/9] platform/x86/intel/sdsi: Simplify ascii
+ printing
+In-Reply-To: <20240405032507.2637311-9-david.e.box@linux.intel.com>
+Message-ID: <6dd8b2c0-1c89-43f0-0426-df8d483a7b1e@linux.intel.com>
+References: <20240405032507.2637311-1-david.e.box@linux.intel.com> <20240405032507.2637311-9-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org>
-In-Reply-To: <20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 8 Apr 2024 19:21:24 +0200
-Message-ID: <CAFBinCBQtMHeQ2drNTJhqtknR32M1pjy+V3nQD7XFRiT8u4DGg@mail.gmail.com>
-Subject: Re: [PATCH] clk: meson: fix module license to GPL only
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Kevin Hilman <khilman@baylibre.com>, 
-	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Mon, Apr 8, 2024 at 11:18=E2=80=AFAM Neil Armstrong
-<neil.armstrong@linaro.org> wrote:
->
-> Fix the checkpatch warning:
-> WARNING: Prefer "GPL" over "GPL v2" - see commit bf7fbeeae6db ("module: C=
-ure the MODULE_LICENSE "GPL" vs. "GPL v2" bogosity")
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Thu, 4 Apr 2024, David E. Box wrote:
+
+> Use printf width specifier to set the display length of encoded feature
+> names.
+> 
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> 
+> V3 - Add FEAT_LEN #def
+> 
+> V2 - Split of V1 patch 7
+> 
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> index 45bc69e6718e..0c9670ba1f15 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -43,6 +43,7 @@
+>  #define METER_CERT_MAX_SIZE	4096
+>  #define STATE_MAX_NUM_LICENSES	16
+>  #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
+> +#define FEAT_LEN		4
+>  
+>  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+>  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+> @@ -409,11 +410,10 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  
+>  	printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle_length));
+>  	while (count < BUNDLE_COUNT(mc->bundle_length)) {
+> -		char feature[5];
+> +		char feature[FEAT_LEN];
+>  
+> -		feature[4] = '\0';
+>  		get_feature(bec[count].encoding, feature);
+> -		printf("    %s:          %d\n", feature, bec[count].counter);
+> +		printf("    %.4s:          %d\n", feature, bec[count].counter);
+>  		++count;
+>  	}
+>  
+> @@ -494,7 +494,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+>  			sizeof(*lki) +			// size of the license key info
+>  			offset;				// offset to this blob content
+>  		struct bundle_encoding *bundle = (void *)(lbc) + sizeof(*lbc);
+> -		char feature[5];
+> +		char feature[FEAT_LEN];
+>  		uint32_t i;
+>  
+>  		printf("     Blob %d:\n", count - 1);
+> @@ -507,11 +507,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+>  		printf("        Blob revision ID:           %u\n", lbc->rev_id);
+>  		printf("        Number of Features:         %u\n", lbc->num_bundles);
+>  
+> -		feature[4] = '\0';
+> -
+>  		for (i = 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); i++) {
+>  			get_feature(bundle[i].encoding, feature);
+> -			printf("                 Feature %d:         %s\n", i, feature);
+> +			printf("                 Feature %d:         %.4s\n", i, feature);
+>  		}
+>  
+>  		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
+> 
+
+Hi,
+
+After staring this for a while, I cannot get rid of the feeling that the 
+removal of NUL termination is a step into wrong direction. But IMO, 
+instead of the caller side, the NUL termination could be added inside 
+get_feature().
+
+-- 
+ i.
+
 
