@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-135160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0E189BBDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:36:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78BA989B725
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F3CC1F230E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:36:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6BE2281459
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B20A4B5DA;
-	Mon,  8 Apr 2024 09:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0835B79E0;
+	Mon,  8 Apr 2024 05:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="bLyVljID"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="l13nWhqg"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C266FBF;
-	Mon,  8 Apr 2024 09:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E8E7470;
+	Mon,  8 Apr 2024 05:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712568961; cv=none; b=XDffvnkOwYTdyYXhpvHB4ECn4O+eMTh0X+LhtMpVLCGKBd6vLG6tHrn7HZSKWRhgQkK+ZqsqBDxMtYsfzEu3NHPfjzbqIcbl5vtRu25E9IMUFMMtWObw3cTg7jA25cui7DPfooZTuvHbdK4MaQz80SnTHpgm5m1kS5OuuTJG9pw=
+	t=1712554145; cv=none; b=V31E1x9vSe8n1/G0T+LtAA1TzV4MO5eDBgkxdMSPdye/JfIIy+UcRroX/WVXtkN7eAu2pT2yNDgDjwKbuHxLqDo0JC22zteE5pPdOijoi+6aFrT3HHYaPOfFTRzJaqsI84BT0smX4by39fodNDRwUVhJYO1z6sqIuZjFIyuetWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712568961; c=relaxed/simple;
-	bh=tBs/YJ2fLDfrIVtxpGytKjKUVc/9/3IKnSLB8drjLUQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oG65I4dfc2ZM4WPMPzjY1sF4rlmJKRT3JHXwbAr+gmPpbcWhXv9gKUfYIkGtFgRnPeHiqUGto7sgNuyAxtZ2mTUcEo7jSvXq3y1K8M43XPGCQYamFiR+PAKmuqhlBEfDOpcvifj4CNHpl/qtISeRRkmEzKct4PCBBf3GB4RtLDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=bLyVljID; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4388rgcQ007326;
-	Mon, 8 Apr 2024 02:35:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=j/ahPDX2/GgpboNxFpPN/xXlJANbz5Sc0e/KSoo81V4=; b=bLy
-	VljIDzHbu5HCTfy/QyWv16BJ+XGLf3ajbpNO8PMOcFn0YLDiDQlJhEDCXI5nJyws
-	FVYW8nV71rITAPwv/72X+K7ir4758gTbSsai8hBJ0szpvQerm58pjJ6xfjXkAcfj
-	kiHwkAsVD12wBvFbzpdW+mFEgg0z6WHBG2DBQTc8X/X+Rev5YxRhoPAj3MvFOJhE
-	FFnEQdQCbbXqe7OgAEj0Ch17t/7BPspt7y9/txCbiohsALZuhvkGN4+yN3OPz4QP
-	T+V7vQVL69Vd6ubmqB05rikZHEWccFiOh/458yF/uOb+cowlYU4EODYbYe851dEl
-	A7bH80poxNfVoE95Gig==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xcdff02ru-7
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 02:35:52 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Sun, 7 Apr 2024 22:26:16 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Sun, 7 Apr 2024 22:26:15 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id AD3503F7055;
-	Sun,  7 Apr 2024 22:26:12 -0700 (PDT)
-From: Geetha sowjanya <gakula@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net PATCH] octeontx2-af: Fix NIX SQ mode and BP config
-Date: Mon, 8 Apr 2024 10:56:11 +0530
-Message-ID: <20240408052611.25736-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1712554145; c=relaxed/simple;
+	bh=ZF1G4XF5SCvY/yTknXLGx7mlRuPVMOp7KyBQ2VsEMyA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NY1XgljzU521bRCPS4wPB3TaYjwwmqOR/6S+Yj1Q8anJ1+MOQPTbA8pQ+2g/V+OLCT07k8MC+I4ldc8xzeH18gCFFmu2z5Jq6eGSXS+0ZQF0omWwq8f7O+RsBPnEk3xigxNeIF3Wy6DyyEzo/+BYX5NNTSdqDzwUVevdXes4f04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=l13nWhqg; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1712554141;
+	bh=YaJc4hAKyVAyUGlKeEz26A8dZKKd75WpuyJPiLKVz94=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=l13nWhqgc3bRToxvUFycvA7lVA9dBc3YPCNj2uqG/l/kDCIG2e8Sb6jGQgeFivQoH
+	 EFe110IQLmfEBjxFOAcViyBp1+B4Rq0QeY99r7Hlyx8uJovPEugC4WvRf7DAwdYiD+
+	 gpHhY1ZBM8eXOfUGKGI5F9zyy4e+7qPj/EEI+9vf05fAgW+a8ZZHvRFVXpvfLfRB6M
+	 YihltItPcWL16DBjvylW6uTPJGnokpeFH2JYmtGRLH0wdCpMuTh0jjnhVT6bh2U9EP
+	 y+VrneMNgn34p/RJM3GY5JwegnbTV3aE9wI9CDHalYsEVkziNm8l3icev1KfmDhnna
+	 bygEnbD15vrPA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VCd1T2x73z4wxt;
+	Mon,  8 Apr 2024 15:29:00 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Finn Thain <fthain@linux-m68k.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq
+ flood
+In-Reply-To: <4bddf8ec-97f1-07f6-9c0a-523c102c0a1b@linux-m68k.org>
+References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
+ <Zg3YZN-QupyVaTPm@surfacebook.localdomain>
+ <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
+ <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
+ <87y19s7bk6.fsf@mail.lhotse>
+ <4bddf8ec-97f1-07f6-9c0a-523c102c0a1b@linux-m68k.org>
+Date: Mon, 08 Apr 2024 15:29:00 +1000
+Message-ID: <87v84sbexv.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,57 +73,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: 9HOTvIT2vNm9umZ5hshSIcRcDX3HOAak
-X-Proofpoint-ORIG-GUID: 9HOTvIT2vNm9umZ5hshSIcRcDX3HOAak
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
 
-NIX SQ mode and link backpressure configuration is required for
-all platforms. But in current driver this code is wrongly placed
-under specific platform check. This patch fixes the issue by 
-moving the code out of platform check.
+Finn Thain <fthain@linux-m68k.org> writes:
+> On Fri, 5 Apr 2024, Michael Ellerman wrote:
+>> >> > > ---
+>> >> > (here is a good location for Cc:)
+>> >>
+>> >> Documentation/process/submitting-patches.rst indicats that it should 
+>> >> be above the "---" separator together with Acked-by etc. Has this 
+>> >> convention changed recently?
+>> 
+>> The docs don't really say where to put the Cc: tags, although they are 
+>> mentioned along with other tags which clearly are intended to go above 
+>> the separator.
+>
+> I see no ambiguity there. What's the point of copying the message headers 
+> into the message body unless it was intended that they form part of the 
+> commit log?
 
-Fixes: 5d9b976d4480 ("octeontx2-af: Support fixed transmit scheduler topology")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
----
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+In many cases I think it's the reverse. The Cc headers are in the commit
+log *so that* git-send-email will add them to the Cc list when the patch
+is sent.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index d39001cdc707..00af8888e329 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -4819,18 +4819,18 @@ static int rvu_nix_block_init(struct rvu *rvu, struct nix_hw *nix_hw)
- 		 */
- 		rvu_write64(rvu, blkaddr, NIX_AF_CFG,
- 			    rvu_read64(rvu, blkaddr, NIX_AF_CFG) | 0x40ULL);
-+	}
- 
--		/* Set chan/link to backpressure TL3 instead of TL2 */
--		rvu_write64(rvu, blkaddr, NIX_AF_PSE_CHANNEL_LEVEL, 0x01);
-+	/* Set chan/link to backpressure TL3 instead of TL2 */
-+	rvu_write64(rvu, blkaddr, NIX_AF_PSE_CHANNEL_LEVEL, 0x01);
- 
--		/* Disable SQ manager's sticky mode operation (set TM6 = 0)
--		 * This sticky mode is known to cause SQ stalls when multiple
--		 * SQs are mapped to same SMQ and transmitting pkts at a time.
--		 */
--		cfg = rvu_read64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS);
--		cfg &= ~BIT_ULL(15);
--		rvu_write64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS, cfg);
--	}
-+	/* Disable SQ manager's sticky mode operation (set TM6 = 0)
-+	 * This sticky mode is known to cause SQ stalls when multiple
-+	 * SQs are mapped to same SMQ and transmitting pkts at a time.
-+	 */
-+	cfg = rvu_read64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS);
-+	cfg &= ~BIT_ULL(15);
-+	rvu_write64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS, cfg);
- 
- 	ltdefs = rvu->kpu.lt_def;
- 	/* Calibrate X2P bus to check if CGX/LBK links are fine */
--- 
-2.25.1
+In that case they can sit below the separator and still function.
 
+IMO there is no value in having them in the commit log. The fact that
+someone was Cc'ed on a patch 10 years ago is not interesting. If it ever
+was interesting, for some forensic purpose, the mail archives would be
+the place to look anyway.
+
+>> > I see, I will prepare a patch to discuss this aspect.
+>> 
+>> FYI there was a discussion about this several years ago, where at least 
+>> some maintainers agreed that Cc: tags don't add much value and are 
+>> better placed below the --- separator.
+>> 
+>
+> Maintainers who merge patches almost always add tags. And they can use the 
+> Cc tags from the message headers if they wish to. Or they can omit them or 
+> remove them. I don't mind. And I'd be happy to resubmit the patch with 
+> different tags if that's what is needed by the workflow used by Jiri Slaby 
+> or Greg Kroah-Hartman.
+
+Many maintainers won't drop Cc: tags if they are there in the submitted
+patch. So I agree with Andy that we should encourage folks not to add
+them in the first place.
+
+But that's getting very off topic for your submission :)
+
+cheers
 
