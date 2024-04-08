@@ -1,151 +1,104 @@
-Return-Path: <linux-kernel+bounces-135720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D689D89CA3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:03:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF4389CA40
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:04:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15C1B1C24220
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:03:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303921F27679
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2C1143C49;
-	Mon,  8 Apr 2024 17:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA328143867;
+	Mon,  8 Apr 2024 17:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aiNc++Ts"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sta3/99x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242B76E60E;
-	Mon,  8 Apr 2024 17:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D85B6E60E;
+	Mon,  8 Apr 2024 17:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712595803; cv=none; b=N8j2jfrMH+MXK+SNc7xO3VyLq+XD4ysLe9vu3MYvNkTGnAyFQhe5bK6EShCtaOpy8yQiC5PwI/1May8wQrTz2po4qPg5RcFHMw6of4oDhHWgwuY0BHPb3NZWkIgcLgZ433+1yBmvqkqOapHSt130KhmTNyz1gEliBZn7rY5q0EY=
+	t=1712595862; cv=none; b=ri7XL6h+QtOi+T57vA/vcNYSYkCVBOe4fwAcw+NM5LEHPGbQ/0aR+1azfMFZZWteQMetiIRRRrUcP/5DGYZzSRdj33cqNObEt77febxZKpwGIf/UQeQ1DGOLEz0DofvCETicTVW/XniwQ+T1i4AKk4of5tFIOpnWjVuQKaaGG1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712595803; c=relaxed/simple;
-	bh=gN//XILcBlT0DJQEOTanYjKqrO+N1Qj9zEhssZWgESs=;
+	s=arc-20240116; t=1712595862; c=relaxed/simple;
+	bh=dy3oPXhtT+DA8A9ZwN7rVbw8cVMFMCW5FtsQNnUysX8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S9GN/SZX4xgj3LOy33wBl9t/NauJV7i8gJRXhp4j8SkMhkuPf5Aw19PcVzsX4ZT70HNvGYx5c4f+Dl1tO80iKLFjiPQCLqCw89Y4Cn+hgLrBuOaRMSfozvRCHZgKjaFVEWoJIfqTSH0blpGR+ykc9CK79ndSLjSyQB/dJCPQ4TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aiNc++Ts; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=EC+c0K53M4cQQaYWWH6ov1Mzjcw38TyRZLp9ANkJLfo=; b=aiNc++TsrqGY3idP8BZBqBlc23
-	oDcNXXEP/RYnFgfQlOPLjGuK9TyM29iXrAGUee+aG7r2LzkLZm3oki+4c3erRNHbk6dMGfEFjMs4I
-	FTKkciLzcgIwLKHkl1eY78PCHKwjaPO86ZVwYHCxX4QdmJB67yprKZRnjijIXIvZTfkqMKvacRcxu
-	nH1VzsXeLWU7yECxgsj+2YHhAwMGTKhhyxnqIzXdjbb9vdOSvLe67vpVrSG0J9QzB4BhBNxuMhk1t
-	TCl1NW+7G3YF8eev+borvQZqjaJVd7MnzNDG5NUNdpmA1v/ZJnCJV0VHqR9LXo4wwNtZpFziOEsBJ
-	ZSxQj4EQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtsOl-00000000Fng-1Lf1;
-	Mon, 08 Apr 2024 17:03:11 +0000
-Date: Mon, 8 Apr 2024 18:03:11 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,
-	Luc Maranget <luc.maranget@inria.fr>,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <ZhQjT4xdS3h-GbtC@casper.infradead.org>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <ZhQVHZnU3beOhEGU@casper.infradead.org>
- <fec60bba-e414-43d1-bc3e-870f5ffe4626@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kq8iC2Fo6nxQ2JHk1Q5NRGRLE6lh8auFiPd9+5iuMLzg4MbEdGxsU63niVqStsLSMCEQyaggZkIiFhz5Xfnuk7XbeCwkK4dK4LYy2xx11mp46oBGQrIPz2RcL+r7QVi2Xmv1UwbBmPoovsPWBq8HaVjH9zIBH1YtaUXoITekJRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sta3/99x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC845C433F1;
+	Mon,  8 Apr 2024 17:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712595862;
+	bh=dy3oPXhtT+DA8A9ZwN7rVbw8cVMFMCW5FtsQNnUysX8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sta3/99x+vUdccGZVczBTBP2IyoYbfDmqeeDUdY7Igf2g9XzJMbYpi1zPYOhZwnoq
+	 9foZTZRBqSHD5TRDoiePadF4JgdwjTSO6Bs0pgQ0OKy0lLDyKLnf9qOAtowOOxGgYV
+	 EydTrUD4xfnyaU0vi6OsqNjuQnWHCcnW0KDMiYlr+vD+k4yqqWkKTT3kicerOKnSSh
+	 ZeoT0sKIcvA4rejXW1WnXiIiZRqolPMoIbhqALDOI8FLeTdjJA/lANXcrIaIRgJo0i
+	 tYI+rs1wULoLQdbI8DAPdDpBAtz1ZabgSuX60NEav5/D7AP7GRh2gpYSvNFhuNLAy7
+	 Wb/eoFp9E73dQ==
+Date: Mon, 8 Apr 2024 18:04:16 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	David Wu <david.wu@rock-chips.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH] dt-bindings: net: rockchip-dwmac: use rgmii-id in example
+Message-ID: <20240408-handpick-scouting-b04de6bec84a@spud>
+References: <20240408-rockchip-dwmac-rgmii-id-binding-v1-1-3886d1a8bd54@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="whOycmADd1NrPPmb"
+Content-Disposition: inline
+In-Reply-To: <20240408-rockchip-dwmac-rgmii-id-binding-v1-1-3886d1a8bd54@pengutronix.de>
+
+
+--whOycmADd1NrPPmb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fec60bba-e414-43d1-bc3e-870f5ffe4626@paulmck-laptop>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 09:55:23AM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 08, 2024 at 05:02:37PM +0100, Matthew Wilcox wrote:
-> > In my ideal world, the compiler would turn this into:
-> > 
-> > 	newfolio->flags |= folio->flags & MIGRATE_MASK;
-> 
-> Why not accumulate the changes in a mask, and then apply the mask the
-> one time?  (In situations where __folio_set_foo() need not apply.)
+On Mon, Apr 08, 2024 at 08:44:10AM +0200, Sascha Hauer wrote:
+> The dwmac supports specifying the RGMII clock delays, but it is
+> recommended to use rgmii-id and to specify the delays in the phy node
+> instead [1].
+>=20
+> Change the example accordingly to no longer promote this undesired
+> setting.
+>=20
+> [1] https://lore.kernel.org/all/1a0de7b4-f0f7-4080-ae48-f5ffa9e76be3@lunn=
+=2Ech/
+>=20
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Yes, absolutely, we can, should and probably eventually will do this
-when it gets to the top of somebody's todo list.  But it irks me that
-we can't tell the compiler this is a safe transformation for it to make.
-There are a number of places where similar things happen.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-$ git grep folio_test.*folio_test
+--whOycmADd1NrPPmb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-will find you 82 of them (where they happen to be on the same line)
+-----BEGIN PGP SIGNATURE-----
 
-                if (folio_test_dirty(folio) || folio_test_locked(folio) ||
-                                folio_test_writeback(folio))
-                        break;
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhQjkAAKCRB4tDGHoIJi
+0vZaAQCzEUq832WzZ37GUbKIrB0V8uvvHYrxPBDcsr17McinxAEA4If1pTgFZfkX
+zWzresFYoT+wuXAVCB7RoeelxHJHWg4=
+=8IjP
+-----END PGP SIGNATURE-----
 
-turns into:
-
-    1f41:       48 8b 29                mov    (%rcx),%rbp
-    1f44:       48 c1 ed 04             shr    $0x4,%rbp
-    1f48:       83 e5 01                and    $0x1,%ebp
-    1f4b:       0f 85 d5 00 00 00       jne    2026 <filemap_range_has_writeback+0x1a6>
-    1f51:       48 8b 29                mov    (%rcx),%rbp
-    1f54:       83 e5 01                and    $0x1,%ebp
-    1f57:       0f 85 c9 00 00 00       jne    2026 <filemap_range_has_writeback+0x1a6>
-    1f5d:       48 8b 29                mov    (%rcx),%rbp
-    1f60:       48 d1 ed                shr    $1,%rbp
-    1f63:       83 e5 01                and    $0x1,%ebp
-    1f66:       0f 85 ba 00 00 00       jne    2026 <filemap_range_has_writeback+0x1a6>
-
-rather than _one_ load from rcx and a test against a mask.
-
-> If it turns out that we really do need a not-quite-volatile, what exactly
-> does it do?  You clearly want it to be able to be optimized so as to merge
-> similar accesses.  Is there a limit to the number of accesses that can
-> be merged or to the region of code over which such merging is permitted?
-> Either way, how is the compiler informed of these limits?
-
-Right, like I said, it's not going to be easy to define exactly what we
-want.
+--whOycmADd1NrPPmb--
 
