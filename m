@@ -1,177 +1,193 @@
-Return-Path: <linux-kernel+bounces-136019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CD689CEF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:32:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 435C089CEEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:28:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC26BB24667
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:32:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4E921F2405A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28834148FFB;
-	Mon,  8 Apr 2024 23:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0EC1487C5;
+	Mon,  8 Apr 2024 23:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nAH4ZiT8"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IQvSTHAr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C204A2EAE9;
-	Mon,  8 Apr 2024 23:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CF1171B0;
+	Mon,  8 Apr 2024 23:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712619130; cv=none; b=PLn/t66WPtL2NAXbuCKzh93AI9OfT0TmQukx20XKcE6pznxF3r1OAWaxefIeSMSXsKSZGRGNO3Gr86gOTgWhaaAGrdB4OeQ2R5ZggOoZiIJWoIvEk6hI+5N5EZxbgDOIkZziy+2fUGrxKRjrWwNmOcpliFVOpERUStOcORop1Pk=
+	t=1712618926; cv=none; b=F/0srf/PTCgXlVSbE5ZDlnDQMbAEsy8Sees0jgPmf3XB+oLG6k+oUseWTjkIzIOvFtrx1LGl3QC22w5MvLTabAL+pMBispFNA+4z8zC5NJFtXI0v5VCgvHVrqOD5T59oiJgo7+DMgu/DPJ/PMY2RCKS7Uh0rczbQlk7uHTfr2Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712619130; c=relaxed/simple;
-	bh=yIZB8EQSaWasDjEcyEiSbsUsfMZm9fU7bYPjnokrYis=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uUURFfJkbD21kLkBXBbH0AxJN2zsxbz6zgEHnJVISK/vB4gFzepxBIlxP+Fqm2uKQcRxNw8ORptB+zflN2zbC947WBshT5iiLc9CEWW14gejDpRfYsMJ6rJtoyTNgK1WTSDFmcpMFKaQUEuAowNDDPqnTvvVJgPsSwmSKJ6FoVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nAH4ZiT8; arc=none smtp.client-ip=198.175.65.12
+	s=arc-20240116; t=1712618926; c=relaxed/simple;
+	bh=K69mSg4Q2UMBAOgrSeKGYQMKDq1NHnlIbV87U1U9Jj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fBwK3jhcEhXLVSeyOvvU5BQ+V1C0OKN0ei6FFOpWxgOe9TNtlEqNtnsGFbNUBVXqv57aWbPdXeYOk9ElED0E8YEWhCgbDqmVHHxV7WpHLAZef7b4tsIRUrhwPVuTYhg2RLHHM2sSrUmyi46+92PEslQcMKKo8oiMNunmLPxUZgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IQvSTHAr; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712619129; x=1744155129;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=yIZB8EQSaWasDjEcyEiSbsUsfMZm9fU7bYPjnokrYis=;
-  b=nAH4ZiT8/uiUssxtKTw8xuwGOgVi6QlMORBROeqN6Sy/h9lcxWkQj4xS
-   Zed7lmz1GDb2Im74QiurXfae6ORqtMBbAkM3biCPsKvANi2pek0e8Sp6O
-   umdSr+X+t08q/3ZyRlkHHvpV4x/smwdMCWbFGQsQSaTUrdDcRs0pgAswo
-   OU1nLfxMfBPbUSvH/TgjrQE482GxEZabb/Kb3NLmafLsHKuQF0pmIDjOE
-   Yn3VYCE4FYoFSdQx3570fljf1XmU+8dzw5xIxn+KCj4AZIkK8d71hMcWz
-   Lj9kuu6ttbnzEJ8or06iUIvc17I7I18onf3FxJNvoLpcRV+g9IXVne5zW
+  t=1712618924; x=1744154924;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=K69mSg4Q2UMBAOgrSeKGYQMKDq1NHnlIbV87U1U9Jj0=;
+  b=IQvSTHAr3ebA4BwWWkoo0Spk/+geENTQ06MUuPOTltwWk3/TK21ErygG
+   E/hcbmPhUkEQSI1oNLAiHY/qiACHGUn4zGALary43OiupK3ArnphMg4ib
+   rNOgMStvJNRoqOmgvP05BiASyhCsY6wwABPNQqas0usCkrdeYVDxlOnhp
+   7bEt0rjQPL/oyrPsTSzP8fdM9OMLXB146QyRpMnGsay9DD9TEid63wqJm
+   r/wVPwIx4Ke7YMTza7esKEGztq12llJ7Hw8p3kXopuVVuxjgyz0sEwbhN
+   93GQ7n+p2lc9trRaYKlQDhNNbUaBk0BgLaqXnLnAC3RKbh+9GuVv8Qgec
    w==;
-X-CSE-ConnectionGUID: 1JwhNWEJQTCAOivomm22NQ==
-X-CSE-MsgGUID: 21wDuZ1ZS2qJ7EFZI38ePg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19350648"
+X-CSE-ConnectionGUID: vgd+vqLDSHOBwWOZRSxfBQ==
+X-CSE-MsgGUID: Q93+l0ukTgC40NutLjcznA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7790432"
 X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19350648"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 16:32:09 -0700
+   d="scan'208";a="7790432"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 16:28:43 -0700
+X-CSE-ConnectionGUID: 6RT2yAbSTEyC1B/bT5rWYQ==
+X-CSE-MsgGUID: HBafZJIBSSuzHCB6yj8LSg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937092379"
 X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="937092379"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Apr 2024 16:32:06 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 288F112C; Tue,  9 Apr 2024 02:32:04 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v1 1/1] Documentation: gpio: Replace leading TABs by spaces in the code blocks
-Date: Tue,  9 Apr 2024 02:32:01 +0300
-Message-ID: <20240408233201.419893-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+   d="scan'208";a="24521853"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 16:28:43 -0700
+Date: Mon, 8 Apr 2024 16:33:12 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Robert Hoo <robert.hoo.linux@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
+ <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
+ <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
+ <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
+ <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
+ Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin"
+ <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com, Robin Murphy
+ <robin.murphy@arm.com>, jim.harris@samsung.com, a.manzanares@samsung.com,
+ Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
+ jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
+ option
+Message-ID: <20240408163312.7b7f3d18@jacob-builder>
+In-Reply-To: <8871e541-4991-44f3-aab7-d3a657fc59db@gmail.com>
+References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
+	<20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+	<8871e541-4991-44f3-aab7-d3a657fc59db@gmail.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The code blocks are indented with two spaces, if the leading TAB
-is occurred the syntax highlighting might be broken in some editors.
-To prevent that unify all code blocks by using spaces instead of
-leading TAB(s).
+Hi Robert,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- Documentation/driver-api/gpio/driver.rst | 28 ++++++++++++------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+On Sat, 6 Apr 2024 12:31:14 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
+wrote:
 
-diff --git a/Documentation/driver-api/gpio/driver.rst b/Documentation/driver-api/gpio/driver.rst
-index bf6319cc531b..e541bd2e898b 100644
---- a/Documentation/driver-api/gpio/driver.rst
-+++ b/Documentation/driver-api/gpio/driver.rst
-@@ -7,7 +7,7 @@ This document serves as a guide for writers of GPIO chip drivers.
- Each GPIO controller driver needs to include the following header, which defines
- the structures used to define a GPIO driver::
- 
--	#include <linux/gpio/driver.h>
-+  #include <linux/gpio/driver.h>
- 
- 
- Internal Representation of GPIOs
-@@ -144,7 +144,7 @@ is not open, it will present a high-impedance (tristate) to the external rail::
-      in ----||                   |/
-             ||--+         in ----|
-                 |                |\
--               GND	           GND
-+               GND                 GND
- 
- This configuration is normally used as a way to achieve one of two things:
- 
-@@ -550,10 +550,10 @@ the interrupt separately and go with it:
-   struct my_gpio *g;
-   struct gpio_irq_chip *girq;
- 
--  ret = devm_request_threaded_irq(dev, irq, NULL,
--		irq_thread_fn, IRQF_ONESHOT, "my-chip", g);
-+  ret = devm_request_threaded_irq(dev, irq, NULL, irq_thread_fn,
-+                                  IRQF_ONESHOT, "my-chip", g);
-   if (ret < 0)
--	return ret;
-+      return ret;
- 
-   /* Get a pointer to the gpio_irq_chip */
-   girq = &g->gc.irq;
-@@ -681,12 +681,12 @@ certain operations and keep track of usage inside of the gpiolib subsystem.
- Input GPIOs can be used as IRQ signals. When this happens, a driver is requested
- to mark the GPIO as being used as an IRQ::
- 
--	int gpiochip_lock_as_irq(struct gpio_chip *chip, unsigned int offset)
-+  int gpiochip_lock_as_irq(struct gpio_chip *chip, unsigned int offset)
- 
- This will prevent the use of non-irq related GPIO APIs until the GPIO IRQ lock
- is released::
- 
--	void gpiochip_unlock_as_irq(struct gpio_chip *chip, unsigned int offset)
-+  void gpiochip_unlock_as_irq(struct gpio_chip *chip, unsigned int offset)
- 
- When implementing an irqchip inside a GPIO driver, these two functions should
- typically be called in the .startup() and .shutdown() callbacks from the
-@@ -708,12 +708,12 @@ When a GPIO is used as an IRQ signal, then gpiolib also needs to know if
- the IRQ is enabled or disabled. In order to inform gpiolib about this,
- the irqchip driver should call::
- 
--	void gpiochip_disable_irq(struct gpio_chip *chip, unsigned int offset)
-+  void gpiochip_disable_irq(struct gpio_chip *chip, unsigned int offset)
- 
- This allows drivers to drive the GPIO as an output while the IRQ is
- disabled. When the IRQ is enabled again, a driver should call::
- 
--	void gpiochip_enable_irq(struct gpio_chip *chip, unsigned int offset)
-+  void gpiochip_enable_irq(struct gpio_chip *chip, unsigned int offset)
- 
- When implementing an irqchip inside a GPIO driver, these two functions should
- typically be called in the .irq_disable() and .irq_enable() callbacks from the
-@@ -763,12 +763,12 @@ Sometimes it is useful to allow a GPIO chip driver to request its own GPIO
- descriptors through the gpiolib API. A GPIO driver can use the following
- functions to request and free descriptors::
- 
--	struct gpio_desc *gpiochip_request_own_desc(struct gpio_desc *desc,
--						    u16 hwnum,
--						    const char *label,
--						    enum gpiod_flags flags)
-+  struct gpio_desc *gpiochip_request_own_desc(struct gpio_desc *desc,
-+                                              u16 hwnum,
-+                                              const char *label,
-+                                              enum gpiod_flags flags)
- 
--	void gpiochip_free_own_desc(struct gpio_desc *desc)
-+  void gpiochip_free_own_desc(struct gpio_desc *desc)
- 
- Descriptors requested with gpiochip_request_own_desc() must be released with
- gpiochip_free_own_desc().
--- 
-2.43.0.rc1.1.gbec44491f096
+> On 4/6/2024 6:31 AM, Jacob Pan wrote:
+> > Add a command line opt-in option for posted MSI if
+> > CONFIG_X86_POSTED_MSI=y.
+> > 
+> > Also introduce a helper function for testing if posted MSI is supported
+> > on the platform.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >   Documentation/admin-guide/kernel-parameters.txt |  1 +
+> >   arch/x86/include/asm/irq_remapping.h            | 11 +++++++++++
+> >   drivers/iommu/irq_remapping.c                   | 13 ++++++++++++-
+> >   3 files changed, 24 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt
+> > b/Documentation/admin-guide/kernel-parameters.txt index
+> > bb884c14b2f6..e5fd02423c4c 100644 ---
+> > a/Documentation/admin-guide/kernel-parameters.txt +++
+> > b/Documentation/admin-guide/kernel-parameters.txt @@ -2251,6 +2251,7 @@
+> >   			no_x2apic_optout
+> >   				BIOS x2APIC opt-out request will be
+> > ignored nopost	disable Interrupt Posting
+> > +			posted_msi enable MSIs delivered as posted
+> > interrupts 
+> >   	iomem=		Disable strict checking of access to
+> > MMIO memory strict	regions from userspace.
+> > diff --git a/arch/x86/include/asm/irq_remapping.h
+> > b/arch/x86/include/asm/irq_remapping.h index 7a2ed154a5e1..e46bde61029b
+> > 100644 --- a/arch/x86/include/asm/irq_remapping.h
+> > +++ b/arch/x86/include/asm/irq_remapping.h
+> > @@ -50,6 +50,17 @@ static inline struct irq_domain
+> > *arch_get_ir_parent_domain(void) return x86_vector_domain;
+> >   }
+> >   
+> > +#ifdef CONFIG_X86_POSTED_MSI
+> > +extern int enable_posted_msi;
+> > +
+> > +static inline bool posted_msi_supported(void)
+> > +{
+> > +	return enable_posted_msi && irq_remapping_cap(IRQ_POSTING_CAP);
+> > +}  
+> 
+> Out of this patch set's scope, but, dropping into irq_remappping_cap(),
+> I'd like to bring this change for discussion:
+> 
+> diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
+> index 4047ac396728..ef2de9034897 100644
+> --- a/drivers/iommu/irq_remapping.c
+> +++ b/drivers/iommu/irq_remapping.c
+> @@ -98,7 +98,7 @@ void set_irq_remapping_broken(void)
+> 
+>   bool irq_remapping_cap(enum irq_remap_cap cap)
+>   {
+> -       if (!remap_ops || disable_irq_post)
+> +       if (!remap_ops || disable_irq_remap)
+>                  return false;
+> 
+>          return (remap_ops->capability & (1 << cap));
+> 
+> 
+> 1. irq_remapping_cap() is to exam some cap, though at present it has only
+> 1 cap, i.e. IRQ_POSTING_CAP, simply return false just because of
+> disable_irq_post isn't good. Instead, IRQ_REMAP is the foundation of all
+> remapping caps. 2. disable_irq_post is used by Intel iommu code only,
+> here irq_remapping_cap() is common code. e.g. AMD iommu code doesn't use
+> it to judge set cap of irq_post or not.
+I agree, posting should be treated as a sub-capability of remapping.
+IRQ_POSTING_CAP is only set when remapping is on.
 
+We need to delete this such that posting is always off when remapping is
+off.
+
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1038,11 +1038,7 @@ static void disable_irq_remapping(void)
+                iommu_disable_irq_remapping(iommu);
+        }
+ 
+-       /*
+-        * Clear Posted-Interrupts capability.
+-        */
+-       if (!disable_irq_post)
+-               intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
++       intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
+ } 
+
+> > +#else
+> > +static inline bool posted_msi_supported(void) { return false; };
+> > +#endif  
+> 
+
+
+Thanks,
+
+Jacob
 
