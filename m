@@ -1,116 +1,103 @@
-Return-Path: <linux-kernel+bounces-135570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC7F689C7B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:01:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8B3B89C7B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:02:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C7C31F233C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:01:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6651C21812
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D6213F447;
-	Mon,  8 Apr 2024 15:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436BE13F438;
+	Mon,  8 Apr 2024 15:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPVzIBvT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INAQY9pl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470CD13F42A;
-	Mon,  8 Apr 2024 15:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278BD13F422;
+	Mon,  8 Apr 2024 15:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712588494; cv=none; b=uRoqqWANLNavbl5vmJnsCI4xn5XWcY4D5QYlTYtBKee6s8H4U6lakBSySHofUzWXb4l8a5c1DZh7NevtJfL8iJDzHTUxGPz/OhMui4vbheLZfMah4cCeRzo/tXAOPsbuHWNcrjaUtDl4On02G5sBnG4plBv6lJpcDBLscpEvzCE=
+	t=1712588524; cv=none; b=KMPNX2NE/vSNpmGZCpq8SlUjs7ITerXAk/NQMUWr81QexcV/Gh/k/ty8jlYNrdmZT0O4pl/zWwRs3mdwscpDns3Yw7axBeOUWdlvrYN+PhNqwSPG3NklkBdv9VDiVi5OSLlZdil3SaVrKOzHW0xHhJdwT/L6nKotdDF2ZayjApc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712588494; c=relaxed/simple;
-	bh=EITVdlJtkrnylLXhed9Pr1DfYAyVTQ3XvaUDh63E534=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bjGRrwHk++ZbrkhTgH5dXtENpfRHmOQgJczDQVc15iA567JVW7k1W6MUUOXs7yZhxnNGzTX9gfmFXSqeiqb/RfO03pubmr21C5vGhsPv+wymsdlr54E51D1WxkfwCXhutiACQjLNfRk4LWGJ4pRpG7g74ENrtKCkg1UVyI74PrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPVzIBvT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB446C433F1;
-	Mon,  8 Apr 2024 15:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712588493;
-	bh=EITVdlJtkrnylLXhed9Pr1DfYAyVTQ3XvaUDh63E534=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iPVzIBvT/iSK03mJ74WyCdtfwrYQ0FIvhL5K8YMXOWzUcxtAW1X9DNCrqtBiFjfyi
-	 tl90sPwPpZ5rbnlWkWlrmucbJbApIpssRcLEk4bwAVt6FxwLnhmycj60p3s5ZulGuY
-	 Oi6kb5XzN6oeZLDaCEoYGMUGaCwA36s9aVa2vFCs+0r3L2ACNZZS6RJMIMK7lmGxXl
-	 LZaKWREq5eaTZ8dEmqubeluPfq1pepZhLI9FVjpANsP8XqyeISOYtrQC8gZ/KN/t0I
-	 J4RLdMza2ntow+e8CC8hAcBjXsrybDusTaZepo397svH4xSl9ToXUzq+mYubuhRT/b
-	 17pKAxdggeVsA==
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea1572136eso453455a34.1;
-        Mon, 08 Apr 2024 08:01:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW3+0lUuKg3hHhe5fIqYbB6u665OvDnFDviXdUd7KWwdn3iXbLFY6hEeIr3VKPT+6KhtijdC/aMEQixQJR8e62LzYen9GjggTwawKLEhn9SqELjylZL57kGQkpxmjD/8n7Z+WFUBW8H2HCWTBOLjc+YqFVDm55FTv5XdDPgzEIaiLOjT+XnmOtAolUMwTh7zUKraa7MV0+2yxafcRNvULKVG6VwrLZivXIW1gexeQtwi62weIsFjgZCMyHHVQ==
-X-Gm-Message-State: AOJu0YzUFgJuG5OoHcgg+C7cG0jOPGlDiSTYqqsmM17PI9Otqcm2Gp8w
-	0xKNpdaFYwl5HKE7Dz+tIuFRrDijMGKw9nsfRzmQji05ws/GVvDn/2lcM2jA+e5CupL+fHBJ80z
-	yHjpuw6lyNGtgRjHxBoAg7xnjuYg=
-X-Google-Smtp-Source: AGHT+IE7BjvtTOsOgPqYkXR1Qq+KOOG/nJtiEyKbfNUuvRcPpCIK8D3B6ZYbWXxS6qJ87RK9Jxd6UH195uv+p6a4TTw=
-X-Received: by 2002:a05:6808:603:b0:3c5:f534:e2c7 with SMTP id
- y3-20020a056808060300b003c5f534e2c7mr2839026oih.1.1712588493105; Mon, 08 Apr
- 2024 08:01:33 -0700 (PDT)
+	s=arc-20240116; t=1712588524; c=relaxed/simple;
+	bh=0fm5UAQptjK49s3k4o1ZvgOcWUKR5HCx6nDBDq21tGs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K5CO5xP+zPVSlX7aQTmyfUg2DfOV300azifBLOyVOs037ejbhDwfYZXKkHOjNAyeqYKi1Zf/ErFk3tE9cKTldA0G6CalQKCqqMF94DJat7j0lCbAkdwJTgp+59jsk/SoWouOQY2gWtjNWzVocOpdQw72OEdU63KqJa1PjUDn5PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INAQY9pl; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712588523; x=1744124523;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0fm5UAQptjK49s3k4o1ZvgOcWUKR5HCx6nDBDq21tGs=;
+  b=INAQY9plPpuJJypnBB+48hrLMzChAbMBs4WCY/V/nmPZxQiK4CM5LF7A
+   8vu257uazWHoeys5z9CdkHGmaIofNNn+PFojB/2rQ5cYqX5T6BBaEpzsM
+   gyRNqNJiIsXpy4A/Yu/tJQHL9IZLLNB2GaOEhmVyu9TjTtOQjojsfKFub
+   N+5Zf7S0U9IOL2+dwKoh92Cix8loplWMa4PlOQKxbVYi+K9R+T2E2ywa3
+   gb3Fv5kf138y+NSh1bV9JwmaD6rWgCUpX/f358260crB9qbUu9BDS6G0n
+   CNRs7x8WPgnoIlA//gzwT0tpCtuB203FhsHEM6R44fOqzQI9rYkAno/nS
+   A==;
+X-CSE-ConnectionGUID: KpFNMJy0QHmFBF4jgUhSyg==
+X-CSE-MsgGUID: /eVH7T/iQDClHDlI1aO2iQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7727281"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="7727281"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:02:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915367984"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="915367984"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:01:58 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rtqVP-00000002YZr-2wNS;
+	Mon, 08 Apr 2024 18:01:55 +0300
+Date: Mon, 8 Apr 2024 18:01:55 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
+	lars@metafoo.de, mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+	u.kleine-koenig@pengutronix.de, biju.das.jz@bp.renesas.com,
+	linus.walleij@linaro.org, semen.protsenko@linaro.org,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] Driver cleanup and series to add triggered buffer
+Message-ID: <ZhQG41ZhHprOvgsH@smile.fi.intel.com>
+References: <20240407172920.264282-1-vassilisamir@gmail.com>
+ <57fe9ec305efff58a2ef1e2ba6e334f042a2ad77.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712410202.git.lukas@wunner.de>
-In-Reply-To: <cover.1712410202.git.lukas@wunner.de>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 8 Apr 2024 17:01:22 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hOHCSp8-8EZjuGAOR0QSH3CcvokG3uBGAKFFpTrkqQRA@mail.gmail.com>
-Message-ID: <CAJZ5v0hOHCSp8-8EZjuGAOR0QSH3CcvokG3uBGAKFFpTrkqQRA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Deduplicate bin_attribute simple read() callbacks
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org, 
-	Jean Delvare <jdelvare@suse.com>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, 
-	Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	intel-gvt-dev@lists.freedesktop.org, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, linux-pm@vger.kernel.org, 
-	Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57fe9ec305efff58a2ef1e2ba6e334f042a2ad77.camel@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Sat, Apr 6, 2024 at 3:52=E2=80=AFPM Lukas Wunner <lukas@wunner.de> wrote=
-:
->
-> For my upcoming PCI device authentication v2 patches, I have the need
-> to expose a simple buffer in virtual memory as a bin_attribute.
->
-> It turns out we've duplicated the ->read() callback for such simple
-> buffers a fair number of times across the tree.
->
-> So instead of reinventing the wheel, I decided to introduce a common
-> helper and eliminate all duplications I could find.
->
-> I'm open to a bikeshedding discussion on the sysfs_bin_attr_simple_read()
-> name. ;)
->
-> Lukas Wunner (2):
->   sysfs: Add sysfs_bin_attr_simple_read() helper
->   treewide: Use sysfs_bin_attr_simple_read() helper
->
->  arch/powerpc/platforms/powernv/opal.c              | 10 +-------
->  drivers/acpi/bgrt.c                                |  9 +-------
->  drivers/firmware/dmi_scan.c                        | 12 ++--------
->  drivers/firmware/efi/rci2-table.c                  | 10 +-------
->  drivers/gpu/drm/i915/gvt/firmware.c                | 26 +++++-----------=
------
->  .../intel/int340x_thermal/int3400_thermal.c        |  9 +-------
->  fs/sysfs/file.c                                    | 27 ++++++++++++++++=
-++++++
->  include/linux/sysfs.h                              | 15 ++++++++++++
->  init/initramfs.c                                   | 10 +-------
->  kernel/module/sysfs.c                              | 13 +----------
->  10 files changed, 56 insertions(+), 85 deletions(-)
->
-> --
+On Sun, Apr 07, 2024 at 11:51:22PM +0200, Angel Iglesias wrote:
+> On Sun, 2024-04-07 at 19:29 +0200, Vasileios Amoiridis wrote:
+> > Based on next-20240405.
+> 
+> Hi there! Small tip, with git's format-patch, you can include this information
+> for the people applying the patches with the argument --base=<commit or branch>.
+> This will point to git the base commit from which the series build the
+> changeset.
 
-For the series
+Moreover, CIs will be able to properly test it.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
