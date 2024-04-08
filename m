@@ -1,132 +1,127 @@
-Return-Path: <linux-kernel+bounces-135960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F56089CE35
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 985D189CE38
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFB98284CBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:06:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53C52284CB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB811494B1;
-	Mon,  8 Apr 2024 22:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8F6149C5C;
+	Mon,  8 Apr 2024 22:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxEsmWF4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="moo4OuYb"
+Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64067E8;
-	Mon,  8 Apr 2024 22:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF0B146A74;
+	Mon,  8 Apr 2024 22:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712613963; cv=none; b=RJEV8YG7ygRiFcu8BKBtFkwXuo0L/AsKwk9dPdqAFt6HN8WsmRK04nMWIeHW/f1QNxaBoK+1xoFwcsY1Je6rsp/f6rrR1ZsvntRsdFOErAYL0TRFk9i9R21ZlN5Qt9CmLkXKsd/Zf9pkQa8x3QGboiUUBCkb7DyR39+UixlGoHY=
+	t=1712614079; cv=none; b=UWeV0m4LWh4F1Xv43NPVEmCESAHtIQyjBSeP6wczpOD1xqgM7EIN3mV/VT8VtbkOWnkd6g/aFHeiqauR8/zehoSAkmyruSC9w5wVbMh1RmiWjon/rusjqAR3QgO5J6knnGxZMV0ROlzhHVSuQKMTLJh+7CxNGAEUe/nF/VyEyM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712613963; c=relaxed/simple;
-	bh=pqw1ADI+qMHaHDaHqcuxy0STdxD+4CZFkalH3Y8huiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tu9WKf2gXhjfOqqGawaX8q3+JCzeoGqSuPuLVj4vtYC7oDjvy+HhMpgN5cV5yU3rvI/VI6sQL6BV2QaDCoep8JJtXe7LdwIKTJMh/Z4RcYOQAtCx9w91d25Gbe+m/oa8cz6j//LFcLTqKBh7ZANCjwt164nJWxJr/qX9rH0RRNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxEsmWF4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8F9C433C7;
-	Mon,  8 Apr 2024 22:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712613963;
-	bh=pqw1ADI+qMHaHDaHqcuxy0STdxD+4CZFkalH3Y8huiQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oxEsmWF4PUKFwgzlzDlnOP9KQVB+NOANun/x2OkOQRKzRPVvt2uVPnG3gaXZXO51H
-	 MjM2d8wqP+unjGiDWZ1EiSca5l1t1YORwrSFSMC85whZvCStBla0KUNYdqqhFZdLbZ
-	 /TYh0RpZai+fY78A2HGBwK2TXyqbrkp5vg6W78bsRFA5DA9ZvHsRPzwpIn8Ii37Q9R
-	 AhRS6O2THlIJwR1c+o+uaMsZr6q5J5MBuQ6qJywP7adjX44dIFCWi1Q7xv1Vw/ZijG
-	 WRHpuPAzIwBj3R+CN3HOHj2/eiiSeD1CFRDlxOObLEKaFEFr7wzdHnC7KStIZ0Cnw0
-	 JjZ88ZwDdilDw==
-Date: Tue, 9 Apr 2024 00:06:00 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 3/4] perf: Remove perf_swevent_get_recursion_context()
- from perf_pending_task().
-Message-ID: <ZhRqSEbyd1rqVwfN@pavilion.home>
-References: <20240322065208.60456-1-bigeasy@linutronix.de>
- <20240322065208.60456-4-bigeasy@linutronix.de>
+	s=arc-20240116; t=1712614079; c=relaxed/simple;
+	bh=P5hRDy1wg+C00YeG8BTUnFaiaw3vCXyKjsGOdD10sf4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TtjdI8xYqSI7sY/GFqof5KhtI+8KoP/HMFroS1eZbz7WPbifmdyi6cmGmtrVZ4Elk3NXl1rq2QFONRrdZ7LfHso/BWlxO7NUAsjvUQOVNXkTpA7xN/vZRPE11OmtjUmL3+s3XsYPbev9kElaGMJv0wVvI4oKUHd1ebDYY2xfrdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=moo4OuYb; arc=none smtp.client-ip=207.171.188.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712614078; x=1744150078;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BNWghUNyuV6Lk+YyDToi8Tsw6HLVZtok1GuBByD/mfA=;
+  b=moo4OuYbI4mRHszXvSW5YzqcXxBnWbqrWfmewPhXBDX3GGnCeT0Xu6MP
+   6ejV2XG0i4e3B07jlSqiDunLaa5a9QjvW0w62P7VqiWnocQAiJz335O2S
+   mrX0t0ata1LS0yE151bsqqTcvi63E2Vy0vfDZUTPIqeajm9NNk5iP6kZv
+   w=;
+X-IronPort-AV: E=Sophos;i="6.07,187,1708387200"; 
+   d="scan'208";a="717029174"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 22:07:51 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [10.0.17.79:39488]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.35.41:2525] with esmtp (Farcaster)
+ id 3f231b9f-fb77-49ec-83b1-2a4b83555169; Mon, 8 Apr 2024 22:07:49 +0000 (UTC)
+X-Farcaster-Flow-ID: 3f231b9f-fb77-49ec-83b1-2a4b83555169
+Received: from EX19D033EUC002.ant.amazon.com (10.252.61.215) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 8 Apr 2024 22:07:43 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D033EUC002.ant.amazon.com (10.252.61.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 8 Apr 2024 22:07:43 +0000
+Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
+ (10.13.244.142) by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28 via Frontend Transport; Mon, 8 Apr 2024 22:07:42 +0000
+From: Jack Allister <jalliste@amazon.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+	Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>, "Jack
+ Allister" <jalliste@amazon.com>, <kvm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] Add API to correct KVM/PV clock drift 
+Date: Mon, 8 Apr 2024 22:07:02 +0000
+Message-ID: <20240408220705.7637-1-jalliste@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240322065208.60456-4-bigeasy@linutronix.de>
 
-Le Fri, Mar 22, 2024 at 07:48:23AM +0100, Sebastian Andrzej Siewior a écrit :
-> perf_swevent_get_recursion_context() is supposed to avoid recursion.
-> This requires to remain on the same CPU in order to decrement/ increment
-> the same counter. This is done by using preempt_disable(). Having
-> preemption disabled while sending a signal leads to locking problems on
-> PREEMPT_RT because sighand, a spinlock_t, becomes a sleeping lock.
-> 
-> This callback runs in task context and currently delivers only a signal
-> to "itself". Any kind of recusrion protection in this context is not
-> required.
-> 
-> Remove recursion protection in perf_pending_task().
-> 
-> Tested-by: Marco Elver <elver@google.com>
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  kernel/events/core.c | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index e0b2da8de485f..5400f7ed2f98b 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6785,14 +6785,6 @@ static void perf_pending_irq(struct irq_work *entry)
->  static void perf_pending_task(struct callback_head *head)
->  {
->  	struct perf_event *event = container_of(head, struct perf_event, pending_task);
-> -	int rctx;
-> -
-> -	/*
-> -	 * If we 'fail' here, that's OK, it means recursion is already disabled
-> -	 * and we won't recurse 'further'.
-> -	 */
-> -	preempt_disable_notrace();
-> -	rctx = perf_swevent_get_recursion_context();
->  
->  	if (event->pending_work) {
->  		event->pending_work = 0;
-> @@ -6800,10 +6792,6 @@ static void perf_pending_task(struct callback_head *head)
->  		local_dec(&event->ctx->nr_pending);
->  	}
->  
-> -	if (rctx >= 0)
-> -		perf_swevent_put_recursion_context(rctx);
-> -	preempt_enable_notrace();
+Guest VMs can be provided with a para-virtualized clock source to
+perform timekeeping. A KVM guest can map in a PV clock via the
+MSR_KVM_SYSTEM_TIME/MSR_KVM_SYSTEM_TIME_NEW virtualized MSRs.
+Where as on a Xen guest this can be provided via the vcpu/shared
+info pages.
 
-Well, if a software event happens during perf_sigtrap(), the task work
-may be requeued endlessly and the task may get stuck in task_work_run()...
+These PV clocks both use a common structure which is mapped between
+host <-> guest to provide the PVTI (paravirtual time information)
+for the clock. This reference information is a guest TSC timestamp
+and a host system time at a SINGULAR point in time.
 
-> -
->  	put_event(event);
->  }
->  
-> -- 
-> 2.43.0
-> 
-> 
+If KVM decides to update the reference information due to a
+KVM_REQ_MASTERCLOCK_UPDATE, a drift between the guest TSC and
+the PV clock can be observed, this is exascerbated when the guest
+TSC is also scaled too.  
+
+If the reference guest TSC & system time within the structure stay
+the same there is no potential for a drift between the TSC and PV
+clock.
+
+This series adds in two patches, one to add in API/ioctl to allow
+a VMM to perform a correction/fixup of the PVTI structure when it
+knows that KVM may have updated the KVM clock information and a
+second one to verify that the drift is present & corrected.
+
+Jack Allister (2):
+  KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for KVM clock drift fixup
+  KVM: selftests: Add KVM/PV clock selftest to prove timer drift
+    correction
+
+ Documentation/virt/kvm/api.rst                |  43 ++++
+ arch/x86/kvm/x86.c                            |  87 +++++++
+ include/uapi/linux/kvm.h                      |   3 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/pvclock_test.c       | 223 ++++++++++++++++++
+ 5 files changed, 357 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/pvclock_test.c
+
+
+base-commit: 8cb4a9a82b21623dbb4b3051dd30d98356cf95bc
+-- 
+2.40.1
+
 
