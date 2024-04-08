@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-134817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25AC389B757
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:57:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30D389B75D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:59:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4EEE2817CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:57:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C992817DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5933A849C;
-	Mon,  8 Apr 2024 05:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BC98BFD;
+	Mon,  8 Apr 2024 05:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDmHFt5b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSTXvrkh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8226E1F93E;
-	Mon,  8 Apr 2024 05:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF418473;
+	Mon,  8 Apr 2024 05:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555862; cv=none; b=hUDqG4bqqCX3ds/UvG3xgl26tNjjNKGFKhHwErRAD+Po4dY2c1ROKr3WvqKlNfvmvrguW6E8ZCUrn8MJvD6lqcpGz3F2A8ahjWd846mMoZlVVhHw/5D88FzcZ4ffYD95x39poMeBbnndAGW6x8n3D2lkrf6um4hJcOjTesNLzjk=
+	t=1712555932; cv=none; b=V8URiILeHhtLFPI3UDHzJZSM1bUtp7565f4mW4mM1xeEf/4dtqLmJ8Ns8FnUAuwZ+g7qCP6PO6yjBLwKvImyqD6FeY0BWfK3XMvY1KWPVIjqn04bDXjv9L6yLHaWfzFhNIzGfjvt48v8ueHy2glGnM56jHz5WWgfFzjC6+tX5xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555862; c=relaxed/simple;
-	bh=mBGucGHxPEYjNGFj9o1D+BgtglcfHZFWJhMetpAilZg=;
+	s=arc-20240116; t=1712555932; c=relaxed/simple;
+	bh=umuB0PVea3TNBq8fJ+4g5SmhV5V4LR2m6gdRGgc8TKc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OckMNXe71KKiYQLR6tljxRG0/+nBT9jzljYh25L5ydROk4suvC19LBS7R+SfvJUSiCP0icD23tLbKJqHJPVghZOrsPTKzfJZdYRlMa9o7YTQ0mjhBzd6FaSFXF+7YLw0NAQWN9BFwg4aFq6MCPIpWVAZXK4HU5i+RLQVHrE/4CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDmHFt5b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE34C433F1;
-	Mon,  8 Apr 2024 05:57:37 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=cKHg7nX/6bVUXWmsPTNpfoL4N21GCH8PZHRE9/5W+0gL5lMSi3I1lCtriM3q6oHkYG1cbsafEHV8D5mjA6h5ZbU/lLENCkdR2cxtlZPeSUwMSgy0XkTibfpm9+iegumfA8Dgiv+CpU6QiOVhR5N1eToPptbuvW85031SEnpSvlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KSTXvrkh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1634C433F1;
+	Mon,  8 Apr 2024 05:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712555862;
-	bh=mBGucGHxPEYjNGFj9o1D+BgtglcfHZFWJhMetpAilZg=;
+	s=k20201202; t=1712555931;
+	bh=umuB0PVea3TNBq8fJ+4g5SmhV5V4LR2m6gdRGgc8TKc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sDmHFt5bWapR5TTFh/Ikxt8jRpMRejQ6zXt1Sm9GJOMtT1UPvftyO1fQMwS/nI0Nv
-	 3lCcjqfnMn07nsWcrjJpYGmJPML4SwLj+E8KqONvckc+WbNinUc+Wk5YS0QdLI3rFQ
-	 IHPacDQ1xU7fJBbO1XQZHDYM48zD+LPjUiU2jFaSSZQ4Tu1Qg4rkuOJ41OqGHrM16f
-	 yOWXS9cP7qps4qRBOaAPdduyQYmWecRtGL2L6ijy9e4u4sWQxCz7u8L8sl4vf3HFwY
-	 WSvm5OLD0VrvtuK5GhkDZkHKC8BnzqA90J2bhdTnpC8nNANbs4iS1xj2hZnIGkt+Tq
-	 0PgiUqgPe424A==
-Message-ID: <ba4c9f20-0391-4ac2-a236-d6930285cd7e@kernel.org>
-Date: Mon, 8 Apr 2024 07:57:35 +0200
+	b=KSTXvrkhpl9RM+R6NVUQUKymDAo0gYeDldOqgV+BfAKslJ6ewmrYheT1R0hxWfWlZ
+	 CZ+OnedRxeLPgLemA20zWdUWpTHDuYvJ/VHbbv4C/ZnPnnSgXijPu4Q8W9f9I6dWUd
+	 S8FOQLNo2xRWnAgCJcfFpG2PXDBLN4uqePZ9t5Isruqu1E04CWne15CRDjwWD9Swip
+	 g9GlO7axR7HMbvUldk2oVzUW6YA0PSYOon3/5jR+kj4kWF57WQFdkaSKNJd7EeHxlR
+	 YJMDeqxtbUphvNaJG+PQ5Ug/WBg0wq3ugPFESV2KFPLM8UjBPqmTYu5gWkPFCDJHPj
+	 b5gOqoLJ78JKA==
+Message-ID: <cf06b75d-2f79-4d3b-8d64-459c9f5cb4ea@kernel.org>
+Date: Mon, 8 Apr 2024 07:58:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,28 +49,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
- additionalProperties to true
-To: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Cristian Marussi <cristian.marussi@arm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "imx@lists.linux.dev" <imx@lists.linux.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
- <20240405-imx95-bbm-misc-v2-v2-1-9fc9186856c2@nxp.com>
- <614b5107-656d-4d41-99c1-77941c48342c@kernel.org>
- <DU0PR04MB9417932A6208128FBBB22C4188012@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <09f6b752-6b72-49d7-b248-6faba2fd13a7@kernel.org>
- <DU0PR04MB9417C5B9BDD9E0B47E7494C088012@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <5b9e0e44-0b9c-44fc-9d18-21c47b46dc63@kernel.org>
- <DU0PR04MB9417839C42681F57366003EF88012@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH 1/3] dt-bindings: remoteproc: qcom,qcs404-cdsp-pil: Fix
+ qcom,halt-regs definition
+To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240407-qcom-halt-regs-fixup-v1-0-a0ea4e2c178e@z3ntu.xyz>
+ <20240407-qcom-halt-regs-fixup-v1-1-a0ea4e2c178e@z3ntu.xyz>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -116,70 +104,21 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <DU0PR04MB9417839C42681F57366003EF88012@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <20240407-qcom-halt-regs-fixup-v1-1-a0ea4e2c178e@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 08/04/2024 01:50, Peng Fan wrote:
->> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
->> additionalProperties to true
->>
->> On 07/04/2024 12:04, Peng Fan wrote:
->>>> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
->>>> additionalProperties to true
->>>>
->>>> On 07/04/2024 02:37, Peng Fan wrote:
->>>>>> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
->>>>>> additionalProperties to true
->>>>>>
->>>>>> On 05/04/2024 14:39, Peng Fan (OSS) wrote:
->>>>>>> From: Peng Fan <peng.fan@nxp.com>
->>>>>>>
->>>>>>> When adding vendor extension protocols, there is dt-schema warning:
->>>>>>> "
->>>>>>> imx,scmi.example.dtb: scmi: 'protocol@81', 'protocol@84' do not
->>>>>>> match any of the regexes: 'pinctrl-[0-9]+'
->>>>>>> "
->>>>>>>
->>>>>>> Set additionalProperties to true to address the issue.
->>>>>>
->>>>>> I do not see anything addressed here, except making the binding
->>>>>> accepting anything anywhere...
->>>>>
->>>>> I not wanna add vendor protocols in arm,scmi.yaml, so will introduce
->>>>> a new yaml imx.scmi.yaml which add i.MX SCMI protocol extension.
->>>>>
->>>>> With additionalProperties set to false, I not know how, please suggest.
->>>>
->>>> First of all, you cannot affect negatively existing devices (their
->>>> bindings) and your patch does exactly that. This should make you
->>>> thing what is the correct approach...
->>>>
->>>> Rob gave you the comment about missing compatible - you still did not
->>>> address that.
->>>
->>> I added the compatible in patch 2/6 in the examples "compatible =
->> "arm,scmi";"
->>
->> So you claim that your vendor extensions are the same or fully compatible
->> with arm,scmi and you add nothing... Are your extensions/protocol valid for
->> arm,scmi?
+On 07/04/2024 11:58, Luca Weiss wrote:
+> Set the 'items' correctly for the qcom,halt-regs property and update the
+> description to match what it should be.
 > 
-> Yes. They are valid for arm,scmi.
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+>  .../devicetree/bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml        | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
->  If yes, why is this in separate binding. If no, why you use someone
->> else's compatible?
-> 
-> Per SCMI Spec
-> 0x80-0xFF: Reserved for vendor or platform-specific extensions to
-> this interface
-> 
-> i.MX use 0x81 for BBM, 0x84 for MISC. But other vendors will use
-> the id for their own protocol.
 
-So how are they valid for arm,scmi? I don't understand.
-
-
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
