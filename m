@@ -1,226 +1,212 @@
-Return-Path: <linux-kernel+bounces-134812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBAD189B745
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:49:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9886889B74F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:56:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31DDF1F2161D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1083A1F21732
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EBF847B;
-	Mon,  8 Apr 2024 05:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB688494;
+	Mon,  8 Apr 2024 05:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b="JKGDZ3H4"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2124.outbound.protection.outlook.com [40.107.13.124])
+	dkim=pass (1024-bit key) header.d=Sony.onmicrosoft.com header.i=@Sony.onmicrosoft.com header.b="naPG2Vhc"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC77D1773D;
-	Mon,  8 Apr 2024 05:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82783BE55;
+	Mon,  8 Apr 2024 05:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555382; cv=fail; b=R1LPA9rkDJkXh3bS0DTvAEzBkToNa2opKs8LoT2Z0/Hy2zf+IwQIL1mP1j3wmdCBUB0P+uxGx3Jf5PSfTbtvlX3XUcvAp0DyZPzBdt0Xh5l/mOaVex3190XPnRsueExhMg95tgs6ZO9+RViiZfW2N01kozdrI16yDgyWYJsiFkA=
+	t=1712555783; cv=fail; b=h6Vg45HXIBGLYThaSyBevLrjci9zeDViT2w6GHQxs9UaGIP0O8oi0MyKyu9ddwT0Gos/GiMjCTCRkHiAeMExtDVX+rdByvN9Zcim9HLB7DZN5+GrAFDj1ULtCt+HfuUEtHydA5qZS1+ufUZ1uN2xC4Q8MBDX7/IcGcjZZ+rhmBk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555382; c=relaxed/simple;
-	bh=D5ahDcSDk7gHN9GOAff0np6Fjzs44f0OybgE+ki/ixE=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=FAdPH1C7co1DthSimCoCkRhRLU0m47mFEU1CYIxIHN0jpn0bHLjQHChCOmxbX/E2ug8WlsbUpfe2k6h4nIT2GixvjMFuq10URitVFe6vPFgtYcSRC1qg8/OD9mGUvyHuJ+e9TRR8YtrAwqJK/7AYi1FGwJd/s50RNhaukkWNJqs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com; spf=pass smtp.mailfrom=mt.com; dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b=JKGDZ3H4; arc=fail smtp.client-ip=40.107.13.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mt.com
+	s=arc-20240116; t=1712555783; c=relaxed/simple;
+	bh=sETc1CltxqaEsBFpn9XoOKsO721a28C/EPYMworu6g8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rkmHyJ0TE5CJ4UU9S5MumCywa8IEVuerrSUuYNBVDEgOQpgspKBvmvzB3k31qvqKalaMlrlB/X7L3u+G/AXt1aIDZmaUJ+36Ig8URToOljMadnnGsipOFPJxI0uKGh4/cFeJ2ri47HOFSRM/dgGWba71a+wOJXJ++bSIhFf3Qgo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=pass smtp.mailfrom=sony.com; dkim=pass (1024-bit key) header.d=Sony.onmicrosoft.com header.i=@Sony.onmicrosoft.com header.b=naPG2Vhc; arc=fail smtp.client-ip=40.107.94.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BTF01GKwFl0e2RYkUDThj+4W4KjsHBgorNRICK6X/Q18dJ/h+84sr9QkIHn+RnMVaI8Py2zpZKiqGHrwITlBD/Gs9QfiCM3C/XMXyx/ObVwAanF8748Vlbc/xetnux5Y1428cySHEHH/Q1+lGezhsgMzTwZn9eVkiEh13SFb27EfTQ5POf6CNVP3mNDSdmYxpiKLJ/Ud/ZtRf0C5vLf73fhXYdKgdWS0fwq2N4NOUyQ77wzRih/N8hvPXXajVDZ6/sQDsgEZ0dXW+Nm1zuC7rKpk3VRv3ezy1mQxEQMUPnHTGVmdV4sJ58pvPptmGhxySDa14LznrfzbuhG2658ukQ==
+ b=U1RS+/QtZMxfYpDJbWa4y0XhBDWuX0Y1LR+bo712cFFJdgpdDju9+RUDM3l1UCBq2pUaeBPJS5buxoThXc3pu0lUp8WAXmWswPz+8i/+rhWnfa5wlzsHQXAPHQERvzQmkNuzD3mr/y4z26BfVtMolpd7PM/PW/97DsAIANEtIooKPi/qUZJV3C5ZDZFmE9RF5SPTN8a/2QzU2JOrqU/M/k0I3xoSBB3Ofe2iumRbEdMim6CBX8P8mFKy9gfD9HfH3nWwFn3+MelijLQm4icI0QXGc/1YjIAmmzs+U8KWp5fF9EA7j3Z9zid/79pXkGGzjqVQEI0XDbdLHdSEl/2cDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7R74q/PYwo8E7ftL5fEKBrmr7hTWP/kQVWOlMEznQmw=;
- b=RAd1sd/zFH/MtyNvwHi6iWZshSx6sUcpIZPw/Rp6tAjkZ/GyXZIHA3xAHDIkgFNWJhtAjvXlQKH1g4iX8wMM/HzynbqscdVxACfISG8pcy8l9FJ859fo3ZKWA7RVt8mtuAazfQ28Lab+9txpbvKVGeB03KRgkodkG6ZKCA1B5rDjqG+ZFsJY0HiOJm4GiSRJVU4RkcaGgmiwlphe+NKChll2losTPepZNik2gu3bcX7qp3lE7THxku2JvMIOvIliPwXyBupchcso5zP/NwH7BON6aEOcbj+uWa7Mld3pFuv1dfoJsephOxOoon18bGiNCKPu44KhUsU+CqRxYODmhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mt.com; dmarc=pass action=none header.from=mt.com; dkim=pass
- header.d=mt.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mt.com; s=selector2;
+ bh=8kmD/K69K1k1eR6qLLgoNMW8GhJj1vk3TQMPHRuUzGs=;
+ b=H6ma8MB9Yfd9eBSoMY3WU8h3l66i/lAO8fP1xpNdF5BgIrRkJpnpvs5KYgD9+GLJseMsUtjLJu4HfxG66I7/a0SosTm3j8hMY6DpvkV3Ce865FBSSslBMZrGJzjstOlFe+kNZhByLQdPotZL4wiCO4HxXsNu/+hmUxOMqwPCZmKHLnLQ9xxAnefCg/0uQjHTJgm6z4wp7ouq94FRCy3FSUeH/F6+WzhK6NsE7y7/naER3HjIQglntkuCG39Pw2cFvFvLOt3jmt2RrGoZc0PQ4tAnd0zyjDIoxyiwOueWb5xQ4Hizh2jZ3odPFQh5lnv/299AlOfP49ttJcrtmMpUZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 121.100.38.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=sony.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=sony.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
+ s=selector2-Sony-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7R74q/PYwo8E7ftL5fEKBrmr7hTWP/kQVWOlMEznQmw=;
- b=JKGDZ3H45Z5iSAF6qA+X5S7ZULxVEqxQ+scNjSwX++OCo1mT850ub5lT+LegUmERRuzyhe+1iY5tbijCD0ISl0P3ggHOqss5Q5nxEKeyvUBd0ptupVIrcAiKc0WRLW68Ymk2qd3nXzS1gSsO33hIzV/6b8rzIxURPpbgz9vs75Ms7x5alndkjF5+QqwmHYlIH8SdeUz64x2r4eYuPy8kwsuChzugTXAsEsZH1B+0OA9W/FNyZcWOFZT6eq54bzzmm6A4/Oh0DI+M7L/LLybqMtOsS6Yb95IDBj/OXrA/ZtUFRYIHn73NMKbnPzIe36d6KhV6H0iBdXwFk1rrpchZsA==
-Received: from DB9PR03MB7513.eurprd03.prod.outlook.com (2603:10a6:10:224::17)
- by AS8PR03MB8498.eurprd03.prod.outlook.com (2603:10a6:20b:53a::15) with
+ bh=8kmD/K69K1k1eR6qLLgoNMW8GhJj1vk3TQMPHRuUzGs=;
+ b=naPG2Vhc0DmYiM58xjSbBoTH52WGQ7PaQkSyPcTP7vIOryldGGA3OWNrqtnTBChoFstTXEmPqWki1gu/59aa2qR7qhMro9p7I7N3rB5IwF8E5933/SsFHbFkZNcg3HG9TwN3eR1ssxjmeLqckJyhoHWX3Yunk7PjQnq2zfQJ1ek=
+Received: from BN9PR03CA0134.namprd03.prod.outlook.com (2603:10b6:408:fe::19)
+ by MW4PR13MB5409.namprd13.prod.outlook.com (2603:10b6:303:181::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 05:49:35 +0000
-Received: from DB9PR03MB7513.eurprd03.prod.outlook.com
- ([fe80::99b5:2449:1fc2:b78e]) by DB9PR03MB7513.eurprd03.prod.outlook.com
- ([fe80::99b5:2449:1fc2:b78e%6]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
- 05:49:35 +0000
-From: Markus Burri <markus.burri@mt.com>
-To: linux-kernel@vger.kernel.org
-Cc: Markus Burri <markus.burri@mt.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v1] rtc: pcf2127: configurable power management function
-Date: Mon,  8 Apr 2024 07:49:26 +0200
-Message-Id: <20240408054926.3994-1-markus.burri@mt.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZR0P278CA0073.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:22::6) To DB9PR03MB7513.eurprd03.prod.outlook.com
- (2603:10a6:10:224::17)
+ 2024 05:56:18 +0000
+Received: from BN3PEPF0000B06D.namprd21.prod.outlook.com
+ (2603:10b6:408:fe:cafe::f0) by BN9PR03CA0134.outlook.office365.com
+ (2603:10b6:408:fe::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.35 via Frontend
+ Transport; Mon, 8 Apr 2024 05:56:17 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 121.100.38.198)
+ smtp.mailfrom=sony.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=sony.com;
+Received-SPF: Fail (protection.outlook.com: domain of sony.com does not
+ designate 121.100.38.198 as permitted sender)
+ receiver=protection.outlook.com; client-ip=121.100.38.198;
+ helo=gepdcl09.sg.gdce.sony.com.sg;
+Received: from gepdcl09.sg.gdce.sony.com.sg (121.100.38.198) by
+ BN3PEPF0000B06D.mail.protection.outlook.com (10.167.243.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7495.0 via Frontend Transport; Mon, 8 Apr 2024 05:56:16 +0000
+Received: from gepdcl04.s.gdce.sony.com.sg (SGGDCSE1NS08.sony.com.sg [146.215.123.198])
+	by gepdcl09.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 4385s6SK027698;
+	Mon, 8 Apr 2024 13:55:59 +0800
+Received: from mail.sony.com ([43.88.80.246])
+	by gepdcl04.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 4385rXmh008417;
+	Mon, 8 Apr 2024 13:53:33 +0800
+Received: by mail.sony.com (Postfix, from userid 1001)
+	id A98AF1D804D2; Mon,  8 Apr 2024 11:23:32 +0530 (IST)
+Date: Mon, 8 Apr 2024 11:23:32 +0530
+From: Sreenath Vijayan <sreenath.vijayan@sony.com>
+To: pmladek@suse.com, john.ogness@linutronix.de, corbet@lwn.net,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc: rdunlap@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, taichi.shimoyashiki@sony.com,
+        daniel.palmer@sony.com, anandakumar.balasubramaniam@sony.com
+Subject: Re: [PATCH v6 2/2] tty/sysrq: Replay kernel log messages on consoles
+ via sysrq
+Message-ID: <ZhOGXGwGTWK5JVuU@sreenath.vijayan@sony.com>
+References: <cover.1710220326.git.sreenath.vijayan@sony.com>
+ <cc3b9b1aae60a236c6aed1dc7b0ffa2c7cd1f183.1710220326.git.sreenath.vijayan@sony.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc3b9b1aae60a236c6aed1dc7b0ffa2c7cd1f183.1710220326.git.sreenath.vijayan@sony.com>
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR03MB7513:EE_|AS8PR03MB8498:EE_
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06D:EE_|MW4PR13MB5409:EE_
+X-MS-Office365-Filtering-Correlation-Id: e08d2a49-c493-433b-22b4-08dc57909b84
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	oMkc/vyKeUdm9X2V+Curiq3tty/oO11B5Pm4+Zp8EcLHRoscuzYY8cb7JZt6St3prG8dZ6SnZBEKb+4Eg5qJfsE7nbNkQiz1uweQYSSyw8u426uCHW0AgFgj+nHRiSkJAl5mc/3xzryvtBrNZLtaRxGspIjp1Awe59ynv4Almk2q+IvzJLHVQl3FDRK+7gnCURge0sNS0xbO9x4W0brZaAIh5x3FeHoDUD4p+HK6oYLLnS0EKyhHzL87gp8NhteJiW14FHJYH5pctnTFtMlu88mYAAM/gH9PEXz4Xf4qJhcxHlL4oBvBuPZ4FRmRuhz0f4YIe6pCadOoroJ5WKl9vqgqo3usbmOyV9/lrKOMPgj+RUQAbNTXv6JNJ3TOvGAcZeD8qvyTACJMFJQS9cfuxK3llYUM7cXteND3CrC+y4HxnW3yWndJENRyVj3krpaLfJmmwa+zr44oJRMhn+sR3nvtJ+3mHWlyV09yqsbJqng+Y/l7d8Ek1Ls7/5SnFA0uQefKwiv6k4Vz7UELd1OIFnoDROodtfep9VpdXdnscXkIkkXKZGdNtOBo3w0COC3cKE2Z1w2TKhW7kraHxwzmWD1uqBoLMCJTjdY5Y0uFXQOTfKmuGf+AWBki+Bq7DTZWXQUj/+Z3NwRRWkaPLuvV6PUs2cGmfDayJaDAstuRc/NjPe2NoXy+aibDXpsK+q6JIR1rrvpqBx8wfKbBim6hZTTc94lGdczBGXKDOQLIoUs=
+	MA2W6rknB4Vlp6hDaZcNyAaEndR6h22VH1afjedTIKuc8GzgBIIwKi1eRtMVS7996d339eRjH8gxIMu7pmueOlCiB6LlpTG08okVLU79PpApLJzn3WLwL9xqYIXOJlSfsfyckmyrJKqUaZaKvOP/0/DKbhrcsDFPf1EPiVU60BVvosesRIKksObFcPoc6CZ3hf3flVoeg0Dtoo2TBJtUSXYz9ubeEStjrfYELq4JpC7EnqjvdlZGZq4s83C6WkdvOlWX4Dos41uwOmMTApTLBewchgWtM+CCCfZ2BW8qnbABzwwUCyV5qXiBU7uWsVmkMvm7zNROWg1Ym7IZ0BMRLwiuZSdD58fhkOnDhtur64xIDHetx1RavbA8e+hqgNMg1w53mppuSweyNRcbvdcvEP4+ljDUGIjkgW/L9od+qaVGdZ7lJRKF5PE8T6zP8cH0p9XYbdEgobMstp//Kjw7QcrQjtr8iUIyURzHoopOPDJ2Q2TtrqQ4CQ/jVti4eg6F94ZwW99CiKMeIPdWCI8EjKZXXXpY+4anEolLDO6hyJHtwJtZ+Rkzq3E6UfHfwxkRJuCXZmpu7DCKeChrAf5kbGRUnkCzf1fM/WYj2moNDeLya6fP5x894D2aCM+B9q3f35CeqEYDxkE3XHyMUTSvKj/HxmklVOMA+G1711QFQNcyigbuJkhpohyx3NJ96aGWyeyF/62OtYqc3oVtZHSudF0IkxYEe3uwSC35SA5PhGCMntjnWh8vlxI9crGPNIjp
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB7513.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?musl8BnmQigEcE1n2hNU+w+SOI0NZ2niBJt6qz+Fto6zo0UuPEs01PnLoieO?=
- =?us-ascii?Q?4ee8zhmf6+dOlDYvr9EieZ5zi7gH1NpuMAFZzHcQULTrWR/D9sm1zHZpQqkH?=
- =?us-ascii?Q?0SkUTYEkFk6veku8GvWY08lK8IyWeAZlwxlN/0UfQFMhTOrwJSPgXzzVUbrm?=
- =?us-ascii?Q?vbWUi5YBLVmmopTGR5w+quwxg0206NM6gvFkMnZ9N2fTKa/c7lk4uwlq08I7?=
- =?us-ascii?Q?SNwDsSX6CpxNiCkn/rMDqfC/NhWG0J72L01pWnefdeSAFrLTN6AimPE0qDrE?=
- =?us-ascii?Q?gorRLF1Vktp7NyjIWWJdwPlLnJnFe9ysrCeit0bsvowVDDnI+ME9j2DTi6co?=
- =?us-ascii?Q?+xQohxBh5h+d4YNJVvxQXSus725JW/L9lYDIc/02o4S+o/deAvANktaOQeKK?=
- =?us-ascii?Q?H7wqiwW7YsL/AnvuCYc43/T4Yg/i9y5vykirWPvNT+byDV3LiOLUGlI9mRmy?=
- =?us-ascii?Q?y5TiNY3nfoK2zxR6k3J32wIcfDD10C9XxOtotIOKC+x0HbBNB+QQD8UQmgww?=
- =?us-ascii?Q?zYyapeog3BBu80VteYXu/BckMxwrTIG4ZRGspbAou+cS3uetAizjCS6/9Lwh?=
- =?us-ascii?Q?WMwnklx+LqKta9IfwkCt+JkyAxmnopoYW7c/cVQI3qa3NMH8gD6Gm6Q5fXME?=
- =?us-ascii?Q?iMZOnjcb3l4vK40MG/TFqFGNKKjSyj1OfHxXyyS2EumTV0re+ivVeB1mbipF?=
- =?us-ascii?Q?qRiav9b/zVnobQLZCAe5SJNTwymhDholyPQzd9FCkw3nJP4acVl4D7QZM69H?=
- =?us-ascii?Q?J4CfLpRn/FNrtybepSeNEaHXyS+8HxvoOLRkEXn57lMUA54STNdoszYM3nC9?=
- =?us-ascii?Q?L/VynwxkQmUR3hlnE95yvRiCoU7hohGMCTB54zMjsPlxQArmJ9M78i5u6Ah3?=
- =?us-ascii?Q?B3A8pamjJnInqBATMTAiODkiE1Q2dW/GsjjLAsDYxiPvMsEtGDbTkWMA48NY?=
- =?us-ascii?Q?ETXqYx+dEjLDw6m7ss1vkXoD9SmD1wZh5rLLsBbexVh/gfSGs2yepXKUVs2z?=
- =?us-ascii?Q?ACtqF4SKsN12cVZz8GCeWUNCjx5OHEPFvhlj8c2fBsw/VcEWmWE5xmj4hzjY?=
- =?us-ascii?Q?O/P7Cj791nL/sWlcO1DUw3z7dnK7/EOUzfGUWINHuK8pq5Ro2sJKbL8lGPua?=
- =?us-ascii?Q?jKD+fZL6A3q4U9XEaQHbKKBN3iFZzyVktYD9SyuTjiFsmDVYoAzu63yzug32?=
- =?us-ascii?Q?VBukMi82h1Z4jDuq9sNJFNVsViRMsoQbfyTRJcxLnJ2Fb06Ts4FZ/6rGwmB0?=
- =?us-ascii?Q?hrE5vs0y8gMq8HdDSmrLoMtQJFGeOSZl/K5d42oWUXyXB6qvGYy/5QXQY5Ml?=
- =?us-ascii?Q?wUiAK9MW8F3xR3/I1iR0oDTO2HrwQ+ey4Pysld6QGjC2ZjkJoeq+miOJkmHr?=
- =?us-ascii?Q?DElj+rpB47lhFOKOTKlu6X9pWZzCcsIrkjnzp9kx5VAUGKNM0QcRuYNfDzKB?=
- =?us-ascii?Q?TNOsJBM09sXvsn/9xd/IFTTYSeB3FbAFDqWL/GC/nqdw8A7WMBFj+WiEsBFF?=
- =?us-ascii?Q?x+YTn16agg1IS/Ui3R/qSxPFWEtgtgC9Z7ctqK2TPOPDZXdfptFHXXxCsqw6?=
- =?us-ascii?Q?RJNZC6chmyphz4bEzq4SUU9XZxSHqM5Wf0LSZZCY?=
-X-OriginatorOrg: mt.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fd1067e-e56e-4c6d-ac79-08dc578fabd0
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR03MB7513.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 05:49:35.5022
+	CIP:121.100.38.198;CTRY:SG;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:gepdcl09.sg.gdce.sony.com.sg;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 05:56:16.8303
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fb4c0aee-6cd2-482f-a1a5-717e7c02496b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DbG4jrouq7LigTWsovp3aR12APw58Pw2AjZs/F/0MFizbUYkhdaSV7aiy6kxsZBtJBrovay701eHL8pbON95SQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB8498
+X-MS-Exchange-CrossTenant-Network-Message-Id: e08d2a49-c493-433b-22b4-08dc57909b84
+X-MS-Exchange-CrossTenant-Id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=66c65d8a-9158-4521-a2d8-664963db48e4;Ip=[121.100.38.198];Helo=[gepdcl09.sg.gdce.sony.com.sg]
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-BN3PEPF0000B06D.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR13MB5409
 
-In the PCF2131 power management the battery switch-over function is
-disabled by default.
-After a power cycle the rtc clock is wrong because of that.
-Add a device-tree property to configure the power management function
-and enable battery switch-over.
+On Wed, Mar 13, 2024 at 03:52:52PM +0530, Sreenath Vijayan wrote:
+> When terminal is unresponsive, one cannot use dmesg to view
+> the printk ring buffer messages. Also, syslog services may be
+> disabled, especially on embedded systems, to check the messages
+> after a reboot. In this scenario, replay the messages in printk
+> ring buffer on consoles via sysrq by pressing sysrq+R.
+> 
+> The console loglevel will determine which all kernel log messages
+> are displayed. The messages will be displayed only when
+> console_trylock() succeeds. Users could repeat the sysrq key when
+> it fails. If the owner of console subsystem lock is stuck,
+> repeating the key won't work.
+> 
+> Suggested-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
+> Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: Sreenath Vijayan <sreenath.vijayan@sony.com>
+> ---
+>  Documentation/admin-guide/sysrq.rst |  9 +++++++++
+>  drivers/tty/sysrq.c                 | 13 ++++++++++++-
+>  2 files changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
+> index 2f2e5bd440f9..a85b3384d1e7 100644
+> --- a/Documentation/admin-guide/sysrq.rst
+> +++ b/Documentation/admin-guide/sysrq.rst
+> @@ -161,6 +161,8 @@ Command	    Function
+>              will be printed to your console. (``0``, for example would make
+>              it so that only emergency messages like PANICs or OOPSes would
+>              make it to your console.)
+> +
+> +``R``	    Replay the kernel log messages on consoles.
+>  =========== ===================================================================
+>  
+>  Okay, so what can I use them for?
+> @@ -211,6 +213,13 @@ processes.
+>  "just thaw ``it(j)``" is useful if your system becomes unresponsive due to a
+>  frozen (probably root) filesystem via the FIFREEZE ioctl.
+>  
+> +``Replay logs(R)`` is useful to view the kernel log messages when system is hung
+> +or you are not able to use dmesg command to view the messages in printk buffer.
+> +User may have to press the key combination multiple times if console system is
+> +busy. If it is completely locked up, then messages won't be printed. Output
+> +messages depend on current console loglevel, which can be modified using
+> +sysrq[0-9] (see above).
+> +
+>  Sometimes SysRq seems to get 'stuck' after using it, what can I do?
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index 02217e3c916b..e5974b8239c9 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -450,6 +450,17 @@ static const struct sysrq_key_op sysrq_unrt_op = {
+>  	.enable_mask	= SYSRQ_ENABLE_RTNICE,
+>  };
+>  
+> +static void sysrq_handle_replay_logs(u8 key)
+> +{
+> +	console_replay_all();
+> +}
+> +static struct sysrq_key_op sysrq_replay_logs_op = {
+> +	.handler        = sysrq_handle_replay_logs,
+> +	.help_msg       = "replay-kernel-logs(R)",
+> +	.action_msg     = "Replay kernel logs on consoles",
+> +	.enable_mask    = SYSRQ_ENABLE_DUMP,
+> +};
+> +
+>  /* Key Operations table and lock */
+>  static DEFINE_SPINLOCK(sysrq_key_table_lock);
+>  
+> @@ -519,7 +530,7 @@ static const struct sysrq_key_op *sysrq_key_table[62] = {
+>  	NULL,				/* O */
+>  	NULL,				/* P */
+>  	NULL,				/* Q */
+> -	NULL,				/* R */
+> +	&sysrq_replay_logs_op,		/* R */
+>  	NULL,				/* S */
+>  	NULL,				/* T */
+>  	NULL,				/* U */
+> -- 
+> 2.25.1
+> 
 
-Signed-off-by: Markus Burri <markus.burri@mt.com>
----
- .../devicetree/bindings/rtc/nxp,pcf2127.yaml  |  3 +++
- drivers/rtc/rtc-pcf2127.c                     | 22 +++++++++++++++++++
- 2 files changed, 25 insertions(+)
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-index 2d9fe5a75b06..5ce0ca6dcedc 100644
---- a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-+++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-@@ -30,6 +30,9 @@ properties:
- 
-   reset-source: true
- 
-+  pwrmng-function:
-+    description: Set power management function for PCF2131
-+
- required:
-   - compatible
-   - reg
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index 9c04c4e1a49c..30d56538c11e 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -48,6 +48,7 @@
- #define PCF2127_BIT_CTRL3_BLF			BIT(2)
- #define PCF2127_BIT_CTRL3_BF			BIT(3)
- #define PCF2127_BIT_CTRL3_BTSE			BIT(4)
-+#define PCF2131_BIT_CTRL3_PWRMNG_MASK   GENMASK(7, 5)
- /* Time and date registers */
- #define PCF2127_REG_TIME_BASE		0x03
- #define PCF2127_BIT_SC_OSF			BIT(7)
-@@ -187,6 +188,7 @@ struct pcf21xx_config {
- 	unsigned int has_bit_wd_ctl_cd0:1;
- 	unsigned int wd_val_reg_readable:1; /* If watchdog value register can be read. */
- 	unsigned int has_int_a_b:1; /* PCF2131 supports two interrupt outputs. */
-+	unsigned int has_pwrmng:1; /* PCF2131 supports power management. */
- 	u8 reg_time_base; /* Time/date base register. */
- 	u8 regs_alarm_base; /* Alarm function base registers. */
- 	u8 reg_wd_ctl; /* Watchdog control register. */
-@@ -926,6 +928,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
- 		.has_bit_wd_ctl_cd0 = 1,
- 		.wd_val_reg_readable = 1,
- 		.has_int_a_b = 0,
-+		.has_pwrmng = 0,
- 		.reg_time_base = PCF2127_REG_TIME_BASE,
- 		.regs_alarm_base = PCF2127_REG_ALARM_BASE,
- 		.reg_wd_ctl = PCF2127_REG_WD_CTL,
-@@ -954,6 +957,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
- 		.has_bit_wd_ctl_cd0 = 0,
- 		.wd_val_reg_readable = 1,
- 		.has_int_a_b = 0,
-+		.has_pwrmng = 0,
- 		.reg_time_base = PCF2127_REG_TIME_BASE,
- 		.regs_alarm_base = PCF2127_REG_ALARM_BASE,
- 		.reg_wd_ctl = PCF2127_REG_WD_CTL,
-@@ -982,6 +986,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
- 		.has_bit_wd_ctl_cd0 = 0,
- 		.wd_val_reg_readable = 0,
- 		.has_int_a_b = 1,
-+		.has_pwrmng = 1,
- 		.reg_time_base = PCF2131_REG_TIME_BASE,
- 		.regs_alarm_base = PCF2131_REG_ALARM_BASE,
- 		.reg_wd_ctl = PCF2131_REG_WD_CTL,
-@@ -1241,6 +1246,23 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
- 		return ret;
- 	}
- 
-+	if (pcf2127->cfg->has_pwrmng) {
-+		uint32_t pwrmng;
-+		if (!device_property_read_u32(dev, "pwrmng-function", &pwrmng)) {
-+			if (!FIELD_FIT(PCF2131_BIT_CTRL3_PWRMNG_MASK, pwrmng)) {
-+				dev_err(dev, "invalid power management function\n");
-+				return ret;
-+			}
-+			ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL3,
-+						 PCF2131_BIT_CTRL3_PWRMNG_MASK,
-+						 FIELD_PREP(PCF2131_BIT_CTRL3_PWRMNG_MASK, pwrmng));
-+			if (ret) {
-+				dev_err(dev, "%s: pwrmng (ctrl3) failed\n",	__func__);
-+				return ret;
-+			}
-+		}
-+	}
-+
- 	/*
- 	 * Enable timestamp functions 1 to 4.
- 	 */
--- 
-2.39.2
+Kindly let me know if there are any review comments for the above changes.
 
+Regards,
+Sreenath
 
