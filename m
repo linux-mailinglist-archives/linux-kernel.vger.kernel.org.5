@@ -1,129 +1,223 @@
-Return-Path: <linux-kernel+bounces-134792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A29D89B6F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:31:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82BEF89B6FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:38:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9876F1F21AE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:31:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72D10B20FF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CA222091;
-	Mon,  8 Apr 2024 04:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6FB6FB9;
+	Mon,  8 Apr 2024 04:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yQXgrV+e"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t57GBb19"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93F68475
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 04:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B2F63AE;
+	Mon,  8 Apr 2024 04:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712550659; cv=none; b=NmfUGXXQJ6dtGtUpfuf4lYBjrMeDxUZc2PslaXTtb+RKL4pCcxf3DVz8mN6wQEtGLn26opaDfw8yj6MSwCzlwCBDo6qvAfoQkco2NHii3c7jkgHoYGvaPv+MLmN+47N+i1Ig8DHOU324sVA73hZmSN7BLE38Y59KwUJ8DrzA5BQ=
+	t=1712551129; cv=none; b=rLDdvNaajz6L5pp9bjXzHhY7H/rqHD/uU0yhw4SQTlukKpKadOCTKcIymeAtkd6YJtj/Fdfnxn+AvRQ3JqVJDunEDFWMaoDNJ1aum4l2BOS6MkP2BmqYMgWtYNZ+Vfr8w7dfgYUqGVG99aTVttS0Z0TnL4hGxQsFBLB4dVAtPRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712550659; c=relaxed/simple;
-	bh=OFNjqXgDmhJBCTwEy8oCd/Fyq6JPLE6X9Ia9XrIuJs4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SBRWZMoW7l9eE4BPNkj8S+IF6qLQXDZzQXBuHsmx2xA7Otkfj04aw8XsNBKXqsq7M385RsJLp0eSNJ7EXZjI4kIQRGowVQhBfU6Tt8xC4pBLHUPqdYHUujlszKvl2naDqrkJ/PN0tLsI1gxOh/Wtbya3C+JVDEdAaZY4hZdOcDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yQXgrV+e; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d16db927so3989160e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 21:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712550656; x=1713155456; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DdS/iAbBxLLUZl8me/kS3vqa9hXzOuPdZZo0B9BMFVE=;
-        b=yQXgrV+epafKe1hURc+6Q2r/2o5kntlDvrTEH3kWs6JcxakTMFbRsbd3lrRvO0pYVy
-         zi+XOrgSN82fnAIVF8iJ8lXQnq89Pu/m3on220dn1gHN4VFgI+uitsmnX4E+gz1IYXCJ
-         snmoXqfqOtF/PRSZCTvjKHcfETs5GnJWtU6rxxzZRKiumrQZr4vPr1J/PtzAEIh6N36+
-         xJ7rcmqaiX/fvvv5RbOtsSpED5hlCcKymaeRClUJT2lPwzAICAu5aTAkkvEfWBnT06b4
-         DddpTBYmgqIjAFD6tke6raC6eGNL1XhqgizPVnSmyK/ZgkhkxA0pAbH2YYVLyNTHUJPo
-         3+mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712550656; x=1713155456;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DdS/iAbBxLLUZl8me/kS3vqa9hXzOuPdZZo0B9BMFVE=;
-        b=gF3/luiEnQOltHCqTY5rS03zDA+TSSbpWvbsDzggjQCeL9qVA3HsxmHekKdCgq8Oy3
-         mSDCrQccxXexabxhye8DndIUcoSKfOe0wel+rRU1X406zY33YQGfCkiUUA+S1+LS0exS
-         BeBU2Uzv1vxy4s9jlofrzfK9eQomXxuWxnl04AQtIS8pnXYhkejdYzKjwLiEKfR5FNyg
-         Xq+cWBNju+WhJYmWri2boW2dyVb+YCnfRXVizh44YniCozqgiZL9O9bU+lPLlCF8H9kX
-         4fzHzq+10q0PWkm1ifZoy/UVwxf5WbXLUB6okwrBM7b1IkPVrhxkoUCRpjdRLmShqlRJ
-         IVsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRp4yOBM/PV5D/HhY4XaH5JQE9J27HL17217ovZuq+aoNQb/qsAvaJv1QMT/k1s9T4Uxyqn7J2sXTqt3Wb0I3AUDcduupuQmm0Ecld
-X-Gm-Message-State: AOJu0YyY670cDYR6cgSTdl3c6okWCb8Imwypjo4/eBHso/aaVT6+vI9K
-	TbXdvZUrpywKvaxHqOhZGIm2BXJs0oR59HyFfDc9n1XHcH2jA/5LAccQ0IGt9rM=
-X-Google-Smtp-Source: AGHT+IGolJn7tKx0Ibob0MCiWR5rKGe2h9hkerxCybsDQSTV08jAZ4Jp1ilgPOu7qsys6iKUMvZ1vg==
-X-Received: by 2002:a05:6512:14a:b0:516:c9a8:5ade with SMTP id m10-20020a056512014a00b00516c9a85ademr4869967lfo.22.1712550656243;
-        Sun, 07 Apr 2024 21:30:56 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id g13-20020ac2538d000000b005132f12ee7asm1033207lfh.174.2024.04.07.21.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 21:30:55 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 08 Apr 2024 07:30:53 +0300
-Subject: [PATCH 5/5] usb: typec: ucsi: glink: set orientation aware if
- supported
+	s=arc-20240116; t=1712551129; c=relaxed/simple;
+	bh=jW0HOzZx0chmSo4CS4bYPAqUuVJL9YFJVxgudK72DAk=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=njzYDA8egUimrJ+YOEWuocZBM5iKzET7tIKbPNEO/v36KcC2/kGup4jrUP/IDZ0glLeKs0SihLzqwDAPcmljj84r07jjxwwAEXHCDU4AhVFA7NBk5nMbmmJZc0nqoT96ZBCE7l9y3biGkS/S/SLGpgh1ViJ8Hu56Naugo6/ZD9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t57GBb19; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2D03C433F1;
+	Mon,  8 Apr 2024 04:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712551128;
+	bh=jW0HOzZx0chmSo4CS4bYPAqUuVJL9YFJVxgudK72DAk=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=t57GBb195OPD/sUJ2TG40eUgBFGHeRKNJpB7nX/Rhb/5ZhlKQwQe6PoqSVCqoe3jj
+	 Akusy1fvhtQUzSgWXCl9ToFI6NyHJYz2JL0Gw0I3xn1LeggAIk5dKS3DMb8W9FkgQP
+	 ZDCSGY5zUHXgb0tJlaPXjrobfjr4NuTuQVcRY7hm3yBoDd4rRWIzLNocsbnkSZP0an
+	 ukZmRSPbB4yx6aF3vB/p7kN3zzhD4qzI8P5MdKXtyCXEqbMjoGeEvWD7K8IK7zCFFB
+	 0KA8RqLjpNnqgMhUb++WlZfkC0n0cMTD6VKla/lvpgnC1jJxPF14pmCOqSUbb1LwzD
+	 i2yTElggYFz5Q==
+Message-ID: <7027a28723d2597d9f620f4e0e1da97e.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240408-ucsi-orient-aware-v1-5-95a74a163a10@linaro.org>
-References: <20240408-ucsi-orient-aware-v1-0-95a74a163a10@linaro.org>
-In-Reply-To: <20240408-ucsi-orient-aware-v1-0-95a74a163a10@linaro.org>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, linux-usb@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=899;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=OFNjqXgDmhJBCTwEy8oCd/Fyq6JPLE6X9Ia9XrIuJs4=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmE3L8yVMFuaX6oHTn7NO/hspCBjSC7aWF6DmsR
- yOlWW4CTxCJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZhNy/AAKCRCLPIo+Aiko
- 1SSCCACemQ21Bu0P55MdKeoqBVCH0prRGLInuVwcWDnQwyo+HgZGlTELmAHitNKlu1iW05uq3Di
- OB4Y/g3Dlk8j8pL7LulULIedAm5OfyQ5yihlH7zb1v73cIYscYn2cKoeDPMkReYqVn89sLFOmOd
- XaorhMzVfO3GashouK9oMTWBvWrfpPx1SWJWne2YJHWMpB49EANCgBtP7mqXpWKnQoSkCVSsgSZ
- qIP59I+SULpp6KlkhROoMmW56lp8lhAjxbPWu82pQ0mLlNgNhOj9VMBQh73s4St16xvGs3UU8lt
- 10mxv/8AJE9TKcl+Uu3DkNgZ6sgoPFMZeZ2kQKEcSiqLf5s2
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240325210025.1448717-2-cristian.marussi@arm.com>
+References: <20240325210025.1448717-1-cristian.marussi@arm.com> <20240325210025.1448717-2-cristian.marussi@arm.com>
+Subject: Re: [PATCH v2 1/5] clk: scmi: Allocate CLK operations dynamically
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com, f.fainelli@gmail.com, vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com, mturquette@baylibre.com, Cristian Marussi <cristian.marussi@arm.com>
+To: Cristian Marussi <cristian.marussi@arm.com>, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Sun, 07 Apr 2024 21:38:46 -0700
+User-Agent: alot/0.10
 
-If the PMIC-GLINK device has orientation GPIOs declared, then it will
-report connection orientation. In this case set the flag to mark
-registered ports as orientation-aware.
+Quoting Cristian Marussi (2024-03-25 14:00:21)
+> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> index 8cbe24789c24..d5d369b052bd 100644
+> --- a/drivers/clk/clk-scmi.c
+> +++ b/drivers/clk/clk-scmi.c
+> @@ -16,6 +16,14 @@
+>  #define NOT_ATOMIC     false
+>  #define ATOMIC         true
+> =20
+> +enum scmi_clk_feats {
+> +       SCMI_CLK_ATOMIC_SUPPORTED,
+> +       SCMI_CLK_MAX_FEATS
+> +};
+> +
+> +#define SCMI_MAX_CLK_OPS       (1 << SCMI_CLK_MAX_FEATS)
+> +
+> +static const struct clk_ops *clk_ops_db[SCMI_MAX_CLK_OPS];
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/usb/typec/ucsi/ucsi_glink.c | 2 ++
- 1 file changed, 2 insertions(+)
+Can it be 'scmi_clk_ops_db' for some name spacing?
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index d279e2cf9bba..87a8b5f88da4 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -378,6 +378,8 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 			return dev_err_probe(dev, PTR_ERR(desc),
- 					     "unable to acquire orientation gpio\n");
- 		ucsi->port_orientation[port] = desc;
-+
-+		ucsi->ucsi->quirks |= UCSI_ORIENTATION_AWARE;
- 	}
- 
- 	ucsi->client = devm_pmic_glink_register_client(dev,
+>  static const struct scmi_clk_proto_ops *scmi_proto_clk_ops;
+> =20
+>  struct scmi_clk {
+> @@ -230,6 +202,106 @@ static int scmi_clk_ops_init(struct device *dev, st=
+ruct scmi_clk *sclk,
+>         return ret;
+>  }
+> =20
+> +/**
+> + * scmi_clk_ops_alloc() - Alloc and configure clock operations
+> + * @dev: A device reference for devres
+> + * @feats_key: A bitmap representing the desired clk_ops capabilities.
 
--- 
-2.39.2
+Drop the period please because it's not consistent with the previous
+argument descriptor.
 
+> + *
+> + * Allocate and configure a proper set of clock operations depending on =
+the
+> + * specifically required SCMI clock features.
+> + *
+> + * Return: A pointer to the allocated and configured clk_ops on Success,
+
+Lowercase 'Success'.
+
+> +
+> +/**
+> + * scmi_clk_ops_select() - Select a proper set of clock operations
+> + * @sclk: A reference to an SCMI clock descriptor
+> + * @atomic_capable: A flag to indicate if atomic mode is supported by the
+> + *                 transport
+> + * @atomic_threshold: Platform atomic threshold value
+
+Is this in nanoseconds, microseconds, or ??? Maybe a better description is
+"clk_ops are atomic when clk enable_latency is less than X [time unit]"=20
+
+> + *
+> + * After having built a bitmap descriptor to represent the set of featur=
+es
+> + * needed by this SCMI clock, at first use it to lookup into the set of
+> + * previously allocated clk_ops to check if a suitable combination of cl=
+ock
+> + * operations was already created; when no match is found allocate a bra=
+nd new
+> + * set of clk_ops satisfying the required combination of features and sa=
+ve it
+> + * for future references.
+> + *
+> + * In this way only one set of clk_ops is ever created for each different
+> + * combination that is effectively needed.
+> + *
+> + * Return: A pointer to the allocated and configured clk_ops on Success,=
+ or
+
+Lowercase 'Success'.
+
+> + *        NULL otherwise.
+> + */
+> +static const struct clk_ops *
+> +scmi_clk_ops_select(struct scmi_clk *sclk, bool atomic_capable,
+> +                   unsigned int atomic_threshold)
+> +{
+> +       const struct scmi_clock_info *ci =3D sclk->info;
+> +       unsigned int feats_key =3D 0;
+> +       const struct clk_ops *ops;
+> +
+> +       /*
+> +        * Note that when transport is atomic but SCMI protocol did not
+> +        * specify (or support) an enable_latency associated with a
+> +        * clock, we default to use atomic operations mode.
+> +        */
+> +       if (atomic_capable && ci->enable_latency <=3D atomic_threshold)
+> +               feats_key |=3D BIT(SCMI_CLK_ATOMIC_SUPPORTED);
+> +
+
+Can we have a static_assert() here that makes sure 'feats_key' isn't
+larger than the size of clk_ops_db?
+
+	static_assert(ARRAY_SIZE(clk_ops_db) >=3D feats_key);
+
+> +       /* Lookup previously allocated ops */
+> +       ops =3D clk_ops_db[feats_key];
+> +       if (!ops) {
+> +               ops =3D scmi_clk_ops_alloc(sclk->dev, feats_key);
+> +               if (!ops)
+> +                       return NULL;
+
+This could be less nested if the first lookup is put in
+scmi_clk_ops_alloc() and the store below is folded in. Or an early
+return if found.
+
+	ops =3D clk_ops_db[feats_key];
+	if (ops)
+		return ops;
+
+	/* Didn't find one */
+	ops =3D scmi_clk_ops_alloc(...)
+	if (!ops)
+		return NULL;
+
+	clk_ops_db[feats_key] =3D ops;
+	return ops;
+	=09
+> +
+> +               /* Store new ops combinations */
+> +               clk_ops_db[feats_key] =3D ops;
+> +       }
+> +
+> +       return ops;
+> +}
+> +
+>  static int scmi_clocks_probe(struct scmi_device *sdev)
+>  {
+>         int idx, count, err;
+> @@ -285,16 +357,10 @@ static int scmi_clocks_probe(struct scmi_device *sd=
+ev)
+>                 sclk->ph =3D ph;
+>                 sclk->dev =3D dev;
+> =20
+> -               /*
+> -                * Note that when transport is atomic but SCMI protocol d=
+id not
+> -                * specify (or support) an enable_latency associated with=
+ a
+> -                * clock, we default to use atomic operations mode.
+> -                */
+> -               if (is_atomic &&
+> -                   sclk->info->enable_latency <=3D atomic_threshold)
+> -                       scmi_ops =3D &scmi_atomic_clk_ops;
+> -               else
+> -                       scmi_ops =3D &scmi_clk_ops;
+> +               scmi_ops =3D scmi_clk_ops_select(sclk, is_atomic,
+
+'is_atomic' should probably be 'transport_is_atomic' so this reads
+easier.
+
+> +                                              atomic_threshold);
+> +               if (!scmi_ops)
+> +                       return -ENOMEM;
+> =20
+>                 /* Initialize clock parent data. */
+>                 if (sclk->info->num_parents > 0) {
 
