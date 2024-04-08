@@ -1,160 +1,148 @@
-Return-Path: <linux-kernel+bounces-135505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8A989C6D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:20:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48BC89C6DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:21:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A06791C238BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:20:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65C711F23D21
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5412E12E1D6;
-	Mon,  8 Apr 2024 14:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4BB12A160;
+	Mon,  8 Apr 2024 14:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YuAljUOw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JyMQ8LnK";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kyoO6H0X"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F54912BEA0;
-	Mon,  8 Apr 2024 14:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907C612A14E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712585947; cv=none; b=TPgrV0ujlvEYoG3oqg+ZzPvE0WEAj/zSAq4eCTqCOXyCIL7HSbg9ICtRnK31/vF/SlTZJZllGkiYh5mrSUaNVbTNFDLXLbVMzMW6rVqa3ns2+vPzMGBAR/tRxky2KOFSR+bnIHNoej7VTB9Af8Xen70QFAix0WxWIZZSxw+L7Ow=
+	t=1712585973; cv=none; b=gfwh4zeNzHfFykjKafiPHwG0+MUDzra7UtgROaHtkjwo7WPEcQ39mqaDYeZ1iGzS6efCdI9ejrtsf2bNzVj4qMalF4vNeXNWi2YaWajQF/6T2iIf0DpC9eZOVcaWCFpuS32B+A/+dXrQ2mAk544bvl4A3LONNbQq+tm/FO/tsxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712585947; c=relaxed/simple;
-	bh=fCohwsfER8OLWfZl6LReGaQxXONj5RyinO1IgQBzs1s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LeIP1ZqvXdyUa/hZ7Do6hmea6oYfk45uRxEGl2DzWCH6bE2/aoBcsZMqICV4PbPOIIt/zF1EcOvsAJBKL5iiDn3J2T7HweO4YOkW9Y4A03aTB3U+84vm2KXGM/Kw9GLPk1ZF9udv/SpoBV8LYikec5YsOxV2euXrkf2WKdVXLPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YuAljUOw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB69EC41606;
-	Mon,  8 Apr 2024 14:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712585947;
-	bh=fCohwsfER8OLWfZl6LReGaQxXONj5RyinO1IgQBzs1s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YuAljUOw0VGTL6reKBytSgl0plRNv+TSjZRfD3ZKuqxOSYkzoXC5WrRi5cw+S+B+M
-	 D4nwox90lYEDvOC2kltYpVUw1dnHyUlGf0Vz9gQ+VSZQ6UY2PlnOXYtJXUxFO+DpNk
-	 45njopcwprSMB+gVFh0LkX6VN8kgR0mIB2295lbbV+KLETQgy8jgbddtYnqL+2OrFg
-	 vSHyTr4CwHU1Vo0rTAX5E99YyX7sNSwK1JC6glkOPrGKg9aBLjrx4igbUnczVMBXk5
-	 xW34dqGA0uX7ktND0DNuPaGnARMfTcEH0+2d19P/OCslQK+OlaTFr1JQ1fC4J87VDd
-	 UWSr4GruMWPXA==
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3be110bbff9so30077b6e.1;
-        Mon, 08 Apr 2024 07:19:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUWnu19PPY0u4kVmxIIQh3V/SM/BPfg0qTlHd1e4rM20PCoEN6dfWSHMDK8e2k4suvScCIAZ2gxzPYvL00HDQbYYniFMCi+YZzr5KKFTBRBzKr3m7itiKFRsotpYNLKXDVyDkcrMitWV3yS7MWyPxKMAT6ivqJgEqnY5RsSoEGzVdvj0BoSh37BKItReZWQnkC/AnFZnd0+eAZw7xASmwZnWtCH7WAvQebyD7Y/y9ASjzzIPlt/a9ipogHQXjuUVs+42A==
-X-Gm-Message-State: AOJu0Yy7ko1dqw+gs0xHuZ66keowJ/N5dPEWaommk6GVa95Bv3HM8fo3
-	feKxrZaqn9+YfMoJg740mOp+qLNWfnO9JlqRiUdqGqSJ4Nnamf4Vr/eVOiTfuC1vIpaeU+gM05A
-	+hJolD3LO6W7d/ZTTa1YcsN0opoo=
-X-Google-Smtp-Source: AGHT+IE2cd5MIHpLilsMOefxnD7lqhVeZau5m81/yoSXqMyOs4mTHwzl+84AR6mEi+xDVYbCBwtZjPGYOY8LlCssj9M=
-X-Received: by 2002:a05:6808:138e:b0:3c5:eab3:657 with SMTP id
- c14-20020a056808138e00b003c5eab30657mr5718403oiw.4.1712585945878; Mon, 08 Apr
- 2024 07:19:05 -0700 (PDT)
+	s=arc-20240116; t=1712585973; c=relaxed/simple;
+	bh=dburm2e0CH8RMC8ZTCT8ZG/KPOT3+NbIGLgwYleaQGc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=W/5HURQT1L04rUMHiosiU42Mar+R8XujDsCDr535/1wGcOQ8UylJhj0obRyItIvOUOQ6PINNX7TRezWtJL6O/HSQy+nOem2DfZczADZds5IW9xxtRG+BMcI3MOpqKdCL3iuG+P5tr12UxzwS0HU3hpg1eMl78UAW4A0ZGUotTWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JyMQ8LnK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kyoO6H0X; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712585969;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zjhyLQPDLHKrpTEkAe5cnDIyWOE69JGkyLJy181UziI=;
+	b=JyMQ8LnKeAoO5DRg2np8AeZd3nbWuoGJvoaJYJpH9Cse3j7soPQk1687SvFW06rRB64QDs
+	Zast2jMyMkAHWKIHyIEcouQ8K0ZJU17if5DGR7PHxjp0GBxuhHscy2AzbUs72HDKJJWjm+
+	Wj/qUD2xtAh6ayi+nh51UlEyrmKWLeBoXIHGYdaA/C2TMq/uGFDVH/4aliw2S9Ywa+U1Db
+	gghkg7XeLb78XZnP4phJwzYyZU5rOLJrZ7CWesOX4WFpYuPXiVBKSArBi1MpxbyKnWOi8C
+	iR439lbfOAZeVKakN8hp/VP92ev9Nn+bG61WGufql+QStaH3beca1dIH9xYJ2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712585969;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zjhyLQPDLHKrpTEkAe5cnDIyWOE69JGkyLJy181UziI=;
+	b=kyoO6H0XTyjNhhV/ui/mCn2yrgxkjTfIMs0FSIxPTuzmbkAMR0iANW7eZoRo7r2yajjqdb
+	QujbPKCrPYymZGBA==
+To: Laura Nao <laura.nao@collabora.com>
+Cc: kernel@collabora.com, laura.nao@collabora.com,
+ linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+ regressions@lists.linux.dev, x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+In-Reply-To: <20240408110605.164608-1-laura.nao@collabora.com>
+References: <87zfu46zal.ffs@tglx>
+ <20240408110605.164608-1-laura.nao@collabora.com>
+Date: Mon, 08 Apr 2024 16:19:29 +0200
+Message-ID: <87r0fg6ioe.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
-In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 8 Apr 2024 16:18:54 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jd7FegkcnJyDn61uBEdGRKHWoaQ8SKJE+JX18W0QHh1Q@mail.gmail.com>
-Message-ID: <CAJZ5v0jd7FegkcnJyDn61uBEdGRKHWoaQ8SKJE+JX18W0QHh1Q@mail.gmail.com>
-Subject: Re: [PATCH v2 00/19] ACPI: store owner from modules with acpi_bus_register_driver()
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Benson Leung <bleung@chromium.org>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, Corentin Chary <corentin.chary@gmail.com>, 
-	"Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
-	Matan Ziv-Av <matan@svgalib.org>, Mattia Dongili <malattia@linux.it>, 
-	Azael Avalos <coproscefalo@gmail.com>, Ajay Kaher <akaher@vmware.com>, 
-	Alexey Makhalov <amakhalov@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Richard Cochran <richardcochran@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>, 
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-input@vger.kernel.org, 
-	netdev@vger.kernel.org, chrome-platform@lists.linux.dev, 
-	platform-driver-x86@vger.kernel.org, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Mar 28, 2024 at 8:49=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Changes in v2:
-> - Correct input and platform/chrome subjects.
-> - Add acks.
-> - Link to v1: https://lore.kernel.org/r/20240327-b4-module-owner-acpi-v1-=
-0-725241a2d224@linaro.org
->
-> Merging
-> =3D=3D=3D=3D=3D=3D=3D
-> All further patches depend on the first amba patch, therefore one way is
-> to ack and take it via one tree, e.g. ACPI.
->
-> Description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Modules registering driver with acpi_bus_register_driver() often forget t=
-o
-> set .owner field.
->
-> Solve the problem by moving this task away from the drivers to the core
-> amba bus code, just like we did for platform_driver in commit
-> 9447057eaff8 ("platform_device: use a macro instead of
-> platform_driver_register").
->
-> Best regards,
-> Krzysztof
->
-> ---
-> Krzysztof Kozlowski (19):
->       ACPI: store owner from modules with acpi_bus_register_driver()
->       Input: atlas - drop owner assignment
->       net: fjes: drop owner assignment
->       platform/chrome: wilco_ec: drop owner assignment
->       platform: asus-laptop: drop owner assignment
->       platform: classmate-laptop: drop owner assignment
->       platform/x86/dell: drop owner assignment
->       platform/x86/eeepc: drop owner assignment
->       platform/x86/intel/rst: drop owner assignment
->       platform/x86/intel/smartconnect: drop owner assignment
->       platform/x86/lg-laptop: drop owner assignment
->       platform/x86/sony-laptop: drop owner assignment
->       platform/x86/toshiba_acpi: drop owner assignment
->       platform/x86/toshiba_bluetooth: drop owner assignment
->       platform/x86/toshiba_haps: drop owner assignment
->       platform/x86/wireless-hotkey: drop owner assignment
->       ptp: vmw: drop owner assignment
->       virt: vmgenid: drop owner assignment
->       ACPI: drop redundant owner from acpi_driver
->
->  drivers/acpi/bus.c                        | 9 +++++----
->  drivers/input/misc/atlas_btns.c           | 1 -
->  drivers/net/fjes/fjes_main.c              | 1 -
->  drivers/platform/chrome/wilco_ec/event.c  | 1 -
->  drivers/platform/x86/asus-laptop.c        | 1 -
->  drivers/platform/x86/classmate-laptop.c   | 5 -----
->  drivers/platform/x86/dell/dell-rbtn.c     | 1 -
->  drivers/platform/x86/eeepc-laptop.c       | 1 -
->  drivers/platform/x86/intel/rst.c          | 1 -
->  drivers/platform/x86/intel/smartconnect.c | 1 -
->  drivers/platform/x86/lg-laptop.c          | 1 -
->  drivers/platform/x86/sony-laptop.c        | 2 --
->  drivers/platform/x86/toshiba_acpi.c       | 1 -
->  drivers/platform/x86/toshiba_bluetooth.c  | 1 -
->  drivers/platform/x86/toshiba_haps.c       | 1 -
->  drivers/platform/x86/wireless-hotkey.c    | 1 -
->  drivers/ptp/ptp_vmw.c                     | 1 -
->  drivers/virt/vmgenid.c                    | 1 -
->  include/acpi/acpi_bus.h                   | 8 ++++++--
->  19 files changed, 11 insertions(+), 28 deletions(-)
-> ---
+Laura!
 
-Whole series applied as 6.10 material, thanks!
+On Mon, Apr 08 2024 at 13:06, Laura Nao wrote:
+> Just tried that and it doesn't boot, nothing on the serial console (I
+> kept earlyprintk=ttyS0,115200 in the cmdline).
+
+Thanks for trying. Now let's take a small step back.
+
+Please reset the tree to:
+
+      ace278e7eca6 ("x86/smpboot: Teach it about topo.amd_node_id")
+
+That's the commit right before switching over and according to your
+bisect it works. Now apply the patch below, which just runs the new
+topology scan function but discards the result.
+
+Thanks,
+
+        tglx
+---
+--- a/arch/x86/kernel/cpu/topology_amd.c
++++ b/arch/x86/kernel/cpu/topology_amd.c
+@@ -29,7 +29,17 @@ static bool parse_8000_0008(struct topo_
+ 	if (!sft)
+ 		sft = get_count_order(ecx.cpu_nthreads + 1);
+ 
+-	topology_set_dom(tscan, TOPO_SMT_DOMAIN, sft, ecx.cpu_nthreads + 1);
++	/*
++	 * cpu_nthreads describes the number of threads in the package
++	 * sft is the number of APIC ID bits per package
++	 *
++	 * As the number of actual threads per core is not described in
++	 * this leaf, just set the CORE domain shift and let the later
++	 * parsers set SMT shift. Assume one thread per core by default
++	 * which is correct if there are no other CPUID leafs to parse.
++	 */
++	topology_update_dom(tscan, TOPO_SMT_DOMAIN, 0, 1);
++	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.cpu_nthreads + 1);
+ 	return true;
+ }
+ 
+@@ -73,12 +83,14 @@ static bool parse_8000_001e(struct topo_
+ 	tscan->c->topo.initial_apicid = leaf.ext_apic_id;
+ 
+ 	/*
+-	 * If leaf 0xb is available, then SMT shift is set already. If not
+-	 * take it from ecx.threads_per_core and use topo_update_dom() -
+-	 * topology_set_dom() would propagate and overwrite the already
+-	 * propagated CORE level.
++	 * If leaf 0xb is available, then the domain shifts are set
++	 * already and nothing to do here.
+ 	 */
+ 	if (!has_0xb) {
++		/*
++		 * Leaf 0x80000008 set the CORE domain shift already.
++		 * Update the SMT domain, but do not propagate it.
++		 */
+ 		unsigned int nthreads = leaf.core_nthreads + 1;
+ 
+ 		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(nthreads), nthreads);
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -133,6 +133,10 @@ static void parse_topology(struct topo_s
+ 	tscan->ebx1_nproc_shift = get_count_order(ebx.nproc);
+ 
+ 	switch (c->x86_vendor) {
++	case X86_VENDOR_AMD:
++		if (IS_ENABLED(CONFIG_CPU_SUP_AMD))
++			cpu_parse_topology_amd(tscan);
++		break;
+ 	case X86_VENDOR_CENTAUR:
+ 	case X86_VENDOR_ZHAOXIN:
+ 		parse_legacy(tscan);
+
+
 
