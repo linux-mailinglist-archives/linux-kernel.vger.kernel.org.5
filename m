@@ -1,273 +1,170 @@
-Return-Path: <linux-kernel+bounces-134959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D9B89B95B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:54:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 714C689B95D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41051F210B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:54:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 234EE283EE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0279939FF7;
-	Mon,  8 Apr 2024 07:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C63D3BB2A;
+	Mon,  8 Apr 2024 07:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eN59EnXi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="1ZHkJbeT"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6588938FB9
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C723BB3D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562593; cv=none; b=mkuVRXGNtOsI5tMDPkwKMYtL0N4z/EwJb/HBhxTMLIiMweGRPQDHLwvUJj7GeRk7WspSdud6dVASuUSVucDHgpCA5QJuQAg06XynjD+ds2iOAyAt6hjoeqZoJswJDl5ittaLFG+CQVEnsFrHs3TlGMSF4JPkteYvDNbwohseYno=
+	t=1712562605; cv=none; b=sbfdWStH6ad3SUUeOYPsBcTdmP9fPx7OZ8Pxu3zkkQ2qgsrXfri+JEocwsoLlDEnssxtenqpociyxnrW0NiyYzeOQ8Dg57s9SWJhMksWuGDD4jZskafWgYPkyOEt125OLGuDlZtXO8r2yTZvi+3W1zDehSpIVf8YDlBZ2lFX1hE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562593; c=relaxed/simple;
-	bh=pdp/S8GTrXp2ZC8n08X2Md+cKastPnDMaOhZ5lzlE8s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=md44TxVMduniP6IyMrreqQ8qikgty+He3J89ukKtjp6n6N29mfqKKrh3mh4uYW3VOgEjtpt+EpdtpaFXpODGQeeg0jIEbBr4V02lSRaZ9DWx96ORL1TXP1KAPq86WDfrDfUe4vz/fPwGqcbqlGUKccwsVhhQDxAdX/CpO/BoEDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eN59EnXi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712562590;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZPb4MvLUOw0ybExZV1Ke1HqJAXEtECafnVx4HaE49Bw=;
-	b=eN59EnXiQx8SToRrE8uB3z2nhDpWVn45PeXGsE/XUcQ0JPDL6ao4LzPoLy7bMGQ/Ws6y+G
-	ZLTl2oCDFAJNAEqscNDWrzk/7zVFCN+ArTCCJglW6HvupMIqih+OSFPK1Y67iV5LrWbs2u
-	AzEi0aLpM4ZUhghwa0QTkHVz2CBkYgQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-4GA4bLbuNYulL4ISHw1iwg-1; Mon, 08 Apr 2024 03:49:48 -0400
-X-MC-Unique: 4GA4bLbuNYulL4ISHw1iwg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a5198c1a6f4so194574366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:49:48 -0700 (PDT)
+	s=arc-20240116; t=1712562605; c=relaxed/simple;
+	bh=62vWMyM9ah8wOO+7CU7SyM0WhITWK9lt/sA4APfNOvo=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=En9+qNsom2/4tJMcxJwMFHVBlAQJAbdtwD36pD9ZCFz7ubi3sU2ZfnkciRdK5HSjs0iqetTdtK2sohQZx4vtrF8PEq8OhJvXX3lcS4l6YBSTU3Sw9dQZOFMQqwC1VbiDGIKdmIZiAtpVZSqM7E1GJNAaAZqSpT401KjW3VSYCb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=1ZHkJbeT; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e509baddaso772051a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1712562601; x=1713167401; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KfgzFQr5Wn5nGNjOjmePsm1TRI//Puj9xojQkt54LHE=;
+        b=1ZHkJbeTpAz+gh+CUHHOfINR/SX3pJAR9hMbB3wxyRUDRunYDfG5g+qzkRZouNpLqk
+         aTF1FfFqY8BKsi2XpEnNPnJ6x2+CV+yLBlbY3xd1v2peLrEuGRKa0l7FNdUwuCdnFq4c
+         /H4p479Zf+MLLQRzbBDDQvI67NAYI4Po7SGL3i7haDNQyck77d2+j5cNiHzA1rN6sGi4
+         akb2fHCVe2nSgsABZJIWiu+Q0W43T0UWPE1ysyMTji2NAUUqGt+D5t+/N6Dm/HJmpR/I
+         enscToTqvko6SQtq9IegujD9dIiX6JybwwlQCXpivGQOTCySGKZhuqEqiNyINuwpkadA
+         NJZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712562588; x=1713167388;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPb4MvLUOw0ybExZV1Ke1HqJAXEtECafnVx4HaE49Bw=;
-        b=aUBgcMg7qz2V5iew/WXBoIMV1sfmCIpxXaoySgfhjXXUjbzq5t/ENT45YM2y4+Qf//
-         fIjux3dBlsohPIZXNc1CI7W9DfvFVZm3Q8WWi5kQrAUTGfqid365Fw/KibajWaAQlmDD
-         FOoi3i7UFwxgzgWuh3G8QLxGZ0K3CtnnlgVq0QcaHR3wxlqRMqEBj5ZkKK3t9kF5tKoB
-         Tg14BVZvWi+Dz6IUlaLRQDzhPuHq+Emo7vD1/VNoN3vjm9tAtInkRopgpgExCkBxMcUf
-         x7NxQfcytPn/VXr75mC3r/wXecrx9H0Hk4Q1dq17nRoKN8HDCbGmHyThFXclSweRxe4w
-         piBw==
-X-Forwarded-Encrypted: i=1; AJvYcCVE7BJn9uZtt2AXONA/h89wXfaqGw3CekAx5jXLz/QKBfOJkkSSArVAKdoOVEpmWB/GfKHhXSNzMqEUMhYEOds8GsRsXzk2bDn0/dAe
-X-Gm-Message-State: AOJu0Yy7krptT6BCCBTclbqp31TGopGmlOti+jZIF9ivFB4GqVa22ihp
-	XIbzNuCMoyQPFA2dflnCyWBaZV8OrhgMD4x/ArhsWXndWYiLfnEVlrgd97KZvVgnKT7AZBOiqSZ
-	P2FQc8AsuHACHv84RmxlfStDZUB9F9BDf5txVmM51cT38vFNTJF1LwW8tK9fEuw==
-X-Received: by 2002:a17:907:31c9:b0:a51:ddc6:edc1 with SMTP id xf9-20020a17090731c900b00a51ddc6edc1mr602313ejb.28.1712562587771;
-        Mon, 08 Apr 2024 00:49:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEgOWLDn5yru8pvspLB9zoJuHB1EBRYuc3ghKmJuv14iqTtLuHSwCTMepoQBWEwYt3BJrgfUQ==
-X-Received: by 2002:a17:907:31c9:b0:a51:ddc6:edc1 with SMTP id xf9-20020a17090731c900b00a51ddc6edc1mr602300ejb.28.1712562587383;
-        Mon, 08 Apr 2024 00:49:47 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id jy15-20020a170907762f00b00a4e26570581sm4102467ejc.108.2024.04.08.00.49.46
+        d=1e100.net; s=20230601; t=1712562601; x=1713167401;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KfgzFQr5Wn5nGNjOjmePsm1TRI//Puj9xojQkt54LHE=;
+        b=EeZyADC8EX+N5i89N860+uTBuS5iuprB5JQjcCcw0I+9rHvk1YE8ckq+wN3+rxRf8R
+         RNQjHc6Ppx8EEpadr23kx7zAosG0bDADo0IXFNNQBwhokksLNoOxUc207dKfo2+6tDmv
+         kfFGS2sthHoWN92VI5SrgofkAgm3c43KRV1r6UnPZu7bPCl094whWo8jaKLiDxfOaJ1Z
+         AG4Cy+ieqsaO/chOHFmPKQGsNa+DqOSYRZ7nVmur0FHqRhDIjzaBAocUs9v6v3murgjM
+         22Y/14jyYMKXkHI8CPRRgod8ckzT7/olSIPxt66bM4+bfqBKJUEB5TYrw8wAOiv7Dufy
+         jTbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpYZjrZ0RkdRoLqn+akcvyod3IU3fTbR98IUExSfGVTlQmxMvNWTfuRBJ7FhsuypX31WZb/+96qdGLDyygUI8ncLGchsm5OwYdaOZg
+X-Gm-Message-State: AOJu0Yzp+nMD0fyds7QitbqkcoVdK/75z7aLy/c0CYXMayjNIwi07Lzb
+	wH7j5hUUk1RnX8e7Y6zDNpm75aLCbnF+MST6CvzvqD/P+N9pVXSpwYmrqMSyzZY=
+X-Google-Smtp-Source: AGHT+IFJUfdSA6v/lBANNp6iDa2JuX8w0cZ5BpDfKTm0N9EV+TTWcWipmjmt3PpztCVgiHFVkU3nzA==
+X-Received: by 2002:a17:906:ac7:b0:a4e:5a23:24d with SMTP id z7-20020a1709060ac700b00a4e5a23024dmr5000388ejf.38.1712562601498;
+        Mon, 08 Apr 2024 00:50:01 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id lx26-20020a170906af1a00b00a4e440989f5sm4079452ejb.159.2024.04.08.00.50.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:49:47 -0700 (PDT)
-Message-ID: <0a05cadf-562d-4516-86bb-51afacb7e167@redhat.com>
-Date: Mon, 8 Apr 2024 09:49:46 +0200
+        Mon, 08 Apr 2024 00:50:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: quickstart: Fix race condition when
- reporting input event
-To: Armin Wolf <W_Armin@gmx.de>, ilpo.jarvinen@linux.intel.com
-Cc: rafael@kernel.org, linux-acpi@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240327214524.123935-1-W_Armin@gmx.de>
- <f662fab0-0f47-4b71-ab71-2b9492253483@gmx.de>
- <b5d808fd-f9c4-48d5-b888-c4ded4b0cad6@redhat.com>
- <2cbad5c6-8c70-45dd-8281-3bbffb4e8daf@gmx.de>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <2cbad5c6-8c70-45dd-8281-3bbffb4e8daf@gmx.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Mon, 08 Apr 2024 09:50:00 +0200
+Message-Id: <D0EKRXT8JJCG.DJW8LMIPMWX5@fairphone.com>
+To: "Luca Weiss" <luca.weiss@fairphone.com>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@linaro.org>
+Cc: "Bjorn Andersson" <andersson@kernel.org>, "Konrad Dybcio"
+ <konrad.dybcio@linaro.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] arm64: dts: qcom: add USB-C orientation GPIOs
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+X-Mailer: aerc 0.15.2
+References: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
+ <D0EJR77G6HF0.2LUJ3XY1YFG65@fairphone.com>
+ <CAA8EJpqUz8anQ9V_Ht67DMrMXw49u9R01mHKDMxnGf-UpXrrUw@mail.gmail.com>
+ <D0EJTA1YFZRW.3LWBWJC0QYQ62@fairphone.com>
+In-Reply-To: <D0EJTA1YFZRW.3LWBWJC0QYQ62@fairphone.com>
 
-Hi,
+On Mon Apr 8, 2024 at 9:04 AM CEST, Luca Weiss wrote:
+> On Mon Apr 8, 2024 at 9:03 AM CEST, Dmitry Baryshkov wrote:
+> > On Mon, 8 Apr 2024 at 10:02, Luca Weiss <luca.weiss@fairphone.com> wrot=
+e:
+> > >
+> > > On Mon Apr 8, 2024 at 4:33 AM CEST, Dmitry Baryshkov wrote:
+> > > > Populate orientation GPIOs for some of the PMIC-GLINK-based devices=
+.
+> > > > This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP C=
+RD
+> > > > without the orientation GPIOs declared.
+> > >
+> > > Hi Dmitry,
+> > >
+> > > How would I find this GPIO on the schematics, or downstream devicetre=
+e?
+> > > I scanned over some relevant areas but nothing jumped out at me excep=
+t
+> > > for the USB_PHY_PS signal coming from PM7250B CC_OUT and going into
+> > > GPIO_140 of the QCM6490 - but I'm guessing this is something else?
+> >
+> > It is exactly that GPIO.
+>
+> Great, thanks! The PM7250B datasheet and my limited USB-C knowledge
+> didn't help me there much ;)
+>
+> I'll send a patch to add it.
 
-On 4/8/24 8:01 AM, Armin Wolf wrote:
-> Am 07.04.24 um 17:32 schrieb Hans de Goede:
-> 
->> Hi,
->>
->> On 4/6/24 8:57 PM, Armin Wolf wrote:
->>> Am 27.03.24 um 22:45 schrieb Armin Wolf:
->>>
->>>> Since commit e2ffcda16290 ("ACPI: OSL: Allow Notify () handlers to run
->>>> on all CPUs"), the ACPI core allows multiple notify calls to be active
->>>> at the same time. This means that two instances of quickstart_notify()
->>>> running at the same time can mess which each others input sequences.
->>>>
->>>> Fix this by protecting the input sequence with a mutex.
->>>>
->>>> Compile-tested only.
->>> Any thoughts on this?
->> I wonder if we need this at all ?
->>
->> The input_event() / input_report_key() / input_sync() functions
->> which underpin sparse_keymap_report_event() all are safe to be called
->> from multiple threads at the same time AFAIK.
->>
->> The only thing which can then still go "wrong" if we have
->> 2 sparse_keymap_report_event() functions racing for the same
->> quickstart button and thus for the same keycode is that we may
->> end up with:
->>
->> input_report_key(dev, keycode, 1);
->> input_report_key(dev, keycode, 1); /* This is a no-op */
->> input_sync(); /* + another input_sync() somewhere which is a no-op */
->> input_report_key(dev, keycode, 0);
->> input_report_key(dev, keycode, 0); /* This is a no-op */
->> input_sync(); /* + another input_sync() somewhere which is a no-op */
->>
->> IOW if 2 racing notifiers hit the perfect race conditions then
->> only 1 key press is reported, instead of 2 which seems like
->> it is not a problem since arguably if the same event gets
->> reported twice at the exact same time it probably really
->> is only a single button press.
->>
->> Also I think it is highly unlikely we will actually see
->> 2 notifiers for this racing in practice.
->>
->> So I don't think we need this at all. But if others feel strongly
->> about adding this I can still merge it... ?
->>
->> Regards,
->>
->> Hans
-> 
-> Hi,
-> 
-> the locking issue was originally brought up by Ilpo Jarvinen during the review of the lenovo-wmi-camera driver.
-> Also the race condition can cause an invalid input sequence to be emitted:
-> 
-> input_report_key(dev, keycode, 1);
-> input_sync();
-> input_report_key(dev, keycode, 0);    // Possible invalid sequence?
-> input_report_key(dev, keycode, 1);
-> input_sync();
-> input_sync();
-> input_report_key(dev, keycode, 0);
-> input_sync();
-> 
-> 
-> I think this input sequence would be invalid, so we need the locking.
+One thing I've noticed now is that the dt schema currently explicitly
+disallows orientation-gpios for anything that's not sm8450, sm8550 or
+x1e80100.
 
-The:
+  arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dtb: pmic-glink: orientati=
+on-gpios: False schema does not allow [[84, 140, 0]]
+          from schema $id: http://devicetree.org/schemas/soc/qcom/qcom,pmic=
+-glink.yaml#
 
-input_report_key(dev, keycode, 0);    // Possible invalid sequence?
-input_report_key(dev, keycode, 1);
-input_sync();
+So I'd think also this series will cause some extra validation errors if
+the schema is not adjusted? Are you planning to do that?
 
-Part is equivalent of:
+Regards
+Luca
 
-input_report_key(dev, keycode, 1);
-input_sync();
-
-Since there is no sync() after the release event it will
-never reach userspace.
-
-With that said, I'm still happy to merge this if you
-prefer to have the locking in place.
-
-Either way please let me know how you want to proceed.
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> Thanks,
-> Armin Wolf
-> 
->>>> Fixes: afd66f2a739e ("platform/x86: Add ACPI quickstart button (PNP0C32) driver")
->>>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->>>> ---
->>>> This applies on the branch "review-hans". Maybe we could somehow
->>>> document the concurrency rules for ACPI notify handlers?
->>>> ---
->>>>    drivers/platform/x86/quickstart.c | 17 +++++++++++++++++
->>>>    1 file changed, 17 insertions(+)
->>>>
->>>> diff --git a/drivers/platform/x86/quickstart.c b/drivers/platform/x86/quickstart.c
->>>> index ba3a7a25dda7..e40f852d42c1 100644
->>>> --- a/drivers/platform/x86/quickstart.c
->>>> +++ b/drivers/platform/x86/quickstart.c
->>>> @@ -18,6 +18,7 @@
->>>>    #include <linux/input/sparse-keymap.h>
->>>>    #include <linux/kernel.h>
->>>>    #include <linux/module.h>
->>>> +#include <linux/mutex.h>
->>>>    #include <linux/platform_device.h>
->>>>    #include <linux/sysfs.h>
->>>>    #include <linux/types.h>
->>>> @@ -35,6 +36,7 @@
->>>>
->>>>    struct quickstart_data {
->>>>        struct device *dev;
->>>> +    struct mutex input_lock;    /* Protects input sequence during notify */
->>>>        struct input_dev *input_device;
->>>>        char input_name[32];
->>>>        char phys[32];
->>>> @@ -73,7 +75,10 @@ static void quickstart_notify(acpi_handle handle, u32 event, void *context)
->>>>
->>>>        switch (event) {
->>>>        case QUICKSTART_EVENT_RUNTIME:
->>>> +        mutex_lock(&data->input_lock);
->>>>            sparse_keymap_report_event(data->input_device, 0x1, 1, true);
->>>> +        mutex_unlock(&data->input_lock);
->>>> +
->>>>            acpi_bus_generate_netlink_event(DRIVER_NAME, dev_name(data->dev), event, 0);
->>>>            break;
->>>>        default:
->>>> @@ -147,6 +152,13 @@ static void quickstart_notify_remove(void *context)
->>>>        acpi_remove_notify_handler(handle, ACPI_DEVICE_NOTIFY, quickstart_notify);
->>>>    }
->>>>
->>>> +static void quickstart_mutex_destroy(void *data)
->>>> +{
->>>> +    struct mutex *lock = data;
->>>> +
->>>> +    mutex_destroy(lock);
->>>> +}
->>>> +
->>>>    static int quickstart_probe(struct platform_device *pdev)
->>>>    {
->>>>        struct quickstart_data *data;
->>>> @@ -165,6 +177,11 @@ static int quickstart_probe(struct platform_device *pdev)
->>>>        data->dev = &pdev->dev;
->>>>        dev_set_drvdata(&pdev->dev, data);
->>>>
->>>> +    mutex_init(&data->input_lock);
->>>> +    ret = devm_add_action_or_reset(&pdev->dev, quickstart_mutex_destroy, &data->input_lock);
->>>> +    if (ret < 0)
->>>> +        return ret;
->>>> +
->>>>        /* We have to initialize the device wakeup before evaluating GHID because
->>>>         * doing so will notify the device if the button was used to wake the machine
->>>>         * from S5.
->>>> -- 
->>>> 2.39.2
->>>>
->>>>
->>
-> 
+>
+> Regards
+> Luca
+>
+> >
+> > >
+> > > Regards
+> > > Luca
+> > >
+> > > >
+> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > ---
+> > > > Dmitry Baryshkov (4):
+> > > >       arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
+> > > >       arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
+> > > >       arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C or=
+ientation GPIOs
+> > > >       arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientati=
+on GPIOs
+> > > >
+> > > >  arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        | 2 ++
+> > > >  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 ++
+> > > >  arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    | 1 +
+> > > >  arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    | 1 +
+> > > >  4 files changed, 6 insertions(+)
+> > > > ---
+> > > > base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+> > > > change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
+> > > >
+> > > > Best regards,
+> > >
 
 
