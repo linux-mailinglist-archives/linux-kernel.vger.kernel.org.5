@@ -1,73 +1,79 @@
-Return-Path: <linux-kernel+bounces-134932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A3089B8FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:47:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D574E89B901
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:47:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18781F21E95
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:47:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049ED1C22324
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA6947794;
-	Mon,  8 Apr 2024 07:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EFD2CCA3;
+	Mon,  8 Apr 2024 07:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="KTNsGiGU"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iccnmVH6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9064595C
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67BF481BB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562248; cv=none; b=IToFAdZGTM/2MsohL/wcKmDAs26e13Y8K3DLgu/wOT28yyBQJtW+yKloi4fhJeXz5ToYNJCvhpbY5NzC/i2TTNVKs2ZFx0tZEuNNDMPvLlwu6u4kCmH36U1dVObatU4KaCB1UcWUuObDPH58Mz3Wq/Bp3rAnTJq8p1AxrCq4uFI=
+	t=1712562266; cv=none; b=CaDZp1MwlRlac9ZfZn08dLtfilBMpwgeifeL9dprx1UQpo1tkB6StwSlyhO0YKHSB81aEFO421Up5V7a3jX+VNmmbKPsZLVlfmD2PY0hikHYEF5PW2tyIThzijriJtl6jjAk/dCScetsWHuDqzhKaVm5p+DnSKYUg6dGMbHEpBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562248; c=relaxed/simple;
-	bh=2OnP4cb1z8gIRAZhhFT2S0R4H+4Hqy7YIK4KutMQgdc=;
+	s=arc-20240116; t=1712562266; c=relaxed/simple;
+	bh=JPA0yJP5QqZqrfapKPMKDjQJHy4vOb4yce5vCTt+O0s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bByvA+yJs5COEdZj2Pk6pHFPOXTY8uGKMnWIGAjpSse15rzCaYGPCgIPboojDYI3x7cRMMBK3SwOBvMtHnc7zK+MZp2Z7gO0YQgRYJMDGItKsoGgrLRnicsj0/jemeaaQC1jZFmuIw4z4oSYY1FJS61DnNfWrKY0HEULrHtmI4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=KTNsGiGU; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5aa17c29ba0so989170eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1712562246; x=1713167046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5KehI8KPu4upz8qJpXfAhUFMX8O5R+67ExYXkKnpvrA=;
-        b=KTNsGiGU1m4qJu4Lv7QFSK6ZKssMxhD7fAfCGyS9qPlfpOSoqI+2PfOqK0vqlxJqpR
-         DUKYGfqkFkE6hjqV4L3U8Zi8SLCSp8t1naA5Bbdhz44Vndp636t9BqIFGoE92ftmgDEk
-         fyO4/U7glT9OAg9cVGHswbrk1u0hfe02SCQeK9hUANeK7hB/3YrFR/RD7MJJ5JNU3Jwg
-         TZtJieit9+yBnQGdrpL/MYhWtfpRaVo3zeONdZzk4w7CBPP1rwhkR1NoYysDeUqA5Rmv
-         QqHmezXZ5WUHVprnv86Su28tu5qYtZ5BiZVCLtgeZIGa4S1upC6DY9DX9QqXkVbpKA1J
-         smHQ==
+	 In-Reply-To:Content-Type; b=ihnT1LmyEWTcgqDR7Flwp4rrmrc295dPRKFYwuIBBodDipenbmylhpoUmzYTomRxuR9m4rsX/476nZpvhZaNbC7t7HEOflXzoIbWI2mhsnjoGn+VX122xH23I0MarAriXhOFlCKYDeeVpv687hhQTf4whAhMn2W8F6TqWekW6W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iccnmVH6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712562263;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M3XrUvn56UijqLfg1EQp0iLztinagyzYc4/8ZWkHKCo=;
+	b=iccnmVH6mhQu+a5pK1d5dQkEKJ/s1by+qYSKK0yMC7evhmmRhSKXy+an0dmCvR80K5YVeQ
+	meE78sbWnpvcbYqGO1uwKN3qwpqE7xW9cswQgb3qa9jD4vLAQ7pBGx/jbduEmnkXh2zvWw
+	YdbCb6W/cF1l+jv7d6kNqCOppL9/U0A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-43-gNMKRX0bOZaBYNqU8eUmcQ-1; Mon, 08 Apr 2024 03:44:22 -0400
+X-MC-Unique: gNMKRX0bOZaBYNqU8eUmcQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416612274e7so1787655e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:44:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712562246; x=1713167046;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5KehI8KPu4upz8qJpXfAhUFMX8O5R+67ExYXkKnpvrA=;
-        b=p8hclRsBnlAl14Ac37bZmkzDkJtfF+TcDDs7RJCcGAuPUZW0a5+qJcVs7v6gmsAkq9
-         wZf2b9DAVxMWsw3I8ozLCauz78cdaY3gqi4a9Z9Ue54pXZhWHXPb+U9K7pcUe16Z2PrC
-         KcrVu3aafmSyfrg2NjTVMyT7rtnBywufN1Hg3VEiGERpRomCebYj75TxMhhnWyKrAvwc
-         oC990TUErrORs5gCMVY3XocsxypBnuXaZC2TkHmdU6T2VnyL0M4yoZU1pp+tQt3B7tLK
-         b4Q0y3/+xAUNJUR5YWXiGz6giH4RLJZ3R1qfjqyVdwFEb3Y6Yqw/C7w6mF59aFuU+/lC
-         x1dw==
-X-Forwarded-Encrypted: i=1; AJvYcCVOe4kaBdbHenZ6UuBnAsqHpzQ+c+5fmYoaedjrGHmt4CR68h8bTAGm2oWbJZBeGOBq+XqdSQxCJAOqp8y6f1S/43wiOiiib+D4rGwr
-X-Gm-Message-State: AOJu0YxnmcX9YB2CgWgFoLE3bFRfHleZ/w/blonFD6IVHN9IFrBw7S7T
-	wElx56TBrYFgNNh90fNj40LRoOhKZNI21KfD0mq1wAj0BrluRcWgYDP26M7RzNA=
-X-Google-Smtp-Source: AGHT+IFsrY4ZpM3SAF0h5M/wjAh7CCTDQmcxT7QFjm1k9lYJqPJRb9dp4KkrAB1d1fuYX++MqHlz8g==
-X-Received: by 2002:a05:6871:4cd:b0:229:8236:ae9 with SMTP id n13-20020a05687104cd00b0022982360ae9mr8836690oai.59.1712562245841;
-        Mon, 08 Apr 2024 00:44:05 -0700 (PDT)
-Received: from [10.54.24.115] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id u21-20020aa78495000000b006e580678dfbsm5812798pfn.193.2024.04.08.00.44.01
+        d=1e100.net; s=20230601; t=1712562261; x=1713167061;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M3XrUvn56UijqLfg1EQp0iLztinagyzYc4/8ZWkHKCo=;
+        b=bAaRNLKwSgP9cgs7Tlk7uQpnejfzlMg3lvG44XGFyWfjPV07dkLjRxf/O1H+LzjoH8
+         xbJFLaY7Fo5q6N4DK6yRFGZinebFpWgQpcn/jon2yqmhRa3AT5L2IJIV3O9+CkiRtZdO
+         8it3ujcl7BeSG13gORCFpyh2KgHJ7Nmpxvsgjz7gkOPpCh4ZbPmFzdXZ9WCaRTYFIuUS
+         zJ2USFnCJBT4Ccum7EExi4LD55L8pJPOWx8C8h7TMpgTESutR3d4gYWWzYhcYpNq8Vlb
+         PDqZ8GaUSf9jmMDGn3X4g5rrEFwPSPF772+ZsoPc0p3YzBRGVR9COsoQDRXe84etNn+R
+         FUBQ==
+X-Gm-Message-State: AOJu0YzS18+UtSoopRgIhQTGNvhQGiu94WlFO/+KQwOuLtLeYn4TJKt5
+	7C3XXn4ONi4tG1i0IYL5U90JBcWiX/2dT6eNIRdvuby4GfFUVk4rQg9SqhsdhiDRdrtoutgChvq
+	2QRxcUNTOwHE6G7k3X7R3ZpZbfiYg3+CjD8Jwog+6BNWWyqMiN5g2NZbsb6d44w==
+X-Received: by 2002:a05:600c:4506:b0:414:56ec:22e7 with SMTP id t6-20020a05600c450600b0041456ec22e7mr6019627wmo.21.1712562261270;
+        Mon, 08 Apr 2024 00:44:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHmacyacz5MJG/SicWG11fdsTuvTk/gi5zfBY36JmAEpCx15RoAfYjuXal36C5vz8BeSfptvA==
+X-Received: by 2002:a05:600c:4506:b0:414:56ec:22e7 with SMTP id t6-20020a05600c450600b0041456ec22e7mr6019610wmo.21.1712562260868;
+        Mon, 08 Apr 2024 00:44:20 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c718:1300:9860:66a2:fe4d:c379? (p200300cbc7181300986066a2fe4dc379.dip0.t-ipconnect.de. [2003:cb:c718:1300:9860:66a2:fe4d:c379])
+        by smtp.gmail.com with ESMTPSA id v19-20020a05600c471300b004157ff88ad7sm12426642wmo.7.2024.04.08.00.44.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:44:05 -0700 (PDT)
-Message-ID: <ca45f32d-b526-4bcd-b177-08698babaf3d@shopee.com>
-Date: Mon, 8 Apr 2024 15:44:00 +0800
+        Mon, 08 Apr 2024 00:44:20 -0700 (PDT)
+Message-ID: <669695d1-b374-4a2e-9f8e-1bf95725ba70@redhat.com>
+Date: Mon, 8 Apr 2024 09:44:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,92 +81,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/2] x86/resctrl: Track llc_occupancy of RMIDs in limbo
- list
-To: Reinette Chatre <reinette.chatre@intel.com>, james.morse@arm.com
-Cc: fenghua.yu@intel.com, babu.moger@amd.com, bp@alien8.de,
- tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- hpa@zytor.com, peternewman@google.com, x86@kernel.org,
- linux-kernel@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
-References: <20240319083039.223088-1-haifeng.xu@shopee.com>
- <4244b729-2eec-4999-9427-00b5c9f3e6fc@intel.com>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <4244b729-2eec-4999-9427-00b5c9f3e6fc@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mm,swapops: Update check in is_pfn_swap_entry for
+ hwpoison entries
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Miaohe Lin <linmiaohe@huawei.com>, Peter Xu <peterx@redhat.com>,
+ stable@vger.kernel.org, Tony Luck <tony.luck@intel.com>
+References: <20240407130537.16977-1-osalvador@suse.de>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240407130537.16977-1-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2024/3/30 07:06, Reinette Chatre wrote:
-> Hi Haifeng,
+On 07.04.24 15:05, Oscar Salvador wrote:
+> Tony reported that the Machine check recovery was broken in v6.9-rc1,
+> as he was hitting a VM_BUG_ON when injecting uncorrectable memory errors
+> to DRAM.
+> After some more digging and debugging on his side, he realized that this
+> went back to v6.1, with the introduction of 'commit 0d206b5d2e0d ("mm/swap: add
+> swp_offset_pfn() to fetch PFN from swap entry")'.
+> That commit, among other things, introduced swp_offset_pfn(), replacing
+> hwpoison_entry_to_pfn() in its favour.
 > 
-> On 3/19/2024 1:30 AM, Haifeng Xu wrote:
->> After removing a monitor group, its RMID may not be freed immediately
->> unless its llc_occupancy is less than the re-allocation threshold. If
->> turning up the threshold, the RMID can be reused. In order to know how
->> much the threshold should be, it's necessary to acquire the llc_occupancy.
->>
->> The patch series provides a new tracepoint to track the llc_occupancy.
+> The patch also introduced a VM_BUG_ON() check for is_pfn_swap_entry(),
+> but is_pfn_swap_entry() never got updated to cover hwpoison entries, which
+> means that we would hit the VM_BUG_ON whenever we would call
+> swp_offset_pfn() for such entries on environments with CONFIG_DEBUG_VM set.
+> Fix this by updating the check to cover hwpoison entries as well, and update
+> the comment while we are it.
 > 
-> There seems to be a problem with the DKIM attestation. Here is what I see
-> when I download this series:
-> 
->     $ b4 am -Q 20240319083039.223088-1-haifeng.xu@shopee.com
->     Grabbing thread from lore.kernel.org/all/20240319083039.223088-1-haifeng.xu@shopee.com/t.mbox.gz
->     Analyzing 3 messages in the thread
->     Looking for additional code-review trailers on lore.kernel.org
->     Checking attestation on all messages, may take a moment...
->     ---
->       ✗ [PATCH v6 1/2] x86/resctrl: Rename pseudo_lock_event.h to trace.h
->       ✗ [PATCH v6 2/2] x86/resctrl: Add tracepoint for llc_occupancy tracking
->     ---
->       ✗ BADSIG: DKIM/shopee.com
->     ---
->     Total patches: 2
->     ---
-> 
+> Reported-by: Tony Luck <tony.luck@intel.com>
+> Closes: https://lore.kernel.org/all/Zg8kLSl2yAlA3o5D@agluck-desk3/
+> Tested-by: Tony Luck <tony.luck@intel.com>
+> Fixes: 0d206b5d2e0d ("mm/swap: add swp_offset_pfn() to fetch PFN from swap entry")
+> Cc: <stable@vger.kernel.org> # 6.1.x
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
 
-Hi, Reinette,
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I can also reproduced it. After digging into it, I found that our DKIM signature header
-has 't' and 'x' flags. They are recommended as a means to help identify spam.
+-- 
+Cheers,
 
-t= is the DKIM signature timestamp.
-x= is the DKIM signature expiration time.
+David / dhildenb
 
-The source code of DKIM Validation can be seen in dkim/__init__.py(line 351), I paste it
-here.
-
- 343     if b'x' in sig:
- 344         if re.match(br"\d+$", sig[b'x']) is None:
- 345             raise ValidationError(
- 346               "x= value is not a decimal integer (%s)" % sig[b'x'])
- 347         x_sign = int(sig[b'x'])
- 348         now = int(time.time())
- 349         slop = 36000 # 10H leeway for mailers with inaccurate clocks
- 350         if x_sign < now - slop:
- 351             raise ValidationError(
- 352                 "x= value is past (%s)" % sig[b'x'])
- 353             if x_sign < t_sign:
- 354                 raise ValidationError(
- 355                     "x= value is less than t= value (x=%s t=%s)" %
- 356                     (sig[b'x'], sig[b't']))
-
-The expiry time is less than the time point you download the patch, so the validation
-fails. If I comment out these lines, this series can be successfully downloaded.
-
-The signature is only valid for a week. So if you use b4 to download the patch series,
-It's best to do it in a week after the patch is sent.
-
-Thanks.
-
-
-> The patches look good to me. Thank you very much for adding this.
-> Please resubmit with the DKIM attestation fixed and then you can add:
-> 
-> | Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> 
-> Reinette
-
-Thanks for your review.
 
