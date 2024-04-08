@@ -1,110 +1,120 @@
-Return-Path: <linux-kernel+bounces-134847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B3089B7CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:43:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E1A89B7CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:45:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB0E91F21A96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:43:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5A90282384
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C72124B2F;
-	Mon,  8 Apr 2024 06:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ESUw3Lpq"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF1417745;
+	Mon,  8 Apr 2024 06:44:55 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A85F22EEB
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15BF111A8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712558596; cv=none; b=qWiJgxsYIhIIk+RDmFW/5JI85s4eBPBrtklx8rNvN1XuGaDZQAyjaGGBhA9Ig/dHyuutFsVzsqOz34TrGVPvTvtygLZuuHKTcJtcV4Ck1nEjTZPIAmEgZGtoIQcS7gyJKzI6xKzF3N1Wqq2XPBqjdvMITJ9WkxyrIKMup2SSd5g=
+	t=1712558694; cv=none; b=j+v3ML9JDLrbWzADwOfCkiN9kqzdxjVlrCV4O2tGIhUyKeMiTrqG0Bg84oJ9ThKknaWB8EH/dlA66s6cOH7Lmcgg4YAgBlvPMJ7oEp/fjpbkmsFl/2Yu81Ycy3p9saCBmjLTUoYOBQyP6dwwtLxFRqvUhY6w1TZgCeHt5LBAfnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712558596; c=relaxed/simple;
-	bh=OjdribcLA53Fwz+JeLKxDPhNrfDqxuIAbAzbCzubzsg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cBRPip5qUMLQNixo4KZa6DtCwvP6dcz8BULT9H+UvwighSdfjDSLWAhyB4lOFfe3qJBJ0csdxJLBXYp/n4JfF7fdE3xr/+4H+k6EBV6whneMe3E8ZDilgxXtza6oRhW2SkV6EJY7P9O31ucyDxYrRNQlDT80h61+bFL88H5Osos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ESUw3Lpq; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d756eb74so2759153e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712558593; x=1713163393; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Fs4Rab7i3Fc1NzrGJb0B7jUp6L1AV2eL+J1xyNAG8c=;
-        b=ESUw3LpqcTHEMwA8AKDb4uapw3/HglbqiPZkdYuqq7H+ehHOp4lmu/C1CpMZOOBP7U
-         CF5lDOmjSuaPSK7ISwBNYUpCN/aBvxXG1V0b3ZRzhIJNHmMIGa4EXI3Paj1yYkFfM+Rc
-         d26R+TDKJXD5pCt4qwk93PKvlxunicGQxB3+ZMQwRVFfHiOc/vh4q0EgYR10AvNo8cLC
-         /EeiOIO4hyCZeYNbcLTlkBQAHBEsfnM3+q8M9Q412JaVPSlU2CYeAYoPc3nL7eUxdfpI
-         38nPfVZZpniH675Vh2KX/c2lDlWpNEpCm26fCRW0Ve+5TeooA4uYsqi21CzdEWxVR9bR
-         fFDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712558593; x=1713163393;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Fs4Rab7i3Fc1NzrGJb0B7jUp6L1AV2eL+J1xyNAG8c=;
-        b=QvRekSK4UMo7e4LX7omkydlaUIcqiZYNTQnsT7lWcK1LZSjqRsJEv0O26tz6QHR4M7
-         iqd9kC8QQ8I9kh8TcTx4rty44UgAGSjcj1gSKH3hEVxLbVBdS8L7gaEMfzP3ng3NaAqp
-         0ZeX8awn+E/9+vBY1GNOac1wOCiJwIzQZ6GqwAEhQ0mor5kXFSygngPcvAzmomK9qc7X
-         zdKo/fNLT/KOk8V1lW1WxtGh9vOc7hyhgdnF5DZRqtJJ1NDKetJBn3nx7LiZ42ZVXj19
-         zSP7rfHqhasvKfMPcb6OIkGPdQMhkzKJ/jvQXG3W2hIEb4CJTNIvinZ8uNdPSZUVoNQM
-         YoMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKBFSG45TTq/sRbQhua27+X1TzwOY4ARV4RxZu1tGA/8fTAGapuYLSqLB/i8N0Pyl6+wrHszbpPdysUBNrxxfb4Z/ckIbaXnvdbsze
-X-Gm-Message-State: AOJu0YxnmA8Q9LfBhH247jlWUwy/P6kEh3mcAUK2Ru/SyESqy2nKnslG
-	+eePrTVG77NuGx6PWm9jgHNeVF8mKEY+/NmlpTOcVVRlSwGy32JfmK87bM0Ko9z5zkM6SUSY2+h
-	D
-X-Google-Smtp-Source: AGHT+IFVxgw3525GrzEaS9/BcvCjU2asTXaT3p4GSsxVHGdjvPPzgt4D2pOpgLM8/eHDX3kZl/3d2A==
-X-Received: by 2002:ac2:5508:0:b0:516:ea55:324d with SMTP id j8-20020ac25508000000b00516ea55324dmr2056505lfk.31.1712558593140;
-        Sun, 07 Apr 2024 23:43:13 -0700 (PDT)
-Received: from [192.168.69.100] ([176.176.144.67])
-        by smtp.gmail.com with ESMTPSA id dh7-20020a0564021d2700b0056e53920717sm1707418edb.8.2024.04.07.23.43.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 23:43:12 -0700 (PDT)
-Message-ID: <d0ab6420-bab8-4584-ab9f-b801845ad0ff@linaro.org>
-Date: Mon, 8 Apr 2024 08:43:11 +0200
+	s=arc-20240116; t=1712558694; c=relaxed/simple;
+	bh=xcu2JJeUBxhfJ2Cc+vMD1v0kZJu2HM1hHarpo5Jxx7k=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fhpw3jl5Ml8cU/37IEnhqJceHQ6iGyulJ6XQ1QrixC+zXE35ZggpwiGX3G6ZWIZp+phB9jxJ5lFBOEPt14tM+Rv/Yh1atOkHhCbBUO2WSBYtrjuynbjKzavEwu0mJBh7wbsS3ZWivVAvYTJxO1VqBKlG96AGQFOU0TtopJNfQUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <s.hauer@pengutronix.de>)
+	id 1rtikC-0008Fs-QO; Mon, 08 Apr 2024 08:44:40 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <s.hauer@pengutronix.de>)
+	id 1rtik9-00B3lF-N6; Mon, 08 Apr 2024 08:44:37 +0200
+Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
+	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <s.hauer@pengutronix.de>)
+	id 1rtik9-00EdB4-22;
+	Mon, 08 Apr 2024 08:44:37 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Mon, 08 Apr 2024 08:44:10 +0200
+Subject: [PATCH] dt-bindings: net: rockchip-dwmac: use rgmii-id in example
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 9/9] MIPS: CPS: Convert to use debug_ll facilities
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240326-mips_debug_ll-v2-0-b64abc76f2a1@flygoat.com>
- <20240326-mips_debug_ll-v2-9-b64abc76f2a1@flygoat.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-In-Reply-To: <20240326-mips_debug_ll-v2-9-b64abc76f2a1@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240408-rockchip-dwmac-rgmii-id-binding-v1-1-3886d1a8bd54@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIADqSE2YC/x2NwQqDMBAFf0X27EKUGGx/pXiIyRofxSgbaAXx3
+ xt6HBhmLiqikELP5iKVDwr2XKFrGwqrz0kYsTL1prfGmpF1D++w4uD43XxgTRtQHZ6RI3Ji1zn
+ nFzc8RjtQrRwqC87/4TXd9w816dqvcQAAAA==
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ David Wu <david.wu@rock-chips.com>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, 
+ Sascha Hauer <s.hauer@pengutronix.de>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712558677; l=1265;
+ i=s.hauer@pengutronix.de; s=20230412; h=from:subject:message-id;
+ bh=xcu2JJeUBxhfJ2Cc+vMD1v0kZJu2HM1hHarpo5Jxx7k=;
+ b=jRDgsC+uUqYxVFiGlrM8R8L11V8C7WJF68mlTmsMeRmDf4vl4YqM+bKeqYcS7YiwmvyTokY51
+ XTH7+rpgZeWBf4+LCXJQYOuBNQY6QZwVoTCo1wPn09IRhSwQMT03UZL
+X-Developer-Key: i=s.hauer@pengutronix.de; a=ed25519;
+ pk=4kuc9ocmECiBJKWxYgqyhtZOHj5AWi7+d0n/UjhkwTg=
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: s.hauer@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 26/3/24 21:35, Jiaxun Yang wrote:
-> debug_ll replaced CPS's custom NS16550 printing functions
-> for dump early SMP bring-up exceptions.
-> 
-> This will enable CPS debugging on more platforms and also
-> reduce code duplication.
-> 
-> All exception name strings are prefixed with CPS to help
-> identification with regular low-level interrupts.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->   arch/mips/Kconfig.debug    | 52 +++++++++-------------------------------------
->   arch/mips/kernel/Makefile  |  1 -
->   arch/mips/kernel/cps-vec.S | 16 +++++++-------
->   3 files changed, 18 insertions(+), 51 deletions(-)
+The dwmac supports specifying the RGMII clock delays, but it is
+recommended to use rgmii-id and to specify the delays in the phy node
+instead [1].
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Change the example accordingly to no longer promote this undesired
+setting.
+
+[1] https://lore.kernel.org/all/1a0de7b4-f0f7-4080-ae48-f5ffa9e76be3@lunn.ch/
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ Documentation/devicetree/bindings/net/rockchip-dwmac.yaml | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+index 70bbc4220e2ac..6bbe96e352509 100644
+--- a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+@@ -137,8 +137,6 @@ examples:
+         assigned-clock-parents = <&ext_gmac>;
+ 
+         rockchip,grf = <&grf>;
+-        phy-mode = "rgmii";
++        phy-mode = "rgmii-id";
+         clock_in_out = "input";
+-        tx_delay = <0x30>;
+-        rx_delay = <0x10>;
+     };
+
+---
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+change-id: 20240408-rockchip-dwmac-rgmii-id-binding-6166af659845
+
+Best regards,
+-- 
+Sascha Hauer <s.hauer@pengutronix.de>
 
 
