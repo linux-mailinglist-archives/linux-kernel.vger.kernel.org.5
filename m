@@ -1,116 +1,134 @@
-Return-Path: <linux-kernel+bounces-135620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1AA89C8A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1BAA89C8A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAE7BB244E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:43:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F4FFB22C85
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15501419B4;
-	Mon,  8 Apr 2024 15:43:04 +0000 (UTC)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2081420B7;
+	Mon,  8 Apr 2024 15:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QEMyJOGk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95075140E4F;
-	Mon,  8 Apr 2024 15:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B5D1411EF;
+	Mon,  8 Apr 2024 15:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712590984; cv=none; b=kPBFmsooLW2wVYfmz565ZuetDJWiHAvm1/lJIbtQgL0HtBlftsYdLha6lvAvYYIR2yocRnCLUmyCNKKXX8lp6157E4HT+gZrUDfbi91GUkzkO4lOXZ0hiKbqPra8AloqEjVmw5SGzs+uX1Ycdw7BisFhIlKs8SS3fhHgfj7cuqI=
+	t=1712591113; cv=none; b=VnL0Sj50Ehgh+QqJaBvxsTYOiBo0vpOkcMy6M0cO7F34lfsBOyOsqnYLizGqpH2GELPtZcd8x3xLX9TfGGZSpcrmNZc/Clr+X1URH0Szu8kdtrdTmQaN9M0EaJd1T92mlR0hWjylz8/vLSuqpzopWPBsM00wtJQo8si2Sjyhxb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712590984; c=relaxed/simple;
-	bh=u84nzCTNcDWnJynwd2ody8MWoy74b9HyxAnHlJf7VLU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rvawbQybeBdQ6WgtmkYkHtqQAixtVfYPMFl68Pkq+IDrUjHGjNtKDgM7hRE6ewtwE7W4EA6xxYP9exoOM+jilTvf0Acr3HUiBipZS8+D8/8qYOlHE9m1DPl+g/YoXrUKgslzh/cFAXsDmyQaClpuC7Ejcni+urM5I2ZD6qjrsAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a47385a4379so1037797266b.0;
-        Mon, 08 Apr 2024 08:43:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712590981; x=1713195781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DZWqINXfXQoMnEdU+hyVda4sKWIxPOFDKIPjHb2rhh4=;
-        b=aTUo+4PXaGRzfMsMQyipb+hany+VwAAENggECWkchAW5xpRCPLM/91UpvPsXdhApic
-         pGMfYeO7UB2wvunx7mRW6Xzzcr8z8Z1ROaBTUaZd3YuNWykFMDsNeqcwklGbHK62HTB6
-         SrL/Yl12YXLmm3RUy4NtmnPufUS8e6iVwF+XKKoehDZ/d1FRGJBD7fE3fvRNnNGz5g1L
-         I7z5+7CpN8ZsoxqxtvnaNlComPmRhUn8jqAR3EhaBc9kWD+lZR06peVedjLAEw//qdIm
-         UKb/Jqhn5aM8GfMROXe4SeJsZy/KnCXK1gQ7u5bVctrmyIPJcjz5rvKB72AMuFqG1Azm
-         KSGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWVQXkcZPWcJ7djU06yBPQUGh1OHABUWSFLWbALfFPK+ZJUUnBsjCMlWduVCV1XlWmkfYSDo15U4F8grdR3bf6tPTB29OaOMEyVCYe5d/a96l5sSlWPtojD8HEVDYVUUPNhl1THWIoWQ==
-X-Gm-Message-State: AOJu0YyqVb2G4piUXhu4DRLQraQGiEFjNsQfbs9GCWxgRmhNjaS0A/io
-	4onavXy1hhgXStM2eL0t6E9f3ySkzn5b/DlUUKeRYi9FAvx7Fez550rLZCULtng=
-X-Google-Smtp-Source: AGHT+IEb2tkCJ5LtsHHh+awJaUpNleR7NuEVn30Ony6kKYtpbE4jPA3g00j8HmqrnOlXBgzZMb1F+g==
-X-Received: by 2002:a17:907:1c21:b0:a51:9575:bd3a with SMTP id nc33-20020a1709071c2100b00a519575bd3amr41936ejc.38.1712590980346;
-        Mon, 08 Apr 2024 08:43:00 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id an2-20020a17090656c200b00a51b00b5236sm3758352ejc.120.2024.04.08.08.43.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 08:43:00 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so777067766b.1;
-        Mon, 08 Apr 2024 08:43:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUoGjDKDaWBkl4Kh4/apT7/NMANJqcuw3q7cT5Etm6MSqDcTiRA4A6t4nr5TX0lvUMEYENv9LtMRuHL2CJp78/4P8LBc/ZuhH6IvirOo8/c3jsSIKggWewd5YbowMk9r896vWcp5pgmkw==
-X-Received: by 2002:a17:907:3e1d:b0:a51:c62f:3c91 with SMTP id
- hp29-20020a1709073e1d00b00a51c62f3c91mr54115ejc.21.1712590980025; Mon, 08 Apr
- 2024 08:43:00 -0700 (PDT)
+	s=arc-20240116; t=1712591113; c=relaxed/simple;
+	bh=T+hfrAsFNnklIEb0sRRQ8EMi792MajkNUSG/16PQJXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5k4fcabr3rhDQbqkCotMNQOHSXRN62S2wWTza9PkHn0vZMcDomPAw2gEIIEnZZXlT2L454wZ8Xo9r1F6foZik0UJF1DJGXjqYFAg2lfHAiz8EVJA9XrWGadwD8nu5dY6SyBkmQHVZti8N7jhG326SeUAKSmEDhPhmDhZ5YHUGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QEMyJOGk; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712591112; x=1744127112;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T+hfrAsFNnklIEb0sRRQ8EMi792MajkNUSG/16PQJXE=;
+  b=QEMyJOGkX6/hHHWD1cBeFJiCHWjgAalgCp8T3qzJ958dOSxcmcRyirvz
+   Qr+QmLZNv3eMIU84RLL86NRepSahytose9EpjsJlwn8HLdgA+YCEtey97
+   ddqMpEswgb5vn0EOWqyi5z2o6Lk5QslEr+es75Bmc3kPiccO9XVrsrsFI
+   2zfZis6uY4Ou1ORAaVkue0BKlN3yMUVZTtwvkQ2nItZsbenfgzy2gtr3X
+   QY20hAE6k45W1wnJHGJA+az1yR3Nb1eIPKJ6Hzjk2smPId19ilwA38JG9
+   ZG5NSpWkBxDJFVmqVrH57LGAtAytgT6yUAbKVoy6SaiFBcPOtwOxTaNTK
+   A==;
+X-CSE-ConnectionGUID: 0jj0ANFKRDCscXaxj1VLjg==
+X-CSE-MsgGUID: NcmG8EEbSrCpI21l0PdImA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8037174"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="8037174"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:45:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915368991"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="915368991"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:45:09 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rtrBC-00000002ZCa-38P1;
+	Mon, 08 Apr 2024 18:45:06 +0300
+Date: Mon, 8 Apr 2024 18:45:06 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Tony Lindgren <tony@atomide.com>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v1 1/1] serial: core: Clearing the circular buffer before
+ NULLifying it
+Message-ID: <ZhQRAhsGfdikDGEG@smile.fi.intel.com>
+References: <20240404150034.41648-1-andriy.shevchenko@linux.intel.com>
+ <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407063341.3710801-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <ZhQE9dU-VIcWI6au@smile.fi.intel.com>
-In-Reply-To: <ZhQE9dU-VIcWI6au@smile.fi.intel.com>
-Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date: Mon, 8 Apr 2024 08:42:48 -0700
-X-Gmail-Original-Message-ID: <CAC41dw-Df3L7B=Tq2QkQHDT2Yf3MzHgy8-czPAkZhdPf0Tea4Q@mail.gmail.com>
-Message-ID: <CAC41dw-Df3L7B=Tq2QkQHDT2Yf3MzHgy8-czPAkZhdPf0Tea4Q@mail.gmail.com>
-Subject: Re: [PATCH v1] ACPI: Declare acpi_blacklisted() only if CONFIG_X86 is enabled
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Apr 8, 2024 at 7:53=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Sat, Apr 06, 2024 at 11:33:41PM -0700, Kuppuswamy Sathyanarayanan wrot=
-e:
-> > The function acpi_blacklisted() is defined only when CONFIG_X86 is
-> > enabled. So to keep it consistent, protect its declaration with
-> > CONFIG_X86.
->
-> ...
->
-> >  extern char acpi_video_backlight_string[];
-> >  extern long acpi_is_video_device(acpi_handle handle);
-> > +#ifdef CONFIG_X86
-> >  extern int acpi_blacklisted(void);
-> > +#endif
-> >  extern void acpi_osi_setup(char *str);
-> >  extern bool acpi_osi_is_win8(void);
->
-> IIRC there is already similar ifdeffery, can we just move the declaration
-> there?
+On Fri, Apr 05, 2024 at 07:25:03AM +0200, Jiri Slaby wrote:
+> On 04. 04. 24, 16:59, Andy Shevchenko wrote:
+> > The circular buffer is NULLified in uart_tty_port_shutdown()
+> > under the spin lock. However, the PM or other timer based callbacks
+> > may still trigger after this event without knowning that buffer pointer
+> > is not valid. Since the serial code is a bit inconsistent in checking
+> > the buffer state (some rely on the head-tail positions, some on the
+> > buffer pointer), it's better to have both aligned, i.e. buffer pointer
+> > to be NULL and head-tail possitions to be the same, meaning it's empty.
+> > This will prevent asynchronous calls to dereference NULL pointer as
+> > reported recently in 8250 case:
+> > 
+> >    BUG: kernel NULL pointer dereference, address: 00000cf5
+> >    Workqueue: pm pm_runtime_work
+> >    EIP: serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >    ...
+> >    ? serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >    __start_tx (drivers/tty/serial/8250/8250_port.c:1551)
+> >    serial8250_start_tx (drivers/tty/serial/8250/8250_port.c:1654)
+> >    serial_port_runtime_suspend (include/linux/serial_core.h:667 drivers/tty/serial/serial_port.c:63)
+> >    __rpm_callback (drivers/base/power/runtime.c:393)
+> >    ? serial_port_remove (drivers/tty/serial/serial_port.c:50)
+> >    rpm_suspend (drivers/base/power/runtime.c:447)
+> 
+> Yeah, I noticed start_tx() is called repeatedly after shutdown() yesterday
+> too. So thanks for looking into this.
+> 
+> And it's pretty weird. I think it's new with the runtime PM (sure, /me reads
+> Fixes: now). I am not sure if it is documented, but most of the code in tty/
+> assumes NO ordinary ->ops (like start_tx()) are called after shutdown().
+> Actually, to me it occurs like serial8250_start_tx() should not be called in
+> the first place. It makes no sense after all.
 
-There is none for CONFIG_X86. We only have some combinations or
-derived config checks like below:
+So, with PM autosuspend the [PM] callback can be called in to cases:
+- port is open and busy, but PM is not informed (yet) of it
+- port is closed while PM timer is still counting
 
-#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
-#ifdef CONFIG_X86_IO_APIC
+The Fixes seems about the first case (so we need to call Tx there).
+The second one probably can be fixed properly with PM barrier.
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+This fix is just against the oops AFAIU the bug report and my own case.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
