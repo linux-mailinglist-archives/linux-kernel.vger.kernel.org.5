@@ -1,159 +1,210 @@
-Return-Path: <linux-kernel+bounces-135609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479AE89C877
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:36:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAA8D89C87E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:36:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14C71F232C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:36:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 633F428735B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000521411DF;
-	Mon,  8 Apr 2024 15:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394AC1411FF;
+	Mon,  8 Apr 2024 15:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ha891YtX"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="DtmRETFl"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2121.outbound.protection.outlook.com [40.107.13.121])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE861E4AF;
-	Mon,  8 Apr 2024 15:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712590573; cv=none; b=a+LbU2O68b1gzRkdpK+jM0I59mYqjZfOdXHfa5EMVyXI1EzoKsyqNH6Oj6CHjLfA5RdyJTZX/TPUEEyHDZMy3AXujrcZ8DhyBV5PXnsSKFjAdLskQcmQqbs13oiiBTOxLIhh4pRP6eQHdB9PvgQel2jrh1ogi2CTmUL/iSgisXI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712590573; c=relaxed/simple;
-	bh=eHpOu5zPvgUSlh0lswOh/raEt39lq9sYMURGlTxt5o4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pdqfl3z6zlC9iTgdppxRzisnAmMRHpU1VjCLaItFjPeG0Er81kcdHifw5rhiFeJP+M8Ws+a13wFszYpSna0leAsBNhQpqbQHWLERw7ag1YVJu9vSAHCw1EUHgbul7tuAVgY+uz/rG9UyzrL30V75Z8C3lGXsNscxWCYP0pQw3pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ha891YtX; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438EYWrt024334;
-	Mon, 8 Apr 2024 15:36:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=rWu4eYt9SG8lqj0AcdAp1+78WbLQfgnnvruXuyd6KC8=;
- b=Ha891YtXvRAFAZ6bK3XawXf9udoL/rSIawJPe+oBTvF6V9FoNwcl1JQJSQCpSFJzO2RA
- NqzjJJKLcRqdrao81QbR0mdS+TurqtBJJePXDxh8sEtwQoPyo/0h94S5Wyxz91a+HXKf
- QgPPhoSITTNxjQTOFL3MoevqfpkrUWF6vc6KAfBTRffwUPdyfGT6pGE6JGfMTXQ5f6cY
- 2t2pOTDbS8RnkKNicEWGU/0NYE7ozz5BIGSdfUD9aBJy51sFqvpShER5YeJtPngDlk/r
- mwrTG2bVob51hk0D9udOC6qI5Ul1bDSeWQX/MLeM/qcL42rEEm+C5xLsBH6y9omV3M2f Gw== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xchws07pf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 15:36:05 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 438F0iZ4019092;
-	Mon, 8 Apr 2024 15:36:04 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh4011fs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 15:36:04 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 438Fa0ur45220240
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Apr 2024 15:36:02 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 10C412004B;
-	Mon,  8 Apr 2024 15:36:00 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8C9F020040;
-	Mon,  8 Apr 2024 15:35:59 +0000 (GMT)
-Received: from [9.171.30.232] (unknown [9.171.30.232])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  8 Apr 2024 15:35:59 +0000 (GMT)
-Message-ID: <a98fdeca857f4eb1e3513a8658ef55f89ac45e8b.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] tty: serial: handle HAS_IOPORT dependencies
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby
- <jirislaby@kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Arnd
- Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        LKML
- <linux-kernel@vger.kernel.org>
-Date: Mon, 08 Apr 2024 17:35:59 +0200
-In-Reply-To: <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
-References: <20240405152924.252598-1-schnelle@linux.ibm.com>
-	 <20240405152924.252598-2-schnelle@linux.ibm.com>
-	 <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
-Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: pz81Vd6ejxPf7HNJ35MPjSCuVNIMX3Ai
-X-Proofpoint-GUID: pz81Vd6ejxPf7HNJ35MPjSCuVNIMX3Ai
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A5D140E5F;
+	Mon,  8 Apr 2024 15:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.121
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712590596; cv=fail; b=j2N+P37l4AuLFMVam/CLTWiTgq/JP2uVyUEZvNZCsqxnDrGR/UovZ91AfSVrwVK5mIbs08u4Ws2mLoThogw0no82Cw5XkK0WC/VqFbFMI1pknEXuJIGhqCj71Ae4FBGrXJyfQP1eP5JtfWlO1tztai5pik6MbMrss4DZ6cuL+i0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712590596; c=relaxed/simple;
+	bh=+pvJNsEVv5dic8dbhPGsASjgERDdYBSKSQ0c+W4I6aI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Idwn9l3MfZYXOm7pZt7sOQqhM46bfDa6p3ihfYDfX8OA9Th8GsQhorsek8m7IcmlzmDABTYtfAHBIEiZ+HmNOq0+WDs1+IiqriAswt77lgfvHWrFVYXubCFAGNiM/tNlYEKutfQw2vuDPzuREghty6XOpoPJQ0K5/pAfABmFFQw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=DtmRETFl; arc=fail smtp.client-ip=40.107.13.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CWTbQWnLqeWOwxZk838KpUp5dsJnMBa4sxlc7mHevpV7a8p9aO5axI0OvTfinHIiDghvEMftfHa93D7xk1BzhZIUwo9R1T/YreGkVE7KBy43FVzIsNpaBns8tLDRblO7B6FaqqFM9BPmCDeC8FcVUQ8FFGmnqgpy4ycfAhyKCPIQnwg9Acs8ppRKOdm71gOIlHTajJjIOorU9lBLM0WFAUXzBTsaLv/s9kriQsnH4wwM7uE1Qi1TBHXVeyAM2O9ThYn4oxug0mj6m+ZifkI7izNy9mDcpAPSWtAiQAhE1yALrXcEiv9vZdFYmbXBt33w1RBKYJ5Xf9IQ5UBb4WBSdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VvofKPs+Nzzec8iqztWGgzOCdld9BpN35btzzHDnIso=;
+ b=bd6UevkYwRvyq+fCXI1BBzEApEBus45DFFuEaO7Tm1ZRtCeD66iHiFU1Rg7C49yw3xu+KgDvrYh2ct0lbuoeF1pR0umxBDrgDtR65sRvyp+UDHvaKoPop6G/1ZTHF4VJoxfeKBJCF60U5oEN2HUXwty7Sd/tooFBEvspM92Vp9sy/4OEigOIIJHfYUEHvIfSTKMnjCt9g7kWuo9P6nf3lGtgIJz/hXzOYDWwfBh4i1vlRh7CMu8y+eQJNaO+p/z8xEcc90Ix4tfZLm1GiuTAXPg3VwV4vRTChYx+gmK+vrCntVLPgSq/ZrRqTquWC6BKlMEHk7Rynw/T1GoSSdBMSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VvofKPs+Nzzec8iqztWGgzOCdld9BpN35btzzHDnIso=;
+ b=DtmRETFlX3KqJ4H5GBPAWMwtYYFyGoTJpX8+MLqrdzCGsGO/zwI63n124OsQpmznQo46PTcS2NSzkhFXbi9pz1as9iFQDSX0fu4Kqc+zMDjXKJxyJBTDTFwsPWb5VKMMdSYtixHrF6fAl6LFZ7+6hpxPNRRW/UVVLmpyfIlkuws=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PA2PR04MB10309.eurprd04.prod.outlook.com (2603:10a6:102:41f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.45; Mon, 8 Apr
+ 2024 15:36:31 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
+ 15:36:31 +0000
+Date: Mon, 8 Apr 2024 11:36:23 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960/wm8962
+ and sai[0,1,4,5]
+Message-ID: <ZhQO979YpKA24pML@lizhi-Precision-Tower-5810>
+References: <20240404161914.1655305-1-Frank.Li@nxp.com>
+ <efc9c624-6a31-4299-a604-8aad1d0cd878@linaro.org>
+ <ZhAO4YWuB8r8k+m8@lizhi-Precision-Tower-5810>
+ <938489b1-eb94-4f8a-8881-230951299f6a@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <938489b1-eb94-4f8a-8881-230951299f6a@linaro.org>
+X-ClientProxiedBy: BYAPR11CA0076.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::17) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_13,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 suspectscore=0
- spamscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404080121
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA2PR04MB10309:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/4a5p6UQSY2kdeCqUy0yJTHNg9xtOxQ/f79TMe0TJ3jFGOxiKfnKVxPzwXUwpAIgUuIOTXLxE+YFVZZKV5cflJOzawDWySvqJ/SB+OOW+24CyDSwEUb8jRsVCI31R18xl+armwDGAYScfPICYdl7Hb4VYJ1CWx5tlNuy0dB/8Gj14xRi2580AV4i1kNzBvYRXeqdZR4G8fFYu2SgA662WmCtQ8AlMusojNsQ9tkGu+7BSdCzVrJvm1c0x1iUyFgQX2Qtj/yvqhoWK9MiOSkjN0E/imrMLOOM+ATRGcRzMt1ZsVX67ZokyFJXpOq5V4oTSRw0fHON/Vm2agKbmj14x+SI7ZQ+bQ+qFqvhOuYq+qBqoWupipn0gHige3SVqVcbEeUAjDTVaypRyHae9UPgGjbzD6F3uAvMrm5IyqtNitXV1VYWbPI8jblAU2bwLgIfxRmQDgu5LJy1gkxVwTWwRSPLa87ygilXjN4k2WJqLAvVHvzN5gwy6o5OwtrLrUwTZQEG/7PQ8E3NQ7t92VviKMKFM7CY5ySMKq1i5AHjFAlnFhKrhQZA3plNn2g/Hbe3G94OKxX83Cpbo+O52ZfuN3rCHWaTAzjBCIzwqmAw9eR7zKC8m2wMyduIUygIJ2/jAEftPqy1mkQ5pBs96uEF9QGDOo/qVy1bS9GxPwQEaYQgsmDG5iBUvVOTZCNW7xr5VcKE42u6f4T2APSLfcavqA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(376005)(366007)(7416005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6+PfjW63+XexsMoRZA2802C3Gi2mHvRSoCIIlSPQUEpTzO9QJbjKHeI5rrfu?=
+ =?us-ascii?Q?BDWv8HVRlP2ePL+EP5LlCoA/fQYx215DNbPkt8Q4yvHaLcP+3GGoYoozgWl+?=
+ =?us-ascii?Q?j85uVRcbLNysdKeh2bR3Yht27FSx7bOtjcKIdN3hDkd/CtxK4+rcOHAChicY?=
+ =?us-ascii?Q?7vyyK9Gw8UplM64K1zvi3ftoWkPV8F7V0lrzIetGeem+jV92/h8wkMJd/poD?=
+ =?us-ascii?Q?xXOsL64TJORDRY/y3bl3NbfGvX2ogEI758IFaahIuQbHWyd+V5Nsy7eLNrIe?=
+ =?us-ascii?Q?xceqE+II6gBdiLBAXQSFIO1IK3iItEoAhtR2GVSqJ8dYoiSrLeGywFeJGKYC?=
+ =?us-ascii?Q?BBDzJwTDXhRNe0p19CKZnVxKC9rmTTWKwP4K5Q6z0QZJBQ48mxFhFWGaqTs6?=
+ =?us-ascii?Q?5beYjpS+nMOI5xIR1+Fq+XSUc8knBE1MAArguUJejSraN4hBKu7xRUxoAR7A?=
+ =?us-ascii?Q?wnDwUL8CPZU9m4vAQrJDuPhihD/75VD2QDe2/l4ceUIcIyF/U2n5aRIQID3V?=
+ =?us-ascii?Q?V8oUyhKD8sUNs98rur4uyunA0YZzpXcWYJC6ZxxTe60pQyRCncvYRDoqD0dc?=
+ =?us-ascii?Q?mtwZJWNKk78Kl1pJWexh2/eFMcnVpKeM/UbgtqIiJbqJTwvW9p9VznjiVZhG?=
+ =?us-ascii?Q?CiXJ8Vh8DmiVwg4ZPd7eMMFVcwLsZNNAtvDu+9vX0YUmzaR0aFQYTDnfT+6g?=
+ =?us-ascii?Q?6HkNF7YpopAKNW/5h/sZC3CZgzW1nt6D5U3N5P5vpkIRrEVSudWwh1OK8l6Q?=
+ =?us-ascii?Q?VvurWRaDJ2SBOLWHplp+35zYh8SmuEmXKOsyeCSaHr3zEQV8wX5ltJ3o/pxW?=
+ =?us-ascii?Q?/AIwWO5HFjBvyTDfpLIAnwSMqslqCsPymss57juSBnWgZKT+p4KVG/OqJWaE?=
+ =?us-ascii?Q?6kAEwYKXBWIWYasr1sgInv90URuC1WGqCd7lxRr4PxDTAPybuztt1cygc34o?=
+ =?us-ascii?Q?x6lcuqQIWWHJWvbCiXA179dqyeHEM4gd8IIRhf3BNBLrXtQfYnO9y//K3XjD?=
+ =?us-ascii?Q?AvZ4x9D/lG3+08bFUHJmZ+9fUMoqH5JwZSxwVmj0iEXXFOLAClcrPMSVGzHV?=
+ =?us-ascii?Q?EkV8DJQ+bq2sCwV9U/blf/OIq0hfcosl5ZYzzKVOzbP+24iOwG10ENJkr2Cu?=
+ =?us-ascii?Q?pf+oY7fwwYSUGZUNBYzVFYWGQeLDKwq92gpU1HWhMxIvIZuwnqkAB1fkMxj/?=
+ =?us-ascii?Q?SXLZCWedc7p49TZjK9rT0oq6kIZb5vIm5KPor5+BfXzkmD3NPs4Z441aa7+e?=
+ =?us-ascii?Q?SRGdMnIl6P65cddbkTwFcHPbv2mSX23m3/IqW8wZbRtk0O3aw/q4lNBKekM8?=
+ =?us-ascii?Q?vQ/bpdGNWjayAz+RjmqLY53RR80UDd5c1ndDoy+hy4hFr6hbn/bejw43oeym?=
+ =?us-ascii?Q?9KGdqboWzQbKs5mGvz+pG0RiS3/xQiPuiPMeIfrX8ogILOpR6bvpWLcZ2TaP?=
+ =?us-ascii?Q?iFj5PfHCZIKzz74HpsBFizSvSosTralpkolxO6nlSLEP/poRQKfnkHYoQ517?=
+ =?us-ascii?Q?0GkBvTiOk+P6gPVcMviG4pSZw7xDvjipQ1Ym0y+iT3fPhGsg7YHhFvOma9+Q?=
+ =?us-ascii?Q?1Lce14a5jfZEi/9dpRg=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85139a6a-fd0e-43ed-187d-08dc57e1a9fe
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 15:36:31.2046
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6AwwfKRqFTHtDDW0ZCbRJiIWgq7/ZYmh+QC2Ql6KFTOc84x3i2RhXvXJtz1NqTmB2ElqnwEhL7yKX5q0DOjiTA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10309
 
-On Mon, 2024-04-08 at 12:54 +0300, Ilpo J=C3=A4rvinen wrote:
-> On Fri, 5 Apr 2024, Niklas Schnelle wrote:
->=20
-> > In a future patch HAS_IOPORT=3Dn will disable inb()/outb() and friends =
-at
-> > compile time. We thus need to add HAS_IOPORT as dependency for those
-> > drivers using them unconditionally. For 8250 based drivers some support
-> > MMIO only use so fence only the parts requiring I/O ports.
-> >=20
-> > Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> > ---
-> > Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
-> > and may be merged via subsystem specific trees at your earliest
-> > convenience.
-> >=20
-> > Note 2: This was previously acked here:
-> > https://lore.kernel.org/all/2023053050-prodigal-shine-4d1c@gregkh/
-> > Given this was almost a year ago and didn't apply then I didn't
-> > carry the Ack over though.
-> >=20
-> >=20
----8<---
-> > diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/=
-Kconfig
-> > index 47ff50763c04..54bf98869abf 100644
-> > --- a/drivers/tty/serial/8250/Kconfig
-> > +++ b/drivers/tty/serial/8250/Kconfig
-> > @@ -6,7 +6,6 @@
-> >=20=20
-> >  config SERIAL_8250
-> >  	tristate "8250/16550 and compatible serial support"
-> > -	depends on !S390
->=20
-> Why? Your changelogs gives zero insight on this change.
+On Fri, Apr 05, 2024 at 08:21:18PM +0200, Krzysztof Kozlowski wrote:
+> On 05/04/2024 16:46, Frank Li wrote:
+> > On Fri, Apr 05, 2024 at 08:41:59AM +0200, Krzysztof Kozlowski wrote:
+> >> On 04/04/2024 18:19, Frank Li wrote:
+> >>> imx8qxp-mek use two kind audio codec, wm8960 and wm8962. Using dummy gpio
+> >>> i2c bus mux to connect both i2c devices. One will probe failure and other
+> >>> will probe success when devices driver check whoami. So one dtb can cover
+> >>> both board configuration.
+> >>
+> >> I don't understand it. Either you add real device or not. If one board
+> >> has two devices, then why do you need to check for failures?
+> >>
+> >> Anyway, don't add fake stuff to DTS.
+> > 
+> > NAK can't resolve the problem. It should be common problem for long time
+> > cycle boards. Some chipes will be out life cycle. such as some sensor. So
+> > chips on boards have been replace by some pin to pin compatible sensor. For
+> > example: 
+> > 	old boards: use sensor A with address 0x1a
+> > 	new bench: use sensor B with address 0x1b.
+> > 
+> > You can treat it as two kind boards, RevA or RevB. But most user want to
+> > use one dtb to handle such small differences. For this case, it should be
+> > simple. Just add a super set.
+> > 	i2c
+> > 	{
+> > 		sensorA@1a
+> > 		{
+> > 		}
+> > 		sensorB@1b
+> > 		{
+> > 		}	
+> > 	}
+> > 
+> > It also depend on whoami check by i2c devices. Only A or B will probe.
+> > 
+> > wm8960 and wm8962 are more complex example.  wm8960 is out of life. But
+> > wm8962 and wm8960 have the same i2c address. The current i2c frame can't
+> > allow the same i2c address in one i2c bus.
+> > 
+> > You are feel to NAK my method, but I hope you also provide constructive
+> > solution to help resolve the problem.
+> 
+> Yes, we resolved it long time ago. Your bootloader can (usually easily)
+> detect revision of the board and load appropriate DTS or DTS+DTSO.
 
-I used this for compile testing since I build on s390 natively and this
-would have hidden the missing HAS_IOPORT dependencies I'm pretty sure
-it was added because of the I/O port problem too. I'll either add to
-the commit description that it is no longer needed or drop this. Any
-preference?
+I knewn it. But the problem is one development boards A have many options,
+so create many child dts for files, A1, A2, ... An which base on A
 
+If there are difference happen at A, create new B. then create all child
+dtb, B1, B2, ... Bn.  DTB number will increase exponent.
+
+If change is quite bit, we have to do that. But if change is quite small,
+One dtb can cover it by driver auto detect, which will work like some
+adaptor card have not plug into boards, or some sensor or NOR-flash have
+not installed because reduce cost.
+  
+Although boot loader can update dts or choose difference dts, It also cause
+many confusition, such as layerscape, uboot update many kernel dtb's
+information, which actually increase dependence between uboot and kernel.
+Also it confuse people, for example,  when try to debug kernel dtb, why
+change have not token affect when change dts because not realized uboot
+over write it.
+
+What's I dide is that trying to reduce unnecessary dts.
+
+Frank
+
+> 
+> Best regards,
+> Krzysztof
+> 
 
