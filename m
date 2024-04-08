@@ -1,146 +1,111 @@
-Return-Path: <linux-kernel+bounces-135316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC14989BEE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:24:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 740D489BEE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7A41F2405D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:24:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC9D9B251C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327C974BE5;
-	Mon,  8 Apr 2024 12:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E4E6E61B;
+	Mon,  8 Apr 2024 12:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="jk+8p+fC"
-Received: from mx0a-00176a03.pphosted.com (mx0a-00176a03.pphosted.com [67.231.149.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YColKxwq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4EC71B24;
-	Mon,  8 Apr 2024 12:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2136A342;
+	Mon,  8 Apr 2024 12:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712579056; cv=none; b=rXCt6P16PihytmE98FEWDADEoGRFaqZ8HxyZ+mQO38P14a7aEZWVmJWafyzoMaa4vqBhjo9XL5NDSu/FuVkZz8Iq7mTbn1vyiGMTQ+rXnykZCFx5svBs3tqYoJiOYHQS3I6Mp4dtpdzbCN6rLAl+/xtO30d6Ik8syIPymIYqo04=
+	t=1712579046; cv=none; b=MLLI33tohdQOWgx6W/oLjpl1ALy4PBUqhp6CipGcokcZ4dq4RZbYNnm2ONKBGvxMV1kDOrEnR3U8E6eKSBcUFITXG7LJ6VNCtpFfzlvAyECE0oI6968br5sgogrncu5nKe+DmTw1fugUM9hWNtv2/RA/vuBAJZYKrXnJla5EAfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712579056; c=relaxed/simple;
-	bh=iMn14yBFHMKIIIY04H1NPIFmozgmActewqy/9b1TMfM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KWqNu2eau7h8/22Ardp+fLWNoTtcbYSe7pDLKcTOo6veTqjoIfTO4B3mGNe5oYYFrRMjQuPibMxbcsz4JOkQyVHvQ3oQM5S46BlVmaFkY6BveTeJtUShi3MI6esjMNJo58LX1Gu3niReUUgVe2gX/MErspTWrfq/E3wDgDH7Gp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com; spf=pass smtp.mailfrom=gehealthcare.com; dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b=jk+8p+fC; arc=none smtp.client-ip=67.231.149.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
-Received: from pps.filterd (m0048274.ppops.net [127.0.0.1])
-	by m0048274.ppops.net-00176a03. (8.17.1.24/8.17.1.24) with ESMTP id 4389aJVq025461;
-	Mon, 8 Apr 2024 08:24:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	gehealthcare.com; h=from:to:cc:subject:date:message-id
-	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=outbound; bh=vG3EaXqf3b262/c0/QoTfdhXWijF6zXQ/VHlqLDA1hs=; b=
-	jk+8p+fCR+KIvao7S5Fu/QH6X9TqxSuKIervYNHHCN9PfucDNBr1g7Cs7PnwI2+n
-	QO3Q1AmZh6CU2liBwnxzziUna5bbw7BP+objIHtXVP5SmIONdpa7+969NlvkSkfA
-	yPQZeonltnEbxT72hFhHyZBMLTlHqD9bK/pf+CVLW9zP6hTcd4fe6yU/vVrdEEPB
-	zSfRjatqqBjrXOjG2BhNm72PrUOj1TAkSQ+SG5V3ccWolV1Q6zvqdhWLLH3PZSWa
-	UwuNn47k32QW7nicDhw4dCNI4CTKIBz5nQ1LAa5ZGpcZC14FpwNHVFn0KVAaG7Xz
-	/+IQyx8elVald/XLkKbUuA==
-From: Ian Ray <ian.ray@gehealthcare.com>
-To: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc: Ian Ray <ian.ray@gehealthcare.com>, devicetree@vger.kernel.org,
-        imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/2] arm64: dts: imx8mp-msc-sm2s: Add i2c{1,6} sda-/scl-gpios
-Date: Mon,  8 Apr 2024 15:23:21 +0300
-Message-Id: <20240408122321.464-2-ian.ray@gehealthcare.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240408122321.464-1-ian.ray@gehealthcare.com>
-References: <20240408122321.464-1-ian.ray@gehealthcare.com>
+	s=arc-20240116; t=1712579046; c=relaxed/simple;
+	bh=OmlkXyMP/p6kjhvrzdxuzPLTgizMNaWW9HDJiUC8jCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZokOM/cem2jU1x1ft8ejyUFD/Q2ON2HTwooBHkfopvQn1A9sfhwA/XT/4MhgflJuMASMVr7+5PEg4MUdLWKpqDOtwk4a9OTCmANxmkwAFASSuOEzYTuZ+pilsVBNwmGVlkV84josZSXPYTQxn38o6Y3WDDmt1cwLtFD7qehAdHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YColKxwq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C4DC433F1;
+	Mon,  8 Apr 2024 12:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712579046;
+	bh=OmlkXyMP/p6kjhvrzdxuzPLTgizMNaWW9HDJiUC8jCU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YColKxwq4R7Xy50Mx+/2IlfxKdz/Vax3+a9MdGD5Il0tPXVBfo9BHGTGONlJfG780
+	 /TJt/t291bOzOlbnsGcNeX7V925JFqUDMaB9cYwGReZ0V7jLMjVDuE4h7Bkm+Y78w5
+	 heIC+ZY+hDjEe1OdN8StB15+MmoASAScvKB8yE897YV2xMo9sbnMenmb4+EGA2pjUc
+	 QOpu95sQ4goHC6pZqEFlrs4odTMjO8SAXHVxFztE+Hv83nWunA1gi0umempa3kB/nl
+	 YCb16AiWY47TwIeRmWCF8kwKjfzoehttY9VgkySYjv63CMOIQlDyShGs6H4wbEXkYB
+	 V9UHLDsIou/xA==
+Date: Mon, 8 Apr 2024 13:24:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Dev Jain <dev.jain@arm.com>, shuah@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Anshuman.Khandual@arm.com, suzuki.poulose@arm.com,
+	ryan.roberts@arm.com, rob.herring@arm.com, Catalin.Marinas@arm.com,
+	will@kernel.org, mark.rutland@arm.com
+Subject: Re: [PATCH 4/4] selftests: Add build infrastructure along with README
+Message-ID: <7ec3aaa8-9df1-44f0-8c5d-c1e28f973386@sirena.org.uk>
+References: <20240405084410.256788-1-dev.jain@arm.com>
+ <20240405084410.256788-5-dev.jain@arm.com>
+ <ab271c32-dca8-413f-b97e-c8ceb6d7924c@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: Z7uRndsBxhjP9vdO3s67vtev4W9D0R3C
-X-Proofpoint-ORIG-GUID: Z7uRndsBxhjP9vdO3s67vtev4W9D0R3C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_11,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
- spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080095
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oNxGWWpiwQ7x0mrB"
+Content-Disposition: inline
+In-Reply-To: <ab271c32-dca8-413f-b97e-c8ceb6d7924c@collabora.com>
+X-Cookie: Drive defensively.  Buy a tank.
 
-Add i2c{1,6} sda-/scl-gpios with the corresponding pinmux entries.
 
-Signed-off-by: Ian Ray <ian.ray@gehealthcare.com>
----
- .../boot/dts/freescale/imx8mp-msc-sm2s.dtsi   | 22 +++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+--oNxGWWpiwQ7x0mrB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-index 940bdbe115a3..aeb557fe9dd6 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-@@ -200,8 +200,11 @@ ethphy1: ethernet-phy@1 {
- };
- 
- &i2c1 {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio5 14 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio5 15 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	clock-frequency = <400000>;
- 	status = "okay";
- 
-@@ -241,8 +244,11 @@ &i2c5 {
- };
- 
- &i2c6 {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c6>;
-+	pinctrl-1 = <&pinctrl_i2c6_gpio>;
-+	scl-gpios = <&gpio3 19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio3 20 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	clock-frequency = <400000>;
- 	status = "okay";
- 
-@@ -606,6 +612,12 @@ pinctrl_i2c1: i2c1grp {
- 			<MX8MP_IOMUXC_I2C1_SDA__I2C1_SDA		0x400001c2>;
- 	};
- 
-+	pinctrl_i2c1_gpio: i2c1gpiogrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_I2C1_SCL__GPIO5_IO14		0x1c2>,
-+			<MX8MP_IOMUXC_I2C1_SDA__GPIO5_IO15		0x1c2>;
-+	};
-+
- 	pinctrl_i2c2: i2c2grp {
- 		fsl,pins =
- 			<MX8MP_IOMUXC_I2C2_SCL__I2C2_SCL		0x400001c2>,
-@@ -636,6 +648,12 @@ pinctrl_i2c6: i2c6grp {
- 			<MX8MP_IOMUXC_SAI5_RXC__I2C6_SDA		0x400001c2>;
- 	};
- 
-+	pinctrl_i2c6_gpio: i2c6gpiogrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_SAI5_RXFS__GPIO3_IO19		0x1c2>,
-+			<MX8MP_IOMUXC_SAI5_RXC__GPIO3_IO20		0x1c2>;
-+	};
-+
- 	pinctrl_lcd0_backlight: lcd0-backlightgrp {
- 		fsl,pins =
- 			<MX8MP_IOMUXC_GPIO1_IO05__GPIO1_IO05		0x41>;
--- 
-2.39.2
+On Sun, Apr 07, 2024 at 02:15:15AM +0500, Muhammad Usama Anjum wrote:
+> On 4/5/24 1:44 PM, Dev Jain wrote:
 
+> > @@ -0,0 +1,31 @@
+> > +KSelfTest ARM
+> > +===============
+> > +
+> > +- This is a series of compatibility tests, wherein the source files are
+> > +  built statically into a 32 bit ELF; they should pass on both 32 and 64
+> > +  bit kernels. They are not built or run but just skipped completely when
+> > +  env-variable ARCH is found to be different than 'arm64' or 'arm' and
+> > +  `uname -m` reports other than 'aarch64', 'armv7l' or 'armv8l'.
+> > +
+> > +- Please ensure that the test kernel is built with CONFIG_COMPAT enabled.
+
+> Please create a config file and put all the per-requisite configurations in
+> that. For example, look at tools/testing/selftests/mm/config
+
+Note that arm and arm64 are different architectures, and the kernel
+config stuff only applies when building for arm64...
+
+--oNxGWWpiwQ7x0mrB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYT4d8ACgkQJNaLcl1U
+h9CAhwf9HJ73B6b+YfDEJfAnAbwpPhRdPTmIUF4Ds0xgmdVwRHOgBBs91I4MXEOh
+kaU+olkJlf+INpOCa5PpFygDclsGlAUodDUn6oMs6u8og8eHWl0r3ejPFwv6WIwR
++K/4+kA7Pc1gP0lRYH2ONEJG4jLUgajA5QW6NrmmWClKQg8aMqshHZZF+uszLOnQ
+lmo+Zr+xj1cwYjOr+lKGl+bF/L/S1aOboHwBMAkmNpV+ZxZ3j6sir+L0qVov2K4s
+2J95bfFw/nganBft8X0Sr6wnzRdn1jR9YxpexBKis8XfQA4V+BZBDeI2Yv54e2DQ
+qjNOpHgitPoMjadKOnByQ+A+csICaw==
+=qmTk
+-----END PGP SIGNATURE-----
+
+--oNxGWWpiwQ7x0mrB--
 
