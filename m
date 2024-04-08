@@ -1,160 +1,206 @@
-Return-Path: <linux-kernel+bounces-135783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52EED89CB66
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:03:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CAE89CB37
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66285B2A4EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 828591F23475
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 388801487F3;
-	Mon,  8 Apr 2024 17:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA8A1448E5;
+	Mon,  8 Apr 2024 17:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A7mkThM0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P24GjNhM"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C8E144D02;
-	Mon,  8 Apr 2024 17:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661271E489;
+	Mon,  8 Apr 2024 17:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712598587; cv=none; b=BFfKvAlcAZ3PU+VrhXg/miSXDx5L3OmEs0TBaaYkZOpVkQXsaCrdQOhS3a2YQuiO14G05DegegZlJVl9FGSzaTO9ZQU5HsrxL45sBW6k5M5HUdapPnKMR2u66252AoGtwvvmqo+q3fmXCdicSWMSntXdFsPtr5JcTmrwkrGZPdw=
+	t=1712598658; cv=none; b=PuKsa9Ynp7KC0trXFVsf5BX0cCd8xm1A0ZMJaNN64CI6h6ne2lTZWzoTVR/BghlULNgempesDMHplZrMnWwYQFlD4HgbPR/R2GnsoUvHXSpsN39N7iZjSK//iOAUbVE5ywf40zvziWnkBm78QgJGgp2LMTaNz86ZckFqV3Lk/74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712598587; c=relaxed/simple;
-	bh=C5CpU6dpky4LWKttI7kOlyW29BP4G9a1vbAChlmbviA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tZWtZm6tki6e7cnZGsZ4g1pGooypCYEQ35kpRY3n8LXZ0k+pQUA9E5BV3uEMPP2Z45X8CXscUhPHVU9+R29cIIr+rfrb+x6kAzIDWW9dcP0EznRq2r3yFFA32d3wAKcmvFnZtMI0rZzcHt0RHcna1PBIM7EUa17pEgYJyUwohQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A7mkThM0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EFC6C3278A;
-	Mon,  8 Apr 2024 17:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712598587;
-	bh=C5CpU6dpky4LWKttI7kOlyW29BP4G9a1vbAChlmbviA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A7mkThM0RImV5o66khbu030tAe3dAuCBOfGyC/Gsufo5lDDRbKEqi703ShDHrgs4W
-	 N6vGVkNABpkg96qmyMxOdeLocfsr0Q1MVHw1v5JtkfCQ//ID+fj0zYbnwosa+vKfzo
-	 v9DJtG/03ZC85kSHKPZom8p7hG6krmM9y7b6Xr3XbTS2n0FXtBGzdsMx6vynZ8ETsl
-	 eUGyXiNaDWemAYweRkAqDKvdrM8/rk5KW4RQzW5idrhitIJgeggHDZ3jTYINu9HpDu
-	 9tWbrN+6yXG/DuLg9/zQ87xLf+RqXqHm1fl3WQDF3OosbU164PNBKMkdQYirYC09oJ
-	 x59xgkDFCLTJw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5FC5BCE2CE2; Mon,  8 Apr 2024 10:49:46 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: elver@google.com,
-	akpm@linux-foundation.org,
-	tglx@linutronix.de,
-	peterz@infradead.org,
-	dianders@chromium.org,
-	pmladek@suse.com,
-	torvalds@linux-foundation.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Yujie Liu <yujie.liu@intel.com>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	linux-riscv@lists.infradead.org,
-	Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH cmpxchg 14/14] riscv: Emulate one-byte cmpxchg
-Date: Mon,  8 Apr 2024 10:49:44 -0700
-Message-Id: <20240408174944.907695-14-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <7b3646e0-667c-48e2-8f09-e493c43c30cb@paulmck-laptop>
-References: <7b3646e0-667c-48e2-8f09-e493c43c30cb@paulmck-laptop>
+	s=arc-20240116; t=1712598658; c=relaxed/simple;
+	bh=hMSsV4hhO/Vfk3AcQkgzg1GidVri54SqYdrlQPYIQ4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3qdd0qeuSeOS0h4COPtuL5wulu9uPMUl1JHqIBGXQ5UL1mfEs/kOKaQEgWzaJLzr6CqMyS4kMPoExkfvGkzUHN8Yz9jpGKER7LJoOD3KzyefwQOn1I5rtk42dQ0/YVdXojJoXdbJHs4mexrOa8+rK/bRI6b80Ykh7DqHfM5xGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=P24GjNhM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FDDqbeNGhoXcnFk6nkXqY1HUDUdyMKYatROs/wiu+Jo=; b=P24GjNhMaw6vUYUb8COhMvk2An
+	Lxregwp4jXT0W+/9Vywm6B1WQsruBZHLSHfl8YnBTo3I3t2EHYSvS0VNaEKyU5DDytq59hbEY+afo
+	yBKy0S0uVq1MMxHzlD0160IwP4xxT1MYLGLEdvST7S+s7udgWA9n11N0txup4Aba4NfgMP6fDacZc
+	9a0gmU3xMWbWvw0UdSoSnJqr2sSv3sbKKDa7yJt+dNNw27SZqf3YpRw8RjE2K+ayOC96fQyWCZgVJ
+	iVWL56inha+/+3m7wmfgXqN6JOuz0kzM6u+OaC5I9o8JItgHwHXhpPRSwUyuKMcWM191mR4muHEUl
+	cZk8xt4A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rtt8p-0000000GObq-3IQ1;
+	Mon, 08 Apr 2024 17:50:47 +0000
+Date: Mon, 8 Apr 2024 10:50:47 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Use the new cmpxchg_emu_u8() to emulate one-byte cmpxchg() on riscv.
+On Fri, Apr 05, 2024 at 11:06:00AM +0100, John Garry wrote:
+> On 04/04/2024 17:48, Matthew Wilcox wrote:
+> > > > The thing is that there's no requirement for an interface as complex as
+> > > > the one you're proposing here.  I've talked to a few database people
+> > > > and all they want is to increase the untorn write boundary from "one
+> > > > disc block" to one database block, typically 8kB or 16kB.
+> > > > 
+> > > > So they would be quite happy with a much simpler interface where they
+> > > > set the inode block size at inode creation time,
+> > > We want to support untorn writes for bdev file operations - how can we set
+> > > the inode block size there? Currently it is based on logical block size.
+> > ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
+> > think we can remove that limitation with the bs>PS patches.
 
-[ paulmck: Apply kernel test robot feedback. ]
-[ paulmck: Drop two-byte support per Arnd Bergmann feedback. ]
+I can say a bit more on this, as I explored that. Essentially Matthew,
+yes, I got that to work but it requires a set of different patches. We have
+what we tried and then based on feedback from Chinner we have a
+direction on what to try next. The last effort on that front was having the
+iomap aops for bdev be used and lifting the PAGE_SIZE limit up to the
+page cache limits. The crux on that front was that we end requiring
+disabling BUFFER_HEAD and that is pretty limitting, so my old
+implementation had dynamic aops so to let us use the buffer-head aops
+only when using filesystems which require it and use iomap aops
+otherwise. But as Chinner noted we learned through the DAX experience
+that's not a route we want to again try, so the real solution is to
+extend iomap bdev aops code with buffer-head compatibility.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: Yujie Liu <yujie.liu@intel.com>
-Cc: Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: <linux-riscv@lists.infradead.org>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
----
- arch/riscv/Kconfig               |  1 +
- arch/riscv/include/asm/cmpxchg.h | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
+> We want a consistent interface for bdev and regular files, so that would
+> need to work for FSes also. FSes(XFS) work based on a homogeneous inode
+> blocksize, which is the SB blocksize.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index be09c8836d56b..3bab9c5c0f465 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -44,6 +44,7 @@ config RISCV
- 	select ARCH_HAS_UBSAN
- 	select ARCH_HAS_VDSO_DATA
- 	select ARCH_KEEP_MEMBLOCK if ACPI
-+	select ARCH_NEED_CMPXCHG_1_EMU
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
- 	select ARCH_STACKWALK
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index 2fee65cc84432..abcd5543b861b 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -9,6 +9,7 @@
- #include <linux/bug.h>
- 
- #include <asm/fence.h>
-+#include <linux/cmpxchg-emu.h>
- 
- #define __xchg_relaxed(ptr, new, size)					\
- ({									\
-@@ -170,6 +171,9 @@
- 	__typeof__(*(ptr)) __ret;					\
- 	register unsigned int __rc;					\
- 	switch (size) {							\
-+	case 1:								\
-+		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, (uintptr_t)__old, (uintptr_t)__new); \
-+		break;							\
- 	case 4:								\
- 		__asm__ __volatile__ (					\
- 			"0:	lr.w %0, %2\n"				\
-@@ -214,6 +218,9 @@
- 	__typeof__(*(ptr)) __ret;					\
- 	register unsigned int __rc;					\
- 	switch (size) {							\
-+	case 1:								\
-+		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-+		break;							\
- 	case 4:								\
- 		__asm__ __volatile__ (					\
- 			"0:	lr.w %0, %2\n"				\
-@@ -260,6 +267,9 @@
- 	__typeof__(*(ptr)) __ret;					\
- 	register unsigned int __rc;					\
- 	switch (size) {							\
-+	case 1:								\
-+		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-+		break;							\
- 	case 4:								\
- 		__asm__ __volatile__ (					\
- 			RISCV_RELEASE_BARRIER				\
-@@ -306,6 +316,9 @@
- 	__typeof__(*(ptr)) __ret;					\
- 	register unsigned int __rc;					\
- 	switch (size) {							\
-+	case 1:								\
-+		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-+		break;							\
- 	case 4:								\
- 		__asm__ __volatile__ (					\
- 			"0:	lr.w %0, %2\n"				\
--- 
-2.40.1
+There are two aspects to this and it is important to differentiate them.
 
+1) LBA formats used
+2) When a large atomic is supported and you want to use smaller LBA formats
+
+When the LBA format, and so logical block size is say 16k, the LBS
+patches with the above mentioned patches enable IOs to the block device
+to be atomic to say 16k.
+
+But to remain flexible we want to support a world where 512 byte and 4k
+LBA formats are still used, and you *optionally* want to leverage say
+16k atomics. Today's block device topology enables this only with a knob
+to userspace to allow userspace to override the sector size for the
+filesystem. In practice today if you want to use 4k IOs you just format
+the drive to use 4k LBA format. However, an alternative at laest for
+NVMe today is to support say 16k atomic with an 4k or 512 LBA format.
+This essentially *lifts* the physical block size to 16k while keeping
+the logical block size at the LBA format, so 4k or 512 bytes. What you
+*could* do with this, from the userspace side of things is at mkfs you
+can *opt* in to use a larger sector size up to the physical block size.
+When you do this the block device still has a logical block size of the
+LBA format, but all IOs the filesystem would use use the larger sector
+size you opted in for.
+
+I suspect this is a use case where perhaps the max folio order could be
+set for the bdev in the future, the logical block size the min order,
+and max order the large atomic.
+
+> Furthermore, we would seem to be mixing different concepts here. Currently
+> in Linux we say that a logical block size write is atomic. In the block
+> layer, we split BIOs on LBS boundaries. iomap creates BIOs based on LBS
+> boundaries. But writing a FS block is not always guaranteed to be atomic, as
+> far as I'm concerned.
+
+True. To be clear above paragraph refers to LBS as logical block size.
+
+However when a filesystem sets the min order, and it should be respected.
+I agree that when you don't set the sector size to 16k you are not forcing the
+filesystem to use 16k IOs, the metadata can still be 4k. But when you
+use a 16k sector size, the 16k IOs should be respected by the
+filesystem.
+
+Do we break BIOs to below a min order if the sector size is also set to
+16k?  I haven't seen that and its unclear when or how that could happen.
+
+At least for NVMe we don't need to yell to a device to inform it we want
+a 16k IO issued to it to be atomic, if we read that it has the
+capability for it, it just does it. The IO verificaiton can be done with
+blkalgn [0].
+
+Does SCSI *require* an 16k atomic prep work, or can it be done implicitly?
+Does it need WRITE_ATOMIC_16?
+
+[0] https://github.com/dagmcr/bcc/tree/blkalgn
+
+> So just increasing the inode block size / FS block size does not
+> really change anything, in itself.
+
+If we're breaking up IOs when a min order is set for an inode, that
+would need to be looked into, but we're not seeing that.
+
+> > Do untorn writes actually exist in SCSI?  I was under the impression
+> > nobody had actually implemented them in SCSI hardware.
+> 
+> I know that some SCSI targets actually atomically write data in chunks >
+> LBS. Obviously atomic vs non-atomic performance is a moot point there, as
+> data is implicitly always atomically written.
+> 
+> We actually have an mysql/innodb port of this API working on such a SCSI
+> target.
+
+I suspect IO verification with the above tool should prove to show the
+same if you use a filesystem with a larger sector size set too, and you
+just would not have to do any changes to userspace other than the
+filesystem creation with say mkfs.xfs params of -b size=16k -s size=16k
+
+> However I am not sure about atomic write support for other SCSI targets.
+
+Good to know!
+
+> > > We saw untorn writes as not being a property of the file or even the inode
+> > > itself, but rather an attribute of the specific IO being issued from the
+> > > userspace application.
+> > The problem is that keeping track of that is expensive for buffered
+> > writes.  It's a model that only works for direct IO.  Arguably we
+> > could make it work for O_SYNC buffered IO, but that'll require some
+> > surgery.
+> 
+> To me, O_ATOMIC would be required for buffered atomic writes IO, as we want
+> a fixed-sized IO, so that would mean no mixing of atomic and non-atomic IO.
+
+Would using the same min and max order for the inode work instead?
+
+  Luis
 
