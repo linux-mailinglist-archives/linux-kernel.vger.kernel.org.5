@@ -1,143 +1,270 @@
-Return-Path: <linux-kernel+bounces-135034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9199289BA37
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:27:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471DD89BA30
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:27:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF831F2160B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:27:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86359B22CE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F016374D2;
-	Mon,  8 Apr 2024 08:27:42 +0000 (UTC)
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA3F36AF2;
+	Mon,  8 Apr 2024 08:27:20 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFC03BBDB;
-	Mon,  8 Apr 2024 08:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECE418E0E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712564861; cv=none; b=ADbKMm3qJgmSxS+QWmffU5aVDd0rXUslpToVsiqCVYqp9aEJ5/86/QcrXN9D0MjNZUtRmuqBEbHRAM0vJM4IksoYNHCARmuKzILWy/o1hi+R/vk6eFBP9ZXK6LRSCdw0qdaRynOIulbqEaqJK4K3E00eOQk8telcbmJzgpYIVf8=
+	t=1712564839; cv=none; b=k4HY+mlhlqtFTLMlDsOUB5ZelGxBOAir0XeYBJAjBt6EpS9H3lcEklkTZocnvvxiPRyLdd5WbwgxqzY5mKUHDfDtV0SBx5BYi8+CiFGNksahn9Ao45VBMWBa8uZxCtGlXR6P01CHb9Hebi4CTnConkOKnk4Y55b63LXYY6qpsZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712564861; c=relaxed/simple;
-	bh=u9L7qVa0ZjLHzku/GRWHHqefATdqWRrHJlXyyocla8c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eOoV4iXCFAbJlOwaS2Tjdpg1OjsKRnKmOVzzuVz6AwKUWzYmUJmLoY7QKbiaXfOMLHReLSBpNIlUp88rNpVYDouB39Qm0euw8QR7phXLcM865RMmZqlgG6xAjH7RJb0srkR5UZ4xzzMJRPtHOHtH0tRB2RzTW03MZb5infotxRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so3110882a12.1;
-        Mon, 08 Apr 2024 01:27:39 -0700 (PDT)
+	s=arc-20240116; t=1712564839; c=relaxed/simple;
+	bh=s6pjQqblp6TQ7LHEwwopPhP+rXbDbi9NujDzRogSXTw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rb3wDBSQ1Jlj2JavklFqTRZV33LgkioePA9rXQt/Qe8+UviFpm0WhQ42w54MsNsCWLConflnbzToaTNUMnY2mXUhRniLeVkKbM5ZqcJapok8WfsdbA5+f58aGaaIqqZOux0GhsiqZNjIpaxvKjwCV9DOa0jrdbwnN80R+BDWqdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a0c5764adso29455225ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:27:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712564859; x=1713169659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mduMjCqjA7drDw2lEIoqwW5oGXEwTzrsNz9VmuPIKQw=;
-        b=G4oD/tN7k00pbY/aLU1vmj7HekENQo8QrzOHUVfqTTkSm+GK5ldTIInhkv7+5Kg/h+
-         JFsgxPPQ0JNSwvq8hEaXAMrEWNCJZKeVYbe7g00FUnAQ9ZN4nQt5cIqb2zpVX8ESh3Zx
-         7gPvQhS2aE2s+FEVyqfYYUjR4aWSN+r/PTY1fhp+HKQyPlylKXA8k5JmgH8KponFxdjY
-         29vg3OptFkNk9g9txkR+1JUNNqvaHHr3GxILXOZgGiBxOdL+lnzlQ0kiCNN1CoAjpm3x
-         sNswmTlKPfHTc2fWPDucGdA1sJX3kM69oQrmPrLv9lbE6YttJD/GkY/R4XCO+kkomBpn
-         WjdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW6NJYwtnB03uxgJuzEOS4pgknqwRKaCHlEqsgJTx4qSvIM6e4Yao2e1Y0L3PQ4HWLwfb6opGTQbb1w9wDUoZ/GSZxaC55l9GTd2uNDklgI1qNq7aWR4Z2iwRxHixVq89F77Hl2SXXSxfMxemXyhCCLk4vDhhPIkr7i+jUrqO+0QMUXa/HZI6qZ+jlhL589auBdPJkxZ/RiI5fA200uutolqCK17sh+JLRQL7v0ZBVuDVGEUkbWFDJlyy9JrexBdXrBF/wKdQ==
-X-Gm-Message-State: AOJu0YzqrVUtIuNCbvcvGbGcT+qrBrHW/Rx72RJv0nBWREg+d1sTFCWA
-	JqQQcjgykj0NILhb2GnbMdofTrSoJdr2Yv3dPKwmyPlEhZyPVht3Di/ZrEpc7es=
-X-Google-Smtp-Source: AGHT+IGJ7rgElWb5tKJ3j015626NGsXJVnXE5arFslRsaZzIOOWwKBgE3ge5TOwfbMt/xI4zlwZA+w==
-X-Received: by 2002:a17:90b:4b4b:b0:2a2:cd61:c3f5 with SMTP id mi11-20020a17090b4b4b00b002a2cd61c3f5mr6874061pjb.37.1712564858823;
-        Mon, 08 Apr 2024 01:27:38 -0700 (PDT)
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com. [209.85.210.182])
-        by smtp.gmail.com with ESMTPSA id ft4-20020a17090b0f8400b002a54c4dd0f2sm226774pjb.43.2024.04.08.01.27.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 01:27:38 -0700 (PDT)
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ecf3943040so2596615b3a.0;
-        Mon, 08 Apr 2024 01:27:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX+dQMpX+7YAU7PBBS5ccV34mj6qNRn0ffOJOpVXs6NW7aBqj9UYYwmhkEJEUJ7M4vpY0eMoIDMP0/AGpGnrU+rda3VFGUtFU2zeTkNkMUKl6taW42f5aXOEYTZkXrDyk7v1aSgWjGlcJvK0glDBvgWWSky+/pr1IYeSqp97IgNi0rKhs1TBuEPcvgj6hxn8D8GEPNtH6XJlpSU+3OwXCTOl/PvhVl8MYd4DWktiPihO2dXMOrk/CUBGpelyiSP8IAxTKrEgA==
-X-Received: by 2002:a25:7406:0:b0:de0:e7f2:a03d with SMTP id
- p6-20020a257406000000b00de0e7f2a03dmr2539436ybc.3.1712564836998; Mon, 08 Apr
- 2024 01:27:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712564837; x=1713169637;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jtFAVUNiPHqphGwlV72BGi0mOagj+maZQ9ahfH0rlT0=;
+        b=WiYRkMx0SVCVKEV64ZNRBJGNKPgri6cPvXW8QJ+qllpYjWFN+/Dx4Vmy1hxBFxKGOy
+         plVhSYy50Mv6Qvgi8E1NTO7FOrQrlrvSt8wRh7ClG5d2Nc2N+C1Rm5OQpevXr+jBGtD2
+         a27Utf/kemmKSZ8siij2CGqJWGl+CJ5/XapxUtorg+L7aVm5xysWLwpxpBrt7SV2Z1Kp
+         2W5oD5f03Lu+lEZqmw/H4hE02jU3emFb8XtC+OVd/s90kbaBgGC9hTjLM19xgSRQ9814
+         fpWLxFonFCRZpvle+X5JgdzP0Ardks7biCyeTx0f5uf8jeyMzrMQZSPiz7zNnhRtHutb
+         kMEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXn5G/ZNGRSQikqBd1aPmtyonXSuVIHGSVgm6wknGo3FkYDTZblpHHNoBQ32yb7UXMaRY+RvU7Ix29XxNZBmvEl0wtRsNgR4ayL3vYY
+X-Gm-Message-State: AOJu0Yxha8hGun+COUz15vRxBvN8cUeT8SO7pE+45Dnz2/+NQIhsYTiq
+	hosGsenlETc/RVHHDFCU7mykEda/nkSN/7TGT40zwlSBzhEitPam1fgZUH2kkavb2oCEgHPUrck
+	XyTvl97oNHtX5RffnzKQAHJ7hGr9NxE7eDj87zsqTqWm7ExKPfSZCHwU=
+X-Google-Smtp-Source: AGHT+IGVEIWaD+d+7aIjzsYEn9NchKm9EVfzcvKYPPvC7C+AyTgtpFR4I2xSVak5DTDFr7oM+aUa9IJrSE3NAwFA+NTkhvvAGkaD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407102000.37213-1-krzysztof.kozlowski@linaro.org> <20240407102000.37213-3-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240407102000.37213-3-krzysztof.kozlowski@linaro.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 8 Apr 2024 10:27:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWjWLdu9c7=OhFLsY+jSZXspb6jPHxVai2GcbJoS7MDLg@mail.gmail.com>
-Message-ID: <CAMuHMdWjWLdu9c7=OhFLsY+jSZXspb6jPHxVai2GcbJoS7MDLg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dt-bindings: PCI: host-bridges: switch from
- deprecated pci-bus.yaml
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>, 
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Ray Jui <rjui@broadcom.com>, 
-	Scott Branden <sbranden@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Jim Quinlan <jim2101024@gmail.com>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Will Deacon <will@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
-	Srikanth Thokala <srikanth.thokala@intel.com>, Ryder Lee <ryder.lee@mediatek.com>, 
-	Jianjun Wang <jianjun.wang@mediatek.com>, 
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Daire McNamara <daire.mcnamara@microchip.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Shawn Lin <shawn.lin@rock-chips.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>, 
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>, Michal Simek <michal.simek@amd.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Mark Kettenis <kettenis@openbsd.org>, 
-	Tom Joseph <tjoseph@cadence.com>, Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>, 
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>, linux-pci@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org
+X-Received: by 2002:a05:6e02:3d05:b0:36a:686:bbb5 with SMTP id
+ db5-20020a056e023d0500b0036a0686bbb5mr392098ilb.3.1712564836776; Mon, 08 Apr
+ 2024 01:27:16 -0700 (PDT)
+Date: Mon, 08 Apr 2024 01:27:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c04f1806159192e8@google.com>
+Subject: [syzbot] [jffs2?] [hfs?] possible deadlock in jffs2_readdir
+From: syzbot <syzbot+0ad40f5b85b1d5535d7d@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 7, 2024 at 12:20=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> dtschema package with core schemas deprecated pci-bus.yaml schema in
-> favor of pci-host-bridge.yaml.  Update all bindings to use the latter
-> one.
->
-> The difference between pci-bus.yaml and pci-host-bridge.yaml is only in
-> lack of "reg" property defined by the latter, which should not have any
-> effect here, because all these bindings define the "reg".
->
-> The change is therefore quite trivial, except mediatek,mt7621-pcie.yaml
-> binding which have children nodes being also host bridges, apparently.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Hello,
 
->  Documentation/devicetree/bindings/pci/rcar-pci-host.yaml      | 2 +-
->  .../devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml        | 2 +-
+syzbot found the following issue on:
 
-LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15576155180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+dashboard link: https://syzkaller.appspot.com/bug?extid=0ad40f5b85b1d5535d7d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153679a1180000
 
-Gr{oetje,eeting}s,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/c57625568dd0/mount_8.gz
 
-                        Geert
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0ad40f5b85b1d5535d7d@syzkaller.appspotmail.com
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc7-syzkaller-g707081b61156 #0 Not tainted
+------------------------------------------------------
+syz-executor.1/13917 is trying to acquire lock:
+ffff0000c7ace190 (&mm->mmap_lock){++++}-{3:3}, at: __might_fault+0x9c/0x124 mm/memory.c:6079
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+but task is already holding lock:
+ffff0000e55ce3c0 (&f->sem){+.+.}-{3:3}, at: jffs2_readdir+0x230/0x42c fs/jffs2/dir.c:135
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&f->sem){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       jffs2_read_folio+0x6c/0xd0 fs/jffs2/file.c:125
+       filemap_read_folio+0x14c/0x39c mm/filemap.c:2324
+       filemap_fault+0xa9c/0xff4 mm/filemap.c:3337
+       __do_fault+0x11c/0x374 mm/memory.c:4396
+       do_read_fault mm/memory.c:4758 [inline]
+       do_fault mm/memory.c:4888 [inline]
+       do_pte_missing mm/memory.c:3745 [inline]
+       handle_pte_fault mm/memory.c:5164 [inline]
+       __handle_mm_fault mm/memory.c:5305 [inline]
+       handle_mm_fault+0x3a80/0x546c mm/memory.c:5470
+       __do_page_fault arch/arm64/mm/fault.c:505 [inline]
+       do_page_fault+0x4f8/0xa64 arch/arm64/mm/fault.c:620
+       do_translation_fault+0x94/0xc8 arch/arm64/mm/fault.c:704
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:840
+       el1_abort+0x3c/0x5c arch/arm64/kernel/entry-common.c:432
+       el1h_64_sync_handler+0x60/0xac arch/arm64/kernel/entry-common.c:492
+       el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
+       __arch_copy_from_user+0xb8/0x230 arch/arm64/lib/copy_template.S:110
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:871 [inline]
+       __se_sys_ioctl fs/ioctl.c:857 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #1 (mapping.invalidate_lock#3){.+.+}-{3:3}:
+       down_read+0x58/0x2fc kernel/locking/rwsem.c:1526
+       filemap_invalidate_lock_shared include/linux/fs.h:859 [inline]
+       filemap_fault+0x698/0xff4 mm/filemap.c:3252
+       __do_fault+0x11c/0x374 mm/memory.c:4396
+       do_read_fault mm/memory.c:4758 [inline]
+       do_fault mm/memory.c:4888 [inline]
+       do_pte_missing mm/memory.c:3745 [inline]
+       handle_pte_fault mm/memory.c:5164 [inline]
+       __handle_mm_fault mm/memory.c:5305 [inline]
+       handle_mm_fault+0x3a80/0x546c mm/memory.c:5470
+       __do_page_fault arch/arm64/mm/fault.c:505 [inline]
+       do_page_fault+0x4f8/0xa64 arch/arm64/mm/fault.c:620
+       do_translation_fault+0x94/0xc8 arch/arm64/mm/fault.c:704
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:840
+       el1_abort+0x3c/0x5c arch/arm64/kernel/entry-common.c:432
+       el1h_64_sync_handler+0x60/0xac arch/arm64/kernel/entry-common.c:492
+       el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
+       __arch_copy_from_user+0xb8/0x230 arch/arm64/lib/copy_template.S:110
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:871 [inline]
+       __se_sys_ioctl fs/ioctl.c:857 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+       __might_fault+0xc4/0x124 mm/memory.c:6080
+       filldir64+0x2d4/0x948 fs/readdir.c:375
+       dir_emit include/linux/fs.h:3479 [inline]
+       jffs2_readdir+0x314/0x42c fs/jffs2/dir.c:152
+       iterate_dir+0x3f8/0x580 fs/readdir.c:110
+       __do_sys_getdents64 fs/readdir.c:409 [inline]
+       __se_sys_getdents64 fs/readdir.c:394 [inline]
+       __arm64_sys_getdents64+0x1c4/0x4a0 fs/readdir.c:394
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock --> mapping.invalidate_lock#3 --> &f->sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&f->sem);
+                               lock(mapping.invalidate_lock#3);
+                               lock(&f->sem);
+  rlock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.1/13917:
+ #0: ffff0000d94854c8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x218/0x2a4 fs/file.c:1191
+ #1: ffff0000e55ce570 (&type->i_mutex_dir_key#8){++++}-{3:3}, at: iterate_dir+0x340/0x580 fs/readdir.c:103
+ #2: ffff0000e55ce3c0 (&f->sem){+.+.}-{3:3}, at: jffs2_readdir+0x230/0x42c fs/jffs2/dir.c:135
+
+stack backtrace:
+CPU: 1 PID: 13917 Comm: syz-executor.1 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:291
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:298
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+ __might_fault+0xc4/0x124 mm/memory.c:6080
+ filldir64+0x2d4/0x948 fs/readdir.c:375
+ dir_emit include/linux/fs.h:3479 [inline]
+ jffs2_readdir+0x314/0x42c fs/jffs2/dir.c:152
+ iterate_dir+0x3f8/0x580 fs/readdir.c:110
+ __do_sys_getdents64 fs/readdir.c:409 [inline]
+ __se_sys_getdents64 fs/readdir.c:394 [inline]
+ __arm64_sys_getdents64+0x1c4/0x4a0 fs/readdir.c:394
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
