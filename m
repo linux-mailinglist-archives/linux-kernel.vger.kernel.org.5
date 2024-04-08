@@ -1,140 +1,118 @@
-Return-Path: <linux-kernel+bounces-135736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C79389CA91
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1B089CA94
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:16:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07AF6288FF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:16:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26686288DA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03740143896;
-	Mon,  8 Apr 2024 17:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196C5143C49;
+	Mon,  8 Apr 2024 17:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T0N1ia1H"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eT5DjDd5"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C525143880
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD9C142E9F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596560; cv=none; b=nKtJQLTNLCU0KJ/fbXBlBlT3oLcWW9qSGnf8AELkyCxlGBSY+yB7K53I7lTZC8Zdf5bQl0bGTj73dSP0Sq8trolRaNuPykNUGu/RGwZi6AwjKSZ0exjPU6otLYbAZYybKN4feLEMtifmFl2se6Wd6ethekfH1fHDQAY6CGErTw8=
+	t=1712596572; cv=none; b=d4Ga6HudmKvqcFRyEZXkbMz8JsBQi0UxQ4eEfXib6XtDTIFECBOoQRE3IBcp5G+F63Hs5EYuGS/s66B5Ecpl6CpMmSyeedVebiJfWCbeTo/CG1pCVJpgDLZfwoiuyuMJU6wWmOkEf6sQbi/UvgW8eFyExtLPC3U3hL/DtIsEekk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596560; c=relaxed/simple;
-	bh=WzIOBFBkD2VF+X/O36wHgqJzYEwGWtCcZYrHSWH0pUE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r/ZrB6fNmUdc/Y0Uz3YcFHbPptqJY1YnjtBM6lEasfGnuh6XpEBYEMJeWKgu7fIw0AX1Zu3XFNjVxqO1ezYSFDLfRDuw7rbjPezK9m4HhtQPc+7wtwzF0QI67nNwz4quTFh++d1ziIs2mYhJJhIrAVpypbpN0FgiJh9BjQzxs8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T0N1ia1H; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7e65c56d29aso290249241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:15:56 -0700 (PDT)
+	s=arc-20240116; t=1712596572; c=relaxed/simple;
+	bh=SaCsVCzVf4qxv3ByikrvVOhuEnEE/taKiCJQLeHbC/Y=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=kNHmkk5qkJETIda6axBXIOsIqhbMBktDP+d63hcMPWyb1OJTfDLgl2EMWs48SZ6qJdz0sxqRmrI03TIarB3fWgZJJ06yEnLRlM5P6amTayRZtT6XSlcbktydDjr8PA/SDLQXJL6LCzz0RdAkydehsFXn2YOmOWsm22slKHGJzu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eT5DjDd5; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-343e7c20686so2575764f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:16:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712596556; x=1713201356; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qMNf7A6k8nLtZDPsfj34GNgCGUzYdTJ3ArVvRF7NLxI=;
-        b=T0N1ia1HCZUIfD5me3hD/7haseWLZWvH6VnymmhWs+pzrD6F57B+znGEWdsMlx5WKB
-         x1gDvHQIo/ZrOeD3AG6uR8cS3hpOpiuliQh8YVirw+Ep8gnNm0o+mhvbsKuuy0qeaIlP
-         6GlmFKW4QIYRMEMuylztBvh0M+NLERW+XIOmuItmXvbZdrdYQt47bWEk0JrmE6S6BIyQ
-         ltfg6vjWDWT9VmkI0cvfZsQu+qMXYryXsu3/rQEiGJZ5KwXHOOSN+C9cRtglkUddxTKP
-         vwOP3f8Om2/Tkm62FKchMr8j0pFQqR9jUFd3diuaYWD2+Uoj0hH2MlcEViiWYuGTnFCF
-         LLEw==
+        d=gmail.com; s=20230601; t=1712596569; x=1713201369; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Z/MHDC/Igjk4t4nZzuD7aGsRzLn8MSL7qY/uwxsEKAQ=;
+        b=eT5DjDd59ImyOaDxSV8uqDq8C10qrDlL04oKaczOcSlyVYtuZ4a6SeTutAtA9h1Czw
+         lsRIGgI2/brdzid+qxPSu32FaHlxx2r8viQ2Qw9HBCTMYE8ZhXVKT5lMvWLZgTz6CuIG
+         v+F3QINYPHhLdEZu8pKBHfiEnLm4QYVZLBR6aNLzm7ennAbgPTO+craFg0c8FaS92e2n
+         WY3b5244QTcRueUvL7lGJjFyGevs6mZ3jwS8BlKAdBYmhG5TK9d8Gc/W0RX5L7dKGx8a
+         nq08vVQnF4uRUEOT9RHIjniK+0Kh5VB2aowW2FQm2YF/kj2rNNVT/fXYwh16mcrY9mjs
+         IttA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596556; x=1713201356;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qMNf7A6k8nLtZDPsfj34GNgCGUzYdTJ3ArVvRF7NLxI=;
-        b=DfuFuy6ZWHIstxCwPTLvr3FTuR8R2hg6yoC01AtMNN5/HAt84cXAYJ2vb8zHcLt+BN
-         B5AjrjYcoSy++fUxYnKr8oihiPXPpWkOoNe3hjER9hkSsBlgeQXn/oi2rzFeqITnNNzb
-         m/6wZHyig/NqRaj2V6zExZzfP6uouhE21J/irRELNknP5+97E/y6rYri4Df1YPcI4UFC
-         uhj3+sDgJPkT81CZA/rRY86zjmDJ3KhLG/cBs3w7njMEZ7DS3zQ/oI9tnwIruGXi1DFk
-         uzxqzvofeuSj/E5nGq7jlEfkJvg9Bi/82cHuc8v+ZkXAw6xxrWgvnaUVbqisfuEhXo01
-         3Jdg==
-X-Forwarded-Encrypted: i=1; AJvYcCU517VbME751oeV/GRsYw7jdKAttb3KWIWO7juwcxXjfCYWuaH9Z0cmcaM+0YTv6AOCJmXjI9jPf/cmzlMCH+O6tZBV3uP+H/0HZH6G
-X-Gm-Message-State: AOJu0YwVCp8qi3/0FNZWImZuew97T5GRkNzNJORXKtoBIr4wsYJiIk0Y
-	4X9fIvys/BE7gY2TyGGjSZBwIqAJW9QvlSyu5K0oLuMAjU1WXvxjjuT+MUTgA3XeG9sdgVGgoOn
-	5eO5VVm8g1qqHCCmtw4MWzhDvMbqiv0P+pydkuorBB5k5mPN1aa0=
-X-Google-Smtp-Source: AGHT+IGH5m+zw44aHKIWpc2eCPDcCytI9gca4fjAbaev/T3kTlbpcREmReh2WF2ua2H28ryZdpuTMcSK6lK7YYEObFE=
-X-Received: by 2002:a05:6102:6ca:b0:47a:ff5:fcc5 with SMTP id
- m10-20020a05610206ca00b0047a0ff5fcc5mr1097660vsg.4.1712596555926; Mon, 08 Apr
- 2024 10:15:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712596569; x=1713201369;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z/MHDC/Igjk4t4nZzuD7aGsRzLn8MSL7qY/uwxsEKAQ=;
+        b=bfObOBl9FBBShUVkYjDOQP+yu5TI5eBaf7kdycpb4uH+kSHQzfSCfCWDcv4hcAY7T7
+         JiFD8Apev3JrT9LjIRcZhKofokkt/nmVrxE4nXDXBdNOTLshgr+sJk9lFNVfz0Q6qBP+
+         3hShs7RayDJbfONpl78tU7jDrWQrQKbdY0ALvOpwbim+NXULKXFo6MHYuZdvqMvDHd/o
+         i8UMYjv93xyasMUhOYQa4V6KmNWdKKO5XkiAiXZJUPzQHXVTZ6+q3PSQCHoHE4MLrG7X
+         VImQR9Gzax8vMnHY5IrmjXpbAK1V1fObxtshrJn/a2cuU4tSoh4ASUwEegQkiVERcLLj
+         LxuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVxoNmx41yOktVV7ima4hEvqHdWjUifQn0jOg2epOV0sxP/Ku8LRy9M25EenqlDd4oFkRMibkZ9hCKpWEwZWT8pZpw6DJCvA7gJevih
+X-Gm-Message-State: AOJu0YzUrJtNVErrc4NENocy6JQq8Pr4wA9mCukvbrDXrRcJDl5zQD0y
+	s3hzOOqRenith5FinNKSIEh6Esty/s3rMh1C8A45z8NSYMcH0vaBqjSjM7lMwP0fnGhl0i1Hy6Y
+	L6o6fAm4MX8he5yBkYRCEybbRFFA=
+X-Google-Smtp-Source: AGHT+IHEKZWh5orZ4XPPFfsWqaRfB/CBsxW2Nv4wV+6virLOPv0C2g5dW/Tx1fVt3NVryKgyJV1uQMwwyeCfjtnsS9A=
+X-Received: by 2002:adf:cf0f:0:b0:343:7fa6:4393 with SMTP id
+ o15-20020adfcf0f000000b003437fa64393mr6935742wrj.38.1712596568173; Mon, 08
+ Apr 2024 10:16:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408125306.643546457@linuxfoundation.org>
-In-Reply-To: <20240408125306.643546457@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 8 Apr 2024 22:45:44 +0530
-Message-ID: <CA+G9fYsvgN2ixfmDKc_x8yFnZ3SfrmSV5Ck1QC5KfmYN89CFYQ@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/252] 6.6.26-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org, Thomas Richter <tmricht@linux.ibm.com>, 
-	Sumanth Korikkar <sumanthk@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+From: broler Liew <brolerliew@gmail.com>
+Date: Tue, 9 Apr 2024 01:15:57 +0800
+Message-ID: <CAODyvywHfmeFJP_obZB=dWcaibH_1RRGX=+CSVwcdfjSLMbJ4A@mail.gmail.com>
+Subject: [PATCH] drm/amdgpu: remove "num_pages" local variable in amdgpu_gtt_mgr_new
+To: alexander.deucher@amd.com
+Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Xinhui.Pan@amd.com, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>, 
+	brolerliew <brolerliew@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 8 Apr 2024 at 18:30, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.26 release.
-> There are 252 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.26-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+amdgpu_gtt_mgr_new and ttm_range_man_alloc share similar logic, but
+"num_pages" in amdgpu_gtt_mgr_new is defined as local variable which
+is calculate directly in ttm_range_man_alloc.
 
-The s390 defconfig build failed with gcc-13 and clang-17 due following
-build warning / errors on Linux stable-rc linux-6.6.y.
+Signed-off-by: brolerliew <brolerliew@gmail.com>
+---
+drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c | 3 +--
+1 file changed, 1 insertion(+), 2 deletions(-)
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+index 44367f03316f..0c56e4057d85 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+@@ -116,7 +116,6 @@ static int amdgpu_gtt_mgr_new(struct
+ttm_resource_manager *man,
+                             struct ttm_resource **res)
+{
+       struct amdgpu_gtt_mgr *mgr = to_gtt_mgr(man);
+-       uint32_t num_pages = PFN_UP(tbo->base.size);
+       struct ttm_range_mgr_node *node;
+       int r;
 
-Build error:
---------
-arch/s390/kernel/perf_pai_crypto.c: In function 'paicrypt_stop':
-arch/s390/kernel/perf_pai_crypto.c:280:51: error: 'paicrypt_root'
-undeclared (first use in this function); did you mean 'paicrypt_stop'?
-  280 |         struct paicrypt_mapptr *mp = this_cpu_ptr(paicrypt_root.mapptr);
-      |                                                   ^~~~~~~~~~~~~
-
-Commit detail,
-  s390/pai: fix sampling event removal for PMU device driver
-  [ Upstream commit e9f3af02f63909f41b43c28330434cc437639c5c ]
-
-Steps to reproduce:
-# tuxmake --runtime podman --target-arch s390 --toolchain gcc-13
---kconfig defconfig
-
-Links:
-  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/log
-  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/details/
-  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eozoS8GQGxb94EUWNTPuXvYjVU/
-
-
+@@ -134,7 +133,7 @@ static int amdgpu_gtt_mgr_new(struct
+ttm_resource_manager *man,
+       if (place->lpfn) {
+               spin_lock(&mgr->lock);
+               r = drm_mm_insert_node_in_range(&mgr->mm, &node->mm_nodes[0],
+-                                               num_pages, tbo->page_alignment,
++
+PFN_UP(node->base.size), tbo->page_alignment,
+                                               0, place->fpfn, place->lpfn,
+                                               DRM_MM_INSERT_BEST);
+               spin_unlock(&mgr->lock);
 --
-Linaro LKFT
-https://lkft.linaro.org
+2.40.1
 
