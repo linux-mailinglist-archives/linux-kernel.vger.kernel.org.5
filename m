@@ -1,111 +1,248 @@
-Return-Path: <linux-kernel+bounces-135012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003A589B9ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:14:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77ABA89B897
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:38:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94CCE1F214D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:14:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE73CB226E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B521452F8E;
-	Mon,  8 Apr 2024 08:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F19F25632;
+	Mon,  8 Apr 2024 07:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JtK9dDMH"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fBn2188k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5bBQXTwO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fBn2188k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5bBQXTwO"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6743353389
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D3D25619
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563831; cv=none; b=EvZqfa0fcvFIKsP6uSuqRQZpN8GMvwDM/fi1AU7Qcr6UVU8jAB4WJe7WfOPW4mjTYjRcKuQc4RpL4Bxef3n/vdkc7pIDN1H80qFHhL3MjnQ8axcCwrIYT7kZdLSFVfVDOxLfY44M+zUzaciK7f0yrgS3l8aOcuwnefp889moAbQ=
+	t=1712561905; cv=none; b=EGJ/IGU7DwVksaoPwXfxcpHelqU73CKs+BTFlfC/dCGUBNGJsBCQ70TbE4yayAj7n6vm/k11g6zHgwq1knSybRjHhcnQRPkzgM+cI/8te3YctMqu7C0owUUR9QvkBem5AW7491ZBWdpMSmaSQJ2i5umTRsR8+z0iJl3C4LH7NL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563831; c=relaxed/simple;
-	bh=virOewUX4t0oSLmoki5IIgzfGSQ60/H3437FkDr3qko=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=pHviAc2de6PlAJKmiGBvOalsGaa71thsf4KjwJF/ZIr5soEOM/p0cGT6JpbPfwKOuG6AKt8x8XfaeKknzgCPrjVZTxj75SHHJ1bEF0vf37iidx1/7FTH7AJarooxTs9dtkGx6szkJv+DunVNq9u/3bDLx8Dck4AMQae6IUW1DOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JtK9dDMH; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51d7213a42so60585566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712563828; x=1713168628; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SO3oSKHhB+QUpEgYOl7F+vhVd4MWO5gWULhDTn9lHJk=;
-        b=JtK9dDMHhI40zGAm112hD9FH+/Um82S5KZTsm3vXdSoVMMsXwePpUt/H4ASWhyXgH8
-         anE5e4xDNptqeEcyFZLOftnk9m+qbNFZ2Sy/4fgI+ErCudRGXKyn1G8p6nONzJK5nmZ1
-         M9FxZpGGc6F14bAjkhEGD/1eoc6rwsg/lT8nGs+lODyaUGT62X5xxiZh2V6FU0o0EPRb
-         SWqwE+ZfP7Ftu1uWPbAzbziLNF+TNsdBRLktzTNzPhfnDrVTQ/xvB9V/aOCOLHSvZeZT
-         2WlwsVdfBrm50l5LYBzDATMNhfcaQkTCsc0oPUYS+pSBBpbt97kxBjrP/dmxA+dXnEfQ
-         5lmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712563828; x=1713168628;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SO3oSKHhB+QUpEgYOl7F+vhVd4MWO5gWULhDTn9lHJk=;
-        b=psUv9njZjw+MnYk6p+kwQkIdykRYFrhJXWFvuw/V7r86j7X/cGcCpi1nS05PyX9So1
-         o20O0npz4mga15sGCD20fdI3IAu/4mnFRqEJ3/7tgOseZnaqAfUgRxyGazAiXk8Hv/Gs
-         C9NO+kbTn0353IxYgCOWAjppwONmtxhsA3aJilR4NYOLaDWmh0zs2pAiL6YWjUDBmUqw
-         ST2YvEWoyERch7tbCv2egheCHkXZuc5O4rqYRJp2z0lVDl3XEmHAzuxU4FMRBgCyJnDq
-         B+Sr7H2lL6AN90jDfi1TV4Z4cNQPGZb2N/0/tAe06Q+Vf8ad9/oxMx0RJuz4IUTRE9vg
-         YeGw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDCyITlc67FD3D1CjEte3kyJm3D0coibMAs87vxYiddUKsuNBCzzzMbVSqho40Lrj2I8b612W1yc7ZvbiDsJgseLy64o3I/Pi1aHhX
-X-Gm-Message-State: AOJu0Yw6WuNp4SZU7ycmlMrdMNaws76ZXx36igvf60sGZDcLkeQkmD37
-	dHoENUGMyVRYy1PA83BjeuyPVwCoVLNXip+VWFzeFQiLMTZ2+DSwb08zmAGMxmY=
-X-Google-Smtp-Source: AGHT+IGBP2Eb1evno6OQER1fBynnrKOVTRDH6lrULwXK4u5X7YCnyIyHK40Fs4HT+0CKsXZ9E+hNfQ==
-X-Received: by 2002:a17:906:ae4f:b0:a47:4bd6:9857 with SMTP id lf15-20020a170906ae4f00b00a474bd69857mr4337354ejb.64.1712563827422;
-        Mon, 08 Apr 2024 01:10:27 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id r11-20020a1709067fcb00b00a4e9359fbe8sm4091818ejs.44.2024.04.08.01.10.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 01:10:27 -0700 (PDT)
-Date: Mon, 8 Apr 2024 10:38:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] ASoC: soc-card: Fix a reversed if condition
-Message-ID: <155bb76e-dc57-4a5c-b0eb-acee5ebde9f4@moroto.mountain>
+	s=arc-20240116; t=1712561905; c=relaxed/simple;
+	bh=GTL/uT0QmdkDTJG+8EUVeHgZ1nLQq/V+K6ECxsaKgJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o6P+NknW0R3kPQsyk5hr1KF4ZtnA7xBuflyKMsWq3m00+6SIQ8kCww7sevyTyxVX7DNQRnbMILrF5IksRJFd6bd3IhuxI0EXais15ZrUB1FY+aX5QDZFshg6pOTH27l4JrVqGP47CeN4mffQLAK9e2rgEc8gY4o31QkfDu06NWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fBn2188k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5bBQXTwO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fBn2188k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5bBQXTwO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5D1881FDD9;
+	Mon,  8 Apr 2024 07:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712561901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yDXYZ+HVnjL8LE33ELw6Ev7L7ptFfBFSiqjfmx+pLTk=;
+	b=fBn2188kDItamcKZUw6GNFQi7zDvajXvdOuQ/G+qSX7jQGwSep87thmPdX7OtGF3ASS0UD
+	ADSf9RNosB49Wou8xYnsqGkOIAU+AGCOBbniGxg72YiFK7Wey942WDa6z1KO5H7XvJ2fFy
+	QfpzapNUfSUyz5C5FpwwdUTxfc8mpZc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712561901;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yDXYZ+HVnjL8LE33ELw6Ev7L7ptFfBFSiqjfmx+pLTk=;
+	b=5bBQXTwOVkFCX54Tjtn+j1d+9yqYRoh8cSYD2edzGBtZ9CRMi3UDCad+i1ch+61upSlXyE
+	+IO7ImUZ+FJO7hDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712561901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yDXYZ+HVnjL8LE33ELw6Ev7L7ptFfBFSiqjfmx+pLTk=;
+	b=fBn2188kDItamcKZUw6GNFQi7zDvajXvdOuQ/G+qSX7jQGwSep87thmPdX7OtGF3ASS0UD
+	ADSf9RNosB49Wou8xYnsqGkOIAU+AGCOBbniGxg72YiFK7Wey942WDa6z1KO5H7XvJ2fFy
+	QfpzapNUfSUyz5C5FpwwdUTxfc8mpZc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712561901;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yDXYZ+HVnjL8LE33ELw6Ev7L7ptFfBFSiqjfmx+pLTk=;
+	b=5bBQXTwOVkFCX54Tjtn+j1d+9yqYRoh8cSYD2edzGBtZ9CRMi3UDCad+i1ch+61upSlXyE
+	+IO7ImUZ+FJO7hDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 422C0137D4;
+	Mon,  8 Apr 2024 07:38:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lTN0D+2eE2bqWQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 08 Apr 2024 07:38:21 +0000
+Message-ID: <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
+Date: Mon, 8 Apr 2024 09:38:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
+Content-Language: en-US
+To: Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
+ "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240320180429.678181-1-hannes@cmpxchg.org>
+ <20240320180429.678181-11-hannes@cmpxchg.org>
+ <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -3.03
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.03 / 50.00];
+	BAYES_HAM(-1.74)[93.40%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-This if condition is reversed.  But fortunately, it has very little
-impact on runtime behavior.
+On 4/7/24 12:19 PM, Baolin Wang wrote:
+> On 2024/3/21 02:02, Johannes Weiner wrote:
+>>   
+>> +	account_freepages(page, zone, 1 << order, migratetype);
+>> +
+>>   	while (order < MAX_PAGE_ORDER) {
+>> -		if (compaction_capture(capc, page, order, migratetype)) {
+>> -			__mod_zone_freepage_state(zone, -(1 << order),
+>> -								migratetype);
+>> +		int buddy_mt = migratetype;
+>> +
+>> +		if (compaction_capture(capc, page, order, migratetype))
+>>   			return;
+>> -		}
+> 
+> IIUC, if the released page is captured by compaction, then the 
+> statistics for free pages should be correspondingly decreased, 
+> otherwise, there will be a slight regression for my thpcompact benchmark.
+> 
+> thpcompact Percentage Faults Huge
+>                            k6.9-rc2-base        base + patch10 + 2 fixes	
+> Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
+> Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
+> Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
+> Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
+> Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
+> Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
+> Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
+> Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
+> Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
+> 
+> I add below fix based on your fix 2, then the thpcompact Percentage 
+> looks good. How do you think for the fix?
 
-Fixes: ef7784e41db7 ("ASoC: soc-card: Add KUnit test case for snd_soc_card_get_kcontrol")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- sound/soc/soc-card-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah another well spotted, thanks. "slight regression" is an understatement,
+this affects not just a "statistics" but very important counter
+NR_FREE_PAGES which IIUC would eventually become larger than reality, make
+the watermark checks false positive and result in depleted reserves etc etc.
+Actually wondering why we're not seeing -next failures already (or maybe I
+just haven't noticed).
 
-diff --git a/sound/soc/soc-card-test.c b/sound/soc/soc-card-test.c
-index 075c52fe82e5..a9fe7d243807 100644
---- a/sound/soc/soc-card-test.c
-+++ b/sound/soc/soc-card-test.c
-@@ -148,7 +148,7 @@ static int soc_card_test_case_init(struct kunit *test)
- 	priv->card->owner = THIS_MODULE;
- 
- 	ret = snd_soc_register_card(priv->card);
--	if (!ret)
-+	if (ret)
- 		return ret;
- 
- 	return 0;
--- 
-2.43.0
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 8330c5c2de6b..2facf844ef84 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+>          while (order < MAX_PAGE_ORDER) {
+>                  int buddy_mt = migratetype;
+> 
+> -               if (compaction_capture(capc, page, order, migratetype))
+> +               if (compaction_capture(capc, page, order, migratetype)) {
+> +                       account_freepages(zone, -(1 << order), migratetype);
+>                          return;
+> +               }
+> 
+>                  buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+>                  if (!buddy)
+> 
+> With my fix, the THP percentage looks better:
+>                        k6.9-rc2-base          base + patch10 + 2 fixes	+ 
+> my fix
+> Percentage huge-1        78.18 (   0.00%)       82.83 (   5.94%)
+> Percentage huge-3        86.70 (   0.00%)       93.47 (   7.81%)
+> Percentage huge-5        90.26 (   0.00%)       94.73 (   4.95%)
+> Percentage huge-7        92.34 (   0.00%)       95.22 (   3.12%)
+> Percentage huge-12       91.18 (   0.00%)       92.40 (   1.34%)
+> Percentage huge-18       89.00 (   0.00%)       85.39 (  -4.06%)
+> Percentage huge-24       90.52 (   0.00%)       94.70 (   4.61%)
+> Percentage huge-30       94.44 (   0.00%)       97.00 (   2.71%)
+> Percentage huge-32       93.09 (   0.00%)       92.87 (  -0.24%)
 
 
