@@ -1,123 +1,137 @@
-Return-Path: <linux-kernel+bounces-134748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036F689B654
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:17:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A9D89B657
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:18:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B062E282F05
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:17:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2D0FB21F3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FAD4687;
-	Mon,  8 Apr 2024 03:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA6D2913;
+	Mon,  8 Apr 2024 03:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyUYHtHT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K11QaQIn"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9BB6FA8;
-	Mon,  8 Apr 2024 03:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6864E186A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 03:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712546224; cv=none; b=tYVArEFvIjb9BxOJeej0SG4DkBmoury+EqI3cpEGWh4M9JEkLAF1xIAMZoI19zR3xffVPq8hqtFYLptwaaN9U8VKIGud+KQAQZiYRofxSbf/jouhVgR+6vs8oCnx3W0k/VethtUL62oazUNiS5ZZewk7l8o1NrII12vAOsDmiq4=
+	t=1712546313; cv=none; b=pyKHTvKq5ZB4WRdm0nUFiAYK/LzIG9rve5reP33nPq2eJkEdm+NB76AvzgjTFPPWrZuEBcXZQna8ZqThqyIoNHvyB6HBXDpZ8Z3sQ/yR0LzgycFegMoFCcxIgjE6HbqGWyENQHXzg3XfCuXuoY2gseKk3IbdD6ILZfFU+e5HA1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712546224; c=relaxed/simple;
-	bh=88xy5ncDJIYZXTN7bl3r8g56wJn0PxbweOPTs/roHCw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=UcZuCi6fTHrFAo9WkRiC1h+Rbp9s98vYQ9VszgNMdaCLnUvBKGnppPo6MwIrjTGcc8fQHh7OM/UQWaj79YLVWrrykYjFpNjHFzjSJkIVxqDSA4uvCYBRNUkJR6j44AQTwPAreTSEv18TnR+Y/+IwJug3H+b2CIaN4FLuBcBi+70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZyUYHtHT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F18CFC433C7;
-	Mon,  8 Apr 2024 03:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712546224;
-	bh=88xy5ncDJIYZXTN7bl3r8g56wJn0PxbweOPTs/roHCw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZyUYHtHTQhKODKjnshXcOh/ThkToFRTSnqBmTTyiXmfdqVvUGvDpFgtFv6y0CX0i2
-	 N+uf4vuOTZqzxAAvYglXPWOiWX7Tm+xP7RdhHcU8+vfaxRLIWBBJGR72blU3qHKrmZ
-	 UR6eb37f4kkGT8pkfjWoiQPXUVYobVQWTY32f171Dbtql4XC3LvYqLkfNefKr3TWdn
-	 GZin3RVDKASvgMnXdND7GADgx0SxhLAR8If7Q89aua45ku3iFhqkAHBYrQYiCjNK8c
-	 jH8BkDVU1shiWB+keBsxv3JFuZS3F6Gc9bGhE02ZZrjaA5gAli5PCr5cDBRCqTzsvk
-	 LD3bvQZJCP3UA==
-Date: Mon, 8 Apr 2024 12:16:57 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-Id: <20240408121657.5603eb93a55ba22a29b0c24b@kernel.org>
-In-Reply-To: <Zg-8r63tPSkuhN7p@krava>
-References: <20240402093302.2416467-2-jolsa@kernel.org>
-	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
-	<Zg0lvUIB4WdRUGw_@krava>
-	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
-	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
-	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
-	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
-	<20240404161108.GG7153@redhat.com>
-	<20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
-	<Zg-8r63tPSkuhN7p@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712546313; c=relaxed/simple;
+	bh=3ilci9gMyUWIKqfJPT0Xi9ZjjLNpXg7E1hfBAMC+znI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HcIXtlfHgn34e34nu0FkJB/eoCu+MOATAyzBiTOJq4e4iBH/SXKXnK2P3oJHokVPrG1ZnjcRndj5i8bu118Rvao7Ys27Oivq5LZM2usPJbrCvypaHMN7PIG8B8AUFEt/DFSRHla03gMmS6ZBnoESbLlCF2LIPQ/JT3WNAVyp4Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=K11QaQIn; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78d575054c8so85867385a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 20:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712546307; x=1713151107; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LyQ3gqC4n7s5e/dZCBWNeKChUckyBUUi1w62B96nUuQ=;
+        b=K11QaQIn3ldF3cN918Usz24I0uObiEJ2G1r9jfOgkLIrY+GJmjFl9gQo64voX5xOOi
+         6liejsybsNHwOMt+3DJohzSHMnaSHF+2fRpbSGNh7mGqMKVtgLgA1t5N1FBS9PQtlLUR
+         TeopixYw46L+W2Xty7JGLfQ+d6NHcQNAOaj7g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712546307; x=1713151107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LyQ3gqC4n7s5e/dZCBWNeKChUckyBUUi1w62B96nUuQ=;
+        b=n6ZkoTMqVF3Ss5pJMR0QyqwDvzd9eE66AGv2C/FtAGe+glUvIVFNhTwiiVl2+vWnjF
+         YZL7/WhZB3+lON6jOaGoi4DntoOG5alOrDLoHVViRA4eYA5n2uYM2MWOcvGAJM2ei7kb
+         qbe0+wLZhXA3On9gbUOBwjMrrwsCQO1rwCIInBcWDQckDGYW88PsFkMAZtYWtMuM0TNN
+         C05e/PVuTUUuGo9fNP4x+82RGem8Mnt1TXLvlOHlhLVAWh9uazLsoh0YfNdvIDSfNfKH
+         yyM29yb6Jw82MCJ+frOLNRruWwOvhIPVFzL/qUJUrwM37BJsfnTdnEV6qt3Q364Mwvj9
+         9x9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWRFoQ9vy13px/6v0j8iwID2sFAV/1NOeDicOEksi0N7KXfkKWJXHsp9ot1mdlEUzZJfKoVy2TQ/j2XY7zumU1d7/yzH3s2CUhbWdkT
+X-Gm-Message-State: AOJu0YwbxY0mXUQHS61Z/RRrU2uOjkIpY0nYoAbHzj0RwRRBnHGtZd31
+	aKDoboIQ48kvwaeC8ZLs+6qLVzzsvTusp1n5v8LosfPQSkXjRrB02DIgK70qCJfpztzMUsqDg5E
+	heA==
+X-Google-Smtp-Source: AGHT+IHgEFG+KLgj7bFBmMjHqt/WcgjjXHoF8Vf/1bNEXPC4OvfdO75ipScnLgikEhEQLjhtRKmCIw==
+X-Received: by 2002:a05:620a:4511:b0:78d:4404:2424 with SMTP id t17-20020a05620a451100b0078d44042424mr10050947qkp.59.1712546307306;
+        Sun, 07 Apr 2024 20:18:27 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id h20-20020a05620a10b400b0078d60973a51sm1375602qkk.75.2024.04.07.20.18.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Apr 2024 20:18:26 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42ee0c326e8so318381cf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 20:18:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVRztz5nh0eWi9Nxpyi6feFUorHHLRNiKCOmxok/mURLEYMUFgaGhPJOkKJD3Y5GSnasPA4FJQRTLopWepgyRJzFqHy3RGavw3zusxR
+X-Received: by 2002:ac8:7cba:0:b0:434:77b8:1ce4 with SMTP id
+ z26-20020ac87cba000000b0043477b81ce4mr154092qtv.0.1712546305996; Sun, 07 Apr
+ 2024 20:18:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240405102436.3479210-1-lma@chromium.org>
+In-Reply-To: <20240405102436.3479210-1-lma@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Sun, 7 Apr 2024 20:18:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U4kLZMSViOMcUaXEJd8E2avb7wiBx=Y=Uad+04Q5LHXw@mail.gmail.com>
+Message-ID: <CAD=FV=U4kLZMSViOMcUaXEJd8E2avb7wiBx=Y=Uad+04Q5LHXw@mail.gmail.com>
+Subject: Re: [PATCH v2] HID: i2c-hid: wait for i2c touchpad deep-sleep to
+ power-up transition
+To: Lukasz Majczak <lma@chromium.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
+	Maxime Ripard <mripard@kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>, 
+	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 5 Apr 2024 10:56:15 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+Hi,
 
-> > 
-> > Can we avoid this with below strict check?
-> > 
-> > if (ri->stack != regs->sp + expected_offset)
-> > 	goto sigill;
-> 
-> hm the current uprobe 'alive' check makes sure the return_instance is above
-> or at the same stack address, not sure we can match it exactly, need to think
-> about that more
-> 
-> > 
-> > expected_offset should be 16 (push * 3 - ret) on x64 if we ri->stack is the
-> > regs->sp right after call.
-> 
-> the syscall trampoline already updates the regs->sp before calling
-> handle_trampoline
-> 
->         regs->sp += sizeof(r11_cx_ax);
+On Fri, Apr 5, 2024 at 3:24=E2=80=AFAM Lukasz Majczak <lma@chromium.org> wr=
+ote:
+>
+> This patch extends the early bailout for probing procedure introduced in
+> commit b3a81b6c4fc6 ("HID: i2c-hid: check if device is there before
+> really probing"), in order to cover devices
+> based on STM microcontrollers. For touchpads based on STM uC,
+> the probe sequence needs to take into account the increased response time
+> for i2c transaction if the device already entered a deep power state.
+> STM specify the wakeup time as 400us between positive strobe of
+> the clock line. Deep sleep is controlled by Touchpad FW,
+> though some devices enter it pretty early to conserve power
+> in case of lack of activity on the i2c bus.
+> Failing to follow this requirement will result in touchpad device not bei=
+ng
+> detected due initial transaction being dropped by STM i2c slave controlle=
+r.
+> By adding additional try, first transaction will wake up the touchpad
+> STM controller, and the second will produce proper detection response.
+>
+> v1->v2:
+> * Updated commit message with short sha of a base commit and proper tags
+> * Rearranged while loop to perform check only once
+> * Loosened sleeping range
+>
+> Co-developed-by: Radoslaw Biernacki <rad@chromium.org>
+> Signed-off-by: Radoslaw Biernacki <rad@chromium.org>
+> Signed-off-by: Lukasz Majczak <lma@chromium.org>
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
 
-Yes, that is "push * 3" part. And "- ret"  is that the stack entry is consumed
-by the "ret", which is stored by call.
+As per my review comments in response to your v1 [1], this seems
+reasonable to me.
 
-1: |--------| <- sp at function entry == ri->stack
-0: |ret-addr| <- call pushed it
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-0: |ret-addr| <- sp at return trampoline
-
-3: |r11     | <- regs->sp at syscall
-2: |rcx     |
-1: |rax     | <- ri->stack
-0: |ret-addr|
-
-(Note: The lower the line, the larger the address.)
-
-Thus, we can check the stack address by (regs->sp + 16 == ri->stack).
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+[1] https://lore.kernel.org/r/20240325105452.529921-1-lma@chromium.org
 
