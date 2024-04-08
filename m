@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-134826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076CA89B785
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:17:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E77E89B786
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:17:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39AF61C20F0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:17:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D606B21C51
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E92FF9E9;
-	Mon,  8 Apr 2024 06:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A90C171B0;
+	Mon,  8 Apr 2024 06:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWwIsZOl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gaW0/pPo"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B0C7470;
-	Mon,  8 Apr 2024 06:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EB58827;
+	Mon,  8 Apr 2024 06:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557036; cv=none; b=uRM7bcd81ZrLY4f43DG9fBJmHucvD6yvAvTfHzhh02h5cPMZxiLXv4Yyakw2/DSDIJUjd2TlBYSaHHuIG6xuv+EkmwhWd8qqryDtfrkspIZDOBzbxvcVf4HigI5BUAUMGdRqSH/GWi40GYacogiocP7WX5bFLwnNgx1mPnS4jG0=
+	t=1712557038; cv=none; b=KwP6toej4MVg05E/35/f9iXuxW+5xBKLb84qe7G3G1eQgQz6bQIhGtH4/qqqAyLGZTavlJS/poI0DEOSNTzsoAARC9FkOYK60e/Tnvnep4PDor1Gcc98C7mnWP/AKFERcf5xVWcZR/9SBJjU2Psz3Of31XMmSGwKRRu+YOzSAC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557036; c=relaxed/simple;
-	bh=OziQqOlr0jwrXZHS75y+H+NpigCrK3eEQkFJgpX31s8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D9zOcz3i5XZqMRhwVqUwRmN4RHd/mnZyfkINdue9Nmy5hdK4yAfqtSHNp7/HSw0i1qT0+DOhDNbMv3zHHvPR8ihNIUwFO40T7cosTbXskCn25PII0V/XYPV56vHKvMyt5949MmiQ6KeUafD1NkVfZlnQ1ipwxoix0Sdq7I5smH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kWwIsZOl; arc=none smtp.client-ip=192.198.163.19
+	s=arc-20240116; t=1712557038; c=relaxed/simple;
+	bh=BVO25ii86k6Vyr75+LHLBzTqlO1r919XfPw4uhYB7n8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=INuaPm2UBi6l+6peFTTUYluFwFiRPLbvphjYpKhKRMMoXdjx5pFIdqiCDN8uBJDLlnaFiPOuWkb0we3aNGwTs36K2Cc3Wo45XerU2Z5TOHfDOaOSz3t8xjz7GS23Vcdo4Bt0d09T5pPY37DzoC3E9ArBLskMZ650xax4+GrMPGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gaW0/pPo; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712557035; x=1744093035;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=OziQqOlr0jwrXZHS75y+H+NpigCrK3eEQkFJgpX31s8=;
-  b=kWwIsZOl3nXmdUPzuCl4FiyD2AM6rqIBsh01DYACvVG3vUAlPMb4JjlI
-   AZxZLs3y4SeicrfYpLqcwilwkKqy4nUw87Q0bET4WQYFlW9cCCjWUFhcD
-   0TEkKAVQ5joq2mYDWRH9g3TmoK0+UlHqIXBDX8O7TTGp5AnWuSKa/Gohe
-   WaSCw/TQGhh58uvgcLg57uJBxUOxqeiejlroqrhcy1zJQCyLwRfVv3Edn
-   JvPpSmr2gwGzD4/rC2l8dd9IZLF7aC3OPVK2iBImeNbCuWt4ajjz938bz
-   jEPg8DpSY3vW3NoYIhXabZtpT+jZlHNiXJvWTyLgI7URo4oqCtAcDxGl8
+  t=1712557037; x=1744093037;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=BVO25ii86k6Vyr75+LHLBzTqlO1r919XfPw4uhYB7n8=;
+  b=gaW0/pPoXVXXnzSNceJtgUzzdK4+sAPNr89JBFyMlWicG6LYIij39kxI
+   iop+ilB8SoHEFQDNEBPO1NX9wUERz8vvNVxjL0gW4JplLJNexTHFYm+bp
+   oE7zPR1OcHYWkWjuqffNf16LTBpANIeC6q3SySpPu3I4MsR0iYDS9ncjo
+   8p5ZlOtGSH7O9QU7JPevTTAgBXRxLigoSzJ5TV4r8h8QfPkfdVcyxJWoK
+   CfiXOnFRNem8EczL4OHGja+FTp0IQ9nN9Um9Z1zE26w8pcx9VLRJEI3gI
+   t7BaE3UOdBNzSpyv58j45vlsRWKCoPWMXGquIC0C8MzcV8k27re46BivQ
    Q==;
-X-CSE-ConnectionGUID: 6n/hSUNpSRSo7Or6vSOsCA==
-X-CSE-MsgGUID: r5IzjDzuSpeOtulo307mxQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7675326"
+X-CSE-ConnectionGUID: AutZOnMLRr2kd+lMJsGd3A==
+X-CSE-MsgGUID: ZA4WJtWiRTWUUWqubonaMA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7675332"
 X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="7675326"
+   d="scan'208";a="7675332"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 23:17:14 -0700
-X-CSE-ConnectionGUID: k+iup9NeRdGDWb5MrUb8oA==
-X-CSE-MsgGUID: xgJWaSzhSV+M+IbFAT+NkQ==
+X-CSE-ConnectionGUID: 30H7Ti21QZapI4lEdtAYLA==
+X-CSE-MsgGUID: M2AxKJvuRK+YN9gAtqQwsA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
-   d="scan'208";a="24511953"
+   d="scan'208";a="24511956"
 Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 23:17:13 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -63,10 +64,12 @@ Cc: vinod.koul@linaro.org,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH 0/2] soundwire: intel_ace2x: fix wakeup handling for LunarLake
-Date: Mon,  8 Apr 2024 06:16:41 +0000
-Message-Id: <20240408061643.420916-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 1/2] soundwire: intel_ace2x: fix wakeup handling
+Date: Mon,  8 Apr 2024 06:16:42 +0000
+Message-Id: <20240408061643.420916-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240408061643.420916-1-yung-chuan.liao@linux.intel.com>
+References: <20240408061643.420916-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,16 +78,116 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For LunarLake, the SoundWire in-band wake detection is reported with
-the HDAudio WAKE_EN/WAKE_STS registers.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Pierre-Louis Bossart (2):
-  soundwire: intel_ace2x: fix wakeup handling
-  soundwire: intel_ace2x: simplify check_wake()
+The initial programming sequence only worked in the case where the
+OFLEN bit is set, i.e. the DSP handles the SoundWire interface. In the
+Linux integration, the interface is owned by the host. This disconnect
+leads to wake-ups being routed to the DSP and not to the host.
 
- drivers/soundwire/intel_ace2x.c | 43 +++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+The suggested update is to rely on the global HDAudio WAKEEN/STATESTS
+registers, with the SDI bits used to program the wakeups and check the
+status.
 
+Note that there is no way to know which peripheral generated a
+wake-up. When the hardware detects a change, it sets all the bits
+corresponding to LSDIIDx. The LSDIIDx information can be used to
+figure out on which link the wakeup happened, but for further details
+the software will have to check the status of each peripheral.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/intel_ace2x.c | 49 +++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
+index 43a348db83bf..f26d4e5c2c7a 100644
+--- a/drivers/soundwire/intel_ace2x.c
++++ b/drivers/soundwire/intel_ace2x.c
+@@ -10,8 +10,10 @@
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_intel.h>
+-#include <sound/pcm_params.h>
++#include <sound/hdaudio.h>
+ #include <sound/hda-mlink.h>
++#include <sound/hda_register.h>
++#include <sound/pcm_params.h>
+ #include "cadence_master.h"
+ #include "bus.h"
+ #include "intel.h"
+@@ -49,37 +51,56 @@ static void intel_shim_vs_set_clock_source(struct sdw_intel *sdw, u32 source)
+ 
+ static int intel_shim_check_wake(struct sdw_intel *sdw)
+ {
+-	void __iomem *shim_vs;
++	u16 lsdiid = 0;
+ 	u16 wake_sts;
++	int ret;
+ 
+-	shim_vs = sdw->link_res->shim_vs;
+-	wake_sts = intel_readw(shim_vs, SDW_SHIM2_INTEL_VS_WAKESTS);
++	/* find out which bits are set in LSDIID for this sublink */
++	ret = hdac_bus_eml_sdw_get_lsdiid_unlocked(sdw->link_res->hbus, sdw->instance, &lsdiid);
++	if (ret < 0)
++		return ret;
+ 
+-	return wake_sts & SDW_SHIM2_INTEL_VS_WAKEEN_PWS;
++	/*
++	 * we need to use the global HDaudio WAKEEN/STS to be able to detect
++	 * wakes in low-power modes
++	 */
++	wake_sts = snd_hdac_chip_readw(sdw->link_res->hbus, STATESTS);
++
++	return wake_sts & lsdiid;
+ }
+ 
+ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+ {
+-	void __iomem *shim_vs = sdw->link_res->shim_vs;
++	u16 lsdiid = 0;
+ 	u16 wake_en;
+ 	u16 wake_sts;
++	int ret;
+ 
+-	wake_en = intel_readw(shim_vs, SDW_SHIM2_INTEL_VS_WAKEEN);
++	mutex_lock(sdw->link_res->shim_lock);
++
++	ret = hdac_bus_eml_sdw_get_lsdiid_unlocked(sdw->link_res->hbus, sdw->instance, &lsdiid);
++	if (ret < 0)
++		goto unlock;
++
++	wake_en = snd_hdac_chip_readw(sdw->link_res->hbus, WAKEEN);
+ 
+ 	if (wake_enable) {
+ 		/* Enable the wakeup */
+-		wake_en |= SDW_SHIM2_INTEL_VS_WAKEEN_PWE;
+-		intel_writew(shim_vs, SDW_SHIM2_INTEL_VS_WAKEEN, wake_en);
++		wake_en |= lsdiid;
++
++		snd_hdac_chip_writew(sdw->link_res->hbus, WAKEEN, wake_en);
+ 	} else {
+ 		/* Disable the wake up interrupt */
+-		wake_en &= ~SDW_SHIM2_INTEL_VS_WAKEEN_PWE;
+-		intel_writew(shim_vs, SDW_SHIM2_INTEL_VS_WAKEEN, wake_en);
++		wake_en &= ~lsdiid;
++		snd_hdac_chip_writew(sdw->link_res->hbus, WAKEEN, wake_en);
+ 
+ 		/* Clear wake status (W1C) */
+-		wake_sts = intel_readw(shim_vs, SDW_SHIM2_INTEL_VS_WAKESTS);
+-		wake_sts |= SDW_SHIM2_INTEL_VS_WAKEEN_PWS;
+-		intel_writew(shim_vs, SDW_SHIM2_INTEL_VS_WAKESTS, wake_sts);
++		wake_sts = snd_hdac_chip_readw(sdw->link_res->hbus, STATESTS);
++		wake_sts |= lsdiid;
++		snd_hdac_chip_writew(sdw->link_res->hbus, STATESTS, wake_sts);
+ 	}
++unlock:
++	mutex_unlock(sdw->link_res->shim_lock);
+ }
+ 
+ static int intel_link_power_up(struct sdw_intel *sdw)
 -- 
 2.34.1
 
