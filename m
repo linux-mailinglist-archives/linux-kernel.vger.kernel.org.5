@@ -1,136 +1,142 @@
-Return-Path: <linux-kernel+bounces-135051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78CF389BA6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:36:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E1CD89BA6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:36:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA13D1C20818
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:36:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18F572838A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EE139870;
-	Mon,  8 Apr 2024 08:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BDA3985A;
+	Mon,  8 Apr 2024 08:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="glnUb59w"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A7xiSuB9"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71DF29CE0
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548F638F82
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565357; cv=none; b=EuOODznBBq/aT3nwu3/1YTl3gMRVoZJBN8cnA7L7vnQUKOOX9mt3OTIOh2fmH9JMOfSuqZPa2PhT2cdGgEI41KfswP2VcQtCN1s9OFwnXcW4blXZhR0xHPxiy94x13xHKmRpRjDF4ZVpAkJgtpv39cemm6OptxPn+yX90oHUbuA=
+	t=1712565367; cv=none; b=YlGfdWZE8foToiUUnkrcSs/fm1KoRQa1uzIkNM1BSqkU3MYTvm9eBpxMVCMJDtY/BBa0ZNoVzftFSdWQDrRjypRZQRZTzNyUQLynbvTePKuFRaqrsOE7DJLVUui7So3zin2XYFLmltPyh3mVdNOtVDtY+58CQ+zpwGVs1dPCzQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565357; c=relaxed/simple;
-	bh=jDLuzGAfbfPC3ySujswGqWcVkwuc+ewcacXDcMbNo10=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eMoZ6boCX/8uwQAPOA3OuMjs5YysxlYxjhpMabfHpnMcHfYPca+8NJoiowlpq4ln621mkrOFefsT44RinAyKTqZT+2YLokZoews46DLJfSFYWYrByO1YdR3sYZyH9+UnoI0rs1o2uOi30Ilb03KtS7ES9i1QWTluESXTljsZ7RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=glnUb59w; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=kaac
-	/HoSNF6kBNyIZvAXuiqRv4XHgDdylJjIFzS6jJw=; b=glnUb59wzYNl2lqMUYNX
-	ZjUTjMWP3AF1osTTIZsoviN3OVy5BVJPkeMTiTK24l1kSjh67hVzj2X7pl933Z+T
-	yFI4MjENYVeM0iZuomTYQMIpOfRHkW5XXs1Ke56fnzEtFh4XZ04yv5kXwAyknkFH
-	RSv3fOKzz0XxOSYFNznus+MuvaBkHRwXMPA7wOEDzK/ktzSAQ/LnQRNh94tyfyt9
-	SQU0i1k9pTWQN7r904M+8imA3//k81pjO1fr6cvj9vkSo8QcaBuPlInI2Cfg66WF
-	vX1o+E++730gPmmHdiIZgXCxt+TA+529ZltqwmOtliGNB6G/Z7YJ3Yj5JyNEoBMn
-	fQ==
-Received: (qmail 704034 invoked from network); 8 Apr 2024 10:35:53 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Apr 2024 10:35:53 +0200
-X-UD-Smtp-Session: l3s3148p1@ivmCsZEVfqEgAwDPXwE9APSWg5D5lDs4
-Date: Mon, 8 Apr 2024 10:35:52 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-i2c@vger.kernel.org, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Joel Stanley <joel@jms.id.au>, 
-	Andrew Jeffery <andrew@codeconstruct.com.au>, openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/64] i2c: aspeed: reword according to newest
- specification
-Message-ID: <wcnu6qxxztplzpqtqc4t3bf53v6buto6ch6b5l5xoytrxxdgjz@gwzlifzzfrvx>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org, 
-	Brendan Higgins <brendan.higgins@linux.dev>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
-	Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-6-wsa+renesas@sang-engineering.com>
- <vb4hempklviz6w4gd3eimprplybm4ckefwz2gyy7cp2uww2anv@b4egbq4u4rrg>
+	s=arc-20240116; t=1712565367; c=relaxed/simple;
+	bh=2KvXfDxpGvTs7nicLHoygqjS9zU8Ya7bdOYchMiAGxc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b8Shpogi92tpJBBXjv4ydmSGrk08j3dyEQElGZ8Uh4strUWJj/ZFgzVApgx5QtOZV6tkCXfDtPDZEyYf2L9XdknLBOc+hM2BGh2O68ic8QTFv1PwMjs0Qc9hycXr4IYD2Tw9LXvaZhk/FyMXTB14Y+PCGj1PyifKe56dMoY2Nws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A7xiSuB9; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e41f984d34so5052555ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712565364; x=1713170164; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ieck+aaN2kHUROY0QeEKB3LJ0efWjt+x+5IctTrffoU=;
+        b=A7xiSuB9yfopOpm+BUX6CBzPJ4kv9oPoi149SIoFFHccPZJu/dOBLb1tqxOkTlfTx2
+         +y3wXwl3duWu3h297KIOrXQxkGctMXHF4tsEWJjH4uT8uMNnH8MInL0K19NV45ojkXwR
+         RPNiSJQjokIRxZ8EdLN8/m3irJALsAXE6+B4z6l8eIF7Z0TcpCDTmHM1jD6QKGK0zyRw
+         llqA6hLCaLx241ukNrwT6obZdxFeZc+XFXHmPu4EiRM3WifWcobQZVcn/MHDybd36614
+         azuODeEVIlDcDZdG+c+5YBunJ3kRjz0zVH1kNz3XmajImWpj4pEscD4vFJyHlRkcuZhp
+         BUMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712565364; x=1713170164;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ieck+aaN2kHUROY0QeEKB3LJ0efWjt+x+5IctTrffoU=;
+        b=Xjwx+t+LaZG659VK3zhA4GYmy4kLZtvPilCgjNbPTR1cY8SvwwaHwlOg/8anaX2i+w
+         JqsvXdnnK7O01+UCWPvkBI9AnhuK2dhY6ZZS9cn3q8Vdx4w/2H7Ieui+ox+t4ZqBoJ1W
+         9DQiSu94iNbtHoMBSVD6WiXEecEuvM/1YkcQXSUWazelsEB0G6hWe3sBHuA+2AiwX+XW
+         0gDPoy8K/bjv16iKzzVbZlelKZa7WczBA/w/Nl9Yo5bjdN2Xq2EfZD6R2q+Q8kwVeril
+         TTHqchc8a0NSqpGkxnffC7PNtJuHAin8W5vj/2mSIqCTcSi14CWKzLmgCxqwslTFM6xD
+         Zuww==
+X-Gm-Message-State: AOJu0YzDuP1bAheVIPx8JYwp1ZOS5ubSkhWw31mIoSQUhWw1T228X2dN
+	4ij2fAU7wm1ZsD1AYBJd6DA8s2VsgAFHVH9bo4i6QTLkc19SkxgoXM6BUnA5lYIL/0TisY2rdRm
+	V3Y975TAOH340YAz1DmSmnJ3DsxEzXK+OJiwWXA==
+X-Google-Smtp-Source: AGHT+IHKeb0f+xWBy55xm1QpQkWYjZ87cuVhjOYFEew4/oFELiJk7+VuImioD91sD1/uegsweduAEn82Biwm69Fk5mU=
+X-Received: by 2002:a17:902:d4c7:b0:1e3:e6cb:a33c with SMTP id
+ o7-20020a170902d4c700b001e3e6cba33cmr4386858plg.65.1712565364614; Mon, 08 Apr
+ 2024 01:36:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fm2sehicf2gvt3hb"
-Content-Disposition: inline
-In-Reply-To: <vb4hempklviz6w4gd3eimprplybm4ckefwz2gyy7cp2uww2anv@b4egbq4u4rrg>
+References: <20240405133319.859813-1-beata.michalska@arm.com> <20240405133319.859813-2-beata.michalska@arm.com>
+In-Reply-To: <20240405133319.859813-2-beata.michalska@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Mon, 8 Apr 2024 10:35:53 +0200
+Message-ID: <CAKfTPtBpb-A011icfitvvAY8Z7pSt-cTmQ-TMsWG_3_sREuEmg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] arch_topology: init capacity_freq_ref to 0
+To: Beata Michalska <beata.michalska@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	ionela.voinescu@arm.com, vanshikonda@os.amperecomputing.com, 
+	sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com, 
+	sumitg@nvidia.com, yang@os.amperecomputing.com, lihuisong@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, 5 Apr 2024 at 15:33, Beata Michalska <beata.michalska@arm.com> wrote:
+>
+> From: Ionela Voinescu <ionela.voinescu@arm.com>
+>
+> It's useful to have capacity_freq_ref initialized to 0 for users of
+> arch_scale_freq_ref() to detect when capacity_freq_ref was not
+> yet set.
+>
+> The only scenario affected by this change in the init value is when a
+> cpufreq driver is never loaded. As a result, the only setter of a
+> cpu scale factor remains the call of topology_normalize_cpu_scale()
+> from parse_dt_topology(). There we cannot use the value 0 of
+> capacity_freq_ref so we have to compensate for its uninitialized state.
+>
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 
---fm2sehicf2gvt3hb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> > -static int aspeed_i2c_master_xfer(struct i2c_adapter *adap,
-> > +static int aspeed_i2c_xfer(struct i2c_adapter *adap,
-> >  				  struct i2c_msg *msgs, int num)
->=20
-> here the alignment goes a bi off.
-
-Thanks, I missed this.
-
-> >  #if IS_ENABLED(CONFIG_I2C_SLAVE)
-> >  /* precondition: bus.lock has been acquired. */
-> > -static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 sla=
-ve_addr)
-> > +static void __aspeed_i2c_reg_target(struct aspeed_i2c_bus *bus, u16 sl=
-ave_addr)
->=20
-> We  have the word master/slave forgotten here and there, but as
-> we are here, /slave_addr/target_addr/
-
-I can do this now. My plan was to convert it when I convert the whole
-CONFIG_I2C_SLAVE interface. But "since we are here" can be argued.
-
-> >  static const struct i2c_algorithm aspeed_i2c_algo =3D {
-> > -	.master_xfer	=3D aspeed_i2c_master_xfer,
-> > +	.xfer	=3D aspeed_i2c_xfer,
->=20
-> here the alignment goes a bit off.
-
-I also wanted to fix this afterwards together with all the tab-indented
-struct declarations in busses/. But maybe I better do the tab-removal
-series beforehand? Would you accept such a thing?
-
-
---fm2sehicf2gvt3hb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYTrGgACgkQFA3kzBSg
-KbaYiw/+IdfDf8ES2q59HpvmAbphgCrIhyycf7z24hxpdlMNa8KCH+NGusDVZ8x6
-DpMDISrjfNpwL+rpE0shnhzmKDo04CYGRceF5E71B2Gk/1s1ujxNOGP+VP0nW/19
-jb8zMDFeuEnkKqF2T2e3lCpTLsP41V4Fl+wWNPL+AkS7hCBCjYyvDemtknRJjqzZ
-OkawH3O73gJ1m07M10Q0IOLfDBMh6qFw2URTIMEgvfErroscCYruNq7BXisWfCHo
-85iiYyiWeWgTpdp6SPFL+apD519ZnS4i6F4XrsVV/Kk02U7izS7QxYi74y7NDA97
-JAQVUSy0JkVmAvwcncQhc5xYc+XJcO3lXd4Gw3UJieVVfwUWm/oKJ+qXeoFUPVUT
-2zOltFsyZX1y0tVS6+A81It3lVzAsihUy4Z0vmPa5IyB1yFxHZ6ljsOV+slH0otE
-+RfzSHL+tA/GdojNayLC70qTKri+goIxImhP4XZn3dc/5RaX9rSfooeNGkK89SJx
-s7aK447F0zoeH5GiK3V3aXGY7XLFHE6WSBGy/MQorHu01PF16jlh7Hagyk1BsIM8
-c13TUVcc9pgSHW5gPBqay2f+SfTJCtapK2KO497kfPmP4S5o2JXRYRwFezZa8ODE
-YI8mFy0scsJxEv5P0WlByOFGFRbFkcaD+gMejTz5bBCUUAUVa+s=
-=iumt
------END PGP SIGNATURE-----
-
---fm2sehicf2gvt3hb--
+> ---
+>  drivers/base/arch_topology.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 024b78a0cfc1..7d4c92cd2bad 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -27,7 +27,7 @@
+>  static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+>  static struct cpumask scale_freq_counters_mask;
+>  static bool scale_freq_invariant;
+> -DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 1;
+> +DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 0;
+>  EXPORT_PER_CPU_SYMBOL_GPL(capacity_freq_ref);
+>
+>  static bool supports_scale_freq_counters(const struct cpumask *cpus)
+> @@ -292,13 +292,15 @@ void topology_normalize_cpu_scale(void)
+>
+>         capacity_scale = 1;
+>         for_each_possible_cpu(cpu) {
+> -               capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+> +               capacity = raw_capacity[cpu] *
+> +                          (per_cpu(capacity_freq_ref, cpu) ?: 1);
+>                 capacity_scale = max(capacity, capacity_scale);
+>         }
+>
+>         pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+>         for_each_possible_cpu(cpu) {
+> -               capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+> +               capacity = raw_capacity[cpu] *
+> +                          (per_cpu(capacity_freq_ref, cpu) ?: 1);
+>                 capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+>                         capacity_scale);
+>                 topology_set_cpu_scale(cpu, capacity);
+> --
+> 2.25.1
+>
 
