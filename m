@@ -1,95 +1,105 @@
-Return-Path: <linux-kernel+bounces-134801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E40289B728
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:30:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B177589B72B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D76ECB2150E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:30:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77386281E57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8522579D2;
-	Mon,  8 Apr 2024 05:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013E7F9C1;
+	Mon,  8 Apr 2024 05:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="UsKnHN5d"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="R/viG1f6"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6146F111A8;
-	Mon,  8 Apr 2024 05:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00F8847B
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 05:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712554199; cv=none; b=jGhLTzZA7aJAsoG2NIqaSO1Ntn4xeApQ6jHNE0N1XJKpdhmQ2/qZ7JT7/LKHLuWVtd79PHVy/DjaKf0hhvoH58hsMDyaUqMZfZcx7iM1Tlk2InWkv4SoiNwzAdV0LvDDz+dFVZaY+1nm4yGqBfQvOnQ/LzyPXc5XEQK48ahqOkQ=
+	t=1712554283; cv=none; b=ZYoPp0zk6U7jMDmoCiN7pG2Gjn2ZXqwMwl67CSLbOyesNMeMFC8DXAByQzMatmFaTVhzqH5aJKL9TMV3CDx4dyMI7X2qjISA5rW964+EKuws3wE+sib+wvaValnxr8wH0HzTME2e2Kru2huyP2kS1BjQLfny9Ev5z1ANfswHgP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712554199; c=relaxed/simple;
-	bh=taPtZ4H9ZcND3oGrS9y6pAeVaLjbudmAuFy8q/qklMc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AhcPJiOhqkknT2flLxT47252ybQxFq5G/eCzTDtAOoaxKlZ93vPxlMmYgrUwDCt40PCs7S0mAcus8I5tsuztoYsg78473wEw+J7y6NUbDMDfeFTPoW0KLvUqcvmdXuf104tRWMgH5kUtd6vcqBCg8p1u/VGbcKk3wrz+gZQOLKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=UsKnHN5d; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1712554197;
-	bh=iMWIRrwu8jzlwq3GFwobpQXIdHqfklC2x5296qQNRHU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UsKnHN5dUA5W0rjVFcwQj5HDYvEHusqogP0tHn2kalVa91OM2idgYC2m6oywCccHn
-	 20FOcjzQeTxSX/TNcljO0PtQeHSikB6hwmGZLi9+pdBhaigjbzBmhfzSCowQyox1AB
-	 M8ZC6Nl7a6+sbocmAHfxGj/Xlr1fxJqAzI6XPx5zHMntsMAgYheeHS13xKkMzmkym4
-	 t0VtffZzOe60AjdZZOuo8CgV1vpgZWyrEhAKfjbc1xIOmg8wyIdPmQbyOubEnH1tHG
-	 UDV589rMWSfeRpqkCEgEaUPYy9XmYedZWEuZI4rNpfpGoTdTsMJjIgT+i3tzqHjXuh
-	 AYWYO2yb9DORA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VCd2X6SD4z4wd3;
-	Mon,  8 Apr 2024 15:29:56 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
- <jirislaby@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-m68k@lists.linux-m68k.org, Benjamin
- Herrenschmidt <benh@kernel.crashing.org>, Andy Shevchenko
- <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] serial/pmac_zilog: Remove flawed mitigation for rx
- irq flood
-In-Reply-To: <2cb53463-897b-8f3f-7238-9fe87622b54d@linux-m68k.org>
-References: <0df45bedded1249f6c6ec2c2fb0d9879da1841b7.1712273040.git.fthain@linux-m68k.org>
- <87v84w7be3.fsf@mail.lhotse>
- <2cb53463-897b-8f3f-7238-9fe87622b54d@linux-m68k.org>
-Date: Mon, 08 Apr 2024 15:29:56 +1000
-Message-ID: <87sezwbewb.fsf@mail.lhotse>
+	s=arc-20240116; t=1712554283; c=relaxed/simple;
+	bh=BWKVL6zGIg10wgYYLFeXAKZ6T3J1vL90pE0rXWz6TBQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H9i5KTXAisENYz81cMOTk65epJATjPwFLLh7KA37H6AeuXEkv2tDoGh5MwbIz8GTBU7gCxMG1w5pCAgo8Ab27OX6iFA/qscTxWUFIXSVYoRKF+YnPX5OApD/DYL6SGN9nK7/a65X+3mzl3bkNgFZikUFCJqPRCA5RIrYYAxc5ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=R/viG1f6; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712554272; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=xIqilud/SwRfW5dU91Smq2PXSnJK7EwpMfyG/QvdBpQ=;
+	b=R/viG1f6JymFl5zSGsREst7DF9PVk5yimeZKTFa98yzdo8ev0Ukf6t8JGkIAmUM0O4AxtomOREzWarjjDdhkgHvSUSIhwjMKF0OZbb2X4VKOXVRLWlcolLasNgPxq63OSYHUKNLgE9SFU89SXwOwenhXtXmxHm6daBuVzfOuvTo=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W42BNQ0_1712554271;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W42BNQ0_1712554271)
+          by smtp.aliyun-inc.com;
+          Mon, 08 Apr 2024 13:31:11 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: rdunlap@infradead.org,
+	arnd@arndb.de,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next 2/3 v2] powerpc: Fix kernel-doc comments in fsl_gtm.c
+Date: Mon,  8 Apr 2024 13:31:08 +0800
+Message-Id: <20240408053109.96360-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Finn Thain <fthain@linux-m68k.org> writes:
-> On Fri, 5 Apr 2024, Michael Ellerman wrote:
->
->> I assume you have tested this on an actual pmac, as well as qemu?
->> 
->
-> I tested the patched driver and its console functionality using Zilog SCC 
-> hardware in a Mac IIci, as well as QEMU's q800 virtual machine.
->
-> That should suffice from a code coverage point-of-view, since 
-> pmz_receive_chars() is portable and independent of CONFIG_PPC_PMAC.
->
-> Moreover, I don't know how to get my PowerMac G3 to execute the kludge 
-> that's to be removed here. I can't prove it's impossible, though.
+Fix some function names in kernel-doc comments.
 
-Thanks. That's good enough for me.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/powerpc/sysdev/fsl_gtm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+diff --git a/arch/powerpc/sysdev/fsl_gtm.c b/arch/powerpc/sysdev/fsl_gtm.c
+index 39186ad6b3c3..3dabc9621810 100644
+--- a/arch/powerpc/sysdev/fsl_gtm.c
++++ b/arch/powerpc/sysdev/fsl_gtm.c
+@@ -77,7 +77,7 @@ struct gtm {
+ static LIST_HEAD(gtms);
+ 
+ /**
+- * gtm_get_timer - request GTM timer to use it with the rest of GTM API
++ * gtm_get_timer16 - request GTM timer to use it with the rest of GTM API
+  * Context:	non-IRQ
+  *
+  * This function reserves GTM timer for later use. It returns gtm_timer
+@@ -110,7 +110,7 @@ struct gtm_timer *gtm_get_timer16(void)
+ EXPORT_SYMBOL(gtm_get_timer16);
+ 
+ /**
+- * gtm_get_specific_timer - request specific GTM timer
++ * gtm_get_specific_timer16 - request specific GTM timer
+  * @gtm:	specific GTM, pass here GTM's device_node->data
+  * @timer:	specific timer number, Timer1 is 0.
+  * Context:	non-IRQ
+@@ -260,7 +260,7 @@ int gtm_set_timer16(struct gtm_timer *tmr, unsigned long usec, bool reload)
+ EXPORT_SYMBOL(gtm_set_timer16);
+ 
+ /**
+- * gtm_set_exact_utimer16 - (re)set 16 bits timer
++ * gtm_set_exact_timer16 - (re)set 16 bits timer
+  * @tmr:	pointer to the gtm_timer structure obtained from gtm_get_timer
+  * @usec:	timer interval in microseconds
+  * @reload:	if set, the timer will reset upon expiry rather than
+-- 
+2.20.1.7.g153144c
 
-cheers
 
