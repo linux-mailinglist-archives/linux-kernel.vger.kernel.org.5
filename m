@@ -1,155 +1,112 @@
-Return-Path: <linux-kernel+bounces-135744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD4D189CAAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:23:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6538E89CABA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:26:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E45C1F27375
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:23:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0A25B21918
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825961442FB;
-	Mon,  8 Apr 2024 17:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y8Tggwn2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350D5143C59;
+	Mon,  8 Apr 2024 17:26:16 +0000 (UTC)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3192F143860;
-	Mon,  8 Apr 2024 17:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD247460;
+	Mon,  8 Apr 2024 17:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596985; cv=none; b=SC1CiHo8IQkeX9TJDFBw5Bi72iyhJAZ3/WE4N3ZTdyzJP6Oo3esoG5yY7WGVmaqoCrUajeLja+iUyh0Fko7HY+qXQPcofdcmKzrzfKFCKdQ9oecMg+KrO6OaWZ+KkQteEtVHsIdx2C5g+hylmwr2ULLtFgcIo3AvpSIhk9aIGaw=
+	t=1712597175; cv=none; b=p04EzlOcwJ4/v/HyUA/iFt8GxRo5nXF6/tG6nXefAfuobvmYRANcOZFE//cbq2DqHfrGfLQL8Od3qZG+okZPAn0U7sPumNtHrPDujxYziSa1rGyd/0IMZFpSyEaPAduxqAvwxommohqY2NOncX7WsOoo6XH+/VN5GK7anauoTbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596985; c=relaxed/simple;
-	bh=Pqh3pyoAGMUHh7oj7/eiymnpIKVlFY2rZB4bG8dyHWI=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=h2Z7pwoAq6mjMYC49hTFyaqBCF2fWX+Dy0cAYQYdkNJFzcHSwMRWHS0itms9jHX50xn4C9gYQdO/gkwloX7wpncEn3Lm2Hq60wpmSsfLYEEfmwELIWlN32sK6miN69O3awyS1zaKjULXBN/4RCeRmEpIAH8V22HgxkRbluGQb7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y8Tggwn2; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712596984; x=1744132984;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Pqh3pyoAGMUHh7oj7/eiymnpIKVlFY2rZB4bG8dyHWI=;
-  b=Y8Tggwn2E7nnZ1xEP3lOhSfcO5IQl55ssMdB9lmfsvtabS/SaD3w2Fg2
-   2YDzTP6HkbXcA7PsP1TvgPb/2YriqvotGmnqtdUoYqI1DSG+Em62MkUUl
-   K8qeId8RUHRHk4I9Ero5joK95uaAAfd/9xxVWyQKecWyPEEWMLvQQ1Nql
-   kjig9jAWMWETSwO/acKzxNy1AHQ62mtpu79BA2C/NHv5IywQfT2edSURm
-   zhVyjlKRn15h3H85c/iZCxgQH6yDzhBPZZUBLUivc5cjgqot50daENG0a
-   tAI+GKrS/YjC1aepISY441jjDIAI5dfvBFlOEESzXhQusYt5YeTXicG5c
-   w==;
-X-CSE-ConnectionGUID: KOw7q+nwSz674k2fFXtLIA==
-X-CSE-MsgGUID: dSR1qco2TPCnPOT6mhfGdw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8112054"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="8112054"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:23:03 -0700
-X-CSE-ConnectionGUID: axvwqU3gQVOpapr20X6fPA==
-X-CSE-MsgGUID: JxHFW/8+Qwm9nS4h3K8IXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="19877439"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.28])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 10:23:02 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 8 Apr 2024 20:22:57 +0300 (EEST)
-To: "David E. Box" <david.e.box@linux.intel.com>
-cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH V3 8/9] platform/x86/intel/sdsi: Simplify ascii
- printing
-In-Reply-To: <20240405032507.2637311-9-david.e.box@linux.intel.com>
-Message-ID: <6dd8b2c0-1c89-43f0-0426-df8d483a7b1e@linux.intel.com>
-References: <20240405032507.2637311-1-david.e.box@linux.intel.com> <20240405032507.2637311-9-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1712597175; c=relaxed/simple;
+	bh=7kdOk4ITZylKnr8pBP2i71I3BILRIe0aVqKcpr7nQas=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K5iTq5buceSZ/E+bLA/5ncHDF+H23bJiO8h2Hj5lu1jfx2EiTj/WhpybDXc7J+LsjMjFcYgklfstwW1FyOBxeTMordpo+xvhPIsMmgnhKcS6T7yoWmVOyS+f1uEZ9nHsjcVdFIP7QMI5SuxHQf0/5fS63/9195JiBcTqV8SWVeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so1249582a12.3;
+        Mon, 08 Apr 2024 10:26:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712597172; x=1713201972;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fXqKi997L3PagciIuldmRmvr0R9pdf27i5jWxsqbl7k=;
+        b=w9xEG/coOOMLYe+jeECThqKMU4bgc8/BdU/UfeUk0KOoJI4Z6kt//ZSpjN7/MgJvlP
+         KPO217y9eJUyxRjwT7bsxPxXtgP3jDV3SxePXRqzUztaPudU040mH5pCcU3rtmHBrf9L
+         Sy9vPodStIllrl+AfKOfj4/opitMfGlrSt9Xb4zHu4w92OhieHFHyiIBq2UF+eSqOG+2
+         dJeROkT4I63LZXPMOy4eKp0EkqBq+NvrJHR3XuzSLVcYdUt7CW/uQGakYO95wNp4RwnU
+         b9+4Henlo7isza0YUkpfI+xzg4a90M8DAPKGOmrDKzmLozdEZQyk1TZnYMDLUlYxJwrC
+         KnDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ9fOgyk8+MEXICzBGXDqP5+qVZ7uIg4f+GbUbCENDxRfqQKSjKag4oGPBUpVu5NqZPrsElyg18Jjg8CBpSiVqSUeW/pLD
+X-Gm-Message-State: AOJu0YwSJ8K1XuUMf79VQtJiLuCKbVIGugcr88kv2+cmO8XY0yOnM6aG
+	90dO2tCZ4tjiK3F0dsYHwKrse+omLMfP/DXBGxUUktmPJ9xMhaKs
+X-Google-Smtp-Source: AGHT+IEsOOE3bcXYiFnIV+Lmdls4F+bKEio38wciboMmKVKKIZoF0r8mLFYbPnS9wMO6DoxP9WjbaQ==
+X-Received: by 2002:a17:906:cd03:b0:a47:4a32:604 with SMTP id oz3-20020a170906cd0300b00a474a320604mr6100227ejb.26.1712597172180;
+        Mon, 08 Apr 2024 10:26:12 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id dr2-20020a170907720200b00a4ea1fbb323sm4645341ejc.98.2024.04.08.10.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 10:26:11 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v2 0/4] net : dqs: optimize if stall threshold is not set
+Date: Mon,  8 Apr 2024 10:25:52 -0700
+Message-ID: <20240408172605.635508-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Thu, 4 Apr 2024, David E. Box wrote:
+Here are four patches aimed at enhancing the Dynamic Queue Limit (DQL)
+subsystem within the networking stack.
 
-> Use printf width specifier to set the display length of encoded feature
-> names.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
-> 
-> V3 - Add FEAT_LEN #def
-> 
-> V2 - Split of V1 patch 7
-> 
->  tools/arch/x86/intel_sdsi/intel_sdsi.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> index 45bc69e6718e..0c9670ba1f15 100644
-> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> @@ -43,6 +43,7 @@
->  #define METER_CERT_MAX_SIZE	4096
->  #define STATE_MAX_NUM_LICENSES	16
->  #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
-> +#define FEAT_LEN		4
->  
->  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
->  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
-> @@ -409,11 +410,10 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  
->  	printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle_length));
->  	while (count < BUNDLE_COUNT(mc->bundle_length)) {
-> -		char feature[5];
-> +		char feature[FEAT_LEN];
->  
-> -		feature[4] = '\0';
->  		get_feature(bec[count].encoding, feature);
-> -		printf("    %s:          %d\n", feature, bec[count].counter);
-> +		printf("    %.4s:          %d\n", feature, bec[count].counter);
->  		++count;
->  	}
->  
-> @@ -494,7 +494,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
->  			sizeof(*lki) +			// size of the license key info
->  			offset;				// offset to this blob content
->  		struct bundle_encoding *bundle = (void *)(lbc) + sizeof(*lbc);
-> -		char feature[5];
-> +		char feature[FEAT_LEN];
->  		uint32_t i;
->  
->  		printf("     Blob %d:\n", count - 1);
-> @@ -507,11 +507,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
->  		printf("        Blob revision ID:           %u\n", lbc->rev_id);
->  		printf("        Number of Features:         %u\n", lbc->num_bundles);
->  
-> -		feature[4] = '\0';
-> -
->  		for (i = 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); i++) {
->  			get_feature(bundle[i].encoding, feature);
-> -			printf("                 Feature %d:         %s\n", i, feature);
-> +			printf("                 Feature %d:         %.4s\n", i, feature);
->  		}
->  
->  		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
-> 
+The first two commits involve code refactoring, while the third patch
+introduces the actual change. The fourth patch just improves the cache
+locality.
 
-Hi,
+Typically, when DQL is enabled, stall information is always populated
+through dql_queue_stall(). However, this information is only necessary
+if a stall threshold is set, which is stored in struct dql->stall_thrs.
 
-After staring this for a while, I cannot get rid of the feeling that the 
-removal of NUL termination is a step into wrong direction. But IMO, 
-instead of the caller side, the NUL termination could be added inside 
-get_feature().
+Although dql_queue_stall() is relatively inexpensive, it is not entirely
+free due to memory barriers and similar overheads.
+
+To optimize performance, refrain from calling dql_queue_stall() when no
+stall threshold is set, thus avoiding the processing of unnecessary
+information.
+
+Changelog:
+
+v1:
+	* https://lore.kernel.org/all/20240404145939.3601097-1-leitao@debian.org/
+v2:
+	* Moved the stall_thrs to the very first cache line, as a new
+	  patch. Suggested by Eric Dumazet.
+
+
+Breno Leitao (4):
+  net: dql: Avoid calling BUG() when WARN() is enough
+  net: dql: Separate queue function responsibilities
+  net: dql: Optimize stall information population
+  net: dqs: make struct dql more cache efficient
+
+ include/linux/dynamic_queue_limits.h | 50 +++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 20 deletions(-)
 
 -- 
- i.
+2.43.0
 
 
