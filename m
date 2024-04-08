@@ -1,113 +1,195 @@
-Return-Path: <linux-kernel+bounces-135494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DEA289C6AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:16:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7309589C6B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:17:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D4791F22521
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 320C1281242
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9D9127B61;
-	Mon,  8 Apr 2024 14:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7045F86242;
+	Mon,  8 Apr 2024 14:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KmXhM+cj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3QDJlZ/n";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="enPTaBQf"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA63126F0A;
-	Mon,  8 Apr 2024 14:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C951D85C6F;
+	Mon,  8 Apr 2024 14:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712585795; cv=none; b=X8BSbLA08yn6hACCm/Z96ERXdigThJdiQxjH4Zzpa3jczNA/lZ6K7yZVTzq23+oL9hLZKKl3S0cLMhR7QxcreIM2eRDWvSQPvZw9tB3/rFRFlyu23yEmzxv6UTJtFv/tFu+aP5Cm34DA9/+XI9m8FlT4JjPuVlyWaUdkjaGeNe8=
+	t=1712585806; cv=none; b=AyZBBH3mk5XqD6hxJ/4jWUV+WpBueRoJ+xR2fI/Y9jseMTmTQmoQy50V5ekgBqgfsSiiXLJwem229sBNXvTooYFAQCzhx8vi7YB/GWjvIXpEGTHnbxbO825CWtAMhMLBfpKZ2SWKmkdx/9y/TRYpd5eeq3sbSv8ZFgmAzWCTHK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712585795; c=relaxed/simple;
-	bh=X165AnuBYRCLHgg1FBFdg4DExbBHQa5z8zpoZFRqZc8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jbAtJ2dVy6GyU1P/3aKdMM3ZE1vjWSnU8VRGCfrl+7OoWJC7b0PwyMy/eYgliy72YOjo0mE+j4sWHv5yCDNCS/EHvx8LoW7HjGUxdlTsGLyM/le4wJ3Wk+1id/T77RkBZp2eS3/7kQwJTLSQNte4J9ww9+/xrZ0HR1DvE+UdMXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KmXhM+cj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF22AC433C7;
-	Mon,  8 Apr 2024 14:16:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712585795;
-	bh=X165AnuBYRCLHgg1FBFdg4DExbBHQa5z8zpoZFRqZc8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KmXhM+cj2OPb3adXuSg4edYNC0GHkDzr9jQhOPgzYHgxP7oalPHLskK8lw2xJlZ8m
-	 RxTpWeSEPRLXsaQSg+wCB2PqVGr+0sNbuHHzZWojgt7EZ8D+vjRYYMGbcpcQlhvoSu
-	 oITPvZ9sZDp+tkkSpQWbBgq+8TF+3CHnPfcxJ7dceIaTIYl9/KCWYwA8mXJ0RACXM0
-	 MY5JOZjN7SX/GGmWgpy+HqwcTtk9jqHCWh7V8A+nEl5/cXTwrW0O/DDmYApFEgYT2H
-	 SIjuANUKwzGZrknnNcBipQ9xCHmSJ5uQ9p20157HSlLM0buWXQ8kq4uAl+klFo2eeN
-	 41eE1k1B60YZw==
-Date: Mon, 8 Apr 2024 15:16:29 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vaishnav Achath <vaishnav.a@ti.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Rob Herring <robh@kernel.org>, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 08/11] spi: cadence-qspi: add early busywait to
- cqspi_wait_for_bit()
-Message-ID: <1f7087ad-824e-47fe-9953-ed5152c8f18f@sirena.org.uk>
-References: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
- <20240405-cdns-qspi-mbly-v2-8-956679866d6d@bootlin.com>
+	s=arc-20240116; t=1712585806; c=relaxed/simple;
+	bh=bh8nWSuXPbDtnBugyVIiuU1sUkbw3RyB5fyuPJeGgvA=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=PslPokGPHqY2XGPhw3ktAHRQRiY2mgPEzFPLr56h7ZvfqfBWMlhef3556smDuS53O79dPdanmDJuzT8TM3t8BlcIuYOCcgSTgiJG+PTvmYrdoVADN+gx2SAFvQNjZAXc2qnZcGaIxVVb/16r8GNHkXXQxY24TlFji+N7BP0SvoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3QDJlZ/n; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=enPTaBQf; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 08 Apr 2024 14:16:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712585802;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+MlJ5XHbN1NPPl7eX/WyHg2J+EFd1iqsdaFiPEliwt8=;
+	b=3QDJlZ/nu3I3QxaFTacN+LZXoUyV7TUDMa4E7DEKxKCc2oBxrfmpoG51Vvt31wHQ7dsZw6
+	neGdlzsxSEfdJDIEFdECvfYrcybpMSq5i9UWQH82Bfu6iLr6faYRtsarl94LMZTJBOVgYv
+	6LoXtaZ1eNf6sIylkog/BzYj5lrerVeScSrKC8U+BhVh4acASTK95SgK0u799e4HQIvja5
+	zN/byFh9RuwaHe4ujTWBl+B8xwPcw3YapwOQzvny9Z9AgtLFYKzta15XLcWEVBcBMX2tRT
+	ooHsMhlOJwUzFlyfx3dhrDAm7fwTp3ivNCCLT933GtPWPB40taGsxBZ1nVGw+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712585802;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+MlJ5XHbN1NPPl7eX/WyHg2J+EFd1iqsdaFiPEliwt8=;
+	b=enPTaBQf12ezEGVDgbh18i7JayXf6RHCU8JxnLcYSfJ099dAciZVc2iNyC2NCavwI1EQEy
+	rIqOBM3b0zggu6BA==
+From: "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/math-emu: Fix function cast warnings
+Cc: Arnd Bergmann <arnd@arndb.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240213095631.454543-1-arnd@kernel.org>
+References: <20240213095631.454543-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="M+xzRGuQWIs7ztiG"
-Content-Disposition: inline
-In-Reply-To: <20240405-cdns-qspi-mbly-v2-8-956679866d6d@bootlin.com>
-X-Cookie: Drive defensively.  Buy a tank.
+Message-ID: <171258580133.10875.15729476936056309317.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the x86/cleanups branch of tip:
 
---M+xzRGuQWIs7ztiG
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     e0ca9353a86c0459a9c3fc8d65f7c88e96217cea
+Gitweb:        https://git.kernel.org/tip/e0ca9353a86c0459a9c3fc8d65f7c88e96217cea
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Thu, 04 Apr 2024 18:17:24 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 08 Apr 2024 16:06:22 +02:00
 
-On Fri, Apr 05, 2024 at 05:02:18PM +0200, Th=E9o Lebrun wrote:
+x86/math-emu: Fix function cast warnings
 
-> If the CQSPI_BUSYWAIT_EARLY quirk flag is on, call
-> readl_relaxed_poll_timeout() with no sleep at the start of
-> cqspi_wait_for_bit(). If its short timeout expires, a sleeping
-> readl_relaxed_poll_timeout() call takes the relay.
->=20
-> Behavior is hidden behind a quirk flag to keep the previous behavior the
-> same on all platforms.
->=20
-> The reason is to avoid hrtimer interrupts on the system. All read
-> operations take less than 100=B5s.
+clang-16 warns about casting function pointers with incompatible
+prototypes. The x86 math-emu code does this in a number of places
+to call some trivial functions that need no arguments:
 
-Why would this be platform specific, this seems like a very standard
-optimisation technique?
+  arch/x86/math-emu/fpu_etc.c:124:14: error: cast from 'void (*)(void)' to 'FUNC_ST0' \
+    (aka 'void (*)(struct fpu__reg *, unsigned char)') converts to incompatible function \
+    type [-Werror,-Wcast-function-type-strict]
+    124 |         fchs, fabs, (FUNC_ST0) FPU_illegal, (FUNC_ST0) FPU_illegal,
+        |                     ^~~~~~~~~~~~~~~~~~~~~~
 
---M+xzRGuQWIs7ztiG
-Content-Type: application/pgp-signature; name="signature.asc"
+  arch/x86/math-emu/fpu_trig.c:1634:19: error: cast from 'void (*)(void)' to 'FUNC_ST0' \
+    (aka 'void (*)(struct fpu__reg *, unsigned char)') converts to incompatible function \
+    type [-Werror,-Wcast-function-type-strict]
+   1634 |         fxtract, fprem1, (FUNC_ST0) fdecstp, (FUNC_ST0) fincstp
+        |                          ^~~~~~~~~~~~~~~~~~
 
------BEGIN PGP SIGNATURE-----
+  arch/x86/math-emu/reg_constant.c:112:53: error: cast from 'void (*)(void)' to 'FUNC_RC' \
+  (aka 'void (*)(int)') converts to incompatible function \
+  type [-Werror,-Wcast-function-type-strict]
+    112 |         fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, (FUNC_RC) FPU_illegal
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYT/DwACgkQJNaLcl1U
-h9ANxgf+Mzi0qALbTQtJ/4YLKSo7Rz0O7xI80u/4JR5cdbLhKIR9wyfq/zYpC1ou
-GugX7jgji68/5rmgbPrXCgMFmfmy2h/EjN3t5sEUIMjtHum2Wxo7AMvAE3l4SPvw
-MsrJvoxg975ApHEXE9CZlzKHaof5nQ7xK4j2tyqCK/1TkUh2zXKFhG0uB/AnIQJg
-jqC0+lTHXviEqqjqx0CM5wcmuzkx19rxpVNsa6wgVy1z9Iy2BF+gR9c04CLiA438
-Og1GynxgfKht138oDVWMEyx9YnMW4DcN8Z8VG82u52z/G/2fUFVGYuy77gNrt9f5
-nbsZFB8X1UwZHCYA+oX1w5wz/xt4nQ==
-=/C1O
------END PGP SIGNATURE-----
+Change the fdecstp() and fincstp() functions to actually have the correct
+prototypes based on the caller, and add wrappers around FPU_illegal() for
+adapting those.
 
---M+xzRGuQWIs7ztiG--
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/lkml/20240213095631.454543-1-arnd@kernel.org
+---
+ arch/x86/math-emu/fpu_etc.c      |  9 +++++++--
+ arch/x86/math-emu/fpu_trig.c     |  6 +++---
+ arch/x86/math-emu/reg_constant.c |  7 ++++++-
+ 3 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/math-emu/fpu_etc.c b/arch/x86/math-emu/fpu_etc.c
+index 1b118fd..39423ec 100644
+--- a/arch/x86/math-emu/fpu_etc.c
++++ b/arch/x86/math-emu/fpu_etc.c
+@@ -120,9 +120,14 @@ static void fxam(FPU_REG *st0_ptr, u_char st0tag)
+ 	setcc(c);
+ }
+ 
++static void FPU_ST0_illegal(FPU_REG *st0_ptr, u_char st0_tag)
++{
++	FPU_illegal();
++}
++
+ static FUNC_ST0 const fp_etc_table[] = {
+-	fchs, fabs, (FUNC_ST0) FPU_illegal, (FUNC_ST0) FPU_illegal,
+-	ftst_, fxam, (FUNC_ST0) FPU_illegal, (FUNC_ST0) FPU_illegal
++	fchs, fabs, FPU_ST0_illegal, FPU_ST0_illegal,
++	ftst_, fxam, FPU_ST0_illegal, FPU_ST0_illegal,
+ };
+ 
+ void FPU_etc(void)
+diff --git a/arch/x86/math-emu/fpu_trig.c b/arch/x86/math-emu/fpu_trig.c
+index 990d847..85daf98 100644
+--- a/arch/x86/math-emu/fpu_trig.c
++++ b/arch/x86/math-emu/fpu_trig.c
+@@ -433,13 +433,13 @@ static void fxtract(FPU_REG *st0_ptr, u_char st0_tag)
+ #endif /* PARANOID */
+ }
+ 
+-static void fdecstp(void)
++static void fdecstp(FPU_REG *st0_ptr, u_char st0_tag)
+ {
+ 	clear_C1();
+ 	top--;
+ }
+ 
+-static void fincstp(void)
++static void fincstp(FPU_REG *st0_ptr, u_char st0_tag)
+ {
+ 	clear_C1();
+ 	top++;
+@@ -1631,7 +1631,7 @@ static void fscale(FPU_REG *st0_ptr, u_char st0_tag)
+ 
+ static FUNC_ST0 const trig_table_a[] = {
+ 	f2xm1, fyl2x, fptan, fpatan,
+-	fxtract, fprem1, (FUNC_ST0) fdecstp, (FUNC_ST0) fincstp
++	fxtract, fprem1, fdecstp, fincstp,
+ };
+ 
+ void FPU_triga(void)
+diff --git a/arch/x86/math-emu/reg_constant.c b/arch/x86/math-emu/reg_constant.c
+index 742619e..003a0b2 100644
+--- a/arch/x86/math-emu/reg_constant.c
++++ b/arch/x86/math-emu/reg_constant.c
+@@ -108,8 +108,13 @@ static void fldz(int rc)
+ 
+ typedef void (*FUNC_RC) (int);
+ 
++static void FPU_RC_illegal(int unused)
++{
++	FPU_illegal();
++}
++
+ static FUNC_RC constants_table[] = {
+-	fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, (FUNC_RC) FPU_illegal
++	fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, FPU_RC_illegal
+ };
+ 
+ void fconst(void)
 
