@@ -1,165 +1,109 @@
-Return-Path: <linux-kernel+bounces-135731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7804489CA83
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFFF89CA85
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:13:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E45C21F2545B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:12:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F148B1F22BC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44707143888;
-	Mon,  8 Apr 2024 17:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E1C143888;
+	Mon,  8 Apr 2024 17:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XsgXaK3B"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TR2e+Ocw"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCCF142906
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6CB142906
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 17:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596341; cv=none; b=BclPxHLf8xGZOFqBncjA/QrNO21a7DxRIfSbiYs+iksjlcAw/Vziv7xudisSFZToCqxSRrnbZy6KqPmFgD11iQSL0ZCvEaJ+41O8NVoqMwSKjoHz88YTH3e2gw8aw7pfYmMDcbdmO0TX0dVZCqSU4FbZ5FoYGgXhNXWqDKYMlx4=
+	t=1712596374; cv=none; b=a7C9+xQm8xBPg3VUV0AR+reDNAHRUpesxGRK2kerahJ+3la1JEUN1Bi/h8OoflaOimC/kFCC1D5D9Tt6mbHj8PyjrW3+TbaJjyr6O+EfrTTWvXbCBryTchcsLsi9hYSseMrd1z/u1n+JQdYJ6Mwk5h0b1UryS1ki/s5FAZP9tTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596341; c=relaxed/simple;
-	bh=oJ9mT+vwINWrYV759TkgfgMbkpyg67bL62cpIdVNlF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MOxEZy+ENGvSKL3mFsYfjwSxiv40L02MQw8DQoXWBdPzhUeEtSPpToWpHgNkot2H+JvBkojtxKVr9+PtZ5w39tSwGlF/9yERtnYipNCnfubEIJxEYP2bx24lU0TyWG1E34VFHcv0rOGnTDfrZsET9eqgBA0ZSc+AZ7OLiq8bq2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XsgXaK3B; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516d04fc04bso7030040e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:12:19 -0700 (PDT)
+	s=arc-20240116; t=1712596374; c=relaxed/simple;
+	bh=MMK6LDRIXHQaIEX/xSO/ytOm4Z0nzdBmVfF6/7CVjLs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HCsbP7iuaCco32XKxMkFxZYZPB876MgyuHRLHVlgNg3HWa1cvMmMUwaA4+PgiKHyJvIBnjQ8dr1kzAYvOalvNu8tO2hafSM6EnCaVZ1Mu1re6EoJwDZF4GNh2mFXvsoZOoOGitehpSr+sAlIQ1AACQi5yCN/7pYNR9uJ3iiQu+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TR2e+Ocw; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51ddc783e3so132696766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:12:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712596338; x=1713201138; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=T8TRMrj5ggtPr7yueS0y7TsmLoLHnTwJgZ1LoVKqCBE=;
-        b=XsgXaK3BWIHwpxfooljCkxPs3MoOdtZhpSKU6RE6g+jKcBUPHDOetLcAoN43Y+uZCh
-         l9slml0lqf69WkmW1j1BnvaUWsn/mU/4gA/DtZaxrNM75Qfnbrqxwmwy7Zw29jQmU4Dh
-         X4WEA6two1XsP7YTDlj6nmqT40o1dhIMd/1uFkjfp1LG4R3QxIB+VH6poMid2m6I7PqO
-         IpO2ySm0BiRZnlQvvwTw9m2pfP4IslTrRFoWhFCa0qRXAg/99OuYrh5T4vv/8Zj9cPU9
-         5qYD9GvqYHkTIONS6+pCmHKURt5UwHLoAcPI3sTX94cUucZwAVtLIjO4fttlrAhdxoap
-         xF4g==
+        d=chromium.org; s=google; t=1712596371; x=1713201171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MMK6LDRIXHQaIEX/xSO/ytOm4Z0nzdBmVfF6/7CVjLs=;
+        b=TR2e+Ocw6lPng4KXMXumyQkqTmEiCkd2zreUEAei16Ih6w7kiVLQVgWipF2wOTVD71
+         fQ7T/DhGv9GcykbvAi7jsLl9kn5ZUeH1Xn+3fef9kjRpXLUwIO091HoxRDZP/o69uYD2
+         S3WOph1iYmm6nZcXapoVTVrof0NQrMJnRGLeA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596338; x=1713201138;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8TRMrj5ggtPr7yueS0y7TsmLoLHnTwJgZ1LoVKqCBE=;
-        b=fox6RGjEci+r3iwD5XeR0riK4AAfqOHShPqD9Xvraaho3B0j8ztGhTpZbc1eAjmOZ1
-         lc3ecuKcYuD1MoC/pBf+UtlWJaaMmXBeS7iZ4km8C1e/eA1MeIK+yAqfQbNurnjY8ome
-         SI1hMf7egVMqInut85Rye5zHhfHvn72EDGf6WpP0yodB7dgkwjDtXzWVe+Shd/5YLEJP
-         nufRra2ILqqx31hfn9ya/jchFKvZbsDurKNsEXQUXlIKddxQVkWRQ9WAeUzRvEPjjczU
-         zeSZfYNpnMitcW7XD2Pn+xAxoTKRKn8AA7sLpdrbQ9ocO0kNoTpJpHMjpbg2NbR34+xv
-         ScKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGq+2zDqnvka0I1xvJltWJM0NV0SF6Cr2oCi5/vTuU8FXL0nbUPJT3rmxe5/0FxutIKO6ub7IPnjnGvzsHetd1WHT/yDKUNqeNz/uO
-X-Gm-Message-State: AOJu0YzMlCcJ3klGFiiyD+cMBZ3nv+cs9oCHwro2xYk9GktePT+Bgqlj
-	Xb2MqJSkBLG5zuRTYHvmn9/nm5e2cRZuz4ZG0esqaaU41iVHUCUELEvnD7VgcEk=
-X-Google-Smtp-Source: AGHT+IHfa69MVbZoX1KR17DtI3oUMVnY5gNXSX0c37nh4zmNkLTwhqWTjIaOwFa2GYGnzTRLv8lHXQ==
-X-Received: by 2002:a05:6512:52b:b0:516:c1b9:316b with SMTP id o11-20020a056512052b00b00516c1b9316bmr8096374lfc.15.1712596338037;
-        Mon, 08 Apr 2024 10:12:18 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id k6-20020ac257c6000000b00515cfc0e324sm1231930lfo.237.2024.04.08.10.12.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 10:12:17 -0700 (PDT)
-Date: Mon, 8 Apr 2024 20:12:16 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Guenter Roeck <groeck@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Pavan Holla <pholla@chromium.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, chrome-platform@lists.linux.dev
-Subject: Re: [PATCH v3 2/2] usb: typec: ucsi: Implement ChromeOS UCSI driver
-Message-ID: <txdq6cmnep2zokrwykdsnpho3k76pangzxbv7ydxpdnyohczxo@2jc4cyakrmez>
-References: <20240403-public-ucsi-h-v3-0-f848e18c8ed2@chromium.org>
- <20240403-public-ucsi-h-v3-2-f848e18c8ed2@chromium.org>
- <3ezjocthsigo3t746slmgzffnmpxw7wwf3s535basiaf2qy6io@7ocxva6ndsbt>
- <2024040449-average-foyer-defa@gregkh>
- <oi3bwdyvyaezpmyxfdtsbiwwprxi2ufc3hlzoz23d5rxdkperl@cxpd7enatg7h>
- <2024040422-ripcord-bladder-bdda@gregkh>
- <CABXOdTeqz5Kza5tYXbCdTyPT66xtezai4C5TFkqmOpQc+1r8Xg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1712596371; x=1713201171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MMK6LDRIXHQaIEX/xSO/ytOm4Z0nzdBmVfF6/7CVjLs=;
+        b=wJL2wR3PnF5YiEHJKqTX+8lB45lLG5dixktntEbZY3ftQltfMtQgda0joQSjFuuPDA
+         nbF9Vk6vhrS9rTG++X+K+nkUEGF3BMpgFgGktYijNADf0pR4dKVdV0W3PG/oa+K8X8MM
+         dqW7k3UrgordI2vhUJjJSsUHEqNuwTRJTbeyXD3HKsGFSUSlkIRVD8i3At8Q9AdZ7Gd3
+         NCMCXXLj07R4zHVutoQ7NaZCAL30naKtU+vnyF0JQF3GwYGt3UXQLXAyTr0nvEelIK4j
+         s+wNPAzZpmPYvkSOFs4doVRdRnZ4Sf35rNN/zH44J0HQ7VMKWx1EFWjuNq0V+IZXBjhP
+         OAUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxuOfZ1qhegLnx08E9rylZmF/57L3ES5rfQQ3F0kUHES8UNazLElPUusmneJ7J4MSJd96EGMcF5QyRQj0mlfYT8H26kCzq3IW1c+Jr
+X-Gm-Message-State: AOJu0YwGI/B2Vo6AfYj5TRvc4v4CxJC480ERj8SILq/JUrIcwvGLynz4
+	y7KAM6ffWl0eGJbXzaqqUvjwpRSv5DLb4c8x1GP/3YW/1ad1CPAQIPkmPNAiNPqJr9vXcEY6zYN
+	HEg==
+X-Google-Smtp-Source: AGHT+IGmLRRfooYJojqNFUAAv2RbGhYYZkrxqOBYY7Rm6s5YOSmKh9AmuoHx1HWlB7ZGcmSnytn9+w==
+X-Received: by 2002:a17:907:7288:b0:a51:cbbf:5214 with SMTP id dt8-20020a170907728800b00a51cbbf5214mr3410732ejc.33.1712596370967;
+        Mon, 08 Apr 2024 10:12:50 -0700 (PDT)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
+        by smtp.gmail.com with ESMTPSA id hj13-20020a170906874d00b00a51c1b325e0sm2965972ejb.211.2024.04.08.10.12.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 10:12:50 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41550858cabso31556765e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 10:12:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXbyhXxuuEaHFhGhjycZcb9xglGftksmoW6gkICLSxvZvVpkXiVl0RdHkv2BhTDzXcpJr/DzlTz1dOvNv4SzW93WZ9yzQH5heMebPXX
+X-Received: by 2002:a05:6000:1566:b0:345:fa50:ba8e with SMTP id
+ 6-20020a056000156600b00345fa50ba8emr1333371wrz.37.1712596369615; Mon, 08 Apr
+ 2024 10:12:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABXOdTeqz5Kza5tYXbCdTyPT66xtezai4C5TFkqmOpQc+1r8Xg@mail.gmail.com>
+References: <20240408151700.1761009-1-festevam@gmail.com>
+In-Reply-To: <20240408151700.1761009-1-festevam@gmail.com>
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Mon, 8 Apr 2024 10:12:35 -0700
+X-Gmail-Original-Message-ID: <CAKZ8rEOZ2bPkxNxSRGMWQH6frvipwYXc79Lw2C8xndZmybaUbw@mail.gmail.com>
+Message-ID: <CAKZ8rEOZ2bPkxNxSRGMWQH6frvipwYXc79Lw2C8xndZmybaUbw@mail.gmail.com>
+Subject: Re: [PATCH] usb: misc: onboard_usb_hub: Disable the USB hub clock on failure
+To: Fabio Estevam <festevam@gmail.com>
+Cc: gregkh@linuxfoundation.org, frieder.schrempf@kontron.de, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabio Estevam <festevam@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 06:04:22AM -0700, Guenter Roeck wrote:
-> On Thu, Apr 4, 2024 at 6:30 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> [ ... ]
-> 
-> > > > > if (WARN_ON_ONCE(val_len > MAX_EC_DATA_SIZE))
-> > > > >   return -EINVAL;
-> > > >
-> > > > So if you trigger this, you just rebooted all boxes that have
-> > > > panic-on-warn enabled (hint, the HUGE majority in quantity of Linux
-> > > > systems out there.)
-> > > >
-> > > > So don't do that, just handle it like this.
-> > >
-> > > Does that mean that we should not use WARN at all? What is the best
-> > > current practice for WARN usage?
-> >
-> > To never use it.  Handle the issue and recover properly.
-> >
-> > > I'm asking because for me this looks like a perfect usecase. If I were
-> > > at the positiion of the driver developer, I'd like to know the whole
-> > > path leading to the bad call, not just the fact that the function was
-> > > called with the buffer being too big.
-> >
-> > Then use ftrace if you are a driver developer, don't crash users boxes
-> > please.
-> >
-> > If you REALLY need a traceback, then provide that, but do NOT use WARN()
-> > for just normal debugging calls that you want to leave around in the
-> > system for users to trip over.
-> >
-> 
-> That is not common practice.
-> 
-> $ git grep WARN_ON drivers/gpu | wc
->    3004   11999  246545
-> $ git grep WARN_ON drivers/net/ | wc
->    3679   14564  308230
-> $ git grep WARN_ON drivers/net/wireless | wc
->    1985    8112  166081
-> 
-> We get hundreds of thousands of reports with warning backtraces from
-> Chromebooks in the field _every single day_. Most of those are from
-> drm and wireless subsystems. We even had to scale back the percentage
-> of reported warning backtraces because the large volume overwhelmed
-> the reporting system. When approached about it, developers usually
-> respond with "this backtrace is absolutely necessary", but nothing
-> ever happens to fix the reported problems. In practice, they are just
-> ignored.
+On Mon, Apr 8, 2024 at 8:17=E2=80=AFAM Fabio Estevam <festevam@gmail.com> w=
+rote:
+>
+> From: Fabio Estevam <festevam@denx.de>
+>
+> In case regulator_bulk_enable() fails, the previously enabled USB hub
+> clock should be disabled.
+>
+> Fix it accordingly.
+>
+> Fixes: 65e62b8a955a ("usb: misc: onboard_usb_hub: Add support for clock i=
+nput")
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 
-That's sad.
-
-> 
-> This means that any system using drm or wireless interfaces just can
-> not really enable panic-on-warn because that would crash the system
-> all the time.
-
-And this is good from my point of view. If I remember correctly,
-initially panic-on-warn was added to simplify debugging of the warnings
-rather than to disallow using WARN_ON(). The system is not supposed to
-continue running after BUG(), so panic/reset on BUG is a safe approach.
-But the WARN is different. It means that the system was able to cope
-with it. And as such there is no need to panic. Whoever enabled
-panic-on-warn is doing a strange thing from my POV.
-
--- 
-With best wishes
-Dmitry
+Acked-by: Matthias Kaehlcke <mka@chromium.org>
 
