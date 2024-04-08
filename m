@@ -1,104 +1,78 @@
-Return-Path: <linux-kernel+bounces-135526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E7C89C72E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:36:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469D189C730
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97921C2165A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:36:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2C001F21F6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF20E13E8AE;
-	Mon,  8 Apr 2024 14:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FAD13E8A2;
+	Mon,  8 Apr 2024 14:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cg32Qols";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1PLkJLud";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cg32Qols";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1PLkJLud"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0d1WVGM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C97C1CD21;
-	Mon,  8 Apr 2024 14:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831CC13E3EE;
+	Mon,  8 Apr 2024 14:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586988; cv=none; b=rT3HWskZsB4h5co9oUtwtiQjsNFC2v5n8BhlVMmAOJRGS612c/T4QGS5ly+xzmeUwac/hhdqmf/NbQCcbgqkzGoj1YH+KXvLG7Yf6LjFQ+QWFK+KcmEcFMemMrhOgo0Mw3VFT3HeQR4GjTYG1kLk+B5+i4ghY/08HRxXAngNHAs=
+	t=1712587008; cv=none; b=nJTO6pru/LXQFgUZpO3/ARWt0dODAOfTaPnQglInEA8+r7vaLk2KnqPCP0ATWp714cfe7U1XP+MJdu6YZOjq5zxuYx2aoExItUkMq67UsWTqvRkKi7OAnGY7v1vRxciLeRhb85pu3G8jYlg3KzdNRQb52UFn6AVuWJz/orKHDDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586988; c=relaxed/simple;
-	bh=+cphjScDx/N1LVEGUDOhYmryp/xfMJ5Vvr5hDEuq1D4=;
+	s=arc-20240116; t=1712587008; c=relaxed/simple;
+	bh=AP6bi9ege6JcpGaSssCggpjbRyuytVVuJ+Jp5d52k3Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZUnbIADmQ77HBRfSIVsuaIFmPZZCeQAmq4TLCzPya+T6s50G3Pgafzq4BXiYI5e6gYBRv6/C2P0mRagohUex2d9KWXLrv17xCII6Y3hnwLyouFUBVizbVXkSJwP/7VCt97+910XugWVp/bs0tFHT0jJwdAZDpHE1u6kqhOWHWkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cg32Qols; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1PLkJLud; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cg32Qols; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1PLkJLud; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 378D4229CA;
-	Mon,  8 Apr 2024 14:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712586984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HLImobEPZznORyc/WCud4eu71GPBDbbHtA/ZDIXEBEU=;
-	b=Cg32QolsCFAjD8mTI7jyVbL+nlEtamG5yOH6w9yEvtAWkPMu1mpAC6c5XYGov+3h+ByrWq
-	GXe78PL0efcpmDcuX8iCdnECGB+y1fG1qlEv7dzFC8D84TavmxhupMqzFK7ttxr5HygSG+
-	bfXPfl/GiuVGxDM8lrJLy5yv7pbtjkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712586984;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HLImobEPZznORyc/WCud4eu71GPBDbbHtA/ZDIXEBEU=;
-	b=1PLkJLudwmhqPbV9ebbqJT4Hpqh+jkJN2lxpOMUHPyc7hJI3NkP/y+MBBKTnL5TAAl3qb6
-	riWOndtqNc6Pq5CA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Cg32Qols;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1PLkJLud
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712586984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HLImobEPZznORyc/WCud4eu71GPBDbbHtA/ZDIXEBEU=;
-	b=Cg32QolsCFAjD8mTI7jyVbL+nlEtamG5yOH6w9yEvtAWkPMu1mpAC6c5XYGov+3h+ByrWq
-	GXe78PL0efcpmDcuX8iCdnECGB+y1fG1qlEv7dzFC8D84TavmxhupMqzFK7ttxr5HygSG+
-	bfXPfl/GiuVGxDM8lrJLy5yv7pbtjkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712586984;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HLImobEPZznORyc/WCud4eu71GPBDbbHtA/ZDIXEBEU=;
-	b=1PLkJLudwmhqPbV9ebbqJT4Hpqh+jkJN2lxpOMUHPyc7hJI3NkP/y+MBBKTnL5TAAl3qb6
-	riWOndtqNc6Pq5CA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 299381332F;
-	Mon,  8 Apr 2024 14:36:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id CzwdCugAFGZzcQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 08 Apr 2024 14:36:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id BEA97A0814; Mon,  8 Apr 2024 16:36:23 +0200 (CEST)
-Date: Mon, 8 Apr 2024 16:36:23 +0200
-From: Jan Kara <jack@suse.cz>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Martin Brandenburg <martin@omnibond.com>, devel@lists.orangefs.org,
-	Vlastimil Babka <vbabka@suse.cz>, Kees Cook <keescook@chromium.org>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] orangefs: fix out-of-bounds fsid access
-Message-ID: <20240408143623.t4uj4dbewl4hyoar@quack3>
-References: <20240408075052.3304511-1-arnd@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XcacV/6MA0w3UhFBRBVy3esTM5LWlo9OndOPN3jBTvsHovL7s/iYNkt6DTHqvPY3AGe4bNhX5fhrqzf0pv9dEs8VzWFZKJuQIJmrZPGUyRCSWCIeyteLSDE/IwlWqrQnRaunToe+gaRD1RjX8/HuuP3sdWDrOoBBZ1i7KSp0CY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g0d1WVGM; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712587007; x=1744123007;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AP6bi9ege6JcpGaSssCggpjbRyuytVVuJ+Jp5d52k3Y=;
+  b=g0d1WVGMQd76uorKZiHF+EkK0H4YYqEFV/pI71QG9lREEbcjlqIwAm+y
+   jI6SNxrc8LvnZwFPyu1Izi25jbf50LSpGSzjx6ZNK1b973gy42IU+lucq
+   OK6e8kgXC12f2SxG5xADsCADYAh7fD7ilbYGH9Z/5Knbb72Rq+M39zM9h
+   tgHrQWYN3cutpAtRJ614C//cfqOeTzvjnhWjclgc17itcp8LEzGP42XXl
+   VD+o1mKDnqbaYC8Qant2IV76yWhxhFsQkzWDfyBQ1AVCY3usC72MzsoKi
+   DRQbILSFhVf4+9rPv1n/KMMuYjYwXqUDFZ2jfzCRItnH5yG5Q54G75jxj
+   A==;
+X-CSE-ConnectionGUID: RQq6ON2WS7aNA16GHxMiVw==
+X-CSE-MsgGUID: BBuNGLyzSsyHPfwnO245mg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="18588085"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="18588085"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 07:36:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915367374"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="915367374"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 07:36:43 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rtq6y-00000002Y9M-0zwF;
+	Mon, 08 Apr 2024 17:36:40 +0300
+Date: Mon, 8 Apr 2024 17:36:39 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Yicong Yang <yangyicong@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	yangyicong@hisilicon.com, Jiri Slaby <jirislaby@kernel.org>,
+	Tony Lindgren <tony@atomide.com>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v1 1/1] serial: core: Clearing the circular buffer before
+ NULLifying it
+Message-ID: <ZhQA95sHWoaWnq07@smile.fi.intel.com>
+References: <20240404150034.41648-1-andriy.shevchenko@linux.intel.com>
+ <b3fd1077-b49e-d99b-9cd1-c41bd244f290@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,89 +81,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240408075052.3304511-1-arnd@kernel.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 378D4229CA
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
+In-Reply-To: <b3fd1077-b49e-d99b-9cd1-c41bd244f290@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon 08-04-24 09:50:43, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sun, Apr 07, 2024 at 05:49:19PM +0800, Yicong Yang wrote:
+> On 2024/4/4 22:59, Andy Shevchenko wrote:
+> > The circular buffer is NULLified in uart_tty_port_shutdown()
+> > under the spin lock. However, the PM or other timer based callbacks
+> > may still trigger after this event without knowning that buffer pointer
+> > is not valid. Since the serial code is a bit inconsistent in checking
+> > the buffer state (some rely on the head-tail positions, some on the
+> > buffer pointer), it's better to have both aligned, i.e. buffer pointer
+> > to be NULL and head-tail possitions to be the same, meaning it's empty.
+> > This will prevent asynchronous calls to dereference NULL pointer as
+> > reported recently in 8250 case:
+> > 
+> >   BUG: kernel NULL pointer dereference, address: 00000cf5
+> >   Workqueue: pm pm_runtime_work
+> >   EIP: serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >   ...
+> >   ? serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >   __start_tx (drivers/tty/serial/8250/8250_port.c:1551)
+> >   serial8250_start_tx (drivers/tty/serial/8250/8250_port.c:1654)
+> >   serial_port_runtime_suspend (include/linux/serial_core.h:667 drivers/tty/serial/serial_port.c:63)
+> >   __rpm_callback (drivers/base/power/runtime.c:393)
+> >   ? serial_port_remove (drivers/tty/serial/serial_port.c:50)
+> >   rpm_suspend (drivers/base/power/runtime.c:447)
+> > 
+> > The proposed change will prevent ->start_tx() to be called during
+> > suspend on shut down port.
 > 
-> orangefs_statfs() copies two consecutive fields of the superblock into
-> the statfs structure, which triggers a warning from the string fortification
-> helpers:
-> 
-> In file included from fs/orangefs/super.c:8:
-> include/linux/fortify-string.h:592:4: error: call to '__read_overflow2_field' declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
->                         __read_overflow2_field(q_size_field, size);
-> 
-> Change the memcpy() to an individual assignment of the two fields, which helps
-> both the compiler and human readers understand better what it does.
-> 
-> Link: https://lore.kernel.org/all/20230622101701.3399585-1-arnd@kernel.org/
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Mike Marshall <hubcap@omnibond.com>
-> Cc: Martin Brandenburg <martin@omnibond.com>
-> Cc: devel@lists.orangefs.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Resending to VFS maintainers, I sent this a couple of times to the
-> orangefs maintainers but never got a reply
-> ---
->  fs/orangefs/super.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
-> index fb4d09c2f531..152478295766 100644
-> --- a/fs/orangefs/super.c
-> +++ b/fs/orangefs/super.c
-> @@ -201,7 +201,10 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
->  		     (long)new_op->downcall.resp.statfs.files_avail);
->  
->  	buf->f_type = sb->s_magic;
-> -	memcpy(&buf->f_fsid, &ORANGEFS_SB(sb)->fs_id, sizeof(buf->f_fsid));
-> +	buf->f_fsid = (__kernel_fsid_t) {{
-> +		ORANGEFS_SB(sb)->fs_id,
-> +		ORANGEFS_SB(sb)->id,
-> +	}};
+> Just saw the issue and thanks for your timely fix. I didn't got a board with
+> 8250 and sorry for didn't found this issue.
 
-Frankly, this initializer is hard to understand for me. Why not simple:
+But does this change make no regression in your case? Can you test it?
 
-	buf->f_fsid[0] = ORANGEFS_SB(sb)->fs_id;
-	buf->f_fsid[1] = ORANGEFS_SB(sb)->id;
+> FYI, I checked device_shutdown() and seems it called pm_runtime_barrier() for waiting all
+> the scheduled RPM callbacks finished and keep the device in resume state. So ideally there
+> shouldn't be any pending requests later since we handled them before shutdown?
+> 
+> There's someone encountered the same issue in shutdown() due to runtime pm and fixed it in
+> 	af8db1508f2c ("PM / driver core: disable device's runtime PM during shutdown")
+> patch above seems to still have some problem and later fixed by:
+> 	fe6b91f47080 ("PM / Driver core: leave runtime PM enabled during system shutdown")
 
-								Honza
+Ah, yes, thanks for reminding (yeah, I saw those patches, let me test it on my setup.
+
+> But seems the handling in the driver core doesn't cover the case here..
+
+Of course, since we have our own shutdown on the upper level, we don't kill the
+device, but we do release _some_ resources.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
 
