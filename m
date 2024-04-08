@@ -1,119 +1,94 @@
-Return-Path: <linux-kernel+bounces-135044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B58189BA57
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:32:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C554A89BA5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC0011C21E9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:32:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80FB92897CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4B338FA0;
-	Mon,  8 Apr 2024 08:31:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C517941A80
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00FA3A1CF;
+	Mon,  8 Apr 2024 08:32:04 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4086A39FFB;
+	Mon,  8 Apr 2024 08:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565103; cv=none; b=FewfCQTH0dyrnpRmM+EODTDQTOIuUCri5QXHnAmM/7a8Ck6AhCn3wfuyUW85PGbUeb11YPSVfZRybRmDSRR5Y4c/y/v4e60jXzcYFp1/sLMzCX1UB0OrHXnxiW7iaOxaKLewSWqtRgHkrwb97fx/gVr5dMgb4sSW6iqLiTo3Em8=
+	t=1712565124; cv=none; b=MvCN9Qi527H580GkGXX9cK3Tu5Z+IZtXlIukRbymHiNFP5s0KsRgYcAdzYNxAZrUrf9Mr2pMaSYc2jrX3uA4++4B+xXjmO/GNYeP52YmzbYW/xLbPcpQUVhbYr8gZsb4Sggn2dNalfPJVj+i0XYnXk2zetYI8xjjGrqBzmYM3hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565103; c=relaxed/simple;
-	bh=cHVXQgWWYQikdi7cXresunZR0HbsRYAMbamgl+6vPTA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AXrylmDhBuzlXzIk18vzdYWKpD7u7JbI1zodkfcMQF8G847A/rnnHXbvOyGfe8s2buMm07l9ipNszJHGsTrejRdlS+wPik7wOaSoP2nWR6yplkDMQfDOCoa46M6XRDdrPRYmGyxdkaJZ9zz5G1GcFJeFuWLBcxocr7EhQJT72cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E77B12FC;
-	Mon,  8 Apr 2024 01:32:10 -0700 (PDT)
-Received: from [10.57.73.169] (unknown [10.57.73.169])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE95E3F766;
-	Mon,  8 Apr 2024 01:31:37 -0700 (PDT)
-Message-ID: <7766689e-a473-475d-8bf6-c1d7435881c9@arm.com>
-Date: Mon, 8 Apr 2024 09:31:36 +0100
+	s=arc-20240116; t=1712565124; c=relaxed/simple;
+	bh=uAmL+spAxj/+wCS8qccqTLgGxz6q90iFWSXXWlUjztM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BueAgU+vR9anFMhaPUx0UknRSNq9/RBtbrdRVRjVtiL7B1TRPcQ90yoMYBFzTtfFitIvTkBM5GGQ0MgLCEt+JIQb4Nr9W5clpKhprjO26OYEvwJptqEdfLEmIucICqnotzkdSkVjVL4X0/3tJ0ycfNjle5/T2+/pa3Ya5ArOOqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VCj3Y0W4Cz21kdL;
+	Mon,  8 Apr 2024 16:31:05 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id 95CA918002D;
+	Mon,  8 Apr 2024 16:31:59 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 8 Apr 2024 16:31:59 +0800
+Subject: Re: [PATCH] mm,swapops: Update check in is_pfn_swap_entry for
+ hwpoison entries
+To: Oscar Salvador <osalvador@suse.de>
+CC: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, David Hildenbrand
+	<david@redhat.com>, Peter Xu <peterx@redhat.com>, <stable@vger.kernel.org>,
+	Tony Luck <tony.luck@intel.com>, Andrew Morton <akpm@linux-foundation.org>
+References: <20240407130537.16977-1-osalvador@suse.de>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <fdf0a811-adfa-cc78-1c8d-203043d1691d@huawei.com>
+Date: Mon, 8 Apr 2024 16:31:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] arm64: tlb: Improve __TLBI_VADDR_RANGE()
-Content-Language: en-GB
-To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
- maz@kernel.org, oliver.upton@linux.dev, apopple@nvidia.com,
- rananta@google.com, mark.rutland@arm.com, v-songbaohua@oppo.com,
- yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com,
- shan.gavin@gmail.com
-References: <20240405035852.1532010-1-gshan@redhat.com>
- <20240405035852.1532010-3-gshan@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240405035852.1532010-3-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20240407130537.16977-1-osalvador@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-On 05/04/2024 04:58, Gavin Shan wrote:
-> The macro returns the operand of TLBI RANGE instruction. A mask needs
-> to be applied to each individual field upon producing the operand, to
-> avoid the adjacent fields can interfere with each other when invalid
-> arguments have been provided. The code looks more tidy at least with
-> a mask and FIELD_PREP().
+On 2024/4/7 21:05, Oscar Salvador wrote:
+> Tony reported that the Machine check recovery was broken in v6.9-rc1,
+> as he was hitting a VM_BUG_ON when injecting uncorrectable memory errors
+> to DRAM.
+> After some more digging and debugging on his side, he realized that this
+> went back to v6.1, with the introduction of 'commit 0d206b5d2e0d ("mm/swap: add
+> swp_offset_pfn() to fetch PFN from swap entry")'.
+> That commit, among other things, introduced swp_offset_pfn(), replacing
+> hwpoison_entry_to_pfn() in its favour.
 > 
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-
-LGTM!
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
-> ---
->  arch/arm64/include/asm/tlbflush.h | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
+> The patch also introduced a VM_BUG_ON() check for is_pfn_swap_entry(),
+> but is_pfn_swap_entry() never got updated to cover hwpoison entries, which
+> means that we would hit the VM_BUG_ON whenever we would call
+> swp_offset_pfn() for such entries on environments with CONFIG_DEBUG_VM set.
+> Fix this by updating the check to cover hwpoison entries as well, and update
+> the comment while we are it.
 > 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index a75de2665d84..243d71f7bc1f 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -142,17 +142,24 @@ static inline unsigned long get_trans_granule(void)
->   * EL1, Inner Shareable".
->   *
->   */
-> -#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)			\
-> -	({									\
-> -		unsigned long __ta = (baddr);					\
-> -		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;		\
-> -		__ta &= GENMASK_ULL(36, 0);					\
-> -		__ta |= __ttl << 37;						\
-> -		__ta |= (unsigned long)(num) << 39;				\
-> -		__ta |= (unsigned long)(scale) << 44;				\
-> -		__ta |= get_trans_granule() << 46;				\
-> -		__ta |= (unsigned long)(asid) << 48;				\
-> -		__ta;								\
-> +#define TLBIR_ASID_MASK		GENMASK_ULL(63, 48)
-> +#define TLBIR_TG_MASK		GENMASK_ULL(47, 46)
-> +#define TLBIR_SCALE_MASK	GENMASK_ULL(45, 44)
-> +#define TLBIR_NUM_MASK		GENMASK_ULL(43, 39)
-> +#define TLBIR_TTL_MASK		GENMASK_ULL(38, 37)
-> +#define TLBIR_BADDR_MASK	GENMASK_ULL(36,  0)
-> +
-> +#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)		\
-> +	({								\
-> +		unsigned long __ta = 0;					\
-> +		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;	\
-> +		__ta |= FIELD_PREP(TLBIR_BADDR_MASK, baddr);		\
-> +		__ta |= FIELD_PREP(TLBIR_TTL_MASK, __ttl);		\
-> +		__ta |= FIELD_PREP(TLBIR_NUM_MASK, num);		\
-> +		__ta |= FIELD_PREP(TLBIR_SCALE_MASK, scale);		\
-> +		__ta |= FIELD_PREP(TLBIR_TG_MASK, get_trans_granule());	\
-> +		__ta |= FIELD_PREP(TLBIR_ASID_MASK, asid);		\
-> +		__ta;							\
->  	})
->  
->  /* These macros are used by the TLBI RANGE feature. */
+> Reported-by: Tony Luck <tony.luck@intel.com>
+> Closes: https://lore.kernel.org/all/Zg8kLSl2yAlA3o5D@agluck-desk3/
+> Tested-by: Tony Luck <tony.luck@intel.com>
+> Fixes: 0d206b5d2e0d ("mm/swap: add swp_offset_pfn() to fetch PFN from swap entry")
+> Cc: <stable@vger.kernel.org> # 6.1.x
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+
+Acked-by: Miaohe Lin <linmiaohe@huawei.com>
+
+Thanks.
 
 
