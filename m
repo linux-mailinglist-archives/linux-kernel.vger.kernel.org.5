@@ -1,141 +1,179 @@
-Return-Path: <linux-kernel+bounces-135484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4F189C679
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC89D89C67E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6B61C229D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:11:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0B5A1C229A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFDD84D1C;
-	Mon,  8 Apr 2024 14:11:31 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F6F8529C;
+	Mon,  8 Apr 2024 14:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hi4haSiz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B475584A2B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC9984D1C;
+	Mon,  8 Apr 2024 14:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712585491; cv=none; b=q+PGlRNMniLGqYHpW6Pecp7pP/5IY02MAaL4ERJ7V84HMGrRnzwuMuNjSLfmveWuqFGA5CuUzW8O+G+OhUBk1nAbWVvSKGKKoNdcrZlsC6ohNPJRPfK1W/fkBmfUYvm6FGH3+BsbmhWjZS4+06UGeEALZJNy3eIdOFNnaff2Sn8=
+	t=1712585510; cv=none; b=faCJAns5daGJeyTvM1f/Y5Cn5r8cuCzS60KcK6KVxKB++kOaJqo4bqsGHTktkTautVOFBDYm/DwtfMCU6kirGkLpYgsiB8qrn6QeClliaW+C9pGYP3EO74gH9t7zWpuNo/QUbwT2NTMxdUP74s39+3lvF5MQXGssvN00SPsbkcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712585491; c=relaxed/simple;
-	bh=eLXvdEPZ7Cv9E/VbzgBBf1ggcn+8mLUZyZt/b335WQ0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PAUTUVl0/MXrIuC6zLSgr3qJ5Vb5WDcOMi/nHIRIwYIr5Ywad81yZDvfHFLafbfGJD2fth6nSJAA1He39C8uB4f7S0gzj7BIc+4emhs9vQiBV9LU3CmHUPEI2b66rsiRRYiyIpgzte8SVGOU6FrrMWa87wee/n2tpqY71lWPbhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 8 Apr
- 2024 17:11:19 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 8 Apr 2024
- 17:11:19 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Eric Van Hensbergen <ericvh@kernel.org>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Latchesar Ionkov
-	<lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, "Christian
- Schoenebeck" <linux_oss@crudebyte.com>, <v9fs@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
-	<syzbot+ff14db38f56329ef68df@syzkaller.appspotmail.com>
-Subject: [PATCH net v2] net/9p: fix uninit-value in p9_client_rpc()
-Date: Mon, 8 Apr 2024 07:10:39 -0700
-Message-ID: <20240408141039.30428-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712585510; c=relaxed/simple;
+	bh=Y5VDGX/dMQKlUWcPOeqi5ZCYWJijxH8qLM/15IHq2Ag=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pNzWCJtZTC44Bh4sRv1hxpljvwkPsjk6dPlKwF/VfaYMq4N475Tn4Y1G7wvOrn7xwdFvgVf0SfjTcOHt7G9qQl809QPJmvCNXT1sauA71lLQO9LIHBboFv1nrm0VU8LB4Pa+HFFjO0S/JuEuC3Q4zE+VZvDGSmhl/To0GAtAJ4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hi4haSiz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D384C433F1;
+	Mon,  8 Apr 2024 14:11:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712585509;
+	bh=Y5VDGX/dMQKlUWcPOeqi5ZCYWJijxH8qLM/15IHq2Ag=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hi4haSizLHLeV1cxPz2QxOf0sM5W3Vwrpvpz75wspuo6phr5Q9EBAv7ole5+JcHVD
+	 B4mexWtiU6i6SPVdOj2n6Rq505T3XDeG9s3dNAD6hSM0PNKHldCAeGmRisHEQNiz6K
+	 cb+isO7Gdz7sXcDItzLKhMvJCpxh+KiIJoLpSY2qlF2PO8kXAnnXj95DQWRnhJiLh/
+	 S8FBsGvp1Z0706XWzLBPsM41nUCDTILIr4iJyQZj+ZsAONcNlB0pglPvW4cIeFCQYK
+	 /cSTYusoNphLJSzIou22wDseKz2gruSn/tzKFclelULXvPLE8+LGdg+8FIXiv6PRkB
+	 VasGbzrUpZMFQ==
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ea0a6856d7so606196a34.1;
+        Mon, 08 Apr 2024 07:11:49 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVUoPJgMkLd+wuxJNYrSwV8ur1Sn0Sge/n8Lm9XdVgFBz5aULQVZoiE0I36oPyCHNniI8Nme594ZFmF34frxwdNRbAAC4F7F6OnsAUpBJhIF3l7XfBqjLFwGOmVuy61OesEkMTmxU7y2XXc329rkuvDu5BaUu/XZzUY+jWrS1O+7MEQ
+X-Gm-Message-State: AOJu0YxZt49HPtNuVBTord259UCSjilcfqiP0CavN+SfVhcwTpx0A2Z7
+	bNxvP6Q3qypWZ7rx0RxSzAU56bDpAAu2cjY7Bic+XrzcWZffvxxW/q7nVkc9ea1ODgQmsmaazDj
+	rmHQ2zKgEtqgcCDDxXaPOXVfq3Zs=
+X-Google-Smtp-Source: AGHT+IHXfmB+SUI1PFf5gbH9pXpP3RXeYlH6OKyn7AkJ05XBV8CG5i8TYv8qnvxxum64Q8ax1o9IrX71zGPJ88VXXks=
+X-Received: by 2002:a05:6808:130a:b0:3c5:dc7a:57d0 with SMTP id
+ y10-20020a056808130a00b003c5dc7a57d0mr10464908oiv.5.1712585508701; Mon, 08
+ Apr 2024 07:11:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+References: <20240405121819.31331-1-sumeet.r.pawnikar@intel.com>
+In-Reply-To: <20240405121819.31331-1-sumeet.r.pawnikar@intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 8 Apr 2024 16:11:37 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0is1Y+QHWfp-=sddAD8bUgn+QD7PmfBnAzgjZktqMYhBA@mail.gmail.com>
+Message-ID: <CAJZ5v0is1Y+QHWfp-=sddAD8bUgn+QD7PmfBnAzgjZktqMYhBA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: DPTF: Add Lunar Lake support
+To: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+Cc: rafael@kernel.org, srinivas.pandruvada@linux.intel.com, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Syzbot with the help of KMSAN reported the following error:
+On Fri, Apr 5, 2024 at 2:31=E2=80=AFPM Sumeet Pawnikar
+<sumeet.r.pawnikar@intel.com> wrote:
+>
+> Add Lunar Lake ACPI IDs for DPTF devices.
+>
+> Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+> ---
+>  drivers/acpi/dptf/dptf_pch_fivr.c                       | 1 +
+>  drivers/acpi/dptf/dptf_power.c                          | 2 ++
+>  drivers/acpi/dptf/int340x_thermal.c                     | 6 ++++++
+>  drivers/acpi/fan.h                                      | 1 +
+>  drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 1 +
+>  drivers/thermal/intel/int340x_thermal/int3403_thermal.c | 1 +
+>  6 files changed, 12 insertions(+)
+>
+> diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_p=
+ch_fivr.c
+> index 654aaa53c67f..d202730fafd8 100644
+> --- a/drivers/acpi/dptf/dptf_pch_fivr.c
+> +++ b/drivers/acpi/dptf/dptf_pch_fivr.c
+> @@ -150,6 +150,7 @@ static const struct acpi_device_id pch_fivr_device_id=
+s[] =3D {
+>         {"INTC1045", 0},
+>         {"INTC1049", 0},
+>         {"INTC1064", 0},
+> +       {"INTC106B", 0},
+>         {"INTC10A3", 0},
+>         {"", 0},
+>  };
+> diff --git a/drivers/acpi/dptf/dptf_power.c b/drivers/acpi/dptf/dptf_powe=
+r.c
+> index b8187babbbbb..8023b3e23315 100644
+> --- a/drivers/acpi/dptf/dptf_power.c
+> +++ b/drivers/acpi/dptf/dptf_power.c
+> @@ -232,6 +232,8 @@ static const struct acpi_device_id int3407_device_ids=
+[] =3D {
+>         {"INTC1061", 0},
+>         {"INTC1065", 0},
+>         {"INTC1066", 0},
+> +       {"INTC106C", 0},
+> +       {"INTC106D", 0},
+>         {"INTC10A4", 0},
+>         {"INTC10A5", 0},
+>         {"", 0},
+> diff --git a/drivers/acpi/dptf/int340x_thermal.c b/drivers/acpi/dptf/int3=
+40x_thermal.c
+> index b7113fa92fa6..014ada759954 100644
+> --- a/drivers/acpi/dptf/int340x_thermal.c
+> +++ b/drivers/acpi/dptf/int340x_thermal.c
+> @@ -43,6 +43,12 @@ static const struct acpi_device_id int340x_thermal_dev=
+ice_ids[] =3D {
+>         {"INTC1064"},
+>         {"INTC1065"},
+>         {"INTC1066"},
+> +       {"INTC1068"},
+> +       {"INTC1069"},
+> +       {"INTC106A"},
+> +       {"INTC106B"},
+> +       {"INTC106C"},
+> +       {"INTC106D"},
+>         {"INTC10A0"},
+>         {"INTC10A1"},
+>         {"INTC10A2"},
+> diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
+> index e7b4b4e4a55e..f89d19c922dc 100644
+> --- a/drivers/acpi/fan.h
+> +++ b/drivers/acpi/fan.h
+> @@ -15,6 +15,7 @@
+>         {"INTC1044", }, /* Fan for Tiger Lake generation */ \
+>         {"INTC1048", }, /* Fan for Alder Lake generation */ \
+>         {"INTC1063", }, /* Fan for Meteor Lake generation */ \
+> +       {"INTC106A", }, /* Fan for Lunar Lake generation */ \
+>         {"INTC10A2", }, /* Fan for Raptor Lake generation */ \
+>         {"PNP0C0B", } /* Generic ACPI fan */
+>
+> diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/dr=
+ivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> index 427d370648d5..f8ebdd19d340 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> @@ -705,6 +705,7 @@ static const struct acpi_device_id int3400_thermal_ma=
+tch[] =3D {
+>         {"INTC1040", 0},
+>         {"INTC1041", 0},
+>         {"INTC1042", 0},
+> +       {"INTC1068", 0},
+>         {"INTC10A0", 0},
+>         {}
+>  };
+> diff --git a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c b/dr=
+ivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> index 9b33fd3a66da..86901f9f54d8 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> @@ -284,6 +284,7 @@ static const struct acpi_device_id int3403_device_ids=
+[] =3D {
+>         {"INTC1043", 0},
+>         {"INTC1046", 0},
+>         {"INTC1062", 0},
+> +       {"INTC1069", 0},
+>         {"INTC10A1", 0},
+>         {"", 0},
+>  };
+> --
 
-BUG: KMSAN: uninit-value in trace_9p_client_res include/trace/events/9p.h:146 [inline]
-BUG: KMSAN: uninit-value in p9_client_rpc+0x1314/0x1340 net/9p/client.c:754
- trace_9p_client_res include/trace/events/9p.h:146 [inline]
- p9_client_rpc+0x1314/0x1340 net/9p/client.c:754
- p9_client_create+0x1551/0x1ff0 net/9p/client.c:1031
- v9fs_session_init+0x1b9/0x28e0 fs/9p/v9fs.c:410
- v9fs_mount+0xe2/0x12b0 fs/9p/vfs_super.c:122
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x2de/0x1400 mm/slub.c:2391
- ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc+0x6d3/0xbe0 mm/slub.c:3852
- p9_tag_alloc net/9p/client.c:278 [inline]
- p9_client_prepare_req+0x20a/0x1770 net/9p/client.c:641
- p9_client_rpc+0x27e/0x1340 net/9p/client.c:688
- p9_client_create+0x1551/0x1ff0 net/9p/client.c:1031
- v9fs_session_init+0x1b9/0x28e0 fs/9p/v9fs.c:410
- v9fs_mount+0xe2/0x12b0 fs/9p/vfs_super.c:122
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-If p9_check_errors() fails early in p9_client_rpc(), req->rc.tag
-will not be properly initialized. However, trace_9p_client_res()
-ends up trying to print it out anyway before p9_client_rpc()
-finishes.
-
-Fix this issue by assigning default values to p9_fcall fields
-such as 'tag' and (just in case KMSAN unearths something new) 'id'
-during the tag allocation stage.
-
-Reported-and-tested-by: syzbot+ff14db38f56329ef68df@syzkaller.appspotmail.com
-Fixes: 348b59012e5c ("net/9p: Convert net/9p protocol dumps to tracepoints")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
-v2: change fc->tag init value from 0 to P9_NOTAG per Dominique
-Martinet's <asmadeus@codewreck.org> helpful suggestion.
-Link: https://lore.kernel.org/all/ZhNVMivKCCq6wir0@codewreck.org/
-
- net/9p/client.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/9p/client.c b/net/9p/client.c
-index f7e90b4769bb..b05f73c291b4 100644
---- a/net/9p/client.c
-+++ b/net/9p/client.c
-@@ -235,6 +235,8 @@ static int p9_fcall_init(struct p9_client *c, struct p9_fcall *fc,
- 	if (!fc->sdata)
- 		return -ENOMEM;
- 	fc->capacity = alloc_msize;
-+	fc->id = 0;
-+	fc->tag = P9_NOTAG;
- 	return 0;
- }
- 
+Applied as 6.10 material, thanks!
 
