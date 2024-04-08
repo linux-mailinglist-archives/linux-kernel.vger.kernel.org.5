@@ -1,204 +1,159 @@
-Return-Path: <linux-kernel+bounces-135608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0166389C86E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:34:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 479AE89C877
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CAED1F22B68
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:34:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14C71F232C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270B81420C8;
-	Mon,  8 Apr 2024 15:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000521411DF;
+	Mon,  8 Apr 2024 15:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2EAEEGQ"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ha891YtX"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F38126F0A;
-	Mon,  8 Apr 2024 15:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE861E4AF;
+	Mon,  8 Apr 2024 15:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712590471; cv=none; b=cbHXdu42OrOV7ykJUvlUdzgJ5+sIeoNH4vabPtPFWME4KFDDv/gtE5ndujGRv7s0xHnVbO177Kh7UFb4msbxp4nDMQNblZn2I3GucZALFypSBcL4KygdhiY1/B92KGef+kaj9v/JwsNuj+ZkzFhO1s4GzH2T60EVaggdPV8LDEI=
+	t=1712590573; cv=none; b=a+LbU2O68b1gzRkdpK+jM0I59mYqjZfOdXHfa5EMVyXI1EzoKsyqNH6Oj6CHjLfA5RdyJTZX/TPUEEyHDZMy3AXujrcZ8DhyBV5PXnsSKFjAdLskQcmQqbs13oiiBTOxLIhh4pRP6eQHdB9PvgQel2jrh1ogi2CTmUL/iSgisXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712590471; c=relaxed/simple;
-	bh=4YKRX0MlfiV5mpfCzOeBNiJQnPi5WzZXviugTinSpNM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QArUo6xInyOSGsy43zIZHs0a4wTh6fA4eALBmXPfrxvr0HaNti7YcbJ5tNYL59ueU+z8jK42WlJAABRnYW03heLiQ7QmDH56OynF/s1kZW2zo9KHpsCuE45doPkMOAEYbazFSEh1CjbK3klHFALpZaUZ5bB8Y7TwYCaj4YE+b14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2EAEEGQ; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ed627829e6so439601b3a.1;
-        Mon, 08 Apr 2024 08:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712590469; x=1713195269; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XzmG06Fco0ZTrSThkuHAMjjsKBRNcTmAqJu1Q2E5r5g=;
-        b=g2EAEEGQARbhbZodLg1Q71essx5NxOLt1+t7HXWuEBtP2GFhJ48uvE/BeeBMYYwu9g
-         yHs2iUYxM04BIDYiTV/mswHbYfKJxCyAybPY6rmR617sk1z27w/nUfjsTu6GvgoYidrV
-         K9icdU93ee85M1IMHlzcl3j+qPEMarUlF4m3t8N895aDUkyzAW4nufEt7eiaGp83PYz6
-         5smDlNPatzvuC95Q5VDHHGSfqocjm5x7YZTlQIG9gZb5bnxxEWmlPenZpUkYjO1d1iaj
-         dn1dyabZvQTnlDklvshhhPnd/JpckcVfjfbePZQaY4onHO1fiDW7PNk6eVizXYnOwKI+
-         5OFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712590469; x=1713195269;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XzmG06Fco0ZTrSThkuHAMjjsKBRNcTmAqJu1Q2E5r5g=;
-        b=R4/W27N65uwZMzN5dBdxizc8EfDzgMoLLqbuaOA/0Di+Llxw3lCW5Bmd6+3VoE6OnB
-         4o8ra0hpMIM5S8ifhcsbZf4Y1ENFe7x6yXrCsTnW+w321oAcJxHcXySQJnPDXKE3wxaS
-         eJ+ppH/24+91xcB7DAkifBPe0r8X9ARlTR75l19//Y9CW5w8AdqGsikLe3g27Lbqh2vx
-         SvPHsCVHKdUUNfCy7faDRfWXvy4SqQ6yi0p+yUEe9rJTMn57n+Zh66RTXXtQluMBBGV7
-         21fbB9dIAD4nhFa08EjG0Enk6gg8CEOKM7kO4ba0A0lAlEQ4w3PeMOUxGQ0v0DJWUOYO
-         Ky/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXYOzx06o08AlNy3qbEm8GGTgh6TmnlinybgbKX3mNfSOtPQ3wu6YGtfpO/+cvQ/06LYY1KskWCsIXo5/b5TN42p36iulmykd6L5gkrahmiI6XR1TcT99K9CjJieL++ydGVDC5g2xziNq6r56dPCiwJxZs8OAao4zF4l8ezyLvjFj7cJqzttsckJ7C4YonAtRZyNgtMzhKa43/1wF6ibUU/BFbGx8ZgFm5V5ZjjwSVgN019kGz6llBBQ37yP6irppi5AUEcFuyRO/afe3t+ShpeLbj9aSzoLm0uYPF8ZpVF23W6Sd/DLp0SI0JFVyaesSG539uieH37eeK+WsxbTghxYb5lKaad/ppa9pFg0GlKBZqo/u0eJ5ir4e/SQzgxtlTuTT/9ksgxlbWEUWnrrLQY6Y0qi25Wl46Ib7IFfxeV6CH7KmfECCf3HxbSa04NQGJOdq2bv40V4SVw/hHYLLX8+yztF4vX3YPQo8ah9z7gj8WICPqAk6I9c2aJ8dn0egu0o2RjXQ==
-X-Gm-Message-State: AOJu0YwcFJIAOg6DBsic/Gb3gnjT5zWImrA0tRUFYlNotbrkL9GK56pM
-	H5h12J7MII8snt7VEGC3aFrBH22GNot97N71JiaJNE2/yPuvm7Ep
-X-Google-Smtp-Source: AGHT+IHBXATYsnCAi18Pnmd94XM8gXF1KK2c5ntBdRmFa9x8kfwO+o1mRSI9SAgTVsohRvBTBjU3lg==
-X-Received: by 2002:a05:6a00:8618:b0:6ed:1c7:8c65 with SMTP id hg24-20020a056a00861800b006ed01c78c65mr9832006pfb.10.1712590468982;
-        Mon, 08 Apr 2024 08:34:28 -0700 (PDT)
-Received: from localhost ([2601:647:6881:9060:13a8:4fe8:4da1:7ea2])
-        by smtp.gmail.com with ESMTPSA id s7-20020aa78d47000000b006e5808b472esm6878408pfe.95.2024.04.08.08.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 08:34:27 -0700 (PDT)
-Date: Mon, 8 Apr 2024 08:34:26 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Marc Harvey <marcharvey@google.com>,
-	"Cong Wang ." <cong.wang@bytedance.com>, shakeel.butt@linux.dev,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-Message-ID: <ZhQOgjkna94y9VBx@pop-os.localdomain>
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com>
- <ZfegzB341oNc_Ocz@infradead.org>
- <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com>
- <ZgC5JoSiWAYf3IgX@infradead.org>
- <CAHS8izO5-giYhM1bVCLLOXRXq-Xd0=pi0kPq5E1-R=3i=XihmQ@mail.gmail.com>
- <ZgUc07Szbx5x-obb@infradead.org>
- <CAHS8izM8iLC9J1xSHScMrMkVyoY5HZ_nFMRO4V7HYarHhZhk6Q@mail.gmail.com>
+	s=arc-20240116; t=1712590573; c=relaxed/simple;
+	bh=eHpOu5zPvgUSlh0lswOh/raEt39lq9sYMURGlTxt5o4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pdqfl3z6zlC9iTgdppxRzisnAmMRHpU1VjCLaItFjPeG0Er81kcdHifw5rhiFeJP+M8Ws+a13wFszYpSna0leAsBNhQpqbQHWLERw7ag1YVJu9vSAHCw1EUHgbul7tuAVgY+uz/rG9UyzrL30V75Z8C3lGXsNscxWCYP0pQw3pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ha891YtX; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438EYWrt024334;
+	Mon, 8 Apr 2024 15:36:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=rWu4eYt9SG8lqj0AcdAp1+78WbLQfgnnvruXuyd6KC8=;
+ b=Ha891YtXvRAFAZ6bK3XawXf9udoL/rSIawJPe+oBTvF6V9FoNwcl1JQJSQCpSFJzO2RA
+ NqzjJJKLcRqdrao81QbR0mdS+TurqtBJJePXDxh8sEtwQoPyo/0h94S5Wyxz91a+HXKf
+ QgPPhoSITTNxjQTOFL3MoevqfpkrUWF6vc6KAfBTRffwUPdyfGT6pGE6JGfMTXQ5f6cY
+ 2t2pOTDbS8RnkKNicEWGU/0NYE7ozz5BIGSdfUD9aBJy51sFqvpShER5YeJtPngDlk/r
+ mwrTG2bVob51hk0D9udOC6qI5Ul1bDSeWQX/MLeM/qcL42rEEm+C5xLsBH6y9omV3M2f Gw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xchws07pf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 15:36:05 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 438F0iZ4019092;
+	Mon, 8 Apr 2024 15:36:04 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh4011fs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 15:36:04 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 438Fa0ur45220240
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Apr 2024 15:36:02 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 10C412004B;
+	Mon,  8 Apr 2024 15:36:00 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8C9F020040;
+	Mon,  8 Apr 2024 15:35:59 +0000 (GMT)
+Received: from [9.171.30.232] (unknown [9.171.30.232])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  8 Apr 2024 15:35:59 +0000 (GMT)
+Message-ID: <a98fdeca857f4eb1e3513a8658ef55f89ac45e8b.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] tty: serial: handle HAS_IOPORT dependencies
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby
+ <jirislaby@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Arnd
+ Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        LKML
+ <linux-kernel@vger.kernel.org>
+Date: Mon, 08 Apr 2024 17:35:59 +0200
+In-Reply-To: <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
+References: <20240405152924.252598-1-schnelle@linux.ibm.com>
+	 <20240405152924.252598-2-schnelle@linux.ibm.com>
+	 <1a14ac6e-30e9-048e-50cc-c1c3aacc2118@linux.intel.com>
+Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pz81Vd6ejxPf7HNJ35MPjSCuVNIMX3Ai
+X-Proofpoint-GUID: pz81Vd6ejxPf7HNJ35MPjSCuVNIMX3Ai
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izM8iLC9J1xSHScMrMkVyoY5HZ_nFMRO4V7HYarHhZhk6Q@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_13,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 impostorscore=0 lowpriorityscore=0 suspectscore=0
+ spamscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404080121
 
-On Mon, Apr 01, 2024 at 12:22:24PM -0700, Mina Almasry wrote:
-> On Thu, Mar 28, 2024 at 12:31 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Tue, Mar 26, 2024 at 01:19:20PM -0700, Mina Almasry wrote:
-> > >
-> > > Are you envisioning that dmabuf support would be added to the block
-> > > layer
-> >
-> > Yes.
-> >
-> > > (which I understand is part of the VFS and not driver specific),
-> >
-> > The block layer isn't really the VFS, it's just another core stack
-> > like the network stack.
-> >
-> > > or as part of the specific storage driver (like nvme for example)? If
-> > > we can add dmabuf support to the block layer itself that sounds
-> > > awesome. We may then be able to do devmem TCP on all/most storage
-> > > devices without having to modify each individual driver.
-> >
-> > I suspect we'll still need to touch the drivers to understand it,
-> > but hopefully all the main infrastructure can live in the block layer.
-> >
-> > > In your estimation, is adding dmabuf support to the block layer
-> > > something technically feasible & acceptable upstream? I notice you
-> > > suggested it so I'm guessing yes to both, but I thought I'd confirm.
-> >
-> > I think so, and I know there has been quite some interest to at least
-> > pre-register userspace memory so that the iommu overhead can be
-> > pre-loaded.  It also is a much better interface for Peer to Peer
-> > transfers than what we currently have.
-> >
+On Mon, 2024-04-08 at 12:54 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Fri, 5 Apr 2024, Niklas Schnelle wrote:
+>=20
+> > In a future patch HAS_IOPORT=3Dn will disable inb()/outb() and friends =
+at
+> > compile time. We thus need to add HAS_IOPORT as dependency for those
+> > drivers using them unconditionally. For 8250 based drivers some support
+> > MMIO only use so fence only the parts requiring I/O ports.
+> >=20
+> > Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+> > Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > ---
+> > Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
+> > and may be merged via subsystem specific trees at your earliest
+> > convenience.
+> >=20
+> > Note 2: This was previously acked here:
+> > https://lore.kernel.org/all/2023053050-prodigal-shine-4d1c@gregkh/
+> > Given this was almost a year ago and didn't apply then I didn't
+> > carry the Ack over though.
+> >=20
+> >=20
+---8<---
+> > diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/=
+Kconfig
+> > index 47ff50763c04..54bf98869abf 100644
+> > --- a/drivers/tty/serial/8250/Kconfig
+> > +++ b/drivers/tty/serial/8250/Kconfig
+> > @@ -6,7 +6,6 @@
+> >=20=20
+> >  config SERIAL_8250
+> >  	tristate "8250/16550 and compatible serial support"
+> > -	depends on !S390
+>=20
+> Why? Your changelogs gives zero insight on this change.
 
-Thanks for copying me on this. This sounds really great. 
+I used this for compile testing since I build on s390 natively and this
+would have hidden the missing HAS_IOPORT dependencies I'm pretty sure
+it was added because of the I/O port problem too. I'll either add to
+the commit description that it is no longer needed or drop this. Any
+preference?
 
-Also P2PDMA requires PCI root complex to support this kind of direct transfer,
-and IIUC dmabuf does not have such hardware dependency.
-
-> 
-> I think this is positively thrilling news for me. I was worried that
-> adding devmemTCP support to storage devices would involve using a
-> non-dmabuf standard of buffer sharing like pci_p2pdma_
-> (drivers/pci/p2pdma.c) and that would require messy changes to
-> pci_p2pdma_ that would get nacked. Also it would require adding
-> pci_p2pdma_ support to devmem TCP, which is a can of worms. If adding
-> dma-buf support to storage devices is feasible and desirable, that's a
-> much better approach IMO. (a) it will maybe work with devmem TCP
-> without any changes needed on the netdev side of things and (b)
-> dma-buf support may be generically useful and a good contribution even
-> outside of devmem TCP.
-
-I think the major difference is its interface, which exposes an mmap memory
-region instead of fd: https://lwn.net/Articles/906092/.
-
-> 
-> I don't have a concrete user for devmem TCP for storage devices but
-> the use case is very similar to GPU and I imagine the benefits in perf
-> can be significant in some setups.
-
-We have storage use cases at ByteDance, we use NVME SSD to cache videos
-transferred through network, so moving data directly from SSD to NIC
-would help a lot.
-
-Thanks!
 
