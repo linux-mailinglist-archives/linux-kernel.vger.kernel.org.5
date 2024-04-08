@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-134723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA1989B603
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:35:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650C089B606
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33EC1281681
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:35:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 195591F217C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487651860;
-	Mon,  8 Apr 2024 02:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D0C1851;
+	Mon,  8 Apr 2024 02:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vL/D+LCF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBxkMY56"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E004184D;
-	Mon,  8 Apr 2024 02:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAF94C8A;
+	Mon,  8 Apr 2024 02:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712543743; cv=none; b=PLWdCQMzpiQdTkIS9zIAqcmG9Us3uQLo81HF9Elgg6CvBgVyJqLfWuCW2fk+fpk9wWltDIANynn8QzJE9C/NKSH2cW64AqV3IfkRz07QNy1K4i0MrUTJRdIRjvP0zyMAfjFc4jlwW16tcAelE9kPtjPkGzvBrW2WyBHW4NhykTg=
+	t=1712543762; cv=none; b=daO46pb5Bnze6GHMkkh4V7okh2yUAQOebl16U+tXGOh3/yAC7w0Niu/moMoKXsLAibJplmG5POTQuUy0+4Km2uis292X2QCpLGerLELRcycGoNUUu4ujDqvB5OKJ8JUzFl6qW2FEebIh9DnUypARq5WrSRwnvKXZ1x8ROZegUp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712543743; c=relaxed/simple;
-	bh=CYcF3xviOioTw0bSRBXtITDLMhC0u3sV5C5DSixd4p0=;
+	s=arc-20240116; t=1712543762; c=relaxed/simple;
+	bh=vPKyhuBswSLMcWjuIQwilDEd+Az3YtYSaPyId04YfEE=;
 	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=c77M4cU6FA7vVcgwhEBP3gVMZIpA7tUJEhH3s+QtJzq00Xzwn9qJeq8m/phYnP39+aSn3uw6y0FJ1xiwPXlHjySTlhvpI7hTqVlrmUYEcuoi+1Cq8/eQOGzuhY5vv4mUZb0iFQmmfQQrDayuclZlkDYcabi9BVMxPyszzCJJYQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vL/D+LCF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA97EC433F1;
-	Mon,  8 Apr 2024 02:35:42 +0000 (UTC)
+	 Subject:From:Cc:To:Date; b=h5CQuuLVP+yLP99/ezNxGb2gdsuPVAKYXjwTzK45TRkwfpIbsvVD2ZFrBjobEnFWhpy88CG9XZnEt3ud2SR//LmuzWHfW6SRLpRuyi15NhR74m91mG6AYoEppGgm6yyrm0fKs4/KRklF/mZY5bkiyvGRIrQx9bQAumve/P32Uz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBxkMY56; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDF8AC433C7;
+	Mon,  8 Apr 2024 02:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712543743;
-	bh=CYcF3xviOioTw0bSRBXtITDLMhC0u3sV5C5DSixd4p0=;
+	s=k20201202; t=1712543762;
+	bh=vPKyhuBswSLMcWjuIQwilDEd+Az3YtYSaPyId04YfEE=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=vL/D+LCFPI5gREdEQ/yKUOesLuqnXbdKoWGFiLaFBW3ZKPFzaRihMJCLedYvaVKKa
-	 Rasct69JPHDevWVLJLhw6YPj5adHXfRkZXbQQtwsOrvRywvfEYk30jljjIWO/BHpRo
-	 WO0hfG4I2jEBy5REK43t5efdRGgBHW53S1yLpM3yi7PoMQvf5A2k82dM7J5oKURjBT
-	 LmKYLuq/5+WYTy1xX6U0tbBtz4/TiPRB4hMR+X5/8xQzIobtAJZqdq5kz6pmcMTACU
-	 KRswV8C88ZqXPCB5WkefZG3/kygGTsXQWVtV2VUuJl1rbx9EbvSX68nF5jGzswPJJ6
-	 hKjNcUWDjRkqQ==
-Message-ID: <07ff4ebb70e7b9edfa20e394fdba9244.sboyd@kernel.org>
+	b=nBxkMY56Iy+gTlh1T98M4KTbfCUwyqamxEHqeqPu+i5O7z1V4MJ/ZPSsrXVbBxKAZ
+	 UzzKOH9lbfqom1tYIbbdtJbJuN72IqWEUaS9gs4Rn/DfFgN01hYjVpEzkw4YYeVeCT
+	 zlGgpBA9F1aKionVlbpznA5EybBSeSeDzBx4Sxg9/8gCRtmrU1GbKU9nHbvV5dy73Z
+	 9GS1qam4q8ziPgGk7LiKkQzgqr86bS1UkS8qxOJDqpxWILrlGgPdGWjCED12nM+cbF
+	 9U7M/4aKJPDu48FIAa+3tw4hpyRgme/PEasHGjxI8dukhXd9cq/I6YYOvZ5n1Qxtoh
+	 oBskEjL5F6wpw==
+Message-ID: <98005e3174d43b96e774458b37fd515f.sboyd@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,28 +49,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240325184204.745706-2-sboyd@kernel.org>
-References: <20240325184204.745706-1-sboyd@kernel.org> <20240325184204.745706-2-sboyd@kernel.org>
-Subject: Re: [PATCH v2 1/5] clk: Remove prepare_lock hold assertion in __clk_release()
+In-Reply-To: <20240325184204.745706-3-sboyd@kernel.org>
+References: <20240325184204.745706-1-sboyd@kernel.org> <20240325184204.745706-3-sboyd@kernel.org>
+Subject: Re: [PATCH v2 2/5] clk: Don't hold prepare_lock when calling kref_put()
 From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, linux-arm-msm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Douglas Anderson <dianders@chromium.org>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>
 To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
-Date: Sun, 07 Apr 2024 19:35:40 -0700
+Date: Sun, 07 Apr 2024 19:35:59 -0700
 User-Agent: alot/0.10
 
-Quoting Stephen Boyd (2024-03-25 11:41:55)
-> Removing this assertion lets us move the kref_put() call outside the
-> prepare_lock section. We don't need to hold the prepare_lock here to
-> free memory and destroy the clk_core structure. We've already unlinked
-> the clk from the clk tree and by the time the release function runs
-> nothing holds a reference to the clk_core anymore so anything with the
-> pointer can't access the memory that's being freed anyway. Way back in
-> commit 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of
-> prepare_lock") we didn't need to have this assertion either.
+Quoting Stephen Boyd (2024-03-25 11:41:56)
+> We don't need to hold the prepare_lock when dropping a ref on a struct
+> clk_core. The release function is only freeing memory and any code with
+> a pointer reference has already unlinked anything pointing to the
+> clk_core. This reduces the holding area of the prepare_lock a bit.
 >=20
-> Fixes: 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of pr=
-epare_lock")
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Note that we also don't call free_clk() with the prepare_lock held.
+> There isn't any reason to do that.
+>=20
 > Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 > ---
