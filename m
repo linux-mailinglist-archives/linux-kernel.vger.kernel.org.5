@@ -1,123 +1,104 @@
-Return-Path: <linux-kernel+bounces-135348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6525789BF4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:45:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC9889BF56
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F042830EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:45:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ED021F21B35
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ACD7C08F;
-	Mon,  8 Apr 2024 12:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C176BFA9;
+	Mon,  8 Apr 2024 12:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="P39HssVx"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aQM+9khF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5776C7BAF7;
-	Mon,  8 Apr 2024 12:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D306F065;
+	Mon,  8 Apr 2024 12:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580221; cv=none; b=fVDxnpo4DOHywN2cgif/mkinq+8VGyAERYHplLr4tswAdW8oQu78rKWsH2RJzxvx6bOk73ovStqHv/2axqQtT1ygZEym3YJendHRoyquV4pLBwJURB7XKrvpGQ+S2kBOvlzpEJeHWrJRhbCUniKTimE86+DVooDkrFRrrRvUbxo=
+	t=1712580304; cv=none; b=hQvjJFP0Ne8MI9hIzzDDXS7qOlC3Fn0pS428BLIfP4LhYvxUYmgcJxwwfiZatWfMN0FSyN33aVv5JNBelakrS6j6BxcZbm2VI5dKym3rpYD9AijPxu3aedABLb90u6dwRdk08TqaQPVz2sZwxJRai5+puddyatNOsjHqeZd5QgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580221; c=relaxed/simple;
-	bh=EHeLp8BG4YmTJLnNGQoteg6h/bg34plAh2da3ELzups=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IyVBOjsObLAHZY5VCuZIEXwXaRZbMaae0sDJ6L2CN2ghg+4/FlzmeaIUhvG+UoGcfPT0p4VXrPSCRBHMLjFAHJIYC23O2VA2mAFIghXTTDZ5xh46BtQB4IlErAZG/lg7+NAEahCaHBieBKkWUDooUNsCImmvyGxkJTa1YYGTxwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=P39HssVx; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3D7FE1BF20A;
-	Mon,  8 Apr 2024 12:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712580217;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EGb9QvvQMCEnKLy7lBueRK3Kn722zA1+bA5mCoVE8rc=;
-	b=P39HssVxYttUmscR0T1RCbh+Ar5Zyp6gJsubxF/YeXwhBAOewcWkqNvdfiixNBpB3RAXEf
-	aDgp7/CyW/dlEdtQIcERESZbyIPT91AEsoRNCS7CLdAbHVjTTpDRFQwMX8N/sdZEibqisa
-	yRfe7jHJ+YXRpfujhylFClFi0Otsiir1CMhIC43a6WBn+eF0Jh3VkmWHR2J6xlUymaLac1
-	Yp1jC8akzBD/l3MO4WQ85R4RQgdmlsS1/qHvZ4uKxEQ+RERtX9JI5lqyVte5fxD/wGZNyQ
-	N1vA0A8Jw+mPRwvXTayIpPZpOkJ5aNK7QTaXzIUbv9fZ72IwV2D/Pf8gHY5XLg==
-Date: Mon, 8 Apr 2024 14:43:35 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou
- <lizhi.hou@amd.com>, Rob Herring <robh@kernel.org>
-Cc: Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
- Stefano Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
- <Jonathan.Cameron@Huawei.com>, Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?=
- <kwilczynski@kernel.org>, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20240408144335.5e9b6a2b@bootlin.com>
-In-Reply-To: <20240325153919.199337-1-herve.codina@bootlin.com>
-References: <20240325153919.199337-1-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1712580304; c=relaxed/simple;
+	bh=tfA9OCUUYmRBc/HfduGlcOEWNno6qBswTFUJs11/8Xo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JwVkRI22gHFjReRx5TI/C9z1XZ9d6jhW4jnYRRk0DjWQ1ogCvYyabdvtcGclDwmn8TMN/1XJDuK/K0AUS+X+ecMZhukaYyFd98a+7B3K/2PZc6p61JbZOwW6YhGeL6mWmkUYqjEbKO0kk6Krr/I3XFviN3NQv4FBM0nvcOBwzQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aQM+9khF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F782C433C7;
+	Mon,  8 Apr 2024 12:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712580303;
+	bh=tfA9OCUUYmRBc/HfduGlcOEWNno6qBswTFUJs11/8Xo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aQM+9khFVzUOxlN8kWH6/Ua0hK+6TWyjo1t158gVxNaLnzWSbD+CfOLvDMaSVOk1S
+	 p4yrEToGN4+sy2F9Js4CY63FE/qYbPlpEPkAAqKFDc6lVmM8VbDLurDOH/FQhKA27X
+	 9EomU7+rrKF3MTc242A3SPlvFSFz1+ryQ8IEVea1MGYnWzCYaerP80Pt+JRbZrsct0
+	 A9eNlJvr4IdSrjXtEafomf6NH64Du3w9oWDfTt6NlaN8sfVaS7WdgSC4LImuFaMc6r
+	 wbsLGNYtw2H3Zhg6UYCqI2cd4Tyq1JxhN1IR6rU8a6hQCFpcacnY+KYHRoZ9T4qoQF
+	 JMOE4QShg0amA==
+Date: Mon, 8 Apr 2024 07:45:00 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, 
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com
+Subject: Re: [RESEND v3 2/2] ASoC: qcom: sc8280xp: Add support for QCM6490
+ and QCS6490
+Message-ID: <45yy3cvepk4uwi2jdmh4w6l5ac3dffqhbot6xzv2bwjvo637ss@pryzth2hghyu>
+References: <20240408042331.403103-1-quic_mohs@quicinc.com>
+ <20240408042331.403103-3-quic_mohs@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408042331.403103-3-quic_mohs@quicinc.com>
 
-Hi,
+On Mon, Apr 08, 2024 at 09:53:31AM +0530, Mohammad Rafi Shaik wrote:
+> Add compatibles for sound card on Qualcomm QCM6490 IDP and
+> QCS6490 RB3Gen2 boards.
+> 
+> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> ---
+>  sound/soc/qcom/sc8280xp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+> index b7fd503a1666..878bd50ad4a7 100644
+> --- a/sound/soc/qcom/sc8280xp.c
+> +++ b/sound/soc/qcom/sc8280xp.c
+> @@ -169,6 +169,8 @@ static int sc8280xp_platform_probe(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id snd_sc8280xp_dt_match[] = {
+> +	{.compatible = "qcom,qcm6490-idp-sndcard", "qcm6490"},
+> +	{.compatible = "qcom,qcs6490-rb3gen2-sndcard", "qcs6490"},
 
-On Mon, 25 Mar 2024 16:39:13 +0100
-Herve Codina <herve.codina@bootlin.com> wrote:
+We now have 4 <platform>-sndcard and two <board>-sndcard compatibles
+here.
 
-> Hi,
-> 
-> The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-> creates of_node for PCI devices.
-> 
-> During the insertion handling of these new DT nodes done by of_platform,
-> new devices (struct device) are created. For each PCI devices a struct
-> device is already present (created and handled by the PCI core).
-> 
-> Creating a new device from a DT node leads to some kind of wrong struct
-> device duplication to represent the exact same PCI device.
-> 
-> This patch series first introduces device_{add,remove}_of_node() in
-> order to add or remove a newly created of_node to an already existing
-> device. Then it fixes the DT node creation for PCI devices to add or
-> remove the created node to the existing PCI device without any new
-> device creation.
-> 
-> Compared to the previous iteration:
->   https://lore.kernel.org/all/20231130165700.685764-1-herve.codina@bootlin.com/
-> this v3 series rewrap commit log.
-> 
-> The potential issue related to the sysfs of_node symlink added after the
-> sysfs PCI device is visible from user-space (raised during the v2
-> review) is maybe not a problem according to Bjorn:
->   https://lore.kernel.org/all/20240319165430.GA1233494@bhelgaas/
-> 
-> IMHO, the discussions started with Rob around the interrupt-controller
-> during the v2 review are out of the issue this specific series tries to
-> fix. Some modifications are needed for the interrupt-controller topic
-> but should be done in a specific series.
-> 
-> Best regards,
-> Hervé
-> 
+Not saying that your patch is wrong, but is this driver board-specific
+or soc-specific? Srinivas, Krzysztof?
 
-I have received no feedback on this v3 series.
-I know maintainers are busy but I would like to be sure that this series was
-not simply missed.
+Regards,
+Bjorn
 
-Best regards,
-Hervé
+>  	{.compatible = "qcom,sc8280xp-sndcard", "sc8280xp"},
+>  	{.compatible = "qcom,sm8450-sndcard", "sm8450"},
+>  	{.compatible = "qcom,sm8550-sndcard", "sm8550"},
+> -- 
+> 2.25.1
+> 
+> 
 
