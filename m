@@ -1,211 +1,129 @@
-Return-Path: <linux-kernel+bounces-135120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6BB89BB60
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:15:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49E2189BB62
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51283281A8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6D511F22C5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035E94AEF8;
-	Mon,  8 Apr 2024 09:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5174F1F2;
+	Mon,  8 Apr 2024 09:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ox4VTx7Y"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CE03FB2C;
-	Mon,  8 Apr 2024 09:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="D7b7JHh1"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DA44E1C8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567664; cv=none; b=SZj8HbrBjC8+aE7LM3eF0pFDjNa2F78XgrN1LFSNrGmpEs6Drve5VdbcW5mPhuwMsnHyaLXEB1W4VV8yW3+sGbPYeoY7/vcgxnZctCywN8VY7Qm8Nj2Qa2sSvPU8rOrMOrw7ojHpnXXdhS53q5oI5T62LYtYv+AUm7UwXq0nlyg=
+	t=1712567668; cv=none; b=Edgty0xOouPw//8C8Dzt65PqS6/GS+9L8YZPFURCdJH/vr3v40aBLfcRNViNfKtoQQxYnxy/QIX/wlczqxH3GMvH+BnzWQjW7RpmwPZ53tvIKqtbRKHcVLXQKvFRvChtN3Lal+fjByQBP3SrAD4aXCgmsfPbke1aoz2whCT2r7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567664; c=relaxed/simple;
-	bh=qbvwauQg0ngZv5EnU6pqwYmdc6h6+U7EnF69LMrD8J4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=LdrOcGuOZKzNyugh6aNJ0gBKJDSSXsZbpqAoSqODn41wzgsZuhwuXraM7IRTWmw/YnDAi7P0OjoCNhf1SyoSvGE2db76ClbCXATlcUaun6VhVz9x+YlSxR5qd44P3UVzanW4ORMGLABmQE0TeSbmRyDkRsMdQ2a2fMkRKIX9Y4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ox4VTx7Y; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DC0CA20EA436;
-	Mon,  8 Apr 2024 02:14:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC0CA20EA436
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712567655;
-	bh=wxtUrQNO2xW63z5bUTkwej3sY0mvw4Com2zCoyeM+ag=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ox4VTx7Yzxl2SIlC6boEIZNcxivmcSDQaIuSyOIoyBkyUTir4fkXvm/OYyzexhv+S
-	 I5IEcWyCP4/+pG7mzVfNbgTDLlChAmd3Jfg4jXrZKPHZRGCZKYAOxaUp/pmbRC5JZF
-	 /357StBxNx9bHJ9GMjvGrWM8TaZRYVpK74AjUe28=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v4 4/4] RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-Date: Mon,  8 Apr 2024 02:14:06 -0700
-Message-Id: <1712567646-5247-5-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1712567668; c=relaxed/simple;
+	bh=z4CDEMFIMTjvOLif5sUmisJHGO9R4pf0qmsvsjOnpUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CK/W+nuUnSncJFwTUqUpyhFyewkHOW78oM//WNEQWuNOhMT56T0Cla0EzGI02X08ttpemCO7BmBXxVlbtITSG5A0QC0dJMVeMs+ADbfuf+OfTNJ3swu1dwIOguoo1ouyWXDZ2ozVozPxmcnEKcMnJxFQEEE1PjK67Vi4F1mhzgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=D7b7JHh1; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=B1xU
+	GkiU6dmYPsBjCTtb6mRNv0nuvWzUMFCwA7SNs6U=; b=D7b7JHh1oY0gpZfVrcWm
+	bVLPU9k9q3DbofnpH/OfhR3aO1Pu7vm5BC95ccqnukqiFFrq8C8rPxn+wKmX3yhe
+	BeF1G4lEhOejWaSv785LLOpfbA2CXkv1tFklvdZHYUEIBrQu1f4Ov4LfTvbfJ8FQ
+	srPASuPZeYyzeQCSkLa4XimHy9jV7libC24ca6Cm23+2VCkgt5bO/P6hWlEPimz2
+	kB3OLKKsljxZDx4L5vzs51QWIhBGtq16LdG5EmnAQf8bwUuO/BWDKyrP3N7GQHUL
+	ShiqM5VjAaxQdgLg/BpK6XAgAO/ji5/Ms71bCFHMNseI49LHGHg5d8N/hxz4Dxk3
+	/g==
+Received: (qmail 716288 invoked from network); 8 Apr 2024 11:14:24 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Apr 2024 11:14:24 +0200
+X-UD-Smtp-Session: l3s3148p1@3RREO5IVVpwgAwDPXwE9APSWg5D5lDs4
+Date: Mon, 8 Apr 2024 11:14:23 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: linux-i2c@vger.kernel.org, 
+	Patrice Chotard <patrice.chotard@foss.st.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 53/64] i2c: st: reword according to newest specification
+Message-ID: <zpaizt3dhjbabotqylxph6hti7z4o4oq3mjqy4zmxjk74lpzdf@apnyh6m2fjst>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>, linux-i2c@vger.kernel.org, 
+	Patrice Chotard <patrice.chotard@foss.st.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-54-wsa+renesas@sang-engineering.com>
+ <f94f293c-4756-458e-8ffa-a10baa8379d0@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zc6r4szvuyukhmxj"
+Content-Disposition: inline
+In-Reply-To: <f94f293c-4756-458e-8ffa-a10baa8379d0@linux.microsoft.com>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Use struct mana_ib_queue and its helpers for RAW QPs
+--zc6r4szvuyukhmxj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Reviewed-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/mana_ib.h |  8 +---
- drivers/infiniband/hw/mana/qp.c      | 55 +++++++---------------------
- 2 files changed, 16 insertions(+), 47 deletions(-)
+> > -	unsigned long timeout;
+> > +	unsigned long time_left;
+>=20
+> Thanks for doing this. Is the timeout v/s time_left language also due to =
+the specification change?
+> A link to the specification(s) in the commit message would be nice to have
 
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index a8953ee80..ceca21cef 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -94,12 +94,8 @@ struct mana_ib_cq {
- struct mana_ib_qp {
- 	struct ib_qp ibqp;
- 
--	/* Work queue info */
--	struct ib_umem *sq_umem;
--	int sqe;
--	u64 sq_gdma_region;
--	u64 sq_id;
--	mana_handle_t tx_object;
-+	mana_handle_t qp_handle;
-+	struct mana_ib_queue raw_sq;
- 
- 	/* The port on the IB device, starting with 1 */
- 	u32 port;
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 8eccd0e6f..0705e1995 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -293,7 +293,6 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	struct mana_obj_spec cq_spec = {};
- 	struct mana_port_context *mpc;
- 	struct net_device *ndev;
--	struct ib_umem *umem;
- 	struct mana_eq *eq;
- 	int eq_vec;
- 	u32 port;
-@@ -339,35 +338,15 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 
- 	qp->port = port;
- 
--	ibdev_dbg(&mdev->ib_dev, "ucmd sq_buf_addr 0x%llx port %u\n",
--		  ucmd.sq_buf_addr, ucmd.port);
--
--	umem = ib_umem_get(ibpd->device, ucmd.sq_buf_addr, ucmd.sq_buf_size,
--			   IB_ACCESS_LOCAL_WRITE);
--	if (IS_ERR(umem)) {
--		err = PTR_ERR(umem);
--		ibdev_dbg(&mdev->ib_dev,
--			  "Failed to get umem for create qp-raw, err %d\n",
--			  err);
--		goto err_free_vport;
--	}
--	qp->sq_umem = umem;
--
--	err = mana_ib_create_zero_offset_dma_region(mdev, qp->sq_umem,
--						    &qp->sq_gdma_region);
-+	err = mana_ib_create_queue(mdev, ucmd.sq_buf_addr, ucmd.sq_buf_size, &qp->raw_sq);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
--			  "Failed to create dma region for create qp-raw, %d\n",
--			  err);
--		goto err_release_umem;
-+			  "Failed to create queue for create qp-raw, err %d\n", err);
-+		goto err_free_vport;
- 	}
- 
--	ibdev_dbg(&mdev->ib_dev,
--		  "create_dma_region ret %d gdma_region 0x%llx\n",
--		  err, qp->sq_gdma_region);
--
- 	/* Create a WQ on the same port handle used by the Ethernet */
--	wq_spec.gdma_region = qp->sq_gdma_region;
-+	wq_spec.gdma_region = qp->raw_sq.gdma_region;
- 	wq_spec.queue_size = ucmd.sq_buf_size;
- 
- 	cq_spec.gdma_region = send_cq->queue.gdma_region;
-@@ -378,19 +357,19 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	cq_spec.attached_eq = eq->eq->id;
- 
- 	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
--				 &cq_spec, &qp->tx_object);
-+				 &cq_spec, &qp->qp_handle);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create wq for create raw-qp, err %d\n",
- 			  err);
--		goto err_destroy_dma_region;
-+		goto err_destroy_queue;
- 	}
- 
- 	/* The GDMA regions are now owned by the WQ object */
--	qp->sq_gdma_region = GDMA_INVALID_DMA_REGION;
-+	qp->raw_sq.gdma_region = GDMA_INVALID_DMA_REGION;
- 	send_cq->queue.gdma_region = GDMA_INVALID_DMA_REGION;
- 
--	qp->sq_id = wq_spec.queue_index;
-+	qp->raw_sq.id = wq_spec.queue_index;
- 	send_cq->queue.id = cq_spec.queue_index;
- 
- 	/* Create CQ table entry */
-@@ -398,7 +377,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	if (err)
- 		goto err_destroy_wq_obj;
- 
--	resp.sqid = qp->sq_id;
-+	resp.sqid = qp->raw_sq.id;
- 	resp.cqid = send_cq->queue.id;
- 	resp.tx_vp_offset = pd->tx_vp_offset;
- 
-@@ -417,13 +396,10 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	gc->cq_table[send_cq->queue.id] = NULL;
- 
- err_destroy_wq_obj:
--	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
- 
--err_destroy_dma_region:
--	mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
--
--err_release_umem:
--	ib_umem_release(umem);
-+err_destroy_queue:
-+	mana_ib_destroy_queue(mdev, &qp->raw_sq);
- 
- err_free_vport:
- 	mana_ib_uncfg_vport(mdev, pd, port);
-@@ -497,12 +473,9 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
- 	mpc = netdev_priv(ndev);
- 	pd = container_of(ibpd, struct mana_ib_pd, ibpd);
- 
--	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
- 
--	if (qp->sq_umem) {
--		mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
--		ib_umem_release(qp->sq_umem);
--	}
-+	mana_ib_destroy_queue(mdev, &qp->raw_sq);
- 
- 	mana_ib_uncfg_vport(mdev, pd, qp->port);
- 
--- 
-2.43.0
+I admit it is probably a seperate change...
 
+> > -	if (!timeout) {
+> > -		dev_err(i2c_dev->dev, "Write to slave 0x%x timed out\n",
+> > -				c->addr);
+
+=2E.. motivated by this "if (!timeout) dev_err("timeout!")" which is super
+confusing to read because the logic is paradox.
+
+
+> > +	if (!time_left)
+> >  		ret =3D -ETIMEDOUT;
+> > -	}
+>=20
+> Why did we lost the dev_err() here?
+
+Agreed. Another seperate change. A timeout is not something the user
+need to be aware of. It can regularly happen while an EEPROM is erasing
+a page. The client driver will probably handle it correctly by trying
+again. Only if the client driver sees a problem, then the user should be
+notified. But not in the controller driver.
+
+
+--zc6r4szvuyukhmxj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYTtW8ACgkQFA3kzBSg
+KbaxqxAAqwfl+isJvw+Tbn4zWASNYgUCF88fdAOUyScMYpiIlRk2c7CR4M4BipLs
+ppKwIrsKht9D++ljltU34nnMNsirMRI+QBRVrOubmvln130b6d5PzLvw0LmL92BR
+9sBawa9Ow1y14b6htJXMB0fjmbUtubcB4vn0vgPNl9DwOyZXGawSQbEDW7eB9Dag
+FePIO6KW1d01J54d3B0R+nBdbhB4Lr23Q99EEiO2N/f/Oa7cb6wc7nuqUkg1ymgG
+4sTRUK95w+FQd2DhaAsXhjzRy1AqCCaW8O6RVDDhR71q808K+L+R4G/Ip/OvuPKS
+nEd1r9HEG4jOVhNNbjtE8vILhIYU0bwdHR45YNCUQDXWNdfvkXa5A3THpfpE0iF/
+D1dsp030Ogwex0OFYtEcUOT9nMeE1Io46sTIwfhO/kmAx5zaZqNB/u0Duv5i6zPA
+vbG5yO6VEOU5wiJR97RTu1kzCs+UenOXSQ3mRjT3MJM5X8XvS/jQR6SSJflUsc7e
+E1tj9COegSg9APc+i0kMeJdqk6wV6JGS3XzYI5fOwaHaEK8eDORj/Al95Y/g1F3W
+yIYZbkL/TAV60Y4Z/VHYqblRa/eFvgzvyrkmZ3jjsTi7Zsh/2r8Dknx5l/tRiN6I
+Vi+ogc1ZQL8awmqdG2FR8V3hrTEQNp/QxphmSJ5M79Dv8t7iIcU=
+=4MpW
+-----END PGP SIGNATURE-----
+
+--zc6r4szvuyukhmxj--
 
