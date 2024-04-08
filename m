@@ -1,199 +1,177 @@
-Return-Path: <linux-kernel+bounces-135140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889BC89BB96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:24:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE88C89BBC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BBCD280EAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE461B2324E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0736E47F53;
-	Mon,  8 Apr 2024 09:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2314947F6A;
+	Mon,  8 Apr 2024 09:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ZoGjQJ+p"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bfcnoJT+"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B469F481AE
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0EC4F881;
+	Mon,  8 Apr 2024 09:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712568254; cv=none; b=hgUgFMfzzZxQqa6i31BPe6o8w+FMMAGKO4k/BGJcFZcAKV+WoBMW+pfFOEZUvjANa9GTlkNjHa4ABLpdUNHexRQhBV9ahiOQFqQkQNjzy5I8Zjk1UlAh7RbBNtlgGlSlg85q2ZITWtVdoSGJ1QckcTr5jCuLZBrWdloC7wPdQVE=
+	t=1712568730; cv=none; b=nfDiPyYJdwsY2ZuWWpVSaAKcaVfXggigqKf9TrBk8ZZstmSPDrZi3QFzVwtNFWu9OpW3kdRsOLdgHlak1XYV8ypqokSSsCh2pQE+mkj3ZwpBtOGwzHzYxZCR32pvIKjkn8bJE8+WkZ3Ui4e7613VBedDY+pUGLrJHNxDUQvrkaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712568254; c=relaxed/simple;
-	bh=xqXzKlHJXALYg0kADBCkggttzbCltmioKyL9ENzrKZw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bHSk+8/U9e1f/r4Xc9ZjB/puu8ivDmpzG4M60SYV3fZzHY4yWYkSQRxDMJ/WRDwcecOuedudOisZYGpSJe4FVzQ5rOtTgc3spfUSRUNYdlPgmNUuJiPfDDpW7yg/fOTgcVO6bH5H3nFMB7GCmBIuW8o/4W7V488CwOUjj7pPGnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ZoGjQJ+p; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e41f984d34so5361945ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1712568252; x=1713173052; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xXhrPWZCbFiNlkejBQmPpVwioI9IicUWQgOG1Qy4BAU=;
-        b=ZoGjQJ+phgUqdRcskWj/SUg1LpOLfPlnFJNVYaTgDTaFYT5BLITYPueC7BSK+iB3kQ
-         +bQKXWK6++c5Hmd8S/ujFW9re0CSwoihIR/JbsdarDvuCcWmc9HDIWNcKiiw5PFWmFnx
-         42bcliOgDeXiR/FJL4sCKwqRdgjJIQJAZtjUamW1V37z2pDi+GsNZmw0IKwQTF1pgMDt
-         /7FqbVI3gkk92NqTpxa/sRdCXSk0lrrchaxNDnTuPs7ElvUS/JyU5yOuQiAVEoApmKRY
-         OJrxAc/Dpn5bXv6fsMh/5ClnUsg95BAR2RSK9ZIq4v3bJ+yk+NUQ5J2VHus62XCYhRD4
-         TtmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712568252; x=1713173052;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xXhrPWZCbFiNlkejBQmPpVwioI9IicUWQgOG1Qy4BAU=;
-        b=dFrdTCSpV87cx2pjO0JfF5VCuiOEcQvFDzmlHT4a2TwRWxkPjhDj37BM8fBZxW/Qu1
-         Wao9Nc5Ja5+jSvpo0mw0PSP6f7sgEGTO1AtI+Ne7HJaL9N8h1oioVfraN9RQjDSQwgXa
-         6nl/VNldFktNPetGHMrrfCRwZN8WzOLlgnC8fOgdoymqTcZ190EC4hMJ06XfCWrnDacB
-         PLGvaP6wUngvtGPhYeeM23DQ6D5fDfkmEwrmjovrsGh2h3OavJNutI+Yy12kBxqSHs0l
-         UDjKY5ox9/DRT1jW1Zx9KOv5aPTxkyK3jwcNub+148sl0/HKJmtMA3KJGtki0UfXVLeY
-         kajg==
-X-Forwarded-Encrypted: i=1; AJvYcCWShzPQzKUbA2FmItnRTaYFx5joFml8l+ciGwGGeSUD50il/3IOc0MqZJN9v87uH6+mnlU1Q4QUQxvSoDjsgAU+AIafp6xY3bShwAa/
-X-Gm-Message-State: AOJu0YxXu6/fqHpdGI2pqUQS92gzQe6jFFOOsH4lMpViXbRaDiZ65feF
-	o0zF9sJw5Uobhn4nt6i13SYsIvXydUtulnUR2XPx2Qla6vGH/pz4xaHdRgEoQiQ=
-X-Google-Smtp-Source: AGHT+IG2aHB10Xdeck+DR44E30QeG48AyS3ygivhIohZ9/D2Bps33gSbdBdn/hJdPGhD5KuQs6+fJg==
-X-Received: by 2002:a17:902:f813:b0:1dd:c288:899f with SMTP id ix19-20020a170902f81300b001ddc288899fmr6191606plb.18.1712568252016;
-        Mon, 08 Apr 2024 02:24:12 -0700 (PDT)
-Received: from seacloud.vm ([143.92.64.17])
-        by smtp.gmail.com with ESMTPSA id u1-20020a17090341c100b001e293b16d8dsm3258731ple.1.2024.04.08.02.24.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 02:24:11 -0700 (PDT)
-From: Haifeng Xu <haifeng.xu@shopee.com>
-To: reinette.chatre@intel.com,
-	james.morse@arm.com
-Cc: fenghua.yu@intel.com,
-	babu.moger@amd.com,
-	bp@alien8.de,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	dave.hansen@linux.intel.com,
-	hpa@zytor.com,
-	peternewman@google.com,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	corbet@lwn.net,
-	linux-doc@vger.kernel.org,
-	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH v7 2/2] x86/resctrl: Add tracepoint for llc_occupancy tracking
-Date: Mon,  8 Apr 2024 17:23:03 +0800
-Message-Id: <20240408092303.26413-3-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240408092303.26413-1-haifeng.xu@shopee.com>
-References: <20240408092303.26413-1-haifeng.xu@shopee.com>
+	s=arc-20240116; t=1712568730; c=relaxed/simple;
+	bh=WmJ95J6HrrRIzY8BMbFTySQyHTK3ZcZmyo6wCARsy2E=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=nBE7SRHhKo6KvBvKoNHS0AYRiomUgrsm/rQ81Wqy49pli03+1kgLAxP4ziaLD1cSsa1p0AV3nJYkklnQnRgBc/9bVDSIvptk7Xn/1iMAhfb+RhiwHXG0blzY4Ji8AHuPuJLnWgOfkClpcRsufQDIi8ZLvILKohrMNtpJ7NdnaYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bfcnoJT+; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 982A7180011C;
+	Mon,  8 Apr 2024 05:32:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 08 Apr 2024 05:32:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1712568725; x=1712655125; bh=6/G3q7w8RbEyu
+	FhhtNgh7QXuPLfMG6eTAQmhdSZyUho=; b=bfcnoJT+rIPCc9WTuyJZ90kzRHSOk
+	v+HdMhdzUdfW1efA00XCKwkQ8HE2pIley67LOhz7uDQ7Joy0ssXOTiOFJnetet8f
+	OPU1kLGvgZ4S/EMjd7drRpI/I3k8MNnzlliSGryYV7anYjGVX68bnGA5/iK5yFDw
+	ibTmWDP5r0ZS+KD84fbg17nNd0AySMMahIuQMP8ZC5b71yESF23xkODHEyJ9v0+P
+	EYy9uPmPpktdTQVI3ktZL/e4baRINJyS6uZ9qvZ9hMkE5Lx8PFsRcJZahpiiW+Jk
+	u5bGiHNN5oqi5UdpevTgCFXWaDVsQckdS0XMFbh3RNxkNzrwTD6fBkSVQ==
+X-ME-Sender: <xms:lLkTZplfTkJe9pJz1rCoJcDjpqTPcEmimm3apJ1VWnhupDQNmDWMQw>
+    <xme:lLkTZk1GRLzKPlowigYZ6m6K0UgkKGYQxDQy4ap-9DXfsAIt8JCH3oZ8k6O3gNU-G
+    1Xn662C0pCMADKLuD4>
+X-ME-Received: <xmr:lLkTZvp0lwzhZ-PmP_u5fT5_hhN5T9m851Q89IkWCcU6nqdnr7cZ-5Nw1tyLCc0s-ah0DZUY8qNKYtuKxbBm4ANiFN491DxMMVI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpefftdekheelvddvtdetudelhfehhfejjeeuudeileettdeuleeigeefkeehvdevffen
+    ucffohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhi
+    nhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:lLkTZpnW8FYJAYWpZVyqzrojcb1Fc33HlL8ue9PA3lQ0S-ekU02eHQ>
+    <xmx:lLkTZn2ZqCSvTAindZMKK8DPQ5LaodKoVLxppVzNl3HpAbo1qw5Kpg>
+    <xmx:lLkTZotE0nuRbO_nisM7Cgs213CsDO73U6X2vIL0rCBP0GOBg0htFA>
+    <xmx:lLkTZrWi3c7DYC81O-MygdtBybl9EhatpQ6db1b6kgucHP5TOHSkOA>
+    <xmx:lbkTZu1iukWOt7h6iHDq1vghN_guy7LnSoBqzAo8595fjpWle76hDS4o>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Apr 2024 05:32:00 -0400 (EDT)
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+    Jiri Slaby <jirislaby@kernel.org>
+Cc: "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+    "Michael Ellerman" <mpe@ellerman.id.au>,
+    "Nicholas Piggin" <npiggin@gmail.com>,
+    "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+    "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+    stable@kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org,
+    linux-serial@vger.kernel.org,
+    linuxppc-dev@lists.ozlabs.org
+Message-Id: <e853cf2c762f23101cd2ddec0cc0c2be0e72685f.1712568223.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v3] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
+Date: Mon, 08 Apr 2024 19:23:43 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-In our production environment, after removing monitor groups, those unused
-RMIDs get stuck in the limbo list forever because their llc_occupancy are
-always larger than the threshold. But the unused RMIDs can be successfully
-freed by turning up the threshold.
+The mitigation was intended to stop the irq completely. That may be
+better than a hard lock-up but it turns out that you get a crash anyway
+if you're using pmac_zilog as a serial console:
 
-In order to know how much the threshold should be, perf can be used to
-acquire the llc_occupancy of RMIDs in each rdt domain.
+ttyPZ0: pmz: rx irq flood !
+BUG: spinlock recursion on CPU#0, swapper/0
 
-Instead of using perf tool to track llc_occupancy and filter the log
-manually, it is more convenient for users to use tracepoint to do this
-work. So add a new tracepoint that shows the llc_occupancy of busy RMIDs
-when scanning the limbo list.
+That's because the pr_err() call in pmz_receive_chars() results in
+pmz_console_write() attempting to lock a spinlock already locked in
+pmz_interrupt(). With CONFIG_DEBUG_SPINLOCK=y, this produces a fatal
+BUG splat. The spinlock in question is the one in struct uart_port.
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-Suggested-by: James Morse <james.morse@arm.com>
-Reviewed-by: James Morse <james.morse@arm.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Even when it's not fatal, the serial port rx function ceases to work.
+Also, the iteration limit doesn't play nicely with QEMU, as can be
+seen in the bug report linked below.
+
+A web search for other reports of the error message "pmz: rx irq flood"
+didn't produce anything. So I don't think this code is needed any more.
+Remove it.
+
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: stable@kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Link: https://github.com/vivier/qemu-m68k/issues/44
+Link: https://lore.kernel.org/all/1078874617.9746.36.camel@gaston/
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- Documentation/arch/x86/resctrl.rst    |  6 ++++++
- arch/x86/kernel/cpu/resctrl/monitor.c | 11 +++++++++++
- arch/x86/kernel/cpu/resctrl/trace.h   | 16 ++++++++++++++++
- 3 files changed, 33 insertions(+)
+Changed since v1:
+ - Reworked commit log according to comments from Andy Shevchenko.
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index a6279df64a9d..bcdbd23cd8a7 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -446,6 +446,12 @@ during mkdir.
- max_threshold_occupancy is a user configurable value to determine the
- occupancy at which an RMID can be freed.
+Changed since v2:
+ - Added Acked-by and Cc tags.
+---
+ drivers/tty/serial/pmac_zilog.c | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+index c8bf08c19c64..77691fbbf779 100644
+--- a/drivers/tty/serial/pmac_zilog.c
++++ b/drivers/tty/serial/pmac_zilog.c
+@@ -210,7 +210,6 @@ static bool pmz_receive_chars(struct uart_pmac_port *uap)
+ {
+ 	struct tty_port *port;
+ 	unsigned char ch, r1, drop, flag;
+-	int loops = 0;
  
-+The mon_llc_occupancy_limbo tracepoint gives the precise occupancy in bytes
-+for a subset of RMID that are not immediately available for allocation.
-+This can't be relied on to produce output every second, it may be necessary
-+to attempt to create an empty monitor group to force an update. Output may
-+only be produced if creation of a control or monitor group fails.
-+
- Schemata files - general concepts
- ---------------------------------
- Each line in the file describes one resource. The line starts with
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index c34a35ec0f03..2345e6836593 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -24,6 +24,7 @@
- #include <asm/resctrl.h>
+ 	/* Sanity check, make sure the old bug is no longer happening */
+ 	if (uap->port.state == NULL) {
+@@ -291,24 +290,11 @@ static bool pmz_receive_chars(struct uart_pmac_port *uap)
+ 		if (r1 & Rx_OVR)
+ 			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+ 	next_char:
+-		/* We can get stuck in an infinite loop getting char 0 when the
+-		 * line is in a wrong HW state, we break that here.
+-		 * When that happens, I disable the receive side of the driver.
+-		 * Note that what I've been experiencing is a real irq loop where
+-		 * I'm getting flooded regardless of the actual port speed.
+-		 * Something strange is going on with the HW
+-		 */
+-		if ((++loops) > 1000)
+-			goto flood;
+ 		ch = read_zsreg(uap, R0);
+ 		if (!(ch & Rx_CH_AV))
+ 			break;
+ 	}
  
- #include "internal.h"
-+#include "trace.h"
+-	return true;
+- flood:
+-	pmz_interrupt_control(uap, 0);
+-	pmz_error("pmz: rx irq flood !\n");
+ 	return true;
+ }
  
- /**
-  * struct rmid_entry - dirty tracking for all RMID.
-@@ -354,6 +355,16 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
- 			rmid_dirty = true;
- 		} else {
- 			rmid_dirty = (val >= resctrl_rmid_realloc_threshold);
-+
-+			/*
-+			 * x86's CLOSID and RMID are independent numbers, so the entry's
-+			 * CLOSID is an empty CLOSID (X86_RESCTRL_EMPTY_CLOSID). On Arm the
-+			 * RMID (PMG) extends the CLOSID (PARTID) space with bits that aren't
-+			 * used to select the configuration. It is thus necessary to track both
-+			 * CLOSID and RMID because there may be dependencies between them
-+			 * on some architectures.
-+			 */
-+			trace_mon_llc_occupancy_limbo(entry->closid, entry->rmid, d->id, val);
- 		}
- 
- 		if (force_free || !rmid_dirty) {
-diff --git a/arch/x86/kernel/cpu/resctrl/trace.h b/arch/x86/kernel/cpu/resctrl/trace.h
-index 495fb90c8572..2a506316b303 100644
---- a/arch/x86/kernel/cpu/resctrl/trace.h
-+++ b/arch/x86/kernel/cpu/resctrl/trace.h
-@@ -35,6 +35,22 @@ TRACE_EVENT(pseudo_lock_l3,
- 	    TP_printk("hits=%llu miss=%llu",
- 		      __entry->l3_hits, __entry->l3_miss));
- 
-+TRACE_EVENT(mon_llc_occupancy_limbo,
-+	    TP_PROTO(u32 ctrl_hw_id, u32 mon_hw_id, int domain_id, u64 llc_occupancy_bytes),
-+	    TP_ARGS(ctrl_hw_id, mon_hw_id, domain_id, llc_occupancy_bytes),
-+	    TP_STRUCT__entry(__field(u32, ctrl_hw_id)
-+			     __field(u32, mon_hw_id)
-+			     __field(int, domain_id)
-+			     __field(u64, llc_occupancy_bytes)),
-+	    TP_fast_assign(__entry->ctrl_hw_id = ctrl_hw_id;
-+			   __entry->mon_hw_id = mon_hw_id;
-+			   __entry->domain_id = domain_id;
-+			   __entry->llc_occupancy_bytes = llc_occupancy_bytes;),
-+	    TP_printk("ctrl_hw_id=%u mon_hw_id=%u domain_id=%d llc_occupancy_bytes=%llu",
-+		      __entry->ctrl_hw_id, __entry->mon_hw_id, __entry->domain_id,
-+		      __entry->llc_occupancy_bytes)
-+	   );
-+
- #endif /* _TRACE_RESCTRL_H */
- 
- #undef TRACE_INCLUDE_PATH
 -- 
-2.25.1
+2.39.3
 
 
