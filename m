@@ -1,327 +1,228 @@
-Return-Path: <linux-kernel+bounces-135231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D468589BD73
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:42:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FAC689BD79
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:47:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B211C21D98
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:42:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA821F22ED5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545675FB96;
-	Mon,  8 Apr 2024 10:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D955FB97;
+	Mon,  8 Apr 2024 10:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PXn2SB+H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Ev4EiDC7"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504EA59B6D;
-	Mon,  8 Apr 2024 10:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F0D5EE8D;
+	Mon,  8 Apr 2024 10:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712572952; cv=none; b=GCKWdGYXTkEcL4ZcosqtUGo+TBoPfZZ9fix+hYOlDNre1wRF78hSgOrKECpvQjRXiJ4uLmNDbwDcfet+Ifj3lAVZW1I1+2UuaKy4YJuXdOBtnDOIW1kz2NMsv1pHBLUzidxlcgb4oM2Z9hlSKbg/0dHkNi1wZQ40nUuYqWyePD8=
+	t=1712573251; cv=none; b=BQDgT94lb0phma7N15UXasGZLfR6qd332HaoVliDn72j8SGH8xCzRVmeVQGWLoULYqfxUXkW7b2zOiSnTbzWozXOetOAwdPU2G91pF/1ILCgf9GPDVQCX7XOTFo+EigHg0jofps+bz+1nG2JryLF8U+KphvnESx54NIWkWDVdyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712572952; c=relaxed/simple;
-	bh=b/Ple0Ig9f380CD8S4g6oLAOcX+OtwPclqtC9HiW+mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DxF6pwvr8D+Z0WJnfWHLgh2rD+2L6q5cmUrKqZK93+KqDtTIkiO0we2EVqSyCUYafzVWbpf9CTVpgUKguog6w+h7cRyD27+7I355ZVIX/ECUjh9brH+yBZ3h7LkE3wnXcNxL2Cu3pXJnnXXpxfhPG18Z4FP8RywUGEvnasMTzuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PXn2SB+H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E9EC433C7;
-	Mon,  8 Apr 2024 10:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712572951;
-	bh=b/Ple0Ig9f380CD8S4g6oLAOcX+OtwPclqtC9HiW+mw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PXn2SB+HH0gGSdOSB6uwQC2te3iLBzVI/QAQlIRQ/ovvRqxqatyXEjDT5IlmLBE54
-	 eQpPUtOmIOHmxJr8EHDpCEuSlFSEeG66kLXpCH4D5QkHoHHxQqu4fl0C9hE+8NX7rB
-	 Dk5A60rdZZhOlUQIE0QkYBoIqa4psq76Vi/HqQoI7WcjWCVs0HxZY7WnDD6RIbehzZ
-	 xWKccqRhW1SY2q8W35RTttBVTrPg6ddeOumiQs5d0h5hwwPmbNFnUYdNnstxyGEu9Y
-	 YK/keo6oC81pGkBxJCkHrBzCRWQYq3zvyxlg9JDag6rQydgOI60qehLqH4LHFNRJax
-	 NUtOKiwTDXC4w==
-Date: Mon, 8 Apr 2024 13:42:22 +0300
-From: Zhi Wang <zhiwang@kernel.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, linux-kernel@vger.kernel.org, Michael Ellerman
- <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- linux-acpi@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, Ard
- Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, Zhenyu Wang
- <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>,
- intel-gvt-dev@lists.freedesktop.org, Daniel Lezcano
- <daniel.lezcano@linaro.org>, linux-pm@vger.kernel.org, Luis Chamberlain
- <mcgrof@kernel.org>, linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/2] treewide: Use sysfs_bin_attr_simple_read() helper
-Message-ID: <20240408134222.00005994.zhiwang@kernel.org>
-In-Reply-To: <92ee0a0e83a5a3f3474845db6c8575297698933a.1712410202.git.lukas@wunner.de>
-References: <cover.1712410202.git.lukas@wunner.de>
- <92ee0a0e83a5a3f3474845db6c8575297698933a.1712410202.git.lukas@wunner.de>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712573251; c=relaxed/simple;
+	bh=EULIeu2IYPBIomOsB6/HixDn+KPkFU5x4TipZmiOq50=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TJ2s1FnM1niSFbwJDza8+gwSHOuti45/5yD8tJb/2SmDlXMM6LI4vxl7FH/eDzb1pbKSVnGuhYD9D7GJsNZMpCQrno26mUjUtOq2ThyV8dBBOMsxkPnKKmrmhwmCmuC/rsnncRqYQ43ttqH+qzKwD0PiYpTO3/wvJnpATHats0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Ev4EiDC7; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29f93c4946cso2595329a91.1;
+        Mon, 08 Apr 2024 03:47:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712573249; x=1713178049;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Lem1V+ZUDVfxXhz5cIX+EVo2hjuDpYPyfQac0mlVZKQ=;
+        b=ig/9jTcY3QZk4iL7vsNaNBi4LETfmC9dNZujev+sZYITMo8OdISI/eY1gvmHvSMj4X
+         /LRxhei8wb1tySrH/cRqmARrxo/gBEix15z2jg8X4Zzzcw7GTP4T6yhkHxzVSllzUUDJ
+         WhxEw0LJkBE+HfIkkuI/7yEpxpeXVO30jgDco25sJ6aiC6aD7lzgcUs+S4ndIqb0TvbC
+         J7d07+9yuyr5R/wQBwz1pnEP6s2LhdeXvLvC9pN/G9sboN/o2Vh9zuehzR+H7MMgO4BP
+         Dy8CR4Ypfyo/DdUMFSPIr0F6FuFO8OMqWoFQilx7m/3Hd2Uq9r6w2cwyvuudJnpwOFPW
+         Wyeg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7vRqcNOHEnpNTgTDx0GzIfnoHa3XunPGDFAa6KrO6AX7qvE9cY8SApuCaocdZzJH//Qw7Hiif5j8qXYeNrnpBntmoCfEeLBDo3XzOLsdFsY4zEwul4i8ysy8VUWkEy4srAsiqX/HhCUw=
+X-Gm-Message-State: AOJu0Yw1Mg5rQQiPBNbvu7VjRhTRxc45VC57qndEczXbKaxLX2tIG+Jf
+	VoyUicVSPbyGGLbB3wls7twq3gKN+7Ao85uOE0YjOgnwKA+STaET
+X-Google-Smtp-Source: AGHT+IFE+qtdK57REoxprWk8JnBiCKf8j0cyf03OkYGG9tc1+t8KBQyGbkuiRdKAgbVSfge9/19ivA==
+X-Received: by 2002:a17:90a:6883:b0:2a2:2654:9e95 with SMTP id a3-20020a17090a688300b002a226549e95mr6679710pjd.36.1712573248958;
+        Mon, 08 Apr 2024 03:47:28 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id v12-20020a17090a898c00b0029df9355e79sm6111751pjn.13.2024.04.08.03.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 03:47:28 -0700 (PDT)
+Date: Mon, 8 Apr 2024 07:47:16 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1712573246;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lem1V+ZUDVfxXhz5cIX+EVo2hjuDpYPyfQac0mlVZKQ=;
+	b=Ev4EiDC7vk3xSyXgyB+eLvQHuK8FVJqhqoAuYqE3kvCgY1I7wHzJ6O+PZrkia8ePEQDRiL
+	3lCYPtpjLFcqig1pt2e0mLRZVJJgdAdwhfoQJn3sYKB9gO4KuzcRcVBVUx0/LUfQwM/YRf
+	8S2J31ZZu0aTVlXBXjBUOoH5HPPKanli32ZJ6ZCXi7zbkbROqEyWgEO1ImGHqUfAUoCq+h
+	LCMYXFXaxJ4RUNAJddtuwYlWXIWisbqGe23TxKQG22+K3QQLhUrmer1rOcsVmJEaae45iH
+	oiaRN78WioFSgI4CnTFUwjhvnZzTKBO7CXDbAkqg/IrGVZJGBZfKNoWo3LfBkA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sean Young <sean@mess.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: dvbdev: make dvb_class constant
+Message-ID: <iduap7j36flhvmmsbvm6kzormftqi2xxfpndf62jp5lveljo3k@zgpxyqwckuuz>
+References: <20240305-class_cleanup-media-v1-0-53e1538973cd@marliere.net>
+ <20240305-class_cleanup-media-v1-1-53e1538973cd@marliere.net>
+ <ae5840f3-7e19-4d60-bd87-567068a3f813@xs4all.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae5840f3-7e19-4d60-bd87-567068a3f813@xs4all.nl>
 
-On Sat, 6 Apr 2024 15:52:02 +0200
-Lukas Wunner <lukas@wunner.de> wrote:
+Hi Hans!
 
-> Deduplicate ->read() callbacks of bin_attributes which are backed by a
-> simple buffer in memory:
+On  8 Apr 11:47, Hans Verkuil wrote:
+> On 05/03/2024 14:26, Ricardo B. Marliere wrote:
+> > Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> > a const *"), the driver core allows for struct class to be in read-only
+> > memory, so move the dvb_class structure to be declared at build time
+> > placing it into read-only memory, instead of having to be dynamically
+> > allocated at boot time.
+> > 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > ---
+> >  drivers/media/dvb-core/dvbdev.c | 23 +++++++++++++----------
+> >  1 file changed, 13 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+> > index 733d0bc4b4cc..dcbf68b00240 100644
+> > --- a/drivers/media/dvb-core/dvbdev.c
+> > +++ b/drivers/media/dvb-core/dvbdev.c
+> > @@ -78,7 +78,13 @@ static const u8 minor_type[] = {
+> >  #define MAX_DVB_MINORS		(DVB_MAX_ADAPTERS * 64)
+> >  #endif
+> >  
+> > -static struct class *dvb_class;
+> > +static int dvb_uevent(const struct device *dev, struct kobj_uevent_env *env);
+> > +static char *dvb_devnode(const struct device *dev, umode_t *mode);
 > 
-> Use the newly introduced sysfs_bin_attr_simple_read() helper instead,
-> either by referencing it directly or by declaring such bin_attributes
-> with BIN_ATTR_SIMPLE_RO() or BIN_ATTR_SIMPLE_ADMIN_RO().
+> Forward references are typically something you want to avoid.
 > 
-> Aside from a reduction of LoC, this shaves off a few bytes from
-> vmlinux (304 bytes on an x86_64 allyesconfig).
+> Looking at the code, I think it makes sense to just move those two functions
+> to just before this dvb_class.
+
+Ack.
+
 > 
-> No functional change intended.
+> > +static const struct class dvb_class = {
+> > +	.name = "dvb",
+> > +	.dev_uevent = dvb_uevent,
+> > +	.devnode = dvb_devnode,
+> > +};
+> >  
+> >  static struct dvb_device *dvb_minors[MAX_DVB_MINORS];
+> >  static DECLARE_RWSEM(minor_rwsem);
 > 
+> Also move the dvb_class (+ the two functions) to after this line. I think that's
+> a more suitable place for this.
 
-As for GVT, looks good to me.
+Ack.
 
-Acked-by: Zhi Wang <zhiwang@kernel.org>
-
-> Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> ---
->  arch/powerpc/platforms/powernv/opal.c              | 10 +--------
->  drivers/acpi/bgrt.c                                |  9 +-------
->  drivers/firmware/dmi_scan.c                        | 12 ++--------
->  drivers/firmware/efi/rci2-table.c                  | 10 +--------
->  drivers/gpu/drm/i915/gvt/firmware.c                | 26
-> +++++----------------- .../intel/int340x_thermal/int3400_thermal.c
->     |  9 +------- init/initramfs.c
-> | 10 +-------- kernel/module/sysfs.c                              |
-> 13 +---------- 8 files changed, 14 insertions(+), 85 deletions(-)
 > 
-> diff --git a/arch/powerpc/platforms/powernv/opal.c
-> b/arch/powerpc/platforms/powernv/opal.c index 45dd77e..5d0f35b 100644
-> --- a/arch/powerpc/platforms/powernv/opal.c
-> +++ b/arch/powerpc/platforms/powernv/opal.c
-> @@ -792,14 +792,6 @@ static int __init opal_sysfs_init(void)
->  	return 0;
->  }
->  
-> -static ssize_t export_attr_read(struct file *fp, struct kobject
-> *kobj,
-> -				struct bin_attribute *bin_attr, char
-> *buf,
-> -				loff_t off, size_t count)
-> -{
-> -	return memory_read_from_buffer(buf, count, &off,
-> bin_attr->private,
-> -				       bin_attr->size);
-> -}
-> -
->  static int opal_add_one_export(struct kobject *parent, const char
-> *export_name, struct device_node *np, const char *prop_name)
->  {
-> @@ -826,7 +818,7 @@ static int opal_add_one_export(struct kobject
-> *parent, const char *export_name, sysfs_bin_attr_init(attr);
->  	attr->attr.name = name;
->  	attr->attr.mode = 0400;
-> -	attr->read = export_attr_read;
-> +	attr->read = sysfs_bin_attr_simple_read;
->  	attr->private = __va(vals[0]);
->  	attr->size = vals[1];
->  
-> diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
-> index e4fb9e2..d1d9c92 100644
-> --- a/drivers/acpi/bgrt.c
-> +++ b/drivers/acpi/bgrt.c
-> @@ -29,14 +29,7 @@
->  BGRT_SHOW(xoffset, image_offset_x);
->  BGRT_SHOW(yoffset, image_offset_y);
->  
-> -static ssize_t image_read(struct file *file, struct kobject *kobj,
-> -	       struct bin_attribute *attr, char *buf, loff_t off,
-> size_t count) -{
-> -	memcpy(buf, attr->private + off, count);
-> -	return count;
-> -}
-> -
-> -static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
-> +static BIN_ATTR_SIMPLE_RO(image);
->  
->  static struct attribute *bgrt_attributes[] = {
->  	&bgrt_attr_version.attr,
-> diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
-> index 015c95a..3d0f773 100644
-> --- a/drivers/firmware/dmi_scan.c
-> +++ b/drivers/firmware/dmi_scan.c
-> @@ -746,16 +746,8 @@ static void __init dmi_scan_machine(void)
->  	pr_info("DMI not present or invalid.\n");
->  }
->  
-> -static ssize_t raw_table_read(struct file *file, struct kobject
-> *kobj,
-> -			      struct bin_attribute *attr, char *buf,
-> -			      loff_t pos, size_t count)
-> -{
-> -	memcpy(buf, attr->private + pos, count);
-> -	return count;
-> -}
-> -
-> -static BIN_ATTR(smbios_entry_point, S_IRUSR, raw_table_read, NULL,
-> 0); -static BIN_ATTR(DMI, S_IRUSR, raw_table_read, NULL, 0);
-> +static BIN_ATTR_SIMPLE_ADMIN_RO(smbios_entry_point);
-> +static BIN_ATTR_SIMPLE_ADMIN_RO(DMI);
->  
->  static int __init dmi_init(void)
->  {
-> diff --git a/drivers/firmware/efi/rci2-table.c
-> b/drivers/firmware/efi/rci2-table.c index de1a9a1..4fd45d6 100644
-> --- a/drivers/firmware/efi/rci2-table.c
-> +++ b/drivers/firmware/efi/rci2-table.c
-> @@ -40,15 +40,7 @@ struct rci2_table_global_hdr {
->  static u32 rci2_table_len;
->  unsigned long rci2_table_phys __ro_after_init =
-> EFI_INVALID_TABLE_ADDR; 
-> -static ssize_t raw_table_read(struct file *file, struct kobject
-> *kobj,
-> -			      struct bin_attribute *attr, char *buf,
-> -			      loff_t pos, size_t count)
-> -{
-> -	memcpy(buf, attr->private + pos, count);
-> -	return count;
-> -}
-> -
-> -static BIN_ATTR(rci2, S_IRUSR, raw_table_read, NULL, 0);
-> +static BIN_ATTR_SIMPLE_ADMIN_RO(rci2);
->  
->  static u16 checksum(void)
->  {
-> diff --git a/drivers/gpu/drm/i915/gvt/firmware.c
-> b/drivers/gpu/drm/i915/gvt/firmware.c index 4dd52ac..5e66a26 100644
-> --- a/drivers/gpu/drm/i915/gvt/firmware.c
-> +++ b/drivers/gpu/drm/i915/gvt/firmware.c
-> @@ -50,21 +50,7 @@ struct gvt_firmware_header {
->  
->  #define dev_to_drm_minor(d) dev_get_drvdata((d))
->  
-> -static ssize_t
-> -gvt_firmware_read(struct file *filp, struct kobject *kobj,
-> -	     struct bin_attribute *attr, char *buf,
-> -	     loff_t offset, size_t count)
-> -{
-> -	memcpy(buf, attr->private + offset, count);
-> -	return count;
-> -}
-> -
-> -static struct bin_attribute firmware_attr = {
-> -	.attr = {.name = "gvt_firmware", .mode = (S_IRUSR)},
-> -	.read = gvt_firmware_read,
-> -	.write = NULL,
-> -	.mmap = NULL,
-> -};
-> +static BIN_ATTR_SIMPLE_ADMIN_RO(gvt_firmware);
->  
->  static int expose_firmware_sysfs(struct intel_gvt *gvt)
->  {
-> @@ -107,10 +93,10 @@ static int expose_firmware_sysfs(struct
-> intel_gvt *gvt) crc32_start = offsetof(struct gvt_firmware_header,
-> version); h->crc32 = crc32_le(0, firmware + crc32_start, size -
-> crc32_start); 
-> -	firmware_attr.size = size;
-> -	firmware_attr.private = firmware;
-> +	bin_attr_gvt_firmware.size = size;
-> +	bin_attr_gvt_firmware.private = firmware;
->  
-> -	ret = device_create_bin_file(&pdev->dev, &firmware_attr);
-> +	ret = device_create_bin_file(&pdev->dev,
-> &bin_attr_gvt_firmware); if (ret) {
->  		vfree(firmware);
->  		return ret;
-> @@ -122,8 +108,8 @@ static void clean_firmware_sysfs(struct intel_gvt
-> *gvt) {
->  	struct pci_dev *pdev = to_pci_dev(gvt->gt->i915->drm.dev);
->  
-> -	device_remove_bin_file(&pdev->dev, &firmware_attr);
-> -	vfree(firmware_attr.private);
-> +	device_remove_bin_file(&pdev->dev, &bin_attr_gvt_firmware);
-> +	vfree(bin_attr_gvt_firmware.private);
->  }
->  
->  /**
-> diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c index
-> 427d370..6d4b51a 100644 ---
-> a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c +++
-> b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c @@ -73,14
-> +73,7 @@ struct odvp_attr { struct device_attribute attr;
->  };
->  
-> -static ssize_t data_vault_read(struct file *file, struct kobject
-> *kobj,
-> -	     struct bin_attribute *attr, char *buf, loff_t off,
-> size_t count) -{
-> -	memcpy(buf, attr->private + off, count);
-> -	return count;
-> -}
-> -
-> -static BIN_ATTR_RO(data_vault, 0);
-> +static BIN_ATTR_SIMPLE_RO(data_vault);
->  
->  static struct bin_attribute *data_attributes[] = {
->  	&bin_attr_data_vault,
-> diff --git a/init/initramfs.c b/init/initramfs.c
-> index da79760..5193fae 100644
-> --- a/init/initramfs.c
-> +++ b/init/initramfs.c
-> @@ -575,15 +575,7 @@ static int __init initramfs_async_setup(char
-> *str) #include <linux/initrd.h>
->  #include <linux/kexec.h>
->  
-> -static ssize_t raw_read(struct file *file, struct kobject *kobj,
-> -			struct bin_attribute *attr, char *buf,
-> -			loff_t pos, size_t count)
-> -{
-> -	memcpy(buf, attr->private + pos, count);
-> -	return count;
-> -}
-> -
-> -static BIN_ATTR(initrd, 0440, raw_read, NULL, 0);
-> +static BIN_ATTR(initrd, 0440, sysfs_bin_attr_simple_read, NULL, 0);
->  
->  void __init reserve_initrd_mem(void)
->  {
-> diff --git a/kernel/module/sysfs.c b/kernel/module/sysfs.c
-> index d964167..26efe13 100644
-> --- a/kernel/module/sysfs.c
-> +++ b/kernel/module/sysfs.c
-> @@ -146,17 +146,6 @@ struct module_notes_attrs {
->  	struct bin_attribute attrs[] __counted_by(notes);
->  };
->  
-> -static ssize_t module_notes_read(struct file *filp, struct kobject
-> *kobj,
-> -				 struct bin_attribute *bin_attr,
-> -				 char *buf, loff_t pos, size_t count)
-> -{
-> -	/*
-> -	 * The caller checked the pos and count against our size.
-> -	 */
-> -	memcpy(buf, bin_attr->private + pos, count);
-> -	return count;
-> -}
-> -
->  static void free_notes_attrs(struct module_notes_attrs *notes_attrs,
->  			     unsigned int i)
->  {
-> @@ -205,7 +194,7 @@ static void add_notes_attrs(struct module *mod,
-> const struct load_info *info) nattr->attr.mode = 0444;
->  			nattr->size = info->sechdrs[i].sh_size;
->  			nattr->private = (void
-> *)info->sechdrs[i].sh_addr;
-> -			nattr->read = module_notes_read;
-> +			nattr->read = sysfs_bin_attr_simple_read;
->  			++nattr;
->  		}
->  		++loaded;
+> > @@ -561,7 +567,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+> >  		return ret;
+> >  	}
+> >  
+> > -	clsdev = device_create(dvb_class, adap->device,
+> > +	clsdev = device_create(&dvb_class, adap->device,
+> >  			       MKDEV(DVB_MAJOR, minor),
+> >  			       dvbdev, "dvb%d.%s%d", adap->num, dnames[type], id);
+> >  	if (IS_ERR(clsdev)) {
+> > @@ -600,7 +606,7 @@ void dvb_remove_device(struct dvb_device *dvbdev)
+> >  
+> >  	dvb_media_device_free(dvbdev);
+> >  
+> > -	device_destroy(dvb_class, MKDEV(DVB_MAJOR, dvbdev->minor));
+> > +	device_destroy(&dvb_class, MKDEV(DVB_MAJOR, dvbdev->minor));
+> >  
+> >  	list_del(&dvbdev->list_head);
+> >  }
+> > @@ -1096,13 +1102,10 @@ static int __init init_dvbdev(void)
+> >  		goto error;
+> >  	}
+> >  
+> > -	dvb_class = class_create("dvb");
+> > -	if (IS_ERR(dvb_class)) {
+> > -		retval = PTR_ERR(dvb_class);
+> > +	retval = class_register(&dvb_class);
+> > +	if (retval != 0)
+> 
+> This can just be 'if (retval)'.
 
+But then it would be on a different style than the rest of the function:
+
+static int __init init_dvbdev(void)
+{
+	int retval;
+	dev_t dev = MKDEV(DVB_MAJOR, 0);
+
+	retval = register_chrdev_region(dev, MAX_DVB_MINORS, "DVB");
+	if (retval != 0) {
+		pr_err("dvb-core: unable to get major %d\n", DVB_MAJOR);
+		return retval;
+	}
+
+	cdev_init(&dvb_device_cdev, &dvb_device_fops);
+	retval = cdev_add(&dvb_device_cdev, dev, MAX_DVB_MINORS);
+	if (retval != 0) {
+		pr_err("dvb-core: unable register character device\n");
+		goto error;
+	}
+
+	retval = class_register(&dvb_class);
+	if (retval != 0)
+		goto error;
+
+	return 0;
+
+error:
+	cdev_del(&dvb_device_cdev);
+	unregister_chrdev_region(dev, MAX_DVB_MINORS);
+	return retval;
+}
+
+
+> 
+> >  		goto error;
+> > -	}
+> > -	dvb_class->dev_uevent = dvb_uevent;
+> > -	dvb_class->devnode = dvb_devnode;
+> > +
+> >  	return 0;
+> >  
+> >  error:
+> > @@ -1115,7 +1118,7 @@ static void __exit exit_dvbdev(void)
+> >  {
+> >  	struct dvbdevfops_node *node, *next;
+> >  
+> > -	class_destroy(dvb_class);
+> > +	class_unregister(&dvb_class);
+> >  	cdev_del(&dvb_device_cdev);
+> >  	unregister_chrdev_region(MKDEV(DVB_MAJOR, 0), MAX_DVB_MINORS);
+> >  
+> > 
+> 
+> Regards,
+> 
+> 	Hans
 
