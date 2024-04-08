@@ -1,123 +1,108 @@
-Return-Path: <linux-kernel+bounces-135092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125AB89BB0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:57:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798DD89BAFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C080428338F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:57:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18CD61F2288D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:56:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C18A3C08E;
-	Mon,  8 Apr 2024 08:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37933A267;
+	Mon,  8 Apr 2024 08:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="EWR6+B0/"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="dC8TND7a"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0113C6AC;
-	Mon,  8 Apr 2024 08:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7813D964;
+	Mon,  8 Apr 2024 08:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712566662; cv=none; b=ZZv9SvqbZ2Ve6QBGNlMECeR7U+tGqfBKqa76gmJ2zG9ixgkNbNYPpCf9ZdyfOzlrz2InKbXSFbpn5FA8q6sRsHAzypNpiMGN7ju1KMqBXa86RS+4Y+xs5qr/BvrxSVDPzxE8CJ+ymdvzftb7jacwjc9l2AOdjx9rjJ8f62XBqDc=
+	t=1712566590; cv=none; b=uKS5eyJXhm/Ln4buSdAcAKiM/FxkrtdABIjt3m15DQvPQWxsutwNwWvLaRlZwkRrAl5MQzYKybf7vZLRsv4UmpYheN38Jpdml2mR+3XaaY2t1KGnzbdUNX3DCTAlPjfFBfsgJ/EDnHwrcu7pt8/rT2RG1iwsJNZAp8yFqFF17vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712566662; c=relaxed/simple;
-	bh=71cgcbD3LCizJbaId/qtf0bxqGyZFhg/a+lnSwLkGbw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ddRGAlHgExwKy+6nES71wZSrVHHodKl6pXVVv9r6SP1xZJaaXYkA+Y35i29vkudpKHvW0DqUf5DQ/1uHI/k06eQIP5G7qO0JXsrCR3Zi/dfIeAUjAqX6wpkbTLHDfjHsVVDV53IDdlneTk+buUn39Lf03xYTQpgnd86mF7rSlVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=EWR6+B0/; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 0270A100003;
-	Mon,  8 Apr 2024 11:57:14 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1712566634; bh=tVaZQ82kV0U3VdjNP3qButkhjLghxD+YcZT09STBU0k=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=EWR6+B0/gNf41mL3w6lZmTV9X69uZetXhu7XTDGpVjECqaMntRrs8I03xbrIeGDvb
-	 xSR6EPy6HI9obNTSe2zvlXDKzikO5zq+Rm+3ek64f257mnNv4jh+1g9xIvnChEhU+Q
-	 fqUyVpBBwyk3NS+flimzDNcWZ0SrLr72HsxJ1n/2zS73uAbed1AzwMnLYY4Wa5Sc6H
-	 mkk7MaBQGoZxXYQMDam/uSM1zDLFJdbBAgAtD/eLCQB5Agiv4bgIsWHfclheA+BBO/
-	 /y4lKFaOd7T03nohLLQB4f5CCb0vOX7lsbnvIY5Glh3rApTXFplEwFa+ylZy+QSGyV
-	 Uxy26W+/Hm4jA==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Mon,  8 Apr 2024 11:55:52 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
- 11:55:32 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Stephen Boyd <swboyd@chromium.org>,
-	<linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] drm/msm/dpu: Add callback function pointer check before its call
-Date: Mon, 8 Apr 2024 11:55:23 +0300
-Message-ID: <20240408085523.12231-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1712566590; c=relaxed/simple;
+	bh=qzK+0wT9Cyf1NitkqrySMGpyo8anNQHWIeU6cKIpYWY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RLAPSvIYso7OxUQJIZtbNcmMzQO992KZaLzKrxQZ2WuJz7P0cuDNt9SN3cIe+cHvKkMissS3yWRlj9bo7sXKb54iLiSqNjpO7XzTX4GW9tr92xArwVrnDd8DYLztHn3bFFX80MJzUNGpkVcTpcpHZonEkAcPXiEciZgUTnPaBbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=dC8TND7a; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=qzK+0wT9Cyf1NitkqrySMGpyo8anNQHWIeU6cKIpYWY=; b=dC8TND7agfDyNYALvE97sUKUio
+	LEBwCQM2OmTmz54MJ5kWzG6Dej7Q8WFmAE/WabcvYrjSyCWxiOMs3VMccEYEsDtFG0ad3fm971gYq
+	VNPrkXCZYr30YxsDDqoMgfra5jQ3aq2bwt2FFE7LKJDacliBtpSRjQeXQqOAECWQaDUm/7PVyZJq5
+	skPZiFu9BhLMOIdq6Er+Q7mc7pgRikOrvNUK1qrFgX9nMttGNAc8tVN7MKD2n3j0sFqM/mkVFPYIO
+	OXVp6pSA0GXy+XfRnhoHNFpKpVoR5lX6n6KAvLyIdnVZY8ozLfLbTcnpstTEeHopPW5EXzwSQIjQj
+	N9ikHv6Q==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rtknZ-0007O7-Ml; Mon, 08 Apr 2024 10:56:17 +0200
+Received: from [185.17.218.86] (helo=localhost)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rtknY-000H9m-SJ; Mon, 08 Apr 2024 10:56:16 +0200
+From: Esben Haabendal <esben@geanix.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,  Jiri Slaby
+ <jirislaby@kernel.org>,  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
+ <s.hauer@pengutronix.de>,  Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Marc Kleine-Budde <mkl@pengutronix.de>,
+  linux-kernel@vger.kernel.org,  linux-serial@vger.kernel.org,
+  imx@lists.linux.dev,  linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] serial: imx: Introduce timeout when waiting on
+ transmitter empty
+In-Reply-To: <CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
+	(Fabio Estevam's message of "Fri, 5 Apr 2024 14:38:48 -0300")
+References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
+	<CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
+Date: Mon, 08 Apr 2024 10:56:16 +0200
+Message-ID: <87ttkckzbj.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184614 [Apr 08 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;mx1.t-argos.ru.ru:7.1.1;127.0.0.199:7.1.2;t-argos.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/08 07:15:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/08 06:53:00 #24704467
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27239/Mon Apr  8 10:26:06 2024)
 
-In dpu_core_irq_callback_handler() callback function pointer is compared to NULL,
-but then callback function is unconditionally called by this pointer.
-Fix this bug by adding conditional return.
+Fabio Estevam <festevam@gmail.com> writes:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> On Fri, Apr 5, 2024 at 6:25=E2=80=AFAM Esben Haabendal <esben@geanix.com>=
+ wrote:
+>>
+>> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potentit=
+al
+>
+> s/potentital/potential
 
-Fixes: c929ac60b3ed ("drm/msm/dpu: allow just single IRQ callback")
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks, fixing.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-index 946dd0135dff..03a16fbd4c99 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-@@ -223,9 +223,11 @@ static void dpu_core_irq_callback_handler(struct dpu_kms *dpu_kms, unsigned int
- 
- 	VERB("IRQ=[%d, %d]\n", DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
- 
--	if (!irq_entry->cb)
-+	if (!irq_entry->cb) {
- 		DRM_ERROR("no registered cb, IRQ=[%d, %d]\n",
- 			  DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
-+		return;
-+	}
- 
- 	atomic_inc(&irq_entry->count);
- 
--- 
-2.30.2
+> Could you elaborate on this deadlock? Have you seen it in practice?
 
+I cannot say for sure if I have seen it. But in some cases, that is
+exactly what you would see. Nothing.
+
+If it would occur during shutdown, the console would simply stop/block,
+and you would see nothing.
+
+> Should a Fixes tag be added?
+
+Which commit should I add to that tag? The polling without timeout dates
+back to at least 2.6.12-rc2.
+
+/Esben
 
