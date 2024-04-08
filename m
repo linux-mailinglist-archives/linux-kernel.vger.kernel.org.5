@@ -1,120 +1,227 @@
-Return-Path: <linux-kernel+bounces-135592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A47C089C818
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:22:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A70189C7D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A7C8284131
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:22:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E89D1C2246D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA2D140381;
-	Mon,  8 Apr 2024 15:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F20813F459;
+	Mon,  8 Apr 2024 15:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="HoUXJp6S";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="yjqDBG6G"
-Received: from fallback13.i.mail.ru (fallback13.i.mail.ru [79.137.243.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nlBPUSKm"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE4313F45E;
-	Mon,  8 Apr 2024 15:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B4B1CD21;
+	Mon,  8 Apr 2024 15:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589745; cv=none; b=Y9I72atoNvvlC2G+6Csm4y503ASbeXsFPBSvJn77mvA9x8pcsfVHpTMlgVV9F0vIUxGacxt2VRVPcd9uSB8mF4llMjJ4oVYq4ByQZ4n37cI/qRhR9glSVa6Ykwqr/NYt1m8339c8Bv0c4mLKj6+7AZzDj84LVej6IQu6UVeM8FQ=
+	t=1712589003; cv=none; b=HaH64v8SxtISHTOcCzLZVo2IBs9xb0tIMiEFwO71K98Puh38P4nt9OuG6Sua+rvn5TGR3W4EEz9bFyTG3Nn8TrNKuOx5OG7NCK7GACYeaxspKCAM7Qdxiv7OA7oYkvYFS48GG/cVI9Fyt38+6v3y2+0mSe/Sb427f5tgrfNQQ24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712589745; c=relaxed/simple;
-	bh=p3uqGizp9xIMGF6CjhHwqsqD088dKF3LY0AdqM5qQiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qq7rG6g6x6UyRiRE8C0PWuOCEpzuPSdcajUKtR5mWBZl/ZD8bGSepzcaheLzy7jNRyHAZDceshtJPK+hVsY//2a0KfXmX52fGMy3fBLAwByXogC9DYNSLY0sAdkcGHkV7eqIOc9lF7CwSUR7FYBW/oCZbbonwShRceCZ1btnu38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=HoUXJp6S; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=yjqDBG6G; arc=none smtp.client-ip=79.137.243.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
-	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=wx+/Kt3SIcMw3DZo1mkGE7FX70+jMpgo7G/HwD3+K2o=;
-	t=1712589742;x=1712679742; 
-	b=HoUXJp6SeqVinIgCUBN52+/roPTJLzz2FJjeVhKtjKZddGdr2I0O8zDlLsM7FYxP/226b/GAXAGwRdlaGhDUWxNWVdGCXcFWMelc1C1scfJPzANjZS+6bV4HufizFmONdSZx11pnivn0lYeuZw5riIzh0e/tk864cP4pzyxQTEiIrg3Iy8EkHSKTYl2GsFDlqvMr2xAM4Ruv6q2E8aKBVnrfXMpYeUv8X4YcE9zF6Yj6l6JOT1E05VvaskijyYEU9ALTws/O4BUNxPqxax0rzT2yCyG/iZqdPa10BFe9V7CZH59zYAMkP/fbOeSmcH2XIajKKdB8r/U/gPJTTf83sQ==;
-Received: from [10.12.4.14] (port=36942 helo=smtp39.i.mail.ru)
-	by fallback13.i.mail.ru with esmtp (envelope-from <end.to.start@mail.ru>)
-	id 1rtqdF-000xdo-ME; Mon, 08 Apr 2024 18:10:01 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
-	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:
-	To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-	X-Cloud-Ids:Disposition-Notification-To;
-	bh=wx+/Kt3SIcMw3DZo1mkGE7FX70+jMpgo7G/HwD3+K2o=; t=1712589001; x=1712679001; 
-	b=yjqDBG6G0J5L2MHnjxjVOoKN7xNAN7I5ksll1/A0v1aaK9FTZ8MhOX/P+CP7cPSFp/R9ZX87sTR
-	NVFE21oW+67Iw8zEJPChONI2S3VTJQx3AeQ6xFGBHW1JIx4Dz1qRQFKnBv3oH7GDgUxSaKypFvjNo
-	muXDT4WaLcs0EEeSBz/eF0NsPRACa3Uby2QOvIupqq1BJHBata63LpDzV4Ddh0H6/kArHI+/h7SeJ
-	gs1DkFNXZtkq1p8f511xWhUKVlegivV5+CnjIEqHzLW0a4aKdk94WtS/Q6UH6C6B1uqtwHdSObUsi
-	2p8xWKsHJfA/SPV8R7qp+eXYJ/jgmjQGqTLw==;
-Received: by smtp39.i.mail.ru with esmtpa (envelope-from <end.to.start@mail.ru>)
-	id 1rtqd2-000000009jk-20tw; Mon, 08 Apr 2024 18:09:48 +0300
-From: "end.to.start" <end.to.start@mail.ru>
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"end . to . start" <end.to.start@mail.ru>
-Subject: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
-Date: Mon,  8 Apr 2024 18:09:05 +0300
-Message-ID: <20240408150905.43407-1-end.to.start@mail.ru>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712589003; c=relaxed/simple;
+	bh=7RjjAX+l+5ybv+rftzcGFZmHFQtRiNYQm+IvwvQLEoo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/TJWCjkRQyfRROq8xYVTyoO4ZgYYzLR7NqXwU6lWKc01ELFfuF00p0lNwhqclyR3HWEj/uhkkzl8wzybn5wGWtXnJ0M9EPvlWE6tR7bBtWnRefbrzsiIigX8iAhkksV/VS8twC5JC6zuX0Ombg106YUyp01Fogmk8/B4x+PulA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nlBPUSKm; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41650ee55ffso9455035e9.0;
+        Mon, 08 Apr 2024 08:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712588999; x=1713193799; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5o7+hDSIuCWKDG8jzwsz/CU+9322M+SgxIxtVMZNuNI=;
+        b=nlBPUSKm9+uNXDQNnZa+6e6c47Z7wE7XuQeObWPWaF+3xUuW725GMn6bPB/SS+8yKI
+         2H4z12+MYZHzjeH6+Xx2xUjAGOjHcIV1cSN0wO1pBnAxIvDFx4irItjFDPMOsy0QaPeK
+         G5PP+u1/ZoFtA3kFGFEffVQKP1xA8IC/GCOGbeJZNhiE6uaErR3sSigYYszTTfs6qkfC
+         emeoiSxk57DNg+EKnWDocYbP1XBriWbQOB8xo1itFANj1/8014bQAjmmmZwZaUTSkYII
+         iZEkOlOvwJWJ67umvA8hKnj6Gn72Xnim7hPI2vxqSblA9EYIz///WYa9eDO0VFBLZ1+r
+         KBhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712588999; x=1713193799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5o7+hDSIuCWKDG8jzwsz/CU+9322M+SgxIxtVMZNuNI=;
+        b=sfL4tQprEAFSxhIdM6qBF5mKAEC5dFsOvmij8cvPNNEueodSKKYVD7lWEthkOWYwyh
+         DqL6fmiEtFqdaYgCW1Ha7pC1j/q6fp+o1BBLUU5bHAkWXT2+rU0x6iCLXgzErBTC9czq
+         +JVK6r2yVsBnx4sdIRncO2KhoCjeRq+k8Sj/xQQQ7RSo+vmj6XPkAPL6SRFvT6NbPU/q
+         zotBEIBvexmBuNSJfpn99AfBcUiK7sweyG25MT6vaXw1e7TcDz1mXF+xJ3PhZTJkGlZI
+         QB7xLQ9NkDPJMfAnvOiuXV5MUL3zDrNlh1OhwRq8ODWUpMUo7FqVHxBefreP981sTobE
+         cSLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZZ/qhim/+QG/JEZy04JGOtxYEtfrkIc8373Sy6yY6W5q6HGxCbM0RZ1gV5pmK/VhONAxW75v2YSU8NvbsdLjFqEDZfqCNl/rnXGsjMW6o6cf7mwJDhU8kUtDUzNQjWTORaVy5pXY5Xcff/W5V4pT475+25WazTqiL
+X-Gm-Message-State: AOJu0YwatePjlq1XSKgOxFVFdB0+TjpgkwQ9VDJmhYkuQsUi29lyLz2n
+	o2rqbTGQOsoN5+2fYoGNqgusKIa3H8g/l3UJxrBKx7TE/3WEHDSpiSWT6RuWLcu9/c5TXcL2xbg
+	9bk2SDoHuGehIjqFibMwmM+B/rcA=
+X-Google-Smtp-Source: AGHT+IGfD5tw9rqnE5LU+TW60kXROajtXB4BtqIhZq3i2yRRlQkfuwvGF/5wsc9QyaA0puOL1oGI7yTw06d1aVVHif4=
+X-Received: by 2002:a05:6000:1048:b0:343:9d6d:59a4 with SMTP id
+ c8-20020a056000104800b003439d6d59a4mr6383480wrx.28.1712588999269; Mon, 08 Apr
+ 2024 08:09:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-4EC0790: 1
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D31116567C8E3CFDFF0E1C6585A2586D0D182A05F53808504030E86D195FBFA14D3DE06ABAFEAF6705ECCA9D1F5DDEDF42BBAA07CA003C8BA6BC0FEE398BF55443
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7492D3E4238663367EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637DEEC83A7CF8598608638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D805961545C5C777FD9EB30F61FB181D1959AD1E186B66E7AF20879F7C8C5043D14489FFFB0AA5F4BFA417C69337E82CC2CC7F00164DA146DAFE8445B8C89999728AA50765F79006372A3B24BF85B2E607389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8A9FF340AA05FB58CF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C0085B890FD2717DA302FCEF25BFAB3454AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C34B26726BD97DF1CFBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CFB73CFAAED92B6E131DD303D21008E298D5E8D9A59859A8B6D082881546D9349175ECD9A6C639B01B78DA827A17800CE796B81110D3CD4288731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A56F17E783356658EC5002B1117B3ED6960CA70ABAE5EA647230E4A65F242F5898823CB91A9FED034534781492E4B8EEADABF80F987DAEDACBC79554A2A72441328621D336A7BC284946AD531847A6065A27ED053E960B195EBDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0AD93B9BA3C444D644977DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF45B00B261A430CA5BBCEDE6F76895AB947921DF39F88E614015E91357665F65FE98901B1639BBD631CFDFDFCAF5E4A4B417BCEB617B21AD3031AFA059D85FBFFD5C9CA713F8CFD3936DDF96CB8D31E6A913E6812662D5F2A65982B5FD154E7DC8F0ECD54AF826900C3981EEBE9DB10F943082AE146A756F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojabKNeIbMV3uh7/WLBVO8nQ==
-X-Mailru-Sender: F34414D909EE10BD7829694AFAC1E9592C6A313979055771B951B70A5BD4BD8E35E73068979AA8954C683740FFAD31F6C773E5EF782A67EF9314192DE98EED7FA9800083D4B72A528C9769C13AF3BBAE440A67913D6ED084D7A14DD9E34ECE7467EA787935ED9F1B
-X-Mras: Ok
-X-4EC0790: 1
-X-7564579A: B8F34718100C35BD
-X-77F55803: 6242723A09DB00B4DB7CCFC93CF1872E8DC4F42B55D8A582718B3D7011F544C268F3CF0E9FE49B695C3EC5CDC8399ABC44D82FE0EB9EC2B801A36E2F7E7FBFCD39401918445667E6
-X-7FA49CB5: 0D63561A33F958A5889B563FAA9B3D83BE5021A100EE5A3BCF32B16F353EAC16CACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F79006378E5B25976F539216389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8C824672CB62AFFF2F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7535881B9F39D4165731C566533BA786AA5CC5B56E945C8DA
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojabKNeIbMV3txdPNMKTGzKQ==
-X-Mailru-MI: 8002000000000800
-X-Mras: Ok
+References: <20240407130850.19625-1-linyunsheng@huawei.com>
+ <CAKgT0Uex+e_g9nyqk6DiB03U4zs_A1z2LoztHnpYbJ9LPm=NFA@mail.gmail.com> <05c21500-033b-dfee-6aa7-1ee967616213@huawei.com>
+In-Reply-To: <05c21500-033b-dfee-6aa7-1ee967616213@huawei.com>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Mon, 8 Apr 2024 08:09:22 -0700
+Message-ID: <CAKgT0UdjBXguCudxM9-tzKx2qWYg18xp5cG2xaeY893rVbw5qQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 00/12] First try to replace page_frag with page_frag_cache
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
+On Mon, Apr 8, 2024 at 6:38=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2024/4/8 1:02, Alexander Duyck wrote:
+> > On Sun, Apr 7, 2024 at 6:10=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
+com> wrote:
+> >>
+> >> After [1], Only there are two implementations for page frag:
+> >>
+> >> 1. mm/page_alloc.c: net stack seems to be using it in the
+> >>    rx part with 'struct page_frag_cache' and the main API
+> >>    being page_frag_alloc_align().
+> >> 2. net/core/sock.c: net stack seems to be using it in the
+> >>    tx part with 'struct page_frag' and the main API being
+> >>    skb_page_frag_refill().
+> >>
+> >> This patchset tries to unfiy the page frag implementation
+> >> by replacing page_frag with page_frag_cache for sk_page_frag()
+> >> first. net_high_order_alloc_disable_key for the implementation
+> >> in net/core/sock.c doesn't seems matter that much now have
+> >> have pcp support for high-order pages in commit 44042b449872
+> >> ("mm/page_alloc: allow high-order pages to be stored on the
+> >> per-cpu lists").
+> >>
+> >> As the related change is mostly related to networking, so
+> >> targeting the net-next. And will try to replace the rest
+> >> of page_frag in the follow patchset.
+> >>
+> >> After this patchset, we are not only able to unify the page
+> >> frag implementation a little, but seems able to have about
+> >> 0.5+% performance boost testing by using the vhost_net_test
+> >> introduced in [1] and page_frag_test.ko introduced in this
+> >> patch.
+> >
+> > One question that jumps out at me for this is "why?". No offense but
+> > this is a pretty massive set of changes with over 1400 additions and
+> > 500+ deletions and I can't help but ask why, and this cover page
+> > doesn't give me any good reason to think about accepting this set.
+>
+> There are 375 + 256 additions for testing module and the documentation
+> update in the last two patches, and there is 198 additions and 176
+> deletions for moving the page fragment allocator from page_alloc into
+> its own file in patch 1.
+> Without above number, there are above 600+ additions and 300+ deletions,
+> deos that seems reasonable considering 140+ additions are needed to for
+> the new API, 300+ additions and deletions for updating the users to use
+> the new API as there are many users using the old API?
 
-Signed-off-by: end.to.start <end.to.start@mail.ru>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Maybe it would make more sense to break this into 2 sets. The first
+one adding your testing, and the second one consolidating the API.
+With that we would have a clearly defined test infrastructure in place
+for the second set which is making significant changes to the API. In
+addition it would provide the opportunity for others to point out any
+other test that they might want pulled in since this is likely to have
+impact outside of just the tests you have proposed.
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 69c68d8e7..1760b5d42 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -430,6 +430,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "MRID6"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "MDC"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Herbag_MDU"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
--- 
-2.44.0
+> > What is meant to be the benefit to the community for adding this? All
+> > I am seeing is a ton of extra code to have to review as this
+> > unification is adding an additional 1000+ lines without a good
+> > explanation as to why they are needed.
+>
+> Some benefits I see for now:
+> 1. Improve the maintainability of page frag's implementation:
+>    (1) future bugfix and performance can be done in one place.
+>        For example, we may able to save some space for the
+>        'page_frag_cache' API user, and avoid 'get_page()' for
+>        the old 'page_frag' API user.
 
+The problem as I see it is it is consolidating all the consumers down
+to the least common denominator in terms of performance. You have
+already demonstrated that with patch 2 which enforces that all drivers
+have to work from the bottom up instead of being able to work top down
+in the page.
+
+This eventually leads you down the path where every time somebody has
+a use case for it that may not be optimal for others it is going to be
+a fight to see if the new use case can degrade the performance of the
+other use cases.
+
+>    (2) Provide a proper API so that caller does not need to access
+>        internal data field. Exposing the internal data field may
+>        enable the caller to do some unexpcted implementation of
+>        its own like below, after this patchset the API user is not
+>        supposed to do access the data field of 'page_frag_cache'
+>        directly[Currently it is still acessable from API caller if
+>        the caller is not following the rule, I am not sure how to
+>        limit the access without any performance impact yet].
+> https://elixir.bootlin.com/linux/v6.9-rc3/source/drivers/net/ethernet/che=
+lsio/inline_crypto/chtls/chtls_io.c#L1141
+
+This just makes the issue I point out in 1 even worse. The problem is
+this code has to be used at the very lowest of levels and is as
+tightly optimized as it is since it is called at least once per packet
+in the case of networking. Networking that is still getting faster
+mind you and demanding even fewer cycles per packet to try and keep
+up. I just see this change as taking us in the wrong direction.
+
+> 2. page_frag API may provide a central point for netwroking to allocate
+>    memory instead of calling page allocator directly in the future, so
+>    that we can decouple 'struct page' from networking.
+
+I hope not. The fact is the page allocator serves a very specific
+purpose, and the page frag API was meant to serve a different one and
+not be a replacement for it. One thing that has really irked me is the
+fact that I have seen it abused as much as it has been where people
+seem to think it is just a page allocator when it was really meant to
+just provide a way to shard order 0 pages into sizes that are half a
+page or less in size. I really meant for it to be a quick-n-dirty slab
+allocator for sizes 2K or less where ideally we are working with
+powers of 2.
+
+It concerns me that you are talking about taking this down a path that
+will likely lead to further misuse of the code as a backdoor way to
+allocate order 0 pages using this instead of just using the page
+allocator.
+
+> >
+> > Also I wouldn't bother mentioning the 0.5+% performance gain as a
+> > "bonus". Changes of that amount usually mean it is within the margin
+> > of error. At best it likely means you haven't introduced a noticeable
+> > regression.
+>
+> For micro-benchmark ko added in this patchset, performance gain seems qui=
+t
+> stable from testing in system without any other load.
+
+Again, that doesn't mean anything. It could just be that the code
+shifted somewhere due to all the code moved so a loop got more aligned
+than it was before. To give you an idea I have seen performance gains
+in the past from turning off Rx checksum for some workloads and that
+was simply due to the fact that the CPUs were staying awake longer
+instead of going into deep sleep states as such we could handle more
+packets per second even though we were using more cycles. Without
+significantly more context it is hard to say that the gain is anything
+real at all and a 0.5% gain is well within that margin of error.
 
