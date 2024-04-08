@@ -1,148 +1,249 @@
-Return-Path: <linux-kernel+bounces-135471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CFC189C562
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:56:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA86289C5D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:01:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF781C225CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:56:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE297B2A2C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675047D080;
-	Mon,  8 Apr 2024 13:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9D97F478;
+	Mon,  8 Apr 2024 13:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jSkc+D6j"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kJxljgJ2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DD87CF1A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712584588; cv=none; b=Oyr90x3c+v5XpH/kToGhnkgn2q2QUx1R9NWc/NNMSYtBT1g0fGU64NstqDA4MiiZZLlGg3avi5mjiUoSq2iENje8qnUZyR9Qpr6g0u2PDdhs6EucZgMeYMS3okDZVVhNTnBp/8l46+a2BLONEvpUqpk9sTFQeOwXSy5CfzcJgS0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712584588; c=relaxed/simple;
-	bh=Sv1lonJMRVR+UVuirFpH2YmZNDikOQMGGjjjY3UJLc4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/oP6RAPIWILCyrtsymsBdbHK0FnW8Khj2t9jJw9mpTksvnE5Kjyl3dQrJwxvW8MA5oA7iXyB+COty2EYuCADmypgX0WRuru/llB5V4AgVo8XsThnvhg5FTjGybyaF8QBbU2zzDKwmFWCIHKdDdTFfT740l0k0tMRgMdmz9xpzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jSkc+D6j; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712584586;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rmNJpHW5Hyb1elegWpLMoq/S1yVvTDK8DJLj5yKd5mI=;
-	b=jSkc+D6jQ67V96JT6DTwSNSLxH1rUBZFARNc5R/BSk3H3V2rn8hWEMn53rcmm7qECEhwzv
-	4DlNbLLRfAPjUgG4ztQxrrxWKNMTWd3TDmrn7o+jk2HQhR30ZhaNTPBH5Cvke1QkWwDuGc
-	aITJkULCtA6UgkkomweJs2wnjLj5alE=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-447-Ww0uSmuPM5GPSWdZCx43uQ-1; Mon, 08 Apr 2024 09:56:24 -0400
-X-MC-Unique: Ww0uSmuPM5GPSWdZCx43uQ-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ea10c8093eso129550a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:56:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712584584; x=1713189384;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rmNJpHW5Hyb1elegWpLMoq/S1yVvTDK8DJLj5yKd5mI=;
-        b=GwrM8F65Y2l6ImNipl2RxaryE838bZQ4pNUw2Wrnl7DmSC/uGsFj1IY16ykwGgokCe
-         b8+slQRTje9d4xkx2vIsBiCJfrYa2N2mI+u/z01VI4aFyHn9tx6+arPItObUBqqi4j4C
-         bccuyfH4AfK8stDbdUvBQEgpZzHfCFvGM62p7+ivOAozgZqvnII4qNEt/KDq5CBFDmuk
-         kFRZzTlovEpM6SpSFTIaOTE6ACUhdS7TrUZ8FCCw0KeYXJsTRn84lKgrmRsFqkVchPyW
-         1uLZllm8aGwRzppWaGo0ksuC7OvlviG502hqYH1OKn7GRoRB1fO0sHgO0iPg6O4l3oF3
-         UTVA==
-X-Gm-Message-State: AOJu0Yye/eu6sWH5Pd7dbbqku26+WhX6rESTKdRZH7pOCC3IhOlbK/WU
-	HVM7pG/2Z67JP6YzhIGEDbhQ54aFnXCAxtjftVFmfr6/3qMS0feiBgnhpSPxEwx5dv2xh19bBFE
-	IGKtKS7lJpxwjrd8BRO+IbVR5k8HM2qPB/tu00MkJwbzyP7wsfbBYhDNTj0Tf1w==
-X-Received: by 2002:a05:6830:a5a:b0:6e7:592:87ab with SMTP id g26-20020a0568300a5a00b006e7059287abmr9702506otu.2.1712584583694;
-        Mon, 08 Apr 2024 06:56:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE/6cZVOu40ZE5XkeceEvB5GWIk5ESL9MdZGK/RmwIM5NG0Lyufyd1ejET8K1FRMeVweFzXgg==
-X-Received: by 2002:a05:6830:a5a:b0:6e7:592:87ab with SMTP id g26-20020a0568300a5a00b006e7059287abmr9702473otu.2.1712584583118;
-        Mon, 08 Apr 2024 06:56:23 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id vw25-20020a05620a565900b0078d63baf516sm1301217qkn.129.2024.04.08.06.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 06:56:22 -0700 (PDT)
-Date: Mon, 8 Apr 2024 09:56:20 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
-Message-ID: <ZhP3hDhe2Qwo9oCL@x1n>
-References: <20240405115815.3226315-1-pbonzini@redhat.com>
- <20240405115815.3226315-2-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA007EEF2;
+	Mon,  8 Apr 2024 13:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712584599; cv=fail; b=cnsALAd43vmuSgeIcCahl47UZa43BNcAMWPudHLktMNuX5iVoH5H+pEJKc8VU8EVpijwPnHnZ4dusogxlp0yPBhjnQ6Ut7wtUiu5qwlqsa8RoPOMaDfsRsmZEqL0TQ9++zME25CDqifaUgzpnxIAbBVIGFBCHoyydNIjZfnYWqM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712584599; c=relaxed/simple;
+	bh=gxVnXcu376VcyunHWBhMFIh2tXtG6YOp6B/A7J+6ZK8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mEgzCat3u/QsTwiKLncMgIOCtQpCayoYf4t0zDDlnuWqJz1Liu3aF5evaAABkkmSlDHRHV9Z9FdrVR6ijF9rrxG4MblY6zPxKaloXYWEtiClrTt7Bpey1zgHdG06/xOH+q1mDOflEeqgj7h7v2aO1VJCe6Tkb7/FZc67aKqEFvc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kJxljgJ2; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712584598; x=1744120598;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=gxVnXcu376VcyunHWBhMFIh2tXtG6YOp6B/A7J+6ZK8=;
+  b=kJxljgJ25QLQ9LI9//gxE/Tgkgj5IFLq4YkkRQGzAyfFoYttQZBeL1hy
+   BMOhjMovBVU4WqvIgHZnzyyPVxSBxxBK4waucILn8Q14tpqrXRatAapdW
+   FpWzTtyo4rVXHHb+WbRmgN2uLvHru+s+rXQowlzmBFoT1Oe0qVQz/RZQX
+   pb5AjE29lWl9+4PYOpgqU5F/A28VDqFf3d6qvUizmjmuLuba8ia0HSTS7
+   u8vJM1NeQBUOkDAyGMWx3vTi5dSJP1X9O3r1/uTzrlphOBn5JpMQybm42
+   ePghMhfxLqdQoxLW0izQ9My744KByGVSph8ITvdsCc9GOisCmsrtfm2MM
+   Q==;
+X-CSE-ConnectionGUID: atiUTno7QOWK/Ksxo1aeTQ==
+X-CSE-MsgGUID: VopUolHtQOiGlEmLyVzP/w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7770773"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="7770773"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 06:56:33 -0700
+X-CSE-ConnectionGUID: OUYD2HW4Ti+9dp5fTXuagA==
+X-CSE-MsgGUID: HdJ4vo81QFCZ9ApxKhJJJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="24666640"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Apr 2024 06:56:28 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Apr 2024 06:56:28 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Apr 2024 06:56:27 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 8 Apr 2024 06:56:27 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 8 Apr 2024 06:56:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MEtUjRFUJIzGKp11PATgOtena8w9Mp/V6zl25HrAlb5hIUrg/Xodyot7+SNBCREGOhOBqmp3iS3g8lpeCOdPshPN7niKH84Iobib4xqHyyx831w+5It4dA44KzRh+8bIbtxAlilybB1yj8iK1InGfph+5CwCy+0xMO22jyox5eA3sH4TKWh6ufHwHt97RdOmAMFeZy9ljvF4GE4iaC/c2YBhPenHtQMhOP0qaPh1Hegu1uEq7fGI9vjiykr/tqEb7OqUSb2ubNsHKpi3rdrR/Nty6KcHStwjSLcR3ujEijKKn6Q7bAKk5xEIT8MaH4B6yurAbZb5HHOp/+Fldwr70A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jdX8ezm4O0NdC40qsvz4e5ZkqRvSj5XAxKo4I8CzcMk=;
+ b=FkmGT8cxjNaF0Di+AYagVvnsnTVGWFGgzD+RTNLiTu0xJ2Jk9pYaYRtSCWZ/VV4RGVh8G7vKXrvRRVADY2BM9R623w01113EGthWlza/mkbJ8Z4YiKbCyeGo7J5ixGgAXSe7TZTKFhXpyD/3gEcJrHVp/ZgNk6wBeJq0wOk/v7VYHVRiasxr/CFfIYUVzjwKXu0Xeaexy1xNQ5Bvs3YoGM1t1eL7GIIdvDCagWOs2iIdajFwtqY/kGDQFgkGfy9yd1ywpIXbZxBN4YATPrlAXJWfUU6+JmYcevDd2OcBsRDnlEnb1gfbk3vnTWiZcsQJcaEcf1DkOLLzVpgU89SMSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB6375.namprd11.prod.outlook.com (2603:10b6:8:c9::21) by
+ MW3PR11MB4746.namprd11.prod.outlook.com (2603:10b6:303:5f::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.26; Mon, 8 Apr 2024 13:56:26 +0000
+Received: from DS0PR11MB6375.namprd11.prod.outlook.com
+ ([fe80::cb11:e68c:53db:aba5]) by DS0PR11MB6375.namprd11.prod.outlook.com
+ ([fe80::cb11:e68c:53db:aba5%7]) with mapi id 15.20.7452.019; Mon, 8 Apr 2024
+ 13:56:26 +0000
+Message-ID: <ef3dfc2a-fe7d-468f-828e-a97ee30f7549@intel.com>
+Date: Mon, 8 Apr 2024 15:56:21 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the sound-asoc tree
+To: Mark Brown <broonie@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>, Linux Next Mailing List
+	<linux-next@vger.kernel.org>, =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+	<amadeuszx.slawinski@linux.intel.com>, <linux-sound@vger.kernel.org>
+References: <20240408141216.3eb1128c@canb.auug.org.au>
+ <ccfe882c-652d-45d2-a9e3-d320ebe01834@sirena.org.uk>
+Content-Language: en-US
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <ccfe882c-652d-45d2-a9e3-d320ebe01834@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DUZPR01CA0177.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4b3::26) To DS0PR11MB6375.namprd11.prod.outlook.com
+ (2603:10b6:8:c9::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240405115815.3226315-2-pbonzini@redhat.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB6375:EE_|MW3PR11MB4746:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KJx5RUmEUiZATuCm4+BSvFKkQAQ3lZ2TFBbiTa2QR/5l5wqnljtRurenv7cqKadtuWUlkUcRZxP1Mj6+pEV6LRR1YExlxRQLhfptUsoLVgv9tZXTXjog+9jNclSvovgyhGjvaKEfwi21J3t7pvzy6pIGrV5xildiz+hqihtZU9US804XxAOH8+dR6GnPz3jEjkFgji3bEQ47ZOCIWjGNR57Od/sYX3gVaYnhqgiuRo7pU7fOyweHeIKhSTahtHwShvBXGpFzFA4z4kSFDsDRWLiQ05lcgAUKiAKgnQxQeIlL4RIxV2rO9WG9jcsZB9ozJ7MCKv8LalAHuufT4S8NBniT+lnia+e06QCfgtTp8mzqQmgax3PVtsC8wYV2D0ZxnZGhIvHmR4kdViIdwh5g7ennbqBT26aNM5Ti/JG7njAK2kILT/1QxoCUBLy8jew38vwPYKaGb9HwEw5N25k1y8mPNLWXtpwcs9IZ7/ZEYvhd4LlP+Is4wRWqfreeK3mSFmmYVr4LgRLXKyfFRoBwxOmWVSP/HzUEndLrhy4223ZXl5t3HxN/9m3SXWGG3qriL7Ty6i4RdIbW6k+zcasmS6ZePuieWjzn3WjfqGXYboI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6375.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFdrSFlOQmNLMlV3d3JrL2NoOXJsYTZ5YUJvR2Z5dFFHb21NcFl1SFlDZHhx?=
+ =?utf-8?B?VUFQd0VtZ3VLVFhOcHh2ZnRsc1pjaDhpR0kzYUxyZzVKRHpxN3VIK0NuMEQz?=
+ =?utf-8?B?ZjRucHRBeEhJR3l6ZEJySXhVNlRNcEYxenEzT2x5WGRlb2dYS21PcGlsRmZq?=
+ =?utf-8?B?bVVJUDZZemgvc1liWEQxSkl3RU5udEZzM09PNnpPeUtXaDV2cXRheHBiKzBu?=
+ =?utf-8?B?VmZQSW9mZHFSUzBRK3JXVjhoT1dQbWpsc2VsMlJvUFYyQXV1U3JFRjhoWGl2?=
+ =?utf-8?B?TXQ3VXlZMzlvaWQ1ZFM3by91SlhuRjY5WVhhSzNlVnE1SzhreGdhS1huY0R2?=
+ =?utf-8?B?T01ZSEFIdkRsSVdGZzBRa0ZvcSthbWZpR3F2enBJdjBjSjBrZTdOWXJ3YkZ0?=
+ =?utf-8?B?QWtGUElwZjJuZUZGQTFzTm93SHhWK2laQnVJT1lNU0ZTZE0xYXNlRDRvVTZH?=
+ =?utf-8?B?cUk0QnNpVUJrRE9WWmdENmtVeHlCdmVKWUpuYTdrc0tUc1JRd3pTSlRzRlZ6?=
+ =?utf-8?B?dW5SOUFBYlNWZXZNYldGaDBXM2pPbjlrWmg5ZldNbmJsTHhQdDgxdU91STA3?=
+ =?utf-8?B?VWJQM2xFYTQybk94R2crdDFNVVVIS2k5N3k2NjhQREowcVh4bEYvaHA2aXVi?=
+ =?utf-8?B?TWNKb0FhTVZZZ3ZMc0hyc3RkOWNLUDdZNE41S0liVWI5dGV2M3YwVnZBQTZh?=
+ =?utf-8?B?OWw2VE8wTmZEcGh5dExDSWxkeGJEaGJGRENHK3NrU0tiZk9YY2JKaXpUemFr?=
+ =?utf-8?B?VUlmTjdUR0wzMUhDclhicjNUSHlmaTJZcVhnZGRhQ3krMUpadW1NOUJrUWRF?=
+ =?utf-8?B?aVNJNnpQaHNieHJ2bXM2d2NLVGhOTWJzUlF4cjVQMmhWNUdNU2hZeGpZU1FD?=
+ =?utf-8?B?VlcwZ2dVNjVxVWlCRXA1Sm8vU0NsUi94YzJ3alFkNWx2VE1oZVJEQi85MnBF?=
+ =?utf-8?B?b0RUYVhjYW5NYmhCZE95bjJxVk94dlAzNkNZR1NHdFFXZTVRcTZFWkdET1d6?=
+ =?utf-8?B?dldwTVFFcm43T2VYc3VyNWlPT2djQTNOZmFDRWtaMVYyZzR4dmxFVk5vQ0pB?=
+ =?utf-8?B?d1V3cUxtOGd1eWk5U21tVUZBcW5rK0pvN1hwRkxGbGRiajErTmVDakVxMEh6?=
+ =?utf-8?B?ZVVKY3lvamdLYW5pNzhVVUwrN1JqbzB3ZU9RMVJOVDJaOVpMLzcyY2Nkanhr?=
+ =?utf-8?B?WXFGcnY5VVA1WTMybWVFc25NS3h5SXE3eVNlenkwR0k1REZWdW5YNHI4Y1d2?=
+ =?utf-8?B?TXpnL2F6cGhaYWhxcUtSa2JXbkplTmZzUmpUcjcza1d3N2dHV1ltcFJCT3NB?=
+ =?utf-8?B?MHhoclNHMzRWRHRmU2pob3FZTHE2cTR3MndHWVBBMmFUZ1JaYS9hblZGSTVX?=
+ =?utf-8?B?YUNwMTlwQmlWdnBiM2lLTWhmczU5YjlKTGI1QStHVldUMXpOSGpqZU1uSnMx?=
+ =?utf-8?B?OGlDQ0kwMGdZUFhXZktiTXJtOU5MSGdUQWxhUmVXRG9mTHlyckh4QTNEaXVn?=
+ =?utf-8?B?ZkpqbHByUDI2SFplZGNCSjRUL040cS9jK0xscE45UjlDOEFBOGM0bVFNc3hv?=
+ =?utf-8?B?OFBsU0pwYkdMS0RhL2I4Q1lHcGJYdHpmSjcveHNJNTMvSWhpT1pqdXNPNDRD?=
+ =?utf-8?B?WTZPUGJaVE95SGNKVzhCQ2hpSUhYY3Q3cStUMVdEZDVCUHRLUmM0TWNxbzR5?=
+ =?utf-8?B?eW1OTjRCazdBekJ6ZXUwWm80cUswNmc3aGFRSm5zTXFBL0UyU3IyNUQ5V1pj?=
+ =?utf-8?B?MXlZTVpZODB5SGxtUHBkRXhsN0t6dU9Xd1hhQnM2dVBKME5ZUHd1MjBZUkZB?=
+ =?utf-8?B?U3dROEJrMVBTSzlnaHBnTlVkS0VkcUlPTGd6YzFmTmJiSHR3aE9HVjBKVWFn?=
+ =?utf-8?B?bEhGcnora2UwcERpcHdPN1VXZFpLZjdUSnNYaTVJS3R4cDZNYkxQMDY2UnhU?=
+ =?utf-8?B?aDJkSnhNSWJDOW4yajUrKzJpYXVaUkEzdFN3eFQ5Q0RtVFA5Q3dGQWVRd0lS?=
+ =?utf-8?B?UmU1alRmMFJPOW9QZ0dFSytKZ285OEZScG5ad1QvL1V1a01XbnFOTmNTaDZh?=
+ =?utf-8?B?ZnBpbldPajZ3UGJPajdjcUYycE5pTXdiQzkwNjdEcS9vWGkwMm14Z0ZUbmhG?=
+ =?utf-8?B?M1JLVEs5ZTBSRzdNZXZRVW9wZE0yZ3JNTXlkRTNLZU9RQ0xSdjMyZkVZdGp2?=
+ =?utf-8?B?VGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14a530dc-ae58-4f89-0f3a-08dc57d3ae9a
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6375.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 13:56:26.0794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gCM2h5akEjKxjPzqjuorgoI1RecSxbqgFUEDzL4tCy/Ufs31Jgtf7+dJxQrV/unzAzMn1rM8ikA5QyjPhoHiFhJyLasBIBBiE2NRMPJZI7c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4746
+X-OriginatorOrg: intel.com
 
-On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
-> The .change_pte() MMU notifier callback was intended as an
-> optimization. The original point of it was that KSM could tell KVM to flip
-> its secondary PTE to a new location without having to first zap it. At
-> the time there was also an .invalidate_page() callback; both of them were
-> *not* bracketed by calls to mmu_notifier_invalidate_range_{start,end}(),
-> and .invalidate_page() also doubled as a fallback implementation of
-> .change_pte().
+On 2024-04-08 2:28 PM, Mark Brown wrote:
+> On Mon, Apr 08, 2024 at 02:12:16PM +1000, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> After merging the sound-asoc tree, today's linux-next build (powerpc
+>> allyesconfig) failed like this:
 > 
-> Later on, however, both callbacks were changed to occur within an
-> invalidate_range_start/end() block.
+> Copying in Amadeusz and Cezary, this is from the recent AVS changes.
+
+Hello Mark,
+
+Sorry for the trouble caused by one of my changes. I've replied earlier 
+today in this very topic and provided a patch [1] which I believe 
+addresses the problem properly.
+
+
+[1]: 
+https://lore.kernel.org/alsa-devel/20240408081840.1319431-1-cezary.rojewski@intel.com/
+
+>>
+>> In file included from include/linux/bits.h:22,
+>>                   from include/linux/gfp_types.h:5,
+>>                   from include/linux/gfp.h:5,
+>>                   from include/linux/slab.h:16,
+>>                   from sound/soc/intel/avs/icl.c:9:
+>> include/linux/build_bug.h:78:41: error: static assertion failed: "sizeof(struct avs_icl_memwnd2) == 65536"
+>>     78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>>        |                                         ^~~~~~~~~~~~~~
+>> include/linux/build_bug.h:77:34: note: in expansion of macro '__static_assert'
+>>     77 | #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+>>        |                                  ^~~~~~~~~~~~~~~
+>> sound/soc/intel/avs/icl.c:73:1: note: in expansion of macro 'static_assert'
+>>     73 | static_assert(sizeof(struct avs_icl_memwnd2) == 65536);
+>>        | ^~~~~~~~~~~~~
+>>
+>> Caused by commit
+>>
+>>    c2b10acb62c1 ("ASoC: Intel: avs: Add assert_static to guarantee ABI sizes")
+>>
+>> PAGE_SIZE is 64K for this build.
+>>
+>> I have applied this patch for today:
+>>
+>> From: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Date: Mon, 8 Apr 2024 13:50:53 +1000
+>> Subject: [PATCH] ASoC: Intel: avs: stop building when PAGE_SIZE == 64K
+>>
+>> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> ---
+>>   sound/soc/intel/Kconfig | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>> index 4b9e498e3303..abe5cba82d50 100644
+>> --- a/sound/soc/intel/Kconfig
+>> +++ b/sound/soc/intel/Kconfig
+>> @@ -211,7 +211,7 @@ config SND_SOC_INTEL_KEEMBAY
+>>   
+>>   config SND_SOC_INTEL_AVS
+>>   	tristate "Intel AVS driver"
+>> -	depends on X86 || COMPILE_TEST
+>> +	depends on X86
+>>   	depends on PCI
+>>   	depends on COMMON_CLK
+>>   	select SND_SOC_ACPI if ACPI
+>> -- 
+>> 2.43.0
+>>
+>> -- 
+>> Cheers,
+>> Stephen Rothwell
 > 
-> In the case of .change_pte(), commit 6bdb913f0a70 ("mm: wrap calls to
-> set_pte_at_notify with invalidate_range_start and invalidate_range_end",
-> 2012-10-09) did so to remove the fallback from .invalidate_page() to
-> .change_pte() and allow sleepable .invalidate_page() hooks.
 > 
-> This however made KVM's usage of the .change_pte() callback completely
-> moot, because KVM unmaps the sPTEs during .invalidate_range_start()
-> and therefore .change_pte() has no hope of finding a sPTE to change.
-> Drop the generic KVM code that dispatches to kvm_set_spte_gfn(), as
-> well as all the architecture specific implementations.
-
-Paolo,
-
-I may miss a bunch of details here (as I still remember some change_pte
-patches previously on the list..), however not sure whether we considered
-enable it?  Asked because I remember Andrea used to have a custom tree
-maintaining that part:
-
-https://github.com/aagit/aa/commit/c761078df7a77d13ddfaeebe56a0f4bc128b1968
-
-Maybe it can't be enabled for some reason that I overlooked in the current
-tree, or we just decided to not to?
-
-Thanks,
-
--- 
-Peter Xu
-
 
