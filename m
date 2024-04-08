@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-135710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555AA89CA12
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:50:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D38CC89CA11
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C13B11F24AEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:50:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 325C4B22921
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F4F14389F;
-	Mon,  8 Apr 2024 16:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F0D143860;
+	Mon,  8 Apr 2024 16:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="P/X2l2Dg"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Mbjhu4jU"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367C71428F0;
-	Mon,  8 Apr 2024 16:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4BE1428F7;
+	Mon,  8 Apr 2024 16:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712595002; cv=none; b=UVK5YMGX3Zd0IRnqO/KWLe1fxLSIYYKihiTvWm7zqXT8khyg73p4u2yg73Hjuv++UrpiIoNtCQM4/M6Vsh0rmwcTcZDpCPBGsanntdgYw53hZXb8IBOE0dQc8vlcfKIHdk2kVLJwOgOnUFZUoNQiq41+DXDmWcAKkpK1xr6tsIc=
+	t=1712595001; cv=none; b=amN41hCq9QE1549vGhjMYUjrZFam/j7nD+YN/0T8/9ck9t+ouIvAkfMZscsEkpFeFTKcA02PvYjZDL83EiX50//6/dR3VMNiNJzTirNluBheEE0oyNvu5aBdC6CHrWYRb7SxwP2bCSPncU4vmoRXwEICDKSA+QLaZZC5AD6pCY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712595002; c=relaxed/simple;
-	bh=QKH1ON0bxcHkXbRpGU4bmgzSL8gJjDeEiyMA1QKf7Xk=;
+	s=arc-20240116; t=1712595001; c=relaxed/simple;
+	bh=33ya6iAIdhOO+qGkv/GeYEfF192TQ7WZCShCQ0XLBNo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f7+Uf6UjZ6jgsjjS2pZldDFOxa0ZkT0cfqaLKCrna+Hg0/wSMwC2hXih3fQuA1O4d1RxF6H4pxADsOeSt0ssGMt36CbAG+s5+KKjbx8RAqpVJ66MMp1g83ibBcxLyF7C94MYkPo3k8KjFBY9jvVmWJqnVY9LK8fPJtkRp5/epzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=P/X2l2Dg; arc=none smtp.client-ip=37.18.73.165
+	 MIME-Version:Content-Type; b=k7Q96WkUhICVga2E3pigWA1j63+RUvLkjoglR+f4VyxOA0C7/Lk83QHy3YDwv5aBQPWYXPkbrh0YzcW7DPhOSJND0kwEdNPJJ9sBNyWR2k2tDVivna8g0IYqgJM4vS04RAZgHlalFN9rO6Tl2Rn+SH9eKVwd+lmr2qx0q0XQbcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Mbjhu4jU; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id CD7DD100027;
-	Mon,  8 Apr 2024 19:49:55 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CD7DD100027
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id AD415120027;
+	Mon,  8 Apr 2024 19:49:56 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AD415120027
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712594995;
-	bh=/k8oBX6LrTtamgxdFTlC/Khi9/j8G6LrxK0Q4+GixUc=;
+	s=mail; t=1712594996;
+	bh=HZCeDqOWZRFrRmmJb31Zwudz+k5V9qwLfzuWrQFrCr0=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=P/X2l2DgSy/l5PSnTMgr3YxQ9Tj6HBn4l9rx9Znme8zTvTEfZ/fQRmancWaSoR9Cj
-	 QAFWB6KaAnLnc38YYGAnzYskuXTZTQb+J7fJccRbXXv5XbJ21LH25sVVAtMm97YAq1
-	 6tdMirSaZfS0NNNexJQOvjo9TSe6qAEaFp7gXDa6P//C7jkNmqDgm42/sqnbUZB9ND
-	 44YM2FUOjFsPFRLdRiGvfPCKWaIcnXdw1+Qm9CvYAUSFOhDu9xlQXgyq4uKB6JBQNR
-	 umkfUdHffw8tHagODAgM8B+zYh/Vq0VH0L3vwGZG2qttcyIt+gxPBc4/aDtWNCDcCq
-	 in1K4+BLhB+Yg==
+	b=Mbjhu4jURZzp+med9MOYEhZqXIgEyuvptRXXUaggCCEGe0qvFQqtxIECPMCb09o4e
+	 9U+RLqL4qYCNn5WhVgap/l44esWXeH78j+mYbOz68RQ/ty1a9IVMOSnflfPJhuiMUH
+	 USz3kmZn5u++K7n//jZRMP27/O+bEQHRQI56/FB86sk6gOmkichtCluqUd89Xsy59p
+	 OwQJIP/K5BoU4biD4gdHOxLYzSvewd+E5QbMu+3M+cxoHVZg1q3AR3FCh5izEt4dss
+	 mplv84t39KGU4/ZQIK1PKZFy9sA2b0iRa2Wp9eHlMcJfD3VsesvN70pEe5X3O5yQyt
+	 odkf53me/OI+A==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  8 Apr 2024 19:49:55 +0300 (MSK)
+	Mon,  8 Apr 2024 19:49:56 +0300 (MSK)
 Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Apr 2024 19:49:55 +0300
+ 15.2.1118.40; Mon, 8 Apr 2024 19:49:56 +0300
 From: Dmitry Rokosov <ddrokosov@salutedevices.com>
 To: <neil.armstrong@linaro.org>, <lgirdwood@gmail.com>,
 	<jbrunet@baylibre.com>, <broonie@kernel.org>, <conor+dt@kernel.org>,
@@ -64,9 +64,9 @@ CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
 	<linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v1 1/2] ASoC: dt-bindings: meson: introduce link-name optional property
-Date: Mon, 8 Apr 2024 19:49:39 +0300
-Message-ID: <20240408164947.30717-2-ddrokosov@salutedevices.com>
+Subject: [PATCH v1 2/2] ASoC: meson: implement link-name optional property in meson card utils
+Date: Mon, 8 Apr 2024 19:49:40 +0300
+Message-ID: <20240408164947.30717-3-ddrokosov@salutedevices.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240408164947.30717-1-ddrokosov@salutedevices.com>
 References: <20240408164947.30717-1-ddrokosov@salutedevices.com>
@@ -89,7 +89,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -97,11 +97,11 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/08 12:02:00 #24709100
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-The 'link-name' property is an optional DT property that allows for the
-customization of the name associated with the DAI link and PCM stream.
-This functionality mirrors the approach commonly utilized in Qualcomm
-audio cards, providing flexibility in DAI naming conventions for
-improved system integration and userspace experience.
+The 'link-name' property presents an optional DT feature that empowers
+users to customize the name associated with the DAI link and PCM stream.
+This functionality reflects the approach often employed in Qualcomm
+audio cards, providing enhanced flexibility in DAI naming conventions
+for improved system integration and userspace experience.
 
 It allows userspace program to easy determine PCM stream purpose, e.g.:
     ~ # cat /proc/asound/pcm
@@ -109,60 +109,37 @@ It allows userspace program to easy determine PCM stream purpose, e.g.:
     00-01: mics (*) :  : capture 1
     00-02: loopback (*) :  : capture 1
 
+The previous naming approach using auto-generated fe or be strings
+continues to be utilized as a fallback.
+
 Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 ---
- .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml   | 6 ++++++
- .../devicetree/bindings/sound/amlogic,gx-sound-card.yaml    | 6 ++++++
- 2 files changed, 12 insertions(+)
+ sound/soc/meson/meson-card-utils.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-index 492b41cc8ccd..46774a3e4b1d 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-@@ -66,6 +66,11 @@ patternProperties:
-         maxItems: 1
-         description: phandle of the CPU DAI
- 
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
+diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
+index ed6c7e2f609c..7bae72905a9b 100644
+--- a/sound/soc/meson/meson-card-utils.c
++++ b/sound/soc/meson/meson-card-utils.c
+@@ -94,10 +94,14 @@ static int meson_card_set_link_name(struct snd_soc_card *card,
+ 				    struct device_node *node,
+ 				    const char *prefix)
+ {
+-	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
+-				    prefix, node->full_name);
+-	if (!name)
+-		return -ENOMEM;
++	const char *name;
 +
-     patternProperties:
-       "^dai-tdm-slot-(t|r)x-mask-[0-3]$":
-         $ref: /schemas/types.yaml#/definitions/uint32-array
-@@ -137,6 +142,7 @@ examples:
++	if (of_property_read_string(node, "link-name", &name)) {
++		name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
++				      prefix, node->full_name);
++		if (!name)
++			return -ENOMEM;
++	}
  
-         dai-link-0 {
-             sound-dai = <&frddr_a>;
-+            link-name = "speaker";
-         };
- 
-         dai-link-1 {
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-index d4277d342e69..975c148f9712 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-@@ -52,6 +52,11 @@ patternProperties:
-         maxItems: 1
-         description: phandle of the CPU DAI
- 
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
-+
-     patternProperties:
-       "^codec(-[0-9]+)?$":
-         type: object
-@@ -89,6 +94,7 @@ examples:
- 
-         dai-link-0 {
-                sound-dai = <&i2s_fifo>;
-+               link-name = "speaker";
-         };
- 
-         dai-link-1 {
+ 	link->name = name;
+ 	link->stream_name = name;
 -- 
 2.43.0
 
