@@ -1,55 +1,68 @@
-Return-Path: <linux-kernel+bounces-135885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635CA89CC9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:48:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D5189CCA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96C061C21931
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:48:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE75281D08
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44312146583;
-	Mon,  8 Apr 2024 19:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B011465BC;
+	Mon,  8 Apr 2024 19:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LoYOqUDb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWH+cejr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805291DDD6;
-	Mon,  8 Apr 2024 19:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C187146595;
+	Mon,  8 Apr 2024 19:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712605708; cv=none; b=boCI0uP/AYOGPftGt0kfjVl3bc5FmtVFjFW2YicNwm8T+sOg8KEddR/auj/90LyAuZs/ZTexORI6zEEDYOO9+JShLcP8TEpoSF5jvsmIhtpkiF8t7elPvbNwmfeabDMhZ/lM1+AzisvLwBEEiLTk7JcQnDVL5E424Ta7BkMC7mU=
+	t=1712605719; cv=none; b=gJUUgdUfADUifutrlqwMcHNagTmBhLpUIDOI84B1PV3y4NUCTzR6Bmf8MAQYHFXkHseX7olVu6TL8r+eUTgUqZtub6T6pTr5wJiX5EgHpOSL1X+DJE82hue0tUaCVWzsoR2drIefW84RJdQYeMob+vI2h6h9YkjvbjkIlfW5Iwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712605708; c=relaxed/simple;
-	bh=G1yDRw2cGcmj3SgEMjIktGBqnDyqi9a//n2mgyTtQas=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jGMMu/Te6RlFH6DlzKnFp+4jBkuJBE6G8TUpooJ4WTv+w55d6eY7vggwY5M9bsHSR3+ly5aqw/2Cap8VbSdwwV+RJJ3sjiRa+fCofF+14Wnsb/6pNluFPVRFGwQPBDv6PPoJcwVi+n0J2PzR6+tRF1DRAOBfPv31w8Esy74Ht14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LoYOqUDb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EF7C433F1;
-	Mon,  8 Apr 2024 19:48:26 +0000 (UTC)
+	s=arc-20240116; t=1712605719; c=relaxed/simple;
+	bh=CslybNzY6McotszEiRDesoqYQQUvU/zYFyq3VeTUCCs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=rHm1yU9z313IChOR3xzplfakG5JoM6y4eR2ek7v7V4nGf9RH5uAJoLV6vs2pAgmYcrxJ6RFoQoaJdvFCJ5jJVQhuWMsU+kYfoQLLU67raOA9uN9Z/fsDheSkFUjfn9QVPFmcKr+scx41wUs5Hb6N3um2P/jdHMouHqaJHqp39Ps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWH+cejr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B726C433F1;
+	Mon,  8 Apr 2024 19:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712605708;
-	bh=G1yDRw2cGcmj3SgEMjIktGBqnDyqi9a//n2mgyTtQas=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LoYOqUDbfx1xNFCsNMnAFyBW96z8s8aBHRpiKE2MwIdZyw6jMXosGQ+fVQEDy6sRj
-	 uroHu3rW3pEwcvDWmlJjMCmZIyp4pZVzH2iw4fVwuxmi9nRsBc2MqO6laPdXc4LD1M
-	 0cCZpL9XRETSJqbgJn5cNE4JNzboilMYcoAsMal8eIwNIjSqKPzObQRBl3B3peq7HT
-	 RRXpwMMCmOZWFYyZamj/ws24MsbmcwGOCHDaNDCMZf4RZOqdRgsnpIFl5CsQD7vfj7
-	 H44E3xqbMumPYnARc0enRqbIom3jzT+btTdZNRnlOS6qzG+r8MMS2elFN1yxk6lT/p
-	 oripfHjywJsmA==
+	s=k20201202; t=1712605718;
+	bh=CslybNzY6McotszEiRDesoqYQQUvU/zYFyq3VeTUCCs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eWH+cejr3PKPTR9GLjP5NsIiQfZQmb+hbRJcqcbielxZh0LpNgtB0ybhKjgCjb+UL
+	 3saf8CT5L32i8qv6Vxyz2pJk/2qqPh0FTrDZNcVnhZBmPxf72jmo+XJh2rjcpkLYLX
+	 yPztgBTGpA978M+O05O7WzW1Al9G7N01TPoY8EgBkkjBQBadXk5rhsQBs1KAILrYhI
+	 D6GxqZUb3rH4Z7WLFzHgzvduNm90gFcY1WfGINlpRhFZUL0IUbP6LuZWSEezX++/Ws
+	 88RYonKxwTS4GKZvpPGTIG56zWnagW+1whUG5HMaDA9J5lDW3TguXymTIR6/pbmXqw
+	 v4Y6qoQCy+Rdw==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nathan Chancellor <nathan@kernel.org>
 Cc: Justin Stitt <justinstitt@google.com>,
 	Dan Carpenter <dan.carpenter@linaro.org>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Franziska Naepelt <franziska.naepelt@googlemail.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Aloka Dixit <quic_alokad@quicinc.com>,
+	Erick Archer <erick.archer@gmx.com>,
+	Yang Yingliang <yangyingliang@huawei.com>,
 	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] [v2] staging: rts5208: replace weird strncpy() with memcpy()
-Date: Mon,  8 Apr 2024 21:48:09 +0200
-Message-Id: <20240408194821.3183462-1-arnd@kernel.org>
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH 2/3] [v2] staging: rtl8723bs: convert strncpy to strscpy
+Date: Mon,  8 Apr 2024 21:48:10 +0200
+Message-Id: <20240408194821.3183462-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240408194821.3183462-1-arnd@kernel.org>
+References: <20240408194821.3183462-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,64 +73,70 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When -Wstringop-truncation is enabled, gcc finds a function that
-always does a short copy:
+gcc-9 complains about a possibly unterminated string in the strncpy() destination:
 
-In function 'inquiry',
-    inlined from 'rtsx_scsi_handler' at drivers/staging/rts5208/rtsx_scsi.c:3210:12:
-drivers/staging/rts5208/rtsx_scsi.c:526:17: error: 'strncpy' output truncated copying between 1 and 28 bytes from a string of length 28 [-Werror=stringop-truncation]
-  526 |                 strncpy(buf + 8, inquiry_string, sendbytes - 8);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'rtw_cfg80211_add_monitor_if',
+    inlined from 'cfg80211_rtw_add_virtual_intf' at drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2209:9:
+drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2146:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
+ 2146 |  strncpy(mon_ndev->name, name, IFNAMSIZ);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The code originally had a memcpy() that would overread the source string,
-and commit 88a5b39b69ab ("staging/rts5208: Fix read overflow in memcpy")
-fixed this but introduced the warning about truncation in the process.
+This one is a false-positive because of the explicit termination in the following
+line, and recent versions of clang and gcc no longer warn about this.
 
-As Dan points out, the final space in the inquiry_string always gets
-cut off, so remove it here for clarity, leaving exactly the 28 non-NUL
-characters that can get copied into the output. In the 'pro_formatter_flag'
-this is followed by another 20 bytes from the 'formatter_inquiry_str'
-array, but there the output never contains a NUL-termination, and the
-length is known, so memcpy() is the more logical choice.
+Interestingly, the other strncpy() in this file is missing a termination but
+does not produce a warning, possibly because of the type confusion and the
+cast between u8 and char.
 
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/lkml/695be581-548f-4e5e-a211-5f3b95568e77@moroto.mountain/
+Change both strncpy() instances to strscpy(), which avoids the warning as well
+as the possibly missing termination. No additional padding is needed here.
+
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: remove unneeded space byte from input string for clarity,
-    rework changelog text
+v2:
+  use the two-argument version of strscpy(), which is simpler for the constant
+  size destination. Add the third instance in this driver as well.
 ---
- drivers/staging/rts5208/rtsx_scsi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 5 ++---
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c       | 2 +-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-index 08bd768ad34d..c27cffb9ad8f 100644
---- a/drivers/staging/rts5208/rtsx_scsi.c
-+++ b/drivers/staging/rts5208/rtsx_scsi.c
-@@ -463,10 +463,10 @@ static unsigned char formatter_inquiry_str[20] = {
- static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- {
- 	unsigned int lun = SCSI_LUN(srb);
--	char *inquiry_default = (char *)"Generic-xD/SD/M.S.      1.00 ";
--	char *inquiry_sdms =    (char *)"Generic-SD/MemoryStick  1.00 ";
--	char *inquiry_sd =      (char *)"Generic-SD/MMC          1.00 ";
--	char *inquiry_ms =      (char *)"Generic-MemoryStick     1.00 ";
-+	char *inquiry_default = (char *)"Generic-xD/SD/M.S.      1.00";
-+	char *inquiry_sdms =    (char *)"Generic-SD/MemoryStick  1.00";
-+	char *inquiry_sd =      (char *)"Generic-SD/MMC          1.00";
-+	char *inquiry_ms =      (char *)"Generic-MemoryStick     1.00";
- 	char *inquiry_string;
- 	unsigned char sendbytes;
- 	unsigned char *buf;
-@@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 65a450fcdce7..3fe27ee75b47 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -884,7 +884,7 @@ static int cfg80211_rtw_add_key(struct wiphy *wiphy, struct net_device *ndev,
+ 		goto addkey_end;
+ 	}
  
- 	if (sendbytes > 8) {
- 		memcpy(buf, inquiry_buf, 8);
--		strncpy(buf + 8, inquiry_string, sendbytes - 8);
-+		memcpy(buf + 8, inquiry_string, min(sendbytes, 36) - 8);
- 		if (pro_formatter_flag) {
- 			/* Additional Length */
- 			buf[4] = 0x33;
+-	strncpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
++	strscpy(param->u.crypt.alg, alg_name);
+ 
+ 	if (!mac_addr || is_broadcast_ether_addr(mac_addr))
+ 		param->u.crypt.set_tx = 0; /* for wpa/wpa2 group key */
+@@ -2143,8 +2143,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+ 	}
+ 
+ 	mon_ndev->type = ARPHRD_IEEE80211_RADIOTAP;
+-	strncpy(mon_ndev->name, name, IFNAMSIZ);
+-	mon_ndev->name[IFNAMSIZ - 1] = 0;
++	strscpy(mon_ndev->name, name);
+ 	mon_ndev->needs_free_netdev = true;
+ 	mon_ndev->priv_destructor = rtw_ndev_destructor;
+ 
+diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+index 68bba3c0e757..55d0140cd543 100644
+--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
++++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+@@ -415,7 +415,7 @@ static int rtw_ndev_init(struct net_device *dev)
+ 	struct adapter *adapter = rtw_netdev_priv(dev);
+ 
+ 	netdev_dbg(dev, FUNC_ADPT_FMT "\n", FUNC_ADPT_ARG(adapter));
+-	strncpy(adapter->old_ifname, dev->name, IFNAMSIZ);
++	strscpy(adapter->old_ifname, dev->name);
+ 
+ 	return 0;
+ }
 -- 
 2.39.2
 
