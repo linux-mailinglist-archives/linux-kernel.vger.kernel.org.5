@@ -1,107 +1,167 @@
-Return-Path: <linux-kernel+bounces-135345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C4C89BF47
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:45:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EADA689BF4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5031F21284
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:45:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5531C2302E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554F96F061;
-	Mon,  8 Apr 2024 12:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D605678286;
+	Mon,  8 Apr 2024 12:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="foj/BEl8"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hlbGNp/f"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4556A348
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6F07BAF7
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580186; cv=none; b=GoUy+D/SoYFkkgBQfcGRr440fSEQ9qtXxQA5/Qjp8KmxF2lU+w76w3x4OfUqY6JiUCyzabe/VGxuVYdxSvyOkEJriYE9tk1A9g9W5tQJmZCir5xB4daRh24KUnRdioU44hPNcc3erWCA3YlhmK9IV+m5dxkYr9PLzzD8meZHfAY=
+	t=1712580215; cv=none; b=TQf2NKnfQABXzyvvJV05kCGBh/lPUc5eL1DsuRYHLwp9ievENlYju53d7e3B4QrEm3CO1oSKX8lTg4Za1BUcLoLXFAFxrkrwX1Ve6QA/wfuW7Jxo+53Vpg/GGeTLRl+e7IpkIwWdpa8tyILAzhXRd2GPngl96bfPyElvdb3LEg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580186; c=relaxed/simple;
-	bh=bj+zCFiaSngsf1RnmUNrOHE0R/4I7AH4K4X2+QbvPnA=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=llK+rWznzHQ+t6wGafj4l/QnQvHKnklbzzekJ5hJbLBfCBySz2opj3gD4nn9yLLvqLvygBxj/fhKHnjoOQlC6PmOobowpmjhjE20/5M+XPxEXFLXoNnVgvqEEvKDCJWCYJcOzLU6K6H/U/ooOMCBLqWDDt2zfvEKMxLH5MNnP18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=foj/BEl8; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51d05c50b2so149481866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 05:43:04 -0700 (PDT)
+	s=arc-20240116; t=1712580215; c=relaxed/simple;
+	bh=fKehCiClD9dg01VzoXzMKEtrJs4OUkNg+PrGr3/Dtj4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mAfkD8K3Q62Fu5314OJvYbJ0iq3BT+GYVdhVHGcf8fjlLsvmRQynqsePGrnY9HfTMf+l+QSp4BD/DqPaoamGcN9uArMzn1ut53+fW4gLPsEho4yV3RffgUwgCB0jXLA+pMmOv8NOFeTg7z8lGAZ3YzOECK6dDYLMQziSv+EyghE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hlbGNp/f; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso5026879276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 05:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712580183; x=1713184983; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bj+zCFiaSngsf1RnmUNrOHE0R/4I7AH4K4X2+QbvPnA=;
-        b=foj/BEl8mHLsFcxY/4hSaHE9Z0jZARB2tEr+pyWbtIJzZll6jgyar4fp/dtIubnUFl
-         pZsfy/2FTWZ2hXEWkUsRazxX5YgjS9ejzO3ggVcjbu3WpQJI9jG6gGJUkyp+NcVSl7gI
-         wIVEukPyCjfU0pGJ5IvrAAnIlzsfhDw4xjF+ceEIaDqh0m3PQbyOBLrjFERf8K8JndMe
-         wmTm8Kiw1tPTC0gRyfD5CgIcb4Ppn2/Y8eUdv6iP/+eYwdIGujph6YSxeSLTPGX7K/LF
-         BSlgXDlk8Z8qsqCvIb02JXBvlo3CqAiK1CD+dzpbyrjNrlReVp29DgvaNzo37zUaaxos
-         Rk0g==
+        d=linaro.org; s=google; t=1712580212; x=1713185012; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JxaT3PMRuL4e9KTFT/emlcM/OCUcuLvdOqHXG/okFts=;
+        b=hlbGNp/fBHWVphGMddVgDdX+vu3xoJ9QQPpk6l8/NG4rT82WYaVeixwkytbFU8/JQC
+         A8q8q1r2C8yMKaItjJaVpoUj4SUxaKQPJ9r9sqZSQU7+N5UIcunE0ytCeULyfHUqQgjr
+         OcGZS7+ph3UilRsolSfKpyET8XsQmMk3B8oayeOEdZ8UmtVPJ3GXwVwhTc2UE0MDY7V9
+         5bIbd4fsAA7lBdAAAcSpU8pwvZIxYzGWooW6ZP0MHEvXTI1IrcjE9eXemPn6HTGvyA97
+         tXe0TqsL+UvcxSMSdv7Mv56VFx9d+A5Y+VAuL+ZLF+WX5hy5umtW41Predm+PK7S4KAT
+         CUAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712580183; x=1713184983;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bj+zCFiaSngsf1RnmUNrOHE0R/4I7AH4K4X2+QbvPnA=;
-        b=vmxtfjgC2rsr5g+GJUTnmt9pSouC1YkDwefByASrdcaKIIhGoF8cEXlXP3g8vSJJ/R
-         ygVputy86WPC9Y+4+cEzTuWci8+OB/YBHjp68aRiLTaLbG4PEQxiaW80GDdkB9SL844n
-         6nsimGSg2DclbIbKAukU/yOPMPrd7KXsg0i6MmyccrQXOxX2cIlwZpScI8GNFfkoyIpm
-         ZZ1QbslFg9Z92wg7dMxxicrkPU+hjecfrqhNpAa6zlA06WhEV9WARpAIpTMU+ZH6fTzF
-         kcMlgwrZNhEctGM8TVXtqKbl6NYV/LUUT1mx8rctgEZUgsWJXl41XzDa1HZEqgs7nK/h
-         4PJw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMnQbsJnHZ9M0IJwVj1FkvjnQk030JWhGttPqg5B7USjCReT4Sbbur+qBIqM6rc0dtKRqxrWhw02yrI8FvslAGcxYQMB0xF1IEFuId
-X-Gm-Message-State: AOJu0Yy660kq9maNdB23Ovz+mppnleTCkkQEo7kEnEyz76bdWcdxxLFS
-	tjqu/Uawd8hTgOeipCDK5u9h/2yCH3ygyRnF/EsisjhyZYTohk9a/PVRWr1zI3M=
-X-Google-Smtp-Source: AGHT+IGDD2DAXc57z2cnZ7DXnGu+eOjPdA/p1faP571apS05EgwVdkCDrTge5mJIsjcO3AGCGFfWPw==
-X-Received: by 2002:a17:907:9496:b0:a51:bc68:fa94 with SMTP id dm22-20020a170907949600b00a51bc68fa94mr5218668ejc.21.1712580183218;
-        Mon, 08 Apr 2024 05:43:03 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:10c6:ce01:bd98:da4e:9b4c:75b3])
-        by smtp.gmail.com with ESMTPSA id d21-20020a170906c21500b00a4e28cacbddsm4384024ejz.57.2024.04.08.05.43.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Apr 2024 05:43:02 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1712580212; x=1713185012;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JxaT3PMRuL4e9KTFT/emlcM/OCUcuLvdOqHXG/okFts=;
+        b=jQZZxHN2Tvskei3EbdB1wJoIyOuqbJAQVZEOmSF7FE0WWhROUWLG78aYHR0Yd2R2aC
+         hnLJS425etklSeZwR3cKcPyJVzUHYex1q8XYnafp0w4dxi5R8q6G/n1oCeyqdVWAcsz+
+         wYcJoicATPVZa0OY1wyZM3rzK2JyZrfkBJeZIVAPBnQeF9jne91nr/1o47GoK3g7Vrbf
+         wnBeSmOVjZ521ITqO8qs4kJJ/f5N5XI8VS1DxwSk/yMQa83OMHU7MJwUyOgFapEhLdjZ
+         QCveCQ1ZOfeB0NdEaNPQY9ikKKiV1FshCgzSg52lksYbCJbJi+IC4LtcSUctbtxwi/KO
+         wQTA==
+X-Gm-Message-State: AOJu0YzLrvHu0pbsRTs2nik0CHHazUQXxuzKujffSN5IuIID5/aNlZJq
+	a+Q2Vjldbk1ZiAg+IxtZs/+kxjKMxYepUdhjZxIUeZqhy63QtgrsGQEuTRPj+I4RpOoXEY87JbR
+	Xh3/d140XdB2j3dAe4yMDHLW09d6aowi/0ImexA==
+X-Google-Smtp-Source: AGHT+IGQxbNzH63UQFQ7p/mhjOGB9jWdMTr1htv/fo/3N9wxCGG7juvIee6jEqslTXlE94kDc2JpOoAnb98ws1sIxxU=
+X-Received: by 2002:a25:ef03:0:b0:dcd:5bdb:4aa4 with SMTP id
+ g3-20020a25ef03000000b00dcd5bdb4aa4mr5956331ybd.51.1712580212336; Mon, 08 Apr
+ 2024 05:43:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] s390/tools: Use ARRAY_SIZE() to fix Coccinelle warnings
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <20240408115104.9447-C-hca@linux.ibm.com>
-Date: Mon, 8 Apr 2024 14:42:51 +0200
-Cc: Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Hendrik Brueckner <brueckner@linux.ibm.com>,
- linux-s390@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7934000F-958F-4B64-BCC1-2686DCAF87B5@toblux.com>
-References: <20240408105515.2328-3-thorsten.blum@toblux.com>
- <20240408115104.9447-C-hca@linux.ibm.com>
-To: Heiko Carstens <hca@linux.ibm.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+References: <20240405083410.4896-1-anna-maria@linutronix.de> <87r0fg5ocg.fsf@somnus>
+In-Reply-To: <87r0fg5ocg.fsf@somnus>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Mon, 8 Apr 2024 14:42:56 +0200
+Message-ID: <CAPDyKFo7KT4V8Nvn58N3mNfeW6ai=-5hampjN7N19kYaR7zdVA@mail.gmail.com>
+Subject: Re: [PATCH v2] PM: s2idle: Make sure CPUs will wakeup directly on resume
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org, 
+	Frederic Weisbecker <frederic@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, 
+	Mario Limonciello <mario.limonciello@amd.com>, stable@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 8. Apr 2024, at 13:51, Heiko Carstens <hca@linux.ibm.com> wrote:
->=20
-> Let's wait until a compile bot reports compile error. It would be
-> helpful to at least compile patches, before sending them.
+On Mon, 8 Apr 2024 at 09:02, Anna-Maria Behnsen
+<anna-maria@linutronix.de> wrote:
+>
+> s2idle works like a regular suspend with freezing processes and freezing
+> devices. All CPUs except the control CPU go into idle. Once this is
+> completed the control CPU kicks all other CPUs out of idle, so that they
+> reenter the idle loop and then enter s2idle state. The control CPU then
+> issues an swait() on the suspend state and therefore enters the idle loop
+> as well.
+>
+> Due to being kicked out of idle, the other CPUs leave their NOHZ states,
+> which means the tick is active and the corresponding hrtimer is programmed
+> to the next jiffie.
+>
+> On entering s2idle the CPUs shut down their local clockevent device to
+> prevent wakeups. The last CPU which enters s2idle shuts down its local
+> clockevent and freezes timekeeping.
+>
+> On resume, one of the CPUs receives the wakeup interrupt, unfreezes
+> timekeeping and its local clockevent and starts the resume process. At that
+> point all other CPUs are still in s2idle with their clockevents switched
+> off. They only resume when they are kicked by another CPU or after resuming
+> devices and then receiving a device interrupt.
+>
+> That means there is no guarantee that all CPUs will wakeup directly on
+> resume. As a consequence there is no guarantee that timers which are queued
+> on those CPUs and should expire directly after resume, are handled. Also
+> timer list timers which are remotely queued to one of those CPUs after
+> resume will not result in a reprogramming IPI as the tick is
+> active. Queueing a hrtimer will also not result in a reprogramming IPI
+> because the first hrtimer event is already in the past.
+>
+> The recent introduction of the timer pull model (7ee988770326 ("timers:
+> Implement the hierarchical pull model")) amplifies this problem, if the
+> current migrator is one of the non woken up CPUs. When a non pinned timer
+> list timer is queued and the queuing CPU goes idle, it relies on the still
+> suspended migrator CPU to expire the timer which will happen by chance.
+>
+> The problem exists since commit 8d89835b0467 ("PM: suspend: Do not pause
+> cpuidle in the suspend-to-idle path"). There the cpuidle_pause() call which
+> in turn invoked a wakeup for all idle CPUs was moved to a later point in
+> the resume process. This might not be reached or reached very late because
+> it waits on a timer of a still suspended CPU.
+>
+> Address this by kicking all CPUs out of idle after the control CPU returns
+> from swait() so that they resume their timers and restore consistent system
+> state.
+>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218641
+> Fixes: 8d89835b0467 ("PM: suspend: Do not pause cpuidle in the suspend-to-idle path")
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+> Cc: stable@kernel.org
 
-Sorry about that. I usually compile the patch before submitting it, but =
-missed
-this one somehow.
+Thanks for the detailed commit message! Please add:
 
-Just including the missing header file also doesn't work.
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Please ignore this patch for now.=
+Kind regards
+Uffe
+
+> ---
+> v2: Fix typos in commit message
+> ---
+>  kernel/power/suspend.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -106,6 +106,12 @@ static void s2idle_enter(void)
+>         swait_event_exclusive(s2idle_wait_head,
+>                     s2idle_state == S2IDLE_STATE_WAKE);
+>
+> +       /*
+> +        * Kick all CPUs to ensure that they resume their timers and restore
+> +        * consistent system state.
+> +        */
+> +       wake_up_all_idle_cpus();
+> +
+>         cpus_read_unlock();
+>
+>         raw_spin_lock_irq(&s2idle_lock);
 
