@@ -1,121 +1,192 @@
-Return-Path: <linux-kernel+bounces-135514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDBD89C706
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3230789C709
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BDCC285532
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:25:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC35285398
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D541127B7B;
-	Mon,  8 Apr 2024 14:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58AB6127B7C;
+	Mon,  8 Apr 2024 14:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxE2bPgR"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=spawn.link header.i=@spawn.link header.b="FjTcWAKj"
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D26F1CD21;
-	Mon,  8 Apr 2024 14:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D291CD21;
+	Mon,  8 Apr 2024 14:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586307; cv=none; b=SuwLYuAO7hur2+R5YJSE+JgC/Pk52ZM0CyR+roelZK7Fqj4k3gxc7oJLBo7urScNXm5h98xd0zNH6gUHf/5+QU0W69y6Ap6WrqyewPI9TT0jbLAI1GBRCp/LI3X38pB3rh/MPa0pnCRIQOxAi0V2E1ugPS2lWKsg+YbhN700RIw=
+	t=1712586422; cv=none; b=MABXY2vxbFxhmSc3nscxleVG3FonH3OJ4kch1fbzUGnRk3j5ExrDkrelzq3hXhzvhH0hth5eHVObNfDOivJW47AsYA3/zyIU/O7z0p9Wv48aBg7o8vyvPQt9bBitW86U83VEapvI60QqKQiBPUJYSLuk5FZveK/aYA7kmdHZxWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586307; c=relaxed/simple;
-	bh=vs3XBmNffGkP+0cG+4YcsNFdxxYDgMGq8O2+X1Zb9Vo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pFfKgQB1CugkIMPnsN4r9Tn/O2yGENO6K8rC3famannlJMlkNhWmRwqs3eaHKonOZq0LnLoVAW7GNVmiXPHvCOXjgwMRLGIM+LoJid0xPuiSxmTO0InAbBkE7cXCIoyA4gjxVVP0xMaGjYiaUUNOZZJASPmHCdltRxgJmhdVTXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxE2bPgR; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a47385a4379so1019907566b.0;
-        Mon, 08 Apr 2024 07:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712586304; x=1713191104; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
-        b=QxE2bPgRFF/0FH43bYbgxuiApsO6WZLg/rgVUHCanLedOtKN4sG1LtdpQbs416ulOa
-         5brihBK4Oyz+wo5CfDhXdH1XlOGue4K55kvotAz2aK4Xm2ka/jYNbEv9WWzaRfHhDFcb
-         W497Q4yQkXjEXgX2EcIAgfIYfhpkG+Caeq/oUrXu64/hpwOoAA/1mq+VTI9enKVWiwN4
-         kQZh//CEGBZoewO/nL/rTYpWm8CzC7TperXoptCSH+F4yT5UPael5JxUxyw6tQ23TbGr
-         P55atkVwPgIRO2NFKqasvd6zl5PP0DskkQNz0Ow8xI4mBFYk5vnjOKuUAS2Flfp6mtn3
-         H+sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712586304; x=1713191104;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
-        b=CRhfYR0ff6ViLiLzxAhFsTWK8O2zd3R90T+UZhoHYvpmq/oA0bRX9jE0w+KT4J+ay4
-         72CC0MoCrnltF/CdzxB2Ed+eb0I97yzG38hZVKf8u/v/ytyq2UNJvhZD4Vp7LcsiZT9o
-         rPLhqCGaMJGkMw2t0M5L34ko0CiX/Xx5AxnZ5yiYkFQoFfyRye5F9wQufbOJCOJXGqpR
-         QnheGICRpAEcoiVVzEq2rlqRnxjbK7gDWBiB+J3CdC+wrlF4p0QQALP2BA+iq8TjAhc5
-         WBqhu1f1l0pO8hrcE5+EEjjm4nE/9cgsNBSSZCeWllDMeErcBxmRRTYcJTK6VP2m0Pv3
-         X53Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW68jXqYq5TTzqyqPGcJFAJwQkybz6VbgLallx9oUmNo+Z6F0yN0tai9zaiZ9hVfpE+jwGbqQNeCUvELyXXYyH8XIGqFduqFRjEtXMnSMbSzogELvhRFuNJ4jzB9hOmFCkdKxfsgH2VgjXKMvJx
-X-Gm-Message-State: AOJu0Yx0CW/iX5mwpnQD5s1r5WtQd9cILtRtjABu2V/DvLiWtdDwaBjU
-	oN6JhZzQya72bCj1oM23RMDaiNpwbsCYyvduk5kIQ6C5YoskIbVv
-X-Google-Smtp-Source: AGHT+IGaq+ZAlXpk9YTgf4/RHBm1Pbf2Q7kE8VkemDhXnN6qOn8H3/zT0wzSorfvRUiTWwzaW7mkBQ==
-X-Received: by 2002:a17:906:7949:b0:a51:d48e:52a0 with SMTP id l9-20020a170906794900b00a51d48e52a0mr3012741ejo.27.1712586304338;
-        Mon, 08 Apr 2024 07:25:04 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id lx26-20020a170906af1a00b00a4e440989f5sm4487554ejb.159.2024.04.08.07.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 07:25:03 -0700 (PDT)
-Message-ID: <ed027c1d54cb588914602a84fa12dfb2a9a403bd.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v6 3/6] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 08 Apr 2024 17:25:02 +0300
-In-Reply-To: <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
-References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
-	 <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1712586422; c=relaxed/simple;
+	bh=rxVFR+tl2mqy5C+KQx6ENcTMnb0CNT7kB2Tov4/MpRo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tRBVwLGFrx8dq3tLTl7M0A7byT+sjved1TLVyNDBBtQOclW36JxM0gfmcVcBJyBo0YyEpYpydhF0GBWbAG1I2jhkSROUiJU+BtYz1ZcBtx/Hd1ceEjsqyORULc/5xMtALRP9GihZqVGNEFJeyRLsHF/JtVan0Bd9E9yRTbJJ/Y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spawn.link; spf=pass smtp.mailfrom=spawn.link; dkim=pass (2048-bit key) header.d=spawn.link header.i=@spawn.link header.b=FjTcWAKj; arc=none smtp.client-ip=185.70.43.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spawn.link
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=spawn.link
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spawn.link;
+	s=protonmail; t=1712586416; x=1712845616;
+	bh=+5Fh0WwUiPmwp1z2/Cl7upCopJ5n83pXevljT6PBbkc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=FjTcWAKjU2UpdyqQGatEblHduf+EVHQOCjF/vjxIU3vcIMouKpOLFkPqSLzzN1qXc
+	 jJSwPsk6ac9jMtiVAI/NS0MKv9M8N5vuEsCfF7sQcE8SLIi+A2RtcGKH00RAFJEOux
+	 Iuv8ay/Dn4Et0DStZjb/Z/rk1CP0gZPEsRiTVgJWqMOepInOZzwg4fHnkr5yzLWDF9
+	 DeTLOUZqI4HBMz9dzElk828BpyRaQB73TjjS+0XAj1IeCqPLzE1e7l/uIm15NQG88n
+	 p3w8C9HKt8YM8Y5oj29BwmnUUu5+OaBH3ed+GM580jK8dt0wYRdfp4SWsAbULviYPR
+	 yoe7NWEDFNhZw==
+Date: Mon, 08 Apr 2024 14:26:53 +0000
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, Jingbo Xu <jefflexu@linux.alibaba.com>
+From: Antonio SJ Musumeci <trapexit@spawn.link>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, zhangjiachen.jaycee@bytedance.com
+Subject: Re: [PATCH] fuse: increase FUSE_MAX_MAX_PAGES limit
+Message-ID: <af555e3c-cd00-4bf4-b774-8099517bf559@spawn.link>
+In-Reply-To: <b4d801a442c71d064a6b2212d8d6f661@dorminy.me>
+References: <b4d801a442c71d064a6b2212d8d6f661@dorminy.me>
+Feedback-ID: 55718373:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
-[...]
+On 4/8/24 01:32, Sweet Tea Dorminy wrote:
+>=20
+> On 2024-01-26 01:29, Jingbo Xu wrote:
+>> On 1/24/24 8:47 PM, Jingbo Xu wrote:
+>>>
+>>>
+>>> On 1/24/24 8:23 PM, Miklos Szeredi wrote:
+>>>> On Wed, 24 Jan 2024 at 08:05, Jingbo Xu <jefflexu@linux.alibaba.com>
+>>>> wrote:
+>>>>>
+>>>>> From: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>>>
+>>>>> Increase FUSE_MAX_MAX_PAGES limit, so that the maximum data size of
+>>>>> a
+>>>>> single request is increased.
+>>>>
+>>>> The only worry is about where this memory is getting accounted to.
+>>>> This needs to be thought through, since the we are increasing the
+>>>> possible memory that an unprivileged user is allowed to pin.
+>>
+>> Apart from the request size, the maximum number of background requests,
+>> i.e. max_background (12 by default, and configurable by the fuse
+>> daemon), also limits the size of the memory that an unprivileged user
+>> can pin.  But yes, it indeed increases the number proportionally by
+>> increasing the maximum request size.
+>>
+>>
+>>>
+>>>> It would be interesting to
+>>>> see the how the number of pages per request affects performance and
+>>>> why.
+>>>
+>>> To be honest, I'm not sure the root cause of the performance boost in
+>>> bytedance's case.
+>>>
+>>> While in our internal use scenario, the optimal IO size of the backend
+>>> store at the fuse server side is, e.g. 4MB, and thus if the maximum
+>>> throughput can not be achieved with current 256 pages per request. IOW
+>>> the backend store, e.g. a distributed parallel filesystem, get optimal
+>>> performance when the data is aligned at 4MB boundary.  I can ask my
+>>> folk
+>>> who implements the fuse server to give more background info and the
+>>> exact performance statistics.
+>>
+>> Here are more details about our internal use case:
+>>
+>> We have a fuse server used in our internal cloud scenarios, while the
+>> backend store is actually a distributed filesystem.  That is, the fuse
+>> server actually plays as the client of the remote distributed
+>> filesystem.  The fuse server forwards the fuse requests to the remote
+>> backing store through network, while the remote distributed filesystem
+>> handles the IO requests, e.g. process the data from/to the persistent
+>> store.
+>>
+>> Then it comes the details of the remote distributed filesystem when it
+>> process the requested data with the persistent store.
+>>
+>> [1] The remote distributed filesystem uses, e.g. a 8+3 mode, EC
+>> (ErasureCode), where each fixed sized user data is split and stored as
+>> 8
+>> data blocks plus 3 extra parity blocks. For example, with 512 bytes
+>> block size, for each 4MB user data, it's split and stored as 8 (512
+>> bytes) data blocks with 3 (512 bytes) parity blocks.
+>>
+>> It also utilize the stripe technology to boost the performance, for
+>> example, there are 8 data disks and 3 parity disks in the above 8+3
+>> mode
+>> example, in which each stripe consists of 8 data blocks and 3 parity
+>> blocks.
+>>
+>> [2] To avoid data corruption on power off, the remote distributed
+>> filesystem commit a O_SYNC write right away once a write (fuse) request
+>> received.  Since the EC described above, when the write fuse request is
+>> not aligned on 4MB (the stripe size) boundary, say it's 1MB in size,
+>> the
+>> other 3MB is read from the persistent store first, then compute the
+>> extra 3 parity blocks with the complete 4MB stripe, and finally write
+>> the 8 data blocks and 3 parity blocks down.
+>>
+>>
+>> Thus the write amplification is un-neglectable and is the performance
+>> bottleneck when the fuse request size is less than the stripe size.
+>>
+>> Here are some simple performance statistics with varying request size.
+>> With 4MB stripe size, there's ~3x bandwidth improvement when the
+>> maximum
+>> request size is increased from 256KB to 3.9MB, and another ~20%
+>> improvement when the request size is increased to 4MB from 3.9MB.
+>=20
+> To add my own performance statistics in a microbenchmark:
+>=20
+> Tested on both small VM and large hardware, with suitably large
+> FUSE_MAX_MAX_PAGES, using a simple fuse filesystem whose write handlers
+> did basically nothing but read the data buffers (memcmp() each 8 bytes
+> of data provided against a variable), I ran fio with 128M blocksize,
+> end_fsync=3D1, psync IO engine, times each of 4 parallel jobs. Throughput
+> was as follows over variable write_size in MB/s.
+>=20
+> write_size  machine1 machine2
+> 32M=091071=096425
+> 16M=091002=096445
+> 8M=09890=096443
+> 4M=09713=096342
+> 2M=09557=096290
+> 1M=09404=096201
+> 512K=09268=096041
+> 256K=09156=095782
+>=20
+> Even on the fast machine, increasing the buffer size to 8M is worth 3.9%
+> over keeping it at 1M, and is worth over 2x on the small VM. We are
+> striving to reduce the ingestion speed in particular as we have seen
+> that as a limiting factor on some machines, and there's a clear plateau
+> reached around 8M. While most fuse servers would likely not benefit from
+> this, and others would benefit from fuse passthrough instead, it does
+> seem like a performance win.
+>=20
+> Perhaps, in analogy to soft and hard limits on pipe size,
+> FUSE_MAX_MAX_PAGES could be increased and treated as the maximum
+> possible hard limit for max_write; and the default hard limit could stay
+> at 1M, thereby allowing folks to opt into the new behavior if they care
+> about the performance more than the memory?
+>=20
+> Sweet Tea
 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fd05d4358b31..d6528359b3f4 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
+As I recall the concern about increased message sizes is that it gives a=20
+process the ability to allocate non-insignificant amounts of kernel=20
+memory. Perhaps the limits could be expanded only if the server has=20
+SYS_ADMIN cap.
 
-[...]
-
-> @@ -2726,6 +2764,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->  BTF_ID_FLAGS(func, bpf_dynptr_size)
->  BTF_ID_FLAGS(func, bpf_dynptr_clone)
-> +BTF_ID_FLAGS(func, bpf_timer_set_sleepable_cb_impl)
-
-Note:
-this hunk does not apply cleanly on top of current master.
-The line 'BTF_ID_FLAGS(func, bpf_modify_return_test_tp)'
-was added to the list since last time current patch-set was merged.
-
->  BTF_KFUNCS_END(common_btf_ids)
-> =20
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
 
