@@ -1,180 +1,227 @@
-Return-Path: <linux-kernel+bounces-134981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB4389B992
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC14489B993
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:00:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42447283FBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:00:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97F51281315
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A633A1CD;
-	Mon,  8 Apr 2024 07:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2052E2D03B;
+	Mon,  8 Apr 2024 07:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xomvOSOf"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2106.outbound.protection.outlook.com [40.107.220.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a2LpuEzF"
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9294B3BBDB;
-	Mon,  8 Apr 2024 07:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.106
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563123; cv=fail; b=HCRjds7onbbhxOoaOPmvsQd1p5PNXZg/eIbpyEsBAm9UVA2jXUQatKXj5p9husolnJCmuys8J9liVOvmyTVy9CUi4NQeWu7nQQ2VvoaajV8NLOCmap2B4sruSp4QLRvcw02psoQa5/aLPDi9zE77QA5MqhrQkWenLfsJDp+pnb8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563123; c=relaxed/simple;
-	bh=UYGK19ae6RCMDu1mACTIlK/pWh3QNMQ9Onpjo6k+4nw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=hQ20Vf//PkPOI79De5lo51VNBI9TjU7iFHfB98WJylGmDJxUkgVyjUeeOIMTSVZHG+aqsbhFcGKCQ6cRLK7IsAiSlslpMgbTIZhmHuF82KVcMnooNDRhL36N6IAMwn46FtBz6DETFmrtEemT4fbjtsjHsjCrVVP6mSb6gAsOwts=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xomvOSOf; arc=fail smtp.client-ip=40.107.220.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KT1opqsX2r8zAPEHjsbxUOlOsxsKGMz5+KHx3E0u+fXc/vANDRh8kd4z7smqMby8HireuD/l8Q5YcK8QOnFrDpEODjirw6wGB1h9rOCGHMcH31DuP2/NqlYMrDf8Tnd5hiAvSyNRcepcUY/07bMYjxUW8fx8TopLBuSrugwtbGz9bYtFQ9jInuesvesnoSCmO/DqCz6evw5APYbIghHvXbQOLm9HWM3rA0wGnvn5kNrkP3IQMdColPJbuxA0j2n6syHzsrDVzrp+9DUVMD2IGfvwqptD/8xneLXRZk/NG8g29ReBbC+Zr1+Lgfv432H/b5kf/MZyMFu7UUwYC1+pNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fkcDmAPfup8CpG1p+PrBQyJXTMqX896i1J+H3Qzq5PE=;
- b=erSh4tZ6JzNMQKM7FxWsH2P+75xaiRfbMVBZjioucGYGc03bi3i/q8Y76HAsTFEidP7ONECkhlQtfKSSHCgrK8ETW8OQiwDcv/RmpX2J/G346ZEm7sJ9tNLhB1SWMsyC3oGAbEgH6XossT2QzNFPxdkvlQAjucl+eCR90OYQfVX+y879zjzZwXSbiLYEw+Tki+YqT5gvLikXVQN2xbj3x3XyY+gf5ZFD1iVyo8B2NUjStLQNCsClTEY2Wq0EvNK/TIh5SGNveUJST84Rmom8iI1rxp43jWCqNLZV9RdbUc7/wQRzHOIN8JnZQ0DrU+s8B8jqXUp0K5P5aJilnLaXaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fkcDmAPfup8CpG1p+PrBQyJXTMqX896i1J+H3Qzq5PE=;
- b=xomvOSOfcXKgZ/8foWt+4W6VB6yCzY4vk4jbbmLVLDViL3Oc8cbtcw0gMx4+DPkCtOTf6P66TyuSMmUMq1ip4HvWz+HmgukiBwaW6O765tn08S7KFrj52sXLHJ7tHiT8MQhNVwgvR/2/7Q+rfdj6vlaxjBvSpAnDhed/GrihSuw=
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SA1PR12MB6824.namprd12.prod.outlook.com (2603:10b6:806:25f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 07:58:39 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
- 07:58:39 +0000
-Message-ID: <9e6f1f52-db49-43bb-a0c2-b0ad12c28aa1@amd.com>
-Date: Mon, 8 Apr 2024 09:58:34 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: add DMA_BUF_IOCTL_SYNC_PARTIAL support
-To: Rong Qianfeng <rongqianfeng@vivo.com>, Jianqun Xu
- <jay.xu@rock-chips.com>, sumit.semwal@linaro.org
-Cc: pekka.paalanen@collabora.com, daniel.vetter@ffwll.ch,
- jason@jlekstrand.net, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <20211113062222.3743909-1-jay.xu@rock-chips.com>
- <1da5cdf0-ccb8-3740-cf96-794c4d5b2eb4@amd.com>
- <3175d41a-fc44-4741-91ac-005c8f21abb8@vivo.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <3175d41a-fc44-4741-91ac-005c8f21abb8@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1P195CA0055.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:5a::44) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABE392C68C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712563191; cv=none; b=k3h/Vl8iQsNTjZtOnvIfnUvQ4iiLKDOLMq7gyCpggl5Q2Sw1JgOdmMyWIh0VrvS3JSeoIZis4UYIhZ/qTZcPOzWndPvGAbHKFcJM8wSscOC1gGZd1e1n/bgZozuCA6+mx8udhi5fV56q3QxFRA8nn9qLTLxHU1ltlHxjWCVGXB8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712563191; c=relaxed/simple;
+	bh=gfPu8CWZl3E7Z4ROJvqIJZLka/gChnqmeOgsGF6qUas=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MKQxeLYtUg/BSfTOlboxGAIu6RAjLZpw1p74BUORtIcfo2y+JtaWGmTvz9Ldd6zdbNlfpnaifQHa05AFmCDFoxs2LOCvytDs/JDQErPSCcz9WOfaAbNvdoNfwLbN1IIVmkrnYQjZBk52nJ1FdpE1JyhN0u8gRonReSj5ENkYDjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a2LpuEzF; arc=none smtp.client-ip=209.85.221.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4dac4791267so516129e0c.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:59:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712563189; x=1713167989; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PbG/Cv7DGpt7tAVi1gqaOi//Mh/4FAflEt7ny+NUGq4=;
+        b=a2LpuEzFh+1zrDKHS9Qgvdy+fcXpBktWbM/dc2JyfeklFRcuNlthqgqXYvu2PTBmMv
+         ayP5JPnBoY/8UwsBmRKcUDLV37YW2jlksRS+k0vhHBfnQHE3tynSAoAjSgw62fjUFVLR
+         uxMOO3jmUnREc1Ipi9yQUvLn3LSMBiGTzYdHcxoUoCS+P744E2LSA3w/7AS/Pcc10x89
+         4mWBahhwXObNrHSO7n1iauqdjpQ2ToaWhPHYo5bjV99G9A0/qaM+mqwTXWL6bIBVe6d8
+         K63POCp75/XlcgQFLlybimKPuZuaD1IxZR9LUBtMp3D1K37b41vC7slpRqGBGQw+DZKx
+         7FvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712563189; x=1713167989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PbG/Cv7DGpt7tAVi1gqaOi//Mh/4FAflEt7ny+NUGq4=;
+        b=q+Imo9EjnJ+8NZ05yYOIiFzsbPNXsK+hhoXjv1QHB1Dq+7ttcsj8dsrOqIdtvdwEyM
+         ytmlH/+Y4cjpfMYAbCsl+6xYv9X36arnv5cqQfsnxF6Lm9NEWOUFSQ6WfJNmLGy7miWT
+         HQj5SUL0SFNAvCvooGHymVG6TSTD9ASKXj1P4iVJ+2hiGfkvGp4rQL1OCwRSUzyw+w+h
+         GroGMgIArPTRU3PSiEvz6zZmY4h0IyX5dBm/or8Ill8Oz/93z0qxNmD17QaQjbRArlkj
+         QcfW2FQCF1pxySAoKxnadS18L5fy8lTZQfEhuPPkfXaLvNacWlMT7tYdXz7h2tAqP2Ok
+         dJBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWQQCCNKFiofvkg9qXBr62R+Jr1B8EprofOabf2pVPiiWe5U1LZnpHQFjTOCsoqLivKVpKcFimy4oNIee5871QXpqshJew0zltp07OT
+X-Gm-Message-State: AOJu0Yzj2kWYtXDGX7NBxzqgHJJLCpWbw3H7IHYf/6Ae7JqAp1M2vwgg
+	ZVvWYygizVzfVBJkXbV3vlLrlVEn5mnRdrCCPtKCuTwdqfV1JfXpwPUNMdStoSLub2aIMWBSkVc
+	JXxc4ip7Bqfq+0fgLZkIUHjm5w08FxFQ8u27CfHBYQXGZX6GKcA==
+X-Google-Smtp-Source: AGHT+IHzMEs3mc0QgxIUxBRNAl9cFA3qfBpyb9XiwEy6iZE0WfiGTdmgyT70awZTbI0csylv+uSMp8XjirCS7fIeG90=
+X-Received: by 2002:a05:6122:685:b0:4d9:218e:3fdd with SMTP id
+ n5-20020a056122068500b004d9218e3fddmr3695276vkq.1.1712563188580; Mon, 08 Apr
+ 2024 00:59:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA1PR12MB6824:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lHS5s2dK5PiKysCxd8VIeA9i15oxR+Lzzc7QJrxG4hifCMOjgEx3LVGpyG55olbmVkAoZcqdmKQi/YmiGYl4P0A/z07W6kjn60N4XTZl6+B83OcspJ5Q946A3T8uw5lgscFjULOB7oHdWuHsJxsiE6BhV1XZKOosNhbLD7nneLuPbLxlmeAXWb2BlctdaadAE9NRLs75Vq2wCZitEpCyOsKR2wszmEm8qdfX/4E2rmptygE3hqA0BvLeqCdPTl1o5TwmUPGsqG6ABonvOriEvm+8f8+Fg5qjeDdHB713lFPSIpCrS2Z58c9kSTqPK1i8bwzXhklJn9jS3HfPpR3WHB573oFCKIv7ddnc/+kVGA4BGR3N7+kY5a/5HajQmJdptwfph8q1M52fYk/E4qJocNSTOsXWpTqo1+3D3Ov0otNwiEZY/semVqv53GvYHSb3ImQSsXWgoX5yj8HYR6kwHuVSWvSO3zhKX4E5XIDrsAYM9dfsbxKDjhDdO7OA+VV/LRURrQ5t26PV0xaZPNv91rLM7Qq+8h1bjqktnIWheqkrk/CmKbyuWpB0AfbZkcak15R5ze54tWhTk+JHJhbPYiLAY3gPYUQkTt1nsJThA2aJ4fIuseYUB/tOUCjJJM54UgwoOztW3U7HNTV3Rm7ByqM1ZwgDCXUR6qjZ4lC4y+s=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WlVIZWZ4V2JEZlVGTE9uY29aVGxIMjl5YUFyRXBNT3V2YUQrQWRMWDRUT3or?=
- =?utf-8?B?NXBLYmx6V1V5Y2dwNFc3RE9Xa2ZBWGMrcW8wOWMwcU9lOWV6TE9uaDRkUmt2?=
- =?utf-8?B?ZzluczNRNmZtYysvcy9MOEkxcGJLaGpiTEZmWFQ5RWRVVlJMLzdubzNuRlBi?=
- =?utf-8?B?YVB5ald4WjFjTlZKaHBxRjgreUhxSUx4TXBlVXVhU1NjRUJJK3lCVTBLSFdr?=
- =?utf-8?B?ZTlScFhpQWtPaDVlZlNYeVhXVGZBUjU5Yk9MVGVISFkrK3BLSUFTenF0ZExy?=
- =?utf-8?B?NE16YnN6NEFPWUV3K1FCTVVZd3VIVnNpMUpoWVhTejc3MWlqbHNHS0s0dEY3?=
- =?utf-8?B?Rnhzb2dpMTNDVHFWOEhJd1Y0OG95VmE3QVg5cmVkdU9MMlhZVkpNM0tVbG1x?=
- =?utf-8?B?MDBpcXM1aW1JREZOSzRJZEhxV3BDSVNmdnJ4TEZVQ0MwVzFkWXA1SndEbS9E?=
- =?utf-8?B?ZzEvRkVPaEdZQ1BISnBadWVPU2xxcTFyMlhxUEhNZVRTai9wQkY1MWxsRUpT?=
- =?utf-8?B?MWxOR0pZaFNEbnJsdFhYMmsybDlxazdGK2luc04vaDlKQ1ZYWjhWdldiL1hB?=
- =?utf-8?B?Z2xJRlI0OUI4czV6UFMxSUdwTFhUbnVsaDR3dno3MU8rS1VBOEp4QUVsY1Nz?=
- =?utf-8?B?REJ6c1Fzd0Z6ZzJxdTNzcXlMWUNYTWpoZmVhWTJmcHk2cUp6b1hDdDFhR0Mv?=
- =?utf-8?B?WDFmdlkyc3JwQTZjODZxVmEySUxzLzNDYmdHWHN4Y3BXdVlmeTc2NGlyQWRs?=
- =?utf-8?B?aDVBaEhjUlFMUmRxa0U2QXB2NVZCdlNjbVZ5VlhGU3RrS0h6TjhzaHB3bWNk?=
- =?utf-8?B?TVErbVZQUGZROEV6Mk40MHk3Zi8xenJLSFJOSVBOaW9ONkZaS2d2cnROKzBj?=
- =?utf-8?B?MVBES1dpOUlJc082ck5qakIwRWtaTkN6K1pSSnFXN1B4SFdzS2J6SkdPZmxw?=
- =?utf-8?B?eTlxbW5GS1hsTyt5WWk1dGRVOGwzL0tTb0F5TnB0SU5CK01vaktLUHNta2hn?=
- =?utf-8?B?WFZTODFDZFE1cVMwMGtaKzBJYjVsUHJ5YU1laDlhbU5qRDhDbEtrVFNhcW9H?=
- =?utf-8?B?RFhrM3lOd0RMZkpkZ2FYNVR5bUZNU1N2d3NFVU84Nmhqb013Wjc0TVRlY2pv?=
- =?utf-8?B?VXJNaTM4M1BhcFhYV3lzVFo2WXdSdldQcjZ6Z1g2WGcwRU1YMGhkL0RJZUZn?=
- =?utf-8?B?dG1JT0lWMzEydkNDUjNzczFVU0RZTkJhRVBsRmkreU9sSTY4VndJSThFcjJ5?=
- =?utf-8?B?UEpCSFdtRnJObFVHdVFzekp3dXZaZEJvOXpOSEdvTkQ3RFR4VjI5YUc3QU12?=
- =?utf-8?B?cG9jTEF3eWdoYUQ2dnpxTis1RnNZQXRrK3IvVHZsbm4yWW9xVU5hWjYvK3dh?=
- =?utf-8?B?YmxZWVF3M3Q0ZnFXUU5RN0F2N3A3Um14ekl5SkI5MjZZUzg3UllsbnpFeE4z?=
- =?utf-8?B?bFpCc21WYzBJL3dGZXRNSFFhRHFiL3U5ODliVGt1TmhmL1ppU0VYc1RySEEy?=
- =?utf-8?B?NWhPS2tQeGJKWHdDNnVhbW9TM3RKazJUbFY4UzlzSXFzdXczelF3TFZKdWFQ?=
- =?utf-8?B?c0M4Ymk1L3NFNjkxZmRtR202U0lGMWZvNmUxQ0FjbUJrMjVSbDJFbmRDaEc2?=
- =?utf-8?B?bjZVektUMkJ4aFozUHJIMThycnBFQ29NdktES3oyejBYYTY1cDFuTlpsa2M3?=
- =?utf-8?B?dGhDNVg2T3g0ckhKYjBDSTRxKzcvL1BiM0ZRKzBvQXJpaU5NZ2FVaVJ4YWY4?=
- =?utf-8?B?aWtWb1haMkF3ZGFlTFFiSU1iekZQOENDUHVVN0k4NDF3NVE4Q0huRTZuUjVZ?=
- =?utf-8?B?REhMQjJHenFmYzFCY0VWeEl3L1RjdVhXcFBpbmJsL0toOUtzUFFDM1huVXdM?=
- =?utf-8?B?RGRaaW9tY3JKdFpTREhtSlJZc0hpQjFzSmx1bW9vU2VKbkxSQjB6cmJpSFZu?=
- =?utf-8?B?RkJPaE10M3ZjaFVTVnY3NTZ5OS9Qd2RJcWhyZDFLRWhTMUFyTld2ZFdKR2h1?=
- =?utf-8?B?U0k0WFlZZFQzajVVRGg2QzN5WHk5NEtOQis3ZkVNamtVT1pFM0g5MUVFUlpQ?=
- =?utf-8?B?TnJyUWZVNjBjdFRGU0J0d1Vncy8xV2xyUkVaM1FDQlVOU2FQdkYvcDJGWmdF?=
- =?utf-8?Q?3Yao3I+CBwlkIS22PSK64Qj7o?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1d45e26-6daa-46b5-d02a-08dc57a1b346
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 07:58:39.3462
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LY9Pr9mjmc0UQFiFA6NAKx8aMRZTs5iZsbVtWTAWA2MwO0OGzMOor4A4l72wkGrO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6824
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
+ <20240402-linked-list-v1-8-b1c59ba7ae3b@google.com> <18698be5-fe4b-44ed-a12e-444ebffd4b32@proton.me>
+In-Reply-To: <18698be5-fe4b-44ed-a12e-444ebffd4b32@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 8 Apr 2024 09:59:37 +0200
+Message-ID: <CAH5fLggBVNYbP1tWSFH+cmkAtXv=2Nzm1fWyF+1-NWgHBDwq6w@mail.gmail.com>
+Subject: Re: [PATCH 8/9] rust: list: support heterogeneous lists
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
+	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
+	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Am 07.04.24 um 09:50 schrieb Rong Qianfeng:
-> [SNIP]
->> Am 13.11.21 um 07:22 schrieb Jianqun Xu:
->>> Add DMA_BUF_IOCTL_SYNC_PARTIAL support for user to sync dma-buf with
->>> offset and len.
->>
->> You have not given an use case for this so it is a bit hard to 
->> review. And from the existing use cases I don't see why this should 
->> be necessary.
->>
->> Even worse from the existing backend implementation I don't even see 
->> how drivers should be able to fulfill this semantics.
->>
->> Please explain further,
->> Christian.
-> Here is a practical case:
-> The user space can allocate a large chunk of dma-buf for 
-> self-management, used as a shared memory pool.
-> Small dma-buf can be allocated from this shared memory pool and 
-> released back to it after use, thus improving the speed of dma-buf 
-> allocation and release.
-> Additionally, custom functionalities such as memory statistics and 
-> boundary checking can be implemented in the user space.
-> Of course, the above-mentioned functionalities require the 
-> implementation of a partial cache sync interface.
-
-Well that is obvious, but where is the code doing that?
-
-You can't send out code without an actual user of it. That will 
-obviously be rejected.
-
-Regards,
-Christian.
-
+On Thu, Apr 4, 2024 at 5:35=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
 >
-> Thanks
-> Rong Qianfeng.
+> On 02.04.24 14:17, Alice Ryhl wrote:
+> > @@ -180,6 +184,41 @@ unsafe fn from_fields(me: *mut ListLinksFields) ->=
+ *mut Self {
+> >      }
+> >  }
+> >
+> > +/// Similar to [`ListLinks`], but also contains a pointer to the full =
+value.
+> > +///
+> > +/// This type can be used instead of [`ListLinks`] to support lists wi=
+th trait objects.
+> > +#[repr(C)]
+> > +pub struct ListLinksSelfPtr<T: ?Sized, const ID: u64 =3D 0> {
+> > +    /// The `ListLinks` field inside this value.
+> > +    ///
+> > +    /// This is public so that it can be used with `impl_has_list_link=
+s!`.
+> > +    pub inner: ListLinks<ID>,
+> > +    self_ptr: UnsafeCell<MaybeUninit<*const T>>,
+> > +}
+> > +
+> > +unsafe impl<T: ?Sized + Send, const ID: u64> Send for ListLinksSelfPtr=
+<T, ID> {}
+> > +unsafe impl<T: ?Sized + Sync, const ID: u64> Sync for ListLinksSelfPtr=
+<T, ID> {}
+>
+> Missing SAFETY comments.
 
+Will do.
+
+> > +
+> > +impl<T: ?Sized, const ID: u64> ListLinksSelfPtr<T, ID> {
+> > +    /// The offset from the [`ListLinks`] to the self pointer field.
+> > +    pub const LIST_LINKS_SELF_PTR_OFFSET: usize =3D core::mem::offset_=
+of!(Self, self_ptr);
+> > +
+> > +    /// Creates a new initializer for this type.
+> > +    pub fn new() -> impl PinInit<Self> {
+> > +        // INVARIANT: Pin-init initializers can't be used on an existi=
+ng `Arc`, so this value will
+> > +        // not be constructed in an `Arc` that already has a `ListArc`=
+.
+> > +        Self {
+> > +            inner: ListLinks {
+> > +                inner: Opaque::new(ListLinksFields {
+> > +                    prev: ptr::null_mut(),
+> > +                    next: ptr::null_mut(),
+> > +                }),
+> > +            },
+>
+> Why don't you use `inner <- ListLinks::new(),`?
+
+Because I wasn't using the macro at all. I was just using the fact
+that T implements PinInit<T>. But as discussed on another patch, I'll
+replace this entire method with init::zeroed().
+
+> > +            self_ptr: UnsafeCell::new(MaybeUninit::zeroed()),
+> > +        }
+> > +    }
+> > +}
+> > +
+> >  impl<T: ?Sized + ListItem<ID>, const ID: u64> List<T, ID> {
+> >      /// Creates a new empty list.
+> >      pub const fn new() -> Self {
+>
+> [...]
+>
+> > @@ -94,5 +137,45 @@ unsafe fn post_remove(me: *mut ListLinks<$num>) -> =
+*const Self {
+> >              }
+> >          }
+> >      };
+> > +
+> > +    (
+> > +        impl$({$($generics:tt)*})? ListItem<$num:tt> for $t:ty {
+> > +            using ListLinksSelfPtr;
+> > +        } $($rest:tt)*
+> > +    ) =3D> {
+> > +        unsafe impl$(<$($generics)*>)? ListItem<$num> for $t {
+> > +            unsafe fn prepare_to_insert(me: *const Self) -> *mut ListL=
+inks<$num> {
+> > +                let links_field =3D unsafe { Self::view_links(me) };
+> > +
+> > +                let spoff =3D ListLinksSelfPtr::<Self, $num>::LIST_LIN=
+KS_SELF_PTR_OFFSET;
+> > +                let self_ptr =3D unsafe { (links_field as *const u8).a=
+dd(spoff)
+> > +                    as *const ::core::cell::UnsafeCell<*const Self> };
+> > +                let cell_inner =3D ::core::cell::UnsafeCell::raw_get(s=
+elf_ptr);
+> > +
+> > +                unsafe { ::core::ptr::write(cell_inner, me) };
+> > +                links_field
+> > +            }
+> > +
+> > +            unsafe fn view_links(me: *const Self) -> *mut ListLinks<$n=
+um> {
+> > +                unsafe {
+> > +                    <Self as HasListLinks<$num>>::raw_get_list_links(m=
+e.cast_mut())
+> > +                }
+> > +            }
+> > +
+> > +            unsafe fn view_value(links_field: *mut ListLinks<$num>) ->=
+ *const Self {
+> > +                let spoff =3D ListLinksSelfPtr::<Self, $num>::LIST_LIN=
+KS_SELF_PTR_OFFSET;
+> > +                let self_ptr =3D unsafe { (links_field as *const u8).a=
+dd(spoff)
+> > +                    as *const ::core::cell::UnsafeCell<*const Self> };
+> > +                let cell_inner =3D ::core::cell::UnsafeCell::raw_get(s=
+elf_ptr);
+> > +                unsafe {
+> > +                    ::core::ptr::read(cell_inner)
+> > +                }
+> > +            }
+> > +
+> > +            unsafe fn post_remove(me: *mut ListLinks<$num>) -> *const =
+Self {
+> > +                unsafe { Self::view_value(me) }
+> > +            }
+> > +        }
+> > +    };
+>
+> The paths in this macro should use `$crate::...` to prevent import
+> errors.
+
+Will do.
+
+Alice
 
