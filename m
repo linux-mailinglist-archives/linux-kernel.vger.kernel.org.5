@@ -1,175 +1,130 @@
-Return-Path: <linux-kernel+bounces-135702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96DC989C9F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:42:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF6189C837
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:26:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 520B3286DC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:42:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A091C22D4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C4C142652;
-	Mon,  8 Apr 2024 16:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC66C14039D;
+	Mon,  8 Apr 2024 15:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="Qu+v/lYh"
-Received: from smtp68.iad3a.emailsrvr.com (smtp68.iad3a.emailsrvr.com [173.203.187.68])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i87uljCJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A1B1428F7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCF814038A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594515; cv=none; b=EMss4Lvod8yZdMFNLBN4R2nYayGFGZTrkZc4BYLqYdsPx9aQHtA4EHW/aFYUzHDkdJqPvbuuRQr5tV7vGWvGB60fS0h2+h5DFWQllc8qFjhoS29CbvEfqeE2YpMrRufdfkCzFFwy0dyxFwcVQSyiWyI1WkO9KWGx8pI0QlMKXWE=
+	t=1712589959; cv=none; b=m0bo3uOu73k2qbijUvtQpLBY456B7fy/JumIn3jPxcT1FO0TX52KC5Yl6K69vhOK3tGNtEHRNL3hU6PP+3ZuhX/LzcUHxcKqGDKj31YPWZ22bqOsqERCl6aS68O6A3GI/4TcBCis7rxrzuQbwgZDNLdXGuaB6zUDPycPQLI7bF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594515; c=relaxed/simple;
-	bh=DGas92X4/ZpcXb5tSqkSEcJjOWyWwlBNT3zZo8zN0jc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V7MDeEArjHDcMZg/nRBiM1DkPQQ5Md9kRg/EHcHqpZDRIKTon+DBUyUUdw9CoIGmIjRNcYwsoEstdjKPnateYV2wB9DkZkG8q5cZizFhB2lhj/tLz7YgpQEV0SjrxaoJtC19WBq7iI/UM033VED6zSSvZOxw3oTaFDZ35bNMHEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=Qu+v/lYh; arc=none smtp.client-ip=173.203.187.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
-Received: from smtp78.iad3a.emailsrvr.com (relay.iad3a.rsapps.net [172.27.255.110])
-	by smtp9.relay.iad3a.emailsrvr.com (SMTP Server) with ESMTPS id 9919A59AB
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 11:25:48 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-	s=20221208-6x11dpa4; t=1712589941;
-	bh=DGas92X4/ZpcXb5tSqkSEcJjOWyWwlBNT3zZo8zN0jc=;
-	h=Date:Subject:To:From:From;
-	b=Qu+v/lYhEfKwZ1oLPqGSzmVtAnawgyHZu/zH8EAR0nsJMmheP2OBhwnRF+uVnSHpA
-	 o28HZoUpSkmAux5R8yy/xSTfhF4mjXTDJ04hI17vNmRlH/Si+zLWeXBbmlvr2pdhBz
-	 UxvUid3aa+8gFDhjAvQGAMbrLC+JY1NkQPdDE+x8=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp18.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3A43E25415;
-	Mon,  8 Apr 2024 11:25:40 -0400 (EDT)
-Message-ID: <e9d04d29-b4a4-4ebc-b04f-9e9877f4eeee@mev.co.uk>
-Date: Mon, 8 Apr 2024 16:25:39 +0100
+	s=arc-20240116; t=1712589959; c=relaxed/simple;
+	bh=E2bygDLxctLyEaBgrlNgxm+JWadAQkRVMDbvCvnQsQk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mZ1AR14rgyxdPOZB0eLo/ntiUhksF5kgP+4IsfPeIRfBe1N3fQGLlT5lu4cOz3ss/DBcddmjAwZhrMeCWv4/vaIqBc2CRDL14/Iu5kSOFa4vDwltKjzXnWONF/l2qZblEf5Gpb7WNxb21W0nILdP+XrvR0MHm3k/+3pV9Oxyd38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i87uljCJ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712589956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E2bygDLxctLyEaBgrlNgxm+JWadAQkRVMDbvCvnQsQk=;
+	b=i87uljCJUPsuJLpA4HuRizPR9hOuHe5hVeKI7gRiakC72Fj8wCfUVqP7rFwVyc8F0DfUd8
+	wJ48ZiJI9y2/mgMMPx67aCED9/mBl44tJDjJT0WHwPYWSDgUiIpDt9ejDq3yZfpPKiqYL0
+	THd0mGxmWCBjvjejNNonXpRmzgD6hBw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-46-3Nu3O5w2MYqMQE1K92yMSQ-1; Mon, 08 Apr 2024 11:25:54 -0400
+X-MC-Unique: 3Nu3O5w2MYqMQE1K92yMSQ-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6993bd297ebso47656056d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:25:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712589954; x=1713194754;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E2bygDLxctLyEaBgrlNgxm+JWadAQkRVMDbvCvnQsQk=;
+        b=fZFV5MYXMMPpGoU2mIAYfu9qrlNOKe3SOi191wH8Dfrz1tk7gyWY1B/YWMr9troXzu
+         oSl/AaTMntOhkSZsegfMBLhkqftzlu6DUci5e3UEas4UuE1SHiH8/0D+omxlOfrB18CA
+         ZdRhhn/NA431KeYAB4p0SVUTBFSzOWq3Zo5ud6deFHGWdAxmWCmW2DFvQrXT5bow6zEX
+         U7Mxjyi/5yojCsuzPOOz6RTo3HY10clLZ8UlX1W2zFbvyeUVkW+LU/pVSyc1/iIvcVA9
+         DW4NzWRXVHDA2/1uR2nrhcnK7ERdHYXG0P3nYXk9IlblO8YuUPpfM/b2GYJz8eJObKSJ
+         YEWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZnI4uXLj3Ale850buU4ObmKtfwMxtmRSlZCaOVQVUi+CEkEEiOq07Kj52lFIHopCRNxlA5DXdHGI1E2cSMzUz/smDPI+p7qDs+Gne
+X-Gm-Message-State: AOJu0YwYLCcQQ7C3/qQxstKUKgBPlC2R7aTSsXf658g1/tPs/4VI/hfF
+	KTRVb1v8APSb2oy10DuaBs0Bb6jVq+ryl4Xm36pqc7BUUlieF8l3h3uYHuhjnxW1cNtExbnGl9O
+	yt8bs07WqX+ole3lXrr+I95OKwfqQNGc2ASjZ/v8tOSa4Gj2KzA3ZPz2C9otmLg==
+X-Received: by 2002:a05:6214:e47:b0:69b:1f07:44ce with SMTP id o7-20020a0562140e4700b0069b1f0744cemr2010616qvc.60.1712589954271;
+        Mon, 08 Apr 2024 08:25:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFjEWhXR1gWfsxsS0ukk1VT9VCFDHUHzGnv1HkbZBErleNvDjFgwO+Da1XgmL5NoX4hL4iYjw==
+X-Received: by 2002:a05:6214:e47:b0:69b:1f07:44ce with SMTP id o7-20020a0562140e4700b0069b1f0744cemr2010603qvc.60.1712589954016;
+        Mon, 08 Apr 2024 08:25:54 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id j9-20020a0cf9c9000000b0069b20aed8b4sm512884qvo.103.2024.04.08.08.25.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 08:25:53 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Alexandru Ardelean <alex@shruggie.ro>, linux-kernel@vger.kernel.org
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ tian.xianting@h3c.com, steffen.aschbacher@stihl.de,
+ gregkh@linuxfoundation.org
+Subject: Re: [PATCH][V2] sched/rt: Print curr when RT throttling activated
+In-Reply-To: <CAH3L5QqZ61H9Fk24R4K3vNdpmvBjnxHaxH7CRTT5Fa3tbot_hg@mail.gmail.com>
+References: <20230516122202.954313-1-alex@shruggie.ro>
+ <CAH3L5QoBqSOBHhoxSrYw6U34gqTPEhi_RB_Cve-YmBzYj3LXAQ@mail.gmail.com>
+ <CAH3L5QqZ61H9Fk24R4K3vNdpmvBjnxHaxH7CRTT5Fa3tbot_hg@mail.gmail.com>
+Date: Mon, 08 Apr 2024 17:25:50 +0200
+Message-ID: <xhsmho7ajanb5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] comedi: vmk80xx: fix incomplete endpoint checking
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org,
- syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
-References: <20240407162646.27486-1-n.zhandarovich@fintech.ru>
-Content-Language: en-GB
-From: Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-In-Reply-To: <20240407162646.27486-1-n.zhandarovich@fintech.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 0f6ca594-37db-496d-b7aa-0d846ec83d1a-1-2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 07/04/2024 17:26, Nikita Zhandarovich wrote:
-> While vmk80xx does have endpoint checking implemented, some things
-> can fall through the cracks. Depending on the hardware model,
-> URBs can have either bulk or interrupt type, and current version
-> of vmk80xx_find_usb_endpoints() function does not take that fully
-> into account. While this warning does not seem to be too harmful,
-> at the very least it will crash systems with 'panic_on_warn' set on
-> them.
-> 
-> Fix the issue found by Syzkaller [1] by somewhat simplifying the
-> endpoint checking process with usb_find_common_endpoints() and
-> ensuring that only expected endpoint types are present.
-> 
-> This patch has not been tested on real hardware.
-> 
-> [1] Syzkaller report:
-> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-> WARNING: CPU: 0 PID: 781 at drivers/usb/core/urb.c:504 usb_submit_urb+0xc4e/0x18c0 drivers/usb/core/urb.c:503
-> ...
-> Call Trace:
->   <TASK>
->   usb_start_wait_urb+0x113/0x520 drivers/usb/core/message.c:59
->   vmk80xx_reset_device drivers/comedi/drivers/vmk80xx.c:227 [inline]
->   vmk80xx_auto_attach+0xa1c/0x1a40 drivers/comedi/drivers/vmk80xx.c:818
->   comedi_auto_config+0x238/0x380 drivers/comedi/drivers.c:1067
->   usb_probe_interface+0x5cd/0xb00 drivers/usb/core/driver.c:399
-> ...
-> 
-> Similar issue also found by Syzkaller:
-> Link: https://syzkaller.appspot.com/bug?extid=5205eb2f17de3e01946e
-> 
-> Reported-and-tested-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
-> Fixes: 49253d542cc0 ("staging: comedi: vmk80xx: factor out usb endpoint detection")
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> ---
->   drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
->   1 file changed, 12 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-> index 4536ed43f65b..476885403c61 100644
-> --- a/drivers/comedi/drivers/vmk80xx.c
-> +++ b/drivers/comedi/drivers/vmk80xx.c
-> @@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
->   	struct vmk80xx_private *devpriv = dev->private;
->   	struct usb_interface *intf = comedi_to_usb_interface(dev);
->   	struct usb_host_interface *iface_desc = intf->cur_altsetting;
-> -	struct usb_endpoint_descriptor *ep_desc;
-> -	int i;
-> +	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
-> +	int i, ret;
+On 01/04/24 18:47, Alexandru Ardelean wrote:
+> On Thu, Jul 13, 2023 at 11:07=E2=80=AFPM Alexandru Ardelean <alex@shruggi=
+e.ro> wrote:
+>>
+>> On Tue, May 16, 2023 at 3:22=E2=80=AFPM Alexandru Ardelean <alex@shruggi=
+e.ro> wrote:
+>> >
+>> > From: Xianting Tian <tian.xianting@h3c.com>
+>> >
+>> > We may meet the issue, that one RT thread occupied the cpu by 950ms/1s,
+>> > The RT thread maybe is a business thread or other unknown thread.
+>> >
+>> > Currently, it only outputs the print "sched: RT throttling activated"
+>> > when RT throttling happen. It is hard to know what is the RT thread,
+>> > For further analysis, we need add more prints.
+>> >
+>> > This patch is to print current RT task when RT throttling activated,
+>> > It help us to know what is the RT thread in the first time.
+>> >
+>>
+>> Adding Greg on this patch, since it 's been a while.
+>> And also: ping :)
+>
+> Ping on this :)
+>
 
-I get a "warning: unused variable 'i' [-Wunused-variable]" warning here.
+AFAIA this has been proposed a few times in the past, the problem is that
+printing the current task isn't the right thing to do as it may not be the
+one that contributed most of the runtime that lead to throttling.
 
->   
-> -	if (iface_desc->desc.bNumEndpoints != 2)
-> -		return -ENODEV;
-> -
-> -	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
-> -		ep_desc = &iface_desc->endpoint[i].desc;
-> -
-> -		if (usb_endpoint_is_int_in(ep_desc) ||
-> -		    usb_endpoint_is_bulk_in(ep_desc)) {
-> -			if (!devpriv->ep_rx)
-> -				devpriv->ep_rx = ep_desc;
-> -			continue;
-> -		}
-> -
-> -		if (usb_endpoint_is_int_out(ep_desc) ||
-> -		    usb_endpoint_is_bulk_out(ep_desc)) {
-> -			if (!devpriv->ep_tx)
-> -				devpriv->ep_tx = ep_desc;
-> -			continue;
-> -		}
-> -	}
-> +	if (devpriv->model == VMK8061_MODEL)
-> +		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
-> +						&ep_tx_desc, NULL, NULL);
-> +	else
-> +		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
-> +						&ep_rx_desc, &ep_tx_desc);
->   
-> -	if (!devpriv->ep_rx || !devpriv->ep_tx)
-> +	if (ret)
->   		return -ENODEV;
->   
-> +	devpriv->ep_rx = ep_rx_desc;
-> +	devpriv->ep_tx = ep_tx_desc;
-> +
->   	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
->   		return -EINVAL;
->   
-
-I've tested it on a K8055/VM110 board and it still works OK. I don't 
-have a K8061/VM140 to test it with, but it should be OK.
-
-Feel free to add "Reviewed-by: Ian Abbott <abbotti@mev.co.uk>" after 
-fixing the compiler warning.
-
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+See https://lore.kernel.org/lkml/20221209163606.53a2370e@gandalf.local.home/
 
 
