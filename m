@@ -1,131 +1,197 @@
-Return-Path: <linux-kernel+bounces-134795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38F0789B700
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:49:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB00589B715
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64E7E2812F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 04:49:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85C681F21F0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0F06FC3;
-	Mon,  8 Apr 2024 04:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QDLEQU8b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F2979EA;
+	Mon,  8 Apr 2024 05:14:05 +0000 (UTC)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034231869;
-	Mon,  8 Apr 2024 04:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529D57470;
+	Mon,  8 Apr 2024 05:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712551742; cv=none; b=M4kNVeY+GXCrzLGnX7snKycXRcm/sgYerzlR8BzgWElnl24Q7GX5wixt5cEt6peJlfKT2bGk7hKMGBf1eUeFgYnP1/kEUFVcrUU3Ti6riJVv6xoLlIfLsehcY2DY33acEXDuSmZAoeN+zI5n19QN2aom+Nf8M6ymsXIhFfNkm34=
+	t=1712553245; cv=none; b=aakpLeXoHYHECzaYI+e+ecLsVaVdtP2Luvw28U+k+vKXeQTTIc38fW5S1txkXKq/WFFcamMeY0GKt/e/BswXwZ+UIo0BhMpCVRg9xDwoZa4sbC3idDSKKIxb/qawT8U+08GLjGPyA/6EZ6+zNFDl/YjFJJOqnZHmK0HfFoFN0Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712551742; c=relaxed/simple;
-	bh=y0uQm0GWht2PsG/ONzt4jj/tppBT8a3wXPqhnjmD6TA=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=kuNcfxBmYWvoxdg7C2tySKo+jBBXOMnWm46RaBm3rAY+yzjfBT4veF9HtxaVdXPhINWn/+286uEeCQ0eGt+gWJCgead+ArYMQ205PLdnrR6l/8Mubmzs13GWgjLTuyzSPoBzPcH40hm52WNWabCj5yGYKP9I3o+8o7ZnGy8h3Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QDLEQU8b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D48C433C7;
-	Mon,  8 Apr 2024 04:49:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712551741;
-	bh=y0uQm0GWht2PsG/ONzt4jj/tppBT8a3wXPqhnjmD6TA=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=QDLEQU8bkkwb7veH38llOXWkW5TsvpjXoGgd8rBgH0kHOwSMJkorCHfKXArPuAyaE
-	 OMv/0+Am4jpwcJQFHVyL5QYncHJ5D1IG9FIi4AiTwsJgR2+6L2O90R3kiSjszNcN+b
-	 70+O0DL7gEHuhF+2m3zczw4LcLqhL94SOhl2vexmp5Sv+zKkW0qErI17ALnTx37vkv
-	 9lXuXGobwjg2WGN79k5jWqiGQJkZxLmPDytpqcQ9IRiWhhijwguF+QCvRg6ggiA8jw
-	 cb7U28wZrGYlJ2SDyinKknVEwkyqFjUhTjp84PYBH2t53PZmoqf30Bv+1XcKjb73Ya
-	 BdOGwr3tm7HJQ==
-Message-ID: <90ac6d2dce33e8078db7cb5681fb94d7.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712553245; c=relaxed/simple;
+	bh=DLwbCxfXbeWl6N3M1HF6ulR5vBBN4/iqyDlNh+AnF8k=;
+	h=From:To:Subject:Date:Message-Id; b=Pu2PhX98juSRx3SEXRr2hHAx/JJDl+Ls9/1xZmffOccveIgHhfkS70P8L/wuLa08gki87UggvjSuTpKcwhN+IOSRS1ddpJmw6UaAq8BFJW/tBfCvzgYASG2A9/XOzwNP1a2SkqwwJG69Vld6wL70uOcIW9SgqYH6w58Ic+LC808=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 644221A1276;
+	Mon,  8 Apr 2024 07:13:56 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 005931A08A6;
+	Mon,  8 Apr 2024 07:13:56 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 31AD31820F77;
+	Mon,  8 Apr 2024 13:13:54 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shengjiu.wang@gmail.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ASoC: dt-bindings: imx-audio-spdif: convert to YAML
+Date: Mon,  8 Apr 2024 12:55:42 +0800
+Message-Id: <1712552142-27055-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240325210025.1448717-3-cristian.marussi@arm.com>
-References: <20240325210025.1448717-1-cristian.marussi@arm.com> <20240325210025.1448717-3-cristian.marussi@arm.com>
-Subject: Re: [PATCH v2 2/5] clk: scmi: Add support for state control restricted clocks
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com, f.fainelli@gmail.com, vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com, mturquette@baylibre.com, Cristian Marussi <cristian.marussi@arm.com>
-To: Cristian Marussi <cristian.marussi@arm.com>, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Sun, 07 Apr 2024 21:48:59 -0700
-User-Agent: alot/0.10
 
-Quoting Cristian Marussi (2024-03-25 14:00:22)
-> Some exposed SCMI Clocks could be marked as non-supporting state changes.
-> Configure a clk_ops descriptor which does not provide the state change
-> callbacks for such clocks when registering with CLK framework.
->=20
-> CC: Michael Turquette <mturquette@baylibre.com>
-> CC: Stephen Boyd <sboyd@kernel.org>
-> CC: linux-clk@vger.kernel.org
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
->  drivers/clk/clk-scmi.c | 22 +++++++++++++++-------
->  1 file changed, 15 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> index d5d369b052bd..fc9603988d91 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -18,6 +18,7 @@
-> =20
->  enum scmi_clk_feats {
->         SCMI_CLK_ATOMIC_SUPPORTED,
-> +       SCMI_CLK_STATE_CTRL_FORBIDDEN,
+Convert the imx-audio-spdif binding to YAML.
 
-Can it be positive, i.e. SCMI_CLK_STATE_CTRL_SUPPORTED?
+When testing dtbs_check, found below compatible strings
+are not listed in document:
 
->         SCMI_CLK_MAX_FEATS
->  };
-> =20
-> @@ -230,15 +231,19 @@ scmi_clk_ops_alloc(struct device *dev, unsigned lon=
-g feats_key)
->          * only the prepare/unprepare API, as allowed by the clock framew=
-ork
->          * when atomic calls are not available.
->          */
-> -       if (feats_key & BIT(SCMI_CLK_ATOMIC_SUPPORTED)) {
-> -               ops->enable =3D scmi_clk_atomic_enable;
-> -               ops->disable =3D scmi_clk_atomic_disable;
-> -               ops->is_enabled =3D scmi_clk_atomic_is_enabled;
-> -       } else {
-> -               ops->prepare =3D scmi_clk_enable;
-> -               ops->unprepare =3D scmi_clk_disable;
-> +       if (!(feats_key & BIT(SCMI_CLK_STATE_CTRL_FORBIDDEN))) {
-> +               if (feats_key & BIT(SCMI_CLK_ATOMIC_SUPPORTED)) {
-> +                       ops->enable =3D scmi_clk_atomic_enable;
-> +                       ops->disable =3D scmi_clk_atomic_disable;
-> +               } else {
-> +                       ops->prepare =3D scmi_clk_enable;
-> +                       ops->unprepare =3D scmi_clk_disable;
-> +               }
->         }
-> =20
-> +       if (feats_key & BIT(SCMI_CLK_ATOMIC_SUPPORTED))
-> +               ops->is_enabled =3D scmi_clk_atomic_is_enabled;
-> +
->         /* Rate ops */
->         ops->recalc_rate =3D scmi_clk_recalc_rate;
->         ops->round_rate =3D scmi_clk_round_rate;
-> @@ -288,6 +293,9 @@ scmi_clk_ops_select(struct scmi_clk *sclk, bool atomi=
-c_capable,
->         if (atomic_capable && ci->enable_latency <=3D atomic_threshold)
->                 feats_key |=3D BIT(SCMI_CLK_ATOMIC_SUPPORTED);
-> =20
-> +       if (ci->state_ctrl_forbidden)
+fsl,imx-sabreauto-spdif
+fsl,imx6sx-sdb-spdif
 
-Then this is negated.
+So add them in yaml file to pass the test.
 
-> +               feats_key |=3D BIT(SCMI_CLK_STATE_CTRL_FORBIDDEN);
-> +
->         /* Lookup previously allocated ops */
->         ops =3D clk_ops_db[feats_key];
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ .../bindings/sound/imx-audio-spdif.txt        | 36 -----------
+ .../bindings/sound/imx-audio-spdif.yaml       | 62 +++++++++++++++++++
+ 2 files changed, 62 insertions(+), 36 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+deleted file mode 100644
+index da84a442ccea..000000000000
+--- a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
++++ /dev/null
+@@ -1,36 +0,0 @@
+-Freescale i.MX audio complex with S/PDIF transceiver
+-
+-Required properties:
+-
+-  - compatible		: "fsl,imx-audio-spdif"
+-
+-  - model		: The user-visible name of this sound complex
+-
+-  - spdif-controller	: The phandle of the i.MX S/PDIF controller
+-
+-
+-Optional properties:
+-
+-  - spdif-out		: This is a boolean property. If present, the
+-			  transmitting function of S/PDIF will be enabled,
+-			  indicating there's a physical S/PDIF out connector
+-			  or jack on the board or it's connecting to some
+-			  other IP block, such as an HDMI encoder or
+-			  display-controller.
+-
+-  - spdif-in		: This is a boolean property. If present, the receiving
+-			  function of S/PDIF will be enabled, indicating there
+-			  is a physical S/PDIF in connector/jack on the board.
+-
+-* Note: At least one of these two properties should be set in the DT binding.
+-
+-
+-Example:
+-
+-sound-spdif {
+-	compatible = "fsl,imx-audio-spdif";
+-	model = "imx-spdif";
+-	spdif-controller = <&spdif>;
+-	spdif-out;
+-	spdif-in;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.yaml b/Documentation/devicetree/bindings/sound/imx-audio-spdif.yaml
+new file mode 100644
+index 000000000000..b29e024f553f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/imx-audio-spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX audio complex with S/PDIF transceiver
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - fsl,imx-audio-spdif
++          - enum:
++              - fsl,imx-sabreauto-spdif
++              - fsl,imx6sx-sdb-spdif
++      - items:
++          - enum:
++              - fsl,imx-audio-spdif
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  spdif-controller:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the i.MX S/PDIF controller
++
++  spdif-out:
++    type: boolean
++    description: |
++      If present, the transmitting function of S/PDIF will be enabled,
++      indicating there's a physical S/PDIF out connector or jack on the
++      board or it's connecting to some other IP block, such as an HDMI
++      encoder or display-controller.
++
++  spdif-in:
++    type: boolean
++    description: |
++      If present, the receiving function of S/PDIF will be enabled,
++      indicating there is a physical S/PDIF in connector/jack on the board.
++
++required:
++  - compatible
++  - model
++  - spdif-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    sound-spdif {
++        compatible = "fsl,imx-audio-spdif";
++        model = "imx-spdif";
++        spdif-controller = <&spdif>;
++        spdif-out;
++        spdif-in;
++    };
+-- 
+2.34.1
+
 
