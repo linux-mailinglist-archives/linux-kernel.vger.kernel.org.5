@@ -1,76 +1,78 @@
-Return-Path: <linux-kernel+bounces-136011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD2A89CEE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3090A89CEE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A8F7281363
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF8F6284CA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48967146A74;
-	Mon,  8 Apr 2024 23:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9917146000;
+	Mon,  8 Apr 2024 23:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a5YgRo2y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V1fUp2g+"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858751DA5E;
-	Mon,  8 Apr 2024 23:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D56E3D0BD
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 23:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712618414; cv=none; b=hKH/FlZmPvy/tMJfvMfXcozybPmLa2OkKQGSA8VgNztM/Y1GIobGrDDMGhDkI3bK+xyTSDK+sUrt7JbETxfYyN0Lg7ehbByg7DCg+3XqJeZs/0gwfulBGAweXGwCkgH9EYBrfjL5KXgoZ6gVM21M9TlUNkqU8SBZ0OVT1oVDSCY=
+	t=1712618436; cv=none; b=RULiv2kJ5KKihAxIDGNjNsMI9BFzCpwPFKXJrNQ8Q97nGtIdTFTAJp988/kbqOr2VJPPjBn/wlDdydWXHQerCJTektdT3QMgsg3JjEc/F24LcDI4+tq6JTBj/vnLKJvt47we2jyGisKATmgWybaDHhU7lLllnAda+/GFrRW37jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712618414; c=relaxed/simple;
-	bh=IfEtQ3E4nR5vHQBjwqTMc8kDx61wvIKdmTWG7x7WHzY=;
+	s=arc-20240116; t=1712618436; c=relaxed/simple;
+	bh=R0vbJw/BDBrD1C3Wb0cjCIKzALfO3U+u/MPT5lmUcrY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o4Mq69s+nLWuWirVC3idNvbE5aySkBmh7mWej6QnKJNWSQwvrUJ3sZGZZg4PYUBOGaQMnmAKyV2IHaZ3E53jBfkTIhwbTidLTyvA9Gj73uMgyickLDHharB8lHG43a4mNG7gbN/laaiavH8wcHyAESEXm5Pg3P2djQV1tt4IMCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a5YgRo2y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DF53C433C7;
-	Mon,  8 Apr 2024 23:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712618414;
-	bh=IfEtQ3E4nR5vHQBjwqTMc8kDx61wvIKdmTWG7x7WHzY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=a5YgRo2yr8x98V7V9NszagtKCxGxOsAZWMnB0RbGXRhbn8yfGJFvjL3quCjV6AbiE
-	 sDnGU10P5TunaqiS+WaJO84ONfyAI7MSzQ6+1KZvU9sfHQJlihy9llb5iPaAShOD6S
-	 zJs8+EoAXu4/wRBZIYlUXVk7LrpRYNov94dhvNhnANDUjKlVBQcdBbMhWNkdRLr6hM
-	 I2Ebz915JsAT4hXDxOPrWTwOJMXMz0jHPMkhAVX/uKA6IeHQ3/MjiA3C2tkA0cAimI
-	 5cE009USFsi1FZTV4EJH6A8yEOOO0w5OInDwsKTheDXEGqxAe7Q65YKCJQLFWMvNt+
-	 P7bcmKD9mazQg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id F15DFCE118A; Mon,  8 Apr 2024 16:20:13 -0700 (PDT)
-Date: Mon, 8 Apr 2024 16:20:13 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <f34ea327-bfb1-4014-8967-1429c2133e2d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
- <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
- <ZhROKK9dEPsNnH4t@google.com>
- <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
- <ZhRoDfoz-YqsGhIB@google.com>
- <edc8b1ad-dee0-456f-89fb-47bd4709ff0e@paulmck-laptop>
- <ZhR4bnFLA08YgAgr@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jYqUzY5zQ3MsgYcARY9eS6/8I6ktwEqK7eeOQU4otkoNdCHiWgiXalY0OiZKh10meSgtdhbYWe4ZeLw+JBcqXCUQ9+/zHNgRCTNKBruD4C2GO9jkw1PNQyjKKZvQFYFl1dBzKNtxVkxmhQ6/hJQPtGdzGRxaVCxz8gb+ABxGPVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V1fUp2g+; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2a54fb929c8so639882a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 16:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712618434; x=1713223234; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iGfzW3KSWciZlgCPg70ValvXebgWwF9Br7yRSrVmJ8Y=;
+        b=V1fUp2g+b7qKJEiXATTj3FznZF+WdNt+AtO6VyvLMvHxOmtkuDnmjOo2U4LR9nLjiv
+         RjSSNGCQsNt1CbjKNwSoXpfQwjwLgdVvHBc60lnilbtasvP02TIckI6oCjoegQQoMS54
+         FjBu2yDrfJftb0uz/aoOZw2vfkzy4SAoi3ybo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712618434; x=1713223234;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iGfzW3KSWciZlgCPg70ValvXebgWwF9Br7yRSrVmJ8Y=;
+        b=WfkUQAXy+y6GhIvoqtTT6Hy5bRlkgMBvGr8bJ4v8jxv8WuoFiNonlKC/icj5u2jJJB
+         sOnxl3Y193vq7/rTOF+Zs/fpq6x7NPUc9IAFZB9CsrG1j2/+0T1fFDTYIqkQD/u1K5S5
+         WFG3CIdVdpeCFxJETeCQIWo5UL5zTw4s9pyoJSsfjefJT3o0vjajolPFC4uqqTUIojGC
+         iAmzu1etit9VhcfsOA5+vSBE3qo9z6twgdxjF8bw1lqVPuMOHTgMHTueN00WvZ72vucV
+         HpCqdAcu/YHQhQFTyqkVn+rjGpbrNcSc2wrHUorScJ1tX+SeIlYc9osO5mB8gTOZ/JhK
+         5RvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvh69dshTu+LAXeq7AZJK4IPqs02RJ/llth9pS3PFyTJLV05E0uXopC8cdv+L1Z3pPyUWZ8XovOaJLnQbSQ2aDivnc1gegJzUDd9+/
+X-Gm-Message-State: AOJu0YxJlvPaj/xAwT1lcIwWsEwP38HSD8JsUgDq2IRNXDST+9fjHbT9
+	SXiHAF22EnL9F81wDL9Lzx+EWLbbrflgR0YtjZf8RN/EnnpjW+tZ3afny7l79A==
+X-Google-Smtp-Source: AGHT+IHagw1kJFyHr7aumQ6VVYFpyQcraFdxbmvsNxzzJN/4xkU5PmluPOJ0qvhBBB6jr79Q6fO2fg==
+X-Received: by 2002:a17:90a:7286:b0:2a2:d41d:2258 with SMTP id e6-20020a17090a728600b002a2d41d2258mr8360479pjg.28.1712618433895;
+        Mon, 08 Apr 2024 16:20:33 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fz7-20020a17090b024700b0029facfb3f25sm7026022pjb.45.2024.04.08.16.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 16:20:33 -0700 (PDT)
+Date: Mon, 8 Apr 2024 16:20:32 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	linux-hardening@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+Subject: Re: [PATCH v4] checkpatch: add check for snprintf to scnprintf
+Message-ID: <202404081620.551120F8EC@keescook>
+References: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,66 +81,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhR4bnFLA08YgAgr@google.com>
+In-Reply-To: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
 
-On Mon, Apr 08, 2024 at 04:06:22PM -0700, Sean Christopherson wrote:
-> On Mon, Apr 08, 2024, Paul E. McKenney wrote:
-> > On Mon, Apr 08, 2024 at 02:56:29PM -0700, Sean Christopherson wrote:
-> > > > OK, then we can have difficulties with long-running interrupts hitting
-> > > > this range of code.  It is unfortunately not unheard-of for interrupts
-> > > > plus trailing softirqs to run for tens of seconds, even minutes.
-> > > 
-> > > Ah, and if that occurs, *and* KVM is slow to re-enter the guest, then there will
-> > > be a massive lag before the CPU gets back into a quiescent state.
-> > 
-> > Exactly!
+On Mon, Apr 08, 2024 at 08:53:33PM +0000, Justin Stitt wrote:
+> I am going to quote Lee Jones who has been doing some snprintf ->
+> scnprintf refactorings:
 > 
-> ...
+> "There is a general misunderstanding amongst engineers that
+> {v}snprintf() returns the length of the data *actually* encoded into the
+> destination array.  However, as per the C99 standard {v}snprintf()
+> really returns the length of the data that *would have been* written if
+> there were enough space for it.  This misunderstanding has led to
+> buffer-overruns in the past.  It's generally considered safer to use the
+> {v}scnprintf() variants in their place (or even sprintf() in simple
+> cases).  So let's do that."
 > 
-> > OK, then is it possible to get some other indication to the
-> > rcu_sched_clock_irq() function that it has interrupted a guest OS?
+> To help prevent new instances of snprintf() from popping up, let's add a
+> check to checkpatch.pl.
 > 
-> It's certainly possible, but I don't think we want to go down that road.
-> 
-> Any functionality built on that would be strictly limited to Intel CPUs, because
-> AFAIK, only Intel VMX has the mode where an IRQ can be handled without enabling
-> IRQs (which sounds stupid when I write it like that).
-> 
-> E.g. on AMD SVM, if an IRQ interrupts the guest, KVM literally handles it by
-> doing:
-> 
-> 	local_irq_enable();
-> 	++vcpu->stat.exits;
-> 	local_irq_disable();
-> 
-> which means there's no way for KVM to guarantee that the IRQ that leads to
-> rcu_sched_clock_irq() is the _only_ IRQ that is taken (or that what RCU sees was
-> even the IRQ that interrupted the guest, though that probably doesn't matter much).
-> 
-> Orthogonal to RCU, I do think it makes sense to have KVM VMX handle IRQs in its
-> fastpath for VM-Exit, i.e. handle the IRQ VM-Exit and re-enter the guest without
-> ever enabling IRQs.  But that's purely a KVM optimization, e.g. to avoid useless
-> work when the host has already done what it needed to do.
-> 
-> But even then, to make it so RCU could safely skip invoke_rcu_core(), KVM would
-> need to _guarantee_ re-entry to the guest, and I don't think we want to do that.
-> E.g. if there is some work that needs to be done on the CPU, re-entering the guest
-> is a huge waste of cycles, as KVM would need to do some shenanigans to immediately
-> force a VM-Exit.  It'd also require a moderate amount of complexity that I wouldn't
-> want to maintain, particularly since it'd be Intel-only.
+> Suggested-by: Finn Thain <fthain@linux-m68k.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Thank you for the analysis!
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-It sounds like the current state, imperfect though it might be, is the
-best of the known possible worlds at the moment.
-
-But should anyone come up with something better, please do not keep it
-a secret!
-
-							Thanx, Paul
-
-> > Not an emergency, and maybe not even necessary, but it might well be
-> > one hole that would be good to stop up.
-> > 
-> > 							Thanx, Paul
+-- 
+Kees Cook
 
