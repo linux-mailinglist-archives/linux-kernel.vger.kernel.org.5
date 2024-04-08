@@ -1,85 +1,112 @@
-Return-Path: <linux-kernel+bounces-135954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3741089CDD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93D7A89CDD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:52:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6FDA284905
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:51:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD5A2849DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322F0148836;
-	Mon,  8 Apr 2024 21:51:07 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F5614884B;
+	Mon,  8 Apr 2024 21:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KFTehzjZ"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C727E8
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A011442F3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712613066; cv=none; b=R9HvOHfPPE/Bgu1JMhUkrfWv+XfETgmoEasqlI5hZ3Si4qeX9LKimzX6ja6xDG+d3c30xtPM/JO/vu96YoNxo4+ays+YioLgyih6U3RDUsOZlK6Bb2hqeJ3mLUUtI/wCMQvDlCFeH4o68cBgyfcC9mriLs5LL6KRcU0KPUqA27s=
+	t=1712613158; cv=none; b=bMnxpuMB7jn/fYDO4lJBZyaqfWcfI2v/jdJNLnf+pxqHV/R3otNN7WmiBeSVog+wPwHdgfxITvUhrxXL0SDSml2xJ2a8U6jjCbc9nnv9U+Ar9RmYRtZpUxthie4RlXtNX2zjHHjAQ0xOF2fOg9KwALfJDeTgoteSg2aSg9JaYco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712613066; c=relaxed/simple;
-	bh=2x+6KvoH32K8EzxgSJkqDxaoAVQEpeU2PsTNogoNZ44=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=qBykmzosTu87TL9amIY3tHuCgufEUH5q1T+i/HdzlWEyjlDG4l/M0F8uCBG/SBkjTOFSByfpYlxYV9fsVaJP/+a6zT2Y/GnvmftckF9t/f1YtQRsTlaDDlL6LJdT/SYBQXM/oXOCRgFcABz8L3v3t11mH4PlQsypipokgtfUZ20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5efba3f8fso129129839f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 14:51:05 -0700 (PDT)
+	s=arc-20240116; t=1712613158; c=relaxed/simple;
+	bh=nvpM8tXyK/CURoTjuw83DuYMKwJ9CyjRJDN6oCQ+WcM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=rPMlj8DPgvA6VrR/cw+M53jrKN5k9cpnJ0pBvQ1DS9yin69sllS0lgoY1IEjA36rJtDiZZNR7eDPuqFmvT1NNi8XACDXFlxjkI3uDxlgCJouxFdkCJ4TM+kSz1jcqUT0ytd8cpgSWO4zNDBdN/htOAC+CERq/SDWiGg64zYXxuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KFTehzjZ; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61506d6d667so84903427b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 14:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712613156; x=1713217956; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=amcZSzW3yyTzEXypL37TcjBNZBV4M3dWgOvIguTbuzI=;
+        b=KFTehzjZWAYt/par8SOgZJrE6uQ7QnRoaIeo1W6zXkM/3vv17gRR8exgPPpaXIsh9l
+         7SHnq9H/+ZkMzn9lYDlsM7Z33ZeT+HUfbIA/OLmi6PTlRR1zuKfboNs8uFNNZqk6YW+v
+         VgCWq47v3o0c88gEc6nlR1dO/HpnplipYCAT5v4LNiQTIUA/T7vsXxC49c3cpfDHXpyd
+         FMUQ6sdjfWRJ10vd+r0RWBVEurVBSqrOIAIZ+RoKgFaYo2OGjtlEe2lH1iHuEI39/Y7o
+         Nk91oi5ry9ANeV53K6QbwK6/yAiKIAOZI0l1mSVPz7IjfeLfu0N4/4V1f6+RGqRJq8y0
+         IodA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712613064; x=1713217864;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1XSBFQxppuDIBA6DKA8wazKAqSDRqcEM0rBXWCorMY=;
-        b=JpxFQcfA8cjTPd722zptcKUpeXrB8e1DBuFBI7StaWI7Chv3ANkogV2Waychr+Qes7
-         R2U2GIijHgPqk3EZTkUAMHz7wn492WPw4wC6KGS5xAswjQtP1drfDYIKduwH2JWGu1Uz
-         Gf5eOxFqh4FnvFp/RyHNq/nl0GFN3ODF5zdCYd6rOeAKfsdSzEsB2yWbgzwUzRcuBzWp
-         RiycnGvug41uqq15MIfJ/588hHyXeHAKGe3my5mMUGBRMZD7ufYxHMAkSQoK4n4RPk4X
-         g5dABZFeD2pw+UP4PAhu8K+DuBYUhijcQSwrrVgzgs1DMt0El3XklV1X3OUxkp4h6/Et
-         j+yg==
-X-Gm-Message-State: AOJu0YxwtItW2qA61kT4IgusX8IR24678zHd2FbooanYXCC6acw3UEg6
-	Z6XF5LgYRn9EzaT8+BFacuTiANrIdWXf9EjGiWWc+ZOFuZWKaezVbuK4CXcteeQ2yHll3id6bMs
-	V3elXQrkfQ8vohphfYltoWuAPJwkteHnTb+cU5ZN5VcXks2kwF7ng2iXS6Q==
-X-Google-Smtp-Source: AGHT+IF6+jYiKS9aNPe7q0ivPhn2muXxdFR85m/Vxot8+1Ypei3KIE5QPbnE3t6gxHC6pKx3wAlwVE77knw73GV7LsHTGDYz+BdI
+        d=1e100.net; s=20230601; t=1712613156; x=1713217956;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=amcZSzW3yyTzEXypL37TcjBNZBV4M3dWgOvIguTbuzI=;
+        b=tXpRt2oKYttLh5lKOW8wFpVfYD6E8XMlNj4ODZHCMXE36TYddYrlmMO+Ji9VAPhsCl
+         BmcK4LFMLQGoylNzm1QIUJEA8hdbqJVpLxxw6O07AmTCYah6IxizXj9euFsyrOhkTt6N
+         sTt5dyeoylPD8NZeYCGvsCPIy6O2TyRuY71nDnk7iJXmgBS/upIJVxTWxlDE/RcWWNPu
+         b1og5qj+niAxF6BJYuZ7IRFaJEP8hLMTGyLABzPauHCttvwGavZG7L71Uwf/Emjgnz2e
+         5lKWlCSiHpmUk6e/my8kcVeZTNJQUGAmqKozGzYcdfFMO8PtHkLMU903OJSs2a3cyfm2
+         uVxA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4O5/HndATFQKc6Se9hAfxOgvaVyG8ef9AePO23RBrzPI/EM+n9ghjIs537AlCld/Xt4aHX2yOB5mtEiGtQP/hWMiJ7zuXH/P28/2o
+X-Gm-Message-State: AOJu0YxuMLohkh05XWzdP+dzkbtITJ/09v0wT5vmyxwTA0wlEwDTkr0d
+	AZRdSv0HiuPaHD1IHFE15PWXUS1MgyBN7Pc1qYLt0GXeHabMA+43axinsAaDMwIZlNAv8ly3wT7
+	TrbIccw==
+X-Google-Smtp-Source: AGHT+IEkq+yrPhgyYDRCrGfUbGremKSvF9Tls/NyM9Ex8fLO1ww0uaL+bHkVzWJv2HGc6KYIwiPvmzeEyS36
+X-Received: from dhavale-desktop.mtv.corp.google.com ([2620:15c:211:201:9081:5db7:4b17:a606])
+ (user=dhavale job=sendgmr) by 2002:a81:ff05:0:b0:615:12a5:49c9 with SMTP id
+ k5-20020a81ff05000000b0061512a549c9mr2538367ywn.3.1712613156122; Mon, 08 Apr
+ 2024 14:52:36 -0700 (PDT)
+Date: Mon,  8 Apr 2024 14:52:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20c9:b0:368:c21e:3898 with SMTP id
- 9-20020a056e0220c900b00368c21e3898mr771465ilq.3.1712613064603; Mon, 08 Apr
- 2024 14:51:04 -0700 (PDT)
-Date: Mon, 08 Apr 2024 14:51:04 -0700
-In-Reply-To: <20240408111049.28844-1-n.zhandarovich@fintech.ru>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005a8d0606159ccdd1@google.com>
-Subject: Re: [syzbot] [usb?] [media?] WARNING in smsusb_start_streaming/usb_submit_urb
-From: syzbot <syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, n.zhandarovich@fintech.ru, 
-	syzkaller-bugs@googlegroups.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240408215231.3376659-1-dhavale@google.com>
+Subject: [PATCH v1] erofs: use raw_smp_processor_id() to get buffer from
+ global buffer pool
+From: Sandeep Dhavale <dhavale@google.com>
+To: Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Chunhai Guo <guochunhai@vivo.com>
+Cc: linux-erofs@lists.ozlabs.org, 
+	syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com, 
+	kernel-team@android.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+erofs will decompress in the preemptible context (kworker or per cpu
+thread). As smp_processor_id() cannot be used in preemptible contexts,
+use raw_smp_processor_id() instead to index into global buffer pool.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Reported-by: syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com
+Fixes: 7a7513292cc6 ("erofs: rename per-CPU buffers to global buffer pool and make it configurable")
+Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+---
+ fs/erofs/zutil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reported-and-tested-by: syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com
+diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
+index b9b99158bb4e..036024bce9f7 100644
+--- a/fs/erofs/zutil.c
++++ b/fs/erofs/zutil.c
+@@ -30,7 +30,7 @@ static struct shrinker *erofs_shrinker_info;
+ 
+ static unsigned int z_erofs_gbuf_id(void)
+ {
+-	return smp_processor_id() % z_erofs_gbuf_count;
++	return raw_smp_processor_id() % z_erofs_gbuf_count;
+ }
+ 
+ void *z_erofs_get_gbuf(unsigned int requiredpages)
+-- 
+2.44.0.478.gd926399ef9-goog
 
-Tested on:
-
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15e8df4b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dcd96d223f515533
-dashboard link: https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=147f1bd3180000
-
-Note: testing is done by a robot and is best-effort only.
 
