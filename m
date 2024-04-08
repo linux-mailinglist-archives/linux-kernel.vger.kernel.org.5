@@ -1,135 +1,193 @@
-Return-Path: <linux-kernel+bounces-135804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B38B789CB91
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:17:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29A889CB94
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:18:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A7AAB264E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:17:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 117921C21874
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B170C1448C1;
-	Mon,  8 Apr 2024 18:17:11 +0000 (UTC)
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6367C1448CD;
+	Mon,  8 Apr 2024 18:17:57 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B6E1442F7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABF71E532;
+	Mon,  8 Apr 2024 18:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712600231; cv=none; b=uoFm5/WT76vIpWxU79s3gMYfIgUkvlrtoeHXKk8j2VPoq1FjWpmoH05T6sv7/x6d1aKB/s0e7JZd+SAc2NLqNOdmRtvuv6JmPJHJ2KYb1xkllTWpJk5l07zBpC1M3oCwF6bf0BL73kr6uS3Ko0hW1chSu7mPl8lMPwtBNidv72A=
+	t=1712600276; cv=none; b=IpYvMwErpTLDkIQziL42BPX4aUFOmeXAuBPOf/dzqQkXq2vZoNOybXa/yepImAt4tz8PJQcKefJkiug2Wm/WkbS/pZWa/4gCO/vX3n37tiEOKdhes4B7aLgnPeWBXRFraFb2lwsEg7DZb8e3D5jr1EZPySINhZ6zFs3dN3JY288=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712600231; c=relaxed/simple;
-	bh=fbdAcjzZo3kIrQh8S0gE9I3aQKCKF+z1gndJcfs9lqg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=LdE++IPndB0URRK8L2I/kHzPP5MjwJd6L9t25JtA7ZeP+qpNEg8vh6Cy9nhPfNggGd6p9sroNH3cq34d+I3oOMYxkRzMZ6LSZjNn7eV33Dvh5mRt3u4DgzADO+h/v/YFFuNeGqmUqqupMS3tCJBT55/TOY94s27i3fjXDZqsymw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 26D3640A8C; Mon,  8 Apr 2024 11:17:02 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 25F7E40787;
-	Mon,  8 Apr 2024 11:17:02 -0700 (PDT)
-Date: Mon, 8 Apr 2024 11:17:02 -0700 (PDT)
-From: "Christoph Lameter (Ampere)" <cl@linux.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-cc: Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org, 
-    linux-mm@kvack.org, penberg@kernel.org, rientjes@google.com, 
-    iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, 
-    roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, xuqiang36@huawei.com, 
-    wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v2] mm/slub: Reduce memory consumption in extreme
- scenarios
-In-Reply-To: <a8b554c8-b71a-4f0f-a291-996c31674966@suse.cz>
-Message-ID: <e3cb4e2d-c80c-71d4-8d86-8391c2780511@linux.com>
-References: <20240330082335.29710-1-chenjun102@huawei.com> <0a59e5a1-1961-5eb2-2eb0-a930006e3f80@gentwo.org> <a8b554c8-b71a-4f0f-a291-996c31674966@suse.cz>
+	s=arc-20240116; t=1712600276; c=relaxed/simple;
+	bh=4e12wlkUU8uMJAum9MdZzs7k9xEejPaPoeShEZnr8bE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EjbFHxbvC6jr6q+H+/SKWe0SnotkwHtZE3eWF+lSUZD8X+sn+64NBLOPeA5SL7IUIp7KnZGj/qRVstzfYVMv7G7vAZgTzqEres7KkAI9qefueOifSK9ZdrGo3wz9oSSMQi+gqi3d/12nBnzet04KCm9VqY2PKEPTWZh4L/09QUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 02A0140E00B2;
+	Mon,  8 Apr 2024 18:17:52 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id c1EzLK9bHGIi; Mon,  8 Apr 2024 18:17:46 +0000 (UTC)
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9BE4D40E0187;
+	Mon,  8 Apr 2024 18:17:38 +0000 (UTC)
+Date: Mon, 8 Apr 2024 20:17:32 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: x86-ml <x86@kernel.org>
+Cc: linux-tip-commits@vger.kernel.org,
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
+	Ingo Molnar <mingo@kernel.org>, Kees Cook <keescook@chromium.org>,
+	linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip: x86/boot] x86/boot: Move kernel cmdline setup earlier in
+ the boot process (again)
+Message-ID: <20240408181732.GCZhQ0vGSfP3Gf8tDW@fat_crate.local>
+References: <171169867308.10875.15117897441999380027.tip-bot2@tip-bot2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <171169867308.10875.15117897441999380027.tip-bot2@tip-bot2>
 
-On Mon, 8 Apr 2024, Vlastimil Babka wrote:
+On Fri, Mar 29, 2024 at 07:51:13AM -0000, tip-bot2 for Julian Stecklina wrote:
+> The following commit has been merged into the x86/boot branch of tip:
+> 
+> Commit-ID:     4faa0e5d6d79fc4c6e1943e8b62a65744d8439a0
+> Gitweb:        https://git.kernel.org/tip/4faa0e5d6d79fc4c6e1943e8b62a65744d8439a0
+> Author:        Julian Stecklina <julian.stecklina@cyberus-technology.de>
+> AuthorDate:    Thu, 28 Mar 2024 16:42:12 +01:00
+> Committer:     Ingo Molnar <mingo@kernel.org>
+> CommitterDate: Fri, 29 Mar 2024 08:19:12 +01:00
+> 
+> x86/boot: Move kernel cmdline setup earlier in the boot process (again)
 
-> On 4/5/24 6:50 PM, Christoph Lameter (Ampere) wrote:
->> On Sat, 30 Mar 2024, Chen Jun wrote:
->>
->>> When kmalloc_node() is called without __GFP_THISNODE and the target node
->>> lacks sufficient memory, SLUB allocates a folio from a different node
->>> other than the requested node, instead of taking a partial slab from it.
->>
->> Hmmm... This would mean that we do not consult the partial lists of the
->> other nodes. That is something to be fixed in the allocator.
->
-> Which allocator? If you mean SLUB, this patch fixes it. If you mean page
-> allocator, I don't see how.
+..
 
+> The order is now:
+> 
+> 	setup_arch():
+> 	  -> Assemble final command line:
+> 	     boot_command_line = builtin_cmdline + boot_cmdline
+> 
+> 	  -> early_cpu_init()
+> 	    -> early_identify_cpu()
+> 	      -> sld_setup()
+> 		-> sld_state_setup()
+> 		  -> Looks for split_lock_detect in boot_command_line
+> 
+> 	  -> e820__memory_setup()
+> 
+> 	  -> parse_early_param()
 
-The SLUB allocator of course. And the patch does not fix it. It tries to 
-convince the page allocator to give us a folio from the right node.
+So that thing. Should we do something like the silly thing below so that
+it catches potential issues with parsing builtin cmdline stuff too
+early?
 
-That kind of activity can be controlled within the page allocator via the 
-node reclaim setting. No point in doing multiple calls into the page 
-allocator.
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index e61e68d71cba..2e1d19e103e6 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -7,6 +7,7 @@
+ #define COMMAND_LINE_SIZE 2048
+ 
+ #include <linux/linkage.h>
++
+ #include <asm/page_types.h>
+ #include <asm/ibt.h>
+ 
+@@ -28,6 +29,8 @@
+ #define NEW_CL_POINTER		0x228	/* Relative to real mode data */
+ 
+ #ifndef __ASSEMBLY__
++#include <linux/cache.h>
++
+ #include <asm/bootparam.h>
+ #include <asm/x86_init.h>
+ 
+@@ -133,6 +136,12 @@ asmlinkage void __init __noreturn x86_64_start_reservations(char *real_mode_data
+ #endif /* __i386__ */
+ #endif /* _SETUP */
+ 
++#ifdef CONFIG_CMDLINE_BOOL
++extern bool builtin_cmdline_added __ro_after_init;
++#else
++#define builtin_cmdline_added 0
++#endif
++
+ #else  /* __ASSEMBLY */
+ 
+ .macro __RESERVE_BRK name, size
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 55a1fc332e20..a35ca100f57c 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -165,6 +165,7 @@ unsigned long saved_video_mode;
+ static char __initdata command_line[COMMAND_LINE_SIZE];
+ #ifdef CONFIG_CMDLINE_BOOL
+ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
++bool builtin_cmdline_added __ro_after_init;
+ #endif
+ 
+ #if defined(CONFIG_EDD) || defined(CONFIG_EDD_MODULE)
+@@ -765,6 +766,7 @@ void __init setup_arch(char **cmdline_p)
+ 		strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+ 	}
+ #endif
++	builtin_cmdline_added = true;
+ #endif
+ 
+ 	strscpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
+diff --git a/arch/x86/lib/cmdline.c b/arch/x86/lib/cmdline.c
+index 80570eb3c89b..6307cd62acd7 100644
+--- a/arch/x86/lib/cmdline.c
++++ b/arch/x86/lib/cmdline.c
+@@ -6,9 +6,12 @@
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/ctype.h>
++
+ #include <asm/setup.h>
+ #include <asm/cmdline.h>
+ 
++#include <asm/bug.h>
++
+ static inline int myisspace(u8 c)
+ {
+ 	return c <= ' ';	/* Close enough approximation */
+@@ -205,12 +208,16 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
+ 
+ int cmdline_find_option_bool(const char *cmdline, const char *option)
+ {
++	WARN_ON_ONCE(!builtin_cmdline_added);
++
+ 	return __cmdline_find_option_bool(cmdline, COMMAND_LINE_SIZE, option);
+ }
+ 
+ int cmdline_find_option(const char *cmdline, const char *option, char *buffer,
+ 			int bufsize)
+ {
++	WARN_ON_ONCE(!builtin_cmdline_added);
++
+ 	return __cmdline_find_option(cmdline, COMMAND_LINE_SIZE, option,
+ 				     buffer, bufsize);
+ }
 
+-- 
+Regards/Gruss,
+    Boris.
 
->>> However, since the allocated folio does not belong to the requested
->>> node, it is deactivated and added to the partial slab list of the node
->>> it belongs to.
->>
->> That should only occur if a request for an object for node X follows a
->> request for an object from node Y.
->
-> Are you sure? I think it's a stream of requests for node X happening on a
-> cpu of node Y, AFAICS the first attempt will allocate the slab page from
-> node different than X (possibly node Y because it's local and has pages
-> available unlike node X which is full). It does get installed as the cpu
-> slab, but then the next request is also for node X, so the node matching
-> checks make the slab deactivate and allocate a new one.
-
-Then there is something broken in the cpuslab logic.
-
-The first request of CPU C for memory from node X should lead to:
-
-1. deactivation of current cpu slab if it is not from node X
-2. retrieval of a slab from node X and activation of that slab as cpuslab
-3. Return of an object from that slab and therefore from node X.
-
-Further allocation should be caught by the hotpatch where we realize that 
-there is a request from node X and the current cpuslab is from node X and 
-therefore fastpath logic can be used to retrieve the next object.
-
-
->> get_any_partial() should do that. Maybe it is not called in the
->> kmalloc_node case.
->
-> Yes, get_any_partial() is currently skipped for requests of numa node
-> different from NUMA_NO_NODE.
-
-Maybe we can use that function after checking that the page allocator is 
-over the watermark on the node that we were wanting to allocate from. That 
-check should be fast.
-
->> I think it's a useful tradeof to first try satisfy the node preference with
-> a GFP_NOWAIT allocation. If it succeeds, the target node is not overloaded,
-> we get the page from the desired node and further allocations will of the
-> same node will not deactivate it. If it doesn't succeed then we indeed
-> fallback to slabs on partial list from other nodes before wastefully
-> allocating new pages from the other nodes, which addresses the scenario that
-> motivated this patch.
-
-There are also the memory policies etc to consider. F.e. for the 
-interleave policy the pages must come from different nodes in sequence to 
-properly balance the allocations over multiple NUMA nodes. There are cases 
-in which the allocations are forced to specific sets of nodes or where a 
-node is preferred but fallback to local should occur.
-
-If you now do multiple page allocator calls then the NUMA interleave 
-policy etc etc may no longer work. I have not looked to deep into those.
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
