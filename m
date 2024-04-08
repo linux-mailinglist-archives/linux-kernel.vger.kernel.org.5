@@ -1,113 +1,161 @@
-Return-Path: <linux-kernel+bounces-135974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1760789CE70
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:34:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2950389CE7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:35:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C190E283B1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:34:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD41D1F23501
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913341EEF7;
-	Mon,  8 Apr 2024 22:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207DF2744B;
+	Mon,  8 Apr 2024 22:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="l2dGt1Z2"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJlZIYqY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2AB7462;
-	Mon,  8 Apr 2024 22:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C327462;
+	Mon,  8 Apr 2024 22:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712615634; cv=none; b=UaIi+314JiI67oWQwTT3VhdebkkGjsFolxJw6l2XK+iCYD0oQJftITucbuY0aZZe951/gEbXtdyC0mz/B0Gx8x33z77pUTjYhLRAGWemXuwt4bmZM8tkc/cGb0XWnxRn5kRc6qxVG7X/wcgYY40DMATpXiYmwxeHYaELL/TGlNo=
+	t=1712615713; cv=none; b=RClinOqDn+hV/bm6GI693hySiSr/l9KaKtcJXYUm/15W0/iuF+7AqK2vuS26TjkPcPhqg1c0fjIv8qmfkjITQVWjCxGLx7ijxeyefT9zEnaUHmKGHiNYR8ELDRSbdoeLmuMtyddGsQz63nI5q2HT7howpYAArHqcSxIjdgnnJvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712615634; c=relaxed/simple;
-	bh=E810jBGAK64VhzZw3D7+umxL/CQhDPc+nvZhUihM1QI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F84FnIM0oGq+D3nA3/iUVBEg4E6M5xkNvw9epSpjnj4t2InYug94O8/p1tGglGmJ2tLEX6h5HO8eIrn52hjzgm5Kh0/FeqrIvvhqQDRAsOEhcMgyHd+l/GS2Fmybl9vKIU0NOLYEZMhB8/I47GhSvS+SM4IxRZwcqqD/BIJECW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=l2dGt1Z2; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712615625;
-	bh=E810jBGAK64VhzZw3D7+umxL/CQhDPc+nvZhUihM1QI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=l2dGt1Z2zqvhYzv3GAf4BWYdEJ+caQ0yo2Ezhz7qJbDhvGzMadzDki21QhiS7yHal
-	 oH1kwedzecbYjrHcds/JH7jO4T6rUo8EefU/ENEc67uwP55QJnX/5TgyhMGBZ39zo+
-	 I+pj4GtywoS1y/lV4a9feTuvdZhiowl9FCxakMsZ+3qyDHJVvWGoaNbhY+dJ5xvxJO
-	 e9Ip326LNE4JzbpAyTl9lvtFxr4vEvRyOsveEiT2sBQIw5ATz3NrKmjBKlEp1CcpPO
-	 l1GIpClZsuL7bwYyHZlHhZibA2YZu6iNgwIQ6Srz0C2lDJM+pefPx5SBr2VZ2d09YA
-	 VqZguOqf0RU9Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VD3ls0LLFz4wb0;
-	Tue,  9 Apr 2024 08:33:44 +1000 (AEST)
-Date: Tue, 9 Apr 2024 08:33:41 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Linux Next
- Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the sound-asoc tree
-Message-ID: <20240409083341.05419e72@canb.auug.org.au>
-In-Reply-To: <00016dca-9e32-4cc1-8d0e-36eaf12dc466@intel.com>
-References: <20240408141216.3eb1128c@canb.auug.org.au>
-	<00016dca-9e32-4cc1-8d0e-36eaf12dc466@intel.com>
+	s=arc-20240116; t=1712615713; c=relaxed/simple;
+	bh=t+9wrEyDbOSCNx4ZXTbZR4MUwwym+2CgIj+H0hIRykA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KKkZO+hsCazolAIzwnKISw2D5F74GWDsbU/6nCbxHuMGef1PfBa3PPwCMWbw6d2MfBOD6+IgrFwwLUUtLdfeXD/gL5cE7Y99bZROjWgIl0s9ZBML9PCsAcY6CH7Hrw0TDOD+MPAGdAYNI6xpF4+GCLtecXlny8WMDv/lzfIFdtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJlZIYqY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C038DC433C7;
+	Mon,  8 Apr 2024 22:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712615712;
+	bh=t+9wrEyDbOSCNx4ZXTbZR4MUwwym+2CgIj+H0hIRykA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=jJlZIYqYUMy4yIcvfVEK40mHzAc0SXiC16+zKpD1UCn6OpHaJNr2Xcqu3DNX7xdNb
+	 dq223WT6Bi4ch2ROsPlXnpIjeK1iDBgmMimiYD7DhBs3xZto5CTvpFbR1EgPlVdenY
+	 OPUwIuqMBsySKE8+Ohtl81IzUDlJY769T5lxY+UlFlyMrCLcxJ7n0t6gCCSln3HzWY
+	 WqWphZbLZ+Be69hfzz7XUk24B3aSB24Jflh34XBX6miP+jfbmJREOtXTQZPJoUzjSs
+	 U33Q6+8spxA8QDU4QrmyR3YrfYmg2J/ZndPSh6OWtjEiO9Y1hSz3QKmHDm6uQBLhmk
+	 zA8def02mHsoA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 62018CE118A; Mon,  8 Apr 2024 15:35:12 -0700 (PDT)
+Date: Mon, 8 Apr 2024 15:35:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <edc8b1ad-dee0-456f-89fb-47bd4709ff0e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad>
+ <ZhAN28BcMsfl4gm-@google.com>
+ <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com>
+ <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
+ <ZhROKK9dEPsNnH4t@google.com>
+ <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
+ <ZhRoDfoz-YqsGhIB@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JCXYvRXIXDDAmDVl3FKnaP0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhRoDfoz-YqsGhIB@google.com>
 
---Sig_/JCXYvRXIXDDAmDVl3FKnaP0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 08, 2024 at 02:56:29PM -0700, Sean Christopherson wrote:
+> On Mon, Apr 08, 2024, Paul E. McKenney wrote:
+> > On Mon, Apr 08, 2024 at 01:06:00PM -0700, Sean Christopherson wrote:
+> > > On Mon, Apr 08, 2024, Paul E. McKenney wrote:
+> > > > > > > +	if (vcpu->wants_to_run)
+> > > > > > > +		context_tracking_guest_start_run_loop();
+> > > > > > 
+> > > > > > At this point, if this is a nohz_full CPU, it will no longer report
+> > > > > > quiescent states until the grace period is at least one second old.
+> > > > > 
+> > > > > I don't think I follow the "will no longer report quiescent states" issue.  Are
+> > > > > you saying that this would prevent guest_context_enter_irqoff() from reporting
+> > > > > that the CPU is entering a quiescent state?  If so, that's an issue that would
+> > > > > need to be resolved regardless of what heuristic we use to determine whether or
+> > > > > not a CPU is likely to enter a KVM guest.
+> > > > 
+> > > > Please allow me to start over.  Are interrupts disabled at this point,
+> > > 
+> > > Nope, IRQs are enabled.
+> > > 
+> > > Oof, I'm glad you asked, because I was going to say that there's one exception,
+> > > kvm_sched_in(), which is KVM's notifier for when a preempted task/vCPU is scheduled
+> > > back in.  But I forgot that kvm_sched_{in,out}() don't use vcpu_{load,put}(),
+> > > i.e. would need explicit calls to context_tracking_guest_{stop,start}_run_loop().
+> > > 
+> > > > and, if so, will they remain disabled until the transfer of control to
+> > > > the guest has become visible to RCU via the context-tracking code?
+> > > > 
+> > > > Or has the context-tracking code already made the transfer of control
+> > > > to the guest visible to RCU?
+> > > 
+> > > Nope.  The call to __ct_user_enter(CONTEXT_GUEST) or rcu_virt_note_context_switch()
+> > > happens later, just before the actual VM-Enter.  And that call does happen with
+> > > IRQs disabled (and IRQs stay disabled until the CPU enters the guest).
+> > 
+> > OK, then we can have difficulties with long-running interrupts hitting
+> > this range of code.  It is unfortunately not unheard-of for interrupts
+> > plus trailing softirqs to run for tens of seconds, even minutes.
+> 
+> Ah, and if that occurs, *and* KVM is slow to re-enter the guest, then there will
+> be a massive lag before the CPU gets back into a quiescent state.
 
-Hi Cezary,
+Exactly!
 
-On Mon, 8 Apr 2024 10:24:28 +0200 Cezary Rojewski <cezary.rojewski@intel.co=
-m> wrote:
->
-> Thank you for the report. I do not believe the patch above is the correct=
- fix.
+> > One counter-argument is that that softirq would take scheduling-clock
+> > interrupts, and would eventually make rcu_core() run.
+> 
+> Considering that this behavior would be unique to nohz_full CPUs, how much
+> responsibility does RCU have to ensure a sane setup?  E.g. if a softirq runs for
+> multiple seconds on a nohz_full CPU whose primary role is to run a KVM vCPU, then
+> whatever real-time workaround the vCPU is running is already doomed.
 
-Sure, I just used that to get the build to work so I could continue.
+True, but it is always good to be doing one's part.
 
-> Below is the context and the proposed fix [1] has just been sent to alsa-=
-devel.
->=20
-> [1]: https://lore.kernel.org/alsa-devel/20240408081840.1319431-1-cezary.r=
-ojewski@intel.com/
+> > But does a rcu_sched_clock_irq() from a guest OS have its "user"
+> > argument set?
+> 
+> No, and it shouldn't, at least not on x86 (I assume other architectures are
+> similar, but I don't actually no for sure).
+> 
+> On x86, the IRQ that the kernel sees comes looks like it comes from host kernel
+> code.  And on AMD (SVM), the IRQ doesn't just "look" like it came from host kernel,
+> the IRQ really does get vectored/handled in the host kernel.  Intel CPUs have a
+> performance optimization where the IRQ gets "eaten" as part of the VM-Exit, and
+> so KVM synthesizes a stack frame and does a manual CALL to invoke the IRQ handler.
+> 
+> And that's just for IRQs that actually arrive while the guest is running.  IRQs
+> arrive while KVM is active, e.g. running its large vcpu_run(), are "pure" host
+> IRQs.
 
-I will apply that fix from today (until it appears in the sound-asoc
-tree).
+OK, then is it possible to get some other indication to the
+rcu_sched_clock_irq() function that it has interrupted a guest OS?
 
---=20
-Cheers,
-Stephen Rothwell
+Not an emergency, and maybe not even necessary, but it might well be
+one hole that would be good to stop up.
 
---Sig_/JCXYvRXIXDDAmDVl3FKnaP0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYUcMYACgkQAVBC80lX
-0GyPfAgAj2t8Dm8caIhzpi1i6yiebZqfnGf6epL+CiU2Yf5OHXHc0Z3MIzPzc3zy
-o91BBks7G1RngdaqYq5Aqoa4bxpeq+EoftXUYLzhrK4xxohWQ7Vu9OKMn1FtqgGk
-GbX0ULZGZwXhn/kZ8RPnTkPPq1xumT3NihjgcZQOEP6DMuaen+ABX0tc00HpGS1H
-AUG5gAUmZstq/e/vVrnCitLwDughGo65zpcp8p3FYENC84/f6X2bTf63wXu7aX/i
-JhHOkKJ0a5iQLDwp+Y619WfyOEM0wbVQDLCa0ZfvZcCgFVkfRw3JLVFz7RIwhkZJ
-WlDvzXcR9nDMsB3V+F1hxIcpYg6cOw==
-=nTFd
------END PGP SIGNATURE-----
-
---Sig_/JCXYvRXIXDDAmDVl3FKnaP0--
+							Thanx, Paul
 
