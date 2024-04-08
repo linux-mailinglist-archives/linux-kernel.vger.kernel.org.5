@@ -1,135 +1,149 @@
-Return-Path: <linux-kernel+bounces-135704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 715DF89C9FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:43:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7AC89C9B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9575D286ED9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:43:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE2E1C2475D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132231428F1;
-	Mon,  8 Apr 2024 16:43:42 +0000 (UTC)
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E40A144D0A;
+	Mon,  8 Apr 2024 16:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTU+IVz7"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742FB14263A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C5C1442F3;
+	Mon,  8 Apr 2024 16:34:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594621; cv=none; b=J3mOOvjGzxW0RZawc3hqbAYlVcvAhZcwKZQGVB0kqzefv4YkZsfBPum6zP0WuF7ZrT1IEA6H1diTALtSg2ddohASfkN8mIJAVe9aNHpSz/fbmaOZxykxb9FYjiVd96lQk3QPAQ6CUSb60vhbx2nMhZk6oBnFBbtR07TiAS7Vzag=
+	t=1712594075; cv=none; b=dErg0lcdWQ7cDOhzAC12FDmUSSJqWTrdpe6mz8h9q/DYgFQnjbLZA2BGGTtj/yUKBmwab02Uc8gSuPr8YeNljgRO2LOUJa3Ki+cBZZ5sBNlm8yQs5vGToO+LjOfEqPpphCnMelDnYYMyPzV76k47v3WIfjOJ1m9Zhvg896SBtDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594621; c=relaxed/simple;
-	bh=IDfPctw9xCwHUVhCUkJDAHkZrpFZqENjHsNEdq9ezYs=;
+	s=arc-20240116; t=1712594075; c=relaxed/simple;
+	bh=GDjg6EBXUVwAARwkkfl8HCARLRaI322ITo8J7xf4XpE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udFFUzc9zM4cDCckI3YzqEiWjoQUdE+LZ/ozqEOGYwqoyvluw3+jAs3ZczxSg9KByZttjm7TZ5YsIV1Bu96FEl3BAOzbdiFpG+/TQCQ+mbg0o/LzhIGd78TiNdbgSecaK7yAqDAxYk0B+CTkdTBj0B3/Zs96DIGRidRqN/wFgDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (2a02-a420-6-f162-164f-8aff-fee4-5930.mobile6.kpn.net [IPv6:2a02:a420:6:f162:164f:8aff:fee4:5930])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 03B744042A;
-	Mon,  8 Apr 2024 18:34:21 +0200 (CEST)
-Date: Mon, 8 Apr 2024 18:34:20 +0200
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Jun Nie <jun.nie@linaro.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] drm/display: Add slice_per_pkt for dsc
-Message-ID: <b2vdqzx3g7s4ihn6i3nkmao6m4wgpd4ivw3rcbsw6qzmby7wub@trq3c23ezt76>
-References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
- <20240403-msm-drm-dsc-dsi-video-upstream-v1-5-db5036443545@linaro.org>
- <CAA8EJprCf5V7jcR2XCkpkTtRr5f1beHKksL8PJJB_10EDLXEMQ@mail.gmail.com>
- <CABymUCODHQ=bobQNhttY-RqLDjEGf75yAm2YD--ZnfXjAtzNMw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kgVbKgNqFb+5c5UnJ81yzx0OzQeZ5UcVuGtgFu2a9rE7AIO68vhhZFMsA0kDkBrTSfxHwGzT6DXpiT6DPeQ4UqBSETJ3X4F2ho2K29L6PgQVVoZtr40Kjynlr4CWRokeHzjKyO8gLerfBtYDvWALuBjcTqiHfhZLo9X6S0iWNtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTU+IVz7; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e2a7b5ef7bso38330425ad.1;
+        Mon, 08 Apr 2024 09:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712594073; x=1713198873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y8W6JiQXMJlyRVh6G0P1/xRBUWDgR2AudHru0aHPOuY=;
+        b=QTU+IVz7TvT4wffdmtolLM28ZZb8ERtTjT/kTEDBsVVH2aoQZ9eWX3OSkfDLON+mGP
+         /Lrn9e42beiGPwNv+84wjKjHyd5NIzeLw1buAo+hW8BBYpQe5QxKQM8dnxtE/kl97i5K
+         CY7hJgkjCZwN2ZeA4zyiraBAuwTg/sBSf7swHSmIWj4BASDX0op1Uz8gOCFBEqeklzc4
+         6eJ1JqUYGwVmHMIMM+YA6wjdCABihemlv5VV6PTZkTqU798GI0PnA+74OFO/HJPzpjdT
+         ECmZ5qWTbxDqj6lxmfcNQ/ubQY0WVxl6EkpMTnHSnYHPdC4Pik2wo24m76VmzfOW6CB0
+         1r6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712594073; x=1713198873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y8W6JiQXMJlyRVh6G0P1/xRBUWDgR2AudHru0aHPOuY=;
+        b=XZsIVtTfROBGgTF8bkH7xuslGiQveQFFpW+MkELO0Q1KRbiTqkoq2S4Sl7ZdZmoHdt
+         hv24XE6DTwzylS9buL7r/dFpiTfMv+Wd243pM0YXdmyiBmvuH74hXaB+B2EY5TpoNBiv
+         8XgQyphGQIVPhnrvT4TSQAeTSHkoD+zz0hHUwZ96Exq2MMLogo/pH+F2yEwc5UsQXosU
+         qBuEkkLmPZlYxn0NHfkiivkP2K5eOs8uEpSPKw1dGReWRzL4VNBKStBNubUJpAyQrkA+
+         npnsNMy3ZDHRjHx0BstNkrvgMPTGQUYMuGDgxVomclN/gd/fb6PS39TNtZEXyPr+WMZ/
+         oFYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnetRmlnnE+4xixXAqICi8M0WxLstu4JIkfqweDjTDz1AeRzgRh7W5sA//BnBU+ty4CaIxLeg0ftA+DK7Tjtxn0GE9AGmWbQAl/27XWFbjRNGAigeYDCC3Jhthv6q09AdIfmKx6mLdCsd3xYqeb4sST7fWg3FJKwVJzC9fe8GBBvU8zm1H8669dfQYJHqiyG3jsjVqhsH1qIV44h4JagHdy5JUe6WangRv73lX53880zGhtP4FLdKm/1rkwHT+zkbsPYDH9Dua2GvcSTiyqNf3bJ1r3XkqTjT4QCovQ5seOxpMD53H1NuMdDhEwWOonw==
+X-Gm-Message-State: AOJu0Yyz+0MsWPjyUrus+EYJJKcHeisIGo3v82FzoD6e3BWYJ0kzVg4t
+	yl6iu1in7rdMr8aLYmTQAPmmOENonDswAlFItDpZieG8kh7MU/A5
+X-Google-Smtp-Source: AGHT+IHjgwPwZy3e5AEopzEIQpEcmD2hcpsHcoA+sLwIBYMIqqkK3bLGAgIh/jDVDgJdWRaZ9xWs0g==
+X-Received: by 2002:a17:902:cec7:b0:1e3:f911:22b2 with SMTP id d7-20020a170902cec700b001e3f91122b2mr6050960plg.7.1712594073047;
+        Mon, 08 Apr 2024 09:34:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n4-20020a170902e54400b001e2b36d0c8esm7189331plf.7.2024.04.08.09.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 09:34:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Mon, 8 Apr 2024 09:34:26 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Kees Cook <keescook@chromium.org>,
+	Daniel Diaz <daniel.diaz@linaro.org>,
+	David Gow <davidgow@google.com>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, x86@kernel.org,
+	Linux Kernel Functional Testing <lkft@linaro.org>,
+	Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH v3 06/15] net: kunit: Suppress lock warning noise at end
+ of dev_addr_lists tests
+Message-ID: <9e8718bf-da81-463b-9436-6c8b0881a045@roeck-us.net>
+References: <20240403131936.787234-1-linux@roeck-us.net>
+ <20240403131936.787234-7-linux@roeck-us.net>
+ <20240403183412.16254318@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABymUCODHQ=bobQNhttY-RqLDjEGf75yAm2YD--ZnfXjAtzNMw@mail.gmail.com>
+In-Reply-To: <20240403183412.16254318@kernel.org>
 
-On 2024-04-08 17:58:29, Jun Nie wrote:
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> 于2024年4月3日周三 17:41写道：
-> >
-> > On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
-> > >
-> > > Add variable for slice number of a DSC compression bit stream packet.
-> > > Its value shall be specified in panel driver, or default value can be set
-> > > in display controller driver if panel driver does not set it.
-> >
-> > This is not a part of the standard. Please justify it.
+On Wed, Apr 03, 2024 at 06:34:12PM -0700, Jakub Kicinski wrote:
+> On Wed,  3 Apr 2024 06:19:27 -0700 Guenter Roeck wrote:
+> > dev_addr_lists_test generates lock warning noise at the end of tests
+> > if lock debugging is enabled. There are two sets of warnings.
+> > 
+> > WARNING: CPU: 0 PID: 689 at kernel/locking/mutex.c:923 __mutex_unlock_slowpath.constprop.0+0x13c/0x368
+> > DEBUG_LOCKS_WARN_ON(__owner_task(owner) != __get_current())
+> > 
+> > WARNING: kunit_try_catch/1336 still has locks held!
+> > 
+> > KUnit test cleanup is not guaranteed to run in the same thread as the test
+> > itself. For this test, this means that rtnl_lock() and rtnl_unlock() may
+> > be called from different threads. This triggers the warnings.
+> > Suppress the warnings because they are irrelevant for the test and just
+> > confusing and distracting.
+> > 
+> > The first warning can be suppressed by using START_SUPPRESSED_WARNING()
+> > and END_SUPPRESSED_WARNING() around the call to rtnl_unlock(). To suppress
+> > the second warning, it is necessary to set debug_locks_silent while the
+> > rtnl lock is held.
 > 
-> Right, I read the standard but did not find any details of packet description.
-> Looks like msm silicon support tuning of number of slice packing per downstream
-> code.
-> The slice_per_pkt can be set in the downstream msm device tree. And I test the
-> values 1 and 2 on vtdr6130 panel and both work. So I guess this is related to
-> performance or something like that. I will have more test with different panel
-> to check the impact.
-> drivers/gpu/drm/panel/panel-raydium-rm692e5.c also mentions to pass new value
-> to slice_per_pkt.
-> 
-> Hi Konrad,
-> Do you remember why value 2 is TODO for slice_per_pkt for panel rm692e5?
+> Is it okay if I move the locking into the tests, instead?
+> It's only 4 lines more and no magic required, seems to work fine.
 
-Hi Jun,
+I don't think it is that simple. Unit tests run in a kernel thread
+and exit immediately if a test fails. While the unit test code _looks_
+sequential, that isn't really the case. Every instance of KUNIT_ASSERT_x
+or KUNIT_FAIL() results in immediate kernel thread termination. If
+that happens, any rtnl_unlock() in the failed function would not be
+executed. I am not aware of an equivalent of atexit() for kernel threads
+which would fix the problem. My understanding is that the kunit system
+doesn't support an equivalent either, but at least sometimes executes
+the exit function in a different thread context.
 
-I think I should indirectly answer that question, as I indirectly via "the"
-MDSS panel generator place that comment there based on the suggested downstream
-value:
-
-https://github.com/msm8916-mainline/linux-mdss-dsi-panel-driver-generator/commit/5c82e613d987d05feca423412f6de625f9c99bae#diff-dba3766d7cec900b8de500f888c64a392cd9780f9baf00aae7e3f87a7d3fefc4R458
-
-So I don't think Konrad's answer will be any different than "that's what
-downstream does, and that's what the generator put there".
-
----
-
-I was fairly certain that it used for performance reasons, but panels were found
-(e.g. on the FairPhone 5) that don't seem to function without combining multiple
-(2) slices in one packet at all?
-
-- Marijn
-
-> > > Signed-off-by: Jun Nie <jun.nie@linaro.org>
-> > > ---
-> > >  include/drm/display/drm_dsc.h | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/include/drm/display/drm_dsc.h b/include/drm/display/drm_dsc.h
-> > > index bc90273d06a6..4fac0a2746ae 100644
-> > > --- a/include/drm/display/drm_dsc.h
-> > > +++ b/include/drm/display/drm_dsc.h
-> > > @@ -82,6 +82,10 @@ struct drm_dsc_config {
-> > >          * @bits_per_component: Bits per component to code (8/10/12)
-> > >          */
-> > >         u8 bits_per_component;
-> > > +       /**
-> > > +        * @slice_per_pkt: slice number per DSC bit stream packet
-> > > +        */
-> > > +       u8 slice_per_pkt;
-> > >         /**
-> > >          * @convert_rgb:
-> > >          * Flag to indicate if RGB - YCoCg conversion is needed
-> > >
-> > > --
-> > > 2.34.1
-> > >
-> >
-> >
-> > --
-> > With best wishes
-> > Dmitry
+Guenter
 
