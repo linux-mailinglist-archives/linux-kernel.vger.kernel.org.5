@@ -1,324 +1,123 @@
-Return-Path: <linux-kernel+bounces-135130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EBDD89BB76
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:18:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3551989BB7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443A4282B8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:18:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94135B23E58
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE943FBBE;
-	Mon,  8 Apr 2024 09:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9055E4595A;
+	Mon,  8 Apr 2024 09:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bs496o1m"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbSW43LS"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75E818E0E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B60E3FBBE;
+	Mon,  8 Apr 2024 09:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567891; cv=none; b=nKRv8DwQepwIG83sBkBOHwGjfPHnh0v7JzSi2kwFjfyHlVpBUT2n4aKL73AUhs4tnbuAI4i4QFYhcqrR4mIx3pcTw3Xw2EWsloxapeMIlQozoffVAwxhC3TgiSoreT/TDVWcrogRE0ZIzom3TyaokeJJ5gefujFOIK0htRBoYqo=
+	t=1712567977; cv=none; b=DctyotTFJ6Qfv24b4PzvyoeuwsfEv71T+Ms62XeLTVR6qHUGyNKSqdO9LSfo5CvQzfT6oulL2QuIkcxrMB1ru+kSNw6cRnV5ziuhdzEfuDxTedRAnQ/8DzBVy/N3idelkWJzfQnGArzGSK+KtfKVSZ7EmpoQIzBDO6d02iDqTB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567891; c=relaxed/simple;
-	bh=xjwUdN10CjsJZjh973zo5V8Q/lDBawSFqqbnjtrDn/A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cUTPtyZRMJRsZMfaqPDoeHOZxlinZr8/Z3MYKTzLoJPlbF2E9mzBXjkkNVc2M/CTN/POxKy/MLjifvZeSZs2MgYSkRNhxBbftmwMQ/xn2uzpeOJ41FRu8ge65g15GorRm3HeCvHTTFI+zQO8oWhfHfvcKZIY2mzNef48cBHtsfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bs496o1m; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a2c9903ef0so2918997a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:18:09 -0700 (PDT)
+	s=arc-20240116; t=1712567977; c=relaxed/simple;
+	bh=xpv4GXaNvHbwNmLZOBogoUexAaRgl91nGHRAWB70R1c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jFgf9RsxuM82rLCzAQQPflgHAEupubUX9NJuvxejHIXk3zM15YN8FS+iNxhTgn0rzHnKtsjKM065DNGrshZ/PVA1Znq6iyVwEyZDtwEVTerMLyEAUrYUMfOB+FAYjgIVoD2RPZicm+NWxUWsbfVdIPlv7Fk8Pu+Rk3IF6lQDTFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbSW43LS; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a526803fccso302123a91.1;
+        Mon, 08 Apr 2024 02:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712567889; x=1713172689; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fZ+a9b/yyBQoRrz5uKGPZjuLE6NdFjAqEAuWnxBbk4U=;
-        b=bs496o1maxW/vGcXb+bDnBJSk7qplM/8+fs6YFpm4ZWIGrebt5mbN5/CdNdbO6chHU
-         4XKQw1MyaGBtZFn2XhFgjcYmH2R+1fEWvVlLeWMJdbKe5gam4BeJcUAIOXCNRfNv5X15
-         MITS6wqQVzStvcuTq+4ciivE2JUVBwkY4wx4OcK0B3BpSOsh7HCn8sQtluN71/FXTUHj
-         G3IoI1iiFBPSHbxes+amTXcTBmaQAHF13iCIbfixXgosSBqf00v8jSgxT4t5CYqx6rF/
-         bAqv9VOCThjlmiHNPv91fP5wQUB5f9uFbuW8rRh1DVa1LhkKEa6B+7gGfauq/GPxVvDo
-         NDtg==
+        d=gmail.com; s=20230601; t=1712567976; x=1713172776; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CMNyRdQrOSFasuq0gOdjmdHM1CPNAmXdupymxZqTDfQ=;
+        b=kbSW43LS53/RHgzEBoQV7dtqa2HscbuSZOvIFMVtd2wua84SWQboW+E1NMRIzwM8Kw
+         5V3JJZJCHi39ZP/Ak3wvPSyN06+4yjxANEtz1bydeWbjtkxGNVqX9MFL5dFuTxbSnkGe
+         gkY5xOTnNSeF+HggYpc2eMwcgwNv9VNR23GnoYsxKYm13IU2+X61N3K7l/bt7rib1CKt
+         txB4b8EpQQgpm5FV7TAZuqNbw4KtiFio1hRyfbz9a5OmS99/dVNmiO/7DHxSHAQkEw2s
+         F+E1j2IIrWDnL/UnoMVUzU2/R8IZenDSB4G7R2vshYAC4yzm8mMTlrCRq04HMP3TYFRZ
+         B/LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712567889; x=1713172689;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fZ+a9b/yyBQoRrz5uKGPZjuLE6NdFjAqEAuWnxBbk4U=;
-        b=BobZ2gsOmEDn+7JXQ1R+w1/l4ORdqfFVHWQKoo1teBx3CzLG9P6Cp64zfbeYxeW78e
-         46If0+RLceI45NFh8DZdS9gc6e6auO6eW7OQsVRjJEiuldt13XINvWZNTUOlQepBmKrV
-         H/arGQrMDZEOfiyI8siHcIQAly6QOSJceW25qjeTSTN+14G6lWC7p+Oz150RDW8edLnB
-         gDlb29kCQ2WNKoKWvuae/fGxnK2EiuMRBI6fIpFYC7Jh6afBBHXqvT67km6siZUTwAcV
-         navr0MT6QMPu+UMCNkyr9/5LIvZsiJdFgJr7j/Qx8YQ+GlmaCRn7gLXy67rPU80cKZzF
-         ErGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW55jrJbFXevdLkazkiD4yQzfuV/Xk94ynFy2QcO2BGMRNRrGbD6H9U9YOjptn9KZcSLLr/hM0ljBk67sVXs9nufzFM2AnoHAPMNztr
-X-Gm-Message-State: AOJu0YzTA9huwSOSAYhPiSQ+FxJ6LTf5TRTKwpplkPQKhAREjnoOrWpP
-	NtpOoFHx14diV24s0YGZJ1ZkCdBDnx0KgorPujsvqVsaev7vBh6NDiOhfnRUqoriObaen+bX6st
-	qadBTzw==
-X-Google-Smtp-Source: AGHT+IHi5RZwxXKnBfFno8pVX7cRaumvMEbsem9ikm46d/ihvdHjbtsYEjDdWwYOzCXi8rR5QOMJsg==
-X-Received: by 2002:a17:90a:130b:b0:29b:22d2:9dd5 with SMTP id h11-20020a17090a130b00b0029b22d29dd5mr6894064pja.38.1712567888845;
-        Mon, 08 Apr 2024 02:18:08 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id s63-20020a17090a69c500b002a51dcecc49sm1532017pjj.38.2024.04.08.02.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 02:18:08 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 08 Apr 2024 11:17:58 +0200
-Subject: [PATCH] clk: meson: fix module license to GPL only
+        d=1e100.net; s=20230601; t=1712567976; x=1713172776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CMNyRdQrOSFasuq0gOdjmdHM1CPNAmXdupymxZqTDfQ=;
+        b=i6JxahFk6Jv1Pn9xib1agVVHHEgahx9Q8GO4feK9OOyTKGYHZL2LmjrFKdcYthhE0p
+         h5pOATMtrLLCKk6VBvmVUaoyEPBcHPbLeJAEEFrOHPEGc5Uqsbov+uPvZUKPh6zBe7w+
+         yiZhMmONveuIr0pd1RPZW31iXroErgc344caiJtroPcTW0Gp1F6Q7tK7qqBdgd6645yL
+         JJP6n+zkVm54oa0kCd2MlDglrdFZHl3gLo2N3ceGIW3KKwvsZb7oxhDuoK0k+zH2Tzv8
+         /KeWFA/lIUEwaVuKTRz6n2zPVy+gNuata+NnBgGhd11hD0AzHHAukOnfBMQxleT3NkMW
+         k3mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVA/tMcVAmoRgfjuZJwh/6iTIt1WsJ2G1aNvyzkqBIrZtGwDBj4LVeBZcTLtUsKNKYRlZbDp593HZYwUl+oSiQHhe0gw6J+N078RDEvYpaDba6W8okWIS7i9uoROLI6X0DRuhu4PRNJurvTf18=
+X-Gm-Message-State: AOJu0YzI3vk8W+tqpLBMelDsqYf/Bo6mX2l89Ve2GIDp0SZ6DylXzhSi
+	9L/3uHfvp8nWfkcjNTtbw+jnJmfAiRQ8q8YLG2Sey1iprW37p5WnVG+2JxSLb/NiO/NSq70AO2l
+	EzGlbKPGJ+EUigf+bb+NqGG7wO+4=
+X-Google-Smtp-Source: AGHT+IFhMRh7Af+1ofz2RUc8GsbDJVtkVO04aivZzCObwcByfet4XkSJddJNLUkQxaNSLaJfOd2L+aFtpEY4xfTHT9E=
+X-Received: by 2002:a17:90a:e50f:b0:2a2:97ce:24f5 with SMTP id
+ t15-20020a17090ae50f00b002a297ce24f5mr7693686pjy.35.1712567975830; Mon, 08
+ Apr 2024 02:19:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAEW2E2YC/x2NywrCMBAAf6Xs2YVtjMX4K+Ihptu6mEfJ2iKU/
- rvB48Aws4NyFVa4dTtU3kSl5Ab9qYPw8nlmlLExGDKWLF3Rp1hmCbgN6HBd9FPZJ5zkiyG+MZV
- xjYxRAmdlPFsaaHLPS+8MtORSuZn/3f1xHD8k59VpfgAAAA==
-To: Jerome Brunet <jbrunet@baylibre.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8776;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=xjwUdN10CjsJZjh973zo5V8Q/lDBawSFqqbnjtrDn/A=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmE7ZL89go/quwtMveKQ6nLbQtpLAjWpfkce1ffITE
- Kb1cAmWJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZhO2SwAKCRB33NvayMhJ0caqEA
- CJvHwSkpsNtoe7ac44udmtD52Bs0aAFUXoFBboJ9b7TjPI246X2F1Cy0ZG4C6hJgnGx4iyjrutSI9t
- i8L21DHmOqEoREm+OV6gA3pccirC2oLS4ZWTx15k8E4elEHIaOeorHL4M94lQiLm0n1nWpcH3340uU
- 8ElF58DKxfNXHDLrfr7VP4POZoK6eX7xburq1cvt+7DP6Y9tq0s3/h8+XbqiGciQaOGyoxbCJos3Xu
- KgaBNtWwbvwdYs/hv7j1NXK9X7xBHxGvF2Cw4bkEWmRg+0a7xmItJ1pHFcINp7SFi/vUC2kygkJORW
- jOtBaLSisl1xmCtn5RhZ/zkPpi+LwAx978Eb21DNRHmjSTzR7MtquKIGaK6Hu9Kvv57FYMRYPEYRPE
- AGQgavwTVahD6H8dNCS5wSCF/nqepejy0NXdfgsnjwT9fwLL7oh6M7K33hTfTWyRTtvurY+cFbsBsA
- 6Xz0/O7wVFyye81o6pBAmdih3kuS/5aKxZ2O7Is46QIA02zLBOD+MwkxnyIVkVdROjM8OX5PY/vRLJ
- x0xrfhLKRKgcnty0Rzz2TBBGuLBZKx8L32OB29OZOCEuv8IT64USgLYqCtuq19Sb/MkKFfNGiAlrOQ
- R+oD52dnZ8lkMoaM2vkdW1KDLPb7a1Xc6/j0ZWdM5bPQdA3K0KRy+aV+/V9w==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+References: <20240404-alice-mm-v4-0-49a84242cf02@google.com>
+ <20240404-alice-mm-v4-4-49a84242cf02@google.com> <a48b2347-b58b-432e-bdb8-d5449016ab57@proton.me>
+ <CAH5fLgg3wpcDE+n6nd0CGtDzyXSrD2nLhY8RxdTHjAD8hQ9VDQ@mail.gmail.com>
+ <c130a6f5-77d7-4d9e-984d-7a8bf48ff918@proton.me> <CAH5fLgigLV17+6U75MC43XFnYeqtgvrrTWD7JmDSB-ebNjCVvw@mail.gmail.com>
+In-Reply-To: <CAH5fLgigLV17+6U75MC43XFnYeqtgvrrTWD7JmDSB-ebNjCVvw@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 8 Apr 2024 11:18:52 +0200
+Message-ID: <CANiq72mZ5QPrb1-jWiKFhO2OF517Xvx=Js3zwM+_VyVL=dy2LA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] rust: add abstraction for `struct page`
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix the checkpatch warning:
-WARNING: Prefer "GPL" over "GPL v2" - see commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs. "GPL v2" bogosity")
+On Mon, Apr 8, 2024 at 9:54=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+>
+> From bindgen's point of view, this constant is just an integer literal
+> with no type information. So I don't see how we can expect it to
+> always be generated as a usize?
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
-[1] https://lore.kernel.org/all/20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org/
----
- drivers/clk/meson/axg-aoclk.c      | 2 +-
- drivers/clk/meson/axg-audio.c      | 2 +-
- drivers/clk/meson/axg.c            | 2 +-
- drivers/clk/meson/clk-cpu-dyndiv.c | 2 +-
- drivers/clk/meson/clk-dualdiv.c    | 2 +-
- drivers/clk/meson/clk-mpll.c       | 2 +-
- drivers/clk/meson/clk-phase.c      | 2 +-
- drivers/clk/meson/clk-pll.c        | 2 +-
- drivers/clk/meson/clk-regmap.c     | 2 +-
- drivers/clk/meson/g12a-aoclk.c     | 2 +-
- drivers/clk/meson/g12a.c           | 2 +-
- drivers/clk/meson/gxbb-aoclk.c     | 2 +-
- drivers/clk/meson/gxbb.c           | 2 +-
- drivers/clk/meson/meson-aoclk.c    | 2 +-
- drivers/clk/meson/meson-eeclk.c    | 2 +-
- drivers/clk/meson/sclk-div.c       | 2 +-
- drivers/clk/meson/vclk.c           | 2 +-
- drivers/clk/meson/vid-pll-div.c    | 2 +-
- 18 files changed, 18 insertions(+), 18 deletions(-)
+In the case of `PAGE_SIZE`, there is type information (`size_t`),
+since it comes from the constant helper:
 
-diff --git a/drivers/clk/meson/axg-aoclk.c b/drivers/clk/meson/axg-aoclk.c
-index d80ab4728f7a..e4d0f46f47f5 100644
---- a/drivers/clk/meson/axg-aoclk.c
-+++ b/drivers/clk/meson/axg-aoclk.c
-@@ -340,4 +340,4 @@ static struct platform_driver axg_aoclkc_driver = {
- };
- 
- module_platform_driver(axg_aoclkc_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-index ac3482960903..e03a5bf899c0 100644
---- a/drivers/clk/meson/axg-audio.c
-+++ b/drivers/clk/meson/axg-audio.c
-@@ -1877,4 +1877,4 @@ module_platform_driver(axg_audio_driver);
- 
- MODULE_DESCRIPTION("Amlogic AXG/G12A/SM1 Audio Clock driver");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
-index 5f60f2bcca59..52d610110e44 100644
---- a/drivers/clk/meson/axg.c
-+++ b/drivers/clk/meson/axg.c
-@@ -2185,4 +2185,4 @@ static struct platform_driver axg_driver = {
- };
- 
- module_platform_driver(axg_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-cpu-dyndiv.c b/drivers/clk/meson/clk-cpu-dyndiv.c
-index 8778c149d26a..aa824b030cb8 100644
---- a/drivers/clk/meson/clk-cpu-dyndiv.c
-+++ b/drivers/clk/meson/clk-cpu-dyndiv.c
-@@ -69,4 +69,4 @@ EXPORT_SYMBOL_GPL(meson_clk_cpu_dyndiv_ops);
- 
- MODULE_DESCRIPTION("Amlogic CPU Dynamic Clock divider");
- MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-dualdiv.c b/drivers/clk/meson/clk-dualdiv.c
-index feae49a8f6dc..d46c02b51be5 100644
---- a/drivers/clk/meson/clk-dualdiv.c
-+++ b/drivers/clk/meson/clk-dualdiv.c
-@@ -140,4 +140,4 @@ EXPORT_SYMBOL_GPL(meson_clk_dualdiv_ro_ops);
- MODULE_DESCRIPTION("Amlogic dual divider driver");
- MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-mpll.c b/drivers/clk/meson/clk-mpll.c
-index 20255e129b37..eae9b7dc5a6c 100644
---- a/drivers/clk/meson/clk-mpll.c
-+++ b/drivers/clk/meson/clk-mpll.c
-@@ -177,4 +177,4 @@ EXPORT_SYMBOL_GPL(meson_clk_mpll_ops);
- 
- MODULE_DESCRIPTION("Amlogic MPLL driver");
- MODULE_AUTHOR("Michael Turquette <mturquette@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-phase.c b/drivers/clk/meson/clk-phase.c
-index a6763439f7d2..ff3f0b1a3ed1 100644
---- a/drivers/clk/meson/clk-phase.c
-+++ b/drivers/clk/meson/clk-phase.c
-@@ -183,4 +183,4 @@ EXPORT_SYMBOL_GPL(meson_sclk_ws_inv_ops);
- 
- MODULE_DESCRIPTION("Amlogic phase driver");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 6fa7639a3050..7f96ede7fdbe 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -486,4 +486,4 @@ EXPORT_SYMBOL_GPL(meson_clk_pll_ro_ops);
- MODULE_DESCRIPTION("Amlogic PLL driver");
- MODULE_AUTHOR("Carlo Caione <carlo@endlessm.com>");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/clk-regmap.c b/drivers/clk/meson/clk-regmap.c
-index 8ad8977cf1c2..ad116d24f700 100644
---- a/drivers/clk/meson/clk-regmap.c
-+++ b/drivers/clk/meson/clk-regmap.c
-@@ -183,4 +183,4 @@ EXPORT_SYMBOL_GPL(clk_regmap_mux_ro_ops);
- 
- MODULE_DESCRIPTION("Amlogic regmap backed clock driver");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/g12a-aoclk.c b/drivers/clk/meson/g12a-aoclk.c
-index c6b1d55cd7c8..58976ed8b92a 100644
---- a/drivers/clk/meson/g12a-aoclk.c
-+++ b/drivers/clk/meson/g12a-aoclk.c
-@@ -475,4 +475,4 @@ static struct platform_driver g12a_aoclkc_driver = {
- };
- 
- module_platform_driver(g12a_aoclkc_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index 083882e53b65..c7c3a9259427 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -5610,4 +5610,4 @@ static struct platform_driver g12a_driver = {
- };
- 
- module_platform_driver(g12a_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/gxbb-aoclk.c b/drivers/clk/meson/gxbb-aoclk.c
-index 4aec1740ac34..dbda563729db 100644
---- a/drivers/clk/meson/gxbb-aoclk.c
-+++ b/drivers/clk/meson/gxbb-aoclk.c
-@@ -300,4 +300,4 @@ static struct platform_driver gxbb_aoclkc_driver = {
- 	},
- };
- module_platform_driver(gxbb_aoclkc_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
-index 1b1279d94781..29507b8c4304 100644
---- a/drivers/clk/meson/gxbb.c
-+++ b/drivers/clk/meson/gxbb.c
-@@ -3569,4 +3569,4 @@ static struct platform_driver gxbb_driver = {
- };
- 
- module_platform_driver(gxbb_driver);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/meson-aoclk.c b/drivers/clk/meson/meson-aoclk.c
-index bf466fef263c..b8a9d59e6726 100644
---- a/drivers/clk/meson/meson-aoclk.c
-+++ b/drivers/clk/meson/meson-aoclk.c
-@@ -89,4 +89,4 @@ int meson_aoclkc_probe(struct platform_device *pdev)
- 	return devm_of_clk_add_hw_provider(dev, meson_clk_hw_get, (void *)&data->hw_clks);
- }
- EXPORT_SYMBOL_GPL(meson_aoclkc_probe);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/meson-eeclk.c b/drivers/clk/meson/meson-eeclk.c
-index 845ca8bfa346..3cbc7f233bba 100644
---- a/drivers/clk/meson/meson-eeclk.c
-+++ b/drivers/clk/meson/meson-eeclk.c
-@@ -58,4 +58,4 @@ int meson_eeclkc_probe(struct platform_device *pdev)
- 	return devm_of_clk_add_hw_provider(dev, meson_clk_hw_get, (void *)&data->hw_clks);
- }
- EXPORT_SYMBOL_GPL(meson_eeclkc_probe);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/sclk-div.c b/drivers/clk/meson/sclk-div.c
-index d12c45c4c261..987f5b06587c 100644
---- a/drivers/clk/meson/sclk-div.c
-+++ b/drivers/clk/meson/sclk-div.c
-@@ -251,4 +251,4 @@ EXPORT_SYMBOL_GPL(meson_sclk_div_ops);
- 
- MODULE_DESCRIPTION("Amlogic Sample divider driver");
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
-index 3ea813a0a995..c0a1d24844bb 100644
---- a/drivers/clk/meson/vclk.c
-+++ b/drivers/clk/meson/vclk.c
-@@ -138,4 +138,4 @@ EXPORT_SYMBOL_GPL(meson_vclk_div_ops);
- 
- MODULE_DESCRIPTION("Amlogic vclk clock driver");
- MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/meson/vid-pll-div.c b/drivers/clk/meson/vid-pll-div.c
-index daff235bc763..ee129f86794d 100644
---- a/drivers/clk/meson/vid-pll-div.c
-+++ b/drivers/clk/meson/vid-pll-div.c
-@@ -96,4 +96,4 @@ EXPORT_SYMBOL_GPL(meson_vid_pll_div_ro_ops);
- 
- MODULE_DESCRIPTION("Amlogic video pll divider driver");
- MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
+    const size_t RUST_CONST_HELPER_PAGE_SIZE =3D PAGE_SIZE;
 
----
-base-commit: a3c4ce7a4b9c1fe78f66afeea6eb89c68ef45f9c
-change-id: 20240408-amlogic-v6-9-upstream-fix-clk-module-license-34060f9b5192
+For the other one, `PAGE_SHIFT`, there is also type information
+(`int`), but bindgen currently picks a type based on the value for
+those (but ideally/eventually bindgen should respect it instead).
 
-Best regards,
--- 
-Neil Armstrong <neil.armstrong@linaro.org>
+So for the former, the allow and the cast are not needed since we are
+already handling it explicitly. And for the latter, if we want to have
+it as `usize`, we should have the cast but not the allow, because now
+it does `u32`, but if it respected the type, it would be `c_int` or
+`i32`. So either way we would need the cast.
 
+Cheers,
+Miguel
 
