@@ -1,185 +1,119 @@
-Return-Path: <linux-kernel+bounces-134909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C35589B88E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:37:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 020EA89B9EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41BE2B221E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:37:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B199B2827B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7691C2E400;
-	Mon,  8 Apr 2024 07:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171C838DE0;
+	Mon,  8 Apr 2024 08:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="S82CzPIr"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lA1jsfpf"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C61D52D638
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2F336AFB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712561812; cv=none; b=uHkJVSQq/cIrAWL3KXHISUr7WJMDOFdrulj7MlhWvyBR33R4JTY69usntYqPiB1LfrKvQYOe7BOqNjDY/9SSLNk5ht+1T7fHpJLDSzA93Yt1L0nSZPWk3qPwqubXelWmqB+Yr5efIBXfANeHGuonMQj6F+bXaoeseHb2YFQJMt4=
+	t=1712563827; cv=none; b=spyX0F9n73YgeejUpZLOiKL7KfRV4P65f3/2TLFakmg0CJC1bG9lx8+54weQGMwbtY4w6ine0bushskXfBNxenRy8MyaOTkAoG1uOsYsW61u7sZqCwxeQFgz4kHMXXmhKOg2i8lz8MtxDpXEYiMh9fgH5KCSc1/NvjRoNxY4ifs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712561812; c=relaxed/simple;
-	bh=kuAOc7HqwllSLTyuUaK6+2j+svofrPf40qNVzjcbHyA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NNqOOR8MBdZltAsiMQWxFdCvgqJkCYdYRdOun1JfALSZ1c4eO0yiDH4zGU0OcmeDvhAMYO9GPmaAM4CPYfEAN4lKuz0JUqQ7NRVqIokWYL6AUn/6kGEyMepVYAzuuNluBZ102Evusdlf9ZV1ICqtfs+wrUVfL1uFZ28AMsFNCC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=S82CzPIr; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4387aO9O032786;
-	Mon, 8 Apr 2024 02:36:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712561785;
-	bh=0yWCV/qLNvQL+G4pU9IjA89QK71YdgPC3LJfQ1pJlnY=;
-	h=From:To:CC:Subject:Date;
-	b=S82CzPIrSLVWUQJKgTuvQJ9AJNUopXwON/2Y6hPxQcce0WIHlByYEu826uT5LtUm8
-	 VqcqQ+5RhAGdHbb3uJjPd4mst3jNuDIntef6kmXrJrJUzrsqYBkIW6bn47CrApkR7q
-	 payT+fSYivezqy5QEbi+EQ7HhtUSeQIGBQP8TVCQ=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4387aOIY047432
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 Apr 2024 02:36:24 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- Apr 2024 02:36:24 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 Apr 2024 02:36:24 -0500
-Received: from localhost (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.252])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4387aNE0083399;
-	Mon, 8 Apr 2024 02:36:24 -0500
-From: Jayesh Choudhary <j-choudhary@ti.com>
-To: <dianders@chromium.org>, <andrzej.hajda@intel.com>,
-        <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
-        <Laurent.pinchart@ideasonboard.com>, <mripard@kernel.org>,
-        <j-choudhary@ti.com>
-CC: <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>,
-        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>, <andersson@kernel.org>,
-        <robdclark@gmail.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/bridge: ti-sn65dsi86: Fix ti_sn_bridge_set_dsi_rate function
-Date: Mon, 8 Apr 2024 13:06:23 +0530
-Message-ID: <20240408073623.186489-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712563827; c=relaxed/simple;
+	bh=GHDQU9zd2nMXU7UlrQa3DtToNffnBvQ5Ugz2l1CzFYM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=rN3LJtVJ2v/kGLINElf6/lp+Su33Jhw6EVxfpFhUNSsUL5DyCX1gVwEazeVBXBwsHxjRpJXcokJeR6i1Ti1uGvM8d+06Sb0xfiHbKB3efaMSfrGYqqNobbZom2geghj2jo6Nq3zcFSQJRgSy1+PDNm+J05R4280x5A1PKovkGbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lA1jsfpf; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so4540988a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712563823; x=1713168623; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LOr2piSF59rBtL6qQkJRVxuVH7En2uLFiUAi/dy63d4=;
+        b=lA1jsfpfNIMPKQ3qH+2mopqRLcf3heuEPPpprN54142bgZ57ukTuIitDmKQGYUDwgK
+         u1eA82n6FfDFzT62zXPg4fKPfOCf7SPlmyfb7gjv1OefhVEEJi2RFqszkC8WJii2oOj3
+         I2tMjb2BrccF8OoctXyZPxXO8FDw6JE9r60nHUFr1KytJzzV3JrwjN4pgiXiI6oAsssr
+         Xj/oTcfPfSQdWGlUj5BE51PDpV5pj0MpVysmIv4fvWdKB1RiLK6zGRDaIa46/imDiieS
+         44ZpCA7fL+Lai6VmPe+/zw4n/muLAxkW7rrKA80hVt8GO5bLq662vsqVBaVSpc1U61HY
+         jjSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712563823; x=1713168623;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LOr2piSF59rBtL6qQkJRVxuVH7En2uLFiUAi/dy63d4=;
+        b=w8W2EOB8f+TsHxhGywb1+UhgQ6bgHrjt5Vpqtv2Ev3WnTBJntdXV9UIgDKptghuDbU
+         RG5j51fNl4lhnqEHdeTPp5zAM2PsS1ZtekCRF1JUGy/+OFy+10/LAA+uK6EltaggXKOS
+         ySq7+yiqZmH5BeNcCFDa+CLe9tcwmfXY/F02DoZbFZL8nskLGV2KwCE068Om9aNVJpKi
+         HcEg0tcMUnS35fS8ZBGviuxbyvivgX9kiKsIkgmc71+GbcyZJgXMwS69EBiL49iUgJu6
+         bLPDt2oyQyzyRmM9K4fr3gNSiYCJpc0MGI3Y/vH3yncBFsCRYh+5S80map0Tn4i3l/Zp
+         fC/g==
+X-Forwarded-Encrypted: i=1; AJvYcCV3oIU1uykKARVqLs1yQGBZufKX+Z/vqcQ+JZCqcWwVAQPuEy4IgLrPe+PKiKmpW6v5jqNy51xgQKIaGN4+Mm2KsQK5ougyxanfk6XP
+X-Gm-Message-State: AOJu0YxHKPH140KYOrb1gXL/WQqm3WAwsbaCtQqR7320k3WZPJe4rrPX
+	rto4E8MU6J+fL57iWM7qy8J4vHJuyecnWDmZmmvGZgRQheVaCwOwuGeHvuwoj5U=
+X-Google-Smtp-Source: AGHT+IHSMNUBKuLQipt6eiK/GpbVAIRoVBfOGY9eusOY9M1lS39qRZiKY7EBBCgcSpTRamQWTGpjPQ==
+X-Received: by 2002:a50:d6d2:0:b0:56e:2bf4:fe0a with SMTP id l18-20020a50d6d2000000b0056e2bf4fe0amr6239511edj.35.1712563823192;
+        Mon, 08 Apr 2024 01:10:23 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id b14-20020aa7c90e000000b0056e46beba6dsm2416447edt.16.2024.04.08.01.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 01:10:23 -0700 (PDT)
+Date: Mon, 8 Apr 2024 10:36:35 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/panthor: clean up some types in panthor_sched_suspend()
+Message-ID: <85356b15-4840-4e64-8c75-922cdd6a5fef@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Due to integer calculations, the rounding off can cause errors in the final
-value propagated in the registers.
-Considering the example of 1080p (very common resolution), the mode->clock
-is 148500, dsi->lanes = 4, and bpp = 24, with the previous logic, the DSI
-clock frequency would come as 444 when we are expecting the value 445.5
-which would reflect in SN_DSIA_CLK_FREQ_REG.
-So move the division to be the last operation where rounding off will not
-impact the register value.
+These variables should be u32 instead of u64 because they're only
+storing u32 values.  Also static checkers complain when we do:
 
-Also according to the SN65DSI86 datasheet[0], the minimum value for that
-reg is 0x08 (inclusive) and the maximum value is 0x97 (exclusive). So add
-check for that.
+	suspended_slots &= ~upd_ctx.timedout_mask;
 
-[0]: <https://www.ti.com/lit/gpn/sn65dsi86>
+In this code "suspended_slots" is a u64 and "upd_ctx.timedout_mask".  The
+mask clears out the top 32 bits which would likely be a bug if anything
+were stored there.
 
-Fixes: ca1b885cbe9e ("drm/bridge: ti-sn65dsi86: Split the setting of the dp and dsi rates")
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 48 +++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 84698a0b27a8..f9cf6b14d85e 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -111,7 +111,14 @@
- #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
- #define  AUX_IRQ_STATUS_NAT_I2C_FAIL		BIT(6)
- 
--#define MIN_DSI_CLK_FREQ_MHZ	40
-+/*
-+ * NOTE: DSI clock frequency range: [40MHz,755MHz)
-+ * DSI clock frequency range is in 5-MHz increments
-+ * So minimum frequency 40MHz translates to 0x08
-+ * And maximum frequency 755MHz translates to 0x97
-+ */
-+#define MIN_DSI_CLK_RANGE	0x8
-+#define MAX_DSI_CLK_RANGE	0x97
- 
- /* fudge factor required to account for 8b/10b encoding */
- #define DP_CLK_FUDGE_NUM	10
-@@ -820,22 +827,37 @@ static void ti_sn_bridge_atomic_disable(struct drm_bridge *bridge,
- 	regmap_update_bits(pdata->regmap, SN_ENH_FRAME_REG, VSTREAM_ENABLE, 0);
- }
- 
--static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
-+static int ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
+diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
+index d4bc652b34d5..b3a51a6de523 100644
+--- a/drivers/gpu/drm/panthor/panthor_sched.c
++++ b/drivers/gpu/drm/panthor/panthor_sched.c
+@@ -2546,7 +2546,7 @@ void panthor_sched_suspend(struct panthor_device *ptdev)
  {
--	unsigned int bit_rate_mhz, clk_freq_mhz;
-+	unsigned int bit_rate_khz;
- 	unsigned int val;
- 	struct drm_display_mode *mode =
- 		&pdata->bridge.encoder->crtc->state->adjusted_mode;
+ 	struct panthor_scheduler *sched = ptdev->scheduler;
+ 	struct panthor_csg_slots_upd_ctx upd_ctx;
+-	u64 suspended_slots, faulty_slots;
++	u32 suspended_slots, faulty_slots;
+ 	struct panthor_group *group;
+ 	u32 i;
  
--	/* set DSIA clk frequency */
--	bit_rate_mhz = (mode->clock / 1000) *
--			mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
--	clk_freq_mhz = bit_rate_mhz / (pdata->dsi->lanes * 2);
-+	/*
-+	 * Set DSIA clk frequency
-+	 * Maximum supported value of bit_rate_khz turns out to be
-+	 * 6040000 which can be put in 32-bit variable so no overflow
-+	 * possible in this calculation.
-+	 */
-+	bit_rate_khz = mode->clock *
-+		       mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
-+
-+	/*
-+	 * For each increment in val, frequency increases by 5MHz
-+	 * and the factor of 1000 comes from kHz to MHz conversion
-+	 */
-+	val = (bit_rate_khz / (pdata->dsi->lanes * 2 * 1000 * 5)) & 0xFF;
-+
-+	if (val >= MAX_DSI_CLK_RANGE || val < MIN_DSI_CLK_RANGE) {
-+		drm_err(pdata->bridge.dev,
-+			"DSI clock frequency not in the supported range\n");
-+		return -EINVAL;
-+	}
- 
--	/* for each increment in val, frequency increases by 5MHz */
--	val = (MIN_DSI_CLK_FREQ_MHZ / 5) +
--		(((clk_freq_mhz - MIN_DSI_CLK_FREQ_MHZ) / 5) & 0xFF);
- 	regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
-+
-+	return 0;
- }
- 
- static unsigned int ti_sn_bridge_get_bpp(struct drm_connector *connector)
-@@ -1104,7 +1126,11 @@ static void ti_sn_bridge_atomic_enable(struct drm_bridge *bridge,
- 			   pdata->ln_polrs << LN_POLRS_OFFSET);
- 
- 	/* set dsi clk frequency value */
--	ti_sn_bridge_set_dsi_rate(pdata);
-+	ret = ti_sn_bridge_set_dsi_rate(pdata);
-+	if (ret) {
-+		DRM_DEV_ERROR(pdata->dev, "Failed to set dsi rate :%d\n", ret);
-+		return;
-+	}
- 
- 	/*
- 	 * The SN65DSI86 only supports ASSR Display Authentication method and
 -- 
-2.25.1
+2.43.0
 
 
