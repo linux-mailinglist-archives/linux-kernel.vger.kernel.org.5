@@ -1,178 +1,116 @@
-Return-Path: <linux-kernel+bounces-135567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9228D89C7A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:58:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7F689C7B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6B821C21993
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:58:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C7C31F233C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B5F13F443;
-	Mon,  8 Apr 2024 14:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D6213F447;
+	Mon,  8 Apr 2024 15:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kyKRGI0F";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kyKRGI0F"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPVzIBvT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0080013EFE3;
-	Mon,  8 Apr 2024 14:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470CD13F42A;
+	Mon,  8 Apr 2024 15:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712588305; cv=none; b=H8SKeGatTZxB7BodTcc7mjp2UXIqtbVifqHK5QfMQn5d7f2xiysXObd/rF54JwkqTygv3wGv+L6jO4qaeQvk6x+67tfKHyycDSuOKZNWDyYNg0b3vxXx+m5Jl9WXaPsxTBEppYBiO8mkkoam7dYiV6IYh3+wRP/OLCNJd2KqeAM=
+	t=1712588494; cv=none; b=uRoqqWANLNavbl5vmJnsCI4xn5XWcY4D5QYlTYtBKee6s8H4U6lakBSySHofUzWXb4l8a5c1DZh7NevtJfL8iJDzHTUxGPz/OhMui4vbheLZfMah4cCeRzo/tXAOPsbuHWNcrjaUtDl4On02G5sBnG4plBv6lJpcDBLscpEvzCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712588305; c=relaxed/simple;
-	bh=LwifpkONrUkWLyBk8gbNdvhiMcqi281CAICCZSh3f7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UKgg9fLy1coGSTSogPwbDWJlv8ltrZZrYXaeMLcyOx3XoX9Oec2xc57rPipo0j+/mQuZZMM7dFJCvt3nXL0ENm72v0EJgeykpMYLyDjxPbsXYBngndJ9Nz/gYBGpzJ00DO8AcL6/hmi7qDXga/Le6xsm2CkOSkKI9ZagfM9v/D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kyKRGI0F; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kyKRGI0F; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F791229FB;
-	Mon,  8 Apr 2024 14:58:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712588302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1rbXAunVKbUV1XwN367Y+XydNp2/9W1e0lOfKLCJipg=;
-	b=kyKRGI0FcxpevV6x3NfZMC5Decj/TV0PerpAe/1hTi6et5v4cQEV4Srt+H9/UQMQ/VhQ5W
-	7plLn2bhAQzqcS19/Y9PjEtD+VYz7dgpn8DslW/vKsSwast3bQd3+qAo6oVkaSs0C6b96R
-	iXytpSk2/gXNIRvfUTEbsVkZ7oNDNLw=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712588302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1rbXAunVKbUV1XwN367Y+XydNp2/9W1e0lOfKLCJipg=;
-	b=kyKRGI0FcxpevV6x3NfZMC5Decj/TV0PerpAe/1hTi6et5v4cQEV4Srt+H9/UQMQ/VhQ5W
-	7plLn2bhAQzqcS19/Y9PjEtD+VYz7dgpn8DslW/vKsSwast3bQd3+qAo6oVkaSs0C6b96R
-	iXytpSk2/gXNIRvfUTEbsVkZ7oNDNLw=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 04B1F13AB3;
-	Mon,  8 Apr 2024 14:58:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 8Df/AA4GFGa8dgAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Mon, 08 Apr 2024 14:58:22 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Kees Cook <keescook@chromium.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Aleksa Sarai <cyphar@cyphar.com>
-Subject: [PATCH 3/3] tracing: Compare pid_max against pid_list capacity
-Date: Mon,  8 Apr 2024 16:58:19 +0200
-Message-ID: <20240408145819.8787-4-mkoutny@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240408145819.8787-1-mkoutny@suse.com>
-References: <20240408145819.8787-1-mkoutny@suse.com>
+	s=arc-20240116; t=1712588494; c=relaxed/simple;
+	bh=EITVdlJtkrnylLXhed9Pr1DfYAyVTQ3XvaUDh63E534=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bjGRrwHk++ZbrkhTgH5dXtENpfRHmOQgJczDQVc15iA567JVW7k1W6MUUOXs7yZhxnNGzTX9gfmFXSqeiqb/RfO03pubmr21C5vGhsPv+wymsdlr54E51D1WxkfwCXhutiACQjLNfRk4LWGJ4pRpG7g74ENrtKCkg1UVyI74PrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPVzIBvT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB446C433F1;
+	Mon,  8 Apr 2024 15:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712588493;
+	bh=EITVdlJtkrnylLXhed9Pr1DfYAyVTQ3XvaUDh63E534=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iPVzIBvT/iSK03mJ74WyCdtfwrYQ0FIvhL5K8YMXOWzUcxtAW1X9DNCrqtBiFjfyi
+	 tl90sPwPpZ5rbnlWkWlrmucbJbApIpssRcLEk4bwAVt6FxwLnhmycj60p3s5ZulGuY
+	 Oi6kb5XzN6oeZLDaCEoYGMUGaCwA36s9aVa2vFCs+0r3L2ACNZZS6RJMIMK7lmGxXl
+	 LZaKWREq5eaTZ8dEmqubeluPfq1pepZhLI9FVjpANsP8XqyeISOYtrQC8gZ/KN/t0I
+	 J4RLdMza2ntow+e8CC8hAcBjXsrybDusTaZepo397svH4xSl9ToXUzq+mYubuhRT/b
+	 17pKAxdggeVsA==
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea1572136eso453455a34.1;
+        Mon, 08 Apr 2024 08:01:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW3+0lUuKg3hHhe5fIqYbB6u665OvDnFDviXdUd7KWwdn3iXbLFY6hEeIr3VKPT+6KhtijdC/aMEQixQJR8e62LzYen9GjggTwawKLEhn9SqELjylZL57kGQkpxmjD/8n7Z+WFUBW8H2HCWTBOLjc+YqFVDm55FTv5XdDPgzEIaiLOjT+XnmOtAolUMwTh7zUKraa7MV0+2yxafcRNvULKVG6VwrLZivXIW1gexeQtwi62weIsFjgZCMyHHVQ==
+X-Gm-Message-State: AOJu0YzUFgJuG5OoHcgg+C7cG0jOPGlDiSTYqqsmM17PI9Otqcm2Gp8w
+	0xKNpdaFYwl5HKE7Dz+tIuFRrDijMGKw9nsfRzmQji05ws/GVvDn/2lcM2jA+e5CupL+fHBJ80z
+	yHjpuw6lyNGtgRjHxBoAg7xnjuYg=
+X-Google-Smtp-Source: AGHT+IE7BjvtTOsOgPqYkXR1Qq+KOOG/nJtiEyKbfNUuvRcPpCIK8D3B6ZYbWXxS6qJ87RK9Jxd6UH195uv+p6a4TTw=
+X-Received: by 2002:a05:6808:603:b0:3c5:f534:e2c7 with SMTP id
+ y3-20020a056808060300b003c5f534e2c7mr2839026oih.1.1712588493105; Mon, 08 Apr
+ 2024 08:01:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -0.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.30 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.00)[43.99%];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:email]
+References: <cover.1712410202.git.lukas@wunner.de>
+In-Reply-To: <cover.1712410202.git.lukas@wunner.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 8 Apr 2024 17:01:22 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hOHCSp8-8EZjuGAOR0QSH3CcvokG3uBGAKFFpTrkqQRA@mail.gmail.com>
+Message-ID: <CAJZ5v0hOHCSp8-8EZjuGAOR0QSH3CcvokG3uBGAKFFpTrkqQRA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Deduplicate bin_attribute simple read() callbacks
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
+	linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org, 
+	Jean Delvare <jdelvare@suse.com>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, 
+	Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	intel-gvt-dev@lists.freedesktop.org, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, linux-pm@vger.kernel.org, 
+	Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-trace_pid_list_alloc() checks pid_max against a magic number referencing
-an (obsolete) source file when it actually should check against the
-capacity of pid_list tree. Turn definition of MAX_PID around -- derive
-it from tree parameters and replace references to magic value and
-header files with so defined MAX_PID.
-Should PID_MAX_LIMIT change in future or pid_max escapes PID_MAX_LIMIT,
-appropriate checks remain in place. No functional change intended.
+On Sat, Apr 6, 2024 at 3:52=E2=80=AFPM Lukas Wunner <lukas@wunner.de> wrote=
+:
+>
+> For my upcoming PCI device authentication v2 patches, I have the need
+> to expose a simple buffer in virtual memory as a bin_attribute.
+>
+> It turns out we've duplicated the ->read() callback for such simple
+> buffers a fair number of times across the tree.
+>
+> So instead of reinventing the wheel, I decided to introduce a common
+> helper and eliminate all duplications I could find.
+>
+> I'm open to a bikeshedding discussion on the sysfs_bin_attr_simple_read()
+> name. ;)
+>
+> Lukas Wunner (2):
+>   sysfs: Add sysfs_bin_attr_simple_read() helper
+>   treewide: Use sysfs_bin_attr_simple_read() helper
+>
+>  arch/powerpc/platforms/powernv/opal.c              | 10 +-------
+>  drivers/acpi/bgrt.c                                |  9 +-------
+>  drivers/firmware/dmi_scan.c                        | 12 ++--------
+>  drivers/firmware/efi/rci2-table.c                  | 10 +-------
+>  drivers/gpu/drm/i915/gvt/firmware.c                | 26 +++++-----------=
+-----
+>  .../intel/int340x_thermal/int3400_thermal.c        |  9 +-------
+>  fs/sysfs/file.c                                    | 27 ++++++++++++++++=
+++++++
+>  include/linux/sysfs.h                              | 15 ++++++++++++
+>  init/initramfs.c                                   | 10 +-------
+>  kernel/module/sysfs.c                              | 13 +----------
+>  10 files changed, 56 insertions(+), 85 deletions(-)
+>
+> --
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- kernel/trace/pid_list.c | 6 +++---
- kernel/trace/pid_list.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+For the series
 
-diff --git a/kernel/trace/pid_list.c b/kernel/trace/pid_list.c
-index 95106d02b32d..b968f0b65dc1 100644
---- a/kernel/trace/pid_list.c
-+++ b/kernel/trace/pid_list.c
-@@ -93,7 +93,7 @@ static inline bool upper_empty(union upper_chunk *chunk)
- static inline int pid_split(unsigned int pid, unsigned int *upper1,
- 			     unsigned int *upper2, unsigned int *lower)
- {
--	/* MAX_PID should cover all pids */
-+	/* MAX_PID must cover all possible pids */
- 	BUILD_BUG_ON(MAX_PID < PID_MAX_LIMIT);
- 
- 	/* In case a bad pid is passed in, then fail */
-@@ -413,8 +413,8 @@ struct trace_pid_list *trace_pid_list_alloc(void)
- 	struct trace_pid_list *pid_list;
- 	int i;
- 
--	/* According to linux/thread.h, pids can be no bigger that 30 bits */
--	WARN_ON_ONCE(pid_max > (1 << 30));
-+	/* See pid_split(), equal to pid_max > PID_MAX_LIMIT */
-+	WARN_ON_ONCE(pid_max > MAX_PID);
- 
- 	pid_list = kzalloc(sizeof(*pid_list), GFP_KERNEL);
- 	if (!pid_list)
-diff --git a/kernel/trace/pid_list.h b/kernel/trace/pid_list.h
-index 62e73f1ac85f..28562a9a3d01 100644
---- a/kernel/trace/pid_list.h
-+++ b/kernel/trace/pid_list.h
-@@ -56,8 +56,8 @@
- 
- #define UPPER_MASK	(UPPER_MAX - 1)
- 
--/* According to linux/thread.h pids can not be bigger than or equal to 1 << 30 */
--#define MAX_PID		(1 << 30)
-+/* Structure can hold only pids strictly below this limit */
-+#define MAX_PID		(1 << (UPPER_BITS + UPPER_BITS + LOWER_BITS))
- 
- /* Just keep 6 chunks of both upper and lower in the cache on alloc */
- #define CHUNK_ALLOC 6
--- 
-2.44.0
-
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
