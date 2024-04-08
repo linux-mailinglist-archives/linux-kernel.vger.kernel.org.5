@@ -1,124 +1,149 @@
-Return-Path: <linux-kernel+bounces-135862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC4F89CC2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:05:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44D9389CC2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:06:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F329F1C221D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77BCD284E9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88337144D3A;
-	Mon,  8 Apr 2024 19:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63604145B2A;
+	Mon,  8 Apr 2024 19:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rhSntl8j"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjLWBhcr"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692AAF51B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 19:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86C1F51B;
+	Mon,  8 Apr 2024 19:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712603142; cv=none; b=lL1twnSL+bPdVhOpxg4JbVxN320I32JodPSZoD35zUVCM7hAi0ZCEZKbG+ds+rOOQVJe1cFdptsqZnJxG16O3RzISO92b+YDpPakxL08T1A4rNgJ3W+WooKQlrvXAHG+KoRUorUuiNx2+AJnqwxooZLXEXZwyR/x9a6jwC7+uwE=
+	t=1712603150; cv=none; b=hGkSF4qsL4Yjk3ErQ3oyZUgNLx/iJ1qxeJUMp9eCezP+Pt5/mtTBt8B6AXcMmQ+dljOlMhZjOVnBbsTYNYkNJ90kJ7i1MjvL2o+IVf75YYnW6JQ8HfXLhEXxU8WBn9TFj2vNOxEr3GbC7tfUF4VBXDReiPSkUy6yZLFjskGA2zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712603142; c=relaxed/simple;
-	bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gDgVWqlc/iHMvbJkzjpeYooCsdxm0l8aoYbkooHnRQCVgHnIdshdWdgoysyS/fqdvJmjw4KPTR0Pz17Y1R49oYmYKBp3l7c2pXm62osWGNw9dEHEhNCgyS3s2cs4J3BNzO9uY+MJHxn7bQEAc+c7FgkFwsmxJofqzzTvTuRH/L0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rhSntl8j; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36a0c8c5f18so27795ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 12:05:41 -0700 (PDT)
+	s=arc-20240116; t=1712603150; c=relaxed/simple;
+	bh=8wFmekVOmu53+cf/lm5FpsFUvsp6gbs1zrZK0Pl2s60=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GUE2yvHrckFBHmIAxKgwACZIPC0706Sk3MsCSUoEenHUExCbffGzOWZOhgxuqV1V4jSZI583syhu1kh6bcMJKyzdtRTTTxNYeyLU+isKYSwPufu9S3vuEK+YTN2RF1/cNsh7/NlQmAHIRucgnZl3xdJ2YVPEoCpy0u3nvlcMK70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjLWBhcr; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516dc51bb72so2809244e87.1;
+        Mon, 08 Apr 2024 12:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712603140; x=1713207940; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712603147; x=1713207947; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
-        b=rhSntl8jtQv6pcCjzJaiPNUmQ0hI6KkwSjcc8FfoI2EN/r9zIJxAF+gFO8Umr7umv4
-         PoBqFzjSjBKwZgSk34sv8szOPMDmzpXmLh5/lt2PN3+bRhT3ZtXqsyKYxFbG37b7n8lZ
-         Z1E1BwuI8jAnMua43tHBpA+8+gH4YKZ4Imhb4U5zMcPJ4KtRzAqwWer/RyeEnHIOV/np
-         qhyzuL/i1sScRSGgudr7emjjLkZxwTWbyAZr8Hu/z8Cprb1RYcJANfgi7+5Z8h5zU3xr
-         Ue8+j9fbnr8y/EDoO/89+lAnI9tNTqD0lrejwD/kxi1zqIUrFrix+wK7XWFE/lrbK2t0
-         1BeA==
+        bh=Qucr3ZG4rBrwezBMSwb49mxeKQa8nls3JKt/ZN46Wsw=;
+        b=hjLWBhcrfZWp3eeAC3Le8+0TNYctmveePDYuSdAb+MjdDnb/s+xdr18hkLxhNddx7n
+         ZrHJIVOMWJQVI2JCmHL8m6t1hG9SGp1+Q60+fQwhYfBaPUT/Ig+gzem7x87x00nWmQWa
+         hnzc70fhk+NwJe6pQzPE9+LROBhgelw/Tg0PExyZVCH0AXKUv8W1WxFK1BYgSOKXV7lF
+         yJ2qNCFQlP9Qc52P3yHSPBGzHnPoW1UmA4Y34B5UYOHXLsQkXlbUZ+c8JV11mCZ7OGVb
+         Sd5nrxKvMmZ+EcEZDuDO9lZerDRfQMSvQ4oUWhOvlin9UhSxF7FnE4z7FQj6JsLmUkfe
+         DZdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712603140; x=1713207940;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712603147; x=1713207947;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lbRobwJw3OdHZdZ4P+7nlZtLBU8BwFDhwjultMzXnbA=;
-        b=J4BLNoR3gh63Teq0qmwNS6L3zc7mkjSrWX+FEUkhXX/ANtVF6G0B5xm95KGnuomcTi
-         cCGf+RV56TaSBgyrv9xSJDKMBtBTVflNlPOfEcJo0o2/zexUqqhTRbhk7eYjCgiSmJ1d
-         T5ZUhiCl6IehmMd48R1Zh4IFPq2cgzAT5X+wNxzgVBZMgOY7O5VUNr12FzDf1x/xoIG0
-         9aWRTG0pDOBybgKgQL8gzapdvNUadDSgvQK30awdFGWEjOhMh8GmZvLAnQFDK4kdPH31
-         iqqU3FxOpx929xDXUrp9qdm5tCmxi5FGkgulMgl0MTtwY/XSFCku6AFDdYTvQ/udu9sQ
-         irAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgOUQiYe7BE04VpR8lf5T/8Gf32Oeg7g6zYzFet0DOsS2NQsg8NPnGJzGwR6cx/PeKWQyLomLoMSDJvRlG9kQ5WPRAjA0BjqU3LLYt
-X-Gm-Message-State: AOJu0Yz7ymx9+3t31Gj1jcaFQv9OwAYOEENPkHhkRHL9Pamlytm/bhp8
-	6ro3t4fENamT3/uHysIH3t+zcKeaZ94B+Adp5wWtPzj10pXVV6LTmo9f6Xv+10tLcxBmmNSutkx
-	E60zWOTDvs5jESKzC1UXT+Zbm1aTYV8fZ+XBX
-X-Google-Smtp-Source: AGHT+IGR+FIKzI/wcrtDoU0xKLEuaSNo1Pi6seLc7A+z/6gARPeaAQ5FJJk+MjgyeXeKOmhZJkn1XSHB3RlSgGvlpsE=
-X-Received: by 2002:a92:b70c:0:b0:368:4204:7bf2 with SMTP id
- k12-20020a92b70c000000b0036842047bf2mr33697ili.12.1712603140332; Mon, 08 Apr
- 2024 12:05:40 -0700 (PDT)
+        bh=Qucr3ZG4rBrwezBMSwb49mxeKQa8nls3JKt/ZN46Wsw=;
+        b=kfMs/kwNE6Tzf6hnK3aaTi5GI6OS3XPkjLCb3mMIvr4lrhfx3PQ0SnwCekC4ifts4z
+         GbbbRZ3OY+MIlPb4v5J92Sk6a8RPMYqwjZU5ojaqr8ZuVR0jkF0f0e9rFO+EpleWBDoI
+         nKNG/+H+rSbe24OWiMvz1XxUls5izKr9ho2gbhDQVPQ3B/ioOuiVXEI5YNEHuOvLW/fi
+         2YG9IruGeZVGHVBgnYOVyizocy41dClcIdBLMGGkf1eEg63d1Dc3enHHiYXRM3kt7dTm
+         GkDi7eFzf2AMoPJfNFph/SdaQegM0K0VKDqi8IGJrmxmIPB/cEueZJt3qVxj0c23fOoc
+         Aatw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVdXdM/McPbXg3oOkjoX3LSbvjCLm2ymyqOoltI0pIGBxLHE9y/+Bh4OQHxE18q/QEilLUK2fZhPIGofyyImeL+WxTAmWV0rO1M57TbjoS4C1GROVIS3o33Me0ZHEtw7M4E5jQoMXO
+X-Gm-Message-State: AOJu0YwEfiVrL0Qf6vlW3bkexiHP3EFAO3Kw8xNGdVZqzMWCmMr8ZIjA
+	6bOauc+nnbXHNwbFx3BMajX7r0lmg6AnHvTmn7kYd1KnVS0iGjtIgKucv1Bh/5Q=
+X-Google-Smtp-Source: AGHT+IFS6YdWF/r3zdQOLFUz3U9xCyj7XabMaoBTsrZUAlosxvGR85IjG7BnK0xafqIAIIfyaajI4A==
+X-Received: by 2002:ac2:5edb:0:b0:513:23be:e924 with SMTP id d27-20020ac25edb000000b0051323bee924mr6455959lfq.59.1712603146362;
+        Mon, 08 Apr 2024 12:05:46 -0700 (PDT)
+Received: from foxbook (acgm220.neoplus.adsl.tpnet.pl. [83.9.240.220])
+        by smtp.gmail.com with ESMTPSA id m15-20020aa7c48f000000b0056b0af78d80sm4452867edq.34.2024.04.08.12.05.45
+        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
+        Mon, 08 Apr 2024 12:05:45 -0700 (PDT)
+Date: Mon, 8 Apr 2024 21:05:41 +0200
+From: =?UTF-8?B?TWljaGHFgg==?= Pecio <michal.pecio@gmail.com>
+To: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Mathias Nyman
+ <mathias.nyman@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-usb@vger.kernel.org
+Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not
+ part of current TD ep_index 1 comp_code 1
+Message-ID: <20240408210541.771253ff@foxbook>
+In-Reply-To: <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
+References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
+	<20240405113247.743e34b2@foxbook>
+	<7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
+	<20240406183659.3daf4fa0@foxbook>
+	<c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
+	<20240407142542.036fb02f@foxbook>
+	<1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325172707.73966-1-peternewman@google.com>
- <20240325172707.73966-2-peternewman@google.com> <e2c479b6-43f0-4e2c-9ccd-2e5f322d1974@intel.com>
- <CALPaoCjWDKM9VYXexDt2+zh2srTotuaErFHXkWzH1w0c_KWDjw@mail.gmail.com> <d3ef1a5a-a7ee-477c-8697-d64b91726d91@intel.com>
-In-Reply-To: <d3ef1a5a-a7ee-477c-8697-d64b91726d91@intel.com>
-From: Peter Newman <peternewman@google.com>
-Date: Mon, 8 Apr 2024 12:05:28 -0700
-Message-ID: <CALPaoCieXQfgEL-7CK2pB5xgrRzTTWBkbic7OXxdKbh-ipWTpw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] x86/resctrl: Move __resctrl_sched_in() out-of-line
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>, 
-	Stephane Eranian <eranian@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Uros Bizjak <ubizjak@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Xin Li <xin3.li@intel.com>, 
-	Babu Moger <babu.moger@amd.com>, Shaopeng Tan <tan.shaopeng@fujitsu.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, Jens Axboe <axboe@kernel.dk>, 
-	Christian Brauner <brauner@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Tycho Andersen <tandersen@netflix.com>, 
-	Nicholas Piggin <npiggin@gmail.com>, Beau Belgrave <beaub@linux.microsoft.com>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Reinette,
+> It's also possible this TD/TRB was cancelled due to the disconnect.
+> Could be that even if driver removes the TD from the list and cleans
+> out the TRB from the ring buffer (turns TRB to no-op) hardware may
+> have read ahead and cached the TRB, and process it anyway.
 
-On Sun, Apr 7, 2024 at 12:21=E2=80=AFPM Reinette Chatre
-<reinette.chatre@intel.com> wrote:
->
-> I think this needs more thought. rdt_enable_key is x86 specific now and s=
-hould not
-> be in the fs code. Every architecture will have its own task switch code,=
- with
-> __resctrl_sched_in() belonging to x86 and thus not something to be direct=
-ly called
-> from the fs code.
+I thought about it, but my debug patch says that the missing TD was
+freed by finish_td(), which is called on TDs considered completed by
+hardware. A cancelled TD would show giveback_invalidated_tds().
 
-I think we will need to discuss whether __resctrl_sched_in() is really
-arch or FS code following the changes in this series. This series
-removes the explicit MSR access and James has already provided inline
-wrappers for the mon and alloc enable keys[1], so I can only assume
-they are architecture-independent in concept.
 
-Thanks!
--Peter
+Anyway, we now have new information from the reporter. My v2 patch
+keeps a log of the last five events processed on each transfer ring
+and dumps the log on TRB mismatch errors.
 
-https://lore.kernel.org/r/20240213184438.16675-18-james.morse@arm.com
+Unfortunately, it looks like the host controller is broken and signals
+completion of those transfers twice. The log below shows two distinct
+events for TRB 32959a1c0 and that the coresponding TD has just been
+freed by finish_td().
+
+[33819.676314] usb 1-2: USB disconnect, device number 7
+[33819.676331] usb 1-2: unregistering device
+[33819.676347] usb 1-2: unregistering interface 1-2:1.0
+[33819.677861] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+[33819.677886] xhci_hcd 0000:00:14.0: Looking for event-dma 000000032959a1c0 trb-start 000000032959a1d0 trb-end 000000032959a1d0 seg-start 000000032959a000 seg-end 000000032959aff0
+[33819.677902] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 32959a1c0 last_dma 32959a1c0 status -115 from finish_td
+[33819.677915] xhci_hcd 0000:00:14.0: handle_tx_event log -4: event ffff9e19c38eb1f0 ep_trb_dma 32959a190 comp_code 1 len 0 slot 6 ep 1
+[33819.677925] xhci_hcd 0000:00:14.0: handle_tx_event log -3: event ffff9e19c38eb200 ep_trb_dma 32959a1a0 comp_code 1 len 0 slot 6 ep 1
+[33819.677934] xhci_hcd 0000:00:14.0: handle_tx_event log -2: event ffff9e19c38eb220 ep_trb_dma 32959a1b0 comp_code 1 len 0 slot 6 ep 1
+[33819.677941] xhci_hcd 0000:00:14.0: handle_tx_event log -1: event ffff9e19c38eb230 ep_trb_dma 32959a1c0 comp_code 1 len 0 slot 6 ep 1
+[33819.677949] xhci_hcd 0000:00:14.0: handle_tx_event log  0: event ffff9e19c38eb260 ep_trb_dma 32959a1c0 comp_code 1 len 0 slot 6 ep 1
+
+At this point we have set the "interesting" flag on this transfer ring,
+so the handling of the next event is logged. We observe TD 32959a1d0
+completing normally here.
+
+[33819.677965] xhci_hcd 0000:00:14.0: handle_tx_event event ffff9e19c38eb270 ep_trb_dma 32959a1d0 comp_code 1 len 0 slot 6 ep 1
+[33819.677979] xhci_hcd 0000:00:14.0: handle_tx_event event ffff9e19c38eb270 first_trb 32959a1d0 last_trb 32959a1d0 ep_seg 32959a000
+[33819.677993] xhci_hcd 0000:00:14.0: process_isoc_td event ffff9e19c38eb270 requested 192 ep_trb_len 192 remaining 0
+[33819.678004] xhci_hcd 0000:00:14.0: finish_td td_status -115 comp_code 1 frame_status 0 frame_actual_length 192
+
+And then we get a TRB mismatch error on this same TD.
+The dumped log shows duplicate events once again.
+
+[33819.678022] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+[33819.678034] xhci_hcd 0000:00:14.0: Looking for event-dma 000000032959a1d0 trb-start 000000032959a1e0 trb-end 000000032959a1e0 seg-start 000000032959a000 seg-end 000000032959aff0
+[33819.678047] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 32959a1d0 last_dma 32959a1d0 status -115 from finish_td
+[33819.678058] xhci_hcd 0000:00:14.0: handle_tx_event log -4: event ffff9e19c38eb220 ep_trb_dma 32959a1b0 comp_code 1 len 0 slot 6 ep 1
+[33819.678066] xhci_hcd 0000:00:14.0: handle_tx_event log -3: event ffff9e19c38eb230 ep_trb_dma 32959a1c0 comp_code 1 len 0 slot 6 ep 1
+[33819.678074] xhci_hcd 0000:00:14.0: handle_tx_event log -2: event ffff9e19c38eb260 ep_trb_dma 32959a1c0 comp_code 1 len 0 slot 6 ep 1
+[33819.678082] xhci_hcd 0000:00:14.0: handle_tx_event log -1: event ffff9e19c38eb270 ep_trb_dma 32959a1d0 comp_code 1 len 0 slot 6 ep 1
+[33819.678089] xhci_hcd 0000:00:14.0: handle_tx_event log  0: event ffff9e19c38eb280 ep_trb_dma 32959a1d0 comp_code 1 len 0 slot 6 ep 1
+
+Regards,
+Michal
 
