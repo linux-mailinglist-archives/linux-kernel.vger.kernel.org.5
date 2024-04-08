@@ -1,284 +1,162 @@
-Return-Path: <linux-kernel+bounces-135930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECCC289CD2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:02:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 419CA89CD27
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1BBC28598A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81071F22BBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0AE147C71;
-	Mon,  8 Apr 2024 21:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89ADA1474A4;
+	Mon,  8 Apr 2024 20:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sB1I/khI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CC4fYGAo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769C37E8;
-	Mon,  8 Apr 2024 21:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF3D1EB46
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 20:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712610157; cv=none; b=C/phv4EcLfBxiBpdJhiOHPKGp8DWg1x5uEes2/dzp4Miyn1Q/WF3weiVXkkjs8dMS8ZUsEed2uqye6IF42eMnUA5TeVL2NbYS8O4ndKMH0WYMFRVn1OleQm/m5du5vCf7BYth2bfdMBEWNsudpY0QiBRzBGgiYKByjWPZjLSbK4=
+	t=1712609942; cv=none; b=JdnZGhzYDmM6t4ruzM5QdN0vbdG/cAY7H3D2yKZnR7cHjbfw7PQMCQrExAwO/4vJ/35jRA5U0f2qLXM9NirwePI9Z1jn+Bi/PNE34VAgKbDVcAj7eOUtrZzU4uYmUBAih99evEuFXXJP4Gmh/4F4NihJataokzeOElVfg9GC5p0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712610157; c=relaxed/simple;
-	bh=Ej1u1Tdv0D0n+r2ATTiCoJkaC37D44Rek2hCwrgsKEI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d8p438dFDnL3WlKtW+p/uMDy9pB0ZZqgPeO2GWMXTTfvJiPAn3MwzWdrkgC0qbCtAw5d0LzKW60PCk8Eity33wDbQ1aVcidI6VQuwS2Lea54dDxzb7fFniWKtFSdQyEVChOjTmXsJ6mC0SU8fr6Zjni92njip+PA+obwDaha96k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sB1I/khI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1086BC433C7;
-	Mon,  8 Apr 2024 21:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712610157;
-	bh=Ej1u1Tdv0D0n+r2ATTiCoJkaC37D44Rek2hCwrgsKEI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=sB1I/khIpIxg90XRIeiSg7/vraPbjc2IZWdXbRVw7h1gbUe1wA0QOQjUOp6IiMknx
-	 6DRGes7EBdBUN/afiPpnkS9iiFPNj7aPS9anB/NzvWaLVslY2gipmAxCYOH5eq7bGK
-	 xfybZBz22QF1EYUNBOCWM/lSM/BzKWf82ZwYTAzDJdr89A6odTJRFVBrh63Q9L1ckr
-	 ZM6Yv0HnbG8Tq/XTiIa0EsOGIf6rGAtAKL+B+wFV1Deuu+v5PzbPi/LX9W0zZr2eD2
-	 hPQrAW+DNf+EDNHUiJcddANlPOGldOT9QWz9afJYZrTLMix9NDcuoqykunsE3H1gxd
-	 6PlhpePZUMdHA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9E70FCE126C; Mon,  8 Apr 2024 14:02:36 -0700 (PDT)
-Date: Mon, 8 Apr 2024 14:02:36 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240328171949.743211-1-leobras@redhat.com>
- <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
- <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
- <ZhROKK9dEPsNnH4t@google.com>
+	s=arc-20240116; t=1712609942; c=relaxed/simple;
+	bh=Sp8ULhDiuUc9igWncb9vXY5dJILFO+9U0kIAbBLTpnI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Kfz1weL5L3G2/fg3rZ62YC5B0cb02jDGWXtXvr/W1yRYapIkg7yW+8kXKOWx6kfbIEqa4IXG9NVka6X1grbM0Dopx1HX/V0+g3hE2i7scdPb29cyN1l6vNRN301ngwR9kToKfOhAldn7CSICpPCkJcXzkMNOFJk6JEsS0w3q7jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CC4fYGAo; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712609941; x=1744145941;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Sp8ULhDiuUc9igWncb9vXY5dJILFO+9U0kIAbBLTpnI=;
+  b=CC4fYGAoUcsXwQ5Opdww9fsC4u6JsacTv1I9hHCkvMDIGtzvEb4AlTkT
+   roY4ZYxMeIw6diMOPTdSeDKZMEpyE6xkOrFKF7CZNW8RuGeHgm8FxK8t7
+   dfu97PWfVks3J8G8AxCQ6dCVt7/SOGWoOo1G2tNzybIFgnluF9MO8WUsK
+   88cckYt+eAdCyBw+4+sOeXnqeKGDAbmB6U98zDomK3k1OCOUDBsH+XTJ5
+   FPrgnLwDFqiYadlvqDdIygG5+VGI2GW2XXqtE4mSRQjsJzu/w46+r+kob
+   vvhT6GXljqFUX8Oe2vGjqrUdGGoKEiwxGN2y/1AqLUfG08yL/yC4yjEGP
+   w==;
+X-CSE-ConnectionGUID: VB6vMlwtR0WMHeL8D7enjw==
+X-CSE-MsgGUID: a5/gBSsHQayFCQyfQeaGwA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19289633"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="19289633"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 13:59:00 -0700
+X-CSE-ConnectionGUID: yhOEEWpNTwC+KnlTevbKCQ==
+X-CSE-MsgGUID: zYNBIbgvRQi+m5Cu9bJqdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="20055284"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 13:59:00 -0700
+Date: Mon, 8 Apr 2024 14:03:29 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: iommu@lists.linux.dev, Kevin Tian <kevin.tian@intel.com>, Yi Liu
+ <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
+ <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ linux-kernel@vger.kernel.org, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/2] iommu/vt-d: Remove caching mode check before devtlb
+ flush
+Message-ID: <20240408140329.6290377f@jacob-builder>
+In-Reply-To: <20240407144232.190355-2-baolu.lu@linux.intel.com>
+References: <20240407144232.190355-1-baolu.lu@linux.intel.com>
+	<20240407144232.190355-2-baolu.lu@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhROKK9dEPsNnH4t@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 08, 2024 at 01:06:00PM -0700, Sean Christopherson wrote:
-> On Mon, Apr 08, 2024, Paul E. McKenney wrote:
-> > On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
-> > > On Fri, Apr 05, 2024, Paul E. McKenney wrote:
-> > > Issuing a warning based on an arbitrary time limit is wildly different than using
-> > > an arbitrary time window to make functional decisions.  My objection to the "assume
-> > > the CPU will enter a quiescent state if it exited a KVM guest in the last second"
-> > > is that there are plenty of scenarios where that assumption falls apart, i.e. where
-> > > _that_ physical CPU will not re-enter the guest.
-> > > 
-> > > Off the top of my head:
-> > > 
-> > >  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
-> > >    will get false positives, and the *new* pCPU will get false negatives (though
-> > >    the false negatives aren't all that problematic since the pCPU will enter a
-> > >    quiescent state on the next VM-Enter.
-> > > 
-> > >  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
-> > >    won't re-enter the guest.  And so the pCPU will get false positives until the
-> > >    vCPU gets a wake event or the 1 second window expires.
-> > > 
-> > >  - If the VM terminates, the pCPU will get false positives until the 1 second
-> > >    window expires.
-> > > 
-> > > The false positives are solvable problems, by hooking vcpu_put() to reset
-> > > kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
-> > > scheduled in on a different pCPU, KVM would hook vcpu_load().
-> > 
-> > Here you are arguing against the heuristic in the original patch, correct?
-> 
-> Yep, correct.
+Hi Lu,
 
-Whew!!!  ;-)
+On Sun,  7 Apr 2024 22:42:32 +0800, Lu Baolu <baolu.lu@linux.intel.com>
+wrote:
 
-> > As opposed to the current RCU heuristic that ignores certain quiescent
-> > states for nohz_full CPUs until the grace period reaches an age of
-> > one second?
-> > 
-> > If so, no argument here.  In fact, please consider my ack cancelled.
+> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
+> implementation caches not-present or erroneous translation-structure
+> entries except the first-stage translation. The caching mode is
+> unrelated to the device TLB , therefore there is no need to check
+> it before a device TLB invalidation operation.
 > 
-> ...
+> Before the scalable mode is introduced, caching mode is treated as
+> an indication that the driver is running in a VM guest. This is just
+> a software contract as shadow page table is the only way to implement
+> a virtual IOMMU. But the VT-d spec doesn't state this anywhere. After
+> the scalable mode is introduced, this doesn't stand for anymore, as
+> caching mode is not relevant for the first-stage translation. A virtual
+> IOMMU implementation is free to support first-stage translation only
+> with caching mode cleared.
 > 
-> > > That's a largely orthogonal discussion.  As above, boosting the scheduling priority
-> > > of a vCPU because that vCPU is in critical section of some form is not at all
-> > > unique to nested virtualization (or RCU).
-> > > 
-> > > For basic functional correctness, the L0 hypervisor already has the "hint" it 
-> > > needs.  L0 knows that the L1 CPU wants to run by virtue of the L1 CPU being
-> > > runnable, i.e. not halted, not in WFS, etc.
-> > 
-> > And if the system is sufficiently lightly loaded, all will be well, as is
-> > the case with my rcutorture usage.  However, if the system is saturated,
-> > that basic functional correctness might not be enough.  I haven't heard
-> > many complaints, other than research work, so I have been assuming that
-> > we do not yet need hinting.  But you guys tell me.  ;-)
+> Remove the caching mode check before device TLB invalidation to ensure
+> compatibility with the scalable mode use cases.
 > 
-> We should never use hinting for basic, *default* functionality.  If the host is
-> so overloaded that it can induce RCU stalls with the default threshold of 21
-> seconds, then something in the host's domain is broken/misconfigured.  E.g. it
-> doesn't necessary have to be a host kernel/userspace bug, it could be an issue
-> with VM scheduling at the control plane.  But it's still a host issue, and under
-> no circumstance should the host need a hint in order for the guest to not complain
-> after 20+ seconds.
-> 
-> And _if_ we were to push the default lower, e.g. all the way down to Android's
-> aggressive 20 milliseconds, a boosting hint would still be the wrong way to go
-> about it, because no sane hypervisor would ever back such a hint with strong
-> guarantees for all scenarios.
-> 
-> It's very much possible to achieve a 20ms deadline when running as a VM, but it
-> would require strong guarantees about the VM's configuration and environment,
-> e.g. that memory isn't overcommited, that each vCPU has a fully dedicated pCPU,
-> etc.
+I agree with the changes below, what about this CM check:
 
-Agreed, and again, you guys need to tell me what is necessary here.
+/* Notification for newly created mappings */
+static void __mapping_notify_one(struct intel_iommu *iommu, struct dmar_domain *domain,
+				 unsigned long pfn, unsigned int pages)
+{
+	/*
+	 * It's a non-present to present mapping. Only flush if caching mode
+	 * and second level.
+	 */
+	if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
+		iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
 
-> > > > > +	    rcu_nohz_full_cpu())
-> > > > 
-> > > > And rcu_nohz_full_cpu() has a one-second timeout, and has for quite
-> > > > some time.
-> > > 
-> > > That's not a good reason to use a suboptimal heuristic for determining whether
-> > > or not a CPU is likely to enter a KVM guest, it simply mitigates the worst case
-> > > scenario of a false positive.
-> > 
-> > Again, are you referring to the current RCU code, or the original patch
-> > that started this email thread?
-> 
-> Original patch.
-> 
-> > > > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > > > index bfb2b52a1416..5a7efc669a0f 100644
-> > > > > --- a/virt/kvm/kvm_main.c
-> > > > > +++ b/virt/kvm/kvm_main.c
-> > > > > @@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
-> > > > >  {
-> > > > >  	int cpu = get_cpu();
-> > > > >  
-> > > > > +	if (vcpu->wants_to_run)
-> > > > > +		context_tracking_guest_start_run_loop();
-> > > > 
-> > > > At this point, if this is a nohz_full CPU, it will no longer report
-> > > > quiescent states until the grace period is at least one second old.
-> > > 
-> > > I don't think I follow the "will no longer report quiescent states" issue.  Are
-> > > you saying that this would prevent guest_context_enter_irqoff() from reporting
-> > > that the CPU is entering a quiescent state?  If so, that's an issue that would
-> > > need to be resolved regardless of what heuristic we use to determine whether or
-> > > not a CPU is likely to enter a KVM guest.
-> > 
-> > Please allow me to start over.  Are interrupts disabled at this point,
-> 
-> Nope, IRQs are enabled.
-> 
-> Oof, I'm glad you asked, because I was going to say that there's one exception,
-> kvm_sched_in(), which is KVM's notifier for when a preempted task/vCPU is scheduled
-> back in.  But I forgot that kvm_sched_{in,out}() don't use vcpu_{load,put}(),
-> i.e. would need explicit calls to context_tracking_guest_{stop,start}_run_loop().
-> 
-> > and, if so, will they remain disabled until the transfer of control to
-> > the guest has become visible to RCU via the context-tracking code?
-> > 
-> > Or has the context-tracking code already made the transfer of control
-> > to the guest visible to RCU?
-> 
-> Nope.  The call to __ct_user_enter(CONTEXT_GUEST) or rcu_virt_note_context_switch()
-> happens later, just before the actual VM-Enter.  And that call does happen with
-> IRQs disabled (and IRQs stay disabled until the CPU enters the guest).
+We are still tying devTLB flush to CM=1, no?
 
-OK, then we can have difficulties with long-running interrupts hitting
-this range of code.  It is unfortunately not unheard-of for interrupts
-plus trailing softirqs to run for tens of seconds, even minutes.
+If we are running in the guest with second level page table (shadowed), can
+we decide if devTLB flush is needed based on ATS enable just as the rest of
+the cases?
 
-One counter-argument is that that softirq would take scheduling-clock
-interrupts, and would eventually make rcu_core() run.
 
-But does a rcu_sched_clock_irq() from a guest OS have its "user"
-argument set?
+> Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by
+> default") Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/iommu.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 493b6a600394..681789b1258d 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -1501,7 +1501,7 @@ static void iommu_flush_iotlb_psi(struct
+> intel_iommu *iommu, else
+>  		__iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
+>  
+> -	if (!cap_caching_mode(iommu->cap) && !map)
+> +	if (!map)
+>  		iommu_flush_dev_iotlb(domain, addr, mask);
+>  }
+>  
+> @@ -1575,8 +1575,7 @@ static void intel_flush_iotlb_all(struct
+> iommu_domain *domain) iommu->flush.flush_iotlb(iommu, did, 0, 0,
+>  						 DMA_TLB_DSI_FLUSH);
+>  
+> -		if (!cap_caching_mode(iommu->cap))
+> -			iommu_flush_dev_iotlb(dmar_domain, 0,
+> MAX_AGAW_PFN_WIDTH);
+> +		iommu_flush_dev_iotlb(dmar_domain, 0,
+> MAX_AGAW_PFN_WIDTH); }
+>  
+>  	if (dmar_domain->nested_parent)
 
-> > > > >  	__this_cpu_write(kvm_running_vcpu, vcpu);
-> > > > >  	preempt_notifier_register(&vcpu->preempt_notifier);
-> > > > >  	kvm_arch_vcpu_load(vcpu, cpu);
-> > > > > @@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
-> > > > >  	kvm_arch_vcpu_put(vcpu);
-> > > > >  	preempt_notifier_unregister(&vcpu->preempt_notifier);
-> > > > >  	__this_cpu_write(kvm_running_vcpu, NULL);
-> > > > > +
-> > > > 
-> > > > And also at this point, if this is a nohz_full CPU, it will no longer
-> > > > report quiescent states until the grace period is at least one second old.
-> > 
-> > And here, are interrupts disabled at this point, and if so, have they
-> > been disabled since the time that the exit from the guest become
-> > visible to RCU via the context-tracking code?
-> 
-> IRQs are enabled.
-> 
-> The gist of my suggestion is:
-> 
-> 	ioctl(KVM_RUN) {
-> 
-> 		context_tracking_guest_start_run_loop();
-> 
-> 		for (;;) {
-> 
-> 			vcpu_run();
-> 
-> 			if (<need to return to userspace>)
-> 				break;
-> 		}
-> 
-> 		context_tracking_guest_stop_run_loop();
-> 	}
-> 
-> where vcpu_run() encompasses a fairly huge amount of code and functionality,
-> including the logic to do world switches between host and guest.
-> 
-> E.g. if a vCPU triggers a VM-Exit because it tried to access memory that has been
-> swapped out by the host, KVM could end up way down in mm/ doing I/O to bring a
-> page back into memory for the guest.  Immediately after VM-Exit, before enabling
-> IRQs, KVM will notify RCU that the CPU has exited the extended quiescent state
-> (this is what happens today).  But the "in KVM run loop" flag would stay set, and
-> RCU would rely on rcu_nohz_full_cpu() for protection, e.g. in case faulting in
-> memory somehow takes more than a second.
-> 
-> But, barring something that triggers a return to userspace, KVM _will_ re-enter
-> the guest as quickly as possible.  So it's still a heuristic in the sense that
-> the CPU isn't guaranteed to enter the guest, nor are there any enforceable SLOs
-> on how quickly the CPU will enter the guest, but I think it's the best tradeoff
-> between simplicity and functionality, especially since rcu_nohz_full_cpu() has
-> a one second timeout to safeguard against some unforeseen hiccup that prevents
-> KVM from re-entering the guest in a timely manner.
-> 
-> Note, as above, my intent is that there would also be hooks in kvm_sched_{in,out}()
-> to note that the guest run loop is starting/stopping if the vCPU task yields or
-> is preempted.
 
-Very good, same responses as for the context_tracking_guest_start_run_loop()
-case.
+Thanks,
 
-							Thanx, Paul
+Jacob
 
