@@ -1,112 +1,121 @@
-Return-Path: <linux-kernel+bounces-135955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D7A89CDD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:52:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8652589CDE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD5A2849DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:52:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64181C21724
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F5614884B;
-	Mon,  8 Apr 2024 21:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E1F149002;
+	Mon,  8 Apr 2024 21:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KFTehzjZ"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C14b7fHu"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A011442F3
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B967E8;
+	Mon,  8 Apr 2024 21:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712613158; cv=none; b=bMnxpuMB7jn/fYDO4lJBZyaqfWcfI2v/jdJNLnf+pxqHV/R3otNN7WmiBeSVog+wPwHdgfxITvUhrxXL0SDSml2xJ2a8U6jjCbc9nnv9U+Ar9RmYRtZpUxthie4RlXtNX2zjHHjAQ0xOF2fOg9KwALfJDeTgoteSg2aSg9JaYco=
+	t=1712613358; cv=none; b=SpE4zYIC2jQjesju8NMR0REVbscWkTFp8POPE7wpoUeoQmzfNs9ZXVJAiRV1pxRqOURRdpywftBX7JhpyhmsHeYkORZPWD0EPiFiVhjDS3roVsibDHKqWEkCWjocoCiJINWnCtqvmc3johA9IYck4GFoPlNT3qabnT+T88nKHg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712613158; c=relaxed/simple;
-	bh=nvpM8tXyK/CURoTjuw83DuYMKwJ9CyjRJDN6oCQ+WcM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=rPMlj8DPgvA6VrR/cw+M53jrKN5k9cpnJ0pBvQ1DS9yin69sllS0lgoY1IEjA36rJtDiZZNR7eDPuqFmvT1NNi8XACDXFlxjkI3uDxlgCJouxFdkCJ4TM+kSz1jcqUT0ytd8cpgSWO4zNDBdN/htOAC+CERq/SDWiGg64zYXxuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KFTehzjZ; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61506d6d667so84903427b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 14:52:36 -0700 (PDT)
+	s=arc-20240116; t=1712613358; c=relaxed/simple;
+	bh=q4GxNzePdy6HcJ/G3VBCqdFL3eQrX9vrFENM+WPga8A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kWrdTSYoxC1l/Jj7aG7YXHZAVw5/1w8/RZDmu0OASshQRCrSeOmPfoUSlxwqFvQZvK5K5OhwF46tIA78Am/RV/KzBcwGQl0izS7abfVDi7jv+cGiY6umKu+m3bsRyma6yFtvKy87A2a9Ek2fVwEWHkA63f6CIAGk0SWnvvHCIG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C14b7fHu; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5171a529224so1745356e87.0;
+        Mon, 08 Apr 2024 14:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712613156; x=1713217956; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+        d=gmail.com; s=20230601; t=1712613355; x=1713218155; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=amcZSzW3yyTzEXypL37TcjBNZBV4M3dWgOvIguTbuzI=;
-        b=KFTehzjZWAYt/par8SOgZJrE6uQ7QnRoaIeo1W6zXkM/3vv17gRR8exgPPpaXIsh9l
-         7SHnq9H/+ZkMzn9lYDlsM7Z33ZeT+HUfbIA/OLmi6PTlRR1zuKfboNs8uFNNZqk6YW+v
-         VgCWq47v3o0c88gEc6nlR1dO/HpnplipYCAT5v4LNiQTIUA/T7vsXxC49c3cpfDHXpyd
-         FMUQ6sdjfWRJ10vd+r0RWBVEurVBSqrOIAIZ+RoKgFaYo2OGjtlEe2lH1iHuEI39/Y7o
-         Nk91oi5ry9ANeV53K6QbwK6/yAiKIAOZI0l1mSVPz7IjfeLfu0N4/4V1f6+RGqRJq8y0
-         IodA==
+        bh=q4GxNzePdy6HcJ/G3VBCqdFL3eQrX9vrFENM+WPga8A=;
+        b=C14b7fHuAVPFYMudVaU85A6LVm5b+d6GjxsH6wUU8cPlQojxwHnVhnhn5lWZfziyob
+         Xf+pb42VMbNNyPYFQW0e4xdPssSwB+nOgwsiBvvFUoOkEuu1f4FH46yxLA24NZAwWd8/
+         aZc1t0vnHOFnG788fn1BYFTBLBQ5pfeVC+tVj8qGgDGvTDTAfyJZ/o8qzc9qrG6851LL
+         pU9d/vI4lGpLeT/j6WZeHR9yk3pZsmJXKgqwJWzFIsXKsWBi3Od6O7vY8xWGpQYcRmTW
+         UB+v0+Sa/p2yya7MZx6iyUU9LwmAldyfC8WAY/P/pKFKsm33/y0sknH9r6ltCGBd07sX
+         pTUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712613156; x=1713217956;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1712613355; x=1713218155;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=amcZSzW3yyTzEXypL37TcjBNZBV4M3dWgOvIguTbuzI=;
-        b=tXpRt2oKYttLh5lKOW8wFpVfYD6E8XMlNj4ODZHCMXE36TYddYrlmMO+Ji9VAPhsCl
-         BmcK4LFMLQGoylNzm1QIUJEA8hdbqJVpLxxw6O07AmTCYah6IxizXj9euFsyrOhkTt6N
-         sTt5dyeoylPD8NZeYCGvsCPIy6O2TyRuY71nDnk7iJXmgBS/upIJVxTWxlDE/RcWWNPu
-         b1og5qj+niAxF6BJYuZ7IRFaJEP8hLMTGyLABzPauHCttvwGavZG7L71Uwf/Emjgnz2e
-         5lKWlCSiHpmUk6e/my8kcVeZTNJQUGAmqKozGzYcdfFMO8PtHkLMU903OJSs2a3cyfm2
-         uVxA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4O5/HndATFQKc6Se9hAfxOgvaVyG8ef9AePO23RBrzPI/EM+n9ghjIs537AlCld/Xt4aHX2yOB5mtEiGtQP/hWMiJ7zuXH/P28/2o
-X-Gm-Message-State: AOJu0YxuMLohkh05XWzdP+dzkbtITJ/09v0wT5vmyxwTA0wlEwDTkr0d
-	AZRdSv0HiuPaHD1IHFE15PWXUS1MgyBN7Pc1qYLt0GXeHabMA+43axinsAaDMwIZlNAv8ly3wT7
-	TrbIccw==
-X-Google-Smtp-Source: AGHT+IEkq+yrPhgyYDRCrGfUbGremKSvF9Tls/NyM9Ex8fLO1ww0uaL+bHkVzWJv2HGc6KYIwiPvmzeEyS36
-X-Received: from dhavale-desktop.mtv.corp.google.com ([2620:15c:211:201:9081:5db7:4b17:a606])
- (user=dhavale job=sendgmr) by 2002:a81:ff05:0:b0:615:12a5:49c9 with SMTP id
- k5-20020a81ff05000000b0061512a549c9mr2538367ywn.3.1712613156122; Mon, 08 Apr
- 2024 14:52:36 -0700 (PDT)
-Date: Mon,  8 Apr 2024 14:52:29 -0700
+        bh=q4GxNzePdy6HcJ/G3VBCqdFL3eQrX9vrFENM+WPga8A=;
+        b=qgeowhlZYbP3x67Joo5TmAhgYMFpgM+BXxA8PFEqsJ3frJvBJxtTUaUIpMzf7Jzdkh
+         ke9l8BwUIApPWXK/io/ueM6M47/dkAJ5KMNkG5MQ003Wq93PYKplSG+2g+D/BJXl6YJd
+         kSaKYN5gL+wudtrUUnK+mwMq5prhTNjznSyrBCg1blQmODJUmyz2xqFlWSm7BTY2jVrH
+         gGM5+WKgACdacar5l79+8JvCVH1Z8+ZK1iveIRSEtz8eaRGO5tIp0+Ot/u6XGcRzbowz
+         /GgFXFcGOdNbWy9z5t+2bDkOfUUQHfHNj4R3QOvb12z3Fs62Jjb7m4xbSczagWoB7+Lb
+         u9hQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXaelbmucaym1k0FQgd87hURRNfA+q/iMa8xTdLNmx6x2bzlAqdSc5VKuZtfh+RZMgCxnF6afVaeXP61OIvNxoJJQuFqX+3mViPBrk9+GeDH0ShwZeYQY/Qh9j3N/Y5hKV8UUWKLuKJzPA4T/x4
+X-Gm-Message-State: AOJu0Yyau61DAfoONZzF4oDNmerB9jIAj5dB/Hzeu0xvHxTSyI4mNahr
+	YfS7LnuoIRCTQCr8cGZuyDKikNW4qK/SFtGwfCBHbCnsVNxyJ4me
+X-Google-Smtp-Source: AGHT+IHU0e3WR949Puzru+7SwM/GkoanitHTIA+lxpX80diL/Qkx32uXThGUcMzQ8I+8qakyXG/Ksg==
+X-Received: by 2002:ac2:44cc:0:b0:516:d09b:cbd6 with SMTP id d12-20020ac244cc000000b00516d09bcbd6mr5750837lfm.15.1712613354820;
+        Mon, 08 Apr 2024 14:55:54 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id nb16-20020a1709071c9000b00a51e6222200sm371602ejc.156.2024.04.08.14.55.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 14:55:54 -0700 (PDT)
+Message-ID: <f80abccc03a9695ab54aaa4841700a069e923c68.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 2/6] bpf: Add support for
+ KF_ARG_PTR_TO_TIMER
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bentiss@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
+ <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 09 Apr 2024 00:55:52 +0300
+In-Reply-To: <20240408-hid-bpf-sleepable-v6-2-0499ddd91b94@kernel.org>
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+	 <20240408-hid-bpf-sleepable-v6-2-0499ddd91b94@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240408215231.3376659-1-dhavale@google.com>
-Subject: [PATCH v1] erofs: use raw_smp_processor_id() to get buffer from
- global buffer pool
-From: Sandeep Dhavale <dhavale@google.com>
-To: Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Chunhai Guo <guochunhai@vivo.com>
-Cc: linux-erofs@lists.ozlabs.org, 
-	syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com, 
-	kernel-team@android.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 
-erofs will decompress in the preemptible context (kworker or per cpu
-thread). As smp_processor_id() cannot be used in preemptible contexts,
-use raw_smp_processor_id() instead to index into global buffer pool.
+On Mon, 2024-04-08 at 10:09 +0200, bentiss@kernel.org wrote:
+> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>=20
+> Introduce support for KF_ARG_PTR_TO_TIMER. The kfuncs will use bpf_timer
+> as argument and that will be recognized as timer argument by verifier.
+> bpf_timer_kern casting can happen inside kfunc, but using bpf_timer in
+> argument makes life easier for users who work with non-kern type in BPF
+> progs.
+>=20
+> Fix up process_timer_func's meta argument usage (ignore if NULL) so that
+> we can share the same checks for helpers and kfuncs. meta argument is
+> only needed to ensure bpf_timer_init's timer and map arguments are
+> coming from the same map (map_uid logic is necessary for correct
+> inner-map handling).
+>=20
+> No such concerns will be necessary for kfuncs as timer initialization
+> happens using helpers, hence pass NULL to process_timer_func from kfunc
+> argument handling code to ignore it.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>=20
+> ---
 
-Reported-by: syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com
-Fixes: 7a7513292cc6 ("erofs: rename per-CPU buffers to global buffer pool and make it configurable")
-Signed-off-by: Sandeep Dhavale <dhavale@google.com>
----
- fs/erofs/zutil.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
-index b9b99158bb4e..036024bce9f7 100644
---- a/fs/erofs/zutil.c
-+++ b/fs/erofs/zutil.c
-@@ -30,7 +30,7 @@ static struct shrinker *erofs_shrinker_info;
- 
- static unsigned int z_erofs_gbuf_id(void)
- {
--	return smp_processor_id() % z_erofs_gbuf_count;
-+	return raw_smp_processor_id() % z_erofs_gbuf_count;
- }
- 
- void *z_erofs_get_gbuf(unsigned int requiredpages)
--- 
-2.44.0.478.gd926399ef9-goog
-
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
