@@ -1,195 +1,141 @@
-Return-Path: <linux-kernel+bounces-135666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6717A89C97E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:21:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C5689C980
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A1991C2151C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:21:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894961F236DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923F6142630;
-	Mon,  8 Apr 2024 16:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957891422BD;
+	Mon,  8 Apr 2024 16:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iA5ADMOh"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dlT3cjNh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347DD24B4A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464A05B1E0
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712593255; cv=none; b=jt3bGElQp8tSxlVsFZSQ9avB+cONxQWLrlqsJcBAtyXuxZFmNTmZ8TZFq2lWl0DwoVQoaYV0hC8AGeJQzoOpfFn9/+3Eq769cgg9oQWzxZG2Yz7AzlJ1H2wLy0gyDtT2kvDZ5NI+6uDmTYy4M/G3UU+zccvWAXx+SPV3YS9iZQI=
+	t=1712593478; cv=none; b=Jz+sdx1w07dR+yqG4vP5Z0RQQSWKbo4D2BYEeoZZdx42a1LbQLg0i05kyz6Vi0HUrrOiT8dwAoWvvYzW6ZQxyZTxVXeqqH+CGuDGBLkncYfEJxvjkeNcrCI18T2piA/srFTAoaDkYTYiTQ/CUZAnY8I1od/dV3wXkN/0fWv4+aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712593255; c=relaxed/simple;
-	bh=VSYbuCAqKf3R9TeMf7JHCuPQ+Xi5C3wzAuqUYJN3sj8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=G96BSktpORkFEz3f/Cfu/iLw5cYMU6mBOnTNkA4d/9w7AmK35Tso6MApTGSbpCW8qQpXq9marzQszFkQPaI/HmGbAolfqiRmO8/xSVkLLhBYvm03alTzdO9ZA4FRSRlyRRbr7PzV/EgFedZGr0n1XRLWCrupOmcD62NUplVAgnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iA5ADMOh; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dc992f8c8aso3747671a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 09:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712593253; x=1713198053; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IFKoX5LRArUwXbnBHpdfGpECLiMAwP3ZmSQZ47P/XxQ=;
-        b=iA5ADMOhDTR3H/DKQX8nWYiYC44zGytZ8CDN55/HY3lxM5h69n2CUEa2WqCUlKb2AD
-         tWcoreJPKuNSQTLPevoEzzHIwYlT5XSilAX0NXpeQe7J0khaqf8y5anav6JxH/2dBDf2
-         f55RnNfxOqmeE6Cfw9XLOJVqhhDGViEN/SzxU1USnAm0mmKo72i37uhVfMqpBh8zFb2f
-         L95HQt3LIdHsQNS5JfmlU4lbkvvxJl295Zh7H8IbdWqrAVKvQdusSPkFWwPD6oXDeh7w
-         5exlf3P9+oPiIzyZKoqu2CV2c99Z+tgyRcqwjo7YmBLfreu/LMCmf1UFjbgBAIO1CA8o
-         gZyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712593253; x=1713198053;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IFKoX5LRArUwXbnBHpdfGpECLiMAwP3ZmSQZ47P/XxQ=;
-        b=hcWSDwN8zd1yZufCdYFNwwyVacd3uZJcvEMnLXzQvcgktsYdBcu4EzHgeXmFLOt97z
-         I4lF3NFj9/5+YsoOW2UuMTBxYQ3YDe1dgmdapwVL2tgJ04Q0W4qlGi+kx1UPFJJw4fVc
-         1ej5lRFQZ/furcUNViKx16B23bs0PWnRGAt/i0rKy7mHCitgRvBsuybid7ULhpEHfbrO
-         34MIbclwJezqgdMf8qSIfq1urRREp6FHSsQmoHC0ZCGqjbAXwEDIzO7XZuo6meRxJ3Rr
-         Rx8s3+MPsdJtQjjNfU0umFqK19ZA9p5qNtCdMmHtnZBGBVoujYCiGeFHXShwyqJvrYCK
-         5CNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUb8kHsSAsgTeJdyOdAQt+JRTDCXvRmme4n1fn4ESxPRvSDiVN1LydNma3iR/WlJBnhzRlogBOG+oJb90dHTBVm9AOVgiK6Ax8dEkM
-X-Gm-Message-State: AOJu0YwluLvdFcIzdC0tmcJngj8SPpafzJyStJ1IKULaWjaEiDjeF/YF
-	mHLfcCnPpnaAPHNQi2KMcSCCY5ACpGvisz9Pwjx+OJBw98FOIyLBKYni37J8hd75JiRupXkzcJA
-	bMA==
-X-Google-Smtp-Source: AGHT+IGtIssXRNZp39j/EtRn/fKzypd9u2A7Vc83yQVSj6H6aqmybuKMcmx9MTN0utnJgg8UKDKDn52HeOo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:d80a:0:b0:5dc:11fe:525f with SMTP id
- b10-20020a63d80a000000b005dc11fe525fmr27590pgh.6.1712593253371; Mon, 08 Apr
- 2024 09:20:53 -0700 (PDT)
-Date: Mon, 8 Apr 2024 09:20:51 -0700
-In-Reply-To: <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
+	s=arc-20240116; t=1712593478; c=relaxed/simple;
+	bh=6NRTUPWf9ZckeTf7WPy0hIku+8O5n7NUx2nXUXIzsaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lQD4lseFFYPqkw8U4zZx9B3O7Rm8U/1PBFXwkIUMI32xnfFFQ/sLDpNDQAkkgb1IaWgMGFGY+yCKgzvOqrhqLK5A7Zgmz2kQGVDxYqC1lSyegpNlhcRle+//7Wi907Nz79p3WW+FVStu7BgQ71Iz1fz6eqiqSaF0BcKJFfPzYK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dlT3cjNh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712593475;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E5neF0ydYd9cA1bevZzf7K+VGoZTfl5uVcOrP5Gq8CQ=;
+	b=dlT3cjNhLTmUN2xVfU9CkDSoAPlyHs+bxctrWRK/p6XF+iS7Jj47eVkejoluP85zcR/55t
+	QCoNVCBTqNrWBoQYONeuBGLXZeBK4QDaz7fUK6kBAQCAYU7y0gqANWcE1z0QBtovAOcMp8
+	4hJkH06OuqasyztmbYjsZT+YLbaG0o4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-311-3OhbNXdPOOqOD_zgQDw3sA-1; Mon, 08 Apr 2024 12:24:34 -0400
+X-MC-Unique: 3OhbNXdPOOqOD_zgQDw3sA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 807C180021A;
+	Mon,  8 Apr 2024 16:24:33 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.180])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 959671C06667;
+	Mon,  8 Apr 2024 16:24:29 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon,  8 Apr 2024 18:23:08 +0200 (CEST)
+Date: Mon, 8 Apr 2024 18:22:59 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-ID: <20240408162258.GC25058@redhat.com>
+References: <20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+ <CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+ <20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+ <CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+ <20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+ <20240404161108.GG7153@redhat.com>
+ <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+ <Zg-8r63tPSkuhN7p@krava>
+ <20240405110230.GA22839@redhat.com>
+ <ZhQVBYQYr5ph33Uu@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405165844.1018872-1-seanjc@google.com> <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
-Message-ID: <ZhQZYzkDPMxXe2RN@google.com>
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-From: Sean Christopherson <seanjc@google.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Rick P Edgecombe <rick.p.edgecombe@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Wei W Wang <wei.w.wang@intel.com>, David Skidmore <davidskidmore@google.com>, 
-	Steve Rutherford <srutherford@google.com>, Pankaj Gupta <pankaj.gupta@amd.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhQVBYQYr5ph33Uu@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Sun, Apr 07, 2024, Xiaoyao Li wrote:
-> On 4/6/2024 12:58 AM, Sean Christopherson wrote:
-> >   - For guest MAXPHYADDR vs. GPAW, rely on KVM_GET_SUPPORTED_CPUID to enumerate
-> >     the usable MAXPHYADDR[2], and simply refuse to enable TDX if the TDX Module
-> >     isn't compatible.  Specifically, if MAXPHYADDR=52, 5-level paging is enabled,
-> >     but the TDX-Module only allows GPAW=0, i.e. only supports 4-level paging.
-> 
-> So userspace can get supported GPAW from usable MAXPHYADDR, i.e.,
-> CPUID(0X8000_0008).eaxx[23:16] of KVM_GET_SUPPORTED_CPUID:
->  - if usable MAXPHYADDR == 52, supported GPAW is 0 and 1.
->  - if usable MAXPHYADDR <= 48, supported GPAW is only 0.
-> 
-> There is another thing needs to be discussed. How does userspace configure
-> GPAW for TD guest?
-> 
-> Currently, KVM uses CPUID(0x8000_0008).EAX[7:0] in struct
-> kvm_tdx_init_vm::cpuid.entries[] of IOCTL(KVM_TDX_INIT_VM) to deduce the
-> GPAW:
-> 
-> 	int maxpa = 36;
-> 	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0x80000008, 0);
-> 	if (entry)
-> 		max_pa = entry->eax & 0xff;
-> 
-> 	...
-> 	if (!cpu_has_vmx_ept_5levels() && max_pa > 48)
-> 		return -EINVAL;
-> 	if (cpu_has_vmx_ept_5levels() && max_pa > 48) {
-> 		td_params->eptp_controls |= VMX_EPTP_PWL_5;
-> 		td_params->exec_controls |= TDX_EXEC_CONTROL_MAX_GPAW;
-> 	} else {
-> 		td_params->eptp_controls |= VMX_EPTP_PWL_4;
-> 	}
-> 
-> The code implies that KVM allows the provided CPUID(0x8000_0008).EAX[7:0] to
-> be any value (when 5level ept is supported). when it > 48, configure GPAW of
-> TD to 1, otherwise to 0.
-> 
-> However, the virtual value of CPUID(0x8000_0008).EAX[7:0] inside TD is
-> always the native value of hardware (for current TDX).
-> 
-> So if we want to keep this behavior, we need to document it somewhere that
-> CPUID(0x8000_0008).EAX[7:0] in struct kvm_tdx_init_vm::cpuid.entries[] of
-> IOCTL(KVM_TDX_INIT_VM) is only for configuring GPAW, not for userspace to
-> configure virtual CPUID value for TD VMs.
-> 
-> Another option is that, KVM doesn't allow userspace to configure
-> CPUID(0x8000_0008).EAX[7:0]. Instead, it provides a gpaw field in struct
-> kvm_tdx_init_vm for userspace to configure directly.
-> 
-> What do you prefer?
+On 04/08, Jiri Olsa wrote:
+>
+> On Fri, Apr 05, 2024 at 01:02:30PM +0200, Oleg Nesterov wrote:
+> >
+> > And what should sys_uretprobe() do if it is not called from the trampoline?
+> > I'd prefer force_sig(SIGILL) to punish the abuser ;) OK, OK, EINVAL.
+>
+> so the similar behaviour with int3 ends up with immediate SIGTRAP
+> and not invoking pending uretprobe consumers, like:
+>
+>   - setup uretprobe for foo
+>   - foo() {
+>       executes int 3 -> sends SIGTRAP
+>     }
+>
+> because the int3 handler checks if it got executed from the uretprobe's
+> trampoline.
 
-Hmm, neither.  I think the best approach is to build on Gerd's series to have KVM
-select 4-level vs. 5-level based on the enumerated guest.MAXPHYADDR, not on
-host.MAXPHYADDR.
+.. or the task has uprobe at this address
 
-With a moderate amount of refactoring, cache/compute guest_maxphyaddr as:
+> if not it treats that int3 as regular trap
 
-	static void kvm_vcpu_refresh_maxphyaddr(struct kvm_vcpu *vcpu)
-	{
-		struct kvm_cpuid_entry2 *best;
+Yes this mimics the "default" behaviour without uprobes/uretprobes
 
-		best = kvm_find_cpuid_entry(vcpu, 0x80000000);
-		if (!best || best->eax < 0x80000008)
-			goto not_found;
+> so I think we should mimic int3 behaviour and:
+>
+>   - setup uretprobe for foo
+>   - foo() {
+>      uretprobe_syscall -> check if we got executed from uretprobe's
+>      trampoline and send SIGILL if that's not the case
 
-		best = kvm_find_cpuid_entry(vcpu, 0x80000008);
-		if (!best)
-			goto not_found;
+Agreed,
 
-		vcpu->arch.maxphyaddr = best->eax & GENMASK(7, 0);
+> I think it's better to have the offending process killed right away,
+> rather than having more undefined behaviour, waiting for final 'ret'
+> instruction that jumps to uretprobe trampoline and causes SIGILL
 
-		if (best->eax & GENMASK(15, 8))
-			vcpu->arch.guest_maxphyaddr = (best->eax & GENMASK(15, 8)) >> 8;
-		else
-			vcpu->arch.guest_maxphyaddr = vcpu->arch.maxphyaddr;
+Agreed. In fact I think it should be also killed if copy_to/from_user()
+fails by the same reason.
 
-		return;
+Oleg.
 
-	not_found:
-		vcpu->arch.maxphyaddr = KVM_X86_DEFAULT_MAXPHYADDR;
-		vcpu->arch.guest_maxphyaddr = KVM_X86_DEFAULT_MAXPHYADDR;
-	}
-
-and then use vcpu->arch.guest_maxphyaddr instead of vcpu->arch.maxphyaddr when
-selecting the TDP level.
-
-	static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
-	{
-		/* tdp_root_level is architecture forced level, use it if nonzero */
-		if (tdp_root_level)
-			return tdp_root_level;
-
-		/*
-		* Use 5-level TDP if and only if it's useful/necessary.  Definitely a
-		* more verbose comment here.
-		*/
-		if (max_tdp_level == 5 && vcpu->arch.guest_maxphyaddr <= 48)
-			return 4;
-
-		return max_tdp_level;
-	}
-
-The only question is whether or not the behavior needs to be opt-in via a new
-capability, e.g. in case there is some weird usage where userspace enumerates
-guest.MAXPHYADDR < host.MAXPHYADDR but still wants/needs 5-level paging.  I highly
-doubt such a use case exists though.
-
-I'll get Gerd's series applied, and will post a small series to implement the
-above later this week.
 
