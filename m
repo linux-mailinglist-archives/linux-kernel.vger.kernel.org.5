@@ -1,164 +1,176 @@
-Return-Path: <linux-kernel+bounces-134913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2337A89B89E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:41:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC45989B8C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:43:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D30C32833F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:40:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A6A283C60
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FE529409;
-	Mon,  8 Apr 2024 07:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2323D2C859;
+	Mon,  8 Apr 2024 07:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWAQhQUo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f9/BqaWp"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5390825619;
-	Mon,  8 Apr 2024 07:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA919482DB;
+	Mon,  8 Apr 2024 07:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562051; cv=none; b=OHr3biGOi0ZSp6IYi7k7TeH238Yc9f45wybGVBkc8CwN6UJUQ3dbXMz/SHTONNoCIN6949LC2+ahUeH+Jcz+FVTdGU2QjJrrle/HKMnV44TUnliM6ZnG4N7i2aQZfTDi6JjxHewBSEautoRQrMHh4eoFZa8HSJLCAqf62fP6v+M=
+	t=1712562081; cv=none; b=BLwNC4b5y4KZrwwRv6UmzS4oAHO2uL+26svHq7vGu/+HnCHGNgPlzJRNQZb5Rdge4c5Yl05rGcNaz4WgRuM9oV2038cVQW31GeViSINurn5Fe5/Ce6C28rOl2bhujMGagaP8gP/76mz/5WhVHubUbhGkaU9GyXefLUWPart30go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562051; c=relaxed/simple;
-	bh=/PwTXAMc4qIagsONctj643hd2NRLVGHlttgBejgG8j8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ae0nXd5WctShqAezhHvsSeHqNIdU85UkFIdxkZTGNGxOzmQ76pRFrJb5jsMuF7YzdNPqyP7wSgGASiS4COw7Xl62OO+nLc19gO4QTwy3qmN3d+O4DFRt/DLk0huM5CNEf7WHe8wTKhgRbiyPbVpZ/VwNDpci+N2lmw/XI02BPSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWAQhQUo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69ACAC433C7;
-	Mon,  8 Apr 2024 07:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712562050;
-	bh=/PwTXAMc4qIagsONctj643hd2NRLVGHlttgBejgG8j8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=BWAQhQUo/m+lzgIsUQVYBAOxqNr0gy9VJuIhOQqc7fdK4j0ctn1Sxzf4CRuItOoiy
-	 jgpzyy+pHdhB2WKLtO2xFcc9s02F7jHdZVTkZnOO2dqk/RC2+t2LLrLyG7mAp1B6z5
-	 373vOlk+ZNrKklfkwiAUxs5KRrurYxlW/oBozWhr7SV6vZrSxLDOHgm3cGt1JYQb7a
-	 M0q6ZpuEAYDx12xXCE48O43Di0EDP3W1Tn9WDbh8I8Zd5NTE6rBwCSueFDhgVBsdcv
-	 zh7jeBA0lttsxUDDgCdFKw1p1ZQ/Y0j5LyUgCQoAdhxteAZgiKvVnRPXgZVXPAP7k7
-	 1NeFBuUS+RpFw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Puranjay Mohan
- <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next] riscv, bpf: add internal-only MOV instruction
- to resolve per-CPU addrs
-In-Reply-To: <CAEf4BzZ2Tz5-GwbQKYg7KoGwqN8ewPBakmghHaH20MfoATe74g@mail.gmail.com>
-References: <20240405124348.27644-1-puranjay12@gmail.com>
- <CAEf4BzZ2Tz5-GwbQKYg7KoGwqN8ewPBakmghHaH20MfoATe74g@mail.gmail.com>
-Date: Mon, 08 Apr 2024 09:40:47 +0200
-Message-ID: <87cyr0uwsg.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1712562081; c=relaxed/simple;
+	bh=HH1sJn4b3V30rPMVBuHlYzoyuDIoo8e0e1oZipDtD1M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=O63kiKKuAa9nLQ9TCfthOhokR0MfW9H5i8F12ttJ7ySRvZRzf0qXaPr6tkmFXjWhINy4NqMZ5cvgOxjes2Za3kKocn9oBrZtjtAWn5gumcUu6YHEG0/5zHJ6FVKP8RFgE6/25BIG8b8iG56EpDdaZ8gLJN7PJ0sc6Fmmonm4JUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f9/BqaWp; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d4d80d00so3050278e87.0;
+        Mon, 08 Apr 2024 00:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712562078; x=1713166878; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AJPEklCzoS2DFb7f9ZXxyBC3nyK2AChPfFAIeZ8KZAI=;
+        b=f9/BqaWpnL9FZAK2QZzdNA6mMlpfZkQ5i7yk7OpIl16ca+yfdPJy9zrT8ezz8GE00+
+         c15kBVYY5ZZA6YDB+0h+2ySAAgoKp8DiGN3zkUvfzEEGoAE5LWKeO4E6sP7ZwmQ1tgHh
+         Wwxva+rpFrQBKb9RlhO/KJytYF/0u93+heFK3x80+5nUwr72rgJ/zlcwoS07GYMgt9wh
+         HeWMzIBebR7MpHjCc8oUXWcV41Z0aYPsbWEkfYWxKUdUZF8r8MG4kEzBInr3mnu3VsQV
+         IO76EDFq3ghbzrDv8ltt8WG0SACEwKCV2rBO/XqQ3eoR9SWUCOH0V+MqIHvEzWiSfmkg
+         54Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712562078; x=1713166878;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJPEklCzoS2DFb7f9ZXxyBC3nyK2AChPfFAIeZ8KZAI=;
+        b=MmD9Ss9e+KMliucR5xLGiR7CUOcRD1vXirfW5/YHukzNO75aPiBXMe+j+I6IzK4BTk
+         PvZzpE3FFHPju+DCUPh18C2825NopoVjvZV6a0/6boTRt7z8yLkOGtpqY5Qzm9Cy1tcZ
+         WHdc1FywAAjTYCUmIPsZvffQzJUVAGBObmwrZtxovKIyZLUjQkAeBTNLqUcQyW4MNeCl
+         IVqhnRdUz0sBYyNUgZgKE0Nt0Co29VsNrQswQK8StFz6AkOyFhq0+N+guI3oH+8H2o29
+         u3323nql8Gf7TleXCSXR4YMYwmlF/TKdSBoJv/IjP5Z5N9Kv+hqUOU/cC92ylVftYExe
+         YvCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXN62ss7ymvZtuXkUYmLhUQO5GiON7gKASpEF5iO0/y9nesu7wVntFOFXTmeHQXyXFmv09tG9s1d36AWzUNy36anzKALhNzF7VkqFQ3I8PUiaDQzELGfDYM4LuH7FnD8mWYU6PRSJDKwpaTKgQzOa4dvrF6RNOY149i
+X-Gm-Message-State: AOJu0YzzpUhhyR6FNs5aIGtxexYYKfBiXKTquXAImyK/wlIjUMO0JWbz
+	lGujMEiak3Z08lmy9I8o1tW2LHzwcByvOf4959ZhqWr0OFvlTfrQ
+X-Google-Smtp-Source: AGHT+IHpElUIChuykMsasXSoM3TJVl6Wfcb1bXJa6Q9tVjHiJv6DKDaFlFEqFX6ZTMlgVGGqgWRrag==
+X-Received: by 2002:a05:6512:3618:b0:513:d5ea:1d21 with SMTP id f24-20020a056512361800b00513d5ea1d21mr5855791lfs.69.1712562077693;
+        Mon, 08 Apr 2024 00:41:17 -0700 (PDT)
+Received: from vasant-suse.suse.cz ([2001:9e8:ab70:9c00:7f0b:c18e:56a6:4f2])
+        by smtp.gmail.com with ESMTPSA id j3-20020adfff83000000b00341e2146b53sm8271413wrr.106.2024.04.08.00.41.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 00:41:16 -0700 (PDT)
+From: vsntk18@gmail.com
+To: x86@kernel.org
+Cc: cfir@google.com,
+	dan.j.williams@intel.com,
+	dave.hansen@linux.intel.com,
+	ebiederm@xmission.com,
+	erdemaktas@google.com,
+	hpa@zytor.com,
+	jgross@suse.com,
+	jroedel@suse.de,
+	jslaby@suse.cz,
+	keescook@chromium.org,
+	kexec@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	luto@kernel.org,
+	martin.b.radev@gmail.com,
+	mhiramat@kernel.org,
+	mstunes@vmware.com,
+	nivedita@alum.mit.edu,
+	peterz@infradead.org,
+	rientjes@google.com,
+	seanjc@google.com,
+	stable@vger.kernel.org,
+	thomas.lendacky@amd.com,
+	virtualization@lists.linux-foundation.org,
+	vkarasulli@suse.de,
+	ashish.kalra@amd.com,
+	michael.roth@amd.com,
+	Borislav.Petkov@amd.com,
+	Dhaval.Giani@amd.com
+Subject: [PATCH v5 08/10] x86/sev: Handle CLFLUSH MMIO events
+Date: Mon,  8 Apr 2024 09:40:47 +0200
+Message-Id: <20240408074049.7049-9-vsntk18@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240408074049.7049-1-vsntk18@gmail.com>
+References: <20240408074049.7049-1-vsntk18@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+From: Joerg Roedel <jroedel@suse.de>
 
-> On Fri, Apr 5, 2024 at 5:44=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
-om> wrote:
->>
->> Support an instruction for resolving absolute addresses of per-CPU
->> data from their per-CPU offsets. This instruction is internal-only and
->> users are not allowed to use them directly. They will only be used for
->> internal inlining optimizations for now between BPF verifier and BPF
->> JITs.
->>
->> RISC-V uses generic per-cpu implementation where the offsets for CPUs
->> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
->> the address of the task_struct in TP register. The first element in
->> tast_struct is struct thread_info, and we can get the cpu number by
->> reading from the TP register + offsetof(struct thread_info, cpu).
->>
->> Once we have the cpu number in a register we read the offset for that
->> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
->> offset to the destination register.
->>
->> To measure the improvement from this change, the benchmark in [1] was
->> used on Qemu:
->>
->> Before:
->> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
->> arr-inc        :    1.121 =C2=B1 0.004M/s
->> hash-inc       :    0.681 =C2=B1 0.052M/s
->>
->> After:
->> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
->> arr-inc        :    1.366 =C2=B1 0.006M/s
->> hash-inc       :    0.676 =C2=B1 0.001M/s
->
-> TBH, I don't trust benchmarks done inside QEMU. Can you try running
-> this on some real hardware?
+Handle CLFLUSH instruction to MMIO memory in the #VC handler. The
+instruction is ignored by the handler, as the Hypervisor is
+responsible for cache management of emulated MMIO memory.
 
-I just ran it on a "VisionFive2" SBC:
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Vasant Karasulli <vkarasulli@suse.de>
+---
+ arch/x86/include/asm/insn-eval.h | 1 +
+ arch/x86/kernel/sev-shared.c     | 3 +++
+ arch/x86/lib/insn-eval-shared.c  | 7 +++++++
+ 3 files changed, 11 insertions(+)
 
-BEFORE
-=3D=3D=3D=3D=3D=3D
-glob-arr-inc   :   11.586 =C2=B1 0.021M/s=20
-arr-inc        :   10.892 =C2=B1 0.005M/s=20
-hash-inc       :    1.517 =C2=B1 0.001M/s=20
+diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+index 54368a43abf6..3bcea641913a 100644
+--- a/arch/x86/include/asm/insn-eval.h
++++ b/arch/x86/include/asm/insn-eval.h
+@@ -40,6 +40,7 @@ enum insn_mmio_type {
+ 	INSN_MMIO_READ_ZERO_EXTEND,
+ 	INSN_MMIO_READ_SIGN_EXTEND,
+ 	INSN_MMIO_MOVS,
++	INSN_MMIO_IGNORE,
+ };
+ 
+ enum insn_mmio_type insn_decode_mmio(struct insn *insn, int *bytes);
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index d769f80d0264..1bffc2205480 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -1171,6 +1171,9 @@ static enum es_result vc_handle_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+ 	if (mmio == INSN_MMIO_DECODE_FAILED)
+ 		return ES_DECODE_FAILED;
+ 
++	if (mmio == INSN_MMIO_IGNORE)
++		return ES_OK;
++
+ 	if (mmio != INSN_MMIO_WRITE_IMM && mmio != INSN_MMIO_MOVS) {
+ 		reg_data = insn_get_modrm_reg_ptr(insn, ctxt->regs);
+ 		if (!reg_data)
+diff --git a/arch/x86/lib/insn-eval-shared.c b/arch/x86/lib/insn-eval-shared.c
+index 02acdc2921ff..27fd347d84ae 100644
+--- a/arch/x86/lib/insn-eval-shared.c
++++ b/arch/x86/lib/insn-eval-shared.c
+@@ -906,6 +906,13 @@ enum insn_mmio_type insn_decode_mmio(struct insn *insn, int *bytes)
+ 				*bytes = 2;
+ 			type = INSN_MMIO_READ_SIGN_EXTEND;
+ 			break;
++		case 0xae: /* CLFLUSH */
++			/*
++			 * Ignore CLFLUSHes - those go to emulated MMIO anyway and the
++			 * hypervisor is responsible for cache management.
++			 */
++			type = INSN_MMIO_IGNORE;
++			break;
+ 		}
+ 		break;
+ 	}
+-- 
+2.34.1
 
-AFTER
-=3D=3D=3D=3D=3D
-glob-arr-inc   :   11.893 =C2=B1 0.017M/s  (+2.6%)
-arr-inc        :   11.630 =C2=B1 0.020M/s  (+6.8%)
-hash-inc       :    1.543 =C2=B1 0.002M/s  (+1.7%)
-
-(It's early, and the coffee haven't kicked in, so I hope the
-calculations are correct...)
-
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> ---
->>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_co=
-mp64.c
->> index 15e482f2c657..e95bd1d459a4 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -12,6 +12,7 @@
->>  #include <linux/stop_machine.h>
->>  #include <asm/patch.h>
->>  #include <asm/cfi.h>
->> +#include <asm/percpu.h>
->>  #include "bpf_jit.h"
->>
->>  #define RV_FENTRY_NINSNS 2
->> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
->>                         emit_mv(rd, RV_REG_T1, ctx);
->>                         break;
->> +               } else if (insn_is_mov_percpu_addr(insn)) {
->> +                       if (rd !=3D rs)
->> +                               emit_mv(rd, rs, ctx);
->
-> Is this an unconditional move instruction? in x86-64, EMIT_mov checks
-> whether source and destination registers are the same and doesn't emit
-> anything if they match (which makes sense, right)?
-
-Yeah, it is. Folding the check into the emit sounds like a good idea.
-
-
-Bj=C3=B6rn
 
