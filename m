@@ -1,191 +1,142 @@
-Return-Path: <linux-kernel+bounces-135141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 091E589BBA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:25:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2453C89BC1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:41:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EB52B22EFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E501F230C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0144747F48;
-	Mon,  8 Apr 2024 09:24:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E8644C94
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358D14AEC2;
+	Mon,  8 Apr 2024 09:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="o4vdlasY"
+Received: from mx0a-00176a03.pphosted.com (mx0a-00176a03.pphosted.com [67.231.149.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69ED4176B;
+	Mon,  8 Apr 2024 09:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712568294; cv=none; b=aj/9k64knJ+nsyYiiUhUmDL6/HXxQGLrjiC1jfoa/NGhSwjq9znMn1Vc5v6iJjv2CG7tCougsaztB+rEq+BwLV6KrE6EJCqCieREeKQaqzrjiP70yIUpzTUIzaFWvmsYMsR/NzmWVDeMrAbnJnpC/kZ9w5CWrq0XESM72QoFtuE=
+	t=1712569305; cv=none; b=sQiskNwfbnWrem2L2vzB9IRq6MdBWE1wzXcvRIatsiGB8aLbwFEqkGOtFwopddfIAFwZoRQDCGOw6c7vzYA0q4XUZeIUDRzogbqsqMMEZM8bT2FDeFQWmEki/OeM0H/2RevZlkPRVTGCoCRVU4l2dzh4marsgA4+RtpJtmeDtYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712568294; c=relaxed/simple;
-	bh=S40D8o9ko7CIYGSt3w3/at32KStj3az8GYQ8bF6pQHg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LX+QMUydOF1zsXTEMVSxYJtHYrkrDpLb8eLVjYWLgFOZXW09xW0Vcx5h0dK+RLA7pMOW5ScGJj4k8cBtFEEAxp3ENH2wKaGafuNnq89uoeA08CE0ohjJMcId0iKOr4/yXXQbrx+dVB2b74mbOjB44iEO2w0jltZkx7/Qbwd33C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 780D51007;
-	Mon,  8 Apr 2024 02:25:22 -0700 (PDT)
-Received: from [10.57.73.169] (unknown [10.57.73.169])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 246CC3F766;
-	Mon,  8 Apr 2024 02:24:50 -0700 (PDT)
-Message-ID: <ba63464e-afc3-4bbb-b13f-704eaf9ed4af@arm.com>
-Date: Mon, 8 Apr 2024 10:24:48 +0100
+	s=arc-20240116; t=1712569305; c=relaxed/simple;
+	bh=VBbyy+f6ApNNw/g8S5UqMO+gnfsVcOxeQZsix2HzRAE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dKOpjfisI8EN/1nMGskivwxOQTqzeW2vZoYxj5rZjC33zlkBRediRH5VgliWV522rmqwujR/QS4XRwXiku9x9Jwh5Eh/piowzCmJ/6dtT5thNvyhuT4WAXHN1ywLNTpJ1AqmJ5ExSnxxXTQ8EBINLkw73Brh3D6bc8eE9mynEn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com; spf=pass smtp.mailfrom=gehealthcare.com; dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b=o4vdlasY; arc=none smtp.client-ip=67.231.149.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
+Received: from pps.filterd (m0048274.ppops.net [127.0.0.1])
+	by m0048274.ppops.net-00176a03. (8.17.1.24/8.17.1.24) with ESMTP id 4386aW4c011966;
+	Mon, 8 Apr 2024 05:25:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	gehealthcare.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=outbound; bh=qYN2gTSX
+	hF9fQTvXvqjS4pLs+E5SrnBzBEJm94NG1bk=; b=o4vdlasYAGzFSXaGpDDp754F
+	VPkKd1iB60geg86+mCnlAq2BH7pzAV1yC2+cFKO4kw15IhVaEhLlCcsoETCzsy5g
+	1rk4HqxtLv/JccHcfNQ6ydnIRYQbadwzdIThr0OIfvGW4DJppG2xaWqEgk2j+Yu2
+	h+SIktSytYfKvkf6Q5vsHqctUZZKLRcBIHXQajKl3BlhHOW+7SxJ5X0o/WvBT1fR
+	n+yw+MJNPKvWdpd5D2fYFENufmBOZ7rRw22uny64qXREkrDurN8sv3rNLidICzW8
+	zX+yWMEp4pBx4V+iJ4Q5+NaztVbSulQU8ElkSlcQbG2oplH++OZbAIGzCryQng==
+From: Ian Ray <ian.ray@gehealthcare.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>
+Cc: Ian Ray <ian.ray@gehealthcare.com>, devicetree@vger.kernel.org,
+        imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mp-msc-sm2s: Add i2c{1,6} sda-/scl-gpios
+Date: Mon,  8 Apr 2024 12:24:49 +0300
+Message-Id: <20240408092449.6-1-ian.ray@gehealthcare.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/6] mm: swap: Allow storage of all mTHP orders
-Content-Language: en-GB
-To: "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Gao Xiang <xiang@kernel.org>,
- Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
- Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- Barry Song <21cnbao@gmail.com>, Chris Li <chrisl@kernel.org>,
- Lance Yang <ioworker0@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240403114032.1162100-1-ryan.roberts@arm.com>
- <20240403114032.1162100-5-ryan.roberts@arm.com>
- <c7748c77-b2a3-4b06-aaeb-02793a160aaf@redhat.com>
- <87edbhaexj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87edbhaexj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: w2OUKmRIns4E--hL0KlioGlPlTKoGXpb
+X-Proofpoint-ORIG-GUID: w2OUKmRIns4E--hL0KlioGlPlTKoGXpb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
+ spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 clxscore=1011 impostorscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080072
 
-On 07/04/2024 07:02, Huang, Ying wrote:
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> On 03.04.24 13:40, Ryan Roberts wrote:
->>> Multi-size THP enables performance improvements by allocating large,
->>> pte-mapped folios for anonymous memory. However I've observed that on an
->>> arm64 system running a parallel workload (e.g. kernel compilation)
->>> across many cores, under high memory pressure, the speed regresses. This
->>> is due to bottlenecking on the increased number of TLBIs added due to
->>> all the extra folio splitting when the large folios are swapped out.
->>> Therefore, solve this regression by adding support for swapping out
->>> mTHP
->>> without needing to split the folio, just like is already done for
->>> PMD-sized THP. This change only applies when CONFIG_THP_SWAP is enabled,
->>> and when the swap backing store is a non-rotating block device. These
->>> are the same constraints as for the existing PMD-sized THP swap-out
->>> support.
->>> Note that no attempt is made to swap-in (m)THP here - this is still
->>> done
->>> page-by-page, like for PMD-sized THP. But swapping-out mTHP is a
->>> prerequisite for swapping-in mTHP.
->>> The main change here is to improve the swap entry allocator so that
->>> it
->>> can allocate any power-of-2 number of contiguous entries between [1, (1
->>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->>> order and allocating sequentially from it until the cluster is full.
->>> This ensures that we don't need to search the map and we get no
->>> fragmentation due to alignment padding for different orders in the
->>> cluster. If there is no current cluster for a given order, we attempt to
->>> allocate a free cluster from the list. If there are no free clusters, we
->>> fail the allocation and the caller can fall back to splitting the folio
->>> and allocates individual entries (as per existing PMD-sized THP
->>> fallback).
->>> The per-order current clusters are maintained per-cpu using the
->>> existing
->>> infrastructure. This is done to avoid interleving pages from different
->>> tasks, which would prevent IO being batched. This is already done for
->>> the order-0 allocations so we follow the same pattern.
->>> As is done for order-0 per-cpu clusters, the scanner now can steal
->>> order-0 entries from any per-cpu-per-order reserved cluster. This
->>> ensures that when the swap file is getting full, space doesn't get tied
->>> up in the per-cpu reserves.
->>> This change only modifies swap to be able to accept any order
->>> mTHP. It
->>> doesn't change the callers to elide doing the actual split. That will be
->>> done in separate changes.
->>> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>   include/linux/swap.h |  10 ++-
->>>   mm/swap_slots.c      |   6 +-
->>>   mm/swapfile.c        | 175 ++++++++++++++++++++++++-------------------
->>>   3 files changed, 109 insertions(+), 82 deletions(-)
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 5e1e4f5bf0cb..11c53692f65f 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -268,13 +268,19 @@ struct swap_cluster_info {
->>>    */
->>>   #define SWAP_NEXT_INVALID	0
->>>   +#ifdef CONFIG_THP_SWAP
->>> +#define SWAP_NR_ORDERS		(PMD_ORDER + 1)
->>> +#else
->>> +#define SWAP_NR_ORDERS		1
->>> +#endif
->>> +
->>>   /*
->>>    * We assign a cluster to each CPU, so each CPU can allocate swap entry from
->>>    * its own cluster and swapout sequentially. The purpose is to optimize swapout
->>>    * throughput.
->>>    */
->>>   struct percpu_cluster {
->>> -	unsigned int next; /* Likely next allocation offset */
->>> +	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
->>>   };
->>>     struct swap_cluster_list {
->>> @@ -471,7 +477,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio);
->>>   bool folio_free_swap(struct folio *folio);
->>>   void put_swap_folio(struct folio *folio, swp_entry_t entry);
->>>   extern swp_entry_t get_swap_page_of_type(int);
->>> -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int entry_size);
->>> +extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order);
->>>   extern int add_swap_count_continuation(swp_entry_t, gfp_t);
->>>   extern void swap_shmem_alloc(swp_entry_t);
->>>   extern int swap_duplicate(swp_entry_t);
->>> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
->>> index 53abeaf1371d..13ab3b771409 100644
->>> --- a/mm/swap_slots.c
->>> +++ b/mm/swap_slots.c
->>> @@ -264,7 +264,7 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
->>>   	cache->cur = 0;
->>>   	if (swap_slot_cache_active)
->>>   		cache->nr = get_swap_pages(SWAP_SLOTS_CACHE_SIZE,
->>> -					   cache->slots, 1);
->>> +					   cache->slots, 0);
->>>     	return cache->nr;
->>>   }
->>> @@ -311,7 +311,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
->>>     	if (folio_test_large(folio)) {
->>>   		if (IS_ENABLED(CONFIG_THP_SWAP))
->>> -			get_swap_pages(1, &entry, folio_nr_pages(folio));
->>> +			get_swap_pages(1, &entry, folio_order(folio));
->>
->> The only comment I have is that this nr_pages -> order conversion adds
->> a bit of noise to this patch.
->>
->> AFAIKS, it's primarily only required for "cluster->next[order]",
->> everything else doesn't really require the order.
->>
->> I'd just have split that out into a separate patch, or simply
->> converted nr_pages -> order where required.
->>
->> Nothing jumped at me, but I'm not an expert on that code, so I'm
->> mostly trusting the others ;)
-> 
-> The nr_pages -> order conversion replaces ilog2(nr_pages) with
-> (1<<order).  IIUC, "<<" is a little faster than "ilog2()".  And, we
-> don't need to worry about whether nr_pages is a power of 2.  Do you
-> think that this makes sense?
+Add i2c{1,6} sda-/scl-gpios with the corresponding pinmux entries.
 
-I think that David's point was that I should just split out that change to its
-own patch to aid readability? I'm happy to do that if no one objects.
+Signed-off-by: Ian Ray <ian.ray@gehealthcare.com>
+---
+ .../boot/dts/freescale/imx8mp-msc-sm2s.dtsi   | 22 +++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-> 
-> --
-> Best Regards,
-> Huang, Ying
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
+index 61c2a63efc6d..7e4327084d26 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
+@@ -200,8 +200,11 @@ ethphy1: ethernet-phy@1 {
+ };
+ 
+ &i2c1 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "gpio";
+ 	pinctrl-0 = <&pinctrl_i2c1>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio5 14 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio5 15 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 	clock-frequency = <400000>;
+ 	status = "okay";
+ 
+@@ -241,8 +244,11 @@ &i2c5 {
+ };
+ 
+ &i2c6 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "gpio";
+ 	pinctrl-0 = <&pinctrl_i2c6>;
++	pinctrl-1 = <&pinctrl_i2c6_gpio>;
++	scl-gpios = <&gpio3 19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio3 20 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 	clock-frequency = <400000>;
+ 	status = "okay";
+ 
+@@ -606,6 +612,12 @@ pinctrl_i2c1: i2c1grp {
+ 			<MX8MP_IOMUXC_I2C1_SDA__I2C1_SDA		0x400001c3>;
+ 	};
+ 
++	pinctrl_i2c1_gpio: i2c1gpiogrp {
++		fsl,pins =
++			<MX8MP_IOMUXC_I2C1_SCL__GPIO5_IO14		0x400001c3>,
++			<MX8MP_IOMUXC_I2C1_SDA__GPIO5_IO15		0x400001c3>;
++	};
++
+ 	pinctrl_i2c2: i2c2grp {
+ 		fsl,pins =
+ 			<MX8MP_IOMUXC_I2C2_SCL__I2C2_SCL		0x400001c3>,
+@@ -636,6 +648,12 @@ pinctrl_i2c6: i2c6grp {
+ 			<MX8MP_IOMUXC_SAI5_RXC__I2C6_SDA		0x400001c3>;
+ 	};
+ 
++	pinctrl_i2c6_gpio: i2c5gpiogrp {
++		fsl,pins =
++			<MX8MP_IOMUXC_SAI5_RXFS__GPIO3_IO19		0x400001c3>,
++			<MX8MP_IOMUXC_SAI5_RXC__GPIO3_IO20		0x400001c3>;
++	};
++
+ 	pinctrl_lcd0_backlight: lcd0-backlightgrp {
+ 		fsl,pins =
+ 			<MX8MP_IOMUXC_GPIO1_IO05__GPIO1_IO05		0x41>;
+-- 
+2.39.2
 
 
