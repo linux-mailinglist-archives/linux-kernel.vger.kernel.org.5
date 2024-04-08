@@ -1,95 +1,119 @@
-Return-Path: <linux-kernel+bounces-135274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13E5489BE44
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:44:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0DC489BE46
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:45:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3184281888
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:44:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED5271C2199F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751DE69E1A;
-	Mon,  8 Apr 2024 11:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF236A02D;
+	Mon,  8 Apr 2024 11:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="jvXJB3H0"
-Received: from mx0a-00176a03.pphosted.com (mx0b-00176a03.pphosted.com [67.231.157.48])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="h0ErTczH"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4524269DF4;
-	Mon,  8 Apr 2024 11:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.157.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4976769DF5;
+	Mon,  8 Apr 2024 11:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712576678; cv=none; b=IOn6xhrexg8YNqiBpVLSDLay3bFC9LM0Lg9NUBJhOIJGji/vN34eTsyHv2M7te10LxOfukL+6nicwsfxeChtOGOySScM9trytS4NVJlvltyWhPNvn7EJrMnM2i7HG0/6DrivfzFaXOLEUqXy6eqTCNaG4hVyddlve3ixT+CL2LA=
+	t=1712576726; cv=none; b=rI9sD6GSZZjmPHMB7/V+piQP9ggjZw89UBx5AI2g0M5DbVrVhvrCdcSD3HezLiwj/K6MSjj9R2zh7/ubBPVOYn5vk3eoExaho/721opaVlfNmVIzaPHnPmhocDOom8NwhzoSjsVzuS++88Y7u3Fjq22hKWbZP5NhNK4DrAuqvOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712576678; c=relaxed/simple;
-	bh=gfhvyNWSMWsFDpAHxQSNSe8Ks7o5V+5CUEMbz1tB7jg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jeiQ9PdeltJOIPMGsyNb63LCf97qY18Otnjr1FX8NbyTLtJg8zJn6uHgEWbnUTcp10yHWQhhq57Jc4N/KvhbfmPJrzdkiU0m4xotwdCJukM1+fAGXQkR/rbOm9uFXTli6zBq9PwrH8aMhMyL4CpXUiEbTqq4BKFjxi/GDNIlTAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com; spf=pass smtp.mailfrom=gehealthcare.com; dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b=jvXJB3H0; arc=none smtp.client-ip=67.231.157.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
-Received: from pps.filterd (m0048300.ppops.net [127.0.0.1])
-	by m0048300.ppops.net-00176a03. (8.17.1.24/8.17.1.24) with ESMTP id 438AxMGo027115;
-	Mon, 8 Apr 2024 07:44:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	gehealthcare.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=outbound;
-	 bh=0zih8xpmKEGXnHl6kNe1okyw+V1Wkzcjhoafj6sdOQ8=; b=jvXJB3H0F3rO
-	C+GYCNCtZWPEuamYLMa4B/+KbiW8eoS3qoCwgT7J9Px0umtcw2S8zHd1rgDRkB2v
-	qk0AAsBSGlm+EQb/z4edS+1e0/JocJ5IfXL4nMffXtMwqByL+wXSxV5yXRKfVUS2
-	/l6JpSkBXRUoMPEjPrhqSHzcpAQZXr7v1lscHexFa3wVOMO619gWvuUet+Qqns7V
-	WFXpNwddj1cBoPndthFBQaED3+BIESml+rw3YzFIMQxpCDcAv04ZKkVag48EOn8j
-	j3i9U3qG3YZ6aX0tZDkU1g4zKcH5FqD+afWmFbOsqpoej6HT8Jsz7oxFjDoUa0y6
-	i2A7R04JUg==
-Date: Mon, 8 Apr 2024 14:44:16 +0300
-From: Ian Ray <ian.ray@gehealthcare.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, imx@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mp-msc-sm2s: Add i2c{1,6} sda-/scl-gpios
-Message-ID: <ZhPYkGLM_b5IEKs2@de2cfed78370>
-References: <20240408092449.6-1-ian.ray@gehealthcare.com>
- <CAOMZO5B-vTRSfi=tNc_iZxnxYstL8JJOd_1rMf4ps9WHyfx0GQ@mail.gmail.com>
+	s=arc-20240116; t=1712576726; c=relaxed/simple;
+	bh=Lvr4Q9WQMTuj4LqkHya0HKL9JodxZNBHVeLenTpYopw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EDXwRu52Sy9oXr+MuO/StmrzEo+2LLChmj2Uql18uwMhNSV33XlQ9cAv9nmcOoQjH8xfj2W9i0v9G7Hf+u7pzCYevQzbvTBDPz3aZV3LeBUuXR/aNTddr9wR5jtRUcKxHD7jSV5h2SJYSM0u5/SdsicfQB9UkXvEwYwzx0KOQJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=h0ErTczH; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1712576721;
+	bh=taqzyuzUm+h1dAr9up1EmBlmxQ7Pw3TT7Dqle3r+vfk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=h0ErTczH+J8eOKMVXpItrHYKRUMh+pxxcV6/0CoHG40VtMk6SjHBicTMij8g0QPcl
+	 DqWHMNnSfi+fwP5HiCdifsYmHpkp4Xn+DbOgdxU7qWixZBXfw3jqmo2Mf9TSyh+dfR
+	 6VbzGd3EpRZksCPRiEZyrpuPnkVP77GEek1dnGxxPTCQfwlANrE42GRZMWo8lTHAps
+	 +9qTuFxiU3mHHBuAnio0EBxVUDdvEu22B/D31hrzTZyHyg754PmZ251qNdGHU6OTRk
+	 8cDtgXORRLDOqu5a0FunAuYei0U3LrNTqxk35BBWQCXaFVALq9JB3md16kAgiWqViN
+	 5wPghIA4bJBwA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VCnMf3rffz4wcF;
+	Mon,  8 Apr 2024 21:45:18 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin
+ <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>, Atish Patra
+ <atishp@atishpatra.org>, Sean Christopherson <seanjc@google.com>, Andrew
+ Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+ linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+In-Reply-To: <20240405115815.3226315-2-pbonzini@redhat.com>
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+ <20240405115815.3226315-2-pbonzini@redhat.com>
+Date: Mon, 08 Apr 2024 21:45:18 +1000
+Message-ID: <87h6gcaxip.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5B-vTRSfi=tNc_iZxnxYstL8JJOd_1rMf4ps9WHyfx0GQ@mail.gmail.com>
-X-Proofpoint-GUID: brSlaN5MVC5iMwCbTOYnKpnHovP73Aic
-X-Proofpoint-ORIG-GUID: brSlaN5MVC5iMwCbTOYnKpnHovP73Aic
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_09,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=677 adultscore=0
- malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404080089
+Content-Type: text/plain
 
-On Mon, Apr 08, 2024 at 08:31:53AM -0300, Fabio Estevam wrote:
-> 
-> Hi Ian,
-> 
-> > +       pinctrl_i2c1_gpio: i2c1gpiogrp {
-> > +               fsl,pins =
-> > +                       <MX8MP_IOMUXC_I2C1_SCL__GPIO5_IO14              0x400001c3>,
-> 
-> The Sion bit is unnecessary in the GPIO mode so you could pass 0x1c3 instead.
+Paolo Bonzini <pbonzini@redhat.com> writes:
+> The .change_pte() MMU notifier callback was intended as an
+> optimization. The original point of it was that KSM could tell KVM to flip
+> its secondary PTE to a new location without having to first zap it. At
+> the time there was also an .invalidate_page() callback; both of them were
+> *not* bracketed by calls to mmu_notifier_invalidate_range_{start,end}(),
+> and .invalidate_page() also doubled as a fallback implementation of
+> .change_pte().
+>
+> Later on, however, both callbacks were changed to occur within an
+> invalidate_range_start/end() block.
+>
+> In the case of .change_pte(), commit 6bdb913f0a70 ("mm: wrap calls to
+> set_pte_at_notify with invalidate_range_start and invalidate_range_end",
+> 2012-10-09) did so to remove the fallback from .invalidate_page() to
+> .change_pte() and allow sleepable .invalidate_page() hooks.
+>
+> This however made KVM's usage of the .change_pte() callback completely
+> moot, because KVM unmaps the sPTEs during .invalidate_range_start()
+> and therefore .change_pte() has no hope of finding a sPTE to change.
+> Drop the generic KVM code that dispatches to kvm_set_spte_gfn(), as
+> well as all the architecture specific implementations.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/arm64/kvm/mmu.c                  | 34 -----------------
+>  arch/loongarch/include/asm/kvm_host.h |  1 -
+>  arch/loongarch/kvm/mmu.c              | 32 ----------------
+>  arch/mips/kvm/mmu.c                   | 30 ---------------
+>  arch/powerpc/include/asm/kvm_ppc.h    |  1 -
+>  arch/powerpc/kvm/book3s.c             |  5 ---
+>  arch/powerpc/kvm/book3s.h             |  1 -
+>  arch/powerpc/kvm/book3s_64_mmu_hv.c   | 12 ------
+>  arch/powerpc/kvm/book3s_hv.c          |  1 -
+>  arch/powerpc/kvm/book3s_pr.c          |  7 ----
+>  arch/powerpc/kvm/e500_mmu_host.c      |  6 ---
 
-Thank you -- I will submit a V2.
+LGTM.
 
-Would 0x1c2 be more correct?  From the IMX8MPRM.pdf, it seems that the
-lowest bit is reserved.  Example: 8.2.4.158 SW_PAD_CTL_PAD_GPIO1_IO05
-SW PAD Control Register (IOMUXC_SW_PAD_CTL_PAD_GPIO1_IO05).
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+cheers
 
