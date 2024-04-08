@@ -1,142 +1,286 @@
-Return-Path: <linux-kernel+bounces-136008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3372689CEDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:18:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C58789CEDA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDCFF286D7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:18:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80C941C239AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3D2149E04;
-	Mon,  8 Apr 2024 23:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B009314C5A0;
+	Mon,  8 Apr 2024 23:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z3Oz7TZg"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fKNkEU3D"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0124914C5B5
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 23:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361A114BF99
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 23:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712618278; cv=none; b=iGWN539OA/I5KCSIBH4FNIYYRNuFYNUtEdJG1XyrFxiGGaL4QlMrU8NFg6gBQVKy1lNfXhVOTJJdiQGqdeOgcKevBFVioK2qB1r8qo7sIAEE1F62sJ+KkOiJbRVnXa+DJC0plK8qyUMBunVlr51GzWebCBQMqEwKpAYYAT33FnA=
+	t=1712618274; cv=none; b=sejTM4aUEDZo9sA1307gZQCHwydiJvf80QEfwYcgCnzAOMDwMXfeVMgJyosITLBEgDG4cQTopPFeBIjgyL0TRhkqMOy+LAnq0lQXRddqGVeHubDf09cv7nHFNVEErU/iTA7VLx4JDXYttANh5n21OTh3rf6VQxb+PpVvBnrv2+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712618278; c=relaxed/simple;
-	bh=mtWNzTX8JC05NtIfESIPbCi1nt0AgwSam4TBmjq+4EU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mZkRTRLqWDt1eMplOT8HIMo3lEcQmKECgJkofqBWkRuSM/haa+lQuB36GNJlO9dz0zaMMN4QDgYiypbcImCVeWdScVDFZ3+BfIpzZOvzNI2i+fLcRxURoNxksD1yhtm1ZCppv9mykBl6AlZslKh616edF10z2IMqObpQJI8nn50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z3Oz7TZg; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1712618274; c=relaxed/simple;
+	bh=LbQqWDbu9Tx23Uw2ZJ+WJ1lu0DuCpxR3GBbGZYWp6zE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mgvc2pAunP4LAYmPk57qY6/BS25R1PCxcHEg+OpRIuVowZIcD652ZhjtYR9gf1QMO03g0w/evD6USVT633kreWfpe3fzGmoKLgyyn5R3utYDDK3Sk+0R8JnracyDpFt5qkJOMuxHIsKtFDVOYW01qhn5qqxSPxpiMzR56KAa7Lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fKNkEU3D; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-43477091797so53221cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 16:17:56 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed0938cd1dso2970280b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 16:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712618276; x=1713223076; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mtWNzTX8JC05NtIfESIPbCi1nt0AgwSam4TBmjq+4EU=;
-        b=Z3Oz7TZgxpYC8iELsZdhYl/NjuApKV06wqQQqzCJ1gF6yZcVBx4lpzPrmHRmlA9HWf
-         UScU0Y+iwJGhEE7ksBg5w1B1f3brLUuyGN/0xin08wL9hbaRR1WzDQHqGcO+mn5dTL1z
-         UtUq7De16C/N6vNh+xxCEZiateQTiE6RtHfc9TywFIEIs8aRfIFC0BbpPRAG+fZmP9PA
-         weWmdR3HEj74WWInWHHvxPrgA2QYs5HL/83D63NIlB3jVuYIrJNwOWA2bBCzCNVhiIMb
-         Lm7CnepHN0TRlwQXvYPqtYvPZPaDs8PsJdUBFdlfcPYAF0WLD4jPH3YKx9AGbBE9VvpP
-         EATw==
+        d=google.com; s=20230601; t=1712618271; x=1713223071; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hzXGD5oeSQZVBAunOhKRzguEzfpXP3gPaAL9WkfEbao=;
+        b=fKNkEU3DVvbei8GaqIK/zrF99nJ8qUgspGIQewrmlOdnCQrvfrWWfLUfUOFdcEIYFY
+         Ik1reXMHBYgcOASRw0Abj1OgTalmgDLJaYIlcpb/oSrUwLtdRPNjYU8ToM0I/n2majgQ
+         1bk2G98iu0YY2hyQYsOdxFXFDxnMXXTrI+zROhV9rzDo43j10QXTzrtT7iIYDeLQkdrI
+         6rzxwlDxycgI2hpc9aYenw6l/2KXfA4CeLpba/IaSuBR9EyMmz14daIMvAnC3Q9tbIvr
+         I7PMCWP5Ddoz3VcUzlmTn2rXxZ6/7R3FFLLDMrTWYnJ3R9kziORVZw2Orypne4PBbjgo
+         vePg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712618276; x=1713223076;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mtWNzTX8JC05NtIfESIPbCi1nt0AgwSam4TBmjq+4EU=;
-        b=GbIIQy08RXE0gyE4iJJsN9lVXmrAmbP8rfUbi4JRSnCnMYVKBwB+/kZxzk5DBnxYXd
-         CFhxfuPbVXLD+UWbln71Ou5qny8/lCeQgkUIDY7Lnt6prJKsPJB2TVrqenhlIF7F2UD5
-         wDb2b2dbkgStGwdNul+kq8C+0GL9RWWNHq1v7zOKXCLAgiMFd2azG4bgGpymyDjvvJg6
-         XjsHRWpW4AL9dkMpAlTA4VCGycS1PxzVIf/O0o/A72aSuftP1k0qRKzQIDj/9JuIKVo3
-         VVb2erT8FJf6I6W/s9Vw+HwwYsGE2CACjWWzwKNkOcgKqZLAIfZB44y2iYHUr679IGqh
-         MNcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWYBwEZoXl2VlPyPNnU907pp9d0v0A70/mM+Wqu00QBg6M7+mEareYht44Hxjg1nOZzDrXwhm2iT1zwHBCIBa5YsiYVSuMjVNI/TPCy
-X-Gm-Message-State: AOJu0Yy1GjQHYqoFrk8sivHw+lKpDnyvOOnC+qZlLCeHRDRSCVSQ6BVq
-	aiyaqlTEX96R3YaXvjYqeDJ8W/iVWdO1FPYyQr3tXrYfWb0DAZsyOWvJk46+QcBk8wK8rfQpas3
-	wnzAl7hLSOHuZqNvSUluxtXHW+VBXopz5Mt2O
-X-Google-Smtp-Source: AGHT+IHeKvaMXc+mckFW4oy6yakcfNZsNKxWqCqjei+Bv6D20mcyMc+btA/+lz9WX79mr7qsbWUULg5iyVQ2vvvzm38=
-X-Received: by 2002:a05:622a:428d:b0:434:bab1:3df8 with SMTP id
- cr13-20020a05622a428d00b00434bab13df8mr74017qtb.20.1712618275692; Mon, 08 Apr
- 2024 16:17:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712618271; x=1713223071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hzXGD5oeSQZVBAunOhKRzguEzfpXP3gPaAL9WkfEbao=;
+        b=PzBeT/lxRM6OYT6nmqGq2mDEsiNfWAh0aM3APchdv1tsyLik4PXuGbMMeM7dFxbRD8
+         U2irJN3lo0rsjFAwX1jZRdhJWVDz6MGvAcdZqgQeUdBF8OMS491iYvU5lRNVq8k2im0A
+         YlK/aSVwJquuGhx8Ukyc0MK8UGfEZeK65WKB89YQMwqMic/G25oBc8QtU3oO4nM4R4ZP
+         7+bpGSwxiA4mFapr5Bifrbsh+1Y12btjIen3sx4Y1d+jiZfzf3i3q+ehquotYORvISuE
+         1CKDDFZXKc9y++8IsaneVzIlWHESchYBOSjmux4Bn4abyn/Ahd2dXllEO9e54wFxuv4i
+         t3BA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4sRxK82Zi61nyn3t8JFU4C+aXtQ/9ZGwpKnE6MKPCE0vEEw7mcLP0eU4mE7Uw64DkNCawuCqDO56iO5607FQRHMS5v6ufgLaRKt38
+X-Gm-Message-State: AOJu0Yzf2mACpxk7gZyDK+QhtNaMTSE7g14IkcEOaIqqFGIB9uYh7fFR
+	V8cIOzotLCTzftklQWwOrKg28WOUMPXwv7k/+hI67oBfQXxprCbT8dsfGZKysw==
+X-Google-Smtp-Source: AGHT+IEKXSf0nqigZnP+patDhG0682RNOOmDpooO5fg456YG55OviiD3AjDfC4vLubpad7IgDEZQww==
+X-Received: by 2002:a05:6a00:3c91:b0:6ea:c4e5:a252 with SMTP id lm17-20020a056a003c9100b006eac4e5a252mr13765276pfb.5.1712618271221;
+        Mon, 08 Apr 2024 16:17:51 -0700 (PDT)
+Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
+        by smtp.gmail.com with ESMTPSA id r18-20020aa79892000000b006ecc858b67fsm7354120pfl.175.2024.04.08.16.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 16:17:50 -0700 (PDT)
+Date: Mon, 8 Apr 2024 23:17:47 +0000
+From: Mingwei Zhang <mizhang@google.com>
+To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
+	Zhang Xiong <xiong.y.zhang@intel.com>,
+	Like Xu <like.xu.linux@gmail.com>,
+	Jinrong Liang <cloudliang@tencent.com>,
+	Dapeng Mi <dapeng1.mi@intel.com>
+Subject: Re: [kvm-unit-tests Patch v3 07/11] x86: pmu: Enable and disable
+ PMCs in loop() asm blob
+Message-ID: <ZhR7G25FX_osy8X5@google.com>
+References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
+ <20240103031409.2504051-8-dapeng1.mi@linux.intel.com>
+ <ZgO3vWIeC3sk_B5N@google.com>
+ <c509996d-fdda-4a57-b6ac-597c811f7786@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220111044.133776-1-herve.codina@bootlin.com>
- <20240220111044.133776-3-herve.codina@bootlin.com> <CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
- <20240221095137.616d2aaa@bootlin.com> <CAGETcx9eFuqwJTSrGz9Or8nfHCN3=kNO5KpXwdUxQ4Z7FxHZug@mail.gmail.com>
- <20240321125904.3ed99eb5@bootlin.com> <CAGETcx-oMbjtgW-sqzP6GPuM9BwgQrYJawpui3QMf1A-ETHpvg@mail.gmail.com>
- <20240408164021.6f13bf66@bootlin.com>
-In-Reply-To: <20240408164021.6f13bf66@bootlin.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Mon, 8 Apr 2024 16:17:16 -0700
-Message-ID: <CAGETcx_YjRzA0joyESsgk=XJKBqqFD7YZeSwKu1a1deo-EyeKw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier when
- created from phandles
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Shawn Guo <shawnguo@kernel.org>, Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c509996d-fdda-4a57-b6ac-597c811f7786@linux.intel.com>
 
-On Mon, Apr 8, 2024 at 7:40=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
->
-> Hi Sarava,
->
-> On Fri, 22 Mar 2024 19:00:03 -0700
-> Saravana Kannan <saravanak@google.com> wrote:
->
-> > On Thu, Mar 21, 2024 at 4:59=E2=80=AFAM Herve Codina <herve.codina@boot=
-lin.com> wrote:
-> > >
-> > > Hi Saravana,
-> > >
-> > > On Mon, 4 Mar 2024 23:14:13 -0800
-> > > Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > ...
-> > > >
-> > > > Thanks for the example. Let me think about this a bit on how we cou=
-ld
-> > > > fix this and get back to you.
-> > > >
-> > > > Please do ping me if I don't get back in a week or two.
-> > > >
-> > >
-> > > This is my ping.
-> > > Do you move forward ?
-> >
-> > Thanks for the ping. I thought about it a bit. I think the right fix
-> > it to undo the overlay fix I had suggested to Geert and then make the
-> > overlay code call __fw_devlink_pickup_dangling_consumers() on the
-> > parent device of the top level overlay nodes that get added that don't
-> > have a device created for them.
-> >
-> > I'll try to wrap up a patch for this on Monday. But if you want to
-> > take a shot at this, that's ok too.
-> >
->
-> I didn't see anything on this topic. Maybe I missed the related modificat=
-ions.
-> Did you move forward on that patch ?
+On Wed, Mar 27, 2024, Mi, Dapeng wrote:
+> 
+> On 3/27/2024 2:07 PM, Mingwei Zhang wrote:
+> > On Wed, Jan 03, 2024, Dapeng Mi wrote:
+> > > Currently enabling PMCs, executing loop() and disabling PMCs are divided
+> > > 3 separated functions. So there could be other instructions executed
+> > > between enabling PMCS and running loop() or running loop() and disabling
+> > > PMCs, e.g. if there are multiple counters enabled in measure_many()
+> > > function, the instructions which enabling the 2nd and more counters
+> > > would be counted in by the 1st counter.
+> > > 
+> > > So current implementation can only verify the correctness of count by an
+> > > rough range rather than a precise count even for instructions and
+> > > branches events. Strictly speaking, this verification is meaningless as
+> > > the test could still pass even though KVM vPMU has something wrong and
+> > > reports an incorrect instructions or branches count which is in the rough
+> > > range.
+> > > 
+> > > Thus, move the PMCs enabling and disabling into the loop() asm blob and
+> > > ensure only the loop asm instructions would be counted, then the
+> > > instructions or branches events can be verified with an precise count
+> > > instead of an rough range.
+> > > 
+> > > Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> > > ---
+> > >   x86/pmu.c | 83 +++++++++++++++++++++++++++++++++++++++++++++----------
+> > >   1 file changed, 69 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/x86/pmu.c b/x86/pmu.c
+> > > index 46bed66c5c9f..88b89ad889b9 100644
+> > > --- a/x86/pmu.c
+> > > +++ b/x86/pmu.c
+> > > @@ -18,6 +18,20 @@
+> > >   #define EXPECTED_INSTR 17
+> > >   #define EXPECTED_BRNCH 5
+> > > +// Instrustion number of LOOP_ASM code
+> > > +#define LOOP_INSTRNS	10
+> > > +#define LOOP_ASM					\
+> > > +	"1: mov (%1), %2; add $64, %1;\n\t"		\
+> > > +	"nop; nop; nop; nop; nop; nop; nop;\n\t"	\
+> > > +	"loop 1b;\n\t"
+> > > +
+> > > +#define PRECISE_LOOP_ASM						\
+> > > +	"wrmsr;\n\t"							\
+> > > +	"mov %%ecx, %%edi; mov %%ebx, %%ecx;\n\t"			\
+> > > +	LOOP_ASM							\
+> > > +	"mov %%edi, %%ecx; xor %%eax, %%eax; xor %%edx, %%edx;\n\t"	\
+> > > +	"wrmsr;\n\t"
+> > Can we add "FEP" prefix into the above blob? This way, we can expand the
+> > testing for emulated instructions.
+Dapeng,
 
-Give this a shot and let me know please.
-https://lore.kernel.org/lkml/20240408231310.325451-1-saravanak@google.com/T=
-/#m40e641cb2b1c0cf5ad1af1021f2daca63faeb427
+Sorry, did not clarify that this is not a hard request. I am not
+pushing that this need to be done in your next version if it takes
+time to do so. (FEP is of couse nice to have :), but this test already
+supports it in somewhere else.).
 
--Saravana
+Once your next version is ready, please send it out as soon as you can
+and I am happy to give my reviews until it is merged.
+
+Thanks.
+-Mingwei
+>
+> 
+> Yeah, that sounds like a new feature request. I would add it in next
+> version.
+> 
+> 
+> > > +
+> > >   typedef struct {
+> > >   	uint32_t ctr;
+> > >   	uint64_t config;
+> > > @@ -54,13 +68,43 @@ char *buf;
+> > >   static struct pmu_event *gp_events;
+> > >   static unsigned int gp_events_size;
+> > > -static inline void loop(void)
+> > > +
+> > > +static inline void __loop(void)
+> > > +{
+> > > +	unsigned long tmp, tmp2, tmp3;
+> > > +
+> > > +	asm volatile(LOOP_ASM
+> > > +		     : "=c"(tmp), "=r"(tmp2), "=r"(tmp3)
+> > > +		     : "0"(N), "1"(buf));
+> > > +}
+> > > +
+> > > +/*
+> > > + * Enable and disable counters in a whole asm blob to ensure
+> > > + * no other instructions are counted in the time slot between
+> > > + * counters enabling and really LOOP_ASM code executing.
+> > > + * Thus counters can verify instructions and branches events
+> > > + * against precise counts instead of a rough valid count range.
+> > > + */
+> > > +static inline void __precise_count_loop(u64 cntrs)
+> > >   {
+> > >   	unsigned long tmp, tmp2, tmp3;
+> > > +	unsigned int global_ctl = pmu.msr_global_ctl;
+> > > +	u32 eax = cntrs & (BIT_ULL(32) - 1);
+> > > +	u32 edx = cntrs >> 32;
+> > > -	asm volatile("1: mov (%1), %2; add $64, %1; nop; nop; nop; nop; nop; nop; nop; loop 1b"
+> > > -			: "=c"(tmp), "=r"(tmp2), "=r"(tmp3): "0"(N), "1"(buf));
+> > > +	asm volatile(PRECISE_LOOP_ASM
+> > > +		     : "=b"(tmp), "=r"(tmp2), "=r"(tmp3)
+> > > +		     : "a"(eax), "d"(edx), "c"(global_ctl),
+> > > +		       "0"(N), "1"(buf)
+> > > +		     : "edi");
+> > > +}
+> > > +static inline void loop(u64 cntrs)
+> > > +{
+> > > +	if (!this_cpu_has_perf_global_ctrl())
+> > > +		__loop();
+> > > +	else
+> > > +		__precise_count_loop(cntrs);
+> > >   }
+> > >   volatile uint64_t irq_received;
+> > > @@ -159,18 +203,17 @@ static void __start_event(pmu_counter_t *evt, uint64_t count)
+> > >   	    ctrl = (ctrl & ~(0xf << shift)) | (usrospmi << shift);
+> > >   	    wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, ctrl);
+> > >       }
+> > > -    global_enable(evt);
+> > >       apic_write(APIC_LVTPC, PMI_VECTOR);
+> > >   }
+> > >   static void start_event(pmu_counter_t *evt)
+> > >   {
+> > >   	__start_event(evt, 0);
+> > > +	global_enable(evt);
+> > >   }
+> > > -static void stop_event(pmu_counter_t *evt)
+> > > +static void __stop_event(pmu_counter_t *evt)
+> > >   {
+> > > -	global_disable(evt);
+> > >   	if (is_gp(evt)) {
+> > >   		wrmsr(MSR_GP_EVENT_SELECTx(event_to_global_idx(evt)),
+> > >   		      evt->config & ~EVNTSEL_EN);
+> > > @@ -182,14 +225,24 @@ static void stop_event(pmu_counter_t *evt)
+> > >   	evt->count = rdmsr(evt->ctr);
+> > >   }
+> > > +static void stop_event(pmu_counter_t *evt)
+> > > +{
+> > > +	global_disable(evt);
+> > > +	__stop_event(evt);
+> > > +}
+> > > +
+> > >   static noinline void measure_many(pmu_counter_t *evt, int count)
+> > >   {
+> > >   	int i;
+> > > +	u64 cntrs = 0;
+> > > +
+> > > +	for (i = 0; i < count; i++) {
+> > > +		__start_event(&evt[i], 0);
+> > > +		cntrs |= BIT_ULL(event_to_global_idx(&evt[i]));
+> > > +	}
+> > > +	loop(cntrs);
+> > >   	for (i = 0; i < count; i++)
+> > > -		start_event(&evt[i]);
+> > > -	loop();
+> > > -	for (i = 0; i < count; i++)
+> > > -		stop_event(&evt[i]);
+> > > +		__stop_event(&evt[i]);
+> > >   }
+> > >   static void measure_one(pmu_counter_t *evt)
+> > > @@ -199,9 +252,11 @@ static void measure_one(pmu_counter_t *evt)
+> > >   static noinline void __measure(pmu_counter_t *evt, uint64_t count)
+> > >   {
+> > > +	u64 cntrs = BIT_ULL(event_to_global_idx(evt));
+> > > +
+> > >   	__start_event(evt, count);
+> > > -	loop();
+> > > -	stop_event(evt);
+> > > +	loop(cntrs);
+> > > +	__stop_event(evt);
+> > >   }
+> > >   static bool verify_event(uint64_t count, struct pmu_event *e)
+> > > @@ -451,7 +506,7 @@ static void check_running_counter_wrmsr(void)
+> > >   	report_prefix_push("running counter wrmsr");
+> > >   	start_event(&evt);
+> > > -	loop();
+> > > +	__loop();
+> > >   	wrmsr(MSR_GP_COUNTERx(0), 0);
+> > >   	stop_event(&evt);
+> > >   	report(evt.count < gp_events[0].min, "cntr");
+> > > @@ -468,7 +523,7 @@ static void check_running_counter_wrmsr(void)
+> > >   	wrmsr(MSR_GP_COUNTERx(0), count);
+> > > -	loop();
+> > > +	__loop();
+> > >   	stop_event(&evt);
+> > >   	if (this_cpu_has_perf_global_status()) {
+> > > -- 
+> > > 2.34.1
+> > > 
 
