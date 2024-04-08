@@ -1,101 +1,126 @@
-Return-Path: <linux-kernel+bounces-135584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 291D589C7F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:16:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFCD89C7FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B641F23812
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:16:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FA9A286374
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D0C13F451;
-	Mon,  8 Apr 2024 15:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AA913F45A;
+	Mon,  8 Apr 2024 15:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FicLUnoP"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZIDyEQWV"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF6D13F431
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F306413F431;
+	Mon,  8 Apr 2024 15:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589404; cv=none; b=gWXRXNidZZFUIKbuV6qHyr6XRLOQeTekTPberG1f2YvxZxHYU06QYSx1Sm0pb7q343oS2rJUNkzPjNFl5AQ3aaiGaiyWL8fLINkKQSpxK3azrsqjA+ZZ7OuJ8WAQZa+4LV4LZvtoXmQDyd2FQdToXA6YQzO4oRNGzSKWoc5fPnw=
+	t=1712589435; cv=none; b=EhqWTmxmHI2vCCD+PHXpPhhOfALOeV93VKo9e0zeyUdQmBkEvS7pHsu6TWk3s/tq3oNOpX707iGVprIMwTKIs3OOWNLKjkokO8Cq/GEF/Nn3FGZgWzsD8vQv0jmSaVkyEW61qu+ztgY/EbCQJUESG39WChk7TUuBVPeCZYrhynE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712589404; c=relaxed/simple;
-	bh=D+prau6GoZ0tpwd6GwwL9MiMRgR3PVQPusKaNXb8xHY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XfEyzbT1wy39+KhMzSJ3R96gVieCmAIohdx/HK+HbJLeCkgwc4mgmpyvpxp7Vh8dckDXBmYTDjm8IK0mVVzfsS2L9XGvCq8+B2r27s25I5xFkuOLlGRyRihEfnhft7DEWEDL++1/5jcBRWB5k+1KFoG82/qnbxW8t9UqJzzNOGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FicLUnoP; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=mJAYc4PEvQcHsUZpWS27vPz5UG+6bl7Nu9InpRTebiI=; b=FicLUnoPwsHFvFaQuaBpfUoF/D
-	2ZVa0wO4WJYCmwys6xw0Xva0fpdoYVGXiuqjEk0i5Bf/ztXkXzyV5pCpejCyUJV1kZWHMI9rseYFT
-	rk+a/dACJXOf+zwevGx60mlwoIsjlVxEIYlh0s15Fe58xo3HADLw4b/tM3zUTCCxyXhjNbwpHdEUf
-	oe9W2aR8hy6qhOrc+j3xo0JiBgoJxh11tpJCvPzNJo3mR3hFz27GZOFVU69fGc7mLrauZio+xWCod
-	SMQmoyiGz2UDFtCC4wVwRReDBT8ZMxlrWbwM63QW4nU6FCsuDmOSbXLukg+cXBMNhLhERbxkGh3VR
-	8tnXZTfw==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtqjd-0000000G03s-014q;
-	Mon, 08 Apr 2024 15:16:39 +0000
-Message-ID: <8f0a4271-2957-4b4a-a63c-184062194075@infradead.org>
-Date: Mon, 8 Apr 2024 08:16:36 -0700
+	s=arc-20240116; t=1712589435; c=relaxed/simple;
+	bh=q9IM8e4kmx5pm3npvywSgEToxazinW+5NZxmKhNW/gA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rl4OQQc3kHSzdaNG5S97qFJOJX3tYgkABq4YHNFfVGQGMgWenZlZ3xd20BfmZ7rYK3XcqFfI8mIek6ZZwzhnbfecFZn3/Ywax8D8eSg0YaSqz13moL9WKblPS+X5ZMZuLBdE1+c/MfoClnRrZ3f9p1A2c29+h6KpYvJaV5e+RzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZIDyEQWV; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e2be2361efso8171835ad.0;
+        Mon, 08 Apr 2024 08:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712589433; x=1713194233; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R9xH90W1R99SqhnZ3QXZmpgoRmLM86GDmNKqMgrpRoU=;
+        b=ZIDyEQWVjVoMO0XOMYX0oDXrhLGzfPkKXSH2F8LNnXO+aAb/FBcv2wCS3KA9czHkcM
+         zDW06xnh1fRFXWvm6Hag6LQs1oA3wuxII/v0NIEi8XcT9YJVtKPClJNrtitoG8+/xzxv
+         T+flPFi8dVEehdAOCyKkvssdsBmoJ/B9sXgHtZyDbOeq9IfhBiZvnZcoe6vhPba4q2Im
+         ndNGOlb3pis4YxZuJlL0s95ZqcTIvJEb9xQKZpjttYNZ53OeomcR8J1lFUNMFLOMRjDg
+         VyUTyodUa4H0ivSg8klvdsV/UlWGMW8BwydZlBu6GTPkTkrXkM/+NbJ09Asqo5n3hKFc
+         ikSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712589433; x=1713194233;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R9xH90W1R99SqhnZ3QXZmpgoRmLM86GDmNKqMgrpRoU=;
+        b=kli5KlahEus0QxRZjX2ptwcXIZyfNd6R2scdkk6hfdz9i/gVLDHs+dgwxshcQiz5f9
+         s+W1y22I+fGcSomi0WSxSWC3c4v2bZJpVMTrm8IXWxVjXQ8NUjOYrjaNFA/Enbb7vEFW
+         g3rC7qdsonJbSJ833xKYjMqVR2lp5fAhUv8bOHiBCCAmkhezLPGDE3ds5ro6epxplbuW
+         F1+h+siiorEFLljQsObyBS+qQN+S4IvikTO+4S4qwM1e3j7ejn6dr4c1KiHOf/FbZPjf
+         rFHCuhZoaXc0M2jejLtBu9AK7ioubcE8bpR8HbZdpfRy2Gvtat5MqfzAFVD36VICZaI+
+         xnMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWw6KOaugtm5ZULF2tGJjHx1vueDqCFc5uKUJXgoWb7xb32wl53AlYj/DzmrEvNB9di6htdEtfvsUvFmWrM+rBO0wcmE0XTtZAYVhOFeT4pt48HQ2L8oy81YQsg4lYXAo6MmK8QHrfG
+X-Gm-Message-State: AOJu0Yxoch233Bti1bf930pNRSsbMIJHhSN29UnRzEjkHqKby903seLG
+	F0RrkvxmzwB4Y6DGhXSuylYHYIH5jE9C9Zx+o/lClRgo6qQ2pygY
+X-Google-Smtp-Source: AGHT+IHEuGFGCot+KiYuKSvFvlp7ddrKUfIGp7L7kNqhsH721/45ozPn9g2ce73YIdNB1UvO7yy9rQ==
+X-Received: by 2002:a17:903:22cf:b0:1e4:5572:9d63 with SMTP id y15-20020a17090322cf00b001e455729d63mr1572678plg.1.1712589433257;
+        Mon, 08 Apr 2024 08:17:13 -0700 (PDT)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:a8b:2133:6cbf:3d35])
+        by smtp.gmail.com with ESMTPSA id p16-20020a1709027ed000b001e0bbd8d0b0sm7214527plb.189.2024.04.08.08.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 08:17:12 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: gregkh@linuxfoundation.org
+Cc: mka@chromium.org,
+	frieder.schrempf@kontron.de,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Fabio Estevam <festevam@denx.de>
+Subject: [PATCH] usb: misc: onboard_usb_hub: Disable the USB hub clock on failure
+Date: Mon,  8 Apr 2024 12:17:00 -0300
+Message-Id: <20240408151700.1761009-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 3/3 v2] powerpc/rtas: Add kernel-doc comments to
- smp_startup_cpu()
-To: Yang Li <yang.lee@linux.alibaba.com>, arnd@arndb.de, mpe@ellerman.id.au,
- npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20240408053109.96360-1-yang.lee@linux.alibaba.com>
- <20240408053109.96360-2-yang.lee@linux.alibaba.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240408053109.96360-2-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Fabio Estevam <festevam@denx.de>
 
+In case regulator_bulk_enable() fails, the previously enabled USB hub
+clock should be disabled.
 
-On 4/7/24 10:31 PM, Yang Li wrote:
-> This commit adds kernel-doc style comments with complete parameter
-> descriptions for the function smp_startup_cpu().
-> 
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Fix it accordingly.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 65e62b8a955a ("usb: misc: onboard_usb_hub: Add support for clock input")
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+ drivers/usb/misc/onboard_usb_dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Thanks.
-
-> ---
->  arch/powerpc/platforms/cell/smp.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/powerpc/platforms/cell/smp.c b/arch/powerpc/platforms/cell/smp.c
-> index 30394c6f8894..fee638fd8970 100644
-> --- a/arch/powerpc/platforms/cell/smp.c
-> +++ b/arch/powerpc/platforms/cell/smp.c
-> @@ -54,6 +54,7 @@ static cpumask_t of_spin_map;
->  
->  /**
->   * smp_startup_cpu() - start the given cpu
-> + * @lcpu: Logical CPU ID of the CPU to be started.
->   *
->   * At boot time, there is nothing to do for primary threads which were
->   * started from Open Firmware.  For anything else, call RTAS with the
-
+diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
+index 648ea933bdad..f2bcc1a8b95f 100644
+--- a/drivers/usb/misc/onboard_usb_dev.c
++++ b/drivers/usb/misc/onboard_usb_dev.c
+@@ -93,7 +93,7 @@ static int onboard_dev_power_on(struct onboard_dev *onboard_dev)
+ 	if (err) {
+ 		dev_err(onboard_dev->dev, "failed to enable supplies: %pe\n",
+ 			ERR_PTR(err));
+-		return err;
++		goto disable_clk;
+ 	}
+ 
+ 	fsleep(onboard_dev->pdata->reset_us);
+@@ -102,6 +102,10 @@ static int onboard_dev_power_on(struct onboard_dev *onboard_dev)
+ 	onboard_dev->is_powered_on = true;
+ 
+ 	return 0;
++
++disable_clk:
++	clk_disable_unprepare(onboard_dev->clk);
++	return err;
+ }
+ 
+ static int onboard_dev_power_off(struct onboard_dev *onboard_dev)
 -- 
-#Randy
+2.34.1
+
 
