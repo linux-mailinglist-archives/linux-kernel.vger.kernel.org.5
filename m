@@ -1,682 +1,86 @@
-Return-Path: <linux-kernel+bounces-135378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A9389BFB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2546489BFA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4BC81F210D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB97F1F22291
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DFB76413;
-	Mon,  8 Apr 2024 12:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E827442A;
+	Mon,  8 Apr 2024 12:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hdK1O8ld"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cJHGSwof"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C0E6CDA8;
-	Mon,  8 Apr 2024 12:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C056F53D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 12:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712581193; cv=none; b=a20FqdV9MRqV0RSUOOxJ/tsjRjQX/fEO4Lt3LOxsUJEeG3pzIElzMkUhLNhGSrUvDiIsvnoFmsBXjBcgNWems33y8p5AQENDY5fYXvSIrWfDV3dTx52FrHS5UVC4MnqTuWHcX4IG3zK1aNHlbq26R+0GkBxleZ+TqdAcqANu+sc=
+	t=1712581026; cv=none; b=cswn/7MeFKvTE6mDpCQmEBNUlIRsRbARds5iBuv+AOfKS9AKfABEG5/JGZb6+os9U6Y4ohQ7y114x/Wf8YCxY6bAbztkMjPkOak02swiLTgenA1NcM5QKZ0HRDIKciLTRI9gGk83aM7VtyGYCNakVmcx2Hi3R4g/kgvzFbFZcdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712581193; c=relaxed/simple;
-	bh=KIDC+io+AOP55kti/qPNCfZav1GQWnfQz7XeFN5a02U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qYPzIZ/K0yRIAK5RmrXIkgW6sJwG8sUAM59qy2yomiHddD418pLX7B0YsEVAapQkO9x9wJwMCe82fQVAM9lyWYq8zmME6wctold6KH4qeQL1tV3jYOUSYqQNRuxjxZR3o2su6FUJ+V8HR6ufwnKLASS+IIpxc9pTY6bFM/Duuk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hdK1O8ld; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8342CC433F1;
-	Mon,  8 Apr 2024 12:59:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712581193;
-	bh=KIDC+io+AOP55kti/qPNCfZav1GQWnfQz7XeFN5a02U=;
-	h=From:To:Cc:Subject:Date:From;
-	b=hdK1O8ld2NSIctBhwB9PctumAE6xauM5TD5lU5PJoJSovinu6t4qIcdVGOTL2cojz
-	 Nsb0okwcVyjjxGAtV6Bd6a/d9p1egEs9azyslMJDOV9OGnPD8p0M28oa+Dg+Ji4QnR
-	 W5nqvnsI2830PiNQn8vgC3wY7BE9rC4CSOvfBjzY=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 6.1 000/138] 6.1.85-rc1 review
-Date: Mon,  8 Apr 2024 14:56:54 +0200
-Message-ID: <20240408125256.218368873@linuxfoundation.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712581026; c=relaxed/simple;
+	bh=NX8c/VEzlABel+cb+UVbVM0M8txNezi7QBogQFWuPcg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W2kOdtJJBuzDB4p4nmEBTHvbRycT1DhwDEHsuNRaV25wsQdMNAbKOxTHOQ8jRIMTkXDap/nd5jTkEu32a6Xcg8vcf23KsjvKPPN0ttdE7MS3RPy/+9qZeHXqPSBMofBQ5eZwJYiL7xm8jy0WQdQPp8TebwNKb0FYg2/b/ngZMpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=cJHGSwof; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712581022;
+	bh=NX8c/VEzlABel+cb+UVbVM0M8txNezi7QBogQFWuPcg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cJHGSwof0rF7TySUFssqZe/IaEXByAiXZhM5qNHVmzo4lyYZD25Y+Ls+0RxmE/FEn
+	 IvTnlX7Z4MBLQvE6if/WaZCoSmV1Lgy9RJ6AEnVh+yZ1xvtyC235eNPc1UQZ98E0nQ
+	 2lotIsRMG6G0eIvvsL/wiiPEM8oDQeB2NwLw3P5f1OsHkFT8MQirKPX6txq9yAylDr
+	 G7ch2ULxwrxfq40dL3Gx8wMtamM9Gyvqd/Az76luDxrgx/asI26usymfpyDQ35P2Ek
+	 hgP1GN7pK2kgLRrZ/9v0IVqVaQHQj1M8TxSwatehHFsNKHwtsS6uc31jYbn3VWGT8F
+	 S0sQt7NpLHK7Q==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D1E783780016;
+	Mon,  8 Apr 2024 12:57:01 +0000 (UTC)
+Message-ID: <1486bf40-a797-4651-816e-85bbfe22a809@collabora.com>
+Date: Mon, 8 Apr 2024 14:57:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.85-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.1.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.1.85-rc1
-X-KernelTest-Deadline: 2024-04-10T12:53+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-This is the start of the stable review cycle for the 6.1.85 release.
-There are 138 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.85-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 6.1.85-rc1
-
-min15.li <min15.li@samsung.com>
-    nvme: fix miss command type check
-
-David Hildenbrand <david@redhat.com>
-    mm/secretmem: fix GUP-fast succeeding on secretmem folios
-
-Geliang Tang <geliang.tang@suse.com>
-    selftests: mptcp: display simult in extra_msg
-
-Davide Caratti <dcaratti@redhat.com>
-    mptcp: don't account accept() of non-MPC client as fallback to TCP
-
-Geliang Tang <tanggeliang@kylinos.cn>
-    selftests: mptcp: join: fix dev in check_endpoint
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in cifs_signal_cifsd_for_reconnect()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in smb2_is_network_name_deleted()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in is_valid_oplock_break()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in smb2_is_valid_lease_break()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in smb2_is_valid_oplock_break()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in cifs_stats_proc_show()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in cifs_stats_proc_write()
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix potential UAF in cifs_debug_files_proc_show()
-
-Ritvik Budhiraja <rbudhiraja@microsoft.com>
-    smb3: retrying on failed server close
-
-Stefan O'Rear <sorear@fastmail.com>
-    riscv: process: Fix kernel gp leakage
-
-Samuel Holland <samuel.holland@sifive.com>
-    riscv: Fix spurious errors from __get/put_kernel_nofault
-
-Sumanth Korikkar <sumanthk@linux.ibm.com>
-    s390/entry: align system call table on 8 bytes
-
-Jason A. Donenfeld <Jason@zx2c4.com>
-    x86/coco: Require seeding RNG with RDRAND on CoCo systems
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/mce: Make sure to grab mce_sysfs_mutex in set_bank()
-
-David Hildenbrand <david@redhat.com>
-    x86/mm/pat: fix VM_PAT handling in COW mappings
-
-Herve Codina <herve.codina@bootlin.com>
-    of: dynamic: Synchronize of_changeset_destroy() with the devlink removals
-
-Herve Codina <herve.codina@bootlin.com>
-    driver core: Introduce device_link_wait_removal()
-
-I Gede Agastya Darma Laksana <gedeagas22@gmail.com>
-    ALSA: hda/realtek: Update Panasonic CF-SZ6 quirk to support headset with microphone
-
-Christoffer Sandberg <cs@tuxedo.de>
-    ALSA: hda/realtek - Fix inactive headset mic jack
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: do not set SMB2_GLOBAL_CAP_ENCRYPTION for SMB 3.1.1
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: validate payload size in ipc response
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: don't send oplock break if rename fails
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/retpoline: Add NOENDBR annotation to the SRSO dummy return thunk
-
-Jeff Layton <jlayton@kernel.org>
-    nfsd: hold a lighter-weight client reference over CB_RECALL_ANY
-
-Arnd Bergmann <arnd@arndb.de>
-    ata: sata_mv: Fix PCI device ID table declaration compilation warning
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: fix sampling event removal for PMU device driver
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: rework paiXXX_start and paiXXX_stop functions
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: cleanup event initialization
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai_crypto: remove per-cpu variable assignement in event initialization
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: initialize event count once at initialization
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai_ext: replace atomic_t with refcount_t
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: rename structure member users to active_events
-
-Thomas Richter <tmricht@linux.ibm.com>
-    s390/pai: rework pai_crypto mapped buffer reference count
-
-David Howells <dhowells@redhat.com>
-    cifs: Fix caching to try to do open O_WRONLY as rdwr on server
-
-Li Nan <linan122@huawei.com>
-    scsi: sd: Unregister device if device_add_disk() failed in sd_probe()
-
-Arnd Bergmann <arnd@arndb.de>
-    scsi: mylex: Fix sysfs buffer lengths
-
-Arnd Bergmann <arnd@arndb.de>
-    ata: sata_sx4: fix pdc20621_get_from_dimm() on 64-bit
-
-Stephen Lee <slee08177@gmail.com>
-    ASoC: ops: Fix wraparound for mask in snd_soc_get_volsw
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: rt711-sdw: fix locking sequence
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: rt711-sdca: fix locking sequence
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: rt5682-sdw: fix locking sequence
-
-Christian Hewitt <christianshewitt@gmail.com>
-    drm/panfrost: fix power transition timeout warnings
-
-Pu Lehui <pulehui@huawei.com>
-    drivers/perf: riscv: Disable PERF_SAMPLE_BRANCH_* while not supported
-
-Dominique Martinet <asmadeus@codewreck.org>
-    9p: Fix read/write debug statements to report server reply
-
-Jann Horn <jannh@google.com>
-    fs/pipe: Fix lockdep false-positive in watchqueue pipe_write()
-
-Ashish Kalra <ashish.kalra@amd.com>
-    KVM: SVM: Add support for allowing zero SEV ASIDs
-
-Sean Christopherson <seanjc@google.com>
-    KVM: SVM: Use unsigned integers when dealing with ASIDs
-
-Sean Christopherson <seanjc@google.com>
-    KVM: SVM: WARN, but continue, if misc_cg_set_capacity() fails
-
-Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-    KVM: SVM: enhance info printk's in SEV init
-
-Paul Barker <paul.barker.ct@bp.renesas.com>
-    net: ravb: Always update error counters
-
-Paul Barker <paul.barker.ct@bp.renesas.com>
-    net: ravb: Always process TX descriptor ring
-
-Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-    net: ravb: Let IP-specific receive function to interrogate descriptors
-
-Wei Fang <wei.fang@nxp.com>
-    net: fec: Set mac_managed_pm during probe
-
-Denis Kirjanov <dkirjanov@suse.de>
-    drivers: net: convert to boolean for the mac_managed_pm flag
-
-Kuniyuki Iwashima <kuniyu@amazon.com>
-    tcp: Fix bind() regression for v6-only wildcard and v4(-mapped-v6) non-wildcard addresses.
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    r8169: prepare rtl_hw_aspm_clkreq_enable for usage in atomic context
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    r8169: use spinlock to protect access to registers Config2 and Config5
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    r8169: use spinlock to protect mac ocp register access
-
-Ivan Vecera <ivecera@redhat.com>
-    i40e: Enforce software interrupt during busy-poll exit
-
-Ivan Vecera <ivecera@redhat.com>
-    i40e: Remove _t suffix from enum type names
-
-Joe Damato <jdamato@fastly.com>
-    i40e: Store the irq number in i40e_q_vector
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Flush GFXOFF requests in prepare stage
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Add concept of running prepare_suspend() sequence for IP blocks
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Evict resources during PM ops prepare() callback
-
-Christian A. Ehrhardt <lk@c--e.de>
-    usb: typec: ucsi: Check for notifications after init
-
-Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-    i40e: fix vf may be used uninitialized in this function warning
-
-Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-    i40e: fix i40e_count_filters() to count only active/new filters
-
-Aleksandr Mishin <amishin@t-argos.ru>
-    octeontx2-af: Add array index check
-
-Su Hui <suhui@nfschina.com>
-    octeontx2-pf: check negative error code in otx2_open()
-
-Hariprasad Kelam <hkelam@marvell.com>
-    octeontx2-af: Fix issue with loading coalesced KPU profiles
-
-Antoine Tenart <atenart@kernel.org>
-    udp: prevent local UDP tunnel packets from being GROed
-
-Antoine Tenart <atenart@kernel.org>
-    udp: do not transition UDP GRO fraglist partial checksums to unnecessary
-
-Antoine Tenart <atenart@kernel.org>
-    udp: do not accept non-tunnel GSO skbs landing in a tunnel
-
-Atlas Yu <atlas.yu@canonical.com>
-    r8169: skip DASH fw status checks when DASH is disabled
-
-David Thompson <davthompson@nvidia.com>
-    mlxbf_gige: stop interface during shutdown
-
-Kuniyuki Iwashima <kuniyu@amazon.com>
-    ipv6: Fix infinite recursion in fib6_dump_done().
-
-Jakub Kicinski <kuba@kernel.org>
-    selftests: reuseaddr_conflict: add missing new line at the end of the output
-
-Eric Dumazet <edumazet@google.com>
-    erspan: make sure erspan_base_hdr is present in skb->head
-
-Ivan Vecera <ivecera@redhat.com>
-    i40e: Fix VF MAC filter removal
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/retpoline: Do the necessary fixup to the Zen3/4 srso return thunk for !SRSO
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/bugs: Fix the SRSO mitigation on Zen3/4
-
-Antoine Tenart <atenart@kernel.org>
-    gro: fix ownership transfer
-
-Antoine Tenart <atenart@kernel.org>
-    selftests: net: gro fwd: update vxlan GRO test expectations
-
-Aleksandr Mishin <amishin@t-argos.ru>
-    net: phy: micrel: Fix potential null pointer dereference
-
-Horatiu Vultur <horatiu.vultur@microchip.com>
-    net: phy: micrel: lan8814: Fix when enabling/disabling 1-step timestamping
-
-Piotr Wejman <piotrwejman90@gmail.com>
-    net: stmmac: fix rx queue priority assignment
-
-Eric Dumazet <edumazet@google.com>
-    net/sched: fix lockdep splat in qdisc_tree_reduce_backlog()
-
-Eric Dumazet <edumazet@google.com>
-    net/sched: act_skbmod: prevent kernel-infoleak
-
-Jakub Sitnicki <jakub@cloudflare.com>
-    bpf, sockmap: Prevent lock inversion deadlock in map delete elem
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    vboxsf: Avoid an spurious warning if load_nls_xxx() fails
-
-Eric Dumazet <edumazet@google.com>
-    netfilter: validate user input for expected length
-
-Ziyang Xuan <william.xuanziyang@huawei.com>
-    netfilter: nf_tables: Fix potential data-race in __nft_flowtable_type_get()
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nf_tables: flush pending destroy work before exit_net release
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nf_tables: reject new basechain after table flag update
-
-Ingo Molnar <mingo@kernel.org>
-    Revert "x86/mm/ident_map: Use gbpages only where full GB page should be mapped."
-
-Marco Pinna <marco.pinn95@gmail.com>
-    vsock/virtio: fix packet delivery to tap device
-
-Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-    net: usb: ax88179_178a: avoid the interface always configured as random address
-
-Mahmoud Adam <mngyadam@amazon.com>
-    net/rds: fix possible cp null dereference
-
-Jesper Dangaard Brouer <hawk@kernel.org>
-    xen-netfront: Add missing skb_mark_for_recycle
-
-Bastien Nocera <hadess@hadess.net>
-    Bluetooth: Fix TOCTOU in HCI debugfs implementation
-
-Hui Wang <hui.wang@canonical.com>
-    Bluetooth: hci_event: set the conn encrypted before conn establishes
-
-Johan Hovold <johan+linaro@kernel.org>
-    Bluetooth: add quirk for broken address properties
-
-Johan Hovold <johan+linaro@kernel.org>
-    Bluetooth: qca: fix device-address endianness
-
-Johan Hovold <johan+linaro@kernel.org>
-    arm64: dts: qcom: sc7180-trogdor: mark bluetooth address as broken
-
-Johan Hovold <johan+linaro@kernel.org>
-    Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
-
-Sean Christopherson <seanjc@google.com>
-    x86/cpufeatures: Add CPUID_LNX_5 to track recently added Linux-defined word
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    r8169: fix issue caused by buggy BIOS on certain boards with RTL8168d
-
-Oliver Upton <oliver.upton@linux.dev>
-    KVM: arm64: Fix host-programmed guest events in nVHE
-
-Sandipan Das <sandipan.das@amd.com>
-    perf/x86/amd/lbr: Use freeze based on availability
-
-Sandipan Das <sandipan.das@amd.com>
-    x86/cpufeatures: Add new word for scattered features
-
-Arnd Bergmann <arnd@arndb.de>
-    dm integrity: fix out-of-range warning
-
-Florian Westphal <fw@strlen.de>
-    inet: inet_defrag: prevent sk release while still in use
-
-Hariprasad Kelam <hkelam@marvell.com>
-    Octeontx2-af: fix pause frame configuration in GMP mode
-
-Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-    net: lan743x: Add set RFE read fifo threshold for PCI1x1x chips
-
-David Howells <dhowells@redhat.com>
-    cifs: Fix duplicate fscache cookie warnings
-
-Andrei Matei <andreimatei1@gmail.com>
-    bpf: Protect against int overflow for stack access size
-
-David Thompson <davthompson@nvidia.com>
-    mlxbf_gige: call request_irq() after NAPI initialized
-
-Sabrina Dubroca <sd@queasysnail.net>
-    tls: get psock ref after taking rxlock to avoid leak
-
-Sabrina Dubroca <sd@queasysnail.net>
-    tls: adjust recv return with async crypto and failed copy to userspace
-
-Sabrina Dubroca <sd@queasysnail.net>
-    tls: recv: process_rx_list shouldn't use an offset with kvec
-
-Jian Shen <shenjian15@huawei.com>
-    net: hns3: mark unexcuted loopback test result as UNEXECUTED
-
-Yonglong Liu <liuyonglong@huawei.com>
-    net: hns3: fix kernel crash when devlink reload during pf initialization
-
-Jie Wang <wangjie125@huawei.com>
-    net: hns3: fix index limit to support all queue stats
-
-Nikita Kiryushin <kiryushin@ancud.ru>
-    ACPICA: debugger: check status of acpi_evaluate_object() in acpi_db_walk_for_fields()
-
-Bjørn Mork <bjorn@mork.no>
-    net: wwan: t7xx: Split 64bit accesses to fix alignment issues
-
-Eric Dumazet <edumazet@google.com>
-    tcp: properly terminate timers for kernel sockets
-
-Alexandra Winter <wintera@linux.ibm.com>
-    s390/qeth: handle deferred cc1
-
-Przemek Kitszel <przemyslaw.kitszel@intel.com>
-    ixgbe: avoid sleeping allocation in ixgbe_ipsec_vf_add_sa()
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: iwlwifi: mvm: rfi: fix potential response leaks
-
-David Thompson <davthompson@nvidia.com>
-    mlxbf_gige: stop PHY during open() error paths
-
-Ryosuke Yasuoka <ryasuoka@redhat.com>
-    nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet
-
-Pavel Sakharov <p.sakharov@ispras.ru>
-    dma-buf: Fix NULL pointer dereference in sanitycheck()
-
-Hangbin Liu <liuhangbin@gmail.com>
-    scripts/bpf_doc: Use silent mode when exec make cmd
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi       |   2 +
- arch/riscv/include/asm/uaccess.h                   |   4 +-
- arch/riscv/kernel/process.c                        |   3 -
- arch/s390/kernel/entry.S                           |   1 +
- arch/s390/kernel/perf_pai_crypto.c                 |  96 ++++++++-------
- arch/s390/kernel/perf_pai_ext.c                    |  66 ++++++-----
- arch/x86/coco/core.c                               |  41 +++++++
- arch/x86/events/amd/core.c                         |   4 +-
- arch/x86/events/amd/lbr.c                          |  16 ++-
- arch/x86/include/asm/asm-prototypes.h              |   1 +
- arch/x86/include/asm/coco.h                        |   2 +
- arch/x86/include/asm/cpufeature.h                  |   8 +-
- arch/x86/include/asm/cpufeatures.h                 |  10 +-
- arch/x86/include/asm/disabled-features.h           |   3 +-
- arch/x86/include/asm/nospec-branch.h               |  20 +++-
- arch/x86/include/asm/required-features.h           |   3 +-
- arch/x86/kernel/cpu/mce/core.c                     |   4 +-
- arch/x86/kernel/cpu/scattered.c                    |   1 +
- arch/x86/kernel/setup.c                            |   2 +
- arch/x86/kvm/reverse_cpuid.h                       |   2 +
- arch/x86/kvm/svm/sev.c                             |  60 ++++++----
- arch/x86/kvm/trace.h                               |  10 +-
- arch/x86/lib/retpoline.S                           |   6 +-
- arch/x86/mm/ident_map.c                            |  23 +---
- arch/x86/mm/pat/memtype.c                          |  49 +++++---
- drivers/acpi/acpica/dbnames.c                      |   8 +-
- drivers/ata/sata_mv.c                              |  63 +++++-----
- drivers/ata/sata_sx4.c                             |   6 +-
- drivers/base/core.c                                |  26 +++-
- drivers/bluetooth/btqca.c                          |   8 +-
- drivers/bluetooth/hci_qca.c                        |  19 ++-
- drivers/dma-buf/st-dma-fence-chain.c               |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  38 ++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  10 +-
- drivers/gpu/drm/amd/include/amd_shared.h           |   1 +
- drivers/gpu/drm/panfrost/panfrost_gpu.c            |   6 +-
- drivers/md/dm-integrity.c                          |   2 +-
- drivers/net/ethernet/freescale/fec_main.c          |  11 +-
- .../hns3/hns3_common/hclge_comm_tqp_stats.c        |   2 +-
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  19 ++-
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |   4 +
- drivers/net/ethernet/intel/i40e/i40e.h             |   6 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c        |  14 ++-
- drivers/net/ethernet/intel/i40e/i40e_ptp.c         |   6 +-
- drivers/net/ethernet/intel/i40e/i40e_register.h    |   3 +
- drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  82 +++++++++----
- drivers/net/ethernet/intel/i40e/i40e_txrx.h        |   5 +-
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  45 ++++---
- drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c     |  16 +--
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    |   5 +
- .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |   2 +
- .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |   2 +-
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   2 +-
- .../ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c |  31 +++--
- drivers/net/ethernet/microchip/lan743x_main.c      |  18 +++
- drivers/net/ethernet/microchip/lan743x_main.h      |   4 +
- drivers/net/ethernet/realtek/r8169_main.c          | 131 +++++++++++++++++----
- drivers/net/ethernet/renesas/ravb_main.c           |  33 +++---
- drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  |  40 +++++--
- .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |  38 ++++--
- drivers/net/phy/micrel.c                           |  31 +++--
- drivers/net/usb/asix_devices.c                     |   4 +-
- drivers/net/usb/ax88179_178a.c                     |   2 +
- drivers/net/wireless/intel/iwlwifi/mvm/rfi.c       |   8 +-
- drivers/net/wwan/t7xx/t7xx_cldma.c                 |   4 +-
- drivers/net/wwan/t7xx/t7xx_hif_cldma.c             |   9 +-
- drivers/net/wwan/t7xx/t7xx_pcie_mac.c              |   8 +-
- drivers/net/xen-netfront.c                         |   1 +
- drivers/nvme/host/core.c                           |   4 +-
- drivers/nvme/host/ioctl.c                          |   3 +-
- drivers/nvme/host/nvme.h                           |   2 +-
- drivers/nvme/target/passthru.c                     |   3 +-
- drivers/of/dynamic.c                               |  12 ++
- drivers/perf/riscv_pmu.c                           |   4 +
- drivers/s390/net/qeth_core_main.c                  |  38 +++++-
- drivers/scsi/myrb.c                                |  20 ++--
- drivers/scsi/myrs.c                                |  24 ++--
- drivers/scsi/sd.c                                  |   2 +-
- drivers/usb/typec/ucsi/ucsi.c                      |  10 +-
- fs/nfsd/nfs4state.c                                |   7 +-
- fs/pipe.c                                          |  17 ++-
- fs/smb/client/cached_dir.c                         |   6 +-
- fs/smb/client/cifs_debug.c                         |   6 +
- fs/smb/client/cifsfs.c                             |  11 ++
- fs/smb/client/cifsglob.h                           |  17 ++-
- fs/smb/client/connect.c                            |   2 +
- fs/smb/client/dir.c                                |  15 +++
- fs/smb/client/file.c                               | 111 ++++++++++++++---
- fs/smb/client/fscache.c                            |  16 ++-
- fs/smb/client/fscache.h                            |   6 +
- fs/smb/client/inode.c                              |   2 +
- fs/smb/client/misc.c                               |   2 +
- fs/smb/client/smb1ops.c                            |   4 +-
- fs/smb/client/smb2misc.c                           |   4 +
- fs/smb/client/smb2ops.c                            |  11 +-
- fs/smb/client/smb2pdu.c                            |   2 +-
- fs/smb/server/ksmbd_netlink.h                      |   3 +-
- fs/smb/server/mgmt/share_config.c                  |   7 +-
- fs/smb/server/smb2ops.c                            |  10 +-
- fs/smb/server/smb2pdu.c                            |   3 +-
- fs/smb/server/transport_ipc.c                      |  37 ++++++
- fs/vboxsf/super.c                                  |   3 +-
- include/kvm/arm_pmu.h                              |   2 +-
- include/linux/device.h                             |   1 +
- include/linux/secretmem.h                          |   4 +-
- include/linux/skbuff.h                             |   7 +-
- include/linux/udp.h                                |  28 +++++
- include/net/bluetooth/hci.h                        |   9 ++
- include/net/inet_connection_sock.h                 |   1 +
- include/net/sock.h                                 |   7 ++
- kernel/bpf/verifier.c                              |   5 +
- mm/memory.c                                        |   4 +
- net/9p/client.c                                    |  10 +-
- net/bluetooth/hci_debugfs.c                        |  64 ++++++----
- net/bluetooth/hci_event.c                          |  25 ++++
- net/bluetooth/hci_sync.c                           |   5 +-
- net/bridge/netfilter/ebtables.c                    |   6 +
- net/core/gro.c                                     |   3 +-
- net/core/sock_map.c                                |   6 +
- net/ipv4/inet_connection_sock.c                    |  33 ++++--
- net/ipv4/inet_fragment.c                           |  70 +++++++++--
- net/ipv4/ip_fragment.c                             |   2 +-
- net/ipv4/ip_gre.c                                  |   5 +
- net/ipv4/netfilter/arp_tables.c                    |   4 +
- net/ipv4/netfilter/ip_tables.c                     |   4 +
- net/ipv4/tcp.c                                     |   2 +
- net/ipv4/udp.c                                     |   7 ++
- net/ipv4/udp_offload.c                             |  23 ++--
- net/ipv6/ip6_fib.c                                 |  14 +--
- net/ipv6/ip6_gre.c                                 |   3 +
- net/ipv6/netfilter/ip6_tables.c                    |   4 +
- net/ipv6/netfilter/nf_conntrack_reasm.c            |   2 +-
- net/ipv6/udp.c                                     |   2 +-
- net/ipv6/udp_offload.c                             |   8 +-
- net/mptcp/protocol.c                               |   3 -
- net/mptcp/subflow.c                                |   2 +
- net/netfilter/nf_tables_api.c                      |  13 +-
- net/nfc/nci/core.c                                 |   5 +
- net/rds/rdma.c                                     |   2 +-
- net/sched/act_skbmod.c                             |  10 +-
- net/sched/sch_api.c                                |   2 +-
- net/tls/tls_sw.c                                   |   7 +-
- net/vmw_vsock/virtio_transport.c                   |   3 +-
- scripts/bpf_doc.py                                 |   4 +-
- sound/pci/hda/patch_realtek.c                      |   3 +-
- sound/soc/codecs/rt5682-sdw.c                      |   4 +-
- sound/soc/codecs/rt711-sdca-sdw.c                  |   4 +-
- sound/soc/codecs/rt711-sdw.c                       |   4 +-
- sound/soc/soc-ops.c                                |   2 +-
- tools/testing/selftests/net/mptcp/mptcp_connect.sh |   7 ++
- tools/testing/selftests/net/mptcp/mptcp_join.sh    |   7 +-
- tools/testing/selftests/net/reuseaddr_conflict.c   |   2 +-
- tools/testing/selftests/net/udpgro_fwd.sh          |  10 +-
- 155 files changed, 1520 insertions(+), 589 deletions(-)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: select CONFIG_SOC_BUS
+To: Arnd Bergmann <arnd@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, William-tw Lin <william-tw.lin@mediatek.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Ulf Hansson <ulf.hansson@linaro.org>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240408125506.1594257-1-arnd@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240408125506.1594257-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Il 08/04/24 14:55, Arnd Bergmann ha scritto:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This is needed to avoid a link failure:
+> 
+> ERROR: modpost: "soc_device_register" [drivers/soc/mediatek/mtk-socinfo.ko] undefined!
+> ERROR: modpost: "soc_device_unregister" [drivers/soc/mediatek/mtk-socinfo.ko] undefined!
+> 
+> Fixes: 423a54da3c7e ("soc: mediatek: mtk-socinfo: Add driver for getting chip information")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
 
