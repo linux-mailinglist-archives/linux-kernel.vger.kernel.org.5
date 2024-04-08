@@ -1,191 +1,159 @@
-Return-Path: <linux-kernel+bounces-135132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C85589BB7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD0B89BB80
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:20:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FC08B23D6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:19:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0198CB240C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B2E45946;
-	Mon,  8 Apr 2024 09:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10CE840867;
+	Mon,  8 Apr 2024 09:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qbszd7Aj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T1DeOK/Z"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160F03FBBE
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D805B3F9FA;
+	Mon,  8 Apr 2024 09:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567967; cv=none; b=jyoCQvz6OTNWnR8xNIesBmQANW261W99ln6sQJncWsRfuH8xxNhqs2y4vWD0TqE7dfnPY3YEN10qabKbrs9m50Q1GHNFmiC7k/hyXkByDd3+cknJZya4p6p7iNOQOMCg999Y6hvvKjlyk2bbuJNEPRzHSmVP/3FKPK7+7XdkZEU=
+	t=1712567989; cv=none; b=QJVBp7mpKwp4nq6wA5Ja8wDMQm2C6mBr5sRWgSuuhPTx2xpiruAVjfXPY8MyYQugMbBf8JBBgk6dCYgpDWj4i9zpqvDmIMDqgg3r3YfT97aoQI0DwsJaHiQ0NnYYmu/8Zb+c5rhOkKQdIb7REB4/yQpd/N5TWzF/TM377sY/VLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567967; c=relaxed/simple;
-	bh=lM8w3tn5AAvQKCD7yYmQlWmfw+1oLvifWiwW0bJQ7Zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bNd/UAtzwx8cpIwiQMxGsY6Q0y8nrQXQbGdDYjgkmOUa1UluuRht+CXht1na7X+C3gtNRN1iTpvCMPiHRHXLTg5eYhp2ashIxfQyT2hrn58Kamr68RPKo010Cc4hAPBEz2G6JQvkMU5mU9Y80jBp/xMf1x9bVWzaW3r7ngOlIKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qbszd7Aj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1119AC433C7;
-	Mon,  8 Apr 2024 09:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712567966;
-	bh=lM8w3tn5AAvQKCD7yYmQlWmfw+1oLvifWiwW0bJQ7Zw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qbszd7AjYBdlafO7ZjZkGWxSifIDGZLkgYTyZaHKJE5D8J8olVWGFWqIgLOjyIoyc
-	 FReMbxW077bk4cIHG/1XIOJkycForZUSN8torcljMEgGfXPu1j9FHJqLmAMJB3txw/
-	 LfyKlKITheQR/spI8FU3oNzVPHegEE0hxHSoGAGeMREz7I3AJv7g/QA4Rdn1HAh07w
-	 jDz8APqrVjwUKMRtDvT1p9YI9MWXwR0QTkSwmiuwpuUGriCRltsvzvB7w/mtL2Y6f0
-	 9rXp+lyZra/HVWf6dqO7tvkosSUixhPejzSsmCBkwbvufDSGWNqtQCYEs+QH4U/d+6
-	 3SWVRP3dN4v5Q==
-Date: Mon, 8 Apr 2024 11:19:21 +0200
-From: Carlos Maiolino <cem@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, 
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [syzbot] [mm?] general protection fault in shmem_get_next_id
-Message-ID: <lqxgvg4mjyo5togrvrzz44agdnzcxap7i34vbtsf7hglydnuy2@7rzx5wnulqtf>
-References: <000000000000a1ff78061517a148@google.com>
- <hgK3SYtGnWjzLbOQ_fdQNLYxKsQF05DY6Zsw62PEgIEFbIMC9cQqz4rx0twm_rQY_JO8IoPT074TBcvYnML1Kg==@protonmail.internalid>
- <20240403183339.7a257066e79ac04a7d6e33fd@linux-foundation.org>
+	s=arc-20240116; t=1712567989; c=relaxed/simple;
+	bh=ofbbhjOcn3gokpPZJXWug0E1Se7nblKWJlzQsqVrdiw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NnXGmOYq3mKArgG/egXW+mNXBs8xnKUXYUlo7yJ+Jj6+P+/y5vcVpTnvcoaoJtPL1WEKU6hl36sBb0gk7iY4qGvCgy+SmCcPZgK3z3QkUdIsSXIk9zzCXBS90iE5XzWwIySumEDy7ECf5j5ajsNV90BxwdoeN3zjK1VTEgPz8nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T1DeOK/Z; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386c1Tu030644;
+	Mon, 8 Apr 2024 09:19:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bxHJFz7JARPgNmGRmpA2i8VMFIvKy301v4ZlZfnTBK0=; b=T1
+	DeOK/ZUTBxQfvCbOOeQQIayXgxxP1mI5Ly29rR/KfcvPSkh7Gon8QugU3JOj7joM
+	LPbBsfUqhu/fvzCyRVekc/o06yvSARfiWESBWFdAHf27MZjn2boZVTswB+iv7nAL
+	Ofpl2UbyvmbUB0kF6OeBh7yklev3CRQJaGtEyUUA4vzHhvYvXy0Ui/57iZ5RA7Kw
+	AC2tAefUBShpj9JSATUHBwpwOmrHK+wVr+HKnMqOMMsju2LRO/pSB+COqrb8uonp
+	WY3mcRrO2sPHXJ2PnETGnjg1oTRZFCz8lXbwOKhZxhlOC9NtuvZa/jaRvWGCuD/r
+	yGKlRKhlGIGpFVBNpl3w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg1ga73-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 09:19:42 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4389JfQL006266
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 09:19:41 GMT
+Received: from [10.238.176.241] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
+ 02:19:39 -0700
+Message-ID: <7c13cb26-0a0d-b73e-443a-b83264cf482b@quicinc.com>
+Date: Mon, 8 Apr 2024 17:19:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403183339.7a257066e79ac04a7d6e33fd@linux-foundation.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V4 2/2] rtc-pm8xxx: Correct the value written into the
+ PM8xxx_RTC_ALARM_CLEAR
+Content-Language: en-US
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Alexandre Belloni
+	<alexandre.belloni@bootlin.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-0-aab2cd6ddab8@quicinc.com>
+ <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-2-aab2cd6ddab8@quicinc.com>
+ <Zg9mKnPrhTTNafdb@hu-bjorande-lv.qualcomm.com>
+From: jianbin zhang <quic_jianbinz@quicinc.com>
+In-Reply-To: <Zg9mKnPrhTTNafdb@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BjYveIFvFL8tZJy-Em57oF0k8eeVD6Gy
+X-Proofpoint-GUID: BjYveIFvFL8tZJy-Em57oF0k8eeVD6Gy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ impostorscore=0 adultscore=0 priorityscore=1501 malwarescore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404080072
 
-On Wed, Apr 03, 2024 at 06:33:39PM -0700, Andrew Morton wrote:
-> On Mon, 01 Apr 2024 23:58:20 -0700 syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com> wrote:
-> 
-> > Hello,
-> 
-> Hello.
-> 
-> Seems that the new TMPFS_QUOTA code has blown up.  Cc's added, thanks
-> for the report and the reproducer!
 
-Thanks Andrew,
+On 4/5/24 10:47, Bjorn Andersson wrote:
+> On Mon, Apr 01, 2024 at 09:56:30AM +0800, jianbin zhang wrote:
+>> Writing 1 to the PM8xxx_RTC_ALARM_CLEAR register is expected to clear
+>> the triggered alarm status. In patch v2, the value written to the
+> I'm not sure what "in patch v2" refers to here.
 
-I'm adding it to my todo list, and will take a look on it ASAP.
+Thanks for reviewing, "In patch v2" refers to https://lore.kernel.org/lkml/20230202155448.6715-4-johan+linaro@kernel.org/ which siwtch to use regmap_update_bits.
 
-Carlos
-
-> 
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> > git tree:       upstream
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c90795180000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=05e63c0981a31f35f3fa
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f51129180000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150d3cee180000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com
-> >
-> > general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> > CPU: 0 PID: 5070 Comm: syz-executor253 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> > RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
-> > Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
-> > RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
-> > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
-> > RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
-> > R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
-> > R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
-> > FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
-> > Call Trace:
-> >  <TASK>
-> >  dquot_get_next_dqblk+0x75/0x3a0 fs/quota/dquot.c:2705
-> >  quota_getnextquota+0x2c7/0x6c0 fs/quota/quota.c:250
-> >  __do_sys_quotactl_fd fs/quota/quota.c:1002 [inline]
-> >  __se_sys_quotactl_fd+0x2a1/0x440 fs/quota/quota.c:973
-> >  do_syscall_64+0xfd/0x240
-> >  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> > RIP: 0033:0x7f5c0349b329
-> > Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007ffc39d71138 EFLAGS: 00000246 ORIG_RAX: 00000000000001bb
-> > RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007f5c0349b329
-> > RDX: 0000000000000000 RSI: ffffffff80000901 RDI: 0000000000000003
-> > RBP: 00007f5c0350e610 R08: 0000000000000000 R09: 00007ffc39d71308
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-> > R13: 00007ffc39d712f8 R14: 0000000000000001 R15: 0000000000000001
-> >  </TASK>
-> > Modules linked in:
-> > ---[ end trace 0000000000000000 ]---
-> > RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
-> > Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
-> > RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
-> > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
-> > RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
-> > R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
-> > R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
-> > FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
-> > ----------------
-> > Code disassembly (best guess):
-> >    0:	04 db                	add    $0xdb,%al
-> >    2:	49 8d 9c c6 90 02 00 	lea    0x290(%r14,%rax,8),%rbx
-> >    9:	00
-> >    a:	48 89 d8             	mov    %rbx,%rax
-> >    d:	48 c1 e8 03          	shr    $0x3,%rax
-> >   11:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
-> >   16:	74 08                	je     0x20
-> >   18:	48 89 df             	mov    %rbx,%rdi
-> >   1b:	e8 f8 66 1b 00       	call   0x1b6718
-> >   20:	48 8b 1b             	mov    (%rbx),%rbx
-> >   23:	48 89 d8             	mov    %rbx,%rax
-> >   26:	48 c1 e8 03          	shr    $0x3,%rax
-> > * 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-> >   2f:	74 08                	je     0x39
-> >   31:	48 89 df             	mov    %rbx,%rdi
-> >   34:	e8 df 66 1b 00       	call   0x1b6718
-> >   39:	4c 8b 23             	mov    (%rbx),%r12
-> >   3c:	48 8d 5d 07          	lea    0x7(%rbp),%rbx
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >
-> > If you want syzbot to run the reproducer, reply with:
-> > #syz test: git://repo/address.git branch-or-commit-hash
-> > If you attach or paste a git patch, syzbot will apply it before testing.
-> >
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >
-> > If you want to undo deduplication, reply with:
-> > #syz undup
+> Also, as with patch 1, please fix your subject line and use internal
+> review list.
+>
+> Regards,
+> Bjorn
+Sure, Will fix the subject line and use internal review list in next 
+patch version.
+>> PM8xxx_RTC_ALARM_CLEAR register in the trigger function is incorrectly
+>> written as 0. So correct the value written to PM8xxx_RTC_ALARM_CLEAR
+>> register into 1.
+>>
+>> Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
+>> ---
+>> Changess in v4:
+>> - add the cover letter
+>> - modify the patch to conform to the specification
+>>
+>> Changes in v3:
+>> - Correct the value written into the PM8xxx_RTC_ALARM_CLEAR to 1.
+>> - link: https://lore.kernel.org/linux-rtc/20240319191216.GB3796206@hu-bjorande-lv.qualcomm.com/T/#t
+>>
+>> Changes in v2:
+>> - Switch to using regmap_update_bits() instead of open coding
+>>    read-modify-write accesses.
+>> - link: https://lore.kernel.org/lkml/20230202155448.6715-4-johan+linaro@kernel.org/
+>>
+>> Changes in v1:
+>> -link: https://lore.kernel.org/linux-rtc/20230126142057.25715-4-johan+linaro@kernel.org/
+>> ---
+>>   drivers/rtc/rtc-pm8xxx.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+>> index e4e2307445cf..806c99cdac9a 100644
+>> --- a/drivers/rtc/rtc-pm8xxx.c
+>> +++ b/drivers/rtc/rtc-pm8xxx.c
+>> @@ -391,7 +391,7 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
+>>   
+>>   	/* Clear alarm status */
+>>   	rc = regmap_update_bits(rtc_dd->regmap, regs->alarm_ctrl2,
+>> -				PM8xxx_RTC_ALARM_CLEAR, 0);
+>> +				PM8xxx_RTC_ALARM_CLEAR, 1);
+>>   	if (rc)
+>>   		return IRQ_NONE;
+>>   
+>>
+>> -- 
+>> 2.43.2
+>>
 
