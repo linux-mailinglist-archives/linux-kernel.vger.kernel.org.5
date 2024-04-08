@@ -1,116 +1,164 @@
-Return-Path: <linux-kernel+bounces-135225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE7C89BD17
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F42789BD2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:30:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B64F1F228BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:28:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C281F22D76
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9793537E8;
-	Mon,  8 Apr 2024 10:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF4A57335;
+	Mon,  8 Apr 2024 10:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZXHoeFux"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fs/AQod8"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9185D52F7E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 10:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FAA55C07;
+	Mon,  8 Apr 2024 10:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712572100; cv=none; b=Po6OZgr/S/9GiJksFWnRY9f8Fub8mCrkUKoXuZiQcq6yLx9br1QrYuviUbymF/xd01DyjK4+5NzQn+bpH0h1KnOR9/Ijp+sIao3E/4wHIh4KOk0fnhrEWaUUIN0OYtL6hmLw95g7zqZLhfMCnxoc5c8NjTEKNEnntLTk0uZ0vw0=
+	t=1712572239; cv=none; b=TyrgMokho4KFzIsCSaEGS+zRf9uDr7m56df90JmWiIFENoMMIyysbk7o0HampeaZlCVM72ttHhqtac8nLr0AI3yRJkGbTSoiKUI7EZC664/tjQxHfbeuGzJ7qeddLuf/t4eDwEZ9Etq0XkP3CF3q9HaOPiDGjZ4wsmsSXA60LtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712572100; c=relaxed/simple;
-	bh=6a0a1WjW79c7b2kHhlwJtsBrCzJPwJXkLVW5NplQJfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Glo5LdqXmBIXPhWMMbe23baQHiQaW1LG51av6qRB6xnahk9ITQoeOZXplUo9HSjkJQiQxeVppmAfs6I3E+FzAL5iTDmo6u9K3Zq4DVfab+D0C7RlMQ7Z6B8XMdjeVPjxLdsoru8Y64DyfsElHJRBrm6LSjPvWSSJoqTOwxtOTH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZXHoeFux; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712572097;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yVwuBF0GMcngCoZS7e29Q9IFctmXTtqweEvVhF9yYKQ=;
-	b=ZXHoeFuxMiaLmPs2SUgS3Uc9yyd4ddpnMHbLTENQUMID3rOpmSoqcmyxhd2o+fh8GXIpQ8
-	BBBkXpYQdce8UgDVKMqIUnm1r/SHbzRDShQE6SmT9ThVcae8DhDcVJT0zNA+mNjqesm5R/
-	uEmBOeuVlmW+6aIxt9CSIsiEizFj0ns=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-351-cRvw7A-sN3iP_MupvctXnA-1; Mon,
- 08 Apr 2024 06:28:14 -0400
-X-MC-Unique: cRvw7A-sN3iP_MupvctXnA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3C8FD29AC007;
-	Mon,  8 Apr 2024 10:28:13 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.180])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 290AF10061E0;
-	Mon,  8 Apr 2024 10:28:09 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon,  8 Apr 2024 12:26:47 +0200 (CEST)
-Date: Mon, 8 Apr 2024 12:26:39 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
-	Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
- check_timer_distribution()
-Message-ID: <20240408102639.GA25058@redhat.com>
-References: <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx>
- <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx>
- <20240406150950.GA3060@redhat.com>
- <20240406151057.GB3060@redhat.com>
- <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
+	s=arc-20240116; t=1712572239; c=relaxed/simple;
+	bh=GEGWc/XxgeRAFafF0SAHIMfS+1Ne1BKISwPtjIBH8cM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LdhNW7Qz1HE3MC0k+Y+qyhUb5wWXXAuYc8GrffmmfPTrfVRy6/GmUELE0VBcBAQMsN3Xdmt7g4sPp+O4aSrch+LLw9uhGMHsKGnINZFKBdIPjla6Fd8rozEO2zs5yfk1dCklHlry5WwNd6d+EXtOnjvXAEMONxs/xbw+KD20S/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fs/AQod8; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a51abd0d7c2so371968466b.2;
+        Mon, 08 Apr 2024 03:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712572236; x=1713177036; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zDrTyP2Vy4iVLI6V80x+ZoMCFhWQosP2tXbTa3RDay8=;
+        b=fs/AQod86L+wLdKHBOaLTMdj37ZH4nrPdivl7h2EH6UhVeis7Rl+P7hqVTyoXY5wCz
+         n4uhFQ/n4ccg5KkPxIIDCHZPmp0XGrHWq616Gy7t3GcZ7RZzKonDMLX2tG3U3BtILZbL
+         0HEAdbXcQ6BRUxv3wcQLiTBknrCBjXDAWjQklfYKwTKp2Sm35ACV7RAKuc16LYgTZhYu
+         x809Qlk+S0osj3Fvyt95fMJ5dKg1UCaW56eEyl0zHlpuYLr30G8sLqGjqmwxTQ2/NJUL
+         AW6I1nvAEd7QSj6EYA1bfwbNVW1WkvuVfxVgXdJ0rI07C7EzeNxPX5x/2CWO1InbFNtI
+         eZkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712572236; x=1713177036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zDrTyP2Vy4iVLI6V80x+ZoMCFhWQosP2tXbTa3RDay8=;
+        b=areTsULTnIWSzovhnGITHDdPZCebmhXtE9YjUYJvCyOoYGgdbLzUB+IHmgcFYDpl5K
+         8QBDiNSnzQoXU71vryL0c2P6H/6jVioOEBhHkegVRrMzNqhbAsjgOitaRqbf7Kpd2lh5
+         RmOayBphywU7C07icUVx6uMJeWV20rHm99FQKQ/ZsOutrTyrusmj0nuZV4eG8CEE9J5k
+         bsuSEhska2msMcnAmS6LsNmVvyQ+15neQQ/bST6SvApcGRE4rroeOPslCNHR8Rn8eXNb
+         ewRyk3lu7UPscKuGFaqVnN0wzbYHPqMhRHH2hQ6yZQrQA18d0F+p0hQdgFwb0L7rqbNa
+         pI3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWt7VJzMBYHafaYYTFm0D3uKaTSXiZvPIiwlJWuTIGMOiLOae5GrUaOFOj8lp8NwnUTz4Grnw5qESP4crhL6l+fbDsPXIcwsqQO6jJf5PVLm6uRq7ARr8obT6Eh2sSW7UjIIh0nB/l+7J+t
+X-Gm-Message-State: AOJu0YxxwkgEyBHJlvjmqsXRuh7I823heA9UnFfYBtI+2YZovFQIRsEo
+	GjdVGCEaRRcvjq9VGKOMBFYJJo9aDC68MDkS+n7/n+fpanfx3rpKBY2U0ytRu5dRK9yzfyTuPWv
+	5x3By3l30Z4gR5qkUazh5t4USwbM=
+X-Google-Smtp-Source: AGHT+IHrzBrC48Lrtrj0shD3qgiyxsJ2BMGxhjJ541np4p2WV47+CJO76OS97mZZAM7ikNc4i6v64annsIx0/tuLNHw=
+X-Received: by 2002:a17:906:f218:b0:a51:a676:db26 with SMTP id
+ gt24-20020a170906f21800b00a51a676db26mr5349858ejb.21.1712572236205; Mon, 08
+ Apr 2024 03:30:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+References: <Zg3WicDB8m9am7dJ@surfacebook.localdomain> <20240408014453.1431652-1-liu.yeC@h3c.com>
+In-Reply-To: <20240408014453.1431652-1-liu.yeC@h3c.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 8 Apr 2024 13:29:59 +0300
+Message-ID: <CAHp75Vd3xAxmEEHHTXWvKYtieV+kUmP+L+tQGq30YDH9S2hc-w@mail.gmail.com>
+Subject: Re: Re: [PATCH V8] kdb: Fix the deadlock issue in KDB debugging.
+To: LiuYe <liu.yeC@h3c.com>
+Cc: daniel.thompson@linaro.org, dianders@chromium.org, 
+	gregkh@linuxfoundation.org, jason.wessel@windriver.com, jirislaby@kernel.org, 
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/08, Dmitry Vyukov wrote:
+On Mon, Apr 8, 2024 at 4:46=E2=80=AFAM LiuYe <liu.yeC@h3c.com> wrote:
+> >Wed, Apr 03, 2024 at 02:11:09PM +0800, liu.yec@h3c.com kirjoitti:
+
+..
+
+> >Ouch.
+> >Please, read this
+> >https://www.kernel.org/doc/html/latest/process/submitting-patches.html#b=
+acktraces-in-commit-messages
+> >and modify the commit message accordingly.
 >
+> The example is the printout of the kernel lockup detection mechanism, whi=
+ch may be easier to understand.
+> If organized according to the format provided in the previous link, shoul=
+d it be arranged as follows?
+
+Do you think all lines are important from this?
+Do you think you haven't dropped anything useful?
+
+If "yes" is the answer to both Qs, then go with it (but at least I see
+that first seems to me as "no", some lines are not important)
+
+
+> Example:
+> BUG: spinlock lockup suspected on CPU#0. owner_cpu: 1
+> CPU1: Call Trace:
+> __schedule
+> schedule
+> schedule_hrtimeout_range_clock
+> mutex_unlock
+> ep_scan_ready_list
+> schedule_hrtimeout_range
+> ep_poll
+> wake_up_q
+> SyS_epoll_wait
+> entry_SYSCALL_64_fastpath
+>
+> CPU0: Call Trace:
+> dump_stack
+> spin_dump
+> do_raw_spin_lock
+> _raw_spin_lock
+> try_to_wake_up
+> wake_up_process
+> insert_work
+> __queue_work
+> queue_work_on
+> kgdboc_post_exp_handler
+> kgdb_cpu_enter
+> kgdb_handle_exception
+> __kgdb_notify
+> kgdb_notify
+> notifier_call_chain
+> notify_die
+> do_int3
+> int3
+
+..
+
+> >>  #include <linux/module.h>
+> >>  #include <linux/platform_device.h>
+> >>  #include <linux/serial_core.h>
+> >> +#include <linux/irq_work.h>
 > >
-> >         if (ctd_failed)
-> >                 ksft_test_result_skip("No signal distribution. Assuming old kernel\n");
+> >Please, keep it ordered (with visible context this should go at least be=
+fore
+> >module.h).
 >
-> Shouldn't the test fail here? The goal of a test is to fail when
-> things don't work.
+> I don't understand why this needs to be placed before module.h. Please ex=
+plain further, thank you.
 
-I've copied this from the previous patch from Thomas, I am fine
-either way.
+Alphabetical order helps long-term maintenance. Yes, I know that it is
+not _fully_ sorted, but don't add more mess to it.
 
-> I don't see any other ksft_test_result_fail() calls, and it does not
-> look that the test will hang on incorrect distribution.
-
-Yes, it should never hang.
-
-Thanks,
-
-Oleg.
-
+--=20
+With Best Regards,
+Andy Shevchenko
 
