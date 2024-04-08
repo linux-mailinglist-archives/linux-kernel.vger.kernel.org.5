@@ -1,106 +1,144 @@
-Return-Path: <linux-kernel+bounces-135612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBEAC89C882
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:38:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D45B89C885
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 386071F232C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:38:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8D41C23D9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B87A1411E5;
-	Mon,  8 Apr 2024 15:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696631411E4;
+	Mon,  8 Apr 2024 15:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V1IG8IZp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="OC7odqCB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C47tX4Hg"
+Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8F92561F;
-	Mon,  8 Apr 2024 15:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B79F1411D9
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712590697; cv=none; b=omFh1QRcqIfj/IAsVYc5BfDSlhqABfn0J/+6Y9ySnkzMyQ3avGz+E9fzaI7Zr3EBRE6Bd5c8rsJcA5uLA5tzRHm0hk6aowUIE+J01nlIE8cuIPZFjvPp2W4EomPy5YAprwBWteHTQ/M9OMLoEVedtiuM3a1dzhJ3SpD86tF06vU=
+	t=1712590727; cv=none; b=qZyHNa1IobfdxVzVmBRjcFOb5nOvQ6T1E0+jI4QmmPD4GofeNJdEEcNGtt/GUgrGBObBd6bCUDC1PWBSG8vNhkjzQoG1rLUGxAfvox5K9iTkAtShoocC0e3GrBDaBnsZAU0hx6514yI51fQ/CAB59I/UNCXWXVhP0D8neyvURDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712590697; c=relaxed/simple;
-	bh=guvuqxnXVGJWUOz34Xxm6gLdYS67IOdUwd2f5vSl8+4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K6lAioTrK5OIwpD3y+zRew9JdFkFEZReEatK1cQan1hzse1ntJlIieOPDGzgtl55IBdv9NbTsZcEAQ6Ea4KBU9856NAh2Fu3zd2bCyftonPAAj3GwCTHy84icgwYIltOdjBo6yHa9lTWlcSUDzDQIpKxXBSHLKQxTOGo7iyHoxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V1IG8IZp; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712590696; x=1744126696;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=guvuqxnXVGJWUOz34Xxm6gLdYS67IOdUwd2f5vSl8+4=;
-  b=V1IG8IZpIncZnrOxqrrbaQM/733O5xzr5R+380lUtr+Mtg6D4j6t2cVK
-   7lCuR3e/xLNiemRfeukzfV0gVg3yHwzKWwXhfIWMqkyMgaUO/desOS140
-   ed0H+53MVerJ6WBwjYvgjzZqqQa9YB0/kRTTOztG3dhjcAbWSj0mLXTuT
-   hgBUPWh7bJE5dKhYAMeUX6LKUJzz/5ABqw2o5TA4QLsMZO08bBPww9Yrr
-   NvEGfPGrsUqSc8xfUKBkf5deuoyg52MEqU/o5jHuIBbcCab6pQX3RF4yw
-   p/7NgbY3aRFth/z1JM4gYlUYDCkVpHBUQvXpDAVkx7jV8IKEM/AV6fU/C
-   w==;
-X-CSE-ConnectionGUID: rC+vuNcLQmK9f1X49XZT1A==
-X-CSE-MsgGUID: snFlj6K3SRulHCJ1ctGnyg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="11666515"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="11666515"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 08:38:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937091742"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="937091742"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Apr 2024 08:38:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 5A1FB24D; Mon,  8 Apr 2024 18:38:12 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Hans de Goede <hdegoede@redhat.com>,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] platform/x86: android-tablets: Use GPIO_LOOKUP() macro
-Date: Mon,  8 Apr 2024 18:37:49 +0300
-Message-ID: <20240408153749.119394-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1712590727; c=relaxed/simple;
+	bh=jx3y8iEl1cgfFLMkQCZpKjXlaeo9PvLQB2ZrWLHu41M=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=qpsXuiQQ0fUWxp4jTHYLGCqEUdDJLTrat8cxxOs6x0d83ILs8jOFcBPYnQ3xQY2qhMb1BeqiSwKc+HG+33LWmq0TCBbKM+7zZQBNmA75hDiC3AycKt4zQP0G2XoaNMPhWjxTJ96CNR8dm+zU6df3LJmJRZfmar8CdqHbu/u0oOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=OC7odqCB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=C47tX4Hg; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id A618311400D2;
+	Mon,  8 Apr 2024 11:38:44 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 08 Apr 2024 11:38:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1712590724; x=1712677124; bh=YkKaVO0IWt
+	dVzEW+2plhy7Zqx1cBB2gS0olKYWW7LKQ=; b=OC7odqCBVt/WFdzPITh/Mc/Eb/
+	QcatPQBwhPLVHSu3aq13S81qoRzyNcY3y9r6HWvGxxCJLLRC8ft+XOTIQAeP8eHM
+	OeC4N3/W6VpuE3FzVQjPFHr5MNaFDMn0UxwcT8GbkWGRojg1wuL9+ia0ZImqhg0t
+	ZNdMzp70HiXTzXe5GXPrXQHwS+8tHRe02jA/omtQks8l49cwTr2jhsE4kA+Xi4z/
+	kWcmHGbuV2dZQtPOvgxFe5UDH0poRZIwxHii4mHZbl/xIvseZngFLT2LeaqHms8x
+	9cfZLQ48gXQL3WDppq2ej/W6qzArURvr+Qn7zygJRUrWRgzj01+LfAVfXBsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712590724; x=1712677124; bh=YkKaVO0IWtdVzEW+2plhy7Zqx1cB
+	B2gS0olKYWW7LKQ=; b=C47tX4HgZOnyz3n9E0BSTu0YOcvE5xeqeedN7xnmjxFF
+	S12Xd416VXzjib/qo3mtV51HFcrtXfbIdlKHtMzrttJ1jLJBot4WfkRP/6eNXJxD
+	KQBPckkBdH4Mend66QZBYMXsVfA/AowtM/T7LYc+AlSB9gDUfsbCWQhvtx7t18Sd
+	N+fDiq2gKGXiN5fIpUK19oFCcBzjGRpeHFC/iSSbPhlt8eLa0ExO/M90y1iR4kH1
+	cNh9u0jpXJGkv2C0jJFlmcL/yauhAPemaNcKGsZIFOOQlPB2EtHDi8xhh4Z0Z2H5
+	wch3zpery2RnbZ16VTVYje7jCQvDNECO7NGBDu3Kyw==
+X-ME-Sender: <xms:hA8UZvV-xnLytfpYH_f9fsrr9WJ6N9zWbT5LbShygSXnVLNMn34w2g>
+    <xme:hA8UZnlIZvyamac4WlQXccsZOcgOIsEJo31f8NbnqMwQyOomNQZ0CFgOgVVL-RJ2G
+    zyFguTonucvSYKwrR0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:hA8UZrbplRF6bY6kRuGIshIcSGFt9otSyoDtdUvIZ2DDu2uCOqiQWw>
+    <xmx:hA8UZqVyebmMI7vfpMqmqC5kB_n588i_ZYRpmAz1zCCfXh61RgqX_A>
+    <xmx:hA8UZpnSFRiemBQhZQAEMPZ7eO01V05gFtYpl6T_FP09d058X9RVPw>
+    <xmx:hA8UZne9cjCQ3QF5GQEOU0ALDCIEC-Uqr3sBrOAVcomKSut9Jd5RRw>
+    <xmx:hA8UZvi6UrNA5r8RCIo3stPYX5APqxVLZB5saNLHKIIVnJ_3sRDCy_7y>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4CFD0B60089; Mon,  8 Apr 2024 11:38:44 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <8b771062-7ce9-4b00-a488-91b231a1476e@app.fastmail.com>
+In-Reply-To: 
+ <u7hc4tkkwr5eua2p4bdetox2lqtawzb6dwimuipejhoiitbzhh@yu3e4sljhgxg>
+References: <20240328140512.4148825-1-arnd@kernel.org>
+ <20240328140512.4148825-6-arnd@kernel.org>
+ <u7hc4tkkwr5eua2p4bdetox2lqtawzb6dwimuipejhoiitbzhh@yu3e4sljhgxg>
+Date: Mon, 08 Apr 2024 17:38:24 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Justin Stitt" <justinstitt@google.com>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, "Andrew Morton" <akpm@linux-foundation.org>
+Subject: Re: [PATCH 05/11] test_hexdump: avoid string truncation warning
+Content-Type: text/plain
 
-Use GPIO_LOOKUP() macro which provides a compound literal
-and can be used with dynamic data.
+On Fri, Mar 29, 2024, at 00:54, Justin Stitt wrote:
+> On Thu, Mar 28, 2024 at 03:04:49PM +0100, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> gcc can warn when a string is too long to fit into the strncpy()
+>> destination buffer, as it is here depending on the function
+>> arguments:
+>> 
+>>     inlined from 'test_hexdump_prepare_test.constprop' at /home/arnd/arm-soc/lib/test_hexdump.c:116:3:
+>> include/linux/fortify-string.h:108:33: error: '__builtin_strncpy' output truncated copying between 0 and 32 bytes from a string of length 32 [-Werror=stringop-truncation]
+>>   108 | #define __underlying_strncpy    __builtin_strncpy
+>>       |                                 ^
+>> include/linux/fortify-string.h:187:16: note: in expansion of macro '__underlying_strncpy'
+>>   187 |         return __underlying_strncpy(p, q, size);
+>>       |                ^~~~~~~~~~~~~~~~~~~~
+>> 
+>> As far as I can tell, this is harmless here because the truncation is
+>> intentional, but using strscpy_pad() will avoid the warning since gcc
+>> does not (yet) know about it.
+>>
+>
+> We need to be careful. strscpy() or strscpy_pad() are not drop-in
+> replacements for strncpy().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/platform/x86/x86-android-tablets/core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+[cut useful explanation]
+> It is possible I haven't fully considered the context of this change but
+> I think using strscpy_pad() will cause these tests to fail, if they
+> aren't failing I think we're getting lucky.
 
-diff --git a/drivers/platform/x86/x86-android-tablets/core.c b/drivers/platform/x86/x86-android-tablets/core.c
-index a3415f1c0b5f..3f56a9dcba52 100644
---- a/drivers/platform/x86/x86-android-tablets/core.c
-+++ b/drivers/platform/x86/x86-android-tablets/core.c
-@@ -52,10 +52,8 @@ int x86_android_tablet_get_gpiod(const char *chip, int pin, const char *con_id,
- 		return -ENOMEM;
- 
- 	lookup->dev_id = KBUILD_MODNAME;
--	lookup->table[0].key = chip;
--	lookup->table[0].chip_hwnum = pin;
--	lookup->table[0].con_id = con_id;
--	lookup->table[0].flags = active_low ? GPIO_ACTIVE_LOW : GPIO_ACTIVE_HIGH;
-+	lookup->table[0] =
-+		GPIO_LOOKUP(chip, pin, con_id, active_low ? GPIO_ACTIVE_LOW : GPIO_ACTIVE_HIGH);
- 
- 	gpiod_add_lookup_table(lookup);
- 	gpiod = devm_gpiod_get(&x86_android_tablet_device->dev, con_id, dflags);
--- 
-2.43.0.rc1.1.gbec44491f096
+You are correct. I do understand the nuances between strncpy()
+and strscpy(), but I failed to read this file properly.
 
+I'm still not entirely sure, but from my current reading, I think
+we can just use memcpy() to replace the strncpy() here, as both
+the input string data_b[] and the output real[TEST_HEXDUMP_BUF_SIZE]
+are sized to cover every possible 'len' value. This also follows
+what Linus did for the other original strncpy in b1286ed7158e
+("test_hexdump: use memcpy instead of strncpy()").
+
+I've reworked the patch based on that assumption now and rewritten
+the changelog text accordingly.
+
+     Arnd
 
