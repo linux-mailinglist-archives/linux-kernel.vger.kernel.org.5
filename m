@@ -1,131 +1,122 @@
-Return-Path: <linux-kernel+bounces-134999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC2D789B9C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:10:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A52A089B9DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 969652826FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:10:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456281F21701
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9C33B782;
-	Mon,  8 Apr 2024 08:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB72F4AEC2;
+	Mon,  8 Apr 2024 08:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BCdJ1pjI"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/4/QCWF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AF8381DF
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EB347F6A;
+	Mon,  8 Apr 2024 08:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563801; cv=none; b=OiQUM18sIKv1lnnf3t9h8XLkbkbvycrRmxJWDDxuN1F84FLuhGbjt8k0xJpUHmbovZWaJLkBkToI37ISepUNALei+v55fAlVWDTZEBjr5MGXB2KmVegOJAeafGi7lTBcByg52PWd4+p8qR9gwO8Z2MWUHD3Iro1npY/ZCcxiSPw=
+	t=1712563810; cv=none; b=o8YfqP6vLiEGoCdbPtOYZfzvBxXsgjXuA4UbhCv0YuwURl+V/l2ZKT8am9U8SlsGwfAcNMWQzpHqKRLJb7hOXpTzY91JNe7w2TPFDeD+UutmcCTEuISBXmUBlI0Q3C6ZQOG/FlvbAkmCpeHg9wlcoL7Ap1RtrBY/4p5v5bHItQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563801; c=relaxed/simple;
-	bh=ljkAHH/jrVsEddYmqwbcAhxir0nJCPPqH96atvjx+I8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZS1tzAATXuPytOoCLY/lHJxXMtbw6plhlC7iPA9xjjku3rXVKxU640QIknkAiz1YWjYgx6L6NZDJ+tb675VurbGApX1Tjyp3YxRZl+f9O17C5go1OWl6S7XtRmAl4UWF4+EJEVfOYmpJaY9btS7V/DZ3pbBlCxAKggvM8Oni4QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BCdJ1pjI; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e346224bdso2150296a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712563797; x=1713168597; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzIHovojG3644yJzi7Rp4zPvS+LnsKi9BT3OOCmERoA=;
-        b=BCdJ1pjInKKk4vrgVcjnsJf+I8ArtH02GFeLNUq5rIpogQRb1hlTw5Z4a3CIC9dQ86
-         p99pc2LF+33dZHwTcmQ1PXNyRNgdShtYxKUSWlLafAORk5KWI3oB/Ej8E8U0MpM8EJlY
-         qpkdpWMfD8j733hkxoa0lhQ8kmu+Quh1PTpL/yIXyID5KDMxHta/P9lXZ3uyOkRE1FNP
-         NVbd3Z2+aDKxlS+UCRpPT6VnHCKMul0ZxQ4TisDo8oMpguE1aYKRNXfWum1OD/3yOZFA
-         jUaYsiHZiRh/Emp4+Hs73LZBgkDILK2QonUpJAWjV06+OC6Mh1L222fKXGtzA9bfNqtI
-         dvdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712563797; x=1713168597;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OzIHovojG3644yJzi7Rp4zPvS+LnsKi9BT3OOCmERoA=;
-        b=xVWJOBjfohHBasIe0VSBY/02tuAPvdcA3imaAb++DNfW2MP1RDXcueWKsWndhKL7jF
-         gaJTCku9WC8Nr/aYB4Gp74R+EeHOqw3J2oZd1Qe7dqyqHMsCMSquivmNU3Rfl+PZ7EvQ
-         WdFsFgFiYsT0bcr4kPwM38XDVjmw0PZhTASIZaxE9xUk16uqAw7GU5kbYg3XQIJOEEV+
-         Onga6HGOor9UM2lX8tONqSg2rBMH9vTs0zFyDHQWrdT2s6n4Kl71/08yapXJYAo9R0gv
-         Dp6A5650kc+jSXH2SZqw5PFBJIIAYxX6jk211pq0m5SGLXYXOIRLw9mMJH3S2WQIWQ3L
-         v18g==
-X-Forwarded-Encrypted: i=1; AJvYcCVAI+v7Xd/cCaMCcZ7e6kAOh72Bf7u5/V+xOzhBfYq1seUEKY6/26TAM1uCQ8YIW4dZydafo81WnLa9lW1aD+AekpEKlkT54uKAmFh9
-X-Gm-Message-State: AOJu0Yx7KQCDUOnbPYM04DJkzoj1Bpn3EwFkMf27NMfTi8nHHiLpk/DM
-	NnqGnMBzvhwkULFpOGlq0LosvrC2zfPymR6NUgEDnLBrEPAjXe+jNOPWmzGrFQw=
-X-Google-Smtp-Source: AGHT+IHtvCDCPVlkweFZtEXFJMtCJqeKZm0fgLqDOmu+n81huoTOcfZOWzp5QNMYK38WJkLMK2XiTQ==
-X-Received: by 2002:a17:906:3391:b0:a4e:768a:144f with SMTP id v17-20020a170906339100b00a4e768a144fmr4666050eja.36.1712563797196;
-        Mon, 08 Apr 2024 01:09:57 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id gt17-20020a1709072d9100b00a51b3d4bb39sm3081020ejc.59.2024.04.08.01.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 01:09:56 -0700 (PDT)
-Date: Mon, 8 Apr 2024 11:09:51 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/2] thermal/drivers/mediatek/lvts_thermal: Improve some
- memory allocation
-Message-ID: <d97f2a57-d318-455b-a860-8bd7972c8aaf@moroto.mountain>
-References: <42a87fb9837f1760d1ad4eb7162a7536785dc6f5.1712520052.git.christophe.jaillet@wanadoo.fr>
- <8cb69f245311a348164b0b5ca3dbc59386746035.1712520052.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1712563810; c=relaxed/simple;
+	bh=IIA39zjHLzll86E9aMpUuAcvhrfq1ysOLkBGOaeDoyY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aJd+hrGgCtl07+6mzwF5wgBnKhWQqPG+aFkekju8R2qtglNBiL1By2/hShNNRvHhcV73OMJugqQ+3S1TmK8qtCZ9KFEwMKpxVNbmZpooApl17fXCTdIv25MHitUfBwPq63jQe8p6C+vddui3g852X0I1PzQ6KvWszoTjce7Dedg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/4/QCWF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BDA2CC43394;
+	Mon,  8 Apr 2024 08:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712563809;
+	bh=IIA39zjHLzll86E9aMpUuAcvhrfq1ysOLkBGOaeDoyY=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=n/4/QCWFfHGh0rrTQ17mrgLgSDnHduSB00YXZtRGEJg4Hr8CfZ5XuDY6GVGQ+5O1A
+	 D1YXZGIATxyHwvICJOTwf5ZeZVQh0jDMspG+sRl61bTpmPJ07tcwWaVXL0aU+xupFY
+	 4OhJNi2MbNkKUozWwkquH/B7F0MYXyKjtgMtYKyWgH9R345Yl3vFTMoWrNniz4ujvl
+	 xAh72fUsIDIXXYYJT5V6PeIBjQOLMd/eG/O/f6MdmNH3hmsqXjblRg5Wdfxe4fNETh
+	 jQVBB2hcyK3Yw4Cx+SiZCuNYE/Yg1x3aRkGqqowMyyp0DSAYsxPomIIyaPcUZOzC11
+	 VA8nDHV3b0n5g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0B93CD128A;
+	Mon,  8 Apr 2024 08:10:09 +0000 (UTC)
+From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
+Subject: [PATCH 0/4] DONOTMERGE: ep93xx-clk from ep93xx device tree
+ conversion
+Date: Mon, 08 Apr 2024 11:09:52 +0300
+Message-Id: <20240408-ep93xx-clk-v1-0-1d0f4c324647@maquefel.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cb69f245311a348164b0b5ca3dbc59386746035.1712520052.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFCmE2YC/x2NywqDQAwAf0VybmB9bttfKT3ENWqobiUpZUH89
+ 649DsMwOxirsMG92EH5KybvmKG8FBBmihOjDJmhclXjGndF3m51ShiWF3atp7Ju/cCdhxz0ZIy
+ 9UgzzmaxkH9ZTbMqjpP/l8TyOH6ea6q51AAAA
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>, 
+ Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712563809; l=1512;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=IIA39zjHLzll86E9aMpUuAcvhrfq1ysOLkBGOaeDoyY=;
+ b=VrVRfqAJGBH1TITFNnree6/Us9PYdMLtl0Qns75QqpclZGI12eTYgimDEbaQtaCmo5HyyCKqye4S
+ b9UycqxfAzF8HtZKL8jJJAmsAgmFG7MRjTlg8fqfD9DJ0646I32q
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
+ with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Reply-To: nikita.shubin@maquefel.me
 
-On Sun, Apr 07, 2024 at 10:01:49PM +0200, Christophe JAILLET wrote:
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index 3003dc350766..b133f731c5ba 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -204,7 +204,7 @@ static const struct debugfs_reg32 lvts_regs[] = {
->  
->  static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
->  {
-> -	struct debugfs_regset32 *regset;
-> +	struct debugfs_regset32 *regsets;
->  	struct lvts_ctrl *lvts_ctrl;
->  	struct dentry *dentry;
->  	char name[64];
-> @@ -214,8 +214,14 @@ static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
->  	if (IS_ERR(lvts_td->dom_dentry))
->  		return 0;
->  
-> +	regsets = devm_kcalloc(dev, lvts_td->num_lvts_ctrl,
-> +			       sizeof(*regsets), GFP_KERNEL);
-> +	if (!regsets)
-> +		return 0;
+The goal is to recieve ACKs.
 
-I understand that this preserved the behavior from the original code,
-but the original code was wrong.  This should return -ENOMEM.
+This is a fraction of v9 "ep93xx device tree conversion" series:
 
-> +
->  	for (i = 0; i < lvts_td->num_lvts_ctrl; i++) {
->  
-> +		struct debugfs_regset32 *regset = &regsets[i];
->  		lvts_ctrl = &lvts_td->lvts_ctrl[i];
+https://lore.kernel.org/all/20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me/
 
-The blank line should come after the declaration.
+The clk driver for ep93xx was converted to AUX device, as suggested
+originally by Stephen Boyd.
 
-regards,
-dan carpenter
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+Nikita Shubin (4):
+      ARM: ep93xx: add regmap aux_dev
+      clk: ep93xx: add DT support for Cirrus EP93xx
+      dt-bindings: soc: Add Cirrus EP93xx
+      soc: Add SoC driver for Cirrus ep93xx
+
+ .../bindings/arm/cirrus/cirrus,ep9301.yaml         |  38 +
+ .../bindings/soc/cirrus/cirrus,ep9301-syscon.yaml  |  94 +++
+ drivers/clk/Kconfig                                |   8 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/clk-ep93xx.c                           | 840 +++++++++++++++++++++
+ drivers/soc/Kconfig                                |   1 +
+ drivers/soc/Makefile                               |   1 +
+ drivers/soc/cirrus/Kconfig                         |  13 +
+ drivers/soc/cirrus/Makefile                        |   2 +
+ drivers/soc/cirrus/soc-ep93xx.c                    | 240 ++++++
+ include/dt-bindings/clock/cirrus,ep9301-syscon.h   |  46 ++
+ include/linux/soc/cirrus/ep93xx.h                  |  26 +
+ 12 files changed, 1310 insertions(+)
+---
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+change-id: 20240408-ep93xx-clk-657a1357de67
+
+Best regards,
+-- 
+Nikita Shubin <nikita.shubin@maquefel.me>
+
 
 
