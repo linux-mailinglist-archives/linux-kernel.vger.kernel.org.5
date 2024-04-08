@@ -1,110 +1,215 @@
-Return-Path: <linux-kernel+bounces-134836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A23E89B7A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:31:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C324D89B7A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:32:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5F86B222EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:31:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81AC1282BC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838001CAAC;
-	Mon,  8 Apr 2024 06:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34F51CAAC;
+	Mon,  8 Apr 2024 06:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T63G9lNy"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="EMK1a7eN"
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B1C1CD21
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:31:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B5D182C5;
+	Mon,  8 Apr 2024 06:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557874; cv=none; b=K2Uh8900dDmwAVw2RZSiCcxpa09APc8P7y8bgIpmrs1nBxNe9wfhrM7wc/NhjfJUE+5lsY2C43xSgq/Cq/qGkqbMoEz7C/CegFyVfGSYknigcjbDAU3GoWYLZjnQn4SejQy09njTrHSXmBxkybadmIqbnsOQJZ3ZWXP6VBVf+Mc=
+	t=1712557930; cv=none; b=kyzqqHrvFsUeBZhD4FpekhebRqzuG+DDCN834F7yLlPHYSeYbmj2Qs47gU6XrIliD7rZsbCrr3COCrBd66ha80Ug/V8UDAqXO56MrCyLHM2Op1mMJRCy82f0Ez3S48Pjyj7P/dY8RIMdOn4RXDhISva57mNxlJREyg6LcG33Jxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557874; c=relaxed/simple;
-	bh=QIczQJye6ulVbsUFMRnntvy0HYTn7yr5hZTeptv1VQA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lkXYO8C+U5QivczqtZ6dgtKJTWVbumSYU6tTwSvQcn6fShJb1VDWKd7I3nDv4ypdDlo06V7oNXwzbJtpCboVXziBd1jt5UOgpW/Cq0VIP9+L2rSKOeWP9LEOaF4hErlyljO6hyRcvG2KAV2qI96Ll/m1EbUZ+BfPzlEf/rzMVCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T63G9lNy; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d04fc04bso5898965e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712557871; x=1713162671; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9FiTVZTYX0KeQgSiuUnwPMRri9NFK7ss97QqAH2vahM=;
-        b=T63G9lNyXog2ViQ6R0cju//BiphRSyB3F+Tj3YHBF2W5S07gA01MwExsT/o2+WCgOs
-         FHZG3LOLL42WMJTr96nJQHhyVN090fW+xWqHC243NOw4jMIAEZv86CN9NcI8VNkGCyhC
-         JS2X5m0WA7A21JByUYXzkSfInVdJUWvaJZXSIuZZm2XuMlvpUvz6UN7qPZsFUvlYzl3k
-         DRXf+cn6Oqfb8/yHUYgckpAnf0/am5NdUAllA8iiodOnGBFGAl3Jou2d+DMDDxx7yc9e
-         IMiF5HnaBzmiu4dnNJ/FK3cfypfap5l1Oj1/5eIDM1e1RHhphRSloWedFH6UKxJOwFL1
-         It3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712557871; x=1713162671;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9FiTVZTYX0KeQgSiuUnwPMRri9NFK7ss97QqAH2vahM=;
-        b=iaS2UuAAoTHKXB2hp76GhBZUkwDQNdfLZkGIOqXtSFdgw/HS7mp+YJArXjCzUX1eFW
-         RTrQVqHwpMkH/MJc4JAb2//DHP/EBCUMwb+MomsV0j2x5De6pVa3nc5lz/U0XbX27SHN
-         MGo4l0ANBb/n23Y6/qi2SJ8U3vn8IRFYzSDYfWhxIKUQXYWD6mSKb5TdG5pIjXi1OIuA
-         cplteu4uBR/nvpqXjjKtRN05Bv6aYaXN1EYWrbZ9sq9IJEl+1hech3EJOH9A1EhVS6EQ
-         p7dOIQO76pmPd5ZpLxt4I8LvZPORx7S8QigJg1L2XZSmi53JEt4boSrITSiCc043jKck
-         j5jA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPiuP67r+Pdnu6FXoVxlqG7KPNw9VAnUJK6iQ2WtEKYJgXTmkPYwLMZamWGykyF2KaLgXsKmm4Gt5IeaVV0uIrMmAeDJRFGNezLBwQ
-X-Gm-Message-State: AOJu0YwbusnyIWMLsLoQQGTywRRr39ZdqQ386Osy5zPZjys+L46L0Su2
-	N0Jbph4AWJTvabuPpmbdjWp9HHAt+ba8FS7CCjXGyVQ3I3VsyXMDgcb5BuNqrHU=
-X-Google-Smtp-Source: AGHT+IEA6kG/jLzxIs8qEGxEX4HFyMOSTK+qrw+cqbwmL3oOUtFSjPH+UfGHY26kn1STJDpLm0t9kA==
-X-Received: by 2002:a05:6512:2387:b0:515:d176:dfd1 with SMTP id c7-20020a056512238700b00515d176dfd1mr8022020lfv.56.1712557871271;
-        Sun, 07 Apr 2024 23:31:11 -0700 (PDT)
-Received: from [192.168.69.100] ([176.176.144.67])
-        by smtp.gmail.com with ESMTPSA id gs44-20020a1709072d2c00b00a46a27794f6sm3975527ejc.123.2024.04.07.23.31.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 23:31:10 -0700 (PDT)
-Message-ID: <d1ad8803-16a9-4fd8-bc9c-8d38171a2554@linaro.org>
-Date: Mon, 8 Apr 2024 08:31:07 +0200
+	s=arc-20240116; t=1712557930; c=relaxed/simple;
+	bh=XwwgQRyoQELf3dRyU9eU2MR58r2rYRarWDZETjS7DEM=;
+	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type; b=Qe8ecqMZwRGnSrAgylzkMT8PMDfD2zdffevK4EBV4KZ/hyCIyTwl9K/twsy+s3eQ/HI0n8Yn7VgZ2mxVN0nu5PKNLVZYr5Qv8vA1EK3p5Q6AUAgVsK8BzDmwRUYe7NPiqVerNOdKfOowozfT+HqVMGGRoLBkHfOXh7Wo8mlJRvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=EMK1a7eN; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id B640382891;
+	Mon,  8 Apr 2024 02:32:02 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1712557922; bh=XwwgQRyoQELf3dRyU9eU2MR58r2rYRarWDZETjS7DEM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EMK1a7eNjICT7tH9Glwsje0GM4Pu38lDpYoFwVNR104pzhtJLlpTjmD4iSVqbPVLW
+	 kLbY+IdGBrSSfvBJlmo+8PmM5OOINM3krlzgykHiZxQCpsp2BUyDYvZCyEl2acutUc
+	 cJu67FA9lJwduBWfXVjqJplGt6jhQvJBpgJsw8MVvqOQ1OjQv8N5I19O6tBhQBn9PG
+	 FFHK9Q0wmSuqYZBHg/fGDNLewmHDTalfnhY/tc5qwHio8KIpwqN/VYzD0qkp5zxv5j
+	 c9pTxxEwp1669OZJ/RNxP9jf5HADgM36U+w0AuW1GzopoiWWgByf93c49qWp/U6sif
+	 YlEOXhCypQX2g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] KVM: remove unused argument of kvm_handle_hva_range()
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Nicholas Piggin <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>,
- Atish Patra <atishp@atishpatra.org>, Sean Christopherson
- <seanjc@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- kvm-riscv@lists.infradead.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240405115815.3226315-1-pbonzini@redhat.com>
- <20240405115815.3226315-3-pbonzini@redhat.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-In-Reply-To: <20240405115815.3226315-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Date: Mon, 08 Apr 2024 02:32:02 -0400
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To: Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhangjiachen.jaycee@bytedance.com
+Subject: Re: [PATCH] fuse: increase FUSE_MAX_MAX_PAGES limit
+Message-ID: <b4d801a442c71d064a6b2212d8d6f661@dorminy.me>
+X-Sender: sweettea-kernel@dorminy.me
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 5/4/24 13:58, Paolo Bonzini wrote:
-> The only user was kvm_mmu_notifier_change_pte(), which is now gone.
+
+On 2024-01-26 01:29, Jingbo Xu wrote:
+> On 1/24/24 8:47 PM, Jingbo Xu wrote:
+>> 
+>> 
+>> On 1/24/24 8:23 PM, Miklos Szeredi wrote:
+>>> On Wed, 24 Jan 2024 at 08:05, Jingbo Xu <jefflexu@linux.alibaba.com> 
+>>> wrote:
+>>>> 
+>>>> From: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>> 
+>>>> Increase FUSE_MAX_MAX_PAGES limit, so that the maximum data size of 
+>>>> a
+>>>> single request is increased.
+>>> 
+>>> The only worry is about where this memory is getting accounted to.
+>>> This needs to be thought through, since the we are increasing the
+>>> possible memory that an unprivileged user is allowed to pin.
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   virt/kvm/kvm_main.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
+> Apart from the request size, the maximum number of background requests,
+> i.e. max_background (12 by default, and configurable by the fuse
+> daemon), also limits the size of the memory that an unprivileged user
+> can pin.  But yes, it indeed increases the number proportionally by
+> increasing the maximum request size.
+> 
+> 
+>> 
+>>> 
+>>> 
+>>> 
+>>>> 
+>>>> This optimizes the write performance especially when the optimal IO 
+>>>> size
+>>>> of the backend store at the fuse daemon side is greater than the 
+>>>> original
+>>>> maximum request size (i.e. 1MB with 256 FUSE_MAX_MAX_PAGES and
+>>>> 4096 PAGE_SIZE).
+>>>> 
+>>>> Be noted that this only increases the upper limit of the maximum 
+>>>> request
+>>>> size, while the real maximum request size relies on the FUSE_INIT
+>>>> negotiation with the fuse daemon.
+>>>> 
+>>>> Signed-off-by: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+>>>> ---
+>>>> I'm not sure if 1024 is adequate for FUSE_MAX_MAX_PAGES, as the
+>>>> Bytedance floks seems to had increased the maximum request size to 
+>>>> 8M
+>>>> and saw a ~20% performance boost.
+>>> 
+>>> The 20% is against the 256 pages, I guess.
+>> 
+>> Yeah I guess so.
+>> 
+>> 
+>>> It would be interesting to
+>>> see the how the number of pages per request affects performance and
+>>> why.
+>> 
+>> To be honest, I'm not sure the root cause of the performance boost in
+>> bytedance's case.
+>> 
+>> While in our internal use scenario, the optimal IO size of the backend
+>> store at the fuse server side is, e.g. 4MB, and thus if the maximum
+>> throughput can not be achieved with current 256 pages per request. IOW
+>> the backend store, e.g. a distributed parallel filesystem, get optimal
+>> performance when the data is aligned at 4MB boundary.  I can ask my 
+>> folk
+>> who implements the fuse server to give more background info and the
+>> exact performance statistics.
+> 
+> Here are more details about our internal use case:
+> 
+> We have a fuse server used in our internal cloud scenarios, while the
+> backend store is actually a distributed filesystem.  That is, the fuse
+> server actually plays as the client of the remote distributed
+> filesystem.  The fuse server forwards the fuse requests to the remote
+> backing store through network, while the remote distributed filesystem
+> handles the IO requests, e.g. process the data from/to the persistent 
+> store.
+> 
+> Then it comes the details of the remote distributed filesystem when it
+> process the requested data with the persistent store.
+> 
+> [1] The remote distributed filesystem uses, e.g. a 8+3 mode, EC
+> (ErasureCode), where each fixed sized user data is split and stored as 
+> 8
+> data blocks plus 3 extra parity blocks. For example, with 512 bytes
+> block size, for each 4MB user data, it's split and stored as 8 (512
+> bytes) data blocks with 3 (512 bytes) parity blocks.
+> 
+> It also utilize the stripe technology to boost the performance, for
+> example, there are 8 data disks and 3 parity disks in the above 8+3 
+> mode
+> example, in which each stripe consists of 8 data blocks and 3 parity
+> blocks.
+> 
+> [2] To avoid data corruption on power off, the remote distributed
+> filesystem commit a O_SYNC write right away once a write (fuse) request
+> received.  Since the EC described above, when the write fuse request is
+> not aligned on 4MB (the stripe size) boundary, say it's 1MB in size, 
+> the
+> other 3MB is read from the persistent store first, then compute the
+> extra 3 parity blocks with the complete 4MB stripe, and finally write
+> the 8 data blocks and 3 parity blocks down.
+> 
+> 
+> Thus the write amplification is un-neglectable and is the performance
+> bottleneck when the fuse request size is less than the stripe size.
+> 
+> Here are some simple performance statistics with varying request size.
+> With 4MB stripe size, there's ~3x bandwidth improvement when the 
+> maximum
+> request size is increased from 256KB to 3.9MB, and another ~20%
+> improvement when the request size is increased to 4MB from 3.9MB.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+To add my own performance statistics in a microbenchmark:
 
+Tested on both small VM and large hardware, with suitably large 
+FUSE_MAX_MAX_PAGES, using a simple fuse filesystem whose write handlers 
+did basically nothing but read the data buffers (memcmp() each 8 bytes 
+of data provided against a variable), I ran fio with 128M blocksize, 
+end_fsync=1, psync IO engine, times each of 4 parallel jobs. Throughput 
+was as follows over variable write_size in MB/s.
+
+write_size  machine1 machine2
+32M	1071	6425
+16M	1002	6445
+8M	890	6443
+4M	713	6342
+2M	557	6290
+1M	404	6201
+512K	268	6041
+256K	156	5782
+
+Even on the fast machine, increasing the buffer size to 8M is worth 3.9% 
+over keeping it at 1M, and is worth over 2x on the small VM. We are 
+striving to reduce the ingestion speed in particular as we have seen 
+that as a limiting factor on some machines, and there's a clear plateau 
+reached around 8M. While most fuse servers would likely not benefit from 
+this, and others would benefit from fuse passthrough instead, it does 
+seem like a performance win.
+
+Perhaps, in analogy to soft and hard limits on pipe size, 
+FUSE_MAX_MAX_PAGES could be increased and treated as the maximum 
+possible hard limit for max_write; and the default hard limit could stay 
+at 1M, thereby allowing folks to opt into the new behavior if they care 
+about the performance more than the memory?
+
+Sweet Tea
 
