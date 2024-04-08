@@ -1,73 +1,64 @@
-Return-Path: <linux-kernel+bounces-134869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2A589B80F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:01:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924BB89B813
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC54B281BCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:01:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C37311C203A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8529A25622;
-	Mon,  8 Apr 2024 07:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CEC2561D;
+	Mon,  8 Apr 2024 07:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+oTm0h9"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QE9LnlOy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FF22554B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32841F93E;
+	Mon,  8 Apr 2024 07:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712559677; cv=none; b=TFE6A6is9QlpAZl5WwOJsgvhZfj0UYB3hPOPKkETh/Z/7yODPM+SwxIl3uGWRhK4bJ0WB/mBuzcldCRXrPqRoEhFkcpNj1ecyM2pM7INug81oj+yt6KGslGH6uVdJ6LHl6gc96TZ/paT479v27ldGNHoDsbw/valhEwOWyuauQQ=
+	t=1712559729; cv=none; b=jGAb9TtG2JV3Q8/LC158rh8WpUmjM5CsUMzVG7ISTLh/H9vzzF2D1Y8EQXNIwcmK60RrLU/BU6TUOIPI8+BJXK5avuXZ4xlaq92jU7qYwaTx3WLJxajidEgTzl4yeFadhlPuSszxpcRnZBFLAJmCa9ezFq/TVIbkJzVap+KZmdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712559677; c=relaxed/simple;
-	bh=nLsZRwx1i4MrD7mYj20l01ThXf/uHKnb3iNXZjBpzqE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VmzWPJqyVuPBnbDhhLpktTLFgxqtslLx/qYMmWDrEx2Ly+FKbSWXQpCC74rm/w7fxGkVGFVzn11tibdVMIV2qQioH6PTYN4oPsN15UnIR+mUXwoSMwsbbyRnDobhwMVINdZ32pM+p8vErQvqnNQw/ey5qVumfIcDfiIYDRs118A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+oTm0h9; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ecf3943040so2541770b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712559676; x=1713164476; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iipQgF147rj4hVuYbg8MCyDIn3mxGhNULOVGWWVLgmo=;
-        b=A+oTm0h9jfw2mRhEij9sXBBy+7+FuI5s/fyTQCc2hood9vCDHgpC1KxHbZzn3puzY0
-         hpdCiKd6+3EL08an2IJeJqOXJajw1M7lQ4mX5NJj+BPlWQNnO3/bZYGIKYmqGtHMRwRo
-         iXhW/VhFB9izH7EY7PcCuFI6uKF6eCeGFQO0VL51PX5QMZGgtvxOQAiNHADmudSut0fT
-         uLtFPlTy47vYMKS81jk0g98N3RhRGqeCGu3UFzKiPMhuG7Oi5i/iI4x4ENRZIwdFavJV
-         lme1g2HjbX/qyH7uDSgklMfobYFChs5GlKUZD42TGGdcAHXF9mifM6+8w1tiW1duDkVT
-         HsSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712559676; x=1713164476;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iipQgF147rj4hVuYbg8MCyDIn3mxGhNULOVGWWVLgmo=;
-        b=DGRTXAdoVz5DS5ekF6Pdeq0ek9T1P1Iq9ik7xoKioABanX4gtv11evykxUeKrouvj4
-         rlCkOW5Ea8gDnxG6f/bi8l0hd3LPcbPdbZdC2Ud5F7U0u/V7+TygmUbBGLF9k4qes9ZZ
-         vpIVrv/Wzr42o6DC/88mpRTBZfuqDxXsD0jAiWK22HSyWikU+0U96BQPLKPDWdo6SUnR
-         /sIeZro28J6r99dc858Q0UQuN9iaBsRv+T4gP2HydChPrCYmRMNlQOdTrgw5LteT4o8J
-         F31dZe5t+zDqbm97lXwti6/htBoNVRtIEJOnhAenjYQlmMzA6tYm7XHrDBCV1dPs2dmK
-         9+YQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWb5hgrwD22Ja0fpAHmbEuHBUgQpK3CcKvO5poBN/j8RMYqQZbje4BN0TgzO337LEdTHsKT228b/WlcIDq/6UeN601gdMEm5OldfZTj
-X-Gm-Message-State: AOJu0YyuHOMo2c48uk+Km+gMzzjv3CjK20YPllzKGByd+6qB2w12YVoy
-	oPaiDpKooMyrjCDGeKZmO5SycAXBtXhzxQVe98IKxtZ6hrnY5/1o
-X-Google-Smtp-Source: AGHT+IGO0HzM4Lj/0joZG14MyEbYD3f6xfjrVq1lXZMVNVQsccyijl9qF9j2y8TKRBMLAcRrGkuTLw==
-X-Received: by 2002:a05:6a00:c8b:b0:6ea:e2ed:497d with SMTP id a11-20020a056a000c8b00b006eae2ed497dmr7673437pfv.19.1712559675841;
-        Mon, 08 Apr 2024 00:01:15 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id u16-20020a056a00099000b006ed06c4074bsm4736772pfg.85.2024.04.08.00.01.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:01:15 -0700 (PDT)
-Message-ID: <f0ff6898-3704-4a46-8357-ce556037c1a9@gmail.com>
-Date: Mon, 8 Apr 2024 15:01:11 +0800
+	s=arc-20240116; t=1712559729; c=relaxed/simple;
+	bh=nSEOvxxKA2GkiOTXh/bLCcoY5ImyTca4m0G6OJ/4FZE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PRWVhq6ToJbQZTQiPT5mao9C9WbZgL2CKiDOMaNOIMRnRrYJWT0eoTHDzMd1wq1R1ztxIYag6nmvmOk5TixABYlnUJX4MZmHLUOeV2xk8jHSOCtJv2iuVf2HgpJGwN62XGFGHElztWytc650CGA+jmKA2gH9uQvFrkoMlA+mYLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QE9LnlOy; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712559728; x=1744095728;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=nSEOvxxKA2GkiOTXh/bLCcoY5ImyTca4m0G6OJ/4FZE=;
+  b=QE9LnlOy1yWboM1VC5fQEOhtf3fD0rN6RXMnbwXhGa69zrtWV6NWAtEm
+   vAn26S6Dq95anlODCRoKT9KPiMS+icnD4lzTJxA502LpjP6jcdjXTcqeD
+   DFBx4jxh/awyPKqkfDEy9qlc3ewzk5mOviv99Vw3Av3tW3NA8kxu8cAlv
+   2nm70igRP+TZ0hVs++ARNQXyAHSfkZF1ON0Ylb7HvwZNs139GiDX9LuYP
+   RaA1lmPRfDm3BWZfNMBQkIU7sJNTX2+4Ch6BfvJcHkHslU8xagNhlRbtR
+   8Sw835QcpmZpm24tAAeANA0G+ndYZ2vIZpt1Q1lw+Dp5tFV5jYy0tPsAg
+   A==;
+X-CSE-ConnectionGUID: uH8S54TpT429xTOulJO1cQ==
+X-CSE-MsgGUID: JXIgCJOPQC6L9USWNnRcnQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="8006073"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="8006073"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:02:02 -0700
+X-CSE-ConnectionGUID: zfaBaHyORCWFLPcV9OMNXw==
+X-CSE-MsgGUID: 1Pttfa8xS8mIEGJNZBiH8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="24526398"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.9.252]) ([10.238.9.252])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:01:58 -0700
+Message-ID: <2c62889c-2978-48bc-accb-8b83183bd1fa@linux.intel.com>
+Date: Mon, 8 Apr 2024 15:01:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,44 +66,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/14] mm/ksm: remove set_page_stable_node
-To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
- Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
- <aarcange@redhat.com>, Izik Eidus <izik.eidus@ravellosystems.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, ryncsn@gmail.com
-Cc: Hugh Dickins <hughd@google.com>, Chris Wright <chrisw@sous-sol.org>
-References: <20240325124904.398913-1-alexs@kernel.org>
- <20240325124904.398913-15-alexs@kernel.org>
- <43a5c133-b271-41b4-9b4f-a2de29b9f593@redhat.com>
-Content-Language: en-US
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <43a5c133-b271-41b4-9b4f-a2de29b9f593@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+From: Binbin Wu <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH v19 092/130] KVM: TDX: Implement interrupt injection
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b2d9539b23f155b95864db3eacce55e0e24eed4d.1708933498.git.isaku.yamahata@intel.com>
+In-Reply-To: <b2d9539b23f155b95864db3eacce55e0e24eed4d.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 4/5/24 5:07 PM, David Hildenbrand wrote:
-> On 25.03.24 13:49, alexs@kernel.org wrote:
->> From: "Alex Shi (tencent)" <alexs@kernel.org>
->>
->> Remove the func since all caller are gone. Also remove the
->> VM_BUG_ON_PAGE() because it's not applicable for a folio.
->>
->> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
->> To: linux-kernel@vger.kernel.org
->> To: linux-mm@kvack.org
->> To: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Hugh Dickins <hughd@google.com>
->> Cc: Chris Wright <chrisw@sous-sol.org>
->> ---
-> 
-> Also, best to just squash this and #13.
+On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata<isaku.yamahata@intel.com>
+>
+> TDX supports interrupt inject into vcpu with posted interrupt.  Wire up the
+> corresponding kvm x86 operations to posted interrupt.  Move
+> kvm_vcpu_trigger_posted_interrupt() from vmx.c to common.h to share the
+> code.
+>
+> VMX can inject interrupt by setting interrupt information field,
+> VM_ENTRY_INTR_INFO_FIELD, of VMCS.  TDX supports interrupt injection only
+> by posted interrupt.  Ignore the execution path to access
+> VM_ENTRY_INTR_INFO_FIELD.
+>
+> As cpu state is protected and apicv is enabled for the TDX guest, VMM can
+> inject interrupt by updating posted interrupt descriptor.  Treat interrupt
+> can be injected always.
+>
+> Signed-off-by: Isaku Yamahata<isaku.yamahata@intel.com>
+> Reviewed-by: Paolo Bonzini<pbonzini@redhat.com>
+> ---
+>   arch/x86/kvm/vmx/common.h      | 71 ++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/main.c        | 93 ++++++++++++++++++++++++++++++----
+>   arch/x86/kvm/vmx/posted_intr.c |  2 +-
+>   arch/x86/kvm/vmx/posted_intr.h |  2 +
+>   arch/x86/kvm/vmx/tdx.c         | 25 +++++++++
+>   arch/x86/kvm/vmx/vmx.c         | 67 +-----------------------
+>   arch/x86/kvm/vmx/x86_ops.h     |  7 ++-
+>   7 files changed, 190 insertions(+), 77 deletions(-)
+>
+[...]
+>   
+> +static void vt_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
+> +{
+> +	if (is_td_vcpu(vcpu))
+> +		return;
 
-Sure, it's better merge them.
-> 
+Please add a blank line.
+
+> +	vmx_set_interrupt_shadow(vcpu, mask);
+> +}
+> +
+[...]
+>   
+> @@ -848,6 +853,12 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
+>   
+>   	trace_kvm_entry(vcpu);
+>   
+> +	if (pi_test_on(&tdx->pi_desc)) {
+> +		apic->send_IPI_self(POSTED_INTR_VECTOR);
+> +
+> +		kvm_wait_lapic_expire(vcpu);
+As Chao pointed out, APIC timer change shouldn't be included in this patch.
+
+Maybe better to put the splitted patch closer to patch
+"KVM: x86: Assume timer IRQ was injected if APIC state is proteced"
+becasue they are related.
+
+> +	}
+> +
+>   	tdx_vcpu_enter_exit(tdx);
+>   
+>   	tdx_user_return_update_cache(vcpu);
+> @@ -1213,6 +1224,16 @@ static int tdx_sept_remove_private_spte(struct kvm *kvm, gfn_t gfn,
+>   	return tdx_sept_drop_private_spte(kvm, gfn, level, pfn);
+>   }
+>   
+[...]
 
