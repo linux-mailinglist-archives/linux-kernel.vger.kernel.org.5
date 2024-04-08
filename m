@@ -1,124 +1,111 @@
-Return-Path: <linux-kernel+bounces-135024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9C189BA10
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:22:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF6A89BA12
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 742761F22BD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:22:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A89F1C22699
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9C82E84F;
-	Mon,  8 Apr 2024 08:22:06 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AB837162;
+	Mon,  8 Apr 2024 08:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e284onaZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337BE2D796
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:22:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71CE383BF;
+	Mon,  8 Apr 2024 08:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712564525; cv=none; b=I+MYTGLINU0GDuCMilEBSjDCntRjj8P4VAGaYylBkJu0Cd2OP7CusCdIx32ZldzH9NTYIfhIoXbqE+oBlgoJ4LC0W75HK8Cdx1s9KmaAlSPEgyygx9ZK53L0eictOyCx0mi8ufylHpf7FWj+WWUQh623Ly+Bb+KXVEoSI4Dm8+Y=
+	t=1712564529; cv=none; b=Z4MpMX3yfEMeFWr2MJPKBVTlRqsYmdvc+mi0h7I4yHg01YHhGWmzZNT5XIEEio50XH+34w7YxjL7kTrRIEz4ExIFAlO8T0l+9SKoII1cHDg4BRWQiqP7gqyPBHF6YB+z1Zonsrjgv6sClQrfE0+//bd5xS2zShqJtguYX3dV9/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712564525; c=relaxed/simple;
-	bh=cMd1gwnz0UOQxewqSWZR27Y7MV3H7URencCBIZpFZ08=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PF7p2+5ZPGaqGZM/B6yB0L/NgDhF6uFsL0J4OCqN6a9LphWEG+8ks494LevfLKCfm8/xTK7bXwguTXAXX6WfbXIbbFCtzRLqnvg8rRN2tjaHRC0+MXgPDTcM9GQZ43UVjfHLEccfbDTGM77YeLuRegEF/nQz6kGM8pGsLsA1ElU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rtkGC-0005va-HW; Mon, 08 Apr 2024 10:21:48 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rtkGB-00B4mH-Hy; Mon, 08 Apr 2024 10:21:47 +0200
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rtkGB-0003Lx-1e;
-	Mon, 08 Apr 2024 10:21:47 +0200
-Message-ID: <f01cdd910ab35316b8012795f73fd2b34c8e6f8e.camel@pengutronix.de>
-Subject: Re: [RFC PATCH v2 1/5] clk: meson: axg: move reset controller's
- code to separate module
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Stephen Boyd <sboyd@kernel.org>, Jan Dakinevich
-	 <jan.dakinevich@salutedevices.com>, Jerome Brunet <jbrunet@baylibre.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette
- <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Kevin Hilman <khilman@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, 
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org
-Date: Mon, 08 Apr 2024 10:21:47 +0200
-In-Reply-To: <e3a85852b911fdf16dd9ae158f42b3ef.sboyd@kernel.org>
-References: <20240328010831.884487-1-jan.dakinevich@salutedevices.com>
-	 <20240328010831.884487-2-jan.dakinevich@salutedevices.com>
-	 <1j7chfiz8e.fsf@starbuckisacylon.baylibre.com>
-	 <e3a85852b911fdf16dd9ae158f42b3ef.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1712564529; c=relaxed/simple;
+	bh=B2Rx1fNaMKY8f98NWO2r36aff0MZPSma76qGnIBadfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VXGDewARgS31ygSKbWIjgZRsHQrYojWeMWmlKJ3SgI57ktlt1iBfTUdvBehdRcQ8m4Kvg+Etq/dQ19BB2D+5euvGy6updzt46uCM7W14hO5shyPfLSVfrf+5fwLwjicCSXeqFQHCtZNp5PAM6/89MzYsmIOZ4fSZ63vdIWGcXjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e284onaZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EEA1C43394;
+	Mon,  8 Apr 2024 08:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712564528;
+	bh=B2Rx1fNaMKY8f98NWO2r36aff0MZPSma76qGnIBadfk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e284onaZX2LtwvM446cRTc0bcql4r1CP8PHC2I5ZJ/0fwevJO+tsWZseQRDJes6n2
+	 BaxanYG/FCjHoIRXZ7TN7eHlcx/S10S1eXMPR4n5Zz85eOnw7Eh2LYeXIALdit1V5Z
+	 xr+0nymQFtercGFZfPoJ/DI3SjltKzi7RzfjJrOSNuqOh1FQpUhw2oZ7jpSFA5yBpL
+	 a0D7OmaBurZ/abxZ3o+6AutOvhOgGqub3F/FCU7dBb3eKD63e6B2DWgILftG31NGvk
+	 vRn7HCeaF8BgvCK9cJZkiRBEqT5F1KfaNmZte3L5UNhl1mDl9Jr+5NGZgukIv6MJs+
+	 /I5xkHCTrWB/Q==
+Date: Mon, 8 Apr 2024 09:22:04 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 0/6] riscv: add initial support for Canaan
+ Kendryte K230
+Message-ID: <20240408-trimester-pusher-720882202b9e@spud>
+References: <tencent_22BA0425B4DF1CA1713B62E4423C1BFBF809@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XQccMBluk0Im+Wo1"
+Content-Disposition: inline
+In-Reply-To: <tencent_22BA0425B4DF1CA1713B62E4423C1BFBF809@qq.com>
 
-On So, 2024-04-07 at 19:39 -0700, Stephen Boyd wrote:
-> Quoting Jerome Brunet (2024-04-02 07:52:38)
-> >=20
-> > On Thu 28 Mar 2024 at 04:08, Jan Dakinevich <jan.dakinevich@salutedevic=
-es.com> wrote:
-> >=20
-> > > This code will by reused by A1 SoC.
-> >=20
-> > Could expand a bit please ?
-> >=20
-> > >=20
-> > > Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> >=20
-> > In general, I like the idea.
-> >=20
-> > We do have a couple a reset registers lost in middle of clocks and this
-> > change makes it possible to re-use the code instead duplicating it.
-> >=20
-> > The exported function would be used by audio clock controllers, but the
-> > module created would be purely about reset.
-> >=20
-> > One may wonder how it ended up in the clock tree, especially since the
-> > kernel as a reset tree too.
-> >=20
-> > I'm not sure if this should move to the reset framework or if it would
-> > be an unnecessary churn. Stephen, Philipp, do you have an opinion on
-> > this ?
-> >=20
+
+--XQccMBluk0Im+Wo1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 08, 2024 at 12:26:58AM +0800, Yangyu Chen wrote:
+> K230 is an ideal chip for RISC-V Vector 1.0 evaluation now. Add initial
+> support for it to allow more people to participate in building drivers
+> to mainline for it.
 >=20
-> I'd prefer it be made into an auxiliary device and the driver put in
-> drivers/reset/ so we can keep reset code in the reset directory.
+> This kernel has been tested upon factory SDK [1] with
+> k230_evb_only_linux_defconfig and patched mainline opensbi [2] to skip
+> locked pmp and successfully booted to busybox on initrd with this log [3].
+>=20
+> Changes in resend v8:
+> - Add missing cc to lkml and linux-dt list and correct Krzysztof's address
+> - No change in content
 
-Seconded, the clk-mpfs/reset-mpfs and clk-starfive-jh7110-sys/reset-
-starfive-jh7110 drivers are examples of this.
+=46rom v6:
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+https://lore.kernel.org/linux-riscv/mhng-08e43080-8679-43f8-80c5-b73304e4e6=
+80@palmer-ri-x1c9/#t
 
-> The auxiliary device creation function can also be in the
-> drivers/reset/ directory so that the clk driver calls some function
-> to create and register the device.
+No need to resend for this alone, but if you do resend, please add that
+ack to all patches.
 
-I'm undecided about this, do you think mpfs_reset_controller_register()
-and jh7110_reset_controller_register() should rather live with the
-reset aux drivers in drivers/reset/ ?
+Cheers,
+Conor.
 
-regards
-Philipp
+--XQccMBluk0Im+Wo1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhOpKwAKCRB4tDGHoIJi
+0iN8AP4n+raany0JpQbFuEWJXAZCl6cajeGZNnjZguEGfmy4yAEA8cPhneIJ509I
+jVvZJAsAf8u5FhmXAOxmUaLDJ9NH+wM=
+=wz0I
+-----END PGP SIGNATURE-----
+
+--XQccMBluk0Im+Wo1--
 
