@@ -1,126 +1,147 @@
-Return-Path: <linux-kernel+bounces-134902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED0B289B86A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:31:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5D889B87B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:33:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57920B20F6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69C0E1F21DA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCAB2576E;
-	Mon,  8 Apr 2024 07:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2FC28DC1;
+	Mon,  8 Apr 2024 07:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xUeU27Sm"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H0U7uAH9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A282224B2F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1323F219F0
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712561470; cv=none; b=Ov7/j5L2P36S3ctmq+kODvvN+1XUE29Chnx/8GXKaAGGwy4tdlNW0soWLBhNGJKEy8zJRzvMevcLxh/tkl/RKPtTD4PTTvO59X9mz5i3EIhR3BMJB9jVsI1oTPK3GXaVDiwwgPp5AWexGaUBfbjKCeKRk5lI5RE5ME7Uw3Q9E30=
+	t=1712561608; cv=none; b=IXzG9OoiZvP+x8oQ1JHM/WkMbvQju/SlMykdtZMy2LHJwwC1hCJZJ3E3WtNmnJr9NcrJy7c3DXuL+pNv2EMu8/Zg3qJh/ucxrpdWpypBrofr6s1tJoWYBzaYiqqr+U+8Virzxvk88MdGslnYdefPaSBQ5r6kox0cgs1TFJvG3ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712561470; c=relaxed/simple;
-	bh=gvPPUa0vl7EbqiToeyDUXWTagIoF8MXRo9SBkPIbo3I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UrX57BoQ9JjOnZteTTkSCUb4HAEV5OcO6Db63ZjJqNBRGtDBbbEmn3QzuXUBB6eiwC1kJBZfRs5HDL3OM7zbtApnks3G+i14gN91whZuOB2sIb1ZpxGKVkQQ6x+fn10DjpshhBuYSy0PvOY/qgRr2bzaHvv+nZMGWdD15BtpXuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xUeU27Sm; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51b5633c9cso213606266b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712561467; x=1713166267; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=layzcbV9sKx4ytm9o4T1Bhv6Ti19VyFlFmhQB+yf+nU=;
-        b=xUeU27SmhaEZOKpMh+0h5WXXSsMFsbJobUZtzI0wcnlC1H2D4qEucZwy1LUJjrDgJb
-         ZwDGCDQZj1ErJMHkEyw7E3pKeyOksrW9RYc2sl7Uh03pFTqUUOv115nhWHfUnTUfuJeV
-         kJrBKxBA7vrt3jBQ8No10F3M1iw7qSimtp0ZRPLBV/sjg3xnMaV/jc3Jku9UjPpOZKTa
-         9jUQd4Nepb+qXL7Vac/Qzkyi01LuYA7TEn55Aavut0DALvul6Qa3Z7PnLbMwO2G2m7Xo
-         YanWWuB8+6QPYYRNlVlI+VIfuS5wymbPvO2Nr+/LaXkLc4J8TQjV4zJfuTwKNzyjFe6R
-         qgAg==
+	s=arc-20240116; t=1712561608; c=relaxed/simple;
+	bh=Ni7HvNm5U0I3Dy8ia12IlwiVKh7s5+qpbpTyHOdBxQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vc7RN2KfEXP3VT6himGKCJUdRJrX1qBA3QwmorM4W5tEGgvBcOeQLipYaicQqyy4N21RHTZwgIRFgJizdRmRSvJ+nNhzZNnYYCxZDKVnCQmPscinbR+scViO/v7IgrCRL1Zfp9yXN7Gzto+CXG812ldSkDcRr7qWHTr9psnNomE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H0U7uAH9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712561605;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T1ekjaOH/ZVs1uSejqLbBkJhchKKbAwLuZOoQubtwZA=;
+	b=H0U7uAH9gUwv6vCAM88dYFHoAsbNKqFHDLyjhCppSD1gvfjlSMU/DdTYpGneCEDCW3nW/G
+	1ZEVT1no5FUo4eWQ15m6f9H69OKvCjR/tc/iRp+KrBHbA9uO2VxhGaA1QVC/qfsgfPJmy2
+	XfpQxP5j40cXuHEebrlWnLuQDl/4YhE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-394-aDGwmsp_Pt-GwRrMRYWCYg-1; Mon, 08 Apr 2024 03:33:24 -0400
+X-MC-Unique: aDGwmsp_Pt-GwRrMRYWCYg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41663c713b7so3657955e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:33:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712561467; x=1713166267;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=layzcbV9sKx4ytm9o4T1Bhv6Ti19VyFlFmhQB+yf+nU=;
-        b=V7N/lqb30V8gzgl9xIjIM0KlX7ArPc8eJxj0RK9b/VYSQFIFcqTwNBCwHj5c+uS9i8
-         xTtTfWp7L4I2xuOqom3iSgD1aFL5qUN+twK19wLU0yfuzKGUIm6tvGHHxs1nAdAdlCxx
-         d2BFpXgt14hiksqgg+ADgk70vUlEFxd/I9cr8LjH9BKl8IqpuwmV2w1M1jlvCptUPIj8
-         B7H99t+hEJ7JBJBNYZu1oh0La6d7UO4GAhxXMDU6kuPuV9+rUjQd64kNmqeWoqOaCEbK
-         LRUe9zQr4TNx8HSfZkKsdB9hHDeW7D1x2kUf/i83BdYoSj6nDWVpPk9bUQsu7miM4N7E
-         GaMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIGVOVnkhHiUI2xJElA6muIcoaOrPhgAYfathqV62k4J6x/fILNnbBxRbRxs0QWdP1X8uPG+XvljdZByM2SZY0vdm9wyQft7HcLSJ6
-X-Gm-Message-State: AOJu0Yz4qoA5fTZkm/yNGzDpBkYOCjKyMaGHRmI1u6T2JRNkyD6n/8Aw
-	taxTFWLsXIG6aXSuG7WVfNPyPz91D/UZ0Fkxd0QxA+kXWgrFjfWV/uKCyQxu/pQ=
-X-Google-Smtp-Source: AGHT+IFROZVhMl9yTG+kjy+p2ZQnYlsNW6lszZjXW/K8pEvc08uSmVIEaO9mys2gBbNnSzYgwzngtQ==
-X-Received: by 2002:a17:906:f754:b0:a51:7a72:294d with SMTP id jp20-20020a170906f75400b00a517a72294dmr5206812ejb.2.1712561466991;
-        Mon, 08 Apr 2024 00:31:06 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id d3-20020a170906544300b00a4e48e52ecbsm4030508ejp.198.2024.04.08.00.31.05
+        d=1e100.net; s=20230601; t=1712561603; x=1713166403;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T1ekjaOH/ZVs1uSejqLbBkJhchKKbAwLuZOoQubtwZA=;
+        b=FvENA3GXM7gmYxU5/RKYB/0X+RmFLZReYdI256zlAqwH5W7oKxnt3wgw/anX1EliBA
+         Z1+YVjgGqapcRI6e2HeRgaUpenI5DyN4gM1s5pJt2xwp8eg9vLSwkpxfPnzRtBeSiLaN
+         Wgp2gFFJh0wQ7jkrQIyafOnVuLPZ8/vaoP+qQ68RcJ7axrqVsHD4dN0whyMwTTqXu0HB
+         KGrPtWkjW/NhXhiO6XYWt4UM0DkhAzxzxhHa+yUt4juDt3FYr0qSovUcSZbvCC+dxaoV
+         S+/LUksjgNwiQTJzYd7ZQxJXczhKIg+75Ju1f8SF6xD98opzl4S7w0tDQZ3/Meg+4Ae0
+         4WBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7GcCdimuLuWlH/G+wWZ9/AtVLj5ekjo0rLcuwAln9ypkZ6ut7WrngXaaMVO4OKYUkhxcmfsF/UUQ6wChoyU3pXqpVApxWueyPwkEj
+X-Gm-Message-State: AOJu0YxhzKO/0VZDqpZ+ZarJRhlP/q6DhwvERMtLwNk/Gxh++8FgsYy8
+	c4CyPk87C+TCH6+jEj43Vp+zElCPYbGD/WVF8u78ywIfKrWSKCuCaesps2ZGs6vnacnQnwf/+8B
+	bY12m9zypJYzc79RVgXsGqGKkk4kijPyOdZ6Ypl5Zk/aIA1bmzGRaGpL97hLGlg==
+X-Received: by 2002:a05:600c:450d:b0:416:389d:a4b6 with SMTP id t13-20020a05600c450d00b00416389da4b6mr5091677wmo.12.1712561603390;
+        Mon, 08 Apr 2024 00:33:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/SGjudmzbcPixdO5UefgKZZdV+4wdtz6qX0cmlw84R4F3NMtGUXyrFS0IXMbUAGBX/Ln24g==
+X-Received: by 2002:a05:600c:450d:b0:416:389d:a4b6 with SMTP id t13-20020a05600c450d00b00416389da4b6mr5091642wmo.12.1712561602800;
+        Mon, 08 Apr 2024 00:33:22 -0700 (PDT)
+Received: from redhat.com ([2.52.152.188])
+        by smtp.gmail.com with ESMTPSA id r19-20020a05600c35d300b004163345d2b4sm9448357wmq.36.2024.04.08.00.33.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 00:31:06 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Wei Xu <xuwei5@hisilicon.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jiancheng Xue <xuejiancheng@hisilicon.com>,
-	Alex Elder <elder@linaro.org>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Yang Xiwen <forbidden405@outlook.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] arm64: dts: hi3798cv200: fix GICR size, add cache info, maintenance irq and GICH, GICV spaces
-Date: Mon,  8 Apr 2024 09:31:03 +0200
-Message-Id: <171256140981.12523.5652563259173425537.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240219-cache-v3-0-a33c57534ae9@outlook.com>
-References: <20240219-cache-v3-0-a33c57534ae9@outlook.com>
+        Mon, 08 Apr 2024 00:33:22 -0700 (PDT)
+Date: Mon, 8 Apr 2024 03:33:19 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Gavin Shan <gshan@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	jasowang@redhat.com, will@kernel.org, davem@davemloft.net,
+	stefanha@redhat.com, sgarzare@redhat.com, keirf@google.com,
+	yihyu@redhat.com, shan.gavin@gmail.com
+Subject: Re: [PATCH v3 3/3] vhost: Improve vhost_get_avail_idx() with
+ smp_rmb()
+Message-ID: <20240408033143-mutt-send-email-mst@kernel.org>
+References: <20240328002149.1141302-1-gshan@redhat.com>
+ <20240328002149.1141302-4-gshan@redhat.com>
+ <20240328052814-mutt-send-email-mst@kernel.org>
+ <8faa07aa-d330-4e3f-95b7-26437d448beb@redhat.com>
+ <b41d65de-dc43-45f6-ba6c-ae722fbb70a8@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b41d65de-dc43-45f6-ba6c-ae722fbb70a8@redhat.com>
 
-
-On Mon, 19 Feb 2024 23:05:25 +0800, Yang Xiwen wrote:
-> The patchset fixes some warnings reported by the kernel during boot.
+On Mon, Apr 08, 2024 at 02:15:24PM +1000, Gavin Shan wrote:
+> Hi Michael,
 > 
-> The cache size info is from Processor_Datasheet_v2XX.pdf [1], Section
-> 2.2.1 Master Processor.
+> On 3/30/24 19:02, Gavin Shan wrote:
+> > On 3/28/24 19:31, Michael S. Tsirkin wrote:
+> > > On Thu, Mar 28, 2024 at 10:21:49AM +1000, Gavin Shan wrote:
+> > > > All the callers of vhost_get_avail_idx() are concerned to the memory
+> > > > barrier, imposed by smp_rmb() to ensure the order of the available
+> > > > ring entry read and avail_idx read.
+> > > > 
+> > > > Improve vhost_get_avail_idx() so that smp_rmb() is executed when
+> > > > the avail_idx is advanced. With it, the callers needn't to worry
+> > > > about the memory barrier.
+> > > > 
+> > > > Suggested-by: Michael S. Tsirkin <mst@redhat.com>
+> > > > Signed-off-by: Gavin Shan <gshan@redhat.com>
+> > > 
+> > > Previous patches are ok. This one I feel needs more work -
+> > > first more code such as sanity checking should go into
+> > > this function, second there's actually a difference
+> > > between comparing to last_avail_idx and just comparing
+> > > to the previous value of avail_idx.
+> > > I will pick patches 1-2 and post a cleanup on top so you can
+> > > take a look, ok?
+> > > 
+> > 
+> > Thanks, Michael. It's fine to me.
+> > 
 > 
-> The cache line size and the set-associative info are from Cortex-A53
-> Documentation [2].
+> A kindly ping.
 > 
-> [...]
+> If it's ok to you, could you please merge PATCH[1-2]? Our downstream
+> 9.4 need the fixes, especially for NVidia's grace-hopper and grace-grace
+> platforms.
+> 
+> For PATCH[3], I also can help with the improvement if you don't have time
+> for it. Please let me know.
+> 
+> Thanks,
+> Gavin
 
-It's rc3 and almost one month after last ping/talk, so apparently these got
-lost. I'll take them, but let me know if this should go via different tree.
+The thing to do is basically diff with the patch I wrote :)
+We can also do a bit more cleanups on top of *that*, like unifying
+error handling.
 
-
-Applied, thanks!
-
-[1/3] arm64: dts: hi3798cv200: fix the size of GICR
-      https://git.kernel.org/krzk/linux-dt/c/428a575dc9038846ad259466d5ba109858c0a023
-[2/3] arm64: dts: hi3798cv200: add GICH, GICV register space and irq
-      https://git.kernel.org/krzk/linux-dt/c/f00a6b9644a5668e25ad9ca5aff53b6de4b0aaf6
-[3/3] arm64: dts: hi3798cv200: add cache info
-      https://git.kernel.org/krzk/linux-dt/c/c7a3ad884d1dc1302dcc3295baa18917180b8bec
-
-Best regards,
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+MST
+
 
