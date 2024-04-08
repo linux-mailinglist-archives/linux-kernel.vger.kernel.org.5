@@ -1,88 +1,104 @@
-Return-Path: <linux-kernel+bounces-134679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 940B889B4E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:07:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE4189B4E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 02:13:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1A60B20F3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 00:07:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 745E61F21351
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 00:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4449F1E876;
-	Mon,  8 Apr 2024 00:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7280801;
+	Mon,  8 Apr 2024 00:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jAc7K/zC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sR0W7xEf"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6791DFC5;
-	Mon,  8 Apr 2024 00:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0764622;
+	Mon,  8 Apr 2024 00:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712534827; cv=none; b=gYAHT1U845Rl4nEp6NbwkyW+oG8KWCR9hU01dl1l+F1kMic1loh8UHtHh+EZJm6bQDy6AuywN2Plqw1H7ARYrdZnZgebKXOyIuMOGYGeX3KRAzVNhPwQ7DefSp7vpS/aTm6zwV4adij8CJApZ7ecsbi9EijqEMz0UveKKnlkjJQ=
+	t=1712535222; cv=none; b=a4l3BXi2R/e0ehtysRe9B39F5eGx9+fl++hjk+vYHMkL7G9+IDcQYoQyA9gpaCVhmgDMJypBtdweRG0S8OvJY9bohaGQIdUTxk7sE3VcWIE12GU63BaklG3u7nRZ4Yait2ad4FBIEdbe82LQLzEd3m9lrJD+6LpIt7uzNicxvrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712534827; c=relaxed/simple;
-	bh=4A6xrkkJR9Gpkc/uXFnyXfPY6mYgg2NhHzgcMzsviag=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sc7rjV5qbtvYGQlGpNkMgN1AoPIsVNIPMcr3WqNQmBMxLC232gN97fWjZl4JfeNsXf1pS9B8hKm8bGeJEaXd9L+GD2EcSo6yIBN4jWTizxN625V6RS5AI87ULgD5coWwt0mh29Pdw/TR/vJrtotGMksWs9KMa+dO0Cr/ypv9R7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jAc7K/zC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89728C433C7;
-	Mon,  8 Apr 2024 00:07:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712534826;
-	bh=4A6xrkkJR9Gpkc/uXFnyXfPY6mYgg2NhHzgcMzsviag=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jAc7K/zCHaVCzMj/rrqxnwJ/C7ghWjM4L3daMo8oa4RSKuW5cJK+rze9tp7hdlx3N
-	 YenELiKelk4K4OVezAmKQRF9GCbJvmlU1d2HNsQfnhHV8qCL49YD4UDBHb5qRlnYIa
-	 KH0y7yZbfOEffNzf+kz4Dqf7hElcYD+oGiiOM/wOCkX+aMHZ9aIeYxUbl2Fdf3bNPS
-	 XH9PcxvP+vCa42bRgwQreicjhICJ/02czQXwEJGkpVpo7fn2upTax3H1GzZieOzTXl
-	 WU4A5Wxy+yc9j7JP6421txn00+OmK5tnz1Z/q8KPZci3SQI7sltmWmmg+ll+ZDXOqV
-	 ShzmXcSE9R/Uw==
-Date: Sun, 7 Apr 2024 19:07:03 -0500
-From: Bjorn Andersson <andersson@kernel.org>
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Johan Hovold <johan@kernel.org>, 
-	David Collins <quic_collinsd@quicinc.com>, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v9 1/7] dt-bindings: spmi: Add X1E80100 SPMI PMIC ARB
- schema
-Message-ID: <fkwugrnak3fhkg5ig47kmy3edm45ut4dprkabntnwemjt3w2mb@7cak5zxwzw4p>
-References: <20240407-spmi-multi-master-support-v9-0-fa151c1391f3@linaro.org>
- <20240407-spmi-multi-master-support-v9-1-fa151c1391f3@linaro.org>
+	s=arc-20240116; t=1712535222; c=relaxed/simple;
+	bh=XxjzcsS90R2DrMSr2FSQSIefN4OFas3tYYbdo23GQF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Xy2Qm3n/dp+1KwMNVvRpmb8BQn2VQ+WH89cW5XDeW5rQ1Gxd26J79XZe0YLuIx05Fo7Rq8rlnHT26iTUCpRQaxlJF0TwulCi3ux+Hfp28V6f6jzkRcaJ3CjRrU2zLTOh5hlVfGQlljQCFmuJ+bFkj8xtzw3BQuhXbsqCvKkj8Tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sR0W7xEf; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712535215;
+	bh=uW3VpuewRB2t/+Lm0ouvbSww4oBuK72AAU7udP3fYYs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=sR0W7xEfVFCcIDOSyPHNy55MKaAaNvo/Hvl+XoC5K40i79uc3NvW1/76O1g0lMcif
+	 H+1WNrE+sonbZhKxy9qxK9ixf6lpvth4Z71eLRsFi6FfnBLGJZfpAGKsz5JYstJo3p
+	 CM0Bc7OUVuBSPxJ//4uKVO9iTY0lQGh11Cp6UxTtKFjmwoHmmbVwhDqEM7nEiyS0F3
+	 4L4TtkfVn2wAuk0ywWWokdqxDnqzUaO4LLlwDpiodr0LkOK/TXd1MpVm8xiCZ/u+rI
+	 fJXG9qRCJUcM+y+FMZwj3bnHqeHkX4VjVfx/HGVmCY4YYDRRpFgLFgeRhQkSosxEut
+	 uo0S1xq6ltMHQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VCV1V6SRqz4wd3;
+	Mon,  8 Apr 2024 10:13:34 +1000 (AEST)
+Date: Mon, 8 Apr 2024 10:13:33 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Huacai Chen <chenhuacai@loongson.cn>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the loongarch tree
+Message-ID: <20240408101333.67a8bf17@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407-spmi-multi-master-support-v9-1-fa151c1391f3@linaro.org>
+Content-Type: multipart/signed; boundary="Sig_/B+8m8XSXd9b0VabYLQfAuV.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, Apr 07, 2024 at 07:23:21PM +0300, Abel Vesa wrote:
-> Add dedicated schema for X1E80100 PMIC ARB (v7) as it allows multiple
-> buses by declaring them as child nodes.
-> 
+--Sig_/B+8m8XSXd9b0VabYLQfAuV.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But is this really a "dedicated schema for X1E80100"? Isn't it "the
-schema for all multi-bus controllers"?
+Hi all,
 
-I.e. isn't this a "dedicated schema for all platforms starting with
-SM8450"?
+The following commit is also in the mm tree as a different commit (but
+the same patch):
 
-Can you please use the commit message to document the actual reason why
-you choose to create a dedicated schema for this? Is it simply to avoid
-having to schema with either pmics or multiple buses as children?
+  27e361b5e171 ("LoongArch: Include linux/sizes.h in addrspace.h to prevent=
+ build errors")
 
-Regards,
-Bjorn
+this is commit
+
+  5d90c9735da8 ("fix-missing-vmalloch-includes-fix-3")
+
+in the mm-unstable branch of the mm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/B+8m8XSXd9b0VabYLQfAuV.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYTNq0ACgkQAVBC80lX
+0GyoDgf7BnP/w79EXLyUXCeSnbrT7YI7HW37rV6reMUu7O8oj8zLz2ezsKYPl6MX
+udwR6cDuWZnUD18jUtYLYMMeEC4ICVVwUs+Q3AYMmKMb6uyZQhzVQBcxEKLU+xcy
+wvOxEvG3vnqyBow6Pj6frC2iO2wV3jpw6OL36oPp8p35Dja90/z+ze/MQCEo4RlW
+a+qhZEvrNde6wNuvb3nD97gnbrQuob8G7yKrdA0sdy777bicHEpenIQQhOrk94LK
+6dNBc6rZXyHdp6eoaVo5sqff/NuXkP72ZsZKvF5ZE0RLRvfx6/wmwcWwMhnx88sD
+poWQPBxuJxisrhCbDtgdc2ksvQ28CA==
+=ze1a
+-----END PGP SIGNATURE-----
+
+--Sig_/B+8m8XSXd9b0VabYLQfAuV.--
 
