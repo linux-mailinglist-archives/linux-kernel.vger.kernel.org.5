@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-134927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B1189B8E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:46:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D927B89B8EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:46:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9708283CD2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:46:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A3681F2245B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED07381DF;
-	Mon,  8 Apr 2024 07:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B973C472;
+	Mon,  8 Apr 2024 07:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYuyjl1k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Md8j7xyW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6FF51C21;
-	Mon,  8 Apr 2024 07:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C86051C27;
+	Mon,  8 Apr 2024 07:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562146; cv=none; b=FwQg1Bzho2WUlzPOG9RjiDKJjxN43S7YgrX0kZ4FjZpZGFaddwDEjRztFSnuvMl4rb/KDmWHGFVSTPwx2foDIAnIP5Ual6cwMsSPoumxSjnZzKLLD4d1Z+aOUQ+QvDBXOwUmtu//pLgEYuLr7uhSDhhl1eaVizqOsXa1RtjkLSs=
+	t=1712562158; cv=none; b=b2B3UI8OrF1wynkmhGdEY608Ru2OVa4Z2JOt/oSNtRf2NA/vggW/Z37ZmOVJ7N2ZHD/yvgSIl/JJh3/57/TjYpd/Mr6rJVRql6yUAyiyluGSu8lIxp1enN2MOXXy4K2kG+4X7fvqtSQIp+5bBPVwhsRDfo9dKhh7j6Dq6hSkWQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562146; c=relaxed/simple;
-	bh=QhZSuSB35MoMs+hEr1m1W8wVl9HJVIJmATUKFn2Whi4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bzQiHyNmPLKEfBU6V/R/lsEVQTrz6IsjRRealmuNLKLcmOp+TUlLVFG9psfxE+0rI0k6/B2mg0K+LhUDmIGi21TzTqS6XmJic2MOSI8nKk+C/j+OUofjRETBVGi0miMq+d0UmDeSHnjVlmjxwM6S3n6L5JS5ifacWitZ88QxraQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYuyjl1k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D91C43390;
-	Mon,  8 Apr 2024 07:42:22 +0000 (UTC)
+	s=arc-20240116; t=1712562158; c=relaxed/simple;
+	bh=4XNXbnlu3pgIJgvcSWwVY2J6RQPD+Ti9vjQzVOe3IrY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ex36PuidR7EOZN9jIyBZNaktrjp+38A96ikgE4gM0p8vllt54l45ucGgSDQZlwc0/iOMwHk6eurItbQ1nC3/pLpdP36F1JOOUISogYJ5OhyMpuJzYP4TmBxpnIFvNDOHWj1mVuN3DY3iNz9klEb7i07tfFMPSC1wmo8Xd75+soo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Md8j7xyW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD9FFC433F1;
+	Mon,  8 Apr 2024 07:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712562145;
-	bh=QhZSuSB35MoMs+hEr1m1W8wVl9HJVIJmATUKFn2Whi4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GYuyjl1k7PzxB3Td7c9/D6mqAKqYgV6BQTSNzdVYylrzcV9Khtzn9Iv6koCaYagUP
-	 +t+1VgA6y2wKCcbD+op0GdRlHBfVcbKpCzgkPK7ftAdK18rCmUzdVR1uC9tDdTOcJn
-	 xu3PrbG1s6hVKwJq6yIwCO9svuq/jfgmkphMYPQEVol3ZFZ2Y6R2JY+m4hpFVl5NOd
-	 3EEjhNC5hxivcG3yEasSuaptJFNdM9e9oHCoVWxzeF0eOBnsIBLCiB17AvRe9eDDvQ
-	 OFlI7pWLgEQ54bDSj+GjZpNh6OgqshJZ77W6LWpR01xwFYUopNs3GBhake5/wk39J3
-	 O8uaoxgGqm0ow==
+	s=k20201202; t=1712562157;
+	bh=4XNXbnlu3pgIJgvcSWwVY2J6RQPD+Ti9vjQzVOe3IrY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Md8j7xyWDu2hiTGHgbgtFP8KZVoqBd3qX1u+RpjLbRY3uIKI5xKChshv/k8Cu7/pP
+	 R+1jwa7b/MyGLWhz/hl9+WInFEWDboqAZkerJ6pn9B67b4Tjm0c7I6UGVcvpXPZFJm
+	 hEBjYoBIhYD4yS+RAuzPNgYqvM87jk+FFGoTV7NhKWh+ZGdICUsNSFdc4L5rnwOaHj
+	 JBJQVPJxNfTZKmrsc7ROcpeM3ZS68YgBYGTL6WmkKprFcGtzEJuzDj+/1nYwK8pc4k
+	 jZxWkQfdiXJBh0DdntAtrZGmpF7uq5Hjn5Pn25CYvY81dHpZ4lgQ2SeMhq3zXhsKuX
+	 EsT+XBTKebS+A==
 From: Arnd Bergmann <arnd@kernel.org>
 To: "David S. Miller" <davem@davemloft.net>,
 	David Ahern <dsahern@kernel.org>,
@@ -46,18 +47,21 @@ To: "David S. Miller" <davem@davemloft.net>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Breno Leitao <leitao@debian.org>,
-	Kui-Feng Lee <thinker.li@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Ville Nuorvala <vnuorval@tcs.hut.fi>,
-	YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>,
+	Zhengchao Shao <shaozhengchao@huawei.com>,
+	Sriram Yagnaraman <sriram.yagnaraman@est.tech>,
+	Maxime Bizon <mbizon@freebox.fr>,
+	Joel Granados <joel.granados@gmail.com>,
+	Kyle Zeng <zengyhkyle@gmail.com>,
+	Beniamino Galvani <b.galvani@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ipv6: fib: hide unused 'pn' variable
-Date: Mon,  8 Apr 2024 09:42:02 +0200
-Message-Id: <20240408074219.3030256-1-arnd@kernel.org>
+Subject: [PATCH 2/2] ipv4/route: avoid unused-but-set-variable warning
+Date: Mon,  8 Apr 2024 09:42:03 +0200
+Message-Id: <20240408074219.3030256-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240408074219.3030256-1-arnd@kernel.org>
+References: <20240408074219.3030256-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,50 +72,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When CONFIG_IPV6_SUBTREES is disabled, the only user is hidden, causing
-a 'make W=1' warning:
+The log_martians variable is only used in an #ifdef, causing a 'make W=1'
+warning with gcc:
 
-net/ipv6/ip6_fib.c: In function 'fib6_add':
-net/ipv6/ip6_fib.c:1388:32: error: variable 'pn' set but not used [-Werror=unused-but-set-variable]
+net/ipv4/route.c: In function 'ip_rt_send_redirect':
+net/ipv4/route.c:880:13: error: variable 'log_martians' set but not used [-Werror=unused-but-set-variable]
 
-Add another #ifdef around the variable declaration, matching the other
-uses in this file.
+Change the #ifdef to an equivalent IS_ENABLED() to let the compiler
+see where the variable is used.
 
-Fixes: 66729e18df08 ("[IPV6] ROUTE: Make sure we have fn->leaf when adding a node on subtree.")
-Link: https://lore.kernel.org/netdev/20240322131746.904943-1-arnd@kernel.org/
+Fixes: 30038fc61adf ("net: ip_rt_send_redirect() optimization")
 Reviewed-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- net/ipv6/ip6_fib.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/ipv4/route.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index ddd8e3c2df4a..31d77885bcae 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -1386,7 +1386,10 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
- 	     struct nl_info *info, struct netlink_ext_ack *extack)
- {
- 	struct fib6_table *table = rt->fib6_table;
--	struct fib6_node *fn, *pn = NULL;
-+	struct fib6_node *fn;
-+#ifdef CONFIG_IPV6_SUBTREES
-+	struct fib6_node *pn = NULL;
-+#endif
- 	int err = -ENOMEM;
- 	int allow_create = 1;
- 	int replace_required = 0;
-@@ -1410,9 +1413,9 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
- 		goto out;
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index c8f76f56dc16..d36ace160d42 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -926,13 +926,11 @@ void ip_rt_send_redirect(struct sk_buff *skb)
+ 		icmp_send(skb, ICMP_REDIRECT, ICMP_REDIR_HOST, gw);
+ 		peer->rate_last = jiffies;
+ 		++peer->n_redirects;
+-#ifdef CONFIG_IP_ROUTE_VERBOSE
+-		if (log_martians &&
++		if (IS_ENABLED(CONFIG_IP_ROUTE_VERBOSE) && log_martians &&
+ 		    peer->n_redirects == ip_rt_redirect_number)
+ 			net_warn_ratelimited("host %pI4/if%d ignores redirects for %pI4 to %pI4\n",
+ 					     &ip_hdr(skb)->saddr, inet_iif(skb),
+ 					     &ip_hdr(skb)->daddr, &gw);
+-#endif
  	}
- 
-+#ifdef CONFIG_IPV6_SUBTREES
- 	pn = fn;
- 
--#ifdef CONFIG_IPV6_SUBTREES
- 	if (rt->fib6_src.plen) {
- 		struct fib6_node *sn;
- 
+ out_put_peer:
+ 	inet_putpeer(peer);
 -- 
 2.39.2
 
