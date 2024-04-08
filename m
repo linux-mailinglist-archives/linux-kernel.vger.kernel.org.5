@@ -1,175 +1,440 @@
-Return-Path: <linux-kernel+bounces-134933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D574E89B901
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:47:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525B289B907
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:48:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049ED1C22324
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:47:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD5D31F211D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EFD2CCA3;
-	Mon,  8 Apr 2024 07:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE1A4D110;
+	Mon,  8 Apr 2024 07:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iccnmVH6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rjWGhKU6"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67BF481BB
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E975F2D03B
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562266; cv=none; b=CaDZp1MwlRlac9ZfZn08dLtfilBMpwgeifeL9dprx1UQpo1tkB6StwSlyhO0YKHSB81aEFO421Up5V7a3jX+VNmmbKPsZLVlfmD2PY0hikHYEF5PW2tyIThzijriJtl6jjAk/dCScetsWHuDqzhKaVm5p+DnSKYUg6dGMbHEpBE=
+	t=1712562331; cv=none; b=hr/WagT5lA+qKwjB9Z6J3UnHB64M56QQzsp0Y2hd4syUe3DpbQk3J8vu4ps2r6Tf3U2Axy6rJdAXpbmLH4Fhpk9DCmhrzb+DT8YYj1itBKC1o6gdTMGkR5SywE70TSny/s59MbEVZmzsHyArmoJaOGP35ozRLHD+y96SoGuT9xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562266; c=relaxed/simple;
-	bh=JPA0yJP5QqZqrfapKPMKDjQJHy4vOb4yce5vCTt+O0s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ihnT1LmyEWTcgqDR7Flwp4rrmrc295dPRKFYwuIBBodDipenbmylhpoUmzYTomRxuR9m4rsX/476nZpvhZaNbC7t7HEOflXzoIbWI2mhsnjoGn+VX122xH23I0MarAriXhOFlCKYDeeVpv687hhQTf4whAhMn2W8F6TqWekW6W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iccnmVH6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712562263;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=M3XrUvn56UijqLfg1EQp0iLztinagyzYc4/8ZWkHKCo=;
-	b=iccnmVH6mhQu+a5pK1d5dQkEKJ/s1by+qYSKK0yMC7evhmmRhSKXy+an0dmCvR80K5YVeQ
-	meE78sbWnpvcbYqGO1uwKN3qwpqE7xW9cswQgb3qa9jD4vLAQ7pBGx/jbduEmnkXh2zvWw
-	YdbCb6W/cF1l+jv7d6kNqCOppL9/U0A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-43-gNMKRX0bOZaBYNqU8eUmcQ-1; Mon, 08 Apr 2024 03:44:22 -0400
-X-MC-Unique: gNMKRX0bOZaBYNqU8eUmcQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416612274e7so1787655e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:44:22 -0700 (PDT)
+	s=arc-20240116; t=1712562331; c=relaxed/simple;
+	bh=jJXfIWddi35UG/oL52cj2ushPCF4BAq92gOjRLTcBE4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=XKMgzqsrY9s7ZP5CyRP3U3hzFx++vZUBQxnhBepOKVB1fCgy1hwR5cqXWLvmVHjAFJmm/EDRTctld6TwqXCYGpSnJoyYV5giYWTnJlpsyzqrjYix1rrholZRWqx4UW0PIUDdJOqSvc4wgN0cOwhk7Y4LqkyfjpXFMHXbzgw6Pt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rjWGhKU6; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd169dd4183so5340678276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712562328; x=1713167128; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OI5KpRzYDF5XZutb93rKx61o7Q8cGyD5sfKXE5dAqr8=;
+        b=rjWGhKU69t7l0xyear2YyJmigRTBKfrDQQ04iYXmQJFFw5o3Tu3jFuT06d4AWV8SfM
+         kUXWpDa3hiWOS7stim9zbm2PXnGyXKk0kiiLChLIZjAnvEAdcPGPKAKcAVuukUZuJtlD
+         oblEC/7iNbA4Cct5cpjySnL8ssKgYNcvXRSkumI40k0LwJaEFdLyLfdXSpX92DpRkLAS
+         35fX/r+cDCBaRPsG40tlPv+09RfdYlRw5uflXdY44mNrIi58+mNexDhxeB8Sw0uahVYv
+         IZCu9lO7r5ymVxJr/XLntGEkqldNeaMrbcUSatQYOucKyOOiJdFcxaLGlzoosmvwVFHW
+         Nlkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712562261; x=1713167061;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M3XrUvn56UijqLfg1EQp0iLztinagyzYc4/8ZWkHKCo=;
-        b=bAaRNLKwSgP9cgs7Tlk7uQpnejfzlMg3lvG44XGFyWfjPV07dkLjRxf/O1H+LzjoH8
-         xbJFLaY7Fo5q6N4DK6yRFGZinebFpWgQpcn/jon2yqmhRa3AT5L2IJIV3O9+CkiRtZdO
-         8it3ujcl7BeSG13gORCFpyh2KgHJ7Nmpxvsgjz7gkOPpCh4ZbPmFzdXZ9WCaRTYFIuUS
-         zJ2USFnCJBT4Ccum7EExi4LD55L8pJPOWx8C8h7TMpgTESutR3d4gYWWzYhcYpNq8Vlb
-         PDqZ8GaUSf9jmMDGn3X4g5rrEFwPSPF772+ZsoPc0p3YzBRGVR9COsoQDRXe84etNn+R
-         FUBQ==
-X-Gm-Message-State: AOJu0YzS18+UtSoopRgIhQTGNvhQGiu94WlFO/+KQwOuLtLeYn4TJKt5
-	7C3XXn4ONi4tG1i0IYL5U90JBcWiX/2dT6eNIRdvuby4GfFUVk4rQg9SqhsdhiDRdrtoutgChvq
-	2QRxcUNTOwHE6G7k3X7R3ZpZbfiYg3+CjD8Jwog+6BNWWyqMiN5g2NZbsb6d44w==
-X-Received: by 2002:a05:600c:4506:b0:414:56ec:22e7 with SMTP id t6-20020a05600c450600b0041456ec22e7mr6019627wmo.21.1712562261270;
-        Mon, 08 Apr 2024 00:44:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmacyacz5MJG/SicWG11fdsTuvTk/gi5zfBY36JmAEpCx15RoAfYjuXal36C5vz8BeSfptvA==
-X-Received: by 2002:a05:600c:4506:b0:414:56ec:22e7 with SMTP id t6-20020a05600c450600b0041456ec22e7mr6019610wmo.21.1712562260868;
-        Mon, 08 Apr 2024 00:44:20 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c718:1300:9860:66a2:fe4d:c379? (p200300cbc7181300986066a2fe4dc379.dip0.t-ipconnect.de. [2003:cb:c718:1300:9860:66a2:fe4d:c379])
-        by smtp.gmail.com with ESMTPSA id v19-20020a05600c471300b004157ff88ad7sm12426642wmo.7.2024.04.08.00.44.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 00:44:20 -0700 (PDT)
-Message-ID: <669695d1-b374-4a2e-9f8e-1bf95725ba70@redhat.com>
-Date: Mon, 8 Apr 2024 09:44:19 +0200
+        d=1e100.net; s=20230601; t=1712562328; x=1713167128;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OI5KpRzYDF5XZutb93rKx61o7Q8cGyD5sfKXE5dAqr8=;
+        b=k7bhSlf/vbUij8y9aI/biKZr9g6E92keNcqbes2jtX7RXlZE3EPvbZmwXbZbkRIJwD
+         VQs/EDHyGdtkpBTkaCQZk6qUl2M/roJH5ScqhSFJbQeesJr0t2EwynKK8WrOBesT3zJM
+         6oEWy0n3kMzLjFua4f/AvseNorbq5wZAG3PapWst25HUxG+0+ZAbwy4BJS69ZS21IFEd
+         v+ysHJztd4T9rEmfiE95lXmt8OGU6U0bJUOzXB//WiCmgd2zLfeMc16hzy7NVLzSY0XR
+         ECd0ZD6urBoyo6Cz27zqWTqZSw8RIgJUloMzv1dYWVKc3k0VhtbdxuJSBsS2T8ZlTZIV
+         vaxA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ6v9bKcXS6V+32j5IhDaPhMmWAKVvmDJBkd+nQgi55dOK/se82cfak7ZcKWpscGmjhmnsucspjpgWCbApubINFOKhShDx2eumYhzr
+X-Gm-Message-State: AOJu0YxvHpgqxDNNSE0ULrgJjoPPhPtkykRqRHnWniLwtRzjCK1dN9Dk
+	i+gGNzhEjCiN6ZWw1zlQb+wRjnncc4yu2p/sYXe3a1vh50WQ8o/rZeqhsURNSBodzNTXRxPGZfg
+	h1anTAhCfWHeKbg==
+X-Google-Smtp-Source: AGHT+IHdL/aZamLg8UjszehMa3RrNVFmJ45XWHdjs/i9WmXXqcUrK0l1RcJc3xNBcaOPf7ZwAvcBlZJk1V+pf6U=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a25:aca4:0:b0:dcc:94b7:a7a3 with SMTP id
+ x36-20020a25aca4000000b00dcc94b7a7a3mr650814ybi.12.1712562327891; Mon, 08 Apr
+ 2024 00:45:27 -0700 (PDT)
+Date: Mon,  8 Apr 2024 07:45:24 +0000
+In-Reply-To: <20240403-wohnort-flausen-748cb8b436af@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm,swapops: Update check in is_pfn_swap_entry for
- hwpoison entries
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Miaohe Lin <linmiaohe@huawei.com>, Peter Xu <peterx@redhat.com>,
- stable@vger.kernel.org, Tony Luck <tony.luck@intel.com>
-References: <20240407130537.16977-1-osalvador@suse.de>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240407130537.16977-1-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240403-wohnort-flausen-748cb8b436af@brauner>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240408074524.981052-1-aliceryhl@google.com>
+Subject: Re: [PATCH v5 3/9] rust: file: add Rust abstraction for `struct file`
+From: Alice Ryhl <aliceryhl@google.com>
+To: brauner@kernel.org
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
+	arve@android.com, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, cmllamas@google.com, dan.j.williams@intel.com, 
+	dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org, 
+	joel@joelfernandes.org, keescook@chromium.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org, 
+	peterz@infradead.org, rust-for-linux@vger.kernel.org, surenb@google.com, 
+	tglx@linutronix.de, tkjos@android.com, tmgross@umich.edu, 
+	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org, 
+	yakoyoku@gmail.com
+Content-Type: text/plain; charset="utf-8"
 
-On 07.04.24 15:05, Oscar Salvador wrote:
-> Tony reported that the Machine check recovery was broken in v6.9-rc1,
-> as he was hitting a VM_BUG_ON when injecting uncorrectable memory errors
-> to DRAM.
-> After some more digging and debugging on his side, he realized that this
-> went back to v6.1, with the introduction of 'commit 0d206b5d2e0d ("mm/swap: add
-> swp_offset_pfn() to fetch PFN from swap entry")'.
-> That commit, among other things, introduced swp_offset_pfn(), replacing
-> hwpoison_entry_to_pfn() in its favour.
+Christian Brauner <brauner@kernel.org> wrote:
+> On Tue, Apr 02, 2024 at 09:39:57AM +0000, Alice Ryhl wrote:
+>> Christian Brauner <brauner@kernel.org> wrote:
+>>> On Mon, Apr 01, 2024 at 12:09:08PM +0000, Alice Ryhl wrote:
+>>>> Christian Brauner <brauner@kernel.org> wrote:
+>>>>> On Wed, Mar 20, 2024 at 06:09:05PM +0000, Alice Ryhl wrote:
+>>>>>> Christian Brauner <brauner@kernel.org> wrote:
+>>>>>>> On Fri, Feb 09, 2024 at 11:18:16AM +0000, Alice Ryhl wrote:
+>>>>>>>> +/// Wraps the kernel's `struct file`.
+>>>>>>>> +///
+>>>>>>>> +/// This represents an open file rather than a file on a filesystem. Processes generally reference
+>>>>>>>> +/// open files using file descriptors. However, file descriptors are not the same as files. A file
+>>>>>>>> +/// descriptor is just an integer that corresponds to a file, and a single file may be referenced
+>>>>>>>> +/// by multiple file descriptors.
+>>>>>>>> +///
+>>>>>>>> +/// # Refcounting
+>>>>>>>> +///
+>>>>>>>> +/// Instances of this type are reference-counted. The reference count is incremented by the
+>>>>>>>> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type `ARef<File>` represents a
+>>>>>>>> +/// pointer that owns a reference count on the file.
+>>>>>>>> +///
+>>>>>>>> +/// Whenever a process opens a file descriptor (fd), it stores a pointer to the file in its `struct
+>>>>>>>> +/// files_struct`. This pointer owns a reference count to the file, ensuring the file isn't
+>>>>>>>> +/// prematurely deleted while the file descriptor is open. In Rust terminology, the pointers in
+>>>>>>>> +/// `struct files_struct` are `ARef<File>` pointers.
+>>>>>>>> +///
+>>>>>>>> +/// ## Light refcounts
+>>>>>>>> +///
+>>>>>>>> +/// Whenever a process has an fd to a file, it may use something called a "light refcount" as a
+>>>>>>>> +/// performance optimization. Light refcounts are acquired by calling `fdget` and released with
+>>>>>>>> +/// `fdput`. The idea behind light refcounts is that if the fd is not closed between the calls to
+>>>>>>>> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that time, as the `struct
+>>>>>>>> +/// files_struct` holds a reference until the fd is closed. This means that it's safe to access the
+>>>>>>>> +/// file even if `fdget` does not increment the refcount.
+>>>>>>>> +///
+>>>>>>>> +/// The requirement that the fd is not closed during a light refcount applies globally across all
+>>>>>>>> +/// threads - not just on the thread using the light refcount. For this reason, light refcounts are
+>>>>>>>> +/// only used when the `struct files_struct` is not shared with other threads, since this ensures
+>>>>>>>> +/// that other unrelated threads cannot suddenly start using the fd and close it. Therefore,
+>>>>>>>> +/// calling `fdget` on a shared `struct files_struct` creates a normal refcount instead of a light
+>>>>>>>> +/// refcount.
+>>>>>>> 
+>>>>>>> When the fdget() calling task doesn't have a shared file descriptor
+>>>>>>> table fdget() will not increment the reference count, yes. This
+>>>>>>> also implies that you cannot have task A use fdget() and then pass
+>>>>>>> f.file to task B that holds on to it while A returns to userspace. It's
+>>>>>>> irrelevant that task A won't drop the reference count or that task B
+>>>>>>> won't drop the reference count. Because task A could return back to
+>>>>>>> userspace and immediately close the fd via a regular close() system call
+>>>>>>> at which point task B has a UAF. In other words a file that has been
+>>>>>>> gotten via fdget() can't be Send to another task without the Send
+>>>>>>> implying taking a reference to it.
+>>>>>> 
+>>>>>> That matches my understanding.
+>>>>>> 
+>>>>>> I suppose that technically you can still send it to another thread *if* you
+>>>>>> ensure that the current thread waits until that other thread stops using the
+>>>>>> file before returning to userspace.
+>>>>> 
+>>>>> _Technically_ yes, but it would be brittle as hell. The problem is that
+>>>>> fdget() _relies_ on being single-threaded for the time that fd is used
+>>>>> until fdput(). There's locking assumptions that build on that e.g., for
+>>>>> concurrent read/write. So no, that shouldn't be allowed.
+>>>>> 
+>>>>> Look at how this broke our back when we introduced pidfd_getfd() where
+>>>>> we steal an fd from another task. I have a lengthy explanation how that
+>>>>> can be used to violate our elided-locking which is based on assuming
+>>>>> that we're always single-threaded and the file can't be suddenly shared
+>>>>> with another task. So maybe doable but it would make the semantics even
+>>>>> more intricate.
+>>>> 
+>>>> Hmm, the part about elided locking is surprising to me, and may be an
+>>>> issue. Can you give more details on that?  Because the current
+>>> 
+>>> So what I referred to was that we do have fdget_pos(). Roughly, if
+>>> there's more than one reference on the file then we need to acquire a
+>>> mutex but if it's only a single reference then we can avoid taking the
+>>> mutex because we know that we're the only one that has a reference to
+>>> that file and no one else can acquire one. Whether or not that mutex was
+>>> taken is taken track of in struct fd.
+>>> 
+>>> So you can't share a file after fdget_pos() has been called on it and
+>>> you haven't taken the position mutex. So let's say you had:
+>>> 
+>>> * Tread A that calls fdget_pos() on file1 and the reference count is
+>>>   one. So Thread A doesn't acquire the file position mutex for file1.
+>>> * Now somehow that file1 becomes shared, e.g., Thread B calls fget() on
+>>>   it and now Thread B does some operation that requires the file
+>>>   position mutex.
+>>> => Thread A and Thread B race on the file position.
+>>> 
+>>> So just because you have a reference to a file from somewhere it doesn't
+>>> mean you can just share it with another thread.
+>>> 
+>>> So if yo have an arbitrary reference to a file in Rust and that somehow
+>>> can be shared with another thread you risk races here.
+>>> 
+>>>> abstractions here *do* actually allow what I described, since we
+>>>> implement Sync for File.
+>>>> 
+>>>> I'm not familiar with the pidfd_getfd discussion you are referring to.
+>>>> Do you have a link?
+>>> 
+>>> https://lore.kernel.org/linux-fsdevel/20230724-vfs-fdget_pos-v1-1-a4abfd7103f3@kernel.org
+>>> 
+>>> pidfd_getfd() can be used to steal a file descriptor from another task.
+>>> It's like a non-cooperative SCM_RIGHTS. That means you can have exactly
+>>> the scenario described above where a file assumed to be non-shared is
+>>> suddenly shared and you have racing reads/writes.
+>>> 
+>>> For readdir we nowadays always take the file position mutex because of
+>>> the pidfd_getfd() business because that might corrupt internal state.
+>>> 
+>>>> 
+>>>> I'm thinking that we may have to provide two different `struct file`
+>>>> wrappers to accurately model this API in Rust. Perhaps they could be
+>>>> called File and LocalFile, where one is marked as thread safe and the
+>>>> other isn't. I can make all LocalFile methods available on File to avoid
+>>>> having to duplicate methods that are available on both.
+>>> 
+>>> But isn't that just struct file and struct fd? Ideally we'd stay close
+>>> to something like this.
+>> 
+>> Right, that kind of naming seems sensible. But I still need to
+>> understand the details a bit better. See below on fdget_pos.
+>> 
+>>>> But it's not clear to me that this is even enough. Even if we give you a
+>>>> &LocalFile to prevent you from moving it across threads, you can just
+>>>> call File::fget to get an ARef<File> to the same file and then move
+>>>> *that* across threads.
+>>> 
+>>> Yes, absolutely.
+>> 
+>> One of my challenges is that Binder wants to call File::fget,
+>> immediately move it to another thread, and then call fd_install. And
+>> it would be pretty unfortunate if that requires unsafe. But like I argue
+>> below, it seems hard to design a safe API for this in the face of
+>> fdget_pos.
+>> 
+>>>> This kind of global requirement is not so easy to model. Maybe klint [1]
+>>>> could do it ... atomic context violations are a similar kind of global
+>>>> check. But having klint do it would be far out.
+>>>> 
+>>>> Or maybe File::fget should also return a LocalFile?
+>>>> 
+>>>> But this raises a different question to me. Let's say process A uses
+>>>> Binder to send its own fd to process B, and the following things happen:
+>>>> 
+>>>> 1. Process A enters the ioctl and takes fdget on the fd.
+>>>> 2. Process A calls fget on the same fd to send it to another process.
+>>>> 3. Process A goes to sleep, waiting for process B to respond.
+>>>> 4. Process B receives the message, installs the fd, and returns to userspace.
+>>>> 5. Process B responds to the transaction, but does not close the fd.
+>>> 
+>>> The fd just installed in 4. and the fd you're referring to in 5. are
+>>> identical, right? IOW, we're not talking about two different fd (dup)
+>>> for the same file, right?
+>> 
+>> I'm referring to whatever fd_install does given the `struct file` I got
+>> from fget in step 2.
+>> 
+>>>> 6a. Process A finishes sleeping, and returns to userspace from the ioctl.
+>>>> 6b. Process B tries to do an operation (e.g. read) on the fd.
+>>>> 
+>>>> Let's say that 6a and 6b run in parallel.
+>>>> 
+>>>> Could this potentially result in a data race between step 6a and 6b? I'm
+>>>> guessing that step 6a probably doesn't touch any of the code that has
+>>>> elided locking assumptions, so in practice I guess there's not a problem
+>>>> ... but if you make any sort of elided locking assumption as you exit
+>>>> from the ioctl (before reaching the fdput), then it seems to me that you
+>>>> have a problem.
+>>> 
+>>> Yes, 6a doesn't touch any code that has elided locking assumptions.
+>>> 
+>>> 1'.  Process A enters the ioctl and takes fdget() on the fd. Process A
+>>>      holds the only reference to that file and the file descriptor table
+>>>      isn't shared. Therefore, f_count is left untouched and remains at 1.
+>>> 2'.  Process A calls fget() which unconditionally bumps f_count bringing
+>>>      it to 2 and sending it another process (Presumably you intend to
+>>>      imply that this reference is now owned by the second process.).
+>>> 3'.  [as 3.]
+>>> 4'.  Process B installs the file into it's file descriptor table
+>>>      consuming that reference from 2'. The f_count remains at 2 with the
+>>>      reference from 2' now being owned by Process B.
+>>> 5'.  Since Process B isn't closing the fd and has just called
+>>>      fd_install() it returns to userspace with f_count untouched and
+>>>      still at 2.
+>>> 6'a. Process A finishes sleeping and returns to userspace calling
+>>>      fdput(). Since the original fdget() was done without bumping the
+>>>      reference count the fdput() of Process A will not decrement the
+>>>      reference count. So f_count remains at 2.
+>>> 6'b. Process B performs a read/write syscall and calls fdget_pos().
+>>>      fdget_pos() sees that this file has f_count > 1 and takes the
+>>>      file position mutex.
+>>> 
+>>> So this isn't a problem. The problem is when a file becomes shared
+>>> implicitly without the original owner of the file knowing.
+>> 
+>> Hmm. Yes, but the ioctl code that called fdget doesn't really know that
+>> the ioctl shared the file? So why is it okay?
 > 
-> The patch also introduced a VM_BUG_ON() check for is_pfn_swap_entry(),
-> but is_pfn_swap_entry() never got updated to cover hwpoison entries, which
-> means that we would hit the VM_BUG_ON whenever we would call
-> swp_offset_pfn() for such entries on environments with CONFIG_DEBUG_VM set.
-> Fix this by updating the check to cover hwpoison entries as well, and update
-> the comment while we are it.
+> Why does it matter to the ioctl() code itself? The ioctl() code never
+> calls fdget_pos().
 > 
-> Reported-by: Tony Luck <tony.luck@intel.com>
-> Closes: https://lore.kernel.org/all/Zg8kLSl2yAlA3o5D@agluck-desk3/
-> Tested-by: Tony Luck <tony.luck@intel.com>
-> Fixes: 0d206b5d2e0d ("mm/swap: add swp_offset_pfn() to fetch PFN from swap entry")
-> Cc: <stable@vger.kernel.org> # 6.1.x
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
+>> 
+>> It really seems like there are two different things going on here. When
+>> it comes to fdget, we only really care about operations that could
+>> remove it from the local file descriptor table, since fdget relies on
+>> the refcount in that table remaining valid until fdput.
+> 
+> Yes.
+> 
+>> 
+>> On the other hand, for fdget_pos it also matters whether it gets
+>> installed in other file descriptor tables. Threads that reference it
+>> through a different fd table will still access the same position.
+> 
+> Yes, they operate on the same f_pos.
+> 
+>> 
+>> And so this means that between fdget/fdput, there's never any problem
+>> with installing the `struct file` into another file descriptor table.
+>> Nothing you can do from that other fd table could cause the local fd
+>> table to drop its refcount on the file. Whereas such an install can be
+>> a problem between fdget_pos/fdput_pos, since that could introduce a race
+>> on the position.
+>> 
+>> Is this correct?
+> 
+> Yes, but that would imply you're sharing and installing a file into a
+> file descriptor table from a read/write/seek codepath. I don't see how
+> this can happen without something like e.g., pidfd_getfd(). And the
+> fd_install()ing task would then have to go back to userspace and issue a
+> concurrent read/write/seek system call while the other thread is still
+> reading/writing.
+> 
+> Overall, we really only care about f_pos consistency because posix
+> requires atomicity between reads/writes/seeks. For pidfd_getfd() where
+> such sharing can happen non-cooperatively we just don't care as we've
+> just declared this to be an instance where we're outside of posix
+> guarantees. And for readdir() we unconditionally acquire the mutex.
+> 
+> I think io_uring is racing on f_pos as well under certain circumstances
+> (REQ_F_CUR_POS?) as they don't use fdget_pos() at all. But iirc Jens
+> dislikes that they ever allowed that.
+> 
+>> 
+>> I was thinking that if we have some sort of File/LocalFile distinction
+>> (or File/Fd), then we may be able to get it to work by limiting what a
+>> File can do. For example, let's say that the only thing you can do with
+>> a File is install it into fd tables, then by the previous logic, there's
+>> no problem with it being safe to move across threads even if there's an
+>> active fdget.
+>> 
+>> But the fdget_pos kind of throws a wrench into that, because now I can
+>> no longer say "it's always safe to do File::fget, move it to another
+>> thread, and install it into the remote fd table", since that could cause
+>> races on the position if there's an active fdget_pos when we call
+>> File::fget.
+> 
+> I think I understand why that's a problem for you but let me try and
+> spell it out so I can understand where you're coming from:
+> 
+> You want the Rust compiler to reject a file becoming shared implicitly
+> from any codepath that is beneath fdget_pos() even though no such code
+> yet exists (ignoring pidfd_getfd()). So it's a correctness issue to you.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Hi Christian,
 
--- 
-Cheers,
+I thought some more about this. Here's an idea of how we can encode this
+knowledge in the API. It seems like there are a few different things we
+might know about a pointer:
 
-David / dhildenb
+1. The pointer is fully shared, that is, all active fdget / fdget_pos
+   references (if any) actually incremented the refcount / took the
+   lock.
 
+2. The pointer may have active fdget references that didn't increment
+   the refcount, but all fdget_pos references (if any) incremented the
+   refcount and took the lock.
+
+3. The pointer may have active fdget or fdget_pos references that didn't
+   increment the refcount / didn't take the lock.
+
+And orthogonal from that, all of the fdget / fdget_pos references are on
+a single thread, so we either know that we are on the same thread as
+them, or we don't know that. (Though we don't care about this
+distinction in the fully shared case.)
+
+I might encode this information with five different "states":
+
+* FullyShared        - fully shared
+* MaybeFdget         - might have fdget, not necessarily on this thread
+* MaybeLocalFdget    - might have fdget, but if so, it's on this thread
+* MaybeFdgetPos      - might have fdget_pos, not necessarily on this thread
+* MaybeLocalFdgetPos - might have fdget_pos, but if so, it's on this thread
+
+And you can make this a parameter on File, so you get pointer types like
+these:
+
+* ARef<File<MaybeFdget>> - A pointer to a file that owns a refcount and
+  might have an active fdget, possibly on a different thread.
+
+* &File<FullyShared> - A reference to a file that doesn't own a
+  refcount, and which is fully shared.
+
+* ARef<File<MaybeLocalFdgetPos>> - A pointer to a file that owns a
+  refcount, and may have both active fdget and fdget_pos calls. If it
+  does, they're on the same thread as this reference. This is the return
+  type of fget.
+
+And if we introduce an Fdget smart pointer too, then it would probably
+be typed Fdget<MaybeLocalFdget> or Fdget<MaybeLocalFdgetPos>.
+
+You could do different things with these. For example, a MaybeFdget
+reference can be used with fd_install, but a MaybeFdgetPos reference
+can't. Similarly, you can close an fd using a FullyShared reference, but
+not using any of the weaker kinds.
+
+As for how you get each kind, well, the fget method would return an
+MaybeLocalFdgetPos reference, since we know that we're on the right
+thread if any fdget/fdget_pos references exist, but we don't otherwise
+know anything.
+
+And you could use something similar to the DeferredFdCloser to take a
+MaybeLocalFdgetPos or MaybeLocalFdget file reference any upgrade it to a
+FullyShared one by waiting until we return to userspace. (But you can't
+do this with the non-local variants.)
+
+When we write a Rust wrapper around file_operations that internally uses
+File::from_raw_file, then we can have it pass a &File<MaybeLocalFdget>
+to the ioctl handler, and a &File<MaybeLocalFdgetPos> to the
+read/write/seek handlers. That way, the ioctl handler can do things with
+the provided file that don't work when there's an fdget_pos, but the
+read/write/seek handlers can't.
+
+Or we can have unsafe methods that do upgrades. For example, the
+codepath in Binder that sends an fd from one process to another will
+most likely just call fget and then use unsafe to say "I know there are
+no active fdget_pos references since I'm in an ioctl" to upgrade the
+MaybeLocalFdgetPos it got from fget into an MaybeFdget (not FullyShared
+since the ioctl uses fdget), that it sends to the other process and then
+fd_installs.
+
+Does this sound sane to you?
+
+Alice
 
