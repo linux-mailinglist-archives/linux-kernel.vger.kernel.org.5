@@ -1,113 +1,154 @@
-Return-Path: <linux-kernel+bounces-135243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF7CB89BDAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8BBA89BDB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919791F2262A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E0411F225CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24DA657AE;
-	Mon,  8 Apr 2024 11:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAA664CFC;
+	Mon,  8 Apr 2024 11:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+cRvinj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="QUnnJn8p"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D720D6025E;
-	Mon,  8 Apr 2024 11:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A91A6168C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 11:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712574035; cv=none; b=rCRWhh/XrcNT4n03oq9TbY0ALlg4y8Afo/rVUxF6IfhBNPMvMa0SwPhlT3kt1wR4fS8kKdR1fpKUnsrI+HkR9VSdlJTJX6SpS1d2Waag0P314atT480KNyJZJv8aq0bqFSBUGJtkG3+tPeL6qmm8oqSJU9aCFRLy8WZfA6Ne4Ts=
+	t=1712574239; cv=none; b=E2+WnnihnagSWozEqQFlpEkUHFV8ckvRgZazxO2yJ2kJLZJa3ginAJhx6z5qq5FPXUQVgq3doL2LpAtyso6iJhYnQWmSMQtjtGwDzt1cgrfRoBMggbVN3wEak601GeUJWXu8Ayr4kwsJa4Bg1zD/X8VE5bqXxufpatRW4eBTFpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712574035; c=relaxed/simple;
-	bh=vM6/mtyUgy39CBRZ+BRnJgNNz4EcuCM7ZMACQHQCzns=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NtU9HVHvvkRkKp5nXN3a9QI2cILk1cdBXd3v0Ibi2xMVGJ37S77k6iQGXW7YWc1Tz0kKmhuYDJTiGliyy9ENB/F0BY+qw8Zgmm3etpT3+cQVxbdGVUJt59JeutFMIz64QwM6J+noaFhdQgXkq94ylgYc+ndOC3vCaHu0LZrqiG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+cRvinj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AE867C433C7;
-	Mon,  8 Apr 2024 11:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712574034;
-	bh=vM6/mtyUgy39CBRZ+BRnJgNNz4EcuCM7ZMACQHQCzns=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=d+cRvinj3pOqjZnzVUzOb3bDqij5jIROFcBjm8JO9KcdNzmYfo6gx7nbA3rpQbU/0
-	 xaNshs9elUFMKP6PK00w7sZableMXdRtkcp23z4Bn/Gt1mPlUEXUJZNJEeWSghi2k1
-	 RcZMsY9gv2+2XRPxYio27UX4nE762K5DS8L4SG8pQm8SaLtzLgmXWub7A+U1Wygyr9
-	 bc4MfP600rG2InBKjA6DWzBq3U6CJU6ezvtgdwwU/lrCuBuC2rUsPkkbcHIkgJhjnr
-	 78cWw2ftB5b0zCCOC3r/n6pEU8Gz/bWcYsVAaWSXudKXIY/W73/4hbb3IE+tY5VaYh
-	 EhVYVxyuwTxFg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A15C6C54BD4;
-	Mon,  8 Apr 2024 11:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712574239; c=relaxed/simple;
+	bh=wkKRyt/Vw/5zc5dlJy0JHXCMpR/2OfytD1MG2A8RMO8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WAIBQ2viy8Hh97QeTUdNdKV2+wVeUle9BRAseiLL7arM6WbwL+4UeQTX1ZecxWBmtX9xzQzijXkP0X3lK7WjV8M4DEOCAn0q3w38Ga45nwvSvaQpHw44M0OvR/gDVmthO0qX5pWRyg+ensQMzKaDQU9xJ9oTINGKOb3vfVlsWIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=QUnnJn8p; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51d83fafa8so85406566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 04:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1712574236; x=1713179036; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4g1Fe38jasdHywEL2euSnsmLnhOpgJ82XZytSUr/W9Q=;
+        b=QUnnJn8pEBYu+zh4J/NCAw2trUTPY4j7dqg1dvLrnb7kRyq47WMMmXmsPGkDqeCqam
+         5qSVvM/tQNajw1Tbw2wJ3UXlD30gyrnfkchtL3WmvUS9z1oAWL48DGwoIW0GG284ZFzF
+         2nn6O9pXtb2isRu1dwwWA7md9vFurJiOfbQHT87T/K4yFdO/WSPp/Ma7LFomKR0piXNa
+         YMKyTmZhMaD7vxSqW3eBqJzaYu6AeglocNS+UxJ+NxfsNJzcPdGTCDBkN8/JlFbZtkif
+         Err7zcMtdQTnJCj8fmn1PT+otC5l8H2OoxV5lto8v3CQLmNvp/0KbpCw0eil8FHz6w/N
+         m1xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712574236; x=1713179036;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4g1Fe38jasdHywEL2euSnsmLnhOpgJ82XZytSUr/W9Q=;
+        b=rlPEBdfT5MoslS5ZWnpuGpeTaytS9qJAdgRsNNbF+XCI1STT3+2vqJnj0r3D8KM4LE
+         qjQxXNEGvVniB7zxySUPHx3HNW4IroZGxHdcOO7euT6tMQxoOgVB1TgZGCaIn3ELc+IZ
+         uGkYI/Ri5/Ed8wEwOgsRDC1dPilp9jchc/bqcO3iIox28h1DIaZXaCuiUNWWh8mJGZZF
+         8D8sN69h/PTMtsxZD0gSnEmvMreITc/g81HN2ncLRoCa/RaHqJUq/93kmGsiJ+0eQeUk
+         UA/ZT+V8+aexp5B9ZvAteG+cF8mYheDoGr6oU8Id5EFWC+RcZ9cdDBVOPjHlKkBIW99d
+         /CrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVa6Oqfzaqcxhzxu3wgIhEmopKAw5sJq6nvFrErA736Hurdfc1zNTGonZrZgW08+oGF5wFD2x6ZvGCkNf91qKXmsoepVSJv7T9d6MlQ
+X-Gm-Message-State: AOJu0YzglJj8N27YtS3sm2Q7JdehkcK9BYEWdwthHYCEbkLiDeilTzNn
+	S8py1K09/wqFhDCBfdX2cidRRS5NdoxPZEGW40iv25KDcj9lBfuFE2wfpMVJCeA=
+X-Google-Smtp-Source: AGHT+IGnIHRj0+4dG4NgzsNXCqgJTww4f9iaHdQi6M7w7Zma3E/8aHUoufLLnKT3jNOOK2m1ikAHoA==
+X-Received: by 2002:a17:906:31d4:b0:a46:da28:992e with SMTP id f20-20020a17090631d400b00a46da28992emr5801257ejf.71.1712574236283;
+        Mon, 08 Apr 2024 04:03:56 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170906d10f00b00a4df4243473sm4279042ejz.4.2024.04.08.04.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 04:03:55 -0700 (PDT)
+Date: Mon, 8 Apr 2024 13:03:54 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc: Deepak Gupta <debug@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>, 
+	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 0/5] Add parsing for Zimop ISA extension
+Message-ID: <20240408-6c93f3f50b55234f3825ca33@orel>
+References: <20240404103254.1752834-1-cleger@rivosinc.com>
+ <20240405-091c6c174f023d74b434059d@orel>
+ <CAKC1njQ3qQ8mTMoYkhhoGQfRSVtp2Tfd2LjDhAmut7UcW9-bGw@mail.gmail.com>
+ <ddc5555a-3ae8-42e5-a08a-ca5ceaf0bf28@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 00/11] selftests: mptcp: cleanups and 'ip mptcp'
- support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171257403465.26748.462026930608140771.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Apr 2024 11:00:34 +0000
-References: <20240405-upstream-net-next-20240405-mptcp-selftests-refactoring-v1-0-eabc9b960966@kernel.org>
-In-Reply-To: <20240405-upstream-net-next-20240405-mptcp-selftests-refactoring-v1-0-eabc9b960966@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, tanggeliang@kylinos.cn
+In-Reply-To: <ddc5555a-3ae8-42e5-a08a-ca5ceaf0bf28@rivosinc.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 05 Apr 2024 12:52:04 +0200 you wrote:
-> Here are some patches from Geliang, doing different cleanups, and
-> supporting 'ip mptcp' in more MPTCP selftests.
+On Mon, Apr 08, 2024 at 10:01:12AM +0200, Clément Léger wrote:
 > 
-> Patch 1 checks that TC is available in selftests requiring it.
 > 
-> Patch 2 adds 'ms' units in TC commands, to avoid confusions.
+> On 05/04/2024 19:33, Deepak Gupta wrote:
+> > On Fri, Apr 5, 2024 at 8:26 AM Andrew Jones <ajones@ventanamicro.com> wrote:
+> >>
+> >> On Thu, Apr 04, 2024 at 12:32:46PM +0200, Clément Léger wrote:
+> >>> The Zimop ISA extension was ratified recently. This series adds support
+> >>> for parsing it from riscv,isa, hwprobe export and kvm support for
+> >>> Guest/VM.
+> >>
+> >> I'm not sure we need this. Zimop by itself isn't useful, so I don't know
+> >> if we need to advertise it at all. When an extension comes along that
+> >> redefines some MOPs, then we'll advertise that extension, but the fact
+> >> Zimop is used for that extension is really just an implementation detail.
+> > 
+> > Only situation I see this can be useful is this:--
+> > 
+> > An implementer, implemented Zimops in CPU solely for the purpose that they can
+> > run mainline distro & packages on their hardware and don't want to leverage any
+> > feature which are built on top of Zimop.
 > 
-> [...]
+> Yes, the rationale was that some binaries using extensions that overload
+> MOPs could still be run. With Zimop exposed, the loader could determine
+> if the binary can be executed without potentially crashing. We could
+> also let the program run anyway but the execution could potentially
+> crash unexpectedly, which IMHO is not really good for the user
+> experience nor for debugging. I already think that the segfaults which
+> happens when executing binaries that need some missing extension are not
+> so easy to debug, so better add more guards.
 
-Here is the summary with links:
-  - [net-next,01/11] selftests: mptcp: add tc check for check_tools
-    https://git.kernel.org/netdev/net-next/c/f30b04cacd85
-  - [net-next,02/11] selftests: mptcp: add ms units for tc-netem delay
-    https://git.kernel.org/netdev/net-next/c/9109853a388b
-  - [net-next,03/11] selftests: mptcp: export ip_mptcp to mptcp_lib
-    https://git.kernel.org/netdev/net-next/c/29aa32fee7d0
-  - [net-next,04/11] selftests: mptcp: netlink: add 'limits' helpers
-    https://git.kernel.org/netdev/net-next/c/3188309c8ceb
-  - [net-next,05/11] selftests: mptcp: add {get,format}_endpoint(s) helpers
-    https://git.kernel.org/netdev/net-next/c/0d16ed0c2e74
-  - [net-next,06/11] selftests: mptcp: netlink: add change_address helper
-    https://git.kernel.org/netdev/net-next/c/b79e51c99949
-  - [net-next,07/11] selftests: mptcp: join: update endpoint ops
-    https://git.kernel.org/netdev/net-next/c/571d79664a4a
-  - [net-next,08/11] selftests: mptcp: export pm_nl endpoint ops
-    https://git.kernel.org/netdev/net-next/c/441c6be9ae28
-  - [net-next,09/11] selftests: mptcp: use pm_nl endpoint ops
-    https://git.kernel.org/netdev/net-next/c/c99d57d0007a
-  - [net-next,10/11] selftests: mptcp: ip_mptcp option for more scripts
-    https://git.kernel.org/netdev/net-next/c/0cef6fcac24d
-  - [net-next,11/11] selftests: mptcp: netlink: drop disable=SC2086
-    https://git.kernel.org/netdev/net-next/c/6eaeda12dc77
+OK. It's only one more extension out of dozens, so I won't complain more,
+but I was thinking that binaries that use particular extensions would
+check for those particular extensions (step 2), rather than Zimop.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
+drew
 
-
+> 
+> > 
+> > As an example zicfilp and zicfiss are dependent on zimops. glibc can
+> > do following
+> > 
+> > 1) check elf header if binary was compiled with zicfiss and zicfilp,
+> > if yes goto step 2, else goto step 6.
+> > 2) check if zicfiss/zicfilp is available in hw via hwprobe, if yes
+> > goto step 5. else goto step 3
+> > 3) check if zimop is available via hwprobe, if yes goto step 6, else goto step 4
+> 
+> I think you meant step 5 rather than step 6.
+> 
+> Clément
+> 
+> > 4) This binary won't be able to run successfully on this platform,
+> > issue exit syscall. <-- termination
+> > 5) issue prctl to enable shadow stack and landing pad for current task
+> > <-- enable feature
+> > 6) let the binary run <-- let the binary run because no harm can be done
 
