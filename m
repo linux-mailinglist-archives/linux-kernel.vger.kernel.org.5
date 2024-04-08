@@ -1,194 +1,132 @@
-Return-Path: <linux-kernel+bounces-135161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BC789BBE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:36:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C53EA89B831
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4937C1C21FBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:36:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DC01C21ABB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C555482E6;
-	Mon,  8 Apr 2024 09:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D824522EEB;
+	Mon,  8 Apr 2024 07:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="GfEV0U65"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pksJtR3i"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4266045958;
-	Mon,  8 Apr 2024 09:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47E41BC39
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569004; cv=none; b=KmHbkPjnYzSMinBZp2VA6cxfTErGmQkLO08LzoZaOLyZYMixE6XTHuymV7n578m6ek+5rUUn72I6rU7RpCLOBnptZmWxzO4FqypG/KD7c4xppPB4yqkkVfVwzGqD/o33Erxo6d51papSW/RpdpucyVp/HThDtO8Q+mcPksOVdZw=
+	t=1712560626; cv=none; b=ZUFjsxhrxWLRLhtfU0Yr9HBYoxjQJJcKZnAQQTBF+05shdo9TtdsxQSQr0+lL9dQWInSIJn0kKh0sL4KcJJK/7D01ZKKRj9Xr57CjheLCQhl/X84d3WvpG0Ln+syhsMfsNYZs81ilsJgJU12IYJ2KU7Q/kDTyVLHxwh5+JquE/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569004; c=relaxed/simple;
-	bh=rXoFAdo1tTS0PjGUrKhn6mS1KcUdpcQU1e2XnCLLWNA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EKHlA5WSHEuBjo6wBUgdlwVkVYDP6d2kdygRDMxIg4M6tQPJ0FLndnyIuITFfq0pfq1RE55/d8r3BQvZ/2uSkjcCN3ivqQu9cLh8JwnTuEvKOBEcdPWPeXQYdISeixjVDP43X3kSe78kfi3dFjoAd3nVxzqyj0w/UR7TllCy0g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=GfEV0U65; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4388rgd3007326;
-	Mon, 8 Apr 2024 02:36:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=6sU5GxlK76ndUKi2361U/O6LtYlGS3aaQIWSH2fN1ig=; b=GfE
-	V0U654ipZQM9d4bChIiTSdErYMcxG7G5qgcZ4xkyOVp4Qu6RuTD5/gDEFPWJ8QFg
-	dkbMt17gvXwNUVXGJ4Qkb1zy0CvUzDAGk9dF8JY0IwXTUJ26VT3CnTGGJlyN90LK
-	EX6ZUAvOk8d79WArKpZKlftmhI9GukyRqPM+DTrYkIwWZrc8P5A9MvGXa2v2j4FF
-	jmUKpyP4WPgEfQ2C4jVqFLczT0KgK8eulp68KP9dH9au6+1SvTr46+ZCF0iIzJRB
-	hfktEzlekKL9xx/LNnphKWxkIg02HfEjtqYihW7TfVlG22c3opssL+wEVQUQHAaF
-	orIK9KDQnL9laGsdgTA==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xcdff02v2-15
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 02:36:37 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 8 Apr 2024 00:16:34 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Mon, 8 Apr 2024 00:16:34 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id E0E733F70C8;
-	Mon,  8 Apr 2024 00:16:30 -0700 (PDT)
-From: Geetha sowjanya <gakula@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net-next PATCH] octeontx2-pf: Add support for offload tc with skbedit mark action
-Date: Mon, 8 Apr 2024 12:46:29 +0530
-Message-ID: <20240408071629.26390-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1712560626; c=relaxed/simple;
+	bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=INTBCrvkOHOLeObj9k9G8N33LexG/uuhiRU4L2cXTzrA1swlQ0jQtdhZ1HvhVgiekUHSJBG2G6rLmX/lX2xTWmWjBsy+TzGNLmIuOFDQEUlXfbtH0ihuazBXQphJZrpm7h5ZmUgk17xcSNfp8/6gxl5c+WVlUgIR5pN/3EtvTvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pksJtR3i; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b22af648so3598155b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712560624; x=1713165424; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
+        b=pksJtR3iAlf0MIVK0RIXXtrlln0bfiVcWKIb0K0W2Hv4Ug6ltE5ni7No/4EY5mPbh7
+         QffVkAkfZ1W0AwBv2woieH6Q0sGQZofAL9Y4hPwhYCaaLtfoTE+xjcM9KRzmkCB3YHPw
+         ruapYC7PHyOMUn9pvUQazelDX0jQaSOWFI/EYwoOVzSGsNRBsQoKv0chTya7kOwka9Vg
+         2MG+XiXQxonQSlm259EmjtZZwxB4eTJFdhpj6BzmvlDvSyr5h/joRm7TBpn0hqf+ObyC
+         TcR3YR9gzNjBj26NtXQENj4a4/UsNG73/LrLWnlJjZHXWaE0xv14B95UE6OAuUbhJFwN
+         YRew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712560624; x=1713165424;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
+        b=Hm0VJZr/QSgwUNTiWZYDX+sKCzZyoL/i3qvxUmi2dFTy5q4DK08Bq1oJTJ1vumo4A0
+         ccncUOpN9HXl3Mdl6fb+cEeQY74TwecjUxkG5m3DRIYPE4wUXunFtowHtA4bQXdJe1pB
+         4RM3eS/JgZ5LYwlQXLjvY87oCI1nOPUGeYgedbWOB8Lw0anT1NroT3asMHOyFXzOQ53c
+         MQhrg2divFsl9WvSkxFR3KjqnLRPJSnGQsuurRTJHDD+JdBcXOpf1JLP5RpS1gIpDXmp
+         qcf7I8LwWLUDCKTF72o4T9qGz16L/uyqXHVQ97GkXXPPYk2m3yAXlDFrc3CCzkfeNKqk
+         olOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJm+8JpHE9VdGvOK7QlM9s5ZclMZXElNY+kHPWCD/8z5W40Cyqaqo6KYgo5VyQS1Bpr40SSchtVaGpfNJuXrxA7AldJw7XoLwFwmJF
+X-Gm-Message-State: AOJu0YzfvJ7TQuEUp/5aNAR6OwfYOcPx+ZUtrVD/KfuGfkwFSkm5Jz/h
+	10Mw53xTL3umthiWoFGRndhsLLCflsndeCWlYMkcICm0TSorrb8I1QJM2Mog2Yrmcho230Nk+FV
+	ZGT8WeFCjW0EeShMO11Kn2qqGS1hz+gqulIM7fw==
+X-Google-Smtp-Source: AGHT+IHf7G0qH23Gi6+/sVvIKSWLs/MgFqI80unw0WgTCq5dgXhEazFn9bkfZ/UXlRbc4H24bkXtDtHfzjtAiihq8LA=
+X-Received: by 2002:a17:902:c94d:b0:1dd:8ed0:59d0 with SMTP id
+ i13-20020a170902c94d00b001dd8ed059d0mr10148621pla.17.1712560623953; Mon, 08
+ Apr 2024 00:17:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: fC6hvAVr3Lo6pDjyfu04X-u4CtOQ9kOF
-X-Proofpoint-ORIG-GUID: fC6hvAVr3Lo6pDjyfu04X-u4CtOQ9kOF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
+ <20240404220500.dmfl2krll37znbi5@airbuntu> <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
+ <20240405171653.boxbylrdak5fopjv@airbuntu> <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
+In-Reply-To: <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Mon, 8 Apr 2024 09:16:52 +0200
+Message-ID: <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
+Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	John Stultz <jstultz@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Support offloading of skbedit mark action.
+On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 04/05/24 18:16, Qais Yousef wrote:
+>
+> > >
+> > > All that to say that I think the weight is not applied on purpose.
+> > > This might work for your particular case but there are more changes to
+> > > be done if you want to apply prio inheritance between cfs tasks.
+> > >
+> > > As an example, what about the impact of cgroup on the actual weight
+> > > and the inherited priority of a task ? If the owner and the waiter
+> > > don't belong to the same cgroup their own prio is meaningless... task
+> > > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
+> > > in a group with a weight equals to nice -20
+> >
+> > That is on my mind actually. But I thought it's a separate problem. That has to
+> > do with how we calculate the effective priority of the pi_task. And probably
+> > the sorting order to if we agree we need to revert the above. If that is done
+>
+> Thinking more about it the revert is not the right thing to do. We want fair
+> tasks to stay ordered in FIFO for better fairness and avoid potential
+> starvation issues. It's just the logic for searching the top_waiter need to be
+> different. If the top_waiter is fair, then we need to traverse the tree to find
+> the highest nice value. We probably can keep track of this while adding items
+> to the tree to avoid the search.
+>
+> For cgroup; is it reasonable (loosely speaking) to keep track of pi_cfs_rq and
+> detach_attach_task_cfs_rq() before the reweight? This seems the most
+> straightforward solution and will contain the complexity to keeping track of
+> cfs_rq. But it'll have similar issue to proxy execution where a task that
+> doesn't belong to the cgroup will consume its share..
 
-For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
-interface:
+That's a good point, Would proxy execution be the simplest way to fix all this ?
 
- # tc qdisc add dev eth2 ingress
- # tc filter add dev eth2 ingress protocol ip flower \
-      dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
-
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c  |  2 ++
- .../ethernet/marvell/octeontx2/nic/otx2_common.h    |  2 ++
- .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c    | 13 +++++++++++++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c  |  3 +++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h  |  3 +++
- 5 files changed, 23 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index c75669c8fde7..6188921e9a20 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -1183,6 +1183,8 @@ static int npc_update_rx_entry(struct rvu *rvu, struct rvu_pfvf *pfvf,
- 			action.pf_func = target;
- 			action.op = NIX_RX_ACTIONOP_UCAST;
- 		}
-+		if (req->match_id)
-+			action.match_id = req->match_id;
- 	}
- 
- 	entry->action = *(u64 *)&action;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 06910307085e..815ae13c371c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -363,6 +363,7 @@ struct otx2_flow_config {
- 	struct list_head	flow_list;
- 	u32			dmacflt_max_flows;
- 	u16                     max_flows;
-+	u16			mark_flows;
- 	struct list_head	flow_list_tc;
- 	bool			ntuple;
- };
-@@ -465,6 +466,7 @@ struct otx2_nic {
- #define OTX2_FLAG_DMACFLTR_SUPPORT		BIT_ULL(14)
- #define OTX2_FLAG_PTP_ONESTEP_SYNC		BIT_ULL(15)
- #define OTX2_FLAG_ADPTV_INT_COAL_ENABLED BIT_ULL(16)
-+#define OTX2_FLAG_TC_MARK_ENABLED		BIT_ULL(17)
- 	u64			flags;
- 	u64			*cq_op_addr;
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 4fd44b6eecea..fd1d78601811 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -511,7 +511,15 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			nr_police++;
- 			break;
- 		case FLOW_ACTION_MARK:
-+			if (act->mark & ~OTX2_RX_MATCH_ID_MASK) {
-+				NL_SET_ERR_MSG_MOD(extack, "Bad flow mark, only 16 bit supported");
-+				return -EOPNOTSUPP;
-+			}
- 			mark = act->mark;
-+			req->match_id = mark & 0xFFFFULL;
-+			req->op = NIX_RX_ACTION_DEFAULT;
-+			nic->flags |= OTX2_FLAG_TC_MARK_ENABLED;
-+			nic->flow_cfg->mark_flows++;
- 			break;
- 
- 		case FLOW_ACTION_RX_QUEUE_MAPPING:
-@@ -1173,6 +1181,11 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		return -EINVAL;
- 	}
- 
-+	/* Disable TC MARK flag if they are no rules with skbedit mark action */
-+	if (flow_node->req.match_id)
-+		if (!(--flow_cfg->mark_flows))
-+			nic->flags &= ~OTX2_FLAG_TC_MARK_ENABLED;
-+
- 	if (flow_node->is_act_police) {
- 		__clear_bit(flow_node->rq, &nic->rq_bmap);
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 4d519ea833b2..d3c9759c9f06 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -380,6 +380,9 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
- 	if (pfvf->netdev->features & NETIF_F_RXCSUM)
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 
-+	if (pfvf->flags & OTX2_FLAG_TC_MARK_ENABLED)
-+		skb->mark = parse->match_id;
-+
- 	skb_mark_for_recycle(skb);
- 
- 	napi_gro_frags(napi);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index a82ffca8ce1b..3f1d2655ff77 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -62,6 +62,9 @@
- #define CQ_OP_STAT_OP_ERR       63
- #define CQ_OP_STAT_CQ_ERR       46
- 
-+/* Packet mark mask */
-+#define OTX2_RX_MATCH_ID_MASK 0x0000ffff
-+
- struct queue_stats {
- 	u64	bytes;
- 	u64	pkts;
--- 
-2.25.1
-
+>
+> Can we treat the two as separate problems? Or you think any solution must
+> address the two? Both must be fixed of course.
+>
+>
+> Thanks!
+>
+> --
+> Qais Yousef
 
