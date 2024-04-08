@@ -1,155 +1,115 @@
-Return-Path: <linux-kernel+bounces-135958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9695489CDE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D631E89CE4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DA1A1F22EB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:56:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 777641F226A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 22:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7B514A09C;
-	Mon,  8 Apr 2024 21:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KjlAgZE3"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A9C1494C0;
+	Mon,  8 Apr 2024 22:09:59 +0000 (UTC)
+Received: from sxb1plsmtpa01-06.prod.sxb1.secureserver.net (sxb1plsmtpa01-06.prod.sxb1.secureserver.net [188.121.53.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1296F149DF4
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606621442F3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 22:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712613393; cv=none; b=ZtYBRUdd/zOWLRWfz+FoNfLFjB4N1SRLJB9AoeF+eNwXhnpFAMvpq62RH8+FC0Xrv/92PescggVU4uJhiFt+GtbNM5A7t73IQkQcOf+cn9o0m+6gpWFLglK96e5gVz74SLFxapv6wHG01LtJ7UykrJX08ONudwG2zD2tC1MJnJc=
+	t=1712614199; cv=none; b=WFdZwyRBeXLAk929EbADTGoIyeaJwtRSB4ke8M+nhzZhWh9K55nOFbZCT4KcdN7YZMNZQyPC0fySU7rrafFwVc/q40UA93A4Fawk4RmsDY2GTM5jyjfZSe0c6kMOP1p6E2nvG8an4I1ve6T9+sDYSyJEDgpKnWRDpj5pKPJ3i+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712613393; c=relaxed/simple;
-	bh=KMgMj5SuCHh7Ha85uQVvUmDrUucgoYhw/hHwBlpvQbY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jUx5vnVdkKvXKTqyCqEMCyYkN4PQv7NUszh4iqj0A4gOaXBdqelW11svbuYEspf13O18zhatlnUEoq8XFi+f8p14hlD/ytHv68Mo8lhhz1fN5VW1I+L59PqprD37QMKGaMe25TOOy32VE9fphdb4X6SHcPywhE9/ANiVIoixIwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KjlAgZE3; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc4563611cso7315378276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 14:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712613391; x=1713218191; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+YtI06tP7BJVW9G+3zSEn/HDI9HVvJWqFii9XPCuXU=;
-        b=KjlAgZE3nlz98x0q293PDPdRhk+5X5FEXRErDY3u7gM43ADQ/PrutCwp5eZioqhPWy
-         h6k04WR84E+XdEpDKttS2IabfF6FqTWsZN9OU0uY0tSDUjv40UDMuVNi/0N0hZJf3ORt
-         ag9HbWcuCI1ey5sl4jSrgcBusSM7snMLAZVLxYFimTmyAMJityePZwtdWOfGQ96MsymH
-         X/3hykJ/yE89A2G7XGt5onu6nDtLkz13oraQPqUZ6KGSp5bGS6UztbLBrcQh5/e80pBc
-         h7muRYDazcBlqdIFnBVppQad/bCTceGFJ08oCTSuJMicu/vWT2HNqC62Qnl626Yd+NEK
-         nZ0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712613391; x=1713218191;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+YtI06tP7BJVW9G+3zSEn/HDI9HVvJWqFii9XPCuXU=;
-        b=VmjMr0Bze8nUwS8TTizOLyDTWbaPYYCOb0bT80l+EukfTbT2B8S0xWohi4UDngb0Q4
-         azDohd0m+/iau78sJdpz+5l+rCKjKaX8aDKSRLsB9RZTHYBs0mJlrzbbE3eZr5+7KKeO
-         866uNAI3j4GO0V6M6rzISFohJaDmDt808h+WEPbjFgdJkLFTQE5iFdWqsaCD9xStbpmM
-         mkpNrcf+M1MzEs1phdV7SjmUu7PrDk2zmfv9KKF3hsIn7E/BfBCJjEXTM7MkDeO6EJ17
-         +IDCRw/vk3w7TA42jb+Chx18pVjV4gP2gC1vYS2+bIiCU67lboWSFsIVyFtXPSjOUbxd
-         cbgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOVN8NDE2Z4+9GaycpZHM233yZD9OkpO1/rJ5E8XP2Yz5zFjX5lV8uYlCEZWm08l9u9CAXbFXGh7/ZIvsmOcRGw1Gm3fnVxtSHBMFS
-X-Gm-Message-State: AOJu0YyWoAZZBvM64FctowjU+tJaFFqCpp1iwzSABJcW3Ud+cpI8nQ+t
-	Q7iq4RSkPXL/kSjxzoieKNANMVrYpdwAPHc6C+3hJVPbPMq5T7VNfL7M9UXCutKW4yf5nMKCGbs
-	5QQ==
-X-Google-Smtp-Source: AGHT+IFa/2P8Cih2UGweMY65SGXpak6RdHKhKQJP1InxT1VYZjJvdFlyLiwBH6E9kuck3BIMa7OXlmY5chc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:188e:b0:dc2:550b:a4f4 with SMTP id
- cj14-20020a056902188e00b00dc2550ba4f4mr3047423ybb.1.1712613391167; Mon, 08
- Apr 2024 14:56:31 -0700 (PDT)
-Date: Mon, 8 Apr 2024 14:56:29 -0700
-In-Reply-To: <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
+	s=arc-20240116; t=1712614199; c=relaxed/simple;
+	bh=FA1l+1VWT7YtpMTlmBruM8zQe16BLG+YQjp9MvtRRjg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=U1rVbXfvNI2S8Y/Q0ih/dpj/1yzanXZYCkvZv63bksMRM7EXWpzrfyuyHPVnWRw046n5c6i+yeGnM76qJw7PLjap5D3u8/T7Ro6aqZ3d9ovPwKMGKtO9ScVr0KNjcg77IEAXF448Rs95i2mgHEsQeyGMTGvE/BBL8HxBbv2aeuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
+Received: from phoenix.fritz.box ([82.69.79.175])
+	by :SMTPAUTH: with ESMTPA
+	id tx44reUu3RNGctx4FrdXqh; Mon, 08 Apr 2024 15:02:20 -0700
+X-CMAE-Analysis: v=2.4 cv=bvaHB1ai c=1 sm=1 tr=0 ts=6614696d
+ a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=XJTnSpgKjpJfBdNX:21 a=1T6qrdwwAAAA:8 a=FXvPX3liAAAA:8 a=VwQbUJbxAAAA:8
+ a=OU3_bkaUkIPW1OEudewA:9 a=pdM9UVT-CToajMN3hxJJ:22 a=UObqyxdv-6Yh2QiB9mM_:22
+ a=AjGcO6oz07-iQ99wixmX:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+From: Phillip Lougher <phillip@squashfs.org.uk>
+To: akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Cc: Phillip Lougher <phillip@squashfs.org.uk>,
+	"Ubisectech Sirius" <bugreport@ubisectech.com>
+Subject: [PATCH] Squashfs: check the inode number is not the invalid value of zero
+Date: Mon,  8 Apr 2024 23:02:06 +0100
+Message-Id: <20240408220206.435788-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad> <ZhAN28BcMsfl4gm-@google.com> <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com> <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
- <ZhROKK9dEPsNnH4t@google.com> <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
-Message-ID: <ZhRoDfoz-YqsGhIB@google.com>
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-From: Sean Christopherson <seanjc@google.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>, Leonardo Bras <leobras@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfMWAN3UN0Lo1ziq/4OsLPusrCyJ5+60LKkmiy7J6Jh8MzFLtDThvtVdUr4knNCSUVIAcFcmdaK6aKbfKRK5M0CvqowHtW2HvSjF3tosQB1TzJzeS0dzj
+ 55S/nG0Yn5Qa0KHAH8iNoVZClKAGTgDRP4WHX4Eg862oyDx1iro4xH5A3662+seQeDjoae/kpSnnWKdbeN6YsRzvu2NYgaLN//bL6cZLSv+MOFWey1Rp+wRD
+ yNNx4bg3ZxXTt+F1n1SqJ+b3FnOGf21rpPM9Euv5BckN0cmYL3jHXOi8g78/gfVxkDV+hxwou9XPvS4bqkwV0g==
 
-On Mon, Apr 08, 2024, Paul E. McKenney wrote:
-> On Mon, Apr 08, 2024 at 01:06:00PM -0700, Sean Christopherson wrote:
-> > On Mon, Apr 08, 2024, Paul E. McKenney wrote:
-> > > > > > +	if (vcpu->wants_to_run)
-> > > > > > +		context_tracking_guest_start_run_loop();
-> > > > > 
-> > > > > At this point, if this is a nohz_full CPU, it will no longer report
-> > > > > quiescent states until the grace period is at least one second old.
-> > > > 
-> > > > I don't think I follow the "will no longer report quiescent states" issue.  Are
-> > > > you saying that this would prevent guest_context_enter_irqoff() from reporting
-> > > > that the CPU is entering a quiescent state?  If so, that's an issue that would
-> > > > need to be resolved regardless of what heuristic we use to determine whether or
-> > > > not a CPU is likely to enter a KVM guest.
-> > > 
-> > > Please allow me to start over.  Are interrupts disabled at this point,
-> > 
-> > Nope, IRQs are enabled.
-> > 
-> > Oof, I'm glad you asked, because I was going to say that there's one exception,
-> > kvm_sched_in(), which is KVM's notifier for when a preempted task/vCPU is scheduled
-> > back in.  But I forgot that kvm_sched_{in,out}() don't use vcpu_{load,put}(),
-> > i.e. would need explicit calls to context_tracking_guest_{stop,start}_run_loop().
-> > 
-> > > and, if so, will they remain disabled until the transfer of control to
-> > > the guest has become visible to RCU via the context-tracking code?
-> > > 
-> > > Or has the context-tracking code already made the transfer of control
-> > > to the guest visible to RCU?
-> > 
-> > Nope.  The call to __ct_user_enter(CONTEXT_GUEST) or rcu_virt_note_context_switch()
-> > happens later, just before the actual VM-Enter.  And that call does happen with
-> > IRQs disabled (and IRQs stay disabled until the CPU enters the guest).
-> 
-> OK, then we can have difficulties with long-running interrupts hitting
-> this range of code.  It is unfortunately not unheard-of for interrupts
-> plus trailing softirqs to run for tens of seconds, even minutes.
+Syskiller has produced an out of bounds access in fill_meta_index().
 
-Ah, and if that occurs, *and* KVM is slow to re-enter the guest, then there will
-be a massive lag before the CPU gets back into a quiescent state.
+That out of bounds access is ultimately caused because the inode
+has an inode number with the invalid value of zero, which was not checked.
 
-> One counter-argument is that that softirq would take scheduling-clock
-> interrupts, and would eventually make rcu_core() run.
+The reason this causes the out of bounds access is due to following
+sequence of events:
 
-Considering that this behavior would be unique to nohz_full CPUs, how much
-responsibility does RCU have to ensure a sane setup?  E.g. if a softirq runs for
-multiple seconds on a nohz_full CPU whose primary role is to run a KVM vCPU, then
-whatever real-time workaround the vCPU is running is already doomed.
+1. Fill_meta_index() is called to allocate (via empty_meta_index())
+   and fill a metadata index.  It however suffers a data read error
+   and aborts, invalidating the newly returned empty metadata index.
+   It does this by setting the inode number of the index to zero,
+   which means unused (zero is not a valid inode number).
 
-> But does a rcu_sched_clock_irq() from a guest OS have its "user"
-> argument set?
+2. When fill_meta_index() is subsequently called again on another
+   read operation, locate_meta_index() returns the previous index
+   because it matches the inode number of 0.  Because this index
+   has been returned it is expected to have been filled, and because
+   it hasn't been, an out of bounds access is performed.
 
-No, and it shouldn't, at least not on x86 (I assume other architectures are
-similar, but I don't actually no for sure).
+This patch adds a sanity check which checks that the inode number
+is not zero when the inode is created and returns -EINVAL if it is.
 
-On x86, the IRQ that the kernel sees comes looks like it comes from host kernel
-code.  And on AMD (SVM), the IRQ doesn't just "look" like it came from host kernel,
-the IRQ really does get vectored/handled in the host kernel.  Intel CPUs have a
-performance optimization where the IRQ gets "eaten" as part of the VM-Exit, and
-so KVM synthesizes a stack frame and does a manual CALL to invoke the IRQ handler.
+Reported-by: "Ubisectech Sirius" <bugreport@ubisectech.com>
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+Closes: https://lore.kernel.org/lkml/87f5c007-b8a5-41ae-8b57-431e924c5915.bugreport@ubisectech.com/
+---
+ fs/squashfs/inode.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-And that's just for IRQs that actually arrive while the guest is running.  IRQs
-arrive while KVM is active, e.g. running its large vcpu_run(), are "pure" host
-IRQs.
+diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
+index aa3411354e66..e0896d8a3cc6 100644
+--- a/fs/squashfs/inode.c
++++ b/fs/squashfs/inode.c
+@@ -48,6 +48,10 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
+ 	gid_t i_gid;
+ 	int err;
+ 
++	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
++	if(inode->i_ino == 0)
++		return -EINVAL;
++
+ 	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->uid), &i_uid);
+ 	if (err)
+ 		return err;
+@@ -58,7 +62,6 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
+ 
+ 	i_uid_write(inode, i_uid);
+ 	i_gid_write(inode, i_gid);
+-	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
+ 	inode_set_mtime(inode, le32_to_cpu(sqsh_ino->mtime), 0);
+ 	inode_set_atime(inode, inode_get_mtime_sec(inode), 0);
+ 	inode_set_ctime(inode, inode_get_mtime_sec(inode), 0);
+-- 
+2.39.2
+
 
