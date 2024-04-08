@@ -1,408 +1,216 @@
-Return-Path: <linux-kernel+bounces-134926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B07A89B8D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:45:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE9789B8D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFD01C22203
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:45:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D0A01F21A60
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26004374D1;
-	Mon,  8 Apr 2024 07:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC83E29CFD;
+	Mon,  8 Apr 2024 07:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCeTtHUh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H5qkbkZ8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DD436AFB;
-	Mon,  8 Apr 2024 07:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B61251004
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562111; cv=none; b=bSV0WIrjf3qSAmkGtdL2h/rQ9Ap2D1JZo8rxxlgWB9wOV9JDGiJoRDl9SXM14PVWFohocvibSuRGK1MzCfzAS2rSvPHjszQldQ3CF0IVVUfi2MOxw/o5/BsRA0JRKNyeZ3fyrQ7+343DpRE4q6bGAVnPqqYKdo6AsVBNAaUYGWY=
+	t=1712562097; cv=none; b=pjqA6Xbql33+2yNtVD8EWPvs/b6gldQttCzY2T2OzUiDCnHSdclx9L3uxVe0ZbDxE/vdWkuZcQrYmQnBERDrxm9RiHDukuLLW/9wC4OBHb+eMCrq/AbFSLE9pBj0TzQHvVtRje+WpWzRZEdSHfxZzaH3f9H28sCY6Lee9Tg4JMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562111; c=relaxed/simple;
-	bh=QNi6U869pwkO7r45qhNkBeq35HwP1JQ6HFNif1rR0mU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=egdctqY1j28vqe5SQSCen+2kVqp9kjkw+b1eyfgFRoKhZVgwmqhGhYXF7DdScxNFrmB5U8kyHJJ4DhnDL+JzuLUR1YlAvcWrVi+2yoJaz/DVO+2O8UM/W290PugvjOfrMHWhw7je2RaSoEJr6IdaTiZX+9yckIDMpzOX8LDTH+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YCeTtHUh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A58AC433C7;
-	Mon,  8 Apr 2024 07:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712562110;
-	bh=QNi6U869pwkO7r45qhNkBeq35HwP1JQ6HFNif1rR0mU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YCeTtHUhbFPR8AWyn0J2QajgebKiCMz0YpUDJRF3+azZXKDimucPthFuIQOUtccoA
-	 L7QCSNteu+24n3M9muxnJUJa5dD3J6A8A1O5AHToGlxwvegbK8onu06+//l7XiuJB+
-	 XVKw0N56i5HS7w2VN/X5967JUOmTBcRyzJNicQgxhTy8pKL55orn3K/ri07M+7PCzO
-	 qLg+cmmmvDoqSoNU1npRqPEHoCrRFKm6SQMVkJF7drxPl8yyyoNd1eoPq3KseBFq5Q
-	 7C5YYDpZ4jQw+Ccx1tLyii1xTwFjB9083VKg9H7H42FFEFvXxW2r2ocFyTjkcMd6ac
-	 gZA9e/UpwkWLQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Simon Horman <horms@kernel.org>,
-	Jiri Pirko <jiri@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Alex Vesker <valex@nvidia.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v4] net/mlx5: fix possible stack overflows
-Date: Mon,  8 Apr 2024 09:41:10 +0200
-Message-Id: <20240408074142.3007036-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712562097; c=relaxed/simple;
+	bh=OyXVP0R2ip4TFP/7ULM0+K+7pdgdByuPjaYkoU1E/rg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HzAnhvB/gaMQN616E/Pgp09OiNybuljK30SpDWKBTtYyCJO8kw/scNZNeQf2wWn+BYoPN05iEKWZ4R1GGysozD6BmMCDp61oQ7Zugxl/SXo3qtHTGjWVHRSFGtYob386540GNSBiLlttvxSSOadYSTSaey+e8jxoDh1MS/2W+hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H5qkbkZ8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712562095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=aXjg1DGkpy6v+34vGsVRlYgX286GisZypAohRXKPIro=;
+	b=H5qkbkZ8PDn7biSXJSPA7fs61QUNaExU5CDMGSqO3ow6Sh072ZBRg64qnfn1jUahmojusU
+	iu4X2nwtqnLNZJc0n4DgQEKtlSgn5WjUgc1t+ze4FuWvg2vdpmkeIp29pupOMdsurNlB03
+	89U2hi86+EuAhajjWoMIWZ2FRI51XOA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-99-sKYBJaEsMBm3lJqbIUMElQ-1; Mon, 08 Apr 2024 03:41:33 -0400
+X-MC-Unique: sKYBJaEsMBm3lJqbIUMElQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41663448bcbso3738645e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:41:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712562092; x=1713166892;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aXjg1DGkpy6v+34vGsVRlYgX286GisZypAohRXKPIro=;
+        b=UoXFwDN7BAqVLlqEVK5eKBqugyjUaYDbOjDhfWDKOHdcEbIlXCAlLT9bptjOig2baG
+         QUXu7JqSiQ4+LFK77x9aO1V1pE9cvzPtQLQLc7pu7R01uA6kMjU+akYkC4x4yDC/EYIc
+         8hFw/1LzvpHqoZGrPpUw40J4jKJn8APzoMJyQhwVDNkfmvJrRokXQXcK14FJuV+5epGH
+         O91p/h6w3tBBptvg7to1fG0yV7qchrsns1s0+f9+c7DYU61w8crCW46Uq+amYYFs0AXW
+         SsuDGzymeizGSul01CTsrTh7U/xVedd4qv+XqCdZZI+kPrvcxLyLb94yGpnxX434FkG7
+         /Tzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUx0veIC66T4c3bFYZEGN7D6r2VO7YvKEgpSOeYbGdwQyVcGyFqUxl/vl2y0RIlTHO271QgB7kxDPIqZi8BBouezBIGUUlpdUEq7NY
+X-Gm-Message-State: AOJu0Yynqik9H7kPB2EpwRGiFXmtrjpTDcPgwpERHfmjD5s0LfFsXQgv
+	buNEEAMyIMvBgY5bhcMGRWRRPT/nA4rYZBuJZocWcyO21CnPT1/CNW+evT9Tz8hfAXSEyBdSEud
+	eBQW1RmVMVvDSaQeiPtzIi5wXK/PRWXz1wy7hmkMJsGGaFo5F5BADsJhJzbdvpTXtV4Fx6Q==
+X-Received: by 2002:a05:600c:1c0e:b0:416:4694:d743 with SMTP id j14-20020a05600c1c0e00b004164694d743mr3401750wms.4.1712562092182;
+        Mon, 08 Apr 2024 00:41:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKtW1u3iGUmpqULkJu0p5sFwV9qG0A74NB63xdsHM8ZK9J1f5hlQR5r9XE3ZDI/Fhsl5G8IQ==
+X-Received: by 2002:a05:600c:1c0e:b0:416:4694:d743 with SMTP id j14-20020a05600c1c0e00b004164694d743mr3401730wms.4.1712562091771;
+        Mon, 08 Apr 2024 00:41:31 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c718:1300:9860:66a2:fe4d:c379? (p200300cbc7181300986066a2fe4dc379.dip0.t-ipconnect.de. [2003:cb:c718:1300:9860:66a2:fe4d:c379])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b004162a9f03a6sm15534185wmb.7.2024.04.08.00.41.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 00:41:31 -0700 (PDT)
+Message-ID: <ad5877ed-0526-41ef-b639-6d5764a85952@redhat.com>
+Date: Mon, 8 Apr 2024 09:41:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm,swap: add document about RCU read lock and swapoff
+ interaction
+To: Huang Ying <ying.huang@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Ryan Roberts <ryan.roberts@arm.com>, Miaohe Lin <linmiaohe@huawei.com>,
+ Hugh Dickins <hughd@google.com>, Minchan Kim <minchan@kernel.org>
+References: <20240407065450.498821-1-ying.huang@intel.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240407065450.498821-1-ying.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 07.04.24 08:54, Huang Ying wrote:
+> During reviewing a patch to fix the race condition between
+> free_swap_and_cache() and swapoff() [1], it was found that the
+> document about how to prevent racing with swapoff isn't clear enough.
+> Especially RCU read lock can prevent swapoff from freeing data
+> structures.  So, the document is added as comments.
+> 
+> [1] https://lore.kernel.org/linux-mm/c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com/
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Minchan Kim <minchan@kernel.org>
+> ---
+>   mm/swapfile.c | 26 +++++++++++++-------------
+>   1 file changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 4919423cce76..6925462406fa 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1226,16 +1226,15 @@ static unsigned char __swap_entry_free_locked(struct swap_info_struct *p,
+>   
+>   /*
+>    * When we get a swap entry, if there aren't some other ways to
+> - * prevent swapoff, such as the folio in swap cache is locked, page
+> - * table lock is held, etc., the swap entry may become invalid because
+> - * of swapoff.  Then, we need to enclose all swap related functions
+> - * with get_swap_device() and put_swap_device(), unless the swap
+> - * functions call get/put_swap_device() by themselves.
+> + * prevent swapoff, such as the folio in swap cache is locked, RCU
+> + * reader side is locked, etc., the swap entry may become invalid
+> + * because of swapoff.  Then, we need to enclose all swap related
+> + * functions with get_swap_device() and put_swap_device(), unless the
+> + * swap functions call get/put_swap_device() by themselves.
+>    *
+> - * Note that when only holding the PTL, swapoff might succeed immediately
+> - * after freeing a swap entry. Therefore, immediately after
+> - * __swap_entry_free(), the swap info might become stale and should not
+> - * be touched without a prior get_swap_device().
+> + * RCU reader side lock (including any spinlock) is sufficient to
+> + * prevent swapoff, because synchronize_rcu() is called in swapoff()
+> + * before freeing data structures.
+>    *
+>    * Check whether swap entry is valid in the swap device.  If so,
+>    * return pointer to swap_info_struct, and keep the swap entry valid
+> @@ -2495,10 +2494,11 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>   
+>   	/*
+>   	 * Wait for swap operations protected by get/put_swap_device()
+> -	 * to complete.
+> -	 *
+> -	 * We need synchronize_rcu() here to protect the accessing to
+> -	 * the swap cache data structure.
+> +	 * to complete.  Because of synchronize_rcu() here, all swap
+> +	 * operations protected by RCU reader side lock (including any
+> +	 * spinlock) will be waited too.  This makes it easy to
+> +	 * prevent folio_test_swapcache() and the following swap cache
+> +	 * operations from racing with swapoff.
+>   	 */
+>   	percpu_ref_kill(&p->users);
+>   	synchronize_rcu();
 
-A couple of debug functions use a 512 byte temporary buffer and call another
-function that has another buffer of the same size, which in turn exceeds the
-usual warning limit for excessive stack usage:
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
-dr_dump_start(struct seq_file *file, loff_t *pos)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
-dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
-dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-
-Rework these so that each of the various code paths only ever has one of
-these buffers in it, and exactly the functions that declare one have
-the 'noinline_for_stack' annotation that prevents them from all being
-inlined into the same caller.
-
-Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Link: https://lore.kernel.org/all/20240219100506.648089-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-[v4] Resend with Reviewed-by after the merge window closed
-[v3] no changes, sending again without a second patch
-[v2] no changes, just based on patch 1/2 but can still be applied independently
----
- .../mellanox/mlx5/core/steering/dr_dbg.c      | 82 +++++++++----------
- 1 file changed, 41 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-index 64f4cc284aea..030a5776c937 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-@@ -205,12 +205,11 @@ dr_dump_hex_print(char hex[DR_HEX_SIZE], char *src, u32 size)
- }
- 
- static int
--dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
-+dr_dump_rule_action_mem(struct seq_file *file, char *buff, const u64 rule_id,
- 			struct mlx5dr_rule_action_member *action_mem)
- {
- 	struct mlx5dr_action *action = action_mem->action;
- 	const u64 action_id = DR_DBG_PTR_TO_ID(action);
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	u64 hit_tbl_ptr, miss_tbl_ptr;
- 	u32 hit_tbl_id, miss_tbl_id;
- 	int ret;
-@@ -488,10 +487,9 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
- }
- 
- static int
--dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
-+dr_dump_rule_mem(struct seq_file *file, char *buff, struct mlx5dr_ste *ste,
- 		 bool is_rx, const u64 rule_id, u8 format_ver)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char hw_ste_dump[DR_HEX_SIZE];
- 	u32 mem_rec_type;
- 	int ret;
-@@ -522,7 +520,8 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
- }
- 
- static int
--dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
-+dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
-+		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		   bool is_rx, const u64 rule_id, u8 format_ver)
- {
- 	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
-@@ -533,7 +532,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		return 0;
- 
- 	while (i--) {
--		ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
-+		ret = dr_dump_rule_mem(file, buff, ste_arr[i], is_rx, rule_id,
- 				       format_ver);
- 		if (ret < 0)
- 			return ret;
-@@ -542,7 +541,8 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 	return 0;
- }
- 
--static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
-+static noinline_for_stack int
-+dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- {
- 	struct mlx5dr_rule_action_member *action_mem;
- 	const u64 rule_id = DR_DBG_PTR_TO_ID(rule);
-@@ -565,19 +565,19 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- 		return ret;
- 
- 	if (rx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, rx, true, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, rx, true, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, tx, false, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, tx, false, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	list_for_each_entry(action_mem, &rule->rule_actions_list, list) {
--		ret = dr_dump_rule_action_mem(file, rule_id, action_mem);
-+		ret = dr_dump_rule_action_mem(file, buff, rule_id, action_mem);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -586,10 +586,10 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- }
- 
- static int
--dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
-+dr_dump_matcher_mask(struct seq_file *file, char *buff,
-+		     struct mlx5dr_match_param *mask,
- 		     u8 criteria, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char dump[DR_HEX_SIZE];
- 	int ret;
- 
-@@ -681,10 +681,10 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
- }
- 
- static int
--dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
-+dr_dump_matcher_builder(struct seq_file *file, char *buff,
-+			struct mlx5dr_ste_build *builder,
- 			u32 index, bool is_rx, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -702,11 +702,10 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
- }
- 
- static int
--dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_matcher_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		      struct mlx5dr_matcher_rx_tx *matcher_rx_tx,
- 		      const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr, e_icm_addr;
- 	int i, ret;
-@@ -731,7 +730,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 		return ret;
- 
- 	for (i = 0; i < matcher_rx_tx->num_of_builders; i++) {
--		ret = dr_dump_matcher_builder(file,
-+		ret = dr_dump_matcher_builder(file, buff,
- 					      &matcher_rx_tx->ste_builder[i],
- 					      i, is_rx, matcher_id);
- 		if (ret < 0)
-@@ -741,7 +740,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int
-+static noinline_for_stack int
- dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- {
- 	struct mlx5dr_matcher_rx_tx *rx = &matcher->rx;
-@@ -763,19 +762,19 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_matcher_mask(file, &matcher->mask,
-+	ret = dr_dump_matcher_mask(file, buff, &matcher->mask,
- 				   matcher->match_criteria, matcher_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (rx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, true, rx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, true, rx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, false, tx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, false, tx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -803,11 +802,10 @@ dr_dump_matcher_all(struct seq_file *file, struct mlx5dr_matcher *matcher)
- }
- 
- static int
--dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_table_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		    struct mlx5dr_table_rx_tx *table_rx_tx,
- 		    const u64 table_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr;
- 	int ret;
-@@ -829,7 +827,8 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
-+static noinline_for_stack int
-+dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- {
- 	struct mlx5dr_table_rx_tx *rx = &table->rx;
- 	struct mlx5dr_table_rx_tx *tx = &table->tx;
-@@ -848,14 +847,14 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- 		return ret;
- 
- 	if (rx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, true, rx,
-+		ret = dr_dump_table_rx_tx(file, buff, true, rx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, false, tx,
-+		ret = dr_dump_table_rx_tx(file, buff, false, tx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
-@@ -881,10 +880,10 @@ static int dr_dump_table_all(struct seq_file *file, struct mlx5dr_table *tbl)
- }
- 
- static int
--dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
-+dr_dump_send_ring(struct seq_file *file, char *buff,
-+		  struct mlx5dr_send_ring *ring,
- 		  const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -902,13 +901,13 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
- 	return 0;
- }
- 
--static noinline_for_stack int
-+static int
- dr_dump_domain_info_flex_parser(struct seq_file *file,
-+				char *buff,
- 				const char *flex_parser_name,
- 				const u8 flex_parser_value,
- 				const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -925,11 +924,11 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
- 	return 0;
- }
- 
--static noinline_for_stack int
--dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
-+static int
-+dr_dump_domain_info_caps(struct seq_file *file, char *buff,
-+			 struct mlx5dr_cmd_caps *caps,
- 			 const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	struct mlx5dr_cmd_vport_cap *vport_caps;
- 	unsigned long i, vports_num;
- 	int ret;
-@@ -969,34 +968,35 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
- }
- 
- static int
--dr_dump_domain_info(struct seq_file *file, struct mlx5dr_domain_info *info,
-+dr_dump_domain_info(struct seq_file *file, char *buff,
-+		    struct mlx5dr_domain_info *info,
- 		    const u64 domain_id)
- {
- 	int ret;
- 
--	ret = dr_dump_domain_info_caps(file, &info->caps, domain_id);
-+	ret = dr_dump_domain_info_caps(file, buff, &info->caps, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw0",
- 					      info->caps.flex_parser_id_icmp_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw1",
- 					      info->caps.flex_parser_id_icmp_dw1,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw0",
- 					      info->caps.flex_parser_id_icmpv6_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw1",
- 					      info->caps.flex_parser_id_icmpv6_dw1,
- 					      domain_id);
- 	if (ret < 0)
-@@ -1032,12 +1032,12 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_domain_info(file, &dmn->info, domain_id);
-+	ret = dr_dump_domain_info(file, buff, &dmn->info, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (dmn->info.supp_sw_steering) {
--		ret = dr_dump_send_ring(file, dmn->send_ring, domain_id);
-+		ret = dr_dump_send_ring(file, buff, dmn->send_ring, domain_id);
- 		if (ret < 0)
- 			return ret;
- 	}
 -- 
-2.39.2
+Cheers,
+
+David / dhildenb
 
 
