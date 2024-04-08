@@ -1,402 +1,224 @@
-Return-Path: <linux-kernel+bounces-135006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 587ED89B9E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:12:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 520FB89B9EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CDF31C21603
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:12:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 085E6282CF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803484D5AB;
-	Mon,  8 Apr 2024 08:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251A0524C0;
+	Mon,  8 Apr 2024 08:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJcxOP90"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lOSlqe9o"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4772347F7D;
-	Mon,  8 Apr 2024 08:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B3B524C2
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563810; cv=none; b=ky8V5wgUhdNIWJOYJsRaWLuaaiJHKdwsFckyNgXcJIRbUJqKHg3aKafohA3Rh2vGTUzHhPLjYcEuIGcb3ZY5pW6Ef4GPn1zPQ5kivaPWrCKPGI0dcPnZ4FXHFBfmR4YZ68oXx6msZJsWZCmGhx7rVuDe5KOwM7mVoETRj/m3Gd0=
+	t=1712563826; cv=none; b=AFhCaY7gqUDtC2ywhl/YGnZP8pnHr0jlXY2LiIV+HyqiQEO/ukE+V/gtytmAFNpeysnWSvxNgmPNR/70QjYoKR+zEoEU0u9i4/2qNiAQ/HrAbOPHnHzULo4LdvZlJYbY3qLjtngdRVPSipsEopcvOu/frXKQ7fYE1ZhPvlhi2ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563810; c=relaxed/simple;
-	bh=K3MlCnAHGE0KdYMKZRXMDWW+AJZKZ7PhF4nQoH8MG8c=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NrqPghIZomW/0zR6xv+ovpDJcAEqNbZGZmqak0WMRp0mnnlewZptlGvqtY6kPFP8DJAH0ePlt65kekiH841eTHjJcdWX1pZJvNPLbPG2tfG8HWicXB9VPSi4wc1WfsQnbIe3Y9UI3k0AC4V95PQqaSJD1BhYexMqmbMfBePdow0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJcxOP90; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 24EE8C4166B;
-	Mon,  8 Apr 2024 08:10:10 +0000 (UTC)
+	s=arc-20240116; t=1712563826; c=relaxed/simple;
+	bh=yqiVE4oOJ/gIlN9qWpoU6AB/pFNy8uHPjaDhffYbiOM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hwuBG87lx2RVru0KNTx3vNLPXLovOTcoDDvONIN6HO5FItncwp+M7iShZaK6wpvePTETKZEMtX4IA/ymcqrP7nJk15Iuu4s7fYdh2j/OUc2nUIDuzov8OCv92SQGZLJ207w45dqazUNs28qI2Ur8MkdcOnoKDdM7aQbTF0pRynw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lOSlqe9o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEA2AC433C7;
+	Mon,  8 Apr 2024 08:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712563810;
-	bh=K3MlCnAHGE0KdYMKZRXMDWW+AJZKZ7PhF4nQoH8MG8c=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=QJcxOP90xJN3K4MZBWb2MR3LfO1a+lUo6nbf5Uco29rOlAoNemjT9qGey4P6z0dCK
-	 ArrGqWvAQyQuW4LikJeaNuOpQWmxfLjjixve9fzQgjWBIK1C/oEQ3tTlsXwFJSqgMY
-	 fyUkfW0pRFkM+/9i4Qtcg5LsiBrq+VpeoF4ks5+6WGT3joTMP+AJ/3nT1RirtXdpzg
-	 z2rHdOciywwMgZDlWdI5ykWkVP7MG+7LCRUIz9ApP3orCMbEl3X4MkpxYPjYpMo9qM
-	 kKDxv/cLCIldGziVw+hlylpS46KjjSHEX37S/9O6fd5j8951Z59F9xA42XWmS0wINF
-	 omAI62zZsjGwQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12C6BCD1292;
-	Mon,  8 Apr 2024 08:10:10 +0000 (UTC)
-From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Mon, 08 Apr 2024 11:09:56 +0300
-Subject: [PATCH 4/4] soc: Add SoC driver for Cirrus ep93xx
+	s=k20201202; t=1712563825;
+	bh=yqiVE4oOJ/gIlN9qWpoU6AB/pFNy8uHPjaDhffYbiOM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lOSlqe9ooFAE+xEuEvFhU73tgJwlTKO2GXJ2y50/dMwuCl9s/Sj9DTtVajE/V1QeR
+	 4RHMeegHvTnP/6ti3t5dpS7+0UaQPeF6mQknZ319QerAH9VxbKda0wAaApNMTeFKfW
+	 5xlt8LIqc+S7RIeuNaSRKnh0itiH6vGaTJB6AD+bB446Q9qfJ2/0zlX3mJ6fLRXHes
+	 JqoQCufIZikyuzKogLjynQB5cPPSGTQlipoiDPGWtWIN02ijND8aTcGaUE7eq79U23
+	 JLb2qi0Izz5QzS8Pja3GmxUf+pNRr9v9dD3oz7V35DHMTcv+ZHEAZarpkz1qWorrU1
+	 qM5nddh3uIT6Q==
+Date: Mon, 8 Apr 2024 09:10:19 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Christoph =?iso-8859-1?Q?M=FCllner?= <christoph.muellner@vrull.eu>
+Cc: Yangyu Chen <cyy@cyyself.name>, ajones@ventanamicro.com, alex@ghiti.fr,
+	alistair.francis@wdc.com, Albert Ou <aou@eecs.berkeley.edu>,
+	bjorn@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+	cooper.qu@linux.alibaba.com, dbarboza@ventanamicro.com,
+	Qingfang Deng <dqfext@gmail.com>, eric.huang@linux.alibaba.com,
+	heiko@sntech.de, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>, philipp.tomsich@vrull.eu,
+	samuel.holland@sifive.com, zhiwei_liu@linux.alibaba.com,
+	Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v3 2/2] riscv: T-Head: Test availability bit before
+ enabling MAE errata
+Message-ID: <20240408-dispersal-foster-49c4e269216e@spud>
+References: <20240407213236.2121592-3-christoph.muellner@vrull.eu>
+ <tencent_CF232CDF85208DF6BFA3076E73CC4E087306@qq.com>
+ <CAEg0e7h0F_LaeMoS6Co1UjgLM6ML8SXtTfHW5+OQS6yedjdZPQ@mail.gmail.com>
+ <tencent_459BC09115173E0624A4A0F19D2F43704F05@qq.com>
+ <CAEg0e7jW=Sfc3tcc0eJwbTx=vb0HM49ZWpda972E-t=Fj1PG+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240408-ep93xx-clk-v1-4-1d0f4c324647@maquefel.me>
-References: <20240408-ep93xx-clk-v1-0-1d0f4c324647@maquefel.me>
-In-Reply-To: <20240408-ep93xx-clk-v1-0-1d0f4c324647@maquefel.me>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>, 
- Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712563809; l=9488;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=wZmf3C8FYeQa2ojy8vOAXoBHARKvrMsAqpZe5AE7EKw=;
- b=2GyI0+OuCcGWfMVj05RtJdfwE7N0WkF0fCuX524je4uYYy6Wv4a7LhHIYHLLwuZc0Q51SOg6Wx9x
- ZgvuuJB8D0Tntc+DRYLQRKzM9f1rssQklnlJecVi+JY+MqGvHWzo
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
- with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
-Reply-To: nikita.shubin@maquefel.me
-
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-
-Add an SoC driver for the ep93xx. Currently there is only one thing
-not fitting into any other framework, and that is the swlock setting.
-
-Used for clock settings, pinctrl and restart.
-
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/soc/Kconfig             |   1 +
- drivers/soc/Makefile            |   1 +
- drivers/soc/cirrus/Kconfig      |  13 +++
- drivers/soc/cirrus/Makefile     |   2 +
- drivers/soc/cirrus/soc-ep93xx.c | 240 ++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 257 insertions(+)
-
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index 5d924e946507..6a8daeb8c4b9 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -7,6 +7,7 @@ source "drivers/soc/aspeed/Kconfig"
- source "drivers/soc/atmel/Kconfig"
- source "drivers/soc/bcm/Kconfig"
- source "drivers/soc/canaan/Kconfig"
-+source "drivers/soc/cirrus/Kconfig"
- source "drivers/soc/fsl/Kconfig"
- source "drivers/soc/fujitsu/Kconfig"
- source "drivers/soc/hisilicon/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index ba8f5b5460e1..5f88bd3aefe3 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -8,6 +8,7 @@ obj-y				+= aspeed/
- obj-$(CONFIG_ARCH_AT91)		+= atmel/
- obj-y				+= bcm/
- obj-$(CONFIG_SOC_CANAAN)	+= canaan/
-+obj-$(CONFIG_EP93XX_SOC)        += cirrus/
- obj-$(CONFIG_ARCH_DOVE)		+= dove/
- obj-$(CONFIG_MACH_DOVE)		+= dove/
- obj-y				+= fsl/
-diff --git a/drivers/soc/cirrus/Kconfig b/drivers/soc/cirrus/Kconfig
-new file mode 100644
-index 000000000000..306499692e8c
---- /dev/null
-+++ b/drivers/soc/cirrus/Kconfig
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+if ARCH_EP93XX
-+
-+config EP93XX_SOC
-+	bool "Cirrus EP93xx chips SoC"
-+	select SOC_BUS
-+	select AUXILIARY_BUS
-+	default y if !EP93XX_SOC_COMMON
-+	help
-+	  Support SoC for Cirrus EP93xx chips.
-+
-+endif
-diff --git a/drivers/soc/cirrus/Makefile b/drivers/soc/cirrus/Makefile
-new file mode 100644
-index 000000000000..9e6608b67f76
---- /dev/null
-+++ b/drivers/soc/cirrus/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-y	+= soc-ep93xx.o
-diff --git a/drivers/soc/cirrus/soc-ep93xx.c b/drivers/soc/cirrus/soc-ep93xx.c
-new file mode 100644
-index 000000000000..044f17f9ba55
---- /dev/null
-+++ b/drivers/soc/cirrus/soc-ep93xx.c
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * SoC driver for Cirrus EP93xx chips.
-+ * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Based on a rewrite of arch/arm/mach-ep93xx/core.c
-+ * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-+ * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
-+ *
-+ * Thanks go to Michael Burian and Ray Lehtiniemi for their key
-+ * role in the ep93xx Linux community.
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/cleanup.h>
-+#include <linux/init.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/of.h>
-+#include <linux/of_fdt.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/sys_soc.h>
-+
-+#include <linux/soc/cirrus/ep93xx.h>
-+
-+#define EP93XX_SYSCON_DEVCFG		0x80
-+
-+#define EP93XX_SWLOCK_MAGICK		0xaa
-+#define EP93XX_SYSCON_SWLOCK		0xc0
-+#define EP93XX_SYSCON_SYSCFG		0x9c
-+#define EP93XX_SYSCON_SYSCFG_REV_MASK	GENMASK(31, 28)
-+#define EP93XX_SYSCON_SYSCFG_REV_SHIFT	28
-+
-+struct ep93xx_map_info {
-+	spinlock_t lock;
-+	void __iomem *base;
-+	struct regmap *map;
-+};
-+
-+/*
-+ * EP93xx System Controller software locked register write
-+ *
-+ * Logic safeguards are included to condition the control signals for
-+ * power connection to the matrix to prevent part damage. In addition, a
-+ * software lock register is included that must be written with 0xAA
-+ * before each register write to change the values of the four switch
-+ * matrix control registers.
-+ */
-+static void ep93xx_regmap_write(struct regmap *map, spinlock_t *lock,
-+				 unsigned int reg, unsigned int val)
-+{
-+	guard(spinlock_irqsave)(lock);
-+
-+	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-+	regmap_write(map, reg, val);
-+}
-+
-+static void ep93xx_regmap_update_bits(struct regmap *map, spinlock_t *lock,
-+				      unsigned int reg, unsigned int mask,
-+				      unsigned int val)
-+{
-+	guard(spinlock_irqsave)(lock);
-+
-+	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-+	/* force write is required to clear swlock if is no changes are made */
-+	regmap_update_bits_base(map, reg, mask, val, NULL, false, true);
-+}
-+
-+static void ep93xx_unregister_adev(void *_adev)
-+{
-+	struct auxiliary_device *adev = _adev;
-+
-+	auxiliary_device_delete(adev);
-+	auxiliary_device_uninit(adev);
-+}
-+
-+static void ep93xx_adev_release(struct device *dev)
-+{
-+	struct auxiliary_device *adev = to_auxiliary_dev(dev);
-+	struct ep93xx_regmap_adev *rdev = to_ep93xx_regmap_adev(adev);
-+
-+	kfree(rdev);
-+}
-+
-+static struct auxiliary_device *ep93xx_adev_alloc(struct device *parent, const char *name,
-+						  struct ep93xx_map_info *info)
-+{
-+	struct ep93xx_regmap_adev *rdev __free(kfree) = NULL;
-+	struct auxiliary_device *adev;
-+	int ret;
-+
-+	rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-+	if (!rdev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rdev->map = info->map;
-+	rdev->base = info->base;
-+	rdev->lock = &info->lock;
-+	rdev->write = ep93xx_regmap_write;
-+	rdev->update_bits = ep93xx_regmap_update_bits;
-+
-+	adev = &rdev->adev;
-+	adev->name = name;
-+	adev->dev.parent = parent;
-+	adev->dev.release = ep93xx_adev_release;
-+
-+	ret = auxiliary_device_init(adev);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return &no_free_ptr(rdev)->adev;
-+}
-+
-+static int ep93xx_controller_register(struct device *parent, const char *name,
-+				      struct ep93xx_map_info *info)
-+{
-+	struct auxiliary_device *adev;
-+	int ret;
-+
-+	adev = ep93xx_adev_alloc(parent, name, info);
-+	if (IS_ERR(adev))
-+		return PTR_ERR(adev);
-+
-+	ret = auxiliary_device_add(adev);
-+	if (ret) {
-+		auxiliary_device_uninit(adev);
-+		return ret;
-+	}
-+
-+	return devm_add_action_or_reset(parent, ep93xx_unregister_adev, adev);
-+}
-+
-+static unsigned int __init ep93xx_soc_revision(struct regmap *map)
-+{
-+	unsigned int val;
-+
-+	regmap_read(map, EP93XX_SYSCON_SYSCFG, &val);
-+	val &= EP93XX_SYSCON_SYSCFG_REV_MASK;
-+	val >>= EP93XX_SYSCON_SYSCFG_REV_SHIFT;
-+	return val;
-+}
-+
-+static const char __init *ep93xx_get_soc_rev(struct regmap *map)
-+{
-+	switch (ep93xx_soc_revision(map)) {
-+	case EP93XX_CHIP_REV_D0:
-+		return "D0";
-+	case EP93XX_CHIP_REV_D1:
-+		return "D1";
-+	case EP93XX_CHIP_REV_E0:
-+		return "E0";
-+	case EP93XX_CHIP_REV_E1:
-+		return "E1";
-+	case EP93XX_CHIP_REV_E2:
-+		return "E2";
-+	default:
-+		return "unknown";
-+	}
-+}
-+
-+const char *pinctrl_names[] = {
-+	"pinctrl-ep9301",	/* EP93XX_9301_SOC */
-+	"pinctrl-ep9307",	/* EP93XX_9307_SOC */
-+	"pinctrl-ep9312",	/* EP93XX_9312_SOC */
-+};
-+
-+static int __init ep93xx_syscon_probe(struct platform_device *pdev)
-+{
-+	enum ep93xx_soc_model model;
-+	struct ep93xx_map_info *map_info;
-+	struct soc_device_attribute *attrs;
-+	struct soc_device *soc_dev;
-+	struct device *dev = &pdev->dev;
-+	struct regmap *map;
-+	void __iomem *base;
-+	int ret;
-+
-+	model = (enum ep93xx_soc_model)(uintptr_t)device_get_match_data(dev);
-+
-+	map = device_node_to_regmap(dev->of_node);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	attrs = devm_kzalloc(dev, sizeof(*attrs), GFP_KERNEL);
-+	if (!attrs)
-+		return -ENOMEM;
-+
-+	attrs->machine = of_flat_dt_get_machine_name();
-+	attrs->family = "Cirrus Logic EP93xx";
-+	attrs->revision = ep93xx_get_soc_rev(map);
-+
-+	soc_dev = soc_device_register(attrs);
-+	if (IS_ERR(soc_dev))
-+		return PTR_ERR(soc_dev);
-+
-+	map_info = devm_kzalloc(dev, sizeof(*map_info), GFP_KERNEL);
-+	if (!map_info)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&map_info->lock);
-+	map_info->map = map;
-+	map_info->base = base;
-+
-+	ret = ep93xx_controller_register(dev, pinctrl_names[model], map_info);
-+	if (ret)
-+		dev_err(dev, "registering pinctrl controller failed\n");
-+
-+	ret = ep93xx_controller_register(dev, "clk-ep93xx", map_info);
-+	if (ret)
-+		dev_err(dev, "registering clock controller failed\n");
-+
-+	ret = ep93xx_controller_register(dev, "reset-ep93xx", map_info);
-+	if (ret)
-+		dev_err(dev, "registering reset controller failed\n");
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ep9301_syscon_of_device_ids[] = {
-+	{ .compatible	= "cirrus,ep9301-syscon", .data = (void *)EP93XX_9301_SOC },
-+	{ .compatible	= "cirrus,ep9302-syscon", .data = (void *)EP93XX_9301_SOC },
-+	{ .compatible	= "cirrus,ep9307-syscon", .data = (void *)EP93XX_9307_SOC },
-+	{ .compatible	= "cirrus,ep9312-syscon", .data = (void *)EP93XX_9312_SOC },
-+	{ .compatible	= "cirrus,ep9315-syscon", .data = (void *)EP93XX_9312_SOC },
-+	{ /* sentinel */ }
-+};
-+
-+static struct platform_driver ep9301_syscon_driver = {
-+	.driver = {
-+		.name = "ep9301-syscon",
-+		.of_match_table = ep9301_syscon_of_device_ids,
-+	},
-+};
-+builtin_platform_driver_probe(ep9301_syscon_driver, ep93xx_syscon_probe);
-
--- 
-2.41.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eyhaaW+BF6W5xuPl"
+Content-Disposition: inline
+In-Reply-To: <CAEg0e7jW=Sfc3tcc0eJwbTx=vb0HM49ZWpda972E-t=Fj1PG+g@mail.gmail.com>
 
 
+--eyhaaW+BF6W5xuPl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 08, 2024 at 09:55:48AM +0200, Christoph M=C3=BCllner wrote:
+> On Mon, Apr 8, 2024 at 9:37=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wro=
+te:
+> > > On Apr 8, 2024, at 14:00, Christoph M=C3=BCllner <christoph.muellner@=
+vrull.eu> wrote:
+> > > On Mon, Apr 8, 2024 at 3:58=E2=80=AFAM Yangyu Chen <cyy@cyyself.name>=
+ wrote:
+> > >> On 2024/4/8 05:32, Christoph M=C3=BCllner wrote:
+> > >>> T-Head's memory attribute extension (XTheadMae) (non-compatible
+> > >>> equivalent of RVI's Svpbmt) is currently assumed for all T-Head har=
+ts.
+> > >>> However, QEMU recently decided to drop acceptance of guests that wr=
+ite
+> > >>> reserved bits in PTEs.
+> > >>> As XTheadMae uses reserved bits in PTEs and Linux applies the MAE e=
+rrata
+> > >>> for all T-Head harts, this broke the Linux startup on QEMU emulatio=
+ns
+> > >>> of the C906 emulation.
+> > >>>
+> > >>> This patch attempts to address this issue by testing the MAE-enable=
+ bit
+> > >>> in the th.sxstatus CSR. This CSR is available in HW and can be
+> > >>> emulated in QEMU.
+> > >>>
+> > >>> This patch also makes the XTheadMae probing mechanism reliable, bec=
+ause
+> > >>> a test for the right combination of mvendorid, marchid, and mimpid
+> > >>> is not sufficient to enable MAE.
+> > >>>
+> > >>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > >>> Signed-off-by: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
+
+> > >>> @@ -28,11 +31,14 @@ static bool errata_probe_mae(unsigned int stage,
+> > >>>      if (arch_id !=3D 0 || impid !=3D 0)
+> > >>>              return false;
+> > >>>
+> > >>
+> > >> I would raise a little concern about keeping this "if" statement for
+> > >> arch_id and imp_id after we have probed it in this CSR way. I would =
+like to
+> > >> remove it and move the CSR probe earlier than RISCV_ALTERNATIVES.
+> > >>
+> > >> I added CC to guoren for more opinions.
+> > >>
+> > >> Even T-Head C908 comes in 2023, which supports RVV 1.0 and also keep=
+s MAEE.
+> > >> But it also supports Svpbmt, and we can perform the switch by cleari=
+ng the
+> > >> MAEE bit in CSR_TH_MXSTATUS in M-Mode Software.
+> > >>
+> > >> Moreover, T-Head MAEE may not be removed in the future of T-Head CPU=
+s. We
+> > >> can see something from the T-Head C908 User Manual that adds a Secur=
+ity bit
+> > >> to MAEE. So, it might used in their own TEE implementation and will =
+not be
+> > >> removed.
+> > >>
+> > >> However, C908 has arch_id and impid, which are not equal to zero. Yo=
+u can
+> > >> see it from the C908 boot log [2] from my patch to support K230 [3].=
+ So, if
+> > >> we have probed MAEE using CSR, you confirmed that this bit will also=
+ be set
+> > >> in the C906 core. We can only probe it this way and no longer use ar=
+ch_id
+> > >> and imp_id. And if the arch_id and imp_id probes get removed, we sho=
+uld
+> > >> also move the csr probe earlier than riscv alternatives.
+> > >
+> > > We keep the probing via arch_id=3D=3D0&&impid=3D=3D0 because we had t=
+hat
+> > > already in the kernel and don't want to break existing functionality.
+> > >
+> > > From the discussions that we had about the v1 and v2 of this series,
+> > > my impression is that we should use DT properties instead of probing
+> > > arch_id and impid. So, if C908 support is needed, this should probably
+> > > be introduced using DT properties. The logic would then be:
+> > > * if arch_id =3D=3D 0 and impid =3D=3D 0 then decide based on th.sxst=
+atus.MAEE
+> > > * else test if "xtheadmae" is in the DT
+> > >
+> > >
+> >
+> > I know about it, and Conor also mentioned adding this property to DT a =
+few
+> > months ago. I agree with this at that time. But for now, you have found=
+ the
+> > T-Head document description about this, and we can probe MAE using CSR =
+even
+> > on C906. I think only probing in CSR will be a better way to do that. It
+> > can maintain compatibility with some early cores, such as C906. And will
+> > also support some new cores with non-zero arch_id and impl_id but may h=
+ave
+> > MAE enabled, such as C908.
+> >
+> > For future concerns, T-Head said from their documentation that
+> > "Availability: The th.sxstatus CSR is available on all systems whose
+> > mvendorid CSR holds a value of 0x5B7." [1] and this extension is frozen=
+ and
+> > stable. I think it's okay to have MAE errara for some cpus whose impl_id
+> > and arch_id are non-zero. And T-Head may have used this for their TEE, =
+so
+> > it might never be removed.
+>=20
+> I wrote that specification. And yes, T-Head reviewed that part.
+> But there is no guarantee for future cores.
+
+Yeah, that is what I assumed. Unless its a 100% certainty that this bit
+will always have this meaning, we can't unconditionally assume that it
+does.
+
+> > Since it might never be removed, if some vendor uses it and makes it ha=
+rd
+> > to run the mainline kernel since it requires setting CSR in M-Mode soft=
+ware
+> > or changing the DT, they may be hard to change for some security reasons
+> > for TEE, I think it's not right
+
+> The question is: why should the kernel have to care about that?
+> This can all be addressed (hidden) in FW, where core-specific
+> routines can test the required bits in vendor CSRs and set DT properties
+> that match the core's configuration.
+
+I'm also not super inclined to care about it requiring changes in
+firmware, because the last time I checked T-Head's SDK (and therefore
+the vendors') use a version of OpenSBI that cannot even run mainline and
+needs to be updated to begin with.
+
+--eyhaaW+BF6W5xuPl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhOmawAKCRB4tDGHoIJi
+0tr/AQCd+JE5/L+WVnwdvpplHfpAcFtlQe7GsV2410Q6Cosm2wEAvHjLaChHcrUb
+ASrH4Zsmcv0BeVXzNNn2VagMox0TzAU=
+=HNw+
+-----END PGP SIGNATURE-----
+
+--eyhaaW+BF6W5xuPl--
 
