@@ -1,119 +1,132 @@
-Return-Path: <linux-kernel+bounces-135816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA6789CBB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:30:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B63289CBBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C5841C21D17
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:30:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9A33283353
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1A01DA3A;
-	Mon,  8 Apr 2024 18:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FEAF1DFF2;
+	Mon,  8 Apr 2024 18:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="mfK9enkX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uP7v9bHu"
-Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="h2Ch8rFB"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB9847B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A91847B
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712601029; cv=none; b=YF+0wpseO5QCREiJdoCfhlri2LHsU8mZxcB5Ok/IPNUrxky1yfxLcJhLAipeKtkQhhivEZt0GyCjVc+aVvpPM8OQgGaKVr4hdNEy4JWWe0cwZ1y9tXnLCECsMg6d+xQBzJiypOZtRBbS05pY/OHE6P+5+TmmpXD5fsAo5hQHe88=
+	t=1712601162; cv=none; b=mVX/gvVNB8YaPBQefhGsK/kinaB0GwRfU90Ls4BLJ5euyJusmaqEGZnfgRxg1PSCkPtD6D924rBBfjGktHVnOKCtgmyRbjV3ir94LjTwudeoHNX/OeWZSKbEeBkNDO3VkhJH3oLrkV4/MGAl6XGRUWXUrvxw3nArPoiJ1vbL2Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712601029; c=relaxed/simple;
-	bh=eAuPjPnMl8lqtdSr5YO+FTr8OdGjykhUZ07H1EI9oIY=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=UDD8PevcSBFG2Za3HEOAllgfMnTZ7xDh8SCEMCBCyUpMPXdD7STzjsRhnPNiA4+jF8Sf1cOTtV+LnEfq2ISI12QidwNvyML291TuE1JRzbr7FTe5ggwzsqDaw74zsGx1K2m0w0TVXGJLt8K2BaTIe8pQFaUReHObuaO3Zf+wvyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=mfK9enkX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uP7v9bHu; arc=none smtp.client-ip=64.147.123.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id B2A7618000FF;
-	Mon,  8 Apr 2024 14:30:26 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 08 Apr 2024 14:30:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1712601026; x=1712687426; bh=fXxNckLzjc
-	Pn37VK3Vmo5LPJa5sdva5WveaKb5nJYi4=; b=mfK9enkX8ouYxGvYuixu29BvEM
-	CzmKtHLrOt/V4LeNwWdzfOB9Rmfc7Wqk93Z8/2tSMELejs5r0snTS/X75oQ0Ud2H
-	/dYLUc/DS6FOfusFu8w4OF9CkK2Zzq2PrjIPWtolpy6A0BTeUaxVU30O44K4Y/H/
-	whQSjk9pl4hu4jFPwB0Dm5nMVAlYsIEa06FOWY8+BsrVTW5iASRmriT/kYdMb77y
-	UnY6wvn+14z115rJpwsF4fnnNtP3doqutRa8zsF7rCBxHl6fLIHjAXse2N6/tbH5
-	PHlpq9LygPKmnN2+OSXIANln175e/SKwjV3+Dai4yrzVGf8bib9J1N224WCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712601026; x=1712687426; bh=fXxNckLzjcPn37VK3Vmo5LPJa5sd
-	va5WveaKb5nJYi4=; b=uP7v9bHuYcP2iHfTVcQJB5gsUqdkT+IlQ3lgMGme0qx2
-	in1ueb+a2lMy0zo5rW8mD4JYrNLPpg1R1xI284Tk/48DSxxvgyg52c8BGOt4sal4
-	NeyUZeY5X+EBf8VoltXknMmwt0eiues1qBmAeTZnKe0hKXimkZdMZpEQNLXdAUvX
-	hZMMXLFlVkI6UNeSRk2QG+PbdASQsGhzyyJtZ/R5kQtYI4GvNI2uMyeDjtkjiaqw
-	IOqkNV6gTM9Q/7zLdZGLohbnK4V3sZ72LFZ25jzNVMk/GEGMk8cbwqT1ETJeMeH/
-	akuyA98qvVoNoWkbw5Pv5eHS+rp91nmOvKeIzUHF4w==
-X-ME-Sender: <xms:wTcUZu-k6fUSFYc5bGHuQmD0i3256fZX9KPtaXXhGbCtwkkZZNe9AQ>
-    <xme:wTcUZusP9DTAWST8MwFZJgNC8owUlHWL_07d788p9SC_fmHYls8W-4ngpFZewJ6aW
-    SEEmkPgyurz-pzLXBQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeejvddvvdduleduheejiedtheehiedvjefgleelffeigfevhffhueduhfeg
-    feefheenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:wjcUZkBBPED_4TdOGA4Xc_0MpiGJwcebpVvddp6bHW7xswGBF0NUuA>
-    <xmx:wjcUZme0KmgXY3DkOn1xjetkuWVwNnIbvFkTWRXOBG6mF1EWJhQBQQ>
-    <xmx:wjcUZjMee5XpAU6bSgVIwPJ3yhyOSdcbeJp1Q3yLEQCy5nomRtdF2Q>
-    <xmx:wjcUZglKeNQ4KZgVXZhfRNS8q3la1wjdLq-Nb_4CqkTHcIcEbsixUQ>
-    <xmx:wjcUZuq8AUQF22q65uxq1oxTtRub2cbJ1BXaS2-GLDtqqTFn87G2_HXh>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id D3982B60089; Mon,  8 Apr 2024 14:30:25 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
+	s=arc-20240116; t=1712601162; c=relaxed/simple;
+	bh=nPGyLyJlX2fCnsHunHmkY7pU0JlkSGSco0okv+kNh4o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lEngpF3wUpAU3qu6tUbEYKmF8STHc/ng0KQLP5HfqdbC9fEki4BMbekGl65wBMgrN3sTGMa0gnfWhH+22CUsUitccrc86JUmuShUbqLRaTCBMdho6QvkHT6xvhypKtR4iET4eTKis5lQbsdaUbsAe11PUppZk4/5AD1LdbZfiZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=h2Ch8rFB; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d6c1e238so3459540e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 11:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1712601158; x=1713205958; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IbEhSspiiQkOhO4cKWHaWHB2yUMq+x8uxq8aQa3Mn54=;
+        b=h2Ch8rFBtSM+lGVbyrpODaxDHdduEKxxNlHazXd4GpQ/KeoHuVyicpCbYlGcziowRt
+         WNrzPhnazdjdCXJ0XiM48sNAWQjqi9xCUbFh1RXof1hzRj3KzWiEvZP4R8SxBdG46Zt/
+         w1cpMlGkAXNIvEJ/Cs30IHRXaaiazRFkLkkag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712601158; x=1713205958;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IbEhSspiiQkOhO4cKWHaWHB2yUMq+x8uxq8aQa3Mn54=;
+        b=HeEOlEHvOuhubKBw3FuWQ8ahg6xrvWyUpWIGxPhqB0b4LUnzI3I0l/h+sxjeKnoHY0
+         gCJIw+pcvX+j1HUdNea8m1MHcNUmuGFKnRorEbI42AaFfg/XEZ/cmiIyXJXQ2jPRiXF+
+         eOU+Rz1zlq5RFaEjrGSOzHQeNeJ/nH4iApG9HDxOBIcQ0ja+ZHT4M6k+sZfe+xlB4JDt
+         EIxJOqVc1YvzFh3nQcG5x0hTjhJja1Q78qimBLoxXsKIf6kaWzuAlEOZkStlNKcZpaxq
+         B23OTdbdoUw50QId8rb6c6tVNOYzX+nb/v4Fvce4cwUxGUvyF5IcFgo0rH2LYu1Vw94v
+         uZDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzXwTcCTHHI7aTt5Gyy3bNgR2bjq86hTMOABQ02KDHIRaFQvUueeCTwBeNY/IDqDX71RZPT+raIpU52kYSIjLbmpnOaEIOHC7fA/t4
+X-Gm-Message-State: AOJu0YwKmt7TLLeNHqs50FSVSs7FHh7iw1fYP0qhcmfBlnDux2hV5Ny2
+	vzlQJ77SlbWnkR183cUqga4TLasM6EG+ARCsXfMFYKwFS44xaPfrl36bLdi6xbDGBLo1nE6MG3O
+	ioX6/jg==
+X-Google-Smtp-Source: AGHT+IFzteOfXe6YrFBoQCe8+G65qPkt/XfnbaLLUlRz3y3K8fvcon2idlwDwxt6SamGKByaioG/Zg==
+X-Received: by 2002:a05:6512:2348:b0:515:9479:a997 with SMTP id p8-20020a056512234800b005159479a997mr8146560lfu.10.1712601158039;
+        Mon, 08 Apr 2024 11:32:38 -0700 (PDT)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id a24-20020a50c318000000b0056e347954f6sm4099217edb.31.2024.04.08.11.32.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 11:32:37 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a51d3193e54so167480866b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 11:32:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVvJ9Zn43o6G4HJZtgf26VRTuC2jCAXguHJXBs3m+oYZg/AsbKQYfzLdVEUJMg5utULjvISYBaAOV2k6RQs+QzTthoKYdvzSF5KDVBu
+X-Received: by 2002:a17:906:eb4c:b0:a51:970c:acd7 with SMTP id
+ mc12-20020a170906eb4c00b00a51970cacd7mr6011573ejb.21.1712601156851; Mon, 08
+ Apr 2024 11:32:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <72780460-f0cf-4ad1-bf88-f49cb37f0de8@app.fastmail.com>
-In-Reply-To: 
- <uejqjxh3ntjdyziy3avisav7ghhb3s66iccfwchjkm534zy3ja@3kxet4bu2ck3>
-References: <20240328140512.4148825-1-arnd@kernel.org>
- <20240328140512.4148825-11-arnd@kernel.org>
- <uejqjxh3ntjdyziy3avisav7ghhb3s66iccfwchjkm534zy3ja@3kxet4bu2ck3>
-Date: Mon, 08 Apr 2024 20:30:05 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Justin Stitt" <justinstitt@google.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "Viresh Kumar" <vireshk@kernel.org>,
- "Johan Hovold" <johan@kernel.org>, "Alex Elder" <elder@kernel.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>,
- greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 10/11] staging: greybus: change strncpy() to strscpy()
-Content-Type: text/plain
+References: <CAHk-=whHWjKK1TOMT1XvxFj8e-_uctJnXPxM=SyWHmW63B_EDw@mail.gmail.com>
+ <20240408084934.GC21904@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240408084934.GC21904@noisy.programming.kicks-ass.net>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 8 Apr 2024 11:32:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
+Message-ID: <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
+Subject: Re: More annoying code generation by clang
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Anvin <hpa@zytor.com>, 
+	"the arch/x86 maintainers" <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024, at 00:28, Justin Stitt wrote:
-> On Thu, Mar 28, 2024 at 03:04:54PM +0100, Arnd Bergmann wrote:
->>
->>
-> Arnd, I see 4 instances of strncpy() in this file. Could you clean them
-> all up at once which would help GREATLY towards:
-> https://github.com/KSPP/linux/issues/90
+On Mon, 8 Apr 2024 at 01:49, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Should this not carry a comment about the "ir" constraint wanting to be
+> "g" except for clang being daft?
 
-Right, I see they all operate on the same string, so it makes
-sense to keep these changes together. As Dan suggested, I'm using
-the padding variant for all of these here, even though I'm not
-entirely sure if this is required.
+Yeah. Except I think I'll do something like
 
-     Arnd
+  /* Clang messes up "g" as an asm source */
+  #define ASM_SOURCE_G "ir"
+
+in <linux/compiler-clang.h>, and
+
+  #ifndef ASM_SOURCE_G
+    #define ASM_SOURCE_G "g"
+  #endif
+
+in linux/compiler.h.
+
+> (I really wish clang would go fix this, it keeps coming up time and
+> again).
+
+It's been reported long ago, it seems to be hard to fix.
+
+I suspect the issue is that the inline asm format is fairly closely
+related to the gcc machine descriptions (look at the machine
+descriptor files in gcc, and if you can ignore the horrid LISP-style
+syntax you see how close they are).
+
+And clang has a different model and needs to "translate" things, and
+that one doesn't translate.
+
+It's not like we don't have workarounds for gcc bugs in this area too
+(eg "asm_goto_output()", n=C3=A9e "asm_volatile_goto()").
+
+There was another bug in my patch, though: the output mask should
+always be "unsigned long", not tied to the input type.
+
+              Linus
 
