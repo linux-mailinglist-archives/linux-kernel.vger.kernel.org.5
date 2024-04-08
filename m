@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-134829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7779C89B791
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:20:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB1E189B792
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:20:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C7AA2827B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BDBB1F21F3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECA0F9E6;
-	Mon,  8 Apr 2024 06:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731A714294;
+	Mon,  8 Apr 2024 06:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KN65rF1f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S5rKsJ3Q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B641C3E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B781610942;
 	Mon,  8 Apr 2024 06:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557226; cv=none; b=aK4SN8bwG7KSE9l7uuoBpMpHaBf+v4rppAuk0D3zRfBEatGkAh6Vemvk0bbD7YTh9cJQ9qLB+2l2C3gRawIHlMgPckql4dV56f58WWOPfgrDDtdzgNJ8tHnmDXY34ti1g+WTS7YajbnLU/so2+Q2HXp8EQdyNTP3+LzAImFBKnc=
+	t=1712557227; cv=none; b=eMkNtAOfwTpfN+jF3oZO86+c6jkIzymkN1M4w54omKBuquj6pzPGx8ru+NEqfU4ZtvnKRcTMWvws7aIq77JfPwEapn2t1SBzmPCxlaz/WnXN97Oig6PkjGmh0brGeEg93qM3JqWxMrhScf+pOh0nv/XVgssFX3OBRHnmoBSZ1ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557226; c=relaxed/simple;
-	bh=BeeYTLf5wFLpqYh+8yiJHCtgyzZdlshb4mu0aF5x7dg=;
+	s=arc-20240116; t=1712557227; c=relaxed/simple;
+	bh=ydEz4pvNadUncoDEpx5DkJX9bvAifXh1bPUwl29TKW0=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KnN/AP2uyl/KI5Nb+GKldtn/mR7ZCh7yc5mhCDDwYlVN7otSss/OnNs6JLJiMQfRgx1VZ2zuFQHUajVBVCeTBDl0HE9AH62h2kOGCMvqpFaW2cyq68Sx4DQ7MomF1gUJ09vODiaBfgolvR/J9VJXNo1huJuG4eHk+vtrdjwDjho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KN65rF1f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F2522C433C7;
-	Mon,  8 Apr 2024 06:20:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=POSgeWexUFLR+jZ+Ix2XxIR4ZpvLHgfVcUpabuJpMgmr6813OxKloO/4pQ1kzrATydAf+WzN17lyQhCBtTio/izB3HiZLXuYU3ZB72erzCLHiwiX9ezINFqfQXSc/eWCq4yq3QBEnn1idS+GBe18As2CsD6JVDpfyd1ZZcpLrfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S5rKsJ3Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 23E89C43399;
+	Mon,  8 Apr 2024 06:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712557226;
-	bh=BeeYTLf5wFLpqYh+8yiJHCtgyzZdlshb4mu0aF5x7dg=;
+	bh=ydEz4pvNadUncoDEpx5DkJX9bvAifXh1bPUwl29TKW0=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KN65rF1ftf3clzoddmDvvthkw4itsWlKuPTSL9hq257lvB/60G19rQrAzfw8I4YxZ
-	 IWfjLpTWmiQ6/tf4iP8tEIa0kQJ/XX2C+/VVBsdYqlweDEaqTIMrYp3PDcX4S6oENH
-	 HzDRB+TbqKI1HpnxqKYZ38c2t5eU2twDD9x2zg3Uxyoj7rlYzbaaKPothD7TE9QTPZ
-	 y9GzPQHU7uNq0SumZHWnwlwJu5YIUIf6cblDWiojWSewaChEgtpI0e2aTwKLuI6/00
-	 RgmyC6m2+clsHS8oWo2n/AFHut375d1FL1t5IBGQTQ4FJTNv3G5gpuKT9m7ggdX+SJ
-	 9nQ3NYX0oCIFA==
+	b=S5rKsJ3QZTLYYbUjJK8OHaOKN+H9lzl7guSBPWck+g3hlkfrq87SN191HcGIxWY8X
+	 6HtuDCI5qMJsC6HAwMYDDppmND0L5KGx1HGAGLDbVjvKriiMD0LC4hQ/gOM4m2Xuix
+	 fCofhz1SCA12iZjzgXN2+wLFCDFWCHYkJWoSWwnfHVKtZYNlkAHXk9equCO1+tjAML
+	 9USK/Vj35ICR3zyYMZ5del2EewTFPqpWB7xHAuDLW0OMuPsoZKJG/83OVP+BOYi8M+
+	 AaZeX9KpnUShf3KL9cMYvLU+1Z4eho7HksvJtB1Z1K/fprRcoo4zhUoAhIi51uFEdk
+	 lxD7YHrJkPITw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E31BCD7982C;
-	Mon,  8 Apr 2024 06:20:25 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19110D2D0FD;
+	Mon,  8 Apr 2024 06:20:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -54,8 +54,8 @@ Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH 0/1] platform: Handle HAS_IOPORT dependencies
 From: patchwork-bot+chrome-platform@kernel.org
 Message-Id: 
- <171255722592.606.18199441888717456715.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Apr 2024 06:20:25 +0000
+ <171255722609.606.5030818566698111967.git-patchwork-notify@kernel.org>
+Date: Mon, 08 Apr 2024 06:20:26 +0000
 References: <20240405134151.5560-1-schnelle@linux.ibm.com>
 In-Reply-To: <20240405134151.5560-1-schnelle@linux.ibm.com>
 To: Niklas Schnelle <schnelle@linux.ibm.com>
@@ -64,7 +64,7 @@ Cc: bleung@chromium.org, tzungbi@kernel.org, chrome-platform@lists.linux.dev,
 
 Hello:
 
-This patch was applied to chrome-platform/linux.git (for-kernelci)
+This patch was applied to chrome-platform/linux.git (for-next)
 by Tzung-Bi Shih <tzungbi@kernel.org>:
 
 On Fri,  5 Apr 2024 15:41:50 +0200 you wrote:
