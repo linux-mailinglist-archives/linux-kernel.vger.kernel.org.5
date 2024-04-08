@@ -1,110 +1,85 @@
-Return-Path: <linux-kernel+bounces-135953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 403B589CDCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:48:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3741089CDD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 23:51:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAF02B22455
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:48:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6FDA284905
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0C214885F;
-	Mon,  8 Apr 2024 21:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="LIQRiZQY"
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322F0148836;
+	Mon,  8 Apr 2024 21:51:07 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1878D11725;
-	Mon,  8 Apr 2024 21:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C727E8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 21:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712612877; cv=none; b=BeCaecC4+9+wwSU9dz57DETbX7/7NppxvWU8wFlwfdAc7lhw/Mbq3x4YxNnvxz99wEM+32n+knt5DKE85MNzVPSLQ8pzbumNqSwciScpI8Ey8OhysRUk3P3HSnv6yFuEe/xH8URopSiX6TaYB6ApNqTU+eqV3GNGRTtZLfZjh4I=
+	t=1712613066; cv=none; b=R9HvOHfPPE/Bgu1JMhUkrfWv+XfETgmoEasqlI5hZ3Si4qeX9LKimzX6ja6xDG+d3c30xtPM/JO/vu96YoNxo4+ays+YioLgyih6U3RDUsOZlK6Bb2hqeJ3mLUUtI/wCMQvDlCFeH4o68cBgyfcC9mriLs5LL6KRcU0KPUqA27s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712612877; c=relaxed/simple;
-	bh=KsMcGgnYpOkBnyUVNH0sXZj0vS5Ooyn1csyDsVRybZg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:From:Cc:Subject:
-	 References:In-Reply-To; b=Hu9dzJT2HmZNQe3sws7f4Jgd15Vwr3SAJiZPA/fhfxDdzJssEopJrq0aaKPrJIp1L+tyG4Tru0U7qDjMhNQCw6OdaRimYhuFQm1zmlXkvrFDTBrzBDZt1vgE47TjoclRvSrl5oKMi01iTRKCzl/F08GZT3lSerEt504IlzcOnkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=LIQRiZQY; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
-	s=submission; t=1712612844; x=1713912844;
-	bh=KsMcGgnYpOkBnyUVNH0sXZj0vS5Ooyn1csyDsVRybZg=; h=From;
-	b=LIQRiZQY0V2qO9N/8l1U9ZH3YsE1FtxdEFFxBB+2O4pWV5kO2uHc6bSAxnrPNroif
-	 k59n0J/+wulO+vjI51EpT3khxRxabkY346yeJpUI4w+fnVAyMD39mI99y/BOneXzKN
-	 GWDhC+6mUmAhOeqFthzrnLcCJhekvRe/f99egXlxwqN7dzKcfwTDYdKe23g4s7iB6J
-	 yR9E8qK8vEj2HZOiIpDS1iIjD1AWWDtarS8h7AEeoFgWLNfhMq3rQXs534WYk9Mc5i
-	 1X1ttT7YYFLk3p4VdR4TVPhDx0iuZBuqOeqV76LZCMuAFTSTX2q+lGxFb1yx92s8yg
-	 G+Vw1e8GTg9zQ==
-Received: from localhost (koleje-wifi-0017.koleje.cuni.cz [78.128.191.17])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 438LlN06005664
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Mon, 8 Apr 2024 23:47:24 +0200 (CEST)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1712613066; c=relaxed/simple;
+	bh=2x+6KvoH32K8EzxgSJkqDxaoAVQEpeU2PsTNogoNZ44=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qBykmzosTu87TL9amIY3tHuCgufEUH5q1T+i/HdzlWEyjlDG4l/M0F8uCBG/SBkjTOFSByfpYlxYV9fsVaJP/+a6zT2Y/GnvmftckF9t/f1YtQRsTlaDDlL6LJdT/SYBQXM/oXOCRgFcABz8L3v3t11mH4PlQsypipokgtfUZ20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5efba3f8fso129129839f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 14:51:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712613064; x=1713217864;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O1XSBFQxppuDIBA6DKA8wazKAqSDRqcEM0rBXWCorMY=;
+        b=JpxFQcfA8cjTPd722zptcKUpeXrB8e1DBuFBI7StaWI7Chv3ANkogV2Waychr+Qes7
+         R2U2GIijHgPqk3EZTkUAMHz7wn492WPw4wC6KGS5xAswjQtP1drfDYIKduwH2JWGu1Uz
+         Gf5eOxFqh4FnvFp/RyHNq/nl0GFN3ODF5zdCYd6rOeAKfsdSzEsB2yWbgzwUzRcuBzWp
+         RiycnGvug41uqq15MIfJ/588hHyXeHAKGe3my5mMUGBRMZD7ufYxHMAkSQoK4n4RPk4X
+         g5dABZFeD2pw+UP4PAhu8K+DuBYUhijcQSwrrVgzgs1DMt0El3XklV1X3OUxkp4h6/Et
+         j+yg==
+X-Gm-Message-State: AOJu0YxwtItW2qA61kT4IgusX8IR24678zHd2FbooanYXCC6acw3UEg6
+	Z6XF5LgYRn9EzaT8+BFacuTiANrIdWXf9EjGiWWc+ZOFuZWKaezVbuK4CXcteeQ2yHll3id6bMs
+	V3elXQrkfQ8vohphfYltoWuAPJwkteHnTb+cU5ZN5VcXks2kwF7ng2iXS6Q==
+X-Google-Smtp-Source: AGHT+IF6+jYiKS9aNPe7q0ivPhn2muXxdFR85m/Vxot8+1Ypei3KIE5QPbnE3t6gxHC6pKx3wAlwVE77knw73GV7LsHTGDYz+BdI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 08 Apr 2024 23:47:57 +0200
-Message-Id: <D0F2LIG40N4N.100NU783PULAH@matfyz.cz>
-To: "Sasha Levin" <sashal@kernel.org>
-From: "Karel Balej" <balejk@matfyz.cz>
-Cc: "Markuss Broks" <markuss.broks@gmail.com>,
-        "Dmitry Torokhov"
- <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, <duje.mihanovic@skole.hr>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 6.8 78/98] input/touchscreen: imagis: add
- support for IST3032C
-References: <20240329123919.3087149-1-sashal@kernel.org>
- <20240329123919.3087149-78-sashal@kernel.org>
- <D06ZCKKYTQM5.3OJ6HCLHW3DZ9@matfyz.cz> <ZhMw3fwiSrbw9r6P@sashalap>
-In-Reply-To: <ZhMw3fwiSrbw9r6P@sashalap>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:20c9:b0:368:c21e:3898 with SMTP id
+ 9-20020a056e0220c900b00368c21e3898mr771465ilq.3.1712613064603; Mon, 08 Apr
+ 2024 14:51:04 -0700 (PDT)
+Date: Mon, 08 Apr 2024 14:51:04 -0700
+In-Reply-To: <20240408111049.28844-1-n.zhandarovich@fintech.ru>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005a8d0606159ccdd1@google.com>
+Subject: Re: [syzbot] [usb?] [media?] WARNING in smsusb_start_streaming/usb_submit_urb
+From: syzbot <syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, n.zhandarovich@fintech.ru, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Sasha Levin, 2024-04-07T19:48:45-04:00:
-[...]
-> >sorry if I'm missing something, but I don't see why this should be
-> >backported: it doesn't fix anything, it's just adding support for new
-> >hardware.
-> >
-> >I can see that adding a device ID is permitted for -stable [1], but I
-> >thought it still has to bear some signs of a fix, such as maybe here
-> >[2].
->
-> It does not need to be a fix, it could just be plain device enablement.
+Hello,
 
-OK, thank you, although I'm afraid I still don't follow the rationale
-behind this, except maybe for some really trivial additions which do not
-require any other changes.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I was also initially having a hard time understanding what your email
-means -- I found no mention of AUTOSEL in the Documentation and was
-unsure whether this is already the review cycle or not. Only later I
-came across this article [1] which confirmed some of my suspicions and
-made things slightly clearer.
+Reported-and-tested-by: syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com
 
-If I were to add a few words to briefly mention AUTOSEL to the
-stable-kernel-rules document according to my current understanding,
-would you take such patch?
+Tested on:
 
-Alternatively, I suggest adding some sort of brief
-description/explanation to these patches as is the case for patches from
-the review cycle.
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=15e8df4b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dcd96d223f515533
+dashboard link: https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=147f1bd3180000
 
-[1] https://lwn.net/Articles/825536/
-
-Best regards,
-K. B.
+Note: testing is done by a robot and is best-effort only.
 
