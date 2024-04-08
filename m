@@ -1,238 +1,175 @@
-Return-Path: <linux-kernel+bounces-135598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7110089C836
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:25:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DC989C9F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:42:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94AB71C22988
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:25:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 520B3286DC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CD514039D;
-	Mon,  8 Apr 2024 15:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C4C142652;
+	Mon,  8 Apr 2024 16:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fXaihqeH"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="Qu+v/lYh"
+Received: from smtp68.iad3a.emailsrvr.com (smtp68.iad3a.emailsrvr.com [173.203.187.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117EA140399
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 15:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A1B1428F7
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589934; cv=none; b=bCIhtyCkdD8zypCk9Fvz8gQO3rHTBviUOQAazwj3xVANnX5kgpiEfV146m7cQb18Hzk03GLPBEmx+2iiLSGeuXykDc09JynZwqbRs7JPXOCAYJ/1VV8OiGhEk0w3EO+i7g16QWey0l667Y9rh9+jVqOPRnXz57+JzvFvHPtL+OQ=
+	t=1712594515; cv=none; b=EMss4Lvod8yZdMFNLBN4R2nYayGFGZTrkZc4BYLqYdsPx9aQHtA4EHW/aFYUzHDkdJqPvbuuRQr5tV7vGWvGB60fS0h2+h5DFWQllc8qFjhoS29CbvEfqeE2YpMrRufdfkCzFFwy0dyxFwcVQSyiWyI1WkO9KWGx8pI0QlMKXWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712589934; c=relaxed/simple;
-	bh=B/v1v3h2AYw4P1pjILLZrQfWcIRBhUaMnA8TnkMXbps=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pbIqexKA0mGSL9Rlav4VPpHxeyHuDnpur+ucM4feOalTHdPgtD7wSK6PxRilyPULtBG4fm/geOlbtHRuudgfc7ZlZ9lVDyxi7cp0dbmnz5MP+gC1EeACU+wKhGQqFVEh9VpNnKh20I7pZRdw1gwAJuqu9ZHhcdYJK0hrl2bSP7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fXaihqeH; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36a133ff27eso6924185ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 08:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712589932; x=1713194732; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dyLeEtLJTKGlZTVOKTvm8+gq5ePSTykbDWLodWR3pJk=;
-        b=fXaihqeHobvHFOMSh6wbKZNHxvhuGh8REeGSzKe7vcpCrCp4wrqtGyqWzYt3xF6FIT
-         G9ZwhZFAAkqWMhz2TGAtz6H299VTT2/3jzNA5ykX0HSYUGOfw8wV74VEOOuCSnweoZRO
-         ESbicSrKmNI16nwFJfc8JITLG10Ot4+9CavmCuqk5CbA2BX25asDHdZ6Oto+Xh0TgF+n
-         MPb+tpqq1PDWyHXiVhz87hiy/S1WZpAiIGJXoZqF37+b+/0b5HiQM1bY8tR4X+wANfxr
-         gDUffVINdlNavkfIfn4pjIyXDrljpr+LLhCS8GpElCKngY6pHX4q1Zj4FLRUuLrJyeJW
-         FdyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712589932; x=1713194732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dyLeEtLJTKGlZTVOKTvm8+gq5ePSTykbDWLodWR3pJk=;
-        b=lgQE32L0qY+SdK6SVuRFaaq5v0zqM/u8pqUDoba+U2jjJTkBFshqEKaen++CooozVo
-         S5+j9dFNWWBx8QXOOr6pZ1RCQk8TSPP2WK/G6o30O4SRzEoblL7xVyK2M8oiP1T/JsWP
-         8kOY7dLtTmLusWcqDGZh+BHs5NZ2da3xxmpVk1AWySId9SI7p7U/Debh8QbuOZtpApnd
-         K8lurO+wOvlhFR1I1YCQg/vy2gReQGRrlNnM4p8i5eV+qeqtU8xG7lF5PbzS4fHe81o/
-         u0UdqaS6cO+CKRUkV21uCnoKAY7FtGB804y2mhjCbpGxjQKu85KfVDpOfKYxleEW7L8L
-         BHhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXX/gqBrRXLvIZv1BEuC7Yn+U6RcXMIHVy9+2wkd9ZRaUdxshs/VDMssPJBvT9dIKobGppzrNfeOa+EA/DMdgx806zVj4Iv3SUpr0wu
-X-Gm-Message-State: AOJu0Yx/4zckmfwkzdS8nzS9+FqHgB30OK7nbj/zNrj95DMkEng0GPEb
-	6CNgiExUrBZGff7fI3qc2lxO2H2qZvPXqpJknXI7ENOFOMS6ZDnZfHXJs+wxyw0Zweg+b25eAAl
-	w5Naf7Pqz7kM7lMXgK/GI+WcSGkGN58va6FAu
-X-Google-Smtp-Source: AGHT+IFoibPO7BhL7RK/sv94V3MP2D2AB7zKuNJZK2klNQtL4Sva6nteovilZR+8Gxg0RywxiuMfLjq9IgnaG49qvAE=
-X-Received: by 2002:a92:c68e:0:b0:368:7571:686d with SMTP id
- o14-20020a92c68e000000b003687571686dmr2483ilg.1.1712589932007; Mon, 08 Apr
- 2024 08:25:32 -0700 (PDT)
+	s=arc-20240116; t=1712594515; c=relaxed/simple;
+	bh=DGas92X4/ZpcXb5tSqkSEcJjOWyWwlBNT3zZo8zN0jc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V7MDeEArjHDcMZg/nRBiM1DkPQQ5Md9kRg/EHcHqpZDRIKTon+DBUyUUdw9CoIGmIjRNcYwsoEstdjKPnateYV2wB9DkZkG8q5cZizFhB2lhj/tLz7YgpQEV0SjrxaoJtC19WBq7iI/UM033VED6zSSvZOxw3oTaFDZ35bNMHEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=Qu+v/lYh; arc=none smtp.client-ip=173.203.187.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
+Received: from smtp78.iad3a.emailsrvr.com (relay.iad3a.rsapps.net [172.27.255.110])
+	by smtp9.relay.iad3a.emailsrvr.com (SMTP Server) with ESMTPS id 9919A59AB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 11:25:48 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+	s=20221208-6x11dpa4; t=1712589941;
+	bh=DGas92X4/ZpcXb5tSqkSEcJjOWyWwlBNT3zZo8zN0jc=;
+	h=Date:Subject:To:From:From;
+	b=Qu+v/lYhEfKwZ1oLPqGSzmVtAnawgyHZu/zH8EAR0nsJMmheP2OBhwnRF+uVnSHpA
+	 o28HZoUpSkmAux5R8yy/xSTfhF4mjXTDJ04hI17vNmRlH/Si+zLWeXBbmlvr2pdhBz
+	 UxvUid3aa+8gFDhjAvQGAMbrLC+JY1NkQPdDE+x8=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp18.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3A43E25415;
+	Mon,  8 Apr 2024 11:25:40 -0400 (EDT)
+Message-ID: <e9d04d29-b4a4-4ebc-b04f-9e9877f4eeee@mev.co.uk>
+Date: Mon, 8 Apr 2024 16:25:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405141411.1807189-1-panikiel@google.com> <6027dacf-549e-4855-97d9-dd02e65fd94a@xs4all.nl>
- <5aa6d853-60f5-485b-b892-e6e81acdfc12@xs4all.nl>
-In-Reply-To: <5aa6d853-60f5-485b-b892-e6e81acdfc12@xs4all.nl>
-From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
-Date: Mon, 8 Apr 2024 17:25:21 +0200
-Message-ID: <CAM5zL5qqv=XFnCwV2g1ErNzjMP0LzJaxRRCPEmqOkvWNDr8U3A@mail.gmail.com>
-Subject: Re: [PATCH 00/16] Switch subdev dv timing callbacks to pad ops
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: kieran.bingham@ideasonboard.com, mchehab@kernel.org, tharvey@gateworks.com, 
-	niklas.soderlund@ragnatech.se, prabhakar.csengg@gmail.com, 
-	charles-antoine.couret@nexvision.fr, thierry.reding@gmail.com, 
-	jonathanh@nvidia.com, skomatineni@nvidia.com, luca.ceresoli@bootlin.com, 
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	chromeos-krk-upstreaming@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] comedi: vmk80xx: fix incomplete endpoint checking
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org,
+ syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+References: <20240407162646.27486-1-n.zhandarovich@fintech.ru>
+Content-Language: en-GB
+From: Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+In-Reply-To: <20240407162646.27486-1-n.zhandarovich@fintech.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 0f6ca594-37db-496d-b7aa-0d846ec83d1a-1-2
 
-On Mon, Apr 8, 2024 at 4:18=E2=80=AFPM Hans Verkuil <hverkuil-cisco@xs4all.=
-nl> wrote:
->
-> On 08/04/2024 16:15, Hans Verkuil wrote:
-> > On 05/04/2024 16:13, Pawe=C5=82 Anikiel wrote:
-> >> Currently, subdev dv timing calls (i.e. g/s/query_dv_timings) are vide=
-o
-> >> ops without a pad argument. This is a problem if the subdevice can hav=
-e
-> >> different dv timings for each pad (e.g. a DisplayPort receiver with
-> >> multiple virtual channels).
-> >>
-> >> This patchset changes subdev dv timing callbacks to include a pad
-> >> argument, and moves them from video to pad ops. All the affected
-> >> drivers are updated to use the new pad ops version.
-> >>
-> >> The affected drivers were updated in a way that mathes how they deal
-> >> with the pad argument in other callbacks (mainly enum_dv_timings,
-> >> dv_timings_cap, get/set_edid).
-> >>
-> >> This was originally a part of a larger patchset:
-> >> https://lore.kernel.org/lkml/20240221160215.484151-2-panikiel@google.c=
-om/
-> >>
-> >> Pawe=C5=82 Anikiel (16):
-> >>   media: v4l2-subdev: Add pad versions of dv timing subdev calls
-> >>   media: i2c: adv748x: Switch dv timing callbacks to pad ops
-> >>   media: i2c: adv7511: Switch dv timing callbacks to pad ops
-> >>   media: i2c: adv7604: Switch dv timing callbacks to pad ops
-> >>   media: i2c: adv7842: Switch dv timing callbacks to pad ops
-> >>   media: i2c: tc358743: Switch dv timing callbacks to pad ops
-> >>   media: i2c: tda1997x: Switch dv timing callbacks to pad ops
-> >>   media: i2c: ths7303: Switch dv timing callbacks to pad ops
-> >>   media: i2c: ths8200: Switch dv timing callbacks to pad ops
-> >>   media: i2c: tvp7002: Switch dv timing callbacks to pad ops
-> >>   media: spi: gs1662: Switch dv timing callbacks to pad ops
-> >>   media: cobalt: Use pad variant of dv timing subdev calls
-> >>   media: rcar-vin: Use pad variant of dv timing subdev calls
-> >>   media: vpif_capture: Use pad variant of dv timing subdev calls
-> >>   media: tegra-video: Use pad variant of dv timing subdev calls
-> >>   media: v4l2-subdev: Remove non-pad dv timing callbacks
-> >
-> > You missed one:
-> >
-> > In file included from include/media/v4l2-device.h:13,
-> >                  from drivers/media/platform/ti/davinci/vpif_display.h:=
-13,
-> >                  from drivers/media/platform/ti/davinci/vpif_display.c:=
-26:
-> > drivers/media/platform/ti/davinci/vpif_display.c: In function 'vpif_s_d=
-v_timings':
-> > include/media/v4l2-subdev.h:1816:56: error: 'const struct v4l2_subdev_v=
-ideo_ops' has no member named 's_dv_timings'
-> >  1816 |                 else if (!(__sd->ops->o && __sd->ops->o->f))   =
-         \
-> >       |                                                        ^~
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expan=
-sion of macro 'v4l2_subdev_call'
-> >   937 |         ret =3D v4l2_subdev_call(ch->sd, video, s_dv_timings, t=
-imings);
-> >       |               ^~~~~~~~~~~~~~~~
-> > include/media/v4l2-subdev.h:1819:53: error: 'const struct v4l2_subdev_v=
-ideo_ops' has no member named 's_dv_timings'
-> >  1819 |                          v4l2_subdev_call_wrappers.o->f)       =
-         \
-> >       |                                                     ^~
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expan=
-sion of macro 'v4l2_subdev_call'
-> >   937 |         ret =3D v4l2_subdev_call(ch->sd, video, s_dv_timings, t=
-imings);
-> >       |               ^~~~~~~~~~~~~~~~
-> > include/media/v4l2-subdev.h:1820:63: error: 'const struct v4l2_subdev_v=
-ideo_ops' has no member named 's_dv_timings'
-> >  1820 |                         __result =3D v4l2_subdev_call_wrappers.=
-o->f(      \
-> >       |                                                               ^=
-~
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expan=
-sion of macro 'v4l2_subdev_call'
-> >   937 |         ret =3D v4l2_subdev_call(ch->sd, video, s_dv_timings, t=
-imings);
-> >       |               ^~~~~~~~~~~~~~~~
-> > include/media/v4l2-subdev.h:1823:48: error: 'const struct v4l2_subdev_v=
-ideo_ops' has no member named 's_dv_timings'
-> >  1823 |                         __result =3D __sd->ops->o->f(__sd, ##ar=
-gs);       \
-> >       |                                                ^~
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: note: in expan=
-sion of macro 'v4l2_subdev_call'
-> >   937 |         ret =3D v4l2_subdev_call(ch->sd, video, s_dv_timings, t=
-imings);
-> >       |               ^~~~~~~~~~~~~~~~
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no memb=
-er 's_dv_timings' in struct v4l2_subdev_video_ops
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no memb=
-er 's_dv_timings' in struct v4l2_subdev_video_ops
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no memb=
-er 's_dv_timings' in struct v4l2_subdev_video_ops
-> > drivers/media/platform/ti/davinci/vpif_display.c:937:15: error: no memb=
-er 's_dv_timings' in struct v4l2_subdev_video_ops
->
-> No need to post a v2. Just post a single patch '14.5/16' to convert vpif_=
-display that
-> will be added after patch [14/16], then I'll take care of it.
+On 07/04/2024 17:26, Nikita Zhandarovich wrote:
+> While vmk80xx does have endpoint checking implemented, some things
+> can fall through the cracks. Depending on the hardware model,
+> URBs can have either bulk or interrupt type, and current version
+> of vmk80xx_find_usb_endpoints() function does not take that fully
+> into account. While this warning does not seem to be too harmful,
+> at the very least it will crash systems with 'panic_on_warn' set on
+> them.
+> 
+> Fix the issue found by Syzkaller [1] by somewhat simplifying the
+> endpoint checking process with usb_find_common_endpoints() and
+> ensuring that only expected endpoint types are present.
+> 
+> This patch has not been tested on real hardware.
+> 
+> [1] Syzkaller report:
+> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> WARNING: CPU: 0 PID: 781 at drivers/usb/core/urb.c:504 usb_submit_urb+0xc4e/0x18c0 drivers/usb/core/urb.c:503
+> ...
+> Call Trace:
+>   <TASK>
+>   usb_start_wait_urb+0x113/0x520 drivers/usb/core/message.c:59
+>   vmk80xx_reset_device drivers/comedi/drivers/vmk80xx.c:227 [inline]
+>   vmk80xx_auto_attach+0xa1c/0x1a40 drivers/comedi/drivers/vmk80xx.c:818
+>   comedi_auto_config+0x238/0x380 drivers/comedi/drivers.c:1067
+>   usb_probe_interface+0x5cd/0xb00 drivers/usb/core/driver.c:399
+> ...
+> 
+> Similar issue also found by Syzkaller:
+> Link: https://syzkaller.appspot.com/bug?extid=5205eb2f17de3e01946e
+> 
+> Reported-and-tested-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+> Fixes: 49253d542cc0 ("staging: comedi: vmk80xx: factor out usb endpoint detection")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> ---
+>   drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
+>   1 file changed, 12 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
+> index 4536ed43f65b..476885403c61 100644
+> --- a/drivers/comedi/drivers/vmk80xx.c
+> +++ b/drivers/comedi/drivers/vmk80xx.c
+> @@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+>   	struct vmk80xx_private *devpriv = dev->private;
+>   	struct usb_interface *intf = comedi_to_usb_interface(dev);
+>   	struct usb_host_interface *iface_desc = intf->cur_altsetting;
+> -	struct usb_endpoint_descriptor *ep_desc;
+> -	int i;
+> +	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
+> +	int i, ret;
 
-I probably thought vpif-capture.c and vpif-display.c were the same
-file. I sent the 14.5 patch as you requested.
+I get a "warning: unused variable 'i' [-Wunused-variable]" warning here.
 
-As an aside, how did you run the compile test? It would be nice to
-know for the future. For this, I did a few greps and manually enabled
-all the drivers in menuconfig. Is there a better way?
+>   
+> -	if (iface_desc->desc.bNumEndpoints != 2)
+> -		return -ENODEV;
+> -
+> -	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
+> -		ep_desc = &iface_desc->endpoint[i].desc;
+> -
+> -		if (usb_endpoint_is_int_in(ep_desc) ||
+> -		    usb_endpoint_is_bulk_in(ep_desc)) {
+> -			if (!devpriv->ep_rx)
+> -				devpriv->ep_rx = ep_desc;
+> -			continue;
+> -		}
+> -
+> -		if (usb_endpoint_is_int_out(ep_desc) ||
+> -		    usb_endpoint_is_bulk_out(ep_desc)) {
+> -			if (!devpriv->ep_tx)
+> -				devpriv->ep_tx = ep_desc;
+> -			continue;
+> -		}
+> -	}
+> +	if (devpriv->model == VMK8061_MODEL)
+> +		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
+> +						&ep_tx_desc, NULL, NULL);
+> +	else
+> +		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
+> +						&ep_rx_desc, &ep_tx_desc);
+>   
+> -	if (!devpriv->ep_rx || !devpriv->ep_tx)
+> +	if (ret)
+>   		return -ENODEV;
+>   
+> +	devpriv->ep_rx = ep_rx_desc;
+> +	devpriv->ep_tx = ep_tx_desc;
+> +
+>   	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
+>   		return -EINVAL;
+>   
 
-Regards,
-Pawe=C5=82
+I've tested it on a K8055/VM110 board and it still works OK. I don't 
+have a K8061/VM140 to test it with, but it should be OK.
 
->
-> Regards,
->
->         Hans
->
-> >
-> > Regards,
-> >
-> >       Hans
-> >
-> >>
-> >>  drivers/media/i2c/adv748x/adv748x-hdmi.c      | 16 ++++----
-> >>  drivers/media/i2c/adv7511-v4l2.c              | 14 +++++--
-> >>  drivers/media/i2c/adv7604.c                   | 14 +++----
-> >>  drivers/media/i2c/adv7842.c                   | 25 ++++++++----
-> >>  drivers/media/i2c/tc358743.c                  | 23 +++++++----
-> >>  drivers/media/i2c/tda1997x.c                  | 12 +++---
-> >>  drivers/media/i2c/ths7303.c                   |  8 +++-
-> >>  drivers/media/i2c/ths8200.c                   | 14 +++++--
-> >>  drivers/media/i2c/tvp7002.c                   | 26 +++++++++----
-> >>  drivers/media/pci/cobalt/cobalt-v4l2.c        | 12 +++---
-> >>  .../platform/renesas/rcar-vin/rcar-v4l2.c     |  9 +++--
-> >>  .../media/platform/ti/davinci/vpif_capture.c  |  4 +-
-> >>  drivers/media/spi/gs1662.c                    | 21 +++++++---
-> >>  drivers/media/v4l2-core/v4l2-subdev.c         | 39 +++++++++++++++++-=
--
-> >>  drivers/staging/media/tegra-video/vi.c        | 12 +++---
-> >>  include/media/v4l2-subdev.h                   | 28 ++++++-------
-> >>  16 files changed, 183 insertions(+), 94 deletions(-)
-> >>
-> >
-> >
->
+Feel free to add "Reviewed-by: Ian Abbott <abbotti@mev.co.uk>" after 
+fixing the compiler warning.
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+
 
