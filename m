@@ -1,90 +1,310 @@
-Return-Path: <linux-kernel+bounces-135436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D6F89C28A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:31:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F2ED89C2C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4B661C21E14
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:31:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BD30B2C09C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6342B7F46F;
-	Mon,  8 Apr 2024 13:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnJwoFd7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974327EF00;
-	Mon,  8 Apr 2024 13:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282017F7CC;
+	Mon,  8 Apr 2024 13:27:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C7C7EF1F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712582860; cv=none; b=ZCSpePY2AyuwjRkoEyc9/sL7IHs0jo6VApJrkMOGYrFGDc2KKjCriU+AuJ3moyAcdjpGtKD6wJsawT99NQO7IJR/NUawqCpxSlHcLDnSTHPhArABZXJFHDLFyWCOxnSodfFv1xzby6WKjgDFxg586hYkwh9Vr2N+ATukhzoMPTg=
+	t=1712582863; cv=none; b=nTjLhVTkmgvfTNNzrZICd/8N/dEL7oESSc9UznAp8TB+k/ar6T+eiLBmf4kA/vqqmpGwN23YB8J7Z5etT7hUqujQe+0+UN0VjQTCBKkbA2Z550hcD59z7TBHKo0cJfasw/Xk6klWWlDmg4WScUtJlGW+Mx/GwslDcMW5RUXKePE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712582860; c=relaxed/simple;
-	bh=oKmlzsu1mzXeyzsroGlcDIypRVHUX7fZH8394HWhSzw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WtuZ8J5BnClm1mfHDwX0D0vTUu9i8OMBKvWdfxN2xfC8t9wqCwN882roZOmsFsPGdds7uUP0jmoMS3TTpNOViwmTobDqfPbTUTZSO1/uUR1R14pXxFEnNofzZ17bTOtQklT4bE/jAAbLWOxXgCvpeQs8Opt5RUuz97DXrdvq40M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnJwoFd7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9355BC433F1;
-	Mon,  8 Apr 2024 13:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712582860;
-	bh=oKmlzsu1mzXeyzsroGlcDIypRVHUX7fZH8394HWhSzw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GnJwoFd70UCXRfAS7Zwt8djjohdK4218pY5tlhXCDcGN9qViHzY5MzHUiDnqxSVom
-	 oAuiiMhDSrRoZwn3R8j0e8XgbViJB7J9yVCzkqpMK9wSv/L+fOmcJsQhiESul6jkbv
-	 RYYfvZVqVjKf8Ov6uJttJIbrKvQ9sXlkYKYmxJyMLpsXfJ4sLTGCac18iOSiwnQGvL
-	 WXYIJudvUpCOvPioBgTRFf3pLFFpS3Z54chQzZjrCd++haXMqzzxUK24JBFsMuZO1C
-	 1h9h9U5LPeT/WBlz+2o97SPqYDxL+yM7jNLMtHFMT7ToR8Y5R7V4IgodsmDr0g691x
-	 j35qXDlexMwLw==
-Date: Mon, 8 Apr 2024 14:27:32 +0100
-From: Simon Horman <horms@kernel.org>
-To: Karthik Sundaravel <ksundara@redhat.com>
-Cc: jesse.brandeburg@intel.com, wojciech.drewek@intel.com,
-	sumang@marvell.com, jacob.e.keller@intel.com,
-	anthony.l.nguyen@intel.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, pmenzel@molgen.mpg.de,
-	jiri@resnulli.us, michal.swiatkowski@linux.intel.com,
-	rjarry@redhat.com, aharivel@redhat.com, vchundur@redhat.com,
-	cfontain@redhat.com
-Subject: Re: [PATCH v8] ice: Add get/set hw address for VFs using devlink
- commands
-Message-ID: <20240408132732.GH26556@kernel.org>
-References: <20240404075917.4347-1-ksundara@redhat.com>
- <20240404075917.4347-2-ksundara@redhat.com>
+	s=arc-20240116; t=1712582863; c=relaxed/simple;
+	bh=aN0U4RvNBa1kFfdbamMdF1alxdn/emMd8WePEhgo9A4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=oFHLGZzMe47CUkl+WmE+IGaXtpuTwxwin9ghJoIorN8U3xR3Bezgx0ofe/a3A7Y+jzQqYmgO6BV1v2wKlazuT8PWLvo2VdapSSgcYTFzaRu0Da4g+6iAZNKQI57HpaXpyLzkrBxiASXQ3Ns96MEF5tMwAmLLv6Eb0SHq9QK0/80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 253F9DA7;
+	Mon,  8 Apr 2024 06:28:10 -0700 (PDT)
+Received: from [10.57.73.169] (unknown [10.57.73.169])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABBE13F64C;
+	Mon,  8 Apr 2024 06:27:37 -0700 (PDT)
+Message-ID: <2cfa542a-ae38-4867-a64b-621e7778fdf7@arm.com>
+Date: Mon, 8 Apr 2024 14:27:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404075917.4347-2-ksundara@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240403114032.1162100-1-ryan.roberts@arm.com>
+ <20240403114032.1162100-3-ryan.roberts@arm.com>
+ <051052af-3b56-4290-98d3-fd5a1eb11ce1@redhat.com>
+ <4110bb1d-65e5-4cf0-91ad-62749975829d@arm.com>
+ <be096120-4dd1-4a10-b283-779d23c2811b@arm.com>
+In-Reply-To: <be096120-4dd1-4a10-b283-779d23c2811b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 01:29:17PM +0530, Karthik Sundaravel wrote:
-> Changing the MAC address of the VFs is currently unsupported via devlink.
-> Add the function handlers to set and get the HW address for the VFs.
+On 08/04/2024 13:47, Ryan Roberts wrote:
+> On 08/04/2024 13:07, Ryan Roberts wrote:
+>> [...]
+>>>
+>>> [...]
+>>>
+>>>> +
+>>>> +/**
+>>>> + * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
+>>>> + * @start_ptep: Page table pointer for the first entry.
+>>>> + * @max_nr: The maximum number of table entries to consider.
+>>>> + * @entry: Swap entry recovered from the first table entry.
+>>>> + *
+>>>> + * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
+>>>> + * containing swap entries all with consecutive offsets and targeting the same
+>>>> + * swap type.
+>>>> + *
+>>>
+>>> Likely you should document that any swp pte bits are ignored? ()
+>>
+>> Now that I understand what swp pte bits are, I think the simplest thing is to
+>> just make this function always consider the pte bits by using pte_same() as you
+>> suggest below? I don't think there is ever a case for ignoring the swp pte bits?
+>> And then I don't need to do anything special for uffd-wp either (below you
+>> suggested not doing batching when the VMA has uffd enabled).
+>>
+>> Any concerns?
+>>
+>>>
+>>>> + * max_nr must be at least one and must be limited by the caller so scanning
+>>>> + * cannot exceed a single page table.
+>>>> + *
+>>>> + * Return: the number of table entries in the batch.
+>>>> + */
+>>>> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
+>>>> +                 swp_entry_t entry)
+>>>> +{
+>>>> +    const pte_t *end_ptep = start_ptep + max_nr;
+>>>> +    unsigned long expected_offset = swp_offset(entry) + 1;
+>>>> +    unsigned int expected_type = swp_type(entry);
+>>>> +    pte_t *ptep = start_ptep + 1;
+>>>> +
+>>>> +    VM_WARN_ON(max_nr < 1);
+>>>> +    VM_WARN_ON(non_swap_entry(entry));
+>>>> +
+>>>> +    while (ptep < end_ptep) {
+>>>> +        pte_t pte = ptep_get(ptep);
+>>>> +
+>>>> +        if (pte_none(pte) || pte_present(pte))
+>>>> +            break;
+>>>> +
+>>>> +        entry = pte_to_swp_entry(pte);
+>>>> +
+>>>> +        if (non_swap_entry(entry) ||
+>>>> +            swp_type(entry) != expected_type ||
+>>>> +            swp_offset(entry) != expected_offset)
+>>>> +            break;
+>>>> +
+>>>> +        expected_offset++;
+>>>> +        ptep++;
+>>>> +    }
+>>>> +
+>>>> +    return ptep - start_ptep;
+>>>> +}
+>>>
+>>> Looks very clean :)
+>>>
+>>> I was wondering whether we could similarly construct the expected swp PTE and
+>>> only check pte_same.
+>>>
+>>> expected_pte = __swp_entry_to_pte(__swp_entry(expected_type, expected_offset));
+>>
+>> So planning to do this.
 > 
-> Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+> Of course this clears all the swp pte bits in expected_pte. So need to do something a bit more complex.
+> 
+> If we can safely assume all offset bits are contiguous in every per-arch representation then we can do:
 
-Hi Karthik,
+Looks like at least csky and hexagon store the offset in discontiguous regions.
+So it will have to be the second approach if we want to avoid anything
+arch-specific. I'll assume that for now; we can always specialize
+pte_next_swp_offset() per-arch in the future if needed.
 
-I think this series should be targeted at iwl-next [1]
-but it does not seem to apply against the dev-queue branch of
-that tree (or net-next).
+> 
+> static inline pte_t pte_next_swp_offset(pte_t pte)
+> {
+> 	pte_t offset_inc = __swp_entry_to_pte(__swp_entry(0, 1));
+> 
+> 	return __pte(pte_val(pte) + pte_val(offset_inc));
+> }
+> 
+> Or if not:
+> 
+> static inline pte_t pte_next_swp_offset(pte_t pte)
+> {
+> 	swp_entry_t entry = pte_to_swp_entry(pte);
+> 	pte_t new = __swp_entry_to_pte(__swp_entry(swp_type(entry), swp_offset(entry) + 1));
+> 
+> 	if (pte_swp_soft_dirty(pte))
+> 		new = pte_swp_mksoft_dirty(new);
+> 	if (pte_swp_exclusive(pte))
+> 		new = pte_swp_mkexclusive(new);
+> 	if (pte_swp_uffd_wp(pte))
+> 		new = pte_swp_mkuffd_wp(new);
+> 
+> 	return new;
+> }
+> 
+> Then swap_pte_batch() becomes:
+> 
+> static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
+> {
+> 	pte_t expected_pte = pte_next_swp_offset(pte);
+> 	const pte_t *end_ptep = start_ptep + max_nr;
+> 	pte_t *ptep = start_ptep + 1;
+> 
+> 	VM_WARN_ON(max_nr < 1);
+> 	VM_WARN_ON(!is_swap_pte(pte));
+> 	VM_WARN_ON(non_swap_entry(pte_to_swp_entry(pte)));
+> 
+> 	while (ptep < end_ptep) {
+> 		pte = ptep_get(ptep);
+> 
+> 		if (!pte_same(pte, expected_pte))
+> 			break;
+> 
+> 		expected_pte = pte_next_swp_offset(expected_pte);
+> 		ptep++;
+> 	}
+> 
+> 	return ptep - start_ptep;
+> }
+> 
+> Would you be happy with either of these? I'll go look if we can assume the offset bits are always contiguous.
+> 
+> 
+>>
+>>>
+>>> ... or have a variant to increase only the swp offset for an existing pte. But
+>>> non-trivial due to the arch-dependent format.
+>>
+>> not this - I agree this will be difficult due to per-arch changes. I'd rather
+>> just do the generic version and leave the compiler to do the best it can to
+>> simplify and optimize.
+>>
+>>>
+>>> But then, we'd fail on mismatch of other swp pte bits.
+>>>
+>>>
+>>> On swapin, when reusing this function (likely!), we'll might to make sure that
+>>> the PTE bits match as well.
+>>>
+>>> See below regarding uffd-wp.
+>>>
+>>>
+>>>>   #endif /* CONFIG_MMU */
+>>>>     void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>>>> diff --git a/mm/madvise.c b/mm/madvise.c
+>>>> index 1f77a51baaac..070bedb4996e 100644
+>>>> --- a/mm/madvise.c
+>>>> +++ b/mm/madvise.c
+>>>> @@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>>> long addr,
+>>>>       struct folio *folio;
+>>>>       int nr_swap = 0;
+>>>>       unsigned long next;
+>>>> +    int nr, max_nr;
+>>>>         next = pmd_addr_end(addr, end);
+>>>>       if (pmd_trans_huge(*pmd))
+>>>> @@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>>> long addr,
+>>>>           return 0;
+>>>>       flush_tlb_batched_pending(mm);
+>>>>       arch_enter_lazy_mmu_mode();
+>>>> -    for (; addr != end; pte++, addr += PAGE_SIZE) {
+>>>> +    for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
+>>>> +        nr = 1;
+>>>>           ptent = ptep_get(pte);
+>>>>             if (pte_none(ptent))
+>>>> @@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>>> long addr,
+>>>>                 entry = pte_to_swp_entry(ptent);
+>>>>               if (!non_swap_entry(entry)) {
+>>>> -                nr_swap--;
+>>>> -                free_swap_and_cache(entry);
+>>>> -                pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>>> +                max_nr = (end - addr) / PAGE_SIZE;
+>>>> +                nr = swap_pte_batch(pte, max_nr, entry);
+>>>> +                nr_swap -= nr;
+>>>> +                free_swap_and_cache_nr(entry, nr);
+>>>> +                clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>>>               } else if (is_hwpoison_entry(entry) ||
+>>>>                      is_poisoned_swp_entry(entry)) {
+>>>>                   pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index 7dc6c3d9fa83..ef2968894718 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -1637,12 +1637,13 @@ static unsigned long zap_pte_range(struct mmu_gather
+>>>> *tlb,
+>>>>                   folio_remove_rmap_pte(folio, page, vma);
+>>>>               folio_put(folio);
+>>>>           } else if (!non_swap_entry(entry)) {
+>>>> -            /* Genuine swap entry, hence a private anon page */
+>>>> +            max_nr = (end - addr) / PAGE_SIZE;
+>>>> +            nr = swap_pte_batch(pte, max_nr, entry);
+>>>> +            /* Genuine swap entries, hence a private anon pages */
+>>>>               if (!should_zap_cows(details))
+>>>>                   continue;
+>>>> -            rss[MM_SWAPENTS]--;
+>>>> -            if (unlikely(!free_swap_and_cache(entry)))
+>>>> -                print_bad_pte(vma, addr, ptent, NULL);
+>>>> +            rss[MM_SWAPENTS] -= nr;
+>>>> +            free_swap_and_cache_nr(entry, nr);
+>>>>           } else if (is_migration_entry(entry)) {
+>>>>               folio = pfn_swap_entry_folio(entry);
+>>>>               if (!should_zap_folio(details, folio))
+>>>> @@ -1665,8 +1666,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>>>               pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+>>>>               WARN_ON_ONCE(1);
+>>>>           }
+>>>> -        pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>>>> -        zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
+>>>> +        clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+>>>
+>>> For zap_install_uffd_wp_if_needed(), the uffd-wp bit has to match.
+>>>
+>>> zap_install_uffd_wp_if_needed() will use the uffd-wp information in
+>>> ptent->pteval to make a decision whether to place PTE_MARKER_UFFD_WP markers.
+>>>
+>>> On mixture, you either lose some or place too many markers.
+>>>
+>>> A simple workaround would be to disable any such batching if the VMA does have
+>>> uffd-wp enabled.
+>>
+>> Rather than this, I'll just consider all the swp pte bits when batching.
+>>
+>>>
+>>>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
+>>>>       } while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+>>
+>> [...]
+>>
+> 
 
-Please consider rebasing and reposting with the target tree specified
-in the subject. e.g.
-
-   Subject: [PATCH iwl-next v9] ...
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git
-
-Otherwise the patch looks good to me.
 
