@@ -1,337 +1,153 @@
-Return-Path: <linux-kernel+bounces-135173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8068F89BC2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:45:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4F4789BBAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5961B20812
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:45:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 907C5282B69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589D04A9B0;
-	Mon,  8 Apr 2024 09:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6C447F57;
+	Mon,  8 Apr 2024 09:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b="eD7U1rVc"
-Received: from mr6.vodafonemail.de (mr6.vodafonemail.de [145.253.228.166])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/5tfw9k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4D633E5;
-	Mon,  8 Apr 2024 09:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.253.228.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336D844C94;
+	Mon,  8 Apr 2024 09:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569508; cv=none; b=sZHnnkSQXG6xIKydYCbrF0Db3kayf5yVtYtFokW62UbwMVu6ACUf2JsiAuTkkBoP5mgpljOaRI8QsLRTrJOX2NGkC4sIp/rnrNEkNWgJu0xT6p8qtM/c5GpybDsHXfiPYyvKjtm93ZO3Vwy5HsjMobaxUcass03IDqPhmEq5FG0=
+	t=1712568574; cv=none; b=nrBTKebsWyan1Pa5HHDlV4jWYe+jWes3U3N4UqhjbacB0jh2+rW2ygtkd82uvurGxEaHJRIG33+yiecgZ1jNC7Eho6WrARbO0/VYpn9vlpBlaFX3o+IX0egjyOBLLGo/VUFzC35xx7y0/x3EOCLo/fbPTZ8j8pAelQxH1o4FMxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569508; c=relaxed/simple;
-	bh=X0+GQa7QJ2+3lukQWG0Jx1+GaK8WmLAHvsunURfwHCc=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version:Content-Type; b=qoilTeIY6ftgh3+ItuY5nuqJ5eAk3j6Na1NrmleAS+XvbevzvQbktkT1adzMRHlnGpS3OogfDFRotvWsGbuKzvvEWiMoyQsc+fAFo6lxKG+lYryR8QKN79qUkXuaDdKeBoWMIMvDNQZ8c481IBw+PDdeYKDnf6eUx/USqbnO4bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de; spf=pass smtp.mailfrom=nexgo.de; dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b=eD7U1rVc; arc=none smtp.client-ip=145.253.228.166
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nexgo.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexgo.de;
-	s=vfde-mb-mr2-23sep; t=1712568976;
-	bh=pOkgtZPXHcLCh8JIwfivwUiRNJ3JAm6xtfDDutHPJL8=;
-	h=Message-ID:From:To:Subject:Date:Content-Type:X-Mailer:From;
-	b=eD7U1rVcYpcg0WNu98zJuFtrF/sFjyObnk0n4nHZHw7ZduUm2kpi1YNGl3bk5yGz8
-	 T7wkKfeBzOr+bnaavIietCLv50fZarVrhlBr1ao/QVPQTqWW4shUtuN/AyKamNNuOf
-	 RZ6cUUcSXylBaeu40sG+rN29hJMskRueI0VJ4+Rk=
-Received: from smtp.vodafone.de (unknown [10.0.0.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mr6.vodafonemail.de (Postfix) with ESMTPS id 4VCkVm26cKz1xxm;
-	Mon,  8 Apr 2024 09:36:16 +0000 (UTC)
-Received: from H270 (p5de6d4c4.dip0.t-ipconnect.de [93.230.212.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.vodafone.de (Postfix) with ESMTPSA id 4VCkVV2rsPzMlrq;
-	Mon,  8 Apr 2024 09:35:59 +0000 (UTC)
-Message-ID: <5EEE09A9021540A5AAD8BFEEE915512D@H270>
-From: "Stefan Kanthak" <stefan.kanthak@nexgo.de>
-To: <linux-kernel@vger.kernel.org>,
-	<linux-crypto@vger.kernel.org>
-Cc: <tim.c.chen@linux.intel.com>,
-	<sean.m.gulley@intel.com>
-Subject: [PATCH 1/2] crypto: s(h)aving 40+ bytes off arch/x86/crypto/sha256_ni_asm.S
-Date: Mon, 8 Apr 2024 11:26:52 +0200
-Organization: Me, myself & IT
+	s=arc-20240116; t=1712568574; c=relaxed/simple;
+	bh=rBe98hJNY8XuRDecuH4PlMK9Yxww2sRXOAuYjPRlaSo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FjwqbiPfk898reaieovxhcnA+S/TTiYn+0K8t6o/YPof5FEloo7+mOefr5retlMEG2LwS96zg8xMb/+KVsMlVWmGx2+pJhHDJ9ig3THazx33+xFxdadDXMV3LkTP7NQHRJ85EjcWZkYOJqjHEbu1RvH6KUlUT9ufqNjGqX0JkB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F/5tfw9k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53DB5C433F1;
+	Mon,  8 Apr 2024 09:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712568574;
+	bh=rBe98hJNY8XuRDecuH4PlMK9Yxww2sRXOAuYjPRlaSo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F/5tfw9k/x4622llVirTzKRAmTFIFVEW9tt360apuDlDTQ9eGswCsqVW5y9GwqngK
+	 dMcgm1UeYSkA+sPdVRHJ+0i/fiWliU5R3hHxJy73wWJClqR27AqTGk5Mn2GEIJUJiV
+	 oYP4PyAUaSgLaxlXGgav7sKDlrsWYvEwa/o+fIs/PrbIBtM+0z/RseVXehWb4s3bUt
+	 uB7iOqmEaiuExGwCgrhIN0CB2zQhBpDddZVM0L8qC9LDcLr0oyrnjTW2NvzxlKhuFV
+	 fmXmYim5kTYd4kBg7hslAnPwQpmshGG863YD+COo1SFOe3g1Sxo5atQZkeBpw0RqiV
+	 ljAlL/QZOfO2g==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Andi Shyti <andi.shyti@kernel.org>,
+	Peter Korsgaard <peter@korsgaard.com>,
+	Andrew Lunn <andrew@lunn.ch>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Gregor Herburger <gregor.herburger@tq-group.com>,
+	linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: ocores: convert to ioport_map() for IORESOURCE_IO
+Date: Mon,  8 Apr 2024 11:28:36 +0200
+Message-Id: <20240408092923.2816928-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Windows Mail 6.0.6002.18197
-X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-size: 11383
-X-purgate-ID: 155817::1712568971-97FFDBA7-240A3DCD/0/0
+Content-Transfer-Encoding: 8bit
 
-Use shorter SSE2 instructions instead of some SSE4.1
-use short displacements into K256
+From: Arnd Bergmann <arnd@arndb.de>
 
---- -/arch/x86/crypto/sha256_ni_asm.S
-+++ +/arch/x86/crypto/sha256_ni_asm.S
-@@ -108,17 +108,17 @@
-          * Need to reorder these appropriately
-          * DCBA, HGFE -> ABEF, CDGH
-          */
--        movdqu          0*16(DIGEST_PTR), STATE0
--        movdqu          1*16(DIGEST_PTR), STATE1
-+        movdqu          0*16(DIGEST_PTR), STATE0        /* DCBA */
-+        movdqu          1*16(DIGEST_PTR), STATE1        /* HGFE */
+There is at least one machine that uses this driver but does not
+have support for inb()/outb() instructions.
+
+Convert this to using ioport_map() so it can build on architectures
+that don't provide these but work correctly on machines that require
+using port I/O.
+
+Fixes: 53f44c1005ba ("i2c: add HAS_IOPORT dependencies")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/lkml/CAMuHMdVUQ2WgtpYPYfO2T=itMmZ7w=geREqDtsP8Q3ODh9rxdw@mail.gmail.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/i2c/busses/Kconfig      |  1 -
+ drivers/i2c/busses/i2c-ocores.c | 21 +++++++--------------
+ 2 files changed, 7 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index 2d5e74ac9ea0..64c985ec0fae 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -886,7 +886,6 @@ config I2C_NPCM
  
--        pshufd          $0xB1, STATE0,  STATE0          /* CDAB */
--        pshufd          $0x1B, STATE1,  STATE1          /* EFGH */
-         movdqa          STATE0, MSGTMP4
--        palignr         $8, STATE1,  STATE0             /* ABEF */
--        pblendw         $0xF0, MSGTMP4, STATE1          /* CDGH */
-+        punpcklqdq      STATE1, STATE0                  /* FEBA */
-+        punpckhqdq      MSGTMP4, STATE1                 /* DCHG */
-+        pshufd          $0x1B, STATE0,  STATE0          /* ABEF */
-+        pshufd          $0xB1, STATE1,  STATE1          /* CDGH */
+ config I2C_OCORES
+ 	tristate "OpenCores I2C Controller"
+-	depends on HAS_IOPORT
+ 	help
+ 	  If you say yes to this option, support will be included for the
+ 	  OpenCores I2C controller. For details see
+diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
+index e106af83cef4..56a4dabf5a38 100644
+--- a/drivers/i2c/busses/i2c-ocores.c
++++ b/drivers/i2c/busses/i2c-ocores.c
+@@ -32,7 +32,6 @@
+  */
+ struct ocores_i2c {
+ 	void __iomem *base;
+-	int iobase;
+ 	u32 reg_shift;
+ 	u32 reg_io_width;
+ 	unsigned long flags;
+@@ -136,16 +135,6 @@ static inline u8 oc_getreg_32be(struct ocores_i2c *i2c, int reg)
+ 	return ioread32be(i2c->base + (reg << i2c->reg_shift));
+ }
  
-         movdqa          PSHUFFLE_BYTE_FLIP_MASK(%rip), SHUF_MASK
--        lea             K256(%rip), SHA256CONSTANTS
-+        lea             K256+8*16(%rip), SHA256CONSTANTS
+-static void oc_setreg_io_8(struct ocores_i2c *i2c, int reg, u8 value)
+-{
+-	outb(value, i2c->iobase + reg);
+-}
+-
+-static inline u8 oc_getreg_io_8(struct ocores_i2c *i2c, int reg)
+-{
+-	return inb(i2c->iobase + reg);
+-}
+-
+ static inline void oc_setreg(struct ocores_i2c *i2c, int reg, u8 value)
+ {
+ 	i2c->setreg(i2c, reg, value);
+@@ -618,15 +607,19 @@ static int ocores_i2c_probe(struct platform_device *pdev)
+ 		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+ 		if (!res)
+ 			return -EINVAL;
+-		i2c->iobase = res->start;
+ 		if (!devm_request_region(&pdev->dev, res->start,
+ 					 resource_size(res),
+ 					 pdev->name)) {
+ 			dev_err(&pdev->dev, "Can't get I/O resource.\n");
+ 			return -EBUSY;
+ 		}
+-		i2c->setreg = oc_setreg_io_8;
+-		i2c->getreg = oc_getreg_io_8;
++		i2c->base = devm_ioport_map(&pdev->dev, res->start,
++					    resource_size(res));
++		if (!i2c->base) {
++			dev_err(&pdev->dev, "Can't map I/O resource.\n");
++			return -EBUSY;
++		}
++		i2c->reg_io_width = 1;
+ 	}
  
- .Lloop0:
-         /* Save hash values for addition after rounds */
-@@ -129,18 +129,18 @@
-         movdqu          0*16(DATA_PTR), MSG
-         pshufb          SHUF_MASK, MSG
-         movdqa          MSG, MSGTMP0
--                paddd           0*16(SHA256CONSTANTS), MSG
-+                paddd           -8*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
- 
-         /* Rounds 4-7 */
-         movdqu          1*16(DATA_PTR), MSG
-         pshufb          SHUF_MASK, MSG
-         movdqa          MSG, MSGTMP1
--                paddd           1*16(SHA256CONSTANTS), MSG
-+                paddd           -7*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP1, MSGTMP0
- 
-@@ -148,9 +148,9 @@
-         movdqu          2*16(DATA_PTR), MSG
-         pshufb          SHUF_MASK, MSG
-         movdqa          MSG, MSGTMP2
--                paddd           2*16(SHA256CONSTANTS), MSG
-+                paddd           -6*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP2, MSGTMP1
- 
-@@ -158,151 +158,151 @@
-         movdqu          3*16(DATA_PTR), MSG
-         pshufb          SHUF_MASK, MSG
-         movdqa          MSG, MSGTMP3
--                paddd           3*16(SHA256CONSTANTS), MSG
-+                paddd           -5*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP3, MSGTMP4
-         palignr         $4, MSGTMP2, MSGTMP4
-         paddd           MSGTMP4, MSGTMP0
-         sha256msg2      MSGTMP3, MSGTMP0
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP3, MSGTMP2
- 
-         /* Rounds 16-19 */
-         movdqa          MSGTMP0, MSG
--                paddd           4*16(SHA256CONSTANTS), MSG
-+                paddd           -4*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP0, MSGTMP4
-         palignr         $4, MSGTMP3, MSGTMP4
-         paddd           MSGTMP4, MSGTMP1
-         sha256msg2      MSGTMP0, MSGTMP1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP0, MSGTMP3
- 
-         /* Rounds 20-23 */
-         movdqa          MSGTMP1, MSG
--                paddd           5*16(SHA256CONSTANTS), MSG
-+                paddd           -3*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP1, MSGTMP4
-         palignr         $4, MSGTMP0, MSGTMP4
-         paddd           MSGTMP4, MSGTMP2
-         sha256msg2      MSGTMP1, MSGTMP2
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP1, MSGTMP0
- 
-         /* Rounds 24-27 */
-         movdqa          MSGTMP2, MSG
--                paddd           6*16(SHA256CONSTANTS), MSG
-+                paddd           -2*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP2, MSGTMP4
-         palignr         $4, MSGTMP1, MSGTMP4
-         paddd           MSGTMP4, MSGTMP3
-         sha256msg2      MSGTMP2, MSGTMP3
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP2, MSGTMP1
- 
-         /* Rounds 28-31 */
-         movdqa          MSGTMP3, MSG
--                paddd           7*16(SHA256CONSTANTS), MSG
-+                paddd           -1*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP3, MSGTMP4
-         palignr         $4, MSGTMP2, MSGTMP4
-         paddd           MSGTMP4, MSGTMP0
-         sha256msg2      MSGTMP3, MSGTMP0
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP3, MSGTMP2
- 
-         /* Rounds 32-35 */
-         movdqa          MSGTMP0, MSG
--                paddd           8*16(SHA256CONSTANTS), MSG
-+                paddd           0*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP0, MSGTMP4
-         palignr         $4, MSGTMP3, MSGTMP4
-         paddd           MSGTMP4, MSGTMP1
-         sha256msg2      MSGTMP0, MSGTMP1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP0, MSGTMP3
- 
-         /* Rounds 36-39 */
-         movdqa          MSGTMP1, MSG
--                paddd           9*16(SHA256CONSTANTS), MSG
-+                paddd           1*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP1, MSGTMP4
-         palignr         $4, MSGTMP0, MSGTMP4
-         paddd           MSGTMP4, MSGTMP2
-         sha256msg2      MSGTMP1, MSGTMP2
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP1, MSGTMP0
- 
-         /* Rounds 40-43 */
-         movdqa          MSGTMP2, MSG
--                paddd           10*16(SHA256CONSTANTS), MSG
-+                paddd           2*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP2, MSGTMP4
-         palignr         $4, MSGTMP1, MSGTMP4
-         paddd           MSGTMP4, MSGTMP3
-         sha256msg2      MSGTMP2, MSGTMP3
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP2, MSGTMP1
- 
-         /* Rounds 44-47 */
-         movdqa          MSGTMP3, MSG
--                paddd           11*16(SHA256CONSTANTS), MSG
-+                paddd           3*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP3, MSGTMP4
-         palignr         $4, MSGTMP2, MSGTMP4
-         paddd           MSGTMP4, MSGTMP0
-         sha256msg2      MSGTMP3, MSGTMP0
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP3, MSGTMP2
- 
-         /* Rounds 48-51 */
-         movdqa          MSGTMP0, MSG
--                paddd           12*16(SHA256CONSTANTS), MSG
-+                paddd           4*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP0, MSGTMP4
-         palignr         $4, MSGTMP3, MSGTMP4
-         paddd           MSGTMP4, MSGTMP1
-         sha256msg2      MSGTMP0, MSGTMP1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
-         sha256msg1      MSGTMP0, MSGTMP3
- 
-         /* Rounds 52-55 */
-         movdqa          MSGTMP1, MSG
--                paddd           13*16(SHA256CONSTANTS), MSG
-+                paddd           5*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP1, MSGTMP4
-         palignr         $4, MSGTMP0, MSGTMP4
-         paddd           MSGTMP4, MSGTMP2
-         sha256msg2      MSGTMP1, MSGTMP2
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
- 
-         /* Rounds 56-59 */
-         movdqa          MSGTMP2, MSG
--                paddd           14*16(SHA256CONSTANTS), MSG
-+                paddd           6*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
-         movdqa          MSGTMP2, MSGTMP4
-         palignr         $4, MSGTMP1, MSGTMP4
-         paddd           MSGTMP4, MSGTMP3
-         sha256msg2      MSGTMP2, MSGTMP3
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
- 
-         /* Rounds 60-63 */
-         movdqa          MSGTMP3, MSG
--                paddd           15*16(SHA256CONSTANTS), MSG
-+                paddd           7*16(SHA256CONSTANTS), MSG
-                 sha256rnds2     STATE0, STATE1
--                pshufd          $0x0E, MSG, MSG
-+                punpckhqdq      MSG, MSG
-                 sha256rnds2     STATE1, STATE0
- 
-         /* Add current hash values with previously saved */
-@@ -315,11 +315,11 @@
-         jne             .Lloop0
- 
-         /* Write hash values back in the correct order */
--        pshufd          $0x1B, STATE0,  STATE0          /* FEBA */
--        pshufd          $0xB1, STATE1,  STATE1          /* DCHG */
-         movdqa          STATE0, MSGTMP4
--        pblendw         $0xF0, STATE1,  STATE0          /* DCBA */
--        palignr         $8, MSGTMP4, STATE1             /* HGFE */
-+        punpcklqdq      STATE1, STATE0                  /* GHEF */
-+        punpckhqdq      MSGTMP4, STATE1                 /* ABCD */
-+        pshufd          $0xB1, STATE0,  STATE0          /* HGFE */
-+        pshufd          $0x1B, STATE1,  STATE1          /* DCBA */
- 
-         movdqu          STATE0, 0*16(DIGEST_PTR)
-         movdqu          STATE1, 1*16(DIGEST_PTR)
+ 	pdata = dev_get_platdata(&pdev->dev);
+-- 
+2.39.2
 
 
