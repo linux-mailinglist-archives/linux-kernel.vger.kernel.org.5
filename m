@@ -1,82 +1,60 @@
-Return-Path: <linux-kernel+bounces-135287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CBE89BE6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7579689BE71
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:51:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAFEA1F22306
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15DEF1F218C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEE76A029;
-	Mon,  8 Apr 2024 11:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4DE6A330;
+	Mon,  8 Apr 2024 11:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NoIa4xFF"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="rxDSbYHW"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664E369E07;
-	Mon,  8 Apr 2024 11:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528BF69E07;
+	Mon,  8 Apr 2024 11:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712577076; cv=none; b=DGjyPejB9E1cMbBwepEhPkassYkM/jcrD4XBBVzhzHZREFzJOsrWQ2DYPCkBkySAj94hu2JATw1SmuiNh5yYwMoO+nv7sIHp4Wc4OuspsYKoFycTv/HJaEpoVDD7A1bkKFnQU4/PbKwef6oNkAIaS5q8jXDRUXzQvOJgK+yv5LQ=
+	t=1712577090; cv=none; b=GEpGfGvBRwYiBiZl0fF0xJ01GxfcJguChmP5/oAKQHAWRlBOY2uLDnc1YBga0nQ9AAY/O2gi3Wchvf7U9Dcwx1Bz9V/oENY41lrmLXtx+KFjwplake7DoT3LDvhd9TD9e45wv+XGG6Ityo8rxHNG7CAWuA0uRsDdYSjfv3GgRpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712577076; c=relaxed/simple;
-	bh=6vLR5Hx1mXcWEJ+fHvoOxg9TPavpf/MeFz1JZwNX7Vk=;
+	s=arc-20240116; t=1712577090; c=relaxed/simple;
+	bh=I5yljxzZzXYcwlpP5I426+Gg1XBkRYcBytW1okcfLJc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BQYu8jTXHEIDq1jpdpG3P8WfzWGP8JfwzKHqUtXu/sod7vPhrOZti4mU01r2G+BKPOusMd/93vHlcTz2GVYJl0p+AoEV9yzpzzL3CAxQTyKT+W9QKEVtkBDKYyED91sK5f8EwvH6JYgnMMpoBC8c2Ju+DDqMxnzxGlLVVsUq2YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NoIa4xFF; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438BFluO015561;
-	Mon, 8 Apr 2024 11:51:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=3S+qtrGdAsgfQrAe4YZ+mkXIyatuaTRRyUl/D6poeo0=;
- b=NoIa4xFFiWoF3rvQCjHWZ/hb4mu1vpo28KTdAuPIHxiZasW+jh8qTwdmnepFWkmgAvtb
- 5U8HtDdq0C0Wo6S6ddXS7TpCctjl+J8iB5mX49AJpoNK6I+BhmPpjLAfpNRaXftEOU+g
- DVJP5ijVUwGOWBMrSVj8LYR3PA96L2NuAarvGRvXJu/+CdDUOhe5hgwoKgKEDOLzhszP
- Rv576q05K46X3r5dohJpNg5QNMf8fCk9xbk5Yu6nB4vV+aXHIm5NmbULNdolVLF3sOsD
- DCU1sDHtqdg2yEiKMRDQyfrpDa5O0mfd7P2eT/xXZpmUDzak/fYx6kTcBHFkq6TYUL6r /A== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xcc9egfej-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 11:51:12 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 438AtNHc019110;
-	Mon, 8 Apr 2024 11:51:12 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh4001ks-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 11:51:11 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 438Bp6F430737106
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Apr 2024 11:51:08 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4C5ED2004E;
-	Mon,  8 Apr 2024 11:51:06 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B876120043;
-	Mon,  8 Apr 2024 11:51:05 +0000 (GMT)
-Received: from osiris (unknown [9.171.19.167])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  8 Apr 2024 11:51:05 +0000 (GMT)
-Date: Mon, 8 Apr 2024 13:51:04 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] s390/tools: Use ARRAY_SIZE() to fix Coccinelle warnings
-Message-ID: <20240408115104.9447-C-hca@linux.ibm.com>
-References: <20240408105515.2328-3-thorsten.blum@toblux.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VGd44+tcMp87g9Ks4wJE2N++Kpgp0JMt7c3zzP4W6NqXpXSTiZhGr8Tql8cH1FzaakSLEJdZfSx/sn9hQrmF/TuEPm4lw8CCwbj8jZVf/x1PDs9ATYV/Yt16y2w+EcLHQkvnQkihWuc6Gqz21KNUXFJPK5Niz9JjsJZz9PAy0NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=rxDSbYHW; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1712577078; bh=I5yljxzZzXYcwlpP5I426+Gg1XBkRYcBytW1okcfLJc=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=rxDSbYHWltTdqEXQq3e2/NVcU5m38sByYCxFziUb6aFv88v9TSrHQGWkO7ZnOJlLf
+	 9pBS6jQO02xwbKyxnIK1MYOP3/5t4khGbOOWoI4P1bD3R1D9knXzZ5ve898ZcZcdD4
+	 +z6mwTIo5pDtgMunTvW9yJhVtlHUCskppb9JaebI=
+Date: Mon, 8 Apr 2024 13:51:18 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
+ document
+Message-ID: <35tqaktf533qtpaquvzb7p5juupjyakktstlqgr2hqretnt7lv@chubnabkyqjz>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+ <ab9affc8-de68-4ec9-bdfc-02131191bc3a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,45 +63,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240408105515.2328-3-thorsten.blum@toblux.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8atXOrkjt6X5C4EG6klL2l0-ihnj-X-V
-X-Proofpoint-GUID: 8atXOrkjt6X5C4EG6klL2l0-ihnj-X-V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_10,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=555
- malwarescore=0 priorityscore=1501 spamscore=0 clxscore=1015 phishscore=0
- bulkscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404080090
+In-Reply-To: <ab9affc8-de68-4ec9-bdfc-02131191bc3a@linaro.org>
 
-On Mon, Apr 08, 2024 at 12:55:17PM +0200, Thorsten Blum wrote:
-> Fixes the following two Coccinelle/coccicheck warnings reported by
-> array_size.cocci:
-> 
-> 	WARNING: Use ARRAY_SIZE
-> 	WARNING: Use ARRAY_SIZE
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  arch/s390/tools/gen_facilities.c   | 2 +-
->  arch/s390/tools/gen_opcode_table.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/tools/gen_facilities.c b/arch/s390/tools/gen_facilities.c
-> index 68580cbea4e6..ebd8a947e97c 100644
-> --- a/arch/s390/tools/gen_facilities.c
-> +++ b/arch/s390/tools/gen_facilities.c
-> @@ -149,7 +149,7 @@ static void print_facility_lists(void)
->  {
->  	unsigned int i;
->  
-> -	for (i = 0; i < sizeof(facility_defs) / sizeof(facility_defs[0]); i++)
-> +	for (i = 0; i < ARRAY_SIZE(facility_defs); i++)
->  		print_facility_list(&facility_defs[i]);
->  }
+Hi Krzysztof,
 
-Let's wait until a compile bot reports compile error. It would be
-helpful to at least compile patches, before sending them.
+On Mon, Apr 08, 2024 at 01:17:32PM GMT, Krzysztof Kozlowski wrote:
+> On 08/04/2024 12:51, Pavel Machek wrote:
+> > Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
+> > but I did best I could.
+> > 
+> > Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> 
+> ...
+> 
+> > +  cabledet-gpios:
+> > +    maxItems: 1
+> > +    description: GPIO controlling CABLE_DET (C3) pin.
+> > +
+> > +  avdd10-supply:
+> > +    description: 1.0V power supply going to AVDD10 (A4, ...) pins
+> > +
+> > +  dvdd10-supply:
+> > +    description: 1.0V power supply going to DVDD10 (D6, ...) pins
+> > +
+> > +  avdd18-supply:
+> > +    description: 1.8V power supply going to AVDD18 (E3, ...) pins
+> > +
+> > +  dvdd18-supply:
+> > +    description: 1.8V power supply going to DVDD18 (G4, ...) pins
+> > +
+> > +  avdd33-supply:
+> > +    description: 3.3V power supply going to AVDD33 (C4, ...) pins
+> > +
+> > +  i2c-supply: true
+> > +  vconn-supply: true
+> 
+> There are no such supplies like i2c and vconn on the schematics.
+
+Which schematics?
+
+ANX7688 has VCONN1/2_EN GPIOs that control a switching of VCONN power supply
+to resective CCx pins. That's just a switch signal. Power for VCONN needs
+to come from somewhere and the driver needs to enable the regulator at
+the appropriate time only.
+
+On Pinephone it can't be an always on power supply and needs to be enabled
+only when used due to HW design of the circuit. (default without ANX driver
+initialized would be to shove 5V to both CC pins, which breaks Type-C spec)
+
+I2C supply is needed for I2C bus to work, apparently. There's nothing
+that says that I2C pull-ups supply has to come from supplies powering the
+chip. I2C I/O is open drain and the device needs to enable a bus supply
+in order to communicate.
+
+You can say that bus master should be managing the bus supply, but you'd still
+have a problem that each device may be behind a voltage translator, and
+logically, bus master driver should care only about its side of the bus then.
+Both side of level shifter need the pull-up power enabled.
+
+You can also make an argument that bus supply can be always on, but that
+causes several other issues on Pinephone due to shared nature of most
+resources like these. There are other devices on shared power rails, that
+need to be turned off during sleep, etc.
+
+Kind regards,
+	o.
+
+> I think this represents some other part of component which was added
+> here only for convenience.
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
