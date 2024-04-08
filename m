@@ -1,114 +1,148 @@
-Return-Path: <linux-kernel+bounces-134769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99E089B6A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:54:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2C789B6A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35C28B21C86
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1445D1F21648
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 03:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D4179FE;
-	Mon,  8 Apr 2024 03:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21995250;
+	Mon,  8 Apr 2024 03:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXV21nBH"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V8pnCjng"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBA0747F;
-	Mon,  8 Apr 2024 03:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A3D1FC8;
+	Mon,  8 Apr 2024 03:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712548419; cv=none; b=qHy7F1wy9hHhkaFdPOqWzlf6/l2N/AqPC0sneFkYEGRLseFOZoDy3FwDBMBinW+YIPRxp+90KOGSLeRLMfWbs8fcaFnIuugMYoDT/EH+BT5lfsgMv6nUuEvHZIZr2NYUpm/JNFeNufdaQ2XLTZAXaRVctT7NpQ34rnSJs62YYYw=
+	t=1712548448; cv=none; b=d2LBDbFGCHizf/h5naSyPLfJkOTugpkMNrBAiQLzlu1Cv0RnUA8iXa3wFLknJgngviKSTLLVnTle7Rbe6Hq2tduxKngNVaNUUPnRyAFSw8McCdpeuRJ/YKccM13idbv3bzAFavsywux5q4L96SBaPqLIC8koUMiuSkDa94iiguI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712548419; c=relaxed/simple;
-	bh=oEHbOOo+Ri1kqs5/5aZkyEbpKV8E6A2FxGUiVI2WTv4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cceppDfYSCsQGu2Azlm5zuyXju6URDyC3XqSNNMA+uWoEdXkhbQhbFqME5Tb5DGW4d0Oyb0CPEUbT7Ihe4fIpGev4WvtPaoK2hBtkX/YYI2YcjGZg9zLcmfVJLcxfnWOg7+CV/W6/YSK9WLoofHbTx267Ft1hD4h0UIRHFJVijQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXV21nBH; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0e89faf47so10064615ad.1;
-        Sun, 07 Apr 2024 20:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712548417; x=1713153217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tdaKb7vbj+4jUEnI1aBP9RhDrJGBVLsISpGLsJCZpEI=;
-        b=ZXV21nBHIj1N2FEUNbZwtkjxiMYUVL9f2VpyfDqxAWMIJu7JjUREamW4lit3H6MH9S
-         U2w+A+PSvvgC6ftEmakKukYQ3iTZIoI5I707n+FkW3HS4g1i8V/L05SxDE2ofuZb6AYX
-         z+7T7TkIHIqNE8pBxxDmrIpj9u2LvdIVKNPZ4/VEA150ie+DWqxJovtx6LJYuIKhNck5
-         f7EGfPvqoGvNYWCWsbLDoPuKEBSN1u4VAPL4cSvm0SqtshDAYzZXZQa7+N90GP3AK+w0
-         KZvI/k0hw4M78EMBq/bMHPFIxuzJzDEkhI58sX6KCPzURN6IGsIJvdC9SYdE3H0ZCiSH
-         DZ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712548417; x=1713153217;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tdaKb7vbj+4jUEnI1aBP9RhDrJGBVLsISpGLsJCZpEI=;
-        b=MDqSmesSgndat1n9UWECuoxQfs1cVMpOlSKjon9F651j28MmThZpOtx1vAKvuSOknL
-         cee6/FAYI4kZdVbIDFTPJJ0728ZVDS3LnGszWa5wpQak3GQYMTN3myYmZr321HfR6DR9
-         yOxZvGt8g6FSTI9R6r66MKpPi50avamOxGt533ZFRk/4M4YHmboS+lPW5wUOIIs12lrN
-         C5fyi3+oycwKq7fXHpSLqBlgOZEFG6xYYc4a+ka7D80uFRUnLm3dhpCEsxyZ3dk8rjMZ
-         cC/yvxXiIWCZwmuldDsqUWiDhmFW9zKfxPj5Gs225h9DmSsc5JexFcGyMmVphEb3fsad
-         zOKA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1jWjAGgg0vYO43bTndsufgRUFYHDrE3Eo4vl4j43lrPvdewHRYrbno2Z0t1frfFc0h8Y8SH/gi3VyPPNZB56y8ZH//EM+3IAqZKY8nqnGZ3o4JnfDPLL6MtV4WwO51VKRFb6xswMdzixoTVACMdhawMgxdzD4MpetskqZSR0f2A==
-X-Gm-Message-State: AOJu0YxkKKB/AlA0VIc7y7EOTDpeMmXAn/Gfy3S3/otp80dPFXVrGgHZ
-	CUGJ3c+tzbHOyea7TxhO595Wfx01uBpEY11Ox6I8fQEWbOJr3xUI
-X-Google-Smtp-Source: AGHT+IGLZl4k8db3AnaLRdS/1JiFbgxr3JLLo6wVIhnsAWiOWBj8HDCBzJF2ZfE47HU1g1KnmKyq1w==
-X-Received: by 2002:a17:902:e811:b0:1e0:c887:f93f with SMTP id u17-20020a170902e81100b001e0c887f93fmr10054410plg.1.1712548417216;
-        Sun, 07 Apr 2024 20:53:37 -0700 (PDT)
-Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:705b:f2ff:2c4d:3b1b])
-        by smtp.gmail.com with ESMTPSA id kp11-20020a170903280b00b001d8aa88f59esm5757512plb.110.2024.04.07.20.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 20:53:36 -0700 (PDT)
-From: I Hsin Cheng <richard120310@gmail.com>
-To: tj@kernel.org
-Cc: lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	corbet@lwn.net,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	I Hsin Cheng <richard120310@gmail.com>
-Subject: [PATCH] docs: cgroup-v1: Fix description for css_online
-Date: Mon,  8 Apr 2024 11:53:29 +0800
-Message-Id: <20240408035329.5175-1-richard120310@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712548448; c=relaxed/simple;
+	bh=ldaL5TI2vG8hJ2dJM8jnvwvFwNTV8s/Opak7rNRuJkQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=kFwO1wyPGg9OKGZ74Z+N9L3IWrxc4FWVCq0VyDy8oda5aOLzrSdSaMFnxLHFS4MQ0ewkPg0jM6mKBAWFTJKS2iRB0CGeQ/viVQHPnYrDcQuYafE2Q+k5U7SfdX8JfV+a3DBCaQk7Cz7TqPuhv2+FasYq9BIWzG3Y3TzH1mGW3Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V8pnCjng; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0C4C433F1;
+	Mon,  8 Apr 2024 03:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712548447;
+	bh=ldaL5TI2vG8hJ2dJM8jnvwvFwNTV8s/Opak7rNRuJkQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=V8pnCjngV44K8vktUDKHOC10cJlaZI7dD9ILMpqODQeiAnMyYymlg53uHnn4bTvpS
+	 nfLjZNy9IFergsvkjz3kVlipshMlKutYpIQ/qvSAysMYCeNE/GOPyJR0q5l+jBv4GQ
+	 juwA/wdWVwJmpITYG3zBVWrb8UddARMslSkOidhLvadEHiWGo3gz68lFc8p/XJbGjv
+	 sme6r9YOgeC8Va9i73956WqXI5AouL6Od/VbEjWtauRBfZcnEWiD8JWlVLUE1sj0ev
+	 fFqm9Eg0aOkN8ElM0H+yqIqovds1KEL4n/KLJMI1odWcEc/unLDhq2BHPxNYepOWyD
+	 erQfeKBReg/xQ==
+Date: Mon, 8 Apr 2024 12:54:01 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-Id: <20240408125401.d4f100d184b11bc01fcd0308@kernel.org>
+In-Reply-To: <20240406175558.GC3060@redhat.com>
+References: <20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+	<20240404161108.GG7153@redhat.com>
+	<20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+	<Zg-8r63tPSkuhN7p@krava>
+	<20240405110230.GA22839@redhat.com>
+	<20240406120536.57374198f3f45e809d7e4efa@kernel.org>
+	<20240406175558.GC3060@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The original description refers to the comment on
-cgroup_for_each_descendant_pre() for more details. However, the macro
-cgroup_for_each_descendant_pre() no longer exist, we replace it with the
-corresponding macro cgroup_for_each_live_descendant_pre().
+On Sat, 6 Apr 2024 19:55:59 +0200
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
----
- Documentation/admin-guide/cgroup-v1/cgroups.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On 04/06, Masami Hiramatsu wrote:
+> >
+> > On Fri, 5 Apr 2024 13:02:30 +0200
+> > Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > > With or without this patch userpace can also do
+> > >
+> > > 	foo() { <-- retprobe1
+> > > 		bar() {
+> > > 			jump to xol_area
+> > > 		}
+> > > 	}
+> > >
+> > > handle_trampoline() will handle retprobe1.
+> >
+> > This is OK because the execution path has been changed to trampoline,
+> 
+> Agreed, in this case the misuse is more clear. But please see below.
+> 
+> > but the above will continue running bar() after sys_uretprobe().
+> 
+> .. and most probably crash
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cgroups.rst b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-index 9343148ee..a3e2edb3d 100644
---- a/Documentation/admin-guide/cgroup-v1/cgroups.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-@@ -570,7 +570,7 @@ visible to cgroup_for_each_child/descendant_*() iterators. The
- subsystem may choose to fail creation by returning -errno. This
- callback can be used to implement reliable state sharing and
- propagation along the hierarchy. See the comment on
--cgroup_for_each_descendant_pre() for details.
-+cgroup_for_each_live_descendant_pre() for details.
- 
- ``void css_offline(struct cgroup *cgrp);``
- (cgroup_mutex held by caller)
+Yes, unless it returns with longjmp(). (but this is rare case and
+maybe malicious program.)
+
+> 
+> > > sigreturn() can be "improved" too. Say, it could validate sigcontext->ip
+> > > and return -EINVAL if this addr is not valid. But why?
+> >
+> > Because sigreturn() never returns, but sys_uretprobe() will return.
+> 
+> You mean, sys_uretprobe() returns to the next insn after syscall.
+> 
+> Almost certainly yes, but this is not necessarily true. If one of consumers
+> changes regs->sp sys_uretprobe() "returns" to another location, just like
+> sys_rt_sigreturn().
+> 
+> That said.
+> 
+> Masami, it is not that I am trying to prove that you are "wrong" ;) No.
+> 
+> I see your points even if I am biased, I understand that my objections are
+> not 100% "fair".
+> 
+> I am just trying to explain why, rightly or not, I care much less about the
+> abuse of sys_uretprobe().
+
+I would like to clear that the abuse of this syscall will not possible to harm
+the normal programs, and even if it is used by malicious code (e.g. injected by
+stack overflow) it doesn't cause a problem. At least thsese points are cleared,
+and documented. it is easier to push it as new Linux API.
+
+Thank you,
+
+> 
+> Thanks!
+> 
+> Oleg.
+> 
+> 
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
