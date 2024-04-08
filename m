@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-135541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F2889C756
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C74C089C75B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:47:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24A78B25CC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:46:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2001B22507
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0485513F44B;
-	Mon,  8 Apr 2024 14:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89709140E40;
+	Mon,  8 Apr 2024 14:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="SJ/MbSbM"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="QxOxCU5m"
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD4613EFE3
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDA213F421
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712587570; cv=none; b=VANd6xh0d0vnncSxHTf7v6xz8b9YqRfkC8XsIhi2NfkX5pm/I6qcRENr2ISBDBi77i5KFjbw8BfwCTsjs7h+pfbBe/DJI6spsrB8FANqySialur3wWl3EYidN5R0N5R2cjPPOAZnMtGhXDfj+0IPIdar2KrBLQuszl0Ixyxbi1k=
+	t=1712587573; cv=none; b=PN8hr66Tk5AKGeCaxyS0ppwkeOC9PnVm/WohNWu+NsswhQmOYYuxGS23ZnoS4XQc+B2i8Tu96srbFUZtCIKyTJ2AIPKBoyKfV9VfcthgxhifK6HUMr6X6Nx54FjsxS39mk7cvnYhUD+D3hs0rslxuks3npLuaLepKmr8g3gbeXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712587570; c=relaxed/simple;
-	bh=KHlvJWsbeMu59kzQUhqgufoGLgCPogqNvZHlzzE3PHQ=;
+	s=arc-20240116; t=1712587573; c=relaxed/simple;
+	bh=tZ0ChOigTyFhTPj1fd2ZmPp9Kwbgmu3k0ib7CAj7Tp0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jHWd2XO44fMShDyfqmLa3Ylu9eeZ3KRUxuTc4rEDEA0pqRE5FgD3jCW1MH2jzyUHXqBxIgUq7EcbIfkvkalnjjhv+tjR8RajXDG5mU0mW8opp0kRqlXZQHavzqOncCicwbcu+rBTyR7nITDsS/HS9lIJF0t1ecss+7MliovaYXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=SJ/MbSbM; arc=none smtp.client-ip=67.231.149.25
+	 MIME-Version:Content-Type; b=KXIqppREVCVUeGLzPFly3kpn+4KiatGLIBlezsEujumxRSIcEWwYqiHuOsEj3wX8J+9Wt3bShSKHJ+QJo933nOuNAaRC1D80tk5hwNyhTvfKrU5Z9SDAlBR2U2X5JbOxa48NcBxQfEDMaCbnbqdWJKN2t6DBaspL5jPCew0pBkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=QxOxCU5m; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385hvQn026412;
-	Mon, 8 Apr 2024 09:46:05 -0500
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385mlL5032409;
+	Mon, 8 Apr 2024 09:46:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=ztAgntGbfvSuq2sHS6V7+FZxdEZkOYXsd9acqSxg14g=; b=
-	SJ/MbSbMKeDr8nYr66UzdEaO8Pz5WGtMb4qD9cZ4Eyd5LjHKFG4rJGyRSpAb3i71
-	h/b/EFUPJ7HzvgYZ2m2TbdohDDekuEj7N1b7PsHHO+J8OEVe6DVt5HPsPpDqEH5j
-	cUQeoZ+B1QZ76tut4U71lCE5XU+ANHE1UBIE/EZeEBL95JIteDff4H/oXVsDIFuI
-	Xath78EM0zH30T3bAt0h9FaodPx7JqHQ3ejcuiHi7rkcJgX6CnBEtPpLogPFRMii
-	XGJbTkJI3bYZMghQQKouvKRajF+m5hCFLe7R1vR9i30qPDfJo6tgtZyzwAjjImEG
-	tTuAvz/peJ84KqJul5rQ7Q==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhjp8-3
+	PODMain02222019; bh=d7MUA8YSpTzS81JUQMKOMK4CDGrnk/tQ/v/lenBUBCk=; b=
+	QxOxCU5mXQ/Sr4NSFx4rZK9ktRtixHbupWGVfGRlxje6WEXQDAYjtmLEzWdn3sXP
+	Hiv2D8/b25Dw9wnvnLoYOWi3HvRDaYzQy5X1+4acT+Xc+ApwIQWv8gLSlY5ZGeEN
+	Q4a85Z288jWGPdetZVGaKpNkPFwLZI0lEZWd4O09lUqWjdnEs/2abnFqH6gjgUPP
+	C+4G3NKskVf92EtHB6J2bp1loVo8vH3vhl5zm1QbLTTYbxwovAiBcDfLqZASLkB+
+	jmXI/MAGu3Ku7XOpeoGarBHrLNUNb4KNTE4JKHHJRLgXIOVnTN6x0hYXU+Nm8ijm
+	3w0t8s6z/sK8ujRazr4YVg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhjp7-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 09:46:04 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 08 Apr 2024 09:46:07 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
  15:46:01 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 8 Apr 2024 15:46:01 +0100
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 8 Apr 2024 15:46:01 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id BE18582026C;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C0575820270;
 	Mon,  8 Apr 2024 14:46:00 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 07/11] regmap: kunit: Add more cache-sync tests
-Date: Mon, 8 Apr 2024 15:45:56 +0100
-Message-ID: <20240408144600.230848-8-rf@opensource.cirrus.com>
+Subject: [PATCH 08/11] regmap: kunit: Use a KUnit action to call regmap_exit()
+Date: Mon, 8 Apr 2024 15:45:57 +0100
+Message-ID: <20240408144600.230848-9-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240408144600.230848-1-rf@opensource.cirrus.com>
 References: <20240408144600.230848-1-rf@opensource.cirrus.com>
@@ -76,191 +77,307 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: rSIIfgjYbeRV6_BpDjYx3wj2xOzdvTp7
-X-Proofpoint-GUID: rSIIfgjYbeRV6_BpDjYx3wj2xOzdvTp7
+X-Proofpoint-ORIG-GUID: 5taDHWMjp2rNNV40v52FNkFvVmpNCBat
+X-Proofpoint-GUID: 5taDHWMjp2rNNV40v52FNkFvVmpNCBat
 X-Proofpoint-Spam-Reason: safe
 
-Extend the testing of cache-sync.
-
-- cache_sync() renamed cache_sync_marked_dirty() for clarity of
-  what conditions it is testing.
-
-- cache_sync_defaults() renamed cache_sync_defaults_marked_dirty()
-  for clarity. Added code to write the register back to its default
-  value to check that a dirty sync doesn't write out the default value.
-
-- Added cache_sync_after_cache_only(). Tests syncing the cache without
-  calling regcache_mark_dirty(). A register written while in cache-only
-  should be written out by regcache_sync().
-
-- Added cache_sync_default_after_cache_only. This is similar to
-  cache_sync_after_cache_only(), but the register is changed to its
-  default value while in cache-only. Because regcache_mark_dirty() was
-  NOT called, regacache_sync() should write out the register.
+Registert a KUnit action handler to call regmap_exit() when a test
+terminates. This ensures that regmap_exit() will be called if a test
+function returns early or aborts.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/base/regmap/regmap-kunit.c | 126 ++++++++++++++++++++++++++++-
- 1 file changed, 122 insertions(+), 4 deletions(-)
+ drivers/base/regmap/regmap-kunit.c | 62 ++++--------------------------
+ 1 file changed, 7 insertions(+), 55 deletions(-)
 
 diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index 3201f5f6406b..1b34f92b1aaf 100644
+index 1b34f92b1aaf..e21028cbddc3 100644
 --- a/drivers/base/regmap/regmap-kunit.c
 +++ b/drivers/base/regmap/regmap-kunit.c
-@@ -706,7 +706,7 @@ static void cache_bypass(struct kunit *test)
- 	regmap_exit(map);
+@@ -5,11 +5,14 @@
+ // Copyright 2023 Arm Ltd
+ 
+ #include <kunit/device.h>
++#include <kunit/resource.h>
+ #include <kunit/test.h>
+ #include "internal.h"
+ 
+ #define BLOCK_TEST_SIZE 12
+ 
++KUNIT_DEFINE_ACTION_WRAPPER(regmap_exit_action, regmap_exit, struct regmap *);
++
+ struct regmap_test_priv {
+ 	struct device *dev;
+ };
+@@ -190,6 +193,8 @@ static struct regmap *gen_regmap(struct kunit *test,
+ 	if (IS_ERR(ret)) {
+ 		kfree(buf);
+ 		kfree(*data);
++	} else {
++		kunit_add_action(test, regmap_exit_action, ret);
+ 	}
+ 
+ 	return ret;
+@@ -226,8 +231,6 @@ static void basic_read_write(struct kunit *test)
+ 
+ 	/* If using a cache the cache satisfied the read */
+ 	KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[0]);
+-
+-	regmap_exit(map);
  }
  
--static void cache_sync(struct kunit *test)
-+static void cache_sync_marked_dirty(struct kunit *test)
- {
- 	const struct regmap_test_param *param = test->param_value;
- 	struct regmap *map;
-@@ -743,7 +743,58 @@ static void cache_sync(struct kunit *test)
- 	regmap_exit(map);
- }
- 
--static void cache_sync_defaults(struct kunit *test)
-+static void cache_sync_after_cache_only(struct kunit *test)
-+{
-+	const struct regmap_test_param *param = test->param_value;
-+	struct regmap *map;
-+	struct regmap_config config;
-+	struct regmap_ram_data *data;
-+	unsigned int val[BLOCK_TEST_SIZE];
-+	unsigned int val_mask;
-+	int i;
-+
-+	config = test_regmap_config;
-+
-+	map = gen_regmap(test, &config, &data);
-+	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
-+	if (IS_ERR(map))
-+		return;
-+
-+	val_mask = GENMASK(config.val_bits - 1, 0);
-+	get_random_bytes(&val, sizeof(val));
-+
-+	/* Put some data into the cache */
-+	KUNIT_EXPECT_EQ(test, 0, regmap_bulk_write(map, param->from_reg, val,
-+						   BLOCK_TEST_SIZE));
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		data->written[param->from_reg + i] = false;
-+
-+	/* Set cache-only and change the values */
-+	regcache_cache_only(map, true);
-+	for (i = 0; i < ARRAY_SIZE(val); ++i)
-+		val[i] = ~val[i] & val_mask;
-+
-+	KUNIT_EXPECT_EQ(test, 0, regmap_bulk_write(map, param->from_reg, val,
-+						   BLOCK_TEST_SIZE));
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		KUNIT_EXPECT_FALSE(test, data->written[param->from_reg + i]);
-+
-+	KUNIT_EXPECT_MEMNEQ(test, &data->vals[param->from_reg], val, sizeof(val));
-+
-+	/* Exit cache-only and sync the cache without marking hardware registers dirty */
-+	regcache_cache_only(map, false);
-+
-+	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
-+
-+	/* Did we just write the correct data out? */
-+	KUNIT_EXPECT_MEMEQ(test, &data->vals[param->from_reg], val, sizeof(val));
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		KUNIT_EXPECT_TRUE(test, data->written[param->from_reg + i]);
-+
-+	regmap_exit(map);
-+}
-+
-+static void cache_sync_defaults_marked_dirty(struct kunit *test)
- {
- 	const struct regmap_test_param *param = test->param_value;
- 	struct regmap *map;
-@@ -775,6 +826,71 @@ static void cache_sync_defaults(struct kunit *test)
+ static void bulk_write(struct kunit *test)
+@@ -261,8 +264,6 @@ static void bulk_write(struct kunit *test)
+ 	/* If using a cache the cache satisfied the read */
  	for (i = 0; i < BLOCK_TEST_SIZE; i++)
- 		KUNIT_EXPECT_EQ(test, i == 2, data->written[param->from_reg + i]);
- 
-+	/* Rewrite registers back to their defaults */
-+	for (i = 0; i < config.num_reg_defaults; ++i)
-+		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, config.reg_defaults[i].reg,
-+						      config.reg_defaults[i].def));
-+
-+	/*
-+	 * Resync after regcache_mark_dirty() should not write out registers
-+	 * that are at default value
-+	 */
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		data->written[param->from_reg + i] = false;
-+	regcache_mark_dirty(map);
-+	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		KUNIT_EXPECT_FALSE(test, data->written[param->from_reg + i]);
-+
-+	regmap_exit(map);
-+}
-+
-+static void cache_sync_default_after_cache_only(struct kunit *test)
-+{
-+	const struct regmap_test_param *param = test->param_value;
-+	struct regmap *map;
-+	struct regmap_config config;
-+	struct regmap_ram_data *data;
-+	unsigned int orig_val;
-+	int i;
-+
-+	config = test_regmap_config;
-+	config.num_reg_defaults = BLOCK_TEST_SIZE;
-+
-+	map = gen_regmap(test, &config, &data);
-+	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
-+	if (IS_ERR(map))
-+		return;
-+
-+	KUNIT_EXPECT_EQ(test, 0, regmap_read(map, param->from_reg + 2, &orig_val));
-+
-+	/* Enter cache-only and change the value of one register */
-+	regcache_cache_only(map, true);
-+	KUNIT_EXPECT_EQ(test, 0, regmap_write(map, param->from_reg + 2, orig_val + 1));
-+
-+	/* Exit cache-only and resync, should write out the changed register */
-+	regcache_cache_only(map, false);
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		data->written[param->from_reg + i] = false;
-+	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
-+
-+	/* Was the register written out? */
-+	KUNIT_EXPECT_TRUE(test, data->written[param->from_reg + 2]);
-+	KUNIT_EXPECT_EQ(test, data->vals[param->from_reg + 2], orig_val + 1);
-+
-+	/* Enter cache-only and write register back to its default value */
-+	regcache_cache_only(map, true);
-+	KUNIT_EXPECT_EQ(test, 0, regmap_write(map, param->from_reg + 2, orig_val));
-+
-+	/* Resync should write out the new value */
-+	regcache_cache_only(map, false);
-+	for (i = 0; i < BLOCK_TEST_SIZE; i++)
-+		data->written[param->from_reg + i] = false;
-+
-+	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
-+	KUNIT_EXPECT_TRUE(test, data->written[param->from_reg + 2]);
-+	KUNIT_EXPECT_EQ(test, data->vals[param->from_reg + 2], orig_val);
-+
- 	regmap_exit(map);
+ 		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+-
+-	regmap_exit(map);
  }
  
-@@ -1590,8 +1706,10 @@ static struct kunit_case regmap_test_cases[] = {
- 	KUNIT_CASE_PARAM(basic_ranges, regcache_types_gen_params),
- 	KUNIT_CASE_PARAM(stress_insert, regcache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_bypass, real_cache_types_gen_params),
--	KUNIT_CASE_PARAM(cache_sync, real_cache_types_gen_params),
--	KUNIT_CASE_PARAM(cache_sync_defaults, real_cache_types_gen_params),
-+	KUNIT_CASE_PARAM(cache_sync_marked_dirty, real_cache_types_gen_params),
-+	KUNIT_CASE_PARAM(cache_sync_after_cache_only, real_cache_types_gen_params),
-+	KUNIT_CASE_PARAM(cache_sync_defaults_marked_dirty, real_cache_types_gen_params),
-+	KUNIT_CASE_PARAM(cache_sync_default_after_cache_only, real_cache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_sync_readonly, real_cache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_sync_patch, real_cache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_drop, sparse_cache_types_gen_params),
+ static void bulk_read(struct kunit *test)
+@@ -292,8 +293,6 @@ static void bulk_read(struct kunit *test)
+ 	/* If using a cache the cache satisfied the read */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void write_readonly(struct kunit *test)
+@@ -325,8 +324,6 @@ static void write_readonly(struct kunit *test)
+ 	/* Did that match what we see on the device? */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_EQ(test, i != 5, data->written[i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void read_writeonly(struct kunit *test)
+@@ -363,8 +360,6 @@ static void read_writeonly(struct kunit *test)
+ 
+ 	/* Did we trigger a hardware access? */
+ 	KUNIT_EXPECT_FALSE(test, data->read[5]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void reg_defaults(struct kunit *test)
+@@ -471,8 +466,6 @@ static void register_patch(struct kunit *test)
+ 			break;
+ 		}
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static void stride(struct kunit *test)
+@@ -512,8 +505,6 @@ static void stride(struct kunit *test)
+ 			KUNIT_EXPECT_TRUE(test, data->written[i]);
+ 		}
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static struct regmap_range_cfg test_range = {
+@@ -612,8 +603,6 @@ static void basic_ranges(struct kunit *test)
+ 		KUNIT_EXPECT_FALSE(test, data->read[i]);
+ 		KUNIT_EXPECT_FALSE(test, data->written[i]);
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ /* Try to stress dynamic creation of cache data structures */
+@@ -665,8 +654,6 @@ static void stress_insert(struct kunit *test)
+ 		KUNIT_EXPECT_EQ(test, rval, vals[i]);
+ 		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_bypass(struct kunit *test)
+@@ -702,8 +689,6 @@ static void cache_bypass(struct kunit *test)
+ 	regcache_cache_bypass(map, false);
+ 	KUNIT_EXPECT_EQ(test, 0, regmap_read(map, param->from_reg, &rval));
+ 	KUNIT_EXPECT_EQ(test, val, rval);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_marked_dirty(struct kunit *test)
+@@ -739,8 +724,6 @@ static void cache_sync_marked_dirty(struct kunit *test)
+ 	KUNIT_EXPECT_MEMEQ(test, &data->vals[param->from_reg], val, sizeof(val));
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_EQ(test, true, data->written[param->from_reg + i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_after_cache_only(struct kunit *test)
+@@ -790,8 +773,6 @@ static void cache_sync_after_cache_only(struct kunit *test)
+ 	KUNIT_EXPECT_MEMEQ(test, &data->vals[param->from_reg], val, sizeof(val));
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_TRUE(test, data->written[param->from_reg + i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_defaults_marked_dirty(struct kunit *test)
+@@ -841,8 +822,6 @@ static void cache_sync_defaults_marked_dirty(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_FALSE(test, data->written[param->from_reg + i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_default_after_cache_only(struct kunit *test)
+@@ -890,8 +869,6 @@ static void cache_sync_default_after_cache_only(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 	KUNIT_EXPECT_TRUE(test, data->written[param->from_reg + 2]);
+ 	KUNIT_EXPECT_EQ(test, data->vals[param->from_reg + 2], orig_val);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_readonly(struct kunit *test)
+@@ -930,8 +907,6 @@ static void cache_sync_readonly(struct kunit *test)
+ 	/* Did that match what we see on the device? */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_EQ(test, i != 5, data->written[param->from_reg + i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_sync_patch(struct kunit *test)
+@@ -990,8 +965,6 @@ static void cache_sync_patch(struct kunit *test)
+ 			break;
+ 		}
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_drop(struct kunit *test)
+@@ -1032,8 +1005,6 @@ static void cache_drop(struct kunit *test)
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_EXPECT_EQ(test, data->read[param->from_reg + i], i >= 3 && i <= 5);
+ 	KUNIT_EXPECT_MEMEQ(test, &data->vals[param->from_reg], rval, sizeof(rval));
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_drop_all_and_sync_marked_dirty(struct kunit *test)
+@@ -1075,8 +1046,6 @@ static void cache_drop_all_and_sync_marked_dirty(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 	for (i = 0; i <= config.max_register; i++)
+ 		KUNIT_EXPECT_FALSE(test, data->written[i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_drop_all_and_sync_no_defaults(struct kunit *test)
+@@ -1119,8 +1088,6 @@ static void cache_drop_all_and_sync_no_defaults(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 	for (i = 0; i <= config.max_register; i++)
+ 		KUNIT_EXPECT_FALSE(test, data->written[i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_drop_all_and_sync_has_defaults(struct kunit *test)
+@@ -1164,8 +1131,6 @@ static void cache_drop_all_and_sync_has_defaults(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 	for (i = 0; i <= config.max_register; i++)
+ 		KUNIT_EXPECT_FALSE(test, data->written[i]);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void cache_present(struct kunit *test)
+@@ -1202,8 +1167,6 @@ static void cache_present(struct kunit *test)
+ 	/* Now everything should be cached */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+ 		KUNIT_ASSERT_TRUE(test, regcache_reg_cached(map, param->from_reg + i));
+-
+-	regmap_exit(map);
+ }
+ 
+ /* Check that caching the window register works with sync */
+@@ -1350,6 +1313,8 @@ static struct regmap *gen_raw_regmap(struct kunit *test,
+ 	if (IS_ERR(ret)) {
+ 		kfree(buf);
+ 		kfree(*data);
++	} else {
++		kunit_add_action(test, regmap_exit_action, ret);
+ 	}
+ 
+ 	return ret;
+@@ -1375,8 +1340,6 @@ static void raw_read_defaults_single(struct kunit *test)
+ 		KUNIT_EXPECT_EQ(test, 0, regmap_read(map, i, &rval));
+ 		KUNIT_EXPECT_EQ(test, config.reg_defaults[i].def, rval);
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static void raw_read_defaults(struct kunit *test)
+@@ -1414,7 +1377,6 @@ static void raw_read_defaults(struct kunit *test)
+ 	}
+ 
+ 	kfree(rval);
+-	regmap_exit(map);
+ }
+ 
+ static void raw_write_read_single(struct kunit *test)
+@@ -1438,8 +1400,6 @@ static void raw_write_read_single(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 0, val));
+ 	KUNIT_EXPECT_EQ(test, 0, regmap_read(map, 0, &rval));
+ 	KUNIT_EXPECT_EQ(test, val, rval);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void raw_write(struct kunit *test)
+@@ -1489,8 +1449,6 @@ static void raw_write(struct kunit *test)
+ 
+ 	/* The values should appear in the "hardware" */
+ 	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], val, sizeof(val));
+-
+-	regmap_exit(map);
+ }
+ 
+ static bool reg_zero(struct device *dev, unsigned int reg)
+@@ -1548,8 +1506,6 @@ static void raw_noinc_write(struct kunit *test)
+ 	/* Make sure we didn't touch the register after the noinc register */
+ 	KUNIT_EXPECT_EQ(test, 0, regmap_read(map, 1, &val));
+ 	KUNIT_ASSERT_EQ(test, val_test, val);
+-
+-	regmap_exit(map);
+ }
+ 
+ static void raw_sync(struct kunit *test)
+@@ -1625,8 +1581,6 @@ static void raw_sync(struct kunit *test)
+ 
+ 	/* The values should now appear in the "hardware" */
+ 	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], &val[0], sizeof(val));
+-
+-	regmap_exit(map);
+ }
+ 
+ static void raw_ranges(struct kunit *test)
+@@ -1689,8 +1643,6 @@ static void raw_ranges(struct kunit *test)
+ 		KUNIT_EXPECT_FALSE(test, data->read[i]);
+ 		KUNIT_EXPECT_FALSE(test, data->written[i]);
+ 	}
+-
+-	regmap_exit(map);
+ }
+ 
+ static struct kunit_case regmap_test_cases[] = {
 -- 
 2.39.2
 
