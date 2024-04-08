@@ -1,211 +1,294 @@
-Return-Path: <linux-kernel+bounces-135248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CA489BDBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:06:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7599789BDC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E69C7B20EE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5C7A1F21D68
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E9764CCC;
-	Mon,  8 Apr 2024 11:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8CF64CD1;
+	Mon,  8 Apr 2024 11:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YnJqrUVM"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2040.outbound.protection.outlook.com [40.107.243.40])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Ht5rXnBv"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B245FB8F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 11:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712574385; cv=fail; b=sMRkzGDIxvyBB+ziugT8xtecNKhAC46eodJOiqwdTIDOU6OJjfsnLS5sTj1Vaqa1MX+bEhBU7LbyDSg0p7OODxYFABqN2+Kk9lFuLQ50lMu5Dfad6e5iADGPrORoOkN2HSZ319IXd8HaXwYs5YBtfC+xFz4FicNpSjq7zZ4ceE8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712574385; c=relaxed/simple;
-	bh=4giIsb9r+dfxboJFitbfuWqZoE118UhGpBzfdy5dCOs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lhdkcgtrPwvoJJxBNdV/dk1MankuDwNDL9DGoPlk8AaioRaj+yBYNpLJr0Pj66PzDp87amva1yfyUrZ5mCmU/CxalQznKuaYG7oBYY+rIrgQAcf4IAK+e35+J+ugSTI9rVFumHaWJatF1wP2K9IoduubB7v4elkv67d1K1yzYLM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YnJqrUVM; arc=fail smtp.client-ip=40.107.243.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PA6udrud+7FAFGkKeM9ACnt1nm0oCjKcz9NeQe99Y5mGv3wprik3zKIlFBOrwoCQBeU7ax3qg4ioRzzeOEs9lC/tffAu9bSOVcj4oLDn6ZOH+UEeMa7GFH5k9P7WMn5L6vBbuaCposuRzDXXoyjyPJLnumeo2I98mrE8m64LqXn7JnfbwivlgdLpNfVHkqV3PlB0G5UbGu9DVwjlvbTJQ/INcF6X9YcPMeV5YxP/HZhU052YCe2oerB0XqQ2SDJABfFwH97IZtAgPLhTTMsutisEa/6vky8FAfU7wYBH0sMTb6Dn5DhwNg+xJFxN9DKl2/eMOuhsdGD15XWiKUF8ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NAj4Hl4Ej3ikJtQd+WA0hhpE8n5LNgIJcXfYekN7Jx8=;
- b=mt8i5vSi5Xq1MkGjpTbcb7vg4qT3IaWZzYslbMWMK9+xNAdY3+M3Kh+FiFa5Uo9iwRZZ4bLcfSKP3QNmYxy+etnXecwXOAT4HYMiJmbgOvJOaEelYane5kZCZvPdAtIx67o0D1Y37YLS0457d/Pe1yRc13rxzO5M8lmJkwWlON0zELkoG82JWt3W+0amPz9FTENWoH4GhtoimLEGa8bVZ3YrsiiWW4Dd7hgF5bS6Fc3+Y5WFFhZGLf1dxxQewcOYZdTL9x9szOl57/xGIRlql9OrJqd49sqcRkR5vZjCgiB7r3MmFJi4Wat0ap759207sFW6jWUJpuGk9sEbXSh1FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NAj4Hl4Ej3ikJtQd+WA0hhpE8n5LNgIJcXfYekN7Jx8=;
- b=YnJqrUVM2Ovglvjn7ekkXH4dIlr37HYu5E9NfTzM+z3STGjmvss5zOG9sYaxKF8oFByUhjbv8aiw9Mgy5cL5NUDI90lYYPhjrSszGqX7EER5PlQaY9vfKSsZN7W9NrTOT71vZ5KEYbjfzxjMlOCpzFXyu5CEK24SBwbxGEKo5fQ=
-Received: from DS7PR03CA0136.namprd03.prod.outlook.com (2603:10b6:5:3b4::21)
- by PH7PR12MB6833.namprd12.prod.outlook.com (2603:10b6:510:1af::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 11:06:21 +0000
-Received: from DS3PEPF000099D3.namprd04.prod.outlook.com
- (2603:10b6:5:3b4:cafe::c0) by DS7PR03CA0136.outlook.office365.com
- (2603:10b6:5:3b4::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.35 via Frontend
- Transport; Mon, 8 Apr 2024 11:06:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D3.mail.protection.outlook.com (10.167.17.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Mon, 8 Apr 2024 11:06:20 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Apr
- 2024 06:06:20 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Apr
- 2024 06:06:19 -0500
-Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 8 Apr 2024 06:06:19 -0500
-From: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To: <michal.simek@amd.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-Subject: [PATCH] soc: xilinx: rename cpu_number1 to dummy_cpu_number
-Date: Mon, 8 Apr 2024 04:06:10 -0700
-Message-ID: <20240408110610.15676-1-jay.buddhabhatti@amd.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFE96025E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 11:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712574481; cv=none; b=HN/eTKMNDfyigDDxbLks00Zfp42/SrW0KOMzu7QgXaGZiHy4klYzzh8ftwBXVcHzxG/G+Jqm/XAqpmExdnv6mAy9Cfw19cJxyK7c65YlC3yAcjtGXdYDVyNyj3tg9RH1lgs6V6SAHPz/iBUwj8Bea9JLrDM9EUapZ8Lp5xuJyMc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712574481; c=relaxed/simple;
+	bh=YhxUQBg3n3cTnufK2zPe131A0C62pT4wrNfA/Coth50=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OgBsELtpBfQSA4JL9IOhrjE4/60j1KyTVp9sIAvVveY6mFSPW1zcp7ILwHnCvRU2sxEBLEiFQ8x3YzbWMqF1gRZENf2xUL8C2MXNFJhO6lZNuvrvpAajfpC6u49m1psZZuucfEC6n2Hgh+C81b/3WryVg/KlWcy6EEX1MNaB+GQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Ht5rXnBv; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=G8yNq+5/1rE8/5Dwk4z6wsHTs+C7YBQ68IPG6F+ovZ4=; b=Ht5rXnBvynUwwe/qU0kYhHgQC1
+	6P0cPSJATQGx0nHe6NQoKbIkAmZjdBsLxkIa1HDIwNH57McaHgs8iZZGafYVY0CT1k2YSrv/JXoLC
+	lU1xexwN53IQORZdi08jz9lI3P23ebeejTcI9ju67bd92HMrJG6sVU9RnXVQjZEIO2hBdWmA5RqTX
+	pBNcS2stYbU5lGoEQ4GroAZCjXMySrSkpm1bq4gjyJb+OnCKAqvznji/nRJ1uftpEzUR2ShDvjPi5
+	B5zT8m+MiBJ1mdoGZmysdTkN19nHGFtE4ta1ShF1jAyLYX0NjM3LdyGj/JyF7xzLeYv5x2E3ePXRg
+	Ovd53EVQ==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rtmqY-002Tcn-Hz; Mon, 08 Apr 2024 13:07:30 +0200
+Message-ID: <eb52c5b7-074e-4f63-a5c4-c693190b5805@igalia.com>
+Date: Mon, 8 Apr 2024 08:07:20 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB05.amd.com: jay.buddhabhatti@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D3:EE_|PH7PR12MB6833:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2ad92258-5f86-447f-d26a-08dc57bbebe6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HD7RJdwkG/2mnvujyQCQjlOKyoTzYytJUxqdBoC/vabAlK6OSF/Kxh+M1MMcJbCBaQjVuHFV7Pw7fuEKwdBFUi1lWEP9lYs1h+rXg1AthpOHhv4YI0AVG893vj8uA0jn++qQe69ez/ZxNwoDPd2in3InMoET9rd2StQNIoD/bodE4pPQKz1iSs36xM8Dy2qttjF86Mcg5Cv5mhDOEiyCxgRKjNAjNaB0VsbTlC9d6fIw7TTIMsemU2VOyvnzS6f/z+zkR3BPkgHV+8Bw/rXFH2TpI+vkZxO3DWRTkePUOqQZxGSpYe6Ao1t09d3kT1feGe+SIoKkN6zAcKc6FeKFdlCsMcN4+vb5Eak1t15WxihVGCrOJ7+iuULaqipIUa6tLZab8LpXaTNWuA+Y3jE58oVGsDa0c9OaaRTuvyY2J0Iql623m/zbyO82/RbedL6xDOwZOrB9ZAiHYtCsn6Kn5TodyzNJt6OzuS/EbQKnpXeC/3cHtCD7O46rCKrK26kgajfXBKSLb+wxUu9cmbMZgaeo/n+AU7oQhVEgTcjaeiVG/JhavKCI881uHkgWzArOG96dVlAYlViD+aKXELS7jmlSzMCegGqgApVk8v+ptxKjUwgdSARaP/X9RYpJScsOg+nryitbmwnX6uZkSVRo2uzsXuTCK6Ul8Sr+MEcSMbj5mKdvTCYnnHNWigxeSRLqiUbpv7jC7r7BmkX/u9kRTIjq34sM2To9iLxhfFaM4XHKpV5I/QDmqYCZzFPrSRhi
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 11:06:20.7260
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ad92258-5f86-447f-d26a-08dc57bbebe6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6833
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Show overall GPU usage stats through sysfs
+ knob
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ kernel@collabora.com, Christopher Healy <healych@amazon.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240404140014.1022816-1-adrian.larumbe@collabora.com>
+ <364bd804-2be6-4a0a-a3d2-e6fa136a73ab@igalia.com>
+ <6aoklcyuvvxgqecjzatn2xopevbsrejhkvzmcqosbu2wkngtui@36gynkk5fay6>
+Content-Language: en-US
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <6aoklcyuvvxgqecjzatn2xopevbsrejhkvzmcqosbu2wkngtui@36gynkk5fay6>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The per cpu variable cpu_number1 is passed to xlnx_event_handler as
-argument "dev_id", but it is not used in this function. So drop the
-initialization of this variable and rename it to dummy_cpu_number.
-This patch is to fix the following call trace when the kernel option
-CONFIG_DEBUG_ATOMIC_SLEEP is enabled:
+On 4/4/24 18:30, Adrián Larumbe wrote:
+> On 04.04.2024 11:31, Maíra Canal wrote:
+>> On 4/4/24 11:00, Adrián Larumbe wrote:
+>>> This changeset is heavily inspired by commit 509433d8146c ("drm/v3d: Expose
+>>> the total GPU usage stats on sysfs"). The point is making broader GPU
+>>> occupancy numbers available through the sysfs interface, so that for every
+>>> job slot, its number of processed jobs and total processing time are
+>>> displayed.
+>>
+>> Shouldn't we make this sysfs interface a generic DRM interface?
+>> Something that would be standard for all drivers and that we could
+>> integrate into gputop in the future.
+> 
+> I think the best way to generalise this sysfs knob would be to create a DRM
+> class attribute somewhere in drivers/gpu/drm/drm_sysfs.c and then adding a new
+> function to 'struct drm_driver' that would return a structure with the relevant
+> information (execution units and their names, number of processed jobs, etc).
 
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
-    in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
-    preempt_count: 1, expected: 0
-    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.1.0 #53
-    Hardware name: Xilinx Versal vmk180 Eval board rev1.1 (QSPI) (DT)
-    Call trace:
-     dump_backtrace+0xd0/0xe0
-     show_stack+0x18/0x40
-     dump_stack_lvl+0x7c/0xa0
-     dump_stack+0x18/0x34
-     __might_resched+0x10c/0x140
-     __might_sleep+0x4c/0xa0
-     __kmem_cache_alloc_node+0xf4/0x168
-     kmalloc_trace+0x28/0x38
-     __request_percpu_irq+0x74/0x138
-     xlnx_event_manager_probe+0xf8/0x298
-     platform_probe+0x68/0xd8
+These is exactly what I was thinking about.
 
-Fixes: daed80ed0758 ("soc: xilinx: Fix for call trace due to the usage of smp_processor_id()")
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
----
- drivers/soc/xilinx/xlnx_event_manager.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+> 
+> What that information would exactly be is up to debate, I guess, since different
+> drivers might be interested in showing different bits of information.
 
-diff --git a/drivers/soc/xilinx/xlnx_event_manager.c b/drivers/soc/xilinx/xlnx_event_manager.c
-index 253299e4214d..366018f6a0ee 100644
---- a/drivers/soc/xilinx/xlnx_event_manager.c
-+++ b/drivers/soc/xilinx/xlnx_event_manager.c
-@@ -3,6 +3,7 @@
-  * Xilinx Event Management Driver
-  *
-  *  Copyright (C) 2021 Xilinx, Inc.
-+ *  Copyright (C) 2024 Advanced Micro Devices, Inc.
-  *
-  *  Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
-  */
-@@ -19,7 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
--static DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number1);
-+static DEFINE_PER_CPU_READ_MOSTLY(int, dummy_cpu_number);
- 
- static int virq_sgi;
- static int event_manager_availability = -EACCES;
-@@ -570,7 +571,6 @@ static void xlnx_disable_percpu_irq(void *data)
- static int xlnx_event_init_sgi(struct platform_device *pdev)
- {
- 	int ret = 0;
--	int cpu;
- 	/*
- 	 * IRQ related structures are used for the following:
- 	 * for each SGI interrupt ensure its mapped by GIC IRQ domain
-@@ -607,11 +607,8 @@ static int xlnx_event_init_sgi(struct platform_device *pdev)
- 	sgi_fwspec.param[0] = sgi_num;
- 	virq_sgi = irq_create_fwspec_mapping(&sgi_fwspec);
- 
--	cpu = get_cpu();
--	per_cpu(cpu_number1, cpu) = cpu;
- 	ret = request_percpu_irq(virq_sgi, xlnx_event_handler, "xlnx_event_mgmt",
--				 &cpu_number1);
--	put_cpu();
-+				 &dummy_cpu_number);
- 
- 	WARN_ON(ret);
- 	if (ret) {
-@@ -627,16 +624,12 @@ static int xlnx_event_init_sgi(struct platform_device *pdev)
- 
- static void xlnx_event_cleanup_sgi(struct platform_device *pdev)
- {
--	int cpu = smp_processor_id();
--
--	per_cpu(cpu_number1, cpu) = cpu;
--
- 	cpuhp_remove_state(CPUHP_AP_ONLINE_DYN);
- 
- 	on_each_cpu(xlnx_disable_percpu_irq, NULL, 1);
- 
- 	irq_clear_status_flags(virq_sgi, IRQ_PER_CPU);
--	free_percpu_irq(virq_sgi, &cpu_number1);
-+	free_percpu_irq(virq_sgi, &dummy_cpu_number);
- 	irq_dispose_mapping(virq_sgi);
- }
- 
--- 
-2.17.1
+I believe we can start with the requirements of V3D and Panfrost and 
+them, expand from it.
 
+> 
+> Laying that down is important because the sysfs file would become part of the
+> device class API.
+
+My PoV: it is important, but not completly tragic if we don't get it
+perfect. Just like fdinfo, which is evolving.
+
+> 
+> I might come up with a new RFC patch series that does precisely that, at least
+> for v3d and Panfrost, and maybe other people could pitch in with the sort of
+> things they'd like to see for other drivers?
+
+Yeah, this would be a great idea. Please, CC me on this series.
+
+Best Regards,
+- Maíra
+
+> 
+> Cheers,
+> Adrian
+> 
+>> Best Regards,
+>> - Maíra
+>>
+>>>
+>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+>>> Cc: Christopher Healy <healych@amazon.com>
+>>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>>> ---
+>>>    drivers/gpu/drm/panfrost/panfrost_device.h |  5 +++
+>>>    drivers/gpu/drm/panfrost/panfrost_drv.c    | 49 ++++++++++++++++++++--
+>>>    drivers/gpu/drm/panfrost/panfrost_job.c    | 17 +++++++-
+>>>    drivers/gpu/drm/panfrost/panfrost_job.h    |  3 ++
+>>>    4 files changed, 68 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>>> index cffcb0ac7c11..1d343351c634 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>>> @@ -169,6 +169,11 @@ struct panfrost_engine_usage {
+>>>    	unsigned long long cycles[NUM_JOB_SLOTS];
+>>>    };
+>>> +struct panfrost_slot_usage {
+>>> +	u64 enabled_ns;
+>>> +	u64 jobs_sent;
+>>> +};
+>>> +
+>>>    struct panfrost_file_priv {
+>>>    	struct panfrost_device *pfdev;
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> index ef9f6c0716d5..6afcde66270f 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> @@ -8,6 +8,7 @@
+>>>    #include <linux/pagemap.h>
+>>>    #include <linux/platform_device.h>
+>>>    #include <linux/pm_runtime.h>
+>>> +#include <linux/sched/clock.h>
+>>>    #include <drm/panfrost_drm.h>
+>>>    #include <drm/drm_drv.h>
+>>>    #include <drm/drm_ioctl.h>
+>>> @@ -524,6 +525,10 @@ static const struct drm_ioctl_desc panfrost_drm_driver_ioctls[] = {
+>>>    	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
+>>>    };
+>>> +static const char * const engine_names[] = {
+>>> +	"fragment", "vertex-tiler", "compute-only"
+>>> +};
+>>> +
+>>>    static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+>>>    				     struct panfrost_file_priv *panfrost_priv,
+>>>    				     struct drm_printer *p)
+>>> @@ -543,10 +548,6 @@ static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+>>>    	 *   job spent on the GPU.
+>>>    	 */
+>>> -	static const char * const engine_names[] = {
+>>> -		"fragment", "vertex-tiler", "compute-only"
+>>> -	};
+>>> -
+>>>    	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
+>>>    	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
+>>> @@ -716,8 +717,48 @@ static ssize_t profiling_store(struct device *dev,
+>>>    static DEVICE_ATTR_RW(profiling);
+>>> +static ssize_t
+>>> +gpu_stats_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>> +{
+>>> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>> +	struct panfrost_slot_usage stats;
+>>> +	u64 timestamp = local_clock();
+>>> +	ssize_t len = 0;
+>>> +	unsigned int i;
+>>> +
+>>> +	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
+>>> +
+>>> +	len += sysfs_emit(buf, "queue        timestamp        jobs        runtime\n");
+>>> +	len += sysfs_emit_at(buf, len, "-------------------------------------------------\n");
+>>> +
+>>> +	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
+>>> +
+>>> +		stats = get_slot_stats(pfdev, i);
+>>> +
+>>> +		/*
+>>> +		 * Each line will display the slot name, timestamp, the number
+>>> +		 * of jobs handled by that engine and runtime, as shown below:
+>>> +		 *
+>>> +		 * queue        timestamp        jobs        runtime
+>>> +		 * -------------------------------------------------
+>>> +		 * fragment     12252943467507   638         1184747640
+>>> +		 * vertex-tiler 12252943467507   636         121663838
+>>> +		 *
+>>> +		 */
+>>> +		len += sysfs_emit_at(buf, len, "%-13s%-17llu%-12llu%llu\n",
+>>> +				     engine_names[i],
+>>> +				     timestamp,
+>>> +				     stats.jobs_sent,
+>>> +				     stats.enabled_ns);
+>>> +	}
+>>> +
+>>> +	return len;
+>>> +}
+>>> +static DEVICE_ATTR_RO(gpu_stats);
+>>> +
+>>>    static struct attribute *panfrost_attrs[] = {
+>>>    	&dev_attr_profiling.attr,
+>>> +	&dev_attr_gpu_stats.attr,
+>>>    	NULL,
+>>>    };
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> index a61ef0af9a4e..4c779e6f4cb0 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> @@ -31,6 +31,8 @@ struct panfrost_queue_state {
+>>>    	struct drm_gpu_scheduler sched;
+>>>    	u64 fence_context;
+>>>    	u64 emit_seqno;
+>>> +
+>>> +	struct panfrost_slot_usage stats;
+>>>    };
+>>>    struct panfrost_job_slot {
+>>> @@ -160,15 +162,20 @@ panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
+>>>    	WARN_ON(!job);
+>>>    	if (job->is_profiled) {
+>>> +		u64 job_time = ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
+>>> +
+>>>    		if (job->engine_usage) {
+>>> -			job->engine_usage->elapsed_ns[slot] +=
+>>> -				ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
+>>> +			job->engine_usage->elapsed_ns[slot] += job_time;
+>>>    			job->engine_usage->cycles[slot] +=
+>>>    				panfrost_cycle_counter_read(pfdev) - job->start_cycles;
+>>>    		}
+>>> +
+>>>    		panfrost_cycle_counter_put(job->pfdev);
+>>> +		pfdev->js->queue[slot].stats.enabled_ns += job_time;
+>>>    	}
+>>> +	pfdev->js->queue[slot].stats.jobs_sent++;
+>>> +
+>>>    	pfdev->jobs[slot][0] = pfdev->jobs[slot][1];
+>>>    	pfdev->jobs[slot][1] = NULL;
+>>> @@ -987,3 +994,9 @@ int panfrost_job_is_idle(struct panfrost_device *pfdev)
+>>>    	return true;
+>>>    }
+>>> +
+>>> +struct panfrost_slot_usage
+>>> +get_slot_stats(struct panfrost_device *pfdev, unsigned int slot)
+>>> +{
+>>> +	return pfdev->js->queue[slot].stats;
+>>> +}
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+>>> index ec581b97852b..e9e2c9db0526 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+>>> @@ -50,4 +50,7 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev);
+>>>    void panfrost_job_suspend_irq(struct panfrost_device *pfdev);
+>>>    int panfrost_job_is_idle(struct panfrost_device *pfdev);
+>>> +struct panfrost_slot_usage
+>>> +get_slot_stats(struct panfrost_device *pfdev, unsigned int slot);
+>>> +
+>>>    #endif
+>>>
+>>> base-commit: 45c734fdd43db14444025910b4c59dd2b8be714a
+>>> prerequisite-patch-id: 06ac397dd381984bfbff2a7661320c4f05470635
 
