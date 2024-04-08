@@ -1,187 +1,124 @@
-Return-Path: <linux-kernel+bounces-135884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6869789CC9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:48:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 635CA89CC9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 21:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 213D028188F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:48:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96C061C21931
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4656C146019;
-	Mon,  8 Apr 2024 19:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44312146583;
+	Mon,  8 Apr 2024 19:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="PWEtn11u"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2096.outbound.protection.outlook.com [40.107.101.96])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LoYOqUDb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C72E1DDD6;
-	Mon,  8 Apr 2024 19:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712605680; cv=fail; b=nzD7Yz+hvt0tI8mubMVtgjDR1C2XdVPJycTKTfrgCVaNAe7k62AXUmK4U0mAx8yuLTRwT1r2dONPg1zNhpVRyY7icfLVfdjSvItaooFtqUnIKrJ5hR984kTnqM4Sup+KoU7Oh9gkznX+d4KixDqTBiejlBjEzIodtHCrHaNBVmw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712605680; c=relaxed/simple;
-	bh=xhTbKdCzFCRZrcOiOJX+EMqNMVG46wtLXc8+NfI/Jak=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DZkpXJ7UT0EYRS0tzm4k/3KJ/QIy2ntXTYCTkrILwZrNiMdAw1Xvyl4dKlDCQ2M9pX6K5DEmuXhmb4D6OCqz1lexmuFcTScpXb3f7dnpX2qklciOmGKN5hVjnaIKShNJ4weM1EfdoNcaQQj8dDydT3qJKRYqzc2ORqp9zMAVF8M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=PWEtn11u; arc=fail smtp.client-ip=40.107.101.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWPhdrs8jvjIyAwjhXG9Qeu18PvsiHPvPy8GeiJ4EwoM2cPb3+9hTy2mbhFEU5UAhX2e0b0Vmk9UiNniO9hRJGDmOvyVEvXxbQv28zZOZCZqMxbrwLTdjupWXlUB59OFuD3ymYkdIxIN0X3E47VRcNAx6tP+B2a9VbHOXY/HBcQDCyCJXUENIPNJOnyCZnHjxWK1ulEjOIK0+ymMerFVmGlO9IkJ4ZnJNex7CgGA80WZuML3YVt4GkSyI0+UKUhRgKwSxHZjySEDunRU+dOU4ZCi81rM39OSqR1iWcJ79EYL3AFmP7PFLPUpQ1iCF2uzVb7sqiwzyc310zYoOKQoDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oiD6EndZ4AnYsiKn4Qdwn8j9HZyllrAtggbxFIJFHNY=;
- b=IuDboRZ02ARqAxpJrrrclmMUM/wcNGW36iWduQRGCRZ7bhmLbgiXTS9B2VJAP7yCkmrmEOaT5tVJ/uSf8CkGIxJlRMuKXlqepswPgDD3EcmGZHyQIfTTMvBB6SvMly+wj2SFctk1FZ1r1rdiVmslx6MPmJxXR+Uao1oDZHwzhL7tiHyq619mIJ98g4CX/FuB825bpPuw27MORVmU3lcPeXaI097H5G/aot+2EfCJ1ob5ZASH+6q1/ahgvHrp8qgfkkM0fVoyFAH1OMNIbsUXExOQqofndJMgG23Vd3tLqi5bndsl9bOJDSIyPLNRFiHi10tGlm0AFZLUfM6dk/N/pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oiD6EndZ4AnYsiKn4Qdwn8j9HZyllrAtggbxFIJFHNY=;
- b=PWEtn11uju4NPna19zFaEi3J3A3yicIxTs2ihaep6j0aJUjKQ00XqCvLRaBosT24IfRm5H4wJwOCv3uvIZL3DAeJGdNJNR5pMpj/ID4opizVgOzbRtklqI4c/MTjR+GEXTSVsNgUJrDkISSlUqZGpvVBIH5l1vLdJSB/G+18qvM=
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
- by SA3PR12MB9157.namprd12.prod.outlook.com (2603:10b6:806:39a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 19:47:55 +0000
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::aaa1:af99:e0e5:7f14]) by CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::aaa1:af99:e0e5:7f14%5]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
- 19:47:55 +0000
-Message-ID: <0c903e3b-093e-461a-aa70-c2d58fc6d82d@amd.com>
-Date: Mon, 8 Apr 2024 14:47:52 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 16/16] EDAC/mce_amd: Add support for FRU Text in MCA
-To: "Luck, Tony" <tony.luck@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "x86@kernel.org" <x86@kernel.org>,
- "Avadhut.Naik@amd.com" <Avadhut.Naik@amd.com>,
- "John.Allen@amd.com" <John.Allen@amd.com>,
- "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-17-yazen.ghannam@amd.com>
- <SJ1PR11MB6083683CAEA79F935BFA1B31FC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: "Naik, Avadhut" <avadnaik@amd.com>
-In-Reply-To: <SJ1PR11MB6083683CAEA79F935BFA1B31FC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR05CA0049.namprd05.prod.outlook.com
- (2603:10b6:8:2f::27) To CH3PR12MB8403.namprd12.prod.outlook.com
- (2603:10b6:610:133::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805291DDD6;
+	Mon,  8 Apr 2024 19:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712605708; cv=none; b=boCI0uP/AYOGPftGt0kfjVl3bc5FmtVFjFW2YicNwm8T+sOg8KEddR/auj/90LyAuZs/ZTexORI6zEEDYOO9+JShLcP8TEpoSF5jvsmIhtpkiF8t7elPvbNwmfeabDMhZ/lM1+AzisvLwBEEiLTk7JcQnDVL5E424Ta7BkMC7mU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712605708; c=relaxed/simple;
+	bh=G1yDRw2cGcmj3SgEMjIktGBqnDyqi9a//n2mgyTtQas=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jGMMu/Te6RlFH6DlzKnFp+4jBkuJBE6G8TUpooJ4WTv+w55d6eY7vggwY5M9bsHSR3+ly5aqw/2Cap8VbSdwwV+RJJ3sjiRa+fCofF+14Wnsb/6pNluFPVRFGwQPBDv6PPoJcwVi+n0J2PzR6+tRF1DRAOBfPv31w8Esy74Ht14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LoYOqUDb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EF7C433F1;
+	Mon,  8 Apr 2024 19:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712605708;
+	bh=G1yDRw2cGcmj3SgEMjIktGBqnDyqi9a//n2mgyTtQas=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LoYOqUDbfx1xNFCsNMnAFyBW96z8s8aBHRpiKE2MwIdZyw6jMXosGQ+fVQEDy6sRj
+	 uroHu3rW3pEwcvDWmlJjMCmZIyp4pZVzH2iw4fVwuxmi9nRsBc2MqO6laPdXc4LD1M
+	 0cCZpL9XRETSJqbgJn5cNE4JNzboilMYcoAsMal8eIwNIjSqKPzObQRBl3B3peq7HT
+	 RRXpwMMCmOZWFYyZamj/ws24MsbmcwGOCHDaNDCMZf4RZOqdRgsnpIFl5CsQD7vfj7
+	 H44E3xqbMumPYnARc0enRqbIom3jzT+btTdZNRnlOS6qzG+r8MMS2elFN1yxk6lT/p
+	 oripfHjywJsmA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Justin Stitt <justinstitt@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] [v2] staging: rts5208: replace weird strncpy() with memcpy()
+Date: Mon,  8 Apr 2024 21:48:09 +0200
+Message-Id: <20240408194821.3183462-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|SA3PR12MB9157:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	qCCpAiOpDdpio7Ol1kiehALCs4JOe6kzOwW9TtT8SQQQt1OifBCHbmHFhsn7a9kbWwatKw1EIaJD29suoWGzkmiHa5BDZ+yBzH9r7YprS85vAg6zCYHeZTemePUHgf21bAyYeGXTDE7GXkPkM/9m0qyN5VpImwbt7HMo8UNuO0yX+O8gIZ6l95KS5y4/24Bv5eW/wMXmAPEgQ8RuUoSJqU4DFi5EnAKxgHDO2dg+2begc7xbEYvw/bhNQUL23Hdpl9JH5688hiWISnzCLDUOTXVjeFL3D3sbeWcui4LchyDxUGRxP/3nA/DjAluDP1XWP6uqrJIxA4THt+q8Yofyb6khn1Pwrd2ZXjF5PP0SFpZHdqiUvN0dwoFLvYOWSQZnJgCbj0v493Qh921i9U0f+a4nt2PCt3c8mEQNWD7EBaqzX1K1QB50p3XPi2ZXEvNFxPuH83CRgQ2lUpGXYJA3uNCfKDA+K+vNNeucNcxzOVUhCDzS4IWyG2LxnKELD9JUTK7FueApaqWA1Rl3acauIrUuySYiZjDnPrkFtGTHPYwG7eWn3oX6jp2jLpM6ikRA8buW/pW5FtWw81ZcgqtGuyHwgnOL6cHeBCLjQllucx1MAQDFrt9seYTo5AyeBAbUw8Ygqnwu2AHxhHvXvvt/CvOViqjYMEUMOKJqgT8us/Q=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cUF1VWkyc0swRytGS3gwZCtoakN6VUNaY2dFRjI2L1FMcnZ0U2laMWRZUk1M?=
- =?utf-8?B?YytCYndzenhGeHNIVnJOOTNrZ3h4M2J2ak93SjJtV1pGQ05pbk9xTmVWQkI1?=
- =?utf-8?B?U0NpVHRPMWpQWExDRml5a0U5WUIwdG9ZS01VaGU5bVJzU3NUcXpuWU9xcDF2?=
- =?utf-8?B?VVl2UXdrbmhhRUhXLzF4Rk1FY1o4cExhSjU3SDRFMnZjendmRWZMUDZxZThp?=
- =?utf-8?B?TVRaK09UbHlGd1ZNQmZleTQxUEZlb3RKd1dhM29ZL3o0OEpzWVVTdFJBQ0F1?=
- =?utf-8?B?Y1NYZDhwOFhtL1ljUW8vTXJqSVl2TGFIaXdqMmdIdlE0SkFYQmUwOVZSVWVB?=
- =?utf-8?B?amNkSDlqdWN5dk9uTDF2VTJsaTVQS3k4NlNpTFBhM2o0bC9DOHAxNFM2WEJz?=
- =?utf-8?B?cFZ4T0o0REtYRVhUc0h1eHZMRGdoYVl5K3p4T0VJcDRjekx1UFh4TnA3aGNS?=
- =?utf-8?B?YkpsQ0VLSnNwTFZOVGY1WkVPNzVtalB6aXF6MlovNmV0NEk4RnVWMjExSTlI?=
- =?utf-8?B?N0dzZnp4Y0E2UTF2R2lSZHVYUkVITTREaE9XRlMvWVltVDdLVTFZSzFYNUkz?=
- =?utf-8?B?dndpSm5FVGNCOGYyejNzZ2E2UmtxSUJNbkh1Ny80cG0zZWV1Nitla3ZSOHMw?=
- =?utf-8?B?RSs5K3R2V01mWUJIZ1FjSER4STFZV0tiaEh0RTYzUGRwWTFUcnNZUW42Vytw?=
- =?utf-8?B?SUZyaVZxLzErNW5PRzMrblZsbEJPNzArL1hjcFhlS1BVUnJJK0hWQVJIcm55?=
- =?utf-8?B?NCtJZ0dxZjB3WkJHcnNNeXpQZG94Q1hUQm52MmQwWGcwM1lIcFFjWldnR3ps?=
- =?utf-8?B?QXBLV0J2bGJnOEZ6ZzVBeUh5eGRxYjBRODkwM1pMWXFsY2FDTDRLNTgwQjJz?=
- =?utf-8?B?L0dFcHdqVTYyVk5SUnYxVGdaUEdXTXpjWGV0blpzUmtJT0VuZjdKSHlUdktn?=
- =?utf-8?B?R0dPdXNvYlR0QnFOWFVKRCtDTFhiZjNDdVY0YU84OFcyZGNUa0lRZ2k0azB4?=
- =?utf-8?B?MWJqb2UxR2k0YWtTMWNZYmpTNDl3Mms4VllyQnNaVzlWQnFmVldDcVdLZU8z?=
- =?utf-8?B?QWhxc25lN0I5aThaVi9IQmJ6bkVXQm9EbVA0MHZDdXZOd2x3RXJqRkxaTE1F?=
- =?utf-8?B?N0lQUThJdVRKK2JjWktGVDZtUUhPWTNHenljTnNyVUFwZEVqYmd3ZEFXajFQ?=
- =?utf-8?B?SzFKV0N6cS8vbm4wWEZMNlZYV0lOR0lzM2wxUkVuS0U0Z0Zhemkzc25qc2I1?=
- =?utf-8?B?b1B4K2ZSN25JZlFXOUZMNllLOVlSTHUvMGt0R2laUGErWm9RNUJGejR0L2Zm?=
- =?utf-8?B?RkJxc1NhZUxYenFpMElDbEZwR3c3T0FoZS9sL0tUb2k5Q241UVNNS0pMRC9p?=
- =?utf-8?B?U0w4aExjVHQySjJlY1J6ODN1RmpJTWg3WHJJMTVidUgrUDlnS0R3SFhCeTd2?=
- =?utf-8?B?cE9ZczVSR01MVkkvM1ZvOHJtOVVHQkFUZUZBbmtzMGkvU3JJNWFvTXl1RDhT?=
- =?utf-8?B?cllubUFSMTNIU2NJcEtnT05ZZHZTakVPS0x3Sk5PZzJuWHhXZWJmZzZ2R2ds?=
- =?utf-8?B?Z0tWcWU1aHBwdEFxWjRwdG50c0g2VlVjcVZ4djNmVjZ4T3Z5T0JZaDVTZkI1?=
- =?utf-8?B?cmUrWjdKUElCQ3ZuMFA2TmlBcGdZZ0wvTC93LzhlNHU5cWt1SHloYVIyaE5m?=
- =?utf-8?B?WlhUZzZLRklqakE5c1FGWXYxbktpOERnVGlnK1pXb1lKZmp1WUFBZzVjUVlq?=
- =?utf-8?B?VDYvek5iWjdwUTV6Nzh3Wk54VW9Hbmw4djE2bldvQU1uRXdxTkp4ZG5COUhn?=
- =?utf-8?B?RU5qTHBselpBU1IyUkFzbVh1Tjh4NXVtdUhuZkVsb2F4eDhyVVM4N3RFaCs4?=
- =?utf-8?B?QUhrUHNTS0xVa1hFV1p0V2NiT01tMEZmUkZNdG95WnVHNDBlNmI3U1JOZkpN?=
- =?utf-8?B?ZXBjbmtBVm5MdFFoVU1Kc1U2Z2xaclJyeEhwWml4VVB4QTJZa1pUOTVrNVRt?=
- =?utf-8?B?eG1rcWg2WUthVkdKRGt4REdXcFRSQjFzZmhkc1FIUk5LUEFpRDhOZWhBU0N1?=
- =?utf-8?B?ZDBac2krTzNJMHpKRUpuSnlEOEJvdW1rT0NSTXJLdldSc0ExTzdnRDJiaTdH?=
- =?utf-8?Q?godRMJPCw8N8V7MkMvaW4R5Xw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7784ecbc-79dd-415d-2df4-08dc5804c8c6
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 19:47:55.3023
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v3JICGSwoSAjXDZ0MRxhPwqGk9wk8nGAoSqlhM22YxsH2N8OiWbKpAS5SkOPoXouJRIYYgX1hYWHNyJjnC21AQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9157
+Content-Transfer-Encoding: 8bit
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+When -Wstringop-truncation is enabled, gcc finds a function that
+always does a short copy:
 
-On 4/5/2024 11:06, Luck, Tony wrote:
->> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
->> index aa27729f7899..a4d09dda5fae 100644
->> --- a/arch/x86/kernel/cpu/mce/core.c
->> +++ b/arch/x86/kernel/cpu/mce/core.c
->> @@ -207,6 +207,8 @@ static void __print_mce(struct mce_hw_err *err)
->>                       pr_cont("SYND2 %llx ", err->vi.amd.synd2);
->>               if (m->ipid)
->>                       pr_cont("IPID %llx ", m->ipid);
->> +             if (err->vi.amd.config)
-> 
-> This is in common code. If other vendors start adding their own stuff to the
-> "vi" union you might incorrectly print this.  Add a vendor check before looking
-> at values inside "m->vi".
->
+In function 'inquiry',
+    inlined from 'rtsx_scsi_handler' at drivers/staging/rts5208/rtsx_scsi.c:3210:12:
+drivers/staging/rts5208/rtsx_scsi.c:526:17: error: 'strncpy' output truncated copying between 1 and 28 bytes from a string of length 28 [-Werror=stringop-truncation]
+  526 |                 strncpy(buf + 8, inquiry_string, sendbytes - 8);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Do we really need an explicit vendor check in this particular instance?
+The code originally had a memcpy() that would overread the source string,
+and commit 88a5b39b69ab ("staging/rts5208: Fix read overflow in memcpy")
+fixed this but introduced the warning about truncation in the process.
 
-Below is a snippet from __print_mce() after applying this series:
+As Dan points out, the final space in the inquiry_string always gets
+cut off, so remove it here for clarity, leaving exactly the 28 non-NUL
+characters that can get copied into the output. In the 'pro_formatter_flag'
+this is followed by another 20 bytes from the 'formatter_inquiry_str'
+array, but there the output never contains a NUL-termination, and the
+length is known, so memcpy() is the more logical choice.
 
-    if (mce_flags.smca) {
-        if (m->synd)
-            pr_cont("SYND %llx ", m->synd);
-        if (err->vi.amd.synd1)
-            pr_cont("SYND1 %llx ", err->vi.amd.synd1);
-        if (err->vi.amd.synd2)
-            pr_cont("SYND2 %llx ", err->vi.amd.synd2);
-        if (m->ipid)
-            pr_cont("IPID %llx ", m->ipid);
-        if (err->vi.amd.config)
-            pr_cont("CONFIG %llx ", err->vi.amd.config);
-    }
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://lore.kernel.org/lkml/695be581-548f-4e5e-a211-5f3b95568e77@moroto.mountain/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: remove unneeded space byte from input string for clarity,
+    rework changelog text
+---
+ drivers/staging/rts5208/rtsx_scsi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-    pr_cont("\n");
-
-All of the above registers including the newly added config MSR will only
-be logged if the smca flag is set in mce_flags.
-Doesn't that already serve as a vendor check of sorts?
-Something that I am missing here?
-
+diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
+index 08bd768ad34d..c27cffb9ad8f 100644
+--- a/drivers/staging/rts5208/rtsx_scsi.c
++++ b/drivers/staging/rts5208/rtsx_scsi.c
+@@ -463,10 +463,10 @@ static unsigned char formatter_inquiry_str[20] = {
+ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+ {
+ 	unsigned int lun = SCSI_LUN(srb);
+-	char *inquiry_default = (char *)"Generic-xD/SD/M.S.      1.00 ";
+-	char *inquiry_sdms =    (char *)"Generic-SD/MemoryStick  1.00 ";
+-	char *inquiry_sd =      (char *)"Generic-SD/MMC          1.00 ";
+-	char *inquiry_ms =      (char *)"Generic-MemoryStick     1.00 ";
++	char *inquiry_default = (char *)"Generic-xD/SD/M.S.      1.00";
++	char *inquiry_sdms =    (char *)"Generic-SD/MemoryStick  1.00";
++	char *inquiry_sd =      (char *)"Generic-SD/MMC          1.00";
++	char *inquiry_ms =      (char *)"Generic-MemoryStick     1.00";
+ 	char *inquiry_string;
+ 	unsigned char sendbytes;
+ 	unsigned char *buf;
+@@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+ 
+ 	if (sendbytes > 8) {
+ 		memcpy(buf, inquiry_buf, 8);
+-		strncpy(buf + 8, inquiry_string, sendbytes - 8);
++		memcpy(buf + 8, inquiry_string, min(sendbytes, 36) - 8);
+ 		if (pro_formatter_flag) {
+ 			/* Additional Length */
+ 			buf[4] = 0x33;
 -- 
-Thanks,
-Avadhut Naik
+2.39.2
+
 
