@@ -1,123 +1,452 @@
-Return-Path: <linux-kernel+bounces-135133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3551989BB7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:19:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EECD589BB7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:19:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94135B23E58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E65F1C21741
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9055E4595A;
-	Mon,  8 Apr 2024 09:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B060B446C5;
+	Mon,  8 Apr 2024 09:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbSW43LS"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ysJoSw22"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B60E3FBBE;
-	Mon,  8 Apr 2024 09:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8827A18E0E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712567977; cv=none; b=DctyotTFJ6Qfv24b4PzvyoeuwsfEv71T+Ms62XeLTVR6qHUGyNKSqdO9LSfo5CvQzfT6oulL2QuIkcxrMB1ru+kSNw6cRnV5ziuhdzEfuDxTedRAnQ/8DzBVy/N3idelkWJzfQnGArzGSK+KtfKVSZ7EmpoQIzBDO6d02iDqTB8=
+	t=1712567949; cv=none; b=hBanGKqf1kPYPlfpf0nfilThbfsyahwMNpqpekZtMsan0tNg531/mitYBi9vZHiLZ+8eHk2NjQy9Ns4ANTcS2z09TpME/MI5gBepgjE+u4OCH4/m6ohZjVXO1R5ew3gdnTPo2/IcimWrL+5R18xVK5Tg6oPjgeRWdY4vSijWngw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712567977; c=relaxed/simple;
-	bh=xpv4GXaNvHbwNmLZOBogoUexAaRgl91nGHRAWB70R1c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jFgf9RsxuM82rLCzAQQPflgHAEupubUX9NJuvxejHIXk3zM15YN8FS+iNxhTgn0rzHnKtsjKM065DNGrshZ/PVA1Znq6iyVwEyZDtwEVTerMLyEAUrYUMfOB+FAYjgIVoD2RPZicm+NWxUWsbfVdIPlv7Fk8Pu+Rk3IF6lQDTFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbSW43LS; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a526803fccso302123a91.1;
-        Mon, 08 Apr 2024 02:19:36 -0700 (PDT)
+	s=arc-20240116; t=1712567949; c=relaxed/simple;
+	bh=OF6arTCB8JONXOoAGJiRS/FL3eYcIUL3qR9dXl7B5SY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XnlqkM6EqvvGfJhmVQWUlhB6EkUr++pV85EP+ymYjMXMjS0q2p/zXLeWUxi8ob3ck3YyojTe0PqPPkPAW8a4IrFO/4kykNqDEJCdl/GAo0e4rX4uNi3CnKWozVrJdpJG5dK0GIJwB0c0uoSExjeClqIcdY0NckoDZLQbhUabkKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ysJoSw22; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4167fce0a41so2106595e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 02:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712567976; x=1713172776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMNyRdQrOSFasuq0gOdjmdHM1CPNAmXdupymxZqTDfQ=;
-        b=kbSW43LS53/RHgzEBoQV7dtqa2HscbuSZOvIFMVtd2wua84SWQboW+E1NMRIzwM8Kw
-         5V3JJZJCHi39ZP/Ak3wvPSyN06+4yjxANEtz1bydeWbjtkxGNVqX9MFL5dFuTxbSnkGe
-         gkY5xOTnNSeF+HggYpc2eMwcgwNv9VNR23GnoYsxKYm13IU2+X61N3K7l/bt7rib1CKt
-         txB4b8EpQQgpm5FV7TAZuqNbw4KtiFio1hRyfbz9a5OmS99/dVNmiO/7DHxSHAQkEw2s
-         F+E1j2IIrWDnL/UnoMVUzU2/R8IZenDSB4G7R2vshYAC4yzm8mMTlrCRq04HMP3TYFRZ
-         B/LA==
+        d=linaro.org; s=google; t=1712567946; x=1713172746; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+X8sGaNu+7zgdnn3L3toqhCWyJlQ5mBbe91/Sg3EK4=;
+        b=ysJoSw22fhrpiTT/IxvHIGxjENhRUKCMmXuT0yry3rtCBRdqbWwa433iyGO4SuMXVM
+         vhNAGIRaBt/kp78ksyDbVZ68o/8NaUKbT+iQB4w1jnEG1kARroncRcpAlCafZE/IV96u
+         kx9eNW5v/uxlEPxmiw1e6QM95VuOrATHqixdTZQ5TIskTfwF/WSkAbwxInBy0SpkfSz5
+         2sTRlsPR3bHyY5MmLmTPJ6BVY2FqxSNg0AffoNsMRnJnxV8tNM4WTYsweQnU+z4pyarU
+         w8AIG7Byp9TUfc1xPLo+IiRWIDB1COSNy8AaPECncSc8RDhphgIT2LQ36df9vw4cc1QZ
+         PisA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712567976; x=1713172776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CMNyRdQrOSFasuq0gOdjmdHM1CPNAmXdupymxZqTDfQ=;
-        b=i6JxahFk6Jv1Pn9xib1agVVHHEgahx9Q8GO4feK9OOyTKGYHZL2LmjrFKdcYthhE0p
-         h5pOATMtrLLCKk6VBvmVUaoyEPBcHPbLeJAEEFrOHPEGc5Uqsbov+uPvZUKPh6zBe7w+
-         yiZhMmONveuIr0pd1RPZW31iXroErgc344caiJtroPcTW0Gp1F6Q7tK7qqBdgd6645yL
-         JJP6n+zkVm54oa0kCd2MlDglrdFZHl3gLo2N3ceGIW3KKwvsZb7oxhDuoK0k+zH2Tzv8
-         /KeWFA/lIUEwaVuKTRz6n2zPVy+gNuata+NnBgGhd11hD0AzHHAukOnfBMQxleT3NkMW
-         k3mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVA/tMcVAmoRgfjuZJwh/6iTIt1WsJ2G1aNvyzkqBIrZtGwDBj4LVeBZcTLtUsKNKYRlZbDp593HZYwUl+oSiQHhe0gw6J+N078RDEvYpaDba6W8okWIS7i9uoROLI6X0DRuhu4PRNJurvTf18=
-X-Gm-Message-State: AOJu0YzI3vk8W+tqpLBMelDsqYf/Bo6mX2l89Ve2GIDp0SZ6DylXzhSi
-	9L/3uHfvp8nWfkcjNTtbw+jnJmfAiRQ8q8YLG2Sey1iprW37p5WnVG+2JxSLb/NiO/NSq70AO2l
-	EzGlbKPGJ+EUigf+bb+NqGG7wO+4=
-X-Google-Smtp-Source: AGHT+IFhMRh7Af+1ofz2RUc8GsbDJVtkVO04aivZzCObwcByfet4XkSJddJNLUkQxaNSLaJfOd2L+aFtpEY4xfTHT9E=
-X-Received: by 2002:a17:90a:e50f:b0:2a2:97ce:24f5 with SMTP id
- t15-20020a17090ae50f00b002a297ce24f5mr7693686pjy.35.1712567975830; Mon, 08
- Apr 2024 02:19:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712567946; x=1713172746;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m+X8sGaNu+7zgdnn3L3toqhCWyJlQ5mBbe91/Sg3EK4=;
+        b=iFyjmbm/9z5gmcpYDIkhhN2Q13NFHsb18V0OG2ooQmPvythqkWRISMj29SSnbWREl5
+         tj8Lt7jJQ1PoI02RqyhAhvWLXUdk9j+ZnrCJHWJIhJLI9bP9trV6DO0jn6+XwjnCJBPP
+         vlrW45yn+J/trvYg/fs+H00NOmxpwqADwT7G3pI/YXpOw51CuQNYuxk5N7rJ0bmen69l
+         a2TcV9XIefKSrw2FfJtds2EEj8xkx65VdoGrsbB5hy2hXO8TVakvPeyv/H5h7hniJnEn
+         rNgkfGj3Z8QZaXNL4jCG6h6p7Jj/8PsLxT7Key8/3MhsJpxnnsWf8rUpeuukXwBEPiRe
+         5+gQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVL4Kceg/0pDemHuBylP+jsuNSStR4wmXI3kWK9AyiEvLyDoHqzTS+SNa22+fZRVQgzUJLD6V6t4xJMv3u2I9uXNNKSxT6yJLWJWhvt
+X-Gm-Message-State: AOJu0YzIAdwjoN4S63Fh44R41yT7AwQ6AezvCXDkrdRhTjvQvDW95FET
+	2thqgTyuCho+bNjzvgGhvZyvIpgDstaZxhtmYp8xpdEbYpPZWK1TKhvpWml1wOA=
+X-Google-Smtp-Source: AGHT+IEe+Nz6gK9it/jNyMfDPLKrr+azkgZeETNSGLMTmujr+CFQ5mGJCWue4R5KbZZwTQ+wXoWTkw==
+X-Received: by 2002:a05:600c:3514:b0:415:666e:9355 with SMTP id h20-20020a05600c351400b00415666e9355mr7241821wmq.15.1712567945737;
+        Mon, 08 Apr 2024 02:19:05 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b0c8:7091:4315:491e? ([2a01:e0a:982:cbb0:b0c8:7091:4315:491e])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c468d00b004163059bb53sm11463820wmo.16.2024.04.08.02.19.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 02:19:05 -0700 (PDT)
+Message-ID: <1a0b8a39-7e15-4773-af5d-5888af3a47af@linaro.org>
+Date: Mon, 8 Apr 2024 11:19:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404-alice-mm-v4-0-49a84242cf02@google.com>
- <20240404-alice-mm-v4-4-49a84242cf02@google.com> <a48b2347-b58b-432e-bdb8-d5449016ab57@proton.me>
- <CAH5fLgg3wpcDE+n6nd0CGtDzyXSrD2nLhY8RxdTHjAD8hQ9VDQ@mail.gmail.com>
- <c130a6f5-77d7-4d9e-984d-7a8bf48ff918@proton.me> <CAH5fLgigLV17+6U75MC43XFnYeqtgvrrTWD7JmDSB-ebNjCVvw@mail.gmail.com>
-In-Reply-To: <CAH5fLgigLV17+6U75MC43XFnYeqtgvrrTWD7JmDSB-ebNjCVvw@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 8 Apr 2024 11:18:52 +0200
-Message-ID: <CANiq72mZ5QPrb1-jWiKFhO2OF517Xvx=Js3zwM+_VyVL=dy2LA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] rust: add abstraction for `struct page`
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v12 2/7] clk: meson: add vclk driver
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Jagan Teki <jagan@amarulasolutions.com>, Nicolas Belin
+ <nbelin@baylibre.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ dri-devel@lists.freedesktop.org
+References: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
+ <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-2-99ecdfdc87fc@linaro.org>
+ <1jmsq9pmgd.fsf@starbuckisacylon.baylibre.com>
+ <2cf79f07-0ae1-4267-ac08-fe40366d87d4@linaro.org>
+ <1ja5m8p4n4.fsf@starbuckisacylon.baylibre.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <1ja5m8p4n4.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 8, 2024 at 9:54=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
-> From bindgen's point of view, this constant is just an integer literal
-> with no type information. So I don't see how we can expect it to
-> always be generated as a usize?
+On 05/04/2024 09:00, Jerome Brunet wrote:
+> 
+> On Thu 04 Apr 2024 at 18:59, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> 
+>> On 04/04/2024 10:13, Jerome Brunet wrote:
+>>> On Wed 03 Apr 2024 at 09:46, Neil Armstrong <neil.armstrong@linaro.org>
+>>> wrote:
+>>>
+>>>> The VCLK and VCLK_DIV clocks have supplementary bits.
+>>>>
+>>>> The VCLK gate has a "SOFT RESET" bit to toggle after the whole
+>>>> VCLK sub-tree rate has been set, this is implemented in
+>>>> the gate enable callback.
+>>>>
+>>>> The VCLK_DIV clocks as enable and reset bits used to disable
+>>>> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
+>>>> the rate is set while the divider is disabled and in reset mode.
+>>>>
+>>>> The VCLK_DIV enable bit isn't implemented as a gate since it's part
+>>>> of the divider logic and vendor does this exact sequence to ensure
+>>>> the divider is correctly set.
+>>> The checkpatch warning is still there. Is it a choice or a mistake ?
+>>> Documentation says "GPL v2" exists for historic reason which seems to
+>>> hint "GPL" is preferred, and I suppose this is why checkpatch warns for
+>>> it.
+>>
+>> Well I didn't see this warning, this is what I fixed:
+>>
+>> $ scripts/checkpatch.pl --strict drivers/clk/meson/vclk.c
+>> CHECK: Alignment should match open parenthesis
+>> #63: FILE: drivers/clk/meson/vclk.c:63:
+>> +static unsigned long meson_vclk_div_recalc_rate(struct clk_hw *hw,
+>> +                                                    unsigned long prate)
+>>
+>> CHECK: Alignment should match open parenthesis
+>> #73: FILE: drivers/clk/meson/vclk.c:73:
+>> +static int meson_vclk_div_determine_rate(struct clk_hw *hw,
+>> +                                             struct clk_rate_request *req)
+>>
+>> CHECK: Alignment should match open parenthesis
+>> #83: FILE: drivers/clk/meson/vclk.c:83:
+>> +static int meson_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
+>> +                                       unsigned long parent_rate)
+>>
+> 
+> I would not ask a respin solely for this. It's nice to fix it but I was
+> mostly after the warning TBH.
+> 
+>> <snip>
+>>
+>> It seems that checking a commit triggers an extra check....
+>>
+>> $ scripts/checkpatch.pl --strict -G 1bac9f6aa3c3
+>> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+>> #58:
+>> new file mode 100644
+>>
+>> <snip>
+>>
+>> WARNING: Prefer "GPL" over "GPL v2" - see commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs. "GPL v2" bogosity")
+>> #203: FILE: drivers/clk/meson/vclk.c:141:
+>> +MODULE_LICENSE("GPL v2");
+> 
+> Hum, I'm running checkpatch against the mail itself, not the commit. I
+> still get the warning
 
-In the case of `PAGE_SIZE`, there is type information (`size_t`),
-since it comes from the constant helper:
+Patch or commit seems to trigger more tests than a file directly, anyway I sent a follow-up patch:
+https://lore.kernel.org/all/20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org/
 
-    const size_t RUST_CONST_HELPER_PAGE_SIZE =3D PAGE_SIZE;
+Thanks,
+Neil
 
-For the other one, `PAGE_SHIFT`, there is also type information
-(`int`), but bindgen currently picks a type based on the value for
-those (but ideally/eventually bindgen should respect it instead).
+> 
+>>
+>> <snip>
+>>
+>> Neil
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>>> ---
+>>>>    drivers/clk/meson/Kconfig  |   4 ++
+>>>>    drivers/clk/meson/Makefile |   1 +
+>>>>    drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
+>>>>    drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
+>>>>    4 files changed, 197 insertions(+)
+>>>>
+>>>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+>>>> index 29ffd14d267b..8a9823789fa3 100644
+>>>> --- a/drivers/clk/meson/Kconfig
+>>>> +++ b/drivers/clk/meson/Kconfig
+>>>> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
+>>>>    	tristate
+>>>>    	select COMMON_CLK_MESON_REGMAP
+>>>>    +config COMMON_CLK_MESON_VCLK
+>>>> +	tristate
+>>>> +	select COMMON_CLK_MESON_REGMAP
+>>>> +
+>>>>    config COMMON_CLK_MESON_CLKC_UTILS
+>>>>    	tristate
+>>>>    diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+>>>> index 9ee4b954c896..9ba43fe7a07a 100644
+>>>> --- a/drivers/clk/meson/Makefile
+>>>> +++ b/drivers/clk/meson/Makefile
+>>>> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
+>>>> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
+>>>>      # Amlogic Clock controllers
+>>>>    diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
+>>>> new file mode 100644
+>>>> index 000000000000..45dc216941ea
+>>>> --- /dev/null
+>>>> +++ b/drivers/clk/meson/vclk.c
+>>>> @@ -0,0 +1,141 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
+>>>> + */
+>>>> +
+>>>> +#include <linux/module.h>
+>>>> +#include "vclk.h"
+>>>> +
+>>>> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
+>>>> +
+>>>> +static inline struct meson_vclk_gate_data *
+>>>> +clk_get_meson_vclk_gate_data(struct clk_regmap *clk)
+>>>> +{
+>>>> +	return (struct meson_vclk_gate_data *)clk->data;
+>>>> +}
+>>>> +
+>>>> +static int meson_vclk_gate_enable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>>> +
+>>>> +	/* Do a reset pulse */
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void meson_vclk_gate_disable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>>> +}
+>>>> +
+>>>> +static int meson_vclk_gate_is_enabled(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
+>>>> +
+>>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>>> +}
+>>>> +
+>>>> +const struct clk_ops meson_vclk_gate_ops = {
+>>>> +	.enable = meson_vclk_gate_enable,
+>>>> +	.disable = meson_vclk_gate_disable,
+>>>> +	.is_enabled = meson_vclk_gate_is_enabled,
+>>>> +};
+>>>> +EXPORT_SYMBOL_GPL(meson_vclk_gate_ops);
+>>>> +
+>>>> +/* The VCLK Divider has supplementary reset & enable bits */
+>>>> +
+>>>> +static inline struct meson_vclk_div_data *
+>>>> +clk_get_meson_vclk_div_data(struct clk_regmap *clk)
+>>>> +{
+>>>> +	return (struct meson_vclk_div_data *)clk->data;
+>>>> +}
+>>>> +
+>>>> +static unsigned long meson_vclk_div_recalc_rate(struct clk_hw *hw,
+>>>> +						unsigned long prate)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +
+>>>> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
+>>>> +				   vclk->table, vclk->flags, vclk->div.width);
+>>>> +}
+>>>> +
+>>>> +static int meson_vclk_div_determine_rate(struct clk_hw *hw,
+>>>> +					 struct clk_rate_request *req)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +
+>>>> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
+>>>> +				      vclk->flags);
+>>>> +}
+>>>> +
+>>>> +static int meson_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
+>>>> +				   unsigned long parent_rate)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
+>>>> +			      vclk->flags);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->div, ret);
+>>>> +
+>>>> +	return 0;
+>>>> +};
+>>>> +
+>>>> +static int meson_vclk_div_enable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +
+>>>> +	/* Unreset the divider when ungating */
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void meson_vclk_div_disable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +
+>>>> +	/* Reset the divider when gating */
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>>> +}
+>>>> +
+>>>> +static int meson_vclk_div_is_enabled(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
+>>>> +
+>>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>>> +}
+>>>> +
+>>>> +const struct clk_ops meson_vclk_div_ops = {
+>>>> +	.recalc_rate = meson_vclk_div_recalc_rate,
+>>>> +	.determine_rate = meson_vclk_div_determine_rate,
+>>>> +	.set_rate = meson_vclk_div_set_rate,
+>>>> +	.enable = meson_vclk_div_enable,
+>>>> +	.disable = meson_vclk_div_disable,
+>>>> +	.is_enabled = meson_vclk_div_is_enabled,
+>>>> +};
+>>>> +EXPORT_SYMBOL_GPL(meson_vclk_div_ops);
+>>>> +
+>>>> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
+>>>> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
+>>>> +MODULE_LICENSE("GPL v2");
+>>>> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
+>>>> new file mode 100644
+>>>> index 000000000000..20b0b181db09
+>>>> --- /dev/null
+>>>> +++ b/drivers/clk/meson/vclk.h
+>>>> @@ -0,0 +1,51 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/*
+>>>> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
+>>>> + */
+>>>> +
+>>>> +#ifndef __VCLK_H
+>>>> +#define __VCLK_H
+>>>> +
+>>>> +#include "clk-regmap.h"
+>>>> +#include "parm.h"
+>>>> +
+>>>> +/**
+>>>> + * struct meson_vclk_gate_data - vclk_gate regmap backed specific data
+>>>> + *
+>>>> + * @enable:	vclk enable field
+>>>> + * @reset:	vclk reset field
+>>>> + * @flags:	hardware-specific flags
+>>>> + *
+>>>> + * Flags:
+>>>> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
+>>>> + */
+>>>> +struct meson_vclk_gate_data {
+>>>> +	struct parm enable;
+>>>> +	struct parm reset;
+>>>> +	u8 flags;
+>>>> +};
+>>>> +
+>>>> +extern const struct clk_ops meson_vclk_gate_ops;
+>>>> +
+>>>> +/**
+>>>> + * struct meson_vclk_div_data - vclk_div regmap back specific data
+>>>> + *
+>>>> + * @div:	divider field
+>>>> + * @enable:	vclk divider enable field
+>>>> + * @reset:	vclk divider reset field
+>>>> + * @table:	array of value/divider pairs, last entry should have div = 0
+>>>> + *
+>>>> + * Flags:
+>>>> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
+>>>> + */
+>>>> +struct meson_vclk_div_data {
+>>>> +	struct parm div;
+>>>> +	struct parm enable;
+>>>> +	struct parm reset;
+>>>> +	const struct clk_div_table *table;
+>>>> +	u8 flags;
+>>>> +};
+>>>> +
+>>>> +extern const struct clk_ops meson_vclk_div_ops;
+>>>> +
+>>>> +#endif /* __VCLK_H */
+>>>
+> 
+> 
 
-So for the former, the allow and the cast are not needed since we are
-already handling it explicitly. And for the latter, if we want to have
-it as `usize`, we should have the cast but not the allow, because now
-it does `u32`, but if it respected the type, it would be `c_int` or
-`i32`. So either way we would need the cast.
-
-Cheers,
-Miguel
 
