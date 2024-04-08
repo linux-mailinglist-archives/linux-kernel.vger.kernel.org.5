@@ -1,117 +1,213 @@
-Return-Path: <linux-kernel+bounces-135651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7AC89C944
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:02:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FBF789C943
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:02:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 174AF287A46
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:02:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405D51C24497
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390AD1422D8;
-	Mon,  8 Apr 2024 16:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffNbVrFN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773871422BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7BC1422C6;
 	Mon,  8 Apr 2024 16:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9DGKylv"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA4522091;
+	Mon,  8 Apr 2024 16:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712592139; cv=none; b=fD0scmo/D16/9XhLHEDharW4faIcwgpIEncDihcBaaFeib55WQ/U2/f6IDDbJ44Wpos+0nXI1FETJV130s889xEg156Q4M1fR3s5D6TVf+uvZeomFTtMXzFcsc7v+WByCxJ0sv3txX1t3FaEAqXdgvDmJr/u28zR9RG95KtEUzc=
+	t=1712592138; cv=none; b=NCAkzf3pbxnzveCREpi2mHRHT2zG/dXTHaT7q0tFb9wiF6CaOBPW9zOdly7i/YsOG4AbiSc115FqbwHyzMDAOhM36gc0VbqzFfukk/kDj8Z08KoVgd1jSwqhYTdWmC6+1CVQcchVPLID2Fh5+gehDiaNTP7iIggEEl2xd1Mxras=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712592139; c=relaxed/simple;
-	bh=ipJuww1ndidw63caquJ6tDL3B0VB+7HW4TINvZ2UjVM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dmYsepsOcVn75T/Tpt2LGLgDfUCIn9syTd7NHIQ8cM4LaVSf1OO5oIG7ZVyOwNk4azM0Ars9DLfdQfXKrdsQF4e1DM6b8935NKhGLXs1ztRG/7pT8O6n0AKehhvFvzqJtuv9dJsFBckW5UxwcnmkhagP0/QrSo2ewDXpUIp/KJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ffNbVrFN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929A6C433C7;
-	Mon,  8 Apr 2024 16:02:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712592139;
-	bh=ipJuww1ndidw63caquJ6tDL3B0VB+7HW4TINvZ2UjVM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ffNbVrFN+q2m8pyqLML6+DLMCxPr7L/hs4qh5BmeJGCpaFELcB7r0g1qe9knYyjpv
-	 yEcceoV4lLaZV3KBJPvbc2KLHEJcrwXrIgXZAl/K+lK6Jt6ErT8G5V2r5wOQ2sdmDv
-	 HuL4Wu+e+AUa2N5nfbDayTspRel9n0EtMBptWwDO5F7dfWCVg4aQ2+6kNI5WMHG5Pz
-	 Q+zUB3GR6uVgkpn+LNRUsfNoaFxz/5yQV+8RbHrsRh39Pd28EYCCE4TciW1w2t9Obb
-	 NTGLfcPyTfkGyye0Ms+WT0ij8l0GSAOnDCxVCJ6RndIQEX1/eL8QNubkZm/IenF0Lx
-	 AXpQ2R74I0TIQ==
-From: Conor Dooley <conor@kernel.org>
-To: Conor Dooley <conor@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	horatiu.vultur@microchip.com,
-	steen.hegelund@microchip.com
-Subject: Re: [PATCH v2 01/10] arm64: dts: microchip: sparx5: fix mdio reg
-Date: Mon,  8 Apr 2024 17:00:40 +0100
-Message-ID: <20240408-okay-deserving-8d06e76c2183@spud>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240405190419.74162-1-krzk@kernel.org>
-References: <20240405190419.74162-1-krzk@kernel.org>
+	s=arc-20240116; t=1712592138; c=relaxed/simple;
+	bh=DsV1N+RIyVPFhY9ohymknnp1vY6EQwDm/UwNOvg54ek=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tqYvwTY9q/qfpP/lhDDsiFlD8gFsg/7n+kM4XDwGa45l+TqWVZ1dkPv2RnEtQKIJ8XXpl4BvFnXX+U/MagYv5gSisDZ0vffNEn8ssq2vdAsCjBLLOO/r4IF6dnjSmYEa0MRxhjW0oRGAImCoDIXQaldILKEXuKTCIdeTIc9PeDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H9DGKylv; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4162b74f2a1so28504565e9.3;
+        Mon, 08 Apr 2024 09:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712592135; x=1713196935; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lgj52WXFs3LmWD1cqpXTyIxxrakcLGvncSgOBzL0ZMw=;
+        b=H9DGKylvkG9akjbCtSdIp9tsHFmJN+oIb/XfwqslJRpkg63moo8PDkqpLRiIZn4BkH
+         7ix6PreWG89tMjecDMgPrDxfoYPrfudkjIqQx/H4X2srF05msQDSz/CYviAIWTvi2Prl
+         W+2cbVqki4IKhbMK+JXGDjOmyU2+9Z5HAPUGKsUijjb4WlJ+T0wdAaFRjACgDOQ/28dD
+         YAZGLG0w4ZoWrh+Q0MC1tyHN40HXAfnPJHq5RfYAoZUcp+rdkZaNAi28/BPGgRW+YixK
+         ZJXGqJN/k8bbqaHGvZ+dB6IOcovEuo6dxxnh3Bbk+2q7VqdBzr/N3g5odUE2zFFx7+jn
+         2FaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712592135; x=1713196935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lgj52WXFs3LmWD1cqpXTyIxxrakcLGvncSgOBzL0ZMw=;
+        b=jZTRrDuo+T2bXtW9R9c2Vmq3cdpMoxG0ZAJjTG3ami6xVheVgTCNv9IgzssFEOx8JN
+         j+aFm5bu+m39QoopilQxgaV2NaMUjfLuc8VgE22P7PxqPgH6gLuJENdvqUFaa3fCBcte
+         QPQIyCl0r3b78JLiYIlz4rd6PTKS/H0yq+nvVQnLxmrIUMhXVChSrzM7iaPs/dzeW7sB
+         l01H4IfaG0zXluPhf7gKFM0gaqaeS8ago5A81tcK+mzC8cUclyOt/wmTFYgVOu5br1D4
+         /OGoElL46UjC4zWPt00tXTt/f50QbSRWAFxObvMazkmPdbc+UYoJWXOT7YBQZg3pL4Nn
+         +9Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCVm02BwfCLo5d19t65Y/Az2DEiRGDZI6QOv2fSON9bM85sNo5Un9XqXxws7J0AAxwAqJfutvnGBJiwJ4zOFkdmjC1RJd41eTApFjqKHGGEe5p8HBYJOT85U0r1zFeVLcMFXbyc6XZ9ZyKD4kIpJahPnLTdugD8Ruk/S8U1glGTX/eUFhpmIFq4x1Obi/kvkquIlVRJx7UQt0Uu43Oar2JMP
+X-Gm-Message-State: AOJu0Yxz4hSTB47K2uuJYKYAawWifK0zqRpTCIgHojZP8ioyKYgJVL45
+	gMDN6i+c2sk8W2hb4SUngQ7BBSMGtsyb8196Xw2pAz3wdMuF+ev/
+X-Google-Smtp-Source: AGHT+IGdszYLuUuRs9COV+xJUeakdZvTqC/ekAOo5huejMNRYzmLOl/jbRaits7AYT74QaZd4JioLg==
+X-Received: by 2002:a05:600c:4f83:b0:416:5a88:4b49 with SMTP id n3-20020a05600c4f8300b004165a884b49mr3499009wmq.15.1712592135309;
+        Mon, 08 Apr 2024 09:02:15 -0700 (PDT)
+Received: from krava (212-147-51-13.fix.access.vtx.ch. [212.147.51.13])
+        by smtp.gmail.com with ESMTPSA id c9-20020a05600c0a4900b0041638a085d3sm9396272wmq.15.2024.04.08.09.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 09:02:14 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 8 Apr 2024 18:02:13 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-ID: <ZhQVBYQYr5ph33Uu@krava>
+References: <Zg0lvUIB4WdRUGw_@krava>
+ <20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+ <CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+ <20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+ <CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+ <20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+ <20240404161108.GG7153@redhat.com>
+ <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+ <Zg-8r63tPSkuhN7p@krava>
+ <20240405110230.GA22839@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1759; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=KA9ih6u3mBi75U8iJUf9RHVwjiBPZpzGXCIcfRNCroo=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGkiIissMo//8H4vX5VzuOMm7+z5Qptmr5/+MMIzZ6bwv 0mnnfhvdpSyMIhxMMiKKbIk3u5rkVr/x2WHc89bmDmsTCBDGLg4BWAiG5gZGTbeU3jFtmLqwvB7 uxkyjrH1WBu+3PHj6l6bgO8Wbin15/cy/BX4+6rPaUUEe0TRze3vYte7b+neY7Jj0qxdG5/5BL3 2SeMFAA==
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405110230.GA22839@redhat.com>
 
-From: Conor Dooley <conor.dooley@microchip.com>
-
-On Fri, 05 Apr 2024 21:04:10 +0200, Krzysztof Kozlowski wrote:
-> Correct the reg address of mdio node to match unit address.  Assume the
-> reg is not correct and unit address was correct, because there is
-> already node using the existing reg 0x110102d4.
+On Fri, Apr 05, 2024 at 01:02:30PM +0200, Oleg Nesterov wrote:
+> On 04/05, Jiri Olsa wrote:
+> >
+> > On Fri, Apr 05, 2024 at 10:22:03AM +0900, Masami Hiramatsu wrote:
+> > >
+> > > I think this expects setjmp/longjmp as below
+> > >
+> > > foo() { <- retprobe1
+> > > 	setjmp()
+> > > 	bar() { <- retprobe2
+> > > 		longjmp()
+> > > 	}
+> > > } <- return to trampoline
+> > >
+> > > In this case, we need to skip retprobe2's instance.
 > 
->   sparx5.dtsi:443.25-451.5: Warning (simple_bus_reg): /axi@600000000/mdio@6110102f8: simple-bus unit address format error, expected "6110102d4"
+> Yes,
 > 
+> > > My concern is, if we can not find appropriate return instance, what happen?
+> > > e.g.
+> > >
+> > > foo() { <-- retprobe1
+> > >    bar() { # sp is decremented
+> > >        sys_uretprobe() <-- ??
+> > >     }
+> > > }
+> > >
+> > > It seems sys_uretprobe() will handle retprobe1 at that point instead of
+> > > SIGILL.
+> >
+> > yes, and I think it's fine, you get the consumer called in wrong place,
+> > but it's your fault and kernel won't crash
 > 
-> [...]
+> Agreed.
+> 
+> With or without this patch userpace can also do
+> 
+> 	foo() { <-- retprobe1
+> 		bar() {
+> 			jump to xol_area
+> 		}
+> 	}
+> 
+> handle_trampoline() will handle retprobe1.
+> 
+> > this can be fixed by checking the syscall is called from the trampoline
+> > and prevent handle_trampoline call if it's not
+> 
+> Yes, but I still do not think this makes a lot of sense. But I won't argue.
+> 
+> And what should sys_uretprobe() do if it is not called from the trampoline?
+> I'd prefer force_sig(SIGILL) to punish the abuser ;) OK, OK, EINVAL.
 
-Applied to microchip-dt64, thanks! I'll re-direct it to fixes either if
-some wider cleanup needs some of these warnings gone before v6.10-rc1.
+so the similar behaviour with int3 ends up with immediate SIGTRAP
+and not invoking pending uretprobe consumers, like:
 
-[01/10] arm64: dts: microchip: sparx5: fix mdio reg
-        https://git.kernel.org/at91/c/5d83b9cbe7cf
-[02/10] arm64: dts: microchip: sparx5: correct serdes unit address
-        https://git.kernel.org/at91/c/013627825bbe
-[03/10] arm64: dts: microchip: sparx5_pcb134: add missing I2C mux unit addresses
-        https://git.kernel.org/at91/c/9dcf4ec57700
-[04/10] arm64: dts: microchip: sparx5_pcb135: add missing I2C mux unit addresses
-        https://git.kernel.org/at91/c/5150c3df4c2e
-[05/10] arm64: dts: microchip: sparx5_pcb134: align I2C mux node name with bindings
-        https://git.kernel.org/at91/c/d3dd7bed4210
-[06/10] arm64: dts: microchip: sparx5_pcb135: align I2C mux node name with bindings
-        https://git.kernel.org/at91/c/b0d5a3ce782a
-[07/10] arm64: dts: microchip: sparx5_pcb134: drop LED unit addresses
-        https://git.kernel.org/at91/c/55fb5a97ebe0
-[08/10] arm64: dts: microchip: sparx5_pcb135: drop LED unit addresses
-        https://git.kernel.org/at91/c/5945df4de0e2
-[09/10] arm64: dts: microchip: sparx5_pcb134: drop duplicated NOR flash
-        https://git.kernel.org/at91/c/f1595d501ea4
-[10/10] arm64: dts: microchip: sparx5_pcb135: drop duplicated NOR flash
-        https://git.kernel.org/at91/c/6c7c4b91aa43
+  - setup uretprobe for foo
+  - foo() {
+      executes int 3 -> sends SIGTRAP
+    }
 
-Thanks,
-Conor.
+because the int3 handler checks if it got executed from the uretprobe's
+trampoline.. if not it treats that int3 as regular trap
+
+while for uretprobe syscall we have at the moment following behaviour:
+
+  - setup uretprobe for foo
+  - foo() {
+     uretprobe_syscall -> executes foo's uretprobe consumers
+    }
+  - at some point we get to the 'ret' instruction that jump into uretprobe
+    trampoline and the uretprobe_syscall won't find pending uretprobe and
+    will send SIGILL
+
+
+so I think we should mimic int3 behaviour and:
+
+  - setup uretprobe for foo
+  - foo() {
+     uretprobe_syscall -> check if we got executed from uretprobe's
+     trampoline and send SIGILL if that's not the case
+
+I think it's better to have the offending process killed right away,
+rather than having more undefined behaviour, waiting for final 'ret'
+instruction that jumps to uretprobe trampoline and causes SIGILL
+
+> 
+> I agree very much with Andrii,
+> 
+>        sigreturn()  exists only to allow the implementation of signal handlers.  It should never be
+>        called directly.  Details of the arguments (if any) passed to sigreturn() vary depending  on
+>        the architecture.
+> 
+> this is how sys_uretprobe() should be treated/documented.
+
+yes, will include man page patch in new version
+
+jirka
+
+> 
+> sigreturn() can be "improved" too. Say, it could validate sigcontext->ip
+> and return -EINVAL if this addr is not valid. But why?
+> 
+> Oleg.
+> 
 
