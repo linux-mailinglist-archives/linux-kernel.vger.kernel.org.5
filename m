@@ -1,62 +1,61 @@
-Return-Path: <linux-kernel+bounces-135217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438A189BCDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:18:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E38089BCE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F36DB2854BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:18:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32ED21C210D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2D85339B;
-	Mon,  8 Apr 2024 10:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E30553389;
+	Mon,  8 Apr 2024 10:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="qT3I7ohe"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="ALgZkFIr"
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9836352F87;
-	Mon,  8 Apr 2024 10:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A119A52F87;
+	Mon,  8 Apr 2024 10:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712571508; cv=none; b=P088X65gfrJGZXgbgVGpaKUCvakvF3Go1PGLm/bwsdUnL7cNIke7qM6eExo3waGa3B6Bi//uo0LiRYP1WJHz21rCzxAJakP2pA8+QxacGJ0ha7FJ4Nvop/EXO7kPoMdoVp3wkFvPnCj6v6mam7INgakWiXndwq9/fz9CZRTk5I0=
+	t=1712571513; cv=none; b=sBtr9N3+KxEt2/30hR1LmpnDvlFT8LIMJZTVainQT1XM85VhmMq9jhT2YnnOEMK9JS4D58R5riR5dcGxYel7y/uOSFRcoca/Lmsz2+nMBOauS/yhrBkzhmS83gF/QyMx+E0aM1U9bFLt4tIwLCTvFv9U9nVUBUy9V9clP6/uhFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712571508; c=relaxed/simple;
-	bh=Jk5AfXpYJl/Ul0uWQBPecZhjRr/Z7t8CO1bBtCb5+qA=;
+	s=arc-20240116; t=1712571513; c=relaxed/simple;
+	bh=qa6qtoo91LrB1qaXiQb/QiFYyJioLMK1RUVQhdD5UvE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PfCLPcbnCPWEifKTqFPz1Cmg0gvhsAg1xNa540nvfL7B93rG4XANhuAVDC/ueQASO4TDbqgPJDeWRudstOe3lb5E7guv3PZaogfinEyVYbxWHjCkJXaHtLf16a84YbMxc0MyGhhV+erkfXp9tLzAfPrlKXW4ABWEZD7EKFYYQYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=qT3I7ohe; arc=none smtp.client-ip=67.231.149.25
+	 MIME-Version:Content-Type; b=twMMPEIGlIZr4Decqsxve+LLFy/tkB05Fct43aoi3Bzb774cMoXTz692H167amStRwxEqvwMOAGOSG+wwolQ/kRguwkj3bvmnfk5pB70gSmfx+2hh0aDsZqphsh6RyT13TKZHU1JY9Y8qLGbVKjzyqr7yBOmV+EE0qEOa5Ya6Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=ALgZkFIr; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43850rVA005178;
-	Mon, 8 Apr 2024 05:18:05 -0500
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43850rVC005178;
+	Mon, 8 Apr 2024 05:18:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=U6m2cDC0lG4V+OJfs4nMI2Z6AhEq3DduAGPDmmbhl9U=; b=
-	qT3I7oheSuZKbXg4rSLcHWQsxyUGPavhCJwPShLxQVPLJt+hEicygncqgnLaIu0x
-	kKiBhbC01AB0pqaMd8e4BTbQ7vXCZqnG3nzGvfKWXUnTLS+nD1BpKKwXirAsYXZj
-	0bw0tpecsh1K1GXfMV3neAjadBtkN4seGHT0svMZPGcOgWcCsXINCbdKFEeCnYsM
-	YN3Oosi22Hm0jZs/9tcNfmLtFh4v56mY/4mU1lEl8iDTkeOr6UF/efG1pQWXnMtU
-	qhjM4HP4TinWzamCerpKzviCgvR9zOU3XaF+GX2Gtt4vQ/EnFg4R74egIXuRA2Pc
-	PBhrsjihm/sHbFym9sQTqw==
+	PODMain02222019; bh=HP5jOhe9Z2fx8yJ8S42D1z6FwLnTIVOPjHt3pv7FB0Q=; b=
+	ALgZkFIr4XGDzWgvdCzkdNoWt4KyeDfgvoEjrjJ4SuXVwppwSpduMxn5lPpWCpve
+	ootVn4qB0shCwYhKWnI5zfT0V4U5TQCChPcM+Omr9feH/8FngpCarcs2BwhpX9t/
+	67rCSp52NoSkpXuef+J+Tx0Ece82vupw1I5YSTGyHCPW943WZ2MRiKjeSmaU9qxN
+	+MRoDYfhl2KRihXN19RUmppSbMHNSEykj8ivIIdGsR8/7lPLccLdyb61B52tnqXM
+	128vVtDWUq4D/ps4bGDCfuFysuQ4Q6GJT1iuYUPbgv5whF0w3SGRwtF+V8srEZaf
+	xuT4Rv1yQgc6q2QxdAg0yA==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhbbq-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhbbq-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 05:18:05 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+	Mon, 08 Apr 2024 05:18:07 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
  11:18:03 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Mon, 8 Apr 2024 11:18:03 +0100
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Mon, 8 Apr 2024 11:18:03 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 36BE582024B;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 43ADE820258;
 	Mon,  8 Apr 2024 10:18:03 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -64,9 +63,9 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 2/4] ALSA: hda: cs35l56: Exit cache-only after cs35l56_wait_for_firmware_boot()
-Date: Mon, 8 Apr 2024 11:18:01 +0100
-Message-ID: <20240408101803.43183-3-rf@opensource.cirrus.com>
+Subject: [PATCH 3/4] ASoC: cs35l56: Fix unintended bus access while resetting amp
+Date: Mon, 8 Apr 2024 11:18:02 +0100
+Message-ID: <20240408101803.43183-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240408101803.43183-1-rf@opensource.cirrus.com>
 References: <20240408101803.43183-1-rf@opensource.cirrus.com>
@@ -78,49 +77,179 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
-X-Proofpoint-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
+X-Proofpoint-ORIG-GUID: Us6V62P_agtVZ1KfO10K_Oxc05tnbEsy
+X-Proofpoint-GUID: Us6V62P_agtVZ1KfO10K_Oxc05tnbEsy
 X-Proofpoint-Spam-Reason: safe
 
-Adds calls to disable regmap cache-only after a successful return from
-cs35l56_wait_for_firmware_boot().
+Use the new regmap_read_bypassed() so that the regmap can be left
+in cache-only mode while it is booting, but the driver can still
+read boot-status and chip-id information during this time.
 
-This is to prepare for a change in the shared ASoC module that will
-leave regmap in cache-only mode after cs35l56_system_reset(). This is
-to prevent register accesses going to the hardware while it is
-rebooting.
+This fixes race conditions where some writes could be issued to the
+silicon while it is still rebooting, before the driver has determined
+that the boot is complete.
+
+This is typically prevented by putting regmap into cache-only until the
+hardware is ready. But this assumes that the driver does not need to
+access device registers to determine when it is "ready". For cs35l56
+this involves polling a register and the original implementation relied
+on having special handlers to block racing callbacks until dsp_work()
+is complete. However, some cases were missed, most notably the ASP DAI
+functions.
+
+The regmap_read_bypassed() function allows the fix for this to be
+simplified to putting regmap into cache-only during the reset. The
+initial boot stages (poll HALO_STATE and read the chip ID) are all done
+bypassed. Only when the amp is seen to be booted is the cache-only
+revoked.
+
+Changes are:
+- cs35l56_system_reset() now leaves the regmap in cache-only status.
+
+- cs35l56_wait_for_firmware_boot() polls using regmap_read_bypassed().
+
+- cs35l56_init() revokes cache-only either via cs35l56_hw_init() or
+  when firmware has rebooted after a soft reset.
+
+- cs35l56_hw_init() exits cache-only after it has determined that the
+  amp has booted.
+
+- cs35l56_sdw_init() doesn't disable cache-only, since this must be
+  deferred to cs35l56_init().
+
+- cs35l56_runtime_resume_common() waits for firmware boot before exiting
+  cache-only.
+
+These changes cover three situations where the registers are not
+accessible:
+
+1) SoundWire first-time enumeration. The regmap is kept in cache-only
+   until the chip is fully booted. The original code had to exit
+   cache-only to read chip status in cs35l56_init() and cs35l56_hw_init()
+   but this is now deferred to after the firmware has rebooted.
+
+   In this case cs35l56_sdw_probe() leaves regmap in cache-only
+   (unchanged behaviour) and cs35l56_hw_init() exits cache-only after the
+   firmware is booted and the chip identified.
+
+2) Soft reset during first-time initialization. cs35l56_init() calls
+   cs35l56_system_reset(), which puts regmap into cache-only.
+   On I2C/SPI cs35l56_init() then flows through to call
+   cs35l56_wait_for_firmware_boot() and exit cache-only. On SoundWire
+   the re-enumeration will enter cs35l56_init() again, which then drops
+   down to call cs35l56_wait_for_firmware_boot() and exit cache-only.
+
+3) Soft reset after firmware download. dsp_work() calls
+   cs35l56_system_reset(), which puts regmap into cache-only. After this
+   the flow is the same as (2).
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 8a731fd37f8b ("ASoC: cs35l56: Move utility functions to shared file")
 ---
-This will have to go through Mark's tree because it's necessary
-to make this change to the HDA driver before applying patch #3 in
-this series.
----
- sound/pci/hda/cs35l56_hda.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/cs35l56-sdw.c    |  2 --
+ sound/soc/codecs/cs35l56-shared.c | 20 ++++++++++++--------
+ sound/soc/codecs/cs35l56.c        |  2 ++
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 1a3f84599cb5..558c1f38fe97 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -644,6 +644,8 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 		ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
- 		if (ret)
- 			goto err_powered_up;
+diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
+index 14a5f86019aa..70ff55c1517f 100644
+--- a/sound/soc/codecs/cs35l56-sdw.c
++++ b/sound/soc/codecs/cs35l56-sdw.c
+@@ -188,8 +188,6 @@ static void cs35l56_sdw_init(struct sdw_slave *peripheral)
+ 			goto out;
+ 	}
+ 
+-	regcache_cache_only(cs35l56->base.regmap, false);
+-
+ 	ret = cs35l56_init(cs35l56);
+ 	if (ret < 0) {
+ 		regcache_cache_only(cs35l56->base.regmap, true);
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index 08cac58e3ab2..a83317db75ed 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -307,10 +307,10 @@ int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
+ 		reg = CS35L56_DSP1_HALO_STATE;
+ 
+ 	/*
+-	 * This can't be a regmap_read_poll_timeout() because cs35l56 will NAK
+-	 * I2C until it has booted which would terminate the poll
++	 * The regmap must remain in cache-only until the chip has
++	 * booted, so use a bypassed read of the status register.
+ 	 */
+-	poll_ret = read_poll_timeout(regmap_read, read_ret,
++	poll_ret = read_poll_timeout(regmap_read_bypassed, read_ret,
+ 				     (val < 0xFFFF) && (val >= CS35L56_HALO_STATE_BOOT_DONE),
+ 				     CS35L56_HALO_STATE_POLL_US,
+ 				     CS35L56_HALO_STATE_TIMEOUT_US,
+@@ -362,7 +362,8 @@ void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
+ 		return;
+ 
+ 	cs35l56_wait_control_port_ready();
+-	regcache_cache_only(cs35l56_base->regmap, false);
++
++	/* Leave in cache-only. This will be revoked when the chip has rebooted. */
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_system_reset, SND_SOC_CS35L56_SHARED);
+ 
+@@ -577,14 +578,14 @@ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_sou
+ 		cs35l56_issue_wake_event(cs35l56_base);
+ 
+ out_sync:
+-	regcache_cache_only(cs35l56_base->regmap, false);
+-
+ 	ret = cs35l56_wait_for_firmware_boot(cs35l56_base);
+ 	if (ret) {
+ 		dev_err(cs35l56_base->dev, "Hibernate wake failed: %d\n", ret);
+ 		goto err;
+ 	}
+ 
++	regcache_cache_only(cs35l56_base->regmap, false);
++
+ 	ret = cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
+ 	if (ret)
+ 		goto err;
+@@ -757,7 +758,7 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ 	 * devices so the REVID needs to be determined before waiting for the
+ 	 * firmware to boot.
+ 	 */
+-	ret = regmap_read(cs35l56_base->regmap, CS35L56_REVID, &revid);
++	ret = regmap_read_bypassed(cs35l56_base->regmap, CS35L56_REVID, &revid);
+ 	if (ret < 0) {
+ 		dev_err(cs35l56_base->dev, "Get Revision ID failed\n");
+ 		return ret;
+@@ -768,7 +769,7 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = regmap_read(cs35l56_base->regmap, CS35L56_DEVID, &devid);
++	ret = regmap_read_bypassed(cs35l56_base->regmap, CS35L56_DEVID, &devid);
+ 	if (ret < 0) {
+ 		dev_err(cs35l56_base->dev, "Get Device ID failed\n");
+ 		return ret;
+@@ -787,6 +788,9 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ 
+ 	cs35l56_base->type = devid & 0xFF;
+ 
++	/* Silicon is now identified and booted so exit cache-only */
++	regcache_cache_only(cs35l56_base->regmap, false);
++
+ 	ret = regmap_read(cs35l56_base->regmap, CS35L56_DSP_RESTRICT_STS1, &secured);
+ 	if (ret) {
+ 		dev_err(cs35l56_base->dev, "Get Secure status failed\n");
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 8d2f021fb362..5a4e0e479414 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -1531,6 +1531,8 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+ 			return ret;
+ 
+ 		dev_dbg(cs35l56->base.dev, "Firmware rebooted after soft reset\n");
 +
 +		regcache_cache_only(cs35l56->base.regmap, false);
  	}
  
  	/* Disable auto-hibernate so that runtime_pm has control */
-@@ -1002,6 +1004,8 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
- 	if (ret)
- 		goto err;
- 
-+	regcache_cache_only(cs35l56->base.regmap, false);
-+
- 	ret = cs35l56_set_patch(&cs35l56->base);
- 	if (ret)
- 		goto err;
 -- 
 2.39.2
 
