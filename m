@@ -1,174 +1,213 @@
-Return-Path: <linux-kernel+bounces-135649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CEBD89C93E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:01:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B09189C957
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E951C21FC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:01:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12C45285BAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6C61422A8;
-	Mon,  8 Apr 2024 16:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622A71422B9;
+	Mon,  8 Apr 2024 16:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jJFUlIKe"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="h4LBflJg"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCBF22091
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:01:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C188B13E3E7
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712592093; cv=none; b=PJyiqiFDROGTkma3x/YiQZ5NF3nBQNwzKsMw7cDNSkH2i1fuCWZSQ9gvdr5ghB1LARkHYuI+sppqn5pjdUFqYX8+pFJiDqS63OsmWHmIhd/WhT49t+VJ8Pwzbhu2NxLNOzL+aOvnxampiqS9jocxsRwl0mMc4kX8Vaol1mlp/XA=
+	t=1712592385; cv=none; b=atf8AtXTOlw7ORxEgGs6Gy2TqDV2xiPuh3QdWwoZXh+yQ7idXwL0CauoFVJCntg/l5B1VGxMsSmZA+2GTgiKfhA5w9TVBhCqzwm9n8Bm9FoENuC/qUlVTV8m75T6REjMg0938y0zLdrvrtz5djXeWzKt7qW0eEc+ldFBt78D0DA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712592093; c=relaxed/simple;
-	bh=Ygi3/4LFZQsuI5V6cl+E49vdQAx7C3y5XXwlxvBn2is=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DCXViUeFC1Uhh/lHytkW83YNiX4HmiWAtQXRv060vNPLIiayJmKeWv51aY5w36oOPLhOKQslhOCgNCf3NLdD5h7z8AA/LKO2YIUiyTPRh4qkHSJYqYUkpbJWUi30cvCSjkEoF2u+UGf6Cb/LOhONiqICQI7oZVQnm2QjDA8EkYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jJFUlIKe; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712592091; x=1744128091;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Ygi3/4LFZQsuI5V6cl+E49vdQAx7C3y5XXwlxvBn2is=;
-  b=jJFUlIKeCD8fik/sMmsC0Tq/aka9fnhwTMoK4sG5Fvb2++ZTpOHJm8Bv
-   IxmovYgqxvjzBMJxKXASgMvCulxp3Rn8SX6kqjvdv1XkLkBsIWxDRS2ZJ
-   s7ELLfuTbSnIXIq/xayY+JC/jl06jB3vRM0ia7jtEM88cQJRsMauBH2U6
-   ASePbOdPvuaSgcdvhv8+8kns6fNFD+hwNxLvC4EqQum6I67qjgxqfktJp
-   jIEz4sOkr3put4Q/6zO9OsQGz/m/qOwZefDWlnG45Ix+DdNMCai4yAPoi
-   SF+RUK1PHpEoFQtOVPkCx1P2fqL1wD528uOJhEOz0rFqgx9xYAD8OixDv
-   Q==;
-X-CSE-ConnectionGUID: g6jaeGAySxGMUDsc3Lsb4w==
-X-CSE-MsgGUID: J3XNDgoxTs690Qv5G5PRjA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="11656105"
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="11656105"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:01:31 -0700
-X-CSE-ConnectionGUID: INLreHreTUSw5gvULrK0Mw==
-X-CSE-MsgGUID: e2IUKgdJRnS2RmR0O3qmPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
-   d="scan'208";a="20054868"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 09:01:27 -0700
-Date: Mon, 8 Apr 2024 09:05:56 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: "sivanich@hpe.com" <sivanich@hpe.com>, Thomas Gleixner
- <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>, Lu Baolu
- <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, "Liu, Yi L"
- <yi.l.liu@intel.com>, "steve.wahl@hpe.com" <steve.wahl@hpe.com>, "Anderson,
- Russ" <russ.anderson@hpe.com>, "Peter Zijlstra" <peterz@infradead.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 2/2] iommu/vt-d: Share DMAR fault IRQ to prevent vector
- exhaustion
-Message-ID: <20240408090556.6165e603@jacob-builder>
-In-Reply-To: <BN9PR11MB527677A69A2004A951165CC38C002@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240403234548.989061-1-jacob.jun.pan@linux.intel.com>
-	<20240403234548.989061-2-jacob.jun.pan@linux.intel.com>
-	<BN9PR11MB527677A69A2004A951165CC38C002@BN9PR11MB5276.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712592385; c=relaxed/simple;
+	bh=EHGyqHY9v++W1MuSnMW3pb0Ag9yRHxOl0H8XDfQ14Js=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=kzcMN7m0J9/i9DmA4StmhTbT0KrsmdtcHJ/s+LW5mwx6/NHBubUaL708Rf/M5Zq5qKbeaKPEXzl9Uuovg5gho9/bVPDRCEMLMrSuP98zhShQrJLVZ/AXjK5b31sv7O/epQbENZgYf8/YRPqPa1/bKiJq2rGcpgdeyyhnR3JzgVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=h4LBflJg; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2523E3FB6C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712592375;
+	bh=Qi/UC6J504JL4p4+SSyJBGVVdfDEf7nzpgfz+ECmA10=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID;
+	b=h4LBflJgUEsRkZ+HimVxB9XdOgig7/JFDWjSYe+5GUPAmlCKbSN/oYk5nwqpZzQqo
+	 biHG1s465fP7D0pYdc9tGThlLiLSspAUGo8IwzEwiP/y5DymVclBjEzut6fyDtXb34
+	 1tDUFhnaM6+rQs8dOJrHhGJ41d4/vXRp1iDCNm2Qaru9NB8fM6/JfI+rvfBM7nQtz7
+	 vcJftbMf7pDdsW9g6mbb5x/jBQX0TEha4/MwYkW7qNEQ/jXm6Job4cesNf4KyRXME4
+	 BDQ2SsnE93kQn8nhq8l6BlhXLY9imMCsunz9nlZIWP4PdRdJe4tVOfBlXW+fHrROcx
+	 Am/7MvVHk+m2g==
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so3304748a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 09:06:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712592373; x=1713197173;
+        h=message-id:date:content-transfer-encoding:content-id:mime-version
+         :comments:references:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qi/UC6J504JL4p4+SSyJBGVVdfDEf7nzpgfz+ECmA10=;
+        b=LHa8G2xZJBberx1xpdoclag8oo7lvk2OPdFUvTZmNbyjFnjhyP1adAKsvNmwZ/xZGV
+         ZAWaaHXHUMke//A54yKRbZiksjylgBOq/K2AQwxoxYHvt+O2xQvlY6DdrRf3700cVokB
+         bsMNSQBH3aFtgYkZ/54Quyw9QxNPDJRCwjsPmUyX8Oh2S1LbAwvFCF91iaONXDdhYNT1
+         HoIqDBgo5Dcwi1+bVyEEHydORLpRkKOyaMI4Mdm2XofuySKDPWMAglSyQ8zv1KLqcvUU
+         BLDB5RbaLATqjpa7lCmAsrnI6XOLsfq3rej40rUbb5nttBlJm4jNpqn0aFVyK1zKzuAi
+         fCQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWuMvf8Xa2ZEDRCnoXbAlo9ZmbajD69swGRlixOKToIjS1y7rqrD3JfmCS9OXdurReqKH9Gz0SIWiOgmHEpgeEy4sJJl3ZNZTf6qc7+
+X-Gm-Message-State: AOJu0Yx6MdwsxLGQRg7DcTtZdXURbCDDV7GWP6X734O2CujEX+3wYq/r
+	UHIoafK+p2iHgUlNppMt8FL95QE/8IZC4EI4kGN35ZX9/ifbRup7Hc3V6acfCYINJ9cvzhsinUs
+	tamWMpN2CG7lDLfAL2ndzI1HosCDHLicn2Dn7IW/0DHAioNsux4X1W/JuVRQ3HwzN6K5vRglgGO
+	mRXg==
+X-Received: by 2002:a05:6a20:244d:b0:1a7:4ec2:fb20 with SMTP id t13-20020a056a20244d00b001a74ec2fb20mr5130756pzc.0.1712592373165;
+        Mon, 08 Apr 2024 09:06:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEWOOgQmG4OvLR0u05aXzy0qbRkNFTK0fHXlDI+xx+rXrPw17t7bIi/He0DVj9VnHWE6DSsJw==
+X-Received: by 2002:a05:6a20:244d:b0:1a7:4ec2:fb20 with SMTP id t13-20020a056a20244d00b001a74ec2fb20mr5130701pzc.0.1712592372516;
+        Mon, 08 Apr 2024 09:06:12 -0700 (PDT)
+Received: from famine.localdomain ([50.125.80.253])
+        by smtp.gmail.com with ESMTPSA id du17-20020a056a002b5100b006ecceed26bfsm6693109pfb.219.2024.04.08.09.06.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Apr 2024 09:06:12 -0700 (PDT)
+Received: by famine.localdomain (Postfix, from userid 1000)
+	id AE33C604B6; Mon,  8 Apr 2024 09:06:11 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+	by famine.localdomain (Postfix) with ESMTP id A672A9FA74;
+	Mon,  8 Apr 2024 09:06:11 -0700 (PDT)
+From: Jay Vosburgh <jay.vosburgh@canonical.com>
+To: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+cc: Andy Gospodarek <andy@greyhouse.net>,
+    "David S. Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bonding: 802.3ad: Avoid packet loss when switching aggregator
+In-reply-to: <20240404114908.134034-1-tbogendoerfer@suse.de>
+References: <20240404114908.134034-1-tbogendoerfer@suse.de>
+Comments: In-reply-to Thomas Bogendoerfer <tbogendoerfer@suse.de>
+   message dated "Thu, 04 Apr 2024 13:49:08 +0200."
+X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <21528.1712592371.1@famine>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 08 Apr 2024 09:06:11 -0700
+Message-ID: <21529.1712592371@famine>
 
-Hi Kevin,
+Thomas Bogendoerfer <tbogendoerfer@suse.de> wrote:
 
-On Mon, 8 Apr 2024 08:48:54 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-wrote:
+>If selection logic decides to switch to a new aggregator it disables
+>all ports of the old aggregator, but doesn't enable ports on
+>the new aggregator. These ports will eventually be enabled when
+>the next LACPDU is received, which might take some time and without an
+>active port transmitted frames are dropped. Avoid this by enabling
+>already collected ports of the new aggregator immediately.
+>
+>Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+>---
+> drivers/net/bonding/bond_3ad.c | 7 +++++++
+> 1 file changed, 7 insertions(+)
+>
+>diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond_3a=
+d.c
+>index c6807e473ab7..529e2a7c51e2 100644
+>--- a/drivers/net/bonding/bond_3ad.c
+>+++ b/drivers/net/bonding/bond_3ad.c
+>@@ -1876,6 +1876,13 @@ static void ad_agg_selection_logic(struct aggregat=
+or *agg,
+> 				__disable_port(port);
+> 			}
+> 		}
+>+
+>+		/* enable ports on new active aggregator */
+>+		for (port =3D best->lag_ports; port;
+>+			port =3D port->next_port_in_aggregator) {
+>+			__enable_port(port);
+>+		}
+>+
 
-> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > Sent: Thursday, April 4, 2024 7:46 AM
-> > 
-> > DMAR fault interrupt is used for per-IOMMU unrecoverable fault
-> > reporting, it occurs only if there is a kernel programming error or
-> > serious hardware failure. In other words, they should never occur under
-> > normal circumstances.  
-> 
-> this is not accurate. When a device is assigned to a malicious guest then
-> it's not unusual to observe faults.
-> 
-Right, a malicious guest kernel could cause unrecoverable faults, e.g.
-wrong privilege.
-
-> in this context you probably meant that it's not a performance path hence
-> sharing the vector is acceptable.
-> 
-Yes.
-> >
-> > @@ -1182,7 +1182,6 @@ static void free_iommu(struct intel_iommu
-> > *iommu)
-> >  			iommu->pr_irq = 0;
-> >  		}
-> >  		free_irq(iommu->fault_irq, iommu);
-> > -		dmar_free_hwirq(iommu->fault_irq);  
-> 
-> You still want to free the vector for the iommu which first gets the
-> vector allocated.
-> 
-I think we always want to keep this vector since the system always needs
-one vector to share. We will never offline all the IOMMUs, right?
-
-> > @@ -1956,9 +1955,8 @@ void dmar_msi_mask(struct irq_data *data)
-> >  	raw_spin_unlock_irqrestore(&iommu->register_lock, flag);
-> >  }
-> > 
-> > -void dmar_msi_write(int irq, struct msi_msg *msg)
-> > +static void dmar_msi_write_msg(struct intel_iommu *iommu, int irq,
-> > struct msi_msg *msg)
-> >  {  
-> 
-> what about iommu_msi_write_msg() to match the first parameter?
-> 
-> otherwise it leads to a slightly circled calltrace:
-> 	dmar_msi_write_msg()
-> 		dmar_msi_write()
-> 			dmar_msi_write_msg()
-> 
-Good point, will do.
-
-> > +
-> > +	/*
-> > +	 * Only the owner IOMMU of the shared IRQ has its fault event
-> > +	 * interrupt unmasked after request_irq(), the rest are
-> > explicitly
-> > +	 * unmasked.
-> > +	 */
-> > +	if (!(iommu->flags & VTD_FLAG_FAULT_IRQ_OWNER))
-> > +		dmar_fault_irq_unmask(iommu);
-> > +  
-> 
-> em there is a problem in dmar_msi_mask() and dmar_msi_mask()
-> which only touches the owner IOMMU. With this shared vector
-> approach we should mask/unmask all IOMMU's together. 
-I thought about this as well, in addition to fault_irq,
-dmar_msi_mask/unmask() are used for other DMAR irqs, page request and
-perfmon. So we need a special case for fault_irq there, it is not pretty.
-
-I added a special case here in this patch, thinking we never mask the
-fault_irq since we need to cover the lifetime of the system. I have looked
-at:
-1.IOMMU suspend/resume, no mask/unmask
-2.IRQ migration, added IRQF_NOBALANCING
-
-maybe I missed some cases?
+	I think this will do the wrong thing if the port in question is
+not in a valid state to send or receive (i.e., it is not one of
+COLLECTING_DISTRIBUTING, COLLECTING, or DISTRIBUTING).
 
 
-Thanks,
+	As it happens, this situation, except for the case of individual
+ports, is handled just below this code:
 
-Jacob
+	/* if the selected aggregator is of join individuals
+	 * (partner_system is NULL), enable their ports
+	 */
+	active =3D __get_active_agg(origin);
+
+	if (active) {
+		if (!__agg_has_partner(active)) {
+			for (port =3D active->lag_ports; port;
+			     port =3D port->next_port_in_aggregator) {
+				__enable_port(port);
+			}
+			*update_slave_arr =3D true;
+		}
+	}
+
+	rcu_read_unlock();
+
+	FWIW, looking at it, I'm not sure that "__agg_has_partner" is
+the proper test for invididual-ness, but I'd have to do a bit of poking
+to confirm that.  In any event, that's not what you want to change right
+now.
+
+	Instead of adding another block that does more or less the same
+thing, I'd suggest updating this logic to include tests for C_D, C, or D
+states, and enabling the ports if that is the case.  Probably something
+like (I have not tested or compiled this at all):
+
+	if (active) {
+		if (!__agg_has_partner(active)) {
+			[ ... the current !__agg_has_partner() stuff ]
+		} else {
+			for (port =3D active->lag_ports; port;
+			     port =3D port->next_port_in_aggregator) {
+				switch (port->sm_mux_state) {
+				case AD_MUX_DISTRIBUTING:
+				case AD_MUX_COLLECTING_DISTRIBUTING:
+					ad_enable_collecting_distributing(port,
+							update_slave_arr);
+					port->ntt =3D true;
+					break;
+				case AD_MUX_COLLECTING:
+					ad_enable_collecting(port);
+					ad_disable_distributing(port, update_slave_arr);
+					port->ntt =3D true;
+					break;
+				default:
+					break;
+		}
+
+
+	Using the wrapper functions (instead of calling __enable_port,
+et al, directly) enables logging for the transitions.
+
+	-J
+
+
+
+> 		/* Slave array needs update. */
+> 		*update_slave_arr =3D true;
+> 	}
+>-- =
+
+>2.35.3
+>
+>
 
