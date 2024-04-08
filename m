@@ -1,198 +1,141 @@
-Return-Path: <linux-kernel+bounces-135179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7873389BC4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:49:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D871889BC50
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 11:50:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DC85284852
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:49:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15FC01C21B41
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901D44CE09;
-	Mon,  8 Apr 2024 09:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAD74DA03;
+	Mon,  8 Apr 2024 09:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="uSm64j3D";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="Z+JgZTi3"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yf2meAYW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D766FBF
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 09:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569772; cv=fail; b=qkrsck14sXIXpd/JTidzppSHpzFS6hVEfqTo25RApBSY6wbYiIs6+vH91q6sg8eFquwv6V1Qi3JDOEu74QZQJtyJ7rqiM2+hN5J0sgMU68YROLHbX+NYMN8IoW0x9EHt6GwBRwj64o/gpyjmsWFbWKsPEDbTJQELocN29fQwrwo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569772; c=relaxed/simple;
-	bh=AwBWMVdOmbivKq+TpJpiqomZTBhMYRsNWxrtvAJKMRw=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=g2184WZpkotqTu88EZ/ortIyZN3pHRtCVvP3XlhWkTxULvB97w1a1xyqNK9zthQJXs+euaIECEfJ2eoscdG78gO71EpX/P1fEqITdN4e8R2lrcqmXGWWi4ZBZrHdPtse+8JoCU1k+HqainGi8MaIpMuJIGutEGJO7HVIFr2RVgc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=uSm64j3D; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=Z+JgZTi3; arc=fail smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 46d18bc0f58d11ee935d6952f98a51a9-20240408
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:To:From; bh=AwBWMVdOmbivKq+TpJpiqomZTBhMYRsNWxrtvAJKMRw=;
-	b=uSm64j3DsAON+wdHmcxl1fN0jztHWbXRggk+IiC2cYJdXZstVSyY6jSCOujdzDlskBmOT4mvCLeeXHEA5GQtEhBUQphpBKztwPh+lPBnuMC1+Nz5FFvY54+v1A6uTNq0HnJj//+ywZJdCYBRNDOX13RBRBnD2iIhLb0eDFZFThI=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:e7dced40-c422-4e2e-8fcd-00f1ce166894,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:12cc6a82-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 46d18bc0f58d11ee935d6952f98a51a9-20240408
-Received: from mtkmbs09n2.mediatek.inc [(172.21.101.94)] by mailgw02.mediatek.com
-	(envelope-from <ck.hu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 676373278; Mon, 08 Apr 2024 17:49:22 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 8 Apr 2024 17:49:21 +0800
-Received: from SINPR02CU002.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 8 Apr 2024 17:49:21 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bVaIPOixcQ9Y/GhRv0t5vSaHjPtlf2sVqX3f74JOSH+gazd2SLYde8jv5YX/+Tdw/UJasyE6gmJBTLdpfDwEzi0Hf9HSLuGAb2R+DMABLI2bRBeheVfW40XBZTF2cZ1SmUZJ6E0uurSWw/SOoErdRqpcAsV/LKy+SXLhn4eLA5lUhGWpTyi3ayu71Icsp7djE6GpY8kDSE6cGq6xqbbMFddb4jND2vdoz2Mk0o+m1rtFoGAhzlXcnwxKqLbiIl8+6ha80xZsZPC/Ownm6J5UasD3VRJexoB+p+sB/EiRjCYLcRtbshZfqP4lvoUkgtB5RTWXXckBySrT1pN+vw4HqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AwBWMVdOmbivKq+TpJpiqomZTBhMYRsNWxrtvAJKMRw=;
- b=NoOvLeLji9jNuMFA9BlrcqDe57CkfvFfl7Nqs2V6qgQ0BxBC63zJtK7GnMseTLa5Dq/i2ltQHvwaHo4MHvkoaFLmrt9BtRt5h70iKCWkfAkqppGfsRRvH0tyEgxIL80rBg3AtwTJf0hWQE9m1BYBaBnwVLpe/5Lw8R1LO+gXJXiNtb5wNOyxu4OeZkfTYjOUpymki5iemFa7iy6WZf7BrFEKSB8c4DflB1yI8y6KjWgzQfnBT4Z8nZ3GLs1u/PJL+U2NdZQ8W1WbVt3nA16VsAGXXjMT47sV+6s9pnKx1ip8FGlX+cC0BBGUOWPATIZ9cfvyjSlc6Rr7MCHr9HZW8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AwBWMVdOmbivKq+TpJpiqomZTBhMYRsNWxrtvAJKMRw=;
- b=Z+JgZTi37ud90OEz0wdHhNhhNQQ4MQ9UX2o4VxbLBDPHGDNlKN07SEk+QEP1X7BKSdQouBXbGmxbX3cMBv8968vk0DY/35P2GMfAtesj81FfrxKCWg5sufKqoJEM7zM+NDVh4EMj+exwGtiy1oWmQmCEIP8DUiZiePubOFZ8+38=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SEYPR03MB7010.apcprd03.prod.outlook.com (2603:1096:101:b0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 09:49:18 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::f3b6:91a7:e0fb:cb27]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::f3b6:91a7:e0fb:cb27%7]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
- 09:49:18 +0000
-From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To: "wmacek@chromium.org" <wmacek@chromium.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"chrome-platform@lists.linux.dev" <chrome-platform@lists.linux.dev>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>, "daniel@ffwll.ch"
-	<daniel@ffwll.ch>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "matthias.bgg@gmail.com"
-	<matthias.bgg@gmail.com>, "angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] drm/mediatek: Add RENDER capability to DRM device
-Thread-Topic: [PATCH] drm/mediatek: Add RENDER capability to DRM device
-Thread-Index: AQHahNMKiD//QF7OJEuho/dn90M+ALFeKmUA
-Date: Mon, 8 Apr 2024 09:49:18 +0000
-Message-ID: <d4b15c6cdec777f8e930473983914ba52457a30d.camel@mediatek.com>
-References: <20240402075352.3147747-1-wmacek@chromium.org>
-In-Reply-To: <20240402075352.3147747-1-wmacek@chromium.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEYPR03MB7010:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 20BPkdS3wlRrKByyO3xiGVmBW8X9H0b9Hu8IN6bijgYvmvEuu4CQU8RAuscVIrUewfftcNEEesQuSIZFJZyohXiAXpm11FTjsbyu6rNjlyAAxPYs4ZndkzL/XgVS4pS3c4zuQDWrU9JdU3zHibhKQ00JmAx1fff3WdvhoFVXh2qpkPs3bJWmIraPmSZeyjgDjsaT+vC3CXOHsKfHrverZ5mDVRNfDrWxpvZTE0mmu9As6btdq/dfFQ424mrliQXZol+3ROSuqC3QBunY3dVPLmCQkXhgu5G6Q1PUOVVd5WdZAKcycoPQHi2WbXBbxWOiU3oBCPCvQ7QIh6u0LGevpmzGosl8kBbZrEuJZyE94lK9VdCWqrSuKq2F4SbPyhXIKAU4io5EJofefLhZUCo7ndNPiv96XAnzehCqM/gO0tzhvRw5YQCN8w716cVVVUNTjuEmQxqw9TcUSSpvzwoZBIe0rxy/qigqHmtvJx/OK+7jX0LwluASyhO6oLI5vFsXu/wJ/tl9tRRgAWGhyYs+DQbaQArilMIFATGDmqVmUla4T/Va3gZZYmbZvd1Rc6t/n3fP1YITbjeNAopG/iJYQhMan1PPyOvKWhxw17rsJZbG0u/qCHZrlAiU/+1zK9ekrCD2/8pA7VATjeYAzojl5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U0dGcnZhWDM3VkFnQ3p1ZmFPa2hPZ3lBZDhqKzdCQVpkeWNxVm9rYXlmbXFy?=
- =?utf-8?B?T2t2bnJhMnZGN1hBcXpyYkNGTUVaQ05hZmd4S052cm5ISDBXVk5ncE03UGRK?=
- =?utf-8?B?dS95TTZFb0J3STM3N2FyMXg1dHd5WVZiV3h5OWNBSHF4QlN0SUNaZGNkbVhy?=
- =?utf-8?B?ekV1UEpITHJjeDFnaHcxVitVbWxjeHIvdDFJcGQzN1NCMHYyTmh3S0lGZDZW?=
- =?utf-8?B?bHRXOHkxYmR0dVpBakZld3Z2b2hRQ1dsTk9ZUHVrb2wvQnZScHo1UGNLY3NW?=
- =?utf-8?B?dUlrY1p4TlkvekxKTzdjVVNDKzNHTkM2QmxxWHBEamUyZ3l5RVlSSndSemIr?=
- =?utf-8?B?d0MrcGl3Y244c1NlUTdZY1NJbGVEdzc5MFJTTEEvOXJSb1RHdStUZFl1L0o2?=
- =?utf-8?B?Y2VYWUxXZUJoZHVWa3NhbGZkeUxpMHBMTzN4UDJ4b096b2NYSldreEZYcG00?=
- =?utf-8?B?cG55bHo5MUc3TlZpWnpyYVM3Y1lkUXlRRTVtMnJyRTVtUlpXVzhJYVB6RS9x?=
- =?utf-8?B?b1VIL3RtOFJZQ1p4eG5RQXVxMll3a2x1SFhCcmpCMURuMElNVURWaXpPYTVF?=
- =?utf-8?B?WTBRdWR3aEtyWWZManBIVG44MGJrNExQMENKSXc3R2loengvNTZMRC9Pekhr?=
- =?utf-8?B?cFdYdFhDRllYVmgzMW5acUpwMTdmcXdEaVF0VitzYmhKQklxZG5WcUl0a2lm?=
- =?utf-8?B?Ym9hTCtRTjFMdmpLWDZaU1c5Zm5wQkVnbm81Z3J3SlRYcFZFbkJsN05qdU1j?=
- =?utf-8?B?Ums2SnZzQmo4SnBrK2w1RkFCVUhJRjcrRDF1bzRjMXliNGFKZG5ON2FwYTdC?=
- =?utf-8?B?cjlyV2lXWnV2OGt0WXFQT05mNVVzVGJBVi9kTUJ1UU5ncjVsWi85VmI2VUhh?=
- =?utf-8?B?UTh4R2JTZmpsZHhwKzJNSUNWUWljRmN1VFIweEpvWnhBSC9OY09NUGRvb2k1?=
- =?utf-8?B?Q3Q2UllJenV2WlZGdVd0ZTdHODlLRzZsRnpMMjBqOTR0ZjRSQ1JZcEUxd0pH?=
- =?utf-8?B?WU4yWWNMZVQwWFhVdmRZajZJSzA4eDI5Z1RMY1VRMnpsN21vQTZVb2lGaXo4?=
- =?utf-8?B?QytCbVc4d1lSS2Y1LzNxSi9yOElZRzgveWEzMFB5MCs1UldpTkpEM2VGWEJt?=
- =?utf-8?B?QkJGU3BQWTBiVHpxNWptZ3Zrbjg3YnBxUDNLVlFDV1hSR1MvZW5zbzYzWGVQ?=
- =?utf-8?B?WjVacjJibkl5ZGFRMzFyZFN4cjVhdWVTOC9zZmtrRG5Ec3hvWmN3UkdlU3FR?=
- =?utf-8?B?RHZ1d0NsaU1lSzhBZFZhQVlFaFpzRVNQeUxZbmx5d0xyZWljaVA0K3YxWE9W?=
- =?utf-8?B?Rzg4RUIvQlVKMFhBN1VIUVlyQkxOVlZTTTNid1UvalAzSjhGM3FwTHFhMDEv?=
- =?utf-8?B?SE9sbTRMZTlXaituYkY4REhXcTIwU3FWYU4wV1RjVGk1R1ZQc1hKNEtQSWtC?=
- =?utf-8?B?QUxxNHRXQTRwNDYrWFZxMDZVUXFHTXAvUHp1R21HNTFvRHcwcjg3OHk4aWZY?=
- =?utf-8?B?R09US0hNVnU2R0JiT3J2ZVpJLytnRmtJdEJPRC9FL0xNYWJLWnBKK3N0VDJK?=
- =?utf-8?B?Y1gzaDhDWnY0SGJKK283NlpXbDNTWnJuZ0ZpUXFlVXA1VmxBRk45OGJIaXFk?=
- =?utf-8?B?M3NpVTR3RUI3ZjNOUXBFREtEa3NzSlN4WGgrL2lVZjNzMlFFelBERCsyTWxY?=
- =?utf-8?B?OFdjNnRiczBRNTFxa2NQQXljV1gvbWdNaXZBWEVlV0x0SFgzaFpGbDdiclZq?=
- =?utf-8?B?ZXlFamNpd0ROc1dieFBZOXovMU1oQjBUUmtUc29PdkswbGhMUEN5cG14b01F?=
- =?utf-8?B?Nmw3dlZzZTFNVUxDRW5hTjlleFh4cXJCUzFXUlpMdlZoR1RuUG5HRWsrQjBM?=
- =?utf-8?B?U0JBb1M2ME1kNW9NdUFtc3VwWmorQ3RqNUlkSHFSZ2JpNVBka3BxTlNmUE84?=
- =?utf-8?B?clhaSUZBMVA3R01BRmZ2cmFKWVcvNGtFZE1TaExMczJUM1lOczlrdG9LSGVC?=
- =?utf-8?B?TEYxVE93bzJtRzZmVVRWNVlPZXV5eDMxL3F0aHN3VEpyVUxPQjdtMVVNQ1Nn?=
- =?utf-8?B?dXZ4WDhRME85a3NxYnMrbUZxYXJiU0RTcUlteXUrU1ZRWE9TeE10a0RHeGsz?=
- =?utf-8?Q?H0bgl1qGDQui/ftb9mV3ghET2?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B8610B01B57A394B8568D85D836BDD44@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D814C634;
+	Mon,  8 Apr 2024 09:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712569792; cv=none; b=oadqY/kZqvnvD+Lh42aQ0O3AV/+ZM01rR8SIkQ7UnAVYfMOuAdzecRBC9K5/aBUSLo/lft8irEiaBsbLI64RUo2aIOLE5C+xkxrQDPnTThEWY++1Bq6f6vNT13/VWG4w1mBJEIg6LZGBoqYSG+ii6fJ0bYig/0XoMDkm1dl+/PQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712569792; c=relaxed/simple;
+	bh=xL1SCPj347yWFVgdwNXote2UupJzfKZAH1a3FbrLt0Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cZBduevjYj6piioilkGyCPyTQ/dB0W1b4vHQLgWjPWPkyjjcsp+egua8S96nvqEMVsDDbmcgKm/ySDs0SwPB5eWu5AfRWCATOgimFB4A56RyVmkCgtLX946Hy5zLaJXzL52zx/uj40NnBvxo54jI7SA2aIfuynteV4ldvIHWkeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yf2meAYW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9D28C433C7;
+	Mon,  8 Apr 2024 09:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712569791;
+	bh=xL1SCPj347yWFVgdwNXote2UupJzfKZAH1a3FbrLt0Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Yf2meAYWAM11DwJ0kDIFvs6Trkrm1Nh9eLBdYZjK4edSqgu1ZWAZumhJTxAhGqBkG
+	 WtQ0TD0UUTWp3eVJp+pIWbqE5TBxTBoT3UKuCF/buV8yQ6UVwBhOXjiR6uWvyRxCeb
+	 j+lc+Qq83O2Lae+A8hHGNozFermlDwy+d4PRcCaugp4+dGnuYMG7Lv1BA0KySWd0Uq
+	 tsKH/cOXghoKB825UVQCIYGcsPlJVbFM56FkmGIuLHHTtqDyubDAy35dE6f88I3mn1
+	 xk5wq81NQLpEEAKtM5dGqQTD2HEPxz8+c1T3IPeIJ6SDrqpQ7iyPt/WnFstUzuCTfk
+	 hlGJLGyb21I5Q==
+Date: Mon, 8 Apr 2024 11:49:45 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH v2 00/10] PCI: endpoint: Make host reboot handling more
+ robust
+Message-ID: <ZhO9udfcdUrNDqQj@ryzen>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <ZgvSrLpvChG4jqQl@ryzen>
+ <20240403134825.GM25309@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6fd84400-c3ba-4a73-01c6-08dc57b128eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2024 09:49:18.6643
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hNptbwWsp5ejyD7GJU0noyJCYv/8ZUFu1odWaBP/1Ssh90/9fRg9Qk1HJyAKxe9ZhPrMg0JPrFN2hKF4sxlo0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7010
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403134825.GM25309@thinkpad>
 
-SGksIFdvamNpZWNoOg0KDQpPbiBUdWUsIDIwMjQtMDQtMDIgYXQgMDc6NTMgKzAwMDAsIFdvamNp
-ZWNoIE1hY2VrIHdyb3RlOg0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90
-IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZp
-ZWQgdGhlIHNlbmRlciBvciB0aGUgY29udGVudC4NCj4gIERSTSBkZXZpY2Ugc2hhbGwgY3JlYXRl
-IC9kZXYvZHJpL3JlbmRlclhYWCBlbnRyeQ0KPiB0byBhbGxvdyBDaHJvbWVPUyBWTXMgdG8gYWNj
-ZXNzIHRoZSBPcGVuR0wgcmVuZGVyaW5nDQo+IG9mZmxvYWQuDQoNCkkgdGhpbmsgdGhpcyBpcyB0
-aGUgY2FzZSBEYW5pZWwgbWVudGlvbiBpbiBbMV0uIElmIHNvLCB0aGlzIHNob3VsZCBub3QNCnVw
-c3RyZWFtLiANCg0KWzFdIA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2Ry
-aS1kZXZlbC9wYXRjaC8xNDUyNjExNzUwLTE2MjgzLTE1LWdpdC1zZW5kLWVtYWlsLXAuemFiZWxA
-cGVuZ3V0cm9uaXguZGUvDQoNClJlZ2FyZHMsDQpDSw0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBX
-b2pjaWVjaCBNYWNlayA8d21hY2VrQGNocm9taXVtLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYyB8IDMgKystDQo+ICAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2RybV9kcnYuYw0KPiBpbmRleCA3NDgzMmMyMTMwOTIuLmFmYTRkNjM5MWIwOCAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4g
-KysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4gQEAgLTU4NSw3
-ICs1ODUsOCBAQCBzdGF0aWMgc3RydWN0IGRybV9nZW1fb2JqZWN0DQo+ICptdGtfZHJtX2dlbV9w
-cmltZV9pbXBvcnQoc3RydWN0IGRybV9kZXZpY2UgKmRldiwNCj4gIH0NCj4gIA0KPiAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBkcm1fZHJpdmVyIG10a19kcm1fZHJpdmVyID0gew0KPiAtCS5kcml2ZXJf
-ZmVhdHVyZXMgPSBEUklWRVJfTU9ERVNFVCB8IERSSVZFUl9HRU0gfCBEUklWRVJfQVRPTUlDLA0K
-PiArCS5kcml2ZXJfZmVhdHVyZXMgPSBEUklWRVJfTU9ERVNFVCB8IERSSVZFUl9HRU0gfCBEUklW
-RVJfQVRPTUlDDQo+IHwNCj4gKwkJCSAgIERSSVZFUl9SRU5ERVIsDQo+ICANCj4gIAkuZHVtYl9j
-cmVhdGUgPSBtdGtfZHJtX2dlbV9kdW1iX2NyZWF0ZSwNCj4gIA0KPiAtLSANCj4gMi40NC4wLjQ3
-OC5nZDkyNjM5OWVmOS1nb29nDQo+IA0K
+On Wed, Apr 03, 2024 at 07:18:25PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Apr 02, 2024 at 11:41:00AM +0200, Niklas Cassel wrote:
+> > On Mon, Apr 01, 2024 at 09:20:26PM +0530, Manivannan Sadhasivam wrote:
+> > > Hello,
+> > > 
+> > > This is the follow up series of [1], to improve the handling of host reboot in
+> > > the endpoint subsystem. This involves refining the PERST# and Link Down event
+> > > handling in both the controller and function drivers.
+> > > 
+> > > Testing
+> > > =======
+> > > 
+> > > This series is tested on Qcom SM8450 based development board with both MHI_EPF
+> > > and EPF_TEST function drivers.
+> > > 
+> > > Dependency
+> > > ==========
+> > > 
+> > > This series depends on [1] and [2].
+> > > 
+> > > - Mani
+> > 
+> > Hello Mani,
+> > 
+> > > [1] https://lore.kernel.org/linux-pci/20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org/
+> > > [2] https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/
+> > 
+> > AFAICT both these series [1] (DBI rework v12, not v10) and [2] are fully
+> > reviewed and seem to be ready to go.
+> > 
+> > Considering that we have patches depending on [1] and [2],
+> > namely the series in $subject, but also:
+> > https://lore.kernel.org/linux-pci/20240330041928.1555578-1-dlemoal@kernel.org/T/#t
+> > 
+> > I think it would be a good idea if you could apply [1] and [2] to the
+> > pci/endpoint branch.
+> > 
+> 
+> Unfortunately, I cannot merge the patches outside 'pci/endpoint' even though
+> these are related to the PCI Endpoint subsystem. But I have delegated these 2
+> series to Krzysztof, so hopefully he'll apply it soon.
+
+Hello Mani, Krzysztof,
+
+These three series:
+https://patchwork.kernel.org/project/linux-pci/list/?series=836730&state=*
+https://patchwork.kernel.org/project/linux-pci/list/?series=838789&state=*
+
+Still haven't been merged.
+
+Considering that the PCI endpoint memory mapping series:
+https://patchwork.kernel.org/project/linux-pci/list/?series=839970
+conflicts with both of these series, I think that it would be nice if the
+two fully reviewed series above could get picked up.
+
+Right now, I think we still have time to get the PCI endpoint memory mapping
+series fully reviewed to live in linux-next for 2 weeks before the next merge
+window opens, but time is running out (because of delays for what appears to
+be no apparent reason).
+
+
+Kind regards,
+Niklas
+
+
+P.S.
+It would also be nice to see:
+https://patchwork.kernel.org/project/linux-pci/list/?series=838545&state=*
+getting picked up.
 
