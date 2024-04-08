@@ -1,124 +1,125 @@
-Return-Path: <linux-kernel+bounces-135560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C7D89C796
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B7589C797
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F4811F229F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:55:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FCAD1F22BB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517AC13F42D;
-	Mon,  8 Apr 2024 14:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA36513F456;
+	Mon,  8 Apr 2024 14:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="nok+zJAZ"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="UY1JEUri"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EE1126F07;
-	Mon,  8 Apr 2024 14:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E5213F442
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712588141; cv=none; b=BL1xTUx5OvG2s7puZaiPm5RK+unA5T+HrzpizYwQlC3aPHmmABYSyyRlh6zTQc0U1wJNSvnvZlHhD6m8ujrIsSvjm/5m2nw7DZZmu8swVefyXjXeI2FTHruMxG/8y7s5MHQ3RdbiDYFPylFcbszzmG8eNU0zd7n+b+5wY0EUUU0=
+	t=1712588145; cv=none; b=kQO8MzbWcgU4arDne/7DXfB0wvzC6vTVGrINWoH7y+r0+u33gDdarP0VfToaQaPYsPMcI/4jba4FkTLhk93beAf6BOwPMpQbr+axRKG64wIzvliSKMISxA9VdhzQWuF8t/Tx0tWs8ERjHG1cssJ5OlzPMExAMRoF6YXvFsvYrAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712588141; c=relaxed/simple;
-	bh=Ov2BcR6+Z6HnKIgx85TjUBUXWlTdUZPqGxh8lge3WGI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MfS2BYkyxcdHh7C6nNHP1+/JB7EUnj/MW1lqLSSMCfHQWuArs7IMFQUkQ4fuqCYvt02QYXg2FNYG5EXMHkg/WL53dEoJ0Joa8hHXcZCt1yHdbyhBjgwbGn6pQ7pQDQVK5HBGRPglykA0/w9YLRH8jlRIdIuMkSYFmqesAO+I5TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=nok+zJAZ; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=1PBTRz03aq88OrjremWvkNYUDAiOv89NpdJyRW1vn4c=; b=nok+zJAZaWJpfupGZrseZ3Tvqk
-	44R0VF4WDwybUX+9OHmLLkPeWjf9bSv/+o7QqaXHJ1qMYpeyKBSZY9LTrQlV1lr86ftHWcT29r65m
-	YQwwPiuybeZ0X7NCN4RrzfoNeQ0/A4330dbcx3gGV3EIynt+43Vz7AphalzRBTEtlHW0v97cEq8Gp
-	gT70fcGaXcg0/R3VENuMDAOMOIu5zFiVMsv2Ut2aCUgFJj3UelenHeQLFRiZ6asMtFJgssbQX/8Zd
-	XAM7neTYwWs4gLnfy38iu7Nnxg5UAI5dT8VC6gnIZqmbVeIDYiPpA7v0pC5LS1698kQ73wX2gWuQu
-	nJqas7XQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35728)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rtqP9-0005JN-1h;
-	Mon, 08 Apr 2024 15:55:27 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rtqP1-0004EI-I3; Mon, 08 Apr 2024 15:55:19 +0100
-Date: Mon, 8 Apr 2024 15:55:19 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Danielle Ratson <danieller@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, sdf@google.com,
-	kory.maincent@bootlin.com, maxime.chevallier@bootlin.com,
-	vladimir.oltean@nxp.com, przemyslaw.kitszel@intel.com,
-	ahmed.zaki@intel.com, richardcochran@gmail.com, shayagr@amazon.com,
-	paul.greenwalt@intel.com, jiri@resnulli.us,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
-Subject: Re: [PATCH net-next 07/10] ethtool: cmis_cdb: Add a layer for
- supporting CDB commands
-Message-ID: <ZhQFV7I3EwW7FV+H@shell.armlinux.org.uk>
-References: <20240408125340.2084269-1-danieller@nvidia.com>
- <20240408125340.2084269-8-danieller@nvidia.com>
+	s=arc-20240116; t=1712588145; c=relaxed/simple;
+	bh=8ixhDcDmRfYWm6cJvXx1rMiBFBKX7dAZIjKBVgAAibo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K2ZTzI3DLvRFvBBJx13MbG46j5Nplt/cGH8G6Do2fa389ZhFJFA1co56FnyUw5p+dd/4ZBgjQiv4WDpKvVNuPoWmsDraVf5+Sa9fWaYOZGvY74XBp8H7wSFZv5KHD5ccZDt62bZrmUnmcdOvje/Kv9IXvw066dFZxpChRTn67ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=UY1JEUri; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712588141;
+	bh=8ixhDcDmRfYWm6cJvXx1rMiBFBKX7dAZIjKBVgAAibo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UY1JEUrimRA0o/tOLLf1B9XqrzwKdBym7ujw+wQmPRF27rQSSvefyT1VXKWPiA4Vb
+	 nrNHd6GyFZVfIxDD713W83E6CS/IMLTTxTgOXzQXUCbj+zu3JwrFiv1IOOHUzqpJTh
+	 B4/ecK4Bh7FUYmBeMY+ioThPFU5B5DbJvcniTZgaXrleMg7LcofijyBqHDRuFygzAs
+	 oZT6hh0o905IDGt8qGASHfBx7aDBSc5EOKt+94K1PBa1Duqr3uA+YYfJeVog4yiVbo
+	 Br/E8/p/vQ2hoTzx6igY0MLO9TZ2eTGI5ZOhxOU/Tf2nyqkIM1RZwIClV6wEGytm3I
+	 Ova4zrD4Aoe3w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A247F3780C39;
+	Mon,  8 Apr 2024 14:55:40 +0000 (UTC)
+Message-ID: <23d98db0-a4a8-4453-95be-1a0982dd66a0@collabora.com>
+Date: Mon, 8 Apr 2024 16:55:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408125340.2084269-8-danieller@nvidia.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: select CONFIG_SOC_BUS
+To: Daniel Golle <daniel@makrotopia.org>, Arnd Bergmann <arnd@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ William-tw Lin <william-tw.lin@mediatek.com>, Arnd Bergmann <arnd@arndb.de>,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240408125506.1594257-1-arnd@kernel.org>
+ <ZhPqLGYxK3NRCSXl@makrotopia.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <ZhPqLGYxK3NRCSXl@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 08, 2024 at 03:53:37PM +0300, Danielle Ratson wrote:
-> +/**
-> + * struct ethtool_cmis_cdb_request - CDB commands request fields as decribed in
-> + *				the CMIS standard
-> + * @id: Command ID.
-> + * @epl_len: EPL memory length.
-> + * @lpl_len: LPL memory length.
-> + * @chk_code: Check code for the previous field and the payload.
-> + * @resv1: Added to match the CMIS standard request continuity.
-> + * @resv2: Added to match the CMIS standard request continuity.
-> + * @payload: Payload for the CDB commands.
-> + */
-> +struct ethtool_cmis_cdb_request {
-> +	__be16 id;
-> +	struct_group(body,
-> +		u16 epl_len;
+Il 08/04/24 14:59, Daniel Golle ha scritto:
+> Hi,
+> 
+> On Mon, Apr 08, 2024 at 02:55:00PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> This is needed to avoid a link failure:
+>>
+>> ERROR: modpost: "soc_device_register" [drivers/soc/mediatek/mtk-socinfo.ko] undefined!
+>> ERROR: modpost: "soc_device_unregister" [drivers/soc/mediatek/mtk-socinfo.ko] undefined!
+>>
+> 
+> I've tried to take care of this in the exact same way a long time
+> ago. Don't ask me why it didn't find it's way into stable yet
+> 
+> https://patchwork.kernel.org/project/linux-mediatek/patch/cc8f7f7da5bdccce514a320e0ae7468659cf7346.1707327680.git.daniel@makrotopia.org/
+> 
+> 
 
-u16 with a struct that also uses __be16 looks suspicious.
+Sorry, went out of my radar for reasons.
+Your commit should take precedence.
 
-> +		u8 lpl_len;
-> +		u8 chk_code;
-> +		u8 resv1;
-> +		u8 resv2;
-> +		u8 payload[ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH];
-> +	);
+Angelo
 
-Does it matter if the compiler inserts some padding before this struct
-group?
+> Cheers
+> 
+> 
+> Daniel
+> 
+>> Fixes: 423a54da3c7e ("soc: mediatek: mtk-socinfo: Add driver for getting chip information")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>   drivers/soc/mediatek/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+>> index 50c664b65f4d..1b7afb19ccd6 100644
+>> --- a/drivers/soc/mediatek/Kconfig
+>> +++ b/drivers/soc/mediatek/Kconfig
+>> @@ -72,6 +72,7 @@ config MTK_SOCINFO
+>>   	tristate "MediaTek SoC Information"
+>>   	default y
+>>   	depends on NVMEM_MTK_EFUSE
+>> +	select SOC_BUS
+>>   	help
+>>   	  The MediaTek SoC Information (mtk-socinfo) driver provides
+>>   	  information about the SoC to the userspace including the
+>> -- 
+>> 2.39.2
+>>
+>>
 
-> +/**
-> + * struct ethtool_cmis_cdb_rpl_hdr - CDB commands reply header arguments
-> + * @rpl_len: Reply length.
-> + * @rpl_chk_code: Reply check code.
-> + */
-> +struct ethtool_cmis_cdb_rpl_hdr {
-> +	u8 rpl_len;
-> +	u8 rpl_chk_code;
-
-Does it matter if the compiler adds some padding here?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
