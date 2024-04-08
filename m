@@ -1,113 +1,127 @@
-Return-Path: <linux-kernel+bounces-134839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED5AE89B7AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:35:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79AC989B7B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A897128191D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:35:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33379281E76
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED87D182DA;
-	Mon,  8 Apr 2024 06:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106C51802E;
+	Mon,  8 Apr 2024 06:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i+OSYLn4"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="BAFpQRgR"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B857E1D540
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A3010976;
+	Mon,  8 Apr 2024 06:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712558127; cv=none; b=bKNRxkm/3BbEi29iVfc6hsGkfMeBBlpVHCV0QHptpslcOwHmUJo4EekJRMNF/DID0rkJbr4PcyejcMub7ACCDiC2ydCMTubG7TaeM93m7Md34rTow9A01kJU/9MVBritopb9eH2Sevvr6QfsS1K3eyP7j9u1m5H26SDO6/F/QoU=
+	t=1712558222; cv=none; b=ISDYA7W6LgzusHi3PWG/qz4fkfoWvXiUAtW9plgj5+HkaeBl9KPgNq6XC/iuE4lpOf8p6FJQAkFzeYXpqHdF6wl5+gnkUyvykY9PjRh1XqPUyURq3cwlky1owtI6lhoSWgBEpDDilBkwv2451yW0dgoANJvVX8XacxdEmiGoA9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712558127; c=relaxed/simple;
-	bh=/a3dQF9z2JQVz9cciOeh+y8wRKyVwnn+yO0CdzhrgHQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WchaYv7HNSuPWE+EancYgPp5nDnrZYSEtFNa5RteXY71J8O1jK1AB6IEIOI2R1TDyRsL6X0ymp6uvRuCkJQcWgjJmGb+15vNz3T2LDTnAWBLWnFuY2RE6QkA0GhgBenER/9xNTrJBC939rDeyYoKer0Q3E1PpHqgq+/k8G8KWVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i+OSYLn4; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51d05c50b2so98476066b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712558124; x=1713162924; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgLtq4Q2TlcP1vQLZpHaRdv1skB8tG59UvbmyPM0V6M=;
-        b=i+OSYLn4mZmdJnMZ5pZA2PyU6zqUHRebwArdxncaSGr3tk/yMEH3aBP8uifGQ8XQFV
-         saVhD686lKd1hIihM2MGct1FfN9dlbLNhfZJkHR2YzNExRsDU0AX0ILAu8qbxMlG344I
-         jchjduM1GY60PIUym5L4xrYw583Fma07u8klFPnCXHhdwEl1sxHGHhtX0QhvwZ4+BGa1
-         wQhxonENWSQgAgpzXx0UcfQUon7H4Nv4vGag7stVF8zKdn00W9vyeaFrpls5rcVUvLBH
-         CWgthrttMXXlR021QC9P3kOw6DikzrduJVJctJPtKzERkMPruMTZY6nbTqsdf7ApOnyr
-         DM0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712558124; x=1713162924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FgLtq4Q2TlcP1vQLZpHaRdv1skB8tG59UvbmyPM0V6M=;
-        b=WGhmoYTTDCeEZcuE3bgsQTH93VKU6lzy9iKEkZAj/YgjXjQuEbx1Hf4FOhSNSjyRdT
-         C6mQQf4PbvBL8j6qv+eH5HnckCOseao06Uap63kNJA8SqiR2JFDDb+FF+xfgaz6nsLAE
-         AYc2pbPl6K0Z0R4b0BOlRM2njP4JeeFnECAHd/bh1hWfRtrWcvVG8l7YgQ/x5FGMfXVi
-         14heEQ5DwgbsG70HrL/0Ix6bj1+o0wBDJLEM/+jxJyNwirpyggkUuLaM3uqnqNfPj4gp
-         2iNyyaT07Ko1AVxQ6YvcvpVrBP8XK22XrBPMWwsKAcnR1pDa9JbyLtiVY01m8lwiDE2V
-         KuQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0F8Gi2fim1upIu9/18JGLaofZtm9ejw6/b3uD4h4ZDo2bcBCtHb/2P+rBC3wYFyxSpk5H4XMfd/bQc23tIW2gDRgyzj0JOb5dknr3
-X-Gm-Message-State: AOJu0YxAZnLme9K+l++q22s24aYplZvSnFYYWLzv42xy4QhIiGuPbMcs
-	hNgoVGqyATObMbrAS+kOfRTTTMZPFGb+ScmsBtgxfPG5XgXwqy0W5qUf2NEkklY=
-X-Google-Smtp-Source: AGHT+IF4EKTTmquAMoLVkOL3W63bmhNdWh38zIYl5ZaMdc7DqN4H52hPc5f4R3mNWxMKNOJbOZxeIw==
-X-Received: by 2002:a17:906:3752:b0:a4e:23a1:9ede with SMTP id e18-20020a170906375200b00a4e23a19edemr5078782ejc.36.1712558123980;
-        Sun, 07 Apr 2024 23:35:23 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id i21-20020a170906a29500b00a51a2711177sm4054925ejz.13.2024.04.07.23.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 23:35:23 -0700 (PDT)
-Date: Mon, 8 Apr 2024 09:35:18 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jackson Chui <jacksonchui.qwerty@gmail.com>
-Cc: Alex Elder <elder@ieee.org>, Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: Clear up precedence for gcam logging
- macros
-Message-ID: <e037e303-47b3-4758-914c-980ebe88d450@moroto.mountain>
-References: <20240404001627.94858-1-jacksonchui.qwerty@gmail.com>
- <658e1f40-d1eb-4ba7-9ba3-0aa05a1ed06e@ieee.org>
- <ZhBrff8qkkmum4wc@jc-ubuntu-dev-korn-1>
- <5eb3afe2-da7b-4f98-aac2-bff529a02cea@moroto.mountain>
- <5e1c5156-d906-4473-970b-bff71e4dcd96@ieee.org>
- <ZhHOKkqVIdsuZ-4Q@mba15m2.local>
+	s=arc-20240116; t=1712558222; c=relaxed/simple;
+	bh=tBs/YJ2fLDfrIVtxpGytKjKUVc/9/3IKnSLB8drjLUQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TbjtPECDNWAQtlhUVz5Enblm2kEs01Db9DcIGNSO0gK6rztgMA4VYSx3uoGTQGg0v0trL+IXREFV9E9RG7CWFM3I9RBmWFet5zap2wgL2XS+gmdJ1/HfsgDrNsbArPuv5XHHR+5zBUnwHk4XolpxJdqUBbVpl63uXl0EAgIHylk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=BAFpQRgR; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 437MmxNx020481;
+	Sun, 7 Apr 2024 23:36:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=j/ahPDX2/GgpboNxFpPN/xXlJANbz5Sc0e/KSoo81V4=; b=BAF
+	pQRgRG+tEooBaHX01dRwo2mFRCFsbGKRxx9TibWa+hgVHw/1NYV+f/oHKWy2kWhw
+	IGASlCahmeMdP6IYHfwDr3rqR1nifgjxhWMVBcwI+bxPZqd21y/G64YApFwyGnpo
+	oklZHOGEKxF3VgRDqIMnIRG+n49ZeoWtYOdovYTHS1K5NC9TGNNXcnYMPhgD1PHA
+	q5zoipkjgV+OByhGUYiCq17bKgwMpoeGZz7rYZyZIF6EBsxUybGny6bAeqdLgDcN
+	dTsrVmRB+UFsx9s1hSQCD/FJ4f7gin6Tcq3Xqj3/fvmbCsc6uAa128K4txM184zo
+	E2nV2MwhhtAkvSeaTvQ==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xbdd4b15d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 07 Apr 2024 23:36:48 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Sun, 7 Apr 2024 23:36:47 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Sun, 7 Apr 2024 23:36:47 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id 4397C3F70AE;
+	Sun,  7 Apr 2024 23:36:44 -0700 (PDT)
+From: Geetha sowjanya <gakula@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net PATCH] octeontx2-af: Fix NIX SQ mode and BP config
+Date: Mon, 8 Apr 2024 12:06:43 +0530
+Message-ID: <20240408063643.26288-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhHOKkqVIdsuZ-4Q@mba15m2.local>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 8kyiDbbuHG5iSCnc8S6gEGh5qqReZe-U
+X-Proofpoint-GUID: 8kyiDbbuHG5iSCnc8S6gEGh5qqReZe-U
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_05,2024-04-05_02,2023-05-22_02
 
-On Sat, Apr 06, 2024 at 06:35:22PM -0400, Jackson Chui wrote:
-> > 					-Alex
-> 
-> Dan, Alex I think both of you are spot on.
-> 
-> I like the suggestion of adding 'gcam_dev()' as an accessor
-> function and directly calling to 'dev_*'. I'm busy this weekend
-> but will send out a new patch with this change next week.
+NIX SQ mode and link backpressure configuration is required for
+all platforms. But in current driver this code is wrongly placed
+under specific platform check. This patch fixes the issue by 
+moving the code out of platform check.
 
-Nah, don't bother with adding the gcam_dev() function.  Like Alex says,
-it's only 4 characters shorter.  Just get rid of the macros and do:
+Fixes: 5d9b976d4480 ("octeontx2-af: Support fixed transmit scheduler topology")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 20 +++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-                dev_err(&gcam->bundle->dev,
-                        "Unsupported unsolicited event: %u\n", op->type);
-
-regards,
-dan carpenter
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index d39001cdc707..00af8888e329 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -4819,18 +4819,18 @@ static int rvu_nix_block_init(struct rvu *rvu, struct nix_hw *nix_hw)
+ 		 */
+ 		rvu_write64(rvu, blkaddr, NIX_AF_CFG,
+ 			    rvu_read64(rvu, blkaddr, NIX_AF_CFG) | 0x40ULL);
++	}
+ 
+-		/* Set chan/link to backpressure TL3 instead of TL2 */
+-		rvu_write64(rvu, blkaddr, NIX_AF_PSE_CHANNEL_LEVEL, 0x01);
++	/* Set chan/link to backpressure TL3 instead of TL2 */
++	rvu_write64(rvu, blkaddr, NIX_AF_PSE_CHANNEL_LEVEL, 0x01);
+ 
+-		/* Disable SQ manager's sticky mode operation (set TM6 = 0)
+-		 * This sticky mode is known to cause SQ stalls when multiple
+-		 * SQs are mapped to same SMQ and transmitting pkts at a time.
+-		 */
+-		cfg = rvu_read64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS);
+-		cfg &= ~BIT_ULL(15);
+-		rvu_write64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS, cfg);
+-	}
++	/* Disable SQ manager's sticky mode operation (set TM6 = 0)
++	 * This sticky mode is known to cause SQ stalls when multiple
++	 * SQs are mapped to same SMQ and transmitting pkts at a time.
++	 */
++	cfg = rvu_read64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS);
++	cfg &= ~BIT_ULL(15);
++	rvu_write64(rvu, blkaddr, NIX_AF_SQM_DBG_CTL_STATUS, cfg);
+ 
+ 	ltdefs = rvu->kpu.lt_def;
+ 	/* Calibrate X2P bus to check if CGX/LBK links are fine */
+-- 
+2.25.1
 
 
