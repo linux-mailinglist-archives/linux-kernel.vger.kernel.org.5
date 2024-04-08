@@ -1,166 +1,141 @@
-Return-Path: <linux-kernel+bounces-134983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B26A89B995
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:00:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A34C89B996
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:00:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40B572825FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:00:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFF71F2151E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF442C695;
-	Mon,  8 Apr 2024 07:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E3F38F99;
+	Mon,  8 Apr 2024 08:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EXHENISy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5NG6esFs";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EXHENISy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5NG6esFs"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uZk1fjbt"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983CF3BB55;
-	Mon,  8 Apr 2024 07:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACDC383A0
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712563198; cv=none; b=f2bMzZsmdJhnNLPRBqvSFK67/tv13e2v1QkAEkVd7WWJewbqS7cNy08bWmqEJX3bME07JVO7EPxAETmzCdWuBkDayspD2GclJJsfpWHRVD/ATuOp7Y4doWNDuEjHbyCzFqcCFo7q79egzVd7JKyx75BrDx4wtdC7wEuAug+iHyE=
+	t=1712563223; cv=none; b=O+6G1CYGLt1UNUsyDooA7zZG1F3o4y62NUstWOn7NQgrw//TMGu5iTVmZaTnQhtuJl+LwTPJCK06K6JibXGPbIHSTVs2Qz9HMwkgAyksxo4YaGTPtPZ1YAF8JyDYZib1aaU25SNHh83MDu6Qxg/bkhcGgNMG4MJ7l0IkW0Jopj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712563198; c=relaxed/simple;
-	bh=i9GmgAXRUBO3xKQwlP/KAP2zpPAiSC47cX5gf5BqJfg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XdkPEWb/Buuy017lyg90keqK5zvmAM3WYYs1TA0cp9++HiVDhiYMNYXfriy2x05kFMH6HIk0dJeNZO5QSXgwcu3EB6jzJn7EHS7caDV31MLkfAigm2cIRVdWZPn1070EhR9K9pxS8aKuoY5RRGdzetEkCaLkbVB+BhSFhswUlBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EXHENISy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5NG6esFs; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EXHENISy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5NG6esFs; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BA46D22157;
-	Mon,  8 Apr 2024 07:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712563193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UeMiwe/89XLtlU9A7wTUtu+OV5lp0v9WZ0aprkeXVh8=;
-	b=EXHENISyHk0j7TJEZacEu01aHSPwcJd3jqtyt9OVBA8LUkMMraeOemEjRMfbR1SGdLzphX
-	EGYGGwyZUZz+DqZCPZVqDiZufrwGnlS6cRr/DoW6s2QBj6kVVPUXkvZv1Dy2lgz3FNI6Ih
-	uqWVCJmSD5BwvOoJZhmKzfHFolcjvo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712563193;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UeMiwe/89XLtlU9A7wTUtu+OV5lp0v9WZ0aprkeXVh8=;
-	b=5NG6esFs0xZT2IRnNAMtIKcI4HbY8Bou2EWslwPlsGvKBT4fAw4zrPS8jUSex3KlOEqjB2
-	7f8dq5mT4uAVF+DQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EXHENISy;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5NG6esFs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712563193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UeMiwe/89XLtlU9A7wTUtu+OV5lp0v9WZ0aprkeXVh8=;
-	b=EXHENISyHk0j7TJEZacEu01aHSPwcJd3jqtyt9OVBA8LUkMMraeOemEjRMfbR1SGdLzphX
-	EGYGGwyZUZz+DqZCPZVqDiZufrwGnlS6cRr/DoW6s2QBj6kVVPUXkvZv1Dy2lgz3FNI6Ih
-	uqWVCJmSD5BwvOoJZhmKzfHFolcjvo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712563193;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UeMiwe/89XLtlU9A7wTUtu+OV5lp0v9WZ0aprkeXVh8=;
-	b=5NG6esFs0xZT2IRnNAMtIKcI4HbY8Bou2EWslwPlsGvKBT4fAw4zrPS8jUSex3KlOEqjB2
-	7f8dq5mT4uAVF+DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 22A4E137D4;
-	Mon,  8 Apr 2024 07:59:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fcxmAfijE2ZNXwAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Mon, 08 Apr 2024 07:59:52 +0000
-Date: Mon, 8 Apr 2024 09:59:43 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Arnd Bergmann" <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
- "Masahiro Yamada" <masahiroy@kernel.org>, "Nathan Chancellor"
- <nathan@kernel.org>, "Greg Kroah-Hartman" <gregkh@suse.de>, "Nicolas
- Schier" <nicolas@fjasle.eu>, "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt"
- <justinstitt@google.com>, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH 05/12] firmware: dmi-id: add a release callback function
-Message-ID: <20240408095943.48e6c0cc@endymion.delvare>
-In-Reply-To: <63909b0a-7d76-418d-a54c-1061bd3b6e11@app.fastmail.com>
-References: <20240326144741.3094687-1-arnd@kernel.org>
-	<20240326145140.3257163-4-arnd@kernel.org>
-	<20240329134917.579c3557@endymion.delvare>
-	<63909b0a-7d76-418d-a54c-1061bd3b6e11@app.fastmail.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1712563223; c=relaxed/simple;
+	bh=pHxB3riv3KUMXEfOU50W6lVzqahm4AeiTdlYhjEfnVI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XPpZoO6ML0NtivH+zenlcbnpiwTW6Xqo5rahlZoWmCC9lLcpdMq8mGDxpHBKvutfyB3Z0VFpD2/DIS6gMq7UAj9heS4pQnLtxbubleNnvYZEwtSNgCtjy6QPcuS7PtbI0DAsHyNgW6QqB27B25Uj+TO0b54xaOQ4NuzssVP4FT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uZk1fjbt; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7e6756ec17bso473449241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712563220; x=1713168020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FOsPTWHaEE82X2na8AskRgQpO9sFazpZ1ejud61f9w=;
+        b=uZk1fjbtJQz4yf+VT6/fWjtC4tjnMtZeyXsPFIyYoDfrSBvWiyfOQL8mIutsH/AhmK
+         mNzDMYuP/2bg7Mq45qopVHW9j0SuPI4GPJMCMAiwmNh+0JWDRmk3T2cmlxeRNLHN3E9R
+         Kp3TfJGmTvcHXYbQ1HNGRDnkgJLO4sNI4kUvFHMIa61dTsuAfhe+0i31bdZFVlATgkd/
+         sFeykH9WBK42bDg6qNgl0mPaVWekjurSW03nufrCBMeRWqR67drYLMxZOyZrfMYBZLzx
+         /Qcg8DlUDSz47J4tzpWFhvjw9AB0Z578XnFhY6fzCai81SmWUs+x/1LgB9DiA0PNfmOH
+         AuvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712563220; x=1713168020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6FOsPTWHaEE82X2na8AskRgQpO9sFazpZ1ejud61f9w=;
+        b=iwBufUA1AwH1FNkQia/As50AZEaA/ijlXev5AXeU23OlK6zFNdLZBXqp00eb0SxXzM
+         6948NX9SJBSKR3kDk+3DhDYZqlwGOF63E0xXXUBh6Lu17bC6i50jPz32OAKrcoC0YmNL
+         ghP4aHRFd07VcVei7x0NGp9mGvDsFcx7KR3g6udG2alKJMqQGECK5zs5syY0FZNIUJDj
+         zC/6DqhsMbqJXiE8PV8bUwyEy7LPF+JsdS9KwhV+q6fssZxNA/B/mkLzNAWyxfwe4N+o
+         rVmvThEPto24lls+a4obPRkZtWppJhF/v9Kziotx4HD93jTcGYhVEmhjas+bYFAs/KHc
+         xesw==
+X-Forwarded-Encrypted: i=1; AJvYcCVEHzmKTlFlrzEYMhcIHFkKJeduikMGsNfMewnkQIbO7laDgxGVlY2e9gofQ4DASZ4t4yY/N94iz2/om48kyM4OzNjfmpYcI3xtHueD
+X-Gm-Message-State: AOJu0YzUd8zj8rYYqs5tT4gboieK57TAb55uEPIqs2ydHbNjAv/7sDCv
+	ezq5scLgMlm+BZqRAXC1jrcfJd2H0fzvpRaO45QdbNEI9xtYD8p4peHoReHm0pg7NaRBrdn+dj5
+	lnBoj6pOvfvuQpGOrVWHfUNN44qF8JEQNQoL/
+X-Google-Smtp-Source: AGHT+IF9f5jmOEJWTkd9kdJrUZmHW+LueigVkR1pev1XTzP7AugYDbMFKGqlkAiec8GAn8o+OvC6BVcvOD7CUKwA3Og=
+X-Received: by 2002:a05:6102:c54:b0:47a:72f:981a with SMTP id
+ y20-20020a0561020c5400b0047a072f981amr1007451vss.26.1712563220314; Mon, 08
+ Apr 2024 01:00:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.60 / 50.00];
-	BAYES_HAM(-2.09)[95.57%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: BA46D22157
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.60
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
+ <20240402-linked-list-v1-6-b1c59ba7ae3b@google.com> <98449574-4c1b-4281-bbd3-3ac2767020cb@proton.me>
+ <CAH5fLggS3qtCy20Y=kuxULUY9Q_4dSzJN5n2WitU362cYuqPLA@mail.gmail.com> <4045af19-05a4-48f0-9ca1-0d8d4d2b865c@proton.me>
+In-Reply-To: <4045af19-05a4-48f0-9ca1-0d8d4d2b865c@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 8 Apr 2024 10:00:09 +0200
+Message-ID: <CAH5fLgiYfU91QqCs+9L=9y76PKAYiDVva3WNoQE=Ja1ASzua7A@mail.gmail.com>
+Subject: Re: [PATCH 6/9] rust: list: add iterators
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
+	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
+	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd,
+On Thu, Apr 4, 2024 at 4:52=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>
+> On 04.04.24 16:41, Alice Ryhl wrote:
+> > On Thu, Apr 4, 2024 at 4:36=E2=80=AFPM Benno Lossin <benno.lossin@proto=
+n.me> wrote:
+> >>
+> >> On 02.04.24 14:17, Alice Ryhl wrote:
+> >>> +/// the end of the list. The `stop` pointer points at the first valu=
+e in the same list, or it is
+> >>> +/// null if the list is empty.
+> >>> +#[derive(Clone)]
+> >>> +pub struct Iter<'a, T: ?Sized + ListItem<ID>, const ID: u64 =3D 0> {
+> >>> +    current: *mut ListLinksFields,
+> >>> +    stop: *mut ListLinksFields,
+> >>> +    _ty: PhantomData<&'a ListArc<T, ID>>,
+> >>> +}
+> >>> +
+> >>> +impl<'a, T: ?Sized + ListItem<ID>, const ID: u64> Iterator for Iter<=
+'a, T, ID> {
+> >>> +    type Item =3D ArcBorrow<'a, T>;
+> >>> +
+> >>> +    fn next(&mut self) -> Option<ArcBorrow<'a, T>> {
+> >>> +        if self.current.is_null() {
+> >>> +            return None;
+> >>> +        }
+> >>> +
+> >>> +        let current =3D self.current;
+> >>> +
+> >>> +        // SAFETY: We just checked that `current` is not null, so it=
+ is in a list, and hence not
+> >>> +        // dangling. There's no race because the iterator holds an i=
+mmutable borrow to the list.
+> >>
+> >> This (that the iterator holds an immutable borrow) is not true (there
+> >> is no `&List` field in `Iter`), but you can make that an invariant
+> >> instead.
+> >
+> > What I mean is that the borrow-checker will consider the `List` to be
+> > borrowed by `Iter`. Whether or not there is a real reference or not
+> > doesn't matter.
+>
+> Yes, but that is implementation detail of the safe function
+> `List::iter`, so I think it must also be captured by an invariant.
 
-On Thu, 04 Apr 2024 16:07:55 +0200, Arnd Bergmann wrote:
-> On Fri, Mar 29, 2024, at 13:49, Jean Delvare wrote:
-> > Will you get this upstream, or do you expect me to take it in my
-> > dmi/for-next branch?  
-> 
-> It would help me if you can apply it to your tree directly.
-
-OK, it's in my dmi-for-next branch now:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git/log/?h=dmi-for-next
-
-Thanks,
--- 
-Jean Delvare
-SUSE L3 Support
+I will add an invariant.
 
