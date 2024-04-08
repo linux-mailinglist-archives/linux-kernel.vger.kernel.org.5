@@ -1,114 +1,111 @@
-Return-Path: <linux-kernel+bounces-135382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7509389C04F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:07:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A3689BFCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6183B29EA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:02:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D256284EAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D227BAFD;
-	Mon,  8 Apr 2024 13:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0167E572;
+	Mon,  8 Apr 2024 13:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJGhC5xC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="wNVB4yAr"
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACC37D3F1;
-	Mon,  8 Apr 2024 13:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B487172F;
+	Mon,  8 Apr 2024 13:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712581228; cv=none; b=DEJgRnnyrF0xqgg4ewjVgJ6ODRr8p/C6DOGiw8NVlExhWC6p3MJq62jdGm8Qg+PTfaoi99KUKsoCE+c/1Za/e60fZlLCSCqtX0jxJAXtQgHAdPN4GMqhn7Eu/YyPDI/wPwf0LLSX/73NKwWCUpCS7HXDg3a3JdKl/HYQO0jtnFk=
+	t=1712581238; cv=none; b=fOUO8BzCb2bR5hBQNsAhuHc/vdVIsqCejozfJuBQk144g2DU8dpS5ksw31YLv3QW0/Mjz+TrrLiumppESbd8Zef44SsxOZfiUyLxw/tUuODF2o5qf2v1qLTjpRqiiU/ddG/cYuh/QOmnIkJPFhN0vEOll5chq+3xmgbPi7Hdxqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712581228; c=relaxed/simple;
-	bh=Wpv5AKvn48JjIJwCSXxs+rgMlho3WmegP95pAqv7OOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LH79FaTQRS3OKKJf/XwPWW3C2ONbCFKrEP5pJq/DI7wSr6cqv9Z5fYDQI7EnG0RuWo03mkFPgl+f8/KlyZe2JBYazQh1xaYuDYPa4VqOJAD/SkQjgB0w++wrvoemNm8eKv3NnXEKVPSEvNo7GZcOkRQ+Lf1NZx6nMZZawjnv/yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJGhC5xC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06CE8C433B2;
-	Mon,  8 Apr 2024 13:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712581228;
-	bh=Wpv5AKvn48JjIJwCSXxs+rgMlho3WmegP95pAqv7OOw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DJGhC5xCjCwXgcZJ0g3vBg/r0ulgVUGmdvMC9pjzwD3AVdMeE3DvbCP733rQgj1JS
-	 0UqtFfkIs7CXis50ct2Lygz+Z6/oZCt6wg/G8ba6MGOQEW+MDEeZrzc1HGXOlSBWXH
-	 fW5a/cLxIX5O1sJ8nw78nJnH7f5xV7brTvxA5JAnjiZCIbOImEHX2PtSS5ylH3oaVk
-	 +xXCmvRgJPJ/zSLD/qD10aeXwY+5s+GwZXsaT3OtoRkl8I9FDQTA1CTFuNPTXCPqpU
-	 rGo8nlPQ3KjS0KwbFgr+7ap6HMbBhqpISs7MRHPXsi2W1JpWhncN2E/YtQS2rdIBwA
-	 KgZZSUCN4U5/g==
-Date: Mon, 8 Apr 2024 16:00:24 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH rdma-next v4 0/4] Define and use mana
- queues for CQs and WQs
-Message-ID: <20240408130024.GG8764@unreal>
-References: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240408112533.GF8764@unreal>
- <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+	s=arc-20240116; t=1712581238; c=relaxed/simple;
+	bh=FkXLzyxqjZzUX3ydZJqpehjHFFdMSDLx+4h5DWHTIiY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RQcOdFqJH2qcxACnm662f4KxwE+ZttMtBUUrTFTHSr+OIFiptpWG/YoVHvjJ2/RshG/RyFRAb8sLzq0AoAl0nKFBLnEYKoG7yCS+a9YWwtd8A9346uN2KarfZwgz52H0Xfg55mHA0wbv655JWgybAXdonvp5hf7YDItKUcaFvpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=wNVB4yAr; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1712581229; bh=FkXLzyxqjZzUX3ydZJqpehjHFFdMSDLx+4h5DWHTIiY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=wNVB4yArKpa2PUdlKiLdUKq+m0PD/rqSv51mIeW6FY3daUZxgK8MjoX3api0EigvJ
+	 d5z8okWEZnkeGojomYZA7aj65SsZa2dOSApaNxn8tFnlvRvlc/7hgZwq5qAZFZp7pL
+	 1iaq0RtpGeDFMHpwyKAhdlW4p+XbPu3Kc3DuG0drdQvu4h3ol/L5ja8gwcd0Hitm1K
+	 T2NtVewABkVOGdCDoZbjpCZVKXITP4DD8t2PTpdUAby5d4tjjTeE6dNCaRZQfI7Ick
+	 FgMlzoZJSH9a24rzBvXxDStS9jsl0JRPl77FgvewUknuJ5doB+aFCH1YU8LucGi4yv
+	 LXUTQZ5bAez+A==
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, jserv@ccns.ncku.edu.tw, cake@lists.bufferbloat.net,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sched: cake: Optimize number of calls to
+ cake_heapify()
+In-Reply-To: <ZhPRfYt0BLh9UELN@visitorckw-System-Product-Name>
+References: <20240406235532.613696-1-visitorckw@gmail.com>
+ <87frvxgnmr.fsf@toke.dk> <ZhPRfYt0BLh9UELN@visitorckw-System-Product-Name>
+Date: Mon, 08 Apr 2024 15:00:29 +0200
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87cyr0ggb6.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 12:50:12PM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > On Mon, Apr 08, 2024 at 02:14:02AM -0700, Konstantin Taranov wrote:
-> > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > >
-> > > This patch series aims to reduce code duplication by introducing a
-> > > notion of mana ib queues and corresponding helpers to create and
-> > > destroy them.
-> > >
-> > > v3->v4:
-> > > * Removed debug prints in patches, as asked by Leon
-> > >
-> > > v2->v3:
-> > > * [in 4/4] Do not define an additional struct for a raw qp
-> > >
-> > > v1->v2:
-> > > * [in 1/4] Added a comment about the ignored return value
-> > > * [in 2/4] Replaced RDMA:mana_ib to RDMA/mana_ib in the subject
-> > > * [in 4/4] Renamed mana_ib_raw_qp to mana_ib_raw_sq
-> > >
-> > > Konstantin Taranov (4):
-> > >   RDMA/mana_ib: Introduce helpers to create and destroy mana queues
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for CQs
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for WQs
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-> > >
-> > >  drivers/infiniband/hw/mana/cq.c      | 52 +++-------------
-> > >  drivers/infiniband/hw/mana/main.c    | 39 ++++++++++++
-> > >  drivers/infiniband/hw/mana/mana_ib.h | 26 ++++----
-> > >  drivers/infiniband/hw/mana/qp.c      | 93 +++++++++-------------------
-> > >  drivers/infiniband/hw/mana/wq.c      | 33 ++--------
-> > >  5 files changed, 96 insertions(+), 147 deletions(-)
-> > 
-> > It doesn't apply.
-> > 
-> 
-> I guess there was some mis-synchronisation between us.
-> I see that you have already applied the patch 6 days ago:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/
-> 
-> I am sorry for sending a newer version after the patch has been applied.
-> I have not checked this before sending.
-> I can take care of useless debug prints in a future cleanup patch.
+Kuan-Wei Chiu <visitorckw@gmail.com> writes:
 
-Please rebase your series, and resend.
+> On Sun, Apr 07, 2024 at 06:10:04PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Kuan-Wei Chiu <visitorckw@gmail.com> writes:
+>>=20
+>> > Improve the max-heap construction process by reducing unnecessary
+>> > heapify operations. Specifically, adjust the starting condition from
+>> > n / 2 to n / 2 - 1 in the loop that iterates over all non-leaf
+>> > elements.
+>>=20
+>> Please add an explanation for why this change is correct, and why it is
+>> beneficial. "Improve" and "unnecessary" is way too implicit.
+>>=20
+>> pw-bot: cr
+>
+> For correctness:
+> To build a heap, we need to perform heapify operations on all non-leaf
+> nodes, so we need to find the index of the first non-leaf node. In a
+> heap, the index of node i, the left child's index is 2 * i + 1, and the
+> right child's index is 2 * i + 2. The left and right children of node
+> CAKE_MAX_TINS * CAKE_QUEUES / 2 are at indexes CAKE_MAX_TINS *
+> CAKE_QUEUES + 1 and CAKE_MAX_TINS * CAKE_QUEUES + 2, respectively. Both
+> children's indexes are beyond the range of the heap, indicating that
+> CAKE_MAX_TINS * CAKE_QUEUES / 2 is a leaf node. The left child of node
+> CAKE_MAX_TINS * CAKE_QUEUES / 2 - 1 is at index CAKE_MAX_TINS *
+> CAKE_QUEUES - 1, and the right child is at index CAKE_MAX_TINS *
+> CAKE_QUEUES. Therefore, we know the left child exists, but the right
+> child does not. Since it's not a leaf node, the loop should start from
+> it.
+>
+> For benefit:
+> We can reduce 2 function calls (one for cake_heapify() and another for
+> cake_heap_get_backlog()) and decrease 5 branch condition evaluations
+> (one for iterating through all non-leaf nodes, one inside the while
+> loop of cake_heapify(), and three more inside the while loop with if
+> conditions). The only added operation is an extra subtraction.
+>
+> If you're satisfied with the explanation above, I can attempt to
+> rewrite the commit message and send the v2 patch.
 
-Thanks
+Yes, sounds reasonable. Did you measure any real-world performance
+benefit, or is this purely a theoretical optimisation? Either way,
+please indicate this in the updated patch description.
+
+-Toke
 
