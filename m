@@ -1,119 +1,128 @@
-Return-Path: <linux-kernel+bounces-135853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7FC89CC0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:57:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D3EB89CC12
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:58:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C272284E0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:57:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1894B2AD91
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA4C149C49;
-	Mon,  8 Apr 2024 18:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8EE145354;
+	Mon,  8 Apr 2024 18:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EzBTMfx3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kG//dSCO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E01148835;
-	Mon,  8 Apr 2024 18:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF44144D3F;
+	Mon,  8 Apr 2024 18:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712602527; cv=none; b=pkoKst4hQyQkZRr2Gd/hxZbfy4wBVad9SOmcoPkj6f29vTQxURK2stFE9i9X0Kf9ri22blyIa2hryyTosz0A26xSdrWdfLa2sBDJZpfnD/VQ9NzmJHa6LaCxO/cXGqBZR3bxOhixnklTAjONztT80Apxc1aDL2pqk/WiGp32oxI=
+	t=1712602576; cv=none; b=MewELXMLK6bNRaogTCX2XXG4tOPNU8uIjEekgko7aAXPTmq/0eTc/lnZUieE1plDkLkn1sTfjx1ysXDnQTIZE54DBUL+p4l4Hd1aiE0FQSyZK/eHd88aOHxYSxQDqnIuMscZ3qNBN8C5Ll7vNcoiwMtK9z9eIOhxX3SetdGeFpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712602527; c=relaxed/simple;
-	bh=BvHgZcFAUDVTBrBRbiRaDYjdO4l4T3ZRwoMXPA6BMQk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aWltg7frMU05UPwsMDnsuWrK3KWZbq7EOjndEcT1qy1scnItFLGd0H1vz0eJ8yJE6bDyggXX9R9XW6SMtvA3Y5L1gBZzEgtOs8g75GpSsHvvgHZbNmR/5T0dKH/HhU3F20wQwHLDG/DhB1xdhJjjUSK+rQ/Y0uC95ydpMsqgrnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EzBTMfx3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB06EC433C7;
-	Mon,  8 Apr 2024 18:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712602527;
-	bh=BvHgZcFAUDVTBrBRbiRaDYjdO4l4T3ZRwoMXPA6BMQk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EzBTMfx3rwiLU0W2aX9wWUyhTBaWz8dCWK1EzV/EnvzsHz3Nd2thn6M96J7zpmzmC
-	 fnxpCzSKtT4aojVmgTDApEZjvrIU23q8AS36rpJAYggyoz5tC+Js+e1Xreb5B4hHGC
-	 sjUJLk/LsYzTkkN4dNda7Ka3n/CwWbcvoO5OIT/Ve/4TNOsGuo0m/uqqM/T8pCblsV
-	 8P4pWQNgQre8cdPR9gbFt4lyu0edvSWJUqyY11t6SDAHJBRsyV7J4ygqNM6YDZbT7V
-	 a/k1oTb6ZZe8gp0ewJk15NBYvMqwC+MDm5+skXK19QtQMPDCWKNbciVQJ/k6af9I90
-	 a8oP1UOACEB1A==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 9/9] tools/include: Sync arm64 asm/cputype.h with the kernel sources
-Date: Mon,  8 Apr 2024 11:55:20 -0700
-Message-ID: <20240408185520.1550865-10-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240408185520.1550865-1-namhyung@kernel.org>
-References: <20240408185520.1550865-1-namhyung@kernel.org>
+	s=arc-20240116; t=1712602576; c=relaxed/simple;
+	bh=GT8DmlYW4wP87a6DyCfEapNSv2ZZRQv8FnHKuwMlPMk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=itzTZ3HLtG8rIYlylsrePBXn3EJRH4xEToQEWAWmTFPcW7FNq93IcarX8Dka4EgO23jcDthc7uoU8y+Oix25ZR1rCmyrJku1YOlXs0kIro3mSaAaLuI6lMZqLLFZGkUqPLcpYxplzk0gZljyXjqzRYvTuwTCbCJwKbQ7aI+/DZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kG//dSCO; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712602574; x=1744138574;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GT8DmlYW4wP87a6DyCfEapNSv2ZZRQv8FnHKuwMlPMk=;
+  b=kG//dSCOlaC0bbY7USlueejZDVlPJ/d5rASSkTTu6UEpiBo9548pQ14l
+   ai/ojCFJgtsp72BIq0H/wr8KNy5XoHSMFzATlFCHhDWQs+D+mtH8RGmi1
+   JJnam49mkl7/vBYOk2fT07uk1DmQkH+8RN6PNQrGKGY5weBKXEkPgBFT/
+   t1BxeZ4LqmmI/vWP1178RkEPJ8sF4WBKNLQidRIMkeUAJ4xxlkL4B5DeK
+   yRkIMl1avvWYDkMwgunCg8U+iHFiNbVLacq+aeRjuVyGwRD4ThbHl3UMf
+   63to/DWvO7VZGJM/mWAX32O/5r7fFVinZnJtVkyz5vO/LQ3X5tyDOvwQy
+   g==;
+X-CSE-ConnectionGUID: qmUW/ol0R8Svv5fxMj8mWg==
+X-CSE-MsgGUID: aiGmqWLSTsmLd/t0xnb2kA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="25342975"
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="25342975"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 11:56:14 -0700
+X-CSE-ConnectionGUID: 4s75vRUOSFy5s5xzZjEywQ==
+X-CSE-MsgGUID: iKPoeOtZTQ+Ussm+qhsdgw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,187,1708416000"; 
+   d="scan'208";a="19928342"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 11:56:13 -0700
+Date: Mon, 8 Apr 2024 11:56:13 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 108/130] KVM: TDX: Handle TDX PV HLT hypercall
+Message-ID: <20240408185613.GX2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <c083430632ba9e80abd09bccd5609fb3cd9d9c63.1708933498.git.isaku.yamahata@intel.com>
+ <ZgzMH3944ZaBx8B3@chao-email>
+ <Zg1seIaTmM94IyR8@google.com>
+ <20240404232537.GV2444378@ls.amr.corp.intel.com>
+ <ZhIX7K0WK+gYtcan@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZhIX7K0WK+gYtcan@chao-email>
 
-To pick up the changes from:
+On Sun, Apr 07, 2024 at 11:50:04AM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-  fb091ff39479 ("arm64: Subscribe Microsoft Azure Cobalt 100 to ARM Neoverse N2 errata")
+> >> > >+	union tdx_vcpu_state_details details;
+> >> > >+	struct vcpu_tdx *tdx = to_tdx(vcpu);
+> >> > >+
+> >> > >+	if (ret || vcpu->arch.mp_state != KVM_MP_STATE_HALTED)
+> >> > >+		return true;
+> >> > 
+> >> > Question: why mp_state matters here?
+> >> > >+
+> >> > >+	if (tdx->interrupt_disabled_hlt)
+> >> > >+		return false;
+> >> > 
+> >> > Shouldn't we move this into vt_interrupt_allowed()? VMX calls the function to
+> >> > check if interrupt is disabled.
+> >
+> >Chao, are you suggesting to implement tdx_interrupt_allowed() as
+> >"EXIT_REASON_HLT && a0" instead of "return true"?
+> >I don't think it makes sense because it's rare case and we can't avoid spurious
+> >wakeup for TDX case.
+> 
+> Yes. KVM differeniates "interrupt allowed" from "has interrupt", e.g.,
+> 
+> static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
+> ...
+> 
+> 	if (kvm_arch_interrupt_allowed(vcpu) &&
+> 	    (kvm_cpu_has_interrupt(vcpu) ||
+> 	    kvm_guest_apic_has_interrupt(vcpu)))
+> 		return true;
+> 
+> 
+> I think tdx_protected_apic_has_interrupt() mixes them together, which isn't
+> good.
 
-This should address these tools/perf build warnings:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/arch/arm64/include/asm/cputype.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/arch/arm64/include/asm/cputype.h b/tools/arch/arm64/include/asm/cputype.h
-index 7c7493cb571f..52f076afeb96 100644
---- a/tools/arch/arm64/include/asm/cputype.h
-+++ b/tools/arch/arm64/include/asm/cputype.h
-@@ -61,6 +61,7 @@
- #define ARM_CPU_IMP_HISI		0x48
- #define ARM_CPU_IMP_APPLE		0x61
- #define ARM_CPU_IMP_AMPERE		0xC0
-+#define ARM_CPU_IMP_MICROSOFT		0x6D
- 
- #define ARM_CPU_PART_AEM_V8		0xD0F
- #define ARM_CPU_PART_FOUNDATION		0xD00
-@@ -135,6 +136,8 @@
- 
- #define AMPERE_CPU_PART_AMPERE1		0xAC3
- 
-+#define MICROSOFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
-+
- #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
- #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
- #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
-@@ -193,6 +196,7 @@
- #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
- #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
- #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
-+#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MICROSOFT_CPU_PART_AZURE_COBALT_100)
- 
- /* Fujitsu Erratum 010001 affects A64FX 1.0 and 1.1, (v0r0 and v1r0) */
- #define MIDR_FUJITSU_ERRATUM_010001		MIDR_FUJITSU_A64FX
+Your point is code clarity.  Ok, we can code in that way. I don't expect any
+performance difference.
 -- 
-2.44.0.478.gd926399ef9-goog
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
