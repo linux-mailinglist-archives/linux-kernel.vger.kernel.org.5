@@ -1,197 +1,100 @@
-Return-Path: <linux-kernel+bounces-135040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D18789BA4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:31:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E610F89BA47
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69731F22B8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:31:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23E781C2182F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675CF3C485;
-	Mon,  8 Apr 2024 08:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Z7kJ1jj9"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468663A1B6;
+	Mon,  8 Apr 2024 08:30:30 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DC9383AC
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3538B2B9D3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565031; cv=none; b=VgSsIB1iitkTjPJynddz0jaDLwtwi2J7YM+XQIYMOYAjvro/8K6+wvEvq55Prj1v67UwJQ5uDRaoQAO4yzHlCAaZg3xUqIcZPh+U080SOQpYl/p+1jIGOGP0+m8+k07t67Gbui6c5CiWaCz+jaBS/u4jePkvn2GdysQHxtTvOmY=
+	t=1712565029; cv=none; b=t3FRWyXNG1dSsh5zWu3+Wn7RPN8oJwYPybsHl2p/fRPOpjgn9UriBSNVPX/uHk8Z81iOMuvUPIjynW3f6IZhOw/jy79MqYVPvb6iW6WSUJ92RUE6apap4woMHDK/i5gaL9HTpDBAhLE1SCe5L05P342X3a1ehzS3pSCU/y3Cp+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565031; c=relaxed/simple;
-	bh=SjoKRikooQ4rEt9uMbPK7q5uiAWzzXZcdF0Tuaxrr7U=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=PyxMGvajk5+oINX7a8RwfXhXw+sogaoT7ozgCAb20NE9/cC1tOdJ2Y6V4V8/6S6gIf8FK0jH/+qTx1bfegNz+lAK2WdBbUzMy8imQ9B+Ls8fDdW9UVwc+1XXPMWsKVJhIlamf27ZOIS20qJYdNZUoExy99TX1ibyiMOrOAYLcVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Z7kJ1jj9; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240408083021epoutp03e1f7b6c0c9ba8ecaf39a75d1bc729f74~EQNBOdxd72460224602epoutp03D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:30:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240408083021epoutp03e1f7b6c0c9ba8ecaf39a75d1bc729f74~EQNBOdxd72460224602epoutp03D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1712565021;
-	bh=9xA2wuGcrIdnD6QeGCy6pEWH3ESJOZu31jlHG5iQwik=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=Z7kJ1jj9MYf5CiYovRq/Ur5n5kClTRjQmZkb0MozYiehYWGMcoqzWCYNe9w/rTZbV
-	 zP75BK8Q2LzWKLbw5EswMttKCEPI/m3PLqpLHIYBv/Gti4IpkaTaI1acON2gdwjolf
-	 wXyH40CIJPezyvYNXXsp2ff8wbNrUL3L5zN/ZbO8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-	20240408083021epcas5p491258648313d8da9b58c4a4934efc60a~EQNAsQgpS0206302063epcas5p4y;
-	Mon,  8 Apr 2024 08:30:21 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.178]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4VCj2g6XtLz4x9Pr; Mon,  8 Apr
-	2024 08:30:19 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	5E.EC.19431.B1BA3166; Mon,  8 Apr 2024 17:30:19 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240408083019epcas5p429571d61b25b95490b913fcabc7f59d5~EQM-CUC7b1593915939epcas5p4J;
-	Mon,  8 Apr 2024 08:30:19 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240408083019epsmtrp1fa891c230381087b44984bc443f55da4~EQM-AK4XT0109201092epsmtrp1a;
-	Mon,  8 Apr 2024 08:30:19 +0000 (GMT)
-X-AuditID: b6c32a50-f57ff70000004be7-f2-6613ab1bfa7a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	20.74.07541.B1BA3166; Mon,  8 Apr 2024 17:30:19 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240408083014epsmtip26c7beec99df2675222e2fb04202b7b6e~EQM60mQBJ1598715987epsmtip29;
-	Mon,  8 Apr 2024 08:30:14 +0000 (GMT)
-From: "Alim Akhtar" <alim.akhtar@samsung.com>
-To: "'Peter Griffin'" <peter.griffin@linaro.org>, <mturquette@baylibre.com>,
-	<sboyd@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <vkoul@kernel.org>, <kishon@kernel.org>,
-	<avri.altman@wdc.com>, <bvanassche@acm.org>, <s.nawrocki@samsung.com>,
-	<cw00.choi@samsung.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<chanho61.park@samsung.com>, <ebiggers@kernel.org>
-Cc: <linux-scsi@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-	<linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <tudor.ambarus@linaro.org>,
-	<andre.draszik@linaro.org>, <saravanak@google.com>,
-	<willmcvicker@google.com>
-In-Reply-To: <20240404122559.898930-1-peter.griffin@linaro.org>
-Subject: RE: [PATCH 00/17] HSI2, UFS & UFS phy support for Tensor GS101
-Date: Mon, 8 Apr 2024 14:00:13 +0530
-Message-ID: <04d401da898e$fd57ec10$f807c430$@samsung.com>
+	s=arc-20240116; t=1712565029; c=relaxed/simple;
+	bh=EjHDMrAz69vatng6jA+oa2JUOP7etuQq0dSwTmjyrss=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DsOqXAWIcMTdSlZd5X8gqT/qWA2K3fQ0EoAnW1QmJL1wvsuitOcZGU6a0+wXHfIbrxRcZmf7M2atAtTS8JdNEfHt4UNsi/y/mH2YeAdl6RBOKehbtPOrtFhh8KpJMD13aQ0/XhnfaKn2BFv0+e9NYZOcyT5ErP9FeiLx0tDtqnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc764c885bso489626239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:30:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712565027; x=1713169827;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pGfa/fu0qaR4580gV0wkow51swbUTo/cyHbTrBarevM=;
+        b=Yyl4iqS7dw6Tp5Xpz/XO12sQ+ajGfOi4pAhIA4ed9waHdYvv1Bej0wukYSjhR7jMGM
+         cyb9FCOXsqHkvW6/5kEKhA7qkV5SIzGylTEqqdvY0ZS8mNmv2LN2ZUoVozQVNF8gwCwv
+         VvXK/CNGN5J+0dqt29iJ7/3zvqqOnsOZCPeNDH0x2ZCw+8jLpt4j4dbVIhE7jueDqpQi
+         OZrWDPXAkuyqJRbDrjStZs5W18JodvadcuZRPMVf/E3NrXw0Y6iVaXcE+Pg4SRaleBph
+         9vZrxNf4hrXtiIi980NR52HlYpVPYvsbsAn+JIqAjmOpzz5mcTCDG/K0DZ8mJpfAGVJi
+         hhog==
+X-Forwarded-Encrypted: i=1; AJvYcCXqKST+3eB3JdOdB7k0FGgojX7gVjsvQL50KrdZF0UGjjzbzeHz1+JlAh6qU4R6+b3jKk2YPRKLxgxrXJcBNT1J4fIXgu7yCzEbOnQh
+X-Gm-Message-State: AOJu0YyGqZ/1lKBpVA0hjlIS88wSYdPGD3WJW0e9fNBEJzMrekaTsdko
+	Sd1Ji5IXJMhBWtt8P8TZlKuOtQ94QIPBKVKfBkNX9u7TonBBT0rz57N5yJEavO6ttW9HugfZjSm
+	RH6Iye6lyT9KqDt+6tPE1UFtTr73ZW5DGfaZPZWdaLX087DHY9QHlH+0=
+X-Google-Smtp-Source: AGHT+IFvl1fTIIj4OYvRlREsAD81IC2U/G3exMy15fGzFJ2jssxxq3RDlP7eisgtQ6PK3mGhUk/4Rj4WOKEZd/Xg/haoZESMefy+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG67MGYnqOHzIYqhKHsGv8jtpiocwJaURTOsYpwP3A=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta1BUZRiec9mziwkdFsJvgEncLJEEdpXFbxkuMoCcwgkaHUlnCo/s4TLA
-	7s5e0popTVkkQC6TmeKahIW0psBCuHGTuEjcJAOW60ARRGBAIAOSsMRysPj3vO88z/e8z/vN
-	y8P4l7iOvHiZmlHK6EQBsQUvr9/t6u502y5G2FIggmWTpTicWOom4OW/lzDYef91+F31QxT2
-	zI9z4I2Ghxx4p2oZg/m95Shs1K5icCJ3iICG300cOJsxxIGdFToCZusXcHilowaF6T1GAt5q
-	MqPwUUsILL5ixuFqlZEL6/+6wIFpdSsENJtKcDjX/x78YfAnDOrnVpEDTlRnVxg106vlUnkG
-	DWXQf0pQg6YqgsrOr0Wo0q/PULNj/TiVWaZHqCeGl6kLteloxAvHE3zjGFrKKF0YWbRcGi+L
-	9ROEHY4KihJ7C0XuIgncL3CR0UmMnyD4UIT7wfjEtRUIXN6nEzVrrQhapRJ4+vsq5Ro14xIn
-	V6n9BIxCmqjwUnio6CSVRhbrIWPUPiKhcK94jXgiIc6Q/gRTzNicXikIP4vc25qGWPEA6QXu
-	nruJpiFbeHyyCgGZqfe5bDGHgCXjCMYWCwhoe1zHeS651v4ZbsF8shoBxZmBaQhvDf+JgGd7
-	LG2CdAfGmymERWtP5mKgprh7/SGMHELBgPY8YWFZkQHgk5FMxILtyFCQXV2yboCTO4HpZ/16
-	35qUgKKxPILFtqD56ui6MUZuB/emdBg7kAtYGivgWIawJ32A9qtolrINTDQ2rKcB5C9WoG+y
-	E2H5weDX5BKcxXZgsqmMy2JHMJGVwrW8A0gK5C87su04MHWraEMaAGq7dLiFgpG7QVGFJ2tl
-	Ay4+G0VZpTVITeGz7FfB+enuDSMnkJOevrFBCvReHcCzkR25m3LlbsqVuylA7v9meQiuRxwZ
-	hSoplokWK0TuMubUf78dLU8yIOvn4RZhRG4Xr3jUISgPqUMADxPYWx8W28bwraX0Bx8ySnmU
-	UpPIqOoQ8dq2czDHl6Lla/clU0eJvCRCL29vby/JPm+RYJv1Y+11KZ+MpdVMAsMoGOVzHcqz
-	cjyLRh0xDS+brad29XVUbm8pnBWDmsIHMVXOYb49T6sDM2o+8jff8Ms42le5WPiFwTm09VSw
-	acehhPIY2j0v5wT1bdNMe2SQ8I2db/441aHI0updP56r35WyaMVpGvOdfFEQGtk17vB2zNFy
-	dX/qK9PSEIf9+XitP/qujjjZtpggdLMVHzlZt6dZ13y9a6htZLbHrNFWu3158FJrOBZwRnV6
-	9MHYYLhzc1nweIjIteLzZPu3Gusr+UGtW+8EFmf/Zpy/GxNyXKKz+WM+o2Dv8DtPL+/L6i/l
-	Tz+a95GbGr5PzhtwC45sCUIkyweGjzmsXENfm/Rs7z8WWIafWxaX098sLNYP/SPAVXG0yA1T
-	quh/AXnKHTOnBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsWy7bCSvK70auE0gwv9vBZbXm1msXj58yqb
-	xbQPP5ktLu/Xtliz9xyTxfUvz1kt5h85x2qxds8fZotFN7YxWRxt/c9s8XLWPTaLTY+vsVp8
-	7LnHanF51xw2iwmrvrFYzDi/j8mi+/oONovlx/8xWVw85WqxYcY/Fov/e3awWxx+085q0XXo
-	L5vFv2sbWSw+3Yqz2HnnBLPFqk//GR2kPS5f8fZ4f6OV3WPBplKPTas62TzuXNvD5jFh0QFG
-	j81L6j0+Pr3F4tG3ZRWjx+dNch7tB7qZArijuGxSUnMyy1KL9O0SuDI2dX9mLnjPV/F3mX8D
-	43aeLkZODgkBE4nZZyezdDFycQgJ7GaU6Jn9hxUiIS1xfeMEdghbWGLlv+fsEEXPGCWajpxg
-	A0mwCehK7FjcxgaSEBFYxyzx/d4zJpAEs8ALJomzl+IgOiYwSsyZ3AI2ilPAXqLxUR8jiC0s
-	4C4xYe9GsHUsAioS1y6sAovzClhKrH+6gA3CFpQ4OfMJ0H0cQEP1JNo2MkLMl5fY/nYOM8R1
-	ChI/ny5jBSkREbCSaF2YDFEiLvHy6BH2CYzCs5AMmoUwaBaSQbOQdCxgZFnFKJlaUJybnpts
-	WGCYl1quV5yYW1yal66XnJ+7iRGcQrQ0djDem/9P7xAjEwfjIUYJDmYlEd5gU8E0Id6UxMqq
-	1KL8+KLSnNTiQ4zSHCxK4ryGM2anCAmkJ5akZqemFqQWwWSZODilGpguyf3eHm1yub7kf0Pw
-	Sdv6NZ+fzwzZcynF7rxG3tuSu0/nlk8wSTTJlF7wsn1amX4fl87LKY/Z5r1InrJz40v+1y7/
-	FiQ3cV5vrbK7laVopBmzPePXa7OT31Za6T4tNLD5GS/iUqebyqr79WGarlVKcVisUdiTCzHX
-	hZUS9cLvfvqxJijr8M9np561TJ9dnbu9df72w4nzjLTXMi9bVqO7bUHHjSovTcmDkpPm7BfM
-	uW5eaLygSuX4ezmZ+Xv2bbxdNlU3dtuZX03Sqt5sdawSH2JmNhR3bG9yD/zIlTlv4Tab56vz
-	94hFXVEvK1B0yd8vXXzQInPO/+qYsyXRaZcFfeKkRDKSEhhNFqbbHldiKc5INNRiLipOBADk
-	2iCOkAMAAA==
-X-CMS-MailID: 20240408083019epcas5p429571d61b25b95490b913fcabc7f59d5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240404122615epcas5p3812bd7c825bf604fc474bbcdf40d11f6
-References: <CGME20240404122615epcas5p3812bd7c825bf604fc474bbcdf40d11f6@epcas5p3.samsung.com>
-	<20240404122559.898930-1-peter.griffin@linaro.org>
+X-Received: by 2002:a05:6638:2485:b0:47e:c070:517c with SMTP id
+ x5-20020a056638248500b0047ec070517cmr170534jat.5.1712565027407; Mon, 08 Apr
+ 2024 01:30:27 -0700 (PDT)
+Date: Mon, 08 Apr 2024 01:30:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001d17cc0615919e05@google.com>
+Subject: [syzbot] Monthly kernfs report (Apr 2024)
+From: syzbot <syzbot+list286f9999cfeae62e8ab6@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Peter
+Hello kernfs maintainers/developers,
 
-> -----Original Message-----
-> From: Peter Griffin <peter.griffin@linaro.org>
-> Sent: Thursday, April 4, 2024 5:56 PM
-> To: mturquette@baylibre.com; sboyd@kernel.org; robh@kernel.org;
-> krzk+dt@kernel.org; conor+dt@kernel.org; vkoul@kernel.org;
-> kishon@kernel.org; alim.akhtar@samsung.com; avri.altman@wdc.com;
-> bvanassche@acm.org; s.nawrocki@samsung.com; cw00.choi@samsung.com;
-> jejb@linux.ibm.com; martin.petersen@oracle.com;
-> chanho61.park@samsung.com; ebiggers@kernel.org
-> Cc: linux-scsi@vger.kernel.org; linux-phy@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-clk@vger.kernel.org; linux-samsung-
-> soc@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; tudor.ambarus@linaro.org;
-> andre.draszik@linaro.org; saravanak@google.com;
-> willmcvicker@google.com; Peter Griffin <peter.griffin@linaro.org>
-> Subject: [PATCH 00/17] HSI2, UFS & UFS phy support for Tensor GS101
-> 
-> Hi folks,
-> 
-> 
-> Question
-> ========
-> 
-> Currently the link comes up in Gear 3 due to ufshcd_init_host_params()
-> host_params initialisation. If I update that to use UFS_HS_G4 for
-negotiation
-> then the link come up in Gear 4. I propose (in a future patch) to use VER
-> register offset 0x8 to determine whether to set G4 capability or not (if
-major
-> version is >= 3).
-> 
-> The bitfield of VER register in gs101 docs is
-> 
-> RSVD [31:16] Reserved
-> MJR [15:8] Major version number
-> MNR [7:4] Minor version number
-> VS [3:0] Version Suffix
-> 
-> Can anyone confirm if other Exynos platforms supported by this driver have
-> the same register, and if it conforms to the bitfield described above?
-> 
+This is a 31-day syzbot report for the kernfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/kernfs
 
-VER (offset 0x8) is standard UFS HCI spec, so all vendor need to have this
-(unless something really wrong with the HW)
-Yes, Exynos and FSD SoC has these bitfield implemented.
- 
-> 
-> 2.44.0.478.gd926399ef9-goog
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 12 issues are still open and 20 have been fixed so far.
 
+Some of the still happening issues:
 
+Ref Crashes Repro Title
+<1> 175     No    possible deadlock in lookup_slow (3)
+                  https://syzkaller.appspot.com/bug?extid=65459fd3b61877d717a3
+<2> 38      Yes   KASAN: use-after-free Read in kernfs_add_one
+                  https://syzkaller.appspot.com/bug?extid=ef17b5b364116518fd65
+<3> 36      Yes   INFO: rcu detected stall in sys_openat (3)
+                  https://syzkaller.appspot.com/bug?extid=23d96fb466ad56cbb5e5
+<4> 7       No    possible deadlock in mnt_want_write (3)
+                  https://syzkaller.appspot.com/bug?extid=3800901c18018cf7ff68
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
