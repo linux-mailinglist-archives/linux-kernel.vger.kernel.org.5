@@ -1,140 +1,119 @@
-Return-Path: <linux-kernel+bounces-135042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F4289BA54
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:31:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B58189BA57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6219B21E03
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:31:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC0011C21E9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D20374F2;
-	Mon,  8 Apr 2024 08:31:25 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D5937149
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4B338FA0;
+	Mon,  8 Apr 2024 08:31:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C517941A80
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565085; cv=none; b=RAoUO8jqV50ObwGS6WfUVscHfzoYMmeWclI18lVra/7ZXjG/wszfVeRugD3Lw5oZPieZQbVZky73n5xJqqhmaRRAk7PAlTNK8kjTChOCCWPNFb7yj8fNbQT4AF8pyD7u27G4bHTvZocFEOhGFcTZBTqUD1vB0JKugkJgvfFdk8U=
+	t=1712565103; cv=none; b=FewfCQTH0dyrnpRmM+EODTDQTOIuUCri5QXHnAmM/7a8Ck6AhCn3wfuyUW85PGbUeb11YPSVfZRybRmDSRR5Y4c/y/v4e60jXzcYFp1/sLMzCX1UB0OrHXnxiW7iaOxaKLewSWqtRgHkrwb97fx/gVr5dMgb4sSW6iqLiTo3Em8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565085; c=relaxed/simple;
-	bh=cGaM4ocapeoZbCgp17qum1GDq8465V9dqZbuMY8HVL4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aSZREvvfIzD2M6h8GmEj2fGf8RGYULw0JZsntpr1L4KOPEkszPD/E8c28Hbty0zQSrrNPUONIzea7T8KAX76eFU34EBoeGgPBuF/0lOdCUDDfpItI6Vao6ezQbCyeTHaYOEd6opAJTjOxWBlHqkZIrMpHOLUdqIAR70GkCerZAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5d650eaafso129163939f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 01:31:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712565082; x=1713169882;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UDk6EV9RQ3C/hMHWveNrOdMW8xuEVmJIEBJEd1bIoI8=;
-        b=AEa6L64UQiMt9VNvNBJw1H9i1llEtIXSnkfJEPsDxZmJGK4h5yXuumRXatRl473QJk
-         1KHc3Iyysny5zzD1DpdpB/qOPLLxVdpcKa4kOEcdvxe5bT5tm8OtaIKv9eLhcS3JJYj1
-         ENEatjPsPMm8ksuLSKdm1ddrvgPL4h5zMlfbaMtkdEpAaig1RO9ptqPOqPRIx4mkBOze
-         v8iK72UwInyycmm0NNW4SrVXeFwuT2Q+zNNh8+mGE5EzrvIgEMuiZy4mB+JCDz0micxH
-         JVjV5OuMn3BrKDHZvWRvOnmpi2ZMNQquWhsnwgDEhuFQCVxsFam2PAiNvyC4swLWmWPu
-         /6MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnzX3wXsZgiM1n1knyMXZboVKHvdNWjI4jI8dSXPEW1fXN5dC+15kV5Hgx4ql2AyNAqxPVqGHFhilNZIUObqcBEthUKM6UheETUoaR
-X-Gm-Message-State: AOJu0Yw813rm69ZfFjDVkbICknDpwEUlnkHUGY9LNJ4yI71AbLyg0ZVs
-	ZhOF5UwdRJ50qIlN0cljJrz8nGkIgv+dhyVUqMDk9WkSXwo9YYmT/7GmPnhVkXh0VYt5oryn9ne
-	9dKULa5juu4ujDe49imKxqDJsQnYxyHjGa0vzSgR0nCk+TQ3xQF2u2fk=
-X-Google-Smtp-Source: AGHT+IFFG5jq75OHTmF+2BNAceR1vkrV7VxGrB+qu/ANAaQ/sBVIjhmet7IssP9ucPu28Yj4qFoVhthofIGW8/+RiCx4NhA+aV6q
+	s=arc-20240116; t=1712565103; c=relaxed/simple;
+	bh=cHVXQgWWYQikdi7cXresunZR0HbsRYAMbamgl+6vPTA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AXrylmDhBuzlXzIk18vzdYWKpD7u7JbI1zodkfcMQF8G847A/rnnHXbvOyGfe8s2buMm07l9ipNszJHGsTrejRdlS+wPik7wOaSoP2nWR6yplkDMQfDOCoa46M6XRDdrPRYmGyxdkaJZ9zz5G1GcFJeFuWLBcxocr7EhQJT72cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E77B12FC;
+	Mon,  8 Apr 2024 01:32:10 -0700 (PDT)
+Received: from [10.57.73.169] (unknown [10.57.73.169])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE95E3F766;
+	Mon,  8 Apr 2024 01:31:37 -0700 (PDT)
+Message-ID: <7766689e-a473-475d-8bf6-c1d7435881c9@arm.com>
+Date: Mon, 8 Apr 2024 09:31:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2612:b0:47f:2af:7c32 with SMTP id
- m18-20020a056638261200b0047f02af7c32mr187870jat.3.1712565082512; Mon, 08 Apr
- 2024 01:31:22 -0700 (PDT)
-Date: Mon, 08 Apr 2024 01:31:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065ed60061591a173@google.com>
-Subject: [syzbot] [nfs?] KFENCE: memory corruption in do_handle_open
-From: syzbot <syzbot+454fe737909d37a0e5fe@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, brauner@kernel.org, chuck.lever@oracle.com, 
-	jack@suse.cz, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] arm64: tlb: Improve __TLBI_VADDR_RANGE()
+Content-Language: en-GB
+To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
+ maz@kernel.org, oliver.upton@linux.dev, apopple@nvidia.com,
+ rananta@google.com, mark.rutland@arm.com, v-songbaohua@oppo.com,
+ yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com,
+ shan.gavin@gmail.com
+References: <20240405035852.1532010-1-gshan@redhat.com>
+ <20240405035852.1532010-3-gshan@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240405035852.1532010-3-gshan@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 05/04/2024 04:58, Gavin Shan wrote:
+> The macro returns the operand of TLBI RANGE instruction. A mask needs
+> to be applied to each individual field upon producing the operand, to
+> avoid the adjacent fields can interfere with each other when invalid
+> arguments have been provided. The code looks more tidy at least with
+> a mask and FIELD_PREP().
+> 
+> Suggested-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
 
-syzbot found the following issue on:
+LGTM!
 
-HEAD commit:    727900b675b7 Add linux-next specific files for 20240403
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15bf53c5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-dashboard link: https://syzkaller.appspot.com/bug?extid=454fe737909d37a0e5fe
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> ---
+>  arch/arm64/include/asm/tlbflush.h | 29 ++++++++++++++++++-----------
+>  1 file changed, 18 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> index a75de2665d84..243d71f7bc1f 100644
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -142,17 +142,24 @@ static inline unsigned long get_trans_granule(void)
+>   * EL1, Inner Shareable".
+>   *
+>   */
+> -#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)			\
+> -	({									\
+> -		unsigned long __ta = (baddr);					\
+> -		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;		\
+> -		__ta &= GENMASK_ULL(36, 0);					\
+> -		__ta |= __ttl << 37;						\
+> -		__ta |= (unsigned long)(num) << 39;				\
+> -		__ta |= (unsigned long)(scale) << 44;				\
+> -		__ta |= get_trans_granule() << 46;				\
+> -		__ta |= (unsigned long)(asid) << 48;				\
+> -		__ta;								\
+> +#define TLBIR_ASID_MASK		GENMASK_ULL(63, 48)
+> +#define TLBIR_TG_MASK		GENMASK_ULL(47, 46)
+> +#define TLBIR_SCALE_MASK	GENMASK_ULL(45, 44)
+> +#define TLBIR_NUM_MASK		GENMASK_ULL(43, 39)
+> +#define TLBIR_TTL_MASK		GENMASK_ULL(38, 37)
+> +#define TLBIR_BADDR_MASK	GENMASK_ULL(36,  0)
+> +
+> +#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)		\
+> +	({								\
+> +		unsigned long __ta = 0;					\
+> +		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;	\
+> +		__ta |= FIELD_PREP(TLBIR_BADDR_MASK, baddr);		\
+> +		__ta |= FIELD_PREP(TLBIR_TTL_MASK, __ttl);		\
+> +		__ta |= FIELD_PREP(TLBIR_NUM_MASK, num);		\
+> +		__ta |= FIELD_PREP(TLBIR_SCALE_MASK, scale);		\
+> +		__ta |= FIELD_PREP(TLBIR_TG_MASK, get_trans_granule());	\
+> +		__ta |= FIELD_PREP(TLBIR_ASID_MASK, asid);		\
+> +		__ta;							\
+>  	})
+>  
+>  /* These macros are used by the TLBI RANGE feature. */
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f8fb4daa7a83/disk-727900b6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d2a6994aee53/vmlinux-727900b6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6759e5411c39/bzImage-727900b6.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+454fe737909d37a0e5fe@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KFENCE: memory corruption in handle_to_path fs/fhandle.c:213 [inline]
-BUG: KFENCE: memory corruption in do_handle_open+0x4be/0x660 fs/fhandle.c:226
-
-Corrupted memory at 0xffff88823bdccff8 [ 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 ] (in kfence-#229):
- handle_to_path fs/fhandle.c:213 [inline]
- do_handle_open+0x4be/0x660 fs/fhandle.c:226
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-kfence-#229: 0xffff88823bdccfe0-0xffff88823bdccff7, size=24, cache=kmalloc-32
-
-allocated by task 5382 on cpu 1 at 75.554801s:
- kmalloc_noprof include/linux/slab.h:664 [inline]
- handle_to_path fs/fhandle.c:195 [inline]
- do_handle_open+0x162/0x660 fs/fhandle.c:226
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-freed by task 5382 on cpu 1 at 75.554827s:
- handle_to_path fs/fhandle.c:213 [inline]
- do_handle_open+0x4be/0x660 fs/fhandle.c:226
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-CPU: 1 PID: 5382 Comm: syz-executor.0 Not tainted 6.9.0-rc2-next-20240403-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
