@@ -1,132 +1,130 @@
-Return-Path: <linux-kernel+bounces-134882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C53EA89B831
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:17:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5708589B82E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 09:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DC01C21ABB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:17:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 102D1283939
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D824522EEB;
-	Mon,  8 Apr 2024 07:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B839123772;
+	Mon,  8 Apr 2024 07:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pksJtR3i"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zah+m34p"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47E41BC39
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 07:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898A725761;
+	Mon,  8 Apr 2024 07:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712560626; cv=none; b=ZUFjsxhrxWLRLhtfU0Yr9HBYoxjQJJcKZnAQQTBF+05shdo9TtdsxQSQr0+lL9dQWInSIJn0kKh0sL4KcJJK/7D01ZKKRj9Xr57CjheLCQhl/X84d3WvpG0Ln+syhsMfsNYZs81ilsJgJU12IYJ2KU7Q/kDTyVLHxwh5+JquE/M=
+	t=1712560547; cv=none; b=E/6XX8mMqFckMHgAgWKw2mfLw0+HMoDJ4pnnfR6T0bpJUssMBb37wXPLKoTa7Im8BAn7SklA3f4sQHfVeOxVUL1icUmuwAhgRToAMRdUmZMt8AnjomQFZEPgbSmtyRLOVR3JdCjNiVoUFusmR7/g0a5g1D5AU38TlYicAcOWt4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712560626; c=relaxed/simple;
-	bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=INTBCrvkOHOLeObj9k9G8N33LexG/uuhiRU4L2cXTzrA1swlQ0jQtdhZ1HvhVgiekUHSJBG2G6rLmX/lX2xTWmWjBsy+TzGNLmIuOFDQEUlXfbtH0ihuazBXQphJZrpm7h5ZmUgk17xcSNfp8/6gxl5c+WVlUgIR5pN/3EtvTvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pksJtR3i; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b22af648so3598155b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 00:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712560624; x=1713165424; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
-        b=pksJtR3iAlf0MIVK0RIXXtrlln0bfiVcWKIb0K0W2Hv4Ug6ltE5ni7No/4EY5mPbh7
-         QffVkAkfZ1W0AwBv2woieH6Q0sGQZofAL9Y4hPwhYCaaLtfoTE+xjcM9KRzmkCB3YHPw
-         ruapYC7PHyOMUn9pvUQazelDX0jQaSOWFI/EYwoOVzSGsNRBsQoKv0chTya7kOwka9Vg
-         2MG+XiXQxonQSlm259EmjtZZwxB4eTJFdhpj6BzmvlDvSyr5h/joRm7TBpn0hqf+ObyC
-         TcR3YR9gzNjBj26NtXQENj4a4/UsNG73/LrLWnlJjZHXWaE0xv14B95UE6OAuUbhJFwN
-         YRew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712560624; x=1713165424;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z6ttkFiobSvcs1HPoZJjd2N3G8sKym7Fnc8Lvj7iQLI=;
-        b=Hm0VJZr/QSgwUNTiWZYDX+sKCzZyoL/i3qvxUmi2dFTy5q4DK08Bq1oJTJ1vumo4A0
-         ccncUOpN9HXl3Mdl6fb+cEeQY74TwecjUxkG5m3DRIYPE4wUXunFtowHtA4bQXdJe1pB
-         4RM3eS/JgZ5LYwlQXLjvY87oCI1nOPUGeYgedbWOB8Lw0anT1NroT3asMHOyFXzOQ53c
-         MQhrg2divFsl9WvSkxFR3KjqnLRPJSnGQsuurRTJHDD+JdBcXOpf1JLP5RpS1gIpDXmp
-         qcf7I8LwWLUDCKTF72o4T9qGz16L/uyqXHVQ97GkXXPPYk2m3yAXlDFrc3CCzkfeNKqk
-         olOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJm+8JpHE9VdGvOK7QlM9s5ZclMZXElNY+kHPWCD/8z5W40Cyqaqo6KYgo5VyQS1Bpr40SSchtVaGpfNJuXrxA7AldJw7XoLwFwmJF
-X-Gm-Message-State: AOJu0YzfvJ7TQuEUp/5aNAR6OwfYOcPx+ZUtrVD/KfuGfkwFSkm5Jz/h
-	10Mw53xTL3umthiWoFGRndhsLLCflsndeCWlYMkcICm0TSorrb8I1QJM2Mog2Yrmcho230Nk+FV
-	ZGT8WeFCjW0EeShMO11Kn2qqGS1hz+gqulIM7fw==
-X-Google-Smtp-Source: AGHT+IHf7G0qH23Gi6+/sVvIKSWLs/MgFqI80unw0WgTCq5dgXhEazFn9bkfZ/UXlRbc4H24bkXtDtHfzjtAiihq8LA=
-X-Received: by 2002:a17:902:c94d:b0:1dd:8ed0:59d0 with SMTP id
- i13-20020a170902c94d00b001dd8ed059d0mr10148621pla.17.1712560623953; Mon, 08
- Apr 2024 00:17:03 -0700 (PDT)
+	s=arc-20240116; t=1712560547; c=relaxed/simple;
+	bh=wfBI0w2ix2dYMyVPgP0IE0+1KgiAiSMym15kBzlE+OM=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=ns4zDvQk/ePJsymgs2NMpfu/5LSEHaFR34Z2UqQhHwwnAlNLSOQKARo9vD6EZs47monumBF8Vpul80Krp9veP5JQ0TEVYDXjlmuX9v52VysR7wbIXK4YFvET8KBCglouhicCtgxMtOnAZ+PMWk2H9nEf9iz9HmbGW1UmhZ1V84M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zah+m34p; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712560545; x=1744096545;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=wfBI0w2ix2dYMyVPgP0IE0+1KgiAiSMym15kBzlE+OM=;
+  b=Zah+m34p/0ICxFjDEMGmVBdCDOhXtOyhSmPqnJi38NF8H+FICffpw6tx
+   oYfCnvPhLUz2Czxgoy5RCXn6BB4SDMO15im3iHJDgKENfFGrVp1x4e28F
+   1jt/knTUCHeleBAnGhTVOLh+0GhtuLtowZRX6B+VV01tujhsXCsd4UwrP
+   2b9MIvCHKuR92ekdR0dagSGWNb7hvK19tW1CNqxE239yoGS4ydVVO0T0d
+   GnVpVQaQeQnisUzOkZwwrZ1+p/0BXAV2gsDlY0WlsAHUQtXZL7jnZwpFK
+   fnCn2Bw+VNMF/z/oZ8EcNsC7JsIwWy+R3Hv3+LA5OnGo/ju4kt1ceycRa
+   Q==;
+X-CSE-ConnectionGUID: 12evUH+ASCW3LOwcH28DAw==
+X-CSE-MsgGUID: xkvrBBI4TFeALn6BhJyMMQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="8007779"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="8007779"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 00:15:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="937090989"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="937090989"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Apr 2024 00:15:27 -0700
+Message-ID: <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
+Date: Mon, 8 Apr 2024 10:17:15 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu> <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu> <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
-In-Reply-To: <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Mon, 8 Apr 2024 09:16:52 +0200
-Message-ID: <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	John Stultz <jstultz@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: =?UTF-8?Q?Micha=c5=82_Pecio?= <michal.pecio@gmail.com>,
+ Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Mathias Nyman <mathias.nyman@intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, linux-usb@vger.kernel.org
+References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
+ <20240405113247.743e34b2@foxbook>
+ <7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
+ <20240406183659.3daf4fa0@foxbook>
+ <c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
+ <20240407142542.036fb02f@foxbook>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part
+ of current TD ep_index 1 comp_code 1
+In-Reply-To: <20240407142542.036fb02f@foxbook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 04/05/24 18:16, Qais Yousef wrote:
->
-> > >
-> > > All that to say that I think the weight is not applied on purpose.
-> > > This might work for your particular case but there are more changes to
-> > > be done if you want to apply prio inheritance between cfs tasks.
-> > >
-> > > As an example, what about the impact of cgroup on the actual weight
-> > > and the inherited priority of a task ? If the owner and the waiter
-> > > don't belong to the same cgroup their own prio is meaningless... task
-> > > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
-> > > in a group with a weight equals to nice -20
-> >
-> > That is on my mind actually. But I thought it's a separate problem. That has to
-> > do with how we calculate the effective priority of the pi_task. And probably
-> > the sorting order to if we agree we need to revert the above. If that is done
->
-> Thinking more about it the revert is not the right thing to do. We want fair
-> tasks to stay ordered in FIFO for better fairness and avoid potential
-> starvation issues. It's just the logic for searching the top_waiter need to be
-> different. If the top_waiter is fair, then we need to traverse the tree to find
-> the highest nice value. We probably can keep track of this while adding items
-> to the tree to avoid the search.
->
-> For cgroup; is it reasonable (loosely speaking) to keep track of pi_cfs_rq and
-> detach_attach_task_cfs_rq() before the reweight? This seems the most
-> straightforward solution and will contain the complexity to keeping track of
-> cfs_rq. But it'll have similar issue to proxy execution where a task that
-> doesn't belong to the cgroup will consume its share..
+On 7.4.2024 15.25, Michał Pecio wrote:
+> This (and the absence of any earlier errors on the endpoint) looks
+> like the hardware may be confirming a "successful" transfer twice or
+> the driver may be processing one such confirmation twice.
 
-That's a good point, Would proxy execution be the simplest way to fix all this ?
+It's also possible this TD/TRB was cancelled due to the disconnect.
+Could be that even if driver removes the TD from the list and cleans out the TRB
+from the ring buffer (turns TRB to no-op) hardware may have read ahead and cached the TRB,
+and process it anyway.
 
->
-> Can we treat the two as separate problems? Or you think any solution must
-> address the two? Both must be fixed of course.
->
->
-> Thanks!
->
-> --
-> Qais Yousef
+> 
+> [   94.088594] usb 1-2: USB disconnect, device number 8
+> [   94.089370] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+> [   94.089403] xhci_hcd 0000:00:14.0: Looking for event-dma 00000001250310f0 trb-start 0000000125031100 trb-end 0000000125031100 seg-start 0000000125031000 seg-end 0000000125031ff0
+> [   94.089427] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 1250310f0 last_dma 1250310f0 status -115 from finish_td
+> 
+> (I say "successful" but it really isn't - the device is no longer
+> listening. But there is no delivery confirmation on isochronous OUT
+> endpoints so the xHC doesn't suspect anything.)
+> 
+> Could you try again with this updated debug patch to get more info?
+
+Would also be helpful to add xhci dynamic debug and xhci tracing (two separate logs)
+These will show in detail everything that is going on.
+
+Steps:
+
+mount -t debugfs none /sys/kernel/debug
+echo 'module xhci_hcd =p' >/sys/kernel/debug/dynamic_debug/control
+echo 'module usbcore =p' >/sys/kernel/debug/dynamic_debug/control
+echo 81920 > /sys/kernel/debug/tracing/buffer_size_kb
+echo 1 > /sys/kernel/debug/tracing/events/xhci-hcd/enable
+echo 1 > /sys/kernel/debug/tracing/tracing_on
+< Reproduce issue >
+Send output of dmesg
+Send content of /sys/kernel/debug/tracing/trace
+
+please copy the /sys/kernel/debug/tracing/trace file somewhere as soon
+as possible after reproducing the issue. It grows fast.
+
+Thanks
+Mathias
+
 
