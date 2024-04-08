@@ -1,137 +1,221 @@
-Return-Path: <linux-kernel+bounces-135751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C711A89CAC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:27:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 393F689CACB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D132B25B89
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:27:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7181C21C61
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857A8143C7D;
-	Mon,  8 Apr 2024 17:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5724A143C65;
+	Mon,  8 Apr 2024 17:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="DrXmJZ+v"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="sA/UQbNT"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46ED5142915;
-	Mon,  8 Apr 2024 17:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A587A143880;
+	Mon,  8 Apr 2024 17:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712597249; cv=none; b=PFPoKiMcZ02W0LYXCTWFyzV0SnOrsDRUZMn7Em2qQc/HmKyOi5TJP0ZsM4e7LtEPms41KG5XpEVLIpLWNbgdN3JOQy/eiNqzPRiw3J7LcwceWRPzfiI4dQnDV2xg2u1IUm1YI7YyTYBURb9rsnlokeQg6FkDJwXJwAhVKUGb9Wg=
+	t=1712597288; cv=none; b=ehDdiLMCi70DE5t+2usR4ofPBEn9nA13bgE/EC0EK4uGdU6XV3bGYBjd5sSOYfOuJ/SnCeWM4abxysbJ8yJ8/6BgIsZeY8ehWHgQUsK/gc+QQ18/bOVWgxrjPiDonlSU9dRkwrH6wOFytrtSxOdciJIhaUh7o2T5t2AXvkpFKO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712597249; c=relaxed/simple;
-	bh=ycEuq9XAYdjVqKjZxvsc1TztcD1hPiLm41bxXcMv5Ho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q29KI0EruEKLi2GH23TFPM2FDaxmvI9M+hyrkVFcmbZhB3kzoXUdfLsR8MTOpDfhmLbT2T3jGIkbfQFUP7ow24xoUpJ14BnNZY5h3TrYBEVI3O8OqvdSATaQRDShA/Tm6PxESkdlNxWYz/nSar2+PNCSJ/sq7/uKjBY2SUjj+M0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=DrXmJZ+v; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e455b630acso4850865ad.1;
-        Mon, 08 Apr 2024 10:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1712597247; x=1713202047; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pOjeDfz9E4F+jzvWRXwUZXbYmoM8nTnojNtQIe47BUs=;
-        b=DrXmJZ+vl/pr8I8yyh4TeoI4BvhFJeHbJDRArp0Gmn+8r3kt3hvFW+x7Btz9stRgBJ
-         6ekmB8D6FV4Hl7itWZh08cXTGZxD/IjrBVPBgZvBkKhASlPTXRQbbX+38VtJD2C8OEiU
-         dVZbF7CYunrrxjTA/Z44Dm2IOEVyJuoxi95TJNBa6IiNAWHNEG20cckzcaKFzLYPybxq
-         5vH0Dnffn2j5nvAo3AogW7QhFalQJogWtwW/0/xu3Eb6+uUaIrqqQtQ4sTcc4lcfyqrj
-         bQekUHzYAdvUwL4/gk1rzd9YcC9Ws7+33f4SOhnCvymwHt5UYdHCAa4mbRO7dFAav4nY
-         GsRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712597247; x=1713202047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pOjeDfz9E4F+jzvWRXwUZXbYmoM8nTnojNtQIe47BUs=;
-        b=lYWx1MELgIAZI3rMBYkZLRr+JRpq/gPU5ZQzs7Npj6C3lOeid9BJWhL0b1ymYJMOsM
-         KUzuXyq329FvhOErk9pOmPgQyt4XIGizIXw6rMnRiGLok4kICPd6eQtNymFwC5UgbGXw
-         GyOrj98D6yzx6j1l0aUGNTjXuotLTsksfxSXeZepsOD7SQ0cLBbYa7tmhtoeyG89ABdE
-         ldYCEbNvXLBeP/BlwqRMW9lmdYNklrvjoL1xKRPVk50TZ/790PRQGhLiaih7GyRAmWFd
-         oJ1l12Tl06taPYFw2jD888i931+YFbb/JT1vrSz4MKJfVKifnERZGTMXSyxARcL8PD3x
-         wuVw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhnJOYOiMIvn+LyY8YqO6txEt2kpVZU5KQcnOXKCB4tTSbqKPBPwsLE45PCcI3C0Fb0rfCmKqgOLl4YFy9Vm9fhXKC35gBTn0i6i4fbz7tpWwWVNL1RK7uryDeCAClfuY3b0YnzSGrGA==
-X-Gm-Message-State: AOJu0YzHsVDWJPYAE19KmzxwsjZlPUTTcIk5TSHY4oBsalM6mektbVgw
-	cznebOinOvMVN9GhL/YG4FZvbgsrdUU41sBH/ZJdZFKRX1z2Chg8vv+N6KUSs8qlZE+hW7nAiLd
-	aNb8NFQH3dQCWs6ZyXKywqh+nIrA=
-X-Google-Smtp-Source: AGHT+IF8o23by08vrZR2GEbNpBf73nw0zhurJP4dptDChRyKgoq8H4Ozt0jNcKGtNTZll6pvAIltKtH5CZD77UZgbDw=
-X-Received: by 2002:a17:902:c946:b0:1e4:24bc:48e with SMTP id
- i6-20020a170902c94600b001e424bc048emr3348565pla.22.1712597247611; Mon, 08 Apr
- 2024 10:27:27 -0700 (PDT)
+	s=arc-20240116; t=1712597288; c=relaxed/simple;
+	bh=plYws3az66yYzUB9kegD6f/52t70PzV1zIDHcCsIMqY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T//fpqNGJAQzyxy5Zt+03PCxjDh26M2y0V+fzjCIWt/MtSI27cdjlNNmjWpE0G8HQUwFhP13fLwLPzG6EyocjfBsIpK8fxz2fep9ttQJ6fuWak4s3VUSHg0TuUX8XE4r/Yz8U0E7maNp4b0L9BZYBwXAlaGe7EpPh0wTxc+BD10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=sA/UQbNT; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 0CAB1600A2;
+	Mon,  8 Apr 2024 17:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1712597282;
+	bh=plYws3az66yYzUB9kegD6f/52t70PzV1zIDHcCsIMqY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sA/UQbNT4EI9oEo2CYem4mTORREN/kAXnH2EGdlfwUMc7gox03AYTTpK2O1C6VGYJ
+	 t2/AeX2TT1F1AgOxF6reGtZcUDdHmsJlwx1MrEo5cxvUXS2E4eH5jkP0TqccLzFfpg
+	 yR8NrKtxYpCnPgn4ctHYWbVqAphTCDGpJrdXagjRWKe+oO2GKBjLj6QpBBXvCZxy95
+	 AltTL3NG8MYaHwZmokak1pskwl//ZZckBwJr8wIU5yedHGYZmqN5tG+T7ldOQ/iCYh
+	 qIYAuqzdIoBgOVgoLwc35f5LxrCIzj8WuzE05jp7xB4Eqs86ROuk7V5CMOkBeUXcN5
+	 q5rIi+vk3teRQ==
+Received: by x201s (Postfix, from userid 1000)
+	id ED11A201CE7; Mon, 08 Apr 2024 17:27:47 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	UNGLinuxDriver@microchip.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: sparx5: flower: fix fragment flags handling
+Date: Mon,  8 Apr 2024 17:27:35 +0000
+Message-ID: <20240408172738.96447-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com>
-In-Reply-To: <20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 8 Apr 2024 19:27:15 +0200
-Message-ID: <CAFBinCD=xWuhoX9cWcKU3bSGcsDShKbxnMVTdyfD84AFZQn8aw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: meson: fix S4 power-controller node
-To: xianwei.zhao@amlogic.com
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 8, 2024 at 5:26=E2=80=AFAM Xianwei Zhao via B4 Relay
-<devnull+xianwei.zhao.amlogic.com@kernel.org> wrote:
->
-> From: Xianwei Zhao <xianwei.zhao@amlogic.com>
->
-> The power-controller module works well by adding its parent
-> node secure-monitor.
->
+I noticed that only 3 out of the 4 input bits were used,
+mt.key->flags & FLOW_DIS_IS_FRAGMENT was never checked.
 
-Please add a Fixes tag here with the original commit where the
-incorrectly placed node was added.
-> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/=
-dts/amlogic/meson-s4.dtsi
-> index ce90b35686a2..24d00dce4969 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-> @@ -65,10 +65,13 @@ xtal: xtal-clk {
->                 #clock-cells =3D <0>;
->         };
->
-> -       pwrc: power-controller {
-> -               compatible =3D "amlogic,meson-s4-pwrc";
-> -               #power-domain-cells =3D <1>;
-> -               status =3D "okay";
-> +       sm: secure-monitor {
-> +               compatible =3D "amlogic,meson-gxbb-sm";
-> +
-> +               pwrc: power-controller {
-> +                       compatible =3D "amlogic,meson-s4-pwrc";
-> +                       #power-domain-cells =3D <1>;
-> +               };
-In Documentation/devicetree/bindings/firmware/amlogic,meson-gxbb-sm.yaml
-the hierarchy is:
-firmware {
-  secure-monitor {
-     power-controller {
-       ...
-     }
-  }
-}
+In order to avoid a complicated maze, I converted it to
+use a 16 byte mapping table.
 
-Is this patch correct (and the documentation needs to be adapted) or
-is the documentation correct (and this patch has to be adapted)?
+As shown in the table below the old heuristics doesn't
+always do the right thing, ie. when FLOW_DIS_IS_FRAGMENT=1/1
+then it used to only match follow-up fragment packets.
+
+Here are all the combinations, and their resulting new/old
+VCAP key/mask filter:
+
+  /- FLOW_DIS_IS_FRAGMENT (key/mask)
+  |    /- FLOW_DIS_FIRST_FRAG (key/mask)
+  |    |    /-- new VCAP fragment (key/mask)
+  v    v    v    v- old VCAP fragment (key/mask)
+
+ 0/0  0/0  -/-  -/-     impossible (due to entry cond. on mask)
+ 0/0  0/1  -/-  0/3 !!  invalid (can't match non-fragment + follow-up frag)
+ 0/0  1/0  -/-  -/-     impossible (key > mask)
+ 0/0  1/1  1/3  1/3     first fragment
+
+ 0/1  0/0  0/3  3/3 !!  not fragmented
+ 0/1  0/1  0/3  3/3 !!  not fragmented (+ not first fragment)
+ 0/1  1/0  -/-  -/-     impossible (key > mask)
+ 0/1  1/1  -/-  1/3 !!  invalid (non-fragment and first frag)
+
+ 1/0  0/0  -/-  -/-     impossible (key > mask)
+ 1/0  0/1  -/-  -/-     impossible (key > mask)
+ 1/0  1/0  -/-  -/-     impossible (key > mask)
+ 1/0  1/1  -/-  -/-     impossible (key > mask)
+
+ 1/1  0/0  1/1  3/3 !!  some fragment
+ 1/1  0/1  3/3  3/3     follow-up fragment
+ 1/1  1/0  -/-  -/-     impossible (key > mask)
+ 1/1  1/1  1/3  1/3     first fragment
+
+In the datasheet the VCAP fragment values are documented as:
+ 0 = no fragment
+ 1 = initial fragment
+ 2 = suspicious fragment
+ 3 = valid follow-up fragment
+
+Result: 3 combinations match the old behavior,
+        3 combinations have been corrected,
+        2 combinations are now invalid, and fail,
+        8 combinations are impossible.
+
+It should now be aligned with how FLOW_DIS_IS_FRAGMENT
+and FLOW_DIS_FIRST_FRAG is set in __skb_flow_dissect() in
+net/core/flow_dissector.c
+
+Since the VCAP fragment values are not a bitfield, we have
+to ignore the suspicious fragment value, eg. when matching
+on any kind of fragment with FLOW_DIS_IS_FRAGMENT=1/1.
+
+Only compile tested, and logic tested in userspace, as I
+unfortunately don't have access to this switch chip (yet).
+
+Fixes: d6c2964db3fe ("net: microchip: sparx5: Adding more tc flower keys for the IS2 VCAP")
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+---
+ .../microchip/sparx5/sparx5_tc_flower.c       | 60 ++++++++++++-------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+index 523e0c470894f..2f87ccb8cf8c8 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+@@ -135,6 +135,26 @@ sparx5_tc_flower_handler_basic_usage(struct vcap_tc_flower_parse_usage *st)
+ 	return err;
+ }
+ 
++/* SparX-5 VCAP fragment types:
++ * 0 = no fragment, 1 = initial fragment,
++ * 2 = suspicious fragment, 3 = valid follow-up fragment
++ */
++enum {                   /* key / mask */
++	FRAG_NOT   = 0x03, /* 0 / 3 */
++	FRAG_SOME  = 0x11, /* 1 / 1 */
++	FRAG_FIRST = 0x13, /* 1 / 3 */
++	FRAG_LATER = 0x33, /* 3 / 3 */
++	FRAG_INVAL = 0xff, /* invalid */
++};
++
++/* Flower fragment flag to VCAP fragment type mapping */
++static const u8 sparx5_vcap_frag_map[4][4] = {
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_FIRST },
++	{ FRAG_NOT,   FRAG_NOT,   FRAG_INVAL, FRAG_INVAL },
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_INVAL },
++	{ FRAG_SOME,  FRAG_LATER, FRAG_INVAL, FRAG_FIRST }
++};
++
+ static int
+ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
+ {
+@@ -145,29 +165,27 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
+ 	flow_rule_match_control(st->frule, &mt);
+ 
+ 	if (mt.mask->flags) {
+-		if (mt.mask->flags & FLOW_DIS_FIRST_FRAG) {
+-			if (mt.key->flags & FLOW_DIS_FIRST_FRAG) {
+-				value = 1; /* initial fragment */
+-				mask = 0x3;
+-			} else {
+-				if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-					value = 3; /* follow up fragment */
+-					mask = 0x3;
+-				} else {
+-					value = 0; /* no fragment */
+-					mask = 0x3;
+-				}
+-			}
+-		} else {
+-			if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-				value = 3; /* follow up fragment */
+-				mask = 0x3;
+-			} else {
+-				value = 0; /* no fragment */
+-				mask = 0x3;
+-			}
++		u8 is_frag_key = !!(mt.key->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_mask = !!(mt.mask->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_idx = (is_frag_key << 1) | is_frag_mask;
++
++		u8 first_frag_key = !!(mt.key->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_mask = !!(mt.mask->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_idx = (first_frag_key << 1) | first_frag_mask;
++
++		/* lookup verdict based on the 2 + 2 input bits */
++		u8 vdt = sparx5_vcap_frag_map[is_frag_idx][first_frag_idx];
++
++		if (vdt == FRAG_INVAL) {
++			NL_SET_ERR_MSG_MOD(st->fco->common.extack,
++					   "match on invalid fragment flag combination");
++			return -EINVAL;
+ 		}
+ 
++		/* extract VCAP fragment key and mask from verdict */
++		value = (vdt >> 4) & 0x3;
++		mask = vdt & 0x3;
++
+ 		err = vcap_rule_add_key_u32(st->vrule,
+ 					    VCAP_KF_L3_FRAGMENT_TYPE,
+ 					    value, mask);
+-- 
+2.43.0
+
 
