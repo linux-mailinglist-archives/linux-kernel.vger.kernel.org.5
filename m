@@ -1,221 +1,150 @@
-Return-Path: <linux-kernel+bounces-135811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D39D589CBA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:24:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594B589CBB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 20:26:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F221C24171
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:24:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1523328234B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A786B144D03;
-	Mon,  8 Apr 2024 18:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463C4144D39;
+	Mon,  8 Apr 2024 18:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6R45nAk"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jgl/1v36"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A5E1448C4;
-	Mon,  8 Apr 2024 18:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8190025753
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 18:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712600674; cv=none; b=qZyTeIkM0+Xf4hZmqzhqWLLIlNeA1NLUqC0CyWjzwPZS8iTy1F2BQ4v8aseJuIvt5O0L2WMmiI/pRG6pDZNQKR1C6fywoXn3GJPBA3Lwy7qQyLlILPGcFqkO97XUoorqrol9QIBLGCaXbhOo+wA/WB7dhhBOhazqkS7iWFa0MQk=
+	t=1712600782; cv=none; b=u4nbrKU/rKQxp8P5ZWw2VviYvRf+pOJVWdH5idCow6KV+MgEHL4UKHTJxCbtBmxJ2AifTBf/icRdL8Biwwc9tM9ey6XuQVc2o7q/PGHy3qzf0zhK8CS5GBKIRZhACVUJbGHtCD5xgXHLpwNE8wKsOBsl6eUcIPiXxcrCPSJfJfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712600674; c=relaxed/simple;
-	bh=BjTJYz/b0W194uG3Dy5J9ActPboXh7mVQIpU2KFg/7A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ha1uoXMmmUC8uPoi/hsZli/LfGMIwgRS8lK6sTEU1vE14fsLp8t7GirkEIb8RAJIVW0JfozF+wRTnClEPw6250syrDDP6xhyKFi9ixNc4n72b4gKm2T9C6Lk3MIkrTuwZNykWjaj3fzIwQ0lqUPbpy3a2a4XSuEpzbDeJ7mvnpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W6R45nAk; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3442f4e098bso1220207f8f.1;
-        Mon, 08 Apr 2024 11:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712600671; x=1713205471; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cROCssBIV4xyuzdSD8dyeKutwvbC7vcc1U8PqfuQR6M=;
-        b=W6R45nAkAaxSUwfQ6YOatTsqryM79ecst165M8IL4W+bb92MFdWRJ0673Z1XLiVUqk
-         YpwpBqP2zyTBtjwVZeaVzehbL/cIDwDQQL3lE6cB091yccqj9llxQrFgizKGXOuas5+2
-         ebFP+WNZa8IjwZ5ubPHkCIM71jQENlEU9aBgO5JGVCOf3zfAf/YWtPKv/QLS/9YBuUkm
-         IDqvOUIG7L0eMA9YmvDMuw1arFyGrKD4TI1WLFdHeg205gSeljx33A1z8inm45G7cJxu
-         6+jmm4H4FeKZVdKNKEsu4mfOkq4CgsngGqB6gIb4SRwqeUvejZSz+rSaTiuSvQ/PpefP
-         1ACQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712600671; x=1713205471;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cROCssBIV4xyuzdSD8dyeKutwvbC7vcc1U8PqfuQR6M=;
-        b=MLaTNE0BYvVYlBsJJCsZDk4DogF7z+cER62Y3uYXcBygV4VNRFlxk61Qxm8CUnbDUA
-         VB0++9OBjMZiSWbepQZjPli9j5Xb/aWXt2Sm7y3Ud5Kcyjeua69+eQkBWb3TupMae0YB
-         cBL1L4grJs+LgOmNqUydm5/C2qldxwBKQIKkpzjePAiVLMOaU1DbTALH3kAIDqRw3F+J
-         cF6ug/zezPGY2Q3mAEBVkWccn304sIKeLgl53zdVMSOurS9vMh9gs/n4N6wHahdSTIGC
-         9Y7t2EBbpgx3embYYJahJ+hx5yL5e2GSNy5o+QuE9Xl0DpWv7HEjNPS2n8dQauhS8XGI
-         JE2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXa+Gr54IROaw9ip8O2lE7FWw4lhvPfKCFSUQVRqouhcrghU3EKVDfihkK1z3GMXcz5cIpQth7qEoslQduoXZf3lcJ9OkST0RU6r+PPO9GS3n/cCqFvXPN3qy28B7RnT8bMmUUjRC8MHzZvY2ZkKj+76OaCSg5HHkboIAqfVy8NCgVgWZMjbhvifhrGleW9fy1OzxL+t4puyvsHIPv+LoSS
-X-Gm-Message-State: AOJu0Yx0UCbqC6kJIr3Fcqlc0aLvx/BJehTAwv9uUOt1/glNGFLE+qSr
-	xvVsZ3StE15eq+r8OUueEjRWFIQhS+hT26pWYzEdw6Tquk9LmAQ1Kca2tcH6QDrGmI6mU++hycK
-	TXNpo7IoiQn6xGIu89BWj31GhYcE=
-X-Google-Smtp-Source: AGHT+IFmb2xMi3DwTGlhE6Fzn2e0lZiTlA2PS5kmTAv5uiYxZ5467CLILgQgbrqh45oGjtS+CQY5Q3oTQtSnXUJzHwE=
-X-Received: by 2002:a05:6000:c8a:b0:343:c05b:e7dd with SMTP id
- dp10-20020a0560000c8a00b00343c05be7ddmr373462wrb.3.1712600671200; Mon, 08 Apr
- 2024 11:24:31 -0700 (PDT)
+	s=arc-20240116; t=1712600782; c=relaxed/simple;
+	bh=zHVhbDUXvIHrWkiMCgJm6IIlq6tLgPd0bdBaL4AIw+g=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=GgqtS0wCJ7EBsaoM8kb+C3ObWmgmsmyohD5Mq4LNhLf0r8WPVNsdtPaRC6PG4B20WnCdwegNvqn5fWh7A+q4A+Qc1sbYotGSsN9SlHgi0cWmWEnVfwJPsIjQz5Eh+itEv6VZlt++Srcj0aPc9hJgpAqX3RilWYza+jVMFnRs5yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jgl/1v36; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2073C433C7;
+	Mon,  8 Apr 2024 18:26:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712600782;
+	bh=zHVhbDUXvIHrWkiMCgJm6IIlq6tLgPd0bdBaL4AIw+g=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=Jgl/1v36x9gPDRGRtgHLpwSWPWCHyO0Au+aX1+oeGjrzJlGRsUOmUY1aLymZ1LD1l
+	 uriWZpqBeVIymR/WovDHQoyS0iLtOWMaZ9T6TX6ZZDnAdBr1VVPrskaCTEUMzChLFF
+	 b271khNSiAkAf9N/7A2kcLCykf4hAdXZSA5fMuGNmvAYNC1SC2tds+cnVaf3wcfzym
+	 5upBRFtDc+qeB/F50U21OOXfzubYNKKNiLpLm+p2vsiyYnmoAG8gO70G+sU+R5kfTB
+	 jQK90zKMDPSbIeJ+HSqnJbN2hPnWoyW5CQliIRm23OG+D2MvYaf1UCg8kslhr37SsL
+	 RMbdKOukmcmZg==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id C1C131200066;
+	Mon,  8 Apr 2024 14:26:20 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 08 Apr 2024 14:26:20 -0400
+X-ME-Sender: <xms:zDYUZnSXwNry391rmaAK2q6pWJ7P0xZmJqjLiKNUODDJ3Pk00Nb_og>
+    <xme:zDYUZozQ-Krgj5gAi4w0A6kwSsFcIV-8dt9B-4wIyRh2cXKg42gpmJ8Jlp6Co3E4R
+    xmMNRybm_uDDjY3Vo0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpefgffejleeluddugfejueeiteefvddtgfeutefhvdfgudfhveekgeeh
+    gfevledvudenucffohhmrghinhepphgrshhtvggsihhnrdgtohhmnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhguodhmvghsmhhtphgr
+    uhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedtvdegqddvkeejtddtvdeigedqrg
+    hrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:zDYUZs3rvvfu67uhmCGEJAPq0TQAmvT7jZzbrj7k9JydV3_k6Zvy9g>
+    <xmx:zDYUZnAABHBYRqtaQ-sy4qdjwWZ5twBGfpIp6UlPW9OgKyogl3P1qA>
+    <xmx:zDYUZgiUnA3CotxjZrPEu_YvIt0FIAQQQTrD-b2MARoGg2OoNZYR0g>
+    <xmx:zDYUZrrT8GCJZwI1mE0yIznln8ztL49PsAFRhw2fLcHjtuTVD2lhFw>
+    <xmx:zDYUZrjT2JJ-Q1GpA_EUI3Mpg9KqHNMSXAZdTcxUwl0GX5MSayuguQmB>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 81795B60089; Mon,  8 Apr 2024 14:26:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404190146.1898103-1-elver@google.com> <CAADnVQKc+Z39k9wbU2MHf-fPFma+9QsyOugmmmGq3ynQCTVfCw@mail.gmail.com>
- <CANpmjNN+rR1PWKbx6RBWhOjnmAP+jUDzc3TLcwTnmfd=ft03dg@mail.gmail.com>
- <CAEf4BzZCj=3hevf+Je=oed9Nisctotp_CX00NrLaO6_7+-0LSQ@mail.gmail.com> <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com>
-In-Reply-To: <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 8 Apr 2024 11:24:19 -0700
-Message-ID: <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
-To: Marco Elver <elver@google.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <1622d9ff-feed-4a12-9d8d-3f00088c9edf@app.fastmail.com>
+In-Reply-To: <76214105-94ae-4540-8511-e9e2ff6d257e@moroto.mountain>
+References: <20240328140512.4148825-1-arnd@kernel.org>
+ <20240328140512.4148825-11-arnd@kernel.org>
+ <76214105-94ae-4540-8511-e9e2ff6d257e@moroto.mountain>
+Date: Mon, 08 Apr 2024 20:26:00 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Dan Carpenter" <dan.carpenter@linaro.org>
+Cc: linux-kernel@vger.kernel.org, "Viresh Kumar" <vireshk@kernel.org>,
+ "Johan Hovold" <johan@kernel.org>, "Alex Elder" <elder@kernel.org>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ "Arnd Bergmann" <arnd@arndb.de>,
+ "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>,
+ greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 10/11] staging: greybus: change strncpy() to strscpy()
+Content-Type: text/plain
 
-On Mon, Apr 8, 2024 at 2:30=E2=80=AFAM Marco Elver <elver@google.com> wrote=
-:
+On Thu, Mar 28, 2024, at 16:00, Dan Carpenter wrote:
+> On Thu, Mar 28, 2024 at 03:04:54PM +0100, Arnd Bergmann wrote:
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>> This is from randconfig testing with random gcc versions, a .config to
+>> reproduce is at https://pastebin.com/r13yezkU
+>> ---
+>>  drivers/staging/greybus/fw-management.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/staging/greybus/fw-management.c b/drivers/staging/greybus/fw-management.c
+>> index 3054f084d777..35bfdd5f32d2 100644
+>> --- a/drivers/staging/greybus/fw-management.c
+>> +++ b/drivers/staging/greybus/fw-management.c
+>> @@ -303,13 +303,13 @@ static int fw_mgmt_backend_fw_update_operation(struct fw_mgmt *fw_mgmt,
+>>  	struct gb_fw_mgmt_backend_fw_update_request request;
+>>  	int ret;
+>>  
+>> -	strncpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
+>> +	ret = strscpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
 >
-> On Fri, 5 Apr 2024 at 22:28, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
-wrote:
-> >
-> > On Fri, Apr 5, 2024 at 1:28=E2=80=AFAM Marco Elver <elver@google.com> w=
-rote:
-> > >
-> > > On Fri, 5 Apr 2024 at 01:23, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> [...]
-> > > > and the tasks can use mmaped array shared across all or unique to e=
-ach
-> > > > process.
-> > > > And both bpf and user space can read/write them with a single instr=
-uction.
-> > >
-> > > That's BPF_F_MMAPABLE, right?
-> > >
-> > > That does not work because the mmapped region is global. Our requirem=
-ents are:
+> This needs to be strscpy_pad() or it risks an information leak.
 
-It sounds not like "requirements", but a description of the proposed
-solution.
-Pls share the actual use case.
-This "tracing prog" sounds more like a ghost scheduler that
-wants to interact with known user processes.
+Right, I think I misread the code thinking that the strncpy()
+destination was user provided, but I see now that this copy is
+from user-provided data into the stack, so the padding is indeed
+stale stack data.
 
-> > >
-> > > 1. Single tracing BPF program.
-> > >
-> > > 2. Per-process (per VM) memory region (here it's per-thread, but each
-> > > thread just registers the same process-wide region).  No sharing
-> > > between processes.
-> > >
-> > > 3. From #2 it follows: exec unregisters the registered memory region;
-> > > fork gets a cloned region.
-> > >
-> > > 4. Unprivileged processes can do prctl(REGISTER). Some of them might
-> > > not be able to use the bpf syscall.
-> > >
-> > > The reason for #2 is that each user space process also writes to the
-> > > memory region (read by the BPF program to make updates depending on
-> > > what state it finds), and having shared state between processes
-> > > doesn't work here.
-> > >
-> > > Is there any reasonable BPF facility that can do this today? (If
-> > > BPF_F_MMAPABLE could do it while satisfying requirements 2-4, I'd be =
-a
-> > > happy camper.)
-> >
-> > You could simulate something like this with multi-element ARRAY +
-> > BPF_F_MMAPABLE, though you'd need to pre-allocate up to max number of
-> > processes, so it's not an exact fit.
+I could not find out whether this gets copied back to userspace,
+but adding the padding is safer indeed.
+
+>>  
+>>  	/*
+>>  	 * The firmware-tag should be NULL terminated, otherwise throw error and
+>                                       ^^^^^^^^^^^^^^^^
+> These comments are out of date.
 >
-> Right, for production use this is infeasible.
+>>  	 * fail.
+>>  	 */
+>> -	if (request.firmware_tag[GB_FIRMWARE_TAG_MAX_SIZE - 1] != '\0') {
+>> +	if (ret == -E2BIG) {
+>>  		dev_err(fw_mgmt->parent, "backend-update: firmware-tag is not NULL terminated\n");
+>                                                           
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> More out of date prints.
 
-Last I heard, ghost agent and a few important tasks can mmap bpf array
-and share it with bpf prog.
-So quite feasible.
+I had thought about changing it when I did the patch, but could
+not come up with anything that describes the error condition better:
+the cause of the -E2BIG error is still the missing NUL-termination
+in the provided string.
 
->
-> > But what seems to be much closer is using BPF task-local storage, if
-> > we support mmap()'ing its memory into user-space. We've had previous
-> > discussions on how to achieve this (the simplest being that
-> > mmap(task_local_map_fd, ...) maps current thread's part of BPF task
-> > local storage). You won't get automatic cloning (you'd have to do that
-> > from the BPF program on fork/exec tracepoint, for example), and within
-> > the process you'd probably want to have just one thread (main?) to
-> > mmap() initially and just share the pointer across all relevant
-> > threads.
->
-> In the way you imagine it, would that allow all threads sharing the
-> same memory, despite it being task-local? Presumably each task's local
-> storage would be mapped to just point to the same memory?
->
-> > But this is a more generic building block, IMO. This relying
-> > on BPF map also means pinning is possible and all the other BPF map
-> > abstraction benefits.
->
-> Deployment-wise it will make things harder because unprivileged
-> processes still have to somehow get the map's shared fd somehow to
-> mmap() it. Not unsolvable, and in general what you describe looks
-> interesting, but I currently can't see how it will be simpler.
+Maybe we should instead not print a warning at all? The general
+rule is that user triggered operations should not lead to
+spamming the kernel logs.
 
-bpf map can be pinned into bpffs for any unpriv process to access.
-Then any task can bpf_obj_get it and mmap it.
-If you have few such tasks than bpf array will do.
-If you have millions of tasks then use bpf arena which is a sparse array.
-Use pid as an index or some other per-task id.
-Both bpf prog and all tasks can read/write such shared memory
-with normal load/store instructions.
-
-> In absence of all that, is a safer "bpf_probe_write_user()" like I
-> proposed in this patch ("bpf_probe_write_user_registered()") at all
-> appealing?
-
-To be honest, another "probe" variant is not appealing.
-It's pretty much bpf_probe_write_user without pr_warn_ratelimited.
-The main issue with bpf_probe_read/write_user() is their non-determinism.
-They will error when memory is swapped out.
-These helpers are ok-ish for observability when consumers understand
-that some events might be lost, but for 24/7 production use
-losing reads becomes a problem that bpf prog cannot mitigate.
-What do bpf prog suppose to do when this safer bpf_probe_write_user errors?
-Use some other mechanism to communicate with user space?
-A mechanism with such builtin randomness in behavior is a footgun for
-bpf users.
-We have bpf_copy_from_user*() that don't have this non-determinism.
-We can introduce bpf_copy_to_user(), but it will be usable
-from sleepable bpf prog.
-While it sounds you need it somewhere where scheduler makes decisions,
-so I suspect bpf array or arena is a better fit.
-
-Or something that extends bpf local storage map.
-See long discussion:
-https://lore.kernel.org/bpf/45878586-cc5f-435f-83fb-9a3c39824550@linux.dev/
-
-I still like the idea to let user tasks register memory in
-bpf local storage map, the kernel will pin such pages,
-and then bpf prog can read/write these regions directly.
-In bpf prog it will be:
-ptr =3D bpf_task_storage_get(&map, task, ...);
-if (ptr) { *ptr =3D ... }
-and direct read/write into the same memory from user space.
+     Arnd
 
