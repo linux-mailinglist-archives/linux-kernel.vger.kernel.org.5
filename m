@@ -1,215 +1,117 @@
-Return-Path: <linux-kernel+bounces-134832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2164489B797
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:23:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDB789B799
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BB4F1F21E1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:23:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5418282827
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 06:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA9C12B75;
-	Mon,  8 Apr 2024 06:23:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6B918C05;
-	Mon,  8 Apr 2024 06:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BBA818026;
+	Mon,  8 Apr 2024 06:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yOXJp81r"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDAC111A8
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 06:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557408; cv=none; b=TAEwbkWOZPVWkvdUAXM6wSz8B5ujRERvaCz5q1ebHRmOHIxtjydTIPLkNX2GgnNtJVvP2ZIb3aJVHQ2pcAAyNSPqsa6ZSuzLh6Ie89LGRteFTirhU+y+Ps+OcIKOgtM2KV1qwbW/CYEKo/LkGbQLJkpdfuz6aZTVdmeaDOTAkJg=
+	t=1712557703; cv=none; b=r0eus8DQl0HTXkhJBmej0deNdHVoNZwEzzGOihmHFnwpKLvp1U3+JV0BTKDMTL3g7dvO75/gw0ejHU/FJHUdgRYNtYgvbi0R5Daa4Wb4BbjgeRDdLFgXXiyzrLev820BIHfmuK0ridUoMyooDnQbsYWpP+q1xISBlOBO4STz+24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557408; c=relaxed/simple;
-	bh=MDilTp9RpE7g2rCJ/IYvSQbKWXU6/qfFiAgirnCRvWg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Qb/b4XiHOzl/VLrsX6M5XfeBpQfh+83/kNNPDlklZSAaYabwJGNpJ5VirpeKfs+8vZUPoFXEXgwZVZzWZJKVtK9vvmgr92KUdwOHiYI9aQpl6R7EZUSNRzid288F+yJ4jjB31ZODTIe3565Lvp+aqoYQIE376PahkEa05fz9/PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24E181007;
-	Sun,  7 Apr 2024 23:23:50 -0700 (PDT)
-Received: from a079740.arm.com (unknown [10.163.54.109])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 72EB73F6C4;
-	Sun,  7 Apr 2024 23:23:01 -0700 (PDT)
-From: Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>
-To: linux-perf-users@vger.kernel.org
-Cc: anshuman.khandual@arm.com,
-	james.clark@arm.com,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Will Deacon <will@kernel.org>,
-	Leo Yan <leo.yan@linaro.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Chenyuan Mi <cymi20@fudan.edu.cn>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	=?UTF-8?q?Ahelenia=20Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
-	Colin Ian King <colin.i.king@gmail.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	=?UTF-8?q?Georg=20M=C3=BCller?= <georgmueller@gmx.net>,
-	Liam Howlett <liam.howlett@oracle.com>,
-	bpf@vger.kernel.org,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 0/8] perf tools: Fix test "perf probe of function from different CU"
-Date: Mon,  8 Apr 2024 11:52:22 +0530
-Message-Id: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712557703; c=relaxed/simple;
+	bh=IE2dQfOBUfWFV2sRzZOKfpp0BxlqrHbr9xEZn3IEuP8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TFldxWEbn/pCVgz+RSjqD4D80lo7gbmpikh3WnR+WkLVJlPKiNoxpjwT0Np6oEJ1H2ScfgDdGSGukQUGtBdaXH93JlvMPmCgI8sltxa0+yNd+lBD6e9Jvj/dwjAI6eV6RiPogphbYiRnyHLKZUPBumZinFEpA4frgwrhLBt9KBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yOXJp81r; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e37503115so1980912a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 23:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712557700; x=1713162500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z6EgD/Muel3BqCojSMMdXuM1Td/LzqFDog01ouaIAt4=;
+        b=yOXJp81rAaNrq1CgYmdLDH1j2ny2sATQ0Jm61sa5Ex90e+AQSMQhg6fXhzgwPXh+TS
+         OF9HCV32Sup3zJYhk3DGDBMvinJDnerJ36Eq2Yr2KFP/2FFR5W8U0KG8ut4nICKn9TKn
+         P5NnSElxCBYRuJu+eoWCyXpBkpD/nWEcBg09Pn3yddBbMT65naPeqwDJbKhP0jsbYtKB
+         7OdZ/5XPp7Bq+yYrJrP12JX2XHV0GNhrJUJiBn/vywNEnxPx6BZtdtKjnBNHE+kAD4MJ
+         l+ZUV9TgVBlx/djmlOfNyNIC9HTDITSqNjcdzrGqn1uWQ9hbrAxInlbTWYGomjY2z/gY
+         Wxfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712557700; x=1713162500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z6EgD/Muel3BqCojSMMdXuM1Td/LzqFDog01ouaIAt4=;
+        b=LC1u5sJSAkkZhyxJ0qtpD6yupKz7z/cBh+Qz7CwAr3yqnR9Hm/a5I9F1duNdlikZKG
+         pIFzLzGyyd77eDDbHlscGiaa3A/dSnMemtny5UgTevBp+uc6qsDmsXJOHiwCzetVvBHY
+         CKnKEbq/elAKcnG2hsmhUozFL2XEIBUQAyPAn1S7l0bYIGUmhHHfu6GCVPWT900H2NGd
+         +IlHU7XStx4gC3MqOFOZqmQIJ5W652PUzLT4u344La5eAiM1TXihkT66fV5BTHIHzkZY
+         y25ZkxqSAuzYJ0gWU2PW6UgZXhXmk0LFGrRhy3PWnEf6N9tw7SOO4V+yBOLC4UwfPCHG
+         DdSw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0D8iZwWStYtkha2rItoiy7rMAnRFulxY6rScE7kJVqwElGHJsqghGMk0ov0IC/BOXVj6ay/EXzQJS5e2qR3EYivvFqWX0FHqS0LBU
+X-Gm-Message-State: AOJu0YxyZpL9ovsgO53+MXkmCwS0ICIYx8+WMKbfwKlcVCHd8spaSI0D
+	uBAaKXRosHS2+PmQ7vTzXJotEYkJo8mgiOzLjet1v0aP+zzh88ArfWzQlb1RdTc=
+X-Google-Smtp-Source: AGHT+IEW7NFlAXtt0eb3qEVFrk9JxABFiNRfMx5pOzC0ESg5/RMCffY6KCodQ4v8J7x5a4GlkvTfcw==
+X-Received: by 2002:a50:bae3:0:b0:56c:18d5:1e27 with SMTP id x90-20020a50bae3000000b0056c18d51e27mr5576700ede.5.1712557699936;
+        Sun, 07 Apr 2024 23:28:19 -0700 (PDT)
+Received: from [192.168.69.100] ([176.176.144.67])
+        by smtp.gmail.com with ESMTPSA id k19-20020aa7c393000000b0056bfb7004basm3538428edq.90.2024.04.07.23.28.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Apr 2024 23:28:19 -0700 (PDT)
+Message-ID: <2e481816-2b06-432c-b09c-e92e230debe8@linaro.org>
+Date: Mon, 8 Apr 2024 08:28:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] mm: replace set_pte_at_notify() with just
+ set_pte_at()
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Nicholas Piggin <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>,
+ Atish Patra <atishp@atishpatra.org>, Sean Christopherson
+ <seanjc@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ kvm-riscv@lists.infradead.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+ <20240405115815.3226315-5-pbonzini@redhat.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+In-Reply-To: <20240405115815.3226315-5-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Chaitanya S Prakash <chaitanyas.prakash@arm.com>
+On 5/4/24 13:58, Paolo Bonzini wrote:
+> With the demise of the .change_pte() MMU notifier callback, there is no
+> notification happening in set_pte_at_notify().  It is a synonym of
+> set_pte_at() and can be replaced with it.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   include/linux/mmu_notifier.h | 2 --
+>   kernel/events/uprobes.c      | 5 ++---
+>   mm/ksm.c                     | 4 ++--
+>   mm/memory.c                  | 7 +------
+>   mm/migrate_device.c          | 8 ++------
+>   5 files changed, 7 insertions(+), 19 deletions(-)
 
-Defconfig doesn't provide all the necessary configs required for the
-test "perf probe of function from different CU" to run successfully on
-all platforms. Therefore the required configs have been added to
-config fragments to resolve this issue. On further investigation it was
-seen that the Perf treated all files beginning with "/tmp/perf-" as a
-map file despite them always ending in ".map", this caused the test to
-fail when Perf was built with NO_DWARF=1. As the file was parsed as a
-map file, the probe...--funcs command output garbage values instead of
-listing the functions in the binary. After fixing the issue an
-additional check to test the output of the probe...--funcs command has
-been added.
-
-Additionally, various functions within the codebase have been refactored
-and restructured. The definition of str_has_suffix() has been adopted
-from tools/bpf/bpftool/gen.c and added to tools/lib/string.c in an
-attempt to make the function more generic. The implementation has been
-retained but the return values have been modified to resemble that of
-str_has_prefix(), i.e., return strlen(suffix) on success and 0 on
-failure. In light of the new addition, "ends_with()", a locally defined
-function used for checking if a string had a given suffix has been
-deleted and str_has_suffix() has replaced its usage. A call to
-strtailcmp() has also been replaced as str_has_suffix() seemed more
-suited for that particular use case.
-
-Finally str_has_prefix() is adopted from the kernel and is added to
-tools/lib/string.c, following which strstarts() is deleted and its use
-has been replaced with str_has_prefix().
-
-This patch series has been tested on 6.9-rc2 mainline kernel, both on
-arm64 and x86 platforms.
-
-Changes in V2:
-- Add str_has_suffix() and str_has_prefix() to tools/lib/string.c
-- Delete ends_with() and replace its usage with str_has_suffix()
-- Replace an instance of strtailcmp() with str_has_suffix()
-- Delete strstarts() from tools/include/linux/string.h and replace its
-  usage with str_has_prefix()
-
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Chenyuan Mi <cymi20@fudan.edu.cn>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-Cc: Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
-Cc: Colin Ian King <colin.i.king@gmail.com>
-Cc: Changbin Du <changbin.du@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Georg Müller <georgmueller@gmx.net>
-Cc: Liam Howlett <liam.howlett@oracle.com>
-Cc: bpf@vger.kernel.org
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-perf-users@vger.kernel.org
-
-Chaitanya S Prakash (8):
-  tools lib: adopt str_has_suffix() from bpftool/gen.c
-  perf util: Delete ends_with() and replace its use with
-    str_has_suffix()
-  perf util: Replace an instance of strtailcmp() by str_has_suffix()
-  tools lib: Adopt str_has_prefix() from kernel
-  tools: Delete strstarts() and replace its usage with str_has_prefix()
-  perf tools: Enable configs required for
-    test_uprobe_from_different_cu.sh
-  perf tools: Only treat files as map files when they have the extension
-    .map
-  perf test: Check output of the probe ... --funcs command
-
- tools/include/linux/string.h                  | 12 ++----
- tools/lib/string.c                            | 42 +++++++++++++++++++
- tools/lib/subcmd/help.c                       |  2 +-
- tools/lib/subcmd/parse-options.c              | 18 ++++----
- tools/objtool/check.c                         |  2 +-
- tools/perf/arch/arm/util/pmu.c                |  4 +-
- tools/perf/arch/x86/annotate/instructions.c   | 14 +++----
- tools/perf/arch/x86/util/env.c                |  2 +-
- tools/perf/builtin-c2c.c                      |  4 +-
- tools/perf/builtin-config.c                   |  2 +-
- tools/perf/builtin-daemon.c                   |  2 +-
- tools/perf/builtin-ftrace.c                   |  2 +-
- tools/perf/builtin-help.c                     |  6 +--
- tools/perf/builtin-kmem.c                     |  2 +-
- tools/perf/builtin-kvm.c                      | 14 +++----
- tools/perf/builtin-kwork.c                    | 10 ++---
- tools/perf/builtin-lock.c                     |  6 +--
- tools/perf/builtin-mem.c                      |  4 +-
- tools/perf/builtin-sched.c                    |  6 +--
- tools/perf/builtin-script.c                   | 30 ++++---------
- tools/perf/builtin-stat.c                     |  4 +-
- tools/perf/builtin-timechart.c                |  2 +-
- tools/perf/builtin-trace.c                    |  6 +--
- tools/perf/perf.c                             | 12 +++---
- tools/perf/tests/config-fragments/config      |  3 ++
- .../shell/test_uprobe_from_different_cu.sh    |  2 +-
- tools/perf/tests/symbols.c                    |  2 +-
- tools/perf/ui/browser.c                       |  2 +-
- tools/perf/ui/browsers/scripts.c              |  2 +-
- tools/perf/ui/stdio/hist.c                    |  2 +-
- tools/perf/util/amd-sample-raw.c              |  4 +-
- tools/perf/util/annotate.c                    |  2 +-
- tools/perf/util/callchain.c                   |  2 +-
- tools/perf/util/config.c                      | 12 +++---
- tools/perf/util/map.c                         |  8 ++--
- tools/perf/util/pmus.c                        |  2 +-
- tools/perf/util/probe-event.c                 |  2 +-
- tools/perf/util/sample-raw.c                  |  2 +-
- tools/perf/util/symbol-elf.c                  |  4 +-
- tools/perf/util/symbol.c                      |  4 +-
- 40 files changed, 146 insertions(+), 117 deletions(-)
-
--- 
-2.30.2
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
 
