@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-135550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF6889C75F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:47:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7FC89C75D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:47:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5557B26A2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:47:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF41C220C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C491420A0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C02B1411DC;
 	Mon,  8 Apr 2024 14:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nIYEutBv"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="GCV1EwsQ"
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C35613EFF4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF9213F011
 	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 14:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712587574; cv=none; b=nxRl0w6azTO1oV8lFRBu3dOGLPc3iGFTcydYHDnJThnw1VD0Ifyo86M8vzk9GES+0MhPg670cwASfsUM8RDhG2fyNof0QqgsPWYtmiLpUpG3VOEzlxrFVk3n779XnUsRhzyfcae94xIvXk/pxKltfJK2MgPJJEuKIOzG9ko/GDs=
+	t=1712587572; cv=none; b=JgDQPEVUfXoJBjlpl/synasZknVHXUqeDvuQpT1PMXIkg7Nra85McRk4WMhWNzoGXqBY/Ud22jyr/JQpwVcM9ivVNj89DOGedDk+q0Hy3tvYrYXmHoecufDsqL3uHwP5TGSX4vPlfWKbMgabXDMm3LihODFMGqlVkiIueQhZozg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712587574; c=relaxed/simple;
-	bh=2SVurQAbEqc0jAne35943NOeGvQcOWlmtHKJaIsGM/A=;
+	s=arc-20240116; t=1712587572; c=relaxed/simple;
+	bh=a/4rn5jp1lTaSk2oH7N9JuuOQl9kivHIfztegQlaYlk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gzDUc7XxnQJ8k5xoFGXx3fs52YJHhYdrZV7Mkac9wCGIlKh6osB3P7LA0Ati9hxv5aGPyYKpx7K5jFKVPUX0IJI4+rQJ93QAdniDlo8ZDTJbopbjRFoYrFgt/d1rh4eATNgPurOjYf3iXOfTpsX3Ou092coDl//zTOBVRCfy7d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=nIYEutBv; arc=none smtp.client-ip=67.231.149.25
+	 MIME-Version:Content-Type; b=tHOvtVOzlCytAI+tOB/XnnbvHkV71q1aUBz9Ln2AEhbWV8mjobEVp21vq1j4MgPypa23L5aIThHfn/yo7Q0ioiyQJUqVjXjOocBUHvTQW+AESQIuOBlntDpeDRxOQSSbdFHkSm4XJkHYiEHyUxxaWihN4JRF8Ath1pmAoS9JM0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=GCV1EwsQ; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385mlL1032409;
-	Mon, 8 Apr 2024 09:46:03 -0500
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4385mlL3032409;
+	Mon, 8 Apr 2024 09:46:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=gnoAedlYftAvk2qQw1KtAvPKxhOnRMJ/9uKbfEPGO4I=; b=
-	nIYEutBvxRl7/hpjlWAuVmE6KqtqF59c/2HYKNiCa7/XPqTmdrW3xx+caa2sSdjx
-	PIgFeYjpqBCeB5+G5pl4G5o6e7IvnLzyspBmE6JhF/tXNfgurlw9y7JiqblvzY2Q
-	USHrB9KCLjDZUAkp8r2Lw3z+ESDGxiVN6nh4j/XR/rf/cFylPUD5xfDouYQ+88OX
-	5x0u0xyfMRGlgwhGtDQqN9h6I80C7lA2hhktOnJTfcf3vzYGoEKe0UHBc/uGdQPW
-	39LTvGCK9oBkWbqGeNLonxUheWqZtxn/Vj7i8jTbRgwKowmm+sIZOemKqONXBCmd
-	9TVoxWYTd9z7efhynOVh4A==
+	PODMain02222019; bh=VbIW8qyKsPALaQgVoa+RAMMxAtYXggZ0eRdcwQ4xLQo=; b=
+	GCV1EwsQsQ3xRdOVkysN2+Geg1UCVqrzvc0jNYNP4K6hqNQ/Qij93UN6f95mRmXJ
+	52g/eoNK/G7/1105KtsizbCwG5BsDRapHgJt8qUwEJ+Vwk6/7irOsXsdSampULjm
+	recvqhjXI7XaA224gpkxw7maoaJOnh+HAPHFjpVq9OHAGVZyw6z2q4G+2UkyQFwy
+	YoQJSIcNajonkZ8QkrPo48AtkIJ6rYBRlcOhzLeZDXKd98vTkKOOXZRlbfM/Njse
+	xrXW8ZUr6FagM0mXiibpE93A4836v/BbHvsRob4uJDDiL2BPjKAJ5bk5tBmsVt9r
+	Uk9DrlU0X7t35LGhBrLjDg==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhjp7-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhjp7-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 09:46:03 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+	Mon, 08 Apr 2024 09:46:05 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
  15:46:01 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 8 Apr 2024 15:46:01 +0100
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 8 Apr 2024 15:46:01 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B159F82024B;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B4CFA820258;
 	Mon,  8 Apr 2024 14:46:00 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 02/11] regmap: kunit: Create a struct device for the regmap
-Date: Mon, 8 Apr 2024 15:45:51 +0100
-Message-ID: <20240408144600.230848-3-rf@opensource.cirrus.com>
+Subject: [PATCH 03/11] regmap: kunit: Introduce struct for test case parameters
+Date: Mon, 8 Apr 2024 15:45:52 +0100
+Message-ID: <20240408144600.230848-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240408144600.230848-1-rf@opensource.cirrus.com>
 References: <20240408144600.230848-1-rf@opensource.cirrus.com>
@@ -76,470 +77,727 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: P5P6Otb-aFgfVs2yXq7ZN638xyo6jHdR
-X-Proofpoint-GUID: P5P6Otb-aFgfVs2yXq7ZN638xyo6jHdR
+X-Proofpoint-ORIG-GUID: SQ8jyYcxzy7k9V6c87uDxaikxc41bDA6
+X-Proofpoint-GUID: SQ8jyYcxzy7k9V6c87uDxaikxc41bDA6
 X-Proofpoint-Spam-Reason: safe
 
-Use kunit_device_register() to create a real struct device for the
-regmap instead of leaving it at NULL.
+Add a struct regmap_test_param and use it for all test cases
+instead of passing various different types of param object
+depending on the test case.
 
-The main reason for this is that it allows context data to be passed
-into the readable_reg/writable_reg/volatile_reg functions by attaching
-it to the struct device with dev_set_drvdata().
-
-The gen_regmap() and gen_raw_regmap() functions are updated to take a
-struct kunit * argument.
-
-A new struct regmap_test_priv has been created to hold the struct device
-created by kunit_device_register(). This allows the struct to be
-extended in the future to hold more private data for the test suite.
+This makes it much easier and cleaner to expand what can be
+parameterized.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/base/regmap/internal.h       |  14 ++--
- drivers/base/regmap/regmap-kunit.c   | 105 +++++++++++++++++++--------
- drivers/base/regmap/regmap-ram.c     |   5 +-
- drivers/base/regmap/regmap-raw-ram.c |   5 +-
- 4 files changed, 87 insertions(+), 42 deletions(-)
+ drivers/base/regmap/regmap-kunit.c | 213 +++++++++++++----------------
+ 1 file changed, 96 insertions(+), 117 deletions(-)
 
-diff --git a/drivers/base/regmap/internal.h b/drivers/base/regmap/internal.h
-index bcdb25bec77c..83acccdc1008 100644
---- a/drivers/base/regmap/internal.h
-+++ b/drivers/base/regmap/internal.h
-@@ -326,20 +326,22 @@ struct regmap_ram_data {
-  * Create a test register map with data stored in RAM, not intended
-  * for practical use.
-  */
--struct regmap *__regmap_init_ram(const struct regmap_config *config,
-+struct regmap *__regmap_init_ram(struct device *dev,
-+				 const struct regmap_config *config,
- 				 struct regmap_ram_data *data,
- 				 struct lock_class_key *lock_key,
- 				 const char *lock_name);
- 
--#define regmap_init_ram(config, data)					\
--	__regmap_lockdep_wrapper(__regmap_init_ram, #config, config, data)
-+#define regmap_init_ram(dev, config, data)					\
-+	__regmap_lockdep_wrapper(__regmap_init_ram, #dev, dev, config, data)
- 
--struct regmap *__regmap_init_raw_ram(const struct regmap_config *config,
-+struct regmap *__regmap_init_raw_ram(struct device *dev,
-+				     const struct regmap_config *config,
- 				     struct regmap_ram_data *data,
- 				     struct lock_class_key *lock_key,
- 				     const char *lock_name);
- 
--#define regmap_init_raw_ram(config, data)				\
--	__regmap_lockdep_wrapper(__regmap_init_raw_ram, #config, config, data)
-+#define regmap_init_raw_ram(dev, config, data)				\
-+	__regmap_lockdep_wrapper(__regmap_init_raw_ram, #dev, dev, config, data)
- 
- #endif
 diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index b46a4f28c1a1..3bc2028fbef7 100644
+index 3bc2028fbef7..2029135f68fb 100644
 --- a/drivers/base/regmap/regmap-kunit.c
 +++ b/drivers/base/regmap/regmap-kunit.c
-@@ -4,11 +4,16 @@
- //
- // Copyright 2023 Arm Ltd
+@@ -14,6 +14,11 @@ struct regmap_test_priv {
+ 	struct device *dev;
+ };
  
-+#include <kunit/device.h>
- #include <kunit/test.h>
- #include "internal.h"
- 
- #define BLOCK_TEST_SIZE 12
- 
-+struct regmap_test_priv {
-+	struct device *dev;
++struct regmap_test_param {
++	enum regcache_type cache;
++	enum regmap_endian val_endian;
 +};
 +
  static void get_changed_bytes(void *orig, void *new, size_t size)
  {
  	char *o = orig;
-@@ -66,9 +71,11 @@ static const struct regcache_types sparse_cache_types_list[] = {
+@@ -37,44 +42,74 @@ static const struct regmap_config test_regmap_config = {
+ 	.val_bits = sizeof(unsigned int) * 8,
+ };
  
- KUNIT_ARRAY_PARAM(sparse_cache_types, sparse_cache_types_list, case_to_desc);
+-struct regcache_types {
+-	enum regcache_type type;
+-	const char *name;
+-};
+-
+-static void case_to_desc(const struct regcache_types *t, char *desc)
++static const char *regcache_type_name(enum regcache_type type)
+ {
+-	strcpy(desc, t->name);
++	switch (type) {
++	case REGCACHE_NONE:
++		return "none";
++	case REGCACHE_FLAT:
++		return "flat";
++	case REGCACHE_RBTREE:
++		return "rbtree";
++	case REGCACHE_MAPLE:
++		return "maple";
++	default:
++		return NULL;
++	}
+ }
  
--static struct regmap *gen_regmap(struct regmap_config *config,
-+static struct regmap *gen_regmap(struct kunit *test,
-+				 struct regmap_config *config,
+-static const struct regcache_types regcache_types_list[] = {
+-	{ REGCACHE_NONE, "none" },
+-	{ REGCACHE_FLAT, "flat" },
+-	{ REGCACHE_RBTREE, "rbtree" },
+-	{ REGCACHE_MAPLE, "maple" },
++static const char *regmap_endian_name(enum regmap_endian endian)
++{
++	switch (endian) {
++	case REGMAP_ENDIAN_BIG:
++		return "big";
++	case REGMAP_ENDIAN_LITTLE:
++		return "little";
++	case REGMAP_ENDIAN_DEFAULT:
++		return "default";
++	case REGMAP_ENDIAN_NATIVE:
++		return "native";
++	default:
++		return NULL;
++	}
++}
++
++static void param_to_desc(const struct regmap_test_param *param, char *desc)
++{
++	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "%s-%s",
++		 regcache_type_name(param->cache),
++		 regmap_endian_name(param->val_endian));
++}
++
++static const struct regmap_test_param regcache_types_list[] = {
++	{ .cache = REGCACHE_NONE },
++	{ .cache = REGCACHE_FLAT },
++	{ .cache = REGCACHE_RBTREE },
++	{ .cache = REGCACHE_MAPLE },
+ };
+ 
+-KUNIT_ARRAY_PARAM(regcache_types, regcache_types_list, case_to_desc);
++KUNIT_ARRAY_PARAM(regcache_types, regcache_types_list, param_to_desc);
+ 
+-static const struct regcache_types real_cache_types_list[] = {
+-	{ REGCACHE_FLAT, "flat" },
+-	{ REGCACHE_RBTREE, "rbtree" },
+-	{ REGCACHE_MAPLE, "maple" },
++static const struct regmap_test_param real_cache_types_list[] = {
++	{ .cache = REGCACHE_FLAT },
++	{ .cache = REGCACHE_RBTREE },
++	{ .cache = REGCACHE_MAPLE },
+ };
+ 
+-KUNIT_ARRAY_PARAM(real_cache_types, real_cache_types_list, case_to_desc);
++KUNIT_ARRAY_PARAM(real_cache_types, real_cache_types_list, param_to_desc);
+ 
+-static const struct regcache_types sparse_cache_types_list[] = {
+-	{ REGCACHE_RBTREE, "rbtree" },
+-	{ REGCACHE_MAPLE, "maple" },
++static const struct regmap_test_param sparse_cache_types_list[] = {
++	{ .cache = REGCACHE_RBTREE },
++	{ .cache = REGCACHE_MAPLE },
+ };
+ 
+-KUNIT_ARRAY_PARAM(sparse_cache_types, sparse_cache_types_list, case_to_desc);
++KUNIT_ARRAY_PARAM(sparse_cache_types, sparse_cache_types_list, param_to_desc);
+ 
+ static struct regmap *gen_regmap(struct kunit *test,
+ 				 struct regmap_config *config,
  				 struct regmap_ram_data **data)
  {
-+	struct regmap_test_priv *priv = test->priv;
++	const struct regmap_test_param *param = test->param_value;
+ 	struct regmap_test_priv *priv = test->priv;
  	unsigned int *buf;
  	struct regmap *ret;
- 	size_t size = (config->max_register + 1) * sizeof(unsigned int);
-@@ -103,7 +110,7 @@ static struct regmap *gen_regmap(struct regmap_config *config,
- 		}
- 	}
+@@ -82,6 +117,7 @@ static struct regmap *gen_regmap(struct kunit *test,
+ 	int i;
+ 	struct reg_default *defaults;
  
--	ret = regmap_init_ram(config, *data);
-+	ret = regmap_init_ram(priv->dev, config, *data);
- 	if (IS_ERR(ret)) {
- 		kfree(buf);
- 		kfree(*data);
-@@ -128,7 +135,7 @@ static void basic_read_write(struct kunit *test)
++	config->cache_type = param->cache;
+ 	config->disable_locking = config->cache_type == REGCACHE_RBTREE ||
+ 					config->cache_type == REGCACHE_MAPLE;
+ 
+@@ -126,14 +162,12 @@ static bool reg_5_false(struct device *context, unsigned int reg)
+ 
+ static void basic_read_write(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+ 	unsigned int val, rval;
+ 
  	config = test_regmap_config;
- 	config.cache_type = t->type;
+-	config.cache_type = t->type;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
+ 	map = gen_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -158,7 +165,7 @@ static void bulk_write(struct kunit *test)
+@@ -148,14 +182,13 @@ static void basic_read_write(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, val, rval);
+ 
+ 	/* If using a cache the cache satisfied the read */
+-	KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[0]);
++	KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[0]);
+ 
+ 	regmap_exit(map);
+ }
+ 
+ static void bulk_write(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -163,7 +196,6 @@ static void bulk_write(struct kunit *test)
+ 	int i;
+ 
  	config = test_regmap_config;
- 	config.cache_type = t->type;
+-	config.cache_type = t->type;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
+ 	map = gen_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -195,7 +202,7 @@ static void bulk_read(struct kunit *test)
+@@ -185,14 +217,13 @@ static void bulk_write(struct kunit *test)
+ 
+ 	/* If using a cache the cache satisfied the read */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+-		KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ 
+ 	regmap_exit(map);
+ }
+ 
+ static void bulk_read(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -200,7 +231,6 @@ static void bulk_read(struct kunit *test)
+ 	int i;
+ 
  	config = test_regmap_config;
- 	config.cache_type = t->type;
+-	config.cache_type = t->type;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
+ 	map = gen_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -230,7 +237,7 @@ static void write_readonly(struct kunit *test)
+@@ -218,14 +248,13 @@ static void bulk_read(struct kunit *test)
+ 
+ 	/* If using a cache the cache satisfied the read */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+-		KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ 
+ 	regmap_exit(map);
+ }
+ 
+ static void write_readonly(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -233,7 +262,6 @@ static void write_readonly(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.num_reg_defaults = BLOCK_TEST_SIZE;
  	config.writeable_reg = reg_5_false;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -264,7 +271,7 @@ static void read_writeonly(struct kunit *test)
- 	config.cache_type = t->type;
+@@ -260,7 +288,6 @@ static void write_readonly(struct kunit *test)
+ 
+ static void read_writeonly(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -268,7 +295,6 @@ static void read_writeonly(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.readable_reg = reg_5_false;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -304,7 +311,7 @@ static void reg_defaults(struct kunit *test)
- 	config.cache_type = t->type;
+ 	map = gen_regmap(test, &config, &data);
+@@ -284,7 +310,7 @@ static void read_writeonly(struct kunit *test)
+ 	 * fail if we aren't using the flat cache.
+ 	 */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++) {
+-		if (t->type != REGCACHE_FLAT) {
++		if (config.cache_type != REGCACHE_FLAT) {
+ 			KUNIT_EXPECT_EQ(test, i != 5,
+ 					regmap_read(map, i, &val) == 0);
+ 		} else {
+@@ -300,7 +326,6 @@ static void read_writeonly(struct kunit *test)
+ 
+ static void reg_defaults(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -308,7 +333,6 @@ static void reg_defaults(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.num_reg_defaults = BLOCK_TEST_SIZE;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -332,7 +339,7 @@ static void reg_defaults_read_dev(struct kunit *test)
- 	config.cache_type = t->type;
+ 	map = gen_regmap(test, &config, &data);
+@@ -323,12 +347,11 @@ static void reg_defaults(struct kunit *test)
+ 
+ 	/* The data should have been read from cache if there was one */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+-		KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ }
+ 
+ static void reg_defaults_read_dev(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -336,7 +359,6 @@ static void reg_defaults_read_dev(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.num_reg_defaults_raw = BLOCK_TEST_SIZE;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -368,7 +375,7 @@ static void register_patch(struct kunit *test)
- 	config.cache_type = t->type;
+ 	map = gen_regmap(test, &config, &data);
+@@ -346,7 +368,7 @@ static void reg_defaults_read_dev(struct kunit *test)
+ 
+ 	/* We should have read the cache defaults back from the map */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++) {
+-		KUNIT_EXPECT_EQ(test, t->type != REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type != REGCACHE_NONE, data->read[i]);
+ 		data->read[i] = false;
+ 	}
+ 
+@@ -357,12 +379,11 @@ static void reg_defaults_read_dev(struct kunit *test)
+ 
+ 	/* The data should have been read from cache if there was one */
+ 	for (i = 0; i < BLOCK_TEST_SIZE; i++)
+-		KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ }
+ 
+ static void register_patch(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -372,7 +393,6 @@ static void register_patch(struct kunit *test)
+ 
+ 	/* We need defaults so readback works */
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.num_reg_defaults = BLOCK_TEST_SIZE;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -419,7 +426,7 @@ static void stride(struct kunit *test)
+ 	map = gen_regmap(test, &config, &data);
+@@ -414,7 +434,6 @@ static void register_patch(struct kunit *test)
+ 
+ static void stride(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -422,7 +441,6 @@ static void stride(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.reg_stride = 2;
  	config.num_reg_defaults = BLOCK_TEST_SIZE / 2;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -495,7 +502,7 @@ static void basic_ranges(struct kunit *test)
- 	config.num_ranges = 1;
- 	config.max_register = test_range.range_max;
+@@ -444,7 +462,7 @@ static void stride(struct kunit *test)
+ 		} else {
+ 			KUNIT_EXPECT_EQ(test, 0, regmap_read(map, i, &rval));
+ 			KUNIT_EXPECT_EQ(test, data->vals[i], rval);
+-			KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE,
++			KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE,
+ 					data->read[i]);
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -565,7 +572,7 @@ static void stress_insert(struct kunit *test)
- 	config.cache_type = t->type;
+ 			KUNIT_EXPECT_EQ(test, 0, regmap_write(map, i, rval));
+@@ -488,7 +506,6 @@ static bool test_range_all_volatile(struct device *dev, unsigned int reg)
+ 
+ static void basic_ranges(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -496,7 +513,6 @@ static void basic_ranges(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 	config.volatile_reg = test_range_all_volatile;
+ 	config.ranges = &test_range;
+ 	config.num_ranges = 1;
+@@ -560,7 +576,6 @@ static void basic_ranges(struct kunit *test)
+ /* Try to stress dynamic creation of cache data structures */
+ static void stress_insert(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -569,7 +584,6 @@ static void stress_insert(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.max_register = 300;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -616,7 +623,7 @@ static void cache_bypass(struct kunit *test)
- 	config = test_regmap_config;
- 	config.cache_type = t->type;
+ 	map = gen_regmap(test, &config, &data);
+@@ -606,7 +620,7 @@ static void stress_insert(struct kunit *test)
+ 	for (i = 0; i < config.max_register; i ++) {
+ 		KUNIT_EXPECT_EQ(test, 0, regmap_read(map, i, &rval));
+ 		KUNIT_EXPECT_EQ(test, rval, vals[i]);
+-		KUNIT_EXPECT_EQ(test, t->type == REGCACHE_NONE, data->read[i]);
++		KUNIT_EXPECT_EQ(test, config.cache_type == REGCACHE_NONE, data->read[i]);
+ 	}
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -655,7 +662,7 @@ static void cache_sync(struct kunit *test)
- 	config = test_regmap_config;
- 	config.cache_type = t->type;
+ 	regmap_exit(map);
+@@ -614,14 +628,12 @@ static void stress_insert(struct kunit *test)
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
+ static void cache_bypass(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+ 	unsigned int val, rval;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 
+ 	map = gen_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -694,7 +701,7 @@ static void cache_sync_defaults(struct kunit *test)
- 	config.cache_type = t->type;
+@@ -652,7 +664,6 @@ static void cache_bypass(struct kunit *test)
+ 
+ static void cache_sync(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -660,7 +671,6 @@ static void cache_sync(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 
+ 	map = gen_regmap(test, &config, &data);
+ 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
+@@ -690,7 +700,6 @@ static void cache_sync(struct kunit *test)
+ 
+ static void cache_sync_defaults(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -698,7 +707,6 @@ static void cache_sync_defaults(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.num_reg_defaults = BLOCK_TEST_SIZE;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -730,7 +737,7 @@ static void cache_sync_readonly(struct kunit *test)
- 	config.cache_type = t->type;
+ 	map = gen_regmap(test, &config, &data);
+@@ -726,7 +734,6 @@ static void cache_sync_defaults(struct kunit *test)
+ 
+ static void cache_sync_readonly(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -734,7 +741,6 @@ static void cache_sync_readonly(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
  	config.writeable_reg = reg_5_false;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -773,7 +780,7 @@ static void cache_sync_patch(struct kunit *test)
- 	config.cache_type = t->type;
- 	config.num_reg_defaults = BLOCK_TEST_SIZE;
+ 	map = gen_regmap(test, &config, &data);
+@@ -767,7 +773,6 @@ static void cache_sync_readonly(struct kunit *test)
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -832,7 +839,7 @@ static void cache_drop(struct kunit *test)
- 	config.cache_type = t->type;
- 	config.num_reg_defaults = BLOCK_TEST_SIZE;
+ static void cache_sync_patch(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -777,7 +782,6 @@ static void cache_sync_patch(struct kunit *test)
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -873,7 +880,7 @@ static void cache_present(struct kunit *test)
+ 	/* We need defaults so readback works */
  	config = test_regmap_config;
- 	config.cache_type = t->type;
+-	config.cache_type = t->type;
+ 	config.num_reg_defaults = BLOCK_TEST_SIZE;
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
+ 	map = gen_regmap(test, &config, &data);
+@@ -828,7 +832,6 @@ static void cache_sync_patch(struct kunit *test)
+ 
+ static void cache_drop(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -836,7 +839,6 @@ static void cache_drop(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 	config.num_reg_defaults = BLOCK_TEST_SIZE;
+ 
+ 	map = gen_regmap(test, &config, &data);
+@@ -870,7 +872,6 @@ static void cache_drop(struct kunit *test)
+ 
+ static void cache_present(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -878,7 +879,6 @@ static void cache_present(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 
+ 	map = gen_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -917,7 +924,7 @@ static void cache_range_window_reg(struct kunit *test)
+@@ -910,7 +910,6 @@ static void cache_present(struct kunit *test)
+ /* Check that caching the window register works with sync */
+ static void cache_range_window_reg(struct kunit *test)
+ {
+-	struct regcache_types *t = (struct regcache_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -918,7 +917,6 @@ static void cache_range_window_reg(struct kunit *test)
+ 	int i;
+ 
+ 	config = test_regmap_config;
+-	config.cache_type = t->type;
+ 	config.volatile_reg = test_range_window_volatile;
+ 	config.ranges = &test_range;
  	config.num_ranges = 1;
- 	config.max_register = test_range.range_max;
+@@ -960,41 +958,29 @@ static void cache_range_window_reg(struct kunit *test)
+ 	KUNIT_ASSERT_EQ(test, val, 2);
+ }
  
--	map = gen_regmap(&config, &data);
-+	map = gen_regmap(test, &config, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -997,10 +1004,12 @@ static const struct regmap_config raw_regmap_config = {
- 	.val_bits = 16,
+-struct raw_test_types {
+-	const char *name;
+-
+-	enum regcache_type cache_type;
+-	enum regmap_endian val_endian;
++static const struct regmap_test_param raw_types_list[] = {
++	{ .cache = REGCACHE_NONE,   .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_NONE,   .val_endian = REGMAP_ENDIAN_BIG },
++	{ .cache = REGCACHE_FLAT,   .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_FLAT,   .val_endian = REGMAP_ENDIAN_BIG },
++	{ .cache = REGCACHE_RBTREE, .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_RBTREE, .val_endian = REGMAP_ENDIAN_BIG },
++	{ .cache = REGCACHE_MAPLE,  .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_MAPLE,  .val_endian = REGMAP_ENDIAN_BIG },
  };
  
--static struct regmap *gen_raw_regmap(struct regmap_config *config,
-+static struct regmap *gen_raw_regmap(struct kunit *test,
-+				     struct regmap_config *config,
- 				     struct raw_test_types *test_type,
+-static void raw_to_desc(const struct raw_test_types *t, char *desc)
+-{
+-	strcpy(desc, t->name);
+-}
++KUNIT_ARRAY_PARAM(raw_test_types, raw_types_list, param_to_desc);
+ 
+-static const struct raw_test_types raw_types_list[] = {
+-	{ "none-little",   REGCACHE_NONE,   REGMAP_ENDIAN_LITTLE },
+-	{ "none-big",      REGCACHE_NONE,   REGMAP_ENDIAN_BIG },
+-	{ "flat-little",   REGCACHE_FLAT,   REGMAP_ENDIAN_LITTLE },
+-	{ "flat-big",      REGCACHE_FLAT,   REGMAP_ENDIAN_BIG },
+-	{ "rbtree-little", REGCACHE_RBTREE, REGMAP_ENDIAN_LITTLE },
+-	{ "rbtree-big",    REGCACHE_RBTREE, REGMAP_ENDIAN_BIG },
+-	{ "maple-little",  REGCACHE_MAPLE,  REGMAP_ENDIAN_LITTLE },
+-	{ "maple-big",     REGCACHE_MAPLE,  REGMAP_ENDIAN_BIG },
++static const struct regmap_test_param raw_cache_types_list[] = {
++	{ .cache = REGCACHE_FLAT,   .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_FLAT,   .val_endian = REGMAP_ENDIAN_BIG },
++	{ .cache = REGCACHE_RBTREE, .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_RBTREE, .val_endian = REGMAP_ENDIAN_BIG },
++	{ .cache = REGCACHE_MAPLE,  .val_endian = REGMAP_ENDIAN_LITTLE },
++	{ .cache = REGCACHE_MAPLE,  .val_endian = REGMAP_ENDIAN_BIG },
+ };
+ 
+-KUNIT_ARRAY_PARAM(raw_test_types, raw_types_list, raw_to_desc);
+-
+-static const struct raw_test_types raw_cache_types_list[] = {
+-	{ "flat-little",   REGCACHE_FLAT,   REGMAP_ENDIAN_LITTLE },
+-	{ "flat-big",      REGCACHE_FLAT,   REGMAP_ENDIAN_BIG },
+-	{ "rbtree-little", REGCACHE_RBTREE, REGMAP_ENDIAN_LITTLE },
+-	{ "rbtree-big",    REGCACHE_RBTREE, REGMAP_ENDIAN_BIG },
+-	{ "maple-little",  REGCACHE_MAPLE,  REGMAP_ENDIAN_LITTLE },
+-	{ "maple-big",     REGCACHE_MAPLE,  REGMAP_ENDIAN_BIG },
+-};
+-
+-KUNIT_ARRAY_PARAM(raw_test_cache_types, raw_cache_types_list, raw_to_desc);
++KUNIT_ARRAY_PARAM(raw_test_cache_types, raw_cache_types_list, param_to_desc);
+ 
+ static const struct regmap_config raw_regmap_config = {
+ 	.max_register = BLOCK_TEST_SIZE,
+@@ -1006,18 +992,18 @@ static const struct regmap_config raw_regmap_config = {
+ 
+ static struct regmap *gen_raw_regmap(struct kunit *test,
+ 				     struct regmap_config *config,
+-				     struct raw_test_types *test_type,
  				     struct regmap_ram_data **data)
  {
-+	struct regmap_test_priv *priv = test->priv;
+ 	struct regmap_test_priv *priv = test->priv;
++	const struct regmap_test_param *param = test->param_value;
  	u16 *buf;
  	struct regmap *ret;
  	size_t size = (config->max_register + 1) * config->reg_bits / 8;
-@@ -1052,7 +1061,7 @@ static struct regmap *gen_raw_regmap(struct regmap_config *config,
- 	if (config->cache_type == REGCACHE_NONE)
- 		config->num_reg_defaults = 0;
+ 	int i;
+ 	struct reg_default *defaults;
  
--	ret = regmap_init_raw_ram(config, *data);
-+	ret = regmap_init_raw_ram(priv->dev, config, *data);
- 	if (IS_ERR(ret)) {
- 		kfree(buf);
- 		kfree(*data);
-@@ -1072,7 +1081,7 @@ static void raw_read_defaults_single(struct kunit *test)
+-	config->cache_type = test_type->cache_type;
+-	config->val_format_endian = test_type->val_endian;
++	config->cache_type = param->cache;
++	config->val_format_endian = param->val_endian;
+ 	config->disable_locking = config->cache_type == REGCACHE_RBTREE ||
+ 					config->cache_type == REGCACHE_MAPLE;
  
- 	config = raw_regmap_config;
+@@ -1042,7 +1028,7 @@ static struct regmap *gen_raw_regmap(struct kunit *test,
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -1099,7 +1108,7 @@ static void raw_read_defaults(struct kunit *test)
+ 	for (i = 0; i < config->num_reg_defaults; i++) {
+ 		defaults[i].reg = i;
+-		switch (test_type->val_endian) {
++		switch (param->val_endian) {
+ 		case REGMAP_ENDIAN_LITTLE:
+ 			defaults[i].def = le16_to_cpu(buf[i]);
+ 			break;
+@@ -1072,7 +1058,6 @@ static struct regmap *gen_raw_regmap(struct kunit *test,
  
- 	config = raw_regmap_config;
- 
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
- 	if (IS_ERR(map))
- 		return;
-@@ -1109,7 +1118,7 @@ static void raw_read_defaults(struct kunit *test)
- 	KUNIT_ASSERT_TRUE(test, rval != NULL);
- 	if (!rval)
- 		return;
--	
-+
- 	/* Check that we can read the defaults via the API */
- 	KUNIT_EXPECT_EQ(test, 0, regmap_raw_read(map, 0, rval, val_len));
- 	for (i = 0; i < config.max_register + 1; i++) {
-@@ -1136,7 +1145,7 @@ static void raw_write_read_single(struct kunit *test)
+ static void raw_read_defaults_single(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1081,7 +1066,7 @@ static void raw_read_defaults_single(struct kunit *test)
  
  	config = raw_regmap_config;
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
  	if (IS_ERR(map))
  		return;
-@@ -1164,7 +1173,7 @@ static void raw_write(struct kunit *test)
+@@ -1097,7 +1082,6 @@ static void raw_read_defaults_single(struct kunit *test)
+ 
+ static void raw_read_defaults(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1108,7 +1092,7 @@ static void raw_read_defaults(struct kunit *test)
  
  	config = raw_regmap_config;
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
  	if (IS_ERR(map))
  		return;
-@@ -1228,7 +1237,7 @@ static void raw_noinc_write(struct kunit *test)
+@@ -1136,7 +1120,6 @@ static void raw_read_defaults(struct kunit *test)
+ 
+ static void raw_write_read_single(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1145,7 +1128,7 @@ static void raw_write_read_single(struct kunit *test)
+ 
+ 	config = raw_regmap_config;
+ 
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
+ 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
+ 	if (IS_ERR(map))
+ 		return;
+@@ -1162,7 +1145,6 @@ static void raw_write_read_single(struct kunit *test)
+ 
+ static void raw_write(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1173,7 +1155,7 @@ static void raw_write(struct kunit *test)
+ 
+ 	config = raw_regmap_config;
+ 
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
+ 	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
+ 	if (IS_ERR(map))
+ 		return;
+@@ -1224,7 +1206,6 @@ static bool ram_reg_zero(struct regmap_ram_data *data, unsigned int reg)
+ 
+ static void raw_noinc_write(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1237,7 +1218,7 @@ static void raw_noinc_write(struct kunit *test)
  	config.writeable_noinc_reg = reg_zero;
  	config.readable_noinc_reg = reg_zero;
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
  	if (IS_ERR(map))
  		return;
-@@ -1276,7 +1285,7 @@ static void raw_sync(struct kunit *test)
+@@ -1274,7 +1255,6 @@ static void raw_noinc_write(struct kunit *test)
+ 
+ static void raw_sync(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1285,7 +1265,7 @@ static void raw_sync(struct kunit *test)
  
  	config = raw_regmap_config;
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
  	if (IS_ERR(map))
  		return;
-@@ -1323,7 +1332,7 @@ static void raw_sync(struct kunit *test)
- 		val[2] = cpu_to_be16(val[2]);
- 	else
- 		val[2] = cpu_to_le16(val[2]);
--	
-+
- 	/* The values should not appear in the "hardware" */
- 	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], &val[0], sizeof(val));
+@@ -1352,7 +1332,6 @@ static void raw_sync(struct kunit *test)
  
-@@ -1356,7 +1365,7 @@ static void raw_ranges(struct kunit *test)
+ static void raw_ranges(struct kunit *test)
+ {
+-	struct raw_test_types *t = (struct raw_test_types *)test->param_value;
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+@@ -1365,7 +1344,7 @@ static void raw_ranges(struct kunit *test)
  	config.num_ranges = 1;
  	config.max_register = test_range.range_max;
  
--	map = gen_raw_regmap(&config, t, &data);
-+	map = gen_raw_regmap(test, &config, t, &data);
+-	map = gen_raw_regmap(test, &config, t, &data);
++	map = gen_raw_regmap(test, &config, &data);
  	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
  	if (IS_ERR(map))
  		return;
-@@ -1437,8 +1446,40 @@ static struct kunit_case regmap_test_cases[] = {
- 	{}
- };
- 
-+static int regmap_test_init(struct kunit *test)
-+{
-+	struct regmap_test_priv *priv;
-+	struct device *dev;
-+
-+	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	test->priv = priv;
-+
-+	dev = kunit_device_register(test, "regmap_test");
-+	priv->dev = get_device(dev);
-+	if (!priv->dev)
-+		return -ENODEV;
-+
-+	dev_set_drvdata(dev, test);
-+
-+	return 0;
-+}
-+
-+static void regmap_test_exit(struct kunit *test)
-+{
-+	struct regmap_test_priv *priv = test->priv;
-+
-+	/* Destroy the dummy struct device */
-+	if (priv && priv->dev)
-+		put_device(priv->dev);
-+}
-+
- static struct kunit_suite regmap_test_suite = {
- 	.name = "regmap",
-+	.init = regmap_test_init,
-+	.exit = regmap_test_exit,
- 	.test_cases = regmap_test_cases,
- };
- kunit_test_suite(regmap_test_suite);
-diff --git a/drivers/base/regmap/regmap-ram.c b/drivers/base/regmap/regmap-ram.c
-index 192d6b131dff..5b4cbf982a11 100644
---- a/drivers/base/regmap/regmap-ram.c
-+++ b/drivers/base/regmap/regmap-ram.c
-@@ -53,7 +53,8 @@ static const struct regmap_bus regmap_ram = {
- 	.free_context = regmap_ram_free_context,
- };
- 
--struct regmap *__regmap_init_ram(const struct regmap_config *config,
-+struct regmap *__regmap_init_ram(struct device *dev,
-+				 const struct regmap_config *config,
- 				 struct regmap_ram_data *data,
- 				 struct lock_class_key *lock_key,
- 				 const char *lock_name)
-@@ -75,7 +76,7 @@ struct regmap *__regmap_init_ram(const struct regmap_config *config,
- 	if (!data->written)
- 		return ERR_PTR(-ENOMEM);
- 
--	map = __regmap_init(NULL, &regmap_ram, data, config,
-+	map = __regmap_init(dev, &regmap_ram, data, config,
- 			    lock_key, lock_name);
- 
- 	return map;
-diff --git a/drivers/base/regmap/regmap-raw-ram.c b/drivers/base/regmap/regmap-raw-ram.c
-index 93ae07b503fd..69eabfb89eda 100644
---- a/drivers/base/regmap/regmap-raw-ram.c
-+++ b/drivers/base/regmap/regmap-raw-ram.c
-@@ -107,7 +107,8 @@ static const struct regmap_bus regmap_raw_ram = {
- 	.free_context = regmap_raw_ram_free_context,
- };
- 
--struct regmap *__regmap_init_raw_ram(const struct regmap_config *config,
-+struct regmap *__regmap_init_raw_ram(struct device *dev,
-+				     const struct regmap_config *config,
- 				     struct regmap_ram_data *data,
- 				     struct lock_class_key *lock_key,
- 				     const char *lock_name)
-@@ -134,7 +135,7 @@ struct regmap *__regmap_init_raw_ram(const struct regmap_config *config,
- 
- 	data->reg_endian = config->reg_format_endian;
- 
--	map = __regmap_init(NULL, &regmap_raw_ram, data, config,
-+	map = __regmap_init(dev, &regmap_raw_ram, data, config,
- 			    lock_key, lock_name);
- 
- 	return map;
 -- 
 2.39.2
 
