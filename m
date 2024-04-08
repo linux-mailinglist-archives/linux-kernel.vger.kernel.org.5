@@ -1,79 +1,42 @@
-Return-Path: <linux-kernel+bounces-135701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17CBC89C9F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:41:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C3689C9F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 18:43:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3B4F284B0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:41:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5EBBB271F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA29142E6C;
-	Mon,  8 Apr 2024 16:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L9j4HMk/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39231428F7;
+	Mon,  8 Apr 2024 16:42:53 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15551428E3
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 16:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5431E4AF;
+	Mon,  8 Apr 2024 16:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712594506; cv=none; b=NUZMaFx8d0ijV8UQzZNb4k3YpXy2KpCZCq3trQzCWwdRct9acrhxbco++1LaXsh8MWv3zLzrBLZTzEPotPgg0WenSyY9Npxl//eAw4XV/ny+5IOHvN7HU4/Hwg40pwIlEbqzYOhNqMKylgpJ5618+F8onEbuNORIHUamqZ+ZI1c=
+	t=1712594573; cv=none; b=a2vOwy9FzXzrmZLCia9cCSQGQ0byhcciZGhWMZNubBmTi2v+Vaik5l0lc/t9CP9sAplIJR9PedwlsI2ntgaALCt1hdaaNoz5pRPra22zTX7pSRsOuCrf2Rm6L4VZThNZoWNCAlLKUnS34evVhsrMmqTjLpa/zqCfCc4w+EN29l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712594506; c=relaxed/simple;
-	bh=sWYvE4qmq7hVzJ0dCGaTIE5eJLwFeKcC0+RULiRIeaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RivRQE0FgM5XKTPmjeeE1QjVmQGnKYwCMkShZWitcHpR7Ft6pyUjFReAopAVt7Ooqx1pi5Tk7ASt9XGOyOcRfg+J7rsS6YgWsnBgKnftYMgHOycTqrmIpeyzYJUYV+Z6SHyQz9XBiMjcSVWRMrwi8U+aZVa+z4Dcivmf0IYxv0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L9j4HMk/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712594503;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WYFhy7LtlEFaejmOfEUdc9o2AS0SlykqOVzLzKcDbrs=;
-	b=L9j4HMk/4ErZ7woZpg9Hf8EIqqjWD13MDgeea3Yyt01hX1DspTtRcpn1iR4k0cKF8qPI2u
-	RvFCo531JMS7CpQdy3AyosmERBbIjZiDOFkliLVeCB3T9CWuG8xpa1aeoLkZXjmzETSwAw
-	WcI1mPbZusM4Q6FcHOMY02YpYp3bjoM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-176-WhyQka5CNzu-eLUzHE7xcA-1; Mon, 08 Apr 2024 12:41:42 -0400
-X-MC-Unique: WhyQka5CNzu-eLUzHE7xcA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51a2113040so189784666b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 09:41:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712594501; x=1713199301;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYFhy7LtlEFaejmOfEUdc9o2AS0SlykqOVzLzKcDbrs=;
-        b=wZzf9KbBLP+ZrJNU4zwh1lv4psZwsyYo1QccPpP85TPrLbxhI3oEnWdUQULNzvFNeY
-         fKumzYBzHa6YXWreDOOAPLNuUzLpZsgOvmCWHC0W9v5fppGArOmIwro1OxMtik2CTjGR
-         GYroY9Z6PWvZelIQtMxiNxrT5yU6fpwH5ax27tJfwuqd717/PmPzlHmGRU2axHGh4lRe
-         GXH4Yy2Aha3nfBAosSBGd94y7dn3qqM43/nvepc42Q+yjsRhqPYysWGI6flrkOnaIkit
-         iCplQUlCCAS/BtfX1fnLUYMZLLrYWDAKh384aITrwcRweuvZLpMmupASRTPS9UT3/DIo
-         DkJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUowy612ZVy43keOgoyg7Nd2WL5X/Wf+fLhytlZyexuNU+q7PyK7l1beq9NeanoFKSpqh+M7MeqygyW3sL2nn014auwTx0bLA/Onj2P
-X-Gm-Message-State: AOJu0YyADxVmSbhGFJ6Rc+LWW9nnVkB3aOvJ2e+Kc8qupCFAgujfWq/s
-	HXxZkZeOviaBAl9A1ORhABME2WiMLCzQPqE4cfWfakIbKRNTcMtGt6Ip24+sOzIRc4s0BWgu8ry
-	KBBFazNz8PtkckPfsgAtWCrqxGs5l7+NQChO3avP6XsG26WMrgMoFhoHIdpn2AA==
-X-Received: by 2002:a17:907:9810:b0:a46:f69b:49b1 with SMTP id ji16-20020a170907981000b00a46f69b49b1mr8095372ejc.46.1712594501558;
-        Mon, 08 Apr 2024 09:41:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGFGkr7moajAvwmFAdF7FwE057LZo7dEfP2XQoNu+wIaT/whevnNtaEz20216zr4FK5onjG1Q==
-X-Received: by 2002:a17:907:9810:b0:a46:f69b:49b1 with SMTP id ji16-20020a170907981000b00a46f69b49b1mr8095351ejc.46.1712594501251;
-        Mon, 08 Apr 2024 09:41:41 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id j20-20020a170906255400b00a51cd604c4bsm2270224ejb.149.2024.04.08.09.41.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 09:41:40 -0700 (PDT)
-Message-ID: <4e37511c-7570-4ea5-bdf9-6bdd62c63575@redhat.com>
-Date: Mon, 8 Apr 2024 18:41:39 +0200
+	s=arc-20240116; t=1712594573; c=relaxed/simple;
+	bh=3cfCGhGo+1bKCCJHCSF579dUEsohJffhuL/JLhHgU0k=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=aiPFCYZiOGy/pB9MxOBNa3dqMN2NX7bRarlWCnOtUKklJXXbBw20pJw2S12B3hytMaN7yon36t+Frp+TgTH4z2/lX6ouFtqvS/5TQd84XXLqarvJw5fNx5NziNua4EWIgzi6xBEGjWINA+8D0hmac4S4nvZDFQg/PzBOQEcODUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.2] (ip5f5af0ad.dynamic.kabel-deutschland.de [95.90.240.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id C980F61E5FE01;
+	Mon,  8 Apr 2024 18:42:33 +0200 (CEST)
+Message-ID: <913ed06e-56d0-4504-8af5-26ebac291d07@molgen.mpg.de>
+Date: Mon, 8 Apr 2024 18:42:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,120 +44,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/3] ACPI: platform-profile: add
- platform_profile_cycle()
-To: Gergo Koteles <soyer@irl.hu>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Len Brown <lenb@kernel.org>, Ike Panhc <ike.pan@canonical.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- =?UTF-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc: linux-acpi@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1712360639.git.soyer@irl.hu>
- <afd975d98708921f67a269aaf031a1dd1be1220d.1712360639.git.soyer@irl.hu>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <afd975d98708921f67a269aaf031a1dd1be1220d.1712360639.git.soyer@irl.hu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part
+ of current TD ep_index 1 comp_code 1
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+To: Mathias Nyman <mathias.nyman@linux.intel.com>,
+ =?UTF-8?Q?Micha=C5=82_Pecio?= <michal.pecio@gmail.com>
+Cc: Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
+ <20240405113247.743e34b2@foxbook>
+ <7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
+ <20240406183659.3daf4fa0@foxbook>
+ <c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
+ <20240407142542.036fb02f@foxbook>
+ <1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
+ <bd4bdabc-2d83-4022-87f4-8c599009d9f5@molgen.mpg.de>
+Content-Language: en-US
+In-Reply-To: <bd4bdabc-2d83-4022-87f4-8c599009d9f5@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Gergo,
+[one addition]
 
-On 4/6/24 2:01 AM, Gergo Koteles wrote:
-> Some laptops have a key to switch platform profiles.
+Am 08.04.24 um 18:37 schrieb Paul Menzel:
+> Dear Mathias, dear Michał,
 > 
-> Add a platform_profile_cycle() function to cycle between the enabled
-> profiles.
 > 
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
-
-Thank you for your patch, 1 small remark below,
-otherwise this looks good to me.
-
-Rafael, may I have your Ack for merging this through the pdx86 tree
-together with the rest of the series once my remark has been addressed ?
-
-
-> ---
->  drivers/acpi/platform_profile.c  | 39 ++++++++++++++++++++++++++++++++
->  include/linux/platform_profile.h |  1 +
->  2 files changed, 40 insertions(+)
+> Thank you very much for your assistance.
 > 
-> diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_profile.c
-> index d418462ab791..acc606af812a 100644
-> --- a/drivers/acpi/platform_profile.c
-> +++ b/drivers/acpi/platform_profile.c
-> @@ -136,6 +136,45 @@ void platform_profile_notify(void)
->  }
->  EXPORT_SYMBOL_GPL(platform_profile_notify);
->  
-> +int platform_profile_cycle(void)
-> +{
-> +	enum platform_profile_option profile;
-> +	enum platform_profile_option next;
-> +	int err;
-> +
-> +	err = mutex_lock_interruptible(&profile_lock);
-> +	if (err)
-> +		return err;
-> +
-> +	if (!cur_profile) {
-> +		mutex_unlock(&profile_lock);
-> +		return -ENODEV;
-> +	}
-> +
-> +	err = cur_profile->profile_get(cur_profile, &profile);
-> +	if (err) {
-> +		mutex_unlock(&profile_lock);
-> +		return err;
-> +	}
-> +
-> +	next = find_next_bit_wrap(cur_profile->choices,
-> +				  ARRAY_SIZE(profile_names), profile + 1);
-> +
-> +	if (WARN_ON(next == ARRAY_SIZE(profile_names))) {
+> 
+> Am 08.04.24 um 09:17 schrieb Mathias Nyman:
+>> On 7.4.2024 15.25, Michał Pecio wrote:
+>>> This (and the absence of any earlier errors on the endpoint) looks
+>>> like the hardware may be confirming a "successful" transfer twice or
+>>> the driver may be processing one such confirmation twice.
+>>
+>> It's also possible this TD/TRB was cancelled due to the disconnect.
+>> Could be that even if driver removes the TD from the list and cleans 
+>> out the TRB from the ring buffer (turns TRB to no-op) hardware may 
+>> have read ahead and cached the TRB, and process it anyway.
+>>
+>>> [   94.088594] usb 1-2: USB disconnect, device number 8
+>>> [   94.089370] xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not part of current TD ep_index 1 comp_code 1
+>>> [   94.089403] xhci_hcd 0000:00:14.0: Looking for event-dma 00000001250310f0 trb-start 0000000125031100 trb-end 0000000125031100 seg-start 0000000125031000 seg-end 0000000125031ff0
+>>> [   94.089427] xhci_hcd 0000:00:14.0: last xhci_td_cleanup: first_dma 1250310f0 last_dma 1250310f0 status -115 from finish_td
+>>>
+>>> (I say "successful" but it really isn't - the device is no longer
+>>> listening. But there is no delivery confirmation on isochronous OUT
+>>> endpoints so the xHC doesn't suspect anything.)
+>>>
+>>> Could you try again with this updated debug patch to get more info?
+>>
+>> Would also be helpful to add xhci dynamic debug and xhci tracing (two 
+>> separate logs). These will show in detail everything that is going on.
+>>
+>> Steps:
+>>
+>> mount -t debugfs none /sys/kernel/debug
+>> echo 'module xhci_hcd =p' >/sys/kernel/debug/dynamic_debug/control
+>> echo 'module usbcore =p' >/sys/kernel/debug/dynamic_debug/control
+>> echo 81920 > /sys/kernel/debug/tracing/buffer_size_kb
+>> echo 1 > /sys/kernel/debug/tracing/events/xhci-hcd/enable
+>> echo 1 > /sys/kernel/debug/tracing/tracing_on
+>> < Reproduce issue >
+>> Send output of dmesg
+>> Send content of /sys/kernel/debug/tracing/trace
+>>
+>> please copy the /sys/kernel/debug/tracing/trace file somewhere as soon
+>> as possible after reproducing the issue. It grows fast.
+> 
+> For posterity I created Linux Kernel Bugzilla issue #218695 [1], and 
+> attached the files there. Hopefully everything was captured, that you 
+> need. The discussion could continue on this list, but do as it suits you 
+> best.
 
-Other code in drivers/acpi/platform_profile.c uses PLATFORM_PROFILE_LAST
-instead of ARRAY_SIZE(profile_names) (these are guaranteed to be equal)
-please switch to using PLATFORM_PROFILE_LAST for consistency.
-
-Regards,
-
-Hans
+Just to clarify, although there are six error log lines I only plugged 
+and unplugged the USB headset once.
 
 
-
-
-
-> +		mutex_unlock(&profile_lock);
-> +		return -EINVAL;
-> +	}
-> +
-> +	err = cur_profile->profile_set(cur_profile, next);
-> +	mutex_unlock(&profile_lock);
-> +
-> +	if (!err)
-> +		sysfs_notify(acpi_kobj, NULL, "platform_profile");
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(platform_profile_cycle);
-> +
->  int platform_profile_register(struct platform_profile_handler *pprof)
->  {
->  	int err;
-> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
-> index e5cbb6841f3a..f5492ed413f3 100644
-> --- a/include/linux/platform_profile.h
-> +++ b/include/linux/platform_profile.h
-> @@ -36,6 +36,7 @@ struct platform_profile_handler {
->  
->  int platform_profile_register(struct platform_profile_handler *pprof);
->  int platform_profile_remove(void);
-> +int platform_profile_cycle(void);
->  void platform_profile_notify(void);
->  
->  #endif  /*_PLATFORM_PROFILE_H_*/
-
+> Kind regards,
+> 
+> Paul
+> 
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218695
 
