@@ -1,158 +1,186 @@
-Return-Path: <linux-kernel+bounces-135722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7322689CA4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:05:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2655389CA51
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 19:05:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B02B286FB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:05:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85C09B29BC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 17:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8117142E9C;
-	Mon,  8 Apr 2024 17:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A13143867;
+	Mon,  8 Apr 2024 17:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OnbJIjKk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ioHiPICM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEA563CB;
-	Mon,  8 Apr 2024 17:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675BA142E79;
+	Mon,  8 Apr 2024 17:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712595896; cv=none; b=ASstNHDoBf0IovBLXFrDElk2LSKL6tCaiVKiwDdvoGC4kF5bFSC8jhZskOIcAklfY0h2vDOAMBjFq8MP6myVJeR+NSXR/GXOmcscXXJi5tdlNj3+rmAhsOoX6niuj2stuGiclutecdow00ymsvVseeqP9RYgQQkyFLIrvhfshPU=
+	t=1712595910; cv=none; b=MzP2A+KVuIZn1ipZxcsO/Vv3tCOaRzH5aAO9/Jle/lK6A31R+vQzhZ1KDj2QgRKoDuaYsdp63LUWRK8EpYPIhBauRwfXGkbJlWFhW1Rtt7yZrR94jxuzg/kU/4KzhDlE/cLRrEc3OKQ/4+FJsWGDVwjWY5TClDzwdvH0jjazIWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712595896; c=relaxed/simple;
-	bh=jQt5fWtSrqnw4LOaCGG5paCwu/qrUWYQYYfyTEi/y2E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AC9ZetiDs2Q29gffaTvU8PNKKQsJO5egrt0OtrOOK9tZ+neaJ6y0jxB15xsvPptMATm2yypWJfO8J2Vr3B25qyxv3nQhfTlLK81M/IeqoQwhXlabkYYJA2vwYI6vd8w1lfjxl9g7xculA+V2hDn924+lVLzhkeOkf7wk6JBJ1Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OnbJIjKk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438DAS0Y011633;
-	Mon, 8 Apr 2024 17:04:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EmbZsgRQtI3hnTKgTCh06rmHUQcq9Po3Jvk5u93mytY=; b=On
-	bJIjKk0SI8N3F5JO0W8urZBf4WE0I20BtlJXPrHS3F3AtvppJ4waFNdDOw1CcTRF
-	CT0BVRp/LsGoJVIWpeZKbQ1PsFwq6MaNSqYIpfWH/sLhfUVLMdhEqiEExZsQ9apZ
-	eU8Vz+L7sz8gPb9OjHn9/Ezhyl37/xhfOT5GmaeXRENDzN7Oe8HvBTY1XYpwsM2K
-	TznhgirloF6wfu2rnD8C4Y1Z9vRpGJUOpAWvAZt+uQxJzpLiZDeHWZ4Gx7UutdX1
-	GZ6lhaf+m+pEFxEUM01HoQjr0I4o1dwNkhQVQTW1hSwexV71krOmNPP6lvescENs
-	3md7dUYvv7miV3Ndtx6Q==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg09f6v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 17:04:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438H4cMi005779
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Apr 2024 17:04:38 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
- 10:04:37 -0700
-Message-ID: <357b6395-5fae-38c9-8b53-5edc9fcbae32@quicinc.com>
-Date: Mon, 8 Apr 2024 10:04:36 -0700
+	s=arc-20240116; t=1712595910; c=relaxed/simple;
+	bh=q3aHEkDIaUg/6DDpl2Hw0IWOkW0evQ42aHBcgH6sLDQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZQsW7Im/7vamuj7ccQLaw8PNV0IuxCUmnT3W1UN0gvwAFFqP/8Yyl5l9UtBDZQ4jz0OdUm7j5U5ZJVJUat9SknsZj+1N5Lb5frmjj8leDNrhuJpYK41vg+Hzhm72S7Ft5+LY4eE/0VfFokrgxS5bMiCt/SbZfSPyXlDUiJQZ9Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ioHiPICM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFABC433C7;
+	Mon,  8 Apr 2024 17:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712595910;
+	bh=q3aHEkDIaUg/6DDpl2Hw0IWOkW0evQ42aHBcgH6sLDQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ioHiPICMdv/jEMGntcCv9aUV/MVpOZZDfda4pKRK3afqjK/qbxUA2oECXtWD0joET
+	 iiQWyqwAtSU5cFOmNQ5OUxdWsYd0oydyfmaYzmJ6lzb6tM0KGe2HVLp3qL+xqL5VnG
+	 69qN5d0DGlpowOhzRz6uwZJyNGoxEL6zBe6m90BJe7akUXvG0MPOoitCpLPOgYVhrL
+	 f2IYzUS3hGGp2tUMYXdhdhC8nZijZqDUYSr6X8C8wCkZ6XdbZjpueNtSry8p1pRanD
+	 rz7wAP0uBP0nCal1oa5/RCw3N0R8cZOBZhPjDxxC+pgi1dART1qBuAO0QC3g5MDmPj
+	 845tkPFRYlLyg==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5aa17bf8cf0so256422eaf.1;
+        Mon, 08 Apr 2024 10:05:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWaD95n6HDAKNVjJt6LrAxzzAei/4GhTiODObAwKZLVEkNZGaO5zFpNV5sv4oUZrBoGH5g6CcW2HgSazgsaqVwrwJwWDb8TSTQc+RMPwV3/IP/ivKS9Dk7KIial6SRAwEBqulooT6QNiS7Hn6LXkq2KqNaz7qXfIoMvClvYhop6Zzout1PO0UYwi3rlDLQ=
+X-Gm-Message-State: AOJu0YwK7h6vf+we6QCuIok5a7KC/vPeJ++BOHD+qbh0d3S48E6uGQ9O
+	mdt3TA3tMl4DlNM8XZKK8Jxi3ZOurv8e8r9QYq8HlV0GgmZnDH4LVRqFHOlvQX+y4sjh5J018ni
+	V/gLu+yynRWgpPSA7o6bIgdUFvEM=
+X-Google-Smtp-Source: AGHT+IEzjnPGX0iQ8amIZ3HV8gdrikLJRs4fdK6C3/HmSvcFMJx6nS6t2DWmTLeaL50L22e7Wnf/dcbFETWvuhpbUZc=
+X-Received: by 2002:a4a:d0af:0:b0:5aa:241a:7f4b with SMTP id
+ t15-20020a4ad0af000000b005aa241a7f4bmr5545431oor.1.1712595909295; Mon, 08 Apr
+ 2024 10:05:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm: ci: fix the xfails for apq8016
-Content-Language: en-US
-To: Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240401204859.24223-1-quic_abhinavk@quicinc.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240401204859.24223-1-quic_abhinavk@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TpNA7rz0y7aZAhQo4BnaZdP1GOu3ECmr
-X-Proofpoint-ORIG-GUID: TpNA7rz0y7aZAhQo4BnaZdP1GOu3ECmr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_15,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 clxscore=1015 spamscore=0 impostorscore=0
- adultscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404080131
+References: <cover.1712360639.git.soyer@irl.hu> <afd975d98708921f67a269aaf031a1dd1be1220d.1712360639.git.soyer@irl.hu>
+ <4e37511c-7570-4ea5-bdf9-6bdd62c63575@redhat.com>
+In-Reply-To: <4e37511c-7570-4ea5-bdf9-6bdd62c63575@redhat.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 8 Apr 2024 19:04:58 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jD=xECU=et=YHYbykyDjz4cBi6RvjmUrf4shzV2dJzRg@mail.gmail.com>
+Message-ID: <CAJZ5v0jD=xECU=et=YHYbykyDjz4cBi6RvjmUrf4shzV2dJzRg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] ACPI: platform-profile: add platform_profile_cycle()
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Gergo Koteles <soyer@irl.hu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Ike Panhc <ike.pan@canonical.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	=?UTF-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>, 
+	linux-acpi@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, 
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Helen
+On Mon, Apr 8, 2024 at 6:41=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
+wrote:
+>
+> Hi Gergo,
+>
+> On 4/6/24 2:01 AM, Gergo Koteles wrote:
+> > Some laptops have a key to switch platform profiles.
+> >
+> > Add a platform_profile_cycle() function to cycle between the enabled
+> > profiles.
+> >
+> > Signed-off-by: Gergo Koteles <soyer@irl.hu>
+>
+> Thank you for your patch, 1 small remark below,
+> otherwise this looks good to me.
+>
+> Rafael, may I have your Ack for merging this through the pdx86 tree
+> together with the rest of the series once my remark has been addressed ?
 
-Gentle reminder on this.
+Sure, please feel free to add
 
-If you are okay, we can land it via msm-next tree...
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thanks
+to this patch.  Thanks!
 
-Abhinav
-
-On 4/1/2024 1:48 PM, Abhinav Kumar wrote:
-> After IGT migrating to dynamic sub-tests, the pipe prefixes
-> in the expected fails list are incorrect. Lets drop those
-> to accurately match the expected fails.
-> 
-> In addition, update the xfails list to match the current passing
-> list. This should have ideally failed in the CI run because some
-> tests were marked as fail even though they passed but due to the
-> mismatch in test names, the matching didn't correctly work and was
-> resulting in those failures not being seen.
-> 
-> Here is the passing pipeline for apq8016 with this change:
-> 
-> https://gitlab.freedesktop.org/drm/msm/-/jobs/57050562
-> 
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->   drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt | 13 +------------
->   1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
-> index 44a5c62dedad..b14d4e884971 100644
-> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
-> @@ -1,17 +1,6 @@
->   kms_3d,Fail
->   kms_addfb_basic@addfb25-bad-modifier,Fail
-> -kms_cursor_legacy@all-pipes-forked-bo,Fail
-> -kms_cursor_legacy@all-pipes-forked-move,Fail
-> -kms_cursor_legacy@all-pipes-single-bo,Fail
-> -kms_cursor_legacy@all-pipes-single-move,Fail
-> -kms_cursor_legacy@all-pipes-torture-bo,Fail
-> -kms_cursor_legacy@all-pipes-torture-move,Fail
-> -kms_cursor_legacy@pipe-A-forked-bo,Fail
-> -kms_cursor_legacy@pipe-A-forked-move,Fail
-> -kms_cursor_legacy@pipe-A-single-bo,Fail
-> -kms_cursor_legacy@pipe-A-single-move,Fail
-> -kms_cursor_legacy@pipe-A-torture-bo,Fail
-> -kms_cursor_legacy@pipe-A-torture-move,Fail
-> +kms_cursor_legacy@torture-bo,Fail
->   kms_force_connector_basic@force-edid,Fail
->   kms_hdmi_inject@inject-4k,Fail
->   kms_selftest@drm_format,Timeout
+> > ---
+> >  drivers/acpi/platform_profile.c  | 39 ++++++++++++++++++++++++++++++++
+> >  include/linux/platform_profile.h |  1 +
+> >  2 files changed, 40 insertions(+)
+> >
+> > diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_pr=
+ofile.c
+> > index d418462ab791..acc606af812a 100644
+> > --- a/drivers/acpi/platform_profile.c
+> > +++ b/drivers/acpi/platform_profile.c
+> > @@ -136,6 +136,45 @@ void platform_profile_notify(void)
+> >  }
+> >  EXPORT_SYMBOL_GPL(platform_profile_notify);
+> >
+> > +int platform_profile_cycle(void)
+> > +{
+> > +     enum platform_profile_option profile;
+> > +     enum platform_profile_option next;
+> > +     int err;
+> > +
+> > +     err =3D mutex_lock_interruptible(&profile_lock);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (!cur_profile) {
+> > +             mutex_unlock(&profile_lock);
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     err =3D cur_profile->profile_get(cur_profile, &profile);
+> > +     if (err) {
+> > +             mutex_unlock(&profile_lock);
+> > +             return err;
+> > +     }
+> > +
+> > +     next =3D find_next_bit_wrap(cur_profile->choices,
+> > +                               ARRAY_SIZE(profile_names), profile + 1)=
+;
+> > +
+> > +     if (WARN_ON(next =3D=3D ARRAY_SIZE(profile_names))) {
+>
+> Other code in drivers/acpi/platform_profile.c uses PLATFORM_PROFILE_LAST
+> instead of ARRAY_SIZE(profile_names) (these are guaranteed to be equal)
+> please switch to using PLATFORM_PROFILE_LAST for consistency.
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+>
+>
+> > +             mutex_unlock(&profile_lock);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     err =3D cur_profile->profile_set(cur_profile, next);
+> > +     mutex_unlock(&profile_lock);
+> > +
+> > +     if (!err)
+> > +             sysfs_notify(acpi_kobj, NULL, "platform_profile");
+> > +
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(platform_profile_cycle);
+> > +
+> >  int platform_profile_register(struct platform_profile_handler *pprof)
+> >  {
+> >       int err;
+> > diff --git a/include/linux/platform_profile.h b/include/linux/platform_=
+profile.h
+> > index e5cbb6841f3a..f5492ed413f3 100644
+> > --- a/include/linux/platform_profile.h
+> > +++ b/include/linux/platform_profile.h
+> > @@ -36,6 +36,7 @@ struct platform_profile_handler {
+> >
+> >  int platform_profile_register(struct platform_profile_handler *pprof);
+> >  int platform_profile_remove(void);
+> > +int platform_profile_cycle(void);
+> >  void platform_profile_notify(void);
+> >
+> >  #endif  /*_PLATFORM_PROFILE_H_*/
+>
 
