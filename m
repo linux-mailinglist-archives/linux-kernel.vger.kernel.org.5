@@ -1,207 +1,186 @@
-Return-Path: <linux-kernel+bounces-135520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B7289C71A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:31:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40EDB89C71F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 16:31:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2D7283E84
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3842284F7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4752413B5B5;
-	Mon,  8 Apr 2024 14:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFBF13D28E;
+	Mon,  8 Apr 2024 14:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n2PEwkJo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x3AnvYBI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n2PEwkJo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x3AnvYBI"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="d0g6MJwQ"
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8161713B594;
-	Mon,  8 Apr 2024 14:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC0413D264;
+	Mon,  8 Apr 2024 14:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586651; cv=none; b=NL+U8IOQMy1a0TOalLoxCjigFefTKBvHj1kdWeSrIC47qWngNOoE8QXFHQAbpVAPf2b2ddu5Q0OEjcCcxQsYTzi55I3BPNHXa8ZDAMf9aUPhqYi8ocOq1B7+NeeTX2mNMlLSmChqoMXs+pStcFa6304uHWSQ/piOM6XVWMpfxII=
+	t=1712586705; cv=none; b=Fjjjc/dNp2kvkZ3rxxo5ejvzE+msCGdpvCUIr05aHOegw6WpPpePo+wUhRLE0dJXJSuuBrjnxrmTVHPRt73YFULTBnoqnq96mr3Jy0wnQ12fQhieMae17I5GJMU3Jz2xnZ2oJLt+mtaXDzoiZUwpocTymPUThnZ+NYr+4ayDheY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586651; c=relaxed/simple;
-	bh=Re4ozZr4CHJHzufgoZx5yfogXY8vgcdxYpMPuHB77VI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rm4VsFmkYe/VqqOB5tZBYfIv37pvsfXHk/53d6XWzh8jAkX9+zy+Ygdq/C5Hex+MsbK/F4fiUB3TqQH2WjhAoW5jGzGpkuqcaDHcQBqPWEHirlIsTkkbJ/DA5RHvhAj5RH6oS2UdsDT/xZ4ltIvAfN0TBUK/GciOyNqR+IPDtwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n2PEwkJo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x3AnvYBI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n2PEwkJo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x3AnvYBI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 95BD9203D1;
-	Mon,  8 Apr 2024 14:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712586647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zn/qWfU1LE05R6zzlgfcSN5haYke/pTO+J4746Gv9mo=;
-	b=n2PEwkJoZtm1iK07eyggjA7Kqoq15r7fKlEqTDvD/JZSOVAc6rivsnp7W2DSsHOuekfnsH
-	4zgFflJPpRtYq4KwKvBE6p7xnL0O3w86+/l/wwY9KPkS2CBXcM/k6qPgON1qSe5LuTZNCC
-	ilg2lTg/qpC2dKhOIxmjxrB4dkrRfmU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712586647;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zn/qWfU1LE05R6zzlgfcSN5haYke/pTO+J4746Gv9mo=;
-	b=x3AnvYBIROEdOj1Us8VkbtucD98rhb5N3jcwpGYuI2OrqLs0kXEJKxeVmuV7IuZ98ekVZw
-	84xOclvqxuf1TECg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712586647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zn/qWfU1LE05R6zzlgfcSN5haYke/pTO+J4746Gv9mo=;
-	b=n2PEwkJoZtm1iK07eyggjA7Kqoq15r7fKlEqTDvD/JZSOVAc6rivsnp7W2DSsHOuekfnsH
-	4zgFflJPpRtYq4KwKvBE6p7xnL0O3w86+/l/wwY9KPkS2CBXcM/k6qPgON1qSe5LuTZNCC
-	ilg2lTg/qpC2dKhOIxmjxrB4dkrRfmU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712586647;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zn/qWfU1LE05R6zzlgfcSN5haYke/pTO+J4746Gv9mo=;
-	b=x3AnvYBIROEdOj1Us8VkbtucD98rhb5N3jcwpGYuI2OrqLs0kXEJKxeVmuV7IuZ98ekVZw
-	84xOclvqxuf1TECg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A2B91332F;
-	Mon,  8 Apr 2024 14:30:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id h3S0IZf/E2Y8cAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 08 Apr 2024 14:30:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 2CB4AA0814; Mon,  8 Apr 2024 16:30:43 +0200 (CEST)
-Date: Mon, 8 Apr 2024 16:30:43 +0200
-From: Jan Kara <jack@suse.cz>
-To: Chao Yu <chao@kernel.org>
-Cc: jack@suse.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] quota: don't let mark_dquot_dirty() fail silently
-Message-ID: <20240408143043.65yowy2yvf46weab@quack3>
-References: <20240407073128.3489785-1-chao@kernel.org>
+	s=arc-20240116; t=1712586705; c=relaxed/simple;
+	bh=EvtVPmC2a8GrbYiUa8nf5b5/yGVqGSuBquGmjhHCG2A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A0w5DL942+0vUrgNbFbTRJZTuNiQAuHmJi9STgte+NKujwOQHQ974zzJPOEt8/e4F+Yy03M66EY8Nkz3u08fVvryY8OTDc2E9+Np7NZ6hmEEEZwreCnhmzgZF+mNjQZTSQ5Oq4HYFXSFvPqcGnR8RRV48SCshKbKOxJyisfhyq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=d0g6MJwQ; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438BnEZ7027951;
+	Mon, 8 Apr 2024 10:31:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=J3KVBpz+p8Bb
+	sjloP3ipPohes/eBdHpznTwlRE3dPvo=; b=d0g6MJwQB5mLa6mCosEhjwhqEgYG
+	Ea/+SjLmEZ1hDc7cLYrHdtwkMj3rh8Z9sL3VxgCSmodItHDq/L7S4LJxoVEJqzBj
+	sCVA71bLOB6QqnGGQvqeae2vdBIWOoKOKk1y2JlAQJfUeMJKtk3kbh+gwvusajvQ
+	2aTwzf9JVbY2KYH1I81enLnohEdBcL323tRd9iK3ZnQLeTiZ7Yssy/EKL3Hq/Adq
+	mSsIWyqZT++B7/5MNTiEgniJ5ESFyesV77kIRNoOTA2PIwB+adnulAWNdM/qIXvB
+	A6aWXIgY7sOnWK1vqvaLIRpIqAORfCn0ieS53m25u1mqpmIG/bt3yzERwg==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3xcbbn1qf1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 10:31:14 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 438EVDkF039117
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 8 Apr 2024 10:31:13 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Mon, 8 Apr 2024
+ 10:31:12 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Mon, 8 Apr 2024 10:31:12 -0400
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 438EUsew017936;
+	Mon, 8 Apr 2024 10:30:57 -0400
+From: Marcelo Schmitt <marcelo.schmitt@analog.com>
+To: <lars@metafoo.de>, <Michael.Hennerich@analog.com>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <marcelo.schmitt1@gmail.com>
+CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/2] Add support for AD4000 series
+Date: Mon, 8 Apr 2024 11:30:50 -0300
+Message-ID: <cover.1712585500.git.marcelo.schmitt@analog.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407073128.3489785-1-chao@kernel.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.77 / 50.00];
-	BAYES_HAM(-2.97)[99.86%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:email]
-X-Spam-Score: -3.77
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: QoTcOSGl1jWg0r1YwsM7F9Amu-qwkuT3
+X-Proofpoint-ORIG-GUID: QoTcOSGl1jWg0r1YwsM7F9Amu-qwkuT3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_12,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080111
 
-On Sun 07-04-24 15:31:28, Chao Yu wrote:
-> mark_dquot_dirty() will callback to specified filesystem function,
-> it may fail due to any reasons, however, no caller will check return
-> value of mark_dquot_dirty(), so, it may fail silently, let's print
-> one line message for such case.
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
->  fs/quota/dquot.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index dacbee455c03..c5df7863942a 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -399,21 +399,20 @@ int dquot_mark_dquot_dirty(struct dquot *dquot)
->  EXPORT_SYMBOL(dquot_mark_dquot_dirty);
->  
->  /* Dirtify all the dquots - this can block when journalling */
-> -static inline int mark_all_dquot_dirty(struct dquot __rcu * const *dquots)
-> +static inline void mark_all_dquot_dirty(struct dquot __rcu * const *dquots)
->  {
-> -	int ret, err, cnt;
-> +	int ret, cnt;
->  	struct dquot *dquot;
->  
-> -	ret = err = 0;
->  	for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
->  		dquot = srcu_dereference(dquots[cnt], &dquot_srcu);
-> -		if (dquot)
-> -			/* Even in case of error we have to continue */
-> -			ret = mark_dquot_dirty(dquot);
-> -		if (!err)
-> -			err = ret;
-> +		if (!dquot)
-> +			continue;
-> +		ret = mark_dquot_dirty(dquot);
-> +		if (ret < 0)
-> +			quota_error(dquot->dq_sb,
-> +				"mark_all_dquot_dirty fails, ret: %d", ret);
+This is more like an RFC patch set since configuration read/write is currently
+buggy.
 
-Do you have any practical case you care about? Because in practice the
-filesystem will usually report if there's some catastrophic error (and the
-errors from ->mark_dirty() all mean the filesystem is in unhealthy state).
-So this message just adds to the noise in the error log - and e.g. if the
-disk goes bad so we cannot write, we could spew a lot of messages like
-this.
+Change log v1 -> v2:
+- Took device tree provided by David.
+- Dropped ABI additions in favor of device tree properties.
+- Set differential IIO channel subtype for differential ADCs.
+- Set scan_type shift bits to mask out correct real bits from buffer.
+- Added __aligned(8) to buffer timestamp.
+- Used union to reduce buffer memory usage for 16-bit devices.
+- Used SPI transfer functions rather than SPI message.
+- Used c99 style structure initialization.
+- Used iio_device_claim_direct_scoped().
+- Removed unneeded pointer casts.
+- Added other power supplies (VDD and VIO).
 
->  	}
-> -	return err;
->  }
->  
->  static inline void dqput_all(struct dquot **dquot)
-> @@ -2725,6 +2724,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->  {
->  	struct mem_dqblk *dm = &dquot->dq_dqb;
->  	int check_blim = 0, check_ilim = 0;
-> +	int ret;
->  	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
->  
->  	if (di->d_fieldmask & ~VFS_QC_MASK)
-> @@ -2807,7 +2807,10 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->  	else
->  		set_bit(DQ_FAKE_B, &dquot->dq_flags);
->  	spin_unlock(&dquot->dq_dqb_lock);
-> -	mark_dquot_dirty(dquot);
-> +	ret = mark_dquot_dirty(dquot);
-> +	if (ret < 0)
-> +		quota_error(dquot->dq_sb,
-> +			"mark_dquot_dirty fails, ret: %d", ret);
+Link to v1: https://lore.kernel.org/linux-iio/cover.1711131830.git.marcelo.schmitt@analog.com/
 
-Here, we can propagate the error back to userspace, which is probably
-better than spamming the logs.
+Additional topics:
 
-								Honza
+- Why there is no different handling for the different SPI wiring modes?
+It looks like there is no need for different handling of "4-wire" and "3-wire"
+modes.
+If in "4-wire" (dt default mode), SDI is connected to SPI controller CS and
+CNV is active high. We can activate the CNV GPIO then let the SPI controller
+bring CS (connected to SDI) down when starting the transfer.
+If in "3-wire" (dt single mode), if we have a CNV (active low) GPIO we activate
+it and then proceed with with the transfer. If controller CS is connected to
+CNV it works the same way.
+I'm thinking it's better if we can support these devices in similar way
+other SPI ADCs are supported. Does that make sense?
+To me, the "3-wire" mode with controller CS to ADC CNV is what most resembles
+conventional SPI. The only important distinction is that the
+controller must be able to keep ADC SDI line high during conversions.
+Although, while the spi-engine implementation provided to me can keep SDI up
+during conversions, I'm not sure its a thing all SPI controllers can do.
+I tried a raspberry pi 4 some time ago and it was leaving the SDI line low if
+no tx buffer was provided. Even with a tx full of 1s the controller would 
+bring SDI down between each 8 bits of transfer.
+Anyway, single-shot and buffered reads work with the spi-engine controller
+with ADC in "3-wire"/single mode with controller CS line connected to ADC CNV
+pin which is how I've been testing it.
+
+- Why did not make vref regulator optional?
+Other SAR ADCs I've seen needed a voltage reference otherwise they simply
+could not provide any reasonable readings. Isn't it preferable to fail rather
+than having a device that can't provide reliable data?
+
+- Why did not split into AD and ADAQ patches?
+The main difference between AD and ADAQ is the amplifier in front of the ADC.
+If only supporting AD, we could probably avoid the scale table since it would
+only have two possible values per ADC. But then the handling of span compression
+scale would need refactoring to be in the scale table when adding ADAQ.
+I'm not excited to implement something knowing it will need rework in the
+following patch. Will do if required.
+
+- Span compression and offset.
+For non-differential ADCs, enabling the span compression requires an input offset.
+Link: https://www.analog.com/media/en/technical-documentation/data-sheets/AD4000-4004-4008.pdf
+page 18
+and
+Link: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
+page 19
+I updated the _offset attribute for those ADCs according to span compression
+being enabled or not. Is it okay to have an attribute update cause an update to
+another one?
+Maybe also make the span compression a dt property and have it fixed after probe?
+
+- Configuration register
+Despite it doing single-shot and buffered captures, read and writes to the
+configuration register are currently buggy. It is as if the register was
+"floating". I tried setting up buffers like ad7768-1, adxl355_core, bma220_spi,
+bma400_core, and mcp3911.
+
+
+Thanks,
+Marcelo
+
+Marcelo Schmitt (2):
+  dt-bindings: iio: adc: Add AD4000
+  iio: adc: Add support for AD4000
+
+ .../bindings/iio/adc/adi,ad4000.yaml          | 201 ++++++
+ MAINTAINERS                                   |   8 +
+ drivers/iio/adc/Kconfig                       |  12 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/ad4000.c                      | 649 ++++++++++++++++++
+ 5 files changed, 871 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+ create mode 100644 drivers/iio/adc/ad4000.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.43.0
+
 
