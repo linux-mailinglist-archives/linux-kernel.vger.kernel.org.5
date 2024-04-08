@@ -1,41 +1,42 @@
-Return-Path: <linux-kernel+bounces-135429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B95189C21F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:26:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7291489C221
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:27:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9599D283127
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:26:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 145691F216AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596997E78F;
-	Mon,  8 Apr 2024 13:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D31E7F487;
+	Mon,  8 Apr 2024 13:23:11 +0000 (UTC)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5502C7E0E4;
-	Mon,  8 Apr 2024 13:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F2578285;
+	Mon,  8 Apr 2024 13:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712582589; cv=none; b=JkHBmx2/etx6B3xz6zKKiRSPC0bgWY4HTOy4zlMYf+8WwEToi0Z1ffiP96pACS142g00JvbwGbGLz1hILGw4PMDY5eORMjKHXtrRimiWLw3yKWzG4C+Ziku1bnfHUc37N28L7S8sniiuvbtDYQVLv8SFKkjo1Lwskl9t7pgTo5Y=
+	t=1712582591; cv=none; b=u92cDlzacT/PQ9Z0Ct5HepNUbqpfM1MmKAzPnMJ10lQ/JTxsyG+1FcVNee6xSbg3+6Gsv7Ytpj6lTXJHzF6P43XAwTSp/wIz7xy/s0SN0Z6fLuK3YDkF6VMwTyHoG2LWy+M1QYdEsoYzd0+PYfTHtaT/vRbjRir61e14Asciii0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712582589; c=relaxed/simple;
-	bh=z6kMTjY5qXKBn2JvGsBepTnGV0+FurDhLE8/eSDMU9Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hpn7gQ/JZ1QFVhUWlGvGhToXhPTj8bY0mCm8SEG2rElRblP2djnT/ROQe13XQhk/eub+P8ycEnE4sakSzi/xoEXqaw/vG/UEUdR4QmO4S2Edw4cj3Xh4OJi3+8UTndfxUIdjwknywRnucZBNHebtDfzmyDLd+pFH3z58VWlSxfc=
+	s=arc-20240116; t=1712582591; c=relaxed/simple;
+	bh=CPkxWt7XO20C5SjHEIoXBB+XcUwQXa3PCxC7/ONdRiY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=r9NLIeyVPdDTtPaDTys1NItxm8k69gjy/QBoMQOImsNRT/m/TfWiQWred50XJSP+PnX0hR3R/ngPOt5jZwMkPIJw1N16Bm7blob+axzKSRMnzBCyvqX6iTBXyKyLwGxneNB9UKrdHusa0XZetie9G+zbtptGmiAFMKr0NfYhpyY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 996C41A1315;
-	Mon,  8 Apr 2024 15:23:06 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E41731A0A08;
+	Mon,  8 Apr 2024 15:23:07 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 593931A14D9;
-	Mon,  8 Apr 2024 15:23:06 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AD6F71A027D;
+	Mon,  8 Apr 2024 15:23:07 +0200 (CEST)
 Received: from pe-lt8779.in-pnq01.nxp.com (pe-lt8779.in-pnq01.nxp.com [10.17.104.141])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6346E1802200;
-	Mon,  8 Apr 2024 21:23:04 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C4E5D1820F77;
+	Mon,  8 Apr 2024 21:23:05 +0800 (+08)
 From: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
 To: marcel@holtmann.org,
 	luiz.dentz@gmail.com,
@@ -57,10 +58,12 @@ Cc: linux-bluetooth@vger.kernel.org,
 	ziniu.wang_1@nxp.com,
 	haibo.chen@nxp.com,
 	LnxRevLi@nxp.com
-Subject: [PATCH v2 0/2] Bluetooth: btnxpuart: Update firmware names
-Date: Mon,  8 Apr 2024 18:52:39 +0530
-Message-Id: <20240408132241.750792-1-neeraj.sanjaykale@nxp.com>
+Subject: [PATCH v2 1/2] dt-bindings: net: bluetooth: btnxpuart: Add firmware-name property
+Date: Mon,  8 Apr 2024 18:52:40 +0530
+Message-Id: <20240408132241.750792-2-neeraj.sanjaykale@nxp.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240408132241.750792-1-neeraj.sanjaykale@nxp.com>
+References: <20240408132241.750792-1-neeraj.sanjaykale@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,25 +73,38 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
 
-This patch series updates the BT firmware file names in BTNXPUART
-driver, and adds a new optional firmware-name device tree property to
-override the firmware file names hardcoded in the driver. This will
-allow user to continue using the older firmware files.
-
-This change is necessary as newer firmware releases will have
-standardized naming convention aligned across all newer and legacy
-chipsets.
+This adds a new optional device tree property called firware-name.
 
 Signed-off-by: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+---
+v2: Add maxItems, simplify description, remove "nxp/". (Krzysztof)
+---
+ .../devicetree/bindings/net/bluetooth/nxp,88w8987-bt.yaml   | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Neeraj Sanjay Kale (2):
-  dt-bindings: net: bluetooth: btnxpuart: Add firmware-name property
-  Bluetooth: btnxpuart: Update firmware names
-
- .../net/bluetooth/nxp,88w8987-bt.yaml         |  6 ++++
- drivers/bluetooth/btnxpuart.c                 | 28 +++++++++++--------
- 2 files changed, 23 insertions(+), 11 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/bluetooth/nxp,88w8987-bt.yaml b/Documentation/devicetree/bindings/net/bluetooth/nxp,88w8987-bt.yaml
+index f01a3988538c..6774cc4d6a9e 100644
+--- a/Documentation/devicetree/bindings/net/bluetooth/nxp,88w8987-bt.yaml
++++ b/Documentation/devicetree/bindings/net/bluetooth/nxp,88w8987-bt.yaml
+@@ -31,6 +31,11 @@ properties:
+       This property depends on the module vendor's
+       configuration.
+ 
++  firmware-name:
++    maxItems: 1
++    description:
++      Specify firmware file name.
++
+ required:
+   - compatible
+ 
+@@ -42,5 +47,6 @@ examples:
+         bluetooth {
+             compatible = "nxp,88w8987-bt";
+             fw-init-baudrate = <3000000>;
++            firmware-name = "uartuart8987_bt_v0.bin";
+         };
+     };
 -- 
 2.34.1
 
