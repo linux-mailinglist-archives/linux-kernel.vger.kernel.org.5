@@ -1,149 +1,253 @@
-Return-Path: <linux-kernel+bounces-135083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A8AA89BAE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:51:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A4D89BAE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 10:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C8D41C21C34
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7DA1F22332
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 08:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815FC3FB8D;
-	Mon,  8 Apr 2024 08:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF83BB20;
+	Mon,  8 Apr 2024 08:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="j1cr+GRr"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OZ4NGTNt"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFE83C470
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 08:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9F3182C5;
+	Mon,  8 Apr 2024 08:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712566278; cv=none; b=BmQP9uHAY7TLOiOczd2byZ6jZM/zQriadDXutgwDsoS1M7tARZdxvxxJT4fEsF7KGPPGP2icPmD/4gy5xMddf7T92zTOLYy1weH6JhJ4xM5HLQVZQrv/1eDdfgD4qXo5hICdLRvzoOnxYbq7jXVbolXarkYs8r10MXEk2Bc1/zg=
+	t=1712566411; cv=none; b=giXQndhyptJHGd/81Cna3dXKY99JqzHLQRiV2YBR6zT3X0osH4L0e+XsiAilyz1Zxuvh+vD2WEZ6J/2etTexwK1Ze3pSCRVLxIPY40E1w9U45TYZ/jeffTKssbCC0+pPaLET6/sOnRCuVELvIXXDepIQFV8t4RZ5QyBVCoPvQSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712566278; c=relaxed/simple;
-	bh=LrHR5P/LrNI/UQPu1hlqeRHQWbUqR3Ke0r8v10Mpe2c=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r1MYDki0gP8esQdlOK2EN9NgYcFrVhHMtVBCzQBfJRV8ihUYqAPedrixqkxa1+LiUA63pzfJd+WSWyvVUMHnvpOavp1XOiNpsTVKaxq+c/9UPUqBzM/mpVB+9BIyOopyPNEzbMzNyBBwfg0Nb0uUJ3CLjHGQZT1K/S33nn119Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=j1cr+GRr; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712566268; x=1712825468;
-	bh=CUkPAONzwDRb/Nkur4cZQic06C81obmvAaXkWg3RRnE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=j1cr+GRrMMDEkZcscWsT32bBHzNmnUv2/sPLO4VMfHQ4WnUlopjx3XddPs8HG7wJQ
-	 Kf+AcdxPcMhQTVUvM1mValC43tW63xzJrRISZ4s77mQlvR6EW2V/6+uB+rKayebDhg
-	 SCKC+p8UstTdDBVEUZ/nvdmVDNKz7D+c9WnkaL/I9gpcFCfJiMYm4gqVjH6+3SI6vM
-	 g/LwBLJz+/VXvwC9c+6Jm5MeljxZywSpgz8gbiP9X4HsFWDpZcbNUi8A/ug1nPVQ6m
-	 Amg9Q9foy4phbHdWfWV9bMYg2drenU45LTXhDaCSTHTgd3vA8FMeDP/7HG3rSSXrKX
-	 xYmHkxCcbUlQg==
-Date: Mon, 08 Apr 2024 08:51:04 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 5/9] rust: list: add List
-Message-ID: <f51231b2-46a4-4fea-af9d-d16b0ea59bf5@proton.me>
-In-Reply-To: <CAH5fLggF=dBYzySEt-TgNT+Tr-SNYvQxp3A26NktXNb2SNhDDg@mail.gmail.com>
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-5-b1c59ba7ae3b@google.com> <d896a813-3081-40b4-985b-ef257d55cec2@proton.me> <CAH5fLgiN3jcd_HMgmP7H-026daMw0xkMk=CGaGc9AM7uHkFXFA@mail.gmail.com> <3f3cf5ae-30df-4032-b752-77126035784c@proton.me> <CAH5fLggF=dBYzySEt-TgNT+Tr-SNYvQxp3A26NktXNb2SNhDDg@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712566411; c=relaxed/simple;
+	bh=Zm3C8Itqr02oqSTrLD1Iv8KQvlmAaIOYfUbODHNva0Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tI7efYdOTA5DkNgsPqfPhlWMK9cADIWvbUcDFapWRVkHFqnF5sFOStv8D/jS5g/A5LCHZD3UprmEJIOqYuR88DmWgaH0xw8CuUWAxHVdQYQl2cqDuGOAiy9Pt8z6nFJsgntaHj4g61DHFX3h2tI5FhIf5uCvJAuHMgI1tAVTtn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OZ4NGTNt; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386bxOi013039;
+	Mon, 8 Apr 2024 08:53:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=kRN8Nj/uvppEFI2sdEgCwCdpQRdOJ/akCEAzT9NJIm4=; b=OZ
+	4NGTNtz+YRyJuA3b2WFpZAWSyoY5jj/y3CI9cYAvIu3quicAbzZ1dE3uy+FNyYYG
+	4DUoLRoswC2Gt5RlOBz6wAWS9hRZZHzxhsW0ihYL/n0OlJROdP/+1C/toGg+ALd+
+	u2qQHLRD+lLZ2mJB3AhkZp+jwwmwDcNdwYftzvCvqnuNn3ZJHzExhvRMiZ39hQmn
+	9jsLZ1miyINruGCuhZ0MY4C1jy5dJuNaHIa0dd6pXn0bQRa2Sd3yPOQplKE27RCT
+	UB5lAqbohAfJCoerRm8Gv5FsH7XhYy/OcSJ3a6oMT+flZQziYtzGHrJIdcuXjBYf
+	HnPZrJHC79zt1ogutPqw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbfyg898-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 08:53:21 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4388rJBD003787
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 08:53:19 GMT
+Received: from [10.216.26.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 8 Apr 2024
+ 01:53:11 -0700
+Message-ID: <66320cc1-614e-ef50-2c0b-12b027c7fa18@quicinc.com>
+Date: Mon, 8 Apr 2024 14:23:06 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v9 2/6] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
+ path
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas
+	<bhelgaas@google.com>, <johan+linaro@kernel.org>,
+        <bmasney@redhat.com>, <djakov@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_parass@quicinc.com>, <krzysztof.kozlowski@linaro.org>,
+        Bryan O'Donoghue
+	<bryan.odonoghue@linaro.org>
+References: <20240407-opp_support-v9-0-496184dc45d7@quicinc.com>
+ <20240407-opp_support-v9-2-496184dc45d7@quicinc.com>
+ <20240407143902.GB2679@thinkpad>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240407143902.GB2679@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: WGv1IFRQHFHFpj3VM7yaBv4pdlrOYyLr
+X-Proofpoint-GUID: WGv1IFRQHFHFpj3VM7yaBv4pdlrOYyLr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_07,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 phishscore=0 clxscore=1015
+ mlxlogscore=999 malwarescore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080067
 
-On 08.04.24 10:04, Alice Ryhl wrote:
-> On Thu, Apr 4, 2024 at 4:51=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
-me> wrote:
+
+
+On 4/7/2024 8:09 PM, Manivannan Sadhasivam wrote:
+> On Sun, Apr 07, 2024 at 10:07:35AM +0530, Krishna chaitanya chundru wrote:
+>> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
+> 
+> Please specify whether you are referencing PCIe host controller or endpoint
+> device or both.
+> 
+>> ICC (interconnect consumers) path should be voted otherwise it may
+> 
+> ICC is just 'Interconnect' unless I misunderstood.
+> 
+>> lead to NoC (Network on chip) timeout. We are surviving because of
+>> other driver vote for this path.
 >>
->> On 04.04.24 16:12, Alice Ryhl wrote:
->>> On Thu, Apr 4, 2024 at 4:03=E2=80=AFPM Benno Lossin <benno.lossin@proto=
-n.me> wrote:
->>>> On 02.04.24 14:17, Alice Ryhl wrote:
->>>>> +        // never null for items in a list.
->>>>> +        //
->>>>> +        // INVARIANT: There are three cases:
->>>>> +        //  * If the list has at least three items, then after remov=
-ing the item, `prev` and `next`
->>>>> +        //    will be next to each other.
->>>>> +        //  * If the list has two items, then the remaining item wil=
-l point at itself.
->>>>> +        //  * If the list has one item, then `next =3D=3D prev =3D=
-=3D item`, so these writes have no effect
->>>>> +        //    due to the writes to `item` below.
->>>>
->>>> I think the writes do not have an effect. (no need to reference the
->>>> writes to `item` below)
->>>
->>> ?
+> 
+> s/vote/voting
+> 
+>> As there is less access on this path compared to PCIe to mem path
+>> add minimum vote i.e 1KBps bandwidth always which is recommended
+>> by HW team.
 >>
->> The first write is
+> 
+> 'which is sufficient enough to keep the path active.'
+> 
+>> When suspending, disable this path after register space access
+>> is done.
 >>
->>       (*next).prev =3D prev;
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-qcom.c | 38 ++++++++++++++++++++++++++++++----
+>>   1 file changed, 34 insertions(+), 4 deletions(-)
 >>
->> Using the fact that `next =3D=3D prev =3D=3D item` we have
->>
->>       (*item).prev =3D prev;
->>
->> But that is already true, since the function requirement is that
->> `(*item).prev =3D=3D prev`. So the write has no effect.
->> The same should hold for `(*prev).next =3D next`.
->=20
-> Oh, you are arguing that we aren't changing the value? I hadn't
-> actually realized that this was the case. But the reason that they end
-> up with the correct values according to the invariants is the writes
-> below that set them to null - not the fact that we don't change them
-> here. After all, setting them to a non-null value is wrong according
-> to the invariants.
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 14772edcf0d3..b4893214b2d3 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -245,6 +245,7 @@ struct qcom_pcie {
+>>   	struct phy *phy;
+>>   	struct gpio_desc *reset;
+>>   	struct icc_path *icc_mem;
+>> +	struct icc_path *icc_cpu;
+>>   	const struct qcom_pcie_cfg *cfg;
+>>   	struct dentry *debugfs;
+>>   	bool suspended;
+>> @@ -1409,6 +1410,9 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>>   	if (IS_ERR(pcie->icc_mem))
+>>   		return PTR_ERR(pcie->icc_mem);
+>>   
+>> +	pcie->icc_cpu = devm_of_icc_get(pci->dev, "cpu-pcie");
+>> +	if (IS_ERR(pcie->icc_cpu))
+>> +		return PTR_ERR(pcie->icc_cpu);
+>>   	/*
+>>   	 * Some Qualcomm platforms require interconnect bandwidth constraints
+>>   	 * to be set before enabling interconnect clocks.
+>> @@ -1418,7 +1422,19 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>>   	 */
+>>   	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+>>   	if (ret) {
+>> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+>> +		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
+>> +			ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Since the CPU-PCIe path is only used for activities like register
+> 
+> Again, differentiate PCIe controller and endpoint device access.
+> 
+Ack to all comments. I will modify in next patch.
+>> +	 * access, Config/BAR space access, HW team has recommended to use a
+>> +	 * minimal bandwidth of 1KBps just to keep the link active.
+>> +	 */
+>> +	ret = icc_set_bw(pcie->icc_cpu, 0, kBps_to_icc(1));
+>> +	if (ret) {
+>> +		dev_err(pci->dev, "failed to set interconnect bandwidth for CPU-PCIe: %d\n",
+>>   			ret);
+>>   		return ret;
+>>   	}
+>> @@ -1448,7 +1464,7 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>>   
+>>   	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+>>   	if (ret) {
+>> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+>> +		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
+>>   			ret);
+>>   	}
+>>   }
+>> @@ -1610,7 +1626,7 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>   	 */
+>>   	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
+>>   	if (ret) {
+>> -		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
+>> +		dev_err(dev, "Failed to set interconnect bandwidth for PCIe-MEM: %d\n", ret);
+>>   		return ret;
+>>   	}
+>>   
+>> @@ -1634,7 +1650,15 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>   		pcie->suspended = true;
+>>   	}
+>>   
+>> -	return 0;
+>> +	/*
+>> +	 * Remove the vote for CPU-PCIe path now, since at this point onwards,
+>> +	 * no register access will be done.
+>> +	 */
+> 
+> Are you sure? Didn't we see late access to DBI registers on sc7280?
+>
+yeah you are correct I will add a check to disable icc only in suspend
+to idle case. only in suspend to ram case we see the DBI access in sc7280
 
-I just was confused by the "due to the writes to `item` below".
-In the single element case, I also think that the INVARIANT comment of
-the next `unsafe` block (still visible in this mail) is a bit weird,
-since the element still is in the list.
-For a single item, removing it is setting the prev, next and first
-pointers to null. So I think you might be able to use this for the last
-bullet point:
-
-     * If the list has one item, then `next =3D=3D prev =3D=3D item`, so th=
-ese
-       writes have no effect, since also `(*item).prev =3D=3D prev` and
-       `(*item).next =3D=3D next` by function requirement.
-
-For the INVARIANT comment below, I think you also need the case
-distinction:
-
-     * If the list had more than one item, `item` is no longer in the
-       list, so the pointers should be null.
-     * If the list had one item, then `item` points to itself, to remove
-       it, we set `prev` and `next` to null and later also `self.first`.
-
-What do you think?
-
---=20
-Cheers,
-Benno
-
->=20
-> Alice
->=20
->>>>> +        unsafe {
->>>>> +            (*next).prev =3D prev;
->>>>> +            (*prev).next =3D next;
->>>>> +        }
->>>>> +        // SAFETY: We have exclusive access to items in the list.
->>>>> +        // INVARIANT: The item is no longer in a list, so the pointe=
-rs should be null.
->>>>> +        unsafe {
->>>>> +            (*item).prev =3D ptr::null_mut();
->>>>> +            (*item).next =3D ptr::null_mut();
->>>>> +        }
-
+-Krishna Chaitanya
+>> +	ret = icc_disable(pcie->icc_cpu);
+>> +	if (ret)
+>> +		dev_err(dev, "failed to disable icc path of CPU-PCIe: %d\n", ret);
+> 
+> s/failed to disable icc path/Failed to disable Interconnect path between CPU-PCIe
+> 
+>> +
+>> +	return ret;
+>>   }
+>>   
+>>   static int qcom_pcie_resume_noirq(struct device *dev)
+>> @@ -1642,6 +1666,12 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+>>   	struct qcom_pcie *pcie = dev_get_drvdata(dev);
+>>   	int ret;
+>>   
+>> +	ret = icc_enable(pcie->icc_cpu);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to enable icc path of CPU-PCIe: %d\n", ret);
+> 
+> Same as above.
+> 
+> - Mani
+> 
 
