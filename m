@@ -1,64 +1,79 @@
-Return-Path: <linux-kernel+bounces-135354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8506D89BF67
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:48:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8A989BF6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 14:50:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22E9B1F22CA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C7CF1F227FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 12:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFD870CC5;
-	Mon,  8 Apr 2024 12:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D0D6F08B;
+	Mon,  8 Apr 2024 12:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="LJCAULDv"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="Z8MIPen1";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="MBFcVCR4"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9666CDDC;
-	Mon,  8 Apr 2024 12:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1058B1C0DE8;
+	Mon,  8 Apr 2024 12:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712580525; cv=none; b=hUfOW4HlxtFmD5vn/XxWE30Tr/cBoVcgPBGZ8ztv9bOe1onJp0cSZ2QN8rp33HgeuelYuDCGgMtKcZjh4q9nTe0ugzQn0bisZ99K8aihNyjGThHQ0Ph20AQThkX6GK7Qmc2ZYfvNcfKilxderPci5q2FUd3qQmbO00rDthow6DA=
+	t=1712580595; cv=none; b=UcR7g931y3fiwRZAm80eKT3aouTDPRbkb8oC2HzIkNPUcaDnLUJBnu85CgYpt8QWNJydRee90cC6S4IGX+qn41R9XudthGqBUZcZb7kHNLdY9i23jlIVe2WSXaCog6+h0PEhFmyTYDaHga9+czy3zaK1xynYaNAucPCBJb2jNic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712580525; c=relaxed/simple;
-	bh=mpZN8yjoALuYbnUIvl1Jzyjr8C6Q7zr6LsHovN0NC9o=;
+	s=arc-20240116; t=1712580595; c=relaxed/simple;
+	bh=UeYcGq37CDN7VKkwoTNLCUWAOzA2D/z/oBg4gvur3Hk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pg/1sNDCftqUSG4xz2HvJYG8T6kem8NsZznnfoGyfS6DMxcNohJLRE0z3TsO984j+37MdYsxXtPBhNZQRMOZjlKNFv/mbekEQjcgPi4PiKqzvZhb0+PLWX8/hBrOGG1sUP/e34a+p07MWNhlIXymo37X9ErjNByi068xEQmzwvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=LJCAULDv; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1712580519; bh=mpZN8yjoALuYbnUIvl1Jzyjr8C6Q7zr6LsHovN0NC9o=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=LJCAULDvuMRsyIafPbaNQo3zkuo+WIc3xesyh+5O/DMXTH821QOZoCFUWMhY56ryb
-	 bdQrZ4Gd/lD/OfSRlQI4uE3EQ+4UKfom3efaJSgRAX7bq7X7M3aFOVBPxgCUAcc6Dd
-	 evsI4KdJmuuktBmlLXiO7nv/NLo+xIJ2MS8MHbMg=
-Date: Mon, 8 Apr 2024 14:48:38 +0200
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
-Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
- document
-Message-ID: <uoo7xltbfx7u6iai7urj3wez7cwotokxt6lwjhff57xbljusqn@fr2xejnrlak7>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
- <ab9affc8-de68-4ec9-bdfc-02131191bc3a@linaro.org>
- <ZhPTTxI4oTF3pgrk@duo.ucw.cz>
- <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
- <e6vvuttix5k5fioy7q44ick5wj6u5gleh7mht36s4zjjcym7vy@bziejyohtc4b>
- <7976e254-ed1e-406d-870b-1ecdc4b1e23c@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LiQROK1cc48CNoyTDEdp7haqOQsjTxwbBbWGeSZCcxfOSUD4KUNWh/T2dEyY6QMAv5Ss6xZO6IB+pTRSHMGe0vbd5h4osyPmSD83PszemJLjAyZNv3x/U8jGRVJSg69UUmlbyyaic3jWJANUyIHdapu/4/OwjTPqRJ/BXsfCAsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=Z8MIPen1; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=MBFcVCR4; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 5BF32C020; Mon,  8 Apr 2024 14:49:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1712580584; bh=sW0O3UuAkGmxozVYNCUjZ+LwPS0GlqwCSzkatBIT1fw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z8MIPen122SH9rqCIV2PrBZ3woCMKx0UKV45OUZgp55pN7WjL84rWv3t/aFe7eKV+
+	 tQNZ9zTV+MHZo1OVGggsjC92v9tPJx5KWgIGDFCVhzrVd8UnWz5D6zVQiF7J+kTKjk
+	 azy4h7dMpO8vlliYwRM5wz6OAT4qH5n1v5+zYoBB8dW6Yes9vp2CcVfR8j7jqzr3QY
+	 BxiQy6h1yvf/S4nMfp3iHgunvvcAX+iVWqBR13Js+yibjZCJ+rjepGgLnF8urG7Kpg
+	 Np7Y9Metd1evUvZ8qyyV2s3xGA10HHVEc9CVINkgG501k+2P3s0NNVAn7+qnhBzNuJ
+	 FhCDuSn5AjRwg==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 66B77C009;
+	Mon,  8 Apr 2024 14:49:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1712580583; bh=sW0O3UuAkGmxozVYNCUjZ+LwPS0GlqwCSzkatBIT1fw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MBFcVCR48YIr43oJzAY9jvP0rmb/Mn9UltewHdcjnRllg8qvcclMu/lReqeQLY3IM
+	 3iw/WuXyWHTMdpHDaHItNT0hPRot6rpIFl6tIOho2byvD1LirPj48V0lDJ0FvKALGn
+	 6KtChdABVtFcF9Xg8VP6SzIcchRcoqx7SOISgAunUaErFHccViyPRbP9nxVQHar3Qi
+	 aIA7f2LF0H8fUkzOC89sxfxkX/B1AN4BH4IAR8m9tg8KETFhXcqOBDXpzpCmBhbCZ1
+	 1EBvxkGvbARLJbnTORtA4DkHNcRXOACbcYoVERJy/SEyrOzconLmUsz+yTNbZQpIJC
+	 ovaxRF2ZeHITA==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id dc276578;
+	Mon, 8 Apr 2024 12:49:35 +0000 (UTC)
+Date: Mon, 8 Apr 2024 21:49:20 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf parse: Allow names to start with digits
+Message-ID: <ZhPn0EwXf_bPBj-p@codewreck.org>
+References: <20240407-perf_digit-v1-0-57ec37c63394@codewreck.org>
+ <20240407-perf_digit-v1-3-57ec37c63394@codewreck.org>
+ <ZhKTrUPbUnBviQYK@codewreck.org>
+ <CAP-5=fWT4=yT9rxKmR4ing9i-EffRQnjTP355wU-fFN1Mfnezg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,89 +82,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7976e254-ed1e-406d-870b-1ecdc4b1e23c@linaro.org>
+In-Reply-To: <CAP-5=fWT4=yT9rxKmR4ing9i-EffRQnjTP355wU-fFN1Mfnezg@mail.gmail.com>
 
-On Mon, Apr 08, 2024 at 01:59:12PM GMT, Krzysztof Kozlowski wrote:
-> On 08/04/2024 13:52, Ondřej Jirman wrote:
-> > On Mon, Apr 08, 2024 at 01:24:03PM GMT, Krzysztof Kozlowski wrote:
-> >> On 08/04/2024 13:21, Pavel Machek wrote:
-> >>> Hi!
-> >>>
-> >>>>> Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
-> >>>>> but I did best I could.
-> >>>>>
-> >>>>> Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> >>>>
-> >>>> ...
-> >>>>
-> >>>>> +  cabledet-gpios:
-> >>>>> +    maxItems: 1
-> >>>>> +    description: GPIO controlling CABLE_DET (C3) pin.
-> >>>>> +
-> >>>>> +  avdd10-supply:
-> >>>>> +    description: 1.0V power supply going to AVDD10 (A4, ...) pins
-> >>>>> +
-> >>>>> +  dvdd10-supply:
-> >>>>> +    description: 1.0V power supply going to DVDD10 (D6, ...) pins
-> >>>>> +
-> >>>>> +  avdd18-supply:
-> >>>>> +    description: 1.8V power supply going to AVDD18 (E3, ...) pins
-> >>>>> +
-> >>>>> +  dvdd18-supply:
-> >>>>> +    description: 1.8V power supply going to DVDD18 (G4, ...) pins
-> >>>>> +
-> >>>>> +  avdd33-supply:
-> >>>>> +    description: 3.3V power supply going to AVDD33 (C4, ...) pins
-> >>>>> +
-> >>>>> +  i2c-supply: true
-> >>>>> +  vconn-supply: true
-> >>>>
-> >>>> There are no such supplies like i2c and vconn on the schematics.
-> >>>>
-> >>>> I think this represents some other part of component which was added
-> >>>> here only for convenience.
-> >>>
-> >>> Can you give me pointer to documentation you are looking at?
-> >>
-> >> The schematics you linked in the document at the beginning. Page 13. Do
-> >> you see these pins there? I saw only VCONN1_EN, but that's not a supply.
-> > 
-> > The supply is U1308.
-> 
-> That's not a supply to anx7688.
+Ian Rogers wrote on Sun, Apr 07, 2024 at 11:32:31AM -0700:
+> Try adding PARSER_DEBUG=1 to your command line, I need to do the following:
+> ```
+> $ make EXTRA_CFLAGS="-Wno-error=redundant-decls" PARSER_DEBUG=1
+> ```
 
-Yeah, I understand where the confusion is. The driver is not for anx7688 chip
-really. The driver is named anx7688, but that's mostly a historical accident at
-this point.
+Thanks for this hint!
+I tried with that earlier and couldn't reproduce either (e.g. it works
+with this patch as you observed), looking at my shell history it turns
+out I was just sleep-deprived and I had forgotten the '-e' preceding the
+probe and didn't grok the error message...
 
-I guess there can be a driver for anx7688 chip that can directly use the chip's
-resources from the host by directly manipulating its registers and implementing
-type-c functionality via eg. Linux's TCPM or TCPCI stack, etc. (eg. like
-fusb302 driver, or various tcpci subdrivers).
+So this patch is ok.
 
-But in this case the chip is driven by an optional on-chip microcontroller's
-firmware and *this driver* is specifically for *the Type-C port on Pinephone*
-and serves as an integration driver for quite a bunch of things that need to
-work together on Pinephone for all of the Type-C port's features to operate
-reasonably well (and one of those is some communication with anx7688 firmware
-that we use, and enabling power to this chip and other things as appropriate,
-based on the communication from the firmware).
+> I think Jiri's e-mail should be jolsa@kernel.org.
 
-It handles the specific needs of the Pinephone's Type-C implementation, all of
-its quirks (of which there are many over several HW revisions) that can't be
-handled by the particular implementation of on-chip microcontroller firmware
-directly and need host side interaction.
+Ah, right -- I used the mail he actually sent the diff with a couple of
+years back, but the address in maintainers is jolsa@kernel.org so you're
+probably correct that it should be prefered.
 
-In an ideal world, many of the things this driver handles would be handled by
-embedded microcontroller on the board (like it is with some RK3399 based Google
-devices), but Pinephone has no such thing and this glue needs to be implemented
-somewhere in the kernel.
-
-Kind regards,
-	o.
-
-> Best regards,
-> Krzysztof
-> 
+I can send a v2 with just this address changed, or whoever picks the
+patches up can fix the commit messages for patches 1 & 2, just tell me.
+-- 
+Dominique Martinet | Asmadeus
 
