@@ -1,249 +1,226 @@
-Return-Path: <linux-kernel+bounces-134811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B4AB89B742
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:48:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBAD189B745
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 07:49:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 102DE1C20F1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31DDF1F2161D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 05:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6798F66;
-	Mon,  8 Apr 2024 05:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EBF847B;
+	Mon,  8 Apr 2024 05:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YhkCbSaV"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b="JKGDZ3H4"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2124.outbound.protection.outlook.com [40.107.13.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E518C747F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 05:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555318; cv=none; b=psZ5+8ZLSf+fdOHDd3kl13/TpDUpufqMqcCXaxJoTeDTna0bhEWy8DH7ocfU0rsghMIrHXXDZ2SH7znJhkGzNvZrjxzbUCWk7nhkhJmNTv8hDQEygkuuview4+o+YfV9JFef3ENKSEzUT27R9rm0wooGhcQ520WxgRkPpW1+kMM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555318; c=relaxed/simple;
-	bh=MH+N/wEjaCv64wWfynlzTAdMkC5jgkaTQMM8mPzSyJM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=R3Up9KaJ5lqrIeC7n7vSkuR6qKHCmDydRd/XV4ZIrjgx+asTrl009dsWm1s74xOovRGHk51wL3u9+3deEj33gJj5CdU+Iylu9RWY9KBNMAFp2M0F78WGPSy03I+pw287QFoBce2b5dRNBffnf1hzamomPMskRwjJ/HUgOLA56xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YhkCbSaV; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56e2b41187aso4214623a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 22:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712555314; x=1713160114; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=aS47jCt3CSgqRn0l/2sPSrpxA9j5rwTbDiGDjwAu4Cg=;
-        b=YhkCbSaV+iYf9+SbKSLsAos6eSYcl9AdxLr6OyaDTkcX3lYXDMHOOQrVOB5Q1avWEl
-         1Y/9z1kPFn5G1Lrd59OXdlfOKZQIJ9oOm1A1kNrlweJqQq2IbdPT7CPGtCyufVvRDvkI
-         ZHH0OKOdg1v8J7yj400NsDMwItBt2ZQ+/O823RAXQP0kScwXpAICaDJbDTADCx6vRW+h
-         qHI5pBoaNrI7JmpyHwtI7goIKz5/GC64Em49+xsP+aOqKZ3DbxNTwPq3TkZrkQ65dbyX
-         Rn2+YEyBIuoqHWKpxFaFfWBBwsAlaKTe3+aD8FAeaKkdVl4ChRLOVchGPqGkgWjHL2G9
-         FijA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712555314; x=1713160114;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aS47jCt3CSgqRn0l/2sPSrpxA9j5rwTbDiGDjwAu4Cg=;
-        b=pJwf5r+QFgGU71NWrGF/j2VRSz+CCmY2PQx26ow42lgxhThS6K2l2oYSAh5+XaZy3i
-         j/wExH8MNzhh54pumW76Dlc/gc+fpytmTI4RJc6hnVy005NONzA/nC7UwHy1kLvJV4NP
-         r5Gvn66JN6Wg1vnolNS1bQLrw6YpxptNJ5aC1IIbnLD9E8LMgaETzSHsLamm3Arohddr
-         4pJQaYiAQJ6rkVufWrgqTDAdKD3Bf5eH+KkzOX031rRcvNG3mMCszvMfZSxpmvx4sBKF
-         ljAtNN2B/1CTZAMgseL9LEMwoAAxzKNeHdt/1fBjgpW6cxivvRwsYGNiT9VfWfRzZrah
-         XyPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeClyLcISDLKV10bIYeyE0Y+mKS9fSZ8KaMdGu2yEmlayDWtn87/sHFowhNmX7Nj1mbBfNI/CIEhyyELe1fPPNNYRlHaeHINnGFFip
-X-Gm-Message-State: AOJu0YwN0L95de+6xG6OSnZWplC0n92y1ZEbOwJZH1LeJIHTEn1NFIEN
-	c8f4rphNqyDfC3dn/sQkFRCNDj9LmA8oMGSeKD2cRB4tGpvFH/UxLwNNlhVjhX0=
-X-Google-Smtp-Source: AGHT+IHUPq6pq/CvDaJBSQInJKXJP8t0NYyfU34THgGYQIZzXyriojbHSYRdI9rAMNRH+ZaWwF8hCw==
-X-Received: by 2002:a05:6402:501d:b0:568:a5b5:8591 with SMTP id p29-20020a056402501d00b00568a5b58591mr8301533eda.1.1712555313987;
-        Sun, 07 Apr 2024 22:48:33 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id ck6-20020a0564021c0600b0056e2bf42d0fsm3748178edb.49.2024.04.07.22.48.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 22:48:33 -0700 (PDT)
-Message-ID: <658417aa-6c47-4ed7-bbe6-76c454b092c9@linaro.org>
-Date: Mon, 8 Apr 2024 07:48:30 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC77D1773D;
+	Mon,  8 Apr 2024 05:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712555382; cv=fail; b=R1LPA9rkDJkXh3bS0DTvAEzBkToNa2opKs8LoT2Z0/Hy2zf+IwQIL1mP1j3wmdCBUB0P+uxGx3Jf5PSfTbtvlX3XUcvAp0DyZPzBdt0Xh5l/mOaVex3190XPnRsueExhMg95tgs6ZO9+RViiZfW2N01kozdrI16yDgyWYJsiFkA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712555382; c=relaxed/simple;
+	bh=D5ahDcSDk7gHN9GOAff0np6Fjzs44f0OybgE+ki/ixE=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=FAdPH1C7co1DthSimCoCkRhRLU0m47mFEU1CYIxIHN0jpn0bHLjQHChCOmxbX/E2ug8WlsbUpfe2k6h4nIT2GixvjMFuq10URitVFe6vPFgtYcSRC1qg8/OD9mGUvyHuJ+e9TRR8YtrAwqJK/7AYi1FGwJd/s50RNhaukkWNJqs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com; spf=pass smtp.mailfrom=mt.com; dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b=JKGDZ3H4; arc=fail smtp.client-ip=40.107.13.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mt.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BTF01GKwFl0e2RYkUDThj+4W4KjsHBgorNRICK6X/Q18dJ/h+84sr9QkIHn+RnMVaI8Py2zpZKiqGHrwITlBD/Gs9QfiCM3C/XMXyx/ObVwAanF8748Vlbc/xetnux5Y1428cySHEHH/Q1+lGezhsgMzTwZn9eVkiEh13SFb27EfTQ5POf6CNVP3mNDSdmYxpiKLJ/Ud/ZtRf0C5vLf73fhXYdKgdWS0fwq2N4NOUyQ77wzRih/N8hvPXXajVDZ6/sQDsgEZ0dXW+Nm1zuC7rKpk3VRv3ezy1mQxEQMUPnHTGVmdV4sJ58pvPptmGhxySDa14LznrfzbuhG2658ukQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7R74q/PYwo8E7ftL5fEKBrmr7hTWP/kQVWOlMEznQmw=;
+ b=RAd1sd/zFH/MtyNvwHi6iWZshSx6sUcpIZPw/Rp6tAjkZ/GyXZIHA3xAHDIkgFNWJhtAjvXlQKH1g4iX8wMM/HzynbqscdVxACfISG8pcy8l9FJ859fo3ZKWA7RVt8mtuAazfQ28Lab+9txpbvKVGeB03KRgkodkG6ZKCA1B5rDjqG+ZFsJY0HiOJm4GiSRJVU4RkcaGgmiwlphe+NKChll2losTPepZNik2gu3bcX7qp3lE7THxku2JvMIOvIliPwXyBupchcso5zP/NwH7BON6aEOcbj+uWa7Mld3pFuv1dfoJsephOxOoon18bGiNCKPu44KhUsU+CqRxYODmhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mt.com; dmarc=pass action=none header.from=mt.com; dkim=pass
+ header.d=mt.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mt.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7R74q/PYwo8E7ftL5fEKBrmr7hTWP/kQVWOlMEznQmw=;
+ b=JKGDZ3H45Z5iSAF6qA+X5S7ZULxVEqxQ+scNjSwX++OCo1mT850ub5lT+LegUmERRuzyhe+1iY5tbijCD0ISl0P3ggHOqss5Q5nxEKeyvUBd0ptupVIrcAiKc0WRLW68Ymk2qd3nXzS1gSsO33hIzV/6b8rzIxURPpbgz9vs75Ms7x5alndkjF5+QqwmHYlIH8SdeUz64x2r4eYuPy8kwsuChzugTXAsEsZH1B+0OA9W/FNyZcWOFZT6eq54bzzmm6A4/Oh0DI+M7L/LLybqMtOsS6Yb95IDBj/OXrA/ZtUFRYIHn73NMKbnPzIe36d6KhV6H0iBdXwFk1rrpchZsA==
+Received: from DB9PR03MB7513.eurprd03.prod.outlook.com (2603:10a6:10:224::17)
+ by AS8PR03MB8498.eurprd03.prod.outlook.com (2603:10a6:20b:53a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
+ 2024 05:49:35 +0000
+Received: from DB9PR03MB7513.eurprd03.prod.outlook.com
+ ([fe80::99b5:2449:1fc2:b78e]) by DB9PR03MB7513.eurprd03.prod.outlook.com
+ ([fe80::99b5:2449:1fc2:b78e%6]) with mapi id 15.20.7409.042; Mon, 8 Apr 2024
+ 05:49:35 +0000
+From: Markus Burri <markus.burri@mt.com>
+To: linux-kernel@vger.kernel.org
+Cc: Markus Burri <markus.burri@mt.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v1] rtc: pcf2127: configurable power management function
+Date: Mon,  8 Apr 2024 07:49:26 +0200
+Message-Id: <20240408054926.3994-1-markus.burri@mt.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0073.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:22::6) To DB9PR03MB7513.eurprd03.prod.outlook.com
+ (2603:10a6:10:224::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: dt-bindings: imx-audio-spdif: convert to YAML
-To: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
- festevam@gmail.com, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-References: <1712552142-27055-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1712552142-27055-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR03MB7513:EE_|AS8PR03MB8498:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	oMkc/vyKeUdm9X2V+Curiq3tty/oO11B5Pm4+Zp8EcLHRoscuzYY8cb7JZt6St3prG8dZ6SnZBEKb+4Eg5qJfsE7nbNkQiz1uweQYSSyw8u426uCHW0AgFgj+nHRiSkJAl5mc/3xzryvtBrNZLtaRxGspIjp1Awe59ynv4Almk2q+IvzJLHVQl3FDRK+7gnCURge0sNS0xbO9x4W0brZaAIh5x3FeHoDUD4p+HK6oYLLnS0EKyhHzL87gp8NhteJiW14FHJYH5pctnTFtMlu88mYAAM/gH9PEXz4Xf4qJhcxHlL4oBvBuPZ4FRmRuhz0f4YIe6pCadOoroJ5WKl9vqgqo3usbmOyV9/lrKOMPgj+RUQAbNTXv6JNJ3TOvGAcZeD8qvyTACJMFJQS9cfuxK3llYUM7cXteND3CrC+y4HxnW3yWndJENRyVj3krpaLfJmmwa+zr44oJRMhn+sR3nvtJ+3mHWlyV09yqsbJqng+Y/l7d8Ek1Ls7/5SnFA0uQefKwiv6k4Vz7UELd1OIFnoDROodtfep9VpdXdnscXkIkkXKZGdNtOBo3w0COC3cKE2Z1w2TKhW7kraHxwzmWD1uqBoLMCJTjdY5Y0uFXQOTfKmuGf+AWBki+Bq7DTZWXQUj/+Z3NwRRWkaPLuvV6PUs2cGmfDayJaDAstuRc/NjPe2NoXy+aibDXpsK+q6JIR1rrvpqBx8wfKbBim6hZTTc94lGdczBGXKDOQLIoUs=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB7513.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?musl8BnmQigEcE1n2hNU+w+SOI0NZ2niBJt6qz+Fto6zo0UuPEs01PnLoieO?=
+ =?us-ascii?Q?4ee8zhmf6+dOlDYvr9EieZ5zi7gH1NpuMAFZzHcQULTrWR/D9sm1zHZpQqkH?=
+ =?us-ascii?Q?0SkUTYEkFk6veku8GvWY08lK8IyWeAZlwxlN/0UfQFMhTOrwJSPgXzzVUbrm?=
+ =?us-ascii?Q?vbWUi5YBLVmmopTGR5w+quwxg0206NM6gvFkMnZ9N2fTKa/c7lk4uwlq08I7?=
+ =?us-ascii?Q?SNwDsSX6CpxNiCkn/rMDqfC/NhWG0J72L01pWnefdeSAFrLTN6AimPE0qDrE?=
+ =?us-ascii?Q?gorRLF1Vktp7NyjIWWJdwPlLnJnFe9ysrCeit0bsvowVDDnI+ME9j2DTi6co?=
+ =?us-ascii?Q?+xQohxBh5h+d4YNJVvxQXSus725JW/L9lYDIc/02o4S+o/deAvANktaOQeKK?=
+ =?us-ascii?Q?H7wqiwW7YsL/AnvuCYc43/T4Yg/i9y5vykirWPvNT+byDV3LiOLUGlI9mRmy?=
+ =?us-ascii?Q?y5TiNY3nfoK2zxR6k3J32wIcfDD10C9XxOtotIOKC+x0HbBNB+QQD8UQmgww?=
+ =?us-ascii?Q?zYyapeog3BBu80VteYXu/BckMxwrTIG4ZRGspbAou+cS3uetAizjCS6/9Lwh?=
+ =?us-ascii?Q?WMwnklx+LqKta9IfwkCt+JkyAxmnopoYW7c/cVQI3qa3NMH8gD6Gm6Q5fXME?=
+ =?us-ascii?Q?iMZOnjcb3l4vK40MG/TFqFGNKKjSyj1OfHxXyyS2EumTV0re+ivVeB1mbipF?=
+ =?us-ascii?Q?qRiav9b/zVnobQLZCAe5SJNTwymhDholyPQzd9FCkw3nJP4acVl4D7QZM69H?=
+ =?us-ascii?Q?J4CfLpRn/FNrtybepSeNEaHXyS+8HxvoOLRkEXn57lMUA54STNdoszYM3nC9?=
+ =?us-ascii?Q?L/VynwxkQmUR3hlnE95yvRiCoU7hohGMCTB54zMjsPlxQArmJ9M78i5u6Ah3?=
+ =?us-ascii?Q?B3A8pamjJnInqBATMTAiODkiE1Q2dW/GsjjLAsDYxiPvMsEtGDbTkWMA48NY?=
+ =?us-ascii?Q?ETXqYx+dEjLDw6m7ss1vkXoD9SmD1wZh5rLLsBbexVh/gfSGs2yepXKUVs2z?=
+ =?us-ascii?Q?ACtqF4SKsN12cVZz8GCeWUNCjx5OHEPFvhlj8c2fBsw/VcEWmWE5xmj4hzjY?=
+ =?us-ascii?Q?O/P7Cj791nL/sWlcO1DUw3z7dnK7/EOUzfGUWINHuK8pq5Ro2sJKbL8lGPua?=
+ =?us-ascii?Q?jKD+fZL6A3q4U9XEaQHbKKBN3iFZzyVktYD9SyuTjiFsmDVYoAzu63yzug32?=
+ =?us-ascii?Q?VBukMi82h1Z4jDuq9sNJFNVsViRMsoQbfyTRJcxLnJ2Fb06Ts4FZ/6rGwmB0?=
+ =?us-ascii?Q?hrE5vs0y8gMq8HdDSmrLoMtQJFGeOSZl/K5d42oWUXyXB6qvGYy/5QXQY5Ml?=
+ =?us-ascii?Q?wUiAK9MW8F3xR3/I1iR0oDTO2HrwQ+ey4Pysld6QGjC2ZjkJoeq+miOJkmHr?=
+ =?us-ascii?Q?DElj+rpB47lhFOKOTKlu6X9pWZzCcsIrkjnzp9kx5VAUGKNM0QcRuYNfDzKB?=
+ =?us-ascii?Q?TNOsJBM09sXvsn/9xd/IFTTYSeB3FbAFDqWL/GC/nqdw8A7WMBFj+WiEsBFF?=
+ =?us-ascii?Q?x+YTn16agg1IS/Ui3R/qSxPFWEtgtgC9Z7ctqK2TPOPDZXdfptFHXXxCsqw6?=
+ =?us-ascii?Q?RJNZC6chmyphz4bEzq4SUU9XZxSHqM5Wf0LSZZCY?=
+X-OriginatorOrg: mt.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fd1067e-e56e-4c6d-ac79-08dc578fabd0
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR03MB7513.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 05:49:35.5022
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fb4c0aee-6cd2-482f-a1a5-717e7c02496b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DbG4jrouq7LigTWsovp3aR12APw58Pw2AjZs/F/0MFizbUYkhdaSV7aiy6kxsZBtJBrovay701eHL8pbON95SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB8498
 
-On 08/04/2024 06:55, Shengjiu Wang wrote:
-> Convert the imx-audio-spdif binding to YAML.
-> 
-> When testing dtbs_check, found below compatible strings
-> are not listed in document:
-> 
-> fsl,imx-sabreauto-spdif
-> fsl,imx6sx-sdb-spdif
-> 
-> So add them in yaml file to pass the test.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../bindings/sound/imx-audio-spdif.txt        | 36 -----------
->  .../bindings/sound/imx-audio-spdif.yaml       | 62 +++++++++++++++++++
+In the PCF2131 power management the battery switch-over function is
+disabled by default.
+After a power cycle the rtc clock is wrong because of that.
+Add a device-tree property to configure the power management function
+and enable battery switch-over.
 
-Filename like compatible.
+Signed-off-by: Markus Burri <markus.burri@mt.com>
+---
+ .../devicetree/bindings/rtc/nxp,pcf2127.yaml  |  3 +++
+ drivers/rtc/rtc-pcf2127.c                     | 22 +++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
->  2 files changed, 62 insertions(+), 36 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.yaml
-> 
-
-
-..
-
-> +$id: http://devicetree.org/schemas/sound/imx-audio-spdif.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX audio complex with S/PDIF transceiver
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx-audio-spdif
-> +          - enum:
-> +              - fsl,imx-sabreauto-spdif
-> +              - fsl,imx6sx-sdb-spdif
-> +      - items:
-
-No need for items here.
-
-> +          - enum:
-> +              - fsl,imx-audio-spdif
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  spdif-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of the i.MX S/PDIF controller
-> +
-> +  spdif-out:
-> +    type: boolean
-> +    description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +      If present, the transmitting function of S/PDIF will be enabled,
-> +      indicating there's a physical S/PDIF out connector or jack on the
-> +      board or it's connecting to some other IP block, such as an HDMI
-> +      encoder or display-controller.
-> +
-> +  spdif-in:
-> +    type: boolean
-> +    description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +      If present, the receiving function of S/PDIF will be enabled,
-> +      indicating there is a physical S/PDIF in connector/jack on the board.
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +  - spdif-controller
-> +
-
-spdif-out and/or spdif-in are required. You either miss oneOf: required:
-or anyOf:
-
-https://elixir.bootlin.com/linux/v6.8-rc4/source/Documentation/devicetree/bindings/connector/usb-connector.yaml#L305
-
-https://elixir.bootlin.com/linux/v5.17-rc2/source/Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml#L91
-
-Judging by example, the first one.
-
-
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    sound-spdif {
-
-spdif {
-
-> +        compatible = "fsl,imx-audio-spdif";
-> +        model = "imx-spdif";
-> +        spdif-controller = <&spdif>;
-> +        spdif-out;
-> +        spdif-in;
-> +    };
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+index 2d9fe5a75b06..5ce0ca6dcedc 100644
+--- a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
++++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+@@ -30,6 +30,9 @@ properties:
+ 
+   reset-source: true
+ 
++  pwrmng-function:
++    description: Set power management function for PCF2131
++
+ required:
+   - compatible
+   - reg
+diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+index 9c04c4e1a49c..30d56538c11e 100644
+--- a/drivers/rtc/rtc-pcf2127.c
++++ b/drivers/rtc/rtc-pcf2127.c
+@@ -48,6 +48,7 @@
+ #define PCF2127_BIT_CTRL3_BLF			BIT(2)
+ #define PCF2127_BIT_CTRL3_BF			BIT(3)
+ #define PCF2127_BIT_CTRL3_BTSE			BIT(4)
++#define PCF2131_BIT_CTRL3_PWRMNG_MASK   GENMASK(7, 5)
+ /* Time and date registers */
+ #define PCF2127_REG_TIME_BASE		0x03
+ #define PCF2127_BIT_SC_OSF			BIT(7)
+@@ -187,6 +188,7 @@ struct pcf21xx_config {
+ 	unsigned int has_bit_wd_ctl_cd0:1;
+ 	unsigned int wd_val_reg_readable:1; /* If watchdog value register can be read. */
+ 	unsigned int has_int_a_b:1; /* PCF2131 supports two interrupt outputs. */
++	unsigned int has_pwrmng:1; /* PCF2131 supports power management. */
+ 	u8 reg_time_base; /* Time/date base register. */
+ 	u8 regs_alarm_base; /* Alarm function base registers. */
+ 	u8 reg_wd_ctl; /* Watchdog control register. */
+@@ -926,6 +928,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
+ 		.has_bit_wd_ctl_cd0 = 1,
+ 		.wd_val_reg_readable = 1,
+ 		.has_int_a_b = 0,
++		.has_pwrmng = 0,
+ 		.reg_time_base = PCF2127_REG_TIME_BASE,
+ 		.regs_alarm_base = PCF2127_REG_ALARM_BASE,
+ 		.reg_wd_ctl = PCF2127_REG_WD_CTL,
+@@ -954,6 +957,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
+ 		.has_bit_wd_ctl_cd0 = 0,
+ 		.wd_val_reg_readable = 1,
+ 		.has_int_a_b = 0,
++		.has_pwrmng = 0,
+ 		.reg_time_base = PCF2127_REG_TIME_BASE,
+ 		.regs_alarm_base = PCF2127_REG_ALARM_BASE,
+ 		.reg_wd_ctl = PCF2127_REG_WD_CTL,
+@@ -982,6 +986,7 @@ static struct pcf21xx_config pcf21xx_cfg[] = {
+ 		.has_bit_wd_ctl_cd0 = 0,
+ 		.wd_val_reg_readable = 0,
+ 		.has_int_a_b = 1,
++		.has_pwrmng = 1,
+ 		.reg_time_base = PCF2131_REG_TIME_BASE,
+ 		.regs_alarm_base = PCF2131_REG_ALARM_BASE,
+ 		.reg_wd_ctl = PCF2131_REG_WD_CTL,
+@@ -1241,6 +1246,23 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+ 		return ret;
+ 	}
+ 
++	if (pcf2127->cfg->has_pwrmng) {
++		uint32_t pwrmng;
++		if (!device_property_read_u32(dev, "pwrmng-function", &pwrmng)) {
++			if (!FIELD_FIT(PCF2131_BIT_CTRL3_PWRMNG_MASK, pwrmng)) {
++				dev_err(dev, "invalid power management function\n");
++				return ret;
++			}
++			ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL3,
++						 PCF2131_BIT_CTRL3_PWRMNG_MASK,
++						 FIELD_PREP(PCF2131_BIT_CTRL3_PWRMNG_MASK, pwrmng));
++			if (ret) {
++				dev_err(dev, "%s: pwrmng (ctrl3) failed\n",	__func__);
++				return ret;
++			}
++		}
++	}
++
+ 	/*
+ 	 * Enable timestamp functions 1 to 4.
+ 	 */
+-- 
+2.39.2
 
 
