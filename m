@@ -1,443 +1,313 @@
-Return-Path: <linux-kernel+bounces-135438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-135440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEDDC89C2A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:32:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB32689C2BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 15:33:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7001C21CF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:32:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619F0283BF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 13:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1086B80BE7;
-	Mon,  8 Apr 2024 13:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8B182D99;
+	Mon,  8 Apr 2024 13:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cxHfJGpf"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P9RQk8Og"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DD579F0
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Apr 2024 13:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B87481A6;
+	Mon,  8 Apr 2024 13:29:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712582938; cv=none; b=udGfsKWFKwJflja6oAzXpqpBB+Lsww73SR1XuLrxHI3RRiWfWvtJCQeLPGwU74Ueo0A4AaqsKQfARYBeV0oOWYnu0FSZksWL1caIX7bnq3E0pCQeAsPC52/1zCldy3LCk0qlQqsWqJ/SnFAq2RgZXy6sBld6PWRJY/jrWjJ8b8I=
+	t=1712582992; cv=none; b=RT/B2Z32Da3YsQMOHvclEK57IAaMZufh5/lDBtDEFLapuBvMPyYkVILA/dvbzuFWOXWyx8V4JtZux/QmJqa+h7hnBGNUfrCt9g6OOJMgjIqD4YT4+aPm+txqK9E7rM7DBydFlYxA8+qsQjArF99p2xNWt0VPfIxJ4jXLyT3qyxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712582938; c=relaxed/simple;
-	bh=c3bcYPH8cKOfU8LeqAkSpeapOprkIO8IdRdgOkvDSJ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l+I3WhH1bjBgPdAOOnclgYJK4flCP4TBivc+ViwHH52oftbKEB+cnguGix3t8LYswYWJPrvtg+MTAmZRoOuMpCezwSO4qaDseloEYXuSx8VnZtxChQBCL9ZKh4AcOw06/qi/Vf+pLek+A5AR6AvozRzzdAYDkAYS85ziXNo5IVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cxHfJGpf; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so2648427a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 06:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712582936; x=1713187736; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=arKMjWP9roAHegrN3zs4cRJ6a4jU7sjNs1NHFOpDfSk=;
-        b=cxHfJGpfpDpHuVdDBQjmH7S2h092/BmeOE5r1lb2Hi/qAf4cbzorgbYWjn/+UMHZLk
-         W1Ci15AncDrIKQQFIz2tMCe8giNqTkU/wlqgNUsT7cuK2buQnc5iVvOi9EcF3bdqQLTi
-         iwjrtnKUPOtFI+PoKvipw1bBAIhej5Byt1O5dv3ki57KRdIIUKYvBHgs91/0wmtVTTQW
-         ADi3GduKtO6fUA1U9xvNeJlRGb9jIrTTPMKsSpJ3ZbOzLec8vYXRXNCRtHEm8EqmQJLJ
-         WPot8WmgfBfNcK4elphGFI2aK8j9BZUmjzQkLS5s007gh/kVGA2khkYxyj6TmDTiWPZL
-         7zGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712582936; x=1713187736;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=arKMjWP9roAHegrN3zs4cRJ6a4jU7sjNs1NHFOpDfSk=;
-        b=jT227jkngsbVrzUJ0f/UWlJh9RVbQ6ZIl4j+C685orx9c3UqJTdIcMYVYfBSzyqDQf
-         SZ1w7MdFIptlg/VeNdI1WTQyC/tXq4H9b8LCNE/eHiQrvrOTyZJD16FmFlEUa6s/dTOL
-         ZFcg5gHDj7Vw/s6sYxae597nBasWGn/CuYgMV5iNvew52E/5WezpySOp6mlJEfg4sQoD
-         lZYU4rekSVbFNn0GxXJ7pFO3l3zgyNaFJcSTKzDWBFMTGszWRJ50PEaMXc2g11hFRCrt
-         WMj7tU9Y6wUrPZzpixSnWj5oPynQdzTHyQ8iINpuZbAUay5c+Khy3z9o7Gpdq8VbPvXQ
-         rziw==
-X-Forwarded-Encrypted: i=1; AJvYcCW7RijEfzCFjpF4O0wv4lVCgKza7JJhh1SnlH1Fxq0PkMGDF4X6qbtcIysjH4SbxEyiqvInd6EqLoeF46H9DTsUVbxBxY+4TpwIfQV8
-X-Gm-Message-State: AOJu0Yzp7NCLYWDU0cH8igXi8etTxOF/xT4eN4uS/lYAcpVg0dNDef5G
-	0du/wuZG6gY0bFbqsPejhCOOWrBieCEAMEISPZiM/1k11IaL4JqWEByA0DMQHWuBJWC2r7ngNNo
-	RVtOmRigDvYUL8WD6til9qHK6LZ9Hug69/R2YsA==
-X-Google-Smtp-Source: AGHT+IFaPBzK+DllLD8jOm2vrPrnjJqDhee94sQFIFxUjDg6mWcqHAeDY1Cn+x/SkqZx1tLbuP0TbiH837JpPzCDLEI=
-X-Received: by 2002:a17:90b:4004:b0:2a2:9f46:439 with SMTP id
- ie4-20020a17090b400400b002a29f460439mr6962873pjb.9.1712582936227; Mon, 08 Apr
- 2024 06:28:56 -0700 (PDT)
+	s=arc-20240116; t=1712582992; c=relaxed/simple;
+	bh=GMPWbprIxp/w/Aq9F/i6/+o5zxEc4QGdo7Dwd6O63zk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dZ0og5XZy6uDTiDsviFn4xfFUPToqgjtPZ4UoRzq7d7m8cQrs1juKCitVewH8sCwlIHO1U7FLBgRAQK3aXjZ2wdO+ShAH/bGEKEW1o5c9060vAST+UdE1zp3eRicefQ/ih8I8CtSk5Xw3+aPkI6teTid0ASFWu2rqXundGYtt9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=P9RQk8Og; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4386ciuR007671;
+	Mon, 8 Apr 2024 13:29:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=uOJyGIL
+	AbX/DCfIqZSQJVsDqmzVAAYRPNl5Gb0eSHfA=; b=P9RQk8OgEkiwdqdI1M1Z/g5
+	rWKfaja0ooIKnlaSsPrViC2g2IgLaTomqE7k6CKyWompHJo3zPS7L+6knM+jVgOL
+	5Z8pvnQrX9CIP/QowIsLbuQSXHU+y9JTJLta5C7x/dZIaDWxzTxkxLmdK/0Pk9S4
+	OPaxpRf9TGXSHvAxiz+NLEEX9V3hIS/UD7Mdr+n7xqUMr6J24P9dRIJksUP5CvCp
+	f8mOUK5MPl6UAoT2tx5E5qY36b7geT1ZDqQGHasRCj/ok/K8HpoNKW+bBpPm3faM
+	/wnEhlbr2cuvuFwj6lvuAtHhc82S1EottWOqZfCRqWutSUoN8jcwp4dDEwxBpJA=
+	=
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcbg30vm6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 13:29:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 438DTgN5022791
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Apr 2024 13:29:42 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Mon, 8 Apr 2024 06:29:37 -0700
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi
+	<balbi@kernel.org>, Johan Hovold <johan@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v20 0/9] Add multiport support for DWC3 controllers
+Date: Mon, 8 Apr 2024 18:59:16 +0530
+Message-ID: <20240408132925.1880571-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1711009927-17873-1-git-send-email-quic_taozha@quicinc.com>
- <1711009927-17873-3-git-send-email-quic_taozha@quicinc.com>
- <8d381e6e-9328-46ff-83fe-efbe5bb4363e@arm.com> <ffce4577-b0f9-4af3-a379-0385a02ddae8@quicinc.com>
-In-Reply-To: <ffce4577-b0f9-4af3-a379-0385a02ddae8@quicinc.com>
-From: Mike Leach <mike.leach@linaro.org>
-Date: Mon, 8 Apr 2024 14:28:45 +0100
-Message-ID: <CAJ9a7VieUqm_Qakqqsm9F=znqunu8EMaccKxzRWMz244NiHpqQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] coresight: Add support for multiple output ports on
- the funnel
-To: Tao Zhang <quic_taozha@quicinc.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Konrad Dybcio <konradybcio@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jinlong Mao <quic_jinlmao@quicinc.com>, 
-	Leo Yan <leo.yan@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	Tingwei Zhang <quic_tingweiz@quicinc.com>, Yuanfang Zhang <quic_yuanfang@quicinc.com>, 
-	Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, andersson@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4TREov16amAhpR_SPPrrxnjedPvctZC0
+X-Proofpoint-GUID: 4TREov16amAhpR_SPPrrxnjedPvctZC0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_11,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 impostorscore=0 lowpriorityscore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404080103
 
-Hi Tao,
+Currently the DWC3 driver supports only single port controller which
+requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+DWC3 controller with multiple ports that can operate in host mode.
+Some of the port supports both SS+HS and other port supports only HS
+mode.
 
-Using a DT label in this way is not how connections should be
-described in device tree, The association needs to be between the
-input and output ports of the component not and extra link back to the
-source.
+This change primarily refactors the Phy logic in core driver to allow
+multiport support with Generic Phy's.
 
-If your "funnel"  has multiple input and output ports, then it is no
-longer a funnel.  As you describe it - the input ports are statically
-associated with an output port, so the device is effectively a set of
-individual funnels.
-Given that the association between the inputs and outputs is known at
-time of compilation - then these can be inferred from the components
-compatible string and handled internally during driver probe.
+Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+are HS+SS capable and 2 are HS only capable).
 
-This component should therefore really have its own driver, and not be
-described as a standard  funnel. In this way you can handle the input
-and output associations within the driver and create a path in the
-normal way, avoiding the need for large changes to the coresight API.
-Having a specific driver will allow creation of sets of associated
-input and output connections.
+Changes in v20:
+Modified return check in get_num_ports call.
+Code re-verified internally and added Bjorn.A RB Tag in patch (2/9)
+from internal review.
 
-Regards
+Changes in v19:
+Replaced IS_ERR(ptr) with a NULL check.
+Modified name of function reading the port num in core file.
 
-Mike
+Changes in v18:
+Updated variable names in patch-7 for setup_port_irq and
+find_num_ports calls.
 
+Changes in v17:
+Modified DT handling patch by checking if dp_hs_phy_1 is present
+or not and then going for DT parsing.
 
+Changes in v16:
+Removing ACPI has simplified the interrupt reading in wrapper. Also
+the logic to find number of ports is based on dp_hs_phy interrupt check
+in DT. Enabling and disabling interrupts is now done per port. Added
+info on power event irq in commit message.
 
+Changes in v15:
+Added minItems property in qcom,dwc3 bindings as suggested by Rob.
+Retained all RB's/ACK's got in v14.
 
+Changes in v14:
+Moved wrapper binding update to 5th patch in the series as it deals
+with only wakeup and not enumeration. The first part of the series
+deals with enumeration and the next part deals with wakeup.
+Updated commit text for wrapper driver patches.
+Added error checks in get_port_index and setup_irq call which were
+missing in v13.
+Added SOB and CDB tags appropriately for the patches.
+Rebased code on top of latest usb next.
+DT changes have been removed and will be sent as a separate series.
 
+Changes in v13:
+This series is a subset of patches in v11 as the first 3 patches in v11
+have been mereged into usb-next.
+Moved dr_mode property from platform specific files to common sc8280xp DT.
+Fixed function call wrapping, added comments and replaced #defines with
+enum in dwc3-qcom for identifying IRQ index appropriately.
+Fixed nitpicks pointed out in v11 for suspend-resume handling.
+Added reported-by tag for phy refactoring patch as a compile error was
+found by kernel test bot [1].
+Removed reviewed-by tag of maintainer for phy refactoring patch as a minor
+change of increasing phy-names array size by 2-bytes was done to fix
+compilation issue mentioned in [1].
 
+Changes in v12:
+Pushed as a subset of acked but no-yet-merged patches of v11 with intent
+of making rebase of other patches easy. Active reviewers from community
+suggested that it would be better to push the whole series in one go as it
+would give good clarity and context for all the patches in the series.
+So pushed v13 for the same addressing comments received in v11.
 
-On Fri, 29 Mar 2024 at 09:27, Tao Zhang <quic_taozha@quicinc.com> wrote:
->
->
-> On 3/22/2024 12:41 AM, Suzuki K Poulose wrote:
-> > On 21/03/2024 08:32, Tao Zhang wrote:
-> >> Funnel devices are now capable of supporting multiple-inputs and
-> >> multiple-outputs configuration with in built hardware filtering
-> >> for TPDM devices. Add software support to this function. Output
-> >> port is selected according to the source in the trace path.
-> >>
-> >> The source of the input port on funnels will be marked in the
-> >> device tree.
-> >> e.g.
-> >> tpdm@xxxxxxx {
-> >>      ... ... ... ...
-> >> };
-> >>
-> >> funnel_XXX: funnel@xxxxxxx {
-> >>      ... ... ... ...
-> >>      out-ports {
-> >>          ... ... ... ...
-> >>          port@x {
-> >>              ... ... ... ...
-> >>              label = "xxxxxxx.tpdm"; <-- To label the source
-> >>          };                           corresponding to the output
-> >>      ... ... ... ...                  connection "port@x". And this
-> >>      };                               is a hardware static connections.
-> >>      ... ... ... ...                  Here needs to refer to hardware
-> >> };                                   design.
-> >>
-> >> Then driver will parse the source label marked in the device tree, and
-> >> save it to the coresight path. When the function needs to know the
-> >> source label, it could obtain it from coresight path parameter. Finally,
-> >> the output port knows which source it corresponds to, and it also knows
-> >> which input port it corresponds to.
-> >
-> > Why do we need labels ? We have connection information for all devices
-> > (both in and out), so, why do we need this label to find a device ?
->
-> Because our funnel's design has multi-output ports, the data stream will not
->
-> know which output port should pass in building the data trace path. This
-> source
->
-> label can make the data stream find the right output port to go.
->
-> >
-> > And also, I thought TPDM is a source device, why does a funnel output
-> > port link to a source ?
->
-> No, this label doesn't mean this funnel output port link to a source, it
-> just let
->
-> the output port know its data source.
->
-> >
-> > Are these funnels programmable ? Or, are they static ? If they are
-> > static, do these need to be described in the DT ? If they are simply
-> > acting as a "LINK" (or HWFIFO ?)
->
-> These funnels are static, and we will add the "label" to the DT to
-> describe the
->
-> multi-output ports for these funnels.
->
-> "If they are simply acting as a "LINK" (or HWFIFO ?) " I'm not sure
-> what's the meaning
->
-> of this. Could you describe it in detail?
->
->
-> Best,
->
-> Tao
->
-> >
-> > Suzuki
-> >
-> >>
-> >> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> >> ---
-> >>   drivers/hwtracing/coresight/coresight-core.c  | 81 ++++++++++++++++---
-> >>   .../hwtracing/coresight/coresight-platform.c  |  5 ++
-> >>   include/linux/coresight.h                     |  2 +
-> >>   3 files changed, 75 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/hwtracing/coresight/coresight-core.c
-> >> b/drivers/hwtracing/coresight/coresight-core.c
-> >> index 5dde597403b3..b1b5e6d9ec7a 100644
-> >> --- a/drivers/hwtracing/coresight/coresight-core.c
-> >> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> >> @@ -113,15 +113,63 @@ struct coresight_device
-> >> *coresight_get_percpu_sink(int cpu)
-> >>   }
-> >>   EXPORT_SYMBOL_GPL(coresight_get_percpu_sink);
-> >>   +static struct coresight_device *coresight_get_source(struct
-> >> list_head *path)
-> >> +{
-> >> +    struct coresight_device *csdev;
-> >> +
-> >> +    if (!path)
-> >> +        return NULL;
-> >> +
-> >> +    csdev = list_first_entry(path, struct coresight_node, link)->csdev;
-> >> +    if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
-> >> +        return NULL;
-> >> +
-> >> +    return csdev;
-> >> +}
-> >> +
-> >> +/**
-> >> + * coresight_source_filter - checks whether the connection matches
-> >> the source
-> >> + * of path if connection is binded to specific source.
-> >> + * @path:    The list of devices
-> >> + * @conn:    The connection of one outport
-> >> + *
-> >> + * Return zero if the connection doesn't have a source binded or
-> >> source of the
-> >> + * path matches the source binds to connection.
-> >> + */
-> >> +static int coresight_source_filter(struct list_head *path,
-> >> +            struct coresight_connection *conn)
-> >> +{
-> >> +    int ret = 0;
-> >> +    struct coresight_device *source = NULL;
-> >> +
-> >> +    if (conn->source_label == NULL)
-> >> +        return ret;
-> >> +
-> >> +    source = coresight_get_source(path);
-> >> +    if (source == NULL)
-> >> +        return ret;
-> >> +
-> >> +    if (strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
-> >> +            conn->source_label))
-> >> +        ret = 0;
-> >> +    else
-> >> +        ret = -1;
-> >> +
-> >> +    return ret;
-> >> +}
-> >> +
-> >>   static struct coresight_connection *
-> >>   coresight_find_out_connection(struct coresight_device *src_dev,
-> >> -                  struct coresight_device *dest_dev)
-> >> +                  struct coresight_device *dest_dev,
-> >> +                  struct list_head *path)
-> >>   {
-> >>       int i;
-> >>       struct coresight_connection *conn;
-> >>         for (i = 0; i < src_dev->pdata->nr_outconns; i++) {
-> >>           conn = src_dev->pdata->out_conns[i];
-> >> +        if (coresight_source_filter(path, conn))
-> >> +            continue;
-> >>           if (conn->dest_dev == dest_dev)
-> >>               return conn;
-> >>       }
-> >> @@ -312,7 +360,8 @@ static void coresight_disable_sink(struct
-> >> coresight_device *csdev)
-> >>     static int coresight_enable_link(struct coresight_device *csdev,
-> >>                    struct coresight_device *parent,
-> >> -                 struct coresight_device *child)
-> >> +                 struct coresight_device *child,
-> >> +                 struct list_head *path)
-> >>   {
-> >>       int ret = 0;
-> >>       int link_subtype;
-> >> @@ -321,8 +370,8 @@ static int coresight_enable_link(struct
-> >> coresight_device *csdev,
-> >>       if (!parent || !child)
-> >>           return -EINVAL;
-> >>   -    inconn = coresight_find_out_connection(parent, csdev);
-> >> -    outconn = coresight_find_out_connection(csdev, child);
-> >> +    inconn = coresight_find_out_connection(parent, csdev, path);
-> >> +    outconn = coresight_find_out_connection(csdev, child, path);
-> >>       link_subtype = csdev->subtype.link_subtype;
-> >>         if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG &&
-> >> IS_ERR(inconn))
-> >> @@ -341,7 +390,8 @@ static int coresight_enable_link(struct
-> >> coresight_device *csdev,
-> >>     static void coresight_disable_link(struct coresight_device *csdev,
-> >>                      struct coresight_device *parent,
-> >> -                   struct coresight_device *child)
-> >> +                   struct coresight_device *child,
-> >> +                   struct list_head *path)
-> >>   {
-> >>       int i;
-> >>       int link_subtype;
-> >> @@ -350,8 +400,8 @@ static void coresight_disable_link(struct
-> >> coresight_device *csdev,
-> >>       if (!parent || !child)
-> >>           return;
-> >>   -    inconn = coresight_find_out_connection(parent, csdev);
-> >> -    outconn = coresight_find_out_connection(csdev, child);
-> >> +    inconn = coresight_find_out_connection(parent, csdev, path);
-> >> +    outconn = coresight_find_out_connection(csdev, child, path);
-> >>       link_subtype = csdev->subtype.link_subtype;
-> >>         if (link_ops(csdev)->disable) {
-> >> @@ -507,7 +557,7 @@ static void coresight_disable_path_from(struct
-> >> list_head *path,
-> >>           case CORESIGHT_DEV_TYPE_LINK:
-> >>               parent = list_prev_entry(nd, link)->csdev;
-> >>               child = list_next_entry(nd, link)->csdev;
-> >> -            coresight_disable_link(csdev, parent, child);
-> >> +            coresight_disable_link(csdev, parent, child, path);
-> >>               break;
-> >>           default:
-> >>               break;
-> >> @@ -588,7 +638,7 @@ int coresight_enable_path(struct list_head *path,
-> >> enum cs_mode mode,
-> >>           case CORESIGHT_DEV_TYPE_LINK:
-> >>               parent = list_prev_entry(nd, link)->csdev;
-> >>               child = list_next_entry(nd, link)->csdev;
-> >> -            ret = coresight_enable_link(csdev, parent, child);
-> >> +            ret = coresight_enable_link(csdev, parent, child, path);
-> >>               if (ret)
-> >>                   goto err;
-> >>               break;
-> >> @@ -802,7 +852,8 @@ static void coresight_drop_device(struct
-> >> coresight_device *csdev)
-> >>    */
-> >>   static int _coresight_build_path(struct coresight_device *csdev,
-> >>                    struct coresight_device *sink,
-> >> -                 struct list_head *path)
-> >> +                 struct list_head *path,
-> >> +                 struct coresight_device *source)
-> >>   {
-> >>       int i, ret;
-> >>       bool found = false;
-> >> @@ -814,7 +865,7 @@ static int _coresight_build_path(struct
-> >> coresight_device *csdev,
-> >>         if (coresight_is_percpu_source(csdev) &&
-> >> coresight_is_percpu_sink(sink) &&
-> >>           sink == per_cpu(csdev_sink,
-> >> source_ops(csdev)->cpu_id(csdev))) {
-> >> -        if (_coresight_build_path(sink, sink, path) == 0) {
-> >> +        if (_coresight_build_path(sink, sink, path, source) == 0) {
-> >>               found = true;
-> >>               goto out;
-> >>           }
-> >> @@ -825,8 +876,12 @@ static int _coresight_build_path(struct
-> >> coresight_device *csdev,
-> >>           struct coresight_device *child_dev;
-> >>             child_dev = csdev->pdata->out_conns[i]->dest_dev;
-> >> +        if (csdev->pdata->out_conns[i]->source_label &&
-> >> +            !strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
-> >> + csdev->pdata->out_conns[i]->source_label))
-> >> +            continue;
-> >>           if (child_dev &&
-> >> -            _coresight_build_path(child_dev, sink, path) == 0) {
-> >> +            _coresight_build_path(child_dev, sink, path, source) ==
-> >> 0) {
-> >>               found = true;
-> >>               break;
-> >>           }
-> >> @@ -871,7 +926,7 @@ struct list_head *coresight_build_path(struct
-> >> coresight_device *source,
-> >>         INIT_LIST_HEAD(path);
-> >>   -    rc = _coresight_build_path(source, sink, path);
-> >> +    rc = _coresight_build_path(source, sink, path, source);
-> >>       if (rc) {
-> >>           kfree(path);
-> >>           return ERR_PTR(rc);
-> >> diff --git a/drivers/hwtracing/coresight/coresight-platform.c
-> >> b/drivers/hwtracing/coresight/coresight-platform.c
-> >> index 9d550f5697fa..f553fb20966d 100644
-> >> --- a/drivers/hwtracing/coresight/coresight-platform.c
-> >> +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> >> @@ -205,6 +205,7 @@ static int of_coresight_parse_endpoint(struct
-> >> device *dev,
-> >>       struct fwnode_handle *rdev_fwnode;
-> >>       struct coresight_connection conn = {};
-> >>       struct coresight_connection *new_conn;
-> >> +    const char *label;
-> >>         do {
-> >>           /* Parse the local port details */
-> >> @@ -243,6 +244,10 @@ static int of_coresight_parse_endpoint(struct
-> >> device *dev,
-> >>           conn.dest_fwnode = fwnode_handle_get(rdev_fwnode);
-> >>           conn.dest_port = rendpoint.port;
-> >>   +        conn.source_label = NULL;
-> >> +        if (!of_property_read_string(ep, "label", &label))
-> >> +            conn.source_label = label;
-> >> +
-> >>           new_conn = coresight_add_out_conn(dev, pdata, &conn);
-> >>           if (IS_ERR_VALUE(new_conn)) {
-> >>               fwnode_handle_put(conn.dest_fwnode);
-> >> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> >> index e8b6e388218c..a9c06ef9bbb2 100644
-> >> --- a/include/linux/coresight.h
-> >> +++ b/include/linux/coresight.h
-> >> @@ -167,6 +167,7 @@ struct coresight_desc {
-> >>    * struct coresight_connection - representation of a single connection
-> >>    * @src_port:    a connection's output port number.
-> >>    * @dest_port:    destination's input port number @src_port is
-> >> connected to.
-> >> + * @source_label: source component's label.
-> >>    * @dest_fwnode: destination component's fwnode handle.
-> >>    * @dest_dev:    a @coresight_device representation of the component
-> >>           connected to @src_port. NULL until the device is created
-> >> @@ -195,6 +196,7 @@ struct coresight_desc {
-> >>   struct coresight_connection {
-> >>       int src_port;
-> >>       int dest_port;
-> >> +    const char *source_label;
-> >>       struct fwnode_handle *dest_fwnode;
-> >>       struct coresight_device *dest_dev;
-> >>       struct coresight_sysfs_link *link;
-> >
+Changes in v11:
+Implemented port_count calculation by reading interrupt-names from DT.
+Refactored IRQ handling in dwc3-qcom.
+Moving of macros to xhci-ext-caps.h made as a separate patch.
+Names of interrupts to be displayed on /proc/interrupts set to the ones
+present in DT.
 
+Changes in v10:
+Refactored phy init/exit/power-on/off functions in dwc3 core
+Refactored dwc3-qcom irq registration and handling
+Implemented wakeup for multiport irq's
+Moved few macros from xhci.h to xhci-ext-caps.h
+Fixed nits pointed out in v9
+Fixed Co-developed by and SOB tags in patches 5 and 11
 
+Changes in v9:
+Added IRQ support for DP/DM/SS MP Irq's of SC8280
+Refactored code to read port count by accessing xhci registers
 
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Changes in v8:
+Reorganised code in patch-5
+Fixed nitpicks in code according to comments received on v7
+Fixed indentation in DT patches
+Added drive strength for pinctrl nodes in SA8295 DT
+
+Changes in v7:
+Added power event irq's for Multiport controller.
+Udpated commit text for patch-9 (adding DT changes for enabling first
+port of multiport controller on sa8540-ride).
+Fixed check-patch warnings for driver code.
+Fixed DT binding errors for changes in snps,dwc3.yaml
+Reabsed code on top of usb-next
+
+Changes in v6:
+Updated comments in code after.
+Updated variables names appropriately as per review comments.
+Updated commit text in patch-2 and added additional info as per review
+comments.
+The patch header in v5 doesn't have "PATHCH v5" notation present. Corrected
+it in this version.
+
+Changes in v5:
+Added DT support for first port of Teritiary USB controller on SA8540-Ride
+Added support for reading port info from XHCI Extended Params registers.
+
+Changes in RFC v4:
+Added DT support for SA8295p.
+
+Changes in RFC v3:
+Incase any PHY init fails, then clear/exit the PHYs that
+are already initialized.
+
+Changes in RFC v2:
+Changed dwc3_count_phys to return the number of PHY Phandles in the node.
+This will be used now in dwc3_extract_num_phys to increment num_usb2_phy 
+and num_usb3_phy.
+Added new parameter "ss_idx" in dwc3_core_get_phy_ny_node and changed its
+structure such that the first half is for HS-PHY and second half is for
+SS-PHY.
+In dwc3_core_get_phy, for multiport controller, only if SS-PHY phandle is
+present, pass proper SS_IDX else pass -1.
+
+Tested enumeration interrupt registration on Tertiary controller of
+SA8295 ADP:
+
+/ # lsusb
+Bus 001 Device 001: ID 1d6b:0002
+Bus 002 Device 001: ID 1d6b:0003
+Bus 001 Device 002: ID 046d:c06a
+/ #
+/ # dmesg  | grep ports
+[    0.066250] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    0.154668] dwc3 a400000.usb: K: hs-ports: 4 ss-ports: 2
+[    0.223137] xhci-hcd xhci-hcd.0.auto: Host supports USB 3.1 Enhanced SuperSpeed
+[    0.227795] hub 1-0:1.0: 4 ports detected
+[    0.233724] hub 2-0:1.0: 2 ports detected
+
+Tested interrupt registration for all 4 ports of SA8295 ADP:
+
+/ # cat /proc/interrupts  |grep phy
+162: 0 0 0 0 0 0 0 0       PDC 127 Edge      dp_hs_phy_1
+163: 0 0 0 0 0 0 0 0       PDC 129 Edge      dp_hs_phy_2
+164: 0 0 0 0 0 0 0 0       PDC 131 Edge      dp_hs_phy_3
+165: 0 0 0 0 0 0 0 0       PDC 133 Edge      dp_hs_phy_4
+166: 0 0 0 0 0 0 0 0       PDC 126 Edge      dm_hs_phy_1
+167: 0 0 0 0 0 0 0 0       PDC  16 Level     ss_phy_1
+168: 0 0 0 0 0 0 0 0       PDC 128 Edge      dm_hs_phy_2
+169: 0 0 0 0 0 0 0 0       PDC  17 Level     ss_phy_2
+170: 0 0 0 0 0 0 0 0       PDC 130 Edge      dm_hs_phy_3
+171: 0 0 0 0 0 0 0 0       PDC 132 Edge      dm_hs_phy_4
+173: 0 0 0 0 0 0 0 0       PDC  14 Edge      dp_hs_phy_irq
+174: 0 0 0 0 0 0 0 0       PDC  15 Edge      dm_hs_phy_irq
+175: 0 0 0 0 0 0 0 0       PDC 138 Level     ss_phy_irq
+
+Tested working of ADB on SM8550 MTP.
+
+Links to previous versions:
+Link to v19: https://lore.kernel.org/all/20240404051229.3082902-1-quic_kriskura@quicinc.com/
+Link to v18: https://lore.kernel.org/all/20240326113253.3010447-1-quic_kriskura@quicinc.com/
+Link to v17: https://lore.kernel.org/all/20240326102809.2940123-1-quic_kriskura@quicinc.com/
+Link to v16: https://lore.kernel.org/all/20240307062052.2319851-1-quic_kriskura@quicinc.com/
+Link to v15: https://lore.kernel.org/all/20240216005756.762712-1-quic_kriskura@quicinc.com/
+Link to v14: https://lore.kernel.org/all/20240206051825.1038685-1-quic_kriskura@quicinc.com/
+Link to v13: https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
+Link to v12: https://lore.kernel.org/all/20231004165922.25642-1-quic_kriskura@quicinc.com/
+Link to v11: https://lore.kernel.org/all/20230828133033.11988-1-quic_kriskura@quicinc.com/
+Link to v10: https://lore.kernel.org/all/20230727223307.8096-1-quic_kriskura@quicinc.com/
+Link to v9: https://lore.kernel.org/all/20230621043628.21485-1-quic_kriskura@quicinc.com/
+Link to v8: https://lore.kernel.org/all/20230514054917.21318-1-quic_kriskura@quicinc.com/
+Link to v7: https://lore.kernel.org/all/20230501143445.3851-1-quic_kriskura@quicinc.com/
+Link to v6: https://lore.kernel.org/all/20230405125759.4201-1-quic_kriskura@quicinc.com/
+Link to v5: https://lore.kernel.org/all/20230310163420.7582-1-quic_kriskura@quicinc.com/
+Link to RFC v4: https://lore.kernel.org/all/20230115114146.12628-1-quic_kriskura@quicinc.com/
+Link to RFC v3: https://lore.kernel.org/all/1654709787-23686-1-git-send-email-quic_harshq@quicinc.com/#r
+Link to RFC v2: https://lore.kernel.org/all/1653560029-6937-1-git-send-email-quic_harshq@quicinc.com/#r
+
+Krishna Kurapati (9):
+  dt-bindings: usb: Add bindings for multiport properties on DWC3
+    controller
+  usb: dwc3: core: Access XHCI address space temporarily to read port
+    info
+  usb: dwc3: core: Skip setting event buffers for host only controllers
+  usb: dwc3: core: Refactor PHY logic to support Multiport Controller
+  dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport
+  usb: dwc3: qcom: Add helper function to request wakeup interrupts
+  usb: dwc3: qcom: Refactor IRQ handling in glue driver
+  usb: dwc3: qcom: Enable wakeup for applicable ports of multiport
+  usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
+
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  34 ++
+ .../devicetree/bindings/usb/snps,dwc3.yaml    |  13 +-
+ drivers/usb/dwc3/core.c                       | 325 +++++++++++++-----
+ drivers/usb/dwc3/core.h                       |  19 +-
+ drivers/usb/dwc3/drd.c                        |  15 +-
+ drivers/usb/dwc3/dwc3-qcom.c                  | 251 +++++++++-----
+ 6 files changed, 482 insertions(+), 175 deletions(-)
+
+-- 
+2.34.1
+
 
