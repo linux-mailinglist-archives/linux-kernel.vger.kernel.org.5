@@ -1,100 +1,311 @@
-Return-Path: <linux-kernel+bounces-136366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEC3089D339
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:34:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E10A89D341
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CAD5B2414B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3214E280A70
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40767F498;
-	Tue,  9 Apr 2024 07:32:58 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032117C0B0;
+	Tue,  9 Apr 2024 07:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CHtivn7/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F64A7F47F;
-	Tue,  9 Apr 2024 07:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0328C7BB11
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712647978; cv=none; b=Imv3GDo6no69kblN4RcLoq8utBg2QlFruO8Cs7LwP/7ZBsc18nYYOYaasSNmHli4hVaHboz+FxNyrzTxr0YWsa2FgBLMhhSaf/m1QbVzsP4xFHbvkYUPokZm/nIt9RxZCbAxeVNp/u5JDs/UUfepwY6WArBW0UpTBErZldCttFw=
+	t=1712648077; cv=none; b=QDCowN0ofpVG678JPPu99H6FgvTrfqmYJ6PBTB32b9d1zSwepghOY1GgrHcLdwJlgzqCM5XG2UmOWyvFSMHplCU6RII6AfkTU/T+dVedEJ8aN7iZFoTaQgJcCOI5PQqa35eUgxpJjTDsCBn0xRgA13V/O+NPfjm9aGe6VUmlmck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712647978; c=relaxed/simple;
-	bh=9tPBSm7SC7rcjr+Fa4Gnnzk5ouIqti3bmwbVvtKlieI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iUl/E8OvqCJiQkP+j0sLWhOdaoX1XT3OrDXgh43gAPtDbezIZe2QCtnW7T0y38SONCZjqMVXJ+5tXP3eN2pl02cwmrBiKaRxzzH8VK06/jqWsByuDP8zp2iLAzM7nLDPSQLhNh6rg+l1HAoVreZeXh30xahvXET+hzNiMe6kilk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 160401C007B; Tue,  9 Apr 2024 09:32:54 +0200 (CEST)
-Date: Tue, 9 Apr 2024 09:32:53 +0200
-From: Pavel Machek <pavel@denx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-Subject: Re: [PATCH 6.1 000/138] 6.1.85-rc1 review
-Message-ID: <ZhTvJXlWJ2TjIQ1a@duo.ucw.cz>
-References: <20240408125256.218368873@linuxfoundation.org>
+	s=arc-20240116; t=1712648077; c=relaxed/simple;
+	bh=WfHrGFFHkZSG5hyQklX+oxU8u1pedeHeoUnEuGA0UUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G8kWiQPbyjqVcVR7izBwQhV5PedH/ZFJEvvjfFO+RpIbxDRwmdO79j+r2/i4wxi1XXs8jIc2cmU8imoFabs8Pv51wZCQVI4Qzn9WWUm9NvhSD8hyc7uWyYIC0Y3e3Znk1WtvzKGiepLFaGiqTPN57+vDYBP6CC6qzc5KqavM6SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CHtivn7/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712648074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=0q+HU0I8zQxKjM+cGvM+C7R5KeCL9UkLViFVS4kRTPc=;
+	b=CHtivn7/cva81l60ax0RVFWf664KcuaRAa/jQMG4dh84MxitYUc/5lQ8/wEmy8o3IYeKZq
+	A0cHGyz3sS4DPcm90N8lSUcjRfyTMi+QpQC2uEJdJ8ipZlGrNdTvMDpZIhSDmfbQiLsqBu
+	fNf4ENYeVS2WdD2e+e9s69zMYMup7Vk=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-562-uyVWZ1FpP7O3E03yjVSVNA-1; Tue, 09 Apr 2024 03:34:32 -0400
+X-MC-Unique: uyVWZ1FpP7O3E03yjVSVNA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d86005189eso43259841fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 00:34:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712648071; x=1713252871;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0q+HU0I8zQxKjM+cGvM+C7R5KeCL9UkLViFVS4kRTPc=;
+        b=R846KVSa7NgiX0MTGaL2sDs5mLisuFmoJ/lEQlntQEjhR+7hZMSJnT7mCtGowhI2Fw
+         mQsoqTTslLQm4723mtp2QT4UBxonGB/2uz/K2Im/2z5KDkztngaGVc0PFV6/bJ7wwTHG
+         Dl8PHLVcLRj3+UV+s5EAn4k68AeP/AHIDr3/kRzHkcFXBZGih7V6Jl3eO2zJkLec0eRf
+         vkg+wJCjvY41rw1Vy5NftFTrvNf6WgQR+GAo2fres/xjt7mJ2Z88fdccNkorn+O3nTsT
+         kQ78d0mCqJZuHXO7kIjS/WN/rlv033uaLkmklZBdFTZ/qfVsfTV5BC9YsD0q/80z4ci/
+         OcjA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNjfVJn0wIbzMi/YXXwW/p+gOcGllV41JhNL8sXpH9l9JNKsx8CNy377T2z9DPf3985LB9UFCYDcFiKvGwiCOgG0eSX3MMwJ0BMdzT
+X-Gm-Message-State: AOJu0YwN05KiyO3m9Vrx8o5tG5ke6goVzibvGt4fkyoyPW/OUn/0Iw+c
+	c15rhiwFFvH7DEGb67XWnYBsSr+hUdsHjX+Ln8misstrRL+PSHpx0kGJVdwMwfVx9+OLuOHiT45
+	orpx062X7kq9Vzxtc2X6cpvMbkfVJIlae7dnNQv0Q5p1Qs+UCv8EeAaHhhg4upQ==
+X-Received: by 2002:a2e:b8c3:0:b0:2d8:a862:2411 with SMTP id s3-20020a2eb8c3000000b002d8a8622411mr506051ljp.46.1712648071347;
+        Tue, 09 Apr 2024 00:34:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGEajpP01sxdAETuPDMX+9d7r5iEj2AuC6aEnf6ol8D2HOBKiEMou7iKPEKtYnlTe5fHGED9w==
+X-Received: by 2002:a2e:b8c3:0:b0:2d8:a862:2411 with SMTP id s3-20020a2eb8c3000000b002d8a8622411mr506028ljp.46.1712648070736;
+        Tue, 09 Apr 2024 00:34:30 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
+        by smtp.gmail.com with ESMTPSA id f8-20020a05600c4e8800b00415dfa709dasm16241871wmq.15.2024.04.09.00.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 00:34:30 -0700 (PDT)
+Message-ID: <52173d5b-672d-4ef6-ad06-ec350c44d739@redhat.com>
+Date: Tue, 9 Apr 2024 09:34:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oZRkL5METsbvE8ng"
-Content-Disposition: inline
-In-Reply-To: <20240408125256.218368873@linuxfoundation.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 2/7] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240408183946.2991168-1-ryan.roberts@arm.com>
+ <20240408183946.2991168-3-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240408183946.2991168-3-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 08.04.24 20:39, Ryan Roberts wrote:
+> Now that we no longer have a convenient flag in the cluster to determine
+> if a folio is large, free_swap_and_cache() will take a reference and
+> lock a large folio much more often, which could lead to contention and
+> (e.g.) failure to split large folios, etc.
+> 
+> Let's solve that problem by batch freeing swap and cache with a new
+> function, free_swap_and_cache_nr(), to free a contiguous range of swap
+> entries together. This allows us to first drop a reference to each swap
+> slot before we try to release the cache folio. This means we only try to
+> release the folio once, only taking the reference and lock once - much
+> better than the previous 512 times for the 2M THP case.
+> 
+> Contiguous swap entries are gathered in zap_pte_range() and
+> madvise_free_pte_range() in a similar way to how present ptes are
+> already gathered in zap_pte_range().
+> 
+> While we are at it, let's simplify by converting the return type of both
+> functions to void. The return value was used only by zap_pte_range() to
+> print a bad pte, and was ignored by everyone else, so the extra
+> reporting wasn't exactly guaranteed. We will still get the warning with
+> most of the information from get_swap_device(). With the batch version,
+> we wouldn't know which pte was bad anyway so could print the wrong one.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   include/linux/pgtable.h | 29 ++++++++++++
+>   include/linux/swap.h    | 12 +++--
+>   mm/internal.h           | 63 ++++++++++++++++++++++++++
+>   mm/madvise.c            | 12 +++--
+>   mm/memory.c             | 13 +++---
+>   mm/swapfile.c           | 97 +++++++++++++++++++++++++++++++++--------
+>   6 files changed, 195 insertions(+), 31 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index a3fc8150b047..75096025fe52 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -708,6 +708,35 @@ static inline void pte_clear_not_present_full(struct mm_struct *mm,
+>   }
+>   #endif
+>   
+> +#ifndef clear_not_present_full_ptes
+> +/**
+> + * clear_not_present_full_ptes - Clear multiple not present PTEs which are
+> + *				 consecutive in the pgtable.
+> + * @mm: Address space the ptes represent.
+> + * @addr: Address of the first pte.
+> + * @ptep: Page table pointer for the first entry.
+> + * @nr: Number of entries to clear.
+> + * @full: Whether we are clearing a full mm.
+> + *
+> + * May be overridden by the architecture; otherwise, implemented as a simple
+> + * loop over pte_clear_not_present_full().
+> + *
+> + * Context: The caller holds the page table lock.  The PTEs are all not present.
+> + * The PTEs are all in the same PMD.
+> + */
+> +static inline void clear_not_present_full_ptes(struct mm_struct *mm,
+> +		unsigned long addr, pte_t *ptep, unsigned int nr, int full)
+> +{
+> +	for (;;) {
+> +		pte_clear_not_present_full(mm, addr, ptep, full);
+> +		if (--nr == 0)
+> +			break;
+> +		ptep++;
+> +		addr += PAGE_SIZE;
+> +	}
+> +}
+> +#endif
+> +
+>   #ifndef __HAVE_ARCH_PTEP_CLEAR_FLUSH
+>   extern pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>   			      unsigned long address,
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index f6f78198f000..5737236dc3ce 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -471,7 +471,7 @@ extern int swap_duplicate(swp_entry_t);
+>   extern int swapcache_prepare(swp_entry_t);
+>   extern void swap_free(swp_entry_t);
+>   extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> -extern int free_swap_and_cache(swp_entry_t);
+> +extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+>   int swap_type_of(dev_t device, sector_t offset);
+>   int find_first_swap(dev_t *device);
+>   extern unsigned int count_swap_pages(int, int);
+> @@ -520,8 +520,9 @@ static inline void put_swap_device(struct swap_info_struct *si)
+>   #define free_pages_and_swap_cache(pages, nr) \
+>   	release_pages((pages), (nr));
+>   
+> -/* used to sanity check ptes in zap_pte_range when CONFIG_SWAP=0 */
+> -#define free_swap_and_cache(e) is_pfn_swap_entry(e)
+> +static inline void free_swap_and_cache_nr(swp_entry_t entry, int nr)
+> +{
+> +}
+>   
+>   static inline void free_swap_cache(struct folio *folio)
+>   {
+> @@ -589,6 +590,11 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
+>   }
+>   #endif /* CONFIG_SWAP */
+>   
+> +static inline void free_swap_and_cache(swp_entry_t entry)
+> +{
+> +	free_swap_and_cache_nr(entry, 1);
+> +}
+> +
+>   #ifdef CONFIG_MEMCG
+>   static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
+>   {
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 3bdc8693b54f..de68705624b0 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -11,6 +11,8 @@
+>   #include <linux/mm.h>
+>   #include <linux/pagemap.h>
+>   #include <linux/rmap.h>
+> +#include <linux/swap.h>
+> +#include <linux/swapops.h>
+>   #include <linux/tracepoint-defs.h>
+>   
+>   struct folio_batch;
+> @@ -189,6 +191,67 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>   
+>   	return min(ptep - start_ptep, max_nr);
+>   }
+> +
+> +/**
+> + * pte_next_swp_offset - Increment the swap entry offset field of a swap pte.
+> + * @pte: The initial pte state; is_swap_pte(pte) must be true.
+
+Likely we also want non_swap_entry() to be false.
+
+> + *
+> + * Increments the swap offset, while maintaining all other fields, including
+> + * swap type, and any swp pte bits. The resulting pte is returned.
+> + */
+> +static inline pte_t pte_next_swp_offset(pte_t pte)
+> +{
+> +	swp_entry_t entry = pte_to_swp_entry(pte);
+> +	pte_t new = __swp_entry_to_pte(__swp_entry(swp_type(entry),
+> +						   swp_offset(entry) + 1));
+> +
+> +	if (pte_swp_soft_dirty(pte))
+> +		new = pte_swp_mksoft_dirty(new);
+> +	if (pte_swp_exclusive(pte))
+> +		new = pte_swp_mkexclusive(new);
+> +	if (pte_swp_uffd_wp(pte))
+> +		new = pte_swp_mkuffd_wp(new);
+> +
+> +	return new;
+> +}
 
 
---oZRkL5METsbvE8ng
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: David Hildenbrand <david@redhat.com>
 
-Hi!
+-- 
+Cheers,
 
-> This is the start of the stable review cycle for the 6.1.85 release.
-> There are 138 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+David / dhildenb
 
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-6.1.y
-
-No problems detected here, either:
-
-Linux 6.6.26-rc1 (ec59b99017e9)
-Linux 6.8.5-rc1 (51d60edf2813)
-Linux 5.15.154-rc1 (bfeab055fa43)
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---oZRkL5METsbvE8ng
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhTvJQAKCRAw5/Bqldv6
-8hwkAKCbN7dcJdR6eKxnpdlsxr+lx6SW3QCdHuq/0kq5iJoTHnUCx0gB9ltgCEE=
-=wBoT
------END PGP SIGNATURE-----
-
---oZRkL5METsbvE8ng--
 
