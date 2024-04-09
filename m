@@ -1,109 +1,191 @@
-Return-Path: <linux-kernel+bounces-137269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB8E189DFB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:51:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5909389DFB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:51:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07C961C22A07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:51:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EFB228E86E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2920137C21;
-	Tue,  9 Apr 2024 15:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gKglQhqX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA7E13AD08;
+	Tue,  9 Apr 2024 15:51:26 +0000 (UTC)
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A49B13667F;
-	Tue,  9 Apr 2024 15:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB9713667F;
+	Tue,  9 Apr 2024 15:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677875; cv=none; b=R5BPcjU9cdhKnVR+CzE0WnXb0fztIpTxcL1AX8nj14evkkNrc2rQk/tmTHd9nJ6BdS6eMLuhT5JX+QSoz03Amak9xLkbRPVr2VEXNXTZsb2s4Oq4LBiXZC2ouHU7Wtq6kzNw09AEeuiGrO+o5u/h0SbHzGpFvt7cgIPz4+TJwl4=
+	t=1712677886; cv=none; b=jJGNhp18O2dq9E/vSAm98eg9XzHCKFW8EDhPR//54Z48LUcHJqHMZ7QA65/kA6KHqyVpS/54HcQ4IvfODzd/qkgB+r7RMXYagYgrl6y8wnV6YTnUQMQVtufqAKE1GBTMVENMgPBuToVK5AsOPXBAe5hPmrFij+gLzcTowbPr8VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677875; c=relaxed/simple;
-	bh=3rRigGgrftXHxJMkPsD1T8AKbfSmr3FbCk/KvX7w3vk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YuqaqwhQk35CWvvWmGuxsoRaXo/ixoYPpgDGxWzNT/Mu+tnj4GqeBpk+J53XtrYISnSo5GWxyNa0SlVHfXpBqtVloUkr1ps69sTVZXudjSZ1O3VriaG54OJmNv2Sqk1Tj0zklEfgnWom7inyfJwLCBz+2VrfcK06GQXqrMpM3q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gKglQhqX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12F9DC433B1;
-	Tue,  9 Apr 2024 15:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712677874;
-	bh=3rRigGgrftXHxJMkPsD1T8AKbfSmr3FbCk/KvX7w3vk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gKglQhqXcTVxJi1naUItRLt/gwaK1khmO0uOdyi47teij5ePlbSCMLSqqu6O5n9u3
-	 q3+noVB29K61ferPB1f2rRYhL1D0fwyK54WLxQbNchz1q0+8a9jULG3jRF20wm7//f
-	 J9WjURMRfKBmwr1re5d/XIyKeJlZr5ACOBLGTWeIgGrzpkviTWuAFtt0vEirWW/YVm
-	 95NZVK173pBwrMPfD9LpG+r3yzxYo6XGso2QGeBhNpRflzz9uHa/wRHpbUKL2DgA05
-	 7j3thoTSyKMbjF8Az/hP6izpL7zSrBGxrjdXCNcvHiKOL1lY6A0vLgICWjz68aFCqG
-	 YCFuR7IWa7eOw==
-Date: Tue, 9 Apr 2024 16:51:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vaishnav Achath <vaishnav.a@ti.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Rob Herring <robh@kernel.org>, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 05/11] spi: cadence-qspi: add FIFO depth detection
- quirk
-Message-ID: <c058fd5e-f5ef-4469-a41f-38d72a345f77@sirena.org.uk>
-References: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
- <20240405-cdns-qspi-mbly-v2-5-956679866d6d@bootlin.com>
- <551bea0a-1c9e-4e04-87db-c643fdaee85e@sirena.org.uk>
- <D0ETH1AG1ONG.1M1FPSZM69H0Z@bootlin.com>
- <66bf7d58-a726-49ba-9765-f769f6189310@sirena.org.uk>
- <D0FIC34Z35BV.1RT6NNGWA85SL@bootlin.com>
+	s=arc-20240116; t=1712677886; c=relaxed/simple;
+	bh=bdt/bR+NhJhIw+HiJQzVZ+Uyt6Q1HO/2VzhcIjPmoTw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o466+usKKW1mM25VqIPyHMxibUGTyvzj6g10wE0HG96ZTQJ9R+UE5hc9jmvRjT1Vl8k6xaHAXrZXfWFl5vBunqw0okXoVxyWCPZa+uBG7XHDEOOZXZ00LqdVt3p5vROmgwYmlrYxeglk5BxeyV7MrEKzTQCORSm/u0X0YDzCP3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a564ca6f67so971554a91.2;
+        Tue, 09 Apr 2024 08:51:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712677884; x=1713282684;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3iStaDiJUNn76p5iia7p4n3GHyQy8GKOLFFVj9zvj24=;
+        b=f+XQCxvgvTuXKc/OePur+WpAzG+xb6BqDiOCzpQHnBENPDtAq/stfqmX3hxRLxBZrX
+         96BwX2A8kW9+y89WBZ5oG+KnIQ6l3QOZOHDswj0mhfHBcZ7JetnS3IFJrpnMdin2qfPp
+         oMlsmDpfgKOyvEuoWPU6C0VkE8kWCV/WMz1ZZj94vMT3YIcC3THbuixSu+SheCeKj4nw
+         +pGsOswbJpH8jFKkPA6xF65BAGhrW9x4iRotVBjjlDrCGY7OOiIarIRo9VMdq56Kz4Pc
+         KegQff1SCQ2mTupByBTVdw4AXcy0lM4I85YpSERl+778lDvn8O+UxmqiI30TaWXZZbXl
+         mCUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXABpwJOHyz55AavmVnekvLn/R/Dy+D2Ft4swZjnICFPY0IvN9In/LvXMyiPAJTS/PUW/EEb6ltZqr7QhuLh/Ks8xk4MsXsQe/FYGqeZ9a6KNJnlNvWzYax7pNdRRcD0OzqBT7I9PBPKzRqR8/30A==
+X-Gm-Message-State: AOJu0Yzh1c0o5hM06YNBGnigGzzir32mDlmSQOmhWz/xxM9HMHYCX3O/
+	3MFR2p20Y302qC0AfUZxGIwJM7s13695J7V+akLdxq+GdsHeT06Sgk9/3mxBY8e0eWmhC9Z9Bho
+	QKQ1uQLXgHv5apM2yzMUk2xCoR6s=
+X-Google-Smtp-Source: AGHT+IGhizdnGDQXqrK8UwNhe+8FbSog4L66KyixWACXgLYZgdMqaNu4NhQkUn8w51V9Wcfs3wfw3jSBPQHXxAT3hjI=
+X-Received: by 2002:a17:90b:11cd:b0:2a2:73e9:c3bf with SMTP id
+ gv13-20020a17090b11cd00b002a273e9c3bfmr28936pjb.20.1712677884057; Tue, 09 Apr
+ 2024 08:51:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="i0WU2ZVJwt5+hsRw"
-Content-Disposition: inline
-In-Reply-To: <D0FIC34Z35BV.1RT6NNGWA85SL@bootlin.com>
-X-Cookie: Everything you know is wrong!
-
-
---i0WU2ZVJwt5+hsRw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240408185520.1550865-1-namhyung@kernel.org> <ZhRB4BULj1Y1f1TN@x1>
+ <ZhTw7e+sy0wfzgR5@gmail.com> <ZhVJegoH7FKVtp0F@x1>
+In-Reply-To: <ZhVJegoH7FKVtp0F@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 9 Apr 2024 08:51:11 -0700
+Message-ID: <CAM9d7ciifGEZt_hdDTZaQfQTjoCiHssWZB9Lg6cX26EOLZ=2=w@mail.gmail.com>
+Subject: Re: [PATCHSET 0/9] Sync tools headers with the kernel source
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 09, 2024 at 12:07:56PM +0200, Th=E9o Lebrun wrote:
+Hi Arnaldo and Ingo,
 
->  - (3) Make DT property optional for all compatibles.
->     - (3a) If provided, warn if runtime detect value is different.
->     - (3b) If provided, do not detect+warn.
+On Tue, Apr 9, 2024 at 6:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> On Tue, Apr 09, 2024 at 09:40:29AM +0200, Ingo Molnar wrote:
+> >
+> > * Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > > On Mon, Apr 08, 2024 at 11:55:11AM -0700, Namhyung Kim wrote:
+> > > > Hello,
+> > > >
+> > > > I'm gonna carry these changes on the perf tools tree.  I'll update =
+the
+> > > > vhost.h once it lands on the mainline.
+> > >
+> > > Humm, maybe its not a good idea to do that this cycle?
+> >
+> > Maybe it's just me, but I've been looking sadly at all the header warni=
+ngs
+> > for months. :-) Would be better to keep them in sync with a bit higher
+>
+> I backtracked from asking for a delay, the reason for me first thinking
+> about not doing it this time is because in perf-tools-next we have, to
+> be merged for 6.10:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git log --oneline torvalds/maste=
+r.. | tail
+> f324b73c2c05832b perf beauty: Stop using the copy of uapi/linux/prctl.h
+> c8bfe3fad4f86a02 perf beauty: Move arch/x86/include/asm/irq_vectors.h cop=
+y out of the directory used to build perf
+> 7050e33e86ad03d2 perf beauty: Move uapi/sound/asound.h copy out of the di=
+rectory used to build perf
+> 44512bd6136ec7bb perf beauty: Move uapi/linux/usbdevice_fs.h copy out of =
+the directory used to build perf
+> ab3316119f9d0b3a perf beauty: Move uapi/linux/mount.h copy out of the dir=
+ectory used to build perf
+> 22916d2cbad9a20d perf beauty: Don't include uapi/linux/mount.h, use sys/m=
+ount.h instead
+> faf7217a397f041f perf beauty: Move uapi/linux/fs.h copy out of the direct=
+ory used to build perf
+> 5d8c646038f2f173 perf beauty: Fix dependency of tables using uapi/linux/m=
+ount.h
+> 4b3761eebb1c5c1b perf c2c: Fix a punctuation
+> a9f4c6c999008c92 perf trace: Collect sys_nanosleep first argument
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+> The reasoning for these changes is in the csets, for instance:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git show 7050e33e86ad03d2 | head=
+ -21
+> commit 7050e33e86ad03d26d7b969bba1d48ee159be496
+> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Date:   Mon Mar 11 17:07:33 2024 -0300
+>
+>     perf beauty: Move uapi/sound/asound.h copy out of the directory used =
+to build perf
+>
+>     It is used only to generate string tables, not to build perf, so move=
+ it
+>     to the tools/perf/trace/beauty/include/ hierarchy, that is used just =
+for
+>     scraping.
+>
+>     This is a something that should've have happened, as happened with th=
+e
+>     linux/socket.h scraper, do it now as Ian suggested while doing an
+>     audit/refactor session in the headers used by perf.
+>
+>     Suggested-by: Ian Rogers <irogers@google.com>
+>     Reviewed-by: Ian Rogers <irogers@google.com>
+>     Cc: Adrian Hunter <adrian.hunter@intel.com>
+>     Cc: Jiri Olsa <jolsa@kernel.org>
+>     Cc: Namhyung Kim <namhyung@kernel.org>
+>     Link: https://lore.kernel.org/lkml/CAP-5=3DfWZVrpRufO4w-S4EcSi9STXcTA=
+N2ERLwTSN7yrSSA-otQ@mail.gmail.com
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+> I.e. I had moved some of the stuff that is being updated, but nah,
+> better to have v6.9 tools/perf building without warnings, I'll fixup the
+> merge when I merge perf-tools-next with torvalds/master after the
+> updates are merged upstream.
 
-I think either of these is fine.
+Yeah I noticed that, but I thought it's better to keep v6.9 headers in
+sync.  Please take care of them in perf-tools-next for v6.10.
 
---i0WU2ZVJwt5+hsRw
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> This is sometimes difficult to achieve tho or would require more pull
+> requests to be sent to Linus to get some last minute changes, its not
+> something common, but I think happened a few times.
+>
+> > frequency, IMO - which would reduce the pain and churn rate:
+> >
+> > > >  16 files changed, 809 insertions(+), 740 deletions(-)
+> >
+> > That's like about a year of changes missed? An update once per cycle an=
+d
+> > this wouldn't be nearly as painful, right?
+>
+> Humm, I haven't checked if it stays that long without merging, what I've
+> agreed with Namhyung is to wait a bit for things to reach upstream, say
+> -rc3, and then do the update, trying not to do these things nor early
+> not late in the -rc sequence, to pick a sweet spot where most likely no
+> changes will be made, we make the update and the perf build has no
+> warnings in the final release.
 
------BEGIN PGP SIGNATURE-----
+I think we're doing it once per release cycle already.  This is just for v6=
+9.
+The kvm changes moved some code to arch directories.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYVY+kACgkQJNaLcl1U
-h9C/6wf/R39iaV51I3X0bI2R7WmoJqIn1NUIMRkmNhL3JTH0GuiS0y4uhXxAi1Mh
-ctXKqYIe88R+Tj6JFqZ94QN/UPne013ighl8AK5g77nyUQudXNSMyU60jzsf2BeB
-T91CvGIJM4taLxkcZ+Mb9RNOY6sFDzGOvPJmaidb1hV0LPy6VIxdnyUpjj8MZi+H
-Rll8YToay3JntnlqkTCi5PFiDeJra4ZfUKiHJlyDoxQ9knxMqPjseOlovAP99e6w
-oPHzWyDQds/d75m349lz2X24njRunjmg638jtf+7zZFsd7Q6cr12lS+BdwN7mz9x
-Jbw0UghamdQziIwhj2zfRssV2RM27g==
-=EeT2
------END PGP SIGNATURE-----
+This is what I did for v6.7.
 
---i0WU2ZVJwt5+hsRw--
+https://lore.kernel.org/r/20231121225650.390246-1-namhyung@kernel.org/
+
+Thanks,
+Namhyung
 
