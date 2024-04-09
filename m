@@ -1,153 +1,147 @@
-Return-Path: <linux-kernel+bounces-136485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC57489D4A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:38:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55BA189D4A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:38:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33F051F2896B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:38:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE372B21E1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E562AF00;
-	Tue,  9 Apr 2024 08:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IIJ6Ov/U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27AD58594B;
+	Tue,  9 Apr 2024 08:31:21 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325A91C0DD7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3468375811
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651472; cv=none; b=r6y/ysK3R6Ruu4qZ7/A4m3yyxXpMRiBt7P3vga42w+GXXh/gTIl5y3nXxj5c+h2WiS4oJOyRby60EBN2Ey/oPc4dFkEMJZyEgbOefRqXMHnvkxPneAPlyZb44PBb1RLv63XSDQJD5GFJlJJtg/4zzB+J6QMiIUvWaInKEEx5aRg=
+	t=1712651480; cv=none; b=gtspyDFfS9cpzbl6/I9UlGvOmOlNTSX+2fyw1Bs6e4U4Q3QIfgfXPMrOcco3IfaIDrqCnQva19MfBeamf72b/JTzdJugPxE0psQwwwvOMufhZIKppb33OJckr9v3cZPupeJe9oDcx46Wa8/jvhchPCrt9/gq37tiigkscRAv7qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651472; c=relaxed/simple;
-	bh=Qx5XjEyvOVzaWc21hiHhfcumz550wgDIQE1tO7gOYOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IlaGVL+j+cxDA6RkSKhPQhMzWNKO+mbEhpS+4l+BsNb4n9QDYK7NsL9mkSc4JvnxLSxHXTVb60N+hAHYYCdbCVZAKk/cgu6B5G1pkckSOgk5IYcP8uWLoDKYXTmgV4vGhoHYLAZkHyPZ/HR2GduGsT3e/tq2qGY5sZEM4+oVPK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IIJ6Ov/U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC99C433C7;
-	Tue,  9 Apr 2024 08:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712651471;
-	bh=Qx5XjEyvOVzaWc21hiHhfcumz550wgDIQE1tO7gOYOU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IIJ6Ov/UIkux883vGqRvbsbGRzzTsuJbCUHk3uTxdKKFp1uahKxyDi3gb2VUmXD9z
-	 pDQm36ZVKnuX8EYK7f6dhxyllpxJucIy6c0Y19RYFnAlOOxJ3/6qpXBwfIIwoPnnP+
-	 JlZgXydR9dtqD9y0/FbN32jPo9Qe3ZMYmOtHVztYHw7lNM2cR9musqr7tzjcTbRDRi
-	 LJRq4Gw7F95emZ+vFitnr/nBPiQq9tF6ttQXAgtM+Yq2jLbNV1eacm4JfcofbNZ9uF
-	 1eujPwGK29ArqSZuYzSlK49IIY/AVxibgsAbLO1/Nw+Dvcj+SDY1eFGSZF2yqmQjAo
-	 jCkJfQ1lQ6cwQ==
-Message-ID: <b7ac48c5-87b7-45ab-af45-574ad8b134f2@kernel.org>
-Date: Tue, 9 Apr 2024 10:31:05 +0200
+	s=arc-20240116; t=1712651480; c=relaxed/simple;
+	bh=0mZxuIDQSzRSza17q/ZWihKXaW6gfz61Dd5U4XNqUNU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kCjNcrYq/WQDgCB1f03IiKPbgF5oqZNPGv0hKGrClBwthcxZAO0xGdCr8hXOQwzjVDmXVS0ZSokcWlEx3AZK/tBz47geQ9ny+PRRV2UnSirm7LbnmD5SUraN38/Ys0vp79YfQb1YekcGocV3kL4nY7ZHU0PHJPiRwcWdXdjA0YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a0f6b6348so32390495ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:31:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712651478; x=1713256278;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JcGKM4YCl59TPh5E0Hi3BGbO70QQph4kXRIDBwCS8SA=;
+        b=r2BjyGukymalp90Fv+hg28CinXxNjtGue2zetCwdoc6ewC7FhaFNzeZtGxBEneq0GW
+         wM5e4/1UlEYsAZjBxDQFKRHr5gL65167MzP/MJsr3VZkYqTXCqeADIYkyZBYBxBMmpMH
+         pmbCKiooAflFpMXEKeQwmPot8qkWupI74Kr+xQoUnnviYq1tQh2tFuMLZ50oRrW99h2Y
+         CU4ZUvF3GR0gbV3O2AnqIf8jc/B0j+hk/YYq2ikjA6kDhkJ1bYUlaf1owoiFkuD6/nvt
+         IjLyDbP+F+yGhiyTPeUTvjCLvNLyqfQnRI9l3xFx3++fj2yZeqwoDC4ZpIcZAE/ps76e
+         fzug==
+X-Forwarded-Encrypted: i=1; AJvYcCVhccUJiSDSOciPU7bWbD4aSZfKOuhWVbLqCL9VjBwQid5mYKbneQYr2nqa2MXlF/HgQn6ZRMSCqgUAsZWoYrKCJgLcEOD5d/N+6FYG
+X-Gm-Message-State: AOJu0YwNHwaBpu6ZoiYMI417L/djOYaZ1zQD4HLBrH9ZJdUkAuis7uJi
+	OYCG8mpnitWUfMq6Ghd289meCcSemI+r2Fb+x5Lqz9+sOe/QEbjc+jMA2m2axyJSFBPw0fpEz5e
+	UiqU4s3yldtm7VoPhfjXdkce3Cf5WMWrcCq5ZcvWLCZabYZLf32nSr5c=
+X-Google-Smtp-Source: AGHT+IFpVfhC2FHJufjWY36+DFOb9NUOz5Xw+KtO/Scs6jnc4hLJ0pdRIuKQ/WhOLMgxw2glaAIew7qsEOdKna8zVuJAhM8d/+v2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Khadas VIM3/3L New TS050 support patch
-To: Jacobe Zang <jacobe.zang@wesion.com>,
- "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
- "quic_jesszhan@quicinc.com" <quic_jesszhan@quicinc.com>,
- "sam@ravnborg.org" <sam@ravnborg.org>,
- "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
- "mripard@kernel.org" <mripard@kernel.org>,
- "tzimmermann@suse.de" <tzimmermann@suse.de>,
- "airlied@gmail.com" <airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Nick Xie <nick@khadas.com>
-References: <d9b282de6a7846269b595d9bdae9102dTYZPR03MB7001ED3D869727EE9331530A803D2@TYZPR03MB7001.apcprd03.prod.outlook.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <d9b282de6a7846269b595d9bdae9102dTYZPR03MB7001ED3D869727EE9331530A803D2@TYZPR03MB7001.apcprd03.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1386:b0:369:aa95:a632 with SMTP id
+ d6-20020a056e02138600b00369aa95a632mr879757ilo.2.1712651478427; Tue, 09 Apr
+ 2024 01:31:18 -0700 (PDT)
+Date: Tue, 09 Apr 2024 01:31:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fefd040615a5bef6@google.com>
+Subject: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_listxattr (2)
+From: syzbot <syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 08/04/2024 15:16, Jacobe Zang wrote:
-> Subject: [PATCH] drm/panel: add New TS050 Panel support
-> 
-> Hello all,
-> 
-> I have made some changes to the panel-khadas-ts050.c. Here is a brief overview of what has been done:
-> 
-> - Add dt-bindings in document.
-> - Add New TS050 Panel timing sequence.
-> - Make it compatible with the old TS050 panel.
-> - The only difference between them is the timing, so I change the node in overlay to identify the specific panel.
-> - Changes in DTS doesn't push, because preceding commits have not been merged.
-> 
+Hello,
 
-I cannot review attachments, but anyway:
+syzbot found the following issue on:
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+HEAD commit:    fec50db7033e Linux 6.9-rc3
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1467098d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=01ade747b16e9c8030e0
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4d8d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15763da9180000
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc/disk-fec50db7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vmlinux-fec50db7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d02/bzImage-fec50db7.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4dff8cc527ea/mount_0.gz
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com
 
-Please kindly resend and include all necessary To/Cc entries.
+loop0: detected capacity change from 0 to 1024
+=====================================================
+BUG: KMSAN: uninit-value in strncmp+0x11e/0x180 lib/string.c:291
+ strncmp+0x11e/0x180 lib/string.c:291
+ hfsplus_listxattr+0x97d/0x1a60
+ vfs_listxattr fs/xattr.c:493 [inline]
+ listxattr+0x1f3/0x6b0 fs/xattr.c:840
+ path_listxattr fs/xattr.c:864 [inline]
+ __do_sys_listxattr fs/xattr.c:876 [inline]
+ __se_sys_listxattr fs/xattr.c:873 [inline]
+ __x64_sys_listxattr+0x16b/0x2f0 fs/xattr.c:873
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3804 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmalloc_trace+0x578/0xba0 mm/slub.c:3992
+ kmalloc include/linux/slab.h:628 [inline]
+ hfsplus_listxattr+0x4cc/0x1a60 fs/hfsplus/xattr.c:701
+ vfs_listxattr fs/xattr.c:493 [inline]
+ listxattr+0x1f3/0x6b0 fs/xattr.c:840
+ path_listxattr fs/xattr.c:864 [inline]
+ __do_sys_listxattr fs/xattr.c:876 [inline]
+ __se_sys_listxattr fs/xattr.c:873 [inline]
+ __x64_sys_listxattr+0x16b/0x2f0 fs/xattr.c:873
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+CPU: 0 PID: 5019 Comm: syz-executor940 Not tainted 6.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
 
 
-Best regards,
-Krzysztof
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
