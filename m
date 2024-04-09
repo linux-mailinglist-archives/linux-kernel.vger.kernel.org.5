@@ -1,164 +1,250 @@
-Return-Path: <linux-kernel+bounces-137338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E814689E0AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DFC789E0BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:46:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CC21C227C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9150E1C2291F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3103C153837;
-	Tue,  9 Apr 2024 16:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF792153836;
+	Tue,  9 Apr 2024 16:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbklh3fZ"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dZBAFjo8"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC03F15358E;
-	Tue,  9 Apr 2024 16:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE92E152DE2
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712681082; cv=none; b=kHnyt69nye5XczOTIVUsekhI2bhD9zMIbiLlyVlYib8SJA2A0Lzpxb1kNSWUBB5ATk7IsUt3djNi5FEhXU5mXewpFY4ul8lf2KLFSDSFKw4UrjevXrFPUa7n6KRl2NU3QgnWECMEXX/fUU2Yb3rNjj+3/LvVy95veeMAWFDbXFo=
+	t=1712681165; cv=none; b=OmFevuxgLDPOIGW8SN3VK0AuwugeRJFwXFLR7ubAiEOLAWLuqkrxuL7m6F3IAzRgq7L95IIfoOYwjvslg7g4kxcZ+HFh2Df3fPlSxCDqR47gLuonZj7T+rHCkzy0LuMSD9TquGfqxrFN4lQnyMXlwpa/FBQ7bfdBxU5YSzaAB/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712681082; c=relaxed/simple;
-	bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZOG27ZWpauDiRZTV0QhNw1vSqbbebo7qsYPVJA0yFkV4F7i454ttTdRgW1ffXDBd3r9AW/qo48MpyrwiwWwcdNhiXiUrqx2UlBxTEhlE4v80vE8bOhqXkeYORidY5P3/1BRgQ7Gk6WK/IqwmWsV9Z1Wj5knVcVVXYB9XIu/sayg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbklh3fZ; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343c891bca5so3737440f8f.2;
-        Tue, 09 Apr 2024 09:44:40 -0700 (PDT)
+	s=arc-20240116; t=1712681165; c=relaxed/simple;
+	bh=V7RrbkpWyu/aIYEhwOeEBFK0kd8UsWPtMudxgDSgPSk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QUQK7LKZo6pp+2BVw03STBPg+fvhsdbPJPkU881DE3ux/NiaMgjy2p8kK4DwT0WoceuAf/ptSZ71RqPZEkmgRL65Lm0DXXAQYjmdg79X+X8eIkl3tr1DOxRTKmYbZasfdSSFSSQZ2UfIpve0ifJ0k71qmEIkEXdNmtsjJJ8dSgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dZBAFjo8; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so2553000a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712681079; x=1713285879; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
-        b=Vbklh3fZq1hRUg0OaYoT730emGfW8d6EJRM2hOSMEtY6FPoNh4bPBovS70DXPCwk66
-         bxMjcdH7036sSJSy616l3Z8VpsUmeUkodxTMgtowP33bgjFJCF52tUrrVFCT+tqo3XS8
-         /M1EGmX1YL3kOLvxrrhSYjH/QXF2bYQn9PoNgXVfufcjgQ6UopFIqfbRrsmT3uI292Qt
-         dQXz4fHIdjtuH2Xo5y6jxcUQlvhlG2MjfKVYiXtryjV4FJ9zGrTM/XMtzePuBRIGPuOe
-         BGwFwF/A2NW8xxcv5y7T5FTAmjI/QzFnQrL6cQj0O4GxcLq9ifDJoUhxtf84PCcwhXic
-         Mdww==
+        d=google.com; s=20230601; t=1712681160; x=1713285960; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VO0sU5Arn6X6D0Lm7h4afSioZzK6RHLZrYO4mvTd0q4=;
+        b=dZBAFjo8iO3CPpZVxnQEA/DT3hIJ2vYeyqMJJ5G+xlXxKxbuIHPuT2dswntKD9CXTr
+         3w1Uxh2lDyUF8iPSozeWzWbWpgqdO7dKW3c+CJWuMh4cyG6KEOrdQ8TBft4y4A3jQU7p
+         N1hnfEWA1XH6eueeR6dC2uws75bpdxKf6OSVlRp/AvjbXRfr1/hxDb+KwU6wRXCbyx4u
+         LTZK5uiVtPieLR1w66CGtoma6wdzj6P9LWfG9xUdujlb++6RjxVGlB8LpqM9FOOGBxiy
+         qYjeHwDpQhscSF5AD2p6uHR09WGDV07/gPAItNCkQHthfnUoPbV5f1FKSbcNN0TWTyor
+         PPeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712681079; x=1713285879;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
-        b=mcLHKWIMys5/z/6fZ0lXH/1INpMIzMtHe0/jq2D0f00kLLy85IhmNx/kbgZkqRCyLJ
-         sPHVTkn2yNQtDoKa9HLJxslz3lB2TOGlmvD7rRUGYiio5cY0568x24lVKJTUR3yMpj5j
-         3bgWXCthDZZcTUDwi6lvKFANaqwJq4zUqD2QDBGdG5fKi2MBA1RE4jbjoNUdkSFF2FQ7
-         czMTRNF5V1PBqQcLgnJTPjAKBHxmgWKBHDIl6Da4nhihuc6uulFnn2jI9e/EeBSJl8xo
-         J9bAWNVkvJfkxJ19E7P3nGAtPP4Yrvxh+cx1aKQOVTkJ8r5U7/ZcG/fQ4PBQSuYcsAUw
-         CxUg==
-X-Forwarded-Encrypted: i=1; AJvYcCVt5hN+YK+LNok8RqP9MR3exYLEyvG6rENhQIUWMwqUs9z5ehr2GhEqGKrgGrhYZuulbIbsMJqZ8kzaO99/3cFCvlWyIBxkLGglcGk6t6HTzQSpV82AyfrnzygSU4EkbWhL9FgZpSG1PsjehRHEveN4O8jJ+EJe4PMBUhpVq+X+5g==
-X-Gm-Message-State: AOJu0YyyCj4cObqS1jSzfnHDTzVhEVkGHFoWqkfRiffiHICTz68sT0Sa
-	RUgGnmzZljHeBFaEMtnrft/gHrsy5RIWZdm0ljcLHwfiRNeFY7elasigEiY4t6I=
-X-Google-Smtp-Source: AGHT+IG9oCRp8KNYrcpRgvkxjASB4B9j7CiacUqJAP6Fnj2ZHjCz12vzOT6sXYOQlWJouTexhhWtPw==
-X-Received: by 2002:adf:f3d0:0:b0:341:8412:a6e7 with SMTP id g16-20020adff3d0000000b003418412a6e7mr188242wrp.18.1712681078763;
-        Tue, 09 Apr 2024 09:44:38 -0700 (PDT)
-Received: from ?IPv6:2001:8a0:e622:f700:5844:d7c8:2851:cad9? ([2001:8a0:e622:f700:5844:d7c8:2851:cad9])
-        by smtp.gmail.com with ESMTPSA id e27-20020a5d595b000000b003445bb2362esm9308419wri.65.2024.04.09.09.44.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:44:38 -0700 (PDT)
-Message-ID: <bd4d7198e58bd89b46a4c721546f6975b287a5fc.camel@gmail.com>
-Subject: Re: [PATCH v1] arm64: dts: imx8mm: fix missing pgc_vpu_* power
- domain parent
-From: Vitor Soares <ivitro@gmail.com>
-To: Lucas Stach <l.stach@pengutronix.de>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: Vitor Soares <vitor.soares@toradex.com>, devicetree@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date: Tue, 09 Apr 2024 17:44:37 +0100
-In-Reply-To: <fcd6acc268b8642371cf289149b2b1c3e90c7f45.camel@pengutronix.de>
-References: <20240409085802.290439-1-ivitro@gmail.com>
-	 <9ce35b9bb5a15891f6bd01bd54b7dc84b3ba4021.camel@pengutronix.de>
-	 <e1552a3008a30ef7ed9097b4b80cda23ccb9e840.camel@gmail.com>
-	 <fcd6acc268b8642371cf289149b2b1c3e90c7f45.camel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1712681160; x=1713285960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VO0sU5Arn6X6D0Lm7h4afSioZzK6RHLZrYO4mvTd0q4=;
+        b=Arf1UzkM3ISX/EkUr0EGxEGTYYBGDmmysrJvLKS6pSV+4OkhgnsRUhHrmR3B9dhW7k
+         naXAP8SaKGTRvxeg3g4VKrbHt5mR7PAZynDjHUD8IVp1yOwJONMk0tC8dFhgtaHxFNt4
+         v4gaFP2hAC+AWXNSXR3EcbUpkyvXm3YMoPWTa2LLzNrzyfVWhZZykzJGrcd9SLlkKeaT
+         b+DCK/+jxq8rNgJ5ZuFCNsRVcKcR97AyqNm5w33owWxwDWEnxuqEhhfNgc2CoSJ1KZn4
+         1atcH5lRVjRpGsTVJXtt7l4GFjf93idkciH3PMcEQmESfTodZ+szXES6KhRuuUt6u+u+
+         lyYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULjlZ40/hjeqxZ4+vMv5WnU+vpNQmvgveN8H72HmGljsPM54DgpstI+uq73dRJbl5GCwqjbAI7lDVpE/lutaVLrM/gkBwd5GG0wKsU
+X-Gm-Message-State: AOJu0Yx4Dblq/qD7E64mfmsh3Dw68Ts91e5M9qIYuw7AO4r1dIu4vzBY
+	7hsQdB3f8/i+VH7flRg8ltlBuQQIugoQtmlyzanaLoHl9mTSOfRX1+AAXljWJ6nOce/qvzo0zo+
+	lHHCKwhtaknGCgB/dZzqUynPhTbFBN3vcAzYx
+X-Google-Smtp-Source: AGHT+IHbJIK6+gNvsrEEhA3aRLXLxWwMGZFgt2rB8VsNwxjaanEbTa+QMHBaWUOnv0UHfwCq83FRne/wbfIulHTT99c=
+X-Received: by 2002:a17:906:248f:b0:a51:d5ce:b79e with SMTP id
+ e15-20020a170906248f00b00a51d5ceb79emr8906ejb.47.1712681159869; Tue, 09 Apr
+ 2024 09:45:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
+ <20240319154437.GA144716@cmpxchg.org> <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
+ <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
+ <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org> <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org> <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+In-Reply-To: <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 9 Apr 2024 09:45:21 -0700
+Message-ID: <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+Subject: Re: Advice on cgroup rstat lock
+To: Waiman Long <longman@redhat.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, 
+	Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Ivan Babrou <ivan@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-04-09 at 16:36 +0200, Lucas Stach wrote:
-> Am Dienstag, dem 09.04.2024 um 14:22 +0100 schrieb Vitor Soares:
-> > Hi Lucas,
-> >=20
-> > Thanks for your feedback.
-> >=20
-> > On Tue, 2024-04-09 at 11:13 +0200, Lucas Stach wrote:
-> > > Hi Vitor,
-> > >=20
-> > > Am Dienstag, dem 09.04.2024 um 09:58 +0100 schrieb Vitor Soares:
-> > > > From: Vitor Soares <vitor.soares@toradex.com>
-> > > >=20
-> > > > The pgc_vpu_* nodes miss the reference to the power domain
-> > > > parent,
-> > > > leading the system to hang during the resume.
-> > > >=20
-> > > This change is not correct. The vpumix domain is controlled
-> > > through
-> > > the
-> > > imx8mm-vpu-blk-ctrl and must not be directly triggered by the
-> > > child
-> > > domains in order to guarantee proper power sequencing.
-> > >=20
-> > > If the sequencing is incorrect for resume, it needs to be fixed
-> > > in
-> > > the
-> > > blk-ctrl driver. I'll happily assist if you have any questions
-> > > about
-> > > this intricate mix between GPC and blk-ctrl hardware/drivers.
-> > =C2=A0
-> > I'm new into the topic, so I tried to follow same approach as in
-> > imx8mp
-> > DT.
-> >=20
-> That's a good hint, the 8MP VPU GPC node additions missed my radar.
-> The
-> direct dependency there between the GPC domains is equally wrong.
->=20
-> > I also checked the imx8mq DT and it only have one domain for the
-> > VPU in the GPC. It seem blk-ctrl also dependes on pgc_vpu_* to work
-> > properly.
-> >=20
-> > The blk-ctrl driver hangs on imx8m_blk_ctrl_power_on() when access
-> > the
-> > ip registers for the soft reset. I tried to power-up the before the
-> > soft reset, but it didn't work.
-> >=20
-> The runtime_pm_get_sync() at the start of that function should ensure
-> that bus GPC domain aka vpumix is powered up. Can you check if that
-> is
-> happening?
+On Tue, Apr 9, 2024 at 8:37=E2=80=AFAM Waiman Long <longman@redhat.com> wro=
+te:
+>
+> On 4/9/24 07:08, Jesper Dangaard Brouer wrote:
+> > Let move this discussion upstream.
+> >
+> > On 22/03/2024 19.32, Yosry Ahmed wrote:
+> >> [..]
+> >>>> There was a couple of series that made all calls to
+> >>>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
+> >>>> (and IRQs enabled) in between CPU iterations. This fixed a similar
+> >>>> problem that we used to face (except in our case, we saw hard lockup=
+s
+> >>>> in extreme scenarios):
+> >>>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed=
+@google.com/
+> >>>>
+> >>>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@goo=
+gle.com/
+> >>>>
+> >>>
+> >>> I've only done the 6.6 backport, and these were in 6.5/6.6.
+> >
+> > Given I have these in my 6.6 kernel. You are basically saying I should
+> > be able to avoid IRQ-disable for the lock, right?
+> >
+> > My main problem with the global cgroup_rstat_lock[3] is it disables IRQ=
+s
+> > and (thereby also) BH/softirq (spin_lock_irq).  This cause production
+> > issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
+> > latency issues (debug via softirq_net_latency.bt [5]).
+> >
+> >   [3]
+> > https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#=
+L10
+> >   [5]
+> > https://github.com/xdp-project/xdp-project/blob/master/areas/latency/so=
+ftirq_net_latency.bt
+> >
+> >
+> >>> And between 6.1 to 6.6 we did observe an improvement in this area.
+> >>> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan
+> >>> progress)
+> >>>
+> >>> I've had a chance to get running in prod for 6.6 backport.
+> >>> As you can see in attached grafana heatmap pictures, we do observe an
+> >>> improved/reduced softirq wait time.
+> >>> These softirq "not-able-to-run" outliers is *one* of the prod issues =
+we
+> >>> observed.  As you can see, I still have other areas to improve/fix.
+> >>
+> >> I am not very familiar with such heatmaps, but I am glad there is an
+> >> improvement with 6.6 and the backports. Let me know if there is
+> >> anything I could do to help with your effort.
+> >
+> > The heatmaps give me an overview, but I needed a debugging tool, so I
+> > developed some bpftrace scripts [1][2] I'm running on production.
+> > To measure how long time we hold the cgroup rstat lock (results below).
+> > Adding ACME and Daniel as I hope there is an easier way to measure lock
+> > hold time and congestion. Notice tricky release/yield in
+> > cgroup_rstat_flush_locked[4].
+> >
+> > My production results on 6.6 with backported patches (below signature)
+> > vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
+> > shows how long time the lock+IRQs were disabled (taking into account it
+> > can be released in the loop [4]).
+> >
+> > Patched kernel:
+> >
+> > 21:49:02  time elapsed: 43200 sec
+> > @lock_time_hist_ns:
+> > [2K, 4K)              61 |      |
+> > [4K, 8K)             734 |      |
+> > [8K, 16K)         121500 |@@@@@@@@@@@@@@@@      |
+> > [16K, 32K)        385714
+> > |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> > [32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@      |
+> > [64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@      |
+> > [128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+> > [256K, 512K)      291986 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      =
+|
+> > [512K, 1M)        101859 |@@@@@@@@@@@@@      |
+> > [1M, 2M)           19866 |@@      |
+> > [2M, 4M)           10146 |@      |
+> > [4M, 8M)           30633 |@@@@      |
+> > [8M, 16M)          40365 |@@@@@      |
+> > [16M, 32M)         21650 |@@      |
+> > [32M, 64M)          5842 |      |
+> > [64M, 128M)            8 |      |
+> >
+> > And normal 6.6 kernel:
+> >
+> > 21:48:32  time elapsed: 43200 sec
+> > @lock_time_hist_ns:
+> > [1K, 2K)              25 |      |
+> > [2K, 4K)            1146 |      |
+> > [4K, 8K)           59397 |@@@@      |
+> > [8K, 16K)         571528 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      =
+|
+> > [16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> > [32K, 64K)        202810 |@@@@@@@@@@@@@      |
+> > [64K, 128K)       134564 |@@@@@@@@@      |
+> > [128K, 256K)       72870 |@@@@@      |
+> > [256K, 512K)       56914 |@@@      |
+> > [512K, 1M)         83140 |@@@@@      |
+> > [1M, 2M)          170514 |@@@@@@@@@@@      |
+> > [2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> > [4M, 8M)          755537
+> > |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> > [8M, 16M)         231222 |@@@@@@@@@@@@@@@      |
+> > [16M, 32M)         76370 |@@@@@      |
+> > [32M, 64M)          1043 |      |
+> > [64M, 128M)           12 |      |
+> >
+> >
+> > For the unpatched kernel we see more events in 4ms to 8ms bucket than
+> > any other bucket.
+> > For patched kernel, we clearly see a significant reduction of events in
+> > the 4 ms to 64 ms area, but we still have some events in this area.  I'=
+m
+> > very happy to see these patches improves the situation.  But for networ=
+k
+> > processing I'm not happy to see events in area 16ms to 128ms area.  If
+> > we can just avoid disabling IRQs/softirq for the lock, I would be happy=
+.
+> >
+> > How far can we go... could cgroup_rstat_lock be converted to a mutex?
+>
+> The cgroup_rstat_lock was originally a mutex. It was converted to a
+> spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex with
+> a spinlock"). Irq was disabled to enable calling from atomic context.
+> Since commit 0a2dc6ac3329 ("cgroup: remove
+> cgroup_rstat_flush_atomic()"), the rstat API hadn't been called from
+> atomic context anymore. Theoretically, we could change it back to a
+> mutex or not disabling interrupt. That will require that the API cannot
+> be called from atomic context going forward.
 
-I checked bc->bus_power_dev->power.runtime_status and it is RPM_ACTIVE.
+I think we should avoid flushing from atomic contexts going forward
+anyway tbh. It's just too much work to do with IRQs disabled, and we
+observed hard lockups before in worst case scenarios.
 
-Am I looking to on the right thing? It is RPM_ACTIVE event before
-runtime_pm_get_sync().
+I think one problem that was discussed before is that flushing is
+exercised from multiple contexts and could have very high concurrency
+(e.g. from reclaim when the system is under memory pressure). With a
+mutex, the flusher could sleep with the mutex held and block other
+threads for a while.
 
+I vaguely recall experimenting locally with changing that lock into a
+mutex and not liking the results, but I can't remember much more. I
+could be misremembering though.
 
->=20
-> Regards,
-> Lucas
->=20
-> > Do you have an idea how we can address this within blk-ctrl?
-> >=20
-> > Best regards,
-> > Vitor
-
+Currently, the lock is dropped in cgroup_rstat_flush_locked() between
+CPU iterations if rescheduling is needed or the lock is being
+contended (i.e. spin_needbreak() returns true). I had always wondered
+if it's possible to introduce a similar primitive for IRQs? We could
+also drop the lock (and re-enable IRQs) if IRQs are pending then.
 
