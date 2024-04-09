@@ -1,91 +1,120 @@
-Return-Path: <linux-kernel+bounces-137652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6935D89E520
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3720C89E522
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB21DB22F7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:44:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5661F23369
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4038158D6D;
-	Tue,  9 Apr 2024 21:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8D6158A35;
+	Tue,  9 Apr 2024 21:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kBeC0vs6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VYsHSsqE"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9C412F381;
-	Tue,  9 Apr 2024 21:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014D4158851;
+	Tue,  9 Apr 2024 21:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712699062; cv=none; b=pR3SkwVmediL7WE7q3Ps9KTQoqUd0Vr2M8+lKwUUNVfMGWQTlL0KHcEip6MaS9ciF8XCtO7BNEl/kGX8i/qx5WsXmZSv0S8ZLuqVP2JmAG2u3EBdrE+j76X2ju3+MevjM2wiL0wn/fInYQtvrSuMXCqdV7Jf8RIUdRhl77iTzEk=
+	t=1712699086; cv=none; b=I8V6ZkuKErYE4g+HnNYFfmDHaWiIFfxb9JNtg3k6SZzU38JAiLiIMxIEPjgcrX76up7VJNiGoijVN1mAvlOIgljobDKIErwgaQOybcJ7ip7Tg2OAQcO9HFKok5DWhijKDMJw1rC3WhO9e/Gj2bU45LW5qA8wmkx1P5/uoH2qAWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712699062; c=relaxed/simple;
-	bh=gmPhoEZQy7H8+eEDT13YM1nQeRhuIBur3SEMSC6wVTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=slKe03b1UeHzx4cD3a2XZMdVAQINfWIKxLEnq2lnnR2IHQTqq/qSc/Pgrwa/wkX4qfKqVGmQi3pYsbiUVJjki/2QlaPZVT7EOM5zY+9hZHGTg+rc3Us0djRpUe+snQSU2YxG1/MGGhueq0NUUl5LeyMWige/BP3BV2YhYS0yRG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kBeC0vs6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51721C433F1;
-	Tue,  9 Apr 2024 21:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712699061;
-	bh=gmPhoEZQy7H8+eEDT13YM1nQeRhuIBur3SEMSC6wVTg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kBeC0vs6D2fvf+lsS/n8G0lta7BNfZAuk1/4mf/TRvmI4GVp05cmjiZ96zfT2IRvz
-	 XMzlzbe1pUq4KXjae9qBQivng6f+ciojwBrNToODd/XXXE2LiQLs12GREzh5sZPhfY
-	 7rvi8THMxQKfLg+xdwQDMh9YyfjT0wLMmpmfeyRwvnsd4942DAMDc5drnu3st4ATr4
-	 6Qp+B7XtXqjl/a9Elw14myYvdSHMvbMft5p3W3K33PqcXWHTA4MIGLoSDQKtGHPCU1
-	 2qohVAGUHihmNDPFH0Dy+XSeGTWdSWT8KA4X3jJLzQL8Or8pRD8UqZIexkxTgCqKPG
-	 b9AkuzVskncag==
-Date: Tue, 9 Apr 2024 14:44:19 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Edward Cree <ecree.xilinx@gmail.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Erick Archer
- <erick.archer@outlook.com>, Long Li <longli@microsoft.com>, Ajay Sharma
- <sharmaajay@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang
- Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
- <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Kees Cook
- <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
- <justinstitt@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shradha Gupta
- <shradhagupta@linux.microsoft.com>, Konstantin Taranov
- <kotaranov@microsoft.com>, linux-rdma@vger.kernel.org,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
- mana_cfg_rx_steer_req_v2
-Message-ID: <20240409144419.6dc12ebb@kernel.org>
-In-Reply-To: <ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
-References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
-	<20240408110730.GE8764@unreal>
-	<20240408183657.7fb6cc35@kernel.org>
-	<ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
+	s=arc-20240116; t=1712699086; c=relaxed/simple;
+	bh=9AniVrmVEwjQQ91ny9Uuu92Ev9GZHv7gYh3BV+EJVvU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JZLuXUklFut1R3EJW4cZspCts5mJTZYLRmVbebbJlWiRaeRhCdCPkGxUnG2+2rUBV/JhpRx/GzWrU2soMzPjbHOa+7paQfYGamC2CAOb6kit8Yh0tby6HUrZgl/85CX1png7rXNogU/bY7gjOsRSwBDnmLAA4iteXlgvSBZIxdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VYsHSsqE; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439LiQRk004818;
+	Tue, 9 Apr 2024 16:44:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712699066;
+	bh=6jGZr9jb/pRBatR/Kljqu36LgjlgOFEHyb73BCXCNbM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=VYsHSsqEPUobLUljx6cz4GA5FVFaZv87np0wQT9/atjtfegoPU3JIjK2n7H9nPSz3
+	 tTydrdAOPmcyT67gtzLFgf43Mp6xZhjXm/YxHEnYNhNhXq0rZthdRuoFjdkEbZ1dOK
+	 lnVd8CZYk0L1sJSYct9/Yr8zKio2x+BEON1M3p/M=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439LiQaJ003856
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 9 Apr 2024 16:44:26 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
+ Apr 2024 16:44:25 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 9 Apr 2024 16:44:25 -0500
+Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439LiPKr059974;
+	Tue, 9 Apr 2024 16:44:25 -0500
+Message-ID: <e1d1aad3-0635-45e1-9470-6398a04820d0@ti.com>
+Date: Tue, 9 Apr 2024 16:44:25 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] watchdog: rti_wdt: Set min_hw_heartbeat_ms to
+ accommodate 5% safety margin
+To: Francesco Dolcini <francesco@dolcini.it>
+CC: Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck
+	<wim@linux-watchdog.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240404153319.1088644-1-jm@ti.com>
+ <a148e8ab-f502-45ec-b915-22fce751ad64@roeck-us.net>
+ <a7b0baba-56bc-47ca-9494-0178f441ff8b@ti.com>
+ <ZhWchn3qr_7Ocggm@gaggiata.pivistrello.it>
+Content-Language: en-US
+From: Judith Mendez <jm@ti.com>
+In-Reply-To: <ZhWchn3qr_7Ocggm@gaggiata.pivistrello.it>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, 9 Apr 2024 18:01:40 +0100 Edward Cree wrote:
-> > Shared branch would be good. Ed has some outstanding patches 
-> > to refactor the ethtool RSS API.  
+Hi Francesco,
+
+On 4/9/24 2:52 PM, Francesco Dolcini wrote:
+> On Tue, Apr 09, 2024 at 02:37:15PM -0500, Judith Mendez wrote:
+>> Hi all,
+>>
+>> On 4/6/24 8:01 AM, Guenter Roeck wrote:
+>>> On Thu, Apr 04, 2024 at 10:33:19AM -0500, Judith Mendez wrote:
+>>>> On AM62x, the watchdog is pet before the valid window
+>>>> is open. Fix min_hw_heartbeat and accommodate a 5% safety
+>>>> margin with the exception of open window size < 10%,
+>>>> which shall use <5% due to the smaller open window size.
+>>
+>> Please do not merge this patch, I will add an additional
+>> patch removing the hack in this driver.
 > 
-> For the record I am extremely unlikely to have time to get those
->  done this cycle :(
-> Though in any case fwiw it doesn't look like this series touches
->  anything that would conflict; mana doesn't appear to support
->  custom RSS contexts and besides the changes are well away from
->  the ethtool API handling.
+> Is the patch buggy, or you are just talking about an additional clean-up?
+> If it is an additional patch and this code is fine, why holding it back?
 
-Better safe than sorry, since the change applies cleanly on an -rc tag
-having it applied to both trees should be very little extra work.
+
+1. If we leave the hack, the hack shifts the valid window. This
+is not desirable behavior. It is better to add a safety margin
+that works in all possible scenarios.
+
+2. 5% safety margin works in almost all cases except when the
+timeout is < 5s. This due to a requirement of a min of 0.25s for the
+safety margin due max possible error. At < 5s timeout, 5% is not
+enough.
+
+I am not 100% sure if using < 5s timeout is a real use-case
+but I would rather use a safety margin that works for all cases.
+
+~ Judith
+
+
 
