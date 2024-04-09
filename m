@@ -1,87 +1,78 @@
-Return-Path: <linux-kernel+bounces-137637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E10B89E4DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:22:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9515689E4DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261871F23133
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C09DA1C2189E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5DC158A06;
-	Tue,  9 Apr 2024 21:22:36 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD2A158A07;
+	Tue,  9 Apr 2024 21:21:27 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9A015746C
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9D938DC9;
+	Tue,  9 Apr 2024 21:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712697756; cv=none; b=OQHz+0cBZ5D2D8jh0tYxXvhwmShpWADjmaw2oli8nbQTZ1hasrsoxZBxDQZY+QnVXqL5o1FpdoOXMz+OAC3PeMZhdi+eIQin3kWsRVp4CL7QooiIfFevmIScG9P4ZYPNS1ltUOLjkmmO+p+9UCcnWn3Eu4nmKZz/vGyScrZc8c4=
+	t=1712697687; cv=none; b=W97BRZZUDq1iRATssq1sLryU7ITN28Udp9K5WlmWnAfyUg8gRFqewc4FkYXEEldjAVxROvrQf8NJNQV18bX6vw2dTt0FwjYMqAQH/JlCqmOuqdBKSmdZ2vtsAR1j5IdmK6nsRvCSw5cNHMAFztOHQcJ20tSfDMWxHt+hFcQDfR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712697756; c=relaxed/simple;
-	bh=yHbf2Av6vbnjP4V9YlfMBezal1Uau1LRG1ANx8tkxzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tk3EE+ptgTfZHcD3vYsGWHtIFEud5VywH9/qKwB881qq9fRpS8mJijU0pkddT97ao8Ikc0WmILukv/sxVXRt1HQlKw9HN1dasnuDjguhcbrRnS95q9wkBNzac49CfKKNSdgJBwIztrwfzBcyqNANx117JuJyAg8/iBvfjjaySfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D254C40E00B2;
-	Tue,  9 Apr 2024 21:22:29 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gjc4wQ84Wzh0; Tue,  9 Apr 2024 21:22:26 +0000 (UTC)
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3E6340E0177;
-	Tue,  9 Apr 2024 21:21:58 +0000 (UTC)
-Date: Tue, 9 Apr 2024 23:21:52 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Ashish Kalra <Ashish.Kalra@amd.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, rafael@kernel.org, peterz@infradead.org,
-	adrian.hunter@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	jun.nakajima@intel.com, rick.p.edgecombe@intel.com,
-	thomas.lendacky@amd.com, michael.roth@amd.com, seanjc@google.com,
-	kai.huang@intel.com, bhe@redhat.com,
-	kirill.shutemov@linux.intel.com, bdas@redhat.com,
-	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
-	jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] x86/sev: add sev_es_enabled() function.
-Message-ID: <20240409212152.GFZhWxcIjiEsObqecf@fat_crate.local>
-References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
- <cover.1712694667.git.ashish.kalra@amd.com>
- <906e037ecd7592eba859448606b028a68a5d48f8.1712694667.git.ashish.kalra@amd.com>
+	s=arc-20240116; t=1712697687; c=relaxed/simple;
+	bh=eqOTlSxbGZgE/xs+yZM0Bgc6tICu1cceOLKGt81zjRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rV2A9tRCQ8f+sGg4laFVspAogO1jNf1CX61PZ59QrfxIN/wVJK7H1yD0IOirFCMad/dMqP5CyW3Mp2blaOoFHew09UQjr1hnPArrq8dOtRBbvhccpO9yqJF9zGkycWqwcvpX2H6APhSD/Vn3aKWS2JvcXAzA9j294EQjhOgQ+nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4725C433C7;
+	Tue,  9 Apr 2024 21:21:23 +0000 (UTC)
+Date: Tue, 9 Apr 2024 17:23:58 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>, "Liam R. Howlett"
+ <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Lorenzo
+ Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Ross
+ Zwisler <zwisler@google.com>, wklin@google.com, Vineeth Remanan Pillai
+ <vineeth@bitbyteword.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Suleiman Souhlal <suleiman@google.com>, Linus Torvalds
+ <torvalds@linuxfoundation.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>
+Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map
+ pstore consistently
+Message-ID: <20240409172358.34ea19f0@gandalf.local.home>
+In-Reply-To: <20240409210254.660888920@goodmis.org>
+References: <20240409210254.660888920@goodmis.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <906e037ecd7592eba859448606b028a68a5d48f8.1712694667.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 09, 2024 at 08:42:38PM +0000, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Add sev_es_enabled() function to detect if SEV-ES
-> support is enabled.
+On Tue, 09 Apr 2024 17:02:54 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-And use it exactly once?
+>   memmap=12M*4096:oops   ramoops.mem_name=oops
 
-Nah, use sev_status directly.
+I forgot to mention that this makes it trivial for any machine that doesn't
+clear memory on soft-reboot, to enable console ramoops (to have access to
+the last boot dmesg without needing serial).
 
--- 
-Regards/Gruss,
-    Boris.
+I tested this on a couple of my test boxes and on QEMU, and it works rather
+well.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+-- Steve
 
