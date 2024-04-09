@@ -1,209 +1,216 @@
-Return-Path: <linux-kernel+bounces-137414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20FAF89E1B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:41:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2747989E21C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:06:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4405C1C22FCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:41:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A827A1F23342
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9952156965;
-	Tue,  9 Apr 2024 17:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D8E156986;
+	Tue,  9 Apr 2024 18:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="uw7ykD65"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bem9nJen"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FC1156861
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5414E7F499;
+	Tue,  9 Apr 2024 18:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712684493; cv=none; b=s2W7upsG2ecczgBvmVZ/Gu56vYr+qQlKGojFyfHXPuN3ZEqKTB2K/H+sqCp1SslcVjNQvNxAsmVUZHuzEvYYQYu9vcXNZ14jnDwONqOQwyug96O6179KUoyTlWf25ldYrBagcZAEyQuYBmebFshuqQoNc+7kfcE+190oOSijhFo=
+	t=1712685985; cv=none; b=BjBdu9GTly3w1t2sdh4aoWJQSe3wa986qnoiVMYrKqfsTS42MBbrF9tE7ODZUrFPECpy2+jEjCUiBBfX6G42/YuULrPpMiCS0qrJe4qK4wFwU+UxnqvuZCZUdU4f35CGt3ug+99K3VZwO1wo8SQl8nA9lSXw+VSJyJLnlcIIzGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712684493; c=relaxed/simple;
-	bh=pltzjY/SPUhMX4spyKWf2ZWvQOAge8NQZlZokE7FSN0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Imons2EplYdGgqZQBrK9shZ0xLmG8JnPyhJ7q2lJngUC6qh6oNmkOjpAx7VSdZIK4+VOS6NnVH2NL2n8Z+FSpIDtUtELfEtzeyv35Hh5Aotis0TRf/hkq9HWs+WJTUWSkRQTcQHccGf6W0OqOiUvFkhxTsjlGdWuVoKv7/o4J3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=uw7ykD65; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-69b236a942dso15190936d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 10:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712684490; x=1713289290; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U7B5Hn9bc69gFGO1dadSBP8b08rYQ+WcE+9Sk3xNJNU=;
-        b=uw7ykD65xgD6HzJrGRzdXmJE3PmUYQaGTZccsUpLVcBlG09eJN7B9flw8BGBdlbxiP
-         gs1XQdDoYt6gddwnapy3nE8ZAB+XCZUZ2CGMgAyiNASU3m9tX+2WQBc0BRhZA4uIiKQy
-         m9OEsKO/KuuCOJBZzAIvAsMc8fIJdf5IMkZ28A69J29XfzNhoR1UjfHf4MZ3Y0IxR/+6
-         cchroH4u66sj83hUbBX0NcTHkFLADlyUz1cBWw7JBSSQydBGh8eDZGOxvZC/1h2lj29O
-         d6degUNO8gPI8/zt4B1P0xtrWb32qKe1zil+Ez/4araX5+bq9Etm7OL93F0lsMSS3EWn
-         YbkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712684490; x=1713289290;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U7B5Hn9bc69gFGO1dadSBP8b08rYQ+WcE+9Sk3xNJNU=;
-        b=nJcM0phIpNUzTB7mgOBlmavsl4kA4Ir7Mt6BAw+RgqsXdfamrrkfTil0K8hJOSIK5p
-         NkLTYEItyl2vTdCY/bVUMoL4nRm6xV1oT6/LCa95weVLkALVCRc2gG3OU2FOTbA0+0rb
-         1hSMKI3A9/TRZznrHZHucbI6bOcSiIwu291nEUQk4BeXv60WkKlimSFmzcXXvv74ywC+
-         y3wPBpZnij+y4PMFAix4h3ofTfFrnLqKan2cYRc8dVVgEK+mPgksTUEkZKTVvZMCbVBl
-         E20zBnVxAi4oqH5217FzFvENfoD7GpTEt2dwtvVGuvF90foiiTFhNoX99J4ucCRFAruc
-         UOew==
-X-Gm-Message-State: AOJu0YyAOSVDc/9oCmuzBG5ufrzP1sOgft9UBlUlAao8Fuye78DlOs66
-	V3XqVnS3qrsVJXftAVZjr5vy8ltx+R6Ha7lJdjB8kXLl8dr/oxHpRUOqFzqZ5I4=
-X-Google-Smtp-Source: AGHT+IFZkYMJyE7vWB2fzdW96Mk6tRNkz5BTdSBeNLiPos0PZIyjmZdGftcIJLVfsA4qvWq2OrJABA==
-X-Received: by 2002:a05:6214:29e2:b0:699:29e0:10b4 with SMTP id jv2-20020a05621429e200b0069929e010b4mr528941qvb.13.1712684490052;
-        Tue, 09 Apr 2024 10:41:30 -0700 (PDT)
-Received: from megalith.oryx-coho.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
-        by smtp.gmail.com with ESMTPSA id o11-20020a0ce40b000000b00699437d4dfbsm3828996qvl.72.2024.04.09.10.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 10:41:29 -0700 (PDT)
-From: Trevor Gamblin <tgamblin@baylibre.com>
-To: linux-pwm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	michael.hennerich@analog.com,
-	nuno.sa@analog.com,
-	tgamblin@baylibre.com,
-	dlechner@baylibre.com
-Subject: [PATCH 2/2 v2] pwm: axi-pwmgen: add duty offset support
-Date: Tue,  9 Apr 2024 13:41:26 -0400
-Message-ID: <20240409174126.1296318-3-tgamblin@baylibre.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240409174126.1296318-1-tgamblin@baylibre.com>
-References: <20240409174126.1296318-1-tgamblin@baylibre.com>
+	s=arc-20240116; t=1712685985; c=relaxed/simple;
+	bh=lKbdrlQEuosracHTbXqyG8nrGq4aKB8F7ccRPnmbiqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hz7ccihp6BGvcsIfdptSoAab2lG4HyXz3RZgfvGLyuq5FdmSkHlg2mDGAuEjXYdAWmEjTgqRedoc0TILeoo/qW52O6bMKz7b5KrTmrZZjWnPh5/DEcCsplVKRpu5dBj/wJhJiUF70gMqLdzBcWf6ioy4sDMskQ9uZm5NYUog5NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bem9nJen; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 439CQYJC028241;
+	Tue, 9 Apr 2024 17:43:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=XJsZh8rurWgQGYHWAum585/lnINVNpaEUluO+e+7ONY=; b=be
+	m9nJenTC4dpWBKe1hFZCXtd+AXYzNpN5ASZOa/1A0rW1LC0jbQ9n5RfRtBiR7NVR
+	znXBsnCjkPzuKrRbj57eFSMH6RpYooO6/0ntzKdgLkUa41vNf5uZGnkCU9Zl/Ipv
+	nUw2EazapN9n2igk4IouRgwuQbUvlzySvZVfbsRTNbEnd/qzw8Pv05SheIzERvtT
+	237Gw1WUC2M5FAt6PIn0RSJrcgrajnm9NKYM6YjnThZN8QqzreysKHVGKDee27dZ
+	yLPLGLRmka0+DZfIwzJQToqUt5b5JK74fv6Tt3caStSEUGDdS5R9F1o8SO/IjrJe
+	Vdk+SykLkICIZvYOPMBw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcv3khu64-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 17:43:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 439Hh5SM025586
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Apr 2024 17:43:05 GMT
+Received: from [10.216.62.42] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 9 Apr 2024
+ 10:42:59 -0700
+Message-ID: <3ab9badd-2cf6-4fe0-aaf0-d08614418968@quicinc.com>
+Date: Tue, 9 Apr 2024 23:12:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v20 4/9] usb: dwc3: core: Refactor PHY logic to support
+ Multiport Controller
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Johan Hovold
+	<johan@kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org"
+	<linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "quic_ppratap@quicinc.com"
+	<quic_ppratap@quicinc.com>,
+        "quic_jackp@quicinc.com"
+	<quic_jackp@quicinc.com>,
+        Johan Hovold <johan+linaro@kernel.org>
+References: <20240408132925.1880571-1-quic_kriskura@quicinc.com>
+ <20240408132925.1880571-5-quic_kriskura@quicinc.com>
+ <20240409011046.zgjqvhewldch3snu@synopsys.com>
+Content-Language: en-US
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <20240409011046.zgjqvhewldch3snu@synopsys.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2kjLBKEa1gL6vBwM6ThsQydqycEfkkho
+X-Proofpoint-GUID: 2kjLBKEa1gL6vBwM6ThsQydqycEfkkho
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-09_12,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1015 priorityscore=1501 impostorscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404090116
 
-Enable duty_offset feature now that it is supported in the pwm
-subsystem. Related macros and struct fields related to duty_offset are
-renamed to be consistent.
 
-Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
----
-v2 changes:
-* Address feedback for driver in v1:
-  * Remove line setting supports_offset flag in pwm_chip, since that has
-    been removed from the struct in core.c.
 
----
- drivers/pwm/pwm-axi-pwmgen.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+On 4/9/2024 6:41 AM, Thinh Nguyen wrote:
+> On Mon, Apr 08, 2024, Krishna Kurapati wrote:
+>> Currently the DWC3 driver supports only single port controller
+>> which requires at least one HS PHY and at most one SS PHY.
+>>
+>> But the DWC3 USB controller can be connected to multiple ports and
+>> each port can have their own PHYs. Each port of the multiport
+>> controller can either be HS+SS capable or HS only capable
+>> Proper quantification of them is required to modify GUSB2PHYCFG
+>> and GUSB3PIPECTL registers appropriately.
+>>
+>> Add support for detecting, obtaining and configuring PHYs supported
+>> by a multiport controller. Limit support to multiport controllers
+>> with up to four ports for now (e.g. as needed for SC8280XP).
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+>> ---
+>>   drivers/usb/dwc3/core.c | 251 ++++++++++++++++++++++++++++------------
+>>   drivers/usb/dwc3/core.h |  14 ++-
+>>   drivers/usb/dwc3/drd.c  |  15 ++-
+>>   3 files changed, 193 insertions(+), 87 deletions(-)
+>>
+> 
+> <snip>
+> 
+>> @@ -1937,6 +2020,10 @@ static int dwc3_get_num_ports(struct dwc3 *dwc)
+>>   
+>>   	iounmap(base);
+>>   
+>> +	if (dwc->num_usb2_ports > DWC3_MAX_PORTS ||
+>> +	    dwc->num_usb3_ports > DWC3_MAX_PORTS)
+>> +		return -ENOMEM;
+> 
+> This should be -EINVAL.
+> 
+>> +
+>>   	return 0;
+>>   }
+> 
+> <snip>
+> 
+>> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+>> index 341e4c73cb2e..df2e111aa848 100644
+>> --- a/drivers/usb/dwc3/core.h
+>> +++ b/drivers/usb/dwc3/core.h
+>> @@ -33,6 +33,12 @@
+>>   
+>>   #include <linux/power_supply.h>
+>>   
+>> +/*
+>> + * Maximum number of ports currently supported for multiport
+>> + * controllers.
+> 
+> This macro here is being used per USB2 vs USB3 ports rather than USB2 +
+> USB3, unlike the xHCI MAXPORTS. You can clarify in the comment and
+> rename the macro to avoid any confusion. You can also create 2 separate
+> macros for number of USB2 and USB3 ports even if they share the same
+> value.
+> 
+> As noted[*], we support have different max number of usb2 ports vs usb3
+> ports. I would suggest splitting the macros.
+> 
 
-diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
-index 539625c404ac..25a083003432 100644
---- a/drivers/pwm/pwm-axi-pwmgen.c
-+++ b/drivers/pwm/pwm-axi-pwmgen.c
-@@ -6,9 +6,9 @@
-  * Copyright 2024 Baylibre SAS
-  *
-  * Limitations:
-- * - The writes to registers for period and duty are shadowed until
-- *   LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at the end of the
-- *   current period.
-+ * - The writes to registers for period, duty, and duty_offset are
-+ *   shadowed until LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at
-+ *   the end of the current period.
-  * - Writing LOAD_CONFIG also has the effect of re-synchronizing all
-  *   enabled channels, which could cause glitching on other channels. It
-  *   is therefore expected that channels are assigned harmonic periods
-@@ -34,7 +34,7 @@
- #define AXI_PWMGEN_REG_NPWM		0x14
- #define AXI_PWMGEN_CHX_PERIOD(v, ch)	((v)->period_base + (v)->ch_step * (ch))
- #define AXI_PWMGEN_CHX_DUTY(v, ch)	((v)->duty_base + (v)->ch_step * (ch))
--#define AXI_PWMGEN_CHX_OFFSET(v, ch)	((v)->offset_base + (v)->ch_step * (ch))
-+#define AXI_PWMGEN_CHX_DUTY_OFFSET(v, ch)	((v)->duty_offset_base + (v)->ch_step * (ch))
- #define AXI_PWMGEN_REG_CORE_MAGIC_VAL	0x601A3471 /* Identification number to test during setup */
- #define AXI_PWMGEN_LOAD_CONFIG		BIT(1)
- #define AXI_PWMGEN_RESET		BIT(0)
-@@ -42,7 +42,7 @@
- struct axi_pwm_variant {
- 	u8 period_base;
- 	u8 duty_base;
--	u8 offset_base;
-+	u8 duty_offset_base;
- 	u8 major_version;
- 	u8 ch_step;
- };
-@@ -62,7 +62,7 @@ static const struct regmap_config axi_pwmgen_regmap_config = {
- static const struct axi_pwm_variant pwmgen_1_00_variant = {
- 	.period_base = 0x40,
- 	.duty_base = 0x44,
--	.offset_base = 0x48,
-+	.duty_offset_base = 0x48,
- 	.major_version = 1,
- 	.ch_step = 12,
- };
-@@ -70,7 +70,7 @@ static const struct axi_pwm_variant pwmgen_1_00_variant = {
- static const struct axi_pwm_variant pwmgen_2_00_variant = {
- 	.period_base = 0x40,
- 	.duty_base = 0x80,
--	.offset_base = 0xC0,
-+	.duty_offset_base = 0xC0,
- 	.major_version = 2,
- 	.ch_step = 4,
- };
-@@ -83,7 +83,7 @@ static int axi_pwmgen_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	unsigned int ch = pwm->hwpwm;
- 	struct regmap *regmap = ddata->regmap;
- 	const struct axi_pwm_variant *variant = ddata->variant;
--	u64 period_cnt, duty_cnt;
-+	u64 period_cnt, duty_cnt, duty_offset_cnt;
- 	int ret;
- 
- 	if (state->polarity != PWM_POLARITY_NORMAL)
-@@ -108,6 +108,14 @@ static int axi_pwmgen_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY(variant, ch), duty_cnt);
- 		if (ret)
- 			return ret;
-+
-+		duty_offset_cnt = mul_u64_u64_div_u64(state->duty_offset, ddata->clk_rate_hz, NSEC_PER_SEC);
-+		if (duty_offset_cnt > UINT_MAX)
-+			duty_offset_cnt = UINT_MAX;
-+
-+		ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY_OFFSET(variant, ch), duty_offset_cnt);
-+		if (ret)
-+			return ret;
- 	} else {
- 		ret = regmap_write(regmap, AXI_PWMGEN_CHX_PERIOD(variant, ch), 0);
- 		if (ret)
-@@ -116,6 +124,10 @@ static int axi_pwmgen_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY(variant, ch), 0);
- 		if (ret)
- 			return ret;
-+
-+		ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY_OFFSET(variant, ch), 0);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	return regmap_write(regmap, AXI_PWMGEN_REG_CONFIG, AXI_PWMGEN_LOAD_CONFIG);
-@@ -145,6 +157,12 @@ static int axi_pwmgen_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 
- 	state->duty_cycle = DIV_ROUND_UP_ULL((u64)cnt * NSEC_PER_SEC, ddata->clk_rate_hz);
- 
-+	ret = regmap_read(regmap, AXI_PWMGEN_CHX_DUTY_OFFSET(variant, ch), &cnt);
-+	if (ret)
-+		return ret;
-+
-+	state->duty_offset = DIV_ROUND_UP_ULL((u64)cnt * NSEC_PER_SEC, ddata->clk_rate_hz);
-+
- 	state->polarity = PWM_POLARITY_NORMAL;
- 
- 	return 0;
--- 
-2.44.0
+Hi Thinh,
 
+  This macro was intended only to identify how many USB2 (or USB3) Phy's 
+were serviced/operated by this driver, not how many logical ports 
+present (like in xHCI). I don't think it would be confusing currently 
+given that it is only used to identify number of generic phy instances 
+to allocate and not used for any other purpose. Once the num_usb2_ports 
+and num_usb3_ports are read by get_num_ports(...) call, they directly 
+indicate how many ports are HS and SS respectively. Keeping the same in 
+mind, I returned ENOMEM above (as you mentioned) because we don't 
+allocate more than DWC3_MAX_PORTS and if the number of hs or ss ports is 
+more than that, we simply return ENOMEM saying the driver doesn't 
+support operating those many phy's.
+
+> [*] https://lore.kernel.org/linux-usb/20230801013031.ft3zpoatiyfegmh6@synopsys.com/
+> 
+>> + */
+>> +#define DWC3_MAX_PORTS 4
+>> +
+>>
+> 
+> But it's not a big issue whether you decided to push a new version or a
+> create a separate patch for the comments above. Here's my Ack:
+> 
+
+Since this is not a bug, I would prefer to make a separate patch to 
+rename the macros. (If that is fine).
+
+> Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+> 
+> Thanks,
+> Thinh
 
