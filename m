@@ -1,112 +1,402 @@
-Return-Path: <linux-kernel+bounces-137677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035AF89E5C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D4B89E5C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C55283DCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:53:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37CEB283357
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D85158DD7;
-	Tue,  9 Apr 2024 22:52:52 +0000 (UTC)
-Received: from mail114-240.sinamail.sina.com.cn (mail114-240.sinamail.sina.com.cn [218.30.114.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DEC158DA7;
+	Tue,  9 Apr 2024 22:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="pirceWlp"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CFF158DA5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DCB158D78
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712703171; cv=none; b=UerljstVQix5fBSTdsUkGErkxpX0ASJKques8nnKPiYjctWQzMMgNNe2aWAu9h0o21paNQh/d/J8JK7cQwbgQM7Lixb0fg9pjTKr8bXA7ePMFKgtcyiXnmMQtv7nxE2jAFjgGziCGn76ARBCPj7qZHfDpCSA5a96B07ItVegXo0=
+	t=1712703167; cv=none; b=rmk17+Soj8FOzCm+brIkXlkXExGF0AVhNy8nv9XRQxpbbwlxECJeomLo4yHjLfzah6/RfAOZn/Zv1vyGWHhyT+h2koZH//Ui9FFIJin7cK7EIYmIbeKFEqTS0CZF2ekosQ9RyuwThHrNOc6r6cc29q/cUYn9sMjNFDSjtg/XdWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712703171; c=relaxed/simple;
-	bh=O+mGXfs3RDsQTErSVM8OTaHI3QnXgNIs9P8CYq9GNoM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BIKmRlhm3ILIVfShDF030KuERxA4t1fzJ+toS+tT+9nCXRP+3OswPe6XQb3hmk2oQTymcIjO/jdIep4q6XGfIrMJ6/+qoPTGh90kI4qpacENOS1+4TKPwfuyL1i1c1vDUL0IHm8WTrUd1XCeOrW2QnkIq0ook3+h4YNLEgMCnxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.11.163])
-	by sina.com (172.16.235.24) with ESMTP
-	id 6615C68000007624; Tue, 10 Apr 2024 06:51:48 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 83548545089525
-X-SMAIL-UIID: AA18EA2385864CD180945C3BC5570DCF-20240410-065148-1
-From: Hillf Danton <hdanton@sina.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: syzbot <syzbot+d1ae9c954f73570e7b58@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Johannes Berg <johannes.berg@intel.com>,
-	Kalle Valo <kvalo@codeaurora.org>,
-	linux-wireless@vger.kernel.org
-Subject: Re: [syzbot] [kernel?] WARNING in hrtimer_forward (2)
-Date: Wed, 10 Apr 2024 06:51:39 +0800
-Message-Id: <20240409225139.1556-1-hdanton@sina.com>
-In-Reply-To: <87a5m27r08.ffs@tglx>
-References: <000000000000b77a880615a0ed2a@google.com>
+	s=arc-20240116; t=1712703167; c=relaxed/simple;
+	bh=mAjayV0DPWOtmoPQbTOB12HW/zadj4FzkdoGwSXy7Cw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JVPu0yN+HF9imeDiwR+ufgimMGKKjB9xcVlZqU5CO1ot6B6tTvK4a3AYrNFLo/2Vnqbhzq1IVqzoUIzLw6a2ch5V79W8+HhFmsrZXfi1G0YijDvGtMCnbFSNh6vgRVZyqUkivOE0VlpTg7zzFfnbmmRJrXXzwubv5EMCTSluFqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=pirceWlp; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e455b630acso13200945ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712703164; x=1713307964; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8646Xh8g5yQ0wp4lvVkVKpM6tKaisldaAHvB1jCcuIM=;
+        b=pirceWlpYX8Fk+aURGPBD1NqxhL8vuBgifa3jr6Ez8ez3AFoUjItyapSt35bFlrSmu
+         MdasjUf1TVs9P9UMqkmzARyOjQ6XvAqjsbzkx0iZMDG92FdYJrSoGzOzgW6JNVS389Wm
+         kJ60eFu9tiszLjF5+HS/NzhF2pcTcpJcbMCMqXX6Zo5GnQF1/hjE8HL1r2jKbaKX0Zy8
+         m2ADYOvYlGyNG4lydjAzG7tAyAfizBpGSkillz3JOMmyGFZvByt0myEYQ9m0741uWj8K
+         3dJlOwP9OoCtnyUUljxQBFHIxOwSdYEAuODGp9SH8OdroRl3gpW8DAhmlvNTsSlj57Ts
+         Z3tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712703164; x=1713307964;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8646Xh8g5yQ0wp4lvVkVKpM6tKaisldaAHvB1jCcuIM=;
+        b=rpYUmw0O9J/rmpqPgse57zq5hGWB9mht2x+b1NcJsy50Sj2M4XPgzC6YHYtOap9a26
+         lINJ5psjDpPQmbYC1kh15Ffd1ZOPyeJxvZKG5EOvCAjT23i4xziFvTtejnMRfX9gB2V8
+         Isf0/LkNzZt+DI43slt0CG433hurbVdbgbn1+zTwRhTWuW3ikXMw7cAAeruR8D2CVc8D
+         /CLP8jJ//r//CWWOObH0fW8u/JmV+2ufp0ZlDx+B7A7ijWk9BbG8a5ZOjwF5jTJimr9Y
+         LyZo5nzFm1HGdnico0WAsYvAMuHAeRsY6zJUCh3gzRD0nqU6+LoYlJsXwfaP70XWXhM1
+         c7lw==
+X-Gm-Message-State: AOJu0YwORvSoCM9Z4ftSVDRx0epPjsRxGiZBQuyBiMRIUudyGdQ7RClp
+	9mxvDc5tBvKMq9LmmY2I3URfRLl1nkNuMGMhO9Dti4pxGD0w9cJ2aBEMEWK06ERBb4EjQkCOlxs
+	Z
+X-Google-Smtp-Source: AGHT+IHPTK8LD9zQy/xLQpYsma/G3UlebQRk8nSskauRbNZ+/B4hgd1PN7d7FaruEdopv10/t5kwJg==
+X-Received: by 2002:a17:902:e548:b0:1e0:b9d0:f6b with SMTP id n8-20020a170902e54800b001e0b9d00f6bmr1177730plf.68.1712703163716;
+        Tue, 09 Apr 2024 15:52:43 -0700 (PDT)
+Received: from [10.0.16.226] ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id q12-20020a170902e30c00b001e290812d49sm9463411plc.226.2024.04.09.15.52.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 15:52:42 -0700 (PDT)
+Message-ID: <8748dbed-d105-4f26-a808-667c3b56c8ec@rivosinc.com>
+Date: Tue, 9 Apr 2024 15:52:40 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 21/22] KVM: riscv: selftests: Add a test for PMU
+ snapshot functionality
+Content-Language: en-US
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>,
+ Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Alexey Makhalov <amakhalov@vmware.com>,
+ Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>,
+ kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
+ virtualization@lists.linux.dev,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20240403080452.1007601-1-atishp@rivosinc.com>
+ <20240403080452.1007601-22-atishp@rivosinc.com>
+ <20240405-4e840120e8117c286cb593f9@orel>
+From: Atish Patra <atishp@rivosinc.com>
+In-Reply-To: <20240405-4e840120e8117c286cb593f9@orel>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 09 Apr 2024 12:46:31 +0200 Thomas Gleixner <tglx@linutronix.de>
-> On Mon, Apr 08 2024 at 19:46, syzbot wrote:
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 11239 at kernel/time/hrtimer.c:1053 hrtimer_forward+0x210/0x2d0 kernel/time/hrtimer.c:1053
-> > RIP: 0010:hrtimer_forward+0x210/0x2d0 kernel/time/hrtimer.c:1053
-> > Call Trace:
-> >  <IRQ>
-> >  hrtimer_forward_now include/linux/hrtimer.h:355 [inline]
-> >  mac80211_hwsim_beacon+0x192/0x1f0 drivers/net/wireless/virtual/mac80211_hwsim.c:2335
-> >  __run_hrtimer kernel/time/hrtimer.c:1692 [inline]
-> >  __hrtimer_run_queues+0x595/0xd00 kernel/time/hrtimer.c:1756
-> >  hrtimer_run_softirq+0x19a/0x2c0 kernel/time/hrtimer.c:1773
-> >  __do_softirq+0x2bc/0x943 kernel/softirq.c:554
-> >  invoke_softirq kernel/softirq.c:428 [inline]
-> >  __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
-> >  irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
-> >  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
-> >  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
-> >  </IRQ>
+On 4/5/24 06:11, Andrew Jones wrote:
+> On Wed, Apr 03, 2024 at 01:04:50AM -0700, Atish Patra wrote:
+>> Verify PMU snapshot functionality by setting up the shared memory
+>> correctly and reading the counter values from the shared memory
+>> instead of the CSR.
+>>
+>> Reviewed-by: Anup Patel <anup@brainfault.org>
+>> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+>> ---
+>>   .../testing/selftests/kvm/include/riscv/sbi.h |  25 ++++
+>>   .../selftests/kvm/lib/riscv/processor.c       |  12 ++
+>>   .../selftests/kvm/riscv/sbi_pmu_test.c        | 127 ++++++++++++++++++
+>>   3 files changed, 164 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/kvm/include/riscv/sbi.h b/tools/testing/selftests/kvm/include/riscv/sbi.h
+>> index 6675ca673c77..8c98bd99d450 100644
+>> --- a/tools/testing/selftests/kvm/include/riscv/sbi.h
+>> +++ b/tools/testing/selftests/kvm/include/riscv/sbi.h
+>> @@ -8,6 +8,12 @@
+>>   #ifndef SELFTEST_KVM_SBI_H
+>>   #define SELFTEST_KVM_SBI_H
+>>   
+>> +/* SBI spec version fields */
+>> +#define SBI_SPEC_VERSION_DEFAULT	0x1
+>> +#define SBI_SPEC_VERSION_MAJOR_SHIFT	24
+>> +#define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
+>> +#define SBI_SPEC_VERSION_MINOR_MASK	0xffffff
+>> +
+>>   /* SBI return error codes */
+>>   #define SBI_SUCCESS				 0
+>>   #define SBI_ERR_FAILURE				-1
+>> @@ -33,6 +39,9 @@ enum sbi_ext_id {
+>>   };
+>>   
+>>   enum sbi_ext_base_fid {
+>> +	SBI_EXT_BASE_GET_SPEC_VERSION = 0,
+>> +	SBI_EXT_BASE_GET_IMP_ID,
+>> +	SBI_EXT_BASE_GET_IMP_VERSION,
+>>   	SBI_EXT_BASE_PROBE_EXT = 3,
+>>   };
+>>   enum sbi_ext_pmu_fid {
+>> @@ -60,6 +69,12 @@ union sbi_pmu_ctr_info {
+>>   	};
+>>   };
+>>   
+>> +struct riscv_pmu_snapshot_data {
+>> +	u64 ctr_overflow_mask;
+>> +	u64 ctr_values[64];
+>> +	u64 reserved[447];
+>> +};
+>> +
+>>   struct sbiret {
+>>   	long error;
+>>   	long value;
+>> @@ -113,4 +128,14 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>>   
+>>   bool guest_sbi_probe_extension(int extid, long *out_val);
+>>   
+>> +/* Make SBI version */
+>> +static inline unsigned long sbi_mk_version(unsigned long major,
+>> +					    unsigned long minor)
+>> +{
+>> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
+>> +		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
 > 
-> The code which arms the timer is not serialized against the callback so
-> the following can happen:
+> Should also also mask 'minor'. I see this matches what we have in the
+> kernel so we should fix it there too.
 > 
->     CPU1                        CPU2
-> 
->     __run_hrtimer(timer)
->                                 if (!hrtimer_queued(timer))
->                                         hrtimer_start(timer);
-> 
->        hrtimer_forward(timer)
->          WARN_ON(hrtimer_queued(timer)
-> 
-> This really wants to use hrtimer_active() which takes the running
-> callback into account.
-> 
-Then the race window is still open with hrtimer_active() and serialization
-outside hrtimer is needed.
 
-	CPU1				CPU2
-	---				---
-					if (!hrtimer_is_active(timer))
-	if (!hrtimer_is_active(timer))
-		hrtimer_start(timer);
-	__run_hrtimer(timer)
-						hrtimer_start(timer);
-	hrtimer_forward(timer)
-	  WARN_ON(hrtimer_queued(timer))
+Nice catch. I fixed it in both places.
+
+>> +}
+>> +
+>> +unsigned long get_host_sbi_spec_version(void);
+>> +
+>>   #endif /* SELFTEST_KVM_SBI_H */
+>> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tools/testing/selftests/kvm/lib/riscv/processor.c
+>> index e8211f5d6863..ccb35573749c 100644
+>> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
+>> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
+>> @@ -502,3 +502,15 @@ bool guest_sbi_probe_extension(int extid, long *out_val)
+>>   
+>>   	return true;
+>>   }
+>> +
+>> +unsigned long get_host_sbi_spec_version(void)
+>> +{
+>> +	struct sbiret ret;
+>> +
+>> +	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_SPEC_VERSION, 0,
+>> +		       0, 0, 0, 0, 0);
+>> +
+>> +	GUEST_ASSERT(!ret.error);
+>> +
+>> +	return ret.value;
+>> +}
+>> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+>> index 8e7c7a3172d8..7d195be5c3d9 100644
+>> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+>> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+>> @@ -19,6 +19,11 @@
+>>   #define RISCV_MAX_PMU_COUNTERS 64
+>>   union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
+>>   
+>> +/* Snapshot shared memory data */
+>> +#define PMU_SNAPSHOT_GPA_BASE		BIT(30)
+>> +static void *snapshot_gva;
+>> +static vm_paddr_t snapshot_gpa;
+>> +
+>>   /* Cache the available counters in a bitmask */
+>>   static unsigned long counter_mask_available;
+>>   
+>> @@ -178,6 +183,32 @@ static unsigned long read_counter(int idx, union sbi_pmu_ctr_info ctrinfo)
+>>   	return counter_val;
+>>   }
+>>   
+>> +static inline void verify_sbi_requirement_assert(void)
+>> +{
+>> +	long out_val = 0;
+>> +	bool probe;
+>> +
+>> +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
+>> +	GUEST_ASSERT(probe && out_val == 1);
+>> +
+>> +	if (get_host_sbi_spec_version() < sbi_mk_version(2, 0))
+>> +		__GUEST_ASSERT(0, "SBI implementation version doesn't support PMU Snapshot");
+>> +}
+> 
+> It's a pity we can't check the SBI spec version that KVM is advertising
+> from KVM userspace. Normally we'd want to check something like this at
+> the start of the test with TEST_REQUIRE() before running a VCPU in order
+> to generate a skip exit.
+> 
+
+Agreed. I will send a separate series for that as it is an ABI change.
+
+> (We probably should allow reading and even writing the SBI spec version
+> from the VMM in order to better support migration.)
+> 
+
+How that would work for SBI spec version write use case ? For migraiton, 
+you can't go back to older SBI versions in the host. Isn't it ?
+
+Considering this case your VM is running with PMU snapshot as the host 
+has SBI v2.0. It can't be migrated to v1.0 and expecting it work. Correct ?
+
+
+>> +
+>> +static void snapshot_set_shmem(vm_paddr_t gpa, unsigned long flags)
+>> +{
+>> +	unsigned long lo = (unsigned long)gpa;
+>> +#if __riscv_xlen == 32
+>> +	unsigned long hi = (unsigned long)(gpa >> 32);
+>> +#else
+>> +	unsigned long hi = gpa == -1 ? -1 : 0;
+>> +#endif
+>> +	struct sbiret ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
+>> +				      lo, hi, flags, 0, 0, 0);
+>> +
+>> +	GUEST_ASSERT(ret.value == 0 && ret.error == 0);
+>> +}
+>> +
+>>   static void test_pmu_event(unsigned long event)
+>>   {
+>>   	unsigned long counter;
+>> @@ -210,6 +241,41 @@ static void test_pmu_event(unsigned long event)
+>>   	stop_reset_counter(counter, 0);
+>>   }
+>>   
+>> +static void test_pmu_event_snapshot(unsigned long event)
+>> +{
+>> +	unsigned long counter;
+>> +	unsigned long counter_value_pre, counter_value_post;
+>> +	unsigned long counter_init_value = 100;
+>> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+>> +
+>> +	counter = get_counter_index(0, counter_mask_available, 0, event);
+>> +	counter_value_pre = read_counter(counter, ctrinfo_arr[counter]);
+>> +
+>> +	/* Do not set the initial value */
+>> +	start_counter(counter, 0, 0);
+>> +	dummy_func_loop(10000);
+>> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
+>> +
+>> +	/* The counter value is updated w.r.t relative index of cbase */
+>> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
+>> +	__GUEST_ASSERT(counter_value_post > counter_value_pre,
+>> +		       "counter_value_post %lx counter_value_pre %lx\n",
+>> +		       counter_value_post, counter_value_pre);
+>> +
+>> +	/* Now set the initial value and compare */
+>> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
+>> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
+>> +	dummy_func_loop(10000);
+>> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
+>> +
+>> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
+>> +	__GUEST_ASSERT(counter_value_post > counter_init_value,
+>> +		       "counter_value_post %lx counter_init_value %lx for counter\n",
+>> +		       counter_value_post, counter_init_value);
+>> +
+>> +	stop_reset_counter(counter, 0);
+>> +}
+>> +
+>>   static void test_invalid_event(void)
+>>   {
+>>   	struct sbiret ret;
+>> @@ -272,6 +338,34 @@ static void test_pmu_basic_sanity(void)
+>>   	GUEST_DONE();
+>>   }
+>>   
+>> +static void test_pmu_events_snaphost(void)
+>> +{
+>> +	int num_counters = 0;
+>> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+>> +	int i;
+>> +
+>> +	/* Verify presence of SBI PMU and minimum requrired SBI version */
+>> +	verify_sbi_requirement_assert();
+>> +
+>> +	snapshot_set_shmem(snapshot_gpa, 0);
+>> +
+>> +	/* Get the counter details */
+>> +	num_counters = get_num_counters();
+>> +	update_counter_info(num_counters);
+>> +
+>> +	/* Validate shared memory access */
+>> +	GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_overflow_mask), 0);
+>> +	for (i = 0; i < num_counters; i++) {
+>> +		if (counter_mask_available & (BIT(i)))
+>> +			GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_values[i]), 0);
+>> +	}
+>> +	/* Only these two events are guranteed to be present */
+>> +	test_pmu_event_snapshot(SBI_PMU_HW_CPU_CYCLES);
+>> +	test_pmu_event_snapshot(SBI_PMU_HW_INSTRUCTIONS);
+>> +
+>> +	GUEST_DONE();
+>> +}
+>> +
+>>   static void run_vcpu(struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct ucall uc;
+>> @@ -328,13 +422,46 @@ static void test_vm_events_test(void *guest_code)
+>>   	test_vm_destroy(vm);
+>>   }
+>>   
+>> +static void test_vm_setup_snapshot_mem(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+>> +{
+>> +	/* PMU Snapshot requires single page only */
+>> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, PMU_SNAPSHOT_GPA_BASE, 1, 1, 0);
+>> +	/* PMU_SNAPSHOT_GPA_BASE is identity mapped */
+>> +	virt_map(vm, PMU_SNAPSHOT_GPA_BASE, PMU_SNAPSHOT_GPA_BASE, 1);
+>> +
+>> +	snapshot_gva = (void *)(PMU_SNAPSHOT_GPA_BASE);
+>> +	snapshot_gpa = addr_gva2gpa(vcpu->vm, (vm_vaddr_t)snapshot_gva);
+>> +	sync_global_to_guest(vcpu->vm, snapshot_gva);
+>> +	sync_global_to_guest(vcpu->vm, snapshot_gpa);
+>> +}
+>> +
+>> +static void test_vm_events_snapshot_test(void *guest_code)
+>> +{
+>> +	struct kvm_vm *vm = NULL;
+>> +	struct kvm_vcpu *vcpu;
+>> +
+>> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+>> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
+>> +				   "SBI PMU not available, skipping test");
+>> +
+>> +	test_vm_setup_snapshot_mem(vm, vcpu);
+>> +
+>> +	run_vcpu(vcpu);
+>> +
+>> +	test_vm_destroy(vm);
+>> +}
+>> +
+>>   int main(void)
+>>   {
+>> +	pr_info("SBI PMU basic test : starting\n");
+>>   	test_vm_basic_test(test_pmu_basic_sanity);
+>>   	pr_info("SBI PMU basic test : PASS\n");
+>>   
+>>   	test_vm_events_test(test_pmu_events);
+>>   	pr_info("SBI PMU event verification test : PASS\n");
+>>   
+>> +	test_vm_events_snapshot_test(test_pmu_events_snaphost);
+>> +	pr_info("SBI PMU event verification with snapshot test : PASS\n");
+>> +
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.34.1
+>>
+> 
+> Since my comments are a bit out-of-scope for this patch,
+> 
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> 
+> Thanks,
+> drew
+
 
