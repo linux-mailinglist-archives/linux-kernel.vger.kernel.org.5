@@ -1,190 +1,127 @@
-Return-Path: <linux-kernel+bounces-137111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5419189DD29
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:46:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DFE589DD20
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07C7AB236C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4CA2897F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EF01304AB;
-	Tue,  9 Apr 2024 14:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356A413173E;
+	Tue,  9 Apr 2024 14:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Alofp5dw"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cdHJtaHo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BADA50275;
-	Tue,  9 Apr 2024 14:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07186130A40
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673842; cv=none; b=qTIdOGK72g/XznKMU2xdSrpuHgElAH57mMh9oGkf4DpnLJnIu6zJuL68mHHpAjmTuM4PIDH9p1zcCnivmpVtkEJ1rXH8Cpg2gAROLPq4HDAcBvBDyj/2LP+leQm670Qj4laM/kKkbBTgvbWfXv1as8paC9lPU7aY7Bom2BQSvFQ=
+	t=1712673856; cv=none; b=LBOhK78AhS3tcX4qIQXp5ozKM4/xvAO6o1NYEwTDVMkpV1kDNwfAS88azPAuAvQomh1VwZ56KaObBcyZlfvCocx9mlQIR8yzAF2syoOrhnfD1Ta2xXlW2blcYNKlOt8h1kFqZBZv75NkzyBq8cuFP8MLxtWZjAthErBIemjoSb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673842; c=relaxed/simple;
-	bh=TX7drptoizj7yMo7tlk2MRiASPssDjpb1m0JlS/t/KY=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=Y1ok1ioTQWwIxhdVS7q/C+FE/ZTw1DMT34MazuCQKEvVT1m7P53wPFmibejy1MHZ63wJflOcIvB/+97I5lHNHJi5ZkjYd8E+n6H7UCcKRuPAEGhzK0RhDk314i7EXr2As9xulPxUnN1Apy19FdHt762JQ9NyJXuJxs/rJEfXmko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Alofp5dw; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-434925427c6so9780031cf.1;
-        Tue, 09 Apr 2024 07:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712673839; x=1713278639; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oHL0RXFr2CJfinyZBuEKsLTHwq4/wJAcA1+55f/eT84=;
-        b=Alofp5dwcQ4HFF3tC+bzA8ooj5UKbyx1AF/QICKOHTygxcLTCvOjGz4eQdk0uE9Q3k
-         vwWzFZA3Kp3fsanyxEwIXCbhwItasXZ4usb/N7jmTsqPVLJFoUYna7bhgI774g5lC9GR
-         NShic+zAJvdcujUjeEBnrNKyoDAIyniI4RoWUu9zQYcpoz6MHjeWMtggJKfc/1LLmVG4
-         ZCZstH0nzBJw7iAH29s3xYCSUdGjWdW/w/H5nrAiS9JginQ2Jds+1aEwu7F07lTO3laz
-         V3ytmywhBcd+FzfEuUTipN4PU33fwosw//Gj/nDEgsu8kTZmt2DgTqhhsP8kNTDMvEJA
-         SYpQ==
+	s=arc-20240116; t=1712673856; c=relaxed/simple;
+	bh=LN+SrPFAB1QQDGS0sQ1uUZWJejE7/O/ikNPcHErmpgo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cOC3sO2m9l4R7r0+ixIsiHcfD6lzctoOphnjhqk1fULGYDFbyntWc2CJ0kwXbkHhT7vAq1yHiBqeGPDZ9Fi0Zgp3f/tW5kM9D/LhV3/qCXuyiNUDm6EYSb+wsI0jE2bcS3QsmZlpYC7tlNZWrWcy99lGa1xU45ZOuPOFnD7Nqu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cdHJtaHo; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712673854;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q0yAbVSZ34mp5kejpKRkl/DoY4HVDAy2aW2h14uuvCc=;
+	b=cdHJtaHouLmRBdHdhnyjtbedwlPPF33p4BZ17aXUFdeXPVjam20RRU5DA9e6jLJ5CPlj94
+	OhJ6g7JFimbZsnJpBaI6yOqkgkHt3zFdbinmcAj7jUiBMGhtITvI7vVmfWJa0ZvBxWxNr3
+	S3b8A+Z6t/kFdDUf3XmflDASlZqKX9M=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-25-5_2YdbJSPuKsZDkePp_CaQ-1; Tue, 09 Apr 2024 10:44:12 -0400
+X-MC-Unique: 5_2YdbJSPuKsZDkePp_CaQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41401f598cfso33419875e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:44:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712673839; x=1713278639;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oHL0RXFr2CJfinyZBuEKsLTHwq4/wJAcA1+55f/eT84=;
-        b=tHsXzPuU3FUsQGhvwmRUyYVJ8ogrXvAXxyKHXWroD8Tx7eb78vwuiPeOcH8q9ENfec
-         MojYsTqIRtCp8FLWeTPpMTBmMNdjoKajAvunn/FCSlS99njjTvXvtR4KPh5yzvrYsGxr
-         sxFW1x3r3nWYp6kD/SoZxc+1a0wh1TiuINh1/Nf+Icg1OWPu7nEzGX9HB1yS5Q9R6DZp
-         dv1czOW5bwe1J4Q4rAjbICbW4CiFA5tDBp/NB+P7yPrJraeTv2ODAUgBsrncH92RQ8ws
-         vgqaVlCeFemXpFdo8ytfvaOLWyktUaGpEOxg9MKZk0IxV3o7NedK/hpm5lllGufU1JV8
-         OVag==
-X-Forwarded-Encrypted: i=1; AJvYcCV1lQyHrqJlqm6NzZB9nlhXRnIOLX5/XFXtXQ3av12MvzhKQpNY6JJ6mqsGEbdj3mZM6HZ2nBTUksJ9WDY0Lgk4ZK6YznSoFnL+hmb3XW/5Uui5q2ziKhWc9didLDByzpp7ff8wuyteS9xIvWi7eRx3y4PbSkiV5nJqnnLhkcaM
-X-Gm-Message-State: AOJu0Yy3vTfgX9EisHG8ktzUmTlmxJpBbDhmq0TYLpa5Mfie0kWYbxqo
-	RKVCX8FGCmfdociBO+5u1nu9WGv3Ut8hYh/T3y9wKNfDrcJNDT8Y
-X-Google-Smtp-Source: AGHT+IGmVVuOOT+gaywxcpqHxcdLnkGDJu/jgmHipvFXgrAm3d0jeVJNp5P+ms8PkckE1M5QcbwFhA==
-X-Received: by 2002:a05:622a:389:b0:432:f69d:aa1c with SMTP id j9-20020a05622a038900b00432f69daa1cmr14283424qtx.49.1712673839387;
-        Tue, 09 Apr 2024 07:43:59 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id bw9-20020a05622a098900b004330090b874sm4672604qtb.95.2024.04.09.07.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 07:43:59 -0700 (PDT)
-Date: Tue, 09 Apr 2024 10:43:58 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Kory Maincent <kory.maincent@bootlin.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, 
- Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, 
- UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, 
- Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-Message-ID: <6615542edc90f_23a2b2294ee@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240409-feature_ptp_netnext-v10-2-0fa2ea5c89a9@bootlin.com>
-References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
- <20240409-feature_ptp_netnext-v10-2-0fa2ea5c89a9@bootlin.com>
-Subject: Re: [PATCH net-next v10 02/13] net: Move dev_set_hwtstamp_phylib to
- net/core/dev.h
+        d=1e100.net; s=20230601; t=1712673851; x=1713278651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q0yAbVSZ34mp5kejpKRkl/DoY4HVDAy2aW2h14uuvCc=;
+        b=eA3SQN+ZNi9lSwc7n2TfndYa6q8XhkdqKX1U599ig6o1ho9wQXMpEcPKFyYBWuwTwY
+         9dGmkdl9W/rNVsaMQJ92X7Ue8QVV0kHAIUWtrKewEsVbJRcf9/uM6OWFhUKI6nlLXKdb
+         Op6eUYQzUlxxrYnQDQQGE7RVy6rS7ZdkxGM3dKdrhfH/jqtPQQefEttQtVs9JMdfNijU
+         x28DqAKXI8q1dXOL5hMTVBCK1aRDZdiCiveSrtBKS/C7a9Jvph6LXq6G5qwaRakqyW6y
+         0kNhwVsCXkBNHgK6Hkta+9ZAB7izH2P1+U2NIowWT7msSg6qIuTsnJgisM6t/L8QLeB/
+         tbsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpvzRozXUJR+gFhXGAhs5nyJjn/HCOY228HyBFL2weKbrhNKu5kfR8cGY/2b3ZoCbz7wB/CZfoTLJooeDNzIZ1ZW3jeIzC4xtmA0QZ
+X-Gm-Message-State: AOJu0YyfLf70zA4aSgYEmKOdapQKvNCED/e0MzAhDGFbjYeJK9hv0boV
+	9JNbgSeS7CdFvwD5L4jHsVHRhESfTfLaBDQAY4WI3qlGS/RLSyCvGTACK5O5MREHsYuIFh+XoW2
+	Vra5jphkxkQ99mcC9tdUcyZJD+jdqXvQP0n8kw32PRMJ0MzykEE5ndbRAWV7Wa8myrDLCbEjlSp
+	LMkBCB4jVIq5dNy3JtSl8TUVShs732dv3KoqSe
+X-Received: by 2002:a5d:5f43:0:b0:346:ad0:7e6a with SMTP id cm3-20020a5d5f43000000b003460ad07e6amr2743686wrb.36.1712673851249;
+        Tue, 09 Apr 2024 07:44:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEB5i0c/rvPebMeztdIAxfzC9J2VD+HmaBLODURlTNuBLFEQTLFKctXKTnuSH/Ewfhllb127kdqpMOHzAxDD2w=
+X-Received: by 2002:a5d:5f43:0:b0:346:ad0:7e6a with SMTP id
+ cm3-20020a5d5f43000000b003460ad07e6amr2743674wrb.36.1712673850960; Tue, 09
+ Apr 2024 07:44:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240404121327.3107131-1-pbonzini@redhat.com> <20240404121327.3107131-8-pbonzini@redhat.com>
+ <43d1ade0461868016165e964e2bc97f280aee9d4.camel@intel.com> <ZhSYEVCHqSOpVKMh@google.com>
+In-Reply-To: <ZhSYEVCHqSOpVKMh@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 9 Apr 2024 16:43:59 +0200
+Message-ID: <CABgObfZAJ50Z30VzFLdSrQFOEaPxpyFWuvVr1iGogjhs2_+bGA@mail.gmail.com>
+Subject: Re: [PATCH v5 07/17] KVM: x86: add fields to struct kvm_arch for CoCo features
+To: Sean Christopherson <seanjc@google.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"michael.roth@amd.com" <michael.roth@amd.com>, Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kory Maincent wrote:
-> This declaration was added to the header to be called from ethtool.
-> ethtool is separated from core for code organization but it is not really
-> a separate entity, it controls very core things.
-> As ethtool is an internal stuff it is not wise to have it in netdevice.h.
-> Move the declaration to net/core/dev.h instead.
-> 
-> Remove the EXPORT_SYMBOL_GPL call as ethtool can not be built as a module.
-> 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+On Tue, Apr 9, 2024 at 3:21=E2=80=AFAM Sean Christopherson <seanjc@google.c=
+om> wrote:
+> > I'm a little late to this conversation, so hopefully not just complicat=
+ing
+> > things. But why not deduce has_private_mem and has_protected_state from=
+ the
+> > vm_type during runtime? Like if kvm.arch.vm_type was instead a bit mask=
+ with
+> > the bit position of the KVM_X86_*_VM set, kvm_arch_has_private_mem() co=
+uld
+> > bitwise-and with a compile time mask of vm_types that have primate memo=
+ry.
+> > This also prevents it from ever transitioning through non-nonsensical s=
+tates
+> > like vm_type =3D=3D KVM_X86_TDX_VM, but !has_private_memory, so would b=
+e a little
+> > more robust.
+>
+> LOL, time is a circle, or something like that.  Paolo actually did this i=
+n v2[*],
+> and I objected, vociferously.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+To be fair, Rick is asking for something much less hideous - just set
 
-At this point this function does not need to be defined in a header at
-all. But patch 12 will change that.
+ kvm->arch.vm_type =3D (1 << vm_type);
 
-net/ethtool can be built-in or not, but cannot be built as module, so
-no need for the EXPORT_SYMBOL_GPL indeed.
+and then define kvm_has_*(kvm) as !!(kvm->arch.vm_type & SOME_BIT_MASK).
 
-> ---
-> 
-> Change in v10:
-> - New patch.
-> ---
->  include/linux/netdevice.h | 3 ---
->  net/core/dev.h            | 4 ++++
->  net/core/dev_ioctl.c      | 1 -
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index d45f330d083d..9a4b92b49fac 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -3901,9 +3901,6 @@ int generic_hwtstamp_get_lower(struct net_device *dev,
->  int generic_hwtstamp_set_lower(struct net_device *dev,
->  			       struct kernel_hwtstamp_config *kernel_cfg,
->  			       struct netlink_ext_ack *extack);
-> -int dev_set_hwtstamp_phylib(struct net_device *dev,
-> -			    struct kernel_hwtstamp_config *cfg,
-> -			    struct netlink_ext_ack *extack);
->  int dev_ethtool(struct net *net, struct ifreq *ifr, void __user *userdata);
->  unsigned int dev_get_flags(const struct net_device *);
->  int __dev_change_flags(struct net_device *dev, unsigned int flags,
-> diff --git a/net/core/dev.h b/net/core/dev.h
-> index 8572d2c8dc4a..39819fffece7 100644
-> --- a/net/core/dev.h
-> +++ b/net/core/dev.h
-> @@ -167,4 +167,8 @@ static inline void dev_xmit_recursion_dec(void)
->  	__this_cpu_dec(softnet_data.xmit.recursion);
->  }
->  
-> +int dev_set_hwtstamp_phylib(struct net_device *dev,
-> +			    struct kernel_hwtstamp_config *cfg,
-> +			    struct netlink_ext_ack *extack);
-> +
->  #endif
-> diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-> index 9a66cf5015f2..b9719ed3c3fd 100644
-> --- a/net/core/dev_ioctl.c
-> +++ b/net/core/dev_ioctl.c
-> @@ -363,7 +363,6 @@ int dev_set_hwtstamp_phylib(struct net_device *dev,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL_GPL(dev_set_hwtstamp_phylib);
->  
->  static int dev_set_hwtstamp(struct net_device *dev, struct ifreq *ifr)
->  {
-> 
-> -- 
-> 2.34.1
-> 
+And indeed it makes sense as an alternative. It also feels a little
+bit more restrictive and the benefit is small, so I think I'm going to
+go with this version.
 
+Paolo
 
 
