@@ -1,121 +1,138 @@
-Return-Path: <linux-kernel+bounces-136831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4BE89D8C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91B9489D8C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEBD1F21897
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:03:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CDA6282CC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF3112A160;
-	Tue,  9 Apr 2024 12:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCCB12D209;
+	Tue,  9 Apr 2024 12:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UF7CxQlp"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UNuLPP5S";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CyTwhFEo"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD74F129E93;
-	Tue,  9 Apr 2024 12:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F1512D1E7;
+	Tue,  9 Apr 2024 12:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664154; cv=none; b=izAqqE8zR72pBR8GcoV+ozADZgio+Gz3TZuQD7nZTYmlnzetrS0Alc/qJYKauN6aK5bizP9I2sozLdIMLwzoKHahM8pOD7pWxwqjP4j1fdtm9h8Uc9j/hhNZrkkDuwegvtE1J/nhDaCPn4FX8ztmI7JsTbZYAZBhzMa0mgrm7VI=
+	t=1712664167; cv=none; b=MmWC0fVy9J5N2cRPJj/6uIKJ1nkRdLtX0T1IJ9Yi3ifbsX6WfkXhgI+9F2/tW8a2+Hfot+TzGRRhyDM/wHpZBy3coPHGnlR/H6Dy1/iU/VzBBUfZCpHaV7bjc2ETFaQfHkpPGs5Eqc6b9EapzXDMG3CrjCnabVrIhXZq8czOimI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664154; c=relaxed/simple;
-	bh=vSvmTJBZXXJEgR7mOloXSqA3+8JPuGp6x3/LLxCsGBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OtDAX1dFUpAk8klrOpfH+h9e6VKOPXxooU4ctRqUtPHcueQ664jcB7yk2OCVSdHtQEljTxn4WOyLrFT982ZXP85bKEEkHqODfkVIYd5435l6yw7WpQT1ZEXDlh05ZDc/LdsKq+BGeLErR/TAkAxRH1zqSi4OMO9SrhxyW5JNL6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UF7CxQlp; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso8215170a12.0;
-        Tue, 09 Apr 2024 05:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712664151; x=1713268951; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AkRKDf5GLr5pj942wy9NJKid+umpjbRA7GynacZfPEQ=;
-        b=UF7CxQlpen+fzohtmyluYOFznEXC0udM8O1ZGdLYhMK+so/LuvMSo6ix5a4ZZRrVZw
-         8VzFbKfYQH/SbYQc2l3GZBWOdkW7W35TA/T7FPE8ZIdCQASV12HZ4pqG6BygoKKNW3gC
-         8aQmKQg6rsC0oUuxBloP5bMBga3jcNZkv7sxlEI5uuCpk7p+wUmt6cJZCsIyD+bJvZI0
-         w/fQA7I/tq3OZfebOSOSGxTr7VyBAltEgxFFG+3/4bVDyelprbcmku5Z5MweWbeWmNF0
-         +XV1j1KAVvA53Cz5iZ7xTmgMgFvZRPiioItXao9UIryBvpdBZ6+OPQOue8rtJYXN49al
-         ZJJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712664151; x=1713268951;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AkRKDf5GLr5pj942wy9NJKid+umpjbRA7GynacZfPEQ=;
-        b=dRMD/fEVWx2c+5ODsX9n2OV0xOcTVmOl59YjA3dJ7cOhOg2lqpOOz2aQhLIP9czVvo
-         8F+Hj/VeHXdbEed37EFDbIWtQxwq5k0okrDEE9Qz0nNgtqsuLt+61wyE0na0NgdkjaaY
-         pWkl3xRQAKjXRiofKs637UDWH4YJ2x2CHfBhnmM+0mAdiFFPmeaw84YFR72I1u2GRdJV
-         5SSpKTP4tBvPfbrIyFCDYCp4BHQPo06Q4dV7iniqt63aMoHoWIs2lOCjgq4AucBd91uc
-         UwdmYTUwQz+RyF0UQf+kmb5CO8g3v20ZVrBIImuc7trCNcyO35kP+67IZgaIgI7T1Asd
-         7UIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWK7dy9sFepMwBTmE7OVGRkQytwNB/pZQMOqs5BcJRx6LQp9yKbGeOFpZa7suopZHSMIgyMQY0uzP2ryy348k8Xo+ysPbH9PT2sU5REmpWcsOKscsHAdr8mgA1TGMAug8bGrKGcGijRAJ/MYREIv48TjgoGHknSal6cfo2D+e48OuG5QQ==
-X-Gm-Message-State: AOJu0YwCSVeqEEROS+YsrdUEJy8ubDJjUIQvn7CorJBR+iGcd/Y+RSDq
-	pxhmEsO6u6z0gnbXSre3hHsjNGa7//8Of6xIQUtuaRyaYex0Eyp9
-X-Google-Smtp-Source: AGHT+IH3wXGsiaRiem9EQMmXVabh3sBI1WiYbDC3AT/ATTb2okPbMfexW2j0doktw3Yi0bClXEyv6Q==
-X-Received: by 2002:a17:907:31c9:b0:a51:ddc6:edc1 with SMTP id xf9-20020a17090731c900b00a51ddc6edc1mr3751319ejb.28.1712664150849;
-        Tue, 09 Apr 2024 05:02:30 -0700 (PDT)
-Received: from [192.168.0.31] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
-        by smtp.gmail.com with ESMTPSA id jg18-20020a170907971200b00a51a60bf400sm5466509ejc.76.2024.04.09.05.02.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 05:02:30 -0700 (PDT)
-Message-ID: <a4283479-2c4a-4f8f-b224-999dd12ba009@gmail.com>
-Date: Tue, 9 Apr 2024 14:02:28 +0200
+	s=arc-20240116; t=1712664167; c=relaxed/simple;
+	bh=OSEZ/IJn1fMBgDMHSVQYwhSOUU5+Mc8UTTRDuJvngM4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dqyOC+uAkIi3h3gS1E9PULA32TutDirJoe4NNMQwKe3zbW4pMYzl6BDUPFCA3YB2pf7xeMHdT3co+Saq55lACmBVA6Noy1qBm3G8PqSFRjEuQ7LRCay2L0/U18x4KKiAmj7Q3sCJxrznvdqsGkBOIc9gDJ4Ju7uxpWhr5fH7hHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UNuLPP5S; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CyTwhFEo; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712664161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8NoF74+Dpoxqa48kWnxI0CEBaofoHHeQ96U8jZayGGY=;
+	b=UNuLPP5SrIkQee7qfz1ZyYRNb3d2WR3QPojM6WUZB3XqsvAeRsfziV+c6gfUoWCLTAc6j5
+	cb8UB5Ju1TSnxx+mDDxo8//mRkDg3Ou+HjilxSksmg4SUyhCkGADdMa4Ia63ZPLhZ0CJ5e
+	60KCV3dcBKnDFSMb5ltGzZvZp2T6gYlhdGYQpbJikI2fpbCere63+gMUjQ7iYB+nb6gfy/
+	Zi2cIzneMdqEgV0lV7YuxJ6Dqbn0g+ofkSddir1skWrWdfIDEtN10oDojrqJpJ94hiVzQH
+	I6NGXeZtQzeMMbJC24agR34DgADXUD/yECpAE7ewmxx1ucJPdq13qlKmPAZ0hA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712664161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8NoF74+Dpoxqa48kWnxI0CEBaofoHHeQ96U8jZayGGY=;
+	b=CyTwhFEoeUdjhwP0bMFPIs9b+VK/snwqfq0q92W1RQ3TQBS8Nl3h9TRGLDVxlui91hbbnU
+	TzjvW8K/YGS/vPBQ==
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>, John Stultz <jstultz@google.com>,
+ Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, "Eric W. Biederman"
+ <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kasan-dev@googlegroups.com, Edward Liaw
+ <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
+ check_timer_distribution()
+In-Reply-To: <20240409111051.GB29396@redhat.com>
+References: <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
+ <87frw2axv0.ffs@tglx> <20240404145408.GD7153@redhat.com>
+ <87le5t9f14.ffs@tglx> <20240406150950.GA3060@redhat.com>
+ <20240406151057.GB3060@redhat.com>
+ <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
+ <20240408102639.GA25058@redhat.com> <20240408184957.GD25058@redhat.com>
+ <87il0r7b4k.ffs@tglx> <20240409111051.GB29396@redhat.com>
+Date: Tue, 09 Apr 2024 14:02:40 +0200
+Message-ID: <877ch67nhb.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/9] rtc: convert multiple bindings into dtschema
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-rtc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com>
- <20240409102658d86fb2bd@mail.local>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240409102658d86fb2bd@mail.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 4/9/24 12:26, Alexandre Belloni wrote:
-> On 08/04/2024 17:53:00+0200, Javier Carrasco wrote:
->> This series converts the following bindings into dtschema, moving them
->> to trivial-rtc whenever possible:
->>
->> - orion-rtc: trival-rtc, referenced in arm arch.
->> - google,goldfish-rtc: trivial-rtc, referenced in mips arch.
->> - lpc32xx-rtc: trival-rtc, referenced in arm arch.
->> - maxim,ds1742: trivial-rtc, not referenced in arch, cheap conversion.
->> - rtc-aspeed: 3 devices to trivial-rtc, all referenced in arm arch.
->> - pxa-rtc: add missing properties and convert. Referenced in arm arch.
->> - st,spear600-rtc: trivial-rtc, referenced in arm arch.
->> - stmp3xxx-rtc: convert, referenced in arm arch.
->> - via,vt8500-rtc: trivial-rtc, referenced in arm arch.
-> 
-> Probably all the moves to trivial-rtc can be squashed.
-> 
+On Tue, Apr 09 2024 at 13:10, Oleg Nesterov wrote:
+> On 04/09, Thomas Gleixner wrote:
+> It seems that this is because in your tree check_timer_distribution() does
+>
+> 	if (timer_delete(id)) {
+> 		ksft_perror("Can't delete timer");
+> 		return 0;
+> 	}
+>
+> while in Linus's tree it returns -1 if timer_delete()
+> fails. Nevermind.
 
-Sure, I will squash them for v2.
+Ooops.
 
-Best regards,
-Javier Carrasco
+>> +static bool check_kernel_version(unsigned int min_major, unsigned int min_minor)
+>> +{
+>> +	unsigned int major, minor;
+>> +	struct utsname info;
+>> +
+>> +	uname(&info);
+>> +	if (sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+>> +		ksft_exit_fail();
+>> +	return major > min_major || (major == min_major && minor >= min_minor);
+>> +}
+>
+> this looks useful regardless. Perhaps it should be moved into
+> tools/testing/selftests/kselftest.h as ksft_ck_kernel_version() ?
 
+Makes sense.
+
+>> +static int check_timer_distribution(void)
+>> +{
+>> +	const char *errmsg;
+>> +
+>> +	if (!check_kernel_version(6, 3)) {
+>> +		ksft_test_result_skip("check signal distribution (old kernel)\n");
+>>  		return 0;
+>
+> ..
+>
+>> +	ksft_test_result(!ctd_failed, "check signal distribution\n");
+>
+> Perhaps
+>
+> 	if (!ctd_failed)
+> 		ksft_test_result_pass("check signal distribution\n");
+> 	else if (check_kernel_version(6, 3))
+> 		ksft_test_result_fail("check signal distribution\n");
+> 	else
+> 		ksft_test_result_skip("check signal distribution (old kernel)\n");
+>
+> makes more sense?
+>
+> This way it can be used on the older kernels with bcb7ee79029d backported.
+
+Indeed.
 
