@@ -1,39 +1,40 @@
-Return-Path: <linux-kernel+bounces-137631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A13289E4CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:11:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FED89E4CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE94A284500
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:11:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DAA41F232E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F175158A14;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2210158A1B;
 	Tue,  9 Apr 2024 21:11:16 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D30D15886D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF6A158871;
 	Tue,  9 Apr 2024 21:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712697076; cv=none; b=jS2w6PRcnTJZ/Vags1tudmP5mCBo2J67Xh9yDTk8NHE8QfxvcRRX+TFob+onpxv6NwJagBugTDH4ZKbnsUGY7QcBUyjEj7nc+IvPMjtJXz/U/7vh4wpZFleFVA8btZHMuJvtdBfOXx7yxAVf9jjd82CGlV2t4dwqh7xwfLSB73s=
+	t=1712697076; cv=none; b=SM1URxDqrLFbk6agCZYkMaB1VVBEs1zlN3xzUHuyBD16qqcBfihjsTS0Aagkdc3Wvl1niHw6UxmKzNLC4zG39Vs6UodMId2ofyuMAHU/L2hjpWiw0S16moSyRkInhQHNxnVgKMmq3TogqI7aM6ECQDbAvCe3p1UhwL7GOvm21so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712697076; c=relaxed/simple;
-	bh=8L0ERTzAy1BQjOx7mGGCwwAduTWBXdMYWDcECfPN7QY=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=FUiICzqKYXokk8KuS4rQs2Em71o0cmbtISei3DaouI4FM659Vxix357kmEpIZGGCzBnTIA2UOdm9I75l7TzDC0llbW2t6OiSTHehC1cTHJ8LnDmQdhZwHKbkf7r9LD5mVxt0BldSQ668dLvVwwfpPrBdXWW4/Z/V6bNfDBIMfk4=
+	bh=qjHBmxO19+VYEQPH6eAGJ8GUUULWhDNC6hilZ/5xo2U=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=Iy5l/AixfnZ4h3Dig5iRbQv3aaHucH5I1YU4UzEpvGsJGuYnZi6Jxr84iORZf4CaLiITgdeE278YoaPv6g4VdP5lmNH50XLTUGUKrl1y2HN0+MzDboyMT766wZcB+EElT4e4xPWE98GyW08jz8Zs4oByVaoDdF6IfzHWXQPdvTo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83FA0C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A950FC433A6;
 	Tue,  9 Apr 2024 21:11:15 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1ruImt-00000000d1d-0Dhi;
+	id 1ruImt-00000000d28-0tuD;
 	Tue, 09 Apr 2024 17:13:51 -0400
-Message-ID: <20240409210254.660888920@goodmis.org>
+Message-ID: <20240409211351.075320273@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 09 Apr 2024 17:02:54 -0400
+Date: Tue, 09 Apr 2024 17:02:55 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -65,115 +66,198 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Linus Torvalds <torvalds@linuxfoundation.org>,
  Catalin Marinas <catalin.marinas@arm.com>,
  Will Deacon <will@kernel.org>
-Subject: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map pstore consistently
+Subject: [POC][RFC][PATCH 1/2] mm/x86: Add wildcard * option as memmap=nn*align:name
+References: <20240409210254.660888920@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add wildcard option of reserving physical memory on kernel command line
+In order to allow for requesting a memory region that can be used for
+things like pstore on multiple machines where the memory is not the same,
+add a new option to the memmap=nn$ kernel command line.
 
-Background:
+The memmap=nn$addr will reserve nn amount of memory at the physical
+address addr. To use this, one must know the physical memory layout and
+know where usable memory exists in the physical layout.
 
-In ChromeOS, we have 1 MB of pstore ramoops reserved so that we can extract
-dmesg output and some other information when a crash happens in the field.
-(This is only done when the user selects "Allow Google to collect data for
- improving the system"). But there are cases when there's a bug that
-requires more data to be retrieved to figure out what is happening. We would
-like to increase the pstore size, either temporarily, or maybe even
-permanently. The pstore on these devices are at a fixed location in RAM (as
-the RAM is not cleared on soft reboots nor crashes). The location is chosen
-by the BIOS (coreboot) and passed to the kernel via ACPI tables on x86.
-There's a driver that queries for this to initialize the pstore for
-ChromeOS:
+Add a '*' option that will assign memory by looking for a range that can
+fit the given size and alignment. It will start at the high addresses, and
+then work its way down.
 
-  See drivers/platform/chrome/chromeos_pstore.c
+The format is:  memmap=nn*align:name
 
-Problem:
+Where it will find nn amount of memory at the given alignment of align.
+The name field is to allow another subsystem to retrieve where the memory
+was found. For example:
 
-The problem is that, even though there's a process to change the kernel on
-these systems, and is done regularly to install updates, the firmware is
-updated much less frequently. Choosing the place in RAM also takes special
-care, and may be in a different address for different boards. Updating the
-size via firmware is a large effort and not something that many are willing
-to do for a temporary pstore size change.
+  memmap=12M*4096:oops ramoops.mem_name=oops
 
-Requirement:
+Where ramoops.mem_name will tell ramoops that memory was reserved for it
+via the wildcard '*' option and it can find it by calling:
 
-Need a way to reserve memory that will be at a consistent location for
-every boot, if the kernel and system are the same. Does not need to work
-if rebooting to a different kernel, or if the system can change the
-memory layout between boots.
+  if (memmap_named("oops", &start, &size)) {
+	// start holds the start address and size holds the size given
 
-The reserved memory can not be an hard coded address, as the same kernel /
-command line needs to run on several different machines. The picked memory
-reservation just needs to be the same for a given machine, but may be
-different for different machines.
-
-Solution:
-
-The solution I have come up with is to introduce a new "memmap=" kernel
-command line (for x86 and I would like something similar for ARM that uses
-device tree). As "memmap=" kernel command line parameter takes on several
-flavors already, I would like to introduce a new one. The "memmap=" kernel
-parameter is of the format of:
-
-  memmap=nn[Xss]
-
-Where nn is the size, 'X' defines the flavor, and 'ss' usually a parameter
-to that flavor. The '$' flavor is to reserve physical memory where you could
-have:
-
-  memmap=12M$0xb000000
-
-Where 12 megs of memory will be reserved at the address 0xb0000000. This
-memory will not be part of the memory used by the kernel's memory management
-system. (e.g. alloc_pages() and kmalloc() will not return memory in that
-location).
-
-I would like to introduce a "wildcard" flavor that is of the format:
-
-  memmap=nn*align:label
-
-Where nn is the size of memory to reserve, the align is the alignment of
-that memory, and label is the way for other sub-systems to find that memory.
-This way the kernel command line could have:
-
-
-  memmap=12M*4096:oops   ramoops.mem_name=oops
-
-At boot up, the kernel will search for 12 megabytes in usable memory regions
-with an alignment of 4096. It will start at the highest regions and work its
-way down (for those old devices that want access to lower address DMA). When
-it finds a region, it will save it off in a small table and mark it with the
-"oops" label. Then the pstore ramoops sub-system could ask for that memory
-and location, and it will map itself there.
-
-This prototype allows for 8 different mappings (which may be overkill, 4 is
-probably plenty) with 16 byte size to store the label. The table lookup is
-only available until boot finishes, which means it is only available for
-builtin code and not for modules.
-
-I have tested this and it works for us to solve the above problem. We can
-update the kernel and command line and increase the size of pstore without
-needing to update the firmware, or knowing every memory layout of each
-board. I only tested this locally, it has not been tested in the field. Before
-doing anything, I am looking for feedback. Maybe I missed something. Perhaps
-there's a better way. Anyway, this is both a Proof of Concept as well as a
-Request for Comments.
-
-Thanks!
-
-Steven Rostedt (Google) (2):
-      mm/x86: Add wildcard '*' option as memmap=nn*align:name
-      pstore/ramoops: Add ramoops.mem_name= command line option
-
-----
- arch/x86/kernel/e820.c | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/pstore/ram.c        | 18 ++++++++++
- include/linux/mm.h     |  2 ++
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ arch/x86/kernel/e820.c | 91 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mm.h     |  2 +
  mm/memory.c            |  7 ++++
- 4 files changed, 118 insertions(+)
+ 3 files changed, 100 insertions(+)
+
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index 6f1b379e3b38..a8831ef30c73 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -64,6 +64,61 @@ struct e820_table *e820_table __refdata			= &e820_table_init;
+ struct e820_table *e820_table_kexec __refdata		= &e820_table_kexec_init;
+ struct e820_table *e820_table_firmware __refdata	= &e820_table_firmware_init;
+ 
++/* For wildcard memory requests, have a table to find them later */
++#define E820_MAX_MAPS		8
++#define E820_MAP_NAME_SIZE	16
++struct e820_mmap_map {
++	char			name[E820_MAP_NAME_SIZE];
++	u64			start;
++	u64			size;
++};
++static struct e820_mmap_map e820_mmap_list[E820_MAX_MAPS] __initdata;
++static int e820_mmap_size				__initdata;
++
++/* Add wildcard region with a lookup name */
++static int __init e820_add_mmap(u64 start, u64 size, const char *name)
++{
++	struct e820_mmap_map *map;
++
++	if (!name || !name[0] || strlen(name) >= E820_MAP_NAME_SIZE)
++		return -EINVAL;
++
++	if (e820_mmap_size >= E820_MAX_MAPS)
++		return -1;
++
++	map = &e820_mmap_list[e820_mmap_size++];
++	map->start = start;
++	map->size = size;
++	strcpy(map->name, name);
++	return 0;
++}
++
++/**
++ * memmap_named - Find a wildcard region with a given name
++ * @name: The name that is attached to a wildcard region
++ * @start: If found, holds the start address
++ * @size: If found, holds the size of the address.
++ *
++ * Returns: 1 if found or 0 if not found.
++ */
++int __init memmap_named(const char *name, u64 *start, u64 *size)
++{
++	struct e820_mmap_map *map;
++	int i;
++
++	for (i = 0; i < e820_mmap_size; i++) {
++		map = &e820_mmap_list[i];
++		if (!map->size)
++			continue;
++		if (strcmp(name, map->name) == 0) {
++			*start = map->start;
++			*size = map->size;
++			return 1;
++		}
++	}
++	return 0;
++}
++
+ /* For PCI or other memory-mapped resources */
+ unsigned long pci_mem_start = 0xaeedbabe;
+ #ifdef CONFIG_PCI
+@@ -200,6 +255,29 @@ static void __init e820_print_type(enum e820_type type)
+ 	}
+ }
+ 
++/*
++ * Search for usable ram that can be reserved for a wildcard.
++ * Start at the highest memory and work down to lower memory.
++ */
++static s64 e820__region(u64 size, u64 align)
++{
++	u64 start;
++	int i;
++
++	for (i = e820_table->nr_entries; i >= 0; i--) {
++		if (e820_table->entries[i].type != E820_TYPE_RAM &&
++		    e820_table->entries[i].type != E820_TYPE_RESERVED_KERN)
++			continue;
++
++		start = e820_table->entries[i].addr + e820_table->entries[i].size;
++		start -= size;
++		start = ALIGN_DOWN(start, align);
++		if (start >= e820_table->entries[i].addr)
++			return start;
++	}
++	return -1;
++}
++
+ void __init e820__print_table(char *who)
+ {
+ 	int i;
+@@ -944,6 +1022,19 @@ static int __init parse_memmap_one(char *p)
+ 	} else if (*p == '$') {
+ 		start_at = memparse(p+1, &p);
+ 		e820__range_add(start_at, mem_size, E820_TYPE_RESERVED);
++	} else if (*p == '*') {
++		u64 align;
++		/* Followed by alignment and ':' then the name */
++		align = memparse(p+1, &p);
++		start_at = e820__region(mem_size, align);
++		if ((s64)start_at < 0)
++			return -EINVAL;
++		if (*p != ':')
++			return -EINVAL;
++		p++;
++		e820_add_mmap(start_at, mem_size, p);
++		p += strlen(p);
++		e820__range_add(start_at, mem_size, E820_TYPE_RESERVED);
+ 	} else if (*p == '!') {
+ 		start_at = memparse(p+1, &p);
+ 		e820__range_add(start_at, mem_size, E820_TYPE_PRAM);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 0436b919f1c7..cf9b34454c6f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -4202,4 +4202,6 @@ static inline bool pfn_is_unaccepted_memory(unsigned long pfn)
+ 	return range_contains_unaccepted_memory(paddr, paddr + PAGE_SIZE);
+ }
+ 
++int memmap_named(const char *name, u64 *start, u64 *size);
++
+ #endif /* _LINUX_MM_H */
+diff --git a/mm/memory.c b/mm/memory.c
+index d2155ced45f8..7a29f17df7c1 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -120,6 +120,13 @@ static bool vmf_orig_pte_uffd_wp(struct vm_fault *vmf)
+ 	return pte_marker_uffd_wp(vmf->orig_pte);
+ }
+ 
++int __init __weak memmap_named(const char *name, u64 *start, u64 *size)
++{
++	pr_info("Kernel command line: memmap=nn*align:name not supported on this kernel");
++	/* zero means not found */
++	return 0;
++}
++
+ /*
+  * A number of key systems in x86 including ioremap() rely on the assumption
+  * that high_memory defines the upper bound on direct map memory, then end
+-- 
+2.43.0
+
+
 
