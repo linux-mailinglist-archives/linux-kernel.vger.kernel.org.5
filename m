@@ -1,107 +1,128 @@
-Return-Path: <linux-kernel+bounces-136990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 906C289DAD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:44:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C12C89DAD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:44:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BFACB246CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:44:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05B23284242
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F2B12F5BB;
-	Tue,  9 Apr 2024 13:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2A412FF76;
+	Tue,  9 Apr 2024 13:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gz9+bP/N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TEGUOZZ5"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9171136E1A;
-	Tue,  9 Apr 2024 13:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBB512F5AD
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669991; cv=none; b=JkoCTvv/wIo8ep5Gxx22yTT8uAs6LRFz1hX3p1H4hMigTPU4/G61qaKD12TOqSITbVhyMU+tPhQy5aCnOwyMLRaqqc1iIghsbbvzlpq72s+MeZW8uNC7GivEglVPnC35X3YMkfcqvOgVRuMTcScgaJU/agXRSxQvDrcjxTxcfV4=
+	t=1712670017; cv=none; b=XHAMtsBid2ZNZ5TTRzQjPVrCiQK4+q4VZHl6sqagjdGhUlVw4Zb80E+l4YzqUIBfXg+LtoYN/q/KyDhkjYYIueFY4SNgNGAib0fGyPq0YHsjWb5JTot6gfmPvWaLR28a5LOo52ULDPCgqfl+QS44r9683lMj28NYj4/COXFVCkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669991; c=relaxed/simple;
-	bh=NlCnClFQH/uZ929V7ZbiGAE/v+SqP5ye30qi4yMGgT4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pYTc8DJV0g4SoVmbAqHa9zgF4YMVwsy0nwJb1wvXpVORBntX5AOF3C4yA+DUm6ql333DQW3IbVO0bVB47a5m3zfOLPPa66sANVm66H8N/XxiNwGrcll+FLDrGH7oOUD76yLstSUUu/25jrlzOb0UxIHz33j4RR84zF1KIojEIOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gz9+bP/N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B8DC43390;
-	Tue,  9 Apr 2024 13:39:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712669990;
-	bh=NlCnClFQH/uZ929V7ZbiGAE/v+SqP5ye30qi4yMGgT4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gz9+bP/NQQKA3q5/7+iA5EmQBknvdLRXCJqhSxDYKUnYOOXHQl7v4xCI76GZyaVPR
-	 t3S2pEJYWHinI58cNsT3RbjM7zqEdeMSSraZ7/BzG3u2l1743I34XsRFBPkVcGc3bC
-	 Y7rRjxR94vd0rmtvzFCEcdtkx8hcc3VS8t2j1eMJFVW/ENdMg4a3qudxJBQmr9KnYF
-	 d+DgY+UO7CK8zByRebkyddA+jIlCQ6zShKiVzMkZEsvb3j1WX2aR8WUkdrQAy2Cex0
-	 HLlA/grRpTLYL5J/AYgQySKUTm6gOcejwYoqjNJJsGnlP810MZsFlzkVtVIVbZiFV+
-	 sAwKfyMo5S0+g==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-	Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-	Carl Vanderlip <quic_carlv@quicinc.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-arm-msm@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] accel/qaic: mark debugfs stub functions as static inline
-Date: Tue,  9 Apr 2024 15:39:35 +0200
-Message-Id: <20240409133945.2976190-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712670017; c=relaxed/simple;
+	bh=8YAynhoBcTZH25sdLVIb9gPxNYS9bVlziuWqHn3N3EE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=CY8MbLsk3jUt0lJ9JKJZI48QGb+07WroJJZvoIOYaN8WeUoouDVpZDFE7BxP3aQM6mvcRCn5eMDIZ7TquT6VEfqTwlIXeta33wC1QdPffZylQiMHwwYfnmLh3+DAZn09T7j62/hMgJeF0aHnIVThL1QR+O4S9wqVYpf6SDuzXCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pgonda.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TEGUOZZ5; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pgonda.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed613bb4d1so1130843b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 06:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712670015; x=1713274815; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uMEfBjeMsB/RLCKigMRUoYsxAnS7VrosZGuO6YiswGs=;
+        b=TEGUOZZ5SFJr7IV9lSgRfIUHw0VwRgQ2Q4MMll7rzmMFLWAX2m8VDxQxY39+SQXd6i
+         UHDlCgdHDuxHddLC6GtWWlbctFnizXjPw7V90SnxdsU/FLD+XT22koVCFlgk3XBqjGd3
+         ZUPLu/lGGo6vG0IVzRbSxUyLMpuC6rm0rviKqv7p5GL86ooQ8bV38PKLnB4U43u8Hjgh
+         p149YnqYgU7/qLXkzSbq3BWPlLPq4oocK5J2NLxsnMbaxN4prEpL5sawzbHFF38WLtzI
+         k4vzjPoq4jzryBQFByWIAifhWxFeIt4TZHBQz03MXDOjQt3NGCJsZ8V0Zm1nE3SQ84Pg
+         PtUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712670015; x=1713274815;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uMEfBjeMsB/RLCKigMRUoYsxAnS7VrosZGuO6YiswGs=;
+        b=GqxqbT+McLe7QEbJ9F5g7HOPutqQ60KNe7B1X05faomQ+mRvnsAx+33PgfiC2TjwS4
+         YoJHVt53/HQCPRdhjG5YFXXu7C1LsrJp5deVaWkotrV7Lh4qEQK/1g7Uo+gJaK/tbH/M
+         EWS6nSKtqrsvcq1tCxhCydajEj5+KTBEarmGZd7lJdTgiiSmj3rWGrhR/Ly0xbJ1J7QC
+         1wdokhGxtHe0cAcqeYZP1cXwu02dgdZ1zDjOxwnsdBG0dEhxVW1o5wa/V7NOrkboK3eQ
+         Obj6v38WWaVetO/eFCJrBC7WK4M4EGf7C/qMnnu7PNClIZYGpRzw5WZS25Q8yRsudZsa
+         S2JA==
+X-Gm-Message-State: AOJu0YzEjYFxgZtYP7WpVFseyB6sdl6JIT+AgNSp+zviWZghvxUw0+F+
+	y06rzDQgy14kfFn9ImALjTtvubpVX2bk9YGjB3c9fvUGj8UIya9IE636mS36JOfmJtkFmx4Act2
+	yUg==
+X-Google-Smtp-Source: AGHT+IGRVEIRxXQ5a79kYy7qEqv4mC1lhc2zIbiG+1EbVkZiFBFly1NL20PHEOj07ifmpp84iSHWkw0p5zY=
+X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:15:661d:897e:ea86:704d])
+ (user=pgonda job=sendgmr) by 2002:a05:6a00:1828:b0:6ea:e2d9:f2af with SMTP id
+ y40-20020a056a00182800b006eae2d9f2afmr1093312pfa.0.1712670014924; Tue, 09 Apr
+ 2024 06:40:14 -0700 (PDT)
+Date: Tue,  9 Apr 2024 06:39:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240409133959.2888018-1-pgonda@google.com>
+Subject: [PATCH 0/6] Add initial GHCB support for SEV-ES selftests
+From: Peter Gonda <pgonda@google.com>
+To: pgonda@google.com, seanjc@google.com
+Cc: linux-kernel@vger.kernel.org, Vishal Annapurve <vannapurve@google.com>, 
+	Ackerley Tng <ackerleytng@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Carlos Bilbao <carlos.bilbao@amd.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+Adding GHCB support for selftests. Very similar code to the ucall
+functionality, I didn't refactor anything common out since I was unsure
+with just two instances that is required. If pulling out common code
+between those two is preferred please let me know. The series only adds a
+single usage of the GHCB which is a special outsb GHCB exit to allow for
+passing the 64-bit ucall pointer. In future series we can test more GHCB
+functionality of KVM. I'd like to base some SNP smoke tests off of this
+and the current SEV selftest work.
 
-The alternative stub functions are listed as global, which produces
-a build failure in some configs:
+base-commit: 40e09b3ccfacc640d58e1e3d6b8f29b2db0a9848
 
-In file included from drivers/accel/qaic/qaic_drv.c:31:
-drivers/accel/qaic/qaic_debugfs.h:16:5: error: no previous prototype for 'qaic_bootlog_register' [-Werror=missing-prototypes]
-   16 | int qaic_bootlog_register(void) { return 0; }
-      |     ^~~~~~~~~~~~~~~~~~~~~
-drivers/accel/qaic/qaic_debugfs.h:17:6: error: no previous prototype for 'qaic_bootlog_unregister' [-Werror=missing-prototypes]
-   17 | void qaic_bootlog_unregister(void) {}
-      |      ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/accel/qaic/qaic_debugfs.h:18:6: error: no previous prototype for 'qaic_debugfs_init' [-Werror=missing-prototypes]
-   18 | void qaic_debugfs_init(struct qaic_drm_device *qddev) {}
-      |      ^~~~~~~~~~~~~~~~~
+Cc: Vishal Annapurve <vannapurve@google.com>
+Cc: Ackerley Tng <ackerleytng@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Carlos Bilbao <carlos.bilbao@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Peter Gonda <pgonda@google.com>
 
-Make them static inline as intended.
+Peter Gonda (6):
+  Add GHCB with setters and getters
+  Add arch specific additional guest pages
+  Add vm_vaddr_alloc_pages_shared()
+  Add GHCB allocations and helpers
+  Add is_sev_enabled() helpers
+  Add ability for SEV-ES guests to use ucalls via GHCB
 
-Fixes: 5f8df5c6def6 ("accel/qaic: Add bootlog debugfs")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/accel/qaic/qaic_debugfs.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/kvm/Makefile          |   2 +-
+ .../selftests/kvm/include/kvm_util_base.h     |   4 +
+ .../selftests/kvm/include/x86_64/sev.h        |   7 +
+ .../selftests/kvm/include/x86_64/svm.h        | 106 +++++++++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  22 ++-
+ .../selftests/kvm/lib/x86_64/processor.c      |   8 +
+ tools/testing/selftests/kvm/lib/x86_64/sev.c  | 149 ++++++++++++++++++
+ .../testing/selftests/kvm/lib/x86_64/ucall.c  |  17 ++
+ .../selftests/kvm/x86_64/sev_smoke_test.c     |  22 +--
+ 9 files changed, 313 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/accel/qaic/qaic_debugfs.h b/drivers/accel/qaic/qaic_debugfs.h
-index ea3fd1a88405..05e74f84cf9f 100644
---- a/drivers/accel/qaic/qaic_debugfs.h
-+++ b/drivers/accel/qaic/qaic_debugfs.h
-@@ -13,8 +13,8 @@ int qaic_bootlog_register(void);
- void qaic_bootlog_unregister(void);
- void qaic_debugfs_init(struct qaic_drm_device *qddev);
- #else
--int qaic_bootlog_register(void) { return 0; }
--void qaic_bootlog_unregister(void) {}
--void qaic_debugfs_init(struct qaic_drm_device *qddev) {}
-+static inline int qaic_bootlog_register(void) { return 0; }
-+static inline void qaic_bootlog_unregister(void) {}
-+static inline void qaic_debugfs_init(struct qaic_drm_device *qddev) {}
- #endif /* CONFIG_DEBUG_FS */
- #endif /* __QAIC_DEBUGFS_H__ */
 -- 
-2.39.2
+2.44.0.478.gd926399ef9-goog
 
 
