@@ -1,152 +1,135 @@
-Return-Path: <linux-kernel+bounces-137109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A998089DD14
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7D289DD4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:50:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36B051F2199A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:44:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549DD1F276B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5BA130A4E;
-	Tue,  9 Apr 2024 14:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A13350275;
+	Tue,  9 Apr 2024 14:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OrcP0M3h"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b="YX28zyeO"
+Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B8312F5A3
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D9A50A62
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.26.156.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673723; cv=none; b=g5vwnsVqwH2gTOAcL4je9uAkmETJYn1OyNJw6eLHQOfF7zoQrbp7p9gc3aL4UZ60IaSDFBovJuvOOw4pFjjC4YSLAdQiJ19ktKgKJU1DLwc1V3kkNAdxIBq0yQBjW0Mazwsjl296JwJxu3yyRZeBCmMzDppedKI4kRR52bAEmXA=
+	t=1712674130; cv=none; b=d+cUtoe05J+WF6mcoHRaTUmsLmfxJcfuDbzVK8J0x4vwcbRLED24lpkizlfny99/ScQBTwOU8ALmxlP2c/csXuoJof2vH6jXHiloOWujYllJrwiE6nyRs4KM0AwziWFSH8giZ5aoGedZsvhEP7yh6zkov6NwvPEkeb4Xuor8zmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673723; c=relaxed/simple;
-	bh=HC00lmey8uySGF4Lqn7tzQE0xcyEUhYbAHGKCK5KpUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e1+5llrP74adwR9tybJtAorHXf0V5rxs8kfek/sLOgJ72Xvau28OV4sprH39JBAi4/b9p3IA6oMQ4EJMR10hLgDOo1jAvo3laXvCob9LMVXz6DDWjwFnfXCFRQVeFxy4SKH68VYpKFYjbcAcExLTasWHNDkQH8F+2GJtuhpQk7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OrcP0M3h; arc=none smtp.client-ip=209.85.217.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-47a0bebeacaso721549137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712673720; x=1713278520; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IBPxWFHl1AiWVB8UI+LeFpQ0i9dZV3ja6KQ3kYMVIr8=;
-        b=OrcP0M3hrVHMUHIU7aKw6E96OX5qd2osL/nYP1IIz9Du+yrGalPEq0XBILBGGDs1Go
-         gcHpTpj3w2IVy680zeLygy3mLCpLJG1D/rgj/eNRX7wtbihH34XC3kkTJPMqKVl2TId7
-         JOfVeY5wboQvMaALS21atRQG7s7TvkSzQnf+JD4aOXlIMIcZQ1BCI8fmCUXgnRywCSzz
-         pc/tny1MDgXpQpw1zWUZ6nakjTF2QDc4bvSKlpvoCd4KoC0mUb/Y6rxfMFagAy2KzXrs
-         VhPlSlsIWd1KhAEc76rJfEEErHqUQ3bXBsj26nB3YXwWcRsybywUjC7msqegaWfzbEAx
-         puJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712673720; x=1713278520;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IBPxWFHl1AiWVB8UI+LeFpQ0i9dZV3ja6KQ3kYMVIr8=;
-        b=ZCzE2WF2z5Pljw0/EuHc5a38be7O/RjCo0BTaHzLWoCPfe2wRRfcC7TLFIQRHuPQQk
-         p8fEzclvmzeSFFKTKm/S6aesj/SQp5Zdpq8XNPSJ1vsVk/lPk4syELuTsIYCb18BW1Lx
-         cgcH+cNhKJkVp1kz07K+QNvBL3h9/fMvGDlLhVnQAbJHH98u0dfV4HllgHGotd8/veKs
-         lcrAAyEVU6jVWJa8geq89SZ/OT7X6klk0q2tnDiWMXnUGIo2q6WehvAA/bInhLVGxwBU
-         Fe7w98nULujUL15WEEdQwWLIy1B2opRWcQnjBJmz97f2mBqWll8EywZgyaHmChtLyhHY
-         fYVQ==
-X-Gm-Message-State: AOJu0YyRbne/9tZoi9PvNlrHuWUYBMedUKgBli19fKa0LcHXK/bfdXgM
-	iqC+Hv2GQNmWU86F2hgJwwIdBDvq0BzpbWiTIHvYlx8Wq/5ASlG4OVjmgvsMxGdlJ/LMgNW9Yh9
-	ksmXUH/5NYndoud2kF0KAw2/N0AY=
-X-Google-Smtp-Source: AGHT+IHbyNQhlUoN0P903X2xsmHoLT6gRckaiuzHxU42vZAdz4IEjESKJ3IHBMxz17WuucojBcnvql3hz3d1QoxWFv4=
-X-Received: by 2002:a05:6102:6c7:b0:47a:1005:ca15 with SMTP id
- m7-20020a05610206c700b0047a1005ca15mr3911038vsg.16.1712673720180; Tue, 09 Apr
- 2024 07:42:00 -0700 (PDT)
+	s=arc-20240116; t=1712674130; c=relaxed/simple;
+	bh=bSBMOSEIwri42I+EM+PyX9ZK5/mVrNAM53JMXpJiGrY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pAT/N0gKPMY/+vxT53UFiZ8ds5pkkoNfX5yfrNxvg98OBLpszTP7Nh+52ZhnmObGICngxMgX1KJKkJ1Jh0yIXaSBto4sQ5C0FQrPqYYME1XBmQT6mpBX1f8Tvh9KwFf8yO1NF5JB6cK1uHA8s5HtJjoXBMGF/M5Q1gaQ/HhwdK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=fail (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=YX28zyeO reason="key not found in DNS"; arc=none smtp.client-ip=185.26.156.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lausen.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
+Received: (qmail 31281 invoked by uid 990); 9 Apr 2024 14:42:05 -0000
+Authentication-Results: devico.uberspace.de;
+	auth=pass (plain)
+Received: from unknown (HELO unkown) (::1)
+	by devico.uberspace.de (Haraka/3.0.1) with ESMTPSA; Tue, 09 Apr 2024 16:42:04 +0200
+Message-ID: <18a16fcd-3ae1-48af-94ed-72700a656e8e@lausen.nl>
+Date: Tue, 9 Apr 2024 10:41:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404195254.556896-1-jaegeuk@kernel.org>
-In-Reply-To: <20240404195254.556896-1-jaegeuk@kernel.org>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Tue, 9 Apr 2024 07:41:47 -0700
-Message-ID: <CACOAw_zwwPDfnQpWEJ7ej2FAGGBoQW7H8NcdWOutB3fHpOibew@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: don't set RO when shutting down f2fs
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	=?UTF-8?B?TGlnaHQgSHNpZWggKOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] gov_power_allocator: Allow binding before cooling
+ devices
+Content-Language: en-US
+To: nikita@trvn.ru, Lukasz Luba <lukasz.luba@arm.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Nikita Travkin <nikitos.tr@gmail.com>
+References: <20240403-gpa-no-cooling-devs-v2-0-79bdd8439449@trvn.ru>
+From: Leonard Lausen <leonard@lausen.nl>
+In-Reply-To: <20240403-gpa-no-cooling-devs-v2-0-79bdd8439449@trvn.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Bar: +
+X-Rspamd-Report: SUSPICIOUS_RECIPS(1.5) BAYES_HAM(-0.348686) XM_UA_NO_VERSION(0.01) MIME_GOOD(-0.1)
+X-Rspamd-Score: 1.061313
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=lausen.nl; s=uberspace;
+	h=from:to:cc:subject:date;
+	bh=bSBMOSEIwri42I+EM+PyX9ZK5/mVrNAM53JMXpJiGrY=;
+	b=YX28zyeOtVRG3iXskkpsZdlPIRqBHVYU6I9cNBc3xLfDDE33JZLNx6dw+qLb8GvYKmgv711jor
+	+QGFuFRR0+cGrngBvCKAnLs+kgzAsKk4vXkJJNRjWgrM4DZIVPS8ZUZ0/kzCBZAHjLkbWDCYYd/T
+	a66wcx6AFaW4geAPdDOVjf2XvrZMj3UmZS1H076oT0/Ro4G3Etz3Zr7LTg8bxlbRpW2hQeYEZlov
+	MbbTPyUAapELfJIGPLL8ZFAjlDB+Kbw6iuGfKE03QV5IbtzVLt0ITYiKHAgjpck2xIk/JJu6c3qf
+	sH3LfY/6hjeEuytbmU/PFn/GZx4DujcrAsEtL5YgQDdphl5pS+CAAzZW1jRFviZjzDUHVE+LXkod
+	YeKhJ+ch+cIZfVZfdoLxSkt0l87oLPO94LSQwbHJa+Y/wEq19q7g3eE6eaU807uZQCAqWSCkbEJJ
+	dLBOQ/XnAgElQb5it2xk8Ea3qz4z2AnDK+DrN/gLwGEeETepW5AwJclqvsgP4rimCuDVVKZIGcRZ
+	wkKHDaT2eaCWx2Rq77++IqwPJPbqx+XaroVgA1CbIIwGrWziCtaCzgsyZmqtC2BW7UemqJmLjWBT
+	eWIxbFMSWSejefQzjqExPUM6/h4599p0e1/+fg0RKrV5JS48xRsswn3JIcQvfgsFLj+d3E0kntey
+	U=
 
-On Thu, Apr 4, 2024 at 12:54=E2=80=AFPM Jaegeuk Kim <jaegeuk@kernel.org> wr=
-ote:
->
-> Shutdown does not check the error of thaw_super due to readonly, which
-> causes a deadlock like below.
->
-> f2fs_ioc_shutdown(F2FS_GOING_DOWN_FULLSYNC)        issue_discard_thread
->  - bdev_freeze
->   - freeze_super
->  - f2fs_stop_checkpoint()
->   - f2fs_handle_critical_error                     - sb_start_write
->     - set RO                                         - waiting
->  - bdev_thaw
->   - thaw_super_locked
->     - return -EINVAL, if sb_rdonly()
->  - f2fs_stop_discard_thread
->   -> wait for kthread_stop(discard_thread);
->
-> Reported-by: "Light Hsieh (=E8=AC=9D=E6=98=8E=E7=87=88)" <Light.Hsieh@med=
-iatek.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Hi Nikita, Hi Łukasz,
+
+thank you for fixing the e83747c2f8e3 ("thermal: gov_power_allocator: Set up trip points earlier") and 912e97c67cc3 ("thermal: gov_power_allocator: Move memory allocation out of throttle()") regressions as part of v6.9-rc3. As the regression was introduced in v6.8, would it be possible to include the fix in a v6.8 patch release?
+
+Thank you
+Leonard
+
+#regzbot introduced: 912e97c67cc3f333c4c5df8f51498c651792e658
+#regzbot fixed-by: 1057c4c36ef8b236a2e28edef301da0801338c5f
+
+
+#regzbot introduced: e83747c2f8e3cc5e284e37a8921099f1901d79d8
+#regzbot fixed-by: da781936e7c301e6197eb6513775748e79fb2575
+
+On 4/3/24 07:31, Nikita Travkin via B4 Relay wrote:
+> Recent changes in IPA made it fail probing if the TZ has no cooling
+> devices attached on probe or no trip points defined.
+> 
+> This series restores prior behavior to:
+> 
+> - allow IPA to probe before cooling devices have attached;
+> - allow IPA to probe when the TZ has no passive/active trip points.
+> 
+> I've noticed that all thermal zones fail probing with -EINVAL on my
+> sc7180 based Acer Aspire 1 since 6.8. This series allows me to bring
+> them back.
+> 
+> Additionally there is a commit that supresses the "sustainable_power
+> will be estimated" warning on TZ that have no trip points (and thus IPA
+> will not be able to do anything for them anyway). This allowed me to
+> notice that some of the TZ with cooling_devices on my platform actually
+> lack the sustainable_power value.
+> 
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 > ---
->  fs/f2fs/super.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index df9765b41dac..ba6288e870c5 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -4135,9 +4135,16 @@ void f2fs_handle_critical_error(struct f2fs_sb_inf=
-o *sbi, unsigned char reason,
->         if (shutdown)
->                 set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
->
-> -       /* continue filesystem operators if errors=3Dcontinue */
-> -       if (continue_fs || f2fs_readonly(sb))
-> +       /*
-> +        * Continue filesystem operators if errors=3Dcontinue. Should not=
- set
-> +        * RO by shutdown, since RO bypasses thaw_super which can hang th=
-e
-> +        * system.
-> +        */
-> +       if (continue_fs || f2fs_readonly(sb) ||
-> +                               reason =3D=3D STOP_CP_REASON_SHUTDOWN) {
-
-I think we can use "shutdown" variable instead of "reason =3D=3D
-STOP_CP_REASON_SHUTDOWN" to be concise.
-
-> +               f2fs_warn(sbi, "Stopped filesystem due to readon: %d", re=
-ason);
-
-readon -> reason?
-
->                 return;
-> +       }
->
->         f2fs_warn(sbi, "Remounting filesystem read-only");
->         /*
-> --
-> 2.44.0.478.gd926399ef9-goog
->
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> Changes in v2:
+> - Split to two changes (Lukasz)
+> - Return 0 in allocate_actors_buffer() instead of suppressing -EINVAL
+>   (Lukasz)
+> - Add a change to supress "sustainable_power will be estimated" warning
+>   on "empty" TZ
+> - Link to v1: https://lore.kernel.org/r/20240321-gpa-no-cooling-devs-v1-1-5c9e0ef2062e@trvn.ru
+> 
+> ---
+> Nikita Travkin (3):
+>       thermal: gov_power_allocator: Allow binding without cooling devices
+>       thermal: gov_power_allocator: Allow binding without trip points
+>       thermal: gov_power_allocator: Suppress sustainable_power warning without trip_points
+> 
+>  drivers/thermal/gov_power_allocator.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> ---
+> base-commit: 727900b675b749c40ba1f6669c7ae5eb7eb8e837
+> change-id: 20240321-gpa-no-cooling-devs-c79ee3288325
+> 
+> Best regards,
 
