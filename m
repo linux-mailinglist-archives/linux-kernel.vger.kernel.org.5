@@ -1,847 +1,227 @@
-Return-Path: <linux-kernel+bounces-136345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36DE589D2ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:21:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3207D89D2E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:20:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEF39284422
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:21:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B68D1F2316D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D017BB0C;
-	Tue,  9 Apr 2024 07:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086E67B3FD;
+	Tue,  9 Apr 2024 07:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MP0hdsaY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZD4b5XoO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5D477F3E;
-	Tue,  9 Apr 2024 07:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712647252; cv=none; b=TAkeZG2ErLqvxnKKWHQ6IN4Yz2mHIEhpamTHo7RbpR7M10aBt0AUmOMGS9B31D3bkCBH9u7oeGsEpwYlu0hudOFhz2BX/ZkMjqVfq+Z3lSjq93tDsdk9SMY9gZkO6w038XClgoRLbISx2mQciMNj61blmeHQ1GpyaoJ/WEme8m4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712647252; c=relaxed/simple;
-	bh=FrmKVdiBVGm8zkaNn+ic0NzmzBH9mdStNkqB78wGuDw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I6lgnAObCdVP70SZXdWIVOVvoLJoT0Pb36204mXoDj2SwE4D/bgQi13ypSdMLo7a6trHjBGo6fsjRt4rY4svcTyumql8+lBv2KJItllrRKtIr2tqa6xIeRwzf9fOWc15rGoraFYFet1Zv9+U3ZRxFLMCenxYPB1Epz9nmbGKyC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MP0hdsaY; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BEB77F3E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712647226; cv=fail; b=E7sQtSrGsjVewNAsF5n4KIm/y8sH/cwqlWYBxOM0NLow+16909FJWMHtxj7urO+Bq82ouGKZm3xQO28+7CfA1NxQKVHkj/gCk5r6hRYClWmcCQna1i5Y5SJ231LGSKBZ7YVTZRe2fkNTDrke8yTC/29FOLe7F2IqorAVSiFuWs4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712647226; c=relaxed/simple;
+	bh=FpTzuqwtFX3BdhsGf6fTdAPY49ZkbexZkeS5zwNi/ds=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Qf5p9XQJLYTEz55NfADaUMInffSeKAH75S6SdHkxax1GevItA7J5igkBV5KTg4C3QEP88WhaqVY+9kFOurBLkEFS294pSI7go9j4jFwdnC8yotxJpj+75gywGTYEAAne/krZ0iPH8Ir5VAJpKfgi8jO98LDSnQejl4pZ9qgdMxQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZD4b5XoO; arc=fail smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712647250; x=1744183250;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=FrmKVdiBVGm8zkaNn+ic0NzmzBH9mdStNkqB78wGuDw=;
-  b=MP0hdsaYV0JCssSyMYZQqloTFAiwszJKKsbHqb06KoR1mCS/OAdbyj96
-   E/kCm2IzC432ksiUa/kIaHU9Kp8mtSQv0KjTUQ111oIC6LOCaMIo1li+Z
-   DPkL4Nt03AKXzxG4qHUtrQaUInElggxvXbHmRh8OvSsC0t4fOIjfo20+K
-   GetxUXmfKtnwfrui+UezqbMSWUHwljjBLdceeQRY3cBGtY+t7g5IcL5We
-   mG5PkVNlERqQZPYwKxGh9LH2XEH6efiv7lMXOqmbUctt6n7QmZ+V78jMH
-   /jqGo18CrUrWFlkVWjrAGp7MnTp9QWron1g3GZY+KrkOi1pbKS7/ymbng
-   Q==;
-X-CSE-ConnectionGUID: 6tCLbZsDTJ6B6DfgdPTEtg==
-X-CSE-MsgGUID: EWIn2MZ/QCinv+WaYvm/qQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19101833"
+  t=1712647224; x=1744183224;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FpTzuqwtFX3BdhsGf6fTdAPY49ZkbexZkeS5zwNi/ds=;
+  b=ZD4b5XoON/cC/Y8sfZJYfY0x7pb7RZXtS3DDijBxMvjfV1rmuIRy8xjV
+   MqFGVZzcH8EsGIIHFHlfqQDGJlg1hsLIAW4wY13E8wjfrm+bhxWRHIB7X
+   qq7871XXeVt1ZvqXitruc8pK2j3Wb1LdKPKuSQG6yd8PrMoFa9kymMD/4
+   PIqoDsZfobhk3p6vqL6MaGRMoEQHv5A1O78K44GzHuwl+trp5Cb2R8DSw
+   z6JA8+v1PRVVwtArwO9hHZa1NBaotHQ2N//fbGcJiuQaL5oUjf5Xemx2o
+   AO/Tu7+kYq4wwdnYqVezz3ylCLFA7BtNwg4detqvDNK9xqOl3oiR/f74y
+   w==;
+X-CSE-ConnectionGUID: m+Ftnds9TQ+vD8jhLfk8Vw==
+X-CSE-MsgGUID: d+Qr86UTSYmpY7wq+79O2w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7862927"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="19101833"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 00:20:49 -0700
-X-CSE-ConnectionGUID: SkDvYLRIRLasl2ogbIEXTA==
-X-CSE-MsgGUID: TcQgzps9TrK/pbADaevjCA==
+   d="scan'208";a="7862927"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 00:20:23 -0700
+X-CSE-ConnectionGUID: DY8Zj0mbToSZQvhfQWQlgQ==
+X-CSE-MsgGUID: m93sZI+mTma0Blm+TwXOXA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="51145027"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 00:20:41 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Yuanchu Xie <yuanchu@google.com>
-Cc: David Hildenbrand <david@redhat.com>,  "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>,  Khalid Aziz <khalid.aziz@oracle.com>,
-  Henry Huang <henry.hj@antgroup.com>,  Yu Zhao <yuzhao@google.com>,  Dan
- Williams <dan.j.williams@intel.com>,  Gregory Price
- <gregory.price@memverge.com>,  Wei Xu <weixugc@google.com>,  David
- Rientjes <rientjes@google.com>,  Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  "Rafael J. Wysocki" <rafael@kernel.org>,
-  Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Michal Hocko <mhocko@kernel.org>,  Roman Gushchin
- <roman.gushchin@linux.dev>,  Muchun Song <muchun.song@linux.dev>,  Shuah
- Khan <shuah@kernel.org>,  Yosry Ahmed <yosryahmed@google.com>,  Matthew
- Wilcox <willy@infradead.org>,  Sudarshan Rajagopalan
- <quic_sudaraja@quicinc.com>,  Kairui Song <kasong@tencent.com>,  "Michael
- S. Tsirkin" <mst@redhat.com>,  Vasily Averin <vasily.averin@linux.dev>,
-  Nhat Pham <nphamcs@gmail.com>,  Miaohe Lin <linmiaohe@huawei.com>,  Qi
- Zheng <zhengqi.arch@bytedance.com>,  Abel Wu <wuyun.abel@bytedance.com>,
-  "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,  Kefeng Wang
- <wangkefeng.wang@huawei.com>,  linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org,  cgroups@vger.kernel.org,
-  linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/8] mm: aggregate working set information into
- histograms
-In-Reply-To: <20240327213108.2384666-3-yuanchu@google.com> (Yuanchu Xie's
-	message of "Wed, 27 Mar 2024 14:31:01 -0700")
-References: <20240327213108.2384666-1-yuanchu@google.com>
-	<20240327213108.2384666-3-yuanchu@google.com>
-Date: Tue, 09 Apr 2024 15:18:48 +0800
-Message-ID: <871q7f80mf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="43333746"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Apr 2024 00:20:23 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 9 Apr 2024 00:20:22 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 9 Apr 2024 00:20:22 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 9 Apr 2024 00:20:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HAguGMr3g4dCpvEylJ5SzijW8EGYehK6ZXZBF8xlPIW8M9sEo5gU91B77rnFi6c1JWFAfS7h+bhGFagXhmgSsGyzcv5GSP2pkP9+C6CClyOsO5arwXNuy4SIIVO8kTlHA7raWV9210ciyS/94JH9ArIXDqO56PGqDTwwNZvruSdG3hTUBGGr/KeegeztzlZHacGpiqFSDnW0Ilm8gJlIdBKpur/g9RVD3eFlFm6HDWHGaNM44WjsnhLvY0RHbHC5kHL8DrxPCuPpTemnafqxvaosDAaApnrz1yrui1vdoj49bjwxW8c/HX6kZ/qC35frjmZTn0MkdJCt2kGTr9J/eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Amd27cm1A9iYJJHs73uSMBoj+7lrmXVDwL3DzkPUnxE=;
+ b=XMcRVTtP3SJAYOSCkjdtvTzTD+FLl6FrXcGyPqq4Dzl8T9A6U/scu6YGkxUhXj5FaQEXflNP+2cnPe5qIZIWvyy373T++QWfBUkuGw40Shoa7Bp+hkrB3o3Bi5AKrxnAfEzVjWbWQLwKMrbAq2HoWUMU7MD1/qssyA9S+CVqJxJYfAg+IE+0o/8X6mp21hd+KNWca39K987WWK5tW4BWK62lPYWcf1WHCSpk+FYt9g9j564DdVXIVvu1VYH59qCuP7N8J/czJ6ewwLzCteM1ase9edMslkKtPIcLV8lqILglosSaswij2lUY78TVw1KXc93tciZPjyl15jjqFJzpJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH7PR11MB6608.namprd11.prod.outlook.com (2603:10b6:510:1b3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Tue, 9 Apr
+ 2024 07:20:20 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7452.019; Tue, 9 Apr 2024
+ 07:20:20 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>, "iommu@lists.linux.dev"
+	<iommu@lists.linux.dev>
+CC: "Liu, Yi L" <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>, "Will
+ Deacon" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] iommu/vt-d: Avoid unnecessary device TLB flush in map
+ path
+Thread-Topic: [PATCH 1/2] iommu/vt-d: Avoid unnecessary device TLB flush in
+ map path
+Thread-Index: AQHaiPn/q4hRm40VZ0qfWlbJiHpMrrFfiK5A
+Date: Tue, 9 Apr 2024 07:20:20 +0000
+Message-ID: <BN9PR11MB5276DD9779553C20EF16BB4B8C072@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240407144232.190355-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20240407144232.190355-1-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB6608:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U7c9SxcKpYG8vBSjdyi58/HMp5MN9OXe6ll27sYDX+KTDwzqHpMPtUganY751BLvp6OuTvQOkCAgRAHGfI873DQ92eQuUKGCyO/NAmmFdR4GBd6vp9NxHQMdOMtmDNTWGA08ag9MAv7g+3D5hHWsXe7E6Nf3XFki3htAVEoo0KYCzlRo8EOpm5E3xMVW3xhLgD7h0ei0WYsgfRz4h3V6mPUqXlnIfWeQFEt8gL7p3Wu/AF7QBeAsYLWQ0o3/MsxL4NWBAQnZVodEiYpZHBeW7AL/JOtJ9TKq3GJpz06amuF4IW4m8pW4p5+9Baqlc7qN28cdiXsRpMspSjJXeDUJVa8pKiSElmkl8iwR53GucT9fggFU35oaIV1UtT/naIBUW5AbyONQyDtEKvDLKLNp2bKrpYyHnRRIireUBxTT3IY/C+7xMVLhrLDS0oiu6P8X/6h3M+zz7/BS3QJAbjzveOwO5kEoPSMa3/vKkhcYWFPyKlVBr4UY4biU9VZYz2cpUrd5O6xyBCpyoyP0I58b8SK3/D6hufsjrSiAwvcShAYi5SjB6I0TB3VR4BM/8JslxYOXlhO8Z6oNJ7JfmmRAvnnQbHbVmz3pMf1aJgjwtS6H8lIElxVyEdkm7hvy/eetwpDhykYvWpJNgSD6VwWFw3+RPhYxGMov1emFYNT0yeE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7mBmoU52yo2CajSr/bBV/3eUX1zTsbAgrRWCJSwnndAxTn25XrHI5BFeapAM?=
+ =?us-ascii?Q?f9vB25ziYnfrTt1U+SDjdsMzK5XZSIM+5/pIb6zFnOSXIw9XCi3VYlPYf0Y3?=
+ =?us-ascii?Q?N44Tx7JzhhCuX1hK+xzzEU5797kHe6vH8kgW7AxdazDFjOfSyU0ZhaD7w1Tf?=
+ =?us-ascii?Q?Q1HV/K66kmyscsM2pCpFIPvtkex+aMKYpit2Mo06pK/HYYXct/ihAxWaf+OW?=
+ =?us-ascii?Q?d2+uds3cpAUHHzjLOXlcvBxLwx4ZMulTtNfSMZV/sROJGU3uGfD81BW7K7Ms?=
+ =?us-ascii?Q?vVj0MOv5UB5/ZGptynmtgMD7M06tJBhyF3tb3wGO5dhTp+FlBUpQjl47hY21?=
+ =?us-ascii?Q?s86N73Bg8h62A0WMwtXJOS3i45QcZMtr/YCOwF+sS/1wjGhrrCMJ9xUBemGw?=
+ =?us-ascii?Q?2VlS+kan/nx1JauRHkc8uyn/fb9KtZ20PX7Vkjmkh+oZacdBeicjcgak2XmT?=
+ =?us-ascii?Q?oVr8qggmldt9ZBGi8OcuItDM52oG2H5YQXnxUZXkLrtazsGfXqSk5UXH3i4u?=
+ =?us-ascii?Q?jsmZ5FIUGPC0Cs7oFnvomLzHLe2qGTHg/2kYLJqEvC2AxOHeN1OZ+vv6T0zz?=
+ =?us-ascii?Q?x44QpSdVJJI8fjIO2MvTvZVn4ePCEtUeRPP/Hh/pn0P0PQHy2tMKjFfaQQdC?=
+ =?us-ascii?Q?QhMoti33SM+CL5JQhrd9arALfy7WcPETQPzlEalrKM5RihjLH27VU1f4p+gX?=
+ =?us-ascii?Q?qdSJfbzdSN1ckf/DkJsFWsolE9y4M0brp2BtdlsmBwRLWCkupqNvebLZ+jfA?=
+ =?us-ascii?Q?WIVxPqH3XweMsRWai5S5abUVjHQpi5wzcC1EaxrjWnWi8pn53hbUc3ScL24S?=
+ =?us-ascii?Q?uS+pn6AM1HVDyMacotXYHaHcX4Cbfx9BIrtVvGjvpz5CfQZtvotcYcRAHoLC?=
+ =?us-ascii?Q?CFuVEEg0/HyUHqpJQWvea+jnoNSl+l5EZS71lyeKUs/KpdCXT/ncLkJphwCM?=
+ =?us-ascii?Q?ztM1bV1wu31BPIH5qo33VlCJJFz1eHpq6SUrxMc3hAnG/PSTvILxZr+vIs5G?=
+ =?us-ascii?Q?R9UIf1Ia9K9VoaQKx5fC5HOa3kiaZ/YpPqRiJ1XcgXg2twtJGdNgcLG+nc+q?=
+ =?us-ascii?Q?1INjkQoxcsJDfKZmmnhnh5Z+HxjnQb06ys9eUBo/Y38+CeFei6ZT8EfkstIF?=
+ =?us-ascii?Q?cxxquVMAznvQttr/4rR8OxclAepUEuHXiAuZdgPN7vv57PnBSIXfXxRvQim9?=
+ =?us-ascii?Q?4N4+SD+wbJ1GB87zZrAiNTRh9KQOLkwOVMo3P/8QKxM+jC7EJbxrm+I21Rvm?=
+ =?us-ascii?Q?IDx7qvEx23ec7cpItO2T9GK6sggns0CoomC4zucKDctv33B9LKd/+hd15EL2?=
+ =?us-ascii?Q?/wSUJ8VDwnlmw9Mh7d9NBJjUs045tPUnm4mw5H/FXdEvHuu6OOUf3a1O28CE?=
+ =?us-ascii?Q?5FSGjm8YGndGgtYEahCgCAe7GAXkfQTxf52cb3soeORRTozZJQyDPG/ZMW7V?=
+ =?us-ascii?Q?hAocmUsH/irJ4XSDiu+BOYcKeCR822yQEpGw4WhhE+ORsjy0NH/mQ3DrL0kt?=
+ =?us-ascii?Q?MY2edBjPhzV1rV+0+Wm/rYMle9hBan8ddnz+Zbz1qVANCPouHQ2sTUrd9MSw?=
+ =?us-ascii?Q?yOJzxcIAVOdc90DyZR1qPmRPsAMgaplu0dgY8icT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66a2fcdb-f3ca-47fd-98cd-08dc586583c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 07:20:20.4820
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kh2ogDEsxRJSyp+pO0yYjK8FkN2lxHPZbpVFgKWcyl5f7rIkDH+nbzvn6KwmCo34Snl11Ak4PUCNQ8uOfLFkxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6608
+X-OriginatorOrg: intel.com
 
-Yuanchu Xie <yuanchu@google.com> writes:
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Sunday, April 7, 2024 10:43 PM
+>=20
+> iommu_flush_iotlb_psi() is called in map and unmap paths. The caching
+> mode check before device TLB invalidation will cause device TLB
+> invalidation always issued if IOMMU is not running in the caching mode.
+> This is inefficient and causes performance overhead.
 
-> Hierarchically aggregate all memcgs' MGLRU generations and their
-> page counts into working set page age histograms.
-> The histograms break down the system's working set per-node,
-> per-anon/file.
->
-> The sysfs interfaces are as follows:
-> /sys/devices/system/node/nodeX/page_age
-> 	A per-node page age histogram, showing an aggregate of the
-> 	node's lruvecs. The information is extracted from MGLRU's
-> 	per-generation page counters. Reading this file causes a
-> 	hierarchical aging of all lruvecs, scanning pages and creates a
-> 	new generation in each lruvec.
-> 	For example:
-> 	1000 anon=0 file=0
-> 	2000 anon=0 file=0
-> 	100000 anon=5533696 file=5566464
-> 	18446744073709551615 anon=0 file=0
->
-> /sys/devices/system/node/nodeX/page_age_interval
-> 	A comma separated list of time in milliseconds that configures
-> 	what the page age histogram uses for aggregation.
->
-> Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+s/inefficient/wrong/
+
+'inefficient' means that it's a right thing to do but just inefficient comp=
+ared
+to other options. But here by definition it's not required and caching mode
+is irrelevant in the context of devtlb.
+
+>=20
+> Make device TLB invalidation behavior consistent between batched mode
+> unmapping and strict mode unmapping. Device TLB invalidation should only
+
+I don't quite understand the connection to batch vs. strict.
+
+> be requested in the unmap path if the IOMMU is not in caching mode.
+
+I'll remove the part about caching mode as it's irrelevant.
+
+>=20
+> Fixes: bf92df30df90 ("intel-iommu: Only avoid flushing device IOTLB for
+> domain ID 0 in caching mode")
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > ---
->  drivers/base/node.c               |   3 +
->  include/linux/mmzone.h            |   4 +
->  include/linux/workingset_report.h |  69 +++++
->  mm/Kconfig                        |   9 +
->  mm/Makefile                       |   1 +
->  mm/internal.h                     |   9 +
->  mm/memcontrol.c                   |   2 +
->  mm/mmzone.c                       |   2 +
->  mm/vmscan.c                       |  34 ++-
->  mm/workingset_report.c            | 413 ++++++++++++++++++++++++++++++
->  10 files changed, 545 insertions(+), 1 deletion(-)
->  create mode 100644 include/linux/workingset_report.h
->  create mode 100644 mm/workingset_report.c
->
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 1c05640461dd..4f589b8253f4 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -20,6 +20,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/swap.h>
->  #include <linux/slab.h>
-> +#include <linux/workingset_report.h>
->  
->  static const struct bus_type node_subsys = {
->  	.name = "node",
-> @@ -625,6 +626,7 @@ static int register_node(struct node *node, int num)
->  	} else {
->  		hugetlb_register_node(node);
->  		compaction_register_node(node);
-> +		wsr_register_node(node);
->  	}
->  
->  	return error;
-> @@ -641,6 +643,7 @@ void unregister_node(struct node *node)
->  {
->  	hugetlb_unregister_node(node);
->  	compaction_unregister_node(node);
-> +	wsr_unregister_node(node);
->  	node_remove_accesses(node);
->  	node_remove_caches(node);
->  	device_unregister(&node->dev);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index a497f189d988..8839931646ee 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -24,6 +24,7 @@
->  #include <linux/local_lock.h>
->  #include <linux/zswap.h>
->  #include <asm/page.h>
-> +#include <linux/workingset_report.h>
->  
->  /* Free memory management - zoned buddy allocator.  */
->  #ifndef CONFIG_ARCH_FORCE_MAX_ORDER
-> @@ -625,6 +626,9 @@ struct lruvec {
->  	struct lru_gen_mm_state		mm_state;
->  #endif
->  #endif /* CONFIG_LRU_GEN */
-> +#ifdef CONFIG_WORKINGSET_REPORT
-> +	struct wsr_state	wsr;
-> +#endif /* CONFIG_WORKINGSET_REPORT */
->  #ifdef CONFIG_MEMCG
->  	struct pglist_data *pgdat;
->  #endif
-> diff --git a/include/linux/workingset_report.h b/include/linux/workingset_report.h
-> new file mode 100644
-> index 000000000000..0de640cb1ef0
-> --- /dev/null
-> +++ b/include/linux/workingset_report.h
-> @@ -0,0 +1,69 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_WORKINGSET_REPORT_H
-> +#define _LINUX_WORKINGSET_REPORT_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/mutex.h>
-> +
-> +struct mem_cgroup;
-> +struct pglist_data;
-> +struct node;
-> +struct lruvec;
-> +
-> +#ifdef CONFIG_WORKINGSET_REPORT
-> +
-> +#define WORKINGSET_REPORT_MIN_NR_BINS 2
-> +#define WORKINGSET_REPORT_MAX_NR_BINS 32
-> +
-> +#define WORKINGSET_INTERVAL_MAX ((unsigned long)-1)
-> +#define ANON_AND_FILE 2
-> +
-> +struct wsr_report_bin {
-> +	unsigned long idle_age;
-> +	unsigned long nr_pages[ANON_AND_FILE];
-> +};
-> +
-> +struct wsr_report_bins {
-> +	unsigned long nr_bins;
-> +	/* last bin contains WORKINGSET_INTERVAL_MAX */
-> +	struct wsr_report_bin bins[WORKINGSET_REPORT_MAX_NR_BINS];
-> +};
-> +
-> +struct wsr_page_age_histo {
-> +	unsigned long timestamp;
-> +	struct wsr_report_bins bins;
-> +};
-> +
-> +struct wsr_state {
-> +	/* breakdown of workingset by page age */
-> +	struct mutex page_age_lock;
-> +	struct wsr_page_age_histo *page_age;
-> +};
-> +
-> +void wsr_init(struct lruvec *lruvec);
-> +void wsr_destroy(struct lruvec *lruvec);
-> +
-> +/*
-> + * Returns true if the wsr is configured to be refreshed.
-> + * The next refresh time is stored in refresh_time.
-> + */
-> +bool wsr_refresh_report(struct wsr_state *wsr, struct mem_cgroup *root,
-> +			struct pglist_data *pgdat);
-> +void wsr_register_node(struct node *node);
-> +void wsr_unregister_node(struct node *node);
-> +#else
-> +static inline void wsr_init(struct lruvec *lruvec)
-> +{
-> +}
-> +static inline void wsr_destroy(struct lruvec *lruvec)
-> +{
-> +}
-> +static inline void wsr_register_node(struct node *node)
-> +{
-> +}
-> +static inline void wsr_unregister_node(struct node *node)
-> +{
-> +}
-> +#endif /* CONFIG_WORKINGSET_REPORT */
-> +
-> +#endif /* _LINUX_WORKINGSET_REPORT_H */
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index ffc3a2ba3a8c..212f203b10b9 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -1261,6 +1261,15 @@ config LOCK_MM_AND_FIND_VMA
->  config IOMMU_MM_DATA
->  	bool
->  
-> +config WORKINGSET_REPORT
-> +	bool "Working set reporting"
-> +	depends on LRU_GEN && SYSFS
-> +	help
-> +	  Report system and per-memcg working set to userspace.
-> +
-> +	  This option exports stats and events giving the user more insight
-> +	  into its memory working set.
-> +
->  source "mm/damon/Kconfig"
->  
->  endmenu
-> diff --git a/mm/Makefile b/mm/Makefile
-> index e4b5b75aaec9..57093657030d 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -92,6 +92,7 @@ obj-$(CONFIG_DEVICE_MIGRATION) += migrate_device.o
->  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
->  obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
->  obj-$(CONFIG_MEMCG) += memcontrol.o vmpressure.o
-> +obj-$(CONFIG_WORKINGSET_REPORT) += workingset_report.o
->  ifdef CONFIG_SWAP
->  obj-$(CONFIG_MEMCG) += swap_cgroup.o
->  endif
-> diff --git a/mm/internal.h b/mm/internal.h
-> index f309a010d50f..5e0caba64ee4 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -198,12 +198,21 @@ extern unsigned long highest_memmap_pfn;
->  /*
->   * in mm/vmscan.c:
->   */
-> +struct scan_control;
->  bool isolate_lru_page(struct page *page);
->  bool folio_isolate_lru(struct folio *folio);
->  void putback_lru_page(struct page *page);
->  void folio_putback_lru(struct folio *folio);
->  extern void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason);
->  
-> +#ifdef CONFIG_WORKINGSET_REPORT
-> +/*
-> + * in mm/wsr.c
-> + */
-> +/* Requires wsr->page_age_lock held */
-> +void wsr_refresh_scan(struct lruvec *lruvec);
-> +#endif
-> +
->  /*
->   * in mm/rmap.c:
->   */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1ed40f9d3a27..2f07141de16c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -65,6 +65,7 @@
->  #include <linux/seq_buf.h>
->  #include <linux/sched/isolation.h>
->  #include <linux/kmemleak.h>
-> +#include <linux/workingset_report.h>
->  #include "internal.h"
->  #include <net/sock.h>
->  #include <net/ip.h>
-> @@ -5457,6 +5458,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
->  	if (!pn)
->  		return;
->  
-> +	wsr_destroy(&pn->lruvec);
->  	free_percpu(pn->lruvec_stats_percpu);
->  	kfree(pn);
->  }
-> diff --git a/mm/mmzone.c b/mm/mmzone.c
-> index c01896eca736..efca44c1b84b 100644
-> --- a/mm/mmzone.c
-> +++ b/mm/mmzone.c
-> @@ -90,6 +90,8 @@ void lruvec_init(struct lruvec *lruvec)
->  	 */
->  	list_del(&lruvec->lists[LRU_UNEVICTABLE]);
->  
-> +	wsr_init(lruvec);
-> +
->  	lru_gen_init_lruvec(lruvec);
->  }
->  
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1a7c7d537db6..b694d80ab2d1 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -56,6 +56,7 @@
->  #include <linux/khugepaged.h>
->  #include <linux/rculist_nulls.h>
->  #include <linux/random.h>
-> +#include <linux/workingset_report.h>
->  
->  #include <asm/tlbflush.h>
->  #include <asm/div64.h>
-> @@ -3815,7 +3816,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long max_seq,
->  	return success;
->  }
->  
-> -static bool try_to_inc_max_seq(struct lruvec *lruvec, unsigned long max_seq,
-> +bool try_to_inc_max_seq(struct lruvec *lruvec, unsigned long max_seq,
->  			       struct scan_control *sc, bool can_swap, bool force_scan)
+>  drivers/iommu/intel/iommu.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 50eb9aed47cc..493b6a600394 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -1501,11 +1501,7 @@ static void iommu_flush_iotlb_psi(struct
+> intel_iommu *iommu,
+>  	else
+>  		__iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
+>=20
+> -	/*
+> -	 * In caching mode, changes of pages from non-present to present
+> require
+> -	 * flush. However, device IOTLB doesn't need to be flushed in this
+> case.
+> -	 */
+> -	if (!cap_caching_mode(iommu->cap) || !map)
+> +	if (!cap_caching_mode(iommu->cap) && !map)
+>  		iommu_flush_dev_iotlb(domain, addr, mask);
 
-It appears that this change isn't necessary.
+It's a bit strange to do this half-baked way and then rely on next patch
+to do the right thing. It temporarily removes all devtlb invalidations
+for caching mode here and then add them back for unmap in next patch.
 
->  {
->  	bool success;
-> @@ -5606,6 +5607,8 @@ static int __init init_lru_gen(void)
->  	if (sysfs_create_group(mm_kobj, &lru_gen_attr_group))
->  		pr_err("lru_gen: failed to create sysfs group\n");
->  
-> +	wsr_register_node(NULL);
-> +
->  	debugfs_create_file("lru_gen", 0644, NULL, NULL, &lru_gen_rw_fops);
->  	debugfs_create_file("lru_gen_full", 0444, NULL, NULL, &lru_gen_ro_fops);
->  
-> @@ -5613,6 +5616,35 @@ static int __init init_lru_gen(void)
->  };
->  late_initcall(init_lru_gen);
->  
-> +/******************************************************************************
-> + *                          workingset reporting
-> + ******************************************************************************/
-> +#ifdef CONFIG_WORKINGSET_REPORT
-> +void wsr_refresh_scan(struct lruvec *lruvec)
-> +{
-> +	DEFINE_MAX_SEQ(lruvec);
-> +	struct scan_control sc = {
-> +		.may_writepage = true,
-> +		.may_unmap = true,
-> +		.may_swap = true,
-> +		.proactive = true,
-> +		.reclaim_idx = MAX_NR_ZONES - 1,
-> +		.gfp_mask = GFP_KERNEL,
-> +	};
-> +	unsigned int flags;
-> +
-> +	set_task_reclaim_state(current, &sc.reclaim_state);
-> +	flags = memalloc_noreclaim_save();
-> +	/*
-> +	 * setting can_swap=true and force_scan=true ensures
-> +	 * proper workingset stats when the system cannot swap.
-> +	 */
-> +	try_to_inc_max_seq(lruvec, max_seq, &sc, true, true);
-> +	memalloc_noreclaim_restore(flags);
-> +	set_task_reclaim_state(current, NULL);
-> +}
-> +#endif /* CONFIG_WORKINGSET_REPORT */
-> +
->  #else /* !CONFIG_LRU_GEN */
->  
->  static void lru_gen_age_node(struct pglist_data *pgdat, struct scan_control *sc)
-> diff --git a/mm/workingset_report.c b/mm/workingset_report.c
-> new file mode 100644
-> index 000000000000..98cdaffcb6b4
-> --- /dev/null
-> +++ b/mm/workingset_report.c
-> @@ -0,0 +1,413 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +#include <linux/export.h>
-> +#include <linux/lockdep.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/kernfs.h>
-> +#include <linux/memcontrol.h>
-> +#include <linux/rcupdate.h>
-> +#include <linux/mutex.h>
-> +#include <linux/err.h>
-> +#include <linux/atomic.h>
-> +#include <linux/node.h>
-> +#include <linux/mmzone.h>
-> +#include <linux/mm.h>
-> +#include <linux/mm_inline.h>
-> +#include <linux/workingset_report.h>
-> +
-> +#include "internal.h"
-> +
-> +void wsr_init(struct lruvec *lruvec)
-> +{
-> +	struct wsr_state *wsr = &lruvec->wsr;
-> +
-> +	memset(wsr, 0, sizeof(*wsr));
-> +	mutex_init(&wsr->page_age_lock);
-> +}
-> +
-> +void wsr_destroy(struct lruvec *lruvec)
-> +{
-> +	struct wsr_state *wsr = &lruvec->wsr;
-> +
-> +	mutex_destroy(&wsr->page_age_lock);
-> +	kfree(wsr->page_age);
-> +	memset(wsr, 0, sizeof(*wsr));
-> +}
-> +
-> +static int workingset_report_intervals_parse(char *src,
-> +				      struct wsr_report_bins *bins)
-> +{
-> +	int err = 0, i = 0;
-> +	char *cur, *next = strim(src);
-> +
-> +	if (*next == '\0')
-> +		return 0;
-> +
-> +	while ((cur = strsep(&next, ","))) {
-> +		unsigned int interval;
-> +
-> +		err = kstrtouint(cur, 0, &interval);
-> +		if (err)
-> +			goto out;
-> +
-> +		bins->bins[i].idle_age = msecs_to_jiffies(interval);
-> +		if (i > 0 && bins->bins[i].idle_age <= bins->bins[i - 1].idle_age) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +
-> +		if (++i == WORKINGSET_REPORT_MAX_NR_BINS) {
-> +			err = -ERANGE;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	if (i && i < WORKINGSET_REPORT_MIN_NR_BINS - 1) {
-> +		err = -ERANGE;
-> +		goto out;
-> +	}
-> +
-> +	bins->nr_bins = i;
-> +	bins->bins[i].idle_age = WORKINGSET_INTERVAL_MAX;
-> +out:
-> +	return err ?: i;
-> +}
-> +
-> +static unsigned long get_gen_start_time(const struct lru_gen_folio *lrugen,
-> +					unsigned long seq,
-> +					unsigned long max_seq,
-> +					unsigned long curr_timestamp)
-> +{
-> +	int younger_gen;
-> +
-> +	if (seq == max_seq)
-> +		return curr_timestamp;
-> +	younger_gen = lru_gen_from_seq(seq + 1);
-> +	return READ_ONCE(lrugen->timestamps[younger_gen]);
-> +}
-> +
-> +static void collect_page_age_type(const struct lru_gen_folio *lrugen,
-> +				  struct wsr_report_bin *bin,
-> +				  unsigned long max_seq, unsigned long min_seq,
-> +				  unsigned long curr_timestamp, int type)
-> +{
-> +	unsigned long seq;
-> +
-> +	for (seq = max_seq; seq + 1 > min_seq; seq--) {
-> +		int gen, zone;
-> +		unsigned long gen_end, gen_start, size = 0;
-> +
-> +		gen = lru_gen_from_seq(seq);
-> +
-> +		for (zone = 0; zone < MAX_NR_ZONES; zone++)
-> +			size += max(
-> +				READ_ONCE(lrugen->nr_pages[gen][type][zone]),
-> +				0L);
-> +
-> +		gen_start = get_gen_start_time(lrugen, seq, max_seq,
-> +					       curr_timestamp);
-> +		gen_end = READ_ONCE(lrugen->timestamps[gen]);
-> +
-> +		while (bin->idle_age != WORKINGSET_INTERVAL_MAX &&
-> +		       time_before(gen_end + bin->idle_age, curr_timestamp)) {
-> +			unsigned long gen_in_bin = (long)gen_start -
-> +						   (long)curr_timestamp +
-> +						   (long)bin->idle_age;
-> +			unsigned long gen_len = (long)gen_start - (long)gen_end;
-> +
-> +			if (!gen_len)
-> +				break;
-> +			if (gen_in_bin) {
-> +				unsigned long split_bin =
-> +					size / gen_len * gen_in_bin;
-> +
-> +				bin->nr_pages[type] += split_bin;
-> +				size -= split_bin;
-> +			}
-> +			gen_start = curr_timestamp - bin->idle_age;
-> +			bin++;
-> +		}
-> +		bin->nr_pages[type] += size;
-> +	}
-> +}
-> +
-> +/*
-> + * proportionally aggregate Multi-gen LRU bins into a working set report
-> + * MGLRU generations:
-> + * current time
-> + * |         max_seq timestamp
-> + * |         |     max_seq - 1 timestamp
-> + * |         |     |               unbounded
-> + * |         |     |               |
-> + * --------------------------------
-> + * | max_seq | ... | ... | min_seq
-> + * --------------------------------
-> + *
-> + * Bins:
-> + *
-> + * current time
-> + * |       current - idle_age[0]
-> + * |       |     current - idle_age[1]
-> + * |       |     |               unbounded
-> + * |       |     |               |
-> + * ------------------------------
-> + * | bin 0 | ... | ... | bin n-1
-> + * ------------------------------
-> + *
-> + * Assume the heuristic that pages are in the MGLRU generation
-> + * through uniform accesses, so we can aggregate them
-> + * proportionally into bins.
-> + */
-> +static void collect_page_age(struct wsr_page_age_histo *page_age,
-> +			     const struct lruvec *lruvec)
-> +{
-> +	int type;
-> +	const struct lru_gen_folio *lrugen = &lruvec->lrugen;
-> +	unsigned long curr_timestamp = jiffies;
-> +	unsigned long max_seq = READ_ONCE((lruvec)->lrugen.max_seq);
-> +	unsigned long min_seq[ANON_AND_FILE] = {
-> +		READ_ONCE(lruvec->lrugen.min_seq[LRU_GEN_ANON]),
-> +		READ_ONCE(lruvec->lrugen.min_seq[LRU_GEN_FILE]),
-> +	};
-> +	struct wsr_report_bins *bins = &page_age->bins;
-> +
-> +	for (type = 0; type < ANON_AND_FILE; type++) {
-> +		struct wsr_report_bin *bin = &bins->bins[0];
-> +
-> +		collect_page_age_type(lrugen, bin, max_seq, min_seq[type],
-> +				      curr_timestamp, type);
-> +	}
-> +}
-> +
-> +/* First step: hierarchically scan child memcgs. */
-> +static void refresh_scan(struct wsr_state *wsr, struct mem_cgroup *root,
-> +			 struct pglist_data *pgdat)
-> +{
-> +	struct mem_cgroup *memcg;
-> +
-> +	memcg = mem_cgroup_iter(root, NULL, NULL);
-> +	do {
-> +		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> +
-> +		wsr_refresh_scan(lruvec);
-> +		cond_resched();
-> +	} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
-> +}
-> +
-> +/* Second step: aggregate child memcgs into the page age histogram. */
-> +static void refresh_aggregate(struct wsr_page_age_histo *page_age,
-> +			      struct mem_cgroup *root,
-> +			      struct pglist_data *pgdat)
-> +{
-> +	struct mem_cgroup *memcg;
-> +	struct wsr_report_bin *bin;
-> +
-> +	/*
-> +	 * page_age_intervals should free the page_age struct
-> +	 * if no intervals are provided.
-> +	 */
-> +	VM_WARN_ON_ONCE(page_age->bins.bins[0].idle_age ==
-> +			WORKINGSET_INTERVAL_MAX);
-> +
-> +	for (bin = page_age->bins.bins;
-> +	     bin->idle_age != WORKINGSET_INTERVAL_MAX; bin++) {
-> +		bin->nr_pages[0] = 0;
-> +		bin->nr_pages[1] = 0;
-> +	}
-> +	/* the last used bin has idle_age == WORKINGSET_INTERVAL_MAX. */
-> +	bin->nr_pages[0] = 0;
-> +	bin->nr_pages[1] = 0;
-> +
-> +	memcg = mem_cgroup_iter(root, NULL, NULL);
-> +	do {
-> +		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> +
-> +		collect_page_age(page_age, lruvec);
-> +		cond_resched();
-> +	} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
-> +	WRITE_ONCE(page_age->timestamp, jiffies);
-> +}
-> +
-> +bool wsr_refresh_report(struct wsr_state *wsr, struct mem_cgroup *root,
-> +			struct pglist_data *pgdat)
-> +{
-> +	struct wsr_page_age_histo *page_age;
-> +
-> +	if (!READ_ONCE(wsr->page_age))
-> +		return false;
-> +
-> +	refresh_scan(wsr, root, pgdat);
-> +	mutex_lock(&wsr->page_age_lock);
-> +	page_age = READ_ONCE(wsr->page_age);
-> +	if (page_age)
-> +		refresh_aggregate(page_age, root, pgdat);
-> +	mutex_unlock(&wsr->page_age_lock);
-> +	return !!page_age;
-> +}
-> +EXPORT_SYMBOL_GPL(wsr_refresh_report);
-> +
-> +static struct pglist_data *kobj_to_pgdat(struct kobject *kobj)
-> +{
-> +	int nid = IS_ENABLED(CONFIG_NUMA) ? kobj_to_dev(kobj)->id :
-> +					    first_memory_node;
-> +
-> +	return NODE_DATA(nid);
-> +}
-> +
-> +static struct wsr_state *kobj_to_wsr(struct kobject *kobj)
-> +{
-> +	return &mem_cgroup_lruvec(NULL, kobj_to_pgdat(kobj))->wsr;
-> +}
-> +
-> +static ssize_t page_age_intervals_show(struct kobject *kobj,
-> +				       struct kobj_attribute *attr, char *buf)
-> +{
-> +	int len = 0;
-> +	struct wsr_state *wsr = kobj_to_wsr(kobj);
-> +
-> +	mutex_lock(&wsr->page_age_lock);
-> +
-> +	if (!!wsr->page_age) {
-> +		int i;
-> +		int nr_bins = wsr->page_age->bins.nr_bins;
-> +
-> +		for (i = 0; i < nr_bins; ++i) {
-> +			struct wsr_report_bin *bin =
-> +				&wsr->page_age->bins.bins[i];
-> +
-> +			len += sysfs_emit_at(buf, len, "%u",
-> +					     jiffies_to_msecs(bin->idle_age));
-> +			if (i + 1 < nr_bins)
-> +				len += sysfs_emit_at(buf, len, ",");
-> +		}
-> +	}
-> +	len += sysfs_emit_at(buf, len, "\n");
-> +
-> +	mutex_unlock(&wsr->page_age_lock);
-> +	return len;
-> +}
-> +
-> +static ssize_t page_age_intervals_store(struct kobject *kobj,
-> +					struct kobj_attribute *attr,
-> +					const char *src, size_t len)
-> +{
-> +	struct wsr_page_age_histo *page_age = NULL, *old;
-> +	char *buf = NULL;
-> +	int err = 0;
-> +	struct wsr_state *wsr = kobj_to_wsr(kobj);
-> +
-> +	buf = kstrdup(src, GFP_KERNEL);
-> +	if (!buf) {
-> +		err = -ENOMEM;
-> +		goto failed;
-> +	}
-> +
-> +	page_age =
-> +		kzalloc(sizeof(struct wsr_page_age_histo), GFP_KERNEL_ACCOUNT);
-> +
-> +	if (!page_age) {
-> +		err = -ENOMEM;
-> +		goto failed;
-> +	}
-> +
-> +	err = workingset_report_intervals_parse(buf, &page_age->bins);
-> +	if (err < 0)
-> +		goto failed;
-> +
-> +	if (err == 0) {
-> +		kfree(page_age);
-> +		page_age = NULL;
-> +	}
-> +
-> +	mutex_lock(&wsr->page_age_lock);
-> +	old = xchg(&wsr->page_age, page_age);
-> +	mutex_unlock(&wsr->page_age_lock);
-> +	kfree(old);
-> +	kfree(buf);
-> +	return len;
-> +failed:
-> +	kfree(page_age);
-> +	kfree(buf);
-> +
-> +	return err;
-> +}
-> +
-> +static struct kobj_attribute page_age_intervals_attr =
-> +	__ATTR_RW(page_age_intervals);
-> +
-> +static ssize_t page_age_show(struct kobject *kobj, struct kobj_attribute *attr,
-> +			     char *buf)
-> +{
-> +	struct wsr_report_bin *bin;
-> +	int ret = 0;
-> +	struct wsr_state *wsr = kobj_to_wsr(kobj);
-> +
-> +	if (!READ_ONCE(wsr->page_age))
-> +		return -EINVAL;
-> +
-> +	wsr_refresh_report(wsr, NULL, kobj_to_pgdat(kobj));
-> +
-> +	mutex_lock(&wsr->page_age_lock);
-> +	if (!wsr->page_age) {
-> +		ret = -EINVAL;
-> +		goto unlock;
-> +	}
-> +
-> +	for (bin = wsr->page_age->bins.bins;
-> +	     bin->idle_age != WORKINGSET_INTERVAL_MAX; bin++)
-> +		ret += sysfs_emit_at(buf, ret, "%u anon=%lu file=%lu\n",
-> +				     jiffies_to_msecs(bin->idle_age),
-> +				     bin->nr_pages[0] * PAGE_SIZE,
-> +				     bin->nr_pages[1] * PAGE_SIZE);
-> +
-> +	ret += sysfs_emit_at(buf, ret, "%lu anon=%lu file=%lu\n",
-> +			     WORKINGSET_INTERVAL_MAX,
-> +			     bin->nr_pages[0] * PAGE_SIZE,
-> +			     bin->nr_pages[1] * PAGE_SIZE);
-> +
-> +unlock:
-> +	mutex_unlock(&wsr->page_age_lock);
-> +	return ret;
-> +}
-> +
-> +static struct kobj_attribute page_age_attr = __ATTR_RO(page_age);
-> +
-> +static struct attribute *workingset_report_attrs[] = {
-> +	&page_age_intervals_attr.attr, &page_age_attr.attr, NULL
-> +};
-> +
-> +static const struct attribute_group workingset_report_attr_group = {
-> +	.name = "workingset_report",
-> +	.attrs = workingset_report_attrs,
-> +};
-> +
-> +void wsr_register_node(struct node *node)
-> +{
-> +	struct kobject *kobj = node ? &node->dev.kobj : mm_kobj;
-> +	struct wsr_state *wsr;
-> +
-> +	if (IS_ENABLED(CONFIG_NUMA) && !node)
-> +		return;
-> +
-> +	wsr = kobj_to_wsr(kobj);
-> +
-> +	if (sysfs_create_group(kobj, &workingset_report_attr_group)) {
-> +		pr_warn("WSR failed to created group");
-> +		return;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(wsr_register_node);
-> +
-> +void wsr_unregister_node(struct node *node)
-> +{
-> +	struct kobject *kobj = &node->dev.kobj;
-> +	struct wsr_state *wsr;
-> +
-> +	if (IS_ENABLED(CONFIG_NUMA) && !node)
-> +		return;
-> +
-> +	wsr = kobj_to_wsr(kobj);
-> +	sysfs_remove_group(kobj, &workingset_report_attr_group);
-> +	wsr_destroy(mem_cgroup_lruvec(NULL, kobj_to_pgdat(kobj)));
-> +}
-> +EXPORT_SYMBOL_GPL(wsr_unregister_node);
+caching mode has nothing to do with devtlb. So I'd just do:
 
---
-Best Regards,
-Huang, Ying
+	if (!map)
+		iommu_flush_dev_iotlb(domain, addr, mask);
+
+
 
