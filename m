@@ -1,111 +1,121 @@
-Return-Path: <linux-kernel+bounces-137697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393C589E61E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:34:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B4A89E61F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:34:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E34F1C224E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:34:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F69CB226E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F7115920B;
-	Tue,  9 Apr 2024 23:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D0515921D;
+	Tue,  9 Apr 2024 23:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bGFWtNyz"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e1YZi+yV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D96159201
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69862159212
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712705658; cv=none; b=NCUoEKBgQLWfaNRZ6JiPSHUK7/88CWdZCqBuUox3YqOq1TR8w0Y5aY3YrR3r317JeQgjXRNHQhJGwtvBa6f9AMymA+8O1lIgqEEBWkM7AbtZ9VKhcSQ54ofWdeHCwralqYhl0JgwPAQ/rjo73K1KVgq71cI9PYqfSfuh1XABEGk=
+	t=1712705660; cv=none; b=XxlC8wkZHI3z4lUFn5BZd3LeEIXhh/cW8ZhTKdkAksFzZPHGUEajxkgLcaeZn+sgwQsG+38ehiFv2zg26uXEsxgN5gROnd5r3fZ3sUeUygx0LzhmUHgI7oRN7jX87Nl49T+ekxTWMU6FJ2umT5jJQCSAUY0LfacATr3t7g39P7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712705658; c=relaxed/simple;
-	bh=f22HyjkIzjMWg5Ym1cTX5CnazZXsHqPj5TZFPRbjcag=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Sokcr4u6gGggkXP3zvWhmlFcjjza3qMIESlIIxOpYNQuCRHVBn5yz7YrKO7/FuVw4bNoSng4vCeWYbZvEDyPRMddn1JrsdeCmr+aK9MqpL6I0P7nvJoSD9ulWb5DKgBFkDcynnrAcV1wmh8/loL9JDfT0LGEJOlNhBlpvUdrVS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bGFWtNyz; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e4149e7695so21152545ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 16:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712705656; x=1713310456; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6odFHMEXFzZMinU+/jCuQ/6/uayaOc5n4IeqpxK5Lj4=;
-        b=bGFWtNyzUH0u/xXUR173fTHLrO3dGlZcDfKHIwMBoQ5anoP69sGxjcWyROHAO0AUXz
-         iRvWevnpfT+KAezn+jhvkk88opVgkEzgT0c6RIByLkXE8ZACA7i1ZxGIJdT0IamRz3iZ
-         WVPSAlqK+MpQawNPOQPR5+5GsBBpCxZ/sEsqFZ5wbAFT4z2Ql0ro7rA2q64HpExZ+t1D
-         TilqJk0tn5adOfK/GRMvu58gD6buJ6UCWdYIW/0Trmbx46XYTkCFCzHhXMToHh6Ce8No
-         w8i24+GXLzDu9BtrKEXcgrHMRWNZb2FFUmhn560wKIxO/mQ8NBO7dTq5+qsAJUKzVhP1
-         99IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712705656; x=1713310456;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6odFHMEXFzZMinU+/jCuQ/6/uayaOc5n4IeqpxK5Lj4=;
-        b=POKbdi5Ueg0iC72iJT+LdJP3xrwLt5ILscKGPSFlC2I/7tcql+ulBYmq6uEX07H0o7
-         NpOcoHigJZ6X4Ia4LUtAMuaYN/mAJL3e2w0Q0EiWyf3KiO5Vx9tqJPRRDO372mXYhIUJ
-         RSW+e88nueD+qwe914Gj5uG8PrBz6PCy1t5VJmjCFeefzRWAoaDX8bZcC/zT6/bKLOCN
-         tmWkkms/pB0lIoQGuc3Bg9OjPNh0B6g5SYUdCyT1nd+tFi0oKwdPwkfPPtzWnQNMstGE
-         LrtAgl7kuzqmaontoM3fJKJB6qlheY5RP9Rsrsvnk8Zn9o4mkixfRkk6AAX1fnczmhMF
-         tQcg==
-X-Gm-Message-State: AOJu0YyCN3b6hwHkgSnQy/JHL/xYjmHDPNU7kRz/nkd9M5sW4Nojsw4M
-	YUr/wh8aNtVOLwtggOV0ayFU0vaV2ZE0SqHQpUjuJ/LtjMDLV2n3HYNI4WkL
-X-Google-Smtp-Source: AGHT+IHkJr8feUvKJuTXxw3mj3hdsJ+535brp1RYR3IJHjcS9AsHhDj+0eU7FhodjhHv9PWsUEOl1Q==
-X-Received: by 2002:a17:902:d905:b0:1e4:9af6:ddc2 with SMTP id c5-20020a170902d90500b001e49af6ddc2mr1027083plz.40.1712705656411;
-        Tue, 09 Apr 2024 16:34:16 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:1d4b:7a42:2921:f1b0])
-        by smtp.gmail.com with ESMTPSA id s1-20020a170902ea0100b001e042dc5202sm9426408plg.80.2024.04.09.16.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 16:34:16 -0700 (PDT)
-From: Daeho Jeong <daeho43@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: write missing last sum blk of file pinning section
-Date: Tue,  9 Apr 2024 16:34:11 -0700
-Message-ID: <20240409233411.1197830-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+	s=arc-20240116; t=1712705660; c=relaxed/simple;
+	bh=waogLAz/SB0tT6Qc4LzIgOKW253P1evhT4wBfsvlx8U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=fqo8V9U9Izzv9RGlzU55Oe4XNR8O+sePVXNX/D/p2DVsnKtOrSJAIUNp1Vzs36jZLHy/POXzL7rt4yW1MKLyXUv6NEH8+8e3RZIB8L/D0JpLIfjJxAR4Cx041sT+XwK6LjPigI4BrxOZbZGSMdY88RmMQPSJyKAwUNbMaMuoKZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e1YZi+yV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9894CC433C7;
+	Tue,  9 Apr 2024 23:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712705660;
+	bh=waogLAz/SB0tT6Qc4LzIgOKW253P1evhT4wBfsvlx8U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=e1YZi+yVZaTXExbyi2RFIfy4lgf6+Qv0QIai5fj78JHAVRj6dRiQaJ0DJVSISlVsJ
+	 4TV6ABs2Vxu4fxtv0vmj3stkVV70t+3gI3dFv1VVEj3lC/qyU7iB5yOEbbxgiRpqIg
+	 aDPnP+7LF9/mKAdD3cFNVKaCFeZQcMzVc68NMksa7c8ojzkZpxndyLRBgYdnPCX/xQ
+	 To2B0lXpo37CO1pLAUXe/B1zGzN+qnvUVHHGlJT+KL6YoQFdIkyme/4fgQwtgyVx9G
+	 fLdtO/fJUK3eypyqamykimv0z9/rIb0zBIe4J3udblnafEZIunLChW3cBbzDugyyar
+	 9kZL9gmQYNm3Q==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20240408144600.230848-1-rf@opensource.cirrus.com>
+References: <20240408144600.230848-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 00/11] regmap: kunit: Add some test cases and a few
+ small improvements
+Message-Id: <171270565934.199621.5334533865002594899.b4-ty@kernel.org>
+Date: Wed, 10 Apr 2024 00:34:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-From: Daeho Jeong <daehojeong@google.com>
+On Mon, 08 Apr 2024 15:45:49 +0100, Richard Fitzgerald wrote:
+> This series adds some more test cases, mainly for testing:
+> 
+> commit eaa03486d932 ("regmap: maple: Fix uninitialized symbol 'ret' warnings")
+> commit 00bb549d7d63 ("regmap: maple: Fix cache corruption in regcache_maple_drop()")
+> 
+> And the pending patch ("regmap: Add regmap_read_bypassed()")
+> https://lore.kernel.org/linux-sound/20240408101803.43183-1-rf@opensource.cirrus.com/T/#m2b99b1e01872bfc3597e89dee57dcdd5dbaf1b55
+> 
+> [...]
 
-While do not allocating a new section in advance for file pinning area, I
-missed that we should write the sum block for the last segment of a file
-pinning section.
+Applied to
 
-Fixes: 9703d69d9d15 ("f2fs: support file pinning for zoned devices")
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fs/f2fs/segment.c | 2 ++
- 1 file changed, 2 insertions(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 4fd76e867e0a..6474b7338e81 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3559,6 +3559,8 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	if (segment_full) {
- 		if (type == CURSEG_COLD_DATA_PINNED &&
- 		    !((curseg->segno + 1) % sbi->segs_per_sec)) {
-+			write_sum_page(sbi, curseg->sum_blk,
-+					GET_SUM_BLOCK(sbi, curseg->segno));
- 			reset_curseg_fields(curseg);
- 			goto skip_new_segment;
- 		}
--- 
-2.44.0.478.gd926399ef9-goog
+Thanks!
+
+[01/11] regmap: kunit: Fix warnings of implicit casts to __le16 and __be16
+        commit: 866f70211bf43927ca44d8e98b5266926fd51315
+[02/11] regmap: kunit: Create a struct device for the regmap
+        commit: 7b7982f14315e0f6910e13b22ed38a47144a83ec
+[03/11] regmap: kunit: Introduce struct for test case parameters
+        commit: 48bccea96fead1b212e19e38e50bf8e69287c45d
+[04/11] regmap: kunit: Run sparse cache tests at non-zero register addresses
+        commit: 710915743d53d19a1baf0326302aa1f743ab018e
+[05/11] regmap: kunit: Run non-sparse cache tests at non-zero register addresses
+        commit: ac4394bf9c5e065919a0e491bfd95e2106b1b9b2
+[06/11] regmap: kunit: Add more cache-drop tests
+        commit: 7dd52d301cfcff9a67be19d00289e03d80d05e46
+[07/11] regmap: kunit: Add more cache-sync tests
+        commit: 7903d15f008056c8c152f2aa3b36217917853264
+[08/11] regmap: kunit: Use a KUnit action to call regmap_exit()
+        commit: ce75e06eea9cfdddaa0082cef663cf2d4aa5ed1d
+[09/11] regmap: kunit: Replace a kmalloc/kfree() pair with KUnit-managed alloc
+        commit: d6f2fd7adcb5f25ac661808be9409f846b1de6fe
+[10/11] regmap: kunit: Add cache-drop test with multiple cache blocks
+        commit: 468d277e6fb112e7a5e816ef5f1f6bd86c29bea6
+[11/11] regmap: kunit: Add test cases for regmap_read_bypassed()
+        commit: f63eb9ae085dc6da27eebfe35317e07a6a02a160
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
