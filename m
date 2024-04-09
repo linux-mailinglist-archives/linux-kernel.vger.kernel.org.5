@@ -1,236 +1,130 @@
-Return-Path: <linux-kernel+bounces-136171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EFC89D0C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:10:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D78989D0D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8A621F24C15
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:10:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02D9A281AEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF8A13E3FD;
-	Tue,  9 Apr 2024 03:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4736E54BCA;
+	Tue,  9 Apr 2024 03:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="em0HzBlN"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QDL9/zEL"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5D113667A;
-	Tue,  9 Apr 2024 03:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65CC548F2;
+	Tue,  9 Apr 2024 03:15:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712632199; cv=none; b=FivUx5rJh/3YNTIBT2V9x0SOCAdA/tPAACu4n7YP23wJvy+wVm7yu4LASRN8JtiicgzedU0VwtM/ZEKIkCtsPisRTogYOecBx1Q2HAwjfpqsQRZPo5nxJkCnF4UkK/ghUEeYxa/OJojlnqp9ukScLmfazokIazBPXCmMPJhMBTM=
+	t=1712632554; cv=none; b=Kc1k8hLZ22B9QJmT2UMbcpfta5767NvQdPTWGxaB2MmHyQ6SNxxNV3XNjqnGvipLOnO/ivk/wL8JeIXACos0RIJRjlT8WleY2JkvYHiVTIySRZ486cwfKEhuuStkYYnxUNUgywCz3u6kHQm8iZBcb5kGPB9GpQcbwyXs46DaL7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712632199; c=relaxed/simple;
-	bh=1nW8c6xT4xjuexdsl7iCzukkDNi5qw9LiQWUF2euC2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=huy/ip00sINO8m7AWRuS7S0uqFPWqbY0RT94ydQMB2Su1PmdhJobaBaSg1a4+L0VK4UZK11SMm7H6TIHf+2agTl7Q75alaWFPsuneuqt6mfXHiMOCXqjfanQTBULiqSsft/JibUMf4K7zmjqmYUx7Eg9uYuIjhfy4imzP1+ylQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=em0HzBlN; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so63766671fa.2;
-        Mon, 08 Apr 2024 20:09:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712632195; x=1713236995; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=76vHKlkPl4zx/sYpnGb1W+utnXEMWzAaVqU7pqKDMoM=;
-        b=em0HzBlNNcYyRGI0y8zH8qZeINHUbmPAdhNsh4aapsr5NP10kZv6vWxY4fi3vvc8op
-         JQsvCuzQBY6kL+VcwWi6+1ajvNCmpiEuj3Pr0bAYN63gEvLkX4fvowCJ2ugZRnbz3kPv
-         JFn9R+5alnF3dr/PQ2EQroFlZq0buRf2359T9mzBHKclQQYo/I2lJhsMcusMz6efWNpi
-         OBnWbgUZ95srkZynKX/ixiqRQPW9PDJFwA3eKBK7XBrDIAGyiPJh6Wp87YOjmjiEZgKC
-         wqVbPto4UJziyJrhya8yeWRPlGAc/l8NYoobT+Qf8YFbl+hMsK75VVd53hNc9PjOw5kr
-         P38A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712632195; x=1713236995;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=76vHKlkPl4zx/sYpnGb1W+utnXEMWzAaVqU7pqKDMoM=;
-        b=ph5CFMkIUJL+tE2UHJ03g9b0uP9y/cmAXabxJrchlpCYJvJoHZwvunZEpT+30Nrfuu
-         XM0CMAHqBtmusCv4BLfG8j1AY0AsLZk5+ZPy9wMgwD7PiqMksDtjcF3yerGtIwt4iCAT
-         6Tk04dEQtHBqXOx593AD7+Qx4ZF+lG75QLpiceK1yPtxxp1OUIWHVv1E1DML8D3FWTz+
-         nsl+ZPUkmBYt05qIJWQUI9HxNfdyLBYFL8H2Obf0wMQGTfjq0XMrFSRrh+0tWfndDOdP
-         IWY4DbMmq+aQUWiZdNzyY3vFq+sqFUC3UmGQ0JKGs59ZHxHpvEYUcVW8SEmKyrePXZ+Z
-         Kevg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhqxVwdJz8nhXfzVwQnrvwX4T8NUfjsTv8BXDtEGb9JxfYMcYDJIDNn4oc7cHsW+juZGDTl8LWmc4Lvd3jm53u9e+LqQiiQzjXSYYV
-X-Gm-Message-State: AOJu0Yxt5lyZWjcVWdo9GajRcwRfjBLC/peYXcqdo2dBo6HX+jo7RgMo
-	EA2yiLPiczfTFFOFkZLuRWqDnQ5IGFivwgAKPc0HdyuUKDqYvkUu
-X-Google-Smtp-Source: AGHT+IGmRB/BC2yOHt7fRFzbdYyTq9seO89uvEloELayi2NgGXi/YJWpnhfFRAoWc3SxuJf+69cmAA==
-X-Received: by 2002:a2e:8857:0:b0:2d6:b424:a634 with SMTP id z23-20020a2e8857000000b002d6b424a634mr7655712ljj.15.1712632194893;
-        Mon, 08 Apr 2024 20:09:54 -0700 (PDT)
-Received: from freebase (oliv-cloud.duckdns.org. [78.196.47.215])
-        by smtp.gmail.com with ESMTPSA id iv9-20020a05600c548900b004162ce49719sm16530113wmb.6.2024.04.08.20.09.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 20:09:54 -0700 (PDT)
-Date: Tue, 9 Apr 2024 05:09:52 +0200
-From: Olivier Dautricourt <olivierdautricourt@gmail.com>
-To: Eric Schwarz <eas@sw-optimization.com>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
-Message-ID: <ZhSxgAxCSeekTdNT@freebase>
-References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
- <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
- <ZQyWsvcQCJgmG5aO@freebase>
- <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
- <ZQ3B9NWVmLvaVhJX@freebase>
- <5e2404d4-f36c-7718-c0fc-d226aefdf2f6@sw-optimization.com>
- <245a848c-5bbc-463d-b7e1-b82cea2c4dba@sw-optimization.com>
+	s=arc-20240116; t=1712632554; c=relaxed/simple;
+	bh=jrIScl7tEROJREqjIpcHI6bGspQlGAFhvM6VM7rlaV0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LgV/9bjYBYlXIinBxD37AXh+c86++9Nf8qVW9/r8Q8qekpFDFvVWYxs5nQDxFOqY9nrtiPK7Q48n9ge0FaIv4bPghkqkSXuadBSUoWlxHkdjZ7Ro/qUNZcM6NPEA54ndC5rp0gw2jXo6q6fG/fEVm/7ulg4nisSu+G+H9limZZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QDL9/zEL; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 439386Hr005531;
+	Tue, 9 Apr 2024 03:15:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=3hR7/b+Lcmm0h+bCz7ikScFKg0g90gZUtEoSlyOaUGQ=;
+ b=QDL9/zELLwJNTA0AlRX0XMVL5usITKhIqI7llCZqCy7N8HGs3rxRV/D0UwmrLLuGzbjM
+ yvDYC37VQftNtPjImysV3fWO2/YqdG7hjBeE5aEhfVcM856SZKQSJ0dPtP6pccEaVKIE
+ lq9/hxwzsYTliDoyEkFdEN58SBsV978NCM1absBAfDovsIrF7QDk+A5yGdY4wTpdceLj
+ 9V/9ZgafeMs8F4P7mVfMI641SZ22vli5o/+VNGzL9DhpltKtJMKgkC6XQ//3bYmlk6iV
+ p/gVyxDRbS/1KrgswfW5PQCbioAkZt1yzu7b1BpxwI4JcpfAM5W7/m2zTXafHmMwgnT/ tQ== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xcv1gg43b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 03:15:45 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4390vlJA013550;
+	Tue, 9 Apr 2024 03:15:44 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtc1ws-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 03:15:44 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4393Ff1F27656924
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Apr 2024 03:15:43 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2E28E2004B;
+	Tue,  9 Apr 2024 03:15:41 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AC77F20040;
+	Tue,  9 Apr 2024 03:15:40 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Apr 2024 03:15:40 +0000 (GMT)
+Received: from jarvis.ozlabs.ibm.com.com (unknown [9.36.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 481A76016D;
+	Tue,  9 Apr 2024 13:15:37 +1000 (AEST)
+From: Andrew Donnellan <ajd@linux.ibm.com>
+To: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc: manoj@linux.ibm.com, ukrishn@linux.ibm.com, fbarrat@linux.ibm.com
+Subject: [PATCH 1/2] MAINTAINERS: Make cxlflash obsolete
+Date: Tue,  9 Apr 2024 13:10:26 +1000
+Message-ID: <20240409031027.41587-1-ajd@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <245a848c-5bbc-463d-b7e1-b82cea2c4dba@sw-optimization.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: MjqIFWIQGX14MH6cBX1Ov2X8XbAeNIZ5
+X-Proofpoint-ORIG-GUID: MjqIFWIQGX14MH6cBX1Ov2X8XbAeNIZ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_19,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=703 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0 clxscore=1011
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404090018
 
-Hi Eric,
+The cxlflash driver is no longer actively maintained and we intend to
+remove it in a future kernel release. Change its status to obsolete.
 
-Changes were tested successfully, i will resend v2 soon.
+While we're here, Matthew Ochs no longer works at IBM and is no longer in
+a position to access cxlflash hardware, so remove him from the maintainers
+list.
 
-Olivier
+Signed-off-by: Andrew Donnellan <ajd@linux.ibm.com>
+---
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Sun, Feb 25, 2024 at 09:05:37PM +0100, Eric Schwarz wrote:
-> Hello Olivier,
-> 
-> just a ping on getting the patches / fixes below mainline. - Were you able
-> to get hardware for testing?
-> 
-> Many thanks
-> Eric
-> 
-> 
-> Am 28.09.2023 um 09:57 schrieb Eric Schwarz:
-> > Hello Olivier,
-> > 
-> > Am 22.09.2023 um 18:33 schrieb Olivier Dautricourt:
-> > > Hi Eric,
-> > > 
-> > > On Fri, Sep 22, 2023 at 09:49:59AM +0200, Eric Schwarz wrote:
-> > > > Hello Olivier,
-> > > > 
-> > > > > > Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
-> > > > > > > Sparse complains because we first take the lock in
-> > > > > > > msgdma_tasklet -> move
-> > > > > > > locking to msgdma_chan_desc_cleanup.
-> > > > > > > In consequence, move calling of
-> > > > > > > msgdma_chan_desc_cleanup outside of the
-> > > > > > > critical section of function msgdma_tasklet.
-> > > > > > > 
-> > > > > > > Use spin_unlock_irqsave/restore instead of just
-> > > > > > > spinlock/unlock to keep
-> > > > > > > state of irqs while executing the callbacks.
-> > > > > > 
-> > > > > > What about the locking in the IRQ handler
-> > > > > > msgdma_irq_handler() itself? -
-> > > > > > Shouldn't spin_unlock_irqsave/restore() be used there as
-> > > > > > well instead of
-> > > > > > just spinlock/unlock()?
-> > > > > 
-> > > > > IMO no:
-> > > > > It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
-> > > > > The irq handler cannot be preempted by the tasklet, so the
-> > > > > spin_lock/unlock version is ok. However the tasklet could be
-> > > > > interrupted
-> > > > > by the Hard IRQ hence the disabling of irqs with save/restore when
-> > > > > entering critical section.
-> > > > > 
-> > > > > It should not be needed to keep interrupts locally disabled
-> > > > > while invoking
-> > > > > callbacks, will add this to the commit description.
-> > > > > 
-> > > > > [1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
-> > > > 
-> > > > Thanks for the link. I have read differently here [2] w/ special
-> > > > emphasis on
-> > > > "Lesson 3: spinlocks revisited.".
-> > > > 
-> > > > [2] https://www.kernel.org/doc/Documentation/locking/spinlocks.txt
-> > > > 
-> > > 
-> > > This chapter [2] says that our code must use irq versions of spin_lock
-> > > because our handler does indeed play with the lock. However this
-> > > requirement does not apply to the irq handler itself, as we know that the
-> > > interrupt line is disabled during the execution of the handler (and our
-> > > handler is not shared with another irq).
-> > 
-> > "... as we know that the interrupt line is disabled during the execution
-> > of the handler (and our handler is not shared with another irq)."
-> > 
-> > That was the point I wanted to be sure about. So if the IRQ handler
-> > cannot be called twice ensured by architecture neither on single or
-> > multi CPU systems (SMP or others) I am fine.
-> > Thanks for your response on that. Appreciated.
-> > 
-> > Because you take the effort to set up hardware and environment again you
-> > may also test following fixes/improvements from zynqmp driver which
-> > could then be merged into altera-msgdma driver. Please check yourself:
-> > 
-> > f2b816a1dfb8 ("dmaengine: zynqmp_dma: Add device_synchronize support")
-> > # Caught by your patchset
-> > #9558cf4ad07e ("dmaengine: zynqmp_dma: fix lockdep warning in tasklet")
-> > # Caught by your patchset
-> > #16ed0ef3e931 ("dmaengine: zynqmp_dma: cleanup after completing all
-> > descriptors")
-> > # Caught by your patchset - For the altera-msgdma driver it is a real
-> > fix not an optimization.
-> > #48594dbf793a ("dmaengine: zynqmp_dma: Use list_move_tail instead of
-> > list_del/list_add_tail")
-> > 5ba080aada5e ("dmaengine: zynqmp_dma: Fix race condition in the probe")
-> > 
-> > Note: If the sequence is applied in reverse order the log would be
-> > comparable to zynqmp driver's log.
-> > 
-> > IMHO your patchset could/should be extended by two more patches and
-> > split into small junks as mentioned. Then history would stay intact to
-> > be compared to zynqmp driver.
-> > 
-> > Note: Take care about "Developer’s Certificate of Origin 1.1". IMHO
-> > "Signed-off-by" tags from the other patches might/must be copied at
-> > least for most of the patches then, which would make it easier to get it
-> > into mainline.
-> > 
-> > Btw, some cosmetic changes could be made in the mainlined driver:
-> > 
-> > 30s/implements/Implements/
-> > 31s/data/Data/
-> > 32s/data/Data/
-> > 33s/the/The/
-> > 39s/data/Data/
-> > 40s/data/Data/
-> > 41s/characteristics/Characteristics/
-> > 109s/response/Response/
-> > 154s/implements/Implements/
-> > 154s/sw\ /SW\ /
-> > 155s/support/Support/
-> > 155s/api/API/
-> > 156s/assosiated/Associated/
-> > 157s/node\ /Node\ /
-> > 158s/transmit/Transmit/
-> > 259s/Hw/HW/
-> > 291s/Hw/HW/
-> > 322s/prepare/Prepare/
-> > 327s/transfer/Transfer/
-> > 378s/prepare/Prepare/
-> > 384s/transfer/Transfer/
-> > 385s/transfer/Transfer/
-> > 502s/its/it\'s/
-> > 514s/oder/order/
-> > 530s/copy\ /Copy\ /
-> > 680s/sSGDMA/mSGDMA/
-> > 723s/Interrupt/interrupt/
-> > 752s/\(\)//
-> > 921s/\(\)//
-> > 
-> > ... and another patch, if that is taken into account.
-> > 
-> > Cheers
-> > Eric
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aea47e04c3a5..34f605498873 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5780,10 +5780,9 @@ F:	include/uapi/misc/cxl.h
+ 
+ CXLFLASH (IBM Coherent Accelerator Processor Interface CAPI Flash) SCSI DRIVER
+ M:	Manoj N. Kumar <manoj@linux.ibm.com>
+-M:	Matthew R. Ochs <mrochs@linux.ibm.com>
+ M:	Uma Krishnan <ukrishn@linux.ibm.com>
+ L:	linux-scsi@vger.kernel.org
+-S:	Supported
++S:	Obsolete
+ F:	Documentation/arch/powerpc/cxlflash.rst
+ F:	drivers/scsi/cxlflash/
+ F:	include/uapi/scsi/cxlflash_ioctl.h
+-- 
+2.44.0
+
 
