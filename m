@@ -1,167 +1,225 @@
-Return-Path: <linux-kernel+bounces-136456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7773589D435
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:28:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F1D89D476
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:34:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00071F24A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:28:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E28E1C22707
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E48D80022;
-	Tue,  9 Apr 2024 08:27:04 +0000 (UTC)
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2117.outbound.protection.outlook.com [40.107.215.117])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199637E78B;
+	Tue,  9 Apr 2024 08:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DDLPpozD";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TIX6bOHt"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0220B7FBD7;
-	Tue,  9 Apr 2024 08:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.117
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651223; cv=fail; b=XdNgO9b4QLqym1cNBNsN0qbL3xm69L9tMwShx56EdyYcCZ2Pj4a1xga3sa6Z7URB6K2rQMMK7plina2PkIhzMtmyamSsOGpkhHqYz8VkjAXEaPqPSv3qE693XcwICBXhCcteDmU5n5pNEESnrtbNd/i2UzySEm8f7bDq7+kOjHw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651223; c=relaxed/simple;
-	bh=TmZWYyicXG37+LTfCZZrtm3PGbmycE3JYAMCwFeACT8=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=S7iUT0+ChEYUpV6AjZpDqnuXOhNRVsjZ8mPlx/AFDZAtifewPejsSnohIMVs2D9u4POFY3m7/4sWeDPJruHXK6NpPOKh9GAzgbY8s+les1EAjEsTvFvkY0kvqMGp+eYInvgYdNQ+iTpFXLZdiVST1BPhx17UdIrBlkx6B5y6BwI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wesion.com; spf=pass smtp.mailfrom=wesion.com; arc=fail smtp.client-ip=40.107.215.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wesion.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wesion.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/9i/GfcCCJvvZUgX988smsZ+qDBj0DjqOcov7eNu5j6yZanN74JNkTWspA6+sMMWPDFmjoghuklIizCto4pCGr3AdfFrIRdgqetEsMVBRR9PiPiIUjXrGHLojmLWyzdQ3porbTC8nGsMNF44x2VG6kjCAK6rvlxrFzcHbIIa97dwIEEgOlf8/Vpb6K6J2VFkWNEktIGQcBB7PsouGex0zVTrLLfSSgjNf2kASu0snxSHnOuu00YvJ407SvnBaWSM59rCDlwalZhuvXHeC9R5X0KAKVsPskyBePqsI4fbeozauoU5pCs8gxxCshMVO37R41Yu4gO9wevuUmmmriuog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bH0GRc/H/DLf7+uJGT/IyjQljXh2DM8YRGEjSfdu8JE=;
- b=kUKmt79BRMtIECebP/5L4r+pfSxwMFDWIZ6fFBdN1HGvxHVuNaFSr4g1Eh/fjeKfqkMIRHpcJ0B2anmgWQrSO6kodi/bPGZCnLY6vAW2ZHWzOtnQgMFnAPugAvsVk3DXjWtPxnlMowxmfxsV24a4QbvI+JtDVeF83nN/zv2iTAWMTiwJmbO79ORd1bY5+A/ZJiOlqAlIkwUK4T2RqXG93V87/Jl0l3Sxfw9EwzOlpdXAyDy2t+Ov5CaiJP5LQcKOrkkV26unV8QMuIUszhnnzw+By7C4MGiJIxLGCoCwCeSFFz8tN6wR3QVZmNZuezYOH5d5+159/tM55cTli26Qcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wesion.com; dmarc=pass action=none header.from=wesion.com;
- dkim=pass header.d=wesion.com; arc=none
-Received: from TYZPR03MB7001.apcprd03.prod.outlook.com (2603:1096:400:26a::14)
- by SEYPR03MB6880.apcprd03.prod.outlook.com (2603:1096:101:b5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 08:26:55 +0000
-Received: from TYZPR03MB7001.apcprd03.prod.outlook.com
- ([fe80::c4f9:d4f1:c115:f1ca]) by TYZPR03MB7001.apcprd03.prod.outlook.com
- ([fe80::c4f9:d4f1:c115:f1ca%6]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
- 08:26:55 +0000
-From: Jacobe Zang <jacobe.zang@wesion.com>
-To: neil.armstrong@linaro.org,
-	narmstrong@baylibre.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: quic_jesszhan@quicinc.com,
-	sam@ravnborg.org,
-	nick@khadas.com,
-	thierry.reding@gmail.com,
-	dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-amlogic@lists.infradead.org,
-	Jacobe Zang <jacobe.zang@wesion.com>
-Subject: [PATCH 1/2] dt-bindings: panel-simple-dsi: add New Khadas TS050 panel bindings
-Date: Tue,  9 Apr 2024 16:26:41 +0800
-Message-Id: <20240409082641.359627-1-jacobe.zang@wesion.com>
-X-Mailer: git-send-email 2.34.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYCPR01CA0070.jpnprd01.prod.outlook.com
- (2603:1096:405:2::34) To TYZPR03MB7001.apcprd03.prod.outlook.com
- (2603:1096:400:26a::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415A713048B;
+	Tue,  9 Apr 2024 08:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712651268; cv=none; b=AnHXi4u5FynB7UbOGjK2GTcpzRkOk5ZUHwzmWZCz0nG0CYfOhry+Yt0sZWAWy2tMX/oUbGRagMtyYK691v1RP6aROw7w9Z22WAz5NlC6XIyy+KG9I3SF+4m6FGZg0Zb/DZw0PIeNDNz0QeCesaAh3yw58/6QYAN03qSoJ1MSCoo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712651268; c=relaxed/simple;
+	bh=/+Hi6vwrI+/azqu2PLMP1pkwyqM1tyJ2TALzPG1MuyA=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=YmhCTiKpM73n/24HmnLV5ItNs3Y+s7o1mb+A7Spo7+Zr2kLgRQFfdtLz5O3WfOxLm46D9DvLOUZ65BH3DAP0mnjfrp6u5DtkhGRrft68Qd+4iGyqBZ5AaNg83HGVrBJoTkKN9bxSDnDolbXZRQvIVJ/k39bxI47zg/oK08akMmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DDLPpozD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TIX6bOHt; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 09 Apr 2024 08:27:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712651264;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uv3eqwvRlzTvqyKKBFLuJ5zhdqBDogQRJAanaG8Ixeg=;
+	b=DDLPpozDuuyGUMP55FuJwgxpjzCgAIwpdiGfPcZ8i+AkOvxNhaIMCXU8dIS/ErkS+Z7w9S
+	zBRQWb2XzUTlshc0WBfv1w4+Bh+mIbeMf3+7zLfzJrd5fGRgtoU4/7WqhVmqhQKO+80Cg3
+	m0OGOApjRUlJVR9QFnLMqr78BJvhIrW7cyZqUhlJzOJkkW2KfIrx4RS6/iy8RlXjjjCgkg
+	vgR9UQSrUmY+1F6jIrEBgj7s4dgAMxxz8XOanvIKrRyVj8N3++0WCSUw9OntvwJfHZODur
+	u1Z/YGNMeyWg3oThettLkSjjEi9RYqM3R9S2pMtgN2FlvKaXMZbrnsf078KNAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712651264;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uv3eqwvRlzTvqyKKBFLuJ5zhdqBDogQRJAanaG8Ixeg=;
+	b=TIX6bOHtOHpk2vhI67s7+g3m+18TQCl1dsBenLUu3B8M72TaWz358Se3Jv09Mrv5pLt4Ke
+	LeAaY5u+O4Q/pxDA==
+From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/mce: Implement recovery for errors in TDX/SEAM
+ non-root mode
+Cc: Tony Luck <tony.luck@intel.com>, Ingo Molnar <mingo@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240408180944.44638-1-tony.luck@intel.com>
+References: <20240408180944.44638-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR03MB7001:EE_|SEYPR03MB6880:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	mcQi3yi8vMqi+7nEg17bEc4eS5kWeUBbMD6syID1CteEiBVKh/guq9EI5oUVQbP9gLkC0kYdV+N8wlgUkz/93RFhs6zOyBGer+f87lLniMl3Y4vXYDePTC3AgrJU7q2JJF0pbGlcuX46P62T0vJxS9iqze8UOEmB+RTGjfvohF8HF1nZBB5SrOQEc70WdeczLSBeWmvEGVfD+p6SXDPEvUVaM2iInQWDfQc9IgeCINovkTosWup8QShiCyF3UEXfzvFcVQBhky5eojk96eA/D4EA8/4OGYojgckaHMI802XHpN8OKM0QIpf0/7Zby4dqxu39aLO8IaNdLGoXsmGii2vxsgVKdFiGEda+LGAtcYNgC1b2RBlRqg9YsnEnEr2d9O2lM3IAmnsgtFh9qglHApJFTrxA97mrSlr/zetj725MiJWlrrnqhITo6KSjxEJ2KzZtutifke6YiB22A+ZrdgKSVqrBfAq4NxH0u7837CYRCqDVcrqq1ZN45aaGpWcs7G8a5VE0XMQMk0oteWqbSL6hXyoKamAWyBYFLUT9dCUa2ZdvIk7gXcGZXMb9Kq3sb/mGZ7YAVq3dIboMHA7v2LiFa/o+fbO4MxO1/dv4VD0+rn+oNaVbINrtYKTDI4ut9fmFY5hbPuxP5Ro+cDWb0XHFaCrLyiKXptbwnCz3dhjXUUX1hnx3NDC/Qx1bnyEroBSnlUFwP6dXjfjnxZPAGOHD67VX3+YXh8VqFSNRV7w=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB7001.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(366007)(1800799015)(7416005)(921011)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cTdRTXdCbm1BaUJ2SmZrbHFpN3E3VFpnMmFscE9mQ0doeGN2NTF0d1NQSHJI?=
- =?utf-8?B?eW81b1hVQmJNYW9KSHVCSUpNUWlPdXZVa0lUSlVMS0ordmU5TU1MZEk2T21l?=
- =?utf-8?B?b2UrSjFkSTBRZ0FZM1AwSDZyNFBWY3gxWXRDQVU0ejdGVnFrSlZMMndxVEFs?=
- =?utf-8?B?MXhVOVFqSmxjRmRZekw3K2RuMStLMkk2SGovd093NWppWEVyRS80SklnSWFn?=
- =?utf-8?B?ZWphb0dXc1JRZC9MUGFIYjRPRUFvMnhjdW55RVVsOTJiOEsveXVFb3pDVmw5?=
- =?utf-8?B?SjJVM2JObkpaeDNWeHIzRVloRUJvbFJYR0ZhSFpIWTg2dXRob04rYlY4M1Q1?=
- =?utf-8?B?eitiNFBuaWpKQ285YWpFRUZpUndnSmlCMTgxZ2MyZmdCNTlrT1hIN3N4UjZW?=
- =?utf-8?B?bU8rV2JXa2FMRzRsTDllRDNpM0MvbjFCWUdJVTIxNWlzeE5TSTdic2NnVzhx?=
- =?utf-8?B?QnJDQUxGdTl3c0liY0xZQzMwNlJxMFU2dk5IZGRjWUpsQkpjbVliTnRZZmRJ?=
- =?utf-8?B?V1FxL1BjeTJQTzgxS1JMSGovbjJjVFZxdnJFT0dDK0NsYlA4K3lmSkFUalpE?=
- =?utf-8?B?bWdOdHNOMTI0VGwvaWhDTGpDMlFGaHJuTGE0Z3BTeTlIR1M2SDRvaktJRFV6?=
- =?utf-8?B?MGFDcklyQ1J0UDdVbmVzMnk2MmI5eXZFYjZMOTFmYmY4MnRTWmYvYUl1ZjAr?=
- =?utf-8?B?THhaOTRtaVdDTWt0UEliRmQxazEyek1BbnVqY2JNaWlVK0VKS01RbjdRVWpo?=
- =?utf-8?B?OEtIM25vd3orRGd1TDNGS0paLzlGb0JyT2xEQzg5aEwrVmFrNWFDUlBDNXBN?=
- =?utf-8?B?ZnZVV1V1U0Q1ZERtM0FtVUpBMDM1b1FrT0I4dnVpVDBVM29pcU01eXlSaTkr?=
- =?utf-8?B?Ukttc0ZZMGozdkh0RUZtOHhqNU5MT1p5T2hiNTRHcjJsZ2FaMUI0M3BuNXhp?=
- =?utf-8?B?NGlxOXdOUHVGQ01LRy9PQ2g5SmlpUEhzWU9FaExLVHZ3cThDQUEvYnZVOWY5?=
- =?utf-8?B?K1RNZmgzaHluSzJ0bVROTjA5YVV6TjFSQ2RrR3Y0THpGZGFtM1p0RE5SNUt3?=
- =?utf-8?B?ZFhIdHFObG1aKzBJc0ovVmoxRVlxT0diZmY3NnRKN0V3cUFVcVh0N2I0aDc4?=
- =?utf-8?B?djNXcmpwRUQ0MXJObmZxcVZydHJ0K295dHp2eWI3dEZYOEthSm5MMmtSSWFN?=
- =?utf-8?B?ZUFjRTVQTDlJeHlTTmhxVVZpS0hGblBJRUliUUtWOU1IOWlSRHp5K2xFa2t1?=
- =?utf-8?B?SWNTZ2xpNlpvSG9TVGVGYlFZVEJXM04zYVA5azgzc0NkS1FwbDc2WmJoalh1?=
- =?utf-8?B?RXcvZW5YWjROSXFramdyTkJvQUF3L0gyTldMZjVoZGJXK1hqeFlsd2tkVENq?=
- =?utf-8?B?TVgwTWZUeFZXejlqZEVoWWNFVU9DUDdieUpwTGcxSUo3eVpraUdrTW1HZ1Ju?=
- =?utf-8?B?cjkwY2xMQ3E1UWhmNmpQNnJXWDYvaTlGTlgra2Y1Nkh4cWFoOExISDM5Z3pQ?=
- =?utf-8?B?NGY0cHJTazZzS3VrVkVuZVo3S0o0OWt3RGlkR29UNTlpQUhFakx2SFpyb3Ew?=
- =?utf-8?B?U25YTDZqbm9XYlFTSEZ0S0ZGbDNEekxQQnhOckdtT1hlaEQ2QjNtS3ZsNXk0?=
- =?utf-8?B?TElnWXRhV001MWNFaks4VTFTUmV2RnN3SFpUZXh5Q2dJWDdNSGEvYm5ocUR4?=
- =?utf-8?B?SkV1S2gzSG0yYTA1MUs5ZWxIdnB2ekVNRTRoemRTTDhjR0tmQXBYNldwSXk2?=
- =?utf-8?B?MEU2aG10U2NtNmVUZXBtSzlReEZIdEVMMjFHT0hhN1RzcGg1L1Bsckd0Kzhv?=
- =?utf-8?B?UVpzc1hrYktWS1luZllqbllYUFc4NmRVeWN4ZTNSWXhlcVFhWXFmTDZsc2dD?=
- =?utf-8?B?aTAvL1VwT3V6UnZzS0tETG9XUHBSY1RYZUh5TXNtVyt6WStxRSttUGdaQzB1?=
- =?utf-8?B?THV0M0UvdStTS0UrZnk2OGV5NForcDdQalNWaWJEb0RiVGlpOEQxV0ZiNWhF?=
- =?utf-8?B?VkIraUhBVlpFd1dBMEJqKzZZSFRuTmIva0dldWpwc01sTVV6dGh5c1dyZTZo?=
- =?utf-8?B?TWg1YjE1Q1RBakxnVVF6eGNlYmFOZ0pETkhYNGgwRnNKMUwwTHg4VDVDRkNx?=
- =?utf-8?Q?BhNErla7Wlvf1o+V2CP5tB717?=
-X-OriginatorOrg: wesion.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 209dcff2-5c3e-4c6f-90f2-08dc586ed0c7
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB7001.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 08:26:55.4281
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2dc3bd76-7ac2-4780-a5b7-6c6cc6b5af9b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wcdiWu3UIL9+jzFpAp8bgnRNXmMimvMEEwVM7ATNNCoxN5/9WqEB1E0GIxpSeZwD6+BU78tOUwAPf2vgsOfTOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB6880
+Message-ID: <171265126376.10875.16864387954272613660.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-This add the bindings for the New Khadas TS050 1080x1920 5" LCD DSI panel
-designed to work with the Khadas VIM3 and VIM3L Single Board Computers.
+The following commit has been merged into the x86/cpu branch of tip:
 
-Signed-off-by: Jacobe Zang <jacobe.zang@wesion.com>
+Commit-ID:     7911f145de5fecbee1d67f27f73bec12f0fbc472
+Gitweb:        https://git.kernel.org/tip/7911f145de5fecbee1d67f27f73bec12f0fbc472
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Mon, 08 Apr 2024 11:09:44 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 09 Apr 2024 09:30:36 +02:00
+
+x86/mce: Implement recovery for errors in TDX/SEAM non-root mode
+
+Machine check SMIs (MSMI) signaled during SEAM operation (typically
+inside TDX guests), on a system with Intel eMCA enabled, might eventually
+be reported to the kernel #MC handler with the saved RIP on the stack
+pointing to the instruction in kernel code after the SEAMCALL instruction
+that entered the SEAM operation. Linux currently says that is a fatal
+error and shuts down.
+
+There is a new bit in IA32_MCG_STATUS that, when set to 1, indicates
+that the machine check didn't originally occur at that saved RIP, but
+during SEAM non-root operation.
+
+Add new entries to the severity table to detect this for both data load
+and instruction fetch that set the severity to "AR" (action required).
+
+Increase the width of the mcgmask/mcgres fields in "struct severity"
+from unsigned char to unsigned short since the new bit is in position 12.
+
+Action required for these errors is just mark the page as poisoned and
+return from the machine check handler.
+
+HW ABI notes:
+=============
+
+The SEAM_NR bit in IA32_MCG_STATUS hasn't yet made it into the Intel
+Software Developers' Manual. But it is described in section 16.5.2
+of "Intel(R) Trust Domain Extensions (Intel(R) TDX) Module Base
+Architecture Specification" downloadable from:
+
+  https://cdrdv2.intel.com/v1/dl/getContent/733575
+
+Backport notes:
+===============
+
+Little value in backporting this patch to stable or LTS kernels as
+this is only relevant with support for TDX, which I assume won't be
+backported. But for anyone taking this to v6.1 or older, you also
+need commit:
+
+  a51cbd0d86d3 ("x86/mce: Use severity table to handle uncorrected errors in kernel")
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20240408180944.44638-1-tony.luck@intel.com
 ---
- .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/include/asm/mce.h         |  2 ++
+ arch/x86/kernel/cpu/mce/core.c     | 18 ++++++++++++++++++
+ arch/x86/kernel/cpu/mce/severity.c | 16 ++++++++++++++--
+ 3 files changed, 34 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-index f9160d7bac3ca..e194309f31b72 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-@@ -36,6 +36,8 @@ properties:
-       - jdi,fhd-r63452
-         # Khadas TS050 5" 1080x1920 LCD panel
-       - khadas,ts050
-+        # Khadas NEW TS050 5" 1080x1920 LCD panel
-+      - khadas,newts050
-         # Kingdisplay KD097D04 9.7" 1536x2048 TFT LCD panel
-       - kingdisplay,kd097d04
-         # LG ACX467AKM-7 4.95" 1080×1920 LCD Panel
--- 
-2.34.1
-
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index de31183..dfd2e96 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -13,6 +13,7 @@
+ #define MCG_CTL_P		BIT_ULL(8)   /* MCG_CTL register available */
+ #define MCG_EXT_P		BIT_ULL(9)   /* Extended registers available */
+ #define MCG_CMCI_P		BIT_ULL(10)  /* CMCI supported */
++#define MCG_SEAM_NR		BIT_ULL(12)  /* MCG_STATUS_SEAM_NR supported */
+ #define MCG_EXT_CNT_MASK	0xff0000     /* Number of Extended registers */
+ #define MCG_EXT_CNT_SHIFT	16
+ #define MCG_EXT_CNT(c)		(((c) & MCG_EXT_CNT_MASK) >> MCG_EXT_CNT_SHIFT)
+@@ -25,6 +26,7 @@
+ #define MCG_STATUS_EIPV		BIT_ULL(1)   /* ip points to correct instruction */
+ #define MCG_STATUS_MCIP		BIT_ULL(2)   /* machine check in progress */
+ #define MCG_STATUS_LMCES	BIT_ULL(3)   /* LMCE signaled */
++#define MCG_STATUS_SEAM_NR	BIT_ULL(12)  /* Machine check inside SEAM non-root mode */
+ 
+ /* MCG_EXT_CTL register defines */
+ #define MCG_EXT_CTL_LMCE_EN	BIT_ULL(0) /* Enable LMCE */
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 84d41be..771a9f1 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1593,6 +1593,24 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		else
+ 			queue_task_work(&m, msg, kill_me_maybe);
+ 
++	} else if (m.mcgstatus & MCG_STATUS_SEAM_NR) {
++		/*
++		 * Saved RIP on stack makes it look like the machine check
++		 * was taken in the kernel on the instruction following
++		 * the entry to SEAM mode. But MCG_STATUS_SEAM_NR indicates
++		 * that the machine check was taken inside SEAM non-root
++		 * mode.  CPU core has already marked that guest as dead.
++		 * It is OK for the kernel to resume execution at the
++		 * apparent point of the machine check as the fault did
++		 * not occur there. Mark the page as poisoned so it won't
++		 * be added to free list when the guest is terminated.
++		 */
++		if (mce_usable_address(&m)) {
++			struct page *p = pfn_to_online_page(m.addr >> PAGE_SHIFT);
++
++			if (p)
++				SetPageHWPoison(p);
++		}
+ 	} else {
+ 		/*
+ 		 * Handle an MCE which has happened in kernel space but from
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index c447716..fc8988c 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -39,8 +39,8 @@ static struct severity {
+ 	u64 mask;
+ 	u64 result;
+ 	unsigned char sev;
+-	unsigned char mcgmask;
+-	unsigned char mcgres;
++	unsigned short mcgmask;
++	unsigned short mcgres;
+ 	unsigned char ser;
+ 	unsigned char context;
+ 	unsigned char excp;
+@@ -174,6 +174,18 @@ static struct severity {
+ 		USER
+ 		),
+ 	MCESEV(
++		AR, "Data load error in SEAM non-root mode",
++		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
++		MCGMASK(MCG_STATUS_SEAM_NR, MCG_STATUS_SEAM_NR),
++		KERNEL
++		),
++	MCESEV(
++		AR, "Instruction fetch error in SEAM non-root mode",
++		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_INSTR),
++		MCGMASK(MCG_STATUS_SEAM_NR, MCG_STATUS_SEAM_NR),
++		KERNEL
++		),
++	MCESEV(
+ 		PANIC, "Data load in unrecoverable area of kernel",
+ 		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
+ 		KERNEL
 
