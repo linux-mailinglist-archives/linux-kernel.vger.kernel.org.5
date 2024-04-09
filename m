@@ -1,120 +1,152 @@
-Return-Path: <linux-kernel+bounces-137250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4298589DF7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:42:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524D889DF8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D736E1F2165A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:42:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D02A29484D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFA913B2A4;
-	Tue,  9 Apr 2024 15:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D42313D526;
+	Tue,  9 Apr 2024 15:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="e1IHAFPW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="hGq+3KrY"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A70D13A275;
-	Tue,  9 Apr 2024 15:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14D013667F;
+	Tue,  9 Apr 2024 15:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677310; cv=none; b=fYawH/BdhV9p2olEuLPauxTbU05kiA9mZT6ClFw1oxn2HcDN2aaor/fqFT3DrDTxjNvE2L13peZqtAz6R4DIDF+z/iNjRPPSoMoNLm29UG4gMHpT7DW7Z1f1OhZP0XUhFkMuLKlwr9dAUAM1ru/qL+xtIsEdPHKxUWOl3CnGz8M=
+	t=1712677587; cv=none; b=EPMaKpP0lav7qrXiT7GiVkO3Q6/1OVzUMmQGPfmUlKnqDgZOoBWJt9r9GJk0b4QXxHZsOMDlKsPQQ8yDLRYpXChaHDMYXzawB8irG+6nEs75kL4QlyacAIi+E6ROGSOdNYWSAtRSejRzzRUPogdCYTjria3Br5ER184NBNimR90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677310; c=relaxed/simple;
-	bh=hU8CbjeCVQ/KTmATBPDlklumAOoUvo7TYj2qC4NSoP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YgGc1XM5jqIzcOJ/4LQjNPwa/UjS+0jQLalNFCSLR0SGKKPeeZTaaNgR2tXqG24V86zKXH6wpEtnpyIYc0RP5e6Eel3C8Fe6kpGqVvfhLEwEjMN6lA4z7si7EEJ/Qqq6FdR0/rcYSNkE3a6UV7/H5+PaRQJ38boPVHgRcUJtkFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=e1IHAFPW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712677306;
-	bh=hU8CbjeCVQ/KTmATBPDlklumAOoUvo7TYj2qC4NSoP0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=e1IHAFPWRx25op5CE12Fp8/khLbdxEH5ppYWqP835pkW9TApEU6PaZcAT+8ph7Q3Y
-	 6GZKGEexwxC+9uhcIEVi6y0rjoadJ0l9I55YWlQJ2E5EW+u6LHeqqANcbk9NzGBST+
-	 uYsZjOx7nnCwRrtugObo0LxNuLYm76E4GypNsseL2Abimxf85gEY7LdzWU1oLEEWJE
-	 lH8ZnMKT5SqWQ4sQuSLmZFhDYl/qaeijQrXFSnmRJ2VNTo/1/s60q93IzgoWlFkzRp
-	 Lizj5nEys1ZJWgLbjoXX+bkonwn/rQ+uzMbPeZuDbGObjbHVK9kn7obaNzcUyuOY+H
-	 b+HobMB7rhARQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 97B2637813CA;
-	Tue,  9 Apr 2024 15:41:44 +0000 (UTC)
-Message-ID: <8600acf8-7b51-456b-8a81-4233cfd6f121@collabora.com>
-Date: Tue, 9 Apr 2024 17:41:43 +0200
+	s=arc-20240116; t=1712677587; c=relaxed/simple;
+	bh=xlXn1+20uTqx+W8MEQ4BJ+F8xH03zz0Ii3xHN9DpT3g=;
+	h=From:To:Cc:Date:Message-Id:MIME-Version:Subject; b=eGmbu0wlsU+qYaC9Mk9/8pwQ0G2MwpXG87QTUyUCKkVm8AblDkjy7Iwu4pgNGOqNVgb3zP28WFRzpGTqz5XH+JGGOkrrnNIctXj1/CtSI63Np58Ww0r0nQfOE7Z8I4z+6QKoQ8CW5Wi830UIfIEjmSEDUPBL1o+bM1ajpV+9yOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=hGq+3KrY; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+	:From:subject:date:message-id:reply-to;
+	bh=I6gHj5ulVRplYdlxefeoXkzfjNeS/XzmKLr+AYiBZGc=; b=hGq+3KrYgOoqjpbO9/HK9WEvuY
+	IJy5438s1SjyptudLQooRozl/aTnkR0MtnhnEscVjxP6hl/PCAx/sWy4iDZi1s/0L2rzowVdiAV6v
+	RtX1Qu942UAbzKkXM6u/L/XNDUuSjjXTN9SJM58GqPQj3FwE2TrJ0HUemmtMlfdt/4Sk=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:44750 helo=pettiford.lan)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1ruDfp-0002NM-14; Tue, 09 Apr 2024 11:46:13 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	peterz@infradead.org,
+	mingo@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	hugo@hugovil.com,
+	andy.shevchenko@gmail.com,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date: Tue,  9 Apr 2024 11:42:48 -0400
+Message-Id: <20240409154253.3043822-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: mediatek: Add OF graph
- support for board path
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: chunkuang.hu@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- matthias.bgg@gmail.com, shawn.sung@mediatek.com, yu-chang.lee@mediatek.com,
- ck.hu@mediatek.com, jitao.shi@mediatek.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- wenst@chromium.org, kernel@collabora.com
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <20240409120211.321153-2-angelogioacchino.delregno@collabora.com>
- <oe75tx35rd27r2a24ofdxfaqwr53tylfp5fwz3nrwc2uz6nmrs@vwc2krbpy3fh>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <oe75tx35rd27r2a24ofdxfaqwr53tylfp5fwz3nrwc2uz6nmrs@vwc2krbpy3fh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+Subject: [PATCH v4 0/5] serial: sc16is7xx: split into core and I2C/SPI parts
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-Il 09/04/24 17:20, Dmitry Baryshkov ha scritto:
-> On Tue, Apr 09, 2024 at 02:02:09PM +0200, AngeloGioacchino Del Regno wrote:
->> The display IPs in MediaTek SoCs support being interconnected with
->> different instances of DDP IPs (for example, merge0 or merge1) and/or
->> with different DDP IPs (for example, rdma can be connected with either
->> color, dpi, dsi, merge, etc), forming a full Display Data Path that
->> ends with an actual display.
->>
->> The final display pipeline is effectively board specific, as it does
->> depend on the display that is attached to it, and eventually on the
->> sensors supported by the board (for example, Adaptive Ambient Light
->> would need an Ambient Light Sensor, otherwise it's pointless!), other
->> than the output type.
-> 
-> With the color and gamma being in play, should the configuration be
-> board-driver or rather use-case driven with the driver being able to
-> reroute some of the blocks at runtime?
-> 
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-The driver can already set some blocks to "BYPASS MODE" at runtime, meaning
-that those will work as simple pass-through, performing *no* processing at
-all, so that's addressed from the very beginning.
+Hello,
+this patch series splits the SPI/I2C parts for the sc16is7xx driver into
+separate source files (and separate I2C/SPI drivers).
 
-This doesn't mean that a specific pipeline must always support the "DISP_GAMMA"
-or the "DISP_CCOLOR" block(s) alone, or together, or in combination with another
-specific block.
+These changes are based on suggestions made by Andy Shevchenko
+following this discussion:
 
-For any other question, clarification, etc, I'm here :-)
+Link: https://lore.kernel.org/all/CAHp75VebCZckUrNraYQj9k=Mrn2kbYs1Lx26f5-8rKJ3RXeh-w@mail.gmail.com/
 
-Cheers!
+The changes are split into multiple patches to facilitate the review process.
+In the end, some of them could be merged into a single patch.
 
->>
->> Add support for OF graphs to most of the MediaTek DDP (display) bindings
->> to add flexibility to build custom hardware paths, hence enabling board
->> specific configuration of the display pipeline and allowing to finally
->> migrate away from using hardcoded paths.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> 
+I have tested the changes on a custom board with two SC16IS752 DUART over
+a SPI interface using a Variscite IMX8MN NANO SOM. The four UARTs are
+configured in RS-485 mode.
+
+I did not test the changes on a real SC16is7xx using the I2C interface. But
+I slightly modified the driver to be able to simulate an I2C device using
+i2c-stub. I was then able to instantiate a virtual I2C device without
+disturbing existing connection/communication between real SPI devices on
+/dev/ttySC0 and /dev/ttySC2 (using a loopback cable).
+
+Thank you.
+
+Link: [v1] https://lore.kernel.org/lkml/20240206214208.2141067-1-hugo@hugovil.com
+      [v2] https://lore.kernel.org/lkml/20240307161828.118495-1-hugo@hugovil.com
+      [v3] https://lore.kernel.org/lkml/20240402174353.256627-1-hugo@hugovil.com
+
+Changes for V2:
+- Move port_registered[] init before the for loop to prevent bug if
+  aborting probe when i = 0
+- Since patch f7b487648986 ("lib/find: add atomic find_bit() primitives") has
+  been dropped from linux-next/master, rework patch 2 (sc16is7xx_lines)
+  without find_and_set_bit.
+
+Changes for V3:
+- Simplify sc16is7xx_lines allocation by using the IDA framework
+
+Changes for V4:
+Changes after Andy S. review comments:
+- Fix commit description
+- Fix includes for IWYU
+- Add Reviewed-by tag (Andy) for patches 1 and 5
+- Add exported symbols to SERIAL_NXP_SC16IS7XX namespace
+- Fix Kconfig deps
+- Keep Kconfig SERIAL_SC16IS7XX_CORE
+- Convert to a single Kconfig entry and automatically selects
+  I2C and SPI interfaces if available.
+- Merge patches 2 and 3
+- Add NXP and UART keywords to Kconfig description
+- Remove __maybe_unused from of_device_id
+- Simplify I2C init/exit with module_i2c_driver()
+- Simplify SPI init/exit with module_spi_driver()
+
+Hugo Villeneuve (5):
+  serial: sc16is7xx: add proper sched.h include for sched_set_fifo()
+  serial: sc16is7xx: unconditionally clear line bit in
+    sc16is7xx_remove()
+  serial: sc16is7xx: split into core and I2C/SPI parts (core)
+  serial: sc16is7xx: split into core and I2C/SPI parts (sc16is7xx_lines)
+  serial: sc16is7xx: split into core and I2C/SPI parts
+    (sc16is7xx_regcfg)
+
+ drivers/tty/serial/Kconfig         |  47 ++----
+ drivers/tty/serial/Makefile        |   2 +
+ drivers/tty/serial/sc16is7xx.c     | 261 +++++++----------------------
+ drivers/tty/serial/sc16is7xx.h     |  41 +++++
+ drivers/tty/serial/sc16is7xx_i2c.c |  67 ++++++++
+ drivers/tty/serial/sc16is7xx_spi.c |  90 ++++++++++
+ 6 files changed, 277 insertions(+), 231 deletions(-)
+ create mode 100644 drivers/tty/serial/sc16is7xx.h
+ create mode 100644 drivers/tty/serial/sc16is7xx_i2c.c
+ create mode 100644 drivers/tty/serial/sc16is7xx_spi.c
+
+
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+-- 
+2.39.2
 
 
