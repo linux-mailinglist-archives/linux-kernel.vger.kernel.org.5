@@ -1,163 +1,125 @@
-Return-Path: <linux-kernel+bounces-137673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2FD89E5B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:42:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C5A789E5B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4527B22056
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:42:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6333B214FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263C433A6;
-	Tue,  9 Apr 2024 22:42:27 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2074E158A3D;
+	Tue,  9 Apr 2024 22:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="bCSsPGAj"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509C97C6C8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82237C6C8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712702547; cv=none; b=r3febr2/IaeLsL8g02V8nGUjBTaWpJ7W/Elyt0XQTTTIuGb8LKCBrXdW3oo+C/Xfz4aFSIMe3YbggeDBB/Z87LG+er/fF4uo6gZcTjinul6MkkyuTOzD3o1jdexKl0rz23gMT7Z15QHBRSQYDssT8+zd72owopVo6UkS7u0fZXo=
+	t=1712702582; cv=none; b=b8Wgi4zCPrRiAEGZ9Se68tL1qTSgtY+cvsuIoyZVwP1IbYmXpShDkew8OKOKA7b3WzJpD1QspDrZrvaF/GvF5Y++pcrhwUboSDccGlbjyywgikl5Y4gfmFvI0y49EIjCNnNiKiiLUk7Y2Jk0cphn3ZegB9bIE6ZL/d3XQDMOVHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712702547; c=relaxed/simple;
-	bh=8E5bmm5Ldq3U91oDOHc/udctTNJo36vV/qKNkwvUzZ4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QarmDky+SqoY4rZ/d27skIGbjHFYhM4RfyRJKaabAe7coTpb0AdY96gmh7W2WDw18Ru6I4kp2EYoz/4SC7UWV11cJ/LGWjd6l4MnhKU64FozQsA4a5nnjfKv7X5wCbEAq6GITZ3yKgGGJeFljqIUjwnmQr9UpRkCJm5OZBiQYOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc74ea9c20so742632339f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:42:25 -0700 (PDT)
+	s=arc-20240116; t=1712702582; c=relaxed/simple;
+	bh=EOPsmlwJFzGM2UI4dOfw8LD2YE7U8XKi3h9Rz8SnOGo=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=UlrhLgXQxiCo6sk/2xlhKLvM8lCsHPkcn1VLN4BLLhEVdGjtpleiM7fJlXNWoACrSo4UyiDI9QWwutqNtmqTYZOKh651ZEhsOIzZXKoFc0+i5cn0OmS/TVeUbZBE8YT1cl3A+iMwLwP83ws82MFWNjNrDLtefgGeKXf+iUd3O+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bCSsPGAj; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6167463c60cso70244617b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712702580; x=1713307380; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nvOU5J+d22A5HC2jQZ6Bg8Tqj0DfjFxuF6JsjQ8c2sA=;
+        b=bCSsPGAj2sH3nm8iuc9uHWwxbeMLxKveiK608uUbrm/qgZRujlPVFzgM4hgJuVGy2o
+         GWmWW4LMn/JLrJCBLaeYqmEuJ0Z2QXHLGnjGIUwMuGirgJ/j+N3kcVKBD324GELrDYvD
+         rlpgmoXaCpqvFAodqxCgmVle1qwse+OXbHrCurV8QTnuSZekY+Pw8T9YX9RDry9DmE/m
+         k81lJX2LI+PMjvYkegbybF5tav0mA3Mdui9yQC8JH6gbIxBOTltyggqJ3GY2FRuvWjGW
+         1+cFWKkSldUox9uVW0/d7mul/6X10Vus7ISsbefgbxzAAekBm40QByEOeocGSuZwt9CZ
+         JwFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712702544; x=1713307344;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tbR/ywQXcXQ0J/6NWBwaaa7Su1KBjSGiK0MxQ+x6Vww=;
-        b=qRFNRdXPo3g0l0wmiFOYAIp+Wk9R1+LO+9gEKphUdquMeVyxXWeZRDcAzJok1L56UF
-         k9c9R314VZDYJwy0I9vzQ51v5UQn+uNSExz9UFJiQeBnWoAm9WBjAN1oxBGu4yWt+8Uq
-         hR3GWhU//5ASXS4sb4oA3UcIy4IEkK0Xdmx6o+w+JnsSFVbjsLsJpmu3a3gaTrnpWriM
-         yDneLw7Gqud2ee87sWWpIXFyNPEB1jI71+49eo8ofZbfHY/4ntZJFL3G+EQy6gycnkgc
-         NXrdeD1E1sBL+3UanycoAyBNLi5D13xZRvJSMUZ+7mG4RguemWvahAr1v1c2gp2+5sTt
-         +psQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUntBaFTDZadmXSpyZSxBT0kXBPqVctHAdmFam+bFVjU2sFTNVUjkNHWKQzkyvWOmokEehb7UqxAuxuSUhQtp3egGecxwqQBj5tiREX
-X-Gm-Message-State: AOJu0YyuASuJDskMirJhXhr3pSopigH65JVoUeCOf/pLQvZu7j7pWLpo
-	bMVY+4I7a6v8exSv8sCvxGe4iHCRZYiD3QTBDoa81rndFQJE5GoowZN3yy7NV2TWoYiVOo7HJ5k
-	H53YFot1ibBoTrXBubHi993s7vxGswBcvMaLVSXguHhjPWSeJijoHHq4=
-X-Google-Smtp-Source: AGHT+IGpu2AtcRiOJn/rn9Yfk8HvsmyICSMz3tDbQhnHy36ixmFFckR1nl/fH9vUh6Veu1i4aDo7qWwiiTftRZ+2tLf+2ZotLjsj
+        d=1e100.net; s=20230601; t=1712702580; x=1713307380;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nvOU5J+d22A5HC2jQZ6Bg8Tqj0DfjFxuF6JsjQ8c2sA=;
+        b=q/Z2X1vMhxCvNrWWYmqaHYqL4iyCbueEW/RveSTNLA1oKSHxDBExQejrQpFqYOMHDq
+         Vd4wUlhBHNPI69iX/+84QVbZ1cRymVSr0bCTy27iEbXPODClM94OnEJsPBMRyrRSKLWB
+         8cljUCx2EQAVJ6WHueRi4NvapoOsBySNCicAfcOOX4XT97+On/abe4de7LRLy26LxPzh
+         HdPELaUauV2gIMeDWwEz3EH+Xkbx3YAQSf+BiQrvtHh+6z0AcHtCZnMnI2baEchbMxHf
+         WfctDL1vf/GAKPhBcdzKbDlrcMx7dZTpD3XWFRfqlCi91OxebzfVts0AdC6m735Dcf0P
+         315A==
+X-Forwarded-Encrypted: i=1; AJvYcCWk3BKHDa4pygaxSv9YilbjsV6Gzzm3jKFl8z6hcxe8RSILvTN3RZ51RfHn5T3Wtcay/Gwh3gSDkOOBh8gReKtxd2XWl1vSnvPIeTZD
+X-Gm-Message-State: AOJu0YzJsfFfkqByxPlkKlJiLeQLxcPncMSdlF2dBvShCYzes4CSfiOD
+	8hHPWlZB1865ZWIZp3+gjqH63UcI/112i0/Lm49TgyMPp+d1O3OTqAE54Z+bpdG/MYaexhA1KFq
+	YBw==
+X-Google-Smtp-Source: AGHT+IEG/dXsyx++mqFslFlSc76Kv14rRGbklYITWYGwB/A65qSHXmzSLYmI3ivC7yI9+fzybcMRqsjyIHQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:a002:0:b0:614:2a7d:5ad3 with SMTP id
+ x2-20020a81a002000000b006142a7d5ad3mr980648ywg.0.1712702579990; Tue, 09 Apr
+ 2024 15:42:59 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Tue,  9 Apr 2024 15:42:56 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4104:b0:482:b15b:df59 with SMTP id
- ay4-20020a056638410400b00482b15bdf59mr24897jab.2.1712702544521; Tue, 09 Apr
- 2024 15:42:24 -0700 (PDT)
-Date: Tue, 09 Apr 2024 15:42:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c5bc980615b1a25c@google.com>
-Subject: [syzbot] [ntfs3?] WARNING in do_open_execat (2)
-From: syzbot <syzbot+fe18c63ce101f2b358bb@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, brauner@kernel.org, 
-	ebiederm@xmission.com, jack@suse.cz, keescook@chromium.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240409224256.1581292-1-seanjc@google.com>
+Subject: [PATCH] selftests: kselftest_harness: Print empty string, not empty
+ fmt on PASS/FAIL
+From: Sean Christopherson <seanjc@google.com>
+To: Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, llvm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, 
+	Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+When printing nothing for the diagnostic on PASS/FAIL, use a string format
+with an empty string, not an empty format with a NULL parameter.  Clang
+complains about the empty format string, which in turn breaks building
+with -Werror.
 
-syzbot found the following issue on:
-
-HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=106d6d15180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
-dashboard link: https://syzkaller.appspot.com/bug?extid=fe18c63ce101f2b358bb
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156040bd180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149d2ead180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e198b7a8a7f2/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fe18c63ce101f2b358bb@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 4096
-ntfs: volume version 3.1.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6164 at fs/exec.c:940 do_open_execat+0x2bc/0x3bc
-Modules linked in:
-CPU: 0 PID: 6164 Comm: syz-executor379 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : do_open_execat+0x2bc/0x3bc
-lr : do_open_execat+0x2b8/0x3bc fs/exec.c:939
-sp : ffff8000977a7b60
-x29: ffff8000977a7bd0 x28: 0000000000000000 x27: ffff0000d609da2c
-x26: 00000000ffffff9c x25: dfff800000000000 x24: ffff700012ef4f6c
-x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000000
-x20: fffffffffffffff3 x19: ffff0000d5ba0000 x18: ffff8000977a7100
-x17: 000000000000c791 x16: ffff80008aca6dc0 x15: 0000000000000002
-x14: 1ffff00012ef4f34 x13: 0000000000000000 x12: 0000000000000000
-x11: ffff700012ef4f36 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000d609da00 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000010
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000008000
-Call trace:
- do_open_execat+0x2bc/0x3bc
- alloc_bprm+0x44/0x934 fs/exec.c:1541
- do_execveat_common+0x158/0x814 fs/exec.c:1935
- do_execveat fs/exec.c:2069 [inline]
- __do_sys_execveat fs/exec.c:2143 [inline]
- __se_sys_execveat fs/exec.c:2137 [inline]
- __arm64_sys_execveat+0xd0/0xec fs/exec.c:2137
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 24796
-hardirqs last  enabled at (24795): [<ffff80008ae5ce28>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-hardirqs last  enabled at (24795): [<ffff80008ae5ce28>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
-hardirqs last disabled at (24796): [<ffff80008ad66988>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (24766): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (24766): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
-softirqs last disabled at (24737): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
----[ end trace 0000000000000000 ]---
-
-
+./kselftest_harness.h:1205:30: error: format string is empty [-Werror,-Wformat-zero-length]
+                              diagnostic ? "%s" : "", diagnostic);
+                                                  ^~
+Fixes: 378193eff339 ("selftests: kselftest_harness: let PASS / FAIL provide diagnostic")
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/testing/selftests/kselftest_harness.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+index 4fd735e48ee7..79ac9e9ada33 100644
+--- a/tools/testing/selftests/kselftest_harness.h
++++ b/tools/testing/selftests/kselftest_harness.h
+@@ -1197,12 +1197,11 @@ void __run_test(struct __fixture_metadata *f,
+ 	if (t->results->reason[0])
+ 		diagnostic = t->results->reason;
+ 	else if (t->exit_code == KSFT_PASS || t->exit_code == KSFT_FAIL)
+-		diagnostic = NULL;
++		diagnostic = "";
+ 	else
+ 		diagnostic = "unknown";
+ 
+-	ksft_test_result_code(t->exit_code, test_name,
+-			      diagnostic ? "%s" : "", diagnostic);
++	ksft_test_result_code(t->exit_code, test_name, "%s", diagnostic);
+ }
+ 
+ static int test_harness_run(int argc, char **argv)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+-- 
+2.44.0.478.gd926399ef9-goog
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
