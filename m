@@ -1,139 +1,303 @@
-Return-Path: <linux-kernel+bounces-136412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A4D589D3C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D83CD89D3C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:08:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9F71C224B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:06:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 511101F22545
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B9B7E59A;
-	Tue,  9 Apr 2024 08:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5387E115;
+	Tue,  9 Apr 2024 08:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2fkzI7y"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPeOO70a"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF857E112
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A697E0E8;
+	Tue,  9 Apr 2024 08:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712649952; cv=none; b=a8EpOgHTzTBlk+tyJ8xyXR8tDisdo1OOTy0DNcbL4Mrxt9ufRRDU8VT/vDw7a7qTuK1MUCZR7f8E78dKpcDOnnC5+eVA6ZjPEUtUOjnVqafsA8UDFzFh6VjHzZHhFpa+zILjM2HB3ppG5XtzwZ/2YmrGAqnb96Vj+tQwEL7s9OU=
+	t=1712650125; cv=none; b=mozWTxDXiQdI4uldIjfGoKcvoHhYY6GjcOZ+JcXoVQFxRGGnFid+mAXhQolLAYFJpWqEUUHJibsw68oUyR9eRZ7+o5IQ6cY95DEFZpY54kXsBiMPSaDtKgkNn95UeGd0A1A3NN7c8EtJuEVv5jMvFo4JE8K3ZxRCNyXHhp9AUms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712649952; c=relaxed/simple;
-	bh=kO1tNZxP0wkRZvHmrwV5luGXqWpuyvapnuwxjqt7xgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aVk7lkjQC9KcS/HZzoUd+AVodevR6Ldo5VtnA+VasqNTd/rAm2vpJStwgEnEvmywGqmGEfkkR5+zoxh0ZUP9cLDAwYnWNxnGQiiWLZBS55FB1qAgZS+gDTXzfTIVpfbd8DRF6gK7P24PsjYeUnSZLxLwdFhbE8Bel78hEqP7bDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2fkzI7y; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1712650125; c=relaxed/simple;
+	bh=5tZM0WszBwnTdBFSaSlC2zyGteF9bXHX900iR0xjfyE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u9OpxCYAm87wMtBgQET924ePKvrx2lE0X5Zvh/6GOhafX6sHISIAhJs88xZ9H8QLjSPoo5sgM4usQ4JjfvoV2JxyXDIh/uB6uiHXB/xZ0bwci0FVG1ar7SjaEP9y1LBgl1c9MqVshXGrrcQvsd9mSQeo3jGTJRhyclcQ3j5QniI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPeOO70a; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so2070317a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:05:50 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51ddc783e3so208316466b.0;
+        Tue, 09 Apr 2024 01:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712649949; x=1713254749; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=53D6mYwekcZo+rbQ++8tdmxbDB0J/LHg13ve9dwFXD8=;
-        b=H2fkzI7yaY3WlRrY9vNqrfW+NKjugbFDXUN+gmF9oR44pnBlvKYuOQ5H7BWgV2b4vD
-         4cYuIP6jdyf+iwETNEw+YBe7IGMad+3EyNFsovk70/tPK16m9f4xeu7P52idM21IgHSO
-         IZrIrydHS1rRrMPWjiNkXNx5CmSTOW5cQXYXLQRPkncb8rtJomDrne1MjSlX3Bu3xiH4
-         9FSV1QA99Z6CWbLO3SbOCc76VaP22TBgycF5nKbJivc6XloTVZmiEE+r4Q+1vIAlylaZ
-         aCSxN29XOmGjqih5Zdgf3eMLBkMugrxLjyMIOWFin4SIM/ydsX2NRWg+rQIAWfi2slep
-         rZfQ==
+        d=gmail.com; s=20230601; t=1712650121; x=1713254921; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zRVriRNVnSGwNMVRc04UUhD3izNHgR8wyJ94dp6Ab9g=;
+        b=EPeOO70aJaacDFpCdYtAiuneKWODPL35nlQ7tj6I/q5e99VXsUEz+/EyuopuGfYNlE
+         sV0VkE+7JPTelf3e3cKIwfOaJn25ZXSteNvdx+iuBFsvDrI/lwt2ezOvMc08yMtDxilr
+         2Yi+md26baiVysgcm1pPSPGfFi3y7styhWvLVP6ZiNDuwolWdhBGwlid2uMwXY8mn65o
+         vrN9zW2dYNXJlh5iZcqmNQL4NkRZoD+kjWVPg6Vxx4lrJX2Ez2GPF8FPgGbYlZ7ERN/W
+         QwqUcln9d8WdGBfNYfDjMLP+j6WF64TcFiriVEZxLChdt0KIILFxTGqqQZCMBrkU+xKN
+         lvuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712649949; x=1713254749;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=53D6mYwekcZo+rbQ++8tdmxbDB0J/LHg13ve9dwFXD8=;
-        b=VPp+GCtzgEX027wZlsZCYYZ9E3YLya+4bkZ0JDV0BGV69SYPxhn187jflnswarWnAT
-         CALfWRvh9SVnhW52Komfya3PxRI0drRuOTZ88E6jTZWq/JNekaAgUdg9fM78OSu2YikI
-         i1sTpOnYCMHlAZkjWHzSzhMF1wOrbXUrgNq64xpmOnnDGyrg0zDRAcgxT+/0dYrUEQu2
-         6aL0QDulPraWrWMba5yFdYCHtL+dUJQaJac9NXC9LzjuXN9MxLVx5tMNBTuTkPHHNhdj
-         LCG5Uc/8dyHLN4maWUZDmzY3b3GFCqsTwBCC0fDeYA3l4fyvzG3FjqcEMaLwVXXJYSHB
-         RKPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTIb8VdbejzLIRY844sFHEwMU8hVxV8USMeMn7fgExFzRCJ0hXcMe1VD7u+zDIc3ek7tAn/sAmXMAsSsuuJS+59WTofRGNH+8p9aKs
-X-Gm-Message-State: AOJu0YwS6D0MlqgryVBtCWH1YYQDsdbkFi6TL/Q9FZ3xhqSrzxWe8IlK
-	6afYbyaRJLEo/Dh15Pqaim43KlB+UbNOAfTNjXJF/dAeiWarSif7
-X-Google-Smtp-Source: AGHT+IESh4hc+E/nydRuDLNH7lDRaToGZpJKCxrfUmU90dnoQWKx7L0rZDDtcs7NFk1TQoNCjifmnQ==
-X-Received: by 2002:a17:906:f58d:b0:a51:9f5b:b659 with SMTP id cm13-20020a170906f58d00b00a519f5bb659mr8794849ejd.34.1712649948802;
-        Tue, 09 Apr 2024 01:05:48 -0700 (PDT)
-Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
-        by smtp.gmail.com with ESMTPSA id jl26-20020a17090775da00b00a51a93e909esm5073629ejc.135.2024.04.09.01.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 01:05:48 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 9 Apr 2024 10:05:46 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Lei Chen <lei.chen@smartx.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] x86/tsc: print some log if calibrated tsc freq
- deviates from original too much
-Message-ID: <ZhT22tl/Iho5M+1x@gmail.com>
-References: <20240408100607.1732600-1-lei.chen@smartx.com>
+        d=1e100.net; s=20230601; t=1712650121; x=1713254921;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zRVriRNVnSGwNMVRc04UUhD3izNHgR8wyJ94dp6Ab9g=;
+        b=N5p/wKUU5soYBz+gjHJ7kqcm0FEY4fbuRSceBAyfSiqyX7WGsQpEOuqGfANuKjSHGs
+         iRXkavRI6zEzxifFcGPqfoVy7DMLDSVCT9k2kSo4Y28kvwi8rDihOmbYewAm98YkLNoF
+         r4YTWzwcyL34DxCLnUi3alH/77yD4yqwzj+fCcnSYXowq2qfHZMTaMT/MGbff3lOi7o0
+         5OWjsDSvjT4cVy0tgF3yTHFmAdy86DH09EfC2cI71FuDJYIOJ0t02wmdsK181tnbF+U9
+         +oKvgooCxS9raGXedYgCGO7EnyhYo2PeCZwW2ms9WWaxqIN93L5zjnnuPBkc4B+US1Mw
+         Nbqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXiSBlIqEQz7U2bnYYzb21zI/5Cy8Z3MG98pgfhM2LDlSELJM2hNSYHrAst8KgD5mLequWUy4RQJDFoxvQHsKqUhnIkk9K/YBOljnGQsgsLbEgjoXEtusZ8R/V95L723FVPjbEdpNaSb/Qo1A33ADJ/x8TShLkSJcchkuwPMpUhHVOHXA==
+X-Gm-Message-State: AOJu0YwUfIGm19xtE4yekFaPEwZm+ZCLE6jI7Jif6pbyueIadxVw8E6w
+	8lDe6Bb34f5geyExLJZPMeUq6a/MmRJpCCi5vC/rhdCJ2FwXUOWN
+X-Google-Smtp-Source: AGHT+IHg/Qr8XIpQ+PqdSSvROL0KSEIAhr4x80iLG7ua7op8Ytac3PKsVfLddq7kFHvmvJe6vZmj3w==
+X-Received: by 2002:a17:906:f0d6:b0:a4e:23b4:763a with SMTP id dk22-20020a170906f0d600b00a4e23b4763amr5909597ejb.58.1712650120997;
+        Tue, 09 Apr 2024 01:08:40 -0700 (PDT)
+Received: from [10.76.84.174] ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id h5-20020a1709060f4500b00a473774b027sm5335749ejj.207.2024.04.09.01.08.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 01:08:40 -0700 (PDT)
+Message-ID: <64b7fd83-f226-4b1f-a801-0fe1cf20f842@gmail.com>
+Date: Tue, 9 Apr 2024 11:08:28 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408100607.1732600-1-lei.chen@smartx.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
+To: Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>
+Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+ <20240401-ad4111-v1-1-34618a9cc502@analog.com>
+ <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
+ <25cb3514-1281-49a8-9e9b-40ead9b050dc@gmail.com>
+ <CAMknhBHu8DveBgV3cor8RP2Up4Zs-+QRx7S2aoHZ_3iKiErVjg@mail.gmail.com>
+ <20240406155328.447b594f@jic23-huawei>
+Content-Language: en-US
+From: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
+In-Reply-To: <20240406155328.447b594f@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-* Lei Chen <lei.chen@smartx.com> wrote:
-
-> In most cases, tsc_khz is refined by hpet on boot. But in a few
-> production-level nodes, the refinement fails because calibrated
-> freq diviates from origin tsc freq more than 1%. Printing some
-> logs will help get this info.
+On 06/04/2024 17:53, Jonathan Cameron wrote:
+> On Wed, 3 Apr 2024 10:40:39 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
 > 
-> Signed-off-by: Lei Chen <lei.chen@smartx.com>
-> ---
->  arch/x86/kernel/tsc.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>> On Wed, Apr 3, 2024 at 2:43 AM Ceclan, Dumitru <mitrutzceclan@gmail.com> wrote:
+>>>
+>>> On 01/04/2024 22:37, David Lechner wrote:  
+>>>> On Mon, Apr 1, 2024 at 10:10 AM Dumitru Ceclan via B4 Relay
+>>>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:  
+>>>>>
+>>>>> From: Dumitru Ceclan <dumitru.ceclan@analog.com>  
+>>>
+>>> ...
+>>>  
+>>>>>      properties:
+>>>>>        reg:
+>>>>> +        description:
+>>>>> +          Reg values 16-19 are only permitted for ad4111/ad4112 current channels.
+>>>>>          minimum: 0
+>>>>> -        maximum: 15
+>>>>> +        maximum: 19  
+>>>>
+>>>> This looks wrong. Isn't reg describing the number of logical channels
+>>>> (# of channel config registers)?
+>>>>
+>>>> After reviewing the driver, I see that > 16 is used as a way of
+>>>> flagging current inputs, but still seems like the wrong way to do it.
+>>>> See suggestion below.
+>>>>  
+>>>
+>>> This was a suggestion from Jonathan, maybe I implemented it wrong.
 > 
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index 15f97c0abc9d..a68b16e72df1 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1435,8 +1435,15 @@ static void tsc_refine_calibration_work(struct work_struct *work)
->  	}
->  
->  	/* Make sure we're within 1% */
-> -	if (abs(tsc_khz - freq) > tsc_khz/100)
-> +	if (abs(tsc_khz - freq) > tsc_khz/100) {
-> +		pr_warn("Warning: TSC freq calibrated by [%s]: %lu.%03lu MHz deviates too much from original freq: %lu.%03lu MHz\n",
+> Maybe Jonathan was wrong!  I was younger then than now :)
+> 
+> However, reg values for child nodes are unique so can't just use a flag these
+> need to be different values.
+> 
 
-Yeah, so it wouldn't cost us anything to more precisely define 'too much':
+I do not see where the restriction appears when using just the flag, when defining
+the channels you would still define unique reg values.
 
- s/deviates too much from
-  /deviates by more than 1% from
+>>> Other alternative that came to my mind: attribute "adi,current-channel".  
+>>
+>> Having a boolean flag like this would make more sense to me if we
+>> don't agree that the suggestion below is simpler.
+>>
+>>>>>
+>>>>>        diff-channels:
+>>>>> +        description:
+>>>>> +          For using current channels specify only the positive channel.
+>>>>> +            (IIN2+, IIN2−) -> diff-channels = <2 0>  
+>>>>
+>>>> I find this a bit confusing since 2 is already VIN2 and 0 is already
+>>>> VIN0. I think it would make more sense to assign unique channel
+>>>> numbers individually to the negative and positive current inputs.
+>>>> Also, I think it makes sense to use the same numbers that the
+>>>> registers in the datasheet use (8 - 11 for negative and 12 to 15 for
+>>>> positive).
+>>>>
+>>>> So: (IIN2+, IIN2−) -> diff-channels = <13 10>
+>>>>
+>>>>  
+>>> It would mean for the user to look in the datasheet at the possible
+>>> channel INPUT configurations values, decode the bit field into two
+>>> integer values and place it here (0110101010) -> 13 10. This is
+>>> cumbersome for just choosing current input 2.  
+>>
+>> It could be documented in the devicetree bindings, just as it is done
+>> in adi,ad4130.yaml so that users of the bindings don't have to
+>> decipher the datasheet.
+> 
+> The <13 10> option makes sense to me and avoids suggesting a common negative
+> input.
+> 
+> The 'fun' bit here is that diff-channels doesn't actually tell us anything.
+> So we could just not provide it and rely on documentation of reg = 16-19 meaning
+> the current channels?
+> 
 
-Right?
+So a channel without diff-channels defined and reg=16 means IN0+ IN0-?
 
-> +			hpet ? "HPET" : "PM_TIMER",
-> +			(unsigned long)freq / 1000,
-> +			(unsigned long)freq % 1000,
-> +			(unsigned long)tsc_khz / 1000,
-> +			(unsigned long)tsc_khz % 1000);
->  		goto out;
-> +	}
+>>
+>>>  
+>>>>> +
+>>>>> +          Family AD411x supports a dedicated VCOM voltage input.
+>>>>> +          To select it set the second channel to 16.
+>>>>> +            (VIN2, VCOM) -> diff-channels = <2 16>  
+>>>>
+>>>> The 411x datasheets call this pin VINCOM so calling it VCOM here is a
+>>>> bit confusing.
+>>>>  
+>>>
+>>> Sure, I'll rename to VINCOM.
+>>>  
+>>>> Also, do we need to add a vincom-supply to get this voltage? Or is it
+>>>> safe to assume it is always connected to AVSS? The datasheet seems to
+>>>> indicate that the latter is the case. But then it also has this
+>>>> special case (at least for AD4116, didn't check all datasheets)
+>>>> "VIN10, VINCOM (single-ended or differential pair)". If it can be used
+>>>> as part of a fully differential input, we probably need some extra
+>>>> flag to indicate that case.
+>>>>  
+>>>
+>>> I cannot see any configuration options for these use cases. All inputs
+>>> are routed to the same mux and routed to the differential positive and
+>>> negative ADC inputs.
+>>>
+>>> "VIN10, VINCOM (single-ended or differential pair)" the only difference
+>>> between these two use cases is if you connected VINCOM to AVSS (with
+>>> unipolar coding) or not with bipolar encoding. The channel is still
+>>> measuring the difference between the two selected inputs and comparing
+>>> to the selected reference.
+>>>  
+>>>> Similarly, do we need special handling for ADCIN15 on AD4116? It has a
+>>>> "(pseudo differential or differential pair)" notation that other
+>>>> inputs don't. In other words, it is more like VINCOM than it is to the
+>>>> other ADCINxx pins. So we probably need an adcin15-supply for this pin
+>>>> to properly get the right channel configuration. I.e. the logic in the
+>>>> IIO driver would be if adcin15-supply is present, any channels that
+>>>> use this input are pseudo-differential, otherwise any channels that
+>>>> use it are fully differential.
+>>>>  
+>>>
+>>> I cannot seem to understand what would a adcin15-supply be needed for.
+>>> This input, the same as all others, enters the mux and is routed to
+>>> either positive or negative input of the ADC.
+>>>
+>>> The voltage on the ADCIN15 pin is not important to the user, just the
+>>> difference in voltage between that pin and the other one selected.
+>>>  
+>>
+>> These suggestions come from some recent discussion about
+>> pseudo-differential vs. fully differential inputs (e.g. search the IIO
+>> mailing list for AD7380).
+>>
+>> So what I suggested here might be more technically correct according
+>> to what I got out of that discussion. But for this specific case, I
+>> agree it is good enough to just treat all inputs as always
+>> fully-differential to keep things from getting too unwieldy.
+> 
+> Hmm.  That whole approach to pseudo differential does get messy if
+> we have the common line routed through the main MUX rather than an opt
+> in only on the negative side.  
+> 
+> If I read this right, its almost a trick to support a pseudo differential
+> wiring with simple registers (I guess reflecting MUX limitations).
+> 
+> So what could we do?
+> 
+> We could assume that VINCOM is used like a conventional pseudo
+> differential negative signal and have supply-vincom + non diffferential
+> channels if that's the configuration wanted.
+> 
+> Then for differential channels can support all the VINX VINX+1
+> and swapped options.
+> For VIN10 it gets fun as non differential and differential options
+> I think map to same actual config.   Don't see reason we need to express
+> that in the binding though so let that have VIN10 VINCOM (probably using
+> a magic channel number) and  VIN10 pseudo differential.
+> 
+> Similar setup for ADCIN15 equivalent usage
+> 
+> Code wise this probably won't be particular hard to support in the driver
+> (obviously I haven't tried though :) is it worth the effort to keep
+> it inline with other devices that support pseudo differential channesl.
 
-The warning makes sense I suppose, if it's one per system and once per 
-bootup [right?], but I think pr_info() would be plenty enough priority for 
-this condition - especially as we didn't have the warning before and don't 
-know how frequent it is?
+Then this would need to be done to any fully differential ADC as support
+for pseudo differential channels is present (connect a fixed non 0 voltage
+to the negative input).
 
-Thanks,
+The AD717x family supports pseudo differential channels as well... should
+this change be applied to them too? It is just the case that the documentation
+does not mentions this use case.
 
-	Ingo
+I think that a distinction needs to be made here:
+- When a device is only pseudo differential, sure, it is in a different category
+- When a device is fully differential and you are using it as pseudo-differential
+  you are having two inputs compared to one another
+
+I would need more clarification is why would supply-vincom be a requirement.
+The voltage supplied to VINCOM will not be used in any computation within 
+the driver. From the perspective of getting the data it doesn't matter if 
+you are using the channel in a pseudo-differential, single ended or fully
+differential manner.
+
+Regarding VINX VINX+1, it is not mandatory to respect those, from AD4111 page27:
+"Due to the matching resistors on the analog front end, the
+ differential inputs must be paired together in the following
+ pairs: VIN0 and VIN1, VIN2 and VIN3, VIN4 and VIN5, and
+ VIN6 and VIN7. If any two voltage inputs are paired in a
+ configuration other than what is described in this data sheet,
+ the accuracy of the device cannot be guaranteed."
+
+Tried the device and it works as fully differential when pairing any
+VINx with VINCOM. Still works when selecting VINCOM as the positive
+input of the ADC.
+
+I really see this as overly complicated and unnecessary. These families
+of ADCs are fully differential. If you are using it to measure a single ended
+(Be it compared to 0V or pseudo differential where you are comparing to Vref/2
+and obtaining results [Vref/2 , -Vref/2]) the final result will not require knowing
+the common voltage.
+
+
+
 
