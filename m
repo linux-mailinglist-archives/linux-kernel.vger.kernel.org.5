@@ -1,125 +1,95 @@
-Return-Path: <linux-kernel+bounces-137439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77CC789E22B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:08:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D338F89E22D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:08:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88B91C21DFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:08:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6B1286EF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF4815697E;
-	Tue,  9 Apr 2024 18:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C182156C5F;
+	Tue,  9 Apr 2024 18:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XwRz3dv0"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSqvynlO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FEA156870;
-	Tue,  9 Apr 2024 18:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87515156C4A;
+	Tue,  9 Apr 2024 18:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712686095; cv=none; b=s7scTmkSgexgnaz3DGRoHgPtola9OfW4gD/po5DhRMCmAA9WMSyEXTZR6ebpeWiNq3Rv8zePEvis/7/erqFj+r2IvpA2KXEn2x+8vyVRICVSXlEvN1wE+iZrRto+TFyvZkbI0mR2u1GDXP9bG8W+rPqHAdMx8gyx2V0k4zKrlPE=
+	t=1712686100; cv=none; b=sBaNzQ+0fZuU0B9IkQ50VUh3WKBb67kKGBnxihbPBFYmLjW/6LroFvvDOZiYj+hZgii09k6g5BRPZbi7eAOXxHON6DzFA3LZDSWnlWgfsVI6WxgXNu/CgXNREzOYjtTJLqbSwKOtBkWE3T9RNOxPuRsfTKIbFjWWQDEkzMx+7d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712686095; c=relaxed/simple;
-	bh=2I9xZFzWhxswz0ShSCkZGYHy3IU7FgiErcUKJcNqPpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KiA1vr8zJKegMstbDy5VgmHTgl+qcdL16N90BsWG6+I7KJrPDkKm7LXx/y5JZEsm6/tOp9ZBIMm1c5ll3LhzT1LmihD5sGdfUWgFngwrtBoiKIoxhPuWqeqrxdMYO/BXklsoxgk8Z4Pl4jDJvfqWm/VQn+9kGS5f4vnuuLtsv1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XwRz3dv0; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3e56c9d2cso26891445ad.1;
-        Tue, 09 Apr 2024 11:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712686093; x=1713290893; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=POlFcO8rRiMn4XpW5ioQKkg2ZlLEK2LdmVjbB41yM08=;
-        b=XwRz3dv0t/QVi131duexDuB3svITlJZT5nLvY8Ftx6NvYyjXHJQhaIsM2X8N2NEwI8
-         m4xNJG4pqmpkaJKdlUEyGd/oUbqdBdo2FKrQ8aC3bYba9mBBhZLaFbW+0EUCNkgOOCAM
-         P0DFhkRJMjLBkh9KKd9YmKMlNG2It8yLbhhtpcde+uvRhDeLxOX6YBtucvMA63Rc2YWd
-         2Bh5OQDZnNDZDmC/WvknYeuJ3isepmfwgEKvjebQ31bT+T4H2iuuy4+qWcWOuqkmpVKX
-         l/EaKEPfl2pxdkc1VZsoxRCkxk4GalLITiZXBGxcYcuI4ChuPSlIGWE+OIhSnBSCQKbr
-         H8rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712686093; x=1713290893;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=POlFcO8rRiMn4XpW5ioQKkg2ZlLEK2LdmVjbB41yM08=;
-        b=kIf21v0XUdCXeOOvfAYrFMYLl7TwmWnPvUrBTL8QT3Aq6o0f4vxpMYKlopgWEgsoCk
-         ugfxO59HnEbT4i1yYo1AECaTfQ1EQVuz15Z3wEeg6e/YXClI6PZQakMJkidr8KbF3dog
-         orTjjEl3E1pJ7/ePexPfJxMCxII2l8UF7MvEYAyOkAUR2VNVa89X27qd3f0OFCoeuPH4
-         lY11S8+bq+QFgZap6Qfuo0+hgVIs7U4qhgAngwJIT1qUJ7rBzjZk4grlFPVxwOrrbJuw
-         ARrOpMsTdWmOOkL9eBJOpQ8lFU9B4TvpJ2Omb/BSpRHXnCIaDfOou/EsEy/MJYQ8iq7w
-         +IYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHFWGVIMn7W5SsxY3rNuddgNaanzf4U5wsrVa1Ycu2bltzPRAdIrYIaFRXg/PK1/zMfrLWPi37iD8boE2HPcAjMyJrulmIBfjmBnv8WWs5MBH7YNa7+O8Qi1SaAI9+A9vVh74N5scK3iA2XELGhYyozEsl8F6D6Dw2Gg+LB/G5EeVUQGaP7blx
-X-Gm-Message-State: AOJu0YzX92NsSENsKzZFTKW/ziPBwg0119qmSEPZigpx8tte0UERDbqY
-	jrxeV+77LTKq2VrkiEVAZxJwrEy1ZC72oj69/wPZ40MbzmZpwyLR
-X-Google-Smtp-Source: AGHT+IFzjFhyBMx6hv8MZ4xwZSSjTQZI1dh3fOoNpvvtY6yc9ogy1c4zmy1+R4Fpx4j8O6s7YrZffg==
-X-Received: by 2002:a17:902:ea01:b0:1e3:e243:1995 with SMTP id s1-20020a170902ea0100b001e3e2431995mr677747plg.1.1712686093000;
-        Tue, 09 Apr 2024 11:08:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i17-20020a170902c95100b001dda32430b3sm657972pla.89.2024.04.09.11.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 11:08:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 9 Apr 2024 11:08:10 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: PeterYin <peteryin.openbmc@gmail.com>
-Cc: patrick@stwcx.xyz, Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/4] drivers: watchdog: ast2500 and ast2600 support
- bootstatus
-Message-ID: <01a07242-22ca-4abe-80f9-72ac4de93fb7@roeck-us.net>
-References: <20240328022231.3649741-1-peteryin.openbmc@gmail.com>
- <20240328022231.3649741-5-peteryin.openbmc@gmail.com>
- <47835475-36de-4682-84ae-0163d45d0bac@gmail.com>
+	s=arc-20240116; t=1712686100; c=relaxed/simple;
+	bh=HHFNJYwTjbYiNwN7KBQiqaYMGmiWrEeJk4tI3/073Ic=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=CBtPB0s4KwPhebo6vdtr6OPbIYy1tw+gcVh6LaPpkqyecTNkXJiGE5u55TUP9f+gBRo2TNZ2tu7ZyyRtq8gwxxrdKlcH0C1B8HkYMLRFN4tV7jwPQhXrOckB4KXmfEL+VYvQKdfBI69hTigBHeUNo+SevpxeQ1iQ2EAv5Gx7H5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSqvynlO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B251DC433C7;
+	Tue,  9 Apr 2024 18:08:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712686100;
+	bh=HHFNJYwTjbYiNwN7KBQiqaYMGmiWrEeJk4tI3/073Ic=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=MSqvynlO7AdmpCHYtNqlRDUVkxeAXpv3n8J3df1XEOeOwanWEi24e/T+VZ0xXbqAt
+	 SHdffs9CYQkkZW3ZLvputSyTwOzxpjRvriydwoqFoHxvIpTbH5V4StELvg8HVqKi3o
+	 Vb1Z5BBv7MSzg2L4NouiBqsC+f/Ug4hiZ0eGnFjcgrh85QJsl9TsM8Bc8tjZL8LQ8B
+	 H4LS9NjV45+kUHwD1M6Ig+rh/hQgshizEutTDc/RSc1k1It34zkqXKVotOCkBB4IXP
+	 0m80G1R5HKfcltGtpQEuzvcQllPpgAC2khZ0NqdWky+GJaZRNm8oEqSr4ex3FZg5FO
+	 UWWsQdNex29KQ==
+From: Mark Brown <broonie@kernel.org>
+To: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ "end.to.start" <end.to.start@mail.ru>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+In-Reply-To: <20240408152454.45532-1-end.to.start@mail.ru>
+References: <20240408152454.45532-1-end.to.start@mail.ru>
+Subject: Re: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
+Message-Id: <171268609844.62778.6340689132993321193.b4-ty@kernel.org>
+Date: Tue, 09 Apr 2024 19:08:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47835475-36de-4682-84ae-0163d45d0bac@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Wed, Apr 10, 2024 at 12:28:44AM +0800, PeterYin wrote:
-[ ... ]
+On Mon, 08 Apr 2024 18:24:54 +0300, end.to.start wrote:
+> This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
 > 
-> Hi Guenter,
->    Could you help me understand the definition of WDIOF_CARDRESET in the
-> kernel? If it resets the CPU, should all values be reset to default? Should
-
-Documentation/watchdog/watchdog-api.rst says:
-
-	"Card previously reset the CPU"
-
-This is a bit historic and was probably defined when watchdogs were
-not typically integrated. The appropriate description, applied to
-current watchdog devices, would be something like "The most recent
-reset was triggered by this watchdog".
-
-Not sure I understand "If it resets the CPU...". It doesn't _do_
-anything, it just reports if the most recent reset was triggered
-by the watchdog.
-
-> we check the POR (RstPwr Power on reset SRST# flag) flag in SCU 0x74
-> register bit 0 in ast2600?
 > 
 
-Only if it indicates that the most recent reset was triggered by the
-watchdog.
+Applied to
 
-Guenter
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] sound: Support microphone from device Acer 315-24p
+      commit: 4b9a474c7c820391c0913d64431ae9e1f52a5143
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
