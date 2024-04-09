@@ -1,96 +1,145 @@
-Return-Path: <linux-kernel+bounces-136169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C49489D0BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 606AE89D0C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E14D1C238BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A9C1C2386F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30E780633;
-	Tue,  9 Apr 2024 03:09:27 +0000 (UTC)
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F371684A30;
+	Tue,  9 Apr 2024 03:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Hn3+AGLB"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F212978276
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F14754BE2;
+	Tue,  9 Apr 2024 03:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712632167; cv=none; b=L6OUmf+b6R23HArsVDKNhSWB4p6itI1WxgbAuFENlMziLhl+UKPckZO4Y/hZvqfmFfXJdvI+MoBKBBeCEb3Q05fktxamLt9jqXMCuRt4if+D5Lp1sL4ZO2TlEvsTH33/cu1jXgtdkBTC8231dKcDjFY8bSoF3+aG5PAja4fYDRo=
+	t=1712632174; cv=none; b=P2UwQ7Ddjzfs9uHA9RLbD+MCY9FaUMCpFKruvTxj/mFldZ7pLAtSPkDRsMvUAAbYgpjjig0HurfO9wDY2M/pY3mC6HFWmex3HXX5zuy/cGMxntDaEq7ZEOfXwVI05wP2D8O6YqCe1lI71e6L4JHfH5jDLJ8cjv+1Sfm9mGUfxtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712632167; c=relaxed/simple;
-	bh=X+VO8HuoE5bRkZC0Q5GftJUm0IIW+qqgbmKJteybXgI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eM/yeWBEHXgzpqFMtDA31hJtNrm4Np9ovCvSkUZKqwpcjzpaVmOMcEFjI3XVIRln5zBd+v2r05uwaOGo7zGR5J+Lgvrvb8z0iDXR2qIHsP46GyungVnVLarmaqe+MQ6GPsgqXAktrHJRrxuKCDuujKlNYcbh5e6oGiW/RP0+T2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-05 (Coremail) with SMTP id zQCowADn7gJNsRRm0pFZAg--.12456S2;
-	Tue, 09 Apr 2024 11:09:02 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: qiang.zhao@nxp.com,
-	leoyang.li@nxp.com,
-	saravanak@google.com,
-	fido_max@inbox.ru
-Cc: linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] soc: fsl: qe: Add check for platform_driver_register
-Date: Tue,  9 Apr 2024 03:08:40 +0000
-Message-Id: <20240409030840.666703-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712632174; c=relaxed/simple;
+	bh=+d2FuWyDyp09SFgcbLLZEoMRw7nq4tWkjra5cuFOu8g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O8wH5c+RdtnZkXzOd2OjDY0foPe0H+zEf+fYwZSlC0cEVRm59fyw0tT2iS2+YFkHKc54Xy5aOE/N5wq2+zgFr4mYZZcoVhyFe2Sk300tiu/13wWkINFEcBbgCo0CY+9m/sdvQyLFjGyn87CFPn5DfbOFZ3tiNCthjSCf7HGbdn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Hn3+AGLB; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 438LnN46007102;
+	Tue, 9 Apr 2024 03:09:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-11-20;
+ bh=sZ1T5BLLnRnaU+VrTMjmxep2SuyqJDIfOmX4eCPgS54=;
+ b=Hn3+AGLBGvF2SoKaqvRdXOHZj0RU/dwZmGUc58sKDaVR7FbXLjKXC0cCUG5PvEpBeqQF
+ /ECb8yeLhZZ2leAX0qJvZkYXt60mHTGkazDLJwzzCbfiiNyc3pMJsTGeu4DEYxvGcEBf
+ wCG8uu5xptkHGHDKuoXyjme757Kx1qdX7lFUfUXwoqXtG6oCS4sw1FLuBXOfcMs1YBlC
+ ZDXDFX5b7v7Truhu4ULRKP7UAvuZCQrIs/bEOeVWePtslAGTAStxrU0rOcNHrcYZYnOu
+ U/zHehIMyb7FSh2CLQP3L9oNFedgj0tkpNpj4jgCdRfLQVhHTJB+IdlvLvmfn2GAhVhS dA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xaxxvc3mk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Apr 2024 03:09:04 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4392jUwN020051;
+	Tue, 9 Apr 2024 03:09:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xavuca6e8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Apr 2024 03:09:03 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 439392F9012913;
+	Tue, 9 Apr 2024 03:09:02 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3xavuca6e1-1;
+	Tue, 09 Apr 2024 03:09:02 +0000
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Hannes Reinecke <hare@suse.de>, Janek Kotas <jank@cadence.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>, Can Guo <quic_cang@quicinc.com>,
+        Anjana Hari <quic_ahari@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v5 00/11] scsi: ufs: Remove overzealous memory barriers
+Date: Mon,  8 Apr 2024 23:08:50 -0400
+Message-ID: <171260277842.3109929.9923224974042628325.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
+References: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowADn7gJNsRRm0pFZAg--.12456S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF4xAw45Ww1ftF1UZr13urg_yoW3Crc_Cr
-	4rW3W7Xr48ur9akF17tw43Zr929FWavrsaqF40qasxta4xtw17X3y5Zr13AF1kXr4rXFyU
-	Kr9rZrySkw13WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbz8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_19,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 adultscore=0 phishscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404090018
+X-Proofpoint-ORIG-GUID: mW8gE__06lOifSzNR_qbiKmZGzojZv1-
+X-Proofpoint-GUID: mW8gE__06lOifSzNR_qbiKmZGzojZv1-
 
-Return platform_driver_register() in order to transfer the error if
-it fails.
+On Fri, 29 Mar 2024 15:46:42 -0500, Andrew Halaney wrote:
 
-Fixes: be7ecbd240b2 ("soc: fsl: qe: convert QE interrupt controller to platform_device")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/soc/fsl/qe/qe_ic.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> Please review with care as I'm not all that confident in this subject.
+> UFS has a lot of mb() variants used, most with comments saying "ensure this
+> takes effect before continuing". mb()'s aren't really the way to
+> guarantee that, a read back is the best method.
+> 
+> Some of these though I think could go a step further and remove the mb()
+> variant without a read back. As far as I can tell there's no real reason
+> to ensure it takes effect in most cases (there's no delay() or anything
+> afterwards, and eventually another readl()/writel() happens which is by
+> definition ordered). Some of the patches in this series do that if I was
+> confident it was safe (or a reviewer pointed out prior that they thought
+> it was safe to do so).
+> 
+> [...]
 
-diff --git a/drivers/soc/fsl/qe/qe_ic.c b/drivers/soc/fsl/qe/qe_ic.c
-index bbae3d39c7be..f17de6000ff2 100644
---- a/drivers/soc/fsl/qe/qe_ic.c
-+++ b/drivers/soc/fsl/qe/qe_ic.c
-@@ -481,7 +481,6 @@ static struct platform_driver qe_ic_driver =
- 
- static int __init qe_ic_of_init(void)
- {
--	platform_driver_register(&qe_ic_driver);
--	return 0;
-+	return platform_driver_register(&qe_ic_driver);
- }
- subsys_initcall(qe_ic_of_init);
+Applied to 6.10/scsi-queue, thanks!
+
+[01/11] scsi: ufs: qcom: Perform read back after writing reset bit
+        https://git.kernel.org/mkp/scsi/c/c4d28e06b0c9
+[02/11] scsi: ufs: qcom: Perform read back after writing REG_UFS_SYS1CLK_1US
+        https://git.kernel.org/mkp/scsi/c/a862fafa263a
+[03/11] scsi: ufs: qcom: Remove unnecessary mb() after writing testbus config
+        https://git.kernel.org/mkp/scsi/c/95d26dda90df
+[04/11] scsi: ufs: qcom: Perform read back after writing unipro mode
+        https://git.kernel.org/mkp/scsi/c/823150ecf04f
+[05/11] scsi: ufs: qcom: Perform read back after writing CGC enable
+        https://git.kernel.org/mkp/scsi/c/d9488511b3ac
+[06/11] scsi: ufs: cdns-pltfrm: Perform read back after writing HCLKDIV
+        https://git.kernel.org/mkp/scsi/c/b715c55daf59
+[07/11] scsi: ufs: core: Perform read back after writing UTP_TASK_REQ_LIST_BASE_H
+        https://git.kernel.org/mkp/scsi/c/408e28086f1c
+[08/11] scsi: ufs: core: Perform read back after disabling interrupts
+        https://git.kernel.org/mkp/scsi/c/e4a628877119
+[09/11] scsi: ufs: core: Perform read back after disabling UIC_COMMAND_COMPL
+        https://git.kernel.org/mkp/scsi/c/4bf3855497b6
+[10/11] scsi: ufs: core: Remove unnecessary wmb() after ringing doorbell
+        https://git.kernel.org/mkp/scsi/c/d3fb9a24a602
+[11/11] scsi: ufs: core: Remove unnecessary wmb() prior to writing run/stop regs
+        https://git.kernel.org/mkp/scsi/c/356a8ce7cd50
+
 -- 
-2.25.1
-
+Martin K. Petersen	Oracle Linux Engineering
 
