@@ -1,130 +1,201 @@
-Return-Path: <linux-kernel+bounces-136207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599C589D114
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:33:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B54589D139
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2A6BB23E63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:33:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5279F285D71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FBF54BE7;
-	Tue,  9 Apr 2024 03:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2364E54FAB;
+	Tue,  9 Apr 2024 03:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="Mf5uvFgO"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aWvnMbHK"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B2554BEF
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C600754BCA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712633595; cv=none; b=rQFz8TLhDpS+IZhT/ItFi2T8fNlTxZFEcSvXwH5U56M9P8668GDFUhEdkFRpKIx3WB2fSpEBvKANS5Px0RJSxZ9YiBNYurhetja9XojmtTklp0YAxbggfoXlw+DF/W89zB92aNUUgzamdgiik4EMvavEVWqmJJQ7sJ+qtld35XM=
+	t=1712633988; cv=none; b=AcPuka3SR5JB7OtWXYvRUm5Ol6BhHnUz44J1F+qzRiAdiJEpNNjiI1EvCLLI9Y7TDty1QhIwOROlbJyTKQ7a6dv5matBemT2PAY92k+7YBk4kFPanVJHo/j/a2W9MJnsdkhpDrYD1T735utEBX9LxzgLuUvTx2FfEzlFS0APaa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712633595; c=relaxed/simple;
-	bh=EFpLPzWISFusOi/KeXwg8luY/SwU7mmvlc+llRkMOW8=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=eHcVKu6Y8JGjg8PQPXx6/xiMxt12nNv3kZnbA5q2W1z+hBfOLFZi+r2ShJ0P74SMK9vqG8sCYS+fYmLDpQWiTs0OClvmxJvo7qZ9q+BGHfppn9GGBqa1x6nuRWvvqadqlqU1uPJrqBI8ld1TuW4WkX7OPUkkQSjGnia/r3HDZ54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=Mf5uvFgO; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-	by cmsmtp with ESMTPS
-	id u1fSrDa1RQr4Su2EMrfFFZ; Tue, 09 Apr 2024 03:33:06 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id u2ELretQdo82ku2ELrCHQP; Tue, 09 Apr 2024 03:33:06 +0000
-X-Authority-Analysis: v=2.4 cv=WOB5XGsR c=1 sm=1 tr=0 ts=6614b6f2
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=7TTvVFQ3ERsjMBJgIWUEuaj2mQu3636MoaMP6F8RdAI=; b=Mf5uvFgOjzF/xhdB7FoTGAeNqT
-	y+r5ywr2fjCEWxBHLsAlcVyskBU3p2ywJeuGkToDm0e3hZ08HsIkIOPMqSB413f/cmIE5kr7kiN+n
-	NVP1e5usHD5UX7bTBX+TGhGFL13U3mTRtcpGdwfFD1TMfqkC1m6ve4MzJz+Y+Slh60FMoMHhRiXwr
-	GYA3EMpNVbPg7G73Hpjl7dx40aaCkifeWQHYE4mENSvn6cHGadUx+8q8YjOxdzjmnmSZAN+gTapHA
-	OrSLkB+oY8Wt9K9K6HQyal5gIxMk+4HxWMFPXGNqKG9/koOvG9jeXC7jjf9ThTaiBMFjbyIhvcW4M
-	0ruZuNdQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:56510 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1ru2EJ-003L4W-1t;
-	Mon, 08 Apr 2024 21:33:03 -0600
-Subject: Re: [PATCH 5.15 000/690] 5.15.154-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240408125359.506372836@linuxfoundation.org>
-In-Reply-To: <20240408125359.506372836@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <8b64df27-501e-40e2-bee3-1b1db9c16442@w6rz.net>
-Date: Mon, 8 Apr 2024 20:33:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1712633988; c=relaxed/simple;
+	bh=EZ2T9kzzpeOrUuGVLRbShAImR8PnmT1WmVOGSUHPYL4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f3eiFGnfzJdVm6I96GjY1mlsxy9ZwKaN5PuMI3VFvW6xoIvckySxhAeHe3npgd+9a+ijCRW6DOy7HYxGW0V8P5bjLsOfyD8WbjyR6UDiJNAPiASeCPuILzOuWp2VXTCcwp6yn3EN2FFk1te3HhWz2jzxfHmEbgFER6mwglE23jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aWvnMbHK; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516b6e75dc3so6492629e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 20:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712633984; x=1713238784; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RKPZzs2J4lIrxwzL7Z1BludJY/XdSD/M6/ANxlIo6/0=;
+        b=aWvnMbHKE0MGGIeoM1pwulgW1s0Muup4TuzdwLMJVccdlTbOSkxAcXwmfFupLApytw
+         jQ4yMp+KqwekOEpBgwiNVCzjha/0MztfpSIUVqptFeBWoZh8A5IbhywdB9ZD3lROYcUL
+         q6vDkpzw91gq0Q33n/O3XYtncm34njSP7H+7w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712633984; x=1713238784;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RKPZzs2J4lIrxwzL7Z1BludJY/XdSD/M6/ANxlIo6/0=;
+        b=iicpzVBFcsU/NB6lcYR7wSWHup6pKmyYwlVeJ9DUECirOEtC94Qh2qhhqO4+LpPj1M
+         BiGKlH88vKBsWK65jHCodt2LiXGFBk2bDjnFzE1nCMPeWkVKKX0zou9+ZCtZFNIfNBm0
+         CT10VJf3SH8HYjj6E+tU2AX6SNQ5KY56a6hKv8eDOh6hQvvv9NOiK0FSYJ5HsFHS3zG8
+         8lr7OY2LvQSd7uuibPqjU9FJbxoTcHGResOl0NOneu/5Z2kBHyBCA/T3p1rIxDw/42FU
+         0ebKluybIWT+BWpqOaDpAG1T8P+em1jbKOUpvwOGuTEeeJOtR5CLULsQyTsWOMcyBGZv
+         Fp3A==
+X-Forwarded-Encrypted: i=1; AJvYcCW18QlzzIBU2aTcR90eTu9gad32FqjLCNsqXBaED5vo198a07+C0I9GrdTpEVRIxIP2evtScmxOPydyvxc2xMjPZ5RFZ3f9MZ55Sr5A
+X-Gm-Message-State: AOJu0YySOwfYTbn1V7sG5cuACYqoIbgv8+mc8cFAINLpz/c54CCpJ3YU
+	AjU/I0kC4x+rrfRPXBJcPYGk+mY+oFC7dMCaZI56q/4azTDmN9UtRG4uRh1M/8aky3RpZ1qrsT9
+	rygDJdqTA5+Zt3m2uBMWB1Qi/QL4kXK/PSFK6
+X-Google-Smtp-Source: AGHT+IFba+BrwCMiOouL0a7dqzF+zOfyVTmCHkiqgDT24USb8iVyp548tZZRYidWDUI6/w60evjxT4xx96AaXSCW7qY=
+X-Received: by 2002:ac2:43b6:0:b0:516:c099:e785 with SMTP id
+ t22-20020ac243b6000000b00516c099e785mr6549819lfl.20.1712633983546; Mon, 08
+ Apr 2024 20:39:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1ru2EJ-003L4W-1t
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:56510
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 61
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPYqzVoGPM7nz/vP/7xILFAKgTN61r1WLbAKL7WMUU1GUmw1AZd79cqUEB6HR4lJwDGQwJ79jvc91Qp70iRhOw4bltFp06pzCWVGBD3bHVgwE3wipHkt
- IrSE/uxSdlqDYuYKTRJUOhfkEWr4s0JRW5O4DT6voAqGlnCxFBd+lV2Gpz4W5BJ1K6C2W53toODG1ZAsGjTn9hpOrPaTjcWE6ac=
+References: <20240404081635.91412-1-angelogioacchino.delregno@collabora.com>
+ <20240404081635.91412-3-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5F9rfTVDExKSCF7fBKwR+HijNzFYE6+4aHKw3ZP81DG9w@mail.gmail.com> <5e385c2e-6509-4347-96a5-4606b32d20ff@collabora.com>
+In-Reply-To: <5e385c2e-6509-4347-96a5-4606b32d20ff@collabora.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 9 Apr 2024 11:39:32 +0800
+Message-ID: <CAGXv+5HkKZr0tDPhS9qVs=Uw7YYpfFYaC2Qf4Suv7RznUNWVsQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: arm: mediatek: mmsys: Add OF graph
+ support for board path
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: chunkuang.hu@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
+	matthias.bgg@gmail.com, shawn.sung@mediatek.com, yu-chang.lee@mediatek.com, 
+	ck.hu@mediatek.com, jitao.shi@mediatek.com, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/8/24 5:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.154 release.
-> There are 690 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Apr 8, 2024 at 6:16=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
 >
-> Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
-> Anything received after that time might be too late.
+> Il 08/04/24 05:20, Chen-Yu Tsai ha scritto:
+> > On Thu, Apr 4, 2024 at 4:16=E2=80=AFPM AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@collabora.com> wrote:
+> >>
+> >> Document OF graph on MMSYS/VDOSYS: this supports up to three DDP paths
+> >> per HW instance (so potentially up to six displays for multi-vdo SoCs)=
+.
+> >>
+> >> The MMSYS or VDOSYS is always the first component in the DDP pipeline,
+> >> so it only supports an output port with multiple endpoints - where eac=
+h
+> >> endpoint defines the starting point for one of the (currently three)
+> >> possible hardware paths.
+> >>
+> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@c=
+ollabora.com>
+> >> ---
+> >>   .../bindings/arm/mediatek/mediatek,mmsys.yaml | 23 +++++++++++++++++=
+++
+> >>   1 file changed, 23 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,m=
+msys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.y=
+aml
+> >> index b3c6888c1457..90758bb5bcb1 100644
+> >> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.ya=
+ml
+> >> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.ya=
+ml
+> >> @@ -93,6 +93,29 @@ properties:
+> >>     '#reset-cells':
+> >>       const: 1
+> >>
+> >> +  port:
+> >> +    $ref: /schemas/graph.yaml#/properties/port
+> >> +    description:
+> >> +      Output port node. This port connects the MMSYS/VDOSYS output to
+> >> +      the first component of one display pipeline, for example one of
+> >> +      the available OVL or RDMA blocks.
+> >> +      Some MediaTek SoCs support up to three display outputs per MMSY=
+S.
+> >> +    properties:
+> >> +      endpoint@0:
+> >> +        $ref: /schemas/graph.yaml#/properties/endpoint
+> >> +        description: Output to the primary display pipeline
+> >> +
+> >> +      endpoint@1:
+> >> +        $ref: /schemas/graph.yaml#/properties/endpoint
+> >> +        description: Output to the secondary display pipeline
+> >> +
+> >> +      endpoint@2:
+> >> +        $ref: /schemas/graph.yaml#/properties/endpoint
+> >> +        description: Output to the tertiary display pipeline
+> >> +
+> >> +      required:
+> >> +        - endpoint@0
+> >> +
+> >
+> > Technically the mmsys device serves as an glue layer for the display
+> > pipeline, providing things like clock control and signal routing; the
+> > device itself is not part of the pipeline, and probably shouldn't be
+> > part of the graph?
+> >
 >
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.154-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> That is (only) partially true: in the case of older SoCs, the MMSYS can o=
+nly
+> connect to a single first IP of the pipeline, but in the case of newer on=
+es,
+> and especially (but not limited to) MT8195 onwards having multiple instan=
+ces
+> of VDOSYS, that really becomes part of the pipeline.
 >
-> thanks,
+> This is not because of the possible different first IP in the pipeline, b=
+ut
+> because of support for dual-interface (DSI and DP) that, in even newer So=
+Cs,
+> can be done with cross-mmsys (cross-vdosys, actually...) as some of those=
+ do
+> have the two in different VDOs.
 >
-> greg k-h
+> So yes, this can be done without the graph in MMSYS *in this precise mome=
+nt in
+> time*, but we'll anyway end up adding it sooner than later - and I'm doin=
+g this
+> right now, instead of later, because it's also simplifying the implementa=
+tion
+> so like that I'm "catching two birds with one stone" :-)
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+I see. Thanks for sorting it out. We had something similar on Allwinner
+platforms but it was never as complex or flexible as this.
 
-Tested-by: Ron Economos <re@w6rz.net>
+ChenYu
 
+> Cheers,
+> Angelo
+>
+> > ChenYu
+> >
+> >>   required:
+> >>     - compatible
+> >>     - reg
+> >> --
+> >> 2.44.0
+> >>
+>
+>
 
