@@ -1,143 +1,205 @@
-Return-Path: <linux-kernel+bounces-136896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E0389D97D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:55:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB2B89D984
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:56:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4971C21D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:55:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EBFEB240F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F7F12DDB8;
-	Tue,  9 Apr 2024 12:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33EA12E1E0;
+	Tue,  9 Apr 2024 12:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="jtKIzC4E"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aYWLMihC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5682C12DDAB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D24B127B5A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667336; cv=none; b=ZSLsmsOUeFQibGdgnjBqMjIRQlI4HCHkA8KQHG79LJxgb/Xw6T8/Nl87Ty7hjEIwtWDdr8DVZFh0is/EMNhKAOMbU1N8HzKkju99cqT9CuY0mnv3SuZd0v9U3Rw+MB7OWTz+W43wbXZf5iMICVfWciTtuAQQoLQLzMuJNH8420Q=
+	t=1712667396; cv=none; b=XlHmRpYu9JiNEVNrBVW1prv75BtWLDOOZ/GycMXDnEY2CYqbggrWd34A+x1ptSyfpqZPC75skZOWSNjgeWMLy5E+IdrX9mTYyk6mexzyXaOzCDHVn/QPE7lSl4ZljsnLUpcyaEHAG5vSp+pXh/HCgL61qZUJtA/DQg4Ua/cD410=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667336; c=relaxed/simple;
-	bh=28FvpAkubR7U/YnsKwvZJdGYuQx67JP9jJ7DevI04Bs=;
+	s=arc-20240116; t=1712667396; c=relaxed/simple;
+	bh=qFjj8gprOyy5QG3PDpMwH5OS6JMEOPGugaUWv8+tRvg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GGpS6a+IHMCWdkCnThO+DIkDnwkJ6Xy0OcMvxO5J9RDjZQYBE+XkWUiXM5mWfwZTSTCzUuRVyCeC3Ty59+mKaO5rLAYl4TAHUeFGsLsLiSWarsDwOqP9vtLKQlkw4cOZSL3PvmXh5AE3j5TGj/nRJnG/Os88EkI7BQHsRtsOlik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=jtKIzC4E; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d895138ce6so26581051fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712667331; x=1713272131; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ElDlfqr37WkHv45h6Xgla3cstFx6EJxDXR9PqWmhUCY=;
-        b=jtKIzC4EmhsRGAK0P45mAs7G0xtcD7TiD1cuzc19o7WQMN0ofEC4v7stbzvS3tnbcj
-         cokgJ51myXn3uqv4w31rAYzxBY3x/PT+ovEWu4H6041DSfK/wXxkRtPbNH9WBbny7cMN
-         Y7nyKuDV6SESnjVEl4ZIpuLAgp50m5kw0JI7a1ekHoD/1gB1SpRYf/EzmJqrOlAsvgbj
-         zWcUqiyxyVtswEC7kqYFi9s+Akv5sxL1OYHUHo7etzuwGq/6fnuQRe+HDu7SB4DVeRQG
-         +/XhDHy+SvqAoKanUsn/PCi69dJDoJ7V/0jRcDdbNvmUwSnIL8lk0v2ZI8omunrYREDX
-         qFOw==
+	 To:Cc:Content-Type; b=kSs78YvI8WwCrDgPHEyt1GiPY6AtXTiaE0Sk4APM5r4pU5nrws8Ar7YTrtSNK9GscVZk/KQfWzY15IYCV4uIZR60f9YCGPU/6RwWmvarQe8nfsccoM/1MHpdv4RYuyWM9imp8yYk5Km2Cgft0LPVg1jo4dnqD1Vt7bxVlTnQxdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aYWLMihC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712667393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pt0N3bL5TJP0v672v3Z/C/6PTX4AkZIvzQAggKI+KTY=;
+	b=aYWLMihC9IAoQBWj2TWh3OwXNP5uprJNlrSK7JJywxjWPurFIFdW4Il0thBRorPjZNHg4M
+	TXuEzhY97akUtz4GWHInYgjWGRrJQBY2JrSuXubPiz2CxEjBAZECURuA9DzY1MxI8iH+XK
+	ANt8IdEJRBCPWsXChCtS29QdWsUIiZM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-beEtrhAwOPaB2IwdBgpTvA-1; Tue, 09 Apr 2024 08:56:31 -0400
+X-MC-Unique: beEtrhAwOPaB2IwdBgpTvA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51cf34d476so106573266b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:56:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712667331; x=1713272131;
+        d=1e100.net; s=20230601; t=1712667391; x=1713272191;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ElDlfqr37WkHv45h6Xgla3cstFx6EJxDXR9PqWmhUCY=;
-        b=rrfqjoa8YgojxWCKq3PqUC07oDVkaFljItQRuSC/mq9bewguh0eaE55UX/ZbIkdJoI
-         cMQv4x5OnW4pDSgN+vl04QcnCB+vuJCgz8wIF8tPgc1Jp+TR2n7Q+zugprohGK5Pp3v6
-         WzvPvD5YHcavJX61ELLArzAL31N7o1ztSiH0CpXaRpXDXC7AS6i2QCaXPpX4wEig2Dag
-         EXzl4q05eAA292F/AcWmwLfIe2B7f4YG7m44tQWd24y3fBhNkqoApbzZBXmwfGRBjFuA
-         aBP4uvJtEikgVkXbCvbnjpYjlM/4HnE4JSz+P85fJ77cN833ltq13ONEVtLTLfzFtoF/
-         LZtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXE4ec2zuVLXwS9p//Kf65hvxtE55xUQFWEjVq5SxwnVRGv8GqtiPv/tNyAwcerL+Cx55RZhUuyutOr+aUTlX/N16Ybkshy+qBREfbs
-X-Gm-Message-State: AOJu0YzPIJGKHz6bX6QHxO4w5tDPhp2MBdWEEPTqWdEVksHeWORvS636
-	IPHciGRi0AVkAGSr+AwFQbWOh+/Y6UY5+MC2LJ9OJZs578eZibOnjdBfF+3GP46ssU309B2jHAR
-	h04N+1xMx0rtEx4IrNIvfYQ1bBK/anNIgi2fWig==
-X-Google-Smtp-Source: AGHT+IElreytHxSdK3MjFouAJM+ZDxBIAatjdrl9atwum0J18I0K0pLO6B4r+Kvm4+ejftK0BHc2qci1wKAPT0U5X2E=
-X-Received: by 2002:a2e:2285:0:b0:2d8:2fb1:3d with SMTP id i127-20020a2e2285000000b002d82fb1003dmr6423456lji.22.1712667331365;
- Tue, 09 Apr 2024 05:55:31 -0700 (PDT)
+        bh=pt0N3bL5TJP0v672v3Z/C/6PTX4AkZIvzQAggKI+KTY=;
+        b=O9t0eRb2g80rkP+yOYH52BFs5h3AIaXYXnhUzj86cPyvYq3sMFkJ1W7/uzEEOMr71A
+         tSPvY9t+PqQ5kdxp5v2qNtc04dqgteimJYNvbjJG+qGB+qwobZnVWn4eau9yxbvw/NMc
+         gTOTAILEW7d3v91IsUOAxFg5UoIvRkxZ573g+bYdXpVDEe+YdZIxAa3IJhAYJ+ear/fY
+         HHXYZ5MaJONpd66PH1r9KQVxwsjAs/QdLauN5YjvUJD34r7fPLrsLipoyuSrNA8HdixT
+         TDLyG+VZawUUr+op41VT0wx1vjKHKkWxeWvlh+f6AjooXegboYqzljFJJf60KA107COD
+         5w/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWovMwml+bh0hr2HRE5UAdHLuIISIfrPjroorVQEwZNT2hHyteARZe6EXwE+4SnNZTnFHJIPtocFbmAwdps360f2wnbwVpxvmer5dtF
+X-Gm-Message-State: AOJu0YwQb5xij5Pds1JMOje9IWKElO2nauuw4wfVWwcvJGcdkpfgZxSR
+	NTZF2ye8dYsyZqMb+Qu4mbY2iA1z6z/RBT4rDhj08DpMaMROLXiccNSQvGc5ndh8yjEQMSlx2JS
+	PkQDsaK5F7MkkwcEli+aFh7ZBvK0qAOQZq5XPpXlOmIXB5QyJsyPfOHSZLO9Fj5Y4hn7bHR1KTA
+	0kEUWi9aop36GYAMjIqO0dwnzr8IorNGVrc+CA
+X-Received: by 2002:a17:906:6889:b0:a51:a688:3e9c with SMTP id n9-20020a170906688900b00a51a6883e9cmr6917337ejr.35.1712667390826;
+        Tue, 09 Apr 2024 05:56:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEoJWDaZk2RdQUZFsUUYdQeQjnpvYmMrAlJni0v8Qmi8hoHGlbaqGBCHz7xfsMA25ZelFLfveAk8CK5Iy6mxH0=
+X-Received: by 2002:a17:906:6889:b0:a51:a688:3e9c with SMTP id
+ n9-20020a170906688900b00a51a6883e9cmr6916714ejr.35.1712667365422; Tue, 09 Apr
+ 2024 05:56:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
- <20240408231727.396452-2-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mf73fFHo83gNvDXGy9BosB1MNz_=8kt56hLA12bPBb8CA@mail.gmail.com> <ZhU5uDJk_M_TtKH2@smile.fi.intel.com>
-In-Reply-To: <ZhU5uDJk_M_TtKH2@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 9 Apr 2024 14:55:20 +0200
-Message-ID: <CAMRc=Meh6K2zxpVPHvsDcr5vMMeagK7FGhnUPz3bb2rQQCPHJA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] gpiolib: Fix a mess with the GPIO_* flags
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, 
-	brcm80211-dev-list.pdl@broadcom.com, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Kalle Valo <kvalo@kernel.org>, 
-	Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20240404055635.316259-1-lulu@redhat.com> <20240408033804-mutt-send-email-mst@kernel.org>
+ <CACLfguUL=Kteorvyn=wRUWFJFvhvgRyp+V7GNBp2R33hK1vnSw@mail.gmail.com> <20240408085008-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240408085008-mutt-send-email-mst@kernel.org>
+From: Cindy Lu <lulu@redhat.com>
+Date: Tue, 9 Apr 2024 20:55:23 +0800
+Message-ID: <CACLfguWC3LruVfLndc4vzpzOuomEz-+nHY0KENZ6iiXNB728eg@mail.gmail.com>
+Subject: Re: [PATCH v3] Documentation: Add reconnect process for VDUSE
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: jasowang@redhat.com, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 2:51=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Apr 8, 2024 at 8:50=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com> =
+wrote:
 >
-> On Tue, Apr 09, 2024 at 11:42:37AM +0200, Bartosz Golaszewski wrote:
-> > On Tue, Apr 9, 2024 at 1:17=E2=80=AFAM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
+> On Mon, Apr 08, 2024 at 08:39:21PM +0800, Cindy Lu wrote:
+> > On Mon, Apr 8, 2024 at 3:40=E2=80=AFPM Michael S. Tsirkin <mst@redhat.c=
+om> wrote:
 > > >
-> > > The GPIO_* flag definitions are *almost* duplicated in two files
-> > > (with unmatches OPEN_SOURCE / OPEN_DRAIN). Moreover, some code relies
-> > > on one set of definitions while the rest is on the other. Clean up
-> > > this mess by providing only one source of the definitions to all.
+> > > On Thu, Apr 04, 2024 at 01:56:31PM +0800, Cindy Lu wrote:
+> > > > Add a document explaining the reconnect process, including what the
+> > > > Userspace App needs to do and how it works with the kernel.
+> > > >
+> > > > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > > > ---
+> > > >  Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 41 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/=
+userspace-api/vduse.rst
+> > > > index bdb880e01132..7faa83462e78 100644
+> > > > --- a/Documentation/userspace-api/vduse.rst
+> > > > +++ b/Documentation/userspace-api/vduse.rst
+> > > > @@ -231,3 +231,44 @@ able to start the dataplane processing as foll=
+ows:
+> > > >     after the used ring is filled.
+> > > >
+> > > >  For more details on the uAPI, please see include/uapi/linux/vduse.=
+h.
+> > > > +
+> > > > +HOW VDUSE devices reconnection works
+> > > > +------------------------------------
+> > > > +1. What is reconnection?
+> > > > +
+> > > > +   When the userspace application loads, it should establish a con=
+nection
+> > > > +   to the vduse kernel device. Sometimes,the userspace application=
+ exists,
+> > > > +   and we want to support its restart and connect to the kernel de=
+vice again
+> > > > +
+> > > > +2. How can I support reconnection in a userspace application?
+> > > > +
+> > > > +2.1 During initialization, the userspace application should first =
+verify the
+> > > > +    existence of the device "/dev/vduse/vduse_name".
+> > > > +    If it doesn't exist, it means this is the first-time for conne=
+ction. goto step 2.2
+> > > > +    If it exists, it means this is a reconnection, and we should g=
+oto step 2.3
+> > > > +
+> > > > +2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
+> > > > +    /dev/vduse/control.
+> > > > +    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memor=
+y for
+> > > > +    the reconnect information. The total memory size is PAGE_SIZE*=
+vq_mumber.
 > > >
-> > > Fixes: b424808115cb ("brcm80211: brcmsmac: Move LEDs to GPIO descript=
-ors")
-> > > Fixes: 5923ea6c2ce6 ("gpio: pass lookup and descriptor flags to reque=
-st_own")
-> > > Fixes: fed7026adc7c ("gpiolib: Make use of enum gpio_lookup_flags con=
-sistent")
-> > > Fixes: 4c0facddb7d8 ("gpio: core: Decouple open drain/source flag wit=
-h active low/high")
-> > > Fixes: 69d301fdd196 ("gpio: add DT bindings for existing consumer fla=
-gs")
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > ---
-> > >  drivers/gpio/gpiolib-of.c                     |  5 ++---
-> > >  drivers/gpio/gpiolib.c                        |  8 +++-----
-> > >  .../broadcom/brcm80211/brcmsmac/led.c         |  2 +-
-> > >  include/linux/gpio/driver.h                   |  3 +--
-> > >  include/linux/gpio/machine.h                  | 20 +++++------------=
---
-> > >  5 files changed, 12 insertions(+), 26 deletions(-)
+> > > Confused. Where is that allocation, in code?
+> > >
+> > > Thanks!
+> > >
+> > this should allocated in function vduse_create_dev(),
+>
+> I mean, it's not allocated there ATM right? This is just doc patch
+> to become part of a larger patchset?
+>
+Got it, thanks Michael I will send the whole patchset soon
+thanks
+Cindy
+
+> > I will rewrite
+> > this part  to make it more clearer
+> > will send a new version soon
+> > Thanks
+> > cindy
 > >
-> > I don't think ./dt-bindings/gpio/gpio.h is the right source of these
-> > defines for everyone - including non-OF systems. I would prefer the
-> > ones in include/linux/gpio/machine.h be the upstream source but then
-> > headers in include/dt-bindings/ cannot include them so my second-best
-> > suggestion is to rename the ones in include/linux/gpio/machine.h and
-> > treewide too. In general values from ./dt-bindings/gpio/gpio.h should
-> > only be used in DTS sources and gpiolib-of code.
+> > > > +2.3 Check if the information is suitable for reconnect
+> > > > +    If this is reconnection :
+> > > > +    Before attempting to reconnect, The userspace application need=
+s to use the
+> > > > +    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GE=
+T_FEATURES...)
+> > > > +    to get the information from kernel.
+> > > > +    Please review the information and confirm if it is suitable to=
+ reconnect.
+> > > > +
+> > > > +2.4 Userspace application needs to mmap the memory to userspace
+> > > > +    The userspace application requires mapping one page for every =
+vq. These pages
+> > > > +    should be used to save vq-related information during system ru=
+nning. Additionally,
+> > > > +    the application must define its own structure to store informa=
+tion for reconnection.
+> > > > +
+> > > > +2.5 Completed the initialization and running the application.
+> > > > +    While the application is running, it is important to store rel=
+evant information
+> > > > +    about reconnections in mapped pages. When calling the ioctl VD=
+USE_VQ_GET_INFO to
+> > > > +    get vq information, it's necessary to check whether it's a rec=
+onnection. If it is
+> > > > +    a reconnection, the vq-related information must be get from th=
+e mapped pages.
+> > > > +
+> > > > +2.6 When the Userspace application exits, it is necessary to unmap=
+ all the
+> > > > +    pages for reconnection
+> > > > --
+> > > > 2.43.0
+> > >
 >
-> Then, please fix that your way. It's quite annoying issue.
->
 
-This is not difficult in itself but it's a tree-wide change so we will
-probably have to send it to Torvalds at the end of the merge window in
-a separate pull-request.
-
-I don't really have time now, I'll be travelling for 5 weeks in a row.
-I'll see closer to the merge window. Or next release cycle.
-
-Bart
 
