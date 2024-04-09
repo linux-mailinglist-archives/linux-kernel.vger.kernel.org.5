@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-137708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AD689E63E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:42:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C11C89E63F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55D711C20A86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5FC61F22BB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21F7159567;
-	Tue,  9 Apr 2024 23:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AF8159578;
+	Tue,  9 Apr 2024 23:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IlnmNzyY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="akCryv6f"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2010F159211;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C321F158DCB;
 	Tue,  9 Apr 2024 23:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706116; cv=none; b=QCCiy/+5Yq1v9cXgvo781ox0ar8hNz6JNW088aRq4tcLqfFXRAG2ejtiMa7q7BYiOvwRQb2ufbkHQ6TgzEdzInqeTXDafKytlgeuAgwm/SrAA+gXXmq7RchWDnWEyKpK3xNmqH/fbtPnmic6eAXsoJbelVRQ2kM7ETS1J3U4haM=
+	t=1712706117; cv=none; b=q12cAPmswx04S7DCiFp63iKJJ81KzhfZICvcwK7nr2dRcr6m4+ugZygJ6NpqyDwMbE7yKXui38CFT8xoarE+Za6MlY2UeEN2sMzHGCcGumV9qS7FOf3HZDNdSGRjTJlBh38IZu50q2J49K9PrMqK7zJQzmL+7XZTuHpK4rYP//M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706116; c=relaxed/simple;
-	bh=fV42Klm8V51peR+/cC+IG71NY4osEXZZZUE0irhWd4s=;
+	s=arc-20240116; t=1712706117; c=relaxed/simple;
+	bh=f7e/oyVMdbTdINlF0aMs9BPxj2KwRBufaHG15Gly+mQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EA4OkiJVWKJPZItw4jJfDBWw+iDun2WI7E9s3lUE3etTGu1UWWL139SkD5gb9mt3j3+QOAFYeEzPAZqSW/3q1uk3X96j51S4xLa2VB1jbcd9xRmd9xCnzaDKOB0l8gG7r+HMmX7LAA4iGJqmvtunQvlXreHcpl0ebJRw3q8Bql8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IlnmNzyY; arc=none smtp.client-ip=192.198.163.7
+	 MIME-Version; b=Dl4Wd4lLKkWF7f+240qHCin6/l0+ARvDjxZ3M0k35z6BlijusaFAMqBmjfsaBS6kEQe/9ccWqh+GyhxEgejNWRTQTtssS8zkYpsMvxD1ChjDanxeqIhlAVtndJrzcEF/vioJ6SnQ0KAy5XPQvpKGtYNBa+rvYzXhPKGHnyxPOe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=akCryv6f; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712706115; x=1744242115;
+  t=1712706116; x=1744242116;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fV42Klm8V51peR+/cC+IG71NY4osEXZZZUE0irhWd4s=;
-  b=IlnmNzyYF8NLvOrIXtFv792H1hbho5Fuw10GwSk09w6mQw49JpPbZy8y
-   5xA2GKO7kn5eEoVZ2Z76oA6omOKIKFG4FwWXf7yhtDNaIbhiO5y75nEae
-   xQvmXtqsYmM2Xb9yY6rCd68lScmS8Ju9jQXei7TjwuzSlw3+YXMi2EVZP
-   0rBBfGjgoj0eWPL8T+pV9/XznmpRAwVFJAxPgexnjDV2YQ7IVhSr9HiHH
-   px9ADmFwtLEr5KZgF8sdY8eVFIgHsPZpfzR8hebZkY53/DDX9HxXd6zGG
-   q58jcWcsRXjiCyoDsTBhsYTPbJzMpGZUBU5AQB/tyFhUdt+2kDLR8M+qW
-   Q==;
-X-CSE-ConnectionGUID: ud8l1UMtRnakDKCjNjyogg==
-X-CSE-MsgGUID: QjMINPkZRP63Gp6JBnnbQw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455091"
+  bh=f7e/oyVMdbTdINlF0aMs9BPxj2KwRBufaHG15Gly+mQ=;
+  b=akCryv6fLO7lPPcYRZeJZbUb03+dMWhPGKtRLYP9FVeteBhf5HxMAL4m
+   jIqtHH28mr1o51eajlChFAQNdiWbZwt4ZLYI85+bT7dFmMlyKtJTgUhxI
+   YTGSCRZTUS9O+rEJWgoCRVAFyDWOg5WfxPc6hlJmtU1zd3fBKQHn0yOIa
+   psO3UsUfWfvisUTddd/20VlNSM44NjeRfmNAYGb6qKL1aPsnWC5SC2jkg
+   mvLewY37zhyrWWTE4NEZozQrRRDs98lsaaqPo0LgPnywBTwluRspDId+r
+   lnSjeiG++MfA6JxfYsTNXn0kujBtuflzV77ZbVg4KY2J4DkrBDUU94BjE
+   g==;
+X-CSE-ConnectionGUID: LiNX/LDyTcG9qP1RabOkyw==
+X-CSE-MsgGUID: wg6mm0QoRuybYHmmq1qGwA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455099"
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="33455091"
+   d="scan'208";a="33455099"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:55 -0700
-X-CSE-ConnectionGUID: py15v8eaS66SxBPSF8GiOQ==
-X-CSE-MsgGUID: aapubMLTQQiKgUO0JOSqJw==
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:56 -0700
+X-CSE-ConnectionGUID: TUQJzVCnRWyi9ZLk2zz8ew==
+X-CSE-MsgGUID: yTAKyI7FSXG1fzTeHDKRvg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20261786"
+   d="scan'208";a="20261793"
 Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:54 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:55 -0700
 From: Peter Colberg <peter.colberg@intel.com>
 To: Wu Hao <hao.wu@intel.com>,
 	Tom Rix <trix@redhat.com>,
@@ -68,9 +68,9 @@ Cc: Russ Weight <russ.weight@linux.dev>,
 	Marco Pagani <marpagan@redhat.com>,
 	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
 	Peter Colberg <peter.colberg@intel.com>
-Subject: [RFC PATCH v2 3/9] fpga: dfl: migrate AFU MMIO region management driver to dfl_feature_dev_data
-Date: Tue,  9 Apr 2024 19:39:36 -0400
-Message-ID: <20240409233942.828440-4-peter.colberg@intel.com>
+Subject: [RFC PATCH v2 4/9] fpga: dfl: migrate FPGA Management Engine driver to dfl_feature_dev_data
+Date: Tue,  9 Apr 2024 19:39:37 -0400
+Message-ID: <20240409233942.828440-5-peter.colberg@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409233942.828440-1-peter.colberg@intel.com>
 References: <20240409233942.828440-1-peter.colberg@intel.com>
@@ -83,7 +83,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 This change separates out most of the symbol name changes required by this
-patch series for the file: drivers/fpga/dfl-afu-region.c. This is done to
+patch series for the file: drivers/fpga/dfl-fme-main.c. This is done to
 split a single monolithic change into multiple, smaller patches at the
 request of the maintainer.
 
@@ -91,175 +91,212 @@ Signed-off-by: Peter Colberg <peter.colberg@intel.com>
 ---
 v2:
 - Split monolithic patch into series at request of maintainer
+- Change fme_hdr_ioctl_*() to receive dfl_feature_dev_data instead of
+  dfl_feature_platform_data.
+- Remove unused local variable pdata in fme_dev_{init,destroy}().
 ---
- drivers/fpga/dfl-afu-region.c | 51 ++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 25 deletions(-)
+ drivers/fpga/dfl-fme-main.c | 68 ++++++++++++++++++++-----------------
+ 1 file changed, 36 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/fpga/dfl-afu-region.c b/drivers/fpga/dfl-afu-region.c
-index 2e7b41629406..b11a5b21e666 100644
---- a/drivers/fpga/dfl-afu-region.c
-+++ b/drivers/fpga/dfl-afu-region.c
-@@ -12,11 +12,11 @@
+diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
+index 864924f68f5e..7f119b09b54e 100644
+--- a/drivers/fpga/dfl-fme-main.c
++++ b/drivers/fpga/dfl-fme-main.c
+@@ -135,10 +135,10 @@ static const struct attribute_group fme_hdr_group = {
+ 	.attrs = fme_hdr_attrs,
+ };
  
- /**
-  * afu_mmio_region_init - init function for afu mmio region support
-- * @pdata: afu platform device's pdata.
-+ * @fdata: afu feature dev data
-  */
--void afu_mmio_region_init(struct dfl_feature_platform_data *pdata)
-+void afu_mmio_region_init(struct dfl_feature_dev_data *fdata)
+-static long fme_hdr_ioctl_release_port(struct dfl_feature_platform_data *pdata,
++static long fme_hdr_ioctl_release_port(struct dfl_feature_dev_data *fdata,
+ 				       unsigned long arg)
  {
--	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
-+	struct dfl_afu *afu = dfl_fpga_fdata_get_private(fdata);
+-	struct dfl_fpga_cdev *cdev = pdata->dfl_cdev;
++	struct dfl_fpga_cdev *cdev = fdata->dfl_cdev;
+ 	int port_id;
  
- 	INIT_LIST_HEAD(&afu->regions);
+ 	if (get_user(port_id, (int __user *)arg))
+@@ -147,10 +147,10 @@ static long fme_hdr_ioctl_release_port(struct dfl_feature_platform_data *pdata,
+ 	return dfl_fpga_cdev_release_port(cdev, port_id);
  }
-@@ -39,7 +39,7 @@ static struct dfl_afu_mmio_region *get_region_by_index(struct dfl_afu *afu,
- /**
-  * afu_mmio_region_add - add a mmio region to given feature dev.
-  *
-- * @pdata: afu platform device's pdata.
-+ * @fdata: afu feature dev data
-  * @region_index: region index.
-  * @region_size: region size.
-  * @phys: region's physical address of this region.
-@@ -47,14 +47,15 @@ static struct dfl_afu_mmio_region *get_region_by_index(struct dfl_afu *afu,
-  *
-  * Return: 0 on success, negative error code otherwise.
-  */
--int afu_mmio_region_add(struct dfl_feature_platform_data *pdata,
-+int afu_mmio_region_add(struct dfl_feature_dev_data *fdata,
- 			u32 region_index, u64 region_size, u64 phys, u32 flags)
+ 
+-static long fme_hdr_ioctl_assign_port(struct dfl_feature_platform_data *pdata,
++static long fme_hdr_ioctl_assign_port(struct dfl_feature_dev_data *fdata,
+ 				      unsigned long arg)
  {
-+	struct device *dev = &fdata->dev->dev;
- 	struct dfl_afu_mmio_region *region;
- 	struct dfl_afu *afu;
+-	struct dfl_fpga_cdev *cdev = pdata->dfl_cdev;
++	struct dfl_fpga_cdev *cdev = fdata->dfl_cdev;
+ 	int port_id;
+ 
+ 	if (get_user(port_id, (int __user *)arg))
+@@ -163,13 +163,13 @@ static long fme_hdr_ioctl(struct platform_device *pdev,
+ 			  struct dfl_feature *feature,
+ 			  unsigned int cmd, unsigned long arg)
+ {
+-	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
+ 
+ 	switch (cmd) {
+ 	case DFL_FPGA_FME_PORT_RELEASE:
+-		return fme_hdr_ioctl_release_port(pdata, arg);
++		return fme_hdr_ioctl_release_port(fdata, arg);
+ 	case DFL_FPGA_FME_PORT_ASSIGN:
+-		return fme_hdr_ioctl_assign_port(pdata, arg);
++		return fme_hdr_ioctl_assign_port(fdata, arg);
+ 	}
+ 
+ 	return -ENODEV;
+@@ -411,14 +411,14 @@ static int power_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+ static int power_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
+ 			     u32 attr, int channel, long val)
+ {
+-	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev->parent);
++	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+ 	struct dfl_feature *feature = dev_get_drvdata(dev);
  	int ret = 0;
+ 	u64 v;
  
--	region = devm_kzalloc(&pdata->dev->dev, sizeof(*region), GFP_KERNEL);
-+	region = devm_kzalloc(dev, sizeof(*region), GFP_KERNEL);
- 	if (!region)
- 		return -ENOMEM;
- 
-@@ -63,13 +64,13 @@ int afu_mmio_region_add(struct dfl_feature_platform_data *pdata,
- 	region->phys = phys;
- 	region->flags = flags;
+ 	val = clamp_val(val / MICRO, 0, PWR_THRESHOLD_MAX);
  
 -	mutex_lock(&pdata->lock);
 +	mutex_lock(&fdata->lock);
  
--	afu = dfl_fpga_pdata_get_private(pdata);
-+	afu = dfl_fpga_fdata_get_private(fdata);
- 
- 	/* check if @index already exists */
- 	if (get_region_by_index(afu, region_index)) {
--		mutex_unlock(&pdata->lock);
-+		mutex_unlock(&fdata->lock);
- 		ret = -EEXIST;
- 		goto exit;
+ 	switch (attr) {
+ 	case hwmon_power_max:
+@@ -438,7 +438,7 @@ static int power_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
+ 		break;
  	}
-@@ -80,37 +81,37 @@ int afu_mmio_region_add(struct dfl_feature_platform_data *pdata,
  
- 	afu->region_cur_offset += region_size;
- 	afu->num_regions++;
+-	mutex_unlock(&pdata->lock);
++	mutex_unlock(&fdata->lock);
+ 
+ 	return ret;
+ }
+@@ -589,7 +589,7 @@ static struct dfl_feature_driver fme_feature_drvs[] = {
+ 	},
+ };
+ 
+-static long fme_ioctl_check_extension(struct dfl_feature_platform_data *pdata,
++static long fme_ioctl_check_extension(struct dfl_feature_dev_data *fdata,
+ 				      unsigned long arg)
+ {
+ 	/* No extension support for now */
+@@ -600,19 +600,21 @@ static int fme_open(struct inode *inode, struct file *filp)
+ {
+ 	struct platform_device *fdev = dfl_fpga_inode_to_feature_dev(inode);
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&fdev->dev);
++	struct dfl_feature_dev_data *fdata;
+ 	int ret;
+ 
+ 	if (WARN_ON(!pdata))
+ 		return -ENODEV;
+ 
+-	mutex_lock(&pdata->lock);
+-	ret = dfl_feature_dev_use_begin(pdata, filp->f_flags & O_EXCL);
++	fdata = pdata;
++	mutex_lock(&fdata->lock);
++	ret = dfl_feature_dev_use_begin(fdata, filp->f_flags & O_EXCL);
+ 	if (!ret) {
+ 		dev_dbg(&fdev->dev, "Device File Opened %d Times\n",
+-			dfl_feature_dev_use_count(pdata));
++			dfl_feature_dev_use_count(fdata));
+ 		filp->private_data = pdata;
+ 	}
+-	mutex_unlock(&pdata->lock);
++	mutex_unlock(&fdata->lock);
+ 
+ 	return ret;
+ }
+@@ -620,19 +622,20 @@ static int fme_open(struct inode *inode, struct file *filp)
+ static int fme_release(struct inode *inode, struct file *filp)
+ {
+ 	struct dfl_feature_platform_data *pdata = filp->private_data;
+-	struct platform_device *pdev = pdata->dev;
++	struct dfl_feature_dev_data *fdata = pdata;
++	struct platform_device *pdev = fdata->dev;
+ 	struct dfl_feature *feature;
+ 
+ 	dev_dbg(&pdev->dev, "Device File Release\n");
+ 
+-	mutex_lock(&pdata->lock);
+-	dfl_feature_dev_use_end(pdata);
++	mutex_lock(&fdata->lock);
++	dfl_feature_dev_use_end(fdata);
+ 
+-	if (!dfl_feature_dev_use_count(pdata))
+-		dfl_fpga_dev_for_each_feature(pdata, feature)
++	if (!dfl_feature_dev_use_count(fdata))
++		dfl_fpga_dev_for_each_feature(fdata, feature)
+ 			dfl_fpga_set_irq_triggers(feature, 0,
+ 						  feature->nr_irqs, NULL);
 -	mutex_unlock(&pdata->lock);
 +	mutex_unlock(&fdata->lock);
  
  	return 0;
- 
- exit:
--	devm_kfree(&pdata->dev->dev, region);
-+	devm_kfree(dev, region);
- 	return ret;
  }
- 
- /**
-  * afu_mmio_region_destroy - destroy all mmio regions under given feature dev.
-- * @pdata: afu platform device's pdata.
-+ * @fdata: afu feature dev data
-  */
--void afu_mmio_region_destroy(struct dfl_feature_platform_data *pdata)
-+void afu_mmio_region_destroy(struct dfl_feature_dev_data *fdata)
+@@ -640,7 +643,8 @@ static int fme_release(struct inode *inode, struct file *filp)
+ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
  {
--	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
-+	struct dfl_afu *afu = dfl_fpga_fdata_get_private(fdata);
- 	struct dfl_afu_mmio_region *tmp, *region;
+ 	struct dfl_feature_platform_data *pdata = filp->private_data;
+-	struct platform_device *pdev = pdata->dev;
++	struct dfl_feature_dev_data *fdata = pdata;
++	struct platform_device *pdev = fdata->dev;
+ 	struct dfl_feature *f;
+ 	long ret;
  
- 	list_for_each_entry_safe(region, tmp, &afu->regions, node)
--		devm_kfree(&pdata->dev->dev, region);
-+		devm_kfree(&fdata->dev->dev, region);
- }
+@@ -650,7 +654,7 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	case DFL_FPGA_GET_API_VERSION:
+ 		return DFL_FPGA_API_VERSION;
+ 	case DFL_FPGA_CHECK_EXTENSION:
+-		return fme_ioctl_check_extension(pdata, arg);
++		return fme_ioctl_check_extension(fdata, arg);
+ 	default:
+ 		/*
+ 		 * Let sub-feature's ioctl function to handle the cmd.
+@@ -658,7 +662,7 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		 * handled in this sub feature, and returns 0 or other
+ 		 * error code if cmd is handled.
+ 		 */
+-		dfl_fpga_dev_for_each_feature(pdata, f) {
++		dfl_fpga_dev_for_each_feature(fdata, f) {
+ 			if (f->ops && f->ops->ioctl) {
+ 				ret = f->ops->ioctl(pdev, f, cmd, arg);
+ 				if (ret != -ENODEV)
+@@ -672,27 +676,27 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
  
- /**
-  * afu_mmio_region_get_by_index - find an afu region by index.
-- * @pdata: afu platform device's pdata.
-+ * @fdata: afu feature dev data
-  * @region_index: region index.
-  * @pregion: ptr to region for result.
-  *
-  * Return: 0 on success, negative error code otherwise.
-  */
--int afu_mmio_region_get_by_index(struct dfl_feature_platform_data *pdata,
-+int afu_mmio_region_get_by_index(struct dfl_feature_dev_data *fdata,
- 				 u32 region_index,
- 				 struct dfl_afu_mmio_region *pregion)
+ static int fme_dev_init(struct platform_device *pdev)
  {
-@@ -118,8 +119,8 @@ int afu_mmio_region_get_by_index(struct dfl_feature_platform_data *pdata,
- 	struct dfl_afu *afu;
- 	int ret = 0;
+-	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
+ 	struct dfl_fme *fme;
+ 
+ 	fme = devm_kzalloc(&pdev->dev, sizeof(*fme), GFP_KERNEL);
+ 	if (!fme)
+ 		return -ENOMEM;
  
 -	mutex_lock(&pdata->lock);
--	afu = dfl_fpga_pdata_get_private(pdata);
-+	mutex_lock(&fdata->lock);
-+	afu = dfl_fpga_fdata_get_private(fdata);
- 	region = get_region_by_index(afu, region_index);
- 	if (!region) {
- 		ret = -EINVAL;
-@@ -127,14 +128,14 @@ int afu_mmio_region_get_by_index(struct dfl_feature_platform_data *pdata,
- 	}
- 	*pregion = *region;
- exit:
+-	dfl_fpga_pdata_set_private(pdata, fme);
 -	mutex_unlock(&pdata->lock);
++	mutex_lock(&fdata->lock);
++	dfl_fpga_fdata_set_private(fdata, fme);
 +	mutex_unlock(&fdata->lock);
- 	return ret;
+ 
+ 	return 0;
  }
  
- /**
-  * afu_mmio_region_get_by_offset - find an afu mmio region by offset and size
-  *
-- * @pdata: afu platform device's pdata.
-+ * @fdata: afu feature dev data
-  * @offset: region offset from start of the device fd.
-  * @size: region size.
-  * @pregion: ptr to region for result.
-@@ -144,7 +145,7 @@ int afu_mmio_region_get_by_index(struct dfl_feature_platform_data *pdata,
-  *
-  * Return: 0 on success, negative error code otherwise.
-  */
--int afu_mmio_region_get_by_offset(struct dfl_feature_platform_data *pdata,
-+int afu_mmio_region_get_by_offset(struct dfl_feature_dev_data *fdata,
- 				  u64 offset, u64 size,
- 				  struct dfl_afu_mmio_region *pregion)
+ static void fme_dev_destroy(struct platform_device *pdev)
  {
-@@ -152,8 +153,8 @@ int afu_mmio_region_get_by_offset(struct dfl_feature_platform_data *pdata,
- 	struct dfl_afu *afu;
- 	int ret = 0;
+-	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
  
 -	mutex_lock(&pdata->lock);
--	afu = dfl_fpga_pdata_get_private(pdata);
-+	mutex_lock(&fdata->lock);
-+	afu = dfl_fpga_fdata_get_private(fdata);
- 	for_each_region(region, afu)
- 		if (region->offset <= offset &&
- 		    region->offset + region->size >= offset + size) {
-@@ -162,6 +163,6 @@ int afu_mmio_region_get_by_offset(struct dfl_feature_platform_data *pdata,
- 		}
- 	ret = -EINVAL;
- exit:
+-	dfl_fpga_pdata_set_private(pdata, NULL);
 -	mutex_unlock(&pdata->lock);
++	mutex_lock(&fdata->lock);
++	dfl_fpga_fdata_set_private(fdata, NULL);
 +	mutex_unlock(&fdata->lock);
- 	return ret;
  }
+ 
+ static const struct file_operations fme_fops = {
 -- 
 2.44.0
 
