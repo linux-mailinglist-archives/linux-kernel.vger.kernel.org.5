@@ -1,118 +1,183 @@
-Return-Path: <linux-kernel+bounces-136219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B89DB89D159
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:54:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB70689D15F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D90B91C20FB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:54:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F74A1F25A12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C4A56B67;
-	Tue,  9 Apr 2024 03:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA35455E40;
+	Tue,  9 Apr 2024 03:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="SYhSaaT/"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N7V/RhbC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F17055E45;
-	Tue,  9 Apr 2024 03:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B8454F95
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712634846; cv=none; b=rnZDnhYU7c8MzD5ADjg7Xnyf3fWplqFvnMYC3tfPpV2DacxGE6sa/A/fEm2AAduMr/kmlYOcXOOB4vEJncGfEvJZZYQKzvsrrwnpxe6hwFIA204R0u2wa9+lT0cSPZ5STWyzJZWUq0BoYXwP4a1QUpk0+wxLJTkVZ+KRsYot+m4=
+	t=1712635186; cv=none; b=Hq1TbQp7CNmy1HH4sD/d7AFsm2b9/HdVPcCzkNiVDHqWqYuV9fw2oMjhddFu1jtGNNj1mBu2VLF8wpRC/zqO2w8GL+ca42tneP60CZU5LDR2edAhi2svSD9LFpgoU6FxQnR69GjOO4+7o5TYxD1bEYkk4omf0A1EFPLPH90QJ9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712634846; c=relaxed/simple;
-	bh=VaB13mZvsSAtXvIGJhKOkspISedcMVO1Bd+yR+ifBdQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OhfsYfmDsbeIOgFpBaNu+RpjTzIixBzhqkO0650nzgjXOetfE54GYDgB+LNiSAmmTWOxXPh/IYlhCJh5zWMJr4l+JMWGLyuRoUxCxcSgP3A2sapV6/eH5em6fpqFYX/tzzMbnuEIJWQVmo8olIP2E1E9g/uJbWZ78ZebYSVE/H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=SYhSaaT/; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: cc42a432f62411eeb8927bc1f75efef4-20240409
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=gn4SVKjDp2+oRxnoHIuawfi3x9MS9w2xBc7UDFhjgkg=;
-	b=SYhSaaT/QBMZd2TFXFBZh6V3wIWlWzq1vLkAtaLZVpq/N6B8Vc7fxOED0sdiFuhvPPp63+bIXnLNqr0KsJxtfpX0G/Kun/pIOmQBMgkqI7kEWZy/E02VJi6YQ6Ea49qFGBY7mnDEIRXat5pemTxlN9BMd5BdjVMwzEvc/J76VJ8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:46e1551d-ad9f-433c-8e8b-ba65d09fd744,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:9339f385-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: cc42a432f62411eeb8927bc1f75efef4-20240409
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <jason-ch.chen@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2046319621; Tue, 09 Apr 2024 11:54:00 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 9 Apr 2024 11:53:57 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 9 Apr 2024 11:53:57 +0800
-From: Jason-ch Chen <jason-ch.chen@mediatek.com>
-To: Krzysztof Kozlowski <krzk+dt@kernel.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	<linux-watchdog@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-	Jason-ch Chen <Jason-ch.Chen@mediatek.com>
-Subject: [PATCH] soc: mediatek: mtk-socinfo: Correct the marketing name for MT8188GV
-Date: Tue, 9 Apr 2024 11:53:55 +0800
-Message-ID: <20240409035355.27659-1-jason-ch.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1712635186; c=relaxed/simple;
+	bh=5FLP6vOlq11TgvbsYHRDLMLdOdFYzw0JyC9A9ixaDnU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DylfhIh+I4QfFuJw3kMYz/3OpkDFAVIRbrsVwqIist7tQE4GC4+2QJiE3MPEI9UC3kmvxtBtpRTmkuXcjffTqo22dMxjY3FAH/RIHOQdTHumz4ecr976WWfSpquxG0g9tJZv4tBEKW8srchWmEGaYlbYN+4ybQ3qxM7jWteBdSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N7V/RhbC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712635183;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ESFjxmFELRVs+AuzBBwmEdBOCmT+SzELHtnXjIlCRYE=;
+	b=N7V/RhbC2Lbrt6SwZyhAqPBRgEJ0IQbkLsV6z05tobwv51ACbjEDrJlkwUXa82fSLt81uw
+	jqVpiVys6kz/ft9HcXBbBD+5+0t5E/MyhPpnudT/HwyumFSbS2Kpsk0MSlg13xce5wFeDp
+	NWD9ipnI8BFD+A0zGk/sCxhdRL3qZbc=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-663-pen0b92YPu2eAGZASWd3qg-1; Mon, 08 Apr 2024 23:59:41 -0400
+X-MC-Unique: pen0b92YPu2eAGZASWd3qg-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e3c14a60e3so29286025ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 20:59:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712635180; x=1713239980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ESFjxmFELRVs+AuzBBwmEdBOCmT+SzELHtnXjIlCRYE=;
+        b=S0BL30QYVpaW4moRaGe4O231IO+YreWc4WwVLHXc1NNetzCfb5Oe8Z7xv6O40O0SlL
+         cwq1Ilzayy0ARBZ/R56B1FJjJo1IeLBAGP/OvVT0BvUV+NqbgD2EwxWr4CKU44A1GA1Z
+         nLxFvVY7nP4cYuUwymT5FTnVHNCsqHZKmUwXouT2RW/YEil+4PQZaDCi6Hajn9xwJfJQ
+         7eslZWyjs7Jrmt4tAN1Hj5znZ1gpa1SfHyPDezDuaT+vlMsCwuCmv+p8vXUGy3bHCDHz
+         fwSbslUbnHn30d+aRzmxKrsYxhameqHc6ZzMvZUhh6fiUT6dY173mALRZ4b8+UGRZ9Sk
+         p6Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCW9AtvdjYQeeSALogGcFPcMS9xQtebjZAxnJRfunb3wb4HUqvEv7iOrjW9TTbcjxMKMMx4wGozUrmtBs7y52utElnBsbjFqPmSRUJX0
+X-Gm-Message-State: AOJu0YzciQdTwHojjOdeFEKVf7zRC0klEKxx6BMw+faF8DC9WgYgEOQj
+	/OODaV7q2ctNyUeAOLAUdFZDL545QibF593Laqw0mWZo6fNy+4QNPORidwZjHo99Co0oR84J02i
+	2DPJSFcNJQpY6+Mc+vNv0fsEeHujtbIOqiN4lL0slaobrtLqqou039YiR75Moru5TtT4YR6i7sU
+	RkFsXGNyokpWnqbVkKmW1NGkZLy0bB3Ou2S0k9
+X-Received: by 2002:a17:902:dac8:b0:1e2:8c12:aac0 with SMTP id q8-20020a170902dac800b001e28c12aac0mr13713177plx.28.1712635180671;
+        Mon, 08 Apr 2024 20:59:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9tu59WVehtU2mwCb0UaP2HnkqkQT/cJ0414esrTrtY6twmt+l2HIit7o5pyDKqDNa5/emeNwsfHJU5mgffHY=
+X-Received: by 2002:a17:902:dac8:b0:1e2:8c12:aac0 with SMTP id
+ q8-20020a170902dac800b001e28c12aac0mr13713164plx.28.1712635180313; Mon, 08
+ Apr 2024 20:59:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--4.265700-8.000000
-X-TMASE-MatchedRID: VZuxIYcieyzh8RW9qY6+GwPZZctd3P4B7f6JAS2hKPhrTDNJQXOxDaPF
-	jJEFr+olwXCBO/GKkVr3FLeZXNZS4IzHo47z5Aa+JSsrnm9gBe1vuqvSSWUSX8OmhAllm9BvzsP
-	W6bH7ICFbnGka1c72QtIUoq3qtzf10Huf0+4h7vtorSEFudR6+b4uS7g0k2sdeZUpm6wun3ba/0
-	6NhYDa4wyzCDjlUx89p2y3mIB+it9WXGvUUmKP2w==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--4.265700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: CCEE519ECF554D8D2C4644AD0C835A1320B2366487E12B37B88ADE3CC7D605D32000:8
-X-MTK: N
+References: <20240408170252.13566-1-ni_liqiang@126.com>
+In-Reply-To: <20240408170252.13566-1-ni_liqiang@126.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 9 Apr 2024 11:59:29 +0800
+Message-ID: <CACGkMEub7vekopiQ1jdh_tHyjOXCADZsouJevioLHEBU1VFOEg@mail.gmail.com>
+Subject: Re: [PATCH] drivers/virtio: delayed configuration descriptor flags
+To: "ni.liqiang" <ni_liqiang@126.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	"jin . qi" <jin.qi@zte.com.cn>, "ni . liqiang" <ni.liqiang@zte.com.cn>, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Jason-ch Chen <Jason-ch.Chen@mediatek.com>
+On Tue, Apr 9, 2024 at 1:27=E2=80=AFAM ni.liqiang <ni_liqiang@126.com> wrot=
+e:
+>
+> In our testing of the virtio hardware accelerator, we found that
+> configuring the flags of the descriptor after addr and len,
+> as implemented in DPDK, seems to be more friendly to the hardware.
+>
+> In our Virtio hardware implementation tests, using the default
+> open-source code, the hardware's bulk reads ensure performance
+> but correctness is compromised. If we refer to the implementation code
+> of DPDK, placing the flags configuration of the descriptor
+> after addr and len, virtio backend can function properly based on
+> our hardware accelerator.
+>
+> I am somewhat puzzled by this. From a software process perspective,
+> it seems that there should be no difference whether
+> the flags configuration of the descriptor is before or after addr and len=
+.
+> However, this is not the case according to experimental test results.
+> We would like to know if such a change in the configuration order
+> is reasonable and acceptable?
 
-Change 'Kompanio 830' to 'Kompanio 838'.
+Harmless but a hint that there's a bug in your hardware?
 
-Signed-off-by: Jason-ch Chen <Jason-ch.Chen@mediatek.com>
----
- drivers/soc/mediatek/mtk-socinfo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+More below
 
-diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mtk-socinfo.c
-index 6943ab29f095..74672a9d6d13 100644
---- a/drivers/soc/mediatek/mtk-socinfo.c
-+++ b/drivers/soc/mediatek/mtk-socinfo.c
-@@ -48,8 +48,8 @@ static struct socinfo_data socinfo_data_table[] = {
- 	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000940),
- 	MTK_SOCINFO_ENTRY("MT8186", "MT8186GV/AZA", "Kompanio 520", 0x81861001, CELL_NOT_USED),
- 	MTK_SOCINFO_ENTRY("MT8186T", "MT8186TV/AZA", "Kompanio 528", 0x81862001, CELL_NOT_USED),
--	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 830", 0x81880000, 0x00000010),
--	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/HZA", "Kompanio 830", 0x81880000, 0x00000011),
-+	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 838", 0x81880000, 0x00000010),
-+	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/HZA", "Kompanio 838", 0x81880000, 0x00000011),
- 	MTK_SOCINFO_ENTRY("MT8192", "MT8192V/AZA", "Kompanio 820", 0x00001100, 0x00040080),
- 	MTK_SOCINFO_ENTRY("MT8192T", "MT8192V/ATZA", "Kompanio 828", 0x00000100, 0x000400C0),
- 	MTK_SOCINFO_ENTRY("MT8195", "MT8195GV/EZA", "Kompanio 1200", 0x81950300, CELL_NOT_USED),
--- 
-2.18.0
+>
+> Thanks.
+>
+> Signed-off-by: ni.liqiang <ni_liqiang@126.com>
+> Reviewed-by: jin.qi <jin.qi@zte.com.cn>
+> Tested-by: jin.qi <jin.qi@zte.com.cn>
+> Cc: ni.liqiang <ni.liqiang@zte.com.cn>
+> ---
+>  drivers/virtio/virtio_ring.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 6f7e5010a673..bea2c2fb084e 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -1472,15 +1472,16 @@ static inline int virtqueue_add_packed(struct vir=
+tqueue *_vq,
+>                         flags =3D cpu_to_le16(vq->packed.avail_used_flags=
+ |
+>                                     (++c =3D=3D total_sg ? 0 : VRING_DESC=
+_F_NEXT) |
+>                                     (n < out_sgs ? 0 : VRING_DESC_F_WRITE=
+));
+> -                       if (i =3D=3D head)
+> -                               head_flags =3D flags;
+> -                       else
+> -                               desc[i].flags =3D flags;
+>
+>                         desc[i].addr =3D cpu_to_le64(addr);
+>                         desc[i].len =3D cpu_to_le32(sg->length);
+>                         desc[i].id =3D cpu_to_le16(id);
+>
+> +                       if (i =3D=3D head)
+> +                               head_flags =3D flags;
+> +                       else
+> +                               desc[i].flags =3D flags;
+> +
+
+The head_flags are not updated at this time, so descriptors are not
+available, the device should not start to read the chain:
+
+        /*
+         * A driver MUST NOT make the first descriptor in the list
+         * available before all subsequent descriptors comprising
+         * the list are made available.
+         */
+        virtio_wmb(vq->weak_barriers);
+        vq->packed.vring.desc[head].flags =3D head_flags;
+        vq->num_added +=3D descs_used;
+
+It looks like your device does speculation reading on the descriptors
+that are not available?
+
+Thanks
+
+>                         if (unlikely(vq->use_dma_api)) {
+>                                 vq->packed.desc_extra[curr].addr =3D addr=
+;
+>                                 vq->packed.desc_extra[curr].len =3D sg->l=
+ength;
+> --
+> 2.34.1
+>
+>
 
 
