@@ -1,125 +1,90 @@
-Return-Path: <linux-kernel+bounces-137304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336D689E028
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:16:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9501789E064
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:30:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 643B41C22C11
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:16:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8488B2A3D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3C213DB9B;
-	Tue,  9 Apr 2024 16:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EB413DDC2;
+	Tue,  9 Apr 2024 16:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h/7Nii/8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j3DE68XL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5D4EAD0;
-	Tue,  9 Apr 2024 16:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B9B13DB90
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679401; cv=none; b=S+Om4hfToagJ6Rf3PrIgCS6NTkNtE8emLuICk9GtJdL6J98xs86wbdDkjOO/ovn9R2y0HlEco+5s+HaeGL7flC1YvN/itMv8ZBpY6AeDXyPmSQz0a10NikS/k+5ba6646O4DGK7+tu7HWsSfcB0yohFczhzgKq4J/+/vmVKYaD8=
+	t=1712679331; cv=none; b=u9jOv11k1YNSqJ/vnpqlHD9dy9xseMy1Pxm7kWYxzfVKQPChRA3xrgECH8eD5ApRPvG52WX4gdqU4j1zuQPJA40stn4PLvxQHWkkdpRTEwlm/zRdOeHg+utiDufUUfU1p9PFMNU1+4pCFWP/IJdNHNqOAkd0vcpioe3WYsrAweE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679401; c=relaxed/simple;
-	bh=gAkb6N8iEk+2d1ruINc6J6Am4Q4iLiEhaX4dERfkTJU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sNhgQLd72ymWUgktDcKVK62nQkN6Qpkd3L6qokVs7euYX6Fmpj8HyJRmrf26vh0nxHTDZQmtLVUMJcTuvgmB/4gmlJ8gpw88xsS72g/UhGUDC58RrRxr5x++60hu4WaMHyeCQJ8SADNEZGv7AVgvM26t64hsWL1Jiif6c5YQFWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h/7Nii/8; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1712679331; c=relaxed/simple;
+	bh=tquQcscQg2VUyGjSzRTkLvgJjpDLbwWYpnqfct1sEjQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U9tfmBIFtQi3Le6sjptudoIUWWL+fnq6vMTzvl6GCxPjBR6E2fMHJCMYuRtY8GIn3khkYDz8sH50XymePBtYG7deu2RKikXYYH85NzsPO7TmxmvtrHpxN/zn0akxnWoOYcv31Md/kjojXoY+BzeOVXGawIh4mqbWnab0hvDvYZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j3DE68XL; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712679399; x=1744215399;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gAkb6N8iEk+2d1ruINc6J6Am4Q4iLiEhaX4dERfkTJU=;
-  b=h/7Nii/8epnvzQDxVB6TEnLDilTvuVVbl3Xr611H2xJ+rkjiNNuFCMOR
-   Z2NtHtszA3wEV3+NpqslTcW80I+b3FtYOq3aqI5GNbuK0dqP/7em9Rd1y
-   6LvSpDzUgUCvB7DflpUp2PYpVIAN24e+FRMumodcnHYAdyL6nJ3YjibKP
-   HgDUaIevEs0vY+LfLThXCLrNNeIyl6GodgEbrDav9wK7BIWW6cNSrH0eN
-   WBzbeFo85l3jtiOR7cidpNoz8Bwwl6LJyzdwSaa01767mVFTGyMJ0ECiy
-   QTKeSx2Rx90rFMfBNC54+8Hp5uGRBgooLEm/7nUvDIQ/HY8VYfnH89pLK
+  t=1712679329; x=1744215329;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tquQcscQg2VUyGjSzRTkLvgJjpDLbwWYpnqfct1sEjQ=;
+  b=j3DE68XLyjxsDcwY/MLhJ/5DJNaQcRGvYzwwIOF67XU9Vwptd72YW63s
+   n7z6djCgyvFWJL7U18CHTU6TviuIJrvi3rBUjD9W08xDYNFpc1rFLlsEM
+   PGgVguDS6F5lEEiJdhH4sXEDuo1pbxI0NzsoVJkCdJbAdcHmxMDrHer73
+   K/sCzvdziRVKzW9ozBiacsh+0ii5rqDXNBpuwl3wUJIAlp9rlK2K8iVSZ
+   FJFcJa5qU9YzsuDLhXRpDTCOOWNBX00TmSlpwDm3keygld+S2eykGSa7d
+   bBEOAn3DtvyyBnBdViq3j/BiTNUfcn347lauOB+s/nTbVr/bc4Am311wN
    g==;
-X-CSE-ConnectionGUID: 5O3+nCTnSMSFT+//b3lokQ==
-X-CSE-MsgGUID: dcxW97fORqWlES6g2hwoVA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18608245"
+X-CSE-ConnectionGUID: cbx0nYBCRkKtyiOxcFM9vA==
+X-CSE-MsgGUID: W9YJdyhrQ4OVs3EE7Cqi5Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33409815"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="18608245"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:13:42 -0700
-X-CSE-ConnectionGUID: DnuX48JvRde8FL+hyX7eyw==
-X-CSE-MsgGUID: OQQ7xYa7T4eb81gd7GDZCQ==
+   d="scan'208";a="33409815"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:15:28 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093592"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="20156749"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:13:39 -0700
-Message-ID: <44af8014-f73c-4ef0-9692-07e8df18fe24@intel.com>
-Date: Wed, 10 Apr 2024 00:13:36 +0800
+   d="scan'208";a="937093592"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 09:15:26 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 90A7B279; Tue,  9 Apr 2024 19:15:25 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andy@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v1 0/2] auxdisplay: charlcd: Add missing macro and forward declaration
+Date: Tue,  9 Apr 2024 19:14:43 +0300
+Message-ID: <20240409161523.935384-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "seanjc@google.com" <seanjc@google.com>
-Cc: "davidskidmore@google.com" <davidskidmore@google.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "srutherford@google.com" <srutherford@google.com>,
- "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "Yamahata, Isaku" <isaku.yamahata@intel.com>,
- "Wang, Wei W" <wei.w.wang@intel.com>
-References: <20240405165844.1018872-1-seanjc@google.com>
- <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
- <ZhQZYzkDPMxXe2RN@google.com>
- <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
- <ZhQ8UCf40UeGyfE_@google.com>
- <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
- <ZhRxWxRLbnrqwQYw@google.com>
- <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
- <ZhSb28hHoyJ55-ga@google.com>
- <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
- <ZhVdh4afvTPq5ssx@google.com>
- <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 4/9/2024 11:49 PM, Edgecombe, Rick P wrote:
->> I don't want JSON.  I want a data payload that is easily consumable in C code,
->> which contains (a) the bits that are fixed and (b) their values.  If a value
->> can
->> change at runtime, it's not fixed.
-> Right. The fixed values have to come in a reasonable format from the TDX module
-> at runtime, or require an opt-in for any CPUID bits to change in future TDX
-> modules.
+Add missing macro and forward declaration.
 
-I have a thought for current situation that TDX module doesn't report 
-fixed CPUID bits via SEAMCALL interface but defines them in docs. VMM 
-(KVM or userspace) can maintain a hardcoded array of fixed CPUID bits 
-and their values according to TDX docs.  And VMM needs to update the 
-fixed array by striping out the bits that are reported in 
-TDSYSINFO.CPUID_CONFIG[], which are configurable.
+Andy Shevchenko (2):
+  auxdisplay: charlcd: Add missing MODULE_DESCRIPTION()
+  auxdisplay: charlcd: Provide a forward declaration
 
-If the newer TDX module changes some fixed bits to configurable bits, 
-They will show up in TDSYSINFO.CPUID_CONFIG[]. So VMM can update fixed 
-array correctly.
+ drivers/auxdisplay/charlcd.c | 1 +
+ drivers/auxdisplay/charlcd.h | 2 ++
+ 2 files changed, 3 insertions(+)
 
-In fact, this is how TDX QEMU series current implements.
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-However, it requires TDX module to follow the rule that if any bit 
-becomes not fixed, it needs to be reported in TDSYSINFO.CPUID_CONFIG[] 
-as configurable.
-
-It's just for the case there is no interface from TDX module to report 
-the fixed CPUID bits in the end.
 
