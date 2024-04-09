@@ -1,207 +1,139 @@
-Return-Path: <linux-kernel+bounces-136411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B9089D3C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:05:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4D589D3C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 691482843F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:05:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9F71C224B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87497E0EB;
-	Tue,  9 Apr 2024 08:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B9B7E59A;
+	Tue,  9 Apr 2024 08:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LSzM80L3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2fkzI7y"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3847E7D417
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF857E112
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712649948; cv=none; b=QD5VYEufBmYyXiD3H/mLKsHJow/KB/092d0OQc79rEtITCG7G5h6g+z5te3XbXWmUjOoGRR+xR04g4F0LiFCEK4OsA5ndD70aH9ox4Ycj1Rkn5g/daDd1yAkkffd3j5ZEq+SvswlMWNYS4YHPSBH0g+e3zILZuaFchCn30jvBLI=
+	t=1712649952; cv=none; b=a8EpOgHTzTBlk+tyJ8xyXR8tDisdo1OOTy0DNcbL4Mrxt9ufRRDU8VT/vDw7a7qTuK1MUCZR7f8E78dKpcDOnnC5+eVA6ZjPEUtUOjnVqafsA8UDFzFh6VjHzZHhFpa+zILjM2HB3ppG5XtzwZ/2YmrGAqnb96Vj+tQwEL7s9OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712649948; c=relaxed/simple;
-	bh=oyYKBlKWgHqUsK47m7D9mlhtiYD7DPYvUpkrMcB7Hzo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uloAN1IBblMnhfuAKxOzf8MfEVmCuGNmmc86PvYrCkQB9HDyXekPxTW1dmC9j91URjc40RtBwZTmig4ArFGOcb2j6MiH9gUnV08W3Lvm+yxt3UKtTxPjNnf+eOu4GNjohR+kcfV7tBFaCsUskQeJra4/HGF6LeKDFh9gjjQD1hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LSzM80L3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712649946;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=m31w2Bc3GpWr2G2turL7uZeQ4TjHzIC1RFvX783g3Mw=;
-	b=LSzM80L3mb9uDcQnndrT99lbY89D8FOhzOVLd+WPweg0Ry7mJqefE7s1HvoT757KzLUcf3
-	e04Q9jyJPppAve9lfhUN7a3WxKA3w1FJztPqPTSCxSAb1AIV3wYYSevgJl0RW4yrMkSRSb
-	6KD7TsZcp4Vdvb3FIlan6qCg9Nlwm9M=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-447-6DmFLPWqPv6bLDOdUuIu9w-1; Tue, 09 Apr 2024 04:05:37 -0400
-X-MC-Unique: 6DmFLPWqPv6bLDOdUuIu9w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41641a8895dso13278995e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:05:37 -0700 (PDT)
+	s=arc-20240116; t=1712649952; c=relaxed/simple;
+	bh=kO1tNZxP0wkRZvHmrwV5luGXqWpuyvapnuwxjqt7xgg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aVk7lkjQC9KcS/HZzoUd+AVodevR6Ldo5VtnA+VasqNTd/rAm2vpJStwgEnEvmywGqmGEfkkR5+zoxh0ZUP9cLDAwYnWNxnGQiiWLZBS55FB1qAgZS+gDTXzfTIVpfbd8DRF6gK7P24PsjYeUnSZLxLwdFhbE8Bel78hEqP7bDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2fkzI7y; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so2070317a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712649949; x=1713254749; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=53D6mYwekcZo+rbQ++8tdmxbDB0J/LHg13ve9dwFXD8=;
+        b=H2fkzI7yaY3WlRrY9vNqrfW+NKjugbFDXUN+gmF9oR44pnBlvKYuOQ5H7BWgV2b4vD
+         4cYuIP6jdyf+iwETNEw+YBe7IGMad+3EyNFsovk70/tPK16m9f4xeu7P52idM21IgHSO
+         IZrIrydHS1rRrMPWjiNkXNx5CmSTOW5cQXYXLQRPkncb8rtJomDrne1MjSlX3Bu3xiH4
+         9FSV1QA99Z6CWbLO3SbOCc76VaP22TBgycF5nKbJivc6XloTVZmiEE+r4Q+1vIAlylaZ
+         aCSxN29XOmGjqih5Zdgf3eMLBkMugrxLjyMIOWFin4SIM/ydsX2NRWg+rQIAWfi2slep
+         rZfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712649936; x=1713254736;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=m31w2Bc3GpWr2G2turL7uZeQ4TjHzIC1RFvX783g3Mw=;
-        b=o7xBjnTVHEfxFFb8L2hxDF1Q3Cdr7PlXdW26WP+YyuKIiJc9YGpEhzGPkOhcSjzkKB
-         e6hGonfIlVak5hf+DoZt7Tf0jDw8jx1L+Abz9IyR1FyYUyEujBRh7Kcnl3tuOnKaM/G+
-         uqRWuwuLAX2F/ZqZ2S8ts2vb3u38W0e8bqLolhlVKNWR3lZNwDydo9vxN00MHssafAvv
-         jPWKCu5sIZEq6OV3Gn/uXeX9Lw0ZXEL7dlobafGb02pI4Excje6XqakBhQMh29/LaDcy
-         X/IXf9vw6hRQOlkuRiC5OhBU0xLjQubBl2NnKRVya0nfABY+N2amDort8f59zlHRhc6H
-         /G1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXLqfyWULrYeG4zgdJee3Zn0V/GBO554KJJdNtrK5U2ddLCZ+/cG8gSOohWksc7S7prwc4N389iIoRkJTGl/h+Lq3ThBMCcx6OMvzzw
-X-Gm-Message-State: AOJu0YwCX+zduEYH59K43TEuJrnHqlEczJi+rxrKQqXp3CpDEjAsEhKo
-	OghccvhDVYtmnnpUlZJ1l3FGulQG1ow2v3GnLToMiWYMtx6bhjTrJloqOWZeKoCpV9KooO4SXc6
-	XzpQnQuKwXlTzGTTRnIpuX4H5SQ4ggfqwvIRIBAQGlUu44+BA+QHzhh5mU4XiBQ==
-X-Received: by 2002:a05:600c:1d88:b0:416:ae85:4126 with SMTP id p8-20020a05600c1d8800b00416ae854126mr564818wms.25.1712649936321;
-        Tue, 09 Apr 2024 01:05:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGQgKJlydiq1QBYNVuP/vy4+pTniCNXqPpxffkpVMrIxaNpbuSrsgAFkgv7Dss/DgoSeVTEpA==
-X-Received: by 2002:a05:600c:1d88:b0:416:ae85:4126 with SMTP id p8-20020a05600c1d8800b00416ae854126mr564796wms.25.1712649935911;
-        Tue, 09 Apr 2024 01:05:35 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
-        by smtp.gmail.com with ESMTPSA id u22-20020a05600c139600b004162b4c6366sm16349118wmf.20.2024.04.09.01.05.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 01:05:35 -0700 (PDT)
-Message-ID: <1e19965c-51f2-4f7a-8d29-e40f4e54a72c@redhat.com>
-Date: Tue, 9 Apr 2024 10:05:33 +0200
+        d=1e100.net; s=20230601; t=1712649949; x=1713254749;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=53D6mYwekcZo+rbQ++8tdmxbDB0J/LHg13ve9dwFXD8=;
+        b=VPp+GCtzgEX027wZlsZCYYZ9E3YLya+4bkZ0JDV0BGV69SYPxhn187jflnswarWnAT
+         CALfWRvh9SVnhW52Komfya3PxRI0drRuOTZ88E6jTZWq/JNekaAgUdg9fM78OSu2YikI
+         i1sTpOnYCMHlAZkjWHzSzhMF1wOrbXUrgNq64xpmOnnDGyrg0zDRAcgxT+/0dYrUEQu2
+         6aL0QDulPraWrWMba5yFdYCHtL+dUJQaJac9NXC9LzjuXN9MxLVx5tMNBTuTkPHHNhdj
+         LCG5Uc/8dyHLN4maWUZDmzY3b3GFCqsTwBCC0fDeYA3l4fyvzG3FjqcEMaLwVXXJYSHB
+         RKPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXTIb8VdbejzLIRY844sFHEwMU8hVxV8USMeMn7fgExFzRCJ0hXcMe1VD7u+zDIc3ek7tAn/sAmXMAsSsuuJS+59WTofRGNH+8p9aKs
+X-Gm-Message-State: AOJu0YwS6D0MlqgryVBtCWH1YYQDsdbkFi6TL/Q9FZ3xhqSrzxWe8IlK
+	6afYbyaRJLEo/Dh15Pqaim43KlB+UbNOAfTNjXJF/dAeiWarSif7
+X-Google-Smtp-Source: AGHT+IESh4hc+E/nydRuDLNH7lDRaToGZpJKCxrfUmU90dnoQWKx7L0rZDDtcs7NFk1TQoNCjifmnQ==
+X-Received: by 2002:a17:906:f58d:b0:a51:9f5b:b659 with SMTP id cm13-20020a170906f58d00b00a519f5bb659mr8794849ejd.34.1712649948802;
+        Tue, 09 Apr 2024 01:05:48 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id jl26-20020a17090775da00b00a51a93e909esm5073629ejc.135.2024.04.09.01.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 01:05:48 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Tue, 9 Apr 2024 10:05:46 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Lei Chen <lei.chen@smartx.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] x86/tsc: print some log if calibrated tsc freq
+ deviates from original too much
+Message-ID: <ZhT22tl/Iho5M+1x@gmail.com>
+References: <20240408100607.1732600-1-lei.chen@smartx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/31] x86/resctrl: Fix allocation of cleanest CLOSID
- on platforms with no monitors
-To: James Morse <james.morse@arm.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
- Reinette Chatre <reinette.chatre@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
- Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
- D Scott Phillips OS <scott@os.amperecomputing.com>,
- carl@os.amperecomputing.com, lcherian@marvell.com,
- bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
- baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
- Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
- dfustini@baylibre.com, amitsinght@marvell.com,
- Rex Nie <rex.nie@jaguarmicro.com>, Dave Martin <dave.martin@arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-2-james.morse@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240321165106.31602-2-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408100607.1732600-1-lei.chen@smartx.com>
 
-On 21.03.24 17:50, James Morse wrote:
-> commit 6eac36bb9eb0 ("x86/resctrl: Allocate the cleanest CLOSID by
-> searching closid_num_dirty_rmid") added a Kconfig option that causes
-> resctrl to search for the CLOSID with the fewest dirty cache lines when
-> creating a new control group. This depends on the values read from the
-> llc_occupancy counters.
+
+* Lei Chen <lei.chen@smartx.com> wrote:
+
+> In most cases, tsc_khz is refined by hpet on boot. But in a few
+> production-level nodes, the refinement fails because calibrated
+> freq diviates from origin tsc freq more than 1%. Printing some
+> logs will help get this info.
 > 
-> This support missed that some platforms may not have these counters.
-> This causes a NULL pointer dereference when creating a new control
-> group as the array was not allocated by dom_data_init().
-> 
-> As this feature isn't necessary on platforms that don't have cache
-> occupancy monitors, add this to the check that occurs when a new
-> control group is allocated.
-> 
-> The existing code is not selected by any upstream platform, it makes
-> no sense to backport this patch to stable.
-> 
-
-It's weird to not see RESCTRL_RMID_DEPENDS_ON_CLOSID appear in any Kconfig file.
-I guess it will all make sense once the refactoring is done :)
-
-As Reinette comments, likely we want here:
-
-Fixes: 6eac36bb9eb0 ("x86/resctrl: Allocate the cleanest CLOSID by searching closid_num_dirty_rmid")
-
-> Signed-off-by: James Morse <james.morse@arm.com>
+> Signed-off-by: Lei Chen <lei.chen@smartx.com>
 > ---
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/x86/kernel/tsc.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 011e17efb1a6..1767c1affa60 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -149,7 +149,8 @@ static int closid_alloc(void)
->   
->   	lockdep_assert_held(&rdtgroup_mutex);
->   
-> -	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
-> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID) &&
-> +	    is_llc_occupancy_enabled()) {
->   		cleanest_closid = resctrl_find_cleanest_closid();
->   		if (cleanest_closid < 0)
->   			return cleanest_closid;
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 15f97c0abc9d..a68b16e72df1 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1435,8 +1435,15 @@ static void tsc_refine_calibration_work(struct work_struct *work)
+>  	}
+>  
+>  	/* Make sure we're within 1% */
+> -	if (abs(tsc_khz - freq) > tsc_khz/100)
+> +	if (abs(tsc_khz - freq) > tsc_khz/100) {
+> +		pr_warn("Warning: TSC freq calibrated by [%s]: %lu.%03lu MHz deviates too much from original freq: %lu.%03lu MHz\n",
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Yeah, so it wouldn't cost us anything to more precisely define 'too much':
 
--- 
-Cheers,
+ s/deviates too much from
+  /deviates by more than 1% from
 
-David / dhildenb
+Right?
 
+> +			hpet ? "HPET" : "PM_TIMER",
+> +			(unsigned long)freq / 1000,
+> +			(unsigned long)freq % 1000,
+> +			(unsigned long)tsc_khz / 1000,
+> +			(unsigned long)tsc_khz % 1000);
+>  		goto out;
+> +	}
+
+The warning makes sense I suppose, if it's one per system and once per 
+bootup [right?], but I think pr_info() would be plenty enough priority for 
+this condition - especially as we didn't have the warning before and don't 
+know how frequent it is?
+
+Thanks,
+
+	Ingo
 
