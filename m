@@ -1,117 +1,94 @@
-Return-Path: <linux-kernel+bounces-136846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 441AC89D8ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:11:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1738F89D8F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5214B251E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:11:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4394288F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF96F12E1C4;
-	Tue,  9 Apr 2024 12:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4D912BEAC;
+	Tue,  9 Apr 2024 12:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lr6otbaZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKb8gmM1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1166B12D753;
-	Tue,  9 Apr 2024 12:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C261B80043;
+	Tue,  9 Apr 2024 12:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664649; cv=none; b=iYmqEGrouVexhiPbK8YoDVdp+CTBm1AEQTzDxGDT21OYI5DV7H9QW5bhXWO9c3oX0cj54dVAcA9inJACfc8UnOBdLI7afJhs2DgSCv8Jc/N2B3JA4h++4Naxqm1/LZY9IleEmjFOF5Zva6jI/H6gl84JVXqWenfKZcxWHvTuplA=
+	t=1712664704; cv=none; b=OUGrZxN9mPOWZuKPkAgD5KHmWZslHJl2op+EDJNJQlI13YJkwPid6tPnAd7WRAR4DSGLqtMZwoTOYeGanrudvB8TfI64Y7nCSHeTVs2vEuBCULLoBWEEbyBRDHyUdqOtALQ6lkDz56KdBiE4UEYz2ypv/Sc58ou7S0zC4zqlOMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664649; c=relaxed/simple;
-	bh=qPcpjQQA+x/Lp3zoDAguMcAnH3yp4AUeYMdHe1M4OcE=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=jRDcaNG84OAu8rLYy2L9rI60105pFASeQD8y+QSFdxCLci4UGSzwT8SN2HJv1ZxtD6RBjqgBfTvyuONVbE85Y4rUC0Df8xfJ0woTDa7cuPhb8ESAYzJslfixAP0wvdXgwkeh9mlfDxOYlUBEU6QPJEhIwiLpkgU28iMCW1/WKhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lr6otbaZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ACE4C43399;
-	Tue,  9 Apr 2024 12:10:48 +0000 (UTC)
+	s=arc-20240116; t=1712664704; c=relaxed/simple;
+	bh=BVOgIna6UH5Fe8n7tYM9YU/VXuuxjddECrXcSWyZ7o8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJc4jtjX2nh4bDY+5UilMcVkRBgD+aqmLgXPpP2Zh9BbWzjUXlN0XdZXtW23HWbYQ8mXEAm1XCn1kErcQO4wxKhza4YOXM/hl5izjxRwx6l5sv8csj457FXqlVCqbNa5RygWFGUzvQyaRSZHXe5jVIbjp2s/TnHVPcwP9G8xvME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKb8gmM1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E98ECC433C7;
+	Tue,  9 Apr 2024 12:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712664648;
-	bh=qPcpjQQA+x/Lp3zoDAguMcAnH3yp4AUeYMdHe1M4OcE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=Lr6otbaZHkCwc8rTE3hO5aEBmzcZW1GmC9RB07B4BUlkpRRo/Dj2uW7ymS7cIqQtf
-	 TI2U0yDOEl9WMMGHLaetqQHVpaud3bzGlHx/8A3G2rWc1KZvLSMiSxIrR2NQODkaNx
-	 S3F/X6kQBtaW8yaX0qCwVBdU791lVnJAxFWyXEvnjr8FcFPkrdf6HjM6YoWDjtL1sA
-	 /JSfcsu/7hCuCFyx4sBOlIDjyxfSf8VJqnSUS3MRT6HWxVpvdE9IcXtO1vs0ACEucf
-	 io9RlHyjH0Z/JkbCJmtALKfb5HFty6qkFWsqmjkNQmx0Vd9rkRpc5aK3MNjNdTsR3u
-	 Q7nZ6uDer/jzA==
-Date: Tue, 09 Apr 2024 07:10:47 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1712664704;
+	bh=BVOgIna6UH5Fe8n7tYM9YU/VXuuxjddECrXcSWyZ7o8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lKb8gmM1SkcPviIvDzzDRveN1RMXmKptiNLqx9jwXfonJ3yB6Ka1G6UANgBrEWbXO
+	 1UdU7vx3HTF5/t3c1vEsJMKeGLGTWRpY8PFtBjDBZ5AhVjoyW82ta8HkFay3RrTOKV
+	 VQ2e1SUdWIiJFDYOH61EEpXcZGhb3mjo5zxucB33i2JkBvCqllTCs9yP8Lc8hhwapC
+	 Yg2OYl+NL4eI9QY2XE9aGgO/BGQupNpJqgM/t5wjnCNXo7CRDfV5yvNEiM5meRh8iD
+	 DW+71Fuy2cgloaC/YgW7j99vfMMQaY7qLx2zUhwSDmzEZgfTEEHhzRokvlWOV2azNT
+	 Fdn9WMTLyH8rQ==
+Date: Tue, 9 Apr 2024 08:11:41 -0400
+From: Eric Biggers <ebiggers@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Chang S . Bae" <chang.seok.bae@intel.com>,
+	Stefan Kanthak <stefan.kanthak@nexgo.de>
+Subject: Re: [PATCH] crypto: x86/aes-xts - access round keys using
+ single-byte offsets
+Message-ID: <20240409121141.GA717@quark.localdomain>
+References: <20240409000154.29799-1-ebiggers@kernel.org>
+ <CAMj1kXEhrPo18dwAuzpn7R7ZGpOxr2pwuoAfGRtWwzgSF+mTsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Alexandre Mergnat <amergnat@baylibre.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Sumit Semwal <sumit.semwal@linaro.org>, Flora Fu <flora.fu@mediatek.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, 
- devicetree@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, linux-media@vger.kernel.org, 
- Jaroslav Kysela <perex@perex.cz>, 
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
- Takashi Iwai <tiwai@suse.com>, Conor Dooley <conor+dt@kernel.org>, 
- linux-mediatek@lists.infradead.org, Lee Jones <lee@kernel.org>, 
- linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>, 
- linaro-mm-sig@lists.linaro.org, Matthias Brugger <matthias.bgg@gmail.com>, 
- linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20240226-audio-i350-v2-4-3043d483de0d@baylibre.com>
-References: <20240226-audio-i350-v2-0-3043d483de0d@baylibre.com>
- <20240226-audio-i350-v2-4-3043d483de0d@baylibre.com>
-Message-Id: <171266464354.692403.15935267584546388532.robh@kernel.org>
-Subject: Re: [PATCH v2 04/18] ASoC: dt-bindings: mt6357: Add audio codec
- document
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEhrPo18dwAuzpn7R7ZGpOxr2pwuoAfGRtWwzgSF+mTsA@mail.gmail.com>
 
-
-On Tue, 09 Apr 2024 12:13:25 +0200, Alexandre Mergnat wrote:
-> Add MT8365 audio codec bindings to set required
-> and optional voltage properties between the codec and the board.
-> The properties are:
-> - phandle of the requiered power supply.
-> - Setup of microphone bias voltage.
-> - Setup of the speaker pin pull-down.
+On Tue, Apr 09, 2024 at 11:12:11AM +0200, Ard Biesheuvel wrote:
+> On Tue, 9 Apr 2024 at 02:02, Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > From: Eric Biggers <ebiggers@google.com>
+> >
+> > Access the AES round keys using offsets -7*16 through 7*16, instead of
+> > 0*16 through 14*16.  This allows VEX-encoded instructions to address all
+> > round keys using 1-byte offsets, whereas before some needed 4-byte
+> > offsets.  This decreases the code size of aes-xts-avx-x86_64.o by 4.2%.
+> >
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> ---
->  .../devicetree/bindings/sound/mt6357.yaml          | 54 ++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
+> Nice optimization!
+> 
+> Do you think we might be able to macrofy this a bit so we can use zero
+> based indexing for the round keys, and hide the arithmetic?
+> 
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+There are two alternatives I considered: defining variables KEYOFF0 through
+KEYOFF14 and writing the offsets as KEYOFF\i(KEY), or defining one variable
+KEYOFF and writing the offsets as \i*16-KEYOFF(KEY).  I think I slightly prefer
+the current patch where it's less abstracted out, though.  It makes it clear the
+offsets really are single-byte, and also index 7 is the exact mid-point so going
+from -7 to 7 still feels fairly natural.  If we wanted to do something more
+complex like use different offsets for AVX vs. AVX512, then we'd need the
+abstraction to handle that, but it doesn't seem useful to do that.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mt6357.yaml: properties:vaud28-supply: '$ref' is not one of ['description', 'deprecated']
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240226-audio-i350-v2-4-3043d483de0d@baylibre.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+- Eric
 
