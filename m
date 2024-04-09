@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-137295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2E2589E016
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:12:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652F589E019
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:12:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 578C82821D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:12:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EEFA1F24E7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F80F13D8A8;
-	Tue,  9 Apr 2024 16:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DEF13D8B7;
+	Tue,  9 Apr 2024 16:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GAFB2s1H"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WoH/D2oG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D8313D885
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E0513D885
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679143; cv=none; b=mqxjSBL9ldX11m+UbLMzdZezRvMWNGMKkz+0sjUHP72iUYu3gpQ99EsUH2nqGPTBs9NyIbhfb4RpQTUOJOKDuyOdclkfbqJTux5Q5+HEz9RcKveZrUlQBjXk8BFYHGDM//wiwAQSR3B2JwFAUCpafw/FBZf2GA6lKhDvzjdP9wI=
+	t=1712679156; cv=none; b=eJshlrfIRLYlAOQONprFV33Tc3ONkGM3YMCnw/OwPLy+Y4zkA+LVOGoLeIkvhVc+9fPr5YTfJoSaCYMo82wxRJOFVHTP4ODL3mTLKVeHoRfrJ7n8xMdakChPw/NWZFp1lnOFT5Dt0N9Fabmos9/cElhIGJPFZijWiUQctjW2EQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679143; c=relaxed/simple;
-	bh=pyCA9PFhP2vNX6M5ogJc24Wsfu/upC5dJoGcQKBRYCA=;
+	s=arc-20240116; t=1712679156; c=relaxed/simple;
+	bh=iokGLwsqJfb4NxRhk5ow1oSNlqc6dGVX7cO8ljBDKSA=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WGD3/S/97NSaczT+Yf9tWz7gvYcVxznSyGLWhk5ZOvlzsQb/hXGQo9W7Rz1O1hGLLKC74E/8wsuVjgBwp6KJfKg/nGj+Q7aN8yFuqlyCpjVElGHCjsmj/l6qBmz1sSft9bWfAIF6Q98LxWo7hGQJa2ovJRTg4U4y0+LuzfMS0Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GAFB2s1H; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=eSP3MsjJ4euPOHeGiwLatatSU25KFtdTysuwgO6HruslGzWDqc8n1ccrXeI3kJVBxi89aA5KBkQfOXojFKrs32GXWiFfxv/dtEd3CvxU1CmYpIo7NyiYuFHLwpDL3Na1cN04h+QE9eIA1BfmTvXGIB0f3ddhxWgFG+90ccedcPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WoH/D2oG; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712679140;
+	s=mimecast20190719; t=1712679153;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HdnV1A2hXwYk6KWxr2w2PhK8RwChTHZzTIDUEHBWZuI=;
-	b=GAFB2s1HMpc6K+u8Do+sTGRSuzWsxuwhZXiZ8hV+Qb3ZYaHZm4uKo1wIo7LuEx+U6dR3WZ
-	Cy6N/G0/eiKVnJ6INZXEQwCe+EOedcjKO0YcWzhEmJ6gquQYrv5LGIWgYAkceKmQpJseuj
-	kBdIXZ/qaRFdAOLfM3TZwXxpAyptAMk=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=iokGLwsqJfb4NxRhk5ow1oSNlqc6dGVX7cO8ljBDKSA=;
+	b=WoH/D2oGLu96Zo9Fcoxmffuaw5W2KJkrvYBuO4L+B0qYxp0P26BHr9z7Tm1xd5nrDUx0c+
+	W4ZyYVTI9CxKDQseLVoLRACYgxgN5cotdZgR8EMQiYHBoSq10mLQIN2DrnQIH9qIBGOQ5A
+	CQLxB/sTod0y4BAa9HWYgDyFHTgUH/c=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-qohvQCz-MX2ptOKMN4b38A-1; Tue, 09 Apr 2024 12:12:19 -0400
-X-MC-Unique: qohvQCz-MX2ptOKMN4b38A-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-434f838ac3dso2148361cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:12:19 -0700 (PDT)
+ us-mta-374-t_zNaTyMPImZj4I4rJbpNQ-1; Tue, 09 Apr 2024 12:12:32 -0400
+X-MC-Unique: t_zNaTyMPImZj4I4rJbpNQ-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-69a011f3069so48631216d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:12:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712679138; x=1713283938;
+        d=1e100.net; s=20230601; t=1712679152; x=1713283952;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HdnV1A2hXwYk6KWxr2w2PhK8RwChTHZzTIDUEHBWZuI=;
-        b=AP33su/Cp3xzIucrWrvXjZv2u9TFwaFUuxX2cMkNesek7bsNoJe0pczUGiMLsH/brS
-         duPYV34YjdR7gpby4AyO4cD5kkBGHkpcIRfrB90AceGAojDA4WeUNdGn4uq9aOWqusVf
-         eEWO1FI1yik9dpMkHdkpYfpT44nRqKtFY3gnaNp4uZ1c04y2hkRYU6uQ4lYQOnr3SJOi
-         a6HNaLf5fLgiHXpNb30GdWMYhqGMf4SRXa1dXRmHc9heres524hMo7NrxYI0o4MYZwJ2
-         qx5As7QXf41CfY3q/7pJJIOxpKrViBy8H3ij4qYyUe+g+NHh+KP/2jLAAVLvdcAntte2
-         n4iw==
-X-Forwarded-Encrypted: i=1; AJvYcCVeRkTUD75bxDTSUmPOYaKNKug4dVDnPRPzfijjtuI97nDWSCXm9ZlRkbxc/j0pOTb3Kbk7CFT4MlvDME01SmHd5ATHqyRAPKBgmL2L
-X-Gm-Message-State: AOJu0Yw2BEUuTmsUsAXkFsADKbZWo0NWsfgxofJ1OvSVmBhjSrmqS9CC
-	ySEob6k64f8JBtZRrrBoQ/eitbZw6GbYwQwOqY3i7iDU213I174onW38W7AAArCxEhcZl+urN4B
-	cIdV93tT9DQjK5D6nzOnY8ZT49P7mv+ivU6TBPo0c3K3dRqVn8Qt3FkAXfasFRg==
-X-Received: by 2002:a05:622a:10e:b0:434:a4dc:b271 with SMTP id u14-20020a05622a010e00b00434a4dcb271mr61634qtw.2.1712679138611;
-        Tue, 09 Apr 2024 09:12:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHGZPCE+gu1fW1VnnTVvcZ2y2Y+DItS/XcKXBqMoJE0dEPBo2O1FyDbA62XAZRgARpR3CPGrA==
-X-Received: by 2002:a05:622a:10e:b0:434:a4dc:b271 with SMTP id u14-20020a05622a010e00b00434a4dcb271mr61604qtw.2.1712679138294;
-        Tue, 09 Apr 2024 09:12:18 -0700 (PDT)
+        bh=iokGLwsqJfb4NxRhk5ow1oSNlqc6dGVX7cO8ljBDKSA=;
+        b=eFoMz+N9CF3w0iaYKlHWS0nR3KfD/SDVOOxiRZZ95axtMmPweY12FLht5lQ8DHQlaC
+         oGx4aqTx/E0g5OUaSIjC088QtSNb5gzCi0Ztb+tj/9RjnV7UIn2yXOUBZMFleJs9XnAU
+         5IqG7CXQY/EEH7HEcHNlSodhIfjW7jAXSp5qFo2I4UiDSqzknHtzmnif5/FbFO/4HNpU
+         1wdaRSGnJ+jXp4D/E0pJVOsEXgXv3at2O3vDV+SXXiXF9Yhj7trofVvzkVd5zEjRJgqS
+         ltStbNANMZk2ztMuEf8QIMJNmY81imewl0lFPzig+L3EFoBqfDBIpjSMKGNtPlyAudTU
+         N0zg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVyrmMvnqKxC0phNRgeFROLnrOEB6uCWDGYyyej3BCkQ04xxrrXqV9EnGuvMLzlUKIhDRfPGlW7ftpYkEXCJAEYkiVf/pGw0R4l7Fo
+X-Gm-Message-State: AOJu0YxcCOfpzCuVKt1dB8wmcg9smq/VECX2J+pWYwGma1kC8m+E1bIL
+	vbIIwelRF69YfRNomGBYZv2yj5CDr5r84cnGo+1+wjno5vQh5VUY4HahNqGOpo8/kY1tGxIgayi
+	HRyNYJJJW4oUFl46uzKlPd5AnmjZik9+i1vyNxc7MfyxZThSIbhZCBhVcLDkeqw==
+X-Received: by 2002:a05:6214:aa8:b0:69b:f01:6fbb with SMTP id ew8-20020a0562140aa800b0069b0f016fbbmr4689376qvb.22.1712679151778;
+        Tue, 09 Apr 2024 09:12:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG93zhGMVddyGB46z5gVtmxtUIAOe63e/8vzI7DtDyZWQ1wYJNVu71Eew4ofejY6k77HYYMrg==
+X-Received: by 2002:a05:6214:aa8:b0:69b:f01:6fbb with SMTP id ew8-20020a0562140aa800b0069b0f016fbbmr4689326qvb.22.1712679151462;
+        Tue, 09 Apr 2024 09:12:31 -0700 (PDT)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ka2-20020a05622a440200b00434c680abbasm1164463qtb.93.2024.04.09.09.12.13
+        by smtp.gmail.com with ESMTPSA id bp9-20020a05621407e900b00699376bcc9fsm4115136qvb.123.2024.04.09.09.12.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:12:17 -0700 (PDT)
+        Tue, 09 Apr 2024 09:12:30 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes
- <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar
- <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+Cc: Juri Lelli <juri.lelli@redhat.com>, Joel Fernandes <joelaf@google.com>,
+ Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Vincent Guittot
  <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
  Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
  Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
@@ -83,15 +83,15 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes
  <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul E.
  McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, Xuewen
  Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
- Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, Davidlohr
- Bueso <dave@stgolabs.net>, John Stultz <jstultz@google.com>
-Subject: Re: [RESEND][PATCH v9 1/7] locking/mutex: Remove wakeups from under
- mutex::wait_lock
-In-Reply-To: <20240401234439.834544-2-jstultz@google.com>
+ Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, Connor
+ O'Brien <connoro@google.com>, John Stultz <jstultz@google.com>
+Subject: Re: [RESEND][PATCH v9 2/7] locking/mutex: Make mutex::wait_lock irq
+ safe
+In-Reply-To: <20240401234439.834544-3-jstultz@google.com>
 References: <20240401234439.834544-1-jstultz@google.com>
- <20240401234439.834544-2-jstultz@google.com>
-Date: Tue, 09 Apr 2024 18:12:11 +0200
-Message-ID: <xhsmhbk6ia52c.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240401234439.834544-3-jstultz@google.com>
+Date: Tue, 09 Apr 2024 18:12:26 +0200
+Message-ID: <xhsmha5m2a51x.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,10 +101,11 @@ MIME-Version: 1.0
 Content-Type: text/plain
 
 On 01/04/24 16:44, John Stultz wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
+> From: Juri Lelli <juri.lelli@redhat.com>
 >
-> In preparation to nest mutex::wait_lock under rq::lock we need to remove
-> wakeups from under it.
+> mutex::wait_lock might be nested under rq->lock.
+>
+> Make it irq safe then.
 >
 > Cc: Joel Fernandes <joelaf@google.com>
 > Cc: Qais Yousef <qyousef@google.com>
@@ -130,66 +131,13 @@ On 01/04/24 16:44, John Stultz wrote:
 > Cc: Thomas Gleixner <tglx@linutronix.de>
 > Cc: kernel-team@android.com
 > Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-> Acked-by: Davidlohr Bueso <dave@stgolabs.net>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> [Heavily changed after 55f036ca7e74 ("locking: WW mutex cleanup") and
-> 08295b3b5bee ("locking: Implement an algorithm choice for Wound-Wait
-> mutexes")]
+
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+
 > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> [jstultz: rebased to mainline, added extra wake_up_q & init
->  to avoid hangs, similar to Connor's rework of this patch]
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> [rebase & fix {un,}lock_wait_lock helpers in ww_mutex.h]
+> Signed-off-by: Connor O'Brien <connoro@google.com>
 > Signed-off-by: John Stultz <jstultz@google.com>
-
-This looks mostly good to me, some preemption questions below.
-
-> @@ -934,6 +942,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
->  		}
->  	}
->  
-> +	preempt_disable();
->  	raw_spin_lock(&lock->wait_lock);
->  	debug_mutex_unlock(lock);
->  	if (!list_empty(&lock->wait_list)) {
-> @@ -952,8 +961,8 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
->  		__mutex_handoff(lock, next);
->
-
-(minor nit) Could the preempt_disable() be moved here instead? IMO if it's
-closer to the unlock it makes it clearer why it is there
-(e.g. sched/core.c::affine_move_task(), rt_mutex_setprio(), __sched_setscheduler().
-
->  	raw_spin_unlock(&lock->wait_lock);
-> -
->  	wake_up_q(&wake_q);
-> +	preempt_enable();
->  }
->  
-
-> @@ -1775,8 +1782,9 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
->  	 * irqsave/restore variants.
->  	 */
->  	raw_spin_lock_irqsave(&lock->wait_lock, flags);
-> -	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state);
-> +	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state, &wake_q);
->  	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-> +	wake_up_q(&wake_q);
-
-Shouldn't this also be wrapped in a preempt-disabled region?
-
->  	rt_mutex_post_schedule();
->  
->  	return ret;
-
-> @@ -122,6 +123,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
->  	if (!ret)
->  		atomic_inc(&rwb->readers);
->  	raw_spin_unlock_irq(&rtm->wait_lock);
-> +	wake_up_q(&wake_q);
-
-Same question wrt preemption.
-
->  	if (!ret)
->  		rwbase_rtmutex_unlock(rtm);
->  
 
 
