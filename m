@@ -1,117 +1,140 @@
-Return-Path: <linux-kernel+bounces-137378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAC689E131
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:12:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9191489E135
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C752862A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:12:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42618286465
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0FC156868;
-	Tue,  9 Apr 2024 17:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F40815574A;
+	Tue,  9 Apr 2024 17:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="M7/MoRa7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hw6oQfAJ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgpnfeFN"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B444215622F;
-	Tue,  9 Apr 2024 17:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E6312E1D5;
+	Tue,  9 Apr 2024 17:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712682697; cv=none; b=t4/ICKaLP+9ea32Y8czIt8HXQsv2xBcsIX2wIldY57gB8WIz1+9JesEnCRM2HWNJGir4GRWsTYtIZYyRbSAsgOAZ9mbxx3LGfFIoxg7pC3aVRALrAOUS9fYcX665HihZIZ7E0+RUuGJTKszIWNdHaqowoX+7HKKeoKCLh5Rnx+s=
+	t=1712682735; cv=none; b=VYBjRbEqMPSIU8AzBaGXC6CBNXQrBm0QZMxkyaJknn3JfClAZD93wcmtKT/uF6f0QHw6eQFlgxL/LKE2ScefDP4XLUPrQWCoqPZjhl17lv22I3QswAJtFZKTlmkRatl9lUgEfNWBr38GsHKeTdA8DMG+kii0lb17NUbowIeM2DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712682697; c=relaxed/simple;
-	bh=+lMudVO1KpWj8hIQyKPdZlasETmNsNY1oslBbmT25P4=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ibFt7Hkn+Bk+WJdIeQxRlGP6P2TRq3cKMj7OJHTbTJ8K+vsKhEUkop0HFOJCe5QI2RugFztDHDZfyCJZIOfEx9HTzATrH+3S8Stz8PB+xFQ9t6Eu/5zIhWeLEsNFatBz+X28ywzMAzINCZJvo7BjEt149F2B6JxEj/ZN2b+0VSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=M7/MoRa7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hw6oQfAJ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 09 Apr 2024 17:11:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712682694;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WXmfCgGFg1bhPyrSG6Lg0RkAm6b8W8XTVMobhwWE6s=;
-	b=M7/MoRa7b5cgD3X0FoAuJrVAwFl0E6/gx21VL5S9gM/j1b12zvZyIcDFoDH4gBnX/RHzau
-	cJToq0+fanD5ftpNacSeVaR3iLVD5nnI1hTAoJNeI6tsrWi4KwGywStVxYzTqwaEGgX/6E
-	oMZtGkQdgOMB5khHXSjwXgCZK5e1JrIWz53FPPiad6z9X7JVPj8ORXtGZpu9DC488q/4OK
-	0Fzn72C2HMTaQMNsUrM53vk+RAidlHibDb/rlbn6IVIdqVd82jnXQnAbpmDk2WahbchHfT
-	+hPQkT/ygVTzXkCavKJn1fmwGD3onn1WRSkaj9XoneBHnmBWPfji9/UcOmqBkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712682694;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WXmfCgGFg1bhPyrSG6Lg0RkAm6b8W8XTVMobhwWE6s=;
-	b=hw6oQfAJOV1letKzP1qIIRTEpxpZhnFV0njJQ+3lMkT/yhJg9JzpsLP5JVVwyE1yHUs9sE
-	Y7+AxsaTPGhc+zDw==
-From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/alternatives: Remove a superfluous newline in
- _static_cpu_has()
-Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240327154317.29909-2-bp@alien8.de>
-References: <20240327154317.29909-2-bp@alien8.de>
+	s=arc-20240116; t=1712682735; c=relaxed/simple;
+	bh=avtQoYEPbu2+Jr0W5m1ghEuAGynrnjvGqeyVENfv9tU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fA5DTzNjVWzDlA+CySAg8GT2+JWRYfFXJXALXrkoBHHcD8inBsDSU005AGQHqL0Nwvxil90MwNgH2t3LjtZFniPQcrbEFysNSav/WZxsHuIUd8IBYK9I1ovLB9h4IQ2pFYjBwqBMdHuuzplfNBIqHnTsmgxUr3c2QJ5HHkqZwcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RgpnfeFN; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso7900714a12.2;
+        Tue, 09 Apr 2024 10:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712682732; x=1713287532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=avtQoYEPbu2+Jr0W5m1ghEuAGynrnjvGqeyVENfv9tU=;
+        b=RgpnfeFN5RTt9XLtfwViH4g2S0SpXVv5rBHVXvdfPEP44G0gSYJrkp2+2pDyn3CjBK
+         GSy7G6JE1PzB4haSCZ9VqMIKOh1kRNASZrZ5rp7jDWIEEqaDwqwYDgnA//5XS12/iCYE
+         LwB9cDmz0V3CBq7w3sHHcaLtF2m8nFQtbc5+IgJkEGP8rGX5e8+Bcwg+0DrS8ZkWdVEX
+         AgrJR3B27DHM+VWIugiV1URbz+O9Ug8SS2CNwJXYd8wtwwhIFr1GS85tCPuTerMQ4V12
+         gdx/sX3yadrDm4nsjsP7Tk8xNVmb6h4G7MVftJbEGbci27cOX+eZlAZaEW9y6DWbzDlL
+         NayA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712682732; x=1713287532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=avtQoYEPbu2+Jr0W5m1ghEuAGynrnjvGqeyVENfv9tU=;
+        b=k/YQ3z4n9xQd+huRLLWpp9G7k7zaHxIvH4vklN1UZNMrwcVP2bZ8fufJmP9AeNXIqD
+         R7q474k+ybnLqtBAs4ckFGxDGshJxOIXGCdWRt+ZNpvQtMB/36dJNcukkw00dJfNUBRR
+         pAgBOJdUusQO+beHVm61uetnjs7o2NauVleUyqG9xTclayMxo2p7F0SjztDP5YYbaXP7
+         2s66TN5Q9B84/zQa2Y9ERoulIz7Azk695DwaZA4oATW65F0AnN8KCyY497DfuPxQf7A9
+         gIvqpVxpHkgN/+uNJxQiB30E0DaEV3gWIc3OJu2eyOcCK6gEmQsT6qc1TSHjryLETvQw
+         YNEw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8l1o7VpMMEyLxFnDr/zdUZN3pvYzF4HimJwwdgmsUpllBS7KGLt/xmUgok76kFLE0agXaoLnSsSqn50kjIWx6S46/R65sdPV5hlFniS/q7DwMFXV1B5KX3aEXkEeb4kBbXPNz8FxgQKlpKl71aI3/pXmg1UBFH+SO6gz/w4PfyRgxJboIh4o=
+X-Gm-Message-State: AOJu0YybLNUc++3WQ6kjbMugMrtOssRSU/e+SQHdNqEqldc420PVsLQ3
+	sTW/mmnqs6S8TW8JMUpnEsWg62c1s0Nj4OBkPq3eqzcozE84vuSQtOrOAsSRRzfdiVUJ7aBoxk+
+	872PVo/jL6Jsh5wRrfNKPphoWOag=
+X-Google-Smtp-Source: AGHT+IHDsDzpN80Q+dT8Z1O9ekHUAbkM8i2z9y0uAzBM2Co9XDpeUNjqG0qPrG/s7Ymg03pkuU0oARufzvBH2JCkaX0=
+X-Received: by 2002:a50:c305:0:b0:568:b622:f225 with SMTP id
+ a5-20020a50c305000000b00568b622f225mr85452edb.30.1712682732145; Tue, 09 Apr
+ 2024 10:12:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171268269354.10875.12889115088213385677.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-3-ce2b864251b1@linaro.org>
+ <pncr7ecf4eir36skul3iwt2nf5bpuwd5zjfzzfwwnxjwe4hoes@6z2xe54crijp>
+ <d8a2ef87-f29e-4bdb-a9b8-591b8bd5d2b2@linaro.org> <tkcbl2iwcy3feoggbk737gx32qsxe5p4ad6lfrujy2pazccrhm@kif3guuzay6h>
+In-Reply-To: <tkcbl2iwcy3feoggbk737gx32qsxe5p4ad6lfrujy2pazccrhm@kif3guuzay6h>
+From: Rob Clark <robdclark@gmail.com>
+Date: Tue, 9 Apr 2024 10:12:00 -0700
+Message-ID: <CAF6AEGsg2xCCC27t_Gqu=MMQ6tckVw=Zj90p4x7EuOm+VKA=ig@mail.gmail.com>
+Subject: Re: [PATCH 3/6] drm/msm/adreno: Allow specifying default speedbin value
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the x86/asm branch of tip:
+On Tue, Apr 9, 2024 at 8:23=E2=80=AFAM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Tue, Apr 09, 2024 at 05:12:46PM +0200, Konrad Dybcio wrote:
+> >
+> >
+> > On 4/6/24 04:56, Dmitry Baryshkov wrote:
+> > > On Fri, Apr 05, 2024 at 10:41:31AM +0200, Konrad Dybcio wrote:
+> > > > From: Neil Armstrong <neil.armstrong@linaro.org>
+> > > >
+> > > > Usually, speedbin 0 is the "super SKU", a.k.a the one which can clo=
+ck
+> > > > the highest. Falling back to it when things go wrong is largely
+> > > > suboptimal, as more often than not, the top frequencies are not
+> > > > supposed to work on other bins.
+> > >
+> > > Isn't it better to just return an error here instead of trying to gue=
+ss
+> > > which speedbin to use?
+> >
+> > Not sure. I'd rather better compatibility for e.g. booting up a new
+> > laptop with just dt.
+>
+> New speedbin can have lower max speed, so by attempting to run it at
+> higher freq you might be breaking it.
 
-Commit-ID:     a0c8cf9780359376496bbd6d2be1343badf68af7
-Gitweb:        https://git.kernel.org/tip/a0c8cf9780359376496bbd6d2be1343badf68af7
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Thu, 04 Apr 2024 12:04:25 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 09 Apr 2024 17:59:10 +02:00
+Usually there are some OPPs in common to all speedbins, so picking a
+freq from that set would seem like the safe thing to do
 
-x86/alternatives: Remove a superfluous newline in _static_cpu_has()
+BR,
+-R
 
-No functional changes.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240327154317.29909-2-bp@alien8.de
----
- arch/x86/include/asm/cpufeature.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index daae5c6..cd90cef 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -168,8 +168,7 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
-  */
- static __always_inline bool _static_cpu_has(u16 bit)
- {
--	asm goto(
--		ALTERNATIVE_TERNARY("jmp 6f", %c[feature], "", "jmp %l[t_no]")
-+	asm goto(ALTERNATIVE_TERNARY("jmp 6f", %c[feature], "", "jmp %l[t_no]")
- 		".pushsection .altinstr_aux,\"ax\"\n"
- 		"6:\n"
- 		" testb %[bitnum], %a[cap_byte]\n"
+>
+> >
+> > >
+> > > If that's not the case, I think the commit should be expanded with
+> > > actually setting default_speedbin for the existing GPUs.
+> >
+> > I think that should be addressed, although separately.
+>
+> I'd prefer to have it as a part of this patch, but I'd not NAK it just
+> for this reason.
+>
+> --
+> With best wishes
+> Dmitry
 
