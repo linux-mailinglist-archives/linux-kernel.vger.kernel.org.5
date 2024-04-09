@@ -1,47 +1,49 @@
-Return-Path: <linux-kernel+bounces-136712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33E589D76F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:59:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844F289D771
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:59:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5705D2826E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:59:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1776C1F21CF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49F485273;
-	Tue,  9 Apr 2024 10:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D208D127B78;
+	Tue,  9 Apr 2024 10:58:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Xp/Be+KY"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="j40dIMXa"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F9584A38;
-	Tue,  9 Apr 2024 10:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE76E8529C;
+	Tue,  9 Apr 2024 10:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660337; cv=none; b=Owjb9W158E63vmPiR6c+5p842PFZXLuXfsHDpBDVgcJIXI5Jn0snQy0m1We1TP2CVGBq9C20WnQCDR7GswSLvGifjnO0mdSuuguUxiKTRkisvlux+avDtmLkiw3Q2ZXetSKlT3vEUHGoE/A+xDC+WayIPyvBIPFV35XhVo0onQc=
+	t=1712660338; cv=none; b=oIPTJUto+2VSymDTRy4zizLNpcfd5JHwdNq2cEnJGejP6bUEI2SnryuyNEdw/LSDV56Qo6rK3WsrjV24cEmx6JfhcbS1XZY+5g0lm7GOD+peKDh279FMJ7TbaaLoYwJVbzi6WySsn5YlDDXdESYeuKhbWcHM7d6KV6hXy4BMyPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660337; c=relaxed/simple;
-	bh=xgdlhQ6no+eBBAb+8ul9yi1YXZyIFcsX7DxOmNDGJJo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TfH5KlpPLoHqbXsJuyVvQ/5bVoHc9vHZiH7IWcVLk6sQ+hNOWP+M8LPV/XEEDGZIh6OYC/X/lyFaDeepIruSEy+y0kgr48cEgsdFoyfmE0GvZqcKq8JZYmykiByyeFKYt4zbX5hLP4ErVV3r55pWdpBvDjbTttAb/M0X9wuTT9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Xp/Be+KY; arc=none smtp.client-ip=217.70.183.198
+	s=arc-20240116; t=1712660338; c=relaxed/simple;
+	bh=/ioZuY2opA9crgD3+O/NIdgBS5tBNlapFgt5HOS9l/w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NP/P3RpWWGXWqxhiuusk5L0sp0P+lXyqWG+3yxvuSJ3nvis7ZWqyCxEAV2ClQ0mc6cyi1iPLMXjEyPAycQKFeywDpvMMyhxIr3l/QhWz+4R/yvGNsaV+hCPivo+jyi80aj97GfVu4XvesNelEr2gotOesGMGfTwfr2jSHuCe8Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=j40dIMXa; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 92C1BC0005;
-	Tue,  9 Apr 2024 10:58:49 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 22ACFC0003;
+	Tue,  9 Apr 2024 10:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712660333;
+	t=1712660334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=6JiJoj71wwbMuDRfP0xJZk24eqUqNdtQq+lnhKdtFz4=;
-	b=Xp/Be+KYhX8cLiNvgJXLYasUPgi4VJJprc8ZAxNepBYojwjLX8MujPdt/9V53aMZCMamLp
-	CSsrWCA3kiRG3i6RO8s5HLaHM+DooFh9C37r+w/OYt9DeA5PTfdKqh+lW/yr6Ce418x+DW
-	bn8UzDo47ShIYAjJgvrBvixmTRJkkBGXfQeQ66CzkR2at5R4/o4A6S+cU1Ksq4wOLY1Gcg
-	V1kvVVFjFXrNmjF2WdaUPGQDr4vyrYH7JU2PHWjZD8I8Lcy0UiWfd0Mf1z8PArrnbd0a4T
-	ZFCytKTFzfMI6QMYbBNc+Z4+/4PiCNyM2oISgcTT0TyruKGxI3qxdUPf7s3xPA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=thJ8uvI2UgimyENihTVu33JjOwHGCEHl5NHGiXq0AbU=;
+	b=j40dIMXaGwyapL2aYoUuRDx/UYqjbGCLyboxaey5CI570patOpSyU5/gmmo7TmyxXFnLec
+	ngsZoB+FGw5Dnt4EOSNpBup6dEduNKkUNutXZDtb0YZp3gTsOJxGA/F/rDqFiTbkSNpksf
+	o87T5dlOhOQw6DgT/BFKm+fFuPkMcVy2WUREqt9tALowjdndI4yml5NfYwBsf4GbrPqOQc
+	Nb3FWLbRx91/yzIYSdBkxGTJu8qBuri8hCjifQgJA6XCMQqZcyTsKGhVav5p8dSad4HA/D
+	hutOrhvFAWm8xE3O46Le824Zu9SyUznwLIro66O/JcAMYyBX72ut8kO7dLjOXQ==
 From: Maxime Chevallier <maxime.chevallier@bootlin.com>
 To: davem@davemloft.net
 Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
@@ -68,10 +70,12 @@ Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
 	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
 	Simon Horman <horms@kernel.org>,
 	mwojtas@chromium.org
-Subject: [PATCH net-next 0/8] net: Allow targeting specific PHYs through netlink
-Date: Tue,  9 Apr 2024 12:58:38 +0200
-Message-ID: <20240409105847.465298-1-maxime.chevallier@bootlin.com>
+Subject: [PATCH net-next 1/8] netlink: specs: add phy-index as a header parameter
+Date: Tue,  9 Apr 2024 12:58:39 +0200
+Message-ID: <20240409105847.465298-2-maxime.chevallier@bootlin.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240409105847.465298-1-maxime.chevallier@bootlin.com>
+References: <20240409105847.465298-1-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,52 +85,29 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Hi everyone,
+Update the spec to take the newly introduced phy-index as a generic
+request parameter.
 
-This series is a resend of the las 8 patches of the link_topology series:
-https://lore.kernel.org/netdev/20240404093004.2552221-1-maxime.chevallier@bootlin.com/
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+---
+ Documentation/netlink/specs/ethtool.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-There were a some conflicts on the netlink specs, which I guess made the
-series fail to apply.
-
-All patches of this series allow accessing and using the PHYs from the
-topology through netlink commands such as PLCA, PSE-PD, Cable testing
-and strsets, and introduces a dedicated command to list said PHYs.
-
-This re-send is simply rebased on net-next, with the addition of
-Andrew's Reviewed-by tags.
-
-Thanks,
-
-Maxime
-
-Maxime Chevallier (8):
-  netlink: specs: add phy-index as a header parameter
-  net: ethtool: Introduce a command to list PHYs on an interface
-  netlink: specs: add ethnl PHY_GET command set
-  net: ethtool: plca: Target the command to the requested PHY
-  net: ethtool: pse-pd: Target the command to the requested PHY
-  net: ethtool: cable-test: Target the command to the requested PHY
-  net: ethtool: strset: Allow querying phy stats by index
-  Documentation: networking: document phy_link_topology
-
- Documentation/netlink/specs/ethtool.yaml      |  62 ++++
- Documentation/networking/ethtool-netlink.rst  |  45 +++
- Documentation/networking/index.rst            |   1 +
- .../networking/phy-link-topology.rst          | 120 +++++++
- include/uapi/linux/ethtool_netlink.h          |  20 ++
- net/ethtool/Makefile                          |   2 +-
- net/ethtool/cabletest.c                       |  16 +-
- net/ethtool/netlink.c                         |   9 +
- net/ethtool/netlink.h                         |   5 +
- net/ethtool/phy.c                             | 300 ++++++++++++++++++
- net/ethtool/plca.c                            |  19 +-
- net/ethtool/pse-pd.c                          |  13 +-
- net/ethtool/strset.c                          |  17 +-
- 13 files changed, 594 insertions(+), 35 deletions(-)
- create mode 100644 Documentation/networking/phy-link-topology.rst
- create mode 100644 net/ethtool/phy.c
-
+diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
+index 87ae7b397984..e8bdad790e3d 100644
+--- a/Documentation/netlink/specs/ethtool.yaml
++++ b/Documentation/netlink/specs/ethtool.yaml
+@@ -35,6 +35,9 @@ attribute-sets:
+         name: flags
+         type: u32
+         enum: header-flags
++      -
++        name: phy-index
++        type: u32
+ 
+   -
+     name: bitset-bit
 -- 
 2.44.0
 
