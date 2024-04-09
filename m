@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-137686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F03389E5EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:09:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B539A89E5F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F01101F23C45
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:09:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDF7CB225BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE1D158DB3;
-	Tue,  9 Apr 2024 23:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138A8158DAF;
+	Tue,  9 Apr 2024 23:11:44 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDEC158DBF;
-	Tue,  9 Apr 2024 23:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B16C8564F;
+	Tue,  9 Apr 2024 23:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712704164; cv=none; b=FPkkuv67qnd/CdteoUa/g+PjU82RTI6o+j1ROZNrXwy+6YesuCeFt8HruJM07uohzJsYbYHfLLzFFeo/3yBOi3mx/lcrKm1KOUYVM8/fCUo91duRK9V7gvw8zfc+G2ZNGiSCZ7yDDRDHg6+8GJpYEzH07e3WTXUWlfHWdEucRwQ=
+	t=1712704303; cv=none; b=ngKPQKkT178F2IJ/YZsQ8piHMMEDIpFqUQESE/eN7p3F9p7iy6E4N4cuM5ZsXKDeg20J2oMFkMSlR8TdNcWhQ1u/BuS9PmxZsoUdRyQmwYq5IJFv83QZLfDldnNNpcxLmwx9ms0e6MxjtXGLpwgSpF4FzNzkLQzkHCFo27a0QsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712704164; c=relaxed/simple;
-	bh=9fQdU5nAO7R939RxH7SSdOIQ3j5lyXRYukuzfa+NXNE=;
+	s=arc-20240116; t=1712704303; c=relaxed/simple;
+	bh=zqMvd3goUtBo22/1JXz1tlIsS734Ma7sGBUHXK3xrqE=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=blyn0vpdpCIWQkgS5qyUmw08s72EvbubneMG8yfoZBRmzxVvARjmtgF3e0P4iTC1uhHOdVtAOof5zFObN/6XZNcXHoJP6bRCitccTJCMqrSpbJvtI7KwwJ+EfYQRPWzHLykT9JAjexQFB1YHWfGpzrtn+mm96UlczuKO/69Ge2Y=
+	 MIME-Version:Content-Type; b=AdwpLoW8hTl3BfIYdsDTge0LCuDKIp3O9DFfATKTflI3ufLJacUs4p6PUTp0wjVh8v0dVFfxAWtW8RVG4dcpZ98rC40Xm1UvIHzjB1KYx/wMKOb67WfRlaj+r8vICniaArYwqE0K3UqnUBQuEwfVByN7y+RK4yAhVA/pzSZIq5Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4227CC433C7;
-	Tue,  9 Apr 2024 23:09:21 +0000 (UTC)
-Date: Tue, 9 Apr 2024 19:11:56 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F495C433C7;
+	Tue,  9 Apr 2024 23:11:40 +0000 (UTC)
+Date: Tue, 9 Apr 2024 19:14:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Kees Cook <keescook@chromium.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
@@ -47,13 +47,13 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
  Suleiman Souhlal <suleiman@google.com>, Linus Torvalds
  <torvalds@linuxfoundation.org>, Catalin Marinas <catalin.marinas@arm.com>,
  Will Deacon <will@kernel.org>
-Subject: Re: [POC][RFC][PATCH 1/2] mm/x86: Add wildcard * option as
- memmap=nn*align:name
-Message-ID: <20240409191156.5f92a15c@gandalf.local.home>
-In-Reply-To: <202404091521.B63E85D@keescook>
+Subject: Re: [POC][RFC][PATCH 2/2] pstore/ramoops: Add ramoops.mem_name=
+ command line option
+Message-ID: <20240409191415.5a7b445f@gandalf.local.home>
+In-Reply-To: <202404091514.B97720B8@keescook>
 References: <20240409210254.660888920@goodmis.org>
-	<20240409211351.075320273@goodmis.org>
-	<202404091521.B63E85D@keescook>
+	<20240409211351.234897475@goodmis.org>
+	<202404091514.B97720B8@keescook>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,15 +64,41 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 9 Apr 2024 15:23:07 -0700
+On Tue, 9 Apr 2024 15:18:45 -0700
 Kees Cook <keescook@chromium.org> wrote:
 
-> Do we need to involve e820 at all? I think it might be possible to just
-> have pstore call request_mem_region() very early? Or does KASLR make
-> that unstable?
+> > @@ -914,6 +919,19 @@ static void __init ramoops_register_dummy(void)
+> >  {
+> >  	struct ramoops_platform_data pdata;
+> >  
+> > +#ifndef MODULE
+> > +	/* Only allowed when builtin */  
+> 
+> Why only when builtin?
 
-Yeah, would that give the same physical memory each boot, and can we
-guarantee that KASLR will not map the kernel over the previous location?
+Well, because the memory table that maps the found physical memory to a
+lable is marked as __initdata, and will not be available after boot. If you
+wanted it for a module, you would need some builtin code to find it.
+
+> 
+> > +	if (mem_name) {
+> > +		u64 start;
+> > +		u64 size;
+> > +
+> > +		if (memmap_named(mem_name, &start, &size)) {
+> > +			mem_address = start;
+> > +			mem_size = size;
+> > +		}
+> > +	}
+> > +#endif  
+> 
+> Otherwise this looks good, though I'd prefer some comments about what's
+> happening here.
+> 
+> (And in retrospect, separately, I probably need to rename "dummy" to
+> "commandline" or something, since it's gathering valid settings here...)
+
+Yeah, that was a bit confusing. I kept thinking "is this function stable?".
 
 -- Steve
 
