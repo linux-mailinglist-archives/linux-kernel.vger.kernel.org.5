@@ -1,120 +1,195 @@
-Return-Path: <linux-kernel+bounces-137514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7D889E32E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DFD89E332
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:22:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27541F23741
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E10E1F232AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB5A157478;
-	Tue,  9 Apr 2024 19:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD8E15746F;
+	Tue,  9 Apr 2024 19:22:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aol.com header.i=@aol.com header.b="psyXiAU3"
-Received: from sonic304-52.consmr.mail.gq1.yahoo.com (sonic304-52.consmr.mail.gq1.yahoo.com [98.137.68.234])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="04nXNOxE"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D9A153587
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.137.68.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62C91386C0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712690470; cv=none; b=btUQjRwdKYc5WTJQhJPYWF1GOoq6xzBeJIQsdbemvef+xmzddEaYc/6ylLdu80M5awiH4IZD9cn7uHp9sTPM+kbbk5Iir1WlinkG8ut07lTX0MkGbdKrYApUYIrqJWH1qmPvXrgO3nkoUDY2vByNc351z0opRWLdT7gPCAt3E5w=
+	t=1712690547; cv=none; b=nLXiyBJQdV3o/OaOxExrQG6NCnPlOfz0ewLpdqm3x0+Zl10U/GQ8amRQP+TL3IrmGllcpVZDuIOH+HpcKOyHF4Lu+uKkQFGjFOUtTqOqYr71jWIu1lQpfxFA7rke7sEWu3LR1IQXsK5m/ObkF2EkoJ+Stvdmvj3g4CvnFa/cihQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712690470; c=relaxed/simple;
-	bh=aZ5Cpwss2meUrwX7WIoDa1wROmmOr4qO2DM2OUclIPY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=G5KBWByjo1pis/AHuJ4vYlJ4/gUtuL9qpwvQe+bGq/ME6giTqEPXO6WEzj5z/7rsucPrZCmtkcqoP8/Aw0ksNVVM+CCafyYbAlHXr3Myy1LYtaNMfQqLgcFcvrjzJjnoqO+OWQ7LgoBHqKgSFGpcR0FTfTjqnZNwhJURgSGrlqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=aol.com; spf=pass smtp.mailfrom=aol.co.uk; dkim=pass (2048-bit key) header.d=aol.com header.i=@aol.com header.b=psyXiAU3; arc=none smtp.client-ip=98.137.68.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=aol.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aol.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1712690468; bh=aZ5Cpwss2meUrwX7WIoDa1wROmmOr4qO2DM2OUclIPY=; h=Subject:From:To:Cc:Date:In-Reply-To:References:From:Subject:Reply-To; b=psyXiAU3Ji7imvhT7MtwG35akSGhEk+imcSmL45Ayu+7Nr+y8kqVynsXVv5aB/xStYnQUoyjREI7MsYOsz9OUYN+IDQgudmRWLCVxiaY5eEL3Axx9oOskWGiqDTBntGJR8IdflXjn7Qol/Xa/SSBeCk2eBYgqnGt9qTBfa8EPv5IXZOu4JfZQINy7vYd7od78as2xL3u3L4lHe03fpB9nL67EW8XSeYBGzxl6COiZbsG6m86XEVVnjZCDPnqPEmXfWwjGy68MjJr2GO50qel/NeOPkLtGgjaPQxcSynkruGy/weBQU0r0J0tXB6nGejNYcQB30byWfvrXErObEZGWQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1712690468; bh=/rNsnzRlcGROtAqbOaVVLqtV0FJV1VZ2z/iOUoQFDIO=; h=X-Sonic-MF:Subject:From:To:Date:From:Subject; b=YJza9BeCU3nnqas6m9sNKMxIC8KHCW8keIM/drRhu6lf5GlOhrZXKkCtGbkybUEmmTuIdipotHZ1wUloha0i9NhMx5RUGYPDBjrepsjpfbhhfl/FwSCuwmjj1x7Hr7dvWcivXttuy7OOhfP6IJJ2JlzjLv2hjhGI3Kg2uYj6CTgUDfbweKaBcHsV01yija6LsjPrFwzurV9tAtc6uCkL4CTQwHpCMeaOl03tSLHkCBvdAmGbG3grTo7t01mWV/r1yga3lupKn+RymJo3TfTAXihf/yxqLQkkiCu4kZIiC+air7c8DTHR4NNp+Yy056kGFd5xyk8lDwLwawvamZ5tOw==
-X-YMail-OSG: W7_l5k0VM1mmT2hoIM4RcvPt_8VM2DVbHJ8JBUseiOg4YvfC3mPuK8nTKK3Mkr.
- LDXZMvBH99OlUHWBosqAbUSNA7H2zRzOBhiOVWG6aBFnjygpAmBz5eQkZzzK4RF3zxTy3IhK4SY9
- NJv.fIWH1HN6yTi9PhY6m0vSU3ZtXOYnSOV4OyW5MCVYqsRqEx82aPS8QN.etn8Go6INCNi.foq5
- voMg85jglwUX5gnii21M84j55kXY4S.xjQdd12x6IMp3Z8J3QPw0jWRyHhVjlTXaNTPYUtdlKbIo
- JQyCC5hGpnieThgnJjLDIKc9rYS2HXD1AXbL_p4VugdLHp7DJMOUGIl.VEiQBJwLJ9pBrh4cCPae
- KnlHNwwGLEXCX4UlzfsVBDlzY1H6kIASfgC5gr_.cxrXdXKro_Lh5E2jWTavTr9i4fqgLIz8NQDS
- T_gAGXeDL8s_MlXGzpkMSgzh1sz4QYUBOWpAOrxVFpalQIyUY16dOwGUz5SbkuGM5ZVVb1uORlaA
- AWplUZwj8bdK2TWSPuk4V_Za17dJ8Yg3HE4v26vYKKqNClqBXcMRg5LrBFLtDCM6vY7jR.lBjFYi
- RsEnEuW09zEI0MUEzRpg7wJ6whvVJHqneEDm3TUty1Zud7ZltrNCxCOW4GtvcUHkdm5aSBUvmx_v
- RS0EU6riTVZBC3ghu2jikKHHrqZK1fOuL9Ujxtyst3HQBCRmb93udbtIrNp65vMJGc2Skd2gz10t
- 4tRNWV3HuK3jYLZ7sN3cum56xCBjA8vAj1eUFb9LqH_5cUJTqfXXiNZX8k7jyMI9CJeiBiX3v8vC
- bap.hFNAjULzfH6GYhH4T4ZxDgkvH_xh8XUQ5cTc1BWlnlmwGBRiyey2iEDrGEBp11fKCnZLiJnf
- 20QtsdP4iZhJe7Fjm7jfODtPVfran.SX1LJ5MeHY.q_NIWHZz8P4GorrK5oTHKKiQLstw9OOA09V
- WSLK3PSr88XCTQBiVkt3qw92G0yPcx0SuXDgPN4Rwk.EvQFPxx90KetJ_lTSovgmsOCQI92EO2D9
- QdTB8QJjyLpHm0WlT9LyCmt231YqfzG3SA_ploo8NpfRUa9l8Ku3SCQgbX6hchQ6qQUB5.TpM._H
- FImz5j1cx8Y87IzFDoQ6OCPbtUwbdPldeFuAKFkRrbgOrTZVxpkta8e3EefgXIUzbuB.rJmAG_z7
- KIek6Nx.FSIQ6fjx3E0VAf3LrQC0XpKKwk5YUeBXvqABB773qSW0ySnpunigi4iW8SnipNcb8GeY
- FKLLgI5bGb8slf4Les4n2rrA8cUBT8Xt32m.NhhNKRu93XHn30PoiPYRusvsY0X2vQxeRCCHJ91w
- DDeEsa4LxR5gUrjpZe7ZIiIQT8ZTuYeXu1uJLoYKSqkjmS1Pd1gyAMfjBmjl84IIDTWkYAmPSQOp
- 3Q8UzWvyKHLGjcw8eO.ciu1NnLuOViQoPqjgBUNYKi3uyGuwQCKyRGFHyiWXZ.51vE46eVZe_F5S
- bSL387gqLEcDdg.rYqu1jXpIu1I7IqIfRs2foChm9lwhQQFQ6TDQcuDnyl2MRYYYHxb0OKRnoes8
- qwGODYi9oSxg09MiiByAAXWZj2iROyFskjnaziOpY9y3N_nyaLm7Oj5YNiTyG5JOM.mphXlVlA1i
- Q3FbpMv2k8zA7b9CGb0Ng4ij0HS1wpKPzS6eSQlFF4aVmRMsaDAQzPvR.nkMl9mpiIl8hQDuXgpF
- kQvanmPHmhSsYZ4_CJUztc2nEKMQjc0xe9ecnNpJkr1xmadhjKI0YkhV_8CEDn0oqkl0WjKNa5H2
- LqFkbnENChFvfcnwF63OQfKG2Acx6MmqamxO0wfrMiHdsIu8_X6rgimHRJ7ncljTPgXlCAPqY6Sg
- Jp8BN1BSYRVApxm7RxCBS0Z62t5vTV2S189C2iHmdS0NXrhpXePmzYFOJvhIo5hsXkyH6bGBFrsR
- 8SZJAMz699lwg5Hp6QAXgfxlmN1RS_97VOxiiF0STqi5XLjB9c3c1u7KsXZmMod9pQ_7paKatUOK
- yaeKftaz0wu733MHparx6.S55C4pM.S45u5as8H.Pen5lbH_6vVvsbVQmiGYuLFVSzuQgP3pl0Mr
- PhyUpv4i6xpng6XnuTqJAkghODJ5JRSN9GlOQHN7jqnK2JsJU3XGsrTcCU7IT9U8Crw.cYjeQBvq
- G3kUWVELa9jaHFZyVgO4s8.31Ykl0.vZ94fBTWCAa2eCJhI87_z1O9mpPETvHF3X8.SGs4duSBCN
- nsI_fePEZHYY8sxGqGPLcXcS93vQ9gnkK_3kFk9s-
-X-Sonic-MF: <rubenru09@aol.co.uk>
-X-Sonic-ID: f31c2d4c-0320-4c64-9e95-a943a61ff2a3
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.gq1.yahoo.com with HTTP; Tue, 9 Apr 2024 19:21:08 +0000
-Received: by hermes--production-bf1-7d6dbd57c9-kfv4r (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID d390bf4cdcc2662a3988b79bd8a73a50;
-          Tue, 09 Apr 2024 19:19:06 +0000 (UTC)
-Message-ID: <654c39d7e7c9172d165d8066a74ca81f6e208fe3.camel@aol.com>
-Subject: Re: [PATCH] spi: Add documentation for last_cs_index_mask
-From: Ruben Wauters <rubenru09@aol.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org
-Date: Tue, 09 Apr 2024 20:18:53 +0100
-In-Reply-To: <1ec0fe6c-6af0-4cee-98ba-25fb2c67ef1d@sirena.org.uk>
-References: <20240409184106.22715-1-rubenru09.ref@aol.com>
-	 <20240409184106.22715-1-rubenru09@aol.com>
-	 <1ec0fe6c-6af0-4cee-98ba-25fb2c67ef1d@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+	s=arc-20240116; t=1712690547; c=relaxed/simple;
+	bh=mgXxAGNeB9LYq0VkWdZHBGaheebBxETxANMV0aQv8tY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W7f4O42nCIC7ANFLiJSeXO9RXUx8dmmDDwjiM+KonUB2ohT9Ze5T1Ah+BJc6mXoTXJiGxm5y5cFO4mZNNyYDCBF8RsQMb2xkA5pvqKZS/K/FhfRSlWQIouorape3dOkUWcgyxjQXJ4rt1X3knWQthu2nBQXBIGxj7R+UGQcTqKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=04nXNOxE; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4daa1be011dso1749576e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 12:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712690545; x=1713295345; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z6tJNUDO0MMVmBUJFDnCuInyM8ZpQ/ZJFxGiIT+wCvI=;
+        b=04nXNOxEJvyZTnLhCRA4MALE0qbltEwvWhqFaYBgwmAswYLzXbZ7pL2icHiotql6gb
+         DMOCjp6HDu+r3VzfzCXV+Gyg9aXyiCy5vLKlArthj+45nV8qn0Wvj5AD7KtkDW9c+0y+
+         vnrJy/NoZex7sGoUtMW6SpzbNzs1+cGFOcQhNbPTVvSq0CTli56vt0gjxvo+pXhIkrFL
+         gkiFJnR73uxApydKII+MsMYs+U0vWaTUavifKpTjAykUIzNKMS0WKtz7MdYky1gfXPVX
+         L//joQ0zlQ+k0aBX4qKrIfkM4RhPoHTH86SBmStFzSyJ51nFO0t25fb4EFLwScjg4pa3
+         3GrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712690545; x=1713295345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z6tJNUDO0MMVmBUJFDnCuInyM8ZpQ/ZJFxGiIT+wCvI=;
+        b=saqhciplXWcot40io2Dy928mJRH+RJahf96aCqWneh2usS6OBSbgVjvoIFlPKQugTq
+         vkMqdPFwQuBbxi2Cm6LAqdBcuN1RPJBCzKSf72Nd20acrZNXp6Hns09xsxKv0svyj73x
+         M80RC4Cu3S3akBtJn6pJXIkT30wQgjcoWP/7ZXUbxCPHVNqUoataYT+2GBr8tmy14weE
+         HnqHJbqXI4Mcr5mtT4vRe91SbV5clSjGtZa3sYaLKLyrJTrUWHqrhoRnJHkSzVrKwGsA
+         cAnJZp9XwZy0qG74Xdb0TzarmUIUP9iql3PBKAUlA4cdK7L/L7yPkCSqirzGc+1fM44j
+         pwAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNVfHBkmzHkFSiT0usgRLlV71qaq6exa1EmZcmNA23XA1sHz9MQzt33sv4o5zN8onY0hmSuKCGSytpE9x4AVtIWVl9zOEEHle65OMZ
+X-Gm-Message-State: AOJu0Ywe9HTqldZIPuq2+3bVODq2yXzoLO50iYCDG3QySm3II5yBQrDK
+	PjX0uuXZy0fjkyBYxZO0/71RB/N2JjgoJ+3O2hnPLxof+2sNWSmbXSI1mrhnVGnayx0ec+lrKkH
+	ozRDMtQBMdJJgQx1H3jgh7Z5QIgQZ4d+FJk9i
+X-Google-Smtp-Source: AGHT+IHhUi0f43o+Q+3qmToYt7MPaLonCa6pX4N3CXqzbxJpERA5UXtUqR140PmlhoPPAn5mE1gamjGCQVAv158d7Oc=
+X-Received: by 2002:a05:6122:1685:b0:4da:aff6:5eee with SMTP id
+ 5-20020a056122168500b004daaff65eeemr715039vkl.15.1712690544607; Tue, 09 Apr
+ 2024 12:22:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol
+References: <bd455761-3dbf-4f44-a0e3-dff664284fcc@molgen.mpg.de>
+ <CANpmjNMAfLDZtHaZBZk_tZ-oM5FgYTSOgfbJLTFN7JE-mq0u_A@mail.gmail.com>
+ <05ba71e6-6b4e-4496-9183-c75bfc8b64cd@molgen.mpg.de> <782006d6-c3f1-4f61-aa40-e9b3903bdbf4@molgen.mpg.de>
+In-Reply-To: <782006d6-c3f1-4f61-aa40-e9b3903bdbf4@molgen.mpg.de>
+From: Marco Elver <elver@google.com>
+Date: Tue, 9 Apr 2024 21:21:46 +0200
+Message-ID: <CANpmjNOsZydmYVU-waN1BdA=2RH0fhjmZcjnaf4JiObA++1p2w@mail.gmail.com>
+Subject: Re: BUG: unable to handle page fault for address: 0000000000030368
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: kasan-dev@googlegroups.com, Thomas Gleixner <tglx@linutronix.de>, 
+	Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-04-09 at 20:09 +0100, Mark Brown wrote:
-> On Tue, Apr 09, 2024 at 07:41:05PM +0100, Ruben Wauters wrote:
->=20
-> > This is my first patch, so I hope I did everything right, please
-> > let
-> > me know if I need to change something, and I shall endevour to do
-> > it
-> > properly.
->=20
-> Everything looks good, only issue I can see is that this question
-> (which
-> is adminstrative stuff rather than part of the changelog) should have
-> gone after the --- below:
->=20
-> >=20
-> > Signed-off-by: Ruben Wauters <rubenru09@aol.com>
-> > ---
->=20
-> so that tooling can automatically remove it when applying.
->=20
-> However a patch for this issue has already been applied but not yet
-> merged into Linus' tree.
+On Thu, 28 Mar 2024 at 17:17, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Marco, dear Linux folks,
+>
+>
+> Am 26.03.24 um 13:44 schrieb Paul Menzel:
+> > [Cc: +X86 maintainers]
+>
+> > Thank you for your quick reply. (Note, that your mailer wrapped the
+> > pasted lines.)
+> >
+> > Am 26.03.24 um 11:07 schrieb Marco Elver:
+> >> On Tue, 26 Mar 2024 at 10:23, Paul Menzel wrote:
+> >
+> >>> Trying KCSAN the first time =E2=80=93 configuration attached =E2=80=
+=93, it fails to boot
+> >>> on the Dell XPS 13 9360 and QEMU q35. I couldn=E2=80=99t get logs on =
+the Dell
+> >>> XPS 13 9360, so here are the QEMU ones:
+> >>
+> >> If there's a bad access somewhere which is instrumented by KCSAN, it
+> >> will unfortunately still crash inside KCSAN.
+> >>
+> >> What happens if you compile with CONFIG_KCSAN_EARLY_ENABLE=3Dn? It
+> >> disables KCSAN (but otherwise the kernel image is the same) and
+> >> requires turning it on manually with "echo on >
+> >> /sys/kernel/debug/kcsan" after boot.
+> >>
+> >> If it still crashes, then there's definitely a bug elsewhere. If it
+> >> doesn't crash, and only crashes with KCSAN enabled, my guess is that
+> >> KCSAN's delays of individual threads are perturbing execution to
+> >> trigger previously undetected bugs.
+> >
+> > Such a Linux kernel booted with a warning on the Dell XPS 13 9360 (but
+> > booted with *no* warning on QEMU q35) [1], but enabling KCSAN on the
+> > laptop hangs the laptop right away. I couldn=E2=80=99t get any logs of =
+the laptop.
+>
+> In the QEMU q35 virtual machine `echo on | sudo tee
+> /sys/kernel/debug/kcsan` also locks up the system. Please find the logs
+> attached.
+>
+>      [   78.241245] BUG: unable to handle page fault for address:
+> 0000000000019a18
+>      [   78.242815] #PF: supervisor read access in kernel mode
+>      [   78.244001] #PF: error_code(0x0000) - not-present page
+>      [   78.245186] PGD 0 P4D 0
+>      [   78.245828] Oops: 0000 [#1] PREEMPT SMP NOPTI
+>      [   78.246878] CPU: 4 PID: 783 Comm: sudo Not tainted 6.9.0-rc1+ #83
+>      [   78.248289] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> BIOS rel-1.16.1-0-g3208b098f51a-prebuilt.qemu.org 04/01/2014
+>      [   78.250763] RIP: 0010:kcsan_setup_watchpoint+0x2b3/0x400
+>      [   78.252108] Code: ea 00 f0 48 ff 05 25 b4 8f 02 eb e0 65 48 8b
+> 05 7b 53 23 4f 48 8d 98 c0 02 03 00 e9 9f fd ff ff 48 83 fd 08 0f 85 fd
+> 00 00 00 <4d> 8b 04 24 e9 bf fe ff ff 49 85 d1 75 54 ba 01 00 00 00 4a 84
+>      [   78.256284] RSP: 0018:ffffbae1c0f5bc48 EFLAGS: 00010046
+>      [   78.257548] RAX: 0000000000000000 RBX: ffff9b95c4ba93b0 RCX:
+> 0000000000000019
+>      [   78.259158] RDX: 0000000000000001 RSI: ffffffffb0f82d36 RDI:
+> 0000000000000000
+>      [   78.260781] RBP: 0000000000000008 R08: 00000000aaaaaaab R09:
+> 0000000000000000
+>      [   78.262417] R10: 0000000000000086 R11: 0010000000019a18 R12:
+> 0000000000019a18
+>      [   78.264040] R13: 000000000000001a R14: 0000000000000000 R15:
+> 0000000000000000
+>      [   78.265658] FS:  00007f65e3a91f00(0000)
+> GS:ffff9b9d1f000000(0000) knlGS:0000000000000000
+>      [   78.267480] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>      [   78.268804] CR2: 0000000000019a18 CR3: 0000000102e26000 CR4:
+> 00000000003506f0
+>      [   78.270424] Call Trace:
+>      [   78.271036]  <TASK>
+>      [   78.271572]  ? __die+0x23/0x70
+>      [   78.272344]  ? page_fault_oops+0x173/0x4f0
+>      [   78.273400]  ? exc_page_fault+0x81/0x190
+>      [   78.274373]  ? asm_exc_page_fault+0x26/0x30
+>      [   78.275395]  ? refill_obj_stock+0x36/0x2e0
+>      [   78.276410]  ? kcsan_setup_watchpoint+0x2b3/0x400
+>      [   78.277556]  refill_obj_stock+0x36/0x2e0
+>      [   78.278540]  obj_cgroup_uncharge+0x13/0x20
+>      [   78.279596]  __memcg_slab_free_hook+0xac/0x140
+>      [   78.280661]  ? free_pipe_info+0x135/0x150
+>      [   78.281631]  kfree+0x2de/0x310
+>      [   78.282419]  free_pipe_info+0x135/0x150
+>      [   78.283395]  pipe_release+0x188/0x1a0
+>      [   78.284303]  __fput+0x127/0x4e0
+>      [   78.285114]  __fput_sync+0x35/0x40
+>      [   78.285958]  __x64_sys_close+0x54/0xa0
+>      [   78.286914]  do_syscall_64+0x88/0x1a0
+>      [   78.287810]  ? fpregs_assert_state_consistent+0x7e/0x90
+>      [   78.289185]  ? srso_return_thunk+0x5/0x5f
+>      [   78.290203]  ? arch_exit_to_user_mode_prepare.isra.0+0x69/0xa0
+>      [   78.291568]  ? srso_return_thunk+0x5/0x5f
+>      [   78.292518]  ? syscall_exit_to_user_mode+0x40/0xe0
+>      [   78.293651]  ? srso_return_thunk+0x5/0x5f
+>      [   78.294606]  ? do_syscall_64+0x94/0x1a0
+>      [   78.295516]  ? arch_exit_to_user_mode_prepare.isra.0+0x69/0xa0
+>      [   78.296876]  ? srso_return_thunk+0x5/0x5f
+>
+> Can you reproduce this?
 
-My apologies, I should have checked before submitting the patch, will
-do this in the future, and noted on the message, will also keep that in
-mind.
-
+This seems to be a compiler issue with a new feature introduced in
+6.9-rc1, and it's fixed in 6.9-rc2. It was fixed by: b6540de9b5c8
+x86/percpu: Disable named address spaces for KCSAN
 
