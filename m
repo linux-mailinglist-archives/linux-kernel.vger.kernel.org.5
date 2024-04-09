@@ -1,123 +1,120 @@
-Return-Path: <linux-kernel+bounces-137511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F1D889E31F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:12:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F7D889E32E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:21:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 416211C20B34
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:12:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27541F23741
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775CE1581E8;
-	Tue,  9 Apr 2024 19:10:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB5A157478;
+	Tue,  9 Apr 2024 19:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=aol.com header.i=@aol.com header.b="psyXiAU3"
+Received: from sonic304-52.consmr.mail.gq1.yahoo.com (sonic304-52.consmr.mail.gq1.yahoo.com [98.137.68.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3651157E9F;
-	Tue,  9 Apr 2024 19:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D9A153587
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.137.68.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712689836; cv=none; b=oc2pJ9WBx9bo83+blcBgxhFfL4eDUiLD8D5+CLRkEB6nDKWP3hC4QqvG9ggwlgeOfKYJgyw45/FgCg1Xhq0aU7YaO9o/V3bkefsY8Tl6c5JW6LxLcPRApgrywNFYYyiLluIB1QTnMxuKBS1XX1faE2FQQW1H+XfJGWvC1InNRIY=
+	t=1712690470; cv=none; b=btUQjRwdKYc5WTJQhJPYWF1GOoq6xzBeJIQsdbemvef+xmzddEaYc/6ylLdu80M5awiH4IZD9cn7uHp9sTPM+kbbk5Iir1WlinkG8ut07lTX0MkGbdKrYApUYIrqJWH1qmPvXrgO3nkoUDY2vByNc351z0opRWLdT7gPCAt3E5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712689836; c=relaxed/simple;
-	bh=40pMLAjuY85R1jd9YK3z5hduTrwij5o0IKhxYs6j88A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=gRLGQn0wrGU8YEcTFXQTV9dOW20uT6SVU6bnqB4GUnR+93/iYs3Hlu/zyLPL0UTcLvep/SxoHT+Osr553RtM8TqaE6yL1adLoGW0kn5NR10jjNXCZv6SqcdfdDziDpoddoyUsXj+OlT420ZNerhQ25fTtYuCIxnmAio9+zhuZ0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC73C43390;
-	Tue,  9 Apr 2024 19:10:35 +0000 (UTC)
-Date: Tue, 9 Apr 2024 15:13:09 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, rsavitski@google.com
-Subject: [PATCH] ring-buffer: Only update pages_touched when a new page is
- touched
-Message-ID: <20240409151309.0d0e5056@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712690470; c=relaxed/simple;
+	bh=aZ5Cpwss2meUrwX7WIoDa1wROmmOr4qO2DM2OUclIPY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=G5KBWByjo1pis/AHuJ4vYlJ4/gUtuL9qpwvQe+bGq/ME6giTqEPXO6WEzj5z/7rsucPrZCmtkcqoP8/Aw0ksNVVM+CCafyYbAlHXr3Myy1LYtaNMfQqLgcFcvrjzJjnoqO+OWQ7LgoBHqKgSFGpcR0FTfTjqnZNwhJURgSGrlqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=aol.com; spf=pass smtp.mailfrom=aol.co.uk; dkim=pass (2048-bit key) header.d=aol.com header.i=@aol.com header.b=psyXiAU3; arc=none smtp.client-ip=98.137.68.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=aol.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aol.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1712690468; bh=aZ5Cpwss2meUrwX7WIoDa1wROmmOr4qO2DM2OUclIPY=; h=Subject:From:To:Cc:Date:In-Reply-To:References:From:Subject:Reply-To; b=psyXiAU3Ji7imvhT7MtwG35akSGhEk+imcSmL45Ayu+7Nr+y8kqVynsXVv5aB/xStYnQUoyjREI7MsYOsz9OUYN+IDQgudmRWLCVxiaY5eEL3Axx9oOskWGiqDTBntGJR8IdflXjn7Qol/Xa/SSBeCk2eBYgqnGt9qTBfa8EPv5IXZOu4JfZQINy7vYd7od78as2xL3u3L4lHe03fpB9nL67EW8XSeYBGzxl6COiZbsG6m86XEVVnjZCDPnqPEmXfWwjGy68MjJr2GO50qel/NeOPkLtGgjaPQxcSynkruGy/weBQU0r0J0tXB6nGejNYcQB30byWfvrXErObEZGWQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1712690468; bh=/rNsnzRlcGROtAqbOaVVLqtV0FJV1VZ2z/iOUoQFDIO=; h=X-Sonic-MF:Subject:From:To:Date:From:Subject; b=YJza9BeCU3nnqas6m9sNKMxIC8KHCW8keIM/drRhu6lf5GlOhrZXKkCtGbkybUEmmTuIdipotHZ1wUloha0i9NhMx5RUGYPDBjrepsjpfbhhfl/FwSCuwmjj1x7Hr7dvWcivXttuy7OOhfP6IJJ2JlzjLv2hjhGI3Kg2uYj6CTgUDfbweKaBcHsV01yija6LsjPrFwzurV9tAtc6uCkL4CTQwHpCMeaOl03tSLHkCBvdAmGbG3grTo7t01mWV/r1yga3lupKn+RymJo3TfTAXihf/yxqLQkkiCu4kZIiC+air7c8DTHR4NNp+Yy056kGFd5xyk8lDwLwawvamZ5tOw==
+X-YMail-OSG: W7_l5k0VM1mmT2hoIM4RcvPt_8VM2DVbHJ8JBUseiOg4YvfC3mPuK8nTKK3Mkr.
+ LDXZMvBH99OlUHWBosqAbUSNA7H2zRzOBhiOVWG6aBFnjygpAmBz5eQkZzzK4RF3zxTy3IhK4SY9
+ NJv.fIWH1HN6yTi9PhY6m0vSU3ZtXOYnSOV4OyW5MCVYqsRqEx82aPS8QN.etn8Go6INCNi.foq5
+ voMg85jglwUX5gnii21M84j55kXY4S.xjQdd12x6IMp3Z8J3QPw0jWRyHhVjlTXaNTPYUtdlKbIo
+ JQyCC5hGpnieThgnJjLDIKc9rYS2HXD1AXbL_p4VugdLHp7DJMOUGIl.VEiQBJwLJ9pBrh4cCPae
+ KnlHNwwGLEXCX4UlzfsVBDlzY1H6kIASfgC5gr_.cxrXdXKro_Lh5E2jWTavTr9i4fqgLIz8NQDS
+ T_gAGXeDL8s_MlXGzpkMSgzh1sz4QYUBOWpAOrxVFpalQIyUY16dOwGUz5SbkuGM5ZVVb1uORlaA
+ AWplUZwj8bdK2TWSPuk4V_Za17dJ8Yg3HE4v26vYKKqNClqBXcMRg5LrBFLtDCM6vY7jR.lBjFYi
+ RsEnEuW09zEI0MUEzRpg7wJ6whvVJHqneEDm3TUty1Zud7ZltrNCxCOW4GtvcUHkdm5aSBUvmx_v
+ RS0EU6riTVZBC3ghu2jikKHHrqZK1fOuL9Ujxtyst3HQBCRmb93udbtIrNp65vMJGc2Skd2gz10t
+ 4tRNWV3HuK3jYLZ7sN3cum56xCBjA8vAj1eUFb9LqH_5cUJTqfXXiNZX8k7jyMI9CJeiBiX3v8vC
+ bap.hFNAjULzfH6GYhH4T4ZxDgkvH_xh8XUQ5cTc1BWlnlmwGBRiyey2iEDrGEBp11fKCnZLiJnf
+ 20QtsdP4iZhJe7Fjm7jfODtPVfran.SX1LJ5MeHY.q_NIWHZz8P4GorrK5oTHKKiQLstw9OOA09V
+ WSLK3PSr88XCTQBiVkt3qw92G0yPcx0SuXDgPN4Rwk.EvQFPxx90KetJ_lTSovgmsOCQI92EO2D9
+ QdTB8QJjyLpHm0WlT9LyCmt231YqfzG3SA_ploo8NpfRUa9l8Ku3SCQgbX6hchQ6qQUB5.TpM._H
+ FImz5j1cx8Y87IzFDoQ6OCPbtUwbdPldeFuAKFkRrbgOrTZVxpkta8e3EefgXIUzbuB.rJmAG_z7
+ KIek6Nx.FSIQ6fjx3E0VAf3LrQC0XpKKwk5YUeBXvqABB773qSW0ySnpunigi4iW8SnipNcb8GeY
+ FKLLgI5bGb8slf4Les4n2rrA8cUBT8Xt32m.NhhNKRu93XHn30PoiPYRusvsY0X2vQxeRCCHJ91w
+ DDeEsa4LxR5gUrjpZe7ZIiIQT8ZTuYeXu1uJLoYKSqkjmS1Pd1gyAMfjBmjl84IIDTWkYAmPSQOp
+ 3Q8UzWvyKHLGjcw8eO.ciu1NnLuOViQoPqjgBUNYKi3uyGuwQCKyRGFHyiWXZ.51vE46eVZe_F5S
+ bSL387gqLEcDdg.rYqu1jXpIu1I7IqIfRs2foChm9lwhQQFQ6TDQcuDnyl2MRYYYHxb0OKRnoes8
+ qwGODYi9oSxg09MiiByAAXWZj2iROyFskjnaziOpY9y3N_nyaLm7Oj5YNiTyG5JOM.mphXlVlA1i
+ Q3FbpMv2k8zA7b9CGb0Ng4ij0HS1wpKPzS6eSQlFF4aVmRMsaDAQzPvR.nkMl9mpiIl8hQDuXgpF
+ kQvanmPHmhSsYZ4_CJUztc2nEKMQjc0xe9ecnNpJkr1xmadhjKI0YkhV_8CEDn0oqkl0WjKNa5H2
+ LqFkbnENChFvfcnwF63OQfKG2Acx6MmqamxO0wfrMiHdsIu8_X6rgimHRJ7ncljTPgXlCAPqY6Sg
+ Jp8BN1BSYRVApxm7RxCBS0Z62t5vTV2S189C2iHmdS0NXrhpXePmzYFOJvhIo5hsXkyH6bGBFrsR
+ 8SZJAMz699lwg5Hp6QAXgfxlmN1RS_97VOxiiF0STqi5XLjB9c3c1u7KsXZmMod9pQ_7paKatUOK
+ yaeKftaz0wu733MHparx6.S55C4pM.S45u5as8H.Pen5lbH_6vVvsbVQmiGYuLFVSzuQgP3pl0Mr
+ PhyUpv4i6xpng6XnuTqJAkghODJ5JRSN9GlOQHN7jqnK2JsJU3XGsrTcCU7IT9U8Crw.cYjeQBvq
+ G3kUWVELa9jaHFZyVgO4s8.31Ykl0.vZ94fBTWCAa2eCJhI87_z1O9mpPETvHF3X8.SGs4duSBCN
+ nsI_fePEZHYY8sxGqGPLcXcS93vQ9gnkK_3kFk9s-
+X-Sonic-MF: <rubenru09@aol.co.uk>
+X-Sonic-ID: f31c2d4c-0320-4c64-9e95-a943a61ff2a3
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.gq1.yahoo.com with HTTP; Tue, 9 Apr 2024 19:21:08 +0000
+Received: by hermes--production-bf1-7d6dbd57c9-kfv4r (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID d390bf4cdcc2662a3988b79bd8a73a50;
+          Tue, 09 Apr 2024 19:19:06 +0000 (UTC)
+Message-ID: <654c39d7e7c9172d165d8066a74ca81f6e208fe3.camel@aol.com>
+Subject: Re: [PATCH] spi: Add documentation for last_cs_index_mask
+From: Ruben Wauters <rubenru09@aol.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org
+Date: Tue, 09 Apr 2024 20:18:53 +0100
+In-Reply-To: <1ec0fe6c-6af0-4cee-98ba-25fb2c67ef1d@sirena.org.uk>
+References: <20240409184106.22715-1-rubenru09.ref@aol.com>
+	 <20240409184106.22715-1-rubenru09@aol.com>
+	 <1ec0fe6c-6af0-4cee-98ba-25fb2c67ef1d@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, 2024-04-09 at 20:09 +0100, Mark Brown wrote:
+> On Tue, Apr 09, 2024 at 07:41:05PM +0100, Ruben Wauters wrote:
+>=20
+> > This is my first patch, so I hope I did everything right, please
+> > let
+> > me know if I need to change something, and I shall endevour to do
+> > it
+> > properly.
+>=20
+> Everything looks good, only issue I can see is that this question
+> (which
+> is adminstrative stuff rather than part of the changelog) should have
+> gone after the --- below:
+>=20
+> >=20
+> > Signed-off-by: Ruben Wauters <rubenru09@aol.com>
+> > ---
+>=20
+> so that tooling can automatically remove it when applying.
+>=20
+> However a patch for this issue has already been applied but not yet
+> merged into Linus' tree.
 
-The "buffer_percent" logic that is used by the ring buffer splice code to
-only wake up the tasks when there's no data after the buffer is filled to
-the percentage of the "buffer_percent" file is dependent on three
-variables that determine the amount of data that is in the ring buffer:
-
- 1) pages_read - incremented whenever a new sub-buffer is consumed
- 2) pages_lost - incremented every time a writer overwrites a sub-buffer
- 3) pages_touched - incremented when a write goes to a new sub-buffer
-
-The percentage is the calculation of:
-
-  (pages_touched - (pages_lost + pages_read)) / nr_pages
-
-Basically, the amount of data is the total number of sub-bufs that have been
-touched, minus the number of sub-bufs lost and sub-bufs consumed. This is
-divided by the total count to give the buffer percentage. When the
-percentage is greater than the value in the "buffer_percent" file, it
-wakes up splice readers waiting for that amount.
-
-It was observed that over time, the amount read from the splice was
-constantly decreasing the longer the trace was running. That is, if one
-asked for 60%, it would read over 60% when it first starts tracing, but
-then it would be woken up at under 60% and would slowly decrease the
-amount of data read after being woken up, where the amount becomes much
-less than the buffer percent.
-
-This was due to an accounting of the pages_touched incrementation. This
-value is incremented whenever a writer transfers to a new sub-buffer. But
-the place where it was incremented was incorrect. If a writer overflowed
-the current sub-buffer it would go to the next one. If it gets preempted
-by an interrupt at that time, and the interrupt performs a trace, it too
-will end up going to the next sub-buffer. But only one should increment
-the counter. Unfortunately, that was not the case.
-
-Change the cmpxchg() that does the real switch of the tail-page into a
-try_cmpxchg(), and on success, perform the increment of pages_touched. This
-will only increment the counter once for when the writer moves to a new
-sub-buffer, and not when there's a race and is incremented for when a
-writer and its preempting writer both move to the same new sub-buffer.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 25476ead681b..6511dc3a00da 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -1393,7 +1393,6 @@ static void rb_tail_page_update(struct ring_buffer_per_cpu *cpu_buffer,
- 	old_write = local_add_return(RB_WRITE_INTCNT, &next_page->write);
- 	old_entries = local_add_return(RB_WRITE_INTCNT, &next_page->entries);
- 
--	local_inc(&cpu_buffer->pages_touched);
- 	/*
- 	 * Just make sure we have seen our old_write and synchronize
- 	 * with any interrupts that come in.
-@@ -1430,8 +1429,9 @@ static void rb_tail_page_update(struct ring_buffer_per_cpu *cpu_buffer,
- 		 */
- 		local_set(&next_page->page->commit, 0);
- 
--		/* Again, either we update tail_page or an interrupt does */
--		(void)cmpxchg(&cpu_buffer->tail_page, tail_page, next_page);
-+		/* Either we update tail_page or an interrupt does */
-+		if (try_cmpxchg(&cpu_buffer->tail_page, &tail_page, next_page))
-+			local_inc(&cpu_buffer->pages_touched);
- 	}
- }
- 
--- 
-2.43.0
+My apologies, I should have checked before submitting the patch, will
+do this in the future, and noted on the message, will also keep that in
+mind.
 
 
