@@ -1,80 +1,82 @@
-Return-Path: <linux-kernel+bounces-136936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B17589DA18
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:23:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0047889DA1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF91FB240A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:23:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF48F2873AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5269412DD8A;
-	Tue,  9 Apr 2024 13:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF0A12F38E;
+	Tue,  9 Apr 2024 13:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yza+R/ef"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HqKVDGWe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D70312F37F;
-	Tue,  9 Apr 2024 13:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8EE8287F;
+	Tue,  9 Apr 2024 13:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712668993; cv=none; b=kXIgJWNPgPcEp0tAijRkbIObz9vEZ5aMacP3rc2dUFzd23Y1w9rcT+XoHcPHF2JeQAbNzrJKQalvfyh8uESTciROPtcfmZyIBkSNeZ1/z+OEya+8Ge2wEp81hoj369XQvbwuM2HBrjxyC7Vgmla+MvAdy3+VUtE6sCudOFsHjgc=
+	t=1712669106; cv=none; b=XjpoqjN938O2JevvKgTnjJjd13GWjSbPh7D+9cQYvfUjZaimD/0sWoZgvjlskCPJFDDxYq9g0cyW1TUiIj1Ox52qjHANq4MqYObGmmDjM2C5mmTFAstkoy69fxpvhxz3k3N/nA/TG8SeujhchvXTxTGWGdEVWHpss0ckFzP2IcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712668993; c=relaxed/simple;
-	bh=7SxGLOMEl/NIZezLT1wZsWVVVZ6kZmZI1q3BxM/hXrU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYzax3KqVg0VDbCwahqnWenPTr0azq1jdS1HWjHQHcM8cDDVPmrDwujjOmmr7UyS1Jg1pGvmbY9S+sCF3reYX3ism0oyD9DxPsvFwZNUn1J+XfRmM8tEFYA7CJs0O80b+pT88jM7ANNwyfdC1VZSFD/Q4XslEetkzRYRULgrPYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yza+R/ef; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B508EC433C7;
-	Tue,  9 Apr 2024 13:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712668993;
-	bh=7SxGLOMEl/NIZezLT1wZsWVVVZ6kZmZI1q3BxM/hXrU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=yza+R/efqfMzJXuaKvHTy/xH5WuJk9MVyjFKexp2bijV7avliKF3gyvQmSSU3Qyex
-	 dnWYwnJbCUsDOGq79KyHqggbyvtRSp6wgJepe9+oyPzJ6CJK7sNxItXoGPuoE1FLj7
-	 wWh1NNaaMiVHPUn3KwcZqI8qmdq5I4M9odDIxWig=
-Date: Tue, 9 Apr 2024 15:23:10 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH printk v4 08/27] serial: core: Provide low-level
- functions to lock port
-Message-ID: <2024040900-pavestone-flagman-fbf9@gregkh>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-9-john.ogness@linutronix.de>
+	s=arc-20240116; t=1712669106; c=relaxed/simple;
+	bh=lYb+9nYvWZ6/nFOvZ0AnbCOYQrH9S92MDjSojdFNMLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FMq90WqEo4ch4sZap+DRShXRmfrVVdWkQgXgCct5gldTPLl0ayWA+OkLXJjZHHDEY/5btnmJINU87e2KiBLhhlJWa7Ch+TGJp+WskN19k94+pXHU+4NzZRmb1jhrHKwdNVcS0lEyBWPcZTZPvAf63L2LpMaBSKSkNmNoFpfLU9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HqKVDGWe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7152C433C7;
+	Tue,  9 Apr 2024 13:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712669106;
+	bh=lYb+9nYvWZ6/nFOvZ0AnbCOYQrH9S92MDjSojdFNMLo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HqKVDGWenvKG+1md3BZViUm6OUHXEea/2xOh2UiaGdonxT4FUiFtM1NT2NixP5VGQ
+	 kSjB057DuhGjauEDkP2xAReiF710GsfjZPBXelpwdZbM3aOsCQBnXITOHm9QiNXZ/S
+	 9DPGMVwKGUjEoUcu0RRqnM1OXIPjAQBXkA8PbeAV3thF/pxPisMniFwQNte7DWCu55
+	 y6SgfbgH0Jn5th/ApTmco0xS254asHOulc6gDn6RoZu7q24XRd9DvwP/Q4/Vo9lW4Z
+	 uDbyjYONqXNLvB06PUVjzVlpvWVrItB67YbwX35+6wRFS+eX4o1F739ZpF7muD/yEt
+	 37bl8nBTDdhEA==
+Date: Tue, 9 Apr 2024 06:25:04 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Alexander Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
+ <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew
+ Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+ <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH net-next v1 12/12] mm: page_frag: update documentation
+ and maintainer for page_frag
+Message-ID: <20240409062504.26cfcdde@kernel.org>
+In-Reply-To: <09d7d59b-9da3-52f7-b039-acd0344c88c8@huawei.com>
+References: <20240407130850.19625-1-linyunsheng@huawei.com>
+	<20240407130850.19625-13-linyunsheng@huawei.com>
+	<b5c5866e626f6c90657a32b5e9adff724d5896db.camel@gmail.com>
+	<c1f5a78a-3040-0cc7-f113-d5ec82c6010f@huawei.com>
+	<CAKgT0UfZBGEVJa1O7cdNt6zy_EEPoGo=aW6ugRKy8a44qg0j8w@mail.gmail.com>
+	<09d7d59b-9da3-52f7-b039-acd0344c88c8@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402221129.2613843-9-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 12:17:10AM +0206, John Ogness wrote:
-> It will be necessary at times for the uart nbcon console
-> drivers to acquire the port lock directly (without the
-> additional nbcon functionality of the port lock wrappers).
-> These are special cases such as the implementation of the
-> device_lock()/device_unlock() callbacks or for internal
-> port lock wrapper synchronization.
+On Tue, 9 Apr 2024 15:59:58 +0800 Yunsheng Lin wrote:
+> > Just to be clear this isn't an Ack, but if you are going to list
+> > maintainers for this my name should be on the list so this is the
+> > preferred format. There are still some things to be cleaned up in this
+> > patch.  
 > 
-> Provide low-level variants __uart_port_lock_irqsave() and
-> __uart_port_unlock_irqrestore() for this purpose.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  include/linux/serial_core.h | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> Sure, I was talking about "Alexander seems to be the orginal author for
+> page_frag, we can add him to the MAINTAINERS later if we have an ack from
+> him." in the commit log.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Do we have to have a MAINTAINERS entry for every 1000 lines of code?
+It really feels forced :/
 
