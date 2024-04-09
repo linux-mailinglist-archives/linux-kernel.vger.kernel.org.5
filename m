@@ -1,53 +1,39 @@
-Return-Path: <linux-kernel+bounces-136732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95CB689D7B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:14:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A824889D7B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:18:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50463282BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:14:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45F4C1F24F02
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D114E86131;
-	Tue,  9 Apr 2024 11:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="NPlx3xSk"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CA08593D;
-	Tue,  9 Apr 2024 11:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7BE7D3E8;
+	Tue,  9 Apr 2024 11:18:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E2684D02
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712661232; cv=none; b=nBlMFbXrgSDYP7qXZiQSvsC1wQ1kItAW2SxBh7goRzDEUY8EASlE9DXfBvIf7ovC3oZrc6dtG96bfxio2eqd3IK15krs9aFwu71mcLpeCuAa08slKisDXrLVkregcL+yVetldu+CrkEhQQwU2g7QwCK5zJcLLAFixrHARTOBmbI=
+	t=1712661487; cv=none; b=cffkuRV0gpi+mMhGatNuiHXnVlzwvuzxnjnRBW52s+7ilqsIAZMXlTLDF397TXwG2aujWMsyWFnFYc1NitGD/6tXfEuscfD4DYOlHrnOeIO1CvDtGkNZ8DOwNSPDccAPIl1fp+BUj7Tg0eWstP+6S9o145nKpgh/aB2pK+hFILk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712661232; c=relaxed/simple;
-	bh=5bVejtBKpem9uNwEH+4qa25UXT6wHLuTwQMG/ZuVVxE=;
+	s=arc-20240116; t=1712661487; c=relaxed/simple;
+	bh=eeWEVJVftQIYGIeFfQPuu7VDG7lFVceItNQBy+NQGr0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cLyfSfsBk+aF4wN/n/FNmrpsggv1l6zWoM8XceUwXr2DxIeKgduuVgGsmQxaf4T+k4BNfjkffksGPDfk/mQ1W/GuYnKy5flrnz2rv7WGSrj0ntxGkm7ceAXRUlcZKhNsam2W8nhF/u/Lrov4BkEfSHkj1uCsAO2nAil2SrTOXR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=NPlx3xSk; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 17B06600A2;
-	Tue,  9 Apr 2024 11:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1712661225;
-	bh=5bVejtBKpem9uNwEH+4qa25UXT6wHLuTwQMG/ZuVVxE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NPlx3xSkfUiMDONhRbRsqPpV+K1d2QECtICZ0PCzvIi/FQ9hoJifUC9lY/42UM9RF
-	 w3XruSMWqTXl9FtLnPEloIVnZhzIK/A5md/K56AkZOgNjzxl3c9oFCjMjeq+C0nJ2Y
-	 P1EiqXucYSz3yKeHnoa4+3iMXNvmosE/oiHkAP66cEBKJEAdV9dwlD70/DKbqEpiFr
-	 3sUqFF/gxksTcusQPcfg9bB0vOttXMbM2qF1QCRjt3bCpRHkSTuBRX3zyo0Et5f5uy
-	 8QApBPWgNL+3+vRx4bgw5rUmvmMRlSVoE8EpDI1X9oKqkxtPW3kEAVQP55+EIfMppb
-	 fF9xP8vWu848g==
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by x201s (Postfix) with ESMTP id F200B200A3D;
-	Tue, 09 Apr 2024 11:13:22 +0000 (UTC)
-Message-ID: <2c7bc566-c975-4dd8-a17c-10c7b9ff3928@fiberby.net>
-Date: Tue, 9 Apr 2024 11:13:22 +0000
+	 In-Reply-To:Content-Type; b=BKUmV/Zo5Ez2LgotWfmfF8dJ6ENb3iYGeJVB0+BHe5tsi0BCQarNgPVRUQEz/hdW0sz+Ul+FP7Oce28xhsVxxML+X+iU0jxtqZzjGumq6US9P0IsxHJDCIIjpkNmyhPdVy+bj0LuVBbVb00UE5V2jvGdPJrBLv9xvQWTeV7+yLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1263ADA7;
+	Tue,  9 Apr 2024 04:18:35 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AB2F3F766;
+	Tue,  9 Apr 2024 04:18:02 -0700 (PDT)
+Message-ID: <8a7f0218-39e3-4e4b-ba99-7fe4389fb703@arm.com>
+Date: Tue, 9 Apr 2024 12:17:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,102 +41,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/6] flow_offload: add
- flow_rule_no_unsupp_control_flags()
-To: Louis Peens <louis.peens@corigine.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Taras Chornyi <taras.chornyi@plvision.eu>,
- Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Yanguo Li <yanguo.li@corigine.com>, oss-drivers@corigine.com,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, Edward Cree <ecree.xilinx@gmail.com>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>
-References: <20240408130927.78594-1-ast@fiberby.net>
- <20240408130927.78594-2-ast@fiberby.net> <ZhT/E1qDsMmMxGwb@LouisNoVo>
-Content-Language: en-US
-From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-In-Reply-To: <ZhT/E1qDsMmMxGwb@LouisNoVo>
+Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Free MSIs in case of ENOMEM
+Content-Language: en-GB
+To: Mostafa Saleh <smostafa@google.com>,
+ Aleksandr Aprelkov <aaprelkov@usergate.com>
+Cc: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Nicolin Chen <nicolinc@nvidia.com>,
+ Michael Shavit <mshavit@google.com>, Lu Baolu <baolu.lu@linux.intel.com>,
+ Marc Zyngier <maz@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240403053759.643164-1-aaprelkov@usergate.com>
+ <ZhUbw6gAeBjpFz5C@google.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <ZhUbw6gAeBjpFz5C@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Louis,
-
-On 4/9/24 8:40 AM, Louis Peens wrote:
-> On Mon, Apr 08, 2024 at 01:09:19PM +0000, Asbjørn Sloth Tønnesen wrote:
->> [Some people who received this message don't often get email from ast@fiberby.net. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+On 09/04/2024 11:43 am, Mostafa Saleh wrote:
+> Hi Aleksandr,
+> 
+> On Wed, Apr 03, 2024 at 12:37:59PM +0700, Aleksandr Aprelkov wrote:
+>> If devm_add_action() returns ENOMEM, then MSIs allocated but
+>> not freed on teardown.
 >>
->> This helper can be used by drivers to check for the
->> presence of unsupported control flags.
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 >>
->> It mirrors the existing check done in sfc:
->>    drivers/net/ethernet/sfc/tc.c +276
->>
->> This is aimed at drivers, which implements some control flags.
->>
->> This should also be used by drivers that implement all
->> current flags, so that future flags will be unsupported
->> by default.
->>
->> Only compile-tested.
->>
->> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+>> Fixes: 166bdbd23161 ("iommu/arm-smmu: Add support for MSI on SMMUv3")
+>> Signed-off-by: Aleksandr Aprelkov <aaprelkov@usergate.com>
 >> ---
->>   include/net/flow_offload.h | 22 ++++++++++++++++++++++
->>   1 file changed, 22 insertions(+)
+>> v2: Use appropriate function for registration failure as
+>> Jonathan Cameron <Jonathan.Cameron@Huawei.com> suggested.
 >>
->> diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
->> index 314087a5e1818..c1317b14da08c 100644
->> --- a/include/net/flow_offload.h
->> +++ b/include/net/flow_offload.h
->> @@ -449,6 +449,28 @@ static inline bool flow_rule_match_key(const struct flow_rule *rule,
->>          return dissector_uses_key(rule->match.dissector, key);
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 41f93c3ab160..8800af041e5f 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -3402,7 +3402,9 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
+>>   	smmu->priq.q.irq = msi_get_virq(dev, PRIQ_MSI_INDEX);
+>>   
+>>   	/* Add callback to free MSIs on teardown */
+>> -	devm_add_action(dev, arm_smmu_free_msis, dev);
+>> +	ret = devm_add_action_or_reset(dev, arm_smmu_free_msis, dev);
+>> +	if (ret)
+>> +		dev_warn(dev, "failed to add free MSIs callback - falling back to wired irqs\n");
+> 
+> I am not sure that is the right fix, as allowing the driver to probe
+> without MSIs, seems worse than leaking MSI memory.
+> 
+> IMHO, we can just add something like:
+>      dev_err(smmu->dev, “Can’t allocate devm action, MSIs are never freed! !\n”) ;
+
+Honestly I don't think this matters. If we ever really did fail to 
+allocate 16 bytes, SLUB would already be screaming and spewing 
+stacktraces, and the system is dead already.
+
+> Also, we can’t unconditionally fallback to wired irqs if MSI exists,
+> according to the user manual:
+>      An implementation must support one of, or optionally both of,
+>      wired interrupts and MSIs
+>      ...
+>      The discovery of support for wired interrupts is IMPLEMENTATION DEFINED.
+> 
+> We can add some logic, to check dt/acpi irqs and to choose to fallback
+> or not based on that, but, if we get -ENOMEM, (especially early at
+> probe) something really went wrong, so I am not sure it’s worth
+> the complexity.
+
+That logic already exists in arm_smmu_setup_unique_irqs() - the messages 
+here are in the sense of "we're giving up on MSIs and falling back to 
+trying whatever wired IRQs we may or may not have." The critical point 
+is that we're not using MSIs for some potentially actionable reason, 
+i.e. if the user does expect the system to be MSI-capable, then it could 
+be an indication of perhaps a wrong or missing msi-parent, for which 
+they may pursue a firmware fix. In other cases it's normal and expected 
+not to use MSIs though (e.g. the system just doesn't have an ITS), so we 
+don't want to be *too* noisy about it.
+
+Thanks,
+Robin.
+
+> 
 >>   }
+>>   
+>>   static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
+>> -- 
+>> 2.34.1
 >>
->> +/**
->> + * flow_rule_no_unsupp_control_flags() - check for unsupported control flags
->> + * @supp_flags: flags supported by driver
->> + * @flags: flags present in rule
->> + * @extack: The netlink extended ACK for reporting errors.
->> + *
->> + * Returns true if only supported control flags are set, false otherwise.
->> + */
->> +static inline bool flow_rule_no_unsupp_control_flags(const u32 supp_flags,
->> +                                                    const u32 flags,
->> +                                                    struct netlink_ext_ack *extack)
-> Thanks for the change Asbjørn, I like the series in general. I do have
-> some nitpicking with the naming of this function, the double negative
-> makes it a bit hard to read. Especially where it gets used, where it
-> then reads as:
->      'if not no unsupported'
-> 
-> I think something like:
->      'if not supported'
-> or
->      'if unsupported'
-> 
-> will read much better - personally I think the first option is the best,
-> otherwise you might end up with 'if not unsupported', which is also
-> weird.
-> 
-> Some possible suggestions I can think of:
->      flow_rule_control_flags_is_supp()
->      flow_rule_is_supp_control_flags()
->      flow_rule_check_supp_control_flags()
-> 
-> or perhaps some even better variant of this. I hope it's not just me, if
-> that's the case please feel free to ignore.
-I agree, I will update the naming in v2:
-
-flow_rule_no_unsupp_control_flags             => flow_rule_is_supp_control_flags
-flow_rule_no_control_flags        + s/no/has/ => flow_rule_has_control_flags
-flow_rule_match_no_control_flags  + s/no/has/ => flow_rule_match_has_control_flags
-
--- 
-Best regards
-Asbjørn Sloth Tønnesen
-Network Engineer
-Fiberby - AS42541
+> Thanks,
+> Mostafa
 
