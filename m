@@ -1,91 +1,156 @@
-Return-Path: <linux-kernel+bounces-136837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2292F89D8D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:06:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C05A89D8DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:06:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC8FC1F218EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C58701F23CDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCD712BE8B;
-	Tue,  9 Apr 2024 12:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D7112D77B;
+	Tue,  9 Apr 2024 12:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="P5l1xQQJ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NgiVxh91"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010A912AAC3
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD08B12AAD3;
+	Tue,  9 Apr 2024 12:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664375; cv=none; b=TtqTA5pqtZNjSHdsMO1KoLbJ+DWEZ9fdUO8DKijeT1htNgvIciIudE4JnCCu56S4IesRiwJoubj9aBsR4F2WRN0VvRdQL773KOVxdQoOtlmGBOgtBaGDUZmJTNnrlkLssVRWzRJ7VEROZIzKlD9nOwfh9k/lgOsws5nrlPo7CpI=
+	t=1712664386; cv=none; b=fhFD+2aRngxCnrh4lMkB+zXL95LhN9ysIw5fgkvCNkSVEqsmIG5P9b3bmHvN1SOU+iXK6ljcmpztmHjO8rWql7zi2uLqESVYTF7mP9dECLamK7nS8BaLcUsWxdahG4iI2uWwcMv7X4Vo9CQdKi/1X71FqRxiD3uxTqZTFI67fFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664375; c=relaxed/simple;
-	bh=bxete63RC9eyY/F1YbE2OTVoJGEBETCNOX3GFBbDvK4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nQbZH6qMqSZdAhc2d6ewiYJqbYiiveHVlUZcJhtdW8HNE5giJg2fhmjMm2/Pl6eZWp5jnPqfDiVtw0IB6SVUKuiWTw9Z+se6sZVxSEd1lGG7NNi5DcD+dXBw6h3Txrolcog9a01/2PEJxTb1wnWBZwiXX/BKEHLGimzP9zuqJyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=P5l1xQQJ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712664372;
-	bh=bxete63RC9eyY/F1YbE2OTVoJGEBETCNOX3GFBbDvK4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P5l1xQQJqk8igiSnjXLbP6ibC/X19GU65q233a+TeWdnpQ5GFllyjsm92UaHhclIg
-	 oH9mEwGxGKMte7BHuSvUovqQa6MJ/86KOAopYgQZ9pqIVJPQQ412XTeNANheU5fht9
-	 0FQxTkiAxIGI5ZSmLvAACVMugINnJLSUaG4DVYDEHJFyg8wopB2+rs4i55Ev7auu9o
-	 zeFyaUqb8nWjh2R1g0xubWZFT5ujcDiDX6Rs+s4sO0UVtb425CdWuaQGhNFIqG8A+o
-	 6I2FLmLTus1ttz/OjrXpV3T5NO2HZ8hskT0HuCPPgT1+ErUoc6GgadDTDe5X0OPcQ7
-	 /AaTn5cUsusQQ==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8912E37820F5;
-	Tue,  9 Apr 2024 12:06:11 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>,
-	William-tw Lin <william-tw.lin@mediatek.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Daniel Golle <daniel@makrotopia.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: depends on CONFIG_SOC_BUS
-Date: Tue,  9 Apr 2024 14:06:06 +0200
-Message-ID: <171266435367.323153.3142211141417575586.b4-ty@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cc8f7f7da5bdccce514a320e0ae7468659cf7346.1707327680.git.daniel@makrotopia.org>
-References: <cc8f7f7da5bdccce514a320e0ae7468659cf7346.1707327680.git.daniel@makrotopia.org>
+	s=arc-20240116; t=1712664386; c=relaxed/simple;
+	bh=3AO53c9WLONX6THJEZDEWKPYefXDqN2JEENGhVOOsG8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fEo0qg0100Qbj2IKHqxZwlj4qWHYGs5cpXeOVlbX78Wo6ruHtC2fRgWxz4PI21qbIpxJPz9eHONrERFKOV4Rnqib+nfFdQIrdhqg/JiOeullQMrukh0/pDkxeW13reEAFs/LfH7iy3miruDCpZEu7f431iEHWUyYkZFQSXRu2Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NgiVxh91; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d895138ce6so25936351fa.0;
+        Tue, 09 Apr 2024 05:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712664383; x=1713269183; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2e3wrJjk3kEfLUNGf9zPzelRPu7eNx73fHKPEVAegg=;
+        b=NgiVxh918xP91PR9FUwnS8ND0DE+fGfuyjGC7duih6kWsVJj8w+2PLA5S5zjIxwF4l
+         2RgjgM/AWE5WWPUwelLEXL+qP0647fy6QAwFY+tIL8QTfQmOYcGL1LaQduHnQBjSV6Ak
+         qZ11hQKBIWYorSFbQxKXe0Eq8tF5mU25//1HMpiblwwjGN8kJ3rkrQJqMbYrixtt/okK
+         iy1x5W+ngtJ2SEjKxr110EAZfM0N/UiQs7tY/34HH6yg3BWNPIGq1jT5yuya4WZGPb92
+         1Vb22zMxJ+ltorLZteDpN8SJ+8OJVH2WUOPqJKyVhQH/mTYx1x6it7AyQ368z8z6maFx
+         FHfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712664383; x=1713269183;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B2e3wrJjk3kEfLUNGf9zPzelRPu7eNx73fHKPEVAegg=;
+        b=Ey9cWttVvXzd6YQIN/licnw5av5gppo9qADQMUg4LtTWSjHPm7VDF0x874bSHdcgjD
+         OVoKmPMcLHzDzwUm4OGVBnyjRc4A64zo8KZ8AlkBLeyCI+TclabuMAeKDyEukV00WX9F
+         35qopUUnGxIOya7rzp81IpKY4nmgm8hvSP/PoMhbpdhMlEwgNtd7EcJ6UHyqR/RxGcyL
+         Goyj741l6RDExo4/lfSTJEA35fGgSituvKg3lrx4llPQ+4SxBh9WVftHk9fx2oyo4/0p
+         feYSFPMiTSO8huP5cVn4pZMe6IEQlmZ88pceEnQvxNOUwbfUA+LbpOLlSZlMG9LDwTrS
+         vEZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXHU6GPHqBMEyouL6qH7KyiSsjP9dcqy9ZZ+Ors2PFH1+7QnHw7rE8IXbKyAQu3kXOH7ZogRm8270cX3oZ5mGksWrZUy5j+46rXHeJTb4B+7b6Q94mI1Qes4mvzknBW5pJRFVjwhb/+C9V4E0aBh+2/msn/Wv9cbSKQzmTLwTn5NZRj46OspIZTCSjUaZMCKKEF7e5bPeSdxSW6SVqWfgcg
+X-Gm-Message-State: AOJu0YyFsZICz32jkfSiRa2MqdtQia9CMna976bFJCoxWPES3++lrlPh
+	u0q3JP9SnaT/7u058a8e6ug6F2fBJEbdmPmGdYgpyJReHqzwHM20
+X-Google-Smtp-Source: AGHT+IHXzOkvkWMebnxceaPO+vdv3DDY9CB9H7+Am5m9tWr9T3xJlv7LNxMmkT69DJVbV3CHB7waIw==
+X-Received: by 2002:a2e:890f:0:b0:2d8:2cd3:aa59 with SMTP id d15-20020a2e890f000000b002d82cd3aa59mr7789697lji.37.1712664382786;
+        Tue, 09 Apr 2024 05:06:22 -0700 (PDT)
+Received: from krava ([2a02:168:f656:0:bbb9:17bc:93d7:223])
+        by smtp.gmail.com with ESMTPSA id w15-20020a05600c474f00b0041668770f37sm8111100wmo.17.2024.04.09.05.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 05:06:22 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 9 Apr 2024 14:06:19 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-ID: <ZhUvO4lHn-xh3jDm@krava>
+References: <CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+ <20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+ <CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+ <20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+ <20240404161108.GG7153@redhat.com>
+ <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+ <Zg-8r63tPSkuhN7p@krava>
+ <20240405110230.GA22839@redhat.com>
+ <ZhQVBYQYr5ph33Uu@krava>
+ <20240408162258.GC25058@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408162258.GC25058@redhat.com>
 
-On Wed, 07 Feb 2024 17:42:41 +0000, Daniel Golle wrote:
-> The mtk-socinfo driver uses symbols 'soc_device_register' and
-> 'soc_device_unregister' which are part of the bus driver for
-> System-on-Chip devices.
+On Mon, Apr 08, 2024 at 06:22:59PM +0200, Oleg Nesterov wrote:
+> On 04/08, Jiri Olsa wrote:
+> >
+> > On Fri, Apr 05, 2024 at 01:02:30PM +0200, Oleg Nesterov wrote:
+> > >
+> > > And what should sys_uretprobe() do if it is not called from the trampoline?
+> > > I'd prefer force_sig(SIGILL) to punish the abuser ;) OK, OK, EINVAL.
+> >
+> > so the similar behaviour with int3 ends up with immediate SIGTRAP
+> > and not invoking pending uretprobe consumers, like:
+> >
+> >   - setup uretprobe for foo
+> >   - foo() {
+> >       executes int 3 -> sends SIGTRAP
+> >     }
+> >
+> > because the int3 handler checks if it got executed from the uretprobe's
+> > trampoline.
 > 
-> Select SOC_BUS to make sure that driver is built and the symbols are
-> available.
+> ... or the task has uprobe at this address
 > 
-> [...]
+> > if not it treats that int3 as regular trap
+> 
+> Yes this mimics the "default" behaviour without uprobes/uretprobes
+> 
+> > so I think we should mimic int3 behaviour and:
+> >
+> >   - setup uretprobe for foo
+> >   - foo() {
+> >      uretprobe_syscall -> check if we got executed from uretprobe's
+> >      trampoline and send SIGILL if that's not the case
+> 
+> Agreed,
+> 
+> > I think it's better to have the offending process killed right away,
+> > rather than having more undefined behaviour, waiting for final 'ret'
+> > instruction that jumps to uretprobe trampoline and causes SIGILL
+> 
+> Agreed. In fact I think it should be also killed if copy_to/from_user()
+> fails by the same reason.
 
-Applied to v6.9-fixes/soc, thanks!
++1 makes sense
 
-[1/1] soc: mediatek: mtk-socinfo: depends on CONFIG_SOC_BUS
-      commit: 2217fb42a6d0e062b0a11f90fe775651f73ed05f
+jirka
 
-Cheers,
-Angelo
-
+> 
+> Oleg.
+> 
 
