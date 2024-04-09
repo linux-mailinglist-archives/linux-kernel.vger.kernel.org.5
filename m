@@ -1,164 +1,159 @@
-Return-Path: <linux-kernel+bounces-136729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22AB89D7A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:10:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8391D89D7A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:12:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BBAAB21309
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:10:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B871C236D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7314C85C73;
-	Tue,  9 Apr 2024 11:10:36 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F74085C59;
+	Tue,  9 Apr 2024 11:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FcCQOh3h"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892CB84A38;
-	Tue,  9 Apr 2024 11:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F33F1E885
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712661036; cv=none; b=LWOuPFm1qUaXNIsV8mrIKXzrQzVLwCHqbelrq8VNuQY+JwxmP1CYjDPbbdl4jIVi7YkQZro5vCtdnF0KodsVfU3qNz64UaWkKapRPK5qTOriiP+FibICn1iDpnsQpYCCCC5wo86TfSrn0IWwP5NzWrA07fEU1a6iB+f6vmjM7MQ=
+	t=1712661168; cv=none; b=FyUTq7ZnsS4Kb4Jr8eq+xirYQqHInP0xry7KhaO+dtBoFDVMEMbPqWC9udXpUNllcseIcoFjPn4zs7I4HOugHiIk32egkACS1gLBhsognEU4045Pu/qI9CbYCAYIKhKk0jXqsqZ5qD0hd63GqC4LYdRn4L/nHXfB4MjF3dAj4iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712661036; c=relaxed/simple;
-	bh=QFEF+7ZaPhu+uNuab3B52rKuxoQMWSHN3kWkkmq8XMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cpE4EmgBjQTGB2Y+5diL33ckZT5IppW+Jc6o1jZIIoVftvfLJfi3KuQT7JBZT18lzH4u7j3yEtxwD2Oq8DBP/mGpqEWGU+Ye/yGQGmklRlRXuX3lBWq2TRFXNuaNF/IP5Cum1BUdch0Yg63NR6Z/QkHjG4Y79SB3o0VigtP4dHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VDNWn3MGqzFr4n;
-	Tue,  9 Apr 2024 19:09:25 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2F09C1400CD;
-	Tue,  9 Apr 2024 19:10:23 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 19:10:22 +0800
-Message-ID: <1476bb96-c0a9-379a-546b-98fc8a06beea@hisilicon.com>
-Date: Tue, 9 Apr 2024 19:10:21 +0800
+	s=arc-20240116; t=1712661168; c=relaxed/simple;
+	bh=5IHeNi8OymAQFbI+jNsuhBZ3ynbYcnFKx8ZYuNMcYX0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zdz75x4/3sMtlD8tRCDkf5r6NJn3CBjwJxj5+LHGWBwErs4a56MQM9fjFL84KGbz3VT1nR4b/Oyunh2P6XT/Et4viFtYRmQ3x99sE0LTpLoqpkUl9cfcooZh90jseOgDTHjY/ZZGjLuD9fpXpdRfX7YcPbYIsCykJGVIAyy9w20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FcCQOh3h; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712661165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WHx3oMFq8PtDxKa6+YzeOhtGXt27WMV38UwSpfqK1lA=;
+	b=FcCQOh3hUPNYEKV5C1C45ZsdbNiBF3GAZMu8OY9rUUmTqorBLqxvUwlrA7huDM7cC9HE6O
+	VL8lZr91S3iSrHdOmlGyZ/qdpese6H15MnM9mA8iRu6u0exJ8YECb770xkPpF9F682uvm+
+	y+qB6tELt+buTWwRDdy9WyBTul24tjU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-KwcDvaYCNkWlpBEde6-CnA-1; Tue, 09 Apr 2024 07:12:42 -0400
+X-MC-Unique: KwcDvaYCNkWlpBEde6-CnA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4135104B502;
+	Tue,  9 Apr 2024 11:12:41 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.56])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 8D73647F;
+	Tue,  9 Apr 2024 11:12:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue,  9 Apr 2024 13:11:15 +0200 (CEST)
+Date: Tue, 9 Apr 2024 13:10:52 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dmitry Vyukov <dvyukov@google.com>, John Stultz <jstultz@google.com>,
+	Marco Elver <elver@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>,
+	Carlos Llamas <cmllamas@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
+ check_timer_distribution()
+Message-ID: <20240409111051.GB29396@redhat.com>
+References: <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
+ <87frw2axv0.ffs@tglx>
+ <20240404145408.GD7153@redhat.com>
+ <87le5t9f14.ffs@tglx>
+ <20240406150950.GA3060@redhat.com>
+ <20240406151057.GB3060@redhat.com>
+ <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
+ <20240408102639.GA25058@redhat.com>
+ <20240408184957.GD25058@redhat.com>
+ <87il0r7b4k.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH] RDMA: hns: Fix possible null pointer dereference
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>, Aleksandr Mishin <amishin@t-argos.ru>
-CC: Wei Xu <xuwei5@hisilicon.com>, Chengchang Tang
-	<tangchengchang@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>, Xi Wang
-	<wangxi11@huawei.com>, Shengming Shu <shushengming1@huawei.com>, Weihang Li
-	<liweihang@huawei.com>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-References: <20240409083047.15784-1-amishin@t-argos.ru>
- <20240409092601.GG4195@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240409092601.GG4195@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87il0r7b4k.ffs@tglx>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+On 04/09, Thomas Gleixner wrote:
+>
+> The discussion started about running new tests on older kernels. As this
+> is a feature and not a bug fix that obviously fails on older kernels.
 
+OK, I see... please see below.
 
-On 2024/4/9 17:26, Leon Romanovsky wrote:
-> On Tue, Apr 09, 2024 at 11:30:47AM +0300, Aleksandr Mishin wrote:
->> In hns_roce_hw_v2_get_cfg() pci_match_id() may return
->> NULL which is later dereferenced. Fix this bug by adding NULL check.
-> 
-> I don't know, this NULL can't happen in this flow.
-> 
-> Thanks
-> 
+> So something like the uncompiled below should work.
 
-Yeah, it's already checked here:
+Hmm... this patch doesn't apply to Linus's tree...
 
-6911 static int hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
-6912 {
-6913         const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
-6914         const struct pci_device_id *id;
-6915         struct device *dev = &handle->pdev->dev;
-6916         int ret;
-6917
-6918         handle->rinfo.instance_state = HNS_ROCE_STATE_INIT;
-6919
-6920         if (ops->ae_dev_resetting(handle) || ops->get_hw_reset_stat(handle)) {
-6921                 handle->rinfo.instance_state = HNS_ROCE_STATE_NON_INIT;
-6922                 goto reset_chk_err;
-6923         }
-6924
-6925         id = pci_match_id(hns_roce_hw_v2_pci_tbl, handle->pdev);
-6926         if (!id)
-6927                 return 0;
-6928
-6929         if (id->driver_data && handle->pdev->revision == PCI_REVISION_ID_HIP08)
-6930                 return 0;
-6931
-6932         ret = __hns_roce_hw_v2_init_instance(handle);
+It seems that this is because in your tree check_timer_distribution() does
 
-Junxian
+	if (timer_delete(id)) {
+		ksft_perror("Can't delete timer");
+		return 0;
+	}
 
->>
->> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>
->> Fixes: 0b567cde9d7a ("RDMA/hns: Enable RoCE on virtual functions")
->> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 13 +++++++++++--
->>  1 file changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index ba7ae792d279..31a2093334d9 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -6754,7 +6754,7 @@ static const struct pci_device_id hns_roce_hw_v2_pci_tbl[] = {
->>  
->>  MODULE_DEVICE_TABLE(pci, hns_roce_hw_v2_pci_tbl);
->>  
->> -static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->> +static int hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>  				  struct hnae3_handle *handle)
->>  {
->>  	struct hns_roce_v2_priv *priv = hr_dev->priv;
->> @@ -6763,6 +6763,9 @@ static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>  
->>  	hr_dev->pci_dev = handle->pdev;
->>  	id = pci_match_id(hns_roce_hw_v2_pci_tbl, hr_dev->pci_dev);
->> +	if (!id)
->> +		return -ENXIO;
->> +
->>  	hr_dev->is_vf = id->driver_data;
->>  	hr_dev->dev = &handle->pdev->dev;
->>  	hr_dev->hw = &hns_roce_hw_v2;
->> @@ -6789,6 +6792,8 @@ static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>  
->>  	hr_dev->reset_cnt = handle->ae_algo->ops->ae_dev_reset_cnt(handle);
->>  	priv->handle = handle;
->> +
->> +	return 0;
->>  }
->>  
->>  static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
->> @@ -6806,7 +6811,11 @@ static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
->>  		goto error_failed_kzalloc;
->>  	}
->>  
->> -	hns_roce_hw_v2_get_cfg(hr_dev, handle);
->> +	ret = hns_roce_hw_v2_get_cfg(hr_dev, handle);
->> +	if (ret) {
->> +		dev_err(hr_dev->dev, "RoCE Engine cfg failed!\n");
->> +		goto error_failed_roce_init;
->> +	}
->>  
->>  	ret = hns_roce_init(hr_dev);
->>  	if (ret) {
->> -- 
->> 2.30.2
->>
+while in Linus's tree it returns -1 if timer_delete() fails. Nevermind.
+
+Thomas, I am almost shy to continue this discussion and waste your time ;)
+But ...
+
+> +static bool check_kernel_version(unsigned int min_major, unsigned int min_minor)
+> +{
+> +	unsigned int major, minor;
+> +	struct utsname info;
+> +
+> +	uname(&info);
+> +	if (sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+> +		ksft_exit_fail();
+> +	return major > min_major || (major == min_major && minor >= min_minor);
+> +}
+
+this looks useful regardless. Perhaps it should be moved into
+tools/testing/selftests/kselftest.h as ksft_ck_kernel_version() ?
+
+> +static int check_timer_distribution(void)
+> +{
+> +	const char *errmsg;
+> +
+> +	if (!check_kernel_version(6, 3)) {
+> +		ksft_test_result_skip("check signal distribution (old kernel)\n");
+>  		return 0;
+
+..
+
+> +	ksft_test_result(!ctd_failed, "check signal distribution\n");
+
+Perhaps
+
+	if (!ctd_failed)
+		ksft_test_result_pass("check signal distribution\n");
+	else if (check_kernel_version(6, 3))
+		ksft_test_result_fail("check signal distribution\n");
+	else
+		ksft_test_result_skip("check signal distribution (old kernel)\n");
+
+makes more sense?
+
+This way it can be used on the older kernels with bcb7ee79029d backported.
+
+Oleg.
+
 
