@@ -1,85 +1,205 @@
-Return-Path: <linux-kernel+bounces-137718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4645E89E655
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:46:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A65589E65B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:47:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 768411C22665
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:46:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2AE0B21756
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D357A158DCE;
-	Tue,  9 Apr 2024 23:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DAD81591E5;
+	Tue,  9 Apr 2024 23:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TLuqmX/p"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Lkm0hxga"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2053.outbound.protection.outlook.com [40.107.236.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD74158A27
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706389; cv=none; b=IkIoThaqAB7fXapZ/GDIiuVKxWe3VqYzO0yg3JWOmTTD11SfLE8YlTx09J87FBiGQxlbpGGdqhOGeb/BHhQqqjwJeMOKbpwIlZoht5IXun5yOX7Z6T/j+f5rdNIhTQ0o0XksElkdyrRW06JKPcv4pRRaT1f/Xgbq2HLtK+sfNrc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706389; c=relaxed/simple;
-	bh=HBJVVaWz8JX97xuVuvJd+mzwWz9q/Je1QwskHu9FxZw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Rb/mNsFU2i20u5UwZYFcLafX1yW04ukYPplQuhJyJjwuvGLGoYIw14Qdldc2whelQV01oU8iluGwrv+6CNeUBrQDSFJW6tMyxsFeUDMsx2GL6P5QEZzTpWRQUd0h6n2zxkfFDZOsEegn553eLiAwSDU4BhiFgXpuVPiM4kkLcJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TLuqmX/p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D00EC433C7;
-	Tue,  9 Apr 2024 23:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712706388;
-	bh=HBJVVaWz8JX97xuVuvJd+mzwWz9q/Je1QwskHu9FxZw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TLuqmX/pqFQ4BD7UUGrq4wDvvLzOgy+cEoJ1yiiSvfqGO/NRpbcCm5bPJzc/6ibuz
-	 wrEXi+kG3GfkyAzGC7N3ioZ+s9N0TslW9GMX6tcIkIn0GymjFJrdMNjvakRgyXcery
-	 5g4sYF/iRu9uAfRr9DldP9smuzYaKUPp48SDBj3M=
-Date: Tue, 9 Apr 2024 16:46:27 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: syzbot <syzbot+57adb2a4b9d206521bc2@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] general protection fault in
- hpage_collapse_scan_file
-Message-Id: <20240409164627.b4803e09c81c01ccb6f55601@linux-foundation.org>
-In-Reply-To: <0000000000009db84e0615a73698@google.com>
-References: <0000000000009db84e0615a73698@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BBCB15820C;
+	Tue,  9 Apr 2024 23:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712706433; cv=fail; b=mlDW4E3FEGrO/lGKkKTEWWVj9OfJlmTV06USanCfRIOHSd8gne5sMl/fOQ5SbAT93EJsXgpmql15Dd3aEEz4+C+m7F6ZU26QDZPAMZqjoe1OMDEy89LKEFx4MRy6McOHvfngPQziAz0uKsux9E/IPYVinZPYZjElqhImsiKu7s0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712706433; c=relaxed/simple;
+	bh=NKVXcD3pzOg7SzRoaXkI3bzBz2Dy40+l085n0jUhtDI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ojvb2aBWve9J1p648fpqC714XqQ8p8WrLiSa/wAe1I9kNZioh8D91DRrS+9J4ZqLnqtPG7nUdJ7zBiiKl0SrcqWrOZSNYdJswVuBsZWRy+2S5bVZHtTL5KChpW2f+dupfeI7m66LrjFfOGsC/oBgUpsfDoJ1/crB3FxhOKW0ITs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Lkm0hxga; arc=fail smtp.client-ip=40.107.236.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q3jyAxul+BknLLRYC/0Dbr7F8t42UcpF7ns9wFZ1rpbebxq2JR/kanvuhBDM1ULjgRg6mMRfDQsnQVL4cBVnhZsrX1niqMAGDkRYPWTze/P9N2VLutoXvyydwD3LdTMThQo9aSL2b3HesJSPfCVKm6SmZmpJ+pkouBm/qTesD6gJLak7QrD2qkBJJDJ2Y+V09IwhIouhkjeDoVSG+IRwWTud0k7y6fOl7XdR4tqjrEidKG7AOEw+WmjF4a7tit4Q1F/9UBTanZTBoQOIlUdekcLnn4mxG8pCcQDF7snsMo8OSfcjOzZAn/h6/UiEWi4eqd7v5xYpj7fTA8SnJq//uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aLmLMDd/ZBF4z4vIsDVzM0Igu0BKn1nlfnml4Y/f2H4=;
+ b=grv+Z0FQTsbVZrxxvvMfkWg+wG7XnwtnvrmRzV0+SL4voWy+Ti2MqDr+BgegqWbSKnL60JDKJnxS9DUoavb9f7AmexgDUUp3KFoQ5yUb0GiaGc06zm1QDj1HczhPIS1vWZ9st5qXYlsCYb0pkVhDPQSufRBKlGxrRLdZtnQrIdsYSHw9bewe2flIrzlYCSF7hfEOpQiWgj0mp+HYzruVukHljuNy5qHujQ9kjWyxEk+Sj8gBfg6VKBqVOm/Bg0HMI9cK2BZi/Ztd5L5fmtuLvycSWHtvGOfjpAhVYIHtjv/t6uAINlALe3n7yt6Pi/fse0VIUb9IND+w1tZ3BH5Jqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aLmLMDd/ZBF4z4vIsDVzM0Igu0BKn1nlfnml4Y/f2H4=;
+ b=Lkm0hxgaKk1y/26wKuWl4/M5YCvKecc4YQWcxuHB3tizHYlJbT5ego/dWLDyxFVgSdi1va4GWGz1CJWhfmINouRjqkmoitS6j6vaPSGosTXJ04NmKtcKYmKYaKsOuer0iuMs6qACzdQdTM/4dcq/eSLoJdhhObvs8bqh0VHFNtM=
+Received: from MN2PR13CA0006.namprd13.prod.outlook.com (2603:10b6:208:160::19)
+ by IA1PR12MB8192.namprd12.prod.outlook.com (2603:10b6:208:3f9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Tue, 9 Apr
+ 2024 23:47:08 +0000
+Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
+ (2603:10b6:208:160:cafe::7c) by MN2PR13CA0006.outlook.office365.com
+ (2603:10b6:208:160::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.18 via Frontend
+ Transport; Tue, 9 Apr 2024 23:47:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Tue, 9 Apr 2024 23:47:08 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Apr
+ 2024 18:47:08 -0500
+Date: Tue, 9 Apr 2024 18:46:32 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<seanjc@google.com>, <isaku.yamahata@intel.com>
+Subject: Re: [PATCH 11/11] KVM: x86: Add gmem hook for determining max NPT
+ mapping level
+Message-ID: <20240409234632.fb5mly7mkgvzbtqo@amd.com>
+References: <20240404185034.3184582-1-pbonzini@redhat.com>
+ <20240404185034.3184582-12-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240404185034.3184582-12-pbonzini@redhat.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|IA1PR12MB8192:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f22f1e9-7db5-4327-39c8-08dc58ef5e9c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	P05tP6Uu6q1oxvgu9q3MojmO8skA5yIXDiRnFyuYk1qkSD3UfTLPZRHVib1EGtSwdn1qYenHGB3sW68AkmUpOxeupABNL83NaE8uik0p4RqNrnjQ2yAkPeZBjn6p+2gmyuDJMEnIv6MwybzhwXDOrlYm0Nke2Ukh59G07z7jQbxnrUvLzkcehCeEFXKemADQqp0VMKLurc9vIA2JwgsZnKBTXKQNHJvdOYx/QftuXA9aA4Wpwgl6B2932EJUFR5xJMoAGIMFjSmPMCod0HkmFCDYvgLurtUnwSntcdIP5PxIdrEdwZbKH5gwCZD/0OLGGHwPeK7m4uLKkHnN6NbJn+aA7PC3UIAX7VWlvmDnbXrMjF/3/9j2hsia/LiZr3Ojmf3fziwFnE1lK0g38ucFDcvSKznuxYeiuD8MQ3kPYnrxx/80bXhKA0RwN0NQjz4XcNmzThNqGa+YXq5AP2z0Dnal+djXaHZqg3L9Wa+FRwQTBoUjgIUCRzseGHrAtqM7B0V+qjxB4qGx0ymd/SwIIMBK3UYZfTlBp2LqIH15tS5J+mLysQ//rmv1LwyONCB+MYsc6b6Sgn+FU+9gmwvtNnASG0jXPieDdgok3ZtXwddvd4Y/Ea+JjOondJ2V4NG5qzeDddT/BatBroubmP4+fBOXbxsyBHZJmZMadKcQ+ksGq9Slg+XGXdn1WxXsrFeK2drygpOaernd5nsZQb4mDi/pPMvxQMgmU+pCaZAOgWEbv61mY+/psNVcnX1kfjoT
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 23:47:08.7023
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f22f1e9-7db5-4327-39c8-08dc58ef5e9c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB56.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8192
 
-On Tue, 09 Apr 2024 03:16:20 -0700 syzbot <syzbot+57adb2a4b9d206521bc2@syzkaller.appspotmail.com> wrote:
-
-> Hello,
+On Thu, Apr 04, 2024 at 02:50:33PM -0400, Paolo Bonzini wrote:
+> From: Michael Roth <michael.roth@amd.com>
 > 
-> syzbot found the following issue on:
+> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
+> 2MB mapping in the guest's nested page table depends on whether or not
+> any subpages within the range have already been initialized as private
+> in the RMP table. The existing mixed-attribute tracking in KVM is
+> insufficient here, for instance:
 > 
-> HEAD commit:    8568bb2ccc27 Add linux-next specific files for 20240405
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=152f4805180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=48ca5acf8d2eb3bc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=57adb2a4b9d206521bc2
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1268258d180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1256598d180000
+>   - gmem allocates 2MB page
+>   - guest issues PVALIDATE on 2MB page
+>   - guest later converts a subpage to shared
+>   - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
+>   - KVM MMU splits NPT mapping to 4K
 
-Help.  From a quick look this seems to be claiming that collapse_file()
-got to 
+Binbin caught that I'd neglected to document the last step in the
+theoretical sequence here. It should state something to the effect
+of:
 
-	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+  - guest later converts that shared page back to private
 
-with folio==NULL, but the code look solid regarding this.
+-Mike
 
-Given that we have a reproducer, can we expect the bot to perform a
-bisection for us?
-
+> 
+> At this point there are no mixed attributes, and KVM would normally
+> allow for 2MB NPT mappings again, but this is actually not allowed
+> because the RMP table mappings are 4K and cannot be promoted on the
+> hypervisor side, so the NPT mappings must still be limited to 4K to
+> match this.
+> 
+> Add a hook to determine the max NPT mapping size in situations like
+> this.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Message-Id: <20231230172351.574091-31-michael.roth@amd.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm-x86-ops.h | 1 +
+>  arch/x86/include/asm/kvm_host.h    | 2 ++
+>  arch/x86/kvm/mmu/mmu.c             | 8 ++++++++
+>  3 files changed, 11 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index c81990937ab4..2db87a6fd52a 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -140,6 +140,7 @@ KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+>  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+>  KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
+> +KVM_X86_OP_OPTIONAL_RET0(gmem_validate_fault)
+>  KVM_X86_OP_OPTIONAL(gmem_invalidate)
+>  
+>  #undef KVM_X86_OP
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 59c7b95034fc..67dc108dd366 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1811,6 +1811,8 @@ struct kvm_x86_ops {
+>  	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+>  	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+>  	void (*gmem_invalidate)(kvm_pfn_t start, kvm_pfn_t end);
+> +	int (*gmem_validate_fault)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> +				   u8 *max_level);
+>  };
+>  
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 992e651540e8..13dd367b8af1 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4338,6 +4338,14 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
+>  			       fault->max_level);
+>  	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
+>  
+> +	r = static_call(kvm_x86_gmem_validate_fault)(vcpu->kvm, fault->pfn,
+> +						     fault->gfn, fault->is_private,
+> +						     &fault->max_level);
+> +	if (r) {
+> +		kvm_release_pfn_clean(fault->pfn);
+> +		return r;
+> +	}
+> +
+>  	return RET_PF_CONTINUE;
+>  }
+>  
+> -- 
+> 2.43.0
+> 
 
