@@ -1,87 +1,80 @@
-Return-Path: <linux-kernel+bounces-137464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03CA89E27B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:26:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD4A89E27F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9751F23611
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:26:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B452D2859EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F48E156C60;
-	Tue,  9 Apr 2024 18:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75650156C54;
+	Tue,  9 Apr 2024 18:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jdz3kUsk"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RDIYaTTg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053A913E3E8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725F0156892
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712687154; cv=none; b=IKVKRcyMg/sBg7VzHOJ/VSXole5myuiGRPcW7z+3aUE0N2is1PGvk5SZeS4TtTg4BQNsILhnIA58/oz7SMpt4ewUDK6xAyrSiQ83LnIfbFI0tr0/WmGSeD/JghwqdPFZ98XqUFl7cyOb0XmntO/Oj60vWxj7TfX/76lCJ14GQAE=
+	t=1712687240; cv=none; b=SHbBpioUOhYJwlHGJrxnIGvSOXH22QVoadpmcUJQaB7TmS8uWlDcfg4Q/atlkTZ7zSrICoVxHoxN+6v5Gda4JGB0Xv1M3tJczC46WKlZV55KiH7AZrUTiHT1HugUB+IjP3UF1jCc8qkWMV2zcs5kgKQovd48Et4YNi7fdB8rYa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712687154; c=relaxed/simple;
-	bh=QMgUojTl/i/srSNF5GIKUc3oeUgKB1hhbEyskGreugQ=;
+	s=arc-20240116; t=1712687240; c=relaxed/simple;
+	bh=lo23YThJkiJCXKlV2P8H/1qt2vZO8tqLHhRvvMJqdkY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m3ify5mx7jAoUBlj0X6g5RmohdGy/hrelc17UO/Vwx3IND97Gapwc8sjAT3ekTVa8c0xkEXzJG8/bvO0nyqo6v4sG5Fg/JrdrUZjVg/VUL7CAXKNkhS2xcvbetuzab1xKWXUGaqy5TOkwEmwe7hofpB8OjjLiq2Nkd7p+JHG8yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jdz3kUsk; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-416c4767ae6so544905e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 11:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712687151; x=1713291951; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMVnTlKzzIBXlOvhWSp8lJbGWUU4Q1quhbk/89hlgNY=;
-        b=jdz3kUskaRhIyLfry1ywef46UKT25IrEf1ZDRfeGYTIPgXlVkVOvvq23fBvp/5h+fS
-         NoC5hfpyQHfXr2A30pUXZbyOqk6dQE7ciEXINpE9VgkrEBQUol/YK68vkhD6M2QWhOpA
-         zYNeTAcrmgrO2cALypsljVhLvNaHWoVcwzbODE8wLEJhHeZJdWFxFDfCNCrNr9cP0cbs
-         x4aS36S0xGBvhgfDCq73vPrzN04RzosRfe4HeSnhQ/2PEOZPgV9McCHHAKZLUATwr7l7
-         swY4Fyy8+2XktNScsU5ynklI25D2x5KxjtXLivhj34QnFyCl93C2nlHe2BqyEOo6xv0w
-         O69A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712687151; x=1713291951;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CMVnTlKzzIBXlOvhWSp8lJbGWUU4Q1quhbk/89hlgNY=;
-        b=vdTGuuavQCeFfxXl6xVFmJELdKaM4jOjSFUrVjs3YxOiKfva9U+TtNBtMse9Aqo90F
-         O8pwgg68f7yQckDhUUiZCfBFNSq3EbxOnt6cGNiKoa59Rhg3+goxIfltXxeTfu8V6507
-         CujsMzuaPoQVyFALdj7FfvcWyRSqJoynpJP7WuVlooh1jzWXqVDBuofkIxLPISqw/z9Z
-         lgKDt1bfhPtMDrP438HpwMRpjQBv/dBGEf3TaKKXjWzGyZXmS1NMAjpQu7NGsFLpkbZ3
-         FRKoOOKqOabNth/lEN8GbGgW9RCP1bA24XGBDeoMG4nb2nY9OKl7qMrZxSZ6znuOUhrr
-         qPVA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5rGYD/rtMaOZjwnzi2JFkLtMtR+lOjJXNIX9JyVyf++Ak+S+cNWXNCi9KbnnQuS4CybLexGeTqB6q1I5k3tXXusv8moWF82tPNK8M
-X-Gm-Message-State: AOJu0YzXWhxwr3MmeRCJKfuUaZ/MGPDqlZIfsmOU1DRRGRh3Y345kaf7
-	SbjeYIKap01K6DHjDNlIukMYHMGxPAqP2a9FBa3KDynwytPc5HgDcjv0Nq6oEA==
-X-Google-Smtp-Source: AGHT+IFHEnlsqznP4KTV21mQuVExIU4Ie6hLZRtrEQN+FAIK8t6xpdewmL+c6BcHdbPggT+DVYeCMw==
-X-Received: by 2002:a05:600c:4707:b0:414:e0af:9b9f with SMTP id v7-20020a05600c470700b00414e0af9b9fmr337610wmo.30.1712687151262;
-        Tue, 09 Apr 2024 11:25:51 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:9c:201:ae75:6122:b198:210f])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b00416b5f63822sm2048888wmo.0.2024.04.09.11.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 11:25:50 -0700 (PDT)
-Date: Tue, 9 Apr 2024 20:25:45 +0200
-From: Marco Elver <elver@google.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH] tracing: Add new_exec tracepoint
-Message-ID: <ZhWIKeZuWfPOU91D@elver.google.com>
-References: <20240408090205.3714934-1-elver@google.com>
- <202404090840.E09789B66@keescook>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkCsoRZXF6826UoyDIblb4U9/U2bPynVmlFCspN/alYvaziy/mcZcJDSTQnaF/7ag9uqHKT7Zabcs57p3fG2U+IdUVCDA6l2K4+lLUI9ZcWTYTvbgevjaM0pDgXFUW73XnAwy1ap4WMGo+CTg4PBGUbYi3Gsi14/hEnobcAFsVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RDIYaTTg; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712687239; x=1744223239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lo23YThJkiJCXKlV2P8H/1qt2vZO8tqLHhRvvMJqdkY=;
+  b=RDIYaTTgYFTPt4vVRjsHekfVwrrinlfXLRyvc14Ifgg19Y/a/BMrVAUc
+   5sCjJhSuShZa8Je7X0PUZMRYImvksony9FAaVtOKy5629P1Fkg+ndgy4s
+   /yyHd2Rg+k1NSPqT8h41Ai/kSYTwbOtlRfEbL3tyiFIwCtJ7FIHAaZs78
+   ku5J/SPLt5seOyLPyMLUVoQpzdCqtrpU71UCf43qHpMzQe8+ZUE9dqyEJ
+   6IJ4RPTw0nw0SY2LM2Srwlyb29Mlk0dY3UwOgt01QmyfSUNIeBvDIyZji
+   xwqf1JZR3lnYjr53zN6FdS0viaX1b2mOoX0zj57gaQIC0ZGrQgbUyNsXm
+   A==;
+X-CSE-ConnectionGUID: FS8v8nu5RVin/tDemescOA==
+X-CSE-MsgGUID: +B5TyFQVSCuv1j/EjA23dg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11794482"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="11794482"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:27:06 -0700
+X-CSE-ConnectionGUID: kl7Y9QmPTgypXWqvuJb2wA==
+X-CSE-MsgGUID: EDLQ/48KQ7a9xCHI2+LjwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="57756617"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 09 Apr 2024 11:26:57 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ruGBK-0006PK-1f;
+	Tue, 09 Apr 2024 18:26:54 +0000
+Date: Wed, 10 Apr 2024 02:26:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, robh+dt@kernel.org,
+	andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com,
+	perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+	kevin-lu@ti.com, shenghao-ding@ti.com, navada@ti.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com,
+	baojun.xu@ti.com, broonie@kernel.org, soyer@irl.hu
+Subject: Re: [PATCH v2 3/3] ALSA: hda/tas2781: Firmware load for tas2781
+ driver for SPI
+Message-ID: <202404100229.tkI9vGOu-lkp@intel.com>
+References: <20240409024816.1180-4-baojun.xu@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,85 +83,176 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202404090840.E09789B66@keescook>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+In-Reply-To: <20240409024816.1180-4-baojun.xu@ti.com>
 
-On Tue, Apr 09, 2024 at 08:46AM -0700, Kees Cook wrote:
-[...]
-> > +	trace_new_exec(current, bprm);
-> > +
-> 
-> All other steps in this function have explicit comments about
-> what/why/etc. Please add some kind of comment describing why the
-> tracepoint is where it is, etc.
+Hi Baojun,
 
-I beefed up the tracepoint documentation, and wrote a little paragraph
-above where it's called to reinforce what we want.
+kernel test robot noticed the following build warnings:
 
-[...]
-> What about binfmt_misc, and binfmt_script? You may want bprm->interp
-> too?
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on tiwai-sound/for-linus rafael-pm/linux-next linus/master v6.9-rc3 next-20240409]
+[cannot apply to rafael-pm/acpi-bus rafael-pm/devprop]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Good points. I'll make the below changes for v2:
+url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ALSA-hda-tas2781-Modification-for-add-tas2781-driver-for-SPI/20240409-105140
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20240409024816.1180-4-baojun.xu%40ti.com
+patch subject: [PATCH v2 3/3] ALSA: hda/tas2781: Firmware load for tas2781 driver for SPI
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240410/202404100229.tkI9vGOu-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240410/202404100229.tkI9vGOu-lkp@intel.com/reproduce)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index ab778ae1fc06..472b9f7b40e8 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1268,6 +1268,12 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	if (retval)
- 		return retval;
- 
-+	/*
-+	 * This tracepoint marks the point before flushing the old exec where
-+	 * the current task is still unchanged, but errors are fatal (point of
-+	 * no return). The later "sched_process_exec" tracepoint is called after
-+	 * the current task has successfully switched to the new exec.
-+	 */
- 	trace_new_exec(current, bprm);
- 
- 	/*
-diff --git a/include/trace/events/task.h b/include/trace/events/task.h
-index 8853dc44783d..623d9af777c1 100644
---- a/include/trace/events/task.h
-+++ b/include/trace/events/task.h
-@@ -61,8 +61,11 @@ TRACE_EVENT(task_rename,
-  * @task:	pointer to the current task
-  * @bprm:	pointer to linux_binprm used for new exec
-  *
-- * Called before flushing the old exec, but at the point of no return during
-- * switching to the new exec.
-+ * Called before flushing the old exec, where @task is still unchanged, but at
-+ * the point of no return during switching to the new exec. At the point it is
-+ * called the exec will either succeed, or on failure terminate the task. Also
-+ * see the "sched_process_exec" tracepoint, which is called right after @task
-+ * has successfully switched to the new exec.
-  */
- TRACE_EVENT(new_exec,
- 
-@@ -71,19 +74,22 @@ TRACE_EVENT(new_exec,
- 	TP_ARGS(task, bprm),
- 
- 	TP_STRUCT__entry(
-+		__string(	interp,		bprm->interp	)
- 		__string(	filename,	bprm->filename	)
- 		__field(	pid_t,		pid		)
- 		__string(	comm,		task->comm	)
- 	),
- 
- 	TP_fast_assign(
-+		__assign_str(interp, bprm->interp);
- 		__assign_str(filename, bprm->filename);
- 		__entry->pid = task->pid;
- 		__assign_str(comm, task->comm);
- 	),
- 
--	TP_printk("filename=%s pid=%d comm=%s",
--		  __get_str(filename), __entry->pid, __get_str(comm))
-+	TP_printk("interp=%s filename=%s pid=%d comm=%s",
-+		  __get_str(interp), __get_str(filename),
-+		  __entry->pid, __get_str(comm))
- );
- 
- #endif
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404100229.tkI9vGOu-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from sound/pci/hda/tas2781_spi_fwlib.c:17:
+   In file included from include/sound/pcm_params.h:10:
+   In file included from include/sound/pcm.h:15:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> sound/pci/hda/tas2781_spi_fwlib.c:2149:3: warning: variable 'status' is uninitialized when used here [-Wuninitialized]
+    2149 |                 status++;
+         |                 ^~~~~~
+   sound/pci/hda/tas2781_spi_fwlib.c:2084:12: note: initialize the variable 'status' to silence this warning
+    2084 |         int status;
+         |                   ^
+         |                    = 0
+   6 warnings generated.
+
+
+vim +/status +2149 sound/pci/hda/tas2781_spi_fwlib.c
+
+  2073	
+  2074	int tasdevice_spi_select_tuningprm_cfg(void *context, int prm_no,
+  2075		int cfg_no, int rca_conf_no)
+  2076	{
+  2077		struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
+  2078		struct tasdevice_rca *rca = &(tas_priv->rcabin);
+  2079		struct tasdevice_config_info **cfg_info = rca->cfg_info;
+  2080		struct tasdevice_fw *tas_fmw = tas_priv->fmw;
+  2081		struct tasdevice_prog *program;
+  2082		struct tasdevice_config *conf;
+  2083		int prog_status = 0;
+  2084		int status;
+  2085	
+  2086		if (!tas_fmw) {
+  2087			dev_err(tas_priv->dev, "%s: Firmware is NULL\n", __func__);
+  2088			return 0;
+  2089		}
+  2090	
+  2091		if (cfg_no >= tas_fmw->nr_configurations) {
+  2092			dev_err(tas_priv->dev,
+  2093				"%s: cfg(%d) is not in range of conf %u\n",
+  2094				__func__, cfg_no, tas_fmw->nr_configurations);
+  2095			return 0;
+  2096		}
+  2097	
+  2098		if (prm_no >= tas_fmw->nr_programs) {
+  2099			dev_err(tas_priv->dev,
+  2100				"%s: prm(%d) is not in range of Programs %u\n",
+  2101				__func__, prm_no, tas_fmw->nr_programs);
+  2102			return 0;
+  2103		}
+  2104	
+  2105		if (rca_conf_no >= rca->ncfgs || rca_conf_no < 0 ||
+  2106			!cfg_info) {
+  2107			dev_err(tas_priv->dev,
+  2108				"conf_no:%d should be in range from 0 to %u\n",
+  2109				rca_conf_no, rca->ncfgs-1);
+  2110			return 0;
+  2111		}
+  2112	
+  2113		if (cfg_info[rca_conf_no]->active_dev & 1) {
+  2114			if (prm_no >= 0	&& (tas_priv->tasdevice.cur_prog != prm_no
+  2115				|| tas_priv->force_fwload_status)) {
+  2116				tas_priv->tasdevice.cur_conf = -1;
+  2117				tas_priv->tasdevice.is_loading = true;
+  2118				prog_status++;
+  2119			}
+  2120		} else {
+  2121			tas_priv->tasdevice.is_loading = false;
+  2122		}
+  2123	
+  2124		if (prog_status) {
+  2125			program = &(tas_fmw->programs[prm_no]);
+  2126			tasdevice_load_data(tas_priv, &(program->dev_data));
+  2127			if (tas_priv->tasdevice.is_loaderr == false
+  2128				&& tas_priv->tasdevice.is_loading == true) {
+  2129				struct tasdevice_fw *cal_fmw =
+  2130					tas_priv->tasdevice.cali_data_fmw;
+  2131	
+  2132				if (cal_fmw) {
+  2133					struct tasdevice_calibration
+  2134						*cal = cal_fmw->calibrations;
+  2135	
+  2136					if (cal)
+  2137						load_calib_data(tas_priv,
+  2138							&(cal->dev_data));
+  2139				}
+  2140				tas_priv->tasdevice.cur_prog = prm_no;
+  2141			}
+  2142	
+  2143		}
+  2144	
+  2145		if (cfg_no >= 0
+  2146			&& (tas_priv->tasdevice.cur_conf != cfg_no)
+  2147			&& (cfg_info[rca_conf_no]->active_dev & 1)
+  2148			&& (tas_priv->tasdevice.is_loaderr == false)) {
+> 2149			status++;
+  2150			tas_priv->tasdevice.is_loading = true;
+  2151		} else {
+  2152			tas_priv->tasdevice.is_loading = false;
+  2153		}
+  2154	
+  2155		if (status) {
+  2156			conf = &(tas_fmw->configs[cfg_no]);
+  2157			status = 0;
+  2158			tasdevice_load_data(tas_priv, &(conf->dev_data));
+  2159			if (tas_priv->tasdevice.is_loaderr == true) {
+  2160				status |= 1 << 4;
+  2161			} else if (tas_priv->tasdevice.is_loaderr == false
+  2162				&& tas_priv->tasdevice.is_loading == true) {
+  2163				tas_priv->tasdevice.cur_conf = cfg_no;
+  2164			}
+  2165		} else
+  2166			dev_dbg(tas_priv->dev, "%s: Unneeded loading dsp conf %d\n",
+  2167				__func__, cfg_no);
+  2168	
+  2169		status |= cfg_info[rca_conf_no]->active_dev;
+  2170	
+  2171		return prog_status;
+  2172	}
+  2173	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
