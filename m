@@ -1,122 +1,113 @@
-Return-Path: <linux-kernel+bounces-137400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EE6E89E183
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:27:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CD989E18D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:28:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A47B21F23CD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:27:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CE2A1C22F56
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED275156233;
-	Tue,  9 Apr 2024 17:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOXtDKhU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFF6156662;
+	Tue,  9 Apr 2024 17:28:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373E7155A45;
-	Tue,  9 Apr 2024 17:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6140915623E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712683626; cv=none; b=BXdNrSoUbRnOmPJxagfxuKpjvzQnFKep793aUs+9AfoIFFM8dpSeryDONK1aAMZ6MHpcG8WKzX+8drg7IYqhRbRbczflXws8po7Ux3gdNHSWrWySC+qa4Lx/0xaUk6WmD9BggOnwh+pD8xkphHPfLPA8nbLpx5K77THb04CONJ8=
+	t=1712683717; cv=none; b=nTHPFWXeT5JTcjuF7gAqmn2jUNS585JRAp5sfXcJo8B9gMH0SsT9reaypEI8s26CFrcvEKAyIhI1LJSrMbZJQDTIVVISK04FqeBQi8V/RHiINVJdgdPzDTeCs/INrBJC8Jc1qCwH8iztHSgscC0GJQIm+zohG/jH4LjbmZQ4jK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712683626; c=relaxed/simple;
-	bh=Kbut6EHysiAuN2pqwbI1Q3ysmlqsWX1b/pEAFMnt+eg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HiPP0NX/K2RcK3B2AqNgeyz21DFPFYq0jI8MlFWrtEf/HfsuB+9gW81Gb59iPU20uZKLYJMdDt4A2maugis6zjEU3n6dVarXvyIrG+O5nmY+KJH6q/Z3u6D6+T8rj4LqqioABwqOnb5+HPFRMGS1oKlCP5VYNP73cAuJoNipuII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOXtDKhU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6636C433C7;
-	Tue,  9 Apr 2024 17:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712683625;
-	bh=Kbut6EHysiAuN2pqwbI1Q3ysmlqsWX1b/pEAFMnt+eg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MOXtDKhUSuGy06O0wOHEzMRUsMEx1PIpgQJfGYxuWXcCM0Hi03dVimVFkMGIujRJ3
-	 nnf9k4pl9WHvRGO24qbpJYe5cQPMAlNzXQnqaC5yB23mArWmjYIwoTLkAe3pHeAij7
-	 bVG/W9agnm3h+ORu1i468Ml2zhUUaDQ23Yr1D4nJprQjvE1GV6xLqsfRHLIKOfK+3q
-	 5WbVRukqkcBpuL0jIA799KCPPHH3S8qo1NW+hOFq4D1e/TJ7DFYKieiv1xGAljJsFj
-	 KNdM3guD0TBs5LxYi9iL3llXOJVY7wDUyizpGSx2sSGYlAGQpTxPcJT7ZnjWoES55A
-	 YlEg8mZ22GnFQ==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51381021af1so9546528e87.0;
-        Tue, 09 Apr 2024 10:27:05 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV4YrIlbxcpcD0Cqj4P1qr3fD3Zr96Bw1tsxsn9qcj1xdfx30Ri6i44HHNkXM9XETGq9owZIpSd705nmBhpPNc1WVfmIa47msYn4HNvpvmYNfrkxGHJKXNaSDyAflgbEHoYX8nTaY8T5Vr7+b6JZEe7h3tj5HEyHZeWipO55NsGb7Uqq1Cr
-X-Gm-Message-State: AOJu0YwLZFUlp0T+ZO/p4mawkGTHJdfdz/g3UsYFgFBNG0LdENfRz0/b
-	9RNrYaCPx5RvAch1Kq4ELIDFb+062mDsnDg4SShMLvSLoHNTSs1OtJzfC6CUvqaRWelyqKX5mRW
-	PjAIbL3fRFzv7onp4eakz3+VqUw==
-X-Google-Smtp-Source: AGHT+IEHcM0JD7ZqWipo4LWrXKbnA82iD02tShlGX9cvVnQUGGgSKaw7D46ABppnjB6v8ynWM6ZkjO5amGWWIwt6rYg=
-X-Received: by 2002:ac2:4c35:0:b0:516:9fab:75de with SMTP id
- u21-20020ac24c35000000b005169fab75demr55819lfq.5.1712683624187; Tue, 09 Apr
- 2024 10:27:04 -0700 (PDT)
+	s=arc-20240116; t=1712683717; c=relaxed/simple;
+	bh=eHo/igXZcq8HeXdyeAD2kiUayElbdwtoFad+ENVCRhc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ijj70EXA9ueVWeVHvwYFpB7JXOgnNYEVwsq57zw2KLADqUgww4gsZyxl1MGlM8DNCtr5b5ugt82wdsYCeU1WwseXrN3YRSRw/PfLCViL5dgQzg5h51NvFwjMm9a/ekxQstI64zc0VyeOUgi4L96td1FdpLMqt0J39FDtr9i0d8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <a.fatoum@pengutronix.de>)
+	id 1ruFGD-0001dT-16; Tue, 09 Apr 2024 19:27:53 +0200
+Message-ID: <4c6164e5-bcfd-4172-a76e-db989f729a8a@pengutronix.de>
+Date: Tue, 9 Apr 2024 19:27:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322145406.2613256-1-Frank.Li@nxp.com>
-In-Reply-To: <20240322145406.2613256-1-Frank.Li@nxp.com>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 9 Apr 2024 12:26:52 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLJDhJd_uoL05Z=s3Mc7PRkcJWsQGGjdG0Q0GFp0zA8xw@mail.gmail.com>
-Message-ID: <CAL_JsqLJDhJd_uoL05Z=s3Mc7PRkcJWsQGGjdG0Q0GFp0zA8xw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ASoC: dt-bindings: fsl-esai: Convert fsl,esai.txt
- to yaml
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shengjiu Wang <shengjiu.wang@nxp.com>, 
-	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	imx@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXT] [PATCH v8 3/6] KEYS: trusted: Introduce NXP DCP-backed
+ trusted keys
+Content-Language: en-US
+To: Kshitiz Varshney <kshitiz.varshney@nxp.com>,
+ David Gstir <david@sigma-star.at>, Mimi Zohar <zohar@linux.ibm.com>,
+ James Bottomley <jejb@linux.ibm.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ Gaurav Jain <gaurav.jain@nxp.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, David Howells <dhowells@redhat.com>,
+ "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Paul Moore <paul@paul-moore.com>,
+ Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ James Morris <jmorris@namei.org>, dl-linux-imx <linux-imx@nxp.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pankaj Gupta <pankaj.gupta@nxp.com>,
+ sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+ "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Li Yang <leoyang.li@nxp.com>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Tejun Heo <tj@kernel.org>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ Shawn Guo <shawnguo@kernel.org>, Varun Sethi <V.Sethi@nxp.com>
+References: <20240403072131.54935-1-david@sigma-star.at>
+ <20240403072131.54935-4-david@sigma-star.at>
+ <DB6PR04MB31904A8EB8B481A530C90CBB8F072@DB6PR04MB3190.eurprd04.prod.outlook.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <DB6PR04MB31904A8EB8B481A530C90CBB8F072@DB6PR04MB3190.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, Mar 22, 2024 at 9:54=E2=80=AFAM Frank Li <Frank.Li@nxp.com> wrote:
->
-> Convert fsl,esai.txt to yaml. So DTB_CHECK tools can verify dts file abou=
-t
-> esai part.
->
-> clock-names 'spba' is optional according to description. So minItems of
-> clocks and clock-names is 3.
->
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->
-> Notes:
->     Change from v1 to v2
->     - alphabetical order compatible string according to rob's suggestion
->     - clock description move under 'clock' according to kryszof's suggest=
-ion
->     - fix descritpion indent according to rob's suggestion
->
->     Pass dt_binding check
->      make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- -j8  dt_binding=
-_check DT_SCHEMA_FILES=3Dfsl,esai.yaml
->       DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dt=
-s
->       LINT    Documentation/devicetree/bindings
->       CHKDT   Documentation/devicetree/bindings/processed-schema.json
->       SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->       DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dt=
-b
+Hello Kshitiz,
 
-Did you run dtbs_check too? Probably not arm32 at least (first number
-is number of warnings):
+On 09.04.24 12:54, Kshitiz Varshney wrote:
+> Hi David,
+>> +       b->fmt_version = DCP_BLOB_VERSION;
+>> +       get_random_bytes(b->nonce, AES_KEYSIZE_128);
+>> +       get_random_bytes(b->blob_key, AES_KEYSIZE_128);
+> 
+> We can use HWRNG instead of using kernel RNG. Please refer drivers/char/hw_random/imx-rngc.c 
 
-    218  esai@2024000: clocks: [[2, 208], [2, 209], [2, 118], [2,
-208], [2, 156]] is too long
-    218  esai@2024000: clock-names:3: 'spba' was expected
-    218  esai@2024000: clock-names:2: 'fsys' was expected
-    218  esai@2024000: clock-names:1: 'extal' was expected
-    218  esai@2024000: clock-names: ['core', 'mem', 'extal', 'fsys',
-'spba'] is too long
+imx-rngc can be enabled and used to seed the kernel entropy pool. Adding
+direct calls into imx-rngc here only introduces duplicated code at no extra
+benefit.
 
-Conversions can leave warnings, but any you think should be fixed in
-the binding should be fixed in the conversion.
+Cheers,
+Ahmad
 
-Rob
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
 
