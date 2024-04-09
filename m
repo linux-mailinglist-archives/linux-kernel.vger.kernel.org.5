@@ -1,186 +1,130 @@
-Return-Path: <linux-kernel+bounces-136433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5108089D403
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2F989D408
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F398328478E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:17:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E44284767
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771A57E101;
-	Tue,  9 Apr 2024 08:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723D97EEF6;
+	Tue,  9 Apr 2024 08:19:02 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CE07E0FF;
-	Tue,  9 Apr 2024 08:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951D17E0F6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650664; cv=none; b=jatRflh7+897iGnr4b/mbHXpoDG0/HpLo9Bk+XPFdUIjGbkbGwLvH8IR49nDdzgrwxkfUnCocOPV3k3cQA+C4PMJLUA8+Q7Xxv5rVTYbKv0Rgrfzv4t3qoKF025O9OZVbo1/DyX6DbrfGQ8H60Xwr5jOWUnj4PqEoEj8933JljI=
+	t=1712650741; cv=none; b=cLQjAvEcYJzDW1Dy57I7M0kxg1X5XBvRfYzpiuPkuNhKup7QVsJM6TxcSbNtkqoq2SRK7y397oYsBb+a6EFXxshINA77LTOexmcKokEIyihWSNFYNq7sXrXjRBNChfdlL+mRc883/0udhg5dM/ojvQMUHt3KkrsWt08OVHWy0n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650664; c=relaxed/simple;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=cdCssfdIhcbW9tmf8AtBeaULtlVfiqwYHKeiZL13hljOgm8NC3JGA+uFhStMsedmw0E2+C+pZE2CfG0jtcYyFEW+VwQTchQSB5jJlNyuNE9Yr0Sa1j7jBJxp+c54A96xc3US3U8xYdepTVAZ2MkhZDEsvlo2wrAE6b8IU9MdGaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 63E692089D;
-	Tue,  9 Apr 2024 08:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
-	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
-	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712650661;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
-	0r5f6bsqUpvWv1Bg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
-	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
-	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712650661;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
-	0r5f6bsqUpvWv1Bg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C638713253;
-	Tue,  9 Apr 2024 08:17:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id yQHPF5z5FGaONgAAn2gu4w
-	(envelope-from <colyli@suse.de>); Tue, 09 Apr 2024 08:17:32 +0000
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1712650741; c=relaxed/simple;
+	bh=+vKAnVxOOtaFR5Lbw6OBExvNJzg7jbglJsu/e1xdY1E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LN9PAMk/ItvBGHHhhd4i/fLadNBnZzLpfKZACrFZ1AIqeU8Wct4agYCX3MjKXOU/1+UHxiOV9abEzxCx+YA0OWsiGWWlO0ZcCm1rPitPGhX4se9xz2fizjdJ3boRFhazrDsuQyo6PAIE9sEhyHu16a4ebJ6mreueNKK981iPw6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru6gw-0006VG-Nk; Tue, 09 Apr 2024 10:18:54 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru6gu-00BGpN-Kj; Tue, 09 Apr 2024 10:18:52 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru6gu-00EoUQ-1p;
+	Tue, 09 Apr 2024 10:18:52 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	David Ahern <dsahern@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
+Subject: [PATCH net-next v5 0/9] Enhanced DCB and DSCP Support for KSZ Switches
+Date: Tue,  9 Apr 2024 10:18:42 +0200
+Message-Id: <20240409081851.3530641-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH v3 00/17] treewide: Refactor heap related implementation
-From: Coly Li <colyli@suse.de>
-In-Reply-To: <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
-Date: Tue, 9 Apr 2024 16:17:14 +0800
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
- msakai@redhat.com,
- peterz@infradead.org,
- mingo@redhat.com,
- acme@kernel.org,
- namhyung@kernel.org,
- akpm@linux-foundation.org,
- bfoster@redhat.com,
- mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com,
- jolsa@kernel.org,
- irogers@google.com,
- adrian.hunter@intel.com,
- jserv@ccns.ncku.edu.tw,
- Bcache Linux <linux-bcache@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dm-devel@lists.linux.dev,
- Linux bcachefs <linux-bcachefs@vger.kernel.org>,
- linux-perf-users@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8D0FD5AF-2AD9-4A91-831D-C79A798BED11@suse.de>
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
-X-Spam-Flag: NO
-X-Spam-Score: -1.58
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.58 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.78)[84.53%];
-	MV_CASE(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,infradead.org,kernel.org,linux-foundation.org,arm.com,linux.intel.com,google.com,intel.com,ccns.ncku.edu.tw,vger.kernel.org,lists.linux.dev];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+This patch series is aimed at improving support for DCB (Data Center
+Bridging) and DSCP (Differentiated Services Code Point) on KSZ switches.
 
+The main goal is to introduce global DSCP and PCP (Priority Code Point)
+mapping support, addressing the limitation of KSZ switches not having
+per-port DSCP priority mapping. This involves extending the DSA
+framework with new callbacks for managing trust settings for global DSCP
+and PCP maps. Additionally, we introduce IEEE 802.1q helpers for default
+configurations, benefiting other drivers too.
 
-> 2024=E5=B9=B44=E6=9C=889=E6=97=A5 11:40=EF=BC=8CKent Overstreet =
-<kent.overstreet@linux.dev> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Sun, Apr 07, 2024 at 12:47:10AM +0800, Kuan-Wei Chiu wrote:
->> This patch series focuses on several adjustments related to heap
->> implementation. Firstly, a type-safe interface has been added to the
->> min_heap, along with the introduction of several new functions to
->> enhance its functionality. Additionally, the heap implementation for
->> bcache and bcachefs has been replaced with the generic min_heap
->> implementation from include/linux. Furthermore, several typos have =
-been
->> corrected.
->>=20
->> Previous discussion with Kent Overstreet:
->> =
-https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg=
-@nrlek5vmisbu
->>=20
->> Regards,
->> Kuan-Wei
->=20
-> pointing test automation at it now:
-> https://evilpiepirate.org/~testdashboard/ci?branch=3Drefactor-heap-v3
->=20
-> Coli, could I get some acks from you?
+Change logs are in separate patches.
 
-Yes, the code tested and Acked-by sent.
+Oleksij Rempel (9):
+  net: dsa: add support for DCB get/set apptrust configuration
+  net: dsa: microchip: add IPV information support
+  net: add IEEE 802.1q specific helpers
+  net: dsa: microchip: add multi queue support for KSZ88X3 variants
+  net: dsa: microchip: add support for different DCB app configurations
+  net: dsa: microchip: dcb: add special handling for KSZ88X3 family
+  net: dsa: microchip: enable ETS support for KSZ989X variants
+  net: dsa: microchip: init predictable IPV to queue mapping for all non
+    KSZ8xxx variants
+  net: dsa: microchip: let DCB code do PCP and DSCP policy configuration
 
-Thanks.
+ drivers/net/dsa/microchip/Kconfig       |   2 +
+ drivers/net/dsa/microchip/Makefile      |   2 +-
+ drivers/net/dsa/microchip/ksz8.h        |   1 +
+ drivers/net/dsa/microchip/ksz8795.c     | 106 ++--
+ drivers/net/dsa/microchip/ksz8795_reg.h |   9 +-
+ drivers/net/dsa/microchip/ksz9477.c     |   6 -
+ drivers/net/dsa/microchip/ksz_common.c  | 100 ++--
+ drivers/net/dsa/microchip/ksz_common.h  |  11 +-
+ drivers/net/dsa/microchip/ksz_dcb.c     | 764 ++++++++++++++++++++++++
+ drivers/net/dsa/microchip/ksz_dcb.h     |  21 +
+ include/net/dsa.h                       |   4 +
+ include/net/dscp.h                      |  76 +++
+ include/net/ieee8021q.h                 |  51 ++
+ net/Kconfig                             |   4 +
+ net/core/Makefile                       |   1 +
+ net/core/ieee8021q_helpers.c            | 171 ++++++
+ net/dsa/user.c                          |  28 +
+ 17 files changed, 1271 insertions(+), 86 deletions(-)
+ create mode 100644 drivers/net/dsa/microchip/ksz_dcb.c
+ create mode 100644 drivers/net/dsa/microchip/ksz_dcb.h
+ create mode 100644 include/net/dscp.h
+ create mode 100644 include/net/ieee8021q.h
+ create mode 100644 net/core/ieee8021q_helpers.c
 
-Coly Li=
+-- 
+2.39.2
+
 
