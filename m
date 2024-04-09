@@ -1,118 +1,116 @@
-Return-Path: <linux-kernel+bounces-137021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2549789DB37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524B989DB38
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3D6228A4AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:54:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0759E1F21CA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978AD130A72;
-	Tue,  9 Apr 2024 13:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D583C130E2E;
+	Tue,  9 Apr 2024 13:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OiFpcHrJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gwdKegbH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qis6pBGv"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA2412C531;
-	Tue,  9 Apr 2024 13:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA44D12C531;
+	Tue,  9 Apr 2024 13:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712670441; cv=none; b=iqlaIeDr207XDc5GlFyZx5O67cYOBWMOh4tG73vT4huTHztNU6TRcK89Xx+KvDprGIpDen5r0EjTNfY7fcPmF+Bnnj3ikZ/u+rVK/lujefQMGLY4l6dlEYfQchcWSdg7jta2YFA6PzeR5CMgLYPEWizCplEWVUhH/nYW1AV5FDU=
+	t=1712670454; cv=none; b=duGQbnoVcI1T18HVBQMdPgjlfNL5+A1n6xRXAUzmYLxYCTA2x27ZRETdGaY6/fwpXvxZCY0TNNEXFFAhY9Cd4WWuzOCmYLtUSw8V8k+aJzB049tU0UJuKkDtt/NJYCcZZO0Az+IqKQgTwZgoQtv3HAj5ho32/lHZ5vkXqaOExOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712670441; c=relaxed/simple;
-	bh=eMgGDvBhSwomIduc3Ww9nHxOHT2zRidPoz1kaAAG6Xc=;
+	s=arc-20240116; t=1712670454; c=relaxed/simple;
+	bh=I8SXAbXUDHLLy/rIZkXEofnDWT+iXwoU5TWom6REpi8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qBmCxUUiBerS9LgFse8HdC/SY5Y9AeWDWryGucfPoPhfTKE6j07pMol4oecv88IooNGk7VdMdW+x96ZEKN2k1LWM8CUkcOAbqRlSKmmIjvYh/LihBbDR+oKbCk4IY9v/rodYskIJiU9lRqUBQQe+26ShwmQ4AkMaGFwr3c7RoTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OiFpcHrJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E767C433F1;
-	Tue,  9 Apr 2024 13:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712670440;
-	bh=eMgGDvBhSwomIduc3Ww9nHxOHT2zRidPoz1kaAAG6Xc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OiFpcHrJrELfQ0w4lX0cktdooBbdqsoHCXatp67xvr4gT/dXvE4wa6RVsIydrq0Ce
-	 RsIqw93EknR0C4SLFv+idmJKR6ZutAE7ABCpYqG1WtfW4qdFdm07px4Sr6CvEb3wMV
-	 eNuBvEm0/6pqZY0bkHFkqKXe4mkepAUsvP3GB57ALkyiv35+N/B033wi1xMe+1mlHP
-	 7PsPMY8c5DfwgLZ6Mgr7lrH6+ynkoJLzZOD+pdMYFQ9EwYi5qFUONZJozCwdX13aom
-	 6VTB6jC2frvRFZAXY4S0Vf0k20CuzXzKcqgADfZDdMgG5afEEF2SIDBvU97l9C4S9M
-	 RWYC1iDthhkiA==
-Date: Tue, 9 Apr 2024 08:47:18 -0500
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-	oxffffaa@gmail.com, kernel@sberdevices.ru
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <20240409134718.GA1050037-robh@kernel.org>
-References: <20240408085931.456337-1-avkrasnov@salutedevices.com>
- <20240408085931.456337-2-avkrasnov@salutedevices.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pUNQEadzfFF0OlNoiTgZ0rXVGtrA7hKfn+u1+2pYSZsGH2jvJBMoS4qsnJZhuijBHXM4FulNPauTNPBI1TBBT1p6JT54npOZzeYpJTtwgr/WFAsIQdy1Fgg2TJihgNuC+TIb5OAE7doewv2Ot20k26L3Je8lGSoKNSiHTlV/sIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gwdKegbH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qis6pBGv; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 9 Apr 2024 15:47:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712670451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lwihX0lE1ReWSXgdrfNpqgYNmD/FYsuPD3bWkvP0exI=;
+	b=gwdKegbHi5653ZJtvhlFEc1q7AWHlvvUVPWFKsukgpMjeCJzWfXT7QRQsj7JeEVEenpMPl
+	iJZKreZtD/uFRjawQ4IJ8YaCskfKYvJYvqRlWJxn0+FXD0m9XdhqvdL06pWZKqaUuRlBJj
+	AUbDjp/xa1TrvxNrRUxf9CTX5Q5zCV2SfKEBqY+w9t2ZFThD3bkJiW/Ob0xWzXwATEvT71
+	DPU1L9KGch4oWRDUNW7Ex7n+w/od3mJ1lkZzaKZpVvPZgfnge+FaogTwNRaB/mtTtb6Gd0
+	3TqUnZcyzY15MesRKbZ7qzgOJfs9C+K/JMIBQkHzfToi89u4z03jUEQjsvNsdg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712670451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lwihX0lE1ReWSXgdrfNpqgYNmD/FYsuPD3bWkvP0exI=;
+	b=qis6pBGvUCGNhXD5K4LNKpfr8focouCEBdv3+vBqKg0+2ZChezXkAm0caqZBYlDgvdjg3O
+	HTAu1GXBZAnZjLAQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 2/4] perf: Enqueue SIGTRAP always via task_work.
+Message-ID: <20240409134729.JpcBYOsK@linutronix.de>
+References: <20240322065208.60456-1-bigeasy@linutronix.de>
+ <20240322065208.60456-3-bigeasy@linutronix.de>
+ <ZhRhn1B0rMSNv6mV@pavilion.home>
+ <20240409085732.FBItbOSO@linutronix.de>
+ <ZhU2YwettB6i6AMp@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240408085931.456337-2-avkrasnov@salutedevices.com>
+In-Reply-To: <ZhU2YwettB6i6AMp@localhost.localdomain>
 
-On Mon, Apr 08, 2024 at 11:59:30AM +0300, Arseniy Krasnov wrote:
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages located with the specified interval
-> within specified offset. Both interval and offset are located in the
-> device tree and used by driver if 'nand-is-boot-medium' is set for
-> NAND chip.
+On 2024-04-09 14:36:51 [+0200], Frederic Weisbecker wrote:
+> > That wake_up() within preempt_disable() section breaks on RT.
 > 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> Ah, but the wake-up still wants to go inside recursion protection somehow or
+> it could generate task_work loop again due to tracepoint events...
+
+okay.
+
+> Although... the wake up occurs only when the event is dead after all...
+
+corner case or not, it has to work, right?
+
+> > How do we go on from here?
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> index 57b6957c8415..80ba5003ca70 100644
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -64,11 +64,25 @@ patternProperties:
->          items:
->            maximum: 0
->  
-> +      amlogic,boot-page-last:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM.
-> +
-> +      amlogic,boot-page-step:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM (in pages).
-> +
->      unevaluatedProperties: false
->  
->      dependencies:
->        nand-ecc-strength: [nand-ecc-step-size]
->        nand-ecc-step-size: [nand-ecc-strength]
-> +      amlogic,boot-page-last: [nand-is-boot-medium, amlogic,boot-page-step]
-> +      amlogic,boot-page-step: [nand-is-boot-medium, amlogic,boot-page-last]
+> I'd tend to think you need my patchset first because the problems it
+> fixes were not easily visible as long as there was an irq work to take
+> care of things most of the time. But once you rely on task_work only then
+> these become a real problem. Especially the sync against perf_release().
 
-You need quotes if using the inline syntax.
+I don't mind rebasing on top of your series. But defaulting to task_work
+is not an option then?
 
-Rob
+RT wise the irq_work is not handled in hardirq because of locks it
+acquires and is handled instead in a thread. Depending on the priority
+the task (receiving the event) it may run before the irq_work-thread.
+Therefore the task_work looked neat because the event would be handled
+_before_ the task returned to userland.
+
+Couldn't we either flush _or_ remove the task_work in perf_release()?
+
+> Thanks.
+Sebastian
 
