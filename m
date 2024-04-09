@@ -1,262 +1,194 @@
-Return-Path: <linux-kernel+bounces-136720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D5389D784
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:01:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87C189D789
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:02:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F849287FCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:01:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02E6E1C2220A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AA312F59D;
-	Tue,  9 Apr 2024 10:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED5485636;
+	Tue,  9 Apr 2024 11:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="N7OFXTgv"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cBGKDZPO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E51212E1F7;
-	Tue,  9 Apr 2024 10:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD317C0B0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660347; cv=none; b=A1sDIiIY/UEBvA2UUK8T66e64b9CV1Yp5ibwu6nDPgqxvX8tlkGaSSK2IweyQaR1wlizkjvt1KkPduYWx4R0K6NP1TQ8/RuQDGTZh1/9cLvdyQk7OVsnAkWS+DLnqV5zy8OfbvSCoPXeP+AIVftu0PG8HEToZBcth/Z7bAp48qc=
+	t=1712660531; cv=none; b=Qbumdn1dfLpKKXPVRiy4Uh5AIl7HqmUbn8TqsbD0S1Rh7pM7YEwBCKvMeipM9IKLttZDGg18XOindHurq4KYK9JWFF2qxPYUdWngg5eEbaOtMQ0A2TJvURZWaAlqDIT2wBtIwuLT5w8tTQAD2Yeg4foGTpcN0xMn/JJdyzOmmI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660347; c=relaxed/simple;
-	bh=Q2eayK5FjhqiLuaHkjorwaRgB+ThC/e6b07FRlLuAr4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DH2ttu+7RzE4Y6Vm8sWoj4rwedZJKsk3XW1oAWk4HIpWnWVjD/wSc5nk0vwQVZGWC8q0wU+lJieXvQXm6ZSHS5G9AOOC26FpvXmrp3s4bLxbQw7dmeVRWTnSZbhtFTE3BKek4wlwn7mDeroIbiVAtzQCJrCSpXZJ6gkQw8Hz1a4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=N7OFXTgv; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 91D07C000F;
-	Tue,  9 Apr 2024 10:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712660343;
+	s=arc-20240116; t=1712660531; c=relaxed/simple;
+	bh=TURxfz+5f22Byehv5ksbQxQ/fqAEtro6k5FvuLPwYuc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gb8kBtS7OiI8agggOYHh/c2wanZukmRgECiQCx8SsQcdaePvfkOLKecX6MjnJ0wg5+zwTBa7dnX0LsCzriQjRMqMh3H0saWQMFdysd5gtPSA1iNFz5an3NYILHTLo1nHwkFcadCC4YlTfLBglnzwAb+B32jXnfmHx/HGJVfkJZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cBGKDZPO; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712660529;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5hzdD3iQ2ioDWjARjRtQGGxrXv51LODauFhkOMOYviE=;
-	b=N7OFXTgvxfIQwliv+KYJ2PfmEBtcCZ2Joj9r7yAPLi0xmaiXSlw1HF+ASMdEO7ZtFCkFTX
-	OqUkxksATDwmWKPKecqzMwQ/W4noVtFdJapa97VYSNL9ebFi1LAx+VnqxpMW747R6Dq528
-	KsNOjzuWCE52tXEnpWyd2Y2etsYG28EIugpf4/v48Fxz4HzMAb1yVnbK6qMtgwZ/TsMwbc
-	ui57Wn5C96J3SpA/OeY4XMNN96kCJs8jHpf2g2n58osDJZZ5preZ+aNRKiYyCYGokDhGtG
-	xCMUw9q+egu9JZqtghIX3qOetYoIJrbEdyzH+XRkAJ8JtZ1P0qvdv1eCf1fzpg==
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: davem@davemloft.net
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	mwojtas@chromium.org
-Subject: [PATCH net-next 8/8] Documentation: networking: document phy_link_topology
-Date: Tue,  9 Apr 2024 12:58:46 +0200
-Message-ID: <20240409105847.465298-9-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240409105847.465298-1-maxime.chevallier@bootlin.com>
-References: <20240409105847.465298-1-maxime.chevallier@bootlin.com>
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=5EuvRYjhB2ByIJqrM8XsBqe7c9oo5XQaPdNDVkox+vI=;
+	b=cBGKDZPOUPLRZMvnV/+ruTC4t16hVQ3PCNEFD8yFyfeUeZH8lS/ZB9Jv+2WPgBMPCJ3o3j
+	ID4SdpsgaY+lr4FGFwNE27XgUSHq0KMmtp25p162WHw+8Umla8rLLeL5EUXn/8d4F87izx
+	ksqSjX6WoQtuWuNo2gReWVQgXIQ/5LM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-IX9zh-SQNC6YoePpLvDpyQ-1; Tue, 09 Apr 2024 07:02:07 -0400
+X-MC-Unique: IX9zh-SQNC6YoePpLvDpyQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41489c04e3aso22442635e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:02:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712660526; x=1713265326;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5EuvRYjhB2ByIJqrM8XsBqe7c9oo5XQaPdNDVkox+vI=;
+        b=Gvxp454tOi4gwAGkQFe1eFi+48yDAiyjz0t6Bh3dir8MrraTyrRqXg0wTlRMqsVd1f
+         aHszC2JRJy/27QZX11mWM5hmejQqOWv3xPdRZa6Y+eZ8Xqufk2r1v1v8+dQ6R93fh+e/
+         fLJUiCozJOUHcrHCUGc2iccEKCqUuCHb8v2adBGmvzkpg6JFchDs4XuPI2P0kGt/FnO9
+         WZs8ZKMYKtZ3qmXhoBxfAQnEGFnGvGx5sL5+7Jmk0Pfl+aFuLduuTNkDLQMcu1ZkSNHB
+         Ps6GyNtPA2xv5H7wR5tO6aqgvbCAV87AV+u2v6mOFhDhM6c0KrFNs+8337xryov8guIy
+         Fb6w==
+X-Forwarded-Encrypted: i=1; AJvYcCVtxEnTqATEdZltQy3k2+FfGgs91pbaJrmfbcp4o2DMNJkvT0OZGZppy9Y8yWM0PkmSuomCCeDxMsMt/Z8yEvuONZRdRswPl6QZ1GXR
+X-Gm-Message-State: AOJu0YxkCWCkl2kg5sGj1VrQSVJGndyAihsXgAb2FIUNnTNIUOdV77kh
+	l9qeoHlPVy0144+0WjDH8maBcmesGJQzC6U6dsRfHZUprKGEP9Wk5ycmI2wosF8ukDCmhbiVd2M
+	NmSK5+T5/dgSkfDnnupriEjcQGssd5h60xexrW95DSMMWaJdwDOe7gzS9yBpodA==
+X-Received: by 2002:a05:600c:512a:b0:416:3317:5951 with SMTP id o42-20020a05600c512a00b0041633175951mr7239145wms.6.1712660526464;
+        Tue, 09 Apr 2024 04:02:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnFcNFxAXoOVObPD2o30lZXdjv6GTG+xWvlEs15Bo+7jeLAg5j8PlkRre9DjPi/ol87m/44Q==
+X-Received: by 2002:a05:600c:512a:b0:416:3317:5951 with SMTP id o42-20020a05600c512a00b0041633175951mr7239130wms.6.1712660526034;
+        Tue, 09 Apr 2024 04:02:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
+        by smtp.gmail.com with ESMTPSA id j9-20020a05600c190900b004155387c08esm12420936wmq.27.2024.04.09.04.02.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 04:02:05 -0700 (PDT)
+Message-ID: <7a8d8005-3cec-4647-82b0-2d55d0ef34fc@redhat.com>
+Date: Tue, 9 Apr 2024 13:02:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 8/9] mm/ksm: Convert chain series funcs and replace
+ get_ksm_page
+To: alexs@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
+ Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
+ <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Chris Wright <chrisw@sous-sol.org>
+References: <20240409092826.1733637-1-alexs@kernel.org>
+ <20240409092826.1733637-9-alexs@kernel.org>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240409092826.1733637-9-alexs@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The newly introduced phy_link_topology tracks all ethernet PHYs that are
-attached to a netdevice. Document the base principle, internal and
-external APIs. As the phy_link_topology is expected to be extended, this
-documentation will hold any further improvements and additions made
-relative to topology handling.
+On 09.04.24 11:28, alexs@kernel.org wrote:
+> From: "Alex Shi (tencent)" <alexs@kernel.org>
+> 
+> In ksm stable tree all page are single, let's convert them to use and
+> folios as well as stable_tree_insert/stable_tree_search funcs.
+> And replace get_ksm_page() by ksm_get_folio() since there is no more
+> needs.
+> 
+> It could save a few compound_head calls.
+> 
+> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
+> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Chris Wright <chrisw@sous-sol.org>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- Documentation/networking/ethtool-netlink.rst  |   3 +
- Documentation/networking/index.rst            |   1 +
- .../networking/phy-link-topology.rst          | 120 ++++++++++++++++++
- 3 files changed, 124 insertions(+)
- create mode 100644 Documentation/networking/phy-link-topology.rst
+I don't recall giving that yet :)
 
-diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
-index b89a3d562018..1ae3bfd805ce 100644
---- a/Documentation/networking/ethtool-netlink.rst
-+++ b/Documentation/networking/ethtool-netlink.rst
-@@ -2027,10 +2027,13 @@ Retrieve information about a given Ethernet PHY sitting on the link. The DO
- operation returns all available information about dev->phydev. User can also
- specify a PHY_INDEX, in which case the DO request returns information about that
- specific PHY.
-+
- As there can be more than one PHY, the DUMP operation can be used to list the PHYs
- present on a given interface, by passing an interface index or name in
- the dump request.
- 
-+For more information, refer to :ref:`Documentation/networking/phy-link-topology.rst`
-+
- Request contents:
- 
-   ====================================  ======  ==========================
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index 473d72c36d61..c29bc5179d8a 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -89,6 +89,7 @@ Contents:
-    operstates
-    packet_mmap
-    phonet
-+   phy-link-topology
-    pktgen
-    plip
-    ppp_generic
-diff --git a/Documentation/networking/phy-link-topology.rst b/Documentation/networking/phy-link-topology.rst
-new file mode 100644
-index 000000000000..1f021419ae8c
---- /dev/null
-+++ b/Documentation/networking/phy-link-topology.rst
-@@ -0,0 +1,120 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================
-+PHY link topology
-+=================
-+
-+Overview
-+========
-+
-+The PHY link topology representation in the networking stack aims at representing
-+the hardware layout for any given Ethernet link.
-+
-+An Ethernet interface from userspace's point of view is nothing but a
-+:c:type:`struct net_device <net_device>`, which exposes configuration options
-+through the legacy ioctls and the ethtool netlink commands. The base assumption
-+when designing these configuration APIs were that the link looks something like ::
-+
-+  +-----------------------+        +----------+      +--------------+
-+  | Ethernet Controller / |        | Ethernet |      | Connector /  |
-+  |       MAC             | ------ |   PHY    | ---- |    Port      | ---... to LP
-+  +-----------------------+        +----------+      +--------------+
-+  struct net_device               struct phy_device
-+
-+Commands that needs to configure the PHY will go through the net_device.phydev
-+field to reach the PHY and perform the relevant configuration.
-+
-+This assumption falls apart in more complex topologies that can arise when,
-+for example, using SFP transceivers (although that's not the only specific case).
-+
-+Here, we have 2 basic scenarios. Either the MAC is able to output a serialized
-+interface, that can directly be fed to an SFP cage, such as SGMII, 1000BaseX,
-+10GBaseR, etc.
-+
-+The link topology then looks like this (when an SFP module is inserted) ::
-+
-+  +-----+  SGMII  +------------+
-+  | MAC | ------- | SFP Module |
-+  +-----+         +------------+
-+
-+Knowing that some modules embed a PHY, the actual link is more like ::
-+
-+  +-----+  SGMII   +--------------+
-+  | MAC | -------- | PHY (on SFP) |
-+  +-----+          +--------------+
-+
-+In this case, the SFP PHY is handled by phylib, and registered by phylink through
-+its SFP upstream ops.
-+
-+Now some Ethernet controllers aren't able to output a serialized interface, so
-+we can't directly connect them to an SFP cage. However, some PHYs can be used
-+as media-converters, to translate the non-serialized MAC MII interface to a
-+serialized MII interface fed to the SFP ::
-+
-+  +-----+  RGMII  +-----------------------+  SGMII  +--------------+
-+  | MAC | ------- | PHY (media converter) | ------- | PHY (on SFP) |
-+  +-----+         +-----------------------+         +--------------+
-+
-+This is where the model of having a single net_device.phydev pointer shows its
-+limitations, as we now have 2 PHYs on the link.
-+
-+The phy_link topology framework aims at providing a way to keep track of every
-+PHY on the link, for use by both kernel drivers and subsystems, but also to
-+report the topology to userspace, allowing to target individual PHYs in configuration
-+commands.
-+
-+API
-+===
-+
-+The :c:type:`struct phy_link_topology <phy_link_topology>` is a per-netdevice
-+resource, that gets initialized at netdevice creation. Once it's initialized,
-+it is then possible to register PHYs to the topology through :
-+
-+:c:func:`phy_link_topo_add_phy`
-+
-+Besides registering the PHY to the topology, this call will also assign a unique
-+index to the PHY, which can then be reported to userspace to refer to this PHY
-+(akin to the ifindex). This index is a u32, ranging from 1 to U32_MAX. The value
-+0 is reserved to indicate the PHY doesn't belong to any topology yet.
-+
-+The PHY can then be removed from the topology through
-+
-+:c:func:`phy_link_topo_del_phy`
-+
-+These function are already hooked into the phylib subsystem, so all PHYs that
-+are linked to a net_device through :c:func:`phy_attach_direct` will automatically
-+join the netdev's topology.
-+
-+PHYs that are on a SFP module will also be automatically registered IF the SFP
-+upstream is phylink (so, no media-converter).
-+
-+PHY drivers that can be used as SFP upstream need to call :c:func:`phy_sfp_attach_phy`
-+and :c:func:`phy_sfp_detach_phy`, which can be used as a
-+.attach_phy / .detach_phy implementation for the
-+:c:type:`struct sfp_upstream_ops <sfp_upstream_ops>`.
-+
-+UAPI
-+====
-+
-+There exist a set of netlink commands to query the link topology from userspace,
-+see ``Documentation/networking/ethtool-netlink.rst``.
-+
-+The whole point of having a topology representation is to assign the phyindex
-+field in :c:type:`struct phy_device <phy_device>`. This index is reported to
-+userspace using the ``ETHTOOL_MSG_PHY_GET`` ethtnl command. Performing a DUMP operation
-+will result in all PHYs from all net_device being listed. The DUMP command
-+accepts either a ``ETHTOOL_A_HEADER_DEV_INDEX`` or ``ETHTOOL_A_HEADER_DEV_NAME``
-+to be passed in the request to filter the DUMP to a single net_device.
-+
-+The retrieved index can then be passed as a request parameter using the
-+``ETHTOOL_A_HEADER_PHY_INDEX`` field in the following ethnl commands :
-+
-+* ``ETHTOOL_MSG_STRSET_GET`` to get the stats string set from a given PHY
-+* ``ETHTOOL_MSG_CABLE_TEST_ACT`` and ``ETHTOOL_MSG_CABLE_TEST_ACT``, to perform
-+  cable testing on a given PHY on the link (most likely the outermost PHY)
-+* ``ETHTOOL_MSG_PSE_SET`` and ``ETHTOOL_MSG_PSE_GET`` for PHY-controlled PoE and PSE settings
-+* ``ETHTOOL_MSG_PLCA_GET_CFG``, ``ETHTOOL_MSG_PLCA_SET_CFG`` and ``ETHTOOL_MSG_PLCA_GET_STATUS``
-+  to set the PLCA (Physical Layer Collision Avoidance) parameters
-+
-+Note that the PHY index can be passed to other requests, which will silently
-+ignore it if present and irrelevant.
+You could have kept some get_ksm_page()->ksm_get_folio() into a separate 
+patch.
+
+i.e., "[PATCH v3 11/14] mm/ksm: remove get_ksm_page and related info" 
+from your old series could have mostly stayed separately.
+
+[...]
+
+>   /*
+> @@ -1829,7 +1821,7 @@ static __always_inline struct page *chain(struct ksm_stable_node **s_n_d,
+>    * This function returns the stable tree node of identical content if found,
+>    * NULL otherwise.
+>    */
+> -static struct page *stable_tree_search(struct page *page)
+> +static void *stable_tree_search(struct page *page)
+
+There is one caller of stable_tree_search() in cmp_and_merge_page().
+
+Why the change from page* to void* ?
+
+I suspect cmp_and_merge_page() could similarly be converted to some 
+degree to let kpage be a folio (separate patch).
+
 -- 
-2.44.0
+Cheers,
+
+David / dhildenb
 
 
