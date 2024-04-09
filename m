@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-137653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3720C89E522
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D7789E524
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5661F23369
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:44:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54AD5B22ECB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8D6158A35;
-	Tue,  9 Apr 2024 21:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0F8158A37;
+	Tue,  9 Apr 2024 21:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VYsHSsqE"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y39dcCrD"
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014D4158851;
-	Tue,  9 Apr 2024 21:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6AF1EA8F;
+	Tue,  9 Apr 2024 21:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712699086; cv=none; b=I8V6ZkuKErYE4g+HnNYFfmDHaWiIFfxb9JNtg3k6SZzU38JAiLiIMxIEPjgcrX76up7VJNiGoijVN1mAvlOIgljobDKIErwgaQOybcJ7ip7Tg2OAQcO9HFKok5DWhijKDMJw1rC3WhO9e/Gj2bU45LW5qA8wmkx1P5/uoH2qAWc=
+	t=1712699134; cv=none; b=fdX0LOTYdrf1WxfvTmugrBm958UVuK+MK1KL7pXfj1O62iw3eQEwX2ghRvIMBtNE3RVEXVpZOnvfoPYsxMeas2pIoGAIi8Yq18eu61P9wr464swdZuIQWQYg7hyKIh6hXkAfrtx1V6J1S8budArAxDNPjFMxOeK5EXN9m7MhcfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712699086; c=relaxed/simple;
-	bh=9AniVrmVEwjQQ91ny9Uuu92Ev9GZHv7gYh3BV+EJVvU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JZLuXUklFut1R3EJW4cZspCts5mJTZYLRmVbebbJlWiRaeRhCdCPkGxUnG2+2rUBV/JhpRx/GzWrU2soMzPjbHOa+7paQfYGamC2CAOb6kit8Yh0tby6HUrZgl/85CX1png7rXNogU/bY7gjOsRSwBDnmLAA4iteXlgvSBZIxdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VYsHSsqE; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439LiQRk004818;
-	Tue, 9 Apr 2024 16:44:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712699066;
-	bh=6jGZr9jb/pRBatR/Kljqu36LgjlgOFEHyb73BCXCNbM=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=VYsHSsqEPUobLUljx6cz4GA5FVFaZv87np0wQT9/atjtfegoPU3JIjK2n7H9nPSz3
-	 tTydrdAOPmcyT67gtzLFgf43Mp6xZhjXm/YxHEnYNhNhXq0rZthdRuoFjdkEbZ1dOK
-	 lnVd8CZYk0L1sJSYct9/Yr8zKio2x+BEON1M3p/M=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439LiQaJ003856
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 16:44:26 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 16:44:25 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 16:44:25 -0500
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439LiPKr059974;
-	Tue, 9 Apr 2024 16:44:25 -0500
-Message-ID: <e1d1aad3-0635-45e1-9470-6398a04820d0@ti.com>
-Date: Tue, 9 Apr 2024 16:44:25 -0500
+	s=arc-20240116; t=1712699134; c=relaxed/simple;
+	bh=BvDvYnOOXVplEXAKZS/pyR1MTJ4xfUq5mSJLxWWLxOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q7rjdhcO+AGoOpmm0yqEAmLQtARzdTwwq8dgaQ9BMmEChoMhWHw8Y7mzhSKSgrWRDW7kLkhPscT88eSgAsRut/vyKvaKGt4TkkVtNBrxhV4OmroSCwOZIRPs0nifPG1MAfXh4IN7x+0vgBof5+WJ0ILDOVkHoIugAq4Z9SC7o8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y39dcCrD; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a559928f46so1307649a91.0;
+        Tue, 09 Apr 2024 14:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712699132; x=1713303932; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iVtDfwwG8gLboGM4jqgJ+puQVYBzgA3lQVXohAbNgTI=;
+        b=Y39dcCrDxkEbb87UMYJkApVHYwMTXoeHzjBGYPDB7fO68znjERmbzO5gTlvbhbmL8u
+         LAGpa2GAB7orAK3kE0grER5YVO/ynKfnP52a0xzCm3Uucpc9DkELpIjQ125rtjzf5u8F
+         opPdVPYGE/fsvKvo8N4isqKOEnjYAkECcs5GsNYJmnfEU+k7HMWhJ/KO31JheZMNmkor
+         9OslkTrlCWGRxifcV6kCl3E3nxUmEii8W7Ps0Ln87Zj1u0U6q1pm6p8bs/c9IUNwnaQW
+         07Qf9LRV0cYtBH/7Bbx0uebgIUkKKznqOsBrY7c3BFMREWsGGuiUF/ya1Hi72Imhn3fY
+         U7nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712699132; x=1713303932;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iVtDfwwG8gLboGM4jqgJ+puQVYBzgA3lQVXohAbNgTI=;
+        b=hQQWYoECz0zGipURGgj9NKMuPJDQwYJQUgqs/Lm3G+uYYBrESc0hT2RSoq0l8NdqdB
+         t+k3Q2jZFDYfzmAIXrLLtgSgkhGVwPfeJ1mXfJmmku8uoSveVqgCYjLiE/o06gqZ3S4X
+         eIK7zOvbxZk+xdfu3IwccE14VAOHYKTOddd1Zhk1oM0mBNrLS5l5uhelea50FVVVJNKs
+         BeY5/YCGIAtJPbyhOdMoQvx8YZKFA/Hq8LKL9ht5s1xtznXtKMTyLANfpDWud7S1lvVv
+         FrnmLqTq2EPvgDbXWwwpRV2f8Dm6C2FJayO5XvjhJg7Fljo0QRv4nZ/FzEvFT+MB0C43
+         fb6w==
+X-Forwarded-Encrypted: i=1; AJvYcCVePjLz2BOiYU+vhTwzhqp4PhueF1Ah0bU1BwdUetJ9ky+zgxKIG21w+RRWwJKJCWtc0aJyaVmxe5wLCnS10YkBhgaB42tkOdAQZ7282OYhTeboAdv8zovqPYC1F0AhBYaKgHE4
+X-Gm-Message-State: AOJu0Yyt98tBk/LkoMapuTE0i/Gv9Df2BKurrWBUtJLY2BlbB7+TQxTX
+	6npwA3z/Pq5o31a5hdCrSaLTQL1Ksn1O1nCL2zTsluc1k5Z/GeXY
+X-Google-Smtp-Source: AGHT+IGq3sKA+G3xXmhaBew7ljkWLI4OQDEMZ/2WB/CMVm/z9wg/DswFuMYeCmjPuq067hOiftgEUA==
+X-Received: by 2002:a17:90b:3cb:b0:2a5:3637:1968 with SMTP id go11-20020a17090b03cb00b002a536371968mr1002437pjb.9.1712699131931;
+        Tue, 09 Apr 2024 14:45:31 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id mg4-20020a17090b370400b002a043efdea6sm73077pjb.11.2024.04.09.14.45.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 14:45:29 -0700 (PDT)
+Message-ID: <90403017-ecf1-40cb-8455-045bd04247e8@gmail.com>
+Date: Tue, 9 Apr 2024 14:45:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,57 +75,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] watchdog: rti_wdt: Set min_hw_heartbeat_ms to
- accommodate 5% safety margin
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck
-	<wim@linux-watchdog.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240404153319.1088644-1-jm@ti.com>
- <a148e8ab-f502-45ec-b915-22fce751ad64@roeck-us.net>
- <a7b0baba-56bc-47ca-9494-0178f441ff8b@ti.com>
- <ZhWchn3qr_7Ocggm@gaggiata.pivistrello.it>
+Subject: Re: [PATCH 6.8 000/280] 6.8.5-rc3 review
 Content-Language: en-US
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <ZhWchn3qr_7Ocggm@gaggiata.pivistrello.it>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240409173543.596615037@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240409173543.596615037@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Francesco,
-
-On 4/9/24 2:52 PM, Francesco Dolcini wrote:
-> On Tue, Apr 09, 2024 at 02:37:15PM -0500, Judith Mendez wrote:
->> Hi all,
->>
->> On 4/6/24 8:01 AM, Guenter Roeck wrote:
->>> On Thu, Apr 04, 2024 at 10:33:19AM -0500, Judith Mendez wrote:
->>>> On AM62x, the watchdog is pet before the valid window
->>>> is open. Fix min_hw_heartbeat and accommodate a 5% safety
->>>> margin with the exception of open window size < 10%,
->>>> which shall use <5% due to the smaller open window size.
->>
->> Please do not merge this patch, I will add an additional
->> patch removing the hack in this driver.
+On 4/9/24 10:44, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.5 release.
+> There are 280 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Is the patch buggy, or you are just talking about an additional clean-up?
-> If it is an additional patch and this code is fine, why holding it back?
+> Responses should be made by Thu, 11 Apr 2024 17:35:00 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.5-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-1. If we leave the hack, the hack shifts the valid window. This
-is not desirable behavior. It is better to add a safety margin
-that works in all possible scenarios.
-
-2. 5% safety margin works in almost all cases except when the
-timeout is < 5s. This due to a requirement of a min of 0.25s for the
-safety margin due max possible error. At < 5s timeout, 5% is not
-enough.
-
-I am not 100% sure if using < 5s timeout is a real use-case
-but I would rather use a safety margin that works for all cases.
-
-~ Judith
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
 
