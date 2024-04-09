@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-136751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5134989D7DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:31:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345C289D7DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:31:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D31228653E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:30:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4069B24940
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7EF12BF2D;
-	Tue,  9 Apr 2024 11:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074FB12D746;
+	Tue,  9 Apr 2024 11:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QANIiwI8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ae1dSzXS"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3327128806
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DDA129E80
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662229; cv=none; b=n4ykG8QBiqBLGDXlKbaexBPGTWqp/Ki7Hzx1LN8k4+5MgVPaJA7qxV1EmkUtGS0MeKcdrUSgm5Wg+15s9vtjK1wHfPX5McHHSxTvTjDfbKfdbwFPNdYrSHjbboCtvvUpudAJk42/37cpPfQpLLnCjipPc8Ns91wj3q7W9OgC/W8=
+	t=1712662230; cv=none; b=FUUvb2zzX3enpVUcf4muYIdXjmgNoZDqn+qTZaRHV1K0JTDUepX/MKf3EAEmmdo4GC0wWVplPQwi+s5ZHeSiinnh/7Uc8eGQ3fdowMukStq8tO0OJsIH+tZrRZwCIgptrBE90WcFnpj2qRfb0Dziguf4lYwwRrfwTPShZ4RgBuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662229; c=relaxed/simple;
-	bh=IXySMsd1LbCuYXSWDngaVCbkpG0HLAxIAN3nQj47ksE=;
+	s=arc-20240116; t=1712662230; c=relaxed/simple;
+	bh=jhoSJK9vAOf7tdZhp/qhOuJmkQkVmgSEyhKVV1fOBC8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=anO2p3kEzubo552q8d90WYw+4VRBWEYDiwwhd2jtVdW13CmJYT1JYICV89F25VGIhgtJifI7orESd8Rkv2grOgIY/Iy9GzKgmOcTl4GFvLsojNuVqaumzQPQCR8MWTSAGIUzsFWMYbtbE/4/qF4WvTvocrYHi7oycbp0lufJSwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QANIiwI8; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=DiHU/oCDriAlMirMUZoRMO+53qSMRtr498DxIPM9CXACSyUZIkEr1j9AOysH+9Ls6bZ95CS19heXbiNnltNbyZPOsl0p5m5DnRLl0FJRMSBhDyU1ytwA/PO5LuzlWtjYXtBo13C3/6l76JMQiUIdTcXE4SJTKrXA4dAH+QIsZFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ae1dSzXS; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712662228; x=1744198228;
+  t=1712662229; x=1744198229;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IXySMsd1LbCuYXSWDngaVCbkpG0HLAxIAN3nQj47ksE=;
-  b=QANIiwI8cX1pvUpzWP7rAaIXH8eeFx9rZs3yhBJ4k5UeSRJp0SSWOo/4
-   QjfqF7NmP+JQBF5MSyaPp/dP1BsYe30hayTALI7uUh5qgwO5TvRSLuAlN
-   fqGP7T2nwVfWeqa8JHUo86D9Ft0ewDlakr74ekLhBCigGsmUCIfedtEVU
-   FU9qIN3JfogqHclzA8WwDRStE6OJ9NNyLDuO0epcvYSS8ULsuUXb3Dn+D
-   wQ+0whhxGaLGWzVyVg1Vv4VxM0O81wDcTTzs72Dm7Lhn0LU2pUENqAqkA
-   RmqTGqkuZOYQpN+0+7uuTH9Tee8kc2lW9ceDsgYGESe+FZbBXYG2Z7wJE
-   w==;
-X-CSE-ConnectionGUID: s0wYpC75TxedTdWpm4AUNA==
-X-CSE-MsgGUID: TxN69dd4Q0m71ut3RziHJw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30460342"
+  bh=jhoSJK9vAOf7tdZhp/qhOuJmkQkVmgSEyhKVV1fOBC8=;
+  b=ae1dSzXS8PI4Jp2RcZPBh9UIV2MDySjgM/HlBW6D+q6CKSRBgPp8kmaf
+   KHTy5wS8BQc8qFMhNWKBY4Fxsuo6EMM6Tgk9VoZg4UW04S5AA+nrwVF30
+   QL/1gjI0L4qL+Ie6yZqBfBopXX1EFzmG9TZTEiIMrrQx2DqSYB0z2+/Ci
+   DiXS5ifM8yaNHSun8eZQttgMANuQ57r+snbNu//oK21BeW8xzy3ShdvJC
+   liEyHkO7SSA4HW24cAtjyzG9H4KY2xxkeg65SBd4QX/q72Fou4Qnhv+Px
+   jHZdzPfW2Omj/0tugqWCS6M1XXznl49Dl+VEhxuuNGOI2OMvfGlsfNzVv
+   g==;
+X-CSE-ConnectionGUID: htZmv5kFSGK73oCF7CX9Jg==
+X-CSE-MsgGUID: cC71c1hFSM2JoQK/5iaTnQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30460357"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="30460342"
+   d="scan'208";a="30460357"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 04:30:24 -0700
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 04:30:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093315"
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093327"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="937093315"
+   d="scan'208";a="937093327"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 04:30:18 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 04:30:23 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 9EFDA8CA; Tue,  9 Apr 2024 14:30:17 +0300 (EEST)
+	id A9B078D1; Tue,  9 Apr 2024 14:30:17 +0300 (EEST)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -79,11 +79,10 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	kexec@lists.infradead.org,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Tao Liu <ltao@redhat.com>
-Subject: [PATCHv10 04/18] cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
-Date: Tue,  9 Apr 2024 14:29:56 +0300
-Message-ID: <20240409113010.465412-5-kirill.shutemov@linux.intel.com>
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+Date: Tue,  9 Apr 2024 14:29:57 +0300
+Message-ID: <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
 References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
@@ -95,91 +94,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ACPI MADT doesn't allow to offline CPU after it got woke up.
+Depending on setup, TDX guests might be allowed to clear CR4.MCE.
+Attempt to clear it leads to #VE.
 
-Currently CPU hotplug is prevented based on the confidential computing
-attribute which is set for Intel TDX. But TDX is not the only possible
-user of the wake up method.
+Use alternatives to keep the flag during kexec for TDX guests.
 
-Disable CPU offlining on ACPI MADT wakeup enumeration.
+The change doesn't affect non-TDX-guest environments.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Tao Liu <ltao@redhat.com>
 ---
- arch/x86/coco/core.c               |  1 -
- arch/x86/kernel/acpi/madt_wakeup.c |  3 +++
- include/linux/cc_platform.h        | 10 ----------
- kernel/cpu.c                       |  3 +--
- 4 files changed, 4 insertions(+), 13 deletions(-)
+ arch/x86/kernel/relocate_kernel_64.S | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-index b31ef2424d19..0f81f70aca82 100644
---- a/arch/x86/coco/core.c
-+++ b/arch/x86/coco/core.c
-@@ -29,7 +29,6 @@ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
- {
- 	switch (attr) {
- 	case CC_ATTR_GUEST_UNROLL_STRING_IO:
--	case CC_ATTR_HOTPLUG_DISABLED:
- 	case CC_ATTR_GUEST_MEM_ENCRYPT:
- 	case CC_ATTR_MEM_ENCRYPT:
- 		return true;
-diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-index cf79ea6f3007..d222be8d7a07 100644
---- a/arch/x86/kernel/acpi/madt_wakeup.c
-+++ b/arch/x86/kernel/acpi/madt_wakeup.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- #include <linux/acpi.h>
-+#include <linux/cpu.h>
- #include <linux/io.h>
- #include <asm/apic.h>
- #include <asm/barrier.h>
-@@ -76,6 +77,8 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..8e2037d78a1f 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -5,6 +5,8 @@
+  */
  
- 	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
- 
-+	cpu_hotplug_disable_offlining();
-+
- 	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
- 
- 	return 0;
-diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
-index 60693a145894..caa4b4430634 100644
---- a/include/linux/cc_platform.h
-+++ b/include/linux/cc_platform.h
-@@ -81,16 +81,6 @@ enum cc_attr {
+ #include <linux/linkage.h>
++#include <linux/stringify.h>
++#include <asm/alternative.h>
+ #include <asm/page_types.h>
+ #include <asm/kexec.h>
+ #include <asm/processor-flags.h>
+@@ -145,11 +147,17 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 * Set cr4 to a known state:
+ 	 *  - physical address extension enabled
+ 	 *  - 5-level paging, if it was enabled before
++	 *  - Machine check exception on TDX guest, if it was enabled before.
++	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
  	 */
- 	CC_ATTR_GUEST_SEV_SNP,
+ 	movl	$X86_CR4_PAE, %eax
+ 	testq	$X86_CR4_LA57, %r13
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
++1:
++	testq	$X86_CR4_MCE, %r13
++	jz	1f
++	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+ 1:
+ 	movq	%rax, %cr4
  
--	/**
--	 * @CC_ATTR_HOTPLUG_DISABLED: Hotplug is not supported or disabled.
--	 *
--	 * The platform/OS is running as a guest/virtual machine does not
--	 * support CPU hotplug feature.
--	 *
--	 * Examples include TDX Guest.
--	 */
--	CC_ATTR_HOTPLUG_DISABLED,
--
- 	/**
- 	 * @CC_ATTR_HOST_SEV_SNP: AMD SNP enabled on the host.
- 	 *
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 08860baa6ce0..a70767aee9d0 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1528,8 +1528,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- 	 * If the platform does not support hotplug, report it explicitly to
- 	 * differentiate it from a transient offlining failure.
- 	 */
--	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) ||
--	    cpu_hotplug_offline_disabled)
-+	if (cpu_hotplug_offline_disabled)
- 		return -EOPNOTSUPP;
- 	if (cpu_hotplug_disabled)
- 		return -EBUSY;
 -- 
 2.43.0
 
