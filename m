@@ -1,169 +1,112 @@
-Return-Path: <linux-kernel+bounces-137271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95DE289DFBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:54:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C595889E061
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37715281CB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0298B2135E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FE313848D;
-	Tue,  9 Apr 2024 15:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="koBP5gFl"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF9513D53C;
+	Tue,  9 Apr 2024 15:55:06 +0000 (UTC)
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3136A136994;
-	Tue,  9 Apr 2024 15:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA26513B293;
+	Tue,  9 Apr 2024 15:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712678077; cv=none; b=TxK12CcYXU9yXT1PNitYNWwBDGDXcXWhCIrMT6FaGDQWB3I7iOlgHBDpgcr9E/c0OqcjWSmUcq0Af4aS1+jTPKAeMX7/YFauSLDTzHAUHe4eiXq7gDwiEQCfI1w6oV2iMIBZ13z+tglXjdMQMc7uStGazjIVMQN29lgaRaeMf1o=
+	t=1712678106; cv=none; b=UCueXl24J299Z4u0ruRpcfW2Tr+xhWY9dE0FxSuNwG286bDhUnDu24JIv6yPaQmMruKRTFSgHLiPgJbz2L5zM5/C1Jm1qL0T42P3zpaFheFWRrNcQONab2bCqEIHaz1+bXkM517hMUsZipZ+pqK8/SFqWnKarUrvcl9LmsSFLRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712678077; c=relaxed/simple;
-	bh=deh9a6oj7S2gS2ULfJVmjBcpLmZfqHAkc6kcjO7qmUo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=lYV5EW6ZjtjS15CL11VZHWdrdZuhbSB6vJIswqcSgye4UObAOFYX8pOlp/PTLjFjErUlUFM/eaXeCktsy3AT6aAEHgM2biyybsAtH+jF7IRobtj0GkBQqfnGxesRpRgz2GlrZl/wttJYgh1u35rYqavjWjo/Ic42nJBzm/6NNlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=koBP5gFl; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 439FR6dd010322;
-	Tue, 9 Apr 2024 15:54:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pp1;
- bh=hltvEKuUiuAjdE9Nr1WEt7/LBEqngI0qozmlnXjnpxQ=;
- b=koBP5gFlerfgpNI8OIJu7AleYBawOadeGKFYBwnGA8Pk4vhUcPSTi1kbZQwhy6oGdE4t
- BXOZKClyN1Nni+3DzSdl+etqj0+SaDETd8LGqT8rx9/MK/qB5Hq2gI8nDyhlZx+DhwXq
- LwZWoL/gVB69eC8xcTsMEUwl0mIl28tDM/y/z6Ql7R84suftLYFhHbdoqAJduQOh3arO
- rXFoxTYOZM9tl5/wT4s4xwbXoy0nIXqLnI88eGASrrvNF+aS+/aO99AdLHVyKZi43zqv
- xU2STpY58crxyuJOhob0SqDqUq/t0CBnBTgbjkugVbymPopoVw1AlLIDNwtjI6YeZYsj RA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xd7rq05gc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 15:54:26 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 439FsNm6022291;
-	Tue, 9 Apr 2024 15:54:23 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xd7rq05g8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 15:54:23 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 439Flq8D021485;
-	Tue, 9 Apr 2024 15:54:22 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbjxkpvrd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 15:54:22 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 439FsHGU29491696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Apr 2024 15:54:19 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 507B82004B;
-	Tue,  9 Apr 2024 15:54:17 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 232FB20040;
-	Tue,  9 Apr 2024 15:54:17 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Apr 2024 15:54:17 +0000 (GMT)
-From: Sumanth Korikkar <sumanthk@linux.ibm.com>
-To: akpm@linux-foundation.org, linux-mm@kvack.org
-Cc: hughd@google.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, iii@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>
-Subject: [PATCH] mm/shmem: Inline shmem_is_huge() for disabled transparent hugepages
-Date: Tue,  9 Apr 2024 17:54:07 +0200
-Message-Id: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712678106; c=relaxed/simple;
+	bh=0lPHtPQnZWwOuPYNH0Mij7OvM1YjXB78i9gew5k4nBo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/Nhrh2hJJBCZbXaZrdjBziBgBgfBFjOeu9bsfR4GAwMQSk5MaVnSIm/jD8mNX4bJea5KtM5CNHka84g2myQr5GZ3UdoK8YPTfkBxIE+R9GHnWMo1qIz1TMeRj8gM0vZuCZ5yESLg5GDTnk71y1k4BuFSEwSW6SkX8XtPvAY+uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so4435961a12.1;
+        Tue, 09 Apr 2024 08:55:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712678104; x=1713282904;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6krUFkZxSu7NHCuJ24hvqtrbwkrF1MhKocaeSXBeP1g=;
+        b=BVTkKK/MdEWX6HBXWry60C1xxrWD9IFMx+se6VU9KlsAeaw9cJWHRS689RPSKhXTHs
+         GZTCqB0I8/TkEaZnR8hFyJDPEdu/FaDhGhtCe43bWp5PvLtUcdpyY7KpfRl9ngevTb30
+         DbwX45tdYgSAuy5w+PeEBkv90LuU75HAPa/p9+UTGYL/291zG8edNiuikYg1t1oWvffg
+         1LGqnL1+K6VwLfncFqfCo9fUj8Xe1UGZBmmFb7bK3DjpSB7n9etNkDfrIHCoojXxrNFO
+         G6bYC7bssTiyHNJxMHpBZyTg5i1/aWEZOhfZo8dwJZx8inNbB3Mpz0Fms1/C1SjmSYTR
+         9PRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVXgKioS39D+vOK6OChRLWYE/VCg/usgUYVa11WUK9MtYnjf+jOJRSvdeOWvsrUchocHCK6IEcfD6lWw7ALQWJvy3nGG7CQpM36z/1xm9LZMxB2xheJnnQ+TG3RvajurrjlRd2MoUWVkZ9hSe40eQ==
+X-Gm-Message-State: AOJu0Ywgm6y4bCj1+bujwjDBLkWa1NLXmiFK/oaoKLqI9mv/HSceruaf
+	pYCo00CfoKPh9JthI9NmTfbNgxodBtAkICdUXzxfD+IAIDJWN0DxlbD1+s8w2KsBaMRFMAmADmc
+	Ceq1lsY/AE3MWWKEysAkI/vL/QY4=
+X-Google-Smtp-Source: AGHT+IHE/dEmZWu5fRh3HefzkZZpkUkBWoB/yZw6LtaPY8lxKNr+Qil08N6s7/bplA2zcN7caznfjTQ4tImCgt1wQzo=
+X-Received: by 2002:a17:90a:101:b0:29b:ccb4:a250 with SMTP id
+ b1-20020a17090a010100b0029bccb4a250mr40293pjb.16.1712678103729; Tue, 09 Apr
+ 2024 08:55:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Yh2qOqAwEPz1FAUnTgCuXIpzv-cWRku-
-X-Proofpoint-ORIG-GUID: O04OGiBclUlW1kPL5W7uXFQepVAMoGO2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_11,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=569
- suspectscore=0 priorityscore=1501 clxscore=1011 phishscore=0 adultscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404090104
+References: <20240408185520.1550865-1-namhyung@kernel.org> <CAMuHMdXQ_osFeknmg=oR6-fMH_MkVqabCtbynxQ6UvpZRwry3Q@mail.gmail.com>
+ <ZhVG_9KpcWLLhc-s@x1>
+In-Reply-To: <ZhVG_9KpcWLLhc-s@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 9 Apr 2024 08:54:51 -0700
+Message-ID: <CAM9d7ci+r73oNUOS7zjHmRGkQk0OhLAdv4zqt7BV+y4jb1rkwg@mail.gmail.com>
+Subject: Re: [PATCHSET 0/9] Sync tools headers with the kernel source
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Ian Rogers <irogers@google.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In order to  minimize code size (CONFIG_CC_OPTIMIZE_FOR_SIZE=y),
-compiler might choose to make a regular function call (out-of-line) for
-shmem_is_huge() instead of inlining it. When transparent hugepages are
-disabled (CONFIG_TRANSPARENT_HUGEPAGE=n), it can cause compilation
-error.
+Hello,
 
-mm/shmem.c: In function ‘shmem_getattr’:
-/include/linux/huge_mm.h:383:27: note: in expansion of macro ‘BUILD_BUG’
-  383 | #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
-      |                           ^~~~~~~~~
-mm/shmem.c:1148:33: note: in expansion of macro ‘HPAGE_PMD_SIZE’
- 1148 |                 stat->blksize = HPAGE_PMD_SIZE;
+On Tue, Apr 9, 2024 at 6:47=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> On Tue, Apr 09, 2024 at 09:15:02AM +0200, Geert Uytterhoeven wrote:
+> > Hi Namhyung, Arnaldo,
+> >
+> > On Mon, Apr 8, 2024 at 8:55=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> > > I'm gonna carry these changes on the perf tools tree.  I'll update th=
+e
+> > > vhost.h once it lands on the mainline.
+> > >
+> > > This is the full explanation from Arnaldo:
+> > >
+> > > There used to be no copies, with tools/ code using kernel headers
+> > > directly. From time to time tools/perf/ broke due to legitimate kerne=
+l
+> > > hacking. At some point Linus complained about such direct usage. Then=
+ we
+> > > adopted the current model.
+> >
+> > Do you have a reference to that?
+>
+> I would have to do a search on the mailing list to find the exact
+> exchange, this is from memory and from people asking this repeatedly.
+>
+> Ingo replied with reasons similar to the ones I use in this canned
+> explanation when sending the notice of updating the files.
 
-To prevent the possible error, always inline shmem_is_huge() when
-transparent hugepages are disabled.
+This is the Ingo's reply:
 
-Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
----
- include/linux/shmem_fs.h | 9 +++++++++
- mm/shmem.c               | 6 ------
- 2 files changed, 9 insertions(+), 6 deletions(-)
+https://lore.kernel.org/r/ZhTwPLliHXKPAJUQ@gmail.com/
 
-diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-index a4c15db2f5e5..3fb18f7eb73e 100644
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -110,8 +110,17 @@ extern struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
- extern void shmem_truncate_range(struct inode *inode, loff_t start, loff_t end);
- int shmem_unuse(unsigned int type);
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- extern bool shmem_is_huge(struct inode *inode, pgoff_t index, bool shmem_huge_force,
- 			  struct mm_struct *mm, unsigned long vm_flags);
-+#else
-+static __always_inline bool shmem_is_huge(struct inode *inode, pgoff_t index, bool shmem_huge_force,
-+					  struct mm_struct *mm, unsigned long vm_flags)
-+{
-+	return false;
-+}
-+#endif
-+
- #ifdef CONFIG_SHMEM
- extern unsigned long shmem_swap_usage(struct vm_area_struct *vma);
- #else
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 0aad0d9a621b..94ab99b6b574 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -748,12 +748,6 @@ static long shmem_unused_huge_count(struct super_block *sb,
- 
- #define shmem_huge SHMEM_HUGE_DENY
- 
--bool shmem_is_huge(struct inode *inode, pgoff_t index, bool shmem_huge_force,
--		   struct mm_struct *mm, unsigned long vm_flags)
--{
--	return false;
--}
--
- static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		struct shrink_control *sc, unsigned long nr_to_split)
- {
--- 
-2.40.1
-
+Thanks,
+Namhyung
 
