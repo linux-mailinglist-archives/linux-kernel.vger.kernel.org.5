@@ -1,161 +1,198 @@
-Return-Path: <linux-kernel+bounces-136474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7AA089D471
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:33:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B04089D464
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99738284026
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9057C1F27278
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E3712F5BB;
-	Tue,  9 Apr 2024 08:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F283912DDAD;
+	Tue,  9 Apr 2024 08:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hPz7Hmr+"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KFYpal4V"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C3A12F383
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB4A12A14F;
+	Tue,  9 Apr 2024 08:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651246; cv=none; b=trxGZ76nWFQJknYo4qa2aH8/+Zt2K+LWy+RMDrFg0TK/sixjaZ4EZVaLze9O1hSvQ/ovcvxu+SwrhozFyjT0EavMHmEVj3EhwpNNGBQP6xX6oKHh9lETYPQjpg6ZWIm226wgLfXZAMuO80TPp92ovK2/lHizjWIKG/4oeEiKddg=
+	t=1712651241; cv=none; b=Y+yZOe89OkBcPPNeAG1Fh4IdzSl2x8l7f+2gDjBhcof8dDDfXkPqkpuIX96ID+HRLXGCOK9QwhQOFTmWqgP1Pn+iF3gP6Lm0kAslhtCvyHUwEQ8mlMdnsL9XS944L2b1JUya60Dp+TPWRqVzIcJE0eWtOR2MGRfLkTrGxv8Szzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651246; c=relaxed/simple;
-	bh=NInqBO3mqli5kAaFy5yCoXoiS3x2iM4UBcvy+GAsVlo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GrlFx6u2VuhOJy6Jm4QRWVmoqG3wRfgHQY21LNJn6RvPPMT0y4xsEo4C2JiZTS9aq9yKoXQn11r6OmQZcT+7RRJi0KNlSX5k5ZaPKhaLP3z4XbgOHvtsesjzEXPFKK6f2VmkhZwgkSheABJa6Rqm2AZkwRHog7GSYufziNgpCcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hPz7Hmr+; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5aa362cc2ccso1750910eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712651244; x=1713256044; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VvJHnREnFZ1cH5hEIu5QcKzQyYhaFholreUs1EUriRY=;
-        b=hPz7Hmr+4DxDSD6V4Ax4T3+darDvLJjsik/x8oswVLk2+hxUQxcfYwRDK4pwgv67gs
-         Ch3QAm+f4gr3DrtPBa9F+081nIokKqClGBQB0NXdO7KdUP+AB6yTLRAZru1pgjnoNBtW
-         R9ohOkpd/ncn901W9pQENVOWkLrpXsCRAYDLWMkRGhQz232LUzQPAmZGkFZxo4T2C3pf
-         ZRaOgTBhWvATd1X9zmM8q8jNF/5hgV7YaRswsTkFHyOpXLQC1sVVgTkFT9C3r5CBLVpj
-         zTn8Y0SDTsqXmklGwNAYhUOP649W9teqEV3Ge7R5uZQqN37P1rrMb4TAzLa5fuYqa6tK
-         +77g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712651244; x=1713256044;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VvJHnREnFZ1cH5hEIu5QcKzQyYhaFholreUs1EUriRY=;
-        b=iAY6bCNJaXsJ0bL4mJW0r+0cBrXVl6XUXiQ0qHPqC/O20F3HhtTYk8v+jt5xDSp8u5
-         c4x8+O0rRwoJ8mMp6r304n9xFhve96PYI4ZRW8xhKRGq/o1V8T3HlmoImvH2v+TEdxG9
-         HMq1AmOa+lXVJjhX6nFOAGNLy1qF9aKhJUbiQ0INRNvbAqMD9WH4w/iTCl5ZiiYZrq6a
-         QK91CYzguVph5NhxwUprOQss/itRfknHsSqVeavHCF1UNVj9NvqaIFrzdDmT8V6N2ZlM
-         xBYXDkKcDdhVM4iQNCzl3UTmjeed5Yg6WssjNLOcWHxVv3lj1TNLPQnK5JvfnJIAJkOo
-         urKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVo0RS/DQ2lnJb8xNZgyZQ68hgR88o4CDZMnlq+4JWg4xXpQYb6SJl3A2tzSLOhr5z6H2Vr9qs4JEUAIkENK3wpTPqsfuzZndO2ZLCU
-X-Gm-Message-State: AOJu0YyS52DeHbTzR+gP47r3q9cgKQWUBQXrKfeMHSNPrZk5rEoaRaxs
-	IQjOUFj2ORqGY59rqSgSyccp4Z7FWVYgFKdHPQBlcKtTrJwPAUNf
-X-Google-Smtp-Source: AGHT+IFBs0lnKgGergw9nSynKWYDcWV9NAHxsayy25kkPHq1gK1xpsfE+xyR/l1fPI85a7fcICPnHg==
-X-Received: by 2002:a05:6358:d39f:b0:186:102b:777 with SMTP id mp31-20020a056358d39f00b00186102b0777mr9881254rwb.10.1712651243980;
-        Tue, 09 Apr 2024 01:27:23 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id r16-20020a632050000000b005f05c88c149sm7594238pgm.71.2024.04.09.01.27.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 01:27:23 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	linux-mm@kvack.org
-Cc: baolin.wang@linux.alibaba.com,
-	chrisl@kernel.org,
-	david@redhat.com,
-	hanchuanhua@oppo.com,
-	hannes@cmpxchg.org,
-	hughd@google.com,
-	kasong@tencent.com,
-	ryan.roberts@arm.com,
-	surenb@google.com,
-	v-songbaohua@oppo.com,
-	willy@infradead.org,
-	xiang@kernel.org,
-	ying.huang@intel.com,
-	yosryahmed@google.com,
-	yuzhao@google.com,
-	ziy@nvidia.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
-Date: Tue,  9 Apr 2024 20:26:31 +1200
-Message-Id: <20240409082631.187483-6-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240409082631.187483-1-21cnbao@gmail.com>
-References: <20240409082631.187483-1-21cnbao@gmail.com>
+	s=arc-20240116; t=1712651241; c=relaxed/simple;
+	bh=lLjexWaZDoedCAGOjG4VuX8BKtf924kbhZ+DSXlqNb8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=STtTGb6PC5OXRjiHypVbqUFUzLSgd+v1izh/Rp4GGqgtWSN18zikBkJudJQY22uDgx0aR0iH9oud4pC/hOslku+15W5dZ79660Rm7O4KhdHbckBQdD4Lw9MrLRg27j6vVTfnwFvCp74TxvPEZJCnQV9AghxncBzTs3jfiXjQtq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KFYpal4V; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0FCA7FF813;
+	Tue,  9 Apr 2024 08:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712651237;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ES3Hzm2djU1rN6Hk2bzxHWrUY1Jv7REvk6nG0DNeQv4=;
+	b=KFYpal4V+yKK6zpC+hdeADBFAmLJy0Sab1IUme+uekQXPsIam9IB8zmOQLGx0q93KdqC9U
+	CeeblzWPDQ3Ngkr8R9CS3Iz33yGphBJswsSJX147KFJOO7FkBlCROkdoY14xgnFQdFuIgx
+	ZUj3QteJmcs293pWbcDCRlQZ9Io6U+rFuhIKEVcy556wU6uGr34UAg3GLpcfhk/YVbY4ND
+	+CvvCBsUCIwXlaj5ovZLX6O6xbZvMCoWG4PawFgp768cMeETDrkN3GFlN3DFv28gjN8FMR
+	kQ9y5T1j+ewIPnRuRHDNX+Rt/pv3mEYFsfnI+RRnY5QUShuAu4pENOesqsCqqA==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Tue, 09 Apr 2024 10:26:32 +0200
+Subject: [PATCH net-next v10 10/13] net: netdevsim: ptp_mock: Convert to
+ netdev_ptp_clock_register
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240409-feature_ptp_netnext-v10-10-0fa2ea5c89a9@bootlin.com>
+References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
+In-Reply-To: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
+ Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+ Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: kory.maincent@bootlin.com
 
-From: Barry Song <v-songbaohua@oppo.com>
+The hardware registration clock for net device is now using
+netdev_ptp_clock_register to save the net_device pointer within the PTP
+clock xarray. netdevsim is registering its ptp through the mock driver.
+It is the only driver using the mock driver to register a ptp clock.
+Convert the mock driver to the new API.
 
-Currently, we are handling the scenario where we've hit a
-large folio in the swapcache, and the reclaiming process
-for this large folio is still ongoing.
-
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- include/linux/huge_mm.h | 1 +
- mm/huge_memory.c        | 2 ++
- mm/memory.c             | 1 +
- 3 files changed, 4 insertions(+)
+Changes in v8:
+- New patch
+---
+ drivers/net/netdevsim/netdev.c | 19 +++++++++++--------
+ drivers/ptp/ptp_mock.c         |  4 ++--
+ include/linux/ptp_mock.h       |  4 ++--
+ 3 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index c8256af83e33..b67294d5814f 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -269,6 +269,7 @@ enum mthp_stat_item {
- 	MTHP_STAT_ANON_ALLOC_FALLBACK,
- 	MTHP_STAT_ANON_SWPOUT,
- 	MTHP_STAT_ANON_SWPOUT_FALLBACK,
-+	MTHP_STAT_ANON_SWPIN_REFAULT,
- 	__MTHP_STAT_COUNT
- };
+diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+index d7ba447db17c..58bc54949956 100644
+--- a/drivers/net/netdevsim/netdev.c
++++ b/drivers/net/netdevsim/netdev.c
+@@ -402,17 +402,12 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
+ 	struct mock_phc *phc;
+ 	int err;
  
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index d8d2ed80b0bf..fb95345b0bde 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -556,12 +556,14 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
- DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
- DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
- DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
-+DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
+-	phc = mock_phc_create(&ns->nsim_bus_dev->dev);
+-	if (IS_ERR(phc))
+-		return PTR_ERR(phc);
+-
+-	ns->phc = phc;
+ 	ns->netdev->netdev_ops = &nsim_netdev_ops;
+ 	ns->netdev->stat_ops = &nsim_stat_ops;
  
- static struct attribute *stats_attrs[] = {
- 	&anon_alloc_attr.attr,
- 	&anon_alloc_fallback_attr.attr,
- 	&anon_swpout_attr.attr,
- 	&anon_swpout_fallback_attr.attr,
-+	&anon_swpin_refault_attr.attr,
- 	NULL,
- };
+ 	err = nsim_udp_tunnels_info_create(ns->nsim_dev, ns->netdev);
+ 	if (err)
+-		goto err_phc_destroy;
++		return err;
  
-diff --git a/mm/memory.c b/mm/memory.c
-index 9818dc1893c8..acc023795a4d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4167,6 +4167,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		nr_pages = nr;
- 		entry = folio->swap;
- 		page = &folio->page;
-+		count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
- 	}
+ 	rtnl_lock();
+ 	err = nsim_bpf_init(ns);
+@@ -426,8 +421,18 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
+ 	if (err)
+ 		goto err_ipsec_teardown;
+ 	rtnl_unlock();
++
++	phc = mock_phc_create(ns->netdev);
++	if (IS_ERR(phc)) {
++		err = PTR_ERR(phc);
++		goto err_register_netdevice;
++	}
++
++	ns->phc = phc;
+ 	return 0;
  
- check_pte:
++err_register_netdevice:
++	unregister_netdevice(ns->netdev);
+ err_ipsec_teardown:
+ 	nsim_ipsec_teardown(ns);
+ 	nsim_macsec_teardown(ns);
+@@ -435,8 +440,6 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
+ err_utn_destroy:
+ 	rtnl_unlock();
+ 	nsim_udp_tunnels_info_destroy(ns->netdev);
+-err_phc_destroy:
+-	mock_phc_destroy(ns->phc);
+ 	return err;
+ }
+ 
+diff --git a/drivers/ptp/ptp_mock.c b/drivers/ptp/ptp_mock.c
+index e7b459c846a2..1dcbe7426746 100644
+--- a/drivers/ptp/ptp_mock.c
++++ b/drivers/ptp/ptp_mock.c
+@@ -115,7 +115,7 @@ int mock_phc_index(struct mock_phc *phc)
+ }
+ EXPORT_SYMBOL_GPL(mock_phc_index);
+ 
+-struct mock_phc *mock_phc_create(struct device *dev)
++struct mock_phc *mock_phc_create(struct net_device *dev)
+ {
+ 	struct mock_phc *phc;
+ 	int err;
+@@ -147,7 +147,7 @@ struct mock_phc *mock_phc_create(struct device *dev)
+ 	spin_lock_init(&phc->lock);
+ 	timecounter_init(&phc->tc, &phc->cc, 0);
+ 
+-	phc->clock = ptp_clock_register(&phc->info, dev);
++	phc->clock = netdev_ptp_clock_register(&phc->info, dev);
+ 	if (IS_ERR(phc->clock)) {
+ 		err = PTR_ERR(phc->clock);
+ 		goto out_free_phc;
+diff --git a/include/linux/ptp_mock.h b/include/linux/ptp_mock.h
+index 72eb401034d9..e226011071f8 100644
+--- a/include/linux/ptp_mock.h
++++ b/include/linux/ptp_mock.h
+@@ -13,13 +13,13 @@ struct mock_phc;
+ 
+ #if IS_ENABLED(CONFIG_PTP_1588_CLOCK_MOCK)
+ 
+-struct mock_phc *mock_phc_create(struct device *dev);
++struct mock_phc *mock_phc_create(struct net_device *dev);
+ void mock_phc_destroy(struct mock_phc *phc);
+ int mock_phc_index(struct mock_phc *phc);
+ 
+ #else
+ 
+-static inline struct mock_phc *mock_phc_create(struct device *dev)
++static inline struct mock_phc *mock_phc_create(struct net_device *dev)
+ {
+ 	return NULL;
+ }
+
 -- 
 2.34.1
 
