@@ -1,62 +1,78 @@
-Return-Path: <linux-kernel+bounces-136892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F68989D974
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9625389D977
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 903E71C23154
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:52:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6FBA1C21FDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFBF12DDA2;
-	Tue,  9 Apr 2024 12:52:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75BB12DDA7;
-	Tue,  9 Apr 2024 12:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0FF12DDB8;
+	Tue,  9 Apr 2024 12:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j0MUDyz6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C00384;
+	Tue,  9 Apr 2024 12:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667154; cv=none; b=XQhlpjiMJIgBWWDWcfvNOmtZYtMTALLDr52FRHClYGPhYXE4L48HNxi2rpbB8Y1XZMyEkKFgdD8WahdRvYuGp/D7gocyCxXRHv7peKoCyLp5eYrGuHbik3G5MfWarKfCbZKBh0FtlnnZcUTRmgwmXx4adVNW3zykduroQImvFFI=
+	t=1712667202; cv=none; b=BNqc9CPLLtSYO5sp3txx4FaOsHWVtiAcOV/PKcBrCUY3Ke07L9pbb8Nq977wnAg5xJRsmz8M26ieQ40F+2fxLHUJiQDQ1IbOHel3yvayUuBXvjad6zBhJ1wDvRC6msafkRPzYsUUWnIOkkeudIh9CAPj0IWtkv9PWB+ydNSAUxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667154; c=relaxed/simple;
-	bh=pAdz7cQhfGznm7umSll9NW7JRcSZF77NwVghKKYKusw=;
+	s=arc-20240116; t=1712667202; c=relaxed/simple;
+	bh=yN5k7M3r1PSoxM2xUNoYNXh8X2U0F8GkRzTPqDQwUUA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oALtNTyDJwQQ1QNv/NQ/vGEuv5p0TKJJtfObkC+ld4MxPN/BRbBZQNJI9xsaC7A0nH91S7OQZz08TdejVJS8/ks7s/NxrDCFux0E6Px1rNdp1Ek7nkyXD8ED3q6O0xg6ncRHSN0CcQ0Z3OK9swzc+1RAVefDRvWaRLliP0wmyQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 578D1139F;
-	Tue,  9 Apr 2024 05:53:02 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E37D3F766;
-	Tue,  9 Apr 2024 05:52:30 -0700 (PDT)
-Date: Tue, 9 Apr 2024 13:52:27 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/6] firmware: arm_scmi: add initial support for i.MX
- BBM protocol
-Message-ID: <ZhU6C2Ovh7xxeREP@bogus>
-References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
- <20240405-imx95-bbm-misc-v2-v2-3-9fc9186856c2@nxp.com>
- <ZhQxu8LVNKf5QDLm@pluto>
- <ZhUDZGJilhczKlDD@bogus>
- <DU0PR04MB94175384AD9113AC6F60546588072@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <ZhUdQ6M0GkL0do_l@bogus>
- <AS1PR04MB9431F99D49D6A777B09814FB88072@AS1PR04MB9431.eurprd04.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dx+QmENHCfTVL7FT/WvHWl0IczLL78dy/bWDPtl69omJtKfdDSnQnFAwTVielSgk+58Ry0IkTdUCSlvzsui0QAmGtiO0hX3yEotUQ0LwlQGFz3jgSh+8xUoIDGiHADjBiyY0WjI+xRGNXtzS4qs2+QZP5h/PIVjTLzGfMOp6ssM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j0MUDyz6; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712667201; x=1744203201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yN5k7M3r1PSoxM2xUNoYNXh8X2U0F8GkRzTPqDQwUUA=;
+  b=j0MUDyz6+sBYaYTtnRQkcE0V/2S5SFYty5dFcAIQKSAPAkhzifj4+AYS
+   /tHY6aIwl9xvVHGxshXX8JK3vSFcC5znSNRPQpW65avXSyMLLPYAAtG/i
+   hX/jPteQiTK7jfEv6BLGE6taDMIapgISJF1S4HxAXkGz8tYvQ28q+22Wr
+   yrWxsTareGNiUWXpvNT1Hjv6SHj+5vlykCAp+9kN0zDGCO2PaTVKkkBYV
+   eTRkwRBmzbjXd/LErg90iACk2swu8kIF5shekdp0CtZsDMsU673TAIVfF
+   83gwX6P2Lz1UitW4Q1q8/+bTfQStBPFbAXhZq5XW/7mpO0wqfLmBmTgiQ
+   w==;
+X-CSE-ConnectionGUID: R0Ikmpx1Rku/9eR02l2piQ==
+X-CSE-MsgGUID: XV7ISzFbST+bzCxCzkX05g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8080805"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="8080805"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:53:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915399115"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915399115"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:53:17 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1ruAyQ-00000002o7p-130G;
+	Tue, 09 Apr 2024 15:53:14 +0300
+Date: Tue, 9 Apr 2024 15:53:14 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Guanbing Huang <albanhuang0@gmail.com>
+Cc: gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
+	linux-acpi@vger.kernel.org, tony@atomide.com,
+	john.ogness@linutronix.de, yangyicong@hisilicon.com,
+	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, lvjianmin@loongson.cn,
+	albanhuang@tencent.com, tombinfan@tencent.com
+Subject: Re: [PATCH v6 0/3] serial: 8250_pnp: Support configurable reg shift
+ property
+Message-ID: <ZhU6Or3hTziarHZo@smile.fi.intel.com>
+References: <cover.1712646750.git.albanhuang@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,20 +81,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AS1PR04MB9431F99D49D6A777B09814FB88072@AS1PR04MB9431.eurprd04.prod.outlook.com>
+In-Reply-To: <cover.1712646750.git.albanhuang@tencent.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Apr 09, 2024 at 11:19:31AM +0000, Peng Fan wrote:
->
-> ok, will add more comment in the patch for the commands.
->
+On Tue, Apr 09, 2024 at 03:43:20PM +0800, Guanbing Huang wrote:
+> From: Guanbing Huang <albanhuang@tencent.com>
+> 
+> The 16550a serial port based on the ACPI table requires obtaining the
+> reg-shift attribute. In the ACPI scenario, If the reg-shift property
+> is not configured like in DTS, the 16550a serial driver cannot read or
+> write controller registers properly during initialization.
+> 
+> To address the issue of configuring the reg-shift property, the 
+> __uart_read_properties() universal interface is called to implement it.
+> Adaptation of PNP devices is done in the __uart_read_properties() function.
 
-No I meant add document/description similar to SCMI spec for each of these
-commands. Not just one line comment. For std protocols, we can refer spec,
-for these vendor protocols, just one like comment will not suffice. Describe
-in more details and hence the request for separate TXT file for that.
-Hope that is clear now, I have mentioned it several times already.
+You either forgot or deliberately not added my tag. Can you elaborate?
 
---
-Regards,
-Sudeep
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
