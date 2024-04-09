@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-137730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D2A989E66C
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4985589E66B
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FBE31C22788
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D95401F231C7
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F2115A480;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1ED615991D;
 	Tue,  9 Apr 2024 23:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ev7SBIF+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XC5ZdLtD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FB6159579;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87AF115957A;
 	Tue,  9 Apr 2024 23:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706604; cv=none; b=hQRthOxiyrKQf/jgD23V+Ff6OoP8SbcAASF1PqVxq3nORdRflgQuPCMNf/27AmF0iHWMpUloZR7uffJwqDcDcKvTVAwSha0vFcEPDnJ3VM7n846RAveD8r0NlHZ8sFyt05Z9cVRCu4DoqfcDL/beQmORoePKYk4PatnkcX6WZQA=
+	t=1712706604; cv=none; b=Ie1G4Q/29X0/p16n68O1sOO/I9YI44WzZNnyJnoCiAVKsz0aSd94ad1uTFGsLYR0/XFw2Y5Jg5gYhKmx5/wD7Jk1lGw6GRBSGym8yB+MAFHGGM01GKU016dGUgeqPri1OQpV8hBnGxEdcnrZqtnzUhg73TeTrW6rwuSlDu14cuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712706604; c=relaxed/simple;
-	bh=nieDE0/teF2k6LWCPMxAt6MAUAfm9geljBFjmb2K5NY=;
+	bh=PHHmaY/dJfgbrb1xjAz7ZXHpkxQRYYdnC61SjjaGTOk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l3LGyoj42drbabr29FtdCtqTuMeY9LHIlIoHkDf0V2hdZTaBGYv2WbYDPbpvGJKAyezzobcOMTmKXyPFM3jL73cy1zTrpzmUMOnFVnXE36GjIF2+jWKAgsOtDuUeVBduPkOQGA1gJo5Juk4ML14GitjdV83F1GjA3c6tVPeeaSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ev7SBIF+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92549C43142;
-	Tue,  9 Apr 2024 23:50:03 +0000 (UTC)
+	 MIME-Version; b=bVJ/lXhCmVe5wWFkge8i/723MpkpPfj3ZBC48+wysBlMW5cAEPumoetIYnv/+fZweJlGIaVR/gNh4Ff8GIC0EAe33YV928h0w4iNwzJjCCAHiObW4D+fK3Ev4RKaGefzeSja2kfyfW3XUIy8x4NS+vtYI78tqdcBuIqI3JMiWsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XC5ZdLtD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AC44C43390;
+	Tue,  9 Apr 2024 23:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712706603;
-	bh=nieDE0/teF2k6LWCPMxAt6MAUAfm9geljBFjmb2K5NY=;
+	s=k20201202; t=1712706604;
+	bh=PHHmaY/dJfgbrb1xjAz7ZXHpkxQRYYdnC61SjjaGTOk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ev7SBIF+29xcCVsiUduIJI+ak9pMOKAhVuW4chcL2NPgr97/MDmzRdLiob+0rYG2+
-	 8KbuhgdxgNHSrYbnMo4AReadDlCbx8b3T4DT7GRkCy0WLnYwZ678zDM9rUC8NdC012
-	 NRKUKUPg0QxEcShsoQLmKh/HgrlEwqmMybkAecQCkojKq/5p1SPA6pyCo8ZmQLSUwM
-	 RcMzpmiEplbWWup9PPKx5ti7alXAr7mbtyQ45CE1VZ/8LL5ozvkctvwwp6/kmMSSMy
-	 qyVdrP0DgpehmRzasyZ7pRVY3xndLSeX3H4dX+RgTcRuaDBSACSCv1rQzxxtQqvL+U
-	 +6aF4x1LJ/UqA==
+	b=XC5ZdLtDw+8tQjRubaQDyZmQrtnywONrn24Tldeg7Mp/JM9IbN92e2Z4XpbdLElO8
+	 nG4CXMkj5xiPsAUnFVrAW3wD14YhmuhvrtkwSJaBz77DHZksdXjHVD0p7oXoD2kjy9
+	 PEEoWIwR6CqdL6vLCZQEhVRsSVXEZtblOPdmXfu9IpPHKJoGGeOzFAUuNJ59YSiYkc
+	 3SORnlNxr20Ubt+mC59v3c6fc1S/AWPtHMucEbY4cxfMV7ioQqd84WANf0lE/zVfAO
+	 qekqa8+TJN9pYmbROL9t0fJn4JmHPDn1Y0AsmULEiURLKA0n4imSeP7Es4Hcxw35gi
+	 HFriir49I6P4w==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 5/6] perf report: Add a menu item to annotate data type in TUI
-Date: Tue,  9 Apr 2024 16:49:59 -0700
-Message-ID: <20240409235000.1893969-6-namhyung@kernel.org>
+Subject: [PATCH 6/6] perf report: Do not collect sample histogram unnecessarily
+Date: Tue,  9 Apr 2024 16:50:00 -0700
+Message-ID: <20240409235000.1893969-7-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240409235000.1893969-1-namhyung@kernel.org>
 References: <20240409235000.1893969-1-namhyung@kernel.org>
@@ -64,87 +64,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the hist entry has the type info, it should be able to display the
-annotation browser for the type like in `perf annotate --data-type`.
+The data type profiling alone doesn't need the sample histogram for
+functions.  It only needs the histogram for the types.
+
+Let's remove the condition in the report_callback to check the data type
+profiling and make sure the annotation has the annotated_source before
+calling symbol__disassemble().
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-report.c    |  5 +++++
- tools/perf/ui/browsers/hists.c | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ tools/perf/builtin-report.c | 2 +-
+ tools/perf/util/annotate.c  | 7 +++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index dcd93ee5fc24..aaa6427a1224 100644
+index aaa6427a1224..dafba6e030ef 100644
 --- a/tools/perf/builtin-report.c
 +++ b/tools/perf/builtin-report.c
-@@ -1694,6 +1694,11 @@ int cmd_report(int argc, const char **argv)
- 	else
- 		use_browser = 0;
+@@ -172,7 +172,7 @@ static int hist_iter__report_callback(struct hist_entry_iter *iter,
+ 	struct mem_info *mi;
+ 	struct branch_info *bi;
  
-+	if (report.data_type && use_browser == 1) {
-+		symbol_conf.annotate_data_member = true;
-+		symbol_conf.annotate_data_sample = true;
+-	if (!ui__has_annotation() && !rep->symbol_ipc && !rep->data_type)
++	if (!ui__has_annotation() && !rep->symbol_ipc)
+ 		return 0;
+ 
+ 	if (sort__mode == SORT_MODE__BRANCH) {
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 11da27801d88..7e034d2f2adb 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -908,6 +908,13 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
+ 
+ 	args.arch = arch;
+ 	args.ms = *ms;
++
++	if (notes->src == NULL) {
++		notes->src = annotated_source__new();
++		if (notes->src == NULL)
++			return -1;
 +	}
 +
- 	if (sort_order && strstr(sort_order, "ipc")) {
- 		parse_options_usage(report_usage, options, "s", 1);
- 		goto error;
-diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
-index 0c02b3a8e121..71b32591d61a 100644
---- a/tools/perf/ui/browsers/hists.c
-+++ b/tools/perf/ui/browsers/hists.c
-@@ -38,6 +38,7 @@
- #include "../ui.h"
- #include "map.h"
- #include "annotate.h"
-+#include "annotate-data.h"
- #include "srcline.h"
- #include "string2.h"
- #include "units.h"
-@@ -2505,6 +2506,32 @@ add_annotate_opt(struct hist_browser *browser __maybe_unused,
- 	return 1;
- }
- 
-+static int
-+do_annotate_type(struct hist_browser *browser, struct popup_action *act)
-+{
-+	struct hist_entry *he = browser->he_selection;
-+
-+	hist_entry__annotate_data_tui(he, act->evsel, browser->hbt);
-+	ui_browser__handle_resize(&browser->b);
-+	return 0;
-+}
-+
-+static int
-+add_annotate_type_opt(struct hist_browser *browser,
-+		      struct popup_action *act, char **optstr,
-+		      struct hist_entry *he)
-+{
-+	if (he == NULL || he->mem_type == NULL || he->mem_type->histograms == NULL)
-+		return 0;
-+
-+	if (asprintf(optstr, "Annotate type %s", he->mem_type->self.type_name) < 0)
-+		return 0;
-+
-+	act->evsel = hists_to_evsel(browser->hists);
-+	act->fn = do_annotate_type;
-+	return 1;
-+}
-+
- static int
- do_zoom_thread(struct hist_browser *browser, struct popup_action *act)
- {
-@@ -3307,6 +3334,10 @@ static int evsel__hists_browse(struct evsel *evsel, int nr_events, const char *h
- 						       browser->he_selection->ip);
- 		}
- skip_annotation:
-+		nr_options += add_annotate_type_opt(browser,
-+						    &actions[nr_options],
-+						    &options[nr_options],
-+						    browser->he_selection);
- 		nr_options += add_thread_opt(browser, &actions[nr_options],
- 					     &options[nr_options], thread);
- 		nr_options += add_dso_opt(browser, &actions[nr_options],
+ 	if (annotate_opts.full_addr)
+ 		notes->src->start = map__objdump_2mem(ms->map, ms->sym->start);
+ 	else
 -- 
 2.44.0.478.gd926399ef9-goog
 
