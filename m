@@ -1,137 +1,137 @@
-Return-Path: <linux-kernel+bounces-137264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD7C89DF9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:49:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3ACA89DFA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E663A2843D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:49:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CFE928676F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F131813848D;
-	Tue,  9 Apr 2024 15:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EAA13D536;
+	Tue,  9 Apr 2024 15:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Lh6hoEpQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nyVyQv7J"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RcO6XzOb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0F5137930;
-	Tue,  9 Apr 2024 15:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF0813BC15;
+	Tue,  9 Apr 2024 15:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677746; cv=none; b=Wf1EKxHPgthSC1grFK82K0Xq7FkvZ8nDZurRX3nmYEoePS7Y6+4/NfjiBpfAKUhLBPPZZL6X/TWZ6BrY7RLKJD+dgoXpXbitVAAa8A0tV4MCV5/Kwih3LF4icyXnhN6dN+26Tmk8+LYkGFQ5nrrJcgz2GXCWQ8AJDlvbotrdFe4=
+	t=1712677750; cv=none; b=goO/yAekyvvzxosmxyDYWj+DT9o57vVHFklVvec5kvr+T73zZXCirJLEJQw+LhGMXWIibJVlJrKsffcHAjo5IAGTVD/XnIcU2g2Te7+GMnJbtwzMTRnvfeYGW62OaV9nh23tnW88esH5Jy/oYOxv6Jx1r7t31dNh4buJub+XVF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677746; c=relaxed/simple;
-	bh=C/lscghtjNoItk4U+pnESUSZzyRAeKrBWvTPy5/qm5I=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ndtXWEpsHjE7wFdwCgJDZC14XQRAGGS+cJk4MYZUaRiLZMTyN9CLkVwQ+yHbq1BbE7vOGckp9jimDpwAzknY4hP1SdJ646Yx+12uNZKlzJ2pe6x0rrm5aCzrR2Exva8wLWQNCR7NBDZDmuWz/4tld2MpaiKTRDn3Vl6Ek8liOj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Lh6hoEpQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nyVyQv7J; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 09 Apr 2024 15:49:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712677741;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FtR81y4zOVvC4J4BVDpKNhGlG4wYDD1cKR+e6YtcdFU=;
-	b=Lh6hoEpQpJAajMtiyx41vw3dlFEjFuIE2rCc3Y3earCb4MgWHTFDGkJNx5a/5K/lBmaFFB
-	SAVBQTiwj+PuKr8CkRgZahUfpnLeOLhuKhnJ6xKLDri+aftG4xzA8hej6kOfZL6csH1lxp
-	fLETSkS5e1tC4xuU9khUIqKGxT+eECf5B+yqLr9VKJ78eP99T/zVEC58W2tHkcSCb9/fcW
-	P53AbGXHH2PlUu7Bj8+9NOkrF3CU6R6rLxDKYr7HPO/fAjQ9L90bSwFfDzWo6og+4ZA7ex
-	aTJQFFIwFygBRd/aDz/nWhqmYVemKpNNQzgzBHJDRcITRZz5wRIJjGd9z85QCg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712677741;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FtR81y4zOVvC4J4BVDpKNhGlG4wYDD1cKR+e6YtcdFU=;
-	b=nyVyQv7J7NQNW5OydikY6vTxh6UkaLR5/z3+cxeHlwNgG7wXstBH8Hd7kYC3WZzmbLy02d
-	rMklYQ6mersLZBAA==
-From: "tip-bot2 for Pawan Gupta" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/msr: Move ARCH_CAP_XAPIC_DISABLE bit
- definition to its rightful place
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C243317ff6c8db307b7701a45f71e5c21da80194b=2E17056?=
- =?utf-8?q?32532=2Egit=2Epawan=2Ekumar=2Egupta=40linux=2Eintel=2Ecom=3E?=
-References: =?utf-8?q?=3C243317ff6c8db307b7701a45f71e5c21da80194b=2E170563?=
- =?utf-8?q?2532=2Egit=2Epawan=2Ekumar=2Egupta=40linux=2Eintel=2Ecom=3E?=
+	s=arc-20240116; t=1712677750; c=relaxed/simple;
+	bh=ggaHHuc2VG2fdrOMhbw4XnILVWpXV0g7RGQkl6nlwv8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fg8KCiQOHu6XOC9CzZ/EOHhYBKwxVIChmoGUCC6nwagQ47Zt9KaMVf8dClCYFvZaYM3ombE2I9elTKFdOSiHAVDvpu5JaJ4txgZcNhnTV3r85ocofFmcfPmtx1JMh8CmsL29tyLLAIDH7FfxPcg7opYDHJQ4f9rM3+Opjtuu/+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RcO6XzOb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05969C43390;
+	Tue,  9 Apr 2024 15:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712677749;
+	bh=ggaHHuc2VG2fdrOMhbw4XnILVWpXV0g7RGQkl6nlwv8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RcO6XzObc7wlgdxiDjy0f1wHeJ/xg90oJK1uvGdSoHGMh1uDr+/iRiQu11+OQMo4Q
+	 sJVbfuMNUvyKdBlNhz0pFzDcPRsQRWgwCjoiC/5WC7ktrR5xGmTyH39axjMlKIWkBD
+	 RoLLn6NtCxA4/EgdcW6ce1XZyV64uZgdpUFUW5KT4yIDRy/h0SnWdTjZN1/YZFglOO
+	 ooFFV5hsQsFBynSxN5lYVTvFdQ1mYVB83rs42o/PTOwBdmwgjqH2N5lULzJiY8kv4y
+	 PxoUnyv4L2D20qsLEHGbCn7fuFr44N1ZRwCjJc7e8WTO9o2xRMPJtm8/y77fjEyP7o
+	 W4c1mQgm9bWnA==
+Date: Tue, 9 Apr 2024 16:49:02 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>, Max Hsu <max.hsu@sifive.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	Palmer Dabbelt <palmer@sifive.com>, linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC 02/11] dt-bindings: riscv: Add Sdtrig optional CSRs
+ existence on DT
+Message-ID: <20240409-princess-hypnotic-7fd89aafa31d@spud>
+References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
+ <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
+ <20240329-affidavit-anatomist-1118a12c3e60@wendy>
+ <20240405-ebdb2943657ab08d2d563c03@orel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171267774070.10875.16415429453111355258.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="S3RasL52JpCL7Ifu"
+Content-Disposition: inline
+In-Reply-To: <20240405-ebdb2943657ab08d2d563c03@orel>
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     53bc516ade85a764edef3d6c8a51e880820e3d9d
-Gitweb:        https://git.kernel.org/tip/53bc516ade85a764edef3d6c8a51e880820e3d9d
-Author:        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-AuthorDate:    Thu, 18 Jan 2024 18:52:24 -08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 09 Apr 2024 17:39:54 +02:00
+--S3RasL52JpCL7Ifu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86/msr: Move ARCH_CAP_XAPIC_DISABLE bit definition to its rightful place
+On Fri, Apr 05, 2024 at 05:59:41PM +0200, Andrew Jones wrote:
+> On Fri, Mar 29, 2024 at 10:31:10AM +0000, Conor Dooley wrote:
+> > On Fri, Mar 29, 2024 at 05:26:18PM +0800, Max Hsu wrote:
+> > > The mcontext/hcontext/scontext CSRs are optional in the Sdtrig extens=
+ion,
+> > > to prevent RW operations to the missing CSRs, which will cause
+> > > illegal instructions.
+> > >=20
+> > > As a solution, we have proposed the dt format for these CSRs.
+> >=20
+> > As I mentioned in your other patch, I amn't sure what the actual value
+> > is in being told about "sdtrig" itself if so many of the CSRs are
+> > optional. I think we should define pseudo extensions that represent
+> > usable subsets that are allowed by riscv,isa-extensions, such as
+> > those you describe here: sdtrig + mcontext, sdtrig + scontext and
+> > sdtrig + hcontext. Probably also for strig + mscontext. What
+> > additional value does having a debug child node give us that makes
+> > it worth having over something like the above?
+>=20
+> Yeah, Sdtrig, which doesn't tell you what you get, isn't nice at all.
+> I wonder if we can start with requiring Sdtrig to be accompanied by
+> Ssstrict in order to enable the context CSRs, i.e.
+>=20
+>  Sdtrig          - support without optional CSRs
+>  Sdtrig+Ssstrict - probe for optional CSRs, support what's found
+>=20
+> If there are platforms with Sdtrig and optional CSRs, but not Ssstrict,
+> then maybe the optional CSRs can be detected in some vendor-specific way,
+> where the decision as to whether or not that vendor-specific way is
+> acceptable is handled case-by-case.
 
-The ARCH_CAP_XAPIC_DISABLE bit of MSR_IA32_ARCH_CAP is not in the
-correct sorted order. Move it where it belongs.
+I think it's pretty reasonable to make sstrict a requirement for the
+kernel's use of sdtrig. If we have some non-sstrict systems that do
+implement these particular CSRs, then I guess we can add some psuedo
+instructions then (and nothing would stop the sstrict systems also
+specifying directly). If they're using some non-standard CSRs then
+case-by-case I guess.
 
-No functional change.
+I'm just specifically not keen on adding extra dt properties that do
+things we can already do with the ones we have!
 
-  [ bp: Massage commit message. ]
+--S3RasL52JpCL7Ifu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/243317ff6c8db307b7701a45f71e5c21da80194b.1705632532.git.pawan.kumar.gupta@linux.intel.com
----
- arch/x86/include/asm/msr-index.h |  9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 05956bd..961c0eb 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -163,6 +163,10 @@
- 						 * are restricted to targets in
- 						 * kernel.
- 						 */
-+#define ARCH_CAP_XAPIC_DISABLE		BIT(21)	/*
-+						 * IA32_XAPIC_DISABLE_STATUS MSR
-+						 * supported
-+						 */
- #define ARCH_CAP_PBRSB_NO		BIT(24)	/*
- 						 * Not susceptible to Post-Barrier
- 						 * Return Stack Buffer Predictions.
-@@ -185,11 +189,6 @@
- 						 * File.
- 						 */
- 
--#define ARCH_CAP_XAPIC_DISABLE		BIT(21)	/*
--						 * IA32_XAPIC_DISABLE_STATUS MSR
--						 * supported
--						 */
--
- #define MSR_IA32_FLUSH_CMD		0x0000010b
- #define L1D_FLUSH			BIT(0)	/*
- 						 * Writeback and invalidate the
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhVjbgAKCRB4tDGHoIJi
+0uhaAQDa5o/BPeXShwDCWbzLtGoQJW9RQEEKp0v/Px0VcnBn/wEAtxi0+ePlahyg
+iuqh+k0zlBfw0fgjAmUxXyvYlSonvAc=
+=bIMw
+-----END PGP SIGNATURE-----
+
+--S3RasL52JpCL7Ifu--
 
