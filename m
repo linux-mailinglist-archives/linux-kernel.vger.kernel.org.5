@@ -1,151 +1,116 @@
-Return-Path: <linux-kernel+bounces-137100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5151E89DC68
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:36:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5693089DC6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCBC9B20C18
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:36:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883091C2106A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6A4347B6;
-	Tue,  9 Apr 2024 14:36:20 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E10E4F5EA;
+	Tue,  9 Apr 2024 14:36:51 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF5A2836A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414832C695;
+	Tue,  9 Apr 2024 14:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673380; cv=none; b=t5hDEBfITC9x06NLoPLSMQFigu94egjXyPynZdUPpTvmACtBOi4Aay+HuDack+SfZJYGfMtK2HnCdLdPIVlDL7/dkruw2D6ci4lL+IKeLKx+mVZTuSh8Hg6u6wlJlJWuaBDCaJrg9DtoqOtp1XknQTQ1oQikfd/SDgwtsRjTuL8=
+	t=1712673410; cv=none; b=nDWnW8YJvg31LeO2iwO6xG+m67wd8+tOeLQwR3p1JyUitrjZ3Xw2mQQ1mfw/U/t+/22Bs6h2YtOgoiSLYY2JP0eWmqRYHcYn/rao3GF9dhIqfRbVqgtmsXbdHVDuLzp5m7Hceq4jMkkdZuyRsh4bf6o73rkAGmD1H/iG2tM4T3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673380; c=relaxed/simple;
-	bh=qTJ7Npe3rxJEDPC2nptV7Bl4EgMVk2rZmo8ah4g96es=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XghysGVE9LYWppgsBIgWF8aPRtXk6DGxdLKXZSW9hZCj5kDnBCVo2bgdP0BTXdSXV1HWjSgvxGnio6iYSOLs7xKlondQCQtAfQ/D9iIIGcSf2C72Rw6ABmNxhVV8H6TpnvgkiUDyJ60FwOsqo3xXapnsm5RWM5+SWfAHq54mjgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <l.stach@pengutronix.de>)
-	id 1ruCZv-0000tX-2w; Tue, 09 Apr 2024 16:36:03 +0200
-Message-ID: <fcd6acc268b8642371cf289149b2b1c3e90c7f45.camel@pengutronix.de>
-Subject: Re: [PATCH v1] arm64: dts: imx8mm: fix missing pgc_vpu_* power
- domain parent
-From: Lucas Stach <l.stach@pengutronix.de>
-To: Vitor Soares <ivitro@gmail.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: Vitor Soares <vitor.soares@toradex.com>, devicetree@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date: Tue, 09 Apr 2024 16:36:01 +0200
-In-Reply-To: <e1552a3008a30ef7ed9097b4b80cda23ccb9e840.camel@gmail.com>
-References: <20240409085802.290439-1-ivitro@gmail.com>
-	 <9ce35b9bb5a15891f6bd01bd54b7dc84b3ba4021.camel@pengutronix.de>
-	 <e1552a3008a30ef7ed9097b4b80cda23ccb9e840.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1712673410; c=relaxed/simple;
+	bh=V48YeIPzcwVGjA7uCl+5dsWCWJXiaVFOuOZsOxK/qMw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oMs+khCXxhdWv+s0Y/ZyoUR7xe1ew3mf4u3ucdNXb4lTD3dLJS+/CeUWJ1sCXATJNk6h1su9MedUHvyE1Y1l00qlPZlAm692OGKcNUzMlioerlDEH8jDiXAy8dE2vr7mdYjA+03ah7svTFfiAoihdk+R1osY55LzR8G9gPm9ka0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 9 Apr
+ 2024 17:36:37 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 9 Apr 2024
+ 17:36:37 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Hans Verkuil
+	<hverkuil-cisco@xs4all.nl>, Dongliang Mu <dzm91@hust.edu.cn>, Andrew Morton
+	<akpm@linux-foundation.org>, Alan Stern <stern@rowland.harvard.edu>,
+	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>,
+	<syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com>
+Subject: [PATCH] media: usb: siano: fix endpoint checks in smsusb_init_device()
+Date: Tue, 9 Apr 2024 07:36:34 -0700
+Message-ID: <20240409143634.33230-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-QW0gRGllbnN0YWcsIGRlbSAwOS4wNC4yMDI0IHVtIDE0OjIyICswMTAwIHNjaHJpZWIgVml0b3Ig
-U29hcmVzOgo+IEhpIEx1Y2FzLAo+IAo+IFRoYW5rcyBmb3IgeW91ciBmZWVkYmFjay4KPiAKPiBP
-biBUdWUsIDIwMjQtMDQtMDkgYXQgMTE6MTMgKzAyMDAsIEx1Y2FzIFN0YWNoIHdyb3RlOgo+ID4g
-SGkgVml0b3IsCj4gPiAKPiA+IEFtIERpZW5zdGFnLCBkZW0gMDkuMDQuMjAyNCB1bSAwOTo1OCAr
-MDEwMCBzY2hyaWViIFZpdG9yIFNvYXJlczoKPiA+ID4gRnJvbTogVml0b3IgU29hcmVzIDx2aXRv
-ci5zb2FyZXNAdG9yYWRleC5jb20+Cj4gPiA+IAo+ID4gPiBUaGUgcGdjX3ZwdV8qIG5vZGVzIG1p
-c3MgdGhlIHJlZmVyZW5jZSB0byB0aGUgcG93ZXIgZG9tYWluIHBhcmVudCwKPiA+ID4gbGVhZGlu
-ZyB0aGUgc3lzdGVtIHRvIGhhbmcgZHVyaW5nIHRoZSByZXN1bWUuCj4gPiA+IAo+ID4gVGhpcyBj
-aGFuZ2UgaXMgbm90IGNvcnJlY3QuIFRoZSB2cHVtaXggZG9tYWluIGlzIGNvbnRyb2xsZWQgdGhy
-b3VnaAo+ID4gdGhlCj4gPiBpbXg4bW0tdnB1LWJsay1jdHJsIGFuZCBtdXN0IG5vdCBiZSBkaXJl
-Y3RseSB0cmlnZ2VyZWQgYnkgdGhlIGNoaWxkCj4gPiBkb21haW5zIGluIG9yZGVyIHRvIGd1YXJh
-bnRlZSBwcm9wZXIgcG93ZXIgc2VxdWVuY2luZy4KPiA+IAo+ID4gSWYgdGhlIHNlcXVlbmNpbmcg
-aXMgaW5jb3JyZWN0IGZvciByZXN1bWUsIGl0IG5lZWRzIHRvIGJlIGZpeGVkIGluCj4gPiB0aGUK
-PiA+IGJsay1jdHJsIGRyaXZlci4gSSdsbCBoYXBwaWx5IGFzc2lzdCBpZiB5b3UgaGF2ZSBhbnkg
-cXVlc3Rpb25zIGFib3V0Cj4gPiB0aGlzIGludHJpY2F0ZSBtaXggYmV0d2VlbiBHUEMgYW5kIGJs
-ay1jdHJsIGhhcmR3YXJlL2RyaXZlcnMuCj4gIAo+IEknbSBuZXcgaW50byB0aGUgdG9waWMsIHNv
-IEkgdHJpZWQgdG8gZm9sbG93IHNhbWUgYXBwcm9hY2ggYXMgaW4gaW14OG1wCj4gRFQuCj4gClRo
-YXQncyBhIGdvb2QgaGludCwgdGhlIDhNUCBWUFUgR1BDIG5vZGUgYWRkaXRpb25zIG1pc3NlZCBt
-eSByYWRhci4gVGhlCmRpcmVjdCBkZXBlbmRlbmN5IHRoZXJlIGJldHdlZW4gdGhlIEdQQyBkb21h
-aW5zIGlzIGVxdWFsbHkgd3JvbmcuCgo+IEkgYWxzbyBjaGVja2VkIHRoZSBpbXg4bXEgRFQgYW5k
-IGl0IG9ubHkgaGF2ZSBvbmUgZG9tYWluIGZvciB0aGUKPiBWUFUgaW4gdGhlIEdQQy4gSXQgc2Vl
-bSBibGstY3RybCBhbHNvIGRlcGVuZGVzIG9uIHBnY192cHVfKiB0byB3b3JrCj4gcHJvcGVybHku
-Cj4gCj4gVGhlIGJsay1jdHJsIGRyaXZlciBoYW5ncyBvbiBpbXg4bV9ibGtfY3RybF9wb3dlcl9v
-bigpIHdoZW4gYWNjZXNzIHRoZQo+IGlwIHJlZ2lzdGVycyBmb3IgdGhlIHNvZnQgcmVzZXQuIEkg
-dHJpZWQgdG8gcG93ZXItdXAgdGhlIGJlZm9yZSB0aGUKPiBzb2Z0IHJlc2V0LCBidXQgaXQgZGlk
-bid0IHdvcmsuCj4gClRoZSBydW50aW1lX3BtX2dldF9zeW5jKCkgYXQgdGhlIHN0YXJ0IG9mIHRo
-YXQgZnVuY3Rpb24gc2hvdWxkIGVuc3VyZQp0aGF0IGJ1cyBHUEMgZG9tYWluIGFrYSB2cHVtaXgg
-aXMgcG93ZXJlZCB1cC4gQ2FuIHlvdSBjaGVjayBpZiB0aGF0IGlzCmhhcHBlbmluZz8KClJlZ2Fy
-ZHMsCkx1Y2FzCgo+IERvIHlvdSBoYXZlIGFuIGlkZWEgaG93IHdlIGNhbiBhZGRyZXNzIHRoaXMg
-d2l0aGluIGJsay1jdHJsPwo+IAo+IEJlc3QgcmVnYXJkcywKPiBWaXRvcgo+IAo+ID4gCj4gPiBS
-ZWdhcmRzLAo+ID4gTHVjYXMKPiA+IAo+ID4gPiBBcyB0aGVzZSBQVSBkb21haW5zIGFyZSBuZXN0
-ZWQgaW5zaWRlIHRoZSB2cHVtaXggZG9tYWluLCBsZXQncwo+ID4gPiByZWZlcmVuY2UKPiA+ID4g
-aXQgYWNjb3JkaW5nbHkuIEFmdGVyIHRoaXMgY2hhbmdlLCB0aGUgc3VzcGVuZC9yZXN1bWUgaXMg
-d29ya2luZy4KPiA+ID4gCj4gPiA+IENjOiBMdWNhcyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25p
-eC5kZT4KPiA+ID4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPgo+ID4gPiBDbG9zZXM6Cj4g
-PiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9mY2NiYjA0MDMzMGE3MDZhNGY3YjM0ODc1
-ZGIxZDg5NmEwYmY4MWM4LmNhbWVsQGdtYWlsLmNvbS8KPiA+ID4gRml4ZXM6IGQzOWQ0YmIxNTMx
-MCAoImFybTY0OiBkdHM6IGlteDhtbTogYWRkIEdQQyBub2RlIikKPiA+ID4gU2lnbmVkLW9mZi1i
-eTogVml0b3IgU29hcmVzIDx2aXRvci5zb2FyZXNAdG9yYWRleC5jb20+Cj4gPiA+IC0tLQo+ID4g
-PiDCoGFyY2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDhtbS5kdHNpIHwgMyArKysKPiA+
-ID4gwqAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspCj4gPiA+IAo+ID4gPiBkaWZmIC0t
-Z2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OG1tLmR0c2kKPiA+ID4gYi9h
-cmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW0uZHRzaQo+ID4gPiBpbmRleCA4YTFi
-NDJiOTRkY2UuLjk3ZDBjNmQyM2FkOCAxMDA2NDQKPiA+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290
-L2R0cy9mcmVlc2NhbGUvaW14OG1tLmR0c2kKPiA+ID4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0
-cy9mcmVlc2NhbGUvaW14OG1tLmR0c2kKPiA+ID4gQEAgLTczOSwxNiArNzM5LDE5IEBAIHBnY192
-cHVtaXg6IHBvd2VyLWRvbWFpbkA2IHsKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwZ2Nf
-dnB1X2cxOiBwb3dlci1kb21haW5ANwo+ID4gPiB7Cj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCNwb3dlci1kb21haW4tY2VsbHMKPiA+ID4gPSA8MD47Cj4gPiA+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9Cj4gPiA+IDxJTVg4
-TU1fUE9XRVJfRE9NQUlOX1ZQVUcxPjsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBwb3dlci1kb21haW5zID0KPiA+ID4gPCZwZ2NfdnB1bWl4PjsKPiA+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqB9Owo+ID4gPiDCoAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHBnY192cHVfZzI6IHBvd2VyLWRvbWFpbkA4Cj4gPiA+IHsKPiA+ID4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgI3Bvd2VyLWRvbWFpbi1jZWxscwo+ID4gPiA9IDww
-PjsKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVnID0KPiA+
-ID4gPElNWDhNTV9QT1dFUl9ET01BSU5fVlBVRzI+Owo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHBvd2VyLWRvbWFpbnMgPQo+ID4gPiA8JnBnY192cHVtaXg+Owo+
-ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH07Cj4gPiA+IMKgCj4gPiA+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgcGdjX3ZwdV9oMTogcG93ZXItZG9tYWluQDkKPiA+ID4gewo+ID4gPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAjcG93ZXItZG9tYWluLWNlbGxzCj4g
-PiA+ID0gPDA+Owo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBy
-ZWcgPQo+ID4gPiA8SU1YOE1NX1BPV0VSX0RPTUFJTl9WUFVIMT47Cj4gPiA+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcG93ZXItZG9tYWlucyA9Cj4gPiA+IDwmcGdjX3Zw
-dW1peD47Cj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiA+ID4gwqAKPiA+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBwZ2NfZGlzcG1peDoKPiA+ID4gcG93ZXItZG9tYWluQDEwIHsK
-PiA+IAo+IAoK
+Syzkaller reported a warning [1] in smsusb_submit_urb() which occurs
+if an attempt is made to send a bulk URB using the wrong endpoint
+type. The current approach to perform endpoint checking does not
+explicitly check if an endpoint in question has its type set to bulk.
 
+Fix this issue by using functions usb_endpoint_is_bulk_XXX() to
+enable testing for correct ep types.
+
+This patch has not been tested on real hardware.
+
+[1] Syzkaller report:
+usb 1-1: string descriptor 0 read error: -71
+smsusb:smsusb_probe: board id=2, interface number 0
+smsusb:siano_media_device_register: media controller created
+------------[ cut here ]------------
+usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 3147 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+..
+Call Trace:
+ smsusb_start_streaming+0x16/0x1d0 drivers/media/usb/siano/smsusb.c:195
+ smsusb_init_device+0xd85/0x12d0 drivers/media/usb/siano/smsusb.c:475
+ smsusb_probe+0x496/0xa90 drivers/media/usb/siano/smsusb.c:566
+ usb_probe_interface+0x633/0xb40 drivers/usb/core/driver.c:396
+ really_probe+0x3cb/0x1020 drivers/base/dd.c:580
+ driver_probe_device+0x178/0x350 drivers/base/dd.c:763
+..
+ hub_event+0x48d/0xd90 drivers/usb/core/hub.c:5644
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1300 kernel/workqueue.c:2422
+ kthread+0x39a/0x3c0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Reported-and-tested-by: syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com
+Fixes: 31e0456de5be ("media: usb: siano: Fix general protection fault in smsusb")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/media/usb/siano/smsusb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/smsusb.c
+index 723510520d09..daaac121c670 100644
+--- a/drivers/media/usb/siano/smsusb.c
++++ b/drivers/media/usb/siano/smsusb.c
+@@ -405,10 +405,10 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
+ 		struct usb_endpoint_descriptor *desc =
+ 				&intf->cur_altsetting->endpoint[i].desc;
+ 
+-		if (desc->bEndpointAddress & USB_DIR_IN) {
++		if (usb_endpoint_is_bulk_in(desc)) {
+ 			dev->in_ep = desc->bEndpointAddress;
+ 			align = usb_endpoint_maxp(desc) - sizeof(struct sms_msg_hdr);
+-		} else {
++		} else if (usb_endpoint_is_bulk_out(desc)) {
+ 			dev->out_ep = desc->bEndpointAddress;
+ 		}
+ 	}
 
