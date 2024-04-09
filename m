@@ -1,45 +1,64 @@
-Return-Path: <linux-kernel+bounces-136306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3052E89D27B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:31:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79D4C89D27F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:32:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D892D1F2407D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAD9F1C224FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9530E41766;
-	Tue,  9 Apr 2024 06:31:20 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB1538DED;
+	Tue,  9 Apr 2024 06:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gv5flgFr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AF91773A;
-	Tue,  9 Apr 2024 06:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DA21DFD1;
+	Tue,  9 Apr 2024 06:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712644280; cv=none; b=VetG4MihlOdQpOzbk/xMzO9VNYAEkVyupGvH1ImN9ar0ROhI9XNv4GrOZ2HiLLg8IPSLZdqlzzI4Kzw3LFoAmHlfBVBOk+IugGOeG6ooyftbDGI6KUv3I2MqTv2bQVe9+AC/Zhr1MHx45sGNFpFygUmLtxdgzT5ePEoOg1bKQas=
+	t=1712644363; cv=none; b=B4NfoN1AnJxgW56x7ZBd/gblqg8+o3WisJ3Kjn5B9r46m9P/T3EQvfS9yz8Ni+rOhD50pv1LmkdMfFtWLyD4+oPsKma0de7mTc17bOB/xJ2NXOi5erF/2axz9ErEaNjDTZ0nj+9nbij6Pd/QzitJqGqhWAkl953bheiblXxKKDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712644280; c=relaxed/simple;
-	bh=URqtiEJVdrnUgHUx9SUvz6al5BcQ5UgCH5Yi0/qKvuE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UZy5ZCSMYTjw1EIch6BhofefKNINv2RyWAP9Ply+cEWZYc1KRRXAGqQxAHLJ/9G8w5kCQ7ncqxr0H89kyUsX+tAAtBFXwWIihp/mFTjCINCzKj6LKNK2nL8RGX7jMMACGj2/7C9CwBlgCJMZT9UhJTJsc4ZurXjSZfTtWAQ3QC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VDGKy4qgGz1GGV5;
-	Tue,  9 Apr 2024 14:30:30 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7AB341A0172;
-	Tue,  9 Apr 2024 14:31:15 +0800 (CST)
-Received: from [10.108.234.194] (10.108.234.194) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 14:31:15 +0800
-Message-ID: <a2f7ae45-9e13-4b0c-a16f-637324565e14@huawei.com>
-Date: Tue, 9 Apr 2024 14:31:14 +0800
+	s=arc-20240116; t=1712644363; c=relaxed/simple;
+	bh=uwimiWdg0T9d2TTNTlk3OaxzP7fmBzP+QfEQK1fM1vw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ABot22hgcM9Vr095Pdudbfg7D2UIHyCk+MtIAZHcx1sJvoKHG5Hf3dLaymb4I8zOkOrNC0eAoOBAGQqbOFVlQ+RMqn7LSxCASaNyFMgmOZq8P8+TjzzNkAwu7fTaRexjE/I1lm4A4G1okBQuqKdWSyS4SKI/aqB76pjBVbwV+p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gv5flgFr; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712644362; x=1744180362;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uwimiWdg0T9d2TTNTlk3OaxzP7fmBzP+QfEQK1fM1vw=;
+  b=gv5flgFrQVePnhDVHq1TiVtXz6HuloPcJJzOwL3qoSFQOSRUzlT218+Y
+   E2S/50srvIaOt6gkGJk1odjnxGiQnvNL5ItYG8azMKbTNZvUIEpb1p3AL
+   5/HUp23/aNay9cmo0LK5Y2wZb2uRYHKzr6r9MgU1j0ye2VK+SPuPzH5Rr
+   b611x3ornYT2dGunyjFU/7G/jz77Kgam4MnRrZNN1P7tfkB1tFWTlTI2u
+   LG5kplDCpYjGMkMO1CNqr5XjzobKwOQfpW1kn5iUpIVMzsi2LpFHcypph
+   oYpmcDUdL4GGBNrMT07wHsG1WaM1DTzeCJhQ1ZppK7JoIdjXBaN5WTIiM
+   w==;
+X-CSE-ConnectionGUID: XO0Qy8cnQTSRhT36s5JUyg==
+X-CSE-MsgGUID: Qi786KYYQtikqD+eMdf6NQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7791210"
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="7791210"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:32:40 -0700
+X-CSE-ConnectionGUID: BxVBfudqTs2J/koKcvN+rQ==
+X-CSE-MsgGUID: U6oEIpf+Skm8uD09xe2lQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="51316237"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.37.26])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:32:38 -0700
+Message-ID: <52c9b314-9770-4bec-ae53-2840709b41d4@intel.com>
+Date: Tue, 9 Apr 2024 09:32:32 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,86 +66,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] quota: don't let mark_dquot_dirty() fail silently
-To: Chao Yu <chao@kernel.org>, <jack@suse.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240407073128.3489785-1-chao@kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240409124905.6816db37@canb.auug.org.au>
 Content-Language: en-US
-From: "wangjianjian (C)" <wangjianjian3@huawei.com>
-In-Reply-To: <20240407073128.3489785-1-chao@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240409124905.6816db37@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
 
-On 2024/4/7 15:31, Chao Yu wrote:
-> mark_dquot_dirty() will callback to specified filesystem function,
-> it may fail due to any reasons, however, no caller will check return
-> value of mark_dquot_dirty(), so, it may fail silently, let's print
-> one line message for such case.
+On 9/04/24 05:49, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
->   fs/quota/dquot.c | 23 +++++++++++++----------
->   1 file changed, 13 insertions(+), 10 deletions(-)
+> After merging the tip tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index dacbee455c03..c5df7863942a 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -399,21 +399,20 @@ int dquot_mark_dquot_dirty(struct dquot *dquot)
->   EXPORT_SYMBOL(dquot_mark_dquot_dirty);
->   
->   /* Dirtify all the dquots - this can block when journalling */
-> -static inline int mark_all_dquot_dirty(struct dquot __rcu * const *dquots)
-> +static inline void mark_all_dquot_dirty(struct dquot __rcu * const *dquots)
->   {
-> -	int ret, err, cnt;
-> +	int ret, cnt;
->   	struct dquot *dquot;
->   
-> -	ret = err = 0;
->   	for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
->   		dquot = srcu_dereference(dquots[cnt], &dquot_srcu);
-> -		if (dquot)
-> -			/* Even in case of error we have to continue */
-> -			ret = mark_dquot_dirty(dquot);
-> -		if (!err)
-> -			err = ret;
-> +		if (!dquot)
-> +			continue;
-> +		ret = mark_dquot_dirty(dquot);
-> +		if (ret < 0)
-> +			quota_error(dquot->dq_sb,
-> +				"mark_all_dquot_dirty fails, ret: %d", ret);
->   	}
-> -	return err;
->   }
->   
->   static inline void dqput_all(struct dquot **dquot)
-> @@ -2725,6 +2724,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->   {
->   	struct mem_dqblk *dm = &dquot->dq_dqb;
->   	int check_blim = 0, check_ilim = 0;
-> +	int ret;
->   	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
->   
->   	if (di->d_fieldmask & ~VFS_QC_MASK)
-> @@ -2807,7 +2807,10 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->   	else
->   		set_bit(DQ_FAKE_B, &dquot->dq_flags);
->   	spin_unlock(&dquot->dq_dqb_lock);
-> -	mark_dquot_dirty(dquot);
-> +	ret = mark_dquot_dirty(dquot);
-Here it overwrite previous error.
+> In file included from <command-line>:
+> lib/vdso/gettimeofday.c: In function 'vdso_calc_ns':
+> lib/vdso/gettimeofday.c:11:33: error: 'U64_MAX' undeclared (first use in this function); did you mean 'U64_C'?
+>    11 | # define VDSO_DELTA_MASK(vd)    U64_MAX
+>       |                                 ^~~~~~~
+> lib/vdso/gettimeofday.c:41:49: note: in expansion of macro 'VDSO_DELTA_MASK'
+>    41 |         u64 delta = (cycles - vd->cycle_last) & VDSO_DELTA_MASK(vd);
+>       |                                                 ^~~~~~~~~~~~~~~
+> lib/vdso/gettimeofday.c:11:33: note: each undeclared identifier is reported only once for each function it appears in
+>    11 | # define VDSO_DELTA_MASK(vd)    U64_MAX
+>       |                                 ^~~~~~~
+> lib/vdso/gettimeofday.c:41:49: note: in expansion of macro 'VDSO_DELTA_MASK'
+>    41 |         u64 delta = (cycles - vd->cycle_last) & VDSO_DELTA_MASK(vd);
+>       |                                                 ^~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   c8e3a8b6f2e6 ("vdso: Consolidate vdso_calc_delta()")
+> 
+> I have used the tip tree from next-20240408 for today.
 
-> +	if (ret < 0)
-> +		quota_error(dquot->dq_sb,
-> +			"mark_dquot_dirty fails, ret: %d", ret);
->   
->   	return 0;
->   }
--- 
-Regards
+Thanks you!  Please consider the fix cc'ed you and linked below:
+
+    https://lore.kernel.org/all/20240409062639.3393-1-adrian.hunter@intel.com/
 
 
