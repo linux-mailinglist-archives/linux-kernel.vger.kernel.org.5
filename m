@@ -1,121 +1,100 @@
-Return-Path: <linux-kernel+bounces-136562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8FAB89D589
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52A9A89D595
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850EC284CB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C23F2852D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1904D86269;
-	Tue,  9 Apr 2024 09:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WssjhCxI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603C085631
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33BB7F7F6;
+	Tue,  9 Apr 2024 09:28:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282C57EF1F;
+	Tue,  9 Apr 2024 09:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654739; cv=none; b=M5gdWb25NR3BoFyn3OpD+gLYxaal3amaT6SdFKQDZoq5SzYGb5H9oBzNDNISqt6NfdwUywFIdDrQ6M8sp1uV8O+VOo0JgzDQA2K0/0X6qk8HCtfV17GkDZSHPDjRBhx7XALroBpd3rqEyBKnBGd1wA6VHCD3ebszeBJOhObNp+Q=
+	t=1712654914; cv=none; b=U0KIrrcrAIyNSUh7zBXrGiys9U/brv6ZK57C0b4bEvvJj+U+o8AsdX7Y4inONLj9PPNvpeoW4LdTRud62gwOdVtbMFQhMiHtM3sY0clx9qFOI3WFaFdbphqEWed1/4t4ojTW+MWC4BUVbfE2J5C5ZehGyDJ7qtqioalSvhDiP8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654739; c=relaxed/simple;
-	bh=MGM8cnYOc2xUfzqiaHDKMMd1O2BaUHSekMXG68vTT9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MSaajEa6hajevLHAjOtlhvzMjB6hexh5VQmA1mJSCJh2WxCWZfgB4BBnzehPFzYJUGZUFFPtwjNBNURmoQ1GfJBSW37n7ULjZ1G/nmoM+cE485l7vBFq1sAFd3MhAKdlHbB9wLwl94cZIzYs04QgQb4O8nZhS0m1+K02aJvwDT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WssjhCxI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9AEBC43390;
-	Tue,  9 Apr 2024 09:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712654739;
-	bh=MGM8cnYOc2xUfzqiaHDKMMd1O2BaUHSekMXG68vTT9g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WssjhCxIFV/yIm+DWR08ghSxRH0lwhxnaD1vS2T9rvquOXkj3qGcbCZmtRVCMugbx
-	 IpWPk8pGp412gnIoQ31Hh+Nj/nr0kRrJQXzBuprxRcKWtx46uGS3zwlAVGzzAnLZOa
-	 52pTuciC59Q7qvfrK/iyC4ieJiOEUd4NAdFCWYHbq3mk8cYivLFFarlmlmJQ3ANn4L
-	 vJKWBxpUoAfA+1TuCAgUsamwLOWgCzpz3n7rfQU0g534XfH/f/OuaqzHk9rvsWc4Go
-	 6wBLSxMwmhQEKLpYL8rYKa8MXVHlvfAV/2jf/n0c8537CHdVO8iTIdYeth+9BA3DNQ
-	 yLoovR8/YKs9Q==
-From: alexs@kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: "Alex Shi (tencent)" <alexs@kernel.org>,
-	Izik Eidus <izik.eidus@ravellosystems.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Chris Wright <chrisw@sous-sol.org>,
-	David Hildenbrand <david@redhat.com>
-Subject: [PATCH v4 9/9] mm/ksm: replace set_page_stable_node by folio_set_stable_node
-Date: Tue,  9 Apr 2024 17:28:24 +0800
-Message-ID: <20240409092826.1733637-10-alexs@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240409092826.1733637-1-alexs@kernel.org>
-References: <20240409092826.1733637-1-alexs@kernel.org>
+	s=arc-20240116; t=1712654914; c=relaxed/simple;
+	bh=IyoxD0ITXsSHOPvcnDKknDm8b+HSTqMYls3i/cTrI9I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eC3qNoQzwr8mml7q8wrJoUeb4nNIJsXlVF0zhnZiFs172lrfnENsIt8x0I3Mw1/V36fOvkoMy1BJcYVS/2X6+x/pGz1nIYCT/noBE5xPZ51W2ZWiuVIwU1Xxj7mXIFftYZ3l9BBZxN2e7rQqY4QWzSWiVcYHlJRuOYkPSlT3pWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB5EADA7;
+	Tue,  9 Apr 2024 02:29:01 -0700 (PDT)
+Received: from [10.57.52.202] (unknown [10.57.52.202])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CEBB3F6C4;
+	Tue,  9 Apr 2024 02:28:29 -0700 (PDT)
+Message-ID: <7f265f0d-7505-41fd-961e-a1d48bb368c9@arm.com>
+Date: Tue, 9 Apr 2024 10:28:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+To: Linu Cherian <lcherian@marvell.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+ George Cherian <gcherian@marvell.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "mike.leach@linaro.org" <mike.leach@linaro.org>,
+ "leo.yan@linaro.org" <leo.yan@linaro.org>
+References: <20240307033625.325058-1-lcherian@marvell.com>
+ <PH0PR18MB5002D016166F97E665BB0F39CE072@PH0PR18MB5002.namprd18.prod.outlook.com>
+Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <PH0PR18MB5002D016166F97E665BB0F39CE072@PH0PR18MB5002.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-Only single page could be reached where we set stable node after write
-protect, so use folio converted func to replace page's. And remove the
-unused func set_page_stable_node().
 
-Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
-Cc: Izik Eidus <izik.eidus@ravellosystems.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Chris Wright <chrisw@sous-sol.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- mm/ksm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+On 09/04/2024 01:10, Linu Cherian wrote:
+> Hi Suzuki/James,
+> 
+>> -----Original Message-----
+>> From: Linu Cherian <lcherian@marvell.com>
+>> Sent: Thursday, March 7, 2024 9:06 AM
+>> To: suzuki.poulose@arm.com; mike.leach@linaro.org; james.clark@arm.com;
+>> leo.yan@linaro.org
+>> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
+>> kernel@vger.kernel.org; robh+dt@kernel.org;
+>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Linu
+>> Cherian <lcherian@marvell.com>
+>> Subject: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+>>
+>> This patch series is rebased on v6.8-rc4 from coresisght tree,[1], since latest
+>> changes are dependent on coresight_get/set_mode APIs.
+>>
+> 
+> 
+> Do you have any feedback on this version ?
+> 
+> Thanks.
+> 
 
-diff --git a/mm/ksm.c b/mm/ksm.c
-index a705ed16aa1b..0d703c3da9d8 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -1094,17 +1094,11 @@ static inline struct ksm_stable_node *page_stable_node(struct page *page)
- 	return folio_stable_node(page_folio(page));
- }
- 
--static inline void set_page_stable_node(struct page *page,
--					struct ksm_stable_node *stable_node)
--{
--	VM_BUG_ON_PAGE(PageAnon(page) && PageAnonExclusive(page), page);
--	page->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
--}
--
- static inline void folio_set_stable_node(struct folio *folio,
- 					 struct ksm_stable_node *stable_node)
- {
--	set_page_stable_node(&folio->page, stable_node);
-+	VM_WARN_ON_FOLIO(folio_test_anon(folio) && PageAnonExclusive(&folio->page), folio);
-+	folio->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
- }
- 
- #ifdef CONFIG_SYSFS
-@@ -1519,7 +1513,7 @@ static int try_to_merge_one_page(struct vm_area_struct *vma,
- 			 * PageAnon+anon_vma to PageKsm+NULL stable_node:
- 			 * stable_tree_insert() will update stable_node.
- 			 */
--			set_page_stable_node(page, NULL);
-+			folio_set_stable_node(page_folio(page), NULL);
- 			mark_page_accessed(page);
- 			/*
- 			 * Page reclaim just frees a clean page with no dirty
--- 
-2.43.0
+Hi Linu,
+
+Sorry it was on my list, I'll take a look this week.
+
 
 
