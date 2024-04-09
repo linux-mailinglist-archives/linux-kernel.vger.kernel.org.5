@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-136975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7923C89DA8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:40:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C089989DA96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0574CB22DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:40:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60CEB1F2159F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A4412FF95;
-	Tue,  9 Apr 2024 13:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C27130493;
+	Tue,  9 Apr 2024 13:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmEoXxg3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYiEWSxn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B537012FF81;
-	Tue,  9 Apr 2024 13:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CCE1304BF;
+	Tue,  9 Apr 2024 13:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669918; cv=none; b=M6tKMmxPpLowSqtigEKL3we4Dty6F4KzVNIVIHlPCVJ92Kmy/lppWg9O/ctI0248iKe/yIeCx4SERqLaJdLS6HLlACfOa4g1qoqyx7b2gMTOrU7EJTKLF5pacu2vNXfHla+qXrJtbgwonFPqf7uvDgEEjReSLy8jsOtvbNq/4wU=
+	t=1712669921; cv=none; b=QaV80N9X9kp4bJvq2PgR67XfAFEwqahSqay5cAHr1fnolk5Bo6+OrttmnfOIBadHqT7WebfzdD0vezqAkmacGeAw3eWumM25lNGt3zEFCKT/JM/p0XIyca8INrtFUrq+/EfwWerZjqrqit9bN7sYYweRxS1YdGUaFp6v1W3EjxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669918; c=relaxed/simple;
-	bh=LH2+MZ60zszRAlWofS4xHZNyYvkyDt5kHRdPGDl7eDg=;
+	s=arc-20240116; t=1712669921; c=relaxed/simple;
+	bh=HRfRkbHD8zcpi5gl/4LkNF4bPGm+koDa1Cv2ivwUNKs=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=VMvyZmCcfZu63sT7g03gJVQa2qLMRAxNzEn8WfIrdl2hFD7NTczkE4Bn3vp05ohSuBgU9ajc8ts6sUXhW0odkzn7fZY293Ty06iPwwFf2fqa/HCohHwQwpGj4RciYa+/3S5e8lMFLPWaICokUuXYjd/Otr+gUQw9TixZrE2b0T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmEoXxg3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607A2C433F1;
-	Tue,  9 Apr 2024 13:38:38 +0000 (UTC)
+	 Message-Id:Subject; b=dckDdwJJNziDyTNoq1VL41pF3sAo1tJvRG3WI069kyr2HjcBOqLKTDTGfhyjhzHMf/Mi1hvVbcRBiQLjJB7nU/le+3Tw+/2DiBjaKYCD9L1hoMllSdCC0Giv0NepSU5pERvSsxGZtGVIq9pYEkdWLrY0CjklpNgWqh7KeJhvwCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYiEWSxn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6562C433F1;
+	Tue,  9 Apr 2024 13:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712669918;
-	bh=LH2+MZ60zszRAlWofS4xHZNyYvkyDt5kHRdPGDl7eDg=;
+	s=k20201202; t=1712669921;
+	bh=HRfRkbHD8zcpi5gl/4LkNF4bPGm+koDa1Cv2ivwUNKs=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=DmEoXxg3vjS6lYG2wOO/DN1hcJODw5Bzq6hdl5Q5Jq1SCYm2nv5cwXaS3A9AnKoD8
-	 MVgZeFAhmLUd9aVnxZOL1Ya3BXj1wZB0fsQwZQFG6jq82HS6W4eIm2AkW8to9cddY/
-	 6dvcmCrFWoAxAssNCjB7WUPy4fAc9Wjnm6tQYjP59TgD5UHXLhmWVs03WPDznLa+SK
-	 YwTEYeRaippOoG0aIEEUViHWUJM99iWa7Ga4l/6pWqcFHSOHJhnyrXIZ6OG/0k45Zj
-	 qH0HencCnuol3TUHj+LoZgeGvz6YZ8qhCZFsCchIvKUBj+/V60gaS97SVkQVuy8cDx
-	 75JwJ1ScmB5Lw==
-Date: Tue, 09 Apr 2024 08:38:37 -0500
+	b=hYiEWSxndHETdib5iYRWGK6lLaBRG1V77qREot8UIVwIHJJhwvBexsk3VXe9s4raq
+	 YaVNFyudOI2CpS/bNqohGr4yQuR/elqRTm8zQcTb7+s4NP7pLWWcqEAsek5b3ie0b9
+	 l97GRsdXJxqbKaG+AiEOmAVItII5sX7hsafY5/xcqw51DyCnXoG6hxmAeHqoWYELbH
+	 2Np4Mu9B5m0sOEKs+uM/g1fjfnZ90rGRgAzc0MWiMk1vPk8HzjRoRcXS/KUzIIH1TF
+	 EiJIKkq1EXpR5PwZqOuXCmMDO2aHCi2ar0ssKD7z+NkaCZngK7NvtT5RfBLtmPh476
+	 dTNG/Cc2ippFA==
+Date: Tue, 09 Apr 2024 08:38:39 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,30 +50,32 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org, 
- Andrew Jeffery <andrew@codeconstruct.com.au>, Joel Stanley <joel@jms.id.au>, 
- linux-arm-kernel@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, 
- linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org
-In-Reply-To: <20240405064624.18997-1-krzysztof.kozlowski@linaro.org>
-References: <20240405064624.18997-1-krzysztof.kozlowski@linaro.org>
-Message-Id: <171266958251.1032405.3082451019333889181.robh@kernel.org>
-Subject: Re: [PATCH v2 1/5] ARM: dts: aspeed: greatlakes: correct Mellanox
- multi-host property
+To: Raymond Hackley <raymondhackley@protonmail.com>
+Cc: linux-arm-msm@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ ~postmarketos/upstreaming@lists.sr.ht, Conor Dooley <conor+dt@kernel.org>, 
+ devicetree@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+ Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>
+In-Reply-To: <20240405120803.20754-1-raymondhackley@protonmail.com>
+References: <20240405120803.20754-1-raymondhackley@protonmail.com>
+Message-Id: <171266958282.1032427.12690493888215530209.robh@kernel.org>
+Subject: Re: [PATCH 0/3] arm64: dts: qcom: msm8916-samsung-fortuna: Add
+ accelerometer/magnetometer
 
 
-On Fri, 05 Apr 2024 08:46:20 +0200, Krzysztof Kozlowski wrote:
-> "mlx,multi-host" is using incorrect vendor prefix and is not documented.
+On Fri, 05 Apr 2024 12:08:19 +0000, Raymond Hackley wrote:
+> Some Grand Prime use a Bosch BMC150 accelerometer/magnetometer combo.
+> The chip provides two separate I2C devices for the accelerometer
+> and magnetometer that are already supported by the bmc150-accel
+> and bmc150-magn driver.
+> Some Grand Prime use a ST LSM303C accelerometer/magnetometer combo.
+> Core Prime LTE uses ST LIS2HH12 accelerometer.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Add support for them.
 > 
-> ---
 > 
-> Changes in v2:
-> 1. None
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
 
@@ -91,10 +93,12 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y aspeed/aspeed-bmc-ampere-mtmitchell.dtb aspeed/aspeed-bmc-facebook-greatlakes.dtb aspeed/aspeed-bmc-facebook-harma.dtb aspeed/aspeed-bmc-facebook-yosemite4.dtb aspeed/aspeed-bmc-facebook-yosemitev2.dtb' for 20240405064624.18997-1-krzysztof.kozlowski@linaro.org:
+New warnings running 'make CHECK_DTBS=y qcom/msm8216-samsung-fortuna3g.dtb' for 20240405120803.20754-1-raymondhackley@protonmail.com:
 
-arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dtb: ftgmac@1e690000: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'mellanox,multi-host' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
+arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dtb: magnetometer@12: 'mount-matrix' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/iio/magnetometer/bosch,bmc150_magn.yaml#
+arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dtb: accelerometer@1d: 'interrupt-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/iio/st,st-sensors.yaml#
 
 
 
