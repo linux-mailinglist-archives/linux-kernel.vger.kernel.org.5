@@ -1,76 +1,58 @@
-Return-Path: <linux-kernel+bounces-137022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524B989DB38
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A063189DB39
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0759E1F21CA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:54:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F31628A610
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D583C130E2E;
-	Tue,  9 Apr 2024 13:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07D0B131185;
+	Tue,  9 Apr 2024 13:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gwdKegbH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qis6pBGv"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqQ3pwPp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA44D12C531;
-	Tue,  9 Apr 2024 13:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3FB130E3B;
+	Tue,  9 Apr 2024 13:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712670454; cv=none; b=duGQbnoVcI1T18HVBQMdPgjlfNL5+A1n6xRXAUzmYLxYCTA2x27ZRETdGaY6/fwpXvxZCY0TNNEXFFAhY9Cd4WWuzOCmYLtUSw8V8k+aJzB049tU0UJuKkDtt/NJYCcZZO0Az+IqKQgTwZgoQtv3HAj5ho32/lHZ5vkXqaOExOw=
+	t=1712670467; cv=none; b=K98w4w0cjVGsQh3huPpMryCrdGBDs6KukNgHGt0hvTegZ9l9HOW3T7f5si1dCkpoxv82rZBXEgou3ZkGqc14Cb0guJp9V9WrS7zWVahAg9IlLGeStDSjTFb/swedRQY7KX0SUys6QyOCG76VbxhXDXHz6/7fT4MM9/iI4TY8h0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712670454; c=relaxed/simple;
-	bh=I8SXAbXUDHLLy/rIZkXEofnDWT+iXwoU5TWom6REpi8=;
+	s=arc-20240116; t=1712670467; c=relaxed/simple;
+	bh=cgXhwNqAUlv7uKKki90yp7H4uGeRWUSAoQWHH9FoDUY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pUNQEadzfFF0OlNoiTgZ0rXVGtrA7hKfn+u1+2pYSZsGH2jvJBMoS4qsnJZhuijBHXM4FulNPauTNPBI1TBBT1p6JT54npOZzeYpJTtwgr/WFAsIQdy1Fgg2TJihgNuC+TIb5OAE7doewv2Ot20k26L3Je8lGSoKNSiHTlV/sIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gwdKegbH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qis6pBGv; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 9 Apr 2024 15:47:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712670451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lwihX0lE1ReWSXgdrfNpqgYNmD/FYsuPD3bWkvP0exI=;
-	b=gwdKegbHi5653ZJtvhlFEc1q7AWHlvvUVPWFKsukgpMjeCJzWfXT7QRQsj7JeEVEenpMPl
-	iJZKreZtD/uFRjawQ4IJ8YaCskfKYvJYvqRlWJxn0+FXD0m9XdhqvdL06pWZKqaUuRlBJj
-	AUbDjp/xa1TrvxNrRUxf9CTX5Q5zCV2SfKEBqY+w9t2ZFThD3bkJiW/Ob0xWzXwATEvT71
-	DPU1L9KGch4oWRDUNW7Ex7n+w/od3mJ1lkZzaKZpVvPZgfnge+FaogTwNRaB/mtTtb6Gd0
-	3TqUnZcyzY15MesRKbZ7qzgOJfs9C+K/JMIBQkHzfToi89u4z03jUEQjsvNsdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712670451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lwihX0lE1ReWSXgdrfNpqgYNmD/FYsuPD3bWkvP0exI=;
-	b=qis6pBGvUCGNhXD5K4LNKpfr8focouCEBdv3+vBqKg0+2ZChezXkAm0caqZBYlDgvdjg3O
-	HTAu1GXBZAnZjLAQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=Aq46K4YsEh/nooyjwJl4bSr2HJvViqePE55B/cu0LmJ7X38cMyuY3IAhIl8p5ZKwGNi15p2heFiXMIKp9qeC3ax2jcL8lq6b5OppIfp57jnxWguYEDiM97QHReZxTGMCAgeRzeicGvOYm90p/CRw7fgmHk+MPJpOFoBYiuSXN50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqQ3pwPp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51B72C433F1;
+	Tue,  9 Apr 2024 13:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712670466;
+	bh=cgXhwNqAUlv7uKKki90yp7H4uGeRWUSAoQWHH9FoDUY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GqQ3pwPpoETGT/zEAhvXKp0U2TRxKtJRJtPHXw8CE2X5dDNx3EayRhtuT1IW4MdWC
+	 8pmS2sbX5GoJVyF9sBmiJaHKzHm7FIxNeBKIKZwlQxPi24Rt0zcNKsi90POcZ1P1Q2
+	 OJuGrGahSuNw080QuesKgxOlf08SX+zUzM6S4FiYfOpj+b/YUi/HShEocMAqHXOxMA
+	 VIINHZJiKb83JNxNa+2BOO59hZvYSbOMk3xhcYmJ5PFowvtwLGwxgGvOHh3RZkTC1R
+	 +Mpc+2P/0EmOuofMuVDxI8gxxaRUZNYwfE7H6q4iV2PdcDmW8VAf510DIExeSXZACY
+	 TsJvyd45opZ3A==
+Date: Tue, 9 Apr 2024 10:47:43 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 2/4] perf: Enqueue SIGTRAP always via task_work.
-Message-ID: <20240409134729.JpcBYOsK@linutronix.de>
-References: <20240322065208.60456-1-bigeasy@linutronix.de>
- <20240322065208.60456-3-bigeasy@linutronix.de>
- <ZhRhn1B0rMSNv6mV@pavilion.home>
- <20240409085732.FBItbOSO@linutronix.de>
- <ZhU2YwettB6i6AMp@localhost.localdomain>
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCHSET 0/9] Sync tools headers with the kernel source
+Message-ID: <ZhVG_9KpcWLLhc-s@x1>
+References: <20240408185520.1550865-1-namhyung@kernel.org>
+ <CAMuHMdXQ_osFeknmg=oR6-fMH_MkVqabCtbynxQ6UvpZRwry3Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,38 +61,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZhU2YwettB6i6AMp@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXQ_osFeknmg=oR6-fMH_MkVqabCtbynxQ6UvpZRwry3Q@mail.gmail.com>
 
-On 2024-04-09 14:36:51 [+0200], Frederic Weisbecker wrote:
-> > That wake_up() within preempt_disable() section breaks on RT.
+On Tue, Apr 09, 2024 at 09:15:02AM +0200, Geert Uytterhoeven wrote:
+> Hi Namhyung, Arnaldo,
 > 
-> Ah, but the wake-up still wants to go inside recursion protection somehow or
-> it could generate task_work loop again due to tracepoint events...
-
-okay.
-
-> Although... the wake up occurs only when the event is dead after all...
-
-corner case or not, it has to work, right?
-
-> > How do we go on from here?
+> On Mon, Apr 8, 2024 at 8:55 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > I'm gonna carry these changes on the perf tools tree.  I'll update the
+> > vhost.h once it lands on the mainline.
+> >
+> > This is the full explanation from Arnaldo:
+> >
+> > There used to be no copies, with tools/ code using kernel headers
+> > directly. From time to time tools/perf/ broke due to legitimate kernel
+> > hacking. At some point Linus complained about such direct usage. Then we
+> > adopted the current model.
 > 
-> I'd tend to think you need my patchset first because the problems it
-> fixes were not easily visible as long as there was an irq work to take
-> care of things most of the time. But once you rely on task_work only then
-> these become a real problem. Especially the sync against perf_release().
+> Do you have a reference to that?
 
-I don't mind rebasing on top of your series. But defaulting to task_work
-is not an option then?
+I would have to do a search on the mailing list to find the exact
+exchange, this is from memory and from people asking this repeatedly.
 
-RT wise the irq_work is not handled in hardirq because of locks it
-acquires and is handled instead in a thread. Depending on the priority
-the task (receiving the event) it may run before the irq_work-thread.
-Therefore the task_work looked neat because the event would be handled
-_before_ the task returned to userland.
+Ingo replied with reasons similar to the ones I use in this canned
+explanation when sending the notice of updating the files.
 
-Couldn't we either flush _or_ remove the task_work in perf_release()?
+- Arnaldo
 
-> Thanks.
-Sebastian
+> I was gonna reply to [PATCH 8/9] (where I was CCed) with "why can't
+> you use the original include file directly?", then read the cover letter.
+> 
+> Thanks!
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
