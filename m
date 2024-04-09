@@ -1,144 +1,123 @@
-Return-Path: <linux-kernel+bounces-136138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C02989D065
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 584E489D067
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:34:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D211F233A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:33:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF99A1F230C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D57757F2;
-	Tue,  9 Apr 2024 02:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3617F54736;
+	Tue,  9 Apr 2024 02:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KRIQdS6g"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TfxLRoCY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0545A6A033
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 02:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7704553E28;
+	Tue,  9 Apr 2024 02:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712629951; cv=none; b=GbHCbxryKeXM4+TV4TvSCxEREwAeVnkKP1QWEYn4Hav9Rq+KJ3N5c6LzWcQ+75ace6n2ZZTTiBt2kRPXolTnm0pXWQjm1x8rInVBaDDi4c9YxEvAtz4k+X5jGxmiswP1Jdg8pxz9ZDnK6RgO+d+4gyEylPFaJNkH8yIAFYepg+0=
+	t=1712629985; cv=none; b=TpsXPOedvDj4KiImV2k2hMtYqegEFsWx6Yl0TuRFYHG/3gf8H/IsrywkHjWwzx7P1hthW6cnRgq1LsHiwcpDDQbFyavm5O81hmFRIv0KrJAA1VUSXwkVCs6VysyJ6/CQ7qBHa8zIzfp3el9Ft/sjY1RlRYsRTG4PBJEjm+W3nxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712629951; c=relaxed/simple;
-	bh=xHsqseGo45EFWIp81P0tGMdoFgzohP0SXk8wpRgIZ/M=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=D/5B7EhNGzN+GHblQCfzqJ/H3Q+2paXuSrWTtLsAkHcdHcBccVYdbug3YlJnRESBK3LkZI3bRIQ51NeoInXm51ghVztMIBYlK9wfjz/Z8O0g074fHN/3Ph11xbT/ec3Q8LytXbrnitiBjYNrBmhqUIMDku5l3qRD/nGRCbfjY/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KRIQdS6g; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64f63d768so8681860276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 19:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712629949; x=1713234749; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/BAUdVwmPAN+ChmE3q8Tcu1VmgKAoqUPA+AHxJ0JyqY=;
-        b=KRIQdS6gSqM7Cz4ZpXf/TfjU83+ld8PARjdjgsTjZB5jsDSlyJQH1FNp6vtjdUev/V
-         Ha3ouiLTbpzSfQtYQSU+HjLfut72Myxq7xmC7f7awy0FKWZN8SyVH2dXwiAimE1IVrqV
-         KYphCN5vLXaSOuZ2GJs78uKk+QVwz4sBlp+A1nx9ioR8t1Eg5yFUco/cXa1jB3NHsVdq
-         DRdGJMdozmX18lywuA/2Esh7RnGdVXt4mqjPOqGggEQ1T0vh8rL0FOIzTl+PvHU/P7Q8
-         VYq6Ox0UYyWoC5MN/JKwopRDYGr0SdGU2LqdKscCXo2PQbSF/cCHaXLuRz+p0vHm7BvD
-         yYBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712629949; x=1713234749;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/BAUdVwmPAN+ChmE3q8Tcu1VmgKAoqUPA+AHxJ0JyqY=;
-        b=XHbpsIcVzqSGTlChYWYDRy0ed2G0k0lduLDQQUUyKzHyM/6a3smUQZPIcXQTqN2JOj
-         u2TOqQlC9oOCE2aw7vWdvO9xc4cu1szNhvl7IJmpMrKU02a9fieklUaLOk5GtvqF2IKF
-         2WlAVEbKPFF2sch0cKEz2ehJqCK94KVIcVAB+OyjqkoyWv4d0juBuqiUHTNhcpFyoaVo
-         NT1BHYz1bCeSCsy/q3ExOgJcW0sd+rNNn3MnSt3uXWqhzcSvHySa31yciMxBhXImSHW7
-         WfLjtKq29O6I6JSnqsPGvhliM2LasCIY1t3+mbSzs6vox7hCW6Vl0hVkV0O3tVVyWyft
-         Z9OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWLi8eZDEJO8v3XfzCXMY/6fGCHMRS1UrtSngqcclNALFFhRFhocT1o/VzVzB/Ib85gAsBqcw6DrlkJLJORV6xl08hwvHIRnNzRXCfO
-X-Gm-Message-State: AOJu0YxP3TQ/36KwPZhFDqMCxqAQcYdDu2DEnaad9xLGWtb/Jvqpi00d
-	DvOkATCFOr1rWVLPncYzrwRL8wweJ+3GG0ub8JwtgerPukG5tZHchYrI2+lXdqRlzzXqWsqnsnX
-	fNmBvyw==
-X-Google-Smtp-Source: AGHT+IGF6ZTjnu8dVcNXGrughSGYScPK3AYo0PJxMnN9RAliJjpZ62UnoVFK8B/Xe/xfHylwSeuiBANHAUhu
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5520:7788:6b7d:7115])
- (user=irogers job=sendgmr) by 2002:a05:6902:70d:b0:dc6:dfd9:d431 with SMTP id
- k13-20020a056902070d00b00dc6dfd9d431mr3087229ybt.1.1712629949240; Mon, 08 Apr
- 2024 19:32:29 -0700 (PDT)
-Date: Mon,  8 Apr 2024 19:32:16 -0700
-In-Reply-To: <20240409023216.2342032-1-irogers@google.com>
-Message-Id: <20240409023216.2342032-5-irogers@google.com>
+	s=arc-20240116; t=1712629985; c=relaxed/simple;
+	bh=kaZl5aohS6PHHFbY2k20Vr3WSpd8PK+x4cpaK0dNKmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t73FtQt6hCohHN1H3SF4EJBasQ+30RcCstb2m3cBTS+nZqNKc2x6rO4D7PFNdlxShNLKSelgN0JKYM89+O2oAdzee6ON4MjcSCXvi1z3suPbCXk3Y1P8+TIVwCUMa56DxMh+6KlWWAWa9UUt1M0WFr9IrKhHnBMwORKCb3oJdIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TfxLRoCY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD6ECC433F1;
+	Tue,  9 Apr 2024 02:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712629985;
+	bh=kaZl5aohS6PHHFbY2k20Vr3WSpd8PK+x4cpaK0dNKmk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TfxLRoCYZ6eJmGn+zCrqSrSkyt8vdVMAYrrgcWYfH859DTwiz0QbeOkUl2gd8W3wW
+	 tYfgW7Q4nSZAaIHPaNygIb543E+DdcPaBQWEAskTmSYqGzbSMD/tmjk9OSEZZCfn4n
+	 dDBQvkJ9RZU4L+R4pwcOegp16Xftx13uPA4ZK1/74W8iDNNzggQdMlzc09tn5Lp4ae
+	 Xw7doy/Cq5BvOhsacixw895GRwCODLpBSviiHmv1691KUlgEEfNeTholDarGPFuBee
+	 E5LCvi/ngmgTS16bEBVYBqU/pJYKTydYkHjfi4xa0VDHH3HPoDbNQhAWi+j69szgvs
+	 8srocdUR5vi7g==
+Date: Mon, 8 Apr 2024 21:33:01 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
+	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+Message-ID: <covjipaso7bhgiifb62vdh24dpadr7kdypl2dleg7a2vc4jwjd@s4ci5xc6qpa3>
+References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
+ <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
+ <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
+ <CAA8EJprzH0LiWNx9Udt6og3G063odY6ccvaAgsNS1r3zG8TmdA@mail.gmail.com>
+ <905222ad-612a-3eaf-d966-23c89c99e1f0@quicinc.com>
+ <CAA8EJpp6Lc7sc5fnKp+O8TYdaywiE+dZ=YJin351s=r5rxi+Kw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240409023216.2342032-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v1 4/4] perf trace beauty: Add shellcheck to scripts
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Oliver Upton <oliver.upton@linux.dev>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpp6Lc7sc5fnKp+O8TYdaywiE+dZ=YJin351s=r5rxi+Kw@mail.gmail.com>
 
-Add shell check to scripts generating perf trace lookup tables. Fix
-quoting issue in arch_errno_names.sh.
+On Tue, Apr 09, 2024 at 01:07:57AM +0300, Dmitry Baryshkov wrote:
+> On Tue, 9 Apr 2024 at 00:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> > On 4/8/2024 2:12 PM, Dmitry Baryshkov wrote:
+> > > On Mon, 8 Apr 2024 at 22:43, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> > >> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
+> > >>> On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
+> > >>>> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> > >>> [..]
+> > >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+[..]
+> > >>
+> > >> I will need sometime to address that use-case as I need to see if we can
+> > >> handle that better and then drop the the DISCONNECT_PENDING state to
+> > >> address this fully. But it needs more testing.
+> > >>
+> > >> But, we will need this patch anyway because without this we will not be
+> > >> able to fix even the most regular and commonly seen case of basic
+> > >> connect/disconnect receiving complementary events.
+> > >
+> > > Hmm, no. We need to drop the HPD state machine, not to patch it. Once
+> > > the driver has proper detect() callback, there will be no
+> > > complementary events. That is a proper way to fix the code, not these
+> > > kinds of band-aids patches.
+> > >
+> >
+> > I had discussed this part too :)
+> >
+> > I totally agree we should fix .detect()'s behavior to just match cable
+> > connect/disconnect and not link_ready status.
+> >
+> > But that alone would not have fixed this issue. If HPD thread does not
+> > get scheduled and plug_handle() was not executed, .detect() would have
+> > still returned old status as we will update the cable status only in
+> > plug_handle() / unplug_handle() to have a common API between internal
+> > and external hpd execution.
+> 
+> I think there should be just hpd_notify, which if the HPD is up,
+> attempts to read the DPCD. No need for separate plug/unplug_handle.
+> The detect() can be as simple as !drm_dp_is_branch() || sink_count != 0.
+> 
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/trace/beauty/Build               | 14 ++++++++++++++
- tools/perf/trace/beauty/arch_errno_names.sh |  8 +++++---
- 2 files changed, 19 insertions(+), 3 deletions(-)
+What is detect() supposed to return in the event that we have external
+HPD handler? The link state? While the external HPD bridge would return
+the HPD state?
 
-diff --git a/tools/perf/trace/beauty/Build b/tools/perf/trace/beauty/Build
-index d8ce1b698983..cb3c1399ff40 100644
---- a/tools/perf/trace/beauty/Build
-+++ b/tools/perf/trace/beauty/Build
-@@ -20,3 +20,17 @@ perf-y += statx.o
- perf-y += sync_file_range.o
- perf-y += timespec.o
- perf-y += tracepoints/
-+
-+ifdef SHELLCHECK
-+  SHELL_TESTS := $(wildcard trace/beauty/*.sh)
-+  TEST_LOGS := $(SHELL_TESTS:trace/beauty/%=%.shellcheck_log)
-+else
-+  SHELL_TESTS :=
-+  TEST_LOGS :=
-+endif
-+
-+$(OUTPUT)%.shellcheck_log: %
-+	$(call rule_mkdir)
-+	$(Q)$(call echo-cmd,test)shellcheck -s bash -a -S warning "$<" > $@ || (cat $@ && rm $@ && false)
-+
-+perf-y += $(TEST_LOGS)
-diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
-index 7df4bf5b55a3..30d3889b2957 100755
---- a/tools/perf/trace/beauty/arch_errno_names.sh
-+++ b/tools/perf/trace/beauty/arch_errno_names.sh
-@@ -60,10 +60,12 @@ create_arch_errno_table_func()
- 	printf 'arch_syscalls__strerrno_t *arch_syscalls__strerrno_function(const char *arch)\n'
- 	printf '{\n'
- 	for arch in $archlist; do
--		printf '\tif (!strcmp(arch, "%s"))\n' $(arch_string "$arch")
--		printf '\t\treturn errno_to_name__%s;\n' $(arch_string "$arch")
-+		arch_str=$(arch_string "$arch")
-+		printf '\tif (!strcmp(arch, "%s"))\n' "$arch_str"
-+		printf '\t\treturn errno_to_name__%s;\n' "$arch_str"
- 	done
--	printf '\treturn errno_to_name__%s;\n' $(arch_string "$default")
-+	arch_str=$(arch_string "$default")
-+	printf '\treturn errno_to_name__%s;\n' "$arch_str"
- 	printf '}\n'
- }
- 
--- 
-2.44.0.478.gd926399ef9-goog
+If a driver only drives the link inbetween atomic_enable() and
+atomic_disable() will the "connected state" then ever be reported as
+"connected"? (I'm sure I'm still missing pieces of this puzzle).
 
+Regards,
+Bjorn
 
