@@ -1,88 +1,76 @@
-Return-Path: <linux-kernel+bounces-137312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B4A89E05B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:29:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C2189E03E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A332B2ED30
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:22:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557AF1C21D65
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F86813E408;
-	Tue,  9 Apr 2024 16:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF66513E05C;
+	Tue,  9 Apr 2024 16:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izuwsy8o"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z7SCVjTW"
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4A0137C2A;
-	Tue,  9 Apr 2024 16:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4E213E058
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679743; cv=none; b=WfU6A/s9490rbaAlMLuNN9GtIIyAqJCLhG3SexJjWw1VWzT3K3cjLIIYKmFvAQo2i8JlBBG4jYohVCg/NT+68nrJq0tsoENL/IugkRGVWUxn0kYtmMI7E+KIWjvtQybgExvRKQYUCl4iXlEVYxYRVfdFA3DCkSm8Pu06EtATJdY=
+	t=1712679737; cv=none; b=HrtaXJwiYiOfYctBoLoAiMXxzROpHTm4+3FjFafB5ZXJt7eMHsf5P8KP2BsLrY2qz4q0ODchQ5RlfQuZg6cvd8c+sAXWBgVjN9UuskpY8AfPR8PJeorJ071/msNlkGyRLA3WBZNdB1DM3lbkgTqfgHaTLiY6X8Tg5Qz4dCt0Dec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679743; c=relaxed/simple;
-	bh=JxIZLeYYKA5Iqp3UIL0+XuqsHCRG8TQtQnZnQZxVDrQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iuO+hPHrv42iUYeGdSDBVYU3J1C5ATm4YmOP1OL2Be+25ZHnjeoRRuracCR2ccV1xvr0XnxPgXSdmWbn5BnjEXfduvFUFpCOPsHLa8PjEKXknUix5qUQ+tr0u8PSy0xOYZHFr0FaHzeEWfTp53PgQ97ZVdg1Jl/2Me+2MpgAyNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izuwsy8o; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f6f03594so16487945ad.0;
-        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
+	s=arc-20240116; t=1712679737; c=relaxed/simple;
+	bh=oFFzmkQFjem8Slp5pGsd7lw06I6XKAmgxLiAx7XwO9o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Omq9jjelIj5586mciaehsVpeQa5lvNMwrGuhrkhxw1kw9cQwGSmOcDkdIdi5QG39w3lDqGoZJnXi43yRL1OS6p+yI0MgSK/e/udhyPlLlh+4Ol83dBvfOE9BNgLnkYxdSoJnKbo9x3l8UoWbjeOZ6bNTA8ynP30W9iIqO7wvBQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z7SCVjTW; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5aa17c69cf7so2152492eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:22:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712679741; x=1713284541; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1712679734; x=1713284534; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
-        b=izuwsy8obxhYNMUNfa1V9hTbc6eu0GOzCMmYlHxxRgOeEJbBQECdMrPiJxXwdMh4Fg
-         xSWlaCKLjDDvobmLB3IS5RiqDQ4BM+75GpkOJpM7ljG+Itbp55Ikn+th4L+VqtTQnoJX
-         nKv7Z/Y6TY+E4ddcEXb9xIRRrDX9Mdr5e0wTgFjvdrQc1p4Xql/3/wb2HhRg2/qyT8jy
-         PzWlmz2JduZTsAiNNiVDkoQKUBql6WLKkdbO1KQJaUKBVavxC6o7Xn9+/PMUMlu5M+7h
-         qSGc+JAv/lRAWe4PIfIY2zmDHQXTGNxMILfu34E8zSiZM6SHfmq8ga2W6jLeBTFgNjx5
-         0kjg==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESgWP/mXe1bk3eSSg55Zmh/raASjeDKKtmwp4/lqxgE=;
+        b=Z7SCVjTWzGrLp5pMAf1WmKQdPO3YNr7lEywWo4dLGTELvYTyKBHINF8tPQvsZpOneQ
+         dJmTZE5k6/o39v+fD0DzQt5fa8pFnQu3D81wfIC7vPxP37hKrexK8ifWm6irzOLM6yvB
+         qAXnlsWPT3O4A2W26fuBW2YcZHv86di57MteE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712679741; x=1713284541;
+        d=1e100.net; s=20230601; t=1712679734; x=1713284534;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
-        b=BiJ7x0xwlDdFZ0psTUqSmG98RQqNlQjoPqRQ7qmKBV1KBnBEzLJ4kKf791ZPxyulds
-         Zqx1V4WtvWuU5UGU2QKcCOnhYbbhMZU/THEqZDZc6skKtxSceq2RwWtSZvFQ9qfTBTes
-         2dw0XSUkuTltorXN9oT+OXc3NHR3CsH/492VHI4ZtPkvR3MKCutIuM7DptMjH6yCUz9c
-         vqNzLNJTVr+RUSSCqWvCu7gDUuapnDZ+3Hu3/qZ3NGaH2XSm1fc05I8C3ddC8/z9lwYL
-         xzLoEJT+EdcvsJkmvJ9qjXV9O4MF1uq3jnRr3r6mU5fsOr9E7LwtYrpgGeD7MawT359A
-         0/yw==
-X-Forwarded-Encrypted: i=1; AJvYcCVj3kXhgv4qRJJKebD+kLpBO/AiaEehMp4u0CWFp13PqXKdiV06Wi3yJO2VsTQ+UBvgBG/YBLiJ9YdOEn/Zar51sfQvl8Emafo4lm8Iaw/dJCvoKRXmAdDRI9kI7gUGPTCjni/fjL/591v79i2GEftco1qz6+TahHXIwyrLpGvewUzc1uU=
-X-Gm-Message-State: AOJu0Yxkbds+k3E4yoPLc0nKkMt0xChuwgEsJWoDP/Nca6T/B8VKNTAg
-	74dmAcVbz4l3ch4FDnzMuyl24UVz8J1vagyUMgcxh1f8eCMbAYfX
-X-Google-Smtp-Source: AGHT+IEpvJvIGTSdUOXn55foN6dxhGocH7+e1yBuo1jkO0TWg0FAeahSCO2QqKfRiDXM8w0fA38H3g==
-X-Received: by 2002:a17:902:d587:b0:1e4:9ad5:7522 with SMTP id k7-20020a170902d58700b001e49ad57522mr273599plh.21.1712679741025;
-        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:df2a:d319:d307:86c9])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170903120600b001e2814e08b9sm9048820plh.32.2024.04.09.09.22.16
+        bh=ESgWP/mXe1bk3eSSg55Zmh/raASjeDKKtmwp4/lqxgE=;
+        b=unk+EAngF+ZESEUsi3aIncbaLoKuMEgJcd8ywd3jJGqf7/fF/qFu3ja2o/XBo4EfLO
+         h6XJBIbiFBBdk7TTzWitO1wtY0RVeEckrR2Nw3IpUCMiFTSxcx9OC2t7onBSFRS8AKkx
+         Q917tvXYjGxH7a2YJ8emxhBHYjI2OQrDgqG/K/oPdELYKveXBW9C9+L46QaHHZEmQH+5
+         /JIgzxQO21qzT/KuuAgbQRbyzo8fJnuCI9Ss6RWFRRFB0YtP0h60N7lZ0L9uQ31FFbvB
+         cVqU2DnXJaBKab5AITG1ZqCgy3lQAc7dhHqe9c6xWoLfBT8dfTRNHZvMztRxF7pOKh7K
+         d3Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUV8zOkpgteuSJbbWMwcevAfaOFPTvB5ymMPGJOACUYqPl0Hb9q9QuF4m8celf5AqAZBmhqu1vMMcOjomZJcAGN8ZokxIL1twx5DVq
+X-Gm-Message-State: AOJu0YzJkmRlBcBXzlLGEjEmPv/3AmeJQRmhp/JJ0axTMbOqw/X0of5Q
+	4vfNksuXM/hOnwN8vukLHgbbHeYh89iYMX1vbVe5FSYhmotcD1TXEds/5Qg/pA==
+X-Google-Smtp-Source: AGHT+IH+ThkTK2969Ez6Dj2+W99kQzkH7mmsmVKS7EpvhvBpgbL/Drf9WpykDBO7NmDp/3SLAhuS4w==
+X-Received: by 2002:a05:6358:5bd4:b0:183:f636:8a46 with SMTP id i20-20020a0563585bd400b00183f6368a46mr350390rwf.27.1712679734649;
+        Tue, 09 Apr 2024 09:22:14 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h11-20020a63210b000000b005dcc8a3b26esm8129675pgh.16.2024.04.09.09.22.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:22:20 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 9 Apr 2024 09:22:00 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/26] dax/region: Create extent resources on DAX region
- driver load
-Message-ID: <ZhVrKGHbR032FxS1@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
+        Tue, 09 Apr 2024 09:22:14 -0700 (PDT)
+Date: Tue, 9 Apr 2024 09:22:13 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] xfs: replace deprecated strncpy with strscpy_pad
+Message-ID: <202404090921.A203626A@keescook>
+References: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,202 +79,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
+In-Reply-To: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
 
-On Sun, Mar 24, 2024 at 04:18:20PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On Fri, Apr 05, 2024 at 07:52:27PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> DAX regions mapping dynamic capacity partitions introduce a requirement
-> for the memory backing the region to come and go as required.  This
-> results in a DAX region with sparse areas of memory backing.  To track
-> the sparseness of the region, DAX extent objects need to track
-> sub-resource information as a new layer between the DAX region resource
-> and DAX device range resources.
+> The current code has taken care of NUL-termination by memset()'ing
+> @label. This is followed by a strncpy() to perform the string copy.
 > 
-> Recall that DCD extents may be accepted when a region is first created.
-> Extend this support on region driver load.  Scan existing extents and
-> create DAX extent resources as a first step to DAX extent realization.
+> Instead, use strscpy_pad() to get both 1) NUL-termination and 2)
+> NUL-padding which is needed as this is copied out to userspace.
 > 
-> The lifetime of a DAX extent is tricky to manage because the extent life
-> may end in one of two ways.  First, the device may request the extent be
-> released.  Second, the region may release the extent when it is
-> destroyed without hardware involvement.  Support extent release without
-> hardware involvement first.  Subsequent patches will provide for
-> hardware to request extent removal.
+> Note that this patch uses the new 2-argument version of strscpy_pad
+> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
+> strscpy()").
 > 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
 > 
-Trivial comments inline.
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 > ---
-> Changes for v1
-> [iweiny: remove xarrays]
-> [iweiny: remove as much of extra reference stuff as possible]
-> [iweiny: Move extent resource handling to core DAX code]
+> Split from https://lore.kernel.org/all/20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com/
+> with feedback from Christoph H.
 > ---
->  drivers/dax/bus.c         | 55 +++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/dax/cxl.c         | 43 ++++++++++++++++++++++++++++++++++--
->  drivers/dax/dax-private.h | 12 +++++++++++
->  3 files changed, 108 insertions(+), 2 deletions(-)
+>  fs/xfs/xfs_ioctl.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 903566aff5eb..4d5ed7ab6537 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -186,6 +186,61 @@ static bool is_sparse(struct dax_region *dax_region)
->  	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
->  }
->  
-> +static int dax_region_add_resource(struct dax_region *dax_region,
-> +				   struct dax_extent *dax_ext,
-> +				   resource_size_t start,
-> +				   resource_size_t length)
-> +{
-> +	struct resource *ext_res;
-> +
-> +	dev_dbg(dax_region->dev, "DAX region resource %pr\n", &dax_region->res);
-> +	ext_res = __request_region(&dax_region->res, start, length, "extent", 0);
-> +	if (!ext_res) {
-> +		dev_err(dax_region->dev, "Failed to add region s:%pa l:%pa\n",
-> +			&start, &length);
-> +		return -ENOSPC;
-> +	}
-> +
-> +	dax_ext->region = dax_region;
-> +	dax_ext->res = ext_res;
-> +	dev_dbg(dax_region->dev, "Extent add resource %pr\n", ext_res);
-> +
-> +	return 0;
-> +}
-> +
-> +static void dax_region_release_extent(void *ext)
-> +{
-> +	struct dax_extent *dax_ext = ext;
-> +	struct dax_region *dax_region = dax_ext->region;
-> +
-> +	dev_dbg(dax_region->dev, "Extent release resource %pr\n", dax_ext->res);
-> +	if (dax_ext->res)
-> +		__release_region(&dax_region->res, dax_ext->res->start,
-> +				 resource_size(dax_ext->res));
-> +
-> +	kfree(dax_ext);
-> +}
-> +
-> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
-> +			  resource_size_t start, resource_size_t length)
-> +{
-> +	int rc;
-> +
-> +	struct dax_extent *dax_ext __free(kfree) = kzalloc(sizeof(*dax_ext),
-> +							   GFP_KERNEL);
-> +	if (!dax_ext)
-> +		return -ENOMEM;
-> +
-> +	guard(rwsem_write)(&dax_region_rwsem);
-> +	rc = dax_region_add_resource(dax_region, dax_ext, start, length);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return devm_add_action_or_reset(ext_dev, dax_region_release_extent,
-> +					no_free_ptr(dax_ext));
-> +}
-> +EXPORT_SYMBOL_GPL(dax_region_add_extent);
-> +
->  bool static_dev_dax(struct dev_dax *dev_dax)
+> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+> index d0e2cec6210d..a1156a8b1e15 100644
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -1750,15 +1750,14 @@ xfs_ioc_getlabel(
+>  	char			__user *user_label)
 >  {
->  	return is_static(dev_dax->region);
-> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
-> index 415d03fbf9b6..70bdc7a878ab 100644
-> --- a/drivers/dax/cxl.c
-> +++ b/drivers/dax/cxl.c
-> @@ -5,6 +5,42 @@
+>  	struct xfs_sb		*sbp = &mp->m_sb;
+> +	/* 1 larger than sb_fname, for a trailing NUL char */
+>  	char			label[XFSLABEL_MAX + 1];
 >  
->  #include "../cxl/cxl.h"
->  #include "bus.h"
-> +#include "dax-private.h"
-> +
-> +static int __cxl_dax_region_add_extent(struct dax_region *dax_region,
-> +				       struct region_extent *reg_ext)
-> +{
-> +	struct device *ext_dev = &reg_ext->dev;
-> +	resource_size_t start, length;
-> +
-> +	dev_dbg(dax_region->dev, "Adding extent HPA %#llx - %#llx\n",
-> +		reg_ext->hpa_range.start, reg_ext->hpa_range.end);
-> +
-> +	start = dax_region->res.start + reg_ext->hpa_range.start;
-> +	length = reg_ext->hpa_range.end - reg_ext->hpa_range.start + 1;
-use range_len() instead?
+>  	/* Paranoia */
+>  	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+>  
+> -	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
+> -	memset(label, 0, sizeof(label));
+>  	spin_lock(&mp->m_sb_lock);
+> -	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
+> +	strscpy_pad(label, sbp->sb_fname);
 
-Fan
+Is sbp->sb_fname itself NUL-terminated? This looks like another case of
+needing the memtostr() helper?
 
-> +
-> +	return dax_region_add_extent(dax_region, ext_dev, start, length);
-> +}
-> +
-> +static int cxl_dax_region_add_extent(struct device *dev, void *data)
-> +{
-> +	struct dax_region *dax_region = data;
-> +	struct region_extent *reg_ext;
-> +
-> +	if (!is_region_extent(dev))
-> +		return 0;
-> +
-> +	reg_ext = to_region_extent(dev);
-> +
-> +	return __cxl_dax_region_add_extent(dax_region, reg_ext);
-> +}
-> +
-> +static void cxl_dax_region_add_extents(struct cxl_dax_region *cxlr_dax,
-> +				      struct dax_region *dax_region)
-> +{
-> +	dev_dbg(&cxlr_dax->dev, "Adding extents\n");
-> +	device_for_each_child(&cxlr_dax->dev, dax_region, cxl_dax_region_add_extent);
-> +}
+-Kees
+
+>  	spin_unlock(&mp->m_sb_lock);
 >  
->  static int cxl_dax_region_probe(struct device *dev)
->  {
-> @@ -29,9 +65,12 @@ static int cxl_dax_region_probe(struct device *dev)
->  		return -ENOMEM;
->  
->  	dev_size = range_len(&cxlr_dax->hpa_range);
-> -	/* Add empty seed dax device */
-> -	if (cxlr->mode == CXL_REGION_DC)
-> +	if (cxlr->mode == CXL_REGION_DC) {
-> +		/* NOTE: Depends on dax_region being set in driver data */
-> +		cxl_dax_region_add_extents(cxlr_dax, dax_region);
-> +		/* Add empty seed dax device */
->  		dev_size = 0;
-> +	}
->  
->  	data = (struct dev_dax_data) {
->  		.dax_region = dax_region,
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 446617b73aea..c6319c6567fb 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -16,6 +16,18 @@ struct inode *dax_inode(struct dax_device *dax_dev);
->  int dax_bus_init(void);
->  void dax_bus_exit(void);
->  
-> +/**
-> + * struct dax_extent - For sparse regions; an active extent
-> + * @region: dax_region this resources is in
-> + * @res: resource this extent covers
-> + */
-> +struct dax_extent {
-> +	struct dax_region *region;
-> +	struct resource *res;
-> +};
-> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
-> +			  resource_size_t start, resource_size_t length);
-> +
->  /**
->   * struct dax_region - mapping infrastructure for dax devices
->   * @id: kernel-wide unique region for a memory range
+>  	if (copy_to_user(user_label, label, sizeof(label)))
 > 
-> -- 
-> 2.44.0
+> ---
+> base-commit: c85af715cac0a951eea97393378e84bb49384734
+> change-id: 20240405-strncpy-xfs-split1-a2c408b934c6
 > 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
+
+-- 
+Kees Cook
 
