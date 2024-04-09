@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-137303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7786E89E026
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:16:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BD289E09D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:37:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173F21F241F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:16:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DD19B27D82
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D81113DB8A;
-	Tue,  9 Apr 2024 16:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1CF13D8B9;
+	Tue,  9 Apr 2024 16:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TP1Z+fos"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZEwP/ci"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E492013DBA2
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E84F883;
+	Tue,  9 Apr 2024 16:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679333; cv=none; b=bsCqDqR+dO2LYP60j994QIMn2LQGE2SIPEf/54V5oIfehH1YCQTqtdnQJ6uFJMAEH1texnr7jzuks3buKPwhxBfdKKMOGy9jC20Bd+yBtS8X5RsibX7gr0AseLJoIVoR9y+GrGdIUoMzqMzCZy/8F6wFxauthXRgjZWAXFKOEuw=
+	t=1712679312; cv=none; b=d1UXhMEAuBtb9gUspcswAjK909hfmlhKHjUCy1gPGh/IOzuEy6wcdB3nGx3m3NpoyJdZCLm+kzbPPjN87ght+JNCQptMPCRkesiWDpigpsqjTjdRZ8pg0gltFrgni+YdrNvANhuus3OQVXgheRa32cYfe15zBPUn8inXQY13VXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679333; c=relaxed/simple;
-	bh=BtY6Rf+hWsZrTY3h3s8J+qLaAvrzTMz+pO7euoVQNqM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XUTEaxp0bBF32Z99eHaAHzuaMeE1uHGBtQayeYsBQ+XwFy4gWRrmzn69aRRYpj3E/KF712AjWkciVP7HunGDQ3Uf78AYP8pAHEnRXQEWjzqpwPWnPsIeKVuVbVjpRujVgpKAQBegeU/3x7TY8+Q/Jv9mr4WNVLWaj24K8ASMzQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TP1Z+fos; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712679332; x=1744215332;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BtY6Rf+hWsZrTY3h3s8J+qLaAvrzTMz+pO7euoVQNqM=;
-  b=TP1Z+fosNqirRpuzUcHPY4V2pGFuQSssTeG30gP6z87+ez61QoGcu1vu
-   m6gBoh41CEVNG83Ur0/NLy1BhBvnfleX1iNyfEOaHIYWTHtziNZQcbvCf
-   byzj2KcBv8IbasIKOkz1DF8ZsalZ03ywqDU45QBTQFiSmQd9G0yWGm3pg
-   XFtPL1WGVJfujXVNlaNtVE2BoD71lgrG+Sgk0G0Q0LcxlRVGoCKZzdar0
-   H06Fca0pZ6rYD9v4UPU6Ao3Z1xe+KKbpJX8sJizc0JcqXXgY0zEGHbnBV
-   seBbC0IidQ2kvYg6b2Y5T92EeY45R3LAU6ytMlBfBIiK7EDpVVMQjSlti
-   g==;
-X-CSE-ConnectionGUID: kxRbAjBxQv2vlkiJEllWZA==
-X-CSE-MsgGUID: HcCzVPeGS+C8yCpTnwH8ww==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33409817"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="33409817"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:15:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093593"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="937093593"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 09:15:26 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id AAA712E9; Tue,  9 Apr 2024 19:15:25 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andy@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v1 2/2] auxdisplay: charlcd: Provide a forward declaration
-Date: Tue,  9 Apr 2024 19:14:45 +0300
-Message-ID: <20240409161523.935384-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240409161523.935384-1-andriy.shevchenko@linux.intel.com>
-References: <20240409161523.935384-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712679312; c=relaxed/simple;
+	bh=GctYHvPeKVpuxt2D+ZotCon7pgUXv3bhxrOGr4ni9qQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dAi81JnvflxMcf/MnFz+CD9qJwUnzFvDOpYkAegr2oW9kNBm6VccgickW2EACRfyOH5ZoISgFzFjYMSoG7j0QPMbMtR0avQwXyRedR4pGLdhhZ657Ma64UVB8kUG7TMsqlcYrxRG/pdp7D+tEvZvbVYcL65GKPgqh+ot04xVrtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZEwP/ci; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34560201517so715621f8f.1;
+        Tue, 09 Apr 2024 09:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712679307; x=1713284107; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=psn6Ri/4HxTIEa5og+2LF06wxFvUe/WNtpM1VRSHt8A=;
+        b=DZEwP/ciuAbkYdKNcAidzt8tG70U2YKWnLb9necNhDJTvrLBo0zFf3yeOCb7oPZyr9
+         pWqN5Yu/ON3k5bZ4eyPCb5m1pzILck1WaYIFr53BoMKusajf9GYqEGXw4ZFXL90OYgGf
+         IDBx2zEB7KYbA9tSegUPDm/gNLRE3OQeyc5DORSNlOgY1FxqsJuJvZohXbUEjVwatiFz
+         LBA+wR0Y2KzMcQjga3WlzTOlF9p1JgfErhD06511jD5jCB8vT7gJ/EDr2OWgVnzK1K15
+         ZG0nS87DegbNquL6Z59sIxypjMdfTv0LRjSA/Bq7UEWNNVzJhD2B0Z/qQ1u2rK4u+tam
+         MjzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712679307; x=1713284107;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=psn6Ri/4HxTIEa5og+2LF06wxFvUe/WNtpM1VRSHt8A=;
+        b=bJiNczF0/QZWDStZasJL9YcovbG6x4g1QxydTZTPUiWxuaNSrRG/xjwZ6nxEONDrno
+         /EHk7jTg5ZXbFrIhM01U8MuCou0BHUFzYBMpVLE2G20r+ThF5V0Dix34hJ6NwNHLUEft
+         KdpUyPY62E8q3bGcpprmxI8U/84cRsccxRZK0RPJ+xQamZUmS7naw7Rkqz6fk2HF0Xla
+         mMMqxsCTM/0pMP/N+CgjtlWlaS5TXnIuPjMJDzBTq8x/Tc9M2ovjq5l82ECcjTGpHCdf
+         x1JW0H8jSeJNcGCkcHrrDzEuk8Ykvi6qf2qHsSgfG6DOZVmEFASWqFIlZ2kMPhnNaAgx
+         HkTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDjfVWSYgKMGUsfrV9IU/7vfOS8JKj3g5ecRLcbJpBiUo4XpsLnppUpgd/djOCwW5E5rEj6y709Qf01F/weP0VnsYwbtCnilavN+9qGSvYW9GnB0Odb1/9xWXZQcP9IHcOb33KirMNRgss53FauAjCO6mUr3rafVzu
+X-Gm-Message-State: AOJu0Yy9+21339L+7puQrFE6iAmA65iFvVKl03WxRx19qvNhqXLXZJ7q
+	qpCU8I8cHTRV5hska60vWZfbCQaPCvCk3nLzkrDeDq0JpuHWqmC1
+X-Google-Smtp-Source: AGHT+IFasR5KHT/RfHFpUn+unrYHSNBNbApu2QweV2uZ+6XSihzXw0UAUe2Jc+88L4ogJ5/5cIBFtg==
+X-Received: by 2002:adf:a347:0:b0:346:5051:1c6d with SMTP id d7-20020adfa347000000b0034650511c6dmr84719wrb.5.1712679307221;
+        Tue, 09 Apr 2024 09:15:07 -0700 (PDT)
+Received: from [10.0.0.4] ([37.170.252.166])
+        by smtp.gmail.com with ESMTPSA id c18-20020adffb52000000b00346266b612csm1854185wrs.81.2024.04.09.09.15.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 09:15:06 -0700 (PDT)
+Message-ID: <49344fc4-a524-4c54-b75a-f094adf90353@gmail.com>
+Date: Tue, 9 Apr 2024 18:15:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] netfilter: x_tables: fix incorrect parameter length
+ before call copy_from_sockptr
+To: Edward Adam Davis <eadavis@qq.com>, netdev@vger.kernel.org,
+ edumazet@google.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
+Content-Language: en-US
+From: Eric Dumazet <eric.dumazet@gmail.com>
+In-Reply-To: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-While there is no compilation error, strictly speaking compiler
-should know about used types beforehand. Provide a forward decration
-for struct charlcd_ops before using it in struct charlcd.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/auxdisplay/charlcd.h | 2 ++
- 1 file changed, 2 insertions(+)
+On 4/9/24 17:00, Edward Adam Davis wrote:
+> If len < sizeof(tmp) it will trigger oob, so take the min of them.
+>
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>   net/ipv4/netfilter/arp_tables.c | 4 ++--
+>   net/ipv4/netfilter/ip_tables.c  | 4 ++--
+>   2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/auxdisplay/charlcd.h b/drivers/auxdisplay/charlcd.h
-index eed80063a6d2..4d4287209d04 100644
---- a/drivers/auxdisplay/charlcd.h
-+++ b/drivers/auxdisplay/charlcd.h
-@@ -36,6 +36,8 @@ enum charlcd_lines {
- 	CHARLCD_LINES_2,
- };
- 
-+struct charlcd_ops;
-+
- struct charlcd {
- 	const struct charlcd_ops *ops;
- 	const unsigned char *char_conv;	/* Optional */
--- 
-2.43.0.rc1.1.gbec44491f096
+Hi Edward
+
+Already fixed in net tree
+
+
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=0c83842df40f86e529db6842231154772c20edcc
+
+Also a followup has been sent today
+
+https://lore.kernel.org/netdev/20240409120741.3538135-1-edumazet@google.com/T/#u
+
+Thanks.
+
+
+
 
 
