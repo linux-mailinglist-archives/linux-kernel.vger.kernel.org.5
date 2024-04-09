@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-136629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA59E89D647
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:07:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A4F89D648
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601B7284B46
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:07:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE3A21F22B9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DD081727;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD988172A;
 	Tue,  9 Apr 2024 10:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EhDDzU8s"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bSzAwssn"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD4680629
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D9B80639
 	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657173; cv=none; b=i4m7xDcr0WHjrgKxDz91wkvqVoqJX8S4gK497dBjdgjEaoI9sUPeN6JS6y6Nl3OGn2n0Vd4Z/IlVqLbmUJHW6rYG4murKquBLzP9dABaJLy2ARKxgPYzjMxHuygkxu2CTPFQFU599dne3QEJNnLimFyYYrXNcAAZqdQUfgs+V1s=
+	t=1712657173; cv=none; b=CSpfUc0JHZOal7rtexI9PVc38wBFlgfhiZ7ygZ1o+pKS9UF60DstxXj8VepJTC9y0wx1i1xF7rH8Zqim3PI+mVSqkB8Cy8Gx9KyqLind98KrT4ZnpfL4IYMsfSMNbaCq0Y3Fv9GCketUHAxc6dFq55kPAd14OqSS6Ue26WyVMZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712657173; c=relaxed/simple;
-	bh=mFNJ9GJFypFrzBVHys9OFUZJBSzxvUUASZWHXI5sgdE=;
+	bh=C/bEWMA9mORMCnBTmv1XrGDUaZhRfn9JeFYgeh+Esz4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uwX7GQKbnhaNDFp8VuNai3MDb9ND/y3VMe09KkeWlrKLioCqVt2QXY+Z2HVoRR3NQdE9xhGs9xhwkBEfDfaKJvvfn9gYQGzFhJCuk25D4Ad9b3urzHUBwEpTh6+o0j7Bz3rmh9OOGnD+9mYKBq/B675SAEFJqfz4+irx6QQJkkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EhDDzU8s; arc=none smtp.client-ip=217.70.183.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=HxRTqYZkHETcAxN74hcqwFSXxAXlzdBaoTDu7glNr9zl9PLZcd8nLnRsiqRifOFxZiGJvZrc4wSyFl7MB9dYzd87TxorIMr949TTfGGRDDEnj3JUn8UnKxARd3HUo84f0DnWzD37xtXgR4auS+5ZNzQlqTtv3cDOeAj32mAZUKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bSzAwssn; arc=none smtp.client-ip=217.70.183.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D6AD1BF20A;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9E98340008;
 	Tue,  9 Apr 2024 10:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
 	t=1712657169;
@@ -38,12 +38,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sqqIhw8jAz1IoeoUfDX7ZgfwWio/XO2e8ETDGPutQoo=;
-	b=EhDDzU8sbXO2ORX1BNpoLu25UrKjUEPzb9gNNo8miMT0FPupYk7lY0bAQanUccet26IqAA
-	psBd8WSI0zQ52F3Vpp8D0z7YBSorfAiM9JP9EPexHpKShEAdMEQETjIjreZN1sIFTYZt7t
-	7/ltiVNI+C4klRoDpshneoU+hPBcRI+GEKJsCE8k3K2qFsgUgOUaVpHYK445VMHIjFZFXa
-	qZ6FXEavoyigREs61NNE951CB7nxmJDWUI4mZOMUvi6UrTX/OKwdtAVSNS2iEz0tluLtrY
-	OsMOJjfJKtrHobVLsCn3qLAX2a+tkexP7azuvYP8r6dkw+uE3x9SN389tCJI7A==
+	bh=5H49i2PxxNai/K6ycWDJvpcrRnWv61IRnD8Osqq+4FI=;
+	b=bSzAwssnXzyBF0E55bS86BWdB2MXEYOQmSSqGGOb3+L47AOCqwL5Z9zVadFKvYjyogzGO7
+	jHdkFFzkTHqul7QHQylswkcJgUbr6d+Jcm5jeAIqBIDFPRIsYIHmv4DdfXZfLVoG6lOXVE
+	XJKgbM2PUumap28qFWcgoS05jmY+xtJe6WtkAxuCYNzPJx3GSgDiit+Fi7ixyAWHLso51g
+	G2X0eA8Cs9WM4NRJxfoT777PcsyXhImL+Qjui3G+ozxqYzNlw7BJOdtJ5NgURYzvXMhS+S
+	+X5avQTwMyf8W5cpQ2c5xDh/p0Ai5bOXON1R1k3uMhWFol/kFGuQiMMn77m3hg==
 Date: Tue, 9 Apr 2024 12:06:06 +0200
 From: Louis Chauvet <louis.chauvet@bootlin.com>
 To: Pekka Paalanen <pekka.paalanen@collabora.com>
@@ -60,8 +60,8 @@ Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
 	linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
 	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
 	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
-Message-ID: <ZhUTDvdsi2I-7-nE@localhost.localdomain>
+Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
+Message-ID: <ZhUTDiN8dX_K4S-b@localhost.localdomain>
 Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
 	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
 	Melissa Wen <melissa.srw@gmail.com>,
@@ -77,12 +77,10 @@ Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
 	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
 	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
 References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
- <20240325151103.0a5f7112.pekka.paalanen@collabora.com>
- <ZgLwTJVb_Z_MHuCp@localhost.localdomain>
- <20240327141629.48ec16f2.pekka.paalanen@collabora.com>
- <ZhOhupo3bf6Cxasy@louis-chauvet-laptop>
- <20240409103537.44e99854.pekka.paalanen@collabora.com>
+ <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
+ <20240327162307.4b9b6e45.pekka.paalanen@collabora.com>
+ <ZhOhuzllWYooTPa6@louis-chauvet-laptop>
+ <20240409105857.67bc4ce4.pekka.paalanen@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,186 +90,218 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240409103537.44e99854.pekka.paalanen@collabora.com>
+In-Reply-To: <20240409105857.67bc4ce4.pekka.paalanen@collabora.com>
 X-GND-Sasl: louis.chauvet@bootlin.com
 
-Le 09/04/24 - 10:35, Pekka Paalanen a écrit :
-> On Mon, 8 Apr 2024 09:50:18 +0200
+Le 09/04/24 - 10:58, Pekka Paalanen a écrit :
+> On Mon, 8 Apr 2024 09:50:19 +0200
 > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 > 
-> > Le 27/03/24 - 14:16, Pekka Paalanen a écrit :
-> > > On Tue, 26 Mar 2024 16:57:00 +0100
+> > Le 27/03/24 - 16:23, Pekka Paalanen a écrit :
+> > > On Wed, 13 Mar 2024 18:45:05 +0100
 > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 > > >   
-> > > > Le 25/03/24 - 15:11, Pekka Paalanen a écrit :  
-> > > > > On Wed, 13 Mar 2024 18:45:03 +0100
-> > > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> > > > >     
-> > > > > > The pixel_read_direction enum is useful to describe the reading direction
-> > > > > > in a plane. It avoids using the rotation property of DRM, which not
-> > > > > > practical to know the direction of reading.
-> > > > > > This patch also introduce two helpers, one to compute the
-> > > > > > pixel_read_direction from the DRM rotation property, and one to compute
-> > > > > > the step, in byte, between two successive pixel in a specific direction.
-> > > > > > 
-> > > > > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > > > > > ---
-> > > > > >  drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++++++++++++++++
-> > > > > >  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
-> > > > > >  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++++++++++
-> > > > > >  3 files changed, 77 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> > > > > > index 9254086f23ff..989bcf59f375 100644
-> > > > > > --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> > > > > > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> 
-> > > > > I hope IGT uses FB patterns instead of solid color in its tests of
-> > > > > rotation to be able to detect the difference.    
+> > > > From: Arthur Grillo <arthurgrillo@riseup.net>
 > > > > 
-> > > > They use solid colors, and even my new rotation test [3] use solid colors.  
+> > > > Add support to the YUV formats bellow:
+> > > > 
+> > > > - NV12/NV16/NV24
+> > > > - NV21/NV61/NV42
+> > > > - YUV420/YUV422/YUV444
+> > > > - YVU420/YVU422/YVU444
+> > > > 
+> > > > The conversion from yuv to rgb is done with fixed-point arithmetic, using
+> > > > 32.32 floats and the drm_fixed helpers.  
 > > > 
-> > > That will completely fail to detect rotation and reflection bugs then.
-> > > E.g. userspace asks for 180-degree rotation, and the driver does not
-> > > rotate at all. Or rotate-180 getting confused with one reflection.  
-> > 
-> > I think I missunderstood what you means with "solid colors".
-> > 
-> > The tests uses a plane with multiple solid colors:
-> > 
-> > +-------+-------+
-> > | White | Red   |
-> > +-------+-------+
-> > | Blue  | Green |
-> > +-------+-------+
-> > 
-> > But it don't use gradients because of YUV.
-> >
-> 
-> Oh, that works. No worries then.
-> 
-> > > > It is mainly for yuv formats with subsampling: if you have formats with 
-> > > > subsampling, a "software rotated buffer" and a "hardware rotated buffer" 
-> > > > will not apply the same subsampling, so the colors will be slightly 
-> > > > different.  
-> > > 
-> > > Why would they not use the same subsampling?  
-> > 
-> > YUV422, for each pair of pixels along a horizontal line, the U and V 
-> > components are shared between those two pixels. However, along a vertical 
-> > line, each pixel has its own U and V components.
-> > 
-> > When you rotate an image by 90 degrees:
-> >  - Hardware Rotation: If you use hardware rotation, the YUV subsampling 
-> >    axis will align with what was previously the "White-Red" axis. The 
-> >    hardware will handle the rotation.
-> >  - Software Rotation: If you use software rotation, the YUV subsampling 
-> >    axis will align with what was previously the "Red-Green" axis.
-> 
-> That would be a bug in the software rotation.
-
-Yes, but it is very complex to fix I think, so I did not chose 
-this path :)
- 
-> > Because the subsampling compression axis changes depending on whether 
-> > you're using hardware or software rotation, the compression effect on 
-> > colors will differ. Specifically:
-> >  - Hardware rotation, a gradient along the "White-Red" axis may be 
-> >    compressed (i.e same UV component for multiple pixels along the 
-> >    gradient).
-> >  - Software rotation, the same gradient will not be compressed (i.e, each 
-> >    different color in the gradient have dedicated UV component)
-> > 
-> > The same reasoning also apply for "color borders", and my series [3] avoid 
-> > this issue by choosing the right number of pixels.
-> 
-> What is [3]?
-
-I don't know why I put [3] here, I probably mixed references between mails
-
-[3]: https://lore.kernel.org/all/20240313-new_rotation-v2-0-6230fd5cae59@bootlin.com/
- 
-> I've used similar tactics in the Weston test suite, when I have no
-> implementation for chroma siting: the input and reference images
-> consist of 2x2 equal color pixel groups, so that chroma siting makes no
-> difference. When chroma siting will be implemented, the tests will be
-> extended.
-> 
-> Is there a TODO item to fix the software rotation bug and make the
-> tests more sensitive?
-> 
-> I think documenting this would be an ok intermediate solution.
-> 
-> > > The framebuffer contents are defined in its natural orientation, and
-> > > the subsampling applies in the natural orientation. If such a FB
-> > > is on a rotated plane, one must account for subsampling first, and
-> > > rotate second. 90-degree rotation does not change the encoded color.
-> > > 
-> > > Getting the subsampling exactly right is going to be necessary sooner
-> > > or later. There is no UAPI for setting chroma siting yet, but ideally
-> > > there should be.
+> > > You mean fixed-point, not floating-point (floats).
 > > >   
-> > > > > The return values do seem correct to me, assuming I have guessed
-> > > > > correctly what "X" and "Y" refer to when combined with rotation. I did
-> > > > > not find good documentation about that.    
 > > > > 
-> > > > Yes, it is difficult to understand how rotation and reflexion should 
-> > > > works in drm. I spend half a day testing all the combination in drm_rect_* 
-> > > > helpers to understand how this works. According to the code:
-> > > > - If only rotation or only reflexion, easy as expected
-> > > > - If reflexion and rotation are mixed, the source buffer is first 
-> > > >   reflected and then rotated.  
+> > > > To do the conversion, a specific matrix must be used for each color range
+> > > > (DRM_COLOR_*_RANGE) and encoding (DRM_COLOR_*). This matrix is stored in
+> > > > the `conversion_matrix` struct, along with the specific y_offset needed.
+> > > > This matrix is queried only once, in `vkms_plane_atomic_update` and
+> > > > stored in a `vkms_plane_state`. Those conversion matrices of each
+> > > > encoding and range were obtained by rounding the values of the original
+> > > > conversion matrices multiplied by 2^32. This is done to avoid the use of
+> > > > floating point operations.
+> > > > 
+> > > > The same reading function is used for YUV and YVU formats. As the only
+> > > > difference between those two category of formats is the order of field, a
+> > > > simple swap in conversion matrix columns allows using the same function.  
 > > > 
-> > > Now that you know, you could send a documentation patch. :-)  
-> > 
-> > And now I'm not sure about it :)
+> > > Sounds good!
+> > >   
+> > > > Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> > > > [Louis Chauvet:
+> > > > - Adapted Arthur's work
+> > > > - Implemented the read_line_t callbacks for yuv
+> > > > - add struct conversion_matrix
+> > > > - remove struct pixel_yuv_u8
+> > > > - update the commit message
+> > > > - Merge the modifications from Arthur]
+> > > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> > > > ---
+> > > >  drivers/gpu/drm/vkms/vkms_drv.h     |  22 ++
+> > > >  drivers/gpu/drm/vkms/vkms_formats.c | 431 ++++++++++++++++++++++++++++++++++++
+> > > >  drivers/gpu/drm/vkms/vkms_formats.h |   4 +
+> > > >  drivers/gpu/drm/vkms/vkms_plane.c   |  17 +-
+> > > >  4 files changed, 473 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> > > > index 23e1d247468d..f3116084de5a 100644
+> > > > --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> > > > +++ b/drivers/gpu/drm/vkms/vkms_drv.h
 > 
-> You'll have people review the patch and confirm your understanding or
-> point out a mistake. A doc patch it easier to notice and jump in than
-> this series.
-
-I just send it [4], you are in copy.
-
-[4]: https://lore.kernel.org/all/20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com/
-
-> > I was running the tests on my v6, and for the first time ran my new 
-> > rotation [3] on the previous VKMS code. None of the tests for 
-> > ROT_90+reflexion and ROT_270+reflexion are passing...
-> > 
-> > So, either the previous vkms implementation was wrong, or mine is wrong :)
-> > 
-> > So, if a DRM expert can explain this, it could be nice.
-> > 
-> > To have a common example, if I take the same buffer as above 
-> > (white+red+blue+green), if I create a plane with rotation = 
-> > ROTATION_90 | REFLECTION_X, what is the expected result?
-> > 
-> > 1 - rotation then reflection 
-> > 
-> > +-------+-------+
-> > | Green | Red   |
-> > +-------+-------+
-> > | Blue  | White |
-> > +-------+-------+
-> > 
-> > 2 - reflection then rotation (my vkms implementation)
-> > 
-> > +-------+-------+
-> > | White | Blue  |
-> > +-------+-------+
-> > | Red   | Green |
-> > +-------+-------+
-> > 
+> ...
 > 
-> I wish I knew. :-)
+> > > > +static struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr,
+> > > > +						  struct conversion_matrix *matrix)  
+> > > 
+> > > If you are using the "swap the matrix columns" trick, then you cannot
+> > > call these cb, cr nor even u,v, because they might be the opposite.
+> > > They are simply the first and second chroma channel, and their meaning
+> > > depends on the given matrix.  
+> > 
+> > I will rename them for v6, channel_1 and channel_2.
+> > 
+> > > > +{
+> > > > +	u8 r, g, b;
+> > > > +	s64 fp_y, fp_cb, fp_cr;
+> > > > +	s64 fp_r, fp_g, fp_b;
+> > > > +
+> > > > +	fp_y = y - matrix->y_offset;
+> > > > +	fp_cb = cb - 128;
+> > > > +	fp_cr = cr - 128;  
+> > > 
+> > > This looks like an incorrect way to convert u8 to fixed-point, but...
+> > >  
+> > > > +
+> > > > +	fp_y = drm_int2fixp(fp_y);
+> > > > +	fp_cb = drm_int2fixp(fp_cb);
+> > > > +	fp_cr = drm_int2fixp(fp_cr);  
+> > > 
+> > > I find it confusing to re-purpose variables like this.
+> > > 
+> > > I'd do just
+> > > 
+> > > 	fp_c1 = drm_int2fixp((int)c1 - 128);  
+> > 
+> > I agree with this remark, I will change it for the v6.
+> > 
+> > > If the function arguments were int to begin with, then the cast would
+> > > be obviously unnecessary.  
+> > 
+> > For this I'm less sure. The name of the function and the usage is 
+> > explicit: we want to use u8 as input. As we manipulate pointers in 
+> > read_line, I don't know how it will works if the pointer is dereferenced 
+> > to a int instead of a u8.
+> 
+> Dereference operator acts on its input type. What happens to the result
+> is irrelevant.
+> 
+> If we have
+> 
+> u8 *p = ...;
+> 
+> void foo(int x);
+> 
+> then you can call
+> 
+> foo(*v);
+> 
+> if that was your question. Dereference acts on u8* which results in u8.
+> Then it gets implicitly cast to int.
+
+Thanks for the clear explaination!
+ 
+> However, you have a semantic reason to keep the argument as u8, and
+> that is fine.
+
+So I will keep u8 for the v6.
+
+> > > So, what you have in fp variables at this point is fractional numbers
+> > > in the 8-bit integer scale. However, because the target format is
+> > > 16-bit, you should not show the extra precision away here. Instead,
+> > > multiply by 257 to bring the values to 16-bit scale, and do the RGB
+> > > clamping to 16-bit, not 8-bit.
+> > >   
+> > > > +
+> > > > +	fp_r = drm_fixp_mul(matrix->matrix[0][0], fp_y) +
+> > > > +	       drm_fixp_mul(matrix->matrix[0][1], fp_cb) +
+> > > > +	       drm_fixp_mul(matrix->matrix[0][2], fp_cr);
+> > > > +	fp_g = drm_fixp_mul(matrix->matrix[1][0], fp_y) +
+> > > > +	       drm_fixp_mul(matrix->matrix[1][1], fp_cb) +
+> > > > +	       drm_fixp_mul(matrix->matrix[1][2], fp_cr);
+> > > > +	fp_b = drm_fixp_mul(matrix->matrix[2][0], fp_y) +
+> > > > +	       drm_fixp_mul(matrix->matrix[2][1], fp_cb) +
+> > > > +	       drm_fixp_mul(matrix->matrix[2][2], fp_cr);
+> > > > +
+> > > > +	fp_r = drm_fixp2int_round(fp_r);
+> > > > +	fp_g = drm_fixp2int_round(fp_g);
+> > > > +	fp_b = drm_fixp2int_round(fp_b);
+> > > > +
+> > > > +	r = clamp(fp_r, 0, 0xff);
+> > > > +	g = clamp(fp_g, 0, 0xff);
+> > > > +	b = clamp(fp_b, 0, 0xff);
+> > > > +
+> > > > +	return argb_u16_from_u8888(255, r, g, b);  
+> > > 
+> > > Going through argb_u16_from_u8888() will throw away precision.  
+> > 
+> > I tried to fix it in the v6, IGT tests pass. If something is wrong in the 
+> > v6, please let me know.
+> > 
+> > > > +}
+> > > > +
+> > > >  /*
+> > > >   * The following functions are read_line function for each pixel format supported by VKMS.
+> > > >   *
+> > > > @@ -293,6 +367,79 @@ static void RGB565_read_line(const struct vkms_plane_state *plane, int x_start,
+> > > >  	}
+> > > >  }
+> > > >  
+> > > > +/*
+> > > > + * This callback can be used for yuv and yvu formats, given a properly modified conversion matrix
+> > > > + * (column inversion)  
+> > > 
+> > > Would be nice to explain what semi_planar_yuv means, so that the
+> > > documentation for these functions would show how they differ rather
+> > > than all saying exactly the same thing.  
+> > 
+> >  /* This callback can be used for YUV format where each color component is 
+> >   * stored in a different plane (often called planar formats). It will 
+> >   * handle correctly subsampling.
+> > 
+> >  /*
+> >   * This callback can be used for YUV formats where U and V values are 
+> >   * stored in the same plane (often called semi-planar formats). It will 
+> >   * corectly handle subsampling.
+> >   * 
+> >   * The conversion matrix stored in the @plane is used to:
+> >   * - Apply the correct color range and encoding
+> >   * - Convert YUV and YVU with the same function (a simple column swap is 
+> >   *   needed)
+> >   */
+> 
+> Sounds good. I'd just drop the "It will handle correctly subsampling."
+> because all code is supposed to be correct by default.
+
+Will do for the v6.
+
+Thanks,
+Louis Chauvet
+ 
+> If there is a function that intentionally overlooks something, that
+> certainly should be documented.
+> 
 > 
 > Thanks,
 > pq
-> 
-> 
-> > > For me as a userspace developer, the important place is
-> > > https://dri.freedesktop.org/docs/drm/gpu/drm-kms.html#standard-plane-properties
-> > >   
 
 
+
+-- 
+Louis Chauvet, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
