@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-136854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC70789D90D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:17:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5848889D914
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:20:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0D2228A249
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:17:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 029971F228E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60D112C7E8;
-	Tue,  9 Apr 2024 12:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8893D12D1E9;
+	Tue,  9 Apr 2024 12:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0EWtxBMo"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EJZdOfYF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A624F883;
-	Tue,  9 Apr 2024 12:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0EB712A160;
+	Tue,  9 Apr 2024 12:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665055; cv=none; b=qY/u6LkJnOp9bc7WJai7SSuPWapMljuvAupFnpKQScD9WvFF92Ic9g//gfkCiL0kmE+U0Z3qh4pzHRXKyStSD8/zEGkZ8TpvFIGOesK1qyL7pPXcib5lW4SJZ8ZHZHLIsJRMawJ5nztdPbyv/HXmsWu75Js/i4bJDaMX8yGlfEI=
+	t=1712665204; cv=none; b=TUouTx1lHxZwiuS/lySr6hjqev6sOXhzMKUwz7fN1tDOD/4Nwm5rIvMP3Gt1n98pcT0tJVOUSRMFy/alvz5dNerX2BZSZazwZ2cD9C336BtQw1i3OjU+0HNvnSXoM/ALIhYQriNlxa7Srv8FHhTTkBZkKdPWURcbXbrNUj2/bdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665055; c=relaxed/simple;
-	bh=fH+pqInuqCP8bPr3hH0Y8Q86LVIvkMeVKXe0pif5V9c=;
+	s=arc-20240116; t=1712665204; c=relaxed/simple;
+	bh=NWxUNBkQQKPJg7yF9QZzxE7wn37+kXxBAOx3qwp4xxE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jLws1CWK3JJ8GVC3bQTiPBwMbIYaLgZ27zs+WrA/a+BkktBKHFSRajp3K+HX8RIc+g/6h8hg7T6mN188fjAkS01RCY9PdjUROLC6knZlNBvNgIeC9jmUk0dcHd8Iark9reFMO/8d3sEH7dQqOqivQtZq0oIog+bDqaE6uDz2lQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0EWtxBMo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1DB4C433F1;
-	Tue,  9 Apr 2024 12:17:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=gUmwOGPR2GH+qAOleeJaaBEecGMc70vxFHIpUEWRrKDARsgqFtJ+hSpJmr6Obi0fblhozuTrS4ObIrv8pV99unKE2XUavOoBD/yWiARpzXOoqzLbxk8Wi4zgeka60zvtkZtm+e83Xhuj5oItZiYElHEdaXTIUil/0kr0khQUGVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EJZdOfYF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143ACC433F1;
+	Tue,  9 Apr 2024 12:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712665054;
-	bh=fH+pqInuqCP8bPr3hH0Y8Q86LVIvkMeVKXe0pif5V9c=;
+	s=korg; t=1712665204;
+	bh=NWxUNBkQQKPJg7yF9QZzxE7wn37+kXxBAOx3qwp4xxE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=0EWtxBMoqzphz7amkYmvLeLupc2mz5UF6CXnZt1n6bkV5RlOez9HF4pe9jifCU4Fh
-	 a5ihOtuJpxsDI9TX2knf3Nl2NS9d4dQJlGOfeCLqmqVvKhp6XAQlOehOvPz7x0awI9
-	 TUiUYJzJ18gZh9Unq9ncbHzICF+PO9DDY+A5SAgY=
-Date: Tue, 9 Apr 2024 14:17:31 +0200
+	b=EJZdOfYFCDOiJEZcdVm0z4EBT63OPWwkBAY5YL9G1+KLXu4jTIcNxmWQsjCSmtFTg
+	 W1V7U8kP/KzSeoVuwbLWL3Vwq9V6FrjLo160d36AGTcvuMIp1V8uGseJmMxZ9Zk6/5
+	 O3WnHOzPswnKxf9c+S6IcL0HPp8BuUWAmQI3CBJ4=
+Date: Tue, 9 Apr 2024 14:20:01 +0200
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Naresh Kamboju <naresh.kamboju@linaro.org>
 Cc: stable@vger.kernel.org, patches@lists.linux.dev,
@@ -51,7 +51,7 @@ Cc: stable@vger.kernel.org, patches@lists.linux.dev,
 	Sumanth Korikkar <sumanthk@linux.ibm.com>,
 	Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
 Subject: Re: [PATCH 6.6 000/252] 6.6.26-rc1 review
-Message-ID: <2024040912-item-nearby-d068@gregkh>
+Message-ID: <2024040949-storeroom-freebase-2ba7@gregkh>
 References: <20240408125306.643546457@linuxfoundation.org>
  <CA+G9fYsvgN2ixfmDKc_x8yFnZ3SfrmSV5Ck1QC5KfmYN89CFYQ@mail.gmail.com>
 Precedence: bulk
@@ -102,18 +102,8 @@ On Mon, Apr 08, 2024 at 10:45:44PM +0530, Naresh Kamboju wrote:
 > Commit detail,
 >   s390/pai: fix sampling event removal for PMU device driver
 >   [ Upstream commit e9f3af02f63909f41b43c28330434cc437639c5c ]
-> 
-> Steps to reproduce:
-> # tuxmake --runtime podman --target-arch s390 --toolchain gcc-13
-> --kconfig defconfig
-> 
-> Links:
->   - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/log
->   - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/details/
->   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eozoS8GQGxb94EUWNTPuXvYjVU/
 
-Thanks, I'll go drop a bunch of s390 patches from this tree and push out
-a -rc2 later tonight.
+I'll drop the pai patches from this queue as well, thanks!
 
 greg k-h
 
