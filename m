@@ -1,110 +1,129 @@
-Return-Path: <linux-kernel+bounces-137124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B44289DD44
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:49:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B543589DD2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7194CB21DCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:48:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0F1BB25835
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F50131E23;
-	Tue,  9 Apr 2024 14:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3841D7FBD3;
+	Tue,  9 Apr 2024 14:46:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T9Vd3lXR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="28vxQEc2"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D02F130E40;
-	Tue,  9 Apr 2024 14:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010EC2C695
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674056; cv=none; b=O2bKrn5PEViDpk9kg0jHP+LQBwbqBhnRcCaN8o/E0eRyKIaqrSHaykbeiO7fEAda20pvZHqcGukIjHknyT88JdlXreIwyisa/nGdkNlFn810Xp389TjKT8vvkE5Wq3NMgGZTDz0EstLwHGPBCoZVQhNxIcatOxBrBlq3HDk4GzQ=
+	t=1712673989; cv=none; b=KXCAUws5BDaJ9CcC/82hhfKNy0DI8/HslhYBIeXNWizft38o8bt13PKbTd4ayXYsTo6qG3tvyyFU+gnwW2rusWaSPOcAiMDMBd8m247pV2d+MY1OxThdfmrEUgA+Lcbo2mm2fQzTGotAp9zWIJLtJdTg0Uo+FlFrcibngMmRJPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674056; c=relaxed/simple;
-	bh=tu2SnYTw7xf2lMZm5p0+FQbEOrP8kSvSQ5bQJwoOWbw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UT4C/C9bF91iFNDoJg5BykZ6AiY3SHiCJ2cM/auS4KAH/+kXpk9IKrbWfcWCTdy29fAa6Y17piO2Lj3LO5cpoeEV8VBA1OZJUB207xCryiXwmWxh2uDrAx1eEnmB2jvuXNQ4W4fikLTrDXLix86UgM+HUk3+VwlSRi0yQAzc+J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T9Vd3lXR; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712674055; x=1744210055;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tu2SnYTw7xf2lMZm5p0+FQbEOrP8kSvSQ5bQJwoOWbw=;
-  b=T9Vd3lXRKUHq5sMc+a7IYEsJ3+gcWP3DbUcUJlJ2ENpnIq11HgWDEFj5
-   3OXiKbPeR8LLcQX7QY+327XO+aZpdXDNjE8JOswk9HH3IIK75cfb4YRW4
-   lg7FAiXaqbF/TBpChMlDLX1gMBSeut0IaDWHT7OrFLAzex9X2tJSqb2nf
-   ztCe/P6RZfXFEv+Js/Ea6fKHv4dhvkqQvCkfTf/9iFwnISvnRSXku3LWr
-   jKcBQ+lMfc2AMUbjJ7i8QNrHBY/faJ+yeEMgFkeZHaTB/aQehhAV4oPQQ
-   gJz/ViuiTJ4wJI7u5SFKpza/0TzNLPDkvkoFwRylocbOW+Grtk00oQaY6
-   g==;
-X-CSE-ConnectionGUID: RXonn10VRO+QZ79UTrtNCg==
-X-CSE-MsgGUID: zDgj+hAET0yUhwJvQJ2zRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7905531"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="7905531"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 07:47:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093486"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="937093486"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 07:47:28 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 1AFF7279; Tue,  9 Apr 2024 17:47:26 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v3 0/8] serial: max3100: Put into shape
-Date: Tue,  9 Apr 2024 17:45:47 +0300
-Message-ID: <20240409144721.638326-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1712673989; c=relaxed/simple;
+	bh=JNYWxfOdBLnkcSOg7S7k0lKm6pw5ifgueS2lI62IYsQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V13AHHgNjHn1AC+YL0BTz34TrfWFvFfj1I9gpM/7REML2MQqfUOLrvMQyNIkFSufwzgtheQqE+pj+H2lXjqY+hg2TtZxM0uxMgcXt7dck8hk/dK7wCczmvZqdgEIdAEGelK85qiU00T4QJsNb8SqAuyp+0b/s3XXiC1+ZLoyOJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=28vxQEc2; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4daa68eef71so1666490e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712673987; x=1713278787; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGKKqyMnDxDe7Z88TFPiX7ZbsHcnXFBE7VSZEtRsFEI=;
+        b=28vxQEc2TfpbRqxpk93+D041AjxSexs6rYQNsHGjjZ8SP1AfWYlIvrDbgi+HSQV+NY
+         hE/csZnXhzr0uDz8wJbGZuxVlzPU3tutz+RB6QDriquBTMIkj2eS5AQvPid7Z+GAudkS
+         uUo5KnnmEnv3+VRdF6XIVXQ6mleVvgpSSx9XXITKH7VS40GSIIXRLIczF2XFhkvXOVr3
+         WclMHKAwcC22dGNNFI4TPb1YDaWKAX40dLh8EXQF7bXTuV5fM10wRgaWo3PGRbMpJeqv
+         OkxRCEEK7iChk5QM4qFrwH/ywqEsaBuDZo4045Y+le2SbaY/fkDoldJctWdf9RzuNwzK
+         /Pag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712673987; x=1713278787;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JGKKqyMnDxDe7Z88TFPiX7ZbsHcnXFBE7VSZEtRsFEI=;
+        b=fRdZFT+ebA/j3Q+3CMfFgH9jhS8yqN0J0/PLAuf2KtHanFlkty+E/PFT54vg6KNbBh
+         XxfkfrZstG+ypoyYa/K3Z9BG/+aF65vZGzRv4NWP4v2kZZ8aSMrYV6ah7Mko3QbgnJzo
+         +BNRh5BIz/YL13LFroZn1qi0NLKjzEVuIxo7C0Tq3nUEjmWB8qsfHmvNNWTGt5qSEhq0
+         GW/pUHVAc2E6uDt7ptsTuBgaqBK6BPEDMic1rJFoIMNbSvJDDrXqOTbFs46o4g4FDssc
+         81vBRLWHyoMPgVrnhABz9qDkHcJveo4ery9duOHAuM1fuIyeAnAn6wZgsB9WN66Q1c1u
+         Bypw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLz8jibYzDp926HtzKcZjdfLs7j6uRVWAxcS1Gnca44SHQKtzCXa1INhnOBAdGQk4sGNJxv8ruwbcRHp83vD+GNrUWAKe8/aVtWo24
+X-Gm-Message-State: AOJu0YwqR7R2A0k84WvfZsbpcA4+EpjQdUWf921b4V3C1y1Lh6K84SIs
+	g7nv1okqlUN3szs/8+e6PMUP4BifTOwJbjWDrd7eLNn5SoRhttvkOlDZgLnbYQcBqAckKZCqqpO
+	jSK6Cer5LmiQoVX3AYzmzRDaTLpiluU3o8OGx
+X-Google-Smtp-Source: AGHT+IG5ZyVYbzpi7MrZFfeuZePmTlO9Cj6SrZUQgNIArSjr/qGXL8vsPlsLH60WkxdNp2m4CZry4zLpVpcPiYwzY5k=
+X-Received: by 2002:a05:6122:48a:b0:4d8:74cb:e3c2 with SMTP id
+ o10-20020a056122048a00b004d874cbe3c2mr33094vkn.9.1712673986727; Tue, 09 Apr
+ 2024 07:46:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240408090205.3714934-1-elver@google.com> <20240409103327.7a9012fa@gandalf.local.home>
+In-Reply-To: <20240409103327.7a9012fa@gandalf.local.home>
+From: Marco Elver <elver@google.com>
+Date: Tue, 9 Apr 2024 16:45:47 +0200
+Message-ID: <CANpmjNOv=8VBvbKBQbsBdg9y2pNsfdaA-46QB53NY-Ddmq3tmA@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Add new_exec tracepoint
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Put the driver into the shape with all new bells and whistles
-from the kernel.
+On Tue, 9 Apr 2024 at 16:31, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon,  8 Apr 2024 11:01:54 +0200
+> Marco Elver <elver@google.com> wrote:
+>
+> > Add "new_exec" tracepoint, which is run right after the point of no
+> > return but before the current task assumes its new exec identity.
+> >
+> > Unlike the tracepoint "sched_process_exec", the "new_exec" tracepoint
+> > runs before flushing the old exec, i.e. while the task still has the
+> > original state (such as original MM), but when the new exec either
+> > succeeds or crashes (but never returns to the original exec).
+> >
+> > Being able to trace this event can be helpful in a number of use cases:
+> >
+> >   * allowing tracing eBPF programs access to the original MM on exec,
+> >     before current->mm is replaced;
+> >   * counting exec in the original task (via perf event);
+> >   * profiling flush time ("new_exec" to "sched_process_exec").
+> >
+> > Example of tracing output ("new_exec" and "sched_process_exec"):
+>
+> How common is this? And can't you just do the same with adding a kprobe?
 
-Tested on Intel Merrifield with MAX3111e connected.
+Our main use case would be to use this in BPF programs to become
+exec-aware, where using the sched_process_exec hook is too late. This
+is particularly important where the BPF program must stop inspecting
+the user space's VM when the task does exec to become a new process.
 
-In v3:
-- dropped applied patches
-- rebased on top of tty-testing
-- v2 (20240402195306.269276-1-andriy.shevchenko@linux.intel.com)
+kprobe (or BPF's fentry) is brittle here, because begin_new_exec()'s
+permission check can still return an error which returns to the
+original task without crashing. Only at the point of no return are we
+guaranteed that the exec either succeeds, or the task is terminated on
+failure.
 
-In v2:
-- fixed a few typos in the commit messages (Hugo)
-- added an additional fix to patch 2 (Hugo)
-- appended tag to patch 13 (Hugo)
-- v1 (20240402154219.3583679-1-andriy.shevchenko@linux.intel.com)
+I don't know if "common" is the right question here, because it's a
+chicken-egg problem: no tracepoint, we give up; we have the
+tracepoint, it unlocks a range of new use cases (that require robust
+solution to make BPF programs exec-aware, and a tracepoint is the only
+option IMHO).
 
-Andy Shevchenko (8):
-  serial: max3100: Enable TIOCM_LOOP
-  serial: max3100: Get crystal frequency via device property
-  serial: max3100: Remove duplicating irq field
-  serial: max3100: Switch to use dev_err_probe()
-  serial: max3100: Replace MODULE_ALIAS() with respective ID tables
-  serial: max3100: Switch to DEFINE_SIMPLE_DEV_PM_OPS()
-  serial: max3100: Extract to_max3100_port() helper macro
-  serial: max3100: Sort headers
-
- drivers/tty/serial/max3100.c | 208 +++++++++++++++--------------------
- 1 file changed, 86 insertions(+), 122 deletions(-)
-
--- 
-2.43.0.rc1.1.gbec44491f096
-
+Thanks,
+-- Marco
 
