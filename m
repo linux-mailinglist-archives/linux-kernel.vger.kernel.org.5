@@ -1,107 +1,100 @@
-Return-Path: <linux-kernel+bounces-136349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C5889D2F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:25:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFB5289D2FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2D171C21651
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ADE728423B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144757BB11;
-	Tue,  9 Apr 2024 07:25:45 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76267C089;
+	Tue,  9 Apr 2024 07:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="ewcjglWh"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F91537E6;
-	Tue,  9 Apr 2024 07:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F91C7BAF0;
+	Tue,  9 Apr 2024 07:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712647544; cv=none; b=e7+gSWERbvo3Yw+R0fArG+bd15yMlShp67iQw+dL/+B0ZJgK3LuILwXW5EjnPbcTy9Ovu7jHQ3J4Apiwuf8qaeg8nevbSZR+fAa5CUXkdTDg45y6Me2kuCvqPaYaIjBRufrfFMOHrfrpjC9zSUIDvW+pQDBoXf0NTp5ndriy5Sc=
+	t=1712647560; cv=none; b=sjlsxEfePr4crQYOO300uB+2VRHnLMMF9hCZLndo4J1agFgtWFpfog6ZtUcSZiiaA9nCbJfM2L578Tp2DXfDsA0Vqrtq9wDirk0vPnSdqMdevNqDp9R7TX0R49MwJDMPui2hqJd2ukyljhoJhGGuxI7B1CHCb4uDeDNdPKvO61c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712647544; c=relaxed/simple;
-	bh=9x+TfeQHYbAC2ZOOl4tIe41PHvzWIyJ7rn56eOmWHqI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qhMcgLW6KH6Sp9KO7wuuJow2mJnyYKjR8nC8aayUcVz2FUVKt2Xq/W278g1QYStPVk6ZXo2R2t+ADrfz85rcPj3/BgH+Xvk8YTB9bCnDHBk+4uHrucFeOrjjFc5MkjDq1xp6cMm8WatddtxWglzBTTPy3dFa2IjF82eOKV9HDyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VDHVD6BvczwRVJ;
-	Tue,  9 Apr 2024 15:22:44 +0800 (CST)
-Received: from canpemm500001.china.huawei.com (unknown [7.192.104.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1F11218007D;
-	Tue,  9 Apr 2024 15:25:39 +0800 (CST)
-Received: from [10.67.111.186] (10.67.111.186) by
- canpemm500001.china.huawei.com (7.192.104.163) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 15:25:38 +0800
-Message-ID: <ca6c46d8-52a3-0f5a-c848-5401296a4f5f@huawei.com>
-Date: Tue, 9 Apr 2024 15:25:38 +0800
+	s=arc-20240116; t=1712647560; c=relaxed/simple;
+	bh=Y2AC2x3B3acM2GKI9v5Q0mM7BmOAM7VvJtxbHJ4uqiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RQtFBeT3JTfRN/rSKu/5gIPBikgVsXpOOunIZZWExeAUZCSLZ9dfR1SyrYkFgvEnLOSStI0mKKzdLSR9/bSSdwGHkMM96ytHA0I9f0OjAc8mg4xWKQr/wAnkLzzDstvXqnaM9UBMDerp7UpZvzxG6wNxB8cXzHReB+sKHshSPQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=ewcjglWh; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 77FE51FA5F;
+	Tue,  9 Apr 2024 09:25:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1712647552;
+	bh=mrd0uFGErzOXz5bsvyPtG3fOYke9LnEn0N06A5zqcbY=; h=From:To:Subject;
+	b=ewcjglWh41Jhrs9fWPK1ibYrQTxhbWdEEAtu8LWN6rSM9+qYYXbNhx9WNpE+TwGDZ
+	 cpyxSuZyioerBltCTj8uuEhFBFBPE2X2GtlotyUqBUGVcJzxAfFham5pY0gaAsxUnI
+	 hIK8XodAodywIlggyjNJqMuztih9oYsTpZj/ylpoq5mJ7h5RUrxU+aC5F2gP56FsuL
+	 5NKM81OMuJjDnGkS2zmCNW+xorUfAcP+5XHYRF6R5F1SLAz055+szZj+QWaXqtdPlv
+	 ZRFXwH70K2jn5y+816p1sbZNSfB6IgfYmKVKciacBYiJqLqEcmP9yBIPe70g3bBTt6
+	 LSrYCHDL8Cf0g==
+Date: Tue, 9 Apr 2024 09:25:48 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc: Horia =?iso-8859-1?Q?Geant=C4?= <horia.geanta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Iuliana Prodan <iuliana.prodan@nxp.com>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-imx@nxp.com
+Subject: Re: [PATCH] caam: init-clk based on caam-page0-access
+Message-ID: <20240409072548.GA6629@francesco-nb>
+References: <20230710053418.2406915-1-pankaj.gupta@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] sched/Documentation: Add RT_RUNTIME_SHARE documentation
-To: <corbet@lwn.net>
-CC: <mingo@kernel.org>, <chrubis@suse.cz>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Peter
- Zijlstra <peterz@infradead.org>
-References: <20240131123238.2332064-1-zhangqiao22@huawei.com>
-From: Zhang Qiao <zhangqiao22@huawei.com>
-In-Reply-To: <20240131123238.2332064-1-zhangqiao22@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500001.china.huawei.com (7.192.104.163)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710053418.2406915-1-pankaj.gupta@nxp.com>
 
-Ping.
+Hello,
 
-+cc Peter, Steven.
-
-在 2024/1/31 20:32, Zhang Qiao 写道:
-> RT_RUNTIME_SHARE is an important strategy for rt bandwidth, and
-> we should document this sched feature.
+On Mon, Jul 10, 2023 at 11:04:18AM +0530, Pankaj Gupta wrote:
+> CAAM clock initialization to be done based on, soc specific
+> info stored in struct caam_imx_data:
+> - caam-page0-access flag
+> - num_clks
 > 
-> Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 > ---
->  Documentation/scheduler/sched-rt-group.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  drivers/crypto/caam/ctrl.c | 26 ++++++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
-> index d685609ed3d7..4d8eceb71f5e 100644
-> --- a/Documentation/scheduler/sched-rt-group.rst
-> +++ b/Documentation/scheduler/sched-rt-group.rst
-> @@ -12,6 +12,7 @@ Real-Time group scheduling
->       2.1 System-wide settings
->       2.2 Default behaviour
->       2.3 Basis for grouping tasks
-> +     2.4 RT_RUNTIME_SHARE sched feature
->     3. Future plans
->  
->  
-> @@ -146,6 +147,16 @@ For now, this can be simplified to just the following (but see Future plans):
->  
->     \Sum_{i} runtime_{i} <= global_runtime
->  
-> +2.4 RT_RUNTIME_SHARE sched feature
-> +----------------------------
-> +
-> +RT_RUNTIME_SHARE allows a cpu borrows rt-runtime from other cpus if it runs
-> +out of its own rt-runtime.
-> +
-> +With this feature enabled, a rt-task probably hits 100% cpu usage and starves
-> +per-cpu tasks like kworkers, as a result, it may hang up the whole system.
-> +Therefore, in order to avoid such exception, recommand to disable this feature
-> +by default unless you really know what you're up to.
->  
->  3. Future plans
->  ===============
-> 
+> diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+> index ff9ddbbca377..74d0b7541d54 100644
+> --- a/drivers/crypto/caam/ctrl.c
+> +++ b/drivers/crypto/caam/ctrl.c
+
+[...]
+
+>  static const struct soc_device_attribute caam_imx_soc_table[] = {
+>  	{ .soc_id = "i.MX6UL", .data = &caam_imx6ul_data },
+>  	{ .soc_id = "i.MX6*",  .data = &caam_imx6_data },
+>  	{ .soc_id = "i.MX7*",  .data = &caam_imx7_data },
+>  	{ .soc_id = "i.MX8M*", .data = &caam_imx7_data },
+> +	{ .soc_id = "i.MX8ULP", .data = &caam_imx8ulp_data },
+
+This change seems unrelated to the change described in the commit message.
+Should it be a separate patch?
+
+Francesco
+
 
