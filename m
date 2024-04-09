@@ -1,78 +1,57 @@
-Return-Path: <linux-kernel+bounces-136214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A258189D148
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:44:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B1F89D13C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41F2C1F24FB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:44:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92569285F11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6056155772;
-	Tue,  9 Apr 2024 03:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFFA54BFD;
+	Tue,  9 Apr 2024 03:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TLIxgiXG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IybSXFxI"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D13154BEF;
-	Tue,  9 Apr 2024 03:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0E754BEF
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712634288; cv=none; b=NOjrgv47sgaxZrwJ2Fcj1Wi4qEUU2Q/Rczlz7ChryoIRPnqr1th/QQQVcSRZCCGkzvpnNxSPhAMgv9jSGykChyXjqIq0nhEXpnKj+XXQjbdUKNaw5YA9G20AVCbu9EIIK9JsBWqytiVmEJAz8Z+1vZco/ALEU3m4ghJ/in12WyQ=
+	t=1712634012; cv=none; b=CaI2/UeyuQn5cJMEYohbcoF/MFMcHE0B+hkrsRwoNASePa4/uAfEHPNfvB2U0V4F6yk707gbuzDPo6pJOZcv80+W2OPNY3Y1C6TsdrJ6K3Ll14hzGlzwQHUisLDdtW6PPiloyg7HV93EII5FeRnsJmNoECO7PiZuzTKq6IKvN24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712634288; c=relaxed/simple;
-	bh=RR5SyerU3swP7blXlrp09ILNLJGLjX1OuihRg3Zwf08=;
+	s=arc-20240116; t=1712634012; c=relaxed/simple;
+	bh=fFF78VPngM7y/us+qOuPjusOESrskdwFUvjmvDF+A5w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nkp4sfsR80LOmW7jQ5+yhozEwR+3ekS4AxEfC4+BQxxMKZq9mFIdTXXevebTwVkxTJM4MWh6pnNYYvS3zpOrJ7jvYDh3Wd0B1LjuN7Q61zgkN45hJj/sNtbHWFUkVFaFuRkXroKmg3MC5hitA2eXPkHpQ8eboZvIPasm7PteWRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TLIxgiXG; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712634287; x=1744170287;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RR5SyerU3swP7blXlrp09ILNLJGLjX1OuihRg3Zwf08=;
-  b=TLIxgiXGRHM7il4ctmA3N4NGvrRDMo9me1rQxheEqFq6EQUM5Pu9JaA8
-   +rnpMUu0MqB8w4VWCFy00MsIEqY3pRFyvq0QGVIVK8H1LVvClCRiPP+BO
-   TCcYnl8awUH0PiFjIfbbz3a+HQ78IRZdNFPOGKRpSwBPTqSghRXAPe6wa
-   3ryu7+xLiTI9pB094sO/09+DCx3kfgYsB9PbKFKNyqo522NPwnVcPBXfb
-   uDEZVnhwwdbNlQKxQyUcQgd9Y9HXQiQbqexHVYLPQrQieKYGHgCevsQY1
-   gFEJx+mtOY3jk33Gse1ojPzq/eC7b5y9ZPJIEZMPGETSrC3OPAI4/8RnK
-   Q==;
-X-CSE-ConnectionGUID: StNyYDN2R8yKa6Lrw6aWSw==
-X-CSE-MsgGUID: keU8WLW0QHOxC7DGTWRJog==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30427936"
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="30427936"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 20:44:46 -0700
-X-CSE-ConnectionGUID: ggQOrKGGT7iExxoFkcpFEg==
-X-CSE-MsgGUID: r2ZzOJOLTWafzvUNP/wPJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="20533497"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa007.jf.intel.com with ESMTP; 08 Apr 2024 20:44:43 -0700
-Date: Tue, 9 Apr 2024 11:39:42 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-	Alan Tull <atull@kernel.org>, Shiva Rao <shiva.rao@intel.com>,
-	Kang Luwei <luwei.kang@intel.com>,
-	Enno Luebbers <enno.luebbers@intel.com>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] fpga: dfl: fme: revise kernel-doc comments for some
- functions
-Message-ID: <ZhS4fuijYnstZ6Rt@yilunxu-OptiPlex-7050>
-References: <20240402204743.1069624-1-peter.colberg@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k2dkd0MqMM7DL+cRqX7ZXFZzowH+SMtVMw6AeyaxrZ7t0CF/DduQFu428eP623D6LtQPngRXkIBUptfQZPmdoJpC7EykezpqVKpbI25gauOg3JDCMONP4SNuX8G57HO4I5IrqqKpzcMFDa+teEuYCG4cQn6kh8vftmtZSU4Kdtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IybSXFxI; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 8 Apr 2024 23:40:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712634008;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pJRkboi1XfUhwyGSGsoCmSy3Kg0vHEU0PUHEGOzc2K4=;
+	b=IybSXFxIG7G4z7NZL+lJGPg3IP8nE6mX+nildWlX3cc2xvghUUnsiz25bQ9ZJHtE/jiBQJ
+	oOjHPj4AbaXKZ77GaqwLNwsodiSXm9Jvw9uh5krnkCXS2gJyMAjONervwTyIj//5sAqmTC
+	54/zO9xkgRXwbddjtU2UOjvsrrFfF9A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 00/17] treewide: Refactor heap related implementation
+Message-ID: <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
+References: <20240406164727.577914-1-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,90 +60,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402204743.1069624-1-peter.colberg@intel.com>
+In-Reply-To: <20240406164727.577914-1-visitorckw@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Apr 02, 2024 at 04:47:43PM -0400, Peter Colberg wrote:
-> From: Xu Yilun <yilun.xu@intel.com>
+On Sun, Apr 07, 2024 at 12:47:10AM +0800, Kuan-Wei Chiu wrote:
+> This patch series focuses on several adjustments related to heap
+> implementation. Firstly, a type-safe interface has been added to the
+> min_heap, along with the introduction of several new functions to
+> enhance its functionality. Additionally, the heap implementation for
+> bcache and bcachefs has been replaced with the generic min_heap
+> implementation from include/linux. Furthermore, several typos have been
+> corrected.
 > 
-> This amends commit 782d8e61b5d6 ("fpga: dfl: kernel-doc corrections"),
-> which separately addressed the kernel-doc warnings below. Add a more
-> precise description of the feature argument to dfl_fme_create_mgr(),
-> and also use plural in the description of dfl_fme_destroy_bridges().
+> Previous discussion with Kent Overstreet:
+> https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 > 
-> lkp reported 2 build warnings:
-> 
->    drivers/fpga/dfl/dfl-fme-pr.c:175: warning: Function parameter or member 'feature' not described in 'dfl_fme_create_mgr'
-> 
-> >> drivers/fpga/dfl/dfl-fme-pr.c:280: warning: expecting prototype for
-> >> dfl_fme_destroy_bridge(). Prototype was for dfl_fme_destroy_bridges()
-> >> instead
+> Regards,
+> Kuan-Wei
 
-Why still list the 2 warnings here? Do they still exsit even with commit
-782d8e61b5d6 ("fpga: dfl: kernel-doc corrections") ?
+pointing test automation at it now:
+https://evilpiepirate.org/~testdashboard/ci?branch=refactor-heap-v3
 
-> 
-> Fixes: 29de76240e86 ("fpga: dfl: fme: add partial reconfiguration sub feature support")
-
-You are still trying to fix this commit?
-
-
-I'm sorry, but please do check and test your patches before submit.
-Re-submitting quickly but full of errors makes people doubt if you are
-really serious about your patches. At least, I do have doubt if you did
-tests for all your patches, or if your test could sufficiently prove the
-issue exists or fixed.
-
-Do not just passively waiting for reviewers to find out the issue. Maybe
-you should again read the Documentation/process/*.rst
-
-
-Back to this patch, I think you can just drop it. Because:
-1. The previous fix works fine, the doc doesn't tell anything wrong.
-2. The 2 functions are internal, no outside users. Little value for the
-kernel doc.
-
-So no need a dedicated fix patch. The preferred practice is you point
-out the nits when the previous patch is not yet merged. Or you by the
-way include these fixes in some new patches which relates to these
-functions.
-
-Thanks,
-Yilun
-
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> ---
-> v2:
-> - Correctly rebase patch onto commit 782d8e61b5d6.
-> ---
->  drivers/fpga/dfl-fme-pr.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
-> index cdcf6dea4cc9..b66f2c1e10a9 100644
-> --- a/drivers/fpga/dfl-fme-pr.c
-> +++ b/drivers/fpga/dfl-fme-pr.c
-> @@ -164,7 +164,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
->  
->  /**
->   * dfl_fme_create_mgr - create fpga mgr platform device as child device
-> - * @feature: sub feature info
-> + * @feature: the dfl fme PR sub feature
->   * @pdata: fme platform_device's pdata
->   *
->   * Return: mgr platform device if successful, and error code otherwise.
-> @@ -273,7 +273,7 @@ static void dfl_fme_destroy_bridge(struct dfl_fme_bridge *fme_br)
->  }
->  
->  /**
-> - * dfl_fme_destroy_bridges - destroy all fpga bridge platform device
-> + * dfl_fme_destroy_bridges - destroy all fpga bridge platform devices
->   * @pdata: fme platform device's pdata
->   */
->  static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
-> -- 
-> 2.44.0
-> 
-> 
+Coli, could I get some acks from you?
 
