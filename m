@@ -1,104 +1,128 @@
-Return-Path: <linux-kernel+bounces-136549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2866589D578
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:24:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C71BB89D579
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:25:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9DB41F23530
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:24:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D0F81F239A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3CF7F482;
-	Tue,  9 Apr 2024 09:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d4qqSS7f"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DEE2B2DD
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9587F7CF;
+	Tue,  9 Apr 2024 09:24:59 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE5B7F482
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654678; cv=none; b=pHrbhTstNZ9eK9b5akBHu++HasFyT5ENJvWYjQQsxKcIHCbCfMsD1g0WFiOxoRhmgGrnjFfGkkZ5mSmbr4VGRlj23hHV/NODF+A7thua+mgp17eOZNoMidLKLe0kREeZsokqvZSrSnctQHV7DV8k6Zgnn7gNhzqUo2qR37sXWd4=
+	t=1712654698; cv=none; b=eKcmeBEh5q5ieQROeCUBDeOVY2Cu8lxbliE+KtgF92ws+MBE2a55WWFdfxCjnxmn1jFZn0wVLUO4HtjjnE08DcAbia2G3XC73ygX+QJXuieE3x/kPHBZuAk3zAbBTLdDPfLZrhx0fgNC8yBhpjgNcbtrPHtjWNPF9LYNTxxf3/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654678; c=relaxed/simple;
-	bh=pDn91/LDDz2c2pSp6ASDfLb6o0elyl6boAw4QkMt+m8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JN6GviYxXhborJDvN3jAi0+C4lgvfeI3nHXBrBZM6xg705vXG1qd7Qod1m4cYY6Z4cno2LnnuY26ehKytu9ojJS8rn32Pljnkq7ng6ZP8fgvscnIGPgDR6fy2NbbGQbgqreTkt6wA8ycdRfu2b3rYMsbxo9Q0PDR0LJDKemgW8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d4qqSS7f; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=EnEcIvvsEn/85gou4VnazrjdRGksKJ0kBm/xoUbL+Go=; b=d4qqSS7fXgczE2PAuj2E9kOS6B
-	yRrNOwOJa39nanc8mM3bA3h/Zlb67DPnMlFoPd0v7XCeRkS7ZRQBeMsWS9F3Rhcc16l2ZhbDd1pY5
-	1CzM4/cuV3N4d6oi1pN+ZuwOUQ41srjk7nMrfIg0/AzKjPMmCkbkRFW93v+jxue5WOboY8Ub6o7Ue
-	VLPKPkgjnZ+htifX7l6gY/bF3zb+5b7ZIKlxJDx5yC/UV8gkSkLyZu7jx1XBJ6Nn2SAneZMMD1SZi
-	mUtsRP2rDnVFGUfosT7O1FZ5GkOrwEV+TtQjyyYmd+TFFjhe4lDq4jQDMnZWnV5tCNy/xVx8EQ9Nw
-	anfQYvrw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ru7iC-00000001o6u-1VQN;
-	Tue, 09 Apr 2024 09:24:16 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 080B730040C; Tue,  9 Apr 2024 11:24:16 +0200 (CEST)
-Date: Tue, 9 Apr 2024 11:24:15 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, linux-kernel@vger.kernel.org,
-	Jonathan.Cameron@huawei.com, linuxarm@huawei.com,
-	linux@roeck-us.net
-Subject: Re: [PATCH 1/2] x86/cpu/topology: don't write to immutable
- cpu_present_mask
-Message-ID: <20240409092415.GB2665@noisy.programming.kicks-ass.net>
-References: <20240407152643.3245-1-adobriyan@gmail.com>
- <87ttkc6kwx.ffs@tglx>
- <ZhT/ZTdRN+Gxfe8S@gmail.com>
+	s=arc-20240116; t=1712654698; c=relaxed/simple;
+	bh=fVzMBpVHDCYnJyjVzpHAN3PRUyFt/fDMP73sAiKyMqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=c94yi1Qu6X16I89PyyK2OVjpAcnXTixBQADCrd1Eu5pLOcx06nnz4xB+AuX/OfHlVgKZgm8I5OHEj6pJOaxh84BApstza/CJNaUInLUndAsyGbmr8/Z1FQ4lClB6HgNJaUbojG9xz6zgXCTNB49HW6cfRlSmVOEoSu0Gkg9EW6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-7f-661509649d67
+From: Honggyu Kim <honggyu.kim@sk.com>
+To: SeongJae Park <sj@kernel.org>
+Cc: honggyu.kim@sk.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/4] mm/damon: add a DAMOS filter type for page granularity access recheck
+Date: Tue,  9 Apr 2024 18:24:31 +0900
+Message-ID: <20240409092434.3031-1-honggyu.kim@sk.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <20240311204545.47097-1-sj@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhT/ZTdRN+Gxfe8S@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDLMWRmVeSWpSXmKPExsXC9ZZnoW4Kp2iaweJDZhZP/v9mtbi8aw6b
+	xb01/1ktDn99w+TA4rFpVSebx6ZPk9g9XmyeyejxeZNcAEsUl01Kak5mWWqRvl0CV8aliX+Z
+	ClYIVTRcPs7WwPiZr4uRk0NCwESi581Xti5GDjB78v4gkDCbgJrElZeTmEBsEQFFiXOPL7J2
+	MXJxMAtMZ5TYeGIzK0hCWCBV4sbcPrAiFgFVid8v37CD2LwCZhLrp11lh5ivKfF4+08wm1PA
+	WOL465NgvUICPBKvNuxnhKgXlDg58wkLiM0sIC/RvHU2M8gyCYEZbBKd698yQQySlDi44gbL
+	BEb+WUh6ZiHpWcDItIpRKDOvLDcxM8dEL6MyL7NCLzk/dxMjMAyX1f6J3sH46ULwIUYBDkYl
+	Hl6Lq8JpQqyJZcWVuYcYJTiYlUR4g00F04R4UxIrq1KL8uOLSnNSiw8xSnOwKInzGn0rTxES
+	SE8sSc1OTS1ILYLJMnFwSjUwTov7HcNzQTlqjxmne+ApsVcGnCEvhHxeB0UxOe+tsuDtnq3M
+	pNRcPitlmrud5oGItJsvn6cFvMw7L/yWVXyOpIOI7hOTDXKOm57dvycRYHLkHbdQkIzi94tv
+	rxjzfNFp23/yxJ4a3V0cOUdL4g2D7sydnCKp83ASG/ejwp4b65rCys38fwcqsRRnJBpqMRcV
+	JwIAHN1XZT8CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrILMWRmVeSWpSXmKPExsXCNUNLTzeFUzTN4O42I4sn/3+zWnx+9prZ
+	ovPJd0aLw3NPslpc3jWHzeLemv+sFoe/vmFyYPfYtKqTzWPTp0nsHi82z2T0+Hbbw2Pxiw9M
+	Hp83yQWwRXHZpKTmZJalFunbJXBlXJr4l6lghVBFw+XjbA2Mn/m6GDk4JARMJCbvD+pi5ORg
+	E1CTuPJyEhOILSKgKHHu8UXWLkYuDmaB6YwSG09sZgVJCAukStyY2wdWxCKgKvH75Rt2EJtX
+	wExi/bSrYLaEgKbE4+0/wWxOAWOJ469PgvUKCfBIvNqwnxGiXlDi5MwnLCA2s4C8RPPW2cwT
+	GHlmIUnNQpJawMi0ilEkM68sNzEzx1SvODujMi+zQi85P3cTIzDgltX+mbiD8ctl90OMAhyM
+	Sjy8DneE04RYE8uKK3MPMUpwMCuJ8AabCqYJ8aYkVlalFuXHF5XmpBYfYpTmYFES5/UKT00Q
+	EkhPLEnNTk0tSC2CyTJxcEo1MOYLVq/J+B4XG6S5R8f8SNmatP3GMp0zlpmJNt+XtOZaIrz7
+	aT97xs7C97fqA8xZD79miZ6UspaldXmFesKE69PvTrfa+HDnrQiOJNMrt0QmphmaHfKZ6WRR
+	PXdfheOOUzGKJhKuxZ1b+D4ufnA5xHTbVu1pN/v+Tby3bYnXr+PH1srffW6bwabEUpyRaKjF
+	XFScCAAwE2uBNAIAAA==
+X-CFilter-Loop: Reflected
 
-On Tue, Apr 09, 2024 at 10:42:13AM +0200, Ingo Molnar wrote:
-> 
-> * Thomas Gleixner <tglx@linutronix.de> wrote:
-> 
-> > On Sun, Apr 07 2024 at 18:26, Alexey Dobriyan wrote:
-> > > Workaround the following oops:
-> > >
-> > > 	topology_hotplug_apic
-> > > 	topo_set_cpuids
-> > > 		set_cpu_possible(cpu, true);
-> > > 		// write to __ro_after_init section after init
-> > 
-> > Duh, yes.
-> > 
-> > > adobriyan: I'm not sure what's going on, can it set unset bit here?
-> > > If not, then why does it repeat the job and set already set bits.
-> > >
-> > > Anyhow, let's not oops peoples' machines for now.
-> > 
-> > Adding a bandaid to paper over the non-understood real problem is
-> > definitely not a good plan. I take this patch as a bug report.
-> > 
-> > Proper fix below.
-> 
-> BTW., independently of the fix, warning about a too late set_cpu_possible() 
-> might still make sense - clearly it *can* be called too late by 
-> architecture init code :-)
+Hi SeongJae,
 
-Make the function __init ? Then it goes away right when the data becomes
-RO.
+On Mon, 11 Mar 2024 13:45:41 -0700 SeongJae Park <sj@kernel.org> wrote:
+> Changes from RFC v1
+> (https://lore.kernel.org/r/20240307030013.47041-1-sj@kernel.org)
+> - Rename __damon_pa_young() to damon_folio_young_one()
+> - Mark the folio as old from the filter for the next check
+> 
+> DAMON allows users to specify desired ranges of overhead and accuracy of
+> the monitoring, and do its best effort to make most lightweight and
+> accurate results.  A recent discussion for tiered memory management
+> support from DAMON[1] revealed that the best effort accuracy may not
+> suffice in some use cases, while increasing the minimum accuracy can
+> incur too high overhead.  The discussion further concluded finding
+> memory regions of specific access pattern via DAMON first, and then
+> double checking the access of the region again in finer granularity
+> could help increasing the accuracy while keeping the low overhead.
+> 
+> Add a new type of DAMOS filter, namely YOUNG for such a case.  Like anon
+> and memcg, the type of filter is applied to each page of the memory
+> region of DAMOS target memory region, and check if the page is accessed
+> since the last check.  Because this is a filter type that applied in
+> page granularity, the support depends on DAMON operations set.  Because
+> there are expected usages of this filter for physical address space
+> based DAMOS usage[1], implement the support for only DAMON operations
+> set for the physical address space, paddr.
+> 
+> [1] https://lore.kernel.org/r/20240227235121.153277-1-sj@kernel.org
+> 
+> 
+> SeongJae Park (4):
+>   mm/damon/paddr: implement damon_folio_young()
+>   mm/damon/paddr: implement damon_folio_mkold()
+>   mm/damon: add DAMOS filter type YOUNG
+>   mm/damon/paddr: support DAMOS filter type YOUNG
+
+I have tested your patches for evaluation of [1] and it all works fine.
+Thanks very much for doing this work!
+
+Tested-by: Honggyu Kim <honggyu.kim@sk.com>
+
+[1] https://lore.kernel.org/damon/20240405060858.2818-1-honggyu.kim@sk.com
+
+>  include/linux/damon.h    |  2 ++
+>  mm/damon/paddr.c         | 64 +++++++++++++++++++++++++---------------
+>  mm/damon/sysfs-schemes.c |  1 +
+>  3 files changed, 43 insertions(+), 24 deletions(-)
+> 
+> 
+> base-commit: 13043cde46a19e72d37965b67b74e564623f65e7
+> -- 
+> 2.39.2
+> 
 
