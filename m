@@ -1,324 +1,204 @@
-Return-Path: <linux-kernel+bounces-136461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED05A89D444
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:29:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 150DE89D433
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:27:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FB7728113E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:29:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F61B1F246C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0E182D7F;
-	Tue,  9 Apr 2024 08:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DFE7EEE1;
+	Tue,  9 Apr 2024 08:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MEAaE4xw"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2Ghk5W2"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A1980622;
-	Tue,  9 Apr 2024 08:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC847E777
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651234; cv=none; b=HBKj7CR/SG5TO9OVSWi5bifmGZfMqT+MW7NVJ+4vhdERkbCUDtYhLd6hNZWbNeatApC0K5cE673C9jiznWKyzM5+GNfS6gzEoV7T0sUmngDHRl91QKDUht8FR9Nqq0TpJhE40gZ4Y0nY7fBHrFKNGOFt1nyHUwX5oZJPu08uCRs=
+	t=1712651218; cv=none; b=Fbw1OV2tfRpOnGCU3u5MRH3dtDYBSdobT9W1W+mCAgywEUILDqC4KWMMopCPoptBRLtBeu7qZEctEQDf9m9Fxcp84Y8ZJRTdQBvUQbim8vrVNmECC9TV/90PQq9eJW77yAmaE1rwkinr7/khV3w1BKVaA/1a5wdRoe0J4ecGPKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651234; c=relaxed/simple;
-	bh=wtVAgX0xEY+zHwpauuBtwhJ06dc7ltmWs4Dbwtv8/Xg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KVqrdLy9H18oz7eTzugHnwohu3F1utqlwZIdZfJWe90n22LNxjJdDEd8w0QSYJXldbFlhsizSTBq0Kj6Cq3rlvMJXalEESWzPJWKgJx3Ymetjy7kllQkHjc4e3OVFyAcrWk+HqoHsSXRQCecO9hJjWw0hwm1VE9XOZOiP6DJWX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MEAaE4xw; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 89FD3FF809;
-	Tue,  9 Apr 2024 08:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712651230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=26JEEt95vJBs36sVv0o/zKUz9aheCKqymwrQT8wgIFY=;
-	b=MEAaE4xwarOGRxS+1CvmUPO1DhBHn5ces2HZ006lO1A4lVdGWpiXWYN3uZc6FrvOnBhnX6
-	YJg1O3EBxr4ET3NnhPg52zOOIQot9HhzU44brnJifo0lWhSwNO7PkbxLTFOvky7nkcKuGw
-	Y6uNeB86fxwP+qmfj/9jWmGwF9HSh1a+KA8zwhxZgjxmiyq70aJCAI6XvsnFk38CV8961C
-	euavzZE5bhpmNzX3mY/eP0v0WIVB+4h/gf1tj/3u5VSHtuo/6ySJaRTAIJPaaRTDHBtQ+c
-	Si5dyXchfkeTgO3+01olp22vbIBc8LeSkyZD8sUA1YO+HKGEyCOhA4PRm3JJzA==
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Tue, 09 Apr 2024 10:26:27 +0200
-Subject: [PATCH net-next v10 05/13] net: Change the API of PHY default
- timestamp to MAC
+	s=arc-20240116; t=1712651218; c=relaxed/simple;
+	bh=ZVVZQhufHZgVYRPoViiMgUgHDRKoZRsicNrqLop/teo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=grgF4NKNskq4tBgDzafFAvkdvchC4rifvJGjMu87DbGW406Xiei3R5xJBuDUPD0nvZtzdD/cmnhdTammLbkhTsUtHQ326cqu9QuCDhc/ODYAXd3DryHZ20mhbjXXhnt/aTEzSg9kTh3+oiln67Y6awhgpsQA4MoPWY+u2pjEX3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2Ghk5W2; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ecfeefe94cso2614593b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712651216; x=1713256016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ei1Crh3xKYkUssDLy2Y3ak8IjHOYPwPhmj2M8HC/g7Q=;
+        b=J2Ghk5W2gCEB0aYkxGY2E322Cjo94GTTUh0IJMz9+MLDbJb7m40yi3aAdRdajuqDD/
+         mrlcCOps9dNdzV4Qikq1ouFrVvsQUStKNWaCvuwWXkSnBUuJI7uS+xtmTrm7bi/hLv1E
+         BshgUb90wMhKiML0Q3BZ63jdNZqFXMB+IsuFpZXP9ekabxWdGd9NLawnyQR0IX5sv8Ry
+         eipjO12gFqXzOi+tCTABUKexhnpcnkaZdqYjIL4CBVXYIwT8yzgI76eNnT/QPDhYScND
+         2JMXz4sUwgj8OIoz/51CZJBw3XYRTC8KLGn16cqFICuQzJ5kbZgOjV2HdDCHFC+47mAu
+         Wgcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712651216; x=1713256016;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ei1Crh3xKYkUssDLy2Y3ak8IjHOYPwPhmj2M8HC/g7Q=;
+        b=ksnQ8nm3eFyosLmWbeCx+ZNZgJm3MULNEEJHmx4icbRl65FQFzDaJ6tvSLo5oh6UyR
+         tyNq1sz+4irgijBm5/LIZ0H3lO/rvmAi7G2W+6elfqtERjr40bhlpkbBz4xEcFE38UUf
+         dAjE8GeDzUu87yCqUIR/baT4BMAQku/hNR9NFRtahVoqMohBBdyCG64nAkwguheoZwIY
+         Y0i2Eh6PO4Y5wRKxkiOocoz0/Wct769N53gj3MmIwHu5lCti5ZCwu7NDJkxNcVba5umf
+         3AHWeGkuN8GpcUAUfRvwV6CWWiGN0VcexJoa+5mUqDQXyjRMo6p3pHMpgOgiDaIM5ME1
+         T3Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCVk3GnYitxYAUnLZyiWEWUD1B3fRzbVnuLfEXWOSdGnrikN7Kyz5u13ScdHPyFhkmjVbtf2dbHXte3FbWHMKHDG7+5FYfQunuQhtkEu
+X-Gm-Message-State: AOJu0YwTqQiv3pqvYonUUaVtTL2ucqlZOgP4MFWpL6SECrIjRdIQPoWo
+	4Ma3gHRyWzLvrfzxrZxebiEio4MJRRRMQQEEnMAfQHpjhM+S5WNRs9SdR7m9GTM=
+X-Google-Smtp-Source: AGHT+IHZGO/8Oq5G4AI8d7uAa0Xfd/UfJnN/mN1F1Zgkmt5jIyqoC0gKP++Z8vrGbui309CoYrBrbQ==
+X-Received: by 2002:a05:6a20:430c:b0:1a7:5413:1e6d with SMTP id h12-20020a056a20430c00b001a754131e6dmr3319733pzk.4.1712651216427;
+        Tue, 09 Apr 2024 01:26:56 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
+        by smtp.gmail.com with ESMTPSA id r16-20020a632050000000b005f05c88c149sm7594238pgm.71.2024.04.09.01.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 01:26:56 -0700 (PDT)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org
+Cc: baolin.wang@linux.alibaba.com,
+	chrisl@kernel.org,
+	david@redhat.com,
+	hanchuanhua@oppo.com,
+	hannes@cmpxchg.org,
+	hughd@google.com,
+	kasong@tencent.com,
+	ryan.roberts@arm.com,
+	surenb@google.com,
+	v-songbaohua@oppo.com,
+	willy@infradead.org,
+	xiang@kernel.org,
+	ying.huang@intel.com,
+	yosryahmed@google.com,
+	yuzhao@google.com,
+	ziy@nvidia.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched swap_free()
+Date: Tue,  9 Apr 2024 20:26:27 +1200
+Message-Id: <20240409082631.187483-2-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240409082631.187483-1-21cnbao@gmail.com>
+References: <20240409082631.187483-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-feature_ptp_netnext-v10-5-0fa2ea5c89a9@bootlin.com>
-References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
-In-Reply-To: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-Change the API to select MAC default time stamping instead of the PHY.
-Indeed the PHY is closer to the wire therefore theoretically it has less
-delay than the MAC timestamping but the reality is different. Due to lower
-time stamping clock frequency, latency in the MDIO bus and no PHC hardware
-synchronization between different PHY, the PHY PTP is often less precise
-than the MAC. The exception is for PHY designed specially for PTP case but
-these devices are not very widespread. For not breaking the compatibility
-default_timestamp flag has been introduced in phy_device that is set by
-the phy driver to know we are using the old API behavior.
+From: Chuanhua Han <hanchuanhua@oppo.com>
 
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+While swapping in a large folio, we need to free swaps related to the whole
+folio. To avoid frequently acquiring and releasing swap locks, it is better
+to introduce an API for batched free.
+
+Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 ---
+ include/linux/swap.h |  5 +++++
+ mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
-Changes in v5:
-- Extract the API change in this patch.
-- Rename whitelist to allowlist.
-- Set NETDEV_TIMESTAMPING in register_netdevice function.
-- Add software timestamping case description in ts_info.
-
-Change in v6:
-- Replace the allowlist phy with a default_timestamp flag to know which
-  phy is using old API behavior.
-- Fix dereferenced of a possible null pointer.
-- Follow timestamping layer naming update.
-- Update timestamp default set between MAC and software.
-- Update ts_info returned in case of software timestamping.
-
-Change in v8:
-- Reform the implementation to use a simple phy_is_default_hwtstamp helper
-  instead of saving the hwtstamp in the net_device struct.
-
-Change in v9:
-- Update few nit following the review.
----
- drivers/net/phy/bcm-phy-ptp.c     |  3 +++
- drivers/net/phy/dp83640.c         |  2 ++
- drivers/net/phy/micrel.c          |  6 ++++++
- drivers/net/phy/mscc/mscc_ptp.c   |  3 +++
- drivers/net/phy/nxp-c45-tja11xx.c |  3 +++
- include/linux/phy.h               | 17 +++++++++++++++++
- net/core/dev_ioctl.c              |  8 +++-----
- net/core/timestamping.c           |  5 +++--
- net/ethtool/common.c              |  2 +-
- 9 files changed, 41 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/phy/bcm-phy-ptp.c b/drivers/net/phy/bcm-phy-ptp.c
-index 617d384d4551..d3e825c951ee 100644
---- a/drivers/net/phy/bcm-phy-ptp.c
-+++ b/drivers/net/phy/bcm-phy-ptp.c
-@@ -931,6 +931,9 @@ struct bcm_ptp_private *bcm_ptp_probe(struct phy_device *phydev)
- 		return ERR_CAST(clock);
- 	priv->ptp_clock = clock;
- 
-+	/* Timestamp selected by default to keep legacy API */
-+	phydev->default_timestamp = true;
-+
- 	priv->phydev = phydev;
- 	bcm_ptp_init(priv);
- 
-diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
-index 5c42c47dc564..d3e72d5c1472 100644
---- a/drivers/net/phy/dp83640.c
-+++ b/drivers/net/phy/dp83640.c
-@@ -1447,6 +1447,8 @@ static int dp83640_probe(struct phy_device *phydev)
- 	for (i = 0; i < MAX_RXTS; i++)
- 		list_add(&dp83640->rx_pool_data[i].list, &dp83640->rxpool);
- 
-+	/* Timestamp selected by default to keep legacy API */
-+	phydev->default_timestamp = true;
- 	phydev->mii_ts = &dp83640->mii_ts;
- 	phydev->priv = dp83640;
- 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index ddb50a0e2bc8..a9baa5e7eff0 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -3201,6 +3201,9 @@ static void lan8814_ptp_init(struct phy_device *phydev)
- 	ptp_priv->mii_ts.ts_info  = lan8814_ts_info;
- 
- 	phydev->mii_ts = &ptp_priv->mii_ts;
-+
-+	/* Timestamp selected by default to keep legacy API */
-+	phydev->default_timestamp = true;
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 11c53692f65f..b7a107e983b8 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+ extern int swap_duplicate(swp_entry_t);
+ extern int swapcache_prepare(swp_entry_t);
+ extern void swap_free(swp_entry_t);
++extern void swap_free_nr(swp_entry_t entry, int nr_pages);
+ extern void swapcache_free_entries(swp_entry_t *entries, int n);
+ extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+ int swap_type_of(dev_t device, sector_t offset);
+@@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t swp)
+ {
  }
  
- static int lan8814_ptp_probe_once(struct phy_device *phydev)
-@@ -4668,6 +4671,9 @@ static int lan8841_probe(struct phy_device *phydev)
- 
- 	phydev->mii_ts = &ptp_priv->mii_ts;
- 
-+	/* Timestamp selected by default to keep legacy API */
-+	phydev->default_timestamp = true;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
-index eb0b032cb613..e66d20eff7c4 100644
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -1570,6 +1570,9 @@ int vsc8584_ptp_probe(struct phy_device *phydev)
- 		return PTR_ERR(vsc8531->load_save);
- 	}
- 
-+	/* Timestamp selected by default to keep legacy API */
-+	phydev->default_timestamp = true;
-+
- 	vsc8531->ptp->phydev = phydev;
- 
- 	return 0;
-diff --git a/drivers/net/phy/nxp-c45-tja11xx.c b/drivers/net/phy/nxp-c45-tja11xx.c
-index 3cf614b4cd52..d18c133e6013 100644
---- a/drivers/net/phy/nxp-c45-tja11xx.c
-+++ b/drivers/net/phy/nxp-c45-tja11xx.c
-@@ -1660,6 +1660,9 @@ static int nxp_c45_probe(struct phy_device *phydev)
- 		priv->mii_ts.ts_info = nxp_c45_ts_info;
- 		phydev->mii_ts = &priv->mii_ts;
- 		ret = nxp_c45_init_ptp_clock(priv);
-+
-+		/* Timestamp selected by default to keep legacy API */
-+		phydev->default_timestamp = true;
- 	} else {
- 		phydev_dbg(phydev, "PTP support not enabled even if the phy supports it");
- 	}
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 3ddfe7fe781a..d09a340b95e2 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -615,6 +615,8 @@ struct macsec_ops;
-  *                 handling shall be postponed until PHY has resumed
-  * @irq_rerun: Flag indicating interrupts occurred while PHY was suspended,
-  *             requiring a rerun of the interrupt handler after resume
-+ * @default_timestamp: Flag indicating whether we are using the phy
-+ *		       timestamp as the default one
-  * @interface: enum phy_interface_t value
-  * @possible_interfaces: bitmap if interface modes that the attached PHY
-  *			 will switch between depending on media speed.
-@@ -681,6 +683,8 @@ struct phy_device {
- 	unsigned irq_suspended:1;
- 	unsigned irq_rerun:1;
- 
-+	unsigned default_timestamp:1;
-+
- 	int rate_matching;
- 
- 	enum phy_state state;
-@@ -1625,6 +1629,19 @@ static inline void phy_txtstamp(struct phy_device *phydev, struct sk_buff *skb,
- 	phydev->mii_ts->txtstamp(phydev->mii_ts, skb, type);
- }
- 
-+/**
-+ * phy_is_default_hwtstamp - return true if phy is the default hw timestamp
-+ * @phydev: Pointer to phy_device
-+ *
-+ * This is used to get default timestamping device taking into account
-+ * the new API choice, which is selecting the timestamping from MAC by
-+ * default if the phydev does not have default_timestamp flag enabled.
-+ */
-+static inline bool phy_is_default_hwtstamp(struct phy_device *phydev)
++void swap_free_nr(swp_entry_t entry, int nr_pages)
 +{
-+	return phy_has_hwtstamp(phydev) && phydev->default_timestamp;
 +}
 +
- /**
-  * phy_is_internal - Convenience function for testing if a PHY is internal
-  * @phydev: the phy_device struct
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index 6aaa8326bf8f..36cea843381f 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -259,9 +259,7 @@ static int dev_eth_ioctl(struct net_device *dev,
-  * @dev: Network device
-  * @cfg: Timestamping configuration structure
-  *
-- * Helper for enforcing a common policy that phylib timestamping, if available,
-- * should take precedence in front of hardware timestamping provided by the
-- * netdev.
-+ * Helper for calling the default hardware provider timestamping.
-  *
-  * Note: phy_mii_ioctl() only handles SIOCSHWTSTAMP (not SIOCGHWTSTAMP), and
-  * there only exists a phydev->mii_ts->hwtstamp() method. So this will return
-@@ -271,7 +269,7 @@ static int dev_eth_ioctl(struct net_device *dev,
- int dev_get_hwtstamp_phylib(struct net_device *dev,
- 			    struct kernel_hwtstamp_config *cfg)
+ static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
  {
--	if (phy_has_hwtstamp(dev->phydev))
-+	if (phy_is_default_hwtstamp(dev->phydev))
- 		return phy_hwtstamp_get(dev->phydev, cfg);
+ }
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 28642c188c93..f4c65aeb088d 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
+ 		__swap_entry_free(p, entry);
+ }
  
- 	return dev->netdev_ops->ndo_hwtstamp_get(dev, cfg);
-@@ -327,7 +325,7 @@ int dev_set_hwtstamp_phylib(struct net_device *dev,
- 			    struct netlink_ext_ack *extack)
- {
- 	const struct net_device_ops *ops = dev->netdev_ops;
--	bool phy_ts = phy_has_hwtstamp(dev->phydev);
-+	bool phy_ts = phy_is_default_hwtstamp(dev->phydev);
- 	struct kernel_hwtstamp_config old_cfg = {};
- 	bool changed = false;
- 	int err;
-diff --git a/net/core/timestamping.c b/net/core/timestamping.c
-index 04840697fe79..3717fb152ecc 100644
---- a/net/core/timestamping.c
-+++ b/net/core/timestamping.c
-@@ -25,7 +25,8 @@ void skb_clone_tx_timestamp(struct sk_buff *skb)
- 	struct sk_buff *clone;
- 	unsigned int type;
- 
--	if (!skb->sk)
-+	if (!skb->sk || !skb->dev ||
-+	    !phy_is_default_hwtstamp(skb->dev->phydev))
- 		return;
- 
- 	type = classify(skb);
-@@ -47,7 +48,7 @@ bool skb_defer_rx_timestamp(struct sk_buff *skb)
- 	struct mii_timestamper *mii_ts;
- 	unsigned int type;
- 
--	if (!skb->dev || !skb->dev->phydev || !skb->dev->phydev->mii_ts)
-+	if (!skb->dev || !phy_is_default_hwtstamp(skb->dev->phydev))
- 		return false;
- 
- 	if (skb_headroom(skb) < ETH_HLEN)
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index 6b2a360dcdf0..01b7550f12c6 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -637,7 +637,7 @@ int __ethtool_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
- 	memset(info, 0, sizeof(*info));
- 	info->cmd = ETHTOOL_GET_TS_INFO;
- 
--	if (phy_has_tsinfo(phydev))
-+	if (phy_is_default_hwtstamp(phydev) && phy_has_tsinfo(phydev))
- 		return phy_ts_info(phydev, info);
- 	if (ops->get_ts_info)
- 		return ops->get_ts_info(dev, info);
-
++/*
++ * Free up the maximum number of swap entries at once to limit the
++ * maximum kernel stack usage.
++ */
++#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFILE_CLUSTER)
++
++/*
++ * Called after swapping in a large folio, batched free swap entries
++ * for this large folio, entry should be for the first subpage and
++ * its offset is aligned with nr_pages
++ */
++void swap_free_nr(swp_entry_t entry, int nr_pages)
++{
++	int i, j;
++	struct swap_cluster_info *ci;
++	struct swap_info_struct *p;
++	unsigned int type = swp_type(entry);
++	unsigned long offset = swp_offset(entry);
++	int batch_nr, remain_nr;
++	DECLARE_BITMAP(usage, SWAP_BATCH_NR) = { 0 };
++
++	/* all swap entries are within a cluster for mTHP */
++	VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
++
++	if (nr_pages == 1) {
++		swap_free(entry);
++		return;
++	}
++
++	remain_nr = nr_pages;
++	p = _swap_info_get(entry);
++	if (p) {
++		for (i = 0; i < nr_pages; i += batch_nr) {
++			batch_nr = min_t(int, SWAP_BATCH_NR, remain_nr);
++
++			ci = lock_cluster_or_swap_info(p, offset);
++			for (j = 0; j < batch_nr; j++) {
++				if (__swap_entry_free_locked(p, offset + i * SWAP_BATCH_NR + j, 1))
++					__bitmap_set(usage, j, 1);
++			}
++			unlock_cluster_or_swap_info(p, ci);
++
++			for_each_clear_bit(j, usage, batch_nr)
++				free_swap_slot(swp_entry(type, offset + i * SWAP_BATCH_NR + j));
++
++			bitmap_clear(usage, 0, SWAP_BATCH_NR);
++			remain_nr -= batch_nr;
++		}
++	}
++}
++
+ /*
+  * Called after dropping swapcache to decrease refcnt to swap entries.
+  */
 -- 
 2.34.1
 
