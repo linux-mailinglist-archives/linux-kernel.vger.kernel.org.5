@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-137257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9F189E014
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:12:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50ED289DF89
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62E76B29AAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812371C2189E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA7F13D608;
-	Tue,  9 Apr 2024 15:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E94D13BC0D;
+	Tue,  9 Apr 2024 15:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="du2t19T0"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="O5rq+CV4"
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C21213BC0B;
-	Tue,  9 Apr 2024 15:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0254A13B7AB;
+	Tue,  9 Apr 2024 15:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677588; cv=none; b=dK0v1b/0ZEEaNYtXzxD7oBpkXCMEOkkib7Rz/JUUj9qG5yc71amXInYnx93Wx9qu6ZS06SMXxkYo7H3oQd+pxGbHHTfDnFP8VdqjbnRvr64Vbay5ohiW6Wj7CnKVHgORV1+0jYin139ByrKuGOyJ+3EtCuY6VIbuh0HHZNfFWZU=
+	t=1712677585; cv=none; b=tzUxciFA1/FpqVV6kDO3SCRtHYlZYDsjgu2BiMeA9b+s9IYnNRvlSDOufCOcJNbQzh94L7mYadYLGNMAbVVdo5C4iUoD1C/nzHrPSW1IXt1/sCuevZylKhIsow96lMVJj1vrzUMEFo6EYQoCn7qsWsjTBxAufHSckKtIkKV5q6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677588; c=relaxed/simple;
-	bh=iSTLVLIy2o0xdhE41Jdp4Cxj2vLa0PYff8icfkK+GMo=;
+	s=arc-20240116; t=1712677585; c=relaxed/simple;
+	bh=lB+OSgFBKTPogjqBh7v/fFKKRZTQIHKNXmdDGgNyk8g=;
 	h=From:To:Cc:Date:Message-Id:In-Reply-To:References:MIME-Version:
-	 Subject; b=BC0+PF4Vd9YiPVI1Higo6/gESB/wCjTWz+cxm4hDCbgaRZ8SXHO6wKfwZmvqrOvI6SWv1ZZKmJSRv3Ri6eK0WY1e4zhgOY50Mnh0WR4a28qanZbZn7ZCky2119HUPwd+t7iGi6KP8PKeWpudroYP42XWIwSqruBqy73KGHgoqwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=du2t19T0; arc=none smtp.client-ip=162.243.120.170
+	 Subject; b=JxzvDMMAXK0uLCtF6qQINoYJWNC/72l1MW5ddj45zSTEfr4t+EfSPHG9FGXPP5myxpV4qhyo2//OlK6gbmSUotwz8WifUoY63kganqSadldglXs4Tzo9/F6ga5kRX/ACtKzEFRpIVmTdzXMiVoOfMbN6Z8U6y/MMMYHOH7tRQwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=O5rq+CV4; arc=none smtp.client-ip=162.243.120.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=lCxCeWbt8uSDKc1Xqjof8d8QsSDhI7OnGAQovecVbF4=; b=du2t19T0lNnQkelI1w+FNUvpv9
-	qQqnid7+vPCGU97qVpmC+mJUIcC1F9UKwyquU1+NJLppqj8nRWak95AWyR3fBZ0zWKq10L2SyjoDY
-	NHp8StDTTsvpHUWKK8nyYzkS8tePX3A2oXH+qy4WKwQQ8TZ2FmuQBzeSGrssNao01Nlg=;
+	bh=tGKtNFefyyWSQPpVNbihtZ2oqv0OxBXwGK/JHuIWq3I=; b=O5rq+CV4kblEFvCwcvq5yv5BIf
+	Kq2oduBDGzl2QaCxbD3I2XM/4aomdiFCwVsIe9wQnBCpWsRVKictO2+GeAolLhrUA4RuxBx10zA5/
+	3Jd41XvMdrBsQtCQhmZtPG9QSI9J7EI/gjXTiceDE7fKI1cmrKwbMBvtREtSxwRL6KLE=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:44750 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1ruDfq-0002NM-0g; Tue, 09 Apr 2024 11:46:14 -0400
+	id 1ruDfq-0002NM-Tk; Tue, 09 Apr 2024 11:46:15 -0400
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -49,9 +49,10 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
 	andy.shevchenko@gmail.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Tue,  9 Apr 2024 11:42:49 -0400
-Message-Id: <20240409154253.3043822-2-hugo@hugovil.com>
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andy@kernel.org>
+Date: Tue,  9 Apr 2024 11:42:50 -0400
+Message-Id: <20240409154253.3043822-3-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240409154253.3043822-1-hugo@hugovil.com>
 References: <20240409154253.3043822-1-hugo@hugovil.com>
@@ -67,41 +68,38 @@ X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Level: 
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-Subject: [PATCH v4 1/5] serial: sc16is7xx: add proper sched.h include for sched_set_fifo()
+Subject: [PATCH v4 2/5] serial: sc16is7xx: unconditionally clear line bit in sc16is7xx_remove()
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Replace incorrect include with the proper one for sched_set_fifo()
-declaration.
+There is no need to check for previous port registration in
+sc16is7xx_remove() because if sc16is7xx_probe() succeeded, we are
+guaranteed to have successfully registered both ports. We can thus
+unconditionally clear the line allocation bit in sc16is7xx_lines.
 
-Fixes: 28d2f209cd16 ("sched,serial: Convert to sched_set_fifo()")
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
 ---
- drivers/tty/serial/sc16is7xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/sc16is7xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 929206a9a6e11..34edc80859d5c 100644
+index 34edc80859d5c..b971fd2a9a77e 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -18,6 +18,7 @@
- #include <linux/module.h>
- #include <linux/property.h>
- #include <linux/regmap.h>
-+#include <linux/sched.h>
- #include <linux/serial_core.h>
- #include <linux/serial.h>
- #include <linux/tty.h>
-@@ -25,7 +26,6 @@
- #include <linux/spi/spi.h>
- #include <linux/uaccess.h>
- #include <linux/units.h>
--#include <uapi/linux/sched/types.h>
+@@ -1670,8 +1670,8 @@ static void sc16is7xx_remove(struct device *dev)
  
- #define SC16IS7XX_NAME			"sc16is7xx"
- #define SC16IS7XX_MAX_DEVS		8
+ 	for (i = 0; i < s->devtype->nr_uart; i++) {
+ 		kthread_cancel_delayed_work_sync(&s->p[i].ms_work);
+-		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
+-			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
++		clear_bit(s->p[i].port.line, sc16is7xx_lines);
++		uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
+ 		sc16is7xx_power(&s->p[i].port, 0);
+ 	}
+ 
 -- 
 2.39.2
 
