@@ -1,137 +1,122 @@
-Return-Path: <linux-kernel+bounces-137399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B366B89E181
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:25:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE6E89E183
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D72A2844E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:25:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A47B21F23CD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E888155A45;
-	Tue,  9 Apr 2024 17:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED275156233;
+	Tue,  9 Apr 2024 17:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="A23n1mtR"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOXtDKhU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D5C15539C;
-	Tue,  9 Apr 2024 17:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373E7155A45;
+	Tue,  9 Apr 2024 17:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712683555; cv=none; b=f/cd6gHXWpBKnNPH1/6mEOTBTdIHf2P6Galh+HQUw7o/ca/kntWkib3TafcKHQP5zeC+qLCZicXA+J5i7ZS3D77EiDCzuQ+Sha1XPV9+2BbOpzUQVQFqwa+gG8dUXE1bfz0oho9F8GCocvHU/dxZVui6p0r6KCm5ejxQ/IbC1xs=
+	t=1712683626; cv=none; b=BXdNrSoUbRnOmPJxagfxuKpjvzQnFKep793aUs+9AfoIFFM8dpSeryDONK1aAMZ6MHpcG8WKzX+8drg7IYqhRbRbczflXws8po7Ux3gdNHSWrWySC+qa4Lx/0xaUk6WmD9BggOnwh+pD8xkphHPfLPA8nbLpx5K77THb04CONJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712683555; c=relaxed/simple;
-	bh=swPXTNFMleNRLwc2lI7NazIDtpCFdxALL6JsEwXB/nI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=n0Z85M3RFhNIntzMSFUDEAoM3MRN/FCM2EPmfjAmksPyXppDii0sKwK9HYqZagBYetbgwJb9HTse+A9Nuj2UPqJyfY2Q5lkTERQcunWB8yhLrLCUaQpJi6fZxvFhAoqWwZDkywvqtVxk4N788dsgN5MHuVCHiUUD6DQHz4E8ins=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=A23n1mtR; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A0981BF207;
-	Tue,  9 Apr 2024 17:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712683551;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WISM4SZ11/bakGJjQ1nxpVqGMl6TzT7gttp099sMHpM=;
-	b=A23n1mtRt2NqdiKwG/WTebq7AV9WP14rbLv03cFVlCVSPlYIaeG3u8uBNq/rJy7yLQfpI+
-	OHfgbuUa9V7MdWNenepSfqYYoQrn0QrM8ZPdjpeaXx9mJwdmFeEKWtPM2zYyqpKM/Rt6YY
-	bwqj05vCBeK7G4aON47bYSQrA5yA84sN3AHShIXvxOi72/6G37Q4B1lpsWQtmXUZ3x1dPw
-	WSZSZi1Y9id7V9YL9DrP2g8+ku9huadfhGJcYT9w67c7EbEDfwOr7K4aC4scbhJZHSUBI+
-	mWaYdCoJmRnSRPpO6sYkqKPudHzPSB75WGQ6HrMbi7DzoAobOZKOWN0BqwB2pQ==
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Tue, 09 Apr 2024 19:25:33 +0200
-Subject: [PATCH] spi: omap2-mcspi: Ensure that CS is correctly asserted
- when switching from MULTI mode to SINGLE mode
+	s=arc-20240116; t=1712683626; c=relaxed/simple;
+	bh=Kbut6EHysiAuN2pqwbI1Q3ysmlqsWX1b/pEAFMnt+eg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HiPP0NX/K2RcK3B2AqNgeyz21DFPFYq0jI8MlFWrtEf/HfsuB+9gW81Gb59iPU20uZKLYJMdDt4A2maugis6zjEU3n6dVarXvyIrG+O5nmY+KJH6q/Z3u6D6+T8rj4LqqioABwqOnb5+HPFRMGS1oKlCP5VYNP73cAuJoNipuII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOXtDKhU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6636C433C7;
+	Tue,  9 Apr 2024 17:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712683625;
+	bh=Kbut6EHysiAuN2pqwbI1Q3ysmlqsWX1b/pEAFMnt+eg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MOXtDKhUSuGy06O0wOHEzMRUsMEx1PIpgQJfGYxuWXcCM0Hi03dVimVFkMGIujRJ3
+	 nnf9k4pl9WHvRGO24qbpJYe5cQPMAlNzXQnqaC5yB23mArWmjYIwoTLkAe3pHeAij7
+	 bVG/W9agnm3h+ORu1i468Ml2zhUUaDQ23Yr1D4nJprQjvE1GV6xLqsfRHLIKOfK+3q
+	 5WbVRukqkcBpuL0jIA799KCPPHH3S8qo1NW+hOFq4D1e/TJ7DFYKieiv1xGAljJsFj
+	 KNdM3guD0TBs5LxYi9iL3llXOJVY7wDUyizpGSx2sSGYlAGQpTxPcJT7ZnjWoES55A
+	 YlEg8mZ22GnFQ==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51381021af1so9546528e87.0;
+        Tue, 09 Apr 2024 10:27:05 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV4YrIlbxcpcD0Cqj4P1qr3fD3Zr96Bw1tsxsn9qcj1xdfx30Ri6i44HHNkXM9XETGq9owZIpSd705nmBhpPNc1WVfmIa47msYn4HNvpvmYNfrkxGHJKXNaSDyAflgbEHoYX8nTaY8T5Vr7+b6JZEe7h3tj5HEyHZeWipO55NsGb7Uqq1Cr
+X-Gm-Message-State: AOJu0YwLZFUlp0T+ZO/p4mawkGTHJdfdz/g3UsYFgFBNG0LdENfRz0/b
+	9RNrYaCPx5RvAch1Kq4ELIDFb+062mDsnDg4SShMLvSLoHNTSs1OtJzfC6CUvqaRWelyqKX5mRW
+	PjAIbL3fRFzv7onp4eakz3+VqUw==
+X-Google-Smtp-Source: AGHT+IEHcM0JD7ZqWipo4LWrXKbnA82iD02tShlGX9cvVnQUGGgSKaw7D46ABppnjB6v8ynWM6ZkjO5amGWWIwt6rYg=
+X-Received: by 2002:ac2:4c35:0:b0:516:9fab:75de with SMTP id
+ u21-20020ac24c35000000b005169fab75demr55819lfq.5.1712683624187; Tue, 09 Apr
+ 2024 10:27:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-fix-omap2-mcspi-v1-1-f2b881ae196d@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAAx6FWYC/y2MQQqEMAxFryJZT6AtRdSriIuoUbNQazuKIN7d4
- Mzyff57FySOwgmq7ILIhyRZFwX7yaCbaBkZpVcGZ5w33hQ4yInrTMHh3KUgSHnrrfWO+pJArRB
- ZL2+xbn4ceds1/P2P9/0AX4w783YAAAA=
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com, 
- yen-mei.goh@keysight.com, jeremie.dautheribes@bootlin.com, 
- Louis Chauvet <louis.chauvet@bootlin.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1947;
- i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=swPXTNFMleNRLwc2lI7NazIDtpCFdxALL6JsEwXB/nI=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmFXoepxRFUwhEMxCHyBDkcvdZB4eO8mCwgvuHR
- krRnUY3zO+JAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZhV6HgAKCRAgrS7GWxAs
- 4tyXEACrFn0qHvl2K7LYOp4wxc8ZUhEzov48y9wjgI6EB4BLJmXKwjf/4QC/N0E6j8FRWcs9HCG
- 1I2r9z81SdrX5iZYzYDtTn3xV52lrVD5rHHmu3W8dpu19DtpDXzfTgC1zqHgI3c7IkCUAUoZwxQ
- 0QQwEdLe1ch2xd4K5KNpxfpgN91cMpl/dlLfnwqbBh8Hp34EsvHKooEltp840EsOtI6EbSOn5HA
- KJKl1CVbd1/Riz45tufyZE0bKf9cg90wdsN3Jf4C8FP+xYuTC++sdbJ6dqheeGw70DRHBqiTta2
- 8rvYBq1aqw7CaVd86QAnlDrtQqpDpvlFWn3+jXe86xmDkr/SyPJIgLC7+mZ8fJ8EoXvxparmy/6
- qQpXuXbO8KHl5I+50o86eFEDgZqhwTtJY5VU2XhFw54vcnrdFcIVZ9PYYliLKiTvpLusQAZWZat
- 131dX5cFFfY+Lxd7Rxxk63hMww2T5f/Lx+N4sg3EMhUTP/brF3Nqa1QVzm64a8z1zgi+S6AX0JK
- QSqB9gDaHw2YBghqRk9ku6C75Ngrm6WfXhX7/GnvA29fDduvO4afdoVdN4XlXWgEcbUADOKIoFd
- rK2UnQluDUXfirlIEwZzVOneLGzN+3BzJtVeMFk9ggiUDHTZTWnLlP+28QhTW5p8dd18fwAN19R
- xpC5yKXk+KNez8w==
-X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
- fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
-X-GND-Sasl: louis.chauvet@bootlin.com
+References: <20240322145406.2613256-1-Frank.Li@nxp.com>
+In-Reply-To: <20240322145406.2613256-1-Frank.Li@nxp.com>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 9 Apr 2024 12:26:52 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLJDhJd_uoL05Z=s3Mc7PRkcJWsQGGjdG0Q0GFp0zA8xw@mail.gmail.com>
+Message-ID: <CAL_JsqLJDhJd_uoL05Z=s3Mc7PRkcJWsQGGjdG0Q0GFp0zA8xw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ASoC: dt-bindings: fsl-esai: Convert fsl,esai.txt
+ to yaml
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shengjiu Wang <shengjiu.wang@nxp.com>, 
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	imx@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The OMAP2 support features a "multi" mode, where the controller
-automatically sets the Chip Select (CS) when necessary. This mode allows
-for shorter delays between CS selection and word content, but the CS is
-always deasserted at the end.
+On Fri, Mar 22, 2024 at 9:54=E2=80=AFAM Frank Li <Frank.Li@nxp.com> wrote:
+>
+> Convert fsl,esai.txt to yaml. So DTB_CHECK tools can verify dts file abou=
+t
+> esai part.
+>
+> clock-names 'spba' is optional according to description. So minItems of
+> clocks and clock-names is 3.
+>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>
+> Notes:
+>     Change from v1 to v2
+>     - alphabetical order compatible string according to rob's suggestion
+>     - clock description move under 'clock' according to kryszof's suggest=
+ion
+>     - fix descritpion indent according to rob's suggestion
+>
+>     Pass dt_binding check
+>      make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- -j8  dt_binding=
+_check DT_SCHEMA_FILES=3Dfsl,esai.yaml
+>       DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dt=
+s
+>       LINT    Documentation/devicetree/bindings
+>       CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>       SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>       DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dt=
+b
 
-The default transfer_one_message function expects the last transfer of a
-message to keep the CS enabled. However, when two consecutive messages
-use "multi" mode followed by "single" mode, the chipselect is not enabled
-during the second message. This discrepancy causes the driver to time
-out.
+Did you run dtbs_check too? Probably not arm32 at least (first number
+is number of warnings):
 
-To address this issue, the CS is now reasserted for each new message that
-follows a "multi"-mode message. This change ensures proper CS handling
-and prevents driver timeouts.
+    218  esai@2024000: clocks: [[2, 208], [2, 209], [2, 118], [2,
+208], [2, 156]] is too long
+    218  esai@2024000: clock-names:3: 'spba' was expected
+    218  esai@2024000: clock-names:2: 'fsys' was expected
+    218  esai@2024000: clock-names:1: 'extal' was expected
+    218  esai@2024000: clock-names: ['core', 'mem', 'extal', 'fsys',
+'spba'] is too long
 
-Fixes: d153ff4056cb ("spi: omap2-mcspi: Add support for MULTI-mode")
+Conversions can leave warnings, but any you think should be fixed in
+the binding should be fixed in the conversion.
 
-Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
----
- drivers/spi/spi-omap2-mcspi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
-index 7e3083b83534..571e4499f71c 100644
---- a/drivers/spi/spi-omap2-mcspi.c
-+++ b/drivers/spi/spi-omap2-mcspi.c
-@@ -1264,6 +1264,15 @@ static int omap2_mcspi_prepare_message(struct spi_controller *ctlr,
- 	struct spi_transfer	*tr;
- 	u8 bits_per_word;
- 
-+	/*
-+	 * When the last transfer used multi-mode, the CS is not keep down by the controller.
-+	 * The default transfer_one_message expect that the last transfer of a message keep the CS
-+	 * active.
-+	 * Ensure that the next call to spi_set_cs will work as expected if single-mode is used.
-+	 */
-+	if (mcspi->use_multi_mode)
-+		master->last_cs = -1;
-+
- 	/*
- 	 * The conditions are strict, it is mandatory to check each transfer of the list to see if
- 	 * multi-mode is applicable.
-
----
-base-commit: 51244b7df2f236cea87a10729d5cbc777d199e19
-change-id: 20240408-fix-omap2-mcspi-a6b41142ad9a
-
-Best regards,
--- 
-Louis Chauvet <louis.chauvet@bootlin.com>
-
+Rob
 
