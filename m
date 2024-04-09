@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-137709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C11C89E63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:42:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7205E89E641
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5FC61F22BB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9501C1C21275
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AF8159578;
-	Tue,  9 Apr 2024 23:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00422159595;
+	Tue,  9 Apr 2024 23:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="akCryv6f"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bS1DOqTf"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C321F158DCB;
-	Tue,  9 Apr 2024 23:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6D8159560;
+	Tue,  9 Apr 2024 23:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706117; cv=none; b=q12cAPmswx04S7DCiFp63iKJJ81KzhfZICvcwK7nr2dRcr6m4+ugZygJ6NpqyDwMbE7yKXui38CFT8xoarE+Za6MlY2UeEN2sMzHGCcGumV9qS7FOf3HZDNdSGRjTJlBh38IZu50q2J49K9PrMqK7zJQzmL+7XZTuHpK4rYP//M=
+	t=1712706118; cv=none; b=svs+7WURfsjWNp9LGUOFnpFx8W7kBWZnoeYqFjTcpG4tHhRLbMHg7e7tsib89/ottGwfmHbGOMdpnIHI7/MuCW7hFLZ4BZp5WkvgYVhSRsiE2uUTvnix5TjH1COzmMMAtHJGLUngFFQNMz/qIcQSOHn9N90sGu2Tl5dg4VtLEM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706117; c=relaxed/simple;
-	bh=f7e/oyVMdbTdINlF0aMs9BPxj2KwRBufaHG15Gly+mQ=;
+	s=arc-20240116; t=1712706118; c=relaxed/simple;
+	bh=iKaSrf5zwPLA+q9IhwN1kJrQgT5cbqfZxW7V8J6yr24=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Dl4Wd4lLKkWF7f+240qHCin6/l0+ARvDjxZ3M0k35z6BlijusaFAMqBmjfsaBS6kEQe/9ccWqh+GyhxEgejNWRTQTtssS8zkYpsMvxD1ChjDanxeqIhlAVtndJrzcEF/vioJ6SnQ0KAy5XPQvpKGtYNBa+rvYzXhPKGHnyxPOe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=akCryv6f; arc=none smtp.client-ip=192.198.163.7
+	 MIME-Version; b=qhOxH7Fg+Eh4AU/2my42SnmaQCayltck9huw576izlJljdxFudv1HKN/f5me4NMwy/Dli4XTS88zk0ChdnIDgKaw17vZdc+UFiC2AuAKSEjVbuSkfNhETy/UxXjiQT3pR9kKTzaRZ+TbS8THRXAuSTFxa/xSl4ZNKu/D3qgpPTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bS1DOqTf; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712706116; x=1744242116;
+  t=1712706117; x=1744242117;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=f7e/oyVMdbTdINlF0aMs9BPxj2KwRBufaHG15Gly+mQ=;
-  b=akCryv6fLO7lPPcYRZeJZbUb03+dMWhPGKtRLYP9FVeteBhf5HxMAL4m
-   jIqtHH28mr1o51eajlChFAQNdiWbZwt4ZLYI85+bT7dFmMlyKtJTgUhxI
-   YTGSCRZTUS9O+rEJWgoCRVAFyDWOg5WfxPc6hlJmtU1zd3fBKQHn0yOIa
-   psO3UsUfWfvisUTddd/20VlNSM44NjeRfmNAYGb6qKL1aPsnWC5SC2jkg
-   mvLewY37zhyrWWTE4NEZozQrRRDs98lsaaqPo0LgPnywBTwluRspDId+r
-   lnSjeiG++MfA6JxfYsTNXn0kujBtuflzV77ZbVg4KY2J4DkrBDUU94BjE
+  bh=iKaSrf5zwPLA+q9IhwN1kJrQgT5cbqfZxW7V8J6yr24=;
+  b=bS1DOqTfhp5yS11Xvi/l4qcOMiE43qTjwVeR7VNMrtCntLOKZu9H6fB+
+   wVxaguElj0P+DgvE6jgkeJAZwetU4WdEohzMc8iIxlv1O/VERn0YBM/Yg
+   nTgkb5e7Qtarfbeh+1zE2dI5HFsKRJpwbyLnd+Gs/N8dF+gBdam+XHxkV
+   JuuzfjhwS+7hmbrTXaRKzBXjf2vm4c0EvUng0UNO3VwJfO/VpMZIKumuv
+   yDOWWXEAiSr73ylqRypWGnIBrzKSH2B/mDqmk+p+GUSaP6TbmVyXivQax
+   NrDMNxfB+MLpdSZzZq7Lb4nltZcDD7G1An3L3UgSHoHU4k9xy3K82r/gv
    g==;
-X-CSE-ConnectionGUID: LiNX/LDyTcG9qP1RabOkyw==
-X-CSE-MsgGUID: wg6mm0QoRuybYHmmq1qGwA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455099"
+X-CSE-ConnectionGUID: Yxcdq0TLSJCKULxvoQHEIQ==
+X-CSE-MsgGUID: YYfbsVUATu6RUxby5+mHcQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455103"
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="33455099"
+   d="scan'208";a="33455103"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:56 -0700
-X-CSE-ConnectionGUID: TUQJzVCnRWyi9ZLk2zz8ew==
-X-CSE-MsgGUID: yTAKyI7FSXG1fzTeHDKRvg==
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:57 -0700
+X-CSE-ConnectionGUID: TekG6ouoQf670rncSnjYuQ==
+X-CSE-MsgGUID: 410dKT+yQ+WzkwRq7mosDg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20261793"
+   d="scan'208";a="20261804"
 Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:55 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:56 -0700
 From: Peter Colberg <peter.colberg@intel.com>
 To: Wu Hao <hao.wu@intel.com>,
 	Tom Rix <trix@redhat.com>,
@@ -68,9 +68,9 @@ Cc: Russ Weight <russ.weight@linux.dev>,
 	Marco Pagani <marpagan@redhat.com>,
 	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
 	Peter Colberg <peter.colberg@intel.com>
-Subject: [RFC PATCH v2 4/9] fpga: dfl: migrate FPGA Management Engine driver to dfl_feature_dev_data
-Date: Tue,  9 Apr 2024 19:39:37 -0400
-Message-ID: <20240409233942.828440-5-peter.colberg@intel.com>
+Subject: [RFC PATCH v2 5/9] fpga: dfl: migrate FME partial reconfiguration driver to dfl_feature_dev_data
+Date: Tue,  9 Apr 2024 19:39:38 -0400
+Message-ID: <20240409233942.828440-6-peter.colberg@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409233942.828440-1-peter.colberg@intel.com>
 References: <20240409233942.828440-1-peter.colberg@intel.com>
@@ -83,220 +83,260 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 This change separates out most of the symbol name changes required by this
-patch series for the file: drivers/fpga/dfl-fme-main.c. This is done to
-split a single monolithic change into multiple, smaller patches at the
-request of the maintainer.
+patch series for the file: drivers/fpga/dfl-fme-pr.c. This is done to split
+a single monolithic change into multiple, smaller patches at the request of
+the maintainer.
 
 Signed-off-by: Peter Colberg <peter.colberg@intel.com>
 ---
 v2:
 - Split monolithic patch into series at request of maintainer
-- Change fme_hdr_ioctl_*() to receive dfl_feature_dev_data instead of
-  dfl_feature_platform_data.
-- Remove unused local variable pdata in fme_dev_{init,destroy}().
+- Substitute @fdata for @pdata in kernel-doc comments for
+  dfl_fme_create_mgr() and dfl_fme_destroy_mgr().
 ---
- drivers/fpga/dfl-fme-main.c | 68 ++++++++++++++++++++-----------------
- 1 file changed, 36 insertions(+), 32 deletions(-)
+ drivers/fpga/dfl-fme-pr.c | 82 ++++++++++++++++++++-------------------
+ 1 file changed, 42 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
-index 864924f68f5e..7f119b09b54e 100644
---- a/drivers/fpga/dfl-fme-main.c
-+++ b/drivers/fpga/dfl-fme-main.c
-@@ -135,10 +135,10 @@ static const struct attribute_group fme_hdr_group = {
- 	.attrs = fme_hdr_attrs,
- };
+diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
+index cdcf6dea4cc9..f4c95c4b88d9 100644
+--- a/drivers/fpga/dfl-fme-pr.c
++++ b/drivers/fpga/dfl-fme-pr.c
+@@ -65,7 +65,7 @@ static struct fpga_region *dfl_fme_region_find(struct dfl_fme *fme, int port_id)
  
--static long fme_hdr_ioctl_release_port(struct dfl_feature_platform_data *pdata,
-+static long fme_hdr_ioctl_release_port(struct dfl_feature_dev_data *fdata,
- 				       unsigned long arg)
- {
--	struct dfl_fpga_cdev *cdev = pdata->dfl_cdev;
-+	struct dfl_fpga_cdev *cdev = fdata->dfl_cdev;
- 	int port_id;
- 
- 	if (get_user(port_id, (int __user *)arg))
-@@ -147,10 +147,10 @@ static long fme_hdr_ioctl_release_port(struct dfl_feature_platform_data *pdata,
- 	return dfl_fpga_cdev_release_port(cdev, port_id);
- }
- 
--static long fme_hdr_ioctl_assign_port(struct dfl_feature_platform_data *pdata,
-+static long fme_hdr_ioctl_assign_port(struct dfl_feature_dev_data *fdata,
- 				      unsigned long arg)
- {
--	struct dfl_fpga_cdev *cdev = pdata->dfl_cdev;
-+	struct dfl_fpga_cdev *cdev = fdata->dfl_cdev;
- 	int port_id;
- 
- 	if (get_user(port_id, (int __user *)arg))
-@@ -163,13 +163,13 @@ static long fme_hdr_ioctl(struct platform_device *pdev,
- 			  struct dfl_feature *feature,
- 			  unsigned int cmd, unsigned long arg)
+ static int fme_pr(struct platform_device *pdev, unsigned long arg)
  {
 -	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
 +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
+ 	void __user *argp = (void __user *)arg;
+ 	struct dfl_fpga_fme_port_pr port_pr;
+ 	struct fpga_image_info *info;
+@@ -123,8 +123,8 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
  
- 	switch (cmd) {
- 	case DFL_FPGA_FME_PORT_RELEASE:
--		return fme_hdr_ioctl_release_port(pdata, arg);
-+		return fme_hdr_ioctl_release_port(fdata, arg);
- 	case DFL_FPGA_FME_PORT_ASSIGN:
--		return fme_hdr_ioctl_assign_port(pdata, arg);
-+		return fme_hdr_ioctl_assign_port(fdata, arg);
- 	}
- 
- 	return -ENODEV;
-@@ -411,14 +411,14 @@ static int power_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
- static int power_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
- 			     u32 attr, int channel, long val)
- {
--	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev->parent);
-+	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
- 	struct dfl_feature *feature = dev_get_drvdata(dev);
- 	int ret = 0;
- 	u64 v;
- 
- 	val = clamp_val(val / MICRO, 0, PWR_THRESHOLD_MAX);
+ 	info->flags |= FPGA_MGR_PARTIAL_RECONFIG;
  
 -	mutex_lock(&pdata->lock);
+-	fme = dfl_fpga_pdata_get_private(pdata);
 +	mutex_lock(&fdata->lock);
++	fme = dfl_fpga_fdata_get_private(fdata);
+ 	/* fme device has been unregistered. */
+ 	if (!fme) {
+ 		ret = -EINVAL;
+@@ -156,7 +156,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
  
- 	switch (attr) {
- 	case hwmon_power_max:
-@@ -438,7 +438,7 @@ static int power_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
- 		break;
- 	}
- 
+ 	put_device(&region->dev);
+ unlock_exit:
 -	mutex_unlock(&pdata->lock);
 +	mutex_unlock(&fdata->lock);
- 
+ free_exit:
+ 	vfree(buf);
  	return ret;
+@@ -164,16 +164,16 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
+ 
+ /**
+  * dfl_fme_create_mgr - create fpga mgr platform device as child device
++ * @fdata: fme feature dev data
+  * @feature: sub feature info
+- * @pdata: fme platform_device's pdata
+  *
+  * Return: mgr platform device if successful, and error code otherwise.
+  */
+ static struct platform_device *
+-dfl_fme_create_mgr(struct dfl_feature_platform_data *pdata,
++dfl_fme_create_mgr(struct dfl_feature_dev_data *fdata,
+ 		   struct dfl_feature *feature)
+ {
+-	struct platform_device *mgr, *fme = pdata->dev;
++	struct platform_device *mgr, *fme = fdata->dev;
+ 	struct dfl_fme_mgr_pdata mgr_pdata;
+ 	int ret = -ENOMEM;
+ 
+@@ -209,11 +209,11 @@ dfl_fme_create_mgr(struct dfl_feature_platform_data *pdata,
+ 
+ /**
+  * dfl_fme_destroy_mgr - destroy fpga mgr platform device
+- * @pdata: fme platform device's pdata
++ * @fdata: fme feature dev data
+  */
+-static void dfl_fme_destroy_mgr(struct dfl_feature_platform_data *pdata)
++static void dfl_fme_destroy_mgr(struct dfl_feature_dev_data *fdata)
+ {
+-	struct dfl_fme *priv = dfl_fpga_pdata_get_private(pdata);
++	struct dfl_fme *priv = dfl_fpga_fdata_get_private(fdata);
+ 
+ 	platform_device_unregister(priv->mgr);
  }
-@@ -589,7 +589,7 @@ static struct dfl_feature_driver fme_feature_drvs[] = {
- 	},
- };
- 
--static long fme_ioctl_check_extension(struct dfl_feature_platform_data *pdata,
-+static long fme_ioctl_check_extension(struct dfl_feature_dev_data *fdata,
- 				      unsigned long arg)
+@@ -221,15 +221,15 @@ static void dfl_fme_destroy_mgr(struct dfl_feature_platform_data *pdata)
+ /**
+  * dfl_fme_create_bridge - create fme fpga bridge platform device as child
+  *
+- * @pdata: fme platform device's pdata
++ * @fdata: fme feature dev data
+  * @port_id: port id for the bridge to be created.
+  *
+  * Return: bridge platform device if successful, and error code otherwise.
+  */
+ static struct dfl_fme_bridge *
+-dfl_fme_create_bridge(struct dfl_feature_platform_data *pdata, int port_id)
++dfl_fme_create_bridge(struct dfl_feature_dev_data *fdata, int port_id)
  {
- 	/* No extension support for now */
-@@ -600,19 +600,21 @@ static int fme_open(struct inode *inode, struct file *filp)
- {
- 	struct platform_device *fdev = dfl_fpga_inode_to_feature_dev(inode);
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&fdev->dev);
-+	struct dfl_feature_dev_data *fdata;
- 	int ret;
+-	struct device *dev = &pdata->dev->dev;
++	struct device *dev = &fdata->dev->dev;
+ 	struct dfl_fme_br_pdata br_pdata;
+ 	struct dfl_fme_bridge *fme_br;
+ 	int ret = -ENOMEM;
+@@ -238,7 +238,7 @@ dfl_fme_create_bridge(struct dfl_feature_platform_data *pdata, int port_id)
+ 	if (!fme_br)
+ 		return ERR_PTR(ret);
  
- 	if (WARN_ON(!pdata))
- 		return -ENODEV;
+-	br_pdata.cdev = pdata->dfl_cdev;
++	br_pdata.cdev = fdata->dfl_cdev;
+ 	br_pdata.port_id = port_id;
+ 
+ 	fme_br->br = platform_device_alloc(DFL_FPGA_FME_BRIDGE,
+@@ -274,11 +274,11 @@ static void dfl_fme_destroy_bridge(struct dfl_fme_bridge *fme_br)
+ 
+ /**
+  * dfl_fme_destroy_bridges - destroy all fpga bridge platform device
+- * @pdata: fme platform device's pdata
++ * @fdata: fme feature dev data
+  */
+-static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
++static void dfl_fme_destroy_bridges(struct dfl_feature_dev_data *fdata)
+ {
+-	struct dfl_fme *priv = dfl_fpga_pdata_get_private(pdata);
++	struct dfl_fme *priv = dfl_fpga_fdata_get_private(fdata);
+ 	struct dfl_fme_bridge *fbridge, *tmp;
+ 
+ 	list_for_each_entry_safe(fbridge, tmp, &priv->bridge_list, node) {
+@@ -290,7 +290,7 @@ static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
+ /**
+  * dfl_fme_create_region - create fpga region platform device as child
+  *
+- * @pdata: fme platform device's pdata
++ * @fdata: fme feature dev data
+  * @mgr: mgr platform device needed for region
+  * @br: br platform device needed for region
+  * @port_id: port id
+@@ -298,12 +298,12 @@ static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
+  * Return: fme region if successful, and error code otherwise.
+  */
+ static struct dfl_fme_region *
+-dfl_fme_create_region(struct dfl_feature_platform_data *pdata,
++dfl_fme_create_region(struct dfl_feature_dev_data *fdata,
+ 		      struct platform_device *mgr,
+ 		      struct platform_device *br, int port_id)
+ {
+ 	struct dfl_fme_region_pdata region_pdata;
+-	struct device *dev = &pdata->dev->dev;
++	struct device *dev = &fdata->dev->dev;
+ 	struct dfl_fme_region *fme_region;
+ 	int ret = -ENOMEM;
+ 
+@@ -353,11 +353,11 @@ static void dfl_fme_destroy_region(struct dfl_fme_region *fme_region)
+ 
+ /**
+  * dfl_fme_destroy_regions - destroy all fme regions
+- * @pdata: fme platform device's pdata
++ * @fdata: fme feature dev data
+  */
+-static void dfl_fme_destroy_regions(struct dfl_feature_platform_data *pdata)
++static void dfl_fme_destroy_regions(struct dfl_feature_dev_data *fdata)
+ {
+-	struct dfl_fme *priv = dfl_fpga_pdata_get_private(pdata);
++	struct dfl_fme *priv = dfl_fpga_fdata_get_private(fdata);
+ 	struct dfl_fme_region *fme_region, *tmp;
+ 
+ 	list_for_each_entry_safe(fme_region, tmp, &priv->region_list, node) {
+@@ -369,7 +369,8 @@ static void dfl_fme_destroy_regions(struct dfl_feature_platform_data *pdata)
+ static int pr_mgmt_init(struct platform_device *pdev,
+ 			struct dfl_feature *feature)
+ {
+-	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature_dev_data *fdata =
++			to_dfl_feature_dev_data(&pdev->dev);
+ 	struct dfl_fme_region *fme_region;
+ 	struct dfl_fme_bridge *fme_br;
+ 	struct platform_device *mgr;
+@@ -381,15 +382,15 @@ static int pr_mgmt_init(struct platform_device *pdev,
+ 	fme_hdr = dfl_get_feature_ioaddr_by_id(&pdev->dev,
+ 					       FME_FEATURE_ID_HEADER);
  
 -	mutex_lock(&pdata->lock);
--	ret = dfl_feature_dev_use_begin(pdata, filp->f_flags & O_EXCL);
-+	fdata = pdata;
+-	priv = dfl_fpga_pdata_get_private(pdata);
 +	mutex_lock(&fdata->lock);
-+	ret = dfl_feature_dev_use_begin(fdata, filp->f_flags & O_EXCL);
- 	if (!ret) {
- 		dev_dbg(&fdev->dev, "Device File Opened %d Times\n",
--			dfl_feature_dev_use_count(pdata));
-+			dfl_feature_dev_use_count(fdata));
- 		filp->private_data = pdata;
++	priv = dfl_fpga_fdata_get_private(fdata);
+ 
+ 	/* Initialize the region and bridge sub device list */
+ 	INIT_LIST_HEAD(&priv->region_list);
+ 	INIT_LIST_HEAD(&priv->bridge_list);
+ 
+ 	/* Create fpga mgr platform device */
+-	mgr = dfl_fme_create_mgr(pdata, feature);
++	mgr = dfl_fme_create_mgr(fdata, feature);
+ 	if (IS_ERR(mgr)) {
+ 		dev_err(&pdev->dev, "fail to create fpga mgr pdev\n");
+ 		goto unlock;
+@@ -405,7 +406,7 @@ static int pr_mgmt_init(struct platform_device *pdev,
+ 			continue;
+ 
+ 		/* Create bridge for each port */
+-		fme_br = dfl_fme_create_bridge(pdata, i);
++		fme_br = dfl_fme_create_bridge(fdata, i);
+ 		if (IS_ERR(fme_br)) {
+ 			ret = PTR_ERR(fme_br);
+ 			goto destroy_region;
+@@ -414,7 +415,7 @@ static int pr_mgmt_init(struct platform_device *pdev,
+ 		list_add(&fme_br->node, &priv->bridge_list);
+ 
+ 		/* Create region for each port */
+-		fme_region = dfl_fme_create_region(pdata, mgr,
++		fme_region = dfl_fme_create_region(fdata, mgr,
+ 						   fme_br->br, i);
+ 		if (IS_ERR(fme_region)) {
+ 			ret = PTR_ERR(fme_region);
+@@ -423,30 +424,31 @@ static int pr_mgmt_init(struct platform_device *pdev,
+ 
+ 		list_add(&fme_region->node, &priv->region_list);
  	}
--	mutex_unlock(&pdata->lock);
-+	mutex_unlock(&fdata->lock);
- 
- 	return ret;
- }
-@@ -620,19 +622,20 @@ static int fme_open(struct inode *inode, struct file *filp)
- static int fme_release(struct inode *inode, struct file *filp)
- {
- 	struct dfl_feature_platform_data *pdata = filp->private_data;
--	struct platform_device *pdev = pdata->dev;
-+	struct dfl_feature_dev_data *fdata = pdata;
-+	struct platform_device *pdev = fdata->dev;
- 	struct dfl_feature *feature;
- 
- 	dev_dbg(&pdev->dev, "Device File Release\n");
- 
--	mutex_lock(&pdata->lock);
--	dfl_feature_dev_use_end(pdata);
-+	mutex_lock(&fdata->lock);
-+	dfl_feature_dev_use_end(fdata);
- 
--	if (!dfl_feature_dev_use_count(pdata))
--		dfl_fpga_dev_for_each_feature(pdata, feature)
-+	if (!dfl_feature_dev_use_count(fdata))
-+		dfl_fpga_dev_for_each_feature(fdata, feature)
- 			dfl_fpga_set_irq_triggers(feature, 0,
- 						  feature->nr_irqs, NULL);
 -	mutex_unlock(&pdata->lock);
 +	mutex_unlock(&fdata->lock);
  
  	return 0;
- }
-@@ -640,7 +643,8 @@ static int fme_release(struct inode *inode, struct file *filp)
- static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	struct dfl_feature_platform_data *pdata = filp->private_data;
--	struct platform_device *pdev = pdata->dev;
-+	struct dfl_feature_dev_data *fdata = pdata;
-+	struct platform_device *pdev = fdata->dev;
- 	struct dfl_feature *f;
- 	long ret;
  
-@@ -650,7 +654,7 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	case DFL_FPGA_GET_API_VERSION:
- 		return DFL_FPGA_API_VERSION;
- 	case DFL_FPGA_CHECK_EXTENSION:
--		return fme_ioctl_check_extension(pdata, arg);
-+		return fme_ioctl_check_extension(fdata, arg);
- 	default:
- 		/*
- 		 * Let sub-feature's ioctl function to handle the cmd.
-@@ -658,7 +662,7 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		 * handled in this sub feature, and returns 0 or other
- 		 * error code if cmd is handled.
- 		 */
--		dfl_fpga_dev_for_each_feature(pdata, f) {
-+		dfl_fpga_dev_for_each_feature(fdata, f) {
- 			if (f->ops && f->ops->ioctl) {
- 				ret = f->ops->ioctl(pdev, f, cmd, arg);
- 				if (ret != -ENODEV)
-@@ -672,27 +676,27 @@ static long fme_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- static int fme_dev_init(struct platform_device *pdev)
- {
--	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
-+	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
- 	struct dfl_fme *fme;
- 
- 	fme = devm_kzalloc(&pdev->dev, sizeof(*fme), GFP_KERNEL);
- 	if (!fme)
- 		return -ENOMEM;
- 
--	mutex_lock(&pdata->lock);
--	dfl_fpga_pdata_set_private(pdata, fme);
+ destroy_region:
+-	dfl_fme_destroy_regions(pdata);
+-	dfl_fme_destroy_bridges(pdata);
+-	dfl_fme_destroy_mgr(pdata);
++	dfl_fme_destroy_regions(fdata);
++	dfl_fme_destroy_bridges(fdata);
++	dfl_fme_destroy_mgr(fdata);
+ unlock:
 -	mutex_unlock(&pdata->lock);
-+	mutex_lock(&fdata->lock);
-+	dfl_fpga_fdata_set_private(fdata, fme);
 +	mutex_unlock(&fdata->lock);
- 
- 	return 0;
+ 	return ret;
  }
  
- static void fme_dev_destroy(struct platform_device *pdev)
+ static void pr_mgmt_uinit(struct platform_device *pdev,
+ 			  struct dfl_feature *feature)
  {
 -	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
-+	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(&pdev->dev);
++	struct dfl_feature_dev_data *fdata =
++			to_dfl_feature_dev_data(&pdev->dev);
  
 -	mutex_lock(&pdata->lock);
--	dfl_fpga_pdata_set_private(pdata, NULL);
--	mutex_unlock(&pdata->lock);
 +	mutex_lock(&fdata->lock);
-+	dfl_fpga_fdata_set_private(fdata, NULL);
+ 
+-	dfl_fme_destroy_regions(pdata);
+-	dfl_fme_destroy_bridges(pdata);
+-	dfl_fme_destroy_mgr(pdata);
+-	mutex_unlock(&pdata->lock);
++	dfl_fme_destroy_regions(fdata);
++	dfl_fme_destroy_bridges(fdata);
++	dfl_fme_destroy_mgr(fdata);
 +	mutex_unlock(&fdata->lock);
  }
  
- static const struct file_operations fme_fops = {
+ static long fme_pr_ioctl(struct platform_device *pdev,
 -- 
 2.44.0
 
