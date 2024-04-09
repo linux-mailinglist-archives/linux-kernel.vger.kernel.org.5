@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-136782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887F389D815
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:38:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B918289D818
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:38:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7A41C24B20
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:38:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5FF61C246B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC7B13248C;
-	Tue,  9 Apr 2024 11:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274FA132819;
+	Tue,  9 Apr 2024 11:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1UxKrCwZ"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="2LxECNbS"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF271131BD6;
-	Tue,  9 Apr 2024 11:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642D813248E;
+	Tue,  9 Apr 2024 11:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662439; cv=none; b=gvdwDzu1tniYVsbtsBAaWBxKgMVFB1WyXpb5wHIMRQa3UPJfr5Z1eENlknv14K8bZcWjmz+g17KRIq3900DEYiAcn98lI2Waat2MauacZQ7q9oryZU+v3skCitFBYVYqyimzkITaKzQxIlp5ktDl09pWU0HPoRjTG+qJxgFITuQ=
+	t=1712662442; cv=none; b=JGX9mFmKkYJZ/TGtXai/+iN5GiRiRiSY39SypyXX+1MT6nTOd00SnPgi0V3LJ5LYWicnkqg2gUCiLIds9WOJm/0xkQxyIhmJBDAS/5yOxOCFVo8o3vC9SYAhKB9fqcjeJvl50IMW9AM9HlvK+FVJ1H3OFZtbeabbmkA7s3zLec4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662439; c=relaxed/simple;
-	bh=ClgWR4mgcTFs9Nig5y7IuRN0DOliEM0btt6YY0gL/ck=;
+	s=arc-20240116; t=1712662442; c=relaxed/simple;
+	bh=0HO5qRG7yEUzOGGRdhqoIYa/lL7AlbvV2yD89QdBpT4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FhCoN62MxtSCBTPQSo1POQKkOLzrf+ItDdr/nxN5kXlnFUe8rUpLtwzGhhwQS4QzOVNohuinHZGD02PNkBVv/QjT/F2s5aNYqQdOgMPmbTPU/10TTcbsHRddAWRdZ8ZpcW4HhHz5csydzwD+LiIGCjOmcYMVlOMpRjEhMhq5d8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1UxKrCwZ; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=DNfmmfAnPdz54s996x2rE1JU0eR7tkFmzrXUWrPdcXYstNVv2APoS2pA5/rYQL0uO246c/ay6DACylHwlGXlRkX2kQdCK+pf/8/s+kOyIG6m7S0nb7NWHfUpqwplK93I1t6JO0689606EDvy3FP+yjLAJb3GeUZFe8wWzUQ5/Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=2LxECNbS; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712662436;
-	bh=ClgWR4mgcTFs9Nig5y7IuRN0DOliEM0btt6YY0gL/ck=;
+	s=mail; t=1712662438;
+	bh=0HO5qRG7yEUzOGGRdhqoIYa/lL7AlbvV2yD89QdBpT4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=1UxKrCwZGfiST8d6KpGhuEB/Zlp/tAykO+Moio6Qm3s5OQYTSOv4a/ysFlL2dosFk
-	 KXgWRlU2V5ll1DWKZrEbFrev4cjH9ZbAzFotBNA6jWLfq1ypemKOAyfpUobXoGhXPc
-	 +ZbauqgXqZkgLvqAb9bQfY2v7418TZEHyDR+V8U+wL/kGpzL825PQooD48GcqBAUlp
-	 PRAXOzUxoBXUJP0xR1gAr00lkgVgY4gJRTYoI5i+qkKIQLhBaCsDnlP4nSDvYNJZq4
-	 JH3BKG6P9m6tpmPtRSoOk3BhYPuUSoueS09F2059J50/sQWlQoq1sz8lLsESC9JT8K
-	 V8C6wWCllhY9Q==
+	b=2LxECNbStsShBe9BxdU7ykmyjzb6y4Dubr6mxyzyi696LuIFVRZ/bDA6heNJ8UcaN
+	 43QKkLN9ze/sW/XnNnwqkLYNgk9uF30JlU/X/QkzKDNjDi4OXyDh4aNWht5faLo34E
+	 HhCAJmBAaS8oF4S4OgXAl9IZlwjmFrxcgXzayVKeq92FR/sgQ8zQ5IePSSUhqdyRv9
+	 16xHQtv6Nb0I+u5JS9slYWgbjiqFXWVelC1R/nodBszN41ZEzs3JdBvR4boBF0RmmD
+	 26I04dw6GJLGBovSo72yWjRjcIzjpV9e849v6OPG41Vn1yb+pBTTKEmL3p5A6HMrbq
+	 D8HxYVSjRF5DQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 50E72378212D;
-	Tue,  9 Apr 2024 11:33:54 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 98F7A3782111;
+	Tue,  9 Apr 2024 11:33:56 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -86,9 +86,9 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 11/18] ASoC: mediatek: Add common mtk_afe_component_probe callback
-Date: Tue,  9 Apr 2024 13:33:03 +0200
-Message-ID: <20240409113310.303261-12-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 12/18] ASoC: mediatek: Use common mtk_afe_pcm_platform with common probe cb
+Date: Tue,  9 Apr 2024 13:33:04 +0200
+Message-ID: <20240409113310.303261-13-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
@@ -100,50 +100,245 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Multiple MediaTek AFE PCM component drivers are using their own .probe()
-callback, but most of those are simply duplicated functions as they are
-doing exactly the same thing over and over.
+Since the mtk-afe-platform-driver generic mtk_afe_pcm_platform now has
+a common .probe() callback, there is no reason to keep duplicating this
+function over and over in the SoC specific AFE-PCM drivers: switch over
+to register with the common bits instead.
 
-Add a common probe callback for this component to reduce duplication.
+Note that MT8186 was left out of this because it is registering some
+extra sinegen controls in the AFE-PCM probe callback and needs extra
+cleanups to be able to use the common bits.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../mediatek/common/mtk-afe-platform-driver.c  | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c | 14 +-----------
+ sound/soc/mediatek/mt7986/mt7986-afe-pcm.c | 14 +-----------
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 14 +-----------
+ sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 21 +-----------------
+ sound/soc/mediatek/mt8192/mt8192-afe-pcm.c | 25 ++--------------------
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 21 +-----------------
+ 6 files changed, 7 insertions(+), 102 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 32edcb6d5219..9b72b2a7ae91 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -126,10 +126,28 @@ int mtk_afe_pcm_new(struct snd_soc_component *component,
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index da7267c684b1..c1dee119e93a 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -704,18 +704,6 @@ static int mt6797_afe_runtime_resume(struct device *dev)
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
  
-+static int mtk_afe_component_probe(struct snd_soc_component *component)
-+{
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	snd_soc_component_init_regmap(component, afe->regmap);
-+
-+	/* If the list was never initialized there are no sub-DAIs */
-+	if (afe->sub_dais.next && afe->sub_dais.prev) {
-+		ret = mtk_afe_add_sub_dai_control(component);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- const struct snd_soc_component_driver mtk_afe_pcm_platform = {
- 	.name		= AFE_PCM_NAME,
- 	.pointer	= mtk_afe_pcm_pointer,
- 	.pcm_construct	= mtk_afe_pcm_new,
-+	.probe		= mtk_afe_component_probe,
- };
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_platform);
+-static int mt6797_afe_component_probe(struct snd_soc_component *component)
+-{
+-	return mtk_afe_add_sub_dai_control(component);
+-}
+-
+-static const struct snd_soc_component_driver mt6797_afe_component = {
+-	.name		= AFE_PCM_NAME,
+-	.probe		= mt6797_afe_component_probe,
+-	.pointer	= mtk_afe_pcm_pointer,
+-	.pcm_construct	= mtk_afe_pcm_new,
+-};
+-
+ static int mt6797_dai_memif_register(struct mtk_base_afe *afe)
+ {
+ 	struct mtk_base_afe_dai *dai;
+@@ -852,7 +840,7 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	pm_runtime_get_sync(&pdev->dev);
  
+ 	/* register component */
+-	ret = devm_snd_soc_register_component(dev, &mt6797_afe_component,
++	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
+ 					      NULL, 0);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c b/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
+index d497e1129889..c1c486e275b9 100644
+--- a/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
++++ b/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
+@@ -429,18 +429,6 @@ static int mt7986_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mt7986_afe_component_probe(struct snd_soc_component *component)
+-{
+-	return mtk_afe_add_sub_dai_control(component);
+-}
+-
+-static const struct snd_soc_component_driver mt7986_afe_component = {
+-	.name = AFE_PCM_NAME,
+-	.probe = mt7986_afe_component_probe,
+-	.pointer	= mtk_afe_pcm_pointer,
+-	.pcm_construct	= mtk_afe_pcm_new,
+-};
+-
+ static int mt7986_dai_memif_register(struct mtk_base_afe *afe)
+ {
+ 	struct mtk_base_afe_dai *dai;
+@@ -573,7 +561,7 @@ static int mt7986_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	/* register component */
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &mt7986_afe_component,
++					      &mtk_afe_pcm_platform,
+ 					      NULL, 0);
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "Cannot register AFE component\n");
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 9e432ed9124b..25348fdf75fa 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -1042,18 +1042,6 @@ static int mt8183_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mt8183_afe_component_probe(struct snd_soc_component *component)
+-{
+-	return mtk_afe_add_sub_dai_control(component);
+-}
+-
+-static const struct snd_soc_component_driver mt8183_afe_component = {
+-	.name		= AFE_PCM_NAME,
+-	.probe		= mt8183_afe_component_probe,
+-	.pointer	= mtk_afe_pcm_pointer,
+-	.pcm_construct	= mtk_afe_pcm_new,
+-};
+-
+ static int mt8183_dai_memif_register(struct mtk_base_afe *afe)
+ {
+ 	struct mtk_base_afe_dai *dai;
+@@ -1232,7 +1220,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	/* register component */
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &mt8183_afe_component,
++					      &mtk_afe_pcm_platform,
+ 					      NULL, 0);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+index 46d6a5540403..9647fe133dc8 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
++++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+@@ -3030,25 +3030,6 @@ static int mt8188_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mt8188_afe_component_probe(struct snd_soc_component *component)
+-{
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+-	int ret;
+-
+-	snd_soc_component_init_regmap(component, afe->regmap);
+-
+-	ret = mtk_afe_add_sub_dai_control(component);
+-
+-	return ret;
+-}
+-
+-static const struct snd_soc_component_driver mt8188_afe_component = {
+-	.name = AFE_PCM_NAME,
+-	.pointer       = mtk_afe_pcm_pointer,
+-	.pcm_construct = mtk_afe_pcm_new,
+-	.probe         = mt8188_afe_component_probe,
+-};
+-
+ static int init_memif_priv_data(struct mtk_base_afe *afe)
+ {
+ 	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+@@ -3350,7 +3331,7 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* register component */
+-	ret = devm_snd_soc_register_component(dev, &mt8188_afe_component,
++	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
+ 					      afe->dai_drivers, afe->num_dai_drivers);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+index aed22baef9fb..424c5c68f78a 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
++++ b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+@@ -2125,22 +2125,6 @@ static int mt8192_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mt8192_afe_component_probe(struct snd_soc_component *component)
+-{
+-	return mtk_afe_add_sub_dai_control(component);
+-}
+-
+-static const struct snd_soc_component_driver mt8192_afe_component = {
+-	.name = AFE_PCM_NAME,
+-	.probe = mt8192_afe_component_probe,
+-	.pointer = mtk_afe_pcm_pointer,
+-	.pcm_construct = mtk_afe_pcm_new,
+-};
+-
+-static const struct snd_soc_component_driver mt8192_afe_pcm_component = {
+-	.name = "mt8192-afe-pcm-dai",
+-};
+-
+ static int mt8192_dai_memif_register(struct mtk_base_afe *afe)
+ {
+ 	struct mtk_base_afe_dai *dai;
+@@ -2302,16 +2286,11 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	/* register platform */
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &mt8192_afe_component, NULL, 0);
+-	if (ret)
+-		return dev_err_probe(dev, ret, "Couldn't register AFE component\n");
+-
+-	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &mt8192_afe_pcm_component,
++					      &mtk_afe_pcm_platform,
+ 					      afe->dai_drivers,
+ 					      afe->num_dai_drivers);
+ 	if (ret)
+-		return dev_err_probe(dev, ret, "Couldn't register AFE-PCM component\n");
++		return dev_err_probe(dev, ret, "Couldn't register AFE component\n");
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+index 620d7ade1992..64af9bf363fd 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
++++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+@@ -2944,25 +2944,6 @@ static int mt8195_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mt8195_afe_component_probe(struct snd_soc_component *component)
+-{
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+-	int ret = 0;
+-
+-	snd_soc_component_init_regmap(component, afe->regmap);
+-
+-	ret = mtk_afe_add_sub_dai_control(component);
+-
+-	return ret;
+-}
+-
+-static const struct snd_soc_component_driver mt8195_afe_component = {
+-	.name = AFE_PCM_NAME,
+-	.pointer = mtk_afe_pcm_pointer,
+-	.pcm_construct = mtk_afe_pcm_new,
+-	.probe = mt8195_afe_component_probe,
+-};
+-
+ static int init_memif_priv_data(struct mtk_base_afe *afe)
+ {
+ 	struct mt8195_afe_private *afe_priv = afe->platform_priv;
+@@ -3164,7 +3145,7 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* register component */
+-	ret = devm_snd_soc_register_component(dev, &mt8195_afe_component,
++	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
+ 					      afe->dai_drivers, afe->num_dai_drivers);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
 -- 
 2.44.0
 
