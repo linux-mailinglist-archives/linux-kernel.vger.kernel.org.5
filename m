@@ -1,115 +1,116 @@
-Return-Path: <linux-kernel+bounces-136394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB2A89D393
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:52:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A0F89D3A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:58:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B6F9B230B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:52:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6F2F1F21D8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EDC7E564;
-	Tue,  9 Apr 2024 07:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF187D3E8;
+	Tue,  9 Apr 2024 07:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LDR6LfN0"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="h2KMpMeG"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF157D096;
-	Tue,  9 Apr 2024 07:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57CA7D3EC
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712649142; cv=none; b=CtSbWhBnm6NwCIN3/1PABy///OQTCxJcPuN79peosidVFhkYTpk88cKH7PYo7e1tBcq2RSStWenRibtt0wlLE3NZrDCQW8Wu4juHGt2ih5XgODf28BNilDPT9q9Q8K58/0ovbgjcIDGTrgQ+u2dHiBRKHzSeb1f76xn2X6j0tDM=
+	t=1712649497; cv=none; b=nIfUAcH/mtstA00lmxzIBE6FdUqhBeycucHUC49NOv9QyhyAPhdKIhFBdhmu8Jy8iiQ95T9vnnFQLyoXT8iJmcjcgr1VtGfEP/cO7aYrwJsaUXBGCrwcwVYrElY8oGOOLfJYGRrwR1rNn3+4TtEddBZj5jDwamZeib2yuJNpcZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712649142; c=relaxed/simple;
-	bh=bEhSDx+vWHpXQlt+M7IjBoMc4qQqSypyklKcr1IXMf0=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L0YGpSisb3ydNchckIPPEnMFNnn6zR4oERsTJyg/J9S08pOOWAh6SS0zRabPRs8ouIPBUlGiUMZqZBB3UVD6y3fVWiPZGo9uGLhgQqb7MZ2kewot/ASff+3C6zjrE2/0hbL5SSGZVE0EQqAqGy46sqHRAVVUyHma1EdNmv1kSjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LDR6LfN0; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B9A091C0007;
-	Tue,  9 Apr 2024 07:52:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712649132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fv6RYLQFO+Neqn3UJOqdARRddJ1bSBwtGcUX7fOSOmY=;
-	b=LDR6LfN0SwuGCykwpiBkJhA675YPhZc5smBYQgzhs2+vOL71choduSOtMKeCZ2zbteNJn0
-	dGJwqyul7Z0JOPsG62iRy8pajSj5AEAeMSVy/lf4TLETXNF1+gDsC3OFpHo5nmtmXmRFzk
-	aK/qznAU2TBbbDw3G/qIeT9fmNuBkNYfUFo8TPzXqqQq9ROFOWCt23M2DTALqh8KAfENcL
-	39BBu5x5ef4Kx9BZzIoskU8FeKrLjpWy7qDStgYb/F9C9n6l7y2MGK3BfMeHJCtaxBVuKG
-	yAT8KjC8HZjDZlX+o0rAr5v3PFUrw6zbXrRxMjPPvNY0tIJjA+f1xCEJ8KDrcw==
-Message-ID: <7364e62f-b776-42c2-b063-319aa939da29@bootlin.com>
-Date: Tue, 9 Apr 2024 09:52:10 +0200
+	s=arc-20240116; t=1712649497; c=relaxed/simple;
+	bh=fkQFeV62PoatkDect11xNRrrL7rSiE+jiTOmwVolER4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A9RF3eUTKyPfvTyjbZ7Dloq+t4kHbSOMyJdZRRy+8Lxw6QFpqLAQkG/QJhqaDk5kaXMcIfKQLpbtCGtDPnhqM8qfQ2uAp5+AIf78JNSyFY7xIwhKvolKTE9wrLJ4u4J8jge28MAIHjcTZg2V3k8xckCHoDdpDI1+LJPjs0RaCmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=h2KMpMeG; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id ACE56100002;
+	Tue,  9 Apr 2024 10:57:52 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1712649472; bh=19/Iy6O/3LiyHhHggC3Vu6d5yWOLTGboqwpYX5yUxhE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=h2KMpMeGhSjBRau0u8dxlvcVd01vY+Bg0ZgvGrH0+UFqhE3oI/y6dv5nffZVPBFRR
+	 taGnfUqPJQD0v3Mg27F58CI/vKFRXut6pQrffVZ0rHYyMBSqxJu/eEu9WMVCoNiFBF
+	 vbhGbh4RfQ369y3AqyY/XSsnl/frty3BNVkmZwDUu9CJluZ8QAZJ7rXFM0Am//kQt+
+	 yL3f18NadrMDRXadGUmDHbcw4OHH67HgGlKQm+zkDxbUxQRPvpSswgRhlb+lJ6NKcg
+	 GtgL+IrE5LkDOGY3J2MgOb8xTzb/Bqg2ITyQsidjMxn4edlPW9Z4hDYWUP57JoC4//
+	 kvr8ACzovQrNQ==
+Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Tue,  9 Apr 2024 10:56:50 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 9 Apr 2024
+ 10:56:30 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Eric Anholt <eric@anholt.net>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Maxime Ripard <mripard@kernel.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+	<tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
+	<daniel@ffwll.ch>, Boris Brezillon <bbrezillon@kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] drm: vc4: Fix possible null pointer dereference
+Date: Tue, 9 Apr 2024 10:56:22 +0300
+Message-ID: <20240409075622.11783-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: michael.opdenacker@bootlin.com, devicetree@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: sophgo: add initial Milk-V Duo S board device
- tree
-To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-References: <20240409064504.4010353-1-michael.opdenacker@bootlin.com>
- <IA1PR20MB49532A8D4294ADCE0C33A654BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Language: en-US
-From: Michael Opdenacker <michael.opdenacker@bootlin.com>
-Organization: Bootlin
-In-Reply-To: <IA1PR20MB49532A8D4294ADCE0C33A654BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: michael.opdenacker@bootlin.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184634 [Apr 09 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t-argos.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/09 06:51:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/09 03:34:00 #24714050
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Hi Inochi
+In vc4_hdmi_audio_init() of_get_address() may return
+NULL which is later dereferenced. Fix this bug by adding NULL check.
 
-Thanks for the review and tips!
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-On 4/9/24 at 09:17, Inochi Amaoto wrote:
-> On Tue, Apr 09, 2024 at 08:45:04AM +0200, michael.opdenacker@bootlin.com wrote:
->> From: Michael Opdenacker <michael.opdenacker@bootlin.com>
->>
->> This adds initial support for the Milk-V Duo S board
->> (https://milkv.io/duo-s), enabling the serial port and
->> read-only SD card support, allowing to boot Linux to the
->> command line.
->>
-> Hi Michael,
->
-> I think your patch losts the board binding and have wrong compatiable.
-> Also, the SD can have rw support with proper property. See link [1]
-> (need 'disable-wp').
+Fixes: bb7d78568814 ("drm/vc4: Add HDMI audio support")
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Right, ""sophgo,sg2000" doesn't exist yet, so it will be indeed cleaner 
-to use "sophgo,cv1812h" instead.
-
->
-> I suggest you resubmitting this patch after applying clk patchs.
-> This could reduce some unnecessary change. For now, you can just
-> use the dts for huashan-pi (with changed memory size).
->
-> [1]: https://lore.kernel.org/linux-riscv/IA1PR20MB4953B158F6F575840F3D4267BB7D2@IA1PR20MB4953.namprd20.prod.outlook.com/
-
-Good to know. That was next on my list.
-I'll submit a V2 in the next days.
-Thanks again
-Cheers
-Michael.
-
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index d8751ea20303..5f8d51b29370 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -2740,6 +2740,8 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 		index = 1;
+ 
+ 	addr = of_get_address(dev->of_node, index, NULL, NULL);
++	if (!addr)
++		return -EINVAL;
+ 
+ 	vc4_hdmi->audio.dma_data.addr = be32_to_cpup(addr) + mai_data->offset;
+ 	vc4_hdmi->audio.dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
 -- 
-Michael Opdenacker, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.30.2
 
 
