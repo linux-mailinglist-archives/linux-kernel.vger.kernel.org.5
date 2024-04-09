@@ -1,54 +1,39 @@
-Return-Path: <linux-kernel+bounces-136601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74D589D606
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4275889D607
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B9782831C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:55:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED90E283F4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB7F80604;
-	Tue,  9 Apr 2024 09:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="a8hm4D8k"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5740B80038;
-	Tue,  9 Apr 2024 09:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3678F8060A;
+	Tue,  9 Apr 2024 09:55:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7709780038
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712656506; cv=none; b=RTTswboAlWzjyxHoUwu661s/xPo/2yPucWclAd5W1lkVnR0ZzlgkPTb4SEOXzoBcDEkfXjvOa2bnEhmHsg1JauqZGIobi9wYliNBB2rsv2bIKWVMFVjlTsK5yWwIB/cX/zw7MhMr9IvIjnTnBoSmFLFMG+UYiWaJrWDTLM8LXOw=
+	t=1712656527; cv=none; b=CiHtlTfokL4+yw6l4ONwMcez62V5H8rqujIYqdBFKhoSDMtjYuKXn2ZpDW5PqZBhsb+DJ3IZja/y786ArNrM8oWHtGmVuUswRCabBDnPuQea1QEYMjDk6Cu4gDpxOULc27xO1Fhz0+GCMKS4LlVp8t79o+DpjX/QXPAocSERyAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712656506; c=relaxed/simple;
-	bh=CwmuuH6kUUg1tnSLRqMdKPmBbHsFnmCt9ISyji9uuQU=;
+	s=arc-20240116; t=1712656527; c=relaxed/simple;
+	bh=EShYxGHtJuVTjpjaobIcz1kylPcKHMfYy1EyNXaxHzo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vEaWl/w9kzOqoxtCwd0bKiq1KRZRybfSnRwTY8ruNjEwJqNEl8AnB9CVeG0g0/7TP5JPd+HEWIENJjYE6w+LWYy9+LYHQQlEMyf8WlxM5cLYfANa058/5SC+TaXj/+cP/P/uIOWuKBob357L2M6NbqfdmABn/VOsJ9OZjniDJn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=a8hm4D8k; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712656502;
-	bh=CwmuuH6kUUg1tnSLRqMdKPmBbHsFnmCt9ISyji9uuQU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=a8hm4D8kaO5XmkvMphLI5aH2COy/5/m0rl+7Rkw8cg+WR4W0bv8sw+wKpC6Eo13oL
-	 tsQJ9+tknhxB9hPi9AEWge9q+JrLesnPCd28YhxzrIwiy5n4dSBxcY6baTkfakPjT3
-	 XF0R2xH9A6tdnjN7coR51ykb9Uf3HV98xQ6lD9r5go3azN1z1Wi6HT5KztD8a23+uO
-	 UHw9t6Lfn95znRSkxOlljUEP+Z6h5P5dKAifdAnWW2EW/4l8m35ElSPwa4a6glQKyX
-	 oOzrwdAOBLavioE8yUUc7Xv+ErDkWGp+ar9788IeVrH1DW+fmKMiNBdIAtwFgoHBHK
-	 S3RdztlUenF7A==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7CE1437820AD;
-	Tue,  9 Apr 2024 09:55:01 +0000 (UTC)
-Message-ID: <682dfcc5-056c-4170-910b-64ae42370c52@collabora.com>
-Date: Tue, 9 Apr 2024 12:55:00 +0300
+	 In-Reply-To:Content-Type; b=KEe4O/ThDFwzBvfq55GrImuHNI2eC3IwIpDiiigdU/3QTweYizcb7uW+kZOzFDyQbkOaQUN2b1d1Ax7vTTWh83yiEbsninQF0zhpqr8kqUn1uttLS836b9ZJbnMsjvhShRB1+cV9LLJ22PMGXhtclDSVQ7zEL23du32dADYmuGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6965DA7;
+	Tue,  9 Apr 2024 02:55:54 -0700 (PDT)
+Received: from [10.1.33.185] (unknown [10.1.33.185])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C044B3F6C4;
+	Tue,  9 Apr 2024 02:55:22 -0700 (PDT)
+Message-ID: <b18a5a7b-f787-4be8-a617-e86a56c140e6@arm.com>
+Date: Tue, 9 Apr 2024 10:55:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,138 +41,272 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: Steam Deck OLED 6.8.2 nau8821-max fails
-To: Linux regressions mailing list <regressions@lists.linux.dev>,
- Bagas Sanjaya <bagasdotme@gmail.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Daniel <dmanlfc@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Sound System <linux-sound@vger.kernel.org>
-References: <ZhFJZoful6nEFskW@archie.me>
- <4d231dc4-0183-47e1-8bfa-3dd225bf8ea3@leemhuis.info>
- <904ffa11-592a-4336-aed2-d6370bb01896@collabora.com>
- <b99e51de-3622-4360-b69d-0fd911ea2a7d@leemhuis.info>
- <9012f8d5-302a-4840-815a-22b1e85fda5c@collabora.com>
- <c0193bca-ea80-49eb-ab26-8256d07078df@leemhuis.info>
- <41b7170d-65b8-4d64-a1d3-7a0d09d79c45@collabora.com>
- <fa076f6f-5a19-4a6a-aaf4-8d9e36df8fea@leemhuis.info>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Content-Language: en-US
-In-Reply-To: <fa076f6f-5a19-4a6a-aaf4-8d9e36df8fea@leemhuis.info>
+Subject: Re: [PATCH v7 2/7] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>,
+ Lance Yang <ioworker0@gmail.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240408183946.2991168-1-ryan.roberts@arm.com>
+ <20240408183946.2991168-3-ryan.roberts@arm.com>
+ <CAGsJ_4xMaO8AWMGc4Od-FLWBhhT-u8f7QbR11VsqD0uqH3Kp6g@mail.gmail.com>
+ <CAGsJ_4wpu2Nq0y3z7LYjPLJ1ZBi+BNRNKkyUPsXKDAg1POLjLA@mail.gmail.com>
+ <44e23a4d-97e7-4d84-848a-f9325b7b76c0@redhat.com>
+ <CAGsJ_4wvjVAK+HBDo86xs4zv18QcCNzVRctr1gYMWwtYGNHvDg@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wvjVAK+HBDo86xs4zv18QcCNzVRctr1gYMWwtYGNHvDg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/9/24 12:19 PM, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 09.04.24 10:47, Cristian Ciocaltea wrote:
->> On 4/9/24 11:04 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
->>> On 09.04.24 09:42, Cristian Ciocaltea wrote:
->>>> On 4/9/24 7:44 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>>> On 09.04.24 01:44, Cristian Ciocaltea wrote:
->>>>>> On 4/7/24 10:47 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>>>>> On 06.04.24 15:08, Bagas Sanjaya wrote:
->>>>>>>> On Bugzilla, Daniel <dmanlfc@gmail.com> reported topology regression
->>>>>>>> on Steam Deck OLED [1]. He wrote:
->>>>>>
->>>>>>>>> I'm adding this here, I hope it's the correct place.
->>>>>>>>> Currently the Steam Deck OLED fails with Kernel 6.8.2 when trying to initialise the topology for the device.
->>>>>>>>> I'm using the `sof-vangogh-nau8821-max.tplg` file from the Steam Deck OLED and associated firmware.
->>>>>>>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218677
->>>>>>> A quick search made me find these posts/threads that foreshadow the problem:
->>>>>>>
->>>>>>> https://lore.kernel.org/lkml/20231219030728.2431640-1-cristian.ciocaltea@collabora.com/
->>>>>>> https://lore.kernel.org/all/a3357e1f-f354-4d4b-9751-6b2182dceea6@amd.com/
->>>>>>>
->>>>>>> From a quick look at the second discussion it seems a bit like we are
->>>>>>> screwed, as iiutc topology files are out in the wild for one or the
->>>>>>> other approach. So we might have to bite a bullet there and accept the
->>>>>>> regression -- but I might easily be totally mistaken here. Would be good
->>>>>>> in one of the experts (Venkata Prasad Potturu maybe?) could quickly
->>>>>>> explain what's up here.
->>>>>>
->>>>>> The problem here is that Steam Deck OLED provides a topology file which
->>>>>> uses an incorrect DAI link ID for BT codec. 
->>>>>>
->>>>>> Patch [1] moves BT_BE_ID to position 2 in the enum, as expected by the
->>>>>> topology, but this is not a change that can be accepted upstream as it
->>>>>> would break other devices which rely on BT_BE_ID set to 3.  
->>>>>>
->>>>>> The proper solution would be to update the topology file on Steam Deck,
->>>>>> but this is probably not straightforward to be accomplished as it would
->>>>>> break the compatibility with the currently released (downstream)
->>>>>> kernels.
->>>>>>
->>>>>> Hopefully, this sheds some more light on the matter.
->>>>>>
->>>>>> [1]: https://lore.kernel.org/all/20231209205351.880797-11-cristian.ciocaltea@collabora.com/
->>>>>
->>>>> Many thx, yes, this sheds some light on the matter. But there is one
->>>>> remaining question: can we make both camps happy somehow? E.g. something
->>>>> along the lines of "first detect if the topology file has BT_BE_ID in
->>>>> position 2 or 3 and then act accordingly?
+On 09/04/2024 10:41, Barry Song wrote:
+> On Tue, Apr 9, 2024 at 9:24 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 09.04.24 11:22, Barry Song wrote:
+>>> On Tue, Apr 9, 2024 at 8:51 PM Barry Song <21cnbao@gmail.com> wrote:
 >>>>
->>>> Right, I have this on my TODOs list but haven't managed to dig into it
->>>> yet. However, that would be most likely just another hack to be carried
->>>> on until the transition to a fixed topology is completed.
+>>>> On Tue, Apr 9, 2024 at 6:40 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>
+>>>>> Now that we no longer have a convenient flag in the cluster to determine
+>>>>> if a folio is large, free_swap_and_cache() will take a reference and
+>>>>> lock a large folio much more often, which could lead to contention and
+>>>>> (e.g.) failure to split large folios, etc.
+>>>>>
+>>>>> Let's solve that problem by batch freeing swap and cache with a new
+>>>>> function, free_swap_and_cache_nr(), to free a contiguous range of swap
+>>>>> entries together. This allows us to first drop a reference to each swap
+>>>>> slot before we try to release the cache folio. This means we only try to
+>>>>> release the folio once, only taking the reference and lock once - much
+>>>>> better than the previous 512 times for the 2M THP case.
+>>>>>
+>>>>> Contiguous swap entries are gathered in zap_pte_range() and
+>>>>> madvise_free_pte_range() in a similar way to how present ptes are
+>>>>> already gathered in zap_pte_range().
+>>>>>
+>>>>> While we are at it, let's simplify by converting the return type of both
+>>>>> functions to void. The return value was used only by zap_pte_range() to
+>>>>> print a bad pte, and was ignored by everyone else, so the extra
+>>>>> reporting wasn't exactly guaranteed. We will still get the warning with
+>>>>> most of the information from get_swap_device(). With the batch version,
+>>>>> we wouldn't know which pte was bad anyway so could print the wrong one.
+>>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> ---
+>>>>>   include/linux/pgtable.h | 29 ++++++++++++
+>>>>>   include/linux/swap.h    | 12 +++--
+>>>>>   mm/internal.h           | 63 ++++++++++++++++++++++++++
+>>>>>   mm/madvise.c            | 12 +++--
+>>>>>   mm/memory.c             | 13 +++---
+>>>>>   mm/swapfile.c           | 97 +++++++++++++++++++++++++++++++++--------
+>>>>>   6 files changed, 195 insertions(+), 31 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>>> index a3fc8150b047..75096025fe52 100644
+>>>>> --- a/include/linux/pgtable.h
+>>>>> +++ b/include/linux/pgtable.h
+>>>>> @@ -708,6 +708,35 @@ static inline void pte_clear_not_present_full(struct mm_struct *mm,
+>>>>>   }
+>>>>>   #endif
+>>>>>
+>>>>> +#ifndef clear_not_present_full_ptes
+>>>>> +/**
+>>>>> + * clear_not_present_full_ptes - Clear multiple not present PTEs which are
+>>>>> + *                              consecutive in the pgtable.
+>>>>> + * @mm: Address space the ptes represent.
+>>>>> + * @addr: Address of the first pte.
+>>>>> + * @ptep: Page table pointer for the first entry.
+>>>>> + * @nr: Number of entries to clear.
+>>>>> + * @full: Whether we are clearing a full mm.
+>>>>> + *
+>>>>> + * May be overridden by the architecture; otherwise, implemented as a simple
+>>>>> + * loop over pte_clear_not_present_full().
+>>>>> + *
+>>>>> + * Context: The caller holds the page table lock.  The PTEs are all not present.
+>>>>> + * The PTEs are all in the same PMD.
+>>>>> + */
+>>>>> +static inline void clear_not_present_full_ptes(struct mm_struct *mm,
+>>>>> +               unsigned long addr, pte_t *ptep, unsigned int nr, int full)
+>>>>> +{
+>>>>> +       for (;;) {
+>>>>> +               pte_clear_not_present_full(mm, addr, ptep, full);
+>>>>> +               if (--nr == 0)
+>>>>> +                       break;
+>>>>> +               ptep++;
+>>>>> +               addr += PAGE_SIZE;
+>>>>> +       }
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>>   #ifndef __HAVE_ARCH_PTEP_CLEAR_FLUSH
+>>>>>   extern pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>>>>>                                unsigned long address,
+>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>>> index f6f78198f000..5737236dc3ce 100644
+>>>>> --- a/include/linux/swap.h
+>>>>> +++ b/include/linux/swap.h
+>>>>> @@ -471,7 +471,7 @@ extern int swap_duplicate(swp_entry_t);
+>>>>>   extern int swapcache_prepare(swp_entry_t);
+>>>>>   extern void swap_free(swp_entry_t);
+>>>>>   extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>>>>> -extern int free_swap_and_cache(swp_entry_t);
+>>>>> +extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+>>>>>   int swap_type_of(dev_t device, sector_t offset);
+>>>>>   int find_first_swap(dev_t *device);
+>>>>>   extern unsigned int count_swap_pages(int, int);
+>>>>> @@ -520,8 +520,9 @@ static inline void put_swap_device(struct swap_info_struct *si)
+>>>>>   #define free_pages_and_swap_cache(pages, nr) \
+>>>>>          release_pages((pages), (nr));
+>>>>>
+>>>>> -/* used to sanity check ptes in zap_pte_range when CONFIG_SWAP=0 */
+>>>>> -#define free_swap_and_cache(e) is_pfn_swap_entry(e)
+>>>>> +static inline void free_swap_and_cache_nr(swp_entry_t entry, int nr)
+>>>>> +{
+>>>>> +}
+>>>>>
+>>>>>   static inline void free_swap_cache(struct folio *folio)
+>>>>>   {
+>>>>> @@ -589,6 +590,11 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
+>>>>>   }
+>>>>>   #endif /* CONFIG_SWAP */
+>>>>>
+>>>>> +static inline void free_swap_and_cache(swp_entry_t entry)
+>>>>> +{
+>>>>> +       free_swap_and_cache_nr(entry, 1);
+>>>>> +}
+>>>>> +
+>>>>>   #ifdef CONFIG_MEMCG
+>>>>>   static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
+>>>>>   {
+>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>> index 3bdc8693b54f..de68705624b0 100644
+>>>>> --- a/mm/internal.h
+>>>>> +++ b/mm/internal.h
+>>>>> @@ -11,6 +11,8 @@
+>>>>>   #include <linux/mm.h>
+>>>>>   #include <linux/pagemap.h>
+>>>>>   #include <linux/rmap.h>
+>>>>> +#include <linux/swap.h>
+>>>>> +#include <linux/swapops.h>
+>>>>>   #include <linux/tracepoint-defs.h>
+>>>>>
+>>>>>   struct folio_batch;
+>>>>> @@ -189,6 +191,67 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>>>
+>>>>>          return min(ptep - start_ptep, max_nr);
+>>>>>   }
+>>>>> +
+>>>>> +/**
+>>>>> + * pte_next_swp_offset - Increment the swap entry offset field of a swap pte.
+>>>>> + * @pte: The initial pte state; is_swap_pte(pte) must be true.
+>>>>> + *
+>>>>> + * Increments the swap offset, while maintaining all other fields, including
+>>>>> + * swap type, and any swp pte bits. The resulting pte is returned.
+>>>>> + */
+>>>>> +static inline pte_t pte_next_swp_offset(pte_t pte)
+>>>>> +{
+>>>>> +       swp_entry_t entry = pte_to_swp_entry(pte);
+>>>>> +       pte_t new = __swp_entry_to_pte(__swp_entry(swp_type(entry),
+>>>>> +                                                  swp_offset(entry) + 1));
+>>>>> +
+>>>>> +       if (pte_swp_soft_dirty(pte))
+>>>>> +               new = pte_swp_mksoft_dirty(new);
+>>>>> +       if (pte_swp_exclusive(pte))
+>>>>> +               new = pte_swp_mkexclusive(new);
+>>>>> +       if (pte_swp_uffd_wp(pte))
+>>>>> +               new = pte_swp_mkuffd_wp(new);
+>>>>
+>>>> I don't quite understand this. If this page table entry is exclusive,
+>>>> will its subsequent page table entry also be exclusive without
+>>>> question?
+>>>> in try_to_unmap_one, exclusive is per-subpage but not per-folio:
+>>>>
+>>>>                  anon_exclusive = folio_test_anon(folio) &&
+>>>>                                   PageAnonExclusive(subpage);
+>>>>
+>>>> same questions also for diry, wp etc.
 >>>
->>> Well, sure it's a hack, but the thing is, our number one rule is "no
->>> regressions" and the reporter apparently faces one (see start of the
->>> thread). So to fulfill this rule it would be ideal to have a fix
->>> available soonish or revert the culprit and reply it later together with
->>> the fix.
+>>> Sorry for the noise. you are right. based on your new version, I think I should
+>>> entirely drop:
+>>>
+>>> [PATCH v2 3/5] mm: swap_pte_batch: add an output argument to reture if
+>>> all swap entries are exclusive
 >>
->> Hmm, unless I'm missing something, this shouldn't been considered a
->> regression.  As I explained previously, the OLED model was launched with
->>  a downstream implementation of the Vangogh SOF drivers on top of v6.1,
->> as there was no upstream support back then.
+>> Yes. If we ever want to ignore some bits, we should likely add flags to
+>> change the behavior, like for folio_pte_batch().
 >>
->> When AMD eventually completed the upstreaming process of their SOF
->> drivers in v6.6, we ended up with this unfortunate ID assignments
->> incompatibility.  Hence I cannot see how the mainline kernel would have
->> worked without applying patch [1] above, unless the reporter
->> experimented with a different topology (which is not the case if I got
->> this right).
->>
->>> Do we know which change that went into 6.8 caused this? Or is a revert
->>> out-of-the question as it will likely break things for other users that
->>> already upgraded to 6.8 and have a matching topology file? (/me fears
->>> the answer to the latter question is "yes", but I have to ask :-/)
->>
->> We need to understand how the reporter got this working with mainline
->> kernels without applying any out-of-tree patches.
+>> For swapin, you really want the exclusive bits to match, though.
 > 
-> Ahh, okay, thx, now I understand this better. You are most likely
-> correct. It also made me look at the initial report again where I
-> noticed "When *I manually patched support* for the 6.6 or 6.7 mainline
-> kernel it worked fine.", so yes, this likely is not a regression.
+> I am not quite sure I definitely need exclusive bits to match. i can either
+> drop my 3/5 or ignore the exclusive bit as below (if anyone is not shared,
+> swpin won't reuse the large folio, but it can still entirely map it read-only):
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index cae39c372bfc..5726e729c9ee 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -253,10 +253,22 @@ static inline int swap_pte_batch(pte_t
+> *start_ptep, int max_nr, pte_t pte,
+>                 *any_shared |= !pte_swp_exclusive(pte);
+> 
+>         while (ptep < end_ptep) {
+> +               pte_t ignore_exclusive_pte;
+> +               pte_t ignore_exclusive_expected_pte;
+>                 pte = ptep_get(ptep);
+> 
+> -               if (!pte_same(pte, expected_pte))
+> -                       break;
+> +               if (any_shared) {
+> +                       ignore_exclusive_pte = pte;
+> +                       ignore_exclusive_expected_pte = expected_pte;
+> +                       ignore_exclusive_pte =
+> pte_swp_clear_exclusive(ignore_exclusive_pte);
+> +                       ignore_exclusive_expected_pte =
+> pte_swp_clear_exclusive(expected_pte);
+> +
+> +                       if (!pte_same(ignore_exclusive_pte,
+> ignore_exclusive_expected_pte))
+> +                               break;
+> +               } else {
+> +                       if (!pte_same(pte, expected_pte))
+> +                               break;
+> +               }
+> 
+>                 if (any_shared)
+>                         *any_shared |= !pte_swp_exclusive(pte);
 
-It would be interesting to find out what the *manually patched support*
-involved. FWIW, to get audio working with v6.8, it's also necessary to
-backport several patches from v6.9-rc1 - I would consider the following:
-
-Fixes: f0f1021fc9cb ("ASoC: amd: acp: Drop redundant initialization of machine driver data")
-Fixes: 68ab29426d88 ("ASoC: amd: acp: Make use of existing *_CODEC_DAI macros")
-Fixes: d0ada20279db ("ASoC: amd: acp: Add missing error handling in sof-mach")
-Fixes: 222be59e5eed ("ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()")
-Fixes: a13f0c3c0e8f ("ASoC: SOF: amd: Optimize quirk for Valve Galileo")
-Fixes: 369b997a1371 ("ASoC: SOF: core: Skip firmware test for custom loaders")
-Fixes: d9cacc1a2af2 ("ASoC: SOF: amd: Compute file paths on firmware load")
-Fixes: 33c3d8133307 ("ASoC: SOF: amd: Move signed_fw_image to struct acp_quirk_entry")
-Fixes: 094d11768f74 ("ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED")
-
-I think most if not all of the mandatory fixes from the list above have been
-already included in the latest v6.8 stable updates, but I haven't actually
-tested.
+I'll leave David to comment on this proposal; I'm not sure I understand all the
+details. The code change does look a bit "busy" though - sometimes that can be
+an indicator :)
 
 > 
-> Thx for your help and sorry for the trouble I caused!
+>> softdirty and uffd-wp as well at least initially for simplicity.
+> 
+> yes for this.
+> 
+> By the way, I wonder if you and Ryan have a moment to review swpin
+> refault patchset
+> v2 :-)
 
-No problem at all!
+It's on my todo list! I'm very keen to get as much large swap-out and swap-in
+support into v6.10 as we can. Hoping to get to it inthe next couple of days.
 
-Regards,
-Cristian
+> 
+> [PATCH v2 0/5] large folios swap-in: handle refault cases first
+> https://lore.kernel.org/linux-mm/20240409082631.187483-1-21cnbao@gmail.com/
+> 
+> 
+>>
+>> --
+>> Cheers,
+>>
+>> David / dhildenb
+>>
+> 
+> Thanks
+> Barry
+
 
