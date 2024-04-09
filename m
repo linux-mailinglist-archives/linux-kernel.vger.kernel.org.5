@@ -1,64 +1,73 @@
-Return-Path: <linux-kernel+bounces-137447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8282189E24B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:13:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4233C89E250
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:13:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6BA81C20A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:13:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 731041C22967
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23905156999;
-	Tue,  9 Apr 2024 18:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 437F2156C46;
+	Tue,  9 Apr 2024 18:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KFNIhLE5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pQpVK86p"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C874156673
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AB315697F
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712686387; cv=none; b=FD38VSOxV9yzFZN6V4jY+hH5dNEO7cqde2FjddNQJAPz02Gbct7URxmA84JlcrKxDM6w39q4BA1SPurI06J7KL/m6XDmxJfqyu+w/uSGPB0DtzO+uYX2b3vDWWjTybXHfwC6xqyB9RNAv2dvn8iMEUjX3q28F7wNw2S18y9sO8A=
+	t=1712686400; cv=none; b=lu+gVTBCCn+X+MI+iUBMEER2bLIrEMzMj5MccgdRiql75y0iOOe0C21qYf9IpS+5JhKw0aZZjVdkytVdQnx+Ie+ASmmDAVXePnSNldazdeqlZWhaQv73CC/6eCyRd5FoIbq6EkWlbclBLWM5+av6l47w4tg8AAPBrkxO25IT9Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712686387; c=relaxed/simple;
-	bh=mt4LK8wRky83QmRbMyyw2lMJig0xnioKZPacc3nZi+E=;
+	s=arc-20240116; t=1712686400; c=relaxed/simple;
+	bh=uLNeg1qHDIQyx4DVMEosgXpludE+lVP3yhaBpeYJCHY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tlTysZzeJcoctadl+HC8nBVdxwBJanAE+in8yVTY+q7z7X9RqmLMF6BbGBifoKR86DZ4Qo3CFvS4PwsaMXCzr0dUQdJZoTJttiX+aMtv0Jdui6sT70pWfwUwiAUeXKeR0iSXwpvfZZCOHS4Ahqd47mxNTBjuhc4HY1aftlijG3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KFNIhLE5; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712686386; x=1744222386;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mt4LK8wRky83QmRbMyyw2lMJig0xnioKZPacc3nZi+E=;
-  b=KFNIhLE5BOqWm/Ww/Z7RjNfUvu+TuAD4UlI4nBRUZkthssDSGdii4WRp
-   CMkWRzYQAHx0WexGGvB2WqlzRFffSaq20W0G+7kpfdlRKCO+/+GCdkZ90
-   xqr7Xq9G0FBE4bQoufGwp5/M9MbxdSnTD5k/UJcH849YwKDDJkkTOux2R
-   pOQaZnT8dsc8/gTccpbCLSMhQewewaAlcICdhXB9U0kuv0gORhC9a0udZ
-   uAZ5bLhYG63cGjEaf6S1CRFe2KSW4d7kJohnSICBX/gXEGbdGx9xoGkga
-   aujU4tQL6z7Xr6x5DAKSCseECCKXyaeSNzjIGg/KN4IiKWxoJuB8BURGn
-   A==;
-X-CSE-ConnectionGUID: owGzOJtFQu64JAINeD9BJg==
-X-CSE-MsgGUID: QUVK3IDLR6+N02FD9zW/3Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7931370"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7931370"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:12:54 -0700
-X-CSE-ConnectionGUID: 4JwxIqsJQ8iG/aa8qLdXTw==
-X-CSE-MsgGUID: c4Qe3VIESJuWGUtRrfIBdA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20777552"
-Received: from osezer-mobl.amr.corp.intel.com (HELO [10.209.70.70]) ([10.209.70.70])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:12:52 -0700
-Message-ID: <1f6f4477-0f2a-434a-8c89-3b5d51d61581@linux.intel.com>
-Date: Tue, 9 Apr 2024 11:12:52 -0700
+	 In-Reply-To:Content-Type; b=A+eJKJx2n+UncFrS4TpZhZZe/qmmNA2+JGciqrbItXz/TuGWDZTbKN+xE7vb82l5H07FpIMrG+Y0DFfRYF2G6NeCj+apsoj1fBCvKDNbc7Hawx24zuDYPVWj30KvbQBc4vdt/n46Xl64JQsOziFB7ZUu//B6AyKtlGjPvTQhhcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pQpVK86p; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so55488731fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 11:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712686396; x=1713291196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SVvL2F1G6X1zePnKsaGHFi1ccfudklq9eqO3sqLfMAg=;
+        b=pQpVK86pEd72nTJgHeERw/U99JtL+PyvlMEZOly41ki8pL1ntemFwcuP1glvkaIGK0
+         zsDEE3OgMNf7DtPDXAnkg9va+umiKFjOKRDK8qkSCuFLhg31sxBQ+aIQoR4hRTzrIke7
+         6uEf9/dyfrWjamM+DXDAXDp6jm3M3hIh5aUjCJcFbxLK23688Vwza2arS7P22d262GnR
+         SlB81KrQhHXU/uK2HdjzgWDviAXvai3/WdbXcnTW4deQlS957sN6+LbRYJ56WkrQNjqN
+         KzAm03a1vSYtoZ23Va+vtUEADUWUncC2t0e0V/LTGn6ijyIaAy6qTPObMtchxrvY4Nox
+         4iIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712686396; x=1713291196;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SVvL2F1G6X1zePnKsaGHFi1ccfudklq9eqO3sqLfMAg=;
+        b=AOu+JEFuwo1d+UxXocUHy9vj25P3wKd2wBbDq5gD2Bi5sOw5HxeeUfn2uH/Ni+jrNq
+         MM8gD9Jy7bArvxdAuN/gO/DS/Uv7HFi3sbWTBpkiTzeQnORW8HaKbfof5m+Dq6WRWx61
+         RpHvN9OPKwYYlniT7WwHxF0G/ic7c/FzEa486Y31Mc21AVIScjlkVsuOXsnSY6K/cA4j
+         t0Rzsnq7ddFY+XshCxiPQESrDUsT90z7/ealF7lW9yw7/0UP5ZyfkTUpc9uGudz0xX3D
+         KWopKlqNNXwPHQDwWwIRS9cALoq46pKvhenFhvrcWt+RxMz3Uh++vd8zasoeN2o/9HIK
+         Eo5w==
+X-Forwarded-Encrypted: i=1; AJvYcCV2Fphj+sEYnPWdApE8pz4srJk5YPYD798z2bofH6+6FzAcHbIy37wcaQ2zj+rkVIbXQ+xhX1Cg+EE1CaQ92PzilcSpjOWp36bkwKyB
+X-Gm-Message-State: AOJu0YzR2iWldCMzDnFy53QEd8/cmEpwFpnfUk7JGD+RLjo/XW/9jyiv
+	Ry/IbJn3l2oAVfiCqqrwRj82fkZiMEY8LhmCDuLuoZ1I/enx529jgVitfAiEBKo=
+X-Google-Smtp-Source: AGHT+IE9IkoN4MIEa62W5SDOs6R2IZNM/Lb7/qVpQfgom65bemgoHxP7/c5kJNTK3D/ZbevsozDIkg==
+X-Received: by 2002:a2e:6e06:0:b0:2d8:63a2:50dc with SMTP id j6-20020a2e6e06000000b002d863a250dcmr374922ljc.48.1712686396194;
+        Tue, 09 Apr 2024 11:13:16 -0700 (PDT)
+Received: from [172.30.205.99] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z25-20020a2e9b99000000b002d869fec5ebsm1535892lji.79.2024.04.09.11.13.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 11:13:15 -0700 (PDT)
+Message-ID: <fbfc2d7e-2120-428f-bb1f-60aa606b261b@linaro.org>
+Date: Tue, 9 Apr 2024 20:13:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,143 +75,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
- running under an SVSM
-To: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>, Michael Roth
- <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
- Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
+Subject: Re: [PATCH 5/6] drm/msm/adreno: Add speedbin data for SM8550 / A740
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+ Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-5-ce2b864251b1@linaro.org>
+ <nek4paofg3hturvjwpa2bnsvmicwmvwixzr6e6iuqstemgrqyo@cagcrnzjsne2>
+ <0955cabc-fc4e-4790-a82c-7f6f807fe36b@linaro.org>
+ <4ghhtxjtkfjzxeyrajn26get4d6xiq57swwsjmyialcyfivui6@se3ukxxukspt>
 Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=UTF-8
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <4ghhtxjtkfjzxeyrajn26get4d6xiq57swwsjmyialcyfivui6@se3ukxxukspt>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
-On 3/25/24 3:26 PM, Tom Lendacky wrote:
-> Config-fs provides support to hide individual attribute entries. Using
-> this support, base the display of the SVSM related entries on the presence
-> of an SVSM.
->
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/coco/core.c        |  4 ++++
->  drivers/virt/coco/tsm.c     | 14 ++++++++++----
->  include/linux/cc_platform.h |  8 ++++++++
->  3 files changed, 22 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-> index d07be9d05cd0..efa0f648f754 100644
-> --- a/arch/x86/coco/core.c
-> +++ b/arch/x86/coco/core.c
-> @@ -12,6 +12,7 @@
->  
->  #include <asm/coco.h>
->  #include <asm/processor.h>
-> +#include <asm/sev.h>
->  
->  enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
->  u64 cc_mask __ro_after_init;
-> @@ -78,6 +79,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
->  	case CC_ATTR_GUEST_STATE_ENCRYPT:
->  		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
->  
-> +	case CC_ATTR_GUEST_SVSM_PRESENT:
-> +		return snp_get_vmpl();
-> +
->  	/*
->  	 * With SEV, the rep string I/O instructions need to be unrolled
->  	 * but SEV-ES supports them through the #VC handler.
-> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
-> index 46f230bf13ac..d30471874e87 100644
-> --- a/drivers/virt/coco/tsm.c
-> +++ b/drivers/virt/coco/tsm.c
-> @@ -64,6 +64,12 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
->  	return container_of(report, struct tsm_report_state, report);
->  }
->  
-> +static bool provider_visibility(const struct config_item *item,
-> +				const struct configfs_attribute *attr)
-> +{
-> +	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT);
-> +}
-> +
 
-Any comment about the following query? I think introducing a CC flag for this use
-case is over kill.
+On 4/9/24 17:24, Dmitry Baryshkov wrote:
+> On Tue, Apr 09, 2024 at 05:13:15PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 4/6/24 05:25, Dmitry Baryshkov wrote:
+>>> On Fri, Apr 05, 2024 at 10:41:33AM +0200, Konrad Dybcio wrote:
+>>>> Add speebin data for A740, as found on SM8550 and derivative SoCs.
+>>>>
+>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>> ---
+>>>>    drivers/gpu/drm/msm/adreno/adreno_device.c | 14 ++++++++++++++
+>>>>    1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> index 901ef767e491..c976a485aef2 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> @@ -570,6 +570,20 @@ static const struct adreno_info gpulist[] = {
+>>>>    		.zapfw = "a740_zap.mdt",
+>>>>    		.hwcg = a740_hwcg,
+>>>>    		.address_space_size = SZ_16G,
+>>>> +		.speedbins = ADRENO_SPEEDBINS(
+>>>
+>>> I think this deserves either a comment or some info in the commit
+>>> message.
+>>
+>> "this" = ?
+> 
+> I see two types of speedbins here, it would be nice to understand at
+> least some reason or some defailts for that (if you know them).
 
-https://lore.kernel.org/lkml/6b90b223-46e0-4e6d-a17c-5caf72e3c949@linux.intel.com/
+"one is slightly faster"
 
->  static int try_advance_write_generation(struct tsm_report *report)
->  {
->  	struct tsm_report_state *state = to_state(report);
-> @@ -144,7 +150,7 @@ static ssize_t tsm_report_service_provider_store(struct config_item *cfg,
->  
->  	return len;
->  }
-> -CONFIGFS_ATTR_WO(tsm_report_, service_provider);
-> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_provider, provider_visibility);
->  
->  static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
->  					     const char *buf, size_t len)
-> @@ -165,7 +171,7 @@ static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
->  
->  	return len;
->  }
-> -CONFIGFS_ATTR_WO(tsm_report_, service_guid);
-> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_guid, provider_visibility);
->  
->  static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg,
->  							 const char *buf, size_t len)
-> @@ -186,7 +192,7 @@ static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg
->  
->  	return len;
->  }
-> -CONFIGFS_ATTR_WO(tsm_report_, service_manifest_version);
-> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_manifest_version, provider_visibility);
->  
->  static ssize_t tsm_report_inblob_write(struct config_item *cfg,
->  				       const void *buf, size_t count)
-> @@ -333,7 +339,7 @@ static ssize_t tsm_report_manifestblob_read(struct config_item *cfg, void *buf,
->  
->  	return tsm_report_read(report, buf, count, TSM_MANIFEST);
->  }
-> -CONFIGFS_BIN_ATTR_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX);
-> +CONFIGFS_BIN_ATTR_VISIBLE_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX, provider_visibility);
->  
->  #define TSM_DEFAULT_ATTRS() \
->  	&tsm_report_attr_generation, \
-> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
-> index cb0d6cd1c12f..f1b4266c1484 100644
-> --- a/include/linux/cc_platform.h
-> +++ b/include/linux/cc_platform.h
-> @@ -90,6 +90,14 @@ enum cc_attr {
->  	 * Examples include TDX Guest.
->  	 */
->  	CC_ATTR_HOTPLUG_DISABLED,
-> +
-> +	/**
-> +	 * @CC_ATTR_GUEST_SVSM_PRESENT: Guest is running under an SVSM
-> +	 *
-> +	 * The platform/OS is running as a guest/virtual machine and is
-> +	 * running under a Secure VM Service Module (SVSM).
-> +	 */
-> +	CC_ATTR_GUEST_SVSM_PRESENT,
->  };
->  
->  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+sorry, qcom downstream has been getting increasingly cryptic lately..
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+Konrad
 
