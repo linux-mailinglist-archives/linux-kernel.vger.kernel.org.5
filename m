@@ -1,83 +1,69 @@
-Return-Path: <linux-kernel+bounces-136537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 912FD89D548
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:20:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4679E89D569
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A28B21C33
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C68B2249B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21EA07F494;
-	Tue,  9 Apr 2024 09:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43FC7E774;
+	Tue,  9 Apr 2024 09:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="f9kS6DsV"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="S0Vw1Qcy"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AFE2B2DD
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301368529E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654449; cv=none; b=BxkpeeW91/Pd3qolys+qvDbkCuW8FKlHuWdaGHJyDktSEGqlf7bVMBlZhA7zR6nckbOaZ2FGLf0XfLtJ4jVI+DfnmsGWe99idCqxhgdeq4C0OU8TtD6r9mV/CUKe5sVZHGZ+ooGxhU1KggWy0Qjjo8UtPW4AHGnB+vTIjbb3DJA=
+	t=1712654488; cv=none; b=MoBL09LRqD/ovYsVKQ0MI+MJpTbSRmDkxq1pEx1qdDyziUbadSeqrMmHsBKRRk4ai8qQr6RUvoJ8GebLGv7LvwOfS9nhKbqRiwApVnIbHk/+hwU3H7y23HeUje62WpcE34XG3csiWWEpfk/WUjtqn2EplvTIkVFUd0M7sZAQ0/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654449; c=relaxed/simple;
-	bh=dzWgJIr+elQQqzhnrLVPNLwsqNmviyJGgqIUxcUQWqY=;
+	s=arc-20240116; t=1712654488; c=relaxed/simple;
+	bh=kpgut7r9SoPwQ6L0e+kvqRpyFcrLlcU6aHU3tKj4qGU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K2ZEvPsJx4DdzzcDmvaViETdj0TiqbEJ+92GYRJkGdl2/6Edu7bQp3GSp8gWDbuqi+ZrNw0e48N8SL6P0aWOEo7zGGQEt61D4GTGXJ8LQ3vWHK5/AY5vWc94R6muBrsoBXcV6KvrDODjTWgxiXZPS8EjZgtqVo1ENAbGHAmF+YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=f9kS6DsV; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so3953187f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 02:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712654445; x=1713259245; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/AT6TTk+LhAPd9pV/ZdmRWE2NJwTKZCbDeN6oR+wQ/4=;
-        b=f9kS6DsVb4DnrdEPxPn7uNsk2hFTpMIzxf8wQWKBMrIU7eahlx1FCq7ncmDtaukraG
-         ARFQipqYhAjc0Ww8yxGs/D0M28f21aiUJ8PfSZoj5TN2ysTfY4k7poH5fqz0YiX1Rz3m
-         Qp4LLwJotQ4ASKewISiCP6MgqlXpNFQtGnmQkWr35Z2K9va4MmZ3elnigJhls7Z3pN+b
-         MM+czGavSroLjIjBClwN1hizPGeXGXXsuvVxFb/HOJyxkZPDWPOIo5GKwwND18ieT0DY
-         EvXfYIFvSQ5uFCTPqM2cIZg+QUHI77zJ7EFOcwmiM9B9odj3BBGRN22s8Aaak/y//WS3
-         LrtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712654445; x=1713259245;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/AT6TTk+LhAPd9pV/ZdmRWE2NJwTKZCbDeN6oR+wQ/4=;
-        b=vwH+iSPgABepCmZK8NUiU2KFArw1z6+9PM9TjS2n9QYPQ17GpO7zGl0Oyfb4lKZt5q
-         xecr+l3HFXzJYCI0Td19jvQetKq3SHbvkqgaDr+pu/M7BGVEICxhKcAl0/rEyVkqm9PO
-         CC3T/3Gv9zv9/6IUOhI3pLttLIkuE3yUoRQrk5dQPbpATZaBMj0CvmBUC3TxUHD6gnsg
-         IaFj/CDh0Z/k3cndjeADM7PSGLnfDb2ZAvUvKGSyqYJLufquHqS0ak19vQymohjwjg5s
-         LpuyjwiDIBsYV5IhL/WtbJNVKIZo5hDV5mnzUAyOezuDR7BbPyEDDo6VH5MDTMAlmRO/
-         GrIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXghamnI4Gr2d3qbZa11FNgoCg3G2nY1r9pVu+Q2PINXuWtahya+9rYHyOWjzqgncbP41ivN6juz/RylwyQVJ1caCIZhTikhyeUHfcN
-X-Gm-Message-State: AOJu0YwqFPdhyPxQT2G7Q16pIViOZZBu5pm9tQu9vmKvT99XldTbTwc9
-	7WdGRIfxpVIiunhgcG/32bpYk6qzwc6opOgbYWzYUpLRq5OtTDioeJ2MfVwiKzWSKFJGNN85OtO
-	j
-X-Google-Smtp-Source: AGHT+IFihTpQSWOgUGCFfZeSy+hQwBLIikiwaB5BmDMXbwBdPJSCfJ9GxBk3l9MRH2zrv22ix/1dDg==
-X-Received: by 2002:a05:6000:152:b0:343:96a0:cccd with SMTP id r18-20020a056000015200b0034396a0cccdmr10005535wrx.33.1712654444898;
-        Tue, 09 Apr 2024 02:20:44 -0700 (PDT)
-Received: from localhost.localdomain ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id z13-20020a056000110d00b0034174875850sm11036893wrw.70.2024.04.09.02.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 02:20:44 -0700 (PDT)
-Date: Tue, 9 Apr 2024 11:20:42 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v4 06/27] printk: nbcon: Add callbacks to
- synchronize with driver
-Message-ID: <ZhUIatzxietD4F-m@localhost.localdomain>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-7-john.ogness@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MbOZo6OrpMwBT4YYeGer1zhuDrqRl56XKt/NGPvTrW9q3CPeTU4M+GAsNbaKzbXlJXcX5qMr4ZYHhicjgzZq2WDe7ben9b3TSEVwd4rmGDeLhBybMd8P0U/mHngKm7YR/8dCXOsrEEqpGc0/hJUQk4duD4rZzbMrr5ujzJwaafs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=S0Vw1Qcy; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=YeC5R0Uay0C5dvbf+qarJuNA6Yc3zpuLXDofRbawIic=; b=S0Vw1Qcy2xbOmQLr3rSK5ilD4q
+	HNqv5Mbrk9qTSeb2fxO+ZEO9HdHeckXYZq2yk1LmmSDmr5PMuQVl9WJ4CAHJ/mZvPsT4VPF8daYE7
+	yRavlZarzT063qFyiI0kzrXdpaWsojrTot8ukdvVz2dUdNXSuW7YmUfvGX2L5RR9Bj1t//p9MUJkr
+	MwV7UZ6GPHjAeIZ37A/M5NTLto6pihqEhSIS5hlxiyGoE56UywfDdEvVruBA0yEK8zQoZHC4K4Hqo
+	1rrpNmj150gpscZJoxTJQW8NoWfxLU/n/Ox5KoN7C43AiVCnyQfQ2MIAvmdK25DawFfka9UUxC2XL
+	t8kCKdrQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ru7f6-00000007WWC-20I6;
+	Tue, 09 Apr 2024 09:21:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 28434300600; Tue,  9 Apr 2024 11:21:04 +0200 (CEST)
+Date: Tue, 9 Apr 2024 11:21:04 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: Abel Wu <wuyun.abel@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>,
+	Tiwei Bie <tiwei.btw@antgroup.com>,
+	Honglei Wang <wanghonglei@didichuxing.com>,
+	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+Message-ID: <20240409092104.GA2665@noisy.programming.kicks-ass.net>
+References: <20240226082349.302363-1-yu.c.chen@intel.com>
+ <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+ <20240408115833.GF21904@noisy.programming.kicks-ass.net>
+ <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,171 +72,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402221129.2613843-7-john.ogness@linutronix.de>
+In-Reply-To: <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
 
-On Wed 2024-04-03 00:17:08, John Ogness wrote:
-> Console drivers typically must deal with access to the hardware
-> via user input/output (such as an interactive login shell) and
-> output of kernel messages via printk() calls.
+On Mon, Apr 08, 2024 at 09:11:39PM +0800, Chen Yu wrote:
+> On 2024-04-08 at 13:58:33 +0200, Peter Zijlstra wrote:
+> > On Thu, Feb 29, 2024 at 05:00:18PM +0800, Abel Wu wrote:
+> > 
+> > > > According to the log, vruntime is 18435852013561943404, the
+> > > > cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
+> > > > thus:
+> > > > s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
+> > > >      delta * 2677 = 7733399554989275921
+> > > > that is to say, the multiply result overflow the s64, which turns the
+> > > > negative value into a positive value, thus eligible check fails.
+> > > 
+> > > Indeed.
+> > 
+> > From the data presented it looks like min_vruntime is wrong and needs
+> > update. If you can readily reproduce this, dump the vruntime of all
+> > tasks on the runqueue and see if min_vruntime is indeed correct.
+> >
 > 
-> Follow-up commits require that the printk subsystem is able to
-> synchronize with the driver. Require nbcon consoles to implement
-> two new callbacks (device_lock(), device_unlock()) that will
-> use whatever synchronization mechanism the driver is using for
-> itself (for example, the port lock for uart serial consoles).
+> This was the dump of all the entities on the tree, from left to right,
 
-We should explain here the bigger picture, see my comment
-of the word "whenever" below.
+Oh, my bad, I thought it was the pick path.
 
-<proposal>
-Console drivers typically have to deal with access to the hardware
-via user input/output (such as an interactive login shell) and
-output of kernel messages via printk() calls.
-
-They use some classic locking mechanism in most situations. But
-console->write_atomic() callbacks, used by nbcon consoles,
-must be synchronized only by acquiring the console context.
-
-The synchronization via the console context ownership is possible
-only when the console driver is registered. It is when a particular
-device driver is connected with a particular console driver.
-
-The two synchronization mechanisms must be synchronized between
-each other. It is tricky because the console context ownership
-is quite special. It might be taken over by a higher priority
-context. Also CPU migration has to be disabled.
-
-The most tricky part is to (dis)connect these two mechanism during
-the console (un)registration. Let's make it easier by adding two new
-callbacks: device_lock(), device_unlock(). They would allow
-to take the device-specific lock while the device is being
-(un)registered by the related console driver.
-
-For example, these callbacks would lock/unlock the port lock
-for serial port drivers.
-</proposal>
-
+> and also from top down in middle order traverse, when this issue happens:
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  include/linux/console.h | 42 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
+> [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 cfs_rq->min_vruntime:763383370431
+> [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
+> 			min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
 > 
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> index e4028d4079e1..ad85594e070e 100644
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -352,6 +352,48 @@ struct console {
->  	 */
->  	void (*write_atomic)(struct console *con, struct nbcon_write_context *wctxt);
->  
-> +	/**
-> +	 * @device_lock:
-> +	 *
-> +	 * NBCON callback to begin synchronization with driver code.
-> +	 *
-> +	 * Console drivers typically must deal with access to the hardware
-> +	 * via user input/output (such as an interactive login shell) and
-> +	 * output of kernel messages via printk() calls. This callback is
-> +	 * called by the printk-subsystem whenever it needs to synchronize
-> +	 * with hardware access by the driver.
+> 
+> [  514.536772][ T8390] Traverse rb-tree from left to right
+> [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible  <-- leftmost se
+> [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> 
+> [  514.538539][ T8390] Traverse rb-tree from topdown
+> [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible   <-- root se
+> [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> 
+> The tree looks like:
+> 
+>           se (0xec1234e0)
+>                   |
+>                   |
+>                   ----> se (0xec4fcf20)
+> 
+> 
+> The root se 0xec1234e0 is also the leftmost se, its min_vruntime and
+> vruntime are both 763383370431, which is aligned with
+> cfs_rq->min_vruntime. It seems that the cfs_rq's min_vruntime gets
+> updated correctly, because it is monotonic increasing.
 
-The word "whenever" can be translated as "always" (by dictionary
-and by my head ;-) Then the description sounds like this would be
-the primary synchronization mechanism between printk and the driver.
+Right.
 
-In fact, this API would have only one purpose to synchronize
-the console registration/unregistration.
+> My guess is that, for some reason, one newly forked se in a newly
+> created task group, in the rb-tree has not been picked for a long
+> time(maybe not eligible). Its vruntime stopped at the negative
+> value(near (unsigned long)(-(1LL << 20)) for a long time, its vruntime
+> is long behind the cfs_rq->vruntime, thus the overflow happens.
 
-IMHO, we should explain here the relation between the driver-specific
-locking and nbcon console context locking. It would describe the big
-picture and hopefully reduce confusion and eventual misuse.
+I'll have to do the math again, but that's something in the order of not
+picking a task in about a day, that would be 'bad' :-)
 
-
-> + It should be implemented to
-> +	 * use whatever synchronization mechanism the driver is using for
-> +	 * itself (for example, the port lock for uart serial consoles).
-> +	 *
-> +	 * This callback is always called from task context. It may use any
-> +	 * synchronization method required by the driver. BUT this callback
-> +	 * MUST also disable migration. The console driver may be using a
-> +	 * synchronization mechanism that already takes care of this (such as
-> +	 * spinlocks). Otherwise this function must explicitly call
-> +	 * migrate_disable().
-> +	 *
-> +	 * The flags argument is provided as a convenience to the driver. It
-> +	 * will be passed again to device_unlock(). It can be ignored if the
-> +	 * driver does not need it.
-> +	 */
-
-<proposal>
-	/**
-	 * @device_lock:
-	 *
-	 * NBCON callback to serialize registration of a device driver
-	 * for a console driver.
-	 *
-	 * Console drivers typically have to deal with access to the hardware
-	 * via user input/output (such as an interactive login shell) and
-	 * Output of kernel messages via printk() calls.
-	 *
-	 * They use some classic locking mechanism in most situations. But
-	 * console->write_atomic() callbacks, used by nbcon consoles,
-	 * must be synchronized only by acquiring the console context.
-	 *
-	 * The synchronization via the console context ownership is possible
-	 * only when the console driver is registered. It is when a particular
-	 * device driver is connected with a particular console driver.
-	 *
-	 * The device_lock() callback must block operations on the device
-	 * while it is being (un)registered as a console driver. It will
-	 * make sure that the classic device locking is aware of the console
-	 * context locking when it might be acquired by the related nbcon
-	 * console driver.
-	 *
-	 * This callback is always called from task context. It may use any
-	 * synchronization method required by the driver, for example
-	 * port lock for serial ports.
-	 *
-	 * IMPORTANT: This callback MUST also disable migration. The console
-	 *	driver may be using a synchronization mechanism that already
-	 *	takes care of this (such as spinlocks). Otherwise this function
-	 *	must explicitly call migrate_disable().
-	 *
-	 *	The flags argument is provided as a convenience to the driver.
-	 *	It will be passed again to device_unlock(). It can be ignored
-	 *	if the driver does not need it.
-	 */
-</proposal>
-
-
-> +	void (*device_lock)(struct console *con, unsigned long *flags);
-> +
-> +	/**
-> +	 * @device_unlock:
-> +	 *
-> +	 * NBCON callback to finish synchronization with driver code.
-> +	 *
-> +	 * It is the counterpart to device_lock().
-> +	 *
-> +	 * This callback is always called from task context. It must
-> +	 * appropriately re-enable migration (depending on how device_lock()
-> +	 * disabled migration).
-> +	 *
-> +	 * The flags argument is the value of the same variable that was
-> +	 * passed to device_lock().
-> +	 */
-> +	void (*device_unlock)(struct console *con, unsigned long flags);
-> +
->  	atomic_t		__private nbcon_state;
->  	atomic_long_t		__private nbcon_seq;
->  	struct printk_buffers	*pbufs;
-
-With the updated commit message and comment:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
-
+Is there any sane way to reproduce this, and how often does it happen?
 
