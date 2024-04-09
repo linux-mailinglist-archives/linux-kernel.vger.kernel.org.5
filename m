@@ -1,147 +1,185 @@
-Return-Path: <linux-kernel+bounces-137251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A449F89DF83
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:46:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9771489DF86
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A779293815
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E1831F25F87
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88503136E0C;
-	Tue,  9 Apr 2024 15:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7496B1369AA;
+	Tue,  9 Apr 2024 15:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zBw1IUGt"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jSfv7kwU"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D8913698F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B8613698F
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677552; cv=none; b=dpUA9bC0662RF9JITA6RIeR5rZwCmws4U+1KbXn/HrX4PdUChwW72NmKzPvqStLsRJu6ibKWw1Gv+XmU3PCzR9aYqvML0B789/8AYCn8M4jld0Wvdu3jSd2MrMDjUYEzyZjVcNEmt80McwxsrBhLqRdzWCrCJd/qgxPMuR+Hu0E=
+	t=1712677574; cv=none; b=qLXk+b9iHScQoa9QpJsVk2nciRgn1HHmbDa3vJGn0pYBDTA78EhPFE2GOJJBR+vqvy1JTRaAtC1W008j8XpworwXiofJfisNZNdrzlC3azHeASOLlGD/AuBJpqlHEdUcEFKI12HOqvmjHj5lE7BIPN0VwuXhi4Ufmf6Lez3Jbtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677552; c=relaxed/simple;
-	bh=Js/2BXIRra/FHVv6CsCNlDO3xAx0z0yGlizmQ4Qvh50=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jY3fVOcmBACXumqSXIE9Qz79UT1cxzR2Wrsf5t88GDupRYH0cDz+RDC68+gkBjgNyClJs1IONSW59k8EsOJBV7kX0MO2XqVp18ES8tfMr86Ex3zADkDTjHYPfO4++tLlqO4ojftyD44ELf83cgku7jF9SZmPpg2z2PYW8gn1uKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zBw1IUGt; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61500da846fso46209857b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:45:51 -0700 (PDT)
+	s=arc-20240116; t=1712677574; c=relaxed/simple;
+	bh=4YNynUGh8NwIznE4z7XpT8p/m3+R1fGobPIeDJ73050=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RJCbwJSkUCzgbqOPFMlhS3SEG89824WPtCucxp0qaIFRrSt6T9ndrQho9UYx7yGHk1UwekrvXXnQA2LuzLIzjTfY2mUNgrJcLDPF26hSrx9f13cFbjJIZKzdWJham359ZSVZh+l2eQp3cjKgCGj+G8IkEbDh50aibhDEjMPJivI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jSfv7kwU; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ecf1bb7f38so3828219b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:46:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712677550; x=1713282350; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=buNYP7p7u2SjN+B3Y9aoQObdwXquT6XXRaxxD1OD6hQ=;
-        b=zBw1IUGtrGyzphbHO42j9oPNWsugNdc6EEIamFYdRse+bHLfJtAREhLkaL5A4x3CPB
-         w6++Ua/kYXOFYhJ0e46Rqsmf4gPQ//jkZUwbg9ZVihh7trnlvIJ4NXU1w6QPd0tpePOS
-         j5MBidsFKz0cjRALAf/3abw9auYS3lK3g1rQ9E9JtwrRnuw2B7gtdLCpAUesEXYswvxQ
-         rK+EfkeJwSi/ZF+y0Ll8hBgQtqc4U00SmH6r7hKTuoIQcKbJI7u+TRE1KAcX/+ZP7WPp
-         1Dbny88Tb+X0IoVo8xkw2Eqg2yQOCbsBFp4YFp6BCnjR6HO1H65ZAycf+raOLSm28zPz
-         R4hA==
+        d=chromium.org; s=google; t=1712677572; x=1713282372; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZb3iRMe5mVHNLzHciI0SO6cgHqSkIE7M20XVfQvi74=;
+        b=jSfv7kwUb9qEcmOVZWd4NNQ8kkcqpjc5RLqEtWEv9ORulGYOipNAK4T9N6HKEy5lNk
+         pK+tHn0sgT0Cnv2RxvM26AzXwkqoH+YnSi7FnjNNCYo50bzdpV5NJ5N3+T+OUo3PlaGR
+         dSYGvwAio9iV2XG+ndFKn2I1VvnMpgc4AaKvY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712677550; x=1713282350;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=buNYP7p7u2SjN+B3Y9aoQObdwXquT6XXRaxxD1OD6hQ=;
-        b=iV0Xuz9G1B49v3O7xVZbDZy24zMbssYkBpQiNY1JJLAq2Rp5nQSa01RC3g1a9YcUj/
-         IsKm+9n30HY/EAdu3JGv5FreMbu2rdYHl4jmPAlFT/bSKb3qx1m+oxnxD38ja8rB1moB
-         1ZaYtaxwYo7Tiqqt7hzUozTPYN5Y+62qluwzcR9zOv0cUhm60WEwg1djUX9QQmbadBh7
-         RfCzvRPaEKf++e3xfT+n0BwuBe/QPJWqwJqPe+zzwaxLPwHfmoUEw2APX+dyh9qoj/8+
-         s2jTQ2K+uhkwK/aK5CJpYt6RZddldpOSNaYcHD3zDgfNwZCKZnUFSEyYUeylOxjmc2kf
-         3ZAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUM2In2KHcDSZuruxoJ/xccTCDMn282xo/KFF6lkZbI8cOYtsdrPNd5gst70bDVfhA94a1ubWT+Kk0+f+BQScrXevff+eteOKmS1EbD
-X-Gm-Message-State: AOJu0YyhmUeYBWAhIZkdVGSZe+IPZJjfhcDxd450nFdiqNTy2FS/8o+1
-	3BINeVDcpG/NpTPafNZg+CVOBaG0GGmbsyaw+vgWTmdMJE4wD1IiQXp7d5O28a9lb1BsGI8X4mq
-	PN9z6nO7oLBFe2boheVkcoDpRC3qSlBAEg1ReYw==
-X-Google-Smtp-Source: AGHT+IFQASAOVayyeXCcdEPsB1W5n+ToWptOioZCwSqIVanbm2a6TPbaXGP3/tSGH/lVzMnrpwjM9UGuBvHRJ7f07U4=
-X-Received: by 2002:a25:ce05:0:b0:dcc:1dc4:15e4 with SMTP id
- x5-20020a25ce05000000b00dcc1dc415e4mr122551ybe.47.1712677550216; Tue, 09 Apr
- 2024 08:45:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712677572; x=1713282372;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TZb3iRMe5mVHNLzHciI0SO6cgHqSkIE7M20XVfQvi74=;
+        b=n1N9LhB89MPJPJNcpkCP+qtAHJixwK8hwhsuyFjWppdKtz9VVksRNGYBpQyWwGSDpt
+         9XpaER6GrGcbbNgcICOf1LFBHoFVKFFFwiVIapkH6PqfCOD1jSGRCjYPI+e04rgy0CH3
+         ZFX0Qszi0+3N/ld0FsSKOIcxvr0A2m7CoJXwDO9yfJUh0oMm0Xq7dMmYrduDaaNlwEdK
+         KpFLr5h7dgswe4R4q0SavmhLU+It+BE46jpMSKrbe6ReSFmJVrQW9qi3AEAYuzsgW0xN
+         xFIIYtCdbxg2RU3kowBv2qg1weTXoh0LZqPZd07+1M3jzaW5x+RxIYfWcvaNLwOwsQ5q
+         BJ3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVWfvTO9nOVKo+JltbbpsOIi5VM8CyOkfGyPviXKrUDEUQMhQxsSMrQXcA3asK5wQ6Zqr+OKRk9a4oxaQa+iW7IbAfEfUqxLuuVhRCS
+X-Gm-Message-State: AOJu0Yzlj4OZaZsmjU4I0lyoco/qOnOJZMyuOl8UaQA63xirYvw28mr7
+	wVFCe5iTE8BO9t98He69m7q4W2tZO5lQQmlr0JdUYFDP8u5GVBsVQE8VR6BT7A==
+X-Google-Smtp-Source: AGHT+IFY4YnmxxIgxT9REWRm8+8QvKZDpcEh61QeY1CTDZRblqm40N34Vq/Eeh+kF58mWnqkXyrA8A==
+X-Received: by 2002:a05:6a00:2355:b0:6ec:da6c:fc2d with SMTP id j21-20020a056a00235500b006ecda6cfc2dmr13723474pfj.23.1712677571643;
+        Tue, 09 Apr 2024 08:46:11 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 27-20020a630f5b000000b005dc5289c4edsm8296124pgp.64.2024.04.09.08.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 08:46:11 -0700 (PDT)
+Date: Tue, 9 Apr 2024 08:46:10 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Marco Elver <elver@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH] tracing: Add new_exec tracepoint
+Message-ID: <202404090840.E09789B66@keescook>
+References: <20240408090205.3714934-1-elver@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <20240409120211.321153-2-angelogioacchino.delregno@collabora.com>
- <oe75tx35rd27r2a24ofdxfaqwr53tylfp5fwz3nrwc2uz6nmrs@vwc2krbpy3fh> <8600acf8-7b51-456b-8a81-4233cfd6f121@collabora.com>
-In-Reply-To: <8600acf8-7b51-456b-8a81-4233cfd6f121@collabora.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 9 Apr 2024 18:45:39 +0300
-Message-ID: <CAA8EJpo68f=9ZyNnVY=+q+drHu9xJMSGk1kNCBa=HM442Jth8g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: mediatek: Add OF graph
- support for board path
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: chunkuang.hu@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
-	matthias.bgg@gmail.com, shawn.sung@mediatek.com, yu-chang.lee@mediatek.com, 
-	ck.hu@mediatek.com, jitao.shi@mediatek.com, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	wenst@chromium.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408090205.3714934-1-elver@google.com>
 
-On Tue, 9 Apr 2024 at 18:41, AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 09/04/24 17:20, Dmitry Baryshkov ha scritto:
-> > On Tue, Apr 09, 2024 at 02:02:09PM +0200, AngeloGioacchino Del Regno wrote:
-> >> The display IPs in MediaTek SoCs support being interconnected with
-> >> different instances of DDP IPs (for example, merge0 or merge1) and/or
-> >> with different DDP IPs (for example, rdma can be connected with either
-> >> color, dpi, dsi, merge, etc), forming a full Display Data Path that
-> >> ends with an actual display.
-> >>
-> >> The final display pipeline is effectively board specific, as it does
-> >> depend on the display that is attached to it, and eventually on the
-> >> sensors supported by the board (for example, Adaptive Ambient Light
-> >> would need an Ambient Light Sensor, otherwise it's pointless!), other
-> >> than the output type.
-> >
-> > With the color and gamma being in play, should the configuration be
-> > board-driver or rather use-case driven with the driver being able to
-> > reroute some of the blocks at runtime?
-> >
->
-> The driver can already set some blocks to "BYPASS MODE" at runtime, meaning
-> that those will work as simple pass-through, performing *no* processing at
-> all, so that's addressed from the very beginning.
->
-> This doesn't mean that a specific pipeline must always support the "DISP_GAMMA"
-> or the "DISP_CCOLOR" block(s) alone, or together, or in combination with another
-> specific block.
+On Mon, Apr 08, 2024 at 11:01:54AM +0200, Marco Elver wrote:
+> Add "new_exec" tracepoint, which is run right after the point of no
+> return but before the current task assumes its new exec identity.
+> 
+> Unlike the tracepoint "sched_process_exec", the "new_exec" tracepoint
+> runs before flushing the old exec, i.e. while the task still has the
+> original state (such as original MM), but when the new exec either
+> succeeds or crashes (but never returns to the original exec).
+> 
+> Being able to trace this event can be helpful in a number of use cases:
+> 
+>   * allowing tracing eBPF programs access to the original MM on exec,
+>     before current->mm is replaced;
+>   * counting exec in the original task (via perf event);
+>   * profiling flush time ("new_exec" to "sched_process_exec").
+> 
+> Example of tracing output ("new_exec" and "sched_process_exec"):
+> 
+>   $ cat /sys/kernel/debug/tracing/trace_pipe
+>       <...>-379     [003] .....   179.626921: new_exec: filename=/usr/bin/sshd pid=379 comm=sshd
+>       <...>-379     [003] .....   179.629131: sched_process_exec: filename=/usr/bin/sshd pid=379 old_pid=379
+>       <...>-381     [002] .....   180.048580: new_exec: filename=/bin/bash pid=381 comm=sshd
+>       <...>-381     [002] .....   180.053122: sched_process_exec: filename=/bin/bash pid=381 old_pid=381
+>       <...>-385     [001] .....   180.068277: new_exec: filename=/usr/bin/tty pid=385 comm=bash
+>       <...>-385     [001] .....   180.069485: sched_process_exec: filename=/usr/bin/tty pid=385 old_pid=385
+>       <...>-389     [006] .....   192.020147: new_exec: filename=/usr/bin/dmesg pid=389 comm=bash
+>        bash-389     [006] .....   192.021377: sched_process_exec: filename=/usr/bin/dmesg pid=389 old_pid=389
+> 
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  fs/exec.c                   |  2 ++
+>  include/trace/events/task.h | 30 ++++++++++++++++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 38bf71cbdf5e..ab778ae1fc06 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -1268,6 +1268,8 @@ int begin_new_exec(struct linux_binprm * bprm)
+>  	if (retval)
+>  		return retval;
+>  
+> +	trace_new_exec(current, bprm);
+> +
 
-I was thinking about slightly different case: do you have enough
-colour blocks to drive all outputs or do you have to select them for
-the particular output only?
+All other steps in this function have explicit comments about
+what/why/etc. Please add some kind of comment describing why the
+tracepoint is where it is, etc.
 
-(excuse me, I didn't check the platform details).
+For example, maybe something like:
 
-> For any other question, clarification, etc, I'm here :-)
->
-> Cheers!
->
-> >>
-> >> Add support for OF graphs to most of the MediaTek DDP (display) bindings
-> >> to add flexibility to build custom hardware paths, hence enabling board
-> >> specific configuration of the display pipeline and allowing to finally
-> >> migrate away from using hardcoded paths.
-> >>
-> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >
->
+/*
+ * Before any changes to 'current', report that the exec is about to
+ * happen (since we made it to the point of no return). On a successful
+ * exec, the 'sched_process_exec' tracepoint will also fire. On failure,
+ * ... [something else]
+ */
 
+> +TRACE_EVENT(new_exec,
+> +
+> +	TP_PROTO(struct task_struct *task, struct linux_binprm *bprm),
+> +
+> +	TP_ARGS(task, bprm),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(	filename,	bprm->filename	)
+> +		__field(	pid_t,		pid		)
+> +		__string(	comm,		task->comm	)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(filename, bprm->filename);
+
+What about binfmt_misc, and binfmt_script? You may want bprm->interp
+too?
+
+-Kees
+
+> +		__entry->pid = task->pid;
+> +		__assign_str(comm, task->comm);
+> +	),
+> +
+> +	TP_printk("filename=%s pid=%d comm=%s",
+> +		  __get_str(filename), __entry->pid, __get_str(comm))
+> +);
+> +
+>  #endif
+>  
+>  /* This part must be outside protection */
+> -- 
+> 2.44.0.478.gd926399ef9-goog
+> 
 
 -- 
-With best wishes
-Dmitry
+Kees Cook
 
