@@ -1,176 +1,177 @@
-Return-Path: <linux-kernel+bounces-136517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62D9D89D510
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:03:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 424F689D513
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F792837F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:03:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72F401C2149C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81F67EF02;
-	Tue,  9 Apr 2024 09:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA107EF06;
+	Tue,  9 Apr 2024 09:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LFKFhsR/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LFKFhsR/"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="NQPtyfNm"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A027E580;
-	Tue,  9 Apr 2024 09:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B7A5339A;
+	Tue,  9 Apr 2024 09:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712653411; cv=none; b=ngsl4Li6bbPBswnbvgk0kfGdMbE9T9ZKoCs2fu7dWd+0qydLrZNfGgAca4wmJTQUdVo7sxunOlcOJN8Ls16p2lnhursKqbIdvjV2nm6x1qE1okegDFICcG8/aHUciRgRiM8qif5p9udCZtBeNuwcY7VsHMB/Muc7TQPc9N8U7tY=
+	t=1712653641; cv=none; b=LHy8ka/U3rQaY1zK0SlgQR5Sn7FqItS7IbTFL64Nox0StcJPLAQQaWViXfOKykEOhKCMIlFuINupepbgGOxRDz1jU1gK88GzU5OQ58IzSuQGVT2dw5ZZOQXbJFjvetm7cHmYhgcReMhOP51TgE+GJnUtDnvVr/lrZueXFm/AQVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712653411; c=relaxed/simple;
-	bh=h2kiHo+GgQz/ZCISfMuUvv0y5uUfdVCdxMdXR1Xy7zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iVQmGUUbuSnqpx92bVQXPqxcyN4znPMQAoG9+TdWpiHY+6fnTypMhwn9PhQkJZGX+pZosX4WTOkId4jS2zCiDrMHzlDSYQGOZAZv9vz04viEPdotUp8ujzEWrRomZ3MOfpCDiIB1W+YQDCF7z7H86Bb/hoH+vyQ3cpTu2osw9KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LFKFhsR/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LFKFhsR/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 21BA622C8E;
-	Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712653408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NvyrWquLz7geaixcVsAUQI3Ex1g1XLIRXoJG2iDV3q8=;
-	b=LFKFhsR/O3HPCXRLhG6lA9hzbnDne02ClR7rfW/zzyLDNHsX6Qwj3M+hs/tUx61xlnR/Pm
-	KeIJWt+2wkYO1tAV8a1eNsHwcvNjS98Nl6wgFhT2Kfh+9/rSDgoDywHh+5CQDTfmilPXkb
-	8P/1X9iKX5h8BmVwPKjyGM/CXN0muzk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712653408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NvyrWquLz7geaixcVsAUQI3Ex1g1XLIRXoJG2iDV3q8=;
-	b=LFKFhsR/O3HPCXRLhG6lA9hzbnDne02ClR7rfW/zzyLDNHsX6Qwj3M+hs/tUx61xlnR/Pm
-	KeIJWt+2wkYO1tAV8a1eNsHwcvNjS98Nl6wgFhT2Kfh+9/rSDgoDywHh+5CQDTfmilPXkb
-	8P/1X9iKX5h8BmVwPKjyGM/CXN0muzk=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 095811332F;
-	Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 5FoaAmAEFWaaQAAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Tue, 09 Apr 2024 09:03:28 +0000
-Date: Tue, 9 Apr 2024 11:03:22 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Haitao Huang <haitao.huang@linux.intel.com>
-Cc: "hpa@zytor.com" <hpa@zytor.com>, 
-	"tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, 
-	"x86@kernel.org" <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
-	"jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"Mehta, Sohil" <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-	"Huang, Kai" <kai.huang@intel.com>, "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, 
-	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>, 
-	"Zhang, Bo" <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>, 
-	"yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>, 
-	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: Re: [PATCH v10 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
-Message-ID: <imqjuxgmm5updfnl75molzixlq52ttlufd6sn2vpcevaby5l7f@22j23whlbvux>
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
- <20240328002229.30264-13-haitao.huang@linux.intel.com>
- <d25dbe76d48a0b6c74fa09b06f1ca3fdf234a190.camel@intel.com>
- <op.2lw8gfg2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
- <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+	s=arc-20240116; t=1712653641; c=relaxed/simple;
+	bh=nsVDit+POVQZ2H6w/6IpwlVYrA58ci/3Jlcy44bs/kE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HpZ/cnKDpxP1oOdiPRqfWmtrVqIaoB2u9uhxf/l5eV1R7OYwLx8JNjLwkzXTwMlJfzY1hGHBor8fWep8pEz2Gkn3W6hYaBjgGhCnqNDM2jrD9FuiolBjajB8Ij6NC+QgrPEVv2hYkTlW+6xXCvhiRGX0pZzMil5JNV9cSa6ZwkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=NQPtyfNm; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 6D9A7100003;
+	Tue,  9 Apr 2024 12:06:52 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1712653612; bh=6MJ6fVJnN7Gpxxf8TraZt1FowXJlJ9GCYXfReimphcE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=NQPtyfNmcjh89rBodlhXy1EsylX+VHfcn9U02hLYvaH6up/r/D9hxcvuoMxhm0EPU
+	 DxbSf6L+M9GBDmrafkeANR6UVwvvPOW435hfGXCYaw9Pcot438f5neUbAEJtVr3FPz
+	 AVjIKRwNMopl1uKScEndfTPW6rdTEgeVxOjIL4FtlUR5yBJpfqKNr2l/9NLePjtqF5
+	 mjeCVtyAEZ4/GAva59U8lvd3yDAR3xi86i6GhuE9aryNO6ULiT2uMMwkRPCkIK1LkP
+	 AFvh7mhVGE+aXag/ssPp+hfYRVtesELjE24VrIpDcI65To5tUSOo0Ok7AHqy+49Toi
+	 S7du+yl8W3RoQ==
+Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Tue,  9 Apr 2024 12:05:45 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 9 Apr 2024
+ 12:05:15 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Atul Gupta <atul.gupta@chelsio.com>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Ayush Sawal
+	<ayush.sawal@chelsio.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, Michael Werner
+	<werner@chelsio.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH net] crypto: chtls: Fix possible null pointer dereferences
+Date: Tue, 9 Apr 2024 12:05:07 +0300
+Message-ID: <20240409090507.21441-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ltmvwvtmhbsdsweo"
-Content-Disposition: inline
-In-Reply-To: <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-X-Spam-Flag: NO
-X-Spam-Score: -5.39
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.39 / 50.00];
-	BAYES_HAM(-2.49)[97.68%];
-	SIGNED_PGP(-2.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email]
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184636 [Apr 09 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t-argos.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/09 08:22:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/09 07:19:00 #24714583
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+In chtls_pass_accept_rpl() and chtls_select_mss() __sk_dst_get() may
+return NULL which is later dereferenced. Fix this bug by adding NULL check.
 
---ltmvwvtmhbsdsweo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-On Mon, Apr 08, 2024 at 11:23:21PM -0500, Haitao Huang <haitao.huang@linux.=
-intel.com> wrote:
-> It's always non-NULL based on testing.
->=20
-> It's hard for me to say definitely by reading the code. But IIUC
-> cgroup_disable command-line only blocks operations in /sys/fs/cgroup so u=
-ser
-> space can't set up controllers and config limits, etc., for the diasabled
-> ones. Each task->cgroups would still have a non-NULL pointer to the static
-> root object for each cgroup that is enabled by KConfig, so
-> get_current_misc_cg() thus  sgx_get_current_cg() should not return NULL
-> regardless 'cgroup_disable=3Dmisc'.
->=20
-> Maybe @Michal or @tj can confirm?
+Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+ .../chelsio/inline_crypto/chtls/chtls_cm.c    | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-The current implementation creates root css object (see cgroup_init(),
-cgroup_ssid_enabled() check is after cgroup_init_subsys()).
-I.e. it will look like all tasks are members of root cgroup wrt given
-controller permanently and controller attribute files won't exist.
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+index 6f6525983130..6d88cbc9fbb0 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+@@ -939,15 +939,15 @@ static void chtls_accept_rpl_arp_failure(void *handle,
+ 	sock_put(sk);
+ }
+ 
+-static unsigned int chtls_select_mss(const struct chtls_sock *csk,
++static bool chtls_select_mss(const struct chtls_sock *csk,
+ 				     unsigned int pmtu,
+-				     struct cpl_pass_accept_req *req)
++				     struct cpl_pass_accept_req *req,
++					 unsigned int *mtu_idx)
+ {
+ 	struct chtls_dev *cdev;
+ 	struct dst_entry *dst;
+ 	unsigned int tcpoptsz;
+ 	unsigned int iphdrsz;
+-	unsigned int mtu_idx;
+ 	struct tcp_sock *tp;
+ 	unsigned int mss;
+ 	struct sock *sk;
+@@ -955,6 +955,9 @@ static unsigned int chtls_select_mss(const struct chtls_sock *csk,
+ 	mss = ntohs(req->tcpopt.mss);
+ 	sk = csk->sk;
+ 	dst = __sk_dst_get(sk);
++	if (!dst)
++		return false;
++
+ 	cdev = csk->cdev;
+ 	tp = tcp_sk(sk);
+ 	tcpoptsz = 0;
+@@ -979,11 +982,11 @@ static unsigned int chtls_select_mss(const struct chtls_sock *csk,
+ 	tp->advmss = cxgb4_best_aligned_mtu(cdev->lldi->mtus,
+ 					    iphdrsz + tcpoptsz,
+ 					    tp->advmss - tcpoptsz,
+-					    8, &mtu_idx);
++					    8, mtu_idx);
+ 	tp->advmss -= iphdrsz;
+ 
+ 	inet_csk(sk)->icsk_pmtu_cookie = pmtu;
+-	return mtu_idx;
++	return true;
+ }
+ 
+ static unsigned int select_rcv_wscale(int space, int wscale_ok, int win_clamp)
+@@ -1016,8 +1019,13 @@ static void chtls_pass_accept_rpl(struct sk_buff *skb,
+ 	struct sock *sk;
+ 	u32 opt2, hlen;
+ 	u64 opt0;
++	struct dst_entry *dst;
+ 
+ 	sk = skb->sk;
++	dst = __sk_dst_get(sk);
++	if (!dst)
++		return;
++
+ 	tp = tcp_sk(sk);
+ 	csk = sk->sk_user_data;
+ 	csk->tid = tid;
+@@ -1029,8 +1037,10 @@ static void chtls_pass_accept_rpl(struct sk_buff *skb,
+ 
+ 	OPCODE_TID(rpl5) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
+ 						     csk->tid));
+-	csk->mtu_idx = chtls_select_mss(csk, dst_mtu(__sk_dst_get(sk)),
+-					req);
++	if (!chtls_select_mss(csk, dst_mtu(dst),
++					req, &csk->mtu_idx))
++		return;
++
+ 	opt0 = TCAM_BYPASS_F |
+ 	       WND_SCALE_V(RCV_WSCALE(tp)) |
+ 	       MSS_IDX_V(csk->mtu_idx) |
+-- 
+2.30.2
 
-(It is up to the controller implementation to do further optimization
-based on the boot-time disablement (e.g. see uses of
-mem_cgroup_disabled()). Not sure if this is useful for misc controller.)
-
-As for the WARN_ON(1), taking example from memcg -- NULL is best
-synonymous with root. It's a judgement call which of the values to store
-and when to intepret it.
-
-HTH,
-Michal
-
---ltmvwvtmhbsdsweo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZhUEVgAKCRAGvrMr/1gc
-jpkmAQDC0m6kfTm0e/ebDdbus7JzB7oXpjF+aa05c4n6JTgMZAD/cof9Y5sOlPGG
-my7EEJBDBJYKcFgS8YtpUYJdZwjKvwE=
-=CQHh
------END PGP SIGNATURE-----
-
---ltmvwvtmhbsdsweo--
 
