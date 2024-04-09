@@ -1,156 +1,109 @@
-Return-Path: <linux-kernel+bounces-137288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFED389E04F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B09EA89E010
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:10:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 500E7B284C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:04:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99522B27D3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF8F13D884;
-	Tue,  9 Apr 2024 16:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E0013D88D;
+	Tue,  9 Apr 2024 16:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yi7EZlQ1"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0Al1BHh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B1A13D63A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7629136E1C;
+	Tue,  9 Apr 2024 16:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712678666; cv=none; b=XOlhoNdVn/eU6I5blPSHQfunTXWHEAcLAsTa9DbmGg+FPR06fbpfQaNYzNXDP9QZNUPNvqFCBjX3uulXBC1gREetXpQhHqL20O0+uq+VjIhf8AP5xt2IuOOlB3q0KUtZPXHWCMl39W6Q22cAY79Sx+ievSrZJI87DxDZlcAYR0I=
+	t=1712678834; cv=none; b=SRwHKqAKlO8p8F/+JxS6fJEdFRI9Za63kbUCeQ0LNPkEpqUKlDhAwdcuLGbbahOwt2Gp1Atrtu8YTR98XcwWgJWUX7bYMUA5nTTDEQTQlJruVRFoVQ60X3YkcW/tqe37VL9KyjeJ+us1oM3Sx0+72Bi6C6kXZrffteU0O3VjaXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712678666; c=relaxed/simple;
-	bh=ol8O3/Qu+bjdL/dGoc/J7NHq0r7ACqYxDaVzpJ+SLaw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHgvW+v0+ePqaqV371/hQQgXkJnZ6TAH/cTuezO9TkIsPQRVlm94BPEn/bw5ocXEsqfPHWHtAAtf1U/uMeYVd8AMCEuSoXZLiqdz5xHHXrRkGPinqGuD3FDcMdOHey/qDloqffOZvvbzNnBIh5btfuUa8yhRKydQCnbs4spZRvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yi7EZlQ1; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e44f82ff9cso122155ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712678664; x=1713283464; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dQUeK+ooPMeTOP4LmlA2cpGhF85DlqGUYugsLHSO63A=;
-        b=yi7EZlQ1ZVXZJpmcQr5TIheiiWOjWiE/F3tFoe4nbwHOyrA3nGDgHB53QrZ8hpWj6I
-         /gcrUiIDf+1ltNNN+akUmy0T4pbKAPtLG2MugOm2vDBnSarBc79jOWSdhuZYROQ8egdo
-         JX9fC7Y3skqnbOKwhcF+p6N8ZMuKUevvbPaF6VtmEdWPhdvd+P4xRa42V0bav8mScECB
-         5O0Z+A+I2jE8oYQ17qfgFTCbR2bU9T2JVOKkh++J6vlzXm8j06Y99R1OG4XkDwpd5xuW
-         jZNfCdrlQXd13JHkF4SA4TMPeDfIl6BMD8BcPUsYFonjorxgfQRCTLjTNnA31uJlh85y
-         5Mkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712678664; x=1713283464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dQUeK+ooPMeTOP4LmlA2cpGhF85DlqGUYugsLHSO63A=;
-        b=c7zuo0G01EtpG2xP5dv5Pb0YPkVOggBEaC1evsqW7V9zu8ChcmRl9jU//Osg70CUCk
-         GfQrcz9SE16PM8jp6FL2cd+mWyzZGSXqF052EbK7kD3kRYvShyLwfCV+ssaMlTgGCY8/
-         hsHzaBOOZ7OYtjignDMYvgH0rcBH0IZDD1MP0cVJKVEOuNdqyP1WwKDrM6ZUH09mAJWB
-         zSTCcGns+lOI9KyMz7DBZ9jS9G2nhVl4XNQBZ3DuRHN1l2S6f+cL7FxzXIanNfmFVOxc
-         ZT8lzNcUKuqwJGuNaKNkZK5NWz/qB52j/5S6nIXbpe+WfvrR64e+hITWLIY+6nAGrvTm
-         DKCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnkeQCLhKQAe8K8WDN9zsAelNQ4vT2BpA1z6vyXY0+SY2mUJwJZsU9ykw7BT4HuD0XW+hz1lG7k3qTG2Z22pWaVJwP3JXWdg3U0NHo
-X-Gm-Message-State: AOJu0Yw/6Mi5rRW/O5g7eJ3EgHNRrq8CVbifzPdO/eSFCjJYzdpdjV6c
-	9Xvkhyv2s96Y0rdDKJ3Yk9SKT7oWWvvD9Ae7vVZ4zrPeZ6oQfIVtnTLeMWbjUdEA03WSMGpWOx+
-	E8OpSgdYmcupiGWG3Z/zWNcjmQWvsYvX9Hy40
-X-Google-Smtp-Source: AGHT+IHstTaEeDKuv7ONHRg78iPJFI7H0d5nLLTLzLOPoqQiSgAOYfbfwB52cXWqX0xW6ysGQ0XXDmHjXvmHJe8WIAQ=
-X-Received: by 2002:a17:902:d4c3:b0:1de:f0c7:108 with SMTP id
- o3-20020a170902d4c300b001def0c70108mr240871plg.6.1712678661668; Tue, 09 Apr
- 2024 09:04:21 -0700 (PDT)
+	s=arc-20240116; t=1712678834; c=relaxed/simple;
+	bh=qmLu+B39nGxcOsPcrCbOMGpwlK3WNzAr6MKX4sjNhf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=POMgIBkEwLxZK1p34DvdC+hsoA71FL/tFV1YoVi19IaiEQunKSpyCiZn7ht1gkpnXtUDdQ7tK5Piwbd6BAx0aBAVJjNsrEmkvQhf0+Q5EDMWVBSo17hhTACAshchh9DSiCBtZgU9ori0QzTwfc2qIiuB7d3MZsYAGOwK6ajlaOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0Al1BHh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500B2C433F1;
+	Tue,  9 Apr 2024 16:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712678834;
+	bh=qmLu+B39nGxcOsPcrCbOMGpwlK3WNzAr6MKX4sjNhf8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=e0Al1BHhQp+hzFUfox1gnuvlWYu0zDeVi7ZTyupNDNSXtGrHWy6Tfqz5iAyAcK5T3
+	 LQRo/g8GPzipVOEfrkkO6z+KdWXPwqJ4NpiVCO0H16qwgS/wrrlNVXMip31UqH/1rI
+	 n7Q0GfF+JAV+504L7jJ6q+aRv2WksRx9t2xNZ5oNU823STgipWokR/eTYlXZr8Vojt
+	 NQ69ES51HtcW6TkaDbNTqmS3wIqFRudOcKzaZrQyAPik49gbKK1sWTzvNRbWgYq8or
+	 gv/YaK4z9RhY99TPV+UzKnWB/qJnUEvkxFed5im9q+LSVzi6+T0Et0VyRnz6xX5JEu
+	 9wmac3e3cGd1w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E1D16CE2D22; Tue,  9 Apr 2024 09:07:13 -0700 (PDT)
+Date: Tue, 9 Apr 2024 09:07:13 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH v2 fs/proc/bootconfig 0/2] remove redundant comments from
+ /proc/bootconfig
+Message-ID: <632948a8-6779-49d5-b90f-f1c5963d36eb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
+ <b1ab4893-46cb-4611-80d8-e05f32305d61@paulmck-laptop>
+ <20240409233248.ca2e8ba75f125f4dd01b273d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240406073804.1932415-1-irogers@google.com> <0d498870-b235-4860-9563-befcddf0ec3e@linux.intel.com>
- <CAP-5=fU=bEvzWw+62HxL=5kOSqQxaBYeDBomv8Fdu+R+fNv5sw@mail.gmail.com> <cd4b5229-b938-44ef-822a-68d29c463aa7@linux.intel.com>
-In-Reply-To: <cd4b5229-b938-44ef-822a-68d29c463aa7@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 9 Apr 2024 09:04:06 -0700
-Message-ID: <CAP-5=fUNTiju7sv5R3P+=rUm-BzL_HmaEicdhCuBVPKooPHWeA@mail.gmail.com>
-Subject: Re: [PATCH v1] perf stat: Remove evlist__add_default_attrs use strings
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Kaige Ye <ye@kaige.org>, 
-	Yicong Yang <yangyicong@hisilicon.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409233248.ca2e8ba75f125f4dd01b273d@kernel.org>
 
-On Tue, Apr 9, 2024 at 9:00=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
-m> wrote:
->
->
->
-> On 2024-04-09 11:20 a.m., Ian Rogers wrote:
-> >>> +             ret =3D parse_events(evlist,
-> >>> +                             "context-switches,"
-> >>> +                             "cpu-migrations,"
-> >>> +                             "page-faults,"
-> >>> +                             "instructions,"
-> >>> +                             "cycles,"
-> >> "cycles",
-> >> "instructions",
-> >>
-> >> It's better to keep the original order.
-> > So the original order was:
-> > "cycles,"
-> > "stalled-cycles-frontend,"
-> > "stalled-cycles-backend,"
-> > "instructions"
-> >
->
-> Right. The stalled-* events are added between default_attrs0 and
-> default_attrs1.
->
->
-> > but many/most/all core PMUs don't provide the stalled-* events. At the
-> > programmer level instructions is the most fundamental thing, so having
-> > it last felt wrong hence moving it to be the first after the software
-> > events. My thought was, if we're going to reorder things then let's
-> > not do a half measure like:
-> > "cycles,"
-> > "instructions,"
-> > "stalled-cycles-frontend,"
-> > "stalled-cycles-backend"
-> >
-> > let's just put things into their best order. It is obviously easy to
-> > change but having this way wasn't an accident. There's obviously
-> > subjectivity about whether cycles is more fundamental than
-> > instructions, my thought is that you get taught instructions first and
-> > that these take some number of cycles to execute, hence thinking
-> > instructions should have some priority in the output over cycles -
-> > some people may not even know what cycles means, it is hard enough
-> > when you do given the variety of different clocks =F0=9F=99=82
-> >
->
-> My concern is that there may be someone who still relies on the std
-> output of perf stat default. So the output format/order matters for
-> them. Their scripts probably be broken if the order is changed.
+On Tue, Apr 09, 2024 at 11:32:48PM +0900, Masami Hiramatsu wrote:
+> Hi Paul,
+> 
+> Thanks, both looks good to me.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Let me update bootconfig/fixes.
 
-I think making everyone suffer for the case of a tool that may behave
-in this way doesn't make sense. The tool should transition to not care
-or to say the json output, or at least contribute a test. There is
-precedent for this attitude, the default metrics for topdown removed
-the event names in perf stat default output - no one screamed, and I
-expect that to be the case here.
+Thank you very much!  As soon as I see them in -next from you, I will
+drop them from -rcu.
 
-Thanks,
-Ian
+							Thanx, Paul
 
-> Thanks,
-> Kan
->
+> On Mon, 8 Apr 2024 21:42:49 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > Hello!
+> > 
+> > This series removes redundant comments from /proc/bootconfig:
+> > 
+> > 1.	fs/proc: remove redundant comments from /proc/bootconfig,
+> > 	courtesy of Zhenhua Huang.
+> > 
+> > 2.	fs/proc: Skip bootloader comment if no embedded kernel parameters,
+> > 	courtesy of Masami Hiramatsu.
+> > 
+> > 						Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> >  b/fs/proc/bootconfig.c       |   12 ++++++------
+> >  b/include/linux/bootconfig.h |    1 +
+> >  b/init/main.c                |    5 +++++
+> >  fs/proc/bootconfig.c         |    2 +-
+> >  4 files changed, 13 insertions(+), 7 deletions(-)
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
