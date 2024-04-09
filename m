@@ -1,137 +1,182 @@
-Return-Path: <linux-kernel+bounces-136304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CB989D275
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02DBA89D278
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:30:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0227C1C21A9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2545B1C22C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3340043AA0;
-	Tue,  9 Apr 2024 06:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF002DF73;
+	Tue,  9 Apr 2024 06:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EzVT0OsL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BfZqNi4V"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB1A1DFC4;
-	Tue,  9 Apr 2024 06:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E33763FC
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712644210; cv=none; b=UTWsQYTyuxneIJ8o7pY9LQqqE60fAaue44k72NkIUkYyGBw3Z68K2Fe79Pgq3I3jnhYz7mSVYMUY+KAKq96HokmsBMZLf1mB6wFfo8sHSFuZ3RQSWkiZB+ghrFXjD/4FHBCpOIQ2ytVHVWTIAkf1+vjyCGudDyv1KMYQACrZvRg=
+	t=1712644214; cv=none; b=P6DtC4/B8/uZqEfalnzF0UAUI3lzRxj/pp14tkUYGZI/+I1/MM6uQd4xVOEQhWkS3IG3UgmkrKnT70aSK0oWYoW9eyd38zw1hV4Nmcw5A4XIN+k0Ug8yaOb+FtjCCVhZMsqkhEmD1AS/b5/SIAHLqCVmGCLXGwtsigFIG/73gOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712644210; c=relaxed/simple;
-	bh=y4XqJdFt7y1AyYebuwpEgYd69/uTnJh6qyQOlVWNtTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YTdoaqESPKRgBviIfti2nl/SJvK6FSUYAT/YS1fMB8OaDDKOGHHkQg20f1tPDY1GD2+wsQRcgmEbSdJE8qWpN/sq2ZkBPh2J7N6ZbJV3njxPgwAwkfqfrqw60GCHrVnKHwWlZUjjV9ZE+iMCJQPvBv3pIa3nzhppPTf6zW8ZXks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EzVT0OsL; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712644209; x=1744180209;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=y4XqJdFt7y1AyYebuwpEgYd69/uTnJh6qyQOlVWNtTY=;
-  b=EzVT0OsLyZFoSIWBchJIEGLiOyL4EXuL48HngcRTRmKBkH0O89+zTt7n
-   R7YGScrX9XICUsZMBQ+eRZUK5vL1d5RET19WUpIJBOdulMnjpQm6+u62Z
-   oNuez6IkFi4NYtue/o12bvb0IHpukWeMhkN+OPXG+rHGCDA4jHvK4IG87
-   Ya+oJflQwkx+RIvDpDz4XAGrdw8wG3uqyC9XrB0Z2koQVWHXcyAiE1r1s
-   t95GwQwqAWwTWGwfKYHRKMlrsn9MlF7FgVEPeInONAKPSM4fFmwbvo2D1
-   vi5XiETrj132w3y4H8MN8gWkODTRfYMe74ccVNM7u21bdqtn2+BJxPCi9
-   A==;
-X-CSE-ConnectionGUID: OK8KBrloRNGZVn8wKb/FhA==
-X-CSE-MsgGUID: qUR03+ISSWujYc3IP6hkYw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8069501"
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="8069501"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:30:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093067"
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="937093067"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 08 Apr 2024 23:30:05 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 09 Apr 2024 09:30:04 +0300
-Date: Tue, 9 Apr 2024 09:30:04 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 3/3] usb: typec: ucsi_glink: drop special handling for
- CCI_BUSY
-Message-ID: <ZhTgbOYigUBucwNY@kuha.fi.intel.com>
-References: <20240408-qcom-ucsi-fixes-bis-v1-0-716c145ca4b1@linaro.org>
- <20240408-qcom-ucsi-fixes-bis-v1-3-716c145ca4b1@linaro.org>
+	s=arc-20240116; t=1712644214; c=relaxed/simple;
+	bh=GLlGOxsGfKxek5hcLAceq+1uQpJbEpoRFNLaAKCpyOE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DD5spyDpyhGM4WiHMq3R7ooCEZtKWcxwCvdYRwXQbAjZreOvXdnuQCZKzVoTqt9fpoa6Y5FZ9yMiu8T58xAbDYYmCGyIn4pUELMmplgkrVkybA3VTxiG6U7+TykpQTnKeILytrHXP+3e3j0dybCekJyg1e7lWtjryGcGxxqMMdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BfZqNi4V; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso7759558a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712644212; x=1713249012; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=JSfFuREisAT8UwnNGuE+3fIOXrzMP5PSYPhNRbJ9h10=;
+        b=BfZqNi4Vrz2yfyEB1I6GAz0w4RWTJhvbfZAIcK7ESckoh6LxaeCoULxmZ3KkcAOQYg
+         sl2ceTA/YFWgjxiSE+ka2sKgu1/Xz0/0Txawhp6BtqxESxv2AQN/Hb2sW2IgTM25NMf7
+         TbF0zI1XJJeAmboTVorPHvBprNyz0fUy7iUEWwd/P3TO0xC7+tygnkbWBoF3vgBes2Nm
+         UqKaeehWtfCcfuoQ/zaHi4z09FT8gVIUW8RDXLsdjYWXFmnRYeBmJjTtTAK9sPJ9GO7n
+         DmIFw6faluEUi9VASzbC+Oule6bUa4yBeH3AnHtVT9Tp8fTnlh3UV2KibubHiNA0NO7F
+         Cqpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712644212; x=1713249012;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JSfFuREisAT8UwnNGuE+3fIOXrzMP5PSYPhNRbJ9h10=;
+        b=lAAmCwOr3mz7uqH6TwBucKyLpyi+YZPjcl7o4A6Kw3NdKe6uJLjMFieQAli5N7KTDX
+         +FNpZxVekunBSh8KvHERmz0mdPOMvqhDuLHvaIwZ549G6tcryftzlvXChiymg3Re5JJY
+         9SVKds9z+OLW3kav5rt7JAWxlxh3s00o7oTG403LeA2wk1CU4MxS9wzfsrczlg9emXLC
+         xo/qw5ZRRXse1MOOrkgVKXkISrS1p7ErVVHukQLNrtddqnpnSJOO7T8NbIBOpy/ITJOq
+         g0JRQv+7rLDcTc9ZJ2EPANhEei50vZ0cgoSDZ5azyNhToZwrSXoWFc2AnpADNoCzr1Dj
+         hQgw==
+X-Forwarded-Encrypted: i=1; AJvYcCXhFjAtpB5LSwO7XRBOJI/JWrH2AhGduXTgrmdJDyRQUwIKQmRA1PcL/L2Ky/7WwXghdadkiSJ/KSeWIgUVR86Ssd8HeUqu6fF9UTCa
+X-Gm-Message-State: AOJu0YzpljU1cK42oqc4yVtHR9TGlCGddYNgNFJal6J1MuOfb1zKU9ly
+	/MxL9xO3krwnB21hR62tqqwlJ1v2O0eahPDIJlptiZpiEdrBX5MFLK8f2e17Lsc=
+X-Google-Smtp-Source: AGHT+IG/oFIIAzcBsZm/egCPjFK0/bLUFEtPbvyxlCvGIe0YLL/tYpAaT9ndRheyNFs0seWC7a0ZUQ==
+X-Received: by 2002:a50:ab1d:0:b0:56e:4039:add5 with SMTP id s29-20020a50ab1d000000b0056e4039add5mr6697537edc.22.1712644211611;
+        Mon, 08 Apr 2024 23:30:11 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id di19-20020a056402319300b0056b7ed75a46sm4986932edb.27.2024.04.08.23.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 23:30:11 -0700 (PDT)
+Message-ID: <51e482b3-ffbf-46f9-972d-875d106c2474@linaro.org>
+Date: Tue, 9 Apr 2024 08:30:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408-qcom-ucsi-fixes-bis-v1-3-716c145ca4b1@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ASoC: dt-bindings: imx-audio-spdif: convert to YAML
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+ festevam@gmail.com, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+References: <1712561233-27250-1-git-send-email-shengjiu.wang@nxp.com>
+ <01734d96-bed2-4f7e-bbba-7068f14c822b@linaro.org>
+ <CAA+D8ANiKH7Oc+KAjD_BMp9P2EVeM8Q6dLGFCC8a83bJXUpPEA@mail.gmail.com>
+ <69ab2bd9-401a-42ff-90fa-6600dd071722@linaro.org>
+ <CAA+D8AOP6D+xUNF_XJXt-8dMi2qFyVh-Sbe8k67CzvUbnzrwoQ@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAA+D8AOP6D+xUNF_XJXt-8dMi2qFyVh-Sbe8k67CzvUbnzrwoQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 08, 2024 at 04:04:17AM +0300, Dmitry Baryshkov wrote:
-> Newer Qualcomm platforms (sm8450+) successfully handle busy state and
-> send the Command Completion after sending the Busy state. Older devices
-> have firmware bug and can not continue after sending the CCI_BUSY state,
-> but the command that leads to CCI_BUSY is already forbidden by the
-> NO_PARTNER_PDOS quirk.
+On 09/04/2024 03:37, Shengjiu Wang wrote:
+> On Mon, Apr 8, 2024 at 11:06 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 08/04/2024 10:01, Shengjiu Wang wrote:
+>>>>> +
+>>>>> +anyOf:
+>>>>> +  - required:
+>>>>> +      - spdif-in
+>>>>> +  - required:
+>>>>> +      - spdif-out
+>>>>> +  - required:
+>>>>> +      - spdif-out
+>>>>> +      - spdif-in
+>>>>
+>>>> Do you need the last required block?
+>>>
+>>> Yes,  one of them or both are required.
+>>
+>> And? It's already there: that's the meaning of any. It is not oneOf...
+>> Before answering please test your changes and ideas. I pointed issue
+>> here and you responded just to close my comment. That does not make me
+>> happy, just wastes my time.
 > 
-> Follow other UCSI glue drivers and drop special handling for CCI_BUSY
-> event. Let the UCSI core properly handle this state.
+> Maybe I didn't express clearly.
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-One minor nitpick below, but feel free to ignore that one.
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/ucsi/ucsi_glink.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
+> we need at least one of them (spdif-in, spdif-out) in the node.  which means
+> that we need to select  "spdif-in",  or "spdif-out",  or "spdif-in and
+> spdif-out".
 > 
-> diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-> index 9ffea20020e7..b91d2d15d7d9 100644
-> --- a/drivers/usb/typec/ucsi/ucsi_glink.c
-> +++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-> @@ -176,7 +176,8 @@ static int pmic_glink_ucsi_sync_write(struct ucsi *__ucsi, unsigned int offset,
->  	left = wait_for_completion_timeout(&ucsi->sync_ack, 5 * HZ);
->  	if (!left) {
->  		dev_err(ucsi->dev, "timeout waiting for UCSI sync write response\n");
-> -		ret = -ETIMEDOUT;
-> +		/* return 0 here and let core UCSI code handle the CCI_BUSY */
-> +		ret = 0;
->  	} else if (ucsi->sync_val) {
->  		dev_err(ucsi->dev, "sync write returned: %d\n", ucsi->sync_val);
->  	}
-> @@ -243,10 +244,7 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
->  		ucsi_connector_change(ucsi->ucsi, con_num);
->  	}
->  
-> -	if (ucsi->sync_pending && cci & UCSI_CCI_BUSY) {
-> -		ucsi->sync_val = -EBUSY;
-> -		complete(&ucsi->sync_ack);
-> -	} else if (ucsi->sync_pending &&
-> +	if (ucsi->sync_pending &&
->  		   (cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))) {
+> So my understanding is that need to use "anyOf", if it is wrong, please let
+> me know.
 
-Looks like you forgot to fix the alignment.
+Third time: it is wrong.
 
->  		complete(&ucsi->sync_ack);
->  	}
-> 
-> -- 
-> 2.39.2
+Can you test the code instead continuing this discussion
 
--- 
-heikki
+Best regards,
+Krzysztof
+
 
