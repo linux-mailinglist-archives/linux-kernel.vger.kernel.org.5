@@ -1,99 +1,127 @@
-Return-Path: <linux-kernel+bounces-137587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC9B89E44B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:22:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB5589E44C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:22:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BFCF1F22FD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:22:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0316F1C215A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0664B15820A;
-	Tue,  9 Apr 2024 20:21:54 +0000 (UTC)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E4E15820A;
+	Tue,  9 Apr 2024 20:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qIOjafEK"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE74E8562A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874A71581E6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712694113; cv=none; b=ITZYS/9JaD5whGywYdojCtRNPOqASSEC8TL4bJf+ODXH3XXedexJfyIOvkTRPYl2kAh1zly2LqbVDARn1TVxEBtPxHDIUiGgSAw0v99uW0KXQHMs58KGMvmIBXZfB0uYYXxKabUkBkc2yWfhIv0xHA1Sr6c4XDqIONDE3AHNvwY=
+	t=1712694130; cv=none; b=EiBS9mTabs12MgoK8uAfLxv4IO+Yj4+0m7ted6Wsg5p51XLsgWwUPEqPcNEvxo/L9MfzRqW4nIPkwS/gYLfMi/Cylm2bHb1MeAFuSw03frduAv4kU32c/7UVv997SY80BcoVVDnlnqX5Jludvy4e0dAE0VaOIxrHfv7XEosErJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712694113; c=relaxed/simple;
-	bh=z05iIoX6+/nX+l3/VMT0gupT5isshor/+S4xstKqjLo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B24FBII9conetRg4x3zcsB2JNv0xjyNG9lti8ZPB55sb1oKA1Zvfku2x0ibtQ59kEzQC6t3QqqoWqe4K2ZZRDJMAPIxfZwkAWSDgXDJDz0H5YhWWZjuXqQkMUAP9SfeB5hxraY+SXnqiUAzjcPM6ylXhU/V+uF5OCgEPF0Ht7Rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d874b89081so5702471fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:21:51 -0700 (PDT)
+	s=arc-20240116; t=1712694130; c=relaxed/simple;
+	bh=LP0AE5/PUtGSyLNbe3rFEA3/mjUNWVbbofmFlYStYaU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=e3V0NBh+YSMS9jo3rqiJ3MAKfosNtfFhoSU8mY5RkoXzNpMzKRUlAVzDWImEQIU2YyJoIjRaAk5bCdyHp6gry+DE9s2tdDYWx5oS1NRBIB/+JKmwfqUmNTke3/9Ht9qfqqqY8OIpHZqj8vXIOhQrakgBhDy8rZJn5jSJW+HyaB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--willmcvicker.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qIOjafEK; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--willmcvicker.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e41c665bb2so20010095ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712694128; x=1713298928; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=li70RG4leC6BXT61G6ins6TrGephnT1pmJh8LVW4448=;
+        b=qIOjafEKF6gK2ACResldhYXO7ScfyaQDN/R5/AHjQTsIxMM7a+h/lSRGt/+riBXOIk
+         dIvXqdOB6KJ0PUiPPWhtVzdmb+dng41tdpnlTKg4POjY2Er/dMRfdxPCPlFvXw9E+omD
+         dr0SL8WlomT3H6IGm4FKdSewRmAe2+3AxJLiCBfxIMfBjOVUlyMcb9u3IsRZXq7CeqTS
+         wvGHht/7ec1kaKEgyTUCJD3mBIAD5JBKqEibO1eNFigUsOCSsAX1lif+jY22SlGXJBvO
+         s1y8wpVsJwsqZiPZHY0Gmgc2Nu1Flwdd4d5c8VvYVKn8BqJ2QIQZ43aTt+CKMsrQCqUN
+         fcQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712694110; x=1713298910;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEA7dHQgHE1uFqZ9aLUCdxhVQ2BEQSowcQOkzZwh8KQ=;
-        b=lqYQ0/Hl9VSABR/jOclSkGdgIPQHtl60WQzfP9u7L+S0gfq8SC8rUaER35gHU8lF+V
-         uWFoeu64oA//fXbhEm3x7CuEotI55zdrrLYcTZbUqpLX0nOVnfbtTV5Cgz3+cE3MZR7i
-         PzCNMe65W5u8ao23SdA5OwPVYchD5SRw26sr97Qj04ChV5km/Dejy6jnFC1JwSVeGvsi
-         P5Gmicxi+rZh7CjgDlhqCaohwHJu+QccGQEqUPH9Ft8/kd+9v9B4ylD6MJoAppkDkzv4
-         sGAdkeJmwSUrtMfHO7tmzoFxMJ9Kfd3+M2kWlOxZx7VoSQv7yb8pp3yIhruobKrQf61O
-         hXlA==
-X-Forwarded-Encrypted: i=1; AJvYcCUU39JWXVK8GBNZdgGgvzUVSdlLQGV+7XcwOF10SzoVUQPdkQDX4sL3s5E1/rQYg11bx6YSOsYbGNGoknM9aktR8BJxCiaAmB1No88j
-X-Gm-Message-State: AOJu0Yy+qWi4ywvTppYcg3rbvHRzx6iaBh5sBfehKvuZx7lqRdfqdZLb
-	qZ1S/UABG5A01KnpkCcReTdRwIK3t+H3f6762LPlrPtJSEm8Z5y0
-X-Google-Smtp-Source: AGHT+IHRCn26vGDmNKTaP3gt7MYF3CGzWIP/8l1UoEUzxQrqmG4j+DpgrF93Vgy/+PJxtO/b5lLdMg==
-X-Received: by 2002:a2e:968f:0:b0:2d8:c62:5e20 with SMTP id q15-20020a2e968f000000b002d80c625e20mr519979lji.3.1712694109834;
-        Tue, 09 Apr 2024 13:21:49 -0700 (PDT)
-Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
-        by smtp.gmail.com with ESMTPSA id k16-20020a05600c1c9000b004166a8ad81bsm9512177wms.43.2024.04.09.13.21.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 13:21:49 -0700 (PDT)
-Message-ID: <23a5c86c-9f68-4c13-832e-7cf4e6953639@grimberg.me>
-Date: Tue, 9 Apr 2024 23:21:48 +0300
+        d=1e100.net; s=20230601; t=1712694128; x=1713298928;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=li70RG4leC6BXT61G6ins6TrGephnT1pmJh8LVW4448=;
+        b=R0uFAGMAXiAnIMrgzAo418iZb34gD6Gl6atNd1xjM5SYhK5mxF1WhFWhGpsojqq8AO
+         EsAnzfXa2z9TJq/huHUt0qMktyPp0gNPuTp9Pgnfv8MfUuB8qBpV+jUoGoaMyG3WHpY/
+         jNsL8WLPwj2g760k+aU2cU3OfkyCnZgOnGDU1hqfw7oK1aWd9vzaU8u8Xz7ZeRS3Rke1
+         5VuTFm4tXTJC24cJKcSBsNzScVIMgwuA5RuGh7FI3/xW5cnBYFzsVjB462EZcdp7PJ9V
+         YZT8jqAwcHE/Si34NPGZLrWkHXTPp6VoxOupoPL1Gihe/0YCGY3FW7g2JwVH1XmWg6to
+         EDBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVGz5Hukdm9ccekYo4h6Dd/6GT9DIoqDMREiuAqlPCJx+OuzYWxEfYDVmBzPeCaIAC9iB2Jg4Mx62MlHeLqpYi5XsvCcZDAB8vRpOak
+X-Gm-Message-State: AOJu0YzYFQUimNHMifARBi+od3IhXegv3OVjLvZupQqAEbU69NE06nkY
+	8lrLq5RrkEsDuKgZu3NDITdRmORvJ6TcJzxhylZT36hq7XiWK9SLrT06K/rs/uPuiammH3lU1YQ
+	p30MxWc0tOLOixgG2SV8quI6vxg==
+X-Google-Smtp-Source: AGHT+IFRUiwCI1bVLGrKHHupMeWnTyEsNBKU9AP3ld9A7X1GTUv6ZAcQK10ulcSFjVO9m9GOgSGuiYAPdF1BHs6+B/o=
+X-Received: from wmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5ebe])
+ (user=willmcvicker job=sendgmr) by 2002:a17:902:f2c9:b0:1e3:e092:53b9 with
+ SMTP id h9-20020a170902f2c900b001e3e09253b9mr29282plc.4.1712694127914; Tue,
+ 09 Apr 2024 13:22:07 -0700 (PDT)
+Date: Tue,  9 Apr 2024 13:22:02 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/6] nvme-rdma: short-circuit reconnect retries
-To: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>,
- Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>
-References: <20240409093510.12321-1-dwagner@suse.de>
- <20240409093510.12321-5-dwagner@suse.de> <20240409140054.GC20883@lst.de>
- <ZhVOcGMuBzC3nyMB@kbusch-mbp.dhcp.thefacebook.com>
-Content-Language: he-IL, en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <ZhVOcGMuBzC3nyMB@kbusch-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240409202203.1308163-1-willmcvicker@google.com>
+Subject: [PATCH v1] scsi: ufs: exynos: Support module autoloading
+From: Will McVicker <willmcvicker@google.com>
+To: Alim Akhtar <alim.akhtar@samsung.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Peter Griffin <peter.griffin@linaro.org>, andre.draszik@linaro.org, 
+	tudor.ambarus@linaro.org, Will McVicker <willmcvicker@google.com>, kernel-team@android.com, 
+	linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Export the module alias information using the MODULE_DEVICE_TABLE()
+macro in order to support auto-loading this module for devices that
+support it.
 
+$ modinfo -F alias out/linux/drivers/ufs/host/ufs-exynos.ko
+of:N*T*Ctesla,fsd-ufsC*
+of:N*T*Ctesla,fsd-ufs
+of:N*T*Csamsung,exynosautov9-ufs-vhC*
+of:N*T*Csamsung,exynosautov9-ufs-vh
+of:N*T*Csamsung,exynosautov9-ufsC*
+of:N*T*Csamsung,exynosautov9-ufs
+of:N*T*Csamsung,exynos7-ufsC*
+of:N*T*Csamsung,exynos7-ufs
 
-On 09/04/2024 17:19, Keith Busch wrote:
-> On Tue, Apr 09, 2024 at 04:00:54PM +0200, Christoph Hellwig wrote:
->> On Tue, Apr 09, 2024 at 11:35:08AM +0200, Daniel Wagner wrote:
->>> From: Hannes Reinecke <hare@suse.de>
->>>
->>> Returning an nvme status from nvme_rdma_setup_ctrl() indicates that the
->> Shouldn't this an be an a based on my highschool english.  Or does
->> Eeenvme count as a vowel?
-> It depends on how you hear it when you read it. If you automatically
-> expand the acronym, "Non-Volatile ...", then it should get the "a"
-> article.
->
-> If you instead try to pronounce "nvme" directly, it sounds like you're
-> saying "envy me", like commanding everyone to acknowledge your
-> awesomeness. Not sure if they had that in mind when deciding on the
-> name, but it's kind of amusing. Anyway, pronounce it that way, it gets
-> an "an". :)
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+---
+ drivers/ufs/host/ufs-exynos.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-:)
+Note, I tested this on a Pixel 6 device with the UFS patch series in
+[1]. With both this patch and [1], the ufs-exynos module autoloads on
+boot.
+
+[1] https://lore.kernel.org/all/20240404122559.898930-1-peter.griffin@linaro.org/
+
+diff --git a/drivers/ufs/host/ufs-exynos.c b/drivers/ufs/host/ufs-exynos.c
+index 734d40f99e31..1795860a2f06 100644
+--- a/drivers/ufs/host/ufs-exynos.c
++++ b/drivers/ufs/host/ufs-exynos.c
+@@ -1748,6 +1748,7 @@ static const struct of_device_id exynos_ufs_of_match[] = {
+ 	  .data       = &fsd_ufs_drvs },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, exynos_ufs_of_match);
+ 
+ static const struct dev_pm_ops exynos_ufs_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(ufshcd_system_suspend, ufshcd_system_resume)
+
+base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+-- 
+2.44.0.683.g7961c838ac-goog
+
 
