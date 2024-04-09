@@ -1,102 +1,268 @@
-Return-Path: <linux-kernel+bounces-136262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C1389D20C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:48:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842D889D209
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCD55284F14
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:48:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2A351C23DDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0E2657AE;
-	Tue,  9 Apr 2024 05:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7621773A;
+	Tue,  9 Apr 2024 05:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="B0SowQn+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="XR6uCKpg"
-Received: from fallback22.i.mail.ru (fallback22.i.mail.ru [79.137.243.74])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gw7orvO7"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638F71773A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209FD138E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712641687; cv=none; b=nW22hnjAVFsjl/eRT58fctgV/YwWCdbV2EJ83YyqlCm3ayki06F59x9icsRBJ/00puf/6O4ayFPk9WgZvsPS4Bpd0LcIzYpJP0ubMcpvz/GB3f2lQoXuXKHTKLP4K93OBOeQF7kpjR6I/eelRd37maXOCfUP1NjyztEaPstndV4=
+	t=1712641247; cv=none; b=nrvowHUBLXhh2rmpoFIDO0oeL0fkhkY/VJ4hMCqecD1MQkG9rk52h2P3QVil525aYOd4wwzCSjuah/AkAAFSgRpnmw28kDImb1zUl4wC6nvOa6dLk5x+akao3ALK0iDyxbfcmhX20+2CiYymOXb8/pxJafVyz3l4OpzDAG3oiWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712641687; c=relaxed/simple;
-	bh=ZwA+l938iPXYTJ60gKk+nW5hvcJp3FdF81ldHAssCSk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hQdgP7GbV7Z6ZET6UdIPGWB8lZ4e0/KoFM5mM0/obmZhChjBipZHjUHTLM/no4PvivA0Xc4tralgTZxMWh9l1UbaMifZz6Hp8rg042Kdkb3pNlnXBRV91BSoLZ/8vsixtVhAWJHH0ua4q9Q+o7mBZuc8ZwmsbUPEEihDeHaenqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru; spf=pass smtp.mailfrom=inbox.ru; dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b=B0SowQn+; dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b=XR6uCKpg; arc=none smtp.client-ip=79.137.243.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inbox.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=9Era2ZLwb79nOsiWvinSwT46I2lLWW20YrV5gIt/5r4=;
-	t=1712641684;x=1712731684; 
-	b=B0SowQn+7fNwPgMTzu5BdHvqtSBsLc42XHoK8AsUeJmz4Ha70BHnPNTN4ep8rd3bPxiUXwEksaXd4gqv5NUuyzfpUkGbA9BfsGot6IqJV6lRP5fe9Vykxt3MBunPE8aI0aNpRnzV3cgxab7ulpLYjH+eEe6HMucEDsX+slSdyWlcSBrEz26qMd6d+YihRjLdGyVi2PBRC1etIPBGFWurcuj0VO7pi2Ol3gYKPZLWrDvU05ui6H8RubyxY4chs8PyhyW/bHmogHIDmMDg3brbJAvM5koQUhu5tDwGqwhb5ISvCamb5fjD1PjWXSbxh4G90CnwAcFMD/6kZIJTqIG55Q==;
-Received: from [10.12.4.19] (port=35978 helo=smtp43.i.mail.ru)
-	by fallback22.i.mail.ru with esmtp (envelope-from <fido_max@inbox.ru>)
-	id 1ru4Bm-002MlQ-SE; Tue, 09 Apr 2024 08:38:35 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
-	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References
-	:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To:Cc:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=9Era2ZLwb79nOsiWvinSwT46I2lLWW20YrV5gIt/5r4=; t=1712641114; x=1712731114; 
-	b=XR6uCKpgxTNmMhZVGfuOD6I5zs1ocQTcD4I6FBtPzEPB6ZjVj4XRfPmJU7vzqr5pFkGO/tPL2Qv
-	z+sVfLTWfEQ82+ivIgdt0G/W6GzCorwnZ9uXDs4sVOJVWN88ZlU3qPzIjxmRHMHol2IZMg1DZNrjn
-	uZEAzCG74QmX8LvPK+rVX0RX0zK5XfguYuDTwQKNi0C+rXTZjq68o8jI8gB+C/fYDgkKK56ywGqMe
-	o5qwlBTw6H9CgqBTfOdRyX8fl2orJpGLOKdncwkFgx5Ls4wQMBecLRwIXtaynGHQZSRV2gGTjkbh9
-	/yuOdqdPGc1OqGTWX3+cNaKS1l3c4+0dIkeQ==;
-Received: by smtp43.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-	id 1ru4BN-00000006joD-2zQ5; Tue, 09 Apr 2024 08:38:10 +0300
-Message-ID: <75d00e5b-48b5-47cb-85aa-7b9c6641f30d@inbox.ru>
-Date: Tue, 9 Apr 2024 08:38:09 +0300
+	s=arc-20240116; t=1712641247; c=relaxed/simple;
+	bh=cKx/XEApGcdgkkBoYHguipdiISKD6oH161Z5fFjIQ/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WlsYdllXmQ+bBcJds6n048PSuU3+EfhbovvIuXwZZ2nIIlM5ykEg3dcUZmh73aEQIAccaFuhICs6dPYcjuT20zlXo+MUUT9rp9Ky0511/0EJQndEvyIFRg8aI0O2k4XPh4YsunGclCHssz9rVuS4AnNoBdGc7GDyNCUwG3HjKbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gw7orvO7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712641244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vP+SQe4NJzDMBR5/uL7vUmv1IMo2/chbDROQYoC6bdg=;
+	b=gw7orvO7iYgFjY77mnB4wSJnkoXIyHayRVfwc/K8hWdqG9yPo2jh1Cq0mxdA854tCT8VfE
+	A+fsRzkcAl8WO/qR4X9D8wDcqTNSXXwvqPj9MXNVymANonpj+mRjSocSia+NOZkabTjMp0
+	OxoXB1mrpp+wddyvz2f+tdFnAsTW2G8=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-xY3OOtl-PwGcCQy6nKLGyw-1; Tue, 09 Apr 2024 01:40:42 -0400
+X-MC-Unique: xY3OOtl-PwGcCQy6nKLGyw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d6c94d98afso49095491fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 22:40:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712641241; x=1713246041;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vP+SQe4NJzDMBR5/uL7vUmv1IMo2/chbDROQYoC6bdg=;
+        b=NGLt1Zc5AxVg9TtytG0751s7tadWWaPzQNzlvBVbrhrsGSKkZFo3el3I/2roifhqhg
+         wQlz1WgEH+IC728wPmz9/iNLaVn4J/wykCueXIvDeewpD3S52ykq8N/0f77FkEqhhkq5
+         0OkJZDjLFKx4vvVu88lOfXcvTQU1j/jxv89svz/HDCSlCqhk5yNy8soqLCUa5p+Hx76T
+         bfmdVpeOJD59dWjbBCttURvjQbw1hdXYuHTebtm9aKcWA9iPJspawTjqyjBRifZIh+u/
+         AIdHSXsrOcD6Vj6BRXVRzNSUJ/tAkxsiyd9EuRJVaxafqjNemIiayb6YRNNcigqyP8xi
+         il1g==
+X-Forwarded-Encrypted: i=1; AJvYcCVMFRQlzBtDOiZox1MQLmjxSV7vtPL72yFMnAqcX6cXRu3FL0RxRxay2kLEAcSWXM0PyNnJQ9ZGlSC5dTfH4sElozr/33yIuqHeWDxs
+X-Gm-Message-State: AOJu0Yw+FCIxc31mHzoBr4yGi1Vkc5pRAJHZYkkRC2VEhRMlfLqUyIcN
+	JRgVjC8L8oad5PRu3bZG3gzOnjFPMqCmPO4mt4UtRXX+zTsG/GhcBYvzQHjRVNTLm+DUaeX6tPP
+	wQx2HOjyjzL0zby2heJ9x4PBdzVpyBVE/FcadBw4ma7FAA2WO+K9nInU2cZrjNw==
+X-Received: by 2002:a2e:9f0c:0:b0:2d4:3d86:54e2 with SMTP id u12-20020a2e9f0c000000b002d43d8654e2mr6914066ljk.27.1712641240911;
+        Mon, 08 Apr 2024 22:40:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+qn0i6whv8AwTjlwkCerpWrTLCi6WhpXkJ62FFmQBBsOuWv8O1bHDdwijM/xD7mQUbvhuFA==
+X-Received: by 2002:a2e:9f0c:0:b0:2d4:3d86:54e2 with SMTP id u12-20020a2e9f0c000000b002d43d8654e2mr6914058ljk.27.1712641240359;
+        Mon, 08 Apr 2024 22:40:40 -0700 (PDT)
+Received: from redhat.com ([2.52.134.26])
+        by smtp.gmail.com with ESMTPSA id z15-20020a5d4c8f000000b00343daeddcb2sm10614463wrs.45.2024.04.08.22.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 22:40:39 -0700 (PDT)
+Date: Tue, 9 Apr 2024 01:40:36 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: lyx634449800 <yuxue.liu@jaguarmicro.com>
+Cc: jasowang@redhat.com, angus.chen@jaguarmicro.com,
+	virtualization@lists.linux.dev, xuanzhuo@linux.alibaba.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] vp_vdpa: fix the method of calculating vectors
+Message-ID: <20240409013020-mutt-send-email-mst@kernel.org>
+References: <20240408035346-mutt-send-email-mst@kernel.org>
+ <20240409014935.944-1-yuxue.liu@jaguarmicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soc: fsl: qe: Add check for platform_driver_register
-To: Chen Ni <nichen@iscas.ac.cn>, qiang.zhao@nxp.com, leoyang.li@nxp.com,
- saravanak@google.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240409030840.666703-1-nichen@iscas.ac.cn>
-Content-Language: en-US
-From: Maxim Kochetkov <fido_max@inbox.ru>
-In-Reply-To: <20240409030840.666703-1-nichen@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D327F0ED0D500BEE3D0D2DC2898190C0A0182A05F5380850408A9F00BCF12307122EB5D77EF37489D1CEDD527866A399A4219EC0674805B9AE4A9DBE0811142006
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE73B44982FA5E78411EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371DF52D98DC3592C48638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B432B0B59149B63E0BF6D59EF90F10D8B04DABB0541D93C920879F7C8C5043D14489FFFB0AA5F4BF176DF2183F8FC7C02F11D39E7306DD338941B15DA834481FA18204E546F3947C1D471462564A2E19F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063783E00425F71A4181389733CBF5DBD5E9B5C8C57E37DE458B9E9CE733340B9D5F3BBE47FD9DD3FB595F5C1EE8F4F765FC8C7ADC89C2F0B2A5E2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8BC6A536F79815AD9275ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
-X-87b9d050: 1
-X-C1DE0DAB: 0D63561A33F958A56981B0E970FC4E695002B1117B3ED69667EBF332286B2BA2FB820E9FE7BD014C823CB91A9FED034534781492E4B8EEADCF86CE9B81855096
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFC087879C3E0AE9D034FFC9DC8582B74DEB09DFF268707B050117E0585162983C486D6DC23143AA0E43A9A4803F78FBB9918D2DB24F4611F1B5508CD4504D7F3E782CBDC177B4639536DDF96CB8D31E6A913E6812662D5F2A17D6C1CDD2003EB8E03787203701020945C72C348FB7EED3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRxVvDy3pXer4zRb8upYVeA==
-X-Mailru-Sender: 689FA8AB762F7393590D8C940224AE3310D6C9911FFDEF1902AB133316F7432E1C8ED5244191747D90DE4A6105A3658D481B2AED7BCCC0A49AE3A01A4DD0D55C6C99E19F044156F45FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4DB7CCFC93CF1872EA8D575E5E21AE01D964B60085DACEEB368F3CF0E9FE49B69E64074A9175417A88727D7F6DF2777CD78C82047CA4AE4585B36B8EC0B0619EB
-X-7FA49CB5: 0D63561A33F958A5FE7B593D28573F95FA00C25D2FAC6109E4CA3DA7BC45C3AFCACD7DF95DA8FC8BD5E8D9A59859A8B6F657401E1635F1D7CC7F00164DA146DAFE8445B8C89999728AA50765F7900637006720155ACF5028389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC86FF1B927F95F3316F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7BEDDA301F84FD0E143847C11F186F3C59DAA53EE0834AAEE
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRxVvDy3pXeo5i+rkqVejlg==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409014935.944-1-yuxue.liu@jaguarmicro.com>
 
-09.04.2024 06:08, Chen Ni пишет:
-> Return platform_driver_register() in order to transfer the error if
-> it fails.
+better subject:
+
+ vp_vdpa: don't allocate unused msix vectors
+
+to make it clear it's not a bugfix.
+
+
+
+
+more comments below, but most importantly this
+looks like it adds a bug.
+
+On Tue, Apr 09, 2024 at 09:49:35AM +0800, lyx634449800 wrote:
+> When there is a ctlq and it doesn't require interrupt
+> callbacks,the original method of calculating vectors
+> wastes hardware msi or msix resources as well as system
+> IRQ resources.
 > 
-> Fixes: be7ecbd240b2 ("soc: fsl: qe: convert QE interrupt controller to platform_device")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+> When conducting performance testing using testpmd in the
+> guest os, it was found that the performance was lower compared
+> to directly using vfio-pci to passthrough the device
+> 
+> In scenarios where the virtio device in the guest os does
+> not utilize interrupts, the vdpa driver still configures
+> the hardware's msix vector. Therefore, the hardware still
+> sends interrupts to the host os. Because of this unnecessary
+> action by the hardware, hardware performance decreases, and
+> it also affects the performance of the host os.
+> 
+> Before modification:(interrupt mode)
+>  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+>  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+>  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+>  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+> 
+> After modification:(interrupt mode)
+>  32:  0  0  1  7   PCI-MSI 32768-edge  vp-vdpa[0000:00:02.0]-0
+>  33: 36  0  3  0   PCI-MSI 32769-edge  vp-vdpa[0000:00:02.0]-1
+>  34:  0  0  0  0   PCI-MSI 32770-edge  vp-vdpa[0000:00:02.0]-config
+> 
+> Before modification:(virtio pmd mode for guest os)
+>  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+>  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+>  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+>  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+> 
+> After modification:(virtio pmd mode for guest os)
+>  32: 0  0  0   0   PCI-MSI 32768-edge   vp-vdpa[0000:00:02.0]-config
+> 
+> To verify the use of the virtio PMD mode in the guest operating
+> system, the following patch needs to be applied to QEMU:
+> https://lore.kernel.org/all/20240408073311.2049-1-yuxue.liu@jaguarmicro.com
+> 
+> Signed-off-by: lyx634449800 <yuxue.liu@jaguarmicro.com>
 
-Reviewed-by: Maxim Kochetkov <fido_max@inbox.ru>
+
+Bad S.O.B format. Should be
+
+Signed-off-by: Real Name <email>
+
+
+> ---
+> 
+> V3: delete unused variables and add validation records
+> V2: fix when allocating IRQs, scan all queues
+> 
+>  drivers/vdpa/virtio_pci/vp_vdpa.c | 35 +++++++++++++++++++------------
+>  1 file changed, 22 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> index df5f4a3bccb5..cd3aeb3b8f21 100644
+> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> @@ -160,22 +160,31 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+>  	struct pci_dev *pdev = mdev->pci_dev;
+>  	int i, ret, irq;
+>  	int queues = vp_vdpa->queues;
+> -	int vectors = queues + 1;
+> +	int msix_vec, allocated_vectors = 0;
+
+
+I would actually call allocated_vectors -> vectors, make the patch
+smaller.
+
+>  
+> -	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
+> -	if (ret != vectors) {
+> +	for (i = 0; i < queues; i++) {
+> +		if (vp_vdpa->vring[i].cb.callback)
+> +			allocated_vectors++;
+> +	}
+> +	allocated_vectors = allocated_vectors + 1;
+
+better: 
+	allocated_vectors++; /* extra one for config */
+
+> +
+> +	ret = pci_alloc_irq_vectors(pdev, allocated_vectors, allocated_vectors,
+> +								PCI_IRQ_MSIX);
+> +	if (ret != allocated_vectors) {
+>  		dev_err(&pdev->dev,
+>  			"vp_vdpa: fail to allocate irq vectors want %d but %d\n",
+> -			vectors, ret);
+> +			allocated_vectors, ret);
+>  		return ret;
+>  	}
+> -
+> -	vp_vdpa->vectors = vectors;
+> +	vp_vdpa->vectors = allocated_vectors;
+>  
+>  	for (i = 0; i < queues; i++) {
+> +		if (!vp_vdpa->vring[i].cb.callback)
+> +			continue;
+> +
+>  		snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
+>  			"vp-vdpa[%s]-%d\n", pci_name(pdev), i);
+> -		irq = pci_irq_vector(pdev, i);
+> +		irq = pci_irq_vector(pdev, msix_vec);
+
+using uninitialized msix_vec here?
+
+I would expect compiler to warn about it.
+
+
+pay attention to compiler warnings pls.
+
+
+>  		ret = devm_request_irq(&pdev->dev, irq,
+>  				       vp_vdpa_vq_handler,
+>  				       0, vp_vdpa->vring[i].msix_name,
+> @@ -185,23 +194,23 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+>  				"vp_vdpa: fail to request irq for vq %d\n", i);
+>  			goto err;
+>  		}
+> -		vp_modern_queue_vector(mdev, i, i);
+> +		vp_modern_queue_vector(mdev, i, msix_vec);
+>  		vp_vdpa->vring[i].irq = irq;
+> +		msix_vec++;
+>  	}
+>  
+>  	snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-config\n",
+> -		 pci_name(pdev));
+> -	irq = pci_irq_vector(pdev, queues);
+> +			pci_name(pdev));
+
+
+don't move pci_name - don't make unrelated code changes.
+
+> +	irq = pci_irq_vector(pdev, msix_vec);
+>  	ret = devm_request_irq(&pdev->dev, irq,	vp_vdpa_config_handler, 0,
+>  			       vp_vdpa->msix_name, vp_vdpa);
+>  	if (ret) {
+>  		dev_err(&pdev->dev,
+> -			"vp_vdpa: fail to request irq for vq %d\n", i);
+> +			"vp_vdpa: fail to request irq for config\n");
+
+I would report ret here too.
+
+>  			goto err;
+>  	}
+> -	vp_modern_config_vector(mdev, queues);
+> +	vp_modern_config_vector(mdev, msix_vec);
+>  	vp_vdpa->config_irq = irq;
+> -
+
+don't make unrelated code changes.
+
+
+>  	return 0;
+>  err:
+>  	vp_vdpa_free_irq(vp_vdpa);
+> -- 
+> 2.43.0
 
 
