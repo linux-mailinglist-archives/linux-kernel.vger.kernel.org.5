@@ -1,160 +1,159 @@
-Return-Path: <linux-kernel+bounces-137061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE3C889DBD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:10:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516B889DC18
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 642611F23183
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:10:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B90928333A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0963512FF6B;
-	Tue,  9 Apr 2024 14:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF8F12FF65;
+	Tue,  9 Apr 2024 14:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bAJDz4o5";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qHgBKUin";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bAJDz4o5";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qHgBKUin"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="AXB8s412"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A448F12F5A7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722E712F5BD;
+	Tue,  9 Apr 2024 14:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671828; cv=none; b=qkcMZjnHjbzA/Hta+Z9etVTNr02l8isDhKz8T7wtuLS3sP59sEzPv981WyzxguTFdkeYcQ1g5/maoewg1Mvqs4t+tOmPMVXuqCagORFOE10BvwTDdbW+iYkRdAJgQbhhqFNSBttWWvAZqr/4/WOBGc9NZ/QT1XhhAepJlt0S4ng=
+	t=1712672474; cv=none; b=Ou7CEtoKskesx+vzMDVt6PUlcCbQy9xZukCrzrJnh57Rjj6RrRSiIUJaaN1Cz7WqSXUMcw5WShay7d77iT1m9niKV2FDJA4jlurQabtCyk59sbRQXK9hA+0YXAD6hQgztAQXjVx4r0cX8wkRiVK4hXE6vNSOR0EGW/FLqwR75AE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671828; c=relaxed/simple;
-	bh=w3fh94FjM8PaoPy+tTe2R4prJdTSl2maBVnpHh+lEJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XDAl3neigdbZb0t2OMYrO5tucFAGBoUJtWcibhU0naeCuRE8yXzf7TsR1ETIKJvhUdEvRgchJcC31fl2zAcX+g3lDajhfvHQ6JQnMQGEbCyXGaT905gIj1PUUhOu8lQeMio85SG13UrsKxsRtbK+07jqrR/XqDNiyutx0ujiCoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bAJDz4o5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qHgBKUin; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bAJDz4o5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qHgBKUin; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1712672474; c=relaxed/simple;
+	bh=sdTINZRe6/HjOBVJ9C9IQxqKUVQS44ToJ7dO5OXxeaE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QMT365Ni7yPmtOJbQB48QScY3nXMomrb81/eXEEdgNOKrRcPEiLdYlSjYalW5FgxZoPLRGvhFYg5Jb1pY3K9wpkqpYMsWMqVIXBNJag8YDrqkPN3auvGUnR5xS5AVjAO4/wFUxL8E8R7Z34bUFtRbf6AeNJkWsoMTbk8JqL0M40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=AXB8s412; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 9067610004E;
+	Tue,  9 Apr 2024 17:21:02 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9067610004E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712672462;
+	bh=PqqwNRBmzHK+DLV9MrZ64lR7K93sMpyqnXfDyXtgkGQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=AXB8s412EtfApS8JBXRYpNcDBCIAk+Bj60Eme6Ex5OHAdTHuR7Q2Tb50sbPVdLVnX
+	 q7AX0kE+CynjDrR6AsNocwr+RtVRL1+TFDId4nFNNeHzfioyvtg7j/wysx4lP33V+A
+	 5cImDkLmY0ar3yfgCWzEZTg1qxG2EosPttgDd4z3dX8Q3AaaDu7ZXWc7rE/besRp1d
+	 49GAC5BsCSWwLo9G3qv+0AxP2ymNMS57KMbZV7O4rrrl2Pxn5NsFOoZ9ahgPgUdg8G
+	 jSkDjp8cLEWo0oXTo3mrLpqJPfbx5hdFXuFMgAscb6GQWC+5p+qvQjCWxlAHuKPkxn
+	 NKZ899P8uJOTA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B986033A22;
-	Tue,  9 Apr 2024 14:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712671824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5EGKPwkjwjC7/2V5eZgVJUDYhN24KSQzqGl9F+xdpE=;
-	b=bAJDz4o5gJ8nuym0JcOaYLtPXS3BrX8EFKlqYRyZOa/l+Y7oLyUynscQ85ZfxC7rH6vCan
-	C1H+4yukjkNba2fFtUZUD5tsRhgNOj4fytk2mnrW8zr79DJ+encWReiPcRbXlaMT6G0ncB
-	SVAWf+5a1t2JhLOSzGGapOvikKStVY0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712671824;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5EGKPwkjwjC7/2V5eZgVJUDYhN24KSQzqGl9F+xdpE=;
-	b=qHgBKUinOs/RCSj+mJalvLvQWP/b5U9KID8WpNJStbmYCSo2o3baSo29ZMrNtbez4uzZwf
-	npt+RGngFuNJxeCw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=bAJDz4o5;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qHgBKUin
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712671824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5EGKPwkjwjC7/2V5eZgVJUDYhN24KSQzqGl9F+xdpE=;
-	b=bAJDz4o5gJ8nuym0JcOaYLtPXS3BrX8EFKlqYRyZOa/l+Y7oLyUynscQ85ZfxC7rH6vCan
-	C1H+4yukjkNba2fFtUZUD5tsRhgNOj4fytk2mnrW8zr79DJ+encWReiPcRbXlaMT6G0ncB
-	SVAWf+5a1t2JhLOSzGGapOvikKStVY0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712671824;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5EGKPwkjwjC7/2V5eZgVJUDYhN24KSQzqGl9F+xdpE=;
-	b=qHgBKUinOs/RCSj+mJalvLvQWP/b5U9KID8WpNJStbmYCSo2o3baSo29ZMrNtbez4uzZwf
-	npt+RGngFuNJxeCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 621451332F;
-	Tue,  9 Apr 2024 14:10:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id R3kAFVBMFWb6BwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Tue, 09 Apr 2024 14:10:24 +0000
-Date: Tue, 9 Apr 2024 16:10:22 +0200
-From: Oscar Salvador <osalvador@suse.de>
-To: Miaohe Lin <linmiaohe@huawei.com>
-Cc: akpm@linux-foundation.org, naoya.horiguchi@nec.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memory-failure: fix deadlock when
- hugetlb_optimize_vmemmap is enabled
-Message-ID: <ZhVMThr9TNeP6SWj@localhost.localdomain>
-References: <20240407085456.2798193-1-linmiaohe@huawei.com>
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue,  9 Apr 2024 17:21:02 +0300 (MSK)
+Received: from [172.28.160.201] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 9 Apr 2024 17:21:01 +0300
+Message-ID: <c9fa6376-a88d-278a-7c20-813f0e8975d8@salutedevices.com>
+Date: Tue, 9 Apr 2024 17:10:25 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407085456.2798193-1-linmiaohe@huawei.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B986033A22
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -5.51
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: amlogic,meson-nand: support
+ fields for boot ROM code
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<oxffffaa@gmail.com>, <kernel@sberdevices.ru>
+References: <20240408085931.456337-1-avkrasnov@salutedevices.com>
+ <20240408085931.456337-2-avkrasnov@salutedevices.com>
+ <20240409134718.GA1050037-robh@kernel.org>
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20240409134718.GA1050037-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184638 [Apr 09 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/09 12:42:00 #24719205
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Sun, Apr 07, 2024 at 04:54:56PM +0800, Miaohe Lin wrote:
-> In short, below scene breaks the lock dependency chain:
+
+
+On 09.04.2024 16:47, Rob Herring wrote:
+> On Mon, Apr 08, 2024 at 11:59:30AM +0300, Arseniy Krasnov wrote:
+>> Boot ROM code on Meson requires that some pages on NAND must be written
+>> in special mode: "short" ECC mode where each block is 384 bytes and
+>> scrambling mode is on. Such pages located with the specified interval
+>> within specified offset. Both interval and offset are located in the
+>> device tree and used by driver if 'nand-is-boot-medium' is set for
+>> NAND chip.
+>>
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>>  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> index 57b6957c8415..80ba5003ca70 100644
+>> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> @@ -64,11 +64,25 @@ patternProperties:
+>>          items:
+>>            maximum: 0
+>>  
+>> +      amlogic,boot-page-last:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description:
+>> +          The NFC driver needs this information to select ECC
+>> +          algorithms supported by the boot ROM.
+>> +
+>> +      amlogic,boot-page-step:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description:
+>> +          The NFC driver needs this information to select ECC
+>> +          algorithms supported by the boot ROM (in pages).
+>> +
+>>      unevaluatedProperties: false
+>>  
+>>      dependencies:
+>>        nand-ecc-strength: [nand-ecc-step-size]
+>>        nand-ecc-step-size: [nand-ecc-strength]
+>> +      amlogic,boot-page-last: [nand-is-boot-medium, amlogic,boot-page-step]
+>> +      amlogic,boot-page-step: [nand-is-boot-medium, amlogic,boot-page-last]
 > 
->  memory_failure
->   __page_handle_poison
->    zone_pcp_disable -- lock(pcp_batch_high_lock)
->    dissolve_free_huge_page
->     __hugetlb_vmemmap_restore_folio
->      static_key_slow_dec
->       cpus_read_lock -- rlock(cpu_hotplug_lock)
+> You need quotes if using the inline syntax.
+
+IIUC it must look like this:
+
+amlogic,boot-page-last: [nand-is-boot-medium, "amlogic,boot-page-step"]
+
+etc.
+
 > 
-> Fix this by calling drain_all_pages() instead.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-
-Acked-by: Oscar Salvador <osalvador@suse.de>
-
-Thanks!
-
-
--- 
-Oscar Salvador
-SUSE Labs
+> Rob
 
