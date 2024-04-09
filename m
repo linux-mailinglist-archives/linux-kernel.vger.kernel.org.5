@@ -1,130 +1,120 @@
-Return-Path: <linux-kernel+bounces-137208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD45989DEE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:23:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EFE89DEE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8873E299A6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:23:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 440C91F25BBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B605E1327E1;
-	Tue,  9 Apr 2024 15:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1216313280A;
+	Tue,  9 Apr 2024 15:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ofoEURwW"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RKAyaOES"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573A61304AB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197DD12D1E7
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676190; cv=none; b=PO0ub6DMjhjx2wHgpxkRZspm2uw8YigQw6KJkY4k6qbc8MQf3G+7fW6pjziadlKGW9llG6a+SXG5D+Ay8lVHYdOkWfToX8x3TlZvrlLzfzv3cMY+3BX0q9k6q+FSwClOQrHTtReIDg5xjZzrrhq+DGSB3TB3TorocnZ4vEs1amg=
+	t=1712676235; cv=none; b=bdxbiQ+0z7O2rynKCBmtQXANlF9us3mr3hJ8o6DZODmCp/2vzfHPo2YaTypbUwJaYw6GRS6fowIjTHUb10bX8h44CxZbpVQcpOSCGok/ljNMZ6LNnL9+IuTKFCkkDend4dhwJOmfGCQ8ExQhO+o4gVB/MAJRQ0fPO3xZjiadZhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676190; c=relaxed/simple;
-	bh=lwgrpuLlnQidXBRAJjUDoX6XQIX2kCvA7rwH3DqWPgc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=izoYgWT3qYJ+TyCHZH/+twskWYsRf3NVJCPC3MsM9+dhtYkDg3uOTpy+QFME62/5MBEFhn5/6iWa7zDcOPZQ2d7ESyrlH3XDm21Gez8NBmHiYDYmxYta/7hfb/Bt48uNODVzU4h0tJv6nQSkr6ck3g0G5hzHVP6fHqpnrCMQ10o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ofoEURwW; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso11582781fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:23:08 -0700 (PDT)
+	s=arc-20240116; t=1712676235; c=relaxed/simple;
+	bh=0QtK/XU5wRxTAWSKfFGQfHhRtI4Bz1uaKMs2LclDKxY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=a5kvvZibULhsNdSS4rHhb0gz3drl7rOLdZt5ZQgNic04GL7z+u6MWnfAFs8M0Pcm8DPzCNJLjDm1EbamWUyYl3D3FdwsjdCgzCLxBpGyf2Osx0/JzOO3lUxTUQU6MSweKj3L54Jhu9Lwbegk+8TQHOq4YsR/5kGO4GXpPEbM1hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RKAyaOES; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ecd48d8e5eso4097157b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:23:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712676186; x=1713280986; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t2tCjiKMLu67Fkz+iezt/yHgHaFuwGLbY1Fvrb5eqfo=;
-        b=ofoEURwWg9NJGvXyRSfOne8RT5Pj7/tUKfFUYAuACFD+zUWaSK6BmTjdG7VvlvUP9N
-         H7r+hjqrZYIyJU7/vCOkTD+JwmRYEz5ohfblNWXkhdg9VUabSdh4xa+qVwNiNkWnKpTd
-         de/kBs0KJ1TkeJZRzIV7ocBo1OK+ptIhBMZEYGhCdZBaGlnANrGJQ/Z26UbhEko1lz8x
-         5fq1xKv9B3/MEfXnZAeprUp1lESuZlpG7xc0on0QrCTFAQVcMokU3M2Tn1iE0kaxm247
-         zLP64NQ1rBxnvcv/IntLQqNTLVjWodBGg9Dzzc3Kb7HGKkOrvHBAJ03DyuALCwlbfEdi
-         oFwA==
+        d=google.com; s=20230601; t=1712676233; x=1713281033; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zTw5tUDYTR1sSRFGOVa8mOeRWBv7Dty/0b6Yi3dyJjk=;
+        b=RKAyaOESrJzoXbn2xNVQAE5rWO5NHHyfV2xyeU3YgXy9Eoh77R5kYmLD+u8t8zVMnO
+         E68sND4GJlZtKSHxRXnqmzSLwHx4T24Q4ab6vrvPINIOede2Ik6aKyfoukvwdHIo/ZuL
+         9dAf0KSJnO6hvtUrtMGbSR7KF55gmaSuDFpOp8GzfCyFVOTnjrLxJo8pj7XUEzGI6T40
+         mi3HqvaAxouq5HuhmDvriHzWOwo9k2eub0DNzJU9TGfm2JzKZlaUQ1Ix1p4EkKeKq3pX
+         1fWjs7D/s93ju7pHPQVpIKKBWg+O8BFoCR3cEYywzAUDyPpbylQXzknZDhHlwlfm2BBE
+         59UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712676186; x=1713280986;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t2tCjiKMLu67Fkz+iezt/yHgHaFuwGLbY1Fvrb5eqfo=;
-        b=QSvQdCwergOXnn7/U6RSJ+Oddv3G4Ie1bM7jJkGwIramC+D2xFMVWaEMBEIv02YmDW
-         w41EmpNTMHY6kQ0THYRD/5kMqtpg4uUBt3s45XySVNhjyQJbKX4MfghXkSe6cGUmDsIg
-         mWkKm1P6sv9TK932t6y3l6swAfniADbc4Wmhwjm17SAgm+HIMrdXWjoydXRFVFJvAOp6
-         N8238kPV8aXWRGRQoY2kDz7KXl7XMVgCG0KQxTz9MGxgJNDCVBo5vDG1a+BWGLD277q7
-         kfzq8ZRJjrNmKDglVEGK6fsf3Sjp1A7/1hc56RXPJZcMrbegLphaRe+BjPHYp2F5srs4
-         Adww==
-X-Forwarded-Encrypted: i=1; AJvYcCVHRBINHTEJ2s1g1hvInylBB2ZGfcEWhcqLPyu5KDd8fd1UVj5z2lW94ioWtJU48r56Du9EI1ukxIHaDjdGLTBkCIVIzuK5TtchUBvJ
-X-Gm-Message-State: AOJu0Yz6wLgomfsp/q8h8CaAaPeZUzAmjNXsSwrHzVm1XDssDHm4dIj6
-	C/alO9Au+9YXSruckRTu/G5qGdvfQm9fjFXFkcImGJY/xFjYshbevfZ94fRvI2o=
-X-Google-Smtp-Source: AGHT+IGd1MRTD1fygLkZGj0gGNROnqZWAPn+yiWrzGgkFdwm6W4JiIoDmuUFWhKDLN7YxgE/yllZVA==
-X-Received: by 2002:ac2:454b:0:b0:516:bf06:cab7 with SMTP id j11-20020ac2454b000000b00516bf06cab7mr8930457lfm.35.1712676186541;
-        Tue, 09 Apr 2024 08:23:06 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id c22-20020a056512325600b00516a302f32asm1593546lfr.132.2024.04.09.08.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 08:23:06 -0700 (PDT)
-Date: Tue, 9 Apr 2024 18:23:04 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH 3/6] drm/msm/adreno: Allow specifying default speedbin
- value
-Message-ID: <tkcbl2iwcy3feoggbk737gx32qsxe5p4ad6lfrujy2pazccrhm@kif3guuzay6h>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-3-ce2b864251b1@linaro.org>
- <pncr7ecf4eir36skul3iwt2nf5bpuwd5zjfzzfwwnxjwe4hoes@6z2xe54crijp>
- <d8a2ef87-f29e-4bdb-a9b8-591b8bd5d2b2@linaro.org>
+        d=1e100.net; s=20230601; t=1712676233; x=1713281033;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zTw5tUDYTR1sSRFGOVa8mOeRWBv7Dty/0b6Yi3dyJjk=;
+        b=p7EFis+XBOdBT+K/EqUzElXll32FkUit5YdtSUYP5Hnd1AFVZ+g/houtVYDnJrG4GW
+         1vF6Tr1j5SZTuAA8KiO/zxULT9ZMfnz8FUSzDQkkfsPpECvzv0KypmiyDxmD7aP7LXgB
+         HUbTZVfvV0+Vd2IZdN9WiIInC9jWXAFWggdLxRNGkXGF5S5vDP/tg+SWpWCkdf2xcVAx
+         yuwgxkiFkABrAg6VjPSYKgQVD/i4s6sli8fjXzwHY3/9vkWdMQ2H7kxiGl2NU6J9PGOG
+         2BveSs9BFhnxmQUYPhqoRFK0DpNYCrP7Ew+wGkJOZ6HP/7BexCOPBcI+JXTnlpn0voaW
+         95+w==
+X-Forwarded-Encrypted: i=1; AJvYcCU4WoqNxuT8t69JklEArRTF5+ellPIb0J8trkhPc45NG43RBhcMihIDntHiKq6VpWvqlCJbABnrbwv8oJ/s911MSYdeJGqy8L0vno8+
+X-Gm-Message-State: AOJu0Yw6Wa9eJPIB1RIUcEW8uFOhprequ/nSmilN7nJ7KaDFBUb3o5t8
+	r8c30uGNX/5TQ+Fa97JuqLHfYEJQO7vWGGhxTGBIlbF3sg+cW/5OIN9gg8F/xjrEgHmWPqRSgYh
+	lig==
+X-Google-Smtp-Source: AGHT+IFlez/00MQ3CRbxBIC87XHuEB5bKTIC4+lU/m/V0i9jMVwrtOp4z85vX96ntN0qsjtgHbGBJNuuq6w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:180f:b0:6ec:f407:ec0c with SMTP id
+ y15-20020a056a00180f00b006ecf407ec0cmr679559pfa.2.1712676233205; Tue, 09 Apr
+ 2024 08:23:53 -0700 (PDT)
+Date: Tue, 9 Apr 2024 08:23:51 -0700
+In-Reply-To: <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8a2ef87-f29e-4bdb-a9b8-591b8bd5d2b2@linaro.org>
+Mime-Version: 1.0
+References: <20240405165844.1018872-1-seanjc@google.com> <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
+ <ZhQZYzkDPMxXe2RN@google.com> <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
+ <ZhQ8UCf40UeGyfE_@google.com> <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
+ <ZhRxWxRLbnrqwQYw@google.com> <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
+ <ZhSb28hHoyJ55-ga@google.com> <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
+Message-ID: <ZhVdh4afvTPq5ssx@google.com>
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+From: Sean Christopherson <seanjc@google.com>
+To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Cc: "davidskidmore@google.com" <davidskidmore@google.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"srutherford@google.com" <srutherford@google.com>, "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Wei W Wang <wei.w.wang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Apr 09, 2024 at 05:12:46PM +0200, Konrad Dybcio wrote:
+On Tue, Apr 09, 2024, Rick P Edgecombe wrote:
+> On Mon, 2024-04-08 at 18:37 -0700, Sean Christopherson wrote:
+> > As I said in PUCK (and recorded in the notes), the fixed values should be
+> > provided in a data format that is easily consumed by C code, so that KVM
+> > can report that to userspace with
 > 
+> Right, I thought I heard this on the call, and to use the upper bits of that
+> leaf for GPAW. What has changed since then is a little more learning on the TDX
+> module behavior around CPUID bits.
 > 
-> On 4/6/24 04:56, Dmitry Baryshkov wrote:
-> > On Fri, Apr 05, 2024 at 10:41:31AM +0200, Konrad Dybcio wrote:
-> > > From: Neil Armstrong <neil.armstrong@linaro.org>
-> > > 
-> > > Usually, speedbin 0 is the "super SKU", a.k.a the one which can clock
-> > > the highest. Falling back to it when things go wrong is largely
-> > > suboptimal, as more often than not, the top frequencies are not
-> > > supposed to work on other bins.
-> > 
-> > Isn't it better to just return an error here instead of trying to guess
-> > which speedbin to use?
-> 
-> Not sure. I'd rather better compatibility for e.g. booting up a new
-> laptop with just dt.
+> The runtime API doesn't provide what the fixed values actually are, but per the
+> TDX module folks, which bits are fixed and what the values are could change
+> without an opt-in.
 
-New speedbin can have lower max speed, so by attempting to run it at
-higher freq you might be breaking it.
+Change when?  While the module is running?  Between modules?
 
-> 
-> > 
-> > If that's not the case, I think the commit should be expanded with
-> > actually setting default_speedbin for the existing GPUs.
-> 
-> I think that should be addressed, although separately.
+> This begged the questions for me of what exactly KVM should expect of TDX
+> module backwards compatibility and what SW is expected to actually do with
+> that JSON file. I'm still trying to track that down.
 
-I'd prefer to have it as a part of this patch, but I'd not NAK it just
-for this reason.
+There is nothing to track down, we damn well state what KVM's requirements are,
+and the TDX folks make it so.
 
--- 
-With best wishes
-Dmitry
+I don't want JSON.  I want a data payload that is easily consumable in C code,
+which contains (a) the bits that are fixed and (b) their values.  If a value can
+change at runtime, it's not fixed.
+
+The only question is, how do we document/define/structure KVM's uAPI so that _if_
+the TDX module breaks backwards compatibility by mucking with fixed bits, then
+it's Intel's problem, not KVM's problem.
 
