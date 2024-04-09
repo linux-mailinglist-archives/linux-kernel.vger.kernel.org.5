@@ -1,99 +1,85 @@
-Return-Path: <linux-kernel+bounces-136930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331C689DA06
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:22:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50AA889D9EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:15:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7C201F22E10
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:22:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 818A81C22425
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5B312F583;
-	Tue,  9 Apr 2024 13:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414B012F376;
+	Tue,  9 Apr 2024 13:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="bRNsxKJO"
-Received: from out162-62-63-194.mail.qq.com (out162-62-63-194.mail.qq.com [162.62.63.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k2yecTju"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E6C12F585
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:21:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.63.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7262712DDAB;
+	Tue,  9 Apr 2024 13:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712668908; cv=none; b=uiC7yXh56AuuVXhov8pKYyhYfNgO9I6Sz+0klrAotiXBqq/Oa1PjYVoAc8ToS8L43nvR3W9MM/N6LugWf7U7mb24nZVtrKOgtN/jq2DOs7O4J0HiTUJy0n6AxMSA7KLjgZ+JwjPKKTpyV96kEb/Cxelk8/LPPEnfI4gqSMGBNs0=
+	t=1712668496; cv=none; b=qMFd0cMMEnTt/dSrhFHMTRvAtkTsnfYutXEAvMtK/nG9B0JmdtJzg8sDm5hiJEQalS1vO/H/G0aXhKjHmXGBewgDlYO6ugzxbRz/RCqVHGo7m89+bUEIVjeKKno1ge9G6+DvnSbEHo+zHoL5rHt5f/zM3Ig+YzJf1Es0SZlcM7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712668908; c=relaxed/simple;
-	bh=BIXtQbP9MP9nqx4vsOYb5xY/BLcCRo0aS7pkb/Oy9M4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=nUt0QxcBvvyyOhdC+/uxKcBaRoCR4QalFmyB4EC5NnQj3C5AZB4VFqeyDH5afgM3OtsCzjuii4hNSiH49oJA9sQTkmiSExadZLYXiooopgdLFUfiXp40IwbHw9hO0zAtfZuLsd7IUIoPA5ekYmZ1Kb96RNCkjW5RbdJ8RlRaBWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=bRNsxKJO; arc=none smtp.client-ip=162.62.63.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712668895; bh=YUtGez/XnDNg5xUU7tPR+7JYoTfIuuLZrutUQBX7E4w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=bRNsxKJOljO5gDXhx6JeJ7EgfIrKkNy1wlrEml8OwkdMFWtKpUXIyHPf5Xt56FLdu
-	 Yh4CdBaXsOEmotMF9CW5zrSWv8agAviPGaa7gi8R8/Qza3a6u3R2HSizC51hGOEwpv
-	 hVVa71o44xjd1eH5nofJx0bOjWh8EuWIZ/xJgr4k=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 356A180B; Tue, 09 Apr 2024 21:13:22 +0800
-X-QQ-mid: xmsmtpt1712668402t5chgs1d7
-Message-ID: <tencent_66764A0C74FD776567343C4D36D6971A3609@qq.com>
-X-QQ-XMAILINFO: OXHA96V41vMDBwhYwn7+OjcGgzli3xXJ2XDxO3wfyTlv9jhUGCma8gVWdIuDuN
-	 q8gbpT2OeHrZgo4KnPTxPoOXTrr+jLmUXj0dn/aqJHpzPeqeMTjHBAuN0Ppaas2adCVyxYG8CzzP
-	 aShYl/WjyuH6yN1aND/6KraaC/HtUP6aeTos6AFQLq8581MSBKOMLifVxFwoo0dY5wb9+3wNgRZR
-	 mWMTEqAHfhLji65ddxmzut9n3WMYXg6xtwqo2EhKBTJirEEM7gWwnufhWF+rqn1El5waws8qzkD3
-	 v2iK2Uqx+7gDtlujVJsnZxgHj9CR2QIGXagyWTqYrQOab6SikTD0YFAqmRqGZIbggb8tdEA3XVYt
-	 sEM38BH5O0DeCrmU2e/XAZi3TXVDp1DSopwHTFDH6453LvFAPr1yxp1+Hb8iVNflHkldj1TIGKWk
-	 JBE/tFj+itxDdiMcNZdGAJyfW24sif6QqDgu9hhhUcULarS641sNTtVkNHaLrhS4P0QqG7JM+Dl0
-	 1A7110ENLuwaAXUlw3v5kKQlOqyWSrLHVMxgNQBv37PiItIccuQOi3WlnpJgJG4sHge6V53Dv14Q
-	 oRMWgwZzeBHOs4T90fZkUumAEvwqvXDhJGmtQ3vylWnYIc5q3q6/TS7DIQ+U1ouG0UjLLk2Yda+D
-	 Ep1HJMpcBzjIrC11nLztBM1QPf3Ulj0x9Nymjk3UxP9iAkaDKQVYe1fpCSafoCQE62+oUJ1LkAyw
-	 gqCMrpHc3xP3aPnFaYcOept/8i+vSNNpkbhG4z2eLam1B74/1EVRkRG/B29iKOfo2sTw/K/7iGTV
-	 4+iHzcS8Cw7OTRiUIbJQ83l54qY+i+UsnOW4zCetBiHCXeP+tq3wY4zkFHrScqMpgM1jNG6HkcSd
-	 rNT7gzJQcJDXWp0Zg4Ozbfls9tpNK2l2UVodLKdc2dDNZzLZXUQRU3edWQE2YB91oofgXma5d7oJ
-	 fGCC6//qsNs39ZvJXBNUPWLsza0clge7u8p3J1b85BJQ5wD5bN5astSCfIYgB5RJR39hNQaEgYF2
-	 i2EQItu4zNgv6BoCSO
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in strnchr
-Date: Tue,  9 Apr 2024 21:13:23 +0800
-X-OQ-MSGID: <20240409131322.4166944-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000009e2ff406130de279@google.com>
-References: <0000000000009e2ff406130de279@google.com>
+	s=arc-20240116; t=1712668496; c=relaxed/simple;
+	bh=HkkZ12I8ixZQ/oJnXLHsHJfU+zBdCbiPsKQH0yIAXww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OdBo/SnR4qGbueeEk2dB4Krrqs7L9nO8uPQxQPUJrGcBoSpoR/TC2631iBgp/6hYfYQFco7XhlXwU8OW5WcfnehdzZOLeCHhyy2KWUElgpQ0vvof0zwuof6B96iUnQcG0hjCyOOq+D82oQlFFuoNz66oRzomY5QFtoOS65UYYBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k2yecTju; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E771C433F1;
+	Tue,  9 Apr 2024 13:14:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712668496;
+	bh=HkkZ12I8ixZQ/oJnXLHsHJfU+zBdCbiPsKQH0yIAXww=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=k2yecTjuUO4NFZK3I+/0vQR20NSltBLSvdaVVahQNmcC2hXy+z/YEVjPtB8wukTtF
+	 RNBTgRxl1f+S4MyO6mO4Ohug1+muDJ8rJ+HYqcCvYOmYQQ9uEvEScZfSytM/fl1HaY
+	 v0WNPtrQJA0t5dOgXu1lepBXIUnjDJ1ENQ98y2X9p8PYe/Y4T7Q+ZfpnIG0AEk1z+O
+	 NtlWBITakVkFg7zgbtsLqADU/JY9oiRigVBk3M51esK9Lh60trs0wNPnKqfB3Dk3Zt
+	 T7uJh+8/A7/ZikpZTg8T7YiNH8GOijt497C858TXC6LyecuO1KLN7CYqXMEOwHSvLc
+	 4GHMnVHrGv4hg==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d1c8dc79so6101798e87.1;
+        Tue, 09 Apr 2024 06:14:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWklcMrfyUcXrCiI2R9AgwvuylOUg9Rl1JbFM8Np5qSf1+cssmXD6BoRqdr3+4OTG/uxgKg1oq2ITdyaXD9hp0HKeT4eTDXu4eayCzr4ViOYmhL7SDhEFUUr7n46tmF4lGyTdkP3iZJ9J0ZaGxkQDlblnOjOEiugnS8BXqW0+ciPrjt0ydRnDpiYiX4oQBNeCDUe7TUCKWhrlOj0980qCZ7sWsvBSKMOWT4BP1uKcVXDQFYu+oDvUc+5ic=
+X-Gm-Message-State: AOJu0YzsGoR0n/i0HSRALJvAOY7Uu6Cdet/Yi+aXrOV3I4tDne5lirFW
+	sbQPeX+crL6waS0ndY3Cssqd+Bl/DiyryBdPSUA+/9d5t5NXysf4X8jJvWK4d+GxIt3FeHSPmJX
+	La9Jv+U834fWTm412jbApgbCJzQ==
+X-Google-Smtp-Source: AGHT+IFBrxuzqDzZhJGZkUFzxWb6IVnvczlBrbogUAcIexbXYb4PJb6Yp8VQzRvCcDRYhvgi+lQjwy/IEz49V9s6uG4=
+X-Received: by 2002:ac2:5453:0:b0:515:d038:5548 with SMTP id
+ d19-20020ac25453000000b00515d0385548mr8080039lfn.31.1712668494427; Tue, 09
+ Apr 2024 06:14:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240409053704.428336-1-saravanak@google.com> <20240409053704.428336-2-saravanak@google.com>
+In-Reply-To: <20240409053704.428336-2-saravanak@google.com>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 9 Apr 2024 08:14:41 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK3vrd6jE07LAnaShf+Rj54b9DHEY4GVsmD3dPiHYp+tg@mail.gmail.com>
+Message-ID: <CAL_JsqK3vrd6jE07LAnaShf+Rj54b9DHEY4GVsmD3dPiHYp+tg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/2] Revert "treewide: Fix probing of devices in DT overlays"
+To: Saravana Kannan <saravanak@google.com>
+Cc: Herve Codina <herve.codina@bootlin.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	kernel-team@android.com, linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-spi@vger.kernel.org, 
+	linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-please test uini in strnchr
+On Tue, Apr 9, 2024 at 12:37=E2=80=AFAM Saravana Kannan <saravanak@google.c=
+om> wrote:
+>
+> This reverts commit 1a50d9403fb90cbe4dea0ec9fd0351d2ecbd8924.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 04b8076df253
+Please say *why* we are reverting. And you still need a S-o-b.
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 449b9a5d3fe3..54abc67c48c7 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -826,7 +826,8 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- 	u64 cur_arg;
- 	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
- 
--	fmt_end = strnchr(fmt, fmt_size, 0);
-+	kmsan_unpoison_memory(fmt, fmt_size);
-+	fmt_end = strnchrnul(fmt, fmt_size, 0);
- 	if (!fmt_end)
- 		return -EINVAL;
- 	fmt_size = fmt_end - fmt;
--- 
-2.43.0
+And you are missing some maintainers.
 
+Rob
 
