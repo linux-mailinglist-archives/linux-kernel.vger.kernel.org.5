@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-136982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CEC89DAA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:42:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C663389DAAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E4E829086A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:42:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 037811C22FEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04645131BCB;
-	Tue,  9 Apr 2024 13:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653881332BA;
+	Tue,  9 Apr 2024 13:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jhaa14da"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TB+Dgk6J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE9013248D;
-	Tue,  9 Apr 2024 13:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A822C132810;
+	Tue,  9 Apr 2024 13:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669938; cv=none; b=CJRrtsE5OU+jiK4HQlUSC4Yd0j/EUI1QDp1xHGYGuenncxqUovfgphVA4J+josNO7g81R98Oe1KxVSrkVYmAWIN6WasmQeSltIj/eqmKmzYF1hS+fVD6kvDW6jNTHKn8ykxLJfeEFUMUhXGiGRyQCjf6k1EAQJsLyNnTlPXjF/I=
+	t=1712669940; cv=none; b=O5E4P3/xms5joeDHhrJ1/G8N60mmTWqD84gVRvfyZhOdRtjIs4T/zocBJmT9RCr7xSRgMfYyMNtHn404TaqygpArEGrL3B6i2uOJoQe8SksFDUxIW6pnjNUg0hawusGCYQulyNimfjQFipTAJjranwir9AL+PvSV1wz84Ydv0GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669938; c=relaxed/simple;
-	bh=K99Fz7vaSeq1E1vtm2u+tF1ZC+xbEgrSLRuL3JRM2HE=;
+	s=arc-20240116; t=1712669940; c=relaxed/simple;
+	bh=pTH7BO4el6rKEVr/dq4/+cLXqiAhvAeRhttJp5b1JT8=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=iZZ42kIVmTu4XNssSYv+lpZWEPOwkOiXeR8gvti3U5XKfmVgOVfiyPmsE5kcLLmigbHzUkb6fQ3SuP7EvTGqk6HTnVYOtgsV+mBxEc68krr03q4mrI9kr4riXeVhAt5v6mblRmLIbxCuJ4UCVswR4tpQJgFowUtFmWoojEqT6TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jhaa14da; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D23C43390;
-	Tue,  9 Apr 2024 13:38:57 +0000 (UTC)
+	 Message-Id:Subject; b=p5Sd2FEMfwqD+tpg+Y7ys6jcYAucq/cfQajeSHUwpLIzuJ/6frmOlEkI3I4sDaghMVITvACX7tJKdXmb3qrhB1I7tXVrpFNcPxo9O3osLTdbnOaPLUgaAhwDorcu7fCJvhRe9YsyAltqVm/zP5sGxUlRiH+k3YMRvnu4JuotnJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TB+Dgk6J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58217C433C7;
+	Tue,  9 Apr 2024 13:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712669938;
-	bh=K99Fz7vaSeq1E1vtm2u+tF1ZC+xbEgrSLRuL3JRM2HE=;
+	s=k20201202; t=1712669940;
+	bh=pTH7BO4el6rKEVr/dq4/+cLXqiAhvAeRhttJp5b1JT8=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=jhaa14da2hhFbbObUFNAJy1wudC187fLN+RSCi7gvP7bLWaamRfxswi4yooAsHTzX
-	 WMM1gNr/ZnKoQd/i6mssv9sqNcrULlPZyaSiIscFArYhUkhaXLJ94sdYB5RJ7ZU/pA
-	 MzoaQ8xGprJOKfOkHANGeEt+8stLMHruRCUL1FRXojKpmCk7Krmcm+sJ5brs+h2ndJ
-	 z59Z8jRsKJ8eMhReoDTJ6X0O5c66PwTaIeRMwu/zsLe8KncmQLUWJZRq4kJjMi8/D/
-	 CLJ51MMsKrjug9Yh6BW0/E0mWLqgMdLOqmgwIK06xASkmJBdIYiOmst+gyGmoPAJnI
-	 Wt76h8VfQeKGg==
-Date: Tue, 09 Apr 2024 08:38:56 -0500
+	b=TB+Dgk6JrdxIOGEplVMcgrE8KE1fFozP5xR2R8hEJNB4vM2/WlHsEfTrKLe6GLrp8
+	 8aepaDluNmT61/iczRzmiP3V3QMA8FJcURyeoi7D/ICl5MYEQSiO/ARcSK/V8AYMh6
+	 nSmb/zFdx4gq3dhYBdATdBxoORqjvEAHDMHnT4oqeNFeaj9nLP3G1JVG6BfD3wsVjr
+	 Up2LEga5g4BXqMGMocwhRoY02oZuJRe9TQCtleZKFhKHazjSfr5qEe79h5fbtmdgcW
+	 ry8SqSwsRCapheez3cZYm6tt1g1VBZKmYis9mWPSeHarqqzphZ9OYD2N79alM8izKl
+	 UqtNK1mYqWG0g==
+Date: Tue, 09 Apr 2024 08:38:59 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,45 +50,39 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-In-Reply-To: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
-References: <20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org>
-Message-Id: <171266958483.1032598.12332619537028473283.robh@kernel.org>
-Subject: Re: [PATCH 0/4] arm64: dts: qcom: add USB-C orientation GPIOs
+To: michael.opdenacker@bootlin.com
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ Chen Wang <unicorn_wang@outlook.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Inochi Amaoto <inochiama@outlook.com>
+In-Reply-To: <20240409064504.4010353-1-michael.opdenacker@bootlin.com>
+References: <20240409064504.4010353-1-michael.opdenacker@bootlin.com>
+Message-Id: <171266958507.1032617.9460749136730849811.robh@kernel.org>
+Subject: Re: [PATCH] riscv: dts: sophgo: add initial Milk-V Duo S board
+ device tree
 
 
-On Mon, 08 Apr 2024 05:33:58 +0300, Dmitry Baryshkov wrote:
-> Populate orientation GPIOs for some of the PMIC-GLINK-based devices.
-> This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP CRD
-> without the orientation GPIOs declared.
+On Tue, 09 Apr 2024 08:45:04 +0200, michael.opdenacker@bootlin.com wrote:
+> From: Michael Opdenacker <michael.opdenacker@bootlin.com>
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> This adds initial support for the Milk-V Duo S board
+> (https://milkv.io/duo-s), enabling the serial port and
+> read-only SD card support, allowing to boot Linux to the
+> command line.
+> 
+> Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+> 
 > ---
-> Dmitry Baryshkov (4):
->       arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
->       arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
->       arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C orientation GPIOs
->       arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientation GPIOs
 > 
->  arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        | 2 ++
->  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 ++
->  arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    | 1 +
->  arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    | 1 +
->  4 files changed, 6 insertions(+)
+> Tested with linux-next as of Apr 9, 2024,
+> using the risc-v "defconfig" configuration.
 > ---
-> base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
-> change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
-> 
-> Best regards,
-> --
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
-> 
+>  arch/riscv/boot/dts/sophgo/Makefile           |  1 +
+>  .../boot/dts/sophgo/sg2000-milkv-duos.dts     | 38 +++++++++++++++++++
+>  2 files changed, 39 insertions(+)
+>  create mode 100644 arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
 > 
 
 
@@ -106,14 +100,10 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y qcom/sc8180x-lenovo-flex-5g.dtb qcom/sc8280xp-lenovo-thinkpad-x13s.dtb qcom/sm8350-hdk.dtb qcom/sm8450-hdk.dtb' for 20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org:
+New warnings running 'make CHECK_DTBS=y sophgo/sg2000-milkv-duos.dtb' for 20240409064504.4010353-1-michael.opdenacker@bootlin.com:
 
-arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dtb: pmic-glink: orientation-gpios: False schema does not allow [[50, 38, 0], [50, 58, 0]]
-	from schema $id: http://devicetree.org/schemas/soc/qcom/qcom,pmic-glink.yaml#
-arch/arm64/boot/dts/qcom/sm8350-hdk.dtb: pmic-glink: orientation-gpios: False schema does not allow [[52, 81, 0]]
-	from schema $id: http://devicetree.org/schemas/soc/qcom/qcom,pmic-glink.yaml#
-arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dtb: pmic-glink: orientation-gpios: False schema does not allow [[62, 166, 0], [62, 49, 0]]
-	from schema $id: http://devicetree.org/schemas/soc/qcom/qcom,pmic-glink.yaml#
+arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dtb: /: failed to match any schema with compatible: ['milkv,duos', 'sophgo,sg2000']
+arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dtb: /: failed to match any schema with compatible: ['milkv,duos', 'sophgo,sg2000']
 
 
 
