@@ -1,164 +1,470 @@
-Return-Path: <linux-kernel+bounces-136934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9117789DA15
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:23:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC9389DA11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C33FE1C2262C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3494B1F22F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3472712FB31;
-	Tue,  9 Apr 2024 13:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8103612F36B;
+	Tue,  9 Apr 2024 13:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nk/px9Li"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SxpjGk7A"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D1612F5BD
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1680A12A144;
+	Tue,  9 Apr 2024 13:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712668966; cv=none; b=CCQEwDDweqTXixMmdDV97HgvsAO/Th+2EAd4Wx2z2snacJMGe8k1cUZI7dVTsSLpiMn/7ZEBRQm4BP2/hvijrSFh0HIABHA7/pjAnohoqZQ9Ntr0Bodoyra95Z9PKsvASXoD+v5R/LpJ6ermBrrBhW6bw1i4d/ZebH333wf6yhc=
+	t=1712668961; cv=none; b=kD01Liy9o6qfiCm/4N+hom3lPv+MzqQxE9RodJBzCt/KYKFflr2k8/9bmFSYA6cu59oZf/Tmv+z8Xed8mOpVeezoc6ffAP86qiKVGi0PSKuhDsnqLkdZBHzxp1i85cR/3B9Kx00Gc3oTTAzAV4awJuKHafwRaR7l1zmn9rNB4dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712668966; c=relaxed/simple;
-	bh=+qRpdfn6imp+KKjieABpdtfi/x/YK+WbMGLOebjohNk=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=VmCOhrXN9sciaPwRN/ckYa+ToOY2S+w05M9wPsO4r4FR1gzj+jn8G4x0Nyphbn80zv3o+EqvAzNHZ/wNbX5YjxtfyQcPtWW498art9QmZFC5kLKn1OceWkK0ZDq7d4j/6L//EXtW/1MmvpN4W0nKJ68P1+lT1Dkzxw/VtVQJpVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nk/px9Li; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB7BC43399;
-	Tue,  9 Apr 2024 13:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712668965;
-	bh=+qRpdfn6imp+KKjieABpdtfi/x/YK+WbMGLOebjohNk=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=Nk/px9LiDpuUrGNWp4QUd2ZRpM8tUx7ILrgAPBox1vJaVZUta8bFvsx4oHja8ZamL
-	 EOQUJ99W0uoHEIaJEkZWU3wOJ/XTmIcyPU2AhW39jw10Sgtdj//YlvGU+45G/rDd2P
-	 AUXBqdDmR9UlFb/N5cG0iFTWkq2YsHmYAAZ4WfwlvXplSc4KBD4UbcZgZdErQMGnPN
-	 AakX3AiO6eaWlHp19uTYSVVHWaipTGQz7wNx61qtFcHGUJnIGDJgXu0mRZHc5/onke
-	 CInI7908qRJdFKCVNrjg3yvvl8+JhJGLVZvF0rYKApbmoUlmiUpXHdb/7nU3iKmEom
-	 7/0nHOcmkAJyA==
-Content-Type: multipart/signed;
- boundary=075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Tue, 09 Apr 2024 15:22:00 +0200
-Message-Id: <D0FMGOEWQC1O.30D61WTXL4087@kernel.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "FLAVIO SULIGOI" <f.suligoi@asem.it>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
- entry
-X-Mailer: aerc 0.16.0
-References: <20240405100104.480779-1-f.suligoi@asem.it>
- <20240405100104.480779-2-f.suligoi@asem.it>
- <D0C9NCOMI27O.2VW2U3FNFTSPK@kernel.org>
- <PH0PR22MB3789719A62A1EE483C9FDF76F9072@PH0PR22MB3789.namprd22.prod.outlook.com>
-In-Reply-To: <
- <PH0PR22MB3789719A62A1EE483C9FDF76F9072@PH0PR22MB3789.namprd22.prod.outlook.com>
+	s=arc-20240116; t=1712668961; c=relaxed/simple;
+	bh=wBDe5zbXaJl2Kd0acfoEQsp/B54ywA9DNFxRA+vilQ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=orsYs11r7AwY0JolqTYtQnIIqwsdRB8IfoHfziROmlVeMW9qSmNlYgx9njBpHYuOY9Rm8kEr30f6fNbS8AEF8K40fRlWBY4W4Bi8RJEood3KcmJLo+XLDHoB7Jml7Hu0fmRJAZLoTNj+NmYi/WpJ9mR32AKzsR6CwIY/QIqmkJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SxpjGk7A; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 439CLl3C015249;
+	Tue, 9 Apr 2024 13:22:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2yqSKT9Bbhkr9bltS0gNzqIpZjnctyVVLv97qIJ7+jo=; b=Sx
+	pjGk7Ame1AAbp6fSd4zk0Jw1o1md+6mK/94HBb6Ig1FGIjQnwo6/oHZ66CYpq3vB
+	kRb2FMyLnHP3qO+xuimAtKoTr3Svl+HCCbtuqLiC30ZX3amrL30LR1FhwXhZTnnV
+	ZxaqSChlmFngu4k6V8qlve1Qc9rgoAqf2wa/ymzlGkY2Y/T/M/dXKcuuMRJjaZw0
+	Gt0F/6VxqQXQGOkngJV7GYjSeY2WLLeHid/azaSMUQ9qrCBnEiQb/s9snrTi/G2n
+	EaZkB6d2EPG9iY/qL6gR2YY8Vu2VKcyYqMOJX39j4ND3g1QZDmZqx21zZIRoKMqd
+	gky2zBIxU2oZyZ3ZOeMQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xd3bsgckq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 13:22:18 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 439DMH13003421
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Apr 2024 13:22:17 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 9 Apr 2024
+ 06:22:13 -0700
+Message-ID: <6baaff95-728b-4492-ae3e-00dedbb50fb0@quicinc.com>
+Date: Tue, 9 Apr 2024 21:22:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] coresight: Add support for multiple output ports on
+ the funnel
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1711009927-17873-1-git-send-email-quic_taozha@quicinc.com>
+ <1711009927-17873-3-git-send-email-quic_taozha@quicinc.com>
+ <8d381e6e-9328-46ff-83fe-efbe5bb4363e@arm.com>
+ <ffce4577-b0f9-4af3-a379-0385a02ddae8@quicinc.com>
+ <a8947ac4-e251-47ba-b44a-6f4fc58f1aac@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <a8947ac4-e251-47ba-b44a-6f4fc58f1aac@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: w2rdVCEbni5enT-AfEySqFaak7J1adx_
+X-Proofpoint-ORIG-GUID: w2rdVCEbni5enT-AfEySqFaak7J1adx_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-09_09,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404090085
 
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-Hi,
-
-On Tue Apr 9, 2024 at 2:07 PM CEST, FLAVIO SULIGOI wrote:
-> > On Fri Apr 5, 2024 at 12:01 PM CEST, Flavio Suligoi wrote:
-> > > Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> > > Memory.
-> > > This device is JEDEC compatible (JESD251 and JESD251-1), but it is no=
-t
-> > > able to provide SFDP information.
-> >=20
-> > Did you try the at25 driver if it will fit your usecase? Judging from
-> > your last response, it sounds like it will do.
+On 4/9/2024 3:13 PM, Suzuki K Poulose wrote:
+> Hi
 >
-> Yes, you are right, it works with at25 driver!
-> Thanks!
-
-Good news :)
-
-> At the moment I have to use a page size of 256 bytes, using "atmel,at25".
-> Since the Everspin EM0004LXB MRAM doesn't have problem with any page size
-> (theoretically I could use a single page size of 512KB), can I update the
-> at25.c driver with a support for the EM0004LXB MRAM, as already done for
-> the Cypress fm25 F-RAM?
-
-Feel free to propose a patch. Keep in mind that it is another ML and
-maintainer. Just use get_maintainer.pl. Keep me on CC if you like.
-
--michael
-
-> >=20
-> > >
-> > > Link: https://www.everspin.com/file/158244/download
-> > >
-> > > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> > > ---
-> > >  drivers/mtd/spi-nor/everspin.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > >
-> > > diff --git a/drivers/mtd/spi-nor/everspin.c
-> > > b/drivers/mtd/spi-nor/everspin.c index 5f321e24ae7d..4741930ce9a8
-> > > 100644
-> > > --- a/drivers/mtd/spi-nor/everspin.c
-> > > +++ b/drivers/mtd/spi-nor/everspin.c
-> > > @@ -31,6 +31,14 @@ static const struct flash_info everspin_nor_parts[=
-]
-> > =3D {
-> > >  		.size =3D SZ_512K,
-> > >  		.sector_size =3D SZ_512K,
-> > >  		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> > > +	}, {
-> > > +		.id =3D SNOR_ID(0x6b, 0xbb, 0x13),
-> > > +		.name =3D "em004lxb",
-> > > +		.size =3D SZ_512K,
-> > > +		.sector_size =3D SZ_512K,
-> > > +		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR | SPI_NOR_HAS_LOCK
-> > |
-> >=20
-> > Will it also work without SPI_NOR_NO_ERASE? Also, the flash supports
-> > fast read, so drop NO_FR. Also, please have a look at [1] for the
-> > testing requirements.
-> >=20
-> > Thanks.
-> > -michael
-> >=20
-> > > +			 SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
-> > > +		.no_sfdp_flags =3D SPI_NOR_SKIP_SFDP,
-> > >  	}
-> > >  };
-> > >
-> >=20
-> > [1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
+> On 29/03/2024 09:27, Tao Zhang wrote:
+>>
+>> On 3/22/2024 12:41 AM, Suzuki K Poulose wrote:
+>>> On 21/03/2024 08:32, Tao Zhang wrote:
+>>>> Funnel devices are now capable of supporting multiple-inputs and
+>>>> multiple-outputs configuration with in built hardware filtering
+>>>> for TPDM devices. Add software support to this function. Output
+>>>> port is selected according to the source in the trace path.
+>>>>
+>>>> The source of the input port on funnels will be marked in the
+>>>> device tree.
+>>>> e.g.
+>>>> tpdm@xxxxxxx {
+>>>>      ... ... ... ...
+>>>> };
+>>>>
+>>>> funnel_XXX: funnel@xxxxxxx {
+>>>>      ... ... ... ...
+>>>>      out-ports {
+>>>>          ... ... ... ...
+>>>>          port@x {
+>>>>              ... ... ... ...
+>>>>              label = "xxxxxxx.tpdm"; <-- To label the source
+>>>>          };                           corresponding to the output
+>>>>      ... ... ... ...                  connection "port@x". And this
+>>>>      };                               is a hardware static 
+>>>> connections.
+>>>>      ... ... ... ...                  Here needs to refer to hardware
+>>>> };                                   design.
+>>>>
+>>>> Then driver will parse the source label marked in the device tree, and
+>>>> save it to the coresight path. When the function needs to know the
+>>>> source label, it could obtain it from coresight path parameter. 
+>>>> Finally,
+>>>> the output port knows which source it corresponds to, and it also 
+>>>> knows
+>>>> which input port it corresponds to.
+>>>
+>>> Why do we need labels ? We have connection information for all devices
+>>> (both in and out), so, why do we need this label to find a device ?
+>>
+>> Because our funnel's design has multi-output ports, the data stream 
+>> will not
+>>
+>> know which output port should pass in building the data trace path. 
+>> This source
+>>
+>> label can make the data stream find the right output port to go.
+>>
+>>>
+>>> And also, I thought TPDM is a source device, why does a funnel output
+>>> port link to a source ?
+>>
+>> No, this label doesn't mean this funnel output port link to a source, 
+>> it just let
+>>
+>> the output port know its data source.
+>>
+>>>
+>>> Are these funnels programmable ? Or, are they static ? If they are
+>>> static, do these need to be described in the DT ? If they are simply
+>>> acting as a "LINK" (or HWFIFO ?)
+>>
+>> These funnels are static, and we will add the "label" to the DT to 
+>> describe the
+>>
+>> multi-output ports for these funnels.
 >
-> Thanks and best regards,
-> Flavio
+> I think there is still a bit of confusion. By "Dynamic" I mean,
+> the "dynamic funnel" (explicit port enablement via MMIO) vs "static 
+> funnel" (no programming, always ON).
+>
+> So, coming to your example, do we need to "explicitly" enable trace 
+> flow for an "input" and/or an "output" port in your "funnel" ?
+
+Sorry for my misunderstanding in the previous mails. Our funnels are 
+programmable just like the common dynamic funnels.
+
+In our solution, we just make funnels have multiple output ports 
+connected to different devices or ports. When we use it, we still
+
+enable the input port through programming. Our solution is to know which 
+input port the expected data comes from based on the
+
+source label corresponding to the output port. This way we can build the 
+expected trace path. In other respects, it is used the same
+
+as common dynamic funnels.
 
 
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749
-Content-Type: application/pgp-signature; name="signature.asc"
+Best,
 
------BEGIN PGP SIGNATURE-----
+Tao
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZhVA+hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/i8/AF/fD2dzcyQr3HGVxsEAOBduorhF05MB4hO
-h5jZbHCSISsiRqqlasJnnSPViXGrm4OcAYDd7cDbdX1ItpPATVlsfP8dkRWSRju1
-l3e0T4hfE1nZO4iUukBEDc9TS8dL0MTgMDw=
-=HQCi
------END PGP SIGNATURE-----
-
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749--
+>
+>
+>>
+>> "If they are simply acting as a "LINK" (or HWFIFO ?) " I'm not sure 
+>> what's the meaning
+>
+> i.e, Like TMC-ETF in HWFIFO mode. In this mode, the TMC-ETF is acting
+> like a cache for easing ATB data load, by providing h/w buffering.
+> (In your case, it may not be providing any buffering, it doesn't matter
+> either way, as it is not visible to the driver).
+>
+> Suzuki
+>
+>>
+>> of this. Could you describe it in detail?
+>>
+>>
+>> Best,
+>>
+>> Tao
+>>
+>>>
+>>> Suzuki
+>>>
+>>>>
+>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>> ---
+>>>>   drivers/hwtracing/coresight/coresight-core.c  | 81 
+>>>> ++++++++++++++++---
+>>>>   .../hwtracing/coresight/coresight-platform.c  |  5 ++
+>>>>   include/linux/coresight.h                     |  2 +
+>>>>   3 files changed, 75 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
+>>>> b/drivers/hwtracing/coresight/coresight-core.c
+>>>> index 5dde597403b3..b1b5e6d9ec7a 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>>>> @@ -113,15 +113,63 @@ struct coresight_device 
+>>>> *coresight_get_percpu_sink(int cpu)
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(coresight_get_percpu_sink);
+>>>>   +static struct coresight_device *coresight_get_source(struct 
+>>>> list_head *path)
+>>>> +{
+>>>> +    struct coresight_device *csdev;
+>>>> +
+>>>> +    if (!path)
+>>>> +        return NULL;
+>>>> +
+>>>> +    csdev = list_first_entry(path, struct coresight_node, 
+>>>> link)->csdev;
+>>>> +    if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
+>>>> +        return NULL;
+>>>> +
+>>>> +    return csdev;
+>>>> +}
+>>>> +
+>>>> +/**
+>>>> + * coresight_source_filter - checks whether the connection matches 
+>>>> the source
+>>>> + * of path if connection is binded to specific source.
+>>>> + * @path:    The list of devices
+>>>> + * @conn:    The connection of one outport
+>>>> + *
+>>>> + * Return zero if the connection doesn't have a source binded or 
+>>>> source of the
+>>>> + * path matches the source binds to connection.
+>>>> + */
+>>>> +static int coresight_source_filter(struct list_head *path,
+>>>> +            struct coresight_connection *conn)
+>>>> +{
+>>>> +    int ret = 0;
+>>>> +    struct coresight_device *source = NULL;
+>>>> +
+>>>> +    if (conn->source_label == NULL)
+>>>> +        return ret;
+>>>> +
+>>>> +    source = coresight_get_source(path);
+>>>> +    if (source == NULL)
+>>>> +        return ret;
+>>>> +
+>>>> +    if (strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+>>>> +            conn->source_label))
+>>>> +        ret = 0;
+>>>> +    else
+>>>> +        ret = -1;
+>>>> +
+>>>> +    return ret;
+>>>> +}
+>>>> +
+>>>>   static struct coresight_connection *
+>>>>   coresight_find_out_connection(struct coresight_device *src_dev,
+>>>> -                  struct coresight_device *dest_dev)
+>>>> +                  struct coresight_device *dest_dev,
+>>>> +                  struct list_head *path)
+>>>>   {
+>>>>       int i;
+>>>>       struct coresight_connection *conn;
+>>>>         for (i = 0; i < src_dev->pdata->nr_outconns; i++) {
+>>>>           conn = src_dev->pdata->out_conns[i];
+>>>> +        if (coresight_source_filter(path, conn))
+>>>> +            continue;
+>>>>           if (conn->dest_dev == dest_dev)
+>>>>               return conn;
+>>>>       }
+>>>> @@ -312,7 +360,8 @@ static void coresight_disable_sink(struct 
+>>>> coresight_device *csdev)
+>>>>     static int coresight_enable_link(struct coresight_device *csdev,
+>>>>                    struct coresight_device *parent,
+>>>> -                 struct coresight_device *child)
+>>>> +                 struct coresight_device *child,
+>>>> +                 struct list_head *path)
+>>>>   {
+>>>>       int ret = 0;
+>>>>       int link_subtype;
+>>>> @@ -321,8 +370,8 @@ static int coresight_enable_link(struct 
+>>>> coresight_device *csdev,
+>>>>       if (!parent || !child)
+>>>>           return -EINVAL;
+>>>>   -    inconn = coresight_find_out_connection(parent, csdev);
+>>>> -    outconn = coresight_find_out_connection(csdev, child);
+>>>> +    inconn = coresight_find_out_connection(parent, csdev, path);
+>>>> +    outconn = coresight_find_out_connection(csdev, child, path);
+>>>>       link_subtype = csdev->subtype.link_subtype;
+>>>>         if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG && 
+>>>> IS_ERR(inconn))
+>>>> @@ -341,7 +390,8 @@ static int coresight_enable_link(struct 
+>>>> coresight_device *csdev,
+>>>>     static void coresight_disable_link(struct coresight_device *csdev,
+>>>>                      struct coresight_device *parent,
+>>>> -                   struct coresight_device *child)
+>>>> +                   struct coresight_device *child,
+>>>> +                   struct list_head *path)
+>>>>   {
+>>>>       int i;
+>>>>       int link_subtype;
+>>>> @@ -350,8 +400,8 @@ static void coresight_disable_link(struct 
+>>>> coresight_device *csdev,
+>>>>       if (!parent || !child)
+>>>>           return;
+>>>>   -    inconn = coresight_find_out_connection(parent, csdev);
+>>>> -    outconn = coresight_find_out_connection(csdev, child);
+>>>> +    inconn = coresight_find_out_connection(parent, csdev, path);
+>>>> +    outconn = coresight_find_out_connection(csdev, child, path);
+>>>>       link_subtype = csdev->subtype.link_subtype;
+>>>>         if (link_ops(csdev)->disable) {
+>>>> @@ -507,7 +557,7 @@ static void coresight_disable_path_from(struct 
+>>>> list_head *path,
+>>>>           case CORESIGHT_DEV_TYPE_LINK:
+>>>>               parent = list_prev_entry(nd, link)->csdev;
+>>>>               child = list_next_entry(nd, link)->csdev;
+>>>> -            coresight_disable_link(csdev, parent, child);
+>>>> +            coresight_disable_link(csdev, parent, child, path);
+>>>>               break;
+>>>>           default:
+>>>>               break;
+>>>> @@ -588,7 +638,7 @@ int coresight_enable_path(struct list_head 
+>>>> *path, enum cs_mode mode,
+>>>>           case CORESIGHT_DEV_TYPE_LINK:
+>>>>               parent = list_prev_entry(nd, link)->csdev;
+>>>>               child = list_next_entry(nd, link)->csdev;
+>>>> -            ret = coresight_enable_link(csdev, parent, child);
+>>>> +            ret = coresight_enable_link(csdev, parent, child, path);
+>>>>               if (ret)
+>>>>                   goto err;
+>>>>               break;
+>>>> @@ -802,7 +852,8 @@ static void coresight_drop_device(struct 
+>>>> coresight_device *csdev)
+>>>>    */
+>>>>   static int _coresight_build_path(struct coresight_device *csdev,
+>>>>                    struct coresight_device *sink,
+>>>> -                 struct list_head *path)
+>>>> +                 struct list_head *path,
+>>>> +                 struct coresight_device *source)
+>>>>   {
+>>>>       int i, ret;
+>>>>       bool found = false;
+>>>> @@ -814,7 +865,7 @@ static int _coresight_build_path(struct 
+>>>> coresight_device *csdev,
+>>>>         if (coresight_is_percpu_source(csdev) && 
+>>>> coresight_is_percpu_sink(sink) &&
+>>>>           sink == per_cpu(csdev_sink, 
+>>>> source_ops(csdev)->cpu_id(csdev))) {
+>>>> -        if (_coresight_build_path(sink, sink, path) == 0) {
+>>>> +        if (_coresight_build_path(sink, sink, path, source) == 0) {
+>>>>               found = true;
+>>>>               goto out;
+>>>>           }
+>>>> @@ -825,8 +876,12 @@ static int _coresight_build_path(struct 
+>>>> coresight_device *csdev,
+>>>>           struct coresight_device *child_dev;
+>>>>             child_dev = csdev->pdata->out_conns[i]->dest_dev;
+>>>> +        if (csdev->pdata->out_conns[i]->source_label &&
+>>>> + !strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+>>>> + csdev->pdata->out_conns[i]->source_label))
+>>>> +            continue;
+>>>>           if (child_dev &&
+>>>> -            _coresight_build_path(child_dev, sink, path) == 0) {
+>>>> +            _coresight_build_path(child_dev, sink, path, source) 
+>>>> == 0) {
+>>>>               found = true;
+>>>>               break;
+>>>>           }
+>>>> @@ -871,7 +926,7 @@ struct list_head *coresight_build_path(struct 
+>>>> coresight_device *source,
+>>>>         INIT_LIST_HEAD(path);
+>>>>   -    rc = _coresight_build_path(source, sink, path);
+>>>> +    rc = _coresight_build_path(source, sink, path, source);
+>>>>       if (rc) {
+>>>>           kfree(path);
+>>>>           return ERR_PTR(rc);
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c 
+>>>> b/drivers/hwtracing/coresight/coresight-platform.c
+>>>> index 9d550f5697fa..f553fb20966d 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-platform.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+>>>> @@ -205,6 +205,7 @@ static int of_coresight_parse_endpoint(struct 
+>>>> device *dev,
+>>>>       struct fwnode_handle *rdev_fwnode;
+>>>>       struct coresight_connection conn = {};
+>>>>       struct coresight_connection *new_conn;
+>>>> +    const char *label;
+>>>>         do {
+>>>>           /* Parse the local port details */
+>>>> @@ -243,6 +244,10 @@ static int of_coresight_parse_endpoint(struct 
+>>>> device *dev,
+>>>>           conn.dest_fwnode = fwnode_handle_get(rdev_fwnode);
+>>>>           conn.dest_port = rendpoint.port;
+>>>>   +        conn.source_label = NULL;
+>>>> +        if (!of_property_read_string(ep, "label", &label))
+>>>> +            conn.source_label = label;
+>>>> +
+>>>>           new_conn = coresight_add_out_conn(dev, pdata, &conn);
+>>>>           if (IS_ERR_VALUE(new_conn)) {
+>>>>               fwnode_handle_put(conn.dest_fwnode);
+>>>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+>>>> index e8b6e388218c..a9c06ef9bbb2 100644
+>>>> --- a/include/linux/coresight.h
+>>>> +++ b/include/linux/coresight.h
+>>>> @@ -167,6 +167,7 @@ struct coresight_desc {
+>>>>    * struct coresight_connection - representation of a single 
+>>>> connection
+>>>>    * @src_port:    a connection's output port number.
+>>>>    * @dest_port:    destination's input port number @src_port is 
+>>>> connected to.
+>>>> + * @source_label: source component's label.
+>>>>    * @dest_fwnode: destination component's fwnode handle.
+>>>>    * @dest_dev:    a @coresight_device representation of the component
+>>>>           connected to @src_port. NULL until the device is created
+>>>> @@ -195,6 +196,7 @@ struct coresight_desc {
+>>>>   struct coresight_connection {
+>>>>       int src_port;
+>>>>       int dest_port;
+>>>> +    const char *source_label;
+>>>>       struct fwnode_handle *dest_fwnode;
+>>>>       struct coresight_device *dest_dev;
+>>>>       struct coresight_sysfs_link *link;
+>>>
+>
 
