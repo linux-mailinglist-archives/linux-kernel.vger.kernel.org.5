@@ -1,107 +1,103 @@
-Return-Path: <linux-kernel+bounces-137429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C67D289E1F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:57:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4749C89E1FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C10A1F21952
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:57:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77D931C211F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98822156998;
-	Tue,  9 Apr 2024 17:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="RG5Vq7xE"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25472156878;
+	Tue,  9 Apr 2024 17:58:12 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC618156897;
-	Tue,  9 Apr 2024 17:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE04E131732
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712685403; cv=none; b=uASiEGDQdNoFdj3Nn3fb3NIf1eqshRNGRYqjS8OLbIsWIdOHUjwd0jjFIbWAAuMymSdSRqZskQvOFh+gRLmzAuNo0uN7fqhgkM4wDodeosv8yq61T5BmLU48v82JlBJU1c4BlthEy3kD/IHDyz/5HbAYtL0wkP+9mViVWKn8ajk=
+	t=1712685491; cv=none; b=p/uMmM87igDIsgz9hRZcUbVLEGI+ZrKwEgoXqIAfmjecTCD1b2PJ+NzTLh56KxJcjS5sPNqPtUQvUKpGmfxqoYWUNQhnlcGo4eSmCZQ61Vz3bVe3d/zkkg1RHT2Q+9sZrYyXF+PLwgj8Af98WRBgOHkAg3CyYYY91t4utPmYucY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712685403; c=relaxed/simple;
-	bh=+ImLdF/rPS1W8RZhaAMn68UmLxKGpvIDQLVmitYV350=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GwJL9rO8+OtrfF23MfVixLW6bwYulYB7mCZ37v1gH1hx7KXqeKehQ3fuHeqxBG2kGcNPfJZET7Z9DrtcpxDyXxP2FzE+vkU1GcYcFHXGDzWhlYONm2+4AIQsFlF8+fmr43pdblG/o5ruM/qQiDRoKadZGiV9mZrPGzA/qOXFlh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=RG5Vq7xE; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
-From: Dragan Simic <dsimic@manjaro.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1712685400;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Mp691LpMMS/NnH46Pk6YFYILzDdopHOT6W8uUeHBmto=;
-	b=RG5Vq7xEw1eRHdUxPfxqe8n6w7RUti8z+zcVoqo/Ai3zJwrnrs8taBGBf7/xAHmwu9yAPs
-	pdyxXAgWmOcDYUBP+Eq5YVvkqe96rRR8lzMMw5bYPYUh2/VxB0ooC/3fybhIQvhXewogJR
-	SOV1o3GL6DwwoCZlW1Bfj7/MzXVNkhNEUDxssPBc3QI0xxPxkQWjUuI4axAJIX1vL9l/lx
-	5wvNwqs3UL7bP7bBXC4/jtRCusHn+PNZXTvNkjwdQwZPc7MH3Aw5CVhmD4JwZVYv5jM4jH
-	ZdqCk/PvvkHkpm0YjdJk+IcVPm7T/pD+BuiubkRBqAbjhgd7W0CNuuMyMD0qzQ==
-To: linux-sound@vger.kernel.org
-Cc: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: pcm: perform power-down delay checks a bit faster
-Date: Tue,  9 Apr 2024 19:56:36 +0200
-Message-Id: <90ae761a5b99640ece48363a7099ac2cf402bd37.1712684592.git.dsimic@manjaro.org>
+	s=arc-20240116; t=1712685491; c=relaxed/simple;
+	bh=K41sP0ZETOeyv4cbfS9ddqUr9tmWzEZdyvMpN+HRH6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pam68GQ3RsrrTYaxaW+ry+Zjnt7mv3xUG/HpsExzM3LwEkFvmJt+fLhzomHBrf7BVYKlMKdhsk0FJTu7ui8e5kMQ5kJydeDRRhpdLF5FJOmlu8K0ZoV1Owgr9iW+Oufkz88jSTqeGoPO7cq4BiL6/DZQWST0loIIpiyzLuw3BaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7148640E01C5;
+	Tue,  9 Apr 2024 17:58:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id tykDg4uvVSRC; Tue,  9 Apr 2024 17:58:02 +0000 (UTC)
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D0ED640E0187;
+	Tue,  9 Apr 2024 17:57:47 +0000 (UTC)
+Date: Tue, 9 Apr 2024 19:57:42 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>
+Subject: Re: [PATCH v3 01/14] x86/sev: Rename snp_init() in the
+ boot/compressed/sev.c file
+Message-ID: <20240409175742.GEZhWBljxrJ8yGC3wE@fat_crate.local>
+References: <cover.1711405593.git.thomas.lendacky@amd.com>
+ <425afa6512994b1ca1bb366eb7abfb24d65175aa.1711405593.git.thomas.lendacky@amd.com>
+ <20240409170917.GCZhV2PWPhmzTHhMRO@fat_crate.local>
+ <ac044150-ffb1-09b5-1f36-fdd6e259ba59@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ac044150-ffb1-09b5-1f36-fdd6e259ba59@amd.com>
 
-When checking whether the power-down delay should be ignored for a specific
-PCM runtime, there's no need to keep going through all DAI link components
-after any of them is found to be configured to use the power-down delay.
+On Tue, Apr 09, 2024 at 12:44:13PM -0500, Tom Lendacky wrote:
+> When it's not static and has the name snp_init(), then it has to match the
+> definition in arch/x86/include/asm/sev.h, which is really intended for the
+> snp_init() in arch/x86/kernel/sev.c when called from
+> arch/x86/mm/mem_encrypt_identity.c.
+> 
+> So, yes, changing the name would be enough except then it remains not a
+> static and you can get a compiler warning about not having a prototype for
+> it if the -Wmissing-prototypes option is ever applied to that file (I don't
+> believe it is today because it is in the decompressor code, but that can
+> change). And since nothing calls the snp_init() in
+> arch/x86/boot/compressed/sev.c from outside of that file, making it static
+> was appropriate.
 
-While there, fix a small typo in one of the comment blocks.
+Yes, then please remove all that text about what could potentially
+happen from the commit message so that it is not confusing as to what
+the situation *currently* is.
 
-Signed-off-by: Dragan Simic <dsimic@manjaro.org>
----
- sound/soc/soc-pcm.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+The two functions are independent right now. It is enough to say that
+you want to differentiate which one is called when, in order to avoid
+confusion.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 77ee103b7cd1..b0e1bd7f588b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -315,23 +315,24 @@ EXPORT_SYMBOL_GPL(snd_soc_runtime_action);
-  * @rtd: The ASoC PCM runtime that should be checked.
-  *
-  * This function checks whether the power down delay should be ignored for a
-- * specific PCM runtime. Returns true if the delay is 0, if it the DAI link has
-+ * specific PCM runtime. Returns true if the delay is 0, if the DAI link has
-  * been configured to ignore the delay, or if none of the components benefits
-  * from having the delay.
-  */
- bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_component *component;
--	bool ignore = true;
- 	int i;
- 
- 	if (!rtd->pmdown_time || rtd->dai_link->ignore_pmdown_time)
- 		return true;
- 
- 	for_each_rtd_components(rtd, i, component)
--		ignore &= !component->driver->use_pmdown_time;
-+		if (component->driver->use_pmdown_time)
-+			/* No need to go through all components */
-+			return false;
- 
--	return ignore;
-+	return true;
- }
- 
- /**
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
