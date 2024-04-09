@@ -1,240 +1,221 @@
-Return-Path: <linux-kernel+bounces-136216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D2589D153
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:53:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1017E89D156
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33DAAB24BCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:53:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 541462872AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F64155C36;
-	Tue,  9 Apr 2024 03:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YtCLh8Wq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C521C64CD0;
+	Tue,  9 Apr 2024 03:53:29 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4DE6548E9
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7869863087
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712634797; cv=none; b=sFJcFyIzqvAeTZw4Ehc1vpsL8e96eHWb2zLONVEYIeEu16tlKHThwUbi1ErXiCzFxn0eH+ABlT08XTUgI7Xxsx3Ir1GyG7JbrRXySNPc0cDTJ9FE90YEPkPJ2sy7FYBsPtk4Z/a+U4AwTnOFfoLEdYQAvrcTVRh5cWiRSASTjGY=
+	t=1712634809; cv=none; b=CV7NHKutdc5nHzwksjhEVvzCwzRaypKzKBVwisuamMVFp867wBwqJMjMat1+tzAkVQBDhK/CMQRHl13FiOXNeULgctsJBv8ROV9Ah1nZODCgfYvuBSVYMg+3IE/V4sB4o2bcoZCMs13JWKzuKHTwQNe3g+5qMGhhKhtrGdEkMW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712634797; c=relaxed/simple;
-	bh=lxzSNvzrD+krJO3vw/t/cixNwL8tYRktEc4XuvGlHUY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gAKGRxmXxCRCtk++2m8SCOA3BrpHkZ7HDX1aUsKR7tSOoK5ydN7BbXJnajHNmZFUjwsyadRLgkZCJ8PiPy65cZE0EueA4+FmbEtwmvVuikFdd+CnAF5eCDXWEBe5Nxxcb8LF8J+pqSnZJYIRaheS8yLZbk/fRsnXEooxJX5Op+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YtCLh8Wq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712634794;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2KD7aI3KUIy6s54+Dn2xAAh6YXCvrhcr6E3iGFb/IXk=;
-	b=YtCLh8Wqd91+7LobRz6fPmghm/fKRYuB5yRCeuUKrJ0gdW3ComvGMIc6niXQW83uzB1utE
-	UXhMg7VZIuOUsdQvsaRN1fnD/V1uQ8UPlsHZuy5p1K9pzmzu5p9WYiLB1BtXlxtnSkMcgc
-	xY8EgGE9MynNUW6OU+piQeHjiyH116k=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-316-0pqnSjFNPmKeIJ_U68YGlg-1; Mon, 08 Apr 2024 23:53:13 -0400
-X-MC-Unique: 0pqnSjFNPmKeIJ_U68YGlg-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5f034b4db5bso2693661a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 20:53:13 -0700 (PDT)
+	s=arc-20240116; t=1712634809; c=relaxed/simple;
+	bh=06vTN+d8pRhXwgOwvKMUusnB5ChI+3oNMJ5UsAw8fww=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=KXxoF+wo07s97wXBYpx7xCgfDdQwFMGx15fSrovfdriFoimp+M1TvC5E4jKnivLLKPhEVoJv7MtVLCXlEdWVUkUBqT0xWDrwaR0XHhsNBLq2W8HumxC/78/VyNfbOXxI8eVdDdALg/BewJrl2gP83A53rDB6anR6rLi5WmhERqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d096c4d663so678488839f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 20:53:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712634792; x=1713239592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2KD7aI3KUIy6s54+Dn2xAAh6YXCvrhcr6E3iGFb/IXk=;
-        b=UF0ucODNa6uv98CUlznrRysh6vUIuRnW8vSavv346bDqs8ZjmhS/Ki5sbcU8zEEn5x
-         okJ6OSVhpbIyZlUk5f6ydZZMh5bKtDl/HxLGp23cHLZVaqLfbMBaM0Zh1fkFDM0xZtFa
-         ixGyU5NmoM+W2SkS43S7SHe3YkhJOk4SEn+l89aR/J4nypbCBZXiV2IvjHPfibWN+Rk3
-         KayzMaJts0GRhmoZ4uTR5H5GSSTZRGLItJ33WbgvCDBMx/vB4nczLlHZ16AOi7hg6PDw
-         AJD4Ng9AgFH4oiF1UpEIatrvb+CLTBFG37j6zrrGjwCekc8FbKWAj2bHkVaMI3U2yG3C
-         dx8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXz3VCKjTL2dx7aiX5h07dC93B7IKax48yJL+IQjbSnjt4QkbD138t7r09n+ntnq591ZeDlgkRHkFOPZ+6tTZ5wuymt6XabmaVj3/WE
-X-Gm-Message-State: AOJu0Yz7vD6ff1y9GcnEobJzYWwzngqwmAuGTsOO3UBWFnb6D2BBa8pw
-	Kl+BAQS3T+6QYVnDUO4hkyKRJFMzExOZh3N+X4HTz/uBckQFBfv8wfnlzgyegdiLLDf7VPozL38
-	7GiANrcuTkHE05T9UYd9kd53Q0Sr0N/pmS2BsiblBPGN0JtaY8G4Mg2zSYWcsM6vJS43ZaCAw1f
-	vVc9gz9bF7adHlJs7fuVnrj0e0qn3C4NlkuYd8CT6WOWTusm+RXg==
-X-Received: by 2002:a05:6a21:3391:b0:1a7:9812:3680 with SMTP id yy17-20020a056a21339100b001a798123680mr2441707pzb.40.1712634791937;
-        Mon, 08 Apr 2024 20:53:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHvsmXztrk7ncCJXSQ+W7uLtHwec4zNCzG/3012Rb3DaDvqvhgpT4f0P6PGoY4v5efkwwjDwdn/8sAvc4Tg7dM=
-X-Received: by 2002:a05:6a21:3391:b0:1a7:9812:3680 with SMTP id
- yy17-20020a056a21339100b001a798123680mr2441690pzb.40.1712634791606; Mon, 08
- Apr 2024 20:53:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712634806; x=1713239606;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dDUHbU7qxbjeLelTJDOElWWcMiZCN2QW8ArLRBQh1Lg=;
+        b=BN+mScexv+GfLd2i/XrN6Kch67ndUG/EaIZKpdHxTSgKqadTc+QKSKHZuUqZ8wYHry
+         ddKhgEdu9ofUmVL/YV5S9rxqqy+N5gzdhym6G6D/karJBVY7/L/c1hQ7c7bDqh5Md9xB
+         e9ILFvLb4GrEh4z446STbwjBmVOFjG9EfInOBdS3OcFSrUv2eErX2mqxbCgmlAlkXSod
+         xDEv3kEhc+MoJ3Xx4g1SbjslYm5wTNxgqKJdM4KMvo+5R4B8A66qNELBbFeUyQkc+Ff4
+         fxKC1/9q53EUI4kBRp78dmRgYbyrzvfVLIx5RkXQlv9sGK7Rt4+T0/tCliu0hI8MvhqV
+         AaJw==
+X-Forwarded-Encrypted: i=1; AJvYcCVeC2QmgCkPcLjVfwD8AGZhSgIXr00g0GMofSBi+3AEoL+NP+emdl7V8XEq34AiLbn3laRPhM3X07d2FExyAEnYifpzsrW7rvQBHpKj
+X-Gm-Message-State: AOJu0YzMOAwJlBYLJmFeN8mrFQ70fb6+Ii0nik0mlIgFsFyo3t4MQdaJ
+	5jfISfqKh1x/jIeh7gQcSZN0sFzeRS1EkOV5hinpznv3u+ERpH6IHzTLUC20v37JFVs3wNti417
+	nhUEfHTN87sst88oaqZEwqO8SDmpfAk1tUOyUevZ7rlFvkQz2NLCyVxo=
+X-Google-Smtp-Source: AGHT+IHenuXx0HIDdsGRc5cXIVDZHqMeeD8NdKsQzyMXltaL67tyqC8c6SpHD7kjsAeanNJ/xB4goy98hAIH7WjfE01htwKV61Wr
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408035346-mutt-send-email-mst@kernel.org> <20240409014935.944-1-yuxue.liu@jaguarmicro.com>
-In-Reply-To: <20240409014935.944-1-yuxue.liu@jaguarmicro.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 9 Apr 2024 11:53:00 +0800
-Message-ID: <CACGkMEsvva4xWJpBLOzxmst=BzE7HRWuTpERVEt78oSGG_=5RQ@mail.gmail.com>
-Subject: Re: [PATCH v3] vp_vdpa: fix the method of calculating vectors
-To: lyx634449800 <yuxue.liu@jaguarmicro.com>
-Cc: mst@redhat.com, angus.chen@jaguarmicro.com, virtualization@lists.linux.dev, 
-	xuanzhuo@linux.alibaba.com, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6638:16d0:b0:482:83aa:16be with SMTP id
+ g16-20020a05663816d000b0048283aa16bemr272729jat.5.1712634806633; Mon, 08 Apr
+ 2024 20:53:26 -0700 (PDT)
+Date: Mon, 08 Apr 2024 20:53:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004792a90615a1dde0@google.com>
+Subject: [syzbot] [bpf?] BUG: unable to handle kernel paging request in
+ bpf_prog_ADDR (2)
+From: syzbot <syzbot+838346b979830606c854@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 9:49=E2=80=AFAM lyx634449800 <yuxue.liu@jaguarmicro.=
-com> wrote:
->
-> When there is a ctlq and it doesn't require interrupt
-> callbacks,the original method of calculating vectors
-> wastes hardware msi or msix resources as well as system
-> IRQ resources.
->
-> When conducting performance testing using testpmd in the
-> guest os, it was found that the performance was lower compared
-> to directly using vfio-pci to passthrough the device
->
-> In scenarios where the virtio device in the guest os does
-> not utilize interrupts, the vdpa driver still configures
-> the hardware's msix vector. Therefore, the hardware still
-> sends interrupts to the host os. Because of this unnecessary
-> action by the hardware, hardware performance decreases, and
-> it also affects the performance of the host os.
->
-> Before modification:(interrupt mode)
->  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
->  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
->  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
->  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
->
-> After modification:(interrupt mode)
->  32:  0  0  1  7   PCI-MSI 32768-edge  vp-vdpa[0000:00:02.0]-0
->  33: 36  0  3  0   PCI-MSI 32769-edge  vp-vdpa[0000:00:02.0]-1
->  34:  0  0  0  0   PCI-MSI 32770-edge  vp-vdpa[0000:00:02.0]-config
->
-> Before modification:(virtio pmd mode for guest os)
->  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
->  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
->  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
->  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
->
-> After modification:(virtio pmd mode for guest os)
->  32: 0  0  0   0   PCI-MSI 32768-edge   vp-vdpa[0000:00:02.0]-config
->
-> To verify the use of the virtio PMD mode in the guest operating
-> system, the following patch needs to be applied to QEMU:
-> https://lore.kernel.org/all/20240408073311.2049-1-yuxue.liu@jaguarmicro.c=
-om
->
-> Signed-off-by: lyx634449800 <yuxue.liu@jaguarmicro.com>
-> ---
->
-> V3: delete unused variables and add validation records
-> V2: fix when allocating IRQs, scan all queues
->
->  drivers/vdpa/virtio_pci/vp_vdpa.c | 35 +++++++++++++++++++------------
->  1 file changed, 22 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/=
-vp_vdpa.c
-> index df5f4a3bccb5..cd3aeb3b8f21 100644
-> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
-> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
-> @@ -160,22 +160,31 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_v=
-dpa)
->         struct pci_dev *pdev =3D mdev->pci_dev;
->         int i, ret, irq;
->         int queues =3D vp_vdpa->queues;
-> -       int vectors =3D queues + 1;
-> +       int msix_vec, allocated_vectors =3D 0;
->
-> -       ret =3D pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSI=
-X);
-> -       if (ret !=3D vectors) {
-> +       for (i =3D 0; i < queues; i++) {
-> +               if (vp_vdpa->vring[i].cb.callback)
-> +                       allocated_vectors++;
-> +       }
-> +       allocated_vectors =3D allocated_vectors + 1;
-> +
-> +       ret =3D pci_alloc_irq_vectors(pdev, allocated_vectors, allocated_=
-vectors,
-> +                                                               PCI_IRQ_M=
-SIX);
-> +       if (ret !=3D allocated_vectors) {
->                 dev_err(&pdev->dev,
->                         "vp_vdpa: fail to allocate irq vectors want %d bu=
-t %d\n",
-> -                       vectors, ret);
-> +                       allocated_vectors, ret);
->                 return ret;
->         }
-> -
-> -       vp_vdpa->vectors =3D vectors;
-> +       vp_vdpa->vectors =3D allocated_vectors;
->
->         for (i =3D 0; i < queues; i++) {
-> +               if (!vp_vdpa->vring[i].cb.callback)
-> +                       continue;
-> +
->                 snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
->                         "vp-vdpa[%s]-%d\n", pci_name(pdev), i);
-> -               irq =3D pci_irq_vector(pdev, i);
-> +               irq =3D pci_irq_vector(pdev, msix_vec);
->                 ret =3D devm_request_irq(&pdev->dev, irq,
->                                        vp_vdpa_vq_handler,
->                                        0, vp_vdpa->vring[i].msix_name,
-> @@ -185,23 +194,23 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_v=
-dpa)
->                                 "vp_vdpa: fail to request irq for vq %d\n=
-", i);
->                         goto err;
->                 }
-> -               vp_modern_queue_vector(mdev, i, i);
-> +               vp_modern_queue_vector(mdev, i, msix_vec);
->                 vp_vdpa->vring[i].irq =3D irq;
-> +               msix_vec++;
->         }
->
->         snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-conf=
-ig\n",
-> -                pci_name(pdev));
-> -       irq =3D pci_irq_vector(pdev, queues);
-> +                       pci_name(pdev));
-> +       irq =3D pci_irq_vector(pdev, msix_vec);
->         ret =3D devm_request_irq(&pdev->dev, irq, vp_vdpa_config_handler,=
- 0,
->                                vp_vdpa->msix_name, vp_vdpa);
->         if (ret) {
->                 dev_err(&pdev->dev,
-> -                       "vp_vdpa: fail to request irq for vq %d\n", i);
-> +                       "vp_vdpa: fail to request irq for config\n");
->                         goto err;
->         }
-> -       vp_modern_config_vector(mdev, queues);
-> +       vp_modern_config_vector(mdev, msix_vec);
->         vp_vdpa->config_irq =3D irq;
-> -
+Hello,
 
-Unnecessary changes.
+syzbot found the following issue on:
 
-Others look good.
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12596223180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=838346b979830606c854
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134ecbb5180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141a8b3d180000
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f6c04726a2ae/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/09c26ce901ea/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/134acf7f5322/bzImage-fe46a7dd.xz
 
-Thanks
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
 
->         return 0;
->  err:
->         vp_vdpa_free_irq(vp_vdpa);
-> --
-> 2.43.0
->
+BUG: unable to handle page fault for address: 0000001000000112
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 800000002e7b1067 P4D 800000002e7b1067 PUD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 PID: 5060 Comm: syz-executor351 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:bpf_prog_a8e24a805b35c61b+0x19/0x1e
+Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 66 90 55 48 89 e5 f3 0f 1e fa 31 c0 48 8b 7f 18 <8b> 7f 00 c9 c3 cc cc cc cc cc cc 40 03 00 00 cc cc cc cc cc cc cc
+RSP: 0018:ffffc90003b07b30 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffffc90000ace048 RCX: ffff88802aa89e00
+RDX: 0000000000000000 RSI: ffffc90000ace048 RDI: 0000001000000112
+RBP: ffffc90003b07b30 R08: ffffffff81bf633c R09: 1ffffffff2595ca0
+R10: dffffc0000000000 R11: ffffffffa000095c R12: ffffc90000ace030
+R13: ffff88802ac3ae28 R14: dffffc0000000000 R15: ffff88802ac3ae28
+FS:  000055558f759380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001000000112 CR3: 0000000077cfa000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ bpf_prog_run_array_cg kernel/bpf/cgroup.c:51 [inline]
+ __cgroup_bpf_run_filter_setsockopt+0x6fa/0x1040 kernel/bpf/cgroup.c:1830
+ do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
+ __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+ __do_sys_setsockopt net/socket.c:2343 [inline]
+ __se_sys_setsockopt net/socket.c:2340 [inline]
+ __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fb234535cc9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 91 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd33db0138 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fb234535cc9
+RDX: 0000000000000010 RSI: 0000000000000112 RDI: 0000000000000007
+RBP: 0000000000000006 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000055558f759338
+R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+CR2: 0000001000000112
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_prog_a8e24a805b35c61b+0x19/0x1e
+Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 66 90 55 48 89 e5 f3 0f 1e fa 31 c0 48 8b 7f 18 <8b> 7f 00 c9 c3 cc cc cc cc cc cc 40 03 00 00 cc cc cc cc cc cc cc
+RSP: 0018:ffffc90003b07b30 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffffc90000ace048 RCX: ffff88802aa89e00
+RDX: 0000000000000000 RSI: ffffc90000ace048 RDI: 0000001000000112
+RBP: ffffc90003b07b30 R08: ffffffff81bf633c R09: 1ffffffff2595ca0
+R10: dffffc0000000000 R11: ffffffffa000095c R12: ffffc90000ace030
+R13: ffff88802ac3ae28 R14: dffffc0000000000 R15: ffff88802ac3ae28
+FS:  000055558f759380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001000000112 CR3: 0000000077cfa000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	cc                   	int3
+   1:	cc                   	int3
+   2:	cc                   	int3
+   3:	cc                   	int3
+   4:	cc                   	int3
+   5:	cc                   	int3
+   6:	cc                   	int3
+   7:	cc                   	int3
+   8:	cc                   	int3
+   9:	cc                   	int3
+   a:	cc                   	int3
+   b:	cc                   	int3
+   c:	cc                   	int3
+   d:	cc                   	int3
+   e:	cc                   	int3
+   f:	cc                   	int3
+  10:	cc                   	int3
+  11:	f3 0f 1e fa          	endbr64
+  15:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  1a:	66 90                	xchg   %ax,%ax
+  1c:	55                   	push   %rbp
+  1d:	48 89 e5             	mov    %rsp,%rbp
+  20:	f3 0f 1e fa          	endbr64
+  24:	31 c0                	xor    %eax,%eax
+  26:	48 8b 7f 18          	mov    0x18(%rdi),%rdi
+* 2a:	8b 7f 00             	mov    0x0(%rdi),%edi <-- trapping instruction
+  2d:	c9                   	leave
+  2e:	c3                   	ret
+  2f:	cc                   	int3
+  30:	cc                   	int3
+  31:	cc                   	int3
+  32:	cc                   	int3
+  33:	cc                   	int3
+  34:	cc                   	int3
+  35:	40 03 00             	rex add (%rax),%eax
+  38:	00 cc                	add    %cl,%ah
+  3a:	cc                   	int3
+  3b:	cc                   	int3
+  3c:	cc                   	int3
+  3d:	cc                   	int3
+  3e:	cc                   	int3
+  3f:	cc                   	int3
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
