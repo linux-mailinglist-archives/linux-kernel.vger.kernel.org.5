@@ -1,120 +1,130 @@
-Return-Path: <linux-kernel+bounces-137298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BD289E09D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:37:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C06089E023
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DD19B27D82
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C971D28890E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1CF13D8B9;
-	Tue,  9 Apr 2024 16:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A036C13DDA5;
+	Tue,  9 Apr 2024 16:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZEwP/ci"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hk3e+T5w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E84F883;
-	Tue,  9 Apr 2024 16:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC76F13D8A0;
+	Tue,  9 Apr 2024 16:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679312; cv=none; b=d1UXhMEAuBtb9gUspcswAjK909hfmlhKHjUCy1gPGh/IOzuEy6wcdB3nGx3m3NpoyJdZCLm+kzbPPjN87ght+JNCQptMPCRkesiWDpigpsqjTjdRZ8pg0gltFrgni+YdrNvANhuus3OQVXgheRa32cYfe15zBPUn8inXQY13VXM=
+	t=1712679321; cv=none; b=g3k1qFm2kFNlA2pzpEB3RiFr+Lhwej5VykU5AoJC/eaR/gZ7PsoH9zNyYGRUKZ/Ysa1PMLj4McuThBtIrlsKhdOD9XanvyAKvPVW+XHTpre08ZaMZOs+vavb7JTj3/ra3jLkSCcTXZDMowzQyP6Nz1HXGvLmv+2bQe2+0FpyQ9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679312; c=relaxed/simple;
-	bh=GctYHvPeKVpuxt2D+ZotCon7pgUXv3bhxrOGr4ni9qQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dAi81JnvflxMcf/MnFz+CD9qJwUnzFvDOpYkAegr2oW9kNBm6VccgickW2EACRfyOH5ZoISgFzFjYMSoG7j0QPMbMtR0avQwXyRedR4pGLdhhZ657Ma64UVB8kUG7TMsqlcYrxRG/pdp7D+tEvZvbVYcL65GKPgqh+ot04xVrtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZEwP/ci; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34560201517so715621f8f.1;
-        Tue, 09 Apr 2024 09:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712679307; x=1713284107; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=psn6Ri/4HxTIEa5og+2LF06wxFvUe/WNtpM1VRSHt8A=;
-        b=DZEwP/ciuAbkYdKNcAidzt8tG70U2YKWnLb9necNhDJTvrLBo0zFf3yeOCb7oPZyr9
-         pWqN5Yu/ON3k5bZ4eyPCb5m1pzILck1WaYIFr53BoMKusajf9GYqEGXw4ZFXL90OYgGf
-         IDBx2zEB7KYbA9tSegUPDm/gNLRE3OQeyc5DORSNlOgY1FxqsJuJvZohXbUEjVwatiFz
-         LBA+wR0Y2KzMcQjga3WlzTOlF9p1JgfErhD06511jD5jCB8vT7gJ/EDr2OWgVnzK1K15
-         ZG0nS87DegbNquL6Z59sIxypjMdfTv0LRjSA/Bq7UEWNNVzJhD2B0Z/qQ1u2rK4u+tam
-         MjzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712679307; x=1713284107;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=psn6Ri/4HxTIEa5og+2LF06wxFvUe/WNtpM1VRSHt8A=;
-        b=bJiNczF0/QZWDStZasJL9YcovbG6x4g1QxydTZTPUiWxuaNSrRG/xjwZ6nxEONDrno
-         /EHk7jTg5ZXbFrIhM01U8MuCou0BHUFzYBMpVLE2G20r+ThF5V0Dix34hJ6NwNHLUEft
-         KdpUyPY62E8q3bGcpprmxI8U/84cRsccxRZK0RPJ+xQamZUmS7naw7Rkqz6fk2HF0Xla
-         mMMqxsCTM/0pMP/N+CgjtlWlaS5TXnIuPjMJDzBTq8x/Tc9M2ovjq5l82ECcjTGpHCdf
-         x1JW0H8jSeJNcGCkcHrrDzEuk8Ykvi6qf2qHsSgfG6DOZVmEFASWqFIlZ2kMPhnNaAgx
-         HkTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDjfVWSYgKMGUsfrV9IU/7vfOS8JKj3g5ecRLcbJpBiUo4XpsLnppUpgd/djOCwW5E5rEj6y709Qf01F/weP0VnsYwbtCnilavN+9qGSvYW9GnB0Odb1/9xWXZQcP9IHcOb33KirMNRgss53FauAjCO6mUr3rafVzu
-X-Gm-Message-State: AOJu0Yy9+21339L+7puQrFE6iAmA65iFvVKl03WxRx19qvNhqXLXZJ7q
-	qpCU8I8cHTRV5hska60vWZfbCQaPCvCk3nLzkrDeDq0JpuHWqmC1
-X-Google-Smtp-Source: AGHT+IFasR5KHT/RfHFpUn+unrYHSNBNbApu2QweV2uZ+6XSihzXw0UAUe2Jc+88L4ogJ5/5cIBFtg==
-X-Received: by 2002:adf:a347:0:b0:346:5051:1c6d with SMTP id d7-20020adfa347000000b0034650511c6dmr84719wrb.5.1712679307221;
-        Tue, 09 Apr 2024 09:15:07 -0700 (PDT)
-Received: from [10.0.0.4] ([37.170.252.166])
-        by smtp.gmail.com with ESMTPSA id c18-20020adffb52000000b00346266b612csm1854185wrs.81.2024.04.09.09.15.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 09:15:06 -0700 (PDT)
-Message-ID: <49344fc4-a524-4c54-b75a-f094adf90353@gmail.com>
-Date: Tue, 9 Apr 2024 18:15:05 +0200
+	s=arc-20240116; t=1712679321; c=relaxed/simple;
+	bh=aQnXMHVSse19+ZZ5n5B1a+ECbXRCEMx+99YFJTJvLZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mceUZbe7EsObDX7LtXrBy+kAWo2ZLRA1VVWOgsXkUQXBgciE5NeLIH5nABbJ3V/dlKdvII7RC8/LkGROJrzJ/Ljr0vcpDRegUIPfamfImta0nBDcCQGkG4VA7RHI1jW61MDVqCISpfdxgeGTdhbn9NTQTYmYB4UKI/ZBE1k4LkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hk3e+T5w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A2AC433F1;
+	Tue,  9 Apr 2024 16:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712679320;
+	bh=aQnXMHVSse19+ZZ5n5B1a+ECbXRCEMx+99YFJTJvLZ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hk3e+T5wh0K9Kad+FZuar56N0ZsAlmRAJwkkOgstUx5MMjyakXAd3tuT1BItcL+w1
+	 bWWSW5ioBrtKbw8Qt5gCwr915JRo0jesU2hD4Q26gIJ3yYa0AV4hQAr+EV7vTFFI+H
+	 GqmhWn8Pli4YMOBs5+19b+MyGAM+ppmX9cqkZWFdkL4/Di4EGtYtzYR1OO+fUJkcER
+	 0zUCzflp3O2liOCbbuG8iz2p2sCXVzMYGUtv2DckZLOGZedO2cSaqGoCfPdOCv1GiV
+	 Ea2hz+dGJvBPzTXvJjlzunxRnZEY6622if4iEHFFvcFGIcDSHJCEe57X8vR2da+OUn
+	 /okM8DtsW6K0Q==
+Date: Tue, 9 Apr 2024 09:15:17 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>, Lin Ma <linma@zju.edu.cn>,
+	Simon Horman <horms@kernel.org>, Breno Leitao <leitao@debian.org>,
+	Tobias Brunner <tobias@strongswan.org>,
+	Raed Salem <raeds@nvidia.com>, Netdev <netdev@vger.kernel.org>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string
+ false-positive
+Message-ID: <20240409161517.GA3219862@dev-arch.thelio-3990X>
+References: <20240216202657.2493685-1-arnd@kernel.org>
+ <202402161301.BBFA14EE@keescook>
+ <763214eb-20eb-4627-8d4b-2e7f29db829a@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] netfilter: x_tables: fix incorrect parameter length
- before call copy_from_sockptr
-To: Edward Adam Davis <eadavis@qq.com>, netdev@vger.kernel.org,
- edumazet@google.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@google.com, song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-References: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
-Content-Language: en-US
-From: Eric Dumazet <eric.dumazet@gmail.com>
-In-Reply-To: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <763214eb-20eb-4627-8d4b-2e7f29db829a@app.fastmail.com>
 
+On Mon, Apr 08, 2024 at 09:06:21AM +0200, Arnd Bergmann wrote:
+> On Fri, Feb 16, 2024, at 22:19, Kees Cook wrote:
+> > On Fri, Feb 16, 2024 at 09:26:40PM +0100, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >> 
+> >> clang-19 recently got branched from clang-18 and is not yet released.
+> >> The current version introduces exactly one new warning that I came
+> >> across in randconfig testing, in the copy_to_user_tmpl() function:
+> >> 
+> >> include/linux/fortify-string.h:420:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
+> >>   420 |                         __write_overflow_field(p_size_field, size);
+> >> 
+> >> I have not yet produced a minimized test case for it, but I have a
+> >> local workaround, which avoids the memset() here by replacing it with
+> >> an initializer.
+> >> 
+> >> The memset is required to avoid leaking stack data to user space
+> >> and was added in commit 1f86840f8977 ("xfrm_user: fix info leak in
+> >> copy_to_user_tmpl()"). Simply changing the initializer to set all fields
+> >> still risks leaking data in the padding between them, which the compiler
+> >> is free to do here. To work around that problem, explicit padding fields
+> >> have to get added as well.
+> >
+> > Per C11, padding bits are zero initialized if there is an initializer,
+> > so "= { }" here should be sufficient -- no need to add the struct
+> > members.
+> >
+> >> Since this is a false positive, a better fix would likely be to
+> >> fix the compiler.
+> >
+> > As Nathan has found, this appears to be a loop unrolling bug in Clang.
+> > https://github.com/ClangBuiltLinux/linux/issues/1985
+> >
+> > The shorter fix (in the issue) is to explicitly range-check before
+> > the loop:
+> >
+> >        if (xp->xfrm_nr > XFRM_MAX_DEPTH)
+> >                return -ENOBUFS;
+> 
+> I ran into this issue again and I see that Nathan's fix has
+> made it into mainline and backports, but it's apparently
+> not sufficient.
+> 
+> I don't see the warning with my patch from this thread, but
+> there may still be a better fix.
 
-On 4/9/24 17:00, Edward Adam Davis wrote:
-> If len < sizeof(tmp) it will trigger oob, so take the min of them.
->
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->   net/ipv4/netfilter/arp_tables.c | 4 ++--
->   net/ipv4/netfilter/ip_tables.c  | 4 ++--
->   2 files changed, 4 insertions(+), 4 deletions(-)
+Is it the exact same warning? clang-19 or older? What
+architecture/configuration? If my change is not sufficient then maybe
+there are two separate issues here? I have not seen this warning appear
+in our CI since my change was applied.
 
-Hi Edward
-
-Already fixed in net tree
-
-
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=0c83842df40f86e529db6842231154772c20edcc
-
-Also a followup has been sent today
-
-https://lore.kernel.org/netdev/20240409120741.3538135-1-edumazet@google.com/T/#u
-
-Thanks.
-
-
-
-
+Cheers,
+Nathan
 
