@@ -1,155 +1,79 @@
-Return-Path: <linux-kernel+bounces-137350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E647D89E0F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:01:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765D089E0F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 236511C22314
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30915285B71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18C3155392;
-	Tue,  9 Apr 2024 17:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C66C13D2B7;
+	Tue,  9 Apr 2024 17:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MgYtO5Tj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="faIIQoRI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D454E155313;
-	Tue,  9 Apr 2024 17:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DDA15359B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712682058; cv=none; b=KF4i6bieNB8B2Pwb/1QPYWTILQkZVfUM1A//F2tmgbIXi/YR7HtGIwODOPR0guHCuWqZRVft2qMtqz3Mm1n9Gbt2024f6RhWplL3BUpjWVLVhBJULiGsCkJWYzOAoiEA1QuYlqFyOzPlVf9lW223zmkA/30QdijQ8RX+y6SQ5cc=
+	t=1712682066; cv=none; b=Gu5J+Y2G4BHmx5jGqNuVbYFlr7RAgLP5j3tDLefQYeKnaJ9CPqtnz+4+AOEruhrj0Tx5MJ2D6NIylY0AoEc1kmkmqR1Y+kqwVTulHm0zgjcEJ4SUlRbjqA/L9XPAsQZThGEGm03kpREisbiWRllsuDYNxWs51N+1gM5fR54CTeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712682058; c=relaxed/simple;
-	bh=4WrtbOs8msag5qvCpx6Nx6EDmYJtha46rksweGE/IUg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ki8m+6gv42S09ECSHGiA7PJ9738QAdGqppWRLr6BGBEF6To8Vu3b8DXVEAZ6uQyreg0d9xifDe6Jm9hLNm2BOJHuMcmY7xAmyMeNqgCWPAk0PIiCkXVtaC3/btNNcqbEpxB9Cy+0KiO4sqx8fQAcaWKHdBS4BGK1GKRIrmH0ObE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MgYtO5Tj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36113C433B1;
-	Tue,  9 Apr 2024 17:00:58 +0000 (UTC)
+	s=arc-20240116; t=1712682066; c=relaxed/simple;
+	bh=zkfEmDXLMJHk1BR2ziIl//FuBOqoV+3WVkeQldg5bOA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Ic7HGd9nJYvE6fLabkA5Z26z/5IofCgmgL0qaC50lgsj7KtEo+bbVS0hpMfAp8Y3aCzmkvAhPu1Qgr7F8/hk6Co8wSCGsul/w1EmzNDQRO7sKVoPOVIDls5Nw4hFyAM+Mqk06FoJZU10xQSDIhz5dkXBKkQz2f+il40bz0JQ94I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=faIIQoRI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 506CFC433C7;
+	Tue,  9 Apr 2024 17:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712682058;
-	bh=4WrtbOs8msag5qvCpx6Nx6EDmYJtha46rksweGE/IUg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MgYtO5Tj2EoU/v1AvFrGNp8xJ8FBv7ZUQrP9IrkGf8gFF0Wewc2uyF3jdNxNbApkI
-	 Cmi45Fh24KdIDPs+RVXnjEc4VHazHSPw0iCqDakt3IMufLEb0ESclkjlkNCZRg9qjG
-	 x6xl5THoYixhoTQej9s12kSr033vdeKGMpb0ErzR0djdcukweuz63kACjq79TJOg0o
-	 9RIDZ316Bec+NnDjBJMwWfBxhcwB/H7QB8cv+0lPQ+Hz9xZsFGJnpyDUrgam6eBPXA
-	 vZklfbulNp0Zc0UoORNPGHZjsefhYZk7OQI5/4rqipKXvYabOAKYBiBg2gWK4YlFYG
-	 999SQuF2Bw3Qw==
-Date: Tue, 9 Apr 2024 14:00:55 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>,
-	Ingo Molnar <mingo@kernel.org>, Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/9] tools/include: Sync uapi/drm/i915_drm.h with the
- kernel sources
-Message-ID: <ZhV0R1lNRrcOYKkV@x1>
-References: <20240408185520.1550865-1-namhyung@kernel.org>
- <20240408185520.1550865-2-namhyung@kernel.org>
- <874jcb9etk.fsf@intel.com>
- <ZhTwPLliHXKPAJUQ@gmail.com>
- <87pluy972m.fsf@intel.com>
- <CAM9d7cizO8j3tLjxiVKh4qw3dOzqKmUKZg8BZwaCF=ChmbX81A@mail.gmail.com>
+	s=k20201202; t=1712682066;
+	bh=zkfEmDXLMJHk1BR2ziIl//FuBOqoV+3WVkeQldg5bOA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=faIIQoRI74JerS0dTL3g2jeqt9cWCJvt75BREWksBvB0NA0GQCg9WQxAXBTC0VyKp
+	 oGn4YckMJBjQ4Ex1B48m2BeFOBNYMvUb84OEXjs+SiAlbFPGsOw0pL93tdL3kRhtJn
+	 1d16+sjZFxvVxR+iY+IS5a7HGrD5QsKB6nEJMmVk+uQVR1/TqMOF5xMYdfsNun8PwK
+	 RP4nDfkWTRq5Qa+Je5k7GTHW6DbXYjh/zD4r1t8Xd1IBWb1i42RRxyUk0/Bf0snUcs
+	 vR4IOWKKxRuRjyGtg/J8Yj5ctlJAESPXCgfBPORx/9HYlGjKVxaqN5zSeycFbjo8V1
+	 z0g+7EMZt+FOQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 449C9D6030D;
+	Tue,  9 Apr 2024 17:01:06 +0000 (UTC)
+Subject: Re: [git pull] drm urgent fix for 6.9-rc4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9tysq6sxv-HRUf4+AoAoC0YA_s0tUz6ujms0FcxrgtOUdQ@mail.gmail.com>
+References: <CAPM=9tysq6sxv-HRUf4+AoAoC0YA_s0tUz6ujms0FcxrgtOUdQ@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9tysq6sxv-HRUf4+AoAoC0YA_s0tUz6ujms0FcxrgtOUdQ@mail.gmail.com>
+X-PR-Tracked-Remote: https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-04-09
+X-PR-Tracked-Commit-Id: 718c4fb221dbeff9072810841b949413c5ffc345
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+Message-Id: <171268206626.20201.11838545735612957768.pr-tracker-bot@kernel.org>
+Date: Tue, 09 Apr 2024 17:01:06 +0000
+To: Dave Airlie <airlied@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>, dri-devel <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cizO8j3tLjxiVKh4qw3dOzqKmUKZg8BZwaCF=ChmbX81A@mail.gmail.com>
 
-On Tue, Apr 09, 2024 at 08:58:55AM -0700, Namhyung Kim wrote:
-> Hello,
-> 
-> On Tue, Apr 9, 2024 at 3:14 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> >
-> > On Tue, 09 Apr 2024, Ingo Molnar <mingo@kernel.org> wrote:
-> > > * Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> > >
-> > >> On Mon, 08 Apr 2024, Namhyung Kim <namhyung@kernel.org> wrote:
-> > >> > To pick up changes from:
-> > >> >
-> > >> >    b112364867499 ("drm/i915: Add GuC submission interface version query")
-> > >> >    5cf0fbf763741 ("drm/i915: Add some boring kerneldoc")
-> > >> >
-> > >> > This should be used to beautify DRM syscall arguments and it addresses
-> > >> > these tools/perf build warnings:
-> > >> >
-> > >> >   Warning: Kernel ABI header differences:
-> > >> >     diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
-> > >>
-> > >> All these years and I never realized there are header copies
-> > >> there. But... why copies?
-> > >
-> > > It's better than all the alternatives we tried so far:
-> > >
-> > >  - Symbolic links and direct #includes: this was the original approach but
-> > >    was pushed back on from the kernel side, when tooling modified the
-> > >    headers and broke them accidentally for kernel builds.
-> > >
-> > >  - Duplicate self-defined ABI headers like glibc: double the maintenance
-> > >    burden, double the chance for mistakes, plus there's no tech-driven
-> > >    notification mechanism to look at new kernel side changes.
-> > >
-> > > What we are doing now is a third option:
-> > >
-> > >  - A software-enforced copy-on-write mechanism of kernel headers to
-> > >    tooling, driven by non-fatal warnings on the tooling side build when
-> > >    kernel headers get modified:
-> > >
-> > >     Warning: Kernel ABI header differences:
-> > >       diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
-> > >       diff -u tools/include/uapi/linux/fs.h include/uapi/linux/fs.h
-> > >       diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
-> > >       ...
-> > >
-> > >    The tooling policy is to always pick up the kernel side headers as-is,
-> > >    and integate them into the tooling build. The warnings above serve as a
-> > >    notification to tooling maintainers that there's changes on the kernel
-> > >    side.
-> > >
-> > > We've been using this for many years now, and it might seem hacky, but
-> > > works surprisingly well.
-> > >
-> > > Does this make sense to you?
-> >
-> > Yes, although there are probably pieces of the puzzle I'm missing.
-> > Thanks for the explanation! (That might work almost as-is copied to
-> > tools/include/uapi/README. ;)
-> >
-> > It's also kind of funny to find this kind of back alleys of the kernel
-> > repo I've never wandered to before.
-> 
-> I have some explanation in the cover letter of the series but I forgot
-> to mention that in each commit message.  Probably I can update the
-> explanation with Ingo's reply.
+The pull request you sent on Tue, 9 Apr 2024 13:29:41 +1000:
 
-I think we can combine Ingo's with the reply I used and you adopted and
-continue to have it when sending the update messages, probably keep it
-in the cover letter (the combined text) and add a link to each
-individual update:
+> https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-04-09
 
-"Please see tools/include/README.kernel-copies."
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
 
-The recommendation that developers shouldn't update the copy seems
-important to have there as well.
+Thank you!
 
-- Arnaldo
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
