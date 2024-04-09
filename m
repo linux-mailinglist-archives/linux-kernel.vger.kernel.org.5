@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-136855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6C789D90E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:17:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB3BF89D90F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:18:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA6D628A691
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:17:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6109F1F21C04
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D8712D77B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D286C12DDB5;
 	Tue,  9 Apr 2024 12:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lt5fXBfk"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HVbchTwy"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19074F883;
-	Tue,  9 Apr 2024 12:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BAC12A160;
+	Tue,  9 Apr 2024 12:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665061; cv=none; b=d2OHnBbt64FZy+2Y3Oti7GA2xiAWHn4KG0oMxXHCC/qUA/H2XczStoeVmkD5lLf0lpsEqY9qYTEwIREeBrE+AeVNreNnrCZzoHaFQ4kSqJHL2TW3Gm2SrMr+6mcovfiOV3YH4tOu/ZpNfvjllg6YkdfirDqaSOWeqABetgo4gaA=
+	t=1712665062; cv=none; b=qqfLfb2Gef1S2AgElmeB+tkvhnM8y7AsQjS4AfEIT05fz/cTEXxBp25pHNjh9EprTAzWqxhu04HE66QKR4VcfBMG7PpRQ6wA2bznFUKfcIR4GaADMLAVXe0agREOcQPY23hbOEXt7zvkBdsLgaed3KmOB35nYvjB5e6jdMRYTtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665061; c=relaxed/simple;
-	bh=yTpd+BWqGy/dzKhGoAtCV3M5u9DuLZOaQnFsBurj/hA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hHsjUWJnCSY+DOf0Img3ZJCicWX6HFSMwxq7Mkd89gow0x4xxTr3PKUFy21EtG/PlH7Xf10MMwDMGHI5JdGvMA/OwIq+iPjwWHcMqOfx2A2MN/BpTtO/RZxFfX/q+mq4OH8DDpOYbdM53G6iOGSo4d3KU/UlhCHfC/pJEnmKV/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lt5fXBfk; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1712665062; c=relaxed/simple;
+	bh=307vDM+j52k02o1eYGDZr+F/hjbmwGjTwX/Iz6iwAmU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gyhxnBNZUk91dYPYAe5UN9vSC507krHXsd81Dy3daxmgDlJzg7MXzxV483hhrYxEab+TBINiDFPwfhIL+ZeXPzcBjGhMSp8ji6tc8Aan6qcAp31TgW6KTQMbuWjaEhUidNnPo70AklzVlWDGJp/G/80CYnFNTO45nI7PkZKlJp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HVbchTwy; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so2055943a12.1;
-        Tue, 09 Apr 2024 05:17:39 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51c37a5025so342097666b.1;
+        Tue, 09 Apr 2024 05:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1712665058; x=1713269858; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Jqx/icbU3jj6O8zCfgxgC+Ni+cIZc9toLFwd7zueOI=;
-        b=Lt5fXBfkl+IKU/4tqZJITFwW69YkKlbg7OzveqkA5DfFCC2EG9BFxoiBATNjwnK3wu
-         28FTc5XArVAaLNByI1+j2iH3gruMGLAn9oicdlOdSCsmU9kkbmgXrpBHbedovK4PTAv5
-         wkl2aefTS7MBCJN2M4/Wtp0lXiBGjK62JOTsBlU47kQ4s92aOJkk0JCoBACkB40ltFXQ
-         ZxeZAwGKl9o2htl/YBkqFpkj55s6Xi9pvC5bdA5GQMrWUbPum+IjStT97ZIwWI4k/WbY
-         /+GAG1rJSQZgsawdiEfUM62HcS5B8GNHo6MJtp2gMXDAFLMTPcCFZDqE9cOC/vJ62BMQ
-         m8Tw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WOiTKq8lulyl+mRKopNfN2zO/PBNsFc4ID6J5RZjFZQ=;
+        b=HVbchTwy5SFrjhez5HJbI1vOg7lmuY0Uc4aaefTCM2KvxTLcNS3ozOlpYWjQ+/uytx
+         e3POBxDTKmBXs55DKN2GBAK7GByX+AnHAaUQwiNxnj8mp1il+sAE/CHDjakXm27uoktU
+         gjxVGZeFHNBnsj9hqFCt71qkAWnHw9JeE/TtT0lb9/1fkhzC8hMbLczgUxh4FPKNmMQI
+         nWE6trLexeYJ39jYMavO6nLdfXvZuisLWzrt7lE6IFE6CG4F3M2q2ZdP1N40vk2Ll0hf
+         ZyNBX4+Ab2JbtBIZ/n2UuIcL5ImxQnzJ6IU0LZKC9OHNGb9Vm9akaw9qVR8l+A5ogIBy
+         qQ1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1712665058; x=1713269858;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/Jqx/icbU3jj6O8zCfgxgC+Ni+cIZc9toLFwd7zueOI=;
-        b=nryobRCXbJ8ANXL7iV3noYzk0w89X1js6X5kqjo5l+6SLsn0zia7onexGQeayalcsv
-         15HY8xWlx0cpQyPnMWFwCqJZ2LwRUtRtts1EMMySajulE0b4KgBLJkoWiOWGO+Zj81/j
-         kiLoBEXIarGQMmk5pqQeyf7mNKJo2Y9DcbaubENSU2cD9t/ZIStOM1uajle46uIbh1B3
-         OftSeYYVdka5ORSql66jIfjDtY0KfnbXJTboLdHUOJCsXhPu/wdmyJ2sS9fiFJrZae/w
-         K76IMjsprcvPgygQq7xFgu1223zihNUTtRL1Upevq/Sj6uA0f+p7k4JwvZQvjzIh6j5A
-         nhvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEpg+R10/baIOst3Jl3RFXbtFDQHLbjNiqchFk7tV92hBUl0OKHLWgnZK7VbRQxjVYCWzXAHVTbuiRESJmisRQzvdtUAt6rRJj/FdP
-X-Gm-Message-State: AOJu0Yxe0FB/IWjygRZ0HNK1jgBn4tpWSPq+KC19p9et6rya9Cn9u59Q
-	t2EqMyDzMZ3Mh+DAnCi+6Ju83Y/iO0F0QDPT4jZVrPvmXsovPc2JWRTpJbuIZH0=
-X-Google-Smtp-Source: AGHT+IHb0aiM6x4hHUXi5dInTdRuPrj0DpsSGhZ+3F8jUx7rtLw7EPUKxknUPhwEqWysDtEgwfQacg==
-X-Received: by 2002:a17:906:e0cd:b0:a51:ae52:19d8 with SMTP id gl13-20020a170906e0cd00b00a51ae5219d8mr6615237ejb.6.1712665057395;
-        Tue, 09 Apr 2024 05:17:37 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WOiTKq8lulyl+mRKopNfN2zO/PBNsFc4ID6J5RZjFZQ=;
+        b=waWcyNUpy17Ti5TJw0E791m2aTqyMxELamYQSfAC+yPPXwcI2jp+mhvFgmYSa6Wo/J
+         1rgTEIBEmniwuhutpgcDVa5TI3ZuYUUqV5ByQ84vjeAudfPMdwg2Ckd9Q4PFhUfNG84j
+         DaogjXsFG7ELmdb/yOPvsg5DesgSXh/o5sNHF+JmsrkO6AG2lQCNjtZdBS2ikn2uBriG
+         Zaef/vvnMIgjlve2cfw4wHisfIvFzOWwwv/kdfAqYx540meyZk8yXrmx5ROvQlSVgfk3
+         WGZjXWlHMgNXb1pbm7UuBMzHYr9OvUAE46X1hfh5v/972cogw1mLG9KcjPK9e8jhM7Vm
+         csPA==
+X-Forwarded-Encrypted: i=1; AJvYcCXAfR8ILsGOiJj2PG8lkTiUBg2r+f39alAtOXoeEvnhb5zLonGHDRq4utNV43YLie63Q0XOoNCzpcAKAFEdptpqkeepaJt/pig9IwmE
+X-Gm-Message-State: AOJu0YzVb4nwnzBj4AKMDPm2XDlUzkS+YlITkFyXlQVvlm1V0rAcYg4K
+	tBKcUJNMVDgxNvcLc7/cJIcA9mkXF2czED0Bdv7e8BFxaa02l75x+Xdb/dwHNjs=
+X-Google-Smtp-Source: AGHT+IFB2UOpKB7gPLJP6OZo+MCiX4llIaEteyxV86C3Sv40na3FBgbvQAUkUqPFgjdlnO5h9PDlxA==
+X-Received: by 2002:a17:906:6a10:b0:a51:ae39:d38e with SMTP id qw16-20020a1709066a1000b00a51ae39d38emr8866130ejc.53.1712665058263;
+        Tue, 09 Apr 2024 05:17:38 -0700 (PDT)
 Received: from andrejs-nb.int.toradex.com (77-59-154-235.dclient.hispeed.ch. [77.59.154.235])
-        by smtp.gmail.com with ESMTPSA id en1-20020a17090728c100b00a51adace6ebsm5030412ejc.79.2024.04.09.05.17.36
+        by smtp.gmail.com with ESMTPSA id en1-20020a17090728c100b00a51adace6ebsm5030412ejc.79.2024.04.09.05.17.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 05:17:36 -0700 (PDT)
+        Tue, 09 Apr 2024 05:17:37 -0700 (PDT)
 From: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
 To: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -72,10 +74,12 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-Subject: [PATCH v1 0/2] ASoC: nau8822: add MCLK support
-Date: Tue,  9 Apr 2024 14:17:17 +0200
-Message-Id: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
+Subject: [PATCH v1 1/2] ASoC: nau8822: move nau8822_set_dai_sysclk()
+Date: Tue,  9 Apr 2024 14:17:18 +0200
+Message-Id: <20240409121719.337709-2-andrejs.cainikovs@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
+References: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,20 +90,61 @@ Content-Transfer-Encoding: 8bit
 
 From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 
-This change adds local MCLK handling, which would cover a case when a
-reference audio clock is present in a system, but is not allowed to be
-changed, see [1].
+Next commit in series makes a change which calls nau8822_set_pll() from
+nau8822_set_dai_sysclk(). Moving latter after the former would avoid a
+forward declaration, and this is exactly what this change does.
 
-[1]: https://lore.kernel.org/all/ZfBdxrzX3EnPuGOn@ediswmail9.ad.cirrus.com/
+Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+---
+ sound/soc/codecs/nau8822.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Andrejs Cainikovs (2):
-  ASoC: nau8822: move nau8822_set_dai_sysclk()
-  ASoC: nau8822: add MCLK support
-
- sound/soc/codecs/nau8822.c | 69 ++++++++++++++++++++++++++++----------
- sound/soc/codecs/nau8822.h |  1 +
- 2 files changed, 53 insertions(+), 17 deletions(-)
-
+diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
+index 7199d734c79f..1046801a41ef 100644
+--- a/sound/soc/codecs/nau8822.c
++++ b/sound/soc/codecs/nau8822.c
+@@ -612,20 +612,6 @@ static const struct snd_soc_dapm_route nau8822_dapm_routes[] = {
+ 	{"Right DAC", NULL, "Digital Loopback"},
+ };
+ 
+-static int nau8822_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+-				 unsigned int freq, int dir)
+-{
+-	struct snd_soc_component *component = dai->component;
+-	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
+-
+-	nau8822->div_id = clk_id;
+-	nau8822->sysclk = freq;
+-	dev_dbg(component->dev, "master sysclk %dHz, source %s\n", freq,
+-		clk_id == NAU8822_CLK_PLL ? "PLL" : "MCLK");
+-
+-	return 0;
+-}
+-
+ static int nau8822_calc_pll(unsigned int pll_in, unsigned int fs,
+ 				struct nau8822_pll *pll_param)
+ {
+@@ -782,6 +768,20 @@ static int nau8822_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 	return 0;
+ }
+ 
++static int nau8822_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
++				 unsigned int freq, int dir)
++{
++	struct snd_soc_component *component = dai->component;
++	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
++
++	nau8822->div_id = clk_id;
++	nau8822->sysclk = freq;
++	dev_dbg(component->dev, "master sysclk %dHz, source %s\n", freq,
++		clk_id == NAU8822_CLK_PLL ? "PLL" : "MCLK");
++
++	return 0;
++}
++
+ static int nau8822_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct snd_soc_component *component = dai->component;
 -- 
 2.34.1
 
