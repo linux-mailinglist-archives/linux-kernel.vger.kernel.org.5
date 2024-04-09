@@ -1,117 +1,103 @@
-Return-Path: <linux-kernel+bounces-137564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C94F289E3F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:54:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170DD89E3FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C8AE282320
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 487921C23627
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064CB1581E0;
-	Tue,  9 Apr 2024 19:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1FE1581F5;
+	Tue,  9 Apr 2024 19:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HGwyxz36"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="qdqurBoH"
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA29157E9A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285C815749F;
+	Tue,  9 Apr 2024 19:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712692448; cv=none; b=Jvq50f1L7CzDWMiAban8ZyXSJFk25+kxVapn2S7a1JYrabwR7PMm4Xs5cRSEQIKxj7rsGCtSW0/AAJPF1uf98//WS/R5br6K2Lnzbmqksv+Agg1mLoWZbgT/cFEyLOdsuOD7960HkunUkI4tDmTeKi9wpG2g0j/DDIFEvLoqODI=
+	t=1712692604; cv=none; b=bsMKoifmnsi/3I5VMhYwwbBc+50B625u2pbV8aqAKBd7RSA8gnBM/AMq/E5N9YU3WbctIe1gj84jeuM4HuvN9EFZ3+SaUqvjaEaYIx0NosESpqjN77fENK6AZKc9slT+4ZNB8bXZ2Yu+gmfaOUXOmamlgZgDnLba6zCmPWo/dBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712692448; c=relaxed/simple;
-	bh=R4hWEalNgIc2RUbUIAhMo5HUmFCwGL3grERNsC+lPqA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mqS/EfEMGGjAskgZwOlFg4olw9qRYTmQq0LprXBQAUqwdVmX6fWo/LYylpGecKm9NcDw1UMjZSGgaUe3i+t3ZwZR9CTScQZnPJlba/lfQQHJvyyBkDOeBY4ST9UJbj9n56L++Ej2HFHRUumnL6fviEr7AOLJc2CE1kxA0kMJEls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HGwyxz36; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439Js1OY018495;
-	Tue, 9 Apr 2024 14:54:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712692441;
-	bh=EJCDlAS4sE2k1Qyg8UddsBlBjtuABhLA0x+ZvQF/JLk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=HGwyxz36voPlRWrx1vnKuajWRNo+fucOHOGcQE8szkZwb7IEo4J4+MKy2zE9tTrT1
-	 dpBkF4KotCP1YA1d3nb12ehHXSOowHW28r8LjtXEcwpUKtoWU4//NNxRGxQVZB6bj5
-	 yvMDu5VcdYJ8iiaLMfTBCYzDqLvRYnFvTZiD0Ifw=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439Js160017623
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 14:54:01 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 14:54:01 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 14:54:01 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439Js1rf117998;
-	Tue, 9 Apr 2024 14:54:01 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar
-	<ssantosh@kernel.org>, Andrew Davis <afd@ti.com>
-CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] soc: ti: wkup_m3_ipc: Send NULL dummy message instead of pointer message
-Date: Tue, 9 Apr 2024 14:53:59 -0500
-Message-ID: <171269243168.647841.14793451313968418164.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240325165507.30323-1-afd@ti.com>
-References: <20240325165507.30323-1-afd@ti.com>
+	s=arc-20240116; t=1712692604; c=relaxed/simple;
+	bh=z7BAwHdlIOFlrDrp4E1/+ZBYeK6Y4f5EcDVqiHKagr4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bnKHmkWx322XRaDtAYECoVmnxv0wwA3mDaGMdgBGBBHOxD+0jR0dIDk7NKaLbNK2zYaVHyDe+aP1CYcHfQdr9iQChpmcSIYuTdierxDo+VKPxHry1/aK3uHg2+WW7OKWvpUjBTfRw2o+PmlS60MRZzFnjqbGyPvy38L6xOFWFLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=qdqurBoH; arc=none smtp.client-ip=80.12.242.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id uHa9rwxIo83vquHa9rIXzq; Tue, 09 Apr 2024 21:56:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1712692599;
+	bh=fu5z4vCgv5ADaSG0dkgCAD7sDLo0K4zyVyA83A0IAdI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=qdqurBoHVqAzZ2c9o312nL4dTD+sj2NhJYfzHw4TlE6jYLXojmdXtoINymkHisIGS
+	 jbdRjM70I8RxAUyScubaNP8GsQQXSQ2avXCkjjldcwgh/P2N6vTnlqiwiB+Lhin8ul
+	 7yk1oNCV2NUNrzNBq5cS+tTYBn5f8bkykJB+sdemHwUdB1kKPHwhFoVlMaExnvCZrS
+	 mHcPmDIufMkWU8tpDGT05lPoRObO17Bb92OeQrecYkE6KZ8uhcXnHqbYHOziH83U2B
+	 1uiq0AmruaUWFypV6AstfIjmNx0NBMEabaxze0bRlkW8H6ERglTjbrGfiaV0EsTEsM
+	 +IXCUX1ombSyg==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 09 Apr 2024 21:56:39 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Amit Kucheria <amitk@kernel.org>,
+	Thara Gopinath <thara.gopinath@gmail.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-pm@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: [PATCH] thermal/drivers/qcom: Remove some unused fields in struct qpnp_tm_chip
+Date: Tue,  9 Apr 2024 21:56:34 +0200
+Message-ID: <d1c3a3c455f485dae46290e3488daf1dcc1d355a.1712687589.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Andrew Davis,
+In "struct qpnp_tm_chip", the 'prev_stage' field is unused.
+Remove it.
 
-On Mon, 25 Mar 2024 11:55:07 -0500, Andrew Davis wrote:
-> mbox_send_message() sends a u32 bit message, not a pointer to a message.
-> We only convert to a pointer type as a generic type. If we want to send
-> a dummy message of 0, then simply send 0 (NULL).
-> 
-> 
+Found with cppcheck, unusedStructMember.
 
-I have applied the following to branch ti-drivers-soc-next on [1].
-Thank you!
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
 
-[1/1] soc: ti: wkup_m3_ipc: Send NULL dummy message instead of pointer message
-      commit: ddbf3204f600a4d1f153498f618369fca352ae00
+Apparently, it has never been used. It is not a left-over from a
+refactoring.
+---
+ drivers/thermal/qcom/qcom-spmi-temp-alarm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+diff --git a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+index 78c5cfe6a0c0..3cd74f6cac8f 100644
+--- a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
++++ b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+@@ -74,7 +74,6 @@ struct qpnp_tm_chip {
+ 	long				temp;
+ 	unsigned int			thresh;
+ 	unsigned int			stage;
+-	unsigned int			prev_stage;
+ 	unsigned int			base;
+ 	/* protects .thresh, .stage and chip registers */
+ 	struct mutex			lock;
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.44.0
 
 
