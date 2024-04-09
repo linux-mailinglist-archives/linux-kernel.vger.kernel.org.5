@@ -1,140 +1,133 @@
-Return-Path: <linux-kernel+bounces-137410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEFD89E1A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:35:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E2AD89E289
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6C028561B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:35:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E131F23E86
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C23E15667F;
-	Tue,  9 Apr 2024 17:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nE+ItwPf"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF3F156C6E;
+	Tue,  9 Apr 2024 18:27:46 +0000 (UTC)
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7D84C85;
-	Tue,  9 Apr 2024 17:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BE9156C50;
+	Tue,  9 Apr 2024 18:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712684147; cv=none; b=tJUnrm8M1YVAUG/tHP0rZHWxWOy9jjw9lUFTrhmEdLkEN/pKzbLmQr/jzif2/MxhEi0qsvHng4N8UVUzWvakk0jSllWf3CUuzRZLfhIZS1EWKBHss+J6VAXoiQB+x+p+5IXxfWAPckuY02EmhUYDoosc5RjdcjUX2LYpPmKA4UY=
+	t=1712687265; cv=none; b=OMOOKs/8unFV2P7PX0wDWn84T6ps9p4BisK1QY5LVnq1SfQnlWxgpCP5PPdT5aLH1pPZUCq4N2vVqHs4CkxWCy9bxyew2eo2nu8iqKMYvmPmdbbG97oeZb6718sDlAiguoCi9vU/WbtclxzUHkmSndxGtuDzbmlabvpIE2ROT64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712684147; c=relaxed/simple;
-	bh=g6XpcYsG78eMyUmVOhris5GkliBV/1yrHtY1DwTpRIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QDLhWzurIKvoAabMrpEXra148exaxDBFKM9GuZch+1tV8s0C9jeexusSWF/Mx0h1w+lFmL+PLdrtAWmCxG8eDaMBGKWHsQ4ibds4tK8/HljIABHhRCipFdkuBm9yzKYQEY1m+IXL5/zYwtUGDGywK6IPkWsVy8Ip6PZ5nJlJNQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nE+ItwPf; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a51b5633c9cso448878466b.2;
-        Tue, 09 Apr 2024 10:35:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712684144; x=1713288944; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oksDrDeNBIi1C7DVLaC+ql7QPqJVNO5mhvekClGdtck=;
-        b=nE+ItwPfiAfhN9KRwf3rLC5HiCnj+m9tRMVy242/VEb41atlWBkOhMH9vOeBzr+hno
-         Et6J3g1oQHBTXEoTgbshe/Z6xWLJYkqQKfDDR7jkwtqeXcFWXjskqFeFi6oUk4hgKlu1
-         Q66kmv/C+KoHjxesl9DOX7B6AlTbaDQ5xb86E14uJWrK42p2V6KA+m5IaNG3TXnoLWW3
-         jf4YImItMUCw9VThitqqHsBzcUcbs3N/q4wBET//DSGEbrvEkRXrRUUAvtGq7Q2puSeI
-         XrMPEuSNOmAEKLn6H7zW4E70PpfwjodQV8Y9RRQICiwBmbLG0sSnAI6Xk60h1xdKKk7w
-         SbQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712684144; x=1713288944;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oksDrDeNBIi1C7DVLaC+ql7QPqJVNO5mhvekClGdtck=;
-        b=avqOSBybOqmAFrGTRa1SU+pwO65FPxMEvOgONUlSQdt2HIO6T02KLTrjCO9ocJgdt7
-         Z3PJxKkGeM2S0C+2y22G2muGAkxbaxyxYsc2JBjsoDTU2RnBLI6l7GDB1dpClRZ78IzV
-         z8wl2+FQPAk0NuUVV57Mmxe/YjG4Pi51aznzZ9d8gAEun2Fmth4/PfobsJY9uaZIo5+w
-         hINxQc/WTnfvi4vMt6roVIF8r818wsJ2j/p2pq3WClj7V2JzjHPb/tTHu0fygdfHjwRd
-         ZA2mbRxmPHlp+8ItaTSkUtZvmm8ytRGPcJI6vjbUjAham/qDbfMxk8N8A6jro3+V8qtN
-         ePcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKCpGzZdljeoCVwUKAkoYro7fU3rdyGdz3/zs8R1SKJJC8A/2XS/+5cfeMcI7ngfTfVJKU4pDgbZy2orXamXOM430ItXOWnoXalyM9
-X-Gm-Message-State: AOJu0Yz0+It3xy4dqyUIYMts5qCIthipQJkC4mmDbGFxHbmuZNj3Arqv
-	hsmtLRSwLCdwRrNj9W9Y64oRw6rQ08qE0UJHkTaEaOPoG4kCK2P0C+gC4epT9d4=
-X-Google-Smtp-Source: AGHT+IEO/dT/EyFhl/Hqi0+rJYkm0yyrxPm+XU5vxXcOVNbNzgJ6NtA5sncFdXAPNsxKDtLVFhSDIQ==
-X-Received: by 2002:a17:906:6a10:b0:a4e:3715:7f4a with SMTP id qw16-20020a1709066a1000b00a4e37157f4amr93587ejc.71.1712684143973;
-        Tue, 09 Apr 2024 10:35:43 -0700 (PDT)
-Received: from andrea ([31.189.89.249])
-        by smtp.gmail.com with ESMTPSA id sa10-20020a1709076d0a00b00a4e6582edf8sm5855812ejc.102.2024.04.09.10.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 10:35:43 -0700 (PDT)
-Date: Tue, 9 Apr 2024 19:35:39 +0200
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	elver@google.com, akpm@linux-foundation.org, tglx@linutronix.de,
-	peterz@infradead.org, dianders@chromium.org, pmladek@suse.com,
-	torvalds@linux-foundation.org, Arnd Bergmann <arnd@arndb.de>,
-	Yujie Liu <yujie.liu@intel.com>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	linux-riscv@lists.infradead.org,
-	Palmer Dabbelt <palmer@rivosinc.com>
-Subject: Re: [PATCH cmpxchg 14/14] riscv: Emulate one-byte cmpxchg
-Message-ID: <ZhV8a+pWAnJQ3Ljp@andrea>
-References: <7b3646e0-667c-48e2-8f09-e493c43c30cb@paulmck-laptop>
- <20240408174944.907695-14-paulmck@kernel.org>
+	s=arc-20240116; t=1712687265; c=relaxed/simple;
+	bh=+e4o3Key427s9PGCVpm+yJBrEgVTXiMxI86rVYGWrbI=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=UbNlBVbQqJgtgtuqFnH7036xygrCII03Li9HfugCyxLbJ3LiwNJJ6C7dIcOsDSJKhQhtS3nXwXgUtcHyHt3iwUT7FrBVCkdSZam9HVxMwafbtzW6Edr1+B9ePoXIr7ez6rAz+z59Ua4GSdA8xcqAHKuJaB+NbNSMNpY62lsyUfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in02.mta.xmission.com ([166.70.13.52]:38406)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1ruFQF-007Aen-3v; Tue, 09 Apr 2024 11:38:15 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:58962 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1ruFQE-009VSq-7G; Tue, 09 Apr 2024 11:38:14 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,  Linus Torvalds
+ <torvalds@linux-foundation.org>,  Roberto Sassu
+ <roberto.sassu@huaweicloud.com>,  linux-integrity@vger.kernel.org,
+  linux-security-module@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+  linux-cifs@vger.kernel.org,  linux-kernel@vger.kernel.org,  Roberto Sassu
+ <roberto.sassu@huawei.com>
+References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
+	<CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+	<CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
+	<20240402210035.GI538574@ZenIV>
+	<CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
+Date: Tue, 09 Apr 2024 12:37:21 -0500
+In-Reply-To: <CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
+	(Paul Moore's message of "Tue, 2 Apr 2024 17:36:30 -0400")
+Message-ID: <87le5mxwry.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408174944.907695-14-paulmck@kernel.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1ruFQE-009VSq-7G;;;mid=<87le5mxwry.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19gMkca3jYcuCNyXyTaOnFXicdzcwRWtZ4=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: **
+X-Spam-Virus: No
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.4480]
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+	*  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+	*  1.0 XMSubMetaSx_00 1+ Sexy Words
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Paul Moore <paul@paul-moore.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 277 ms - load_scoreonly_sql: 0.03 (0.0%),
+	signal_user_changed: 4.1 (1.5%), b_tie_ro: 2.8 (1.0%), parse: 0.71
+	(0.3%), extract_message_metadata: 8 (3.1%), get_uri_detail_list: 0.70
+	(0.3%), tests_pri_-2000: 6 (2.2%), tests_pri_-1000: 1.97 (0.7%),
+	tests_pri_-950: 1.05 (0.4%), tests_pri_-900: 0.80 (0.3%),
+	tests_pri_-90: 59 (21.3%), check_bayes: 57 (20.7%), b_tokenize: 4.6
+	(1.7%), b_tok_get_all: 6 (2.1%), b_comp_prob: 1.51 (0.5%),
+	b_tok_touch_all: 42 (15.1%), b_finish: 0.87 (0.3%), tests_pri_0: 181
+	(65.3%), check_dkim_signature: 0.37 (0.1%), check_dkim_adsp: 7 (2.6%),
+	poll_dns_idle: 0.53 (0.2%), tests_pri_10: 2.7 (1.0%), tests_pri_500: 9
+	(3.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] security changes for v6.9-rc3
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-Hi Paul,
 
-> @@ -170,6 +171,9 @@
->  	__typeof__(*(ptr)) __ret;					\
->  	register unsigned int __rc;					\
->  	switch (size) {							\
-> +	case 1:								\
-> +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, (uintptr_t)__old, (uintptr_t)__new); \
-> +		break;							\
->  	case 4:								\
->  		__asm__ __volatile__ (					\
->  			"0:	lr.w %0, %2\n"				\
-> @@ -214,6 +218,9 @@
->  	__typeof__(*(ptr)) __ret;					\
->  	register unsigned int __rc;					\
->  	switch (size) {							\
-> +	case 1:								\
-> +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-> +		break;							\
->  	case 4:								\
->  		__asm__ __volatile__ (					\
->  			"0:	lr.w %0, %2\n"				\
-> @@ -260,6 +267,9 @@
->  	__typeof__(*(ptr)) __ret;					\
->  	register unsigned int __rc;					\
->  	switch (size) {							\
-> +	case 1:								\
-> +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-> +		break;							\
->  	case 4:								\
->  		__asm__ __volatile__ (					\
->  			RISCV_RELEASE_BARRIER				\
-> @@ -306,6 +316,9 @@
->  	__typeof__(*(ptr)) __ret;					\
->  	register unsigned int __rc;					\
->  	switch (size) {							\
-> +	case 1:								\
-> +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
-> +		break;							\
->  	case 4:								\
->  		__asm__ __volatile__ (					\
->  			"0:	lr.w %0, %2\n"				\
+Paul Moore <paul@paul-moore.com> writes:
 
-Seems the last three are missing uintptr_t casts?
+> I know it's everyone's favorite hobby to bash the LSM and LSM devs,
+> but it's important to note that we don't add hooks without working
+> with the associated subsystem devs to get approval.
 
-  Andrea
+Hah!!!!
+
+> In the cases
+> where we don't get an explicit ACK, there is an on-list approval, or
+> several ignored on-list attempts over weeks/months/years.  We want to
+> be good neighbors.
+
+Hah!!!!
+
+You merged a LSM hook that is only good for breaking chrome's sandbox,
+over my expressed objections.  After I tested and verified that
+is what it does.
+
+I asked for testing. None was done.  It was claimed that no
+security sensitive code would ever fail to check and deal with
+all return codes, so no testing was necessary.  Then later a
+whole bunch of security sensitive code that didn't was found.
+
+The only redeeming grace has been that no-one ever actually uses
+that misbegotten security hook.
+
+P.S.  Sorry for this off topic rant but sheesh.   At least from
+my perspective you deserve plenty of bashing.
+
+Eric
 
