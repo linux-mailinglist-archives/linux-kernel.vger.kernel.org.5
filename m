@@ -1,73 +1,70 @@
-Return-Path: <linux-kernel+bounces-137454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0C789E262
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:17:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFBC089E264
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:18:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FAF91C22C71
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:17:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D12C71C22104
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00454156994;
-	Tue,  9 Apr 2024 18:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA007156C48;
+	Tue,  9 Apr 2024 18:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NkxYjiG2"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B+Rxupzf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71276156861
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DA613B284;
+	Tue,  9 Apr 2024 18:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712686622; cv=none; b=JEgf3GhAE/ZhqBtO6nxocY66VMc5GMhhWkAdcc/xT87DlFWU70yf/9y8MHrLcyr3gxHwDJD/my60YJMkJXyNuE/qVjKvsrX/7demqRVeKgKLjdToS5iZEKfm3+lYHriYn9cd2QNOmBd9pHKsypBXsoSr6rH5uvMbQc10qVhwl3M=
+	t=1712686704; cv=none; b=EPPfR9BBfTzwbzGKpRjhZKlXzjLAOqDjXq/ZaMqTkSwM4Ps4Jzprt3oZYliJM+ypFwrTAfsqakK4bR4dhjYZ7HI0Sr7vOGbG6LezfGkKV9QwcDIg2JAq77dpTftiA90djBtKf+fqDUdaw1+62LlZNMGe2z+RRctF4pCbS9rki0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712686622; c=relaxed/simple;
-	bh=8v7Bw7Ml2qSXocRuYkT6D/f4NYEZj9FMUacUtYK7PxQ=;
+	s=arc-20240116; t=1712686704; c=relaxed/simple;
+	bh=jikeKFV5YTyaoHcnI26N71nbgtzbSdGLSnHmNo5O4hw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UUOEVE3yUPqlOSf9D+bWmYXmJZCoHRFZGC7HV93CNHrPEs1aRA3TOiqFINn7LmUd8IkU+4mCm2o6AY0HBaTARZwBYsHmMYjY6kO2SRzOmEeH0f1rpZD3q/uZ0tf7YZecMIO7wn9wHfA20vlxYgNJysY8bhqyicfZ9MNZaiMBBzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NkxYjiG2; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516cbf3fd3dso6863226e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 11:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712686619; x=1713291419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KwRcEqJdl/aKPcyjjUDw4PrMEBdsdFKPMiKh/b3NCj0=;
-        b=NkxYjiG27JOn6YNUPIHrMmshU6ip4pbLatylyNZUeFkgXkhlH68Bz1VUkCcjP5FX06
-         meJpageOM9/wIFE9wAJvoA5gqGKBKCLHXOmCOXibTZF0OBYecjOVxFqO8OyPE8yyMPNQ
-         X/Qs7wn4AsbjklvKP6RbXBZ6txByD2uLVEG9HHSPDbOPHtgGSlKdCsQMlGq+SoR8MtYS
-         c6k7jVa1Nn6RaVk3SrFIaN+/tHXWSMcXV/patllyDu0e0fmXuOYH9IJnuyoS48CFVCrn
-         6Blk60SAVKH+ZTT1HQeQlTkTVxEGdGH9BffOZn/FfHuTCV+TF9vaVOo8XGgU9kH7tZFi
-         ve6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712686619; x=1713291419;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KwRcEqJdl/aKPcyjjUDw4PrMEBdsdFKPMiKh/b3NCj0=;
-        b=crKh4NRx0LHIivlrkdtJkCazoL2+gURQV/g5EB3GlcvFrnUyxBuVb/zW33z9UDeVpA
-         lND1mp4It44Db1zt7nQPl9dDxzjIIa8SMW/5+X34V/mqD4jwmHnAZDnuMT6MiRfDDsvV
-         y1jUPdBg29hhOv1Ie5EdJsuJf3AdM6CpEVJZzw+XbRmgcCnZ9nqkALpfSBr7jNt963qW
-         rTqxnygagoBa3d/JRDc16SI3yeribuRBdBrDlmyVV5/LmVO/pk/4NlN2bnYnWKVoVnSj
-         gn+Tba2HD/IlRFR2k5Vr8yqxgsLTkh9Y8uwbzblblPx7XHh6pxq5q4jkd5lksZd37P3g
-         i1Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCVsMAhHkmevwjFv8AFVeEfAh8Up8KLnKMOeBZqTZzfP9t3cDo4YAkq9kNmQNBahdPcQJD0BU7qDvSgi8t4wAv3rVxA8c+01uwIV4vF5
-X-Gm-Message-State: AOJu0YxVJ1Z/kGMVQxPbGA+ZDzsXAVZasaUla4WcZZyWmDtjcdt9fQNc
-	YSbfEJCVSGtY0tGXYwBho78urNr8bn69ZiT8QxnmJx3rM2AzxtpoziK6o1HJNoU=
-X-Google-Smtp-Source: AGHT+IFi97DTqvvh7mVWzHxai8ZC6jdD8XWkBMYhCggo9XKB7YbQyLLHUqoq4tjk99obPxsTaf1bQQ==
-X-Received: by 2002:a05:6512:2c95:b0:516:c600:64e8 with SMTP id dw21-20020a0565122c9500b00516c60064e8mr200709lfb.1.1712686618619;
-        Tue, 09 Apr 2024 11:16:58 -0700 (PDT)
-Received: from [172.30.205.99] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id x7-20020ac259c7000000b00516dc765e1esm1276627lfn.267.2024.04.09.11.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 11:16:58 -0700 (PDT)
-Message-ID: <bc15138c-211a-4b97-8d64-45d2d11b21e9@linaro.org>
-Date: Tue, 9 Apr 2024 20:16:56 +0200
+	 In-Reply-To:Content-Type; b=lPdUOBPgWrzlODcSDaYqjQIAUPvhPF9PgFmTOD4YpeHxs4pUCU4P7cK2nW2VOVQ2WwY6v0u0tsowlGAriYlx7P8eRb5a5jvdaIGr1RPNXnUonRoIInbA/kBigaR8Q/s3HLoZOgPxEI28gxC+0k1F8XWu48XUiP87dBOnoclaHMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B+Rxupzf; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712686704; x=1744222704;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jikeKFV5YTyaoHcnI26N71nbgtzbSdGLSnHmNo5O4hw=;
+  b=B+RxupzfUBWcVkh9BoQnWTPkHJ2DFSKOFCl74RxtUCuAgEGqTWbklxJN
+   Uzs828rqIqMPccTAtXSNBsJrHXiZvkJ3jNoOtU5fU8ZdLkWDz6vPbLtTD
+   XNMzU1Wd7ay90pYxHFTvGtmXhYFzrG70Ugt6jbjL1SXWd6kWv/GikmKH8
+   OSpRIqeWfFY8fqD+G7reKiuzub4v3AjCAkQ/AbQ3zUc60j19BtLTtj2n7
+   kbBrIwhzBU7MIjOq7vuQ6x9cZUBvDQ4g/ktqRIuviOTnfUGv2UPcj0zOV
+   nuZUx1dPoVQyPbyINGRPDwTX+eI2kXXLLGCowEXSgSbv7DcO3mvnu7o30
+   A==;
+X-CSE-ConnectionGUID: 131NvEhhTbWrlgqCxWXDTg==
+X-CSE-MsgGUID: tUfA1JwiR/amGxpvahdTgA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8246490"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="8246490"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:18:23 -0700
+X-CSE-ConnectionGUID: 9y6xtvftRcq/It0oniJviw==
+X-CSE-MsgGUID: HirWmNQDRlC3NlpKa6n0kA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="20254944"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:18:23 -0700
+Received: from [10.213.177.168] (kliang2-mobl1.ccr.corp.intel.com [10.213.177.168])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id D3DE520B573A;
+	Tue,  9 Apr 2024 11:18:20 -0700 (PDT)
+Message-ID: <16587efd-ab12-463a-bd87-7721adfc731d@linux.intel.com>
+Date: Tue, 9 Apr 2024 14:18:19 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,80 +72,125 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/19] media: venus: pm_helpers: Add kerneldoc to
- venus_clks_get()
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
- <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
+Subject: Re: [PATCH 3/3] perf report: Add weight[123] output fields
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org,
+ Stephane Eranian <eranian@google.com>, Andi Kleen <ak@linux.intel.com>,
+ Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20240409000659.1727785-1-namhyung@kernel.org>
+ <20240409000659.1727785-3-namhyung@kernel.org>
+ <0ec1328a-0731-42a6-b953-163ac5a56deb@linux.intel.com>
+ <CAM9d7cizZLMNa82VxuuvEWEY3vwdbs_iTG9jsogJQBoWMLP7Fw@mail.gmail.com>
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAM9d7cizZLMNa82VxuuvEWEY3vwdbs_iTG9jsogJQBoWMLP7Fw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 4/5/24 10:26, Dikshita Agarwal wrote:
+On 2024-04-09 12:53 p.m., Namhyung Kim wrote:
+> Hi Kan,
 > 
+> On Tue, Apr 9, 2024 at 9:37 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>
+>>
+>>
+>> On 2024-04-08 8:06 p.m., Namhyung Kim wrote:
+>>> Add weight1, weight2 and weight3 fields to -F/--fields and their aliases
+>>> like 'ins_lat', 'p_stage_cyc' and 'retire_lat'.  Note that they are in
+>>> the sort keys too but the difference is that output fields will sum up
+>>> the weight values and display the average.
+>>>
+>>> In the sort key, users can see the distribution of weight value and I
+>>> think it's confusing we have local vs. global weight for the same weight.
+>>>
+>>> For example, I experiment with mem-loads events to get the weights.  On
+>>> my laptop, it seems only weight1 field is supported.
+>>>
+>>>   $ perf mem record -- perf test -w noploop
+>>>
+>>> Let's look at the noploop function only.  It has 7 samples.
+>>>
+>>>   $ perf script -F event,ip,sym,weight | grep noploop
+>>>   # event                         weight     ip           sym
+>>>   cpu/mem-loads,ldlat=30/P:           43     55b3c122bffc noploop
+>>>   cpu/mem-loads,ldlat=30/P:           48     55b3c122bffc noploop
+>>>   cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
+>>>   cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
+>>>   cpu/mem-loads,ldlat=30/P:           59     55b3c122bffc noploop
+>>>   cpu/mem-loads,ldlat=30/P:           33     55b3c122bffc noploop
+>>>   cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
+>>>
+>>> When you use the 'weight' sort key, it'd show entries with a separate
+>>> weight value separately.  Also note that the first entry has 3 samples
+>>> with weight value 38, so they are displayed together and the weight
+>>> value is the sum of 3 samples (114 = 38 * 3).
+>>>
+>>>   $ perf report -n -s +weight | grep -e Weight -e noploop
+>>>   # Overhead  Samples  Command   Shared Object   Symbol         Weight
+>>>        0.53%        3     perf   perf            [.] noploop    114
+>>>        0.18%        1     perf   perf            [.] noploop    59
+>>>        0.18%        1     perf   perf            [.] noploop    48
+>>>        0.18%        1     perf   perf            [.] noploop    43
+>>>        0.18%        1     perf   perf            [.] noploop    33
+>>>
+>>> If you use 'local_weight' sort key, you can see the actualy weight.
+>>>
+>>>   $ perf report -n -s +local_weight | grep -e Weight -e noploop
+>>>   # Overhead  Samples  Command   Shared Object   Symbol         Local Weight
+>>>        0.53%        3     perf   perf            [.] noploop    38
+>>>        0.18%        1     perf   perf            [.] noploop    59
+>>>        0.18%        1     perf   perf            [.] noploop    48
+>>>        0.18%        1     perf   perf            [.] noploop    43
+>>>        0.18%        1     perf   perf            [.] noploop    33
+>>>
+>>> But when you use the -F/--field option instead, you can see the average
+>>> weight for the while noploop funciton (as it won't group samples by
+>>
+>> %s/funciton/function/
+>>
+>>> weight value and use the default 'comm,dso,sym' sort keys).
+>>>
+>>>   $ perf report -n -F +weight | grep -e Weight -e noploop
+>>>   # Overhead  Samples  Weight1  Command  Shared Object  Symbol
+>>>        1.23%        7     42.4  perf     perf           [.] noploop
+>>
+>> I think the current +weight shows the sum of weight1 of all samples,
+>> (global weight). With this patch, it becomes an average (local_weight).
+>> The definition change may break the existing user script.
+>>
+>> Ideally, I think we should keep the meaning of the weight and
+>> local_weight as is.
 > 
-> On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
->> To make it easier to understand the various clock requirements within
->> this driver, add kerneldoc to venus_clk_get() explaining the fluff.
->>
->> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   drivers/media/platform/qcom/venus/pm_helpers.c | 28 ++++++++++++++++++++++++++
->>   1 file changed, 28 insertions(+)
->>
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index ac7c83404c6e..cf91f50a33aa 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -23,6 +23,34 @@
->>   
->>   static bool legacy_binding;
->>   
->> +/**
->> + * venus_clks_get() - Get Venus clocks that are not bound to a vcodec
->> + * @core: A pointer to the venus core resource
->> + *
->> + * The Venus block (depending on the generation) can be split into a couple
->> + * of clock domains: one for main logic and one for each video core (0-2 instances).
->> + *
->> + * MSM8916 (and possibly other HFIv1 users) only feature the "main logic"
->> + * domain, so this function is the only kind if clk_get necessary there.
->> + *
->> + * MSM8996 (and other HFIv3 users) feature two video cores, with core0 being
->> + * statically defined a decoder and core1 an encoder, with both having
->> + * their own clock domains.
->> + *
->> + * SDM845 features two video cores, each one of which may or may not be
->> + * subdivided into two encoder/decoder threads.
->> + *
->> + * Other SoCs either feature a single video core (with its own clock domain)
->> + * or one video core and one CVP (Computer Vision Processor) core. In both cases
->> + * we treat it the same way (CVP only happens to live near-by Venus on the SoC).
->> + *
->> + * Due to unfortunate developments in the past, we need to support legacy
-> why unfortunate? please re-phrase this.
+> Hmm.. then we may add 'avg_weight' or something.
+> 
+> But note that there's a subtle difference in the usage.  If you use
+> 'weight' as a sort key (-s weight) it'd keep the existing behavior
+> that shows the sum (global_weight).  It'd show average only if
+> you use it as an output field (-F weight).
+>
 
-It's unfortunate because another binding has been created to
-represent the same hardware to solve a "problem" that could have
-been dealt with using a couple lines of C and that we now need to
-carry support for.
+As my understanding, the -F weight is implicitly replaced by the -F
+weight1 with this patch. There is no way to get the sum of weight with
+-F anymore.
 
-Konrad
+I think that's a user visible behavior change. At least, we have to warn
+the end user with a message, e.g., "weight is not supported with -F
+anymore. Using weight1 to instead". Only updating the doc may not be enough.
+
+> The issue of the sort key is that it cannot have the total sum
+> of weights for a function.  It'll have separate entries for each
+> weight for each function like in the above example.
+> 
+
+That seems to be a different issue. If the total sum of weights for a
+function is required, we should fix the existing "weight".
+
+Thanks,
+Kan
 
