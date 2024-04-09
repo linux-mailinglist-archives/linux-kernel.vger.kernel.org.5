@@ -1,539 +1,186 @@
-Return-Path: <linux-kernel+bounces-136034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 145C389CF2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:07:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B2D89CF34
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:11:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4322B1C23D56
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:07:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7429B1F23615
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86084688;
-	Tue,  9 Apr 2024 00:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B9538B;
+	Tue,  9 Apr 2024 00:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GR3wUxeW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="lL4DzGQ9"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C91B10F2;
-	Tue,  9 Apr 2024 00:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712621222; cv=none; b=jYo72tL+SsSJKCVb46XtTSnb3W4Z5pNVLGvBYitOI9ZP4GAtmrISe7XhmwH3uw+JF+ppliPk8AZ1T5aGwVpKepIZ3q/HQkVK4O2RN1fTh391u7RRj7OzrvzfiB99n2ckEcQfNQCAxk0nZJfjgaD3iHJ8g8tMbJPSicZ3hcElgGY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712621222; c=relaxed/simple;
-	bh=k3PAt6RB4aQhTDZqROsa1ewlfKf/wWXMCfnMseif7wY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ArTiw94neb9G1YU+YcVF9V3nbKAWam3zElEV1u30wracmfkELb3dQ5zXpNa0A6YgV33KU3p2Cl75EGVCNTZC6LK7eiUkpDo8BmFsDtLC1FU70/sRMVgQscCdxu4X9wBJx9OgDedmOytKaPkVOPvltb+6kS8MwMGMOAUDeQlN9I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GR3wUxeW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C389C433C7;
-	Tue,  9 Apr 2024 00:07:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712621222;
-	bh=k3PAt6RB4aQhTDZqROsa1ewlfKf/wWXMCfnMseif7wY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GR3wUxeWiwF0QsDCV7hYlEMB82nEVGY+TPnMJtSm+5+V4cK+K3JpSpY4CntTLv/Hc
-	 cPzH8nV4r4wvapI16QIzvm8r9P79Hi54A9vbSpZZU1bDnsK39uZD9RRbfSUVe8SVkw
-	 7XdYN5QBGKrzQgPHFKmQ4HVDnGH2C0kYX1Gnx2O7mlKrMgZB+bP6bjXSgN79ddHdJO
-	 Y/Z/1Pp+BDKi+zPJ1ITryXA9oju4WtCXAAcJotQD2cLjbbuSs4H0Qiq4818QnZWrF9
-	 DKDRTKdzb5/Gni8TWEoPM673EuZRVCUT+J9Hhb+izH/T09jW5A57q0BvJZ7rTF0f80
-	 hT6cQrxh6c2aQ==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Stephane Eranian <eranian@google.com>,
-	Andi Kleen <ak@linux.intel.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Subject: [PATCH 3/3] perf report: Add weight[123] output fields
-Date: Mon,  8 Apr 2024 17:06:59 -0700
-Message-ID: <20240409000659.1727785-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240409000659.1727785-1-namhyung@kernel.org>
-References: <20240409000659.1727785-1-namhyung@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E609418E;
+	Tue,  9 Apr 2024 00:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712621453; cv=fail; b=fA8JKh86FrlrMtDC5LL3qX/0xR0btng6ABVc7LN02EWPoYvbapWiS2uY0uMOoHpYYMnOwOyU05acKSGQ1004lvKkV37RYxsTegYcOrBSFNvphsxdCjOGCoFnwPj0+Nvp/MJ3zSkqUEaHVeLcKzR+sVoZ+vSQUhm7Av05Y4U6NnQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712621453; c=relaxed/simple;
+	bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=UTfq5YyKjWospd+P2oFQeYkthbVraRrK/OcwL9lXCkRqURwt/hTKpKo5P5HFWxt8JO01+kmnNBbYEE12x7J1NEelqkQjA6BznK8SW9TwPvntchdmHS8CyP9dE3Ny6HNddKmoOwNSA9nmtvFYb1F5oLETW3JCs1tQuxnSx/EFW98=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=lL4DzGQ9; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438GoLUx023474;
+	Mon, 8 Apr 2024 17:10:34 -0700
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xb5wgebj0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 17:10:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dArTwPlqV2a8I+WIuwGK+1fQ261cbDCb0mlmv7vkOxkPDON1jyWHCagC3BbUOZjQzY4q8eArlJ8TX7ScN/EEX1ok3kR123W4HbvNQ2ERd7DT/rg0308tysNziyV8dJkY0oTDLmnHdxwrfsh8zvegCgXSlBJOQ5X5tvs4HwkiR7FSO2bBMvIGJeue6DUA5qAdoIDN4hQ4V+oKatKIT5xN4N2dCdkyqZbsCQkMAdRZDK4PXtAFWElRMSOsuNEZEtp5gnJF0y5FSwPZ5vu+JZFF3BWdzE1Ogu6zxGm7aWa48zOIMy1sLlzPh1GHb1XXG2au+luhpIuhNLngR8F8EBsWHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
+ b=GxD9Xkw9eHo1JVegmerUxncuTrWW/J+hD9nylHAay7iiE25qzrO+7j24RcZvQ+vUCAqCTdFWlBznEHbxLkixptE0Dm+waOYj+KWrxzlcYMl/Wp89BC0RcWSW8oiEb7K/LLnKEA58NwbvgNScRAzxz+3OSLGNzEfsHRoawQ1ZFHSBhbMJ2tuVYKMwdCxCRwwY0MfdRzRViC8O0Lewx8fwuvSG5AQBLBbzikgyN3XL+v/EV6iMENk58BZyfxtG2CaIA5OIOtuyU9xlgTf1dTG0fuj5A0DcCIvUYv6N4fcT8ydY0qicadEeP09B6VKbQLQn1easolh+D1V92TK7SRxxIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
+ b=lL4DzGQ9rjNsWqrTNLq158+zvWrEU0gYfLnyfIJJGPiGHjmKtFLGNn8R/2exzJg2HVEx5S0iQO/Cbt8CT/swd02AZNdqJTDiOyRrJ/KWPdZ2txxnXYSXBCKBUfvmsD6eVNkPWDESzBZGb/hKFihXZTKvxkOA9v24CLI0sjgSK2g=
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com (2603:10b6:510:11d::12)
+ by PH0PR18MB3813.namprd18.prod.outlook.com (2603:10b6:510:23::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
+ 2024 00:10:32 +0000
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::8bf7:91cd:866c:68b0]) by PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::8bf7:91cd:866c:68b0%7]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
+ 00:10:31 +0000
+From: Linu Cherian <lcherian@marvell.com>
+To: Linu Cherian <lcherian@marvell.com>,
+        "suzuki.poulose@arm.com"
+	<suzuki.poulose@arm.com>,
+        "mike.leach@linaro.org" <mike.leach@linaro.org>,
+        "james.clark@arm.com" <james.clark@arm.com>,
+        "leo.yan@linaro.org"
+	<leo.yan@linaro.org>
+CC: "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+        "coresight@lists.linaro.org"
+	<coresight@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        George Cherian <gcherian@marvell.com>
+Subject: RE: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+Thread-Topic: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+Thread-Index: AQHacECr+wmc6MJsCEeCTVfctSb+8bFfQ22g
+Date: Tue, 9 Apr 2024 00:10:31 +0000
+Message-ID: 
+ <PH0PR18MB5002D016166F97E665BB0F39CE072@PH0PR18MB5002.namprd18.prod.outlook.com>
+References: <20240307033625.325058-1-lcherian@marvell.com>
+In-Reply-To: <20240307033625.325058-1-lcherian@marvell.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB5002:EE_|PH0PR18MB3813:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ ZHEdH9WGV6uqVgyZ00aPR+nlFyCql9fAcpfNX0ywflqT3z4cy5Oppr7RRys0G2WB7O/V37RfnHGkviANQaIArFnXcsROv0QM01W0lOFuNIzC7xlzL+uaUVZ35nzTocz2ANZWLpX2CGxgZdPi5B4uOlygwI/cgKa6Z/JQVKH8u3PRgi9DoKIqzg+X11hwb6fBm4l5Gdc7jWatgtuLCwAp5HHIYZvHhs2ILdM7d8DWoEulmSJYv4fNsE8CxjpIXjlQQyWJEN1OzD0d/fgELkUA16kLqu6/HTo9R955Bx5PW4VyBdt/r2nR+Ua6weB4csmt5DloR538h+XRPTuDfMKPrgcHrWloZhAn2xPxkI6bxa+0XCiapfpey6emA8r4gYrpTWRFv3rj39nhw1Jh440fEXh0Wd97/aVnpiauUwO5s/KU8d4IazQXaXa3w1kmxYUWTMGNCvG0lL/mKpvHyfifcCqmzSvl3hH8JhQeEXyaZhE0Ewk0q9C1x7W6sVGaeSHTxxwaHkBXxW9Mo8vF/WkO3HcrXtkZS/3Fm+49J07/opW8XtdSiVJyTRsZ5tqWVfr4wxDJlzv/FfOYhItJXPs2elwo+4mfmizihQnMjrNY0YVaxAvaazkxnjmh6dVYJlEcPPWyAy3xvyLEjpa/Mr7nm1ygfetqXV7eeuvTM+EJ5Lc=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB5002.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?lVjyiSXxfqeNQsAOz9QL0GD5kOXUq9dz3C7OIv1TDDaeUFjsijz6Z4cS6cB1?=
+ =?us-ascii?Q?gaPfyD2a9J8oJ/Q4hqytRBPydOkvYuEoCtjDX0kYAckoZJU7ooWkaVPUNTZj?=
+ =?us-ascii?Q?1X0wL/zYVopKBlA3Z4dhLr36mJ4dja2yZR8qbZl8twKSyLH484VhxplKnYnD?=
+ =?us-ascii?Q?Wl59NZUc5gH3b9kCuuMFlVLmEzjCbDClJN0Wc+c9hX4CC8Wgdio/O2Vyk90T?=
+ =?us-ascii?Q?K3N/1HVS9HIP7M8ynCQVyg3r5OEjDX+adQt5AFoXpAueUEGUr21HmVoJ0fFX?=
+ =?us-ascii?Q?jKWQWqXT6tVIbd5pylR0+bT/1LcL72dg/X3esc/sRXlB0cL6mkp6/b7NFlKk?=
+ =?us-ascii?Q?85GfAw7YCQp+ezVI3fEkFXP9rbQX1XBKsJCw3gKViW6b15+r0q9FuXD7aHJQ?=
+ =?us-ascii?Q?chbhCI42AjZm9ES+TpUx1vdHywXIO/HoVcOvAbFgXQOHNPqkE8KVp+Cqhp7A?=
+ =?us-ascii?Q?Hqs6994zCrfU823CVsONGlrZBo48o8tIm8g7j9xiIhKu9tSp+cNEJbAi66lP?=
+ =?us-ascii?Q?6LZTRFu1MlYgqfN4PoztwHBXJzN1AZj0mVvRzB1Whn64eGjsfnw28X5XVUOD?=
+ =?us-ascii?Q?r4ksz2AP/zZzPHt1NI3IaFkD9h2bKcWrZzzm4WxMmcG0X7g0gU+lsifqbYgQ?=
+ =?us-ascii?Q?rQ5Tx3Y7qIFnvHN4XbxjP+dHLjZIyEKrImNwXd1VRjYv2BgF/VGpbnJC9+9U?=
+ =?us-ascii?Q?ILIg4Q5/rKPRHdlo3XCkhDVmWV1DS759UDhoXPEOgNGTewGRMObw3+WRIX7L?=
+ =?us-ascii?Q?WxyCVHAaqZE17DZ0EhCddvv8tEYF2HET5q77T0pHlGZd/owCU1FA9FNcHuYL?=
+ =?us-ascii?Q?GIqOHctJ9BVUdF6Li1ywFVI8pcpjNqgYYMrvTGnTBgKcDs7VagM0eAaVHpHd?=
+ =?us-ascii?Q?TFiBwkmUqSRZE26hd5FxNVPEZwgvWvgPqhQr0VVygNfXljp7O8zRFl5qi8td?=
+ =?us-ascii?Q?zHDAGGpiQS4HV5Cc2G6TEvZkXNSQx4flFw6JFgdwWSp8YkuB7JfHIAaJiAj+?=
+ =?us-ascii?Q?O6P44onIXcxi7VMRe3XYnAkLCDz2lgfR5WMgz4ABZXQxIUiGgg+ggmUSQoJG?=
+ =?us-ascii?Q?G6OIAaAlqxoilfSNiDSWDrcMrvOZ9egkaHbFaHPMfHvuI1tLvQkj/f5ZSyCa?=
+ =?us-ascii?Q?AJ2GoBBH1GJ1MMgOI8z0dN8SMZd8A6pUkTVNVfJ7WjDQuz1nQ6PXdC/pNGUW?=
+ =?us-ascii?Q?vwz8Qgux6dVLaT/i+65nCWxigYsfNPYL7bZN+bOt60HEGO/M4nZRK+GP2oVA?=
+ =?us-ascii?Q?IP4JzlCPlLn9A/gltlDWvWkDk76NAsi9THhRgAgUrzmr0lgcljHn0SJgWtBm?=
+ =?us-ascii?Q?xakCB1crIYgcCp3rp0bw4PqkzCocYxmrC21HLPxI/fukfHlVlXZlCx1ac4Wo?=
+ =?us-ascii?Q?Fsfjg8NCN7ZCHNQHmFpdqISp/r55KKwNlBwOX6ZvX9gqbKMf1LI/xO64fnmk?=
+ =?us-ascii?Q?yEo4eX94K4thVhQwhCrK/gAswe6eVYU3/Ww9/f7kgsF76ecStDrZpJdXrW87?=
+ =?us-ascii?Q?l2wYaMmg/B1Br56edII+QHmqYNYhgnCX7+UYZ0xnqjSoKgIHA2LxLdRRnCj9?=
+ =?us-ascii?Q?dgs2dYvQLVC0XYCF8NS4pCR+gWoz22A9+Xbf+OV6?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB5002.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22a2a7a0-708a-456d-2588-08dc5829784c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 00:10:31.4335
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b3J6pXkwIPnacQQMZgrCqL8kQRpVooG8XBIQGluDIqtw8JG4HY9z/H3GoSVjnFI/y+A0V5F1r84Ay5xzXAZ9HQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB3813
+X-Proofpoint-ORIG-GUID: 4joVFZq6L9Ge3-7-IpKQr3uQRpTlBszy
+X-Proofpoint-GUID: 4joVFZq6L9Ge3-7-IpKQr3uQRpTlBszy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-08_18,2024-04-05_02,2023-05-22_02
 
-Add weight1, weight2 and weight3 fields to -F/--fields and their aliases
-like 'ins_lat', 'p_stage_cyc' and 'retire_lat'.  Note that they are in
-the sort keys too but the difference is that output fields will sum up
-the weight values and display the average.
+Hi Suzuki/James,
 
-In the sort key, users can see the distribution of weight value and I
-think it's confusing we have local vs. global weight for the same weight.
+> -----Original Message-----
+> From: Linu Cherian <lcherian@marvell.com>
+> Sent: Thursday, March 7, 2024 9:06 AM
+> To: suzuki.poulose@arm.com; mike.leach@linaro.org; james.clark@arm.com;
+> leo.yan@linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; lin=
+ux-
+> kernel@vger.kernel.org; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Linu
+> Cherian <lcherian@marvell.com>
+> Subject: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+>=20
+> This patch series is rebased on v6.8-rc4 from coresisght tree,[1], since =
+latest
+> changes are dependent on coresight_get/set_mode APIs.
+>=20
 
-For example, I experiment with mem-loads events to get the weights.  On
-my laptop, it seems only weight1 field is supported.
 
-  $ perf mem record -- perf test -w noploop
+Do you have any feedback on this version ?
 
-Let's look at the noploop function only.  It has 7 samples.
-
-  $ perf script -F event,ip,sym,weight | grep noploop
-  # event                         weight     ip           sym
-  cpu/mem-loads,ldlat=30/P:           43     55b3c122bffc noploop
-  cpu/mem-loads,ldlat=30/P:           48     55b3c122bffc noploop
-  cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
-  cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
-  cpu/mem-loads,ldlat=30/P:           59     55b3c122bffc noploop
-  cpu/mem-loads,ldlat=30/P:           33     55b3c122bffc noploop
-  cpu/mem-loads,ldlat=30/P:           38     55b3c122bffc noploop    <--- same weight
-
-When you use the 'weight' sort key, it'd show entries with a separate
-weight value separately.  Also note that the first entry has 3 samples
-with weight value 38, so they are displayed together and the weight
-value is the sum of 3 samples (114 = 38 * 3).
-
-  $ perf report -n -s +weight | grep -e Weight -e noploop
-  # Overhead  Samples  Command   Shared Object   Symbol         Weight
-       0.53%        3     perf   perf            [.] noploop    114
-       0.18%        1     perf   perf            [.] noploop    59
-       0.18%        1     perf   perf            [.] noploop    48
-       0.18%        1     perf   perf            [.] noploop    43
-       0.18%        1     perf   perf            [.] noploop    33
-
-If you use 'local_weight' sort key, you can see the actualy weight.
-
-  $ perf report -n -s +local_weight | grep -e Weight -e noploop
-  # Overhead  Samples  Command   Shared Object   Symbol         Local Weight
-       0.53%        3     perf   perf            [.] noploop    38
-       0.18%        1     perf   perf            [.] noploop    59
-       0.18%        1     perf   perf            [.] noploop    48
-       0.18%        1     perf   perf            [.] noploop    43
-       0.18%        1     perf   perf            [.] noploop    33
-
-But when you use the -F/--field option instead, you can see the average
-weight for the while noploop funciton (as it won't group samples by
-weight value and use the default 'comm,dso,sym' sort keys).
-
-  $ perf report -n -F +weight | grep -e Weight -e noploop
-  # Overhead  Samples  Weight1  Command  Shared Object  Symbol
-       1.23%        7     42.4  perf     perf           [.] noploop
-
-The weight1 field shows the average value:
-  (38 * 3 + 59 + 48 + 43 + 33) / 7 = 42.4
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Documentation/perf-report.txt |  9 ++-
- tools/perf/ui/hist.c                     | 92 +++++++++++++++++++-----
- tools/perf/util/hist.h                   | 15 +++-
- tools/perf/util/sort.c                   | 25 ++++---
- tools/perf/util/sort.h                   |  2 +-
- 5 files changed, 112 insertions(+), 31 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-index d8b863e01fe0..d2b1593ef700 100644
---- a/tools/perf/Documentation/perf-report.txt
-+++ b/tools/perf/Documentation/perf-report.txt
-@@ -121,6 +121,9 @@ OPTIONS
- 	- type: Data type of sample memory access.
- 	- typeoff: Offset in the data type of sample memory access.
- 	- symoff: Offset in the symbol.
-+	- weight1: Average value of event specific weight (1st field of weight_struct).
-+	- weight2: Average value of event specific weight (2nd field of weight_struct).
-+	- weight3: Average value of event specific weight (3rd field of weight_struct).
- 
- 	By default, comm, dso and symbol keys are used.
- 	(i.e. --sort comm,dso,symbol)
-@@ -198,7 +201,11 @@ OPTIONS
- --fields=::
- 	Specify output field - multiple keys can be specified in CSV format.
- 	Following fields are available:
--	overhead, overhead_sys, overhead_us, overhead_children, sample and period.
-+	overhead, overhead_sys, overhead_us, overhead_children, sample, period,
-+	weight1, weight2, weight3, ins_lat, p_stage_cyc and retire_lat.  The
-+	last 3 names are alias for the corresponding weights.  When the weight
-+	fields are used, they will show the average value of the weight.
-+
- 	Also it can contain any sort key(s).
- 
- 	By default, every sort keys not specified in -F will be appended
-diff --git a/tools/perf/ui/hist.c b/tools/perf/ui/hist.c
-index 2bf959d08354..685ba2a54fd8 100644
---- a/tools/perf/ui/hist.c
-+++ b/tools/perf/ui/hist.c
-@@ -25,7 +25,7 @@
- 
- static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 		      hpp_field_fn get_field, const char *fmt, int len,
--		      hpp_snprint_fn print_fn, bool fmt_percent)
-+		      hpp_snprint_fn print_fn, enum perf_hpp_fmt_type fmtype)
- {
- 	int ret;
- 	struct hists *hists = he->hists;
-@@ -33,7 +33,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 	char *buf = hpp->buf;
- 	size_t size = hpp->size;
- 
--	if (fmt_percent) {
-+	if (fmtype == PERF_HPP_FMT_TYPE__PERCENT) {
- 		double percent = 0.0;
- 		u64 total = hists__total_period(hists);
- 
-@@ -41,8 +41,16 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 			percent = 100.0 * get_field(he) / total;
- 
- 		ret = hpp__call_print_fn(hpp, print_fn, fmt, len, percent);
--	} else
-+	} else if (fmtype == PERF_HPP_FMT_TYPE__AVERAGE) {
-+		double average = 0;
-+
-+		if (he->stat.nr_events)
-+			average = 1.0 * get_field(he) / he->stat.nr_events;
-+
-+		ret = hpp__call_print_fn(hpp, print_fn, fmt, len, average);
-+	} else {
- 		ret = hpp__call_print_fn(hpp, print_fn, fmt, len, get_field(he));
-+	}
- 
- 	if (evsel__is_group_event(evsel)) {
- 		int prev_idx, idx_delta;
-@@ -54,6 +62,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 		list_for_each_entry(pair, &he->pairs.head, pairs.node) {
- 			u64 period = get_field(pair);
- 			u64 total = hists__total_period(pair->hists);
-+			int nr_samples = pair->stat.nr_events;
- 
- 			if (!total)
- 				continue;
-@@ -66,7 +75,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 				 * zero-fill group members in the middle which
- 				 * have no sample
- 				 */
--				if (fmt_percent) {
-+				if (fmtype != PERF_HPP_FMT_TYPE__RAW) {
- 					ret += hpp__call_print_fn(hpp, print_fn,
- 								  fmt, len, 0.0);
- 				} else {
-@@ -75,9 +84,14 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 				}
- 			}
- 
--			if (fmt_percent) {
-+			if (fmtype == PERF_HPP_FMT_TYPE__PERCENT) {
- 				ret += hpp__call_print_fn(hpp, print_fn, fmt, len,
- 							  100.0 * period / total);
-+			} else if (fmtype == PERF_HPP_FMT_TYPE__AVERAGE) {
-+				double avg = nr_samples ? (period / nr_samples) : 0;
-+
-+				ret += hpp__call_print_fn(hpp, print_fn, fmt,
-+							  len, avg);
- 			} else {
- 				ret += hpp__call_print_fn(hpp, print_fn, fmt,
- 							  len, period);
-@@ -92,7 +106,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 			/*
- 			 * zero-fill group members at last which have no sample
- 			 */
--			if (fmt_percent) {
-+			if (fmtype != PERF_HPP_FMT_TYPE__RAW) {
- 				ret += hpp__call_print_fn(hpp, print_fn,
- 							  fmt, len, 0.0);
- 			} else {
-@@ -114,33 +128,35 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hist_entry *he,
- 
- int hpp__fmt(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
- 	     struct hist_entry *he, hpp_field_fn get_field,
--	     const char *fmtstr, hpp_snprint_fn print_fn, bool fmt_percent)
-+	     const char *fmtstr, hpp_snprint_fn print_fn,
-+	     enum perf_hpp_fmt_type fmtype)
- {
- 	int len = fmt->user_len ?: fmt->len;
- 
- 	if (symbol_conf.field_sep) {
- 		return __hpp__fmt(hpp, he, get_field, fmtstr, 1,
--				  print_fn, fmt_percent);
-+				  print_fn, fmtype);
- 	}
- 
--	if (fmt_percent)
-+	if (fmtype == PERF_HPP_FMT_TYPE__PERCENT)
- 		len -= 2; /* 2 for a space and a % sign */
- 	else
- 		len -= 1;
- 
--	return  __hpp__fmt(hpp, he, get_field, fmtstr, len, print_fn, fmt_percent);
-+	return  __hpp__fmt(hpp, he, get_field, fmtstr, len, print_fn, fmtype);
- }
- 
- int hpp__fmt_acc(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
- 		 struct hist_entry *he, hpp_field_fn get_field,
--		 const char *fmtstr, hpp_snprint_fn print_fn, bool fmt_percent)
-+		 const char *fmtstr, hpp_snprint_fn print_fn,
-+		 enum perf_hpp_fmt_type fmtype)
- {
- 	if (!symbol_conf.cumulate_callchain) {
- 		int len = fmt->user_len ?: fmt->len;
- 		return snprintf(hpp->buf, hpp->size, " %*s", len - 1, "N/A");
- 	}
- 
--	return hpp__fmt(fmt, hpp, he, get_field, fmtstr, print_fn, fmt_percent);
-+	return hpp__fmt(fmt, hpp, he, get_field, fmtstr, print_fn, fmtype);
- }
- 
- static int field_cmp(u64 field_a, u64 field_b)
-@@ -350,7 +366,7 @@ static int hpp__color_##_type(struct perf_hpp_fmt *fmt,				\
- 			      struct perf_hpp *hpp, struct hist_entry *he) 	\
- {										\
- 	return hpp__fmt(fmt, hpp, he, he_get_##_field, " %*.2f%%",		\
--			hpp_color_scnprintf, true);				\
-+			hpp_color_scnprintf, PERF_HPP_FMT_TYPE__PERCENT);	\
- }
- 
- #define __HPP_ENTRY_PERCENT_FN(_type, _field)					\
-@@ -358,7 +374,7 @@ static int hpp__entry_##_type(struct perf_hpp_fmt *fmt,				\
- 			      struct perf_hpp *hpp, struct hist_entry *he) 	\
- {										\
- 	return hpp__fmt(fmt, hpp, he, he_get_##_field, " %*.2f%%",		\
--			hpp_entry_scnprintf, true);				\
-+			hpp_entry_scnprintf, PERF_HPP_FMT_TYPE__PERCENT);	\
- }
- 
- #define __HPP_SORT_FN(_type, _field)						\
-@@ -378,7 +394,7 @@ static int hpp__color_##_type(struct perf_hpp_fmt *fmt,				\
- 			      struct perf_hpp *hpp, struct hist_entry *he) 	\
- {										\
- 	return hpp__fmt_acc(fmt, hpp, he, he_get_acc_##_field, " %*.2f%%", 	\
--			    hpp_color_scnprintf, true);				\
-+			    hpp_color_scnprintf, PERF_HPP_FMT_TYPE__PERCENT);	\
- }
- 
- #define __HPP_ENTRY_ACC_PERCENT_FN(_type, _field)				\
-@@ -386,7 +402,7 @@ static int hpp__entry_##_type(struct perf_hpp_fmt *fmt,				\
- 			      struct perf_hpp *hpp, struct hist_entry *he) 	\
- {										\
- 	return hpp__fmt_acc(fmt, hpp, he, he_get_acc_##_field, " %*.2f%%",	\
--			    hpp_entry_scnprintf, true);				\
-+			    hpp_entry_scnprintf, PERF_HPP_FMT_TYPE__PERCENT);	\
- }
- 
- #define __HPP_SORT_ACC_FN(_type, _field)					\
-@@ -406,7 +422,7 @@ static int hpp__entry_##_type(struct perf_hpp_fmt *fmt,				\
- 			      struct perf_hpp *hpp, struct hist_entry *he) 	\
- {										\
- 	return hpp__fmt(fmt, hpp, he, he_get_raw_##_field, " %*"PRIu64, 	\
--			hpp_entry_scnprintf, false);				\
-+			hpp_entry_scnprintf, PERF_HPP_FMT_TYPE__RAW);		\
- }
- 
- #define __HPP_SORT_RAW_FN(_type, _field)					\
-@@ -416,6 +432,26 @@ static int64_t hpp__sort_##_type(struct perf_hpp_fmt *fmt __maybe_unused, 	\
- 	return __hpp__sort(a, b, he_get_raw_##_field);				\
- }
- 
-+#define __HPP_ENTRY_AVERAGE_FN(_type, _field)					\
-+static u64 he_get_##_field(struct hist_entry *he)				\
-+{										\
-+	return he->stat._field;							\
-+}										\
-+										\
-+static int hpp__entry_##_type(struct perf_hpp_fmt *fmt,				\
-+			      struct perf_hpp *hpp, struct hist_entry *he) 	\
-+{										\
-+	return hpp__fmt(fmt, hpp, he, he_get_##_field, " %*.1f",		\
-+			hpp_entry_scnprintf, PERF_HPP_FMT_TYPE__AVERAGE);	\
-+}
-+
-+#define __HPP_SORT_AVERAGE_FN(_type, _field)					\
-+static int64_t hpp__sort_##_type(struct perf_hpp_fmt *fmt __maybe_unused, 	\
-+				 struct hist_entry *a, struct hist_entry *b) 	\
-+{										\
-+	return __hpp__sort(a, b, he_get_##_field);				\
-+}
-+
- 
- #define HPP_PERCENT_FNS(_type, _field)					\
- __HPP_COLOR_PERCENT_FN(_type, _field)					\
-@@ -431,6 +467,10 @@ __HPP_SORT_ACC_FN(_type, _field)
- __HPP_ENTRY_RAW_FN(_type, _field)					\
- __HPP_SORT_RAW_FN(_type, _field)
- 
-+#define HPP_AVERAGE_FNS(_type, _field)					\
-+__HPP_ENTRY_AVERAGE_FN(_type, _field)					\
-+__HPP_SORT_AVERAGE_FN(_type, _field)
-+
- HPP_PERCENT_FNS(overhead, period)
- HPP_PERCENT_FNS(overhead_sys, period_sys)
- HPP_PERCENT_FNS(overhead_us, period_us)
-@@ -441,6 +481,10 @@ HPP_PERCENT_ACC_FNS(overhead_acc, period)
- HPP_RAW_FNS(samples, nr_events)
- HPP_RAW_FNS(period, period)
- 
-+HPP_AVERAGE_FNS(weight1, weight1)
-+HPP_AVERAGE_FNS(weight2, weight2)
-+HPP_AVERAGE_FNS(weight3, weight3)
-+
- static int64_t hpp__nop_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
- 			    struct hist_entry *a __maybe_unused,
- 			    struct hist_entry *b __maybe_unused)
-@@ -510,7 +554,10 @@ struct perf_hpp_fmt perf_hpp__format[] = {
- 	HPP__COLOR_PRINT_FNS("guest usr", overhead_guest_us, OVERHEAD_GUEST_US),
- 	HPP__COLOR_ACC_PRINT_FNS("Children", overhead_acc, OVERHEAD_ACC),
- 	HPP__PRINT_FNS("Samples", samples, SAMPLES),
--	HPP__PRINT_FNS("Period", period, PERIOD)
-+	HPP__PRINT_FNS("Period", period, PERIOD),
-+	HPP__PRINT_FNS("Weight1", weight1, WEIGHT1),
-+	HPP__PRINT_FNS("Weight2", weight2, WEIGHT2),
-+	HPP__PRINT_FNS("Weight3", weight3, WEIGHT3),
- };
- 
- struct perf_hpp_list perf_hpp_list = {
-@@ -526,6 +573,7 @@ struct perf_hpp_list perf_hpp_list = {
- #undef HPP_PERCENT_FNS
- #undef HPP_PERCENT_ACC_FNS
- #undef HPP_RAW_FNS
-+#undef HPP_AVERAGE_FNS
- 
- #undef __HPP_HEADER_FN
- #undef __HPP_WIDTH_FN
-@@ -534,9 +582,11 @@ struct perf_hpp_list perf_hpp_list = {
- #undef __HPP_COLOR_ACC_PERCENT_FN
- #undef __HPP_ENTRY_ACC_PERCENT_FN
- #undef __HPP_ENTRY_RAW_FN
-+#undef __HPP_ENTRY_AVERAGE_FN
- #undef __HPP_SORT_FN
- #undef __HPP_SORT_ACC_FN
- #undef __HPP_SORT_RAW_FN
-+#undef __HPP_SORT_AVERAGE_FN
- 
- static void fmt_free(struct perf_hpp_fmt *fmt)
- {
-@@ -785,6 +835,12 @@ void perf_hpp__reset_width(struct perf_hpp_fmt *fmt, struct hists *hists)
- 		fmt->len = 12;
- 		break;
- 
-+	case PERF_HPP__WEIGHT1:
-+	case PERF_HPP__WEIGHT2:
-+	case PERF_HPP__WEIGHT3:
-+		fmt->len = 8;
-+		break;
-+
- 	default:
- 		break;
- 	}
-diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-index f34f101c36c2..5260822b9773 100644
---- a/tools/perf/util/hist.h
-+++ b/tools/perf/util/hist.h
-@@ -550,6 +550,9 @@ enum {
- 	PERF_HPP__OVERHEAD_ACC,
- 	PERF_HPP__SAMPLES,
- 	PERF_HPP__PERIOD,
-+	PERF_HPP__WEIGHT1,
-+	PERF_HPP__WEIGHT2,
-+	PERF_HPP__WEIGHT3,
- 
- 	PERF_HPP__MAX_INDEX
- };
-@@ -596,16 +599,24 @@ void perf_hpp__reset_sort_width(struct perf_hpp_fmt *fmt, struct hists *hists);
- void perf_hpp__set_user_width(const char *width_list_str);
- void hists__reset_column_width(struct hists *hists);
- 
-+enum perf_hpp_fmt_type {
-+	PERF_HPP_FMT_TYPE__RAW,
-+	PERF_HPP_FMT_TYPE__PERCENT,
-+	PERF_HPP_FMT_TYPE__AVERAGE,
-+};
-+
- typedef u64 (*hpp_field_fn)(struct hist_entry *he);
- typedef int (*hpp_callback_fn)(struct perf_hpp *hpp, bool front);
- typedef int (*hpp_snprint_fn)(struct perf_hpp *hpp, const char *fmt, ...);
- 
- int hpp__fmt(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
- 	     struct hist_entry *he, hpp_field_fn get_field,
--	     const char *fmtstr, hpp_snprint_fn print_fn, bool fmt_percent);
-+	     const char *fmtstr, hpp_snprint_fn print_fn,
-+	     enum perf_hpp_fmt_type fmtype);
- int hpp__fmt_acc(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
- 		 struct hist_entry *he, hpp_field_fn get_field,
--		 const char *fmtstr, hpp_snprint_fn print_fn, bool fmt_percent);
-+		 const char *fmtstr, hpp_snprint_fn print_fn,
-+		 enum perf_hpp_fmt_type fmtype);
- 
- static inline void advance_hpp(struct perf_hpp *hpp, int inc)
- {
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index 92a1bd695e8a..e43558bbca38 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -2441,6 +2441,13 @@ static struct hpp_dimension hpp_sort_dimensions[] = {
- 	DIM(PERF_HPP__OVERHEAD_ACC, "overhead_children"),
- 	DIM(PERF_HPP__SAMPLES, "sample"),
- 	DIM(PERF_HPP__PERIOD, "period"),
-+	DIM(PERF_HPP__WEIGHT1, "weight1"),
-+	DIM(PERF_HPP__WEIGHT2, "weight2"),
-+	DIM(PERF_HPP__WEIGHT3, "weight3"),
-+	/* aliases for weight_struct */
-+	DIM(PERF_HPP__WEIGHT2, "ins_lat"),
-+	DIM(PERF_HPP__WEIGHT3, "retire_lat"),
-+	DIM(PERF_HPP__WEIGHT3, "p_stage_cyc"),
- };
- 
- #undef DIM
-@@ -3743,26 +3750,26 @@ void sort__setup_elide(FILE *output)
- 	}
- }
- 
--int output_field_add(struct perf_hpp_list *list, char *tok)
-+int output_field_add(struct perf_hpp_list *list, const char *tok)
- {
- 	unsigned int i;
- 
--	for (i = 0; i < ARRAY_SIZE(common_sort_dimensions); i++) {
--		struct sort_dimension *sd = &common_sort_dimensions[i];
-+	for (i = 0; i < ARRAY_SIZE(hpp_sort_dimensions); i++) {
-+		struct hpp_dimension *hd = &hpp_sort_dimensions[i];
- 
--		if (!sd->name || strncasecmp(tok, sd->name, strlen(tok)))
-+		if (strncasecmp(tok, hd->name, strlen(tok)))
- 			continue;
- 
--		return __sort_dimension__add_output(list, sd);
-+		return __hpp_dimension__add_output(list, hd);
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(hpp_sort_dimensions); i++) {
--		struct hpp_dimension *hd = &hpp_sort_dimensions[i];
-+	for (i = 0; i < ARRAY_SIZE(common_sort_dimensions); i++) {
-+		struct sort_dimension *sd = &common_sort_dimensions[i];
- 
--		if (strncasecmp(tok, hd->name, strlen(tok)))
-+		if (!sd->name || strncasecmp(tok, sd->name, strlen(tok)))
- 			continue;
- 
--		return __hpp_dimension__add_output(list, hd);
-+		return __sort_dimension__add_output(list, sd);
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(bstack_sort_dimensions); i++) {
-diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-index 690892a92cf3..0bd0ee3ae76b 100644
---- a/tools/perf/util/sort.h
-+++ b/tools/perf/util/sort.h
-@@ -141,7 +141,7 @@ void reset_dimensions(void);
- int sort_dimension__add(struct perf_hpp_list *list, const char *tok,
- 			struct evlist *evlist,
- 			int level);
--int output_field_add(struct perf_hpp_list *list, char *tok);
-+int output_field_add(struct perf_hpp_list *list, const char *tok);
- int64_t
- sort__iaddr_cmp(struct hist_entry *left, struct hist_entry *right);
- int64_t
--- 
-2.44.0.478.gd926399ef9-goog
+Thanks.
 
 
