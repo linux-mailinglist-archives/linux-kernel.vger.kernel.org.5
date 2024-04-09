@@ -1,115 +1,109 @@
-Return-Path: <linux-kernel+bounces-136804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CCB389D857
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:44:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F0789D834
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA55B282124
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:44:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EC51C22017
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E7B128387;
-	Tue,  9 Apr 2024 11:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OxE5DP9J"
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD1512D20E;
+	Tue,  9 Apr 2024 11:37:58 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF5586242;
-	Tue,  9 Apr 2024 11:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010AD128826
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712663048; cv=none; b=iMQP3+2UK4bW0cW3ZVLSxUSjRal/sFKAzPvl2QI1s5cl8ag47akbl0VzzNH5X+CyXLRZYvzw9UfB5I779NRDmlgV6we4WIlpJE7DloctxBj34Sq+27f4bS2BNRZaPN+qVz/uDPCcQgVI4kCkPSCnbUIbBd1MmsyezAai0pwWLYc=
+	t=1712662678; cv=none; b=QDC5Un3MaSt3nkYZeN84nNO7dfhdVDq+0gy6EgnyjuppsitgWi2g7yiE7tAK/BOin3pQbvmsYv97ENWVk7G9V/snZNK69OPifkDORc0fW0yYBkCN+XB2DjLY7e63UqQwWOhP/9/2GzwoO84DCEeiKqcPousBa5PTPWZWNDzZb3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712663048; c=relaxed/simple;
-	bh=1dQG2CvAIYQGD4YX1qhjNYbP21CNDqzNX0gQDzEE75w=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=g6p0NbR4ilF4WoOlOUhUJDBTYH2DJcukpDCMuulg7pvlDiUijT5sWGbTZIK07oqJwoO/mTe/HyDgSZIy2ydDcuSajjDShPXst3PAjfcankYH+ZNy4PrT6k20GqR9SOyrTiThYVmLZgCkHRwDltPqTAuLa46Gj5YuGAeUuieVTd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=OxE5DP9J; arc=none smtp.client-ip=203.205.221.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712663043; bh=ek038P3LxIw6ciT6YTkaoOBDNFyc6zhMZtJXRjLxO2U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OxE5DP9J5wJ4vPeRBpEtobdQDNHXMmx6jF/g7f4Mz1snQoYVLMGiL9YmOB808Qfgu
-	 QJrHLRVKhDo2GU2WmqXay2HztKEGf/ydGkXVWQRNyMhACbHzqnhz8ISseyAZSSznx8
-	 y8j4Ydwyqy3ao+fuiwgcb4+cKM4LYYLTp+LSYKTg=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 96A80033; Tue, 09 Apr 2024 19:37:42 +0800
-X-QQ-mid: xmsmtpt1712662662tw6erwfdr
-Message-ID: <tencent_AABA5D95191FCFD28DB325F58D8212525D07@qq.com>
-X-QQ-XMAILINFO: OLnGMPzD2sDVVgYBMuObIt7JY7d+1JJldgIEcNGDmR75Mny7SS/dHiEza6dSIl
-	 G/Mq+ty3e57hyKBAmSoLMVu0nn/iwyNqwiNgwShDz/Wzp1qwnxR8IAKzJkgyUtXEgHTcRLJDoh44
-	 dPQyOcex70aCjGv32PeQ8hpphjivh860XqgXXkE+8RySOSeS/j6Js1Q41fYgITH/frAnGOXRvz0s
-	 ME4ZKTpQnrNTaxllfs5+Ch0GIg+8ivwTQ9XC3ZrBJGHpgd6uP0CZ0L4fjSD6lupgu3zgc//43ysD
-	 6jJMb0i0ZqpgpRNLsGe1CYqJUihji8XNokAqdAkchbUJAOKrdOC8tiP/B0BIGwAbz9VUyLLMGbMS
-	 HNT3GfUESr/93xMNphzEbYS90JvTdsj3ipwDm0ELC6BQqKkQpJghx5JLlSWHHGxSxEkTGNyBsSMT
-	 yipAnTQMkIG2iw4RJRRKi5MX7mZAKq6PE0lz3jHzPvCruqXQbsK27+eOOvSMB4OVukXPXGfavviZ
-	 nWtlCPx9MHwbDTq+eBs0fbVWFosb/45+UB7xGFyLLPOyzy+p9OBvwe9w5qs7NXvxPLjf72ff4K01
-	 coIk7nuvZf3Pds8qmOzbz3CXo5GgOaweKUprYm9/yzMPAq9PFZJZ+58gQeS/6R0rMtLLUqUJorro
-	 h8eOmfHJ0mVER/eE95YejLzVsH5eT2IVUn9QtiRUveS8WNet2AVSaLiqG+WGnfe95x4k4/xE0hHk
-	 dF/Yp4BfrVUg5P28n4+jMy9vJu+hxDHfof9xUbKh9AJy1LwbQ03oNt0Mz5Q4UG2VYSRgNbHIHxTX
-	 f2EVUBZyu1dL8vDZCnbMdW0earas4LzlyywTrbk1CkH+vNv3vYA+8akcZ61iY98Do7UJ2vw7Wadz
-	 mJ8YUQt3h727jYFBUReIMcoAMAYBtQcLm2NleOZE0HCYpcxy7bz1OOX4I4BblYhGVBLoSqxOurvf
-	 GErxvfbvUFFwDaVOSmeXmoFmZ1wZpBRzpjGuJ0fbh0U+/Xx00Iow==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH] bpf: fix uninit-value in strnchr
-Date: Tue,  9 Apr 2024 19:37:43 +0800
-X-OQ-MSGID: <20240409113742.4055421-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000009e2ff406130de279@google.com>
-References: <0000000000009e2ff406130de279@google.com>
+	s=arc-20240116; t=1712662678; c=relaxed/simple;
+	bh=Zr6aCdpoCKG0P7Z6ungADoq81IHnDx/2r+SXS7k/pMM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h+WUOR823kpmjqKdCfYmajg0qL4eK80b2qr4N3hDUOzysgeyAPcoS6LPEb58DSnObeizpAMC4B0gEVgVqo4N6pBq349y3RDqlLlkMxXWxan6+t6zDYdRLatN7LFGhokNS97+m0uvSE8GpecX4bDgzA54C1SST/d4kWlv/KnzXaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VDP5H4BRlzwRjB;
+	Tue,  9 Apr 2024 19:34:59 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (unknown [7.193.23.54])
+	by mail.maildlp.com (Postfix) with ESMTPS id 058691400FD;
+	Tue,  9 Apr 2024 19:37:54 +0800 (CST)
+Received: from Linux-SUSE12SP5.huawei.com (10.67.136.233) by
+ kwepemm600014.china.huawei.com (7.193.23.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 9 Apr 2024 19:37:53 +0800
+From: zhuqiuer <zhuqiuer1@huawei.com>
+To: <linux@armlinux.org.uk>, <nathan@kernel.org>,
+	<"ndesaulniers@google.commorbo"@google.com>, <morbo@google.com>,
+	<justinstitt@google.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<zhuqiuer1@huawei.com>
+Subject: [PATCH] ARM: Add a memory clobber to the fmrx instruction
+Date: Tue, 9 Apr 2024 19:37:49 +0800
+Message-ID: <20240409113749.4438-1-zhuqiuer1@huawei.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
 
-According to the context in bpf_bprintf_prepare(), this is checking if fmt ends
-with a NUL word. Therefore, strnchrnul() should be used for validation instead
-of strnchr().
+The instruction fmrx is used throughout the kernel,
+where it is sometimes expected to be skipped
+by incrementing the program counter, such as in vfpmodule.c:vfp_init().
+Therefore, the instruction should not be reordered when it is not intended.
+Adding a barrier() instruction before and after this call cannot prevent
+reordering by the compiler, as the fmrx instruction is constrained
+by '=r', meaning it works on the general register but not on memory.
+To ensure the order of the instruction after compiling,
+adding a memory clobber is necessary.
 
-Reported-by: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Below is the code snippet disassembled from the method:
+vfpmodule.c:vfp_init(), compiled by LLVM.
+
+Before the patching:
+xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
+xxxxx:   xxxxx    mov r0, r4
+xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
+..
+xxxxx:   xxxxx    bl  c0791c8c <printk>
+xxxxx:   xxxxx    movw    r5, #23132  ; 0x5a5c
+xxxxx:   xxxxx    vmrs    r4, fpsid  <- this is the fmrx instruction
+
+After the patching:
+xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
+xxxxx:   xxxxx    mov r0, r4
+xxxxx:   xxxxx    vmrs    r5, fpsid  <- this is the fmrx instruction
+xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
+
+Signed-off-by: zhuqiuer <zhuqiuer1@huawei.com>
 ---
- kernel/bpf/helpers.c | 2 +-
+ arch/arm/vfp/vfpinstr.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 449b9a5d3fe3..07490eba24fe 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- 	u64 cur_arg;
- 	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
+diff --git a/arch/arm/vfp/vfpinstr.h b/arch/arm/vfp/vfpinstr.h
+index 3c7938fd40aa..e70129e10b8e 100644
+--- a/arch/arm/vfp/vfpinstr.h
++++ b/arch/arm/vfp/vfpinstr.h
+@@ -68,7 +68,7 @@
+ 	u32 __v;			\
+ 	asm(".fpu	vfpv2\n"	\
+ 	    "vmrs	%0, " #_vfp_	\
+-	    : "=r" (__v) : : "cc");	\
++	    : "=r" (__v) : : "memory", "cc");	\
+ 	__v;				\
+  })
  
--	fmt_end = strnchr(fmt, fmt_size, 0);
-+	fmt_end = strnchrnul(fmt, fmt_size, 0);
- 	if (!fmt_end)
- 		return -EINVAL;
- 	fmt_size = fmt_end - fmt;
 -- 
-2.43.0
+2.12.3
 
 
