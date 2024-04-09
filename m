@@ -1,71 +1,132 @@
-Return-Path: <linux-kernel+bounces-137735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA1389E67A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:53:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535E789E67C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C06DB1F21D62
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:53:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AD4728243C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F164E1591F1;
-	Tue,  9 Apr 2024 23:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8BEE1591FA;
+	Tue,  9 Apr 2024 23:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naEikCrZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwojOdW2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFD61EB5C;
-	Tue,  9 Apr 2024 23:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316DC158851;
+	Tue,  9 Apr 2024 23:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706804; cv=none; b=BUI8wFflu+RpEGnZcZ1/Z/ESLOqynMYNBZYy67uKTOx6uzwq3mmQlUTzAHo7Te4DBJTTU9efxNmNBBsL2NpeqI9YU4kHSIBnf83pUNjuimwzWQjRtrxSF2712QTkT9hZEzLhnY5azrPj3d3M2haIj6B3CXJqFhs8MYA5ZlbJB/c=
+	t=1712706874; cv=none; b=UxfnAUfeVIS0i1dEM06AGUz3RUndetzFlEPrDGJtZdJxVfveNZ0mqDEldOpetpwCU2YJvnosWL/OUf3W7HU2WYE/x2TauW+0CLkKMtdoQ0jW3A1Xq0fczPTF8d4fS0uaZVSCbOi6U7YdIaL2yb2mail+CiwmgCKfHQIncFB8Pck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706804; c=relaxed/simple;
-	bh=d2JlSSzg7fvVL/MPAAgkaaEpRGccUssPU5uIiZerKmA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LZ5ID47LyO2+UeJJc47pubhFUyZo5sRCEvsUob8daRZhq6dndtxHGce7Z9ii9jSd3ErCkQnc8CU/91gViQLUVtgEvwhPTGbxu8m+JbYEs/Q2oRnlnCyE9JYr/G2ba5QwG8AwYhIxL57CvmOROcjP7p1TU5o+SqQhFAUABvPglN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=naEikCrZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE3CC433F1;
-	Tue,  9 Apr 2024 23:53:23 +0000 (UTC)
+	s=arc-20240116; t=1712706874; c=relaxed/simple;
+	bh=t1NhF4nrxdQhhoLefZQtEgoMWYKkMCdVLx8xtlo79Mw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=mxTXIlVg2YKnKjxPh6neoT4PnQdX2iPlsIelqBXtAA2rn5iK7uNr1HAcj4ppYRkSkey7C5DPiX6LJrPV7ps7IZQij4SqqSz0MNgyGSX+3EBNBu/S3lV3Dz0mvqc8rHmNZ5U0rsX45/kzgReRFVEqtS7DPXQPEMkf4ERvgC9kxGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwojOdW2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E1A9C433F1;
+	Tue,  9 Apr 2024 23:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712706803;
-	bh=d2JlSSzg7fvVL/MPAAgkaaEpRGccUssPU5uIiZerKmA=;
+	s=k20201202; t=1712706873;
+	bh=t1NhF4nrxdQhhoLefZQtEgoMWYKkMCdVLx8xtlo79Mw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=naEikCrZJLwa2e4s14QNHzroCD+4520uCwiRMpO6eAiSrKimNqKens3UgVB+/sXex
-	 Pr6sdUHBsmsAOrR5iA5OIzI/fdkBHWCuKuvDD+TT1MXG46AwXClumgPZV0X0zaWPx5
-	 ic0bVc2HoEZCtc1/RIawGKXqIEfuHsqRljF/fRctfTqVDPPcpe/8zgA60jYI47NmJZ
-	 oaTnbbpz1plp5Dwk51AtKGZ1up7S8Ve6cCsAaCDJS8VEsTAHCUKWzZ0v0CBZVXIAU9
-	 3CZC2oTWoQ9jiDbM8+VNAfZjJzTe3YxHYcnStMgMBybJ9r2BicDA1iZK758KG4ff3w
-	 jjxwwYvHH1m2Q==
-Date: Tue, 9 Apr 2024 16:53:22 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Sean Christopherson <seanjc@google.com>, Shuah Khan <shuah@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, linux-kselftest@vger.kernel.org,
- llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: kselftest_harness: Print empty string, not
- empty fmt on PASS/FAIL
-Message-ID: <20240409165322.60f1bcbc@kernel.org>
-In-Reply-To: <202404091644.9CFF82A@keescook>
-References: <20240409224256.1581292-1-seanjc@google.com>
-	<20240409160920.3bfe3eeb@kernel.org>
-	<202404091644.9CFF82A@keescook>
+	b=NwojOdW2AUtmiM4odkHOSUKtAmqdBkpXq4Sienw6hV91VcOgqBhaTkP76EaYBwmvm
+	 MBkGDAY6vmhV262dis86jOzkdodmqdQOnR2F23XwGnbtXO3VsZgxs5qTAFAHqp04uA
+	 zFyIk7eMTdtL4aGRMgDaBvjZzkourZhvpq0j8eSOAUwk9zdyMZZuhjkWzeC4TVyTMc
+	 0YdNVxcu1YDvf3IxXdYZK9qX586ukiLZj9FwOM+I2YY8t/K9jUCK4bGIpvIEZ8P6zi
+	 TlOjbfmbpw23dA7/cVNp44QysvPU+TUeiWYqFr2b73mrRqrfsBQwB6ZdKdueiIl/AM
+	 4pezmDgjCkQNw==
+Date: Wed, 10 Apr 2024 08:54:28 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Marco Elver <elver@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Eric Biederman
+ <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara
+ <jack@suse.cz>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH] tracing: Add new_exec tracepoint
+Message-Id: <20240410085428.53093333cf4d768d6b420a11@kernel.org>
+In-Reply-To: <CANpmjNOv=8VBvbKBQbsBdg9y2pNsfdaA-46QB53NY-Ddmq3tmA@mail.gmail.com>
+References: <20240408090205.3714934-1-elver@google.com>
+	<20240409103327.7a9012fa@gandalf.local.home>
+	<CANpmjNOv=8VBvbKBQbsBdg9y2pNsfdaA-46QB53NY-Ddmq3tmA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 9 Apr 2024 16:46:40 -0700 Kees Cook wrote:
-> 	ksft_test_result_code(t->exit_code, test_name, "%s",
-> 			      diagnostic ?: "");
+On Tue, 9 Apr 2024 16:45:47 +0200
+Marco Elver <elver@google.com> wrote:
 
-Could work, but we need to change the callee to extract the first arg
-after format from va_arg, which I wasn't sufficiently familiar with :(
+> On Tue, 9 Apr 2024 at 16:31, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Mon,  8 Apr 2024 11:01:54 +0200
+> > Marco Elver <elver@google.com> wrote:
+> >
+> > > Add "new_exec" tracepoint, which is run right after the point of no
+> > > return but before the current task assumes its new exec identity.
+> > >
+> > > Unlike the tracepoint "sched_process_exec", the "new_exec" tracepoint
+> > > runs before flushing the old exec, i.e. while the task still has the
+> > > original state (such as original MM), but when the new exec either
+> > > succeeds or crashes (but never returns to the original exec).
+> > >
+> > > Being able to trace this event can be helpful in a number of use cases:
+> > >
+> > >   * allowing tracing eBPF programs access to the original MM on exec,
+> > >     before current->mm is replaced;
+> > >   * counting exec in the original task (via perf event);
+> > >   * profiling flush time ("new_exec" to "sched_process_exec").
+> > >
+> > > Example of tracing output ("new_exec" and "sched_process_exec"):
+> >
+> > How common is this? And can't you just do the same with adding a kprobe?
+> 
+> Our main use case would be to use this in BPF programs to become
+> exec-aware, where using the sched_process_exec hook is too late. This
+> is particularly important where the BPF program must stop inspecting
+> the user space's VM when the task does exec to become a new process.
+
+Just out of curiousity, would you like to audit that the user-program
+is not malformed? (security tracepoint?) I think that is an interesting
+idea. What kind of information you need?
+
+> 
+> kprobe (or BPF's fentry) is brittle here, because begin_new_exec()'s
+> permission check can still return an error which returns to the
+> original task without crashing. Only at the point of no return are we
+> guaranteed that the exec either succeeds, or the task is terminated on
+> failure.
+
+Just a note: That is BPF limitation, kprobe and kprobe events can put
+a probe in the function body, but that is not supported on BPF (I guess
+because it depends on kernel debuginfo.) You can add kprobe-event using
+"perf probe" tool.
+
+Thank you,
+
+> 
+> I don't know if "common" is the right question here, because it's a
+> chicken-egg problem: no tracepoint, we give up; we have the
+> tracepoint, it unlocks a range of new use cases (that require robust
+> solution to make BPF programs exec-aware, and a tracepoint is the only
+> option IMHO).
+> 
+> Thanks,
+> -- Marco
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
