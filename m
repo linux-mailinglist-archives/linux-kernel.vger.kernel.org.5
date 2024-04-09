@@ -1,122 +1,115 @@
-Return-Path: <linux-kernel+bounces-136393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB3489D391
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:52:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB2A89D393
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:52:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54F3A1F22CD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:52:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B6F9B230B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2427D3E8;
-	Tue,  9 Apr 2024 07:52:21 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EDC7E564;
+	Tue,  9 Apr 2024 07:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LDR6LfN0"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB0E7D094
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF157D096;
+	Tue,  9 Apr 2024 07:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712649140; cv=none; b=HdZPmD+DPG07Eh8D9IPn1xNgAlXw9D0ZP3tKgJ3d0wPSn1EobwQeFCU4zb9rPj1sCL9Oozn9cP+MCtWKZRmJwGVt38tVStoR1DlMyNb6iw2qukpzCT+lvbp4knstAJK53npvfeclTmxewGR+BS/Jfw1MWKU6vR5HAQ6xwSPblb0=
+	t=1712649142; cv=none; b=CtSbWhBnm6NwCIN3/1PABy///OQTCxJcPuN79peosidVFhkYTpk88cKH7PYo7e1tBcq2RSStWenRibtt0wlLE3NZrDCQW8Wu4juHGt2ih5XgODf28BNilDPT9q9Q8K58/0ovbgjcIDGTrgQ+u2dHiBRKHzSeb1f76xn2X6j0tDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712649140; c=relaxed/simple;
-	bh=tja6D2D9zLCp/wwk0kBxodTByQozVcN4WMbhLnavqTA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pIf0fyGTbfej5MB6y7maF3J0w0hds9MZjXzsLIEZwq1/DpsxL8U8hvD0IoRCRKK6zGEBscd6ADIvCIm2gaGT2k48OSyP+/S8v6gBdQx1LqPI7UKoxBsUnzO2RWA0WdAmcghLli+L6Pjw42toELvatjx6wPE1SyX1TIeic+CTvZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61149e50602so35080537b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 00:52:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712649137; x=1713253937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zGsJLD3MDPYLGbFxf/soiqkNvo17SqwPa+nbihFypWk=;
-        b=Oqx2LVEZzCLc/OnCDEG/otjdLJgyuUo2aFwClmcumQR8Hnv899Rki+WOneX2V/xZ6B
-         T0EFk7ijlLfiLtnVipL2v71zcQfzwjTMVvblz6vmI/q8nAB09ygaLxpmfRFyeFwPQCgL
-         LLR95uXAJxsNE7sjQ8pBnhn8jNP9bIN9vZnp9nupA9IMVUmQVUQRYwAgrE5ZAgynlhGu
-         PGTWAoNVP691rsDZus8CStEXKrkxT6PNSK0ydVYBdWfUBp90nrK0121uJuWJPROtr1t0
-         Z+6lh3TEY60/E4mLpjohsVatqBGilElHqITbSiWxg6Wt5TIS/axYm4ZkaKjcdZsZQzML
-         dAaA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRWZchYZWBH+mxs5ohsGRAYUtekVTBM+Hzq/pzHa5OKPSwfKidJa5/F3H8yrJXCaTR/OU/fpGWM0Fk09q2tXzfR6jfbfxqBaYuFM4c
-X-Gm-Message-State: AOJu0Yy5PRMPxuxjwhi0I3GjItWsYUcd059IJH+MSb7DFnBwigarYLcv
-	7GS/BUUwHg5DDFNW8B2UO1T2T3mdJisLZiWEkpiyfVQrgHvh+XVsYrMUpIKPwx4=
-X-Google-Smtp-Source: AGHT+IGdCJyofR+xtphwBbbHc3kcAOayaGIQ1d/brSr0WIxSjxAMGr4QnHJ7khrrymt4m1dLf+8ygg==
-X-Received: by 2002:a0d:e886:0:b0:615:1be5:6d33 with SMTP id r128-20020a0de886000000b006151be56d33mr1290432ywe.22.1712649134590;
-        Tue, 09 Apr 2024 00:52:14 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id g10-20020a0ddd0a000000b00617bcab1236sm2108211ywe.35.2024.04.09.00.52.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 00:52:14 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-615053a5252so47871537b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 00:52:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWLZ4wPkCGKsSbn9G+b7MbqdQF1YEroTt8LZpIW7b5Sj8ByGllUMIc8WINA89FC6nLDlO74E6FzCWXzJUoI1Dzl1GlMYWoFYhybO+U2
-X-Received: by 2002:a25:ad42:0:b0:dcf:ecce:b2da with SMTP id
- l2-20020a25ad42000000b00dcfecceb2damr1188554ybe.19.1712649134048; Tue, 09 Apr
- 2024 00:52:14 -0700 (PDT)
+	s=arc-20240116; t=1712649142; c=relaxed/simple;
+	bh=bEhSDx+vWHpXQlt+M7IjBoMc4qQqSypyklKcr1IXMf0=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=L0YGpSisb3ydNchckIPPEnMFNnn6zR4oERsTJyg/J9S08pOOWAh6SS0zRabPRs8ouIPBUlGiUMZqZBB3UVD6y3fVWiPZGo9uGLhgQqb7MZ2kewot/ASff+3C6zjrE2/0hbL5SSGZVE0EQqAqGy46sqHRAVVUyHma1EdNmv1kSjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LDR6LfN0; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B9A091C0007;
+	Tue,  9 Apr 2024 07:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712649132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Fv6RYLQFO+Neqn3UJOqdARRddJ1bSBwtGcUX7fOSOmY=;
+	b=LDR6LfN0SwuGCykwpiBkJhA675YPhZc5smBYQgzhs2+vOL71choduSOtMKeCZ2zbteNJn0
+	dGJwqyul7Z0JOPsG62iRy8pajSj5AEAeMSVy/lf4TLETXNF1+gDsC3OFpHo5nmtmXmRFzk
+	aK/qznAU2TBbbDw3G/qIeT9fmNuBkNYfUFo8TPzXqqQq9ROFOWCt23M2DTALqh8KAfENcL
+	39BBu5x5ef4Kx9BZzIoskU8FeKrLjpWy7qDStgYb/F9C9n6l7y2MGK3BfMeHJCtaxBVuKG
+	yAT8KjC8HZjDZlX+o0rAr5v3PFUrw6zbXrRxMjPPvNY0tIJjA+f1xCEJ8KDrcw==
+Message-ID: <7364e62f-b776-42c2-b063-319aa939da29@bootlin.com>
+Date: Tue, 9 Apr 2024 09:52:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405144304.1223160-1-arnd@kernel.org>
-In-Reply-To: <20240405144304.1223160-1-arnd@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 9 Apr 2024 09:52:01 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUPX+Tx9y3AGFXgVM8G0YkSLgmmNUPCQCX8L9Q_kg5muA@mail.gmail.com>
-Message-ID: <CAMuHMdUPX+Tx9y3AGFXgVM8G0YkSLgmmNUPCQCX8L9Q_kg5muA@mail.gmail.com>
-Subject: Re: [PATCH] [v3] parport: mfc3: avoid empty-body warning
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: michael.opdenacker@bootlin.com, devicetree@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: dts: sophgo: add initial Milk-V Duo S board device
+ tree
+To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+References: <20240409064504.4010353-1-michael.opdenacker@bootlin.com>
+ <IA1PR20MB49532A8D4294ADCE0C33A654BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Language: en-US
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Organization: Bootlin
+In-Reply-To: <IA1PR20MB49532A8D4294ADCE0C33A654BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: michael.opdenacker@bootlin.com
 
-Hi Arnd,
+Hi Inochi
 
-Thanks for your patch!
+Thanks for the review and tips!
 
-On Fri, Apr 5, 2024 at 4:43=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
-e:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 4/9/24 at 09:17, Inochi Amaoto wrote:
+> On Tue, Apr 09, 2024 at 08:45:04AM +0200, michael.opdenacker@bootlin.com wrote:
+>> From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+>>
+>> This adds initial support for the Milk-V Duo S board
+>> (https://milkv.io/duo-s), enabling the serial port and
+>> read-only SD card support, allowing to boot Linux to the
+>> command line.
+>>
+> Hi Michael,
 >
-> on m68k builds, the mfc3 driver causes a warning about an empty if() bloc=
-k:
+> I think your patch losts the board binding and have wrong compatiable.
+> Also, the SD can have rw support with proper property. See link [1]
+> (need 'disable-wp').
+
+Right, ""sophgo,sg2000" doesn't exist yet, so it will be indeed cleaner 
+to use "sophgo,cv1812h" instead.
+
 >
-> drivers/parport/parport_mfc3.c: In function 'control_pc_to_mfc3':
-> drivers/parport/parport_mfc3.c:106:37: warning: suggest braces around emp=
-ty body in an 'if' statement [-Wempty-body]
+> I suggest you resubmitting this patch after applying clk patchs.
+> This could reduce some unnecessary change. For now, you can just
+> use the dts for huashan-pi (with changed memory size).
 >
-> Remove it in favor of a simpler comment.
->
-> Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> Link: https://lore.kernel.org/lkml/20230727122448.2479942-1-arnd@kernel.o=
-rg/
+> [1]: https://lore.kernel.org/linux-riscv/IA1PR20MB4953B158F6F575840F3D4267BB7D2@IA1PR20MB4953.namprd20.prod.outlook.com/
 
-Why the Link-tag, pointing to v2?
+Good to know. That was next on my list.
+I'll submit a V2 in the next days.
+Thanks again
+Cheers
+Michael.
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+-- 
+Michael Opdenacker, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-For the actual patch:
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
