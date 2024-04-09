@@ -1,110 +1,97 @@
-Return-Path: <linux-kernel+bounces-136961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2730989DA5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:36:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0484A89DA60
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:36:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BA4FB25B0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:36:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3606A1C22FB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEAE12FF73;
-	Tue,  9 Apr 2024 13:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856D912FF9C;
+	Tue,  9 Apr 2024 13:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MON71pSk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZTMfB0U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D2512A144;
-	Tue,  9 Apr 2024 13:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD8112F381;
+	Tue,  9 Apr 2024 13:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669464; cv=none; b=WlGae4+cb633tQvwnAxLf3Sy31VdHwTUN4j7S4XCqL9l1u7SSwImGUO48deSYBD/ogmaiVk0dkM5YfO82hRfrm7kVz/dRnBJmb+RxWIBIA2ERzZMB3QmqVRvU04lak9kNv0ACjESB/eNSKsfgzhJFAqVchcy1w/hz5cik6eoxac=
+	t=1712669517; cv=none; b=syU2B+WP9wZKw66eIkPMgKInnv2VFWjYdkL6zO4J1ktWHLOB9XWRn1gqKoWl/PyrpLDXz6tyVQB4V1pkWCGyxHKwGW8kBsCtayWvpSE1O8OyQB3K+fD+byRLQmXOVo/qQmOUr0M1Bj0zTIz37rSBgU3UpWGL4FlfJl7Soz1viGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669464; c=relaxed/simple;
-	bh=C5Pgvgm3baCPKcrkdPQDnpWS7wMXweORPfyVxBxJtII=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=dwCL5MAaZrw6AJ1fBWvDGITeg2wQxyPrOdlKgUEPfdvwuK6KpYDENDOSpZUtKKe5bMQpUtEHpKKDaj8ShKtCSED4IZGlef82ufv76q92pKbCfag1f5n+3GnnJNq2EmudwoTIeXgR6rCzv5vBkm0cSGCjhWr4UBU4Y40Ofkq8c54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MON71pSk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEFBBC433C7;
-	Tue,  9 Apr 2024 13:31:03 +0000 (UTC)
+	s=arc-20240116; t=1712669517; c=relaxed/simple;
+	bh=t+Ksp7FCYvmyEVKHHeraJyf8M135WOhzLeRnkqqR5u8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=eRI7LAul0eLnEeUuMWxVyzzwkY2gyrSyMJdIEszn8kAZ2wx9df885YuBb+H3MH3pugVEZLXzCZwYXl4AiTy2jY/HkTd27i0u2Pl7hIiKgpIcbwJaA+L99bzr2FSELwvjcWMik8GJ8fFbIitwEchFsf8Yxq5HUmFb+643OSOV3bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kZTMfB0U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC0FC433F1;
+	Tue,  9 Apr 2024 13:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712669464;
-	bh=C5Pgvgm3baCPKcrkdPQDnpWS7wMXweORPfyVxBxJtII=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=MON71pSkaCjpYpANsLx7RFQYqc1znbqTBrx/5arKf7zzStcEH+auE9EvWac6sKC/2
-	 8aZD1t4FcuU4M+tDK1y0+SpCRqxxM4UWTl5i/mqFIMv8F7jFFNWX3Z2wmQruIZrLW/
-	 Ayz1WZmw6ozS3v7o/Wa7aWdwUzHgZydnHU3GYfNRssq+1Lv1RdNxyzEdBmNWtYeyAd
-	 qdPRR+NltcJhLj4uClPmIVa6n+MvWH8CRe963O5ZQE7WBHG/qKmz+MZvFhfPZhv6iu
-	 OJi/O++htw1gam3CC0Zg0OUt9Mroi+whS6/3Vp0naNCYvs9XPkb+JzxXxskx2PH8qJ
-	 54fncFaIjWtyQ==
-Date: Tue, 09 Apr 2024 08:31:02 -0500
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	s=k20201202; t=1712669517;
+	bh=t+Ksp7FCYvmyEVKHHeraJyf8M135WOhzLeRnkqqR5u8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=kZTMfB0UAUPUs0ocDCsQO13zU2bvvSgpasC59IiSmHHyq5XquOjWZLfQicAj8A8aB
+	 o+pn4rDwBAewqokcx0PMk+RHmw49d08jFLRV+DGu9hOEzj56AnR0SEHQQGIetF/ffd
+	 qNj5FIjO4PUo7n+e/5FBfQ5t00rnGIIMGEv5ZhEDAdpCYn0flo9t7ZdzOJhNOUKRkb
+	 NauVif830INUuV/PA1lNcIU/6Zg6yI7E8WyW9L34teJKhQESmDt7oyO8lkSLL0eVIt
+	 L/hZgbmZr/uk9pA6PPv5p1Ot9xoHKqB/T6gWZV8SyYBrW1sQZfnAlRexOi37//klF4
+	 V1i8PIrLfEFtg==
+Date: Tue, 9 Apr 2024 08:31:55 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
+ properly reset the endpoint devices
+Message-ID: <20240409133155.GA2072077@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org, 
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240409123556.34299-1-mike.looijmans@topic.nl>
-References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.67250ca5-6a79-4048-b845-3d240ff83a75@emailsignatures365.codetwo.com>
- <20240409123556.34299-1-mike.looijmans@topic.nl>
-Message-Id: <171266946179.1029796.4237832991239731761.robh@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: power: supply: ltc3350-charger:
- Add bindings
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg22Dhi2c7U5oqoz@ryzen>
 
+On Wed, Apr 03, 2024 at 10:03:26PM +0200, Niklas Cassel wrote:
+> On Wed, Apr 03, 2024 at 07:02:17PM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Apr 02, 2024 at 01:18:54PM +0200, Niklas Cassel wrote:
+> > > On Mon, Apr 01, 2024 at 09:20:36PM +0530, Manivannan Sadhasivam wrote:
+> > > > PCIe host controller drivers are supposed to properly reset the endpoint
+> > > > devices during host shutdown/reboot. Currently, Qcom driver doesn't do
+> > > > anything during host shutdown/reboot, resulting in both PERST# and refclk
+> > > > getting disabled at the same time. This prevents the endpoint device
+> > > > firmware to properly reset the state machine. Because, if the refclk is
+> > > > cutoff immediately along with PERST#, access to device specific registers
+> > > > within the endpoint will result in a firmware crash.
+> > > > 
+> > > > To address this issue, let's call qcom_pcie_host_deinit() inside the
+> > > > shutdown callback, that asserts PERST# and then cuts off the refclk with a
+> > > > delay of 1ms, thus allowing the endpoint device firmware to properly
+> > > > cleanup the state machine.
+> ...
 
-On Tue, 09 Apr 2024 14:35:54 +0200, Mike Looijmans wrote:
-> The LTC3350 is a backup power controller that can charge and monitor
-> a series stack of one to four supercapacitors.
-> 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> 
-> ---
-> 
-> Changes in v2:
-> Rename to lltc,ltc3350.yaml
-> Fix spaces and indentation
-> 
->  .../bindings/power/supply/lltc,ltc3350.yaml   | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/lltc,ltc3350.yaml
-> 
+> For a real PCIe card, if you assert + msleep(100) + deassert PERST, surely
+> the endpoint is supposed to be in a good/well defined state, regardless if
+> he REFCLK was cutoff at the exact time as PERST was asserted or not?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I think this is the key point.  This PERST#/REFCLK timing requirement
+seems like a defect in the endpoint.  I know there's firmware involved
+and whatnot, but IMO it's the endpoint's problem to handle these issues
+internally.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/power/supply/lltc,ltc3350.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
- 	 $id: http://devicetree.org/schemas/power/supply/ltc3350.yaml
- 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/power/supply/lltc,ltc3350.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240409123556.34299-1-mike.looijmans@topic.nl
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Bjorn
 
