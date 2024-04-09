@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-136309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E47789D284
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:36:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C63989D287
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFC911C215C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:36:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9651C22173
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7366E5EF;
-	Tue,  9 Apr 2024 06:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A5974431;
+	Tue,  9 Apr 2024 06:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kyxq5yw7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W35iNMjf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B949C1DFD8;
-	Tue,  9 Apr 2024 06:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5E4286AF;
+	Tue,  9 Apr 2024 06:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712644575; cv=none; b=r0L9ozayW6Han2+7/c6+vqu7R/JD6JI7UL2kS4yHimpTwlzse00Eug6VjrGg25mghxnF5NlEqqevNWlKPZRamFlAPsOB9+wX8o8kSD5vQT0jfTVeqwuyTZtcIDTTPypj4IkROegJtR+gY3X8LKhZ+fA4Zd3oUSvBYUdXqwXnlBI=
+	t=1712644632; cv=none; b=ZJaICACSxajvambhLAM1znZqF/4hpJMxuEfQt6/cNLntQRiQFyVSkvvrOaeMBUFbb3zeKqTejHruRO2Zhhvz+0P5mHZvvXCa4nwRPY7v1AIZkdSewt3XLCsmDMwW5uuvD3hU6XqLbhFjh0X9wyURmOLsHeNi3gNHas4EykZ7in4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712644575; c=relaxed/simple;
-	bh=lMgqYEPTRmtKSTSuLSxgyQvQ4+CLjIyT/Z/XeACisFo=;
+	s=arc-20240116; t=1712644632; c=relaxed/simple;
+	bh=vy0PWZPAPyixcPi5hnwM4Paya8fSPXHfcDQ5TZi89qo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HlEM/m6X2WAJqg7p+nfLtjAv5A7Q6xwo05ox3qcQldmeclXpW+Bw5V/gu4MPTkjJdIPhVACKzMuMQfap3nm2Q/uuGOKCCVERYyuFGdf46u1wrG60VsDDqgZdUUPMmHDr0xDaEgEp51K6rHQTIdENw3ggasxI49VRa7IvpGe5grw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kyxq5yw7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9587DC433C7;
-	Tue,  9 Apr 2024 06:36:10 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=LSYBRh6c5ZAmYOt/zkfPQFNnxiKSQ1aJXVL0UUr1yCujkk1fUAswyB+c9VRcxSd2tdC1+Z5sn+QPgKsYn7MWepMbO2mtZ7bgpQq+iFZCHLP1tU7+XB0eanU+0bFtKk2H0ihndXhDwE3aqeTuUW0RQe8fR1LQ57EV/eLvIerRgic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W35iNMjf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C367DC433C7;
+	Tue,  9 Apr 2024 06:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712644575;
-	bh=lMgqYEPTRmtKSTSuLSxgyQvQ4+CLjIyT/Z/XeACisFo=;
+	s=k20201202; t=1712644631;
+	bh=vy0PWZPAPyixcPi5hnwM4Paya8fSPXHfcDQ5TZi89qo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Kyxq5yw7yttBj2lIXmF+G6ZVo77oOzQcGIurxA8qO3rkBZdIYNw0M9Ko3sjHGReFm
-	 36uckzGq61U47wz5veDnuSHrS6UsQRnJsB2km3C0lcJjv0j9lLNa1UG1elk6YLfSOz
-	 1NY//SYj8uH4uQqbUx78KcgCExGUNpUrGhL5hieIUmkJbhFvAaQiYB6ZVi7kikoRC/
-	 wXmHuKBjIWRBBCKy3dmjEClYnW8xqKHUiLJfOreeRFDFhEJPz9fAunjdBPdmfcWCXF
-	 jD8w9yFJyoMm+W43l6Wg7ZuAsLXq9ZOwT5KUBcn4CKfpsGAPKjs6jzRciMo5Jy7GNW
-	 pWvrjbamXZGhg==
-Message-ID: <b0055143-96bf-45c6-ae9b-78b60fd02d6c@kernel.org>
-Date: Tue, 9 Apr 2024 08:36:08 +0200
+	b=W35iNMjfqXxBgVo11VVkrE6Gmk6js52raUjbHKe8RhyVa98nKmZJIic+t7j9nN/5d
+	 A2Ox/QpBVP99OM+GZreQMXeyK2aRYE+xsk23K2MPtdKsnn5ao0GUhyR7gfRFJK80or
+	 6DESuWqioGMR5xm4NWOaJv9JIM+lK2AWR8CVRtnemdrf66b+6BUmHx5cZ51IFMPSME
+	 TXleNRZE8wlzbndHOa4FgFNwGK/TeFWDJNQmmH+Y8Gy40RAecKuZdnb6mk4Ol2cGmK
+	 L3vlkEszOlBu871OBYUR9ZjZLE71cND6moaP1uhzm2djTeygrS21Wz04xhG09ZO0GI
+	 vUDX9SvWfK3jg==
+Message-ID: <ef8443ef-005b-44cc-a98d-a9a0cd201eb0@kernel.org>
+Date: Tue, 9 Apr 2024 08:37:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,16 +49,21 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: iio: imu: mpu6050: Improve i2c-gate disallow
- list
+Subject: Re: [PATCH 1/2] dt-bindings: mailbox: qcom: Add MSM8974 APCS
+ compatible
 To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240408-mpu6050-i2c-gate-v1-1-621f051ce7de@z3ntu.xyz>
+ phone-devel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240408-msm8974-apcs-v1-0-90cb7368836e@z3ntu.xyz>
+ <20240408-msm8974-apcs-v1-1-90cb7368836e@z3ntu.xyz>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,23 +109,18 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240408-mpu6050-i2c-gate-v1-1-621f051ce7de@z3ntu.xyz>
+In-Reply-To: <20240408-msm8974-apcs-v1-1-90cb7368836e@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 08/04/2024 18:34, Luca Weiss wrote:
-> Before all supported sensors except for MPU{9150,9250,9255} were not
-> allowed to use i2c-gate in the bindings which excluded quite a few
-> supported sensors where this functionality is supported.
-> 
-> Switch the list of sensors to ones where the Linux driver explicitly
-> disallows support for the auxiliary bus ("inv_mpu_i2c_aux_bus"). Since
-> the driver is also based on "default: return true" this should scale
-> better into the future.
-> 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+On 08/04/2024 21:32, Luca Weiss wrote:
+> Add compatible for the Qualcomm MSM8974 APCS block.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+"... The block is already used in DTS, but without any SoC specific
+compatible."
+
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
 
 Best regards,
 Krzysztof
