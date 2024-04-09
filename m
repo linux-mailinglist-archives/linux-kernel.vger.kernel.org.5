@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-136278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60B589D22D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:13:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E5189D22E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B2DC282D83
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:13:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 453E31C2117B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67ED7E777;
-	Tue,  9 Apr 2024 06:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A897EF06;
+	Tue,  9 Apr 2024 06:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="sUv0lF5p"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="QKkZ+K7g"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265307E564
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577FC757EE
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643137; cv=none; b=hI7e3hVA24Tji/shJei5Xv3wGreyAjk23tSwQr32vCAo7AK1ujfOzfK0VV+9/zANJHokyzdNR37FDIU8j/t+Y6kioxnOpOqRKp+gRA1/eS8qvWDvC6W9UrGjnhhr9XF+8E24IwcvOUtv2GiismVkwQNrwIW8uFfdzkiYNKBx/SI=
+	t=1712643139; cv=none; b=Uz/V38pOe2astv6JSGu9kzfdmHOqfAGBXfx6ZG3cWYF7ifnRkjDFTL+dzrxFPLY1QqRF2Qrbd/+yCnthDGuUfQW42+qn+69oWzccmUp36gw8O2P+xtWQ/gE/W6I8KGPHyIuswTNDVF2Ov3GCj4ACkUQPzJgZ6vBhyl6ljNdgOwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643137; c=relaxed/simple;
-	bh=Hs9lg5qGOOwmGFesJpJkUKBoTukCuS9EqZHQvOWY1XM=;
+	s=arc-20240116; t=1712643139; c=relaxed/simple;
+	bh=wl3aqJRZY3tGjSAdrBhGHd2RCmOZTytU6+iHNOCOXfo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nZO5CyyJLPUWYDGpN/R2l9nztMqDyZ22P0+kYU+kYH0V258/BI+DJ7kV7Q74RsemJEjnhT3iqxYxZLV7+76GPwiiwerI/sJ7kmNqQu9h35WPOfuCvJzsfLcrj2zK35NhHY3jmlo/meE0otifF/hiLAh+D/rYYnuzxIihv2gP3ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=sUv0lF5p; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=HKSJtqooon9vEK0mIRXb3FsbfVAp1/MVsSg5DwE3ylG7EVdpiLBd/qsQJ7EzXB9KZ2csNVxFPSLaoRUkSYTKkXp4g6xzTJMrM7+Uadrvc8hAgRilKBBOxrtQGltAe2S8a7DhWqmYxmBKv6KVBrIqYdGrf6Bq1/mTWvdh0l89yxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=QKkZ+K7g; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4107934a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:12:16 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso4531846b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712643135; x=1713247935; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712643137; x=1713247937; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VjvFClKwy+BYaRIrausKimMcjFw1vT5hOqvdsQGe/rs=;
-        b=sUv0lF5pxl3rp03mwDpN5aOqMrD1fuiMDjjtQX802u8X21kKQbA1Vso+8r4C5jtr5l
-         yTAVwr70sLcHCE6xw4f/EaLMtJQj3/8vWSJAiHYOZdqjs+n05ik8MbEC/S/DE/0KJQ4K
-         F+p0nM2ijjJ+wqPEiQ/6zOEriE3j4PwUI4cgBLZMnn92Uo4yadrly4VTk/T0f1JLwWpC
-         OgLibOI9fkLc9cM++igyFgiAk04d68addn4qWMicohxe3RfJTdYVLnPC36nY/dPDz4S1
-         TlRteLKGxohg4Ex07DYCQZGDYCfAreIEqWGvG1ktetg+N0f2jss3+ZCahKWwPTXE0c2t
-         0uKg==
+        bh=2Dd+qicqNqOTXPUN+vfB0pN9kY+D/OYBSctt1TBOZeY=;
+        b=QKkZ+K7grHe3vPCrXtW6gaZheFGugxxeClMqh+Z2bPYIKi+She130jb3mgb/7ba6ao
+         TB75aN9As0qpiP/GSeWXUPFUZYl2lbeJ/wf+CPtatuePF8kqsv+y348dfiR02jZKY3aG
+         gadWndNz+XRreVL2oVCQUjusiZZxAI5Ps2fwDOLO+PYFJwJFpSj/TB2XXf0Rg0qLLt7C
+         KJ/Z61mDuLJNq5t600kqz8jENOyRpJwPvALVfUQZAZVWnZnTyrKHaBJtnuOkyx0slOtj
+         P1fs7WT8nRmDTa+dkWpFf5EoVEPIxXiZf0IfDL7eLFKIM1V+5YUGg/9RVBxkygesDedp
+         BvKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712643135; x=1713247935;
+        d=1e100.net; s=20230601; t=1712643137; x=1713247937;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VjvFClKwy+BYaRIrausKimMcjFw1vT5hOqvdsQGe/rs=;
-        b=i3Vw7gAEngUYdyftRJCCEMPQ6dCvfnX2wUW7Xhyk1X481gy8ZfofwBzn5wd03hyqOR
-         DsBahAtpiAC9sVHZNV78xggrUeu2LpqfpI6+5PTXlQOZtFY5BrsDaupIqB5Nb5WX7fdA
-         as6B8lrVhK/23PRwsLr2vIFnRA9dwrU5pDCC8dm54GBNjZAk6bNw/3+zmHTK1kGn5wfc
-         2l13Cdi0uPR6+rILg9HM+TA4w/m7CyWQ7ZoaI4OeSlHqkpFj5uTvY8IzYGpbTFNN7A9C
-         8dbUx6R/4/O6+ptWVTx/a7kGCjyfSQyIHvBXjFJXM74XtexuJfnQ9TbLc1yIJ1H00mwv
-         x/IA==
-X-Forwarded-Encrypted: i=1; AJvYcCW0yG1xh5oIRgyZcpsIMQRH3YI76m/49Po2Dzcqg0yX26J1xl26m4nDJy5njPUtuAHLyROBKda8h+YO9v0bVDwldbljuSTZfM4S5r9M
-X-Gm-Message-State: AOJu0Yyb3B4EtCZDjNmGtAW+XJm2QZ5Jp+i/q0kKC8mR23osss6h2gTu
-	v3AMUOw0MVUQSIJ5yZ+JQsY6n5ZsoYOnhz/8PD9Ck//NYfPuZO0q/qNDa9q0AXs=
-X-Google-Smtp-Source: AGHT+IEp8MmTA8LKx3GHOoxHTg1gStAegDNh1X4uTEZe5dJSLPSECO/RehYfY7RXVVoYxf41UDsgzg==
-X-Received: by 2002:a17:902:ecd0:b0:1e3:dfdc:6972 with SMTP id a16-20020a170902ecd000b001e3dfdc6972mr9975664plh.9.1712643135531;
-        Mon, 08 Apr 2024 23:12:15 -0700 (PDT)
+        bh=2Dd+qicqNqOTXPUN+vfB0pN9kY+D/OYBSctt1TBOZeY=;
+        b=lMaTkNsyxrUkW73gnnp0wukbqSxzfBOF1NTBhdrOTxqwBTZOkandIrdqPcE5YBJXTF
+         alwnpbatA3mpX3Mp2h20MT9QhxfngnEUtjbL3Cn3aizYrFgxdw5HK44guppNN2odte70
+         +MilwaGnGp2mOF2QnYY73ccdPYkzAA9ANbEgCkp1hzdy6pc46uS8aIIrRta+PbDo4mVy
+         WREevPTn91YAZ//zto6Bepb3dT8SNPSS6Ds6WFSsFEn6rgJZx958YPri5H3tD+jzOgNn
+         z0oDk9nVf2Ua2BQ81tFVn7ViflXHZR5RsAvhEzP5IxthUoOAqTYEnXvbfgcTpJOk0Wlk
+         i28w==
+X-Forwarded-Encrypted: i=1; AJvYcCUGNlc11JfD4/7LD4oErNsX5m+2VriAk7uaTtRRVRU5BAU7Z7bDb9Y+BzdIswCxURAHXfWgUDxCPu5/C6I6oLN7wt/DLlXez480lMQv
+X-Gm-Message-State: AOJu0Yy2pER6HniHSZjsxbjWzqmsNFGF0Bqr8IZy8AnkfKt/hURTGhVf
+	XJ7s++pgndBFQnOKQHEGgmIMM+nJBoRMURzdK67uKWmQrvfdA9VZMjn9zYV7xhY=
+X-Google-Smtp-Source: AGHT+IGcPqN2fScaedBq3ewRagrgaPjfyc3cvTGWCEiCpjBURAFRRAm2I2dL0qDPjIDkD3S3Bq2SLQ==
+X-Received: by 2002:a05:6a20:de15:b0:1a3:e2ed:62af with SMTP id kz21-20020a056a20de1500b001a3e2ed62afmr8155980pzb.34.1712643137498;
+        Mon, 08 Apr 2024 23:12:17 -0700 (PDT)
 Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001e3dd5972ccsm5775564plf.185.2024.04.08.23.12.13
+        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001e3dd5972ccsm5775564plf.185.2024.04.08.23.12.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 23:12:15 -0700 (PDT)
+        Mon, 08 Apr 2024 23:12:17 -0700 (PDT)
 From: Deepak Gupta <debug@rivosinc.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -119,9 +119,9 @@ Cc: paul.walmsley@sifive.com,
 	paulmck@kernel.org,
 	broonie@kernel.org,
 	rick.p.edgecombe@intel.com
-Subject: [RFC PATCH 09/12] scs: kernel shadow stack with hardware assistance
-Date: Mon,  8 Apr 2024 23:10:40 -0700
-Message-Id: <20240409061043.3269676-10-debug@rivosinc.com>
+Subject: [RFC PATCH 10/12] riscv/traps: Introduce software check exception
+Date: Mon,  8 Apr 2024 23:10:41 -0700
+Message-Id: <20240409061043.3269676-11-debug@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240409061043.3269676-1-debug@rivosinc.com>
 References: <20240409061043.3269676-1-debug@rivosinc.com>
@@ -133,178 +133,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If shadow stack have memory protections from underlying cpu, use those
-protections. RISCV uses PAGE_KERNEL_SHADOWSTACK to vmalloc such shadow
-stack pages. Shadow stack pages on RISCV grows downwards like regular
-stack. Clang based software shadow call stack grows low to high address.
-Thus this patch addresses some of those needs due to opposite direction
-of shadow stack. Furthermore, RISCV hw shadow stack can't be memset
-because memset uses normal stores. Lastly to store magic word at base of
-shadow stack, arch specific shadow stack store has to be performed.
+zicfiss / zicfilp introduces a new exception to priv isa `software check
+exception` with cause code = 18. This patch implements software check
+exception.
+
+If sw check exception was triggered while in usermode, unknown trap is
+triggered for usermode. If sw check exception was triggered for kernel
+mode, kernel dies.
 
 Signed-off-by: Deepak Gupta <debug@rivosinc.com>
 ---
- include/linux/scs.h | 48 +++++++++++++++++++++++++++++++++------------
- kernel/scs.c        | 28 ++++++++++++++++++++++----
- 2 files changed, 59 insertions(+), 17 deletions(-)
+ arch/riscv/include/asm/asm-prototypes.h |  1 +
+ arch/riscv/kernel/entry.S               |  3 +++
+ arch/riscv/kernel/traps.c               | 20 ++++++++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-diff --git a/include/linux/scs.h b/include/linux/scs.h
-index 4ab5bdc898cf..3a31433532d1 100644
---- a/include/linux/scs.h
-+++ b/include/linux/scs.h
-@@ -12,6 +12,7 @@
- #include <linux/poison.h>
- #include <linux/sched.h>
- #include <linux/sizes.h>
-+#include <asm/scs.h>
+diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+index cd627ec289f1..5a27cefd7805 100644
+--- a/arch/riscv/include/asm/asm-prototypes.h
++++ b/arch/riscv/include/asm/asm-prototypes.h
+@@ -51,6 +51,7 @@ DECLARE_DO_ERROR_INFO(do_trap_ecall_u);
+ DECLARE_DO_ERROR_INFO(do_trap_ecall_s);
+ DECLARE_DO_ERROR_INFO(do_trap_ecall_m);
+ DECLARE_DO_ERROR_INFO(do_trap_break);
++DECLARE_DO_ERROR_INFO(do_trap_software_check);
  
- #ifdef CONFIG_SHADOW_CALL_STACK
+ asmlinkage void handle_bad_stack(struct pt_regs *regs);
+ asmlinkage void do_page_fault(struct pt_regs *regs);
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 0262b46ab064..89aeae803702 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -353,6 +353,9 @@ SYM_DATA_START_LOCAL(excp_vect_table)
+ 	RISCV_PTR do_page_fault   /* load page fault */
+ 	RISCV_PTR do_trap_unknown
+ 	RISCV_PTR do_page_fault   /* store page fault */
++	RISCV_PTR do_trap_unknown /* cause=16 */
++	RISCV_PTR do_trap_unknown /* cause=17 */
++	RISCV_PTR do_trap_software_check /* cause=18 is sw check exception */
+ SYM_DATA_END_LABEL(excp_vect_table, SYM_L_LOCAL, excp_vect_table_end)
  
-@@ -31,6 +32,29 @@ void scs_init(void);
- int scs_prepare(struct task_struct *tsk, int node);
- void scs_release(struct task_struct *tsk);
+ #ifndef CONFIG_MMU
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 05a16b1f0aee..b464355f62b2 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -354,6 +354,26 @@ void do_trap_ecall_u(struct pt_regs *regs)
  
-+#ifdef CONFIG_DYNAMIC_SCS
-+/* dynamic_scs_enabled set to true if RISCV dynamic SCS */
-+#ifdef CONFIG_RISCV
-+DECLARE_STATIC_KEY_TRUE(dynamic_scs_enabled);
-+#else
-+DECLARE_STATIC_KEY_FALSE(dynamic_scs_enabled);
-+#endif
-+#endif
-+
-+static inline bool scs_is_dynamic(void)
-+{
-+	if (!IS_ENABLED(CONFIG_DYNAMIC_SCS))
-+		return false;
-+	return static_branch_likely(&dynamic_scs_enabled);
-+}
-+
-+static inline bool scs_is_enabled(void)
-+{
-+	if (!IS_ENABLED(CONFIG_DYNAMIC_SCS))
-+		return true;
-+	return scs_is_dynamic();
-+}
-+
- static inline void scs_task_reset(struct task_struct *tsk)
- {
- 	/*
-@@ -42,6 +66,9 @@ static inline void scs_task_reset(struct task_struct *tsk)
- 
- static inline unsigned long *__scs_magic(void *s)
- {
-+	if (scs_is_dynamic())
-+		return (unsigned long *)(s);
-+
- 	return (unsigned long *)(s + SCS_SIZE) - 1;
  }
  
-@@ -50,23 +77,18 @@ static inline bool task_scs_end_corrupted(struct task_struct *tsk)
- 	unsigned long *magic = __scs_magic(task_scs(tsk));
- 	unsigned long sz = task_scs_sp(tsk) - task_scs(tsk);
- 
--	return sz >= SCS_SIZE - 1 || READ_ONCE_NOCHECK(*magic) != SCS_END_MAGIC;
--}
--
--DECLARE_STATIC_KEY_FALSE(dynamic_scs_enabled);
-+	if (scs_is_dynamic())
-+		sz = (task_scs(tsk) + SCS_SIZE) - task_scs_sp(tsk);
- 
--static inline bool scs_is_dynamic(void)
--{
--	if (!IS_ENABLED(CONFIG_DYNAMIC_SCS))
--		return false;
--	return static_branch_likely(&dynamic_scs_enabled);
-+	return sz >= SCS_SIZE - 1 || READ_ONCE_NOCHECK(*magic) != SCS_END_MAGIC;
- }
- 
--static inline bool scs_is_enabled(void)
-+static inline void __scs_store_magic(unsigned long *s, unsigned long magic_val)
- {
--	if (!IS_ENABLED(CONFIG_DYNAMIC_SCS))
--		return true;
--	return scs_is_dynamic();
-+	if (scs_is_dynamic())
-+		arch_scs_store(s, magic_val);
-+	else
-+		*__scs_magic(s) = SCS_END_MAGIC;
- }
- 
- #else /* CONFIG_SHADOW_CALL_STACK */
-diff --git a/kernel/scs.c b/kernel/scs.c
-index d7809affe740..e447483fa9f4 100644
---- a/kernel/scs.c
-+++ b/kernel/scs.c
-@@ -13,8 +13,13 @@
- #include <linux/vmstat.h>
- 
- #ifdef CONFIG_DYNAMIC_SCS
-+/* dynamic_scs_enabled set to true if RISCV dynamic SCS */
-+#ifdef CONFIG_RISCV
-+DEFINE_STATIC_KEY_TRUE(dynamic_scs_enabled);
-+#else
- DEFINE_STATIC_KEY_FALSE(dynamic_scs_enabled);
- #endif
-+#endif
- 
- static void __scs_account(void *s, int account)
- {
-@@ -32,19 +37,29 @@ static void *__scs_alloc(int node)
- {
- 	int i;
- 	void *s;
-+	pgprot_t prot = PAGE_KERNEL;
-+
-+	if (scs_is_dynamic())
-+		prot = PAGE_KERNEL_SHADOWSTACK;
- 
- 	for (i = 0; i < NR_CACHED_SCS; i++) {
- 		s = this_cpu_xchg(scs_cache[i], NULL);
- 		if (s) {
- 			s = kasan_unpoison_vmalloc(s, SCS_SIZE,
- 						   KASAN_VMALLOC_PROT_NORMAL);
--			memset(s, 0, SCS_SIZE);
 +/*
-+ * If either of them undefined, its safe to memset. Else memset is not
-+ * possible. memset constitutes stores and stores to shadow stack memory
-+ * are disallowed and will fault.
++ * software check exception is defined with risc-v cfi spec. Software check
++ * exception is raised when:-
++ * a) An indirect branch doesn't land on 4 byte aligned PC or `lpad`
++ *    instruction or `label` value programmed in `lpad` instr doesn't
++ *    match with value setup in `x7`. reported code in `xtval` is 2.
++ * b) `sspopchk` instruction finds a mismatch between top of shadow stack (ssp)
++ *    and x1/x5. reported code in `xtval` is 3.
 + */
-+			if (!scs_is_dynamic())
-+				memset(s, 0, SCS_SIZE);
- 			goto out;
- 		}
- 	}
- 
- 	s = __vmalloc_node_range(SCS_SIZE, 1, VMALLOC_START, VMALLOC_END,
--				    GFP_SCS, PAGE_KERNEL, 0, node,
-+				    GFP_SCS, prot, 0, node,
- 				    __builtin_return_address(0));
- 
- out:
-@@ -59,7 +74,7 @@ void *scs_alloc(int node)
- 	if (!s)
- 		return NULL;
- 
--	*__scs_magic(s) = SCS_END_MAGIC;
-+	__scs_store_magic(__scs_magic(s), SCS_END_MAGIC);
- 
- 	/*
- 	 * Poison the allocation to catch unintentional accesses to
-@@ -122,7 +137,12 @@ int scs_prepare(struct task_struct *tsk, int node)
- 	if (!s)
- 		return -ENOMEM;
- 
--	task_scs(tsk) = task_scs_sp(tsk) = s;
-+	task_scs(tsk) = s;
-+	if (scs_is_dynamic())
-+		task_scs_sp(tsk) = s + SCS_SIZE;
-+	else
-+		task_scs_sp(tsk) = s;
++asmlinkage __visible __trap_section void do_trap_software_check(struct pt_regs *regs)
++{
++	if (user_mode(regs)) {
++		/* deliver unknown trap to usermode */
++		do_trap_unknown(regs);
++	} else {
++		/* sw check exception coming from kernel is a bug in kernel, die */
++		die(regs, "Kernel BUG");
++	}
++}
 +
- 	return 0;
- }
- 
+ #ifdef CONFIG_MMU
+ asmlinkage __visible noinstr void do_page_fault(struct pt_regs *regs)
+ {
 -- 
 2.43.2
 
