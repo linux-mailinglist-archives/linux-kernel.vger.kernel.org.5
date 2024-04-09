@@ -1,203 +1,219 @@
-Return-Path: <linux-kernel+bounces-136431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A885289D3FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:17:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D456D89D3FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:17:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBDF91C21EA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:17:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9041F26A15
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210517E0FF;
-	Tue,  9 Apr 2024 08:16:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6DA87EF06;
+	Tue,  9 Apr 2024 08:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b="Bn8KX+z7"
-Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazon11020002.outbound.protection.outlook.com [52.101.128.2])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Tkch436q"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB387CF17;
-	Tue,  9 Apr 2024 08:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650562; cv=fail; b=bxBukVA0YIzop7UR9sBHn1lJDju99pjwI3sSlosLo4nw+fOHhlod69id8woA8ll9d84Hy3jGSFge8SbuMDvh35y7jYChNIwLe0VAJjp5+dgISG9SkfzuFZghbLR3DNDH3sPEmmmb5jgtMhA8ANeaxfxtisr2IMol9v8QHYmp1j4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650562; c=relaxed/simple;
-	bh=hMkDl+UvqZuSqUYNjC8sq9hSeCgCSG+Nx/QWvXx6RDY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=eTVyp4W8OJ21ikeE9ki8Epxjgt+BTs27h3ZMGJF6qb3z+TyOMUGN2vJrtozNW8r1Mc4FVtnhLsxrcVHHOf9GnHLsXMZdV4U+txQ1zKt+RzosfX8WvS1nXLhOAXl1Vsk+OqeME1EpCHutItqO/0WjhZ2b/QBMxFS21nF9RDzXvvA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com; spf=pass smtp.mailfrom=amlogic.com; dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b=Bn8KX+z7; arc=fail smtp.client-ip=52.101.128.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bBXT2nMTK4Mw4qxsWOtPkL+wydpKyPb29w9udHqiWn5LHWO1LfZsYFl0bT3tGg282ab1aAgc+Cg5rDxB9hx0vMd5WnH+89O3HGhqG9/E0WGGckVcZE+mBwBY2Rs92f0W/hFJ/z/jilgtNWR3IkM+QE8MKBSJrTCfEwhPjB/RCYxzivK96oPB4rVX6+mbjGpFQsB2rt5tHGkex690oerkSwylfjmkylYajhPrZmSO6gwHDzeLD+kZPWq71fgkheIDHeOZHh3ic3XrxXZV3DtYdE5AAoonmbUQf2bMzLLVgldRi0vDC9sL6Rh+nC9eGqwqqWKrT2HNMt+CS7N56pHdww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ukNaMHR15lWIyUJBrhy5LsSuB4h5zjuaeaY3gONE7t4=;
- b=KIhXX6HijlaQjzUrwGF/6IBjE4cq3eaFNHp0WmW2pZYJbRKfc4S2WfGlz4Ce7FXFIKBM8LbjWdKN/t19Oivl/Zhz06V7Q8MeUIQppwe08Dfw1jmI92W+19lKSDgTaZRiX8o4VBJjp1mIr/koazL5JMyO5cCpnLzWntJGiL1GI2NCD/VZ/9pJhEo457O/fjsnBp6x1GXjNMYp7mQDPmc8N7+BOqARum3PHjSwqIpJjOmEp1hdiNhNemBhtNgEXnqEZPcVRED+bmub3MVuH687XD/lzfpSQe/U4sOdZD50zrdXfB75/v5f5kEpChgjUSJGukQUGRruwBdBaFZYhQ3OQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
- dkim=pass header.d=amlogic.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ukNaMHR15lWIyUJBrhy5LsSuB4h5zjuaeaY3gONE7t4=;
- b=Bn8KX+z7Ir9dx06e56IjjvmBefYJnb0ngPpQCqkA+PMrMlsJTQvCq4wWesvXx9WRlHGYo4wug0iVXmjs8Mc1cZ2+G7RM1qeO/Wzst1Ewn4vie1ad4SYawm8sbOxRVUIKG23k+oIkw1cx2DqjN1bcQqknkInb+tLf9/NO+//ObkpkRPl4CsjuAApKcpO/3t8Cc+CS7bmnXoRfLXj++shLZSNBJSWJdzz4+uu4mB8aA1d3I6cyv7QYuONQg1h5NCSJb9jSKL1eDbT+eNTjVPFaW12a2U+ZGKGKAzIFO4HDQ5793v2EsqlJXOD9XkW0jj2+GhJLdwzywH5jYBhNWx7OyA==
-Received: from PUZPR03MB6888.apcprd03.prod.outlook.com (2603:1096:301:100::7)
- by SEZPR03MB8966.apcprd03.prod.outlook.com (2603:1096:101:248::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 08:15:56 +0000
-Received: from PUZPR03MB6888.apcprd03.prod.outlook.com
- ([fe80::ecbf:40a0:335e:cceb]) by PUZPR03MB6888.apcprd03.prod.outlook.com
- ([fe80::ecbf:40a0:335e:cceb%6]) with mapi id 15.20.7409.053; Tue, 9 Apr 2024
- 08:15:54 +0000
-Message-ID: <f6de7d87-ee23-4b65-b0e5-cb5217ecc692@amlogic.com>
-Date: Tue, 9 Apr 2024 16:15:44 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: meson: fix S4 power-controller node
-Content-Language: en-US
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com>
- <CAFBinCD=xWuhoX9cWcKU3bSGcsDShKbxnMVTdyfD84AFZQn8aw@mail.gmail.com>
-From: Xianwei Zhao <xianwei.zhao@amlogic.com>
-In-Reply-To: <CAFBinCD=xWuhoX9cWcKU3bSGcsDShKbxnMVTdyfD84AFZQn8aw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0019.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::15) To PUZPR03MB6888.apcprd03.prod.outlook.com
- (2603:1096:301:100::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE52F7E116;
+	Tue,  9 Apr 2024 08:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712650566; cv=none; b=YJP+oJvKuXmFfF7lXw5baHuzN1Z+PAh2hbQ8aCk0BD6kocjtUmVmdNMCgPoQnUhaFl3TMbId9TbjfR+YjaV1T6u6OWneBdPXwLQBgpsUFAYAnl4IiievpNzlGMefIaYyvNeZAzAt603i18ZXEUvp/Hw3huuWfHo3Xq+XLEBpW6w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712650566; c=relaxed/simple;
+	bh=8HvCApuiy6ONW7tfYfgKhurDV6wmKYxjw6pCqGJW4qw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G2bIjaIxp4lOcwoi1USzcCf+uCFHhK99UlgLpOucklMvxjqqRPjSaed7F4aMbYbf/6rgRSS29Zdu+GFRq8ix11uwiNv5Uig1bZLnA06y1ciiRpADR9FAK/OJ0jI4NuHPcye4MgSIgKzfRyfYYvYr0LpKECWx2j9wWVeTAISQIfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Tkch436q; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=RRSBY6/rtPwcAAaFW3HJTN9NeVlK6dzskGTvl9SWwlk=; b=Tkch436qG2RJnWFcSMxqYvcDnX
+	KG41Odci/LVUbafwNby6jvXCU7pWNzdA7kTCzKMIXwBqhUsCZdJQ/m1WO7P1wwVr3UWL3FKQ84DTj
+	3Y0Nm7/Hb8z/7M+x6gGufi1w4MnaBd/4/kw/q8rIge2shXxnq0XNhUGsMBqnP7+8WgGYrD+R5O7RW
+	NmzLSh2XxGZb86K7eqKxsrt/5DqkIIQfcns4vAJNATXV6HCg58Pn5e8GEpmAjVI2PqCA2s2GECvwP
+	LzPvDC4wbDZCF//QQEu6xOkY4cHn4GnwTHJAMtx8aYcWFfb6kVs5yKlSvvAWZkkP7UAVJfivrERak
+	0CriE9Ug==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38758)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ru6dz-000640-0N;
+	Tue, 09 Apr 2024 09:15:52 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ru6dx-0004vn-Gs; Tue, 09 Apr 2024 09:15:49 +0100
+Date: Tue, 9 Apr 2024 09:15:49 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>,
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+Message-ID: <ZhT5NRYnceirmAGz@shell.armlinux.org.uk>
+References: <000000000000e9a8d80615163f2a@google.com>
+ <20240403184149.0847a9d614f11b249529fd02@linux-foundation.org>
+ <CAADnVQ+meL1kvXUehDT3iO2mxiZNeSUqeRKYx1C=3c0h=NSiqA@mail.gmail.com>
+ <Zg_aTFoC2Pwakyl1@FVFF77S0Q05N>
+ <Zg/iGQCDKa9bllyI@shell.armlinux.org.uk>
+ <CAADnVQ+LKO2Y90DVZ4qQv3dXyuWKkvFqqJ0E_p_=qwscsvnaVg@mail.gmail.com>
+ <CAEf4BzYNc-cxRu9qEe2DWdCBNwXAvpSBHKtUhXtoEhB_XNc1Gg@mail.gmail.com>
+ <ZhBAnvLRfj/JW5bZ@shell.armlinux.org.uk>
+ <mb61pcyqzx9l9.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR03MB6888:EE_|SEZPR03MB8966:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	9iqHaLeJ03ZbkLZJD+fCZNAW/6aymQogerPRdbqJisEI64ycEDsODZFsWzNtX8qN0PvuBHQG4bPvnuBVaK18BBwkIwEndMbq1LE3ctIITeeqfTYhlvIIy8xAgo2oR2b/8DxptGKf76hBYMh848mvWvDooSSSYD1M1ALQZpBQE2lgjS6UN3Dz2VRsw3WcplUfLwE0dR/TrZaIYdqk0WHyc5HZm7U4AxiQzn5ysaNhS+zjXEwklsUdnMdH/1+wLyO1LrjK3clSEeSyvm8skAOn4oXpqAx8Mvxw3W+YqcnrJ342hzcQ3X4KR00aE7coYEydAlUq0FQAGxoP16KpOQV7sLfgG8Png+fcF9CcRsUMWGUQjTWtgcmZn7FtIfbO3fOGKw5JCtneUgMdXDJnA29iVu+oXwXW6MpGFCU0W0F8VVfN7mI5gBh/vGLYf9Ilf2w1cmk8QUXTqA5ZqrYMOlq3L815bKEjhW5zcAkbWmmcQjbITERL6L6yChVflZeMq2u+z8XYOWLF5gUZiEoo1Fi/dl2l3MVz7sGC2YbV4U13bHz7AQDFa61UTRtGF0Wur9hoSW6PEv/i6iYWQuGlOd2Gf1S2eY8XS/KC5Cwg+DKgMEPEEaRgpnaCN98KOMgeuPxXeN/9dmtabyeKYqgvX9Octg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR03MB6888.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RVpTYm9FMDlGeG8rQ3MwOFE0Y2hYckxlY2F6VlZ2U0xYZnhqL3ViczlpVkZo?=
- =?utf-8?B?S3hGbEtZQkM5QkYrcHJ2MWVjNE8zWDhoMHNnM0tmTFVvcGRSUytWdG9PSEZG?=
- =?utf-8?B?Uk5RVkRRUmthb3N1MWgxbFVCcFZta1diSGQ3cDB4RkthYXlZTDNySHhVYS92?=
- =?utf-8?B?V3MxY3RxMzdzWkltc1pZei9zUW1aUnZRN0k3MlIwOCtFZzQvNlpvMXcrRWxV?=
- =?utf-8?B?Ymd2T3lwZWdXeFFuQjdPSCtWVUxobUxVQ2pOQ05EQ3pRK3pBd3VRWDlmRWp2?=
- =?utf-8?B?Y2VaOVlaNk0reVY3c3RadjRxTkIvazJxejZZUTNOb05VenBXQmxRbXdhaW1G?=
- =?utf-8?B?YzRYM3ArYVorajI3d2txalJqbkkrSmdKa3M5cWJjUU11RVB3ZXVzaXdJSGcz?=
- =?utf-8?B?N3kzNDd0Vkp6bjdaS2U4bzVoaWN5WGEwaDR0aVM0Z1A2NXBCV3BlV0ZlQmVx?=
- =?utf-8?B?eVNGMWFzSG9xYlNFNzlZQ09kVlI1NnJ1YllMYjlZTURmWjRXU1VoMHptNldt?=
- =?utf-8?B?azZlaWtkZmRqZlZhR1c0dlZ4bmFEYUE4RklzN0lCamM1UzV2ckFHVzkvR2pQ?=
- =?utf-8?B?WmxZaWVxa2J6VVIxdmJPL3ltYzRacVhYNmlYTjhDeDlXRDlMQXJmTURXNU0r?=
- =?utf-8?B?N2J5YTloMkxzVUNpZXlsRVp2OTNQak9LM3N5QTJOU0dJdUM3aUoycjRUcmJW?=
- =?utf-8?B?QUlwelJOZVJZVXNFQU1CWlIwVitXc0hKZzArZEgydUVTTnNnRDBZcW93andq?=
- =?utf-8?B?UDYvRGkzVnBXMjJuU0lhcE4ybnViN2lBTWtIQUxVUEpaNWFNM2VsZlJNaHl2?=
- =?utf-8?B?R0p4MjVSS0dka3pEODZ0MElBU1pXUDk3dTNhdFNtVmZTcUNKa0NSbFp6bm5h?=
- =?utf-8?B?Wkt4enkvYlE3dlVWaFY3ZW9tSHY0Q0IrejRNVlAxa2NGcTBoaUxvWitRd2Zk?=
- =?utf-8?B?QytvVlBuVHpnMndUVDJkWSs2R05SUXBsbXA5NDNYUlI4VzY2a0Z5dlVFYW1t?=
- =?utf-8?B?SzhxZzliajNaaHBVUHhBeEZ5U2wvQUJkbDE5eVFubHc2VTF5d1h4bzA3MEtV?=
- =?utf-8?B?SmpXTllVOWVuK05KOVY5c2IyOTY4Si9QaHI5bC93ZEJUbldybTE2N2RXMDI0?=
- =?utf-8?B?clp2dkl1V2pFS1VxWUEvVS91SU8zaklYYjBpbUI1U09GMFFTR0JMeDFJOWIz?=
- =?utf-8?B?dlVzVmlqTkpsamlFZ2RBYnpOV2FnUGc1SytGU2JXbzFVMGxleDNDQUN4TUdY?=
- =?utf-8?B?TXQvSXhRR1oxYy9YTmlvbXVXc2twYlpoTzFMT0hqK0loTE5VemlQR0lrZ2JP?=
- =?utf-8?B?Mlh6dWpZb2lFbWMvOXpiQVdsdnMvYjhvWTZxUWlNeEd6Kzd3eHgrQmdKMkxR?=
- =?utf-8?B?dVBoVXVkQ242WEZkZmRQSFdFclNmbTRGYkdiRlpkK2RZZmtDbjl4dG5kNVlB?=
- =?utf-8?B?RnFBM3M5MTlSM2phK0ROTVFJRFpGMU1mTmxqK3ZxaUdsb2ZNMHRvRlR3NEd2?=
- =?utf-8?B?Yk00S3B2SjR4ZzIxaDZJSkVaUFQrUmVma3FmS1p2MGJleEdFaU0zc1dCSWRo?=
- =?utf-8?B?U3dpYk8xN0piaU5ZbjF4aWl2NjhqK1YydnIxalM5cW8zVlMySkNOdG9UVGZE?=
- =?utf-8?B?RG5uWEVvZ3lVWnJGTWxvK3kwY09yYmhzRXgzTGp5ZGNOYkl5OWRpaUMwQUI3?=
- =?utf-8?B?L01tTWQrVkl4VDBKQlpzK2JsYVAwcXFZQlVWZDJhc3RFMGZKQ1hoVk1KQjR3?=
- =?utf-8?B?Q0RmWmdVcVM5bTVpVGE5NFR3ZzRSMFlTR0JGY0hlczJyTWMrak50NldiV1lv?=
- =?utf-8?B?S3REbldJMGk5d3BrVnpGNlFHWTFCK1VNOVF2a05EY0F0czFYUE9pTUZXeFAz?=
- =?utf-8?B?OW8waGxOYTNCSmdPOFVGczdsUDJVMFBkVG8xcDloZ0x4SVp6SXZiUlV4VjNI?=
- =?utf-8?B?OGdvSTQxejh5dkJHbm45KzVxYVZUMlVWa2pLUkxrV0ZQOU5ZWXo0WHJxeC9w?=
- =?utf-8?B?aldkZEhqY21HS1VsM3BCTHdkWERDYVk4NlhFekUzUi9pbEVXSFg0aUhBV1Fo?=
- =?utf-8?B?a05hNlN6SlpRUFBUU3JPcXRDRVpSanhRaTQ2Wkk3Vis4SGF1SFZrVEx1U1NU?=
- =?utf-8?B?K0J6ZkgyOW9tVmxWa3VaL25ZeE8rNmpqcmlURFhZa3NEcktUNEw4QnN4aGxG?=
- =?utf-8?B?T0E9PQ==?=
-X-OriginatorOrg: amlogic.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7976467-2651-400d-a69f-08dc586d46d6
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR03MB6888.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 08:15:54.4466
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IJZblcbBkWSzQ+YOmXF+FlLensK2fG8Bcc02XVrakjylWi9D5s5mvRi3ubO6y8zb8GJi4Kw/WgNP9fPKRpC3sza3h1KRaO5tK95pCU2Xsgo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8966
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <mb61pcyqzx9l9.fsf@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Martin,
-     Thanks for your review.
-
-On 2024/4/9 01:27, Martin Blumenstingl wrote:
-> [ EXTERNAL EMAIL ]
+On Tue, Apr 09, 2024 at 07:45:54AM +0000, Puranjay Mohan wrote:
+> "Russell King (Oracle)" <linux@armlinux.org.uk> writes:
 > 
-> On Mon, Apr 8, 2024 at 5:26 AM Xianwei Zhao via B4 Relay
-> <devnull+xianwei.zhao.amlogic.com@kernel.org> wrote:
->>
->> From: Xianwei Zhao <xianwei.zhao@amlogic.com>
->>
->> The power-controller module works well by adding its parent
->> node secure-monitor.
->>
+> > On Fri, Apr 05, 2024 at 10:50:30AM -0700, Andrii Nakryiko wrote:
+> >> On Fri, Apr 5, 2024 at 9:30 AM Alexei Starovoitov
+> >> <alexei.starovoitov@gmail.com> wrote:
+> >> >
+> >> > On Fri, Apr 5, 2024 at 4:36 AM Russell King (Oracle)
+> >> > <linux@armlinux.org.uk> wrote:
+> >> > >
+> >> > > On Fri, Apr 05, 2024 at 12:02:36PM +0100, Mark Rutland wrote:
+> >> > > > On Thu, Apr 04, 2024 at 03:57:04PM -0700, Alexei Starovoitov wrote:
+> >> > > > > On Wed, Apr 3, 2024 at 6:56 PM Andrew Morton <akpm@linux-foundationorg> wrote:
+> >> > > > > >
+> >> > > > > > On Mon, 01 Apr 2024 22:19:25 -0700 syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com> wrote:
+> >> > > > > >
+> >> > > > > > > Hello,
+> >> > > > > >
+> >> > > > > > Thanks.  Cc: bpf@vger.kernel.org
+> >> > > > >
+> >> > > > > I suspect the issue is not on bpf side.
+> >> > > > > Looks like the bug is somewhere in arm32 bits.
+> >> > > > > copy_from_kernel_nofault() is called from lots of places.
+> >> > > > > bpf is just one user that is easy for syzbot to fuzz.
+> >> > > > > Interestingly arm defines copy_from_kernel_nofault_allowed()
+> >> > > > > that should have filtered out user addresses.
+> >> > > > > In this case ffffffe9 is probably a kernel address?
+> >> > > >
+> >> > > > It's at the end of the kernel range, and it's ERR_PTR(-EINVAL).
+> >> > > >
+> >> > > > 0xffffffe9 is -0x16, which is -22, which is -EINVAL.
+> >> > > >
+> >> > > > > But the kernel is doing a write?
+> >> > > > > Which makes no sense, since copy_from_kernel_nofault is probe reading.
+> >> > > >
+> >> > > > It makes perfect sense; the read from 'src' happened, then the kernel tries to
+> >> > > > write the result to 'dst', and that aligns with the disassembly in the report
+> >> > > > below, which I beleive is:
+> >> > > >
+> >> > > >      8: e4942000        ldr     r2, [r4], #0  <-- Read of 'src', fault fixup is elsewhere
+> >> > > >      c: e3530000        cmp     r3, #0
+> >> > > >   * 10: e5852000        str     r2, [r5]      <-- Write to 'dst'
+> >> > > >
+> >> > > > As above, it looks like 'dst' is ERR_PTR(-EINVAL).
+> >> > > >
+> >> > > > Are you certain that BPF is passing a sane value for 'dst'? Where does that
+> >> > > > come from in the first place?
+> >> > >
+> >> > > It looks to me like it gets passed in from the BPF program, and the
+> >> > > "type" for the argument is set to ARG_PTR_TO_UNINIT_MEM. What that
+> >> > > means for validation purposes, I've no idea, I'm not a BPF hacker.
+> >> > >
+> >> > > Obviously, if BPF is allowing copy_from_kernel_nofault() to be passed
+> >> > > an arbitary destination address, that would be a huge security hole.
+> >> >
+> >> > If that's the case that's indeed a giant security hole,
+> >> > but I doubt it. We would be crashing other archs as well.
+> >> > I cannot really tell whether arm32 JIT is on.
+> >> > If it is, it's likely a bug there.
+> >> > Puranjay,
+> >> > could you please take a look.
+> >> >
+> >> 
+> >> I dumped the BPF program that repro.c is loading, it works on x86-64
+> >> and there is nothing special there. We are probe-reading 5 bytes from
+> >> somewhere into the stack. Everything is unaligned here, but stays
+> >> within a well-defined memory slot.
+> >> 
+> >> Note the r3 = (s8)r1, that's a new-ish thing, maybe bug is somewhere
+> >> there (but then it would be JIT, not verifier itself)
+> >> 
+> >>    0: (7a) *(u64 *)(r10 -8) = 896542069
+> >>    1: (bf) r1 = r10
+> >>    2: (07) r1 += -7
+> >>    3: (b7) r2 = 5
+> >>    4: (bf) r3 = (s8)r1
+> >>    5: (85) call bpf_probe_read_kernel#-72390
+> >
 > 
-> Please add a Fixes tag here with the original commit where the
-> incorrectly placed node was added.
-
-Will add Fixes tag.
-
->> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
->> ---
->>   arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 11 +++++++----
->>   1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
->> index ce90b35686a2..24d00dce4969 100644
->> --- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
->> +++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
->> @@ -65,10 +65,13 @@ xtal: xtal-clk {
->>                  #clock-cells = <0>;
->>          };
->>
->> -       pwrc: power-controller {
->> -               compatible = "amlogic,meson-s4-pwrc";
->> -               #power-domain-cells = <1>;
->> -               status = "okay";
->> +       sm: secure-monitor {
->> +               compatible = "amlogic,meson-gxbb-sm";
->> +
->> +               pwrc: power-controller {
->> +                       compatible = "amlogic,meson-s4-pwrc";
->> +                       #power-domain-cells = <1>;
->> +               };
-> In Documentation/devicetree/bindings/firmware/amlogic,meson-gxbb-sm.yaml
-> the hierarchy is:
-> firmware {
->    secure-monitor {
->       power-controller {
->         ...
->       }
->    }
-> }
+> I have started looking into this, the issue only reproduces when the JIT
+> is enabled. With the interpreter, it works fine.
 > 
-> Is this patch correct (and the documentation needs to be adapted) or
-> is the documentation correct (and this patch has to be adapted)?
+> I used GDB to dump the JITed BPF program:
+> 
+>    0xbf00012c:  push    {r4, r5, r6, r7, r8, r9, r11, lr}
+>    0xbf000130:  mov     r11, sp
+>    0xbf000134:  mov     r3, #0
+>    0xbf000138:  sub     r2, sp, #80     @ 0x50
+>    0xbf00013c:  sub     sp, sp, #88     @ 0x58
+>    0xbf000140:  strd    r2, [r11, #-64] @ 0xffffffc0
+>    0xbf000144:  mov     r2, #0
+>    0xbf000148:  strd    r2, [r11, #-72] @ 0xffffffb8
+>    0xbf00014c:  mov     r2, r0
+>    0xbf000150:  movw    r8, #9589       @ 0x2575
+>    0xbf000154:  movt    r8, #13680      @ 0x3570
+>    0xbf000158:  mov     r9, #0
+>    0xbf00015c:  ldr     r6, [r11, #-64] @ 0xffffffc0
+>    0xbf000160:  str     r8, [r6, #-8]
+>    0xbf000164:  str     r9, [r6, #-4]
+>    0xbf000168:  ldrd    r2, [r11, #-64] @ 0xffffffc0
+>    0xbf00016c:  movw    r8, #65529      @ 0xfff9
+>    0xbf000170:  movt    r8, #65535      @ 0xffff
+>    0xbf000174:  movw    r9, #65535      @ 0xffff
+>    0xbf000178:  movt    r9, #65535      @ 0xffff
+>    0xbf00017c:  adds    r2, r2, r8
+>    0xbf000180:  adc     r3, r3, r9
+>    0xbf000184:  mov     r6, #5
+>    0xbf000188:  mov     r7, #0
+>    0xbf00018c:  strd    r6, [r11, #-8]
+>    0xbf000190:  ldrd    r6, [r11, #-16]
 
-Will add firmware node to adapt documentation.
+Up to this point, it looks correct. r2/r3 contain the stack pointer
+which corresponds to the instruction at "2:"
+
+>    0xbf000194:  lsl     r2, r2, #24
+>    0xbf000198:  asr     r2, r2, #24
+>    0xbf00019c:  str     r2, [r11, #-16]
+
+This then narrows the 64-bit pointer down to just 8!!! bits, but this
+is what the instruction at "4:" is asking for. However, it looks like
+it's happening to BPF's "r1" rather than "r3" and this is probably
+where the problem lies.
+
+I haven't got time to analyse this further this morning - I'm only
+around sporadically today. I'll try to look deeper at this later on.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
