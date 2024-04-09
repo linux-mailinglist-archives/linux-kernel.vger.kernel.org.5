@@ -1,133 +1,104 @@
-Return-Path: <linux-kernel+bounces-137467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2AD89E289
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:28:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F37589E1AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E131F23E86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:28:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B7891C220E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF3F156C6E;
-	Tue,  9 Apr 2024 18:27:46 +0000 (UTC)
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDA415667C;
+	Tue,  9 Apr 2024 17:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eruILjw4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BE9156C50;
-	Tue,  9 Apr 2024 18:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCEA4C85
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712687265; cv=none; b=OMOOKs/8unFV2P7PX0wDWn84T6ps9p4BisK1QY5LVnq1SfQnlWxgpCP5PPdT5aLH1pPZUCq4N2vVqHs4CkxWCy9bxyew2eo2nu8iqKMYvmPmdbbG97oeZb6718sDlAiguoCi9vU/WbtclxzUHkmSndxGtuDzbmlabvpIE2ROT64=
+	t=1712684369; cv=none; b=grylVD6AwXJrO/hMUxu1T4NOjGLRU94fmCgaD8yaLvzr/k2NkWxq7pLQXNsCCSn7PE7ftPqXTgeeXxuSz3BqNfa1Z3KblvjvzndUHH2GmhX1BN8WSBgyRCEzsVLrq5/2zFE56XJBa9K+uWClRpnXMctuN3ddEDIAYmQi0E4jnEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712687265; c=relaxed/simple;
-	bh=+e4o3Key427s9PGCVpm+yJBrEgVTXiMxI86rVYGWrbI=;
-	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type:Subject; b=UbNlBVbQqJgtgtuqFnH7036xygrCII03Li9HfugCyxLbJ3LiwNJJ6C7dIcOsDSJKhQhtS3nXwXgUtcHyHt3iwUT7FrBVCkdSZam9HVxMwafbtzW6Edr1+B9ePoXIr7ez6rAz+z59Ua4GSdA8xcqAHKuJaB+NbNSMNpY62lsyUfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
-Received: from in02.mta.xmission.com ([166.70.13.52]:38406)
-	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1ruFQF-007Aen-3v; Tue, 09 Apr 2024 11:38:15 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:58962 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1ruFQE-009VSq-7G; Tue, 09 Apr 2024 11:38:14 -0600
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,  Linus Torvalds
- <torvalds@linux-foundation.org>,  Roberto Sassu
- <roberto.sassu@huaweicloud.com>,  linux-integrity@vger.kernel.org,
-  linux-security-module@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
-  linux-cifs@vger.kernel.org,  linux-kernel@vger.kernel.org,  Roberto Sassu
- <roberto.sassu@huawei.com>
-References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
-	<CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
-	<CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
-	<20240402210035.GI538574@ZenIV>
-	<CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
-Date: Tue, 09 Apr 2024 12:37:21 -0500
-In-Reply-To: <CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
-	(Paul Moore's message of "Tue, 2 Apr 2024 17:36:30 -0400")
-Message-ID: <87le5mxwry.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1712684369; c=relaxed/simple;
+	bh=D6no2q4BPXav0GadcSykjMo9DQS40m4v5xe13lK8CYE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WsmHQijIJyTMUSaOUT7CKpHu+csE6Jax5pw+SNy+bcOx4TKWnj+zFNWeGQMDjdjzBlEWzwRdUOtVFdf235XnIFDNKUy4Pl7cCyT0M1/zqKrs4SkkUHLqf8N7mhbBY7teogg0KgUP5rIZr1B/oGXodqT0Z7U1Z+oejGw1I13Wtio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eruILjw4; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712684368; x=1744220368;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=D6no2q4BPXav0GadcSykjMo9DQS40m4v5xe13lK8CYE=;
+  b=eruILjw4QA6DGuSZq1iII/HaOLvf/2Jz00yrNdQDOUe8BzcuHZDOEOLV
+   GKgudlGzjNKF+Jk5++E4FAL5J6WoA9TEFCXxvCwsiP1bnFHdxpegfvQbq
+   BfAHqYPRXIrLAKlx2u5cqJdfrHxgWjpdYwNT4uQ1Nn6FgvRNU5xWJd8a6
+   VjNev7yzW2Q9Wx71U+IRKPxYvUTpTRFj+su+M42MnB8j5iadwzE7j6w8S
+   FDkPUFb8HiFayIMM9koDthuRuEdMxQFdrCGu8INFL7Rw6uT9hIFI8Bbm/
+   FfdSStVCOeOwcxDT+QHGceGv070bTeAT5ZubfdW/ThqfOZGF/5NxHXbnW
+   Q==;
+X-CSE-ConnectionGUID: RZJmNilATfqvHEl08rueZg==
+X-CSE-MsgGUID: Ml/vDtuuSrOgMduPOup4jA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11855962"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="11855962"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 10:39:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093673"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="937093673"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 10:39:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 0C70512C; Tue,  9 Apr 2024 20:39:23 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andy@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v1 1/1] auxdisplay: charlcd: Don't rebuild when CONFIG_PANEL_BOOT_MESSAGE=y
+Date: Tue,  9 Apr 2024 20:39:21 +0300
+Message-ID: <20240409173921.1080616-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ruFQE-009VSq-7G;;;mid=<87le5mxwry.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19gMkca3jYcuCNyXyTaOnFXicdzcwRWtZ4=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Level: **
-X-Spam-Virus: No
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-	*      [score: 0.4480]
-	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-	*      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-	*  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-	*  0.0 T_TooManySym_01 4+ unique symbols in subject
-	*  1.0 XMSubMetaSx_00 1+ Sexy Words
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Paul Moore <paul@paul-moore.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 277 ms - load_scoreonly_sql: 0.03 (0.0%),
-	signal_user_changed: 4.1 (1.5%), b_tie_ro: 2.8 (1.0%), parse: 0.71
-	(0.3%), extract_message_metadata: 8 (3.1%), get_uri_detail_list: 0.70
-	(0.3%), tests_pri_-2000: 6 (2.2%), tests_pri_-1000: 1.97 (0.7%),
-	tests_pri_-950: 1.05 (0.4%), tests_pri_-900: 0.80 (0.3%),
-	tests_pri_-90: 59 (21.3%), check_bayes: 57 (20.7%), b_tokenize: 4.6
-	(1.7%), b_tok_get_all: 6 (2.1%), b_comp_prob: 1.51 (0.5%),
-	b_tok_touch_all: 42 (15.1%), b_finish: 0.87 (0.3%), tests_pri_0: 181
-	(65.3%), check_dkim_signature: 0.37 (0.1%), check_dkim_adsp: 7 (2.6%),
-	poll_dns_idle: 0.53 (0.2%), tests_pri_10: 2.7 (1.0%), tests_pri_500: 9
-	(3.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] security changes for v6.9-rc3
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 
+When CONFIG_PANEL_BOOT_MESSAGE=y the module still includes
+the generated header and gets rebuilt even if it doesn't use
+anything from that header.  Include generated header conditionally
+to avoid unnecessary rebuilds.
 
-Paul Moore <paul@paul-moore.com> writes:
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/auxdisplay/charlcd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> I know it's everyone's favorite hobby to bash the LSM and LSM devs,
-> but it's important to note that we don't add hooks without working
-> with the associated subsystem devs to get approval.
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index 5df019720c56..bb9463814454 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -17,7 +17,9 @@
+ #include <linux/uaccess.h>
+ #include <linux/workqueue.h>
+ 
++#ifndef CONFIG_PANEL_BOOT_MESSAGE
+ #include <generated/utsrelease.h>
++#endif
+ 
+ #include "charlcd.h"
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-Hah!!!!
-
-> In the cases
-> where we don't get an explicit ACK, there is an on-list approval, or
-> several ignored on-list attempts over weeks/months/years.  We want to
-> be good neighbors.
-
-Hah!!!!
-
-You merged a LSM hook that is only good for breaking chrome's sandbox,
-over my expressed objections.  After I tested and verified that
-is what it does.
-
-I asked for testing. None was done.  It was claimed that no
-security sensitive code would ever fail to check and deal with
-all return codes, so no testing was necessary.  Then later a
-whole bunch of security sensitive code that didn't was found.
-
-The only redeeming grace has been that no-one ever actually uses
-that misbegotten security hook.
-
-P.S.  Sorry for this off topic rant but sheesh.   At least from
-my perspective you deserve plenty of bashing.
-
-Eric
 
