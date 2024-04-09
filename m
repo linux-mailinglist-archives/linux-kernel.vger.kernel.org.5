@@ -1,299 +1,247 @@
-Return-Path: <linux-kernel+bounces-136508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7081F89D4EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:53:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD3E89D4F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:57:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2192E282364
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:53:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332A81F2228A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00E57F46C;
-	Tue,  9 Apr 2024 08:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21697E777;
+	Tue,  9 Apr 2024 08:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PZNOtIG0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uQvu/TUN";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IcUTBqrS"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17427E794;
-	Tue,  9 Apr 2024 08:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D521EA90;
+	Tue,  9 Apr 2024 08:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712652784; cv=none; b=ljQT2V1oEWfpTAMHettgKVnc6dpIRA3GhH9P+91PpiS2oFgii9Z6+RpMyFv8LPL8S7e7TjNYWo7WR/8RTCXXdL1C7SnfGc/pz6kLw6tQO2ST2BjG30ZeTlZoU+NzoeLuilghqxpfpbo7s2jF5pPel7klMiuE6HL/7BHwTHKDJTU=
+	t=1712653057; cv=none; b=tVa7G494hb/ZjS7dtZ1Gf3RG8FRP0JPerou+N3xyoQHnHSZ0CoV9m5+/G/J2Zo45xRniwFFuHNJAmjHY8UIYQOIJabK8/fQ0/C8jPZwBH7xp+ahd43kLcrHTqlRw+PZCGw0Wsk9NnF/r1rAiMyqCJHajp23PH5G9TORWl2mVio0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712652784; c=relaxed/simple;
-	bh=LXkNVlRuW9flSn9i9Am3TH+MFAtd0G+t2OWUcoL9zg8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iYHBiK6I4OQx+G2tIWM7rQDIc8hWSylEO38xVsXyCDfL8kxVmEgei/34qpV+2hCYYT0qgXko4F9QR4SCJgmzIFxRrtMZms3KyAyBv5UyGfkNoiznkn+E3t6EJgWmW40W8Rc83romlG/zBaxzxAst5PODztrjCNX8/lAT3anhTgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PZNOtIG0; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712652783; x=1744188783;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LXkNVlRuW9flSn9i9Am3TH+MFAtd0G+t2OWUcoL9zg8=;
-  b=PZNOtIG0bYb8RwdkHnHtDuJHqJuSc1NsffEanhru/kA+rz6UjtNaFCjb
-   TYP38UUcXXU9x9fMLLRuTu13AQByji82eXzO9LKkj4m+ZJS7DcrYSffDI
-   EBH4Xvks/Yth6bxgaWvWbAWR7FVkoTn6nQCMd16d9Sos/eQC2q2hIOORP
-   WzDjfYccnHGpSeJO9Np+gPVajPZSi1euB2f7Vo5PoZ0lm/4C98XrUm54q
-   BqD7NYQgMHP+HAS2a+oIOUWV+5MHQAy/9xZmsGDBcENP8uLrWi/gv0pq7
-   HBbE0Xh64a6MxXV9FPSShZ3EWSsxtLTt3EOeT8jyMAKwPJfUcLcB305RX
-   A==;
-X-CSE-ConnectionGUID: rFSTUaXaShKf8o9y3HgyIQ==
-X-CSE-MsgGUID: E24n8qbPTiuyZtc+RQar9g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="18563303"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="18563303"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 01:53:02 -0700
-X-CSE-ConnectionGUID: 89x2+YlKRTaKym0zn3MeNQ==
-X-CSE-MsgGUID: kXKIZc6NS7iIB7ucFUO7IA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="24898864"
-Received: from unknown (HELO [10.238.9.252]) ([10.238.9.252])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 01:52:58 -0700
-Message-ID: <bb05156c-a143-4257-b5a3-4af05429e07f@linux.intel.com>
-Date: Tue, 9 Apr 2024 16:52:56 +0800
+	s=arc-20240116; t=1712653057; c=relaxed/simple;
+	bh=6p3XrYSfCp5BzdTJPB7ofCyIaoPuRSffsb8bGJ8si6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cH0JFObDBIwR0sOFYuZVg1Xi0lW0xpMTbVNgwHbt3SqVnKK5fuJyy0Y2gYjqtjgHBH6l7cK//aQHa2BkTSu7CNJ7s6SA8DwlZdyCrq9mcBp5ZkOFEPwcQWsfdZz2+uk4/60TmmnQXJA4FA3RITZD830QOWiLe4f7rQ2k+ffXByg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uQvu/TUN; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IcUTBqrS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 9 Apr 2024 10:57:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712653053;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JXJNqVIAGMcVeHUGC7WuTtked9qzXGP9s4PGe4rcDN4=;
+	b=uQvu/TUN7HZfe0smaCGPSFG3ofBjd80YJTJNVwTBroEg6wl04NG5PbmwSnxG57W09AXit0
+	lQwp43X7EOAnFuRd/eTRLhv6BxvMYiNcX/WJ9riiwc65KscsWatgxUrikK3g16olXtQ4fn
+	meUpVnDvVh6jr0wxVBSQq1D4GKs5CXX5WqHIo8GD7ntZKek6V72Wp7+FnTiyYRiG25LHss
+	tzIKASmxZiXUgvIVtmDoEqGwVn+p5lFefDWva0NAbhgYVcnp8FaM8TDMzK4k1JfEs+1UhL
+	k03ECZ6cA4HwxOIBzzlmTHREaTRkNDlI3n8C03azIFd/Pf/dLOmRKt7XZNp3eA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712653053;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JXJNqVIAGMcVeHUGC7WuTtked9qzXGP9s4PGe4rcDN4=;
+	b=IcUTBqrS7ZxoIsMWz18aq33YtpZnE8bFCoQpyDphBDSANCq9OFvMU0UqN4fILvXSPxcbQq
+	MwzWPfMl5ehP2HCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 2/4] perf: Enqueue SIGTRAP always via task_work.
+Message-ID: <20240409085732.FBItbOSO@linutronix.de>
+References: <20240322065208.60456-1-bigeasy@linutronix.de>
+ <20240322065208.60456-3-bigeasy@linutronix.de>
+ <ZhRhn1B0rMSNv6mV@pavilion.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 096/130] KVM: VMX: Move NMI/exception handler to
- common helper
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b709dc92da98e6bd0ba15c80c1f291beafc9dada.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <b709dc92da98e6bd0ba15c80c1f291beafc9dada.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZhRhn1B0rMSNv6mV@pavilion.home>
 
+On 2024-04-08 23:29:03 [+0200], Frederic Weisbecker wrote:
+> > index c7a0274c662c8..e0b2da8de485f 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -2283,21 +2283,6 @@ event_sched_out(struct perf_event *event, struct=
+ perf_event_context *ctx)
+> >  		state =3D PERF_EVENT_STATE_OFF;
+> >  	}
+> > =20
+> > -	if (event->pending_sigtrap) {
+> > -		bool dec =3D true;
+> > -
+> > -		event->pending_sigtrap =3D 0;
+> > -		if (state !=3D PERF_EVENT_STATE_OFF &&
+> > -		    !event->pending_work) {
+> > -			event->pending_work =3D 1;
+> > -			dec =3D false;
+> > -			WARN_ON_ONCE(!atomic_long_inc_not_zero(&event->refcount));
+> > -			task_work_add(current, &event->pending_task, TWA_RESUME);
+> > -		}
+> > -		if (dec)
+> > -			local_dec(&event->ctx->nr_pending);
+> > -	}
+> > -
+> >  	perf_event_set_state(event, state);
+> > =20
+> >  	if (!is_software_event(event))
+> > @@ -6741,11 +6726,6 @@ static void __perf_pending_irq(struct perf_event=
+ *event)
+> >  	 * Yay, we hit home and are in the context of the event.
+> >  	 */
+> >  	if (cpu =3D=3D smp_processor_id()) {
+> > -		if (event->pending_sigtrap) {
+> > -			event->pending_sigtrap =3D 0;
+> > -			perf_sigtrap(event);
+> > -			local_dec(&event->ctx->nr_pending);
+> > -		}
+> >  		if (event->pending_disable) {
+> >  			event->pending_disable =3D 0;
+> >  			perf_event_disable_local(event);
+> > @@ -9592,14 +9572,23 @@ static int __perf_event_overflow(struct perf_ev=
+ent *event,
+> > =20
+> >  		if (regs)
+> >  			pending_id =3D hash32_ptr((void *)instruction_pointer(regs)) ?: 1;
+> > -		if (!event->pending_sigtrap) {
+> > -			event->pending_sigtrap =3D pending_id;
+> > +		if (!event->pending_work) {
+> > +			event->pending_work =3D pending_id;
+> >  			local_inc(&event->ctx->nr_pending);
+> > -			irq_work_queue(&event->pending_irq);
+> > +			WARN_ON_ONCE(!atomic_long_inc_not_zero(&event->refcount));
+> > +			task_work_add(current, &event->pending_task, TWA_RESUME);
+>=20
+> If the overflow happens between exit_task_work() and perf_event_exit_task=
+(),
+> you're leaking the event. (This was there before this patch).
+> See:
+> 	https://lore.kernel.org/all/202403310406.TPrIela8-lkp@intel.com/T/#m5e6c=
+8ebbef04ab9a1d7f05340cd3e2716a9a8c39
 
+Okay.
 
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> TDX mostly handles NMI/exception exit mostly the same to VMX case.  The
-> difference is how to retrieve exit qualification.  To share the code with
-> TDX, move NMI/exception to a common header, common.h.
+> > +			/*
+> > +			 * The NMI path returns directly to userland. The
+> > +			 * irq_work is raised as a dummy interrupt to ensure
+> > +			 * regular return path to user is taken and task_work
+> > +			 * is processed.
+> > +			 */
+> > +			if (in_nmi())
+> > +				irq_work_queue(&event->pending_irq);
+> >  		} else if (event->attr.exclude_kernel && valid_sample) {
+> >  			/*
+> >  			 * Should not be able to return to user space without
+> > -			 * consuming pending_sigtrap; with exceptions:
+> > +			 * consuming pending_work; with exceptions:
+> >  			 *
+> >  			 *  1. Where !exclude_kernel, events can overflow again
+> >  			 *     in the kernel without returning to user space.
+> > @@ -9609,7 +9598,7 @@ static int __perf_event_overflow(struct perf_even=
+t *event,
+> >  			 *     To approximate progress (with false negatives),
+> >  			 *     check 32-bit hash of the current IP.
+> >  			 */
+> > -			WARN_ON_ONCE(event->pending_sigtrap !=3D pending_id);
+> > +			WARN_ON_ONCE(event->pending_work !=3D pending_id);
+> >  		}
+> > =20
+> >  		event->pending_addr =3D 0;
+> > @@ -13049,6 +13038,13 @@ static void sync_child_event(struct perf_event=
+ *child_event)
+> >  		     &parent_event->child_total_time_running);
+> >  }
+> > =20
+> > +static bool task_work_cb_match(struct callback_head *cb, void *data)
+> > +{
+> > +	struct perf_event *event =3D container_of(cb, struct perf_event, pend=
+ing_task);
+> > +
+> > +	return event =3D=3D data;
+> > +}
+>=20
+> I suggest we introduce a proper API to cancel an actual callback head, se=
+e:
+>=20
+> https://lore.kernel.org/all/202403310406.TPrIela8-lkp@intel.com/T/#mbfac4=
+17463018394f9d80c68c7f2cafe9d066a4b
+> https://lore.kernel.org/all/202403310406.TPrIela8-lkp@intel.com/T/#m0a347=
+249a462523358724085f2489ce9ed91e640
 
-Suggest to add "No functional change intended." in the changelog.
+This rework would work.
 
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/common.h | 59 +++++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.c    | 68 +++++----------------------------------
->   2 files changed, 67 insertions(+), 60 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-> index 6f21d0d48809..632af7a76d0a 100644
-> --- a/arch/x86/kvm/vmx/common.h
-> +++ b/arch/x86/kvm/vmx/common.h
-> @@ -4,8 +4,67 @@
->   
->   #include <linux/kvm_host.h>
->   
-> +#include <asm/traps.h>
-> +
->   #include "posted_intr.h"
->   #include "mmu.h"
-> +#include "vmcs.h"
-> +#include "x86.h"
-> +
-> +extern unsigned long vmx_host_idt_base;
-> +void vmx_do_interrupt_irqoff(unsigned long entry);
-> +void vmx_do_nmi_irqoff(void);
-> +
-> +static inline void vmx_handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
-> +{
-> +	/*
-> +	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
-> +	 * MSR value is not clobbered by the host activity before the guest
-> +	 * has chance to consume it.
-> +	 *
-> +	 * Do not blindly read xfd_err here, since this exception might
-> +	 * be caused by L1 interception on a platform which doesn't
-> +	 * support xfd at all.
-> +	 *
-> +	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
-> +	 * only when xfd contains a non-zero value.
-> +	 *
-> +	 * Queuing exception is done in vmx_handle_exit. See comment there.
-> +	 */
-> +	if (vcpu->arch.guest_fpu.fpstate->xfd)
-> +		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
-> +}
-> +
-> +static inline void vmx_handle_exception_irqoff(struct kvm_vcpu *vcpu,
-> +					       u32 intr_info)
-> +{
-> +	/* if exit due to PF check for async PF */
-> +	if (is_page_fault(intr_info))
-> +		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
-> +	/* if exit due to NM, handle before interrupts are enabled */
-> +	else if (is_nm_fault(intr_info))
-> +		vmx_handle_nm_fault_irqoff(vcpu);
-> +	/* Handle machine checks before interrupts are enabled */
-> +	else if (is_machine_check(intr_info))
-> +		kvm_machine_check();
-> +}
-> +
-> +static inline void vmx_handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
-> +							u32 intr_info)
-> +{
-> +	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
-> +	gate_desc *desc = (gate_desc *)vmx_host_idt_base + vector;
-> +
-> +	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
-> +	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
-> +		return;
-> +
-> +	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
-> +	vmx_do_interrupt_irqoff(gate_offset(desc));
-> +	kvm_after_interrupt(vcpu);
-> +
-> +	vcpu->arch.at_instruction_boundary = true;
-> +}
->   
->   static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
->   					     unsigned long exit_qualification)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 29d891e0795e..f8a00a766c40 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -518,7 +518,7 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
->   	vmx->segment_cache.bitmask = 0;
->   }
->   
-> -static unsigned long host_idt_base;
-> +unsigned long vmx_host_idt_base;
->   
->   #if IS_ENABLED(CONFIG_HYPERV)
->   static bool __read_mostly enlightened_vmcs = true;
-> @@ -4273,7 +4273,7 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
->   	vmcs_write16(HOST_SS_SELECTOR, __KERNEL_DS);  /* 22.2.4 */
->   	vmcs_write16(HOST_TR_SELECTOR, GDT_ENTRY_TSS*8);  /* 22.2.4 */
->   
-> -	vmcs_writel(HOST_IDTR_BASE, host_idt_base);   /* 22.2.4 */
-> +	vmcs_writel(HOST_IDTR_BASE, vmx_host_idt_base);   /* 22.2.4 */
->   
->   	vmcs_writel(HOST_RIP, (unsigned long)vmx_vmexit); /* 22.2.5 */
->   
-> @@ -5166,7 +5166,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
->   	intr_info = vmx_get_intr_info(vcpu);
->   
->   	/*
-> -	 * Machine checks are handled by handle_exception_irqoff(), or by
-> +	 * Machine checks are handled by vmx_handle_exception_irqoff(), or by
->   	 * vmx_vcpu_run() if a #MC occurs on VM-Entry.  NMIs are handled by
->   	 * vmx_vcpu_enter_exit().
->   	 */
-> @@ -5174,7 +5174,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
->   		return 1;
->   
->   	/*
-> -	 * Queue the exception here instead of in handle_nm_fault_irqoff().
-> +	 * Queue the exception here instead of in vmx_handle_nm_fault_irqoff().
->   	 * This ensures the nested_vmx check is not skipped so vmexit can
->   	 * be reflected to L1 (when it intercepts #NM) before reaching this
->   	 * point.
-> @@ -6889,59 +6889,6 @@ void vmx_load_eoi_exitmap(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap)
->   	vmcs_write64(EOI_EXIT_BITMAP3, eoi_exit_bitmap[3]);
->   }
->   
-> -void vmx_do_interrupt_irqoff(unsigned long entry);
-> -void vmx_do_nmi_irqoff(void);
-> -
-> -static void handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
-> -{
-> -	/*
-> -	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
-> -	 * MSR value is not clobbered by the host activity before the guest
-> -	 * has chance to consume it.
-> -	 *
-> -	 * Do not blindly read xfd_err here, since this exception might
-> -	 * be caused by L1 interception on a platform which doesn't
-> -	 * support xfd at all.
-> -	 *
-> -	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
-> -	 * only when xfd contains a non-zero value.
-> -	 *
-> -	 * Queuing exception is done in vmx_handle_exit. See comment there.
-> -	 */
-> -	if (vcpu->arch.guest_fpu.fpstate->xfd)
-> -		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
-> -}
-> -
-> -static void handle_exception_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
-> -{
-> -	/* if exit due to PF check for async PF */
-> -	if (is_page_fault(intr_info))
-> -		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
-> -	/* if exit due to NM, handle before interrupts are enabled */
-> -	else if (is_nm_fault(intr_info))
-> -		handle_nm_fault_irqoff(vcpu);
-> -	/* Handle machine checks before interrupts are enabled */
-> -	else if (is_machine_check(intr_info))
-> -		kvm_machine_check();
-> -}
-> -
-> -static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
-> -					     u32 intr_info)
-> -{
-> -	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
-> -	gate_desc *desc = (gate_desc *)host_idt_base + vector;
-> -
-> -	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
-> -	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
-> -		return;
-> -
-> -	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
-> -	vmx_do_interrupt_irqoff(gate_offset(desc));
-> -	kvm_after_interrupt(vcpu);
-> -
-> -	vcpu->arch.at_instruction_boundary = true;
-> -}
-> -
->   void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> @@ -6950,9 +6897,10 @@ void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->   		return;
->   
->   	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
-> -		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
-> +		vmx_handle_external_interrupt_irqoff(vcpu,
-> +						     vmx_get_intr_info(vcpu));
->   	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
-> -		handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
-> +		vmx_handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
->   }
->   
->   /*
-> @@ -8284,7 +8232,7 @@ __init int vmx_hardware_setup(void)
->   	int r;
->   
->   	store_idt(&dt);
-> -	host_idt_base = dt.address;
-> +	vmx_host_idt_base = dt.address;
->   
->   	vmx_setup_user_return_msrs();
->   
+> >  static void
+> >  perf_event_exit_event(struct perf_event *event, struct perf_event_cont=
+ext *ctx)
+> >  {
+> > @@ -13088,6 +13084,18 @@ perf_event_exit_event(struct perf_event *event=
+, struct perf_event_context *ctx)
+> >  		 * Kick perf_poll() for is_event_hup();
+> >  		 */
+> >  		perf_event_wakeup(parent_event);
+> > +		/*
+> > +		 * Cancel pending task_work and update counters if it has not
+> > +		 * yet been delivered to userland. free_event() expects the
+> > +		 * reference counter at one and keeping the event around until
+> > +		 * the task returns to userland can be a unexpected if there is
+> > +		 * no signal handler registered.
+> > +		 */
+> > +		if (event->pending_work &&
+> > +		    task_work_cancel_match(current, task_work_cb_match, event)) {
+> > +			put_event(event);
+> > +			local_dec(&event->ctx->nr_pending);
+> > +		}
+>=20
+> So exiting task, privileged exec and also exit on exec call into this bef=
+ore
+> releasing the children.
+>=20
+> And parents rely on put_event() from file close + the task work.
+>=20
+> But what about remote release of children on file close?
+> See perf_event_release_kernel() directly calling free_event() on them.
 
+Interesting things you are presenting. I had events popping up at random
+even after the task decided that it won't go back to userland to handle
+it so letting it free looked like the only option=E2=80=A6
+
+> One possible fix is to avoid the reference count game around task work
+> and flush them on free_event().
+>=20
+> See here:
+>=20
+> https://lore.kernel.org/all/202403310406.TPrIela8-lkp@intel.com/T/#m63c28=
+147d8ac06b21c64d7784d49f892e06c0e50
+
+That wake_up() within preempt_disable() section breaks on RT.
+
+How do we go on from here?
+
+> Thanks.
+
+Sebastian
 
