@@ -1,228 +1,119 @@
-Return-Path: <linux-kernel+bounces-136857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D67F89D910
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:18:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC70789D90D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:17:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A66241F228F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:18:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0D2228A249
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5855C12EBD3;
-	Tue,  9 Apr 2024 12:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60D112C7E8;
+	Tue,  9 Apr 2024 12:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XKl9MmAi"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0EWtxBMo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A762012D772;
-	Tue,  9 Apr 2024 12:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A624F883;
+	Tue,  9 Apr 2024 12:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665063; cv=none; b=lLCW1lotVgr7BAd7qtO3EDgkXd1WjKoAKtSNDo9wwkoyazisKAJOHDruQBcIVcb5QJWJAIOKmVUO68VP6arH4vYb5geInAg4/HoOElem4Mpxl6oAVj6fkrthnFXPsfQVO5OM5DeZ4EVr06KwlKE7nw0SjwV6UlVKlMWm9cseMU8=
+	t=1712665055; cv=none; b=qY/u6LkJnOp9bc7WJai7SSuPWapMljuvAupFnpKQScD9WvFF92Ic9g//gfkCiL0kmE+U0Z3qh4pzHRXKyStSD8/zEGkZ8TpvFIGOesK1qyL7pPXcib5lW4SJZ8ZHZHLIsJRMawJ5nztdPbyv/HXmsWu75Js/i4bJDaMX8yGlfEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665063; c=relaxed/simple;
-	bh=OJsRhoPc8vdarkRSJk7jY9fXve2LFn9ZQxpvvBIt4tI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uZQHU8VgIM6wRIb8LvUStYTX8S1RvRf41Lc22WpScHIqSgIP9e57pa4nfKLXw2UyZt3jMOqB4nAdWeU8y8w93MC7oXRz5vAbpJI0Nwa2geESTc2WdNbBp8CQGl06bO6vpsXlE8357XWp+iWqiTIZ/S+1JTbps6/Hcl0GPSEtT44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XKl9MmAi; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so2056019a12.1;
-        Tue, 09 Apr 2024 05:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712665059; x=1713269859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BtF5y0EImJ4vW+W1H9mx+EhIAtOed3hLMOGBWnjGhFc=;
-        b=XKl9MmAiAlhWAy1jU3FCIQw4yMiXs9P7kMFp2UCcSvxjad73HyHHegukJHW/3SLVeQ
-         X0Z52FaTzcUupjvnIWwCpSbsY4rdlq8WMs3ePMGUbc0iV4LRhJu7CH8wFDOzKhsQM4+N
-         JhC3xc5xweUaAntkV5PDVeeItWzKJY2VSJuJ13qxzCOyObU03UIhSJraUHoMz8vUm4eV
-         mFKdVNH8+5gsuGVoQVJUMbuSG015/ojoMjgCUF49bVI3NnKbj2wc7aneRC5Sf693/mH4
-         zzFRoSYgNYs/BMig9f8pYyKI75//GSRjgNiYZwP1IACEqWZam8N3/yQ2QzrFjpO5dFOg
-         Cc0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712665059; x=1713269859;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BtF5y0EImJ4vW+W1H9mx+EhIAtOed3hLMOGBWnjGhFc=;
-        b=Hn5aq7FWmP4smvHiwMNuDzSp41VAJ+OUK7Cz5CEHeajf1gSzvNyfV3tRebTMh5n/b2
-         i+yj/PkkEze2as/10/E3Kg/QYmQmwoK9nhTgQCJV8iBrvUteQmSwbmW9xBYl3Qgt6Q3j
-         B10wca5FGwDBcbJJR363II8SAAeYUL9D18S5aC/3CyQsldpiI5yxx7H8XgSSK+u0AJjp
-         wXtjTn3bF4ljXL//urmXStPVRLuMqQVH/9u3A7LO98C98+LEpQEM0n5yCz6S3dUn7DXL
-         7hjfT7GnHeXYv+EmEQ+a5nDthOf2DscjobbDsYxQIkKqZBkv6BSJtU2baLjgX+2E1GMB
-         hT3A==
-X-Forwarded-Encrypted: i=1; AJvYcCX8DhPcJa0tSaj5NCXh6otaVmUlM3vwwurGQdrPF2xrHFrNrJa2z9Qd1+tm7QWEyrtBviYCLifCCv/2drOU5WyvE2RcSNg+j/ZJHXUY
-X-Gm-Message-State: AOJu0YxdR5ai1CEMTLsoQkXffjcNaMLbNzQt5iC6u2O5TF/JGqEvvKHC
-	IBz07KnFZppLbpF9dvnjatrj8+/NX/DpnaZzKuo+uwwZclocJC5GSy+2UYTpv98=
-X-Google-Smtp-Source: AGHT+IFQQpLWr9V3c9QgBn7s7I1wlCI5vVFOGVAIdAKDkaREqhSY71NorqFHAjUqkgOHY2yIRL/6vQ==
-X-Received: by 2002:a17:907:84b:b0:a51:df52:5a65 with SMTP id ww11-20020a170907084b00b00a51df525a65mr3379949ejb.2.1712665059324;
-        Tue, 09 Apr 2024 05:17:39 -0700 (PDT)
-Received: from andrejs-nb.int.toradex.com (77-59-154-235.dclient.hispeed.ch. [77.59.154.235])
-        by smtp.gmail.com with ESMTPSA id en1-20020a17090728c100b00a51adace6ebsm5030412ejc.79.2024.04.09.05.17.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 05:17:38 -0700 (PDT)
-From: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-To: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-Subject: [PATCH v1 2/2] ASoC: nau8822: add MCLK support
-Date: Tue,  9 Apr 2024 14:17:19 +0200
-Message-Id: <20240409121719.337709-3-andrejs.cainikovs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
-References: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
+	s=arc-20240116; t=1712665055; c=relaxed/simple;
+	bh=fH+pqInuqCP8bPr3hH0Y8Q86LVIvkMeVKXe0pif5V9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jLws1CWK3JJ8GVC3bQTiPBwMbIYaLgZ27zs+WrA/a+BkktBKHFSRajp3K+HX8RIc+g/6h8hg7T6mN188fjAkS01RCY9PdjUROLC6knZlNBvNgIeC9jmUk0dcHd8Iark9reFMO/8d3sEH7dQqOqivQtZq0oIog+bDqaE6uDz2lQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0EWtxBMo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1DB4C433F1;
+	Tue,  9 Apr 2024 12:17:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712665054;
+	bh=fH+pqInuqCP8bPr3hH0Y8Q86LVIvkMeVKXe0pif5V9c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0EWtxBMoqzphz7amkYmvLeLupc2mz5UF6CXnZt1n6bkV5RlOez9HF4pe9jifCU4Fh
+	 a5ihOtuJpxsDI9TX2knf3Nl2NS9d4dQJlGOfeCLqmqVvKhp6XAQlOehOvPz7x0awI9
+	 TUiUYJzJ18gZh9Unq9ncbHzICF+PO9DDY+A5SAgY=
+Date: Tue, 9 Apr 2024 14:17:31 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Sumanth Korikkar <sumanthk@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 6.6 000/252] 6.6.26-rc1 review
+Message-ID: <2024040912-item-nearby-d068@gregkh>
+References: <20240408125306.643546457@linuxfoundation.org>
+ <CA+G9fYsvgN2ixfmDKc_x8yFnZ3SfrmSV5Ck1QC5KfmYN89CFYQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsvgN2ixfmDKc_x8yFnZ3SfrmSV5Ck1QC5KfmYN89CFYQ@mail.gmail.com>
 
-From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+On Mon, Apr 08, 2024 at 10:45:44PM +0530, Naresh Kamboju wrote:
+> On Mon, 8 Apr 2024 at 18:30, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.6.26 release.
+> > There are 252 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.26-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> The s390 defconfig build failed with gcc-13 and clang-17 due following
+> build warning / errors on Linux stable-rc linux-6.6.y.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Build error:
+> --------
+> arch/s390/kernel/perf_pai_crypto.c: In function 'paicrypt_stop':
+> arch/s390/kernel/perf_pai_crypto.c:280:51: error: 'paicrypt_root'
+> undeclared (first use in this function); did you mean 'paicrypt_stop'?
+>   280 |         struct paicrypt_mapptr *mp = this_cpu_ptr(paicrypt_root.mapptr);
+>       |                                                   ^~~~~~~~~~~~~
+> 
+> Commit detail,
+>   s390/pai: fix sampling event removal for PMU device driver
+>   [ Upstream commit e9f3af02f63909f41b43c28330434cc437639c5c ]
+> 
+> Steps to reproduce:
+> # tuxmake --runtime podman --target-arch s390 --toolchain gcc-13
+> --kconfig defconfig
+> 
+> Links:
+>   - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/log
+>   - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.25-253-gec59b99017e9/testrun/23347738/suite/build/test/gcc-13-defconfig/details/
+>   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eozoS8GQGxb94EUWNTPuXvYjVU/
 
-This change adds MCLK clock handling directly within driver.
-When used in combination with simple-audio-card, and mclk-fs is set,
-simple-audio-card will change MCLK frequency before configuring PLL.
-In some cases, however, MCLK reference clock should be static (see [1]),
-which means it needs to be moved away from simple-audio-card.
+Thanks, I'll go drop a bunch of s390 patches from this tree and push out
+a -rc2 later tonight.
 
-[1]: https://lore.kernel.org/all/ZfBdxrzX3EnPuGOn@ediswmail9.ad.cirrus.com/
-
-Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
----
- sound/soc/codecs/nau8822.c | 43 ++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/nau8822.h |  1 +
- 2 files changed, 40 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
-index 1046801a41ef..01db182434a4 100644
---- a/sound/soc/codecs/nau8822.c
-+++ b/sound/soc/codecs/nau8822.c
-@@ -14,6 +14,7 @@
- #include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
-@@ -773,11 +774,26 @@ static int nau8822_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
-+	unsigned long mclk_freq;
- 
- 	nau8822->div_id = clk_id;
- 	nau8822->sysclk = freq;
-+
-+	if (nau8822->mclk) {
-+		mclk_freq = clk_get_rate(nau8822->mclk);
-+		if (mclk_freq != freq) {
-+			int ret = nau8822_set_pll(dai, NAU8822_CLK_MCLK,
-+				NAU8822_CLK_MCLK, mclk_freq, freq);
-+			if (ret) {
-+				dev_err(component->dev, "Failed to set PLL\n");
-+				return ret;
-+			}
-+			nau8822->div_id = NAU8822_CLK_PLL;
-+		}
-+	}
-+
- 	dev_dbg(component->dev, "master sysclk %dHz, source %s\n", freq,
--		clk_id == NAU8822_CLK_PLL ? "PLL" : "MCLK");
-+		nau8822->div_id == NAU8822_CLK_PLL ? "PLL" : "MCLK");
- 
- 	return 0;
- }
-@@ -848,7 +864,7 @@ static int nau8822_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
--	int val_len = 0, val_rate = 0;
-+	int div = 0, val_len = 0, val_rate = 0;
- 	unsigned int ctrl_val, bclk_fs, bclk_div;
- 
- 	/* make BCLK and LRC divide configuration if the codec as master. */
-@@ -915,8 +931,10 @@ static int nau8822_hw_params(struct snd_pcm_substream *substream,
- 	/* If the master clock is from MCLK, provide the runtime FS for driver
- 	 * to get the master clock prescaler configuration.
- 	 */
--	if (nau8822->div_id == NAU8822_CLK_MCLK)
--		nau8822_config_clkdiv(dai, 0, params_rate(params));
-+	if (nau8822->div_id != NAU8822_CLK_MCLK)
-+		div = nau8822->pll.mclk_scaler;
-+
-+	nau8822_config_clkdiv(dai, div, params_rate(params));
- 
- 	return 0;
- }
-@@ -940,12 +958,23 @@ static int nau8822_mute(struct snd_soc_dai *dai, int mute, int direction)
- static int nau8822_set_bias_level(struct snd_soc_component *component,
- 				 enum snd_soc_bias_level level)
- {
-+	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
- 		snd_soc_component_update_bits(component,
- 			NAU8822_REG_POWER_MANAGEMENT_1,
- 			NAU8822_REFIMP_MASK, NAU8822_REFIMP_80K);
-+		if (nau8822->mclk) {
-+			int ret = clk_prepare_enable(nau8822->mclk);
-+
-+			if (ret) {
-+				dev_err(component->dev,
-+					"Failed to enable MCLK: %d\n", ret);
-+				return ret;
-+			}
-+		}
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -973,6 +1002,7 @@ static int nau8822_set_bias_level(struct snd_soc_component *component,
- 			NAU8822_REG_POWER_MANAGEMENT_2, 0);
- 		snd_soc_component_write(component,
- 			NAU8822_REG_POWER_MANAGEMENT_3, 0);
-+		clk_disable_unprepare(nau8822->mclk);
- 		break;
- 	}
- 
-@@ -1125,6 +1155,11 @@ static int nau8822_i2c_probe(struct i2c_client *i2c)
- 	}
- 	i2c_set_clientdata(i2c, nau8822);
- 
-+	nau8822->mclk = devm_clk_get_optional(&i2c->dev, "mclk");
-+	if (IS_ERR(nau8822->mclk))
-+		return dev_err_probe(&i2c->dev, PTR_ERR(nau8822->mclk),
-+			"Error getting mclk\n");
-+
- 	nau8822->regmap = devm_regmap_init_i2c(i2c, &nau8822_regmap_config);
- 	if (IS_ERR(nau8822->regmap)) {
- 		ret = PTR_ERR(nau8822->regmap);
-diff --git a/sound/soc/codecs/nau8822.h b/sound/soc/codecs/nau8822.h
-index 6ecd46e45923..13fe0a091e9e 100644
---- a/sound/soc/codecs/nau8822.h
-+++ b/sound/soc/codecs/nau8822.h
-@@ -215,6 +215,7 @@ struct nau8822_pll {
- struct nau8822 {
- 	struct device *dev;
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 	struct nau8822_pll pll;
- 	int sysclk;
- 	int div_id;
--- 
-2.34.1
-
+greg k-h
 
