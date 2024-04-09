@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-137056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67DD89DBB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:06:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAABD89DBBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7176BB27ED3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:06:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9641A2852CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DCD130A6C;
-	Tue,  9 Apr 2024 14:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94EF312FB00;
+	Tue,  9 Apr 2024 14:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="BI2WNaYJ"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CECIG6Ph"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B2E12F37B;
-	Tue,  9 Apr 2024 14:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3407EEE0;
+	Tue,  9 Apr 2024 14:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671494; cv=none; b=NGS0KCyyhthAnM+K1BILPHgifOBJaLGFfqZbxFsgfIdT8OeYLYCZ3WNLHjYFC7PLawmyYf0z3xvk686J+xR4ZWzLcuz5lVjyxyH1l9Tbkaa0YMqg6WEJ+uhBJ3JXCTHGgR7EKCdLrdLSfN+UVHCqA/U5YC9HJyWCwqP+e+f4oUw=
+	t=1712671610; cv=none; b=p1oiaCLOvjjEf2mTLWvEJKV8he4tw3rv/XPO2UTFbrn5m3tmUbXZG6a2xyRW0R1A9hlUfvSzuiICWLpTz0GGRp5kt9X/pUFopTfIOP+WE9B+iW4waPAdIxvCKKApDGyKR1zmdSgunk0G2xmHJeEmMV88Kuz3wXuA4eWuNPDodd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671494; c=relaxed/simple;
-	bh=ZfJgQ+0Djfvx+LbeItuW7wp7/1+oMaOmn6GRrZla1GM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T7EB/7vwM2hLzA9VannlojpTyJ4xr6awEtKmki4yfa5S7hOq++qf3+OkazUBRKBS9gev7YM4Bua3bwIu1JuSvK9/cTzp1xDOte5yBNChQ5rQqh/0n3pJyYzJ/vATzKG79UAdUwRin0iBiGccjSBewGj/p/KAyV+Qi2nSC71GskU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=BI2WNaYJ; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1712671610; c=relaxed/simple;
+	bh=P1gNeYkG5bwZnGH03ghwXER+cIJuJOAxd+xPMYGlaCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y6F8LsTSHyx0RvBXAJB2yIrI+U2ZQVLc610o7F3SAjp3lN8wTzPAqwzagTFJLTxqyREn6KpjEsuRu7vH4EwJvX8Tg6Ie8OIi89tNwCaJYp2XGhD4wqOtmiBNBq7aERvnazGNRTxv3jGjk6qOBZg6kArgZXHxN4Ig8cHoli+0Q+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CECIG6Ph; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712671492; x=1744207492;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712671609; x=1744207609;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZfJgQ+0Djfvx+LbeItuW7wp7/1+oMaOmn6GRrZla1GM=;
-  b=BI2WNaYJ+g1D7vfcQNkIcR4e1+VXAlsVgdoqYyHraXkCXtoyfLvLYVGI
-   iS6vOK379BeQKu7pg3NCr3/gowCQqgoMkD2IyHRdPqKDLiS7/MYEY2IAh
-   uf7q5Y0nLRXiVBkaNqgNZ92hy9ewCYUSolW7kwV0phMI5xfALWGyvm/rQ
-   l8AtoryYRR/oWOVloaDtk8aUJ84aq7B2tm8MgOQnV73/6QX/jxEoqomz/
-   AC2obpFYTb6vnwkIEav68YZxPso1qM0ZHOz3gAO0BbqKjne9DOi0kTz1A
-   y+CWsGo5MOYVCKmNm5TRlsbdDypk+Frb/vPmUW+es/EOJy18p3XD5LtvD
-   A==;
-X-CSE-ConnectionGUID: VSAYxGtOTA60prrClmzs5Q==
-X-CSE-MsgGUID: VOiVzVOcTsO5ka6CTTiuKg==
-X-IronPort-AV: E=Sophos;i="6.07,189,1708412400"; 
-   d="scan'208";a="20143798"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Apr 2024 07:04:51 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Apr 2024 07:03:54 -0700
-Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 9 Apr 2024 07:03:50 -0700
-Date: Tue, 9 Apr 2024 14:03:50 +0000
-From: Daniel Machon <daniel.machon@microchip.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-CC: "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>, Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Vladimir
- Oltean" <olteanv@gmail.com>, Woojung Huh <woojung.huh@microchip.com>, "Arun
- Ramadoss" <arun.ramadoss@microchip.com>, Florian Fainelli
-	<florian.fainelli@broadcom.com>, <kernel@pengutronix.de>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, David Ahern <dsahern@kernel.org>, "Simon
- Horman" <horms@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
-Subject: Re: [PATCH net-next v5 1/9] net: dsa: add support for DCB get/set
- apptrust configuration
-Message-ID: <20240409140350.vgi52z75qygbwgid@DEN-DL-M70577>
-References: <20240409081851.3530641-1-o.rempel@pengutronix.de>
- <20240409081851.3530641-2-o.rempel@pengutronix.de>
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=P1gNeYkG5bwZnGH03ghwXER+cIJuJOAxd+xPMYGlaCI=;
+  b=CECIG6PhoJPLrdMzNAIV1vmPfiYCQtMiWvTM4ql0OtwlGymCTeAxjiGl
+   6NkPEJukJMAqQ0XPJuNLBMFbRDtBlXdcYoLhQSMN96M8yVVXq+RSeN0Ye
+   N3YcO4dt/o1y4GAN0vBC+BvWYOZA4DTSTSYmdbgAkTMpctR/LDQjF7sif
+   Ex6XipHnLVCQam89eknrWefYdUUgO9+XQMjXJ9HAuF72uHCMmcWN7yFAB
+   75l8MSk3O8dWYDo6LK0fRCn57/oxTADUveLQp2oOHOnE160bHYD6yH7AD
+   M5iuaSQYCm49MCYBRWyTsOH2CRgfZyScy1Afl9jtmnKHVkUWdP/4EgACN
+   g==;
+X-CSE-ConnectionGUID: u1vYq9qwR2ajBKvYNeCxaw==
+X-CSE-MsgGUID: +H+XGrLcRLqlpp9bUYyW9A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11824762"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="11824762"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 07:06:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915400773"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915400773"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 07:06:44 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruC7V-00000002p7w-0HJf;
+	Tue, 09 Apr 2024 17:06:41 +0300
+Date: Tue, 9 Apr 2024 17:06:40 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 2/2] gpiolib: Update the kernel documentation - add
+ Return sections
+Message-ID: <ZhVLcNI3rRhWs9_D@smile.fi.intel.com>
+References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
+ <20240408231727.396452-3-andriy.shevchenko@linux.intel.com>
+ <ZhU57jB_pVvDz0ZR@smile.fi.intel.com>
+ <CAMRc=Mdzc2gSEX0h0Uwcxr2qMgwLLXfhJda=3AkNNYsDBQre7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240409081851.3530641-2-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mdzc2gSEX0h0Uwcxr2qMgwLLXfhJda=3AkNNYsDBQre7A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Oleksij
+On Tue, Apr 09, 2024 at 04:01:43PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Apr 9, 2024 at 2:52 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Tue, Apr 09, 2024 at 02:12:51AM +0300, Andy Shevchenko wrote:
+> > > $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w warning | wc -l
+> > > 67
+> > >
+> > > Fix these by adding Return sections. While at it, make sure all of
+> > > Return sections use the same style.
+> >
+> > Since there shouldn't be hard dependency to the first one, can you consider
+> > applying this one, so it unblocks me?
+> 
+> I'm not sure what the resolution is for % and HTML <font> tags in the end?
 
-> +static int __maybe_unused
-> +dsa_user_dcbnl_set_apptrust(struct net_device *dev, u8 *sel, int nsel)
-> +{
-> +       struct dsa_port *dp = dsa_user_to_port(dev);
-> +       struct dsa_switch *ds = dp->ds;
-> +       int port = dp->index;
-> +
+Most of the constants are without %, so less churn now is to drop %.
+If you think otherwise, please, fix it and I will rebase my patches later.
 
-This should be !ds->ops->port_set_apptrust, right :-)
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +       if (!ds->ops->port_get_apptrust)
-> +               return -EOPNOTSUPP;
-> +
-> +       return ds->ops->port_set_apptrust(ds, port, sel, nsel);
-> +}
+
 
