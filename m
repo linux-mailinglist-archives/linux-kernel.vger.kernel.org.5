@@ -1,101 +1,104 @@
-Return-Path: <linux-kernel+bounces-137616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C309089E4A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2BB89E4A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:45:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 517F7B230B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:44:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF52B2229B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFF2158A06;
-	Tue,  9 Apr 2024 20:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87440158864;
+	Tue,  9 Apr 2024 20:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Duc5iDp5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3/LubXYh"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0CA13E3E8;
-	Tue,  9 Apr 2024 20:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848D1370
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712695422; cv=none; b=fCGY9ioiK7aF1WyUEiT3Dhk1HeTWvhBHbm0aprE4YF+e2jX+T2NU+E4vriR2HVucF1vhYcN5qPj3YN1AouoORNlWYWbq85lc/l4jvXc4YKLbkQkvJ0GA5c3+hcPq0TDzMufRdj4UfnqkFFV8XJy3EkYicTsmbgLo0PoLO56lja4=
+	t=1712695504; cv=none; b=X6fO4b0+eafJSm1pNN3Yyh0zbfqkI2d44GXWNdaqDBN0navsDVsQF0hnWtTOctg9gE1uJ1NmegjUoC2zucPrqK1KRujiojQPa3u+cNSNqrt1eHP3+brvRHhLBFyQDtV7GLoMR1Svp/Fz/XtWmAMa3bAatJvOKTFoE+Z31MAFkQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712695422; c=relaxed/simple;
-	bh=zgb9xqkfmIfMBSO3HULJQLwocp3IQYBjZjtX9h+GnmE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=j4qZu5a28W1u3RNMgQ5uJCAAXRdPAOmLtnl2PsXMSeU7GOR1WUOCOAp6q7W7aRQZ3kmIz+MbIKTyI9/Q2FWH4OddJGEfvvTXr/eXsQMFx0vMk4OB5FqHzTyjDKt/9HlK1sylIgwFoYVNzwqigVeCCeZF/iiE+R8sX7yvjUK1EJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Duc5iDp5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0CC6C433C7;
-	Tue,  9 Apr 2024 20:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712695422;
-	bh=zgb9xqkfmIfMBSO3HULJQLwocp3IQYBjZjtX9h+GnmE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Duc5iDp5S24/UJmZaJ8NTV5ssdUeldIB19Ifprzm/YDaoWmqKcXGSQpcwG0KYYGmh
-	 E7/TAwXBNivt16SX8Rqc4Y9gMSy1rt/Egmvsxy3GjiMOSVQkaOp9BZMMxDnngVV/Cj
-	 GJqQH1/BZ5Krpqeg88yAZr2+X8XVJ5kL1gq3r145C6JYu50gtM8DTX5LTBQpH5tNUx
-	 ZxT8r9PgNC7XSB0B8Y9xJBYeClh/X0hqtzUD0N4Es8KYOdefqdQSWCPnyKWJGq/HYV
-	 sYT9n5Uu5s06mfXALoDYdj9bV8mTpKlNSiUeqW/eF/Qu9D3EILIdeWL0gL9AXN0xEw
-	 QkMs2+XhU248w==
-From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org, Dragan Simic <dsimic@manjaro.org>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <90ae761a5b99640ece48363a7099ac2cf402bd37.1712684592.git.dsimic@manjaro.org>
-References: <90ae761a5b99640ece48363a7099ac2cf402bd37.1712684592.git.dsimic@manjaro.org>
-Subject: Re: [PATCH] ASoC: pcm: perform power-down delay checks a bit
- faster
-Message-Id: <171269542042.178415.9248384379060261944.b4-ty@kernel.org>
-Date: Tue, 09 Apr 2024 21:43:40 +0100
+	s=arc-20240116; t=1712695504; c=relaxed/simple;
+	bh=a7U/KHmJSAC0qS3Nm1s43VAOBejI7+eeUwhheadSBPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E85oJ9NIBMPVrWebCUqFctUubCJzcdaa8MmeEXsczUi70RyFf3SxqMsJq3hrwfEuzFZKrrr6CBPz3jcN1NlKX0px3Yh9iLY90ykTlEW6qkqTAm89+3ztM3kGsSxC3MKdtAHVBsxsKFP6a13X7eQZJsug7FDZ+uNuCMUOVfvpXLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3/LubXYh; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e44f82ff9cso8045ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712695503; x=1713300303; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EJmnxoz+cMpgq0WmNUJv1TqkP9ZYN8EAwfDEGZy9D1Q=;
+        b=3/LubXYhgz0gHYIgfEUt4CfEWoWQrlpQJeipMVD1uIx6Pqm6/aqfipeH2dcvp7QY5i
+         wCMT2NSyGp1w4EMO1Ps/WIlAe+fiPJ0aXKAW8QcuFyLVln92Z6Yl8lR/xxzvOi7G+7mK
+         T5eO42Guec6QMuARutDPfnvc1iA/IZgpzs+2NtkI3m7FjIwm96lf6Is1ur5zf10qnlUv
+         D3Ft/G4zcORb2uka5jLk9ct3mUvnbFPZqBFD1soA6j/K7leh43FR9ttBcPEYtQmZSCmx
+         qXC0ZOYBIp62FKLhhZ1wRTQHuxHJsevu8wDGqwS31P96unK2dc/RtOp1YQqZ61l8jiHu
+         7jzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712695503; x=1713300303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EJmnxoz+cMpgq0WmNUJv1TqkP9ZYN8EAwfDEGZy9D1Q=;
+        b=ssqkP0ghQ3r1Bi7jkFVS3CwySDyovdQQyqwPUxLLHlFWZN/G5YDxs11oi3etjwEbTF
+         G50Ru+s4hz34a4URwHu7tKZquGUH+bfoK9nbmnctZcNdEqjUmWBta3vzhkaYY6fGcFUu
+         11NnJ2s98UcuftD9RnvdtPFTFu6sjS/zjhmqneLnfiYA/mxSg2FY2BFI/Xhrpw68tRdr
+         eEDKCe9Enk9OKu0bWndqrO3OieYYEcu17VEIsfOhllZ62+MzMSUKRoJO0hQVoui+1U99
+         ok0YKtqAI0Ua2rzVYQZ77zrC+RxwXM9CK2QoYYMYCKkxVNF3qdZOKXS50nDftiGg6P1t
+         f4oA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNZ8cfucjw3kKxmPYB4RYyJ8nTjEbnSLtIXVG+NdJZc5l+/THPPgLjjk8Z08oSOqozFy6TjWRUd51MSMsSwMnJe6HM2zSe0Q/gvGY1
+X-Gm-Message-State: AOJu0YwGywcvkis4lQSRLDekaQ6G0G0rc8rFKsxJQXaoBRhb/uFSvKiG
+	lW+qFewWN5GBBlCAqXdXYKzZMxLOW3LlkpNKLeLEDOOo4wB3CJ7U9uqWmEEIYw==
+X-Google-Smtp-Source: AGHT+IFa8r1jmAE3TF87p+ZjYjOxHmi2FAw+CssDTLHycGO9qMsOeroqMfRmi0AE4GzvGCr8R3G/6Q==
+X-Received: by 2002:a17:902:dad1:b0:1e3:e1fe:d43e with SMTP id q17-20020a170902dad100b001e3e1fed43emr6535plx.11.1712695502499;
+        Tue, 09 Apr 2024 13:45:02 -0700 (PDT)
+Received: from google.com (201.215.168.34.bc.googleusercontent.com. [34.168.215.201])
+        by smtp.gmail.com with ESMTPSA id e10-20020a170902f1ca00b001e2a7ed52d0sm9389391plc.239.2024.04.09.13.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 13:45:01 -0700 (PDT)
+Date: Tue, 9 Apr 2024 13:44:58 -0700
+From: William McVicker <willmcvicker@google.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Peter Wang <peter.wang@mediatek.com>,
+	Stanley Jhu <chu.stanley@gmail.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-scsi@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] scsi: ufs: mediatek: fix module autoloading
+Message-ID: <ZhWoytLROIi6GP7s@google.com>
+References: <20240409203954.80484-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409203954.80484-1-krzysztof.kozlowski@linaro.org>
 
-On Tue, 09 Apr 2024 19:56:36 +0200, Dragan Simic wrote:
-> When checking whether the power-down delay should be ignored for a specific
-> PCM runtime, there's no need to keep going through all DAI link components
-> after any of them is found to be configured to use the power-down delay.
+On 04/09/2024, Krzysztof Kozlowski wrote:
+> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
+> based on the alias from of_device_id table.
 > 
-> While there, fix a small typo in one of the comment blocks.
-> 
-> 
-> [...]
+> Cc: Will McVicker <willmcvicker@google.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: pcm: perform power-down delay checks a bit faster
-      commit: f78bf2c933c9cb3b61215378664f83c5abd25374
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Reviewed-by: Will McVicker <willmcvicker@google.com>
 
 Thanks,
-Mark
-
+Will
 
