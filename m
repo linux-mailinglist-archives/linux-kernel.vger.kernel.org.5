@@ -1,132 +1,109 @@
-Return-Path: <linux-kernel+bounces-137391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A12789E162
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:17:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC81389E164
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B55C1C22D96
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:17:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D3761F2193E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36F0155393;
-	Tue,  9 Apr 2024 17:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB51C155745;
+	Tue,  9 Apr 2024 17:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bl60pRRN"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b="CpybkHqn"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8560815359E;
-	Tue,  9 Apr 2024 17:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A415C15381A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:17:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712683030; cv=none; b=dzQd5HFNg6ojK7JsWa9dANK+gRMbEgjhaDQf6/O8doMDk9eB+0BVJ8Tj5RpHTgvVyIIcaZbyPoRrIYSvBrPKzIdCbdUXwAXkJtLr2AiK3+NhxXtHN5Xc5o7OJO200RsHdhvPvRqa5BljaLoNfiBmkc7Uuu+x+E64MTI3B5XCiGg=
+	t=1712683042; cv=none; b=FkFDkF+3oWwEEtA8Wm/p6IWalSiCHlR5uRkb6TLYVXJGpW8nCWjhdKn5NjSF16nzwLX3bYQfvrGlC23SkyF1wPIEPTo10PcBqP2h7po00PsKB1astjA3A93RMIW2/xeUaHhBNFOnMm+LPKnh3AumUMqAI5qjvV4UQ2QMTeh2VSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712683030; c=relaxed/simple;
-	bh=yPLx0WlPcqbYP7PztskjJ6gP7k8HuYhFWSUP1+GpN6U=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=onJZ5nMf1XI6r2oNpzsx+7flemqukb6jBg//iVZQyZ4RvFeYJBemzyQr4JLgKcdxTShNi2+vUpVe+rGf9Iebfg3jQXFkjscREJyaZoZxawsarHQt0X7C8KWrMsrKdhl8TZEBDtXCFYN6mjcowSegRvud+qU1O2YDEIDTG9JvqAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bl60pRRN; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so82894731fa.0;
-        Tue, 09 Apr 2024 10:17:08 -0700 (PDT)
+	s=arc-20240116; t=1712683042; c=relaxed/simple;
+	bh=QUmjtRQ2Et38MbBGo7SgDrlnT4lS7whKAE/1mSeqn7k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=U+n+vIjlrdWte4S1p4Qprt1gF/z6fumYGI+/0FlwgSk6faGKgVlMnFYEbY9P7Ek46u7vQ04+kM7fLXYHrA30eWUvA4KP1pUjSJlW+wnDrZ7XWFi9USGDL+BtQdAB2LQNWuk6hdA4aVMOtfIe/hMKH58l4zJ2/nBuwmEM5ZmUoJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org; spf=pass smtp.mailfrom=wbinvd.org; dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b=CpybkHqn; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wbinvd.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e21db621caso11808035ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 10:17:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712683027; x=1713287827; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GcyQviJT/ZKll5Y+ZKktvq3eLlaWHgRX/7+F6P9kW0A=;
-        b=Bl60pRRNiLWIUAVIEFZv4IS8swHBa9qWkqf1b8Y6m680/9HPbT/Dvp874evkBUgynH
-         1sdpIzl7kxd07pKt0HNpebGrg5n/ONOWR8sh97RbhtJWtQJqcQTO2/WlH+ciEeRg2uuh
-         oXVO3fsAu6aHbA51ORZOR3Sqw6Zh5vIRbe01+QAj7KdnT0Wu8bmVv5eGmuXx9M1sIQoB
-         T/ssuBjebg0gxxqMfM+fG17W5gveKdMT7yOtrJ0GIXzx7DXI5TjQpLJe04zR5CcSRVc/
-         CebfXKR1xasx5kN7QV63Gs6gvVQEbYP/Sa415yLWiRvqLj5EWmWiCJFFVVAJZzcZEfEn
-         z2wg==
+        d=wbinvd.org; s=wbinvd; t=1712683040; x=1713287840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MvWmgyGI74zEDpvJ6ZWhvtxho6GjxC+GaSfStZau1r0=;
+        b=CpybkHqnh+cMqcx4v6ztcUXzzFFU/oH57MHSPturYFcr9ZgiO2ztTM1S8RAe97c+yA
+         bLLttT3sdMBb7h+qttaqhCOoLM0YZvm9sIU0ELI7kBjbtjZFSXEJmccgXX+Z+0hvNYYS
+         VRzDfIOiRNNaBCVcYIEaGb8odVQ5yI17LFQaA77KPIwi1JYxQ5DKjgO67n8k95Xo7Ri0
+         NzusjRMIeiyIZGLqDmhfANL95dwSbkLp2RnRden79EqcpGe9avZQAH90CXG2Oi9tFB6S
+         oY19pdNYnfPXA8SfYTW1QiVhO/qeXQjIXx5QMaerw3M3R2l0Ff4io/OvLtcaBgYxMWhp
+         nqVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712683027; x=1713287827;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GcyQviJT/ZKll5Y+ZKktvq3eLlaWHgRX/7+F6P9kW0A=;
-        b=QmaWShPN0wNpXmF6mp9Sh2TRTR5cbpBmMnzCG3x6t7hvW8tivsxm3ri2Qmi7NTDbEE
-         NiAqOHn7A4ozLfFjAWyJMMx93Mn0eGxlI6Q2Jh01xP4cdeOwd0ib+xuS2DvYm6yPLkmA
-         APoLlzhmLgba85WDzTQMPidbiKiTuTKwDiGWDpe2WA6rh8Tcu44Z/rwg9gvFK6FcLV1u
-         eI2Ne3I0O9nqHrwO1OoOBmL/h+ZtPhkSfyHVjuV76Q/IO33oPFwfwASAAmrwUzc3HiX9
-         URahBAsYbCwvF57c9ccGTtb/fZL5Bes+0QF7ryO7mNTZ4wokZrhLcwZ3BOFyXiv8ySID
-         1aKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX9UTZ2mpKlEU+r62+tRudfnHnYMGquj7TPciIRaaKKZp1eW2+yiqVm0X6ymdcJ54BiVg1xUR0D4C6BtQzeJfUZbJvF6D74vfGJRb7TjLbZqi2UwCWCfLaMHNVrc2WgPTBo
-X-Gm-Message-State: AOJu0Yxk2DseqzcGMKwD1u/T08hHvKPY9y4TNRXIQ5lQ31lHPzNu02e7
-	pCqubYTGfejllx/0qgeG1/7D76v+kvEokFEc5K1OwPUXg5LoVmKbjXmL8FKNILU=
-X-Google-Smtp-Source: AGHT+IEcHUTdr1f9hHpKHYtrK7jxVjg6oestPlAx2GF5WZap0QGjMk3qaqPIXKwPVck52B/KPGh8og==
-X-Received: by 2002:a05:651c:1a28:b0:2d8:34ad:7f4e with SMTP id by40-20020a05651c1a2800b002d834ad7f4emr434658ljb.4.1712683026485;
-        Tue, 09 Apr 2024 10:17:06 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id p14-20020a05600c358e00b0041674bf7d4csm7945486wmq.48.2024.04.09.10.17.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 10:17:06 -0700 (PDT)
-Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
- value tracking
-To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
- Edward Cree <ecree@amd.com>
-Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, paul@isovalent.com,
- Matan Shachnai <m.shachnai@rutgers.edu>,
- Srinivas Narayana <srinivas.narayana@rutgers.edu>,
- Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
- <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
- <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
-From: Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <9d149d61-239c-67ac-0647-b59a12264299@gmail.com>
-Date: Tue, 9 Apr 2024 18:17:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        d=1e100.net; s=20230601; t=1712683040; x=1713287840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MvWmgyGI74zEDpvJ6ZWhvtxho6GjxC+GaSfStZau1r0=;
+        b=A6KhBMvItDssneIfMIuA12fiPbUpKfkTOTh2spgM/TFN4CeVY6qrMjyCIL+qfUdnJ0
+         sVDp/aOQoQF6seUMP1Zv6L/kd9sAm4yOLGC6tokcvVAuz46CGed9h8IJVs6axzDR+hT/
+         cD6t6HEUKoaKLlrPkN0MXs1F2ialDS7sE+PwBbIqDxLZVypmwfm0Vy8wLO/Qv1YPXwpD
+         DLJto+/ceyLuecRHdLBPkAE06lsUHlc/wqL5xnB9iEE8VgyZadKajyUOIkhd/7y761OU
+         LVMWFzZnGlCzUEYj8W9T9RqRuWgyfZ10BM9dhdOZBLrrljsxMlvY8LAAISVbeuecpXE6
+         dBPA==
+X-Gm-Message-State: AOJu0YxbpDMnx8am7vl8iNOuLvuTmH+HhbmMU8XmS8tZ3dF6MRK13S9S
+	4wFtx4DNB6QffLM2fprptHtVZi1Uhi8Jh9ENhxF1OyRcwFHjENp0hBGOi8aqlsRrLgBUPX0eelV
+	G
+X-Google-Smtp-Source: AGHT+IE+uWo/1PSkL4b+IFqjLiW//0Gj4eATqmnyNsUpcV6hTkTwemkJbc/CTdypoZCRvxXrA0yNRw==
+X-Received: by 2002:a17:903:41cf:b0:1dd:667f:bf1b with SMTP id u15-20020a17090341cf00b001dd667fbf1bmr467291ple.0.1712683039836;
+        Tue, 09 Apr 2024 10:17:19 -0700 (PDT)
+Received: from mozart.vkv.me ([192.184.165.229])
+        by smtp.gmail.com with ESMTPSA id ja21-20020a170902efd500b001e0da190a07sm9134048plb.167.2024.04.09.10.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 10:17:19 -0700 (PDT)
+From: Calvin Owens <calvin@wbinvd.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH] kbuild: buildtar: Add arm support
+Date: Tue,  9 Apr 2024 10:17:07 -0700
+Message-Id: <e7c14a0d329e28bdcda21376b54a43c85a4aaf3f.1712682861.git.calvin@wbinvd.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 04/04/2024 03:40, Harishankar Vishwanathan wrote:
-> [...]
-> Given the above, please advise if we should backport this patch to older
-> kernels (and whether I should use the fixes tag).
+Make 'make tar-pkg' and friends work on 32-bit arm.
 
-I don't feel too strongly about it, and if you or Shung-Hsi still
- think, on reflection, that backporting is desirable, then go ahead
- and keep the Fixes: tag.
-But maybe tweak the description so someone doesn't see "latent
- unsoundness" and think they need to CVE and rush this patch out as
- a security thing; it's more like hardening.  *shrug*
+Signed-off-by: Calvin Owens <calvin@wbinvd.org>
+---
+ scripts/package/buildtar | 3 +++
+ 1 file changed, 3 insertions(+)
 
->> Commit message could also make clearer that the new code considers whether
->>  the *output* ubounds cross sign, rather than looking at the input bounds
->>  as the previous code did.  At first I was confused as to why XOR didn't
->>  need special handling (since -ve xor -ve is +ve).
-> 
-> Sounds good regarding making it clearer within the context of what the
-> existing code does. However, I wanted to clarify that XOR does indeed use
-> the same handling as all the other operations. Could you elaborate on what
-> you mean?
+diff --git a/scripts/package/buildtar b/scripts/package/buildtar
+index 72c91a1b832f..0939f9eabbf2 100755
+--- a/scripts/package/buildtar
++++ b/scripts/package/buildtar
+@@ -101,6 +101,9 @@ case "${ARCH}" in
+ 			fi
+ 		done
+ 		;;
++	arm)
++		[ -f "${objtree}/arch/arm/boot/zImage" ] && cp -v -- "${objtree}/arch/arm/boot/zImage" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
++		;;
+ 	*)
+ 		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
+ 		echo "" >&2
+-- 
+2.39.2
 
-Just that if you XOR two negative numbers you get a positive number,
- which isn't true for AND or OR; and my confused little brain thought
- that fact was relevant, which it isn't.
-
--e
 
