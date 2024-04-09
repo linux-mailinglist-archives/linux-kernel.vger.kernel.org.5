@@ -1,133 +1,129 @@
-Return-Path: <linux-kernel+bounces-137083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48C6489DC29
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:23:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E90B589DC2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B8C81C21A1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:23:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 260D21C21120
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90AF612FF6D;
-	Tue,  9 Apr 2024 14:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE7612FF6D;
+	Tue,  9 Apr 2024 14:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gj1lWbvN"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="icS/oM+I"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DEF12FF63;
-	Tue,  9 Apr 2024 14:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E68812F598;
+	Tue,  9 Apr 2024 14:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712672619; cv=none; b=NIC0N5a6Ikdb6al2nB59EaCT+cLtlDiVGafw5XYWq3og7bciWFfXEzovCQtkn6E7MGxBgCqfSOg201aOTquk8pCxWwdS8jipDw7pHyaw5EUwzb1JWNXNijCU6PYuhfpU8FMOctdHqtuxJBRHVPIVYLpjDcgkAB129SadcHEKu5E=
+	t=1712672781; cv=none; b=oqiQIjCElpWRmFnaQtyaixC2nIdeDO2LVH9KrOGtKV7zyIqp/ahaKMQoo6YSPZw4rN0Cp/HdeHdnQcKM+iTO+IQJA1b9jtCctZ5lUv+/tUN6BghRbwdBf/4B/scNyWZ++Pi3PXf6nmn5bhnGZ2jtOVyKZqvYdj+iAprH2q45kMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712672619; c=relaxed/simple;
-	bh=Ty2f8pnPcBEyF3m2q3oawb8ksrgM+TTBnxPTrXpEtjM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IMMYhvkpwIfmj5eslW1qVK/HnIrpmcyljTQebxHR2D4d1AKpZzktleCLvyVynCSZHCi40ScpqdDDV0hPKpuM163NLl2AE0NkplTarBG4LAu6Icnacew3v1cRu7naH1T1V7GM2LA68SWVDu44TRIPE5Q4KN757zYpwyjoIBqcqQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gj1lWbvN; arc=none smtp.client-ip=209.85.208.180
+	s=arc-20240116; t=1712672781; c=relaxed/simple;
+	bh=0FCx0ExAOuO47pPXq+LvIi7sP+m6A6+hblbEodnSxDc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mQF8nvPTgdQn5bPEcm+99Bh7l5/ix/J7GGfrU/j962er0/jXNGmiXglfouI8W7irOaZS91o048MMFmv6/msIg6g6/kp45QvkncfMEsx+KKP2lL2u6IJ5tNG2t4Ndvr5I+2TeOOuFikNAAj4To2FGd3qaUwPSQ15jHldJ/HE2ryY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=icS/oM+I; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d4979cd8c8so52954501fa.0;
-        Tue, 09 Apr 2024 07:23:37 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516ef30b16eso3282638e87.3;
+        Tue, 09 Apr 2024 07:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712672616; x=1713277416; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BhWsMOQgYV9auXE9rRgSy5tpt3ezoTRv+HC7Wl6JmUg=;
-        b=gj1lWbvNdywQTL/j2YqPf5CG2bUrE7QKzbbwR07vFhInamUAgCW6T8OHJK2PH1WXCD
-         goEB3M/7cAElahKj50ucy+HFe9SjMcvoN4/IFS36xHKRjAya92el3MwQA+X3bpGDzAX4
-         lIE0CbkKj4zX7rt+QHH7MaOdz3Qe5HqUzqpELHQaoeCZCIBVIeKqyz6/qhPd0lDUn0de
-         yYvj9xezjANNX7kUqCguTd1+yXh4rubFj3A4K/8ptPG+66JfYhXi3HYwBCNPJNdsQEf3
-         EQi5lNfVUxFmBEI7liV+eV8o8gqLNyNHK1iYa5iFgvECukI32K0o0o7KmhQR1FNNbcHf
-         vxbQ==
+        d=gmail.com; s=20230601; t=1712672778; x=1713277578; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5siHBidFUu/f/+SSwIYn7JsHrl83u4UHX8WsLfWFlHk=;
+        b=icS/oM+I76ESzKryfrKgYOof1JiUqjVl5zNQzYbMPdO3U2NtIRAtH/iL6NOUXVSGf4
+         h+uv7OmQZbpDGqFPd+ic0nbIvyXZ7bFCnUF6JwqmMf90yOKSwER43B9CG4jfwSJkS3Q0
+         G7vCigFk/WSbFM4pFoU1ijVsep/Dyrc2/E35XTN/HLVPNo+JhYWbnp8CImd1WHbXCQt2
+         l4d9/AUNzfHnhocz1KYwJlMPLB9m8sT4dKxPngOgH9J8y7wFFbeNQIzAwMyET44Q9nqT
+         NWk5L4hTSIvRp5a5FAhJDsSWozQgNEh4qZ2IDb32lObBbeyLL2G5CApjg6eC3L3oO+3h
+         dp4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712672616; x=1713277416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BhWsMOQgYV9auXE9rRgSy5tpt3ezoTRv+HC7Wl6JmUg=;
-        b=pOWs92eg667NofbAWt9BfrzYcmb+tSDTrrwcpB/j4RsbcpVz1B4811fNDJ9ws7+xuU
-         CeITR3Osz74I0CSyKrxS0zdNp2hk2nI64Ohiw7FkyXAxM4D2Rv3NkiN3aHsnaoM36XIE
-         UFsMUZaZhhcRuYnFAtiGi7lVuc3k2+FQ8fp5OCi5s1R3dD3hHCc6LnUbhQOU9U7kXyEz
-         2q5tk/bcg8sb9rnpl1QYNFvYSFzMF47fb1Of/eVpg7NQCT9kk5ukWEmgh9eln6A70OJD
-         iiA+cHFEZLrkQ7vPaSwu47eRT/F1ssz+Wgpo9xLfvyLSgdt8/3GqbUP8vK9MtSRZESMw
-         YiXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrQr+KJU4GwVSMX/YL+OA/iqi9dSFkiOUWZCtxJ/Uxi74+JZYoxDkkeEbj9nRocj5J4WFTRyDrHAW74vq9QdcePbbVEkRXUZj72YCaDLLR6lnUUxlzFU54rvQW5DxlQGv4LclaW3pscqnqyATo
-X-Gm-Message-State: AOJu0Yyfgg1e4pwiMcC/pkJUJQoGh2CeJQwH8NQuN38tcLd0nn+sRaiY
-	BG4JUtIxXyLgy7b/MNz78og1faoxHz5XlZ2BO+YeSv7LCmxh98ztqlLFs6o52MMvduN1uAdAKmE
-	b2R2IQOHOhuN17RshkFwK+FZPope/edS3VRE=
-X-Google-Smtp-Source: AGHT+IGz1jFaS6SRwv5iWAR2VPLNxDGE3/BU8tCAxZQ+8qGx7loUh+88mJoj8KZrkQFz1WMtEzF4mVP/Vjk6KnqQ9AM=
-X-Received: by 2002:a2e:b16f:0:b0:2d4:79ff:5573 with SMTP id
- a15-20020a2eb16f000000b002d479ff5573mr881657ljm.20.1712672616060; Tue, 09 Apr
- 2024 07:23:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712672778; x=1713277578;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5siHBidFUu/f/+SSwIYn7JsHrl83u4UHX8WsLfWFlHk=;
+        b=K91FrIF712UCUlmXZv3Td0zOHtI8MSbniDDylYkBKf/K5JbNZXrjStMKlgrHY5m7Pc
+         SmklOS5qlUFQwWnpRlijpTTSQ691O/4U4McVIdxhfCGmgrM46XKzFoV3O+wkTNMW0n+e
+         4lOBeQqi8F+S5VRAyqMrja4gvc66IqRA51yoztyogEsAHISkKHijt74eIx54tFz0mD2P
+         i6pTnaGDkvk9y39VMNZcbmF1Ge3lhrHyJVqWo/xKfHZxzfhiujDUN438SOxSWj28+F6C
+         C4r7v95efWddDqfBjcyFeMeEdjpqcVIjC348w1UbISgLp/UvNz/Y/nh24UKi6haIzS2j
+         hLuw==
+X-Forwarded-Encrypted: i=1; AJvYcCWOpzcu77cHQkotNfBBz+w1ZYM5fdvxy/Mo4gf5fCMEHbT2nLnFQ0CesKJOIn8YQeug9KERGJCdiaZR5qsascMm5IHGfQhrSMQROS8NhoZcfm3ZnJeA2PZVIq+KUAqN9ToqO3aJ
+X-Gm-Message-State: AOJu0YywA9tTBVF4CvxPgRD6iDUgG3H1sFN0qcxMg2OlgxzONJhp/O5J
+	fav0yT8S2bxMlSDz4MJEV1q4B8wxIOuo8snN7Y8SfmJjarRrtB/zh5lw/G9j
+X-Google-Smtp-Source: AGHT+IHj+m5LwCmCOAmqAI1oRxRP3QiTiWCZAHVTOsuuo4TMQQOeU4/As9nnE1nRGMtnNgpgroibvA==
+X-Received: by 2002:ac2:5337:0:b0:513:dac5:ee22 with SMTP id f23-20020ac25337000000b00513dac5ee22mr6953932lfh.28.1712672777495;
+        Tue, 09 Apr 2024 07:26:17 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id s17-20020a195e11000000b00515d55b66acsm1558748lfb.64.2024.04.09.07.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 07:26:17 -0700 (PDT)
+Date: Tue, 9 Apr 2024 17:26:13 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Minda Chen <minda.chen@starfivetech.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Add missing mmc statistics in DW GMAC
+Message-ID: <qfsmz4mtjknbul2e43mvqghinqvpqq3hsnp5p5prtpbmoa47at@g3zuvdq7kirx>
+References: <20240408012943.66508-1-minda.chen@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408123459.66504-1-wse@tuxedocomputers.com>
-In-Reply-To: <20240408123459.66504-1-wse@tuxedocomputers.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Tue, 9 Apr 2024 10:23:23 -0400
-Message-ID: <CABBYNZ+DNkb4bC8eSQaxcDFEuA4hWJMgk00r6+YKc+BH953x+w@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: btintel: Add devices to HCI_QUIRK_BROKEN_LE_CODED
-To: Werner Sembach <wse@tuxedocomputers.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Christoffer Sandberg <cs@tuxedo.de>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408012943.66508-1-minda.chen@starfivetech.com>
 
-Hi Werner,
+On Mon, Apr 08, 2024 at 09:29:41AM +0800, Minda Chen wrote:
+> Add miss MMC statistic in DW GMAC
+> 
+> base on 6.9-rc1
+> 
+> changed
+> v2:
+>    patch2 : remove mmc_rx_control_g due to it is gotten in
+> ethtool_ops::get_eth_ctrl_stats.
 
-On Mon, Apr 8, 2024 at 8:35=E2=80=AFAM Werner Sembach <wse@tuxedocomputers.=
-com> wrote:
->
-> From: Christoffer Sandberg <cs@tuxedo.de>
->
-> For HW variants 0x17, 0x18 and 0x19 LE Coded PHY causes scan and
-> connection issues when enabled. This patch disables it through
-> the existing quirk.
+The series has already been merged in. Just a small note about the
+patches. Both the changes seems reasonable:
+LPI-statistics for DW GMAC and DW QoS Eth,
+and
+Rx-Recv and Tx-oversize errors stat for DW GMAC and DW QoS Eth.
+The former stats has originally been added for DW XGMAC and the later
+stats aren't supported by DW XGMAC. So the provided change is
+complete. Thanks.
 
-Perhaps the following could be a proper fix for that:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-https://patchwork.kernel.org/project/bluetooth/patch/20240405204037.3451091=
--1-luiz.dentz@gmail.com/
+-Serge(y)
 
-If you manage to test it please reply and add Tested-by to its thread.
-
-> Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  drivers/bluetooth/btintel.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
-> index cdc5c08824a0a..9f9c4696d082a 100644
-> --- a/drivers/bluetooth/btintel.c
-> +++ b/drivers/bluetooth/btintel.c
-> @@ -2881,6 +2881,9 @@ static int btintel_setup_combined(struct hci_dev *h=
-dev)
->         case 0x17:
->         case 0x18:
->         case 0x19:
-> +               /* 0x17, 0x18 and 0x19 have issues when LE Coded PHY is e=
-nabled */
-> +               set_bit(HCI_QUIRK_BROKEN_LE_CODED, &hdev->quirks);
-> +               fallthrough;
->         case 0x1b:
->         case 0x1c:
->                 /* Display version information of TLV type */
-> --
-> 2.34.1
->
-
-
---=20
-Luiz Augusto von Dentz
+> 
+> Minda Chen (2):
+>   net: stmmac: mmc_core: Add GMAC LPI statistics
+>   net: stmmac: mmc_core: Add GMAC mmc tx/rx missing statistics
+> 
+>  drivers/net/ethernet/stmicro/stmmac/mmc.h         |  2 ++
+>  drivers/net/ethernet/stmicro/stmmac/mmc_core.c    | 15 +++++++++++++++
+>  .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c  |  2 ++
+>  3 files changed, 19 insertions(+)
+> 
+> 
+> base-commit: 4cece764965020c22cff7665b18a012006359095
+> -- 
+> 2.17.1
+> 
+> 
 
