@@ -1,126 +1,101 @@
-Return-Path: <linux-kernel+bounces-136223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23CEF89D173
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A695F89D175
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F7601F2262B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:23:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A51A41C238C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F5656477;
-	Tue,  9 Apr 2024 04:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6162C69DF4;
+	Tue,  9 Apr 2024 04:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bP4520uS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ueNsqCBv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C388054672
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 04:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B71C64CEF;
+	Tue,  9 Apr 2024 04:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712636574; cv=none; b=AZh2BJYj41aHpDixwF8bTnZuzHSSABDljfLmxdxlsVSS5WIMMNvN0P4cc4OqZ4ztgY8mCYh1OllYmn829874dXVJi3pGbNpf+xt+Vemm4gs2ogbjKTjrYJgNVdX0+B10vQefwxbe8+FbrCVu74vZHxYEJ38rQie9vM/uYRGEGpA=
+	t=1712636576; cv=none; b=usszrl5GQO4iMuDRTF2aqgMVvRBzu5qC1qk4wnjBS0IR30jDIWU+2YNdDrVGMCzkSQH49Si2qP1n23xzdHychZGePji3nZkDQi64QoRghiFzQia7kktpalXsLCW19ZYD7vw10RBAkH4NG3sYLKm0sLBM/Yue5Zi7MJmzz/Fk7Ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712636574; c=relaxed/simple;
-	bh=mni5WVvCDm+zkncO9NAz8NliA7a2eGSlY5U9viMNhac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-type; b=bakc7wUKUWAdqMb2FDwu0wyZs5Yb9hbuSHbPY50Vu4saOYlEBeQY8J3/fGC46Jk7+h+dPd1A9OBp4NXYvswYUrorfO96T35eP3WEokI9+9Z66cyTne80ZE/BEfWqDeqdJ9yl9AJ51EJnPFAKwfKFy4UJb63fuEXVZfup0AT2xRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bP4520uS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712636571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=6KAPtGBew3LOOWgs/rnupaUNsltQxJ2vjmJVi4Tpsck=;
-	b=bP4520uS6kcmsCpxQYwoBXXa3dqGTTsgH+zNsamJ1Anp2zKUl5EBe1BPNynmZ6OVdpb8iY
-	8kjhXXWAJTweaRBpUOhvpZ44+sQ1nFXjXBH/3AUPmbv/mzJGWCiLBhounRxGIUMJsp8XJO
-	lhryJKyqVe42Q4ynwtFf8hYQNCyGxw0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-113-K6JynX3JObK_P15MTvSksg-1; Tue,
- 09 Apr 2024 00:22:49 -0400
-X-MC-Unique: K6JynX3JObK_P15MTvSksg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 664E51C03163;
-	Tue,  9 Apr 2024 04:22:49 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.50])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2451D1C060A6;
-	Tue,  9 Apr 2024 04:22:46 +0000 (UTC)
-From: Baoquan He <bhe@redhat.com>
-To: kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	jirislaby@kernel.org,
-	Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2] kexec: fix the unexpected kexec_dprintk() macro
-Date: Tue,  9 Apr 2024 12:22:38 +0800
-Message-ID: <20240409042238.1240462-1-bhe@redhat.com>
+	s=arc-20240116; t=1712636576; c=relaxed/simple;
+	bh=QnwHqeYJPBPK/Xrmgd4DuJ3QQvB+ALt1X1KUY4pf/QQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=DDMXRnPH6fvx7wfRv0aQwWHtMI7e9texH0JyMRkNOXxhJ7gLFLQ38udVECIIivxNlLsLRceJx/rmbvUkN1XPtIj5muOebcEEVjceqCJ/vChX3Fp3IlLEu696DKlVMTIfDma5qPOtBZOPbdPvComzkk+qLsCEmVKCQLwhAJS9Kq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ueNsqCBv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13830C433A6;
+	Tue,  9 Apr 2024 04:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712636576;
+	bh=QnwHqeYJPBPK/Xrmgd4DuJ3QQvB+ALt1X1KUY4pf/QQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=ueNsqCBvo3g2lE6VaS4QKVSd37rLTDVyopUkCqikwT27F0H4xcrMSIr4yOrRYJCNN
+	 UPtPFryWlM6WDgOpWb2+CzL9ndiyg97AA1Hhokzv9geZ0P6KUa4e41HlKtYMIzC1ul
+	 yacZwTT1hirJBe32nN12G3f7JJBzopFBQIl90S4JocESKaFDO8DGur2y203a7Jtmtb
+	 friiHruhfy1/Gjdd+BHbUa5+OI+FgeG7Do2v3JNVgv72GvOPM3m3Exx5hjYfWWgeRr
+	 pbQwnlz5YwxVfV6d5id9rES2j4UxcJrXPhlkB6cBPZk+mJyxGzQy+EONOUU3AXi7tF
+	 dTrwgt82ZRkeQ==
+Message-ID: <94bce3e14a32d017c0f8acb6726a3484fda01cfd.camel@kernel.org>
+Subject: Re: [PATCH 1/1] cxl/acpi.c: Add buggy BIOS hint for CXL ACPI lookup
+ failure
+From: PJ Waskiewicz <ppwaskie@kernel.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Lukas Wunner
+	 <lukas@wunner.de>, linux-cxl@vger.kernel.org, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Mon, 08 Apr 2024 21:22:55 -0700
+In-Reply-To: <ZhRii1BAg86gccWM@snoopy>
+References: <20240407210526.8500-1-ppwaskie@kernel.org>
+	 <ZhMP-NBMb387KD4Y@wunner.de> <ZhNQa8wAflycciNA@snoopy>
+	 <20240408093422.000062d9@Huawei.com> <ZhRFsUiDieY+HhfV@snoopy>
+	 <6614575a1c15c_2583ad29476@dwillia2-xfh.jf.intel.com.notmuch>
+	 <ZhRii1BAg86gccWM@snoopy>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Jiri reported that the current kexec_dprintk() always prints out
-debugging message whenever kexec/kdmmp loading is triggered. That is
-not wanted. The debugging message is supposed to be printed out when
-'kexec -s -d' is specified for kexec/kdump loading.
+On Mon, 2024-04-08 at 14:32 -0700, PJ Waskiewicz wrote:
+> >=20
+> > Turns out that straightforward message is aleady a driver message,
+> > but
+> > it gets skipped in this case. So, I am thinking of cleanup /
+> > clarification along the following lines:
+> >=20
+> > 1/ Lean on the existing cxl_get_chbs() validation paths to report
+> > on
+> > errors
+> >=20
+> > 2/ Include the device-name rather than the UID since if UID is
+> > unreliable it does not help you communicate with your BIOS vendor.
+> > I.e.
+> > give a breadcrumb for the BIOS engineer to match the AML device
+> > name
+> > with the CEDT content.
+> >=20
+> > 3/ Do not fail driver load on a single host-bridge parsing failure
+> >=20
+> > 4/ These are all cxl_acpi driver init events, so consistently use
+> > the
+> > ACPI0017 device, and the cxl_acpi driver, as the originator of the
+> > error
+> > message.
+> >=20
+> > Would this clarification have saved you time with the debug?
 
-After investigating, the reason is the current kexec_dprintk() takes
-printk(KERN_INFO) or printk(KERN_DEBUG) depending on whether '-d' is
-specified. However, distros usually have defaulg log level like below:
+I guess I should have asked: would you like me to pull this patch in
+and give it a test on a known broken host?  I'm happy to do it.
 
- [~]# cat /proc/sys/kernel/printk
- 7       4      1       7
-
-So, even though '-d' is not specified, printk(KERN_DEBUG) also always
-prints out. I thought printk(KERN_DEBUG) is equal to pr_debug(), it's
-not.
-
-Fix it by changing to use pr_info() instead which are expected to work.
-
-Fixes: cbc2fe9d9cb2 ("kexec_file: add kexec_file flag to control debug printing")
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Closes: https://lore.kernel.org/all/4c775fca-5def-4a2d-8437-7130b02722a2@kernel.org
----
-v1->v2:
-- Change to use pr_info() only when "kexec -s -d" is specified. With
-  this change, those debugging message for "kexec -c -d" of kexec_load
-  will be missed. We'll see if we need add them for kexec_load too, if
-  someone explicitly requests it.
-
- include/linux/kexec.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 060835bb82d5..f31bd304df45 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -461,10 +461,8 @@ static inline void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages) {
- 
- extern bool kexec_file_dbg_print;
- 
--#define kexec_dprintk(fmt, ...)					\
--	printk("%s" fmt,					\
--	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
--	       ##__VA_ARGS__)
-+#define kexec_dprintk(fmt, arg...) \
-+        do { if (kexec_file_dbg_print) pr_info(fmt, ##arg); } while (0)
- 
- #else /* !CONFIG_KEXEC_CORE */
- struct pt_regs;
--- 
-2.41.0
+-PJ
 
 
