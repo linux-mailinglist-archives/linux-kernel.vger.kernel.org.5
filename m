@@ -1,153 +1,184 @@
-Return-Path: <linux-kernel+bounces-136098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D709B89CFF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:45:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1002089CFF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:45:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778411F23BC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:45:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78EDE1F23BC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA484EB3C;
-	Tue,  9 Apr 2024 01:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3704C4F1FA;
+	Tue,  9 Apr 2024 01:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OxJbJBS+"
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BYq0BEu5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D32110A;
-	Tue,  9 Apr 2024 01:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2494F1E0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 01:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712627098; cv=none; b=b+NdToi3wprJFJfcUy7JB7Fte9UAPwTuDrVZD01EIr7z52j2eV+wc3vvTHNVNZmHCnB/bpzqaZqm4RsC/uhSqunnvFmuZ4X7JG2YWKHRrP65hB8VI43Q1wn4eeGoJfDy/THFb7xgNjGs785hQBx5QKgD/H9RfhqYW+fbpb5yP3w=
+	t=1712627124; cv=none; b=gNlTHCm3DDllrWRpnbuqb8ThY7FvJDK7jeZBmzwVGw8quAqAdNQmK2mNExSrIyZvz2Abm6rwD561qxtp8QgYEvmzzbDB1NIOgqkb4KlJEaCqEdXN4KZC/rBjGcv2P9KcNfafmyIS8rfAqjq2ko0XzlIoXbKFJk2cvRhw8kRR+Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712627098; c=relaxed/simple;
-	bh=j7urtP4ouQoNOdaRnsPEz8WC+3ThBpb8ls9QDzEF4Eo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hTCv5bJezaT1uopkKDogo2R73n8qb8GVKTpP834bN1WbSz+ouPSK/Ds+ASpL10A/2DxOVpJFNPg9+cK+L8Ie0PamJTFFb3s1xRuM05gy8aZpRi8h8Ow4waWc99NAponyVKMrq9rCiPoP6knIWndozwDnPf26lVyeSrXZKlGX31c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OxJbJBS+; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712627086; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=hRt60i/N6X7YihbK5ksUh4m+JDUuCca3dbuWQD3MwgY=;
-	b=OxJbJBS+f2iklXpZHfajm1L91ez6DVDqSYOZPnUq4q83H/xsF8EhctjkaoXEgrgbGWsu0wpOkcHqd+72E2digUy5zrOTxeWlL4jPuti+ok4TiqOdDU0Pgrr7RfItDoJp7LLOKZPXVg/DB/FRGMb3gPUxD2kRneQUBYPXsv1TS5M=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W4CYNQs_1712627084;
-Received: from 30.221.129.235(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W4CYNQs_1712627084)
-          by smtp.aliyun-inc.com;
-          Tue, 09 Apr 2024 09:44:46 +0800
-Message-ID: <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
-Date: Tue, 9 Apr 2024 09:44:44 +0800
+	s=arc-20240116; t=1712627124; c=relaxed/simple;
+	bh=z2eCoScpgsl7Ir10XM1QcJSlIyoPYZVQM9kO+cbyA4c=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=WYzSU8IWhwf5kL+8inMo14vTuI5R+3AK+Jb5rHRRwErzrSGVuB4n9zPmwOhbTexaFIFKGaJqT3b21JqPom1EIMN5dxGwryNqSGrT5IujEXJM+BeShOhDVe1VrghHbgi3LMmvspq1J7Ov+mTo7si24oQ99xR3LLuXFFoshyq3QDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BYq0BEu5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5305C433C7;
+	Tue,  9 Apr 2024 01:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712627124;
+	bh=z2eCoScpgsl7Ir10XM1QcJSlIyoPYZVQM9kO+cbyA4c=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=BYq0BEu52Xr7p+duyjGWBqOJ8lQxU+kvhZP8g8BBzCi1/cdfwn/DUHnGAL4n7FM7r
+	 MXD8jY2HLdZ2SiA2XuFQEhKTXp4Cuwq3DTrqoAopfzwn1RS4vMRp9hXwKgvhFKlvl6
+	 /OMOodkL377GbnigzmGjgDOT1ByAPWU6oMeEaqnHKEJuI7O1fwaNmw+Rpn6ovdjgmh
+	 XFzatHYbuzIavNJWEJIq7Wo95UcR7KeIC94m6zRA6bs/ebslJ/oX0nNvjTqUkWEhXO
+	 3GODVwmUFrtZ4O3nqPdBoC51rwfzCufRzKeUzdN9BZ0Y0j7/chak6onuw18zf6eWap
+	 1Safc6T57lgRA==
+Date: Mon, 08 Apr 2024 18:45:19 -0700
+From: Kees Cook <kees@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Justin Piszcz <jpiszcz@lucidpixels.com>,
+ Bagas Sanjaya <bagasdotme@gmail.com>
+CC: "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
+ Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>,
+ =?ISO-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+ Kees Cook <keescook@chromium.org>
+Subject: =?US-ASCII?Q?Re=3A_6=2E5=2E5=3A_UBSAN=3A_radeon=5Fatombios=2Ec=3A_ind?=
+ =?US-ASCII?Q?ex_1_is_out_of_range_for_type_=27UCHAR_=5B1=5D=27?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <a619df03-e0cb-48f7-840a-970b7a6f6037@quicinc.com>
+References: <CAO9zADy4b1XkD_ZaEF+XkDCXePJLD4Lev3g7HAEGYsCHgeM+KQ@mail.gmail.com> <ZRoIGhMesKtmNkAM@debian.me> <CAO9zADyfaLRWB-0rdojnbFD6SUsqX+zb9JZSZUkgTC7VJN=c1A@mail.gmail.com> <a619df03-e0cb-48f7-840a-970b7a6f6037@quicinc.com>
+Message-ID: <CA212FEF-E0BB-483C-86CC-6986D4FBE168@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some unsupported
- operations of loopback-ism
-To: Niklas Schnelle <schnelle@linux.ibm.com>,
- Gerd Bayer <gbayer@linux.ibm.com>, wintera@linux.ibm.com,
- twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240324135522.108564-1-guwen@linux.alibaba.com>
- <20240324135522.108564-5-guwen@linux.alibaba.com>
- <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
- <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
- <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
- <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
- <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2024/4/4 23:15, Niklas Schnelle wrote:
-> On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
->>
->> On 2024/4/4 19:42, Niklas Schnelle wrote:
->>> On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
->>>>
->>>> On 2024/4/4 00:25, Gerd Bayer wrote:
->>>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
->>>>>> This implements some operations that loopback-ism does not support
->>>>>> currently:
->>>>>>     - vlan operations, since there is no strong use-case for it.
->>>>>>     - signal_event operations, since there is no event to be processed
->>>>>> by the loopback-ism device.
->>>>>
->>>>> Hi Wen,
->>>>>
->>>>> I wonder if the these operations that are not supported by loopback-ism
->>>>> should rather be marked "optional" in the struct smcd_ops, and the
->>>>> calling code should call these only when they are implemented.
->>>>>
->>>>> Of course this would mean more changes to net/smc/smc_core.c - but
->>>>> loopback-ism could omit these "boiler-plate" functions.
->>>>>
->>>>
->>>> Hi Gerd.
->>>>
->>>> Thank you for the thoughts! I agree that checks like 'if(smcd->ops->xxx)'
->>>> can avoid the device driver from implementing unsupported operations. But I
->>>> am afraid that which operations need to be defined as 'optional' may differ
->>>> from different device perspectives (e.g. for loopback-ism they are vlan-related
->>>> opts and signal_event). So I perfer to simply let the smc protocol assume
->>>> that all operations have been implemented, and let drivers to decide which
->>>> ones are unsupported in implementation. What do you think?
->>>>
->>>> Thanks!
->>>>
->>>
->>> I agree with Gerd, in my opinion it is better to document ops as
->>> optional and then allow their function pointers to be NULL and check
->>> for that. Acting like they are supported and then they turn out to be
->>> nops to me seems to contradict the principle of least surprises. I also
->>> think we can find a subset of mandatory ops without which SMC-D is
->>> impossible and then everything else should be optional.
->>
->> I see. If we all agree to classify smcd_ops into mandatory and optional ones,
->> I'll add a patch to mark the optional ops and check if they are implemented.
-> 
-> Keep in mind I don't speak for the SMC maintainers but that does sound
-> reasonable to me.
-> 
+On April 8, 2024 5:45:29 PM PDT, Jeff Johnson <quic_jjohnson@quicinc=2Ecom=
+> wrote:
+>On 10/1/23 17:12, Justin Piszcz wrote:
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>>> [Sun Oct  1 15:59:04 2023] UBSAN: array-index-out-of-bounds in
+>>>> drivers/gpu/drm/radeon/radeon_atombios=2Ec:2620:43
+>>>> [Sun Oct  1 15:59:04 2023] index 1 is out of range for type 'UCHAR [1=
+]'
+>>>> [Sun Oct  1 15:59:04 2023] CPU: 5 PID: 1 Comm: swapper/0 Tainted: G
+>>>>              T  6=2E5=2E5 #13 55df8de52754ef95effc50a55e9206abdea304a=
+c
+>>>> [Sun Oct  1 15:59:04 2023] Hardware name: Supermicro X9SRL-F/X9SRL-F,
+>>>> BIOS 3=2E3 11/13/2018
+>>>> [Sun Oct  1 15:59:04 2023] Call Trace:
+>>>> [Sun Oct  1 15:59:04 2023]  <TASK>
+>>>> [Sun Oct  1 15:59:04 2023]  dump_stack_lvl+0x36/0x50
+>>>> [Sun Oct  1 15:59:04 2023]  __ubsan_handle_out_of_bounds+0xc7/0x110
+>>>> [Sun Oct  1 15:59:04 2023]  radeon_atombios_get_power_modes+0x87a/0x8=
+f0
+>>>> [Sun Oct  1 15:59:04 2023]  radeon_pm_init+0x13a/0x7e0
+>>>> [Sun Oct  1 15:59:04 2023]  evergreen_init+0x13d/0x3d0
+>>>> [Sun Oct  1 15:59:04 2023]  radeon_device_init+0x60a/0xbf0
+>>>> [Sun Oct  1 15:59:04 2023]  radeon_driver_load_kms+0xb1/0x250
+>>>> [Sun Oct  1 15:59:04 2023]  drm_dev_register+0xfc/0x250
+>>>> [Sun Oct  1 15:59:04 2023]  radeon_pci_probe+0xd0/0x150
+>>>> [Sun Oct  1 15:59:04 2023]  pci_device_probe+0x97/0x130
+>>>> [Sun Oct  1 15:59:04 2023]  really_probe+0xbe/0x2f0
+>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx___driver_attach+0x10/0x10
+>>>> [Sun Oct  1 15:59:04 2023]  __driver_probe_device+0x6e/0x120
+>>>> [Sun Oct  1 15:59:04 2023]  driver_probe_device+0x1a/0x90
+>>>> [Sun Oct  1 15:59:04 2023]  __driver_attach+0xd4/0x170
+>>>> [Sun Oct  1 15:59:04 2023]  bus_for_each_dev+0x87/0xe0
+>>>> [Sun Oct  1 15:59:04 2023]  bus_add_driver+0xf3/0x1f0
+>>>> [Sun Oct  1 15:59:04 2023]  driver_register+0x58/0x120
+>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_radeon_module_init+0x10/0x10
+>>>> [Sun Oct  1 15:59:04 2023]  do_one_initcall+0x93/0x4a0
+>>>> [Sun Oct  1 15:59:04 2023]  kernel_init_freeable+0x301/0x580
+>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_kernel_init+0x10/0x10
+>>>> [Sun Oct  1 15:59:04 2023]  kernel_init+0x15/0x1b0
+>>>> [Sun Oct  1 15:59:04 2023]  ret_from_fork+0x2f/0x50
+>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_kernel_init+0x10/0x10
+>>>> [Sun Oct  1 15:59:04 2023]  ret_from_fork_asm+0x1b/0x30
+>>>> [Sun Oct  1 15:59:04 2023]  </TASK>
+>>>> [Sun Oct  1 15:59:04 2023]
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>>> [Sun Oct  1 15:59:04 2023] [drm] radeon: dpm initialized
+>>>> [Sun Oct  1 15:59:04 2023] [drm] GART: num cpu pages 262144, num gpu
+>>>> pages 262144
+>>>> [Sun Oct  1 15:59:04 2023] [drm] enabling PCIE gen 2 link speeds,
+>>>> disable with radeon=2Epcie_gen2=3D0
+>>>> [Sun Oct  1 15:59:04 2023] [drm] PCIE GART of 1024M enabled (table at
+>>>> 0x000000000014C000)=2E
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: WB enabled
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: fence driver on rin=
+g 0
+>>>> use gpu addr 0x0000000040000c00
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: fence driver on rin=
+g 3
+>>>> use gpu addr 0x0000000040000c0c
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: fence driver on rin=
+g 5
+>>>> use gpu addr 0x000000000005c418
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: radeon: MSI limited=
+ to 32-bit
+>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00=2E0: radeon: using MSI=
+=2E
+>>>> [Sun Oct  1 15:59:04 2023] [drm] radeon: irq initialized=2E
+>>>>=20
+>>>=20
+>>> Please also open an issue on freedesktop tracker [1]=2E
+>>>=20
+>>> Thanks=2E
+>>>=20
+>>> [1]: https://gitlab=2Efreedesktop=2Eorg/drm/amd/-/issues
+>>=20
+>> Issue opened: https://gitlab=2Efreedesktop=2Eorg/drm/amd/-/issues/2894
+>>=20
+>> Regards,
+>> Justin
+>
+>+Kees since I've worked with him on several of these flexible array issue=
+s=2E
+>
+>I just happened to look at kernel logs today for my ath1*k driver mainten=
+ance and see the subject issue is present on my device, running 6=2E9=2E0-r=
+c1=2E The freedesktop issue tracker says the issue is closed, but any fix h=
+as not landed in the upstream kernel=2E Is there a -next patch somewhere?
+>
+>[   12=2E105270] UBSAN: array-index-out-of-bounds in drivers/gpu/drm/rade=
+on/radeon_atombios=2Ec:2718:34
+>[   12=2E105272] index 48 is out of range for type 'UCHAR [1]'
+>[
+>
+>If there isn't really an upstream fix, I can probably supply one=2E
 
-Hi Wenjia and Jan, do you have any comments on this and [1]? Thanks!
+I would expect this to have fixed it:
+https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/torvalds/linux=2Egit/c=
+ommit/drivers/gpu/drm/radeon/pptable=2Eh?id=3Dc63079c61177ba1b17fa05c687569=
+9a36924fe39
 
-[1] https://lore.kernel.org/netdev/60b4aec0b4bf4474d651b653c86c280dafc4518a.camel@linux.ibm.com/
+If not, there must be something else happening?
 
->>
->>>
->>> As a first guess I think the following options may be mandatory:
->>>
->>> * query_remote_gid()
->>> * register_dmb()/unregister_dmb()
->>> * move_data()
->>>     For this one could argue that either move_data() or
->>>     attach_dmb()/detach_dmb() is required though personally I would
->>>     prefer to always have move_data() as a fallback and simple API
->>> * supports_v2()
->>> * get_local_gid()
->>> * get_chid()
->>> * get_dev()
->> I agree with this classification. Just one point, maybe we can take
->> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
->> it is not implemented, we treat it as an ISMv1.
->>
->> Thanks!
-> 
-> Interpreting a NULL supports_v2() as not supporting v2 sounds
-> reasonable to me.
+-Kees
+
+--=20
+Kees Cook
 
