@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-136761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F179F89D7E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 856B989D7E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DCACB25482
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:32:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E37E9B24D99
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1610612FF7B;
-	Tue,  9 Apr 2024 11:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E4612F374;
+	Tue,  9 Apr 2024 11:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wg1ozo/3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="npaABGW3"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323B612D778
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B8E12D75F
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662236; cv=none; b=LC+/4XEqJD2BXtkK+3JgI5KYz02ZLtE8iAAajNZU9N8GiyrOI5tewRlCfh8RfCuTLNWK8oNyKSWR+OwHnRUlNrPlWh840bLzUQfHE23PDd210YGBIGAqnv0vAR4zeNfB4Mv4/d4qRQ/e9PxFP/xuVsk5YErTB75vnaHxm5f/VGc=
+	t=1712662233; cv=none; b=HmwoqWNPMCwUJ49keKACvj3gyuXS0kJlwy/pXEPC84D3e6CR1EkXuZxJLubePvmLLLRtLuA+JM8CY/TK9GStoHE0FCJ/3KrhNeTLwPz0/bvvMA0hprC98YYaRGKvkalWFXndXjbrvPDO9cGvX497FVFjPf2A2twS0yz7Lj8DrRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662236; c=relaxed/simple;
-	bh=xtXGFEbyV1MUQviSE1XFEbU8TkliEYOxKs3K/oQH2hk=;
+	s=arc-20240116; t=1712662233; c=relaxed/simple;
+	bh=DBcJsWV4nfgk/8fw3M6vcKnfFbP1zoB1PzLmLNRfgyE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bKARSdrHde5QWtAuA3a/yzxNFl0ueRBObfddp+EQI8syEKrWZfVlpRE92zWoa3zXXR5ux5dee/ArLbnqMLFHKhpQg8lLnb+pyS4AuDbg2Q9FwOi/S/kW1aahPBGhS06iCnxFqf7RNes+KjuHSNRUGq830hHrXMEOX3gkzs9xEBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wg1ozo/3; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=hcZXTqaBlb8zgSq0d562HnXoZhzgsX5O3piC7F38ZaPqZJ0/XC8T0BFGbz4lRY6RwaZ4qvYL7ygAjJchN8L0PirCM5j4ZJmY5PG0vtoHYKChJaQN6rxhyYUqZIxpzsTnTRtW90jRX1YkkJt1bVaTdzLJ2HJva5XzQnEMeWd9Bxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=npaABGW3; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712662235; x=1744198235;
+  t=1712662232; x=1744198232;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xtXGFEbyV1MUQviSE1XFEbU8TkliEYOxKs3K/oQH2hk=;
-  b=Wg1ozo/3/GmYh6k/DVR5A7qnnmVk3tuntvcbKssXXR79Hwxpwz1Zg/Sb
-   kh+FZ+RMR09I8GI4ENK8tPBKc1ftcarzr4A/rqZEiVoimfFcwNZa1kiR0
-   W5FN8BClknNkzckDhnjHtShct5L1anCe2ohK6v2ORIOwq91QKnDm21KX9
-   /y2Z6XIOSf2cBXn4WS0kdGAnymkgUBWXmtk1Bwz/8xLS+QhThMiGgg1Ny
-   O3hVscb6tNEqTa7Yot95RpDTfz0xIsrVU7Z/wFX9LMCQmcu9RSG3dnIW5
-   4PGXGff9OkMXEAy+Kd2Vh6C7Tgtpm8tt8TY3Qa4ft+QUUoE98x0D7hdWI
-   Q==;
-X-CSE-ConnectionGUID: 6iN0Xy61RYeMxZxtrQPP9w==
-X-CSE-MsgGUID: egA6s741T7ubN4zndJNkSg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30460451"
+  bh=DBcJsWV4nfgk/8fw3M6vcKnfFbP1zoB1PzLmLNRfgyE=;
+  b=npaABGW3ZiTiRiQZQ6bPIEc0m0Qn2yApAwArDHHFO/QmzGWJWKytFRkC
+   kGvl2WHp7GDwE73D8HtokeEU6R0Fs+XzCy1iYa/P99N2oQSf5Qhk6C1A7
+   8/JkF9LSwbCzPvjZw7JJVQD2soRSp2W6h4NVdecCQKDNdfmaCDotBkzy9
+   h2m9U47CBAe0KWsD0o6QGZbia/v+PS+w7q+B5BnCrYgonUGn8Wiy2o+YV
+   jLpnY2sdFiHGXn7ZfPfkAZvZ/u69lFi4GmbGstBPtwDeA19hoqEYy3mH6
+   rZMag7EsR6wG+mmIEE3tEV0Ll8ZIZv3b0T+XV2WgTlTgwEwa+dNpdITgK
+   A==;
+X-CSE-ConnectionGUID: uhmJcgCSSeOBO9mFvx1v0Q==
+X-CSE-MsgGUID: iU4l+MOkS5KTc36wqfSqBw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30460383"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="30460451"
+   d="scan'208";a="30460383"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 04:30:30 -0700
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 04:30:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093349"
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093331"
 X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="937093349"
+   d="scan'208";a="937093331"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 04:30:24 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 078D6EA4; Tue,  9 Apr 2024 14:30:18 +0300 (EEST)
+	id 11CC1C09; Tue,  9 Apr 2024 14:30:18 +0300 (EEST)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -79,12 +79,10 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	kexec@lists.infradead.org,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Dave Hansen <dave.hansen@intel.com>,
-	Tao Liu <ltao@redhat.com>
-Subject: [PATCHv10 11/18] x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
-Date: Tue,  9 Apr 2024 14:30:03 +0300
-Message-ID: <20240409113010.465412-12-kirill.shutemov@linux.intel.com>
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv10 12/18] x86/mm: Do not zap page table entries mapping unaccepted memory table during kdump.
+Date: Tue,  9 Apr 2024 14:30:04 +0300
+Message-ID: <20240409113010.465412-13-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
 References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
@@ -96,74 +94,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-e820__end_of_ram_pfn() is used to calculate max_pfn which, among other
-things, guides where direct mapping ends. Any memory above max_pfn is
-not going to be present in the direct mapping.
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-e820__end_of_ram_pfn() finds the end of the ram based on the highest
-E820_TYPE_RAM range. But it doesn't includes E820_TYPE_ACPI ranges into
-calculation.
+During crashkernel boot only pre-allocated crash memory is presented as
+E820_TYPE_RAM. This can cause page table entries mapping unaccepted memory
+table to be zapped during phys_pte_init(), phys_pmd_init(), phys_pud_init()
+and phys_p4d_init() as SNP/TDX guest use E820_TYPE_ACPI to store the
+unaccepted memory table and pass it between the kernels on
+kexec/kdump.
 
-Despite the name, E820_TYPE_ACPI covers not only ACPI data, but also EFI
-tables and might be required by kernel to function properly.
+E820_TYPE_ACPI covers not only ACPI data, but also EFI tables and might
+be required by kernel to function properly.
 
-Usually the problem is hidden because there is some E820_TYPE_RAM memory
-above E820_TYPE_ACPI. But crashkernel only presents pre-allocated crash
-memory as E820_TYPE_RAM on boot. If the preallocated range is small, it
-can fit under the last E820_TYPE_ACPI range.
+The problem was discovered during debugging kdump for SNP guest. The
+unaccepted memory table stored with E820_TYPE_ACPI and passed between
+the kernels on kdump was getting zapped as the PMD entry mapping this
+is above the E820_TYPE_RAM range for the reserved crashkernel memory.
 
-Modify e820__end_of_ram_pfn() and e820__end_of_low_ram_pfn() to cover
-E820_TYPE_ACPI memory.
-
-The problem was discovered during debugging kexec for TDX guest. TDX
-guest uses E820_TYPE_ACPI to store the unaccepted memory bitmap and pass
-it between the kernels on kexec.
-
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Tested-by: Tao Liu <ltao@redhat.com>
 ---
- arch/x86/kernel/e820.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/mm/init_64.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index 6f1b379e3b38..f29969428443 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -827,7 +827,7 @@ u64 __init e820__memblock_alloc_reserved(u64 size, u64 align)
- /*
-  * Find the highest page frame number we have available
-  */
--static unsigned long __init e820_end_pfn(unsigned long limit_pfn, enum e820_type type)
-+static unsigned long __init e820_end_ram_pfn(unsigned long limit_pfn)
- {
- 	int i;
- 	unsigned long last_pfn = 0;
-@@ -838,7 +838,8 @@ static unsigned long __init e820_end_pfn(unsigned long limit_pfn, enum e820_type
- 		unsigned long start_pfn;
- 		unsigned long end_pfn;
- 
--		if (entry->type != type)
-+		if (entry->type != E820_TYPE_RAM &&
-+		    entry->type != E820_TYPE_ACPI)
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index 7e177856ee4f..28002cc7a37d 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -469,7 +469,9 @@ phys_pte_init(pte_t *pte_page, unsigned long paddr, unsigned long paddr_end,
+ 			    !e820__mapped_any(paddr & PAGE_MASK, paddr_next,
+ 					     E820_TYPE_RAM) &&
+ 			    !e820__mapped_any(paddr & PAGE_MASK, paddr_next,
+-					     E820_TYPE_RESERVED_KERN))
++					     E820_TYPE_RESERVED_KERN) &&
++			    !e820__mapped_any(paddr & PAGE_MASK, paddr_next,
++					     E820_TYPE_ACPI))
+ 				set_pte_init(pte, __pte(0), init);
  			continue;
- 
- 		start_pfn = entry->addr >> PAGE_SHIFT;
-@@ -864,12 +865,12 @@ static unsigned long __init e820_end_pfn(unsigned long limit_pfn, enum e820_type
- 
- unsigned long __init e820__end_of_ram_pfn(void)
- {
--	return e820_end_pfn(MAX_ARCH_PFN, E820_TYPE_RAM);
-+	return e820_end_ram_pfn(MAX_ARCH_PFN);
- }
- 
- unsigned long __init e820__end_of_low_ram_pfn(void)
- {
--	return e820_end_pfn(1UL << (32 - PAGE_SHIFT), E820_TYPE_RAM);
-+	return e820_end_ram_pfn(1UL << (32 - PAGE_SHIFT));
- }
- 
- static void __init early_panic(char *msg)
+ 		}
+@@ -524,7 +526,9 @@ phys_pmd_init(pmd_t *pmd_page, unsigned long paddr, unsigned long paddr_end,
+ 			    !e820__mapped_any(paddr & PMD_MASK, paddr_next,
+ 					     E820_TYPE_RAM) &&
+ 			    !e820__mapped_any(paddr & PMD_MASK, paddr_next,
+-					     E820_TYPE_RESERVED_KERN))
++					     E820_TYPE_RESERVED_KERN) &&
++			    !e820__mapped_any(paddr & PMD_MASK, paddr_next,
++					     E820_TYPE_ACPI))
+ 				set_pmd_init(pmd, __pmd(0), init);
+ 			continue;
+ 		}
+@@ -611,7 +615,9 @@ phys_pud_init(pud_t *pud_page, unsigned long paddr, unsigned long paddr_end,
+ 			    !e820__mapped_any(paddr & PUD_MASK, paddr_next,
+ 					     E820_TYPE_RAM) &&
+ 			    !e820__mapped_any(paddr & PUD_MASK, paddr_next,
+-					     E820_TYPE_RESERVED_KERN))
++					     E820_TYPE_RESERVED_KERN) &&
++			    !e820__mapped_any(paddr & PUD_MASK, paddr_next,
++					     E820_TYPE_ACPI))
+ 				set_pud_init(pud, __pud(0), init);
+ 			continue;
+ 		}
+@@ -698,7 +704,9 @@ phys_p4d_init(p4d_t *p4d_page, unsigned long paddr, unsigned long paddr_end,
+ 			    !e820__mapped_any(paddr & P4D_MASK, paddr_next,
+ 					     E820_TYPE_RAM) &&
+ 			    !e820__mapped_any(paddr & P4D_MASK, paddr_next,
+-					     E820_TYPE_RESERVED_KERN))
++					     E820_TYPE_RESERVED_KERN) &&
++			    !e820__mapped_any(paddr & P4D_MASK, paddr_next,
++					     E820_TYPE_ACPI))
+ 				set_p4d_init(p4d, __p4d(0), init);
+ 			continue;
+ 		}
 -- 
 2.43.0
 
