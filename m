@@ -1,198 +1,164 @@
-Return-Path: <linux-kernel+bounces-137337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02C989E0B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:45:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E814689E0AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:44:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3D1DB272EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CC21C227C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFA115381F;
-	Tue,  9 Apr 2024 16:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3103C153837;
+	Tue,  9 Apr 2024 16:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="aWV4nS4q"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbklh3fZ"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5768152DE2
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC03F15358E;
+	Tue,  9 Apr 2024 16:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712681082; cv=none; b=mHOimNlB7rRv26hiti3t2LCX3Cmavfe2OJiIa95TqOuRKVNh9UtA/764qqrlY3UgU1xtjod197EDS+D1g8b9nEG78C/BUsTGrhUk/1VnTM2sCNMoS7E1iTZIR08GieIqPs4WkbiQTGZ6RIMS0hIu+f78YJTmrVEyF1aS6k0dB2U=
+	t=1712681082; cv=none; b=kHnyt69nye5XczOTIVUsekhI2bhD9zMIbiLlyVlYib8SJA2A0Lzpxb1kNSWUBB5ATk7IsUt3djNi5FEhXU5mXewpFY4ul8lf2KLFSDSFKw4UrjevXrFPUa7n6KRl2NU3QgnWECMEXX/fUU2Yb3rNjj+3/LvVy95veeMAWFDbXFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712681082; c=relaxed/simple;
-	bh=JWUdqyVAIsWLcoctxkkYi4e62PvFbfqGshP17Q8rHNM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kbJ3oMd4xAiW+qIwGwPrQ4ZKLUMhFxTlykgUDT3tuRLaLVhXWbVaRuAH1/ynL4XX2ZlQfRVZa392ZSbwbCxcyzzVH0GPzZuxj4hY2oNBKsZqmrjG8RAbJQLqMAxtN3Zr7XuOChq8muLuBLbbE2o2Dra0xspgJP0ajAYwswQ8Q0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=aWV4nS4q; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d895138ce6so30567421fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:44:39 -0700 (PDT)
+	bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZOG27ZWpauDiRZTV0QhNw1vSqbbebo7qsYPVJA0yFkV4F7i454ttTdRgW1ffXDBd3r9AW/qo48MpyrwiwWwcdNhiXiUrqx2UlBxTEhlE4v80vE8bOhqXkeYORidY5P3/1BRgQ7Gk6WK/IqwmWsV9Z1Wj5knVcVVXYB9XIu/sayg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbklh3fZ; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343c891bca5so3737440f8f.2;
+        Tue, 09 Apr 2024 09:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712681078; x=1713285878; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CjfeLLs5/QHmTieADjEMzvSqZ5segVSHp4sf0PYGlic=;
-        b=aWV4nS4qSOFuCVuTvjSVOwhuSp/m7PypqRI31ulbfjk/qaEw4c0WmW9HopD94/tdlN
-         PGD8dWeKBKyI4OEUdAvmM+7p31/y5AaGTr/Ey1oRsK9k25IVgSq8ZlLx7jBIOlx7uWMw
-         wg+qv/UWHuC90g50TliFgrXzIKJ10gjhgZMpO+9qcLhdWZe6ozSa2jx3EF9jEhJMbOks
-         cOa7YABRnyCQ/3LTXr5phAQiVeiWWVmSsyt9tNMjCdLY5KuQqghY32NFPtfarl9qK04C
-         gcSERegQxzhzvNnUl5gjtRKbfdcC84stBU+L158eI0Ieycxaa2CnKL+glbEmnOQShO74
-         eJcQ==
+        d=gmail.com; s=20230601; t=1712681079; x=1713285879; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
+        b=Vbklh3fZq1hRUg0OaYoT730emGfW8d6EJRM2hOSMEtY6FPoNh4bPBovS70DXPCwk66
+         bxMjcdH7036sSJSy616l3Z8VpsUmeUkodxTMgtowP33bgjFJCF52tUrrVFCT+tqo3XS8
+         /M1EGmX1YL3kOLvxrrhSYjH/QXF2bYQn9PoNgXVfufcjgQ6UopFIqfbRrsmT3uI292Qt
+         dQXz4fHIdjtuH2Xo5y6jxcUQlvhlG2MjfKVYiXtryjV4FJ9zGrTM/XMtzePuBRIGPuOe
+         BGwFwF/A2NW8xxcv5y7T5FTAmjI/QzFnQrL6cQj0O4GxcLq9ifDJoUhxtf84PCcwhXic
+         Mdww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712681078; x=1713285878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CjfeLLs5/QHmTieADjEMzvSqZ5segVSHp4sf0PYGlic=;
-        b=BINKVguP/IB0C9FCGkk4nywGRsaLlV1knPBG0w6R4DZUfvY96EVU39QC0mxYMgt4HI
-         Bdc216gEibdLpBoPXFt7hZhUBvHbdFlaJlrmbUxIdG32qa96Hk+QXHfkEVsxihs+9sm1
-         4fOlkbqvggdYrY2aM3K/aF5uZYC8ExdimCcNeLf7F7GyDCXlUEX+zuyRLMKmak+JOnQA
-         zXrgfIYrtJQtaXI9TIT6lDpHqnKAykuQYoeH7QSf7vIib+eBeps4VtAA/wghiTh0ghFU
-         asYcnOu2pUqgZQNosjIHjUFUNXIRB3bBxziyo7FSnrVNIkyAqYgEY0fTt3lsP0UlHIxz
-         mLRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqIGTQZQKDpxPA3xwdiHIV5UoyaqbPaFXAcFipZToQPFZeWuBkRXbdBwJfAQrt2mgMBdLIHR97UlJK8JqtZmmLSTPpnGmFkat8wAza
-X-Gm-Message-State: AOJu0YzAlSd1/mjcrsQWl8iqHdYj0PE8U5rk8I33xm/Ytiwi25sMwBul
-	NE7Ub+YFcNlTw9xh3OoMKPrFFnVioeFSx672CuukWf0hiNOaF0BezNl/2XFovHzULOO9hxCHcVF
-	6Gd+eFKZ92w6201dHr1nZWXvn/3MLORR2Ea1J+Q==
-X-Google-Smtp-Source: AGHT+IHDfyAKHWwlD9X/VzdBRfEeR4pd71e1VTx+ltpPqyBKd04yyyXe9X8P7a68xl0iT/2ZbRzolEtgQkxwaWEId6I=
-X-Received: by 2002:a2e:8013:0:b0:2d8:3e60:b9c9 with SMTP id
- j19-20020a2e8013000000b002d83e60b9c9mr209693ljg.33.1712681078050; Tue, 09 Apr
- 2024 09:44:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712681079; x=1713285879;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=39YyZmAfdf4vHb3K8iCAxVV01Zal5LvvE4zzi2uoc7o=;
+        b=mcLHKWIMys5/z/6fZ0lXH/1INpMIzMtHe0/jq2D0f00kLLy85IhmNx/kbgZkqRCyLJ
+         sPHVTkn2yNQtDoKa9HLJxslz3lB2TOGlmvD7rRUGYiio5cY0568x24lVKJTUR3yMpj5j
+         3bgWXCthDZZcTUDwi6lvKFANaqwJq4zUqD2QDBGdG5fKi2MBA1RE4jbjoNUdkSFF2FQ7
+         czMTRNF5V1PBqQcLgnJTPjAKBHxmgWKBHDIl6Da4nhihuc6uulFnn2jI9e/EeBSJl8xo
+         J9bAWNVkvJfkxJ19E7P3nGAtPP4Yrvxh+cx1aKQOVTkJ8r5U7/ZcG/fQ4PBQSuYcsAUw
+         CxUg==
+X-Forwarded-Encrypted: i=1; AJvYcCVt5hN+YK+LNok8RqP9MR3exYLEyvG6rENhQIUWMwqUs9z5ehr2GhEqGKrgGrhYZuulbIbsMJqZ8kzaO99/3cFCvlWyIBxkLGglcGk6t6HTzQSpV82AyfrnzygSU4EkbWhL9FgZpSG1PsjehRHEveN4O8jJ+EJe4PMBUhpVq+X+5g==
+X-Gm-Message-State: AOJu0YyyCj4cObqS1jSzfnHDTzVhEVkGHFoWqkfRiffiHICTz68sT0Sa
+	RUgGnmzZljHeBFaEMtnrft/gHrsy5RIWZdm0ljcLHwfiRNeFY7elasigEiY4t6I=
+X-Google-Smtp-Source: AGHT+IG9oCRp8KNYrcpRgvkxjASB4B9j7CiacUqJAP6Fnj2ZHjCz12vzOT6sXYOQlWJouTexhhWtPw==
+X-Received: by 2002:adf:f3d0:0:b0:341:8412:a6e7 with SMTP id g16-20020adff3d0000000b003418412a6e7mr188242wrp.18.1712681078763;
+        Tue, 09 Apr 2024 09:44:38 -0700 (PDT)
+Received: from ?IPv6:2001:8a0:e622:f700:5844:d7c8:2851:cad9? ([2001:8a0:e622:f700:5844:d7c8:2851:cad9])
+        by smtp.gmail.com with ESMTPSA id e27-20020a5d595b000000b003445bb2362esm9308419wri.65.2024.04.09.09.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 09:44:38 -0700 (PDT)
+Message-ID: <bd4d7198e58bd89b46a4c721546f6975b287a5fc.camel@gmail.com>
+Subject: Re: [PATCH v1] arm64: dts: imx8mm: fix missing pgc_vpu_* power
+ domain parent
+From: Vitor Soares <ivitro@gmail.com>
+To: Lucas Stach <l.stach@pengutronix.de>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>
+Cc: Vitor Soares <vitor.soares@toradex.com>, devicetree@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date: Tue, 09 Apr 2024 17:44:37 +0100
+In-Reply-To: <fcd6acc268b8642371cf289149b2b1c3e90c7f45.camel@pengutronix.de>
+References: <20240409085802.290439-1-ivitro@gmail.com>
+	 <9ce35b9bb5a15891f6bd01bd54b7dc84b3ba4021.camel@pengutronix.de>
+	 <e1552a3008a30ef7ed9097b4b80cda23ccb9e840.camel@gmail.com>
+	 <fcd6acc268b8642371cf289149b2b1c3e90c7f45.camel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712585500.git.marcelo.schmitt@analog.com>
- <1d95d7d023dad69b894a2d0e7b0bad9d569ae382.1712585500.git.marcelo.schmitt@analog.com>
- <CAMknhBEMDg3YF5pvoKJ-6y0Y5OJpmBthWfogCjy90B=F84SvzA@mail.gmail.com> <ZhVoTi2amNTOJ4eS@debian-BULLSEYE-live-builder-AMD64>
-In-Reply-To: <ZhVoTi2amNTOJ4eS@debian-BULLSEYE-live-builder-AMD64>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 9 Apr 2024 11:44:26 -0500
-Message-ID: <CAMknhBGVkv9sP0pjmmdFngKmGVu+G4Y3MUDG199az1wOUtwasw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: adc: Add support for AD4000
-To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de, 
-	Michael.Hennerich@analog.com, jic23@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 11:09=E2=80=AFAM Marcelo Schmitt
-<marcelo.schmitt1@gmail.com> wrote:
->
-> On 04/08, David Lechner wrote:
-> > On Mon, Apr 8, 2024 at 9:32=E2=80=AFAM Marcelo Schmitt
-> > <marcelo.schmitt@analog.com> wrote:
-> > >
+On Tue, 2024-04-09 at 16:36 +0200, Lucas Stach wrote:
+> Am Dienstag, dem 09.04.2024 um 14:22 +0100 schrieb Vitor Soares:
+> > Hi Lucas,
+> >=20
+> > Thanks for your feedback.
+> >=20
+> > On Tue, 2024-04-09 at 11:13 +0200, Lucas Stach wrote:
+> > > Hi Vitor,
+> > >=20
+> > > Am Dienstag, dem 09.04.2024 um 09:58 +0100 schrieb Vitor Soares:
+> > > > From: Vitor Soares <vitor.soares@toradex.com>
+> > > >=20
+> > > > The pgc_vpu_* nodes miss the reference to the power domain
+> > > > parent,
+> > > > leading the system to hang during the resume.
+> > > >=20
+> > > This change is not correct. The vpumix domain is controlled
+> > > through
+> > > the
+> > > imx8mm-vpu-blk-ctrl and must not be directly triggered by the
+> > > child
+> > > domains in order to guarantee proper power sequencing.
+> > >=20
+> > > If the sequencing is incorrect for resume, it needs to be fixed
+> > > in
+> > > the
+> > > blk-ctrl driver. I'll happily assist if you have any questions
+> > > about
+> > > this intricate mix between GPC and blk-ctrl hardware/drivers.
+> > =C2=A0
+> > I'm new into the topic, so I tried to follow same approach as in
+> > imx8mp
+> > DT.
+> >=20
+> That's a good hint, the 8MP VPU GPC node additions missed my radar.
+> The
+> direct dependency there between the GPC domains is equally wrong.
+>=20
+> > I also checked the imx8mq DT and it only have one domain for the
+> > VPU in the GPC. It seem blk-ctrl also dependes on pgc_vpu_* to work
+> > properly.
+> >=20
+> > The blk-ctrl driver hangs on imx8m_blk_ctrl_power_on() when access
+> > the
+> > ip registers for the soft reset. I tried to power-up the before the
+> > soft reset, but it didn't work.
+> >=20
+> The runtime_pm_get_sync() at the start of that function should ensure
+> that bus GPC domain aka vpumix is powered up. Can you check if that
+> is
+> happening?
 
-..
+I checked bc->bus_power_dev->power.runtime_status and it is RPM_ACTIVE.
 
-> >
-> > I also still have doubts about using IIO_BE and 8-bit xfers when it
-> > comes to adding support later to achieve max sample rate with a SPI
-> > offload. For example to get 2MSPS with an 18-bit chip, it will require
-> > an approx 33% faster SPI clock than the actual slowest clock possible
-> > because it will have to read 6 extra bits per sample. I didn't check
-> > the specs, but this may not even be physically possible without
-> > exceeding the datasheet max SPI clock rate. Also errors could be
-> > reduced if we could actually use the slowest allowable SPI clock rate.
-> > Furthermore, the offload hardware would have to be capable of adding
-> > an extra byte per sample for 18 and 20-bit chips when piping the data
-> > to DMA in order to get the 32-bit alignment in the buffer required by
-> > IIO scan_type and the natural alignment requirements of IIO buffers in
-> > general.
->
-> Maybe I should already implement support for reading with SPI offload
-> rather than doing it after this set is merged?
-> So we can test what happens at faster sample rates before we commit to a =
-solution.
->
-
-Yes, that sounds like a wise thing to do.
-
->
-> >
-> > > +               } data;
-> > > +               s64 timestamp __aligned(8);
-> > > +       } scan;
-> > > +       __be16 tx_buf __aligned(IIO_DMA_MINALIGN);
-> > > +       __be16 rx_buf;
-> > > +};
-> >
-> > scan.data is used as SPI rx_buf so __aligned(IIO_DMA_MINALIGN); needs
-> > to be moved to the scan field.
->
-> I have already tried it. Maybe I did something wrong besides buffer align=
-ment
-> at that time. Will give it another try.
-
-This is the alignment for DMA cache coherency. So it should not have
-any affect on the actual data read, only performance.
+Am I looking to on the right thing? It is RPM_ACTIVE event before
+runtime_pm_get_sync().
 
 
-> > > +static void ad4000_config(struct ad4000_state *st)
-> > > +{
-> > > +       unsigned int reg_val;
-> > > +       int ret;
-> > > +
-> > > +       reg_val =3D FIELD_PREP(AD4000_TURBO, 1);
-> >
-> > Since the driver in it's current state can get anywhere near the max
-> > sample rate of ~1MSPS, I don't think it makes sense to enable turbo at
-> > this point.
-> >
->
-> This is just enabling turbo at start up. If not enabling turbo during pro=
-be,
-> we would want(need?) to provide some interface for that, which might not =
-be
-> much desired.
->
+>=20
+> Regards,
+> Lucas
+>=20
+> > Do you have an idea how we can address this within blk-ctrl?
+> >=20
+> > Best regards,
+> > Vitor
 
-TURBO is only needed to achieve the max sample rate of 500k/1M/2MSPS
-on the various chips by skipping powering down some circuitry between
-samples. We can't get anywhere close to that in Linux without some
-sort of SPI offloading. So, for now, we might as well leave it
-disabled and save some power.
-
-
-> > > +
-> > > +       st->pin_gain =3D AD4000_1_GAIN;
-> > > +       if (device_property_present(&spi->dev, "adi,gain-milli")) {
-> > > +               u32 val;
-> >
-> > Should it be an error if adi,gain-milli is set on non-adaq chips?
->
-> Maybe. We should not change the scale if it's a chip that don't have the
-> amplifier in front of the ADC. I think the best handling would be to just
-> ignore adi,gain-milli if it's not an ADAQ device. Maybe better add a DT
-> constraint,
->   - if:
->       properties:
->         compatible:
->           contains:
->             enum:
->               - adi,adaq4001
->               - adi,adaq4003
->     then:
->       properties:
->         adi,gain-milli: false
-> ?
-
-I think this is missing a not:, but otherwise yes this should be in
-the DT bindings.
-
-Even with that though, I would still be helpful to readers of the
-driver to at least have a comment here pointing out that this property
-and related gain scaling only applies to ADAQ chips.
 
