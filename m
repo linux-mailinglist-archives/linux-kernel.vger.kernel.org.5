@@ -1,225 +1,206 @@
-Return-Path: <linux-kernel+bounces-136709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D051289D767
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:58:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A9789D76A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16246B21C26
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:58:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9398B23B81
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DFA85641;
-	Tue,  9 Apr 2024 10:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585B585C6C;
+	Tue,  9 Apr 2024 10:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrEjQg7d"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VJ0O0D3/"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2097.outbound.protection.outlook.com [40.107.236.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D1383A08;
-	Tue,  9 Apr 2024 10:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660282; cv=none; b=jhLXHWymewAHLulDR90cjT4InqKevdOS7lYf+xbzNdEJ07iI3h6zkfnO4S5bpxSA5oj3ua0XX6nUpS0wgKqtHspfSmXNwry3vod418rzVdSNysjxjhQfTbzhljXfDPI/3xirMMr0CgJSldF7E9yeACcXmJGJHrgUv+fW7Q8EHc8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660282; c=relaxed/simple;
-	bh=ya/MCMiaE1ggd5qVAUNHoR3erBVlClUkIgBYXaCFLUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bfZMnYNNl4WBd0YsehSv2DJKqS7XpONzwQZpwV5ACe5psGEnC08ddpq1Z+JDCrmcdtvwcsyZ6KUduMrbMCwDBTfnH1c1KIGp6hDkAkae6CIZrXsBbiqjAlFFKKAWkXYDbJGCecL40gHWjsHpVorBcOzgO0G5OS2K/bfEjTukbA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrEjQg7d; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dd161eb03afso4795514276.0;
-        Tue, 09 Apr 2024 03:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712660279; x=1713265079; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aZEsFzW9LRR0XJd7CjP0zKGx1rfiXxStLnGZA0bf4Nw=;
-        b=mrEjQg7dbfA/IaGCZ4JICmeRIVQrX02cGg2N80hHGYBPbgoZ+7GsGVfMPiKZMzZzgv
-         hAkA1fYpoLKNGs9vQixcsf8x0x6FNH86nMBAaRNP5//6hKgI9EufPkB7WS0/0EVr9Ey8
-         /XLGhZ/QzWnVsgzh0DPqZG5qUInfxFSyf9yNVW8kq6WvsvmNklQ9UedkuuTWVk1aw8XJ
-         SACh2vIwVCt00cLOtkjee7aDUFL8HjPxJJznT4KYdYZOsmvtfjiU9v7aAt6k0YqAqyIl
-         F00dKRFHBXplzM3XBpyP+tTQFflb30XlA8gKZwhQ3ghfiVSnPgOey4A+d49fC2Gp74nL
-         UyuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712660279; x=1713265079;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aZEsFzW9LRR0XJd7CjP0zKGx1rfiXxStLnGZA0bf4Nw=;
-        b=hkQK3Kzfu1r5X+3mIQorwS/c/B+nG/BlRsN9yxiA8vAMGnjTNj6jYgkY4p+fYkNUt0
-         UuyR07rJuVV4lEcV+zu1u/WIUsOyyN+/XgHupyJi45eZ6Gli8ud4G71hL4j4pp+wv6IW
-         Hj/DEgvTrvFWuxwG9MUOLzQfzd/MS6lHpDsR67a2X2fdl6KPQ2wY7FmxCWet0fhA086l
-         kycnD8zwaAmoF22dSbwyDvzvQc+CU6tqu0tMnkDjAa2T9+jPLMBoj9uVlhZiNZWMFb95
-         Ia+qZpcsoZ+rCQssHbLS+0/JQ4wih5bGWu6nrasNFy8RInl3tZ4M9YTeCJdi5wPmC44y
-         f3bw==
-X-Forwarded-Encrypted: i=1; AJvYcCWE3HJ+rIa/4S6rAz+TOJ/KlT4pa6WxQ2F1Me/lfOXT5eKFR857NSX+er8v0Mf+0oz34Tnuw73zWEyDKu4BGDk3Rls2y7e5bkfzxmuH8omFt3MPJ1YEZKmIrC3evRcIMrH2Py/G/cKJCyQ=
-X-Gm-Message-State: AOJu0YyJvRJYx9UGxC3d90LeLSDw+bfkAPsjiUYrtrBnE8XAGLEvB1vS
-	kIdz7I3v8zUfnK0UNIK3saX0gX4EVJseHXDZeFL9eyDpxdavP4rWi/fzTMbdOq/zlLkv6NadNpE
-	UW67FzeolVU880JkrU6/8hLcF9uc=
-X-Google-Smtp-Source: AGHT+IHk8vzL6Rj9EH+UpigARhru0dj56fO8DLqAIhRSdY6MaOWN9mqgHKht5kCPaBqcwNz6sgVuYTonTH7cPUYMQl8=
-X-Received: by 2002:a05:6902:1d0:b0:dcc:1062:47c0 with SMTP id
- u16-20020a05690201d000b00dcc106247c0mr8231890ybh.56.1712660279410; Tue, 09
- Apr 2024 03:57:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F4C83A08;
+	Tue,  9 Apr 2024 10:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.97
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712660292; cv=fail; b=GZt6rUnjOT/i6jURw+yYh5BM+vzE3Zix8A+jhuY6lZtsJiEx40thHaw7XDm3Tu71tLE2CnpenGqZKjoT2eARmSoxCrjj8SjecvTJki39ck58ADuLhiCy7LZjLj6xNbyawvbzE5AVhMcDgLCB7zCRuCBCrNuPL1KuQwFg16qfZkk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712660292; c=relaxed/simple;
+	bh=ZHcViww8vZEVFejLwzLRoYT6NQ1TBnmgQneqjMfc040=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FaeBYVT9Ct5UrcHs0LAYev+yetYsOAbHfdbnKkIhVJkZYDVQg6XBdpDQY8bSCjgcw2aVxTHJWOnFQR7nfJwDjbd9B495feHrYaWVYhjOFy1/vyD2xgybCLD8QignT+10S2JBqvIec6A1Fb4qsRCyql+q/9fi+vGkftuEZscQsVQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VJ0O0D3/; arc=fail smtp.client-ip=40.107.236.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MMNVpP5lISLrVOqf7Sg3zrNr8H0DvWyQVV7kCF9aC064lraRfRAsoxgDaBKuTcTHnhaErfWzFoTVLqTiyrm/N+uZxzG5s/O4S+/GvdCXMxd14CVgIh/OUuEuwhPRF/QjJx2lFiVe7RKRXua1RCRbiI+z0KvBhDQKlNsyFw6GDRn1tbC6urFEhJEJp8sgpmekDbCxOStnvXUm7uUll2z44G6ngONgR32iT24PWa3c2+ri4WgLmqax4Iw/yGcUaYemxEFyVknZqoSqnh2P6qEDjChdZz1D9IEsnr7SUe3C1c5n4y9S1UFWBgLBiWhPsBimpde3JJm/MW8E0GKzqU73gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZHcViww8vZEVFejLwzLRoYT6NQ1TBnmgQneqjMfc040=;
+ b=ltoT3X0Gd5x19MF3vusPbeOeCgJsZtCzfniAiov9mLp+hm//EYZf8AK+x/aRDEUOoWxq3Py1SCcBnz/Kb3oe2s+RA/GeQDkc+kns1voWgXJAw6P9FR3hh8O63wvr8aCiXp7AUz+jaZ5zDwtDDaRmdCKn69TeBi9qRRXSQFMNJmMTJ/SVOClap1zwVXz/MZgp+pLLFDiIAyZJ/ZkVfB8l3WKcDxKiEnpUvpPbdDi5u3ocJj+m531c+LPr48hdLBJZDz+17BiTwWPBvB8RULpXqjBRkgpkulESGymXVcha72mHyhOGcPaWWFzm1EYYxJmJPSSjBU6wPXVPoDKCS86teg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZHcViww8vZEVFejLwzLRoYT6NQ1TBnmgQneqjMfc040=;
+ b=VJ0O0D3/wAacxUvNkeKL7kCgPQAnuoR1E1A7LIktsFjy8i/L87VzSVEzowDj+TNHUUSLZ0KliAP1VaCct/Jwh/jEIUWGYSv26gz7cFi34ITW+No9WRJx9WSR/v1QfUgWwIM9WwjCfSqazbPkPLJfSnww9MbaMLyYLIKGlCu5Od+rKX6b9blQqB3cXjRyqQwV7GSqPiJi3Enf/N6VtBk/7rldpme1RsATO66leSZa+oj/qIvtcdAeO3KmWgEMDP/5AIDu/+cFraM1W4RXP0kU/2zEQ9UVVfnE1YDhTCgFnFSYXsQ/ywBl/8+4v/pdXIXyRsigQZM8v4nwZla1LyUN4w==
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20)
+ by IA1PR12MB8467.namprd12.prod.outlook.com (2603:10b6:208:448::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Tue, 9 Apr
+ 2024 10:58:06 +0000
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::43e9:7b19:9e11:d6bd]) by DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::43e9:7b19:9e11:d6bd%6]) with mapi id 15.20.7409.053; Tue, 9 Apr 2024
+ 10:58:06 +0000
+From: Danielle Ratson <danieller@nvidia.com>
+To: Matthew Wilcox <willy@infradead.org>, "Russell King (Oracle)"
+	<linux@armlinux.org.uk>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"corbet@lwn.net" <corbet@lwn.net>, "sdf@google.com" <sdf@google.com>,
+	"kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
+	"maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
+	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
+	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+	"ahmed.zaki@intel.com" <ahmed.zaki@intel.com>, "richardcochran@gmail.com"
+	<richardcochran@gmail.com>, "shayagr@amazon.com" <shayagr@amazon.com>,
+	"paul.greenwalt@intel.com" <paul.greenwalt@intel.com>, "jiri@resnulli.us"
+	<jiri@resnulli.us>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, mlxsw
+	<mlxsw@nvidia.com>, Petr Machata <petrm@nvidia.com>, Ido Schimmel
+	<idosch@nvidia.com>
+Subject: RE: [PATCH net-next 07/10] ethtool: cmis_cdb: Add a layer for
+ supporting CDB commands
+Thread-Topic: [PATCH net-next 07/10] ethtool: cmis_cdb: Add a layer for
+ supporting CDB commands
+Thread-Index: AQHaibP8CTLNLV9gi0evdveMyJyMArFediSAgAAU5oCAATqgEA==
+Date: Tue, 9 Apr 2024 10:58:06 +0000
+Message-ID:
+ <DM6PR12MB45163D7B0DB9B1A334652425D8072@DM6PR12MB4516.namprd12.prod.outlook.com>
+References: <20240408125340.2084269-1-danieller@nvidia.com>
+ <20240408125340.2084269-8-danieller@nvidia.com>
+ <ZhQFV7I3EwW7FV+H@shell.armlinux.org.uk>
+ <ZhQW3wxgv_lJF8Ep@casper.infradead.org>
+In-Reply-To: <ZhQW3wxgv_lJF8Ep@casper.infradead.org>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB4516:EE_|IA1PR12MB8467:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ vMvJWg1cGp+n5PiRVbs5RmaCOWnKHeX7rZmuWsmVD3kkxcr7HfgEz5131fDEMtuManTL3pTyFDZ0s9pRtLFhvlvNiUh6x6xKCF1okyaAcrIxmCNiim+x7AWP106O9D/8vhOvWOTQExXpgwsDrqhbPe54cNbp5ht/ajxENx4yPePydzx5KI1kT9zaIzH4LtCsG4RNnSOsc1gq/oFMGhQa6PU1hfk/odx93LHDyNSi/g9FJpj9mL0NIvDX9+hQADLby5JlFFBCHVZQKCGfDhNtdlQ9SneZZYBeV2Ed84sQc8Q0jZ4JNU24aCETNXQg+0giKMMm72uNQl13PgRLJUg+wGhYxY3bIEHWu1ROfAeRRhN/GpXEEaDrb9SnmHH/wvGlXUgI9k5E3VszD29++0nDL9zBA4i1wO5QB1ax7pDMZ5ONz+M+kDSVhs64yKH3N8yqrTGNeHDdtK2asIZKyc+S7/AAorSn2ijxa/0hqEF1smQQa7QkybeF9rN/bAhLk4KJtINNA0FR2t87p8j4X/DuU2jkbVO1zA445OKJVTmsOmMIWiV0vFjK+K/dzmI1KwdASO7Izj1VSdq4F+LmUcfxpHse0EN1y/1cK59BCaILTpnT9cY30IH0ZIf0EDHtFHCuffWVdic28cBvWnWikq3ldEUNP5e97aVaxnXYmdJPMak=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4516.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?T3BvN1RTMFp4MFFiUzZiY2ROTlZWYnFDbXJoalhpcW84WVIxRXU5MkxsbjlT?=
+ =?utf-8?B?a0k2UkwrQlVTRFBuODlHSEcxNDlXTldjUE9XdDM5VHRhYUttTVpBNWRzMU1l?=
+ =?utf-8?B?UlRWeFZwR1ExblIyanc3Q25TWldxekYzVW85LytwV3VEeDFjOVB3Q0NsNStG?=
+ =?utf-8?B?MnRFVjR0eEtmQlNSNCtNZ3E2eTJCd2FCOHhvcW03aHlLREtENnhuYkhaZFlC?=
+ =?utf-8?B?TDF3N0I4cUlPbEZ1bkJBanVYcHF6VkM4VXYwdk9ia3BydzZUdmpaZ0hjY3l5?=
+ =?utf-8?B?OWZYQkNyWGxDc1c1RU5yK0Q5WnZLN04vcXl4YTd6UkZpRGJqNzJNZVBPRWFV?=
+ =?utf-8?B?TXZVOUNnYmY4QzVKYzFHR3NJaHdWZ0JXNmdndFZXYzU3SmRzM00xRDhCdnNa?=
+ =?utf-8?B?Z2NrSjJCZ0ZyK3VVSEF6MllnRWR5clZqbTVMOFdGRnB6WjYxR3lxSDAvaDRa?=
+ =?utf-8?B?R2FqVVdHdWxtUFRsZS8yRWJ1ME1TQjl6QXFMeHNXZ1VmaTE4d2N0SmEvNWlu?=
+ =?utf-8?B?dWtLbXhMbWNRUFVGeVVWQkE2Y1A1elpGNWNpYkNuMzlkSkYwL0UrRk1UM3JC?=
+ =?utf-8?B?R2k5SjJHMGJHZmZTNHo5L0FhNnZiZCthc0VtRVVtbE9VaUh4TTlXZkcrZHVQ?=
+ =?utf-8?B?QWxkNUpDZkYxditqN2dxSDNjcDI0VDB4ZURpaGFzaS9QTHpqMFJTUnVNU1Ev?=
+ =?utf-8?B?WjNnU0M5RHRKei9Xc0xrMC9hRXE2QjBHWnRSRWY1TTdFWXJmdncxVzE0Mlcz?=
+ =?utf-8?B?aDVCYUhjVWdlUUhScWtCdG5XT2xpVFFmYWFnOXgwbDZkOTZjdXNmVVhyeGJU?=
+ =?utf-8?B?SEg0REVPZ3Vhb3BJY2NibDgwbmlGMHpDZTBIaTFQRWJiQW9NV2RENStvU2U1?=
+ =?utf-8?B?Q2tLeVdqRnFSN3pTbTJ6Y3cveWFZbklobkJsWU45b3lFYStlOVhlcWRBNmxo?=
+ =?utf-8?B?YjVpV3ErZHI4aVFacmZpWWFXZGtpTXozdDlkZWw4eE5ONDRYcFhqOEZ5bGZn?=
+ =?utf-8?B?SFZPajdEMmk2OTB4dlBuV2V2dzVjTjNyL2ZPbytzeWEyN3dpYXpzRzNBaUZn?=
+ =?utf-8?B?M3hweFdESEcwNXdIZnRJS1lHdVRnN1BQL1VDR2g5aFVIREpub2ZqTGhiK3JL?=
+ =?utf-8?B?bHFlcEVGMVZGcEVpaTJtSmZXQ2NiL2VuOTVBVnpQamQrTzZMdDB1dUd6RDJm?=
+ =?utf-8?B?ejlhbUhPT2FzWXhVYk9JUWtBTVY1aFRhNjh3Q3hiNzR5eUM2c3RicUxYSkZQ?=
+ =?utf-8?B?S2luT3hPbEsxcEFnNmJUUnRVcWlyWWdQa3RmR2Mrb1ZsRmJ6cDg1WGhmYWtI?=
+ =?utf-8?B?SEw2QXZvQTJKeDFaMVRwZUNFTjJzQ3RTK3B2NnU5MUg1MkQ5Y3UvYjFDakQy?=
+ =?utf-8?B?Q253MDlRdm5ORCtWZ0REY0pIS21nK0xmR2pqNVY2OXpyWFluK2x6enN0bmdi?=
+ =?utf-8?B?L0hZRDRtQjM1ekREaFo4dkF0NzZBQWs3OEhNR2V4OXZBbTlBUmkwYUZScXly?=
+ =?utf-8?B?UzhMS2FQcDI2cjhnd3VqMSt0T3ZhSmluU3lDVDB0bjl5bGdYS00yWGpYZU44?=
+ =?utf-8?B?dmtqQjVzT0gyb281SGlKVGVzQXFnY2Y2dEk0VStsN0lKN3FWZjVZdEhWaTNM?=
+ =?utf-8?B?ajB0cm1ZUWZtVXIrZmt6K0EyZkY2VkxZSnZ6Z1IzYzNKN3JpeEdtMlZSYXRL?=
+ =?utf-8?B?YlUra0hDZHlzd1E1TzhFTmlzRW1tdkpScmk3QmVTUGxwZXgyZ0MxdmFPaGdF?=
+ =?utf-8?B?Z09sSENKQXpvT1AyNDdpc240QTRDRStmWHdSZDMwSUhKRlFraThFc1NJT0ow?=
+ =?utf-8?B?dXA0MTAzYkh3aFY1blZVMHZtQWdsU3h6M0FRNlFwQ3VtQ0RuRytxU094U3FQ?=
+ =?utf-8?B?Q0s3SnZMVkk3YnBBV0tYQWlhdTFrUmxrc2dIWnZTU05xQmRSdDRiaHEyS004?=
+ =?utf-8?B?Z2wySy9VMzFoNzlBbDlpdWhGVUdPeG9UeHJRazJ3cFBCbHgvOE9YbUk2VDQw?=
+ =?utf-8?B?RDNVNWxoZ0FuQUpIeXYzNlJRbnRRWFRtM1BGbHNmd0pSRzVQaCtQMm1VSzlD?=
+ =?utf-8?B?cmRWMG1PL0NqM3BsRWZXdTR0eGdxRTNkOUlqdXdlVitsK2N2cnFyQ29nT2xZ?=
+ =?utf-8?Q?9vq8yddaLLB4misaWbHefyMSo?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZhFJZoful6nEFskW@archie.me> <4d231dc4-0183-47e1-8bfa-3dd225bf8ea3@leemhuis.info>
- <904ffa11-592a-4336-aed2-d6370bb01896@collabora.com> <b99e51de-3622-4360-b69d-0fd911ea2a7d@leemhuis.info>
- <9012f8d5-302a-4840-815a-22b1e85fda5c@collabora.com> <c0193bca-ea80-49eb-ab26-8256d07078df@leemhuis.info>
- <41b7170d-65b8-4d64-a1d3-7a0d09d79c45@collabora.com> <fa076f6f-5a19-4a6a-aaf4-8d9e36df8fea@leemhuis.info>
- <682dfcc5-056c-4170-910b-64ae42370c52@collabora.com>
-In-Reply-To: <682dfcc5-056c-4170-910b-64ae42370c52@collabora.com>
-From: Daniel Martin <dmanlfc@gmail.com>
-Date: Tue, 9 Apr 2024 20:57:48 +1000
-Message-ID: <CAOyTmd0OWyOJGK3b5J322Ftxz=S8_qRmO=aC7mMeYXe76=w+Mg@mail.gmail.com>
-Subject: Re: Fwd: Steam Deck OLED 6.8.2 nau8821-max fails
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
-	Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>, 
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Sound System <linux-sound@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4516.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 623316d6-f3df-44c6-8521-08dc5883ef91
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 10:58:06.2400
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ydFQ3T6CLz8G6JclrEDZ/+4XIFlyKWlw3MRaRd30r0Qu67oomwHBGHGEMBeAILPejEGNibqktgcJmuHxTCOLfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8467
 
-The manual patches were worked from the Steam Deck kernel, trial &
-error with partial support in 6.6 at the time.
-6.8 sources where this has been implemented recently were not yet
-available or in linux-next.
-Suffice to say the code matches up almost perfectly apart from the
-enum issues which are thus being discussed.
-I still go back to the point, apart from the Steam Deck, who else is
-using this named topology file?
-I don't think anyone is, therefore the enum numbering should match the
-current Steam Deck kernel implementation & topology file.
-
-
-On Tue, 9 Apr 2024 at 19:55, Cristian Ciocaltea
-<cristian.ciocaltea@collabora.com> wrote:
->
-> On 4/9/24 12:19 PM, Linux regression tracking (Thorsten Leemhuis) wrote:
-> > On 09.04.24 10:47, Cristian Ciocaltea wrote:
-> >> On 4/9/24 11:04 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >>> On 09.04.24 09:42, Cristian Ciocaltea wrote:
-> >>>> On 4/9/24 7:44 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >>>>> On 09.04.24 01:44, Cristian Ciocaltea wrote:
-> >>>>>> On 4/7/24 10:47 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >>>>>>> On 06.04.24 15:08, Bagas Sanjaya wrote:
-> >>>>>>>> On Bugzilla, Daniel <dmanlfc@gmail.com> reported topology regression
-> >>>>>>>> on Steam Deck OLED [1]. He wrote:
-> >>>>>>
-> >>>>>>>>> I'm adding this here, I hope it's the correct place.
-> >>>>>>>>> Currently the Steam Deck OLED fails with Kernel 6.8.2 when trying to initialise the topology for the device.
-> >>>>>>>>> I'm using the `sof-vangogh-nau8821-max.tplg` file from the Steam Deck OLED and associated firmware.
-> >>>>>>>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218677
-> >>>>>>> A quick search made me find these posts/threads that foreshadow the problem:
-> >>>>>>>
-> >>>>>>> https://lore.kernel.org/lkml/20231219030728.2431640-1-cristian.ciocaltea@collabora.com/
-> >>>>>>> https://lore.kernel.org/all/a3357e1f-f354-4d4b-9751-6b2182dceea6@amd.com/
-> >>>>>>>
-> >>>>>>> From a quick look at the second discussion it seems a bit like we are
-> >>>>>>> screwed, as iiutc topology files are out in the wild for one or the
-> >>>>>>> other approach. So we might have to bite a bullet there and accept the
-> >>>>>>> regression -- but I might easily be totally mistaken here. Would be good
-> >>>>>>> in one of the experts (Venkata Prasad Potturu maybe?) could quickly
-> >>>>>>> explain what's up here.
-> >>>>>>
-> >>>>>> The problem here is that Steam Deck OLED provides a topology file which
-> >>>>>> uses an incorrect DAI link ID for BT codec.
-> >>>>>>
-> >>>>>> Patch [1] moves BT_BE_ID to position 2 in the enum, as expected by the
-> >>>>>> topology, but this is not a change that can be accepted upstream as it
-> >>>>>> would break other devices which rely on BT_BE_ID set to 3.
-> >>>>>>
-> >>>>>> The proper solution would be to update the topology file on Steam Deck,
-> >>>>>> but this is probably not straightforward to be accomplished as it would
-> >>>>>> break the compatibility with the currently released (downstream)
-> >>>>>> kernels.
-> >>>>>>
-> >>>>>> Hopefully, this sheds some more light on the matter.
-> >>>>>>
-> >>>>>> [1]: https://lore.kernel.org/all/20231209205351.880797-11-cristian.ciocaltea@collabora.com/
-> >>>>>
-> >>>>> Many thx, yes, this sheds some light on the matter. But there is one
-> >>>>> remaining question: can we make both camps happy somehow? E.g. something
-> >>>>> along the lines of "first detect if the topology file has BT_BE_ID in
-> >>>>> position 2 or 3 and then act accordingly?
-> >>>>
-> >>>> Right, I have this on my TODOs list but haven't managed to dig into it
-> >>>> yet. However, that would be most likely just another hack to be carried
-> >>>> on until the transition to a fixed topology is completed.
-> >>>
-> >>> Well, sure it's a hack, but the thing is, our number one rule is "no
-> >>> regressions" and the reporter apparently faces one (see start of the
-> >>> thread). So to fulfill this rule it would be ideal to have a fix
-> >>> available soonish or revert the culprit and reply it later together with
-> >>> the fix.
-> >>
-> >> Hmm, unless I'm missing something, this shouldn't been considered a
-> >> regression.  As I explained previously, the OLED model was launched with
-> >>  a downstream implementation of the Vangogh SOF drivers on top of v6.1,
-> >> as there was no upstream support back then.
-> >>
-> >> When AMD eventually completed the upstreaming process of their SOF
-> >> drivers in v6.6, we ended up with this unfortunate ID assignments
-> >> incompatibility.  Hence I cannot see how the mainline kernel would have
-> >> worked without applying patch [1] above, unless the reporter
-> >> experimented with a different topology (which is not the case if I got
-> >> this right).
-> >>
-> >>> Do we know which change that went into 6.8 caused this? Or is a revert
-> >>> out-of-the question as it will likely break things for other users that
-> >>> already upgraded to 6.8 and have a matching topology file? (/me fears
-> >>> the answer to the latter question is "yes", but I have to ask :-/)
-> >>
-> >> We need to understand how the reporter got this working with mainline
-> >> kernels without applying any out-of-tree patches.
-> >
-> > Ahh, okay, thx, now I understand this better. You are most likely
-> > correct. It also made me look at the initial report again where I
-> > noticed "When *I manually patched support* for the 6.6 or 6.7 mainline
-> > kernel it worked fine.", so yes, this likely is not a regression.
->
-> It would be interesting to find out what the *manually patched support*
-> involved. FWIW, to get audio working with v6.8, it's also necessary to
-> backport several patches from v6.9-rc1 - I would consider the following:
->
-> Fixes: f0f1021fc9cb ("ASoC: amd: acp: Drop redundant initialization of machine driver data")
-> Fixes: 68ab29426d88 ("ASoC: amd: acp: Make use of existing *_CODEC_DAI macros")
-> Fixes: d0ada20279db ("ASoC: amd: acp: Add missing error handling in sof-mach")
-> Fixes: 222be59e5eed ("ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()")
-> Fixes: a13f0c3c0e8f ("ASoC: SOF: amd: Optimize quirk for Valve Galileo")
-> Fixes: 369b997a1371 ("ASoC: SOF: core: Skip firmware test for custom loaders")
-> Fixes: d9cacc1a2af2 ("ASoC: SOF: amd: Compute file paths on firmware load")
-> Fixes: 33c3d8133307 ("ASoC: SOF: amd: Move signed_fw_image to struct acp_quirk_entry")
-> Fixes: 094d11768f74 ("ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED")
->
-> I think most if not all of the mandatory fixes from the list above have been
-> already included in the latest v6.8 stable updates, but I haven't actually
-> tested.
->
-> >
-> > Thx for your help and sorry for the trouble I caused!
->
-> No problem at all!
->
-> Regards,
-> Cristian
-
-
-
--- 
-
-Kind Regards,
-
-Daniel
-+61 (0)409611884
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXR0aGV3IFdpbGNveCA8d2ls
+bHlAaW5mcmFkZWFkLm9yZz4NCj4gU2VudDogTW9uZGF5LCA4IEFwcmlsIDIwMjQgMTk6MTANCj4g
+VG86IFJ1c3NlbGwgS2luZyAoT3JhY2xlKSA8bGludXhAYXJtbGludXgub3JnLnVrPg0KPiBDYzog
+RGFuaWVsbGUgUmF0c29uIDxkYW5pZWxsZXJAbnZpZGlhLmNvbT47IG5ldGRldkB2Z2VyLmtlcm5l
+bC5vcmc7DQo+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGVkdW1hemV0QGdvb2dsZS5jb207IGt1YmFA
+a2VybmVsLm9yZzsNCj4gcGFiZW5pQHJlZGhhdC5jb207IGNvcmJldEBsd24ubmV0OyBzZGZAZ29v
+Z2xlLmNvbTsNCj4ga29yeS5tYWluY2VudEBib290bGluLmNvbTsgbWF4aW1lLmNoZXZhbGxpZXJA
+Ym9vdGxpbi5jb207DQo+IHZsYWRpbWlyLm9sdGVhbkBueHAuY29tOyBwcnplbXlzbGF3LmtpdHN6
+ZWxAaW50ZWwuY29tOw0KPiBhaG1lZC56YWtpQGludGVsLmNvbTsgcmljaGFyZGNvY2hyYW5AZ21h
+aWwuY29tOyBzaGF5YWdyQGFtYXpvbi5jb207DQo+IHBhdWwuZ3JlZW53YWx0QGludGVsLmNvbTsg
+amlyaUByZXNudWxsaS51czsgbGludXgtZG9jQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+IGtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG1seHN3IDxtbHhzd0BudmlkaWEuY29tPjsgUGV0ciBNYWNo
+YXRhDQo+IDxwZXRybUBudmlkaWEuY29tPjsgSWRvIFNjaGltbWVsIDxpZG9zY2hAbnZpZGlhLmNv
+bT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dCAwNy8xMF0gZXRodG9vbDogY21pc19j
+ZGI6IEFkZCBhIGxheWVyIGZvcg0KPiBzdXBwb3J0aW5nIENEQiBjb21tYW5kcw0KPiANCj4gT24g
+TW9uLCBBcHIgMDgsIDIwMjQgYXQgMDM6NTU6MTlQTSArMDEwMCwgUnVzc2VsbCBLaW5nIChPcmFj
+bGUpIHdyb3RlOg0KPiA+IE9uIE1vbiwgQXByIDA4LCAyMDI0IGF0IDAzOjUzOjM3UE0gKzAzMDAs
+IERhbmllbGxlIFJhdHNvbiB3cm90ZToNCj4gPiA+ICsvKioNCj4gPiA+ICsgKiBzdHJ1Y3QgZXRo
+dG9vbF9jbWlzX2NkYl9yZXF1ZXN0IC0gQ0RCIGNvbW1hbmRzIHJlcXVlc3QgZmllbGRzIGFzDQo+
+IGRlY3JpYmVkIGluDQo+ID4gPiArICoJCQkJdGhlIENNSVMgc3RhbmRhcmQNCj4gPiA+ICsgKiBA
+aWQ6IENvbW1hbmQgSUQuDQo+ID4gPiArICogQGVwbF9sZW46IEVQTCBtZW1vcnkgbGVuZ3RoLg0K
+PiA+ID4gKyAqIEBscGxfbGVuOiBMUEwgbWVtb3J5IGxlbmd0aC4NCj4gPiA+ICsgKiBAY2hrX2Nv
+ZGU6IENoZWNrIGNvZGUgZm9yIHRoZSBwcmV2aW91cyBmaWVsZCBhbmQgdGhlIHBheWxvYWQuDQo+
+ID4gPiArICogQHJlc3YxOiBBZGRlZCB0byBtYXRjaCB0aGUgQ01JUyBzdGFuZGFyZCByZXF1ZXN0
+IGNvbnRpbnVpdHkuDQo+ID4gPiArICogQHJlc3YyOiBBZGRlZCB0byBtYXRjaCB0aGUgQ01JUyBz
+dGFuZGFyZCByZXF1ZXN0IGNvbnRpbnVpdHkuDQo+ID4gPiArICogQHBheWxvYWQ6IFBheWxvYWQg
+Zm9yIHRoZSBDREIgY29tbWFuZHMuDQo+ID4gPiArICovDQo+ID4gPiArc3RydWN0IGV0aHRvb2xf
+Y21pc19jZGJfcmVxdWVzdCB7DQo+ID4gPiArCV9fYmUxNiBpZDsNCj4gPiA+ICsJc3RydWN0X2dy
+b3VwKGJvZHksDQo+ID4gPiArCQl1MTYgZXBsX2xlbjsNCj4gPg0KPiA+IHUxNiB3aXRoIGEgc3Ry
+dWN0IHRoYXQgYWxzbyB1c2VzIF9fYmUxNiBsb29rcyBzdXNwaWNpb3VzLg0KPiANCj4gSSdkIHVu
+ZGVyc3RhbmQgaWYgaXQgd2VyZSB0aGUgb3RoZXIgd2F5IGFyb3VuZC4gIFRoZSBjb21tYW5kIElE
+IGlzbid0IGENCj4gX251bWJlcl8sIGl0J3MgYW4gSUQuICBZb3UgY2FuJ3QgYWRkIDEgdG8gaXQg
+YW5kIGdldCBhIG1lYW5pbmdmdWwgcmVxdWlsdDsgYWxsIHlvdQ0KPiBjYW4gZG8gaXMgY2hlY2sg
+aXQgZm9yIGVxdWFsaXR5LCBzbyBhIHUxNiBtYWtlcyBzZW5zZSBmb3IgYW4gSUQuDQo+IFRoYXQn
+cyB3aGF0IEkgZGlkIGluIE5WTWU7IGNvbW1hbmRfaWQgaXMgdHlwZWQgYXMgYSBfX3UxNi4NCj4g
+DQo+IEJ1dCBhICdsZW5ndGgnIGZpZWxkIGlzIG9idmlvdXNseSBhIG51bWJlci4gIFlvdSBjYW4g
+bWVhbmluZ2Z1bGx5IGFkZCBhbmQNCj4gc3VidHJhY3QgbnVtYmVycyB0byBpdC4gIElmIHRoZXJl
+J3MgYW4gZW5kaWFuIGNvbnNpZGVyYXRpb24sIHRoYXQncyB3aGVyZSB5b3UnZA0KPiBleHBlY3Qg
+dG8gc2VlIGl0Lg0KPiANCj4gU28gSSBjb25jdXIsIHRoaXMgaXMgc3VwaWNpb3VzLg0KPiANCj4g
+KE9oLCB5b3UgbWlnaHQgd29uZGVyIHdoeSBuYW1lc3BhY2UgSUQgKG5zaWQpIGluIHRoZSBOVk1l
+IGNvbW1hbmQgaXMgYW4NCj4gbGUzMiByYXRoZXIgdGhhbiBhIHUzMiwgc2luY2UgaXQgaXMgYWxz
+byBhbiBJRC4gIEFuZCB0aGF0J3MgYmVjYXVzZSBpdCdzIGFuIElEDQo+IHdoaWNoIGlzIGV4cG9z
+ZWQgdG8gdXNlcnNwYWNlLiAgWW91IHdvdWxkbid0IHdhbnQgdG8gaGF2ZSBiaWcgZW5kaWFuIHN5
+c3RlbXMNCj4gY2FsbCB0aGUgbmFtZXNwYWNlIDE2Nzc3MjE2IGFuZCBsaXR0bGUgZW5kaWFuIHN5
+c3RlbXMgY2FsbCBpdCAxKQ0KDQpIaSwNCg0KVGhhbmsgeW91IHR3byBmb3IgdGhlIGNvbW1lbnQu
+DQpZZXMsIHlvdSBhcmUgcmlnaHQuIERvZXMgaXQgbWFrZSBzZW5zZSB0byB5b3UgdG8gZGVmaW5l
+IGJvdGggYXMgX19iZTE2PyANCg0KVGhhbmtzLA0KRGFuaWVsbGUgDQoNCg==
 
