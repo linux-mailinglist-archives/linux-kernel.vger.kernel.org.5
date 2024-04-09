@@ -1,106 +1,138 @@
-Return-Path: <linux-kernel+bounces-137019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709E689DB2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:53:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4552B89DB2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22A591F21AEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:53:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014EF289C25
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A6512FF60;
-	Tue,  9 Apr 2024 13:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B171512FB0D;
+	Tue,  9 Apr 2024 13:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Td6C2W+p"
-Received: from out162-62-63-194.mail.qq.com (out162-62-63-194.mail.qq.com [162.62.63.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Iy4NTzVF"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9751812F378;
-	Tue,  9 Apr 2024 13:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.63.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED6112F39A;
+	Tue,  9 Apr 2024 13:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712670268; cv=none; b=Y/Jm2Ryd/ojaqsciFzqOAYTNa5X5BR3vXlCK+7jLoCcDntIIADPOGsKeHZXn97/rUp6fsnVd3E6aICH/kjIk/NeWrb8J/oVaPc0VxCfHScIRC3eCUMnp/f3CZMvmRYkAsFWQkU5FhSBscd+4BwhcHy2D5UpYOyWSrgmmO+XMmg0=
+	t=1712670232; cv=none; b=GiiNmgGvcrhGEFua5Impk+4NViFnxkD9JkqKaHHsxmf+9uWT41CXdg9yOr9vC27oyQFjLGc8CxqGgAnX0578A+SadefZdLj9KUAiu4AnB1+yq2ArrPOiag9MRp4E5sw51cM5pz1dJ/bgQz+zGPQ27TT1Yh38ID4zSGNxlVITlp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712670268; c=relaxed/simple;
-	bh=/kxZXr+rwuZWsLpAl0SSYwp1srPD3nqS4ULZVWAuf8k=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=dIt76et7EEqLBftYxYnbsX7KnKajy5nB1wWjnE45bCGk/AJTdjvCoQ1hSfV5hhfYq/TbJnSMeeC5yK7BvlsLTWPkFbIMgJlSFZTo8G49G8vJNe+4d6WaSTAPAyzXqh6IfGEuKlTAlVO2RA2szjHC/GVlbEoNUQRDOhkj6SZ0SIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Td6C2W+p; arc=none smtp.client-ip=162.62.63.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712670258; bh=mV+2uXEU0mxyaFTSC+dqJ7oImfFIcAAupTtNJvfgJYA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Td6C2W+pebgIe4I12hp+cKrXcRfD/tNrb6/WJ0wRlrtl5RwOT+TsnPky8kEafErPQ
-	 fCzNkZ47jO19lUSEqk+vJE9MswA68HnGSzY6w0rLmO0PfSPrCoZYM5J9SOYNZyDuwG
-	 //j0JlKmq406vNRMAgosdznENIhY5hIAOH7X7leU=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id AB23389E; Tue, 09 Apr 2024 21:42:50 +0800
-X-QQ-mid: xmsmtpt1712670170tkjmb0sae
-Message-ID: <tencent_EDCC88A7DB46D3D2F7C64449976EC56EE006@qq.com>
-X-QQ-XMAILINFO: OCYbvBDBNb9rerlANBwTUHLlLdyj8SmQAzuXuPK9Ob3UVeMTOUlb2KXNa0+x5z
-	 CriuoSgInpV8P2aXGt1YyYfx154hu2f1Yvlydw6FtioPyI9zqjDX7GfWc6eCcYz88908p6Sn5al2
-	 bsnAegt/UzKNcGgnYJyiHzszdulrN2bIfan6CEK2brvGFI8AKYGffxhlLLgSvljvPbogo3HdKE2g
-	 bkCeVoeGCF5wnTK9NkLVUhPnLOAy8hAnbzMQC5imHkST880ZuwsqCFT86XnKRYpuLdvbl65piPrA
-	 iH4I/80v3ALIHlCI/zdisN+cTQyyKOLt4axc2v7GevNjzluOjamKO8gxjC/tYO1qKUOHA7jYAm3J
-	 t8heAypBDIdCLKlrBy8yqajqfkZQjIlsv98Rqx1WQGcRfF5j9NqPuxIXsHre22hnTX6zArERnmi4
-	 o4hrfC3j2daxLqTgwNR/3NmpuqI95ICUa8rc3uqj5FyQwfhOYHklKbxxBje3dv+dEzRh5PD7uwiD
-	 pAKRsXDHlTl69FssNHh9xQrPHoR3MaTUtkhxWqDVl151sK1HH7lRqjvzxj+Yza5KhoHCOJS4fmP0
-	 KuemLKhoi6X6Hede9Pag0GlEsZxbSZtVIcL6oXth27WyXTU8Thncq9K4u620biye4mOADV3Rffok
-	 OZOGhmLz14NEY9+hEQVGluKVONp1KhMmQDEfUJCzUij2osiB/WLsqpxO3qawDOexVgFquXeDGYYV
-	 hpXuLwstk2JAOUV+HIzBHHRkhiHdUWyrc0gJYDFLMpQ/GY8e2q56iJJtPZxQ3uxAp676Tfjyr3V/
-	 v/0wDr1qScqyah7gCUeAgHoewwDNc2PDGd/SRQ0imyaFqSltV+7cqIiZtR351mZFMbEXQOqgETk/
-	 v4bYcMGTWKm5GvB7jOkjejHb0zKtG8XX/ZOnlDnJL/pVU+a8C330cIGs0NinTbNqoFuuV8PcYh4A
-	 bQPfsAuc6VSjSSivdBuZlPSuP5BSZm0C+sdLhmCp5SDxs5GYdJZM3RKvodBZLS
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
-Cc: johan.hedberg@gmail.com,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	luiz.dentz@gmail.com,
-	marcel@holtmann.org,
-	syzkaller-bugs@googlegroups.com,
-	netdev@vger.kernel.org
-Subject: [PATCH] Bluetooth: fix oob in hci_sock_setsockopt
-Date: Tue,  9 Apr 2024 21:42:51 +0800
-X-OQ-MSGID: <20240409134250.1414-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000007558ae061553f41b@google.com>
-References: <0000000000007558ae061553f41b@google.com>
+	s=arc-20240116; t=1712670232; c=relaxed/simple;
+	bh=y/xaSl/jhXl08yoalUQ5vH76MCEpZVtsR/1x4w43g8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d6C78SBbRtpG7KbDxKkgD8DzeyqBFfgqlTVvCwWmRACM+WabTR6+024ZCVtvceOVSEOxGbURpvl8p4XaYmtpaXIcPTAumig3dXcUMi3RtMjjw6KwGhxur/CXLSstNNjZG5Chw5p52SqvzcVj3ebpNrXukEMgWyqk2Qve76nByUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Iy4NTzVF; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3041F240008;
+	Tue,  9 Apr 2024 13:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712670228;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m5UDulmenCwJXHuGMpELuxhDA4GFyujVsdxEaX2Dr8g=;
+	b=Iy4NTzVFWYIISKvZb3P1zAUEKQXE6VFTgx/iZnMms4cEObuZ97PE1okjL+Zx6GUOhH358F
+	2TUZr25TtQN/aJaJVeGL0chkGZ/cllV0WOROlZwrnz63KbJg+ZWwW1XRb/T5jK5+dLIdsD
+	O6x426KxtkdX3k+CnUx7Fzlrl714fiPVBxr5l5EutPwJJSKtFdwl3I+E/IUjaelg4j9R9B
+	v4tvJls4ZOgiyxBiOvO7UHwoBygwhpUxWCetIkKY0XowlW2uLs5g0zh17FV5u96wtMk1nh
+	hPIClv4uh+Ulc8a1PD8GzVB7Svcg0wZuAFHM0GL3R6rVBVu0As4CvUsd53TT4Q==
+Date: Tue, 9 Apr 2024 15:43:45 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
+ <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 14/17] dt-bindings: net: pse-pd: Add
+ bindings for PD692x0 PSE controller
+Message-ID: <20240409154345.7a2a73a5@kmaincent-XPS-13-7390>
+In-Reply-To: <20240402132834.GB3744978-robh@kernel.org>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+	<20240326-feature_poe-v6-14-c1011b6ea1cb@bootlin.com>
+	<20240402132834.GB3744978-robh@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-If len < sizeof(opt) it will trigger oob, so take the min of them.
+On Tue, 2 Apr 2024 08:28:34 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-Reported-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/bluetooth/hci_sock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > +    patternProperties:
+> > +      "^manager@0[0-9]|1[0-2]$": =20
+>=20
+> Unit-addresses are typically in hex.
+>=20
+> Is 'manager' something specific to this device or should be common?
 
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index 4ee1b976678b..cee7ec1adbd2 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -1946,7 +1946,7 @@ static int hci_sock_setsockopt_old(struct socket *sock, int level, int optname,
- 
- 	switch (optname) {
- 	case HCI_DATA_DIR:
--		if (copy_from_sockptr(&opt, optval, sizeof(opt))) {
-+		if (copy_from_sockptr(&opt, optval, min_t(int, sizeof(opt), len))) {
- 			err = -EFAULT;
- 			break;
- 		}
--- 
-2.43.0
+Specific to this device.
+=20
+> > +        $ref: /schemas/graph.yaml#/properties/ports =20
+>=20
+> This is not using the graph binding. Furthermore, I don't want to see=20
+> new cases of 'port' node names which are not graph nodes. We have it=20
+> already with ethernet switches, but 'ethernet-port' is preferred over=20
+> 'port'.
 
+Ok I will remove the ref then.
+=20
+> Why is this one 'managers' and the other device binding 'channels'?
+
+Here each manager can have up to 8 ports.
+The ports in tps23881 are called channels in the datasheet but I can use the
+port naming for both if you prefer.
+
+> > +        description:
+> > +          PD69208T4/PD69204T4/PD69208M PSE manager exposing 4 or 8 phy=
+sical
+> > +          ports.
+> > +
+> > +        properties:
+> > +          reg:
+> > +            description:
+> > +              Incremental index of the PSE manager starting from 0, ra=
+nging
+> > +              from lowest to highest chip select, up to 12.
+> > +            maxItems: 1
+> > +
+> > +        patternProperties:
+> > +          '^port@[0-7]$':
+> > +            type: object
+> > +            required:
+> > +              - reg =20
+>=20
+> Any property you want is allowed in this node. You are missing=20
+> 'additionalProperties'.
+
+Indeed.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
