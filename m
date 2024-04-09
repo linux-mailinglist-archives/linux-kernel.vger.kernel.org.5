@@ -1,53 +1,52 @@
-Return-Path: <linux-kernel+bounces-136618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B07F89D636
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:04:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B3489D638
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:05:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB2531F21860
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:04:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB9F41C226C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE808175E;
-	Tue,  9 Apr 2024 10:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D678382888;
+	Tue,  9 Apr 2024 10:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZRrq0sSa"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QJc24gR+"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4A98060B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C5B80619
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657084; cv=none; b=k1IcwzUuUoSQj9p+bLGuvlXuizWG9XQGACSYPrRqq4NodnLKG2pV2WYXKmhCZ1kn7LYtxYSaWkdLAh5XXPQImj07HS+J12gcKrrdH/8SK0Kt9kn8zQI0p2GfAVHy/c/FWbk5sV7sb8ZdnVIMXu3L6TtfcH0bt+pCmtQydwuDik4=
+	t=1712657085; cv=none; b=IC0Z5RQ655rG5KHut705Jhe8+2LCHfFXy4zCwltvfsD9gwhQOYtH5lMhTmXOqOUNmlV5MFh/sLI9Prpubt7Gr86XcjW27ZxEjQEgSGdfgEIzQeoial73c743Htdx00If8afCeP5QiVSwl4+0AYxx3fzFSFZERnyFruOMsqVhqq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657084; c=relaxed/simple;
-	bh=p9nxB4AmLrlY4zWIcrP/uy/FSacfcNG8RxwAEAEEXDI=;
+	s=arc-20240116; t=1712657085; c=relaxed/simple;
+	bh=p9bWfzVhPSbxnan4gt/J8np1umoCeXuce2K3EFa4g9o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jqTZtpMlknEfbGk6R+XpQPKMvIA/bqyJaaHK1gUTECfo3tK7o8zG3u+/ByKgChe2dLcbsLHQdpNsMwhtdPS1qniaLAb+SbyVCSJvyYaEJcD+k9IqYUpbYxco5p6o1Va+zjitE7kGb5AQiJVwzdHgaZX72KgXSZHRiG/NKL9t+CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZRrq0sSa; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=hSqJy1j/9cCHlOT3UpK0/nSNEWPdMDMErCn4x1MaTr1pYu7hPs1WkKYgOXGmyeZ+RCMgvvh7kWtmx6c202NQQ4KB1fJGr45wz0xTTADplFyDSD8AL1//fpBYUvFSpV3i+8fE1G6YQ7ox4Ig/Ajyg5N3n6xtvHEGwKWiS86UOsi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QJc24gR+; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CD693C0008;
-	Tue,  9 Apr 2024 10:04:39 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 95F33C0011;
+	Tue,  9 Apr 2024 10:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712657080;
+	t=1712657081;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fmoK2saX48Z7BaAk8XIAqhHfqZyQB83Bo3eVwyIjC00=;
-	b=ZRrq0sSas7zBBUrm6THO4/o98Kj6Gv2TR+QnfXpJTXGYUWcrMouQNkQtPKPxwIzTPMagpG
-	HMgSs9dF5X2LWM1PuPA2YsPAtEnBZ+mieM6h6lMYRJc3fWiyUzgDPLibijEZ6LUlFIC1FI
-	Rafq5ztB80pWPA9g4UPYXnaYJwMsKfz/3d5XychhhgyDVKh95nGibDpxDhaO67sG8Efm3R
-	DdelqAoryNQG0W5MXAn35vwseu7pUMmHOJGjeA+vkGVgX3K1n0ITBltJfC+vSw5vdQFjKD
-	Zwg79FZUS4oNGivgLrc2H6eacSFzIItmQ0iZCxONp1AhJTRUNlyvPJ0Z4vDY5w==
+	bh=VaOfMtUooEBbcTUX3ySQvIrI0XekY4PkXHzJqdiW8Do=;
+	b=QJc24gR+EXPcui/smHnpzu+Iyl0fuhh4pXJnOtuggGfG9A8hmU6oIIUMFDk+AM7gqRCVOe
+	moo86y2k7ZTh6yHYSGXG6xew/rlTlEisKSupG68sd8dVYxDjrXVdEsxWgx8PCdy0HDzp8S
+	aJaJL+zrJ76sZBor5k3l0+/Z6ahq7l+yBKcKGY/GHksEAaebdtuBtFN+tdV/hsAgAll8h5
+	PECQCJjSoxj0wUowUdY+VstshOb+ZSFvw5YqriQYCP/vIdxqupAnmE07NPvtfEwWCkwBZN
+	qg4M05eQ2Xk2Y6QN3dFkhDJAtuOd4E07KFvjo7U0OFmeKylztBHmUmdhjaakzA==
 From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Tue, 09 Apr 2024 12:04:06 +0200
-Subject: [PATCH 2/3] drm: drm_blend.c: Improve
- drm_plane_create_rotation_property kernel doc
+Date: Tue, 09 Apr 2024 12:04:07 +0200
+Subject: [PATCH 3/3] drm/fourcc: Add documentation around drm_format_info
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-google-drm-doc-v1-2-033d55cc8250@bootlin.com>
+Message-Id: <20240409-google-drm-doc-v1-3-033d55cc8250@bootlin.com>
 References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
 In-Reply-To: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
@@ -67,110 +66,97 @@ Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
  pekka.paalanen@collabora.com, thomas.petazzoni@bootlin.com, 
  Louis Chauvet <louis.chauvet@bootlin.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2944;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3487;
  i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=p9nxB4AmLrlY4zWIcrP/uy/FSacfcNG8RxwAEAEEXDI=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmFRK1GE/Zfoq0FQBmC5eluz1pdZw5EyewevzkT
- 8ImCpzVqgmJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZhUStQAKCRAgrS7GWxAs
- 4i6JD/4yVdG5z/8ZTrn1U4lG/4s67XBOGXJgD80d/hDeXG1bt7N01LbtWsJ8vnory9361X7Mz7S
- iiPZ7kqzQMOv40mTNt6FUUWTuGT4qAaLPGWEbiJCAt15ppISdB+dey28Lealqv3PfGYcBrIM8Fv
- OgrJILVs3WCiYKWz1DmzTEVfZv6C6fkbqSYqoe9Cx0/Hyhrmk09CBBZgNldQ1W6sabfesMvlMbz
- bo7ZMJA3ej/XZxnksHu0ykTg57iwl9ddUtQE3OZ5gv9sfCfvKfGDj4tUL+/Yx4K05rcU7kfnP/g
- P98hTuIJqS6g7758fJweQzXhzAa2vKvl5A96V49VwRQG1Zt4cxJHlFCquTct48/XKi3nirl8Xss
- SCxCzOUePtI9Sn+j89pBjjXwL5QEV7VJMt7zTJr1DBMn8rUx9XaQw9Gc6tWAFsoKlKJyCb9hDff
- Xzv77Nkld/hUvny38BL+aqeQnfoD+kIlSbsdH8EXfHPL/tGqtT8fSdDwuUQqsIuY/RAqwmqYZMt
- ZzVPWQd0StIm4nIuE52f3g68L86eG9eOsW8x3l4hNqbDhY2he9198/8B9t7VkWjK8YhrGE5b7CA
- xQGzpPRJX12xTPCcPcTCO1U9lp2Jk+hFKAgJjsAh99jGe6L1N1bcmcn7b0mZ+j9Nebe0YIKOKA1
- M/9rVWEgL5U7hjA==
+ bh=p9bWfzVhPSbxnan4gt/J8np1umoCeXuce2K3EFa4g9o=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmFRK1SSdf8m+PrFjNQ3393GV2MGNqtQp/i5TiL
+ IsTjcumGhaJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZhUStQAKCRAgrS7GWxAs
+ 4msAEACt6PBybYnO/0WibFTqCZSNQrho5XGmeeAUcpdpp9btXh0I2bQxxAqFRZgJG9iEnEJF2mo
+ oePi6L0iTBRMesI/C/EP/XQbz+zD9lQhcxirWahCwz4yzDIJzkilX7WQ6Gd4yeBr1hQt0McLZvp
+ AyXdUUrAMBMhu2hug+k205Q5+AdpIWF+zqaspIPSTarIgVoZc+oYo9e5mt3fkvUKr4ZYybFUIRh
+ L+XQ9zd6Gdkx1QwLhnDNEu+OKv6YeITTQaqjld/Cz3ooXGBvd7e7D8sOTVENbDV49QODwjElgHh
+ n95tUFT2Gzk1F5Tkmomd6pC+L+cv1Y/eJFLMGkaPhUImP/GvtlRfmUS0DpsSdULJvx8m5qpkDZo
+ Pe6te1cbxdbGrH5A11iKW4t3Ckkr3wEYJOULKi2nXNWbQii+CbGX+TE+jAHNRrxE0/drcJOa4X6
+ XLestlDulUHC2Zon0gw86eVhVtdODOQVQoDV//J2sIxoGEB1Rf2F9UMqv6dosrBA1puYjukI77v
+ Y4V2JLU58fV0Ph06I9PGN8nAlUFM0h1tZbGUFXRIah7C3wjFIpq84ea8KMTLoyEB3yiBZsuHu08
+ t/IKIoQ2Fb1q2Wo1w/EERvSIx5xzxbKfmqX4x4ABmbw1lETyMUUCT8QjvAScJuk6959UYdr4UB1
+ HqKRZRmEfQTNkGQ==
 X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
  fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
 X-GND-Sasl: louis.chauvet@bootlin.com
 
-The expected behavior of the rotation property was not very clear. Add
-more examples to explain what is the expected result.
+Let's provide more details about the drm_format_info structure because
+its content may not be straightforward for someone not used to video
+formats and drm internals.
 
 Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 ---
- drivers/gpu/drm/drm_blend.c | 52 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 14 deletions(-)
+ include/drm/drm_fourcc.h | 45 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 38 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
-index 8d4b317eb9d7..6fbb8730d8b0 100644
---- a/drivers/gpu/drm/drm_blend.c
-+++ b/drivers/gpu/drm/drm_blend.c
-@@ -104,6 +104,9 @@
-  *	Without this property the rectangle is only scaled, but not rotated or
-  *	reflected.
-  *
-+ *	See drm_plane_create_rotation_property() for details about the expected rotation and
-+ *	reflection behavior.
+diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
+index ccf91daa4307..66cc30e28f79 100644
+--- a/include/drm/drm_fourcc.h
++++ b/include/drm/drm_fourcc.h
+@@ -58,6 +58,44 @@ struct drm_mode_fb_cmd2;
+ 
+ /**
+  * struct drm_format_info - information about a DRM format
 + *
-  *	Possbile values:
-  *
-  *	"rotate-<degrees>":
-@@ -114,18 +117,6 @@
-  *		Signals that the contents of a drm plane is reflected along the
-  *		<axis> axis, in the same way as mirroring.
-  *
-- *	reflect-x::
-- *
-- *			|o |    | o|
-- *			|  | -> |  |
-- *			| v|    |v |
-- *
-- *	reflect-y::
-- *
-- *			|o |    | ^|
-- *			|  | -> |  |
-- *			| v|    |o |
-- *
-  * zpos:
-  *	Z position is set up with drm_plane_create_zpos_immutable_property() and
-  *	drm_plane_create_zpos_property(). It controls the visibility of overlapping
-@@ -266,8 +257,41 @@ EXPORT_SYMBOL(drm_plane_create_alpha_property);
-  *
-  * Rotation is the specified amount in degrees in counter clockwise direction,
-  * the X and Y axis are within the source rectangle, i.e.  the X/Y axis before
-- * rotation. After reflection, the rotation is applied to the image sampled from
-- * the source rectangle, before scaling it to fit the destination rectangle.
-+ * rotation.
++ * A drm_format_info describes how planes and pixels are stored in memory.
 + *
-+ * Here are some examples of rotation and reflections:
++ * Some format like YUV can have multiple planes, counted in @num_planes. It
++ * means that a full pixel can be stored in multiple non-continuous buffers.
++ * For example, NV12 is a YUV format using two planes: one for the Y values and
++ * one for the UV values.
 + *
-+ * |o  +|  REFLECT_X  |+  o|
-+ * |    |  ========>  |    |
-+ * |    |             |    |
++ * On each plane, the "pixel" unit can be different in case of subsampling. For
++ * example with the NV12 format, a pixel in the UV plane is used for four pixels
++ * in the Y plane.
++ * The fields @hsub and @vsub are the relation between the size of the main
++ * plane and the size of the subsampled planes in pixels:
++ *	plane[0] width = hsub * plane[1] width
++ *	plane[0] height = vsub * plane[1] height
 + *
-+ * |o   |  REFLECT_Y  |+   |
-+ * |    |  ========>  |    |
-+ * |+   |             |o   |
++ * In some formats, pixels are not independent in memory. It can be a packed
++ * representation to store more pixels per byte (for example P030 uses 4 bytes
++ * for three 10 bit pixels). It can also be used to represent tiled formats,
++ * where a continuous buffer in memory can represent a rectangle of pixels (for
++ * example, in DRM_FORMAT_Y0L0, a buffer of 8 bytes represents a 2x2 pixel
++ * region of the picture).
++ *	The field @char_per_block is the size of a block on a specific plane, in
++ *	bytes.
++ *	The fields @block_w and @block_h are the size of a block in pixels.
 + *
-+ * |o  +|  ROTATE_90  |+   |
-+ * |    |  ========>  |    |
-+ * |    |             |o   |
++ * The older format representation (which only uses @cpp, kept for historical
++ * reasons because there are a lot of places in drivers where it's used) is
++ * assuming that a block is always 1x1 pixel.
 + *
-+ * |o   |  ROTATE_180 |   +|
-+ * |    |  ========>  |    |
-+ * |+   |             |   o|
-+ *
-+ * |o   |  ROTATE_270 |+  o|
-+ * |    |  ========>  |    |
-+ * |+   |             |    |
-+ *
-+ * Rotation and reflection can be combined to handle more situations. In this condition, the
-+ * reflection is applied first and the rotation in second.
-+ *
-+ * For example the expected result for DRM_MODE_ROTATE_90 | DRM_MODE_REFLECT_X is:
-+ *
-+ * |o  +|  REFLECT_X  |+  o|  ROTATE_90  |o   |
-+ * |    |  ========>  |    |  ========>  |    |
-+ * |    |             |    |             |+   |
-+ *
-+ * It is not possible to pass multiple rotation at the same time. (i.e ROTATE_90 | ROTATE_180 is
-+ * not the same as ROTATE_270 and is not accepted).
++ * To keep the compatibility with older format representations and treat block
++ * and non-block formats in the same way one should use:
++ *	- @char_per_block to access the size of a block on a specific plane, in
++ *	bytes.
++ *	- drm_format_info_block_width() to access the width of a block of a
++ *	specific plane, in pixels.
++ *	- drm_format_info_block_height() to access the height of a block of a
++ *	specific plane, in pixels.
   */
- int drm_plane_create_rotation_property(struct drm_plane *plane,
- 				       unsigned int rotation,
+ struct drm_format_info {
+ 	/** @format: 4CC format identifier (DRM_FORMAT_*) */
+@@ -97,13 +135,6 @@ struct drm_format_info {
+ 		 * formats for which the memory needed for a single pixel is not
+ 		 * byte aligned.
+ 		 *
+-		 * @cpp has been kept for historical reasons because there are
+-		 * a lot of places in drivers where it's used. In drm core for
+-		 * generic code paths the preferred way is to use
+-		 * @char_per_block, drm_format_info_block_width() and
+-		 * drm_format_info_block_height() which allows handling both
+-		 * block and non-block formats in the same way.
+-		 *
+ 		 * For formats that are intended to be used only with non-linear
+ 		 * modifiers both @cpp and @char_per_block must be 0 in the
+ 		 * generic format table. Drivers could supply accurate
 
 -- 
 2.43.0
