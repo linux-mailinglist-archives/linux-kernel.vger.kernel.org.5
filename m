@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-137159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C26589DDCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:05:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C9089DDD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:05:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5A01C22EAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:05:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9AFC1C22BEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6529134CC2;
-	Tue,  9 Apr 2024 15:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD1A136666;
+	Tue,  9 Apr 2024 15:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pJ+QHZyE"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="f58M/wXL"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6815B130E47;
-	Tue,  9 Apr 2024 15:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58716130E48;
+	Tue,  9 Apr 2024 15:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712675067; cv=none; b=Nprhx4I1DzWw1Z4EvLR3FQwdf8PRUCIix3LdOe7RU1zqtDV7g0i09AnXifUmtkO3kqLl255DXulJCyljz8Kq0cBgCNhidbxcalHYavLOfFWf0kCjdsQ3/mivEdwHZy+1RisO4dxopbFXHRpVvRrRcM08yK3apJjyz25jz5dto4U=
+	t=1712675068; cv=none; b=YNtC9hD4T7HDZPn6ZE7uXirKfECRjX28SlobukNfJxs8mb4QaFZCZqvFsAv0IkSR0qZKxPjGbBC76BmeHQwdOpeyG+bvnGLzZmlRFrwqyFx+xoslI1tWascyf2QSNTXQYpTPxDR6vvJVtkOq+beoPEy086V8SYlKhqO3LbcmlBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712675067; c=relaxed/simple;
-	bh=4ERq0U5iMfSXhPyoq84Z0n0t9ecry+TPtJdFUbepSbc=;
+	s=arc-20240116; t=1712675068; c=relaxed/simple;
+	bh=VbpVc3LMnXhaGIVI10p4WYWa60jDZe38DIuneNRhZ/c=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eB7bTPTLaN+6CqQJrQENnxReLXpPCKEbsI2nOeWtJkQu04fdqcKVTnLTB0xej1dN+45Mb5JJnGDmqM0zFDmC+E1ukd02Ml1U2llgGGFcoItnYRl0A8+bs7uX3fVr9odr8nVixGPBJoo7poI/QGV9RxpSoTVoYRKx4KM2Jrrpt9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pJ+QHZyE; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=tgPhea0/GKyJnEOIP9O+YUtgy7hw93fLgyGHIJ8IK7z8VY/pLZ12gB3AXA8ARg/bNBCG4AagV5Z2jO9dlwDuvhNqvLclCNYJvj/5Euc5zBacqoNoBabLhV5sIPGZ0ybiiPu08YWDGrIMiPoghmbX8rD0aKBh3puXXM/Qz/zCAuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=f58M/wXL; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2F5A9C000D;
-	Tue,  9 Apr 2024 15:04:16 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 71AF8C000B;
+	Tue,  9 Apr 2024 15:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712675058;
+	t=1712675059;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gpIu4oPXZiRjvkrqx0KKsmI6Ga0O+KyJijz0/8t3XzE=;
-	b=pJ+QHZyEpUdzEioFOH9jrxgS5F2bE3jTLIzQXX4wIboitIEBtdUjH4IPFheIzhpmTt/HzG
-	ZcT5G9Y/2jx+HuHyCSXxPrmRvnHLr9RKH+nRg9phdNwUj18pCGeBr0A9WJQquDdM16lUrQ
-	3ci7vnh4LNvHDDoBj3hYD5X2nSzToaWno/MjMzN+3KKviBrZ9xqsebA0dfeJY/zZGlwtKZ
-	cnCNO7fXqvJczGI3J1nY2F+TkUsQU+N/q7KF9vnwB+I3n5hCFQFI7VNnCKRlyJePkxkX83
-	SPSvUKdyoim3yCU2t+vz21cbnuw/Jd4qdAFUIFHkGVxlUKBUsJmn7jMulL96hQ==
+	bh=N7hgOlwhh7AJ2Cb11Tjl197wNQhnRk7F9sf4WGqgQXk=;
+	b=f58M/wXLruLMXlivwAnUNH2UBQjND3NqqJPhn/9sHR+mQRmxDo1NgSKkDchpJtwUgT7iJD
+	7gkqogxQh7kv9B+lxBD57HQ4OnzXkyP2s2q4qyBh1ChDwVMXF6LJK67aRd74/wVkievSUG
+	50jX4sIhKDiiajO3ggPAbD9FZ7u10sUeMexgF1aQXGAMYy07z5PTtG7XnS6Xy5oX7oVIYP
+	qEZGrggLBWNP3DIdgGQ1S6qhV6Db/4MDZJ8HKnagmb3jhGGtL2tRXsSV0h3jAIFqEDYd0x
+	egYbDIg5YLvrMbGNPgoZ+SGvEMW4cRbLdrdK/62hDW0uUg1pEDKyrMSxhiQXOQ==
 From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Tue, 09 Apr 2024 17:03:51 +0200
-Subject: [PATCH net-next v7 01/17] MAINTAINERS: net: Add Oleksij to pse-pd
- maintainers
+Date: Tue, 09 Apr 2024 17:03:52 +0200
+Subject: [PATCH net-next v7 02/17] of: property: Add fw_devlink support for
+ pse parent
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-feature_poe-v7-1-11e38efd4dee@bootlin.com>
+Message-Id: <20240409-feature_poe-v7-2-11e38efd4dee@bootlin.com>
 References: <20240409-feature_poe-v7-0-11e38efd4dee@bootlin.com>
 In-Reply-To: <20240409-feature_poe-v7-0-11e38efd4dee@bootlin.com>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -81,38 +81,39 @@ X-GND-Sasl: kory.maincent@bootlin.com
 
 From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 
-Oleksij was the first to add support for pse-pd net subsystem.
-Add himself to the maintainers seems logical.
+This allows fw_devlink to create device links between consumers of
+a PSE and the supplier of the PSE.
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
 
 Changes in v3:
 - New patch
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/of/property.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4745ea94d463..e3363e4fc261 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17783,6 +17783,13 @@ F:	include/net/psample.h
- F:	include/uapi/linux/psample.h
- F:	net/psample
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index a6358ee99b74..cc064151853e 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1252,6 +1252,7 @@ DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
+ DEFINE_SIMPLE_PROP(panel, "panel", NULL)
+ DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
+ DEFINE_SIMPLE_PROP(post_init_providers, "post-init-providers", NULL)
++DEFINE_SIMPLE_PROP(pses, "pses", "#pse-cells")
+ DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+ DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
  
-+PSE NETWORK DRIVER
-+M:	Oleksij Rempel <o.rempel@pengutronix.de>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/net/pse-pd/
-+F:	drivers/net/pse-pd/
-+
- PSTORE FILESYSTEM
- M:	Kees Cook <keescook@chromium.org>
- R:	Tony Luck <tony.luck@intel.com>
+@@ -1357,6 +1358,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_backlight, },
+ 	{ .parse_prop = parse_panel, },
+ 	{ .parse_prop = parse_msi_parent, },
++	{ .parse_prop = parse_pses, },
+ 	{ .parse_prop = parse_gpio_compat, },
+ 	{ .parse_prop = parse_interrupts, },
+ 	{ .parse_prop = parse_regulators, },
 
 -- 
 2.34.1
