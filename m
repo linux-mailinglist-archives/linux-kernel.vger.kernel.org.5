@@ -1,120 +1,198 @@
-Return-Path: <linux-kernel+bounces-137336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB3A389E0A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:43:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E02C989E0B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CF71F2427A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:43:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3D1DB272EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B638F153595;
-	Tue,  9 Apr 2024 16:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFA115381F;
+	Tue,  9 Apr 2024 16:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eWYbsfjq"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="aWV4nS4q"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576C36FCB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5768152DE2
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712680983; cv=none; b=fQfqP0UzXO39Ic9uJsudAfrmdD7pNVso8YwpFvhTPi61YEfwa13URWNn8NdePxu1IhXLrL4Tjnnv3yoREnErngAin6c9jInMVBrCvf98hKVuuPicTyJiUUsFbzmSCqHyEapIpgxkHEP2JEH+RjR+PbYIz2+4NmzhQvipfdK5oHA=
+	t=1712681082; cv=none; b=mHOimNlB7rRv26hiti3t2LCX3Cmavfe2OJiIa95TqOuRKVNh9UtA/764qqrlY3UgU1xtjod197EDS+D1g8b9nEG78C/BUsTGrhUk/1VnTM2sCNMoS7E1iTZIR08GieIqPs4WkbiQTGZ6RIMS0hIu+f78YJTmrVEyF1aS6k0dB2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712680983; c=relaxed/simple;
-	bh=0a8GFmlFDrP2qZGUYBXjIAA37zI8J6F9L2EQlfe/B50=;
+	s=arc-20240116; t=1712681082; c=relaxed/simple;
+	bh=JWUdqyVAIsWLcoctxkkYi4e62PvFbfqGshP17Q8rHNM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UGCLo/+KYUWd4nq9QjhgK4tg0ypMtFDweZqhbM0APUSGjKN9P3tw7+8RVpUDILvzhduRpHQxiPbwWBMXo58BV/SIQr90oi/yjVcv4d1Bvv5q6YFj792y/9eN6ON7MzlplaXbe3+hMctHdnWNiQke1YmcgtJrN0X02wqjWxmf6+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=eWYbsfjq; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a51c6e91793so469819966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:43:01 -0700 (PDT)
+	 To:Cc:Content-Type; b=kbJ3oMd4xAiW+qIwGwPrQ4ZKLUMhFxTlykgUDT3tuRLaLVhXWbVaRuAH1/ynL4XX2ZlQfRVZa392ZSbwbCxcyzzVH0GPzZuxj4hY2oNBKsZqmrjG8RAbJQLqMAxtN3Zr7XuOChq8muLuBLbbE2o2Dra0xspgJP0ajAYwswQ8Q0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=aWV4nS4q; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d895138ce6so30567421fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712680979; x=1713285779; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712681078; x=1713285878; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FnTqlWbdyt+TuRAaYpRi/f7MpcKj9Cbb2bnd4lfqWzI=;
-        b=eWYbsfjq5WmEWpU7GNpCh/YO3NnimCd4eK8JZAleHjYccDZ4RXZ831mw3grjdNfag1
-         MteT8ZJ+GgTmu34TfcUw/ZIEn4kyPN41Ph51LTXr7A8iaV1245+GoiSpN85PmEdEnqxG
-         Euj13N23ay1Zs2oCDkS7Md/hwJXhoFcl/jl4Q=
+        bh=CjfeLLs5/QHmTieADjEMzvSqZ5segVSHp4sf0PYGlic=;
+        b=aWV4nS4qSOFuCVuTvjSVOwhuSp/m7PypqRI31ulbfjk/qaEw4c0WmW9HopD94/tdlN
+         PGD8dWeKBKyI4OEUdAvmM+7p31/y5AaGTr/Ey1oRsK9k25IVgSq8ZlLx7jBIOlx7uWMw
+         wg+qv/UWHuC90g50TliFgrXzIKJ10gjhgZMpO+9qcLhdWZe6ozSa2jx3EF9jEhJMbOks
+         cOa7YABRnyCQ/3LTXr5phAQiVeiWWVmSsyt9tNMjCdLY5KuQqghY32NFPtfarl9qK04C
+         gcSERegQxzhzvNnUl5gjtRKbfdcC84stBU+L158eI0Ieycxaa2CnKL+glbEmnOQShO74
+         eJcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712680979; x=1713285779;
+        d=1e100.net; s=20230601; t=1712681078; x=1713285878;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FnTqlWbdyt+TuRAaYpRi/f7MpcKj9Cbb2bnd4lfqWzI=;
-        b=eVaxXYB+UTcoJ4mEYE2CBmFRLGqmPw7JCv67IKIlD5i6449PceKCFGY1uR2J0z2Yvr
-         XRO9RFDuZzxItymsTaymtuQYOF2R/cfJAjqUX13sULDkYMqPNMnqb9DcG6htv8ZPYPWM
-         bLvA2ah0VZGd1//Byo4s+MlHggHmzuRhXXxBc3nY6IFIJUra64rKuTDdNrzb+Xpb9SIL
-         tiF4IYYK02RfHwDZTWF52RXDbsXKa5dIwoqqTnO9Tz/dpHNfDGyL3x6mqiEBLXY3rhm2
-         XCG/2gJaA5RLKocJpui46PZSzeKOsrEqTWBTzET7tJ3WT1Xz3H3XHN6H1TvWm3tyOEYs
-         N+Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpXiID0nUXMqU/hEVq384fRCLqYTEOdqAWVw9yb+fIO22d3390JULc5oxz+oy9IsxQjp2l0z9GyyK3PJORPe9s1Iozh0qGn8BAoLU9
-X-Gm-Message-State: AOJu0YzeIEptSkN5OAcS1f42sjnisi7i5hbnzclJELXLf1oMEHuzeYcD
-	vrxkcvZau2bya3tCM6EAIMfw/XIRuwb3T+qJRAE2DJYmyRBGsBbtGLJPl0aKBjE/sskxSHMPrTc
-	=
-X-Google-Smtp-Source: AGHT+IEu8lnRC2HQA3FJ0NOmJQP6ngX1yB4sSHxgnOGwakt/GSmPcll1lOBCDfBVT9daqwW1uOL1UA==
-X-Received: by 2002:a17:906:b2c7:b0:a51:abd8:8621 with SMTP id cf7-20020a170906b2c700b00a51abd88621mr2521699ejb.19.1712680979296;
-        Tue, 09 Apr 2024 09:42:59 -0700 (PDT)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170906230d00b00a51f0f9a2casm1163016eja.188.2024.04.09.09.42.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 09:42:58 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41650de9e1eso16254795e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:42:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXlpNJfEmJWXvDgMwe8f1H6UiFCYNRjlUr+brYFT+Lgb7DJ8avC1I9++7T1APXE8p5eSkRzaw6y6phCATB2dDQMf8pMQhErsLuO+PsQ
-X-Received: by 2002:a05:600c:4fcb:b0:416:6adf:fe44 with SMTP id
- o11-20020a05600c4fcb00b004166adffe44mr2880442wmq.17.1712680978184; Tue, 09
- Apr 2024 09:42:58 -0700 (PDT)
+        bh=CjfeLLs5/QHmTieADjEMzvSqZ5segVSHp4sf0PYGlic=;
+        b=BINKVguP/IB0C9FCGkk4nywGRsaLlV1knPBG0w6R4DZUfvY96EVU39QC0mxYMgt4HI
+         Bdc216gEibdLpBoPXFt7hZhUBvHbdFlaJlrmbUxIdG32qa96Hk+QXHfkEVsxihs+9sm1
+         4fOlkbqvggdYrY2aM3K/aF5uZYC8ExdimCcNeLf7F7GyDCXlUEX+zuyRLMKmak+JOnQA
+         zXrgfIYrtJQtaXI9TIT6lDpHqnKAykuQYoeH7QSf7vIib+eBeps4VtAA/wghiTh0ghFU
+         asYcnOu2pUqgZQNosjIHjUFUNXIRB3bBxziyo7FSnrVNIkyAqYgEY0fTt3lsP0UlHIxz
+         mLRA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqIGTQZQKDpxPA3xwdiHIV5UoyaqbPaFXAcFipZToQPFZeWuBkRXbdBwJfAQrt2mgMBdLIHR97UlJK8JqtZmmLSTPpnGmFkat8wAza
+X-Gm-Message-State: AOJu0YzAlSd1/mjcrsQWl8iqHdYj0PE8U5rk8I33xm/Ytiwi25sMwBul
+	NE7Ub+YFcNlTw9xh3OoMKPrFFnVioeFSx672CuukWf0hiNOaF0BezNl/2XFovHzULOO9hxCHcVF
+	6Gd+eFKZ92w6201dHr1nZWXvn/3MLORR2Ea1J+Q==
+X-Google-Smtp-Source: AGHT+IHDfyAKHWwlD9X/VzdBRfEeR4pd71e1VTx+ltpPqyBKd04yyyXe9X8P7a68xl0iT/2ZbRzolEtgQkxwaWEId6I=
+X-Received: by 2002:a2e:8013:0:b0:2d8:3e60:b9c9 with SMTP id
+ j19-20020a2e8013000000b002d83e60b9c9mr209693ljg.33.1712681078050; Tue, 09 Apr
+ 2024 09:44:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408151700.1761009-1-festevam@gmail.com> <2024040940-resume-polygraph-5800@gregkh>
-In-Reply-To: <2024040940-resume-polygraph-5800@gregkh>
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Tue, 9 Apr 2024 09:42:43 -0700
-X-Gmail-Original-Message-ID: <CAKZ8rEMg8SamD_R46LpA9LAh4WUhH=6zsqjkXS0ABVdPAK9Czw@mail.gmail.com>
-Message-ID: <CAKZ8rEMg8SamD_R46LpA9LAh4WUhH=6zsqjkXS0ABVdPAK9Czw@mail.gmail.com>
-Subject: Re: [PATCH] usb: misc: onboard_usb_hub: Disable the USB hub clock on failure
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Fabio Estevam <festevam@gmail.com>, frieder.schrempf@kontron.de, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabio Estevam <festevam@denx.de>
+References: <cover.1712585500.git.marcelo.schmitt@analog.com>
+ <1d95d7d023dad69b894a2d0e7b0bad9d569ae382.1712585500.git.marcelo.schmitt@analog.com>
+ <CAMknhBEMDg3YF5pvoKJ-6y0Y5OJpmBthWfogCjy90B=F84SvzA@mail.gmail.com> <ZhVoTi2amNTOJ4eS@debian-BULLSEYE-live-builder-AMD64>
+In-Reply-To: <ZhVoTi2amNTOJ4eS@debian-BULLSEYE-live-builder-AMD64>
+From: David Lechner <dlechner@baylibre.com>
+Date: Tue, 9 Apr 2024 11:44:26 -0500
+Message-ID: <CAMknhBGVkv9sP0pjmmdFngKmGVu+G4Y3MUDG199az1wOUtwasw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: adc: Add support for AD4000
+To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de, 
+	Michael.Hennerich@analog.com, jic23@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
- wrote:
+On Tue, Apr 9, 2024 at 11:09=E2=80=AFAM Marcelo Schmitt
+<marcelo.schmitt1@gmail.com> wrote:
 >
-> On Mon, Apr 08, 2024 at 12:17:00PM -0300, Fabio Estevam wrote:
-> > From: Fabio Estevam <festevam@denx.de>
-> >
-> > In case regulator_bulk_enable() fails, the previously enabled USB hub
-> > clock should be disabled.
-> >
-> > Fix it accordingly.
-> >
-> > Fixes: 65e62b8a955a ("usb: misc: onboard_usb_hub: Add support for clock=
- input")
-> > Signed-off-by: Fabio Estevam <festevam@denx.de>
-> > ---
-> >  drivers/usb/misc/onboard_usb_dev.c | 6 +++++-
->
-> This file is not in the tree for 6.9-rc2, can you please fix this up and
-> resend?
+> On 04/08, David Lechner wrote:
+> > On Mon, Apr 8, 2024 at 9:32=E2=80=AFAM Marcelo Schmitt
+> > <marcelo.schmitt@analog.com> wrote:
+> > >
 
-The driver has been renamed in usb-next. Shouldn't this patch be based
-on usb-next and the backports to stable kernels account for the name
-change? v6.9 sits a bit in between, since there is no stable branch
-yet. The fix doesn't seem super-critical, I guess it would be ok to
-leave v6.9 as is for now and add the fix once there is a stable branch
-for it.
+..
+
+> >
+> > I also still have doubts about using IIO_BE and 8-bit xfers when it
+> > comes to adding support later to achieve max sample rate with a SPI
+> > offload. For example to get 2MSPS with an 18-bit chip, it will require
+> > an approx 33% faster SPI clock than the actual slowest clock possible
+> > because it will have to read 6 extra bits per sample. I didn't check
+> > the specs, but this may not even be physically possible without
+> > exceeding the datasheet max SPI clock rate. Also errors could be
+> > reduced if we could actually use the slowest allowable SPI clock rate.
+> > Furthermore, the offload hardware would have to be capable of adding
+> > an extra byte per sample for 18 and 20-bit chips when piping the data
+> > to DMA in order to get the 32-bit alignment in the buffer required by
+> > IIO scan_type and the natural alignment requirements of IIO buffers in
+> > general.
+>
+> Maybe I should already implement support for reading with SPI offload
+> rather than doing it after this set is merged?
+> So we can test what happens at faster sample rates before we commit to a =
+solution.
+>
+
+Yes, that sounds like a wise thing to do.
+
+>
+> >
+> > > +               } data;
+> > > +               s64 timestamp __aligned(8);
+> > > +       } scan;
+> > > +       __be16 tx_buf __aligned(IIO_DMA_MINALIGN);
+> > > +       __be16 rx_buf;
+> > > +};
+> >
+> > scan.data is used as SPI rx_buf so __aligned(IIO_DMA_MINALIGN); needs
+> > to be moved to the scan field.
+>
+> I have already tried it. Maybe I did something wrong besides buffer align=
+ment
+> at that time. Will give it another try.
+
+This is the alignment for DMA cache coherency. So it should not have
+any affect on the actual data read, only performance.
+
+
+> > > +static void ad4000_config(struct ad4000_state *st)
+> > > +{
+> > > +       unsigned int reg_val;
+> > > +       int ret;
+> > > +
+> > > +       reg_val =3D FIELD_PREP(AD4000_TURBO, 1);
+> >
+> > Since the driver in it's current state can get anywhere near the max
+> > sample rate of ~1MSPS, I don't think it makes sense to enable turbo at
+> > this point.
+> >
+>
+> This is just enabling turbo at start up. If not enabling turbo during pro=
+be,
+> we would want(need?) to provide some interface for that, which might not =
+be
+> much desired.
+>
+
+TURBO is only needed to achieve the max sample rate of 500k/1M/2MSPS
+on the various chips by skipping powering down some circuitry between
+samples. We can't get anywhere close to that in Linux without some
+sort of SPI offloading. So, for now, we might as well leave it
+disabled and save some power.
+
+
+> > > +
+> > > +       st->pin_gain =3D AD4000_1_GAIN;
+> > > +       if (device_property_present(&spi->dev, "adi,gain-milli")) {
+> > > +               u32 val;
+> >
+> > Should it be an error if adi,gain-milli is set on non-adaq chips?
+>
+> Maybe. We should not change the scale if it's a chip that don't have the
+> amplifier in front of the ADC. I think the best handling would be to just
+> ignore adi,gain-milli if it's not an ADAQ device. Maybe better add a DT
+> constraint,
+>   - if:
+>       properties:
+>         compatible:
+>           contains:
+>             enum:
+>               - adi,adaq4001
+>               - adi,adaq4003
+>     then:
+>       properties:
+>         adi,gain-milli: false
+> ?
+
+I think this is missing a not:, but otherwise yes this should be in
+the DT bindings.
+
+Even with that though, I would still be helpful to readers of the
+driver to at least have a comment here pointing out that this property
+and related gain scaling only applies to ADAQ chips.
 
