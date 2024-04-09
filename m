@@ -1,128 +1,126 @@
-Return-Path: <linux-kernel+bounces-136226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED3E89D178
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1825C89D187
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0756E1C23807
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA8A1C21DF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C95C5F4;
-	Tue,  9 Apr 2024 04:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nTI9L8cB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A3734CDE;
+	Tue,  9 Apr 2024 04:32:09 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2296683CB0;
-	Tue,  9 Apr 2024 04:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B8F26AC5
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 04:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712636607; cv=none; b=TSOLWTfiXD9hnooT8YOKObw3vueDkId/1CQCksv3h42fJWEK58WzFY81k0d3i667KpuI3s3I5+d6iYyIZ9oeF98O5ge3O9EYgYPWyLKGGDns/uHQl3kPucwpdm+ooQK+Nxz1gZ/lCYUkF8DMFZcj9McR8m7t+GoI1wIMDHXKyX4=
+	t=1712637129; cv=none; b=krHgITtY+8U53cljtHidYy85Hj78PJMaPHCHyMrCiDG7c2d1AuTf6/emoFH6Png7qygWmihrocBUhVvYqfOoGA1+VTBz815bMltKRJO0hZGFQwJblB6ENyZXeSW6SKTq70Rm4Bx8/uzQBPV/6zhut6ObiwBZF0nEkO/Gd0YZrBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712636607; c=relaxed/simple;
-	bh=SuQSgPe8CBiuq2s/IXE0JGCrExX0FOBruorD6DKwhDI=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=VVfDvZPXTbd3GlqPq1NhBm4H4+c2emf+sQGcgrwzpqBqgfaZR5xiqqwzqZqKHgHDo1W0eHK354foyTHlG3hP0jpsv9GwEkd6C888o0G/3q03JAWYf9NPAovbviz+DWXyr2PMG08QbAxC4+NQsVDly8ruAs4kw9V+zvcbq/3Farg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nTI9L8cB; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712636606; x=1744172606;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=SuQSgPe8CBiuq2s/IXE0JGCrExX0FOBruorD6DKwhDI=;
-  b=nTI9L8cBUe4UZYDCljqedY/9k5z4cQNHJ3Hi1bouyyOjMT8aZto0tXLr
-   vgnVPkpcfMf90M0StmFh/c8xdwZ/54bUs6QSNcJaeRD3kZuzPUIHBnIzu
-   FxNSVfsL12baT7GjsLGS7HhZAF3vwlw98pY0aUNpyZr9l8test982VJ2A
-   cR9GY6a1wpezTAna7wjvWMc/Qx9fAyFujL5AJbmB2sdEREUGVgwkKgOKc
-   9Ui8ZDxOKr5j3vmRbC1SAiJ+RoPq/1+FiUIFsOCs17IEitnha0p9/vpz6
-   bGxa0EOTU7ZOeaVIla0YdDzgL5BdGVS1mTdVpjFj1GnEs27X3ofvwY6IV
-   A==;
-X-CSE-ConnectionGUID: nXg57YKOS6ek8UbTXoy9zg==
-X-CSE-MsgGUID: E+CCpb21TfeHwyDazU9tyQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="33344738"
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="33344738"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 21:23:25 -0700
-X-CSE-ConnectionGUID: OqeZOLAWSVm4WyyvVODuHw==
-X-CSE-MsgGUID: eIudRArYTrG75Ijrlc2gPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="20182985"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 08 Apr 2024 21:23:23 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v10 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
- <20240328002229.30264-13-haitao.huang@linux.intel.com>
- <d25dbe76d48a0b6c74fa09b06f1ca3fdf234a190.camel@intel.com>
- <op.2lw8gfg2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
-Date: Mon, 08 Apr 2024 23:23:21 -0500
+	s=arc-20240116; t=1712637129; c=relaxed/simple;
+	bh=dPvPqUERy12DlCuYBp4kJOrK+EGsyRWG0aIs7+b7590=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X4zBTPYOD3yCIZVM/N1yiudhl5dQJzTn0/kdZvP5FA1VRedM/MeL70zasoI3ePqGrzm2cMWu97bLxCOktuqB6E7XEqfxIabiZzneRQJMxKkm/qJ88fjs/pSQEote2tuSRxD3wq5DGjpAvpX6rng3FtURaleGGy6szaPwa/Q5NI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru39E-0004ek-Fn; Tue, 09 Apr 2024 06:31:52 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru39C-00BErS-Fh; Tue, 09 Apr 2024 06:31:50 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ru39C-004MsH-1F;
+	Tue, 09 Apr 2024 06:31:50 +0200
+Date: Tue, 9 Apr 2024 06:31:50 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Arun.Ramadoss@microchip.com
+Cc: andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
+	Woojung.Huh@microchip.com, pabeni@redhat.com, edumazet@google.com,
+	f.fainelli@gmail.com, kuba@kernel.org, kernel@pengutronix.de,
+	dsahern@kernel.org, san@skov.dk, willemb@google.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	horms@kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v4 5/9] net: dsa: microchip: add support for
+ different DCB app configurations
+Message-ID: <ZhTEtmcvubthMXmB@pengutronix.de>
+References: <20240408074758.1825674-1-o.rempel@pengutronix.de>
+ <20240408074758.1825674-6-o.rempel@pengutronix.de>
+ <40d90a28d95bff48f352a3aaf81df2b1a6133cc7.camel@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <40d90a28d95bff48f352a3aaf81df2b1a6133cc7.camel@microchip.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, 08 Apr 2024 17:37:10 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+Hi Arun,
 
->
->
-> On 9/04/2024 6:03 am, Haitao Huang wrote:
->>>>
->>  The misc root cgroup is a static similar to sgx_cg_root. So  
->> misc_cg_root()  won't be NULL
->> However, based on how css_misc() was check NULL, I suppose  
->> sgx_get_current_cg() may be NULL when cgroup is disabled (again not  
->> 100% sure but we handle it anyway)
->
-> Could you help to check?  Sorry I am busy on something else thus won't  
-> be able to do any actual check.
->
-It's always non-NULL based on testing.
+On Mon, Apr 08, 2024 at 04:10:15PM +0000, Arun.Ramadoss@microchip.com wrote:
+> > +int ksz_port_get_default_prio(struct dsa_switch *ds, int port)
+> > +{
+> > +       struct ksz_device *dev = ds->priv;
+> > +       int ret, reg, shift;
+> > +       u8 data, mask;
+> > +
+> > +       ksz_get_defult_port_prio_reg(dev, &reg, &mask, &shift);
+> > +
+> > +       ret = ksz_pread8(dev, port, reg, &data);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       return (data & mask) >> shift;
+> 
+> I assume we can use retrun FIELD_GET(mask, data), since mask is GENMASK
+> format. 
+> 
+> > 
+> > +int ksz_port_set_default_prio(struct dsa_switch *ds, int port, u8
+> > prio)
+> > prio)
+> > +{
+> > +       struct ksz_device *dev = ds->priv;
+> > +       int reg, shift;
+> > +       u8 mask;
+> > +
+> > +       if (prio >= dev->info->num_tx_queues)
+> > +               return -EINVAL;
+> > +
+> > +       ksz_get_defult_port_prio_reg(dev, &reg, &mask, &shift);
+> > +
+> > +       return ksz_prmw8(dev, port, reg, mask, (prio << shift) &
+> > mask);
+> 
+> FIELD_PREP(mask, prio)
 
-It's hard for me to say definitely by reading the code. But IIUC  
-cgroup_disable command-line only blocks operations in /sys/fs/cgroup so  
-user space can't set up controllers and config limits, etc., for the  
-diasabled ones. Each task->cgroups would still have a non-NULL pointer to  
-the static root object for each cgroup that is enabled by KConfig, so  
-get_current_misc_cg() thus  sgx_get_current_cg() should not return NULL  
-regardless 'cgroup_disable=misc'.
+Sadly, FIELD_GET() and FIELD_PREP() do not work with dynamic masks.
 
-Maybe @Michal or @tj can confirm?
-
-Thanks
-Haitao
-
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
