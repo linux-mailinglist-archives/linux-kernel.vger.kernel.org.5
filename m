@@ -1,149 +1,105 @@
-Return-Path: <linux-kernel+bounces-136697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E35AB89D732
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0821B89D735
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CF3328405D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:43:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6C5A284784
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B17823A8;
-	Tue,  9 Apr 2024 10:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E41982D7F;
+	Tue,  9 Apr 2024 10:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U/BRlO5h"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efYu5bVZ"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4946B80BFC
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3877580603;
+	Tue,  9 Apr 2024 10:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712659403; cv=none; b=tU++HCOGhksJyJi70x9ILlI0qnmbyv/3UGrfRYQVxcyxZjzM8D3lGneoPLcM6sDI0DMo3LzXqnEVVhbo04IR//Zf4UwR8oqbl/3z/u+ijLvf4KoJs42qSDx2WNipwQVi2BZh1z/olUPBjN8Mm+twvOtWk6D69evX6S0RS6iFVaQ=
+	t=1712659417; cv=none; b=BQtt2jbEHOF7fXqlnes588eyJxqIx7zE+OuY4w/Qwp/czr4wY9MxvvXFCqq1qPf6dZ2U2eTq/r19b0IMgBxH9lw88ru0XDZH3bQKLFV2cT9kG9KEnwvWbfCdZfQRBI1bssQFnlZaTkjKmAaOzgFBtnFSdJKFXTPZ0EX5DJ0T+4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712659403; c=relaxed/simple;
-	bh=P1drV4PVyYjqV1TiHKD9r5Q92b00wwuRopyWCFjwIO8=;
+	s=arc-20240116; t=1712659417; c=relaxed/simple;
+	bh=gjE+I+A0HeyP2PKHxiDJDFFd+6zMneQwATAwAgoiiJE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lORnn9cKADdwHYxLsJBR8F5QtyLJJu81EQjqIDnNSg1/+2ONfmr33lWYbTJBi5R13IxEl9WtP/e/cJ0m0FvVggG05EHK5v2JlS1U5Hgxiry30sIlnXSTghSNI0EjEB1KHIr7mLf/9P+GlrzFsAzN7PPT0lVY2v1ZkN+KPcziWaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U/BRlO5h; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41699bbfb91so66955e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:43:21 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=R3giiZ63tUWSmNDKRQKCDok8jC+9N+Pjn6z8mDP3KIC/h4Rc5AzAHD9XltAMwVc6ab/C1tqrHjqbttItfVXuSwPuB9QtIYWZWGf57rtZfgyRgCIqJdoanOIMPMcQ2ads2Pxc/r9rZtaI2zuYjXqpiGujumjbjbZqij2Z/2dNYJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efYu5bVZ; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51fd94c0bfso48298966b.2;
+        Tue, 09 Apr 2024 03:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712659400; x=1713264200; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ikQVwwVGg1QRlqcNnHhwQAmZ6t6nRddh161TyahHqsI=;
-        b=U/BRlO5hEpqG4GyvUQJxezZmHpJvwbb8HoHlp1OvH0IVWL3bGz8cxvLyW7yZWo/3/e
-         kf4kNbvfWcKE+8BSJP/rE59UNmOIvjxqK+QFXXu8Muy7CWcXwpM/o6Ps7jGXyu4jtIJx
-         wqmfqoiU+jeKXrjtPDzG7CW8EWpbE+cKBk/piAErS3LixqDnP/OZik4XdAAo7iVg5o3N
-         ZKjFbjCtWVVpywSPSCVOJ1FxLVfI+bI+2irv2/oWwHxNNXxnac71fZ3JyAsKGvf0C+go
-         3vbM0Np7y/wh44q43I4IViS5G9S0dJBQOMkOYLqmsz8257GUxWdVPFbnsepqUa26ym5l
-         x/yQ==
+        d=gmail.com; s=20230601; t=1712659414; x=1713264214; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OCxhJzgdq7JvJJLvU/sGXpXvWKxyivmCeUQolgjSiVk=;
+        b=efYu5bVZfSSgDEVn/SZJv/ezaHCVKWZwV3rQjl7lxqWROToS+1E9FlscMFN/X9py/K
+         Dn3vkvnpOXqdVBXT4WaiIqBJ9jnBXdSOd3soFZJ5qEJJdYlqiqAh4XC+a1GSbKZuOlUP
+         mlMDcp14AsDGO0RJaUwARhxHn83dv32ayleVXI6HSkxgsVB69RYLUIV4BlmV1SjGStry
+         5d7L7rRoREVaANSwRosuO0WObWRBmvlnwJ24L/Ih+HbOKVju/xAI7NsU9TVfEXFtGMDG
+         hd6bx2wbqjizYA8QOwdmFp58nsyLDdoj421lgl+1CqYyLiqWloozz+STEO09PjuKGQ9w
+         oitw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712659400; x=1713264200;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ikQVwwVGg1QRlqcNnHhwQAmZ6t6nRddh161TyahHqsI=;
-        b=YfyxbBHKMjilNmx2JA/0C3vx2VOxiNYnI7Uu0J/Bpexo6UPR2nAWp7Ni07vYmBKr2N
-         gWDx9Lk3KF/MT59qPtbX6ID+wYwdtJT+3nYazvoqOcmwMj/u/hG53zyzlRmy7cGbvAAc
-         wdj0iUfT3a0tK4wMldABptZSLw4T3QV1WovvgjdAnYnJwswnV47KsUoBri+CYHfq881r
-         pylDJ7W+5gJFjGU6imKF/ralzt5Tv+z+1bH8jH+MmTyxGDNqhCXsKQHZAbroUtKG/huT
-         ID4AMV/OfHEx49gsHcCZu7QlO5hf/8thgrXjmn9tK1+l4m05Z1g1o2AfZt0XRpVoav7v
-         s10g==
-X-Forwarded-Encrypted: i=1; AJvYcCUYpM+ceVqhmNm61y1sD9QRKKbVzLzvxFqI+J0s4kbTn+ZCgI3Ss+f2XO00AI1Ou2tyKkyDnrDTWO8ejJUePlpriGQyeu+Mk669qPCO
-X-Gm-Message-State: AOJu0Yzy5MPGkCO92RjdWeZJplWy/xbds1Ba+N6FCb3Zk26EMMCnR4j5
-	jimASbnrUpuu1OghpGnjerLAlAc/bnvfLzWAOARbgIYHVjjANYSbBwNmc3y0cQ==
-X-Google-Smtp-Source: AGHT+IEmRPrla3hhCrDIRObyh+HMBsdD+xkXu0Qn4yIa7MpXx8XpCnlB5sSXyw9+afvoI4IVfrqHbg==
-X-Received: by 2002:a05:600c:3b21:b0:416:6b86:852 with SMTP id m33-20020a05600c3b2100b004166b860852mr150180wms.2.1712659399532;
-        Tue, 09 Apr 2024 03:43:19 -0700 (PDT)
-Received: from google.com (180.232.140.34.bc.googleusercontent.com. [34.140.232.180])
-        by smtp.gmail.com with ESMTPSA id s7-20020adff807000000b00343d6c7240fsm11098732wrp.35.2024.04.09.03.43.19
+        d=1e100.net; s=20230601; t=1712659414; x=1713264214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OCxhJzgdq7JvJJLvU/sGXpXvWKxyivmCeUQolgjSiVk=;
+        b=MiTNTIWeniuhF/Y8d5k3Jc7hMf09p9RiJXdi1WfTsjTeYh0ysWJtnYbU9aVz4+tHmZ
+         R/1K7Z3VQYpuryCvv11VWAZHWGJ+6yF5d1O7tCp0lowEYH7bwKLgkxK9gRTvWDXqsUmV
+         9T8MK1rtaW5pMCWAAP78yAOAwCNgLzCJAwjWzRmNUnK2G2XUhRO8ysrrkVD5xHVnU1WS
+         HzjojyuBz9vcLH2+z/UMUlVMXoV8dIZRGZYExK+4CQuYlkUESsmn7UF4JR89a2cXoUxq
+         fWjgA7MhJungPEs9O+RElApHN1M5fwfms9liiDY8yVY5GogbZ7J9IWNw8bAPjd3twX8e
+         iqZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXa4tMm98CshDdjNNl4lWHCzMEh0bmmPApixTYq84ZEefXTnX8hZYumAbCSSz5T4xHryau2+FiUiIgC3FJS580YIOYO+MpOZ4N9adVdbl30BghReBM68wiJzkEqZWJ2i2gYbeEC8w==
+X-Gm-Message-State: AOJu0Yx1Ma5zJ1dpSeKyFFbVyeGM2LmbYW8uCGS8IoJ6zsMq9QCTM0Tc
+	4dT1ihjYKi8Zj6xX7+Eu2TL2cGqFc8ijMyCgkwgWt+2S6oplMoA/fNzrGQboQWM=
+X-Google-Smtp-Source: AGHT+IG+aE6wNBav4To09hfvAh5ZkM+dypL331ghgPVgQvN/+5HFswTVM4ecAkY9pRjlPWE16lW81g==
+X-Received: by 2002:a17:906:7949:b0:a51:d4fa:cf8f with SMTP id l9-20020a170906794900b00a51d4facf8fmr5027000ejo.6.1712659414226;
+        Tue, 09 Apr 2024 03:43:34 -0700 (PDT)
+Received: from andrea ([31.189.89.249])
+        by smtp.gmail.com with ESMTPSA id nb33-20020a1709071ca100b00a4628cacad4sm5520411ejc.195.2024.04.09.03.43.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 03:43:19 -0700 (PDT)
-Date: Tue, 9 Apr 2024 10:43:15 +0000
-From: Mostafa Saleh <smostafa@google.com>
-To: Aleksandr Aprelkov <aaprelkov@usergate.com>
-Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Michael Shavit <mshavit@google.com>,
-	Lu Baolu <baolu.lu@linux.intel.com>, Marc Zyngier <maz@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Free MSIs in case of ENOMEM
-Message-ID: <ZhUbw6gAeBjpFz5C@google.com>
-References: <20240403053759.643164-1-aaprelkov@usergate.com>
+        Tue, 09 Apr 2024 03:43:33 -0700 (PDT)
+Date: Tue, 9 Apr 2024 12:43:29 +0200
+From: Andrea Parri <parri.andrea@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	kernel-team@meta.com, mingo@kernel.org, stern@rowland.harvard.edu,
+	will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+	npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+	luc.maranget@inria.fr, akiyks@gmail.com,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH memory-model 2/3] Documentation/litmus-tests: Demonstrate
+ unordered failing cmpxchg
+Message-ID: <ZhUb0eWvaoogbeaS@andrea>
+References: <8550daf1-4bfd-4607-8325-bfb7c1e2d8c7@paulmck-laptop>
+ <20240404192649.531112-2-paulmck@kernel.org>
+ <Zg/M141yzwnwPbCi@andrea>
+ <88b71a34-3d50-40a8-b4b6-c2d29a5d93a5@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240403053759.643164-1-aaprelkov@usergate.com>
+In-Reply-To: <88b71a34-3d50-40a8-b4b6-c2d29a5d93a5@paulmck-laptop>
 
-Hi Aleksandr,
-
-On Wed, Apr 03, 2024 at 12:37:59PM +0700, Aleksandr Aprelkov wrote:
-> If devm_add_action() returns ENOMEM, then MSIs allocated but
-> not freed on teardown.
+> Good catch in all four tests, thank you!
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 166bdbd23161 ("iommu/arm-smmu: Add support for MSI on SMMUv3")
-> Signed-off-by: Aleksandr Aprelkov <aaprelkov@usergate.com>
-> ---
-> v2: Use appropriate function for registration failure as 
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> suggested.
-> 
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 41f93c3ab160..8800af041e5f 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -3402,7 +3402,9 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
->  	smmu->priq.q.irq = msi_get_virq(dev, PRIQ_MSI_INDEX);
->  
->  	/* Add callback to free MSIs on teardown */
-> -	devm_add_action(dev, arm_smmu_free_msis, dev);
-> +	ret = devm_add_action_or_reset(dev, arm_smmu_free_msis, dev);
-> +	if (ret)
-> +		dev_warn(dev, "failed to add free MSIs callback - falling back to wired irqs\n");
+> Does the patch shown at the end of this email clear things up for you?
 
-I am not sure that is the right fix, as allowing the driver to probe
-without MSIs, seems worse than leaking MSI memory.
+Yes, that'll do it.
 
-IMHO, we can just add something like:
-    dev_err(smmu->dev, “Can’t allocate devm action, MSIs are never freed! !\n”) ;
-
-Also, we can’t unconditionally fallback to wired irqs if MSI exists,
-according to the user manual:
-    An implementation must support one of, or optionally both of,
-    wired interrupts and MSIs
-    ...
-    The discovery of support for wired interrupts is IMPLEMENTATION DEFINED.
-
-We can add some logic, to check dt/acpi irqs and to choose to fallback
-or not based on that, but, if we get -ENOMEM, (especially early at
-probe) something really went wrong, so I am not sure it’s worth
-the complexity.
-
->  }
->  
->  static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
-> -- 
-> 2.34.1
-> 
-Thanks,
-Mostafa
+  Andrea
 
