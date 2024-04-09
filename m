@@ -1,265 +1,120 @@
-Return-Path: <linux-kernel+bounces-137648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0E789E502
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:34:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D7489E50C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2C11C21F40
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:34:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF8C9B21A51
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9A4158A25;
-	Tue,  9 Apr 2024 21:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0032158A2D;
+	Tue,  9 Apr 2024 21:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="OejyuHux"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="brhd4jGe"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B94F158213;
-	Tue,  9 Apr 2024 21:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE8D12F381;
+	Tue,  9 Apr 2024 21:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698440; cv=none; b=hsLj6JwBxfrG/zJ8MJ4cmhXHcU0h+mdPYdXy9FMLp0NoKXZycVgG7+XzzjTePjWw15caBOdYwqhokRz5fxJL/lu3NlfA3pBz8Dq6R0GpKwb8Awj8q1pCavSl6QqpDffcfrGjG8lQ5LNsnu6xqujTpzpUxil9zmZ6DtbguW5P+F8=
+	t=1712698691; cv=none; b=ujCkn961zpVIkfLyXGnjTAhk3Lsa/REQX1SmNV0ZPWRWX3ghyIMNZn1eLWyE8Keim3x9msNrL3b52/7htWTjS4gQFduwlMcbfkocwd4ZdzXekjPLT/XdBlDKibgzuzHFrO+NK7u2TtbxikX3UvcNQvDV0btCfXrUS39hU0NRjCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698440; c=relaxed/simple;
-	bh=6GDlg+zLBx4PsLbRoItai3KSHzYY5NK1nUnquIRqNRI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E8D05nez2smU5HLEdUzrJTMasGRyOfd48DJuWf7s+NaNbs2/crJ9TYZ5CcLT06Ke+I/ZHLZRO/0hafOQ6Ax6b1wkzlxFYYgcDCQZAoHckeMStfjqbcMi0s1J8RuA5MIyAyDJXY0b018qJb6K4cHi2c99XTMacSkJ3S3+cGom+no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=OejyuHux; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712698408; x=1713303208; i=w_armin@gmx.de;
-	bh=sjuhz+TaLmV9ixOiAi3uRJXQXF3anu1HLOApgAGNu3w=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=OejyuHuxq9kd6VqEiWc4efIV7P2tLRwE60CmjTJCKvPEEeCx1wZ9StpeHtCBZkPa
-	 Urc4Gd5fK9g+l12DW/I6GEWnT4hrt4CAUJp/cvtT9K81Z9GGPbqmGKKmBRCFEfjE0
-	 OdSGdaWn9AkB9hWDAij5I/znCxnaMF3KnVCa5bK+qL/ANmnwzjh5hUdB3jeoB860f
-	 EOmdIGZwA2Jv/k5s9Ni3GsWsCFBN72rn6WAtCTuzG4xWVsouZpNMfWMKbOO2WRqFq
-	 MH3RVZ0sJOXC2ud1azJuBsjaXsjiCNxKz87+FqOud1eBU57Xh6U0K36AH3evclMPY
-	 ZfRyjtKApYwwC3DJCg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1N6bfq-1sr2Xu1PAs-0181f3; Tue, 09 Apr 2024 23:33:28 +0200
-From: Armin Wolf <W_Armin@gmx.de>
-To: mlj@danelec.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: jdelvare@suse.com,
-	linux@roeck-us.net,
-	linux@weissschuh.net,
-	ilpo.jarvinen@linux.intel.com,
-	linux-acpi@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2] ACPI: fan: Add hwmon support
-Date: Tue,  9 Apr 2024 23:33:23 +0200
-Message-Id: <20240409213323.8031-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712698691; c=relaxed/simple;
+	bh=a6dju3HKpW7sRypaPtrf7VW08Pozh7etO++KZldlSsE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CugDm6ixqjxsYYFq0CVeG4XPzgX4Vv5z/op1lQSYEJVc7MYh5htpOAiBQ1NawTh0jtgAlBuXTE2xNpg9JsgYzvnwDyEs0u79ZGsuiHjrDI/gHT1mKKtpicHzWsWBUgjUqnpzWx85O0XFaioKIoIC3NaNDQN97Jv7d2z+2A8j9/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=brhd4jGe; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712698688; x=1744234688;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a6dju3HKpW7sRypaPtrf7VW08Pozh7etO++KZldlSsE=;
+  b=brhd4jGevs+/W3lLu2ZQ3RbYy4b8N9A/qFznmZk6l+GYTfTfz2qU25i4
+   GHAF1Zsuc+LnSQSdnvyZnWEYVaT4mzHN/wEC5owHAR5hBGhZ6HtBi3FTh
+   N9N7QOch5wvRSlKARskQOc4FOqDoIV1eeBOD9QA52sMsHnnxN0qMYTHh2
+   qrl9PXrHPUW6e41QyhPNEuutTZi7m8/Ij0lyg5GpcG8BrA0QSMSkjwavn
+   gV/PMbs3Z6gM+tu9JyBFSx40g1cX2QkP5p+z6Fp47juAkBZDNBx4B6thH
+   hQj1FHj1mzoaeXgepB3GJouGXZIEzqERDep4Crgb+rADazTVCZ8LUdHh3
+   A==;
+X-CSE-ConnectionGUID: ncJ/xF2dSgeVoENsDvWTXA==
+X-CSE-MsgGUID: eZRRxjlZQze//y/4FNCtoA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8214966"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="8214966"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 14:38:08 -0700
+X-CSE-ConnectionGUID: CyJlMzQTRf6i5sbKlZpsdA==
+X-CSE-MsgGUID: oIdAYGWeRSmqTk8U+kdcTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="25022748"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 09 Apr 2024 14:38:03 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ruJAH-0006XK-18;
+	Tue, 09 Apr 2024 21:38:01 +0000
+Date: Wed, 10 Apr 2024 05:37:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Guanbing Huang <albanhuang0@gmail.com>, gregkh@linuxfoundation.org,
+	andriy.shevchenko@intel.com, rafael.j.wysocki@intel.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-acpi@vger.kernel.org,
+	tony@atomide.com, john.ogness@linutronix.de,
+	yangyicong@hisilicon.com, jirislaby@kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	lvjianmin@loongson.cn, albanhuang@tencent.com,
+	tombinfan@tencent.com
+Subject: Re: [PATCH v6 2/3] serial: port: Add support of PNP IRQ to
+ __uart_read_properties()
+Message-ID: <202404100548.rbAa11Xr-lkp@intel.com>
+References: <e6dc33e399f119e6430bca48223cb2127930939b.1712646750.git.albanhuang@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yYdU5SWqH/bNqNsamsZdNYjgngACK2VgYu9rtYrDw57TzVQOfzk
- nbwx7FnKGIQD4a8CQDvsHEZ/Ospk5g7w4vd5fY8vJGFGBwg7MiETD/G1gpBdl12yKFbcc2z
- A0B0HMdpaANJd+A3Ya97MirLbdVG2NtLy1UxNDhf/yeY1inuODu5Nz3awDzud4o6PG0khzh
- Cmf0GOTxKcwAgCqFJ/GtA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wtmSOyWMUO4=;7DDBbaFiuDx6Dit4uUKw2lAzbRA
- k7pkIyPjTCgqpyjA8tgOz/neI3lGQj7fWg26E65YT+M3NP2shf5PJEX7Oqr6eeMEgmeX0mM4o
- 0M8pDyPdv3Sy5Arh30XY+Wd9PbSqxrbZet5pjcWPEm1lTZs0BbBN+GpZtbW2F1RgCC7neVtjK
- ViiyTuenqv8liQVouUHwCZKKnDcQihN3YlxNbf/E/41eLbMLlBaypRv3VumgtOtTziiI/yNyQ
- e4ju/GD0HqHBFILae98JDql4ETFH58Ht/CxXqfKZT/UVyrjSCyLHxg7CkDNx1es/mpDVPiLxX
- WygY6lpfkj+UJ9o7etf5WTRebiu+Q8U9J7VuGsVcyCdf/T+SDsCYsgibDMsh//+kVjFuod3So
- Q5PHW+mCldy9Hdq7efwz30J0ljeT2vq22SEqqMzbAq2lSYjEw7Q2+gIWl4DW2Nj1EuRhxukXc
- kC6CJSG79591XxqBilNEWavox4u3HyVaWCQxGrbnCOnj4cJ33BEboAm5aRkplldsQkx7H7gm8
- kMoGd/5s1T8rAHS833amsTd1OkyCflbjHumzsGXAtcUzWy8Ple5ZxD1v782H53gQr/Dek/EEP
- lSR0GmWKlHsR29qgyDmifLBjTFdNrNvxxSXDgU8q9UO1yx0ObiN+T7fNw6QrwfdWbO1S/RVL0
- gF0CXVlIRbyct79se4m/bVsL+DZUCr+nFZ8RMFHayA9BlbuvC1U8x2hm6LhQia/5cn3DWytaJ
- dGOcF7qn8JNCCop976XiNgLkw8GU/KprE3h45fDXGXFfNETCn7+HeAlluLez8nM+cYOaPLbhN
- YbjU5X96fOBnfdhhrmKiMWwwVG/4deimRs4Gu7ErQWSYY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6dc33e399f119e6430bca48223cb2127930939b.1712646750.git.albanhuang@tencent.com>
 
-Currently, the driver does only support a custom sysfs
-to allow userspace to read the fan speed.
-Add support for the standard hwmon interface so users
-can read the fan speed with standard tools like "sensors".
+Hi Guanbing,
 
-Compile-tested only.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
-Changes since v1:
-- fix undefined reference error
-- fix fan speed validation
-- coding style fixes
-- clarify that the changes are compile-tested only
-- add hwmon maintainers to cc list
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus linus/master v6.9-rc3 next-20240409]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The changes will be tested by Mikael Lund Jepsen from Danelec and
-should be merged only after those tests.
-=2D--
- drivers/acpi/Makefile    |  1 +
- drivers/acpi/fan.h       |  9 +++++
- drivers/acpi/fan_core.c  |  4 ++
- drivers/acpi/fan_hwmon.c | 83 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 97 insertions(+)
- create mode 100644 drivers/acpi/fan_hwmon.c
+url:    https://github.com/intel-lab-lkp/linux/commits/Guanbing-Huang/PNP-Add-dev_is_pnp-macro/20240409-154558
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/e6dc33e399f119e6430bca48223cb2127930939b.1712646750.git.albanhuang%40tencent.com
+patch subject: [PATCH v6 2/3] serial: port: Add support of PNP IRQ to __uart_read_properties()
+config: sparc-allnoconfig (https://download.01.org/0day-ci/archive/20240410/202404100548.rbAa11Xr-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240410/202404100548.rbAa11Xr-lkp@intel.com/reproduce)
 
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index d69d5444acdb..c272ab2c93b9 100644
-=2D-- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -83,6 +83,7 @@ obj-$(CONFIG_ACPI_TINY_POWER_BUTTON)	+=3D tiny-power-but=
-ton.o
- obj-$(CONFIG_ACPI_FAN)		+=3D fan.o
- fan-objs			:=3D fan_core.o
- fan-objs			+=3D fan_attr.o
-+fan-$(CONFIG_HWMON)		+=3D fan_hwmon.o
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404100548.rbAa11Xr-lkp@intel.com/
 
- obj-$(CONFIG_ACPI_VIDEO)	+=3D video.o
- obj-$(CONFIG_ACPI_TAD)		+=3D acpi_tad.o
-diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
-index e7b4b4e4a55e..97863bdb6303 100644
-=2D-- a/drivers/acpi/fan.h
-+++ b/drivers/acpi/fan.h
-@@ -10,6 +10,8 @@
- #ifndef _ACPI_FAN_H_
- #define _ACPI_FAN_H_
+All errors (new ones prefixed by >>):
 
-+#include <linux/kconfig.h>
-+
- #define ACPI_FAN_DEVICE_IDS	\
- 	{"INT3404", }, /* Fan */ \
- 	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
-@@ -56,4 +58,11 @@ struct acpi_fan {
- int acpi_fan_get_fst(struct acpi_device *device, struct acpi_fan_fst *fst=
-);
- int acpi_fan_create_attributes(struct acpi_device *device);
- void acpi_fan_delete_attributes(struct acpi_device *device);
-+
-+#if IS_REACHABLE(CONFIG_HWMON)
-+int devm_acpi_fan_create_hwmon(struct acpi_device *device);
-+#else
-+static inline int devm_acpi_fan_create_hwmon(struct acpi_device *device) =
-{ return 0; };
-+#endif
-+
- #endif
-diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
-index ff72e4ef8738..7cea4495f19b 100644
-=2D-- a/drivers/acpi/fan_core.c
-+++ b/drivers/acpi/fan_core.c
-@@ -336,6 +336,10 @@ static int acpi_fan_probe(struct platform_device *pde=
-v)
- 		if (result)
- 			return result;
+   sparc-linux-ld: drivers/tty/serial/serial_port.o: in function `__uart_read_properties':
+   serial_port.c:(.text+0x1c4): undefined reference to `pnp_bus_type'
+>> sparc-linux-ld: serial_port.c:(.text+0x1c8): undefined reference to `pnp_bus_type'
 
-+		result =3D devm_acpi_fan_create_hwmon(device);
-+		if (result)
-+			return result;
-+
- 		result =3D acpi_fan_create_attributes(device);
- 		if (result)
- 			return result;
-diff --git a/drivers/acpi/fan_hwmon.c b/drivers/acpi/fan_hwmon.c
-new file mode 100644
-index 000000000000..b01055432ded
-=2D-- /dev/null
-+++ b/drivers/acpi/fan_hwmon.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * fan_hwmon.c - hwmon interface for the ACPI Fan driver
-+ *
-+ * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/hwmon.h>
-+#include <linux/limits.h>
-+
-+#include "fan.h"
-+
-+/* Returned when the ACPI fan does not support speed reporting */
-+#define FAN_SPEED_UNAVAILABLE	0xffffffff
-+
-+static umode_t acpi_fan_is_visible(const void *drvdata, enum hwmon_sensor=
-_types type, u32 attr,
-+				   int channel)
-+{
-+	return 0444;
-+}
-+
-+static int acpi_fan_read(struct device *dev, enum hwmon_sensor_types type=
-, u32 attr, int channel,
-+			 long *val)
-+{
-+	struct acpi_device *adev =3D dev_get_drvdata(dev);
-+	struct acpi_fan_fst fst;
-+	int ret;
-+
-+	switch (type) {
-+	case hwmon_fan:
-+		ret =3D acpi_fan_get_fst(adev, &fst);
-+		if (ret < 0)
-+			return ret;
-+
-+		switch (attr) {
-+		case hwmon_fan_input:
-+			if (fst.speed =3D=3D FAN_SPEED_UNAVAILABLE)
-+				return -ENODATA;
-+
-+			if (fst.speed > LONG_MAX)
-+				return -EOVERFLOW;
-+
-+			*val =3D fst.speed;
-+			return 0;
-+		case hwmon_fan_fault:
-+			*val =3D (fst.speed =3D=3D FAN_SPEED_UNAVAILABLE);
-+			return 0;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return -EOPNOTSUPP;
-+}
-+
-+static const struct hwmon_ops acpi_fan_ops =3D {
-+	.is_visible =3D acpi_fan_is_visible,
-+	.read =3D acpi_fan_read,
-+};
-+
-+static const struct hwmon_channel_info * const acpi_fan_info[] =3D {
-+	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_FAULT),
-+	NULL
-+};
-+
-+static const struct hwmon_chip_info acpi_fan_chip_info =3D {
-+	.ops =3D &acpi_fan_ops,
-+	.info =3D acpi_fan_info,
-+};
-+
-+int devm_acpi_fan_create_hwmon(struct acpi_device *device)
-+{
-+	struct device *hdev;
-+
-+	hdev =3D devm_hwmon_device_register_with_info(&device->dev, "acpi_fan", =
-device,
-+						    &acpi_fan_chip_info, NULL);
-+
-+	return PTR_ERR_OR_ZERO(hdev);
-+}
-=2D-
-2.39.2
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
