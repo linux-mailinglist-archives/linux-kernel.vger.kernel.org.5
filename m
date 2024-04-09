@@ -1,186 +1,816 @@
-Return-Path: <linux-kernel+bounces-136035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12B2D89CF34
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:11:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C87189CF38
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:11:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7429B1F23615
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:11:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B462C2823AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B9538B;
-	Tue,  9 Apr 2024 00:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114FA10FA;
+	Tue,  9 Apr 2024 00:11:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="lL4DzGQ9"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uurG1br8"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E609418E;
-	Tue,  9 Apr 2024 00:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712621453; cv=fail; b=fA8JKh86FrlrMtDC5LL3qX/0xR0btng6ABVc7LN02EWPoYvbapWiS2uY0uMOoHpYYMnOwOyU05acKSGQ1004lvKkV37RYxsTegYcOrBSFNvphsxdCjOGCoFnwPj0+Nvp/MJ3zSkqUEaHVeLcKzR+sVoZ+vSQUhm7Av05Y4U6NnQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712621453; c=relaxed/simple;
-	bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UTfq5YyKjWospd+P2oFQeYkthbVraRrK/OcwL9lXCkRqURwt/hTKpKo5P5HFWxt8JO01+kmnNBbYEE12x7J1NEelqkQjA6BznK8SW9TwPvntchdmHS8CyP9dE3Ny6HNddKmoOwNSA9nmtvFYb1F5oLETW3JCs1tQuxnSx/EFW98=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=lL4DzGQ9; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 438GoLUx023474;
-	Mon, 8 Apr 2024 17:10:34 -0700
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xb5wgebj0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 17:10:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dArTwPlqV2a8I+WIuwGK+1fQ261cbDCb0mlmv7vkOxkPDON1jyWHCagC3BbUOZjQzY4q8eArlJ8TX7ScN/EEX1ok3kR123W4HbvNQ2ERd7DT/rg0308tysNziyV8dJkY0oTDLmnHdxwrfsh8zvegCgXSlBJOQ5X5tvs4HwkiR7FSO2bBMvIGJeue6DUA5qAdoIDN4hQ4V+oKatKIT5xN4N2dCdkyqZbsCQkMAdRZDK4PXtAFWElRMSOsuNEZEtp5gnJF0y5FSwPZ5vu+JZFF3BWdzE1Ogu6zxGm7aWa48zOIMy1sLlzPh1GHb1XXG2au+luhpIuhNLngR8F8EBsWHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
- b=GxD9Xkw9eHo1JVegmerUxncuTrWW/J+hD9nylHAay7iiE25qzrO+7j24RcZvQ+vUCAqCTdFWlBznEHbxLkixptE0Dm+waOYj+KWrxzlcYMl/Wp89BC0RcWSW8oiEb7K/LLnKEA58NwbvgNScRAzxz+3OSLGNzEfsHRoawQ1ZFHSBhbMJ2tuVYKMwdCxCRwwY0MfdRzRViC8O0Lewx8fwuvSG5AQBLBbzikgyN3XL+v/EV6iMENk58BZyfxtG2CaIA5OIOtuyU9xlgTf1dTG0fuj5A0DcCIvUYv6N4fcT8ydY0qicadEeP09B6VKbQLQn1easolh+D1V92TK7SRxxIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+TNpdr6daXnTDM86vsWepPwKPSnG/ww7LgJMagz4Vl0=;
- b=lL4DzGQ9rjNsWqrTNLq158+zvWrEU0gYfLnyfIJJGPiGHjmKtFLGNn8R/2exzJg2HVEx5S0iQO/Cbt8CT/swd02AZNdqJTDiOyRrJ/KWPdZ2txxnXYSXBCKBUfvmsD6eVNkPWDESzBZGb/hKFihXZTKvxkOA9v24CLI0sjgSK2g=
-Received: from PH0PR18MB5002.namprd18.prod.outlook.com (2603:10b6:510:11d::12)
- by PH0PR18MB3813.namprd18.prod.outlook.com (2603:10b6:510:23::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 00:10:32 +0000
-Received: from PH0PR18MB5002.namprd18.prod.outlook.com
- ([fe80::8bf7:91cd:866c:68b0]) by PH0PR18MB5002.namprd18.prod.outlook.com
- ([fe80::8bf7:91cd:866c:68b0%7]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
- 00:10:31 +0000
-From: Linu Cherian <lcherian@marvell.com>
-To: Linu Cherian <lcherian@marvell.com>,
-        "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>,
-        "mike.leach@linaro.org" <mike.leach@linaro.org>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        "leo.yan@linaro.org"
-	<leo.yan@linaro.org>
-CC: "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org"
-	<coresight@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        George Cherian <gcherian@marvell.com>
-Subject: RE: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
-Thread-Topic: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
-Thread-Index: AQHacECr+wmc6MJsCEeCTVfctSb+8bFfQ22g
-Date: Tue, 9 Apr 2024 00:10:31 +0000
-Message-ID: 
- <PH0PR18MB5002D016166F97E665BB0F39CE072@PH0PR18MB5002.namprd18.prod.outlook.com>
-References: <20240307033625.325058-1-lcherian@marvell.com>
-In-Reply-To: <20240307033625.325058-1-lcherian@marvell.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB5002:EE_|PH0PR18MB3813:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- ZHEdH9WGV6uqVgyZ00aPR+nlFyCql9fAcpfNX0ywflqT3z4cy5Oppr7RRys0G2WB7O/V37RfnHGkviANQaIArFnXcsROv0QM01W0lOFuNIzC7xlzL+uaUVZ35nzTocz2ANZWLpX2CGxgZdPi5B4uOlygwI/cgKa6Z/JQVKH8u3PRgi9DoKIqzg+X11hwb6fBm4l5Gdc7jWatgtuLCwAp5HHIYZvHhs2ILdM7d8DWoEulmSJYv4fNsE8CxjpIXjlQQyWJEN1OzD0d/fgELkUA16kLqu6/HTo9R955Bx5PW4VyBdt/r2nR+Ua6weB4csmt5DloR538h+XRPTuDfMKPrgcHrWloZhAn2xPxkI6bxa+0XCiapfpey6emA8r4gYrpTWRFv3rj39nhw1Jh440fEXh0Wd97/aVnpiauUwO5s/KU8d4IazQXaXa3w1kmxYUWTMGNCvG0lL/mKpvHyfifcCqmzSvl3hH8JhQeEXyaZhE0Ewk0q9C1x7W6sVGaeSHTxxwaHkBXxW9Mo8vF/WkO3HcrXtkZS/3Fm+49J07/opW8XtdSiVJyTRsZ5tqWVfr4wxDJlzv/FfOYhItJXPs2elwo+4mfmizihQnMjrNY0YVaxAvaazkxnjmh6dVYJlEcPPWyAy3xvyLEjpa/Mr7nm1ygfetqXV7eeuvTM+EJ5Lc=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB5002.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?lVjyiSXxfqeNQsAOz9QL0GD5kOXUq9dz3C7OIv1TDDaeUFjsijz6Z4cS6cB1?=
- =?us-ascii?Q?gaPfyD2a9J8oJ/Q4hqytRBPydOkvYuEoCtjDX0kYAckoZJU7ooWkaVPUNTZj?=
- =?us-ascii?Q?1X0wL/zYVopKBlA3Z4dhLr36mJ4dja2yZR8qbZl8twKSyLH484VhxplKnYnD?=
- =?us-ascii?Q?Wl59NZUc5gH3b9kCuuMFlVLmEzjCbDClJN0Wc+c9hX4CC8Wgdio/O2Vyk90T?=
- =?us-ascii?Q?K3N/1HVS9HIP7M8ynCQVyg3r5OEjDX+adQt5AFoXpAueUEGUr21HmVoJ0fFX?=
- =?us-ascii?Q?jKWQWqXT6tVIbd5pylR0+bT/1LcL72dg/X3esc/sRXlB0cL6mkp6/b7NFlKk?=
- =?us-ascii?Q?85GfAw7YCQp+ezVI3fEkFXP9rbQX1XBKsJCw3gKViW6b15+r0q9FuXD7aHJQ?=
- =?us-ascii?Q?chbhCI42AjZm9ES+TpUx1vdHywXIO/HoVcOvAbFgXQOHNPqkE8KVp+Cqhp7A?=
- =?us-ascii?Q?Hqs6994zCrfU823CVsONGlrZBo48o8tIm8g7j9xiIhKu9tSp+cNEJbAi66lP?=
- =?us-ascii?Q?6LZTRFu1MlYgqfN4PoztwHBXJzN1AZj0mVvRzB1Whn64eGjsfnw28X5XVUOD?=
- =?us-ascii?Q?r4ksz2AP/zZzPHt1NI3IaFkD9h2bKcWrZzzm4WxMmcG0X7g0gU+lsifqbYgQ?=
- =?us-ascii?Q?rQ5Tx3Y7qIFnvHN4XbxjP+dHLjZIyEKrImNwXd1VRjYv2BgF/VGpbnJC9+9U?=
- =?us-ascii?Q?ILIg4Q5/rKPRHdlo3XCkhDVmWV1DS759UDhoXPEOgNGTewGRMObw3+WRIX7L?=
- =?us-ascii?Q?WxyCVHAaqZE17DZ0EhCddvv8tEYF2HET5q77T0pHlGZd/owCU1FA9FNcHuYL?=
- =?us-ascii?Q?GIqOHctJ9BVUdF6Li1ywFVI8pcpjNqgYYMrvTGnTBgKcDs7VagM0eAaVHpHd?=
- =?us-ascii?Q?TFiBwkmUqSRZE26hd5FxNVPEZwgvWvgPqhQr0VVygNfXljp7O8zRFl5qi8td?=
- =?us-ascii?Q?zHDAGGpiQS4HV5Cc2G6TEvZkXNSQx4flFw6JFgdwWSp8YkuB7JfHIAaJiAj+?=
- =?us-ascii?Q?O6P44onIXcxi7VMRe3XYnAkLCDz2lgfR5WMgz4ABZXQxIUiGgg+ggmUSQoJG?=
- =?us-ascii?Q?G6OIAaAlqxoilfSNiDSWDrcMrvOZ9egkaHbFaHPMfHvuI1tLvQkj/f5ZSyCa?=
- =?us-ascii?Q?AJ2GoBBH1GJ1MMgOI8z0dN8SMZd8A6pUkTVNVfJ7WjDQuz1nQ6PXdC/pNGUW?=
- =?us-ascii?Q?vwz8Qgux6dVLaT/i+65nCWxigYsfNPYL7bZN+bOt60HEGO/M4nZRK+GP2oVA?=
- =?us-ascii?Q?IP4JzlCPlLn9A/gltlDWvWkDk76NAsi9THhRgAgUrzmr0lgcljHn0SJgWtBm?=
- =?us-ascii?Q?xakCB1crIYgcCp3rp0bw4PqkzCocYxmrC21HLPxI/fukfHlVlXZlCx1ac4Wo?=
- =?us-ascii?Q?Fsfjg8NCN7ZCHNQHmFpdqISp/r55KKwNlBwOX6ZvX9gqbKMf1LI/xO64fnmk?=
- =?us-ascii?Q?yEo4eX94K4thVhQwhCrK/gAswe6eVYU3/Ww9/f7kgsF76ecStDrZpJdXrW87?=
- =?us-ascii?Q?l2wYaMmg/B1Br56edII+QHmqYNYhgnCX7+UYZ0xnqjSoKgIHA2LxLdRRnCj9?=
- =?us-ascii?Q?dgs2dYvQLVC0XYCF8NS4pCR+gWoz22A9+Xbf+OV6?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5450738D
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 00:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712621467; cv=none; b=AIGWBT2aL/6OS4oQE1L1sY1evEihPF7XE6xT7wc37pQ5gtqQUsDzm0FG5yzU4/YC9mvZia9AprGnI+N35UsZ4LYlzXoCnDyiamWsWoMQiTJRUjJAquUvhlwlcA7G+R9AuYtTHwSC6q4zKyQgYkQdOcMzhy7Z1hb/p9SE6+UpNJ8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712621467; c=relaxed/simple;
+	bh=PGxdP6sosyDpyyMVfCr9MQtsPxsE4YeVug8Utl0ywZE=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=gnDLhI6PbJlPWGn06XUGUjxi4t67o1pbtTn282q5+Q+1zbLENqvMFfteAvUFSKCCo3uKX4TtGH0nbkTzrs8mKn94F0bIW/xDnepoNkbmYocGVN1T+tH/m0rDXCNr8xUJX+Sm5VDjrqt0AlDkUxxPl2Busb2qh9ZA8Jfc31mN014=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uurG1br8; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712621463;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I11W5v1kCk/Un+Quo7Bx83cfQrZjzwg+cd/PDh7B/MM=;
+	b=uurG1br8TkTb/VxcSuHFvJi52nn07588urHzoB7jZLiomN5QMKvm5eDdwnFTfPrAZd3O8b
+	96K+fh98P7jEqfSDZFTlZEYKquvXrOfkNRAbxmBlrUm5PzNMoW5PUrAXQ9lN7lH7hl6m6V
+	Cbf2L1PUAmmvEfdU1E2jF7KqGPgyPzE=
+From: Itaru Kitayama <itaru.kitayama@linux.dev>
+Message-Id: <FCDCBCEE-7D97-4769-AB95-7294A9CE18E0@linux.dev>
+Content-Type: multipart/mixed;
+	boundary="Apple-Mail=_6301FD46-615B-4C7C-A21F-4DBA8139077F"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB5002.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22a2a7a0-708a-456d-2588-08dc5829784c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 00:10:31.4335
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b3J6pXkwIPnacQQMZgrCqL8kQRpVooG8XBIQGluDIqtw8JG4HY9z/H3GoSVjnFI/y+A0V5F1r84Ay5xzXAZ9HQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB3813
-X-Proofpoint-ORIG-GUID: 4joVFZq6L9Ge3-7-IpKQr3uQRpTlBszy
-X-Proofpoint-GUID: 4joVFZq6L9Ge3-7-IpKQr3uQRpTlBszy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-08_18,2024-04-05_02,2023-05-22_02
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH v2 0/4] Speed up boot with faster linear map creation
+Date: Tue, 9 Apr 2024 09:10:42 +0900
+In-Reply-To: <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>,
+ David Hildenbrand <david@redhat.com>,
+ Donald Dutile <ddutile@redhat.com>,
+ Eric Chanudet <echanude@redhat.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-kernel@vger.kernel.org
+To: Ryan Roberts <ryan.roberts@arm.com>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <Zg+qwooaWFNL7KIg@vm3> <fd4aed3a-42be-44e0-b3bb-12f77c5911a1@arm.com>
+ <ZhEkif45F0aVvKPx@vm3> <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Suzuki/James,
 
-> -----Original Message-----
-> From: Linu Cherian <lcherian@marvell.com>
-> Sent: Thursday, March 7, 2024 9:06 AM
-> To: suzuki.poulose@arm.com; mike.leach@linaro.org; james.clark@arm.com;
-> leo.yan@linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; lin=
-ux-
-> kernel@vger.kernel.org; robh+dt@kernel.org;
-> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
-> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
-> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Linu
-> Cherian <lcherian@marvell.com>
-> Subject: [PATCH v7 0/7] Coresight for Kernel panic and watchdog reset
+--Apple-Mail=_6301FD46-615B-4C7C-A21F-4DBA8139077F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Hi Ryan,
+
+> On Apr 8, 2024, at 16:30, Ryan Roberts <ryan.roberts@arm.com> wrote:
 >=20
-> This patch series is rebased on v6.8-rc4 from coresisght tree,[1], since =
-latest
-> changes are dependent on coresight_get/set_mode APIs.
+> On 06/04/2024 11:31, Itaru Kitayama wrote:
+>> Hi Ryan,
+>>=20
+>> On Sat, Apr 06, 2024 at 09:32:34AM +0100, Ryan Roberts wrote:
+>>> Hi Itaru,
+>>>=20
+>>> On 05/04/2024 08:39, Itaru Kitayama wrote:
+>>>> On Thu, Apr 04, 2024 at 03:33:04PM +0100, Ryan Roberts wrote:
+>>>>> Hi All,
+>>>>>=20
+>>>>> It turns out that creating the linear map can take a significant =
+proportion of
+>>>>> the total boot time, especially when rodata=3Dfull. And most of =
+the time is spent
+>>>>> waiting on superfluous tlb invalidation and memory barriers. This =
+series reworks
+>>>>> the kernel pgtable generation code to significantly reduce the =
+number of those
+>>>>> TLBIs, ISBs and DSBs. See each patch for details.
+>>>>>=20
+>>>>> The below shows the execution time of map_mem() across a couple of =
+different
+>>>>> systems with different RAM configurations. We measure after =
+applying each patch
+>>>>> and show the improvement relative to base (v6.9-rc2):
+>>>>>=20
+>>>>>               | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere =
+Altra
+>>>>>               | VM, 16G     | VM, 64G     | VM, 256G    | Metal, =
+512G
+>>>>> =
+---------------|-------------|-------------|-------------|-------------
+>>>>>               |   ms    (%) |   ms    (%) |   ms    (%) |    ms    =
+(%)
+>>>>> =
+---------------|-------------|-------------|-------------|-------------
+>>>>> base           |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   =
+(0%)
+>>>>> no-cont-remap  |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 =
+(-78%)
+>>>>> batch-barriers |   13 (-92%) |  162 (-93%) |  655 (-93%) |  1656 =
+(-91%)
+>>>>> no-alloc-remap |   11 (-93%) |  109 (-95%) |  449 (-95%) |  1257 =
+(-93%)
+>>>>> lazy-unmap     |    6 (-96%) |   61 (-97%) |  257 (-97%) |   838 =
+(-95%)
+>>>>>=20
+>>>>> This series applies on top of v6.9-rc2. All mm selftests pass. =
+I've compile and
+>>>>> boot tested various PAGE_SIZE and VA size configs.
+>>>>>=20
+>>>>> ---
+>>>>>=20
+>>>>> Changes since v1 [1]
+>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>>=20
+>>>>>  - Added Tested-by tags (thanks to Eric and Itaru)
+>>>>>  - Renamed ___set_pte() -> __set_pte_nosync() (per Ard)
+>>>>>  - Reordered patches (biggest impact & least controversial first)
+>>>>>  - Reordered alloc/map/unmap functions in mmu.c to aid reader
+>>>>>  - pte_clear() -> __pte_clear() in clear_fixmap_nosync()
+>>>>>  - Reverted generic p4d_index() which caused x86 build error. =
+Replaced with
+>>>>>    unconditional p4d_index() define under arm64.
+>>>>>=20
+>>>>>=20
+>>>>> [1] =
+https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.rob=
+erts@arm.com/
+>>>>>=20
+>>>>> Thanks,
+>>>>> Ryan
+>>>>>=20
+>>>>>=20
+>>>>> Ryan Roberts (4):
+>>>>>  arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
+>>>>>  arm64: mm: Batch dsb and isb when populating pgtables
+>>>>>  arm64: mm: Don't remap pgtables for allocate vs populate
+>>>>>  arm64: mm: Lazily clear pte table mappings from fixmap
+>>>>>=20
+>>>>> arch/arm64/include/asm/fixmap.h  |   5 +-
+>>>>> arch/arm64/include/asm/mmu.h     |   8 +
+>>>>> arch/arm64/include/asm/pgtable.h |  13 +-
+>>>>> arch/arm64/kernel/cpufeature.c   |  10 +-
+>>>>> arch/arm64/mm/fixmap.c           |  11 +
+>>>>> arch/arm64/mm/mmu.c              | 377 =
++++++++++++++++++++++++--------
+>>>>> 6 files changed, 319 insertions(+), 105 deletions(-)
+>>>>>=20
+>>>>> --
+>>>>> 2.25.1
+>>>>>=20
+>>>>=20
+>>>> I've build and boot tested the v2 on FVP, base is taken from your
+>>>> linux-rr repo. Running run_vmtests.sh on v2 left some gup longterm =
+not oks, would you take a look at it? The mm ksefltests used is from =
+your linux-rr repo too.
+>>>=20
+>>> Thanks for taking a look at this.
+>>>=20
+>>> I can't reproduce your issue unfortunately; steps as follows on =
+Apple M2 VM:
+>>>=20
+>>> Config: arm64 defconfig + the following:
+>>>=20
+>>> # Squashfs for snaps, xfs for large file folios.
+>>> ./scripts/config --enable CONFIG_SQUASHFS_LZ4
+>>> ./scripts/config --enable CONFIG_SQUASHFS_LZO
+>>> ./scripts/config --enable CONFIG_SQUASHFS_XZ
+>>> ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
+>>> ./scripts/config --enable CONFIG_XFS_FS
+>>>=20
+>>> # For general mm debug.
+>>> ./scripts/config --enable CONFIG_DEBUG_VM
+>>> ./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
+>>> ./scripts/config --enable CONFIG_DEBUG_VM_RB
+>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
+>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
+>>> ./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
+>>>=20
+>>> # For mm selftests.
+>>> ./scripts/config --enable CONFIG_USERFAULTFD
+>>> ./scripts/config --enable CONFIG_TEST_VMALLOC
+>>> ./scripts/config --enable CONFIG_GUP_TEST
+>>>=20
+>>> Running on VM with 12G memory, split across 2 (emulated) NUMA nodes =
+(needed by
+>>> some mm selftests), with kernel command line to reserve hugetlbs and =
+other
+>>> features required by some mm selftests:
+>>>=20
+>>> "
+>>> transparent_hugepage=3Dmadvise earlycon root=3D/dev/vda2 =
+secretmem.enable
+>>> hugepagesz=3D1G hugepages=3D0:2,1:2 hugepagesz=3D32M =
+hugepages=3D0:2,1:2
+>>> default_hugepagesz=3D2M hugepages=3D0:64,1:64 hugepagesz=3D64K =
+hugepages=3D0:2,1:2
+>>> "
+>>>=20
+>>> Ubuntu userspace running off XFS rootfs. Build and run mm selftests =
+from same
+>>> git tree.
+>>>=20
+>>>=20
+>>> Although I don't think any of this config should make a difference =
+to gup_longterm.
+>>>=20
+>>> Looks like your errors are all "ftruncate() failed". I've seen this =
+problem on
+>>> our CI system. There it is due to running the tests from NFS file =
+system. What
+>>> filesystem are you using? Perhaps you are sharing into the FVP using =
+9p? That
+>>> might also be problematic.
+>>=20
+>> That was it. This time I booted up the kernel including your series =
+on
+>> QEMU on my M1 and executed the gup_longterm program without the =
+ftruncate
+>> failures. When testing your kernel on FVP, I was executing the script =
+from the FVP's host filesystem using 9p.
+>=20
+> I'm not sure exactly what the root cause is. Perhaps there isn't =
+enough space on
+> the disk? It might be worth enhancing the error log to provide the =
+errno in
+> tools/testing/selftests/mm/gup_longterm.c.
 >=20
 
+Attached is the strace=E2=80=99d gup_longterm executiong log on your =
+pgtable-boot-speedup-v2 kernel.
 
-Do you have any feedback on this version ?
+Thanks,
+Itaru.
 
-Thanks.
+--Apple-Mail=_6301FD46-615B-4C7C-A21F-4DBA8139077F
+Content-Disposition: attachment;
+	filename=straced-gup_longterm.log
+Content-Type: application/octet-stream;
+	x-unix-mode=0644;
+	name="straced-gup_longterm.log"
+Content-Transfer-Encoding: 7bit
 
+execve("./gup_longterm", ["./gup_longterm"], 0xffffc8e27490 /* 12 vars */) = 0
+brk(NULL)                               = 0xaaaafb5dc000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8727d000
+faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib64/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\260\265\2\0\0\0\0\0"..., 832) = 832
+newfstatat(3, "", {st_mode=S_IFREG|0755, st_size=1605640, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 1650608, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xffff870ea000
+mmap(0xffff8726c000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x182000) = 0xffff8726c000
+mmap(0xffff87271000, 49072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffff87271000
+close(3)                                = 0
+set_tid_address(0xffff8727def0)         = 194
+set_robust_list(0xffff8727df00, 24)     = 0
+rseq(0xffff8727e540, 0x20, 0, 0xd428bc00) = 0
+mprotect(0xffff8726c000, 12288, PROT_READ) = 0
+mprotect(0xaaaae548f000, 4096, PROT_READ) = 0
+mprotect(0xffff872a8000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+openat(AT_FDCWD, "/sys/kernel/mm/hugepages/", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+newfstatat(3, "", {st_mode=S_IFDIR|0755, st_size=0, ...}, AT_EMPTY_PATH) = 0
+getrandom("\xc0\xaf\xa1\xd8\x09\x56\x5c\x4d", 8, GRND_NONBLOCK) = 8
+brk(NULL)                               = 0xaaaafb5dc000
+brk(0xaaaafb5fd000)                     = 0xaaaafb5fd000
+getdents64(3, 0xaaaafb5dc2d0 /* 6 entries */, 32768) = 208
+newfstatat(1, "", {st_mode=S_IFIFO|0600, st_size=0, ...}, AT_EMPTY_PATH) = 0
+getdents64(3, 0xaaaafb5dc2d0 /* 0 entries */, 32768) = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/sys/kernel/debug/gup_test", O_RDWR) = -1 ENOENT (No such file or directory)
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_twSAYO", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_twSAYO", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_vDLIRw", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_vDLIRw", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_TBRsO0", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_TBRsO0", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_jwd7gF", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_jwd7gF", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_XrL4Qd", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_XrL4Qd", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+close(3)                                = 0
+write(1, "# [INFO] detected hugetlb page s"..., 4096# [INFO] detected hugetlb page size: 2048 KiB
+# [INFO] detected hugetlb page size: 32768 KiB
+# [INFO] detected hugetlb page size: 64 KiB
+# [INFO] detected hugetlb page size: 1048576 KiB
+TAP version 13
+1..56
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd
+ok 1 # SKIP gup_test not available
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+ok 2 # SKIP gup_test not available
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+not ok 3 ftruncate() failed
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 4 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
+ok 5 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (64 kB)
+ok 6 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 7 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+ok 8 # SKIP gup_test not available
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+ok 9 # SKIP gup_test not available
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+not ok 10 ftruncate() failed
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 11 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
+ok 12 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (64 kB)
+ok 13 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 14 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd
+ok 15 # SKIP gup_test not available
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+ok 16 # SKIP gup_test not available
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+not ok 17 ftruncate() failed
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 18 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
+ok 19 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (64 kB)
+ok 20 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 21 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+ok 22 # SKIP gup_test not available
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+ok 23 # SKIP gup_test not available
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+not ok 24 ftruncate() failed
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 25 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
+ok 26 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (64 kB)
+ok 27 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 28 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+ok 29 # SKIP gup_test not available
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+ok 30 # SKIP gup_test not available
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+not ok 31 ftruncate() failed
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 32 # SKIP need more free huge pages
+# [RUN] R/W longterm) = 4096
+write(1, " GUP pin in MAP_PRIVATE file map"..., 71 GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (32768 kB)
+) = 71
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+write(1, "ok 33 # SKIP need more free huge"..., 39ok 33 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP pin in "..., 88# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (64 kB)
+) = 88
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+write(1, "ok 34 # SKIP need more free huge"..., 39ok 34 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP pin in "..., 93# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+) = 93
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+write(1, "ok 35 # SKIP need more free huge"..., 39ok 35 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 77# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+) = 77
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 36 # SKIP gup_test not availa"..., 36ok 36 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 79# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+) = 79
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 37 # SKIP gup_test not availa"..., 36ok 37 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 85# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+) = 85
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_vdu0ET", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_vdu0ET", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+write(1, "not ok 38 ftruncate() failed\n", 29not ok 38 ftruncate() failed
+) = 29
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 95# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+) = 95
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+write(1, "ok 39 # SKIP need more free huge"..., 39ok 39 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 96# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (32768 kB)
+) = 96
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+write(1, "ok 40 # SKIP need more free huge"..., 39ok 40 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 93# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (64 kB)
+) = 93
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+write(1, "ok 41 # SKIP need more free huge"..., 39ok 41 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/W longterm GUP-fast pi"..., 98# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+) = 98
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+write(1, "ok 42 # SKIP need more free huge"..., 39ok 42 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 72# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+) = 72
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 43 # SKIP gup_test not availa"..., 36ok 43 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 74# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+) = 74
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 44 # SKIP gup_test not availa"..., 36ok 44 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 80# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+) = 80
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_3KYzfZ", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_3KYzfZ", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+write(1, "not ok 45 ftruncate() failed\n", 29not ok 45 ftruncate() failed
+) = 29
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 90# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+) = 90
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+write(1, "ok 46 # SKIP need more free huge"..., 39ok 46 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 91# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (32768 kB)
+) = 91
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+write(1, "ok 47 # SKIP need more free huge"..., 39ok 47 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 88# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (64 kB)
+) = 88
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+write(1, "ok 48 # SKIP need more free huge"..., 39ok 48 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP pin in "..., 93# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+) = 93
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+write(1, "ok 49 # SKIP need more free huge"..., 39ok 49 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 77# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+) = 77
+memfd_create("test", 0)                 = 3
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x82baf8fa, 0x71479f87]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 50 # SKIP gup_test not availa"..., 36ok 50 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 79# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+) = 79
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416024, f_bfree=416007, f_bavail=416007, f_files=416024, f_ffree=416018, f_fsid={val=[0x1357e84b, 0x1c37069b]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, 3, 0) = 0xffff870e9000
+write(1, "ok 51 # SKIP gup_test not availa"..., 36ok 51 # SKIP gup_test not available
+) = 36
+munmap(0xffff870e9000, 4096)            = 0
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 85# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+) = 85
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", 0) = 0
+fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+write(1, "not ok 52 ftruncate() failed\n", 29not ok 52 ftruncate() failed
+) = 29
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 95# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+) = 95
+memfd_create("test", MFD_HUGETLB|21<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=2097152, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x10, 0]}, f_namelen=255, f_frsize=2097152, f_flags=ST_VALID}) = 0
+ftruncate(3, 2097152)                   = 0
+fallocate(3, 0, 0, 2097152)             = -1 ENOSPC (No space left on device)
+write(1, "ok 53 # SKIP need more free huge"..., 39ok 53 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 96# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (32768 kB)
+) = 96
+memfd_create("test", MFD_HUGETLB|25<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=33554432, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x12, 0]}, f_namelen=255, f_frsize=33554432, f_flags=ST_VALID}) = 0
+ftruncate(3, 33554432)                  = 0
+fallocate(3, 0, 0, 33554432)            = -1 ENOSPC (No space left on device)
+write(1, "ok 54 # SKIP need more free huge"..., 39ok 54 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 93# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (64 kB)
+) = 93
+memfd_create("test", MFD_HUGETLB|16<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=65536, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x13, 0]}, f_namelen=255, f_frsize=65536, f_flags=ST_VALID}) = 0
+ftruncate(3, 65536)                     = 0
+fallocate(3, 0, 0, 65536)               = -1 ENOSPC (No space left on device)
+write(1, "ok 55 # SKIP need more free huge"..., 39ok 55 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "# [RUN] R/O longterm GUP-fast pi"..., 98# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+) = 98
+memfd_create("test", MFD_HUGETLB|30<<MFD_HUGE_SHIFT) = 3
+fstatfs(3, {f_type=HUGETLBFS_MAGIC, f_bsize=1073741824, f_blocks=0, f_bfree=0, f_bavail=0, f_files=0, f_ffree=0, f_fsid={val=[0x11, 0]}, f_namelen=255, f_frsize=1073741824, f_flags=ST_VALID}) = 0
+ftruncate(3, 1073741824)                = 0
+fallocate(3, 0, 0, 1073741824)          = -1 ENOSPC (No space left on device)
+write(1, "ok 56 # SKIP need more free huge"..., 39ok 56 # SKIP need more free huge pages
+) = 39
+close(3)                                = 0
+write(1, "Bail out! 8 out of 56 tests fail"..., 35Bail out! 8 out of 56 tests failed
+) = 35
+write(1, "# Totals: pass:0 fail:8 xfail:0 "..., 56# Totals: pass:0 fail:8 xfail:0 xpass:0 skip:48 error:0
+) = 56
+exit_group(1)                           = ?
++++ exited with 1 +++
+
+--Apple-Mail=_6301FD46-615B-4C7C-A21F-4DBA8139077F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+> Thanks,
+> Ryan
+>=20
+>>=20
+>> Thanks,
+>> Itaru.
+>>=20
+>>>=20
+>>> Does this problem reproduce with v6.9-rc2, without my patches? I =
+except it
+>>> probably does?
+>>>=20
+>>> Thanks,
+>>> Ryan
+>>>=20
+>>>>=20
+>>>> Thanks,
+>>>> Itaru.
+
+
+
+--Apple-Mail=_6301FD46-615B-4C7C-A21F-4DBA8139077F--
 
