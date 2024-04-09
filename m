@@ -1,59 +1,62 @@
-Return-Path: <linux-kernel+bounces-136891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D350789D972
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:52:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F68989D974
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:52:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DD9F28B14C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:52:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 903E71C23154
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B426D12DDB8;
-	Tue,  9 Apr 2024 12:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="31px0dfs"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053EA12DDA2;
-	Tue,  9 Apr 2024 12:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFBF12DDA2;
+	Tue,  9 Apr 2024 12:52:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75BB12DDA7;
+	Tue,  9 Apr 2024 12:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667142; cv=none; b=j4Ex/GTpCChB+fo69gfsyVPtTP60OOaDdAonQqzyoh7GvfPdDJvH1Yh2fFfMwdczsTAQJAFmn1+usiNXO80WPfAwNrXd3aGqqHvCbidEj7FCC43ijDskh6UJNUYVhWIwRrAprJaQMPduiPPydKitLp9tUhIseesB6YJPskUv42Y=
+	t=1712667154; cv=none; b=XQhlpjiMJIgBWWDWcfvNOmtZYtMTALLDr52FRHClYGPhYXE4L48HNxi2rpbB8Y1XZMyEkKFgdD8WahdRvYuGp/D7gocyCxXRHv7peKoCyLp5eYrGuHbik3G5MfWarKfCbZKBh0FtlnnZcUTRmgwmXx4adVNW3zykduroQImvFFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667142; c=relaxed/simple;
-	bh=41b/xhD3dPWFH2Cgl+OJc2iALYdSLEci2U9fZ4hnz+k=;
+	s=arc-20240116; t=1712667154; c=relaxed/simple;
+	bh=pAdz7cQhfGznm7umSll9NW7JRcSZF77NwVghKKYKusw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JMBd7JliLNXZ3w0OXcrHogihyVtEdzgwqNAuAVEKnhihGEhpmIOBIxufD+fHkYW//8G+l1TUuUzbDPhjuP2ZTr0H+WYHvHGeZZ8AsJDFdDEkCQHdObOyl23a80L1w+mcvOMFtf5GET+04+upoy3ugJgc3wr2r5kW6rzQKwpst2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=31px0dfs; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=SOiDJKippIgWMoxQU2kFtESoBNJpC+0fpTgJoPzBWVA=; b=31px0dfsxvJWYgtK2EYN81+mgX
-	FTvXnHwQnouuYlmxONhKXJKIQIBzamX6wdArIX+b3JEX8ijjRho9B5rP7UVqN/q8ULMDHzJjfWEJm
-	DCvhyl78W0cnUJgq7EyfQcMdPO6JdcC70LY4vVKwJ8gaEnwPY0PrA94+2W/Ln2ZqjEvI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1ruAxM-00CZcj-IP; Tue, 09 Apr 2024 14:52:08 +0200
-Date: Tue, 9 Apr 2024 14:52:08 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Lei Chen <lei.chen@smartx.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] net:tun: limit printing rate when illegal packet
- received by tun dev
-Message-ID: <0e5a96b6-0862-4c00-b07f-7485af232475@lunn.ch>
-References: <20240409062407.1952728-1-lei.chen@smartx.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oALtNTyDJwQQ1QNv/NQ/vGEuv5p0TKJJtfObkC+ld4MxPN/BRbBZQNJI9xsaC7A0nH91S7OQZz08TdejVJS8/ks7s/NxrDCFux0E6Px1rNdp1Ek7nkyXD8ED3q6O0xg6ncRHSN0CcQ0Z3OK9swzc+1RAVefDRvWaRLliP0wmyQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 578D1139F;
+	Tue,  9 Apr 2024 05:53:02 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E37D3F766;
+	Tue,  9 Apr 2024 05:52:30 -0700 (PDT)
+Date: Tue, 9 Apr 2024 13:52:27 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/6] firmware: arm_scmi: add initial support for i.MX
+ BBM protocol
+Message-ID: <ZhU6C2Ovh7xxeREP@bogus>
+References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
+ <20240405-imx95-bbm-misc-v2-v2-3-9fc9186856c2@nxp.com>
+ <ZhQxu8LVNKf5QDLm@pluto>
+ <ZhUDZGJilhczKlDD@bogus>
+ <DU0PR04MB94175384AD9113AC6F60546588072@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <ZhUdQ6M0GkL0do_l@bogus>
+ <AS1PR04MB9431F99D49D6A777B09814FB88072@AS1PR04MB9431.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,36 +65,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240409062407.1952728-1-lei.chen@smartx.com>
+In-Reply-To: <AS1PR04MB9431F99D49D6A777B09814FB88072@AS1PR04MB9431.eurprd04.prod.outlook.com>
 
-On Tue, Apr 09, 2024 at 02:24:05AM -0400, Lei Chen wrote:
-> vhost_worker will call tun call backs to receive packets. If too many
-> illegal packets arrives, tun_do_read will keep dumping packet contents.
-> When console is enabled, it will costs much more cpu time to dump
-> packet and soft lockup will be detected.
-> 
-> Rate limit mechanism can be used to limit the dumping rate.
-> @@ -2125,14 +2126,16 @@ static ssize_t tun_put_user(struct tun_struct *tun,
->  					    tun_is_little_endian(tun), true,
->  					    vlan_hlen)) {
->  			struct skb_shared_info *sinfo = skb_shinfo(skb);
-> -			pr_err("unexpected GSO type: "
-> -			       "0x%x, gso_size %d, hdr_len %d\n",
-> -			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
-> -			       tun16_to_cpu(tun, gso.hdr_len));
-> -			print_hex_dump(KERN_ERR, "tun: ",
-> -				       DUMP_PREFIX_NONE,
-> -				       16, 1, skb->head,
-> -				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
-> +
-> +			if (__ratelimit(&ratelimit)) {
+On Tue, Apr 09, 2024 at 11:19:31AM +0000, Peng Fan wrote:
+>
+> ok, will add more comment in the patch for the commands.
+>
 
-Maybe just use net_ratelimit() rather than add a new ratelimit
-variable?
+No I meant add document/description similar to SCMI spec for each of these
+commands. Not just one line comment. For std protocols, we can refer spec,
+for these vendor protocols, just one like comment will not suffice. Describe
+in more details and hence the request for separate TXT file for that.
+Hope that is clear now, I have mentioned it several times already.
 
-A separate issue, i wounder if rather than pr_err(),
-netdev_err(tun->dev, ...) should be used to indicate which TUN device
-has been given bad GSO packets?
-
-    Andrew
+--
+Regards,
+Sudeep
 
