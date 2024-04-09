@@ -1,111 +1,194 @@
-Return-Path: <linux-kernel+bounces-136449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4B0D89D429
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:25:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E946B89D42B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11BAB1C222CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:25:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 185081C224EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346D37E771;
-	Tue,  9 Apr 2024 08:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFE37E776;
+	Tue,  9 Apr 2024 08:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZvttuI9e"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Kvoe1xRP"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2115.outbound.protection.outlook.com [40.107.220.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122C57D413;
-	Tue,  9 Apr 2024 08:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651136; cv=none; b=YTMlMAjW4UXbY0WlX025kd+8htUMNu7aE76oKfGEW/BOf4cJaYjYPpzq+gzI1+phUDso0+MPnsVjEkEBTANjRpCBvYUJu9Pu9fXCb7sRlWbA4sOV7rUvf/PVTChpfr6pKDGsATqo/nAI5YI+2ZB4CSZjujjibetnvSSmp0uYdSQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651136; c=relaxed/simple;
-	bh=9gq00SjHcig7A04o9+fxsqSU+z6odSuDVPgoQObKNmA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HBeQiB5pZjYHfs+vdomLkL12ckwV9+TqEH3NhkhlTzWQvtAwoW90er9lMUIMZqfBNk1cncZzr1pv2DzTE1bcB/hpWlKUjEiM1zaoEaMCgsfzwxDITzb2hYJGSD1woa/diax402iIKFIEp1+KvJanxO4mmeZ71MWP528TgbcNIQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZvttuI9e; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712651133;
-	bh=9gq00SjHcig7A04o9+fxsqSU+z6odSuDVPgoQObKNmA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZvttuI9eCIg0F4HYNf/0bbzuDRX52cuOZ2SeKTl5VCUPJzORaiLGin1rvmHBUNgsE
-	 yu5Fyhok5xNZ5rNO/rLpAsf4QBYgsmtN3gJqZ0kX5NB1nQtY9GUCPuKraU1hShO9SC
-	 oTfk75+AC2UDqfiXPV0S7keBS7IMVbP7b+MxRyS340r0KIut3Q6jjx21tuZbT992EM
-	 MYeG6w1x/z8zoMrNkf/QZIkiIkK8l5okw0aT/Tuob4lE1R0WuZbe8o/TuyHyWvBcAI
-	 61044vkCiyGHYmkigpzJtiMEqELyu0tADcQ8d7EX1vYXLgiNGUfc9G+TTgcdxgYNZ+
-	 1Dl6/r33CG88Q==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1619C37809D1;
-	Tue,  9 Apr 2024 08:25:32 +0000 (UTC)
-Message-ID: <bf713024-a96b-457a-9281-0406e6eb0828@collabora.com>
-Date: Tue, 9 Apr 2024 11:25:31 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BAE56454;
+	Tue,  9 Apr 2024 08:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712651160; cv=fail; b=M+jtGkl2rqZY8zLKYHdpqo+24BE/9FEf95cr9bPDI/7SFMlBzdro/HnlzFAejzCm7WGCNcb0m8S60WQLJWJmnO9oE9olUC0iHK+IkhrZ5COp3Lffzlo1WxBDF6M9LANn+jSt8GP8wUOCUXwte7tswlSuQ8AW23+QE0uEyLCmuH0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712651160; c=relaxed/simple;
+	bh=xMZUHm3GFMsv+Mp8CLQbCvcOTTpcz8uggVke0Fu3QvY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EwFG3tlozP+iJ6OVpOMrvpTRDv5CAmAANDaWfrpnBNyy+Hq+s/ARCJ8tRhd29hlBFL5aHZ9uR/rLy09DKzSHzSJEaeEOYpVQspE2+nQrei2LenR2wC6OQDEe6dTLKUdQ725l4/z1/oFd3xf9H3kVLKWYesxy8VHHdyM2Dvz7YAk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Kvoe1xRP; arc=fail smtp.client-ip=40.107.220.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xs/3Hxk8Uud+KPOTm8tmIuBcHibFZeegesJA4aFCP0+0ugYkwJO/iKAFyM53WZK+8C4PH4w7M2BGysPIxkbWoVCoHGggVuP6WIUo3yk8Pee9F1YlbWH4qlOoHzwmz6JXrkgJo2G3R9pfLC71owxpeQvdIiwrTC3mRcvQZOUt+vlCHWHNbGlDOQvfSoXu1XCVX+iGd2801SMEqGe382Wv5QB8uZsZGyIYsygX4F2UbaoD6m4vrZ8W7FHg/CgOUrUn7KWwGX+VtqqKI9MUz4/UJKTqmgJ/o+wF3TM/CPWQgaHYsECMOzl2joExatKEOYbHlI06s6heYNEAIA6iWc5HsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ACFsbx+A8IiYYmnLmek1nGSNzkH6uiy5AzzFOyqbKJg=;
+ b=gXyMWCJaX8Ely3oSANtOM/HC9lfZ3rsm7QwBASmRImpCuWwIMsTvUW4DzOUGTuQ0ZmNQIceyS67Z2ZDIsLmgJb1iLpY+m2vv7eUcz777jmA2Ib3QnbIyqHSb5zN2PGMTuxqqYuxxC6L1CDZReVKN1DxgB+GKKWF8z51r4XncbuQCnwETZ4AIRBU+j1tknt3rCW/1XqVyETOuMRSQbpzaM6pHDo9FjHHVyI6QL0z46H44zSIuNQz8I4xqG+tEAoXdOJnnLMWNgkRrEbPFmTDKCRBZ8b7SeL/xZr/tjS7Uce32S+TZniZmjLEk4icA7hpHkuqdZb0PyOyf2uOcXj5BVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ACFsbx+A8IiYYmnLmek1nGSNzkH6uiy5AzzFOyqbKJg=;
+ b=Kvoe1xRPUJ51rFMArQ7X5OEIu4+GFtGIeMs/xBTnlOgSrFc5plppeRcb+wxMvH6uCHRyf+/dVryFpnc3XYG2/kxFnliYR79SY72Q1a+ms7DsnUedIbpnORgxrprvjfKVjyvUZDOOdJE8rAxu1xXdfKt2TzvOVsORmeZ8CaAuCN0=
+Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
+ by CH3PR12MB8904.namprd12.prod.outlook.com (2603:10b6:610:167::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
+ 2024 08:25:56 +0000
+Received: from CH3PR12MB9194.namprd12.prod.outlook.com
+ ([fe80::ed15:6173:2f14:f539]) by CH3PR12MB9194.namprd12.prod.outlook.com
+ ([fe80::ed15:6173:2f14:f539%5]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
+ 08:25:56 +0000
+Message-ID: <56a5734a-076c-4274-9d54-7da8a11fce89@amd.com>
+Date: Tue, 9 Apr 2024 18:25:48 +1000
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH kernel v3] PCI/DOE: Support discovery version 2
+Content-Language: en-US
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ira Weiny <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Lukas Wunner <lukas@wunner.de>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Sathyanarayanan Kuppuswamy Natarajan <sathyanarayanan.nkuppuswamy@gmail.com>
+References: <20240307022006.3657433-1-aik@amd.com>
+ <32ac2ee6-26b1-4f37-bd88-db1ef2a31267@linux.intel.com>
+ <16120a31-c3d6-48a8-9355-7b063e28d242@amd.com>
+ <CAC41dw9x8H2m=YB66+PA-GwiVkpCyT0PobdWvFXLHpAsQOE0ew@mail.gmail.com>
+ <8d542410-d8e1-4243-939c-6ce7743a66f1@amd.com>
+ <8d076ed4-5c3c-499a-bca0-9bd51d5454cc@linux.intel.com>
+From: Alexey Kardashevskiy <aik@amd.com>
+In-Reply-To: <8d076ed4-5c3c-499a-bca0-9bd51d5454cc@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SY5P282CA0087.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:201::20) To CH3PR12MB9194.namprd12.prod.outlook.com
+ (2603:10b6:610:19f::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: Steam Deck OLED 6.8.2 nau8821-max fails
-To: Daniel Martin <dmanlfc@gmail.com>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
- Bagas Sanjaya <bagasdotme@gmail.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Sound System <linux-sound@vger.kernel.org>
-References: <ZhFJZoful6nEFskW@archie.me>
- <4d231dc4-0183-47e1-8bfa-3dd225bf8ea3@leemhuis.info>
- <904ffa11-592a-4336-aed2-d6370bb01896@collabora.com>
- <b99e51de-3622-4360-b69d-0fd911ea2a7d@leemhuis.info>
- <9012f8d5-302a-4840-815a-22b1e85fda5c@collabora.com>
- <CAOyTmd3bpmb7t1fCMKPBXqhVtpdpKRvVq5EA7VXrnb-5Fs9ngQ@mail.gmail.com>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Content-Language: en-US
-In-Reply-To: <CAOyTmd3bpmb7t1fCMKPBXqhVtpdpKRvVq5EA7VXrnb-5Fs9ngQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|CH3PR12MB8904:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ajSUsMRe1/Lpvlzm+OVHJqRLCsFWecSZGhFFzAubW01G8xsq1Ghr8YSPgNHyVJPmMidcwrx4fiCwbkbwuorf0OmHDxGDYCsa4VcyoX4IFlFdUA3D1YEFEMwAkv6cdOLABZoDsC53IPcr1r8Dw6A1VBQ7IY/ZPp1GO7gFfjRtKqxrJcQzGSwpGP+KY+BR4iFyLZRWtwCOd2Wd0OPA0CS2PTIwKEhYEArhPEOEIZn0EwqpV70VHmSQHJb8VqUBdXuTobqPKhbLBU14Kh99PfyDmVwopziOJPkxp8WnZZczX4uWoZ88vqdl4yKNMC8cR+t51Sez3f/c+5Rf7CMjs+vXnUM+Z9emOmRgFY2QwaIlOAeLISd1bAltkStjGIC/Mu0WpkzXQqPJz2IIH10ykPK+ovkpKN72NLPN2SOx+WxJg4suCccRjbvHqSteWK1xUuN1u8ZRyNd9ChuKRkaUy+wCB4Y84d0LihG6UndjeEoP/rCu6NjF3pNW0m80jqTJ1OXtLNr2SZrXU+NF0+zjm01AccSAn2UIZbmKXitbOR2VJYWJ75uiTujLS4PrIwsQKz40eMpUYYGE3LmKBj1TVxj4usl3wfbRvBAXMymEbROgs/0b/RmZBwqBSzeL+D0+O+AOUxfi8LZAW1rZ5jEqc3zI8ncJxHiSxUlyIO7MWDt7GKU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VGdacHpGRU9YNVJ0OXg1OUc4cTlld093Z2o4bnRWem1GYjNzUS9odkpYcGtp?=
+ =?utf-8?B?WUw0MnNIWVZBd2Z4ckZJU2xrNjhJUkRMNXpNbVpXUGRwaFF4NUl1cHNWV1NB?=
+ =?utf-8?B?QTZCd3BIZGs2cktQK3dJWE5PeFNNYmxuSEhoeWd4UnNOM2lMOTZWZ1F1VkZT?=
+ =?utf-8?B?SnBkQ0w5UExuZjFXZzR6WW54bWZuL1QzaFFuK010THZxNmZTV0swRVY5MXow?=
+ =?utf-8?B?bnBaMmV2RTBEeFJ2eks3STZNa3BjcSsvK25pMEpqVkxDc2hNRHNJaXVmdisz?=
+ =?utf-8?B?a0JtTGd5dW9JMHYyS0VSNUlzL2VQNGF6Q0s2N2N1dTVCTmxxZTNwRnh6SlVV?=
+ =?utf-8?B?b04wK0pSNnBndDBoTVU4dTlPQitTbXZJdFQxYm1oamJsK3NWRVJjS0I2NzZM?=
+ =?utf-8?B?MzlHWnhiMVphSkV6VmJveUN1QUUzSzJNcktHZkk3RklMZkovbzdSbkZPUGtr?=
+ =?utf-8?B?SDEzaUN1UlZld0JGcWhqUnVuTlZVSXhIbWw5bVRMUktCOTcwcjNSazlwbXFF?=
+ =?utf-8?B?d1FqREEzSWw2NVRzWTVOdXR6Wng0bGNUeFFyaGNjNjFQbkd2RkhPNjNQcGNV?=
+ =?utf-8?B?b1hxcS9TdHpGblA2aUVGR1lvb1dtM0tpRUxsTC9ROFQzKzhFa3J5R2RMZWVm?=
+ =?utf-8?B?R0VuVklTNGpxOC9WWnFwVFhzVlo5MU1nbm9GRk54MndCdmROcnpFZ0o4NlV6?=
+ =?utf-8?B?KzhhRGVVM0NBRkJJbi9ETHFnUWNCZ0J0bWQ0cGttV1BsZ2RkOFU4R1ltMWQ4?=
+ =?utf-8?B?b2czTTZOOXpkUlZlV0U0V3YzZDU2TWs3eTRUTHBwNThCdGdVSkVKVEl6QTBZ?=
+ =?utf-8?B?QVhFUDhNNURGZkZmSHNrU2pTZlYyQ0V5aWU2UkhHanRVNHA4K1F3cTFiSmxY?=
+ =?utf-8?B?RHVTenl5Z2FnTWVSZ1F2Q1ZNNzUvQk0vRE85UzJxaDRRUVBySERnU2JXY0Uv?=
+ =?utf-8?B?UTIzdmRHbFNIVVZPRWpDU2oyb2Y5TE10Y2poaEM1YmNnNHNQNGVHbnFmUWN0?=
+ =?utf-8?B?dkdwSkErMFBxdWVEc2lhY08xR2FHTUVMZDR6VmE4YVlla0V6bFhtQ0ticW1i?=
+ =?utf-8?B?SGxHZ3lwWGRSL0NRSzJmekU3Smh5ekE4VnBIZERzcGYxcUV1eHl2aVpsQ0lI?=
+ =?utf-8?B?NFN6TlB2NXZFRytlcHBxQWZQcnZaQzVQRDlzekZMVXZuWkx6SnVwUnp0dnpp?=
+ =?utf-8?B?NjR4Mjl5V1ZrNkVpOUNRWXBMS1dhOHJuTS91V2Q0clBUZms3YUxaY2txMFVs?=
+ =?utf-8?B?S2RYQjZ5Nk5ZeDBmZElhaXZmZTZ1NjRXb1U2SFV0ZCs2SXFjUDNPc2lYQTBz?=
+ =?utf-8?B?QU05UUJoTmlpeFVoSHBmUDhibTZhSkROUXg4cVpQZXRuUnMveUtPUnZFeHRW?=
+ =?utf-8?B?M2FDTXJMK0REU3pJRXZkS0xHTmJkb1ZVUmRaVDcwRXdTQmdVTUt3VTNPY3M2?=
+ =?utf-8?B?NklWeU40ekZ6RkNUcldKZmNGUGFSOFVTUXFqS0VkMWxUUm9PT3Z5QzkwUG1z?=
+ =?utf-8?B?cmVZb2ZvazZmNG5UZ3BPTDNCVGFrUG5kaXEwd1JmeEFjL2k1UHVndXBROUpz?=
+ =?utf-8?B?ZjNRN0E1eWZZVThXR1lWeDNVY2k1bktDRnFFMjhpQndDZHpZS2ZCa2xia0Jo?=
+ =?utf-8?B?L0ZwMXY5aWprblJtRW54aDFqUnVyZlNab3NBYTRPTDh3dW1DRlFPd0RWTHp0?=
+ =?utf-8?B?YitkTVJ5elF5d012RzdiYUswVFdsZG5Mc2tsejJ6ZG4rbVhVc1JwTU52dlNy?=
+ =?utf-8?B?L2p1WEtZcGMwSVAvaVVTS1hXdDBzSlBVREVkVld1YXFxYWpkSmxxNXcxWUdX?=
+ =?utf-8?B?ZFN0RC9CVjVUQWh6REgyTm1EcGo4cmtQWjFQMUlESU5vN2xhVGpwYUFJS2hY?=
+ =?utf-8?B?NU5DK0RrazErcTROQ2dEMi8xMTBwdkVPQnNqcGRTejV0cEI5MUE2Q21XYTIz?=
+ =?utf-8?B?dThsWE1yczVpOWZ4U2o4bEtsY0phYldzSXJlb08yWi9BdE5WN0wxTTBKNVBD?=
+ =?utf-8?B?QktJZWhFZ1dlYXBvaXcrSk9DMzRRQm83M290cDhiUGIzdlZ5V3FIOUhGQk0r?=
+ =?utf-8?B?K2xTWHJBbVlxWVdleVIwWmtxb1Mxam9jWmFvM0RHaTA0VU5rcUNyL2kxdWUr?=
+ =?utf-8?Q?/2PpTtQn69MeJT4WTuNK9jneB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54565b2f-eb1a-4cc0-b253-08dc586ead71
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 08:25:56.2813
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wTMx2EHW6IRUGlvLohkBh1A2k+1fDhxbo5NCnV/HcKAB/wn1hbuuCS/BRfeHfsGT82qdydBAhpRALFRMwZoCyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8904
+
+Ping? Is this going anywhere? Thanks,
 
 
-On 4/9/24 10:54 AM, Daniel Martin wrote:
-> Why this was changed in the first place could do with some explaining,
-> as Valve had this implemented first in the SteamDeck (probably collabora
-> dev).
-> There were no other implementations out in the wild AFAIK & now with the
-> 6.8.x kernel, this issue has manifested because of an enum change.
+On 14/3/24 17:49, Kuppuswamy Sathyanarayanan wrote:
+> 
+> On 3/13/24 5:59 PM, Alexey Kardashevskiy wrote:
+>>
+>>
+>> On 7/3/24 17:22, Sathyanarayanan Kuppuswamy Natarajan wrote:
+>>> On Wed, Mar 6, 2024 at 10:09 PM Alexey Kardashevskiy <aik@amd.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 7/3/24 16:06, Kuppuswamy Sathyanarayanan wrote:
+>>>>>
+>>>>> On 3/6/24 6:20 PM, Alexey Kardashevskiy wrote:
+>>>>>> PCIe r6.1, sec 6.30.1.1 defines a "DOE Discovery Version" field in
+>>>>>> the DOE Discovery Request Data Object Contents (3rd DW) as:
+>>>>>>
+>>>>>> 15:8 DOE Discovery Version – must be 02h if the Capability Version in
+>>>>>> the Data Object Exchange Extended Capability is 02h or greater.
+>>>>>
+>>>>> Does this change fix any functional issue? If yes, please add Fixes:
+>>>>> tag and probably CC stable?
+>>>>
+>>>> The issue is that before this patch the DOE driver was following PCIe
+>>>> r6.0 and it was not working on a device with DOE cap v2 added in r6.1.
+>>>> Is it "fixes"?
+>>>>
+>>>
+>>> Since you are enabling support for the newer spec version, I think it will not
+>>> fall under bug fix. But it might be qualified for the stable branch.
+>>> It depends on
+>>> whether you want to support this device in older(stable) kernels.
+>>
+>>
+>> I am going to need lot more stuff (TSM, IDE, TDISP) in addition to this but it is coming much later so there is no point in pushing this alone to older kernels. Thanks,
+>>
+>>
+> Got it.
+> 
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> 
 
-The OLED model was launched with a 6.1-based kernel which relied on a
-downstream implementation of the Vangogh SOF drivers.  Those were
-mainlined by AMD way later, in v6.6, but during the upstreaming process
-we ended up with this unfortunate ID assignments incompatibility.
+-- 
+Alexey
 
-> I cannot for the life of me find an alternative topology file. Where are
-> the other implementations? Therefore it makes sense aligning to what was
-> done before on the Steam Deck OLED.
-
-I'm not aware of an alternative topology file available so far.
-> Alternatively, if Valve could provide an updated topology file for 6.8+
-> kernels, that would be great too.
-> Just my two cents from a humble OS dev, trying to make stuff work.
-
-I think that would be the long-term goal, so until that is figured out,
-the easiest workaround to get this working with mainline is to apply the
-enum change patch.
-
-Regards,
-Cristian
 
