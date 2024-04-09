@@ -1,178 +1,276 @@
-Return-Path: <linux-kernel+bounces-137321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A355389E062
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:30:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED4A189E060
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C49851C2103F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3C9128DD35
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551F913E41F;
-	Tue,  9 Apr 2024 16:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F8613E400;
+	Tue,  9 Apr 2024 16:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JFHZx1YB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WI8L30wi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDB513E400
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF7213E3F2;
+	Tue,  9 Apr 2024 16:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712680213; cv=none; b=F++6mC8pr2Ocijshb88fNFy/xY/dJsVP/yYu2TAuUfrbFE/RVY1WTeMv9oKGa+aUNWvKwbODWz/qqKmZwZhDy4Kv0tKS7mCE8tY0aLtbgSERWnWZcAS8dmwPWjhmehXrR4+c74Grz6QyueXNRoyQRk20Xcd+Nw4tDbrwzAwOjPM=
+	t=1712680202; cv=none; b=IgTp4TKyo6HDEp6QkZ02ivVvyL1X/DKeE5yOulLiYtXdXZZJY2VJ33nRxfim+4TLvChJ6CGOGLvkNM9BP+ACE5C7FVnktF+bIybcf+eQ820KBrErOGF2UpLlnsMJKCpRR1R0huMOStmsgkKGfGzMeb6+v/C5IALWC3U75UhvNhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712680213; c=relaxed/simple;
-	bh=DFOzieDuAL+zwmbA47qxk0Y2Ai2LA/jilIkINPKmX/E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VKm/xiMZR7fjUtZco4Ty132kULscENrzbFIL6Ah5qmNcL+EF6G3lOLbosn8KYlcYSmZkpW82x46UoyhRx6REs9IMPLYmDHlpIvqsn7q/YXfYqMmbIKjcLO2LKoV6Woro/yqD4Uk2gibbKMMKJFEKp0g/KQmy3VaGfWWfXd07mMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JFHZx1YB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712680210;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z2N15/vQsvR0nDOnw1tYJA2j128oangAGgtCd36y2W8=;
-	b=JFHZx1YBxnYgStV786aHT6Xz6iHmI623tgaZ1BDgqn3rAH9b2172GpyMD1b5iweIr1+IRZ
-	NCyv4CLDRYljNYuQ92X5UAjunHEjrxA/xNrPKTJBW6L2mJPyalrbhrF+ubuznxvWNm1LU2
-	BseUcYmEpd2pkL92giPk+eNIcG2++Tg=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-184-dZQJEE6JOke-v5KhCrPbSw-1; Tue, 09 Apr 2024 12:30:07 -0400
-X-MC-Unique: dZQJEE6JOke-v5KhCrPbSw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-78d3352237cso835518085a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:30:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712680204; x=1713285004;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z2N15/vQsvR0nDOnw1tYJA2j128oangAGgtCd36y2W8=;
-        b=NSW1S7uUw1E3XSXIgHOnAB2uwh5GBk6q2nQRyp2hzP/wV6DPy6ZZn7E5wdB39oFZQt
-         afyXMCgwCsKQwxlf+GU0BfF+XWdvlvjqQo7vcYbAjdMK/5ufASTjayEurWm1dJoclkSK
-         8irW2RzRGKmaBbtPI5Ilkvd2yyITZDCN4MOlgjqKewYGXiaNtJOGZqWoVfdnYIyaGOJw
-         JTKPTQzRd6YFJmxbWRZyQtEv/MYk4rFIlBzvYse0XBjOh4yoRhuV89uhWA6kB74nGP3m
-         Z+Z9cu0Gbg0//ZxW/9eMny9pe7Hs7twGgBwC6b4sFoyrJbgUGgBnRBlq/1jIsqN3WRzi
-         kN6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVQWIICnlmoRGckTUGKvBnn7DkjSWZvPwY6o03MHQL6UIDSHKHNjF0tUpk8iQUyMZwdw4QcMZhZ5MPzCBA7y3hS4VATqec5r6Onvsg9
-X-Gm-Message-State: AOJu0YzwnYR7VU2xB//J+1pWTsFIvzmyrsTfBTjn5Y6HxnlP7cFz1JgT
-	CILWlNyHaa33NwzJ9YU+9AALu9ASdRrAq3zHfQTShk5Rjo0Xz+JyWgP5CL0XnSAFjL2Mnk85qKt
-	dWPmn2La6sKRQ0Yzv6EP33Wt/9szoZhKRck5ywyNdXd6Ki5ipL0m1PJMQXobg4A==
-X-Received: by 2002:a05:620a:1a04:b0:78d:5d86:ee3a with SMTP id bk4-20020a05620a1a0400b0078d5d86ee3amr271165qkb.27.1712680203575;
-        Tue, 09 Apr 2024 09:30:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEaunIAnuq3r3o5QKqjTq71PbncpgxojMlNuf8undfiMQByOKkHlYoNcgKVeL0cSUpKYTduWA==
-X-Received: by 2002:a05:620a:1a04:b0:78d:5d86:ee3a with SMTP id bk4-20020a05620a1a0400b0078d5d86ee3amr271092qkb.27.1712680203193;
-        Tue, 09 Apr 2024 09:30:03 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id r30-20020a05620a03de00b0078d679f6efesm1805562qkm.16.2024.04.09.09.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:30:02 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Connor O'Brien <connoro@google.com>, Joel Fernandes <joelaf@google.com>,
- Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, Youssef
- Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
- Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul
- E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, Xuewen
- Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
- Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, John Stultz
- <jstultz@google.com>
-Subject: Re: [RESEND][PATCH v9 4/7] sched: Add do_push_task helper
-In-Reply-To: <20240401234439.834544-5-jstultz@google.com>
-References: <20240401234439.834544-1-jstultz@google.com>
- <20240401234439.834544-5-jstultz@google.com>
-Date: Tue, 09 Apr 2024 18:29:57 +0200
-Message-ID: <xhsmh5xwqa48q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1712680202; c=relaxed/simple;
+	bh=sqluHhiDFTvPVAtAz82cjsGRqtZJ0+0bxToUl7j52aw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BUqurf3Nz+7BMMaxajnICijj85Z+1vn65uK7IpOSpXhb0vC71mOk6q0yVfmIAQDb/S3QbdttaYlJFpqgMSgD3w7o4x/gPUVwNAqnkK/4IY9xF4qOL+GN3Alhw1P/nZVzv8KruiW+FqjUxH0eR5QGRZklRbjmCzdidutaoYdlOPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WI8L30wi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C948FC433C7;
+	Tue,  9 Apr 2024 16:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712680202;
+	bh=sqluHhiDFTvPVAtAz82cjsGRqtZJ0+0bxToUl7j52aw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WI8L30wi8+cPsQ6t6sJvESP3xYGy3z94xyR0hDTjzF51FDi+hyftf0KHT1sdnz/E/
+	 Al/MCkZqa3cUfRwvHPauc0pM8XyTmcB8mSBRcKyAMvF0qwUngqU93+RiiC+GjBnZDU
+	 /+/DVYHh91an/ZtxGP+zyRObpJQP+vDgXvEcqLZc4BfyodxH+2KTtlGZd5k3ajgd59
+	 drm0WCZ8NkEDBzYC1dYz3BmzNwpAgNGapY4faSK+LIkeB7IazpJcJ1plTH2+WAoW7A
+	 jiLORtsazrRCL9eC8WeTBbHTMZw5h7Wak8bKbuMpClwqbPpN09D6kgsEvGkaEEQ0HE
+	 gDz6pq0QXmoRg==
+Date: Tue, 9 Apr 2024 11:29:59 -0500
+From: Rob Herring <robh@kernel.org>
+To: Jacky Huang <ychuang570808@gmail.com>
+Cc: linus.walleij@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ychuang3@nuvoton.com, schung@nuvoton.com,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v7 2/3] dt-bindings: pinctrl: Document nuvoton ma35d1 pin
+ control
+Message-ID: <20240409162959.GA1370985-robh@kernel.org>
+References: <20240409095637.2135-1-ychuang570808@gmail.com>
+ <20240409095637.2135-3-ychuang570808@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409095637.2135-3-ychuang570808@gmail.com>
 
-On 01/04/24 16:44, John Stultz wrote:
-> From: Connor O'Brien <connoro@google.com>
->
-> Switch logic that deactivates, sets the task cpu,
-> and reactivates a task on a different rq to use a
-> helper that will be later extended to push entire
-> blocked task chains.
->
-> This patch was broken out from a larger chain migration
-> patch originally by Connor O'Brien.
->
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+On Tue, Apr 09, 2024 at 09:56:36AM +0000, Jacky Huang wrote:
+> From: Jacky Huang <ychuang3@nuvoton.com>
+> 
+> Add documentation to describe nuvoton ma35d1 pin control and GPIO.
+> 
+> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       | 163 ++++++++++++++++++
+>  1 file changed, 163 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..8b9ec263213f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+> @@ -0,0 +1,163 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/nuvoton,ma35d1-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton MA35D1 pin control and GPIO
+> +
+> +maintainers:
+> +  - Shan-Chun Hung <schung@nuvoton.com>
+> +  - Jacky Huang <ychuang3@nuvoton.com>
+> +
+> +allOf:
+> +  - $ref: pinctrl.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,ma35d1-pinctrl
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+> +
+> +  nuvoton,sys:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      phandle of the system-management node.
 
-Naming nit below notwithstanding:
+If these are the *only* registers to access the pinctrl functions, then 
+this binding should be a child node of the system-management node and 
+then you don't need this property.
 
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+And if the registers for pinctrl are a defined range, you should add a 
+'reg' property (even though Linux and regmap don't use it).
 
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> [jstultz: split out from larger chain migration patch]
-> Signed-off-by: John Stultz <jstultz@google.com>
+> +
+> +  ranges: true
 
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index d2242679239e..16057de24ecd 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -3472,5 +3472,14 @@ static inline void init_sched_mm_cid(struct task_struct *t) { }
->  
->  extern u64 avg_vruntime(struct cfs_rq *cfs_rq);
->  extern int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se);
-> +#ifdef CONFIG_SMP
-> +static inline
-> +void do_push_task(struct rq *rq, struct rq *dst_rq, struct task_struct *task)
+This property makes no sense with the binding as-is. You don't have 
+any address to translate. Maybe with the above changes it will.
 
-The naming IMO unfortunately clashes with the hotplug push_task /
-balance_push() stuff.
+> +
+> +patternProperties:
+> +  "^gpio@[0-9a-f]+$":
+> +    type: object
+> +    additionalProperties: false
+> +    properties:
+> +      gpio-controller: true
+> +
+> +      '#gpio-cells':
+> +        const: 2
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +      interrupt-controller: true
+> +
+> +      '#interrupt-cells':
+> +        const: 2
+> +
+> +      interrupts:
+> +        description:
+> +          The interrupt outputs to sysirq.
+> +        maxItems: 1
+> +
+> +    required:
+> +      - gpio-controller
+> +      - '#gpio-cells'
+> +      - reg
+> +      - clocks
+> +      - interrupt-controller
+> +      - '#interrupt-cells'
+> +      - interrupts
+> +
+> +  "^pin-[a-z0-9]+$":
+> +    type: object
+> +    description:
+> +      A pinctrl node should contain at least one subnodes representing the
+> +      pinctrl groups available on the machine. Each subnode will list the
+> +      pins it needs, and how they should be configured, with regard to muxer
+> +      configuration, pullups, drive strength, input enable/disable and input
+> +      schmitt.
+> +
+> +    $ref: pincfg-node.yaml#
+> +
+> +    properties:
+> +      power-source:
+> +        description: |
+> +          Valid arguments are described as below:
+> +          0: power supply of 1.8V
+> +          1: power supply of 3.3V
+> +        enum: [0, 1]
+> +
+> +      drive-strength-microamp:
+> +        oneOf:
+> +          - enum: [ 2900, 4400, 5800, 7300, 8600, 10100, 11500, 13000 ]
+> +            description: 1.8V I/O driving strength
+> +          - enum: [ 17100, 25600, 34100, 42800, 48000, 56000, 77000, 82000 ]
+> +            description: 3.3V I/O driving strength
+> +
+> +    unevaluatedProperties: false
 
-AFAICT this is move_queued_task() but in a double rq lock
-context. How about move_queued_task_locked()?
+In the indented cases, it's preferred to put this before 'properties'.
 
-Interestingly, all the patched call sites end up with a resched_curr(), but
-move_queued_task() has wakeup_preempt() instead.  
 
-> +{
-> +	deactivate_task(rq, task, 0);
-> +	set_task_cpu(task, dst_rq->cpu);
-> +	activate_task(dst_rq, task, 0);
-> +}
-> +#endif
->  
->  #endif /* _KERNEL_SCHED_SCHED_H */
+> +
+> +  "-grp$":
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+
+Missing $ref to common properties and 'unevaluatedProperties'.
+
+> +    properties:
+> +      nuvoton,pins:
+> +        description:
+> +          Each entry consists of 4 parameters and represents the mux and config
+> +          setting for one pin.
+> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +        minItems: 1
+> +        items:
+> +          items:
+> +            - minimum: 0
+> +              maximum: 13
+> +              description:
+> +                Pin bank.
+> +            - minimum: 0
+> +              maximum: 15
+> +              description:
+> +                Pin bank index.
+> +            - minimum: 0
+> +              maximum: 15
+> +              description:
+> +                Mux 0 means GPIO and mux 1 to 15 means the specific device function.
+> +
+> +required:
+> +  - compatible
+> +  - nuvoton,sys
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
+> +
+> +    pinctrl@40040000 {
+> +        compatible = "nuvoton,ma35d1-pinctrl";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        nuvoton,sys = <&sys>;
+> +        ranges = <0 0x40040000 0xc00>;
+> +
+> +        gpio@0 {
+> +            reg = <0x0 0x40>;
+> +            interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&clk GPA_GATE>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <2>;
+> +        };
+> +
+> +        uart-grp {
+> +            uart11-pins {
+
+This is not what the schema says.
+
+> +                nuvoton,pins = <11 0 2>,
+> +                               <11 1 2>,
+> +                               <11 2 2>,
+> +                               <11 3 2>;
+> +                bias-disable;
+> +                power-source = <1>;
+> +            };
+> +        };
+
+Include a pin-* node in the example.
+
+> +    };
 > -- 
-> 2.44.0.478.gd926399ef9-goog
-
+> 2.34.1
+> 
 
