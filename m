@@ -1,177 +1,134 @@
-Return-Path: <linux-kernel+bounces-136518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424F689D513
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:07:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A69FB89D516
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72F401C2149C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:07:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7A101C21464
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA107EF06;
-	Tue,  9 Apr 2024 09:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99AF7F46C;
+	Tue,  9 Apr 2024 09:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="NQPtyfNm"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pdMgfxke";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wp3hKmfm"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B7A5339A;
-	Tue,  9 Apr 2024 09:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1587E578;
+	Tue,  9 Apr 2024 09:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712653641; cv=none; b=LHy8ka/U3rQaY1zK0SlgQR5Sn7FqItS7IbTFL64Nox0StcJPLAQQaWViXfOKykEOhKCMIlFuINupepbgGOxRDz1jU1gK88GzU5OQ58IzSuQGVT2dw5ZZOQXbJFjvetm7cHmYhgcReMhOP51TgE+GJnUtDnvVr/lrZueXFm/AQVc=
+	t=1712653687; cv=none; b=OgSG9dtS0Dav6ct9zeNWrJii0ZlMrAHayY/j3ZfkHG8fD+k0bPCK715WowqGteKzUkT2hHEOtzY5uoTkMg/L1a08fMMXxqbhB5iLrMIH+Wl1VDnHzfMxFkPD67dLN5g/aUBsFywideufhl6Ep/Sa1V8wx6/wvKK0PZzVluAEd2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712653641; c=relaxed/simple;
-	bh=nsVDit+POVQZ2H6w/6IpwlVYrA58ci/3Jlcy44bs/kE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HpZ/cnKDpxP1oOdiPRqfWmtrVqIaoB2u9uhxf/l5eV1R7OYwLx8JNjLwkzXTwMlJfzY1hGHBor8fWep8pEz2Gkn3W6hYaBjgGhCnqNDM2jrD9FuiolBjajB8Ij6NC+QgrPEVv2hYkTlW+6xXCvhiRGX0pZzMil5JNV9cSa6ZwkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=NQPtyfNm; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 6D9A7100003;
-	Tue,  9 Apr 2024 12:06:52 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1712653612; bh=6MJ6fVJnN7Gpxxf8TraZt1FowXJlJ9GCYXfReimphcE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=NQPtyfNmcjh89rBodlhXy1EsylX+VHfcn9U02hLYvaH6up/r/D9hxcvuoMxhm0EPU
-	 DxbSf6L+M9GBDmrafkeANR6UVwvvPOW435hfGXCYaw9Pcot438f5neUbAEJtVr3FPz
-	 AVjIKRwNMopl1uKScEndfTPW6rdTEgeVxOjIL4FtlUR5yBJpfqKNr2l/9NLePjtqF5
-	 mjeCVtyAEZ4/GAva59U8lvd3yDAR3xi86i6GhuE9aryNO6ULiT2uMMwkRPCkIK1LkP
-	 AFvh7mhVGE+aXag/ssPp+hfYRVtesELjE24VrIpDcI65To5tUSOo0Ok7AHqy+49Toi
-	 S7du+yl8W3RoQ==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Tue,  9 Apr 2024 12:05:45 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 9 Apr 2024
- 12:05:15 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Atul Gupta <atul.gupta@chelsio.com>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Ayush Sawal
-	<ayush.sawal@chelsio.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, Michael Werner
-	<werner@chelsio.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH net] crypto: chtls: Fix possible null pointer dereferences
-Date: Tue, 9 Apr 2024 12:05:07 +0300
-Message-ID: <20240409090507.21441-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1712653687; c=relaxed/simple;
+	bh=rtyrlOsyG0y7h5VHwYtKJ1vBsr/b2iu9nRKb+Ocfj6o=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=P6ffH0r96huXIv9mKv31x61L2yMYG9sWxwcUHmwLYEMiSSldaMHhTQnnQ7Id61MCd03+Jtsdg4MyvY0whiBQYe/FVHkq20hpFbB3Pa2bJg9NXV5hDpe/HghYb3s9k6vl6bBSS2WC4McD2PaavEA9IZh3jqAFm1virZ/PJlHPE7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pdMgfxke; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wp3hKmfm; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 09 Apr 2024 09:08:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712653682;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APMP/y4EnKfb5ze4aAiaXsWRgifOcdSTI8rDs+a5ADw=;
+	b=pdMgfxke1mshdIEvhDVtiafSmLWqdAVWxbE6EFWXOlSUR0ybFGIold/ZhlhVCacaxe3Mo6
+	lG2O7MzEXLxrugxJF4uaixOh6BTPBIDUXk8UG3Y5D5SNMaUmI3xj5ykkZZyPx0aP5swNRV
+	DsAyHUr4EhViC/B3Mfm29slKknLz4M9cbJ6W3JONEl0E/HXCKaRPHgtEQuQgzyhN8j90dN
+	yMg+VT4ZUuWfvXsCMzLAdhq2bSJbHmHS0lSWr9uIMo/oCeU5aie/++ZAi01n4Fd07MnKwS
+	BhEjna3MKpMcdhz1hcU9VVBYFh/63I8VmVsq/oKPkhuX4hfHFaj+cqFxTiM3Uw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712653682;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APMP/y4EnKfb5ze4aAiaXsWRgifOcdSTI8rDs+a5ADw=;
+	b=wp3hKmfml8EcGhk3bCzAojuWzmnX0oSVazXUD1Q4Bzisz7J929ShP8iOh4XxWCWrmpZDxh
+	t+5BC03lJ/3HwWCQ==
+From: "tip-bot2 for Tiezhu Yang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irqchip/loongson-eiointc: Set CPU affinity only on
+ SMP machines for LoongArch
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>, Thomas Gleixner <tglx@linutronix.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240326121130.16622-4-yangtiezhu@loongson.cn>
+References: <20240326121130.16622-4-yangtiezhu@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184636 [Apr 09 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t-argos.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/09 08:22:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/09 07:19:00 #24714583
-X-KSMG-AntiVirus-Status: Clean, skipped
+Message-ID: <171265368189.10875.5441043593179943891.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-In chtls_pass_accept_rpl() and chtls_select_mss() __sk_dst_get() may
-return NULL which is later dereferenced. Fix this bug by adding NULL check.
+The following commit has been merged into the irq/core branch of tip:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Commit-ID:     a64003da0ef8e135cda678eb2c8a6f0baf4a9f35
+Gitweb:        https://git.kernel.org/tip/a64003da0ef8e135cda678eb2c8a6f0baf4a9f35
+Author:        Tiezhu Yang <yangtiezhu@loongson.cn>
+AuthorDate:    Tue, 26 Mar 2024 20:11:30 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 09 Apr 2024 11:03:16 +02:00
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+irqchip/loongson-eiointc: Set CPU affinity only on SMP machines for LoongArch
+
+According to the code comment of "struct irq_chip", the member
+"irq_set_affinity" is to set the CPU affinity on SMP machines, so define
+and call eiointc_set_irq_affinity() only under CONFIG_SMP.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240326121130.16622-4-yangtiezhu@loongson.cn
 ---
- .../chelsio/inline_crypto/chtls/chtls_cm.c    | 24 +++++++++++++------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ drivers/irqchip/irq-loongson-eiointc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
-index 6f6525983130..6d88cbc9fbb0 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
-@@ -939,15 +939,15 @@ static void chtls_accept_rpl_arp_failure(void *handle,
- 	sock_put(sk);
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+index b64cbe3..4f5e6d2 100644
+--- a/drivers/irqchip/irq-loongson-eiointc.c
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -59,6 +59,7 @@ static int cpu_to_eio_node(int cpu)
+ 	return cpu_logical_map(cpu) / CORES_PER_EIO_NODE;
  }
  
--static unsigned int chtls_select_mss(const struct chtls_sock *csk,
-+static bool chtls_select_mss(const struct chtls_sock *csk,
- 				     unsigned int pmtu,
--				     struct cpl_pass_accept_req *req)
-+				     struct cpl_pass_accept_req *req,
-+					 unsigned int *mtu_idx)
++#ifdef CONFIG_SMP
+ static void eiointc_set_irq_route(int pos, unsigned int cpu, unsigned int mnode, nodemask_t *node_map)
  {
- 	struct chtls_dev *cdev;
- 	struct dst_entry *dst;
- 	unsigned int tcpoptsz;
- 	unsigned int iphdrsz;
--	unsigned int mtu_idx;
- 	struct tcp_sock *tp;
- 	unsigned int mss;
- 	struct sock *sk;
-@@ -955,6 +955,9 @@ static unsigned int chtls_select_mss(const struct chtls_sock *csk,
- 	mss = ntohs(req->tcpopt.mss);
- 	sk = csk->sk;
- 	dst = __sk_dst_get(sk);
-+	if (!dst)
-+		return false;
-+
- 	cdev = csk->cdev;
- 	tp = tcp_sk(sk);
- 	tcpoptsz = 0;
-@@ -979,11 +982,11 @@ static unsigned int chtls_select_mss(const struct chtls_sock *csk,
- 	tp->advmss = cxgb4_best_aligned_mtu(cdev->lldi->mtus,
- 					    iphdrsz + tcpoptsz,
- 					    tp->advmss - tcpoptsz,
--					    8, &mtu_idx);
-+					    8, mtu_idx);
- 	tp->advmss -= iphdrsz;
+ 	int i, node, cpu_node, route_node;
+@@ -126,6 +127,7 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
  
- 	inet_csk(sk)->icsk_pmtu_cookie = pmtu;
--	return mtu_idx;
-+	return true;
+ 	return IRQ_SET_MASK_OK;
  }
++#endif
  
- static unsigned int select_rcv_wscale(int space, int wscale_ok, int win_clamp)
-@@ -1016,8 +1019,13 @@ static void chtls_pass_accept_rpl(struct sk_buff *skb,
- 	struct sock *sk;
- 	u32 opt2, hlen;
- 	u64 opt0;
-+	struct dst_entry *dst;
+ static int eiointc_index(int node)
+ {
+@@ -238,7 +240,9 @@ static struct irq_chip eiointc_irq_chip = {
+ 	.irq_ack		= eiointc_ack_irq,
+ 	.irq_mask		= eiointc_mask_irq,
+ 	.irq_unmask		= eiointc_unmask_irq,
++#ifdef CONFIG_SMP
+ 	.irq_set_affinity	= eiointc_set_irq_affinity,
++#endif
+ };
  
- 	sk = skb->sk;
-+	dst = __sk_dst_get(sk);
-+	if (!dst)
-+		return;
-+
- 	tp = tcp_sk(sk);
- 	csk = sk->sk_user_data;
- 	csk->tid = tid;
-@@ -1029,8 +1037,10 @@ static void chtls_pass_accept_rpl(struct sk_buff *skb,
- 
- 	OPCODE_TID(rpl5) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
- 						     csk->tid));
--	csk->mtu_idx = chtls_select_mss(csk, dst_mtu(__sk_dst_get(sk)),
--					req);
-+	if (!chtls_select_mss(csk, dst_mtu(dst),
-+					req, &csk->mtu_idx))
-+		return;
-+
- 	opt0 = TCAM_BYPASS_F |
- 	       WND_SCALE_V(RCV_WSCALE(tp)) |
- 	       MSS_IDX_V(csk->mtu_idx) |
--- 
-2.30.2
-
+ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
 
