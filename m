@@ -1,206 +1,121 @@
-Return-Path: <linux-kernel+bounces-137367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263CD89E115
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:08:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FF6789E132
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:12:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF80B28668D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:08:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03657B2628F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27CD155391;
-	Tue,  9 Apr 2024 17:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A623715382A;
+	Tue,  9 Apr 2024 17:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="jFz0y9Eq"
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="MaLvLzRw"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CEF1552FC;
-	Tue,  9 Apr 2024 17:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698A715380F
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712682480; cv=none; b=akrZc2NxXHSQ6NHPBicLZhH7iBUCoGSK65mwZJb4dl8v7DG+egleUlezbeScvbv/bV4S5RfSQGqvE3wLEFtyEoMtzKVKumZWqzoS2iL6UW2LD31/cfjSaEqhEySOorc8fWnPX8TMSKZeESB0XovZu2gVL98wL+ju5E/8I2lQWsg=
+	t=1712682466; cv=none; b=YmUgtz9Jh91FtSzl5Sj8FjYchz7+cnt1OZDiv6EbnudKtQzAh3xn5ZTLIxYACd5H0BN0kJu3GyrSPRPqGCkhvY19K7fbkyo37Tat6BWbyCpS6uFbvVReXggK7NKhhHkpTjtohmtluB0Eyuqsh+E9Yq3lgu9Hoixf0JpzdvX7Sac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712682480; c=relaxed/simple;
-	bh=jW2XOtO9vH3fyORTD0njVKSTagn7WFaKPY/etiNC/h4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QznnVqc//6kQJDf65BzsdX/cDzS6OMl35XnowAWvDZsjdRJGl8Y+Pi66UafwB7XMF4OOu0n8GeGaBrlZkhpwDIAOzm8fsmuWj76DBaKYTFdVDgpMOubpxLokLnWqzz9yFFu9LiMlzfP2PuMKYWxk/fHu9OtaomqVRAntGjW6xnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=jFz0y9Eq; arc=none smtp.client-ip=207.171.188.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+	s=arc-20240116; t=1712682466; c=relaxed/simple;
+	bh=ue+OGUqfOmLNbIUTamEItS+snMKGV7KZJW+7KVOECcQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BqUtA+8Z0YyCCs2eYlbvw/a4iOR804bZa9BNxc6cbXlHD1G4EEf+I/hPub91EQE1dPwQd09iWyUPm4rHGH12O+VpeVO9Bu2krt3zigummyaXcWMqqoGqDOcZHo+hrQicLz+pKcLcds9CMG/iM+ndMrAAKG8JSndXrAL/bss9tho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MaLvLzRw; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41699bbfb91so4245e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 10:07:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712682479; x=1744218479;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6UmcuCQ72fp6Cahtrj1U+7eJO6P8w7duBJ8wqAOb/u0=;
-  b=jFz0y9EqCYW8G5JEI6Qz87iYfppnltnWkj7U+3gYE7mWPICa/nqDbTla
-   mwaUckxE/MJZxoJ0XkpC+n1s0Fk3yzbssB+nQepEcnQWLYT6Iwnvk3M6u
-   4teRYEdcO4NbZaod8alCkH7xgXqzBjF8C8/m0Nam1CFnZ2XfdLCJ+DQAC
-   E=;
-X-IronPort-AV: E=Sophos;i="6.07,190,1708387200"; 
-   d="scan'208";a="717254626"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 17:07:48 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.10.100:47808]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.47.234:2525] with esmtp (Farcaster)
- id 96f2432d-69c8-47ed-9200-5e5da5c63474; Tue, 9 Apr 2024 17:07:46 +0000 (UTC)
-X-Farcaster-Flow-ID: 96f2432d-69c8-47ed-9200-5e5da5c63474
-Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 9 Apr 2024 17:07:42 +0000
-Received: from bcd074994f7f.amazon.com (10.95.97.144) by
- EX19D036EUC002.ant.amazon.com (10.252.61.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 9 Apr 2024 17:07:37 +0000
-From: Sudan Landge <sudanl@amazon.com>
-To: <tytso@mit.edu>, <Jason@zx2c4.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<sudanl@amazon.com>, <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	<thomas.lendacky@amd.com>, <dan.j.williams@intel.com>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <graf@amazon.de>, <dwmw@amazon.co.uk>, <bchalios@amazon.es>,
-	<xmarcalx@amazon.co.uk>
-Subject: [PATCH v4 5/5] virt: vmgenid: add support for devicetree bindings
-Date: Tue, 9 Apr 2024 18:07:22 +0100
-Message-ID: <20240409170722.81738-1-sudanl@amazon.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+        d=google.com; s=20230601; t=1712682463; x=1713287263; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qsBq0cy8GlGyTLsFzDWh0JUEGzZ8zL8Mw/WsALeBfxM=;
+        b=MaLvLzRwsNqMtgMawlV7zeMp+juP7zR9WXy0Jm4OWZTfvbgp4XI2/j8yKW7i8hECJK
+         fbCeB+D+wqStiwLFxOW/qtdPZ2ZPI/zMlq9pRPOhWytAWIfWPSoiz4RIqmVqMVHy8AmD
+         N+kTiPixd+GouoRy5LQF5Dx1LcsWJ+iayHPQgCa1hUgi5bni+d+ARNAaXXefq0MFfDsA
+         s2zhA2S8Zf1QexcsIeXmMNHvGy1J1/dM62U0wKWvGZrTdyxibGz4EzOQ6NthPz+5zhRq
+         T/4KjLWMYcro1FZ82b9Wrm2xV3RU4QBWaYZCrStiZiuA0UIdk5cKFAFjSGv1N2BbQ4X5
+         J/MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712682463; x=1713287263;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qsBq0cy8GlGyTLsFzDWh0JUEGzZ8zL8Mw/WsALeBfxM=;
+        b=YCQZuAmd0HvNbB4g+uhbjIHt8EXSXYRcuAf1BPulR7DRDqrjIHonQjwv0imNU1XhHi
+         Nt+WL366EmnWeKV2LrFYvk07enoZ/0OatPM9DYVEeiPhIPsjGnPWykz2MCwRjkjn5Xhi
+         GNY/F9Oyifm+REcn+zY0W46emsU5nM5o8ySSZD1y1rtbFO4Cuak7frJxRkA17duq55AA
+         edzo6zIBpQGS05DWk7yV6LmkgwYUCfyp/aKQ9OMv6kdPaF56CAodTbTSvZ2sWzRnbK7g
+         HM/T9bBUz8xUUjNFQ0q2Jv48Ej2PSjgMAaa2FkV/jiH2oonMvtVXNyRBATtPFilOuq6a
+         tmUA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTzTgKQoIoiUmrNeJHrlXA+mERg2nYHHAyL9CDdicRQkKr6ayi3GAjU+VKhbNzot/svnZXRb7mN2P85V6HA2URAqTBlIB06v7aqSIv
+X-Gm-Message-State: AOJu0YxVjGYrrF3p5Wx1m65ka0l1QqckBcTgK3/6vUj2znwP63Dd5Jz7
+	iy9tY6nBt/s8QG8zwxPukOmj/NAqUTUHI8Y6ohcNOYqp4VLPOVtKJ7tTa3kOG9hupqmGLKyJLXk
+	g4YjwjEvBMxsdIhZL+Eo1HVBUddKe1M5+3e0=
+X-Google-Smtp-Source: AGHT+IEEpJwqd6S7g8HTA9AUAVkouCdLTgaK8Qrafsc/GrNIeR6yWteoZFEb2wHAnEnwAyAcW7FiUqeH8KOEXFfmP5c=
+X-Received: by 2002:a05:600c:1987:b0:416:57f5:b426 with SMTP id
+ t7-20020a05600c198700b0041657f5b426mr184824wmq.1.1712682462632; Tue, 09 Apr
+ 2024 10:07:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWA001.ant.amazon.com (10.13.139.83) To
- EX19D036EUC002.ant.amazon.com (10.252.61.191)
+References: <20240409062639.3393-1-adrian.hunter@intel.com>
+In-Reply-To: <20240409062639.3393-1-adrian.hunter@intel.com>
+From: John Stultz <jstultz@google.com>
+Date: Tue, 9 Apr 2024 10:07:30 -0700
+Message-ID: <CANDhNCqx14CU9TwwkWqgUY9ucgaQZ8DwNmG+m==XrOziSfOS0Q@mail.gmail.com>
+Subject: Re: [PATCH] vdso: Fix powerpc build U64_MAX undeclared error
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Extend the vmgenid platform driver to support devicetree bindings.
-With this support, hypervisors can send vmgenid notifications to
-the virtual machine without the need to enable ACPI.
-The bindings are located at:
-Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+On Mon, Apr 8, 2024 at 11:27=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> U64_MAX is not in include/vdso/limits.h, although that isn't noticed on x=
+86
+> because x86 includes include/linux/limits.h indirectly. However powerpc
+> is more selective, resulting in the following build error:
+>
+>   In file included from <command-line>:
+>   lib/vdso/gettimeofday.c: In function 'vdso_calc_ns':
+>   lib/vdso/gettimeofday.c:11:33: error: 'U64_MAX' undeclared
+>      11 | # define VDSO_DELTA_MASK(vd)    U64_MAX
+>         |                                 ^~~~~~~
+>
+> Use ULLONG_MAX instead which will work just as well and is in
+> include/vdso/limits.h.
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Closes: https://lore.kernel.org/all/20240409124905.6816db37@canb.auug.org=
+au/
+> Fixes: c8e3a8b6f2e6 ("vdso: Consolidate vdso_calc_delta()")
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Signed-off-by: Sudan Landge <sudanl@amazon.com>
----
- drivers/virt/vmgenid.c | 53 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 51 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-index 3d93e3fb94c4..e1ad74116c0c 100644
---- a/drivers/virt/vmgenid.c
-+++ b/drivers/virt/vmgenid.c
-@@ -2,12 +2,13 @@
- /*
-  * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-  *
-- * The "Virtual Machine Generation ID" is exposed via ACPI and changes when a
-+ * The "Virtual Machine Generation ID" is exposed via ACPI or DT and changes when a
-  * virtual machine forks or is cloned. This driver exists for shepherding that
-  * information to random.c.
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -20,6 +21,7 @@ enum { VMGENID_SIZE = 16 };
- struct vmgenid_state {
- 	u8 *next_id;
- 	u8 this_id[VMGENID_SIZE];
-+	int irq;
- };
- 
- static void vmgenid_notify(struct device *device)
-@@ -43,6 +45,14 @@ vmgenid_acpi_handler(acpi_handle __always_unused handle,
- 	vmgenid_notify(dev);
- }
- 
-+static __maybe_unused irqreturn_t
-+vmgenid_of_irq_handler(int __always_unused irq, void *dev)
-+{
-+	vmgenid_notify(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int __maybe_unused
- setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
- {
-@@ -106,6 +116,35 @@ static int vmgenid_add_acpi(struct device __maybe_unused *dev,
- #endif
- }
- 
-+static int vmgenid_add_of(struct platform_device *pdev,
-+			  struct vmgenid_state *state)
-+{
-+	u8 *virt_addr;
-+	int ret = 0;
-+
-+	virt_addr = (u8 *)devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-+	if (IS_ERR(virt_addr))
-+		return PTR_ERR(virt_addr);
-+
-+	ret = setup_vmgenid_state(state, virt_addr);
-+	if (ret)
-+		return ret;
-+
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	state->irq = ret;
-+	pdev->dev.driver_data = state;
-+
-+	ret = devm_request_irq(&pdev->dev, state->irq, vmgenid_of_irq_handler,
-+			       IRQF_SHARED, "vmgenid", &pdev->dev);
-+	if (ret)
-+		pdev->dev.driver_data = NULL;
-+
-+	return ret;
-+}
-+
- static int vmgenid_add(struct platform_device *pdev)
- {
- 	struct vmgenid_state *state;
-@@ -116,7 +155,10 @@ static int vmgenid_add(struct platform_device *pdev)
- 	if (!state)
- 		return -ENOMEM;
- 
--	ret = vmgenid_add_acpi(dev, state);
-+	if (dev->of_node)
-+		ret = vmgenid_add_of(pdev, state);
-+	else
-+		ret = vmgenid_add_acpi(dev, state);
- 
- 	if (ret)
- 		devm_kfree(dev, state);
-@@ -124,6 +166,12 @@ static int vmgenid_add(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct of_device_id vmgenid_of_ids[] = {
-+	{ .compatible = "microsoft,vmgenid", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
-+
- static const struct acpi_device_id vmgenid_acpi_ids[] = {
- 	{ "VMGENCTR", 0 },
- 	{ "VM_GEN_COUNTER", 0 },
-@@ -136,6 +184,7 @@ static struct platform_driver vmgenid_plaform_driver = {
- 	.driver     = {
- 		.name   = "vmgenid",
- 		.acpi_match_table = vmgenid_acpi_ids,
-+		.of_match_table = vmgenid_of_ids,
- 	},
- };
- 
--- 
-2.34.1
-
+Acked-by: John Stultz <jstultz@google.com>
 
