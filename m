@@ -1,84 +1,59 @@
-Return-Path: <linux-kernel+bounces-136890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE19089D970
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:52:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D350789D972
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BF96B22439
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:52:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DD9F28B14C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71C212E1D5;
-	Tue,  9 Apr 2024 12:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B426D12DDB8;
+	Tue,  9 Apr 2024 12:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HwsfChMo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="31px0dfs"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8631F12D74E;
-	Tue,  9 Apr 2024 12:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053EA12DDA2;
+	Tue,  9 Apr 2024 12:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667127; cv=none; b=TZOPWIw2TxQX5n/moMzRHWNiUklaLRZeJvXJZmixDaeH1wsXpBXRzXRpVsxHed8ef/3z5f+OVcCZ/sBA9CNBG9svqOscmQGGEq2bVM1PwLB0Q8YXz2Mtyr+3VYbC1nGOLb2XbJhh0VnAWHpWm/a/6fSG+p7MpNBSQUxwcuH5Nfg=
+	t=1712667142; cv=none; b=j4Ex/GTpCChB+fo69gfsyVPtTP60OOaDdAonQqzyoh7GvfPdDJvH1Yh2fFfMwdczsTAQJAFmn1+usiNXO80WPfAwNrXd3aGqqHvCbidEj7FCC43ijDskh6UJNUYVhWIwRrAprJaQMPduiPPydKitLp9tUhIseesB6YJPskUv42Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667127; c=relaxed/simple;
-	bh=hy2lwU0g3yjobcG30ZSLKCrav3rYwNPP3S/donc4pYw=;
+	s=arc-20240116; t=1712667142; c=relaxed/simple;
+	bh=41b/xhD3dPWFH2Cgl+OJc2iALYdSLEci2U9fZ4hnz+k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=quI13dnGZp53igHCZH4kYLzmAS0eAqkrbWN1QVvBTBnjy3HFO9wrc/a4RPJ+fiY3glWvrSmlYESWZJN5tfFOgXqdf+0cLcOPByZOJoldgr9ta+RZ7QJsYlk1bHPIHnyK7Mfcn7+d4m/+aQKdwMfpx/OCfaC5YcNJqf5Nmpq+bSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HwsfChMo; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712667126; x=1744203126;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hy2lwU0g3yjobcG30ZSLKCrav3rYwNPP3S/donc4pYw=;
-  b=HwsfChMoJ5RIfiTKZowS8aM0Nq75b0nFkLOPkTlHXpUpbiBm1hWOTloF
-   1PK0FaHo9c5E3i63kQ9TcKYi6eAcFoHq2hzQzTgTGoD/fhP3hlQWEs2t2
-   NYyKE5Pjjmd1fQ/9yPWGAFKgvtq/e3vyIKV/Z+HaHkk5T0JXKSQMWsq0I
-   Tsw2WLltZBLIbjsqpSpJB8I3rxwqzSaNUt1CFODTUF8TqEgQ4f8bWGkbE
-   nd+fpLu8aHADEkhqo1UtOw8eFohkFUrQ3BUXwpGz/6x4lfYsBO7GGnDZh
-   o5aISR/5EA4KSCmCmBzMJAyFbe/YocvTZfuUkh5AgRoAaqvuXrOgg72Dk
-   g==;
-X-CSE-ConnectionGUID: VTiUlIW5TY2IFlSCEoV9Pw==
-X-CSE-MsgGUID: Sh7uzmLTS2C7vlU5sBkKgA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8080715"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="8080715"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:52:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915399092"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="915399092"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:52:01 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ruAxC-00000002o6w-1HKO;
-	Tue, 09 Apr 2024 15:51:58 +0300
-Date: Tue, 9 Apr 2024 15:51:58 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2 2/2] gpiolib: Update the kernel documentation - add
- Return sections
-Message-ID: <ZhU57jB_pVvDz0ZR@smile.fi.intel.com>
-References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
- <20240408231727.396452-3-andriy.shevchenko@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JMBd7JliLNXZ3w0OXcrHogihyVtEdzgwqNAuAVEKnhihGEhpmIOBIxufD+fHkYW//8G+l1TUuUzbDPhjuP2ZTr0H+WYHvHGeZZ8AsJDFdDEkCQHdObOyl23a80L1w+mcvOMFtf5GET+04+upoy3ugJgc3wr2r5kW6rzQKwpst2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=31px0dfs; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=SOiDJKippIgWMoxQU2kFtESoBNJpC+0fpTgJoPzBWVA=; b=31px0dfsxvJWYgtK2EYN81+mgX
+	FTvXnHwQnouuYlmxONhKXJKIQIBzamX6wdArIX+b3JEX8ijjRho9B5rP7UVqN/q8ULMDHzJjfWEJm
+	DCvhyl78W0cnUJgq7EyfQcMdPO6JdcC70LY4vVKwJ8gaEnwPY0PrA94+2W/Ln2ZqjEvI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1ruAxM-00CZcj-IP; Tue, 09 Apr 2024 14:52:08 +0200
+Date: Tue, 9 Apr 2024 14:52:08 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Lei Chen <lei.chen@smartx.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] net:tun: limit printing rate when illegal packet
+ received by tun dev
+Message-ID: <0e5a96b6-0862-4c00-b07f-7485af232475@lunn.ch>
+References: <20240409062407.1952728-1-lei.chen@smartx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,24 +62,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240408231727.396452-3-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240409062407.1952728-1-lei.chen@smartx.com>
 
-On Tue, Apr 09, 2024 at 02:12:51AM +0300, Andy Shevchenko wrote:
-> $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w warning | wc -l
-> 67
+On Tue, Apr 09, 2024 at 02:24:05AM -0400, Lei Chen wrote:
+> vhost_worker will call tun call backs to receive packets. If too many
+> illegal packets arrives, tun_do_read will keep dumping packet contents.
+> When console is enabled, it will costs much more cpu time to dump
+> packet and soft lockup will be detected.
 > 
-> Fix these by adding Return sections. While at it, make sure all of
-> Return sections use the same style.
+> Rate limit mechanism can be used to limit the dumping rate.
+> @@ -2125,14 +2126,16 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>  					    tun_is_little_endian(tun), true,
+>  					    vlan_hlen)) {
+>  			struct skb_shared_info *sinfo = skb_shinfo(skb);
+> -			pr_err("unexpected GSO type: "
+> -			       "0x%x, gso_size %d, hdr_len %d\n",
+> -			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
+> -			       tun16_to_cpu(tun, gso.hdr_len));
+> -			print_hex_dump(KERN_ERR, "tun: ",
+> -				       DUMP_PREFIX_NONE,
+> -				       16, 1, skb->head,
+> -				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
+> +
+> +			if (__ratelimit(&ratelimit)) {
 
-Since there shouldn't be hard dependency to the first one, can you consider
-applying this one, so it unblocks me?
+Maybe just use net_ratelimit() rather than add a new ratelimit
+variable?
 
-Thank you!
+A separate issue, i wounder if rather than pr_err(),
+netdev_err(tun->dev, ...) should be used to indicate which TUN device
+has been given bad GSO packets?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+    Andrew
 
