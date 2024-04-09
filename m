@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-136274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2CD89D228
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:13:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CDEE89D229
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:13:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D71B22D42
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:13:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B393A1F23B26
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717027D062;
-	Tue,  9 Apr 2024 06:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3117D3EC;
+	Tue,  9 Apr 2024 06:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="tqPiCtAS"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="rTcw5ook"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588777C09F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AD96FE35
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643129; cv=none; b=fV1yniMNYRP7uZ62msRRGxlVtjNhlFptfpm5UzCJlxLl2TveqqWU5h37vFws4EsJKEVQ43NgI20cDMyozaadxaiafNpT6c2HzYQhGVB3vhNdjj/oFZzBfETGgQzHfXm55zH8iDZKwNEnFR+cJ3oFbnTwIE/UUFdyj7+zGom+2DU=
+	t=1712643131; cv=none; b=g9TiZrpoBUKtAiEI7NI6NQAr+UQ3ytsjX/jeTu9emzKQCWFfG0crLyTo7VU4JxymxOdEZsjUOvNT6HXJyjDwMnrtH5cMmdRNfFZJSBvYvbJ1S3ULFD+ItfJdcJwFMZ5Ks8swZABtQ3jzBxnThzqMVGxuhflvOEjAJFkOChW4Yz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643129; c=relaxed/simple;
-	bh=pgcQ0O7mGTa5hgvj/DeLVv7bktEQUMChSoIMdpY1ek4=;
+	s=arc-20240116; t=1712643131; c=relaxed/simple;
+	bh=VqVo0bzh6XJftKAe8XsJ+Ul+IauZxO02HTjKRZ5kZE0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ccP6RCKKyqIKWy53S6HcH+I0twxWh1dM0u+7f/uc5Ku117e/kvVDMujMJYyOZRrGiKvTMi/8b9fwyKEC59Kp5Sqgiq9DDQMwx6pYFw/hAVPtHOEU0uwf7aiTVYaaVmkKRLkWXcqgeGnXqqybLL3vvWDO8/+fRyc/sl9KtXnMC/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=tqPiCtAS; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=t1+hFLJcV33LFh1IxUrViP7uoWwNzycyc7SoB9WakAQ1V00jMyMcK9emA1aLV9IxSCbSXJCMpQzyEPlMyFVdqEFSQ/Uhl7SlK7QxCD2sKv2rFrVEZJi+g3yVujpojvYn335K0SmD6hdu7fLTPI8n4QUvHmhZHVVRHDATsefJ704=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=rTcw5ook; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e244c7cbf8so43834635ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:12:08 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e220e40998so32728915ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:12:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712643127; x=1713247927; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712643129; x=1713247929; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sjtTgkYtpD1hbyyXFcP/z2jvjrG+SfaQnLJvf/Uiuoc=;
-        b=tqPiCtASiXnXGorqyjbe4+xJHmXuYnt+x3HFOvlV3sLiotp/0nInmaoedlSZykK2w6
-         57UU6BLbn4usAEOtA6pCCrZKDSYgDuYkxfYfMxyfQanRqjCuQoz6a/wkddH7k7R0oKER
-         4ub06+6zCoBBKqJFExywlYkaIsKtJ453Xq2aN9TL2TeYLnyQ2vDr/nORCpC/vzT0tQnu
-         gHu7UOR3Oq+Yt+wHRH9NeJ/+pkumwvMKSWv454SBSmDMLTFuXtbaOze1EMcLsw1SfptP
-         UGOM79uRiHXTxHIqo6yiSiZrRoEEGio6jdMEaC+8TSiSDK3pfTsTSIcJ1Jt2PaP5gmav
-         5fRQ==
+        bh=vK6fRyMYl1P58cmeO0LU6+3feTaUZnDC3wku/DDJlMg=;
+        b=rTcw5ook+3U4ts/9UAM8TkYaP0aRMEX5mRp33rhaboYXM3nbp8KeXa17yDpljNgsIo
+         OXGp2GuHAF3ilgvY7WHuN35kqXmpTqsy0cft1mnSD6wmvb7Vcryo3z0XPs7TPbMO45s/
+         fK5/hL9pO63EifTwZnHsrpoogplFghwKgO5kH6p6SWkeb7Bt1xy1hob2JTNpuAk08zVP
+         niL2iq3V+xlmbyhfNxhBFDiJaBuHkSExARdThAtLBvFOMBj/KDyKaapnL8TznluVcdj3
+         miEsWWq+0rZrLjrNo7WdI5gWDoONI0A0HSgoIllMUZrin58tcpT3VDfgobkJMr2Ojg8v
+         t2vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712643127; x=1713247927;
+        d=1e100.net; s=20230601; t=1712643129; x=1713247929;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sjtTgkYtpD1hbyyXFcP/z2jvjrG+SfaQnLJvf/Uiuoc=;
-        b=ozvr+n1dAZmXf5QtYer8Z/0IZ8SqF7zDSAaic/55SDdfNxumuOVjl8bNx9XkwXUXR/
-         bewo6DDIUp4sy6PAEeCNydFVlSxkzQjWBCttzPVZEkPU/NRgXV3Vr4gghx65raqG5FVd
-         wiM6JSCs3CqwhqEjRRIqlgKA4lYnecbb+gNNLlSJFFpzQ7p4PJ1cbKK5pxOdZDKFX4K0
-         HE3Nxv3Lh4Bbe4twvgQHgqadx1VTScLQHEw4Sy3jrkyX+NBRVd2Jg9mDa2iLWkh5PSZk
-         n7QRL5KN7DxCeI04SXTK1PIj8FdCUx13CIYeLzfDYYw7m6/yAlfn8250uuX9wjHuWlgG
-         HH3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUKeHxg9BzksQnfsyWBG6I00j5nprNJ5pGPaWDPLELSnrGPtXo64wAgpi6HB4MCW9W3MF3zYPp4gf5/XoCE9IXCuYQxc07bbLIDOB9J
-X-Gm-Message-State: AOJu0YyIzj743XYyMmY2NQPTHP64meMt1kx60rAV9vBWeUurowYfTNZN
-	eIVWivgr/2gfmWceZTM7bK2VBFgi3/0czTEQamlvzmJzcMd+5fOnE5W7iVYaFOw=
-X-Google-Smtp-Source: AGHT+IE/zrYmmP+jRMmProhU7OrEkAtvl+lojCdG3T5dMALi5Qk/NiBMoaQSS094JtfcnVR7MBKxhA==
-X-Received: by 2002:a17:902:e945:b0:1e4:363b:1d42 with SMTP id b5-20020a170902e94500b001e4363b1d42mr4916637pll.3.1712643127547;
-        Mon, 08 Apr 2024 23:12:07 -0700 (PDT)
+        bh=vK6fRyMYl1P58cmeO0LU6+3feTaUZnDC3wku/DDJlMg=;
+        b=VeEzXEP4xKJVin0vdT49sUVzTrFaR9HQDgBYTcgM5/XkGKGmV0VD/C2BB71ZhNnPrw
+         6DEqIU58WMSAOKVTyadrp8v1ckMZB7TTZRyD0+Iz5WCT5hq2pNAPNrlTbhvIzWTe04uv
+         kJ2LFLVcg39ioGpC2WjOIjLWvRS7J3jlEjDwcgwMGdRBJRmpC3PardvN1FZ88pYPGeo8
+         t6kqjZPLX/W3nIB+vyRonuy1ZUmUhzmffz+7hN5adwp9exH51hBRX2A6jizY541qx/C4
+         tTE1r+vWs1knGmu/FvPjCGr48qtDku6KN+OQfzGeCf+ZujQhUAYaJbM/4+3w/oEbx16S
+         y/Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXTTO51jTDDT9EgvG0G25s9v55Pe/GgP2Mi+mtxqWUZhDzInbsesgtQU48AqlvTMdfNxiBLm8UAi0E0qXFwZraLq4mDUBzOj6lnGeM
+X-Gm-Message-State: AOJu0Yz96VVSJYS7gbpmIjLHuqqbrxjka2MlvhIYLF8quWRKsZSyjWoL
+	PQDGL0Xrtc4Veif+bY1u67kL2bdyZMy4CJQA1x5m0aTdOdftqhPIQ8cwBE7P4Eg=
+X-Google-Smtp-Source: AGHT+IHgZW6LjlIuQt5UvFz+14tJ+M4rswVyzT+uN214hG5uWWodDhWYY3GIvVhaCwgATxAIZVKVqw==
+X-Received: by 2002:a17:902:c407:b0:1e2:96d3:1bc1 with SMTP id k7-20020a170902c40700b001e296d31bc1mr13068819plk.1.1712643129552;
+        Mon, 08 Apr 2024 23:12:09 -0700 (PDT)
 Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001e3dd5972ccsm5775564plf.185.2024.04.08.23.12.05
+        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001e3dd5972ccsm5775564plf.185.2024.04.08.23.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 23:12:06 -0700 (PDT)
+        Mon, 08 Apr 2024 23:12:09 -0700 (PDT)
 From: Deepak Gupta <debug@rivosinc.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -119,9 +119,9 @@ Cc: paul.walmsley@sifive.com,
 	paulmck@kernel.org,
 	broonie@kernel.org,
 	rick.p.edgecombe@intel.com
-Subject: [RFC PATCH 05/12] riscv: fix certain indirect jumps for kernel cfi
-Date: Mon,  8 Apr 2024 23:10:36 -0700
-Message-Id: <20240409061043.3269676-6-debug@rivosinc.com>
+Subject: [RFC PATCH 06/12] scs: place init shadow stack in .shadowstack section
+Date: Mon,  8 Apr 2024 23:10:37 -0700
+Message-Id: <20240409061043.3269676-7-debug@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240409061043.3269676-1-debug@rivosinc.com>
 References: <20240409061043.3269676-1-debug@rivosinc.com>
@@ -133,36 +133,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Handwritten `__memset` asm routine performs certain static jumps within
-function and uses `a5` to do that. This would require a landing pad
-instruction at the target. Since its static jump and no memory load is
-involved, use `t2` instead which is exempt from requiring a landing pad.
+If compiled for riscv and dynamic scs is turned on, place shadow stack in
+`.shadowstack` section. Arch specific linker script can place logic to
+protect this section against regular stores.
 
 Signed-off-by: Deepak Gupta <debug@rivosinc.com>
 ---
- arch/riscv/lib/memset.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/init_task.h |  5 +++++
+ init/init_task.c          | 12 ++++++++++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/lib/memset.S b/arch/riscv/lib/memset.S
-index 35f358e70bdb..e129ebf66986 100644
---- a/arch/riscv/lib/memset.S
-+++ b/arch/riscv/lib/memset.S
-@@ -56,12 +56,12 @@ SYM_FUNC_START(__memset)
+diff --git a/include/linux/init_task.h b/include/linux/init_task.h
+index bccb3f1f6262..f025022e1164 100644
+--- a/include/linux/init_task.h
++++ b/include/linux/init_task.h
+@@ -40,4 +40,9 @@ extern struct cred init_cred;
+ /* Attach to the thread_info data structure for proper alignment */
+ #define __init_thread_info __section(".data..init_thread_info")
  
- 	/* Jump into loop body */
- 	/* Assumes 32-bit instruction lengths */
--	la a5, 3f
-+	la t2, 3f
- #ifdef CONFIG_64BIT
- 	srli a4, a4, 1
++#if defined(CONFIG_RISCV) && defined(CONFIG_DYNAMIC_SCS)
++/* init shadow stack page */
++#define __init_shadow_stack __section(".shadowstack..init")
++#endif
++
  #endif
--	add a5, a5, a4
--	jr a5
-+	add t2, t2, a4
-+	jr t2
- 3:
- 	REG_S a1,        0(t0)
- 	REG_S a1,    SZREG(t0)
+diff --git a/init/init_task.c b/init/init_task.c
+index 4daee6d761c8..3c0a01455978 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -52,10 +52,18 @@ static struct sighand_struct init_sighand = {
+ };
+ 
+ #ifdef CONFIG_SHADOW_CALL_STACK
+-unsigned long init_shadow_call_stack[SCS_SIZE / sizeof(long)] = {
++unsigned long init_shadow_call_stack[SCS_SIZE / sizeof(long)]
++#if defined(CONFIG_RISCV) && defined(CONFIG_DYNAMIC_SCS)
++	/* RISC-V dynamic SCS implements shadow stack and must go in special section */
++	__init_shadow_stack = {
++	[0] = SCS_END_MAGIC
++};
++#else
++	= {
+ 	[(SCS_SIZE / sizeof(long)) - 1] = SCS_END_MAGIC
+ };
+-#endif
++#endif /* CONFIG_RISCV && CONFIG_DYNAMIC_SCS */
++#endif /* CONFIG_SHADOW_CALL_STACK */
+ 
+ /*
+  * Set up the first task table, touch at your own risk!. Base=0,
 -- 
 2.43.2
 
