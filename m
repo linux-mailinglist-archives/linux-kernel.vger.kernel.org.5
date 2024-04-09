@@ -1,109 +1,144 @@
-Return-Path: <linux-kernel+bounces-137344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769A489E0DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:54:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC7089E0D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:52:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 162F11F22A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CF9D284504
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DA215381F;
-	Tue,  9 Apr 2024 16:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9812C15380D;
+	Tue,  9 Apr 2024 16:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b="KKkIWzjw"
-Received: from mr3.vodafonemail.de (mr3.vodafonemail.de [145.253.228.163])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WE/VmO/l"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF971386C0;
-	Tue,  9 Apr 2024 16:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.253.228.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B5013A267
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712681675; cv=none; b=THPp+sRyVQtBJrNYnO/Aaiugxzny7IzQMbwFHh4SAnfXBt2sqLV9C8Fu4rZ8QvxecXpUaYx6HbTIFFo6wKpKGrTrf0DvjARFMUHMiTCVIIWa4G0FPZu98G9eoBnpRi2olNjMu3L7SSJA/dq9QqMY5MxtU3cQ8g4YqE/vql32z0k=
+	t=1712681567; cv=none; b=QWv3p0I9uBAF5xmY82R3GarECf8Lt/jsg0R7+5TcnjiDy2u5ANP1+Y2j65jpFnOB2WzyR9IV9re3qXY9ekT72Z99JLwS0wBk5IUi1ckFuWXdrJ21oFdx4KwnWnWf5dU3QVvtWVban/PXg8iPhImoz4gS7AhwkFAJm2KGumRdRPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712681675; c=relaxed/simple;
-	bh=HEj8fGwu2M7SCaKbJdG/QejwGPEN39S60SJHeImWezw=;
-	h=Message-ID:From:To:Cc:References:In-Reply-To:Subject:Date:
-	 MIME-Version:Content-Type; b=dDdLY2Jzef+16a8EQSrNgKBR4psz6uusVcdePLMF1p6qovLRcGIGQchlNZUqViUOJGtpGKiO6VK/NTcGl1REGt+VDDHdoIZdGaZn1t9pMWSSkVAIxltjXVkbXjxA0tvnLsNAUPVaxbo9r6/ZeVG33jNAFZ3Cr/IWoIdFacBvBNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de; spf=pass smtp.mailfrom=nexgo.de; dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b=KKkIWzjw; arc=none smtp.client-ip=145.253.228.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nexgo.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexgo.de;
-	s=vfde-mb-mr2-23sep; t=1712681663;
-	bh=Oo30CQZlp5KZEr6FMyyQB9R5JI3hVckU9HntCkKGtq4=;
-	h=Message-ID:From:To:References:In-Reply-To:Subject:Date:
-	 Content-Type:X-Mailer:From;
-	b=KKkIWzjwKJddxVViMBx4zI16tyG15t5cu5dDuNt0qeDI30LXWKnXfCUQGkOSiCLRi
-	 9lBiKd0fyy/p+IHWbplCqd0jTKO4yKEtmn3TSDw5DcXSkHOX3z8waRAGY/1DtWAzSf
-	 MxCVfDStDE/4i08MXEKCh5DmAtT+Bi4zRKvd1y8Q=
-Received: from smtp.vodafone.de (unknown [10.0.0.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mr3.vodafonemail.de (Postfix) with ESMTPS id 4VDX9q61dfz2FsG;
-	Tue,  9 Apr 2024 16:54:23 +0000 (UTC)
-Received: from H270 (p54805648.dip0.t-ipconnect.de [84.128.86.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.vodafone.de (Postfix) with ESMTPSA id 4VDX9Z3fKhz9sc3;
-	Tue,  9 Apr 2024 16:54:07 +0000 (UTC)
-Message-ID: <C0FA88ECA90F43B1BF9E7849C53440D7@H270>
-From: "Stefan Kanthak" <stefan.kanthak@nexgo.de>
-To: "Eric Biggers" <ebiggers@kernel.org>,
-	<linux-crypto@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>,
-	<ardb@kernel.org>
-References: <20240409124216.9261-1-ebiggers@kernel.org> <20240409124216.9261-2-ebiggers@kernel.org>
-In-Reply-To: <20240409124216.9261-2-ebiggers@kernel.org>
-Subject: Re: [PATCH 1/2] crypto: x86/sha256-ni - convert to use rounds macros
-Date: Tue, 9 Apr 2024 18:52:02 +0200
-Organization: Me, myself & IT
+	s=arc-20240116; t=1712681567; c=relaxed/simple;
+	bh=j2Y+94KbsbY7acQxdTX6z539hRaKkg/fO5uMKEch7SU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=o0OJF6+9isDR+H5hTUmVsZilXcJVFMlGIWgZk3Okq9RjaJioxYBJY+7Nm2bw+Xw3NNnik/f/fzA5rGMHog5JxRxulWeqcGHQXsxPhvwQeFPa/gmxzqfgSVzGu4sO7gaDbq4yVWQ+gHskYjiwfM5PvnQGwRDiM4r+UIIQ/FET1EI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WE/VmO/l; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712681565;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+NKidzKW/DTvBc1tQ8E4kYeb8ojdS1p5BOYrq1bKV6k=;
+	b=WE/VmO/lSgEB8sVWrgRnbqY+oMv95WvOVRD7Jt52twwg4sPiPbN9eXhp+pa9mj78nIZYGO
+	9Go4efK6gXuA8mvvvBjo5DAEV0TWctW1GaWWJKr2kQ0kEF9PFkS3f06VmYTH3jU8oEEd95
+	hAQ1G1FeZH+PYMSmd45otwjlTCZFSkc=
+Received: from mail-vk1-f200.google.com (mail-vk1-f200.google.com
+ [209.85.221.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-216-Omczv-P3MNKVA1LM5H_T3Q-1; Tue, 09 Apr 2024 12:52:43 -0400
+X-MC-Unique: Omczv-P3MNKVA1LM5H_T3Q-1
+Received: by mail-vk1-f200.google.com with SMTP id 71dfb90a1353d-4d40305ddb3so1289282e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:52:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712681563; x=1713286363;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+NKidzKW/DTvBc1tQ8E4kYeb8ojdS1p5BOYrq1bKV6k=;
+        b=YqFPAJoSOWKpT1CoN4F8NoI1cZHlYULpgmC/XqMzSUhu4oZk8r/0cZtoAtKKb6MtXk
+         tTPINaxrktibOPABkNos0ryHKWLIA8MaEtYjOUTKbnObgijTjge42doDV0aHs3AsfbQy
+         W4nnSJ4dDJUtiqpl/ZUsThUeaegu2wnNDi4sV50kTJp95ZIUECofeLA3szS6HOEBO/hq
+         fL8XCUDvVQx52WoIiCMy82x4Nvj90YQubqDg6/kmXCmiuZxw6vIOnoKHKWDeRr+b/0kT
+         SUpkVRk7w8qpz9tO42SMJJG5xMjSUzSeu1eJJomGOYE/k9RDGEzMldFsSKNSvtX3xWG5
+         jabg==
+X-Forwarded-Encrypted: i=1; AJvYcCVu8cZo3II0goE6COaaHDMqhKzRyyWPzS+YwzhOQY8tS+yFPbIe5PIRAlAKI0GZx6EQW1DQL0BNkHQ4em+aMLLrBFwmxxxC2PENP81A
+X-Gm-Message-State: AOJu0YxdHrOXjv2Smq7qI3ji6D0lF5jifoaWzitUOUjI+ET9PkXIQb/r
+	/hYPvAjHgRoZkynmJiNRBzhzMMCf1TavCty2j4taebzKDdfwFgpOs57Nt8I4wdllj0lemRlm2j2
+	iBBxn53MZ1gh5DmbHPM6KHc+SKpicAgz0G8b2I4dqV230sGsduhesl9QmUk04Jg==
+X-Received: by 2002:a05:6122:90c:b0:4d3:4ac2:29f4 with SMTP id j12-20020a056122090c00b004d34ac229f4mr484247vka.2.1712681563217;
+        Tue, 09 Apr 2024 09:52:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE40zvLEF0ZBb59hoel0B1fp7t336yp12pBAvKmKmGFQvM2VaoTV61WKM8Kbw1z3qCiHsrz9Q==
+X-Received: by 2002:a05:6122:90c:b0:4d3:4ac2:29f4 with SMTP id j12-20020a056122090c00b004d34ac229f4mr484208vka.2.1712681562863;
+        Tue, 09 Apr 2024 09:52:42 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id fe4-20020a0562140b8400b00698facb19d5sm4093118qvb.106.2024.04.09.09.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 09:52:41 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Connor O'Brien <connoro@google.com>, Joel Fernandes <joelaf@google.com>,
+ Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, Youssef
+ Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
+ Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>,
+ Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul
+ E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, Xuewen
+ Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, John Stultz
+ <jstultz@google.com>
+Subject: Re: [RESEND][PATCH v9 5/7] sched: Consolidate pick_*_task to
+ task_is_pushable helper
+In-Reply-To: <20240401234439.834544-6-jstultz@google.com>
+References: <20240401234439.834544-1-jstultz@google.com>
+ <20240401234439.834544-6-jstultz@google.com>
+Date: Tue, 09 Apr 2024 18:52:36 +0200
+Message-ID: <xhsmh34rua36z.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Windows Mail 6.0.6002.18197
-X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-size: 783
-X-purgate-ID: 155817::1712681659-FBFEDA47-1BACD483/0/0
+Content-Type: text/plain
 
-"Eric Biggers" <ebiggers@kernel.org> wrote:
+On 01/04/24 16:44, John Stultz wrote:
+> From: Connor O'Brien <connoro@google.com>
+>
+> This patch consolidates rt and deadline pick_*_task functions to
+> a task_is_pushable() helper
+>
+> This patch was broken out from a larger chain migration
+> patch originally by Connor O'Brien.
+>
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Metin Kaya <Metin.Kaya@arm.com>
+> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kernel-team@android.com
+> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
 
-> +.macro do_4rounds i, m0, m1, m2, m3
-> +.if \i < 16
-> +        movdqu  \i*4(DATA_PTR), MSG
-> +        pshufb  SHUF_MASK, MSG
-> +        movdqa  MSG, \m0
-> +.else
-> +        movdqa  \m0, MSG
-> +.endif
-> +        paddd   \i*4(SHA256CONSTANTS), MSG
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-To load the round constant independent from and parallel to the previous
-instructions which use \m0 I recommend to change the first lines of the
-do_4rounds macro as follows (this might save 1+ cycle per macro invocation,
-and most obviously 2 lines):
+> Signed-off-by: Connor O'Brien <connoro@google.com>
+> [jstultz: split out from larger chain migration patch,
+>  renamed helper function]
+> Signed-off-by: John Stultz <jstultz@google.com>
 
-macro do_4rounds i, m0, m1, m2, m3
-if \i < 16
-        movdqu  \i*4(DATA_PTR), \m0
-        pshufb  SHUF_MASK, \m0
-endif
-        movdqa  \i*4(SHA256CONSTANTS), MSG
-        paddd   \m0, MSG
-..
-
-regards
-Stefan
 
