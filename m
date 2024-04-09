@@ -1,215 +1,95 @@
-Return-Path: <linux-kernel+bounces-137720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD8A389E658
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:47:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E31A89E628
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:37:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C194C1C22792
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:47:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C380B22DA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C691591FB;
-	Tue,  9 Apr 2024 23:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE98C1591E9;
+	Tue,  9 Apr 2024 23:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xVuQzfCE"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2064.outbound.protection.outlook.com [40.107.101.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JWVzFkgl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597D9158DAA;
-	Tue,  9 Apr 2024 23:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706412; cv=fail; b=YOwG1suzvteZqo8aQK6y7NzShk9g7mKfzLTnlpgdkepLIvNzmwwdlAwHNEe6NRyAlQHKIqTPQ0GjyBPX0WMVqDCnZUl8P9czK3/7a9cUIxQJJtvrJmqP9z9/tuDqnjSQwQLSoLibGKMlCOsru3GuKMrnLDff3XO1WPEOLqmQbyc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706412; c=relaxed/simple;
-	bh=uij4znCTQR9kMW4quQQZ2MHqAUIDszgrxafUxYVpQLI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JsTB0rHVSHDceTfQMTL+7o85jbNnFYx/odTxcpz7d2NnSs2FKr13enTV2U0tqRIJWTdgPx0ZT4o/Bm1mzU6qIO8Sn0wAP2Qg53s3zWnDzrCJxfQEMWGZP1uIcZTncUjRQ/650UZFKX57rOLY1XDP+NxFAVyvyaC02gX2QT3WwRE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xVuQzfCE; arc=fail smtp.client-ip=40.107.101.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I2wf2cPT4yP27gLHWEMVuJ9tgjOtFqQCSIjCbabqcUiqdjhRY0WenSIFZCu8XLIJGsdnSjOVXvtem+7/XOQi1YudWqHebtvKL997WcdDbVrSznCbAR1cIzmYbddkLNm34W5zpVX9zSBgZgOgS0Vjt5fFRzwnyb8KG1s5W2DNVZKxeDwI9m3oScSeTpF+9CdAAB4H4OkbXYKX4qqwTyiSkJyFdoACWedWosNjcnaCVaZbaA9QPzuoAA5MGW2c4yNW850JhounmH3+GviENwTC8spLno/Lp/0FN0864c6/PZvzhoN6TkK8FXrMIYLJCkaumJwHfZzkasCEyW17NVJ4Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WN/BJdzXy76+BDeOTlQn2RuppyJHceidGxubrrPPX8U=;
- b=b4XCliZ32bc4py0UhU+9EV4nBg0On+3CUQh9hTWD00f+zPoSpXEVuKWVEyk1mMGmvc7AIh7gfyXOthWOc9Sn8FswDZikaX4OC0WS0Rry2Kl9aAZhuzefRxMboK9tt7OWS0HH961bE2OlM8FXqgrrGnciEVOjWjXtcDm+oluMVtrtcDHtVgrg+oE4OtWV0oYVNsQhzPSpY0fzPszMRNs5zDRWIde4o2WjgKk0XP959X2kEh1nSUr95tjj9zBFfnDc2rRR2Wulm39/59fvn05PEggJGeders/dcESI2yDB+canU2eyURFeZKvPdHTK/uKpvtcx/NjgwaYcDSxt4fg7Gw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WN/BJdzXy76+BDeOTlQn2RuppyJHceidGxubrrPPX8U=;
- b=xVuQzfCEQM795GL+wasW4EQngYjljbA4YjhQm0aGFyn4qDNR5yZjMuukBRw72mGANclCo4vHK9x48KztW7F0RN6ZrFyTIQf7rOwxi9bh7x+iGngNythR9qbZMC8BIJqs8S6k3Ci4mTw1RtVx7vEOp0Ua2hlgKyw0Gxd+8clcMCY=
-Received: from MN2PR20CA0037.namprd20.prod.outlook.com (2603:10b6:208:235::6)
- by CY8PR12MB7753.namprd12.prod.outlook.com (2603:10b6:930:93::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 23:46:48 +0000
-Received: from BL6PEPF0001AB55.namprd02.prod.outlook.com
- (2603:10b6:208:235:cafe::e6) by MN2PR20CA0037.outlook.office365.com
- (2603:10b6:208:235::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.34 via Frontend
- Transport; Tue, 9 Apr 2024 23:46:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB55.mail.protection.outlook.com (10.167.241.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Tue, 9 Apr 2024 23:46:47 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Apr
- 2024 18:46:47 -0500
-Date: Tue, 9 Apr 2024 18:35:42 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<seanjc@google.com>, <isaku.yamahata@intel.com>
-Subject: Re: [PATCH 07/11] KVM: guest_memfd: extract __kvm_gmem_get_pfn()
-Message-ID: <20240409233542.aapmef7mkztgbnv2@amd.com>
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-8-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D101158D6E;
+	Tue,  9 Apr 2024 23:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712705813; cv=none; b=s2XeuX3xIpEWXkSIicR4RpfXFdMdUMKZXGYTzB5U4ZkmeKIu5DVzWo5QuU8fOijVNG2RhMQ/dYBwByQekgJPKm7OMEm4GuZWyzFIftZvpAyLoUL+2Y0WvObKo8c4CJ/ztuz2Q8SMCabsSa4xqiI3ORan+pDaouNKtz+QtMDvz0Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712705813; c=relaxed/simple;
+	bh=hA2wWyk7zfJrrACYbKi2zhdNeTSkqeqGy0UHG741Q8o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dzv28hh1HsYtE/iQqxrEvsWJIajdeMx2HXfd5Km3ERokayGMj+BI74sR5RdyjwuBVAtNQjQRo/c7WAdLCgHkqn2aUJZe+mwNCMov++kGB/dvyEzeB7TP4HyPp+W9xlUTKfQCyoFh4JBtumAhBxaWJgzaeNKTmJv4tYKipKqB/qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JWVzFkgl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 300F3C433F1;
+	Tue,  9 Apr 2024 23:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712705812;
+	bh=hA2wWyk7zfJrrACYbKi2zhdNeTSkqeqGy0UHG741Q8o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JWVzFkglFzfP/c3ERcovhr2V/wFFIoIoa+/1Z6mrmGLq3ovzRgxZ+IeKClflbpjvi
+	 iL6/PWfzgk14UMJoQ2MTsGBKLsRU2DLVln84moNtcMTeBootGQKt89DaJYmjo8BrJ8
+	 lqSqFj1LIIfJANq6SiD9q8c81w7ZBqftFZ1o8yC2JVDZaD75FTwUwrWnfveN7SF0I1
+	 yq7xkjarHWjCwO0+46qZuzmgghsx9tbXdqPJH2+xxv/Po+uN75wXu6aA5D8cuVMtdu
+	 DAbkOX1FA0u4y5hhg3BmZoXXKYNhwsTQdbnfJ5+/gasZPaBaa3eABg6Q6GNl62uEg4
+	 M+87GOqG2nDKA==
+Date: Tue, 9 Apr 2024 19:36:50 -0400
+From: Eric Biggers <ebiggers@kernel.org>
+To: Stefan Kanthak <stefan.kanthak@nexgo.de>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org
+Subject: Re: [PATCH 1/2] crypto: x86/sha256-ni - convert to use rounds macros
+Message-ID: <20240409233650.GA1609@quark.localdomain>
+References: <20240409124216.9261-1-ebiggers@kernel.org>
+ <20240409124216.9261-2-ebiggers@kernel.org>
+ <C0FA88ECA90F43B1BF9E7849C53440D7@H270>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240404185034.3184582-8-pbonzini@redhat.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB55:EE_|CY8PR12MB7753:EE_
-X-MS-Office365-Filtering-Correlation-Id: debaadf2-6467-44fa-9acd-08dc58ef5243
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	cNlry1k166MXclMw8RLqn62jsMKQc3QZ1TmFmcI6o3NO1YkKsl4Wq61KXcXz6qb3mUCZzAXulLnUDt7pMYReuTcdoo0wHaJzxhkBz+0PFQLHm7TghssvIC/+neRTcpQscOUMYmC70CELhAK8MY6etz5hORCEuS/RWwvW8xgoJTXGoyDS9MY1DSWD2M81SNaCPdUTm+hRtI9HkBX9lr5RWF8sfmOdd9tuXyR07wvsLFvzswEPVYYHwmJxg6iQ0gkt5nz30mLPfk2AZu9MIay2DuQx0HhtoAhczeosLOyZUpGwUBjnVfvpQXvPls5Z7aR3iQBJuCSt86CbidCR2FkZNmbNY85Hz8EjX7tEMRyMY+59pItXtP17a9hcIGJP/dgD8FD8B+PZjFMGi+eKr79CAMgDhNzLfWski9W4X+t3mnAtfMMjiVWanW3SDtLtGBQQwqMLJJkZ7zf+iCKfBq1HhIkmpix/Kdn81LxgLcVVwflXDiejzNv7Qn7kH8am5hXz5MFFDPaid8jgji41R0ehsmLVpSQkduuecV0dHQeGnTFp3aepxfXsEg5ya96lt+4eaYGh83ByGaIgvLFuOlMMmryq2NCvPMq1u9FHGW24foCdZsKcPyIxN5Q6a198aNoDZ0fYH/+bY/1/e5NBOFCMwhvrvHunuQ2QBnSKLncwEVvPgIWPg3+56FRaPwtXkiWio4Yu69ztFnKrx/BXfj36Yfv1CRVDx3nDzNzzevUfYjMcg3qkbskv+KEl9IOOhVN2
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 23:46:47.9889
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: debaadf2-6467-44fa-9acd-08dc58ef5243
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB55.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7753
+In-Reply-To: <C0FA88ECA90F43B1BF9E7849C53440D7@H270>
 
-On Thu, Apr 04, 2024 at 02:50:29PM -0400, Paolo Bonzini wrote:
-> In preparation for adding a function that walks a set of pages
-> provided by userspace and populates them in a guest_memfd,
-> add a version of kvm_gmem_get_pfn() that has a "bool prepare"
-> argument and passes it down to kvm_gmem_get_folio().
+On Tue, Apr 09, 2024 at 06:52:02PM +0200, Stefan Kanthak wrote:
+> "Eric Biggers" <ebiggers@kernel.org> wrote:
 > 
-> Populating guest memory has to call repeatedly __kvm_gmem_get_pfn()
-> on the same file, so make the new function take struct file*.
+> > +.macro do_4rounds i, m0, m1, m2, m3
+> > +.if \i < 16
+> > +        movdqu  \i*4(DATA_PTR), MSG
+> > +        pshufb  SHUF_MASK, MSG
+> > +        movdqa  MSG, \m0
+> > +.else
+> > +        movdqa  \m0, MSG
+> > +.endif
+> > +        paddd   \i*4(SHA256CONSTANTS), MSG
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  virt/kvm/guest_memfd.c | 38 +++++++++++++++++++++++---------------
->  1 file changed, 23 insertions(+), 15 deletions(-)
+> To load the round constant independent from and parallel to the previous
+> instructions which use \m0 I recommend to change the first lines of the
+> do_4rounds macro as follows (this might save 1+ cycle per macro invocation,
+> and most obviously 2 lines):
 > 
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index 486748e65f36..a537a7e63ab5 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -540,33 +540,29 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
->  	fput(file);
->  }
->  
-> -int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
-> -		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
-> +static int __kvm_gmem_get_pfn(struct file *file, struct kvm_memory_slot *slot,
-> +		       gfn_t gfn, kvm_pfn_t *pfn, int *max_order, bool prepare)
->  {
->  	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
-> -	struct kvm_gmem *gmem;
-> +	struct kvm_gmem *gmem = file->private_data;
->  	struct folio *folio;
->  	struct page *page;
-> -	struct file *file;
->  	int r;
->  
-> -	file = kvm_gmem_get_file(slot);
-> -	if (!file)
-> +	if (file != slot->gmem.file) {
-> +		WARN_ON_ONCE(slot->gmem.file);
->  		return -EFAULT;
-> +	}
->  
->  	gmem = file->private_data;
-> -
->  	if (xa_load(&gmem->bindings, index) != slot) {
->  		WARN_ON_ONCE(xa_load(&gmem->bindings, index));
-> -		r = -EIO;
-> -		goto out_fput;
-> +		return -EIO;
->  	}
->  
->  	folio = kvm_gmem_get_folio(file_inode(file), index, true);
+> .macro do_4rounds i, m0, m1, m2, m3
+> .if \i < 16
+>         movdqu  \i*4(DATA_PTR), \m0
+>         pshufb  SHUF_MASK, \m0
+> .endif
+>         movdqa  \i*4(SHA256CONSTANTS), MSG
+>         paddd   \m0, MSG
+> ...
 
-This should be:
+Yes, your suggestion looks good.  I don't see any performance difference on
+Ice Lake, but it does shorten the source code.  It belongs in a separate patch
+though, since this patch isn't meant to change the output.
 
-  folio = kvm_gmem_get_folio(file_inode(file), index, prepare);
-
-Otherwise:
-
-Reviewed-by: Michael Roth <michael.roth@amd.com>
-
--Mike
-
-> -	if (!folio) {
-> -		r = -ENOMEM;
-> -		goto out_fput;
-> -	}
-> +	if (!folio)
-> +		return -ENOMEM;
->  
->  	if (folio_test_hwpoison(folio)) {
->  		r = -EHWPOISON;
-> @@ -583,9 +579,21 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->  
->  out_unlock:
->  	folio_unlock(folio);
-> -out_fput:
-> -	fput(file);
->  
->  	return r;
->  }
-> +
-> +int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
-> +{
-> +	struct file *file = kvm_gmem_get_file(slot);
-> +	int r;
-> +
-> +	if (!file)
-> +		return -EFAULT;
-> +
-> +	r = __kvm_gmem_get_pfn(file, slot, gfn, pfn, max_order, true);
-> +	fput(file);
-> +	return r;
-> +}
->  EXPORT_SYMBOL_GPL(kvm_gmem_get_pfn);
-> -- 
-> 2.43.0
-> 
-> 
+- Eric
 
