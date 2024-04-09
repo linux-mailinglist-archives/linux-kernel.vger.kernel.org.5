@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-136300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F5289D264
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:26:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BC5F89D260
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2158C1F23F08
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:26:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D96E2848E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CDD7D09D;
-	Tue,  9 Apr 2024 06:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E557BB13;
+	Tue,  9 Apr 2024 06:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="l5JnLph2"
-Received: from mail.tkos.co.il (golan.tkos.co.il [84.110.109.230])
+	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="n3qLjVAj"
+Received: from mail.tkos.co.il (guitar.tkos.co.il [84.110.109.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B16974431;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D747442A;
 	Tue,  9 Apr 2024 06:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.110.109.230
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643942; cv=none; b=o/fkcBKTVhSQzcqeQW8jCadhnUwQg29gLenwpuP3KDavdrp5lEaDJaKmB+aRLKhERtMGzH5WVPqwD2emvHTGALuxY8eKuLEHiPq+lLONKXBHIVhU8Pam1sO3FXzjghAyYOVX/YbMdljX8YF2SbbCK2JuoMHK5dEisGiqVUIJ7LE=
+	t=1712643941; cv=none; b=hZb875hmGBpkvzlH+AUeMCavHYCIWn7jsfPjJIGmayfShpo5x31DjPLUZbrAzBUbana+TvJHws8W/x+X6FwbyWNFC8aMd2/zxgBiipNGFStcJdufNssOQZe99c1VXEQfjohusfhsvgPI3FWiK3rzubN1DkaVHqdCyER1Cy+AHdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643942; c=relaxed/simple;
-	bh=FXQtGF6++0LX0KatAYgesfv/8e0GvZUA1g/auC5Ghlc=;
+	s=arc-20240116; t=1712643941; c=relaxed/simple;
+	bh=EIw24HYGCi1y+d787B1Nwod7ac/kZ5Ydc0E1Leu5myU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q3FY9Fif5nLWfQj2bC3CoA+CHCTaSF3IigHKlobPqv260VVJ75o7DC9Gk0rNgAR+G2lms0PW014LUS/XlEPlo8pcMKwIFCcSy/Bm5HXT8m2Q3sIjYcuW0J8RcFcFWH3s83CUiwpvwZLdBqCaLCEkwcAOGqBE2PKsbBiaA8R25PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il; spf=pass smtp.mailfrom=tkos.co.il; dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b=l5JnLph2; arc=none smtp.client-ip=84.110.109.230
+	 MIME-Version; b=QfOyHcTUvqGj+qA98s2Tad+wSW2Tv6oHcIsGj1F2FBHJgstUJEp+cuUMkievwlXWIY9h08njkR/ugPC50WGRyzw78ZgrGZtwrLF/0ErRUKVfnwX76V0eQ/rlccbu9k0hYnoazKQTVTcHMVSqVbyrTuMttwSih8zYbMOXJDnlKHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il; spf=pass smtp.mailfrom=tkos.co.il; dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b=n3qLjVAj; arc=none smtp.client-ip=84.110.109.230
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
 Received: from tarshish.tkos.co.il (unknown [10.0.8.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.tkos.co.il (Postfix) with ESMTPS id CE478440291;
-	Tue,  9 Apr 2024 09:17:42 +0300 (IDT)
+	by mail.tkos.co.il (Postfix) with ESMTPS id 3F5CC4402AC;
+	Tue,  9 Apr 2024 09:17:43 +0300 (IDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
 	s=default; t=1712643463;
-	bh=FXQtGF6++0LX0KatAYgesfv/8e0GvZUA1g/auC5Ghlc=;
+	bh=EIw24HYGCi1y+d787B1Nwod7ac/kZ5Ydc0E1Leu5myU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l5JnLph2+ot8XePK4SlZn31LRIvdmAaMZcFK5/sjmQZa0fNGTUHMFjlW0/7d3LVbG
-	 6E9mcmKmABkUmQQVgsztHBJSky0dfHlvbwiJdCefg2lkVkFKRXEfM6Kb10GdKxuYOO
-	 oqa/LzAihcKVRg5EDq3bUKxwy44WPJX8F8tdDWLA40VzuhjYsAZ2kl3WlCo0Zd/Zt8
-	 q6sqhPpzabaPVkBLl4mS0nDFpanR6hC7jLKna7nVn1iSI8KazThuKSJWsa+hhEqqXN
-	 VsTdwCwvan+rWMZNA67Q9zdFvAE4D0hKiZmDga7ffpM2gyozW5S24N2y+pRJy3WWEW
-	 UDOUVIN+RqIIQ==
+	b=n3qLjVAj+4pF4UYTEPUfy6hDZc7RQUJl12cdtSQ67feuraSJIcxEnkhhz7svNCZev
+	 WiFYZlsATBak209c0SBVa1hf/ggF4S1N16dWH1g9juf38FTb5MKzO5N4stpAdIfAna
+	 XycYLYvSezvjE/+xRKgPwwodUZL59zZpOmzpRgcA8BeKfxbYcgVXPCzwMXLGQnMVtk
+	 DlpOc9jsgwHZKnFO4YYjqd/gi7etpfY1VBFuqgqhNIsBfzzBbuDvzQy9zRlq1zfL6E
+	 VmsQN9vAyrAP78oOAToGaJR2hb+bhccZVs3Bzit89jiGKrOwxaHmKOAsR2I+1vBZUA
+	 1zf1LjaNsJl3Q==
 From: Baruch Siach <baruch@tkos.co.il>
 To: Christoph Hellwig <hch@lst.de>,
 	Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -63,9 +63,9 @@ Cc: Baruch Siach <baruch@tkos.co.il>,
 	=?UTF-8?q?Petr=20Tesa=C5=99=C3=ADk?= <petr@tesarici.cz>,
 	Ramon Fried <ramon@neureality.ai>,
 	Elad Nachman <enachman@marvell.com>
-Subject: [PATCH RFC v2 1/5] dma-mapping: replace zone_dma_bits by zone_dma_limit
-Date: Tue,  9 Apr 2024 09:17:54 +0300
-Message-ID: <fda45c91f69e65ec14b9aaec9aa053e6982e5b87.1712642324.git.baruch@tkos.co.il>
+Subject: [PATCH RFC v2 2/5] of: get dma area lower limit
+Date: Tue,  9 Apr 2024 09:17:55 +0300
+Message-ID: <230ea13ef8e9f576df849e1b03406184ca890ba8.1712642324.git.baruch@tkos.co.il>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1712642324.git.baruch@tkos.co.il>
 References: <cover.1712642324.git.baruch@tkos.co.il>
@@ -77,210 +77,178 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Catalin Marinas <catalin.marinas@arm.com>
+of_dma_get_max_cpu_address() returns the highest CPU address that
+devices can use for DMA. The implicit assumption is that all CPU
+addresses below that limit are suitable for DMA. However the
+'dma-ranges' property this code uses also encodes a lower limit for DMA
+that is potentially non zero.
 
-Hardware DMA limit might not be power of 2. When RAM range starts above
-0, say 4GB, DMA limit of 30 bits should end at 5GB. A single high bit
-can not encode this limit.
+Rename to of_dma_get_cpu_limits(), and extend to retrieve also the lower
+limit for the same 'dma-ranges' property describing the high limit.
 
-Use direct phys_addr_t limit address for DMA zone limit.
+Update callers of of_dma_get_max_cpu_address(). No functional change
+intended.
 
-Following commits will add explicit base address to DMA zone.
-
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 ---
-Catalin,
-
-This is taken almost verbatim from your email:
-
-  https://lore.kernel.org/all/ZZ2HnHJV3gdzu1Aj@arm.com/
-
-Would you provide your sign-off?
-
-Thanks,
-baruch
----
- arch/arm64/mm/init.c       | 32 ++++++++++----------------------
- arch/powerpc/mm/mem.c      |  9 ++++-----
- arch/s390/mm/init.c        |  2 +-
- include/linux/dma-direct.h |  2 +-
- kernel/dma/direct.c        |  6 +++---
- kernel/dma/pool.c          |  2 +-
- kernel/dma/swiotlb.c       |  4 ++--
- 7 files changed, 22 insertions(+), 35 deletions(-)
+ arch/arm64/mm/init.c  |  2 +-
+ drivers/of/address.c  | 38 +++++++++++++++++++++++++++-----------
+ drivers/of/unittest.c |  8 ++++----
+ include/linux/of.h    | 11 ++++++++---
+ 4 files changed, 40 insertions(+), 19 deletions(-)
 
 diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 03efd86dce0a..00508c69ca9e 100644
+index 00508c69ca9e..77e942ca578b 100644
 --- a/arch/arm64/mm/init.c
 +++ b/arch/arm64/mm/init.c
-@@ -113,36 +113,24 @@ static void __init arch_reserve_crashkernel(void)
- 				    low_size, high);
- }
- 
--/*
-- * Return the maximum physical address for a zone accessible by the given bits
-- * limit. If DRAM starts above 32-bit, expand the zone to the maximum
-- * available memory, otherwise cap it at 32-bit.
-- */
--static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-+static phys_addr_t __init max_zone_phys(phys_addr_t zone_limit)
- {
--	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
--	phys_addr_t phys_start = memblock_start_of_DRAM();
--
--	if (phys_start > U32_MAX)
--		zone_mask = PHYS_ADDR_MAX;
--	else if (phys_start > zone_mask)
--		zone_mask = U32_MAX;
--
--	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
-+	return min(zone_limit, memblock_end_of_DRAM() - 1) + 1;
- }
- 
- static void __init zone_sizes_init(void)
- {
- 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
--	unsigned int __maybe_unused acpi_zone_dma_bits;
--	unsigned int __maybe_unused dt_zone_dma_bits;
--	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32);
-+	phys_addr_t __maybe_unused acpi_zone_dma_limit;
-+	phys_addr_t __maybe_unused dt_zone_dma_limit;
-+	phys_addr_t __maybe_unused dma32_phys_limit =
-+		max_zone_phys(DMA_BIT_MASK(32));
+@@ -128,7 +128,7 @@ static void __init zone_sizes_init(void)
  
  #ifdef CONFIG_ZONE_DMA
--	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
--	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
--	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
--	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-+	acpi_zone_dma_limit = acpi_iort_dma_get_max_cpu_address();
-+	dt_zone_dma_limit = of_dma_get_max_cpu_address(NULL);
-+	zone_dma_limit = min(dt_zone_dma_limit, acpi_zone_dma_limit);
-+	arm64_dma_phys_limit = max_zone_phys(zone_dma_limit);
+ 	acpi_zone_dma_limit = acpi_iort_dma_get_max_cpu_address();
+-	dt_zone_dma_limit = of_dma_get_max_cpu_address(NULL);
++	of_dma_get_cpu_limits(NULL, &dt_zone_dma_limit, NULL);
+ 	zone_dma_limit = min(dt_zone_dma_limit, acpi_zone_dma_limit);
+ 	arm64_dma_phys_limit = max_zone_phys(zone_dma_limit);
  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
- #endif
- #ifdef CONFIG_ZONE_DMA32
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 3a440004b97d..4d6f575fd354 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -214,7 +214,7 @@ static int __init mark_nonram_nosave(void)
-  * everything else. GFP_DMA32 page allocations automatically fall back to
-  * ZONE_DMA.
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index ae46a3605904..ac009b3bb63b 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -964,21 +964,25 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+ #endif /* CONFIG_HAS_DMA */
+ 
+ /**
+- * of_dma_get_max_cpu_address - Gets highest CPU address suitable for DMA
++ * of_dma_get_cpu_limits - Gets highest CPU address suitable for DMA
+  * @np: The node to start searching from or NULL to start from the root
++ * @max: Pointer to high address limit or NULL if not needed
++ * @min: Pointer to low address limit or NULL if not needed
   *
-- * By using 31-bit unconditionally, we can exploit zone_dma_bits to inform the
-+ * By using 31-bit unconditionally, we can exploit zone_dma_limit to inform the
-  * generic DMA mapping code.  32-bit only devices (if not handled by an IOMMU
-  * anyway) will take a first dip into ZONE_NORMAL and get otherwise served by
-  * ZONE_DMA.
-@@ -250,13 +250,12 @@ void __init paging_init(void)
- 	 * powerbooks.
- 	 */
- 	if (IS_ENABLED(CONFIG_PPC32))
--		zone_dma_bits = 30;
-+		zone_dma_limit = DMA_BIT_MASK(30);
- 	else
--		zone_dma_bits = 31;
-+		zone_dma_limit = DMA_BIT_MASK(31);
- 
- #ifdef CONFIG_ZONE_DMA
--	max_zone_pfns[ZONE_DMA]	= min(max_low_pfn,
--				      1UL << (zone_dma_bits - PAGE_SHIFT));
-+	max_zone_pfns[ZONE_DMA]	= min(max_low_pfn, zone_dma_limit >> PAGE_SHIFT);
- #endif
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
- #ifdef CONFIG_HIGHMEM
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index f6391442c0c2..5feaa60933b7 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -95,7 +95,7 @@ void __init paging_init(void)
- 
- 	vmem_map_init();
- 	sparse_init();
--	zone_dma_bits = 31;
-+	zone_dma_limit = DMA_BIT_MASK(31);
- 	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
- 	max_zone_pfns[ZONE_DMA] = virt_to_pfn(MAX_DMA_ADDRESS);
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 3eb3589ff43e..7cf76f1d3239 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -12,7 +12,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/swiotlb.h>
- 
--extern unsigned int zone_dma_bits;
-+extern phys_addr_t zone_dma_limit;
- 
- /*
-  * Record the mapping of CPU physical to DMA addresses for a given region.
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 4d543b1e9d57..3b2ebcd4f576 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -20,7 +20,7 @@
-  * it for entirely different regions. In that case the arch code needs to
-  * override the variable below for dma-direct to work properly.
+  * Gets the highest CPU physical address that is addressable by all DMA masters
+- * in the sub-tree pointed by np, or the whole tree if NULL is passed. If no
+- * DMA constrained device is found, it returns PHYS_ADDR_MAX.
++ * in the sub-tree pointed by np, or the whole tree if @np in NULL. If no
++ * DMA constrained device is found, @*max is PHYS_ADDR_MAX, and @*low is 0.
   */
--unsigned int zone_dma_bits __ro_after_init = 24;
-+phys_addr_t zone_dma_limit __ro_after_init = DMA_BIT_MASK(24);
+-phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np)
++void __init of_dma_get_cpu_limits(struct device_node *np,
++		phys_addr_t *max, phys_addr_t *min)
+ {
+ 	phys_addr_t max_cpu_addr = PHYS_ADDR_MAX;
+ 	struct of_range_parser parser;
+-	phys_addr_t subtree_max_addr;
++	phys_addr_t min_cpu_addr = 0;
+ 	struct device_node *child;
+ 	struct of_range range;
+ 	const __be32 *ranges;
++	u64 cpu_start = 0;
+ 	u64 cpu_end = 0;
+ 	int len;
  
- static inline dma_addr_t phys_to_dma_direct(struct device *dev,
- 		phys_addr_t phys)
-@@ -59,7 +59,7 @@ static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
- 	 * zones.
- 	 */
- 	*phys_limit = dma_to_phys(dev, dma_limit);
--	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
-+	if (*phys_limit <= zone_dma_limit)
- 		return GFP_DMA;
- 	if (*phys_limit <= DMA_BIT_MASK(32))
- 		return GFP_DMA32;
-@@ -584,7 +584,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
- 	 * part of the check.
- 	 */
- 	if (IS_ENABLED(CONFIG_ZONE_DMA))
--		min_mask = min_t(u64, min_mask, DMA_BIT_MASK(zone_dma_bits));
-+		min_mask = min_t(u64, min_mask, zone_dma_limit);
- 	return mask >= phys_to_dma_unencrypted(dev, min_mask);
- }
+@@ -988,21 +992,33 @@ phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np)
+ 	ranges = of_get_property(np, "dma-ranges", &len);
+ 	if (ranges && len) {
+ 		of_dma_range_parser_init(&parser, np);
+-		for_each_of_range(&parser, &range)
+-			if (range.cpu_addr + range.size > cpu_end)
++		for_each_of_range(&parser, &range) {
++			if (range.cpu_addr + range.size > cpu_end) {
+ 				cpu_end = range.cpu_addr + range.size - 1;
++				cpu_start = range.cpu_addr;
++			}
++		}
  
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index d10613eb0f63..410a7b40e496 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -70,7 +70,7 @@ static bool cma_in_zone(gfp_t gfp)
- 	/* CMA can't cross zone boundaries, see cma_activate_area() */
- 	end = cma_get_base(cma) + size - 1;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
--		return end <= DMA_BIT_MASK(zone_dma_bits);
-+		return end <= zone_dma_limit;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
- 		return end <= DMA_BIT_MASK(32);
- 	return true;
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 86fe172b5958..96d6eee7d215 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -446,7 +446,7 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
- 	if (!remap)
- 		io_tlb_default_mem.can_grow = true;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp_mask & __GFP_DMA))
--		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(zone_dma_bits);
-+		io_tlb_default_mem.phys_limit = zone_dma_limit;
- 	else if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp_mask & __GFP_DMA32))
- 		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(32);
- 	else
-@@ -625,7 +625,7 @@ static struct page *swiotlb_alloc_tlb(struct device *dev, size_t bytes,
+-		if (max_cpu_addr > cpu_end)
++		if (max_cpu_addr > cpu_end) {
+ 			max_cpu_addr = cpu_end;
++			min_cpu_addr = cpu_start;
++		}
  	}
  
- 	gfp &= ~GFP_ZONEMASK;
--	if (phys_limit <= DMA_BIT_MASK(zone_dma_bits))
-+	if (phys_limit <= zone_dma_limit)
- 		gfp |= __GFP_DMA;
- 	else if (phys_limit <= DMA_BIT_MASK(32))
- 		gfp |= __GFP_DMA32;
+ 	for_each_available_child_of_node(np, child) {
+-		subtree_max_addr = of_dma_get_max_cpu_address(child);
+-		if (max_cpu_addr > subtree_max_addr)
++		phys_addr_t subtree_max_addr, subtree_min_addr;
++
++		of_dma_get_cpu_limits(child, &subtree_max_addr, &subtree_min_addr);
++		if (max_cpu_addr > subtree_max_addr) {
+ 			max_cpu_addr = subtree_max_addr;
++			min_cpu_addr = subtree_min_addr;
++		}
+ 	}
+ 
+-	return max_cpu_addr;
++	if (max)
++		*max = max_cpu_addr;
++	if (min)
++		*min = min_cpu_addr;
+ }
+ 
+ /**
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index 6b5c36b6a758..2d632d4ec5b1 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -921,7 +921,7 @@ static void __init of_unittest_changeset(void)
+ #endif
+ }
+ 
+-static void __init of_unittest_dma_get_max_cpu_address(void)
++static void __init of_unittest_dma_get_cpu_limits(void)
+ {
+ 	struct device_node *np;
+ 	phys_addr_t cpu_addr;
+@@ -935,9 +935,9 @@ static void __init of_unittest_dma_get_max_cpu_address(void)
+ 		return;
+ 	}
+ 
+-	cpu_addr = of_dma_get_max_cpu_address(np);
++	of_dma_get_cpu_limits(np, &cpu_addr, NULL);
+ 	unittest(cpu_addr == 0x4fffffff,
+-		 "of_dma_get_max_cpu_address: wrong CPU addr %pad (expecting %x)\n",
++		 "of_dma_get_cpu_limits: wrong CPU addr %pad (expecting %x)\n",
+ 		 &cpu_addr, 0x4fffffff);
+ }
+ 
+@@ -4109,7 +4109,7 @@ static int __init of_unittest(void)
+ 	of_unittest_changeset();
+ 	of_unittest_parse_interrupts();
+ 	of_unittest_parse_interrupts_extended();
+-	of_unittest_dma_get_max_cpu_address();
++	of_unittest_dma_get_cpu_limits();
+ 	of_unittest_parse_dma_ranges();
+ 	of_unittest_pci_dma_ranges();
+ 	of_unittest_bus_ranges();
+diff --git a/include/linux/of.h b/include/linux/of.h
+index a0bedd038a05..7756441d3ce0 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -454,7 +454,8 @@ int of_map_id(struct device_node *np, u32 id,
+ 	       const char *map_name, const char *map_mask_name,
+ 	       struct device_node **target, u32 *id_out);
+ 
+-phys_addr_t of_dma_get_max_cpu_address(struct device_node *np);
++void of_dma_get_cpu_limits(struct device_node *np, phys_addr_t *max,
++		phys_addr_t *min);
+ 
+ struct kimage;
+ void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+@@ -880,9 +881,13 @@ static inline int of_map_id(struct device_node *np, u32 id,
+ 	return -EINVAL;
+ }
+ 
+-static inline phys_addr_t of_dma_get_max_cpu_address(struct device_node *np)
++static inline void of_dma_get_cpu_limits(struct device_node *np,
++		phys_addr_t *max, phys_addr_t *min)
+ {
+-	return PHYS_ADDR_MAX;
++	if (max)
++		*max = PHYS_ADDR_MAX;
++	if (min)
++		*min = 0;
+ }
+ 
+ static inline const void *of_device_get_match_data(const struct device *dev)
 -- 
 2.43.0
 
