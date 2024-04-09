@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-137488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D181C89E2D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:59:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E955E89E2D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056E01C21939
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:59:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7907A2853EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200DA156F52;
-	Tue,  9 Apr 2024 18:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72C3156F44;
+	Tue,  9 Apr 2024 18:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CqQpAnWC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4hGjxCj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635A7156F44;
-	Tue,  9 Apr 2024 18:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA499157478;
+	Tue,  9 Apr 2024 18:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712689188; cv=none; b=X9cMr7lB+0sXaWinkcvYw3kBDhLUPaSeDQOZ3DbavRl8uMXUptblm5O5FRaZ2T0zdMqZW7elS0U8JFj0txxFHVoLPnFpJ98itBKkyJF1cCrph4XRYxjvL/ljYDrbY46N4XQJ/VniuJIteDQu5FaHt2nEUj/iySdSGXESCWZiDsQ=
+	t=1712689191; cv=none; b=fS12j8iCEZCyxrWisEXj50XN2d+7W+yUkpzHYgbsDNjpEey5xrBBS0bPALbcmu9eiARd4IGOWi8i5eCChEga4K2hHetI4ZVWH2JJvHR83JJ2ZRlvNXyuYpRc4zwHCbD62Yc2wuz81wAaAo155B5lt1QmXygyQpcX68ZrCPsO1Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712689188; c=relaxed/simple;
-	bh=jc3efBJ47qXtIZp6pJaaV7RlQijXHYkEm7+7tWa0gbg=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hrcTKfItHA0lDnlsMDVlVGXZIoQrcpNK1SCkp4MQ2mYmbAwMpwcPhkefh7ZUVqRpcV1TEA+QWSHmo6GK1V781rgKbkdCqo1JM5WpMFzWvSKBOf8lZ7O620UNV1eS4OW0nBdGCamx14NGDfXs/REX+zHo3gQoYaZIzf9cYzBpI1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CqQpAnWC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A88C433F1;
-	Tue,  9 Apr 2024 18:59:47 +0000 (UTC)
+	s=arc-20240116; t=1712689191; c=relaxed/simple;
+	bh=rQ1wN85KvyDr48E/qDDapLu5pJUhnzdbM/cwNfrXARI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=QDoOCziZ2jP08DgXKv33I4r9Czf39taq7Yldtwb1WiDg+k14NK6tWNI8BF3iLNQp5vLJ4p879r9OQuKvlFhpZ5xC97LqDv9NTctmFOIp5kDmmrz1EoovKfDFvWoZZVBrHqmwNG1TvrFXTkYhc+hRK5GO8gZPsVp0p58zY/12vKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r4hGjxCj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45AF6C433C7;
+	Tue,  9 Apr 2024 18:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712689188;
-	bh=jc3efBJ47qXtIZp6pJaaV7RlQijXHYkEm7+7tWa0gbg=;
-	h=From:Subject:Date:To:Cc:From;
-	b=CqQpAnWCw4AlEGOvdj5t4IBlS/XyalWUNYQFPCYUc/c7nGfvSZl+Tmu00yMrSNg6A
-	 YNUHwgF1I/n7dL5lWPOoM9zfjMtF6c+XSRCm8FLEKkrvaIgWwSIuqjqenF04Kv5yl6
-	 TKu+TktVacRZqiv/w3m4y9gQp7iDVXkIBD7BOJZ20zKCCfmEcUwc2rsYCg4i2KEF23
-	 GKrXVzvazpnI+r8dv67gKrHJza7l5+Es7ZU9C5ezO2Qw2bXIGh5sEeBLN/B6DGmW9F
-	 z0sVx9uW4FLJGeOqenUhVfb7gBnZTwfGaA1xPmdo13Ks90Ghsypgpb4SEy6EAddu0b
-	 ESfmwWZVaIjig==
+	s=k20201202; t=1712689190;
+	bh=rQ1wN85KvyDr48E/qDDapLu5pJUhnzdbM/cwNfrXARI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=r4hGjxCjpDkwKcy7c8SOBbtbnq6r3tyJFqmodY4ysuckS+GpEJyzaVL7r1LHXZesU
+	 QLDZFtSc02R0rhF+E6oIVPCmpNiv06hkuIbtdJtSOkCXazDdaA00ICrpOGQT5j0Q/t
+	 /L8VHrltviHsHAgGniO2L+40V3MouHADODO3iH8PioUIQKstIW2SdvgDBb73uzeiN7
+	 IMopX8BVnFie0GnerpxMcgnfHWMk0fdt2QHMnn+x4/wWeICN9TbaMACCL3w7dWKj75
+	 UzfEO2cgMKJHWw1s1uhoWfbM17QpV3zxrrl1VyeHpEC27gcr7Tm6cQTUp0UNEf+Upj
+	 q0DpNp3gWb9dQ==
 From: Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 0/3] of: Use __free() based cleanups
-Date: Tue, 09 Apr 2024 13:59:38 -0500
-Message-Id: <20240409-dt-cleanup-free-v2-0-5b419a4af38d@kernel.org>
+Date: Tue, 09 Apr 2024 13:59:39 -0500
+Subject: [PATCH v2 1/3] of: Add a helper to free property struct
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,49 +51,169 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABqQFWYC/3WNwQ6CMBBEf4Xs2TWlxQY9+R+GQ2kX2EgK2SLRE
- P7dyt3M6U0ybzZIJEwJbsUGQisnnmIGfSrADy72hBwyg1a6UjkYFvQjufiasRMitOFiTNVWrbE
- 15NUs1PH7MD6azAOnZZLPcbCWv/a/ay1RobeKrG9dHdz1/iSJNJ4n6aHZ9/0L1Tq38K8AAAA=
+Message-Id: <20240409-dt-cleanup-free-v2-1-5b419a4af38d@kernel.org>
+References: <20240409-dt-cleanup-free-v2-0-5b419a4af38d@kernel.org>
+In-Reply-To: <20240409-dt-cleanup-free-v2-0-5b419a4af38d@kernel.org>
 To: Saravana Kannan <saravanak@google.com>
 Cc: Jonathan Cameron <jic23@kernel.org>, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
  Jonathan Cameron <Jonathan.Cameron@huawei.com>
 X-Mailer: b4 0.13-dev
 
-This small series converts the DT code to use __free() based cleanups 
-for kfree() and of_node_put(). Using __free() simplifies function exit 
-handling. Initial support for struct device_node was added in commit 
-9448e55d032d ("of: Add cleanup.h based auto release via 
-__free(device_node) markings").
+Freeing a property struct is 3 kfree()'s which is duplicated in multiple
+spots. Add a helper, __of_prop_free(), and replace all the open coded
+cases in the DT code.
 
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Changes in v2:
-- Also use cleanup for 'dev' in __of_translate_address()
-- Further simplify of_dma_is_coherent() and of_mmio_is_nonposted()
-- Link to v1: https://lore.kernel.org/r/20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org
+ drivers/of/dynamic.c    | 26 ++++++++++++--------------
+ drivers/of/of_private.h |  1 +
+ drivers/of/overlay.c    | 11 +++--------
+ drivers/of/unittest.c   | 12 +++---------
+ 4 files changed, 19 insertions(+), 31 deletions(-)
 
----
-Rob Herring (3):
-      of: Add a helper to free property struct
-      of: Use scope based kfree() cleanups
-      of: Use scope based of_node_put() cleanups
+diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+index 3bf27052832f..af7c57a7a25d 100644
+--- a/drivers/of/dynamic.c
++++ b/drivers/of/dynamic.c
+@@ -305,15 +305,20 @@ int of_detach_node(struct device_node *np)
+ }
+ EXPORT_SYMBOL_GPL(of_detach_node);
+ 
++void __of_prop_free(struct property *prop)
++{
++	kfree(prop->name);
++	kfree(prop->value);
++	kfree(prop);
++}
++
+ static void property_list_free(struct property *prop_list)
+ {
+ 	struct property *prop, *next;
+ 
+ 	for (prop = prop_list; prop != NULL; prop = next) {
+ 		next = prop->next;
+-		kfree(prop->name);
+-		kfree(prop->value);
+-		kfree(prop);
++		__of_prop_free(prop);
+ 	}
+ }
+ 
+@@ -426,9 +431,7 @@ struct property *__of_prop_dup(const struct property *prop, gfp_t allocflags)
+ 	return new;
+ 
+  err_free:
+-	kfree(new->name);
+-	kfree(new->value);
+-	kfree(new);
++	__of_prop_free(new);
+ 	return NULL;
+ }
+ 
+@@ -470,9 +473,7 @@ struct device_node *__of_node_dup(const struct device_node *np,
+ 			if (!new_pp)
+ 				goto err_prop;
+ 			if (__of_add_property(node, new_pp)) {
+-				kfree(new_pp->name);
+-				kfree(new_pp->value);
+-				kfree(new_pp);
++				__of_prop_free(new_pp);
+ 				goto err_prop;
+ 			}
+ 		}
+@@ -921,11 +922,8 @@ static int of_changeset_add_prop_helper(struct of_changeset *ocs,
+ 		return -ENOMEM;
+ 
+ 	ret = of_changeset_add_property(ocs, np, new_pp);
+-	if (ret) {
+-		kfree(new_pp->name);
+-		kfree(new_pp->value);
+-		kfree(new_pp);
+-	}
++	if (ret)
++		__of_prop_free(new_pp);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+index 485483524b7f..94fc0aa07af9 100644
+--- a/drivers/of/of_private.h
++++ b/drivers/of/of_private.h
+@@ -123,6 +123,7 @@ extern void *__unflatten_device_tree(const void *blob,
+  * own the devtree lock or work on detached trees only.
+  */
+ struct property *__of_prop_dup(const struct property *prop, gfp_t allocflags);
++void __of_prop_free(struct property *prop);
+ struct device_node *__of_node_dup(const struct device_node *np,
+ 				  const char *full_name);
+ 
+diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+index 2ae7e9d24a64..4d861a75d694 100644
+--- a/drivers/of/overlay.c
++++ b/drivers/of/overlay.c
+@@ -262,9 +262,7 @@ static struct property *dup_and_fixup_symbol_prop(
+ 	return new_prop;
+ 
+ err_free_new_prop:
+-	kfree(new_prop->name);
+-	kfree(new_prop->value);
+-	kfree(new_prop);
++	__of_prop_free(new_prop);
+ err_free_target_path:
+ 	kfree(target_path);
+ 
+@@ -361,11 +359,8 @@ static int add_changeset_property(struct overlay_changeset *ovcs,
+ 		pr_err("WARNING: memory leak will occur if overlay removed, property: %pOF/%s\n",
+ 		       target->np, new_prop->name);
+ 
+-	if (ret) {
+-		kfree(new_prop->name);
+-		kfree(new_prop->value);
+-		kfree(new_prop);
+-	}
++	if (ret)
++		__of_prop_free(new_prop);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index 6b5c36b6a758..a8c01c953a29 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -795,15 +795,11 @@ static void __init of_unittest_property_copy(void)
+ 
+ 	new = __of_prop_dup(&p1, GFP_KERNEL);
+ 	unittest(new && propcmp(&p1, new), "empty property didn't copy correctly\n");
+-	kfree(new->value);
+-	kfree(new->name);
+-	kfree(new);
++	__of_prop_free(new);
+ 
+ 	new = __of_prop_dup(&p2, GFP_KERNEL);
+ 	unittest(new && propcmp(&p2, new), "non-empty property didn't copy correctly\n");
+-	kfree(new->value);
+-	kfree(new->name);
+-	kfree(new);
++	__of_prop_free(new);
+ #endif
+ }
+ 
+@@ -3718,9 +3714,7 @@ static __init void of_unittest_overlay_high_level(void)
+ 				goto err_unlock;
+ 			}
+ 			if (__of_add_property(of_symbols, new_prop)) {
+-				kfree(new_prop->name);
+-				kfree(new_prop->value);
+-				kfree(new_prop);
++				__of_prop_free(new_prop);
+ 				/* "name" auto-generated by unflatten */
+ 				if (!strcmp(prop->name, "name"))
+ 					continue;
 
- drivers/of/address.c    | 113 +++++++++++++++++-------------------------------
- drivers/of/base.c       |  34 ++++-----------
- drivers/of/dynamic.c    |  37 +++++++---------
- drivers/of/of_private.h |   1 +
- drivers/of/overlay.c    |  11 ++---
- drivers/of/property.c   |  22 +++-------
- drivers/of/resolver.c   |  35 ++++++---------
- drivers/of/unittest.c   |  12 ++---
- 8 files changed, 90 insertions(+), 175 deletions(-)
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240404-dt-cleanup-free-6d5334b4b368
-
-Best regards,
 -- 
-Rob Herring <robh@kernel.org>
+2.43.0
 
 
