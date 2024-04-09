@@ -1,165 +1,186 @@
-Return-Path: <linux-kernel+bounces-136816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0A989D89C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FEE89D89E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:59:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684F11F22D6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:57:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655B81F241E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A01129E93;
-	Tue,  9 Apr 2024 11:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC7612A144;
+	Tue,  9 Apr 2024 11:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=asem.it header.i=@asem.it header.b="d/HaoAXL"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2131.outbound.protection.outlook.com [40.107.236.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AfDD2nLd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF6A42053
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.131
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712663827; cv=fail; b=nPbsoErp5lvBg/gkgbaHm5s7Gtay4odYfDymZasKJkuYKt0MKb+jxb+bA1yIHQFXj3M2ygJP3QYeZRViRX8VxnQYBW53k+LZ4rrrvf58fEiiMaZJ/Bi5VyVYH1jbYatgXgnvwJXwucUEwDwRAGrdkX1trt2c3TBi/mS4zskNYFo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712663827; c=relaxed/simple;
-	bh=8K45sA6ph+Wd3TxGL7sY+00G1gKprxNTj34JplnOCeE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LYpQxCdXqQ1HeJz5bRplA/yNdo+qRxwteF0Tp+xq86RquxiuR1uLQvnLY52DzV2zudYb4AsE5VDpoHR6g8kKJJDggTm8MtWHU4tqGcbvHdIdu+uIEilXtV/MNb9R2ZPnccdMpFSppyDBtg+Zje89NCMDY1aO4ejOMPOAeZkTmVM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it; spf=pass smtp.mailfrom=asem.it; dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b=d/HaoAXL; arc=fail smtp.client-ip=40.107.236.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=asem.it
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bPUyJihhWktiZRMRTOQ71sOP67TmqxFoUOzDQmQp5YlVQQsxxwBrUApBme7AxpoiAyeUb4wLt79+lLnp3luUo4SpLrsk5vEZT4NxnTswtolOCvEO0PGJrTxhHC6D/cG+7h4UDcI4OPagKjnmWU3nYueSH0MvQjDfA3+5pGZzPDUAxmE3beVi+HXHNeFJniNXIeziT6N5LPMfEG1Quc+VFmOv3uDNmw5mqGs2h9tdM0MV6tq5sPYa1eca20Co6d4/53Oj4gZFc8Ojk9glP/DlHMGTVREIe5XA/IZHnN5bcQH4zA+EEo2tIg/ZAuZpx969ac4aWatz1n2DtNcslY9oaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8K45sA6ph+Wd3TxGL7sY+00G1gKprxNTj34JplnOCeE=;
- b=nFC393eAf5jUCbuZU7d6dggR44H/+cankd2mFBOMmalYur1XO5uobbH4Tmo/U/P2XSVcQcBpa/Hni5iXaoiQDpZEaL1EDTFcpvP6OP0zp4B4nmcjJGvf+BbMKmTx6JUkDdpjUIsL5ax00F3NA9mv87iGdQI9FMc8nGJKc5zN/hxS25w6X8UzrXD5sszN+gcmq6tqi/zsIqPHRTfccj/Y7bwek5X4rMzvYYK1Ti6ljbGPYCW5FetkoYpu3P+NZnCP44g4WO/HmdyJXM5B7mqxpi0HWyoOgYXTB2kUZT5Bio9/C86CzaY+yA27ubJtKhwk7rYk+uuWzZ5KGRF2eHpzLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
- header.d=asem.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8K45sA6ph+Wd3TxGL7sY+00G1gKprxNTj34JplnOCeE=;
- b=d/HaoAXLudviWWAPdgQTjiNS/ZSNUheSkxslhrkr9vNiMSQtc8S4q8+G8c1oalsYaveuH0PuXWyntmeCgBq28avyIxPdv7D5GRR1e6ONsyXINU0haMRuTlK1oU+XrCLyc2LW9vdiy1ruO5CyZ9skOd4HXRveAR1VwvpWMB/PZvzlaGXQ0t1v6ezhXFHLMSNhjGxnJtY8c74pvn/I/bAJDjYhcLqGU8BY36A1xSe5tYh2mq3gocw+vfsK3ktdTpskcHtEIBZCgTgK/RcVRDo/YSLDCt47AXHd8oRrvuqStbZPg+LkaArbbp/EMJ4UDyN36goPVBmQwaQwXuWUPe2mKw==
-Received: from PH0PR22MB3789.namprd22.prod.outlook.com (2603:10b6:510:29c::11)
- by PH0PR22MB3790.namprd22.prod.outlook.com (2603:10b6:510:2a0::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 11:57:02 +0000
-Received: from PH0PR22MB3789.namprd22.prod.outlook.com
- ([fe80::35ce:ff48:fa8b:d4a7]) by PH0PR22MB3789.namprd22.prod.outlook.com
- ([fe80::35ce:ff48:fa8b:d4a7%7]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
- 11:57:02 +0000
-From: FLAVIO SULIGOI <f.suligoi@asem.it>
-To: 'Francesco Dolcini' <francesco@dolcini.it>
-CC: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
-	<pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
- entry
-Thread-Topic: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
- entry
-Thread-Index: AQHah1nAfXWnkfTva0GHRKLjc+c+r7Ff2yLg
-Date: Tue, 9 Apr 2024 11:57:02 +0000
-Message-ID:
- <PH0PR22MB3789745264AFC2A3DC86CE3EF9072@PH0PR22MB3789.namprd22.prod.outlook.com>
-References: <20240405100104.480779-1-f.suligoi@asem.it>
- <20240405100104.480779-2-f.suligoi@asem.it>
- <20240405130359.GA308940@francesco-nb>
-In-Reply-To: <20240405130359.GA308940@francesco-nb>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR22MB3789:EE_|PH0PR22MB3790:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- v1EH6kS998pykQrxspwJXaXuBzicCPS7Dvhws/Amq5vcV8JyaIVptA8h8ogyA+pocyqCqNPf7Q7lPU31gJmamJFlR33a5n+JOYZljaNGR3SCb728km8ERVvG9BOaDonFsXAJlv+grAyRRvGNBIhF5gX5c+Reg7ipjCvxtPorj54y8Jid8LlmnfwHD9/qm4+LkWMoWBNH/ih8rhBroeO0pDFPcQvXXIgSuQOB6nNEW4M1fcpO+SWvaDSlMn85Rf2+6gB0UmcfdYt1HMvWiXGNUlyLWLNzhfeDackEV37Gdv4BcK6+gpRtCyVrM9+4D1hoiDEpXl8tc52CrWYN1PaHhAsE6bI8DnfDylSBfH6Q9sMeqKB+xz9n273yaH6VICwfMadIEw1K0FiSjKkHnAnakPnxwv4NKDPoOFjuWDeF3MyLMxTDmttHLKhPM9ZmINrH8eOsq93qod+fTBT5r1uFBUqVIqfQXlHb14ZHXwHC+VCrF8e4Pyhgd7fc5DjhqSMblkNrDeIO+eAlRTBJEObD5waxWwycsR1W4zbLK7VvZQnmgRaiNiUSSRUyo9qrW8dHTi1iCVEF745GVKHW2Bjj/B3voe7oh0nWlCJtFhRYgqs=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR22MB3789.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?Pt+/AUBJKE6RX1ka7KV32GhlBOjcFwkSIRf7AVD8QMtkHGHA1zUnzoMVHy3E?=
- =?us-ascii?Q?aPyroiAYHM4C0Vftyp77UB75EU3AUflvj4eaf7C4MU/nY5bgZTrq+4NbRWDZ?=
- =?us-ascii?Q?Wxwa52B4NGbhkzrRy5MhzFKSfLlF6ZfKvA+UMQDltOZMpzt1Ew5BSVi2rR2C?=
- =?us-ascii?Q?fifQSg85zez6Yiht/zeym8mBNtcaiVcAs6h86y5n8am1KuNMX+0Y6XzwNbvh?=
- =?us-ascii?Q?iJiRhWssVVAtzRXpS3cz04eIpYEgn7eRt7jcqm1RSYhZkJM6x8dBMsC9mdeJ?=
- =?us-ascii?Q?27qsYy6urW3ekpd8ehy90IIArUFBXO/eSqbPr7qE+q9ebOE9HyKlXPeW6Ojk?=
- =?us-ascii?Q?hgJqopi8kl5blt3l3aNwzaa5+7d7nrE3khSaWyIfDEvqxbB2jrXQQmVARI8E?=
- =?us-ascii?Q?evNdHNLGILDrk6VRA1ZeF1U5Bs1ZJU6VVCI77zwnb/pVmfFn7W+N9tbuxgoy?=
- =?us-ascii?Q?n4V/JDBk/CFbS+7KmKCLNAi2KngL8qIthjX9114lHJCqQAn47t00W8aJCjxj?=
- =?us-ascii?Q?QaDe2Ol3R048fIMyCfCmcgIs7jB0ftx4oqKxDrAHO24HHRCermKge3X/Xrc+?=
- =?us-ascii?Q?OYdyzz1EKv4EInlVaMb+Zur6bKs5N1PA95Uq8d/XLnDtNcbLqkgqHxSJg06U?=
- =?us-ascii?Q?HL2Gk/c70uxPqLVRRlOE/sb8t+Gy9NvnhpCLw2td62IOITlC+xe7pSeAC5BK?=
- =?us-ascii?Q?8dYGedy85Jii6KtI664x8JEBP9WePOl+cJCGypSJIEBFNj60qQbKkG8QaSdu?=
- =?us-ascii?Q?izO8vNXsKflfJwZBL6uUL+JUjJ3chlsPs5iG9bkUUKLSzBGK11OmYg3DpqNf?=
- =?us-ascii?Q?oZmNXc7muXmdSpuLEUZxL3MkKcmiZBMI1E33V0nyzSAkdBe8jIMJt60qkP8B?=
- =?us-ascii?Q?jc2V0QgoIwF1FG6bvkKLRssfHrOAXv6roOGjfuldm6LeJEUJF0KugjOY1odz?=
- =?us-ascii?Q?dX5i4dHe5rPYrKVkuEJPe3oHNxsO2pm3OG1Bv6apLd5NLtKLo2yjcP/Q4nNO?=
- =?us-ascii?Q?MJwNXn2hd3jHf5DCXOFYpzk19bfHIDCTO6oSYDyTc1Lel6zib9+cUcTAzUFd?=
- =?us-ascii?Q?8XrPU5ksgBFaRSOxIHWiA9l+9jL6V5WTmZ16DINOEjFvh+k0VcUADG28MdCW?=
- =?us-ascii?Q?U4ZqSleK2w71b5hw9QsB1R9S3T+9KBYOmoec3Ika+IFIH7u8ilDSlPUK9vy4?=
- =?us-ascii?Q?6qDNQz7dSe5YVKK/uH9c4KTqLwUtiWrRgcvU2jqip8eDmbTn+hUoBvgb8oHP?=
- =?us-ascii?Q?fi6UhWnPzl/6JpbxWBNzxnSVdRHDmgsQL8nnLvoqvKCXuBRvbTd1vhIUIFC+?=
- =?us-ascii?Q?qA5mPKTWvQ3xRFYVlkaYB0IS2CPBljHcpamQU1lHQ/c9QBQ1evLn2Yz35Ky+?=
- =?us-ascii?Q?nPW1hd1DooXIHZHKSh2R5lqc3GaoMPHVni9ah9uZZSGseAf/KOwgkqwUD6Cq?=
- =?us-ascii?Q?TKDPee45M5Pq1XhjH9T/qDXDvxXdU1Y1qWBh6PBF2DVFRBz9c1pbtUmH3TgH?=
- =?us-ascii?Q?G2AUJLw9XzI3/Qr6Gec3UXuTAzqozStxhxpxlxSM534h7GY4qQxJ+BxlA3ly?=
- =?us-ascii?Q?ID9/PewI49O+EWvOTLKLQWHZE0GtLZmIdI6GAllO/aIqT+0GmUprywN3PZYR?=
- =?us-ascii?Q?7s/NML5WVHpYBeOIt03ayx4=3D?=
-Content-Type: text/plain; charset="us-ascii"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A57585636
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712663947; cv=none; b=l2KGgrC4mHY0FE+EApWh1AfnJyozITP6XdhQYqaCr9sgq8xtd7C+6vx2KTCmacBLSq+NanIzXfL5M0eYJXuIh4t6RB5KIcHnWUwf8o3lL5ABa5QXd3I6+JZrszyskhzV76PyjdEWqI+dIMz/dXXHOh0n6vAyGkP/lELRO7hafM0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712663947; c=relaxed/simple;
+	bh=xJmkWDFZRpfiovpWUIpX2q0pD8EQi7uOSkrwm+axFQA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XfD48jyo3Fh6KFqBmmHIsBXDl8mljQvjj13NEx+STGkirGAUDgM8jMV9WYpLRITjIHHvsMsvm3vl0qONIH4aKDaEFjrCnS6vq1r2roO7cslHzLC2vv9L9040s/uEVBCbPL5m6XzarEQab2jVP+ja5q1Ad0AOwFcie/g6FT5npO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AfDD2nLd; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712663944;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=AVnEvaxqsd9dCkI2giCqtV+/ipEyruMB7htKp3/+osk=;
+	b=AfDD2nLdqZZ4UZcAkYnHi5zqGlKm2Rob4Y18ksQZ4nGw+xsN4qesMKrDEFeZs2ksZz+tAf
+	qoyirrukGWY9mAV97AoR7DFZD0vzaYD1LWJ78mFWHN0Rm9nu/v8EUJuUpdjeU9H5oJH4NQ
+	5r8fFYtgkNdY2NGPmKvlagpQcbJ1So8=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-166-qrlLiDh3OW-bWuAANOeOCw-1; Tue, 09 Apr 2024 07:59:03 -0400
+X-MC-Unique: qrlLiDh3OW-bWuAANOeOCw-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6993921ae18so7017636d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:59:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712663942; x=1713268742;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVnEvaxqsd9dCkI2giCqtV+/ipEyruMB7htKp3/+osk=;
+        b=bYin8DN5hmWEJDhM4k2ApUVb0O3WnkCfRsjal7rnHnDo9n5kLMKaW7QezarNtxJWbh
+         t+hGb02KOtWRQK4n8zR1IAkyx2XLMLpU13ck8DBPxLzFAXtVSCU5g9ETyhwVvKBY8V9q
+         LwMV3DAjczeygiaH/xP9wE4g9vFjiFtSFY2tNBF4YBUDUDtDKw63lxLbHQax9AIjfSKy
+         z6zuZOC1f/KumNadZBs+lklNqMhfBHd6shZEHtitxlQExU2Ml3I4fb2aob5r0F6p1NSs
+         8sXUZwTxjH9JfeiDnd86IMLHgUm9n4TP3BdDFXKpC+OQ48W1V71KXz6Qv234sRdO242f
+         k1+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVNPIGZBDkp00lftqgM3CjLgrLv4pFBZh1FiVU2euZDRltPYH5yLNzCKTSqs+bvruO3uDSBtBlE4tyKn/WHO55tdNRhJbd5i2FSYrf2
+X-Gm-Message-State: AOJu0Yzhy8P/iXQQ5bpD1VarNc6e0gIoOz9lYJlmw/EdJYCGha/gSzt9
+	+Q0SchDHwa7s1ZqwR8F2KZg/KCODtBVFjqoPhuWEMfK7ONnryZUiqAal8FObuGZrbQQjzI8VjhD
+	3sE3xn55vL4CvoW1Maxoyiw8+cIc/1f2NtIj+H5FuRqWj/2E3ylRQF0lbhP2NPQ==
+X-Received: by 2002:a05:6214:2408:b0:699:2d88:744f with SMTP id fv8-20020a056214240800b006992d88744fmr12560481qvb.4.1712663942485;
+        Tue, 09 Apr 2024 04:59:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGKcKqg6OiKy05WliAywffygt+wTBvOwmYCPaEUR8+Z7dbH4Z0DauesnEKqhKw8Fu2D+h1LNg==
+X-Received: by 2002:a05:6214:2408:b0:699:2d88:744f with SMTP id fv8-20020a056214240800b006992d88744fmr12560454qvb.4.1712663942159;
+        Tue, 09 Apr 2024 04:59:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-244-144.dyn.eolo.it. [146.241.244.144])
+        by smtp.gmail.com with ESMTPSA id a8-20020ad441c8000000b0069b1f86f754sm1411709qvq.28.2024.04.09.04.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 04:59:01 -0700 (PDT)
+Message-ID: <1f2bc5416a0a73756cc1f45f3300619eb201b0a4.camel@redhat.com>
+Subject: Re: [PATCH net v3] net: dsa: mt7530: fix enabling EEE on MT7531
+ switch on all boards
+From: Paolo Abeni <pabeni@redhat.com>
+To: arinc.unal@arinc9.com, Daniel Golle <daniel@makrotopia.org>, DENG
+ Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>, Andrew
+ Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Vladimir
+ Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, =?ISO-8859-1?Q?Ren=E9?= van
+ Dorst <opensource@vdorst.com>, Russell King <linux@armlinux.org.uk>,
+ SkyLake Huang <SkyLake.Huang@mediatek.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ mithat.guner@xeront.com,  erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,  Florian Fainelli
+ <florian.fainelli@broadcom.com>
+Date: Tue, 09 Apr 2024 13:58:56 +0200
+In-Reply-To: <20240408-for-net-mt7530-fix-eee-for-mt7531-mt7988-v3-1-84fdef1f008b@arinc9.com>
+References: 
+	<20240408-for-net-mt7530-fix-eee-for-mt7531-mt7988-v3-1-84fdef1f008b@arinc9.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: asem.it
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR22MB3789.namprd22.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c7f5501-0319-4f62-c314-08dc588c2b14
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 11:57:02.0633
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 855b093e-7340-45c7-9f0c-96150415893e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ep77AkKTMBOBuHL1u/dIKyv0mCcoLQtcynlxO9rB6SqBFk9vPIPdTk7s+rwct13djIn8Aw596abPQdtezthJ1ofok6sHzNzRImBt2OaxVo9vRxTUCQz24OHJ0vs9y3rT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR22MB3790
 
-Hi Francesco,
-..
-
-> Hello Flavio, thanks for your patch.
+On Mon, 2024-04-08 at 10:08 +0300, Ar=C4=B1n=C3=A7 =C3=9CNAL via B4 Relay w=
+rote:
+> From: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
 >=20
-> On Fri, Apr 05, 2024 at 12:01:04PM +0200, Flavio Suligoi wrote:
-> > Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> > Memory.
-> > This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
-> > able to provide SFDP information.
-> >
-> > Link:
-> > https://urldefense.com/v3/__https://www.everspin.com/file/158244/downl
-> > oad__;!!JhrIYaSK6lFZ!tWeIxTcqY-RFxb9oTGXkVDvdN3bGApINZBts9sSPv-AIlH7r2
-> > xf0to_QuyONQPwOICeq6hrz5Ia-1e6vT1VfaA$
-> >
-> No empty lines in-between tags
-
-Thanks for your observation, right!
-
+> The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features"=
+)
+> brought EEE support but did not enable EEE on MT7531  MACs. EEE is
+> enabled on MT7531 switch MACs by pulling the LAN2LED0 pin low on the boar=
+d
+> (bootstrapping), unsetting the EEE_DIS bit on the trap register, or setti=
+ng
+> the internal EEE switch bit on the CORE_PLL_GROUP4 register. Thanks to
+> SkyLake Huang (=E9=BB=83=E5=95=9F=E6=BE=A4) from MediaTek for providing i=
+nformation on the
+> internal EEE switch bit.
 >=20
-> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> There are existing boards that were not designed to pull the pin low.
+> Because of that, the EEE status currently depends on the board design.
 >=20
-> Francesco
+> The EEE_DIS bit on the trap pertains to the LAN2LED0 pin which is usually
+> used to control an LED. Once the bit is unset, the pin will be low. That
+> will make the active low LED turn on. The pin is controlled by the switch
+> PHY. It seems that the PHY controls the pin in the way that it inverts th=
+e
+> pin state. That means depending on the wiring of the LED connected to
+> LAN2LED0 on the board, the LED may be on without an active link.
+>=20
+> To not cause this unwanted behaviour whilst enabling EEE on all boards, s=
+et
+> the internal EEE switch bit on the CORE_PLL_GROUP4 register.
+>=20
+> My testing on MT7531 shows a certain amount of traffic loss when EEE is
+> enabled. That said, I haven't come across a board that enables EEE. So
+> enable EEE on the switch MACs but disable EEE advertisement on the switch
+> PHYs. This way, we don't change the behaviour of the majority of the boar=
+ds
+> that have this switch. The mediatek-ge PHY driver already disables EEE
+> advertisement on the switch PHYs but my testing shows that it is somehow
+> enabled afterwards. Disabling EEE advertisement before the PHY driver
+> initialises keeps it off.
+>=20
+> With this change, EEE can now be enabled using ethtool.
+>=20
+> Fixes: 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> Signed-off-by: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
+> ---
+> Here's some information for the record. EEE could not be enabled on MT753=
+1
+> on most boards using ethtool before this. On MT7988 SoC switch, EEE is
+> disabled by default but can be turned on normally using ethtool. EEE is
+> enabled by default on MT7530 and there's no need to make changes on the D=
+SA
+> subdriver for it.
+> ---
+> Changes in v3:
+> - Remove patch 2, it was revealed that it doesn't fix a bug.
+> - Patch 1
+>   - Use the internal EEE switch bit provided by SkyLake Huang (=E9=BB=83=
+=E5=95=9F=E6=BE=A4). It
+>     is a better method compared to unsetting the EEE_DIS bit of the trap =
+as
+>     the latter method causes unwanted behaviour on the LED connected to t=
+he
+>     pin that pertains to the EEE_DIS bit.
 
-Flavio
+Since this leverages something relatively obscure, it would be great if
+someone in the CC list could independently test it. Let's wait a bit
+more.
+
+Cheers,
+
+Paolo
+
 
