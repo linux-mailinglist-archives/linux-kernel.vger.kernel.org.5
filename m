@@ -1,138 +1,102 @@
-Return-Path: <linux-kernel+bounces-136260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6326789D207
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:38:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42C1389D20C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:48:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C24C2B23F8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:38:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCD55284F14
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FC56BB20;
-	Tue,  9 Apr 2024 05:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0E2657AE;
+	Tue,  9 Apr 2024 05:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rt5oiIvf"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="B0SowQn+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="XR6uCKpg"
+Received: from fallback22.i.mail.ru (fallback22.i.mail.ru [79.137.243.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4506A29CE0
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638F71773A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712641056; cv=none; b=jsrrLzAurUCg4RgSFTBpVeozzncQJM6Esxqtv2VS7ncUeouGDWhKn2NRi7s9cZlgBncOp4ZA4agCnle/5a9OPJLflebwRC03vIx+ZhgIxWEVMuk+ZC+N8JNyuQ9Er7HsOULvu7FL9YQ8WJ/bk7GsfXt6RVUPyGDEyXLNYxK+2ww=
+	t=1712641687; cv=none; b=nW22hnjAVFsjl/eRT58fctgV/YwWCdbV2EJ83YyqlCm3ayki06F59x9icsRBJ/00puf/6O4ayFPk9WgZvsPS4Bpd0LcIzYpJP0ubMcpvz/GB3f2lQoXuXKHTKLP4K93OBOeQF7kpjR6I/eelRd37maXOCfUP1NjyztEaPstndV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712641056; c=relaxed/simple;
-	bh=rAbRGgpUqpqC5AoI01CmDtL5z+AL13jZdTSG3M/3s6M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=d+FZNQSbkx4qDyvfWr9MwvgKPSm6dBWQ4t04ZsjZy2vB5bwMX9ubvEv0zZ9N/JtyNjr6s9ZTBKguK96m0D+cI7Nr0QkDBZZkq87F8dg2G99mHWIJHlKnJsFB26xUoBCLc5ZZk6XoyBIri8MS6qagvLASej/yGtX5HbZ+0LW7z04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rt5oiIvf; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fb458efd-0bc9-4a9d-aff1-e979b7abc710@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712641052;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXLr+E8y8RLJnLQzg5QVmlMDEV9DDDPeZaSPPyLguZs=;
-	b=rt5oiIvfOpVjBLA9Sk9FPRs6XJ7dAlN7cHzEdwfCEsZnyv4GanAUjxMtgEKKuq7Wl2IzVA
-	ItFHwIx5i4BKPKAVOFaWCwxP2BLt6R+S0JBAIHZ+xmW+bnDOby3ZgOWDAMXPDrRKdPg5ve
-	46cCvwrfVv0GO/fOupJbns/F1VekUTQ=
-Date: Mon, 8 Apr 2024 22:37:21 -0700
+	s=arc-20240116; t=1712641687; c=relaxed/simple;
+	bh=ZwA+l938iPXYTJ60gKk+nW5hvcJp3FdF81ldHAssCSk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hQdgP7GbV7Z6ZET6UdIPGWB8lZ4e0/KoFM5mM0/obmZhChjBipZHjUHTLM/no4PvivA0Xc4tralgTZxMWh9l1UbaMifZz6Hp8rg042Kdkb3pNlnXBRV91BSoLZ/8vsixtVhAWJHH0ua4q9Q+o7mBZuc8ZwmsbUPEEihDeHaenqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru; spf=pass smtp.mailfrom=inbox.ru; dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b=B0SowQn+; dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b=XR6uCKpg; arc=none smtp.client-ip=79.137.243.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inbox.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=9Era2ZLwb79nOsiWvinSwT46I2lLWW20YrV5gIt/5r4=;
+	t=1712641684;x=1712731684; 
+	b=B0SowQn+7fNwPgMTzu5BdHvqtSBsLc42XHoK8AsUeJmz4Ha70BHnPNTN4ep8rd3bPxiUXwEksaXd4gqv5NUuyzfpUkGbA9BfsGot6IqJV6lRP5fe9Vykxt3MBunPE8aI0aNpRnzV3cgxab7ulpLYjH+eEe6HMucEDsX+slSdyWlcSBrEz26qMd6d+YihRjLdGyVi2PBRC1etIPBGFWurcuj0VO7pi2Ol3gYKPZLWrDvU05ui6H8RubyxY4chs8PyhyW/bHmogHIDmMDg3brbJAvM5koQUhu5tDwGqwhb5ISvCamb5fjD1PjWXSbxh4G90CnwAcFMD/6kZIJTqIG55Q==;
+Received: from [10.12.4.19] (port=35978 helo=smtp43.i.mail.ru)
+	by fallback22.i.mail.ru with esmtp (envelope-from <fido_max@inbox.ru>)
+	id 1ru4Bm-002MlQ-SE; Tue, 09 Apr 2024 08:38:35 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
+	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References
+	:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To:Cc:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
+	bh=9Era2ZLwb79nOsiWvinSwT46I2lLWW20YrV5gIt/5r4=; t=1712641114; x=1712731114; 
+	b=XR6uCKpgxTNmMhZVGfuOD6I5zs1ocQTcD4I6FBtPzEPB6ZjVj4XRfPmJU7vzqr5pFkGO/tPL2Qv
+	z+sVfLTWfEQ82+ivIgdt0G/W6GzCorwnZ9uXDs4sVOJVWN88ZlU3qPzIjxmRHMHol2IZMg1DZNrjn
+	uZEAzCG74QmX8LvPK+rVX0RX0zK5XfguYuDTwQKNi0C+rXTZjq68o8jI8gB+C/fYDgkKK56ywGqMe
+	o5qwlBTw6H9CgqBTfOdRyX8fl2orJpGLOKdncwkFgx5Ls4wQMBecLRwIXtaynGHQZSRV2gGTjkbh9
+	/yuOdqdPGc1OqGTWX3+cNaKS1l3c4+0dIkeQ==;
+Received: by smtp43.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
+	id 1ru4BN-00000006joD-2zQ5; Tue, 09 Apr 2024 08:38:10 +0300
+Message-ID: <75d00e5b-48b5-47cb-85aa-7b9c6641f30d@inbox.ru>
+Date: Tue, 9 Apr 2024 08:38:09 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- percpu_array_map_lookup_elem
-To: syzbot <syzbot+5e23b0df3b12b8b215b7@syzkaller.appspotmail.com>
-References: <0000000000004139c80614076a2c@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: fsl: qe: Add check for platform_driver_register
+To: Chen Ni <nichen@iscas.ac.cn>, qiang.zhao@nxp.com, leoyang.li@nxp.com,
+ saravanak@google.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240409030840.666703-1-nichen@iscas.ac.cn>
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, sdf@google.com, song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-In-Reply-To: <0000000000004139c80614076a2c@google.com>
+From: Maxim Kochetkov <fido_max@inbox.ru>
+In-Reply-To: <20240409030840.666703-1-nichen@iscas.ac.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D327F0ED0D500BEE3D0D2DC2898190C0A0182A05F5380850408A9F00BCF12307122EB5D77EF37489D1CEDD527866A399A4219EC0674805B9AE4A9DBE0811142006
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE73B44982FA5E78411EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371DF52D98DC3592C48638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B432B0B59149B63E0BF6D59EF90F10D8B04DABB0541D93C920879F7C8C5043D14489FFFB0AA5F4BF176DF2183F8FC7C02F11D39E7306DD338941B15DA834481FA18204E546F3947C1D471462564A2E19F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063783E00425F71A4181389733CBF5DBD5E9B5C8C57E37DE458B9E9CE733340B9D5F3BBE47FD9DD3FB595F5C1EE8F4F765FC8C7ADC89C2F0B2A5E2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8BC6A536F79815AD9275ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
+X-87b9d050: 1
+X-C1DE0DAB: 0D63561A33F958A56981B0E970FC4E695002B1117B3ED69667EBF332286B2BA2FB820E9FE7BD014C823CB91A9FED034534781492E4B8EEADCF86CE9B81855096
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFC087879C3E0AE9D034FFC9DC8582B74DEB09DFF268707B050117E0585162983C486D6DC23143AA0E43A9A4803F78FBB9918D2DB24F4611F1B5508CD4504D7F3E782CBDC177B4639536DDF96CB8D31E6A913E6812662D5F2A17D6C1CDD2003EB8E03787203701020945C72C348FB7EED3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRxVvDy3pXer4zRb8upYVeA==
+X-Mailru-Sender: 689FA8AB762F7393590D8C940224AE3310D6C9911FFDEF1902AB133316F7432E1C8ED5244191747D90DE4A6105A3658D481B2AED7BCCC0A49AE3A01A4DD0D55C6C99E19F044156F45FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4DB7CCFC93CF1872EA8D575E5E21AE01D964B60085DACEEB368F3CF0E9FE49B69E64074A9175417A88727D7F6DF2777CD78C82047CA4AE4585B36B8EC0B0619EB
+X-7FA49CB5: 0D63561A33F958A5FE7B593D28573F95FA00C25D2FAC6109E4CA3DA7BC45C3AFCACD7DF95DA8FC8BD5E8D9A59859A8B6F657401E1635F1D7CC7F00164DA146DAFE8445B8C89999728AA50765F7900637006720155ACF5028389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC86FF1B927F95F3316F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7BEDDA301F84FD0E143847C11F186F3C59DAA53EE0834AAEE
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRxVvDy3pXeo5i+rkqVejlg==
+X-Mailru-MI: 8000000000000800
+X-Mras: Ok
 
-On 3/19/24 11:12 AM, syzbot wrote:
-> Hello,
+09.04.2024 06:08, Chen Ni пишет:
+> Return platform_driver_register() in order to transfer the error if
+> it fails.
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14e351c9180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=aa3d79b689f321c8
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5e23b0df3b12b8b215b7
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14498006180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e4d769180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/eaca555a0446/disk-e5eb28f6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4fbf90fa0d23/vmlinux-e5eb28f6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/bbae0627aafd/bzImage-e5eb28f6.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5e23b0df3b12b8b215b7@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in percpu_array_map_lookup_elem+0x142/0x160 kernel/bpf/arraymap.c:243
->   percpu_array_map_lookup_elem+0x142/0x160 kernel/bpf/arraymap.c:243
->   ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
->   bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
->   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
->   __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+> Fixes: be7ecbd240b2 ("soc: fsl: qe: convert QE interrupt controller to platform_device")
+> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
 
-#syz dup: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
-
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
->   __bpf_trace_ext4_es_insert_delayed_block+0x34/0x50 include/trace/events/ext4.h:2481
->   trace_ext4_es_insert_delayed_block include/trace/events/ext4.h:2481 [inline]
->   ext4_es_insert_delayed_block+0x11e1/0x1290 fs/ext4/extents_status.c:2082
->   ext4_insert_delayed_block fs/ext4/inode.c:1676 [inline]
->   ext4_da_map_blocks fs/ext4/inode.c:1777 [inline]
->   ext4_da_get_block_prep+0x1714/0x1d30 fs/ext4/inode.c:1817
->   ext4_block_write_begin+0x749/0x1df0 fs/ext4/inode.c:1055
->   ext4_da_write_begin+0x889/0xec0 fs/ext4/inode.c:2894
->   generic_perform_write+0x400/0xc60 mm/filemap.c:3974
->   ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
->   ext4_file_write_iter+0x208/0x3450
->   call_write_iter include/linux/fs.h:2108 [inline]
->   new_sync_write fs/read_write.c:497 [inline]
->   vfs_write+0xb63/0x1520 fs/read_write.c:590
->   ksys_write+0x20f/0x4c0 fs/read_write.c:643
->   __do_sys_write fs/read_write.c:655 [inline]
->   __se_sys_write fs/read_write.c:652 [inline]
->   __x64_sys_write+0x93/0xe0 fs/read_write.c:652
->   do_syscall_64+0xd5/0x1f0
->   entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> Local variable stack created at:
->   __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
-> 
-> CPU: 1 PID: 5001 Comm: syz-executor118 Not tainted 6.8.0-syzkaller-09791-ge5eb28f6d1af #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> =====================================================
+Reviewed-by: Maxim Kochetkov <fido_max@inbox.ru>
 
 
