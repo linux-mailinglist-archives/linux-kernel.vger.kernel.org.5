@@ -1,120 +1,132 @@
-Return-Path: <linux-kernel+bounces-137390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A63D89E15E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:16:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A12789E162
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:17:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E42B1F22E44
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:16:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B55C1C22D96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D98715625B;
-	Tue,  9 Apr 2024 17:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36F0155393;
+	Tue,  9 Apr 2024 17:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cTbcuocS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bl60pRRN"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3984C85;
-	Tue,  9 Apr 2024 17:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8560815359E;
+	Tue,  9 Apr 2024 17:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712682966; cv=none; b=ZHxTIYXzVyj9Wc5XPBPNDAVRpy+DhRS5XvY6GIkLj1dlvwmb/+pFfHsGdA5VwYFawX5cFZ4HUb3Ude2UJbbYMCC84uOTXO5A92wbbnIXE1FIOsjMDif/1bPSDMn6mWUps5DtI9l34Qz3Aw6lwySR+8Vldh50tzelVTVKkcd9eV4=
+	t=1712683030; cv=none; b=dzQd5HFNg6ojK7JsWa9dANK+gRMbEgjhaDQf6/O8doMDk9eB+0BVJ8Tj5RpHTgvVyIIcaZbyPoRrIYSvBrPKzIdCbdUXwAXkJtLr2AiK3+NhxXtHN5Xc5o7OJO200RsHdhvPvRqa5BljaLoNfiBmkc7Uuu+x+E64MTI3B5XCiGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712682966; c=relaxed/simple;
-	bh=sLn1MkuowWjc6krARTBpYDuzXpWucWq2bmwehniidC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DVAres22MFw4RZnpkGuWohao46EW94IXtYmnsZELYd35FBgDrokWKplkhwGjlEwcIilwS0lbrEk2ISRJl5+Q9CC2c+BrO7CHdnRx0FN1t5QLUMjRRizdmI6PIN6r73P3njlEhn0URMK65sJtwZbfVNk3lIIjICOMBVjGC67Syi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cTbcuocS; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712682962; x=1744218962;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sLn1MkuowWjc6krARTBpYDuzXpWucWq2bmwehniidC4=;
-  b=cTbcuocSVEUwF/PxfZitr06XsU24gddl+egzds5jWzaDSQjDRKCmeabt
-   Q2gxrwC8MoQ5Ai+kQhTGQrIJnWH7Y0iYikGcBbSiVSAXlenzLWeZ1rHoA
-   Y9ywQh7bJH0D18HN2I4lpV71MUhe2Vsr2wHRIkT0UzyQqC/Y5Jiz662ga
-   aZnYbT/0bQBsdyrFRqhSngFU+XYGCr36yaVHId5Zem4x+XE563/P2HjdD
-   tRfhDYjWRxaqqd9+gtNF+uMHik65YDqfAj9mk+OV8R5vxK+VSsnKVGUJM
-   ZOqE9bGy+d/vQOVDW9H8TFzB4wXoCRZKwPg4Ap3Q62sZBy/Ji/TsT82xW
-   w==;
-X-CSE-ConnectionGUID: sFO0iKuoSRGVoHY+0wx90g==
-X-CSE-MsgGUID: NihCW0DjQtSPgPa91ZNbPQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7924889"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7924889"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 10:16:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915405484"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="915405484"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 10:15:59 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ruF4f-00000002rrI-2EXk;
-	Tue, 09 Apr 2024 20:15:57 +0300
-Date: Tue, 9 Apr 2024 20:15:57 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] platform/x86/intel: atomisp2: Replace deprecated
- UNIVERSAL_DEV_PM_OPS()
-Message-ID: <ZhV3zUgZjAMUZ0yD@smile.fi.intel.com>
-References: <20240403105511.558395-1-andriy.shevchenko@linux.intel.com>
- <609652ce-0336-4d69-ab79-f84c8a8506e5@redhat.com>
+	s=arc-20240116; t=1712683030; c=relaxed/simple;
+	bh=yPLx0WlPcqbYP7PztskjJ6gP7k8HuYhFWSUP1+GpN6U=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=onJZ5nMf1XI6r2oNpzsx+7flemqukb6jBg//iVZQyZ4RvFeYJBemzyQr4JLgKcdxTShNi2+vUpVe+rGf9Iebfg3jQXFkjscREJyaZoZxawsarHQt0X7C8KWrMsrKdhl8TZEBDtXCFYN6mjcowSegRvud+qU1O2YDEIDTG9JvqAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bl60pRRN; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so82894731fa.0;
+        Tue, 09 Apr 2024 10:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712683027; x=1713287827; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GcyQviJT/ZKll5Y+ZKktvq3eLlaWHgRX/7+F6P9kW0A=;
+        b=Bl60pRRNiLWIUAVIEFZv4IS8swHBa9qWkqf1b8Y6m680/9HPbT/Dvp874evkBUgynH
+         1sdpIzl7kxd07pKt0HNpebGrg5n/ONOWR8sh97RbhtJWtQJqcQTO2/WlH+ciEeRg2uuh
+         oXVO3fsAu6aHbA51ORZOR3Sqw6Zh5vIRbe01+QAj7KdnT0Wu8bmVv5eGmuXx9M1sIQoB
+         T/ssuBjebg0gxxqMfM+fG17W5gveKdMT7yOtrJ0GIXzx7DXI5TjQpLJe04zR5CcSRVc/
+         CebfXKR1xasx5kN7QV63Gs6gvVQEbYP/Sa415yLWiRvqLj5EWmWiCJFFVVAJZzcZEfEn
+         z2wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712683027; x=1713287827;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GcyQviJT/ZKll5Y+ZKktvq3eLlaWHgRX/7+F6P9kW0A=;
+        b=QmaWShPN0wNpXmF6mp9Sh2TRTR5cbpBmMnzCG3x6t7hvW8tivsxm3ri2Qmi7NTDbEE
+         NiAqOHn7A4ozLfFjAWyJMMx93Mn0eGxlI6Q2Jh01xP4cdeOwd0ib+xuS2DvYm6yPLkmA
+         APoLlzhmLgba85WDzTQMPidbiKiTuTKwDiGWDpe2WA6rh8Tcu44Z/rwg9gvFK6FcLV1u
+         eI2Ne3I0O9nqHrwO1OoOBmL/h+ZtPhkSfyHVjuV76Q/IO33oPFwfwASAAmrwUzc3HiX9
+         URahBAsYbCwvF57c9ccGTtb/fZL5Bes+0QF7ryO7mNTZ4wokZrhLcwZ3BOFyXiv8ySID
+         1aKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9UTZ2mpKlEU+r62+tRudfnHnYMGquj7TPciIRaaKKZp1eW2+yiqVm0X6ymdcJ54BiVg1xUR0D4C6BtQzeJfUZbJvF6D74vfGJRb7TjLbZqi2UwCWCfLaMHNVrc2WgPTBo
+X-Gm-Message-State: AOJu0Yxk2DseqzcGMKwD1u/T08hHvKPY9y4TNRXIQ5lQ31lHPzNu02e7
+	pCqubYTGfejllx/0qgeG1/7D76v+kvEokFEc5K1OwPUXg5LoVmKbjXmL8FKNILU=
+X-Google-Smtp-Source: AGHT+IEcHUTdr1f9hHpKHYtrK7jxVjg6oestPlAx2GF5WZap0QGjMk3qaqPIXKwPVck52B/KPGh8og==
+X-Received: by 2002:a05:651c:1a28:b0:2d8:34ad:7f4e with SMTP id by40-20020a05651c1a2800b002d834ad7f4emr434658ljb.4.1712683026485;
+        Tue, 09 Apr 2024 10:17:06 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id p14-20020a05600c358e00b0041674bf7d4csm7945486wmq.48.2024.04.09.10.17.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 10:17:06 -0700 (PDT)
+Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
+ value tracking
+To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+ Edward Cree <ecree@amd.com>
+Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, paul@isovalent.com,
+ Matan Shachnai <m.shachnai@rutgers.edu>,
+ Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+ Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
+ <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
+ <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
+From: Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <9d149d61-239c-67ac-0647-b59a12264299@gmail.com>
+Date: Tue, 9 Apr 2024 18:17:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <609652ce-0336-4d69-ab79-f84c8a8506e5@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 08, 2024 at 06:20:03PM +0200, Hans de Goede wrote:
-> On 4/3/24 12:55 PM, Andy Shevchenko wrote:
+On 04/04/2024 03:40, Harishankar Vishwanathan wrote:
+> [...]
+> Given the above, please advise if we should backport this patch to older
+> kernels (and whether I should use the fixes tag).
 
-..
+I don't feel too strongly about it, and if you or Shung-Hsi still
+ think, on reflection, that backporting is desirable, then go ahead
+ and keep the Fixes: tag.
+But maybe tweak the description so someone doesn't see "latent
+ unsoundness" and think they need to CVE and rush this patch out as
+ a security thing; it's more like hardening.  *shrug*
 
-> As mentioned in the description of DEFINE_RUNTIME_DEV_PM_OPS()
-> DEFINE_RUNTIME_DEV_PM_OPS() is NOT a 1:1 replacement for
-> UNIVERSAL_DEV_PM_OPS() specifically it uses pm_runtime_force_suspend() /
-> pm_runtime_force_resume() .
+>> Commit message could also make clearer that the new code considers whether
+>>  the *output* ubounds cross sign, rather than looking at the input bounds
+>>  as the previous code did.  At first I was confused as to why XOR didn't
+>>  need special handling (since -ve xor -ve is +ve).
+> 
+> Sounds good regarding making it clearer within the context of what the
+> existing code does. However, I wanted to clarify that XOR does indeed use
+> the same handling as all the other operations. Could you elaborate on what
+> you mean?
 
-Right.
+Just that if you XOR two negative numbers you get a positive number,
+ which isn't true for AND or OR; and my confused little brain thought
+ that fact was relevant, which it isn't.
 
-> Specifically pm_runtime_force_suspend() may NOT get set (and in this case
-> will not set) needs_force_resume skipping a resume + suspend cycle
-> after a system suspend, which is a problem if firmware has touched
-> the state of the device during the suspend/resume cycle since the device
-> may now actually be left powered on.
-
-I see, thanks for explaining me this. So this driver is kinda very special.
-Still the old question, can we get rid altogether of these atomisp "drivers"
-in PDx86?
-
-> It seems there is no direct replacement for UNIVERSAL_DEV_PM_OPS()
-> without a behavior change.
-
-Correct.
-
-..
-
-Btw, have you seen a few cleanup patches against AtomISP v2 by me?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+-e
 
