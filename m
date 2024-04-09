@@ -1,195 +1,440 @@
-Return-Path: <linux-kernel+bounces-136819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 047FB89D8A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:59:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED84589D8A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012B11C218EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:59:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638E21F244B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50554129E9E;
-	Tue,  9 Apr 2024 11:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C857712A160;
+	Tue,  9 Apr 2024 12:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmTLO8/8"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SxtNfeMn"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AB3129E81
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B786651
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712663989; cv=none; b=CCiu/ZK9vv3wdUr79TnMUpCO+YCpfDQdnEw5CXj7C3X3vA7VxCBC5TAyXNNkXUSII8WGmJtuAcZHoPR/H6Mq58elPu59hSJdg7MWKFJQXcL8KcSpqVrQqhGnnhMHhFn4gCNjTK9Y0L5/NGrDqsc+yTrtPq5vKDknvW4izAJVLrU=
+	t=1712664015; cv=none; b=u8wxCcqLpED5Bf46/vHbykKkC9W0pC+ThQyQh2h+aOFGPKd9G3hkO/32QC2Ab6/W+wq2t0BmF9Gi6ewit9pq2mVZekscuqyhHa6SbtDEFlzQXmJEe1J7FBx752ONcoIG/5hyZqY4O55Uy2uyFDzBrEGZaKEHbAbuTssw6P303zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712663989; c=relaxed/simple;
-	bh=cKXGyQ9ugO3FhOEEQMeDF4UljKTgHKI4IxvzJMDPhNE=;
+	s=arc-20240116; t=1712664015; c=relaxed/simple;
+	bh=kSsCJ+neyaD9aFL/tH+VGrh65tQwOtpkOJUoXxdZRIw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iJAvs5lYzfC6HD7thFm+q2faRhfSxteET3KwPXSlHpqE/+hZzvGk7/iaOTEDpkpp3zNk9Rv9paM+quKUd4TdYg1mbXjxEe3UTzpJM0f8vuWwp1Cg9UFc5uP7xdb4BJy7QDt29Jl5VLEowHPvayX+P8S/i201hpTBf54va5T5jvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmTLO8/8; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d89346eb45so25146131fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:59:47 -0700 (PDT)
+	 To:Cc:Content-Type; b=qIRSx8sC/67c5KN2OOKhEUGeFRGRQ1LkhnPGentF9XGv+HxfVFbFXEShyVf4obc24WuL57vJbRkES+hUJnGO6skCctL30ltNvos7LYcC9I2Om+GoCJd1JwdUgbL7yCJpjh87dZHErqQG/3nIPxnM4WF3ISWUPcy3aWra4vP3eLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SxtNfeMn; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ea15e25a06so1436592a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712663986; x=1713268786; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712664013; x=1713268813; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yA6yM//l15RQkg/PQ3vqwqQ/y4GYtRX2qaa5WJPkuhw=;
-        b=PmTLO8/8Zm8W273oyEE2JInli51o6YzzKenG3GDN4xIxkpQ49QUleWUZs9mVH6r3kO
-         swZmKYrRVSUrJ9YnCM5gw/IffWfq5NM0bZyPxU2esxt2rqHrSSP7octuOkrg3HmjKwZO
-         gfQAEfO3M7hqMRGcJu2TE5OKdtJr0MgnXzQKXbiAqqOhYdAyYnyDI+gH9OewXnE1UmzJ
-         J00X3d8859mX4h+lO3jWpoQ3aauaZiowWXJyeai7krh3TM59nynOtQ+CJ3XOFxzUheGw
-         Rpmjt+dVpFshy+drdv+JbHtYGC+tLE9kE5VSZBUwCBFOk6ivdVyB53L/pK/qmWoh3zVg
-         BqfQ==
+        bh=g57FLG2DYtjB7l2/AdccliiuJIB7I5F3g9Z2XQHJM60=;
+        b=SxtNfeMnx8ugip7seohFAs3z+mqBfWay0QS0SA7zoPBf839XfoWfRF7gqhcc8MRDLN
+         QNsdbbp+qIogI/Zc3sYP/hLzZfi6z20FHVkB7XcnrGJ22fyAjGpYGrHV3VXyhKn1LIol
+         97dBRxJbf4MXaptisSg1+KyUq8wf7zwiz5ppIlVLbLPXIpXy0QQkTBG5DMOjLlooOpAB
+         GdJiRZAsvwviKvdBcvCqvxBtQfVw69OnBZRuo8QkP9O4sHTBQie2VPKjcrqx0rvsgrdb
+         GCg0V6bSQTC/SVFvKX4MKuIMT2H1/lrwk42c3aMb56mOcMWFpRDhSG2XX8l8nxBnMKjI
+         oHWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712663986; x=1713268786;
+        d=1e100.net; s=20230601; t=1712664013; x=1713268813;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yA6yM//l15RQkg/PQ3vqwqQ/y4GYtRX2qaa5WJPkuhw=;
-        b=t18l/CEnrOWB9kyZpBDhSfDqlAeDul6ywxD0l+t8XtYuSxny4gmOSS4jMUkMr+kTcQ
-         X7Rri0t0LGtnWy8VxSZFEG7nCoMubonHFBsYbbge16HbvVjXmtot84RckJ6Vsmgec7lM
-         Ie7F7kpOnYspoH83VTYcL7yUYBr7zT0TApvWdmDtVK4xly+pr9lw4FctVRhDe35RaMzc
-         aFbFw7yAsI2T7xj392Zx3HwnhnuhJldHS/7K10hg4+0GmcsjhhF4NLeDLZ7Qp4ZzyMcf
-         zW9CExAwkx6N41+jmcFTStdkxSbCErgXLdC0iEiB8E+eUuK8JK9T/xnuzalCcrtMjHnR
-         I4zw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYE877E9+gmYZVlrwlCSCdhUqSnac8flSnuNzmoxMOHGN3+i24jhszpZpLgaO09hsH278PadyIgNYwVffKgQOS9dolw7eazMOwlIi4
-X-Gm-Message-State: AOJu0YwhYanXr2LYXwIs9eARn7dE3yqU5Ay6Hl0eJJ3aCuTQyTh8G102
-	JrvQHoGPT2en9UZumjMH4CmZfWXc9M2IAJwHZl9EEXhRFJMt40Ya+q/jf3/TGC48X/UduaZQ++J
-	bcor4oY9TCDYDNlmzZJi8/2sADZjThVgYAKOaKA==
-X-Google-Smtp-Source: AGHT+IHw7vOfR8eGw1oZjXBiod/DvgknmgFEPtkUfg6glfmn8GOHjjxnRb2AUbjjkSwA53q1VyFDk1hcDde1wZqc81A=
-X-Received: by 2002:a2e:bc13:0:b0:2d8:6ca7:2165 with SMTP id
- b19-20020a2ebc13000000b002d86ca72165mr13695836ljf.46.1712663985471; Tue, 09
- Apr 2024 04:59:45 -0700 (PDT)
+        bh=g57FLG2DYtjB7l2/AdccliiuJIB7I5F3g9Z2XQHJM60=;
+        b=VyNxJpoPzHegVggKfNiRG8daSP9siw7RIBW7IXyUswKb2svJmHGvvNGDsicUiDacZg
+         iJX0CBM6v5Ng0/oOfnOjR+rklxt5jHQh8k3ZdSfFm5PDUBzTwKhzD/xGQCYmgvHCMW0I
+         BdtiZQhPNZmNzJMtPdLrL+2Bnj5zlfkYCt3z9bfuiYyrO8IY0EdObWnJgcbl/Z1J4BgH
+         NxNwKUTgY1O3ozNQroxhpCzb4JbdaHLQAUSxcn1lh0MoPhlSsqzu8jRIRsg57/IhOJ3A
+         1FHYSNNTFOYkB1kSxjnTvZVdIWkSi4inv+xAJ1LlwXqsC3v2MmeUza9CX6G0+noee7Hj
+         OqHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7rDuzm0x/c4A4WK1V85sI1C1FQLEg3Ngz1duKkBapMpE7bwD9f0WeYW/RKheqRijmih7aZYPVYKEA72Rs75ARrKxOqlSyWzW0IS+o
+X-Gm-Message-State: AOJu0YzLafTKP6vv/P4AUDpGOb6SDgsFoj+FlgZdTyWSdIJQfnn5KMEz
+	GZ8nkUp2NtB3EXPn9vqKaXn0PdVYLSBvp659cCVDUjrjfuKLO6L8vf5h9aHDJ+39H4AD3BHnohX
+	2lBVmYpp2TX0mqtDO3R5aQ8BEO8kSpn1SOC4GRw==
+X-Google-Smtp-Source: AGHT+IE3c2YTtnw4w6o839yJoZUr2rWNziP6CqA0KFHn0n5VcRiKCHbRofYfnpb6PovupHKtTrD7cYlAEoCdrliikBE=
+X-Received: by 2002:a05:6808:14a:b0:3c5:f35b:163a with SMTP id
+ h10-20020a056808014a00b003c5f35b163amr5649657oie.22.1712664012608; Tue, 09
+ Apr 2024 05:00:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409100503.274629-1-ubizjak@gmail.com> <20240409100503.274629-4-ubizjak@gmail.com>
- <ZhUhWcjo556WoTF4@FVFF77S0Q05N>
-In-Reply-To: <ZhUhWcjo556WoTF4@FVFF77S0Q05N>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Tue, 9 Apr 2024 13:59:33 +0200
-Message-ID: <CAFULd4ZcAhCyjkxm+FLQFz2Gw1AWvzY+_4TeUyODxwQk7hfh+w@mail.gmail.com>
-Subject: Re: [PATCH 3/6] locking/atomic/x86: Use READ_ONCE before
- atomic{,64}_try_cmpxchg loops
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>
+References: <20240405115318.904143-1-jens.wiklander@linaro.org>
+ <20240405115318.904143-3-jens.wiklander@linaro.org> <DM6PR04MB657580885C16AE4F5743357EFC022@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <PH7PR11MB76050B745987B7169C8EDA0EE5022@PH7PR11MB7605.namprd11.prod.outlook.com>
+In-Reply-To: <PH7PR11MB76050B745987B7169C8EDA0EE5022@PH7PR11MB7605.namprd11.prod.outlook.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Tue, 9 Apr 2024 14:00:01 +0200
+Message-ID: <CAHUa44EfLjZkeS0HFTf4gvBiwZj3682t0JSWx_=rb9xfagbWLQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] mmc: block: register RPMB partition with the RPMB subsystem
+To: "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc: Avri Altman <Avri.Altman@wdc.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, 
+	"op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Jerome Forissier <jerome.forissier@linaro.org>, 
+	Sumit Garg <sumit.garg@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Bart Van Assche <bvanassche@acm.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Usyskin, Alexander" <alexander.usyskin@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 1:07=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
-wrote:
+On Sat, Apr 6, 2024 at 5:31=E2=80=AFPM Winkler, Tomas <tomas.winkler@intel.=
+com> wrote:
 >
-> On Tue, Apr 09, 2024 at 12:03:54PM +0200, Uros Bizjak wrote:
-> > The value preload before the cmpxchg loop does not need to be atomic,
-> > but should use READ_ONCE to prevent compiler from merging, refetching
-> > or reordering the read.
 > >
->
-> Yes, and that's what arch_atomic_read() and arch_atomic64_read() do...
->
-> > This patch unifies arch_atomic{,64}_{,fetch}_{and,or,xor}() macros
-> > between x86_32 and x86_64 targets.
 > >
-> > No functional changes intended.
+> > > +
+> > > +#define RPMB_PROGRAM_KEY       0x1    /* Program RPMB Authentication
+> > You expect the key to be already programmed - so you don't really need =
+this
+> > operation?
+> Depends in what manufacturing flow you program the device,  second I beli=
+eve in the original series was also a simulation device,
+> This is important as the real device can be programmed only once.
+
+This isn't strictly needed, this is the only "nice to have" feature
+I've kept because it's easy enough and can be useful. I can remove it
+if it's important.
+
 > >
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > ---
-> >  arch/x86/include/asm/atomic.h      |  8 ++++----
-> >  arch/x86/include/asm/atomic64_64.h | 20 ++++++++++----------
-> >  2 files changed, 14 insertions(+), 14 deletions(-)
+> > > Key */
+> > > +#define RPMB_GET_WRITE_COUNTER 0x2    /* Read RPMB write counter
+> > */
+> > > +#define RPMB_WRITE_DATA        0x3    /* Write data to RPMB partitio=
+n */
+> > > +#define RPMB_READ_DATA         0x4    /* Read data from RPMB partiti=
+on
+> > */
+> > > +#define RPMB_RESULT_READ       0x5    /* Read result request  (Inter=
+nal)
+> > */
+> > > +
+> > >  static DEFINE_MUTEX(block_mutex);
+> > >
+> > >  /*
+> > > @@ -163,6 +205,7 @@ struct mmc_rpmb_data {
+> > >         int id;
+> > >         unsigned int part_index;
+> > >         struct mmc_blk_data *md;
+> > > +       struct rpmb_dev *rdev;
+> > >         struct list_head node;
+> > >  };
+> > >
+> > > @@ -2672,7 +2715,6 @@ static int mmc_rpmb_chrdev_open(struct inode
+> > > *inode, struct file *filp)
+> > >
+> > >         get_device(&rpmb->dev);
+> > >         filp->private_data =3D rpmb;
+> > > -       mmc_blk_get(rpmb->md->disk);
+> > Maybe add a comment that this has moved to mmc_blk_alloc_rpmb_part?
+> > For those who will look for it.
+
+Such a comment seems odd. Those looking for mmc_blk_get() should be
+able to find it easily. I'll add the comment if it's important.
+
 > >
-> > diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomi=
-c.h
-> > index 55a55ec04350..b166da21ee98 100644
-> > --- a/arch/x86/include/asm/atomic.h
-> > +++ b/arch/x86/include/asm/atomic.h
-> > @@ -20,7 +20,7 @@ static __always_inline int arch_atomic_read(const ato=
-mic_t *v)
-> >        * Note for KASAN: we deliberately don't use READ_ONCE_NOCHECK() =
-here,
-> >        * it's non-inlined function that increases binary size and stack=
- usage.
-> >        */
-> > -     return __READ_ONCE((v)->counter);
-> > +     return __READ_ONCE(v->counter);
->
-> Removing the unncessary brackets is fine, but the commit message didn't m=
-ention this.
+> > >
+> > >         return nonseekable_open(inode, filp);  } @@ -2682,7 +2724,6 @=
+@
+> > > static int mmc_rpmb_chrdev_release(struct inode *inode, struct file *=
+filp)
+> > >         struct mmc_rpmb_data *rpmb =3D container_of(inode->i_cdev,
+> > >                                                   struct
+> > > mmc_rpmb_data, chrdev);
+> > >
+> > > -       mmc_blk_put(rpmb->md);
+> > Ditto.
 
-It was just a change in passing. I didn't think it even needed a comment.
+See my answer above.
 
-> [...]
->
-> >  static __always_inline int arch_atomic_fetch_and(int i, atomic_t *v)
-> >  {
-> > -     int val =3D arch_atomic_read(v);
-> > +     int val =3D __READ_ONCE(v->counter);
->
-> This is the wrong thing to do; arch_atomic_read() already has the require=
-d
-> semantic, and it more clearly aligns with the use of arch_atomic_try_cmpx=
-chg()
-> below. It contains the documentation regarding why we use __READ_ONCE()
-> specifically (which we should probably note in arch_atomic64_read()).
->
-> Please leave this as-is, and likewise for the other cases below. Similarl=
-y, the
-> prior patch should use arch_atomic{,_64}_read() rather than using
-> __READ_ONCE().
-
-Please note that arch_atomic64_read implements true 64-bit atomic read
-on x86_32. I tried to bypass this using __READ_ONCE(), but your
-suggestion to use arch_atomic64_read_tearable() is indeed a much
-better approach.
-
-> [...]
->
-> >  static __always_inline s64 arch_atomic64_fetch_and(s64 i, atomic64_t *=
-v)
-> >  {
-> > -     s64 val =3D arch_atomic64_read(v);
-> > +     s64 val =3D __READ_ONCE(v->counter);
-> > +
-> > +     do { } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
 > >
-> > -     do {
-> > -     } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
-> >       return val;
->
-> I think this reformatting is what you meant in the commit message when yo=
-u said:
->
-> | This patch unifies arch_atomic{,64}_{,fetch}_{and,or,xor}() macros
-> | between x86_32 and x86_64 targets.
+> > >         put_device(&rpmb->dev);
+> > >
+> > >         return 0;
+> > > @@ -2703,10 +2744,157 @@ static void
+> > > mmc_blk_rpmb_device_release(struct
+> > > device *dev)  {
+> > >         struct mmc_rpmb_data *rpmb =3D dev_get_drvdata(dev);
+> > >
+> > > +       rpmb_dev_unregister(rpmb->rdev);
+> > > +       mmc_blk_put(rpmb->md);
+> > >         ida_simple_remove(&mmc_rpmb_ida, rpmb->id);
+> > >         kfree(rpmb);
+> > >  }
+> > >
+> > > +static void free_idata(struct mmc_blk_ioc_data **idata, unsigned int
+> > > +cmd_count) {
+> > > +       unsigned int n;
+> > > +
+> > > +       for (n =3D 0; n < cmd_count; n++)
+> > > +               kfree(idata[n]);
+> > > +       kfree(idata);
+> > > +}
+> > > +
+> > > +static struct mmc_blk_ioc_data **alloc_idata(struct mmc_rpmb_data
+> > *rpmb,
+> > > +                                            unsigned int cmd_count) =
+{
+> > > +       struct mmc_blk_ioc_data **idata;
+> > > +       unsigned int n;
+> > > +
+> > > +       idata =3D kcalloc(cmd_count, sizeof(*idata), GFP_KERNEL);
+> > > +       if (!idata)
+> > > +               return NULL;
+> > > +
+> > > +       for (n =3D 0; n < cmd_count; n++) {
+> > > +               idata[n] =3D kcalloc(1, sizeof(**idata), GFP_KERNEL);
+> > > +               if (!idata[n]) {
+> > > +                       free_idata(idata, n);
+> > > +                       return NULL;
+> > > +               }
+> > > +               idata[n]->rpmb =3D rpmb;
+> > > +       }
+> > > +
+> > > +       return idata;
+> > > +}
+> > > +
+> > > +static void set_idata(struct mmc_blk_ioc_data *idata, u32 opcode,
+> > > +                     int write_flag, u8 *buf, unsigned int buf_bytes=
+) {
+> > > +       idata->ic.opcode =3D opcode;
+> > > +       idata->ic.flags =3D MMC_RSP_R1 | MMC_CMD_ADTC;
+> > > +       idata->ic.write_flag =3D write_flag;
+> > > +       idata->ic.blksz =3D sizeof(struct rpmb_frame);
+> > blksz =3D 512, so maybe add a compile-time check on sizeof(struct
+> > rpmb_frame)?
 
-Actually, it was the change to use __READ_ONCE(). The reformatting
-follows the functions from atomic.h, e.g. arch_atomic_fetch_and() and
-was another case of change in passing, not worth mentioning in the
-commit message. I will rewrite this in v2 of the patch, so these
-functions will uniformly use arch_atomic64_read_tearable().
+That makes sense, I'll add it.
 
-> Assuming so, can you please jsut do that, and say:
+> >
+> > > +       idata->ic.blocks =3D buf_bytes /  idata->ic.blksz;
+> > > +       idata->buf =3D buf;
+> > > +       idata->buf_bytes =3D buf_bytes;
+> > > +}
+> > > +
+> > > +static int mmc_route_rpmb_frames(struct device *dev, u8 *req,
+> > > +                                unsigned int req_len, u8 *resp,
+> > > +                                unsigned int resp_len) {
+> > > +       struct rpmb_frame *frm =3D (struct rpmb_frame *)req;
+> > > +       struct mmc_rpmb_data *rpmb =3D dev_get_drvdata(dev);
+> > > +       struct mmc_blk_data *md =3D rpmb->md;
+> > > +       struct mmc_blk_ioc_data **idata;
+> > > +       unsigned int cmd_count;
+> > > +       struct request *rq;
+> > > +       u16 req_type;
+> > > +       bool write;
+> > > +       int ret;
+> > > +
+> > > +       if (IS_ERR(md->queue.card))
+> > > +               return PTR_ERR(md->queue.card);
+> > > +
+> > > +       if (req_len < sizeof(*frm))
+> > > +               return -EINVAL;
+> > > +
+> > > +       req_type =3D be16_to_cpu(frm->req_resp);
+> > > +       switch (req_type) {
+> > > +       case RPMB_PROGRAM_KEY:
+> > > +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> > > +                   resp_len !=3D sizeof(struct rpmb_frame))
+> > > +                       return -EINVAL;
+> > > +               write =3D true;
+> > > +               break;
+> > > +       case RPMB_GET_WRITE_COUNTER:
+> > > +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> > > +                   resp_len !=3D sizeof(struct rpmb_frame))
+> > > +                       return -EINVAL;
+> > > +               write =3D false;
+> > > +               break;
+> > > +       case RPMB_WRITE_DATA:
+> > > +               if (req_len % sizeof(struct rpmb_frame) ||
+> > > +                   resp_len !=3D sizeof(struct rpmb_frame))
+> > > +                       return -EINVAL;
+> > > +               write =3D true;
+> > > +               break;
+> > > +       case RPMB_READ_DATA:
+> > > +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> > > +                   resp_len % sizeof(struct rpmb_frame))
+> > > +                       return -EINVAL;
+> > > +               write =3D false;
+> > > +               break;
+> > > +       default:
+> > > +               return -EINVAL;
+> > > +       }
+> > Looks like the above input validation section can be reduced to is
+> > RPMB_WRITE_DATA and default?
+
+RPMB_GET_WRITE_COUNTER and RPMB_READ_DATA have different checks for resp_le=
+n.
+
+> >
+> > > +
+> > > +       if (write)
+> > > +               cmd_count =3D 3;
+> > > +       else
+> > > +               cmd_count =3D 2;
+> > > +
+> > > +       idata =3D alloc_idata(rpmb, cmd_count);
+> > > +       if (!idata)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       if (write) {
+> > > +               struct rpmb_frame *frm =3D (struct rpmb_frame *)resp;
+> > > +
+> > > +               /* Send write request frame(s) */
+> > > +               set_idata(idata[0], MMC_WRITE_MULTIPLE_BLOCK,
+> > > +                         1 | MMC_CMD23_ARG_REL_WR, req, req_len);
+> > > +
+> > > +               /* Send result request frame */
+> > > +               memset(frm, 0, sizeof(*frm));
+> > > +               frm->req_resp =3D cpu_to_be16(RPMB_RESULT_READ);
+> > > +               set_idata(idata[1], MMC_WRITE_MULTIPLE_BLOCK, 1, resp=
+,
+> > > +                         resp_len);
+> > > +
+> > > +               /* Read response frame */
+> > > +               set_idata(idata[2], MMC_READ_MULTIPLE_BLOCK, 0, resp,
+> > > resp_len);
+> > It is confusing to me that your response is holding 2 frame types:
+> > The status frame and the response frame.
+> Refer to the spec.
 >
->   This patch reformats the x86_64 arch_atomic{,64}_{,fetch}_{and,or,xor}(=
-)
->   functions to match the x86_32 versions.
+> >
+> >
+> > > +       } else {
+> > > +               /* Send write request frame(s) */
+> > > +               set_idata(idata[0], MMC_WRITE_MULTIPLE_BLOCK, 1, req,
+> > > + req_len);
+> > > +
+> > > +               /* Read response frame */
+> > > +               set_idata(idata[1], MMC_READ_MULTIPLE_BLOCK, 0, resp,
+> > > resp_len);
+> > > +       }
+> > > +
+> > > +       rq =3D blk_mq_alloc_request(md->queue.queue, REQ_OP_DRV_OUT,
+> > 0);
+> > > +       if (IS_ERR(rq)) {
+> > > +               ret =3D PTR_ERR(rq);
+> > > +               goto out;
+> > > +       }
+> > > +
+> > > +       req_to_mmc_queue_req(rq)->drv_op =3D
+> > MMC_DRV_OP_IOCTL_RPMB;
+> > > +       req_to_mmc_queue_req(rq)->drv_op_result =3D -EIO;
+> > > +       req_to_mmc_queue_req(rq)->drv_op_data =3D idata;
+> > > +       req_to_mmc_queue_req(rq)->ioc_count =3D cmd_count;
+> > Maybe have an additional struct mmc_queue_req *mq_rq =3D
+> > req_to_mmc_queue_req(rq);
+
+Sure, I'll add it.
+
+> >
+> > > +       blk_execute_rq(rq, false);
+> > > +       ret =3D req_to_mmc_queue_req(rq)->drv_op_result;
+> > > +
+> > > +       blk_mq_free_request(rq);
+> > > +
+> > > +out:
+> > > +       free_idata(idata, cmd_count);
+> > > +       return ret;
+> > > +}
+> > > +
+> > >  static int mmc_blk_alloc_rpmb_part(struct mmc_card *card,
+> > >                                    struct mmc_blk_data *md,
+> > >                                    unsigned int part_index, @@ -2741,=
+6
+> > > +2929,7 @@ static int mmc_blk_alloc_rpmb_part(struct mmc_card *card,
+> > >         rpmb->dev.release =3D mmc_blk_rpmb_device_release;
+> > >         device_initialize(&rpmb->dev);
+> > >         dev_set_drvdata(&rpmb->dev, rpmb);
+> > > +       mmc_blk_get(md->disk);
+> > >         rpmb->md =3D md;
+> > >
+> > >         cdev_init(&rpmb->chrdev, &mmc_rpmb_fileops); @@ -3002,6
+> > > +3191,41 @@ static void mmc_blk_remove_debugfs(struct mmc_card
+> > *card,
+> > >
+> > >  #endif /* CONFIG_DEBUG_FS */
+> > >
+> > > +static void mmc_blk_rpmb_add(struct mmc_card *card) {
+> > > +       struct mmc_blk_data *md =3D dev_get_drvdata(&card->dev);
+> > > +       struct mmc_rpmb_data *rpmb;
+> > > +       struct rpmb_dev *rdev;
+> > > +       unsigned int n;
+> > > +       u32 cid[4];
+> > > +       struct rpmb_descr descr =3D {
+> > > +               .type =3D RPMB_TYPE_EMMC,
+> > > +               .route_frames =3D mmc_route_rpmb_frames,
+> > > +               .reliable_wr_count =3D card->ext_csd.raw_rpmb_size_mu=
+lt,
+> > > +               .capacity =3D card->ext_csd.rel_sectors,
+> > The capacity is RPMB_SIZE_MULT and also limited to 16MB?
+
+Thanks for noticing this, I'll fix it. Yes, the spec says it's limited to 1=
+6MB.
+
+> > And you also need the region size you are writing to.
+> > If I get your intention regarding reliable_wr_count, AFAIK, rpmb can be
+> > written either as a single, double, or 32 frames.
+> > And this should be induced from card->ext_csd.rel_param, and not card-
+> > >ext_csd.rel_sectors.
+> This may change in the spec since this patch was written it was few years=
+ ago.
+
+Thanks, I'll fix it.
+
+> >
+> > > +               .dev_id =3D (void *)cid,
+> > > +               .dev_id_len =3D sizeof(cid),
+> > > +       };
+> > > +
+> > > +       /*
+> > > +        * Provice CID as an octet array. The CID needs to be interpr=
+eted
+> > > +        * when used as input to derive the RPMB key since some field=
+s
+> > > +        * will change due to firmware updates.
+> > > +        */
+> > Not sure how the CID register is related to RPMB?
+> > Is this something internal to TEE?
+> Yes to identify the device.
+
++1
 
 Thanks,
-Uros.
+Jens
+
+> >
+> > > +       for (n =3D 0; n < 4; n++)
+> > > +               cid[n] =3D be32_to_cpu(card->raw_cid[n]);
+> > > +
+> > > +       list_for_each_entry(rpmb, &md->rpmbs, node) {
+> > > +               rdev =3D rpmb_dev_register(&rpmb->dev, &descr);
+> > > +               if (IS_ERR(rdev)) {
+> > > +                       pr_warn("%s: could not register RPMB device\n=
+",
+> > > +                               dev_name(&rpmb->dev));
+> > > +                       continue;
+> > > +               }
+> > > +               rpmb->rdev =3D rdev;
+> > > +       }
+> > > +}
+> > > +
+> >
+> > Thanks,
+> > Avri
 
