@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-136627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E717E89D645
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756D589D646
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1646C1C22ABD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E165B1F22498
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D7A82865;
-	Tue,  9 Apr 2024 10:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC41012AAF0;
+	Tue,  9 Apr 2024 10:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hBD1Dh6X"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bC6p1iHW"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECABF127B78
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D578129A7B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657118; cv=none; b=tYIY78dZoPNBW764uFb4Q9Qe00toowxUM7838rqyk8BaI+7imzFar9pb6fB9jRYLDIUt6vdujoo//IR6vpf7oAlbNg+o5AVAxacl3F5qSB5f+nuYjbKgW/e1lQolYE6R/u4Q4HmfnwLwndme5eaXw43AJBB1C6q7dKX1MFhHDg4=
+	t=1712657120; cv=none; b=o9I+C0NJg37FDxDIrdqJvkoIlfeO/wh7JLI47si4IF2Ewt70WUYi9ezUudc5HUNjmdOTvrTdPkgY+tAB/lzcI4Oel7y/OEUFBoeennmk+fAduH5/7IqC9/twx/71mWDL5YH33Pvl9CPSD0b++2IKLEwVeo2b5XZLeNQaAxo6Y9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657118; c=relaxed/simple;
-	bh=+Fa+VjFTLuwGROrkdO13qvGvvADDnYTOxp3ABbZPnww=;
+	s=arc-20240116; t=1712657120; c=relaxed/simple;
+	bh=+IJA9+/LkDO3Qh/z4ZzTDQ69ze3J+3wDzxu13Sj1clQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AE01dQB1sOM4evLBKr09ssv8VLDhGZo+ClZwcPWTNxn67sQaDAWoXFX8Gy5YIN1pkDTX8Qic52qg/iiXltXYTmhcMuRAYXUcfUiAMKapQSdmL5P+BkdtLZ2NijOq+nTwjNcnXLL+DjbczxfKa8ZRaSgNUBm5AFMqq1Yz3eVWneE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hBD1Dh6X; arc=none smtp.client-ip=209.85.167.52
+	 MIME-Version; b=QykGzBAqdV6cYzvbgGolW358DBpdUjVzGLCj7HgpMuVSbfBXYLd4+TqdhAH4kAtcwSFF6OKa1eQoHHAtbbWB04GU8akjycUZe29D5MwcJgtrKGYK1CuSbr9waf+DA9Yqhw0bWysOBQEJRAFgmNdtNkN2Z1zCF0CK6dzoRM67UX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bC6p1iHW; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51381021af1so8730386e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:05:16 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5200202c1bso26184666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712657115; x=1713261915; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712657117; x=1713261917; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OjP8OuPSYU8pIC+kj3/su0ypXF+SYBCAH3lD5yqhYyM=;
-        b=hBD1Dh6XFYrNwTj0zZI3kDf2r1xbMRYbziDOIlYhlzJuSq+GDxyIzHCOjUQbryEXri
-         JTPfBr7UCWMnUsKhwohDwJpcaQiQ00VV8mFtVGMlExCFL2wGEsros5bN2qvjDKtDYj4F
-         lZuleocWltHQzAbuJdoM3KeM/qmbfhhvzZUR1TX5gAtMaNWeoimDwfMeeyY8r9+PSrg1
-         fNm63Duz/Xi/rgoDsvZKb0fHm0Ax0N1v/w243yW0m5i4uNagzrmahMmOep+XIFXKEHOW
-         EXCfjoFrBQYTGO7CYPtIKkV9/ztskN0xOkwvEKgXZVdZDKPU5kHKbwv7VjZmQuVYDzAX
-         Ox5A==
+        bh=lyHz56u/iO9/FgsI4q0cP6V/rorpyyesh7+7+zlmKI8=;
+        b=bC6p1iHW8rZgqBzJSrEDMfsBA8aTO0wbFgbYcGVyKUpUB4JNc/tKHr2S8OdXpgabDz
+         2DMYFlMzl25nixcs6I64S795bRhd5dhCO2cuYQVQXKHuGN6ZDSNrdez3VQf+PXqcTzpI
+         r2iF9EzOAMSHbUB61JpiLH48+Fn/ee0pp34JuSEp8NipWxg7YS/N60ZWLSvvFQVu+vVE
+         GUYszspOjp9Ar/f0j4pQV9gQdOtcFhX7zLWuDdUljn/fQA3VdkgghI6lwKsIIn6phpiG
+         8PijcE2aRcLEjmxGl4wA2l5LtSlMrEPBHDY0Wk5WcLKVkoajljBHjb87Qwt4NNLHx0Ep
+         5x0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712657115; x=1713261915;
+        d=1e100.net; s=20230601; t=1712657117; x=1713261917;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OjP8OuPSYU8pIC+kj3/su0ypXF+SYBCAH3lD5yqhYyM=;
-        b=bxVk/BanPaTxwvLQww4Byv2+jwyeGlLaAKNa9/vqAuyKghaGTRLTwAEfWkAuiGu2rW
-         8V8ky35uS+R5JbP+MKJFhiYcUfAWDvOf7MkZzj+E6xQJKzAbpIdjIAl5EWvajagK66au
-         eAwAm2xT/Q2Ua6Kah9/MygWbsn8fW+tpN8Wd+qit1Yqz8sJCnpxBdJuNX0piLVgJpx0e
-         O/A2SfUWLd5h4oiAuyhNfc50fVogG1XaxJOJkITrq8s8ilEwH+HI1uzPgB7oGDEWtp5v
-         Xwmy15PRqkgiddAkWYAJc0w65+ldPFvwGc0737Ra3UVzw0QgbA667oQtqhkEeEogqnRA
-         FxKw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRWKc/4NH5D4+wEYL0c8VkZc/tjCuPRXPUX9yY/CUtiYeGW35mOHwdPGT+EVRabmlG9axGF/dCn8f7GMeqSG2SnGWLsv5XPai6bMMR
-X-Gm-Message-State: AOJu0YzPtZKXzMCkyGl9sn2ZqWhqOq5Pj7iutriLdKEbg9Ate0EmQqoD
-	lwV9sO97LghrOcLRH4O8AwTqNpiEj60GCCPlxv2jCkl4v4C1QlxP
-X-Google-Smtp-Source: AGHT+IEZDqWek1R8pb5BSd4GD7BsxX4mL7A81DVxst0hWKSLUUuvUDWNrQX52A4wuEmiKVhoe11XUw==
-X-Received: by 2002:ac2:5302:0:b0:513:c223:f0e4 with SMTP id c2-20020ac25302000000b00513c223f0e4mr10321029lfh.10.1712657114965;
-        Tue, 09 Apr 2024 03:05:14 -0700 (PDT)
+        bh=lyHz56u/iO9/FgsI4q0cP6V/rorpyyesh7+7+zlmKI8=;
+        b=qAxiTrTRMziYMLl4vF6x9+3ftV7pTJ5FP/pqSNPX6Cpj5RQgLMPbwXHr49tf4UMQWD
+         WCpB+NUOrh3FcSXZtR+SYx4dXeBljV9TRoTcLqfYGRkp0etzto/2+GlRSVLbGyqKiqbs
+         xGKJn1biRgHedCUzWW7+0jvtKi28NbAoLQhREyHVwoiXBnUMcFY+3XM+q4OMgVBZ2ayx
+         VrdfJBEA31KMh+jOooArfUUCsn17shSNfw6/T+avI+UsE31ZSDZRviZWG49udNL9OabD
+         3VhHdK8kglUfjwzAAMa9vjqoCfin7J+RuhCjMat5fbD28M8FG3tv9FPXt5mxA/3Tf9Km
+         Z/9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWefhON1LfgyPf+vo98S3HXbwUUo45X0BK99CIL4LcBolKAIeE/YqgLI9wGkWcVVsj06HEB1dlEmEub51WG+ZKWqpdKYcHreK12SoKc
+X-Gm-Message-State: AOJu0YwGJ6efaJq3NQ0f+qaO4uXrdL6WdlOvyKnyl1xtWeZk8jh+4LVI
+	KR7uxmJo6rQshTxz7SGLTVwOGG9yRioD8PLWtLrh/V9yOJNH9iq4
+X-Google-Smtp-Source: AGHT+IH4uESLV606lHisWITKlS8BD5JNspBkRmUwN0p7WVc2Hamq61jeR9aVU0Fl23GolotFpGbE+A==
+X-Received: by 2002:a17:907:7ea4:b0:a4e:5676:417d with SMTP id qb36-20020a1709077ea400b00a4e5676417dmr12020143ejc.58.1712657116669;
+        Tue, 09 Apr 2024 03:05:16 -0700 (PDT)
 Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5496681ejc.0.2024.04.09.03.05.13
+        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5496681ejc.0.2024.04.09.03.05.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 03:05:13 -0700 (PDT)
+        Tue, 09 Apr 2024 03:05:15 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -76,9 +76,9 @@ Cc: Uros Bizjak <ubizjak@gmail.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>,
 	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 5/6] locking/atomic/x86: Define arch_atomic_sub() family using arch_atomic_add() functions
-Date: Tue,  9 Apr 2024 12:03:56 +0200
-Message-ID: <20240409100503.274629-6-ubizjak@gmail.com>
+Subject: [PATCH 6/6] locking/atomic/x86: Reorder a couple of arch_atomic64 functions
+Date: Tue,  9 Apr 2024 12:03:57 +0200
+Message-ID: <20240409100503.274629-7-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409100503.274629-1-ubizjak@gmail.com>
 References: <20240409100503.274629-1-ubizjak@gmail.com>
@@ -90,9 +90,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is no need to implement arch_atomic_sub() family of inline
-functions, corresponding macros can be directly implemented using
-arch_atomic_add() inlines with negated argument.
+Reorder a couple of arch_atomic64 functions in
+arch/x86/include/asm/atomic64_32.h to better match
+their sequence of declarations between x86_32 and x86_64.
 
 No functional changes intended.
 
@@ -104,110 +104,92 @@ Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- arch/x86/include/asm/atomic.h      | 12 ++----------
- arch/x86/include/asm/atomic64_32.h | 23 ++++++++++++-----------
- arch/x86/include/asm/atomic64_64.h | 12 ++----------
- 3 files changed, 16 insertions(+), 31 deletions(-)
+ arch/x86/include/asm/atomic64_32.h | 46 +++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
-index b2e44de36934..77526257dacf 100644
---- a/arch/x86/include/asm/atomic.h
-+++ b/arch/x86/include/asm/atomic.h
-@@ -86,11 +86,7 @@ static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
- }
- #define arch_atomic_add_return arch_atomic_add_return
- 
--static __always_inline int arch_atomic_sub_return(int i, atomic_t *v)
--{
--	return arch_atomic_add_return(-i, v);
--}
--#define arch_atomic_sub_return arch_atomic_sub_return
-+#define arch_atomic_sub_return(i, v) arch_atomic_add_return(-(i), v)
- 
- static __always_inline int arch_atomic_fetch_add(int i, atomic_t *v)
- {
-@@ -98,11 +94,7 @@ static __always_inline int arch_atomic_fetch_add(int i, atomic_t *v)
- }
- #define arch_atomic_fetch_add arch_atomic_fetch_add
- 
--static __always_inline int arch_atomic_fetch_sub(int i, atomic_t *v)
--{
--	return xadd(&v->counter, -i);
--}
--#define arch_atomic_fetch_sub arch_atomic_fetch_sub
-+#define arch_atomic_fetch_sub(i, v) arch_atomic_fetch_add(-(i), v)
- 
- static __always_inline int arch_atomic_cmpxchg(atomic_t *v, int old, int new)
- {
 diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
-index 4f79198da98e..862448db1207 100644
+index 862448db1207..3864d82a9339 100644
 --- a/arch/x86/include/asm/atomic64_32.h
 +++ b/arch/x86/include/asm/atomic64_32.h
-@@ -199,6 +199,18 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
+@@ -12,7 +12,7 @@ typedef struct {
+ 	s64 __aligned(8) counter;
+ } atomic64_t;
+ 
+-#define ATOMIC64_INIT(val)	{ (val) }
++#define ATOMIC64_INIT(i)	{ (i) }
+ 
+ #define __ATOMIC64_DECL(sym) void atomic64_##sym(atomic64_t *, ...)
+ #ifndef ATOMIC64_EXPORT
+@@ -61,17 +61,21 @@ ATOMIC64_DECL(add_unless);
+ #undef __ATOMIC64_DECL
+ #undef ATOMIC64_EXPORT
+ 
+-static __always_inline s64 arch_atomic64_cmpxchg(atomic64_t *v, s64 old, s64 new)
++static __always_inline s64 arch_atomic64_read(const atomic64_t *v)
+ {
+-	return arch_cmpxchg64(&v->counter, old, new);
++	s64 r;
++	alternative_atomic64(read, "=&A" (r), "c" (v) : "memory");
++	return r;
+ }
+-#define arch_atomic64_cmpxchg arch_atomic64_cmpxchg
+ 
+-static __always_inline bool arch_atomic64_try_cmpxchg(atomic64_t *v, s64 *old, s64 new)
++static __always_inline void arch_atomic64_set(atomic64_t *v, s64 i)
+ {
+-	return arch_try_cmpxchg64(&v->counter, old, new);
++	unsigned high = (unsigned)(i >> 32);
++	unsigned low = (unsigned)i;
++	alternative_atomic64(set, /* no output */,
++			     "S" (v), "b" (low), "c" (high)
++			     : "eax", "edx", "memory");
+ }
+-#define arch_atomic64_try_cmpxchg arch_atomic64_try_cmpxchg
+ 
+ static __always_inline s64 arch_atomic64_xchg(atomic64_t *v, s64 n)
+ {
+@@ -85,22 +89,6 @@ static __always_inline s64 arch_atomic64_xchg(atomic64_t *v, s64 n)
+ }
+ #define arch_atomic64_xchg arch_atomic64_xchg
+ 
+-static __always_inline void arch_atomic64_set(atomic64_t *v, s64 i)
+-{
+-	unsigned high = (unsigned)(i >> 32);
+-	unsigned low = (unsigned)i;
+-	alternative_atomic64(set, /* no output */,
+-			     "S" (v), "b" (low), "c" (high)
+-			     : "eax", "edx", "memory");
+-}
+-
+-static __always_inline s64 arch_atomic64_read(const atomic64_t *v)
+-{
+-	s64 r;
+-	alternative_atomic64(read, "=&A" (r), "c" (v) : "memory");
+-	return r;
+-}
+-
+ static __always_inline s64 arch_atomic64_add_return(s64 i, atomic64_t *v)
+ {
+ 	alternative_atomic64(add_return,
+@@ -199,6 +187,18 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
  #undef alternative_atomic64
  #undef __alternative_atomic64
  
-+static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
++static __always_inline s64 arch_atomic64_cmpxchg(atomic64_t *v, s64 old, s64 new)
 +{
-+	s64 val = __READ_ONCE(v->counter);
-+
-+	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val + i));
-+
-+	return val;
++	return arch_cmpxchg64(&v->counter, old, new);
 +}
-+#define arch_atomic64_fetch_add arch_atomic64_fetch_add
++#define arch_atomic64_cmpxchg arch_atomic64_cmpxchg
 +
-+#define arch_atomic64_fetch_sub(i, v) arch_atomic64_fetch_add(-(i), v)
++static __always_inline bool arch_atomic64_try_cmpxchg(atomic64_t *v, s64 *old, s64 new)
++{
++	return arch_try_cmpxchg64(&v->counter, old, new);
++}
++#define arch_atomic64_try_cmpxchg arch_atomic64_try_cmpxchg
 +
- static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
- {
- 	s64 val = __READ_ONCE(v->counter);
-@@ -220,15 +232,4 @@ static __always_inline void arch_atomic64_xor(s64 i, atomic64_t *v)
- 	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
- }
- 
--static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
--{
--	s64 val = __READ_ONCE(v->counter);
--
--	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val + i));
--	return val;
--}
--#define arch_atomic64_fetch_add arch_atomic64_fetch_add
--
--#define arch_atomic64_fetch_sub(i, v)	arch_atomic64_fetch_add(-(i), (v))
--
- #endif /* _ASM_X86_ATOMIC64_32_H */
-diff --git a/arch/x86/include/asm/atomic64_64.h b/arch/x86/include/asm/atomic64_64.h
-index b2c9974ba971..a96a4b9acfcb 100644
---- a/arch/x86/include/asm/atomic64_64.h
-+++ b/arch/x86/include/asm/atomic64_64.h
-@@ -80,11 +80,7 @@ static __always_inline s64 arch_atomic64_add_return(s64 i, atomic64_t *v)
- }
- #define arch_atomic64_add_return arch_atomic64_add_return
- 
--static __always_inline s64 arch_atomic64_sub_return(s64 i, atomic64_t *v)
--{
--	return arch_atomic64_add_return(-i, v);
--}
--#define arch_atomic64_sub_return arch_atomic64_sub_return
-+#define arch_atomic64_sub_return(i, v) arch_atomic64_add_return(-(i), v)
- 
  static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
  {
-@@ -92,11 +88,7 @@ static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
- }
- #define arch_atomic64_fetch_add arch_atomic64_fetch_add
- 
--static __always_inline s64 arch_atomic64_fetch_sub(s64 i, atomic64_t *v)
--{
--	return xadd(&v->counter, -i);
--}
--#define arch_atomic64_fetch_sub arch_atomic64_fetch_sub
-+#define arch_atomic64_fetch_sub(i, v) arch_atomic64_fetch_add(-(i), v)
- 
- static __always_inline s64 arch_atomic64_cmpxchg(atomic64_t *v, s64 old, s64 new)
- {
+ 	s64 val = __READ_ONCE(v->counter);
 -- 
 2.44.0
 
