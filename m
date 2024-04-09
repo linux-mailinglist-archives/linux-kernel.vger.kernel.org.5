@@ -1,74 +1,78 @@
-Return-Path: <linux-kernel+bounces-137551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA15989E3CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:39:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A8D89E3D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:40:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85F2D2832BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:39:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07891F21807
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07524157A51;
-	Tue,  9 Apr 2024 19:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8AB4157A48;
+	Tue,  9 Apr 2024 19:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UwsNC70x"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LdvvLqCX"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D581E89E;
-	Tue,  9 Apr 2024 19:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3261E89E;
+	Tue,  9 Apr 2024 19:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712691564; cv=none; b=GEaf9lQOpL5pRf21T8kjVmcBi3wZxiycRkMdI/3VRuLGbuv7Tjx6sRd5Hw3obFNMkischaVMs5Jbdd+BrYo3RoB63Mypcmq5q/iRTqvksVRkWB5LVStDyDmJ72BrxpoAZst2aI+Vb8n5VaONaB91MGzamA4gw/saFbfXqLK3Ahc=
+	t=1712691599; cv=none; b=no0uGwuf5/T3i7a6XZ9utXnyaYTsNmc0DRjXSS4ZBt+cez+MJrtD0Leul7ieo344YKg77r6F+oTNknObHjWieKeLZWHSSL5dD7s7Jk7S6tI/nyORKubV8QiNpShGwTk9taNI0rkrPDi+ioViuyxgIJQdzAwGbnAkQnXRQpgE1Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712691564; c=relaxed/simple;
-	bh=jvfqdllxszzWIO3omrAadvdVw9I8LcR+WJ++GLM8mx0=;
+	s=arc-20240116; t=1712691599; c=relaxed/simple;
+	bh=UWMRK0m4UxrnUXib4lCMgaD1ArvJTQn3Ncm77l4ouRc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GunTm4hXXdbxzWSY0ts14qXdUb+ikapiyQjP3VSUhCsUstBNkd5IN7Yp5WCVU5j1/tKx/da5rS8iJMBcNnxckHssjsoU2jeOMOM+NzQ/tlkQ9SxwqjiZ0ToZfdayTwPDGrQkxWKBGZ2YSpctXZ6oZNkgH05MvAr96eSZzxa5NSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UwsNC70x; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=NVz2FDzN2/mQFwTmZ0PpoNUalfvhAP0EXDT8YFaE9KbsinJHlatAZ51XUMaVdlD95pu6DiqxMym+3rp0pT3Tbs5EYGdnCDXpV3TdmgWIlrBMj8RYdTAIs0Kuw75NBY3frMlnnmWkJl3hV/AEQmd6WrnXC3fQj8J185bFp0QNEQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=LdvvLqCX; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439JdF0q016084;
-	Tue, 9 Apr 2024 14:39:15 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439JdjaB106624;
+	Tue, 9 Apr 2024 14:39:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712691555;
-	bh=0kXWr09pO7Mlq1CB1JbZnar3+SauEhZ6UIneplQ2frs=;
+	s=ti-com-17Q1; t=1712691585;
+	bh=v4GwheQo5p5O4y/kpHxweoSNcFIKUU+zSI9LDZJ8My8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=UwsNC70xyshHU3V1OS3TYB4PkLZ09VovuZAbS3x1T9ZIhLc7/cK2iQPz7gAgoipj3
-	 mYH2zQsNyeTbC69ViY+q0sqF3atVyvu4dFIPsJezEOP9cykss6QXV1p2GIOh34pZTE
-	 BTEslTthvpgFMO0c+cv6tgKBygka2jadfyLYIz8Q=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439JdFYI055483
+	b=LdvvLqCXYL/z+dWaPKmJimnojez0oJxwtIwNiZ1uNRxhduCEFVupq+dQ+T71Y/xmb
+	 kJ9AD+ThfyB3WZjfPaEbHwZN9lC78WZY/d8Wzqnk0F3GHk2nECcjiFlwU+ojlMADtL
+	 2NR+QcCi6yj+aElu/X/5EvS7whn+YzaLJv/ebq5A=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439Jdjei002800
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 14:39:15 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 9 Apr 2024 14:39:45 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 14:39:15 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 14:39:45 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 14:39:15 -0500
+ Frontend Transport; Tue, 9 Apr 2024 14:39:45 -0500
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JdFQx093803;
-	Tue, 9 Apr 2024 14:39:15 -0500
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JdjrH105320;
+	Tue, 9 Apr 2024 14:39:45 -0500
 From: Nishanth Menon <nm@ti.com>
 To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski
 	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Andrew Davis <afd@ti.com>
-CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] arm64: dts: ti: k3-am65: Remove UART baud rate selection
-Date: Tue, 9 Apr 2024 14:39:13 -0500
-Message-ID: <171269153957.643321.7481119560022583706.b4-ty@ti.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+CC: Nishanth Menon <nm@ti.com>,
+        Francesco Dolcini
+	<francesco.dolcini@toradex.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 0/2] arm64: dts: ti: k3-am625-verdin: fix GPIOs pinctrl
+Date: Tue, 9 Apr 2024 14:39:43 -0500
+Message-ID: <171269157178.643546.11040513615596738650.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240326185441.29656-1-afd@ti.com>
-References: <20240326185441.29656-1-afd@ti.com>
+In-Reply-To: <20240327182801.5997-1-francesco@dolcini.it>
+References: <20240327182801.5997-1-francesco@dolcini.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,37 +83,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Andrew Davis,
+Hi Francesco Dolcini,
 
-On Tue, 26 Mar 2024 13:54:36 -0500, Andrew Davis wrote:
-> As described in the binding document for the "current-speed" property:
+On Wed, 27 Mar 2024 19:27:59 +0100, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> "This should only be present in case a driver has no chance to know the
-> baud rate of the slave device."
+> Fix a couple of issues on the Verdin AM62 pinctrl affecting multiple
+> carrier boards.
 > 
-> This is not the case for the UART used in K3 devices, the current
-> baud-rate can be calculated from the registers. Having this property
-> has the effect of actually skipping the baud-rate setup in some drivers
-> as it assumes it will already be set to this rate, which may not always
-> be the case.
+> The first patch fixes a mistake on the pinctrl of the verdin-am62 mallow
+> carrier board.
 > 
 > [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/6] arm64: dts: ti: k3-am65: Remove UART baud rate selection
-      commit: 9a1cedcdb98387bfc5d4fb9f1a1ada9121d32757
-[2/6] arm64: dts: ti: k3-am64: Remove UART baud rate selection
-      commit: 78331a044106f7022915058376ac56ec5d048124
-[3/6] arm64: dts: ti: k3-j7200: Remove UART baud rate selection
-      commit: 69dfa876d4b03f7bc043b196c472fca5d339722a
-[4/6] arm64: dts: ti: k3-j721e: Remove UART baud rate selection
-      commit: 14e556b08380b20833c5e2f6a5826d0669e0e0fa
-[5/6] arm64: dts: ti: k3-j721s2: Remove UART baud rate selection
-      commit: cfcfcd47c9f049be4ebcee90eafaf78b03cdf05f
-[6/6] arm64: dts: ti: k3-j784s4: Remove UART baud rate selection
-      commit: bd305a20fd338690fdd8ab8c4a50ab9d14066dfe
+[1/2] arm64: dts: ti: verdin-am62: mallow: fix GPIOs pinctrl
+      commit: 8760892b8a3e20fdd996e59daf0a5f847b238967
+[2/2] arm64: dts: ti: k3-am625-verdin: add PCIe reset gpio hog
+      commit: d3c702186abe01e24f962627ec67fcad8106c79d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
