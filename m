@@ -1,142 +1,155 @@
-Return-Path: <linux-kernel+bounces-136028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28D2C89CF1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:00:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A4A689CF23
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:01:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5A372845CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40CC11C23C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C9C28376;
-	Tue,  9 Apr 2024 00:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="onb6kH+/";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hx8VlIy2"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9B61FBB;
+	Tue,  9 Apr 2024 00:01:37 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079476FCC;
-	Tue,  9 Apr 2024 00:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C3D383
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 00:01:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712620832; cv=none; b=pCki/npEAs3cQeDe3ys4qQud0RcU4qpk0FmdYXXQL7Uw47cp96TTRNwv5tEJTSe2cgoBPWbotRzOVFddYJu4hE5TCWzAjwBawNrvpS9pfsTtbd/eI2uKqUjSF5rcxo5JqaoS8bpLxhW2xWkGvdhZA4nRpMwkP7qiFoSq7FU08BY=
+	t=1712620897; cv=none; b=Sofg+7sHRfhFm4eVXuFk/bMB1OqUfuLwVqofk68GeiZKJNpuvuH5dfJ+lqo95TTaYSYIPUlsr8SbwtC3WgfcRI/TZFKfcqVdPzwuOHtFoOMRfy5FgsYE9oaMJ5YaExPaa6f8z8Xk6i51gEe2JWLvDQwEu/VHRdcCCn7Q4NG89UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712620832; c=relaxed/simple;
-	bh=YLbAEexYffOfuWNkm4tRuuW0cy32tPBJSJ56rXHioTc=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=U+3ypuC0QY1h7V7OCxbz++S3F+GbpItdV45Gc/2ppRjhMnfIbE4ssq5/gGamNJievyuqryJIk+I5gVJZVMO6AHCy8nICTK5jhfH3C/gSds2ehNltW1jfZXtzMMGoXWiF/cp02r2b/d2EQZroVwoTQGSGcedLjXb7w4ZPW1WuuEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=onb6kH+/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hx8VlIy2; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id F295C114012F;
-	Mon,  8 Apr 2024 20:00:28 -0400 (EDT)
-Received: from imap52 ([10.202.2.102])
-  by compute3.internal (MEProxy); Mon, 08 Apr 2024 20:00:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1712620828; x=1712707228; bh=3jJTrn3M9P
-	nPBPpdaXwd3Dwyudp0ERNih8NQ9xLiPv0=; b=onb6kH+/eoNGbV/QZHdUzkd+ZE
-	7b92FM70Gc8HQOO5KN5/wQt8UVCF3TR7lGWPPBPzrlslu12hH27T0Kke/uQCNmOO
-	C80pO6G6ag0ouBlWv2PFBT6b3QaiCYAk2sJrILENZn85+ndrpyXaHAb7iJESkk+W
-	Mlg5hSsRwMYPBpXJNEiVCocogyFj0hJTfBremmT82x23pZMHwjZtIl8FaogA4fWI
-	phgkC8P/jnH4wGCGbtEUSHQ8GIhVPVIFfYJWHjUdv7mJpr1RWUAgEfc636ueGfqu
-	3H7yjp5J7+9WtrFK1Gypdi2yEN4DlzXivFjDHded2YAWubyuYqZ49/sAz/lg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712620828; x=1712707228; bh=3jJTrn3M9PnPBPpdaXwd3Dwyudp0
-	ERNih8NQ9xLiPv0=; b=hx8VlIy2mYvNIWumG6XMu+XCDCrmaqTjFNO3ItLMYlH4
-	XhNzNJHaUGwIXQAczHTbvR6SMcBuoiWvsdqJ6X321w5jmxodYaoVlLD/SiTTgW4l
-	l7EwrN/S8KtAA2D6GamAS5HZR56ZbeJgjkXipOKL+MKrn1E3o84oqiOsL86Ibah5
-	nRdozI2+YMOHLObElsE+AOU8rL+r0Zww02w41mHXmDlTowUaq4+NchDbRZBXTSJ0
-	1OcRUXyr5WoKSQosBm3+5uhgdNTEaazocOF++e2zNmqRIxFXFcn8dGY4X5/QWgfz
-	yYkSDwXov70TIRT6AGunumJJGsrMwc2A5o5iWV2Gxg==
-X-ME-Sender: <xms:HIUUZmYKrqfu5if1nxPNdDOv8wW5Cp7Qx57uv0FJ6kl3zkke0s6czQ>
-    <xme:HIUUZpYtcBRddWDF_3c5pEgrTQ44w56sh2kkrcRBnWxqiNU8V6j8SeYhMvKXeCC0O
-    knx9i2JCfSPS1qri_w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegkedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfofgr
-    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
-    drtggrqeenucggtffrrghtthgvrhhnpeeiueefjeeiveetuddvkeetfeeltdevffevudeh
-    ffefjedufedvieejgedugeekhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
-X-ME-Proxy: <xmx:HIUUZg-FYI6_bB9Dkfd5Y-zkDTzr26pyv5cki8FoZWxZoaSlbSutqA>
-    <xmx:HIUUZoqNW0dzoT03O4jV4AzABptbAQP8wjtzoD_YIc0ep72NybdItA>
-    <xmx:HIUUZhoEoQa6gSgnE9Ade_-W6tRH7gMTP9gaxnCGGuVQQStyNLUCHA>
-    <xmx:HIUUZmS3HFEwfiodwz5E_bMWdXaAzAyshL2UNJhyT0kkaUf9ZahNbw>
-    <xmx:HIUUZujQGB0JJwgtnhiysPEdZVXZWRZHrlba0fAFZ-stgnDaZrZQdD4Z>
-Feedback-ID: ibe194615:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 4842EC60097; Mon,  8 Apr 2024 20:00:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-368-gc733b1d8df-fm-20240402.001-gc733b1d8
+	s=arc-20240116; t=1712620897; c=relaxed/simple;
+	bh=3voE6CPaxkY+iWi5FLW6Jx+FisQflngU8sSDOJcMLF0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=iWwOjq81he6Qs2uG+0H/0TqohKoONKVfhGkOOUNE05eCjA/2EgNGaXOQqyXoHuLzpQuzmDLRLRCfdXjaKBdsEJH/jHsYv9Lsh3DIzfQDsibejE9H8fKWieg07fvHX3R6k2k9BSwBaG5Ri69jUhsJHkz3f+KMMMyLrqc3k69Yc74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5db4db531so223806639f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 17:01:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712620894; x=1713225694;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pyYAqFUZdXsMjhaAEjBagjDEFe+wEMpPEHgURXo3AOU=;
+        b=D1dxygvMzj/jkE68KN8mpa7FBAlrV6qzqq7kjPpDHzcQLqva+g541m+3vyp0dd5FPW
+         uTc6vTWv8/G/N1QwbFfRrT9IjYpNbIB0wA3ViWyPhM1F7sAtFnir6M0S2iHbl6Au4mbN
+         0nCArrrLsnrVGmRhPZnsZ7L5RkTzd96mlkPx0USeWHZGx3xmD5A/GgKQO8b2kAcw9ZfK
+         i3RArBKfc4vwVO6vFdaV8xrvIvufjRNa3f5or8mFt7pYy2IUAF+frYpqvOW+1qbF6Umi
+         AIEhTatrd9MCkoMLZVGN1UBmX537tj3tVBiAIWZevbJv7FAmoHC/u15nC0huaePVVHn5
+         3weQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ3Ccuhqp9Ldyjm5Trsr/5kGtpMoRWcDOGEhD96JEKDckvafu3R8BxvE6BIC48MnhJ7inyRk7nCib1ifM/HEF/mmXA6e1ll1L9uxxH
+X-Gm-Message-State: AOJu0YzYa6ZjbBXE9ilWLtX/KhUQi9KQNrShsq6B8aSaF892ExUepo6J
+	L7UtXL0UGig40xXQ00v2o+PHh6hcPA7lEF59d34hYily7MbDbHJhZJrOoqDBUV2t7WJTzQH7bwn
+	eYIGwI7wre6nmDY4INaqi8lsNkEcTKsXpIgjdGyBeSSqPfDKeDLt9StQ=
+X-Google-Smtp-Source: AGHT+IGQYzW6ougw4l1ajcrWrIuF2lFcE+k6qVPMRd3DcXGN34DcVGdqKFrXq+QUy3hk/Z/+IJiAsRJueSiCRpc6qdPLu1dqsibA
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <c6427b27-3c9d-4aa4-abfa-c3588b5d9a42@app.fastmail.com>
-In-Reply-To: <ZhR-WPx7dgKxziMb@google.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
- <ZhR-WPx7dgKxziMb@google.com>
-Date: Mon, 08 Apr 2024 20:00:30 -0400
-From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
-To: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
-Cc: "Hans de Goede" <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Henrique de Moraes Holschuh" <hmh@hmh.eng.br>,
- ibm-acpi-devel@lists.sourceforge.net,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- "Nitin Joshi1" <njoshi1@lenovo.com>, "Vishnu Sankar" <vsankar@lenovo.com>,
- "Peter Hutterer" <peter.hutterer@redhat.com>
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug info keycodes
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:1a89:b0:369:f750:5bf1 with SMTP id
+ k9-20020a056e021a8900b00369f7505bf1mr604446ilv.5.1712620894604; Mon, 08 Apr
+ 2024 17:01:34 -0700 (PDT)
+Date: Mon, 08 Apr 2024 17:01:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000ee21406159ea06a@google.com>
+Subject: [syzbot] [bpf?] [net?] WARNING in sock_map_close
+From: syzbot <syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Dmitry
+Hello,
 
-On Mon, Apr 8, 2024, at 7:31 PM, Dmitry Torokhov wrote:
-> Hi Mark,
->
-> On Sun, Mar 24, 2024 at 05:07:58PM -0400, Mark Pearson wrote:
->> Add support for new input events on Lenovo laptops that need exporting to
->> user space.
->> 
->> Lenovo trackpoints are adding the ability to generate a doubletap event.
->> Add a new keycode to allow this to be used by userspace.
->
-> What is the intended meaning of this keycode? How does it differ from
-> the driver sending BTN_LEFT press/release twice?
+syzbot found the following issue on:
 
-Double tapping on the trackpoint is a unique event - it's not the same as BTN_LEFT twice. The BIOS will send a new ACPI event for it and it's not meant to be the same as mouse button clicks.
+HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=164811f6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=07a2e4a1a57118ef7355
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1600ac05180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150ac5a1180000
 
-For example, on Windows this launches a utility that let's you do various configurations on your laptop (some Lenovo specific), but that's not available on Linux (yet). We did want to make it flexible in this implementation so users could use it for whatever was useful to them.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
 
->> 
->> Lenovo support is using FN+N with Windows to collect needed details for
->> support cases. Add a keycode so that we'll be able to provide similar
->> support on Linux.
->
-> Is there a userspace consumer for this?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com
 
-There isn't yet, though we would like to implement something, and do plan to. 
-We still have to work through the details of the best way to do this, and if it's Lenovo specific, or (probably better) something generic.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5259 at net/core/sock_map.c:1654 sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1654
+Modules linked in:
+CPU: 0 PID: 5259 Comm: syz-executor257 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1654
+Code: df e8 52 4d 98 f8 48 8b 1b 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 39 4d 98 f8 4c 8b 23 eb 89 e8 af 05 35 f8 90 <0f> 0b 90 48 83 c4 08 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc
+RSP: 0018:ffffc90004c5fda8 EFLAGS: 00010293
+RAX: ffffffff895feac1 RBX: ffffffff948b2be0 RCX: ffff888023278000
+RDX: 0000000000000000 RSI: ffffffff8baac220 RDI: ffffffff8bfec6e0
+RBP: 0000000000000000 R08: ffffffff92cc759f R09: 1ffffffff2598eb3
+R10: dffffc0000000000 R11: fffffbfff2598eb4 R12: ffffffff895fe820
+R13: ffff8880222bc000 R14: ffff8880222bc000 R15: ffffffff895fe850
+FS:  0000555569b3e380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000007dc22000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ unix_release+0x85/0xc0 net/unix/af_unix.c:1048
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xbc/0x240 net/socket.c:1421
+ __fput+0x429/0x8a0 fs/file_table.c:423
+ __do_sys_close fs/open.c:1557 [inline]
+ __se_sys_close fs/open.c:1542 [inline]
+ __x64_sys_close+0x7f/0x110 fs/open.c:1542
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f3e539366a0
+Code: ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 80 3d 01 8a 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+RSP: 002b:00007ffc63195558 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f3e539366a0
+RDX: 0000000000000010 RSI: 0000000020000f40 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000069b3f610 R09: 0000000069b3f610
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-I don't have as much knowledge on the user-space side development, and my experience is it tends to move a bit slower for getting things implemented. We thought we'd get the framework in, so it's available, and then work with user-space folk to deliver a solution in a suitable manner.
-Ultimately this is something we'll need in our Linux preloads and the aim is to make it easier for Linux users to get help from our support team (not always the easiest currently).
-I don't know if other vendors have something similar, but I wouldn't be surprised if this could be re-used in other cases so I hope it's not Lenovo specific. It felt like it would be useful functionality to have :)
 
-Mark
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
