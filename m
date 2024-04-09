@@ -1,92 +1,84 @@
-Return-Path: <linux-kernel+bounces-136818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BABC189D89F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:59:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51ACB89D88F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59A501F24285
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:59:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 021F81F23DE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4EB12A14A;
-	Tue,  9 Apr 2024 11:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336E712BEBB;
+	Tue,  9 Apr 2024 11:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="spjHKH+J"
-Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="NTPcbofB"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A6B129E7D;
-	Tue,  9 Apr 2024 11:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED4012AAD0;
+	Tue,  9 Apr 2024 11:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712663960; cv=none; b=GdmPlfhKHs6uPNLQ1JXNto4AfL6dRzT+AMbU6u3VG9nnKW/b5mRERRuSTv7esRZJQ47JiK8or4DvQTir0kYFHX8GkkHsu+sFtSIBW/1ZaJYh63nja5l0uI3gkljLwm0uiVl4DrhqFGF38m7fQDquCInGL42mIVIItWR1/eL0dDk=
+	t=1712663587; cv=none; b=YArsq3dkCjA4L8fvLis6ZXr+Zdr6jrLquvweGJmDNzDamvIJCYzIUkKp/pgDwG19sfHbD+orwmYKyRL9cVSQndjZwvoZuGku0XLFiDyf1uM0r6TQbLCC0oWl1eA7PCHjYaR8/RXOq+Ln0JaVwlhs1rllIA5hE3dlWX0BcxRqVT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712663960; c=relaxed/simple;
-	bh=In4ySCQtNTNmF/RKIYRC+UVR5wUKNrk4cFtiqcQYyqk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=OP8tDpQzfyAPqFRPTKg3oviFpGVplNcYC9Wrh7CFr1wB5sQmUUwtQEzuFspppzmu72Gw/c7s4Jdrwq3yk2XL5l4nVe6UQboGPET+lAMxaLAh1IvnWFRa40daNT+Uog5nffQWeaQTY7ZhY5i3+8XkcyBAMop+eBbcJtVOxREIXOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=spjHKH+J; arc=none smtp.client-ip=203.205.251.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712663949; bh=In4ySCQtNTNmF/RKIYRC+UVR5wUKNrk4cFtiqcQYyqk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=spjHKH+JwM4B3XuXWyFkzbZPrOUwPJemLl0Fm8FQaKWk7kQC5MOQhBccUjcKqwodJ
-	 oMV0Lo3pM01eIz2gYGjXpJfjOWtz5ywZJzOGoQlJphZ3zVPTCE7Gu4Shx2Eyt6CI65
-	 mxG/+q9XxM9xP6f1DY1zfejHbKCoewlq/fhzhv/g=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id D3217424; Tue, 09 Apr 2024 19:52:50 +0800
-X-QQ-mid: xmsmtpt1712663570t7p4c6isc
-Message-ID: <tencent_5799EEDAEEE0CC88E7D506FA12F686584906@qq.com>
-X-QQ-XMAILINFO: NyTsQ4JOu2J2UwlZ0q6Cy/YMsu6pFBIhEgFPtPxkuKVvGfVQlDpybRgY1BE3mt
-	 8ec2U/t4U8OlBc180umpRei7AYMBp9tBDia1n9N7VCFESxnoG8OR9apuEzyD+mkycaLiYcHllgZx
-	 iEntrNc62fMM0W5RQERbT3E4CcArUWfJAxvZhMLjMuEvpUKPAJHupZwrcSwdmjeUz3c0N4pK7rX9
-	 oNqKHUCj7nJ512ylZYOqJ2onQrDdSEEOFbyaF/qw49/Mvqgx1F7ubkFPNOL/0dqJ0M4eY2KdG5tt
-	 wRU1Oczq28KczDGo6uUjQ5Uqttmy1h8qzDZwCbGD0uqxP8WYDTo5umQLuTQoPi9UiOBeo8djYWiM
-	 JZOzYI3o9FRYucYkLzZeQ29AHfjhuFe51gNtE11vqwCu6BTODQvpM0TrCvCixQ0LFvAzpYfESAvm
-	 7zSfb60PgWLdNgjDmFWyDO5z0VCXDQ5t7FR1ikBJ4Plyj1aC7Db0yYeisdPCUXkXjlQntn3uw+pl
-	 cxGnmkdvwZZV6Eq/v5Ai86GepvjZX4IskqLEcM7MD43/be4GJZT5USfI5t093YRer/XnkxxMM/Ko
-	 ozf9vF+19IXHNZQlsDU57aIQKD/d3ltAaSSoRf0Lj5BllkI7vkc1/ftc16Fb5mVefGH+aGP5Rxru
-	 DLRBnJvodQY45xDN9ifCWDE9LBNvFGysj6IXXuYpEJqJb8U5wQIOVAHQkE52kvZWN7PcHMNSJMCe
-	 KO6RuEaFP9htszLYgUp3NHQOO/V68U6i0UrZxbVY2TZbjHNMs7sJNFrsJN+EFCukIHOO4qjhC9Xy
-	 zDNrJogLm8OhBaFxIKWiiz6FJdbtvliafgOn4V4j0UVTojqwvgEC7TmBcQNkOUPUMtY/R6+Vd8nn
-	 81RSrBWZFH1QZnA4pEONWsbh5N3L4I9ZkTNxQ5KN6MDYmQVk6APrO2TEjyQbheZ7l1FyGmkhYSn7
-	 Xb7dr7nk4=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Edward Adam Davis <eadavis@qq.com>
-To: eadavis@qq.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH] bpf: fix uninit-value in strnchr
-Date: Tue,  9 Apr 2024 19:52:51 +0800
-X-OQ-MSGID: <20240409115250.4070106-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_AABA5D95191FCFD28DB325F58D8212525D07@qq.com>
-References: <tencent_AABA5D95191FCFD28DB325F58D8212525D07@qq.com>
+	s=arc-20240116; t=1712663587; c=relaxed/simple;
+	bh=uFtB/lSFtsJF9yk9iDLSRuCwagX/ZJnnVfsrEr8ZsXU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tHtsgA7Lc7lJB5MdkTaKP5BpLfGXhDjcIiefnrtHn8/A91Zr2oNu44Ij3tYrAPqWdmlLKFiZ4PyR+BQdWtPY3qVGnxcEKVcj3ok/xbOVhGPeez7s//SOLobcOSlBYOA137mqnHsPx79gdxIL1/vkWIVXDrAB7VXwgED5DBha/sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=NTPcbofB; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 6D6E72012B;
+	Tue,  9 Apr 2024 19:53:01 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1712663583;
+	bh=uFtB/lSFtsJF9yk9iDLSRuCwagX/ZJnnVfsrEr8ZsXU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=NTPcbofBd9m/9hOn+Z9Bbo9pjqBPAKGNnyTT2yNWOmCgmIADn5G3XCAFCJPIRF0EZ
+	 wn3wJbQ2YDXaggC3yhum2A2+giKMYEreMFZ3IQ+EVaw38aecyEs4RVQU77UWpU0433
+	 kP+VfZQ6pmC7XW6Li7H4vFIM0uUQo4mfNRi+M5e6wkdqFInWncdaMCwDAE4350u379
+	 J29QgMlWXGnOgaNgRot38jEKMSleP8E7quRZUxvMe8W0yvq0jNmkAioSicj5FHWzo5
+	 FQ9Qh9QojP2CJJKGlV0YDTMzuIBb/t7BTpQ2LwTs6Sc1ZHS5ShlxlFAzPltO94hZpX
+	 lCVopsqSOhjJg==
+Message-ID: <4adaae76f71c0f1f84ae10de68ce9837f1057463.camel@codeconstruct.com.au>
+Subject: Re: [PATCH 5/9] dt-bindings: rtc: rtc-aspeed: move to trivial-rtc
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com
+Date: Tue, 09 Apr 2024 21:23:00 +0930
+In-Reply-To: <20240408-rtc_dtschema-v1-5-c447542fc362@gmail.com>
+References: <20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com>
+	 <20240408-rtc_dtschema-v1-5-c447542fc362@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The patch title is incorrect. It is used to fix errors using strnchr.
+On Mon, 2024-04-08 at 17:53 +0200, Javier Carrasco wrote:
+> The RTCs documented in this binding require a compatible, a reg
+> and a single interrupt, which make them suitable for a direct
+> conversion into trivial-rtc.
+>=20
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+
+Thanks,
+
+Andrew
 
