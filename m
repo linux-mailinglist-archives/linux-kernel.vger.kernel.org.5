@@ -1,300 +1,495 @@
-Return-Path: <linux-kernel+bounces-137331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517E289E08A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE91C89E096
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B891C20DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:35:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0EAA1C21818
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A393E153575;
-	Tue,  9 Apr 2024 16:35:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A30E153517
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712680544; cv=none; b=cZDoxU3wlorazA9/uAlIOb7SOL67ATqGVu8E8icejQyRp+oE5U7C2uiYjfyhepyIGJx+d8r5gYoyTH8iYJu+ANgnS3PqKJNFcBsQ7CdZcg9b/909HD6BWcMkuOpgp+nZcOhhEN+bda7IKK6UPcqUVY/hs4l/kHjRGjgBx21KIP8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712680544; c=relaxed/simple;
-	bh=lYT+VYrupc6PCCtXdZsmT0J8TGKLgB4t1zGn/1iHgxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WRainIJ3nJoihFFNg4XF4F1sEve4LUMvytO56suVSrvWh/BQOJc1rMsqs55yG868GVcShTz8LWJ9scshnITWkVK3PoAm6uMB2gzq1/Tw7eQtRS/JW3wkiSZmvRlN9l9RSoEX+D0cuk16xoWk1SD2T/ON2MMhFMWp11GNE3nLiHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AED2139F;
-	Tue,  9 Apr 2024 09:36:11 -0700 (PDT)
-Received: from [10.1.33.185] (XHFQ2J9959.cambridge.arm.com [10.1.33.185])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72A9B3F6C4;
-	Tue,  9 Apr 2024 09:35:39 -0700 (PDT)
-Message-ID: <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
-Date: Tue, 9 Apr 2024 17:35:38 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1207815359B;
+	Tue,  9 Apr 2024 16:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Ox3uxRxN"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2120.outbound.protection.outlook.com [40.107.6.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55983153576;
+	Tue,  9 Apr 2024 16:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.120
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712680607; cv=fail; b=cwo+DxpeEnhuvIqdg8dV2XOznePpIaesBxTjXM5o3zfcIjyAWumkflj374mX6bxPhe9yeiVnDPP47u/XGfVufUcPXHWr6oW8wApLo375Kul9wiTFDDQIjC6XeLSLAiIHm4QeWHrTFYzrjHBUCAa+Dy9KJ8u3IowS0fy4NbbQjc0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712680607; c=relaxed/simple;
+	bh=Xm/f1e4CbNdDtNna9QRjORy29LQ/ya0a7FVojPUD5RI=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=oJnWzF13pxB5G3yQ7uGU0h7hBx+mLCXWBnk88cafgMxdUQGwXHLvQmnM/ss2m94jVG9AA3FW4wJjzoi7PtrluZIeGQ3eN2202ncDU8mIxb1bu6d/Em1tCIUl4t26KNLuUCngNM/IXujVFqgDYd6WrzOBvrD19bD5Rs+A9B0ivqE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Ox3uxRxN; arc=fail smtp.client-ip=40.107.6.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hCQoGUlTZAl90GGNn9kNbEpQeLsgEHWWum0roGJHoMgtyk0vtWIfoQoK9xWSqiJkscaHA8TpQSL2o7Vuhu+PExXuJrvocfKD8288B1q2iM337Vbb557qnqtpPkfTkW8pjPnga0b6B7m1Q6aPu+oRNke1xujeqt2uJgmW10PaQ7IZiOd4bsnOtVxUy8MaGd/fqohiHnwsYlIM6qbj8RG2NUaTnKenb5mzCmnYuZhr6x1UuAzmBBQ9Q/k0phSeHY1PZmew+YYcyI3eSwd9LSomIp+s4dgLrB3hEXVSDvGMdPVsbXQhkjjVFkf7YfvN1ZDIVseKNm5zBDmrYFEMeczG3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EytkoVo2kJCII+IXVB7EBJhiPOq4ohxbGaoaVza8o9g=;
+ b=HLsacKDJXaDoZFy3vWDh8IjTvGSeYzP1DTconw5gIL35WnCnuPRh3zt7qN/FI8rrGRNWy11EjxUNbcJYMoP9rHx6fP9Ay3Lel01lrz/yGdFSQoOw+wBXQEeAY5N9c5VqMmgV+XW0d6GUnhzYcgSaDaxjPd66R8jGxmSRtIK0tAGKF1TeyOb0y/wRMMRtbURsfqDkqjQB3Jqd0IkX49Kj0ozAQ7gVymFg0x3NFnDAaqYEmFrkzXphNjvXTuXWQJAccuYllMU4eAeNHyPFhflk7kvHb6xDeP66ypJJ4baY2meZ8xwDt4wjk4yY+0Fa73R0HuSnQt5DdtpcmUKtVIIapg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EytkoVo2kJCII+IXVB7EBJhiPOq4ohxbGaoaVza8o9g=;
+ b=Ox3uxRxNRI0PAwOzDHYZE03KPmopJ8DASUHEQ1OFYBRDKk+zWzLdH2UuMumUSSosdq2yr4RpRoFTME2gUh06GYkiu9jGDlgO+pTB0dQRVW9t/OzxH7Kh+r8smvNbFTgrgiB0QsMJliY6Jot8KNwDcdt1etf621QA+/r4HGsFoKc=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8978.eurprd04.prod.outlook.com (2603:10a6:20b:42d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Tue, 9 Apr
+ 2024 16:36:42 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
+ 16:36:42 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: vkoul@kernel.org
+Cc: Frank.Li@nxp.com,
+	dmaengine@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] dmaengine: fsl-dpaa2-qdma: Update DPDMAI interfaces to version 3
+Date: Tue,  9 Apr 2024 12:36:30 -0400
+Message-Id: <20240409163630.1996052-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BY5PR17CA0055.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::32) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
- <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
- <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
- <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
- <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
- <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
- <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
- <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8978:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Mx86ZW+fg96ZmQqMWD/uOI7xLijjMW7+NWwsWP0wpFlytnQ0IMVtQ4AJCohgORz1H/zABI7AgBR12Ue6tjT1hxChObx3EXr8/JRB0u+T8yt9xqTAtr258Gr+DKPkRt0hSylNTN+R5N7P0ZAg+SEzOn2gLuHOFtgo5V6qsgACLdOG0a64yV164dPE+0AY3uQ4U/xld+PJgwnmJ/45f2NxpyjiDdoTe3+5WrHspubFE8D2dQOYFTe/zVcXC13eEpPjWlPck274G0pI3g2BMB7ZyrkyauUWYq/9VmyEzbtcKhE2HxHhbeNZc6cXZ0NK2IuQE5PQlQ1ssrNba81UjXyW1UovNJPfeWc2n7Cfh+EDyYedKqEbDrRAzHWrAjF5P/Ssf7587fWmhHr9LwD+VUOquVcj47njO5pU5UMmDtdY9vl2z/qsvoRNAWTnjy0glg72amIQSeeVoTLUs/t7VQN2s8X80XiDNOJFHpJHRsr8LiYigNzs0aDiEfXE3HPiDtLUOcw8MDUyhfcdzce7G59YifAhKEaz5H9Z02YI+xQ2S+6rW1AyKwMZGuVNDCkhketlihe6k2mXcoJQS1iwyQS6A319MxN+UdEbTYRAL1uQcqqiwdY0zrXjfak151N0K8ds5itKdiVBeQ/Ro+LLLeYXvzI5Hg2vUXYuAv8rwUedQ9iKHcfadefLkYwrMJ87PMYIzJJTp9iUWA1AyGs6kSk3AKBpYxPIS4qKtHenZmryMyc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?OT8PqMpn2R+CVEQiM9UKY5zPG9/popMrz/MMoIlIe4HzfQMYjXP71wAmQKWh?=
+ =?us-ascii?Q?rAjrpdGBgdcNEHU8lPNT6Djrzt3Ka8UkJbitXNhbABrz5vRCpMfNPy5Sd+zD?=
+ =?us-ascii?Q?4hgGEX1WAG89EmXdzJPNAjj6OkwmGWntEPdYJ7GW//RKa7hErN9KElvI68Fo?=
+ =?us-ascii?Q?5D9E+Hdv4tz0bGi0x/mbO4POqrfUmXPdu3wNYJfiKXxd3eR6v1PT6btmJLyT?=
+ =?us-ascii?Q?Smz1ewUayneZyXEEVNWdsI95UyXbhdlaYVm7x1vS2sTIdamaDtemVC3Mo563?=
+ =?us-ascii?Q?xkpDEpVcC3lnVTlnt1QpbiXmsYP99HiLx8Oq6uroZTNXgDoO5G7tutt+9HcK?=
+ =?us-ascii?Q?7wGFJo1IFEYbl80oKxhwvGJv363bp9+2eVxQsT0sj1jDFIhv9QBl4X7CIdwq?=
+ =?us-ascii?Q?lEr8CgfRp7VJAv/8wKWJ4n0j/HhLvvQZhaYr9ZgnvJ2GcG1ENuISa+SeVmvs?=
+ =?us-ascii?Q?KJY72pjMZPcBLlyFk+F7HSSzOZeKbo9bjTt+MSSQhyD2yAaNmyLFuKAZFWpR?=
+ =?us-ascii?Q?QrlQIssHkF7BhtIbbbOcm1EVyv+sZsGfxjZ+O/2mVc1GPWY8UleofxKZbDXd?=
+ =?us-ascii?Q?ct8M9MLeft2KFORyp0KE/CpuWpEu4cEtijAflLm1dhX+5OuDI2zFVJrfQTMt?=
+ =?us-ascii?Q?449VAS6OwH4RpbPnMM5ZeoSMk98K6AlfGF9pT/dLYrlUAVCvptemRGdaqPOc?=
+ =?us-ascii?Q?EtSFeWiGTjxRAkHvxl/MqUmO/MoZj4jK/3ZoLXId7MtAWt/mG6ECsbt333hT?=
+ =?us-ascii?Q?ZK0mKatgHWAyzA8LovDFP6dckeL0OJkuG90VqqJxnCCWgyH68bxoIPbjfE4U?=
+ =?us-ascii?Q?IjmpygTlBgGXBieYl6YGatnHQWKhbpStSQtpz5j56/ljFSGizwN4zgyTU2P5?=
+ =?us-ascii?Q?960BmkWk6hrjOnTCZKjDqCX9YfnXfHZ+cl5Xc0iEUFWB8axT1PuLPuIvogzQ?=
+ =?us-ascii?Q?laNWUkw+BQv8qE1S950jGxhK3m+nOMT+J2rKIbK6y9syhI//TGDtD40DPfCo?=
+ =?us-ascii?Q?gqIgWFvekf7N3qnxRADdjAq6+Px7hukI8VHlwy1vbQmWtYlij/o4K5fimlQU?=
+ =?us-ascii?Q?kyUU6k1uJGYhSw7mSI6Z0zqbDOlRqxLEUNu3TRS48gl6qm8D+GbPDpH1iySG?=
+ =?us-ascii?Q?IuiRH2E2SYuOoWP9DcmHCUkacgMyg5litvYtA6yZDEmXMpkGHa5TpI2mU4f9?=
+ =?us-ascii?Q?YxefV22JU0SePneF9Rd0xc8fOGfw5Lz6mcrWj40oB/MeXe6tq9JPXHwvw3dQ?=
+ =?us-ascii?Q?KZfb9cCA6MtVG+WF09gsF3WGBjI/p+zNGujT4winvmUz56mpjM/PhMxsQQ34?=
+ =?us-ascii?Q?ooBqDgk8af/p+/0u3oaO57wWoRCo3mSggzgHeCSTXuzMYUDk21JHjIwWYxaz?=
+ =?us-ascii?Q?e1igH5Vjn/ylUGYx2rbvZkENCwrdM/3RIIXJobNtNRNzpu25zmcAtsAyA/Nc?=
+ =?us-ascii?Q?H3IL9q2Cf6LFkn+slvvGzlEZOTBVtrjwWtCGwtd/VeM3DUjm74IYxw21zoeR?=
+ =?us-ascii?Q?u9hmsssz6fnbst4BP71QOgSYdtcD7ZCkGVCMmPLa1rfZdemanmLXm3prvgXN?=
+ =?us-ascii?Q?SgIXnOmWGIWJQGu+75E=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b824cd0d-5fa9-4deb-161a-08dc58b33cee
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 16:36:42.6619
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ibbVqVyiP8zy1civlXX6ipyj6aoBleIs4uaVi9ThSpBFZ0Hp1V86L+zKSHJfPXShUvacizwTXijEW9sldtkKnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8978
 
-On 08/04/2024 09:36, David Hildenbrand wrote:
-> On 03.04.24 14:59, Ryan Roberts wrote:
->> On 27/03/2024 09:34, David Hildenbrand wrote:
->>> On 26.03.24 18:51, Ryan Roberts wrote:
->>>> On 26/03/2024 17:39, David Hildenbrand wrote:
->>>>> On 26.03.24 18:32, Ryan Roberts wrote:
->>>>>> On 26/03/2024 17:04, David Hildenbrand wrote:
->>>>>>>>>>>
->>>>>>>>>>> Likely, we just want to read "the real deal" on both sides of the
->>>>>>>>>>> pte_same()
->>>>>>>>>>> handling.
->>>>>>>>>>
->>>>>>>>>> Sorry I'm not sure I understand? You mean read the full pte including
->>>>>>>>>> access/dirty? That's the same as dropping the patch, right? Of course if
->>>>>>>>>> we do
->>>>>>>>>> that, we still have to keep pte_get_lockless() around for this case.
->>>>>>>>>> In an
->>>>>>>>>> ideal
->>>>>>>>>> world we would convert everything over to
->>>>>>>>>> ptep_get_lockless_norecency() and
->>>>>>>>>> delete ptep_get_lockless() to remove the ugliness from arm64.
->>>>>>>>>
->>>>>>>>> Yes, agreed. Patch #3 does not look too crazy and it wouldn't really
->>>>>>>>> affect
->>>>>>>>> any
->>>>>>>>> architecture.
->>>>>>>>>
->>>>>>>>> I do wonder if pte_same_norecency() should be defined per architecture
->>>>>>>>> and the
->>>>>>>>> default would be pte_same(). So we could avoid the mkold etc on all other
->>>>>>>>> architectures.
->>>>>>>>
->>>>>>>> Wouldn't that break it's semantics? The "norecency" of
->>>>>>>> ptep_get_lockless_norecency() means "recency information in the returned
->>>>>>>> pte
->>>>>>>> may
->>>>>>>> be incorrect". But the "norecency" of pte_same_norecency() means "ignore
->>>>>>>> the
->>>>>>>> access and dirty bits when you do the comparison".
->>>>>>>
->>>>>>> My idea was that ptep_get_lockless_norecency() would return the actual
->>>>>>> result on
->>>>>>> these architectures. So e.g., on x86, there would be no actual change in
->>>>>>> generated code.
->>>>>>
->>>>>> I think this is a bad plan... You'll end up with subtle differences between
->>>>>> architectures.
->>>>>>
->>>>>>>
->>>>>>> But yes, the documentation of these functions would have to be improved.
->>>>>>>
->>>>>>> Now I wonder if ptep_get_lockless_norecency() should actively clear
->>>>>>> dirty/accessed bits to more easily find any actual issues where the bits
->>>>>>> still
->>>>>>> matter ...
->>>>>>
->>>>>> I did a version that took that approach. Decided it was not as good as
->>>>>> this way
->>>>>> though. Now for the life of me, I can't remember my reasoning.
->>>>>
->>>>> Maybe because there are some code paths that check accessed/dirty without
->>>>> "correctness" implications? For example, if the PTE is already dirty, no
->>>>> need to
->>>>> set it dirty etc?
->>>>
->>>> I think I decided I was penalizing the architectures that don't care because
->>>> all
->>>> their ptep_get_norecency() and ptep_get_lockless_norecency() need to explicitly
->>>> clear access/dirty. And I would have needed ptep_get_norecency() from day 1 so
->>>> that I could feed its result into pte_same().
->>>
->>> True. With ptep_get_norecency() you're also penalizing other architectures.
->>> Therefore my original thought about making the behavior arch-specific, but the
->>> arch has to make sure to get the combination of
->>> ptep_get_lockless_norecency()+ptep_same_norecency() is right.
->>>
->>> So if an arch decide to ignore bits in ptep_get_lockless_norecency(), it must
->>> make sure to also ignore them in ptep_same_norecency(), and must be able to
->>> handle access/dirty bit changes differently.
->>>
->>> Maybe one could have one variant for "hw-managed access/dirty" vs. "sw managed
->>> accessed or dirty". Only the former would end up ignoring stuff here, the latter
->>> would not.
->>>
->>> But again, just some random thoughts how this affects other architectures and
->>> how we could avoid it. The issue I describe in patch #3 would be gone if
->>> ptep_same_norecency() would just do a ptep_same() check on other architectures
->>> -- and would make it easier to sell :)
->>>
->>
->> I've been thinking some more about this. I think your proposal is the following:
->>
->>
->> // ARM64
->> ptep_get_lockless_norecency()
->> {
->>     - returned access/dirty may be incorrect
->>     - returned access/dirty may be differently incorrect between 2 calls
->> }
->> pte_same_norecency()
->> {
->>     - ignore access/dirty when doing comparison
->> }
->> ptep_set_access_flags(ptep, pte)
->> {
->>     - must not assume access/dirty in pte are "more permissive" than
->>       access/dirty in *ptep
->>     - must only set access/dirty in *ptep, never clear
->> }
->>
->>
->> // Other arches: no change to generated code
->> ptep_get_lockless_norecency()
->> {
->>     return ptep_get_lockless();
->> }
->> pte_same_norecency()
->> {
->>     return pte_same();
->> }
->> ptep_set_access_flags(ptep, pte)
->> {
->>     - may assume access/dirty in pte are "more permissive" than access/dirty
->>       in *ptep
->>     - if no HW access/dirty updates, "*ptep = pte" always results in "more
->>       permissive" change
->> }
->>
->> An arch either specializes all 3 or none of them.
->>
->> This would allow us to get rid of ptep_get_lockless().
->>
->> And it addresses the bug you found with ptep_set_access_flags().
->>
->>
->> BUT, I still have a nagging feeling that there are likely to be other similar
->> problems caused by ignoring access/dirty during pte_same_norecency(). I can't
->> convince myself that its definitely all safe and robust.
-> 
-> Right, we'd have to identify the other possible cases and document what an arch
-> + common code must stick to to make it work.
-> 
-> Some rules would be: if an arch implements ptep_get_lockless_norecency():
-> 
-> (1) Passing the result from ptep_get_lockless_norecency() to pte_same()
->     is wrong.
-> (2) Checking pte_young()/pte_old/pte_dirty()/pte_clean() after
->     ptep_get_lockless_norecency() is very likely wrong.
-> 
-> 
->>
->> So I'm leaning towards dropping patch 3 and therefore keeping
->> ptep_get_lockless() around.
->>
->> Let me know if you have any insight that might help me change my mind :)
-> 
-> I'm wondering if it would help if we could find a better name (or concept) for
-> "norecency" here, that expresses that only on some archs we'd have that fuzzy
-> handling.
-> 
-> Keeping ptep_get_lockless() around for now sounds like the best alternative.
+Update the DPDMAI interfaces to support MC firmware up to 10.1x.x, which
+major change is to add dpaa domain id support. User space MC controller
+tool can create difference dpaa domain for difference virtual environment.
+DMA queues can map to difference service priorities.
 
-Separately to this I've been playing with an idea to add support for uffd-wp and
-soft-dirty SW PTE bits for arm64; it boils down to keeping the SW bits in
-separate storage, linked from the ptdesc. And we have some constant HW PTE bits
-that we can remove and replace with those SW bits so we can keep the pte_t the
-same size and abstract it all with ptep_get() and set_ptes().
+The MC command was basic compatible original one. The new command use
+previous reserved field.
 
-It was all looking straightforward until I got to ptep_get_lockless(). Now that
-there are 2 separate locations for PTE bits, I can't read it all atomically.
+- Add queue number for dpdmai_get_tx(rx)_queue().
+- Unified rx(tx)_queue_attr.
+- Update pad/reserved field of struct dpdmai_rsp_get_attributes and
+struct dpdmai_cmd_queue for new API.
+- Update command DPDMAI_SET(GET)_RX_QUEUE and DPDMAI_CMDID_GET_TX_QUEUE
 
-So I've been looking at all this again, and getting myself even more confused.
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-I believe there are 2 classes of ptep_get_lockless() caller:
+Notes:
+    Change from v1 to v2
+    - Rewrite commit message, by add major change in MC firmware.
+    - remove used struct dpdmai_rsp_is_enabled
 
-1) vmf->orig_pte = ptep_get_lockless(vmf->pte); in handle_pte_fault()
-2) everyone else
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 14 ++++----
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |  5 +--
+ drivers/dma/fsl-dpaa2-qdma/dpdmai.c     | 48 +++++++++++++++++--------
+ drivers/dma/fsl-dpaa2-qdma/dpdmai.h     | 35 +++++++++++-------
+ 4 files changed, 67 insertions(+), 35 deletions(-)
 
---
-
-(1) doesn't really care if orig_pte is consistent or not. It just wants to read
-a value, do some speculative work based on that value, then lock the PTL, and
-check the value hasn't changed. If it has changed, it backs out. So we don't
-actually need any "lockless" guarrantees here; we could just use ptep_get().
-
-In fact, prior to Hugh's commit 26e1a0c3277d ("mm: use pmdp_get_lockless()
-without surplus barrier()"), we had this:
-
-                vmf->pte = pte_offset_map(vmf->pmd, vmf->address);
--               vmf->orig_pte = *vmf->pte;
-+               vmf->orig_pte = ptep_get_lockless(vmf->pte);
-                vmf->flags |= FAULT_FLAG_ORIG_PTE_VALID;
-
--               /*
--                * some architectures can have larger ptes than wordsize,
--                * e.g.ppc44x-defconfig has CONFIG_PTE_64BIT=y and
--                * CONFIG_32BIT=y, so READ_ONCE cannot guarantee atomic
--                * accesses.  The code below just needs a consistent view
--                * for the ifs and we later double check anyway with the
--                * ptl lock held. So here a barrier will do.
--                */
--               barrier();
-                if (pte_none(vmf->orig_pte)) {
-
---
-
-(2) All the other users require that a subset of the pte fields are
-self-consistent; specifically they don't care about access, dirty, uffd-wp or
-soft-dirty. arm64 can guarrantee that all the other bits are self-consistent
-just by calling ptep_get().
-
---
-
-So, I'm making the bold claim that it was never neccessary to specialize
-pte_get_lockless() on arm64, and I *think* we could just delete it so that
-ptep_get_lockless() resolves to ptep_get() on arm64. That solves the original
-aim without needing to introduce "norecency" variants.
-
-Additionally I propose documenting ptep_get_lockless() to describe the set of
-fields that are guarranteed to be self-consistent and the remaining fields which
-are self-consistent only with best-effort.
-
-Could it be this easy? My head is hurting...
-
-Thanks,
-Ryan
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+index 5a8061a307cda..36384d0192636 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+@@ -362,7 +362,7 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+ 
+ 	for (i = 0; i < priv->num_pairs; i++) {
+ 		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+-					  i, &priv->rx_queue_attr[i]);
++					  i, 0, &priv->rx_queue_attr[i]);
+ 		if (err) {
+ 			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
+ 			goto exit;
+@@ -370,13 +370,13 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+ 		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
+ 
+ 		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+-					  i, &priv->tx_fqid[i]);
++					  i, 0, &priv->tx_queue_attr[i]);
+ 		if (err) {
+ 			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
+ 			goto exit;
+ 		}
+-		ppriv->req_fqid = priv->tx_fqid[i];
+-		ppriv->prio = i;
++		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
++		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
+ 		ppriv->priv = priv;
+ 		ppriv++;
+ 	}
+@@ -542,7 +542,7 @@ static int __cold dpaa2_dpdmai_bind(struct dpaa2_qdma_priv *priv)
+ 		rx_queue_cfg.dest_cfg.dest_id = ppriv->nctx.dpio_id;
+ 		rx_queue_cfg.dest_cfg.priority = ppriv->prio;
+ 		err = dpdmai_set_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+-					  rx_queue_cfg.dest_cfg.priority,
++					  rx_queue_cfg.dest_cfg.priority, 0,
+ 					  &rx_queue_cfg);
+ 		if (err) {
+ 			dev_err(dev, "dpdmai_set_rx_queue() failed\n");
+@@ -642,7 +642,7 @@ static int dpaa2_dpdmai_init_channels(struct dpaa2_qdma_engine *dpaa2_qdma)
+ 	for (i = 0; i < dpaa2_qdma->n_chans; i++) {
+ 		dpaa2_chan = &dpaa2_qdma->chans[i];
+ 		dpaa2_chan->qdma = dpaa2_qdma;
+-		dpaa2_chan->fqid = priv->tx_fqid[i % num];
++		dpaa2_chan->fqid = priv->tx_queue_attr[i % num].fqid;
+ 		dpaa2_chan->vchan.desc_free = dpaa2_qdma_free_desc;
+ 		vchan_init(&dpaa2_chan->vchan, &dpaa2_qdma->dma_dev);
+ 		spin_lock_init(&dpaa2_chan->queue_lock);
+@@ -802,7 +802,7 @@ static void dpaa2_qdma_shutdown(struct fsl_mc_device *ls_dev)
+ 	dpdmai_disable(priv->mc_io, 0, ls_dev->mc_handle);
+ 	dpaa2_dpdmai_dpio_unbind(priv);
+ 	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
+-	dpdmai_destroy(priv->mc_io, 0, ls_dev->mc_handle);
++	dpdmai_destroy(priv->mc_io, 0, priv->dpqdma_id, ls_dev->mc_handle);
+ }
+ 
+ static const struct fsl_mc_device_id dpaa2_qdma_id_table[] = {
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+index 03e2f4e0baca8..2c80077cb7c0a 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+@@ -6,6 +6,7 @@
+ 
+ #define DPAA2_QDMA_STORE_SIZE 16
+ #define NUM_CH 8
++#define DPAA2_QDMA_DEFAULT_PRIORITY 0
+ 
+ struct dpaa2_qdma_sd_d {
+ 	u32 rsv:32;
+@@ -122,8 +123,8 @@ struct dpaa2_qdma_priv {
+ 	struct dpaa2_qdma_engine	*dpaa2_qdma;
+ 	struct dpaa2_qdma_priv_per_prio	*ppriv;
+ 
+-	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_PRIO_NUM];
+-	u32 tx_fqid[DPDMAI_PRIO_NUM];
++	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
++	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
+ };
+ 
+ struct dpaa2_qdma_priv_per_prio {
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
+index 610f6231835a8..a824450fe19c2 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
+@@ -1,32 +1,39 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright 2019 NXP
+ 
++#include <linux/bitfield.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/io.h>
+ #include <linux/fsl/mc.h>
+ #include "dpdmai.h"
+ 
++#define DEST_TYPE_MASK 0xF
++
+ struct dpdmai_rsp_get_attributes {
+ 	__le32 id;
+ 	u8 num_of_priorities;
+-	u8 pad0[3];
++	u8 num_of_queues;
++	u8 pad0[2];
+ 	__le16 major;
+ 	__le16 minor;
+ };
+ 
+ struct dpdmai_cmd_queue {
+ 	__le32 dest_id;
+-	u8 priority;
+-	u8 queue;
++	u8 dest_priority;
++	union {
++		u8 queue;
++		u8 pri;
++	};
+ 	u8 dest_type;
+-	u8 pad;
++	u8 queue_idx;
+ 	__le64 user_ctx;
+ 	union {
+ 		__le32 options;
+ 		__le32 fqid;
+ 	};
+-};
++} __packed;
+ 
+ struct dpdmai_rsp_get_tx_queue {
+ 	__le64 pad;
+@@ -37,6 +44,10 @@ struct dpdmai_cmd_open {
+ 	__le32 dpdmai_id;
+ } __packed;
+ 
++struct dpdmai_cmd_destroy {
++	__le32 dpdmai_id;
++} __packed;
++
+ static inline u64 mc_enc(int lsoffset, int width, u64 val)
+ {
+ 	return (val & MAKE_UMASK64(width)) << lsoffset;
+@@ -113,18 +124,23 @@ EXPORT_SYMBOL_GPL(dpdmai_close);
+  * dpdmai_destroy() - Destroy the DPDMAI object and release all its resources.
+  * @mc_io:      Pointer to MC portal's I/O object
+  * @cmd_flags:  Command flags; one or more of 'MC_CMD_FLAG_'
++ * @dpdmai_id:	The object id; it must be a valid id within the container that created this object;
+  * @token:      Token of DPDMAI object
+  *
+  * Return:      '0' on Success; error code otherwise.
+  */
+-int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
++int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u32 dpdmai_id, u16 token)
+ {
++	struct dpdmai_cmd_destroy *cmd_params;
+ 	struct fsl_mc_command cmd = { 0 };
+ 
+ 	/* prepare command */
+ 	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_DESTROY,
+ 					  cmd_flags, token);
+ 
++	cmd_params = (struct dpdmai_cmd_destroy *)&cmd.params;
++	cmd_params->dpdmai_id = cpu_to_le32(dpdmai_id);
++
+ 	/* send command to mc*/
+ 	return mc_send_command(mc_io, &cmd);
+ }
+@@ -224,6 +240,7 @@ int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
+ 	attr->version.major = le16_to_cpu(rsp_params->major);
+ 	attr->version.minor = le16_to_cpu(rsp_params->minor);
+ 	attr->num_of_priorities = rsp_params->num_of_priorities;
++	attr->num_of_queues = rsp_params->num_of_queues;
+ 
+ 	return 0;
+ }
+@@ -240,7 +257,7 @@ EXPORT_SYMBOL_GPL(dpdmai_get_attributes);
+  *
+  * Return:	'0' on Success; Error code otherwise.
+  */
+-int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
++int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token, u8 queue_idx,
+ 			u8 priority, const struct dpdmai_rx_queue_cfg *cfg)
+ {
+ 	struct dpdmai_cmd_queue *cmd_params;
+@@ -252,11 +269,12 @@ int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+ 
+ 	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
+ 	cmd_params->dest_id = cpu_to_le32(cfg->dest_cfg.dest_id);
+-	cmd_params->priority = cfg->dest_cfg.priority;
+-	cmd_params->queue = priority;
++	cmd_params->dest_priority = cfg->dest_cfg.priority;
++	cmd_params->pri = priority;
+ 	cmd_params->dest_type = cfg->dest_cfg.dest_type;
+ 	cmd_params->user_ctx = cpu_to_le64(cfg->user_ctx);
+ 	cmd_params->options = cpu_to_le32(cfg->options);
++	cmd_params->queue_idx = queue_idx;
+ 
+ 	/* send command to mc*/
+ 	return mc_send_command(mc_io, &cmd);
+@@ -274,7 +292,7 @@ EXPORT_SYMBOL_GPL(dpdmai_set_rx_queue);
+  *
+  * Return:	'0' on Success; Error code otherwise.
+  */
+-int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
++int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token, u8 queue_idx,
+ 			u8 priority, struct dpdmai_rx_queue_attr *attr)
+ {
+ 	struct dpdmai_cmd_queue *cmd_params;
+@@ -287,6 +305,7 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+ 
+ 	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
+ 	cmd_params->queue = priority;
++	cmd_params->queue_idx = queue_idx;
+ 
+ 	/* send command to mc*/
+ 	err = mc_send_command(mc_io, &cmd);
+@@ -295,8 +314,8 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+ 
+ 	/* retrieve response parameters */
+ 	attr->dest_cfg.dest_id = le32_to_cpu(cmd_params->dest_id);
+-	attr->dest_cfg.priority = cmd_params->priority;
+-	attr->dest_cfg.dest_type = cmd_params->dest_type;
++	attr->dest_cfg.priority = cmd_params->dest_priority;
++	attr->dest_cfg.dest_type = FIELD_GET(DEST_TYPE_MASK, cmd_params->dest_type);
+ 	attr->user_ctx = le64_to_cpu(cmd_params->user_ctx);
+ 	attr->fqid = le32_to_cpu(cmd_params->fqid);
+ 
+@@ -316,7 +335,7 @@ EXPORT_SYMBOL_GPL(dpdmai_get_rx_queue);
+  * Return:	'0' on Success; Error code otherwise.
+  */
+ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
+-			u16 token, u8 priority, u32 *fqid)
++			u16 token, u8 queue_idx, u8 priority, struct dpdmai_tx_queue_attr *attr)
+ {
+ 	struct dpdmai_rsp_get_tx_queue *rsp_params;
+ 	struct dpdmai_cmd_queue *cmd_params;
+@@ -329,6 +348,7 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
+ 
+ 	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
+ 	cmd_params->queue = priority;
++	cmd_params->queue_idx = queue_idx;
+ 
+ 	/* send command to mc*/
+ 	err = mc_send_command(mc_io, &cmd);
+@@ -338,7 +358,7 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
+ 	/* retrieve response parameters */
+ 
+ 	rsp_params = (struct dpdmai_rsp_get_tx_queue *)cmd.params;
+-	*fqid = le32_to_cpu(rsp_params->fqid);
++	attr->fqid = le32_to_cpu(rsp_params->fqid);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+index 3f2db582509a1..1efca2a305334 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
++++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+@@ -5,14 +5,19 @@
+ #define __FSL_DPDMAI_H
+ 
+ /* DPDMAI Version */
+-#define DPDMAI_VER_MAJOR	2
+-#define DPDMAI_VER_MINOR	2
++#define DPDMAI_VER_MAJOR	3
++#define DPDMAI_VER_MINOR	3
+ 
+-#define DPDMAI_CMD_BASE_VERSION	0
++#define DPDMAI_CMD_BASE_VERSION	1
+ #define DPDMAI_CMD_ID_OFFSET	4
+ 
+-#define DPDMAI_CMDID_FORMAT(x)	(((x) << DPDMAI_CMD_ID_OFFSET) | \
+-				DPDMAI_CMD_BASE_VERSION)
++/*
++ * Maximum number of Tx/Rx queues per DPDMAI object
++ */
++#define DPDMAI_MAX_QUEUE_NUM	8
++
++#define DPDMAI_CMDID_FORMAT_V(x, v)	(((x) << DPDMAI_CMD_ID_OFFSET) | (v))
++#define DPDMAI_CMDID_FORMAT(x)		DPDMAI_CMDID_FORMAT_V(x, DPDMAI_CMD_BASE_VERSION)
+ 
+ /* Command IDs */
+ #define DPDMAI_CMDID_CLOSE		DPDMAI_CMDID_FORMAT(0x800)
+@@ -26,9 +31,9 @@
+ #define DPDMAI_CMDID_RESET              DPDMAI_CMDID_FORMAT(0x005)
+ #define DPDMAI_CMDID_IS_ENABLED         DPDMAI_CMDID_FORMAT(0x006)
+ 
+-#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMDID_FORMAT(0x1A0)
+-#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A1)
+-#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A2)
++#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMDID_FORMAT_V(0x1A0, 2)
++#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMDID_FORMAT_V(0x1A1, 2)
++#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMDID_FORMAT_V(0x1A2, 2)
+ 
+ #define MC_CMD_HDR_TOKEN_O 32  /* Token field offset */
+ #define MC_CMD_HDR_TOKEN_S 16  /* Token field size */
+@@ -64,6 +69,7 @@
+  *	should be configured with 0
+  */
+ struct dpdmai_cfg {
++	u8 num_queues;
+ 	u8 priorities[DPDMAI_PRIO_NUM];
+ };
+ 
+@@ -85,6 +91,7 @@ struct dpdmai_attr {
+ 		u16 minor;
+ 	} version;
+ 	u8 num_of_priorities;
++	u8 num_of_queues;
+ };
+ 
+ /**
+@@ -149,20 +156,24 @@ struct dpdmai_rx_queue_attr {
+ 	u32 fqid;
+ };
+ 
++struct dpdmai_tx_queue_attr {
++	u32 fqid;
++};
++
+ int dpdmai_open(struct fsl_mc_io *mc_io, u32 cmd_flags,
+ 		int dpdmai_id, u16 *token);
+ int dpdmai_close(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+-int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
++int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u32 dpdmai_id, u16 token);
+ int dpdmai_enable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+ int dpdmai_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+ int dpdmai_reset(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+ int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
+ 			  u16 token, struct dpdmai_attr	*attr);
+ int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+-			u8 priority, const struct dpdmai_rx_queue_cfg *cfg);
++			u8 queue_idx, u8 priority, const struct dpdmai_rx_queue_cfg *cfg);
+ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+-			u8 priority, struct dpdmai_rx_queue_attr *attr);
++			u8 queue_idx, u8 priority, struct dpdmai_rx_queue_attr *attr);
+ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
+-			u16 token, u8 priority, u32 *fqid);
++			u16 token, u8 queue_idx, u8 priority, struct dpdmai_tx_queue_attr *attr);
+ 
+ #endif /* __FSL_DPDMAI_H */
+-- 
+2.34.1
 
 
