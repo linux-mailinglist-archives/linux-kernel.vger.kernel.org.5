@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-136383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A77E89D37A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EB789D37D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C777B21642
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:43:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01D82B22CFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92CA17D094;
-	Tue,  9 Apr 2024 07:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019DC7D09A;
+	Tue,  9 Apr 2024 07:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9/fRur0"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RqQ1LQUd"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FD57CF0F;
-	Tue,  9 Apr 2024 07:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BF67C6CA;
+	Tue,  9 Apr 2024 07:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712648616; cv=none; b=HDhRgwDAbH3ODa1Kg+jVons7+HPdSXhItJAz+YaE275YtPJdM8zqQZhcZdS/wdzfe7/ZMJLuZckEypcciVhYphcO2+HXlht9gMJ4xvamGMpClfO8Ndi4nu1uB5oEcAD0tbGuokT4mGim3iCFjX3h6wjcLXMUuixMf/QSEeDqSic=
+	t=1712648637; cv=none; b=P4KbyTrL9i61eHKvM9CDvdf6tNnJjsARQeTFMJxmeoGoFhABNse1A3WsTpczlx6babi9evPrM7TfG96+rG+zT0O6t92gyxl1DxKGDENLf8q0KK1FwBZQqQuIuAtGtcItOj+4+dUj/Bb/sDe6BLLkLEwKxHtEy5v44mT0RO9uqbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712648616; c=relaxed/simple;
-	bh=RW3Vcu+pBuM8Ouz89hCFm3+7XrBJRg4T1ezg40F76/U=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=kbn8+lfSCe0JRjc2XrpyynC+vDhiQ4B+GCcnAFo//L4R4X1BZd7YF/LCo9YdFyj4UXZDTJO42OE40VvRnYOSvdSfbCp0M2Hz3yuF/xZvEl6ZCL98SmQcUVV2gSf9dx4vskIX6Dkgt+vbJY9zpAl8mvo+tKHdVoWFvQVOCGZ9HbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y9/fRur0; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1712648637; c=relaxed/simple;
+	bh=w0Z0P84vxqSmx39NUsYXq/qGnGd2RcUjYIVp1R5MhG8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=CO/SCc79DcAR212XlkjWC5x2BgBR4c/P630Oj0hUWxOmRMn56um7h5VZ6Lxc3Kpl7Ztg2KYvTjWj/BDl/doDOpi2HrWEoBncD4Js41ohnWvTdV6950R5dNRb9V9Ec3FVQklkCUp6DPDebW45KKF6WZCYHYS3HzMt8wpSPUbl0/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RqQ1LQUd; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso3283553a12.3;
-        Tue, 09 Apr 2024 00:43:35 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e455b630acso8134485ad.1;
+        Tue, 09 Apr 2024 00:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712648615; x=1713253415; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zh/VM2PvaWXby6D1nbK/G/Ihjx2YeKbQpPxdCvQ3goc=;
-        b=Y9/fRur0cF9uw1YY5L882ESN1kKs/eh1hTAONEE8kpGPO1o/9nZuniPV9HSDC9LSxb
-         nNmPebKFLHmjkpAvR0K5VVchbm6D6/pM/CDjbgfaUVy7du0bs1UXCpT1bmfWCjBy9Ydi
-         VOSQJIHEyuywL1j6SReIlYT97Vms5wLoL5eu/oVwvwRoNMn5ADmCChofoOMAz9mRLfH+
-         xLWJ4vw5+5/cK3xROsGVwXtGsnsr2Oe6pIb9FFUaAbvfKB/GjtzFyBwdNTu2Tcv2yRpp
-         D8UHuH6G5XB3JJtL8rJKQl4zTYT2POeb0Y4sSyob+bX3D6soYA8I5HcfHvMsyx6fsHIW
-         Jjww==
+        d=gmail.com; s=20230601; t=1712648635; x=1713253435; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ONFD4/Vc6YR7CCQ0n+d7jmlTotuvow43AhDgWdDDx6I=;
+        b=RqQ1LQUdNT7P5q3OJbrmD8bWQEbVo1PEur7XHUSkaTNLHfmQjd6ONyxcxzq/zd0aZf
+         cc2Cs0BpV4FCrhyLEV6VhH1eBLVz8NTw5uRmRTrwX/54KhtUryRCdGYOMp4Vr2VwH305
+         8NfoMFEBg5DTXqARk4xfEZoTKHf870UvaG00gr4QYDU0tJgsg78hq1/Qn7WBhRJZe35v
+         GLYHxBpohfoos44fCJGbtF0m/dkGHhaG1ZiSh/yoKMWZPrgYjBzWBcwhUelru8DPDAzY
+         mdqJ10krxyUtojUhTnSq9NCK8xb7E2h0kzMY35CwP7clzzff35qd73I8jcsVFUSa1OID
+         t12w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712648615; x=1713253415;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zh/VM2PvaWXby6D1nbK/G/Ihjx2YeKbQpPxdCvQ3goc=;
-        b=sLmAhgSq8+tmx1YQpg1/kDqhxgDhe7LYJ5vwrhaHbpUh/gz8sv1SLkhTEjdAXHFVFB
-         UQR1opr8RZU2s+0Y5kSw/46DKRgSOce9m8CiNjJ/8V3x3p6V8f2Oe52TrNnq1HJglzJg
-         hpMjuJxh9mN8RWvVRlXaF+k9/4OTcR2X4MzH13l2YaU1cdcWiDq2WbYLvzOzXCUUf/Bc
-         fPdqTmO5I3pUVPExTExJPvUQhagOsdxpSmT6ikRozNDAdp44bA4W9NxHUjkB1dL2pUgG
-         CLl4Dv/4cR55R7xtaGEo08rF+CKZeucoYJ/sNRhJom8PcdJXqQ9l1apyy6wMf3lfo/xD
-         HBhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJWpnQebQDBxIqjpa9Sq5UAEuL2+Q7IR9h3NSF/cqnemNjWP83wVevoL/k3Epq1nDhDFTVDUF/q+5enLuFJesy1wYptXNt3YC/soh3BsVaqIQNfRh3tqvDnMQjhzCp96uEUn+tVsYoO7A3
-X-Gm-Message-State: AOJu0YwuE498lpuRLpfnZV3S6V1H5gDxnGAbQ6X3ipYstQAIwNQyJaAq
-	9lwkcZKKKlFSclnFN0Lhk+6SgybjQwJGALh2LaAfdGLeDz557mAO
-X-Google-Smtp-Source: AGHT+IGV+g8i4PY5Pwnyy1nv/gWQ2jZdzaluRE2j3ANO2KGktSNJ/KF430xe3csJjHxeCxRbDXGA6g==
-X-Received: by 2002:a05:6a21:1506:b0:1a7:7ac1:a3ba with SMTP id nq6-20020a056a21150600b001a77ac1a3bamr4661407pzb.53.1712648614823;
-        Tue, 09 Apr 2024 00:43:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712648635; x=1713253435;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ONFD4/Vc6YR7CCQ0n+d7jmlTotuvow43AhDgWdDDx6I=;
+        b=t/OkaEBeAVfCGxvqLAe2t/3HKffIDch2ih7wnBiWideeCZdDmAka1vMlTmsTjJZ7sN
+         n8SxGlRJeAW9yWyKCVUSm0I0/jbTrytTMeaLq5JpBTbHX8jnM3ia6aS4yk125hzqFWK/
+         KURRpgFVeEpxowUh08jx5uY4NarmhDa7AYRPx5euvi+LtPkQsnKFmegMx7jpbf4Iqgk4
+         SwT+dws0E40aOCTModkD6i8qk/ELH0NWUY3dVK5grG5aS1uu295upw12H6+zxpdW2+wa
+         n5F2OEEYH5jlOsU6GMcqdTT+Ck5xnPpuMA4F/kEbNUnbDvRKybm7h43tyG2WWdHUb88E
+         CwkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNAUDcexYJA9BDHgt+bZ6vc0LYEO0uvwKID3SnYrUhs21kxz1OWH0we1F+LJG+GcH6vMKpBHJoI9GSp+5Y95sRVkZo8VcBWGZn5OI3tknF9eNgdhI3jsVDYXttNdM81SMyvt1Dqu/MVcMl
+X-Gm-Message-State: AOJu0YwP/83KVhroWV6clvcQ/95hgJVvtZ881j8irDKnPfYGP/bYOOEx
+	64rbLZp6D7kLpIsO+zOG3w4jtxTQ2RzD/v+K/Gpz/y2yUjSWQxbl
+X-Google-Smtp-Source: AGHT+IG9f4mfZYnvm8ROpu5/UudNC3S46z1v8L7mwA165lyQ7y+oj0sj+xask7LQmgHgzOs+8CwZEA==
+X-Received: by 2002:a17:902:da81:b0:1e3:dc0c:1bb0 with SMTP id j1-20020a170902da8100b001e3dc0c1bb0mr7864871plx.1.1712648635342;
+        Tue, 09 Apr 2024 00:43:55 -0700 (PDT)
 Received: from localhost.localdomain ([43.159.199.34])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170902d48d00b001e40898e9acsm4248237plg.276.2024.04.09.00.43.32
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001e424ccf438sm3458975plx.97.2024.04.09.00.43.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 00:43:34 -0700 (PDT)
+        Tue, 09 Apr 2024 00:43:55 -0700 (PDT)
 From: Guanbing Huang <albanhuang0@gmail.com>
 To: gregkh@linuxfoundation.org,
 	andriy.shevchenko@intel.com,
@@ -77,10 +77,12 @@ Cc: linux-acpi@vger.kernel.org,
 	lvjianmin@loongson.cn,
 	albanhuang@tencent.com,
 	tombinfan@tencent.com
-Subject: [PATCH v6 0/3] serial: 8250_pnp: Support configurable reg shift property
-Date: Tue,  9 Apr 2024 15:43:20 +0800
-Message-Id: <cover.1712646750.git.albanhuang@tencent.com>
+Subject: [PATCH v6 1/3] PNP: Add dev_is_pnp() macro
+Date: Tue,  9 Apr 2024 15:43:41 +0800
+Message-Id: <f8f216c4a36d2266b4fbf48f95793c44f13fb506.1712646750.git.albanhuang@tencent.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1712646750.git.albanhuang@tencent.com>
+References: <cover.1712646750.git.albanhuang@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,25 +91,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
 From: Guanbing Huang <albanhuang@tencent.com>
 
-The 16550a serial port based on the ACPI table requires obtaining the
-reg-shift attribute. In the ACPI scenario, If the reg-shift property
-is not configured like in DTS, the 16550a serial driver cannot read or
-write controller registers properly during initialization.
+Add dev_is_pnp() macro to determine whether the device is a PNP device.
 
-To address the issue of configuring the reg-shift property, the 
-__uart_read_properties() universal interface is called to implement it.
-Adaptation of PNP devices is done in the __uart_read_properties() function.
+Signed-off-by: Guanbing Huang <albanhuang@tencent.com>
+Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Reviewed-by: Bing Fan <tombinfan@tencent.com>
+Tested-by: Linheng Du <dylanlhdu@tencent.com>
+---
+v5 -> v6: fix the issue that the cover letter is not chained with the patch series
+v4 -> v5: change "pnp" in the commit message to uppercase
 
-Guanbing Huang (3):
-  PNP: Add dev_is_pnp() macro
-  serial: port: Add support of PNP IRQ to __uart_read_properties()
-  serial: 8250_pnp: Support configurable reg shift property
+ include/linux/pnp.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/tty/serial/8250/8250_pnp.c | 40 +++++++++++++++++++-----------
- drivers/tty/serial/serial_port.c   |  7 +++++-
- include/linux/pnp.h                |  2 ++
- 3 files changed, 33 insertions(+), 16 deletions(-)
-
+diff --git a/include/linux/pnp.h b/include/linux/pnp.h
+index ddbe7c3ca4ce..792921c06594 100644
+--- a/include/linux/pnp.h
++++ b/include/linux/pnp.h
+@@ -502,6 +502,8 @@ static inline void pnp_unregister_driver(struct pnp_driver *drv) { }
+ 
+ #endif /* CONFIG_PNP */
+ 
++#define dev_is_pnp(d) ((d)->bus == &pnp_bus_type)
++
+ /**
+  * module_pnp_driver() - Helper macro for registering a PnP driver
+  * @__pnp_driver: pnp_driver struct
 -- 
 2.17.1
 
