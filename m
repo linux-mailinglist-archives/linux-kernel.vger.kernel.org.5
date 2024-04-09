@@ -1,354 +1,482 @@
-Return-Path: <linux-kernel+bounces-137231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1FE689DF3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:34:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1DA89DF44
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:35:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E57831C21DBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B03C28F848
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7179F13E042;
-	Tue,  9 Apr 2024 15:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CDF1353E3;
+	Tue,  9 Apr 2024 15:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmLWRjb9"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mJ4RU053"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB0513E3E8;
-	Tue,  9 Apr 2024 15:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C22C1327E9
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676574; cv=none; b=qF04xVM29LxbiyrMbTylV3nfpO+HDplmx2HTZPQotn2+HRlU0bjSJp+b9DiDV3Rd+8YZ6YJt2tcO91fdOgO5MqCwI6vFowP42wOR0uDNxagSfglUIqJoPhB86T9WcZnDNV8r21Rg0lNtMHkek3dIqPTb87eiX+AU8sLE48srrz8=
+	t=1712676675; cv=none; b=EfJXrTYCbQdm0ltloU6KI9bqGTfom2VnsuJjYBnf6CGKtWXy3sTWRgBeCBpQIHlEHL2xVGp/rzfVC6hpUG4kDvNRqSCciRnVSt4g+rkEGXV+MNMqoDT2LufHhGUWXjSt44HTSkT1NFLACtrD0VaPxqcPde6xmgFcvqi3ajjocDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676574; c=relaxed/simple;
-	bh=p8GCIbQsrjA92CnY0L3dxkTqT4ceV3QuDXIAqDzM+bI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GWS4TUft5IBSUfMgosSVLhQAKmQMGRdia82dR6djb2I2fH8+2xX5sDr/aNuziN+C+5LgF6++crEY8EHBpqiRyZIkmF3R7xkzuIuV7nx3/xugRwavnfqngnJ6AVFAqOzp5pwwt/3+kbyM7e94bMUPnrO16QAR82WDKzZ4J84SleA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmLWRjb9; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2a2f6da024eso3573748a91.3;
-        Tue, 09 Apr 2024 08:29:32 -0700 (PDT)
+	s=arc-20240116; t=1712676675; c=relaxed/simple;
+	bh=4vXjhaOJuEhLQszfSjACXUnAB/klz58XNe4Q5PbFrg4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YKuPKOcHBhc/5J/GXAQEFTYB79qJBJ0K2+vulyhZEMeYwwsHpRwbJubW0xzP/e/ChCc5InghzLhTP/caY4TccSWSwO15No4NABRoAU8jEHAgdkmFrjhg5SXcWIr8Wcvx4mHTepCneAy23MvjvpzDD/ZZHlYSnauMMCeo4GUGmMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mJ4RU053; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e42a6158d5so166895ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712676572; x=1713281372; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IXJi5llpZ+vhWTyedf01ExpUFEryZUwweTd1xXAkLeA=;
-        b=JmLWRjb9KHPsbjcuhNVlgSm3y80Qi88yprGXTWwxnMTdZvJGnVZpfVZBzolRzNgvn7
-         0ECsBkHci/7N2OOFFAfLVsHfUIB2KLSpRI0nEo+CprzB8hNX09/2s+AK4Ii7Ejpvf4VP
-         dTJLqLkk/NMWjtr7HKkGgdgicuiEKAYXPuEynYMV7dRM+IWDMR3pcUXUsriSrVemRf0o
-         P4z9s7Mu00jPx4qwbE5jNqCwW5n93RKRheTjizQI79EZy00cT6f/e6cdEY4ipl7zJybJ
-         iadZsrSQk33FBvgMCHwWwaUqxkTWJ3vpPn27spHgAxXDp0esKwHJs7I0+sYlpKMWAHod
-         rQSA==
+        d=google.com; s=20230601; t=1712676672; x=1713281472; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6gMizypd/HsGI5I1fv7KYeF5S96ztzmQGbMPbCthnUs=;
+        b=mJ4RU053j0Rfl38jw5fgajYVVG//qL2DD4zNZkcWuuRrg9FslL1jeVhvUayim2BkE1
+         GD3mUqKtPSrt9woSHqc2vkK/gt09MJj0uF+bv9xnjJ/NN45J2BUGMScvApmuWHAzUYMs
+         H3tGrpiueqqKdbHkIHJRySb9q+lPVMfllMOoCCOLngfyzj32YHQJoM6STwMklpH9lf6j
+         1VNr5OsKBGnW3j7TAGBfTIxLLck0T+ZN/dT4dOmUun062mRA2ehR+OUULgsK8ChTDcNJ
+         SbmiG2hM/eUP4BvRdS8o/DiLgUd7VcHHrikXV9dUr2q5EL/qkL2lsR+OwxwTgTVm569I
+         erdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712676572; x=1713281372;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXJi5llpZ+vhWTyedf01ExpUFEryZUwweTd1xXAkLeA=;
-        b=l6d56nEzFOWPcUQpjJv1iLpFLbr378cXabVPBTmrB5n1vb9HU12LrOPNKCXmBEc8eI
-         ml1Z6T5CCRedOcxytrSQ1gMUcnJGzQtJ7MZXtcBrgS7sRNMffeoFKxSzXWXPrU2+x9rg
-         KIyst5/JdEA4WJFw6qj4VHngUrXCvoB7/oL0h3mTo2rXiQSOoxt3sUMiiV4qPzu1RcQW
-         o4KZ50zvi7LyjTgiYD3al2MjPznghdJYt77+bVR1zu+gQH5Qe3kyS7LJLs9eQUDI3oYl
-         iPZWvoKmAFxNMl298e5TPXt9s19gZ/lz479w3DwQMIhk2JAvJo7yjas5SEDoJHHE9bh5
-         Rv/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVCn+SaqzJatzETlq3eURHEiaUPYM438WEd22CALx6ICW59JB//6MgJT/3VVioC0e4egolEQ516maf3iyLnvcsDR2cMKoHjLsFjvc12bijIbmREQZEyit7nlwRyW/w3K1uhT8vqlcKzDqeL3tjG2bhR1h1L5G185q3tqMhfgGAIJSVeIQ==
-X-Gm-Message-State: AOJu0Yx41AdwrI6KNtKcVs2xFc30EDCTgggAfmNVrjQjvaUlGE4vo7TC
-	g6plk4pVzKjmeLdVZrQsr9leTFah8nxRULL0IVq/SMIvgVWk0Iec
-X-Google-Smtp-Source: AGHT+IGlykDmbn4myicFVQlbrUlMJK5wpHx4pDcuR+/fuZbd8lLCjgz+ruZ7gvq460VXybZpHu0TEQ==
-X-Received: by 2002:a17:90b:607:b0:2a2:55de:93eb with SMTP id gb7-20020a17090b060700b002a255de93ebmr9318567pjb.33.1712676571566;
-        Tue, 09 Apr 2024 08:29:31 -0700 (PDT)
-Received: from localhost ([2804:30c:1618:ed00:d152:440c:102b:144e])
-        by smtp.gmail.com with ESMTPSA id bo3-20020a17090b090300b0029f349cc253sm10081435pjb.54.2024.04.09.08.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 08:29:30 -0700 (PDT)
-Date: Tue, 9 Apr 2024 12:30:09 -0300
-From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de,
-	Michael.Hennerich@analog.com, jic23@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: Add AD4000
-Message-ID: <ZhVfARtMfOLOPRid@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1712585500.git.marcelo.schmitt@analog.com>
- <7c877c865f0b7da28d9f1f177b3b2692b0ae20b9.1712585500.git.marcelo.schmitt@analog.com>
- <CAMknhBGKNZhGbD7pQ0Z7SMCWqxqGux0LcO_wW0XGP4hLTOwNBg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1712676672; x=1713281472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6gMizypd/HsGI5I1fv7KYeF5S96ztzmQGbMPbCthnUs=;
+        b=X/jspnoNINQaCXHmKDYe6H8YUG76w8gak0OXS9CIa5bIUAioRRSQUQaaam3phhRN4G
+         v3lImjzRkSIJ7FMkZpPvq/rfL/1t+VR61CkCeQc0eSGY7T8AMln/75db0AaNqdZ6XCGz
+         upQjqgCFaKZdFFi31Pfly31fw6lWOa/+bLS+HYrJ5wRfHqPPemmssMfrci46mk0vPbNr
+         8r69ZBqyBY4gjUzhCzKCL8OS3f0y1KqiCJFKbk9IsApuA4Y2Vd0eo2yEPtEsHQfly37v
+         MbvfxS/XdXd3utdAMtWwtG7lVMCmZdRe/mVWVmhre1QCVTeUY2UesN8gK/qPM258HbFn
+         VWMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZ4psrnNjnMJjAiHjzgFjCsxySUOmTHMnd43r3Sv6Ka9cmnAbk6cVCknMlsnWeah7yUEC7LW7v9qinUmgBAluIGs8AhoJ7a/FBaeRH
+X-Gm-Message-State: AOJu0YwRz6UsEWpYMtoYdLb4P3x7fCz5S7E+yBE/BhKfCJfB1wQLT7UO
+	IFazMopZ+2TSPdDKHyiqXmApkGlP0gcXEu9VnygettHNMc7AGN/kaIyJsmzH1xOpOT33J3Wwqbw
+	czHn/TAt8g9ITv73YrCg/nnzEW+/snqb9j1cT
+X-Google-Smtp-Source: AGHT+IEegZBq4jA1aZCMIpXEIue7txl9MXK7W+SSEeI/SIb5vrO2+1q2DfwFb9RGpwMmpaAaoFUFs+ZGsAVurhfqU0A=
+X-Received: by 2002:a17:903:228f:b0:1e0:a494:4bb7 with SMTP id
+ b15-20020a170903228f00b001e0a4944bb7mr239175plh.2.1712676671283; Tue, 09 Apr
+ 2024 08:31:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMknhBGKNZhGbD7pQ0Z7SMCWqxqGux0LcO_wW0XGP4hLTOwNBg@mail.gmail.com>
+References: <20240329064803.3058900-1-irogers@google.com> <8a415ffe-af51-415e-816f-2d15d0654f7c@linux.intel.com>
+In-Reply-To: <8a415ffe-af51-415e-816f-2d15d0654f7c@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 9 Apr 2024 08:30:58 -0700
+Message-ID: <CAP-5=fXnFskX3dRmxQrvrW6A6bLJWNUptOCTHzUEhm4E80ZJZg@mail.gmail.com>
+Subject: Re: [PATCH v1] perf pmus: Sort/merge/aggregate PMUs like mrvl_ddr_pmu
+To: "Liang, Kan" <kan.liang@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	Bharat Bhushan <bbhushan2@marvell.com>, Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
+	John Garry <john.g.garry@oracle.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	Will Deacon <will@kernel.org>, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/08, David Lechner wrote:
-> On Mon, Apr 8, 2024 at 9:32 AM Marcelo Schmitt
-> <marcelo.schmitt@analog.com> wrote:
+On Tue, Apr 9, 2024 at 8:17=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
+m> wrote:
+>
+>
+>
+> On 2024-03-29 2:48 a.m., Ian Rogers wrote:
+> > The mrvl_ddr_pmu is uncore and has a hexadecimal address suffix while
+> > the previous PMU sorting/merging code assumes uncore PMU names start
+> > with uncore_ and have a decimal suffix. Because of the previous
+> > assumption it isn't possible to wildcard the mrvl_ddr_pmu.
 > >
-> > Add device tree documentation for AD4000 family of ADC devices.
+> > Modify pmu_name_len_no_suffix but also remove the suffix number out
+> > argument, this is because we don't know if a suffix number of say 10
+> > is in hexadecimal or decimal. As the only use of the suffix number is
+> > in comparisons, it is safe there to compare the values as hexadecimal.
 > >
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
-> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
+> > Add a set of PMUs tests for pmu_name_len_no_suffix and pmu_name_cmp.
 > >
-> 
-> Suggested-by: David Lechner <dlechner@baylibre.com>
-> 
-> (if you still use mostly my suggestions in the end)
-
-Yes, it's been of great help. Will include the tag in future ad4000 DT patches.
-
-> 
-> > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > > ---
-> >  .../bindings/iio/adc/adi,ad4000.yaml          | 201 ++++++++++++++++++
-> >  MAINTAINERS                                   |   7 +
-> >  2 files changed, 208 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> >  tools/perf/tests/Build          |   1 +
+> >  tools/perf/tests/builtin-test.c |   1 +
+> >  tools/perf/tests/pmus.c         | 108 ++++++++++++++++++++++++++++++++
+> >  tools/perf/tests/tests.h        |   2 +
+> >  tools/perf/util/pmu.c           |   2 +-
+> >  tools/perf/util/pmus.c          |  51 ++++++++-------
+> >  tools/perf/util/pmus.h          |   7 ++-
+> >  7 files changed, 146 insertions(+), 26 deletions(-)
+> >  create mode 100644 tools/perf/tests/pmus.c
+>
+> I think it's better to split the patch into two patches. One is to
+> update the interface. The other is to add a new test.
+
+Sgtm, will fix for v2.
+
 > >
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> > diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> > index c7f9d9676095..a7bab6e9300f 100644
+> > --- a/tools/perf/tests/Build
+> > +++ b/tools/perf/tests/Build
+> > @@ -14,6 +14,7 @@ perf-y +=3D perf-record.o
+> >  perf-y +=3D evsel-roundtrip-name.o
+> >  perf-$(CONFIG_LIBTRACEEVENT) +=3D evsel-tp-sched.o
+> >  perf-y +=3D fdarray.o
+> > +perf-y +=3D pmus.o
+> >  perf-y +=3D pmu.o
+> >  perf-y +=3D pmu-events.o
+> >  perf-y +=3D hists_common.o
+> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin=
+-test.c
+> > index d13ee7683d9d..c90f270a469a 100644
+> > --- a/tools/perf/tests/builtin-test.c
+> > +++ b/tools/perf/tests/builtin-test.c
+> > @@ -68,6 +68,7 @@ static struct test_suite *generic_tests[] =3D {
+> >       &suite__parse_events,
+> >       &suite__expr,
+> >       &suite__PERF_RECORD,
+> > +     &suite__pmus,
+> >       &suite__pmu,
+> >       &suite__pmu_events,
+> >       &suite__dso_data,
+> > diff --git a/tools/perf/tests/pmus.c b/tools/perf/tests/pmus.c
 > > new file mode 100644
-> > index 000000000000..ca06afb5149e
+> > index 000000000000..6279c925e689
 > > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
-> > @@ -0,0 +1,201 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/adi,ad4000.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +++ b/tools/perf/tests/pmus.c
+> > @@ -0,0 +1,108 @@
+> > +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > +#include "pmus.h"
+> > +#include "tests.h"
+> > +#include <string.h>
+> > +#include <linux/kernel.h>
 > > +
-> > +title: Analog Devices AD4000 and similar Analog to Digital Converters
+> > +static const char * const uncore_chas[] =3D {
+> > +     "uncore_cha_0",
+> > +     "uncore_cha_1",
+> > +     "uncore_cha_2",
+> > +     "uncore_cha_3",
+> > +     "uncore_cha_4",
+> > +     "uncore_cha_5",
+> > +     "uncore_cha_6",
+> > +     "uncore_cha_7",
+> > +     "uncore_cha_8",
+> > +     "uncore_cha_9",
+> > +     "uncore_cha_10",
+> > +     "uncore_cha_11",
+> > +     "uncore_cha_12",
+> > +     "uncore_cha_13",
+> > +     "uncore_cha_14",
+> > +     "uncore_cha_15",
+> > +     "uncore_cha_16",
+> > +     "uncore_cha_17",
+> > +     "uncore_cha_18",
+> > +     "uncore_cha_19",
+> > +     "uncore_cha_20",
+> > +     "uncore_cha_21",
+> > +     "uncore_cha_22",
+> > +     "uncore_cha_23",
+> > +     "uncore_cha_24",
+> > +     "uncore_cha_25",
+> > +     "uncore_cha_26",
+> > +     "uncore_cha_27",
+> > +     "uncore_cha_28",
+> > +     "uncore_cha_29",
+> > +     "uncore_cha_30",
+> > +     "uncore_cha_31",
+> > +};
 > > +
-> > +maintainers:
-> > +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
+> > +static const char * const mrvl_ddrs[] =3D {
+> > +     "mrvl_ddr_pmu_87e1b0000000",
+> > +     "mrvl_ddr_pmu_87e1b1000000",
+> > +     "mrvl_ddr_pmu_87e1b2000000",
+> > +     "mrvl_ddr_pmu_87e1b3000000",
+> > +     "mrvl_ddr_pmu_87e1b4000000",
+> > +     "mrvl_ddr_pmu_87e1b5000000",
+> > +     "mrvl_ddr_pmu_87e1b6000000",
+> > +     "mrvl_ddr_pmu_87e1b7000000",
+> > +     "mrvl_ddr_pmu_87e1b8000000",
+> > +     "mrvl_ddr_pmu_87e1b9000000",
+> > +     "mrvl_ddr_pmu_87e1ba000000",
+> > +     "mrvl_ddr_pmu_87e1bb000000",
+> > +     "mrvl_ddr_pmu_87e1bc000000",
+> > +     "mrvl_ddr_pmu_87e1bd000000",
+> > +     "mrvl_ddr_pmu_87e1be000000",
+> > +     "mrvl_ddr_pmu_87e1bf000000",
+> > +};
 > > +
-> > +description: |
-> > +  Analog Devices AD4000 family of Analog to Digital Converters with SPI support.
-> > +  Specifications can be found at:
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
+> > +static int test__name_len(struct test_suite *test __maybe_unused, int =
+subtest __maybe_unused)
+> > +{
+> > +     TEST_ASSERT_EQUAL("cpu", pmu_name_len_no_suffix("cpu"), (int)strl=
+en("cpu"));
+> > +     TEST_ASSERT_EQUAL("i915", pmu_name_len_no_suffix("i915"), (int)st=
+rlen("i915"));
+> > +     for (size_t i =3D 0; i < ARRAY_SIZE(uncore_chas); i++) {
+> > +             TEST_ASSERT_EQUAL("Strips uncore_cha suffix",
+> > +                             pmu_name_len_no_suffix(uncore_chas[i]),
+> > +                             (int)strlen("uncore_cha"));
+> > +     }
+> > +     for (size_t i =3D 0; i < ARRAY_SIZE(mrvl_ddrs); i++) {
+> > +             TEST_ASSERT_EQUAL("Strips mrvl_ddr_pmu suffix",
+> > +                             pmu_name_len_no_suffix(mrvl_ddrs[i]),
+> > +                             (int)strlen("mrvl_ddr_pmu"));
+> > +     }
+> > +     return TEST_OK;
+> > +}
 > > +
-> > +$ref: /schemas/spi/spi-peripheral-props.yaml#
+> > +static int test__name_cmp(struct test_suite *test __maybe_unused, int =
+subtest __maybe_unused)
+> > +{
+> > +     TEST_ASSERT_EQUAL("cpu", pmu_name_cmp("cpu", "cpu"), 0);
+> > +     TEST_ASSERT_EQUAL("i915", pmu_name_cmp("i915", "i915"), 0);
+> > +     TEST_ASSERT_VAL("i915", pmu_name_cmp("cpu", "i915") < 0);
+> > +     TEST_ASSERT_VAL("i915", pmu_name_cmp("i915", "cpu") > 0);
+> > +     for (size_t i =3D 1; i < ARRAY_SIZE(uncore_chas); i++) {
+> > +             TEST_ASSERT_VAL("uncore_cha suffixes ordered lt",
+> > +                             pmu_name_cmp(uncore_chas[i-1], uncore_cha=
+s[i]) < 0);
+> > +             TEST_ASSERT_VAL("uncore_cha suffixes ordered gt",
+> > +                             pmu_name_cmp(uncore_chas[i], uncore_chas[=
+i-1]) > 0);
+> > +     }
+> > +     for (size_t i =3D 1; i < ARRAY_SIZE(mrvl_ddrs); i++) {
+> > +             TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered lt",
+> > +                             pmu_name_cmp(mrvl_ddrs[i-1], mrvl_ddrs[i]=
+) < 0);
+> > +             TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered gt",
+> > +                             pmu_name_cmp(mrvl_ddrs[i], mrvl_ddrs[i-1]=
+) > 0);
+> > +     }
+> > +     return TEST_OK;
+> > +}
 > > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,ad4000
-> > +      - adi,ad4001
-> > +      - adi,ad4002
-> > +      - adi,ad4003
-> > +      - adi,ad4004
-> > +      - adi,ad4005
-> > +      - adi,ad4006
-> > +      - adi,ad4007
-> > +      - adi,ad4008
-> > +      - adi,ad4010
-> > +      - adi,ad4011
-> > +      - adi,ad4020
-> > +      - adi,ad4021
-> > +      - adi,ad4022
-> > +      - adi,adaq4001
-> > +      - adi,adaq4003
+> > +static struct test_case tests__pmus[] =3D {
+> > +     TEST_CASE("PMU name combining", name_len),
+> > +     TEST_CASE("PMU name comparison", name_cmp),
+> > +     {       .name =3D NULL, }
+> > +};
 > > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  spi-max-frequency:
-> > +    maximum: 102040816 # for VIO > 2.7 V, 81300813 for VIO > 1.7 V
-> > +
-> > +  spi-cpha: true
-> > +
-> > +  adi,spi-mode:
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [ single, chain ]
-> 
-> It sounds like there are more possible wiring configurations for these
-> chips that I thought when suggesting reusing this binding from AD7944
-> so we probably need more options here. (see my reply to the cover
-> letter for the complete context of these remarks)
-> 
-> We identified A) an additional wiring configuration where SDI of the
-> ADC chip is wired to SDO of the SPI controller and B) a potential need
-> to pin mux between wiring modes to work around SPI controller
-> limitations perhaps we could omit the adi,spi-mode property and just
-> use the standard pinctrl properties.
-> 
->   pinctrl-names:
->     description: |
->       Names for possible ways the SDI line of the controller is wired.
-> 
->       * default: The SDI line of the ADC is connected to the SDO line of the
->         SPI controller.  CNV line of the ADC is connected to CS of the SPI
->         controller.
-Not sure if should be DT, but maybe also point out that in default mode the
-SPI controller must be capable of keeping ADC SDI (controller SDO) line high
-during ADC conversions.
+> > +struct test_suite suite__pmus =3D {
+> > +     .desc =3D "PMUs test",
+> > +     .test_cases =3D tests__pmus,
+> > +};
+> > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> > index 3aa7701ee0e9..03278f0f7698 100644
+> > --- a/tools/perf/tests/tests.h
+> > +++ b/tools/perf/tests/tests.h
+> > @@ -3,6 +3,7 @@
+> >  #define TESTS_H
+> >
+> >  #include <stdbool.h>
+> > +#include <debug.h>
+> >
+> >  enum {
+> >       TEST_OK   =3D  0,
+> > @@ -81,6 +82,7 @@ DECLARE_SUITE(PERF_RECORD);
+> >  DECLARE_SUITE(perf_evsel__roundtrip_name_test);
+> >  DECLARE_SUITE(perf_evsel__tp_sched_test);
+> >  DECLARE_SUITE(syscall_openat_tp_fields);
+> > +DECLARE_SUITE(pmus);
+> >  DECLARE_SUITE(pmu);
+> >  DECLARE_SUITE(pmu_events);
+> >  DECLARE_SUITE(attr);
+> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > index f39cbbc1a7ec..b0cca5841f90 100644
+> > --- a/tools/perf/util/pmu.c
+> > +++ b/tools/perf/util/pmu.c
+> > @@ -1657,7 +1657,7 @@ static char *format_alias(char *buf, int len, con=
+st struct perf_pmu *pmu,
+> >  {
+> >       struct parse_events_term *term;
+> >       int pmu_name_len =3D skip_duplicate_pmus
+> > -             ? pmu_name_len_no_suffix(pmu->name, /*num=3D*/NULL)
+> > +             ? pmu_name_len_no_suffix(pmu->name)
+> >               : (int)strlen(pmu->name);
+> >       int used =3D snprintf(buf, len, "%.*s/%s", pmu_name_len, pmu->nam=
+e, alias->name);
+> >
+> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> > index 16505071d362..b4ddcd0ade26 100644
+> > --- a/tools/perf/util/pmus.c
+> > +++ b/tools/perf/util/pmus.c
+> > @@ -39,31 +39,44 @@ static bool read_sysfs_all_pmus;
+> >
+> >  static void pmu_read_sysfs(bool core_only);
+> >
+> > -int pmu_name_len_no_suffix(const char *str, unsigned long *num)
+> > +int pmu_name_len_no_suffix(const char *str)
+> >  {
+> >       int orig_len, len;
+> >
+> >       orig_len =3D len =3D strlen(str);
+> >
+> > -     /* Non-uncore PMUs have their full length, for example, i915. */
+> > -     if (!strstarts(str, "uncore_"))
+> > -             return len;
+> > -
+> >       /*
+> >        * Count trailing digits and '_', if '_{num}' suffix isn't presen=
+t use
+> >        * the full length.
+> >        */
+> > -     while (len > 0 && isdigit(str[len - 1]))
+> > +     while (len > 0 && isxdigit(str[len - 1]))
+> >               len--;
+>
+> The letter in the hex may be part of a PMU name.
+>
+> Searched the kernel code and got this PMU name of s390.
+>
+>         rc =3D perf_pmu_register(&cpumf_pmu, "cpum_cf", -1);
+>
+> Such kinds of PMUs may have issues.
 
->       * single: The datasheet calls this "3-wire mode".  (NOTE: The datasheet's
->         definition of 3-wire mode is NOT at all related to the standard
->         spi-3wire property!)  In this mode, SDI is tied to VIO, and the CNV line
->         can be connected to the CS line of the SPI controller (typical) or to a
->         GPIO, in which case the CS line of the controller is unused.  The SDO
->         line of the SPI controller is not connected.
->       * multi: The datasheet calls this "4-wire mode" and is used when multiple
->         chips are connected in parallel.  In this mode, the ADC SDI line is tied
->         to the CS line on the SPI controller and the CNV line is connected to
->         a GPIO.  The SDO line of the SPI controller is not connected.
->       * chain: The datasheet calls this "chain mode".  This mode is used to save
->         on wiring when multiple ADCs are used.  In this mode, the SDI line of
->         one chip is tied to the SDO of the next chip in the chain and the SDI of
->         the last chip in the chain is tied to GND.  Only the first chip in the
->         chain is connected to the SPI bus.  The CNV line of all chips are tied
->         together.  The CS line of the SPI controller can be used as the CNV line
->         only if it is active high.
-> 
->       If one name is specified, it is assumed the chip is hard-wired in this
->       configuration.
-> 
->       If two names are specified, it is assumed that a pinmux can switch between
->       the two wiring configurations.  The first is the default mode for reading
->       and writing registers on the chip and the second is the mode for reading
->       the conversion data from the chip.
->     oneOf:
->       - items:
->           - enum:
->             - default
->             - single
->             - multi
->             - chain
->       - items:
->           - const: default
->           - enum:
->             - single
->             - multi
->             - chain
-> 
->   pinctrl-0:
->     maxItems: 1
-> 
->   pinctrl-1:
->     maxItems: 1
-> 
-> 
-> > +    description: |
-> > +      This property indicates the SPI wiring configuration.
-> > +
-> > +      When this property is omitted, it is assumed that the device is using what
-> > +      the datasheet calls "4-wire mode". This is the conventional SPI mode used
-> > +      when there are multiple devices on the same bus. In this mode, the CNV
-> > +      line is used to initiate the conversion and the SDI line is connected to
-> > +      CS on the SPI controller.
-> > +
-> > +      When this property is present, it indicates that the device is using one
-> > +      of the following alternative wiring configurations:
-> > +
-> > +      * single: The datasheet calls this "3-wire mode". (NOTE: The datasheet's
-> > +        definition of 3-wire mode is NOT at all related to the standard
-> > +        spi-3wire property!) This mode is often used when the ADC is the only
-> > +        device on the bus. In this mode, SDI is tied to VIO, and the CNV line
-> > +        can be connected to the CS line of the SPI controller or to a GPIO, in
-> > +        which case the CS line of the controller is unused.
-> > +      * chain: The datasheet calls this "chain mode". This mode is used to save
-> > +        on wiring when multiple ADCs are used. In this mode, the SDI line of
-> > +        one chip is tied to the SDO of the next chip in the chain and the SDI of
-> > +        the last chip in the chain is tied to GND. Only the first chip in the
-> > +        chain is connected to the SPI bus. The CNV line of all chips are tied
-> > +        together. The CS line of the SPI controller can be used as the CNV line
-> > +        only if it is active high.
-> > +
-> > +  '#daisy-chained-devices': true
-> > +
-> > +  vdd-supply:
-> > +    description: A 1.8V supply that powers the chip (VDD).
-> > +
-> > +  vio-supply:
-> > +    description:
-> > +      A 1.8V to 5.5V supply for the digital inputs and outputs (VIO).
-> > +
-> > +  ref-supply:
-> > +    description:
-> > +      A 2.5 to 5V supply for the external reference voltage (REF).
-> > +
-> > +  cnv-gpios:
-> > +    description:
-> > +      The Convert Input (CNV). This input has multiple functions. It initiates
-> > +      the conversions and selects the SPI mode of the device (chain or CS). In
-> > +      'single' mode, this property is omitted if the CNV pin is connected to the
-> > +      CS line of the SPI controller. If 'single' mode is selected and this GPIO
-> > +      is provided, it must be active low.
-> 
-> Since the conversion is triggered on the low to high transition of
-> CNV, I think it only makes sense to have it active high and not active
-> low.
+Ugh, good catch and why do we always do this? :-) I'm reminded that
+raw events are "r[0-9a-f]+" which of course matches the name "read",
+had we made raw events "r0x[0-9a-f]+" then a bunch of complexity in
+the event parsing could have been avoided. I think in this case the
+"m" in "cpum" should save things, but if Thomas could check on a real
+s390 it'd be awesome :-) We have similar issues on Intel, for example
+the PMU name "i" will match "i915", which doesn't exactly feel working
+as intended. The other option is to rename the Marvell PMUs? Maybe
+Bharat and/or Bhaskra who did that work could comment?
 
-The idea was to use the GPIO as a replacement for the controller CS when
-in "3-wire"/single mode so we could have simpler handling of SPI transfers.
-But if changing transfer to avoid latency then this might not simplify anything
-anymore. Will probably drop this last line.
+Thanks,
+Ian
 
-> 
-> > +    maxItems: 1
+> Thanks,
+> Kan
+> >
+> > -     if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_') {
+> > -             if (num)
+> > -                     *num =3D strtoul(&str[len], NULL, 10);
+> > +     if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_')
+> >               return len - 1;
+> > -     }
 > > +
-> > +  adi,high-z-input:
-> > +    type: boolean
-> > +    description:
-> > +      High-Z mode allows the amplifier and RC filter in front of the ADC to be
-> > +      chosen based on the signal bandwidth of interest, rather than the settling
-> > +      requirements of the switched capacitor SAR ADC inputs.
+> >       return orig_len;
+> >  }
+> >
+> > +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name)
+> > +{
+> > +     unsigned long lhs_num =3D 0, rhs_num =3D 0;
+> > +     int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name);
+> > +     int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name);
+> > +     int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
+> > +                     lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
+e_len : rhs_pmu_name_len);
 > > +
-> > +  adi,gain-milli:
-> > +    description: |
-> > +      The hardware gain applied to the ADC input (in milli units).
-> > +      The gain provided by the ADC input scaler is defined by the hardware
-> > +      connections between chip pins OUT+, R1K-, R1K1-, R1K+, R1K1+, and OUT-.
-> > +      If not present, default to 1000 (no actual gain applied).
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum: [454, 909, 1000, 1900]
-> > +    default: 1000
-> 
-> Same suggestion as in V1 - we should make it clear that this property
-> only applies to ADAQ chips (in the description and also a -if: for the
-> bindings validator). Also, looking at the datasheet, it looks like
-> there are a lot more pins on the ADAQ chips, so I think there are more
-> properties missing here.
-> 
-> Some trivial ones:
-> 
-> vs-pos-supply (VS+ pin, 0 to 11V supply) and vs-neg-supply (VS- pin,
-> -11 to 0V supply)
-> 
-> pd-amp-gpios (active low) and pd-ref-gpios (active low) for optional
-> runtime power management.
-
-Ok, will have closer look to these and other pins described in the datasheet and
-include them here too.
-
-> 
-> Also the datasheet says the ADAQ chips supports "Single-ended to
-> differential conversion". So it seems like we might need some extra
-> properties to describe that case (a flag for indicating single-ended
-> wiring and an optional voltage supply to describe what is connected to
-> the negative input if it isn't tied to GND)
-
-Yes, the differential ADCs also support "Single-ended to differential conversion".
-Will provide support those too.
+> > +     if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
+mu_name_len =3D=3D 0)
+> > +             return ret;
+> > +
+> > +     if (lhs_pmu_name_len + 1 < (int)strlen(lhs_pmu_name))
+> > +             lhs_num =3D strtoul(&lhs_pmu_name[lhs_pmu_name_len + 1], =
+NULL, 16);
+> > +     if (rhs_pmu_name_len + 1 < (int)strlen(rhs_pmu_name))
+> > +             rhs_num =3D strtoul(&rhs_pmu_name[rhs_pmu_name_len + 1], =
+NULL, 16);
+> > +
+> > +     return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
+> > +}
+> > +
+> >  void perf_pmus__destroy(void)
+> >  {
+> >       struct perf_pmu *pmu, *tmp;
+> > @@ -164,20 +177,10 @@ static struct perf_pmu *perf_pmu__find2(int dirfd=
+, const char *name)
+> >  static int pmus_cmp(void *priv __maybe_unused,
+> >                   const struct list_head *lhs, const struct list_head *=
+rhs)
+> >  {
+> > -     unsigned long lhs_num =3D 0, rhs_num =3D 0;
+> >       struct perf_pmu *lhs_pmu =3D container_of(lhs, struct perf_pmu, l=
+ist);
+> >       struct perf_pmu *rhs_pmu =3D container_of(rhs, struct perf_pmu, l=
+ist);
+> > -     const char *lhs_pmu_name =3D lhs_pmu->name ?: "";
+> > -     const char *rhs_pmu_name =3D rhs_pmu->name ?: "";
+> > -     int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name, &lh=
+s_num);
+> > -     int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name, &rh=
+s_num);
+> > -     int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
+> > -                     lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
+e_len : rhs_pmu_name_len);
+> >
+> > -     if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
+mu_name_len =3D=3D 0)
+> > -             return ret;
+> > -
+> > -     return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
+> > +     return pmu_name_cmp(lhs_pmu->name ?: "", rhs_pmu->name ?: "");
+> >  }
+> >
+> >  /* Add all pmus in sysfs to pmu list: */
+> > @@ -297,11 +300,11 @@ static struct perf_pmu *perf_pmus__scan_skip_dupl=
+icates(struct perf_pmu *pmu)
+> >               pmu_read_sysfs(/*core_only=3D*/false);
+> >               pmu =3D list_prepare_entry(pmu, &core_pmus, list);
+> >       } else
+> > -             last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "", NULL);
+> > +             last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "");
+> >
+> >       if (use_core_pmus) {
+> >               list_for_each_entry_continue(pmu, &core_pmus, list) {
+> > -                     int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "", /*num=3D*/NULL);
+> > +                     int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "");
+> >
+> >                       if (last_pmu_name_len =3D=3D pmu_name_len &&
+> >                           !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
+name_len))
+> > @@ -313,7 +316,7 @@ static struct perf_pmu *perf_pmus__scan_skip_duplic=
+ates(struct perf_pmu *pmu)
+> >               pmu =3D list_prepare_entry(pmu, &other_pmus, list);
+> >       }
+> >       list_for_each_entry_continue(pmu, &other_pmus, list) {
+> > -             int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"", /*num=3D*/NULL);
+> > +             int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"");
+> >
+> >               if (last_pmu_name_len =3D=3D pmu_name_len &&
+> >                   !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
+))
+> > diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
+> > index 94d2a08d894b..624c2d53fc30 100644
+> > --- a/tools/perf/util/pmus.h
+> > +++ b/tools/perf/util/pmus.h
+> > @@ -2,10 +2,15 @@
+> >  #ifndef __PMUS_H
+> >  #define __PMUS_H
+> >
+> > +#include <stdbool.h>
+> > +#include <linux/list.h>
+> > +
+> >  struct perf_pmu;
+> >  struct print_callbacks;
+> >
+> > -int pmu_name_len_no_suffix(const char *str, unsigned long *num);
+> > +int pmu_name_len_no_suffix(const char *str);
+> > +/* Exposed for testing only. */
+> > +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name);
+> >
+> >  void perf_pmus__destroy(void);
+> >
 
