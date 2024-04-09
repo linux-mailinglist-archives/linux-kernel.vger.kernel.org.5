@@ -1,129 +1,193 @@
-Return-Path: <linux-kernel+bounces-137115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B543589DD2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:47:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D6389DD36
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:48:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0F1BB25835
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:46:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B9B51F25001
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3841D7FBD3;
-	Tue,  9 Apr 2024 14:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E6A12FB3E;
+	Tue,  9 Apr 2024 14:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="28vxQEc2"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S5QbEyWC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010EC2C695
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5372B50275;
+	Tue,  9 Apr 2024 14:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673989; cv=none; b=KXCAUws5BDaJ9CcC/82hhfKNy0DI8/HslhYBIeXNWizft38o8bt13PKbTd4ayXYsTo6qG3tvyyFU+gnwW2rusWaSPOcAiMDMBd8m247pV2d+MY1OxThdfmrEUgA+Lcbo2mm2fQzTGotAp9zWIJLtJdTg0Uo+FlFrcibngMmRJPc=
+	t=1712674052; cv=none; b=nvthsNzTdBcnMSBA511/Z55VeF4uZYVWeoOt0xf8ZR405iy+sRhLBQWDHrkhR0I5E++rfSWj78VfvNNtOfFZ+tYlt/zWnaJEI4M43CAxDyZoN318MYu1w0qtvmBNMOZlA0zcSRrZeIr7SqSsOeQx/yMQtF5FskXVcVDCB5ZLjfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673989; c=relaxed/simple;
-	bh=JNYWxfOdBLnkcSOg7S7k0lKm6pw5ifgueS2lI62IYsQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V13AHHgNjHn1AC+YL0BTz34TrfWFvFfj1I9gpM/7REML2MQqfUOLrvMQyNIkFSufwzgtheQqE+pj+H2lXjqY+hg2TtZxM0uxMgcXt7dck8hk/dK7wCczmvZqdgEIdAEGelK85qiU00T4QJsNb8SqAuyp+0b/s3XXiC1+ZLoyOJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=28vxQEc2; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4daa68eef71so1666490e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712673987; x=1713278787; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JGKKqyMnDxDe7Z88TFPiX7ZbsHcnXFBE7VSZEtRsFEI=;
-        b=28vxQEc2TfpbRqxpk93+D041AjxSexs6rYQNsHGjjZ8SP1AfWYlIvrDbgi+HSQV+NY
-         hE/csZnXhzr0uDz8wJbGZuxVlzPU3tutz+RB6QDriquBTMIkj2eS5AQvPid7Z+GAudkS
-         uUo5KnnmEnv3+VRdF6XIVXQ6mleVvgpSSx9XXITKH7VS40GSIIXRLIczF2XFhkvXOVr3
-         WclMHKAwcC22dGNNFI4TPb1YDaWKAX40dLh8EXQF7bXTuV5fM10wRgaWo3PGRbMpJeqv
-         OkxRCEEK7iChk5QM4qFrwH/ywqEsaBuDZo4045Y+le2SbaY/fkDoldJctWdf9RzuNwzK
-         /Pag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712673987; x=1713278787;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JGKKqyMnDxDe7Z88TFPiX7ZbsHcnXFBE7VSZEtRsFEI=;
-        b=fRdZFT+ebA/j3Q+3CMfFgH9jhS8yqN0J0/PLAuf2KtHanFlkty+E/PFT54vg6KNbBh
-         XxfkfrZstG+ypoyYa/K3Z9BG/+aF65vZGzRv4NWP4v2kZZ8aSMrYV6ah7Mko3QbgnJzo
-         +BNRh5BIz/YL13LFroZn1qi0NLKjzEVuIxo7C0Tq3nUEjmWB8qsfHmvNNWTGt5qSEhq0
-         GW/pUHVAc2E6uDt7ptsTuBgaqBK6BPEDMic1rJFoIMNbSvJDDrXqOTbFs46o4g4FDssc
-         81vBRLWHyoMPgVrnhABz9qDkHcJveo4ery9duOHAuM1fuIyeAnAn6wZgsB9WN66Q1c1u
-         Bypw==
-X-Forwarded-Encrypted: i=1; AJvYcCXLz8jibYzDp926HtzKcZjdfLs7j6uRVWAxcS1Gnca44SHQKtzCXa1INhnOBAdGQk4sGNJxv8ruwbcRHp83vD+GNrUWAKe8/aVtWo24
-X-Gm-Message-State: AOJu0YwqR7R2A0k84WvfZsbpcA4+EpjQdUWf921b4V3C1y1Lh6K84SIs
-	g7nv1okqlUN3szs/8+e6PMUP4BifTOwJbjWDrd7eLNn5SoRhttvkOlDZgLnbYQcBqAckKZCqqpO
-	jSK6Cer5LmiQoVX3AYzmzRDaTLpiluU3o8OGx
-X-Google-Smtp-Source: AGHT+IG5ZyVYbzpi7MrZFfeuZePmTlO9Cj6SrZUQgNIArSjr/qGXL8vsPlsLH60WkxdNp2m4CZry4zLpVpcPiYwzY5k=
-X-Received: by 2002:a05:6122:48a:b0:4d8:74cb:e3c2 with SMTP id
- o10-20020a056122048a00b004d874cbe3c2mr33094vkn.9.1712673986727; Tue, 09 Apr
- 2024 07:46:26 -0700 (PDT)
+	s=arc-20240116; t=1712674052; c=relaxed/simple;
+	bh=kg9KDXJNIRys96XzkRzlSzAvAHPk0RvpRk5pjnWlqpo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dLTSfSm6pE3PpUDPxMW8uJOx7dI33MHxXaUhuttQgTDNpv4VuPG7HyLvCFdHPNs5Nx7/RKzMvWEPSV8zuvFuTwkvNQCPJFZM1xr4xBuqeyVEY/0zWezTFSEac11clwvusgi2vRBgDP7OFzQ5VahJpEFmw+ounpo8K59jd39Xido=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S5QbEyWC; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712674050; x=1744210050;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kg9KDXJNIRys96XzkRzlSzAvAHPk0RvpRk5pjnWlqpo=;
+  b=S5QbEyWCSV1p4Ba62giqlUCbktU64I/l2Ab+2uHG8DLxDiewMYM/vz2c
+   DzKs2neRmBU4trtsKRSQYCPYuM/Bl5wEuc9hCGjlnIhVvg+r+S5b4s3xm
+   HMaYff5ol1jdjq0Z5AawGjyocVHhxK6AskRfUQx77992NVFUg19+fNb97
+   R30jgXQ098qjjCgWK+5ElNVgr+pLgMPu5PjR79x59FRX9fqF+3MnhZiJR
+   HyU2rQ39F44WujShIFJfTU45mEGoi7kpfXg8FFLfYdD+TvyPzbTrl0KUJ
+   Uc0EtVUIOBdCggAnpakR/aWsvJXYbzETgxI/+Cg1077DhZq7o1k5hiR2G
+   A==;
+X-CSE-ConnectionGUID: 1yXCl1FtQW2IoVrEPp4kNA==
+X-CSE-MsgGUID: 5J9w3LhBTl2kH3k+CIbXKQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7905517"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="7905517"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 07:47:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093482"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="937093482"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 07:47:28 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 2848D193; Tue,  9 Apr 2024 17:47:27 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v3 1/8] serial: max3100: Enable TIOCM_LOOP
+Date: Tue,  9 Apr 2024 17:45:48 +0300
+Message-ID: <20240409144721.638326-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20240409144721.638326-1-andriy.shevchenko@linux.intel.com>
+References: <20240409144721.638326-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408090205.3714934-1-elver@google.com> <20240409103327.7a9012fa@gandalf.local.home>
-In-Reply-To: <20240409103327.7a9012fa@gandalf.local.home>
-From: Marco Elver <elver@google.com>
-Date: Tue, 9 Apr 2024 16:45:47 +0200
-Message-ID: <CANpmjNOv=8VBvbKBQbsBdg9y2pNsfdaA-46QB53NY-Ddmq3tmA@mail.gmail.com>
-Subject: Re: [PATCH] tracing: Add new_exec tracepoint
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 9 Apr 2024 at 16:31, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon,  8 Apr 2024 11:01:54 +0200
-> Marco Elver <elver@google.com> wrote:
->
-> > Add "new_exec" tracepoint, which is run right after the point of no
-> > return but before the current task assumes its new exec identity.
-> >
-> > Unlike the tracepoint "sched_process_exec", the "new_exec" tracepoint
-> > runs before flushing the old exec, i.e. while the task still has the
-> > original state (such as original MM), but when the new exec either
-> > succeeds or crashes (but never returns to the original exec).
-> >
-> > Being able to trace this event can be helpful in a number of use cases:
-> >
-> >   * allowing tracing eBPF programs access to the original MM on exec,
-> >     before current->mm is replaced;
-> >   * counting exec in the original task (via perf event);
-> >   * profiling flush time ("new_exec" to "sched_process_exec").
-> >
-> > Example of tracing output ("new_exec" and "sched_process_exec"):
->
-> How common is this? And can't you just do the same with adding a kprobe?
+Enable or disable loopback at run-time.
 
-Our main use case would be to use this in BPF programs to become
-exec-aware, where using the sched_process_exec hook is too late. This
-is particularly important where the BPF program must stop inspecting
-the user space's VM when the task does exec to become a new process.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/serial/max3100.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-kprobe (or BPF's fentry) is brittle here, because begin_new_exec()'s
-permission check can still return an error which returns to the
-original task without crashing. Only at the point of no return are we
-guaranteed that the exec either succeeds, or the task is terminated on
-failure.
+diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
+index 75e96ff74571..4a4343e7b1fa 100644
+--- a/drivers/tty/serial/max3100.c
++++ b/drivers/tty/serial/max3100.c
+@@ -32,14 +32,12 @@
+ 
+ /**
+  * struct plat_max3100 - MAX3100 SPI UART platform data
+- * @loopback:            force MAX3100 in loopback
+  * @crystal:             1 for 3.6864 Mhz, 0 for 1.8432
+  *
+  * You should use this structure in your machine description to specify
+  * how the MAX3100 is connected.
+  */
+ struct plat_max3100 {
+-	int loopback;
+ 	int crystal;
+ };
+ 
+@@ -109,6 +107,7 @@ struct max3100_port {
+ 
+ 	int minor;		/* minor number */
+ 	int crystal;		/* 1 if 3.6864Mhz crystal 0 for 1.8432 */
++	int loopback_commit;	/* need to change loopback */
+ 	int loopback;		/* 1 if we are in loopback mode */
+ 
+ 	/* for handling irqs: need workqueue since we do spi_sync */
+@@ -241,9 +240,9 @@ static void max3100_work(struct work_struct *w)
+ 	struct max3100_port *s = container_of(w, struct max3100_port, work);
+ 	struct tty_port *tport = &s->port.state->port;
+ 	unsigned char ch;
++	int conf, cconf, cloopback, crts;
+ 	int rxchars;
+ 	u16 tx, rx;
+-	int conf, cconf, crts;
+ 
+ 	dev_dbg(&s->spi->dev, "%s\n", __func__);
+ 
+@@ -253,11 +252,15 @@ static void max3100_work(struct work_struct *w)
+ 		conf = s->conf;
+ 		cconf = s->conf_commit;
+ 		s->conf_commit = 0;
++		cloopback = s->loopback_commit;
++		s->loopback_commit = 0;
+ 		crts = s->rts_commit;
+ 		s->rts_commit = 0;
+ 		spin_unlock(&s->conf_lock);
+ 		if (cconf)
+ 			max3100_sr(s, MAX3100_WC | conf, &rx);
++		if (cloopback)
++			max3100_sr(s, 0x4001, &rx);
+ 		if (crts) {
+ 			max3100_sr(s, MAX3100_WD | MAX3100_TE |
+ 				   (s->rts ? MAX3100_RTS : 0), &rx);
+@@ -395,18 +398,24 @@ static void max3100_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ 	struct max3100_port *s = container_of(port,
+ 					      struct max3100_port,
+ 					      port);
+-	int rts;
++	int loopback, rts;
+ 
+ 	dev_dbg(&s->spi->dev, "%s\n", __func__);
+ 
++	loopback = (mctrl & TIOCM_LOOP) > 0;
+ 	rts = (mctrl & TIOCM_RTS) > 0;
+ 
+ 	spin_lock(&s->conf_lock);
++	if (s->loopback != loopback) {
++		s->loopback = loopback;
++		s->loopback_commit = 1;
++	}
+ 	if (s->rts != rts) {
+ 		s->rts = rts;
+ 		s->rts_commit = 1;
+-		max3100_dowork(s);
+ 	}
++	if (s->loopback_commit || s->rts_commit)
++		max3100_dowork(s);
+ 	spin_unlock(&s->conf_lock);
+ }
+ 
+@@ -593,12 +602,6 @@ static int max3100_startup(struct uart_port *port)
+ 		return -EBUSY;
+ 	}
+ 
+-	if (s->loopback) {
+-		u16 tx, rx;
+-		tx = 0x4001;
+-		max3100_sr(s, tx, &rx);
+-	}
+-
+ 	s->conf_commit = 1;
+ 	max3100_dowork(s);
+ 	/* wait for clock to settle */
+@@ -754,7 +757,6 @@ static int max3100_probe(struct spi_device *spi)
+ 	spi_set_drvdata(spi, max3100s[i]);
+ 	pdata = dev_get_platdata(&spi->dev);
+ 	max3100s[i]->crystal = pdata->crystal;
+-	max3100s[i]->loopback = pdata->loopback;
+ 	max3100s[i]->minor = i;
+ 	timer_setup(&max3100s[i]->timer, max3100_timeout, 0);
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-I don't know if "common" is the right question here, because it's a
-chicken-egg problem: no tracepoint, we give up; we have the
-tracepoint, it unlocks a range of new use cases (that require robust
-solution to make BPF programs exec-aware, and a tracepoint is the only
-option IMHO).
-
-Thanks,
--- Marco
 
