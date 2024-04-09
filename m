@@ -1,144 +1,273 @@
-Return-Path: <linux-kernel+bounces-137075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99E889DC06
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:18:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 529BF89DC08
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C286B281F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:18:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2D6D1F22411
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F84A12FF69;
-	Tue,  9 Apr 2024 14:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E3B12FB3F;
+	Tue,  9 Apr 2024 14:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g5m0cUey"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O/it/5Cn"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B9F12FB0F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E307F7CB;
+	Tue,  9 Apr 2024 14:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712672280; cv=none; b=iedue2Bs72Ee3LXvp7yRYIQQJiPlsoDNPsH/DkHjdtSc/Sdxz15JBQZ7L7EijPa56H9uS/pI07mS4l0ou1lVqZZNc6Er5ZxExf+f2mDs3Xij2ZkTbpTkXRUhzJHTZaUbb5n9yxdnJv2k8A6eAWesUCJES0JRwTyuNavoHmD3EbQ=
+	t=1712672291; cv=none; b=J/buslMJZoQLPHO6Wxidc5iLcJW2q5qkbjGEJCGNkngG/69XFBBEbniFG04VFkxMhbhtOedV9mqJoDLDi8YdVDVnULZlTMJ6ptjxvaN5UJ/8HLHPdUvMyMUTK/gmpNxPCqBd6GwQ7oF03jXPvHxRVsKte0wDUSXtpASfglPBLAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712672280; c=relaxed/simple;
-	bh=CQJJ+EXkS8vzXDSQGCdhZzOcQSnJl9LGsjKU2h6iW4g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qFq9wdBLtKG9+HDMpMleoA8oH2J8rZ654kUjJMUCnnbqIElD7zFBq66zTLj1keYjmi4jLPGTmxbOCwtwwXH/c7OXqAEBZrybqYOLGYKs5f4QsKKjhJprDQqcAlJ+ZlFxrgpJkWhUs/ATWkArpcUV+obMxxMNQh8LV0KsHoeytSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g5m0cUey; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e67402a3fso14988a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:17:58 -0700 (PDT)
+	s=arc-20240116; t=1712672291; c=relaxed/simple;
+	bh=uax+RWxKEbaA1e2deShTZVjPm7+CFItZbXeKGAxqd5k=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=aJehif5HDBN6TaGnjJkZLxNY0Ud+hOwJR/abdtUte2nvbLavmjA5Yot6jcT8pSj0TsXTLRWLy4ZhuGbFJPasULWknXmoUczKpXk+vXmmPs5zfsXerO/tJ4YMYQzb+0hFj74YAdhyymx3CQhGNw2G/RewzPNpLle1eBNBI7Vzi1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O/it/5Cn; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so4187173f8f.0;
+        Tue, 09 Apr 2024 07:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712672277; x=1713277077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VmZzs0VOF7pCa24C6qKP0DzgKs89B6zI1lNihOdcCC8=;
-        b=g5m0cUeyt3OPmYkjeSaCYLiqKCKoOiiJTSs8Hmnilp+hftyUFIBS1fVNM/3U1waNh1
-         jufjXbupOQXE7izYYd2czwgvfM+BH8UiDEnRT6+891cKMjOLoJF6C7tGfkz4A3Kn7/yn
-         FAF1Spp8EgkxJ/B/UNYkXLq4F11OdyBLFTD26Ejp/vbnqjqOc0Y51THJ94qjUs5s7bT1
-         Nzgwn3/2S6/2LdD8G/5xS8Y59feo2Mvj2fRQeoju8BmsHHvYUULBLbVmypi458U+FmNE
-         3wQ+UUU+//UXMxgFXw+QdH6D/CcAddYcSkk106wULLqMkvVgvarBxFak6a9OG/LVXzfy
-         Douw==
+        d=gmail.com; s=20230601; t=1712672287; x=1713277087; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A6yL++YY0uHvpHOqy6iThpKsg+y4Qyi34ePcZp0Xdl4=;
+        b=O/it/5Cn6kkS4Z9g39SiWYaNbR8dhFw1fj73quaZmZsWmSEBymV1TGhQHqE6u9GVnP
+         tuO3KzyfUAnkz8OiqNF6aMI96DEDNDwFW+F8uONQIqwhd+/eUCkvz6ZCZRjhfvgaYZ1A
+         1ADEVwNkanpi57pM7D/9inihnYixz50WpDnE8SY0rbHZYADefnmlBfXIXiAvpfz/BvrL
+         v/OfsPPeSyY3/+Gep5taEYW7GNI4y4O4SW2GzBwuJYXlsgdvEZ5MUHxTuImp/xw/1aKS
+         EbrgXVJWdLht/axOlW2wyWBaICnLfJAu03hirm2iXQ/G4sTQX6zMpF91Ji3zQnloKcyI
+         eJjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712672277; x=1713277077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VmZzs0VOF7pCa24C6qKP0DzgKs89B6zI1lNihOdcCC8=;
-        b=I25rBVkiTyVJ490qQPXi+rlTEtB7GTTY4czuLeVHLt0Z/9AeAGGZhnhLSTJx8TTHXS
-         xn5O7PNjSd/G5xnAPZvEfthTTpXv55hA0BLzQqsuZ+jyvtID2Jhmk+RntT3w58cZCclO
-         tt8hcZeRBvUgQN7kAv34T8N+UdygvE6uU7ybrwDWn1xNjuwoA8b/cEVtvWgr3ddbpxnI
-         ANpzGWCZuGUR/fJpT2qtHTYllst1qNdSfq/VJBjVDsuON+bFLR15Z0AHtqGuAJLzXqcF
-         jLawGUeHciLnzQ+1rPZsEnA809ZDept1ueXLWxSVmJO1CDU5GQgtEUs0xB+DJFCFKlKn
-         AqXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWp6cvuRSDW7V8aMs861+N4a6Dvehall3O/tYJYPHwvkncDfmAwjF+0PsN6Ul0pRPt14xl02j48efb407jEgpvDaW+w6fbYWKCoQJ2N
-X-Gm-Message-State: AOJu0Yw20OBJZU6inMAGPUIBF1kvnsfXXOjVFotk2lLMDx3XzbtMqy/z
-	zqY5RhS6uumIq8vACQrQWIZmxeUXkxG2ZjGwy4BObAPDWRvqzL0ioj97z3mJxl068jlFJ106PQr
-	j3sU65WNgyEmsMkN2yovsNZrtxY54dZ4UkuFW
-X-Google-Smtp-Source: AGHT+IEotRWbGGi6bZ2X7QllsriEs5XuAfrmYSsR3+QQhN3IykwUSZgSv9+89fLvM1ymkT3RaeWYlpR5hL6VjU0ap8U=
-X-Received: by 2002:a05:6402:40cc:b0:56e:72a3:e5a8 with SMTP id
- z12-20020a05640240cc00b0056e72a3e5a8mr161277edb.3.1712672276490; Tue, 09 Apr
- 2024 07:17:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712672287; x=1713277087;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6yL++YY0uHvpHOqy6iThpKsg+y4Qyi34ePcZp0Xdl4=;
+        b=L0DOHTlvf181k09z+cmpUIq0SoU24Tu6JvLRDD5wzQsz8TDYwhA3ivha17uXTZKwj7
+         FMECIWWVpo+9Na4r4d6dlgpo7w/lHtU9qfz/93Kp/40spJcKyz7gq30NIK6m+7Nr52xd
+         W+VWcfhbi8k+PbkuOpRY9MVVZ3JtdkG5LLBXrli1iYMM/HZvkkFGJ15qEElKDu9V52O1
+         cb1ggsu9P/XjJam6fPNQECJuKhxplBVrF8AEAU8tPJHZKnvexpYjtWpigbfbhnExo9Wz
+         V059UiB6UnvaSj49Y5HN29jza942bzJhc/Km4h7tafaOjQZ3+3sH44Rg5TilMRRWKMuX
+         ONCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVonxPX+vKQNeGBFZc0QHJZyTap5GcolyIdjBtoaXwvpXyVrm942vcFpGiXsYkEJ2Lbp8P/mIcRbVmjrcb26tyJQGOsaa33bLWZ2FLWLNEXUKI+CrhFz807ih7/XSumwXfJ
+X-Gm-Message-State: AOJu0YyO3hsA3Loi0kIy2anHZVNurgvFkkE7rqBrTUkTU2Irxi5j+a3h
+	nH+0vIJi/z/HvHpMA3pGUr2vorSS+euyRY1aY3PIiLAgG49lPISV
+X-Google-Smtp-Source: AGHT+IH7XbCJuV/FVCNBbRHb5wc6eYGEsHBJoz27ahx66T07a1Ps+5BGnlS3QxlX6WDMsnAcnsVzdg==
+X-Received: by 2002:adf:e78a:0:b0:343:6b76:251f with SMTP id n10-20020adfe78a000000b003436b76251fmr11079446wrm.42.1712672287227;
+        Tue, 09 Apr 2024 07:18:07 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id y13-20020a5d4acd000000b00343eac2acc4sm10950993wrs.111.2024.04.09.07.18.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Apr 2024 07:18:06 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, alexei.starovoitov@gmail.com,
+ andrii.nakryiko@gmail.com, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux@armlinux.org.uk, mark.rutland@arm.com,
+ syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+In-Reply-To: <00000000000044fca50615a82595@google.com>
+References: <00000000000044fca50615a82595@google.com>
+Date: Tue, 09 Apr 2024 14:18:05 +0000
+Message-ID: <mb61pwmp6hb6q.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7cf0848b-f44c-42ad-848a-369a249bff77@gmail.com> <tencent_88401767377846C9736D0363C96C23BB4405@qq.com>
-In-Reply-To: <tencent_88401767377846C9736D0363C96C23BB4405@qq.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 9 Apr 2024 16:17:42 +0200
-Message-ID: <CANn89iJAyCKbL1Gx9mbBMuEvDB7nr-Ao6vB7KbtOK5D0UhiQNQ@mail.gmail.com>
-Subject: Re: [PATCH] net/socket: Ensure length of input socket option param >= sizeof(int)
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: eric.dumazet@gmail.com, johan.hedberg@gmail.com, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org, 
-	pmenzel@molgen.mpg.de, syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Apr 9, 2024 at 4:02=E2=80=AFPM Edward Adam Davis <eadavis@qq.com> w=
-rote:
+syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com> writes:
+
+> Hello,
 >
-> On Tue, 9 Apr 2024 15:07:41 +0200, Eric Dumazet wrote:
-> > > The optlen value passed by syzbot to _sys_setsockopt() is 2, which re=
-sults in
-> > > only 2 bytes being allocated when allocating memory to kernel_optval,=
- and the
-> > > optval size passed when calling the function copy_from_sockptr() is 4=
- bytes.
-> > > Here, optlen is determined uniformly in the entry function __sys_sets=
-ockopt().
-> > > If its value is less than 4, the parameter is considered invalid.
-> > >
-> > > Reported-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
-> > > Reported-by: syzbot+b71011ec0a23f4d15625@syzkaller.appspotmail.com
-> > > Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
-> > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> >
-> >
-> > I think I gave my feedback already.
-> >
-> > Please do not ignore maintainers feedback.
-> >
-> > This patch is absolutely wrong.
-> >
-> > Some setsockopt() deal with optlen =3D=3D 1 just fine, thank you very m=
-uch.
-> It's better to use evidence to support your claim, rather than your "main=
-tainer" title.
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> INFO: task hung in _vm_unmap_aliases
+>
+> INFO: task kworker/0:41:4201 blocked for more than 430 seconds.
+>       Not tainted 6.9.0-rc1-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:41    state:D stack:0     pid:4201  tgid:4201  ppid:2      flags:0x00000000
+> Workqueue: events bpf_prog_free_deferred
+> Call trace: 
+> [<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+> [<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+>  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfd0dd94 r5:84dd1800
+>  r4:84dd1800
+> [<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+>  r5:84dd1800 r4:82714be4
+> [<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+> [<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+> [<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+>  r10:82c16005 r9:dfd0de20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+>  r4:00000000
+> [<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+> [<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+> [<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+> [<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+>  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+>  r4:00000000
+> [<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+>  r9:84dd1800 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f055000
+> [<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+>  r5:00001000 r4:dfe91000
+> [<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+> [<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+> [<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+>  r5:845b0754 r4:845b0400
+> [<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+>  r7:dddd00c0 r6:82c16000 r5:845b0754 r4:84d7cb00
+> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+>  r10:84dd1800 r9:84d7cb2c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
+>  r4:84d7cb00
+> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+>  r10:00000000 r9:dfa55e90 r8:845d8e80 r7:84d7cb00 r6:802672c4 r5:84dd1800
+>  r4:84c66500
+> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+> Exception stack(0xdfd0dfb0 to 0xdfd0dff8)
+> dfa0:                                     00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66500
+> INFO: task kworker/1:55:4229 blocked for more than 430 seconds.
+>       Not tainted 6.9.0-rc1-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/1:55    state:D stack:0     pid:4229  tgid:4229  ppid:2      flags:0x00000000
+> Workqueue: events bpf_prog_free_deferred
+> Call trace: 
+> [<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+> [<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+>  r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dfe39d94 r5:84e83c00
+>  r4:84e83c00
+> [<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+>  r5:84e83c00 r4:82714be4
+> [<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+> [<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+> [<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+>  r10:82c16205 r9:dfe39e20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+>  r4:00000000
+> [<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+> [<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+> [<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+> [<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+>  r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+>  r4:00000000
+> [<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+>  r9:84e83c00 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f053000
+> [<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+>  r5:00001000 r4:dfe73000
+> [<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+> [<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+> [<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+>  r5:845b2b54 r4:845b2800
+> [<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+>  r7:ddde40c0 r6:82c16200 r5:845b2b54 r4:845d9f80
+> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+>  r10:84e83c00 r9:845d9fac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+>  r4:845d9f80
+> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+>  r10:00000000 r9:dfde5e90 r8:84640600 r7:845d9f80 r6:802672c4 r5:84e83c00
+>  r4:84c66300
+> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+> Exception stack(0xdfe39fb0 to 0xdfe39ff8)
+> 9fa0:                                     00000000 00000000 00000000 00000000
+> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66300
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 31 Comm: khungtaskd Not tainted 6.9.0-rc1-syzkaller #0
+> Hardware name: ARM-Versatile Express
+> Call trace: 
+> [<818795bc>] (dump_backtrace) from [<818796b8>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
+>  r7:00000000 r6:00000113 r5:60000193 r4:81fc4768
+> [<818796a0>] (show_stack) from [<81896e70>] (__dump_stack lib/dump_stack.c:88 [inline])
+> [<818796a0>] (show_stack) from [<81896e70>] (dump_stack_lvl+0x70/0x7c lib/dump_stack.c:114)
+> [<81896e00>] (dump_stack_lvl) from [<81896e94>] (dump_stack+0x18/0x1c lib/dump_stack.c:123)
+>  r5:00000000 r4:00000001
+> [<81896e7c>] (dump_stack) from [<81866994>] (nmi_cpu_backtrace+0x160/0x17c lib/nmi_backtrace.c:113)
+> [<81866834>] (nmi_cpu_backtrace) from [<81866ae0>] (nmi_trigger_cpumask_backtrace+0x130/0x1d8 lib/nmi_backtrace.c:62)
+>  r7:00000000 r6:8260c590 r5:8261a88c r4:ffffffff
+> [<818669b0>] (nmi_trigger_cpumask_backtrace) from [<802105b4>] (arch_trigger_cpumask_backtrace+0x18/0x1c arch/arm/kernel/smp.c:851)
+>  r9:8260c6f4 r8:00007b4d r7:8289dfe0 r6:00007d59 r5:8500ee04 r4:850d4b24
+> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline])
+> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline])
+> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (watchdog+0x480/0x594 kernel/hung_task.c:380)
+> [<8034e7c8>] (watchdog) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+>  r10:00000000 r9:df819e58 r8:82e98440 r7:00000000 r6:8034e7c8 r5:82ee8c00
+>  r4:82f42100
+> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+> Exception stack(0xdf8ddfb0 to 0xdf8ddff8)
+> dfa0:                                     00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:82f42100
+> Sending NMI from CPU 0 to CPUs 1:
+> NMI backtrace for cpu 1
+> CPU: 1 PID: 5655 Comm: kworker/1:259 Not tainted 6.9.0-rc1-syzkaller #0
+> Hardware name: ARM-Versatile Express
+> Workqueue: wg-crypt-wg0 wg_packet_encrypt_worker
+> PC is at poly1305_final_arch+0x0/0x80 arch/arm/crypto/poly1305-glue.c:189
+> LR is at poly1305_final include/crypto/poly1305.h:94 [inline]
+> LR is at chacha20poly1305_crypt_sg_inplace+0x43c/0x4b4 lib/crypto/chacha20poly1305.c:320
+> pc : [<80232f80>]    lr : [<807fa0e4>]    psr: 60000113
+> sp : eafa1990  ip : eafa1990  fp : eafa1bb4
+> r10: 00000000  r9 : 00000000  r8 : 00000000
+> r7 : eafa19e0  r6 : 00000000  r5 : 00000000  r4 : eafa19f0
+> r3 : 00000000  r2 : 00000000  r1 : eafa19f0  r0 : eafa1a68
+> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> Control: 30c5387d  Table: 8461dec0  DAC: 00000000
+> Call trace: 
+> [<807f9ca8>] (chacha20poly1305_crypt_sg_inplace) from [<807fa188>] (chacha20poly1305_encrypt_sg_inplace+0x2c/0x34 lib/crypto/chacha20poly1305.c:338)
+>  r10:00000000 r9:00000000 r8:00000074 r7:00000001 r6:84dca018 r5:00000000
+>  r4:00000074
+> [<807fa15c>] (chacha20poly1305_encrypt_sg_inplace) from [<80bfb0f8>] (encrypt_packet+0x194/0x230 drivers/net/wireguard/send.c:216)
+>  r5:00000000 r4:00000074
+> [<80bfaf64>] (encrypt_packet) from [<80bfb8d0>] (wg_packet_encrypt_worker+0xbc/0x270 drivers/net/wireguard/send.c:297)
+>  r10:846c86e8 r9:82f2a540 r8:00000000 r7:846c86a0 r6:8260eea8 r5:00000000
+>  r4:82f2a540
+> [<80bfb814>] (wg_packet_encrypt_worker) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+>  r10:84032e05 r9:85156000 r8:00000180 r7:ddde40c0 r6:84032e00 r5:ff7ffcf4
+>  r4:8505ff00
+> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+>  r10:85156000 r9:8505ff2c r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+>  r4:8505ff00
+> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+>  r10:00000000 r9:eaeb1e90 r8:84ed1a40 r7:8505ff00 r6:802672c4 r5:85156000
+>  r4:847e7040
+> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+> Exception stack(0xeafa1fb0 to 0xeafa1ff8)
+> 1fa0:                                     00000000 00000000 00000000 00000000
+> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:847e7040
+>
+>
+> Tested on:
+>
+> commit:         7deb8d88 arm32, bpf: Fix sign-extension mov instruction
+> git tree:       https://github.com/puranjaymohan/linux.git arm32_movsx_fix
+> console output: https://syzkaller.appspot.com/x/log.txt?x=175200cb180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=43f1e0cbdb852271
+> dashboard link: https://syzkaller.appspot.com/bug?extid=186522670e6722692d86
+> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm
+>
+> Note: no patches were applied.
 
-I will answer since you ask so nicely,
-but if you plan sending linux kernel patches, I suggest you look in
-the source code.
+I am not able to reproduce the above locally. I don't think it is
+related to the change.
 
-Look at do_ip_setsockopt(), which is one of the most used setsockopt()
-in the world.
-
-The code is at least 20 years old.
-
-It even supports optlen =3D=3D 0
-
-               if (optlen >=3D sizeof(int)) {
-                       if (copy_from_sockptr(&val, optval, sizeof(val)))
-                               return -EFAULT;
-               } else if (optlen >=3D sizeof(char)) {
-                       unsigned char ucval;
-
-                       if (copy_from_sockptr(&ucval, optval, sizeof(ucval))=
-)
-                               return -EFAULT;
-                       val =3D (int) ucval;
-               }
-       }
-
-       /* If optlen=3D=3D0, it is equivalent to val =3D=3D 0 */
+Thanks,
+Puranjay
 
