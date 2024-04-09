@@ -1,126 +1,106 @@
-Return-Path: <linux-kernel+bounces-137024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC7189DB45
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:54:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F1A89DBA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:04:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2DCB1F219CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:54:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 502BAB2777B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFE5131BCE;
-	Tue,  9 Apr 2024 13:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA41113540E;
+	Tue,  9 Apr 2024 14:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jk/4sfVz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="F5aKfgb+"
+Received: from out203-205-251-88.mail.qq.com (out203-205-251-88.mail.qq.com [203.205.251.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D10130E47;
-	Tue,  9 Apr 2024 13:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD3C1350FA;
+	Tue,  9 Apr 2024 14:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712670512; cv=none; b=puMoAlSsR0M7Avc1e9YJGeBV32yNL7a/CB3yyAgH7a8SRf7W/soqv76FDfi4/TnJ3m1dUgIBLGvJSopnorGzrdK13HoVK27l+RszdsArvOPobPDOWDVwuALPaJd445vf/qD5jZTCzSzW46w+gEYzkVJ19uS46MBYc0uBWzMcuIk=
+	t=1712671301; cv=none; b=SmIPWp4dVnZAAiSX9L/rRQ99gAso2fyUXCPlFuKUkFmCHnxcdDS4sR12aOWYMI5EsSUx3D48UbTtJLvQPiMpz1eR6rHumNkciVeaZGiiqdvjscwu20uNwG6S8K3cg31gc7pkwQCfhi7ebHNRvOOyd2k7pVhnFx9nirGbpZghaVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712670512; c=relaxed/simple;
-	bh=lY/4wKOh/DIkoH73lXxAFPUPx0Fw/2iox1dE6fYg0V4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WKOkVx6CJCij7ToaAzas08ZvRO3hl8jAJ0c6RwraY2gCypi9iIzYUBmxI0One/inPv57BFQTB8QJPnLKNtkRR9FpYFzvuyA5pL5BfV3h2aAMCJW5PCxl9RFRiFPeqVZW0XpaplPY/bsuktjguK1Wr8ZEvssnMSbG1JFXKTxpkoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jk/4sfVz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8499DC433C7;
-	Tue,  9 Apr 2024 13:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712670511;
-	bh=lY/4wKOh/DIkoH73lXxAFPUPx0Fw/2iox1dE6fYg0V4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jk/4sfVzp/FqUu/E9Kv984LFB+BDnS4hpA6X7Xur98C4l2OpU0LQqrhXzdPxhLC5g
-	 maOM8QLXXPrlFxo+/o9nCh64QqB7E3dqEk4OBCFZ6kUJK0CQyaBup3A2HduHoP68sP
-	 nI956a18HBaBun5llmCJ9uH74oCtXxtH8ceqT1oI=
-Date: Tue, 9 Apr 2024 15:48:28 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Corey Minyard <minyard@acm.org>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Peter Rosin <peda@axentia.se>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-	Keyur Chudgar <keyur@os.amperecomputing.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	openipmi-developer@lists.sourceforge.net,
-	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
- annotations
-Message-ID: <2024040921-propose-scorer-a319@gregkh>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-34-arnd@kernel.org>
+	s=arc-20240116; t=1712671301; c=relaxed/simple;
+	bh=vrPska5K1zP2GJf7AnCX/vaoifBTE5wptR6Hd3S+vX8=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=S7QvPXXWPg1HFbY/Q0Ph4Yfvna5kaul9NhzxpIdg2vXItz+urdWhE/QRCGnr7fUdXKcurl/dwEM7Y1QYXUIgrHm06V8yfQC+o/wowqkJsuXK126n9FpNOdyW+Ffy/yzuACaxzNaVt0REau8esD1X+gym2d7AWTwQZCfP+BpkF80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=F5aKfgb+; arc=none smtp.client-ip=203.205.251.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712671296; bh=q+HKk82SsH0dAyp9pLgDNzM195MPqqeIgw9zov7U/8M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=F5aKfgb+C2UpLtDMyD6a6zNe7MmweGL9g13U67uQeS+zxtPuRAW7mY7Pc2OCRnPzg
+	 f+uwNnObyI80vPhCunoO7v9qcgHk/uVJGr/F4HFdu6xd13L6CTvDVoKwlLVkW3A/AE
+	 iPOEbnp6eeoVFKzS1VZkLTU1yy68+j/Z/2sNQm1M=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id C4C2C4BA; Tue, 09 Apr 2024 21:49:12 +0800
+X-QQ-mid: xmsmtpt1712670552t9yjlm8rr
+Message-ID: <tencent_D423A78448F764177A26CAB3716365096705@qq.com>
+X-QQ-XMAILINFO: Nxcyh1H/Itmf8neWbaeeTpSXGHnSLvykyApNx66BdgHQr9/eu4JXvR/FePuH9h
+	 GG66zyVWVw26sa5gRPr0mQfntrf/FaFiFPECMdJQfBV8LuTDipXZ5t4GOXSdpl9b4sZ3nNhReBuu
+	 9soy1LxE7sEBNVQfYK/xS6AAOItwJEd0cblXxSvceeXNpa1/o29PY+YcHbXXovbe/kUY1G5uUgZ7
+	 cFXMUdaTFSNnIl3LFk+5KPWn00VHNAot2kXLNDYoSujPD8nA0k244yeRI2HsoY/DY9GCj+x862e+
+	 Q1B5GcSJpADiIUxcdp+jKwnRQS5aYgQHKQF5MhuzxCN2WRDk4r9YZSi3YKX0EcsRzU0CYYuUTG0T
+	 klOyZS4ulGJls8keabk/8v25JOfH86TCo5GOixTtN218t0XJ2s/Vb2Ldl/3fCFFZZbdqEkL3kz+o
+	 WkPXe/XYQzHZ9IMMYFi3I71sFPSFwpUFG4HuT0Zj+VU350zSMujMieslt/5k4oFbtdWn+7NqNA3/
+	 i6iKJI3QQ4BAcC3JmIQ1s/AR2E8jsXpZg2u63juOjbmhrp3RDous/xtT9Pnex995E9nrJ6+zY7LW
+	 HTbjchhSyViT1OoIPHBSIc1kq4OSWb+pJ2bejmaR2sv3ZyQkChQv3vM3/FSOTNzurutYrHaIthEP
+	 zrlA0pqprVjWCFGB4dmUsBD97ZJoy1CldjHy6MTc7ISkxDeqTo8I/if+c87PDOHnTy0NoR8ES7Nu
+	 DgVaN+wTUJbWdb7X+cn3+dEcjSuEtiyPbn3BfLCCdUjK7s81LgNZ/FtMwXacJBG5dASmUYy9xmGL
+	 Es6cySL0qonoP+rNQyNAPFz7ouZTwe/XdI6hmoWHtovClCeaD1K7tj/JgjrDLr0NEZ+NTJokZIxJ
+	 7kpV2qewswUwHrY+PNbvCxspAv5ijeWM1AUNPOb5YmDScfaPJqPL5PhS+F2dcM+j9qW7a3AXMFyd
+	 yzOcxtVSZ2ySYnon0MnGu3kPpaCkli
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+b71011ec0a23f4d15625@syzkaller.appspotmail.com
+Cc: johan.hedberg@gmail.com,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	luiz.dentz@gmail.com,
+	marcel@holtmann.org,
+	netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] Bluetooth: fix oob in sco_sock_setsockopt
+Date: Tue,  9 Apr 2024 21:49:12 +0800
+X-OQ-MSGID: <20240409134911.12995-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000b0848f061553f0d5@google.com>
+References: <000000000000b0848f061553f0d5@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 10:06:51AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
-> warnings enabled, a lot of driver cause a warning about an unused
-> ID table:
-> 
-> drivers/char/tpm/tpm_ftpm_tee.c:356:34: error: unused variable 'of_ftpm_tee_ids' [-Werror,-Wunused-const-variable]
-> drivers/dma/img-mdc-dma.c:863:34: error: unused variable 'mdc_dma_of_match' [-Werror,-Wunused-const-variable]
-> drivers/fpga/versal-fpga.c:62:34: error: unused variable 'versal_fpga_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-ltc4306.c:200:34: error: unused variable 'ltc4306_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-reg.c:242:34: error: unused variable 'i2c_mux_reg_of_match' [-Werror,-Wunused-const-variable]
-> drivers/memory/pl353-smc.c:62:34: error: unused variable 'pl353_smc_supported_children' [-Werror,-Wunused-const-variable]
-> drivers/regulator/pbias-regulator.c:136:34: error: unused variable 'pbias_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl-regulator.c:552:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl6030-regulator.c:645:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/scsi/hisi_sas/hisi_sas_v2_hw.c:3635:36: error: unused variable 'sas_v2_acpi_match' [-Werror,-Wunused-const-variable]
-> drivers/staging/pi433/pi433_if.c:1359:34: error: unused variable 'pi433_dt_ids' [-Werror,-Wunused-const-variable]
-> drivers/tty/serial/amba-pl011.c:2945:34: error: unused variable 'sbsa_uart_of_match' [-Werror,-Wunused-const-variable]
-> 
-> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
-> that remove the reference, rather than adding another #ifdef just for build
-> testing for a configuration that doesn't matter in practice.
-> 
-> I considered splitting up the large patch into per subsystem patches, but since
-> it's really just the same thing everywhere it feels better to do it all at once.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+If optlen < sizeof(u32) it will trigger oob, so take the min of them.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+b71011ec0a23f4d15625@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ net/bluetooth/sco.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 43daf965a01e..815646d9e72b 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -890,7 +890,7 @@ static int sco_sock_setsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case BT_PKT_STATUS:
+-		if (copy_from_sockptr(&opt, optval, sizeof(u32))) {
++		if (copy_from_sockptr(&opt, optval, min_t(int, sizeof(u32), optlen))) {
+ 			err = -EFAULT;
+ 			break;
+ 		}
+-- 
+2.43.0
+
 
