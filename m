@@ -1,273 +1,226 @@
-Return-Path: <linux-kernel+bounces-137496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD62289E2E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:03:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8F2489E2E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:05:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 109F9B22965
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:03:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5676C1F2159E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28EC6156F50;
-	Tue,  9 Apr 2024 19:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE003156F59;
+	Tue,  9 Apr 2024 19:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Izq4ogMf"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cgzzHIhX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFA7157489
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0804E130A72;
+	Tue,  9 Apr 2024 19:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712689365; cv=none; b=l40RZwp7j0Je5beIEVIqySvVXCl15YjLYC0i8Bq7j7bG9nMBHah/EYfOcmz9tB1S1OzntRe7Sqp5a2SjxJUYYa9U5TFvgqME1gdF4rSyXKi9NO+d5xXkzhA8WRGM123HoCr6zfgmeUI+dVndU9OsZfLxec7BhpywH/Cnh72Zt5U=
+	t=1712689543; cv=none; b=t5F1Tl/Tvc8C14G+tLDhz7woZiqSqwNxml1x/9PMH6QbXN73DoO9hoPaS9GW7PeYsOLGYbAge+6TIZ2f1k8EL0N05qBgXwk+QxJZp4i8pMSc7T0AQrCI+cdzmXb3O9bmsTUbJNuMcfdiHPjDdFGpdiK5hNksQ4lc4D6/EiSUfX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712689365; c=relaxed/simple;
-	bh=pjO/EdIcJWhe4jLC9dLVMdCS9P4ixop/idJjzexUyv8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OOhRFMbasJrFtRZHZPpr8XEIRN19xD7FZgFdsXY8XiP0IJtmmYk1kyqmDqGKkU+HFht+pL+4ioeKnX/BrieTB2wlp3fOIHBGRiY9Moo5BCNfWSJh4h+nlrF+fPLOfSqLNVc0/yh/8caI+nHxt3d11JVdfsJPzaxVTdwgVkGJvw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Izq4ogMf; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso6051173276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 12:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712689362; x=1713294162; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u9JT5x/b9oaUqCAXwkz87p9Kfabiba0RNb5HLj9kkfw=;
-        b=Izq4ogMfAavb1rQq2gEQ9afDj2/DJ2gaL1zYfiCuitlv+jfepFFaN2lP2sEyQeLtxZ
-         gxFN4BrH15VcOT+ZPKyrkW8oS8TGeNOhZ8ynOJVjmyMjqb0hI62mx1PljsdUIQm4VTbs
-         V4y+9cfr6fekOV3le0fpbUySwfxTI4PNWLGiMa1X45POvaM4DVXGqRrMYP++o7+LKWWI
-         KYjVQi1AvmScnEFj/d8FI457nwbXfdu5XGa70LOek4ApNbmwHZMHiTe1YJkfVjpQOckE
-         MNkmXSyIcD/6OSzcFxMKu1x+PfTUnOX4RkLnvV7nLAeK1hhyLb+yhXUZ5h+KGUUq+vMX
-         p/Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712689362; x=1713294162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u9JT5x/b9oaUqCAXwkz87p9Kfabiba0RNb5HLj9kkfw=;
-        b=wkJ0P8RnOSLTw3+00gFT6JJ0V7LhB4mpYMx+mGCo3pNi9YRdztIss7y1F4onUxfI2K
-         oZCc0M46OJgVxChIiRbeiFUIsOC7JoK2+2DjPaWkurCqJCDvmZkOwBk5p1Y3+lFQglqE
-         9fNqvOifhaicmnJ/iXSyufOs/JhU0bythtF0n8wMYCC3JNa83BRzP1yOjI6gD/eih3qt
-         vK/FPuzkjKiuEWW4d+wI6giELoIADwsyXELiR2ZLL0VwsIPa6r3YKnfQ6/TPKgbLhMf7
-         fmci/37hYKW0+mUiT0SgjiWAUJPAvgofIlIueuwseLuY5HReOCK2mrn/cwonVsMM54VJ
-         pkfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjNLAaRXHHLjeAsuqxrhQuSReJfUMZujZbNhHiRxTCGwSnDahjuguNc7uXO9QvVMRwYwVIOgDNsR+ePPpY0EB0Dg2xN1MTMLfkCn9j
-X-Gm-Message-State: AOJu0YxokCBG2OYuWMK5asvZ8EfapqjviM1X6DFcSS0E8gnyyyUPJME6
-	II3zqDwENA4bdntULHGGltWjSH8zpcPnDo3Aq0VX6kGlNc/rJZUnS7trFOjHz9AtfOtRk5yJftw
-	+nTD0j2K/AipOY8xIY4Xmj09F424hXhay5VynYw==
-X-Google-Smtp-Source: AGHT+IEhGXon713SAihpC+CGTqCe5Yi+IkEzhQrqxAFLZdzLSTS9HBsKOtlx/4EZ5ThM7PRsnpjepkyCsqvR+OR0zTE=
-X-Received: by 2002:a5b:ac2:0:b0:de0:de85:e388 with SMTP id
- a2-20020a5b0ac2000000b00de0de85e388mr666317ybr.24.1712689362423; Tue, 09 Apr
- 2024 12:02:42 -0700 (PDT)
+	s=arc-20240116; t=1712689543; c=relaxed/simple;
+	bh=WyswoSsvIFf1la8mXA7G3ZXsWxfOhh+9HBZ5KAn38/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bDlqnU05NIBDCExhHqj4jR8Kf4hW8reV7ydxQyWnTxtOVPl9kBJx3L2LWP7YMNDOMlTdx6StXXvJslcxSKqZmYHer3I+luImk6Luc3vcG12ZallkN8Ijv9tlcSVMSaCgDlu3b4dR7TQGDS2pmYySQ/iXd/2vrM+tYCvSoMBvIUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cgzzHIhX; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712689542; x=1744225542;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WyswoSsvIFf1la8mXA7G3ZXsWxfOhh+9HBZ5KAn38/E=;
+  b=cgzzHIhXUi/1xr575ddRt8Fu2Xf95zbWJM4yBZhNilgSfre/lkbAn8+r
+   Nrnsp7AFLvgGQkCcMvZ7xBQLYBhBNj/JNCsMThuXMTixxbKgfjeE3/qLx
+   odHFvZzFlZyJAkYMugKg8+xIInnt5Rm3LKwL77+C4uC1pD+4nwBrPYSl0
+   qYs5G0j6WgmoFlC6Ce+tn+xe4rfJtRTg0MV+IwkVlTxi9UfGxFiR3JiAE
+   qD0z3bWitEWycv98KAFR0Hq10LRBiuQkHXSGLkIBhsQnH3rDNE7IUfQUE
+   agbeRfVZ6sZhXLO7tfunqnJpR0wJsnyL2Qc/c6QCJzqqhFySWtac8Q4n4
+   A==;
+X-CSE-ConnectionGUID: YasGmnlFT5CvXiIXhTfGrw==
+X-CSE-MsgGUID: ZfDnH9ypTcKJKwpbpOamHg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7873369"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7873369"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 12:05:41 -0700
+X-CSE-ConnectionGUID: xjZ6p92kTHu5/R1Jm6DVRg==
+X-CSE-MsgGUID: 3VaAkvRGR+6lSw83hNOQFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="24797805"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.37.26])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 12:05:39 -0700
+Message-ID: <3a816064-ed40-496c-95ab-79753c64b5b6@intel.com>
+Date: Tue, 9 Apr 2024 22:05:32 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405000707.2670063-1-horenchuang@bytedance.com>
- <20240405000707.2670063-3-horenchuang@bytedance.com> <20240405150244.00004b49@Huawei.com>
- <CAKPbEqpGM_nR+LKbsoFTviBZaKUKYqJ3zbJp9EOCJAGvuPy6aQ@mail.gmail.com> <20240409171204.00001710@Huawei.com>
-In-Reply-To: <20240409171204.00001710@Huawei.com>
-From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Date: Tue, 9 Apr 2024 12:02:31 -0700
-Message-ID: <CAKPbEqry55fc51hQ8oUC8so=PD_wWoJMEPiR-eq03BgB5q86Yw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v11 2/2] memory tier: create CPUless memory
- tiers after obtaining HMAT info
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Gregory Price <gourry.memverge@gmail.com>, 
-	aneesh.kumar@linux.ibm.com, mhocko@suse.com, tj@kernel.org, 
-	john@jagalactic.com, Eishan Mirakhur <emirakhur@micron.com>, 
-	Vinicius Tavares Petrucci <vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>, 
-	Alistair Popple <apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, 
-	SeongJae Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, nvdimm@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linux Memory Management List <linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, 
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>, qemu-devel@nongnu.org, 
-	Hao Xiang <hao.xiang@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: BISECTED: perf test 'Miscellaneous Intel PT' failing on Intel
+ hybrid machines
+To: Ian Rogers <irogers@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ linux-perf-users@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ZhVfc5jYLarnGzKa@x1> <ZhVf9rO-b3xTqZEK@x1>
+ <CAP-5=fVbkj74K3w0cOfpbKe2=9wK1AJYkGQmbHLD4SKzc=dVBw@mail.gmail.com>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAP-5=fVbkj74K3w0cOfpbKe2=9wK1AJYkGQmbHLD4SKzc=dVBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Jonathan,
+On 9/04/24 18:46, Ian Rogers wrote:
+> On Tue, Apr 9, 2024 at 8:34 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>>
+>> On Tue, Apr 09, 2024 at 12:32:06PM -0300, Arnaldo Carvalho de Melo wrote:
+>>> root@x1:~# perf test "Miscellaneous Intel PT testing"
+>>> 112: Miscellaneous Intel PT testing                                  : FAILED!
+>>> root@x1:~#
+>>>
+>>> then I revert:
+>>>
+>>> commit 642e1ac96aaa12aeb41402e68eac7faf5917a67a (HEAD -> perf-tools-next)
+>>> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+>>> Date:   Tue Apr 9 12:28:49 2024 -0300
+>>>
+>>>     Revert "perf pmus: Check if we can encode the PMU number in perf_event_attr.type"
+>>>
+>>>     This reverts commit 82fe2e45cdb00de4fa648050ae33bdadf9b3294a.
+>>> ⬢[acme@toolbox perf-tools-next]$
+>>>
+>>> It works now:
+>>>
+>>> root@x1:~# perf -v
+>>> perf version 6.8.g642e1ac96aaa
+>>> root@x1:~# perf test "Miscellaneous Intel PT testing"
+>>> 117: Miscellaneous Intel PT testing                                  : Ok
+>>> root@x1:~#
+>>>
+>>> Investigating, if you come up with ideas, lemme know.
+>>
+>> Some more context:
+>>
+>> When this patch was implemented/tested I had access only to an ARM64
+>> hybrid machine, now my notebook is a Rocket Lake lenovo (13th gen), that
+>> is hybrid and the test is failing with:
+>>
+>> root@x1:~# perf test -v "Miscellaneous Intel PT testing"
+>> 112: Miscellaneous Intel PT testing                                  :
+>> --- start ---
+>> test child forked, pid 304355
+>> --- Test system-wide sideband ---
+>> Checking for CPU-wide recording on CPU 0
+>> OK
+>> Checking for CPU-wide recording on CPU 1
+>> OK
+>> Linux
+>> [ perf record: Woken up 1 times to write data ]
+>> [ perf record: Captured and wrote 1.934 MB /tmp/perf-test-intel-pt-sh.xACV6V7Hn4/test-perf.data ]
+>> OK
+>> --- Test per-thread recording ---
+>> Workload PIDs are 304377 and 304378
+>> perf PID is 304389
+>> Waiting for "perf record has started" message
+>> OK
+>> pid 0 cpu -1 fd 5 : sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
+>> pid 0 cpu -1 fd 6 : sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 6
+>> pid 304377 cpu -1 fd 7 : sys_perf_event_open: pid 304377  cpu -1  group_fd -1  flags 0x8 = 7
+>> pid 304380 cpu -1 fd 8 : sys_perf_event_open: pid 304380  cpu -1  group_fd -1  flags 0x8 = 8
+>> pid 304378 cpu -1 fd 9 : sys_perf_event_open: pid 304378  cpu -1  group_fd -1  flags 0x8 = 9
+>> pid 304381 cpu -1 fd 10 : sys_perf_event_open: pid 304381  cpu -1  group_fd -1  flags 0x8 = 10
+>> pid 304377 cpu -1 fd 11 : sys_perf_event_open: pid 304377  cpu -1  group_fd -1  flags 0x8 = 11
+>> pid 304380 cpu -1 fd 12 : sys_perf_event_open: pid 304380  cpu -1  group_fd -1  flags 0x8 = 12
+>> pid 304378 cpu -1 fd 13 : sys_perf_event_open: pid 304378  cpu -1  group_fd -1  flags 0x8 = 13
+>> pid 304381 cpu -1 fd 14 : sys_perf_event_open: pid 304381  cpu -1  group_fd -1  flags 0x8 = 14
+>> fd 7 : idx 0: mmapping fd 7
+>> fd 11 fd_to 7 : idx 0: set output fd 11 -> 7
+>> fd 8 : idx 1: mmapping fd 8
+>> fd 12 fd_to 8 : idx 1: set output fd 12 -> 8
+>> fd 9 : idx 2: mmapping fd 9
+>> fd 13 fd_to 9 : idx 2: set output fd 13 -> 9
+>> fd 10 : idx 3: mmapping fd 10
+>> fd 14 fd_to 10 : idx 3: set output fd 14 -> 10
+>> Checking 10 fds
+>> No mmap for fd 5
+> 
+> Thanks Arnaldo, so the reverted change is:
+> ```
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -4,6 +4,7 @@
+> #include <subcmd/pager.h>
+> #include <sys/types.h>
+> #include <dirent.h>
+> +#include <pthread.h>
+> #include <string.h>
+> #include <unistd.h>
+> #include "debug.h"
+> @@ -492,9 +493,35 @@ int perf_pmus__num_core_pmus(void)
+>        return count;
+> }
+> 
+> +static bool __perf_pmus__supports_extended_type(void)
+> +{
+> +       struct perf_pmu *pmu = NULL;
+> +
+> +       if (perf_pmus__num_core_pmus() <= 1)
+> +               return false;
+> +
+> +       while ((pmu = perf_pmus__scan_core(pmu)) != NULL) {
+> +               if (!is_event_supported(PERF_TYPE_HARDWARE,
+> PERF_COUNT_HW_CPU_CYCLES | ((__u64)pmu->
+> type << PERF_PMU_TYPE_SHIFT)))
+> +                       return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +static bool perf_pmus__do_support_extended_type;
+> +
+> +static void perf_pmus__init_supports_extended_type(void)
+> +{
+> +       perf_pmus__do_support_extended_type =
+> __perf_pmus__supports_extended_type();
+> +}
+> +
+> bool perf_pmus__supports_extended_type(void)
+> {
+> -       return perf_pmus__num_core_pmus() > 1;
+> +       static pthread_once_t extended_type_once = PTHREAD_ONCE_INIT;
+> +
+> +       pthread_once(&extended_type_once,
+> perf_pmus__init_supports_extended_type);
+> +
+> +       return perf_pmus__do_support_extended_type;
+> }
+> 
+> struct perf_pmu *evsel__find_pmu(const struct evsel *evsel)
+> ```
+> On your Intel this should have previously returned true as
+> "perf_pmus__num_core_pmus() > 1", and with the new code presumably
+> is_event_supported is returning false. Could you dump the PMU's name
+> at that point? Is cpu_core or cpu_atom looking like it doesn't support
+> the event? Is the test failing when run as root (ie is
+> is_event_supported failing to have expected fallback paths)?
 
-On Tue, Apr 9, 2024 at 9:12=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 5 Apr 2024 15:43:47 -0700
-> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
->
-> > On Fri, Apr 5, 2024 at 7:03=E2=80=AFAM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > On Fri,  5 Apr 2024 00:07:06 +0000
-> > > "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
-> > >
-> > > > The current implementation treats emulated memory devices, such as
-> > > > CXL1.1 type3 memory, as normal DRAM when they are emulated as norma=
-l memory
-> > > > (E820_TYPE_RAM). However, these emulated devices have different
-> > > > characteristics than traditional DRAM, making it important to
-> > > > distinguish them. Thus, we modify the tiered memory initialization =
-process
-> > > > to introduce a delay specifically for CPUless NUMA nodes. This dela=
-y
-> > > > ensures that the memory tier initialization for these nodes is defe=
-rred
-> > > > until HMAT information is obtained during the boot process. Finally=
-,
-> > > > demotion tables are recalculated at the end.
-> > > >
-> > > > * late_initcall(memory_tier_late_init);
-> > > > Some device drivers may have initialized memory tiers between
-> > > > `memory_tier_init()` and `memory_tier_late_init()`, potentially bri=
-nging
-> > > > online memory nodes and configuring memory tiers. They should be ex=
-cluded
-> > > > in the late init.
-> > > >
-> > > > * Handle cases where there is no HMAT when creating memory tiers
-> > > > There is a scenario where a CPUless node does not provide HMAT info=
-rmation.
-> > > > If no HMAT is specified, it falls back to using the default DRAM ti=
-er.
-> > > >
-> > > > * Introduce another new lock `default_dram_perf_lock` for adist cal=
-culation
-> > > > In the current implementation, iterating through CPUlist nodes requ=
-ires
-> > > > holding the `memory_tier_lock`. However, `mt_calc_adistance()` will=
- end up
-> > > > trying to acquire the same lock, leading to a potential deadlock.
-> > > > Therefore, we propose introducing a standalone `default_dram_perf_l=
-ock` to
-> > > > protect `default_dram_perf_*`. This approach not only avoids deadlo=
-ck
-> > > > but also prevents holding a large lock simultaneously.
-> > > >
-> > > > * Upgrade `set_node_memory_tier` to support additional cases, inclu=
-ding
-> > > >   default DRAM, late CPUless, and hot-plugged initializations.
-> > > > To cover hot-plugged memory nodes, `mt_calc_adistance()` and
-> > > > `mt_find_alloc_memory_type()` are moved into `set_node_memory_tier(=
-)` to
-> > > > handle cases where memtype is not initialized and where HMAT inform=
-ation is
-> > > > available.
-> > > >
-> > > > * Introduce `default_memory_types` for those memory types that are =
-not
-> > > >   initialized by device drivers.
-> > > > Because late initialized memory and default DRAM memory need to be =
-managed,
-> > > > a default memory type is created for storing all memory types that =
-are
-> > > > not initialized by device drivers and as a fallback.
-> > > >
-> > > > Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> > > > Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
-> > > > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> > >
-> > > Hi - one remaining question. Why can't we delay init for all nodes
-> > > to either drivers or your fallback late_initcall code.
-> > > It would be nice to reduce possible code paths.
-> >
-> > I try not to change too much of the existing code structure in
-> > this patchset.
-> >
-> > To me, postponing/moving all memory tier registrations to
-> > late_initcall() is another possible action item for the next patchset.
-> >
-> > After tier_mem(), hmat_init() is called, which requires registering
-> > `default_dram_type` info. This is when `default_dram_type` is needed.
-> > However, it is indeed possible to postpone the latter part,
-> > set_node_memory_tier(), to `late_init(). So, memory_tier_init() can
-> > indeed be split into two parts, and the latter part can be moved to
-> > late_initcall() to be processed together.
-> >
-> > Doing this all memory-type drivers have to call late_initcall() to
-> > register a memory tier. I=E2=80=99m not sure how many they are?
-> >
-> > What do you guys think?
->
-> Gut feeling - if you are going to move it for some cases, move it for
-> all of them.  Then we only have to test once ;)
->
-> J
+Problem is the test scrapes debug output and is_event_supported()
+prints out debug that confuses the test.  Other probe functions
+like in perf_api_probe.c use sys_perf_event_open() so the issue
+has not arisen before.
 
-Thank you for your reminder! I agree~ That's why I'm considering
-changing them in the next patchset because of the amount of changes.
-And also, this patchset already contains too many things.
-
-> >
-> > >
-> > > Jonathan
-> > >
-> > >
-> > > > ---
-> > > >  mm/memory-tiers.c | 94 +++++++++++++++++++++++++++++++++++--------=
-----
-> > > >  1 file changed, 70 insertions(+), 24 deletions(-)
-> > > >
-> > > > diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> > > > index 516b144fd45a..6632102bd5c9 100644
-> > > > --- a/mm/memory-tiers.c
-> > > > +++ b/mm/memory-tiers.c
-> > >
-> > >
-> > >
-> > > > @@ -855,7 +892,8 @@ static int __init memory_tier_init(void)
-> > > >        * For now we can have 4 faster memory tiers with smaller adi=
-stance
-> > > >        * than default DRAM tier.
-> > > >        */
-> > > > -     default_dram_type =3D alloc_memory_type(MEMTIER_ADISTANCE_DRA=
-M);
-> > > > +     default_dram_type =3D mt_find_alloc_memory_type(MEMTIER_ADIST=
-ANCE_DRAM,
-> > > > +                                                   &default_memory=
-_types);
-> > > >       if (IS_ERR(default_dram_type))
-> > > >               panic("%s() failed to allocate default DRAM tier\n", =
-__func__);
-> > > >
-> > > > @@ -865,6 +903,14 @@ static int __init memory_tier_init(void)
-> > > >        * types assigned.
-> > > >        */
-> > > >       for_each_node_state(node, N_MEMORY) {
-> > > > +             if (!node_state(node, N_CPU))
-> > > > +                     /*
-> > > > +                      * Defer memory tier initialization on
-> > > > +                      * CPUless numa nodes. These will be initiali=
-zed
-> > > > +                      * after firmware and devices are initialized=
-.
-> > >
-> > > Could the comment also say why we can't defer them all?
-> > >
-> > > (In an odd coincidence we have a similar issue for some CPU hotplug
-> > >  related bring up where review feedback was move all cases later).
-> > >
-> > > > +                      */
-> > > > +                     continue;
-> > > > +
-> > > >               memtier =3D set_node_memory_tier(node);
-> > > >               if (IS_ERR(memtier))
-> > > >                       /*
-> > >
-> >
-> >
->
-
-
---=20
-Best regards,
-Ho-Ren (Jack) Chuang
-=E8=8E=8A=E8=B3=80=E4=BB=BB
 
