@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-136469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B04089D464
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D3489D468
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:32:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9057C1F27278
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0420B1F27223
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F283912DDAD;
-	Tue,  9 Apr 2024 08:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5347F487;
+	Tue,  9 Apr 2024 08:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KFYpal4V"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RurPN5K3"
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB4A12A14F;
-	Tue,  9 Apr 2024 08:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183DB12CD9C;
+	Tue,  9 Apr 2024 08:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712651241; cv=none; b=Y+yZOe89OkBcPPNeAG1Fh4IdzSl2x8l7f+2gDjBhcof8dDDfXkPqkpuIX96ID+HRLXGCOK9QwhQOFTmWqgP1Pn+iF3gP6Lm0kAslhtCvyHUwEQ8mlMdnsL9XS944L2b1JUya60Dp+TPWRqVzIcJE0eWtOR2MGRfLkTrGxv8Szzs=
+	t=1712651242; cv=none; b=r3ANFeNYiX7Pb388OrDgSsRhRmZq6QLw6/f7jQXa1n6z+QQcNytTWtdQizqwXcQUauZMaESwpkzuLG1Omq1KUjovWkWOXzhYKVbDrbHEcWkD5GWeNKGXJlwGq0B53BsH7SHDoE3TtJ47LeyjRMwdpnKwvjRlHtm65QQr0sZIfTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712651241; c=relaxed/simple;
-	bh=lLjexWaZDoedCAGOjG4VuX8BKtf924kbhZ+DSXlqNb8=;
+	s=arc-20240116; t=1712651242; c=relaxed/simple;
+	bh=Ccu6UJMGFols9hejHCvUU8L02LM1jWMbMXDbUMzT0KI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=STtTGb6PC5OXRjiHypVbqUFUzLSgd+v1izh/Rp4GGqgtWSN18zikBkJudJQY22uDgx0aR0iH9oud4pC/hOslku+15W5dZ79660Rm7O4KhdHbckBQdD4Lw9MrLRg27j6vVTfnwFvCp74TxvPEZJCnQV9AghxncBzTs3jfiXjQtq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KFYpal4V; arc=none smtp.client-ip=217.70.183.199
+	 In-Reply-To:To:Cc; b=Z66gqn7hFffRBbf/mOCi9OjzWGFaJLpb9k+foBtqj8P9O6G8Tk+B2AFp1B+fivw17W+c0eZmbCthb9MNscHG0P0X98v4wTws66dfavF4ct/xvcGlq10Wforr0RxuCUdD1SGxg8WsJ/JxSuwv0rBUkD9ul69SwlJjCFcgiahA1d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RurPN5K3; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0FCA7FF813;
-	Tue,  9 Apr 2024 08:27:16 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 773D4FF814;
+	Tue,  9 Apr 2024 08:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712651237;
+	t=1712651238;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ES3Hzm2djU1rN6Hk2bzxHWrUY1Jv7REvk6nG0DNeQv4=;
-	b=KFYpal4V+yKK6zpC+hdeADBFAmLJy0Sab1IUme+uekQXPsIam9IB8zmOQLGx0q93KdqC9U
-	CeeblzWPDQ3Ngkr8R9CS3Iz33yGphBJswsSJX147KFJOO7FkBlCROkdoY14xgnFQdFuIgx
-	ZUj3QteJmcs293pWbcDCRlQZ9Io6U+rFuhIKEVcy556wU6uGr34UAg3GLpcfhk/YVbY4ND
-	+CvvCBsUCIwXlaj5ovZLX6O6xbZvMCoWG4PawFgp768cMeETDrkN3GFlN3DFv28gjN8FMR
-	kQ9y5T1j+ewIPnRuRHDNX+Rt/pv3mEYFsfnI+RRnY5QUShuAu4pENOesqsCqqA==
+	bh=TK/W9hOQzfI0Ad3qbfJjWhiLglJoRwsqcdnqi9uaq3o=;
+	b=RurPN5K3L34qfRsKY5KdvkQmhXNM+g+wDEc3LzlSLKK1ProrUoeDax5U8GME09klMw7aYA
+	dUQ2DpkqQB9ALSQnc+s+qOi2QAeCRfWZRDCoAq8UR1G7g3xrPv/JreqgJ12K4WZ7w72suo
+	6ro8ItQzUs/EIViPq+c6EuXflGXKg5I/BWBA9I4q0iVRCR3BVEswUA0+KA6t1MM9NP8h+B
+	E+A+QhqrieZZGtVPOC2bAAYtWgjudbNjbK+6XqLv9Ytg4IW167P9gPY3WF0sm3vrg0Qnp3
+	p3rPcgpYJHLMV5+3CO75lHFaJAZ+gOoD0R+/jpm0SgfRYQh4L21Uz3BUxqHU1A==
 From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Tue, 09 Apr 2024 10:26:32 +0200
-Subject: [PATCH net-next v10 10/13] net: netdevsim: ptp_mock: Convert to
+Date: Tue, 09 Apr 2024 10:26:33 +0200
+Subject: [PATCH net-next v10 11/13] net: macb: Convert to
  netdev_ptp_clock_register
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-feature_ptp_netnext-v10-10-0fa2ea5c89a9@bootlin.com>
+Message-Id: <20240409-feature_ptp_netnext-v10-11-0fa2ea5c89a9@bootlin.com>
 References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
 In-Reply-To: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
 To: Florian Fainelli <florian.fainelli@broadcom.com>, 
@@ -83,115 +83,31 @@ X-Mailer: b4 0.13.0
 X-GND-Sasl: kory.maincent@bootlin.com
 
 The hardware registration clock for net device is now using
-netdev_ptp_clock_register to save the net_device pointer within the PTP
-clock xarray. netdevsim is registering its ptp through the mock driver.
-It is the only driver using the mock driver to register a ptp clock.
-Convert the mock driver to the new API.
+netdev_ptp_clock_register to save the net_device pointer within the ptp
+clock xarray. Convert the macb driver to the new API.
 
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
-Changes in v8:
+
+Change in v8:
 - New patch
 ---
- drivers/net/netdevsim/netdev.c | 19 +++++++++++--------
- drivers/ptp/ptp_mock.c         |  4 ++--
- include/linux/ptp_mock.h       |  4 ++--
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/cadence/macb_ptp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
-index d7ba447db17c..58bc54949956 100644
---- a/drivers/net/netdevsim/netdev.c
-+++ b/drivers/net/netdevsim/netdev.c
-@@ -402,17 +402,12 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
- 	struct mock_phc *phc;
- 	int err;
- 
--	phc = mock_phc_create(&ns->nsim_bus_dev->dev);
--	if (IS_ERR(phc))
--		return PTR_ERR(phc);
--
--	ns->phc = phc;
- 	ns->netdev->netdev_ops = &nsim_netdev_ops;
- 	ns->netdev->stat_ops = &nsim_stat_ops;
- 
- 	err = nsim_udp_tunnels_info_create(ns->nsim_dev, ns->netdev);
- 	if (err)
--		goto err_phc_destroy;
-+		return err;
- 
- 	rtnl_lock();
- 	err = nsim_bpf_init(ns);
-@@ -426,8 +421,18 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
- 	if (err)
- 		goto err_ipsec_teardown;
- 	rtnl_unlock();
-+
-+	phc = mock_phc_create(ns->netdev);
-+	if (IS_ERR(phc)) {
-+		err = PTR_ERR(phc);
-+		goto err_register_netdevice;
-+	}
-+
-+	ns->phc = phc;
- 	return 0;
- 
-+err_register_netdevice:
-+	unregister_netdevice(ns->netdev);
- err_ipsec_teardown:
- 	nsim_ipsec_teardown(ns);
- 	nsim_macsec_teardown(ns);
-@@ -435,8 +440,6 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
- err_utn_destroy:
- 	rtnl_unlock();
- 	nsim_udp_tunnels_info_destroy(ns->netdev);
--err_phc_destroy:
--	mock_phc_destroy(ns->phc);
- 	return err;
- }
- 
-diff --git a/drivers/ptp/ptp_mock.c b/drivers/ptp/ptp_mock.c
-index e7b459c846a2..1dcbe7426746 100644
---- a/drivers/ptp/ptp_mock.c
-+++ b/drivers/ptp/ptp_mock.c
-@@ -115,7 +115,7 @@ int mock_phc_index(struct mock_phc *phc)
- }
- EXPORT_SYMBOL_GPL(mock_phc_index);
- 
--struct mock_phc *mock_phc_create(struct device *dev)
-+struct mock_phc *mock_phc_create(struct net_device *dev)
- {
- 	struct mock_phc *phc;
- 	int err;
-@@ -147,7 +147,7 @@ struct mock_phc *mock_phc_create(struct device *dev)
- 	spin_lock_init(&phc->lock);
- 	timecounter_init(&phc->tc, &phc->cc, 0);
- 
--	phc->clock = ptp_clock_register(&phc->info, dev);
-+	phc->clock = netdev_ptp_clock_register(&phc->info, dev);
- 	if (IS_ERR(phc->clock)) {
- 		err = PTR_ERR(phc->clock);
- 		goto out_free_phc;
-diff --git a/include/linux/ptp_mock.h b/include/linux/ptp_mock.h
-index 72eb401034d9..e226011071f8 100644
---- a/include/linux/ptp_mock.h
-+++ b/include/linux/ptp_mock.h
-@@ -13,13 +13,13 @@ struct mock_phc;
- 
- #if IS_ENABLED(CONFIG_PTP_1588_CLOCK_MOCK)
- 
--struct mock_phc *mock_phc_create(struct device *dev);
-+struct mock_phc *mock_phc_create(struct net_device *dev);
- void mock_phc_destroy(struct mock_phc *phc);
- int mock_phc_index(struct mock_phc *phc);
- 
- #else
- 
--static inline struct mock_phc *mock_phc_create(struct device *dev)
-+static inline struct mock_phc *mock_phc_create(struct net_device *dev)
- {
- 	return NULL;
- }
+diff --git a/drivers/net/ethernet/cadence/macb_ptp.c b/drivers/net/ethernet/cadence/macb_ptp.c
+index a63bf29c4fa8..50fa62a0ddc5 100644
+--- a/drivers/net/ethernet/cadence/macb_ptp.c
++++ b/drivers/net/ethernet/cadence/macb_ptp.c
+@@ -332,7 +332,7 @@ void gem_ptp_init(struct net_device *dev)
+ 	bp->tsu_rate = bp->ptp_info->get_tsu_rate(bp);
+ 	bp->ptp_clock_info.max_adj = bp->ptp_info->get_ptp_max_adj();
+ 	gem_ptp_init_timer(bp);
+-	bp->ptp_clock = ptp_clock_register(&bp->ptp_clock_info, &dev->dev);
++	bp->ptp_clock = netdev_ptp_clock_register(&bp->ptp_clock_info, dev);
+ 	if (IS_ERR(bp->ptp_clock)) {
+ 		pr_err("ptp clock register failed: %ld\n",
+ 			PTR_ERR(bp->ptp_clock));
 
 -- 
 2.34.1
