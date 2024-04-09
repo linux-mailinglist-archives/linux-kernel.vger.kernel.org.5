@@ -1,133 +1,176 @@
-Return-Path: <linux-kernel+bounces-136516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D4189D50E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:03:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D9D89D510
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:03:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2087B1F22485
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F792837F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FAB7E798;
-	Tue,  9 Apr 2024 09:03:21 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81F67EF02;
+	Tue,  9 Apr 2024 09:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LFKFhsR/";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LFKFhsR/"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F125339A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A027E580;
+	Tue,  9 Apr 2024 09:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712653401; cv=none; b=n8eDuY1BZDriuFDjKsokZTTtIjHiDtBUPAGPnkuaG8UNH2i0qRYNlsXg79YhLK/qRLC7XfJuGymUfB3ONIepYmi5Hz/ttfYxcVPL6VTv5lSLcma0D3HP++wCqd3HqgDMbVqhAcf1WxqCYjfpW+R25HGXJPRQsncztjQ8+umU/E0=
+	t=1712653411; cv=none; b=ngsl4Li6bbPBswnbvgk0kfGdMbE9T9ZKoCs2fu7dWd+0qydLrZNfGgAca4wmJTQUdVo7sxunOlcOJN8Ls16p2lnhursKqbIdvjV2nm6x1qE1okegDFICcG8/aHUciRgRiM8qif5p9udCZtBeNuwcY7VsHMB/Muc7TQPc9N8U7tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712653401; c=relaxed/simple;
-	bh=vi4m312x4kVDts/5E1BrX8edzkMoKg9FVUzNpNUyKYI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WNJH85OKczM8QCaxP1MMF1p2Ogtpj1xGcAk5tsQ4srS66rP0qhdoUTBZfIyZZI1/xM8fCFW/B5weEsEpfmXO7BsO5EVwK9OP8A4G9G775Hvjna4ZEBwjLUb2dBcS3iDX1pedjRiVo0Mdc0oaTRBZFfV/0wka0SAvUeSazuTAmk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ru7No-0001rD-Vl; Tue, 09 Apr 2024 11:03:13 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ru7Nm-00BGyH-5y; Tue, 09 Apr 2024 11:03:10 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ru7Nm-00GqCV-0J;
-	Tue, 09 Apr 2024 11:03:10 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH] auxdisplay: seg-led-gpio: Convert to platform remove callback returning void
-Date: Tue,  9 Apr 2024 11:03:07 +0200
-Message-ID: <20240409090306.29284-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712653411; c=relaxed/simple;
+	bh=h2kiHo+GgQz/ZCISfMuUvv0y5uUfdVCdxMdXR1Xy7zs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iVQmGUUbuSnqpx92bVQXPqxcyN4znPMQAoG9+TdWpiHY+6fnTypMhwn9PhQkJZGX+pZosX4WTOkId4jS2zCiDrMHzlDSYQGOZAZv9vz04viEPdotUp8ujzEWrRomZ3MOfpCDiIB1W+YQDCF7z7H86Bb/hoH+vyQ3cpTu2osw9KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LFKFhsR/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LFKFhsR/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 21BA622C8E;
+	Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712653408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvyrWquLz7geaixcVsAUQI3Ex1g1XLIRXoJG2iDV3q8=;
+	b=LFKFhsR/O3HPCXRLhG6lA9hzbnDne02ClR7rfW/zzyLDNHsX6Qwj3M+hs/tUx61xlnR/Pm
+	KeIJWt+2wkYO1tAV8a1eNsHwcvNjS98Nl6wgFhT2Kfh+9/rSDgoDywHh+5CQDTfmilPXkb
+	8P/1X9iKX5h8BmVwPKjyGM/CXN0muzk=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712653408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvyrWquLz7geaixcVsAUQI3Ex1g1XLIRXoJG2iDV3q8=;
+	b=LFKFhsR/O3HPCXRLhG6lA9hzbnDne02ClR7rfW/zzyLDNHsX6Qwj3M+hs/tUx61xlnR/Pm
+	KeIJWt+2wkYO1tAV8a1eNsHwcvNjS98Nl6wgFhT2Kfh+9/rSDgoDywHh+5CQDTfmilPXkb
+	8P/1X9iKX5h8BmVwPKjyGM/CXN0muzk=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 095811332F;
+	Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 5FoaAmAEFWaaQAAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Tue, 09 Apr 2024 09:03:28 +0000
+Date: Tue, 9 Apr 2024 11:03:22 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>
+Cc: "hpa@zytor.com" <hpa@zytor.com>, 
+	"tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, 
+	"x86@kernel.org" <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
+	"jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"Mehta, Sohil" <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
+	"Huang, Kai" <kai.huang@intel.com>, "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, 
+	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>, 
+	"Zhang, Bo" <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>, 
+	"yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>, 
+	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: Re: [PATCH v10 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
+Message-ID: <imqjuxgmm5updfnl75molzixlq52ttlufd6sn2vpcevaby5l7f@22j23whlbvux>
+References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
+ <20240328002229.30264-13-haitao.huang@linux.intel.com>
+ <d25dbe76d48a0b6c74fa09b06f1ca3fdf234a190.camel@intel.com>
+ <op.2lw8gfg2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
+ <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2311; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=vi4m312x4kVDts/5E1BrX8edzkMoKg9FVUzNpNUyKYI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmFQRK/qOJl5sDCIBE3KgvzJ1OvKHnybIlCDcpy 1ii/Aea3diJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZhUESgAKCRCPgPtYfRL+ TtTHB/0clZaHwrfkkyud5xK020JK+eGJxmBKuPdOVOa96Y8Wl6JXHe5fB1yGNwk/Llg/mJDWj/z RlnDcZ6EpWo3F/86nLRKTMixCl6kegGyDxdpp7Tm3cABpHrZ62qXzVTuSV/NIAh+V+UNyRwREba WUjbudfVRPB4X3hBKmnMzmALr0gMCfozNjtfXmbw1ZfOmjq6n9IePGsoyiPz+9INmKaMdCsAeyw UodPCKSv7oyql0tAMmp77LQe/0dumqsFaAmEVHosWiYfEDAMbjE02UNHMVxnQtHzq2jeM76aB0Q wdC/9fkdfpGwxU70rhA8g8eCZlJmFHX23YLk12jZTTSyp3UR
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ltmvwvtmhbsdsweo"
+Content-Disposition: inline
+In-Reply-To: <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Flag: NO
+X-Spam-Score: -5.39
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.39 / 50.00];
+	BAYES_HAM(-2.49)[97.68%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email]
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+--ltmvwvtmhbsdsweo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+On Mon, Apr 08, 2024 at 11:23:21PM -0500, Haitao Huang <haitao.huang@linux.=
+intel.com> wrote:
+> It's always non-NULL based on testing.
+>=20
+> It's hard for me to say definitely by reading the code. But IIUC
+> cgroup_disable command-line only blocks operations in /sys/fs/cgroup so u=
+ser
+> space can't set up controllers and config limits, etc., for the diasabled
+> ones. Each task->cgroups would still have a non-NULL pointer to the static
+> root object for each cgroup that is enabled by KConfig, so
+> get_current_misc_cg() thus  sgx_get_current_cg() should not return NULL
+> regardless 'cgroup_disable=3Dmisc'.
+>=20
+> Maybe @Michal or @tj can confirm?
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/auxdisplay/seg-led-gpio.c | 6 ++----
+The current implementation creates root css object (see cgroup_init(),
+cgroup_ssid_enabled() check is after cgroup_init_subsys()).
+I.e. it will look like all tasks are members of root cgroup wrt given
+controller permanently and controller attribute files won't exist.
 
-Hello,
+(It is up to the controller implementation to do further optimization
+based on the boot-time disablement (e.g. see uses of
+mem_cgroup_disabled()). Not sure if this is useful for misc controller.)
 
-the drivers below of drivers/auxdisplay were already converted to struct
-platform_driver::remove_new during the v6.9-rc1 development cycle. This
-driver was added for v6.9-rc1 still using the old prototype.
+As for the WARN_ON(1), taking example from memcg -- NULL is best
+synonymous with root. It's a judgement call which of the values to store
+and when to intepret it.
 
-There are still more drivers to be converted, so there is from my side
-no need to get this into v6.9, but the next merge window would be nice.
+HTH,
+Michal
 
-Best regards
-Uwe
- 1 file changed, 2 insertions(+), 4 deletions(-)
+--ltmvwvtmhbsdsweo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/auxdisplay/seg-led-gpio.c b/drivers/auxdisplay/seg-led-gpio.c
-index 35a8dbb1e9d2..183ab3011cbb 100644
---- a/drivers/auxdisplay/seg-led-gpio.c
-+++ b/drivers/auxdisplay/seg-led-gpio.c
-@@ -81,14 +81,12 @@ static int seg_led_probe(struct platform_device *pdev)
- 	return linedisp_register(&priv->linedisp, dev, 1, &seg_led_linedisp_ops);
- }
- 
--static int seg_led_remove(struct platform_device *pdev)
-+static void seg_led_remove(struct platform_device *pdev)
- {
- 	struct seg_led_priv *priv = platform_get_drvdata(pdev);
- 
- 	cancel_delayed_work_sync(&priv->work);
- 	linedisp_unregister(&priv->linedisp);
--
--	return 0;
- }
- 
- static const struct of_device_id seg_led_of_match[] = {
-@@ -99,7 +97,7 @@ MODULE_DEVICE_TABLE(of, seg_led_of_match);
- 
- static struct platform_driver seg_led_driver = {
- 	.probe = seg_led_probe,
--	.remove = seg_led_remove,
-+	.remove_new = seg_led_remove,
- 	.driver = {
- 		.name = "seg-led-gpio",
- 		.of_match_table = seg_led_of_match,
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: 4cece764965020c22cff7665b18a012006359095
--- 
-2.43.0
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZhUEVgAKCRAGvrMr/1gc
+jpkmAQDC0m6kfTm0e/ebDdbus7JzB7oXpjF+aa05c4n6JTgMZAD/cof9Y5sOlPGG
+my7EEJBDBJYKcFgS8YtpUYJdZwjKvwE=
+=CQHh
+-----END PGP SIGNATURE-----
 
+--ltmvwvtmhbsdsweo--
 
