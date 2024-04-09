@@ -1,123 +1,108 @@
-Return-Path: <linux-kernel+bounces-137371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F01F89E120
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C9D89E11E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DC8F1C22977
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:11:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B807B1C22CE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50097155A46;
-	Tue,  9 Apr 2024 17:10:50 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06D915539E;
+	Tue,  9 Apr 2024 17:10:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="iBzYfnWv"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651C6153BD8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D78B153BD8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712682649; cv=none; b=h7A/Q9OLm5Jaj3YTX6EKlJUpX1a6Tf47WdmbBRJlcT8i54JVE745MnQOWdgWkeKxNAi6S3igbbzYxWQ6sOvcFMuRnCWSholYyb7rSTs37/49VW5izsR/oWmqw5ij6vi34QFw1F4jjHqlSZzU5Dgic70zpyv+1vwX2O+D/q6eIQU=
+	t=1712682644; cv=none; b=EtpUWQKZlfXKEal/oaCA/oqElh6fF6bOc8PjS24JohZfNTBXtIrEpDNZfmZSCBvpTZ81BJCfGqbQAYlW5na+wBkQ9Ub4OUXGWB5hhZ8/eDxTalwIEjSQ1FbLZMw2C3cJGN69NEftFU/SsrHCXnzGDR7zSZMpDwzsRCR1CNOvlNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712682649; c=relaxed/simple;
-	bh=//NYRKb9J4jh0dSOg7w2Vs50Sdc+5h5cLrGT0qMmio8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HAuEPNzV90pLXZjJltUjuN5TcjiVv6vN4654fLUhcJONECu9zwxg5KHKDTFK8unXbgyNnM6y8HdyrC5ERWr/N9cXrfD+M8W3/Z+VHA53lU2AK7vPRzhzMBAFeE15Hh0V+T5RyTLUMtvDQgw2ExI8uFpxc9KaKjyMq0NhjqECdaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ruEzS-0008Pk-KN; Tue, 09 Apr 2024 19:10:34 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ruEzR-00BLKD-3C; Tue, 09 Apr 2024 19:10:33 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ruEzQ-00H51y-3C;
-	Tue, 09 Apr 2024 19:10:33 +0200
-Date: Tue, 9 Apr 2024 19:10:32 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: Frank Binns <frank.binns@imgtec.com>, 
-	Matt Coster <matt.coster@imgtec.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mediatek@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, Thierry Reding <thierry.reding@gmail.com>, 
-	Mikko Perttunen <mperttunen@nvidia.com>, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 0/4] gpu: Convert to platform remove callback returning
- void
-Message-ID: <tlmlxgcsz27q2hm2z5hht7deiksp7lrpin3ju2sutc2higfhmo@bw3avnea6sac>
-References: <cover.1712681770.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1712682644; c=relaxed/simple;
+	bh=DaPCXUGC5SI+VvCrK6iY6VKR70jtnLy+38KfZddgl/o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ggkikmI/2lo8IPMAzYjF0q6NO2uIGu6lAWwmy80BOyAyS7Mf0m5YdW+QOSXk5tJIR/Eatwvnb4LzP05cbxzkGJUgImjahW/tzWg7rTYODxIaGJa2Rb+dqRO9ZJFJAlPxyLNKFedLgx3lONyM1bsctgUQs1gh0pins/2FNLpZ4QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=iBzYfnWv; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5aa34ec9a54so76983eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 10:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712682640; x=1713287440; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rCF4brmK1xna8X9dl4JbyVl4tAdSfSlHlPsOdrXYGDA=;
+        b=iBzYfnWvTTgUTCdTUIKYJcav2CXcE99UyyXqPEFifHVrBSQNBC+wDwuPXNyuR9FGEP
+         /UfI+b4bmsZdxJpOE1wKPvvGFiForg+zpX6Gv3ZP0EJd239nTI/GrYAKi5TfZX1pQXny
+         r4mMlAoMaB87vKLH8H/xjCt0x140+VvoQHB9vF6HQGuK/27Z/vrlp03HG6coqqqd5xXm
+         SxosxqAYJtmI0NfPgSbYLhrBSQqQXz9MsithjCwyzGOBYU6E36exuhkOsd5wJ9aUgyS7
+         4oAcZ4l82d50odbKdEDGZ2KRC0WPK89VMcEl7H1wqbyyYPBnADO7CbdG8ZMegtPjkVT0
+         w0rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712682640; x=1713287440;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rCF4brmK1xna8X9dl4JbyVl4tAdSfSlHlPsOdrXYGDA=;
+        b=PGwuuCx76CG2XUMeUrY+ongcCTZzIuuvyTrdnDK2BJuqivO1+bfKiKk5GdgD1ODW4o
+         EsS764YL1kKbOX9ymCmxLh9mlIE9lb5G/Ppzhjn8lqE3/hAtqQemIWysOnVNySCUcH5l
+         56vdS/JwopkgqnoLpFqf0vjTxsey3k7MEfB3DWgaMh4BSlCicslceYI4GeQxreqI89dw
+         VBBl8E7vZJpCQk0VEOyNcwnGFQ6a4k0PLU9qIFUuuG3oGvX/oNUjvMX+U5vUkuN92L3T
+         j/xRgNWxBkocPlnqmhIGbPUKfApaGIONCr26XIV8sLy/dYLcgG1mGkvw0CD2+OYriKz3
+         VszA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGWvdNadFXHzHZ3DdYddIYKqKN7okDFTFvi0mMsLSdSgMnRL2AyXE57Ej8vKZCkA7C92J/2CY7C75O2RCtAvWx0Q9mFl+1tWUGpAzQ
+X-Gm-Message-State: AOJu0YzBKQ5ukd7OEpJ6gzmmMo9Fn+gQyeQ0/S+jfx+xOKosLhcnNQX1
+	4DX9mc/q12i1rMwnKPaVS+6LxAhrtGS9fWCdSQz00k6WFTGhInN9ZP34twRiU4o=
+X-Google-Smtp-Source: AGHT+IG0Q+2GTIz4xzJKQZb4/LaRz7TK4ronqVobmO/AKkEHPaGT79eQEbnXx4hY8yxj2ScSHCLFlA==
+X-Received: by 2002:a05:6359:2ea3:b0:186:10ee:b04 with SMTP id rp35-20020a0563592ea300b0018610ee0b04mr431149rwb.1.1712682640194;
+        Tue, 09 Apr 2024 10:10:40 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id w9-20020a63fb49000000b005bd980cca56sm8397770pgj.29.2024.04.09.10.10.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 10:10:39 -0700 (PDT)
+Message-ID: <8187c490-b1e1-4c7d-9f7c-590ade4777c4@kernel.dk>
+Date: Tue, 9 Apr 2024 11:10:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wh4wffqp5vy4ayph"
-Content-Disposition: inline
-In-Reply-To: <cover.1712681770.git.u.kleine-koenig@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] iov_iter: add copy_to_iter_full()
+Content-Language: en-US
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240409152438.77960-1-axboe@kernel.dk>
+ <20240409152438.77960-2-axboe@kernel.dk> <20240409170644.GE2118490@ZenIV>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240409170644.GE2118490@ZenIV>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 4/9/24 11:06 AM, Al Viro wrote:
+> On Tue, Apr 09, 2024 at 09:22:15AM -0600, Jens Axboe wrote:
+>> Add variant of copy_to_iter() that either copies the full amount asked
+>> for and return success, or ensures that the iov_iter is back to where
+>> it started on failure and returns false.
+> 
+> FWIW, see git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.iov_iter
+> 
+> There was an open-coded instance (skb_copy_linear()) that I'd converted to
+> that helper in the same commit; I can split it, of course, but I don't
+> see much point in that.
 
---wh4wffqp5vy4ayph
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No reason to split it, I'll have a dependency regardless. I'll just pull
+your branch in, so ignore patch 1 here, 2-4 will remain the same.
 
-On Tue, Apr 09, 2024 at 07:02:47PM +0200, Uwe Kleine-K=F6nig wrote:
-> Hello,
->=20
-> with some patches sent earlier[1], this series converts all platform
-> drivers below drivers/gpu to not use struct platform_device::remove()
-> any more.
+-- 
+Jens Axboe
 
-I forgot to include footnote with the list of earlier patches. For
-completeness:
-
-[1]:
-	https://lore.kernel.org/dri-devel/20240409165043.105137-2-u.kleine-koenig@=
-pengutronix.de
-	https://lore.kernel.org/dri-devel/20240304091005.717012-2-u.kleine-koenig@=
-pengutronix.de
-	https://lore.kernel.org/dri-devel/20240304090555.716327-2-u.kleine-koenig@=
-pengutronix.de
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---wh4wffqp5vy4ayph
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYVdocACgkQj4D7WH0S
-/k4NBQf/fGCO4C5nBz03r5cSavubMucd4IklIaLfyl262aXVhEoDky/JmF6J/iBK
-DH//l0VXopedb0iA1DoShtgQd0/4murtDOrKL8i6pZ8pIzkT4VeVxaftlnnLUtrS
-pi6ryVXU5kfczK9gx1c+VTbgl/sTzKmOTP7VUd7V5MctnmEE1l35kwlMwWwbLBHq
-VK7IkbRT+nIRuqDfmjpIJCMWAigeJAXIclmMT5z5W7TGfqGlbhGsoVL29gdL4PsK
-phXuywB6RFq0kpDbCBYBSau6ylBov/kaX5hlcGliWuxNxOjAXaXX1rbk6vghqatH
-HrmfYNmYaOg/oL5DdyZD4fqTUawBrA==
-=Mzy3
------END PGP SIGNATURE-----
-
---wh4wffqp5vy4ayph--
 
