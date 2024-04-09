@@ -1,312 +1,169 @@
-Return-Path: <linux-kernel+bounces-136602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4275889D607
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:55:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E1589D60C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:56:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED90E283F4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:55:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 946881F21EC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3678F8060A;
-	Tue,  9 Apr 2024 09:55:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7709780038
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:55:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FCC80630;
+	Tue,  9 Apr 2024 09:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TUCGSqHs"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27C38060A;
+	Tue,  9 Apr 2024 09:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712656527; cv=none; b=CiHtlTfokL4+yw6l4ONwMcez62V5H8rqujIYqdBFKhoSDMtjYuKXn2ZpDW5PqZBhsb+DJ3IZja/y786ArNrM8oWHtGmVuUswRCabBDnPuQea1QEYMjDk6Cu4gDpxOULc27xO1Fhz0+GCMKS4LlVp8t79o+DpjX/QXPAocSERyAg=
+	t=1712656605; cv=none; b=VoCqXUSeqfyRvFQSP3JzD2noNcsUjH9StRx69QdY6Cb7Xkcyimu/nxt7txUwrPkRm9bCaJwyaBuCCSqyKUmnmLVWjac4Bp7S0Js4iiesPzP/pzPrfOS/v4fgJXin6llFGDEQC4QqYCYLwsDDlX46gL83o5QocQ5Bqhk3Li3jnEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712656527; c=relaxed/simple;
-	bh=EShYxGHtJuVTjpjaobIcz1kylPcKHMfYy1EyNXaxHzo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KEe4O/ThDFwzBvfq55GrImuHNI2eC3IwIpDiiigdU/3QTweYizcb7uW+kZOzFDyQbkOaQUN2b1d1Ax7vTTWh83yiEbsninQF0zhpqr8kqUn1uttLS836b9ZJbnMsjvhShRB1+cV9LLJ22PMGXhtclDSVQ7zEL23du32dADYmuGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6965DA7;
-	Tue,  9 Apr 2024 02:55:54 -0700 (PDT)
-Received: from [10.1.33.185] (unknown [10.1.33.185])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C044B3F6C4;
-	Tue,  9 Apr 2024 02:55:22 -0700 (PDT)
-Message-ID: <b18a5a7b-f787-4be8-a617-e86a56c140e6@arm.com>
-Date: Tue, 9 Apr 2024 10:55:21 +0100
+	s=arc-20240116; t=1712656605; c=relaxed/simple;
+	bh=5kdIyr7d+TqYs/Wm27GviIdtHrnkZbUdmJ6L1NB2+mw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NJidscL3aPLNCXrhzpIJJgRqmqlVaUE+G5nSO+mU3Izo2bw7IS7wJsnYqo4Sqpv3MICV19pAsT9CUpVOL0aIhOidDGkho2Rwvq6c8agz7dmiQS2D+uv3GpzTvGKiIERVlcLSqIr63z00PUUM6KcxPY/gmABNXtXunuZgwm86Gcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TUCGSqHs; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e244c7cbf8so45122195ad.0;
+        Tue, 09 Apr 2024 02:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712656603; x=1713261403; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hYDT1gagtsYDBQ7j1Wl4qvL1OaVYrsLw8iRUF0LZZa4=;
+        b=TUCGSqHszkifKbFkWyFqbw+HW6hV1xLWwJLKLNq5T1w1rbMINEQCbk8uV3TrNus2K2
+         n19wOhf0s88ZWoDTsajd6dvntj7tGrXzCGi2tit+X1RN9erCCya6lFFDHdC6Mk6JaYJb
+         gAy4wMArXfMW49U9pq/LrTojoniWIoDq6mJa4Udu19iXgi8KBytnC7ym6cRA6btqr32z
+         7tdP1InyQX7ZC1JkG9a4BjebDcN8HaDrplH43hS8ko+0zXP5M/+Qji2+bH1/YSe/2slz
+         ce9ACb8MoXqEWVmlaBQ90yKvCgurF36kaHwqgN6XFvTcnbjm0gYMipPAjF7fRDMMCVYV
+         gcXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712656603; x=1713261403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hYDT1gagtsYDBQ7j1Wl4qvL1OaVYrsLw8iRUF0LZZa4=;
+        b=NSIBP9noLaK9GjvC6n6qcd4/XPKzJ7aLC2tU9ZqalcLE+im/RNO6DnliWh8ijcLdP5
+         IFDmOTqzkvHiPBLUlKy87QDH5EBrFGNWt9IrOYuw4cjrpJ1FnIODvhqEhQD1EhJmdCLM
+         FZL/fVKUcagn0ED9CCBjlwQjfc0bka62xH2NNPd76d9z2IEqgLxYZP0tHI3ewxr8clL9
+         lw6c6uE+MVUzZpR0/9Kq5BleA69VRt+muPuCSa9cY8K4PhCZc194a3IzIPds2Ua//7cw
+         jiI2yJh9oBjjCntTxE3oU2nzxKJiSe4JVF1KX6Bwx14dzGSbnL3OV8YvipPUUbi7ooOj
+         T2oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXZlP4uJj/uQrnG0ztlUn1sn6uqiKcjVE1ZgZHC0UIaN8Vza27NoRBcYWMGGbSfOg35ytthhT8P+qUahWdp+VqntrwKAlXoS9klIIGmnQ1XzDyCo6CG5FG+nCgIdNwFby33UJdkTBsmPAXbeleyPtUo2txxWVRKIH7SQmJmSXS0G+qsrBU=
+X-Gm-Message-State: AOJu0Yy/z6djReloNHBb+Lb6ZvwtbkF0zWvK+2L5yhCYIKWnmTBFxctV
+	6yVgIbSaCoWSqKIubql3scC/txyC4FvrGwYmlhaA7n23oRDf5SGW
+X-Google-Smtp-Source: AGHT+IGbspmJ4y0DWy0bXoZNhmrveZTGkCJ0U/luzwHbiILv8Pozmxr4Mq8N7vYEE073vwEM59r/Tg==
+X-Received: by 2002:a17:902:d2d1:b0:1e3:f2d0:1a4d with SMTP id n17-20020a170902d2d100b001e3f2d01a4dmr7381037plc.45.1712656602759;
+        Tue, 09 Apr 2024 02:56:42 -0700 (PDT)
+Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id o17-20020a170902d4d100b001e3f1596baasm5100445plg.298.2024.04.09.02.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 02:56:42 -0700 (PDT)
+From: Jacky Huang <ychuang570808@gmail.com>
+To: linus.walleij@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ychuang3@nuvoton.com,
+	schung@nuvoton.com
+Subject: [PATCH v7 0/3] Add support for nuvoton ma35d1 pin control
+Date: Tue,  9 Apr 2024 09:56:34 +0000
+Message-Id: <20240409095637.2135-1-ychuang570808@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/7] mm: swap: free_swap_and_cache_nr() as batched
- free_swap_and_cache()
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>,
- Lance Yang <ioworker0@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240408183946.2991168-1-ryan.roberts@arm.com>
- <20240408183946.2991168-3-ryan.roberts@arm.com>
- <CAGsJ_4xMaO8AWMGc4Od-FLWBhhT-u8f7QbR11VsqD0uqH3Kp6g@mail.gmail.com>
- <CAGsJ_4wpu2Nq0y3z7LYjPLJ1ZBi+BNRNKkyUPsXKDAg1POLjLA@mail.gmail.com>
- <44e23a4d-97e7-4d84-848a-f9325b7b76c0@redhat.com>
- <CAGsJ_4wvjVAK+HBDo86xs4zv18QcCNzVRctr1gYMWwtYGNHvDg@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wvjVAK+HBDo86xs4zv18QcCNzVRctr1gYMWwtYGNHvDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 09/04/2024 10:41, Barry Song wrote:
-> On Tue, Apr 9, 2024 at 9:24 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 09.04.24 11:22, Barry Song wrote:
->>> On Tue, Apr 9, 2024 at 8:51 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>
->>>> On Tue, Apr 9, 2024 at 6:40 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>
->>>>> Now that we no longer have a convenient flag in the cluster to determine
->>>>> if a folio is large, free_swap_and_cache() will take a reference and
->>>>> lock a large folio much more often, which could lead to contention and
->>>>> (e.g.) failure to split large folios, etc.
->>>>>
->>>>> Let's solve that problem by batch freeing swap and cache with a new
->>>>> function, free_swap_and_cache_nr(), to free a contiguous range of swap
->>>>> entries together. This allows us to first drop a reference to each swap
->>>>> slot before we try to release the cache folio. This means we only try to
->>>>> release the folio once, only taking the reference and lock once - much
->>>>> better than the previous 512 times for the 2M THP case.
->>>>>
->>>>> Contiguous swap entries are gathered in zap_pte_range() and
->>>>> madvise_free_pte_range() in a similar way to how present ptes are
->>>>> already gathered in zap_pte_range().
->>>>>
->>>>> While we are at it, let's simplify by converting the return type of both
->>>>> functions to void. The return value was used only by zap_pte_range() to
->>>>> print a bad pte, and was ignored by everyone else, so the extra
->>>>> reporting wasn't exactly guaranteed. We will still get the warning with
->>>>> most of the information from get_swap_device(). With the batch version,
->>>>> we wouldn't know which pte was bad anyway so could print the wrong one.
->>>>>
->>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>> ---
->>>>>   include/linux/pgtable.h | 29 ++++++++++++
->>>>>   include/linux/swap.h    | 12 +++--
->>>>>   mm/internal.h           | 63 ++++++++++++++++++++++++++
->>>>>   mm/madvise.c            | 12 +++--
->>>>>   mm/memory.c             | 13 +++---
->>>>>   mm/swapfile.c           | 97 +++++++++++++++++++++++++++++++++--------
->>>>>   6 files changed, 195 insertions(+), 31 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>> index a3fc8150b047..75096025fe52 100644
->>>>> --- a/include/linux/pgtable.h
->>>>> +++ b/include/linux/pgtable.h
->>>>> @@ -708,6 +708,35 @@ static inline void pte_clear_not_present_full(struct mm_struct *mm,
->>>>>   }
->>>>>   #endif
->>>>>
->>>>> +#ifndef clear_not_present_full_ptes
->>>>> +/**
->>>>> + * clear_not_present_full_ptes - Clear multiple not present PTEs which are
->>>>> + *                              consecutive in the pgtable.
->>>>> + * @mm: Address space the ptes represent.
->>>>> + * @addr: Address of the first pte.
->>>>> + * @ptep: Page table pointer for the first entry.
->>>>> + * @nr: Number of entries to clear.
->>>>> + * @full: Whether we are clearing a full mm.
->>>>> + *
->>>>> + * May be overridden by the architecture; otherwise, implemented as a simple
->>>>> + * loop over pte_clear_not_present_full().
->>>>> + *
->>>>> + * Context: The caller holds the page table lock.  The PTEs are all not present.
->>>>> + * The PTEs are all in the same PMD.
->>>>> + */
->>>>> +static inline void clear_not_present_full_ptes(struct mm_struct *mm,
->>>>> +               unsigned long addr, pte_t *ptep, unsigned int nr, int full)
->>>>> +{
->>>>> +       for (;;) {
->>>>> +               pte_clear_not_present_full(mm, addr, ptep, full);
->>>>> +               if (--nr == 0)
->>>>> +                       break;
->>>>> +               ptep++;
->>>>> +               addr += PAGE_SIZE;
->>>>> +       }
->>>>> +}
->>>>> +#endif
->>>>> +
->>>>>   #ifndef __HAVE_ARCH_PTEP_CLEAR_FLUSH
->>>>>   extern pte_t ptep_clear_flush(struct vm_area_struct *vma,
->>>>>                                unsigned long address,
->>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>> index f6f78198f000..5737236dc3ce 100644
->>>>> --- a/include/linux/swap.h
->>>>> +++ b/include/linux/swap.h
->>>>> @@ -471,7 +471,7 @@ extern int swap_duplicate(swp_entry_t);
->>>>>   extern int swapcache_prepare(swp_entry_t);
->>>>>   extern void swap_free(swp_entry_t);
->>>>>   extern void swapcache_free_entries(swp_entry_t *entries, int n);
->>>>> -extern int free_swap_and_cache(swp_entry_t);
->>>>> +extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
->>>>>   int swap_type_of(dev_t device, sector_t offset);
->>>>>   int find_first_swap(dev_t *device);
->>>>>   extern unsigned int count_swap_pages(int, int);
->>>>> @@ -520,8 +520,9 @@ static inline void put_swap_device(struct swap_info_struct *si)
->>>>>   #define free_pages_and_swap_cache(pages, nr) \
->>>>>          release_pages((pages), (nr));
->>>>>
->>>>> -/* used to sanity check ptes in zap_pte_range when CONFIG_SWAP=0 */
->>>>> -#define free_swap_and_cache(e) is_pfn_swap_entry(e)
->>>>> +static inline void free_swap_and_cache_nr(swp_entry_t entry, int nr)
->>>>> +{
->>>>> +}
->>>>>
->>>>>   static inline void free_swap_cache(struct folio *folio)
->>>>>   {
->>>>> @@ -589,6 +590,11 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
->>>>>   }
->>>>>   #endif /* CONFIG_SWAP */
->>>>>
->>>>> +static inline void free_swap_and_cache(swp_entry_t entry)
->>>>> +{
->>>>> +       free_swap_and_cache_nr(entry, 1);
->>>>> +}
->>>>> +
->>>>>   #ifdef CONFIG_MEMCG
->>>>>   static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
->>>>>   {
->>>>> diff --git a/mm/internal.h b/mm/internal.h
->>>>> index 3bdc8693b54f..de68705624b0 100644
->>>>> --- a/mm/internal.h
->>>>> +++ b/mm/internal.h
->>>>> @@ -11,6 +11,8 @@
->>>>>   #include <linux/mm.h>
->>>>>   #include <linux/pagemap.h>
->>>>>   #include <linux/rmap.h>
->>>>> +#include <linux/swap.h>
->>>>> +#include <linux/swapops.h>
->>>>>   #include <linux/tracepoint-defs.h>
->>>>>
->>>>>   struct folio_batch;
->>>>> @@ -189,6 +191,67 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->>>>>
->>>>>          return min(ptep - start_ptep, max_nr);
->>>>>   }
->>>>> +
->>>>> +/**
->>>>> + * pte_next_swp_offset - Increment the swap entry offset field of a swap pte.
->>>>> + * @pte: The initial pte state; is_swap_pte(pte) must be true.
->>>>> + *
->>>>> + * Increments the swap offset, while maintaining all other fields, including
->>>>> + * swap type, and any swp pte bits. The resulting pte is returned.
->>>>> + */
->>>>> +static inline pte_t pte_next_swp_offset(pte_t pte)
->>>>> +{
->>>>> +       swp_entry_t entry = pte_to_swp_entry(pte);
->>>>> +       pte_t new = __swp_entry_to_pte(__swp_entry(swp_type(entry),
->>>>> +                                                  swp_offset(entry) + 1));
->>>>> +
->>>>> +       if (pte_swp_soft_dirty(pte))
->>>>> +               new = pte_swp_mksoft_dirty(new);
->>>>> +       if (pte_swp_exclusive(pte))
->>>>> +               new = pte_swp_mkexclusive(new);
->>>>> +       if (pte_swp_uffd_wp(pte))
->>>>> +               new = pte_swp_mkuffd_wp(new);
->>>>
->>>> I don't quite understand this. If this page table entry is exclusive,
->>>> will its subsequent page table entry also be exclusive without
->>>> question?
->>>> in try_to_unmap_one, exclusive is per-subpage but not per-folio:
->>>>
->>>>                  anon_exclusive = folio_test_anon(folio) &&
->>>>                                   PageAnonExclusive(subpage);
->>>>
->>>> same questions also for diry, wp etc.
->>>
->>> Sorry for the noise. you are right. based on your new version, I think I should
->>> entirely drop:
->>>
->>> [PATCH v2 3/5] mm: swap_pte_batch: add an output argument to reture if
->>> all swap entries are exclusive
->>
->> Yes. If we ever want to ignore some bits, we should likely add flags to
->> change the behavior, like for folio_pte_batch().
->>
->> For swapin, you really want the exclusive bits to match, though.
-> 
-> I am not quite sure I definitely need exclusive bits to match. i can either
-> drop my 3/5 or ignore the exclusive bit as below (if anyone is not shared,
-> swpin won't reuse the large folio, but it can still entirely map it read-only):
-> 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index cae39c372bfc..5726e729c9ee 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -253,10 +253,22 @@ static inline int swap_pte_batch(pte_t
-> *start_ptep, int max_nr, pte_t pte,
->                 *any_shared |= !pte_swp_exclusive(pte);
-> 
->         while (ptep < end_ptep) {
-> +               pte_t ignore_exclusive_pte;
-> +               pte_t ignore_exclusive_expected_pte;
->                 pte = ptep_get(ptep);
-> 
-> -               if (!pte_same(pte, expected_pte))
-> -                       break;
-> +               if (any_shared) {
-> +                       ignore_exclusive_pte = pte;
-> +                       ignore_exclusive_expected_pte = expected_pte;
-> +                       ignore_exclusive_pte =
-> pte_swp_clear_exclusive(ignore_exclusive_pte);
-> +                       ignore_exclusive_expected_pte =
-> pte_swp_clear_exclusive(expected_pte);
-> +
-> +                       if (!pte_same(ignore_exclusive_pte,
-> ignore_exclusive_expected_pte))
-> +                               break;
-> +               } else {
-> +                       if (!pte_same(pte, expected_pte))
-> +                               break;
-> +               }
-> 
->                 if (any_shared)
->                         *any_shared |= !pte_swp_exclusive(pte);
+From: Jacky Huang <ychuang3@nuvoton.com>
 
-I'll leave David to comment on this proposal; I'm not sure I understand all the
-details. The code change does look a bit "busy" though - sometimes that can be
-an indicator :)
+This patch series adds the pin control and GPIO driver for the nuvoton ma35d1
+ARMv8 SoC. It includes DT binding documentation and the ma35d1 pin control driver.
 
-> 
->> softdirty and uffd-wp as well at least initially for simplicity.
-> 
-> yes for this.
-> 
-> By the way, I wonder if you and Ryan have a moment to review swpin
-> refault patchset
-> v2 :-)
+This pin control driver has been tested on the ma35d1 som board with Linux 6.9.0.
 
-It's on my todo list! I'm very keen to get as much large swap-out and swap-in
-support into v6.10 as we can. Hoping to get to it inthe next couple of days.
+v7:
+  - Replace the magic numbers appearing in the driver with defined constants, or
+    provide comments to explain them.
+  - Update the ma35_irq_irqtype()
+    - irq_set_handler_locked(d, handle_edge_irq) and
+      irq_set_handler_locked(d, handle_level_irq)
+    - add case IRQ_TYPE_EDGE_BOTH
+  - Use handle_bad_irq for girq->handler, instead of handle_level_irq
 
-> 
-> [PATCH v2 0/5] large folios swap-in: handle refault cases first
-> https://lore.kernel.org/linux-mm/20240409082631.187483-1-21cnbao@gmail.com/
-> 
-> 
->>
->> --
->> Cheers,
->>
->> David / dhildenb
->>
-> 
-> Thanks
-> Barry
+v6:
+  - Remove DTS from this patchset. The DTS will be submitted in another patchset.
+
+v5:
+  - Update the pinctrl driver header file pinctrl-ma35.h
+    - Include platform_device.h to fix compile issues.
+
+v4:
+  - Update the pinctrl driver Kconfig
+    - Add depends to CONFIG_PINCTRL_MA35D1 to prevent compilation errors.
+  - Update the pinctrl driver
+    - Utilize devm_kcalloc() instead of devm_kzalloc().
+    - Employ ARRAY_SIZE() instead of sizeof()/sizeof().
+
+v3:
+  - Update DTS and YAML files
+    - Corrected the unit address of nodes gpioa ~ gpion.
+    - Removed the invalid "pin-default" node.
+    - Removed the phandle entry from "nuvoton,pins".
+  - Update pinctrl driver
+    - Fixed the Kconfig by using "depend on" instead of "if".
+    - Removed unused #include of header files.
+    - Utilized immutable irq_chip instead of dynamic irq_chip.
+    - Replaced ma35_dt_free_map() with pinconf_generic_dt_free_map().
+    - Implemented other minor fixes as suggested by the reviewer.
+
+v2:
+  - Update nuvoton,ma35d1-pinctrl.yaml
+    - Update the 'nuvoton,pins' to follow the style of rockchip pinctrl approch.
+    - Use power-source to indicate the pin voltage selection which follow the
+      realtek pinctrl approch.
+    - Instead of integer, use drive-strength-microamp to specify the real driving
+      strength capability of IO pins.
+  - Update ma35d1 pinctrl driver
+    - Add I/O drive strength lookup table for translating device tree setting
+      into control register.
+  - Remove ma35d1-pinfunc.h which is unused after update definition of 'nuvoton,pins'.
+
+
+Jacky Huang (3):
+  dt-bindings: reset: Add syscon to nuvoton ma35d1 system-management
+    node
+  dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
+  pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
+
+ .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       |  163 ++
+ .../bindings/reset/nuvoton,ma35d1-reset.yaml  |    3 +-
+ drivers/pinctrl/nuvoton/Kconfig               |   19 +
+ drivers/pinctrl/nuvoton/Makefile              |    2 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c        | 1233 +++++++++++
+ drivers/pinctrl/nuvoton/pinctrl-ma35.h        |   51 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35d1.c      | 1797 +++++++++++++++++
+ 7 files changed, 3267 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
+
+-- 
+2.34.1
 
 
