@@ -1,117 +1,155 @@
-Return-Path: <linux-kernel+bounces-137619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47ECF89E4A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:47:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2490689E4A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:49:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE279282C31
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:47:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3C8B1F23048
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0225C158855;
-	Tue,  9 Apr 2024 20:47:01 +0000 (UTC)
-Received: from sxb1plsmtpa01-01.prod.sxb1.secureserver.net (sxb1plsmtpa01-01.prod.sxb1.secureserver.net [188.121.53.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C781F158860;
+	Tue,  9 Apr 2024 20:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dpznEsTK"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BCD2905
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632FB153BDD
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712695620; cv=none; b=Q13rE6PYqCsCXaPPZA/+JPtqeH94mpPiGzlge1eQ0/sB/p1m0kVEHq9YA5gXkoMwlPvMBK64rh7HcvSRWtpJNbubTr/d/wcsuZTxbeuv6Ij4xJR3lYc3MihR71DEYfN7f0GQrvM0tAoBUtNcRKYdMqVqIX/+4Kgkc72sE1lkeHI=
+	t=1712695735; cv=none; b=hWMRY2LQxlVsve8NDzEXCNCKgl0i7IqBBUoycj5Xbtp5J+jOwTuzZwwioBP7nmDPZDFnCfWHfDe0uq7CiBEIZHAypyJLl6fg801AFF7bzuP3XXmwTbwOKs0Dn5x53Bz1J0geZR7RD/RMhmwXiB48sAE9vGRoxB8+C2euyroAn/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712695620; c=relaxed/simple;
-	bh=QTM+LP0YD0A7dbv3jscQrPsB8DT7gPc3um5gzm+C+tI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p8xr7AZ2ZHZecOU1gUdp82ENhUIOoVxiePUWSDvR2i7fvx2H5/35RFX4ZnE+vbus+UD1034LtQzQaGu5mxGSYIyieAJF0B2IfA3jXJc7HTDn6elSrJQcSiDC74DZc2E7xOSd0LYBHmlyHH5zmAcWPsucA3sgyhKZ4RJpNFie30s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
-Received: from phoenix.fritz.box ([82.69.79.175])
-	by :SMTPAUTH: with ESMTPA
-	id uIMXrvVZ9defduIMirCrSi; Tue, 09 Apr 2024 13:46:49 -0700
-X-CMAE-Analysis: v=2.4 cv=GuaJ+V1C c=1 sm=1 tr=0 ts=6615a939
- a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=XJTnSpgKjpJfBdNX:21 a=1T6qrdwwAAAA:8 a=VwQbUJbxAAAA:8 a=FXvPX3liAAAA:8
- a=OU3_bkaUkIPW1OEudewA:9 a=pdM9UVT-CToajMN3hxJJ:22 a=AjGcO6oz07-iQ99wixmX:22
- a=UObqyxdv-6Yh2QiB9mM_:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-From: Phillip Lougher <phillip@squashfs.org.uk>
-To: akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Cc: Phillip Lougher <phillip@squashfs.org.uk>,
-	"Ubisectech Sirius" <bugreport@ubisectech.com>
-Subject: [PATCH V2] Squashfs: check the inode number is not the invalid value of zero
-Date: Tue,  9 Apr 2024 21:47:23 +0100
-Message-Id: <20240409204723.446925-1-phillip@squashfs.org.uk>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712695735; c=relaxed/simple;
+	bh=AkzPRwIJ73o3QRSvWCo1z6HvR+da50xyrwDb6AgOtP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CHRzH/jSO/86TC0yxbCZ0BkvT5xsJ6b8TADSNe03yXDA4jhu6dYASf2jqOK43D54F5q4K6nrLItjUGpTA6pFaLrwCAuyw3gHa1NM8t8lJZfM4CnwjJXnwPqRFv9Z0s6FQUbIJ3cxJKbPC/1qffdNepKyjXLN5VO2AEvH1SdkO1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dpznEsTK; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56e346224bdso4132497a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712695732; x=1713300532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r8FBvT4U9jWO7n57wctvYSnbs8wWD3G7D/bsJH6yrak=;
+        b=dpznEsTKTkI4z/SZ7icROPfOb+Xx4omuK6mA1iWdeMYqh8yvdUNjO5tBOChPDNkyYg
+         4LxH/WWjrSW14/ZRU9O2kQaSQAeaKntlAU/m26o2UB1vYdU7rEY3+jeNJdOxKvupKTbG
+         fEy4rW4bvi3A6Il2mN17wjIU0+SCQF4lp8tbpo0dIAcDGnm/Z/LPEK6RFaqmG732la8b
+         tTjrqt3HCYPQNcTVRud5wJ408YatIFu8GEY23I3CKn7Q7GomYK1oXSuxVuoGRPYLoJmR
+         Pg9qilI/K7k1Ewn8V7hggv5MDjOisEsfOLSWirZjxuX5UNQD2IecBezcn/ux+A3yDs5F
+         Q7jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712695732; x=1713300532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r8FBvT4U9jWO7n57wctvYSnbs8wWD3G7D/bsJH6yrak=;
+        b=UualnwrMZrKNxOyUSXXUyNRPxkNlakRTK/xWPmqFo212RlxUthwoGrBSE+NzirtND2
+         +Jyb4MwlKSbnT/QiY0pwVNeleVCj4WMICHOUkVj6WJ0QrsQp3JU8dIpgFc/cqaTsJOYy
+         ned0mW9SoQDixNPgBFbN3JtEWdfCeMG9yrxeP8c8tCBL+ZdvAxD1PXoOZj7oMM6czW+U
+         55IpAEH+VYjETugQ2b4XolYj/QR8bopGp5s4flOjcdmtxauTLbPI4UehSrzd8nlLxnvE
+         qSfF+VQGP8/u/4y0AoeK1UX/S6lDU1adHJ1J4PxpvDGtDouxkhaT81QFHqcI2YdyZX9l
+         eOAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUuHzyJ5CuoPse9RsD1JTMnoZcCmFT7rFeGUxxBQsOUldChf096IXs1QqXncOqnTUmPfJ+hDtefqJMVqHC9LMPYjAyIS7tbBUsvXkW
+X-Gm-Message-State: AOJu0YwlrJaVKdxLoEbkl5Bz6jz037lvTqqlTAeLufQgjt6FvmMK1N5f
+	bMKKp+3pcaJfpfJsxmnRbOLhjqGmm0cokljd/d5tlJfM2o8QTmcB54IYLqSt6CgbLeGorNKYWLj
+	93f6hhGHzJUGWmm8AfQdJv8sBsLdxLcvpGLOQ
+X-Google-Smtp-Source: AGHT+IHmdRG/nFnqS9OEuLDhWFqseJucDLixYntzV9YZk7CKKlWhzUyPbXqLfCYRT3uZPpxDKB0xkdf/1sRhAlzoBmg=
+X-Received: by 2002:a50:cddc:0:b0:56e:99e:1fac with SMTP id
+ h28-20020a50cddc000000b0056e099e1facmr383240edj.39.1712695731585; Tue, 09 Apr
+ 2024 13:48:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfL/wfjlBWDoeFH1N6AfOORQApCtH1tdsbN+46ujuZyxFfgxQ1pKDNuV9an83pXR24MCs0k4vZl6AeSdj/UQ9GIv8fb2nfc+rB1YO58nBcd2pX/0ILyBw
- wKom7pWc72NgjOKBHB49bYI8m6N4ZyRhk6IQKiAbySP06hTGkceA2D0qyKF9uGFWNl/Bt602NJNsbpEy78AjZTkeeqym4BXrVFQHH4JqbnRb5s3hDYNcSMSR
- /1esuSxj6FTtikF5dc2vfn0o7aY4FLhAVjSKfyYw/6SK/5GenX/OdRagm50twvZRpbzVwvZb5oFjSThat45jww==
+References: <20240405-strncpy-kernel-debug-kdb-kdb_io-c-v2-1-d0bf595ab301@google.com>
+ <20240405095144.GB2890893@aspen.lan> <CAFhGd8q99emm1SFJSs=L7Pn0A79vCtDHtTD5XUbVCNh=DDadaQ@mail.gmail.com>
+ <20240409183558.GA7510@aspen.lan>
+In-Reply-To: <20240409183558.GA7510@aspen.lan>
+From: Justin Stitt <justinstitt@google.com>
+Date: Tue, 9 Apr 2024 13:48:38 -0700
+Message-ID: <CAFhGd8qESuuifuHsNjFPR-Va3P80bxrw+LqvC8deA8GziUJLpw@mail.gmail.com>
+Subject: Re: [PATCH v2] kdb: replace deprecated strncpy
+To: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>, Douglas Anderson <dianders@chromium.org>, 
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Syskiller has produced an out of bounds access in fill_meta_index().
+Hi,
 
-That out of bounds access is ultimately caused because the inode
-has an inode number with the invalid value of zero, which was not checked.
+On Tue, Apr 9, 2024 at 11:36=E2=80=AFAM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Mon, Apr 08, 2024 at 05:46:42PM -0700, Justin Stitt wrote:
+> > On Fri, Apr 5, 2024 at 2:51=E2=80=AFAM Daniel Thompson
+> > <daniel.thompson@linaro.org> wrote:
+> > >
+> > > >                       len_tmp =3D strlen(p_tmp);
+> > > > -                     strncpy(cp, p_tmp+len, len_tmp-len + 1);
+> > > > +                     strscpy(cp, p_tmp+len, len_tmp-len + 1);
+> > >
+> > > Again, I really don't think the third argument provides the number of
+> > > characters in the destination buffer.
+> > >
+> >
+> > Right, the third argument is the length of the "remaining" characters
+> > from the completion point.
+>
+> Which is not how strscpy() is designed to be used.
+>
+>
+> > if you type "tes" and press tab then kallsyms_symbol_complete() will
+> > populate p_tmp with "test". Prior to rendering to the user, @cp points
+> > to "s", we need to catch the user up and print the rest of the symbol
+> > name since they've already typed "tes" we only need to print out "t".
+>
+> I'm more concerned about the case where you fill the buffer entirely
+> then move the cursor left until you get to the tes and then press Tab.
+> I think at the point we write too many bytes to cp.
+>
+>
+> > len_tmp is the length of the entire symbol part as returned by
+> > kallsyms_symbol_complete() and len is the length of only the
+> > user-typed symbol. Therefore, the amount of remaining characters to
+> > print is given by len_tmp-len (and +1 for a NUL-byte).
+> >
+> > So, yeah, you're right. This isn't the length of the destination but I
+> > don't see why we can't use memcpy() (or strscpy()) and have this not
+> > be considered "broken". The pointer arithmetic checks out.
+>
+> The problem with substituting strncpy() with memcpy() is that is *not*
+> obviously wrong... but it could be subtly wrong.
+>
+> We can see that the person who originally wrote this code made a pretty
+> serious mistake with strncpy() and the third argument if garbage. It is
+> therefore important to figure out what the *correct* value for argument
+> #3 should have been *before* we attempt to replace strncpy() with
+> anything.
+>
+> Transforming something we know to be broken without fixing it first
+> means it is impossible to know if the transformation is correct or not.
+> Hence the original question, how do we know there is enough space
+> after cp to store the string?
 
-The reason this causes the out of bounds access is due to following
-sequence of events:
+Gotcha, I will find time to seriously refactor/rewrite this function
+(or at the very least the tab handling part of it).
 
-1. Fill_meta_index() is called to allocate (via empty_meta_index())
-   and fill a metadata index.  It however suffers a data read error
-   and aborts, invalidating the newly returned empty metadata index.
-   It does this by setting the inode number of the index to zero,
-   which means unused (zero is not a valid inode number).
+At the end of the day, though, I just want this strncpy() gone.
 
-2. When fill_meta_index() is subsequently called again on another
-   read operation, locate_meta_index() returns the previous index
-   because it matches the inode number of 0.  Because this index
-   has been returned it is expected to have been filled, and because
-   it hasn't been, an out of bounds access is performed.
+>
+>
+> Daniel.
 
-This patch adds a sanity check which checks that the inode number
-is not zero when the inode is created and returns -EINVAL if it is.
-
-Reported-by: "Ubisectech Sirius" <bugreport@ubisectech.com>
-Closes: https://lore.kernel.org/lkml/87f5c007-b8a5-41ae-8b57-431e924c5915.bugreport@ubisectech.com/
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
---
-V2: add space between "if" and "(".  Move Closes: to after Reported-by:.
----
- fs/squashfs/inode.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
-index aa3411354e66..16bd693d0b3a 100644
---- a/fs/squashfs/inode.c
-+++ b/fs/squashfs/inode.c
-@@ -48,6 +48,10 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
- 	gid_t i_gid;
- 	int err;
- 
-+	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
-+	if (inode->i_ino == 0)
-+		return -EINVAL;
-+
- 	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->uid), &i_uid);
- 	if (err)
- 		return err;
-@@ -58,7 +62,6 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
- 
- 	i_uid_write(inode, i_uid);
- 	i_gid_write(inode, i_gid);
--	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
- 	inode_set_mtime(inode, le32_to_cpu(sqsh_ino->mtime), 0);
- 	inode_set_atime(inode, inode_get_mtime_sec(inode), 0);
- 	inode_set_ctime(inode, inode_get_mtime_sec(inode), 0);
--- 
-2.39.2
-
+Thanks
+Justin
 
