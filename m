@@ -1,81 +1,75 @@
-Return-Path: <linux-kernel+bounces-137549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D8C89E3C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F04F589E3C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:39:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F53287207
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:38:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC961281977
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDFB157A41;
-	Tue,  9 Apr 2024 19:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC3A157E63;
+	Tue,  9 Apr 2024 19:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EiXq7zIf"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BD0zXLTd"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBE98287E;
-	Tue,  9 Apr 2024 19:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795E6157A71;
+	Tue,  9 Apr 2024 19:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712691533; cv=none; b=OPKDbsjhyAMnOQ1ndqVT/QpBZeWXnYtrMExHI6TSSTGXZ5ZjwC8zmlwEIl4cb28vW0zvbW2RINhywh5vE8ym1TmkZhR83MK5bV0cXZU1ssKhTxErpxxGDlkSwc/WRL6qRrx1W9x5TeB0C0S9SbipcdLY2SNMEplUPpXeuNNk0iw=
+	t=1712691538; cv=none; b=bdXTporBWUgddJ3ulxuHvgORbaLxwemjqVrTPG8iraI7hG6xHqgzzuD1Dqfa7nIf6nEcJCVgzeizOeVecmo2xp9DSjf0Cuni0LCl6NEaCyldqwrr30s5JPE4wFnE4BjEzSyfc/BeCuJNbv170SgbtmdkxeyP/CkLK9BNX147HD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712691533; c=relaxed/simple;
-	bh=5He+hPYuSWL8/RTjUKHQyM43sI44vCYjWprccp1juHQ=;
+	s=arc-20240116; t=1712691538; c=relaxed/simple;
+	bh=8CiuLjT8SYyHW8CYKyCQNs8I0ckuvccHwDNQ5TsQY04=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EJQtW6KQwyTbL96ItGxol+jvtEQZ7+kM7X4v7S5zzqu+ktbElcLWmp58BIl8Q8Qis9uPjgzKgiwVAF+3rzSWQyRsCKs7epQW6yppX3yJrAZRWmfveosx0V4l7oxmZGbjX6hmg5+dxEYegWDvGIw+IxR6gg7hQ2ZePcGjEvevqW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=EiXq7zIf; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=b5L8w95veW77eOArSUoOcKiLzVGmCPReF4+nD34wDNDMNnDqbZs3Dw4IJRNYAYWimrMrM/E30jW2k0x2yW2qYI9V4ickoRyU94joZKN4xOXqh45kfo8mG7Tn17C1Q/8CBRAGi1f0KZv5It9VvSKAveVNZGfrkDHESWT3x3a0TEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=BD0zXLTd; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439JcZKw016007;
-	Tue, 9 Apr 2024 14:38:35 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439JcoLo106152;
+	Tue, 9 Apr 2024 14:38:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712691515;
-	bh=UMeKXqutEdhZWaPaQ+3kgGVkcVHTscqD8c4wrFATNrY=;
+	s=ti-com-17Q1; t=1712691530;
+	bh=Nf2oFc62KEq/tI8eB+W0WJoLyI0NYoNEasGeOioyT6A=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=EiXq7zIfhIEV47bv+tanv8aPeippm7Yl4oTlW3U6gxVJuUYT56Hl1GiOTdr8tUp41
-	 v+b+5o/cKagzyMFyQpYdfMDItiWUvbxVcBDd3E3VnbZZZwkA1hwPpmhHEXvDX+/0Yt
-	 VcRn755QTRxCNCTqfIunNB4ktxDqcdy4gXAiVuak=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439JcZLZ006752
+	b=BD0zXLTdXacGLRBlLjvj24DYRQneOP1vie4nEErvcSpvwBxN15LawFcGgvOS96LBA
+	 +/6az4U2WfbYl9cCiGvzzLioH2qdEIGB59EnePawElsvo1xBCGOsf2ivra79VISD45
+	 v5nLHkR6xEmVQUL1Fj8sGdjwCug3Y9fZq7+ig4ic=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439Jco26055213
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 14:38:35 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 9 Apr 2024 14:38:50 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 14:38:34 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 14:38:50 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 14:38:34 -0500
+ Frontend Transport; Tue, 9 Apr 2024 14:38:50 -0500
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JcYlm092851;
-	Tue, 9 Apr 2024 14:38:34 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JcoZ7093153;
+	Tue, 9 Apr 2024 14:38:50 -0500
 From: Nishanth Menon <nm@ti.com>
-To: Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-CC: Robert Nelson <robertcnelson@gmail.com>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
+To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski
 	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Shengyu Qu <wiagn233@outlook.com>,
-        Sukrut Bellary <sukrut.bellary@linux.com>,
-        Javier Martinez Canillas
-	<javierm@redhat.com>,
-        Bill Mills <bill.mills@linaro.org>
-Subject: Re: [PATCH V2] arm64: dts: ti: k3-am625-beagleplay: Use mmc-pwrseq for wl18xx enable
-Date: Tue, 9 Apr 2024 14:38:33 -0500
-Message-ID: <171269147745.643129.11386696424104889094.b4-ty@ti.com>
+        Conor Dooley <conor+dt@kernel.org>, Anand Gadiyar <gadiyar@ti.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>
+CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62-lp-sk: Remove tps65219 power-button
+Date: Tue, 9 Apr 2024 14:38:48 -0500
+Message-ID: <171269152122.643229.15373522506888565634.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240325143511.2144768-1-nm@ti.com>
-References: <20240325143511.2144768-1-nm@ti.com>
+In-Reply-To: <20240325152029.2933445-1-msp@baylibre.com>
+References: <20240325152029.2933445-1-msp@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,28 +80,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Nishanth Menon,
+Hi Markus Schneider-Pargmann,
 
-On Mon, 25 Mar 2024 09:35:10 -0500, Nishanth Menon wrote:
-> BeaglePlay SBC[1] has Texas Instrument's WL18xx WiFi chipset[2].
+On Mon, 25 Mar 2024 16:20:29 +0100, Markus Schneider-Pargmann wrote:
+> On am62-lp-sk the PMIC is not wired up to a power button. Remove this
+> property. This fixes issues observed when entering a very deep sleep
+> state that is not yet available upstream.
 > 
-> Currently, WLAN_EN is configured as regulator and regulator-always-on.
-> However, the timing and wlan_en sequencing is not correctly modelled.
 > 
-> This causes the sdio access to fail during runtime-pm power operations
-> saving or during system suspend/resume/hibernation/freeze operations.
-> This is because the WLAN_EN line is not deasserted to low '0' to power
-> down the WiFi. So during restore, the WiFi driver tries to load the FW
-> without following correct power sequence. WLAN_EN => '1'/assert (high)
-> to power-up the chipset.
-> 
-> [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-am625-beagleplay: Use mmc-pwrseq for wl18xx enable
-      commit: 31d5c43719bbd147d7e2c53ad2ef17953c68f458
+[1/1] arm64: dts: ti: k3-am62-lp-sk: Remove tps65219 power-button
+      commit: 20b7a6af07b80771043d3beddd80720a40dce60c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
