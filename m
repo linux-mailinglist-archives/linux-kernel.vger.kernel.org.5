@@ -1,201 +1,154 @@
-Return-Path: <linux-kernel+bounces-137436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E124289E221
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 660B089E216
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E1781F23159
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:07:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C23E1F23302
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D526156975;
-	Tue,  9 Apr 2024 18:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D2C15574A;
+	Tue,  9 Apr 2024 18:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="jH1HgOpB"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lIK/QBsk"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327607F499;
-	Tue,  9 Apr 2024 18:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDB185276
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 18:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712686045; cv=none; b=kTzBnh27ekbuLkLLwynPdNjeLRq3vOkNO4FF6g5jFLtL5ziaDpEuruX6BjH6GyowqyR8BH7+9pTepyQ+iOwMJ4kCsuPLnFp0J+D2/HV4xbHPOx1FBeahQZ4nQOSVkBsJk9Mzx1ehYTDhSTarndX4m4Yyt5ERhJQ7Icbe7La1KRw=
+	t=1712685889; cv=none; b=d40H405OphyGbcvuYh71d+fLldnFBK6Yjn8Fv0wHuXgUsBNuaaTjSSoHoAg3rqstWZeZ1Er6CWVr41j3v9/8HTYh3VYXBf17NGCKLJm/ExsUFmij7cqqa2Ck2EtlMjJ8rLd35TJloFFEVK9DClFMjhNgePxwsyr2LOPNlMs4gZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712686045; c=relaxed/simple;
-	bh=tYIcoz0wchts/Gtp2iRLf9iduerku6Apdgx2vlKtfFU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ozfoXuIwEP4flzEryE5RMKQxgeLoVqBva+AC9mM0vy8WKxWyaLsRoUUkhruNDwoobh7WS5V/zUuFzQ/J0mWR+g07ZIpTZeRWT7SrmlN3WNd5r/IthieEf1o7aUy80QdmQAc0LDVZcr6BMRdf8WlCnxEF3QZPr2Heior+/apW2hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=jH1HgOpB; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 839D7100002;
-	Tue,  9 Apr 2024 21:07:00 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1712686020; bh=RFwbyFvj6nYarjY+Ujb977cApsg0/oYvU6Fkzw6g2QA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=jH1HgOpBJSPPtG5Q/nmkFX7x9hWXSVqxu3SD6zU1gLZzeze/lAR/ODu6+EJPEmoop
-	 Xy4mnbXKxU76+XQgOW7y+Acu9dhtp8zQJ4Xcpk2onfl4FB8m4h9eX1CG+RGP/qLKCm
-	 9WVfP5dgRkSt33V+sppeejz8qnZAidNTAnXMvMinUn1O/DNKtDd0tVfmoB79Z2iaUT
-	 l2ZT6NPY9if6E4GHBUP9wK96ecu+TqnCCfyKP+qg4fYPVmLdZVyUUeFiFcqiSqsSob
-	 XZw0wUrbPE7vM5BLyDINajThKhp5eCIz3lTClrqv0gpGOyUrW/2HgViIqpcBuIEPzt
-	 VFswAgoEXAGXA==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Tue,  9 Apr 2024 21:05:54 +0300 (MSK)
-Received: from [172.17.214.6] (172.17.214.6) by ta-mail-02 (172.17.13.212)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 9 Apr 2024
- 21:05:03 +0300
-Message-ID: <1a96d3be-cc40-4aef-bd4d-bb3a9ef3a7d4@t-argos.ru>
-Date: Tue, 9 Apr 2024 21:01:38 +0300
+	s=arc-20240116; t=1712685889; c=relaxed/simple;
+	bh=sEg91M0chOfJoTJVgoQ99WIic1YAWUXIb7Gv6htphyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O4wb+ahJElHyshjQf9ApSi1NCQT29oDDOmjEECYZtNB4w57dAAwGB17J+ZfqwMpiDsLzKSXCbUSqB9dfazC5qxEqMcy/0unT1j/7gDJg/Ip0V0ecwsSlt62cBi0TVz2Od5uDjAcmEFmir/VODQms3o/iiffm7BM4Q9xn6X2uIC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lIK/QBsk; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d487659bso6030418e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 11:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712685886; x=1713290686; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mt7HVPjAilY3mwr17H22AEx0sDoVw4kMEURX0lXTtic=;
+        b=lIK/QBskQ0U/mssZE5sPferBAoVJ3IRRGedK4xqm65E6gbNWfftcnJoemQaLzM+zLe
+         ETULRTFFVkB6NLfjgm9HABqZWFnX2Nv5j3BslK16hQUyid7nC4NmHwHP46tpLdis/N9n
+         t8HSKziYIMtafIivmWSrUSHypzgr+I0Fc9FtAYeaxPgYSRaiTBkMLqaCy64R9sDuCjja
+         ak/xtmukTDFKGalOe++dHlRrkw1NYRwiNS2c9mDAkspVj1idUvc7jLGwg5+MlRttt+Mg
+         a8VsQ/fkI56CAy2MrKLjqIqpFLiSHPJmrkHGL7f4AcbHU82Aq4tdPzcxhxKR3gt8E99u
+         OZTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712685886; x=1713290686;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mt7HVPjAilY3mwr17H22AEx0sDoVw4kMEURX0lXTtic=;
+        b=b7WwzLQQ4QXm17YXb4yfahEZjf3U3vQ4XfbP2jdWF1jOCS5ngYMJ+GipFJFDQiy2MB
+         /D1CYhBw6RNJM/RXsp3SMcvkJitUqv1VCc0w6w/YO6nEcxDqi7AZ7Ko2SwmNdrE22LPF
+         /Rpz4dVpk9X1hak/Bj7FLZyHnMK4veIuG145jDLAqCDWvINeoqD9v9+x7r3wEJIBTPBu
+         oFfNOwmwy49SQoOBC2PM64fqkKJoWSyKxfLIFxkiGrYfU93jQSu58zlj6N7IjNz5W/Zk
+         pBUFxZD7IxqmfdUmdiZqZ2er4MhPWAN/J8BQfPz/Jv3A8Rc3nWWHuB1O0PqzvSg7Nb4C
+         hgSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSQlOhUw+t1bRmOEVOZC2+5SiKNNGJ7KW2wkTIBKawodlyV2MjjP+RdkXrNeHN5TNyHamFx5Gnck2SJNCJULk2SJ22wM91xUhdNTUf
+X-Gm-Message-State: AOJu0YzG3H0PBNCNnLXN9Ie+SUl6D5D0G5rVTfEwksHM6WjRrBgzju+U
+	ZQAfyMAjzjdoktQd5CF1diu7ZcSKAU3om4bSPK1TIHJaRbVWVJqLmrkQUbiAhGs=
+X-Google-Smtp-Source: AGHT+IGdK7leJ3QXhD6uZ/35F5XaLJqlEevFkNwPNitSZjtNpi/nk0armGKfZL2bzGGgnmj2Q9OGzg==
+X-Received: by 2002:a05:6512:455:b0:517:5f99:5a9f with SMTP id y21-20020a056512045500b005175f995a9fmr106766lfk.29.1712685885930;
+        Tue, 09 Apr 2024 11:04:45 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id w20-20020a05651234d400b00516cdd2183asm1619918lfr.15.2024.04.09.11.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 11:04:45 -0700 (PDT)
+Date: Tue, 9 Apr 2024 21:04:43 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Rob Clark <robdclark@gmail.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 3/6] drm/msm/adreno: Allow specifying default speedbin
+ value
+Message-ID: <quil2y6tbilihgont2xekay4joxgnsanu3khgo77omtwkolslp@ozuaajpv5uon>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-3-ce2b864251b1@linaro.org>
+ <pncr7ecf4eir36skul3iwt2nf5bpuwd5zjfzzfwwnxjwe4hoes@6z2xe54crijp>
+ <d8a2ef87-f29e-4bdb-a9b8-591b8bd5d2b2@linaro.org>
+ <tkcbl2iwcy3feoggbk737gx32qsxe5p4ad6lfrujy2pazccrhm@kif3guuzay6h>
+ <CAF6AEGsg2xCCC27t_Gqu=MMQ6tckVw=Zj90p4x7EuOm+VKA=ig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA: hns: Fix possible null pointer dereference
-To: Junxian Huang <huangjunxian6@hisilicon.com>, Leon Romanovsky
-	<leon@kernel.org>
-CC: Wei Xu <xuwei5@hisilicon.com>, Chengchang Tang
-	<tangchengchang@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>, Xi Wang
-	<wangxi11@huawei.com>, Shengming Shu <shushengming1@huawei.com>, Weihang Li
-	<liweihang@huawei.com>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-References: <20240409083047.15784-1-amishin@t-argos.ru>
- <20240409092601.GG4195@unreal>
- <1476bb96-c0a9-379a-546b-98fc8a06beea@hisilicon.com>
-Content-Language: ru
-From: Aleksandr Mishin <amishin@t-argos.ru>
-In-Reply-To: <1476bb96-c0a9-379a-546b-98fc8a06beea@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184641 [Apr 09 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1;t-argos.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/09 13:26:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/09 13:05:00 #24719238
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGsg2xCCC27t_Gqu=MMQ6tckVw=Zj90p4x7EuOm+VKA=ig@mail.gmail.com>
 
+On Tue, Apr 09, 2024 at 10:12:00AM -0700, Rob Clark wrote:
+> On Tue, Apr 9, 2024 at 8:23 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Tue, Apr 09, 2024 at 05:12:46PM +0200, Konrad Dybcio wrote:
+> > >
+> > >
+> > > On 4/6/24 04:56, Dmitry Baryshkov wrote:
+> > > > On Fri, Apr 05, 2024 at 10:41:31AM +0200, Konrad Dybcio wrote:
+> > > > > From: Neil Armstrong <neil.armstrong@linaro.org>
+> > > > >
+> > > > > Usually, speedbin 0 is the "super SKU", a.k.a the one which can clock
+> > > > > the highest. Falling back to it when things go wrong is largely
+> > > > > suboptimal, as more often than not, the top frequencies are not
+> > > > > supposed to work on other bins.
+> > > >
+> > > > Isn't it better to just return an error here instead of trying to guess
+> > > > which speedbin to use?
+> > >
+> > > Not sure. I'd rather better compatibility for e.g. booting up a new
+> > > laptop with just dt.
+> >
+> > New speedbin can have lower max speed, so by attempting to run it at
+> > higher freq you might be breaking it.
+> 
+> Usually there are some OPPs in common to all speedbins, so picking a
+> freq from that set would seem like the safe thing to do
 
-Thank you! I assumed something like this, but I couldn't find any 
-confirmations and offered a patch as a solution.
+Well, the issue is about an uknown speed bin. So in theory we know
+nothing about the set of speeds itsupports. My point is that we should
+simplfy fail in such case.
 
-On 09.04.2024 14:10, Junxian Huang wrote:
 > 
+> BR,
+> -R
 > 
-> On 2024/4/9 17:26, Leon Romanovsky wrote:
->> On Tue, Apr 09, 2024 at 11:30:47AM +0300, Aleksandr Mishin wrote:
->>> In hns_roce_hw_v2_get_cfg() pci_match_id() may return
->>> NULL which is later dereferenced. Fix this bug by adding NULL check.
->>
->> I don't know, this NULL can't happen in this flow.
->>
->> Thanks
->>
-> 
-> Yeah, it's already checked here:
-> 
-> 6911 static int hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
-> 6912 {
-> 6913         const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
-> 6914         const struct pci_device_id *id;
-> 6915         struct device *dev = &handle->pdev->dev;
-> 6916         int ret;
-> 6917
-> 6918         handle->rinfo.instance_state = HNS_ROCE_STATE_INIT;
-> 6919
-> 6920         if (ops->ae_dev_resetting(handle) || ops->get_hw_reset_stat(handle)) {
-> 6921                 handle->rinfo.instance_state = HNS_ROCE_STATE_NON_INIT;
-> 6922                 goto reset_chk_err;
-> 6923         }
-> 6924
-> 6925         id = pci_match_id(hns_roce_hw_v2_pci_tbl, handle->pdev);
-> 6926         if (!id)
-> 6927                 return 0;
-> 6928
-> 6929         if (id->driver_data && handle->pdev->revision == PCI_REVISION_ID_HIP08)
-> 6930                 return 0;
-> 6931
-> 6932         ret = __hns_roce_hw_v2_init_instance(handle);
-> 
-> Junxian
-> 
->>>
->>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>>
->>> Fixes: 0b567cde9d7a ("RDMA/hns: Enable RoCE on virtual functions")
->>> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
->>> ---
->>>   drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 13 +++++++++++--
->>>   1 file changed, 11 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>> index ba7ae792d279..31a2093334d9 100644
->>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>> @@ -6754,7 +6754,7 @@ static const struct pci_device_id hns_roce_hw_v2_pci_tbl[] = {
->>>   
->>>   MODULE_DEVICE_TABLE(pci, hns_roce_hw_v2_pci_tbl);
->>>   
->>> -static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>> +static int hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>>   				  struct hnae3_handle *handle)
->>>   {
->>>   	struct hns_roce_v2_priv *priv = hr_dev->priv;
->>> @@ -6763,6 +6763,9 @@ static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>>   
->>>   	hr_dev->pci_dev = handle->pdev;
->>>   	id = pci_match_id(hns_roce_hw_v2_pci_tbl, hr_dev->pci_dev);
->>> +	if (!id)
->>> +		return -ENXIO;
->>> +
->>>   	hr_dev->is_vf = id->driver_data;
->>>   	hr_dev->dev = &handle->pdev->dev;
->>>   	hr_dev->hw = &hns_roce_hw_v2;
->>> @@ -6789,6 +6792,8 @@ static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
->>>   
->>>   	hr_dev->reset_cnt = handle->ae_algo->ops->ae_dev_reset_cnt(handle);
->>>   	priv->handle = handle;
->>> +
->>> +	return 0;
->>>   }
->>>   
->>>   static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
->>> @@ -6806,7 +6811,11 @@ static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
->>>   		goto error_failed_kzalloc;
->>>   	}
->>>   
->>> -	hns_roce_hw_v2_get_cfg(hr_dev, handle);
->>> +	ret = hns_roce_hw_v2_get_cfg(hr_dev, handle);
->>> +	if (ret) {
->>> +		dev_err(hr_dev->dev, "RoCE Engine cfg failed!\n");
->>> +		goto error_failed_roce_init;
->>> +	}
->>>   
->>>   	ret = hns_roce_init(hr_dev);
->>>   	if (ret) {
->>> -- 
->>> 2.30.2
->>>
-> 
+> >
+> > >
+> > > >
+> > > > If that's not the case, I think the commit should be expanded with
+> > > > actually setting default_speedbin for the existing GPUs.
+> > >
+> > > I think that should be addressed, although separately.
+> >
+> > I'd prefer to have it as a part of this patch, but I'd not NAK it just
+> > for this reason.
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
 -- 
-Kind regards
-Aleksandr
+With best wishes
+Dmitry
 
