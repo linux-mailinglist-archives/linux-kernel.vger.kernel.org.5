@@ -1,206 +1,292 @@
-Return-Path: <linux-kernel+bounces-136371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A768889D34C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:36:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3853889D34B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:36:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C9EE282DF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:36:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BA251C21532
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297E87D3E3;
-	Tue,  9 Apr 2024 07:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA427C097;
+	Tue,  9 Apr 2024 07:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Pb7dKC6c"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vEvH34iG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B7E7C6CC
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A80537E6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712648156; cv=none; b=ri6uWiwpafZOkriaAIes6n9vvDdIQ71qS32ZxaqWOisHcs2zFK9C+n4c2Wf3gTl0Qebv+aqKYWnWjdrk70ncBjQcuLFYlfEcTGfJsoBJGVonvXcS4GbRmoA8u8stUrMZL6i1l+vwWpcocXdkf/RxF/9EHw6XA4V5gx6px3j5CFw=
+	t=1712648151; cv=none; b=rbrUq2F6Ebi3WVQnnPT6WaAgZyOcwlW0q/DP37fmgTi8mjWE+5Nc8gmOn8JB+COt8VpJARx4e/QPX/KC48D/2zui8mqrVSuChwOF+ikaXqwBO3uyIea6IewjIMbEQGj/pMbGPMv52tR4I0eX7ToHJ0xshrwzKzzWpvSXakIfLnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712648156; c=relaxed/simple;
-	bh=G1PHgsYK6Hi8kJaHfak0CzSmoGGO8wVYUfL7WphTOOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ellYEh8JGLbWCX+jcIw2muBCqRgaOY4iZywC502sfpCBweHiVuSLyiYamfl/oiclZgdjFiWOC9AZkmwTJrtPbU/w0oxpZ+aKmsPPBzauUWhzz4W6yz9Iz09wGBZhy7ko/uJFla+nM9Ni36iPhOI32V+M0pYD1cPtttHFVsnqAVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Pb7dKC6c; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4397NwIo016110;
-	Tue, 9 Apr 2024 07:35:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=2+7diTVZ3rSZnpTn6NllEJkVpD9Qyx7pIep06/Paocs=;
- b=Pb7dKC6cjvTuGecDxZjCa6+Sqew6tlPvZhqgTqtYSZ2ZU+gNUyhRzM1jaQYXpy2OeTAX
- sS9MPaMM2RRdwlar0zG9wVoVthpT9w7eS52LlxBfmW/nfy0WltbVsKIFSxSeZdVDtcNY
- 57/W+zqQluUKsNbh1uM6aZvUi6Qr20GgbMHJohIs2PdgVf1VOcEW+aYTrgoiEPBP+XpN
- Wai4pijI7d0bMqqTXu0gFwYuxQUzZRncwTRXKgZTvglD2nQiQX4ksw1gbnCkrSlFjNdL
- mmPb9WdXRjSOBv3+y2gQzOMRS00Ddp320vsxWT4oUr4aG+x032sCoKPN8hfKel2E4tON GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xd0ty82jn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 07:35:35 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4397ZY3L002336;
-	Tue, 9 Apr 2024 07:35:34 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xd0ty82jj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 07:35:34 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4394eaLl019082;
-	Tue, 9 Apr 2024 07:35:33 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh405188-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 07:35:33 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4397ZTFq50266544
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Apr 2024 07:35:31 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B887820040;
-	Tue,  9 Apr 2024 07:35:29 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 72E072004B;
-	Tue,  9 Apr 2024 07:35:29 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.210.49])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  9 Apr 2024 07:35:29 +0000 (GMT)
-Date: Tue, 9 Apr 2024 09:35:27 +0200
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Luis Machado <luis.machado@arm.com>, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, nd <nd@arm.com>
-Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
-Message-ID: <ZhTvvz9oq7qhLJRs@DESKTOP-2CCOB1S.>
-References: <20240228161018.14253-1-huschle@linux.ibm.com>
- <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
- <ZfL/hROYxQudcTuX@DESKTOP-2CCOB1S.>
- <66c4286e-deaf-44a0-be62-0928529ae73f@arm.com>
- <4b25ab45b762e64b9df09d4d12d8289f@linux.ibm.com>
- <CAKfTPtDyrsnq-CSFo+upzdOJpuH=JkRzSALad-OL29OvqkK2dg@mail.gmail.com>
- <65fa8a7c.050a0220.c8ec5.0278SMTPIN_ADDED_BROKEN@mx.google.com>
- <CAKfTPtBA7ECeYJYdzL9ybeXLbpEudLfB6V9s+DZiJUmpnPf_kQ@mail.gmail.com>
- <65fc25ae.810a0220.f705f.4cdbSMTPIN_ADDED_BROKEN@mx.google.com>
- <CAKfTPtCv37JA+5D6WQbgsjeY7-Vx4tD+6PFDH+wc8TtPE58T9A@mail.gmail.com>
+	s=arc-20240116; t=1712648151; c=relaxed/simple;
+	bh=YcUJn2HKpN04q9KKGaJkJFDwFrKfIsLsYaiaYNAEWPY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tF9s0I/9eEluLRfkmOZZ/VdjnuDi3g6+wRroz8m1QTnebaVcGJV7JshvnPZ4j01PY8qQMl0HDFb8bwEFlwOmqX43xQA76pUJp89s5m8lFKgWEnZ4mJDc3EesZW0ikdXUsuUv5JqeX5tnvn76VX40A88jR54lVaZe2kSrZwJqzFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vEvH34iG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712648147;
+	bh=YcUJn2HKpN04q9KKGaJkJFDwFrKfIsLsYaiaYNAEWPY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=vEvH34iGXnle2VIQj3yCVdU90mFtwHMWapwu5pfFFaRS0gccyHqmATcj/YXK/QtM9
+	 6GlzR1DWpOM0zO9QeNedMYC8TDDSo9f/Fb4yrFzWbeOdtlL+Fl/JeezAZgw6VKjbRh
+	 PEjGb2CFrank/87d6xefG3e2YkD1IthNCRwMrT3o5ylXujmO4KcuWHQOLwqOOE2W2A
+	 Y7z3NJIkBGb7a6w1k7/VV+X6Mvzd7BB6CfKbwJVdqA8mDS1kGO+mNjYkBxRPyF0d1T
+	 yGOilcK03b15I4YQHxAQwSVFNGlPD1mPWKfo31CZHhGbft11rH1JQXXSxIE5lnAPoW
+	 QPtauP7LVR7AQ==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C759537820CD;
+	Tue,  9 Apr 2024 07:35:45 +0000 (UTC)
+Date: Tue, 9 Apr 2024 10:35:37 +0300
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
+Message-ID: <20240409103537.44e99854.pekka.paalanen@collabora.com>
+In-Reply-To: <ZhOhupo3bf6Cxasy@louis-chauvet-laptop>
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+	<20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
+	<20240325151103.0a5f7112.pekka.paalanen@collabora.com>
+	<ZgLwTJVb_Z_MHuCp@localhost.localdomain>
+	<20240327141629.48ec16f2.pekka.paalanen@collabora.com>
+	<ZhOhupo3bf6Cxasy@louis-chauvet-laptop>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtCv37JA+5D6WQbgsjeY7-Vx4tD+6PFDH+wc8TtPE58T9A@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fRbtPw482L_B4nDgFsZ88BlC8FJn39pH
-X-Proofpoint-GUID: 7obpUKdEzUtebrDf-jRoQWSL32CwjP1A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_04,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 suspectscore=0 adultscore=0 spamscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404090046
+Content-Type: multipart/signed; boundary="Sig_/7ZpC0ifXnJlJSiBwE7xK8iV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Fri, Mar 22, 2024 at 06:02:05PM +0100, Vincent Guittot wrote:
-> and then
->     se->vruntime = max_vruntime(se->vruntime, vruntime)
-> 
+--Sig_/7ZpC0ifXnJlJSiBwE7xK8iV
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-First things first, I was wrong to assume a "boost" in the CFS code. So I
-dug a bit deeper and tried to pinpoint what the difference between CFS and
-EEVDF actually is. I found the following:
+On Mon, 8 Apr 2024 09:50:18 +0200
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-Let's assume we have two tasks taking turns on a single CPU.
-Task 1 is always runnable.
-Task 2 gets woken up by task 1 and goes back to sleep when it is done.
-This means, task 1 runs, wakes up task 2, task 2 runs, goes to sleep and
-task 1 runs again and we repeat.
-Most of the time: runtime(task1) > runtime(task2)
-Rare occasions:   runtime(task1) < runtime(task2)
-So, task 1 usually consumes more of its designated time slices until it gets
-rescheduled by the wakeup of task2 than task 2 does. But both never consume
-their full time slice. Rather the opposite, both run for low 5-digit ns or
-less.
+> Le 27/03/24 - 14:16, Pekka Paalanen a =C3=A9crit :
+> > On Tue, 26 Mar 2024 16:57:00 +0100
+> > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> >  =20
+> > > Le 25/03/24 - 15:11, Pekka Paalanen a =C3=A9crit : =20
+> > > > On Wed, 13 Mar 2024 18:45:03 +0100
+> > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> > > >    =20
+> > > > > The pixel_read_direction enum is useful to describe the reading d=
+irection
+> > > > > in a plane. It avoids using the rotation property of DRM, which n=
+ot
+> > > > > practical to know the direction of reading.
+> > > > > This patch also introduce two helpers, one to compute the
+> > > > > pixel_read_direction from the DRM rotation property, and one to c=
+ompute
+> > > > > the step, in byte, between two successive pixel in a specific dir=
+ection.
+> > > > >=20
+> > > > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> > > > > ---
+> > > > >  drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++=
+++++++++++++++
+> > > > >  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
+> > > > >  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++=
+++++++++
+> > > > >  3 files changed, 77 insertions(+)
+> > > > >=20
+> > > > > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/d=
+rm/vkms/vkms_composer.c
+> > > > > index 9254086f23ff..989bcf59f375 100644
+> > > > > --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> > > > > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
 
-So something like this:
+> > > > I hope IGT uses FB patterns instead of solid color in its tests of
+> > > > rotation to be able to detect the difference.   =20
+> > >=20
+> > > They use solid colors, and even my new rotation test [3] use solid co=
+lors. =20
+> >=20
+> > That will completely fail to detect rotation and reflection bugs then.
+> > E.g. userspace asks for 180-degree rotation, and the driver does not
+> > rotate at all. Or rotate-180 getting confused with one reflection. =20
+>=20
+> I think I missunderstood what you means with "solid colors".
+>=20
+> The tests uses a plane with multiple solid colors:
+>=20
+> +-------+-------+
+> | White | Red   |
+> +-------+-------+
+> | Blue  | Green |
+> +-------+-------+
+>=20
+> But it don't use gradients because of YUV.
+>
 
-task 1    |----------|    |---------|    |------...
-task 2               |----|         |----|
+Oh, that works. No worries then.
 
-This creates different behaviors under CFS and EEVDF:
+> > > It is mainly for yuv formats with subsampling: if you have formats wi=
+th=20
+> > > subsampling, a "software rotated buffer" and a "hardware rotated buff=
+er"=20
+> > > will not apply the same subsampling, so the colors will be slightly=20
+> > > different. =20
+> >=20
+> > Why would they not use the same subsampling? =20
+>=20
+> YUV422, for each pair of pixels along a horizontal line, the U and V=20
+> components are shared between those two pixels. However, along a vertical=
+=20
+> line, each pixel has its own U and V components.
+>=20
+> When you rotate an image by 90 degrees:
+>  - Hardware Rotation: If you use hardware rotation, the YUV subsampling=20
+>    axis will align with what was previously the "White-Red" axis. The=20
+>    hardware will handle the rotation.
+>  - Software Rotation: If you use software rotation, the YUV subsampling=20
+>    axis will align with what was previously the "Red-Green" axis.
 
-### CFS ####################################
+That would be a bug in the software rotation.
 
-In CFS the difference in runtimes means that task 2 cannot catch up with 
-task 1 vruntime-wise
+> Because the subsampling compression axis changes depending on whether=20
+> you're using hardware or software rotation, the compression effect on=20
+> colors will differ. Specifically:
+>  - Hardware rotation, a gradient along the "White-Red" axis may be=20
+>    compressed (i.e same UV component for multiple pixels along the=20
+>    gradient).
+>  - Software rotation, the same gradient will not be compressed (i.e, each=
+=20
+>    different color in the gradient have dedicated UV component)
+>=20
+> The same reasoning also apply for "color borders", and my series [3] avoi=
+d=20
+> this issue by choosing the right number of pixels.
 
-With every exchange between task 1 and task 2, task 2 falls back more on
-vruntime. Once a difference in the magnitude of sysctl_sched_latency is 
-established, the difference remains stable due to the max handling in 
-place_entity.
+What is [3]?
 
-Occasionally, task 2 may run longer than task 1. In those cases, it
-will catch up slightly. But in the majority of cases, task 2 runs
-shorter, thereby increasing the difference in vruntime.
+I've used similar tactics in the Weston test suite, when I have no
+implementation for chroma siting: the input and reference images
+consist of 2x2 equal color pixel groups, so that chroma siting makes no
+difference. When chroma siting will be implemented, the tests will be
+extended.
 
-This would explain why task 2 gets always scheduled immediately on wakeup.
+Is there a TODO item to fix the software rotation bug and make the
+tests more sensitive?
 
-### EEVDF ##################################
+I think documenting this would be an ok intermediate solution.
 
-The rare occasions where task 2 runs longer than task 1 seem to cause 
-issues with EEVDF:
+> > The framebuffer contents are defined in its natural orientation, and
+> > the subsampling applies in the natural orientation. If such a FB
+> > is on a rotated plane, one must account for subsampling first, and
+> > rotate second. 90-degree rotation does not change the encoded color.
+> >=20
+> > Getting the subsampling exactly right is going to be necessary sooner
+> > or later. There is no UAPI for setting chroma siting yet, but ideally
+> > there should be.
+> >  =20
+> > > > The return values do seem correct to me, assuming I have guessed
+> > > > correctly what "X" and "Y" refer to when combined with rotation. I =
+did
+> > > > not find good documentation about that.   =20
+> > >=20
+> > > Yes, it is difficult to understand how rotation and reflexion should=
+=20
+> > > works in drm. I spend half a day testing all the combination in drm_r=
+ect_*=20
+> > > helpers to understand how this works. According to the code:
+> > > - If only rotation or only reflexion, easy as expected
+> > > - If reflexion and rotation are mixed, the source buffer is first=20
+> > >   reflected and then rotated. =20
+> >=20
+> > Now that you know, you could send a documentation patch. :-) =20
+>=20
+> And now I'm not sure about it :)
 
-In the regular case where task 1 runs longer than task 2. Task 2 gets 
-a positive lag and is selected on wake up --> good.
-In the irregular case where task 2 runs longer than task 1 task 2 
-now gets a negative lag and is no longer chosen on wakeup --> bad (in some cases).
+You'll have people review the patch and confirm your understanding or
+point out a mistake. A doc patch it easier to notice and jump in than
+this series.
 
-This would explain why task 2 gets not selected on wake up occasionally. 
+> I was running the tests on my v6, and for the first time ran my new=20
+> rotation [3] on the previous VKMS code. None of the tests for=20
+> ROT_90+reflexion and ROT_270+reflexion are passing...
+>=20
+> So, either the previous vkms implementation was wrong, or mine is wrong :)
+>=20
+> So, if a DRM expert can explain this, it could be nice.
+>=20
+> To have a common example, if I take the same buffer as above=20
+> (white+red+blue+green), if I create a plane with rotation =3D=20
+> ROTATION_90 | REFLECTION_X, what is the expected result?
+>=20
+> 1 - rotation then reflection=20
+>=20
+> +-------+-------+
+> | Green | Red   |
+> +-------+-------+
+> | Blue  | White |
+> +-------+-------+
+>=20
+> 2 - reflection then rotation (my vkms implementation)
+>=20
+> +-------+-------+
+> | White | Blue  |
+> +-------+-------+
+> | Red   | Green |
+> +-------+-------+
+>=20
 
-### Summary ################################
+I wish I knew. :-)
 
-So my wording, that a woken up task gets "boosted" was obviously wrong. 
-Task 2 is not getting boosted in CFS, it gets "outrun" by task 1, with 
-no chance of catching up. Leaving it with a smaller vruntime value.
+Thanks,
+pq
 
-EEVDF on the other hand, does not allow lag to accumulate if an entity, like 
-task 2 in this case, regularly dequeues itself. So it will always have 
-a lag with an upper boundary of whatever difference it encountered in 
-comparison to the runtime with task 1.
 
-The patch below, allows tasks to accumulate lag over time. This fixes the
-original regression, that made me stumble into this topic. But, this might 
-of course come with arbitrary side effects.
+> > For me as a userspace developer, the important place is
+> > https://dri.freedesktop.org/docs/drm/gpu/drm-kms.html#standard-plane-pr=
+operties
+> >  =20
 
-I'm not suggesting to actually implement this, but would like to confirm 
-whether my understanding is correct that this is the aspect where CFS and 
-EEVDF differ, where CFS is more aware of the past in this particular case
-than EEVDF is.
+--Sig_/7ZpC0ifXnJlJSiBwE7xK8iV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 03be0d1330a6..b83a72311d2a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -701,7 +701,7 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
-        s64 lag, limit;
- 
-        SCHED_WARN_ON(!se->on_rq);
--       lag = avg_vruntime(cfs_rq) - se->vruntime;
-+       lag = se->vlag + avg_vruntime(cfs_rq) - se->vruntime;
- 
-        limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
-        se->vlag = clamp(lag, -limit, limit);
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYU78kACgkQI1/ltBGq
+qqeYfg/+PS3QEJX8CnU8a1qo4nXuCr7ss8sSfGX6zY/YAmpLQ7xHMUtu2Z85Ygyz
+h/cUvvORb3CD/zpoxh4w3JqYnW20AgEN4P1Rphl13VETOwVsreRtnlhMUm3E0sJX
+rk3IFQIZgqNzwJxbc6u+ObRNYekaP5SG8y4J1vs9+XUns+AyjGBmHq9uf1NiRtTz
+ylK96N1y6QiLPkK6t1c55nbLWKptaLe7ONw6A07VbTMQED/0LWOb2o0Y/snxJR0i
+8t49+izUSGINNHhgoRsGFhA4yDLuHeZnSDsUREyL2blrxeMVgshMtlzjOwu9GHm5
+jNEjGKY7yB0IvWFdfp5YktBkQNLFqK/IfiCJRTLNcxMBNMfUawajsWjtm1hTvwC/
+IekuIYmnEXumrhga5Adkby4nYku+Ro0tdDXCOULRxx7lQToj/8V6AuZOTAK+75a0
+58zeVuXF+VvicjJPHix1FVSwSmucIveuhA86IB17GBK1INRC+VUW0jARf4/qRksD
+JYYhl/hiluWw/IJJ7cNCm4H+Da8jlMmQray0QfDGAlDXBh2tS2XIJEiaBm+B9yZd
+vAtMIknf3JC9MASUNdykVCuJ1Wti3lu8pmpopLSiktPIyPNYhD4a3n+mWpRvKHpb
+1mo2PraPdNgF3mDrGCevEVt2u8xpv5V0fL3Zj2GWVGCe16f8oTM=
+=Z/uP
+-----END PGP SIGNATURE-----
+
+--Sig_/7ZpC0ifXnJlJSiBwE7xK8iV--
 
