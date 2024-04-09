@@ -1,112 +1,114 @@
-Return-Path: <linux-kernel+bounces-137601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F2689E47A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:34:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D908389E47D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66751F22594
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:34:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79A5D1F225ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843DD1586FC;
-	Tue,  9 Apr 2024 20:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93C41586E2;
+	Tue,  9 Apr 2024 20:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOjfp/7g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1GXL1JG9"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0111586E5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE378157E97
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712694857; cv=none; b=qBgiz6BdccpXqJVK6mv2amb/hRO5nj5rts8HW5XHdnMKJvSQfEgvb8hgbScUtj2LRCR09TXDWAHuFyouOTxBxRj3ndVaGH44qQtotiHaUgc02QPEy1WdwRtszgSLsyiOa8c8ItPgOwvMg/3sH/OpG+zqr0ZxU6KFfw1dCab342M=
+	t=1712694925; cv=none; b=hK3DQA8qoSHR8ekCZXTXEfZMD/nozDC7MMA91SotkgSUVRvWD5iI2i39ChMSXJjFQvxSP6bjozCXVxBlM1MZ76u/ZqvLLhfikAB01FEultMe0ka61/yqFTYuZTMVVloktYMsf2J0ZxwqipZSYtXbHFnPHQ2Fvb4fmP9WXmwGSWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712694857; c=relaxed/simple;
-	bh=+4w6Yn40335a0GsU306fLSUnzxXEUP2Ol6OJgXDYeI4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QWESsg5Sd7hxQyuviJrrBpDShVBqLCugikEXusCoUAy/ZafPvcXVdDvOAMULNUsPndNtp49VXWvhQ7woiQirgdTj++qN/fG7M4omriN7pvocQeM6L8svJies3muE9ICXNEyUSXCrImq08Yk37VXMMoy2XCKrcUcfWh57sp4klC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOjfp/7g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B26AC433C7;
-	Tue,  9 Apr 2024 20:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712694857;
-	bh=+4w6Yn40335a0GsU306fLSUnzxXEUP2Ol6OJgXDYeI4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FOjfp/7g2+iX4WP7BmUILh7tqFC85L1DLkTG24ckMIrxOZGocygA/5bs19BDuOc3M
-	 BDtYlBc+gY0lkLP8sezyoUt/3Qx8AV0wO1ptAMIQJNjHKglQcweQmZXRaW6aMeyWdZ
-	 jz3fF0yGMNUcvDFc4GqmvwlU3eXu+JGxnYClbmc5OJc9MamBMmApbAvftFWvUCaDCi
-	 ZLLFjUw1H5Fdf9Wv0Pjd3Sbx5dlmGQlRqc3cyQEH5jJwZi2NU1cnXJsJJX8bEOlhEB
-	 bKt1XiCNEK2kCv6R0y1q5n9pAS7EogAtl1Ed1ndGkIbZl30272kQWaGuYQGUoDfNfy
-	 zjtcH1ozj0BCw==
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 3/3] f2fs: fix false alarm on invalid block address
-Date: Tue,  9 Apr 2024 20:34:11 +0000
-Message-ID: <20240409203411.1885121-3-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240409203411.1885121-1-jaegeuk@kernel.org>
-References: <20240409203411.1885121-1-jaegeuk@kernel.org>
+	s=arc-20240116; t=1712694925; c=relaxed/simple;
+	bh=fZIg5v37kdpa59dSYgf0jUUNlNvt5/x5mDHHcsopdy0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PwfNm8EXBF8G/IJFUlhFhjUSqqug7TKlGMYYX9F1d5t7q1EIlS3z3EnoVkERDzQwdFS6/sE7Jjj+f/MmhlREPLjpCMld1Y/qH7oOYYIbU5FZTrmZoL3ZyGhFNTfwonOF0zHTUITjs/RGkEuSmg4VlgfD6BSnSGrrZmVFd34JdoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1GXL1JG9; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e062f3a47bso8055ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712694923; x=1713299723; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sbzjIXGi8MY3xAo287kFRCnEJlxM2VAYg6QbjiGNyVw=;
+        b=1GXL1JG9il10PRtnmWEJLy5yDYGGY6Uxuosvozq1CtR7hCoEgUSFRP25meTsDcfh/T
+         twrazkt22lAR3rGT1pFLOApdSlN074hnGRTabcOA/9DI88SN0IYh7aDCnj6G2H44914G
+         pYgvWaLJ2QbGZN5VVdq1CsOwgVtZKt915peJodlfQ1xU40p5hokE9lkt5p0rf9/BkmBr
+         6EZqP3LDcPpXm6KHTUqgn2qLwuoCAG2jwCSz6qtdlkS9h/AQwnsdQwVyiq7Ub4OkR97J
+         iunFgSm5I3vm4Nb3lVbVpsbIS5sGkspZkYVwH8BRng6udCb3bi9o1USqYpYNvRWZW28o
+         B6Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712694923; x=1713299723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sbzjIXGi8MY3xAo287kFRCnEJlxM2VAYg6QbjiGNyVw=;
+        b=kDi5X00UAZqnqBw70q7n+Uo2UDzR7IeDfP+6vvgFfB4l2CeNx6j8/M+o97zjyE7FY5
+         ZpCg79PW4IZr4GcO7gQbPVMt9dv03DrUSBqMpKbW/TFZhRH5TIGVAKLsJFYccKdr7Oa0
+         uaAIN5S6LvHGi6ifJ3UGb6KoJQLishBXBzzUoZV8Lx3aEL16gLqmJq5VoBEB2vny1iQH
+         M9T4JP+KNFfPRQoQ0b9055QlNdDBJWmGK6JdAs6jT5bP0uXL+NXZAJJdiLot1DQD79TA
+         fKla8frtOcMkobCxAsC3DZR2LJqmVvwE1N+6yZu/MyH4w7TyAkK+jurNRkZtfBvd8cvq
+         hSZw==
+X-Forwarded-Encrypted: i=1; AJvYcCX11+U8ht67f5o+zRWLOYSktDP8n1fDtkXfBYWNCs+KTDOSqRDxAmgvk0SJe2F2EkaSXHb3kkYWTy0LWHU+LGTHQUOWcDZxitahwIxS
+X-Gm-Message-State: AOJu0Yy+eo8VkBrADASdmxumvntN+OEakoU0dI0o1hZhOyxw1YSKODJV
+	cqzNXzcTMl9P94OJCPKMAHYu38elQ1saYkUHUdLwDlcqv7tiPvX24IGM/jBEOw==
+X-Google-Smtp-Source: AGHT+IFbAgqRaIQQnQohL03A2IR6pwfXasIyq+0yEDQ6FgLyJnqBCuWghjNFqobOCKa2d0RR48njlA==
+X-Received: by 2002:a17:902:9a87:b0:1e4:32ec:7679 with SMTP id w7-20020a1709029a8700b001e432ec7679mr2786plp.19.1712694922933;
+        Tue, 09 Apr 2024 13:35:22 -0700 (PDT)
+Received: from google.com (201.215.168.34.bc.googleusercontent.com. [34.168.215.201])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001e424ccf438sm4564732plx.97.2024.04.09.13.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 13:35:22 -0700 (PDT)
+Date: Tue, 9 Apr 2024 13:35:19 -0700
+From: William McVicker <willmcvicker@google.com>
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org,
+	kishon@kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+	bvanassche@acm.org, s.nawrocki@samsung.com, cw00.choi@samsung.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	chanho61.park@samsung.com, ebiggers@kernel.org,
+	linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org,
+	andre.draszik@linaro.org, saravanak@google.com
+Subject: Re: [PATCH 15/17] scsi: ufs: host: ufs-exynos: add some pa_dbg_
+ register offsets into drvdata
+Message-ID: <ZhWmh1NUmj2h02Ua@google.com>
+References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-16-peter.griffin@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404122559.898930-16-peter.griffin@linaro.org>
 
-f2fs_ra_meta_pages can try to read ahead on invalid block address which is
-not the corruption case.
+On 04/04/2024, Peter Griffin wrote:
+> This allows these registers to be at different offsets or not
+> exist at all on some SoCs variants.
+> 
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 
-Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid_blkaddr")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/checkpoint.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Tested-by: Will McVicker <willmcvicker@google.com>
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index eac698b8dd38..b01320502624 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 		break;
- 	case META_SIT:
- 		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_SSA:
- 		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
- 			blkaddr < SM_I(sbi)->ssa_blkaddr))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_CP:
- 		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
- 			blkaddr < __start_cp_addr(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_POR:
- 		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
- 			blkaddr < MAIN_BLKADDR(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case DATA_GENERIC:
- 	case DATA_GENERIC_ENHANCE:
-@@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 	return true;
- err:
- 	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+check_only:
- 	return false;
- }
- 
--- 
-2.44.0.478.gd926399ef9-goog
+I tested this patch series on a Pixel 6 device. I was able to successfully
+mount two of the Android ext4 partitions -- efs and metadata.
 
+  root@google-gs:~# mount | grep /dev/sda
+  /dev/sda5 on /mnt/efs type ext4 (rw,relatime)
+  /dev/sda8 on /mnt/metadata type ext4 (rw,relatime)
+
+Regards,
+Will
 
