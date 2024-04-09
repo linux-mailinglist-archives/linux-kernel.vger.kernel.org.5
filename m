@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-137047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 184E689DB95
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:03:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3080989DB9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:03:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93084B2668F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61AFF1C21111
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F22C13175E;
-	Tue,  9 Apr 2024 14:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BED912FB26;
+	Tue,  9 Apr 2024 14:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSSa5z1S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="seYFDBBN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB061311B9;
-	Tue,  9 Apr 2024 14:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3D41311B9;
+	Tue,  9 Apr 2024 14:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671278; cv=none; b=Vmv8bmuu7pOlNIa+PJck2V6glqOf7ucQ77BewfMtr+umtBuU5O+D1q9F57HgcJ0WdLZqa5P/0egdYdnboK2xC+vuORBFgiYcS2fNVJHH5H2ZyTD+xE9kTvJ2IscmzBx9HIJsJHD+s31A/8DZ6yimTiRhMK0lbHrXt6EUixdMppY=
+	t=1712671283; cv=none; b=UCM1Vd5/tKR/jkD3QxamFkrGDgf9RRQyk17NWint7ykWeBCCwRr0IZ4rfvsHOyVM8X+pAxZQuaydphuD9W27xY3z0XbQl9H3j2GLF32d7oOunOvIKw1nA2xgxzSTlAaytTqNTYRxMJ9KnYCWKsGrHoCxZzP0tMgRSP0Fpaeax3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671278; c=relaxed/simple;
-	bh=apx3gbxkYNqe3VpAmpZgPTdGN3/2cOQjfTIRYJyoYL8=;
+	s=arc-20240116; t=1712671283; c=relaxed/simple;
+	bh=+6XHH0IKbKZJZfLuR8UiLY5DybHOF/uJqvg3k5VIrYY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZrLuoZAmzLwDtERMC71+W/24VHTwqAPWZJJUqR6HeAjfOQx5Pwe1XFwakes2cd0aJ2aB1d692yV5NGp1OV2y9M72TVMLlPvpuSdSOHkN3dXC0yV5MLaFrHo7H7IxBJCQgyVr2rt2yi0ZX7NGVoPqOaexs3iFur1QyWnyYwg6fEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSSa5z1S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD480C43142;
-	Tue,  9 Apr 2024 14:01:13 +0000 (UTC)
+	 MIME-Version; b=Rd+fBWDsoEzUeYIgDJlqM1CRLCiazXSa6efWCLSO5Jofx0eR22avpH2ekLvuehnLfNiKziu02BL6lYqmAuvYnImN2nlV9aZvVAAyRiapLVn9iSSfowWAH3/82Y1bwZrergV1P9yV09SqAozTSswS7mmfUCp4SEd6SE0tKrxon9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=seYFDBBN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB531C43601;
+	Tue,  9 Apr 2024 14:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712671278;
-	bh=apx3gbxkYNqe3VpAmpZgPTdGN3/2cOQjfTIRYJyoYL8=;
+	s=k20201202; t=1712671283;
+	bh=+6XHH0IKbKZJZfLuR8UiLY5DybHOF/uJqvg3k5VIrYY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MSSa5z1S9ryJwrH6rhZwsfZ+WYHqk+DUN6umSYaSz9+PInQkEmLLg9HxlScb7SB66
-	 INAABa+8rjj1c4bradO8L6DkDBPNDU7qPWK7URSSmUPTxK+4hefFZn2CZXuFgBrngb
-	 QdlQN775GdzBYwFXCsuI8v5PtJCTjL+tCs3wkzvRFaW5ly10uQ3/gpx0iQk6QTCQNL
-	 x3PysVOlaDEUIoyLnkd+Jm0Vi30mdh9slrYCeOOucTVTqixQKDXisg4oPy8r6K1xlD
-	 BcBWJB4mfLTtXNA4AAKEknHbTNgkfQrMFIZi1WJwSfYfbs/hZovigEojcExc6eLrtw
-	 S96r3fjZf4spg==
+	b=seYFDBBNQDwm3rbyua/v8J3aR2fdaXaheTfVVTdXR7eE7sMrmz3miSMjwS+ALRTjO
+	 3keDS7/WA23UgDKScxs2qbPxAnxQq5cKW2mqPPIzRmx4q+oajuSJYMhsI8NPbxIyDe
+	 r8JSc6Wgt3n9s+H0fYI8xAqv0qbNj5HjUi/CceuFaOYrBzwSHYdlvQtFE7HpZT7Icf
+	 Jg9mP/RwmYcvzfeiTgsNl/sQ7NDJHRRJBuPTy7r8unNf7A3LnopNDxu/rlBnjOOKP+
+	 U7BAgVieDFa+2RczYDaBt0X77ALDKlU+jKCIDGhyluyaj9mTJOimEu/sG7GQGhji7S
+	 y15jJwN/Osm5Q==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -62,10 +62,11 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
-Date: Tue,  9 Apr 2024 16:00:55 +0200
-Message-Id: <20240409140059.3806717-3-arnd@kernel.org>
+	linux-trace-kernel@vger.kernel.org,
+	Justin Stitt <justinstitt@google.com>
+Subject: [PATCH 3/5] [v2] block/partitions/ldm: convert strncpy() to strscpy()
+Date: Tue,  9 Apr 2024 16:00:56 +0200
+Message-Id: <20240409140059.3806717-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240409140059.3806717-1-arnd@kernel.org>
 References: <20240409140059.3806717-1-arnd@kernel.org>
@@ -79,40 +80,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc -Wstringop-truncation warns about copying a string that results in a
-missing nul termination:
+The strncpy() here can cause a non-terminated string, which older gcc
+versions such as gcc-9 warn about:
 
-drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
-   60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
-   61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'ldm_parse_tocblock',
+    inlined from 'ldm_validate_tocblocks' at block/partitions/ldm.c:386:7,
+    inlined from 'ldm_partition' at block/partitions/ldm.c:1457:7:
+block/partitions/ldm.c:134:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
+  134 |  strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+block/partitions/ldm.c:145:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
+  145 |  strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The code works as intended, and the warning could be addressed by using
-a memcpy(), but turning the warning off for this file works equally well
-and may be easir to merge.
+New versions notice that the code is correct after all because of the
+following termination, but replacing the strncpy() with strscpy_pad()
+or strcpy() avoids the warning and simplifies the code at the same time.
 
-Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
-Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com/#t
+Use the padding version here to keep the existing behavior, in case
+the code relies on not including uninitialized data.
+
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/acpi/acpica/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ block/partitions/ldm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
-index 30f3fc13c29d..8d18af396de9 100644
---- a/drivers/acpi/acpica/Makefile
-+++ b/drivers/acpi/acpica/Makefile
-@@ -5,6 +5,7 @@
+diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
+index 38e58960ae03..2bd42fedb907 100644
+--- a/block/partitions/ldm.c
++++ b/block/partitions/ldm.c
+@@ -131,8 +131,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
+ 		ldm_crit ("Cannot find TOCBLOCK, database may be corrupt.");
+ 		return false;
+ 	}
+-	strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
+-	toc->bitmap1_name[sizeof (toc->bitmap1_name) - 1] = 0;
++	strscpy_pad(toc->bitmap1_name, data + 0x24, sizeof(toc->bitmap1_name));
+ 	toc->bitmap1_start = get_unaligned_be64(data + 0x2E);
+ 	toc->bitmap1_size  = get_unaligned_be64(data + 0x36);
  
- ccflags-y			:= -D_LINUX -DBUILDING_ACPICA
- ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
-+CFLAGS_tbfind.o 		+= $(call cc-disable-warning, stringop-truncation)
- 
- # use acpi.o to put all files here into acpi.o modparam namespace
- obj-y	+= acpi.o
+@@ -142,8 +141,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
+ 				TOC_BITMAP1, toc->bitmap1_name);
+ 		return false;
+ 	}
+-	strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
+-	toc->bitmap2_name[sizeof (toc->bitmap2_name) - 1] = 0;
++	strscpy_pad(toc->bitmap2_name, data + 0x46, sizeof(toc->bitmap2_name));
+ 	toc->bitmap2_start = get_unaligned_be64(data + 0x50);
+ 	toc->bitmap2_size  = get_unaligned_be64(data + 0x58);
+ 	if (strncmp (toc->bitmap2_name, TOC_BITMAP2,
 -- 
 2.39.2
 
