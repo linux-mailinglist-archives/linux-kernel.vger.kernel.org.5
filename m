@@ -1,143 +1,163 @@
-Return-Path: <linux-kernel+bounces-137672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1946189E5B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:41:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2FD89E5B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B9E1F222A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:41:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4527B22056
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FB61586D5;
-	Tue,  9 Apr 2024 22:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="le6yobmN"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263C433A6;
+	Tue,  9 Apr 2024 22:42:27 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D4433A6
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509C97C6C8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712702481; cv=none; b=FBA+QuAMlR17S/yc5rbeR5lP62icY44CPGBetJA7gM+AiQZTwGFMZOXR1RBFOeIOV6+t0zyONY1YY4757JDlq7nwTyIsunAMjKrRsmSXAwbxM29DFx1/Myc1qpoMFQz5Jv/hYOsJSFoWJxOxz7YUZ9s0G8rjt0jBGpibbMZDD+U=
+	t=1712702547; cv=none; b=r3febr2/IaeLsL8g02V8nGUjBTaWpJ7W/Elyt0XQTTTIuGb8LKCBrXdW3oo+C/Xfz4aFSIMe3YbggeDBB/Z87LG+er/fF4uo6gZcTjinul6MkkyuTOzD3o1jdexKl0rz23gMT7Z15QHBRSQYDssT8+zd72owopVo6UkS7u0fZXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712702481; c=relaxed/simple;
-	bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=mWIj0dmfklLTGwsoV2k3eFwCyWQdvCTcRK/DqAJBG5xqb84IJvWRdYLGAr13h1TPXCufKy+h7HHXIk3DK5AjNltO7y7VeEjld8lzIT2Eth1hfy0vyloAx0bnrewQoDOd08SOCX31DffCThYBFbPUJbMyO3ajD6BrAAUc9KBhkiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=le6yobmN; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso5127135b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1712702479; x=1713307279; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
-        b=le6yobmNKIk7IcTrMR7Yh1AwzfvsJdsn82Viz0c1EC3SmHM/Rx+55n58Ug4HFiHvP+
-         mvLXPVPbToE1zLeMe7C1+f/FOd9XTiMtbuVNSEvBLoed+MtHbbtgyIThSBoEWKXyGwVF
-         K7zRAWYmoqkOjBvgpPSaPytSO9wvKW7kAwOeA=
+	s=arc-20240116; t=1712702547; c=relaxed/simple;
+	bh=8E5bmm5Ldq3U91oDOHc/udctTNJo36vV/qKNkwvUzZ4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QarmDky+SqoY4rZ/d27skIGbjHFYhM4RfyRJKaabAe7coTpb0AdY96gmh7W2WDw18Ru6I4kp2EYoz/4SC7UWV11cJ/LGWjd6l4MnhKU64FozQsA4a5nnjfKv7X5wCbEAq6GITZ3yKgGGJeFljqIUjwnmQr9UpRkCJm5OZBiQYOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc74ea9c20so742632339f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:42:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712702479; x=1713307279;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
-        b=Sv0b9Tw2ddHTASuApWZYTswSReN7a+DBdj/ACks1saQhzLr/NKvBDtoU1rAhgthR1x
-         alghdP5r+rMa+jDG5J4Tem8CP50bqDhk5/63AJWZvjR5lxYp7szGSOA3RPbofN0ym12T
-         T0YfEUV+3ldYfiCWyUwinvKIcyoAs9srPrl2Xw4lBA1lCk9oc/o+M4gcA8K9NbWupTsM
-         VxF8e3nvA926rfggh5cLSEasyYB8Yo/wQHcL60dA5dJhZKbG0GV6RsPX3dkuteOLY5OX
-         5cKa78Xtr7feEbrEwvhkgx+Bs5UwTk/CTCGab8zocAZAd4G2A1y4k5xyPgKY7mFCMOuj
-         zkKA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+2C/ysZ1Cbgdd2t/w0stimUPMSrYPANw/964Wyk2s/xnWZegWB6YQ2oEFhL4G0DtoGFPbS9+E6hUKesfQ6wDCEe9uGcffQ9S9mE/q
-X-Gm-Message-State: AOJu0YzDqvWeO4GScYbNs4zmO5Er5npUep57xbbT/tXFcOye4iB7TE2B
-	J/c9VTT1d8XasXYKMwgedXo3sC1WHBXwqtx0COPQv89/C1opPPB7TEZsw73D3nw=
-X-Google-Smtp-Source: AGHT+IGf7AyQcGgtDnxdEc6zeyqopRNu0tZWpw/6iFI0a7xHNGrXDfFFZjth8bXqtf7pRwJfL78atg==
-X-Received: by 2002:a05:6a21:1a9:b0:1a3:ae75:d6f5 with SMTP id le41-20020a056a2101a900b001a3ae75d6f5mr1505619pzb.20.1712702479019;
-        Tue, 09 Apr 2024 15:41:19 -0700 (PDT)
-Received: from smtpclient.apple ([103.98.78.154])
-        by smtp.gmail.com with ESMTPSA id g26-20020aa79f1a000000b006ecee8c8c0fsm7200440pfr.176.2024.04.09.15.41.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 15:41:18 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+        d=1e100.net; s=20230601; t=1712702544; x=1713307344;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tbR/ywQXcXQ0J/6NWBwaaa7Su1KBjSGiK0MxQ+x6Vww=;
+        b=qRFNRdXPo3g0l0wmiFOYAIp+Wk9R1+LO+9gEKphUdquMeVyxXWeZRDcAzJok1L56UF
+         k9c9R314VZDYJwy0I9vzQ51v5UQn+uNSExz9UFJiQeBnWoAm9WBjAN1oxBGu4yWt+8Uq
+         hR3GWhU//5ASXS4sb4oA3UcIy4IEkK0Xdmx6o+w+JnsSFVbjsLsJpmu3a3gaTrnpWriM
+         yDneLw7Gqud2ee87sWWpIXFyNPEB1jI71+49eo8ofZbfHY/4ntZJFL3G+EQy6gycnkgc
+         NXrdeD1E1sBL+3UanycoAyBNLi5D13xZRvJSMUZ+7mG4RguemWvahAr1v1c2gp2+5sTt
+         +psQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUntBaFTDZadmXSpyZSxBT0kXBPqVctHAdmFam+bFVjU2sFTNVUjkNHWKQzkyvWOmokEehb7UqxAuxuSUhQtp3egGecxwqQBj5tiREX
+X-Gm-Message-State: AOJu0YyuASuJDskMirJhXhr3pSopigH65JVoUeCOf/pLQvZu7j7pWLpo
+	bMVY+4I7a6v8exSv8sCvxGe4iHCRZYiD3QTBDoa81rndFQJE5GoowZN3yy7NV2TWoYiVOo7HJ5k
+	H53YFot1ibBoTrXBubHi993s7vxGswBcvMaLVSXguHhjPWSeJijoHHq4=
+X-Google-Smtp-Source: AGHT+IGpu2AtcRiOJn/rn9Yfk8HvsmyICSMz3tDbQhnHy36ixmFFckR1nl/fH9vUh6Veu1i4aDo7qWwiiTftRZ+2tLf+2ZotLjsj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map pstore consistently
-Date: Wed, 10 Apr 2024 04:11:05 +0530
-Message-Id: <9F1B6537-F0BF-46E1-92A2-92C082DDB573@joelfernandes.org>
-References: <SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Cc: Kees Cook <keescook@chromium.org>,
- Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Lorenzo Stoakes <lstoakes@gmail.com>,
- linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- Ross Zwisler <zwisler@google.com>, wklin@google.com,
- Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
- Suleiman Souhlal <suleiman@google.com>,
- Linus Torvalds <torvalds@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-In-Reply-To: <SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
-To: "Luck, Tony" <tony.luck@intel.com>
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:4104:b0:482:b15b:df59 with SMTP id
+ ay4-20020a056638410400b00482b15bdf59mr24897jab.2.1712702544521; Tue, 09 Apr
+ 2024 15:42:24 -0700 (PDT)
+Date: Tue, 09 Apr 2024 15:42:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c5bc980615b1a25c@google.com>
+Subject: [syzbot] [ntfs3?] WARNING in do_open_execat (2)
+From: syzbot <syzbot+fe18c63ce101f2b358bb@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, brauner@kernel.org, 
+	ebiederm@xmission.com, jack@suse.cz, keescook@chromium.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=106d6d15180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe18c63ce101f2b358bb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156040bd180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149d2ead180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e198b7a8a7f2/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fe18c63ce101f2b358bb@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 4096
+ntfs: volume version 3.1.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6164 at fs/exec.c:940 do_open_execat+0x2bc/0x3bc
+Modules linked in:
+CPU: 0 PID: 6164 Comm: syz-executor379 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : do_open_execat+0x2bc/0x3bc
+lr : do_open_execat+0x2b8/0x3bc fs/exec.c:939
+sp : ffff8000977a7b60
+x29: ffff8000977a7bd0 x28: 0000000000000000 x27: ffff0000d609da2c
+x26: 00000000ffffff9c x25: dfff800000000000 x24: ffff700012ef4f6c
+x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000000
+x20: fffffffffffffff3 x19: ffff0000d5ba0000 x18: ffff8000977a7100
+x17: 000000000000c791 x16: ffff80008aca6dc0 x15: 0000000000000002
+x14: 1ffff00012ef4f34 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff700012ef4f36 x10: 0000000000ff0100 x9 : 0000000000000000
+x8 : ffff0000d609da00 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000010
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000008000
+Call trace:
+ do_open_execat+0x2bc/0x3bc
+ alloc_bprm+0x44/0x934 fs/exec.c:1541
+ do_execveat_common+0x158/0x814 fs/exec.c:1935
+ do_execveat fs/exec.c:2069 [inline]
+ __do_sys_execveat fs/exec.c:2143 [inline]
+ __se_sys_execveat fs/exec.c:2137 [inline]
+ __arm64_sys_execveat+0xd0/0xec fs/exec.c:2137
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+irq event stamp: 24796
+hardirqs last  enabled at (24795): [<ffff80008ae5ce28>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+hardirqs last  enabled at (24795): [<ffff80008ae5ce28>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
+hardirqs last disabled at (24796): [<ffff80008ad66988>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
+softirqs last  enabled at (24766): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (24766): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
+softirqs last disabled at (24737): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
+---[ end trace 0000000000000000 ]---
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> On Apr 10, 2024, at 3:55=E2=80=AFAM, Luck, Tony <tony.luck@intel.com> wrot=
-e:
->=20
-> =EF=BB=BF
->>=20
->>> I forgot to mention that this makes it trivial for any machine that does=
-n't
->>> clear memory on soft-reboot, to enable console ramoops (to have access t=
-o
->>> the last boot dmesg without needing serial).
->>>=20
->>> I tested this on a couple of my test boxes and on QEMU, and it works rat=
-her
->>> well.
->>=20
->> I've long wanted a "stable for this machine and kernel" memory region
->> like this for pstore. It would make testing much easier.
->=20
-> Which systems does this work on? I'd assume that servers (and anything
-> else with ECC memory) would nuke contents while resetting ECC to clean
-> state.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If that were the case universally, then ramoops pstore backend would not wor=
-k either?
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-And yet we get the last kernel logs via the pstore for many years now, on em=
-bedded-ish devices.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-=46rom my reading, ECC-enabled DRAM is not present on lots of systems and II=
-RC, pstore ramoops has its own ECC.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Or did I miss a recent trend with ECC-enabled DRAM?
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-- Joel
-
-
-
->=20
-> -Tony
+If you want to undo deduplication, reply with:
+#syz undup
 
