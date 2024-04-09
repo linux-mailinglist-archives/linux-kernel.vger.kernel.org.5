@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-137222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4133289DF15
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:30:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F0989DF12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:30:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16C5B28C9F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:30:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9921C20A28
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5871E13D8A4;
-	Tue,  9 Apr 2024 15:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362E613D635;
+	Tue,  9 Apr 2024 15:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pnGODQoN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CueSECOF"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6007013D891;
-	Tue,  9 Apr 2024 15:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1781E12F367
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676396; cv=none; b=BKD7McxvEnjEvYjqpNBGbFboag0x6b4A1HWNe/Z23klNOK9zFdxRzq9bHWH5fNooxC3La5RhEtQUeZAdEz4ECG8CQpHa1ErRQR38nVgjwz09PHaOuIw9dbYwcvmWenEmIo115zE3npxAvCCCp8uoKJyhlyKJZgtI9shnZCPnlzY=
+	t=1712676392; cv=none; b=BYQcPyTYDam4UQXx1umzost62Uit+wyk2ER+hCU3BsalR7bwyQr+14X0K+wVzlAPhzo3Esyd6jWdWV3qTjx5h0ZrKIHOF23tavCmbvUZj72y5pgPaLoi2/xVcIp6Gm34yjG1/pgHfDEwle9ojNYpYptxL/ZDVRp61j+i6GTSLxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676396; c=relaxed/simple;
-	bh=OymyiDNf4YW49xGrZ+gXBk6psnOk8MiiogrmhOiNcXg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K4hKoWXG1QNuKF9Rym8cntA8fiIYJgSMVKIf1/yDesfEMoq4WP1zSJGIQICU7iT2JuVmpJ17CO6WZ0YiEaDv5SxPPR8Y2HEzkeg7q9X1OjbLbnh/c4j5Gq/ueKOcoZ2LY/qwaydszvUCiCkqo2gLttPILkDIqE1JKNxH6FpPMYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pnGODQoN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81708C43390;
-	Tue,  9 Apr 2024 15:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712676395;
-	bh=OymyiDNf4YW49xGrZ+gXBk6psnOk8MiiogrmhOiNcXg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pnGODQoNm1sF/Hwhx/x6or1eK83G+5sisNDHVxdxJib16K/EkjwscrCNNcJbXBP9K
-	 35TjBkFXzRRF1C6IVMk3h24ux8P4mWOm1oSxWPCfECO+KsVry/8YDIvdUKP+NK9RuS
-	 tQzBy6VAN5YnfIR7dkvXtSA0eAJGGC8gHkLdcHVde3aFcp1yoX8NQNg/hGQVrZG5Lq
-	 SF/ETWwUnfmiE35TDlMU8pvp1GK7jK+yREt6ial+dqfOIAq1kfjWg3VN6MwdaFLBrw
-	 snfonA8cFCTX5ItW8G+zR+Bi8CWGhlVoJg5njGzbjhOWLfmklvncL1/i1W1WnpPB8G
-	 hDTKD5GwIbFYg==
-Date: Tue, 9 Apr 2024 16:26:28 +0100
-From: Will Deacon <will@kernel.org>
-To: Xu Yang <xu.yang_2@nxp.com>
-Cc: frank.li@nxp.com, mark.rutland@arm.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, john.g.garry@oracle.com, jolsa@kernel.org,
-	namhyung@kernel.org, irogers@google.com, mike.leach@linaro.org,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH v8 3/8] perf: imx_perf: let the driver manage the counter
- usage rather the user
-Message-ID: <20240409152627.GA23621@willie-the-truck>
-References: <20240322063930.749126-1-xu.yang_2@nxp.com>
- <20240322063930.749126-3-xu.yang_2@nxp.com>
+	s=arc-20240116; t=1712676392; c=relaxed/simple;
+	bh=7AkwAkiGFeXn/tzNgwfDv+w516qHyDpPTUwTkeRV5D0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A0n2lILQd78BgMfNO4wevfbS7/KLiPUr2RJiKH5xbfluLPjeregFYJQIdSsXnb+8+9vPMBkohS/4Yf64BgwoMr97mPSGgA3sOnXkH3YMQzt1sWUHTM3CJT7KP1eQk4Jp+Rtvf8YbB25ch3Yxi8y68iyNPrOmSJdGEmgZ6tfJsO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CueSECOF; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6167463c60cso64779337b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712676390; x=1713281190; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L6zxjwXhkVdMVC69wPNMLfHGLf1mnpEnNlg9mNA1BZg=;
+        b=CueSECOFYYF7LRtpdB09YssCkGviporTFhY3RfbGoSFLLQ6re0HbeQ1mbdGKIN1/Dm
+         ei1354ZFavr1myENW5RJYIaXhMF9rpTM84Ekban/rfQoTycGFbavjIMBRklOMvFL6cNT
+         aPGGP3vYkfelbF+QgGN7HCqeBniQ+WMPKXSbBotHhUkaU/CWx0AZy4Q63wD1yQWd5x//
+         VedxBWd+n1zj/tzYS9spzk1FMRrxat4nu3Ls+5Eh1wH9fFZrhgkSpakC3mzp0fLm4rZW
+         rhdFzUrPQrhplLFY27nuJBjOnWJ09Y0agflKsSZD87e/LqFeiTSTvuJ43Dg2jvXMgKUT
+         bzgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712676390; x=1713281190;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=L6zxjwXhkVdMVC69wPNMLfHGLf1mnpEnNlg9mNA1BZg=;
+        b=sevHYs6k0DZULFE5NnFdXqBcji4O4Hiy9lPxPUVbVHxpaZkWG+Qnr/1dJdi12DZ32R
+         M9lAhcQVSLTqPwDi8DABJIXpQyOE73EXSs2KKgXZkDswyHUNN5X64yPUk64kV55+fNNO
+         eh9TYten8Ux8pr/XSOMI9iRWFuVyOyWEQmgOIbwMMgXU60SSP45VDp5/llF4J+t7QcIW
+         ZUpJFDVrz8U1eOUY8Eh4ru2MPMvZo/li3hP9hmsub5T8Rl0I3KBN/2R+NM9VkX9CkYo3
+         KzndqvzPr0hB6rA/UlPBajC3xL/6hDkAKXSt+bzZRl0ZR9yn5y7IACWdy+8g0Qvy0MyR
+         jTYg==
+X-Forwarded-Encrypted: i=1; AJvYcCURY02SRy/w2m8jN4+xOJfhlwsMvOZuD+posiN9xWCTOo0JNqLcHoNIXau4h8EJtaozGflpMlJt54/y4z1RgfqEOyypWLPum8um2MxY
+X-Gm-Message-State: AOJu0Yy6IGHIJsPusxDkLg9qj4MANc30mwwnZpwF4Yy+P+bum2lzv/vC
+	4As3ISANlkKIrU1JlYVDrJ2mYUlNRPC0DwTaTd+00XRDmv7bHUjnvq/QVSiRzbvCLhRrcNxw0cW
+	ZEA==
+X-Google-Smtp-Source: AGHT+IHgEVlNGyzPHVr+TYaNurRXSfMtqIJogxKzXj5vEBHwyHEd0/3MyNjcj/APy5cCPp4QIthaKpor6z4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:c74d:0:b0:615:1c63:417e with SMTP id
+ i13-20020a81c74d000000b006151c63417emr716361ywl.1.1712676390070; Tue, 09 Apr
+ 2024 08:26:30 -0700 (PDT)
+Date: Tue, 9 Apr 2024 08:26:28 -0700
+In-Reply-To: <CABgObfZAJ50Z30VzFLdSrQFOEaPxpyFWuvVr1iGogjhs2_+bGA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322063930.749126-3-xu.yang_2@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Mime-Version: 1.0
+References: <20240404121327.3107131-1-pbonzini@redhat.com> <20240404121327.3107131-8-pbonzini@redhat.com>
+ <43d1ade0461868016165e964e2bc97f280aee9d4.camel@intel.com>
+ <ZhSYEVCHqSOpVKMh@google.com> <CABgObfZAJ50Z30VzFLdSrQFOEaPxpyFWuvVr1iGogjhs2_+bGA@mail.gmail.com>
+Message-ID: <ZhVeJH0DPL89Dg97@google.com>
+Subject: Re: [PATCH v5 07/17] KVM: x86: add fields to struct kvm_arch for CoCo features
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"michael.roth@amd.com" <michael.roth@amd.com>, Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 02:39:25PM +0800, Xu Yang wrote:
-> In current design, the user of perf app needs to input counter ID to count
-> events. However, this is not user-friendly since the user needs to lookup
-> the map table to find the counter. Instead of letting the user to input
-> the counter, let this driver to manage the counters in this patch.
+On Tue, Apr 09, 2024, Paolo Bonzini wrote:
+> On Tue, Apr 9, 2024 at 3:21=E2=80=AFAM Sean Christopherson <seanjc@google=
+com> wrote:
+> > > I'm a little late to this conversation, so hopefully not just complic=
+ating
+> > > things. But why not deduce has_private_mem and has_protected_state fr=
+om the
+> > > vm_type during runtime? Like if kvm.arch.vm_type was instead a bit ma=
+sk with
+> > > the bit position of the KVM_X86_*_VM set, kvm_arch_has_private_mem() =
+could
+> > > bitwise-and with a compile time mask of vm_types that have primate me=
+mory.
+> > > This also prevents it from ever transitioning through non-nonsensical=
+ states
+> > > like vm_type =3D=3D KVM_X86_TDX_VM, but !has_private_memory, so would=
+ be a little
+> > > more robust.
+> >
+> > LOL, time is a circle, or something like that.  Paolo actually did this=
+ in v2[*],
+> > and I objected, vociferously.
+>=20
+> To be fair, Rick is asking for something much less hideous - just set
+>=20
+>  kvm->arch.vm_type =3D (1 << vm_type);
+>=20
+> and then define kvm_has_*(kvm) as !!(kvm->arch.vm_type & SOME_BIT_MASK).
+>=20
+> And indeed it makes sense as an alternative.
 
-I think we still have to support the old interface so that we don't break
-those existing users (even if the driver just ignores whatever counter ID
-is provided in a backwards-compatible way).
+Ah, yeah, I'd be fine with that.=20
 
-> This will be implemented by:
->  1. allocate counter 0 for cycle event.
->  2. find unused counter from 1-10 for reference events.
->  3. allocate specific counter for counter-specific events.
-> 
-> In this patch, counter attribute is removed too. To mark counter-specific
-> events, counter ID will be encoded into perf_pmu_events_attr.id.
-> 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-> 
-> ---
-> Changes in v6:
->  - new patch
-> Changes in v7:
->  - no changes
-> Changes in v8:
->  - add Rb tag
-> ---
->  drivers/perf/fsl_imx9_ddr_perf.c | 168 ++++++++++++++++++-------------
->  1 file changed, 99 insertions(+), 69 deletions(-)
-> 
-> diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
-> index 0017f2c9ef91..b728719b494c 100644
-> --- a/drivers/perf/fsl_imx9_ddr_perf.c
-> +++ b/drivers/perf/fsl_imx9_ddr_perf.c
-> @@ -245,14 +249,12 @@ static const struct attribute_group ddr_perf_events_attr_group = {
->  	.attrs = ddr_perf_events_attrs,
->  };
->  
-> -PMU_FORMAT_ATTR(event, "config:0-7");
-> -PMU_FORMAT_ATTR(counter, "config:8-15");
-> +PMU_FORMAT_ATTR(event, "config:0-15");
+> It also feels a little bit more restrictive and the benefit is small, so =
+I
+> think I'm going to go with this version.
 
-Sadly, this is a user-visible change so I think it will break old tools,
-won't it?
-
-Will
++1
 
