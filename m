@@ -1,292 +1,157 @@
-Return-Path: <linux-kernel+bounces-136370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3853889D34B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:36:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA97B89D352
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BA251C21532
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:36:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D309B224F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA427C097;
-	Tue,  9 Apr 2024 07:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E387C0B0;
+	Tue,  9 Apr 2024 07:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vEvH34iG"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JrkGV9t1"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A80537E6
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B327BB07
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 07:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712648151; cv=none; b=rbrUq2F6Ebi3WVQnnPT6WaAgZyOcwlW0q/DP37fmgTi8mjWE+5Nc8gmOn8JB+COt8VpJARx4e/QPX/KC48D/2zui8mqrVSuChwOF+ikaXqwBO3uyIea6IewjIMbEQGj/pMbGPMv52tR4I0eX7ToHJ0xshrwzKzzWpvSXakIfLnc=
+	t=1712648189; cv=none; b=cFo94jVpXJ2dZwM5j3Po4nNeHGofxRWCVT3LyUW3PZCBQxyHyOq3NtpIAPsQWcyUAkwt0Lcjy54xakRTqUi6M/pC6UMr3dQxiEi24hTlGqZAb3BNz+A4gOtV4md3IHG34YSOtipLGrqDusclz/elsD5nl1Ec3y610cx9zI4pzuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712648151; c=relaxed/simple;
-	bh=YcUJn2HKpN04q9KKGaJkJFDwFrKfIsLsYaiaYNAEWPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tF9s0I/9eEluLRfkmOZZ/VdjnuDi3g6+wRroz8m1QTnebaVcGJV7JshvnPZ4j01PY8qQMl0HDFb8bwEFlwOmqX43xQA76pUJp89s5m8lFKgWEnZ4mJDc3EesZW0ikdXUsuUv5JqeX5tnvn76VX40A88jR54lVaZe2kSrZwJqzFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vEvH34iG; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712648147;
-	bh=YcUJn2HKpN04q9KKGaJkJFDwFrKfIsLsYaiaYNAEWPY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=vEvH34iGXnle2VIQj3yCVdU90mFtwHMWapwu5pfFFaRS0gccyHqmATcj/YXK/QtM9
-	 6GlzR1DWpOM0zO9QeNedMYC8TDDSo9f/Fb4yrFzWbeOdtlL+Fl/JeezAZgw6VKjbRh
-	 PEjGb2CFrank/87d6xefG3e2YkD1IthNCRwMrT3o5ylXujmO4KcuWHQOLwqOOE2W2A
-	 Y7z3NJIkBGb7a6w1k7/VV+X6Mvzd7BB6CfKbwJVdqA8mDS1kGO+mNjYkBxRPyF0d1T
-	 yGOilcK03b15I4YQHxAQwSVFNGlPD1mPWKfo31CZHhGbft11rH1JQXXSxIE5lnAPoW
-	 QPtauP7LVR7AQ==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C759537820CD;
-	Tue,  9 Apr 2024 07:35:45 +0000 (UTC)
-Date: Tue, 9 Apr 2024 10:35:37 +0300
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
-Message-ID: <20240409103537.44e99854.pekka.paalanen@collabora.com>
-In-Reply-To: <ZhOhupo3bf6Cxasy@louis-chauvet-laptop>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
-	<20240325151103.0a5f7112.pekka.paalanen@collabora.com>
-	<ZgLwTJVb_Z_MHuCp@localhost.localdomain>
-	<20240327141629.48ec16f2.pekka.paalanen@collabora.com>
-	<ZhOhupo3bf6Cxasy@louis-chauvet-laptop>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712648189; c=relaxed/simple;
+	bh=qpxLu2bpQc4Zm7ZnzngrCQCHYbbIHmjF0IYgHnsNPaI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O9T5O0YyM2vq8SiFfkVhtWg9ZxJuowo/qcnF4+a7kq5J/Rh+d0mMkfjMTZzVXvE+L8I801n8XZPZJb52zn4g5tcnqjLW3/Mut/K1GpmXypSmToozxc5HqLVVA0CmNUKYHZxOipW1KRw2NvZCWSxWfbDDOimktue93j7tWuQxZuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JrkGV9t1; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-416923f05faso7652565e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 00:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712648186; x=1713252986; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=tYpqkkVkS46MTh2ZOUYz+PJWA51380etQYhSvT3UZ3E=;
+        b=JrkGV9t1VVkYVhlwm0A5vZkxjTbZDz6RkoDFBd3o29OZIKDJbWVObOLbpb5fdU7Pw7
+         j1UVJ+h37Pd+ESJPV9ayYE/1/PJ/om7m3MqlYKZI1gQ9MbK/hf9oqVeABU+2q9DfHC/8
+         BPpNDdxOKPVYjdYJcKhSuFRKRRsiXFJ4RW0ASoCFZ+ohLGsc4adhMj86waM0R4notrRi
+         jN77LANjSlv63j1F5R2VqVUKtgzETnqKiBOkBEXCzf4IBrTABm8SwWGFgcoJAXpckz1R
+         ME1sK0ACbFfP3GteY0GkhRnNtaclLz+Wp8lNneE1P2CHSSHrsX/SJt8mi6Jew15t1kYc
+         lsAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712648186; x=1713252986;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tYpqkkVkS46MTh2ZOUYz+PJWA51380etQYhSvT3UZ3E=;
+        b=HXDNP704btrSWzaRUegc3S4jJHjtQ9j1vXR9DRfckzAogpYxbYESUGNaxifov21Shm
+         TGdBIDJnWlN0oSkW8U7nkDZhNpEki07T8sacPFW8uJi9E+UPQ2cP4t/jI7bm9/zT6AB2
+         cJ4bFuG5NirpxgKY984viFCdi5aK1iSsw5r9Gl+Rym+YK0e5uXqpjOzQpTGNWHGJ6hvR
+         /34br/nAxRToVXMA2OEHI7hECGpHCcahMjVPyYupFsFvusxaE7Pa19L9A6QzX9HnuubT
+         OA9SG47bJNuueooY4LJ/s9q+SoZ4C56OvSQJ1j7zebnTzTh7VopxVthEW2xJsYZgCRBm
+         lyAg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7TF2OUyzk6OmgxdByigDmO9fhrtRh509xSvF5Dh3JYP9469MrQCQ3Q43Rq3BPjJFwXnuFheuGaPHcl1lv5ZaQoHU2gYGfXx8D6fHP
+X-Gm-Message-State: AOJu0YwrzmbGHY34JiOEmFYNQLiTknx8e+Fyj4N1eaBw2IcouoClVIPr
+	HqhEuXYKrcsTfuk0ioLOb82999PAkyP07ivGbDJ+3QOUpIJ56ZDqVLGBsZqBKKc=
+X-Google-Smtp-Source: AGHT+IHTAIAuE+jwmADmMOcXe5dKO7dmHWaWTnTpJp/TEhZJQcQGyQCTDzZ6O+feTE7q0iAV3pqUxA==
+X-Received: by 2002:a05:600c:1ca1:b0:416:a8a7:9503 with SMTP id k33-20020a05600c1ca100b00416a8a79503mr626028wms.3.1712648186120;
+        Tue, 09 Apr 2024 00:36:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id m12-20020a056000180c00b00341de3abb0esm10749509wrh.20.2024.04.09.00.36.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 00:36:25 -0700 (PDT)
+Message-ID: <5ad54140-d6c2-4c65-b31e-1ef19bc5ce5a@linaro.org>
+Date: Tue, 9 Apr 2024 09:36:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7ZpC0ifXnJlJSiBwE7xK8iV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/7ZpC0ifXnJlJSiBwE7xK8iV
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/9] dt-bindings: rtc: rtc-aspeed: move to trivial-rtc
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com>
+ <20240408-rtc_dtschema-v1-5-c447542fc362@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240408-rtc_dtschema-v1-5-c447542fc362@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Mon, 8 Apr 2024 09:50:18 +0200
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+On 08/04/2024 17:53, Javier Carrasco wrote:
+> The RTCs documented in this binding require a compatible, a reg
+> and a single interrupt, which make them suitable for a direct
+> conversion into trivial-rtc.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
 
-> Le 27/03/24 - 14:16, Pekka Paalanen a =C3=A9crit :
-> > On Tue, 26 Mar 2024 16:57:00 +0100
-> > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> >  =20
-> > > Le 25/03/24 - 15:11, Pekka Paalanen a =C3=A9crit : =20
-> > > > On Wed, 13 Mar 2024 18:45:03 +0100
-> > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> > > >    =20
-> > > > > The pixel_read_direction enum is useful to describe the reading d=
-irection
-> > > > > in a plane. It avoids using the rotation property of DRM, which n=
-ot
-> > > > > practical to know the direction of reading.
-> > > > > This patch also introduce two helpers, one to compute the
-> > > > > pixel_read_direction from the DRM rotation property, and one to c=
-ompute
-> > > > > the step, in byte, between two successive pixel in a specific dir=
-ection.
-> > > > >=20
-> > > > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > > > > ---
-> > > > >  drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++=
-++++++++++++++
-> > > > >  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
-> > > > >  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++=
-++++++++
-> > > > >  3 files changed, 77 insertions(+)
-> > > > >=20
-> > > > > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/d=
-rm/vkms/vkms_composer.c
-> > > > > index 9254086f23ff..989bcf59f375 100644
-> > > > > --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> > > > > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> > > > I hope IGT uses FB patterns instead of solid color in its tests of
-> > > > rotation to be able to detect the difference.   =20
-> > >=20
-> > > They use solid colors, and even my new rotation test [3] use solid co=
-lors. =20
-> >=20
-> > That will completely fail to detect rotation and reflection bugs then.
-> > E.g. userspace asks for 180-degree rotation, and the driver does not
-> > rotate at all. Or rotate-180 getting confused with one reflection. =20
->=20
-> I think I missunderstood what you means with "solid colors".
->=20
-> The tests uses a plane with multiple solid colors:
->=20
-> +-------+-------+
-> | White | Red   |
-> +-------+-------+
-> | Blue  | Green |
-> +-------+-------+
->=20
-> But it don't use gradients because of YUV.
->
+Best regards,
+Krzysztof
 
-Oh, that works. No worries then.
-
-> > > It is mainly for yuv formats with subsampling: if you have formats wi=
-th=20
-> > > subsampling, a "software rotated buffer" and a "hardware rotated buff=
-er"=20
-> > > will not apply the same subsampling, so the colors will be slightly=20
-> > > different. =20
-> >=20
-> > Why would they not use the same subsampling? =20
->=20
-> YUV422, for each pair of pixels along a horizontal line, the U and V=20
-> components are shared between those two pixels. However, along a vertical=
-=20
-> line, each pixel has its own U and V components.
->=20
-> When you rotate an image by 90 degrees:
->  - Hardware Rotation: If you use hardware rotation, the YUV subsampling=20
->    axis will align with what was previously the "White-Red" axis. The=20
->    hardware will handle the rotation.
->  - Software Rotation: If you use software rotation, the YUV subsampling=20
->    axis will align with what was previously the "Red-Green" axis.
-
-That would be a bug in the software rotation.
-
-> Because the subsampling compression axis changes depending on whether=20
-> you're using hardware or software rotation, the compression effect on=20
-> colors will differ. Specifically:
->  - Hardware rotation, a gradient along the "White-Red" axis may be=20
->    compressed (i.e same UV component for multiple pixels along the=20
->    gradient).
->  - Software rotation, the same gradient will not be compressed (i.e, each=
-=20
->    different color in the gradient have dedicated UV component)
->=20
-> The same reasoning also apply for "color borders", and my series [3] avoi=
-d=20
-> this issue by choosing the right number of pixels.
-
-What is [3]?
-
-I've used similar tactics in the Weston test suite, when I have no
-implementation for chroma siting: the input and reference images
-consist of 2x2 equal color pixel groups, so that chroma siting makes no
-difference. When chroma siting will be implemented, the tests will be
-extended.
-
-Is there a TODO item to fix the software rotation bug and make the
-tests more sensitive?
-
-I think documenting this would be an ok intermediate solution.
-
-> > The framebuffer contents are defined in its natural orientation, and
-> > the subsampling applies in the natural orientation. If such a FB
-> > is on a rotated plane, one must account for subsampling first, and
-> > rotate second. 90-degree rotation does not change the encoded color.
-> >=20
-> > Getting the subsampling exactly right is going to be necessary sooner
-> > or later. There is no UAPI for setting chroma siting yet, but ideally
-> > there should be.
-> >  =20
-> > > > The return values do seem correct to me, assuming I have guessed
-> > > > correctly what "X" and "Y" refer to when combined with rotation. I =
-did
-> > > > not find good documentation about that.   =20
-> > >=20
-> > > Yes, it is difficult to understand how rotation and reflexion should=
-=20
-> > > works in drm. I spend half a day testing all the combination in drm_r=
-ect_*=20
-> > > helpers to understand how this works. According to the code:
-> > > - If only rotation or only reflexion, easy as expected
-> > > - If reflexion and rotation are mixed, the source buffer is first=20
-> > >   reflected and then rotated. =20
-> >=20
-> > Now that you know, you could send a documentation patch. :-) =20
->=20
-> And now I'm not sure about it :)
-
-You'll have people review the patch and confirm your understanding or
-point out a mistake. A doc patch it easier to notice and jump in than
-this series.
-
-> I was running the tests on my v6, and for the first time ran my new=20
-> rotation [3] on the previous VKMS code. None of the tests for=20
-> ROT_90+reflexion and ROT_270+reflexion are passing...
->=20
-> So, either the previous vkms implementation was wrong, or mine is wrong :)
->=20
-> So, if a DRM expert can explain this, it could be nice.
->=20
-> To have a common example, if I take the same buffer as above=20
-> (white+red+blue+green), if I create a plane with rotation =3D=20
-> ROTATION_90 | REFLECTION_X, what is the expected result?
->=20
-> 1 - rotation then reflection=20
->=20
-> +-------+-------+
-> | Green | Red   |
-> +-------+-------+
-> | Blue  | White |
-> +-------+-------+
->=20
-> 2 - reflection then rotation (my vkms implementation)
->=20
-> +-------+-------+
-> | White | Blue  |
-> +-------+-------+
-> | Red   | Green |
-> +-------+-------+
->=20
-
-I wish I knew. :-)
-
-Thanks,
-pq
-
-
-> > For me as a userspace developer, the important place is
-> > https://dri.freedesktop.org/docs/drm/gpu/drm-kms.html#standard-plane-pr=
-operties
-> >  =20
-
---Sig_/7ZpC0ifXnJlJSiBwE7xK8iV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYU78kACgkQI1/ltBGq
-qqeYfg/+PS3QEJX8CnU8a1qo4nXuCr7ss8sSfGX6zY/YAmpLQ7xHMUtu2Z85Ygyz
-h/cUvvORb3CD/zpoxh4w3JqYnW20AgEN4P1Rphl13VETOwVsreRtnlhMUm3E0sJX
-rk3IFQIZgqNzwJxbc6u+ObRNYekaP5SG8y4J1vs9+XUns+AyjGBmHq9uf1NiRtTz
-ylK96N1y6QiLPkK6t1c55nbLWKptaLe7ONw6A07VbTMQED/0LWOb2o0Y/snxJR0i
-8t49+izUSGINNHhgoRsGFhA4yDLuHeZnSDsUREyL2blrxeMVgshMtlzjOwu9GHm5
-jNEjGKY7yB0IvWFdfp5YktBkQNLFqK/IfiCJRTLNcxMBNMfUawajsWjtm1hTvwC/
-IekuIYmnEXumrhga5Adkby4nYku+Ro0tdDXCOULRxx7lQToj/8V6AuZOTAK+75a0
-58zeVuXF+VvicjJPHix1FVSwSmucIveuhA86IB17GBK1INRC+VUW0jARf4/qRksD
-JYYhl/hiluWw/IJJ7cNCm4H+Da8jlMmQray0QfDGAlDXBh2tS2XIJEiaBm+B9yZd
-vAtMIknf3JC9MASUNdykVCuJ1Wti3lu8pmpopLSiktPIyPNYhD4a3n+mWpRvKHpb
-1mo2PraPdNgF3mDrGCevEVt2u8xpv5V0fL3Zj2GWVGCe16f8oTM=
-=Z/uP
------END PGP SIGNATURE-----
-
---Sig_/7ZpC0ifXnJlJSiBwE7xK8iV--
 
