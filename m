@@ -1,209 +1,110 @@
-Return-Path: <linux-kernel+bounces-137605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86C589E48D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:39:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 434B689E490
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F480284EF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F381328340B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF2715885C;
-	Tue,  9 Apr 2024 20:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACE815885F;
+	Tue,  9 Apr 2024 20:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iexLxoS4"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMUuwKXV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B7F158843;
-	Tue,  9 Apr 2024 20:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29CE158843;
+	Tue,  9 Apr 2024 20:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712695152; cv=none; b=DfEvV24GVlgh7hcVBo4qFDVjx64dxkDSX+wH2G2F2vo0/bgi/diDdYmGFyFA2aEZ/GxSJpCBLYBYNtPfvr8llHfNqxRkElrQyUwZOEbt2VsDWqs4mgIb3HR2SkcmZG34Z0RdJR1oY4tG35l9x9+2zo8xTvRLF87ds348UnMMGyQ=
+	t=1712695189; cv=none; b=IKYrQJO00e9fKqQ5eNZk4m3SvFzi3ZpGVgESAmeWFRKyz7gzrF6eRg4rJuKWUdcuog6mZ80hDK02sN+lZuJgipKbyRY2U4bc0Beh5xNY1o68uYYpzqs1qIh++sS8J3wOPNVN2qklPNbJOVY43RsVodvcTnCDmjuL7bwWVl0VZjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712695152; c=relaxed/simple;
-	bh=8jbelJmjK60K89nVSGEJVZ1VFyu5tfUrVQ6MaclgRv8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=LnmGfAlhzMOuXicm/F3+H7nKDlA4b/6FB4fgoxcBvq+qr8Rp+B4PbJ5vNLBWiqOw04eP2lh1mquqW04R9Yy3oSZP3vbdcj0Yt6htOZyjJNqy47rg5EmOG9pbdbujuY/v5fK6ElpIX9rcuNaZh9qNNbRvklRakkUhqoyWzMnqoD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iexLxoS4; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ed63d154-fc1f-4207-b994-9dad73eaebdb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712695148;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SVUiOM0QcRqoo/6o1IjJwVcyR3Qxex0Ao2MUyWJnXTc=;
-	b=iexLxoS4HQYGzHW0qQNnXKyYF04/CU/9OoS0xvx8xGCO4Ix16ivK+y9+ymiwAOQEvR/M5J
-	E7KmoPQbVNKAGeF/j1Zitj8/w+qiZ16xWP+z/osg4i8cW3jrYsKI/f8LAzcbFvhn/hf61S
-	3AMT3shrV2uY9XICbFQwXYTvBCoZNUE=
-Date: Tue, 9 Apr 2024 22:39:03 +0200
+	s=arc-20240116; t=1712695189; c=relaxed/simple;
+	bh=0Yc1aRq0cfqJFhJyIkDldFkrL/Y5AHCSI3i6IACqU04=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=c3/3YAFnlxhsREjMDtUwU4xPl1mU/RhxxqRuOSN2KHRuD6E4T4owXIWYu0o3RvuH4xSu5uYNBTe4btSbefPH6IuiVew6rheTKC1w3j5Xf/R0ttosrL9FJQV3Jbyp5W6KS+8wnoC/P9KM2Nlliv+2VUbNB3/Vs6AFMiDBE0gEYt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMUuwKXV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C00EC433F1;
+	Tue,  9 Apr 2024 20:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712695189;
+	bh=0Yc1aRq0cfqJFhJyIkDldFkrL/Y5AHCSI3i6IACqU04=;
+	h=From:Date:Subject:To:Cc:From;
+	b=hMUuwKXVWpHSCB08oTL4bQsM+y2MbzeXwjXoms7bGBa1G1wxAiIlFqmDglUGVtHh2
+	 EhFEtWcXHWQ77H6s773LvtZZVRuYWDbpKV/WbiTWyl3wvnOBEMoCFO53OVkpxATMvh
+	 g3CgrbeNJOmfdhwho49UTwhm4W8XKOrOvTI0oTubkaB0qcP0nT7eF9AqIqrVOL5wNA
+	 rnUuMZHICDV+7P4ve0J6SzHkq8HBnarLl7DGL097BxKJ4IpqDo/vO/ZA6ktPXtDX1M
+	 46HOP0FbxUrkYIZ+Dkecgtb2a1sx0OYpkydAxx/5d0V7G1/qrXYVilGQZWjwfQqw9y
+	 TZqp8SG9kdSww==
+From: Mark Brown <broonie@kernel.org>
+Date: Tue, 09 Apr 2024 21:39:43 +0100
+Subject: [PATCH] selftests/clone3: Check that the child exited cleanly
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Robin Murphy <robin.murphy@arm.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
- Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
- Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
- linux-nvme@lists.infradead.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- Bart Van Assche <bvanassche@acm.org>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Amir Goldstein <amir73il@gmail.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- Dan Williams <dan.j.williams@intel.com>, "jack@suse.com" <jack@suse.com>,
- Leon Romanovsky <leonro@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1709635535.git.leon@kernel.org>
- <afc34f07-ff4c-4947-a203-ef244dcf43e8@linux.dev>
-In-Reply-To: <afc34f07-ff4c-4947-a203-ef244dcf43e8@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240409-kselftest-clone3-signal-v1-1-bbe49156171d@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAI+nFWYC/x3MQQqDMBBG4avIrDuQmEjBq5Quov6xgyGWjIgg3
+ t3g8lu8d5KiCJT65qSCXVTWXGFfDY2/kGewTNXUmtYbbzpeFClu0I3HtGY4VplzSGwxDTa42Pm
+ 3o1r/C6Icz/nzva4bQIBCWmkAAAA=
+To: Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1383; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=0Yc1aRq0cfqJFhJyIkDldFkrL/Y5AHCSI3i6IACqU04=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBmFaeTbrxsxMQPVHOJS1Rq3fBJfXRe6ITHtiWAWxK/
+ MzXc+gmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZhWnkwAKCRAk1otyXVSH0Ke9B/
+ 9w6DBsuLvUH5CBI7kbhMfrrpkgyrnX3pibIAWlpmiaV695Fg8918CCCEfeatGxKIstjfhk/EN3tGbv
+ mwLbqbdBjlw0CtiwwL9oA7Rge5UKwGfEzYwPkM4IIXbK8BVqEtp49wpdyMLDS2eE4BHfn8PRznjkHT
+ GW866EZm7CNM5AYNWiTBBnTQw7qfsu9XrEPNPIUKxrwPYo5V+TigOvUSWKjsoB49dohj7blrvb+yJ5
+ KascqXrfTvk/W1qzx5ljXkCy3h6I2xNYXWO0Dv/Ui59BT8FS5evOB89h6hwy+Lpe0MT1uOH/FAP0lr
+ PQUr3cMWKSN1tdnlRkuF8mIZuUqPtA
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
+When the child exits during the clone3() selftest we use WEXITSTATUS() to
+get the exit status from the process without first checking WIFEXITED() to
+see if the result will be valid. This can lead to incorrect results, for
+example if the child exits due to signal. Add a WIFEXTED() check and report
+any non-standard exit as a failure, using EXIT_FAILURE as the exit status
+for call_clone3() since we otherwise report 0 or negative errnos.
 
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/clone3/clone3.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-在 2024/3/7 7:01, Zhu Yanjun 写道:
-> 在 2024/3/5 12:18, Leon Romanovsky 写道:
->> This is complimentary part to the proposed LSF/MM topic.
->> https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
-> 
-> I am interested in this topic. Hope I can join the meeting to discuss 
-> this topic.
-> 
+diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
+index 3c9bf0cd82a8..0e0e5dfa97c6 100644
+--- a/tools/testing/selftests/clone3/clone3.c
++++ b/tools/testing/selftests/clone3/clone3.c
+@@ -98,6 +98,11 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
+ 		ksft_print_msg("Child returned %s\n", strerror(errno));
+ 		return -errno;
+ 	}
++	if (!WIFEXITED(status)) {
++		ksft_print_msg("Child did not exit normally, status 0x%x\n",
++			       status);
++		return EXIT_FAILURE;
++	}
+ 	if (WEXITSTATUS(status))
+ 		return WEXITSTATUS(status);
+ 
 
-With the same idea, in the IDPF driver, the function dma_alloc_coherent 
-which is called in the IDPF driver can be devided into the following 2 
-functions:
+---
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+change-id: 20240405-kselftest-clone3-signal-1edb1a3f5473
 
-iommu_dma_alloc_pages
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-and
-
-iommu_dma_map_page
-
-So the function iommu_dma_alloc_pages allocates pages, 
-iommu_dma_map_page makes mapping between pages and IOVA.
-
-Now the above idea is implemented in the NIC driver. Currently it can 
-work well.
-
-Next the above idea will be implemented in the block device. Hope this 
-can increase the performance of the block device.
-
-Best Regards,
-Zhu Yanjun
-
-> Zhu Yanjun
-> 
->>
->> This is posted as RFC to get a feedback on proposed split, but RDMA, 
->> VFIO and
->> DMA patches are ready for review and inclusion, the NVMe patches are 
->> still in
->> progress as they require agreement on API first.
->>
->> Thanks
->>
->> -------------------------------------------------------------------------------
->> The DMA mapping operation performs two steps at one same time: allocates
->> IOVA space and actually maps DMA pages to that space. This one shot
->> operation works perfectly for non-complex scenarios, where callers use
->> that DMA API in control path when they setup hardware.
->>
->> However in more complex scenarios, when DMA mapping is needed in data
->> path and especially when some sort of specific datatype is involved,
->> such one shot approach has its drawbacks.
->>
->> That approach pushes developers to introduce new DMA APIs for specific
->> datatype. For example existing scatter-gather mapping functions, or
->> latest Chuck's RFC series to add biovec related DMA mapping [1] and
->> probably struct folio will need it too.
->>
->> These advanced DMA mapping APIs are needed to calculate IOVA size to
->> allocate it as one chunk and some sort of offset calculations to know
->> which part of IOVA to map.
->>
->> Instead of teaching DMA to know these specific datatypes, let's separate
->> existing DMA mapping routine to two steps and give an option to advanced
->> callers (subsystems) perform all calculations internally in advance and
->> map pages later when it is needed.
->>
->> In this series, three users are converted and each of such conversion
->> presents different positive gain:
->> 1. RDMA simplifies and speeds up its pagefault handling for
->>     on-demand-paging (ODP) mode.
->> 2. VFIO PCI live migration code saves huge chunk of memory.
->> 3. NVMe PCI avoids intermediate SG table manipulation and operates
->>     directly on BIOs.
->>
->> Thanks
->>
->> [1] 
->> https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
->>
->> Chaitanya Kulkarni (2):
->>    block: add dma_link_range() based API
->>    nvme-pci: use blk_rq_dma_map() for NVMe SGL
->>
->> Leon Romanovsky (14):
->>    mm/hmm: let users to tag specific PFNs
->>    dma-mapping: provide an interface to allocate IOVA
->>    dma-mapping: provide callbacks to link/unlink pages to specific IOVA
->>    iommu/dma: Provide an interface to allow preallocate IOVA
->>    iommu/dma: Prepare map/unmap page functions to receive IOVA
->>    iommu/dma: Implement link/unlink page callbacks
->>    RDMA/umem: Preallocate and cache IOVA for UMEM ODP
->>    RDMA/umem: Store ODP access mask information in PFN
->>    RDMA/core: Separate DMA mapping to caching IOVA and page linkage
->>    RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
->>    vfio/mlx5: Explicitly use number of pages instead of allocated length
->>    vfio/mlx5: Rewrite create mkey flow to allow better code reuse
->>    vfio/mlx5: Explicitly store page list
->>    vfio/mlx5: Convert vfio to use DMA link API
->>
->>   Documentation/core-api/dma-attributes.rst |   7 +
->>   block/blk-merge.c                         | 156 ++++++++++++++
->>   drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
->>   drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
->>   drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
->>   drivers/iommu/dma-iommu.c                 | 129 ++++++++---
->>   drivers/nvme/host/pci.c                   | 220 +++++--------------
->>   drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
->>   drivers/vfio/pci/mlx5/cmd.h               |  22 +-
->>   drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
->>   include/linux/blk-mq.h                    |   9 +
->>   include/linux/dma-map-ops.h               |  13 ++
->>   include/linux/dma-mapping.h               |  39 ++++
->>   include/linux/hmm.h                       |   3 +
->>   include/rdma/ib_umem_odp.h                |  22 +-
->>   include/rdma/ib_verbs.h                   |  54 +++++
->>   kernel/dma/debug.h                        |   2 +
->>   kernel/dma/direct.h                       |   7 +-
->>   kernel/dma/mapping.c                      |  91 ++++++++
->>   mm/hmm.c                                  |  34 +--
->>   20 files changed, 870 insertions(+), 605 deletions(-)
->>
-> 
 
