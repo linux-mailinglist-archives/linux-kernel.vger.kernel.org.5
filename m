@@ -1,203 +1,256 @@
-Return-Path: <linux-kernel+bounces-136547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB6489D570
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:24:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 912FD89D548
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D88E91F234B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:24:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A28B21C33
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E43281727;
-	Tue,  9 Apr 2024 09:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21EA07F494;
+	Tue,  9 Apr 2024 09:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="oKEp2fOb"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2105.outbound.protection.outlook.com [40.107.13.105])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="f9kS6DsV"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856C08061D;
-	Tue,  9 Apr 2024 09:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.105
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654577; cv=fail; b=o5rOEwunDrpgl7+ligsP6JUHOpsQVFLlhJQSvKS1aRLr0OABasxw/HDM+kOxMD7WQu3qNtQAlVUEhQTNy99A7ZDF9nf3oeE29412aDWeVZsLzc0OL3Y4FsVyjU/Nkyzqs86dAxWMzb4Z3D2aJyXRyp38le6TXdcQ3/Isx1SL2dM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654577; c=relaxed/simple;
-	bh=Gzc+z0v/RIB1UUQ4IGJiK+C6fBFgEW68d4jBUvf9Zfg=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=lt7xnrodWZ5NDnztQejdduXC/rkDV+iQN72Nr0FDPsqwNNunXP9rCX+SDIZmQdm+4/MNhucpBjO93JOzpwmk2PzY6eXxnLqE5EIGun0Yt1kRc3kkTGNLdeqqoyPx11qb8iqPq03Uwfn25H9Q1fQn3JvDl09NhlVqkLyjM5Fprk4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=oKEp2fOb; arc=fail smtp.client-ip=40.107.13.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FdWmn7i8VjpFA08ZLGrE5q7VT489ju/77Bj1ylrNnv9SFc5LyjA9F1GKyLolxXMsqB4PBy2OndufVRL2vRY1sejVpguOd7XHz98sefEK85YGzO7GBJTrE244929X/oLQH8zCq6zIYbtw1NR5yDSlNtAecgcAWTpDbbEcH+er+vBiBXJkAhIniKTRNE4+MzgKOwJg4V6bD08XnKeXm+LbEd64YQ9Ou8651VLy/pNz9T34YdZfvL9WjVf9aqQ+YJr8/kGlThlzNxrldu02J+FX6aSGHtonibijvkr0RhP518hKz3Px5EQd1JVhUTOpUjgfvY0GOomWqgTwdcf6k5GJfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=01y7rUwcotKi72Z7yEbm1QIRBlYvdU5gNvyG0k/qEA0=;
- b=GXagRJ14X85o7Az9P3USn+TjPzQ07y0n+597zMDXcp6YDSl8XC38mxiVfI3WiGPUNBf2WyLLXaY+gbqqku5RVUfC52TSItNNuCnjTiFsVlQyqVuA7nAVmeffHwMTrObnxJbbuGYKdVWPUMH+eYaFyDHc0MqwiVtFVMtbD05WqM75pA+PTCiG9/LfuyAKJpBYYX84HzbpK/+XiAd7fqaQ8UgjGZzAs/qpj4XBKXIX1JCSn5N+xFSvOlbkUKwTW8CZl7k0mbX+552fua1RUN/YD97h+QqBfMrQysLsKsZ9F2T5iVF4SkUlELryZhmaXOfXia3Xuaau+KTLBSpTyb6dhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=01y7rUwcotKi72Z7yEbm1QIRBlYvdU5gNvyG0k/qEA0=;
- b=oKEp2fObv77RzJnEvSPXKeazSWM9U6pFdzpn3l2zBCuts0Ct1GhOxVaHgNR0QA5s19O5PIGdcjcxy/zrw2BopjESfzJawusn8fnmvQ4hyfwYN5dP91Zu+ZF6rLsM21YgaLjAOaZzuTKHoTI33du60jzrpsDymYrHTWTtMvWJunI=
-Received: from AM9PR04MB8604.eurprd04.prod.outlook.com (2603:10a6:20b:43b::21)
- by PA4PR04MB7679.eurprd04.prod.outlook.com (2603:10a6:102:e0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 09:22:52 +0000
-Received: from AM9PR04MB8604.eurprd04.prod.outlook.com
- ([fe80::33cc:db75:c850:63a4]) by AM9PR04MB8604.eurprd04.prod.outlook.com
- ([fe80::33cc:db75:c850:63a4%2]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
- 09:22:52 +0000
-From: Pankaj Gupta <pankaj.gupta@nxp.com>
-To: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	peng.fan@nxp.com,
-	ping.bai@nxp.com,
-	haibo.chen@nxp.com,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Varun Sethi <v.sethi@nxp.com>
-Subject: [PATCH v4] arm64: dts: imx8ulp: add caam jr
-Date: Tue,  9 Apr 2024 14:50:40 +0530
-Message-Id: <20240409092040.3870497-1-pankaj.gupta@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0023.APCP153.PROD.OUTLOOK.COM (2603:1096:4:190::6)
- To AM9PR04MB8604.eurprd04.prod.outlook.com (2603:10a6:20b:43b::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AFE2B2DD
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712654449; cv=none; b=BxkpeeW91/Pd3qolys+qvDbkCuW8FKlHuWdaGHJyDktSEGqlf7bVMBlZhA7zR6nckbOaZ2FGLf0XfLtJ4jVI+DfnmsGWe99idCqxhgdeq4C0OU8TtD6r9mV/CUKe5sVZHGZ+ooGxhU1KggWy0Qjjo8UtPW4AHGnB+vTIjbb3DJA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712654449; c=relaxed/simple;
+	bh=dzWgJIr+elQQqzhnrLVPNLwsqNmviyJGgqIUxcUQWqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K2ZEvPsJx4DdzzcDmvaViETdj0TiqbEJ+92GYRJkGdl2/6Edu7bQp3GSp8gWDbuqi+ZrNw0e48N8SL6P0aWOEo7zGGQEt61D4GTGXJ8LQ3vWHK5/AY5vWc94R6muBrsoBXcV6KvrDODjTWgxiXZPS8EjZgtqVo1ENAbGHAmF+YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=f9kS6DsV; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so3953187f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 02:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1712654445; x=1713259245; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/AT6TTk+LhAPd9pV/ZdmRWE2NJwTKZCbDeN6oR+wQ/4=;
+        b=f9kS6DsVb4DnrdEPxPn7uNsk2hFTpMIzxf8wQWKBMrIU7eahlx1FCq7ncmDtaukraG
+         ARFQipqYhAjc0Ww8yxGs/D0M28f21aiUJ8PfSZoj5TN2ysTfY4k7poH5fqz0YiX1Rz3m
+         Qp4LLwJotQ4ASKewISiCP6MgqlXpNFQtGnmQkWr35Z2K9va4MmZ3elnigJhls7Z3pN+b
+         MM+czGavSroLjIjBClwN1hizPGeXGXXsuvVxFb/HOJyxkZPDWPOIo5GKwwND18ieT0DY
+         EvXfYIFvSQ5uFCTPqM2cIZg+QUHI77zJ7EFOcwmiM9B9odj3BBGRN22s8Aaak/y//WS3
+         LrtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712654445; x=1713259245;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/AT6TTk+LhAPd9pV/ZdmRWE2NJwTKZCbDeN6oR+wQ/4=;
+        b=vwH+iSPgABepCmZK8NUiU2KFArw1z6+9PM9TjS2n9QYPQ17GpO7zGl0Oyfb4lKZt5q
+         xecr+l3HFXzJYCI0Td19jvQetKq3SHbvkqgaDr+pu/M7BGVEICxhKcAl0/rEyVkqm9PO
+         CC3T/3Gv9zv9/6IUOhI3pLttLIkuE3yUoRQrk5dQPbpATZaBMj0CvmBUC3TxUHD6gnsg
+         IaFj/CDh0Z/k3cndjeADM7PSGLnfDb2ZAvUvKGSyqYJLufquHqS0ak19vQymohjwjg5s
+         LpuyjwiDIBsYV5IhL/WtbJNVKIZo5hDV5mnzUAyOezuDR7BbPyEDDo6VH5MDTMAlmRO/
+         GrIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXghamnI4Gr2d3qbZa11FNgoCg3G2nY1r9pVu+Q2PINXuWtahya+9rYHyOWjzqgncbP41ivN6juz/RylwyQVJ1caCIZhTikhyeUHfcN
+X-Gm-Message-State: AOJu0YwqFPdhyPxQT2G7Q16pIViOZZBu5pm9tQu9vmKvT99XldTbTwc9
+	7WdGRIfxpVIiunhgcG/32bpYk6qzwc6opOgbYWzYUpLRq5OtTDioeJ2MfVwiKzWSKFJGNN85OtO
+	j
+X-Google-Smtp-Source: AGHT+IFihTpQSWOgUGCFfZeSy+hQwBLIikiwaB5BmDMXbwBdPJSCfJ9GxBk3l9MRH2zrv22ix/1dDg==
+X-Received: by 2002:a05:6000:152:b0:343:96a0:cccd with SMTP id r18-20020a056000015200b0034396a0cccdmr10005535wrx.33.1712654444898;
+        Tue, 09 Apr 2024 02:20:44 -0700 (PDT)
+Received: from localhost.localdomain ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id z13-20020a056000110d00b0034174875850sm11036893wrw.70.2024.04.09.02.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 02:20:44 -0700 (PDT)
+Date: Tue, 9 Apr 2024 11:20:42 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v4 06/27] printk: nbcon: Add callbacks to
+ synchronize with driver
+Message-ID: <ZhUIatzxietD4F-m@localhost.localdomain>
+References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+ <20240402221129.2613843-7-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB8604:EE_|PA4PR04MB7679:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	hfcD7w1IIoib/9VMBCZWdl6v0BogzXVGboUteuEUQ2T+KkdDQka5L0uIrfdSHV4wy3LI0PaAss1JCUtQIowLtemcwCimOGQn5Pg2X4MCm4PcPZHZaErewBVYRaeRVGm6oTcELDsOEHUVEZokRGtR4Q0VlpxmFcRS6aUCUHHFTe8kPdsb8c/P9kdM3xEHnUNpeN4A54hJ8nvB/N5uODYgjBq/piq8jIDg/u220mqxrQ88Qety2FK/C3Y3KP74mdvJnDsr/PUqGVG5f7cuOe6Ox9lZP2OMcQluMkktm/2MAmeNg2CnVpd8twEen/DPdIY83RbKdlilbbJdtpuBdzP6hXc3dk+GbyVbSH9fuuZs8fViX8MQ4mDDeVP2hgL0vpLcvBpcBqUjtOTqUuuFfNIPQM19X2sy0eUtgyXqMe9YRDH9EQU8FfQI8liYpAgh931vAwblJlOg1tcsc5vYwEZV9mdMistJlB/SHjuX6F3vLFsK3tes4UuupYXZTA0vqYZF/iPiVtZ+OYoxAr+6qqSgALM+7eoL38Z5B+rxGnry0yhelPHNpSYuLIPMVjk0ttHJu8stuhpDo9T9rnTZHlL1ZfCnHr+MJ/dUbZc3PsvNSpzkbcdleksAUIWk+UoPUNkw2NwiAoOGhUVeN9jzs0r6xKnUAOM7kjmAXKCPAC++XLt4VaIC0HtRNAK3tuhxgPmt5CfqUqghcSc4cyIIOrUbL9yiyy158LL8xIDmI6qDrVg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8604.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(52116005)(1800799015)(366007)(921011)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?na4qfg7w8Zt8UZL6snvLimGTbjqyUxWgXvdJCVf2Ew0iYse6I8CcSC8h+NfA?=
- =?us-ascii?Q?lpJ00hjBvuC0arq0xh1s3ocJonPOfQT38Y+UI8DuKpP/bVIC1r//KlI20zJz?=
- =?us-ascii?Q?Mf98oCnhZxxqGuu3UrgtzPAKh+fWkX0A3PJCYcU2/x2tu018hKT5KEdtwPKe?=
- =?us-ascii?Q?HuyXKd7GGvUG+9OVkkibKGXcZhF5TDzAucLDFgrAQq23u6T4voiI9sQ0VTaD?=
- =?us-ascii?Q?uKrie+WJG75DmL57iAdSmD+AufNvtpjYa1xPg8PyYHkn06RHC1tgC/ti1RaI?=
- =?us-ascii?Q?xRoCCFG4m/c+xkvrM9tYtSDDM7dkYNLzOzDMBaXLf7RxRHqZw1rfe5epuWvH?=
- =?us-ascii?Q?6FRTahmb9Bh6DeJm033Nnff2UOfLBBkIAJESUhgjqPMI3Xa2bOXamjE1J6zt?=
- =?us-ascii?Q?pKQr10uzZrtEkVfxuAT/3qEVPPpUMw9J5Kk2zriwUZTgG7eq6uEK9dhMdCWi?=
- =?us-ascii?Q?8egVPEtJGgtC06oxjYhoDF51PKc+zAlcSIvagT157tyqEYDOL98BrEgC4fVr?=
- =?us-ascii?Q?le/KznDnzVHW/uuf0aR4R1Ujgs6EPDwFCcctGado+LU+OGpYOeFjK8Y6TJfj?=
- =?us-ascii?Q?z0x4+0VgwD+3JAzNi1bgTUiyyLRWb6rpSPvHvPSn8nK0oHmuABAS/PlOgRp/?=
- =?us-ascii?Q?oBcwiPSOq5LtGDckwwzu7BsXl83Mrxk08Ny6AskDfqiB2GMVYF6Yo309jYcG?=
- =?us-ascii?Q?3sUuvW3i8EToyx+XM8ri4SBA1avImU5c/TaXF2lZiehSBkuYJpIndpBJ+EPu?=
- =?us-ascii?Q?hF6NomLm5rr9usxcTIaqj8FKwy+XBe0wUXkliS7X8aZtYdRv+KMbPVgpKg8l?=
- =?us-ascii?Q?jTQ0/f1ptY84RHqUOubBPhQLrCoj/0+tv1SAnDV6jQa9JuhHa4Fai6FZDfni?=
- =?us-ascii?Q?T3nADwcQZ9lDHVktrXZeXV2jeB2mx+moxwNc60qsJ2ARHCA6gepQhkdBq1v0?=
- =?us-ascii?Q?yQIYH3UHBeyMbuIG47mz7Z3m9OMX2OPUsGQKlODyIZoi1UAqMLOKtcVLvDp4?=
- =?us-ascii?Q?9bNAOVSuOC8soitlHGcgAstK8IbVtc/XaHqH2tb3mJA9m4nU7Q35LpE7UB/L?=
- =?us-ascii?Q?JadiXWISvi+UrThw4ZoUDBMXpURn3l5NYMQXYHi1wg9vyzg7beeb+QHqKC8Y?=
- =?us-ascii?Q?5tGWMI8JD5/h0y4fWJlZS4IjX0c+VAEsFGSXPKkrWecbWg9vq6XkOdXqGxmF?=
- =?us-ascii?Q?TfsztMYb0Vy/9Rv2G6QypjRaksFGqasxALHbJ8evXC87fuimWn1Nd5ZpM/Ah?=
- =?us-ascii?Q?pjslx/H+7OjYWk4v338+xzafMhaol3gW01qSVeKEbBzHr4cqneaYzeBw1s3i?=
- =?us-ascii?Q?yI8fJedOBClLHaTu3cxKQiNeK81LlvJxnsg1aJZlcJ2utpswWy3qU1D5aZdq?=
- =?us-ascii?Q?WG9pBJfN9FCRPYNlSq6U0hdjBnYRT88fKQQtIJkgUQWE5HqsUkCOpQ0AEmmC?=
- =?us-ascii?Q?HgW0hFiu98AXGFKyxOfiWBKebYURl7iln1NpGSTmtKFi/DPzj89isFT0IQPm?=
- =?us-ascii?Q?htDZCUKhBYw6FkDh/X4h0PnzwS+3IWpSmIGTGERZtO5ezfpTrkW9lSd3GRcL?=
- =?us-ascii?Q?EUmPQmD0CRThsd2nIn85+zABQkOxWr9wYXWUBWwz?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ac2f58f-e217-4e73-8122-08dc5876a181
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8604.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 09:22:52.0820
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 64B7H5AfIzx6yMSsWLs83cy527zEWibLj+ULuRZ3YlSe0YB5Qovp2tzYjHSz2jxdWkmG0wY4HI0jd4v0GLD8jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7679
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402221129.2613843-7-john.ogness@linutronix.de>
 
-Add crypto node in device tree for:
-- CAAM job-ring
+On Wed 2024-04-03 00:17:08, John Ogness wrote:
+> Console drivers typically must deal with access to the hardware
+> via user input/output (such as an interactive login shell) and
+> output of kernel messages via printk() calls.
+> 
+> Follow-up commits require that the printk subsystem is able to
+> synchronize with the driver. Require nbcon consoles to implement
+> two new callbacks (device_lock(), device_unlock()) that will
+> use whatever synchronization mechanism the driver is using for
+> itself (for example, the port lock for uart serial consoles).
 
-Signed-off-by: Varun Sethi <v.sethi@nxp.com>
-Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
----
+We should explain here the bigger picture, see my comment
+of the word "whenever" below.
 
-v4:
- - Order of node properties changed.
+<proposal>
+Console drivers typically have to deal with access to the hardware
+via user input/output (such as an interactive login shell) and
+output of kernel messages via printk() calls.
 
-v3: 
- - Commit message title is changed from "imx8ulp-evk" to "imx8ulp".
+They use some classic locking mechanism in most situations. But
+console->write_atomic() callbacks, used by nbcon consoles,
+must be synchronized only by acquiring the console context.
 
-v2:
- - As requested, this patch is separated from the larger patch-set of 9
-   patches. 
+The synchronization via the console context ownership is possible
+only when the console driver is registered. It is when a particular
+device driver is connected with a particular console driver.
 
-Commit 
- arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+The two synchronization mechanisms must be synchronized between
+each other. It is tricky because the console context ownership
+is quite special. It might be taken over by a higher priority
+context. Also CPU migration has to be disabled.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-index 8a6596d5a581..ed86854a59c3 100644
---- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-@@ -252,6 +252,38 @@ pcc3: clock-controller@292d0000 {
- 				#reset-cells = <1>;
- 			};
- 
-+			crypto: crypto@292e0000 {
-+				compatible = "fsl,sec-v4.0";
-+				reg = <0x292e0000 0x10000>;
-+				ranges = <0 0x292e0000 0x10000>;
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+
-+				sec_jr0: jr@1000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x1000 0x1000>;
-+					interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+
-+				sec_jr1: jr@2000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x2000 0x1000>;
-+					interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+
-+				sec_jr2: jr@3000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x3000 0x1000>;
-+					interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+
-+				sec_jr3: jr@4000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x4000 0x1000>;
-+					interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+			};
-+
- 			tpm5: tpm@29340000 {
- 				compatible = "fsl,imx8ulp-tpm", "fsl,imx7ulp-tpm";
- 				reg = <0x29340000 0x1000>;
--- 
-2.34.1
+The most tricky part is to (dis)connect these two mechanism during
+the console (un)registration. Let's make it easier by adding two new
+callbacks: device_lock(), device_unlock(). They would allow
+to take the device-specific lock while the device is being
+(un)registered by the related console driver.
+
+For example, these callbacks would lock/unlock the port lock
+for serial port drivers.
+</proposal>
+
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  include/linux/console.h | 42 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/include/linux/console.h b/include/linux/console.h
+> index e4028d4079e1..ad85594e070e 100644
+> --- a/include/linux/console.h
+> +++ b/include/linux/console.h
+> @@ -352,6 +352,48 @@ struct console {
+>  	 */
+>  	void (*write_atomic)(struct console *con, struct nbcon_write_context *wctxt);
+>  
+> +	/**
+> +	 * @device_lock:
+> +	 *
+> +	 * NBCON callback to begin synchronization with driver code.
+> +	 *
+> +	 * Console drivers typically must deal with access to the hardware
+> +	 * via user input/output (such as an interactive login shell) and
+> +	 * output of kernel messages via printk() calls. This callback is
+> +	 * called by the printk-subsystem whenever it needs to synchronize
+> +	 * with hardware access by the driver.
+
+The word "whenever" can be translated as "always" (by dictionary
+and by my head ;-) Then the description sounds like this would be
+the primary synchronization mechanism between printk and the driver.
+
+In fact, this API would have only one purpose to synchronize
+the console registration/unregistration.
+
+IMHO, we should explain here the relation between the driver-specific
+locking and nbcon console context locking. It would describe the big
+picture and hopefully reduce confusion and eventual misuse.
+
+
+> + It should be implemented to
+> +	 * use whatever synchronization mechanism the driver is using for
+> +	 * itself (for example, the port lock for uart serial consoles).
+> +	 *
+> +	 * This callback is always called from task context. It may use any
+> +	 * synchronization method required by the driver. BUT this callback
+> +	 * MUST also disable migration. The console driver may be using a
+> +	 * synchronization mechanism that already takes care of this (such as
+> +	 * spinlocks). Otherwise this function must explicitly call
+> +	 * migrate_disable().
+> +	 *
+> +	 * The flags argument is provided as a convenience to the driver. It
+> +	 * will be passed again to device_unlock(). It can be ignored if the
+> +	 * driver does not need it.
+> +	 */
+
+<proposal>
+	/**
+	 * @device_lock:
+	 *
+	 * NBCON callback to serialize registration of a device driver
+	 * for a console driver.
+	 *
+	 * Console drivers typically have to deal with access to the hardware
+	 * via user input/output (such as an interactive login shell) and
+	 * Output of kernel messages via printk() calls.
+	 *
+	 * They use some classic locking mechanism in most situations. But
+	 * console->write_atomic() callbacks, used by nbcon consoles,
+	 * must be synchronized only by acquiring the console context.
+	 *
+	 * The synchronization via the console context ownership is possible
+	 * only when the console driver is registered. It is when a particular
+	 * device driver is connected with a particular console driver.
+	 *
+	 * The device_lock() callback must block operations on the device
+	 * while it is being (un)registered as a console driver. It will
+	 * make sure that the classic device locking is aware of the console
+	 * context locking when it might be acquired by the related nbcon
+	 * console driver.
+	 *
+	 * This callback is always called from task context. It may use any
+	 * synchronization method required by the driver, for example
+	 * port lock for serial ports.
+	 *
+	 * IMPORTANT: This callback MUST also disable migration. The console
+	 *	driver may be using a synchronization mechanism that already
+	 *	takes care of this (such as spinlocks). Otherwise this function
+	 *	must explicitly call migrate_disable().
+	 *
+	 *	The flags argument is provided as a convenience to the driver.
+	 *	It will be passed again to device_unlock(). It can be ignored
+	 *	if the driver does not need it.
+	 */
+</proposal>
+
+
+> +	void (*device_lock)(struct console *con, unsigned long *flags);
+> +
+> +	/**
+> +	 * @device_unlock:
+> +	 *
+> +	 * NBCON callback to finish synchronization with driver code.
+> +	 *
+> +	 * It is the counterpart to device_lock().
+> +	 *
+> +	 * This callback is always called from task context. It must
+> +	 * appropriately re-enable migration (depending on how device_lock()
+> +	 * disabled migration).
+> +	 *
+> +	 * The flags argument is the value of the same variable that was
+> +	 * passed to device_lock().
+> +	 */
+> +	void (*device_unlock)(struct console *con, unsigned long flags);
+> +
+>  	atomic_t		__private nbcon_state;
+>  	atomic_long_t		__private nbcon_seq;
+>  	struct printk_buffers	*pbufs;
+
+With the updated commit message and comment:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
 
 
