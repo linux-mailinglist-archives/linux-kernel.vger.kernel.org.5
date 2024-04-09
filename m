@@ -1,111 +1,116 @@
-Return-Path: <linux-kernel+bounces-137485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6996C89E2C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA6E389E2C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:57:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A1281C2314E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:55:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B48CE1C22C46
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A05156F46;
-	Tue,  9 Apr 2024 18:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E663156F46;
+	Tue,  9 Apr 2024 18:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KWldweP9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ri9oDrsK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4252113E3E8;
-	Tue,  9 Apr 2024 18:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A7150275;
+	Tue,  9 Apr 2024 18:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712688947; cv=none; b=cehb2mpDq0VpN6ZvQaT1qdLU6sY3GxKvEBPIvklNOn1UNhLsU7ZWjJnCnu+BTe0q0S5PWLqvzseEtwAk0WAGRsdlndlCUODYooHBgdxksHjxXC7H1qD8XbqX1R3eCKAt7ADjfQAiTuCzPOd3pHBnpPj8kbTSqeEK4laD+HS5kqQ=
+	t=1712689042; cv=none; b=hvVIpow3LJs/nfnJcuR2fKMkmhS7kFgo8FyePyV/m1lZUhtUjWdmRYBRmcCZdoXR+rW4JIumcNvxwsE9jQ0Q4Yf5Tpig0FEgf7D4BO8eDEEK11y16wyFWfyErGYutcSrnoI91lTNbIcdP3IU+OGROAodlUIp19tc96wl3xY/PfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712688947; c=relaxed/simple;
-	bh=Jo9vvIH5U/HV9EfsCBETk8fcu/gk0vAuBO3iGYCYU6A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hebpCfaW3b10jxHJ0ixFpceiRPBEvoonU8XCvnOSxvhvJvopvZHYcQFaUdcCPADTSzpBbRY7L+AvPtS21DyN5tnaC/UEHE4MRJPWRWv1THNjuy1bvaSUy5pWPcuB3n2A4p/aF3+xHGVF+vSSjTZbLUxTVkLjALBUH9r+Il+LkfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KWldweP9; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712688946; x=1744224946;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Jo9vvIH5U/HV9EfsCBETk8fcu/gk0vAuBO3iGYCYU6A=;
-  b=KWldweP9sDe1+1/lTO7cvkRjQKqXzk4s4lehv/zAQe/UPn2RYF72tCr6
-   YK8SCOL7jH4uSykNhOHTlxOZbJQ7hGw2dmGfj7Dd4h1kJWpT8qpVVOlBL
-   NiCdm0ensyspFgtFJMSPbo29XMElr5XiJOd6A7pB01YxhXF1g44OqTWBj
-   zjthuBA+efMkokFX3wTWKF12wEN23zSLAvue3lAhfVFNwYO7ciVC6aEBh
-   TQKzlXo0cRetZbe1LauRCSV+BbMWXRnv0SNG62XZWfeZ4ihc/B0VsbZ6f
-   6d4v72kWIevEBLgnRFxG66cgSRCTxgPGgG2YwGi7LCr67WSOzN9vR0tW9
-   g==;
-X-CSE-ConnectionGUID: N/u6NRxISOG0Pf8mWpPX5g==
-X-CSE-MsgGUID: rLFh+pNEREeTY5d5k7tFjw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7878068"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7878068"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:55:46 -0700
-X-CSE-ConnectionGUID: y7jAz1TPTWaqFLR0JYYEuQ==
-X-CSE-MsgGUID: T2R9OcVAQYiMHo998YUXxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20755797"
-Received: from mljaencu-mobl.amr.corp.intel.com (HELO [10.125.80.154]) ([10.125.80.154])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:55:44 -0700
-Message-ID: <976c385e-2174-464e-9afd-de4cb46f63b8@linux.intel.com>
-Date: Tue, 9 Apr 2024 11:55:43 -0700
+	s=arc-20240116; t=1712689042; c=relaxed/simple;
+	bh=XEPl6rvMdUEJUxQcF63UGqxzYLQBf+b+068mHOKHyKo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=eMwUvGZJZ5ZyTpoGxYb7+GsXCm5D/MSfc1JgX7Tk1Kkomav2pox3NfA22WuKrXDqGn/rHGBZ9bA5WBPH/gkfHxoZqLXwKalzLHkVHgjXtYEsTFWldMPFqm7fBOOe1T+9aPDhVqd1QHNucMmON7DCIxDgBp0GBIEQviDwRTToXDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ri9oDrsK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A60C433C7;
+	Tue,  9 Apr 2024 18:57:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712689041;
+	bh=XEPl6rvMdUEJUxQcF63UGqxzYLQBf+b+068mHOKHyKo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Ri9oDrsKK06MjsP2/S9PlJBEbNIckYh92Uv1G/Gmnkhr3bfO0N2QdqI05KYfFZZsZ
+	 E9wZSeOYWK24MzrQ5A92d6m+K9gYEWujsLt90AyZ5IZeE5MD3zwQo0bzcYXOUy3oKd
+	 iJ9Sdu+8T98pdzlgxnaPEGsmYHnui4FEvTQiPBCjI3UYPE0ZEgIJpJtMp/b2GWNbdZ
+	 AZDWH3qQJNa3C7rRonVq+jx2AfYjh78P9ntBBXdg+Wy49Y+lN8Pi3geg/jP2jYSzzl
+	 3rnbJLIA1L2Ke4csy+Fw1n9bE/vQ61P8no25P1/LX3akwobrJmfzPekpoBisHzwNHE
+	 iVOhXGEHPvpGA==
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, 
+ Basavaraj.Hiregoudar@amd.com, venkataprasad.potturu@amd.com, 
+ kernel test robot <lkp@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Lucas Tanure <lucas.tanure@collabora.com>, 
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>, 
+ "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, 
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20240408180229.3287220-1-Vijendar.Mukunda@amd.com>
+References: <20240408180229.3287220-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: fix for soundwire build dependencies for
+ legacy stack
+Message-Id: <171268903831.71903.8798252407593021756.b4-ty@kernel.org>
+Date: Tue, 09 Apr 2024 19:57:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] x86/cpu: Fix SPECULATIVE_MITIGATION=n kernels
-To: Sean Christopherson <seanjc@google.com>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-References: <20240409175108.1512861-1-seanjc@google.com>
-Content-Language: en-US
-From: Daniel Sneddon <daniel.sneddon@linux.intel.com>
-In-Reply-To: <20240409175108.1512861-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On 4/9/24 10:51, Sean Christopherson wrote:
-> Fix the handling of SPECULATION_MITIGATIONS=n so that it actually does
-> what it says it does: disable any and all mitigations.
+On Mon, 08 Apr 2024 23:32:26 +0530, Vijendar Mukunda wrote:
+> The SND_SOC_AMD_SOUNDWIRE Kconfig symbol has build dependency on
+> SOUNDWIRE_AMD. It gets it wrong for a configuration involving
+> SND_SOC_AMD_SOUNDWIRE_LINK_BASELINE=y,SND_SOC_AMD_PS=y and SOUNDWIRE_AMD=m,
+> which results in a link failure:
 > 
-> And because I don't see a way to provide sane behavior for overriding
-> SPECULATION_MITIGATIONS=n at runtime, explicitly disallow doing so via
-> the "mitigations" kernel parameter, e.g. so that the user at least knows
-> that their system is still likely vulnerable to a variety of issues.
+> ld: vmlinux.o: in function `amd_sdw_probe':
+> >> sound/soc/amd/ps/pci-ps.c:271:(.text+0x1d51eff):
+> 	undefined reference to `sdw_amd_probe'
+> ld: vmlinux.o: in function `acp63_sdw_machine_select':
+> >> sound/soc/amd/ps/pci-ps.c:294:(.text+0x1d525d5):
+> 	undefined reference to `sdw_amd_get_slave_info'
+> ld: vmlinux.o: in function `amd_sdw_exit':
+> >> sound/soc/amd/ps/pci-ps.c:280:(.text+0x1d538ce):
+> 	undefined reference to `sdw_amd_exit'
 > 
-> Sean Christopherson (3):
->   x86/cpu: Actually turn off mitigations by default for
->     SPECULATION_MITIGATIONS=n
->   x86/cpu: Disable BHI mitigation by default when
->     SPECULATION_MITIGATIONS=n
->   x86/cpu: Ignore "mitigations" kernel parameter if
->     SPECULATION_MITIGATIONS=n
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  3 +++
->  arch/x86/Kconfig                                | 10 +++++++---
->  arch/x86/kernel/cpu/bugs.c                      |  6 +++---
->  kernel/cpu.c                                    |  5 ++++-
->  4 files changed, 17 insertions(+), 7 deletions(-)
-> 
-> 
-> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+> [...]
 
-Reviewed-by: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: amd: fix for soundwire build dependencies for legacy stack
+      commit: 56437a561fefab2be708dfebf80e31c4715eb52e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
