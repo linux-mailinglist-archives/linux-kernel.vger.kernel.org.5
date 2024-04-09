@@ -1,132 +1,133 @@
-Return-Path: <linux-kernel+bounces-136515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887EE89D50D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:02:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D4189D50E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:03:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45AE6B22A5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:02:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2087B1F22485
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E427EF04;
-	Tue,  9 Apr 2024 09:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KpQFxEST"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FAB7E798;
+	Tue,  9 Apr 2024 09:03:21 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7F87E580
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F125339A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712653337; cv=none; b=Q876RKp6wTOabJlzEMy70fZufzqx8jqjGcGFzJgyuFVAJ1sVAKtdPeR05Hdkx4qdVhsWZ55ENgZmKkzkUwcBUbzOXvERRP2bd/2sGfWN6DJPX8ThcGmV/JgtCp5ewN/burfkoOeN6/rdrt7LBSJEkzveyB8VXcNaAjTdLU7WB5k=
+	t=1712653401; cv=none; b=n8eDuY1BZDriuFDjKsokZTTtIjHiDtBUPAGPnkuaG8UNH2i0qRYNlsXg79YhLK/qRLC7XfJuGymUfB3ONIepYmi5Hz/ttfYxcVPL6VTv5lSLcma0D3HP++wCqd3HqgDMbVqhAcf1WxqCYjfpW+R25HGXJPRQsncztjQ8+umU/E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712653337; c=relaxed/simple;
-	bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
-	h=From:To:Cc:Subject:In-Reply-To:MIME-Version:Content-Type:
-	 References:Date:Message-ID; b=Y5E+rl1jw/u75KA0Wnr2c1fDZbXUwzym81GJqefUCSiputFPBzF9PDsLAqX3rmSyo562A4JKbQA7RiFmj6ZtigikWMdCqNTytQxJCrdcvlrjOIrH3elUuPjwQI3Nd5w6oIHjdUkIXu5wLkLNvUp6nG6qNlRb5eINXJnAKb5CKXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KpQFxEST; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712653335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
-	b=KpQFxEST1MCnVLCSyly/XAxCsNUpnTs2CPXMKqFo4q83hy1A0QgReJY/wklwqGYqFDeuyE
-	MTEKNSii8HspAk6j3HdSc1M4c69DgXbbajeFMpTa4X2/iPR8EZ8C6gCpyaYmLELklgOg+Y
-	rdw4WryVTm5KOVY4B3+vge7HWWS7oUA=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-JHQrmNZINiyN_VYSu5uIpQ-1; Tue, 09 Apr 2024 05:02:14 -0400
-X-MC-Unique: JHQrmNZINiyN_VYSu5uIpQ-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78d3352237cso770250885a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712653333; x=1713258133;
-        h=message-id:date:references:mime-version:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
-        b=TvxI/sVaQ0rAC+wK5AB9nlfpHEO4yj12qNqgodJVPea0Y+yQuKNKq2QQSyL3paW4IW
-         dN+4soKM28GS3lSZFNqTH+kEnYXT8A/w4hS8ezQcjhkbVFbocR9YkAQTQErU58LRnqEh
-         Wgmkk09A36w7LrQpayr6r/uuZqOjH5aL4euBsFF2+bnCw2bcXsmfVVQDL9M8olYTD4B7
-         yKtXFnKV5YkOXJx6OGrxr6X8IfXmDtNkIraUjJ13HtxLCVHKHKgU6L8suuF0ssUZl3FF
-         9VgyfsCZNmk2zSahIuuKDM6MV4PuDxSH/1dnpKJCspzDL7VMuetCdYvFoxrp324QNxOT
-         I4Cw==
-X-Gm-Message-State: AOJu0YwWzLLhkwcKBWgGlvHcNgHzDiVv8Vdmk5O7m1MDhuOpbCLy8XeF
-	WmLCMd8rGtGs1yugHCpMBodmFgj/vj7s/3tXaszb/EFiHxwhI8+cHEryKhuDEh44nwncume/B28
-	MHSDfK5fBcmqsK2DMz/r4nXk7ga2gbQDqP14d6d4QEQIMH83cC1+qQZu8HmQ8ng==
-X-Received: by 2002:a05:620a:198e:b0:78b:b0c2:17b6 with SMTP id bm14-20020a05620a198e00b0078bb0c217b6mr3047966qkb.11.1712653333507;
-        Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGfJ9YI9fXu3bzCu+1ZKDrEFWqdCINgH4B4WK2Fj7Lg7ZxEGYh8Q7hvW22usdjnP1/pni2urA==
-X-Received: by 2002:a05:620a:198e:b0:78b:b0c2:17b6 with SMTP id bm14-20020a05620a198e00b0078bb0c217b6mr3047929qkb.11.1712653333008;
-        Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id h6-20020ac85486000000b004347d76f43csm2678126qtq.79.2024.04.09.02.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 02:02:12 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>,
- Luis Chamberlain <mcgrof@kernel.org>, josh@joshtriplett.org, Kees Cook
- <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
- Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
- Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
- <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Petr
- Mladek <pmladek@suse.com>, John Ogness <john.ogness@linutronix.de>, Sergey
- Senozhatsky <senozhatsky@chromium.org>, "Naveen N. Rao"
- <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
- <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Joel Granados <j.granados@samsung.com>
-Subject: Re: [PATCH v3 06/10] scheduler: Remove the now superfluous sentinel
- elements from ctl_table array
-In-Reply-To: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-6-285d273912fe@samsung.com>
+	s=arc-20240116; t=1712653401; c=relaxed/simple;
+	bh=vi4m312x4kVDts/5E1BrX8edzkMoKg9FVUzNpNUyKYI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WNJH85OKczM8QCaxP1MMF1p2Ogtpj1xGcAk5tsQ4srS66rP0qhdoUTBZfIyZZI1/xM8fCFW/B5weEsEpfmXO7BsO5EVwK9OP8A4G9G775Hvjna4ZEBwjLUb2dBcS3iDX1pedjRiVo0Mdc0oaTRBZFfV/0wka0SAvUeSazuTAmk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ru7No-0001rD-Vl; Tue, 09 Apr 2024 11:03:13 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ru7Nm-00BGyH-5y; Tue, 09 Apr 2024 11:03:10 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ru7Nm-00GqCV-0J;
+	Tue, 09 Apr 2024 11:03:10 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] auxdisplay: seg-led-gpio: Convert to platform remove callback returning void
+Date: Tue,  9 Apr 2024 11:03:07 +0200
+Message-ID: <20240409090306.29284-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
- <20240328-jag-sysctl_remove_empty_elem_kernel-v3-6-285d273912fe@samsung.com>
-Date: Tue, 09 Apr 2024 11:02:04 +0200
-Message-ID: <xhsmhil0qaoz7.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2311; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=vi4m312x4kVDts/5E1BrX8edzkMoKg9FVUzNpNUyKYI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmFQRK/qOJl5sDCIBE3KgvzJ1OvKHnybIlCDcpy 1ii/Aea3diJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZhUESgAKCRCPgPtYfRL+ TtTHB/0clZaHwrfkkyud5xK020JK+eGJxmBKuPdOVOa96Y8Wl6JXHe5fB1yGNwk/Llg/mJDWj/z RlnDcZ6EpWo3F/86nLRKTMixCl6kegGyDxdpp7Tm3cABpHrZ62qXzVTuSV/NIAh+V+UNyRwREba WUjbudfVRPB4X3hBKmnMzmALr0gMCfozNjtfXmbw1ZfOmjq6n9IePGsoyiPz+9INmKaMdCsAeyw UodPCKSv7oyql0tAMmp77LQe/0dumqsFaAmEVHosWiYfEDAMbjE02UNHMVxnQtHzq2jeM76aB0Q wdC/9fkdfpGwxU70rhA8g8eCZlJmFHX23YLk12jZTTSyp3UR
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 28/03/24 16:44, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
->
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
->
-> rm sentinel element from ctl_table arrays
->
-> Acked-by: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Tested-by: Valentin Schneider <vschneid@redhat.com>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/auxdisplay/seg-led-gpio.c | 6 ++----
+
+Hello,
+
+the drivers below of drivers/auxdisplay were already converted to struct
+platform_driver::remove_new during the v6.9-rc1 development cycle. This
+driver was added for v6.9-rc1 still using the old prototype.
+
+There are still more drivers to be converted, so there is from my side
+no need to get this into v6.9, but the next merge window would be nice.
+
+Best regards
+Uwe
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/auxdisplay/seg-led-gpio.c b/drivers/auxdisplay/seg-led-gpio.c
+index 35a8dbb1e9d2..183ab3011cbb 100644
+--- a/drivers/auxdisplay/seg-led-gpio.c
++++ b/drivers/auxdisplay/seg-led-gpio.c
+@@ -81,14 +81,12 @@ static int seg_led_probe(struct platform_device *pdev)
+ 	return linedisp_register(&priv->linedisp, dev, 1, &seg_led_linedisp_ops);
+ }
+ 
+-static int seg_led_remove(struct platform_device *pdev)
++static void seg_led_remove(struct platform_device *pdev)
+ {
+ 	struct seg_led_priv *priv = platform_get_drvdata(pdev);
+ 
+ 	cancel_delayed_work_sync(&priv->work);
+ 	linedisp_unregister(&priv->linedisp);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id seg_led_of_match[] = {
+@@ -99,7 +97,7 @@ MODULE_DEVICE_TABLE(of, seg_led_of_match);
+ 
+ static struct platform_driver seg_led_driver = {
+ 	.probe = seg_led_probe,
+-	.remove = seg_led_remove,
++	.remove_new = seg_led_remove,
+ 	.driver = {
+ 		.name = "seg-led-gpio",
+ 		.of_match_table = seg_led_of_match,
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+-- 
+2.43.0
 
 
