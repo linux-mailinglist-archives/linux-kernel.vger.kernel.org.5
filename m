@@ -1,158 +1,203 @@
-Return-Path: <linux-kernel+bounces-136290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5779789D248
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:22:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE3C89D24C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:23:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D533B1F24325
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:22:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949D6285CC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F37374438;
-	Tue,  9 Apr 2024 06:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sVAg4r6F"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62AA762F8;
+	Tue,  9 Apr 2024 06:22:25 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665CB762C1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AD177F1B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643743; cv=none; b=OH0qDmAeLox1ovC+su7HAgZJJOgi22ibwy8YGFbz+jV2veh6ZOX3BIS6tU5w1fP6/Z9Cj4t4ZGpWA8GKPi/pAXM2tMro2h/sKdUqRSGiesgvay83JDYKUILFdeYe36nVN5rTHNLLBYLSPCdLgRPSAUCXin3kyWuzKdDlp8JkkcY=
+	t=1712643745; cv=none; b=YVGEZtFItSn2c7LdDZ0Z4meI7dLTPIozAfoZJX8sGcA6dGdSzcck7ZH0q0yTo8kN7MqwxoJjZGXFvw4OfpiI/NzJkHKPPHUZYCRRv5Ack4adiGsXGsmdiHUj9YA+oYNu4REirxhlViJlMxhWIQnWqSPanS62rOsfgnYQcqFmEi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643743; c=relaxed/simple;
-	bh=y/N4w4ACVX8+rwzurXt0wPOGs6PInCUVXqIgWDsm+HY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XzrFHS99t61LgOK59ahmL4deMjTTLZHq6rf4GMbgtVRC0guKEFHGIcyojtB91akg2fN0TmNRf1t9pAj7AlVNonBsA4MMkOvtW3zUIekHxj7mq0Xw8BgSZWl5RtCZq7kxxJmmtLL09itz93HcPq6+n0MafnEqab+JRMJqOsp+R4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sVAg4r6F; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a51d0dda061so266179966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712643739; x=1713248539; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UMDYO2c6oxyg4uLYpkx2s2QjYRlbgcgKpJOA25y7Xcg=;
-        b=sVAg4r6FL9E4SZ+4X2QmfJEMURmaH5I/b6xZtgQLypadhicxgXhJptvwowhyXSu9rP
-         8gxJ0rLdWMeGpEQFu3vA3sZJwkLVGrukNEGpxmde+odqx7ZYWHoZnPlb6HeHQeFIWXex
-         2MSlIMY4ulEqu2gkIsIN2c+OEn8uYmjev+yq3GqpgslcxrE+RynWrfRqmkiZWmbKuT8d
-         mnAVByivy8CzoKz2RsF8TnE5kIXieaRLuEHY2Yl45sX5IS8LsHlkBmzDjoBKRQsSpHyT
-         j79VcNKbbHm3DtZD0LfZxgcOJf0+EpKw+yxOsRPO6F9G2Ru61HVzmfYUb+w8rGfl/ICQ
-         cJhg==
+	s=arc-20240116; t=1712643745; c=relaxed/simple;
+	bh=dxqg7QUHHPh0XgEN0poHt96ZHULaChHB5inM0E040qM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UP6w4teBE6nWhHfPVi0pfo24emYZIYqIQTWVmTg6O0AxBiYweadHyQ3jjRGdZyjZTW70uaff1R3uPzJdvJ5r6vICKxEM4MhGnJq2EkQ3OC/xg85BfZtVG0tLP7TivWFdab7hMYwPwLk0yMNPgSeYG2E1rUcTNU1r6cbh9UpZ6v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc74ea8606so617192839f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:22:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712643739; x=1713248539;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UMDYO2c6oxyg4uLYpkx2s2QjYRlbgcgKpJOA25y7Xcg=;
-        b=Vus2SI/8DBKKbT3/6nC0ZOUDI0Fnoy0oFdi56skhC24ZXh1hCqLlu2wAm5+DhTrnyO
-         /BoNFbAGkbiMrCELgKc3q7Lwf7LWrulMEc14iUa9S78r0lWYzuhwC0qCo1sLVdbTcJML
-         jd14OgiPCQlvsJIad1xRBrvY73mOUUi3DAFo7RMvp1i1tIZC8hKfMbpo62n9KFqeWwNS
-         +ruulJRcirGCwuYypIvqfBvrUrG7l5hMPwO7BA/XZWJBisiwBxRgfF3UzXZcQo87bj8G
-         cnfBnU6TeFhHx3fI3Ht+LrpnZwGr9jGxngXBuzvL425tSDb5XTbrcRYZXauWacLf0ujn
-         o13Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUmPgqp4Fw3T+ofKhw1tT8C8HH5GLfcJB8vbTXOg2u1p8pv9SiA7/ll1uIfuQ1swxeppwhQgLb7fJU4MrJlkx3UggBBVvfkxIzL80OL
-X-Gm-Message-State: AOJu0YywCR4r224wt3l5wFCBmcwZXcvFr3CHT5ABkOXtZTHuPg30641G
-	Dknz9mAV7Toej90rjPM1zBuhNNl6TBG8W2QwZvpsBlZ0zc6S2C4bj/UEY0rL+mE=
-X-Google-Smtp-Source: AGHT+IFezcxylFThCkZ5dq6o+jnfozGQsIp94NHvIm6eTu25O92P3DhT+nJlYrPygKuAeOBrFXddww==
-X-Received: by 2002:a17:907:7203:b0:a51:d48e:52a0 with SMTP id dr3-20020a170907720300b00a51d48e52a0mr1969227ejc.27.1712643739522;
-        Mon, 08 Apr 2024 23:22:19 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id qx25-20020a170907b59900b00a46caa13e67sm5252758ejc.105.2024.04.08.23.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 23:22:18 -0700 (PDT)
-Date: Tue, 9 Apr 2024 09:22:14 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/2] thermal/drivers/mediatek/lvts_thermal: Improve some
- memory allocation
-Message-ID: <483b8e9a-26db-45c8-ada6-e39575760c51@moroto.mountain>
-References: <42a87fb9837f1760d1ad4eb7162a7536785dc6f5.1712520052.git.christophe.jaillet@wanadoo.fr>
- <8cb69f245311a348164b0b5ca3dbc59386746035.1712520052.git.christophe.jaillet@wanadoo.fr>
- <d97f2a57-d318-455b-a860-8bd7972c8aaf@moroto.mountain>
- <4ebbe227-38b1-4a1c-af34-9ba7bdfecad5@wanadoo.fr>
+        d=1e100.net; s=20230601; t=1712643742; x=1713248542;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W2VcRzoo9Ftq1sUhypIxLcNGWAhae/L/KjOgqxMZoZ4=;
+        b=cyZWntvoUC3r0QVH4pAXEqgHvWqWRjUFE2GZKBA+mGgNgc5TWqupp0kpJK3WWj//xx
+         /ET7ik2wBKFDGnHbLrHpwP1NBEXdo8Fzzgho7vIEf5D29pHH9Ivavc9NzhvAbjOAgBRm
+         lBiH75V/E6pVtrJ4i+tvGkU+VhI0EUz9oq4akSk+rSB1BI/Nc7NyKKwqfF/wrEgux+Zz
+         JnItQNpY0hCMfpShm7ToMAiqeTcNlN+IT5HDJzrqsERbTD9zfUwmylP9fDMO8XtdaHd7
+         OUnsH+rhsP+dtVq7ehawldSfZCqc7+V8fPPPboVdT8UH9T7gmqSHPMEt9qiZuhp0dUs7
+         wosQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzBmdsT+Of8OTA6/dY/pvTSA2qdwUqV9bGjgZaq1MVTTHh86A/hgqtkde71UCu70agzS3PISfX6zVEHQHYCftryWCLRz+z3sKwStCH
+X-Gm-Message-State: AOJu0YwhFl+D2eJZsrRjkvQO7X4q+D653M1ZfRMom3DkXcIyh7ZtiOot
+	gL/4a2+8kpDiXM5FBt6gFJkPRBJCFZ7SYdtYFdBQ7VyRvARW0oh480Y8j4sjVf3ATIweHjU6831
+	Ibpp+r5Hd6wvT/3b1Nzx86BWEW6sek1SEZPjp/GzLMdj+bp0ctJHBeps=
+X-Google-Smtp-Source: AGHT+IFRW3/zEzexbjjNNBFAvgsMDQ1pCF2FxKoPSjG/ggONSo/rGJv98NsJxBnSf0frAcFlYDFvvEZZZiEYfS0E9OrGOvdzMxrV
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4ebbe227-38b1-4a1c-af34-9ba7bdfecad5@wanadoo.fr>
+X-Received: by 2002:a05:6638:2607:b0:482:8cc1:4eaf with SMTP id
+ m7-20020a056638260700b004828cc14eafmr389254jat.5.1712643742784; Mon, 08 Apr
+ 2024 23:22:22 -0700 (PDT)
+Date: Mon, 08 Apr 2024 23:22:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ea6cba0615a3f177@google.com>
+Subject: [syzbot] [jfs?] general protection fault in dtInsertEntry
+From: syzbot <syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 08, 2024 at 08:41:26PM +0200, Christophe JAILLET wrote:
-> Le 08/04/2024 à 10:09, Dan Carpenter a écrit :
-> > On Sun, Apr 07, 2024 at 10:01:49PM +0200, Christophe JAILLET wrote:
-> > > diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> > > index 3003dc350766..b133f731c5ba 100644
-> > > --- a/drivers/thermal/mediatek/lvts_thermal.c
-> > > +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> > > @@ -204,7 +204,7 @@ static const struct debugfs_reg32 lvts_regs[] = {
-> > >   static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
-> > >   {
-> > > -	struct debugfs_regset32 *regset;
-> > > +	struct debugfs_regset32 *regsets;
-> > >   	struct lvts_ctrl *lvts_ctrl;
-> > >   	struct dentry *dentry;
-> > >   	char name[64];
-> > > @@ -214,8 +214,14 @@ static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
-> > >   	if (IS_ERR(lvts_td->dom_dentry))
-> > >   		return 0;
-> > > +	regsets = devm_kcalloc(dev, lvts_td->num_lvts_ctrl,
-> > > +			       sizeof(*regsets), GFP_KERNEL);
-> > > +	if (!regsets)
-> > > +		return 0;
-> > 
-> > I understand that this preserved the behavior from the original code,
-> > but the original code was wrong.  This should return -ENOMEM.
-> 
-> Hi Dan,
-> I don't agree.
-> 
-> For me, this memory allocation is of the same type as all debugfs functions
-> that we ignore the error code.
-> 
-> If it fails, it is not a reason good enough to have the probe fail. (anyway,
-> if we are short on memory at this point other errors will likely occur)
-> 
+Hello,
 
-Huh.  It's an interesting point.  Fair enough.
+syzbot found the following issue on:
 
-> > 
-> > > +
-> > >   	for (i = 0; i < lvts_td->num_lvts_ctrl; i++) {
-> > > +		struct debugfs_regset32 *regset = &regsets[i];
-> > >   		lvts_ctrl = &lvts_td->lvts_ctrl[i];
-> > 
-> > The blank line should come after the declaration.
-> 
-> The blank line was already there, and in this file, it looks like the
-> preferred style (even if not completely consistent)
-> 
-> Let see if there is some comment about 0 or -ENOMEM in case of memory
-> allocation error, and if needed, I'll repost without the blank line.
-> 
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10056223180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=bba84aef3a26fb93deb9
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10548115180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136ecbb5180000
 
-There is supposed to be a blank line after declarations though so I
-think if you re-run checkpatch.pl -f on the file there is a checkpatch
-warning now.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/06e004bee618/mount_0.gz
 
-regards,
-dan carpenter
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1401ee15180000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1601ee15180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1201ee15180000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 32768
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 5061 Comm: syz-executor404 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:dtInsertEntry+0xd0c/0x1780 fs/jfs/jfs_dtree.c:3713
+Code: 83 e6 02 31 ff e8 a4 3f 75 fe 83 e3 02 75 3a e8 9a 3c 75 fe 48 8b 9c 24 a8 00 00 00 48 83 c3 08 48 89 d8 48 c1 e8 03 4c 89 f2 <42> 0f b6 04 30 84 c0 74 3e 89 d9 80 e1 07 38 c1 7c 35 48 89 df e8
+RSP: 0018:ffffc9000381f060 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000008 RCX: ffff88801a715a00
+RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000381f210 R08: ffffffff831fb7ac R09: ffffffff832296af
+R10: 0000000000000004 R11: ffff88801a715a00 R12: ffff88807adfb130
+R13: ffffffffffffffff R14: dffffc0000000000 R15: 000000000000000d
+FS:  000055558fe16380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000066c7e0 CR3: 000000002ca48000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dtInsert+0xbf1/0x6b00 fs/jfs/jfs_dtree.c:891
+ jfs_create+0x7ba/0xb90 fs/jfs/namei.c:137
+ lookup_open fs/namei.c:3497 [inline]
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x1425/0x3240 fs/namei.c:3796
+ do_filp_open+0x235/0x490 fs/namei.c:3826
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_openat fs/open.c:1437 [inline]
+ __se_sys_openat fs/open.c:1432 [inline]
+ __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f30b7a475f9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffd9c3bfb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007fffd9c3c198 RCX: 00007f30b7a475f9
+RDX: 000000000000275a RSI: 0000000020000080 RDI: 00000000ffffff9c
+RBP: 00007f30b7ac0610 R08: 0000000000005e33 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffd9c3c188 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:dtInsertEntry+0xd0c/0x1780 fs/jfs/jfs_dtree.c:3713
+Code: 83 e6 02 31 ff e8 a4 3f 75 fe 83 e3 02 75 3a e8 9a 3c 75 fe 48 8b 9c 24 a8 00 00 00 48 83 c3 08 48 89 d8 48 c1 e8 03 4c 89 f2 <42> 0f b6 04 30 84 c0 74 3e 89 d9 80 e1 07 38 c1 7c 35 48 89 df e8
+RSP: 0018:ffffc9000381f060 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000008 RCX: ffff88801a715a00
+RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000381f210 R08: ffffffff831fb7ac R09: ffffffff832296af
+R10: 0000000000000004 R11: ffff88801a715a00 R12: ffff88807adfb130
+R13: ffffffffffffffff R14: dffffc0000000000 R15: 000000000000000d
+FS:  000055558fe16380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557bf42357e0 CR3: 000000002ca48000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	83 e6 02             	and    $0x2,%esi
+   3:	31 ff                	xor    %edi,%edi
+   5:	e8 a4 3f 75 fe       	call   0xfe753fae
+   a:	83 e3 02             	and    $0x2,%ebx
+   d:	75 3a                	jne    0x49
+   f:	e8 9a 3c 75 fe       	call   0xfe753cae
+  14:	48 8b 9c 24 a8 00 00 	mov    0xa8(%rsp),%rbx
+  1b:	00
+  1c:	48 83 c3 08          	add    $0x8,%rbx
+  20:	48 89 d8             	mov    %rbx,%rax
+  23:	48 c1 e8 03          	shr    $0x3,%rax
+  27:	4c 89 f2             	mov    %r14,%rdx
+* 2a:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	74 3e                	je     0x71
+  33:	89 d9                	mov    %ebx,%ecx
+  35:	80 e1 07             	and    $0x7,%cl
+  38:	38 c1                	cmp    %al,%cl
+  3a:	7c 35                	jl     0x71
+  3c:	48 89 df             	mov    %rbx,%rdi
+  3f:	e8                   	.byte 0xe8
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
