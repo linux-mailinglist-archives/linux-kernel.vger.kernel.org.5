@@ -1,88 +1,143 @@
-Return-Path: <linux-kernel+bounces-136964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01C1C89DA63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:36:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993DD89DA75
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:38:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19CAA1C22DA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:36:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4DF71C21DFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBFE130A5B;
-	Tue,  9 Apr 2024 13:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xKkGsbU4"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB035132814;
+	Tue,  9 Apr 2024 13:35:21 +0000 (UTC)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652CB7FBD3;
-	Tue,  9 Apr 2024 13:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2D712F376;
+	Tue,  9 Apr 2024 13:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669571; cv=none; b=mJ883A1doDz4FmgO1WTRtTMwE3A3w44gb/VRvcCJPyJ+P+ROSQFbKIgnZE2qsXULkqEwAXNeurV/PxLTjjCVy45vRqawLmuszWBghP3PMUJbsar7ta4hh16xgH/wM4q53jYz/SqaeYL46nYvTFNnUb/59tazddH7ybuGAmL6mOQ=
+	t=1712669721; cv=none; b=bTIkRmSL6uyIzcAPzKhiy5WBLM88fdCzwZ/MBr03kgE7j+ohBl9on56I0YZDfhQVLxsJPigfdeWhm2uRggglP0ZL/5Z6hp+dLHYeGUL5jx5Yu/Eni073tDuKVuafwFx3NuE1r/mr+p5RpePAq4Udh7RySMiFaZbm6SLBssuGd9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669571; c=relaxed/simple;
-	bh=RiIwGLCd0WmHcv9dwUh7ZyBlB74tyvzcwHjtFnzVHoo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nb3sBpqh1/R2t40gbQnDGfflTjzNJtJ8Tik6WaXmPRS4tul8Iz2yTPE1ekEnixefEzCLBONVz7MwpFsJL7WYpQTN/n4EQF05StnuiAQtrBjQpY+NF/JNBCRscy2PW0CIe6Gyuz1xcxCbPhxw6e0N5zw87tqJQNFIRlRtOenLdGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xKkGsbU4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=tEIbor9pEQA30BeptpyPyxQfeq6lHOGOFBBdte10kwc=; b=xKkGsbU4yDo8cQiMtUTZFLfVV6
-	EW1omNWvMb2sqkmhkizSWTq8vqEdToNCE5w2vIYW8cS5nXnm9oMx6dCTElFXWKGQFX5Z/Vcyhg3wB
-	/OBCRuVg3bplmpxTN6qRTJqTVIKD575IWhWsYooFihI9r4OHKSMrCe2u2tlYc15jhXJDy8mtJVFqD
-	cdBkrkOk9F67cSdr46++B4aVEq6YPdNkgTBxZKKtKpc5V3xVpwQBMOz0P4aUb8/qYtsfR7yHMn0lT
-	rwv0X0L3PPhKw5mGSkHQhaLUtDVeI8asmrM1/99gk6iYF7hSrnEJeZuaumcZSGlbeYXCbDOpLO9ST
-	M485Stbw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruBaj-000000028qr-3OZQ;
-	Tue, 09 Apr 2024 13:32:49 +0000
-Date: Tue, 9 Apr 2024 06:32:49 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] xfs: xattr: replace strncpy and check for truncation
-Message-ID: <ZhVDgbRoF9X7JSdt@infradead.org>
-References: <20240405-strncpy-xattr-split2-v1-1-90ab18232407@google.com>
+	s=arc-20240116; t=1712669721; c=relaxed/simple;
+	bh=f9nTh0EfACiC5uRI99Wmu8UneIV2W1Qj3qTkTY7pT+w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ay/qFASev01rOsV4gzGj+DonaYrd8l1VfAT61li2RCwMjU3yPw3L//y97nvOurLn/8JYnHCE8FJcc+VL6dYIfMQQDzHuFUc8KftFQIdPIQmuoTYFJAo7F2m2IZj9zwMzINBWVF8bWoVuL67ve2cE/SOR+DpZPUn5UR+I7T8AEdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso6298157a12.0;
+        Tue, 09 Apr 2024 06:35:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712669718; x=1713274518;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O6lqza+y20jmgL1FUPxo6ruPEO/LBvmrDYaeR7EHG0c=;
+        b=kMI6byNhrmySNkJU/VxQedIEhwmjRpfTqBXbkipVlQh8zogrry3xfd1M403xJ7s2l4
+         +QILkVK4WrkrmaNIcQPrQfdL5qs6zTcHaVFqfW1DzCHe7IhaDhrZ3i5Ff7XVqaRoS378
+         kgiu8CszkCfr/mXPbZjYtwqOAgEGptsF9uB8ZoLv1gG2c9lo6Fl2ikX/y9pxh8X8bHGs
+         z0fqI5OCCIGA6gVJTYAKxHVgdzjn8fBPbdPH5Fbd6RwQNA88HTfPlh81p9VhGNohQ9a2
+         jmEnibFW/FAj3810L0BrKDgAxg2OMHeIWnpnGTdq1ENmfXdxzhaR4y3x7mMgkq0RwJ70
+         9XlA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCWuVk9mkAg3h3gvl37cAFLGYfrLBhrrgkK5eQNK3rOqoLr1cKpmIlk9OvCU8oU4OhP+prCXtKbV/iLCkFpAMDhipKkuNj2mQxfTxMMmLAStyrLwS9G5RCjHtN8Ml4G9yf
+X-Gm-Message-State: AOJu0Ywa9hzETCsr8O9J7HS0Vwtt6ep/NP3BKLC6pBQeyuf/IhFGCBtW
+	opxietGiNBp4xgYCsKety08PjZ+qNLqni+LlHXjHppnZCHY/TaDG9MEwVYn3
+X-Google-Smtp-Source: AGHT+IF4N0TpR/1q5j5evnyE0GihgQz26tXPuy2DErdFrHORTKmYrFyu8s8q3bMATTb1WkDayA2P9Q==
+X-Received: by 2002:a17:906:694f:b0:a51:b228:9282 with SMTP id c15-20020a170906694f00b00a51b2289282mr5964031ejs.44.1712669717916;
+        Tue, 09 Apr 2024 06:35:17 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170906830500b00a4734125fd2sm5704159ejx.31.2024.04.09.06.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 06:35:17 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	=?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+	Oliver Neukum <oneukum@suse.com>
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org (open list:USB NETWORKING DRIVERS)
+Subject: [PATCH net-next 1/2] net: usb: qmi_wwan: Leverage core stats allocator
+Date: Tue,  9 Apr 2024 06:33:05 -0700
+Message-ID: <20240409133307.2058099-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405-strncpy-xattr-split2-v1-1-90ab18232407@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 05, 2024 at 07:45:08PM +0000, Justin Stitt wrote:
-> -	memcpy(offset, prefix, prefix_len);
-> -	offset += prefix_len;
-> -	strncpy(offset, (char *)name, namelen);			/* real name */
-> -	offset += namelen;
-> -	*offset = '\0';
-> +
-> +	combined_len = prefix_len + namelen;
-> +
-> +	/* plus one byte for \0 */
-> +	actual_len = scnprintf(offset, combined_len + 1, "%s%s", prefix, name);
-> +
-> +	if (actual_len < combined_len)
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of in this driver.
 
-Shouldn't this be a != ?
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-That being said I think this is actually wrong - the attr names are
-not NULL-terminated on disk, which is why we have the explicit
-zero terminataion above.
+Remove the allocation in the qmi_wwan driver and leverage the network
+core allocation instead.
 
-How was this tested?
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+PS: This was compiled-tested only due to lack of hardware.
+---
+ drivers/net/usb/qmi_wwan.c | 8 +-------
+ drivers/net/usb/usbnet.c   | 1 +
+ 2 files changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+index e2e181378f41..5528a9c2b9d6 100644
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -133,6 +133,7 @@ static void qmimux_setup(struct net_device *dev)
+ 	dev->flags           = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
+ 	dev->netdev_ops      = &qmimux_netdev_ops;
+ 	dev->mtu             = 1500;
++	dev->pcpu_stat_type  = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->needs_free_netdev = true;
+ }
+ 
+@@ -257,12 +258,6 @@ static int qmimux_register_device(struct net_device *real_dev, u8 mux_id)
+ 	priv->mux_id = mux_id;
+ 	priv->real_dev = real_dev;
+ 
+-	new_dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!new_dev->tstats) {
+-		err = -ENOBUFS;
+-		goto out_free_newdev;
+-	}
+-
+ 	new_dev->sysfs_groups[0] = &qmi_wwan_sysfs_qmimux_attr_group;
+ 
+ 	err = register_netdevice(new_dev);
+@@ -295,7 +290,6 @@ static void qmimux_unregister_device(struct net_device *dev,
+ 	struct qmimux_priv *priv = netdev_priv(dev);
+ 	struct net_device *real_dev = priv->real_dev;
+ 
+-	free_percpu(dev->tstats);
+ 	netdev_upper_dev_unlink(real_dev, dev);
+ 	unregister_netdevice_queue(dev, head);
+ 
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index e84efa661589..f3f7f686fe9c 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1733,6 +1733,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
+ 	dev->hard_mtu = net->mtu + net->hard_header_len;
+ 	net->min_mtu = 0;
+ 	net->max_mtu = ETH_MAX_MTU;
++	net->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 
+ 	net->netdev_ops = &usbnet_netdev_ops;
+ 	net->watchdog_timeo = TX_TIMEOUT_JIFFIES;
+-- 
+2.43.0
 
 
