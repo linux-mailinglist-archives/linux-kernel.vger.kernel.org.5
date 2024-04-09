@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-136137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5176B89D064
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:33:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C02989D065
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 04:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0EBDB24C3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:33:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D211F233A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9DA6A340;
-	Tue,  9 Apr 2024 02:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D57757F2;
+	Tue,  9 Apr 2024 02:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1PthwBvX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KRIQdS6g"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E325464A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 02:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0545A6A033
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 02:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712629949; cv=none; b=SiE9yNW2UwsPZqHYGH+gyS2pyuEdBEGgIHhOoBGJcRxHDcwGRcOjlVhQLbY2kpu4wayih42n+tPBBg2MRhryoMMEnPlGyZxYT5Cu+W/vIN4O8vP4IAreF+tCLkGOwKRStjbFtlYvZEjt1hWD2UDwO7qrh7aUtWoVuT2fQvXiNHo=
+	t=1712629951; cv=none; b=GbHCbxryKeXM4+TV4TvSCxEREwAeVnkKP1QWEYn4Hav9Rq+KJ3N5c6LzWcQ+75ace6n2ZZTTiBt2kRPXolTnm0pXWQjm1x8rInVBaDDi4c9YxEvAtz4k+X5jGxmiswP1Jdg8pxz9ZDnK6RgO+d+4gyEylPFaJNkH8yIAFYepg+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712629949; c=relaxed/simple;
-	bh=PL/A3WVadEL63FKjbVqnoa/RshNov2kFBvTQ0RAhX60=;
+	s=arc-20240116; t=1712629951; c=relaxed/simple;
+	bh=xHsqseGo45EFWIp81P0tGMdoFgzohP0SXk8wpRgIZ/M=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=Ep+q3h+HxNrYRVdAxT04u2tUMlK6b5x+GVkJTCB7n9kvPZKYack30G1qoay89/o49CKomHLgl/BT8VLZGUbH7ipldmMSXQACYEPVUN/fTIlUrg8dVfSsWCFITRqhBiFFkIly4lyEssWFi7hj4t8iBVNoub9NN3U/MnUSsQnNTpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1PthwBvX; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=D/5B7EhNGzN+GHblQCfzqJ/H3Q+2paXuSrWTtLsAkHcdHcBccVYdbug3YlJnRESBK3LkZI3bRIQ51NeoInXm51ghVztMIBYlK9wfjz/Z8O0g074fHN/3Ph11xbT/ec3Q8LytXbrnitiBjYNrBmhqUIMDku5l3qRD/nGRCbfjY/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KRIQdS6g; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso7225386276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 19:32:27 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64f63d768so8681860276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 19:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712629947; x=1713234747; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712629949; x=1713234749; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4JjU99n3cntJzSuWKEHlCabsCaDKhMo8d9uJcAKSqpE=;
-        b=1PthwBvXPHwvvmq6plmmvmLYVnOlygUuuRIINo98O3rrNKn0jObdQAfTok4aTPei3j
-         XxRd+tcDDPf4pf7l4J6UQw3IJ+cbnFitt79aa+J9EUZYkMn6Fps9YKuaLfWO7s5LFcNS
-         ktU5ez2sUtVi7XH+dNL64ESAS69nA8IAD31AdnzyWMQehJHlJii+LMo9S8TKTA369Pcn
-         xmyRHXTLVYbNx8XknFWtmo9Ee/ifK79tiPt5uOK0fXK5j5hkwjmh1nOtEMbAGBp37aST
-         oumd1fc5uy/1m//A1fepNCDQbGCy1UYYn23Vza9eb3fNf3dydx+udtWIKUGNdj5r5+BD
-         G6TA==
+        bh=/BAUdVwmPAN+ChmE3q8Tcu1VmgKAoqUPA+AHxJ0JyqY=;
+        b=KRIQdS6gSqM7Cz4ZpXf/TfjU83+ld8PARjdjgsTjZB5jsDSlyJQH1FNp6vtjdUev/V
+         Ha3ouiLTbpzSfQtYQSU+HjLfut72Myxq7xmC7f7awy0FKWZN8SyVH2dXwiAimE1IVrqV
+         KYphCN5vLXaSOuZ2GJs78uKk+QVwz4sBlp+A1nx9ioR8t1Eg5yFUco/cXa1jB3NHsVdq
+         DRdGJMdozmX18lywuA/2Esh7RnGdVXt4mqjPOqGggEQ1T0vh8rL0FOIzTl+PvHU/P7Q8
+         VYq6Ox0UYyWoC5MN/JKwopRDYGr0SdGU2LqdKscCXo2PQbSF/cCHaXLuRz+p0vHm7BvD
+         yYBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712629947; x=1713234747;
+        d=1e100.net; s=20230601; t=1712629949; x=1713234749;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4JjU99n3cntJzSuWKEHlCabsCaDKhMo8d9uJcAKSqpE=;
-        b=xGDg1ZnWu4de4EvDq4SoXmmRpcLKW/w6h4joRlO9gljVTcpV2TuCRznooQUzFjxp+F
-         KzvMRaDYP5aasanIkbLDjQpIQ90SS3bcKdAqVc9DxF3CeSOTPDwA1S2DY3WPyWDhjaEZ
-         4P/w5GuSCeKCyIOljYDIpuJFqO0X6VHFqHErTVzKqJEP9URuGXWtJRxVVdizpdtc3grG
-         xY1++iGckgGqbiEiIb2eeYGopHQ8O6gHpvh6KebG3Z9dYZG9HfsIAcJKbkBl9stqRbPg
-         FSM7mYS+eb1V4dTF3u7aP/nopFpwU+wbEHFDiHRA5MbeuK3eIRAYyj2OhNkVpHbpaj+y
-         xctw==
-X-Forwarded-Encrypted: i=1; AJvYcCXCjJybhqVK2nWsV5xpWWfVBXHbs1yWOpokTlAJTC4/AfIustkPT/kvOTq9yNpTRpkhUOgVrtrcZ0Mvz8u4yevCoFISk6mSL9MwOJDV
-X-Gm-Message-State: AOJu0YzdrYbldICsTZ4fDbPhmZlS+6ui2qH2snbYADjFjJ0sYD8Cd0q0
-	XbqyqFMDnHRbenfMJPU+vZJLuUzZq6S10X3y9G6fDQfJ/AWZ05K7oO6rJTG+V9gHzOVnOwvfXTx
-	PDZ44Iw==
-X-Google-Smtp-Source: AGHT+IHrxNdg3AbPwFqBK+ciQlIUmbNjVBlMy/hHjaGqY4bavIjah0RyNlXtnMe94CNiX51z2K7BxkRbPJfh
+        bh=/BAUdVwmPAN+ChmE3q8Tcu1VmgKAoqUPA+AHxJ0JyqY=;
+        b=XHbpsIcVzqSGTlChYWYDRy0ed2G0k0lduLDQQUUyKzHyM/6a3smUQZPIcXQTqN2JOj
+         u2TOqQlC9oOCE2aw7vWdvO9xc4cu1szNhvl7IJmpMrKU02a9fieklUaLOk5GtvqF2IKF
+         2WlAVEbKPFF2sch0cKEz2ehJqCK94KVIcVAB+OyjqkoyWv4d0juBuqiUHTNhcpFyoaVo
+         NT1BHYz1bCeSCsy/q3ExOgJcW0sd+rNNn3MnSt3uXWqhzcSvHySa31yciMxBhXImSHW7
+         WfLjtKq29O6I6JSnqsPGvhliM2LasCIY1t3+mbSzs6vox7hCW6Vl0hVkV0O3tVVyWyft
+         Z9OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLi8eZDEJO8v3XfzCXMY/6fGCHMRS1UrtSngqcclNALFFhRFhocT1o/VzVzB/Ib85gAsBqcw6DrlkJLJORV6xl08hwvHIRnNzRXCfO
+X-Gm-Message-State: AOJu0YxP3TQ/36KwPZhFDqMCxqAQcYdDu2DEnaad9xLGWtb/Jvqpi00d
+	DvOkATCFOr1rWVLPncYzrwRL8wweJ+3GG0ub8JwtgerPukG5tZHchYrI2+lXdqRlzzXqWsqnsnX
+	fNmBvyw==
+X-Google-Smtp-Source: AGHT+IGF6ZTjnu8dVcNXGrughSGYScPK3AYo0PJxMnN9RAliJjpZ62UnoVFK8B/Xe/xfHylwSeuiBANHAUhu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5520:7788:6b7d:7115])
- (user=irogers job=sendgmr) by 2002:a25:a288:0:b0:dc9:5ef8:2b2d with SMTP id
- c8-20020a25a288000000b00dc95ef82b2dmr3131277ybi.4.1712629947067; Mon, 08 Apr
- 2024 19:32:27 -0700 (PDT)
-Date: Mon,  8 Apr 2024 19:32:15 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:70d:b0:dc6:dfd9:d431 with SMTP id
+ k13-20020a056902070d00b00dc6dfd9d431mr3087229ybt.1.1712629949240; Mon, 08 Apr
+ 2024 19:32:29 -0700 (PDT)
+Date: Mon,  8 Apr 2024 19:32:16 -0700
 In-Reply-To: <20240409023216.2342032-1-irogers@google.com>
-Message-Id: <20240409023216.2342032-4-irogers@google.com>
+Message-Id: <20240409023216.2342032-5-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240409023216.2342032-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v1 3/4] perf util: Add shellcheck to generate-cmdlist.sh
+Subject: [PATCH v1 4/4] perf trace beauty: Add shellcheck to scripts
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -87,26 +87,27 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Add shellcheck to generate-cmdlist.sh to avoid basic shell script
-mistakes.
+Add shell check to scripts generating perf trace lookup tables. Fix
+quoting issue in arch_errno_names.sh.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/Build | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ tools/perf/trace/beauty/Build               | 14 ++++++++++++++
+ tools/perf/trace/beauty/arch_errno_names.sh |  8 +++++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index aec5a590e349..292170a99ab6 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -389,3 +389,17 @@ $(OUTPUT)util/vsprintf.o: ../lib/vsprintf.c FORCE
- $(OUTPUT)util/list_sort.o: ../lib/list_sort.c FORCE
- 	$(call rule_mkdir)
- 	$(call if_changed_dep,cc_o_c)
+diff --git a/tools/perf/trace/beauty/Build b/tools/perf/trace/beauty/Build
+index d8ce1b698983..cb3c1399ff40 100644
+--- a/tools/perf/trace/beauty/Build
++++ b/tools/perf/trace/beauty/Build
+@@ -20,3 +20,17 @@ perf-y += statx.o
+ perf-y += sync_file_range.o
+ perf-y += timespec.o
+ perf-y += tracepoints/
 +
 +ifdef SHELLCHECK
-+  SHELL_TESTS := generate-cmdlist.sh
-+  TEST_LOGS := $(SHELL_TESTS:%=%.shellcheck_log)
++  SHELL_TESTS := $(wildcard trace/beauty/*.sh)
++  TEST_LOGS := $(SHELL_TESTS:trace/beauty/%=%.shellcheck_log)
 +else
 +  SHELL_TESTS :=
 +  TEST_LOGS :=
@@ -114,9 +115,29 @@ index aec5a590e349..292170a99ab6 100644
 +
 +$(OUTPUT)%.shellcheck_log: %
 +	$(call rule_mkdir)
-+	$(Q)$(call echo-cmd,test)shellcheck -a -S warning "$<" > $@ || (cat $@ && rm $@ && false)
++	$(Q)$(call echo-cmd,test)shellcheck -s bash -a -S warning "$<" > $@ || (cat $@ && rm $@ && false)
 +
 +perf-y += $(TEST_LOGS)
+diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+index 7df4bf5b55a3..30d3889b2957 100755
+--- a/tools/perf/trace/beauty/arch_errno_names.sh
++++ b/tools/perf/trace/beauty/arch_errno_names.sh
+@@ -60,10 +60,12 @@ create_arch_errno_table_func()
+ 	printf 'arch_syscalls__strerrno_t *arch_syscalls__strerrno_function(const char *arch)\n'
+ 	printf '{\n'
+ 	for arch in $archlist; do
+-		printf '\tif (!strcmp(arch, "%s"))\n' $(arch_string "$arch")
+-		printf '\t\treturn errno_to_name__%s;\n' $(arch_string "$arch")
++		arch_str=$(arch_string "$arch")
++		printf '\tif (!strcmp(arch, "%s"))\n' "$arch_str"
++		printf '\t\treturn errno_to_name__%s;\n' "$arch_str"
+ 	done
+-	printf '\treturn errno_to_name__%s;\n' $(arch_string "$default")
++	arch_str=$(arch_string "$default")
++	printf '\treturn errno_to_name__%s;\n' "$arch_str"
+ 	printf '}\n'
+ }
+ 
 -- 
 2.44.0.478.gd926399ef9-goog
 
