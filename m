@@ -1,182 +1,284 @@
-Return-Path: <linux-kernel+bounces-136414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C5F89D3C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:09:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5B489D3DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D6722822D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:09:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AFE2B22933
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EE17E101;
-	Tue,  9 Apr 2024 08:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5087EEF6;
+	Tue,  9 Apr 2024 08:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V/JWcPO+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0h0dJ29h"
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B877E0E8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52197E10B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650168; cv=none; b=FkYd3rChMSTOCdaoUwCX10tJ4MHlr//Qrl9CJKuPHeq8bfQqAjD+amq66w4uH+sXz4DUwOcb2vc6bzxMztYStiia6YlEkD0/5j3exdqOLo9ybTaH6INuMBJM9aunTV/svlvZIim76hNJ53LCH3/GBkVjgUwseyY1m/n/srAdM2M=
+	t=1712650294; cv=none; b=p/vXcJEFp7/YkNmvVMMoChT+Oksx9DRVKiebh4ebqiyrA2+wqFyJQtfT89QgxRb9MppubqY6lt/Y3OnFvnOISZ2BlGNrGradiY7ESvdkOAXX6RqK/wIos1ezf602KprGvXMRNOn711h8e1SkNcCGTZOKgOTizSA32ihPWG+Q0W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650168; c=relaxed/simple;
-	bh=xUo91t5hI8Cb04ItwP9naq0YtKzSZsLmPuxJ3cq5B4g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eSrTMI8Aku89C49YH1wcJpEv3osBI7UVdWWCeEFcrNQNIqDQfSwF6Zr8amYXwPxaH0kKq1eetS3L2IOzIDQq8zB9YDYPl679Madd26PXUCsiXlKNjwlBpkNPyu0aM+30+YF2mTjnjrLFPY6CUp7AgVtgEBGDNrsFESvyC7W7M3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V/JWcPO+; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712650165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jPexdV4dgWou2KnabUAsmiUVZjyB+kN+kK+ahj9bwWs=;
-	b=V/JWcPO+b1dcG3LD+dGDuRiSX46I5nIANhFFJ6O5wWGB6GHJRvo6AQSQiCTn00A7WRW/gx
-	19R4jEabI9SYS4zSPiXTbpLJbMkCtCECenThQPbQY1fZLt5YKFzbOpV1OAdyDRA5q1AQKG
-	o0I4KtzDj68zfKM3UYtI11pYn76khUc=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-433-XrFadgGRP8GPj4JYXNfA4w-1; Tue, 09 Apr 2024 04:09:24 -0400
-X-MC-Unique: XrFadgGRP8GPj4JYXNfA4w-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41489c04f8cso27288755e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:09:24 -0700 (PDT)
+	s=arc-20240116; t=1712650294; c=relaxed/simple;
+	bh=Sj7xWo6dggnBKWnwopkjcfoSOT+F+b/D4Pubow5TKx8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BKtJSOLt6WUsHMQBg4n8+j+c0Azunnv+nq9DqFdXYgWzKRgoyqRjvnIbFhDDAKe1HpSq/dM14iTBckshoB5axvzRy+A3K5MxftVRbXVMxLsnBcpE56JLmU+z1h/LJfmtL3Na+VtRaTG3Kbxmo8lnPxLlTjvpO5AWiwREK/xZY9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0h0dJ29h; arc=none smtp.client-ip=209.85.221.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4dae34a3806so1033146e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712650291; x=1713255091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/0nblBmM1/a+p1HrPFvTeMrGyNMRc47QQf0Yo+BcYZs=;
+        b=0h0dJ29heE2qr9EdfMpearXEVBdflTFRu1ZtFiXFt2DB9mZAuqJDfHliFJ/PX745vm
+         PqXBxjd6L9h1AUeLsIZ/lirSjEPCJ4xbFz7F26seBxIF1+hpMDwlTYOLE18Q+d/DKzIl
+         d0UT43vpHftNS5yXCJSZKbq8Hdhdb6SbVXdvTHifBJEThYmzq3jMvKiEOZPT7k+pMT5f
+         p3BGOX7jRnhVPYaMsYlz8CxFXs/ELzm+/bFR7JVwnJrGVFNLb0Wiwd0RowkhRRpk6k3v
+         NC9S5ashIcKb09sIeetgmYIPdoyOhCFvTwArmCNi4SSVlGNUIPvbxqJm5cN+Xsq82Jol
+         2kng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712650163; x=1713254963;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jPexdV4dgWou2KnabUAsmiUVZjyB+kN+kK+ahj9bwWs=;
-        b=rNMo18x21+QIvx/t+D369bqvKO5+UGlFe+aWAK8hoMRyD7N31KWrSGio8S66B9g/vP
-         UkvzqT+j1NB9ujE3vQp6+GCwoWaeVB4XVhW9b5VASGz02M8yu/PPhmZYrkXavN0jRvJK
-         PocfR2j38BcwqZduXwRTGLhaj0wDQsz5XKD75+o51J4nVc9XlovpizgzJVWinZisikHc
-         vsJMBpXOU2rNQ4/jj0+Mw6ESXyxAjawzEAZrAx0R95JZej8XlaRQ5Fxe2xzCrC16R9I6
-         xI1T6Jb9yNku94iFRhdn/TWSKDw3csmzePIiNuhEbcY0UXVpsf5U0iwp8fePp991onvg
-         6INw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHaCPrJFQQyOuhSzXW86w/vyiNxWKWTQAGKTqtRerduZFNnY/TlOLijM0+HalAybJjqEUv+pbCxZdw8A4EjufobIP0NehgTWlQ+U+5
-X-Gm-Message-State: AOJu0YxQAzQtwOiQQaKYLEybtB2rYiJPnAM4wxA7ImXezaVtko9+NeEb
-	RFUPqiMNLWcRahN8FwRMdhLxIx3IKWPBFccWM0wRuK8bgJbHAzFonjgHuJBVvyLbmTznhuZiqRw
-	Lt+a6LGDDztIqs5doEkP+Dlc51CXazL2L3N627Vw4R2XcJuGmtUrJclkR7g+ed69DcrA/BA==
-X-Received: by 2002:a05:600c:4e02:b0:416:9e38:3bdd with SMTP id b2-20020a05600c4e0200b004169e383bddmr1447744wmq.27.1712650163093;
-        Tue, 09 Apr 2024 01:09:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEbNYsh+cTWpSvmTxUzGL4BnGJ0+lBv+iHZ8pt4DUhs31jSTdu5ejnXeTG2V4Gkyn7w1PNROg==
-X-Received: by 2002:a05:600c:4e02:b0:416:9e38:3bdd with SMTP id b2-20020a05600c4e0200b004169e383bddmr1447715wmq.27.1712650162716;
-        Tue, 09 Apr 2024 01:09:22 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
-        by smtp.gmail.com with ESMTPSA id o6-20020a05600c4fc600b0041663450a4asm7784798wmq.45.2024.04.09.01.09.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 01:09:22 -0700 (PDT)
-Message-ID: <1488fa2e-9552-4f52-bcf9-aeef68049ce0@redhat.com>
-Date: Tue, 9 Apr 2024 10:09:20 +0200
+        d=1e100.net; s=20230601; t=1712650291; x=1713255091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0nblBmM1/a+p1HrPFvTeMrGyNMRc47QQf0Yo+BcYZs=;
+        b=XdN4t/7ZMzs2Egm3uhymu+T8ydDZ/pRx+VgfWO3f9UbSV2E6y1XICJqJsrW+3Ih/WQ
+         UQcrT6rA+v++Jw266FYKiKk8t6vRkr7QzVurn0u3VMdA+HpZYtsgAwAsxGh8nI77Mzgv
+         57QWP1E/2K8EwAs78ouEodMlRFZgX6IK9+/0zOqFLYhpZOZtjuCC4eSkh8HFVDjmrL/Q
+         vGRIDYiJ932hG0gvdXDGEIXKeUjz1ahWp9Bi5t/XibtJOVrCng5h7HZoM3OTs2Lxa1jW
+         UNrN4xKRBm0lVhrp6/PO3G6r/b08WV63dDazHVYCf7zFULfHx9Sz4VtVI4PQDuhDVVtZ
+         CcOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRgZS6UAI7V7Hnata7MgrIW5+unOmu6BHRh2XWF+ZcL+fVAEPzYRhDBl/974UfpbyZQrovQpHBrzzCCMEizEShq/kn9EEuHH7sAVbZ
+X-Gm-Message-State: AOJu0YwLbsmS0HRRmakAIJdbbgzfUyyYSOysGN16IU+M3ilJU/LeZWEN
+	/u1J82xvTxRvB9ObskW9bFt9DQbT8VtNsJJ7GFaanmKItKu9mSwWtwQQ4E48DghNgZyjOhnVnsP
+	UcLayQBEdgfwzugbNYj+sXgsy35yDPCFbxhX1
+X-Google-Smtp-Source: AGHT+IHo3sayxxc3lpEm1Fm76MGBY1zYfOZ1vpEOlwm67dbXPRGyU26Bo6MFRjwdx3BD+yQ6vx/rvX5dUBr75D/IPdA=
+X-Received: by 2002:a05:6122:264f:b0:4c7:7760:8f14 with SMTP id
+ dr15-20020a056122264f00b004c777608f14mr1093930vkb.7.1712650290765; Tue, 09
+ Apr 2024 01:11:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 02/31] x86/resctrl: Add a helper to avoid reaching into
- the arch code resource list
-To: James Morse <james.morse@arm.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
- Reinette Chatre <reinette.chatre@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
- Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
- D Scott Phillips OS <scott@os.amperecomputing.com>,
- carl@os.amperecomputing.com, lcherian@marvell.com,
- bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
- baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
- Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
- dfustini@baylibre.com, amitsinght@marvell.com,
- Rex Nie <rex.nie@jaguarmicro.com>, Dave Martin <dave.martin@arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-3-james.morse@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240321165106.31602-3-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240404190146.1898103-1-elver@google.com> <CAADnVQKc+Z39k9wbU2MHf-fPFma+9QsyOugmmmGq3ynQCTVfCw@mail.gmail.com>
+ <CANpmjNN+rR1PWKbx6RBWhOjnmAP+jUDzc3TLcwTnmfd=ft03dg@mail.gmail.com>
+ <CAEf4BzZCj=3hevf+Je=oed9Nisctotp_CX00NrLaO6_7+-0LSQ@mail.gmail.com>
+ <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com> <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
+From: Marco Elver <elver@google.com>
+Date: Tue, 9 Apr 2024 10:10:52 +0200
+Message-ID: <CANpmjNO3m-f-Yg5EqTL3ktL2CqTw7v0EjHGVth7ssWJRnNz5xQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 21.03.24 17:50, James Morse wrote:
-> Resctrl occasionally wants to know something about a specific resource,
-> in these cases it reaches into the arch code's rdt_resources_all[]
-> array.
-> 
-> Once the filesystem parts of resctrl are moved to /fs/, this means it
-> will need visibility of the architecture specific struct
-> resctrl_hw_resource definition, and the array of all resources.
-> All architectures would also need a r_resctrl member in this struct.
-> 
-> Instead, abstract this via a helper to allow architectures to do
-> different things here. Move the level enum to the resctrl header and
-> add a helper to retrieve the struct rdt_resource by 'rid'.
-> 
-> resctrl_arch_get_resource() should not return NULL for any value in
-> the enum, it may instead return a dummy resource that is
-> !alloc_enabled && !mon_enabled.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
+On Mon, 8 Apr 2024 at 20:24, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Apr 8, 2024 at 2:30=E2=80=AFAM Marco Elver <elver@google.com> wro=
+te:
+> >
+> > On Fri, 5 Apr 2024 at 22:28, Andrii Nakryiko <andrii.nakryiko@gmail.com=
+> wrote:
+> > >
+> > > On Fri, Apr 5, 2024 at 1:28=E2=80=AFAM Marco Elver <elver@google.com>=
+ wrote:
+> > > >
+> > > > On Fri, 5 Apr 2024 at 01:23, Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > [...]
+> > > > > and the tasks can use mmaped array shared across all or unique to=
+ each
+> > > > > process.
+> > > > > And both bpf and user space can read/write them with a single ins=
+truction.
+> > > >
+> > > > That's BPF_F_MMAPABLE, right?
+> > > >
+> > > > That does not work because the mmapped region is global. Our requir=
+ements are:
+>
+> It sounds not like "requirements", but a description of the proposed
+> solution.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+These requirements can also be implemented differently, e.g. with the
+proposed task-local storage maps if done right (the devil appears to
+be in the implementation-details - these details are currently beyond
+my knowledge of the BPF subsystem internals). They really are the bare
+minimum requirements for the use case. The proposed solution probably
+happens to be the simplest one, and mapping requirements is relatively
+straightforward for it.
 
--- 
-Cheers,
+> Pls share the actual use case.
+> This "tracing prog" sounds more like a ghost scheduler that
+> wants to interact with known user processes.
 
-David / dhildenb
+It's tcmalloc - we have a BPF program provide a simpler variant of the
+"thread re-scheduling" notifications discussed here:
+https://lore.kernel.org/all/CACT4Y+beLh1qnHF9bxhMUcva8KyuvZs7Mg_31SGK5xSoR=
+=3D3m1A@mail.gmail.com/
 
+Various synchronization algorithms can be optimized if they know about
+scheduling events. This has been proposed in [1] to implement an
+adaptive mutex. However, we think that there are many more
+possibilities, but it really depends on the kind of scheduler state
+being exposed ("thread on CPU" as in [1], or more details, like
+details about which thread was switched in, which was switched out,
+where was the thread migrated to, etc.). Committing to these narrow
+use case ABIs and extending the main kernel with more and more such
+information does not scale. Instead, BPF easily allows to expose this
+information where it's required.
+
+[1] https://lore.kernel.org/all/20230529191416.53955-1-mathieu.desnoyers@ef=
+ficios.com/
+
+> > > > 1. Single tracing BPF program.
+> > > >
+> > > > 2. Per-process (per VM) memory region (here it's per-thread, but ea=
+ch
+> > > > thread just registers the same process-wide region).  No sharing
+> > > > between processes.
+> > > >
+> > > > 3. From #2 it follows: exec unregisters the registered memory regio=
+n;
+> > > > fork gets a cloned region.
+> > > >
+> > > > 4. Unprivileged processes can do prctl(REGISTER). Some of them migh=
+t
+> > > > not be able to use the bpf syscall.
+> > > >
+> > > > The reason for #2 is that each user space process also writes to th=
+e
+> > > > memory region (read by the BPF program to make updates depending on
+> > > > what state it finds), and having shared state between processes
+> > > > doesn't work here.
+> > > >
+> > > > Is there any reasonable BPF facility that can do this today? (If
+> > > > BPF_F_MMAPABLE could do it while satisfying requirements 2-4, I'd b=
+e a
+> > > > happy camper.)
+> > >
+> > > You could simulate something like this with multi-element ARRAY +
+> > > BPF_F_MMAPABLE, though you'd need to pre-allocate up to max number of
+> > > processes, so it's not an exact fit.
+> >
+> > Right, for production use this is infeasible.
+>
+> Last I heard, ghost agent and a few important tasks can mmap bpf array
+> and share it with bpf prog.
+> So quite feasible.
+
+Nothing related to ghost.
+
+It's tcmalloc, i.e. every process running everywhere.
+
+> > > But what seems to be much closer is using BPF task-local storage, if
+> > > we support mmap()'ing its memory into user-space. We've had previous
+> > > discussions on how to achieve this (the simplest being that
+> > > mmap(task_local_map_fd, ...) maps current thread's part of BPF task
+> > > local storage). You won't get automatic cloning (you'd have to do tha=
+t
+> > > from the BPF program on fork/exec tracepoint, for example), and withi=
+n
+> > > the process you'd probably want to have just one thread (main?) to
+> > > mmap() initially and just share the pointer across all relevant
+> > > threads.
+> >
+> > In the way you imagine it, would that allow all threads sharing the
+> > same memory, despite it being task-local? Presumably each task's local
+> > storage would be mapped to just point to the same memory?
+> >
+> > > But this is a more generic building block, IMO. This relying
+> > > on BPF map also means pinning is possible and all the other BPF map
+> > > abstraction benefits.
+> >
+> > Deployment-wise it will make things harder because unprivileged
+> > processes still have to somehow get the map's shared fd somehow to
+> > mmap() it. Not unsolvable, and in general what you describe looks
+> > interesting, but I currently can't see how it will be simpler.
+>
+> bpf map can be pinned into bpffs for any unpriv process to access.
+> Then any task can bpf_obj_get it and mmap it.
+> If you have few such tasks than bpf array will do.
+> If you have millions of tasks then use bpf arena which is a sparse array.
+> Use pid as an index or some other per-task id.
+> Both bpf prog and all tasks can read/write such shared memory
+> with normal load/store instructions.
+>
+> > In absence of all that, is a safer "bpf_probe_write_user()" like I
+> > proposed in this patch ("bpf_probe_write_user_registered()") at all
+> > appealing?
+>
+> To be honest, another "probe" variant is not appealing.
+> It's pretty much bpf_probe_write_user without pr_warn_ratelimited.
+
+Fair enough.
+
+> The main issue with bpf_probe_read/write_user() is their non-determinism.
+> They will error when memory is swapped out.
+
+Right. Although, user space mlock'ing and prefaulting the memory
+solves it in the common case (some corner cases like after fork() are
+still tricky).
+
+> These helpers are ok-ish for observability when consumers understand
+> that some events might be lost, but for 24/7 production use
+> losing reads becomes a problem that bpf prog cannot mitigate.
+> What do bpf prog suppose to do when this safer bpf_probe_write_user error=
+s?
+> Use some other mechanism to communicate with user space?
+
+Right, for use cases where these errors aren't ok it does not work.
+But if the algorithm is tolerant to lossy reads/writes from the BPF
+program side, it's not an issue.
+
+> A mechanism with such builtin randomness in behavior is a footgun for
+> bpf users.
+> We have bpf_copy_from_user*() that don't have this non-determinism.
+> We can introduce bpf_copy_to_user(), but it will be usable
+> from sleepable bpf prog.
+> While it sounds you need it somewhere where scheduler makes decisions,
+> so I suspect bpf array or arena is a better fit.
+
+Correct, it can't sleep because it wants scheduler events.
+
+> Or something that extends bpf local storage map.
+> See long discussion:
+> https://lore.kernel.org/bpf/45878586-cc5f-435f-83fb-9a3c39824550@linux.de=
+v/
+>
+> I still like the idea to let user tasks register memory in
+> bpf local storage map, the kernel will pin such pages,
+> and then bpf prog can read/write these regions directly.
+> In bpf prog it will be:
+> ptr =3D bpf_task_storage_get(&map, task, ...);
+> if (ptr) { *ptr =3D ... }
+> and direct read/write into the same memory from user space.
+
+I would certainly welcome something like this - I agree this looks
+better than bpf_probe_read/write.
+
+Thanks,
+-- Marco
 
