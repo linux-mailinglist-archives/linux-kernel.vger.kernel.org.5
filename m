@@ -1,73 +1,80 @@
-Return-Path: <linux-kernel+bounces-136413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83CD89D3C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:08:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C5F89D3C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 511101F22545
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:08:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D6722822D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5387E115;
-	Tue,  9 Apr 2024 08:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EE17E101;
+	Tue,  9 Apr 2024 08:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPeOO70a"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V/JWcPO+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A697E0E8;
-	Tue,  9 Apr 2024 08:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B877E0E8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 08:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650125; cv=none; b=mozWTxDXiQdI4uldIjfGoKcvoHhYY6GjcOZ+JcXoVQFxRGGnFid+mAXhQolLAYFJpWqEUUHJibsw68oUyR9eRZ7+o5IQ6cY95DEFZpY54kXsBiMPSaDtKgkNn95UeGd0A1A3NN7c8EtJuEVv5jMvFo4JE8K3ZxRCNyXHhp9AUms=
+	t=1712650168; cv=none; b=FkYd3rChMSTOCdaoUwCX10tJ4MHlr//Qrl9CJKuPHeq8bfQqAjD+amq66w4uH+sXz4DUwOcb2vc6bzxMztYStiia6YlEkD0/5j3exdqOLo9ybTaH6INuMBJM9aunTV/svlvZIim76hNJ53LCH3/GBkVjgUwseyY1m/n/srAdM2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650125; c=relaxed/simple;
-	bh=5tZM0WszBwnTdBFSaSlC2zyGteF9bXHX900iR0xjfyE=;
+	s=arc-20240116; t=1712650168; c=relaxed/simple;
+	bh=xUo91t5hI8Cb04ItwP9naq0YtKzSZsLmPuxJ3cq5B4g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u9OpxCYAm87wMtBgQET924ePKvrx2lE0X5Zvh/6GOhafX6sHISIAhJs88xZ9H8QLjSPoo5sgM4usQ4JjfvoV2JxyXDIh/uB6uiHXB/xZ0bwci0FVG1ar7SjaEP9y1LBgl1c9MqVshXGrrcQvsd9mSQeo3jGTJRhyclcQ3j5QniI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPeOO70a; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51ddc783e3so208316466b.0;
-        Tue, 09 Apr 2024 01:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712650121; x=1713254921; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zRVriRNVnSGwNMVRc04UUhD3izNHgR8wyJ94dp6Ab9g=;
-        b=EPeOO70aJaacDFpCdYtAiuneKWODPL35nlQ7tj6I/q5e99VXsUEz+/EyuopuGfYNlE
-         sV0VkE+7JPTelf3e3cKIwfOaJn25ZXSteNvdx+iuBFsvDrI/lwt2ezOvMc08yMtDxilr
-         2Yi+md26baiVysgcm1pPSPGfFi3y7styhWvLVP6ZiNDuwolWdhBGwlid2uMwXY8mn65o
-         vrN9zW2dYNXJlh5iZcqmNQL4NkRZoD+kjWVPg6Vxx4lrJX2Ez2GPF8FPgGbYlZ7ERN/W
-         QwqUcln9d8WdGBfNYfDjMLP+j6WF64TcFiriVEZxLChdt0KIILFxTGqqQZCMBrkU+xKN
-         lvuQ==
+	 In-Reply-To:Content-Type; b=eSrTMI8Aku89C49YH1wcJpEv3osBI7UVdWWCeEFcrNQNIqDQfSwF6Zr8amYXwPxaH0kKq1eetS3L2IOzIDQq8zB9YDYPl679Madd26PXUCsiXlKNjwlBpkNPyu0aM+30+YF2mTjnjrLFPY6CUp7AgVtgEBGDNrsFESvyC7W7M3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V/JWcPO+; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712650165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jPexdV4dgWou2KnabUAsmiUVZjyB+kN+kK+ahj9bwWs=;
+	b=V/JWcPO+b1dcG3LD+dGDuRiSX46I5nIANhFFJ6O5wWGB6GHJRvo6AQSQiCTn00A7WRW/gx
+	19R4jEabI9SYS4zSPiXTbpLJbMkCtCECenThQPbQY1fZLt5YKFzbOpV1OAdyDRA5q1AQKG
+	o0I4KtzDj68zfKM3UYtI11pYn76khUc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-XrFadgGRP8GPj4JYXNfA4w-1; Tue, 09 Apr 2024 04:09:24 -0400
+X-MC-Unique: XrFadgGRP8GPj4JYXNfA4w-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41489c04f8cso27288755e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 01:09:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712650121; x=1713254921;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zRVriRNVnSGwNMVRc04UUhD3izNHgR8wyJ94dp6Ab9g=;
-        b=N5p/wKUU5soYBz+gjHJ7kqcm0FEY4fbuRSceBAyfSiqyX7WGsQpEOuqGfANuKjSHGs
-         iRXkavRI6zEzxifFcGPqfoVy7DMLDSVCT9k2kSo4Y28kvwi8rDihOmbYewAm98YkLNoF
-         r4YTWzwcyL34DxCLnUi3alH/77yD4yqwzj+fCcnSYXowq2qfHZMTaMT/MGbff3lOi7o0
-         5OWjsDSvjT4cVy0tgF3yTHFmAdy86DH09EfC2cI71FuDJYIOJ0t02wmdsK181tnbF+U9
-         +oKvgooCxS9raGXedYgCGO7EnyhYo2PeCZwW2ms9WWaxqIN93L5zjnnuPBkc4B+US1Mw
-         Nbqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXiSBlIqEQz7U2bnYYzb21zI/5Cy8Z3MG98pgfhM2LDlSELJM2hNSYHrAst8KgD5mLequWUy4RQJDFoxvQHsKqUhnIkk9K/YBOljnGQsgsLbEgjoXEtusZ8R/V95L723FVPjbEdpNaSb/Qo1A33ADJ/x8TShLkSJcchkuwPMpUhHVOHXA==
-X-Gm-Message-State: AOJu0YwUfIGm19xtE4yekFaPEwZm+ZCLE6jI7Jif6pbyueIadxVw8E6w
-	8lDe6Bb34f5geyExLJZPMeUq6a/MmRJpCCi5vC/rhdCJ2FwXUOWN
-X-Google-Smtp-Source: AGHT+IHg/Qr8XIpQ+PqdSSvROL0KSEIAhr4x80iLG7ua7op8Ytac3PKsVfLddq7kFHvmvJe6vZmj3w==
-X-Received: by 2002:a17:906:f0d6:b0:a4e:23b4:763a with SMTP id dk22-20020a170906f0d600b00a4e23b4763amr5909597ejb.58.1712650120997;
-        Tue, 09 Apr 2024 01:08:40 -0700 (PDT)
-Received: from [10.76.84.174] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id h5-20020a1709060f4500b00a473774b027sm5335749ejj.207.2024.04.09.01.08.39
+        d=1e100.net; s=20230601; t=1712650163; x=1713254963;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jPexdV4dgWou2KnabUAsmiUVZjyB+kN+kK+ahj9bwWs=;
+        b=rNMo18x21+QIvx/t+D369bqvKO5+UGlFe+aWAK8hoMRyD7N31KWrSGio8S66B9g/vP
+         UkvzqT+j1NB9ujE3vQp6+GCwoWaeVB4XVhW9b5VASGz02M8yu/PPhmZYrkXavN0jRvJK
+         PocfR2j38BcwqZduXwRTGLhaj0wDQsz5XKD75+o51J4nVc9XlovpizgzJVWinZisikHc
+         vsJMBpXOU2rNQ4/jj0+Mw6ESXyxAjawzEAZrAx0R95JZej8XlaRQ5Fxe2xzCrC16R9I6
+         xI1T6Jb9yNku94iFRhdn/TWSKDw3csmzePIiNuhEbcY0UXVpsf5U0iwp8fePp991onvg
+         6INw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHaCPrJFQQyOuhSzXW86w/vyiNxWKWTQAGKTqtRerduZFNnY/TlOLijM0+HalAybJjqEUv+pbCxZdw8A4EjufobIP0NehgTWlQ+U+5
+X-Gm-Message-State: AOJu0YxQAzQtwOiQQaKYLEybtB2rYiJPnAM4wxA7ImXezaVtko9+NeEb
+	RFUPqiMNLWcRahN8FwRMdhLxIx3IKWPBFccWM0wRuK8bgJbHAzFonjgHuJBVvyLbmTznhuZiqRw
+	Lt+a6LGDDztIqs5doEkP+Dlc51CXazL2L3N627Vw4R2XcJuGmtUrJclkR7g+ed69DcrA/BA==
+X-Received: by 2002:a05:600c:4e02:b0:416:9e38:3bdd with SMTP id b2-20020a05600c4e0200b004169e383bddmr1447744wmq.27.1712650163093;
+        Tue, 09 Apr 2024 01:09:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEbNYsh+cTWpSvmTxUzGL4BnGJ0+lBv+iHZ8pt4DUhs31jSTdu5ejnXeTG2V4Gkyn7w1PNROg==
+X-Received: by 2002:a05:600c:4e02:b0:416:9e38:3bdd with SMTP id b2-20020a05600c4e0200b004169e383bddmr1447715wmq.27.1712650162716;
+        Tue, 09 Apr 2024 01:09:22 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
+        by smtp.gmail.com with ESMTPSA id o6-20020a05600c4fc600b0041663450a4asm7784798wmq.45.2024.04.09.01.09.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 01:08:40 -0700 (PDT)
-Message-ID: <64b7fd83-f226-4b1f-a801-0fe1cf20f842@gmail.com>
-Date: Tue, 9 Apr 2024 11:08:28 +0300
+        Tue, 09 Apr 2024 01:09:22 -0700 (PDT)
+Message-ID: <1488fa2e-9552-4f52-bcf9-aeef68049ce0@redhat.com>
+Date: Tue, 9 Apr 2024 10:09:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,229 +82,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
-To: Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>
-Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
- <20240401-ad4111-v1-1-34618a9cc502@analog.com>
- <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
- <25cb3514-1281-49a8-9e9b-40ead9b050dc@gmail.com>
- <CAMknhBHu8DveBgV3cor8RP2Up4Zs-+QRx7S2aoHZ_3iKiErVjg@mail.gmail.com>
- <20240406155328.447b594f@jic23-huawei>
+Subject: Re: [PATCH v1 02/31] x86/resctrl: Add a helper to avoid reaching into
+ the arch code resource list
+To: James Morse <james.morse@arm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com,
+ Rex Nie <rex.nie@jaguarmicro.com>, Dave Martin <dave.martin@arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-3-james.morse@arm.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-From: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-In-Reply-To: <20240406155328.447b594f@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240321165106.31602-3-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 06/04/2024 17:53, Jonathan Cameron wrote:
-> On Wed, 3 Apr 2024 10:40:39 -0500
-> David Lechner <dlechner@baylibre.com> wrote:
+On 21.03.24 17:50, James Morse wrote:
+> Resctrl occasionally wants to know something about a specific resource,
+> in these cases it reaches into the arch code's rdt_resources_all[]
+> array.
 > 
->> On Wed, Apr 3, 2024 at 2:43 AM Ceclan, Dumitru <mitrutzceclan@gmail.com> wrote:
->>>
->>> On 01/04/2024 22:37, David Lechner wrote:  
->>>> On Mon, Apr 1, 2024 at 10:10 AM Dumitru Ceclan via B4 Relay
->>>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:  
->>>>>
->>>>> From: Dumitru Ceclan <dumitru.ceclan@analog.com>  
->>>
->>> ...
->>>  
->>>>>      properties:
->>>>>        reg:
->>>>> +        description:
->>>>> +          Reg values 16-19 are only permitted for ad4111/ad4112 current channels.
->>>>>          minimum: 0
->>>>> -        maximum: 15
->>>>> +        maximum: 19  
->>>>
->>>> This looks wrong. Isn't reg describing the number of logical channels
->>>> (# of channel config registers)?
->>>>
->>>> After reviewing the driver, I see that > 16 is used as a way of
->>>> flagging current inputs, but still seems like the wrong way to do it.
->>>> See suggestion below.
->>>>  
->>>
->>> This was a suggestion from Jonathan, maybe I implemented it wrong.
+> Once the filesystem parts of resctrl are moved to /fs/, this means it
+> will need visibility of the architecture specific struct
+> resctrl_hw_resource definition, and the array of all resources.
+> All architectures would also need a r_resctrl member in this struct.
 > 
-> Maybe Jonathan was wrong!  I was younger then than now :)
+> Instead, abstract this via a helper to allow architectures to do
+> different things here. Move the level enum to the resctrl header and
+> add a helper to retrieve the struct rdt_resource by 'rid'.
 > 
-> However, reg values for child nodes are unique so can't just use a flag these
-> need to be different values.
+> resctrl_arch_get_resource() should not return NULL for any value in
+> the enum, it may instead return a dummy resource that is
+> !alloc_enabled && !mon_enabled.
 > 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
 
-I do not see where the restriction appears when using just the flag, when defining
-the channels you would still define unique reg values.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
->>> Other alternative that came to my mind: attribute "adi,current-channel".  
->>
->> Having a boolean flag like this would make more sense to me if we
->> don't agree that the suggestion below is simpler.
->>
->>>>>
->>>>>        diff-channels:
->>>>> +        description:
->>>>> +          For using current channels specify only the positive channel.
->>>>> +            (IIN2+, IIN2−) -> diff-channels = <2 0>  
->>>>
->>>> I find this a bit confusing since 2 is already VIN2 and 0 is already
->>>> VIN0. I think it would make more sense to assign unique channel
->>>> numbers individually to the negative and positive current inputs.
->>>> Also, I think it makes sense to use the same numbers that the
->>>> registers in the datasheet use (8 - 11 for negative and 12 to 15 for
->>>> positive).
->>>>
->>>> So: (IIN2+, IIN2−) -> diff-channels = <13 10>
->>>>
->>>>  
->>> It would mean for the user to look in the datasheet at the possible
->>> channel INPUT configurations values, decode the bit field into two
->>> integer values and place it here (0110101010) -> 13 10. This is
->>> cumbersome for just choosing current input 2.  
->>
->> It could be documented in the devicetree bindings, just as it is done
->> in adi,ad4130.yaml so that users of the bindings don't have to
->> decipher the datasheet.
-> 
-> The <13 10> option makes sense to me and avoids suggesting a common negative
-> input.
-> 
-> The 'fun' bit here is that diff-channels doesn't actually tell us anything.
-> So we could just not provide it and rely on documentation of reg = 16-19 meaning
-> the current channels?
-> 
+-- 
+Cheers,
 
-So a channel without diff-channels defined and reg=16 means IN0+ IN0-?
-
->>
->>>  
->>>>> +
->>>>> +          Family AD411x supports a dedicated VCOM voltage input.
->>>>> +          To select it set the second channel to 16.
->>>>> +            (VIN2, VCOM) -> diff-channels = <2 16>  
->>>>
->>>> The 411x datasheets call this pin VINCOM so calling it VCOM here is a
->>>> bit confusing.
->>>>  
->>>
->>> Sure, I'll rename to VINCOM.
->>>  
->>>> Also, do we need to add a vincom-supply to get this voltage? Or is it
->>>> safe to assume it is always connected to AVSS? The datasheet seems to
->>>> indicate that the latter is the case. But then it also has this
->>>> special case (at least for AD4116, didn't check all datasheets)
->>>> "VIN10, VINCOM (single-ended or differential pair)". If it can be used
->>>> as part of a fully differential input, we probably need some extra
->>>> flag to indicate that case.
->>>>  
->>>
->>> I cannot see any configuration options for these use cases. All inputs
->>> are routed to the same mux and routed to the differential positive and
->>> negative ADC inputs.
->>>
->>> "VIN10, VINCOM (single-ended or differential pair)" the only difference
->>> between these two use cases is if you connected VINCOM to AVSS (with
->>> unipolar coding) or not with bipolar encoding. The channel is still
->>> measuring the difference between the two selected inputs and comparing
->>> to the selected reference.
->>>  
->>>> Similarly, do we need special handling for ADCIN15 on AD4116? It has a
->>>> "(pseudo differential or differential pair)" notation that other
->>>> inputs don't. In other words, it is more like VINCOM than it is to the
->>>> other ADCINxx pins. So we probably need an adcin15-supply for this pin
->>>> to properly get the right channel configuration. I.e. the logic in the
->>>> IIO driver would be if adcin15-supply is present, any channels that
->>>> use this input are pseudo-differential, otherwise any channels that
->>>> use it are fully differential.
->>>>  
->>>
->>> I cannot seem to understand what would a adcin15-supply be needed for.
->>> This input, the same as all others, enters the mux and is routed to
->>> either positive or negative input of the ADC.
->>>
->>> The voltage on the ADCIN15 pin is not important to the user, just the
->>> difference in voltage between that pin and the other one selected.
->>>  
->>
->> These suggestions come from some recent discussion about
->> pseudo-differential vs. fully differential inputs (e.g. search the IIO
->> mailing list for AD7380).
->>
->> So what I suggested here might be more technically correct according
->> to what I got out of that discussion. But for this specific case, I
->> agree it is good enough to just treat all inputs as always
->> fully-differential to keep things from getting too unwieldy.
-> 
-> Hmm.  That whole approach to pseudo differential does get messy if
-> we have the common line routed through the main MUX rather than an opt
-> in only on the negative side.  
-> 
-> If I read this right, its almost a trick to support a pseudo differential
-> wiring with simple registers (I guess reflecting MUX limitations).
-> 
-> So what could we do?
-> 
-> We could assume that VINCOM is used like a conventional pseudo
-> differential negative signal and have supply-vincom + non diffferential
-> channels if that's the configuration wanted.
-> 
-> Then for differential channels can support all the VINX VINX+1
-> and swapped options.
-> For VIN10 it gets fun as non differential and differential options
-> I think map to same actual config.   Don't see reason we need to express
-> that in the binding though so let that have VIN10 VINCOM (probably using
-> a magic channel number) and  VIN10 pseudo differential.
-> 
-> Similar setup for ADCIN15 equivalent usage
-> 
-> Code wise this probably won't be particular hard to support in the driver
-> (obviously I haven't tried though :) is it worth the effort to keep
-> it inline with other devices that support pseudo differential channesl.
-
-Then this would need to be done to any fully differential ADC as support
-for pseudo differential channels is present (connect a fixed non 0 voltage
-to the negative input).
-
-The AD717x family supports pseudo differential channels as well... should
-this change be applied to them too? It is just the case that the documentation
-does not mentions this use case.
-
-I think that a distinction needs to be made here:
-- When a device is only pseudo differential, sure, it is in a different category
-- When a device is fully differential and you are using it as pseudo-differential
-  you are having two inputs compared to one another
-
-I would need more clarification is why would supply-vincom be a requirement.
-The voltage supplied to VINCOM will not be used in any computation within 
-the driver. From the perspective of getting the data it doesn't matter if 
-you are using the channel in a pseudo-differential, single ended or fully
-differential manner.
-
-Regarding VINX VINX+1, it is not mandatory to respect those, from AD4111 page27:
-"Due to the matching resistors on the analog front end, the
- differential inputs must be paired together in the following
- pairs: VIN0 and VIN1, VIN2 and VIN3, VIN4 and VIN5, and
- VIN6 and VIN7. If any two voltage inputs are paired in a
- configuration other than what is described in this data sheet,
- the accuracy of the device cannot be guaranteed."
-
-Tried the device and it works as fully differential when pairing any
-VINx with VINCOM. Still works when selecting VINCOM as the positive
-input of the ADC.
-
-I really see this as overly complicated and unnecessary. These families
-of ADCs are fully differential. If you are using it to measure a single ended
-(Be it compared to 0V or pseudo differential where you are comparing to Vref/2
-and obtaining results [Vref/2 , -Vref/2]) the final result will not require knowing
-the common voltage.
-
-
+David / dhildenb
 
 
