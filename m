@@ -1,176 +1,218 @@
-Return-Path: <linux-kernel+bounces-136284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB8B89D23A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B00E689D23C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:19:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58F191F2299C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EABA1F2234E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7206FE06;
-	Tue,  9 Apr 2024 06:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA0371742;
+	Tue,  9 Apr 2024 06:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="C4urIcu2"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Buahw931"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F52524AF
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ACB96EB72
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643554; cv=none; b=JDfvxTtnu6ah/jLsQBCAZ30Hp9EKsCGWi4DOT/jdN7zXoi6bSS7CemY8wpZgFNxXspt4UiScbLaypIhwQjOEuAo3JxJFyXGfzkCUb6b+Ytw05W20C95J+JHOI5RDl2nSiXFJGfzLoli1TuH/gp6E11klvxy+NmeMDQhsBbENZOQ=
+	t=1712643584; cv=none; b=nLcabEoJEBMJATVUncyYWo8uG+71OSfNLjHGvJTqlCW7/Iqb1b7Owm9W0KXc2BJYfdJnK0mD/7Kb84BylhxB466Yp/23HTWJVlUOfl9QR8b6pkEKDLVk582azWvC5aEMjg7x4YoIdqe4pLZCDKFZymwKKuDq4ITJXQ8ML7ZxBok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643554; c=relaxed/simple;
-	bh=zFhwm1ItKILaHreSDT7Vvr+9GifZdA1mRiCL8eGn7E0=;
+	s=arc-20240116; t=1712643584; c=relaxed/simple;
+	bh=fkhIHTNgQsjJ+75AHWtWhK3dV9fPw50Z6dlrmwK15EA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LcwFYYvE9WK2tyUIZg1Myf1dJdLtOO3bmoeUuh21XlZrwBW6917oQ7DXyF1xtFNdwzxN99jUxNqjZfiks3wLpuWi5RbbGuZogVBKKDgp2VJFidUoRz6R3KKd8E4tRvTIfHiK74wwPqgj/Eaw8zNiL79eZnZtwAPVL5pdoXVvEJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=C4urIcu2; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso3683821b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:19:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1712643552; x=1713248352; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QdzZ0R+UmqwjTSQK9W90Q8xqm2fMZ1gt15Od4SXKF+M=;
-        b=C4urIcu20YCHVNpf7wLjZdZSBuMm+3i1TkYdjzzMoB0f/uGQeQrFUAdERBbVRaNhNM
-         lbRAohmzdX3wvWF1e6rVjo9UaD++CFlSwvvLHzsGJqhwt5YebTz2kYIVGU6fzR7apW7c
-         T2muz/LPbbW7YHE3A4vndik810o1DGV5Ym1uvOG+FAdnzKcJD77dktuamLD0h+JiRchx
-         vU03yu2m8nuE5fTudhN4xsxKvSWLLleODM6oiVcB0K2HKaHCGR8FYpZm0FLgIxPgS5Z6
-         /KeIT0DjUiHnMrbSqOPg2WpTRTP7+uw8bkukpkHu9YWg6o6euIp8aV8/rcCSDvWpsc5W
-         Apqw==
+	 Content-Type:Content-Disposition:In-Reply-To; b=nsg5w4/GpH+mdV8ddpxft9L/v66RBuk2iKxiOgbdQrK2fHTdWTH6z6XeVwRgIoWCfODNYYk+lQteq9St9UxlyWd2gAPihXb1esdAU6Z7TrvL/4qfTPKIofey+I7Dgt0tU9hSHDCcpHzmFTwZJQqUXpmnbPUY6rGkobM465sFzes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Buahw931; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712643580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1cvkP8+VQryWRgcJ5dN75UnPlwOjiMz8ZDJuBxlHfU=;
+	b=Buahw931X7yKFWe585gkPpSUSyB/kbiMIUpxEmQnRLuk/VWw60EGyz49NJcfeDQ5m9oE4B
+	wv4SIaWwDMRRp73yIluYZyyI0sozLKlLSjkQajNG5ogHS7qxrjkWcVWsICIq+n5hJ0vNd5
+	oW1ao64B0NWeUJV/PJjxBjby7KLe58k=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-86_OEn8cO5e38N6GEm267w-1; Tue, 09 Apr 2024 02:19:38 -0400
+X-MC-Unique: 86_OEn8cO5e38N6GEm267w-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-56e5309b4d6so1725041a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:19:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712643552; x=1713248352;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QdzZ0R+UmqwjTSQK9W90Q8xqm2fMZ1gt15Od4SXKF+M=;
-        b=uJyGHKGUceVUZpn21mhuaQ4tMq5iru+fz0Tb8YLhJG4PeC7SWuXVOOaAS+TZgyQhbV
-         TstsYB79mOvc3Yc1ehbm8SBhRZ3h+NeoFUDFcXQRLjKazDkVaF2q1xrv+7289ySMUGfU
-         qqsZvNvnYJkJQzVt+M6SVFiFS2sq/QuK6jm1QvxKi1QZwi4TBsWrfK5hd/chwF5HYggc
-         Vy7FQz5G4NbCXDrzrEdREATef3jNuMydFU3BklAlkX6SBdrJ1iY8bR7zCd7q3LySGCXm
-         xackOMSrPuHd4ijr59C/t1DipKqHRoVFMCiTdJc49uwwayAY5CHX5s5vHEhQCjyJFuf8
-         v0Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ1/wjzzxCcrUa0uN4Sp5oqqwd/I/bZijGZTbtc5f/g96kPgb1apltUk6r/fSsZbIZDUCoxEQCD4yGK4u4SyuHctPwGIlZBqM+dSAU
-X-Gm-Message-State: AOJu0YzAVs03HIHj6TYZIKfG6FRuof+3NQBE21tcka7NqUrIxyiR2cQY
-	Pm1W1zLzIP9zvj4RSeFpsjeficXvHTGzG84gg5OeGOShPec0b/HqriWUC5sYeMQ=
-X-Google-Smtp-Source: AGHT+IEzMCjBmsGS4sJHCrdffXtdbWnV4LV6gdj017ZQLmtxA1JEvtOWV+XAhymj3BTYwXE2f+J8EA==
-X-Received: by 2002:a05:6a00:3927:b0:6ed:21cb:13f3 with SMTP id fh39-20020a056a00392700b006ed21cb13f3mr6860643pfb.17.1712643552035;
-        Mon, 08 Apr 2024 23:19:12 -0700 (PDT)
-Received: from airbuntu ([64.125.41.58])
-        by smtp.gmail.com with ESMTPSA id g14-20020aa7874e000000b006e69a142458sm7557082pfo.213.2024.04.08.23.19.10
+        d=1e100.net; s=20230601; t=1712643577; x=1713248377;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y1cvkP8+VQryWRgcJ5dN75UnPlwOjiMz8ZDJuBxlHfU=;
+        b=RFkyvQ0IP1HZq09MeVq1C3qjW2KCCjFGtn00GR7KeFLMxi2WMUzMjjv/PgMjp2+tzK
+         +BJijI7Tb8gNnFbQPaLO0Rrtbj0ome7AdCNv9zapzXHE4UOXT1V6xreHEjQNF7Gd/zL3
+         VBzW8nwSeQ59s9K4WF0sVesAMP9IhKQ+XgpZuwQsHzOPezNJLI/9mzsBLSxnZNxiKaU1
+         IU0nhUCZa+iw2X/lDtwndKcCHVLYN08TUZ9TskUK7K2eqo+Bm9DM7edr14EdVrrETJhe
+         EFQolx2O1QAmT+PdGnaUNTGm0qVUHXoBBjvOSFNZflFGYu+yO8LbnC8z3cz9jG7bInd8
+         Ew7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUT4hJwXjR+sAIwnSQbEpSVGY+3RKaW9PsQS2tS0u1W+5aXAMhuHrpOOeA8Fca3JUYkMX7EDaq1krLV6uC04/ETqH5Ya/DEBwr4IJJD
+X-Gm-Message-State: AOJu0YxhyImTJRMJQzDwqAYVJ/JMRYQR/BcXTwh1UE/juVZ8q46Vee3d
+	jTOcUPsZKph9Md+UIFABinQfeeIelD3FO71MRXCWZ1KOGbn9jdu8BWU3VC7f5SUAII+cuAz+PO8
+	cE3MX3fMqT5lHkyK9P+qRbGU0xn81TeKQWdimV4nVI/sAqygmYU2yfT+NcY8UWg==
+X-Received: by 2002:a50:9f6b:0:b0:56e:dc5:e99 with SMTP id b98-20020a509f6b000000b0056e0dc50e99mr7728897edf.24.1712643577203;
+        Mon, 08 Apr 2024 23:19:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHAIf7qjab0t3qaKYhj5BbpIPDCgMO0B5IeFA+M2gmA0bxyH/eBzWzin0nhgUp3McDyUeprAg==
+X-Received: by 2002:a50:9f6b:0:b0:56e:dc5:e99 with SMTP id b98-20020a509f6b000000b0056e0dc50e99mr7728885edf.24.1712643576691;
+        Mon, 08 Apr 2024 23:19:36 -0700 (PDT)
+Received: from redhat.com ([2.52.134.26])
+        by smtp.gmail.com with ESMTPSA id i33-20020a0564020f2100b0056e6e9a367fsm671421eda.19.2024.04.08.23.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 23:19:11 -0700 (PDT)
-Date: Tue, 9 Apr 2024 07:19:09 +0100
-From: Qais Yousef <qyousef@layalina.io>
-To: John Stultz <jstultz@google.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting
- prio
-Message-ID: <20240409061909.tb3vxc27h2eawiwg@airbuntu>
-References: <20240403005930.1587032-1-qyousef@layalina.io>
- <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu>
- <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu>
- <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
- <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
- <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
+        Mon, 08 Apr 2024 23:19:36 -0700 (PDT)
+Date: Tue, 9 Apr 2024 02:19:33 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: "ni.liqiang" <ni_liqiang@126.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"jin . qi" <jin.qi@zte.com.cn>,
+	"ni . liqiang" <ni.liqiang@zte.com.cn>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/virtio: delayed configuration descriptor flags
+Message-ID: <20240409015712-mutt-send-email-mst@kernel.org>
+References: <20240408170252.13566-1-ni_liqiang@126.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
+In-Reply-To: <20240408170252.13566-1-ni_liqiang@126.com>
 
-On 04/08/24 12:51, John Stultz wrote:
-> On Mon, Apr 8, 2024 at 12:17 AM Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 04/05/24 18:16, Qais Yousef wrote:
-> > >
-> > > > >
-> > > > > All that to say that I think the weight is not applied on purpose.
-> > > > > This might work for your particular case but there are more changes to
-> > > > > be done if you want to apply prio inheritance between cfs tasks.
-> > > > >
-> > > > > As an example, what about the impact of cgroup on the actual weight
-> > > > > and the inherited priority of a task ? If the owner and the waiter
-> > > > > don't belong to the same cgroup their own prio is meaningless... task
-> > > > > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
-> > > > > in a group with a weight equals to nice -20
-> > > >
-> > > > That is on my mind actually. But I thought it's a separate problem. That has to
-> > > > do with how we calculate the effective priority of the pi_task. And probably
-> > > > the sorting order to if we agree we need to revert the above. If that is done
-> > >
-> > > Thinking more about it the revert is not the right thing to do. We want fair
-> > > tasks to stay ordered in FIFO for better fairness and avoid potential
-> > > starvation issues. It's just the logic for searching the top_waiter need to be
-> > > different. If the top_waiter is fair, then we need to traverse the tree to find
-> > > the highest nice value. We probably can keep track of this while adding items
-> > > to the tree to avoid the search.
-> > >
-> > > For cgroup; is it reasonable (loosely speaking) to keep track of pi_cfs_rq and
-> > > detach_attach_task_cfs_rq() before the reweight? This seems the most
-> > > straightforward solution and will contain the complexity to keeping track of
-> > > cfs_rq. But it'll have similar issue to proxy execution where a task that
-> > > doesn't belong to the cgroup will consume its share..
-> >
-> > That's a good point, Would proxy execution be the simplest way to fix all this ?
-
-Is it? Over 4.5 years ago Unity reported to me about performance inversion
-problem and that's when proxy execution work was revived as simplest way to fix
-all of this. But still no end in sight from what I see. I was and still think
-an interim solution in rt_mutex could help a lot of use cases already without
-being too complex. Not as elegant and comprehensive like proxy execution, but
-given the impact on both userspace and out of tree kernel hacks are growing
-waiting for this to be ready, the cost of waiting is high IMHO.
-
-FWIW, I already heard several feedbacks that PTHREAD_PRIO_INHERIT does nothing.
-I think this reweight issue is more serious problem and likely why I heard this
-feedback. I could be underestimating the complexity of the fix though. So I'll
-trust your judgement and ditch further effort if you think it's more effort
-than helping proxy execution patchset - for the list at least. I'm likely still
-to pursue something out of tree to get into as many android LTS kernels. And
-will be happy to share this work if there's desire to try to pick something up
-for mainline to make the problem less severe at least.
-
-Note that binder has already performance, latency (out of tree) and priority
-inheritance and without those performance is impacted in many corner cases and
-considered indispensable part.
-
+On Tue, Apr 09, 2024 at 01:02:52AM +0800, ni.liqiang wrote:
+> In our testing of the virtio hardware accelerator, we found that
+> configuring the flags of the descriptor after addr and len,
+> as implemented in DPDK, seems to be more friendly to the hardware.
 > 
-> So, at the moment, in part. It ought to resolve the issue for
-> in-kernel mutexes (blocked tasks stay on rq, if blocked tasks are
-> selected to run we will instead run the runnable lock owner - thus it
-> works across scheduling classes), but it isn't tied into userland
-> futexes the way rt_mutexes are at this point.
+> In our Virtio hardware implementation tests, using the default
+> open-source code, the hardware's bulk reads ensure performance
+> but correctness is compromised. If we refer to the implementation code
+> of DPDK, placing the flags configuration of the descriptor
+> after addr and len, virtio backend can function properly based on
+> our hardware accelerator.
 > 
-> Review and feedback on the series would be greatly appreciated!
-> (Nudge! Nudge! :)
+> I am somewhat puzzled by this. From a software process perspective,
+> it seems that there should be no difference whether
+> the flags configuration of the descriptor is before or after addr and len.
+> However, this is not the case according to experimental test results.
 
-I am guilty of this, sorry.
+
+You should be aware of the following, from the PCI Express spec.
+Note especially the second paragraph, and the last paragraph:
+
+2.4.2.
+25
+30
+Update Ordering and Granularity Observed by a
+Read Transaction
+If a Requester using a single transaction reads a block of data from a Completer, and the
+Completer's data buffer is concurrently being updated, the ordering of multiple updates and
+granularity of each update reflected in the data returned by the read is outside the scope of this
+specification. This applies both to updates performed by PCI Express write transactions and
+updates performed by other mechanisms such as host CPUs updating host memory.
+If a Requester using a single transaction reads a block of data from a Completer, and the
+Completer's data buffer is concurrently being updated by one or more entities not on the PCI
+Express fabric, the ordering of multiple updates and granularity of each update reflected in the data
+returned by the read is outside the scope of this specification.
+
+
+
+
+As an example of update ordering, assume that the block of data is in host memory, and a host CPU
+writes first to location A and then to a different location B. A Requester reading that data block
+with a single read transaction is not guaranteed to observe those updates in order. In other words,
+the Requester may observe an updated value in location B and an old value in location A, regardless
+of the placement of locations A and B within the data block. Unless a Completer makes its own
+guarantees (outside this specification) with respect to update ordering, a Requester that relies on
+update ordering must observe the update to location B via one read transaction before initiating a
+subsequent read to location A to return its updated value.
+
+
+
+
+As an example of update granularity, if a host CPU writes a QWORD to host memory, a Requester
+reading that QWORD from host memory may observe a portion of the QWORD updated and
+another portion of it containing the old value.
+While not required by this specification, it is strongly recommended that host platforms guarantee
+that when a host CPU writes aligned DWORDs or aligned QWORDs to host memory, the update
+granularity observed by a PCI Express read will not be smaller than a DWORD.
+
+
+IMPLEMENTATION NOTE
+No Ordering Required Between Cachelines
+15
+A Root Complex serving as a Completer to a single Memory Read that requests multiple cachelines
+from host memory is permitted to fetch multiple cachelines concurrently, to help facilitate multi-
+cacheline completions, subject to Max_Payload_Size. No ordering relationship between these
+cacheline fetches is required.
+
+
+
+
+
+Now I suspect that what is going on is that your Root complex
+reads descriptors out of order, so the second descriptor is invalid
+but the 1st one is valid.
+
+
+
+
+> We would like to know if such a change in the configuration order
+> is reasonable and acceptable?
+
+We need to understand the root cause and how robust the fix is
+before answering this.
+
+
+> Thanks.
+> 
+> Signed-off-by: ni.liqiang <ni_liqiang@126.com>
+> Reviewed-by: jin.qi <jin.qi@zte.com.cn>
+> Tested-by: jin.qi <jin.qi@zte.com.cn>
+> Cc: ni.liqiang <ni.liqiang@zte.com.cn>
+> ---
+>  drivers/virtio/virtio_ring.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 6f7e5010a673..bea2c2fb084e 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -1472,15 +1472,16 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>  			flags = cpu_to_le16(vq->packed.avail_used_flags |
+>  				    (++c == total_sg ? 0 : VRING_DESC_F_NEXT) |
+>  				    (n < out_sgs ? 0 : VRING_DESC_F_WRITE));
+> -			if (i == head)
+> -				head_flags = flags;
+> -			else
+> -				desc[i].flags = flags;
+>  
+>  			desc[i].addr = cpu_to_le64(addr);
+>  			desc[i].len = cpu_to_le32(sg->length);
+>  			desc[i].id = cpu_to_le16(id);
+>  
+> +			if (i == head)
+> +				head_flags = flags;
+> +			else
+> +				desc[i].flags = flags;
+> +
+>  			if (unlikely(vq->use_dma_api)) {
+>  				vq->packed.desc_extra[curr].addr = addr;
+>  				vq->packed.desc_extra[curr].len = sg->length;
+> -- 
+> 2.34.1
+
 
