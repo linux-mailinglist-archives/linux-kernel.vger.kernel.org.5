@@ -1,88 +1,57 @@
-Return-Path: <linux-kernel+bounces-137210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB0C89DEEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:24:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2775789DEF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:26:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C25431F270F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:24:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5FD4289F93
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4911327F3;
-	Tue,  9 Apr 2024 15:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E858135A79;
+	Tue,  9 Apr 2024 15:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CoH2ukWX"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvEJm3Ox"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AF01304AB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95DD12FF93;
+	Tue,  9 Apr 2024 15:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676259; cv=none; b=j0sUC8lmf5iiJcJTcbl3RjeTEa/Cs46dfAmICLMzqZxA7NWEU5fRq/MOOBDw0LAbqF7aHZo7rVPY4d82MfD/YALz5OXHeLkwfAMgTDfszilhpIyouTRrGaTCpktdoGnhRDRw4cROcaFj6jdhHXvrg6G0GEcC2qlR/oRJFiRYE2I=
+	t=1712676281; cv=none; b=fqGw562XNTeDFST35Gmu/PEs1+iuPv6FiGAekszsJjbMz+aFBGPeEJzX/zSjTWNXR0tcfJfs8GiNwutZGVjMrOSiGK1Oo9d0PFILtleaOuz4pjuRVJXDyGfST0epInKj/jikp/cqq2J9Q6ouLgnREQDr5VLEsDlbxTS6BSoo5fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676259; c=relaxed/simple;
-	bh=GKUqmsCQggqe9TQ/VlUNrNyugz5nzNQPq9eDIJoV+WM=;
+	s=arc-20240116; t=1712676281; c=relaxed/simple;
+	bh=GYhUMYcuopyTTsXZocs09eC4l4ecRuEg28Z8oo3DJDg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rRhL4K106raAGAv8Q6V0w0JA5w7Ul7w9Gg/bwjOaMqvPDjANZGwhYZuukJGdy+9W+0dGMGLjVY/bktOn5iQi1n+grW9yJPQYlBz1VJqGmmlpAfx91HRQBJCMc3kW9JQrsfCihJGrRWSGXnf0OfI8+91im8IcDmu8TDN0WHBQGXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CoH2ukWX; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516ef30b16eso3366361e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712676255; x=1713281055; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8W6G8HZYeo1iMSpifmT8ORYKphiMz1er5wWw8HHvUlI=;
-        b=CoH2ukWXoeRc/jBCSDg5sZYs0epXkB1+m+AcX7VZjsXjakoIOpkHOcFWYvcKumcvFa
-         eN+4FlQutMQT4qcLJP0b5nOE2vI1v8IvVSLMKbwu5KIhbg4OkCOz6OtdWi3EwZASczws
-         7tCNla750U9E7rMILRCLs19pXRq4bUG6BYUqyxtnJy75qG4svw8UjPm318bs5Nxj5Cn7
-         R05RsZH3iHm0Stgfyd3/ZtAkMWzKWTmsfASNquMHlVfIeHmObIFb2HNUcXOKzNTUNKCF
-         TwV0JZN8nvr09/Z8bjFZGOOq+Ad17IJxQ55FUDxICHZT3gMWrcc75MrFu/d0DmncUK2n
-         P2BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712676255; x=1713281055;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8W6G8HZYeo1iMSpifmT8ORYKphiMz1er5wWw8HHvUlI=;
-        b=g8Ym/tDyfwBa/zGAvua4ZkdGd89BFa1tESZUlF6DhubQUUDW3E76at0ylAcyohhyrL
-         xv2Zqk94tnOmDjos6wCTiRZrTBdi9rPM1pd67V3m2qoPnX9PA5P+8hbQ8yOzF7xg1Lts
-         BbK+gmRmf7vKldWKZSnmHEzFoF/A6Irb8FjmqVxIHVz+uJzzjyVp2mYDTF9tBZ9A/FZj
-         7hK5wS3BCAwkhhZgIFNBx2kjq8EgR1CA2BF37KT5NhamXdP1fbJ9stQxJmya0Tp19CIa
-         Jd5Jbq14st1qgMFmrDvFwtoe8GoZ0cB7aUflsNCJHVaFf9x52/GkI6TAuQr0gq/hR2zR
-         g4DA==
-X-Forwarded-Encrypted: i=1; AJvYcCXqBRO1QL4fIcU3ISKVZYgmN+GDXZCZIhvaAvu8xgDL6XsNKLdP23A5QWoQ1EreZKis40VMGJFti1oQqVWesJkTc0+AqQa01A7X8jj2
-X-Gm-Message-State: AOJu0Yxv6+pHWbBaqvSnzk7XMeLTG5UV8jkyUVt7NrIMLCMBfZAXBp1+
-	okxbeJkLq208UitqXwKPPCGBMq873u0FwnGqsqNzI88UKtWTj9BaGvIjRTMB17KWoAC0KqWd/o5
-	t
-X-Google-Smtp-Source: AGHT+IGgmNyquLws0Qkisav6dI35WAm8hEi+6R9A8E+K+p3FMjpmyYxLBNTdF+Phz+qzA9Iy+M4e/Q==
-X-Received: by 2002:a2e:7807:0:b0:2d8:3a46:8ab6 with SMTP id t7-20020a2e7807000000b002d83a468ab6mr83703ljc.17.1712676255409;
-        Tue, 09 Apr 2024 08:24:15 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id s10-20020a2e98ca000000b002d0aad9dcfcsm1584958ljj.59.2024.04.09.08.24.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 08:24:15 -0700 (PDT)
-Date: Tue, 9 Apr 2024 18:24:13 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH 5/6] drm/msm/adreno: Add speedbin data for SM8550 / A740
-Message-ID: <4ghhtxjtkfjzxeyrajn26get4d6xiq57swwsjmyialcyfivui6@se3ukxxukspt>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-5-ce2b864251b1@linaro.org>
- <nek4paofg3hturvjwpa2bnsvmicwmvwixzr6e6iuqstemgrqyo@cagcrnzjsne2>
- <0955cabc-fc4e-4790-a82c-7f6f807fe36b@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lIcjrvtsl6nrkenheP/gY7sTHb6kUL22JzhCSfFrr+NkbEiOlPh252AOWMCyubDXRQWCx1S9CXrRCc97bCfpiwA9nzZXBiZHe1DQF4eZInSyamikzt1ebcP5T38BgLfT6O1o42oNDcu90w9DzKX2fxxI5eH9d094BqiMracZqw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvEJm3Ox; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C5AC43390;
+	Tue,  9 Apr 2024 15:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712676281;
+	bh=GYhUMYcuopyTTsXZocs09eC4l4ecRuEg28Z8oo3DJDg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uvEJm3OxeJsz20Wg45vymQiE31AfCrNGbzGYu9fxvx7v25A8to4o8663gLuEQP6kc
+	 D1LbChA9runpUpskT9BeY/BXUrAoHLKy/HCpG8Uw7p5/wlzYhzHbYBWg21NreDrNZ+
+	 2wwxB4tTkhbuEfN4ZZRT4CSLD1d0BnrNPNDdtoW4YH1vMSqYLuYJwWdvaMCtSA11r9
+	 x4WRy3D4wovEURW33pEzwp4xsbB9ZzE4BGvWDcplalEkx0L8wX7bcO2zPM9rsfOucm
+	 p3zWHN0040b1J2xkM4/+gQzY++sxkv2dNdugqzT5i1YTm6BLGoMiM+4kGLNkqZWY3Q
+	 4ebj7HWojvSnw==
+Date: Tue, 9 Apr 2024 10:24:38 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Adam Skladowski <a39.skl@gmail.com>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+	Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: msm8976: Add MDSS nodes
+Message-ID: <463qtzv2z4hbazjmis6xf5p7j44eafeqtpw4qb22sddeolig3i@eujjyfwqxycs>
+References: <20240401172153.9231-1-a39.skl@gmail.com>
+ <20240401172153.9231-3-a39.skl@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,39 +60,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0955cabc-fc4e-4790-a82c-7f6f807fe36b@linaro.org>
+In-Reply-To: <20240401172153.9231-3-a39.skl@gmail.com>
 
-On Tue, Apr 09, 2024 at 05:13:15PM +0200, Konrad Dybcio wrote:
-> 
-> 
-> On 4/6/24 05:25, Dmitry Baryshkov wrote:
-> > On Fri, Apr 05, 2024 at 10:41:33AM +0200, Konrad Dybcio wrote:
-> > > Add speebin data for A740, as found on SM8550 and derivative SoCs.
-> > > 
-> > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > ---
-> > >   drivers/gpu/drm/msm/adreno/adreno_device.c | 14 ++++++++++++++
-> > >   1 file changed, 14 insertions(+)
-> > > 
-> > > diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > index 901ef767e491..c976a485aef2 100644
-> > > --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > @@ -570,6 +570,20 @@ static const struct adreno_info gpulist[] = {
-> > >   		.zapfw = "a740_zap.mdt",
-> > >   		.hwcg = a740_hwcg,
-> > >   		.address_space_size = SZ_16G,
-> > > +		.speedbins = ADRENO_SPEEDBINS(
-> > 
-> > I think this deserves either a comment or some info in the commit
-> > message.
-> 
-> "this" = ?
+On Mon, Apr 01, 2024 at 07:21:51PM +0200, Adam Skladowski wrote:
+> diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
+[..]
+> +		mdss: display-subsystem@1a00000 {
+[..]
+> +			mdss_dsi0: dsi@1a94000 {
+> +				compatible = "qcom,msm8976-dsi-ctrl", "qcom,mdss-dsi-ctrl";
+> +				reg = <0x01a94000 0x25c>;
+> +				reg-names = "dsi_ctrl";
+> +
+> +				interrupt-parent = <&mdss>;
+> +				interrupts = <4>;
+> +
+> +				clocks = <&gcc GCC_MDSS_MDP_CLK>,
+> +					 <&gcc GCC_MDSS_AHB_CLK>,
+> +					 <&gcc GCC_MDSS_AXI_CLK>,
+> +					 <&gcc GCC_MDSS_BYTE0_CLK>,
+> +					 <&gcc GCC_MDSS_PCLK0_CLK>,
+> +					 <&gcc GCC_MDSS_ESC0_CLK>;
+> +				clock-names = "mdp_core",
+> +					      "iface",
+> +					      "bus",
+> +					      "byte",
+> +					      "pixel",
+> +					      "core";
+> +
+> +				assigned-clocks = <&gcc GCC_MDSS_BYTE0_CLK_SRC>,
+> +						  <&gcc GCC_MDSS_PCLK0_CLK_SRC>;
+> +				assigned-clock-parents = <&mdss_dsi0_phy 0>,
+> +							 <&mdss_dsi0_phy 1>;
+> +
+> +				phys = <&mdss_dsi0_phy>;
+> +
+> +				operating-points-v2 = <&dsi0_opp_table>;
+> +				power-domains = <&gcc MDSS_GDSC>;
+> +
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
 
-I see two types of speedbins here, it would be nice to understand at
-least some reason or some defailts for that (if you know them).
+Seems reasonable to keep this disabled as well. Further more &mdss_dsi0
+depends on &mdss_dsi0_phy which is disabled.
 
--- 
-With best wishes
-Dmitry
+> +				ports {
+[..]
+> +			mdss_dsi0_phy: phy@1a94a00 {
+> +				compatible = "qcom,dsi-phy-28nm-hpm-fam-b";
+> +				reg = <0x01a94a00 0xd4>,
+> +				      <0x01a94400 0x280>,
+> +				      <0x01a94b80 0x30>;
+> +				reg-names = "dsi_pll",
+> +					    "dsi_phy",
+> +					    "dsi_phy_regulator";
+> +
+> +				#clock-cells = <1>;
+> +				#phy-cells = <0>;
+> +
+> +				clocks = <&gcc GCC_MDSS_AHB_CLK>,
+> +					 <&rpmcc RPM_SMD_XO_CLK_SRC>;
+> +				clock-names = "iface", "ref";
+> +
+> +				status = "disabled";
+> +			};
+
+PS. Leave &mdss_mdp enabled...
+
+Regards,
+Bjorn
 
