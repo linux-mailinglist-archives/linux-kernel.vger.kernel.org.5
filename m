@@ -1,307 +1,149 @@
-Return-Path: <linux-kernel+bounces-137723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A03C89E65F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:48:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0332C89E662
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:48:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75AABB22F4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:48:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F9391F21682
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E91D1591E3;
-	Tue,  9 Apr 2024 23:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39CF1591E5;
+	Tue,  9 Apr 2024 23:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CGzdr53L"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="UV78n/6F"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3CB158DCB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDF9158DD0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706477; cv=none; b=ak7NTucZ3CfxjoADCcZkO88LSm8LtRc68DgANJNMDmoRsSqTQMIUgwbFep298EY1q+SX8kNe3Sr4P7qdA1vm1B4xk9QRtNKyt7/AB8ULjbbUhTcTuxACS2WVAearAPoWnrA1pdEjFoxQmOQRjDzcrOkoVDlLu+Xdo94TtFxrk/4=
+	t=1712706484; cv=none; b=l7T54Z6yraorPwCKz9L136hmh/uHfLbp3ug0QPxb61lKh7CXbhpc/wJehakphtLaYpsM+wc4FCcXI12YuzpTvGX0zRhGDyuu3yo4zJbDHm3EoVT/z8kl0zrLWQpUo57N5Z0V+oj9j0UeIj9fNQOWnQJiCcRZd1pHWX8H9C+R2CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706477; c=relaxed/simple;
-	bh=fojvbkoQ1qnxHWDrD0djvFzPN586S6oM8s/o1Hodv8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IlzvjZeZjVdQbFuxcupb5Dd8OUU34/DMxzYs7Ciq+sRvtIEcwOs7SyCVKBwxm+F0HALjJHvekVFgLDHivKBZiZDLV92uGOTAsqwEE+K6z+n4m2qfjEznx/1JFOLs8BrpVy6aBySngvBuVZa6kuh3zAOPWwHV3m9ANVNuvfFL81o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=CGzdr53L; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3f17c6491so26382455ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 16:47:55 -0700 (PDT)
+	s=arc-20240116; t=1712706484; c=relaxed/simple;
+	bh=08qq5HCWlZ+kc23Un20MVp8h4gAK+quDdzQ4miFER2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PZHHIdjPbZXbgVSF1QF3NRX/6qWUOUMG5iAEGJAUe4qaPoFUSxsK18U4iTEHAI/v2wNDqT/02CoKQh+NmneNTx6nnocxtNi1viBxf4oDcbgbIq9ZpJMyayyqGYW5mkXv1Arr3DOASINK88fNpBXrcAjz/1dMdL/aPpid8lN3RFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=UV78n/6F; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78d735b0756so84049485a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 16:48:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712706475; x=1713311275; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RgrB4N7HIT6g2jHcT1375/VgKhsjQsjM2O3SRfcZbZc=;
-        b=CGzdr53L/BP1jirwWTssnrJlHi7V45slGcUWe75K5N2dlZPc0dss4G1NK0sDE1XS3E
-         bM3+PzZglaj65MEu5Kbd0/nMbZKB9wkBRQOOldCpVnXRVeyk92bs9CVGr1Svgqht/NyW
-         FYhk4oBxweZdtWhnWnmn71zyXIJUqCZ74Ib0Iu5cb0M9fjBwtjpkYfxshJVSWf1KSVcK
-         8idc81ym5oCJyrv4YrcwxfsZ8ZIIHfHO4rkvlahaGH6H0HeTbwmO0pKPTl/inCJuta4E
-         SfR7qHEJvmRIlMs+Un6QJNNSKRjZQM5AB4LB+B1NXLevM4o2rq128+YaGjuqyQ+xDgDG
-         REHA==
+        d=ziepe.ca; s=google; t=1712706482; x=1713311282; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VhYxjqqqLEZ4NmXo+SZfv1SY139w6T7h5FSNcRUkNNQ=;
+        b=UV78n/6FvtFa+sHq1XCEc0qpLSyKqomlNQYOQoqqCKB27/v2VqVIDX0xocnTN7wUok
+         2mjGNWv/XSwxQ2LBLg1MXQ52JBGPdX1AoAp8yREpH27ZOV5MBwF5MwI3ut8C8L6pnHqt
+         rAJtbRa8P20vKmg6MutPbu5H4p6DujhEGyMv0xwDW32pkzGgBg209qpgyNzES0+q4pSk
+         /00nUtb/J8x4nHFdDHiaxiLeI2mySt7iMR8b5wAUhBSC4pbRZUL9/O/iFAUPP1yuPDhs
+         cFs6ftRf9KMRRB0enQn4Vl21XQpJty9/ybgP3QDU80Uj+q9Kog09hGzi5fy01G7CjgCA
+         Z4eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712706475; x=1713311275;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RgrB4N7HIT6g2jHcT1375/VgKhsjQsjM2O3SRfcZbZc=;
-        b=rJhE78oxqDeQVzfk5zXa149X2MF/LMQhNXX1AYsogbBIrkboxrIN01puzGw43xB39O
-         Xp3/Tmb1UBVFj1YftZqJOyprx6452kbEJTxt3YxtSsB5B6i8otzYxjXieerjffLv94Wu
-         EJBjdkPcJQ/AFqHbfzJP2EKLZn1iJOsDuoICxN73w56s3f6wThw/DSS7Sew9Xbryz89u
-         SFbJNUd/L3xSzet5aZ9XYs/TmUXi0+NuTynvxdq1SS7mWD1BVzFD0Ztuh2N7XUEoSWdZ
-         mLe6lzJzkKZB8BO1xJrfW13KhOaXyTd2RBzVYoFhgAcjKys80tEubeIeC69Dj/wQQDg+
-         M3mw==
-X-Gm-Message-State: AOJu0YxYknChR6k9V07h9YzQk6LIjfZ94Oj63pWNEDnZ1yAkDeUJesWh
-	R5rX6VHb9KTNhzVPNPh5SuesSiwvM+i5h+5Ri8v49PKhPZRpWS9pS14ChlB756s=
-X-Google-Smtp-Source: AGHT+IHk/q17IeOHQyGGUSgmO41DCPXIxbm368Sp4qp2GXcbAOCnlkTai/EEVXRYcJTcrtE51VHdfw==
-X-Received: by 2002:a17:902:f611:b0:1e2:a7bf:5172 with SMTP id n17-20020a170902f61100b001e2a7bf5172mr1613615plg.52.1712706474847;
-        Tue, 09 Apr 2024 16:47:54 -0700 (PDT)
-Received: from [10.0.16.226] ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id w19-20020a170902d11300b001e0501d3058sm9518174plw.63.2024.04.09.16.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 16:47:54 -0700 (PDT)
-Message-ID: <4f3fa42e-eaf9-40bf-8906-6193ea21a575@rivosinc.com>
-Date: Tue, 9 Apr 2024 16:47:51 -0700
+        d=1e100.net; s=20230601; t=1712706482; x=1713311282;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VhYxjqqqLEZ4NmXo+SZfv1SY139w6T7h5FSNcRUkNNQ=;
+        b=dNDZCFd1E2guSpXQ+ASHrpGsnErRdgXnKdvTmFI5NDHthXTc/Tp+zQpRMQxSNHNKP8
+         o3T3TWsjEwYKK+V6uNE/0zo91QDIQ//CXGuFn0EW4mfDw3B9ZI6g2sl+PjBJMINRZ0S0
+         hP8IuHZ0WCGYGUmhXWwJ9r0g598++oHrWYbKIOVlSBaVcjv625THR2phxqUmaWj/vJFI
+         0GFAOAlUJVDP5lLrG7iQxSwXHeXUzqXlQh3qLr7Wb8+M86s+p9ciCnJ2Cc3JhdUxF2dq
+         LRxvlDwwp19GLfpFNBukqkBQgdUpxiKSbaHzCAM0rGFew6zmEfNdCDi5OWX1PQW4vThM
+         ja9g==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ/Nky32xn1NsKjzI+2Gt6FDwSJ055H9M64Xse4sY9fqIs0a6Zmp1GXSagwAJIGke2M+6oqBOtJzhP8w3UHZHiKB/e/cSrIuIoU94t
+X-Gm-Message-State: AOJu0Yx8Xqe0yppzTMlOolTPtZjb0k68Ng3xu69prYs4MdYrWPCRb8dL
+	cIu+UYmm3v6lynsMP5qIwhOdlL3L6jBgdxYSK1blV6kZUy4crQZHJt9ve0nLE0E=
+X-Google-Smtp-Source: AGHT+IF1pNgXaBW/Yn6UlU21y660oCrae0FfmY/a+9BPxXzGL3pwhOQklD3p33dxkbP8tOGj4Kgh6A==
+X-Received: by 2002:a05:620a:370b:b0:78d:37bf:74cf with SMTP id de11-20020a05620a370b00b0078d37bf74cfmr6318076qkb.5.1712706481980;
+        Tue, 09 Apr 2024 16:48:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id j26-20020ac84c9a000000b00434f880039asm428978qtv.70.2024.04.09.16.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 16:48:01 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1ruLC4-007GFW-Ju;
+	Tue, 09 Apr 2024 20:48:00 -0300
+Date: Tue, 9 Apr 2024 20:48:00 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Baolu Lu <baolu.lu@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/9] iommu: Replace sva_iommu with iommu_attach_handle
+Message-ID: <20240409234800.GD223006@ziepe.ca>
+References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
+ <20240403011519.78512-3-baolu.lu@linux.intel.com>
+ <20240403115913.GC1363414@ziepe.ca>
+ <e3f526e3-6474-49ff-b8d6-995aaf1c1830@linux.intel.com>
+ <20240408141946.GB223006@ziepe.ca>
+ <86e723e7-c3be-41b1-95d8-dbdf86bbdab5@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 22/22] KVM: riscv: selftests: Add a test for counter
- overflow
-Content-Language: en-US
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>,
- Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>,
- Alexey Makhalov <amakhalov@vmware.com>,
- Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>,
- kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
- Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
- virtualization@lists.linux.dev,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20240403080452.1007601-1-atishp@rivosinc.com>
- <20240403080452.1007601-23-atishp@rivosinc.com>
- <20240405-3a20fe10d65368651c2d23fa@orel>
-From: Atish Patra <atishp@rivosinc.com>
-In-Reply-To: <20240405-3a20fe10d65368651c2d23fa@orel>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86e723e7-c3be-41b1-95d8-dbdf86bbdab5@linux.intel.com>
 
-On 4/5/24 06:23, Andrew Jones wrote:
-> On Wed, Apr 03, 2024 at 01:04:51AM -0700, Atish Patra wrote:
->> Add a test for verifying overflow interrupt. Currently, it relies on
->> overflow support on cycle/instret events. This test works for cycle/
->> instret events which support sampling via hpmcounters on the platform.
->> There are no ISA extensions to detect if a platform supports that. Thus,
->> this test will fail on platform with virtualization but doesn't
->> support overflow on these two events.
+On Tue, Apr 09, 2024 at 10:11:28AM +0800, Baolu Lu wrote:
+> On 4/8/24 10:19 PM, Jason Gunthorpe wrote:
+> > On Sat, Apr 06, 2024 at 02:09:34PM +0800, Baolu Lu wrote:
+> > > On 4/3/24 7:59 PM, Jason Gunthorpe wrote:
+> > > > On Wed, Apr 03, 2024 at 09:15:12AM +0800, Lu Baolu wrote:
+> > > > > +	/* A bond already exists, just take a reference`. */
+> > > > > +	handle = iommu_attach_handle_get(group, iommu_mm->pasid);
+> > > > > +	if (handle) {
+> > > > > +		mutex_unlock(&iommu_sva_lock);
+> > > > > +		return handle;
+> > > > >    	}
+> > > > At least in this context this is not enough we need to ensure that the
+> > > > domain on the PASID is actually an SVA domain and it was installed by
+> > > > this mechanism, not an iommufd domain for instance.
+> > > > 
+> > > > ie you probably need a type field in the iommu_attach_handle to tell
+> > > > what the priv is.
+> > > > 
+> > > > Otherwise this seems like a great idea!
+> > > Yes, you are right. For the SVA case, I will add the following changes.
+> > > The IOMMUFD path will also need such enhancement. I will update it in
+> > > the next version.
+> > The only use for this is the PRI callbacks right? Maybe instead of
+> > adding a handle type let's just check domain->iopf_handler  ?
+> > 
+> > Ie SVA will pass &ommu_sva_iopf_handler as its "type"
 > 
-> Maybe we should give the user a command line option to disable this test
-> in case the platform they're testing doesn't support it but they want to
-> run the rest of the tests without getting a FAIL.
-> 
+> Sorry that I don't fully understand the proposal here.
 
-Sure. I will add that option.
+I was talking specifically about the type field you suggested adding
+to the handle struct.
 
->>
->> Reviewed-by: Anup Patel <anup@brainfault.org>
->> Signed-off-by: Atish Patra <atishp@rivosinc.com>
->> ---
->>   .../selftests/kvm/riscv/sbi_pmu_test.c        | 114 ++++++++++++++++++
->>   1 file changed, 114 insertions(+)
->>
->> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
->> index 7d195be5c3d9..451db956b885 100644
->> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
->> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
->> @@ -14,6 +14,7 @@
->>   #include "test_util.h"
->>   #include "processor.h"
->>   #include "sbi.h"
->> +#include "arch_timer.h"
->>   
->>   /* Maximum counters(firmware + hardware) */
->>   #define RISCV_MAX_PMU_COUNTERS 64
->> @@ -24,6 +25,9 @@ union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
->>   static void *snapshot_gva;
->>   static vm_paddr_t snapshot_gpa;
->>   
->> +static int vcpu_shared_irq_count;
->> +static int counter_in_use;
->> +
->>   /* Cache the available counters in a bitmask */
->>   static unsigned long counter_mask_available;
->>   
->> @@ -117,6 +121,31 @@ static void guest_illegal_exception_handler(struct ex_regs *regs)
->>   	regs->epc += 4;
->>   }
->>   
->> +static void guest_irq_handler(struct ex_regs *regs)
->> +{
->> +	unsigned int irq_num = regs->cause & ~CAUSE_IRQ_FLAG;
->> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
->> +	unsigned long overflown_mask;
->> +	unsigned long counter_val = 0;
->> +
->> +	/* Validate that we are in the correct irq handler */
->> +	GUEST_ASSERT_EQ(irq_num, IRQ_PMU_OVF);
->> +
->> +	/* Stop all counters first to avoid further interrupts */
->> +	stop_counter(counter_in_use, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
->> +
->> +	csr_clear(CSR_SIP, BIT(IRQ_PMU_OVF));
->> +
->> +	overflown_mask = READ_ONCE(snapshot_data->ctr_overflow_mask);
->> +	GUEST_ASSERT(overflown_mask & 0x01);
->> +
->> +	WRITE_ONCE(vcpu_shared_irq_count, vcpu_shared_irq_count+1);
->> +
->> +	counter_val = READ_ONCE(snapshot_data->ctr_values[0]);
->> +	/* Now start the counter to mimick the real driver behavior */
->> +	start_counter(counter_in_use, SBI_PMU_START_FLAG_SET_INIT_VALUE, counter_val);
->> +}
->> +
->>   static unsigned long get_counter_index(unsigned long cbase, unsigned long cmask,
->>   				       unsigned long cflags,
->>   				       unsigned long event)
->> @@ -276,6 +305,33 @@ static void test_pmu_event_snapshot(unsigned long event)
->>   	stop_reset_counter(counter, 0);
->>   }
->>   
->> +static void test_pmu_event_overflow(unsigned long event)
->> +{
->> +	unsigned long counter;
->> +	unsigned long counter_value_post;
->> +	unsigned long counter_init_value = ULONG_MAX - 10000;
->> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
->> +
->> +	counter = get_counter_index(0, counter_mask_available, 0, event);
->> +	counter_in_use = counter;
->> +
->> +	/* The counter value is updated w.r.t relative index of cbase passed to start/stop */
->> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
->> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
->> +	dummy_func_loop(10000);
->> +	udelay(msecs_to_usecs(2000));
->> +	/* irq handler should have stopped the counter */
->> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
->> +
->> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
->> +	/* The counter value after stopping should be less the init value due to overflow */
->> +	__GUEST_ASSERT(counter_value_post < counter_init_value,
->> +		       "counter_value_post %lx counter_init_value %lx for counter\n",
->> +		       counter_value_post, counter_init_value);
->> +
->> +	stop_reset_counter(counter, 0);
->> +}
->> +
->>   static void test_invalid_event(void)
->>   {
->>   	struct sbiret ret;
->> @@ -366,6 +422,34 @@ static void test_pmu_events_snaphost(void)
->>   	GUEST_DONE();
->>   }
->>   
->> +static void test_pmu_events_overflow(void)
->> +{
->> +	int num_counters = 0;
->> +
->> +	/* Verify presence of SBI PMU and minimum requrired SBI version */
->> +	verify_sbi_requirement_assert();
->> +
->> +	snapshot_set_shmem(snapshot_gpa, 0);
->> +	csr_set(CSR_IE, BIT(IRQ_PMU_OVF));
->> +	local_irq_enable();
->> +
->> +	/* Get the counter details */
->> +	num_counters = get_num_counters();
->> +	update_counter_info(num_counters);
->> +
->> +	/*
->> +	 * Qemu supports overflow for cycle/instruction.
->> +	 * This test may fail on any platform that do not support overflow for these two events.
->> +	 */
->> +	test_pmu_event_overflow(SBI_PMU_HW_CPU_CYCLES);
->> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 1);
->> +
->> +	test_pmu_event_overflow(SBI_PMU_HW_INSTRUCTIONS);
->> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 2);
->> +
->> +	GUEST_DONE();
->> +}
->> +
->>   static void run_vcpu(struct kvm_vcpu *vcpu)
->>   {
->>   	struct ucall uc;
->> @@ -451,6 +535,33 @@ static void test_vm_events_snapshot_test(void *guest_code)
->>   	test_vm_destroy(vm);
->>   }
->>   
->> +static void test_vm_events_overflow(void *guest_code)
->> +{
->> +	struct kvm_vm *vm = NULL;
->> +	struct kvm_vcpu *vcpu;
->> +
->> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
->> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
->> +				   "SBI PMU not available, skipping test");
->> +
->> +	__TEST_REQUIRE(__vcpu_has_isa_ext(vcpu, KVM_RISCV_ISA_EXT_SSCOFPMF),
->> +				   "Sscofpmf is not available, skipping overflow test");
->> +
->> +
-> 
-> extra blank line here
-> 
+Instead of adding a type field check the domain->iopf_handler to
+determine the domain and thus handle type.
 
-Fixed.
+> The problem is that the context code (SVA, IOMMUFD, etc.) needs to make
+> sure that the attach handle is really what it has installed during
+> domain attachment. The context code needs some mechanism to include some
+> kind of "owner cookie" in the attach handle, so that it could check
+> against it later for valid use.
 
->> +	test_vm_setup_snapshot_mem(vm, vcpu);
->> +	vm_init_vector_tables(vm);
->> +	vm_install_interrupt_handler(vm, guest_irq_handler);
->> +
->> +	vcpu_init_vector_tables(vcpu);
->> +	/* Initialize guest timer frequency. */
->> +	vcpu_get_reg(vcpu, RISCV_TIMER_REG(frequency), &timer_freq);
->> +	sync_global_to_guest(vm, timer_freq);
->> +
->> +	run_vcpu(vcpu);
->> +
->> +	test_vm_destroy(vm);
->> +}
->> +
->>   int main(void)
->>   {
->>   	pr_info("SBI PMU basic test : starting\n");
->> @@ -463,5 +574,8 @@ int main(void)
->>   	test_vm_events_snapshot_test(test_pmu_events_snaphost);
->>   	pr_info("SBI PMU event verification with snapshot test : PASS\n");
->>   
->> +	test_vm_events_overflow(test_pmu_events_overflow);
->> +	pr_info("SBI PMU event verification with overflow test : PASS\n");
->> +
->>   	return 0;
->>   }
->> -- 
->> 2.34.1
->>
-> 
-> Other than the command line option idea,
-> 
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> 
-> Thanks,
-> drew
+Right, you have a derived struct for each user and you need a way to
+check if casting from the general handle struct to the derived struct
+is OK.
 
+I'm suggesting using domain->iopf_handle as the type key.
+
+Jason
 
