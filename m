@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-137600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D36389E476
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:34:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F2689E47A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EB7A1C20D3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66751F22594
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20291586E4;
-	Tue,  9 Apr 2024 20:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843DD1586FC;
+	Tue,  9 Apr 2024 20:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYS5yUbp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOjfp/7g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E331586D2
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0111586E5
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712694857; cv=none; b=AwCJCXIMXwaJdoRBobOfWcsox40Q61S0T8HHElNy1NmMrdA2AcI5M73sEj8NCFzIbGrDcX6JEpFy1SdC7WUgTehlF/wN7GQSKn7RlzDkfI8Fe4TV51syFxqYys4b+cDJfL/IP/1VWvUdYWSPKjIvykW+7YHWVBcELp72FXblbyk=
+	t=1712694857; cv=none; b=qBgiz6BdccpXqJVK6mv2amb/hRO5nj5rts8HW5XHdnMKJvSQfEgvb8hgbScUtj2LRCR09TXDWAHuFyouOTxBxRj3ndVaGH44qQtotiHaUgc02QPEy1WdwRtszgSLsyiOa8c8ItPgOwvMg/3sH/OpG+zqr0ZxU6KFfw1dCab342M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712694857; c=relaxed/simple;
-	bh=yuHHraFJs2uSx9hQ7hdbnjpoe1/DllEgPkr59YJ8+BU=;
+	bh=+4w6Yn40335a0GsU306fLSUnzxXEUP2Ol6OJgXDYeI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GCmerm1a5dNKkwjppy3HjetQIRkvnhPSl7DJ62jvf5gph3Kc/85hFexvQaaNueagxJ80LSAXTlMa1obSkVTqwwKzrAjuRnFeO3oKuoUUfzYOV8OnPn5yf/bgy6qTEDn5Fs1heW9jEUDoyWGKK7GzCMaE7QMmuJQCB7h0P1e2NSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qYS5yUbp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A76CC433F1;
-	Tue,  9 Apr 2024 20:34:16 +0000 (UTC)
+	 MIME-Version; b=QWESsg5Sd7hxQyuviJrrBpDShVBqLCugikEXusCoUAy/ZafPvcXVdDvOAMULNUsPndNtp49VXWvhQ7woiQirgdTj++qN/fG7M4omriN7pvocQeM6L8svJies3muE9ICXNEyUSXCrImq08Yk37VXMMoy2XCKrcUcfWh57sp4klC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOjfp/7g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B26AC433C7;
+	Tue,  9 Apr 2024 20:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712694856;
-	bh=yuHHraFJs2uSx9hQ7hdbnjpoe1/DllEgPkr59YJ8+BU=;
+	s=k20201202; t=1712694857;
+	bh=+4w6Yn40335a0GsU306fLSUnzxXEUP2Ol6OJgXDYeI4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qYS5yUbp2j2MUkMS/chiuO59dZHMJNSE+6fhRmIqgrmpMsWsXPq11EPlEQFcnkp99
-	 HnWtx8P31Ejg/zj46124biFba+Pz96KQDjmJKVU+nC6XcSZQgQBrrOUWr6bTKqcOpt
-	 4DY6avaWW08lHV6cty4FKMK6+zo/lsMlbAqXZ2QUptl3W5G26MOWu3+z2vGtX2oXDs
-	 4Id09by82cRuUMnEwQIiKdAKmEs7Wbybyr9PlYxfKOX5+66+MMC2k6H+jG2kqlTWlM
-	 f9eIVPMnKbWIBXfIGJ1Eg7iK8YGSTc0vbg1Dk3wDgGQL3U2XskeK37fh4nEmZ5AnTu
-	 exkNMIRLiJeUg==
+	b=FOjfp/7g2+iX4WP7BmUILh7tqFC85L1DLkTG24ckMIrxOZGocygA/5bs19BDuOc3M
+	 BDtYlBc+gY0lkLP8sezyoUt/3Qx8AV0wO1ptAMIQJNjHKglQcweQmZXRaW6aMeyWdZ
+	 jz3fF0yGMNUcvDFc4GqmvwlU3eXu+JGxnYClbmc5OJc9MamBMmApbAvftFWvUCaDCi
+	 ZLLFjUw1H5Fdf9Wv0Pjd3Sbx5dlmGQlRqc3cyQEH5jJwZi2NU1cnXJsJJX8bEOlhEB
+	 bKt1XiCNEK2kCv6R0y1q5n9pAS7EogAtl1Ed1ndGkIbZl30272kQWaGuYQGUoDfNfy
+	 zjtcH1ozj0BCw==
 From: Jaegeuk Kim <jaegeuk@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 2/3] f2fs: clear writeback when compression failed
-Date: Tue,  9 Apr 2024 20:34:10 +0000
-Message-ID: <20240409203411.1885121-2-jaegeuk@kernel.org>
+Subject: [PATCH 3/3] f2fs: fix false alarm on invalid block address
+Date: Tue,  9 Apr 2024 20:34:11 +0000
+Message-ID: <20240409203411.1885121-3-jaegeuk@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240409203411.1885121-1-jaegeuk@kernel.org>
 References: <20240409203411.1885121-1-jaegeuk@kernel.org>
@@ -58,80 +58,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Let's stop issuing compressed writes and clear their writeback flags.
+f2fs_ra_meta_pages can try to read ahead on invalid block address which is
+not the corruption case.
 
+Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid_blkaddr")
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- fs/f2fs/compress.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ fs/f2fs/checkpoint.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index d67c471ab5df..3a8ecc6aee84 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1031,6 +1031,25 @@ static void set_cluster_writeback(struct compress_ctx *cc)
- 	}
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index eac698b8dd38..b01320502624 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 		break;
+ 	case META_SIT:
+ 		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
+-			goto err;
++			goto check_only;
+ 		break;
+ 	case META_SSA:
+ 		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
+ 			blkaddr < SM_I(sbi)->ssa_blkaddr))
+-			goto err;
++			goto check_only;
+ 		break;
+ 	case META_CP:
+ 		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
+ 			blkaddr < __start_cp_addr(sbi)))
+-			goto err;
++			goto check_only;
+ 		break;
+ 	case META_POR:
+ 		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
+ 			blkaddr < MAIN_BLKADDR(sbi)))
+-			goto err;
++			goto check_only;
+ 		break;
+ 	case DATA_GENERIC:
+ 	case DATA_GENERIC_ENHANCE:
+@@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 	return true;
+ err:
+ 	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
++check_only:
+ 	return false;
  }
  
-+static void cancel_cluster_writeback(struct compress_ctx *cc, int submitted)
-+{
-+	int i;
-+
-+	for (i = 0; i < cc->cluster_size; i++) {
-+		if (!cc->rpages[i])
-+			continue;
-+		if (i < submitted) {
-+			if (i)
-+				f2fs_wait_on_page_writeback(cc->rpages[i],
-+						DATA, true, true);
-+			inode_inc_dirty_pages(cc->inode);
-+			lock_page(cc->rpages[i]);
-+		}
-+		clear_page_private_gcing(cc->rpages[i]);
-+		end_page_writeback(cc->rpages[i]);
-+	}
-+}
-+
- static void set_cluster_dirty(struct compress_ctx *cc)
- {
- 	int i;
-@@ -1232,7 +1251,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 		.page = NULL,
- 		.encrypted_page = NULL,
- 		.compressed_page = NULL,
--		.submitted = 0,
- 		.io_type = io_type,
- 		.io_wbc = wbc,
- 		.encrypted = fscrypt_inode_uses_fs_layer_crypto(cc->inode) ?
-@@ -1358,7 +1376,15 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 			fio.compressed_page = cc->cpages[i - 1];
- 
- 		cc->cpages[i - 1] = NULL;
-+		fio.submitted = 0;
- 		f2fs_outplace_write_data(&dn, &fio);
-+		if (unlikely(!fio.submitted)) {
-+			cancel_cluster_writeback(cc, i);
-+
-+			/* To call fscrypt_finalize_bounce_page */
-+			i = cc->valid_nr_cpages;
-+			goto out_destroy_crypt;
-+		}
- 		(*submitted)++;
- unlock_continue:
- 		inode_dec_dirty_pages(cc->inode);
-@@ -1392,8 +1418,11 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- out_destroy_crypt:
- 	page_array_free(cc->inode, cic->rpages, cc->cluster_size);
- 
--	for (--i; i >= 0; i--)
-+	for (--i; i >= 0; i--) {
-+		if (!cc->cpages[i])
-+			continue;
- 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
-+	}
- out_put_cic:
- 	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
 -- 
 2.44.0.478.gd926399ef9-goog
 
