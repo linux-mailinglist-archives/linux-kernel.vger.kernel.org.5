@@ -1,125 +1,114 @@
-Return-Path: <linux-kernel+bounces-136668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB02489D6E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:23:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C74889D6E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CDA128A2B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBA8728A297
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FBF12BEBE;
-	Tue,  9 Apr 2024 10:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454AA12D21F;
+	Tue,  9 Apr 2024 10:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ajvumatU"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBWiiQ6H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506D781AA5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7BB84A56;
+	Tue,  9 Apr 2024 10:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657891; cv=none; b=j8116e76hSHEY4VjZDALQfpSLV2HbBJN3ID5JoHJcS8DlH7jVtbbv5m5rQFu03K4VA70SIQNIQHr3y/U4KFgTVGUbIR1sndOctWsyR/dppN0VFSZiAaaZxnwXCWA0mf+th9OgawhcZO0bpwNHTm+4WmkE9cZ02DkDbxE+524WdM=
+	t=1712658040; cv=none; b=lR4EEOLtRs9h7HHrqYCdjWXkdRynKcOq3BIWwcDqgqbPiF2gx6vbAcJzOF9gP/rkb4VxJ5IV1slalQlu6/ze/QYUYkAw4EsMU5TQ7JuVddIO7LI0OuC0Tlw7tNQssvftUtw8MjdFewVFAdDok11MTJQNfqBHzEx7InyOIgVAMVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657891; c=relaxed/simple;
-	bh=u2U8gJTN1Y6/tkA6R0gZXY/7BUyF0iITDQkVEsbOAnA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I2xnTaEE6rQSFRe8O9Tdq5GKcZJNJXpmT49a4bOK/LYhYMFria97PtI8pN9EzqTx5XjOoPHZKxATvy7GjwdKMFApC+II2FQsVCPWXoJ+4Ks5/RBuRNQd7Fgu4hq9h8tpGUrUq8c+GgGuDeH7IjiRVVAorPWy2v8kNf65y4hlheU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ajvumatU; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712657889; x=1744193889;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=u2U8gJTN1Y6/tkA6R0gZXY/7BUyF0iITDQkVEsbOAnA=;
-  b=ajvumatU/MGHXpxFzrswG24et95j7b6keOdZ/fZQR5C7aXYiYxQ4Sl2P
-   nOvISVvROVcRluOdmhT/mMFp9AsviEte7zp4b/gH8/KKvHyzGdBzB5xqy
-   genozE5v4FiCkJYzBmVdNIKmvjoqGdR3yO23nczLM7JRgsIkUKG0CP84H
-   jt4XfkJ4Lvr1xihRI3pY0XMQIezcj0P3mIYgeiyDDv898L1DiEl+Un795
-   XQhmi6vLwITcA+Eq0byKpcchm7ANCUGkdiwUI0/MOlkEaOhD+ZMpBfVqn
-   GU6eApbpe0dHFPO0kPD4cadspiJyP5u8dS81ab/5OQn5jjnbEQIlgN3Hy
-   A==;
-X-CSE-ConnectionGUID: nVn0v+WaSjOKBNv0OCQCsQ==
-X-CSE-MsgGUID: nAv517X1Tyygaf1M646PWA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7809999"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="7809999"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 03:18:08 -0700
-X-CSE-ConnectionGUID: LTf4sdfZTz6UbXVmVZS56A==
-X-CSE-MsgGUID: qxFEr1dPQ6GxCjqgjB5/HQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="20754976"
-Received: from mserban-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.59.228])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 03:18:03 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
- pekka.paalanen@collabora.com, thomas.petazzoni@bootlin.com, Louis Chauvet
- <louis.chauvet@bootlin.com>
-Subject: Re: [PATCH 0/3] drm: Multiple documentation update
-In-Reply-To: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
-Date: Tue, 09 Apr 2024 13:18:00 +0300
-Message-ID: <87msq296w7.fsf@intel.com>
+	s=arc-20240116; t=1712658040; c=relaxed/simple;
+	bh=pzdCSbr5SHBon91syIJCTeDKf1rySdQBVpzt6jNEgQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dpmPYm+ZPOuz2Xr1e3hi7DhEbFARFCdjz2Vg6FZiBIqKvG38hYjQeBqxnRkHVEWC1dPMPVEMi0bqocay/3Jzlp/e7YOeRWNw6pJJb2bXZNTPSy7It+5PfUfpagCTNlxWFHaccUyjxGUmaokmSdPPyo9oAl4LrtUH1ulVZvOYNi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBWiiQ6H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B258EC433B1;
+	Tue,  9 Apr 2024 10:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712658040;
+	bh=pzdCSbr5SHBon91syIJCTeDKf1rySdQBVpzt6jNEgQk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mBWiiQ6HYjrUnXh8pi5Y+nI2VufkIDxZO/XmS5JqHzIzKKCTFyV7b+JdB1J8eljk3
+	 uY8uLDeRFlIO9Mf7//GhUc8688Q2OwdPcgwwYYl28hlq8nQ41g08WfBnB6QBbxdmkH
+	 3Z570Zzg4S9m8kgE+sKCOw9kk6Hp+LC3g5QVd1AfXrgITn04uJvxjMPSWhcfr2as2X
+	 rYCNFvJgG3PWZrt2crQLnTvwakDXiQQT1Glsur+x5qO899l1UwfNjZiXmXq1hO6K0k
+	 H/FEtUgK+F7Hh3ALnjh3eW2REylKT0rje563SEAVGjrCEA2sFNwt7ygTwY9xdN/rOq
+	 +Dqbxn3Gq6Thg==
+Date: Tue, 9 Apr 2024 11:20:33 +0100
+From: Will Deacon <will@kernel.org>
+To: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc: robin.murphy@arm.com, joro@8bytes.org, iommu@lists.linux.dev,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	andersson@kernel.org, konrad.dybcio@linaro.org, robdclark@gmail.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com,
+	quic_sukadev@quicinc.com, quic_pdaly@quicinc.com,
+	quic_sudaraja@quicinc.com, djakov@kernel.org
+Subject: Re: [PATCH v7 2/7] iommu/arm-smmu-qcom-tbu: Add Qualcomm TBU driver
+Message-ID: <20240409102033.GA22381@willie-the-truck>
+References: <20240329210638.3647523-1-quic_c_gdjako@quicinc.com>
+ <20240329210638.3647523-3-quic_c_gdjako@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329210638.3647523-3-quic_c_gdjako@quicinc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, 09 Apr 2024, Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> PATCH 1 and PATCH 2 focus on the rotation property. The rotation property 
-> can be challenging to understand, especially when it is combined with 
-> reflections. These patches aim to provide clearer explanations and 
-> examples to aid in comprehension.
->
-> Patch 3 relates to the fourcc property. It includes additional details 
-> about block and char_per_block to provide a more comprehensive 
-> understanding of this feature.
->
-> Regarding PATCH 1, I would appreciate some feedback on the expected 
-> behavior. During a recent VKMS refactor, I used drm_rect_rotate as a 
-> reference for the rotation. However, during my testing phase, I noticed 
-> that the original VKMS implementation interpreted the rotation 
-> differently. Therefore, I kindly request that someone validate or 
-> invalidate my interpretation before proceeding with the merge.
-
-Did you run 'make htmldocs' and check the results after your changes?
-I'm almost certain this botches up the layout.
-
-BR,
-Jani.
-
->
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+On Fri, Mar 29, 2024 at 02:06:33PM -0700, Georgi Djakov wrote:
+> Operating the TBUs (Translation Buffer Units) from Linux on Qualcomm
+> platforms can help with debugging context faults. To help with that,
+> the TBUs can run ATOS (Address Translation Operations) to manually
+> trigger address translation of IOVA to physical address in hardware
+> and provide more details when a context fault happens.
+> 
+> The driver will control the resources needed by the TBU to allow
+> running the debug operations such as ATOS, check for outstanding
+> transactions, do snapshot capture etc.
+> 
+> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 > ---
-> Louis Chauvet (3):
->       drm: drm_blend.c: Add precision in drm_rotation_simplify kernel doc
->       drm: drm_blend.c: Improve drm_plane_create_rotation_property kernel doc
->       drm/fourcc: Add documentation around drm_format_info
->
->  drivers/gpu/drm/drm_blend.c | 57 ++++++++++++++++++++++++++++++++++-----------
->  include/drm/drm_fourcc.h    | 45 +++++++++++++++++++++++++++++------
->  2 files changed, 81 insertions(+), 21 deletions(-)
-> ---
-> base-commit: e495e523b888a6155f82c767d34c8d712a41ee54
-> change-id: 20240327-google-drm-doc-cd275291792f
->
-> Best regards,
+>  drivers/iommu/Kconfig                         |   9 +
+>  drivers/iommu/arm/arm-smmu/Makefile           |   1 +
+>  .../iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c    | 372 ++++++++++++++++++
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h    |   2 +
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h         |   2 +
+>  5 files changed, 386 insertions(+)
+>  create mode 100644 drivers/iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c
+> 
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index 0af39bbbe3a3..b699e88f42c5 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -374,6 +374,15 @@ config ARM_SMMU_QCOM
+>  	  When running on a Qualcomm platform that has the custom variant
+>  	  of the ARM SMMU, this needs to be built into the SMMU driver.
+>  
+> +config ARM_SMMU_QCOM_TBU
+> +	bool "Qualcomm TBU driver"
+> +	depends on ARM_SMMU_QCOM
+> +	help
+> +	  The SMMUs on Qualcomm platforms may include Translation Buffer
+> +	  Units (TBUs) for each master. Enabling support for these units
+> +	  allows to operate the TBUs and obtain additional information
+> +	  when debugging memory management issues like context faults.
+> +
+>  config ARM_SMMU_QCOM_DEBUG
 
--- 
-Jani Nikula, Intel
+Can we just use ARM_SMMU_QCOM_DEBUG for all of this? Having both
+ARM_SMMU_QCOM_DEBUG and ARM_SMMU_QCOM_TBU for the same hardware is
+pretty confusing, I think.
+
+Will
 
