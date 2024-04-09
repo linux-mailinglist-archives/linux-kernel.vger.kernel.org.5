@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-137705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9B989E636
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:41:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B5D89E639
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:42:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4EA1C223A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:41:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 337971C22722
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A04158DD0;
-	Tue,  9 Apr 2024 23:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B22158DD4;
+	Tue,  9 Apr 2024 23:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TN5/Mc3P"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mn85nTXh"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0900C158DC4;
-	Tue,  9 Apr 2024 23:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FBF158DCB;
+	Tue,  9 Apr 2024 23:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706102; cv=none; b=qgf04Re2vEEb/HRTOKGW8FKxBbd5AjEULQXK2rW8Fw1ajm+FEarcnl45LXY0NdIUCX3ulYnrbBqpfGJJseS0KKGBZk1UCYHHng1J9j6/S+ZS8rrC3E/ZC8UIQr9KfTEzM18lInwsd8wZf4EUY4FZPNzYRIQTncOPJCMCwKKh/Ms=
+	t=1712706112; cv=none; b=gkkbmnPe4m6GTP5UBaDKdChw6sU5rec7eMuB3dAAPziqjjTh78Eculkry1aYp3gTGkdlRrmWANTOd/Iwa6695UyT15iXc9pcPPgVeDlhculwSKKHdD7HVGaGqB3ORpIYJ8mg3gP8fPoPPO2XK8JLE9W3Nl3DfXEuNVYxqB3A+G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706102; c=relaxed/simple;
-	bh=p+mYvSZ5jqONe0GguEhDFJy9lDuHfUm34Zjqnta0fOI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C9SbSLqzz8J9q+0DebmpvUM0w3zzEU5/ZEV+B2jWITO8jwDDDV7cuiERV0GhTuYh1lViALGN/HK1o5cr1NjkmhuaBAoaf8XcA6RG7Wv2dBokaGGHR5xbQ2bcHBUn6AFDHvwawCSBUkcRlOxvksEX6Yjc7+4CJULIv26ebX5+5S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TN5/Mc3P; arc=none smtp.client-ip=192.198.163.7
+	s=arc-20240116; t=1712706112; c=relaxed/simple;
+	bh=XZPnuMGpxPe4CWkciEp2JpTmAZ+j8o4aGih5VYVyakI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BjjhtOLVEm+7nGqF3yMV4Nv5i6cZzpUIVz1kPGCmcvY+AByaIX6ViciB6Co+2aXs2nQtzoaZHQHaJYM8q8UuFrxBES+ctgxcVdP7EFsfG90Q2C7wFnDDsTiNtHtcRLkfKbHrRk7YalFx9s/RPSN3zepe5cKLgBgUEwPPig+OXHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mn85nTXh; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712706100; x=1744242100;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=p+mYvSZ5jqONe0GguEhDFJy9lDuHfUm34Zjqnta0fOI=;
-  b=TN5/Mc3PYc1xEf9kCVpPh/Zkv3HV/d58iXv2SchH1uzn0JKcxHOQXA40
-   PiaevUHyQZvmZCtF/KHC5Tcy/uEsLeqWtpGzsvC9inN5MJ9r3KrFRNoZu
-   fB4btTX+6gW9QylthK+md/Cv4S69heVPiv64ANNr1Nw3QxH0eejxEeDMf
-   oiaQefOpCyaxoqXDYqT2W0OCP4C0aaX357TPIYT+QSTmqV4P5I4t7k+Wy
-   KWmFi0JNt1m1WZPMlU6AV726jsq3PJov9SFjvpcIgUDmuT39j/8aSwv2E
-   366hjyyDOw/zwnhRD6vn4iDNhvyYjafg4TNbJeJvkG6HXNdlwvkZXV/aE
-   Q==;
-X-CSE-ConnectionGUID: +EBV4Z/bSkudJ3yfzXW2RQ==
-X-CSE-MsgGUID: avjHO8xKTeq2ccdALrXnuA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455057"
+  t=1712706111; x=1744242111;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=XZPnuMGpxPe4CWkciEp2JpTmAZ+j8o4aGih5VYVyakI=;
+  b=mn85nTXhCzQ0ICNEt5FT6vW8Y95ArwiQkBVKwYlBL07qbzkEJZK0aQpf
+   NsNk0FQxCgh7dq2WTbXhk+9ZIjmQF3Ipv45YWKDTTleZj+saguNOTIiK4
+   6q+8A79yBP5pTtA6b5jaMwtEdjmKMLlxw1FlqcpZnu830Vq0EhdXkpa/h
+   NrJk8KsrVpiipF7Za3bbbgmGgG/Ynks/pUL9pKq6p1KolZ+79Jq7lbyXX
+   L6v92AEGHRaZQf0lRu8hX8j+7JPpYW2wfIQX7EuSAAHTVzQk4F8W5YyB2
+   P0uyxmyee26K/kifi6/UMUNvZGbvHN3yblLA5fEPL0gWRXxhM61hxKCvq
+   A==;
+X-CSE-ConnectionGUID: 4su5iyT6S2OLbD6krFDGnw==
+X-CSE-MsgGUID: L+EPuzZERVSot2bXLFf7UQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33455081"
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="33455057"
+   d="scan'208";a="33455081"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:39 -0700
-X-CSE-ConnectionGUID: Vjcf5HX0ScC4EHPnMC4v+g==
-X-CSE-MsgGUID: Jf/eG5BzQ82g+XUisCpLoQ==
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:50 -0700
+X-CSE-ConnectionGUID: a2dS8efpQj2fCUyxkDfvxg==
+X-CSE-MsgGUID: R7bkZ9y7T/Cz2I8Ls/zsNg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20261560"
+   d="scan'208";a="20261714"
 Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:39 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:41:50 -0700
 From: Peter Colberg <peter.colberg@intel.com>
 To: Wu Hao <hao.wu@intel.com>,
 	Tom Rix <trix@redhat.com>,
@@ -67,10 +68,12 @@ Cc: Russ Weight <russ.weight@linux.dev>,
 	Marco Pagani <marpagan@redhat.com>,
 	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
 	Peter Colberg <peter.colberg@intel.com>
-Subject: [RFC PATCH v2 0/9] fpga: dfl: fix kernel warning on port release/assign for SRIOV
-Date: Tue,  9 Apr 2024 19:39:33 -0400
-Message-ID: <20240409233942.828440-1-peter.colberg@intel.com>
+Subject: [RFC PATCH v2 1/9] fpga: dfl: alias dfl_feature_dev_data to dfl_feature_platform_data
+Date: Tue,  9 Apr 2024 19:39:34 -0400
+Message-ID: <20240409233942.828440-2-peter.colberg@intel.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240409233942.828440-1-peter.colberg@intel.com>
+References: <20240409233942.828440-1-peter.colberg@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,96 +82,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-DFL ports are registered as platform devices in PF mode. The port device
-should be removed from the host when the user wants to configure the
-port as a VF and pass through to a virtual machine. The FME device
-ioctls DFL_FPGA_FME_PORT_RELEASE/ASSIGN are designed for this purpose.
+Add temporary macros that alias dfl_feature_dev_data ("fdata") to
+dfl_feature_platform_data ("pdata") and associated functions from the
+"fdata" to the corresponding "pdata" variants. This is done to split a
+single monolithic change into multiple, smaller patches at the request of
+the maintainer. The macros will be removed in the last patch of the series.
 
-In the previous implementation, the port platform device is not completely
-destroyed on port release: it is removed from the system by
-platform_device_del(), but the platform device instance is retained.
-When the port assign ioctl is called, the platform device is added back by
-platform_device_add(), which conflicts with this comment of device_add():
-"Do not call this routine more than once for any device structure", and
-will cause a kernel warning at runtime.
+Signed-off-by: Peter Colberg <peter.colberg@intel.com>
+---
+v2:
+- Split monolithic patch into series at request of maintainer
+---
+ drivers/fpga/dfl.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-This patch tries to completely unregister the port platform device on
-release and registers a new one on assign. But the main work is to remove
-the dependency on struct dfl_feature_platform_data for many internal DFL
-APIs. This structure holds many DFL enumeration infos for feature devices.
-Many DFL APIs are expected to work with these info even when the port
-platform device is unregistered. But with the change the platform_data will
-be freed in this case. So this patch introduces a new structure
-dfl_feature_dev_data for these APIs, which acts similarly to the previous
-dfl_feature_platform_data. The dfl_feature_platform_data then only needs a
-pointer to dfl_feature_dev_data to make the feature device driver work.
-
-The single monolithic v1 patch is split into multiple, smaller patches
-at the request of the maintainer. The first patch adds temporary macros
-that alias dfl_feature_dev_data ("fdata") to dfl_feature_platform_data
-("pdata") and associated functions from the "fdata" to the corresponding
-"pdata" variants. Subsequent patches separate out most of the symbol
-name changes required by this patch series, one patch per file. The last
-patch of the series removes the macros and applies the actual change.
-
-Link: https://lore.kernel.org/all/DM6PR11MB3819F9CCD0A6126B55BCB47685FB9@DM6PR11MB3819.namprd11.prod.outlook.com/T/#t
-
-This series applies after the following non-RFC patches:
-- fpga: dfl: remove unused function is_dfl_feature_present
-- [v2] fpga: dfl: remove unused member pdata from struct dfl_{afu,fme}
-
-Changes since v1:
-- Split monolithic patch into series at request of maintainer.
-- Substitute binfo->type for removed function feature_dev_id_type() in
-  parse_feature_irqs().
-- Return ERR_PTR(-ENOMEM) on !feature->params in
-  binfo_create_feature_dev_data().
-- Reorder cdev as first member of struct dfl_feature_platform_data
-  such that container_of() to obtain pdata evaluates to a no-op.
-- Change afu_ioctl_*() to receive dfl_feature_dev_data instead of
-  dfl_feature_platform_data.
-- Change fme_hdr_ioctl_*() to receive dfl_feature_dev_data instead of
-  dfl_feature_platform_data.
-- Replace local variable pdata with fdata in afu_mmap().
-- Remove unused local variable pdata in afu_dev_{init,destroy}().
-- Remove unused local variable pdata in fme_dev_{init,destroy}().
-- Reorder local variables in afu_dma_unpin_pages() to reverse Christmas
-  tree order.
-- Align kernel-doc function name for __dfl_fpga_cdev_find_port_data().
-- Substitute @fdata for @pdata in kernel-doc comments for
-  dfl_fme_create_mgr() and dfl_fme_destroy_mgr().
-
-Peter Colberg (8):
-  fpga: dfl: alias dfl_feature_dev_data to dfl_feature_platform_data
-  fpga: dfl: migrate AFU DMA region management driver to
-    dfl_feature_dev_data
-  fpga: dfl: migrate AFU MMIO region management driver to
-    dfl_feature_dev_data
-  fpga: dfl: migrate FPGA Management Engine driver to
-    dfl_feature_dev_data
-  fpga: dfl: migrate FME partial reconfiguration driver to
-    dfl_feature_dev_data
-  fpga: dfl: migrate Accelerated Function Unit driver to
-    dfl_feature_dev_data
-  fpga: dfl: migrate DFL support header to dfl_feature_dev_data
-  fpga: dfl: migrate dfl_get_feature_by_id() to dfl_feature_dev_data
-
-Xu Yilun (1):
-  fpga: dfl: fix kernel warning on port release/assign for SRIOV
-
- drivers/fpga/dfl-afu-dma-region.c | 119 ++++----
- drivers/fpga/dfl-afu-error.c      |  59 ++--
- drivers/fpga/dfl-afu-main.c       | 281 +++++++++----------
- drivers/fpga/dfl-afu-region.c     |  51 ++--
- drivers/fpga/dfl-afu.h            |  26 +-
- drivers/fpga/dfl-fme-br.c         |  24 +-
- drivers/fpga/dfl-fme-error.c      |  98 +++----
- drivers/fpga/dfl-fme-main.c       |  86 +++---
- drivers/fpga/dfl-fme-pr.c         |  88 +++---
- drivers/fpga/dfl.c                | 433 +++++++++++++++---------------
- drivers/fpga/dfl.h                | 139 ++++++----
- 11 files changed, 722 insertions(+), 682 deletions(-)
-
+diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+index 5063d73b0d82..d724614796cb 100644
+--- a/drivers/fpga/dfl.h
++++ b/drivers/fpga/dfl.h
+@@ -206,6 +206,8 @@
+ #define PORT_UINT_CAP_INT_NUM	GENMASK_ULL(11, 0)	/* Interrupts num */
+ #define PORT_UINT_CAP_FST_VECT	GENMASK_ULL(23, 12)	/* First Vector */
+ 
++#define dfl_feature_dev_data dfl_feature_platform_data
++
+ /**
+  * struct dfl_fpga_port_ops - port ops
+  *
+@@ -365,6 +367,8 @@ int dfl_feature_dev_use_count(struct dfl_feature_platform_data *pdata)
+ 	return pdata->open_count;
+ }
+ 
++#define dfl_fpga_fdata_set_private dfl_fpga_pdata_set_private
++
+ static inline
+ void dfl_fpga_pdata_set_private(struct dfl_feature_platform_data *pdata,
+ 				void *private)
+@@ -372,6 +376,8 @@ void dfl_fpga_pdata_set_private(struct dfl_feature_platform_data *pdata,
+ 	pdata->private = private;
+ }
+ 
++#define dfl_fpga_fdata_get_private dfl_fpga_pdata_get_private
++
+ static inline
+ void *dfl_fpga_pdata_get_private(struct dfl_feature_platform_data *pdata)
+ {
+@@ -437,6 +443,10 @@ void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u16 id)
+ 	return NULL;
+ }
+ 
++#define to_dfl_feature_dev_data dev_get_platdata
++
++#define dfl_fpga_fdata_to_parent dfl_fpga_pdata_to_parent
++
+ static inline
+ struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
+ {
 -- 
 2.44.0
 
