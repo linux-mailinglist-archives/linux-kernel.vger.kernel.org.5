@@ -1,203 +1,296 @@
-Return-Path: <linux-kernel+bounces-136291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEE3C89D24C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:23:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6BE289D24F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949D6285CC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CEAD286049
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62AA762F8;
-	Tue,  9 Apr 2024 06:22:25 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BE06EB72;
+	Tue,  9 Apr 2024 06:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AU/Eam+X";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="37CR/FUU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AU/Eam+X";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="37CR/FUU"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AD177F1B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED2C71727
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712643745; cv=none; b=YVGEZtFItSn2c7LdDZ0Z4meI7dLTPIozAfoZJX8sGcA6dGdSzcck7ZH0q0yTo8kN7MqwxoJjZGXFvw4OfpiI/NzJkHKPPHUZYCRRv5Ack4adiGsXGsmdiHUj9YA+oYNu4REirxhlViJlMxhWIQnWqSPanS62rOsfgnYQcqFmEi0=
+	t=1712643804; cv=none; b=pvDkqM4quQ12MN0axHcPZdtYFT2DF2QSKrqgEhkMKld4TCwGGGC/pKd4RAOsKvQvWJ/NlQfsHx0Dlj0pLFgpGDAqdr0sLp2bqTS5TESI8ZMGqLefTxIXCChysM1sWmr9/8q43e4UkGisw2BT9mcCBhmWfhmmJNZBcTKIOLMiIq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712643745; c=relaxed/simple;
-	bh=dxqg7QUHHPh0XgEN0poHt96ZHULaChHB5inM0E040qM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UP6w4teBE6nWhHfPVi0pfo24emYZIYqIQTWVmTg6O0AxBiYweadHyQ3jjRGdZyjZTW70uaff1R3uPzJdvJ5r6vICKxEM4MhGnJq2EkQ3OC/xg85BfZtVG0tLP7TivWFdab7hMYwPwLk0yMNPgSeYG2E1rUcTNU1r6cbh9UpZ6v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc74ea8606so617192839f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 23:22:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712643742; x=1713248542;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W2VcRzoo9Ftq1sUhypIxLcNGWAhae/L/KjOgqxMZoZ4=;
-        b=cyZWntvoUC3r0QVH4pAXEqgHvWqWRjUFE2GZKBA+mGgNgc5TWqupp0kpJK3WWj//xx
-         /ET7ik2wBKFDGnHbLrHpwP1NBEXdo8Fzzgho7vIEf5D29pHH9Ivavc9NzhvAbjOAgBRm
-         lBiH75V/E6pVtrJ4i+tvGkU+VhI0EUz9oq4akSk+rSB1BI/Nc7NyKKwqfF/wrEgux+Zz
-         JnItQNpY0hCMfpShm7ToMAiqeTcNlN+IT5HDJzrqsERbTD9zfUwmylP9fDMO8XtdaHd7
-         OUnsH+rhsP+dtVq7ehawldSfZCqc7+V8fPPPboVdT8UH9T7gmqSHPMEt9qiZuhp0dUs7
-         wosQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzBmdsT+Of8OTA6/dY/pvTSA2qdwUqV9bGjgZaq1MVTTHh86A/hgqtkde71UCu70agzS3PISfX6zVEHQHYCftryWCLRz+z3sKwStCH
-X-Gm-Message-State: AOJu0YwhFl+D2eJZsrRjkvQO7X4q+D653M1ZfRMom3DkXcIyh7ZtiOot
-	gL/4a2+8kpDiXM5FBt6gFJkPRBJCFZ7SYdtYFdBQ7VyRvARW0oh480Y8j4sjVf3ATIweHjU6831
-	Ibpp+r5Hd6wvT/3b1Nzx86BWEW6sek1SEZPjp/GzLMdj+bp0ctJHBeps=
-X-Google-Smtp-Source: AGHT+IFRW3/zEzexbjjNNBFAvgsMDQ1pCF2FxKoPSjG/ggONSo/rGJv98NsJxBnSf0frAcFlYDFvvEZZZiEYfS0E9OrGOvdzMxrV
+	s=arc-20240116; t=1712643804; c=relaxed/simple;
+	bh=QQLwAh9Frhb0NQmVCDxjrhDGsxEX117pOKRmcvX6Pvk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nuP7oOxiDVWc3jAeu2p2xhGW9gFHwLPYdvD9n3rjq8srTJ17+q4/42Lu0Op7x4mHCjpo9ZxcqP+ghVYRPR6XUJX3Ty+dQs3IXKN5OLSHzoiursrbF2AWEDy7XnFILx+4lrQvuYvKHpCDaUNFLlPatMNvMtQRbI57jyFwU3j5ztk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AU/Eam+X; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=37CR/FUU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AU/Eam+X; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=37CR/FUU; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AA2FD2080A;
+	Tue,  9 Apr 2024 06:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712643800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=2wv4dy4qt5fBaBHru1E7dQVRFP0uGbCdZP6F+NXrKhY=;
+	b=AU/Eam+X4HqvNCnR0fB0Rky9yxPCOoHo+Fc9SxirD+LGR/q7/0AmGLvWJ/rD8UfMMePyAq
+	PokQnLP2jaXUZaVl8X1ckd6TH8Bmv+e0VOBENN/eKsUZm1Og/n6vVa2m3CDeEWmGYqzsPs
+	Nlt3If2xLqD98zxFewP7mbaEZ82B0AA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712643800;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=2wv4dy4qt5fBaBHru1E7dQVRFP0uGbCdZP6F+NXrKhY=;
+	b=37CR/FUUZstI7p9VLLJfFENOSFX4ylFsqKRbQh9NZ+vYaG2BjvdulGI4Vy30nYKI1Wdp47
+	20/qMtLCCIjTleAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712643800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=2wv4dy4qt5fBaBHru1E7dQVRFP0uGbCdZP6F+NXrKhY=;
+	b=AU/Eam+X4HqvNCnR0fB0Rky9yxPCOoHo+Fc9SxirD+LGR/q7/0AmGLvWJ/rD8UfMMePyAq
+	PokQnLP2jaXUZaVl8X1ckd6TH8Bmv+e0VOBENN/eKsUZm1Og/n6vVa2m3CDeEWmGYqzsPs
+	Nlt3If2xLqD98zxFewP7mbaEZ82B0AA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712643800;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=2wv4dy4qt5fBaBHru1E7dQVRFP0uGbCdZP6F+NXrKhY=;
+	b=37CR/FUUZstI7p9VLLJfFENOSFX4ylFsqKRbQh9NZ+vYaG2BjvdulGI4Vy30nYKI1Wdp47
+	20/qMtLCCIjTleAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9134C13313;
+	Tue,  9 Apr 2024 06:23:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qzMoI9jeFGbnLAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 09 Apr 2024 06:23:20 +0000
+Message-ID: <1cc1e3d1-4646-436c-92cb-f8584406bf88@suse.cz>
+Date: Tue, 9 Apr 2024 08:23:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2607:b0:482:8cc1:4eaf with SMTP id
- m7-20020a056638260700b004828cc14eafmr389254jat.5.1712643742784; Mon, 08 Apr
- 2024 23:22:22 -0700 (PDT)
-Date: Mon, 08 Apr 2024 23:22:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ea6cba0615a3f177@google.com>
-Subject: [syzbot] [jfs?] general protection fault in dtInsertEntry
-From: syzbot <syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
+Content-Language: en-US
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
+ "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240320180429.678181-1-hannes@cmpxchg.org>
+ <20240320180429.678181-11-hannes@cmpxchg.org>
+ <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
+ <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
+ <20240408142340.GA1057805@cmpxchg.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20240408142340.GA1057805@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email]
+X-Spam-Score: -4.29
+X-Spam-Flag: NO
 
-Hello,
+On 4/8/24 4:23 PM, Johannes Weiner wrote:
+> On Mon, Apr 08, 2024 at 09:38:20AM +0200, Vlastimil Babka wrote:
+>> On 4/7/24 12:19 PM, Baolin Wang wrote:
+>> > On 2024/3/21 02:02, Johannes Weiner wrote:
+>> >>   
+>> >> +	account_freepages(page, zone, 1 << order, migratetype);
+>> >> +
+>> >>   	while (order < MAX_PAGE_ORDER) {
+>> >> -		if (compaction_capture(capc, page, order, migratetype)) {
+>> >> -			__mod_zone_freepage_state(zone, -(1 << order),
+>> >> -								migratetype);
+>> >> +		int buddy_mt = migratetype;
+>> >> +
+>> >> +		if (compaction_capture(capc, page, order, migratetype))
+>> >>   			return;
+>> >> -		}
+>> > 
+>> > IIUC, if the released page is captured by compaction, then the 
+>> > statistics for free pages should be correspondingly decreased, 
+>> > otherwise, there will be a slight regression for my thpcompact benchmark.
+>> > 
+>> > thpcompact Percentage Faults Huge
+>> >                            k6.9-rc2-base        base + patch10 + 2 fixes	
+>> > Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
+>> > Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
+>> > Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
+>> > Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
+>> > Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
+>> > Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
+>> > Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
+>> > Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
+>> > Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
+>> > 
+>> > I add below fix based on your fix 2, then the thpcompact Percentage 
+>> > looks good. How do you think for the fix?
+>> 
+>> Yeah another well spotted, thanks. "slight regression" is an understatement,
+>> this affects not just a "statistics" but very important counter
+>> NR_FREE_PAGES which IIUC would eventually become larger than reality, make
+>> the watermark checks false positive and result in depleted reserves etc etc.
+>> Actually wondering why we're not seeing -next failures already (or maybe I
+>> just haven't noticed).
+> 
+> Good catch indeed.
+> 
+> Trying to understand why I didn't notice this during testing, and I
+> think it's because I had order-10 pageblocks in my config. There is
+> this in compaction_capture():
+> 
+> 	if (order < pageblock_order && migratetype == MIGRATE_MOVABLE)
+> 		return false;
+> 
+> Most compaction is for order-9 THPs on movable blocks, so I didn't get
+> much capturing in practice in order for that leak to be noticable.
+> 
+> In earlier versions of the patches I had more aggressive capturing,
+> but also did the accounting in add_page_to/del_page_from_freelist(),
+> so capturing only steals what's already accounted to be off list.
+> 
+> With the __add/__del and the consolidated account_freepages()
+> optimization, compaction_capture() needs explicit accounting again.
+> 
+>> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> > index 8330c5c2de6b..2facf844ef84 100644
+>> > --- a/mm/page_alloc.c
+>> > +++ b/mm/page_alloc.c
+>> > @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+>> >          while (order < MAX_PAGE_ORDER) {
+>> >                  int buddy_mt = migratetype;
+>> > 
+>> > -               if (compaction_capture(capc, page, order, migratetype))
+>> > +               if (compaction_capture(capc, page, order, migratetype)) {
+>> > +                       account_freepages(zone, -(1 << order), migratetype);
+>> >                          return;
+>> > +               }
+>> > 
+>> >                  buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+>> >                  if (!buddy)
+>> > 
+>> > With my fix, the THP percentage looks better:
+>> >                        k6.9-rc2-base          base + patch10 + 2 fixes	+ 
+>> > my fix
+>> > Percentage huge-1        78.18 (   0.00%)       82.83 (   5.94%)
+>> > Percentage huge-3        86.70 (   0.00%)       93.47 (   7.81%)
+>> > Percentage huge-5        90.26 (   0.00%)       94.73 (   4.95%)
+>> > Percentage huge-7        92.34 (   0.00%)       95.22 (   3.12%)
+>> > Percentage huge-12       91.18 (   0.00%)       92.40 (   1.34%)
+>> > Percentage huge-18       89.00 (   0.00%)       85.39 (  -4.06%)
+>> > Percentage huge-24       90.52 (   0.00%)       94.70 (   4.61%)
+>> > Percentage huge-30       94.44 (   0.00%)       97.00 (   2.71%)
+>> > Percentage huge-32       93.09 (   0.00%)       92.87 (  -0.24%)
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-syzbot found the following issue on:
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10056223180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=bba84aef3a26fb93deb9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10548115180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136ecbb5180000
+> With fixed indentation:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/06e004bee618/mount_0.gz
+Maybe Baolin could resend the finalized 2 fixups in a more ready-to-pick form?
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 70f82635f650..96815e3c22f2 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -805,8 +805,10 @@ static inline void __free_one_page(struct page *page,
+>  	while (order < MAX_PAGE_ORDER) {
+>  		int buddy_mt = migratetype;
+>  
+> -		if (compaction_capture(capc, page, order, migratetype))
+> +		if (compaction_capture(capc, page, order, migratetype)) {
+> +			account_freepages(zone, -(1 << order), migratetype);
+>  			return;
+> +		}
+>  
+>  		buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
+>  		if (!buddy)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1401ee15180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1601ee15180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1201ee15180000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 32768
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 0 PID: 5061 Comm: syz-executor404 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:dtInsertEntry+0xd0c/0x1780 fs/jfs/jfs_dtree.c:3713
-Code: 83 e6 02 31 ff e8 a4 3f 75 fe 83 e3 02 75 3a e8 9a 3c 75 fe 48 8b 9c 24 a8 00 00 00 48 83 c3 08 48 89 d8 48 c1 e8 03 4c 89 f2 <42> 0f b6 04 30 84 c0 74 3e 89 d9 80 e1 07 38 c1 7c 35 48 89 df e8
-RSP: 0018:ffffc9000381f060 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: 0000000000000008 RCX: ffff88801a715a00
-RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000381f210 R08: ffffffff831fb7ac R09: ffffffff832296af
-R10: 0000000000000004 R11: ffff88801a715a00 R12: ffff88807adfb130
-R13: ffffffffffffffff R14: dffffc0000000000 R15: 000000000000000d
-FS:  000055558fe16380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066c7e0 CR3: 000000002ca48000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- dtInsert+0xbf1/0x6b00 fs/jfs/jfs_dtree.c:891
- jfs_create+0x7ba/0xb90 fs/jfs/namei.c:137
- lookup_open fs/namei.c:3497 [inline]
- open_last_lookups fs/namei.c:3566 [inline]
- path_openat+0x1425/0x3240 fs/namei.c:3796
- do_filp_open+0x235/0x490 fs/namei.c:3826
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f30b7a475f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffd9c3bfb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007fffd9c3c198 RCX: 00007f30b7a475f9
-RDX: 000000000000275a RSI: 0000000020000080 RDI: 00000000ffffff9c
-RBP: 00007f30b7ac0610 R08: 0000000000005e33 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fffd9c3c188 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:dtInsertEntry+0xd0c/0x1780 fs/jfs/jfs_dtree.c:3713
-Code: 83 e6 02 31 ff e8 a4 3f 75 fe 83 e3 02 75 3a e8 9a 3c 75 fe 48 8b 9c 24 a8 00 00 00 48 83 c3 08 48 89 d8 48 c1 e8 03 4c 89 f2 <42> 0f b6 04 30 84 c0 74 3e 89 d9 80 e1 07 38 c1 7c 35 48 89 df e8
-RSP: 0018:ffffc9000381f060 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: 0000000000000008 RCX: ffff88801a715a00
-RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000381f210 R08: ffffffff831fb7ac R09: ffffffff832296af
-R10: 0000000000000004 R11: ffff88801a715a00 R12: ffff88807adfb130
-R13: ffffffffffffffff R14: dffffc0000000000 R15: 000000000000000d
-FS:  000055558fe16380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557bf42357e0 CR3: 000000002ca48000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	83 e6 02             	and    $0x2,%esi
-   3:	31 ff                	xor    %edi,%edi
-   5:	e8 a4 3f 75 fe       	call   0xfe753fae
-   a:	83 e3 02             	and    $0x2,%ebx
-   d:	75 3a                	jne    0x49
-   f:	e8 9a 3c 75 fe       	call   0xfe753cae
-  14:	48 8b 9c 24 a8 00 00 	mov    0xa8(%rsp),%rbx
-  1b:	00
-  1c:	48 83 c3 08          	add    $0x8,%rbx
-  20:	48 89 d8             	mov    %rbx,%rax
-  23:	48 c1 e8 03          	shr    $0x3,%rax
-  27:	4c 89 f2             	mov    %r14,%rdx
-* 2a:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	74 3e                	je     0x71
-  33:	89 d9                	mov    %ebx,%ecx
-  35:	80 e1 07             	and    $0x7,%cl
-  38:	38 c1                	cmp    %al,%cl
-  3a:	7c 35                	jl     0x71
-  3c:	48 89 df             	mov    %rbx,%rdi
-  3f:	e8                   	.byte 0xe8
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
