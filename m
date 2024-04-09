@@ -1,138 +1,113 @@
-Return-Path: <linux-kernel+bounces-137018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4552B89DB2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:53:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37FF89DB34
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014EF289C25
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:53:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63E8C1F2183F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B171512FB0D;
-	Tue,  9 Apr 2024 13:43:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576E2130494;
+	Tue,  9 Apr 2024 13:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Iy4NTzVF"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eflFdtuC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED6112F39A;
-	Tue,  9 Apr 2024 13:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E67212C531;
+	Tue,  9 Apr 2024 13:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712670232; cv=none; b=GiiNmgGvcrhGEFua5Impk+4NViFnxkD9JkqKaHHsxmf+9uWT41CXdg9yOr9vC27oyQFjLGc8CxqGgAnX0578A+SadefZdLj9KUAiu4AnB1+yq2ArrPOiag9MRp4E5sw51cM5pz1dJ/bgQz+zGPQ27TT1Yh38ID4zSGNxlVITlp0=
+	t=1712670393; cv=none; b=IuDXuTFuFaeD/bz/nk23VLlTGN8TYAMta292vnRH+e63qM19c0ZBFMacjjT0VcZueWQfqlGoVyW0kif/g8XEJ6sqvLxQ0Wg6s29B1XgAgN2vEONBzjn3zS8HmbsI6FUU06RGRL99dPR/XJw/bR0kKcYCfaWgvZ5GZDO0DI4Wnk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712670232; c=relaxed/simple;
-	bh=y/xaSl/jhXl08yoalUQ5vH76MCEpZVtsR/1x4w43g8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d6C78SBbRtpG7KbDxKkgD8DzeyqBFfgqlTVvCwWmRACM+WabTR6+024ZCVtvceOVSEOxGbURpvl8p4XaYmtpaXIcPTAumig3dXcUMi3RtMjjw6KwGhxur/CXLSstNNjZG5Chw5p52SqvzcVj3ebpNrXukEMgWyqk2Qve76nByUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Iy4NTzVF; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3041F240008;
-	Tue,  9 Apr 2024 13:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712670228;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m5UDulmenCwJXHuGMpELuxhDA4GFyujVsdxEaX2Dr8g=;
-	b=Iy4NTzVFWYIISKvZb3P1zAUEKQXE6VFTgx/iZnMms4cEObuZ97PE1okjL+Zx6GUOhH358F
-	2TUZr25TtQN/aJaJVeGL0chkGZ/cllV0WOROlZwrnz63KbJg+ZWwW1XRb/T5jK5+dLIdsD
-	O6x426KxtkdX3k+CnUx7Fzlrl714fiPVBxr5l5EutPwJJSKtFdwl3I+E/IUjaelg4j9R9B
-	v4tvJls4ZOgiyxBiOvO7UHwoBygwhpUxWCetIkKY0XowlW2uLs5g0zh17FV5u96wtMk1nh
-	hPIClv4uh+Ulc8a1PD8GzVB7Svcg0wZuAFHM0GL3R6rVBVu0As4CvUsd53TT4Q==
-Date: Tue, 9 Apr 2024 15:43:45 +0200
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
- Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 14/17] dt-bindings: net: pse-pd: Add
- bindings for PD692x0 PSE controller
-Message-ID: <20240409154345.7a2a73a5@kmaincent-XPS-13-7390>
-In-Reply-To: <20240402132834.GB3744978-robh@kernel.org>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
-	<20240326-feature_poe-v6-14-c1011b6ea1cb@bootlin.com>
-	<20240402132834.GB3744978-robh@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712670393; c=relaxed/simple;
+	bh=zDbyBb/9hhPVBbG3X7C1YdT4HO4jlTdu1qvdQ+VHvJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bBfQezPsBLgp3LiXrM9rfqYTPrqM9zr+GhR5XcisQ56vX9I8CnG/fMBqluiYmJyFjzcZ1thE8xa7o9bzoqwSwhOjQMkXovcCpWVPv/k8Xt45OxAllCXHmy3iQPdalqaAfXqP4Z+Ze5+0nATJydmu2ESjTujElCStSumh5wE1ltk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eflFdtuC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF194C433C7;
+	Tue,  9 Apr 2024 13:46:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712670393;
+	bh=zDbyBb/9hhPVBbG3X7C1YdT4HO4jlTdu1qvdQ+VHvJE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eflFdtuCE7meJNtJ0Hp2+gGmaAnDIiIBQS7CUgKkcvnDVwoxUWPdC7Nku33lL47Rw
+	 OyqoX1knSwghzlxHbL9UGhzngUjdFVkI3M0ZWK8ae8BnOir9NLz88MADXEczliGDrP
+	 sjLZM0S9BvPXV+eXIdtqLbO5a7RPrnTho2LNLK7c=
+Date: Tue, 9 Apr 2024 15:46:30 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH v1 0/3] serial: Do not count XON/XOFF in the statistics
+Message-ID: <2024040926-whinny-coil-4c15@gregkh>
+References: <20240403144722.860258-1-andriy.shevchenko@linux.intel.com>
+ <Zg3VHs-LVxHFdi8V@surfacebook.localdomain>
+ <573aac92-9c9b-427b-a76f-3c0b7c3b6ce6@kernel.org>
+ <Zg7NPnpFXkQWJ-Ks@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg7NPnpFXkQWJ-Ks@smile.fi.intel.com>
 
-On Tue, 2 Apr 2024 08:28:34 -0500
-Rob Herring <robh@kernel.org> wrote:
+On Thu, Apr 04, 2024 at 06:54:38PM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 04, 2024 at 07:16:55AM +0200, Jiri Slaby wrote:
+> > On 04. 04. 24, 0:15, Andy Shevchenko wrote:
+> > > Wed, Apr 03, 2024 at 05:46:14PM +0300, Andy Shevchenko kirjoitti:
+> > > > Some drivers count XON/XOFF in the Tx statistics, some do not.
+> > > > I actually a bit uncertain, but I _think_ the correct way is not
+> > > > to count them, hence this series.
+> > > 
+> > > Okay, it seems there are much more drivers doing that. Perhaps we need
+> > > to add that to the rest in this case (i.o.w. invert the series from removal
+> > > to addition)?
+> > 
+> > Interesting, perhaps cut & paste?
+> > 
+> > XON and XOFF are overhead IMO. So should not be counted. When they are, they
+> > mangle statistics as in transmitted (real) bytes per second.
+> > 
+> > How are they handled on the RX side?
+> 
+> It took me a while.
+> 
+> All serial drivers accept everything and those that care, update statics for
+> anything they receive. This is because of layering. The Rx XON/XOFF seems
+> (note I am completely unfamiliar with mysterious ways of TTY layers) to be
+> handled on TTY level by n_tty_receive_char_flow_ctrl(), i.o.w. we may not
+> skip counting it easily.
+> 
+> Now the question is, shall we count the control characters on output or not?
+> Whatever decision we made, we should document (if not yet) and align drivers
+> accordingly.
+> 
+> Another Q is what do books / other OS / projects usually do with them
+> WRT statistics?
 
-> > +    patternProperties:
-> > +      "^manager@0[0-9]|1[0-2]$": =20
->=20
-> Unit-addresses are typically in hex.
->=20
-> Is 'manager' something specific to this device or should be common?
+It depends on where you are measuring stuff.
 
-Specific to this device.
-=20
-> > +        $ref: /schemas/graph.yaml#/properties/ports =20
->=20
-> This is not using the graph binding. Furthermore, I don't want to see=20
-> new cases of 'port' node names which are not graph nodes. We have it=20
-> already with ethernet switches, but 'ethernet-port' is preferred over=20
-> 'port'.
+If you want "raw" bytes on the wire, you count them.  If you want to see
+what the port sends based on what userspace sent/recieved, you don't.
 
-Ok I will remove the ref then.
-=20
-> Why is this one 'managers' and the other device binding 'channels'?
+> If we count everything on a wire, then we must count them, otherwise
+> it depends on how we treat them.
 
-Here each manager can have up to 8 ports.
-The ports in tps23881 are called channels in the datasheet but I can use the
-port naming for both if you prefer.
+Agreed.  We need to pick one and stick with it.
 
-> > +        description:
-> > +          PD69208T4/PD69204T4/PD69208M PSE manager exposing 4 or 8 phy=
-sical
-> > +          ports.
-> > +
-> > +        properties:
-> > +          reg:
-> > +            description:
-> > +              Incremental index of the PSE manager starting from 0, ra=
-nging
-> > +              from lowest to highest chip select, up to 12.
-> > +            maxItems: 1
-> > +
-> > +        patternProperties:
-> > +          '^port@[0-7]$':
-> > +            type: object
-> > +            required:
-> > +              - reg =20
->=20
-> Any property you want is allowed in this node. You are missing=20
-> 'additionalProperties'.
+I think, at the driver level, we should count it, as it's a ldisc thing,
+not a driver thing, right?
 
-Indeed.
+thanks,
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+greg k-h
 
