@@ -1,182 +1,111 @@
-Return-Path: <linux-kernel+bounces-137570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5C189E413
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:02:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CAE89E418
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:03:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80D6E2864F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:02:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6A71C229EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:03:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1541B1581F3;
-	Tue,  9 Apr 2024 20:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C9E1581FC;
+	Tue,  9 Apr 2024 20:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rxpaoIOn"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qIuyFRFe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605B61581EA
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663E5157E97;
+	Tue,  9 Apr 2024 20:03:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712692959; cv=none; b=RiZqycEHSNzOX8wu9zlSOFpjN73qR8VdyX20a81OatVvm+PEyF/lpKdIYfXplKKBV605zMUJOt5ks6M1RXDmS1i3eJu6MHZHqkVxAHhCZZYbMDmYx7Dx76fEjLOgKLRp218MiF1SD6ctunxduoh8Oig03SdF4l2wiQ896/jcWI8=
+	t=1712692997; cv=none; b=XUGDn4huTeDDLeIEzpZFb2IMwBH4NODFGBgYohddeQF5EkP/8IpyzDIVuZ9Y9m3B/1bkjdDs/F48jc2KjR7ob2D64/smTumuy76O1ogeE8BhE/Ev9BSyEo2yI2N8NO3ZwCfMQwoMMXRnsPE5SAC3w3en648+G0L+Pu3WMQdv/n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712692959; c=relaxed/simple;
-	bh=xZE6fAknrFtFcMcsRpUiH6/5dTPD5Xd4Yzw15t+58rM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iT6HEExjaoZIjDsCtAqmBt2EEaOlpd4HJdKKL6gN9oXaMcbMOn/fmKlf+sW1XQxMXVwlKWiQy48EVaDt+F53eF5GKlrmMcKdvbt88zkUSXEtDppVbDWJPPx/aI2R+fMb7I5nRBQrImgcRdHyyH+wyGjqmqtXe1EFEM/dciBzL3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rxpaoIOn; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516cbf3fd3dso6968586e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712692955; x=1713297755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qP/zHelEcajJKZmH8PzSTPov6puOsFvz7yjWMI0/YAE=;
-        b=rxpaoIOn2OktbZTwSE1sW5/6jtp4UTPt2fzGlUT13CfMrNKW++1cEHYQA4IJtWRHut
-         my0weCe5ZtK4NgWPamC48oGs/S/a4hDSUzZK4DtSbc7/NnQ2WAcBKaJndzE7teTFChm0
-         k7TfQIz2DVLCpPhT3aP2zoxRdGCuVZ19ZiFEiTJBlU+eE3h+T8vRpJnZf/GLr3BHdGXs
-         X37qGQOPQ94MfblkETZ6bwcYEDa7NEBsSQbFI46SBNTGS/WfofK42aFzlmy6DEWtTceI
-         MIXFMtmHVrrJZhbb1He1ibIyFwTV4gmXs8kZeAi8S7XhoGnTXNXi69iQuIpYl+V5Rzhu
-         EhcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712692955; x=1713297755;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qP/zHelEcajJKZmH8PzSTPov6puOsFvz7yjWMI0/YAE=;
-        b=ig3pwq7un1/zi2IMt5DWzsaArozv4wNGOiPsCaPPm8EWxu5MhwjdPmm5TBIQFJ5GgG
-         fbXZ8CsGZnxuPCZ35pWvhGbX4SEwUWOwNt9C4NNNIAkAFhGZN87jKLGnIMpwkNRGjT/l
-         IHXt9VObOwROZVXglztOmaNQRkGr1BptSmIkPCcICHO/YZZgXrPXHAPMT94GUWujgbaf
-         knOPpUdYwAdpt/3pScRxBxkolkUFHgPf+KGB/NZexBRXBn3NwCJNIKUFV8vw3M1gSX/t
-         jPqZYQjtwYpUgdtMCzyiGksH6bCmuIa5CwuQTafqK4KUToG43fiJ3CcZUyGJTB2JIyqp
-         Hu+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXV7WrHlrnIWinanT6l21GpOAD9+Cm/bfycu+3Tt7ZeBb27SlToH8EK9jdas03yNkWEy0w9rwBKHmIAdQyAArRbFpaMMdUWnJKffA1c
-X-Gm-Message-State: AOJu0YzYFC/Tf4tUK7qXQ4aBEX/tJ9RHby0A4BaWMUT90iEFKn52hOOx
-	AtH6pDqi6D3R0Rdf0RA2DKjUWJxamCbWjFXy1rFuS/kQLTgZyFfciVqVMc7cSz8=
-X-Google-Smtp-Source: AGHT+IGO4bDo1swVDoKYG/oOq1ZmyH19BSz7jL29XNClKqaLa2NX9QEe9WHaasa5TPB2FZKHEIqe+A==
-X-Received: by 2002:ac2:4a9d:0:b0:517:65b5:e721 with SMTP id l29-20020ac24a9d000000b0051765b5e721mr256193lfp.33.1712692955473;
-        Tue, 09 Apr 2024 13:02:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id w14-20020a170907270e00b00a4e29b7eb60sm6053146ejk.3.2024.04.09.13.02.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 13:02:34 -0700 (PDT)
-Message-ID: <b15ad271-037e-4ee3-ad88-e8068d31c8c8@linaro.org>
-Date: Tue, 9 Apr 2024 22:02:32 +0200
+	s=arc-20240116; t=1712692997; c=relaxed/simple;
+	bh=W0Dg/LFVG/zk6w1OJr/E+L0AAUiXJ9nwCf1h17aljN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=sEGvYlcbhqDEsS7NXV/N/qly7zcZeuI8EcKPv4/B3CEJDua/pnaMPjFqx+k+mJieJdmLZuigtdla7VtDjQIRjv/JoHYAqHH/cCVlVPhHENvL59lHqJ4ul+0awBxzwoPSjH/ReLTlMcJDrbWV89hMDs8q98nZH4TBOJCVdcdGEXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qIuyFRFe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6EFDC433F1;
+	Tue,  9 Apr 2024 20:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712692996;
+	bh=W0Dg/LFVG/zk6w1OJr/E+L0AAUiXJ9nwCf1h17aljN0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=qIuyFRFe8Io8vngdx3pCHOgr9fPX5ND0sl//x5REFfEOjyjYNU76rWwfsRqAw6vDv
+	 3Vib8zwLf743gCAZaVORYHFdeQSWBjOKZ5k0yJxTbO8HsUfJZDiZYbd+hGnpXRUc8T
+	 ZX109BdQn0wlxURG5F2KlWvXYdgcHPHFf6tjCnChvmRiY33b/a4pYTzJv4R6bTTcJV
+	 UJroth14Lrg1CsSiP/NUrmp8jlcJIsPDDTTsOWZfa7qKaHWkbebDvYgcu2xGVpWZr/
+	 GzkTGJMCToZ8xhCzRsQn1IAetrwX0w0O9cWHbWXO6ZVomimvxzE2jhBqO8B+I131GQ
+	 I2c2hOSkzQ4Xg==
+Date: Tue, 9 Apr 2024 15:03:14 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>
+Cc: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+	"Huang, Ray" <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <20240409200314.GA2086199@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: dma: fsl-edma: remove 'clocks' from
- required
-To: Frank Li <Frank.Li@nxp.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org, imx@lists.linux.dev,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
- peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
-References: <20240409185416.2224609-1-Frank.Li@nxp.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240409185416.2224609-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL1PR12MB5849572DFC67B1F8A68E123DE7002@BL1PR12MB5849.namprd12.prod.outlook.com>
 
-On 09/04/2024 20:54, Frank Li wrote:
-> fsl,imx8qm-adma and fsl,imx8qm-edma don't require 'clocks'. Remove it from
-> required and add 'if' block for other compatible string to keep the same
-> restrictions.
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v2 to v3
->       - rebase to dmaengine/next
+[+to Rafael]
 
-This fails...
+On Mon, Apr 08, 2024 at 06:42:31AM +0000, Chen, Jiqian wrote:
+> Hi Bjorn,
+> It has been almost two months since we received your reply last time.
+> This series are blocking on this patch, since there are patches on Xen and Qemu side depending on it.
+> Do you still have any confusion about this patch? Or do you have other suggestions?
+> If no, may I get your Reviewed-by?
 
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> index 825f4715499e5..657a7d3ebf857 100644
-> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> @@ -82,7 +82,6 @@ required:
->    - compatible
->    - reg
->    - interrupts
-> -  - clocks
->    - dma-channels
->  
->  allOf:
-> @@ -187,6 +186,22 @@ allOf:
->          "#dma-cells":
->            const: 3
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +	  contains:
+  - This is ACPI-specific, but exposes /sys/.../gsi for all systems,
+    including non-ACPI systems.  I don't think we want that.
 
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
+  - Do you care about similar Xen configurations on non-ACPI systems?
+    If so, maybe the commit log could mention how you learn about PCI
+    INTx routing on them in case there's some way to unify this in the
+    future.
 
-Best regards,
-Krzysztof
+  - Missing an update to Documentation/ABI/.
 
+  - A nit: I asked about s/dumU/DomU/ in the commit log earlier,
+    haven't seen any response.
+
+  - Commit log mentions "and for other potential scenarios."  It's
+    another nit, but unless you have another concrete use for this,
+    that phrase is meaningless hand waving and should be dropped.
+
+  - A _PRT entry may refer directly to a GSI or to an interrupt link
+    device (PNP0C0F) that can be routed to one of several GSIs:
+
+      ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 7 9 10 *11 12 14 15)
+ 
+    I don't think the kernel reconfigures interrupt links after
+    enumeration, but if they are reconfigured at run-time (via _SRS),
+    the cached GSI will be wrong.  I think setpnp could do this, but
+    that tool is dead.  So maybe this isn't a concern anymore, but I
+    *would* like to get Rafael's take on this.  If we don't care
+    enough, I think we should mention it in the commit log just in
+    case.
+
+Bjorn
 
