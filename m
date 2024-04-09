@@ -1,100 +1,170 @@
-Return-Path: <linux-kernel+bounces-137242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D18F89DF63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:39:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C61589DF67
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:40:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9CF1C22DC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:39:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2981F215F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3078D13D628;
-	Tue,  9 Apr 2024 15:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD90A13AD3F;
+	Tue,  9 Apr 2024 15:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uHsfcDCm"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gmiOk1oY"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D10713D625
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7135913AD17
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676956; cv=none; b=Z3vgqRh1IBFQUmf1AsMD0CCT5XB/SBerCPLs91uY6doQbutHUqQd8OuUGIEMk/VhV9YCgCgwBNOPh62oIU1Km3+ddz9frmcjRhjh7iFFhsvpN522/5A6GjAMV9treKDowHvsfNsePBnaSA8IJLw5MQ6tJi8H0XOwhhV4jsXAuJc=
+	t=1712677048; cv=none; b=TDPBRoGn+xLgvAqql46R4tKL9NNTohl9DyofjK1r/AMJiHJ10kN6QitNieY5bewcUe1pa1m9CsSyC3x1U4febVEJtOWp2tITJQf16WqUyfTllXoUKqDPHiDbNrRtsHJES4e4afZF2RP5HQfVJ0xh6n9TAzLpOYW7I+d/a8FpOTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676956; c=relaxed/simple;
-	bh=z5AF5xY1j5K4ShCi88r9SGOibb/8QoN3dzNf4V00bdo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sl1ip7/8+mbRSTTzaNEhemvAdhsNq5avHGjVFzP9/YFsoGBASSpYKbTcJ5bFNKTowZ5DOGmee9cXpjufL8OHEDAAAATgh93CsW4jHPIpMUT1CyEC6e44VUf900qjn5+U+48usjGrKf9skcXQzetyGDEsNv4q4zTdTKyK+6fcVf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uHsfcDCm; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-416632343d0so17685575e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:35:54 -0700 (PDT)
+	s=arc-20240116; t=1712677048; c=relaxed/simple;
+	bh=Aqminu13BA5RfzICIWKV4tMcJYaOt32oW1/5Ll0JWxk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rrzaF4gIyCRBrNRF2LX5dkBollPPAaOdOfvb0NswQRyHhvLT2TVSVzR3hrMKQ6UkSXzxnv9nru+HHsrXnNIY0qBF1l9Qiy2a/doPWxQ3ErxzSLbt7geHcVu0VGSgCIefDbSkOZ31ntfUUilHtscfdBH9NTph1Av56E1o+U/jc20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gmiOk1oY; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34641b7c49aso344006f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712676953; x=1713281753; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RO/ZWp4a+TbCWiJJVnk1jNMrTa4t5wCjsm2zT6QGFvI=;
-        b=uHsfcDCmErwWXuaCw+jBvo8ARW1yf0HFm4QkOMqc5tHfP+g72fazGhJfIsUnCt8xpe
-         mp/xRZsIg0mgOZqJhTG8cT7McPXGJ1ukft0WWdaIUS+eWaDA2zXp8vzYYaWFVJ1n4c3f
-         SCKvonjGJfPXnUNxwdImPJFX79k8bQBPCc+4An4JmfWG/NfhIaNniA8hj56CNjbaFfps
-         zd1uD1WICyi/4n/5GXUDYbTz3/piVvk+Bvrj9mW0yKGLaG3FVKLIUKSdcta23cxqKwRN
-         dydlEQziVshhvzTl9Kd5bJ8PPzPHlRyIBKwjcFbpdJ+No1jeRPUwmtUSN+f7b0r6q86a
-         xMIg==
+        d=google.com; s=20230601; t=1712677045; x=1713281845; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O3wHvYb+xH1G7TOL58ej8375ZusY8e96JWmR5Aw1tE4=;
+        b=gmiOk1oYSBunqK3ErTTHgzFtPqAjq1VzuV3RShmBJNsj5JMsyqqfi1tOU5EVF6zVtb
+         B7kOnT9nlSc6xdLpAfwM1XE07m2yr3xMKrazayG+ZTdw5TBmgRsSYq/HUbH1l0pM1MZX
+         dQjHK58SvJgP2BubR5/0mya3hylLzINvF2yNBUpUQJ1MCUaZk4U+y0R6D5ybf7Bbr1mU
+         SGDNcWUyMcV1PUJGlHMWY0mqigE8d/9uC8uNTvp6sgmh8+oD+J0m9bkRLnWDcOjV36J5
+         j+iUaG5/7/AUDWhZRXI4rlExegyiRUsv9saMhbO0reki/hZl/SaP+45qb7SHncRfpAG/
+         6uew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712676953; x=1713281753;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RO/ZWp4a+TbCWiJJVnk1jNMrTa4t5wCjsm2zT6QGFvI=;
-        b=Nj/tj4pwpTKUqX7ZZqSm4E/AOPg9Cpjw6jOxK3ida3llWYbO9XDMsxtPS5lQm2Xuw3
-         12gy1waEaz0vmLUa/cmcywv//f4d5fxFD+ueD9vynapArIcp4h6pXwzDQMqg1VCGR6XF
-         nBGZUO6O4oYhyIUypZVATTigZr5qEOFOjF5W/nw7aQTce7aSroIwhsljXoslrXp6WckZ
-         K8l6jrefvFIjCvzWMSnXZ/GAIv+/qnL9tRy6Ybt6Mg8aaL+WeppoeWfS2gnbtUrPDtOo
-         GmKFv0coiuHJV8MCWMoA8Sa0J89ADIZVULprH5s+//sfCva5Q0jCk678Pt9gNPWY6gtS
-         iLlg==
-X-Gm-Message-State: AOJu0YxHFzXfmB0Pp0Pd5Yy0MQYTB20qwPrWQ+uBbKcwnchLmbcYmbS5
-	DEUZWfZ+s5kVFpqz9T7pNxhI3r+zkNjkIpjJ286JJOduHFiEkKtOxgriAudAgDk=
-X-Google-Smtp-Source: AGHT+IH1MlVadqwVn3deyEvCrPmhxyitZBrEegAplbcQczNk+NJd5X1pH7M68uHU5nX6fsvXs4PUJg==
-X-Received: by 2002:a5d:4088:0:b0:343:7a53:16cf with SMTP id o8-20020a5d4088000000b003437a5316cfmr65352wrp.41.1712676952870;
-        Tue, 09 Apr 2024 08:35:52 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id s7-20020a5d4ec7000000b0033dd2a7167fsm11760977wrv.29.2024.04.09.08.35.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 08:35:52 -0700 (PDT)
-Message-ID: <d9453d32-c83e-42e2-b269-29f1d649c0df@linaro.org>
-Date: Tue, 9 Apr 2024 16:35:51 +0100
+        d=1e100.net; s=20230601; t=1712677045; x=1713281845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O3wHvYb+xH1G7TOL58ej8375ZusY8e96JWmR5Aw1tE4=;
+        b=I6EEINP8B0bMoy5JrR8sY1FPCshyxeSuq4G4hTwpI7YFtSw8N3RTPnZ9GxHVct+D97
+         s2JB410/kF9b94lbgeIJH5xE/bjxzeqCsHmRoCtzMN/XErr+HEBioYNrboa650Ub1rZ3
+         cLfZXNBKQ0Iss+m/zVP0cxjDjFB0xz6J7zy9GHpoxcVWezsoQxtDW0LqmOHQ9nInD5FV
+         wqgoDcailkiWJrQcZmKny8wycgoMSkx5lbrt/Umgx2oNUiRppimmJrJqvHvWIjrdi4q3
+         SPbgZH+e2JBXB/xZFs0Bs+bZuWUSA/j8lsSuDTuLo6vRBWmeonFgkbEUSynbCfkl/i9E
+         P3jA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfM/o6cvvIj6tQEWcIAViDr52dNFc85ZigMgh+IWe0bCTyzufvvOkZEqoqqvLjFlvHw4sebCQ6NOoBV3W1NYhd7xKmJ7X7adElyFtA
+X-Gm-Message-State: AOJu0YxP8VyRBwYw4c4xAfd3+EbIvNk5AG7i90KnCWc/zKPo857shJxc
+	CPnqrD9s03UsEYxGuYLiQVhLTBUTi7IFjkjefYY62mpj13KjfmqO/O1eKHZiQy2f+f1/c45vOLN
+	9gSF73Kuarww9MrFiT7SiUBLD6AwQivfRPsyw
+X-Google-Smtp-Source: AGHT+IEATApo3o8XfWViXxHA3nBf59pbXIp4qO5W17tsNOoEx8kff/kEukGenu4hXqklT5aG6y50jY3+j+NZ6v/SAgs=
+X-Received: by 2002:adf:ec50:0:b0:33e:8aba:cd0a with SMTP id
+ w16-20020adfec50000000b0033e8abacd0amr75524wrn.9.1712677044575; Tue, 09 Apr
+ 2024 08:37:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/8] media: qcom: camss: Add new VFE driver for SM8550
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: Depeng Shao <quic_depengs@quicinc.com>, rfoss@kernel.org,
- todor.too@gmail.com, andersson@kernel.org, konrad.dybcio@linaro.org,
- mchehab@kernel.org, quic_yon@quicinc.com
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240320141136.26827-1-quic_depengs@quicinc.com>
- <20240320141136.26827-7-quic_depengs@quicinc.com>
- <18837b02-27af-4d0c-a772-bb7ce787a4c0@linaro.org>
-Content-Language: en-US
-In-Reply-To: <18837b02-27af-4d0c-a772-bb7ce787a4c0@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=whHWjKK1TOMT1XvxFj8e-_uctJnXPxM=SyWHmW63B_EDw@mail.gmail.com>
+ <20240408084934.GC21904@noisy.programming.kicks-ass.net> <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
+ <CAHk-=wg=Wdct5f9W2-tvwfRefv3xmw1-9Ko+RG+6=xjLu4ndFg@mail.gmail.com> <20240409104540.GB21779@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240409104540.GB21779@noisy.programming.kicks-ass.net>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Tue, 9 Apr 2024 08:37:10 -0700
+Message-ID: <CAKwvOdktV5vnKwET1PhM8x0urK+LUhAC=uc28RXHUsvq-7_vbA@mail.gmail.com>
+Subject: Re: More annoying code generation by clang
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Peter Anvin <hpa@zytor.com>, 
+	"the arch/x86 maintainers" <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/04/2024 14:39, Bryan O'Donoghue wrote:
-> 1. Please use 'rdi' not 'n' as the parameter here and
+On Tue, Apr 9, 2024 at 3:45=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Mon, Apr 08, 2024 at 12:42:31PM -0700, Linus Torvalds wrote:
+>
+> > Actually, one of the github issues pages has more of an explanation
+> > (and yes, it's tied to impedance issues between the inline asm syntax
+> > and how clang works):
+> >
+> >       https://github.com/llvm/llvm-project/issues/20571#issuecomment-98=
+0933442
+> >
+>
+> So that same issue seems to suggest Nick is actually working on this and
+> got stuff merged. Nick, what is the status of your efforts and should we
+> indeed do the below as Linus suggests or should he upgrade his compiler?
 
-Ignore this comment 'n' is the right value here - you've already used 
-'rdi' in CSID which is the appropriate place 'n' is correct here.
+Sorry, I'm no longer working on the issue.  I should mark that as such.
 
----
-bod
+The feature got hung up on rewriting one of the register allocation
+frameworks in llvm.
+https://github.com/llvm/llvm-project/pull/74344
+
+I have a new set of responsibilities at work so I probably wont be
+working on that issue any time soon.
+
+>
+> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-cl=
+ang.h
+> > index 49feac0162a5..0dee061fd7a6 100644
+> > --- a/include/linux/compiler-clang.h
+> > +++ b/include/linux/compiler-clang.h
+> > @@ -118,3 +118,15 @@
+> >
+> >  #define __diag_ignore_all(option, comment) \
+> >       __diag_clang(13, ignore, option)
+> > +
+> > +/*
+> > + * clang has horrible behavior with "g" or "rm" constraints for asm
+> > + * inputs, turning them into something worse than "m". Avoid using
+> > + * constraints with multiple possible uses (but "ir" seems to be ok):
+> > + *
+> > + *   https://github.com/llvm/llvm-project/issues/20571
+> > + *   https://github.com/llvm/llvm-project/issues/30873
+> > + *   https://github.com/llvm/llvm-project/issues/34837
+
+20571 is the cannonical bug for this.
+
+> > + */
+> > +#define ASM_INPUT_G "ir"
+> > +#define ASM_INPUT_RM "r"
+> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_ty=
+pes.h
+> > index 2abaa3a825a9..e53acd310545 100644
+> > --- a/include/linux/compiler_types.h
+> > +++ b/include/linux/compiler_types.h
+> > @@ -380,6 +380,15 @@ struct ftrace_likely_data {
+> >  #define asm_goto_output(x...) asm volatile goto(x)
+> >  #endif
+> >
+> > +/*
+> > + * Clang has trouble with constraints with multiple
+> > + * alternative behaviors (mainly "g" and "rm").
+> > + */
+> > +#ifndef ASM_INPUT_G
+> > +  #define ASM_INPUT_G "g"
+> > +  #define ASM_INPUT_RM "rm"
+> > +#endif
+> > +
+> >  #ifdef CONFIG_CC_HAS_ASM_INLINE
+> >  #define asm_inline asm __inline
+> >  #else
+> > --
+> > 2.44.0.330.g4d18c88175
+> >
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
 
