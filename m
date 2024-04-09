@@ -1,145 +1,117 @@
-Return-Path: <linux-kernel+bounces-137620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A1C89E4A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:47:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47ECF89E4A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 743161F22F85
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:47:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE279282C31
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAE315887B;
-	Tue,  9 Apr 2024 20:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FmLcX6Xl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0225C158855;
+	Tue,  9 Apr 2024 20:47:01 +0000 (UTC)
+Received: from sxb1plsmtpa01-01.prod.sxb1.secureserver.net (sxb1plsmtpa01-01.prod.sxb1.secureserver.net [188.121.53.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0DD2905
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BCD2905
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712695625; cv=none; b=Uevh7PtGtjtvNHTq2lFyb/5VTgW/4nCUuFsNKbTTgEdamAYCAUw5WSQUcDEwmSIN8jPT4OnWXqabUXcfPFmatwJFOAaoZ0Aznk/YWX+Wgo2NNHzKQepY8tlkb4lVfLrwgBz/kENGAT0QVHFwcpRrHtKdqowRc+cGMvbP67VczdM=
+	t=1712695620; cv=none; b=Q13rE6PYqCsCXaPPZA/+JPtqeH94mpPiGzlge1eQ0/sB/p1m0kVEHq9YA5gXkoMwlPvMBK64rh7HcvSRWtpJNbubTr/d/wcsuZTxbeuv6Ij4xJR3lYc3MihR71DEYfN7f0GQrvM0tAoBUtNcRKYdMqVqIX/+4Kgkc72sE1lkeHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712695625; c=relaxed/simple;
-	bh=QtUyiLmeuh4WXIA7zBsu7RgbNBKYIPJFxnhtfnlAPkM=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=EM1OgBi34Ip1WvDwfaIYzXbyiXjboT9F+PvWs8E1tw+HBBzemiHRLx2F84ha/yahX5XieS63to6v0OEpkuYXPTFiMU9eYkWccE737iE3AWtnC8JNzrYxgkoQilfNpCAf8RXYC55SXXG35VovDU+bfnCCwtgA+MNKTiOc/usKrEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FmLcX6Xl; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712695623; x=1744231623;
-  h=date:from:to:cc:subject:message-id;
-  bh=QtUyiLmeuh4WXIA7zBsu7RgbNBKYIPJFxnhtfnlAPkM=;
-  b=FmLcX6XlN63RDKOjfYL/zZ5cb2ljLxYQ4fa0kubl2X7oT7SY0IJa1ZqO
-   Ye+GntmRTGSCVEpTGfUK8QE+Nrsm7G16DNS0IqHVSuFulKOAud2/7AMC4
-   gKyFT34jwC6Z0YW5pwqy4r1+yvscd5W4+2LuMPi3b+hoZOwwEkGf8TMt5
-   rQcE5IrgUt2IVqIUHO1CXx8VTErQGcf6biZeKZ0UNemgFWNDEAp/usO3B
-   NzQqK6QvkKj3m7GuFovPOIKaXm98GpMcAI7Qv59YXzC+PHyuDvr3lPmII
-   yKF24XR+7um/zuss+7bkyzRxYIHqx/Y7kUao28eKFsyv7O0Ts/pkEipR/
-   A==;
-X-CSE-ConnectionGUID: BRlUC+f9QoO7LeyUPtbdnQ==
-X-CSE-MsgGUID: KTTtbdMORySBmj3ufKoCJQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="19460298"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="19460298"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 13:47:03 -0700
-X-CSE-ConnectionGUID: 7Wp7JKfJTQudxtxBOxjC+Q==
-X-CSE-MsgGUID: YlgOmALPT3ijSkQaZqBGYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20779600"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 09 Apr 2024 13:47:03 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ruIMt-0006Uw-36;
-	Tue, 09 Apr 2024 20:46:59 +0000
-Date: Wed, 10 Apr 2024 04:46:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/entry] BUILD SUCCESS
- b767fe5de0b4a5057b070d8cdefdcf6740733d6e
-Message-ID: <202404100430.uwNs1rAa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712695620; c=relaxed/simple;
+	bh=QTM+LP0YD0A7dbv3jscQrPsB8DT7gPc3um5gzm+C+tI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p8xr7AZ2ZHZecOU1gUdp82ENhUIOoVxiePUWSDvR2i7fvx2H5/35RFX4ZnE+vbus+UD1034LtQzQaGu5mxGSYIyieAJF0B2IfA3jXJc7HTDn6elSrJQcSiDC74DZc2E7xOSd0LYBHmlyHH5zmAcWPsucA3sgyhKZ4RJpNFie30s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
+Received: from phoenix.fritz.box ([82.69.79.175])
+	by :SMTPAUTH: with ESMTPA
+	id uIMXrvVZ9defduIMirCrSi; Tue, 09 Apr 2024 13:46:49 -0700
+X-CMAE-Analysis: v=2.4 cv=GuaJ+V1C c=1 sm=1 tr=0 ts=6615a939
+ a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=XJTnSpgKjpJfBdNX:21 a=1T6qrdwwAAAA:8 a=VwQbUJbxAAAA:8 a=FXvPX3liAAAA:8
+ a=OU3_bkaUkIPW1OEudewA:9 a=pdM9UVT-CToajMN3hxJJ:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+From: Phillip Lougher <phillip@squashfs.org.uk>
+To: akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Cc: Phillip Lougher <phillip@squashfs.org.uk>,
+	"Ubisectech Sirius" <bugreport@ubisectech.com>
+Subject: [PATCH V2] Squashfs: check the inode number is not the invalid value of zero
+Date: Tue,  9 Apr 2024 21:47:23 +0100
+Message-Id: <20240409204723.446925-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfL/wfjlBWDoeFH1N6AfOORQApCtH1tdsbN+46ujuZyxFfgxQ1pKDNuV9an83pXR24MCs0k4vZl6AeSdj/UQ9GIv8fb2nfc+rB1YO58nBcd2pX/0ILyBw
+ wKom7pWc72NgjOKBHB49bYI8m6N4ZyRhk6IQKiAbySP06hTGkceA2D0qyKF9uGFWNl/Bt602NJNsbpEy78AjZTkeeqym4BXrVFQHH4JqbnRb5s3hDYNcSMSR
+ /1esuSxj6FTtikF5dc2vfn0o7aY4FLhAVjSKfyYw/6SK/5GenX/OdRagm50twvZRpbzVwvZb5oFjSThat45jww==
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
-branch HEAD: b767fe5de0b4a5057b070d8cdefdcf6740733d6e  x86/entry: Merge thunk_64.S and thunk_32.S into thunk.S
+Syskiller has produced an out of bounds access in fill_meta_index().
 
-elapsed time: 722m
+That out of bounds access is ultimately caused because the inode
+has an inode number with the invalid value of zero, which was not checked.
 
-configs tested: 53
-configs skipped: 134
+The reason this causes the out of bounds access is due to following
+sequence of events:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1. Fill_meta_index() is called to allocate (via empty_meta_index())
+   and fill a metadata index.  It however suffers a data read error
+   and aborts, invalidating the newly returned empty metadata index.
+   It does this by setting the inode number of the index to zero,
+   which means unused (zero is not a valid inode number).
 
-tested configs:
-alpha                            allyesconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240410   gcc  
-i386         buildonly-randconfig-002-20240410   clang
-i386         buildonly-randconfig-003-20240410   clang
-i386         buildonly-randconfig-004-20240410   clang
-i386         buildonly-randconfig-005-20240410   gcc  
-i386         buildonly-randconfig-006-20240410   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240410   clang
-i386                  randconfig-002-20240410   clang
-i386                  randconfig-003-20240410   gcc  
-i386                  randconfig-004-20240410   gcc  
-i386                  randconfig-005-20240410   gcc  
-i386                  randconfig-006-20240410   clang
-i386                  randconfig-011-20240410   clang
-i386                  randconfig-012-20240410   clang
-i386                  randconfig-013-20240410   gcc  
-i386                  randconfig-014-20240410   clang
-i386                  randconfig-015-20240410   gcc  
-i386                  randconfig-016-20240410   gcc  
-loongarch                        alldefconfig   gcc  
-m68k                       m5475evb_defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                           ip22_defconfig   gcc  
-mips                      malta_kvm_defconfig   gcc  
-mips                          rm200_defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   gcc  
-riscv                             allnoconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+2. When fill_meta_index() is subsequently called again on another
+   read operation, locate_meta_index() returns the previous index
+   because it matches the inode number of 0.  Because this index
+   has been returned it is expected to have been filled, and because
+   it hasn't been, an out of bounds access is performed.
 
+This patch adds a sanity check which checks that the inode number
+is not zero when the inode is created and returns -EINVAL if it is.
+
+Reported-by: "Ubisectech Sirius" <bugreport@ubisectech.com>
+Closes: https://lore.kernel.org/lkml/87f5c007-b8a5-41ae-8b57-431e924c5915.bugreport@ubisectech.com/
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+--
+V2: add space between "if" and "(".  Move Closes: to after Reported-by:.
+---
+ fs/squashfs/inode.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
+index aa3411354e66..16bd693d0b3a 100644
+--- a/fs/squashfs/inode.c
++++ b/fs/squashfs/inode.c
+@@ -48,6 +48,10 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
+ 	gid_t i_gid;
+ 	int err;
+ 
++	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
++	if (inode->i_ino == 0)
++		return -EINVAL;
++
+ 	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->uid), &i_uid);
+ 	if (err)
+ 		return err;
+@@ -58,7 +62,6 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
+ 
+ 	i_uid_write(inode, i_uid);
+ 	i_gid_write(inode, i_gid);
+-	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
+ 	inode_set_mtime(inode, le32_to_cpu(sqsh_ino->mtime), 0);
+ 	inode_set_atime(inode, inode_get_mtime_sec(inode), 0);
+ 	inode_set_ctime(inode, inode_get_mtime_sec(inode), 0);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
 
