@@ -1,138 +1,227 @@
-Return-Path: <linux-kernel+bounces-137524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B09589E35D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:26:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A4189E368
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:27:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE6111F239F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:26:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005291C221C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C2D157E9C;
-	Tue,  9 Apr 2024 19:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E66157A7E;
+	Tue,  9 Apr 2024 19:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PBHdKyia"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/SGLq92"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FF9156C51;
-	Tue,  9 Apr 2024 19:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B5D157A51
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712690712; cv=none; b=F7fghw91ygddSqOBu+07OecogNlNmmm7M15t5aasnmF8t4ygZqPOLcwnSOoWaLWTM1rJRDu4HW/NAWAwfZat93yUIxhrEbR1aw1tjATKu9SUwEBMK04dYJNX5slU9tnn3wMjgrRZ5T1PeuExFfT+alNPYCFVz8/QGguDM5ky8IA=
+	t=1712690739; cv=none; b=g/NhhdIuFZkbPIK0Q3pNwatjz/47Z5nywwNjP9ZHu9h6fmef2tVtTU7hFvTphTTmnoG9AahyLqfCXvFaZ/L85eoZaqiPPu2kK3f3MF0vlaPtL9eXOcyt3NfbPNFJaCd7W5ydmyR7Yu7CZ3+hSe49JfGzl+TMPJR3J3iwgq5mxRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712690712; c=relaxed/simple;
-	bh=aWx7CevydRrDXasefacZWPb71JXpq5DVLlOrVLb3d/8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XF1+cEeX4Zb2M5FcQNyBoJ/saxaQdlZo69bPuvZnchlnNyK19k48KTOSgZHezKl6TDWyNjb2zWfos2/872zu07oSGRNbq8nJHvq2S2PgrjQfM67pNsCFbnfR9pBsET2Ka1DyCfBPdkWU2gErZACL7s50cILgZ7DBEFwWyX46dOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PBHdKyia; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439JOvm9060924;
-	Tue, 9 Apr 2024 14:24:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712690697;
-	bh=f/2ZZLv/YXP88a8yKxEUi5GZ92gmoDf4RDx042otFLg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=PBHdKyiaGJ1OgD/UUvSZm7UTmi5/B4fAFOVe6ytVkd67jSaJCFiqkdHm2GNXHU/Ug
-	 x9d83d4KAt44Myog//G7n/u4Mk4KIHXeXLh6BRpeSvhlGq3X3UfElxrxvbficjip2W
-	 PuvrjAAgJYPLpVtsPXbv2PY7m7I8A8dgnVMrskLk=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439JOv7K001369
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 14:24:57 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 14:24:57 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 14:24:57 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JOv1K079041;
-	Tue, 9 Apr 2024 14:24:57 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Jai Luthra <j-luthra@ti.com>,
-        Francesco Dolcini
-	<francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrejs
- Cainikovs <andrejs.cainikovs@gmail.com>
-CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: dahlia: fix audio clock
-Date: Tue, 9 Apr 2024 14:24:54 -0500
-Message-ID: <171269065936.640145.6245831948587866462.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240315102500.18492-1-andrejs.cainikovs@gmail.com>
-References: <20240315102500.18492-1-andrejs.cainikovs@gmail.com>
+	s=arc-20240116; t=1712690739; c=relaxed/simple;
+	bh=sZns4wWiCwVq2UKw3DllXS1aY/CmVoZGF+v/FMeR3zg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VPAPRKkJ53UWSiKCOKeHNX2sdYs130MFKud+WpFRJ/fH0R9vohwNNHGxZNpVJ1cM+brfltOnBVjzKaqS2EX7jjqSud01iSgnSvvs3kHmRhziB9rdNo2/BZ1tYgJJVPzgUZwsEdRIXspv8tBMyXsc9Ml1lQ3On/WKnFO5DRiLhfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/SGLq92; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7621FC433C7;
+	Tue,  9 Apr 2024 19:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712690738;
+	bh=sZns4wWiCwVq2UKw3DllXS1aY/CmVoZGF+v/FMeR3zg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=L/SGLq92FO/Y3Ifb/DIrf0ewcs/SvPtFMxGhrGdIItA5B7TNlzsLA5NhLFZHE4Sf5
+	 ax+o5r283Ugp/c4OxkE3Oyv7Fbgui/3EePahWdUxJC6/1PEWJUoup3vBFs5qdjjLW0
+	 u3Srk84StwXDJT5/HK6BK49ESE5tlA8aXfyiQZ/Bx6uNQ4+mft0Q05VT7M5StCpoug
+	 lcoqa1k9tqFxqgtwlz+DOdj0HngoveTKYtR/LeZvrJG2g54QN9ndsdhkf96YkfJ5i/
+	 dnhmEV4K+LmdqGVOK/HBmFLPJy8Hb7HhiUxOiQmZKv4+rfpwg5ZIV+6E/9QOi+H9iT
+	 HZ4MU0o7Jr/eQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 11B81CE2D22; Tue,  9 Apr 2024 12:25:38 -0700 (PDT)
+Date: Tue, 9 Apr 2024 12:25:38 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: Finding open-coded workarounds for 1/2-byte cmpxchg()?
+Message-ID: <d0c0e4c6-0791-448b-90ec-0bb4edcb8518@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f57bcb57-45a4-4dfb-8758-8f7302223ea9@paulmck-laptop>
+ <alpine.DEB.2.22.394.2404060057110.3446@hadrien>
+ <0e489247-6350-4485-9976-320b457ae748@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e489247-6350-4485-9976-320b457ae748@paulmck-laptop>
 
-Hi Andrejs Cainikovs,
-
-On Fri, 15 Mar 2024 11:25:00 +0100, Andrejs Cainikovs wrote:
-> In current configuration, wm8904 codec on Dahlia carrier board provides
-> distorted audio output. This happens due to reference clock is fixed to
-> 25MHz and no FLL is enabled. During playback following parameters are set:
+On Fri, Apr 05, 2024 at 04:18:29PM -0700, Paul E. McKenney wrote:
+> On Sat, Apr 06, 2024 at 01:00:35AM +0200, Julia Lawall wrote:
+> > 
+> > 
+> > On Thu, 4 Apr 2024, Paul E. McKenney wrote:
+> > 
+> > > Hello, Julia!
+> > >
+> > > I hope that things are going well for you and yours.
+> > >
+> > > TL;DR: Would you or one of your students be interested in looking for
+> > > some interesting code patterns involving cmpxchg?  If such patterns exist,
+> > > we would either need to provide fixes or to drop support for old systems.
+> > >
+> > > If this would be of interest, please read on!
+> > >
+> > > Arnd (CCed) and I are looking for open-coded emulations for one-byte
+> > > and two-byte cmpxchg().  Such emulations might be attempting to work
+> > > around the fact that not all architectures support those sizes, being
+> > > as they are only required to support four-byte cmpxchg() and, if they
+> > > are 64-bit architectures, eight-byte cmpxchg().
+> > >
+> > > There is a one-byte emulation in RCU (kernel/rcu/tasks.h), which looks
+> > > like this:
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new)
+> > > {
+> > > 	union rcu_special ret;
+> > > 	union rcu_special trs_old = READ_ONCE(t->trc_reader_special);
+> > > 	union rcu_special trs_new = trs_old;
+> > >
+> > > 	if (trs_old.b.need_qs != old)
+> > > 		return trs_old.b.need_qs;
+> > > 	trs_new.b.need_qs = new;
+> > > 	ret.s = cmpxchg(&t->trc_reader_special.s, trs_old.s, trs_new.s);
+> > > 	return ret.b.need_qs;
+> > > }
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > An additional issue is posed by these, also in kernel/rcu/tasks.h:
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > 	if (trs.b.need_qs == (TRC_NEED_QS_CHECKED | TRC_NEED_QS)) {
+> > >
+> > > 	return smp_load_acquire(&t->trc_reader_special.b.need_qs);
+> > >
+> > > 	smp_store_release(&t->trc_reader_special.b.need_qs, v);
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > The additional issue is that these statements assume that each CPU
+> > > architecture has single-byte load and store instructions, which some of
+> > > the older Alpha systems do not.  Fortunately for me, Arnd was already
+> > > thinking in terms of removing support for these systems.
+> > >
+> > > But there are additional systems that do not support 16-bit loads and
+> > > stores.  So if there is a 16-bit counterpart to rcu_trc_cmpxchg_need_qs()
+> > > on a quantity that is also subject to 16-bit loads or stores, either
+> > > that function needs adjustment or a few more ancient systems need to
+> > > lose their Linux-kernel support.
+> > >
+> > > Again, is looking for this sort of thing something that you or one of
+> > > your students would be interested in?
+> > 
+> > Hello,
+> > 
+> > I tried, but without much success.  The following looks a little bit
+> > promising, eg the use of the variable name "want", but it's not clear that
+> > the rest of the context fits the pattern.
 > 
-> 44100Hz:
+> Thank you for digging into this!!!
 > 
-> [  310.276924] wm8904 1-001a: Target BCLK is 1411200Hz
-> [  310.276990] wm8904 1-001a: Using 25000000Hz MCLK
-> [  310.277001] wm8904 1-001a: CLK_SYS is 12500000Hz
-> [  310.277018] wm8904 1-001a: Selected CLK_SYS_RATIO of 256
-> [  310.277026] wm8904 1-001a: Selected SAMPLE_RATE of 44100Hz
-> [  310.277034] wm8904 1-001a: Selected BCLK_DIV of 80 for 1562500Hz BCLK
-> [  310.277044] wm8904 1-001a: LRCLK_RATE is 35
+> > diff -u -p /home/julia/linux/net/sunrpc/xprtsock.c
+> > /tmp/nothing/net/sunrpc/xprtsock.c
+> > --- /home/julia/linux/net/sunrpc/xprtsock.c
+> > +++ /tmp/nothing/net/sunrpc/xprtsock.c
+> > @@ -690,12 +690,9 @@ xs_read_stream(struct sock_xprt *transpo
+> >  		if (ret <= 0)
+> >  			goto out_err;
+> >  		transport->recv.offset = ret;
+> > -		if (transport->recv.offset != want)
+> > -			return transport->recv.offset;
 > 
-> [...]
+> Agreed, though you are quite right that ->recv.copied and ->recv.offset
+> are different lengths.  But yes, as you sugggest below, there must be
+> a cmpxchg() of some type (cmpxchg(), cmpxchg_acquire(), ...) in the mix
+> somewhere.  Also, the cmpxchg() must be applied to a pointer to either
+> a 32-bit or a 64-bit quantity, but the change must be 16 bits (or 8 bits).
+> 
+> > The semantic patch in question was:
+> > 
+> > @r@
+> > expression olde;
+> > idexpression old;
+> > @@
+> > 
+> > if (olde != old) { ... return olde; }
+> > 
+> > @@
+> > expression newe != r.olde;
+> > idexpression nw;
+> > expression r.olde;
+> > idexpression r.old;
+> > @@
+> > 
+> > *if (olde != old) { ... return olde; }
+> > ...
+> > *newe = nw;
+> > ...
+> > *return newe;
+> > 
+> > The semantic patch doesn't include the cmpxchg.  I wasn't sure if that
+> > would always be present, or in what form.
+> 
+> It would be, but I am having trouble characterizing exactly what the
+> pattern would look like beyond "emulating a 16-bit cmpxchg() using either
+> a 32-bit cmpxchg() or a 64-bit cmpxchg()".  :-(
+> 
+> Thank you again, and something to think more about.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+I took the crude approach of looking at all of the cmpxchg*() invocations,
+discarding those that were clearly not an issue.  Here are the close calls
+that I found:
 
-[1/1] arm64: dts: ti: verdin-am62: dahlia: fix audio clock
-      commit: a15e5320d91abe68ff1123bb72583d629c49100c
+o	drivers/misc/genwqe/card_ddcb.c enqueue_ddcb() does work against
+	a union that has 32-bit, 16-bit, and eight-bit members, but as
+	far as I can see the ->icrc_16 member is not used.  But this
+	might be an accident waiting to happen.  Or maybe this driver
+	is used only by architectures with a full set of cmpxchg sizes.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+	The 8-bit ->hsi and ->shi fields are used for debug output, which
+	should be harmless.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+	Ditto __genwqe_purge_ddcb() that same file.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+o	drivers/platform/surface/aggregator/controller.c ssh_seq_next()
+	does an 8-bit cmpxchg().
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+o	drivers/platform/surface/aggregator/controller.c ssh_rqid_next()
+	does a 16-bit cmpxchg().
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+o	kernel/locking/qspinlock_paravirt.h pv_wait_node() does
+	an 8-bit cmpxchg().  As does pv_kick_node() in that same
+	file.  And __pv_queued_spin_unlock().  And, as Arnd noted,
+	trylock_clear_pending() and pv_hybrid_queued_unfair_trylock()
+	in that same file do 16-bit cmpxchg_acquire().
 
+o	net/rxrpc/io_thread.c rxrpc_input_packet_on_conn() is strange
+	in that it supplies 16-bit old and new fields to a cmpxchg()
+	of a 32-bit quantity, but it is quite possible that this would
+	be a 16-bit quantity if permitted in core code.  This is in an
+	rxrpc_connection structure.
+
+There are no doubt some false negatives omitted from this list, but
+there are a few places that use or would like to use 8-bit and 16-bit
+cmpxchg*().
+
+							Thanx, Paul
 
