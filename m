@@ -1,233 +1,225 @@
-Return-Path: <linux-kernel+bounces-136681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E37689D709
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:32:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E1C89D707
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8442281EB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7921F22107
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B654B81AA5;
-	Tue,  9 Apr 2024 10:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE9281725;
+	Tue,  9 Apr 2024 10:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GQdOYDkg"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SB08Rwjx"
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1866E1EB46
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9A58119
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712658763; cv=none; b=gtE5fCjiWelssfvcVcxRv/CYaRaEZGR/7MXh8J02hJYVjWdX911rQzcl1jwkeluoQPsXj0JJKak6wSRtFCvi3ifE7OYRINBG22llVpSYyBL86MeveqkA97s/HGeYN0GHqPHAqvoc4BfEzbjE9odelYjweCN+k3kfo5Gi3XwH5Qs=
+	t=1712658751; cv=none; b=G4YWgdbkjk0l7bsikts7G6ymvOEFlUFrnPSZ6yUZ6HWjOvhp+9NjOzJ18ez1BCZnCnnfom4lntFzVABr5jj+XJ3CR8LUxejlGsQ6+WxONmVdIVqnnf6Ie76kY/4RK1iH+//YafxPcQT4fD5E3UoGdk/qcB7qnaiRXgixlYcZCDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712658763; c=relaxed/simple;
-	bh=5czf5Adh9rovAzlSJfAJI8FiDCtAO2TmwPWLd9haL8c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E79+vZ002iDjcNbnvakzzBERvp9l2tRK15QjDbghmmZDyooMcLC7mWpER+i7Sp4ZNbORM+Aach9B/wA3iEzrfKxve9rhFyWwS2k6bOSergF026L7SfWt1F0JUlu8Q8gZJZ71ZBTxdSnOxv8i16dAxmZxCpAwNgZvMc+DZHiTop4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GQdOYDkg; arc=none smtp.client-ip=209.85.219.182
+	s=arc-20240116; t=1712658751; c=relaxed/simple;
+	bh=UX9k3/oswSpfOSvNZcldfTNpVEuueE8+0oPvL3d72Ok=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bgwmF7llq/Bn7WEB518QkionNPcALoLDyjA9IQTqYJgBNOJqPlCT1adaKzCy7A8S4Rgh9nXOD1gg6okMYkSim6r7/IBAWr3um3hKJGj39ptnJtElyyRJgIWorxy9Ia82in4KXUda6rnhU+C6qW23/vHidZYX3QC7T+D3ea8msrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SB08Rwjx; arc=none smtp.client-ip=209.85.161.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso5329312276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:32:41 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5aa16c0583eso1791465eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712658761; x=1713263561; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ywMqPmvjfuSg7K+puQLhP8JMKU69QDDCjZnvVUw25RU=;
-        b=GQdOYDkgrep7F5hLpbDGjIbhlfq1Kh2Ql3iVjtZhxuj7Sxo9Sx+Z6Mg/nQ+kgb/mo+
-         EEBKlO3HzrpgW53IohoK6WPS0abrSTjrHnY4nNcY/5A7+qseFHZmPHy/97f0pb6yDEKm
-         RG/e99UNRWi8YrgKheaE60fxWP/YdQZ/d+qKQFMW9SsA9xw7CWf5sTn+ySonyN6TCMEd
-         6YYqB9Qm1qKK9U18x6CHmovcYcEq/tMf2NzB1vAXclbtCuy5WG6ns6xSugrVqYzI8P+J
-         ZPJeIdF+b4UZipHoNQIcpXawZ+f2tSlft4qKzXhghCFTySolAcAGu6UYVk8YDtXGxcHT
-         JX3g==
+        d=linaro.org; s=google; t=1712658748; x=1713263548; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E6wiRCdd89h1sVMfB48/ixg+/YiJUwbUXTRR0BuEf6E=;
+        b=SB08Rwjxu7Ls+gAb3fV8ixQMYHqvxvETrfahPNf8G5XiVDnP/O0L8Rm2nPyxe4UysD
+         qvQX/m7OYxot2c31tTYnz/aHRQSRqj6Be9GPAKx7hO85pLDdrIDqc+2gOCZp/TWTmpmx
+         lRj7+bfGoUOyBrGQ1h4+Rvcvsn3wnW64R6nnTRjGWu/VpvVFy+wXWOVRJQRFGSvLDi8s
+         YgDjsj6UUwsFeVHe9smE3OrBjYEzOLt/vyM30du/OJtX9vb2qiI3uQvt50E1svHuebCP
+         85V+aYa1LpXSdirkF94z9ZZMz6gtUMY8z3u+3oqpEx0VbkxjnidB1VW2f4WMk0uXzs5u
+         hRfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712658761; x=1713263561;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1712658748; x=1713263548;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ywMqPmvjfuSg7K+puQLhP8JMKU69QDDCjZnvVUw25RU=;
-        b=SAK4enGgk+Rg9aPIG7UX7IqUS0UapNf/Vlj5bfXih12XsEUJumKaW/Bzw9rdlWaS9i
-         bh07B+Ji3Y3NxmER24K5GYPWr4lP0WohAJO3oy0Hnznv4SnAWZckpLFcG6CssuBVdpG2
-         QD8g0WS4mI4U8kIO65MoNjaCT81Ubsx+KrKKBijxzgYnqWJ1fS5Yvpidgiki90qrtdfn
-         2sexLrLGQXaGy6gmWyBbGrgC7A2q521BxYUwgiBbqhEHlHx5gNzhgEyXl6j1V5+SBsDy
-         9cwToAsgFPv4h2RRwabMGXCxn3hqIobJcaih9F9U+Je4Z3NomxZ2Aq3NeuW4o5tAPYg3
-         W0Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCVxOPygzv0BullP81tcZErUZ6aRajaTZsDRqSQC1PCvrmEpdAIyz1Tlz0vdZakqxh5AwHQbogpzz/6zktlMBSysLYIp5BXD1ePGxj7G
-X-Gm-Message-State: AOJu0Yz9tHMQ3vqaudqZXwYkSTJafqCGN1RJ9dTcZ6EXPN9bzfQZH/yC
-	cSDXMgaBV563JBHlknCL4tqG6UEBdxaSeFyo/DtfBkvPZRFy9Buz0o744oXJpY15Jv0b9+O1dYH
-	n9RV/LYyZIXIb9gvCM9Pm+oX4Rseiem2ajaPdKA==
-X-Google-Smtp-Source: AGHT+IE6ld1LxqfQn0k5e9/PewJ6aOPe+V7Ds69yIjXtT1hudq7zrLPCAyY5v5qOBVfHKUCnvM/mlhNjl+kN+3CdkGA=
-X-Received: by 2002:a25:e20b:0:b0:dcd:6c0:da64 with SMTP id
- h11-20020a25e20b000000b00dcd06c0da64mr9426728ybe.58.1712658761139; Tue, 09
- Apr 2024 03:32:41 -0700 (PDT)
+        bh=E6wiRCdd89h1sVMfB48/ixg+/YiJUwbUXTRR0BuEf6E=;
+        b=qiMGLxPpMlkONtRSPVQkl87IcMarMd3kXCWDSOb989kD8SFzkPeNZUNvzvHcDjjQh1
+         4/NklkRC23aE0Wcz79HDf0wxozeQz1N4zogd2hwt5gyqzh44Xxu0t2B2+hS01omlY1l+
+         gzQ0j/tDpJkbDRP0cAyWQRYqiuBDaWJlCu8hXvJD04CVXtceOsL8qrf+Mxy5je54krVZ
+         GUXtTmox8or2wAWHUsm+96RUc28xf+msSKSLOMERZxXSjvGQEuuvw2hrlDLJdFeja92u
+         ISAi+3QvqgmSb64c+zjjCnATxf6bkhg76OTq3Cts9yNdTkztIXYazncZ74pSfT6dXe0u
+         vk5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUOUNyPEp8ftr8z4jvtA7NNoahihHA+FvwlFPnzA4AlKvH/ShaFg+9x9Q1UelmZ+vO4m0R2bIxlKUBZ1P9ld20EUOLbAEzMNyTePogW
+X-Gm-Message-State: AOJu0YwySryS3bwlZktmkMrq4u3OCH9wQDJ/RyQHMfFzP9HvKMJREkvZ
+	a0+OqwtV1UCRZQmRLomY3GYpVZGMIrs3dmoBTnpwhpwyVuRP/oLpFQqVrxZbkDDkM2ljXjbVwRB
+	7
+X-Google-Smtp-Source: AGHT+IFEn7fzGVX4ENx7itTb1ycHDldkvgWUd8eaiNCRvLKK78VmQRDlwjkEc3HvZiTxCd71tp4LJA==
+X-Received: by 2002:a05:6358:d3a7:b0:186:5f1:3827 with SMTP id mp39-20020a056358d3a700b0018605f13827mr11380787rwb.18.1712658748170;
+        Tue, 09 Apr 2024 03:32:28 -0700 (PDT)
+Received: from localhost ([122.172.85.136])
+        by smtp.gmail.com with ESMTPSA id e1-20020a630f01000000b005f072084432sm7878536pgl.38.2024.04.09.03.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 03:32:27 -0700 (PDT)
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Vladimir Lypak <vladimir.lypak@gmail.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Thorsten Leemhuis <regressions@leemhuis.info>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] OPP: Fix required_opp_tables for multiple genpds using same table
+Date: Tue,  9 Apr 2024 16:02:19 +0530
+Message-Id: <c274500b623b83c00c0460383cbe1cdc7490eeac.1712658693.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325184204.745706-1-sboyd@kernel.org> <20240325184204.745706-5-sboyd@kernel.org>
- <c1dc0e4c1d4c9ba2b5e9c0fc207db267.sboyd@kernel.org>
-In-Reply-To: <c1dc0e4c1d4c9ba2b5e9c0fc207db267.sboyd@kernel.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 9 Apr 2024 12:32:04 +0200
-Message-ID: <CAPDyKFoGxxSzykQ-=o08LD_P_=8m=KRm4SHK_grBFgXNNv4OVw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] clk: Get runtime PM before walking tree during disable_unused
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
-	linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 8 Apr 2024 at 04:36, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Stephen Boyd (2024-03-25 11:41:58)
-> > Doug reported [1] the following hung task:
-> >
-> >  INFO: task swapper/0:1 blocked for more than 122 seconds.
-> >        Not tainted 5.15.149-21875-gf795ebc40eb8 #1
-> >  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >  task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00000008
-> >  Call trace:
-> >   __switch_to+0xf4/0x1f4
-> >   __schedule+0x418/0xb80
-> >   schedule+0x5c/0x10c
-> >   rpm_resume+0xe0/0x52c
-> >   rpm_resume+0x178/0x52c
-> >   __pm_runtime_resume+0x58/0x98
-> >   clk_pm_runtime_get+0x30/0xb0
-> >   clk_disable_unused_subtree+0x58/0x208
-> >   clk_disable_unused_subtree+0x38/0x208
-> >   clk_disable_unused_subtree+0x38/0x208
-> >   clk_disable_unused_subtree+0x38/0x208
-> >   clk_disable_unused_subtree+0x38/0x208
-> >   clk_disable_unused+0x4c/0xe4
-> >   do_one_initcall+0xcc/0x2d8
-> >   do_initcall_level+0xa4/0x148
-> >   do_initcalls+0x5c/0x9c
-> >   do_basic_setup+0x24/0x30
-> >   kernel_init_freeable+0xec/0x164
-> >   kernel_init+0x28/0x120
-> >   ret_from_fork+0x10/0x20
-> >  INFO: task kworker/u16:0:9 blocked for more than 122 seconds.
-> >        Not tainted 5.15.149-21875-gf795ebc40eb8 #1
-> >  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >  task:kworker/u16:0   state:D stack:    0 pid:    9 ppid:     2 flags:0x00000008
-> >  Workqueue: events_unbound deferred_probe_work_func
-> >  Call trace:
-> >   __switch_to+0xf4/0x1f4
-> >   __schedule+0x418/0xb80
-> >   schedule+0x5c/0x10c
-> >   schedule_preempt_disabled+0x2c/0x48
-> >   __mutex_lock+0x238/0x488
-> >   __mutex_lock_slowpath+0x1c/0x28
-> >   mutex_lock+0x50/0x74
-> >   clk_prepare_lock+0x7c/0x9c
-> >   clk_core_prepare_lock+0x20/0x44
-> >   clk_prepare+0x24/0x30
-> >   clk_bulk_prepare+0x40/0xb0
-> >   mdss_runtime_resume+0x54/0x1c8
-> >   pm_generic_runtime_resume+0x30/0x44
-> >   __genpd_runtime_resume+0x68/0x7c
-> >   genpd_runtime_resume+0x108/0x1f4
-> >   __rpm_callback+0x84/0x144
-> >   rpm_callback+0x30/0x88
-> >   rpm_resume+0x1f4/0x52c
-> >   rpm_resume+0x178/0x52c
-> >   __pm_runtime_resume+0x58/0x98
-> >   __device_attach+0xe0/0x170
-> >   device_initial_probe+0x1c/0x28
-> >   bus_probe_device+0x3c/0x9c
-> >   device_add+0x644/0x814
-> >   mipi_dsi_device_register_full+0xe4/0x170
-> >   devm_mipi_dsi_device_register_full+0x28/0x70
-> >   ti_sn_bridge_probe+0x1dc/0x2c0
-> >   auxiliary_bus_probe+0x4c/0x94
-> >   really_probe+0xcc/0x2c8
-> >   __driver_probe_device+0xa8/0x130
-> >   driver_probe_device+0x48/0x110
-> >   __device_attach_driver+0xa4/0xcc
-> >   bus_for_each_drv+0x8c/0xd8
-> >   __device_attach+0xf8/0x170
-> >   device_initial_probe+0x1c/0x28
-> >   bus_probe_device+0x3c/0x9c
-> >   deferred_probe_work_func+0x9c/0xd8
-> >   process_one_work+0x148/0x518
-> >   worker_thread+0x138/0x350
-> >   kthread+0x138/0x1e0
-> >   ret_from_fork+0x10/0x20
-> >
-> > The first thread is walking the clk tree and calling
-> > clk_pm_runtime_get() to power on devices required to read the clk
-> > hardware via struct clk_ops::is_enabled(). This thread holds the clk
-> > prepare_lock, and is trying to runtime PM resume a device, when it finds
-> > that the device is in the process of resuming so the thread schedule()s
-> > away waiting for the device to finish resuming before continuing. The
-> > second thread is runtime PM resuming the same device, but the runtime
-> > resume callback is calling clk_prepare(), trying to grab the
-> > prepare_lock waiting on the first thread.
-> >
-> > This is a classic ABBA deadlock. To properly fix the deadlock, we must
-> > never runtime PM resume or suspend a device with the clk prepare_lock
-> > held. Actually doing that is near impossible today because the global
-> > prepare_lock would have to be dropped in the middle of the tree, the
-> > device runtime PM resumed/suspended, and then the prepare_lock grabbed
-> > again to ensure consistency of the clk tree topology. If anything
-> > changes with the clk tree in the meantime, we've lost and will need to
-> > start the operation all over again.
-> >
-> > Luckily, most of the time we're simply incrementing or decrementing the
-> > runtime PM count on an active device, so we don't have the chance to
-> > schedule away with the prepare_lock held. Let's fix this immediate
-> > problem that can be triggered more easily by simply booting on Qualcomm
-> > sc7180.
-> >
-> > Introduce a list of clk_core structures that have been registered, or
-> > are in the process of being registered, that require runtime PM to
-> > operate. Iterate this list and call clk_pm_runtime_get() on each of them
-> > without holding the prepare_lock during clk_disable_unused(). This way
-> > we can be certain that the runtime PM state of the devices will be
-> > active and resumed so we can't schedule away while walking the clk tree
-> > with the prepare_lock held. Similarly, call clk_pm_runtime_put() without
-> > the prepare_lock held to properly drop the runtime PM reference. We
-> > remove the calls to clk_pm_runtime_{get,put}() in this path because
-> > they're superfluous now that we know the devices are runtime resumed.
-> >
-> > Reported-by: Douglas Anderson <dianders@chromium.org>
-> > Closes: https://lore.kernel.org/all/20220922084322.RFC.2.I375b6b9e0a0a5348962f004beb3dafee6a12dfbb@changeid/ [1]
-> > Closes: https://issuetracker.google.com/328070191
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> > Fixes: 9a34b45397e5 ("clk: Add support for runtime PM")
-> > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> > ---
->
-> Applied to clk-fixes
+The required_opp_tables parsing is not perfect, as the OPP core does the
+parsing solely based on the DT node pointers.
 
-Apologies for not being able to review this, it got lost in my email
-filters. Looks like you manage to solve the locking order for the clk
-disable unused thing - great!
+The core sets the required_opp_tables entry to the first OPP table in
+the "opp_tables" list, that matches with the node pointer.
 
-However I think the main problem we are seeing with these kind of
-locking issues is that we are holding a global lock while calling into
-pm_runtime_get|put*(). Similar problems have also been reported in the
-past. It's been on my todo list for quite some time to have a closer
-look, but I haven't reached it yet.
+If the target DT OPP table is used by multiple devices and they all
+create separate instances of 'struct opp_table' from it, then it is
+possible that the required_opp_tables entry may be set to the incorrect
+sibling device.
 
-Without going into too much detail, let me just ask a related
-question. Would it not be possible to call pm_runtime_get/put() within
-the clock framework, without *always* keeping the clock prepare lock
-acquired? I assume a clock can't be unregistered, as long as there is
-reference taken for it, right? Wouldn't that be a sufficient guarantee
-that it's okay to runtime_resume|suspend its corresponding device?
+Unfortunately, there is no clear way to initialize the right values
+during the initial parsing and we need to do this at a later point of
+time.
 
-Or maybe I should just send a patch. :-)
+Cross check the OPP table again while the genpds are attached and fix
+them if required.
 
-Kind regards
-Uffe
+Also add a new API for the genpd core to fetch the device pointer for
+the genpd.
+
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218682
+Reported-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+Co-developed-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+Vladimir Lypak,
+
+Can you please give this a try and confirm that it fixes the issue.
+
+ drivers/opp/core.c        | 31 ++++++++++++++++++++++++++++++-
+ drivers/pmdomain/core.c   | 10 ++++++++++
+ include/linux/pm_domain.h |  6 ++++++
+ 3 files changed, 46 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index e233734b7220..1f64b703b744 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2394,7 +2394,8 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
+ 			const char * const *names, struct device ***virt_devs)
+ {
+-	struct device *virt_dev;
++	struct device *virt_dev, *gdev;
++	struct opp_table *genpd_table;
+ 	int index = 0, ret = -EINVAL;
+ 	const char * const *name = names;
+ 
+@@ -2427,6 +2428,34 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
+ 			goto err;
+ 		}
+ 
++		/*
++		 * The required_opp_tables parsing is not perfect, as the OPP
++		 * core does the parsing solely based on the DT node pointers.
++		 * The core sets the required_opp_tables entry to the first OPP
++		 * table in the "opp_tables" list, that matches with the node
++		 * pointer.
++		 *
++		 * If the target DT OPP table is used by multiple devices and
++		 * they all create separate instances of 'struct opp_table' from
++		 * it, then it is possible that the required_opp_tables entry
++		 * may be set to the incorrect sibling device.
++		 *
++		 * Cross check it again and fix if required.
++		 */
++		gdev = dev_to_genpd_dev(virt_dev);
++		if (!IS_ERR(gdev))
++			return PTR_ERR(gdev);
++
++		genpd_table = _find_opp_table(gdev);
++		if (!IS_ERR(genpd_table)) {
++			if (genpd_table != opp_table->required_opp_tables[index]) {
++				dev_pm_opp_put_opp_table(opp_table->required_opp_tables[index]);
++				opp_table->required_opp_tables[index] = genpd_table;
++			} else {
++				dev_pm_opp_put_opp_table(genpd_table);
++			}
++		}
++
+ 		/*
+ 		 * Add the virtual genpd device as a user of the OPP table, so
+ 		 * we can call dev_pm_opp_set_opp() on it directly.
+diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
+index 4215ffd9b11c..c40eda92a85a 100644
+--- a/drivers/pmdomain/core.c
++++ b/drivers/pmdomain/core.c
+@@ -184,6 +184,16 @@ static struct generic_pm_domain *dev_to_genpd(struct device *dev)
+ 	return pd_to_genpd(dev->pm_domain);
+ }
+ 
++struct device *dev_to_genpd_dev(struct device *dev)
++{
++	struct generic_pm_domain *genpd = dev_to_genpd(dev);
++
++	if (IS_ERR(genpd))
++		return ERR_CAST(genpd);
++
++	return &genpd->dev;
++}
++
+ static int genpd_stop_dev(const struct generic_pm_domain *genpd,
+ 			  struct device *dev)
+ {
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index 772d3280d35f..f24546a3d3db 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -260,6 +260,7 @@ int pm_genpd_remove_subdomain(struct generic_pm_domain *genpd,
+ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 		  struct dev_power_governor *gov, bool is_off);
+ int pm_genpd_remove(struct generic_pm_domain *genpd);
++struct device *dev_to_genpd_dev(struct device *dev);
+ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state);
+ int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb);
+ int dev_pm_genpd_remove_notifier(struct device *dev);
+@@ -307,6 +308,11 @@ static inline int pm_genpd_remove(struct generic_pm_domain *genpd)
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline struct device *dev_to_genpd_dev(struct device *dev)
++{
++	return ERR_PTR(-EOPNOTSUPP);
++}
++
+ static inline int dev_pm_genpd_set_performance_state(struct device *dev,
+ 						     unsigned int state)
+ {
+-- 
+2.31.1.272.g89b43f80a514
+
 
