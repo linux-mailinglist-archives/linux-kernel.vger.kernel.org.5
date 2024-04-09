@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-137130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F7D289DD4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:50:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60CD489DD16
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549DD1F276B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:50:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2BD282EF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A13350275;
-	Tue,  9 Apr 2024 14:48:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389244DA03;
+	Tue,  9 Apr 2024 14:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b="YX28zyeO"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b="wc7nePo9"
 Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D9A50A62
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4B84AED6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.26.156.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674130; cv=none; b=d+cUtoe05J+WF6mcoHRaTUmsLmfxJcfuDbzVK8J0x4vwcbRLED24lpkizlfny99/ScQBTwOU8ALmxlP2c/csXuoJof2vH6jXHiloOWujYllJrwiE6nyRs4KM0AwziWFSH8giZ5aoGedZsvhEP7yh6zkov6NwvPEkeb4Xuor8zmg=
+	t=1712673772; cv=none; b=Z7nBNntX965HjpL4h5DF+Fc/Yrd1sDaErHMHMR08ZJgabAiewlaqeEYXgAgTkWO77U0C8+dDuh+REnAVSx1EPoL4CMs+Y45D5nLfK0zr9SPa6oz48Z24IaWOBgH8nQ+gsrs0G1zqV8s57455LEPWFJ35+QfbFqTiBZsEYRuSPiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674130; c=relaxed/simple;
-	bh=bSBMOSEIwri42I+EM+PyX9ZK5/mVrNAM53JMXpJiGrY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pAT/N0gKPMY/+vxT53UFiZ8ds5pkkoNfX5yfrNxvg98OBLpszTP7Nh+52ZhnmObGICngxMgX1KJKkJ1Jh0yIXaSBto4sQ5C0FQrPqYYME1XBmQT6mpBX1f8Tvh9KwFf8yO1NF5JB6cK1uHA8s5HtJjoXBMGF/M5Q1gaQ/HhwdK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=fail (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=YX28zyeO reason="key not found in DNS"; arc=none smtp.client-ip=185.26.156.185
+	s=arc-20240116; t=1712673772; c=relaxed/simple;
+	bh=WcBHAO835OpZ7Wucwr0AFDAB7jKmJePuFUm5drOOGgY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=m5cbEa2Txy886QOMetnJBuurTS6p0wULfubHKKngcUnJaFN03nV+z6HoWHQQmInsTFsAqv5SMGEOiPdt/MAk8oMguo0FWjJWSnBWA4UE9zw7IzXahMf5Xw3b/doUKVo4XMilzUDJeylu4gBFxbJ26FQjUx7ea6NDBIlphquqSEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=fail (0-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=wc7nePo9 reason="key not found in DNS"; arc=none smtp.client-ip=185.26.156.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lausen.nl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
-Received: (qmail 31281 invoked by uid 990); 9 Apr 2024 14:42:05 -0000
+Received: (qmail 31948 invoked by uid 990); 9 Apr 2024 14:42:46 -0000
 Authentication-Results: devico.uberspace.de;
 	auth=pass (plain)
 Received: from unknown (HELO unkown) (::1)
-	by devico.uberspace.de (Haraka/3.0.1) with ESMTPSA; Tue, 09 Apr 2024 16:42:04 +0200
-Message-ID: <18a16fcd-3ae1-48af-94ed-72700a656e8e@lausen.nl>
-Date: Tue, 9 Apr 2024 10:41:59 -0400
+	by devico.uberspace.de (Haraka/3.0.1) with ESMTPSA; Tue, 09 Apr 2024 16:42:45 +0200
+Message-ID: <594fdc5a-3b09-40df-98a0-43671665e55f@lausen.nl>
+Date: Tue, 9 Apr 2024 10:42:44 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,37 +44,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+From: Leonard Lausen <leonard@lausen.nl>
 Subject: Re: [PATCH v2 0/3] gov_power_allocator: Allow binding before cooling
  devices
-Content-Language: en-US
 To: nikita@trvn.ru, Lukasz Luba <lukasz.luba@arm.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>
 Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Nikita Travkin <nikitos.tr@gmail.com>
+ Nikita Travkin <nikitos.tr@gmail.com>, regressions@lists.linux.dev
 References: <20240403-gpa-no-cooling-devs-v2-0-79bdd8439449@trvn.ru>
-From: Leonard Lausen <leonard@lausen.nl>
+Content-Language: en-US
 In-Reply-To: <20240403-gpa-no-cooling-devs-v2-0-79bdd8439449@trvn.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Bar: +
-X-Rspamd-Report: SUSPICIOUS_RECIPS(1.5) BAYES_HAM(-0.348686) XM_UA_NO_VERSION(0.01) MIME_GOOD(-0.1)
-X-Rspamd-Score: 1.061313
+X-Rspamd-Bar: /
+X-Rspamd-Report: SUSPICIOUS_RECIPS(1.5) BAYES_HAM(-0.490661) XM_UA_NO_VERSION(0.01) MIME_GOOD(-0.1)
+X-Rspamd-Score: 0.919338
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
 	d=lausen.nl; s=uberspace;
 	h=from:to:cc:subject:date;
-	bh=bSBMOSEIwri42I+EM+PyX9ZK5/mVrNAM53JMXpJiGrY=;
-	b=YX28zyeOtVRG3iXskkpsZdlPIRqBHVYU6I9cNBc3xLfDDE33JZLNx6dw+qLb8GvYKmgv711jor
-	+QGFuFRR0+cGrngBvCKAnLs+kgzAsKk4vXkJJNRjWgrM4DZIVPS8ZUZ0/kzCBZAHjLkbWDCYYd/T
-	a66wcx6AFaW4geAPdDOVjf2XvrZMj3UmZS1H076oT0/Ro4G3Etz3Zr7LTg8bxlbRpW2hQeYEZlov
-	MbbTPyUAapELfJIGPLL8ZFAjlDB+Kbw6iuGfKE03QV5IbtzVLt0ITYiKHAgjpck2xIk/JJu6c3qf
-	sH3LfY/6hjeEuytbmU/PFn/GZx4DujcrAsEtL5YgQDdphl5pS+CAAzZW1jRFviZjzDUHVE+LXkod
-	YeKhJ+ch+cIZfVZfdoLxSkt0l87oLPO94LSQwbHJa+Y/wEq19q7g3eE6eaU807uZQCAqWSCkbEJJ
-	dLBOQ/XnAgElQb5it2xk8Ea3qz4z2AnDK+DrN/gLwGEeETepW5AwJclqvsgP4rimCuDVVKZIGcRZ
-	wkKHDaT2eaCWx2Rq77++IqwPJPbqx+XaroVgA1CbIIwGrWziCtaCzgsyZmqtC2BW7UemqJmLjWBT
-	eWIxbFMSWSejefQzjqExPUM6/h4599p0e1/+fg0RKrV5JS48xRsswn3JIcQvfgsFLj+d3E0kntey
-	U=
+	bh=WcBHAO835OpZ7Wucwr0AFDAB7jKmJePuFUm5drOOGgY=;
+	b=wc7nePo90m4/dEoTfQqKRpWsmcKs0wrORamLnVXUa+5xU/Q5UTKc+dEJf2/6JMP8Oq+MDKmaXn
+	4T4kIzD7nx1SHCpEN5kgcMkdBjCPA5cPw3VKx7Ky8Dbfr4/TR9SaByXns6eNSIGoQh7RFAZtKAgM
+	8cd1y79tJ9wzE+8elKX+AJ+K77aNKdGg6is/swfkZkmbMJ7xf27NLPXNWcUcGBv6WoTTURFRxsIo
+	o/WMrHzgDQ5bqDGPWjeDOglanQ/04/MBVEMrlzFX69eQy7xmAKp6aDTtVVfp8P1Eg4YoydjTTETl
+	0XxES+ZBu4zto8ChIkWj+sgMf2+usyre1KfJ22Er48QFK0/kaZuYpE5W3rMIZ24wEgTCaz1w4zh5
+	xDjs4jXVtOeCEfgYYGRA3NuUqxyGmF3ROhn07xGkhjj9gjaSv8rnxKD5yD4CR4zltHthl5ZxzfI0
+	rYy7ES5LgnXtGiGXhlSutcj797widsU0CCkg9GrbCnBdxMkJG3YKW2OI8NYIxLt76c/rP75veTqf
+	yGCpGPvSt1vsXeVM4axHgxA7pOpaDeH0PXE6QoG3DGK1vqHw5413/bfqvH57y45ILAyNSHa+ANVQ
+	rSfa7pwFIcUm5dg3FERSNjDzW9zoK0IO1H4gkF2opDRcWm2A3dZ5ILKT6EkQqLWfD1m7nJ2WFfKr
+	Y=
 
 Hi Nikita, Hi Łukasz,
 
@@ -82,6 +82,8 @@ thank you for fixing the e83747c2f8e3 ("thermal: gov_power_allocator: Set up tri
 
 Thank you
 Leonard
+
+(Resending with regressions@lists.linux.dev in CC)
 
 #regzbot introduced: 912e97c67cc3f333c4c5df8f51498c651792e658
 #regzbot fixed-by: 1057c4c36ef8b236a2e28edef301da0801338c5f
