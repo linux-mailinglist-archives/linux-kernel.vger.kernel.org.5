@@ -1,122 +1,152 @@
-Return-Path: <linux-kernel+bounces-137108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080AA89DD13
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A998089DD14
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:44:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6932288DCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:43:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36B051F2199A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD8212FF94;
-	Tue,  9 Apr 2024 14:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5BA130A4E;
+	Tue,  9 Apr 2024 14:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="H5SG4Q6f"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OrcP0M3h"
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4AC12F5A3
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B8312F5A3
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673702; cv=none; b=nFAbL9KnmVrotRjKCK2Cy+eg2IdkJXzmO55bS3WVPrI5R6unKczzgITnAFZT/IxxsTMl9/Ps1+MiaWinuVz396iNk6ZbOR6PUypT38B5+0W1eF6AB5xjyB1+QRLMcdRSJoq8aXtu63IY0nTsH3ASsUivkUztwTV6aDrvReCihDM=
+	t=1712673723; cv=none; b=g5vwnsVqwH2gTOAcL4je9uAkmETJYn1OyNJw6eLHQOfF7zoQrbp7p9gc3aL4UZ60IaSDFBovJuvOOw4pFjjC4YSLAdQiJ19ktKgKJU1DLwc1V3kkNAdxIBq0yQBjW0Mazwsjl296JwJxu3yyRZeBCmMzDppedKI4kRR52bAEmXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673702; c=relaxed/simple;
-	bh=1Mniz3dgshc7E3Db3KWa+vxnT7MISvNh/+gY777tGEY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=av92DNBFaOWQqxnEE11pFfeG3OFqiRNPL4ZHAqXp6ugooxF4U7w3EgYmtYI1t0QAuyNBiBWXU/827NFwzgmdgASwGa3GIy/gQFnvH6Hi6n1e7QJwR9xknHDN7b26+OKPVxjNQc7tZ9BFg5DKdn330kUaJDMflt6ULQKUjGZFEgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=H5SG4Q6f; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0bec01232so46149095ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:41:40 -0700 (PDT)
+	s=arc-20240116; t=1712673723; c=relaxed/simple;
+	bh=HC00lmey8uySGF4Lqn7tzQE0xcyEUhYbAHGKCK5KpUo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e1+5llrP74adwR9tybJtAorHXf0V5rxs8kfek/sLOgJ72Xvau28OV4sprH39JBAi4/b9p3IA6oMQ4EJMR10hLgDOo1jAvo3laXvCob9LMVXz6DDWjwFnfXCFRQVeFxy4SKH68VYpKFYjbcAcExLTasWHNDkQH8F+2GJtuhpQk7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OrcP0M3h; arc=none smtp.client-ip=209.85.217.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-47a0bebeacaso721549137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:42:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712673700; x=1713278500; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KCNea12o/6VUNWUfcyPcbIWG4VttNplpFFNalEKl1QU=;
-        b=H5SG4Q6fB80fjFi/kEpbT2FX1ccDaIqQ/QSlg1jKw0MaC7TFXzqT5IzV1Vx/3HSyff
-         GK59FBVEL+el9UttKD2lHz9n3nHcykxEm9pnaww8Bcov8ah8Zk7W8ndnsVT7r7mIc5on
-         mnEIm5vlmYaA5iWHkjzxdxmvazxXUhlyTIp/SVr+RWnC5FKpXqJBGiLZcytrbf8Ka0+e
-         Qi4Euj8d8abMzjXbIfCCTZcDuuGeRWBMmNnk0auYo93E2DVpyMm/7R70IEKubfyiD+qg
-         1tEsojN2byowR1V2HDgM/UJUucoTNm+FuqqTomTGNUsJj/YI5DV9tuhyP2blRbuug8MO
-         +JhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712673700; x=1713278500;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712673720; x=1713278520; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KCNea12o/6VUNWUfcyPcbIWG4VttNplpFFNalEKl1QU=;
-        b=RnwekFKWvgXgv3Ihfs/Nmtd3oqbCmf97kJy/vyHgZtkYVsriM+gSFWIhG9eOu9mj8n
-         gFYe4A/ehIfOEgNXzI0RoHUm1Ba8LG2B+GZ/tfZqDF3GToVvGS0HVLZjXe0rK1LfwYzX
-         4yhS1Tlw31LfWc7YBv7lYH1b2aoR6N9Dad49oj3HXj3BwdkvnqeGZTwmjBtWL1ubAkGC
-         eAQzOM9ZseZug4RDMWeRF9kZTydM/b0lZgiN/K5l6dwWERpzfvaZLw1EDVgZInEeAwsk
-         xYMepiJCCa21klBiezas4/0cdupKTCYJSUTKtZ0T0jvft9KL80KELH9lhJKIV2lwTwtV
-         74Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVi06SrD5DKo2EUR/kVe3Pm9azewxquSMDZxYOoug6pXI45tahTZTxGg1q0Fpft/E/mknzTtvXWgHbcveDPpnV09CveMPE1JmvZihK1
-X-Gm-Message-State: AOJu0YwezYEQVTp27VSc21UkUPqhhe1/2jp/x6bVqo1pTa5fbP2wTSPo
-	Gi9Y9XnhgRkf2Z99M03KXoQ83/BUPWKAbkQxzPoWOh5/N7/HbMnhlQUqDTnqxTU=
-X-Google-Smtp-Source: AGHT+IGRw2dBpQjaGcDhXFkJbiyZJFy2cQnXUEeD7DIfCfoahwMGNRpxCQuIp2dqwMnS8QCDwuCNIQ==
-X-Received: by 2002:a17:902:eccb:b0:1e3:cfc5:589e with SMTP id a11-20020a170902eccb00b001e3cfc5589emr10181571plh.64.1712673699804;
-        Tue, 09 Apr 2024 07:41:39 -0700 (PDT)
-Received: from bytedance ([61.213.176.6])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170902654800b001e120a9e964sm8798565pln.126.2024.04.09.07.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 07:41:39 -0700 (PDT)
-Date: Tue, 9 Apr 2024 22:41:32 +0800
-From: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: ryncsn@gmail.com, nphamcs@gmail.com, ying.huang@intel.com,
-	songmuchun@bytedance.com, david@redhat.com, chrisl@kernel.org,
-	guo.ziliang@zte.com.cn, yosryahmed@google.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm: swap: prejudgement swap_has_cache to avoid page
- allocation
-Message-ID: <20240409144132.GA542987@bytedance>
-References: <20240408121439.GA252652@bytedance>
- <20240408132704.f966adc8d3928df4d3b8c0a9@linux-foundation.org>
+        bh=IBPxWFHl1AiWVB8UI+LeFpQ0i9dZV3ja6KQ3kYMVIr8=;
+        b=OrcP0M3hrVHMUHIU7aKw6E96OX5qd2osL/nYP1IIz9Du+yrGalPEq0XBILBGGDs1Go
+         gcHpTpj3w2IVy680zeLygy3mLCpLJG1D/rgj/eNRX7wtbihH34XC3kkTJPMqKVl2TId7
+         JOfVeY5wboQvMaALS21atRQG7s7TvkSzQnf+JD4aOXlIMIcZQ1BCI8fmCUXgnRywCSzz
+         pc/tny1MDgXpQpw1zWUZ6nakjTF2QDc4bvSKlpvoCd4KoC0mUb/Y6rxfMFagAy2KzXrs
+         VhPlSlsIWd1KhAEc76rJfEEErHqUQ3bXBsj26nB3YXwWcRsybywUjC7msqegaWfzbEAx
+         puJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712673720; x=1713278520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IBPxWFHl1AiWVB8UI+LeFpQ0i9dZV3ja6KQ3kYMVIr8=;
+        b=ZCzE2WF2z5Pljw0/EuHc5a38be7O/RjCo0BTaHzLWoCPfe2wRRfcC7TLFIQRHuPQQk
+         p8fEzclvmzeSFFKTKm/S6aesj/SQp5Zdpq8XNPSJ1vsVk/lPk4syELuTsIYCb18BW1Lx
+         cgcH+cNhKJkVp1kz07K+QNvBL3h9/fMvGDlLhVnQAbJHH98u0dfV4HllgHGotd8/veKs
+         lcrAAyEVU6jVWJa8geq89SZ/OT7X6klk0q2tnDiWMXnUGIo2q6WehvAA/bInhLVGxwBU
+         Fe7w98nULujUL15WEEdQwWLIy1B2opRWcQnjBJmz97f2mBqWll8EywZgyaHmChtLyhHY
+         fYVQ==
+X-Gm-Message-State: AOJu0YyRbne/9tZoi9PvNlrHuWUYBMedUKgBli19fKa0LcHXK/bfdXgM
+	iqC+Hv2GQNmWU86F2hgJwwIdBDvq0BzpbWiTIHvYlx8Wq/5ASlG4OVjmgvsMxGdlJ/LMgNW9Yh9
+	ksmXUH/5NYndoud2kF0KAw2/N0AY=
+X-Google-Smtp-Source: AGHT+IHbyNQhlUoN0P903X2xsmHoLT6gRckaiuzHxU42vZAdz4IEjESKJ3IHBMxz17WuucojBcnvql3hz3d1QoxWFv4=
+X-Received: by 2002:a05:6102:6c7:b0:47a:1005:ca15 with SMTP id
+ m7-20020a05610206c700b0047a1005ca15mr3911038vsg.16.1712673720180; Tue, 09 Apr
+ 2024 07:42:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408132704.f966adc8d3928df4d3b8c0a9@linux-foundation.org>
+References: <20240404195254.556896-1-jaegeuk@kernel.org>
+In-Reply-To: <20240404195254.556896-1-jaegeuk@kernel.org>
+From: Daeho Jeong <daeho43@gmail.com>
+Date: Tue, 9 Apr 2024 07:41:47 -0700
+Message-ID: <CACOAw_zwwPDfnQpWEJ7ej2FAGGBoQW7H8NcdWOutB3fHpOibew@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: don't set RO when shutting down f2fs
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+	=?UTF-8?B?TGlnaHQgSHNpZWggKOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 01:27:04PM -0700, Andrew Morton wrote:
-> On Mon, 8 Apr 2024 20:14:39 +0800 Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com> wrote:
-> 
-> > Based on qemu arm64 - latest kernel + 100M memory + 1024M swapfile.
-> > Create 1G anon mmap and set it to shared, and has two processes
-> > randomly access the shared memory. When they are racing on swap cache,
-> > on average, each "alloc_pages_mpol + swapcache_prepare + folio_put"
-> > took about 1475 us.
-> 
-> And what effect does this patch have upon the measured time?  ANd upon
-> overall runtime?
+On Thu, Apr 4, 2024 at 12:54=E2=80=AFPM Jaegeuk Kim <jaegeuk@kernel.org> wr=
+ote:
+>
+> Shutdown does not check the error of thaw_super due to readonly, which
+> causes a deadlock like below.
+>
+> f2fs_ioc_shutdown(F2FS_GOING_DOWN_FULLSYNC)        issue_discard_thread
+>  - bdev_freeze
+>   - freeze_super
+>  - f2fs_stop_checkpoint()
+>   - f2fs_handle_critical_error                     - sb_start_write
+>     - set RO                                         - waiting
+>  - bdev_thaw
+>   - thaw_super_locked
+>     - return -EINVAL, if sb_rdonly()
+>  - f2fs_stop_discard_thread
+>   -> wait for kthread_stop(discard_thread);
+>
+> Reported-by: "Light Hsieh (=E8=AC=9D=E6=98=8E=E7=87=88)" <Light.Hsieh@med=
+iatek.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  fs/f2fs/super.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index df9765b41dac..ba6288e870c5 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -4135,9 +4135,16 @@ void f2fs_handle_critical_error(struct f2fs_sb_inf=
+o *sbi, unsigned char reason,
+>         if (shutdown)
+>                 set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
+>
+> -       /* continue filesystem operators if errors=3Dcontinue */
+> -       if (continue_fs || f2fs_readonly(sb))
+> +       /*
+> +        * Continue filesystem operators if errors=3Dcontinue. Should not=
+ set
+> +        * RO by shutdown, since RO bypasses thaw_super which can hang th=
+e
+> +        * system.
+> +        */
+> +       if (continue_fs || f2fs_readonly(sb) ||
+> +                               reason =3D=3D STOP_CP_REASON_SHUTDOWN) {
 
-Hi Andrew,
+I think we can use "shutdown" variable instead of "reason =3D=3D
+STOP_CP_REASON_SHUTDOWN" to be concise.
 
-When share memory between two or more processes has swapped and pagefault now,
-it would readahead swap and call __read_swap_cache_async().
-If one of the processes calls swapcache_prepare() and finds that the cache 
-has been EXIST(another process added), it will folio_put on the basis of the 
-alloc_pages_mpol() that has been called, and then try filemap_get_folio() again.
+> +               f2fs_warn(sbi, "Stopped filesystem due to readon: %d", re=
+ason);
 
-I think the page alloc in this process is wasteful.
-when the memory pressure is large, alloc_pages_mpol() will be time-consuming, 
-so the purpose of my patch is to judge whether the page has cache before page alloc, 
-then skip page alloc and retry filemap_get_folio() to save the time of the function.
+readon -> reason?
 
-Thank you.
-
-> 
-> > So skip page allocation if SWAP_HAS_CACHE was set, just
-> > schedule_timeout_uninterruptible and continue to acquire page
-> > via filemap_get_folio() from swap cache, to speedup
-> > __read_swap_cache_async.
+>                 return;
+> +       }
+>
+>         f2fs_warn(sbi, "Remounting filesystem read-only");
+>         /*
+> --
+> 2.44.0.478.gd926399ef9-goog
+>
+>
+>
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
