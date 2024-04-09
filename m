@@ -1,90 +1,91 @@
-Return-Path: <linux-kernel+bounces-137651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB46B89E519
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:42:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6935D89E520
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A71832843A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:42:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB21DB22F7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3164158D63;
-	Tue,  9 Apr 2024 21:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4038158D6D;
+	Tue,  9 Apr 2024 21:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ud318HAF"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kBeC0vs6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA4D158A1E;
-	Tue,  9 Apr 2024 21:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9C412F381;
+	Tue,  9 Apr 2024 21:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698969; cv=none; b=B/g0wp9WvgV+Od/BNwMG4GI7lPI4tHs2qnGayH2uQMVcBCJfFSAZkXKA8Sif3LYE8nNJSCQi4c0kjKW4JYQhfHMN8kXcN8FB/NdZhL5QyTpEdZDlX9VdrZ//tlpA5pymP9BCWPPIKRlxoM+kNDxNCb7AXw8BsTp2nls3ZaKKle8=
+	t=1712699062; cv=none; b=pR3SkwVmediL7WE7q3Ps9KTQoqUd0Vr2M8+lKwUUNVfMGWQTlL0KHcEip6MaS9ciF8XCtO7BNEl/kGX8i/qx5WsXmZSv0S8ZLuqVP2JmAG2u3EBdrE+j76X2ju3+MevjM2wiL0wn/fInYQtvrSuMXCqdV7Jf8RIUdRhl77iTzEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698969; c=relaxed/simple;
-	bh=VnI1mV5conMscaAY6LWaUtz+ynM+a4jRDb2r1ctiVko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iil2HtdTAhX7w74xJYNazIAQAik0ZX86RJ7Wozax2ytUbpNR/vyF2H5sVAqWOXJONtcQyhrmw4JVdn6zjBgCwGGL2vX9mzzrupd5CS18JbawAZdXPFyhnz+IuUS4jb74LR+EyhytAVkhXMFttE8x67FzfRh/IIVZL1GEIaed50g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ud318HAF; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=cAZm87PzI6fyQ1m2jU/2dvY7F4KiYWybRLHCj3v2RmA=; b=ud318HAFAMuxza1NMA5qxCWVYS
-	Q3RQ7jjtcx3N5nPxhhPAR0r9nI5meQpupzsoLYg/sLklNXZGNvq4mJldoHmAZlB8EiPlc66C1enlq
-	5v9zE4iPBgno4IMn85s2hY3bY/kxn2nymlq59ieFhSg6I4plV2yvY3X40V7jN6+qA4t8AL8cjDmKV
-	QL1wHhqVrLEbkmzXAyAszoqKaMDh+yZfRq646kXMiDKPVWpKg079mOaofT7ZiO68GJv1A7tl2Inw5
-	ry5F7XRa498awRyp/nbS9D2xQlZqxN9g3+IyGZhZ2iwmQQDGSZCm5jlUbR8JiU25qsEUpJwq5Ir6G
-	6HhHRSJw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruJEb-00000002zqV-2c7l;
-	Tue, 09 Apr 2024 21:42:29 +0000
-Date: Tue, 9 Apr 2024 22:42:29 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Xu <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Yin Fengwei <fengwei.yin@intel.com>, Yang Shi <shy828301@gmail.com>,
-	Zi Yan <ziy@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
-	Hugh Dickins <hughd@google.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Miaohe Lin <linmiaohe@huawei.com>,
-	Naoya Horiguchi <naoya.horiguchi@nec.com>,
-	Richard Chang <richardycc@google.com>
-Subject: Re: [PATCH v1 01/18] mm: allow for detecting underflows with
- page_mapcount() again
-Message-ID: <ZhW2RQtKDvUrbyWA@casper.infradead.org>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-2-david@redhat.com>
+	s=arc-20240116; t=1712699062; c=relaxed/simple;
+	bh=gmPhoEZQy7H8+eEDT13YM1nQeRhuIBur3SEMSC6wVTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=slKe03b1UeHzx4cD3a2XZMdVAQINfWIKxLEnq2lnnR2IHQTqq/qSc/Pgrwa/wkX4qfKqVGmQi3pYsbiUVJjki/2QlaPZVT7EOM5zY+9hZHGTg+rc3Us0djRpUe+snQSU2YxG1/MGGhueq0NUUl5LeyMWige/BP3BV2YhYS0yRG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kBeC0vs6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51721C433F1;
+	Tue,  9 Apr 2024 21:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712699061;
+	bh=gmPhoEZQy7H8+eEDT13YM1nQeRhuIBur3SEMSC6wVTg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kBeC0vs6D2fvf+lsS/n8G0lta7BNfZAuk1/4mf/TRvmI4GVp05cmjiZ96zfT2IRvz
+	 XMzlzbe1pUq4KXjae9qBQivng6f+ciojwBrNToODd/XXXE2LiQLs12GREzh5sZPhfY
+	 7rvi8THMxQKfLg+xdwQDMh9YyfjT0wLMmpmfeyRwvnsd4942DAMDc5drnu3st4ATr4
+	 6Qp+B7XtXqjl/a9Elw14myYvdSHMvbMft5p3W3K33PqcXWHTA4MIGLoSDQKtGHPCU1
+	 2qohVAGUHihmNDPFH0Dy+XSeGTWdSWT8KA4X3jJLzQL8Or8pRD8UqZIexkxTgCqKPG
+	 b9AkuzVskncag==
+Date: Tue, 9 Apr 2024 14:44:19 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Edward Cree <ecree.xilinx@gmail.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Erick Archer
+ <erick.archer@outlook.com>, Long Li <longli@microsoft.com>, Ajay Sharma
+ <sharmaajay@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Kees Cook
+ <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+ <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+ <justinstitt@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shradha Gupta
+ <shradhagupta@linux.microsoft.com>, Konstantin Taranov
+ <kotaranov@microsoft.com>, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ llvm@lists.linux.dev
+Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
+ mana_cfg_rx_steer_req_v2
+Message-ID: <20240409144419.6dc12ebb@kernel.org>
+In-Reply-To: <ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
+References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
+	<20240408110730.GE8764@unreal>
+	<20240408183657.7fb6cc35@kernel.org>
+	<ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409192301.907377-2-david@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 09, 2024 at 09:22:44PM +0200, David Hildenbrand wrote:
-> Commit 53277bcf126d ("mm: support page_mapcount() on page_has_type()
-> pages") made it impossible to detect mapcount underflows by treating
-> any negative raw mapcount value as a mapcount of 0.
+On Tue, 9 Apr 2024 18:01:40 +0100 Edward Cree wrote:
+> > Shared branch would be good. Ed has some outstanding patches 
+> > to refactor the ethtool RSS API.  
+> 
+> For the record I am extremely unlikely to have time to get those
+>  done this cycle :(
+> Though in any case fwiw it doesn't look like this series touches
+>  anything that would conflict; mana doesn't appear to support
+>  custom RSS contexts and besides the changes are well away from
+>  the ethtool API handling.
 
-Yes, but I don't think this is the right place to check for underflow.
-We should be checking for that on modification, not on read.  I think
-it's more important for page_mapcount() to be fast than a debugging aid.
-
+Better safe than sorry, since the change applies cleanly on an -rc tag
+having it applied to both trees should be very little extra work.
 
