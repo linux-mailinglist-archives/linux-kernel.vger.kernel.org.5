@@ -1,64 +1,78 @@
-Return-Path: <linux-kernel+bounces-137313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4496C89E046
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:23:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E515989E07B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:33:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22611F24ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:23:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 305F6B24340
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A052213E88D;
-	Tue,  9 Apr 2024 16:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1476713E3E3;
+	Tue,  9 Apr 2024 16:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOf15R97"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B51Ub3Qy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34F013E3EF;
-	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED4A137C2A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679753; cv=none; b=GVIDf/Rau8FvjBI5wDdXtGAhsiQQN3hTcIGgB5toGTb+HqSmKtCTKD7Eq+zl/XclKExfkRH1qR6Juo+RO5Ggssa9nflCG2zYIsTA0mG/noQIss1IVpiwtdpB001wEIxOcOzONo0p/oqXoCN929ioc0LIeOE37ACMuPGHck1Fq58=
+	t=1712679916; cv=none; b=WHyvqSPMrBP/m04oSa/GAHrO2RENdT69bD8ZDFzwOv0rS3DveZinV3YdfCelfRZtiXXnQ9qAj2GCvqBMJthRUWm556Jd8niF2/W48EhOZbZarkutW2WktqDs/bpDHv7uSGUnhZDtuHzRAid5/HrQq6G5+NOaRIU84Mk/TW6X928=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679753; c=relaxed/simple;
-	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
+	s=arc-20240116; t=1712679916; c=relaxed/simple;
+	bh=+cjrGu90UubJL76esXMipBZVAl1+63up9ZPbsgzMTl8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UIbPt3n29SPe3OM1HQr4vEBpyYGCfPIVdAkE2fllySvx4PYg/zapleLTCLHq9O7WUlasVq0hkEbOVJZCGnYCs3cXVHb4znHD7OQ39zHRu6eps8Xu2KwO2XeI2ZpU2jZjG1lXChXjVEliMPJoBvpapLfa3TBbf3yG/h6F22g5P5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOf15R97; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 783B4C433F1;
-	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712679753;
-	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uOf15R97CfO4NRrpGlR+ut/EZaH8gJePsx76fVYZ2CwpkY6p2z9oJg8boVPOdOoce
-	 WETlWuf5gfSinxoonTC04g5Kc3Sj2wZe9v17KvknHY3kunNrQaSO0L6nThQ5p/8nRJ
-	 nKKPh7+OV5XuHOCgKUobpVWsMEUosqNN+Oy7MtOavp44t3NaOWktoHNU3flF3rj12P
-	 bxvOmVWzXpwkP+BPmdlgreV35svfYgm5TTPVIxw45uz3NeIFb27nURTpm/B4vJffGz
-	 rHBMtsPRwqA5Of0yoDXPSPXCbiEUfKL6dAA1Ko3ghM2b9lkhjl0APrqbDbXL3wc/MZ
-	 nHjQ03z4Hsjsg==
-Date: Tue, 9 Apr 2024 09:22:32 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 01/13] fs: fiemap: add physical_length field to extents
-Message-ID: <20240409162232.GA6367@frogsfrogsfrogs>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hScpEnYHMqlBXjL+gb0bnQ/ykwH4boMAKyS5oi/QrauprhHPuQNtpgj3264YkfIZHPzQFzFrdqIKtAfg//C+5XCrh+UNM7PBN5O2/zum50iOz7lXEGMOA1kKa1qGk0GOHCYxNbejbB0OYg/vXuYGWG6ye2YkJuL6VhQIvrAMp9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B51Ub3Qy; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712679915; x=1744215915;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+cjrGu90UubJL76esXMipBZVAl1+63up9ZPbsgzMTl8=;
+  b=B51Ub3QyiZN0LCTyIe0mJi3kMBos1UeXjaoEianA3sRqX2yRwiqQggZi
+   n7LF3bEsNyTwDKULbzlmBtdOUQJ1VbsLExxFCx3XO2Pv+GS29BhK9CmKO
+   CKKdSrMfxCrV4JD+PQyLls4a4D5yBPDAscopnj7+weTT65NlneupvP0KX
+   9Cjr2x/zeONMes+q8vM16TJB+6ozlVeAqbjFHkp3srBTR948Kt9tVVQpn
+   a+DoDDYjx6FTsUIOpiIYcGGaTssbyiaWl00OFjpRI1iwK13MPyE3kzD5f
+   rqxao3YQPTwpFdVZ4brGIfM1eaqDmuoO/nvglPeDxDyBFxNHcBJi/AfYz
+   A==;
+X-CSE-ConnectionGUID: iktY9IiZTnCtwSUlOZRoGw==
+X-CSE-MsgGUID: 7rjC0sP8S4+wPkglQCtTjQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18610065"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="18610065"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:25:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915404275"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915404275"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 09:25:10 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruEHT-00000002r9y-0iDB;
+	Tue, 09 Apr 2024 19:25:07 +0300
+Date: Tue, 9 Apr 2024 19:25:06 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: linux-kernel@vger.kernel.org, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH 2/2 RESEND] sched/topology: Optimize topology_span_sane()
+Message-ID: <ZhVr4i5F1uWyrJ15@smile.fi.intel.com>
+References: <20240409155250.3660517-1-kyle.meyer@hpe.com>
+ <20240409155250.3660517-3-kyle.meyer@hpe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,157 +81,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <20240409155250.3660517-3-kyle.meyer@hpe.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 03, 2024 at 03:22:42AM -0400, Sweet Tea Dorminy wrote:
-> Some filesystems support compressed extents which have a larger logical
-> size than physical, and for those filesystems, it can be useful for
-> userspace to know how much space those extents actually use. For
-> instance, the compsize [1] tool for btrfs currently uses btrfs-internal,
-> root-only ioctl to find the actual disk space used by a file; it would
-> be better and more useful for this information to require fewer
-> privileges and to be usable on more filesystems. Therefore, use one of
-> the padding u64s in the fiemap extent structure to return the actual
-> physical length; and, for now, return this as equal to the logical
-> length.
+On Tue, Apr 09, 2024 at 10:52:50AM -0500, Kyle Meyer wrote:
+> Optimize topology_span_sane() by removing duplicate comparisons.
 > 
-> [1] https://github.com/kilobyte/compsize
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  Documentation/filesystems/fiemap.rst | 28 +++++++++++++++++-------
->  fs/ioctl.c                           |  3 ++-
->  include/uapi/linux/fiemap.h          | 32 ++++++++++++++++++++++------
->  3 files changed, 47 insertions(+), 16 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/fiemap.rst b/Documentation/filesystems/fiemap.rst
-> index 93fc96f760aa..c2bfa107c8d7 100644
-> --- a/Documentation/filesystems/fiemap.rst
-> +++ b/Documentation/filesystems/fiemap.rst
-> @@ -80,14 +80,24 @@ Each extent is described by a single fiemap_extent structure as
->  returned in fm_extents::
->  
->      struct fiemap_extent {
-> -	    __u64	fe_logical;  /* logical offset in bytes for the start of
-> -				* the extent */
-> -	    __u64	fe_physical; /* physical offset in bytes for the start
-> -				* of the extent */
-> -	    __u64	fe_length;   /* length in bytes for the extent */
-> -	    __u64	fe_reserved64[2];
-> -	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-> -	    __u32	fe_reserved[3];
-> +            /*
-> +             * logical offset in bytes for the start of
-> +             * the extent from the beginning of the file
-> +             */
-> +            __u64 fe_logical;
-> +            /*
-> +             * physical offset in bytes for the start
-> +             * of the extent from the beginning of the disk
-> +             */
-> +            __u64 fe_physical;
-> +            /* logical length in bytes for this extent */
-> +            __u64 fe_logical_length;
-> +            /* physical length in bytes for this extent */
-> +            __u64 fe_physical_length;
-> +            __u64 fe_reserved64[1];
-> +            /* FIEMAP_EXTENT_* flags for this extent */
-> +            __u32 fe_flags;
-> +            __u32 fe_reserved[3];
->      };
->  
->  All offsets and lengths are in bytes and mirror those on disk.  It is valid
-> @@ -175,6 +185,8 @@ FIEMAP_EXTENT_MERGED
->    userspace would be highly inefficient, the kernel will try to merge most
->    adjacent blocks into 'extents'.
->  
-> +FIEMAP_EXTENT_HAS_PHYS_LEN
-> +  This will be set if the file system populated the physical length field.
+> The total number of comparisons is reduced from N * (N - 1) to
+> N * (N - 1) / 2 (per non-NUMA scheduling domain level).
 
-Just out of curiosity, should filesystems set this flag and
-fe_physical_length if fe_physical_length == fe_logical_length?
-Or just leave both blank?
+..
 
->  VFS -> File System Implementation
->  ---------------------------------
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 661b46125669..8afd32e1a27a 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -138,7 +138,8 @@ int fiemap_fill_next_extent(struct fiemap_extent_info *fieinfo, u64 logical,
->  	memset(&extent, 0, sizeof(extent));
->  	extent.fe_logical = logical;
->  	extent.fe_physical = phys;
-> -	extent.fe_length = len;
-> +	extent.fe_logical_length = len;
-> +	extent.fe_physical_length = len;
->  	extent.fe_flags = flags;
->  
->  	dest += fieinfo->fi_extents_mapped;
-> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
-> index 24ca0c00cae3..3079159b8e94 100644
-> --- a/include/uapi/linux/fiemap.h
-> +++ b/include/uapi/linux/fiemap.h
-> @@ -14,14 +14,30 @@
->  
->  #include <linux/types.h>
->  
-> +/*
-> + * For backward compatibility, where the member of the struct was called
-> + * fe_length instead of fe_logical_length.
-> + */
-> +#define fe_length fe_logical_length
+> -	for_each_cpu(i, cpu_map) {
+> -		if (i == cpu)
+> -			continue;
+> +	for_each_cpu_from(i, cpu_map) {
 
-This #define has global scope; are you sure this isn't going to cause a
-weird build problem downstream with some program that declares an
-unrelated fe_length symbol?
+Hmm... I'm not familiar with the for_each_cpu*(), but from the above
+it seems only a single comparison? Or i.o.w. can i ever repeat the value?
+And what about i < cpu cases?
 
-> +
->  struct fiemap_extent {
-> -	__u64 fe_logical;  /* logical offset in bytes for the start of
-> -			    * the extent from the beginning of the file */
-> -	__u64 fe_physical; /* physical offset in bytes for the start
-> -			    * of the extent from the beginning of the disk */
-> -	__u64 fe_length;   /* length in bytes for this extent */
-> -	__u64 fe_reserved64[2];
-> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-> +	/*
-> +	 * logical offset in bytes for the start of
-> +	 * the extent from the beginning of the file
-> +	 */
-> +	__u64 fe_logical;
-> +	/*
-> +	 * physical offset in bytes for the start
-> +	 * of the extent from the beginning of the disk
-> +	 */
-> +	__u64 fe_physical;
-> +	/* logical length in bytes for this extent */
-> +	__u64 fe_logical_length;
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Or why not just leave the field name the same since the "logical length
-in bytes" comment is present both here in the header and again in the
-documentation?
 
---D
-
-> +	/* physical length in bytes for this extent */
-> +	__u64 fe_physical_length;
-> +	__u64 fe_reserved64[1];
-> +	/* FIEMAP_EXTENT_* flags for this extent */
-> +	__u32 fe_flags;
->  	__u32 fe_reserved[3];
->  };
->  
-> @@ -66,5 +82,7 @@ struct fiemap {
->  						    * merged for efficiency. */
->  #define FIEMAP_EXTENT_SHARED		0x00002000 /* Space shared with other
->  						    * files. */
-> +#define FIEMAP_EXTENT_HAS_PHYS_LEN	0x00004000 /* Physical length is valid
-> +						    * and set by FS. */
->  
->  #endif /* _UAPI_LINUX_FIEMAP_H */
-> -- 
-> 2.43.0
-> 
-> 
 
