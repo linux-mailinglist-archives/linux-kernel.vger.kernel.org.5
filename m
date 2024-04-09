@@ -1,277 +1,312 @@
-Return-Path: <linux-kernel+bounces-136722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 808BF89D792
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D43889D796
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:04:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3CD21C22F95
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:04:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30EE91C213D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F2485C44;
-	Tue,  9 Apr 2024 11:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1DC85C73;
+	Tue,  9 Apr 2024 11:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RGD6dQSK"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="DlxH/Fna"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF207C0B0;
-	Tue,  9 Apr 2024 11:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF501811E9;
+	Tue,  9 Apr 2024 11:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660629; cv=none; b=IZHszvTz8gIjRJOCrWDoRkurJf41h32MVBe5CqxMSTasT4BoQ+YzgHcEUjfnU6KkgkSdSfHypvV6Tx2aMcaEaTe1Vu2x+JP0vLez2RmawHvk707Eikl0IMT7yOZCVA7Eb597TYBnJPjHwhLtWgLv60MnovgnkLq8PZoHwg1hLCQ=
+	t=1712660665; cv=none; b=Q6zuMhK64D7vou+2qr5pL69YbNAN+KVPIRh49V4QZPJxI1B998kD0Td/3jeu6hdSoGmBWYYfd0/rcCUjKDhagPq/QG58oruOpbEdUBEsEAPzR0S+7cmQ/MFmOaGbIKutkMiMY+fCVp90TsMF8ybcn5JNvDTdH2AU+Rxq5HMFnNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660629; c=relaxed/simple;
-	bh=BKL2aI470n0H/gucOxUDsX3tYrfnCJ+YtT/c8wWVhec=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QrIiLoIKPKJn5ot+vUMiXqUyspcysguBlDl7VXqMCW5CykJ19kVEpaC9pMwls4pUET3tkuMRVWTMwTZx6oXq+rKxNfZcThsfi99pYY4bvb8kBLioHVKtck7jXyjGZYXqM9Ym218W4faNf0X8OKxdZAHfbCKoq9FS03MR3njHedw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RGD6dQSK; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4397m36D020972;
-	Tue, 9 Apr 2024 11:03:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=6BRVh/GiB7fDH1Ya2R3Cq
-	R2SPX5lMgLeOW15Ssmy+TM=; b=RGD6dQSKR1dwEVoE8wtqsPzE5sxIWSyxA85KR
-	QH8aku8W9OEdjcUTruzaWq3hD/T+dyeH8qAv530RiqUg+uydVQ4eaDSukNjrSxWu
-	HU0MNXGj25GVQxAXqMl9ZIRmDLfSZztVREFeTczeYl5VPBBkmsBJM/859mLiFP4H
-	Vjbdxk9NOTBM0mkn9NndU6l+fj+XJyxWb10HCuVS5oPA/pLOsIk8eIWbtjvMa9Bt
-	lk6AJw6kHv9pwb7ss+Sq8wz2yiZt2Jl0pmkEEGto/YLV24WD4fJgkwAAL2sAr9hs
-	/C+RlU1bwTExdRZIesqGmLeHBnIyhuwlJ++1nA3PO9G+6548A==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcvtk0tur-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 11:03:42 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 439B3glf008175
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Apr 2024 11:03:42 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 9 Apr 2024 04:03:37 -0700
-Date: Tue, 9 Apr 2024 16:33:34 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
-        <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <djakov@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_anusha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v7 1/5] dt-bindings: interconnect: Add Qualcomm IPQ9574
- support
-Message-ID: <ZhUghsa5Do5m7wrX@hu-varada-blr.qualcomm.com>
-References: <20240403104220.1092431-1-quic_varada@quicinc.com>
- <20240403104220.1092431-2-quic_varada@quicinc.com>
- <58c9b754-b9a7-444d-9545-9e6648010630@kernel.org>
- <Zg5q6mnWtK6hmPBT@hu-varada-blr.qualcomm.com>
- <ZhTxFVDH0xTSkw7r@hu-varada-blr.qualcomm.com>
- <1ec401be-11cb-416a-9eae-d72ea8acf06f@kernel.org>
+	s=arc-20240116; t=1712660665; c=relaxed/simple;
+	bh=qqf5a/EY02zPcDiutgF2yPSaWnzOls7BMpdi+ctjzRA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MXD5jXt+6aub2rD07p4vLwsf1Mil9EBq096RtvpIGIoBQYum0GLpD1OaP1DGN/SCL+d/UTTcu/PNQDTw6up+h1FFdfcnEZutHNvV4kdg0ojwH445N2UBzwMoMNGqegMeQE1xn23wUgOGafY8vjqI7Ak8+TSXMP3yyBjfJEoLWKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=DlxH/Fna; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id F22911C007B; Tue,  9 Apr 2024 13:04:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1712660653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RZ+v7gDWnIHLHrKpLguqCMBP/+unrvR2yYCVCES/Tcw=;
+	b=DlxH/Fnam4Xic6XHXP9QYSXq49VMSvA6hQBciBC7KWYICbyYBdNUEKvuBe3ehgJ2ALQ4MX
+	+NkMcDnSIZUlcCqVLVekfxblhZ38WIJhVsq4lF2y3JMTWBkAkiwLgFBGNBkrEos9L7k76P
+	F3pweM24Mt5N9Iz+SIMc9W5J2IQIwY8=
+Date: Tue, 9 Apr 2024 13:04:12 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+	fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, megi@xff.cz
+Subject: Re: [PATCHv3 2/2] usb: typec: anx7688: Add driver for ANX7688 USB-C
+ HDMI bridge
+Message-ID: <ZhUgrNwRYoaV1AIJ@duo.ucw.cz>
+References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+ <ZhPM4XU8ttsFftBd@duo.ucw.cz>
+ <ZhUQ6kzV5ARlkfPC@kuha.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e3VgoD62Ejch02x1"
 Content-Disposition: inline
-In-Reply-To: <1ec401be-11cb-416a-9eae-d72ea8acf06f@kernel.org>
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dwonnYnHQ4i9LRfht3nMrlyW9rUsxKkC
-X-Proofpoint-ORIG-GUID: dwonnYnHQ4i9LRfht3nMrlyW9rUsxKkC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_08,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 suspectscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404090070
+In-Reply-To: <ZhUQ6kzV5ARlkfPC@kuha.fi.intel.com>
 
-On Tue, Apr 09, 2024 at 11:45:51AM +0200, Krzysztof Kozlowski wrote:
-> On 09/04/2024 09:41, Varadarajan Narayanan wrote:
-> > On Thu, Apr 04, 2024 at 02:25:06PM +0530, Varadarajan Narayanan wrote:
-> >> On Wed, Apr 03, 2024 at 04:59:40PM +0200, Krzysztof Kozlowski wrote:
-> >>> On 03/04/2024 12:42, Varadarajan Narayanan wrote:
-> >>>> Add interconnect-cells to clock provider so that it can be
-> >>>> used as icc provider.
-> >>>>
-> >>>> Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
-> >>>> interfaces. This will be used by the gcc-ipq9574 driver
-> >>>> that will for providing interconnect services using the
-> >>>> icc-clk framework.
-> >>>>
-> >>>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> >>>> ---
-> >>>> v7:
-> >>>> Fix macro names to be consistent with other bindings
-> >>>> v6:
-> >>>> Removed Reviewed-by: Krzysztof Kozlowski
-> >>>> Redefine the bindings such that driver and DT can share them
-> >>>>
-> >>>> v3:
-> >>>> Squash Documentation/ and include/ changes into same patch
-> >>>>
-> >>>> qcom,ipq9574.h
-> >>>> 	Move 'first id' to clock driver
-> >>>>
-> >>>> ---
-> >>>>  .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
-> >>>>  .../dt-bindings/interconnect/qcom,ipq9574.h   | 87 +++++++++++++++++++
-> >>>>  2 files changed, 90 insertions(+)
-> >>>>  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> >>>> index 944a0ea79cd6..824781cbdf34 100644
-> >>>> --- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> >>>> +++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> >>>> @@ -33,6 +33,9 @@ properties:
-> >>>>        - description: PCIE30 PHY3 pipe clock source
-> >>>>        - description: USB3 PHY pipe clock source
-> >>>>
-> >>>> +  '#interconnect-cells':
-> >>>> +    const: 1
-> >>>> +
-> >>>>  required:
-> >>>>    - compatible
-> >>>>    - clocks
-> >>>> diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> >>>> new file mode 100644
-> >>>> index 000000000000..0b076b0cf880
-> >>>> --- /dev/null
-> >>>> +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> >>>> @@ -0,0 +1,87 @@
-> >>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> >>>> +#ifndef INTERCONNECT_QCOM_IPQ9574_H
-> >>>> +#define INTERCONNECT_QCOM_IPQ9574_H
-> >>>> +
-> >>>> +#define ICC_ANOC_PCIE0		0
-> >>>> +#define ICC_SNOC_PCIE0		1
-> >>>> +#define ICC_ANOC_PCIE1		2
-> >>>> +#define ICC_SNOC_PCIE1		3
-> >>>> +#define ICC_ANOC_PCIE2		4
-> >>>> +#define ICC_SNOC_PCIE2		5
-> >>>> +#define ICC_ANOC_PCIE3		6
-> >>>> +#define ICC_SNOC_PCIE3		7
-> >>>> +#define ICC_SNOC_USB		8
-> >>>> +#define ICC_ANOC_USB_AXI	9
-> >>>> +#define ICC_NSSNOC_NSSCC	10
-> >>>> +#define ICC_NSSNOC_SNOC_0	11
-> >>>> +#define ICC_NSSNOC_SNOC_1	12
-> >>>> +#define ICC_NSSNOC_PCNOC_1	13
-> >>>> +#define ICC_NSSNOC_QOSGEN_REF	14
-> >>>> +#define ICC_NSSNOC_TIMEOUT_REF	15
-> >>>> +#define ICC_NSSNOC_XO_DCD	16
-> >>>> +#define ICC_NSSNOC_ATB		17
-> >>>> +#define ICC_MEM_NOC_NSSNOC	18
-> >>>> +#define ICC_NSSNOC_MEMNOC	19
-> >>>> +#define ICC_NSSNOC_MEM_NOC_1	20
-> >>>> +
-> >>>> +#define ICC_NSSNOC_PPE		0
-> >>>> +#define ICC_NSSNOC_PPE_CFG	1
-> >>>> +#define ICC_NSSNOC_NSS_CSR	2
-> >>>> +#define ICC_NSSNOC_IMEM_QSB	3
-> >>>> +#define ICC_NSSNOC_IMEM_AHB	4
-> >>>> +
-> >>>> +#define MASTER_ANOC_PCIE0		(ICC_ANOC_PCIE0 * 2)
-> >>>> +#define SLAVE_ANOC_PCIE0		((ICC_ANOC_PCIE0 * 2) + 1)
-> >>>
-> >>> Which existing Qualcomm platform has such code?
-> >>
-> >> Existing Qualcomm platforms don't use icc-clk. They use icc-rpm
-> >> or icc-rpmh. clk-cbf-msm8996.c is the only driver that uses icc-clk.
-> >>
-> >> The icc_clk_register automatically creates master & slave nodes
-> >> for each clk entry provided as input with the node-ids 'n' and
-> >> 'n+1'. Since clk-cbf-msm8996.c has only one entry, it could just
-> >> define MASTER_CBF_M4M and SLAVE_CBF_M4M with 0 and 1 and avoid these
-> >> calculations.
-> >>
-> >> However, ipq9574 gives an array of clock entries as input to
-> >> icc_clk_register. To tie the order/sequence of these clock
-> >> entries correctly with the node-ids, this calculation is needed.
-> >>
-> >>> This is the third time I am asking for consistent headers. Open
-> >>> existing, recently added headers and look how it is done there. Why?
-> >>> Because I am against such calculations and see no reason for them.
-> >>
-> >> Apologies. Regret that I have to trouble you.
-> >>
-> >> In this ipq9574 case, have to reconcile between the following
-> >> feedbacks.
-> >>
-> >> 1. https://lore.kernel.org/linux-arm-msm/fe40b307-26d0-4b2a-869b-5d093415b9d1@linaro.org/
-> >>    We could probably use indexed identifiers here to avoid confusion:
-> >>    [ICC_BINDING_NAME] = CLK_BINDING_NAME
-> >>
-> >> 2. https://lore.kernel.org/linux-arm-msm/95f4e99a60cc97770fc3cee850b62faf.sboyd@kernel.org/
-> >>    Are these supposed to be in a dt-binding header?
-> >>
-> >> 3. https://lore.kernel.org/linux-arm-msm/031d0a35-b192-4161-beef-97b89d5d1da6@linaro.org/
-> >>    Do you use them as well in the DTS?
-> >>
-> >> Having the defines (with the calculations) seemed to to comply
-> >> with the above three feedbacks.
-> >>
-> >> Please let me know if this can be handled in a different way that
-> >> would be consistent with other Qualcomm platforms.
-> >
-> > Krzysztof,
-> >
-> > Is this ok? Can I post a new version addressing other review comments?
->
-> I don't understand and you did not answered before, why you have to do
-> it differently than all other Qualcomm interconnect providers. Maybe the
-> code here needs it, maybe not, but I don't see any argument proving this.
 
-Other Qualcomm interconnect providers use the icc-rpm.
+--e3VgoD62Ejch02x1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	1. The SoC specific interconnect providers have control
-	   over the master/slave id-numbers and is hard coded.
+Hi!
 
-	2. These id-numbers are used by the RPM firmware.
+> > This is driver for ANX7688 USB-C HDMI, with flashing and debugging
+> > features removed. ANX7688 is rather criticial piece on PinePhone,
+> > there's no display and no battery charging without it.
+> >=20
+> > There's likely more work to be done here, but having basic support
+> > in mainline is needed to be able to work on the other stuff
+> > (networking, cameras, power management).
+> >=20
+> > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > Co-developed-by: Martijn Braam <martijn@brixit.nl>
+> > Co-developed-by: Samuel Holland <samuel@sholland.org>
+> > Signed-off-by: Pavel Machek <pavel@ucw.cz>
+>=20
+> Just couple of quick comments below - I did not have time to go over
+> this very thoroughly, but I think you need to make a new version in
+> any case because of comments in 1/2.
 
-IPQ9574 uses icc-clk.
+Yes, there will be new version.
 
-	1. The ipq9574 specific interconnect provider doesn't
-	   have control over the master/slave id-numbers. The
-	   icc-clk framework auto generates it in the order of
-	   the clock entries given as input.
+There is ton of sleep primitives, and existing ones are okay. I can
+change everything to fdelay or whatever primitive-of-the-day is, but
+I'd rather not do pointless changes.
 
-	2. These auto-generated id-numbers have to be correctly
-	   tied to the DT nodes. Else, the relevant clocks may
-	   not get enabled.
+You can ask for major changes, or complain about extra newlines, but
+doing both in the same email does not make sense.
 
-Since ICC-CLK creates two ids per clock entry (one MASTER_xxx and
-one SLAVE_xxx), using those MASTER/SLAVE_xxx macros as indices in
-the below array would create holes.
+> Btw, Co-developed-by comes before Signed-off-by I think.
 
-	static int icc_ipq9574_hws[] = {
-		[MASTER_ANOC_PCIE0] = GCC_ANOC_PCIE0_1LANE_M_CLK,
-		[MASTER_SNOC_PCIE0] = GCC_SNOC_PCIE0_1LANE_S_CLK,
-		[MASTER_ANOC_PCIE1] = GCC_ANOC_PCIE1_1LANE_M_CLK,
-		[MASTER_SNOC_PCIE1] = GCC_SNOC_PCIE1_1LANE_S_CLK,
-		. . .
-	};
+I believe this order is fine, too.
 
-Other Qualcomm drivers don't have this issue and they can
-directly use the MASTER/SLAVE_xxx macros.
+> > +++ b/drivers/usb/typec/anx7688.c
+> > @@ -0,0 +1,1830 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * ANX7688 USB-C HDMI bridge/PD driver
+> > + *
+> > + * Warning, this driver is somewhat PinePhone specific.
+>=20
+> So why not split this into core part and PinePhone specific glue
+> part?
 
-As the MASTER_xxx macros cannot be used, have to define a new set
-of macros that can be used for indices in the above array. This
-is the reason for the ICC_BINDING_NAME macros.
+Potentially a lot of work I can't really test and would rather not do.
 
-Does this answer your concern? Please let me know.
+> > +	struct delayed_work work;
+> > +	struct timer_list work_timer;
+> > +
+> > +	struct mutex lock;
+>=20
+> Undocumented lock.
 
-Thanks
-Varada
+This is simple driver. How do you expect me to document it? Protects
+this data structure, not exactly uncommon.
+
+> > +
+> > +	/* wait for power to stabilize and release reset */
+> > +	msleep(10);
+> > +	gpiod_set_value(anx7688->gpio_reset, 0);
+> > +	usleep_range(2, 4);
+>=20
+> Why not just use usleep_range() in both cases.
+
+It does not really make code any better. Can do if you insist.
+
+> > +static int anx7688_connect(struct anx7688 *anx7688)
+> > +{
+> > +	struct typec_partner_desc desc =3D {};
+> > +	int ret, i;
+> > +	u8 fw[2];
+> > +	const u8 dp_snk_identity[16] =3D {
+> > +		0x00, 0x00, 0x00, 0xec,	/* id header */
+> > +		0x00, 0x00, 0x00, 0x00,	/* cert stat */
+> > +		0x00, 0x00, 0x00, 0x00,	/* product type */
+> > +		0x39, 0x00, 0x00, 0x51	/* alt mode adapter */
+> > +	};
+> > +	const u8 svid[4] =3D {
+> > +		0x00, 0x00, 0x01, 0xff,
+> > +	};
+>=20
+> Why not get those from DT?
+
+Are you sure it belongs to the DT (and that DT people will agree)?
+
+> > +	u32 caps[8];
+> > +
+> > +	dev_dbg(anx7688->dev, "cable inserted\n");
+> > +
+> > +	anx7688->last_status =3D -1;
+> > +	anx7688->last_cc_status =3D -1;
+> > +	anx7688->last_dp_state =3D -1;
+> > +
+> > +	msleep(10);
+>=20
+> Please make a comment here why you have to wait, and use
+> usleep_range().
+
+/* Dunno because working code does that and waiting for hardware to
+settle down after cable insertion kind of looks like a good thing */
+
+I did not write the driver, and there's no good documentation for this
+chip. I can try to invent something, but...
+
+> > +	i =3D 0;
+> > +	while (1) {
+> > +		ret =3D anx7688_reg_read(anx7688, ANX7688_REG_EEPROM_LOAD_STATUS0);
+> > +
+> > +		if (ret >=3D 0 && (ret & ANX7688_EEPROM_FW_LOADED) =3D=3D ANX7688_EE=
+PROM_FW_LOADED) {
+> > +			dev_dbg(anx7688->dev, "eeprom0 =3D 0x%02x\n", ret);
+> > +			dev_dbg(anx7688->dev, "fw loaded after %d ms\n", i * 10);
+> > +			break;
+> > +		}
+> > +
+> > +		if (i > 99) {
+> > +			set_bit(ANX7688_F_FW_FAILED, anx7688->flags);
+> > +			dev_err(anx7688->dev,
+> > +				"boot firmware load failed (you may need to flash FW to anx7688 fi=
+rst)\n");
+> > +			ret =3D -ETIMEDOUT;
+> > +			goto err_vconoff;
+> > +		}
+> > +		msleep(5);
+> > +		i++;
+> > +	}
+>=20
+> You need to use something like time_is_after_jiffies() here instead of
+> a counter.
+
+Well, this works as well, but yes, I agree here.
+
+> > +	ret =3D i2c_smbus_read_i2c_block_data(anx7688->client,
+> > +					    ANX7688_REG_FW_VERSION1, 2, fw);
+> > +	if (ret < 0) {
+> > +		dev_err(anx7688->dev, "failed to read firmware version\n");
+> > +		goto err_vconoff;
+> > +	}
+> > +
+> > +	dev_dbg(anx7688->dev, "OCM firmware loaded (version 0x%04x)\n",
+> > +		 fw[1] | fw[0] << 8);
+> > +
+> > +	/* Unmask interrupts */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_STATUS_INT, 0);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_STATUS_INT_MASK, ~ANX7=
+688_SOFT_INT_MASK);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_IRQ_EXT_SOURCE2, 0xff);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_IRQ_EXT_MASK2, (u8)~AN=
+X7688_IRQ2_SOFT_INT);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	/* time to turn off vbus after cc disconnect (unit is 4 ms) */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_VBUS_OFF_DELAY_TIME, 1=
+00 / 4);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	/* 300ms (unit is 2 ms) */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_TRY_UFP_TIMER, 300 / 2=
+);
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	/* maximum voltage in 100 mV units */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_MAX_VOLTAGE, 50); /* 5=
+ V */
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	/* min/max power in 500 mW units */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_MAX_POWER, 15 * 2); /*=
+ 15 W */
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_MIN_POWER, 1);  /* 0.5=
+ W */
+> > +	if (ret)
+> > +		goto err_vconoff;
+> > +
+> > +	/* auto_pd, try.src, try.sink, goto safe 5V */
+> > +	ret =3D anx7688_reg_write(anx7688, ANX7688_REG_FEATURE_CTRL, 0x1e & ~=
+BIT(2)); // disable try_src
+>=20
+> Those two comments are obscure.
+
+I hoped they make sense to someone familiar with the area. Can't do
+much better than remove them.
+
+> This function seems to have lot of hard coded information above.
+> Shouldn't much of that come from DT?
+
+You tell me, I suppose you seen some similar drivers.
+
+> Please note that if you have that PinePhone specific glue driver, you
+> can get much of the hard coded information from there, if getting the
+> information from DT is not an option for what ever reason.
+
+Thanks for review.
+
+Could you trim the parts of email you are not replying to?
+
+Do you see any other major problems?
+
+Do you have any idea if this chip is used elsewhere? I do not have any
+other hardware with anx7688, so I won't be able to test it elsewhere,
+and if there are no other users, having specific driver should not be
+a problem for anyone. If there's other user, well, there's chance they
+have docs and can help.
+
+How would you envision the split? Do you have any other driver that
+could be used as an example? Is someone else putting them in the
+device tree?
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--e3VgoD62Ejch02x1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhUgrAAKCRAw5/Bqldv6
+8tdbAJ9whsn5MtGDbYUeie+RE5DcrfiBTQCfd0dzide5IWF2ZejjVK++2UM1z+Q=
+=UoGp
+-----END PGP SIGNATURE-----
+
+--e3VgoD62Ejch02x1--
 
