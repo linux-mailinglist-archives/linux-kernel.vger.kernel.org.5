@@ -1,223 +1,156 @@
-Return-Path: <linux-kernel+bounces-137241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D97989DF61
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:38:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC1E89DF64
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42D802890C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:38:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1BA1C22DF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA4213D60F;
-	Tue,  9 Apr 2024 15:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02F113D89C;
+	Tue,  9 Apr 2024 15:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="M8RQIUlD"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ifzo3XZ0"
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1977113D511
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905C913D626
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676952; cv=none; b=uAJfoF34dmW53BG2ghxjEh1OMiiq7qt3lE+cpeySbOEcezmu3oSuHnQFob3cfpHxbOJeaw+6klWy7ohVNTWKrYv5LxLH2xqOI8MLpIQea7yn9HLx3SFAckbjcVEj7k+uzFtz9eMfJwa1GjBKsEdO3zNe3m+00SZb13jbmnzdxHY=
+	t=1712676957; cv=none; b=se8435RqteqvIAeECeeYrIQV19H+az4bxppmrP4Ur380jX1Eq3C7o2D6N8oNsURQD/CDe5BoiSnS5pli3KVBXeJWKG30w+yYZajQaICqPdDFImRqr/t8SmtkD3/uenP/IvORbHwnoynsybEP/cKNtl7M+brNXoPYqmniQowBUzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676952; c=relaxed/simple;
-	bh=0pjTPnekrZ6Mo2O3A8pGX4AK75zIDzNbFZm+tv/AiyM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+8VkL+2+9mWk5ncmKkvZ4OmZtUjwgsjYmpobsHfV6FCi+K+6I/Qn3IldUwoWxrI/7usVFyQ15oP53IaCTLVIBsJYTnaEAiyMG01mHo2MW91Kif0xHNssEcXgP6nkl6CqPSX3yvBe1z9Jr9f84ymNjmPmV0RolZxRfuvDe65cnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=M8RQIUlD; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d8b194341eso5801841fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:35:49 -0700 (PDT)
+	s=arc-20240116; t=1712676957; c=relaxed/simple;
+	bh=P04LBfkaeW2XuO46xw0RoQrDoyCOfrzCkGumelNfjDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YLDItj8j90DL+JSizeHuewlix49n8oblnCIZ8aVtuP5InVgdil+NQsA6tskNiUAy7UXYbY/MN7sAQXIVE7NXce/9dX5PR2Qj+EtDy6ZqBwIaKPC3rHjAj4S0j1gJem5Ii6W7FBYUd+RnnLOoX53BRSe0hBnmZH22uwIcMW5USL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ifzo3XZ0; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d886f17740so26628941fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712676948; x=1713281748; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nARArI/JGxcqeVSW+91I3DRTdX+G+3rkUWRdOGuyuMs=;
-        b=M8RQIUlDboOKc3mYlmgZamgiQC/aqLQdEjingQuXqsMIhm0B833yg2d/kFvFgYpdcs
-         uI+RCkeL7K7XLOF/96xLDwC4TbsVVRzLdv3icLl0LbRBslasba4tb2KPocIze+zr9O24
-         tGobTO82QFpSI01PDd9R/PIqqdqEHl3XFIhJxdf+MiL+I2oPBRvjlk2cSkwsLYvgqoR/
-         YW58TtOa+ApGdF7yexxbzbmvIHajgQlMIMa9jTil8T4fJg2HAARCZpAsJmdTktmgwkRc
-         qXPZOxCylHAAHTn1sCxK5OWt2JuGhCGFF2KvvdtpBvYSXePb/br+ec+iNyk53+5Z65uH
-         WihA==
+        d=linaro.org; s=google; t=1712676953; x=1713281753; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRsd3hpzzr4WHD3K4LXpLnFX04nl95mWHv7i9FXsiIo=;
+        b=Ifzo3XZ0knqheuQUy5YJ25SbTbC+2x+t6hBB9lkdL0R/ZGHelTE41TUNcl/2VBLLJv
+         ZqFqWGbhrUW8g/QchdBkBBeSZJ+/OirjmC+EyL1RR5IwfPq+L2bVDHXgaLIqBvhAJmZ/
+         SL4fKCGd7XVJBo3oNR3W6MjIXdzCjzeJeziR+Y9+hYdtfSHtVw2iT9CRLr5lYUTPd6Rk
+         I8+l0aUfqC6hMxogPlb9itjA7REQBUY+fH121jd/r/GRWYV86JQzhUGij5LX387nytbb
+         NgyI5PyUrXDbwDx5mD0ix9MK+KIpYOsgdZYR7I6uRUyeW7h6DCBLeyF2ykzpZPXjNqUT
+         1cZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712676948; x=1713281748;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nARArI/JGxcqeVSW+91I3DRTdX+G+3rkUWRdOGuyuMs=;
-        b=RFVbwR4gFJ50V8yPwElFWASbPzh7m5x04NFo3ke3tEjccmKwFeSe+326MEgLpZELqa
-         fLRQNtIIG8SUkL3TdFeCrOWdBjHHO3g6zO/MJ7FHDcFbkKTkt+BSiP7Nyw0oURm28jwQ
-         Aefx0JRnMVvXYb5cypaghQci+ZnEZ00rXDhQ9VhIrey7GUPU1V8g2ExvvaPeIG7DwJue
-         Ouptq2i3RQSzawyhf49udK76qI7tMlYN+DW9MhCWQhzFAUUfZOD9TYN1hgm3thDmzS8H
-         YAWki61RUZ0ssYpvwZK5cUk4wITeY30KVe3OW5YDX/try0RgdwvCrOsyOUCo0Sd/Wxtr
-         P84g==
-X-Forwarded-Encrypted: i=1; AJvYcCX/kKLKxA5edGbSHBmr7ytp8gCBlW/QPMZdZjLSX9Q+sQmGr5GSwihfw4IpFJNoAtGjs2umDjOkuRnfO5aK/gDJWqHhOMdgPW+JTxyt
-X-Gm-Message-State: AOJu0YzO/8Z2E7ZZRJr5H3DBg0UpVVh8x/oSyTkCW87QgTJz/eW1ILfq
-	AlLDxgggPO8Hh8TRUiBSPwaE4fZ0D0z5XzdavgeqlO5xw7aK7pa0tGYu8SBczuxjN9Ws0Cqjg+3
-	qyaJHU+3xV9NXn5vIvubc7Op4RpXX5mVUDil0sg==
-X-Google-Smtp-Source: AGHT+IGYR0H515M8Yuyw6jAM8maTiRT7zQOgLaut79Nmzv6VqTS4JpTG+pUsMdsTdhL2wX5eqAgRDApWqIUOQCBytW4=
-X-Received: by 2002:a2e:b8c3:0:b0:2d8:a814:583d with SMTP id
- s3-20020a2eb8c3000000b002d8a814583dmr166320ljp.30.1712676947967; Tue, 09 Apr
- 2024 08:35:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712676953; x=1713281753;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BRsd3hpzzr4WHD3K4LXpLnFX04nl95mWHv7i9FXsiIo=;
+        b=eVxg4tmDvTA4ayXARmEhs2Xv2g6SpYcnk1gysZZ8qwvofUeepsVoeRIfQZZ4ZBcYU3
+         Cxknv7v/OlC1fOOhaBU30IjIqShPFynBwNRUtGskXfhU/V7EXM8eIDcp1tOpLorzSNuq
+         pAHiUUo/ZTo4ULGbTEy1smcK6OF+8M/SDAXAE7n/MSkCQE3uowDECV4uI4YFNQI9WmZE
+         wBVMKUuOTPtMMmxBwtDVoC2NCRhLUnljoTLoz8myMCTJQcZQ/aTLetfzKa+0jutLuOA1
+         BOSwd0QkY5FgX9LZl8RDi2lHYY70z16s5ZhSYiws8erqM1zY9wjSN4pP2gjh4JprkWvW
+         n1tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRThJ2TC9a8T+CmlJMJ1lTpLHyhnPDJL/+4JoWd4NHIAf/yhvljeA/oUJfCnakEUmACRWAu4IwO8lNoP5bZslQpLjZNOmfVRxfMZtM
+X-Gm-Message-State: AOJu0YxaGVCsvB9F92Q1L+EUnv9+f9n4rhXQOznqxSiaYi8W7kXmJ442
+	4Z34vag1uQB6n5wyFFo8FFwT1VFRxEs00PJFCwZXkz1KDQPPC92HrII2hgZrU0XZvuaugtgbBnr
+	b
+X-Google-Smtp-Source: AGHT+IHJYOHXxN+KPaWlA8Ai6GNsv61R44Zkfg2lEX23bMYFoBeClEaCKCd8pkT/YOsSHwvrrH2xYQ==
+X-Received: by 2002:a2e:9259:0:b0:2d8:a1b3:d4ba with SMTP id v25-20020a2e9259000000b002d8a1b3d4bamr4385ljg.11.1712676952665;
+        Tue, 09 Apr 2024 08:35:52 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id m15-20020a2e910f000000b002d808b86073sm1571238ljg.78.2024.04.09.08.35.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 08:35:52 -0700 (PDT)
+Date: Tue, 9 Apr 2024 18:35:50 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, 
+	martijn@brixit.nl, samuel@sholland.org, gregkh@linuxfoundation.org, 
+	linux-usb@vger.kernel.org, megi@xff.cz
+Subject: Re: [PATCHv3 2/2] usb: typec: anx7688: Add driver for ANX7688 USB-C
+ HDMI bridge
+Message-ID: <4q7o5vb26ibkbvqal5nn4kdnc32rrajhtszrf4fnuisnlfcsg5@6322saeu7qoe>
+References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+ <ZhPM4XU8ttsFftBd@duo.ucw.cz>
+ <ZhUQ6kzV5ARlkfPC@kuha.fi.intel.com>
+ <ZhUgrNwRYoaV1AIJ@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325131624.26023-1-brgl@bgdev.pl> <6b63d5d2-5f30-4fbd-a872-91f32dc32c87@gmail.com>
-In-Reply-To: <6b63d5d2-5f30-4fbd-a872-91f32dc32c87@gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 9 Apr 2024 17:35:36 +0200
-Message-ID: <CAMRc=McWdU-=MoGe+yVnj4OKzM-2D9KUZnQuj0MmtxDG10e3kw@mail.gmail.com>
-Subject: Re: [PATCH v6 00/16] power: sequencing: implement the subsystem and
- add first users
-To: Xilin Wu <wuxilin123@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhUgrNwRYoaV1AIJ@duo.ucw.cz>
 
-On Sat, Apr 6, 2024 at 5:03=E2=80=AFAM Xilin Wu <wuxilin123@gmail.com> wrot=
-e:
->
-> I tested the patchset on SM8550 and it does give me working WiFi. However=
- I
-> seethe following warnings during boot.
->
-> [    5.973011] mhi mhi0: Requested to power ON
-> [    6.597591] mhi mhi0: Power on setup success
-> [    6.597631] sysfs: cannot create duplicate filename '/devices/platform=
-/soc@0/1c00000.pcie/pci0000:00/0000:00:00.0/resource0'
-> [    6.597634] CPU: 7 PID: 154 Comm: kworker/u32:5 Tainted: G S          =
-       6.9.0-rc1-next-20240328-g955237c9980c #1
-> [    6.597635] Hardware name: AYN Odin 2 (DT)
-> [    6.597637] Workqueue: async async_run_entry_fn
-> [    6.597645] Call trace:
-> [    6.597646]  dump_backtrace+0xa0/0x128
-> [    6.597649]  show_stack+0x20/0x38
-> [    6.597650]  dump_stack_lvl+0x74/0x90
-> [    6.597653]  dump_stack+0x18/0x28
-> [    6.597654]  sysfs_warn_dup+0x6c/0x90
-> [    6.597658]  sysfs_add_bin_file_mode_ns+0xdc/0x100
-> [    6.597660]  sysfs_create_bin_file+0x7c/0xb8
-> [    6.597662]  pci_create_attr+0xb4/0x1a8
-> [    6.597665]  pci_create_resource_files+0x64/0xd0
-> [    6.597667]  pci_create_sysfs_dev_files+0x24/0x40
-> [    6.597669]  pci_bus_add_device+0x54/0x138
-> [    6.597670]  pci_bus_add_devices+0x40/0x98
-> [    6.597672]  pci_host_probe+0x70/0xf0
-> [    6.597673]  dw_pcie_host_init+0x248/0x658
-> [    6.597676]  qcom_pcie_probe+0x234/0x330
-> [    6.597677]  platform_probe+0x70/0xd8
-> [    6.597680]  really_probe+0xc8/0x3a0
-> [    6.597681]  __driver_probe_device+0x84/0x170
-> [    6.597682]  driver_probe_device+0x44/0x120
-> [    6.597683]  __device_attach_driver+0xc4/0x168
-> [    6.597684]  bus_for_each_drv+0x8c/0xf0
-> [    6.597686]  __device_attach_async_helper+0xb4/0x118
-> [    6.597687]  async_run_entry_fn+0x40/0x178
-> [    6.597689]  process_one_work+0x16c/0x410
-> [    6.597691]  worker_thread+0x284/0x3a0
-> [    6.597693]  kthread+0x118/0x128
-> [    6.597693]  ret_from_fork+0x10/0x20
-> [    6.597698] ------------[ cut here ]------------
-> [    6.597698] proc_dir_entry '0000:00/00.0' already registered
-> [    6.597710] WARNING: CPU: 7 PID: 154 at fs/proc/generic.c:375 proc_reg=
-ister+0x138/0x1d0
-> [    6.597713] Modules linked in:
-> [    6.597714] CPU: 7 PID: 154 Comm: kworker/u32:5 Tainted: G S          =
-       6.9.0-rc1-next-20240328-g955237c9980c #1
-> [    6.597715] Hardware name: AYN Odin 2 (DT)
-> [    6.597716] Workqueue: async async_run_entry_fn
-> [    6.597718] pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYP=
-E=3D--)
-> [    6.597719] pc : proc_register+0x138/0x1d0
-> [    6.597721] lr : proc_register+0x138/0x1d0
-> [    6.597723] sp : ffff800081e3b9a0
-> [    6.597723] x29: ffff800081e3b9a0 x28: 0000000000000000 x27: ffffddb2a=
-28eabe0
-> [    6.597725] x26: ffff3425c9ada5c0 x25: ffffddb2a2d4eef0 x24: ffff3425c=
-9ada540
-> [    6.597726] x23: 0000000000000004 x22: ffff3425c7b1822c x21: 000000000=
-0000004
-> [    6.597727] x20: ffff3425c7b18180 x19: ffff3425c9adaec8 x18: fffffffff=
-fffffff
-> [    6.597729] x17: 3040636f732f6d72 x16: 6f6674616c702f73 x15: ffff80008=
-1e3b910
-> [    6.597730] x14: 0000000000000000 x13: 0a64657265747369 x12: 676572207=
-9646165
-> [    6.597731] x11: fffffffffff00000 x10: ffffddb2a27c4fb0 x9 : ffffddb29=
-f5d7528
-> [    6.597733] x8 : 00000000ffff7fff x7 : ffffddb2a27c4fb0 x6 : 80000000f=
-fff8000
-> [    6.597734] x5 : 0000000000000358 x4 : 0000000000000000 x3 : 00000000f=
-fffffff
-> [    6.597736] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff3425c=
-5ce0000
-> [    6.597737] Call trace:
-> [    6.597737]  proc_register+0x138/0x1d0
-> [    6.597739]  proc_create_data+0x48/0x78
-> [    6.597741]  pci_proc_attach_device+0x84/0x118
-> [    6.597743]  pci_bus_add_device+0x5c/0x138
-> [    6.597744]  pci_bus_add_devices+0x40/0x98
-> [    6.597745]  pci_host_probe+0x70/0xf0
-> [    6.597746]  dw_pcie_host_init+0x248/0x658
-> [    6.597748]  qcom_pcie_probe+0x234/0x330
-> [    6.597749]  platform_probe+0x70/0xd8
-> [    6.597750]  really_probe+0xc8/0x3a0
-> [    6.597751]  __driver_probe_device+0x84/0x170
-> [    6.597752]  driver_probe_device+0x44/0x120
-> [    6.597753]  __device_attach_driver+0xc4/0x168
-> [    6.597754]  bus_for_each_drv+0x8c/0xf0
-> [    6.597756]  __device_attach_async_helper+0xb4/0x118
-> [    6.597757]  async_run_entry_fn+0x40/0x178
-> [    6.597759]  process_one_work+0x16c/0x410
-> [    6.597760]  worker_thread+0x284/0x3a0
-> [    6.597761]  kthread+0x118/0x128
-> [    6.597762]  ret_from_fork+0x10/0x20
-> [    6.597763] ---[ end trace 0000000000000000 ]---
->
-> This probably only occurs when the relevant drivers on compiled as built-=
-in.
-> Similar behavior has been noticed before as well:
->
-> https://lore.kernel.org/lkml/20240201155532.49707-1-brgl@bgdev.pl/T/#mdee=
-ca9bc8e19458787d53738298abcfff443068a
->
-> Thanks,
-> Xilin
->
+On Tue, Apr 09, 2024 at 01:04:12PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > This is driver for ANX7688 USB-C HDMI, with flashing and debugging
+> > > features removed. ANX7688 is rather criticial piece on PinePhone,
+> > > there's no display and no battery charging without it.
+> > > 
+> > > There's likely more work to be done here, but having basic support
+> > > in mainline is needed to be able to work on the other stuff
+> > > (networking, cameras, power management).
+> > > 
+> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > > Co-developed-by: Martijn Braam <martijn@brixit.nl>
+> > > Co-developed-by: Samuel Holland <samuel@sholland.org>
+> > > Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> > 
+> > Just couple of quick comments below - I did not have time to go over
+> > this very thoroughly, but I think you need to make a new version in
+> > any case because of comments in 1/2.
+> 
 
-Thanks for the report. The reason for this was populating the platform
-devices before the bridge device was fully added. In case of loadable
-modules this meant the pwrctl probe would be deferred long enough for
-that to complete so I didn't see it but with pwrctl built-in this
-would trigger the problem. I fixed it locally and will resend with
-that addressed.
+[skipped]
 
-Bart
+> 
+> > > +static int anx7688_connect(struct anx7688 *anx7688)
+> > > +{
+> > > +	struct typec_partner_desc desc = {};
+> > > +	int ret, i;
+> > > +	u8 fw[2];
+> > > +	const u8 dp_snk_identity[16] = {
+> > > +		0x00, 0x00, 0x00, 0xec,	/* id header */
+> > > +		0x00, 0x00, 0x00, 0x00,	/* cert stat */
+> > > +		0x00, 0x00, 0x00, 0x00,	/* product type */
+> > > +		0x39, 0x00, 0x00, 0x51	/* alt mode adapter */
+> > > +	};
+> > > +	const u8 svid[4] = {
+> > > +		0x00, 0x00, 0x01, 0xff,
+> > > +	};
+> > 
+> > Why not get those from DT?
+> 
+> Are you sure it belongs to the DT (and that DT people will agree)?
+
+From Documentation/devicetree/bindings/connector/usb-connector.yaml:
+
+            altmodes {
+                displayport {
+                    svid = /bits/ 16 <0xff01>;
+                    vdo = <0x00001c46>;
+                };
+            };
+
+BTW, I don't see the VDO for the DP altmode in your code. Maybe I missed
+it at a quick glance.
+
+> 
+> > > +	u32 caps[8];
+> > > +
+
+
+-- 
+With best wishes
+Dmitry
 
