@@ -1,215 +1,156 @@
-Return-Path: <linux-kernel+bounces-137715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF2689E650
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:44:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D63389E651
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:45:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C4E51F22DA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF95284D11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C555158DD2;
-	Tue,  9 Apr 2024 23:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098B5159207;
+	Tue,  9 Apr 2024 23:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nAcjPDAW"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2091.outbound.protection.outlook.com [40.107.237.91])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MRkTDG+8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA17F158D6E
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706242; cv=fail; b=AUSbam2hIKe9jj82vfSec1OhwjVMWTJ0zTPQNF9Z/SMqk1Rf5xDVaTPVGbhmArud+J3TF+fA2K/5BFXRX7pl3FlNLxju3Ybu8KvjPeAsVUd28pv2ZbwLxKzhR+JnwUik+B2i/tTf2Isyt1/epa4nljlI5R38/KjVC51Sn5+lak8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706242; c=relaxed/simple;
-	bh=t6LM5vAiMkZIQB3y1ybar1uwWUn4IT7dPJvV0Zr+kJI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=NngFebhX8K6cFLgADqY4I6wz3G1zRYX6hDrTZ8oB7QtXjGaf8vpcD0F+wNduYdZxOsWiEZOYOI8GSB+SSp+90KJPDl/tKonJfKK+rE5XadqLxkijtcg6yBfeFCJci1DOGcavAtHNkZe4cQgav8sMID4CPsTjzFv0AX+YjFfPT4c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nAcjPDAW; arc=fail smtp.client-ip=40.107.237.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xi+3pvDvOVxI5yXfdGGEQhgvZpb+NKDP96OnbU3lTPZxmfFJxuI72YaIEktEJdLDtS8dTtF5+dxEgaFKn9dpdjO0dGfgBdUOa0iRMybTAJeVRfTAu723wxZN6FbbR4/fv+4hjZHbdXrfr1wrOMiJgn62bIjnIYoHRGhsvcmWOZ0DUh1EMKip5LvYZSK8qCwlhCKukGFl9bPmD+CvaL6AGhFIXo6KD3cYeAz8rIprwihx3zLcPjOxaDtoLn2x8POp/Lj/0Ql5pUS4O3awxM4iUwrezebj4mEm0SO6zVxKCbAffkwddfFN9XfdJvllRi4M4vv9rl0tWRjlaERwjN/UOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZtYTOEh4QaWorr43L3gIXx64bhliZyCJB+XpBOpnfnY=;
- b=acpbnNMFSjuW2F/GF7XDJ2VI4xwM9sVYi7kcXFseCy5rM6Bser2UxfQtZHDM5PgFXLLakEAzgJOeLqARrZer0PydIAZh8YGsGIAzp8+sf40tFPy7EQMAcY+XRWEyfBrUJJyVZUbsz7GqvpmeQP7j4u6YnNB/c5B5w7g8tUWxQEljmAXWmaMTBFehxY+yfm4wZoDG4A9WvvE6ClJn3JlxB8HILipb0XM3QdU/s0OIosMVePW52tGx75UHawEnHdT3da11Wi0iqWS4x+SFGWTm5x0lyqUScllgEdZjWgL0jm3qISuW/mNiSZ0B87Z2iTqDAsMoajACRXBI2/r2UPpoiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZtYTOEh4QaWorr43L3gIXx64bhliZyCJB+XpBOpnfnY=;
- b=nAcjPDAW0kACTUv5lj0Y/8tRiH/b3l1rt3VC8DswdR/Y9x2JskqMcO5yof+yx1xoRzs+RhlUszlFJMCKFqKyGM/j3Z9wb53p6NMN3vUnPidrWJp8kWBmWhsqbEv05qZSU5gy8xb6InpN6aX8Jwi3muJRcFYzks21wyEutN1UQCgGFkrObwsw4KRhQyTuc72hx3p57wOaubPe21ByEu9vigKyRRkTW5xHDP/i7Xhz+6MMX/7z3FVNi1iMZkv6ZQTS6wX7tBsYQBNN8qqx5EPXlYxlBTm3L3Gnii4tQ8ort7+34j5WkmL0/JgoscbdAbCqcco4TbKwwTTrFdM3JxTocQ==
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by CY5PR12MB6371.namprd12.prod.outlook.com (2603:10b6:930:f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Tue, 9 Apr
- 2024 23:43:57 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.053; Tue, 9 Apr 2024
- 23:43:57 +0000
-Date: Tue, 9 Apr 2024 20:43:55 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
-Message-ID: <20240409234355.GJ5383@nvidia.com>
-References: <20240321220802.679544-1-peterx@redhat.com>
- <20240322161000.GJ159172@nvidia.com>
- <ZgHJaJSpoeJVEccN@x1n>
- <20240326140252.GH6245@nvidia.com>
- <Zg8gEyE4o_VJsTmx@x1n>
- <20240405181633.GH5383@nvidia.com>
- <ZhBwVLyHr8WEKSx2@x1n>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhBwVLyHr8WEKSx2@x1n>
-X-ClientProxiedBy: BL1PR13CA0252.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::17) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467571591F1;
+	Tue,  9 Apr 2024 23:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712706244; cv=none; b=JK2/CouzBU0oHG6CHvxDy73yoGH9sQ0CzCxtmD9MUX6Cj/d+NM7QWJnrHaDg//Jxa4+98YT2EAInH7Fe711KNAVWlCuYJu4qoE1v8aHIEUqHOfIWvhksykG6FJS98C5ue4w4e7inh62Q5cVIXJD1g1ONGApIZNllEiJn6adMKu0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712706244; c=relaxed/simple;
+	bh=v4Esx9cF4KlSWIcQ2kqz/TpABAeRs6jtLpyXFM7NH+w=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=B8OaW/ka7MIbTiqS/+BCZ/0WseXzF4kZeF9LJCAcdqxd7I+P9xzB7EjWiMQ0C273j43gdIoudtqL51FqdnjUthcOsCqF4HoLyaj2NYNWfaVb1xQDaSPKTeQuydBUwtND1qkJgIZs7ehBHyiAXxXO1cjLYxqKHHAp/S8gw3FmyYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MRkTDG+8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1334BC43390;
+	Tue,  9 Apr 2024 23:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712706243;
+	bh=v4Esx9cF4KlSWIcQ2kqz/TpABAeRs6jtLpyXFM7NH+w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=MRkTDG+8qYVtJprKDkKROpi+qmMYRDozGGUHK/ANM3jblCM+04FmSYPNSJqxOPy0f
+	 3AibsMXWDJLkq5lIJhLOnniO1RXbiqfoG9VxeMOTZnhp/ZW5ip/hqorJd5nJK7xnAu
+	 9BE/9VrovpSZM2DwXg2ubmBAqni6ooUrfj00SJwVBnU1Bll4Z2tepkwsjQ37kbvR82
+	 7/J/XexNSvWH9kw+t7/KGyzDm9OJXbTnlXFS3ZZ0OK8QHRG/93tgRNeiTrAFJR4Gtc
+	 4suJPDU95W2D8i+SXtP5OXGYHZlvsSXF6Yekr58Kg5B4QoPxMf79wpTD3rpOR/IqCq
+	 +HsV3zP8Qg5WQ==
+Date: Wed, 10 Apr 2024 08:44:00 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ rsavitski@google.com
+Subject: Re: [PATCH] ring-buffer: Only update pages_touched when a new page
+ is touched
+Message-Id: <20240410084400.d08b17cc846c233619e3c9fd@kernel.org>
+In-Reply-To: <20240409151309.0d0e5056@gandalf.local.home>
+References: <20240409151309.0d0e5056@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CY5PR12MB6371:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	iXQTxovTY807gc9Dbk5H0zd9d0njVbKMhGDXOQQ6ZTfgqyaFPOgiRx4Mm4bl0xB8/31350HIhR084ItECUUS9eEcpvJqW3JxtpmM59l+Nu2rQCGLcq4OISstEP3jYYHjaDUN8g5XVvgfMUvzafeYWdwIrDNHzODw8jTGuwRjiYTmswad9tTkbQmFH8XKGqebBpVt/IcchePxCyZcJ6YmacEx5O4zWVPpkfj3gBLD8YVroioVW8QUWelKirZsM3CD6Kml3GZsn5G6nNUhqMG88wk/GJRjfobkkcxRAGqR0BsiyBXIA6j95P7wnfrNs07dGJbcKq51rcL3V6CjHtoEJRIIKQGqVMyvHKxdb1ikHXTH7dmFZA+uWT3b8biLb0OfshoICsnk0pZLix2Q8FALh1vvX/Y6OB61pAR2koybkQimnh5CCHlf/RmEfnTxIYkeUQIe2CoBvUnmsfTJEQ8H2Olwuijj2tn0a7t26qisAnGPCwrBOrP0RZGSz7czl0awcF4UB4aH4Ba02cVp/JkguACxwR2bRXlWx1VStVtu52JNseiF73W3+DGuGK5BXNlooS3TDobd+CE4AgVZlKDeLiYr9rGDnhWKgjts2A/J2Wb2BH8XY81uonrjBpgM/v5lL6OzW9Hch0PRZqIzzcx9cburqln0VWUxWN25AOVSMnI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?LsbAex/tFaOhbX5oXZtD2xnKSHaLeub2PpPUmpl9Y4EinNTpaBVG8vnUJOWG?=
- =?us-ascii?Q?e/y7V8hJtgWVDC0rkXlLnKpc4TtC+9zKlae4wCl+pXU85lIFDQP9seYfJLYF?=
- =?us-ascii?Q?oEANW1pktsvHbr6OZlSh8TkvzUGe6e/jJG6J6c9OJQjl3yAZKkRj2KAmAGuC?=
- =?us-ascii?Q?7DWJR4SyjRGOln34+eJDGyo8OkRjSfnSmjkvn9UnXoTMqdzh8c08s1CVxqin?=
- =?us-ascii?Q?piyxmajEGbJ8xSYtlc0qHVZZT9r4PqnZazYJUu3h2sFb8WULeXkEcjRn+2/T?=
- =?us-ascii?Q?CL+wwDvuFk6ycyTyatRwdWkvZoR0xMP+3nqLp/aiLN1nJxiRf4EKH5BK0F5K?=
- =?us-ascii?Q?+O7CmocJ4fIGpWNwXj/2sDYpUykq58u2jZGwxFlvEpxy3/Fg95YGadeOowqC?=
- =?us-ascii?Q?J+RRMpxr0mF3gqyrSxQ6lu/QEgIMXeedjrl4a0tO6kmQqs+93a3I2lKgHdGw?=
- =?us-ascii?Q?tHUTHInOH6556qlhkMptj5KeK2r92pPeG1U5+zY0NlgaGexxpnT7/GJWW6TR?=
- =?us-ascii?Q?q+3WGX1ffFsk2yQAXMuvYVBDewEWi+zUKnHdxpxa1CMK0hqJyqdzUb3K7VrJ?=
- =?us-ascii?Q?aWW/9BqXWMPBJT/7M4mNzozLBLiKipDlaQ4C4nq/UJuj8XfMWsvUf4O+Styo?=
- =?us-ascii?Q?aEM9YwlIG4AzxxV65ZXH5BFJ0mSMo/rQpd++4tWJth8cLrfMwhUvgTl+exbk?=
- =?us-ascii?Q?SjKlTW7yGaKIIIUAM35bfS7SVK4W7J4l+D5ymCFCH8M6QIgEM5ZlTU7hwL/m?=
- =?us-ascii?Q?E++4/wtyRULEQd04V1YCuUZYMEX1+8NzhrE2eOuOoNMle0O3+c/qPvXv125V?=
- =?us-ascii?Q?niP47nXoiMGXvSd9+GyYUnNkuwfiiXa9bqEXTRdwtAp2zNerQslFSA9j48yO?=
- =?us-ascii?Q?0iWeN6EroSDCvRyhpTrj5HFTtpwjaCCglGLgXYe68aOxiDLqmXHuw/1f7NzZ?=
- =?us-ascii?Q?ER4NULBHpqZW/H77fQLVa3KpkFueTW0qCMAaxz+2zEMC/WZwzSJnh6cc6wpg?=
- =?us-ascii?Q?n2iVCPxpVhLcNm6LNkPBKDpcaemM65as+I39xolAOodWS0sVi02NmxWG95KC?=
- =?us-ascii?Q?J48e5+W/77mvgrt8p/1edxo10TGzDdBSUj6fqojnZaDjGVeaQa5j/l7mRIgT?=
- =?us-ascii?Q?YtW5amIZHFu1ScXv7QvJ8JUMuLKNyznJPJdNikPmoFc9Z3FKoAuwRo5FFkzA?=
- =?us-ascii?Q?iziyqOneDlKtDUTooHdz+6xef+7poKlK1II4pe4VCX0xj9/3U/8XwSMNRKlX?=
- =?us-ascii?Q?TcaQNtPGsdwlAcj9ZqrZq+7V9FS5MBHoN3oHgIPv4X1pi531SZUmJEAiMuvP?=
- =?us-ascii?Q?laDiXae2IQ1TM1+QqUu/Taey/VgL0nJya/bbhVQu6XU1p4NiIOZ8BitSojst?=
- =?us-ascii?Q?iXuUC1TEBRedIsRztPhmsrARqVSkLxjmuJrEvbnGHPVMDfkXz26fvgLAtSPr?=
- =?us-ascii?Q?yKaQLoVnWrBmbcqfaf1OF4dse5IietzKQddHb/62jAYx/USjB0FD7vL/PMBH?=
- =?us-ascii?Q?DT2+xLhhAtDQE4+/Ho/512dmzC9N4te2pdMA4wHNbAXfSISUOsAxb9UM/m8S?=
- =?us-ascii?Q?ihV6z0q3kuX/QAwP5flrKN0tCFCiLbrObP4TA0aC?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85e3d269-d78b-41b7-d9ce-08dc58eeec68
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 23:43:57.2831
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W8tC1X3VQ0gDilRgFzcj7VTWoVsSZCmOuOX+sy3uB0ahEU1M7HHxIrKg+VfaSHQA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6371
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 05, 2024 at 05:42:44PM -0400, Peter Xu wrote:
-> In short, hugetlb mappings shouldn't be special comparing to other huge pXd
-> and large folio (cont-pXd) mappings for most of the walkers in my mind, if
-> not all.  I need to look at all the walkers and there can be some tricky
-> ones, but I believe that applies in general.  It's actually similar to what
-> I did with slow gup here.
+On Tue, 9 Apr 2024 15:13:09 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I think that is the big question, I also haven't done the research to
-know the answer.
-
-At this point focusing on moving what is reasonable to the pXX_* API
-makes sense to me. Then reviewing what remains and making some
-decision.
-
-> Like this series, for cont-pXd we'll need multiple walks comparing to
-> before (when with hugetlb_entry()), but for that part I'll provide some
-> performance tests too, and we also have a fallback plan, which is to detect
-> cont-pXd existance, which will also work for large folios.
-
-I think we can optimize this pretty easy.
- 
-> > I think if you do the easy places for pXX conversion you will have a
-> > good idea about what is needed for the hard places.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Here IMHO we don't need to understand "what is the size of this hugetlb
-> vma"
-
-Yeh, I never really understood why hugetlb was linked to the VMA.. The
-page table is self describing, obviously.
-
-> or "which level of pgtable does this hugetlb vma pages locate",
-
-Ditto
-
-> because we may not need that, e.g., when we only want to collect some smaps
-> statistics.  "whether it's hugetlb" may matter, though. E.g. in the mm
-> walker we see a huge pmd, it can be a thp, it can be a hugetlb (when
-> hugetlb_entry removed), we may need extra check later to put things into
-> the right bucket, but for the walker itself it doesn't necessarily need
-> hugetlb_entry().
-
-Right, places may still need to know it is part of a huge VMA because we
-have special stuff linked to that.
-
-> > But then again we come back to power and its big list of page sizes
-> > and variety :( Looks like some there have huge sizes at the pgd level
-> > at least.
+> The "buffer_percent" logic that is used by the ring buffer splice code to
+> only wake up the tasks when there's no data after the buffer is filled to
+> the percentage of the "buffer_percent" file is dependent on three
+> variables that determine the amount of data that is in the ring buffer:
 > 
-> Yeah this is something I want to be super clear, because I may miss
-> something: we don't have real pgd pages, right?  Powerpc doesn't even
-> define p4d_leaf(), AFAICT.
+>  1) pages_read - incremented whenever a new sub-buffer is consumed
+>  2) pages_lost - incremented every time a writer overwrites a sub-buffer
+>  3) pages_touched - incremented when a write goes to a new sub-buffer
+> 
+> The percentage is the calculation of:
+> 
+>   (pages_touched - (pages_lost + pages_read)) / nr_pages
+> 
+> Basically, the amount of data is the total number of sub-bufs that have been
+> touched, minus the number of sub-bufs lost and sub-bufs consumed. This is
+> divided by the total count to give the buffer percentage. When the
+> percentage is greater than the value in the "buffer_percent" file, it
+> wakes up splice readers waiting for that amount.
+> 
+> It was observed that over time, the amount read from the splice was
+> constantly decreasing the longer the trace was running. That is, if one
+> asked for 60%, it would read over 60% when it first starts tracing, but
+> then it would be woken up at under 60% and would slowly decrease the
+> amount of data read after being woken up, where the amount becomes much
+> less than the buffer percent.
+> 
+> This was due to an accounting of the pages_touched incrementation. This
+> value is incremented whenever a writer transfers to a new sub-buffer. But
+> the place where it was incremented was incorrect. If a writer overflowed
+> the current sub-buffer it would go to the next one. If it gets preempted
+> by an interrupt at that time, and the interrupt performs a trace, it too
+> will end up going to the next sub-buffer. But only one should increment
+> the counter. Unfortunately, that was not the case.
+> 
+> Change the cmpxchg() that does the real switch of the tail-page into a
+> try_cmpxchg(), and on success, perform the increment of pages_touched. This
+> will only increment the counter once for when the writer moves to a new
+> sub-buffer, and not when there's a race and is incremented for when a
+> writer and its preempting writer both move to the same new sub-buffer.
+> 
 
-AFAICT it is because it hides it all in hugepd.
+Looks good to me.
 
-If the goal is to purge hugepd then some of the options might turn out
-to convert hugepd into huge p4d/pgd, as I understand it. It would be
-nice to have certainty on this at least.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-We have effectively three APIs to parse a single page table and
-currently none of the APIs can return 100% of the data for power.
+BTW, isn't this a real bugfix, because the page_touched can be
+bigger than nr_pages without this fix?
 
-Jason
+Thank you,
+
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 25476ead681b..6511dc3a00da 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -1393,7 +1393,6 @@ static void rb_tail_page_update(struct ring_buffer_per_cpu *cpu_buffer,
+>  	old_write = local_add_return(RB_WRITE_INTCNT, &next_page->write);
+>  	old_entries = local_add_return(RB_WRITE_INTCNT, &next_page->entries);
+>  
+> -	local_inc(&cpu_buffer->pages_touched);
+>  	/*
+>  	 * Just make sure we have seen our old_write and synchronize
+>  	 * with any interrupts that come in.
+> @@ -1430,8 +1429,9 @@ static void rb_tail_page_update(struct ring_buffer_per_cpu *cpu_buffer,
+>  		 */
+>  		local_set(&next_page->page->commit, 0);
+>  
+> -		/* Again, either we update tail_page or an interrupt does */
+> -		(void)cmpxchg(&cpu_buffer->tail_page, tail_page, next_page);
+> +		/* Either we update tail_page or an interrupt does */
+> +		if (try_cmpxchg(&cpu_buffer->tail_page, &tail_page, next_page))
+> +			local_inc(&cpu_buffer->pages_touched);
+>  	}
+>  }
+>  
+> -- 
+> 2.43.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
