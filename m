@@ -1,219 +1,186 @@
-Return-Path: <linux-kernel+bounces-136432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D456D89D3FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:17:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5108089D403
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9041F26A15
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:17:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F398328478E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6DA87EF06;
-	Tue,  9 Apr 2024 08:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771A57E101;
+	Tue,  9 Apr 2024 08:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Tkch436q"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE52F7E116;
-	Tue,  9 Apr 2024 08:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CE07E0FF;
+	Tue,  9 Apr 2024 08:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650566; cv=none; b=YJP+oJvKuXmFfF7lXw5baHuzN1Z+PAh2hbQ8aCk0BD6kocjtUmVmdNMCgPoQnUhaFl3TMbId9TbjfR+YjaV1T6u6OWneBdPXwLQBgpsUFAYAnl4IiievpNzlGMefIaYyvNeZAzAt603i18ZXEUvp/Hw3huuWfHo3Xq+XLEBpW6w=
+	t=1712650664; cv=none; b=jatRflh7+897iGnr4b/mbHXpoDG0/HpLo9Bk+XPFdUIjGbkbGwLvH8IR49nDdzgrwxkfUnCocOPV3k3cQA+C4PMJLUA8+Q7Xxv5rVTYbKv0Rgrfzv4t3qoKF025O9OZVbo1/DyX6DbrfGQ8H60Xwr5jOWUnj4PqEoEj8933JljI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650566; c=relaxed/simple;
-	bh=8HvCApuiy6ONW7tfYfgKhurDV6wmKYxjw6pCqGJW4qw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G2bIjaIxp4lOcwoi1USzcCf+uCFHhK99UlgLpOucklMvxjqqRPjSaed7F4aMbYbf/6rgRSS29Zdu+GFRq8ix11uwiNv5Uig1bZLnA06y1ciiRpADR9FAK/OJ0jI4NuHPcye4MgSIgKzfRyfYYvYr0LpKECWx2j9wWVeTAISQIfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Tkch436q; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=RRSBY6/rtPwcAAaFW3HJTN9NeVlK6dzskGTvl9SWwlk=; b=Tkch436qG2RJnWFcSMxqYvcDnX
-	KG41Odci/LVUbafwNby6jvXCU7pWNzdA7kTCzKMIXwBqhUsCZdJQ/m1WO7P1wwVr3UWL3FKQ84DTj
-	3Y0Nm7/Hb8z/7M+x6gGufi1w4MnaBd/4/kw/q8rIge2shXxnq0XNhUGsMBqnP7+8WgGYrD+R5O7RW
-	NmzLSh2XxGZb86K7eqKxsrt/5DqkIIQfcns4vAJNATXV6HCg58Pn5e8GEpmAjVI2PqCA2s2GECvwP
-	LzPvDC4wbDZCF//QQEu6xOkY4cHn4GnwTHJAMtx8aYcWFfb6kVs5yKlSvvAWZkkP7UAVJfivrERak
-	0CriE9Ug==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38758)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1ru6dz-000640-0N;
-	Tue, 09 Apr 2024 09:15:52 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1ru6dx-0004vn-Gs; Tue, 09 Apr 2024 09:15:49 +0100
-Date: Tue, 9 Apr 2024 09:15:49 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- copy_from_kernel_nofault (2)
-Message-ID: <ZhT5NRYnceirmAGz@shell.armlinux.org.uk>
-References: <000000000000e9a8d80615163f2a@google.com>
- <20240403184149.0847a9d614f11b249529fd02@linux-foundation.org>
- <CAADnVQ+meL1kvXUehDT3iO2mxiZNeSUqeRKYx1C=3c0h=NSiqA@mail.gmail.com>
- <Zg_aTFoC2Pwakyl1@FVFF77S0Q05N>
- <Zg/iGQCDKa9bllyI@shell.armlinux.org.uk>
- <CAADnVQ+LKO2Y90DVZ4qQv3dXyuWKkvFqqJ0E_p_=qwscsvnaVg@mail.gmail.com>
- <CAEf4BzYNc-cxRu9qEe2DWdCBNwXAvpSBHKtUhXtoEhB_XNc1Gg@mail.gmail.com>
- <ZhBAnvLRfj/JW5bZ@shell.armlinux.org.uk>
- <mb61pcyqzx9l9.fsf@gmail.com>
+	s=arc-20240116; t=1712650664; c=relaxed/simple;
+	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=cdCssfdIhcbW9tmf8AtBeaULtlVfiqwYHKeiZL13hljOgm8NC3JGA+uFhStMsedmw0E2+C+pZE2CfG0jtcYyFEW+VwQTchQSB5jJlNyuNE9Yr0Sa1j7jBJxp+c54A96xc3US3U8xYdepTVAZ2MkhZDEsvlo2wrAE6b8IU9MdGaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 63E692089D;
+	Tue,  9 Apr 2024 08:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
+	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
+	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
+	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712650661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
+	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
+	0r5f6bsqUpvWv1Bg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
+	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
+	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
+	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712650661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
+	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
+	0r5f6bsqUpvWv1Bg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C638713253;
+	Tue,  9 Apr 2024 08:17:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id yQHPF5z5FGaONgAAn2gu4w
+	(envelope-from <colyli@suse.de>); Tue, 09 Apr 2024 08:17:32 +0000
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <mb61pcyqzx9l9.fsf@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v3 00/17] treewide: Refactor heap related implementation
+From: Coly Li <colyli@suse.de>
+In-Reply-To: <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
+Date: Tue, 9 Apr 2024 16:17:14 +0800
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
+ msakai@redhat.com,
+ peterz@infradead.org,
+ mingo@redhat.com,
+ acme@kernel.org,
+ namhyung@kernel.org,
+ akpm@linux-foundation.org,
+ bfoster@redhat.com,
+ mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com,
+ jolsa@kernel.org,
+ irogers@google.com,
+ adrian.hunter@intel.com,
+ jserv@ccns.ncku.edu.tw,
+ Bcache Linux <linux-bcache@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ dm-devel@lists.linux.dev,
+ Linux bcachefs <linux-bcachefs@vger.kernel.org>,
+ linux-perf-users@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8D0FD5AF-2AD9-4A91-831D-C79A798BED11@suse.de>
+References: <20240406164727.577914-1-visitorckw@gmail.com>
+ <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
+X-Spam-Flag: NO
+X-Spam-Score: -1.58
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.58 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	BAYES_HAM(-0.78)[84.53%];
+	MV_CASE(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,infradead.org,kernel.org,linux-foundation.org,arm.com,linux.intel.com,google.com,intel.com,ccns.ncku.edu.tw,vger.kernel.org,lists.linux.dev];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
 
-On Tue, Apr 09, 2024 at 07:45:54AM +0000, Puranjay Mohan wrote:
-> "Russell King (Oracle)" <linux@armlinux.org.uk> writes:
-> 
-> > On Fri, Apr 05, 2024 at 10:50:30AM -0700, Andrii Nakryiko wrote:
-> >> On Fri, Apr 5, 2024 at 9:30 AM Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >> >
-> >> > On Fri, Apr 5, 2024 at 4:36 AM Russell King (Oracle)
-> >> > <linux@armlinux.org.uk> wrote:
-> >> > >
-> >> > > On Fri, Apr 05, 2024 at 12:02:36PM +0100, Mark Rutland wrote:
-> >> > > > On Thu, Apr 04, 2024 at 03:57:04PM -0700, Alexei Starovoitov wrote:
-> >> > > > > On Wed, Apr 3, 2024 at 6:56 PM Andrew Morton <akpm@linux-foundationorg> wrote:
-> >> > > > > >
-> >> > > > > > On Mon, 01 Apr 2024 22:19:25 -0700 syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com> wrote:
-> >> > > > > >
-> >> > > > > > > Hello,
-> >> > > > > >
-> >> > > > > > Thanks.  Cc: bpf@vger.kernel.org
-> >> > > > >
-> >> > > > > I suspect the issue is not on bpf side.
-> >> > > > > Looks like the bug is somewhere in arm32 bits.
-> >> > > > > copy_from_kernel_nofault() is called from lots of places.
-> >> > > > > bpf is just one user that is easy for syzbot to fuzz.
-> >> > > > > Interestingly arm defines copy_from_kernel_nofault_allowed()
-> >> > > > > that should have filtered out user addresses.
-> >> > > > > In this case ffffffe9 is probably a kernel address?
-> >> > > >
-> >> > > > It's at the end of the kernel range, and it's ERR_PTR(-EINVAL).
-> >> > > >
-> >> > > > 0xffffffe9 is -0x16, which is -22, which is -EINVAL.
-> >> > > >
-> >> > > > > But the kernel is doing a write?
-> >> > > > > Which makes no sense, since copy_from_kernel_nofault is probe reading.
-> >> > > >
-> >> > > > It makes perfect sense; the read from 'src' happened, then the kernel tries to
-> >> > > > write the result to 'dst', and that aligns with the disassembly in the report
-> >> > > > below, which I beleive is:
-> >> > > >
-> >> > > >      8: e4942000        ldr     r2, [r4], #0  <-- Read of 'src', fault fixup is elsewhere
-> >> > > >      c: e3530000        cmp     r3, #0
-> >> > > >   * 10: e5852000        str     r2, [r5]      <-- Write to 'dst'
-> >> > > >
-> >> > > > As above, it looks like 'dst' is ERR_PTR(-EINVAL).
-> >> > > >
-> >> > > > Are you certain that BPF is passing a sane value for 'dst'? Where does that
-> >> > > > come from in the first place?
-> >> > >
-> >> > > It looks to me like it gets passed in from the BPF program, and the
-> >> > > "type" for the argument is set to ARG_PTR_TO_UNINIT_MEM. What that
-> >> > > means for validation purposes, I've no idea, I'm not a BPF hacker.
-> >> > >
-> >> > > Obviously, if BPF is allowing copy_from_kernel_nofault() to be passed
-> >> > > an arbitary destination address, that would be a huge security hole.
-> >> >
-> >> > If that's the case that's indeed a giant security hole,
-> >> > but I doubt it. We would be crashing other archs as well.
-> >> > I cannot really tell whether arm32 JIT is on.
-> >> > If it is, it's likely a bug there.
-> >> > Puranjay,
-> >> > could you please take a look.
-> >> >
-> >> 
-> >> I dumped the BPF program that repro.c is loading, it works on x86-64
-> >> and there is nothing special there. We are probe-reading 5 bytes from
-> >> somewhere into the stack. Everything is unaligned here, but stays
-> >> within a well-defined memory slot.
-> >> 
-> >> Note the r3 = (s8)r1, that's a new-ish thing, maybe bug is somewhere
-> >> there (but then it would be JIT, not verifier itself)
-> >> 
-> >>    0: (7a) *(u64 *)(r10 -8) = 896542069
-> >>    1: (bf) r1 = r10
-> >>    2: (07) r1 += -7
-> >>    3: (b7) r2 = 5
-> >>    4: (bf) r3 = (s8)r1
-> >>    5: (85) call bpf_probe_read_kernel#-72390
-> >
-> 
-> I have started looking into this, the issue only reproduces when the JIT
-> is enabled. With the interpreter, it works fine.
-> 
-> I used GDB to dump the JITed BPF program:
-> 
->    0xbf00012c:  push    {r4, r5, r6, r7, r8, r9, r11, lr}
->    0xbf000130:  mov     r11, sp
->    0xbf000134:  mov     r3, #0
->    0xbf000138:  sub     r2, sp, #80     @ 0x50
->    0xbf00013c:  sub     sp, sp, #88     @ 0x58
->    0xbf000140:  strd    r2, [r11, #-64] @ 0xffffffc0
->    0xbf000144:  mov     r2, #0
->    0xbf000148:  strd    r2, [r11, #-72] @ 0xffffffb8
->    0xbf00014c:  mov     r2, r0
->    0xbf000150:  movw    r8, #9589       @ 0x2575
->    0xbf000154:  movt    r8, #13680      @ 0x3570
->    0xbf000158:  mov     r9, #0
->    0xbf00015c:  ldr     r6, [r11, #-64] @ 0xffffffc0
->    0xbf000160:  str     r8, [r6, #-8]
->    0xbf000164:  str     r9, [r6, #-4]
->    0xbf000168:  ldrd    r2, [r11, #-64] @ 0xffffffc0
->    0xbf00016c:  movw    r8, #65529      @ 0xfff9
->    0xbf000170:  movt    r8, #65535      @ 0xffff
->    0xbf000174:  movw    r9, #65535      @ 0xffff
->    0xbf000178:  movt    r9, #65535      @ 0xffff
->    0xbf00017c:  adds    r2, r2, r8
->    0xbf000180:  adc     r3, r3, r9
->    0xbf000184:  mov     r6, #5
->    0xbf000188:  mov     r7, #0
->    0xbf00018c:  strd    r6, [r11, #-8]
->    0xbf000190:  ldrd    r6, [r11, #-16]
 
-Up to this point, it looks correct. r2/r3 contain the stack pointer
-which corresponds to the instruction at "2:"
 
->    0xbf000194:  lsl     r2, r2, #24
->    0xbf000198:  asr     r2, r2, #24
->    0xbf00019c:  str     r2, [r11, #-16]
+> 2024=E5=B9=B44=E6=9C=889=E6=97=A5 11:40=EF=BC=8CKent Overstreet =
+<kent.overstreet@linux.dev> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Sun, Apr 07, 2024 at 12:47:10AM +0800, Kuan-Wei Chiu wrote:
+>> This patch series focuses on several adjustments related to heap
+>> implementation. Firstly, a type-safe interface has been added to the
+>> min_heap, along with the introduction of several new functions to
+>> enhance its functionality. Additionally, the heap implementation for
+>> bcache and bcachefs has been replaced with the generic min_heap
+>> implementation from include/linux. Furthermore, several typos have =
+been
+>> corrected.
+>>=20
+>> Previous discussion with Kent Overstreet:
+>> =
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg=
+@nrlek5vmisbu
+>>=20
+>> Regards,
+>> Kuan-Wei
+>=20
+> pointing test automation at it now:
+> https://evilpiepirate.org/~testdashboard/ci?branch=3Drefactor-heap-v3
+>=20
+> Coli, could I get some acks from you?
 
-This then narrows the 64-bit pointer down to just 8!!! bits, but this
-is what the instruction at "4:" is asking for. However, it looks like
-it's happening to BPF's "r1" rather than "r3" and this is probably
-where the problem lies.
+Yes, the code tested and Acked-by sent.
 
-I haven't got time to analyse this further this morning - I'm only
-around sporadically today. I'll try to look deeper at this later on.
+Thanks.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Coly Li=
 
