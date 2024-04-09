@@ -1,117 +1,154 @@
-Return-Path: <linux-kernel+bounces-136959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B118A89DA55
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E43889DA59
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:35:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66CD41F21EA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:35:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537121F2210B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B2A137752;
-	Tue,  9 Apr 2024 13:28:12 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6B312FB3F;
+	Tue,  9 Apr 2024 13:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CFijhd1M"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E63136E29
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A167A12EBE5;
+	Tue,  9 Apr 2024 13:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669292; cv=none; b=e1si+t9bPgHuCIWW0SUW1k6MYvmRtKiBY8xzflgRsziXaQaZvHFpUdYYHj3Z1Uk/hdZxdJevGDfzE+wrMo4hyjDVlImGjBEIUj2c1p5yJZY02Hs3UuNcEYmPlcuslYgQfSYkVU6ii+e7k/Jv1Li3XkcMpvrioQtXzui6VIuZ5iE=
+	t=1712669423; cv=none; b=LWP+G9SWnkLXad4n4HyfmnUdVAdjGq+c5nxeHBmF28LqPLfSmmvQklrcJhkOZ2+9tzeTx4Jzm5CUxEyTcstIec76C7OXTI8D/7coKVGRMBbQ3nKV7vy2PwjFSJtAAlZO/gDutUf1e3HVOns5qFpcwtZGPYqoQH4oK/csYQ8Jwjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669292; c=relaxed/simple;
-	bh=Dk3z3t3XHGug3Wyd7YN1dCENsVlrnDU58Ikqk0CwKW0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZU+LsRIXNYiTgE1zVFeksVrceY7EVKMZh3c5hj6I5pX0w0AaeSYq/pX97Ibta9ip5RBzkUkOl/vwfFrkVThbDpFWuxCUtYulThW9c+J3aVVNO+Rq0TsPpUmxSA5sJSlbkjZsByEeGdIJJHzpIbs/XOJVEspvj/mi1ISXN/+mJZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VDRZd2tsXz21kdB;
-	Tue,  9 Apr 2024 21:27:05 +0800 (CST)
-Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 739091A0172;
-	Tue,  9 Apr 2024 21:28:00 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 21:28:00 +0800
-Message-ID: <4311bf57-ea3e-4ea6-8f7b-370d9dd2dac1@huawei.com>
-Date: Tue, 9 Apr 2024 21:27:59 +0800
+	s=arc-20240116; t=1712669423; c=relaxed/simple;
+	bh=fwIbdQ6kieHWU7HxacTenkKM95bShpnCbvagYrNsuEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OOxJ5GLEY9JQZKWFgQv5ZUbzblgnkCpVPTOWV3AJ0fOP5ddIfj8Hl9aYzXE/PfVDdIsJdUUKZ55zpB42KdG+/XR8AxGl3GxXzWKu1SVEQAzsuMfdUpX8VpPI5fchFnIIsgCSeuFZnqFxnSdhNt73eiSrvF2Q8yLDw1Al4shc28I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CFijhd1M; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712669421; x=1744205421;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=fwIbdQ6kieHWU7HxacTenkKM95bShpnCbvagYrNsuEE=;
+  b=CFijhd1MWC8DuYDeKFcKls+VPi9QYuJ0NeUz/2XEpzkSe76wRs+LAzu6
+   cKEKg5T+Aoquzn2LvpkxdZlZSl3kn9E0IeEwzLrbZY381zlVVoZvJkbnY
+   VFxbabtLOCg46OAx2RAvpcTi50yGXxnampfBJuOLbbAQzcLTNqOAt6n2u
+   X29AV7IGy5+RTjxIyGdKkv4NZxQ4AGGC5PmGb80wegHl1D/UpaaTgHTJ1
+   YY2NAP94YPE9kt2VmhuUW90QKnwgbZe838F1X4MOPp+pJfR+vpAEyu5hw
+   hj07rpZGgxHaOIZi868pn+wRTWvEnC8nnWEMO53A/GQn5BlxXOWlQQ4lw
+   g==;
+X-CSE-ConnectionGUID: d3hFL4NER+uyb7sBYSmTcQ==
+X-CSE-MsgGUID: pz/7gzCIT6OukG7VKjksHw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="25423555"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="25423555"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 06:30:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915399886"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915399886"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 06:30:16 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruBYD-00000002ob8-2kVm;
+	Tue, 09 Apr 2024 16:30:13 +0300
+Date: Tue, 9 Apr 2024 16:30:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] gpiolib: Fix a mess with the GPIO_* flags
+Message-ID: <ZhVC5Qa472_xQs3A@smile.fi.intel.com>
+References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
+ <20240408231727.396452-2-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mf73fFHo83gNvDXGy9BosB1MNz_=8kt56hLA12bPBb8CA@mail.gmail.com>
+ <ZhU5uDJk_M_TtKH2@smile.fi.intel.com>
+ <CAMRc=Meh6K2zxpVPHvsDcr5vMMeagK7FGhnUPz3bb2rQQCPHJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm,page_owner: Defer enablement of static branch
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>, Andrew Morton
-	<akpm@linux-foundation.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, Vlastimil Babka
-	<vbabka@suse.cz>
-References: <20240409131715.13632-1-osalvador@suse.de>
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20240409131715.13632-1-osalvador@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm100001.china.huawei.com (7.185.36.93)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Meh6K2zxpVPHvsDcr5vMMeagK7FGhnUPz3bb2rQQCPHJA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Tue, Apr 09, 2024 at 02:55:20PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Apr 9, 2024 at 2:51 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Apr 09, 2024 at 11:42:37AM +0200, Bartosz Golaszewski wrote:
+> > > On Tue, Apr 9, 2024 at 1:17 AM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > The GPIO_* flag definitions are *almost* duplicated in two files
+> > > > (with unmatches OPEN_SOURCE / OPEN_DRAIN). Moreover, some code relies
+> > > > on one set of definitions while the rest is on the other. Clean up
+> > > > this mess by providing only one source of the definitions to all.
+> > > >
+> > > > Fixes: b424808115cb ("brcm80211: brcmsmac: Move LEDs to GPIO descriptors")
+> > > > Fixes: 5923ea6c2ce6 ("gpio: pass lookup and descriptor flags to request_own")
+> > > > Fixes: fed7026adc7c ("gpiolib: Make use of enum gpio_lookup_flags consistent")
+> > > > Fixes: 4c0facddb7d8 ("gpio: core: Decouple open drain/source flag with active low/high")
+> > > > Fixes: 69d301fdd196 ("gpio: add DT bindings for existing consumer flags")
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > ---
+> > > >  drivers/gpio/gpiolib-of.c                     |  5 ++---
+> > > >  drivers/gpio/gpiolib.c                        |  8 +++-----
+> > > >  .../broadcom/brcm80211/brcmsmac/led.c         |  2 +-
+> > > >  include/linux/gpio/driver.h                   |  3 +--
+> > > >  include/linux/gpio/machine.h                  | 20 +++++--------------
+> > > >  5 files changed, 12 insertions(+), 26 deletions(-)
+> > >
+> > > I don't think ./dt-bindings/gpio/gpio.h is the right source of these
+> > > defines for everyone - including non-OF systems. I would prefer the
+> > > ones in include/linux/gpio/machine.h be the upstream source but then
+> > > headers in include/dt-bindings/ cannot include them so my second-best
+> > > suggestion is to rename the ones in include/linux/gpio/machine.h and
+> > > treewide too. In general values from ./dt-bindings/gpio/gpio.h should
+> > > only be used in DTS sources and gpiolib-of code.
+> >
+> > Then, please fix that your way. It's quite annoying issue.
+> 
+> This is not difficult in itself
+
+I'm not sure, what about enum gpio_lookup_flags? Shall we resurrect it?
+I see that you have better vision anyway. Consider my patch as a problem
+report (and as bonus you have already list of Fixes tags :-).
+
+> but it's a tree-wide change so we will
+> probably have to send it to Torvalds at the end of the merge window in
+> a separate pull-request.
+
+WFM!
+
+> I don't really have time now, I'll be travelling for 5 weeks in a row.
+> I'll see closer to the merge window. Or next release cycle.
+
+But can you prioritize this? It's a carefully planted minefield with already
+a bug and confusion here.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-
-On 2024/4/9 21:17, Oscar Salvador wrote:
-> Kefeng Wang reported that he was seeing some memory leaks with kmemleak
-> with page_owner enabled.
-> The reason behind is that we enable the page_owner_inited static branch
-> and then proceed with the linking of stack_list struct to dummy_stack,
-> which means that exists a race window between these two steps where we
-> can have pages already being allocated calling add_stack_record_to_list(),
-> allocating objects and linking them to stack_list, but then we set
-> stack_list pointing to dummy_stack in init_page_owner.
-> Which means that the objects that have been allocated during that time
-> window are unreferenced and lost.
-> 
-> Fix this by deferring the enablement of the branch until we have properly
-> set up the list.
-> 
-> Reported-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Closes: https://lore.kernel.org/linux-mm/74b147b0-718d-4d50-be75-d6afc801cd24@huawei.com/
-> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Fixes: 4bedfb314bdd ("mm,page_owner: maintain own list of stack_records structs")
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
-> Special thanks and kudos go to Kefeng Wang for helping me out chasing
-> down this bug, as I could not reproduce it with any of my machines, and
-> to Vlastimil to bring another pair of eyes, which was very helpful.
-> 
-The issue is found by accident when test my migrate changes, thanks for
-your great job and quick response, this does pass my test, thanks ;)
-
->   mm/page_owner.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 9bef0b442863..742f432e5bf0 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -118,7 +118,6 @@ static __init void init_page_owner(void)
->   	register_dummy_stack();
->   	register_failure_stack();
->   	register_early_stack();
-> -	static_branch_enable(&page_owner_inited);
->   	init_early_allocated_pages();
->   	/* Initialize dummy and failure stacks and link them to stack_list */
->   	dummy_stack.stack_record = __stack_depot_get_stack_record(dummy_handle);
-> @@ -129,6 +128,7 @@ static __init void init_page_owner(void)
->   		refcount_set(&failure_stack.stack_record->count, 1);
->   	dummy_stack.next = &failure_stack;
->   	stack_list = &dummy_stack;
-> +	static_branch_enable(&page_owner_inited);
->   }
->   
->   struct page_ext_operations page_owner_ops = {
 
