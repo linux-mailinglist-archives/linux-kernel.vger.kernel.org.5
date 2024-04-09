@@ -1,97 +1,101 @@
-Return-Path: <linux-kernel+bounces-136962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0484A89DA60
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 058DD89DA61
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3606A1C22FB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:36:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321A41C22F98
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856D912FF9C;
-	Tue,  9 Apr 2024 13:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZTMfB0U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25ED51304B4;
+	Tue,  9 Apr 2024 13:32:21 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD8112F381;
-	Tue,  9 Apr 2024 13:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC5E7FBD3
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669517; cv=none; b=syU2B+WP9wZKw66eIkPMgKInnv2VFWjYdkL6zO4J1ktWHLOB9XWRn1gqKoWl/PyrpLDXz6tyVQB4V1pkWCGyxHKwGW8kBsCtayWvpSE1O8OyQB3K+fD+byRLQmXOVo/qQmOUr0M1Bj0zTIz37rSBgU3UpWGL4FlfJl7Soz1viGk=
+	t=1712669540; cv=none; b=M6HCtUqmsVbwcbb+/lW0y4ldCRD4JMk65y3QJYb2fElAqt5XgUa5f8MYsPiCVyrJxPvLX6bjK9FeHGH53aejjoHglUCAvMbG8InxavvYK+Wn8oYtHOrQ5tGvEPnCl0V+77vQ6k+piBZUFjr4o2a4OyP/Cmst/RlIWFt34DLKuuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669517; c=relaxed/simple;
-	bh=t+Ksp7FCYvmyEVKHHeraJyf8M135WOhzLeRnkqqR5u8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=eRI7LAul0eLnEeUuMWxVyzzwkY2gyrSyMJdIEszn8kAZ2wx9df885YuBb+H3MH3pugVEZLXzCZwYXl4AiTy2jY/HkTd27i0u2Pl7hIiKgpIcbwJaA+L99bzr2FSELwvjcWMik8GJ8fFbIitwEchFsf8Yxq5HUmFb+643OSOV3bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kZTMfB0U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC0FC433F1;
-	Tue,  9 Apr 2024 13:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712669517;
-	bh=t+Ksp7FCYvmyEVKHHeraJyf8M135WOhzLeRnkqqR5u8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kZTMfB0UAUPUs0ocDCsQO13zU2bvvSgpasC59IiSmHHyq5XquOjWZLfQicAj8A8aB
-	 o+pn4rDwBAewqokcx0PMk+RHmw49d08jFLRV+DGu9hOEzj56AnR0SEHQQGIetF/ffd
-	 qNj5FIjO4PUo7n+e/5FBfQ5t00rnGIIMGEv5ZhEDAdpCYn0flo9t7ZdzOJhNOUKRkb
-	 NauVif830INUuV/PA1lNcIU/6Zg6yI7E8WyW9L34teJKhQESmDt7oyO8lkSLL0eVIt
-	 L/hZgbmZr/uk9pA6PPv5p1Ot9xoHKqB/T6gWZV8SyYBrW1sQZfnAlRexOi37//klF4
-	 V1i8PIrLfEFtg==
-Date: Tue, 9 Apr 2024 08:31:55 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
- properly reset the endpoint devices
-Message-ID: <20240409133155.GA2072077@bhelgaas>
+	s=arc-20240116; t=1712669540; c=relaxed/simple;
+	bh=dMqGeHAHH7zcug3J3Ku1senR0ip7h5j/VVoBZ3xVssw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=S+/mfRcM+wQSXfwhW6fpc9KOmGouUJP43uoMdHPgOev9Y44zXRYUBuF3tF5fb4P1rxt6yOXDMpkl7Zc7lAAwwlGathY0ha+oUNnWQSGCFZt9rgtgdLEhnLF4KxoFhu19wlTW2fVMCPC3UfePvmKA8ctRB107XK18hYMT1tQ5tC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VDRd029GSzXlBL;
+	Tue,  9 Apr 2024 21:29:08 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 38254140118;
+	Tue,  9 Apr 2024 21:32:15 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 9 Apr 2024 21:32:14 +0800
+Message-ID: <c0bed01f-0cd4-49d5-9e8b-1ea6cc9a760a@huawei.com>
+Date: Tue, 9 Apr 2024 21:32:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg22Dhi2c7U5oqoz@ryzen>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/4] page_owner: Fix refcount imbalance and print fixup
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>, Andrew Morton
+	<akpm@linux-foundation.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, Michal Hocko
+	<mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, Marco Elver
+	<elver@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, Alexander
+ Potapenko <glider@google.com>, Alexandre Ghiti <alexghiti@rivosinc.com>
+References: <20240404070702.2744-1-osalvador@suse.de>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20240404070702.2744-1-osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-On Wed, Apr 03, 2024 at 10:03:26PM +0200, Niklas Cassel wrote:
-> On Wed, Apr 03, 2024 at 07:02:17PM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Apr 02, 2024 at 01:18:54PM +0200, Niklas Cassel wrote:
-> > > On Mon, Apr 01, 2024 at 09:20:36PM +0530, Manivannan Sadhasivam wrote:
-> > > > PCIe host controller drivers are supposed to properly reset the endpoint
-> > > > devices during host shutdown/reboot. Currently, Qcom driver doesn't do
-> > > > anything during host shutdown/reboot, resulting in both PERST# and refclk
-> > > > getting disabled at the same time. This prevents the endpoint device
-> > > > firmware to properly reset the state machine. Because, if the refclk is
-> > > > cutoff immediately along with PERST#, access to device specific registers
-> > > > within the endpoint will result in a firmware crash.
-> > > > 
-> > > > To address this issue, let's call qcom_pcie_host_deinit() inside the
-> > > > shutdown callback, that asserts PERST# and then cuts off the refclk with a
-> > > > delay of 1ms, thus allowing the endpoint device firmware to properly
-> > > > cleanup the state machine.
-> ...
 
-> For a real PCIe card, if you assert + msleep(100) + deassert PERST, surely
-> the endpoint is supposed to be in a good/well defined state, regardless if
-> he REFCLK was cutoff at the exact time as PERST was asserted or not?
 
-I think this is the key point.  This PERST#/REFCLK timing requirement
-seems like a defect in the endpoint.  I know there's firmware involved
-and whatnot, but IMO it's the endpoint's problem to handle these issues
-internally.
+On 2024/4/4 15:06, Oscar Salvador wrote:
+> This series consists of a refactoring/correctness of updating the metadata
+> of tail pages, a couple of fixups for the refcounting part and a fixup for
+> the stack_start() function.
+> 
+>>From this series on, instead of counting the stacks, we count the outstanding
+> nr_base_pages each stack has, which gives us a much better memory overview.
+> The other fixup is for the migration part.
+> 
+> A more detailed explanation can be found in the changelog of the respective
+> patches.
 
-Bjorn
+I think this also should be merged into 6.9-rc1 asap, it is easy to 
+occur when migration.
+
+Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+
+> 
+> v3 -> v4:
+>   - Fix some typos remarked by Vlastimil
+>   - Add Reviewed-by tag from Vlastimil and Tested-by tag from Alexandre Ghiti
+>     (closed a syzbot report for RISC)
+> 
+> Oscar Salvador (4):
+>    mm,page_owner: Update metadata for tail pages
+>    mm,page_owner: Fix refcount imbalance
+>    mm,page_owner: Fix accounting of pages when migrating
+>    mm,page_owner: Fix printing of stack records
+> 
+>   Documentation/mm/page_owner.rst |  73 +++++++------
+>   mm/page_owner.c                 | 188 ++++++++++++++++++--------------
+>   2 files changed, 147 insertions(+), 114 deletions(-)
+> 
 
