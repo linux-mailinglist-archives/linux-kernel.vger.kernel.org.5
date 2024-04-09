@@ -1,151 +1,232 @@
-Return-Path: <linux-kernel+bounces-136090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD8889CFE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:37:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC4C89CFE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:37:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02C48B24527
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6408285B3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929598F77;
-	Tue,  9 Apr 2024 01:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C2FF9CF;
+	Tue,  9 Apr 2024 01:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9d0zUae"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="uu4HvniB"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7978F59;
-	Tue,  9 Apr 2024 01:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5408C1F
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 01:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712626638; cv=none; b=RiZIoZ5a8HjZbJ+mIgDFfz1gjUY5ub+qoyad/b/gWbj2GeYe84yiY69WS0sQIgyLQjjOFntKdY+j0jeOaLnxUYe63FZ8ZBwdqUMevs+Ce7mneDAjVeVkdGsiL5T1rBU5naAXky6u5UNkV37lWbn9EahBnU9fToUy6EmHkCnCRvU=
+	t=1712626655; cv=none; b=c/2Mq+HIp2fvNGRK7ZvuNdEvuSLKyTrMlZ9NADfffrRv49AoNrc3MQ1eRJA5AuTySTaRAqAGoW/j25e9P86bIijeCEQaMvBU914QoNuTsJMa9QqnkeYUXq0ue1uOYvqvZbukQ6wZNysrW2u4ZMo04fVF5N5jlRjQMXGtn7PmaEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712626638; c=relaxed/simple;
-	bh=REUfQMGxi6wZBiAigJvmtnxlwEZNsiAI6JDcOF9qSOs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SBCIHpfeJtTROvTCPMcnscLCuf/NqdZsHwk1VyrdkXF19xcSU2PUR577GSwTTpELajRG9TmmUiiw60rz134fCERMmKW4MkWkU7UdV8UNCy/QP6+Uuk7x76lvCloOu5d5WudRO3tw5Jz+97hT1zTRPyh7mGk3c1Q3Cdwir+e0PUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9d0zUae; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36a2ab5a05dso4081395ab.2;
-        Mon, 08 Apr 2024 18:37:17 -0700 (PDT)
+	s=arc-20240116; t=1712626655; c=relaxed/simple;
+	bh=BaSg7ch3d2lz1UPLvkxJNOW7XPlVJW6QBboYvJclAi0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=PLQDQb+zkJ6TOTggW/cenJO49iA7VDCWMoMNN0o7A3cyFIEQFI8IIov5Ob5rsELNBtA4yiKQ5fPf1sEaOsvR4IlNsHnfoy3MATzCrlMDCgQ4Oe44O1uZNHk8GHNZxeAi8DGdwTc0uC4i80hl89rm8gXrl7J2HVGBymcVQGnN+l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uu4HvniB; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e42b701219so11970235ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 18:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712626636; x=1713231436; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9lrU41zZbg4rdCONBXZqOnSqD9/BbJGHGI3UVtCYp1A=;
-        b=l9d0zUaeoONxcuX2LbObNdcK0dYSs3NetXU1RFkrWEcifa9dLQfxI4F6U7NpfmSQhu
-         6smdNTlJHC1zbyZMfqQZx1AhMcgd4ZDlhSfq6Mt84F6nZ/AEomwWYdsqV7FiYq3wtztR
-         qPhsBVRPaOeSUtyyBZhUOT3f6pfb2I9ffHRBeUWHFSHhes0hXogufXkBU4KHhVeDGRWt
-         HFyOn7jcoPC6HK0tf3xwVb3PpunDOMa7hdrQBbKQmkQbcfP/tj1Ybj6NnSMN11xGrB8P
-         ziaWNI5QgSwgRo8Lzraf+QMDGzSQdGo3Fgg3SH+F8oG/8lurfzZ7gZ/hvmiIsHVMOwXy
-         VCXw==
+        d=google.com; s=20230601; t=1712626653; x=1713231453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pTnXG7YvYzmRGdsTsIToSlQ51H4VFsJL7wKMPVx2EDM=;
+        b=uu4HvniBTFSS7+BwzaIEKokOmCBsYE7aV3j5k3abu0jCFNjM6FU4LFgDP2F+ZQzmmD
+         fguzlsEMPyrDisOK+GGKfpKTyt4T30sbbrbbyQOyedu3On0RJfoIcXa31bhBH/gADzR5
+         OhgCqaR7gIsz/LqC6ilnip9PzkT0uQ6+5n+X9v5e/G4Y1ucWzJLFKmrpzgDyzRaeO6U1
+         c/jfTb0mnnZS4HQ+Ej0AsM0zklm1PrAiKDqdSfPAJWLNCOLMpMVv+8VSpATxueam1VDN
+         st9dvHpJdwO/wkLPfm9i6xMmDkNk1e3P8FDpL6G46dNWLe0N/xWPXyt6D5UynPtOVKlu
+         ibFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712626636; x=1713231436;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9lrU41zZbg4rdCONBXZqOnSqD9/BbJGHGI3UVtCYp1A=;
-        b=YwQaw3zEKuab/u28VUMbXP4VMtdljCLljenFQu8TvtsUE9/rMBh5dIN1hWv1JY/ZsV
-         uIyi2ZkdXKQOwvsS1spy0GHdvMgeF/USXcnbWam2LS22gwqOBszXp7HvOvaq8yBn3+up
-         RaT/OC5jCr/T/68orNm0Zb9SlzynErwmtb0X0murso+gwmXoeI9LkEQ7cCn5G2K624QO
-         lJ4sERzy9iVevjkXERMz3vNSn38kU6VmGjmWf0wMH67tX7YD1VMtoj1OzcnVVSeclic6
-         Roig0g0jzNRm1HOxj/d/rxOvwWtWKvSJD7I6Roce+BcG+fiwmqI+FaDxQcuVLTOT5f/r
-         abEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ5UNMGsx99emP1x/8NGtlSrhZyX/WG29NjQpTvEzWKDSSg+4NNKmCDahmqs7vuDt+wbtzK8JDN3PqVqJnmInKy0PkbaAyCmF0ePJpTuhYsJwl3d+qxCwrGR4Adb7Z1kwD+vcrVggqQOfLoCjMtusd4iY3B2lHH14zhBNi+qHRt+6c3V0i
-X-Gm-Message-State: AOJu0YxvbyjPUW6kT7zmN4qUIK+xk9evyrFQ05faQSxrmEKA0/BSq0aC
-	a+4s4RrzMaWvpSo7rZpNbOPXwsjNXtc+mhKv1DwXVZFgAQtZOzZ5OyPhV+FMrKLNNCSSbOZCxSE
-	dh9dd5QBNDSfKAIwfrypnbOWzLVQ=
-X-Google-Smtp-Source: AGHT+IGHBYdqw5WuioZTYaZ1SjiEaQQ73sRjZsGoduAA1jBDzDuGbUyCGX9a6fp37uYrTgH2e7VJ2m+I4JB2tYmbQ2Q=
-X-Received: by 2002:a05:6e02:b48:b0:368:aa7a:e25c with SMTP id
- f8-20020a056e020b4800b00368aa7ae25cmr12442798ilu.30.1712626636379; Mon, 08
- Apr 2024 18:37:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712626653; x=1713231453;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pTnXG7YvYzmRGdsTsIToSlQ51H4VFsJL7wKMPVx2EDM=;
+        b=pnjzaVCIFuH2tBX4xvb8O91FtQEiWPeOcWAIxADFT00srOe97Jy/3/jMfKgki4JPJd
+         2NqKGroLMWoqoET0o0+STIqen0osQzHgF2Gm3L1evvI4Sdms+rZvsR2gnqsxlQVYUAq/
+         IvBNvj1rak0gH+yO+dLCabzJWJMrKFVJD5ivB3BapFMh6iAirqg5yzyr4jO3i7AdvepS
+         4norqaP9uGDtOjF02SPa2xbwV0hG5K0CQGijlKFHLYBitYiG6tItr/ddqCTvaQ9fl4kb
+         3ERUM9Ff2ndZUo2IgjOLM6hzKhqeIL+dG7lQfi9F6D39PpTaeXHN5EUzex4RlV2UQVLa
+         pnsw==
+X-Forwarded-Encrypted: i=1; AJvYcCVLWnJgHhxR8lQ7cKB4HBZ15CKkuyI0rZkhChnFFCeG/QzWOM4+fDmdrc9yKXmAhhbs8mYSlMxbIOBhXpvFa+FJ4CYchDZRnjCUZahS
+X-Gm-Message-State: AOJu0YxJL7Rm83nBJuAFdDKbM4wCtLhdIY7WhimS32YriRoxZlsX5OQW
+	YdPWitf45JnjYpWtzOw3aPl0MMXm//6Tr7NX4uTtpQ5aqws8soSBU0U2Fk2UGMPqUoOnKizA3C3
+	B5Q==
+X-Google-Smtp-Source: AGHT+IHz67h1hmRwe9KXBRLMyq3Gzn7HhjiIHEg9/DPuUSctMPB71xN043N2itoO/43t2nfaG4/U84FiJ60=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:230b:b0:1e4:4056:b969 with SMTP id
+ d11-20020a170903230b00b001e44056b969mr274362plh.10.1712626653272; Mon, 08 Apr
+ 2024 18:37:33 -0700 (PDT)
+Date: Mon, 8 Apr 2024 18:37:31 -0700
+In-Reply-To: <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <1712561233-27250-1-git-send-email-shengjiu.wang@nxp.com>
- <01734d96-bed2-4f7e-bbba-7068f14c822b@linaro.org> <CAA+D8ANiKH7Oc+KAjD_BMp9P2EVeM8Q6dLGFCC8a83bJXUpPEA@mail.gmail.com>
- <69ab2bd9-401a-42ff-90fa-6600dd071722@linaro.org>
-In-Reply-To: <69ab2bd9-401a-42ff-90fa-6600dd071722@linaro.org>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Tue, 9 Apr 2024 09:37:05 +0800
-Message-ID: <CAA+D8AOP6D+xUNF_XJXt-8dMi2qFyVh-Sbe8k67CzvUbnzrwoQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: imx-audio-spdif: convert to YAML
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com, broonie@kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, 
-	kernel@pengutronix.de, festevam@gmail.com, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240405165844.1018872-1-seanjc@google.com> <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
+ <ZhQZYzkDPMxXe2RN@google.com> <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
+ <ZhQ8UCf40UeGyfE_@google.com> <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
+ <ZhRxWxRLbnrqwQYw@google.com> <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
+Message-ID: <ZhSb28hHoyJ55-ga@google.com>
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+From: Sean Christopherson <seanjc@google.com>
+To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Cc: "davidskidmore@google.com" <davidskidmore@google.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"srutherford@google.com" <srutherford@google.com>, "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Wei W Wang <wei.w.wang@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 8, 2024 at 11:06=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 08/04/2024 10:01, Shengjiu Wang wrote:
-> >>> +
-> >>> +anyOf:
-> >>> +  - required:
-> >>> +      - spdif-in
-> >>> +  - required:
-> >>> +      - spdif-out
-> >>> +  - required:
-> >>> +      - spdif-out
-> >>> +      - spdif-in
-> >>
-> >> Do you need the last required block?
-> >
-> > Yes,  one of them or both are required.
->
-> And? It's already there: that's the meaning of any. It is not oneOf...
-> Before answering please test your changes and ideas. I pointed issue
-> here and you responded just to close my comment. That does not make me
-> happy, just wastes my time.
+On Mon, Apr 08, 2024, Rick P Edgecombe wrote:
+> On Mon, 2024-04-08 at 15:36 -0700, Sean Christopherson wrote:
+> > > Currently the values for the directly settable CPUID leafs come via a=
+ TDX
+> > > specific init VM userspace API.
+> >=20
+> > Is guest.MAXPHYADDR one of those?=C2=A0 If so, use that.
+>=20
+> No it is not configurable. I'm looking into make it configurable, but it =
+is not
+> likely to happen before we were hoping to get basic support upstream.
 
-Maybe I didn't express clearly.
+Yeah, love me some hardware defined software.
 
-we need at least one of them (spdif-in, spdif-out) in the node.  which mean=
-s
-that we need to select  "spdif-in",  or "spdif-out",  or "spdif-in and
-spdif-out".
+> An alternative would be to have the KVM API peak at the value, and then
+> discard it (not pass the leaf value to the TDX module). Not ideal.
 
-So my understanding is that need to use "anyOf", if it is wrong, please let
-me know.
+Heh, I typed up this idea before reading ahead.  This has my vote.  Unless =
+I'm
+misreading where things are headed, using guest.MAXPHYADDR to communicate w=
+hat
+is essentially GPAW to the guest is about to become the de facto standard.
 
->
-> >
-> >>
-> >>> +
-> >>> +additionalProperties: false
-> >>> +
-> >>> +examples:
-> >>> +  - |
-> >>> +    sound {
-> >>
-> >> That's a random change...
+At that point, KVM can basically treat the current TDX module behavior as a=
+n
+erratum, i.e. discarding guest.MAXPHYADDR becomes a workaround for a "CPU" =
+bug,
+not some goofy KVM quirk.
 
-So  I can use "sound-spdif", right?
+> Or have a dedicated GPAW field and expose the concept to userspace like
+> Xiaoyao was talking about.
 
-best regards
-wang shengjiu
+I'd prefer not to.  As above, it's not KVM's fault that the TDX module can'=
+t move
+fast enough to adapt.
 
-> >>
-> >> Instead of sending two patches per day, please carefully address the
-> >> feedback.
-> >
-> > In v1 you suggest to change it to spdif?  but spdif may conflict
-> > with the fsl,spdif.yaml.   so which name I should use?
->
-> I don't understand where is the conflict. That's a different binding.
->
->
+> > > So should we look at making the TDX side follow a
+> > > KVM_GET_SUPPORTED_CPUID/KVM_SET_CPUID pattern for feature enablement?=
+ Or am
+> > > I
+> > > misreading general guidance out of this specific suggestion around GP=
+AW?=20
+> >=20
+> > No?=C2=A0 Where I was going with that, is _if_ vCPUs can be created (in=
+ KVM) before
+> > the GPAW is set (in the TDX module), then using vCPU0's guest.MAXPHYADD=
+R tokkk
+> > compute the desired GPAW may be the least awful solution, all things
+> > considered.
+>=20
+> Sorry, I was trying to uplevel the conversation to be about the general c=
+oncept
+> of matching TD configuration to CPUID bits. Let me try to articulate the =
+problem
+> a little better.
+>=20
+> Today, KVM=E2=80=99s KVM_GET_SUPPORTED_CPUID is a way to specify which fe=
+atures are
+> virtualizable by KVM. Communicating this via CPUID leaf values works for =
+the
+> most part, because CPUID is already designed to communicate which feature=
+s are
+> supported. But TDX has a different language to communicate which features=
+ are
+> supported. That is special fields that are passed when creating a VM: XFA=
+M
+> (matching XCR0 features) and ATTRIBUTES (TDX specific flags for MSR based
+> features like PKS, etc). So compared to KVM_GET_SUPPORTED_CPUID/KVM_SET_C=
+PUID,
+> the TDX module instead accepts only a few CPUID bits to be set directly b=
+y the
+> VMM, and sets other CPUID leafs to match the configured features via XFAM=
+ and
+> ATTRIBUTES.
+>=20
+> There are also some bits/features that have fixed values. Which leafs are=
+ fixed
+> and what the values are isn't something provided by any current TDX modul=
+e API.
+> Instead they are only known via documentation, which is subject to change=
+ The
+> queryable information is limited to communicating which bits are directly
+> configurable.=20
+
+As I said in PUCK (and recorded in the notes), the fixed values should be p=
+rovided
+in a data format that is easily consumed by C code, so that KVM can report =
+that
+to userspace with
+
+> So the current interface won't allow us to perfectly match the
+> KVM_GET_SUPPORTED_CPUID/KVM_SET_CPUID. Even excluding the vm-scoped vs vc=
+pu-
+> scoped differences. However, we could try to match the general design a
+> little better.
+
+No, don't try to match KVM_GET_SUPPORTED_CPUID, it's a terrible API that no=
+ one
+likes.  The only reason we haven't replaced is because no one has come up w=
+ith a
+universally better idea.  For feature flags, communicating what KVM support=
+s is
+straightforward, mostly.  But for things like topology, communicating exact=
+ly what
+KVM "supports" is much more difficult.
+
+The TDX fixed bits are very different.  It's the TDX module, and thus KVM, =
+saying
+"here are the bits that you _must_ set to these exact values".
+
+> Here we were discussing making gpaw configurable via a dedicated named fi=
+eld,
+> but the suggestion is to instead include it in CPUID bits. The current AP=
+I takes
+> ATTRIBUTES as a dedicated field too. But there actually are CPUID bits fo=
+r some
+> of those features. Those CPUID bits are controlled instead via the associ=
+ated
+> ATTRIBUTES. So we could expose such features via CPUID as well. Userspace=
+ would
+> for example, pass the PKS CPUID bit in, and KVM would see it and configur=
+e PKS
+> via the ATTRIBUTES bit.
+>=20
+> So what I was looking to understand is, what is the enthusiasm for genera=
+lly
+> continuing to use CPUID has the main method for specifying which features=
+ should
+> be enabled/virtualized, if we can't match the existing
+> KVM_GET_SUPPORTED_CPUID/KVM_SET_CPUID APIs. Is the hope just to make user=
+space's
+> code more unified between TDX and normal VMs?
+
+I need to look at the TDX code more to form an (updated) opinion.  IIRC, my=
+ opinion
+from four years ago was to use ATTRIBUTES and then force CPUID to match.  W=
+hether
+or not that's still my preferred approach probably depends on how many, and=
+ what,
+things are shoved into attributes.
 
