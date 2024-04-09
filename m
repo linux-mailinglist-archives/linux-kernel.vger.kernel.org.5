@@ -1,111 +1,119 @@
-Return-Path: <linux-kernel+bounces-136824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA9989D8AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:01:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E101E89D8AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:01:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEE891C21DB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:01:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FEE2862B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164E012AADF;
-	Tue,  9 Apr 2024 12:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD21780043;
+	Tue,  9 Apr 2024 12:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vCeatPVO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V0FxeHBd"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA5786651;
-	Tue,  9 Apr 2024 12:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0655129E81
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664053; cv=none; b=gRpFv6PWI3uP6IY7IhmJkhI1eQi8kQqBBo99LElnRRmq8sNiMkZy/eXyG847eNHQOV0+W+oU1rjQOGfaBhFmWY0B38kFCs7cUEhQFLy6gvtPhlVQW76nQpuB/XsHEfzFcL+3uGSMUmESUMG1lv166aFof6VQdmL9eui8j234hR8=
+	t=1712664084; cv=none; b=nOee+4QPR7GtTsNB0M7dBpg3IBnFHkICEGlz4nqSC9nBfllurKAurp0locN7a9h6MDhJEuDEs8RJ6MmPxwVSlPnVmO6gH4DitbJnPtGktB00cTMbjeaQ1Fvm4jOCBz4eC780VO+uqtOWjup/mAqAylr8huaUtNyEb0cSIV2qJdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664053; c=relaxed/simple;
-	bh=tAyPAeaQANhI4c3tAyeCyOp+cseGWerbAlJvZtQeEac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jVAsG53aGCe3s2IumZEYfyTu3GErtFfH4w5aK8ZblS8cMFlpLd4LszW0mWqLZtl/rxhYggQwHNwVXZa7Jk5Fqkd4qsb4Xy2EwpVz9umfmBaAcWvjHCbXqZHwC5ibMbKcODROhvL3snAOioDSoXjx3mMayRxxsbbZruJeBnjr5hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vCeatPVO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63AB4C433F1;
-	Tue,  9 Apr 2024 12:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712664052;
-	bh=tAyPAeaQANhI4c3tAyeCyOp+cseGWerbAlJvZtQeEac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vCeatPVOqX3Hx7iTF3LlEUcKobQjBcaRcBc+fJpctd/culjL8StZejl0MHXkpetUm
-	 eYa8kVtD6iizmqCJs/r5uYdajS02qAc9/rJ8H9LkYw/XYk73EC/DkPp8415WO7xGEC
-	 K1qXCt9G1iTV6jyTJsCPv7dZMZC2LL46PmD87sEL3nRwcr88pwhMVj0UNWoWMBmhAx
-	 w/AHNjgvxZV2nKPZtpUrCRfcPEvayZbDK9kja90XB4QDPjLq5HYT/ucwEVbVyfvDcc
-	 PAw6kGw4pZOX7tx8QrPZQOmj9lLbyTgD+94FH+uxRXtdJdLSk2cWy4JsjBs/t9aoqW
-	 FepHEf5w4IOZQ==
-Date: Tue, 9 Apr 2024 14:00:49 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 3/4] perf: Remove perf_swevent_get_recursion_context()
- from perf_pending_task().
-Message-ID: <ZhUt8XMndGSwNuwx@localhost.localdomain>
-References: <20240322065208.60456-1-bigeasy@linutronix.de>
- <20240322065208.60456-4-bigeasy@linutronix.de>
- <ZhRqSEbyd1rqVwfN@pavilion.home>
- <20240409062501.h4rA_ck4@linutronix.de>
- <ZhUaAjhQXN6ahtpS@localhost.localdomain>
- <20240409105405.TXUU--_W@linutronix.de>
+	s=arc-20240116; t=1712664084; c=relaxed/simple;
+	bh=/bJkIcYPyNFLkwEnXNF99Y8h0DtpWIDGG30A3oUtr9o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AdeJrkhCY7dksWu06CX98vXugQaEAchFD2el18COx0ueABxW99RLIpWmPnhu4q2tPWZFczvJ7AeKCcJ1H6AWoVsyRYMsAWKDA0zdcKc9jTaRU9vY8XKwWosLU5OQ4sYGPDUUENGmt8/PuDT1wqGP8vuhHpm+I+y7FIixpxPAbCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V0FxeHBd; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c5ed27114bso450108b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712664081; x=1713268881; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/bJkIcYPyNFLkwEnXNF99Y8h0DtpWIDGG30A3oUtr9o=;
+        b=V0FxeHBdkZQ+o6HC94cZygYR+Xjvwxql88Cyzl6Vpn73+DCWvqcVgSf5O6h0P1kOjm
+         79Q5TdQE9wekXswdzU3lNr7cdEuc/G0l8vUmV8W8YVSicbcXijltOdiSQ7M2h+q0Tf2h
+         GqHkAqft47gwnupuAbHy7a9S1kpAzGwanRiZIX+USa1U2pVVDtYVi39BoRN0sRtqTjGM
+         409fxdb6wit+nAVMq3j55CbfEe07u3w//6DcWDsQKySBInWBLTZiZnf0fiE+TS4oFuq3
+         ETHYz+IFw5UaK9G3Ne8sfQR+1UDcQhewD8UQieF1aH7o7NE7Nx/cEGLxlUlZ3ZZEZPXj
+         gwrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712664081; x=1713268881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/bJkIcYPyNFLkwEnXNF99Y8h0DtpWIDGG30A3oUtr9o=;
+        b=NilqQgLkPugGfRn1JNzenB7N4tpGoIDGsB/6Wbt6XcPKtydHe3CAmaeAgWAHnfAkcv
+         nqXOh2Ap0hRPPiRg4LKTF+1jaAfGUL2q6UrE98KdTQCtXGxqaSJhKk6ctH7pg6jon6PL
+         0gyu0SYphgpl5gfwIjDGp74ys/lMMqozqk4rjtzqTrk/gSdPEfLX+F3XIUuDHzsMYESh
+         6F0cN2C5TuXCnUhJizIrxqCQIVDb0O+yhou/kYGsG79ZlNOKTbCoG/rX5+viG7T2lBvX
+         BbAaYr+I56eBaCbM7bkLEmvyEZaokiB9CkLUQ5fSTVvCUo6x56A0WWZbRZg+3xu13mHn
+         krcQ==
+X-Gm-Message-State: AOJu0YxTmUHo9qOqHncGHquuBldzwilhLEuFtvwK8rXJLUVejOC/PRpK
+	6U0I4ocov5Sk2J5hk1UOzMStsXUtXQvtdYBvAQXnJE0VEwJ48gzB6HfyubC5M+HritTGqzw9raj
+	m+ii58lrjjePdwwzNtWcp/eH1UlNh1T9iHR+AAg==
+X-Google-Smtp-Source: AGHT+IHvCXB+IR0sKbXE066F42lsqz3+YeUibucf/KdS8fPmJNMZ+gR8gytCo2qCKC+gCADN5Y/2vZAoWEhybIwI6FI=
+X-Received: by 2002:a05:6808:21a3:b0:3c5:e755:834f with SMTP id
+ be35-20020a05680821a300b003c5e755834fmr1114418oib.0.1712664081629; Tue, 09
+ Apr 2024 05:01:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240409105405.TXUU--_W@linutronix.de>
+References: <20240405115318.904143-1-jens.wiklander@linaro.org>
+ <20240405115318.904143-3-jens.wiklander@linaro.org> <CACRpkdYLCuRKZRqRUkav7UoT+0FSaMmciH9bps3VGgxLCw6+_g@mail.gmail.com>
+In-Reply-To: <CACRpkdYLCuRKZRqRUkav7UoT+0FSaMmciH9bps3VGgxLCw6+_g@mail.gmail.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Tue, 9 Apr 2024 14:01:10 +0200
+Message-ID: <CAHUa44GozpaRSC4oNiGCG1Myv+GE8bvk6aHS0q1ecQwW-YMMUA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] mmc: block: register RPMB partition with the RPMB subsystem
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, Sumit Garg <sumit.garg@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Tue, Apr 09, 2024 at 12:54:05PM +0200, Sebastian Andrzej Siewior a écrit :
-> On 2024-04-09 12:35:46 [+0200], Frederic Weisbecker wrote:
-> > > > > @@ -6800,10 +6792,6 @@ static void perf_pending_task(struct callback_head *head)
-> > > > >  		local_dec(&event->ctx->nr_pending);
-> > > > >  	}
-> > > > >  
-> > > > > -	if (rctx >= 0)
-> > > > > -		perf_swevent_put_recursion_context(rctx);
-> > > > > -	preempt_enable_notrace();
-> > > > 
-> > > > Well, if a software event happens during perf_sigtrap(), the task work
-> > > > may be requeued endlessly and the task may get stuck in task_work_run()...
-> > > 
-> > > The last time I checked it had no users in the task context. How would
-> > > that happen?
-> > 
-> > I guess many tracepoint events would do the trick. Such as trace_lock_acquire()
-> > for example.
-> 
-> So the perf_trace_buf_alloc() is invoked from that trace point and
-> avoids the recursion. And any trace event from within perf_sigtrap()
-> would trigger the endless loop?
+Hi Linus,
 
-No sure I'm following:
+On Mon, Apr 8, 2024 at 11:07=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+org> wrote:
+>
+> Hi Jens,
+>
+> On Fri, Apr 5, 2024 at 1:53=E2=80=AFPM Jens Wiklander <jens.wiklander@lin=
+aro.org> wrote:
+>
+> > +/**
+> > + * struct rpmb_frame - rpmb frame as defined by specs
+>
+> As Tomas said maybe we can write the name of the spec or the number or
+> something so users can find it?
+>
+> I would also write explicitly "the stuff bytes and big-endian properties =
+are
+> modeled to fit to the spec".
 
-1) event->perf_event_overflow() -> task_work_add()
-//return to userspace
-2) task_work_run() -> perf_pending_task() -> perf_sigtrap() -> tracepoint event
-   -> perf_event_overflow() -> task_work_add()
-3) task_work_run() -> perf_pending_task() -> etc...
+That makes sense, I'll add it.
 
-What am I missing?
+Thanks,
+Jens
 
-Thanks.
+>
+> Yours,
+> Linus Walleij
 
