@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-136538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E8289D557
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:21:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219AD89D558
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:21:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C319282C30
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:21:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B791C2193F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0312B7FBC2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4CE80034;
 	Tue,  9 Apr 2024 09:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CJaUxvWu"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ihcxW5Re"
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41E17E798;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DAE7F478;
 	Tue,  9 Apr 2024 09:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654481; cv=none; b=qir1HSKB2vDlXf7gdvZBuAr9zbL4g42pzb7HBwMckQ1haU9XTOeVkvm3uktKayKm7L/CvzPIM+VxxmHFBRupPdbP2OZS/xToS22nJ+9GTaq8s4+RLnLpIrauMIwyAFU0ECKhemKdiuUHbv8DlWBjW57JT31sTy+bOdpO733y/HY=
+	t=1712654481; cv=none; b=HgGBGeZuiCYwIrtC2Q4zwjUi3cEf2pds79SwRlAeCug/3ljE2EvPTbixrWBejiA4o/xssj8XS7aDUC5Tok20s2u0NhRHpM4y8QCgD9Nk2Ynrgq8hiRb9tlRe+lYOSDFJy8t0IowT47rg1Lbkkrs+v+yFyuGlwRJz94kqrLSWMjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712654481; c=relaxed/simple;
-	bh=L55iLpsbIZ+5RYaT9LyDbQhxY6Gq3oW3OyLMYDl+CcE=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=WcrNxabkEYiEmPjNp4NwVTMGne7VsJkL8u66UZ12l4KKDO3FIrqr5ZGtKzMZN8UY9gW46Y9X3ADMtlNg9U8tw0NRnF5qGNiDanbWzJ36mNO4WpgLnAq6JaQHwJtk/0EggwFVlaBuW/4jDq6J++sNA75KU1Fg5KOhsXqZ5H0pc8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CJaUxvWu; arc=none smtp.client-ip=217.70.183.201
+	bh=RgQ+mZW3M5pg9bHIByJF6UqZHSarQFZlT0mB2JICOgM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=tAr3NXVc8YqXr0AZUa2hBsEDcliqtHQMTMION/DGSp3a+JTlD5gunfccNAaw1pdLhn2/vmm7mvcCGbr4Epk5zGLAvHQAIoKnP6TLqVMxDxDhWzWUxNL7FPeZ71etud327FDc+DapWEnHabGa5wUlClXOGyEKDVB97Yk2Z9mjBPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ihcxW5Re; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 806581BF208;
-	Tue,  9 Apr 2024 09:21:09 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1F3361BF20A;
+	Tue,  9 Apr 2024 09:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712654471;
+	t=1712654472;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WpIo0b1UVsh1fxNr1ZZUxhvbWy3Yo7lP2Ma4USOQd64=;
-	b=CJaUxvWuQ9VDKqKT3pQ+nyvMW7jY+Uu5yxmuLr+CmqaAdjPnS1vynele/n4HfYG2L1nUq0
-	SNMzzr1sFIrEBUXddWM9bvDZrURAMxb7lSVEiUdvE8JsUS/gNyW1Ds5HRccPvITxREPBXv
-	0QHdUCsgFVLUSIAc5IPKjkDezC2+0mqNprgvUZXaCz8VMudfSnrcVjZ4OVEMbvYHnfYq5E
-	nl2UklAtQNLQbtY3TZvn1/4v0PMO8Mz6abSN/F1OULIJsibGLzeI/lBx1oVsgQ/StaUlUG
-	iYhTlB2I4XhBhX7X3FmNV17L0nsHm/VOl+jm0LxDVQgpqW1/SjZGsGd7MpJF2g==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+1AjpgLZrq5VOp+FpLofqafK5+WZ3KagtEpDGsQo+mE=;
+	b=ihcxW5ReqtChDthPOHkgaed9vPCmR0VWCI0k4pH681rFtekp8WwYbY9aVeMLm/yPbhg1ir
+	ZV0P7AA2vtVWe9L/gKQRGp56+0iS9nWfymX2Cnk1NQOrhzJGJa3Zo7zWOBuTgA0JVWFldB
+	KQgiHELOQN9iOOY/VM/KEepSZO1p/uAAjIVRsWC+zmw4M9CtMIj3tLYWaGTE78QTZkZlwy
+	iUUmgDMsP8JLRfWbyrGceobTDREaU9C7hTOyPy2gGETOxsE6j9d0CxXe9BP6IuYo5xhD5r
+	vKoJss1VYfP8ZhC29M04mD8Vz867huuIlWgn3vehMLqrGX2d9wkr9mBozdQzxw==
 From: Romain Gantois <romain.gantois@bootlin.com>
-Subject: [PATCH net-next v2 0/5] net: stmmac: Add support for RZN1 GMAC
- devices
-Date: Tue, 09 Apr 2024 11:21:43 +0200
-Message-Id: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
+Date: Tue, 09 Apr 2024 11:21:44 +0200
+Subject: [PATCH net-next v2 1/5] dt-bindings: net: renesas,rzn1-gmac:
+ Document RZ/N1 GMAC support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,10 +56,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAKgIFWYC/22NQQ6CMBBFr0Jm7Zi2ghZX3sOwgHaASaQ1bUNQw
- t1tunb58vLf3yFSYIpwr3YItHJk7zKoUwVm7t1EyDYzKKFqUQuF4eskTktvJF51Y0Z9ay9WEOT
- BO9DIW4k9wVFCR1uCLpuZY/LhU15WWfy/4CpRYDOQGpRua6vNY/A+vdidjV+gO47jB8GCFH+wA
- AAA
+Message-Id: <20240409-rzn1-gmac1-v2-1-79ca45f2fc79@bootlin.com>
+References: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
+In-Reply-To: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
 To: "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
  Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
@@ -75,68 +75,99 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
  linux-arm-kernel@lists.infradead.org, 
- Romain Gantois <romain.gantois@bootlin.com>, 
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>
+ Romain Gantois <romain.gantois@bootlin.com>
 X-Mailer: b4 0.13.0
 X-GND-Sasl: romain.gantois@bootlin.com
 
-Hello everyone,
+From: Clément Léger <clement.leger@bootlin.com>
 
-This is version two of my series that adds support for a Gigabit Ethernet
-controller featured in the Renesas r9a06g032 SoC, of the RZ/N1 family. This
-GMAC device is based on a Synopsys IP and is compatible with the stmmac driver.
+The RZ/N1 series of MPUs feature up to two Gigabit Ethernet controllers.
+These controllers are based on Synopsys IPs. They can be connected to
+RZ/N1 RGMII/RMII converters.
 
-My former colleague Clément Léger originally sent a series for this driver,
-but an issue in bringing up the PCS clock had blocked the upstreaming
-process. This issue has since been resolved by the following series:
+Add a binding that describes these GMAC devices.
 
-https://lore.kernel.org/all/20240326-rxc_bugfix-v6-0-24a74e5c761f@bootlin.com/
-
-This series consists of a devicetree binding describing the RZN1 GMAC
-controller IP, a node for the GMAC1 device in the r9a06g032 SoC device
-tree, and the GMAC driver itself which is a glue layer in stmmac.
-
-There are also two patches by Russell that improve pcs initialization handling
-in stmmac.
-
-Best Regards,
-
-Romain Gantois
-
+Signed-off-by: "Clément Léger" <clement.leger@bootlin.com>
+[rgantois: commit log]
+Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
 ---
-Changes in v2:
-- Add pcs_init/exit callbacks in stmmac to solve race condition
-- Use pcs_init/exit callbacks in dwmac_socfpga glue layer
-- Miscellaneous device tree binding corrections
-- Link to v1: https://lore.kernel.org/r/20240402-rzn1-gmac1-v1-0-5be2b2894d8c@bootlin.com
+ .../devicetree/bindings/net/renesas,rzn1-gmac.yaml | 66 ++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
----
-Clément Léger (3):
-      dt-bindings: net: renesas,rzn1-gmac: Document RZ/N1 GMAC support
-      net: stmmac: add support for RZ/N1 GMAC
-      ARM: dts: r9a06g032: describe GMAC1
+diff --git a/Documentation/devicetree/bindings/net/renesas,rzn1-gmac.yaml b/Documentation/devicetree/bindings/net/renesas,rzn1-gmac.yaml
+new file mode 100644
+index 000000000000..d9a8d586e260
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/renesas,rzn1-gmac.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/renesas,rzn1-gmac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas GMAC
++
++maintainers:
++  - Romain Gantois <romain.gantois@bootlin.com>
++
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - renesas,r9a06g032-gmac
++          - renesas,rzn1-gmac
++  required:
++    - compatible
++
++allOf:
++  - $ref: snps,dwmac.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,r9a06g032-gmac
++      - const: renesas,rzn1-gmac
++      - const: snps,dwmac
++
++  pcs-handle:
++    description:
++      phandle pointing to a PCS sub-node compatible with
++      renesas,rzn1-miic.yaml#
++
++required:
++  - compatible
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/r9a06g032-sysctrl.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    ethernet@44000000 {
++      compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
++      reg = <0x44000000 0x2000>;
++      interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
++      interrupt-names = "macirq", "eth_wake_irq", "eth_lpi";
++      clock-names = "stmmaceth";
++      clocks = <&sysctrl R9A06G032_HCLK_GMAC0>;
++      power-domains = <&sysctrl>;
++      snps,multicast-filter-bins = <256>;
++      snps,perfect-filter-entries = <128>;
++      tx-fifo-depth = <2048>;
++      rx-fifo-depth = <4096>;
++      pcs-handle = <&mii_conv1>;
++      phy-mode = "mii";
++    };
++
++...
 
-Russell King (Oracle) (2):
-      net: stmmac: introduce pcs_init/pcs_exit stmmac operations
-      net: stmmac: dwmac-socfpga: use pcs_init/pcs_exit
-
- .../devicetree/bindings/net/renesas,rzn1-gmac.yaml |  66 +++++++++++++
- MAINTAINERS                                        |   6 ++
- arch/arm/boot/dts/renesas/r9a06g032.dtsi           |  19 ++++
- drivers/net/ethernet/stmicro/stmmac/Kconfig        |  12 +++
- drivers/net/ethernet/stmicro/stmmac/Makefile       |   1 +
- drivers/net/ethernet/stmicro/stmmac/dwmac-rzn1.c   |  88 +++++++++++++++++
- .../net/ethernet/stmicro/stmmac/dwmac-socfpga.c    | 109 +++++++++++----------
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  14 +++
- include/linux/stmmac.h                             |   2 +
- 9 files changed, 263 insertions(+), 54 deletions(-)
----
-base-commit: 87c33315af380ca12a2e59ac94edad4fe0481b4c
-change-id: 20240402-rzn1-gmac1-685cf8793d0e
-
-Best regards,
 -- 
-Romain Gantois <romain.gantois@bootlin.com>
+2.44.0
 
 
