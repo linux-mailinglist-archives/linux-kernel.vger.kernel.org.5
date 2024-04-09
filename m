@@ -1,245 +1,241 @@
-Return-Path: <linux-kernel+bounces-137285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F41D89E034
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:19:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA9789DFF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72279B2C65A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24E202816D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD5413D880;
-	Tue,  9 Apr 2024 16:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5564A13D63F;
+	Tue,  9 Apr 2024 16:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L5dHXokQ"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Q08IBV1E"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2094.outbound.protection.outlook.com [40.107.104.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D5013D63F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712678422; cv=none; b=UDRtp+gZQOrLckdzFdMAyQBp5DjtN271ThAdhlmLKseW2bRnvQ7qfUe+htFzeKESR1v9NWpT0/LnIKOq/3gbRyj5hAR7DhvMMdReUc8IrTUVcMOQ5STZmP9ys4wl0OY7n/Ug2z2V/7KaeIaXWMdcQFjP9Ye53D0hWvp4znq5uKw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712678422; c=relaxed/simple;
-	bh=E3LQw7BIH6NFeKqXEwye3PeW+RQje2qB7r+WxoyVbG8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rVFfjmlGZiAOutCps0OGHr8305HvV8+xlwRI2yCgKWyC+79T0+t6ac5LLpkQLrEe/OXG5RssH+0Q8yye1sP9cDe4K1+eSc/DAWM56jONXSnMNYVosk2KJYfzuxfTry1Bc31ZjGuiVIqMcEVI6F7B9kNFC7O18D1fQtKFZ7k2rXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L5dHXokQ; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33edbc5932bso4300070f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712678419; x=1713283219; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vl2WAWZiRqw9Ns4ylVujkmqdUMbnF+5lRwOPnf5XU7k=;
-        b=L5dHXokQ1nzXeoXdFV8LRViHdrbl5rmy8sgDV0c16Eax6paVFXhsc1mr/2T26UcyxR
-         mRbE2XXgMcdJTHg1cTxO4ro3O7sEmZucjtQJ5WI5koV3Nhdcc92Y7B6z8IB3uSblF7S3
-         GEx1mNo7crrsHocbjgXKkJWVxmAtlFl0onE+CYrLuJofhTXh7sWH0B4f84e6tfgc0ukD
-         hvzvN3sD/reOL5Jk0rUHzDSFWii65Sb/C/RuRvC+/+DjKEk5X/596aGDuqR16IsNTrWp
-         LQrI8CubTguLqUgUDQrvfec1pHEkbN9RIfUwlpTBzUYSsnWDc48VO6/OkyVhRZfGOFwa
-         rkbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712678419; x=1713283219;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vl2WAWZiRqw9Ns4ylVujkmqdUMbnF+5lRwOPnf5XU7k=;
-        b=lbRzcUapmdVFSNzB/BvXL4qZLhNHEXnoV0l+096WANwM+Kz1XfgISBMUwhe2bb1/lR
-         59eT38F92NuWh6g68sssIlAUnQ52pVTe2xAitLVCDCg30uOKeHa74o4KSG5UCvTtpKAL
-         OmwQu+LmnsGAR47MKftj4wE801sfa3sSUXqy+/DOuy6UjKgC84dXeyw5uH9+n0bgYIpT
-         zajso3GC2mgiZiQScGqp8BYVP1spe0wmmW9YHzOE2KYpdODJWDazmHgjXZMQgTqbSRt0
-         XYtQbdBf22Ji+VkLh9YQ6ikrP1h6fAnAB8bSJaNEEPRn3lfFiht05boZd1Qv/F8PF44i
-         9fmw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBhMdDVhEmVTfdbbWs3BTrRdyveNT3RhXGnpR3KSZWPnp/Vhvefk1L7c5XZw0YkgAXpYLos5j6t6EvQXiOPtWKsbmXbFPxFoFIEFwp
-X-Gm-Message-State: AOJu0YznE2eA38gvWp/rotv3CP9w/2pJF/lUB4hJx2lEUt1krXqC298U
-	hhzay13xfgYiyuHSIc45NnFpBfUlTzbejns4yxCqbJltIlUF5g5ILmblUD+56uU=
-X-Google-Smtp-Source: AGHT+IHXyvG8mKfTY4naLXWGXb6e7X0FvCeImKpBuVDysC36RkLPoOdejDcQfesyOgvubSVgZ97dCw==
-X-Received: by 2002:adf:f1c4:0:b0:341:e4f4:4399 with SMTP id z4-20020adff1c4000000b00341e4f44399mr83235wro.68.1712678418814;
-        Tue, 09 Apr 2024 09:00:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id k2-20020adff282000000b0033e9d9f891csm11740838wro.58.2024.04.09.09.00.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 09:00:18 -0700 (PDT)
-Message-ID: <62b1f2fe-7892-405c-bbb9-4bc77173a801@linaro.org>
-Date: Tue, 9 Apr 2024 18:00:16 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FC71D6A8;
+	Tue,  9 Apr 2024 16:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712678562; cv=fail; b=asIz81I9N7RCTEpORixyr7hKWcUZyYha8kJGFZwM5HL710/loNpcxFlyv7Qq7jXXOO2Pg5SVwszs0CF/zp25CK8QL9922LuMz3YIUa9tEjo1CRN9WlC8KMPuWtPKcF1Euz6vf9e6UgYgM3mKmZ7Ey2xUU2jkIeR5oHkWsOCtc0Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712678562; c=relaxed/simple;
+	bh=+968bWGmhO0NAy9cEKFuaIqOPD0C7SADtxSAg5x60g8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=joyaw26ioVG3ttVXWY0QrB7Q5/lcQynnR2wUPhsB7Sky1wkPQuB5c1QM4ASFjleeKtHm3Znp4DEVfYBv5/oQadIFyyYVspSl4jvBw9K76zvIZE9sUW+kmchSEG9ieu+o3vxuo+9uikbxmPLFY/NAsortaGyFBKdFMxZVt8mQcYE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Q08IBV1E; arc=fail smtp.client-ip=40.107.104.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ob7TA7kfIGpKVvlh+npmwhvM6gn4fdNGbGCW1eS8fleEVidckV0tQB5SIo8sgM7MpcREH3BTnCj8TeIi6LidbXQCwMDmxAjaUs/+4K9PdbigqGlu2XVxkyswG4/uITl/MB6MrYbn5IxpAVmkxMSRaenxuObdJfnpW7C9fcnzioIb9WcgafyFz6eobbh4NBj9L4DImFJNFAsLCT2jIO3vmdg7BC6SinKSPGMHXnCfmKbnWum6CJd3vBTAidLsGVB29DBnYvMagPiPMgq64224A84uOv688hkUK6yR7OyOo35YYxcyEmHm/sIq6A5hZ3LT6WfT5o4MX2jwO37ogboMPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LaqmPIH7buyzIqRFdBz7O7KPbDEiuqE0TSJzwH301Rc=;
+ b=ffMoy7COYyGVYC7L3QfLwz9Kbm8NlA1Y6lo45ixUeD6GEprpiDS66IUeEidgx5lxbiyLEKNYzjWeN3zPp1Y3soDd6M5+mf8m5Q5Zaj9jsOnDVEd/vnABNCoAueg+6QWbElUAfkApWQIX/61FdepiterT3RaAq5EAUH4DhH2VMumFO53oVEd+qqkMmFWWsOB7u+eWMkkpyJNBirbaR9bX1TsZOHAcFNpD6lRlN0dW4VGmCj9QhyG2j3RNVMWDoHb/26gjmRhtupFYuF8x5uGkiQnaMZXAYVQsAYJ0XWabLQoJikBG6CKLSvzo7F5OcnwjCxSr17y4JU/BVIe2nSkbDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LaqmPIH7buyzIqRFdBz7O7KPbDEiuqE0TSJzwH301Rc=;
+ b=Q08IBV1E/lBWhRVeFszp7F9SWC0O47dsTD1PsmLh2mfq2Mx98X1BcQ4RRTE+hZnaaEuacQglMhuSXOidVV8KL0x+V/N5Znhg24nk/0jUZnBKttMBdxLO/1jOea/Q5ukHZpaw6P1okvPfD5ADAeRsiE6+gAre5kg9i1V0Rrqz0DM=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8405.eurprd04.prod.outlook.com (2603:10a6:102:1c2::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
+ 2024 16:02:37 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
+ 16:02:37 +0000
+Date: Tue, 9 Apr 2024 12:02:28 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960/wm8962
+ and sai[0,1,4,5]
+Message-ID: <ZhVmlFIq/Ed+HbT9@lizhi-Precision-Tower-5810>
+References: <20240404161914.1655305-1-Frank.Li@nxp.com>
+ <efc9c624-6a31-4299-a604-8aad1d0cd878@linaro.org>
+ <ZhAO4YWuB8r8k+m8@lizhi-Precision-Tower-5810>
+ <938489b1-eb94-4f8a-8881-230951299f6a@linaro.org>
+ <ZhQO979YpKA24pML@lizhi-Precision-Tower-5810>
+ <76714850-0e02-4333-acce-02c7657666b0@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76714850-0e02-4333-acce-02c7657666b0@linaro.org>
+X-ClientProxiedBy: SJ0PR03CA0258.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::23) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 18/18] arm64: dts: mediatek: add audio support for
- mt8365-evk
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Rob Herring <robh@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v3-0-16bb2c974c55@baylibre.com>
- <20240226-audio-i350-v3-18-16bb2c974c55@baylibre.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240226-audio-i350-v3-18-16bb2c974c55@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8405:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	MoDSmzKOMG8QCuoreNo7bHwSu/2FYWFeSHHOdUf7fO4rNkQeIOHhpK47dZ/d0mIL/7bzq0fueGNvAPBShwhl7ifEFO52qLcHjOm1fKp1WbEXvPLI6My50991/DieT3JNTJ7yCAyhq0ysgb7PRvvIainC++7OaeusGaWtpadLm6suB/snN9wl9Kt3pjqkdG0RVUJbkuYJtM9jK42OeGGCbqfKvzUBEjf3uvINXOmLQABui5g5nsyuo3GI/oeR3KzI4ezkr4e4W4xspUEajGASYWYCFz77syMH7w9fWNUCqYLeCqfFxs7q3dr7Q9Nfxo1a9RqTZ5oFCB7IQ1xJOjC3aQoYja9+zc5vlodZV5+7e7V4FvNRr8+MWV2wEAtvHi6hktwyE/Rqc+ZJNe4WwR+75O2IkeuxAB9ra1hcNp8IW7y0V42Q4uGDdgPr9FfqVQxBi3Q8VfC0xTCzbCq/1QRDZy+0o5Z064KBCf24FUF93we1f1/LZ6jsSaxVgvykbUwc2+GTH9ioesPy9BNdOs9UDpvRACKD+Af31nQu/ovBZI22c8lTr0WCZkHqjZGIg1tlvg3olmtjXkZyRqski+MFaIqh0wOcwWLd3WH3smoR/Sh/LR2oaAON9FsIdUjoAmGZFTZf0HkN8irsJKtFF/K9RVEfSgx8qdWJaDkaycOAb7SXqntcuxjfc/Wsoov0YUc07510H7GP3R8h40P6q4SUhBSy9InhzaINVLyh9/0EzOw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(376005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qmbvlek6cOf8MMBuRZajeU3fk2+Q7/crRXXIRe6/Kbo042yQbx8kO/2tZc75?=
+ =?us-ascii?Q?xVG+IJh2VeFlqXifC5pKQJxYcutyJgJ0RY4DUuY59NuyNo7zAgPQH1ZM+D0D?=
+ =?us-ascii?Q?hoV0KHg82woo1YkIQKd2+umkb5s2QrOP2Utmth4k866UeGCeK3yysmRLNUUN?=
+ =?us-ascii?Q?NZim8n8U85OG9JpjNSJSsQIVcD60sMHRR8VqkNWtAK2cAcJsqRVNyXAuDQbB?=
+ =?us-ascii?Q?BDBvhEPe6hUlBgwZOq0a7gCNnwoeYY0L64pY3RFNrd/KltgvqxGqaYuM6sx8?=
+ =?us-ascii?Q?70IpZJ8720zlh5L18+y50AVypKArOQjQq3DgGEbFsRzvG2fzKBYppr7woD/k?=
+ =?us-ascii?Q?6w9H9mRHwEi8hFCRCc0m3kQWMSbO3buor1zWoawUUUTa5+DzXxoEZd0l2XFn?=
+ =?us-ascii?Q?xo4OzJ7pTli2mNa5witDOXfofxDwJ5AAc5M/r7Gz90DPBu2ucgbTPDfmDp4b?=
+ =?us-ascii?Q?+A1vM2TIO+iuimm0HjJG321BDUc2AjyPi/npMvRCkTJ57M65u+c31pkrCLjT?=
+ =?us-ascii?Q?sUqgk1M5UFOJXNe31Rqu2b3nivgPXutFOYAwv35PS4XMriRY5adUXIFCZX/l?=
+ =?us-ascii?Q?bVGQa/MutRO7HQLytj37gz2XrCnzD3djP+MrMhUhY6aoslpSCfGzCV/evcgA?=
+ =?us-ascii?Q?3EIj1raJy6fR1xl20TCrPLBjZGvR81xe+MOjRppkMVbhPHn4x07h2341Xm9s?=
+ =?us-ascii?Q?GaKJYpEYCfCJhkw2wSi16Rp/l088o+xs19ws/AK/wa+moFjlNLmDOHioxGAZ?=
+ =?us-ascii?Q?QDCdI2TZgYxYlHRzhUcdBz19BUsOPvDu7Zm5YqMmO2qrkq5DHCmBsuB4rGzK?=
+ =?us-ascii?Q?sADzCS5vRbAM8pE1Y0CTEO5Xlnhlgx7Zjzlyo4MYKLPF1/dunas9/8f7c08w?=
+ =?us-ascii?Q?JvYT+P98T2GbAmMczmnXUz9xLy/w369F7N36iZbLn0k3eiHuwK1WL7qwR5GI?=
+ =?us-ascii?Q?EwoY0ac2y0Njm3AY/hGkjZvsMyQ1VdePsTTUNfNeHxcXPIJoeHHebHlKgNeU?=
+ =?us-ascii?Q?NW8McNT2FDTlObRpdw3k/T+g4YKh8jAfx+DfnndJXlhV7VEobDhQsGb3Hd4W?=
+ =?us-ascii?Q?42MQPFbyM7lnJd5kU9PWdL3ToDyRoMvf3Xn5qpdrQTz8s4O0ngdpZAK+ncfs?=
+ =?us-ascii?Q?vF9FhCNAqdxvYbxuOsFoVWP3aaA945SLd1STXloCuyq3Jz6MiPJR1ne7sqnw?=
+ =?us-ascii?Q?FP+T5yowDMd+vdoLM0zuPsx9s+vXuel/7kYeUkLyWbUEbNJseqjV6IhOfbvE?=
+ =?us-ascii?Q?RJ2Vm1hCZZFqHh2SgvpOq6iuaTjzbJq1Nx0BOJdrSNn7xrNr/RLjLSb/QbBZ?=
+ =?us-ascii?Q?VdqSf2WACAynu+4NbJ2wUPrr9rk3W94RKqU2YWZzp+LlNlNBggm5c+mBVAOv?=
+ =?us-ascii?Q?5EsBK0svCGc9PvXUVjaBxtCDP/jgxY2bfg3xPmrle4Nimx+NuLxhyf11eo1J?=
+ =?us-ascii?Q?OZ+Ye1Lol1bjKUVq8V2hNo/jtv5Bh5FJwt3P3MTI5rlZaxa5BEb00tL/QDZR?=
+ =?us-ascii?Q?njzcXs0YCrSanL2YUGxrT69sRIOvyUsxzBAxfeEQ6a2ukvPFbkqQuz2WXAWD?=
+ =?us-ascii?Q?+KvlbtR1X3HPhtBQ4JU=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ee8f0cb-2db7-41d0-4f13-08dc58ae7a05
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 16:02:37.5910
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZIrCHSI9y7u85GgqtUhovgw1G+Jjz7brhtxQGdEhdFNgA0WvjN+MC/66bYT0+tdmZi8Ht+8iWDeM1f7eqLzaKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8405
 
-On 09/04/2024 15:42, Alexandre Mergnat wrote:
-> Add the sound node which is linked to the MT8365 SoC AFE and
-> the MT6357 audio codec.
+On Tue, Apr 09, 2024 at 08:33:22AM +0200, Krzysztof Kozlowski wrote:
+> On 08/04/2024 17:36, Frank Li wrote:
+> > On Fri, Apr 05, 2024 at 08:21:18PM +0200, Krzysztof Kozlowski wrote:
+> >> On 05/04/2024 16:46, Frank Li wrote:
+> >>> On Fri, Apr 05, 2024 at 08:41:59AM +0200, Krzysztof Kozlowski wrote:
+> >>>> On 04/04/2024 18:19, Frank Li wrote:
+> >>>>> imx8qxp-mek use two kind audio codec, wm8960 and wm8962. Using dummy gpio
+> >>>>> i2c bus mux to connect both i2c devices. One will probe failure and other
+> >>>>> will probe success when devices driver check whoami. So one dtb can cover
+> >>>>> both board configuration.
+> >>>>
+> >>>> I don't understand it. Either you add real device or not. If one board
+> >>>> has two devices, then why do you need to check for failures?
+> >>>>
+> >>>> Anyway, don't add fake stuff to DTS.
+> >>>
+> >>> NAK can't resolve the problem. It should be common problem for long time
+> >>> cycle boards. Some chipes will be out life cycle. such as some sensor. So
+> >>> chips on boards have been replace by some pin to pin compatible sensor. For
+> >>> example: 
+> >>> 	old boards: use sensor A with address 0x1a
+> >>> 	new bench: use sensor B with address 0x1b.
+> >>>
+> >>> You can treat it as two kind boards, RevA or RevB. But most user want to
+> >>> use one dtb to handle such small differences. For this case, it should be
+> >>> simple. Just add a super set.
+> >>> 	i2c
+> >>> 	{
+> >>> 		sensorA@1a
+> >>> 		{
+> >>> 		}
+> >>> 		sensorB@1b
+> >>> 		{
+> >>> 		}	
+> >>> 	}
+> >>>
+> >>> It also depend on whoami check by i2c devices. Only A or B will probe.
+> >>>
+> >>> wm8960 and wm8962 are more complex example.  wm8960 is out of life. But
+> >>> wm8962 and wm8960 have the same i2c address. The current i2c frame can't
+> >>> allow the same i2c address in one i2c bus.
+> >>>
+> >>> You are feel to NAK my method, but I hope you also provide constructive
+> >>> solution to help resolve the problem.
+> >>
+> >> Yes, we resolved it long time ago. Your bootloader can (usually easily)
+> >> detect revision of the board and load appropriate DTS or DTS+DTSO.
+> > 
+> > I knewn it. But the problem is one development boards A have many options,
+> > so create many child dts for files, A1, A2, ... An which base on A
 > 
-> Update the file header.
+> So use DTSO, what's the problem? Other vendors, liek Rpi does not have
+> problem with it and it works well. No confusion.
 > 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 98 +++++++++++++++++++++++++++--
->  1 file changed, 94 insertions(+), 4 deletions(-)
+> > 
+> > If there are difference happen at A, create new B. then create all child
+> > dtb, B1, B2, ... Bn.  DTB number will increase exponent.
+> > 
+> > If change is quite bit, we have to do that. But if change is quite small,
+> > One dtb can cover it by driver auto detect, which will work like some
+> > adaptor card have not plug into boards, or some sensor or NOR-flash have
+> > not installed because reduce cost.
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> index 50cbaefa1a99..eb0c5f076dd4 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> @@ -1,9 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Copyright (c) 2021-2022 BayLibre, SAS.
-> - * Authors:
-> - * Fabien Parent <fparent@baylibre.com>
-> - * Bernhard Rosenkränzer <bero@baylibre.com>
-> + * Copyright (c) 2024 BayLibre, SAS.
+> You have two boards, not 20 here!
 
+Actually, it is around ~20 derived boards. It is not upstream just because
+we have not time to do that yet. After some clean up, I estimate about 7 -
+- 10. 
 
-What is happening with your copyrights? Why do you change existing ones?
+> 
+> >   
+> > Although boot loader can update dts or choose difference dts, It also cause
+> > many confusition, such as layerscape, uboot update many kernel dtb's
+> > information, which actually increase dependence between uboot and kernel.
+> > Also it confuse people, for example,  when try to debug kernel dtb, why
+> > change have not token affect when change dts because not realized uboot
+> > over write it.
+> > 
+> > What's I dide is that trying to reduce unnecessary dts.
+> 
+> There is no confusion. That's normal process, so if someone is confused
+> by having variants of board, this someone will be even more confused by
+> seeing non-existing hardware in his DTS.
 
-> + * Authors: Fabien Parent <fparent@baylibre.com>
-> + *	    Bernhard Rosenkränzer <bero@baylibre.com>
-> + *	    Alexandre Mergnat <amergnat@baylibre.com>
->   */
->  
->  /dts-v1/;
-> @@ -86,6 +86,29 @@ optee_reserved: optee@43200000 {
->  			reg = <0 0x43200000 0 0x00c00000>;
->  		};
->  	};
-> +
-> +	sound: sound {
-> +		compatible = "mediatek,mt8365-mt6357";
-> +		pinctrl-names = "default",
-> +				"dmic",
-> +				"miso_off",
-> +				"miso_on",
-> +				"mosi_off",
-> +				"mosi_on";
-> +		pinctrl-0 = <&aud_default_pins>;
-> +		pinctrl-1 = <&aud_dmic_pins>;
-> +		pinctrl-2 = <&aud_miso_off_pins>;
-> +		pinctrl-3 = <&aud_miso_on_pins>;
-> +		pinctrl-4 = <&aud_mosi_off_pins>;
-> +		pinctrl-5 = <&aud_mosi_on_pins>;
-> +		mediatek,platform = <&afe>;
-> +		status = "okay";
+How about existed dummy_clk and dummy regulator in dts? 
 
-Where did you disable the node?
+> 
+> This problem was solved long time ago and you do not bring any
+> reasonable new arguments. All vendors solved it (just look at ongoing
+> discussions on board id) but only you have problem with their solution.
 
-> +	};
-> +};
-> +
-> +&afe {
-> +	mediatek,dmic-mode = <1>;
-> +	status = "okay";
->  };
->  
->  &cpu0 {
-> @@ -174,6 +197,12 @@ &mmc1 {
->  	status = "okay";
->  };
->  
-> +&mt6357_codec {
-> +	mediatek,micbias0-microvolt = <1900000>;
-> +	mediatek,micbias1-microvolt = <1700000>;
-> +	mediatek,vaud28-supply = <&mt6357_vaud28_reg>;
-> +};
-> +
->  &mt6357_pmic {
->  	interrupts-extended = <&pio 145 IRQ_TYPE_LEVEL_HIGH>;
->  	interrupt-controller;
-> @@ -181,6 +210,67 @@ &mt6357_pmic {
->  };
->  
->  &pio {
-> +	aud_default_pins: audiodefault-pins {
-> +		pins {
-> +		pinmux = <MT8365_PIN_72_CMDAT4__FUNC_I2S3_BCK>,
-> +			 <MT8365_PIN_73_CMDAT5__FUNC_I2S3_LRCK>,
-> +			 <MT8365_PIN_74_CMDAT6__FUNC_I2S3_MCK>,
-> +			 <MT8365_PIN_75_CMDAT7__FUNC_I2S3_DO>;
+I never said solution was not work. Just not friend for user enough for
+this case. It likes USB TypeC vs USB A port. Both works, just TypeC can't
+care direction.
 
-You have broken indentation everywhere.
-
-Best regards,
-Krzysztof
-
+> 
+> NAK
+> 
+> Best regards,
+> Krzysztof
+> 
 
