@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-136080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F5D89CFD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:30:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331DD89CFD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:31:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8DFE1C2222C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:30:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0AE42825FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885264DA11;
-	Tue,  9 Apr 2024 01:30:05 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949DE8C11;
+	Tue,  9 Apr 2024 01:30:08 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA84A36137
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 01:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F304F1FE
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 01:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712626205; cv=none; b=NKnqZMgGc4pk2HvLnCQcVX41ReHQC9QET4gyVr5rP2cMipQF4qiuiOjoZ3/p+T4plH3lDMryMkL6tJokjvE9xECR98DEsGWmLzceRQkI3VLZ4fsH5zhgOsrQwe7YFwdulA6y+iANIVv80dEJ9Cs9EBwUvaQBU2wVNSJ0y3xGUDM=
+	t=1712626208; cv=none; b=entRgoWR0jpq09RE40b7vbfScudbD+S+ScyEBfy++gta6VQ350K7NOe5sAhRKpmBFWtmuvb++/rIyhcu7L3uIlmp8S7LPTP0eV0ii/jNb8JKcnthZlcXprYKXDjwDIH9+nNy8LmStWY6HWnHwszCBBye1B/FL/aFSStMsuOsl64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712626205; c=relaxed/simple;
-	bh=OjZmqpTC2ehTHN8Sd68worBXYXZg9Jpv/26xY6sXNS0=;
+	s=arc-20240116; t=1712626208; c=relaxed/simple;
+	bh=5r+ijZQ5MH7I7vPvW7C5wUqEXvulF+LJcjAwi2rEDXg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XpO9XhhBAteBkZj08tLNvtmNZf+bqPmhOOqrgi1DBJ+B0LCiBecTRXpm4/BTJ4J/9tpHDSsu4tr3YwvhUJa9m9Z7/oLpAONmSfUbbtBkrVpOzkSoUlnPFI/YIorPczAOwss8X4ph2N/IVVnjhexmj8IbnGbfmGC4u8UpDua5N00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	 MIME-Version:Content-Type; b=sksAjSvNWJPmhphtBqq1db85Hum2TuSV2DnaEw4+16TJyFAyJzY/u9k+kZ8VWEqUYmTrtAMFpez7nsxoA55QjbnDF6R1IZNuDyWUj83OX8nrPYFPP9icOJOfsZoYgQRpwE7PAtvIT3MQzuoWz0YrM5ZzsY7DEBWOimk1fRh0nMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VD7cf02b2zNn6P;
-	Tue,  9 Apr 2024 09:27:46 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VD7fP0gDRz1GG1Y;
+	Tue,  9 Apr 2024 09:29:17 +0800 (CST)
 Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8CEAC18007D;
-	Tue,  9 Apr 2024 09:30:00 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A071D140384;
+	Tue,  9 Apr 2024 09:30:01 +0800 (CST)
 Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
  (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Tue, 9 Apr
- 2024 09:29:59 +0800
+ 2024 09:30:00 +0800
 From: Liao Chang <liaochang1@huawei.com>
 To: <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
 	<oliver.upton@linux.dev>, <james.morse@arm.com>, <suzuki.poulose@arm.com>,
@@ -55,9 +55,9 @@ To: <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
 	<reijiw@google.com>, <akihiko.odaki@daynix.com>, <ruanjinjie@huawei.com>
 CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<kvmarm@lists.linux.dev>
-Subject: [PATCH 4/9] arm64/cpufeature: Simplify detect PE support for FEAT_NMI
-Date: Tue, 9 Apr 2024 01:23:39 +0000
-Message-ID: <20240409012344.3194724-5-liaochang1@huawei.com>
+Subject: [PATCH 5/9] arm64/cpufeature: Use alternatives to check enabled ARM64_HAS_NMI feature
+Date: Tue, 9 Apr 2024 01:23:40 +0000
+Message-ID: <20240409012344.3194724-6-liaochang1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240409012344.3194724-1-liaochang1@huawei.com>
 References: <20240409012344.3194724-1-liaochang1@huawei.com>
@@ -72,47 +72,32 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd200013.china.huawei.com (7.221.188.133)
 
-From: Jinjie Ruan <ruanjinjie@huawei.com>
+Due to the historical reasons, cpus_have_const_cap() is more complicated
+than it needs to be. When CONFIG_ARM64_NMI=y the ARM64_HAS_NMI cpucap is
+a strict boot cpu feature which is detected and patched early on the
+boot cpu, which means no code depends on ARM64_HAS_NMI cpucap run in the
+window between the ARM64_HAS_NMI cpucap is detected and alternative is
+patched. So it would be nice to migrate caller over to
+alternative_has_cap_likey().
 
-Simplify the Non-maskable Interrupts feature implementation with
-ARM64_CPUID_FIELDS macro.
-
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
 ---
- arch/arm64/kernel/cpufeature.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ arch/arm64/include/asm/cpufeature.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index fb9e52c84fda..99c3bc74008d 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -2905,24 +2905,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
- 		.desc = "Non-maskable Interrupts present",
- 		.capability = ARM64_HAS_NMI,
- 		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
--		.sys_reg = SYS_ID_AA64PFR1_EL1,
--		.sign = FTR_UNSIGNED,
--		.field_pos = ID_AA64PFR1_EL1_NMI_SHIFT,
--		.field_width = 4,
--		.min_field_value = ID_AA64PFR1_EL1_NMI_IMP,
- 		.matches = has_cpuid_feature,
-+		ARM64_CPUID_FIELDS(ID_AA64PFR1_EL1, NMI, IMP)
- 	},
- 	{
- 		.desc = "Non-maskable Interrupts enabled",
- 		.capability = ARM64_USES_NMI,
- 		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
--		.sys_reg = SYS_ID_AA64PFR1_EL1,
--		.sign = FTR_UNSIGNED,
--		.field_pos = ID_AA64PFR1_EL1_NMI_SHIFT,
--		.field_width = 4,
--		.min_field_value = ID_AA64PFR1_EL1_NMI_IMP,
- 		.matches = use_nmi,
- 		.cpu_enable = nmi_enable,
-+		ARM64_CPUID_FIELDS(ID_AA64PFR1_EL1, NMI, IMP)
- 	},
- #endif
- 	{},
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index dc8b2d0d3763..4c35565ad656 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -803,7 +803,7 @@ static __always_inline bool system_uses_irq_prio_masking(void)
+ static __always_inline bool system_uses_nmi(void)
+ {
+ 	return IS_ENABLED(CONFIG_ARM64_NMI) &&
+-		cpus_have_const_cap(ARM64_USES_NMI);
++		alternative_has_cap_likely(ARM64_USES_NMI);
+ }
+ 
+ static inline bool system_supports_mte(void)
 -- 
 2.34.1
 
