@@ -1,207 +1,205 @@
-Return-Path: <linux-kernel+bounces-137248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7566489DF72
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B9A89DF78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:42:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9797A1C22E11
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:41:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25FD01C22DB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3923513D602;
-	Tue,  9 Apr 2024 15:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C48D136E0A;
+	Tue,  9 Apr 2024 15:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KtkJA6bh"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="UXu4Psta"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1D413D514
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02C7C6D4;
+	Tue,  9 Apr 2024 15:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677172; cv=none; b=RsDlXjewFv3wibJbDiimA8fzx7Mdm0oMPWNvve45l0EDXOzvZSs2lVAnuuFijRBJ7fFyADVqsP3awj92Z9oQ7myP3q/pD46vPmovZEqr80jpNNAYFLBkWVHQ/c0byCuJ2vPzwSB3/ZqPPSwdfgZ+vFliG/9t5NNKCEcPF8OSho4=
+	t=1712677289; cv=none; b=qPgs1skoWVrsJr66B+Qkda7hT1PGJkxJFMqTzgYuMUI/TRHS0gLpTzP3DnVRa7TpImIzhovLMbzxXhV9bOAMlvWnH43RJM7RwmmTJGMhIH9XXVGUQWLIdBhBHJnLYS1+2TBXrwvcvrW+PoxD+PplapBy/LbWqhX/+iDseq62jLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677172; c=relaxed/simple;
-	bh=IRlf5u4lxYAWwyMTEv942PuNwtxN8w3SbyR/5WEk+a4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oJtKE1ilzNpduIJu0YydmKtz5wCtbcC9FsqWF81fasEapoF+lOXXq9CTGLk3YiV3ux3mQW49+qUAumnTTpkU5FVRkF/HzcJRSB48VZfxfqJwwVuoErdyxOT5Pj9ybEFumA5pVrFViXblUS+L8bvSrVLBnJ8gN10D7fhNXno5ToE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KtkJA6bh; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 439CppUs017838;
-	Tue, 9 Apr 2024 15:39:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BVya2MLIf3T+ay0p5m5Dy3OvncV3HoHy2h8QweebvPk=; b=Kt
-	kJA6bhYIkRC4MZLI1LGmOfLeWO1DAgDad2jo7KMtyNYLPZZoBT16faQIgcrECgso
-	uho+kGsHmTj+j03mF4sk+Tj67rvzDvEv5P65XlEpKhzoYQ723lz+eFXq/ieHk29c
-	dIPNHSbCr/YssNqPMd/fxt/sv23fosG2q+AQ4axlxDChD3/z9C2D6Xpp+H9hnm/y
-	58TZKFu9K4Oj62ub7r3YRdyjw/YexEmOqzGOgM7sk3hJbpFyQ5Idupg0jpYqlaOr
-	rVHIYVaWEKXnHO4ooXxxAsLGXtvdSHuOJMGGhbV3b6aGsXyt0iMvfc6CTQcsKeeQ
-	9VxAKmFibhcVPVY8phCA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xcv3khhnr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 15:39:19 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 439FdIfx026011
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Apr 2024 15:39:18 GMT
-Received: from [10.110.80.194] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 9 Apr 2024
- 08:39:17 -0700
-Message-ID: <4a29d0b8-d9b6-4229-b5de-b4f378328cf4@quicinc.com>
-Date: Tue, 9 Apr 2024 08:39:16 -0700
+	s=arc-20240116; t=1712677289; c=relaxed/simple;
+	bh=qhCYA/5Ka78x/AhOEj073SAa9gtAsUKx6yUxVJ3iM8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kHczYvfysFOHbgSeGiUyNt7ORBh3GnDHi5t/rrR44bSqq0/pTOf2IqGiV7TKDziEi+j4iru5wLj3kGjxeC7Th4bLppv0PVjSePKek8C/QHMoRSgm/R+Mo9ThVKzeAatQFLy/3rK5f8tDjgAt3kCkdggaVQa7xxCIC/7rgLGs9p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=UXu4Psta; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=18Odz/5yLBDcln/iNt3WMBtL6a1+w4gU5ncEqjhL9JA=; b=UXu4PstavMyKGBNeMIrboZ3j4v
+	pqIOaBALuH4pvMSA+AbjJcVpjVdejndi0OAob9ppo/Js8PcvGlFxAwoiJCi9+had5PB0bqJnaKK9q
+	fzY5UuBysctH63R+sae+xUEAhrZ7hqejFahNaq/kVEZwmGqidRewDT5cAL8E4RLQO7bi1BIYROS09
+	26eipawvX2yzStNDvL9+AJ7qzCCorEziCUp2OIzdBKifPgUuixDOovySr1ba/Y07ZHatPwGuqF1rV
+	UHTPCrAbY+tMtFgqKcwYKT8PKLPTWKb0VKINq0AD9V+6KKszJtzT11xkoj7BEUBcSHci+Z1vbq4eX
+	cDEHTCXA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37506)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ruDai-0006ih-0B;
+	Tue, 09 Apr 2024 16:40:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ruDah-0005Ad-Kb; Tue, 09 Apr 2024 16:40:55 +0100
+Date: Tue, 9 Apr 2024 16:40:55 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, puranjay12@gmail.com
+Subject: Re: [PATCH bpf] arm32, bpf: Fix sign-extension mov instruction
+Message-ID: <ZhVhh3bDTQ+sks6b@shell.armlinux.org.uk>
+References: <20240409095038.26356-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.5.5: UBSAN: radeon_atombios.c: index 1 is out of range for type
- 'UCHAR [1]'
-Content-Language: en-US
-To: Alex Deucher <alexdeucher@gmail.com>, Kees Cook <kees@kernel.org>
-CC: Justin Piszcz <jpiszcz@lucidpixels.com>,
-        Bagas Sanjaya
-	<bagasdotme@gmail.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
-        Linux AMDGPU
-	<amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?=
-	<christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>
-References: <CAO9zADy4b1XkD_ZaEF+XkDCXePJLD4Lev3g7HAEGYsCHgeM+KQ@mail.gmail.com>
- <ZRoIGhMesKtmNkAM@debian.me>
- <CAO9zADyfaLRWB-0rdojnbFD6SUsqX+zb9JZSZUkgTC7VJN=c1A@mail.gmail.com>
- <a619df03-e0cb-48f7-840a-970b7a6f6037@quicinc.com>
- <CA212FEF-E0BB-483C-86CC-6986D4FBE168@kernel.org>
- <CADnq5_PKoX9G8jD=m1WnX3nxd_+GL_xi03_Dgq8HK6Diw3=JsQ@mail.gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <CADnq5_PKoX9G8jD=m1WnX3nxd_+GL_xi03_Dgq8HK6Diw3=JsQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: c1qwXR0YvDTneK_1PZhMy5ER1dO-JAhs
-X-Proofpoint-GUID: c1qwXR0YvDTneK_1PZhMy5ER1dO-JAhs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_11,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404090102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409095038.26356-1-puranjay@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 4/8/2024 9:23 PM, Alex Deucher wrote:
-> On Mon, Apr 8, 2024 at 9:45 PM Kees Cook <kees@kernel.org> wrote:
->>
->>
->>
->> On April 8, 2024 5:45:29 PM PDT, Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
->>> On 10/1/23 17:12, Justin Piszcz wrote:
->>>>>> ================================================================================
->>>>>> [Sun Oct  1 15:59:04 2023] UBSAN: array-index-out-of-bounds in
->>>>>> drivers/gpu/drm/radeon/radeon_atombios.c:2620:43
->>>>>> [Sun Oct  1 15:59:04 2023] index 1 is out of range for type 'UCHAR [1]'
->>>>>> [Sun Oct  1 15:59:04 2023] CPU: 5 PID: 1 Comm: swapper/0 Tainted: G
->>>>>>              T  6.5.5 #13 55df8de52754ef95effc50a55e9206abdea304ac
->>>>>> [Sun Oct  1 15:59:04 2023] Hardware name: Supermicro X9SRL-F/X9SRL-F,
->>>>>> BIOS 3.3 11/13/2018
->>>>>> [Sun Oct  1 15:59:04 2023] Call Trace:
->>>>>> [Sun Oct  1 15:59:04 2023]  <TASK>
->>>>>> [Sun Oct  1 15:59:04 2023]  dump_stack_lvl+0x36/0x50
->>>>>> [Sun Oct  1 15:59:04 2023]  __ubsan_handle_out_of_bounds+0xc7/0x110
->>>>>> [Sun Oct  1 15:59:04 2023]  radeon_atombios_get_power_modes+0x87a/0x8f0
->>>>>> [Sun Oct  1 15:59:04 2023]  radeon_pm_init+0x13a/0x7e0
->>>>>> [Sun Oct  1 15:59:04 2023]  evergreen_init+0x13d/0x3d0
->>>>>> [Sun Oct  1 15:59:04 2023]  radeon_device_init+0x60a/0xbf0
->>>>>> [Sun Oct  1 15:59:04 2023]  radeon_driver_load_kms+0xb1/0x250
->>>>>> [Sun Oct  1 15:59:04 2023]  drm_dev_register+0xfc/0x250
->>>>>> [Sun Oct  1 15:59:04 2023]  radeon_pci_probe+0xd0/0x150
->>>>>> [Sun Oct  1 15:59:04 2023]  pci_device_probe+0x97/0x130
->>>>>> [Sun Oct  1 15:59:04 2023]  really_probe+0xbe/0x2f0
->>>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx___driver_attach+0x10/0x10
->>>>>> [Sun Oct  1 15:59:04 2023]  __driver_probe_device+0x6e/0x120
->>>>>> [Sun Oct  1 15:59:04 2023]  driver_probe_device+0x1a/0x90
->>>>>> [Sun Oct  1 15:59:04 2023]  __driver_attach+0xd4/0x170
->>>>>> [Sun Oct  1 15:59:04 2023]  bus_for_each_dev+0x87/0xe0
->>>>>> [Sun Oct  1 15:59:04 2023]  bus_add_driver+0xf3/0x1f0
->>>>>> [Sun Oct  1 15:59:04 2023]  driver_register+0x58/0x120
->>>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_radeon_module_init+0x10/0x10
->>>>>> [Sun Oct  1 15:59:04 2023]  do_one_initcall+0x93/0x4a0
->>>>>> [Sun Oct  1 15:59:04 2023]  kernel_init_freeable+0x301/0x580
->>>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_kernel_init+0x10/0x10
->>>>>> [Sun Oct  1 15:59:04 2023]  kernel_init+0x15/0x1b0
->>>>>> [Sun Oct  1 15:59:04 2023]  ret_from_fork+0x2f/0x50
->>>>>> [Sun Oct  1 15:59:04 2023]  ? __pfx_kernel_init+0x10/0x10
->>>>>> [Sun Oct  1 15:59:04 2023]  ret_from_fork_asm+0x1b/0x30
->>>>>> [Sun Oct  1 15:59:04 2023]  </TASK>
->>>>>> [Sun Oct  1 15:59:04 2023]
->>>>>> ================================================================================
->>>>>> [Sun Oct  1 15:59:04 2023] [drm] radeon: dpm initialized
->>>>>> [Sun Oct  1 15:59:04 2023] [drm] GART: num cpu pages 262144, num gpu
->>>>>> pages 262144
->>>>>> [Sun Oct  1 15:59:04 2023] [drm] enabling PCIE gen 2 link speeds,
->>>>>> disable with radeon.pcie_gen2=0
->>>>>> [Sun Oct  1 15:59:04 2023] [drm] PCIE GART of 1024M enabled (table at
->>>>>> 0x000000000014C000).
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: WB enabled
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: fence driver on ring 0
->>>>>> use gpu addr 0x0000000040000c00
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: fence driver on ring 3
->>>>>> use gpu addr 0x0000000040000c0c
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: fence driver on ring 5
->>>>>> use gpu addr 0x000000000005c418
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: radeon: MSI limited to 32-bit
->>>>>> [Sun Oct  1 15:59:04 2023] radeon 0000:03:00.0: radeon: using MSI.
->>>>>> [Sun Oct  1 15:59:04 2023] [drm] radeon: irq initialized.
->>>>>>
->>>>>
->>>>> Please also open an issue on freedesktop tracker [1].
->>>>>
->>>>> Thanks.
->>>>>
->>>>> [1]: https://gitlab.freedesktop.org/drm/amd/-/issues
->>>>
->>>> Issue opened: https://gitlab.freedesktop.org/drm/amd/-/issues/2894
->>>>
->>>> Regards,
->>>> Justin
->>>
->>> +Kees since I've worked with him on several of these flexible array issues.
->>>
->>> I just happened to look at kernel logs today for my ath1*k driver maintenance and see the subject issue is present on my device, running 6.9.0-rc1. The freedesktop issue tracker says the issue is closed, but any fix has not landed in the upstream kernel. Is there a -next patch somewhere?
->>>
->>> [   12.105270] UBSAN: array-index-out-of-bounds in drivers/gpu/drm/radeon/radeon_atombios.c:2718:34
->>> [   12.105272] index 48 is out of range for type 'UCHAR [1]'
->>> [
->>>
->>> If there isn't really an upstream fix, I can probably supply one.
->>
->> I would expect this to have fixed it:
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/gpu/drm/radeon/pptable.h?id=c63079c61177ba1b17fa05c6875699a36924fe39
->>
->> If not, there must be something else happening?
+On Tue, Apr 09, 2024 at 09:50:38AM +0000, Puranjay Mohan wrote:
+> The current implementation of the mov instruction with sign extension
+> clobbers the source register because it sign extends the source and then
+> moves it to the destination.
 > 
-> This patch should silence it I think:
-> https://patchwork.freedesktop.org/patch/588305/
+> Fix this by moving the src to a temporary register before doing the sign
+> extension only if src is not an emulated register (on the scratch stack).
+> 
+> Also fix the emit_a32_movsx_r64() to put the register back on scratch
+> stack if that register is emulated on stack.
 
-I can confirm that my issues are resolved with that patch
-Tested-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+It would be good to include in the commit message an example or two of
+the resulting assembly code so that it's clear what the expected
+generation is. Instead, I'm going to have to work it out myself, but
+I'm quite sure this is information you already have.
 
+> Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
+> Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/arm/net/bpf_jit_32.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> index 1d672457d02f..8fde6ab66cb4 100644
+> --- a/arch/arm/net/bpf_jit_32.c
+> +++ b/arch/arm/net/bpf_jit_32.c
+> @@ -878,6 +878,13 @@ static inline void emit_a32_mov_r(const s8 dst, const s8 src, const u8 off,
+>  
+>  	rt = arm_bpf_get_reg32(src, tmp[0], ctx);
+>  	if (off && off != 32) {
+> +		/* If rt is not a stacked register, move it to tmp, so it doesn't get clobbered by
+> +		 * the shift operations.
+> +		 */
+> +		if (rt == src) {
+> +			emit(ARM_MOV_R(tmp[0], rt), ctx);
+> +			rt = tmp[0];
+> +		}
 
+This change is adding inefficiency, don't we want to have the JIT
+creating as efficient code as possible within the bounds of
+reasonableness?
+
+>  		emit(ARM_LSL_I(rt, rt, 32 - off), ctx);
+>  		emit(ARM_ASR_I(rt, rt, 32 - off), ctx);
+
+LSL and ASR can very easily take a different source register to the
+destination register. All this needs to be is:
+
+		emit(ARM_LSL_I(tmp[0], rt, 32 - off), ctx);
+		emit(ARM_ASR_I(tmp[0], tmp[0], 32 - off), ctx);
+		rt = tmp[0];
+
+This will generate:
+
+		lsl	tmp[0], src, #32-off
+		asr	tmp[0], tmp[0], #32-off
+
+and then the store to the output register will occur.
+
+What about the high-32 bits of the register pair - should that be
+taking any value?
+
+>  	}
+
+I notice in passing that the comments are out of sync with the
+code - please update the comments along with code changes.
+
+> @@ -919,15 +926,15 @@ static inline void emit_a32_movsx_r64(const bool is64, const u8 off, const s8 ds
+>  	const s8 *tmp = bpf2a32[TMP_REG_1];
+>  	const s8 *rt;
+>  
+> -	rt = arm_bpf_get_reg64(dst, tmp, ctx);
+> -
+>  	emit_a32_mov_r(dst_lo, src_lo, off, ctx);
+>  	if (!is64) {
+>  		if (!ctx->prog->aux->verifier_zext)
+>  			/* Zero out high 4 bytes */
+>  			emit_a32_mov_i(dst_hi, 0, ctx);
+>  	} else {
+> +		rt = arm_bpf_get_reg64(dst, tmp, ctx);
+>  		emit(ARM_ASR_I(rt[0], rt[1], 31), ctx);
+> +		arm_bpf_put_reg64(dst, rt, ctx);
+>  	}
+>  }
+
+Why oh why oh why are we emitting code to read the source register
+(which may be a load), then write it to the destination (which may
+be a store) to only then immediately reload from the destination
+to then do the sign extension? This is madness.
+
+Please... apply some thought to the code generation from the JIT...
+or I will remove you from being a maintainer of this code. I spent
+time crafting some parts of the JIT to generate efficient code and
+I'm seeing that a lot of that work is now being thrown away by
+someone who seemingly doesn't care about generating "good" code.
+
+Why not read the source 32-bit register (potentially into a temporary
+register), store it to the destination low register, then do the
+sign extension into the destination high register or zero the high
+register. We _could_ be a bit more optimal here by checking whether
+dst_hi is a stacked register and use that directly for the ASR
+instruction, omitting the need to move it there afterwards - whether
+that's worth it or not depends on the performance we expect from this
+eBPF opcode.
+
+	rt = arm_bpf_get_reg32(src_lo, tmp[1], ctx);
+	/* rt may be either src[1] or tmp[1] */
+
+	/* write dst_lo */
+	arm_bpf_put_reg32(dst_lo, rt, ctx)
+
+	if (is64) {
+		emit(ARM_ASR_I(tmp[0], rt, 31), ctx);
+		arm_bpf_put_reg32(dst_hi, tmp[0], ctx);
+	} else if (!ctx->prog->aux->verifier_zext) {
+		emit_a32_mov_i(dst_hi, 0, ctx);
+	}
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
