@@ -1,76 +1,72 @@
-Return-Path: <linux-kernel+bounces-137563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C030389E3F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:53:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94F289E3F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:54:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34E6DB21E4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:53:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C8AE282320
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591171581E3;
-	Tue,  9 Apr 2024 19:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064CB1581E0;
+	Tue,  9 Apr 2024 19:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ocv+byEu"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HGwyxz36"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A68157A44;
-	Tue,  9 Apr 2024 19:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA29157E9A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 19:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712692429; cv=none; b=fzbIZ4PTnC9BGE2VaLK4TnHW4fm3EXeOcHmvp0VWL2e51RLuqDK3BEdKgSPOphH7RdiMdfiWhRoiwRGc1dncv60vPPadd6KkQu6zB5zSphQ99rxoihn3fqyKjrOzKfmcGRulmoE+cZg4Wkq1qiP9A5J+d67ng6siUm+18CqiXpQ=
+	t=1712692448; cv=none; b=Jvq50f1L7CzDWMiAban8ZyXSJFk25+kxVapn2S7a1JYrabwR7PMm4Xs5cRSEQIKxj7rsGCtSW0/AAJPF1uf98//WS/R5br6K2Lnzbmqksv+Agg1mLoWZbgT/cFEyLOdsuOD7960HkunUkI4tDmTeKi9wpG2g0j/DDIFEvLoqODI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712692429; c=relaxed/simple;
-	bh=TZ3aootWxltD3EKWy6U3UWGchEIxAQfp7i9I1yvoI4I=;
+	s=arc-20240116; t=1712692448; c=relaxed/simple;
+	bh=R4hWEalNgIc2RUbUIAhMo5HUmFCwGL3grERNsC+lPqA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qgFvf+1DqWWuPAKKgrlskozuFLbwhhDizI1tOICwcHaqH5uNR3lfkkHSCHSjmzDERVoSEBLTksxYIl29CZKCt7OqOcHFtxBlbBQ74ik7hWnfwZ4gWtVFVFXP2RwPcsGhgQ8rOLgfOTjFjjg0ugwwAIEciwtzSX0T+vx8sqogS4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Ocv+byEu; arc=none smtp.client-ip=198.47.23.248
+	 MIME-Version:Content-Type; b=mqS/EfEMGGjAskgZwOlFg4olw9qRYTmQq0LprXBQAUqwdVmX6fWo/LYylpGecKm9NcDw1UMjZSGgaUe3i+t3ZwZR9CTScQZnPJlba/lfQQHJvyyBkDOeBY4ST9UJbj9n56L++Ej2HFHRUumnL6fviEr7AOLJc2CE1kxA0kMJEls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HGwyxz36; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439Jrefk067023;
-	Tue, 9 Apr 2024 14:53:40 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 439Js1OY018495;
+	Tue, 9 Apr 2024 14:54:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712692420;
-	bh=n9yKZ/FE80uwMs/umpNdmhBbpU3Q2Qd45yxqG/HmVo4=;
+	s=ti-com-17Q1; t=1712692441;
+	bh=EJCDlAS4sE2k1Qyg8UddsBlBjtuABhLA0x+ZvQF/JLk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=Ocv+byEuQOD6a9XxUso5SL1ViwFt2yP3x0jGUm3/5X6pgl5Kl638W6wKt+eCJkIw1
-	 bQ6bnQD9YoaYQJS6a1V1CU66I5gQPLKzJVCM4F76DvSMZf2c4zRZNHcBkC6x3r0bv9
-	 uLb042yQ3sKjGbIm3uHKB6ZoXeAn0SYAMZwdS0gg=
+	b=HGwyxz36voPlRWrx1vnKuajWRNo+fucOHOGcQE8szkZwb7IEo4J4+MKy2zE9tTrT1
+	 dpBkF4KotCP1YA1d3nb12ehHXSOowHW28r8LjtXEcwpUKtoWU4//NNxRGxQVZB6bj5
+	 yvMDu5VcdYJ8iiaLMfTBCYzDqLvRYnFvTZiD0Ifw=
 Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439JreNE012933
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 439Js160017623
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Apr 2024 14:53:40 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
+	Tue, 9 Apr 2024 14:54:01 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
  (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Apr 2024 14:53:39 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 14:54:01 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Apr 2024 14:53:39 -0500
+ Frontend Transport; Tue, 9 Apr 2024 14:54:01 -0500
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439JrdFC117545;
-	Tue, 9 Apr 2024 14:53:39 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 439Js1rf117998;
+	Tue, 9 Apr 2024 14:54:01 -0500
 From: Nishanth Menon <nm@ti.com>
-To: Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, Andrew Davis <afd@ti.com>
-CC: Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] Unconditionally register TI-SCI reset handler
-Date: Tue, 9 Apr 2024 14:53:37 -0500
-Message-ID: <171269235826.647454.8602732844398119999.b4-ty@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+        Santosh Shilimkar
+	<ssantosh@kernel.org>, Andrew Davis <afd@ti.com>
+CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] soc: ti: wkup_m3_ipc: Send NULL dummy message instead of pointer message
+Date: Tue, 9 Apr 2024 14:53:59 -0500
+Message-ID: <171269243168.647841.14793451313968418164.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240326223730.54639-1-afd@ti.com>
-References: <20240326223730.54639-1-afd@ti.com>
+In-Reply-To: <20240325165507.30323-1-afd@ti.com>
+References: <20240325165507.30323-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,31 +79,18 @@ X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
 Hi Andrew Davis,
 
-On Tue, 26 Mar 2024 17:37:26 -0500, Andrew Davis wrote:
-> This series is the replacement for this series[0] and is based on a
-> comment in that series by Rob here[1].
+On Mon, 25 Mar 2024 11:55:07 -0500, Andrew Davis wrote:
+> mbox_send_message() sends a u32 bit message, not a pointer to a message.
+> We only convert to a pointer type as a generic type. If we want to send
+> a dummy message of 0, then simply send 0 (NULL).
 > 
-> First patch is just a fixup, second patch is the core of the series.
 > 
-> Thanks,
-> Andrew
-> 
-> [...]
 
 I have applied the following to branch ti-drivers-soc-next on [1].
 Thank you!
 
-[1/4] firmware: ti_sci: Use devm_register_restart_handler()
-      commit: c0e5a431442d7bbfbd3704212680e49faa8ee46c
-[2/4] firmware: ti_sci: Unconditionally register reset handler
-      commit: 8c8ff39838e02b6df91b80e086426dcb9ac86908
-
-and the following to branch ti-keystone-dts-next on [1].
-
-[3/4] ARM: dts: ti: keystone: k2g: Remove ti,system-reboot-controller property
-      commit: 345d22f4f45369a33b416a96c92bc273e41d695b
-[4/4] dt-bindings: arm: keystone: Remove ti,system-reboot-controller property
-      commit: 60242b20fe784ef9142050be8b68bd85e94be557
+[1/1] soc: ti: wkup_m3_ipc: Send NULL dummy message instead of pointer message
+      commit: ddbf3204f600a4d1f153498f618369fca352ae00
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
