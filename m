@@ -1,182 +1,963 @@
-Return-Path: <linux-kernel+bounces-136415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8D489D3D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:11:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1B889D3DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:12:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79C2AB20E8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:11:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24DC51F21D8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F6BE7E11E;
-	Tue,  9 Apr 2024 08:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB147E777;
+	Tue,  9 Apr 2024 08:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hM2HZjsO"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SQo52Qs7";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="05HFBHEk";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SQo52Qs7";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="05HFBHEk"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D1869DF4;
-	Tue,  9 Apr 2024 08:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400B87E0F6;
+	Tue,  9 Apr 2024 08:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650274; cv=none; b=BXWnyPBAYKg8reZjWlTXX6XXpnh4xlIPHepnWbYAuwaki8BENSRV/QOBm2y0zx+iPhjBqwD/CxCLfF0v5PPcVyycktGssMl1KFyzxbRIAAR24KCEkRzZ1iv10kF4i3D8M/BoL7bri8zASS5nNryiftkqrHy4PINEILRDYDjQQ1Q=
+	t=1712650294; cv=none; b=HFUw5Ssy7NX/WM3/N8bP3Xf8d8IJcaNISsDm0Cz11KSHWpzTm+4m2jMjedMaU3WfZ5BiOIlK34bneX/AvloEEH+a4tYxPuvUxByrpn4wD8UblYWIMMHilRKbsLYhz9GJA6tGCeoUumcrV/TRwQZdJz8OjzRKZbQK9iZinn15Nbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650274; c=relaxed/simple;
-	bh=mpZ9WvBxBftWU2nvlxYc6ybVCBhBaZGYOJfzFuCKWdM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=itYWn23ozpv4feBEQFjTfAoDsXI8cQvD9JP6GaXfvM6Yiul2v2+j8Ff3wCbg9x8TffVi/8+g6+b2z8FGKTtgqefX692lXs7sEbY8Oo2B03V+LORtNkZkblfe4/AZ/7Oh8lX4BtWHsREOaQDEBI5VF2KLM9yvtBy/vXxHR+IinVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hM2HZjsO; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d2b9cd69so4630753e87.2;
-        Tue, 09 Apr 2024 01:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712650271; x=1713255071; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=297Emwb2i0jClNV8FtJNZax66Kj4bzhkdODvVgQa0x0=;
-        b=hM2HZjsOySFvE34mJlCU8eyspqiQzqd+PNxuwOI7zCscAPwBNE91/OAYIrKcELPnRY
-         2UCiWEEJve5QEnKJqhfGv4/CGU0DzQ2ex6dlvYgfawJpd3RbRLATz9SidNSSHAFDeF+V
-         dGYS2W9cVR2i3tdfHaoaTHqcCTbvZaBBuwEk2f20ww5MJXoEH838EdZwSwFc/dzxKBDb
-         Jov8G4bqRO5bQrHhKbmAsY419Txa+r7chk7qCgmgJX4RROU6TRJDo8brQZE7WLv7sPLr
-         5CaCwIv4LLcWZIyPw5I1VZMLmVhKiRkrCY90lMYcqJtW0Ms0UJQp1YW/gmVuqDowTzKq
-         m8Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712650271; x=1713255071;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=297Emwb2i0jClNV8FtJNZax66Kj4bzhkdODvVgQa0x0=;
-        b=Gn28kW61KXBicmNKas8f5jeQZblOnt7gDrmVfQCgAkjxT+s9mFDV/lHau3T6wQHEid
-         zWzYA+t7/sB9Ze1wH9ma7nAfTjkAk+9GHHXwfDftNtD4dmzZRTWSi3ejmGdUWhoZ6Qnb
-         xJbeyKVC/jP56gHS6OSwne6f2lL/nYlGlrExrfcB8yuOmid1eOOrGYvzA7QB8bIOM04w
-         fDm99W4RkShaMBSwhY2q1+8vKpxKcIMOTzKwik7wXm6cJJM6rSXT3hdcIUx68ToUeixi
-         LLPyB57yE7Q1N6dEwIhsl4OXvW/64Ny9dADHUF7IeKZ69a8b6feuQYt5VTG/LaAaTOi5
-         OlNw==
-X-Forwarded-Encrypted: i=1; AJvYcCUrw1l1IK9lhg5TOPSNG9113bBTtx4cPv+Sq+xZA/GTx9w28JdGXjCmqKL4LizjyIDLeTd3XnMymVTDWP013tz1ryXYSEKD/J84xTN1UrVcZWJ4gf+VtsT/ERiGUuMrXwEKfS7SYL63K10RPKd/HJjmyrpT3W49mS+NmQlBOcS3hbQ2NA==
-X-Gm-Message-State: AOJu0Yw7bD9wIGrjipYMftZXo6WcU/uAghTYeIed1EZcn9cLN1ZDLI/W
-	Xw1wfCDASRlA4qxaZVoxUsP/zRTzW3y5QFrOn60I+Jk+M0xB1DndxDMSwQ9NDShgkg==
-X-Google-Smtp-Source: AGHT+IHQocxne5E8JOSSq+Hfi93thAi+YTnQQjQ+sc9yYHH5ggWVu3E+hrTwyp3gx8SwetYpZNSARw==
-X-Received: by 2002:ac2:42c9:0:b0:516:d538:35a4 with SMTP id n9-20020ac242c9000000b00516d53835a4mr7448893lfl.7.1712650270754;
-        Tue, 09 Apr 2024 01:11:10 -0700 (PDT)
-Received: from [10.76.84.174] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id s17-20020a195e11000000b00515d55b66acsm1469486lfb.64.2024.04.09.01.11.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 01:11:10 -0700 (PDT)
-Message-ID: <47175ff9-8b05-4b6a-8689-a3d0722d7571@gmail.com>
-Date: Tue, 9 Apr 2024 11:10:57 +0300
+	s=arc-20240116; t=1712650294; c=relaxed/simple;
+	bh=TexNJaI6P9AGQQNSfZfnSfsGhgnfrPWY8926JaUxN6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u6ulOBhWv1bN9+lQTHyg0zIemVSl/G5WyHyhdfhO2WqavkzZCmhDKtaBR+LGhCswp3CJoUIDwCfaNiU3l1DmSSKUN5848Sj7WaQ1c8igNvWjfu2FIPCt8qGvqubDO6260xIoDin/V25wlnUmKMKriYRBQ4vY+8JtFF+8KtpsjWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SQo52Qs7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=05HFBHEk; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SQo52Qs7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=05HFBHEk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 854822087F;
+	Tue,  9 Apr 2024 08:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712650289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DBUCSo9KtNY8Lylv4WDffzUuWIuU7Dvp9ZUxxyqyqNg=;
+	b=SQo52Qs76VTG6t8ik+JaqLR3ygRkAewAQySzxWokCQxhj1bu4l8mA5W2i3PhIFXXgxpCeC
+	hZksiK+QrqqjNR8vjaoMQN12zJU9c0SMqMQjddyEQy14DPH+JQeVbmXWJMV9ZtvbLve4uU
+	J5TRlYMhYkehEacNCTYdgrlNOmkz0mw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712650289;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DBUCSo9KtNY8Lylv4WDffzUuWIuU7Dvp9ZUxxyqyqNg=;
+	b=05HFBHEk/Z8XTZlQ4HAtI6+pn3tONmmfiYr3lXqL3NlNWnEjUBRcOFaWQV52sc4msO8KYH
+	S2qSOo0cOL2CwbAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=SQo52Qs7;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=05HFBHEk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712650289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DBUCSo9KtNY8Lylv4WDffzUuWIuU7Dvp9ZUxxyqyqNg=;
+	b=SQo52Qs76VTG6t8ik+JaqLR3ygRkAewAQySzxWokCQxhj1bu4l8mA5W2i3PhIFXXgxpCeC
+	hZksiK+QrqqjNR8vjaoMQN12zJU9c0SMqMQjddyEQy14DPH+JQeVbmXWJMV9ZtvbLve4uU
+	J5TRlYMhYkehEacNCTYdgrlNOmkz0mw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712650289;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DBUCSo9KtNY8Lylv4WDffzUuWIuU7Dvp9ZUxxyqyqNg=;
+	b=05HFBHEk/Z8XTZlQ4HAtI6+pn3tONmmfiYr3lXqL3NlNWnEjUBRcOFaWQV52sc4msO8KYH
+	S2qSOo0cOL2CwbAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 810AE13253;
+	Tue,  9 Apr 2024 08:11:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id mMwcCin4FGYVNQAAn2gu4w
+	(envelope-from <colyli@suse.de>); Tue, 09 Apr 2024 08:11:21 +0000
+Date: Tue, 9 Apr 2024 16:11:18 +0800
+From: Coly Li <colyli@suse.de>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: kent.overstreet@linux.dev, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 16/17] bcache: Remove heap-related macros and switch
+ to generic min_heap
+Message-ID: <3urm3w2zakg7h7ksta3tljdg34ssqzdgoohf3tn2ycbyp3tzk7@bol5qwyz6ifb>
+Mutt-References: <20240406164727.577914-17-visitorckw@gmail.com>
+Mutt-Fcc: ~/.mutt/sent
+References: <20240406164727.577914-1-visitorckw@gmail.com>
+ <20240406164727.577914-17-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>, dumitru.ceclan@analog.com,
- Lars-Peter Clausen <lars@metafoo.de>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
- <20240401-ad4111-v1-1-34618a9cc502@analog.com>
- <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
- <CAMknhBGVuMSg+OpS5QTLWi9vA=Xa33AJ+cVS8ZCDyKsAVEe-ww@mail.gmail.com>
- <0a72de29-6d25-4d2d-9824-ca407af69153@gmail.com>
- <CAMknhBHhxi7mN88+peU7BGkzSP2vtipCuvM-XfQzgusqKvARsg@mail.gmail.com>
- <aa84a3c5-a3e6-4c76-9b67-624ed8d8c704@gmail.com>
- <20240406152637.5d53c34f@jic23-huawei>
-Content-Language: en-US
-From: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-In-Reply-To: <20240406152637.5d53c34f@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240406164727.577914-17-visitorckw@gmail.com>
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 854822087F
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email]
 
-On 06/04/2024 17:26, Jonathan Cameron wrote:
-> On Thu, 4 Apr 2024 16:08:56 +0300
-> "Ceclan, Dumitru" <mitrutzceclan@gmail.com> wrote:
+On Sun, Apr 07, 2024 at 12:47:26AM +0800, Kuan-Wei Chiu wrote:
+> Drop the heap-related macros from bcache and replacing them with the
+> generic min_heap implementation from include/linux. By doing so, code
+> readability is improved by using functions instead of macros. Moreover,
+> the min_heap implementation in include/linux adopts a bottom-up
+> variation compared to the textbook version currently used in bcache.
+> This bottom-up variation allows for approximately 50% reduction in the
+> number of comparison operations during heap siftdown, without changing
+> the number of swaps, thus making it more efficient.
 > 
->> On 03/04/2024 18:22, David Lechner wrote:
->>> On Wed, Apr 3, 2024 at 2:50 AM Ceclan, Dumitru <mitrutzceclan@gmail.com> wrote:  
->>>> On 02/04/2024 00:16, David Lechner wrote:  
->>>>> On Mon, Apr 1, 2024 at 2:37 PM David Lechner <dlechner@baylibre.com> wrote:  
->>>>>> On Mon, Apr 1, 2024 at 10:10 AM Dumitru Ceclan via B4 Relay
->>>>>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:  
->>>>>>> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
->>>>>>>  
->>>> ...
->>>>  
->>>>>>>      properties:
->>>>>>>        reg:
->>>>>>> +        description:
->>>>>>> +          Reg values 16-19 are only permitted for ad4111/ad4112 current channels.
->>>>>>>          minimum: 0
->>>>>>> -        maximum: 15
->>>>>>> +        maximum: 19  
->>>>>> This looks wrong. Isn't reg describing the number of logical channels
->>>>>> (# of channel config registers)?
->>>>>>
->>>>>> After reviewing the driver, I see that > 16 is used as a way of
->>>>>> flagging current inputs, but still seems like the wrong way to do it.
->>>>>> See suggestion below.
->>>>>>  
->>>>>>>        diff-channels:
->>>>>>> +        description:
->>>>>>> +          For using current channels specify only the positive channel.
->>>>>>> +            (IIN2+, IIN2−) -> diff-channels = <2 0>  
->>>>>> I find this a bit confusing since 2 is already VIN2 and 0 is already
->>>>>> VIN0. I think it would make more sense to assign unique channel
->>>>>> numbers individually to the negative and positive current inputs.
->>>>>> Also, I think it makes sense to use the same numbers that the
->>>>>> registers in the datasheet use (8 - 11 for negative and 12 to 15 for
->>>>>> positive).
->>>>>>
->>>>>> So: (IIN2+, IIN2−) -> diff-channels = <13 10>  
->>>>> Thinking about this a bit more...
->>>>>
->>>>> Since the current inputs have dedicated pins and aren't mix-and-match
->>>>> with multiple valid wiring configurations like the voltage inputs, do
->>>>> we even need to describe them in the devicetree?
->>>>>
->>>>> In the driver, the current channels would just be hard-coded like the
->>>>> temperature channel since there isn't any application-specific
->>>>> variation.  
->>>>  Sure, but we still need to offer the user a way to configure which
->>>> current inputs he wants and if they should use bipolar or unipolar coding.  
->>> From the datasheet, it looks like only positive current input is
->>> allowed so I'm not sure bipolar applies here. But, yes, if there is
->>> some other variation in wiring or electrical signal that needs to be
->>> describe here, then it makes sense to allow a channel configuration
->>> node for it.  
->>
->> AD4111 datasheet pg.29:
->> When the ADC is configured for bipolar operation, the output
->> code is offset binary with a negative full-scale voltage resulting
->> in a code of 000 … 000, a zero differential input voltage resulting in
->> a code of 100 … 000, and a positive full-scale input voltage
->> resulting in a code of 111 … 111. The output code for any
->> analog input voltage can be represented as
->> Code = 2^(N – 1) × ((V_IN × 0.1/V REF) + 1)
->> The output code for any input current is represented as
->> Code = 2^(N − 1) × ((I_IN × 50 Ω/V REF) + 1)
->>
->> I would say bipolar applies here, not a great idea because of the limitation on
->>  the negative side (Input Current Range min:−0.5 max:+24 mA) so still, the option
->>  is available.
-> Just to check I am correct in thinking you 'might' use bipolar if you want
-> to be able to measure small negative currents, but the range is much larger
-> in the positive direction?
+> Link: https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+
+For the bcache replacement part,
+
+Acked-by: Coly Li <colyli@suse.de>
+
+Thanks.
+
+Coly Li
+> ---
+> Changes in v3:
+> - Correct bugs where the parameter types in some compare functions
+>   should have been 'type **', but were mistakenly written as 'type *'.
 > 
-> J
+>  drivers/md/bcache/alloc.c     | 64 +++++++++++++++++++-------
+>  drivers/md/bcache/bcache.h    |  2 +-
+>  drivers/md/bcache/bset.c      | 84 ++++++++++++++++++++++++-----------
+>  drivers/md/bcache/bset.h      | 14 +++---
+>  drivers/md/bcache/btree.c     | 17 ++++++-
+>  drivers/md/bcache/extents.c   | 53 ++++++++++++++--------
+>  drivers/md/bcache/movinggc.c  | 41 ++++++++++++-----
+>  drivers/md/bcache/sysfs.c     |  2 +
+>  drivers/md/bcache/util.h      | 67 +---------------------------
+>  drivers/md/bcache/writeback.c |  3 ++
+>  10 files changed, 202 insertions(+), 145 deletions(-)
+> 
+> diff --git a/drivers/md/bcache/alloc.c b/drivers/md/bcache/alloc.c
+> index ce13c272c387..8cfa15ea32b4 100644
+> --- a/drivers/md/bcache/alloc.c
+> +++ b/drivers/md/bcache/alloc.c
+> @@ -166,40 +166,68 @@ static void bch_invalidate_one_bucket(struct cache *ca, struct bucket *b)
+>   * prio is worth 1/8th of what INITIAL_PRIO is worth.
+>   */
+>  
+> -#define bucket_prio(b)							\
+> -({									\
+> -	unsigned int min_prio = (INITIAL_PRIO - ca->set->min_prio) / 8;	\
+> -									\
+> -	(b->prio - ca->set->min_prio + min_prio) * GC_SECTORS_USED(b);	\
+> -})
+> +static inline unsigned int new_bucket_prio(struct cache *ca, struct bucket *b)
+> +{
+> +	unsigned int min_prio = (INITIAL_PRIO - ca->set->min_prio) / 8;
+> +
+> +	return (b->prio - ca->set->min_prio + min_prio) * GC_SECTORS_USED(b);
+> +}
+> +
+> +static inline bool new_bucket_max_cmp(const void *l, const void *r, void *args)
+> +{
+> +	struct bucket **lhs = (struct bucket **)l;
+> +	struct bucket **rhs = (struct bucket **)r;
+> +	struct cache *ca = args;
+> +
+> +	return new_bucket_prio(ca, *lhs) > new_bucket_prio(ca, *rhs);
+> +}
+>  
+> -#define bucket_max_cmp(l, r)	(bucket_prio(l) < bucket_prio(r))
+> -#define bucket_min_cmp(l, r)	(bucket_prio(l) > bucket_prio(r))
+> +static inline bool new_bucket_min_cmp(const void *l, const void *r, void *args)
+> +{
+> +	struct bucket **lhs = (struct bucket **)l;
+> +	struct bucket **rhs = (struct bucket **)r;
+> +	struct cache *ca = args;
+> +
+> +	return new_bucket_prio(ca, *lhs) < new_bucket_prio(ca, *rhs);
+> +}
+> +
+> +static inline void new_bucket_swap(void *l, void *r, void __always_unused *args)
+> +{
+> +	struct bucket **lhs = l, **rhs = r;
+> +
+> +	swap(*lhs, *rhs);
+> +}
+>  
+>  static void invalidate_buckets_lru(struct cache *ca)
+>  {
+>  	struct bucket *b;
+> -	ssize_t i;
+> +	const struct min_heap_callbacks bucket_max_cmp_callback = {
+> +		.less = new_bucket_max_cmp,
+> +		.swp = new_bucket_swap,
+> +	};
+> +	const struct min_heap_callbacks bucket_min_cmp_callback = {
+> +		.less = new_bucket_min_cmp,
+> +		.swp = new_bucket_swap,
+> +	};
+>  
+> -	ca->heap.used = 0;
+> +	ca->heap.nr = 0;
+>  
+>  	for_each_bucket(b, ca) {
+>  		if (!bch_can_invalidate_bucket(ca, b))
+>  			continue;
+>  
+> -		if (!heap_full(&ca->heap))
+> -			heap_add(&ca->heap, b, bucket_max_cmp);
+> -		else if (bucket_max_cmp(b, heap_peek(&ca->heap))) {
+> +		if (!min_heap_full(&ca->heap))
+> +			min_heap_push(&ca->heap, &b, &bucket_max_cmp_callback, ca);
+> +		else if (!new_bucket_max_cmp(&b, min_heap_peek(&ca->heap), ca)) {
+>  			ca->heap.data[0] = b;
+> -			heap_sift(&ca->heap, 0, bucket_max_cmp);
+> +			min_heap_sift_down(&ca->heap, 0, &bucket_max_cmp_callback, ca);
+>  		}
+>  	}
+>  
+> -	for (i = ca->heap.used / 2 - 1; i >= 0; --i)
+> -		heap_sift(&ca->heap, i, bucket_min_cmp);
+> +	min_heapify_all(&ca->heap, &bucket_min_cmp_callback, ca);
+>  
+>  	while (!fifo_full(&ca->free_inc)) {
+> -		if (!heap_pop(&ca->heap, b, bucket_min_cmp)) {
+> +		if (!ca->heap.nr) {
+>  			/*
+>  			 * We don't want to be calling invalidate_buckets()
+>  			 * multiple times when it can't do anything
+> @@ -208,6 +236,8 @@ static void invalidate_buckets_lru(struct cache *ca)
+>  			wake_up_gc(ca->set);
+>  			return;
+>  		}
+> +		b = min_heap_peek(&ca->heap)[0];
+> +		min_heap_pop(&ca->heap, &bucket_min_cmp_callback, ca);
+>  
+>  		bch_invalidate_one_bucket(ca, b);
+>  	}
+> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+> index 4e6afa89921f..575d1e3a5217 100644
+> --- a/drivers/md/bcache/bcache.h
+> +++ b/drivers/md/bcache/bcache.h
+> @@ -457,7 +457,7 @@ struct cache {
+>  	/* Allocation stuff: */
+>  	struct bucket		*buckets;
+>  
+> -	DECLARE_HEAP(struct bucket *, heap);
+> +	MIN_HEAP(struct bucket *, cache_heap) heap;
+>  
+>  	/*
+>  	 * If nonzero, we know we aren't going to find any buckets to invalidate
+> diff --git a/drivers/md/bcache/bset.c b/drivers/md/bcache/bset.c
+> index 2bba4d6aaaa2..bd97d8626887 100644
+> --- a/drivers/md/bcache/bset.c
+> +++ b/drivers/md/bcache/bset.c
+> @@ -57,6 +57,8 @@ int __bch_count_data(struct btree_keys *b)
+>  	struct btree_iter iter;
+>  	struct bkey *k;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	if (b->ops->is_extents)
+>  		for_each_key(b, k, &iter)
+>  			ret += KEY_SIZE(k);
+> @@ -70,6 +72,8 @@ void __bch_check_keys(struct btree_keys *b, const char *fmt, ...)
+>  	struct btree_iter iter;
+>  	const char *err;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	for_each_key(b, k, &iter) {
+>  		if (b->ops->is_extents) {
+>  			err = "Keys out of order";
+> @@ -110,9 +114,9 @@ void __bch_check_keys(struct btree_keys *b, const char *fmt, ...)
+>  
+>  static void bch_btree_iter_next_check(struct btree_iter *iter)
+>  {
+> -	struct bkey *k = iter->data->k, *next = bkey_next(k);
+> +	struct bkey *k = iter->heap.data->k, *next = bkey_next(k);
+>  
+> -	if (next < iter->data->end &&
+> +	if (next < iter->heap.data->end &&
+>  	    bkey_cmp(k, iter->b->ops->is_extents ?
+>  		     &START_KEY(next) : next) > 0) {
+>  		bch_dump_bucket(iter->b);
+> @@ -885,6 +889,8 @@ unsigned int bch_btree_insert_key(struct btree_keys *b, struct bkey *k,
+>  
+>  	BUG_ON(b->ops->is_extents && !KEY_SIZE(k));
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	/*
+>  	 * If k has preceding key, preceding_key_p will be set to address
+>  	 *  of k's preceding key; otherwise preceding_key_p will be set
+> @@ -1077,27 +1083,42 @@ struct bkey *__bch_bset_search(struct btree_keys *b, struct bset_tree *t,
+>  
+>  /* Btree iterator */
+>  
+> -typedef bool (btree_iter_cmp_fn)(struct btree_iter_set,
+> -				 struct btree_iter_set);
+> +typedef bool (new_btree_iter_cmp_fn)(const void *, const void *, void *);
+> +
+> +static inline bool new_btree_iter_cmp(const void *l, const void *r, void __always_unused *args)
+> +{
+> +	const struct btree_iter_set *_l = l;
+> +	const struct btree_iter_set *_r = r;
+> +
+> +	return bkey_cmp(_l->k, _r->k) <= 0;
+> +}
+>  
+> -static inline bool btree_iter_cmp(struct btree_iter_set l,
+> -				  struct btree_iter_set r)
+> +static inline void new_btree_iter_swap(void *iter1, void *iter2, void __always_unused *args)
+>  {
+> -	return bkey_cmp(l.k, r.k) > 0;
+> +	struct btree_iter_set *_iter1 = iter1;
+> +	struct btree_iter_set *_iter2 = iter2;
+> +
+> +	swap(*_iter1, *_iter2);
+>  }
+>  
+>  static inline bool btree_iter_end(struct btree_iter *iter)
+>  {
+> -	return !iter->used;
+> +	return !iter->heap.nr;
+>  }
+>  
+>  void bch_btree_iter_push(struct btree_iter *iter, struct bkey *k,
+>  			 struct bkey *end)
+>  {
+> +	const struct min_heap_callbacks callbacks = {
+> +		.less = new_btree_iter_cmp,
+> +		.swp = new_btree_iter_swap,
+> +	};
+> +
+>  	if (k != end)
+> -		BUG_ON(!heap_add(iter,
+> -				 ((struct btree_iter_set) { k, end }),
+> -				 btree_iter_cmp));
+> +		BUG_ON(!min_heap_push(&iter->heap,
+> +				 &((struct btree_iter_set) { k, end }),
+> +				 &callbacks,
+> +				 NULL));
+>  }
+>  
+>  static struct bkey *__bch_btree_iter_init(struct btree_keys *b,
+> @@ -1107,8 +1128,8 @@ static struct bkey *__bch_btree_iter_init(struct btree_keys *b,
+>  {
+>  	struct bkey *ret = NULL;
+>  
+> -	iter->size = ARRAY_SIZE(iter->data);
+> -	iter->used = 0;
+> +	iter->heap.size = ARRAY_SIZE(iter->heap.preallocated);
+> +	iter->heap.nr = 0;
+>  
+>  #ifdef CONFIG_BCACHE_DEBUG
+>  	iter->b = b;
+> @@ -1130,26 +1151,34 @@ struct bkey *bch_btree_iter_init(struct btree_keys *b,
+>  }
+>  
+>  static inline struct bkey *__bch_btree_iter_next(struct btree_iter *iter,
+> -						 btree_iter_cmp_fn *cmp)
+> +						 new_btree_iter_cmp_fn *cmp)
+>  {
+>  	struct btree_iter_set b __maybe_unused;
+>  	struct bkey *ret = NULL;
+> +	const struct min_heap_callbacks callbacks = {
+> +		.less = cmp,
+> +		.swp = new_btree_iter_swap,
+> +	};
+>  
+>  	if (!btree_iter_end(iter)) {
+>  		bch_btree_iter_next_check(iter);
+>  
+> -		ret = iter->data->k;
+> -		iter->data->k = bkey_next(iter->data->k);
+> +		ret = iter->heap.data->k;
+> +		iter->heap.data->k = bkey_next(iter->heap.data->k);
+>  
+> -		if (iter->data->k > iter->data->end) {
+> +		if (iter->heap.data->k > iter->heap.data->end) {
+>  			WARN_ONCE(1, "bset was corrupt!\n");
+> -			iter->data->k = iter->data->end;
+> +			iter->heap.data->k = iter->heap.data->end;
+>  		}
+>  
+> -		if (iter->data->k == iter->data->end)
+> -			heap_pop(iter, b, cmp);
+> +		if (iter->heap.data->k == iter->heap.data->end) {
+> +			if (iter->heap.nr) {
+> +				b = min_heap_peek(&iter->heap)[0];
+> +				min_heap_pop(&iter->heap, &callbacks, NULL);
+> +			}
+> +		}
+>  		else
+> -			heap_sift(iter, 0, cmp);
+> +			min_heap_sift_down(&iter->heap, 0, &callbacks, NULL);
+>  	}
+>  
+>  	return ret;
+> @@ -1157,7 +1186,7 @@ static inline struct bkey *__bch_btree_iter_next(struct btree_iter *iter,
+>  
+>  struct bkey *bch_btree_iter_next(struct btree_iter *iter)
+>  {
+> -	return __bch_btree_iter_next(iter, btree_iter_cmp);
+> +	return __bch_btree_iter_next(iter, new_btree_iter_cmp);
+>  
+>  }
+>  
+> @@ -1195,16 +1224,18 @@ static void btree_mergesort(struct btree_keys *b, struct bset *out,
+>  			    struct btree_iter *iter,
+>  			    bool fixup, bool remove_stale)
+>  {
+> -	int i;
+>  	struct bkey *k, *last = NULL;
+>  	BKEY_PADDED(k) tmp;
+>  	bool (*bad)(struct btree_keys *, const struct bkey *) = remove_stale
+>  		? bch_ptr_bad
+>  		: bch_ptr_invalid;
+> +	const struct min_heap_callbacks callbacks = {
+> +		.less = b->ops->sort_cmp,
+> +		.swp = new_btree_iter_swap,
+> +	};
+>  
+>  	/* Heapify the iterator, using our comparison function */
+> -	for (i = iter->used / 2 - 1; i >= 0; --i)
+> -		heap_sift(iter, i, b->ops->sort_cmp);
+> +	min_heapify_all(&iter->heap, &callbacks, NULL);
+>  
+>  	while (!btree_iter_end(iter)) {
+>  		if (b->ops->sort_fixup && fixup)
+> @@ -1296,6 +1327,7 @@ void bch_btree_sort_partial(struct btree_keys *b, unsigned int start,
+>  	struct btree_iter iter;
+>  	int oldsize = bch_count_data(b);
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+>  	__bch_btree_iter_init(b, &iter, NULL, &b->set[start]);
+>  
+>  	if (start) {
+> @@ -1325,6 +1357,8 @@ void bch_btree_sort_into(struct btree_keys *b, struct btree_keys *new,
+>  	uint64_t start_time = local_clock();
+>  	struct btree_iter iter;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	bch_btree_iter_init(b, &iter, NULL);
+>  
+>  	btree_mergesort(b, new->set->data, &iter, false, true);
+> diff --git a/drivers/md/bcache/bset.h b/drivers/md/bcache/bset.h
+> index d795c84246b0..f79441acd4c1 100644
+> --- a/drivers/md/bcache/bset.h
+> +++ b/drivers/md/bcache/bset.h
+> @@ -187,8 +187,9 @@ struct bset_tree {
+>  };
+>  
+>  struct btree_keys_ops {
+> -	bool		(*sort_cmp)(struct btree_iter_set l,
+> -				    struct btree_iter_set r);
+> +	bool		(*sort_cmp)(const void *l,
+> +				    const void *r,
+> +					void *args);
+>  	struct bkey	*(*sort_fixup)(struct btree_iter *iter,
+>  				       struct bkey *tmp);
+>  	bool		(*insert_fixup)(struct btree_keys *b,
+> @@ -312,16 +313,17 @@ enum {
+>  	BTREE_INSERT_STATUS_FRONT_MERGE,
+>  };
+>  
+> +struct btree_iter_set {
+> +	struct bkey *k, *end;
+> +};
+> +
+>  /* Btree key iteration */
+>  
+>  struct btree_iter {
+> -	size_t size, used;
+>  #ifdef CONFIG_BCACHE_DEBUG
+>  	struct btree_keys *b;
+>  #endif
+> -	struct btree_iter_set {
+> -		struct bkey *k, *end;
+> -	} data[MAX_BSETS];
+> +	MIN_HEAP_PREALLOCATED(struct btree_iter_set, btree_iter_heap, MAX_BSETS) heap;
+>  };
+>  
+>  typedef bool (*ptr_filter_fn)(struct btree_keys *b, const struct bkey *k);
+> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+> index 196cdacce38f..a2bb86d52ad4 100644
+> --- a/drivers/md/bcache/btree.c
+> +++ b/drivers/md/bcache/btree.c
+> @@ -157,8 +157,8 @@ void bch_btree_node_read_done(struct btree *b)
+>  	 * See the comment arount cache_set->fill_iter.
+>  	 */
+>  	iter = mempool_alloc(&b->c->fill_iter, GFP_NOIO);
+> -	iter->size = b->c->cache->sb.bucket_size / b->c->cache->sb.block_size;
+> -	iter->used = 0;
+> +	iter->heap.size = b->c->cache->sb.bucket_size / b->c->cache->sb.block_size;
+> +	iter->heap.nr = 0;
+>  
+>  #ifdef CONFIG_BCACHE_DEBUG
+>  	iter->b = &b->keys;
+> @@ -1312,6 +1312,8 @@ static bool btree_gc_mark_node(struct btree *b, struct gc_stat *gc)
+>  	struct btree_iter iter;
+>  	struct bset_tree *t;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	gc->nodes++;
+>  
+>  	for_each_key_filter(&b->keys, k, &iter, bch_ptr_invalid) {
+> @@ -1573,6 +1575,8 @@ static unsigned int btree_gc_count_keys(struct btree *b)
+>  	struct btree_iter iter;
+>  	unsigned int ret = 0;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	for_each_key_filter(&b->keys, k, &iter, bch_ptr_bad)
+>  		ret += bkey_u64s(k);
+>  
+> @@ -1615,6 +1619,7 @@ static int btree_gc_recurse(struct btree *b, struct btree_op *op,
+>  	struct gc_merge_info r[GC_MERGE_NODES];
+>  	struct gc_merge_info *i, *last = r + ARRAY_SIZE(r) - 1;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+>  	bch_btree_iter_init(&b->keys, &iter, &b->c->gc_done);
+>  
+>  	for (i = r; i < r + ARRAY_SIZE(r); i++)
+> @@ -1913,6 +1918,8 @@ static int bch_btree_check_recurse(struct btree *b, struct btree_op *op)
+>  	struct bkey *k, *p = NULL;
+>  	struct btree_iter iter;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	for_each_key_filter(&b->keys, k, &iter, bch_ptr_invalid)
+>  		bch_initial_mark_key(b->c, b->level, k);
+>  
+> @@ -1958,6 +1965,8 @@ static int bch_btree_check_thread(void *arg)
+>  	cur_idx = prev_idx = 0;
+>  	ret = 0;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	/* root node keys are checked before thread created */
+>  	bch_btree_iter_init(&c->root->keys, &iter, NULL);
+>  	k = bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
+> @@ -2054,6 +2063,8 @@ int bch_btree_check(struct cache_set *c)
+>  	struct btree_iter iter;
+>  	struct btree_check_state check_state;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	/* check and mark root node keys */
+>  	for_each_key_filter(&c->root->keys, k, &iter, bch_ptr_invalid)
+>  		bch_initial_mark_key(c, c->root->level, k);
+> @@ -2549,6 +2560,7 @@ static int bch_btree_map_nodes_recurse(struct btree *b, struct btree_op *op,
+>  		struct bkey *k;
+>  		struct btree_iter iter;
+>  
+> +		min_heap_init(&iter.heap, NULL, MAX_BSETS);
+>  		bch_btree_iter_init(&b->keys, &iter, from);
+>  
+>  		while ((k = bch_btree_iter_next_filter(&iter, &b->keys,
+> @@ -2582,6 +2594,7 @@ int bch_btree_map_keys_recurse(struct btree *b, struct btree_op *op,
+>  	struct bkey *k;
+>  	struct btree_iter iter;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+>  	bch_btree_iter_init(&b->keys, &iter, from);
+>  
+>  	while ((k = bch_btree_iter_next_filter(&iter, &b->keys, bch_ptr_bad))) {
+> diff --git a/drivers/md/bcache/extents.c b/drivers/md/bcache/extents.c
+> index d626ffcbecb9..a7221e5dbe81 100644
+> --- a/drivers/md/bcache/extents.c
+> +++ b/drivers/md/bcache/extents.c
+> @@ -33,15 +33,16 @@ static void sort_key_next(struct btree_iter *iter,
+>  	i->k = bkey_next(i->k);
+>  
+>  	if (i->k == i->end)
+> -		*i = iter->data[--iter->used];
+> +		*i = iter->heap.data[--iter->heap.nr];
+>  }
+>  
+> -static bool bch_key_sort_cmp(struct btree_iter_set l,
+> -			     struct btree_iter_set r)
+> +static bool new_bch_key_sort_cmp(const void *l, const void *r, void *args)
+>  {
+> -	int64_t c = bkey_cmp(l.k, r.k);
+> +	struct btree_iter_set *_l = (struct btree_iter_set *)l;
+> +	struct btree_iter_set *_r = (struct btree_iter_set *)r;
+> +	int64_t c = bkey_cmp(_l->k, _r->k);
+>  
+> -	return c ? c > 0 : l.k < r.k;
+> +	return !(c ? c > 0 : _l->k < _r->k);
+>  }
+>  
+>  static bool __ptr_invalid(struct cache_set *c, const struct bkey *k)
+> @@ -238,7 +239,7 @@ static bool bch_btree_ptr_insert_fixup(struct btree_keys *bk,
+>  }
+>  
+>  const struct btree_keys_ops bch_btree_keys_ops = {
+> -	.sort_cmp	= bch_key_sort_cmp,
+> +	.sort_cmp	= new_bch_key_sort_cmp,
+>  	.insert_fixup	= bch_btree_ptr_insert_fixup,
+>  	.key_invalid	= bch_btree_ptr_invalid,
+>  	.key_bad	= bch_btree_ptr_bad,
+> @@ -255,22 +256,36 @@ const struct btree_keys_ops bch_btree_keys_ops = {
+>   * Necessary for btree_sort_fixup() - if there are multiple keys that compare
+>   * equal in different sets, we have to process them newest to oldest.
+>   */
+> -static bool bch_extent_sort_cmp(struct btree_iter_set l,
+> -				struct btree_iter_set r)
+> +
+> +static bool new_bch_extent_sort_cmp(const void *l, const void *r, void __always_unused *args)
+> +{
+> +	struct btree_iter_set *_l = (struct btree_iter_set *)l;
+> +	struct btree_iter_set *_r = (struct btree_iter_set *)r;
+> +	int64_t c = bkey_cmp(&START_KEY(_l->k), &START_KEY(_r->k));
+> +
+> +	return !(c ? c > 0 : _l->k < _r->k);
+> +}
+> +
+> +static inline void new_btree_iter_swap(void *iter1, void *iter2, void __always_unused *args)
+>  {
+> -	int64_t c = bkey_cmp(&START_KEY(l.k), &START_KEY(r.k));
+> +	struct btree_iter_set *_iter1 = iter1;
+> +	struct btree_iter_set *_iter2 = iter2;
+>  
+> -	return c ? c > 0 : l.k < r.k;
+> +	swap(*_iter1, *_iter2);
+>  }
+>  
+>  static struct bkey *bch_extent_sort_fixup(struct btree_iter *iter,
+>  					  struct bkey *tmp)
+>  {
+> -	while (iter->used > 1) {
+> -		struct btree_iter_set *top = iter->data, *i = top + 1;
+> -
+> -		if (iter->used > 2 &&
+> -		    bch_extent_sort_cmp(i[0], i[1]))
+> +	const struct min_heap_callbacks callbacks = {
+> +		.less = new_bch_extent_sort_cmp,
+> +		.swp = new_btree_iter_swap,
+> +	};
+> +	while (iter->heap.nr > 1) {
+> +		struct btree_iter_set *top = iter->heap.data, *i = top + 1;
+> +
+> +		if (iter->heap.nr > 2 &&
+> +		    !new_bch_extent_sort_cmp(&i[0], &i[1], NULL))
+>  			i++;
+>  
+>  		if (bkey_cmp(top->k, &START_KEY(i->k)) <= 0)
+> @@ -278,7 +293,7 @@ static struct bkey *bch_extent_sort_fixup(struct btree_iter *iter,
+>  
+>  		if (!KEY_SIZE(i->k)) {
+>  			sort_key_next(iter, i);
+> -			heap_sift(iter, i - top, bch_extent_sort_cmp);
+> +			min_heap_sift_down(&iter->heap, i - top, &callbacks, NULL);
+>  			continue;
+>  		}
+>  
+> @@ -288,7 +303,7 @@ static struct bkey *bch_extent_sort_fixup(struct btree_iter *iter,
+>  			else
+>  				bch_cut_front(top->k, i->k);
+>  
+> -			heap_sift(iter, i - top, bch_extent_sort_cmp);
+> +			min_heap_sift_down(&iter->heap, i - top, &callbacks, NULL);
+>  		} else {
+>  			/* can't happen because of comparison func */
+>  			BUG_ON(!bkey_cmp(&START_KEY(top->k), &START_KEY(i->k)));
+> @@ -298,7 +313,7 @@ static struct bkey *bch_extent_sort_fixup(struct btree_iter *iter,
+>  
+>  				bch_cut_back(&START_KEY(i->k), tmp);
+>  				bch_cut_front(i->k, top->k);
+> -				heap_sift(iter, 0, bch_extent_sort_cmp);
+> +				min_heap_sift_down(&iter->heap, 0, &callbacks, NULL);
+>  
+>  				return tmp;
+>  			} else {
+> @@ -618,7 +633,7 @@ static bool bch_extent_merge(struct btree_keys *bk,
+>  }
+>  
+>  const struct btree_keys_ops bch_extent_keys_ops = {
+> -	.sort_cmp	= bch_extent_sort_cmp,
+> +	.sort_cmp	= new_bch_extent_sort_cmp,
+>  	.sort_fixup	= bch_extent_sort_fixup,
+>  	.insert_fixup	= bch_extent_insert_fixup,
+>  	.key_invalid	= bch_extent_invalid,
+> diff --git a/drivers/md/bcache/movinggc.c b/drivers/md/bcache/movinggc.c
+> index ebd500bdf0b2..7f482729c56d 100644
+> --- a/drivers/md/bcache/movinggc.c
+> +++ b/drivers/md/bcache/movinggc.c
+> @@ -182,16 +182,27 @@ err:		if (!IS_ERR_OR_NULL(w->private))
+>  	closure_sync(&cl);
+>  }
+>  
+> -static bool bucket_cmp(struct bucket *l, struct bucket *r)
+> +static bool new_bucket_cmp(const void *l, const void *r, void __always_unused *args)
+>  {
+> -	return GC_SECTORS_USED(l) < GC_SECTORS_USED(r);
+> +	struct bucket **_l = (struct bucket **)l;
+> +	struct bucket **_r = (struct bucket **)r;
+> +
+> +	return GC_SECTORS_USED(*_l) >= GC_SECTORS_USED(*_r);
+> +}
+> +
+> +static void new_bucket_swap(void *l, void *r, void __always_unused *args)
+> +{
+> +	struct bucket **_l = l;
+> +	struct bucket **_r = r;
+> +
+> +	swap(*_l, *_r);
+>  }
+>  
+>  static unsigned int bucket_heap_top(struct cache *ca)
+>  {
+>  	struct bucket *b;
+>  
+> -	return (b = heap_peek(&ca->heap)) ? GC_SECTORS_USED(b) : 0;
+> +	return (b = min_heap_peek(&ca->heap)[0]) ? GC_SECTORS_USED(b) : 0;
+>  }
+>  
+>  void bch_moving_gc(struct cache_set *c)
+> @@ -199,6 +210,10 @@ void bch_moving_gc(struct cache_set *c)
+>  	struct cache *ca = c->cache;
+>  	struct bucket *b;
+>  	unsigned long sectors_to_move, reserve_sectors;
+> +	const struct min_heap_callbacks callbacks = {
+> +		.less = new_bucket_cmp,
+> +		.swp = new_bucket_swap,
+> +	};
+>  
+>  	if (!c->copy_gc_enabled)
+>  		return;
+> @@ -209,7 +224,7 @@ void bch_moving_gc(struct cache_set *c)
+>  	reserve_sectors = ca->sb.bucket_size *
+>  			     fifo_used(&ca->free[RESERVE_MOVINGGC]);
+>  
+> -	ca->heap.used = 0;
+> +	ca->heap.nr = 0;
+>  
+>  	for_each_bucket(b, ca) {
+>  		if (GC_MARK(b) == GC_MARK_METADATA ||
+> @@ -218,25 +233,31 @@ void bch_moving_gc(struct cache_set *c)
+>  		    atomic_read(&b->pin))
+>  			continue;
+>  
+> -		if (!heap_full(&ca->heap)) {
+> +		if (!min_heap_full(&ca->heap)) {
+>  			sectors_to_move += GC_SECTORS_USED(b);
+> -			heap_add(&ca->heap, b, bucket_cmp);
+> -		} else if (bucket_cmp(b, heap_peek(&ca->heap))) {
+> +			min_heap_push(&ca->heap, &b, &callbacks, NULL);
+> +		} else if (!new_bucket_cmp(&b, min_heap_peek(&ca->heap), ca)) {
+>  			sectors_to_move -= bucket_heap_top(ca);
+>  			sectors_to_move += GC_SECTORS_USED(b);
+>  
+>  			ca->heap.data[0] = b;
+> -			heap_sift(&ca->heap, 0, bucket_cmp);
+> +			min_heap_sift_down(&ca->heap, 0, &callbacks, NULL);
+>  		}
+>  	}
+>  
+>  	while (sectors_to_move > reserve_sectors) {
+> -		heap_pop(&ca->heap, b, bucket_cmp);
+> +		if (ca->heap.nr) {
+> +			b = min_heap_peek(&ca->heap)[0];
+> +			min_heap_pop(&ca->heap, &callbacks, NULL);
+> +		}
+>  		sectors_to_move -= GC_SECTORS_USED(b);
+>  	}
+>  
+> -	while (heap_pop(&ca->heap, b, bucket_cmp))
+> +	while (ca->heap.nr) {
+> +		b = min_heap_peek(&ca->heap)[0];
+> +		min_heap_pop(&ca->heap, &callbacks, NULL);
+>  		SET_GC_MOVE(b, 1);
+> +	}
+>  
+>  	mutex_unlock(&c->bucket_lock);
+>  
+> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+> index 6956beb55326..e8f696cb58c0 100644
+> --- a/drivers/md/bcache/sysfs.c
+> +++ b/drivers/md/bcache/sysfs.c
+> @@ -662,6 +662,8 @@ static unsigned int bch_root_usage(struct cache_set *c)
+>  	struct btree *b;
+>  	struct btree_iter iter;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  	goto lock_root;
+>  
+>  	do {
+> diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
+> index f61ab1bada6c..539454d8e2d0 100644
+> --- a/drivers/md/bcache/util.h
+> +++ b/drivers/md/bcache/util.h
+> @@ -9,6 +9,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/sched/clock.h>
+>  #include <linux/llist.h>
+> +#include <linux/min_heap.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/workqueue.h>
+> @@ -30,16 +31,10 @@ struct closure;
+>  
+>  #endif
+>  
+> -#define DECLARE_HEAP(type, name)					\
+> -	struct {							\
+> -		size_t size, used;					\
+> -		type *data;						\
+> -	} name
+> -
+>  #define init_heap(heap, _size, gfp)					\
+>  ({									\
+>  	size_t _bytes;							\
+> -	(heap)->used = 0;						\
+> +	(heap)->nr = 0;						\
+>  	(heap)->size = (_size);						\
+>  	_bytes = (heap)->size * sizeof(*(heap)->data);			\
+>  	(heap)->data = kvmalloc(_bytes, (gfp) & GFP_KERNEL);		\
+> @@ -52,64 +47,6 @@ do {									\
+>  	(heap)->data = NULL;						\
+>  } while (0)
+>  
+> -#define heap_swap(h, i, j)	swap((h)->data[i], (h)->data[j])
+> -
+> -#define heap_sift(h, i, cmp)						\
+> -do {									\
+> -	size_t _r, _j = i;						\
+> -									\
+> -	for (; _j * 2 + 1 < (h)->used; _j = _r) {			\
+> -		_r = _j * 2 + 1;					\
+> -		if (_r + 1 < (h)->used &&				\
+> -		    cmp((h)->data[_r], (h)->data[_r + 1]))		\
+> -			_r++;						\
+> -									\
+> -		if (cmp((h)->data[_r], (h)->data[_j]))			\
+> -			break;						\
+> -		heap_swap(h, _r, _j);					\
+> -	}								\
+> -} while (0)
+> -
+> -#define heap_sift_down(h, i, cmp)					\
+> -do {									\
+> -	while (i) {							\
+> -		size_t p = (i - 1) / 2;					\
+> -		if (cmp((h)->data[i], (h)->data[p]))			\
+> -			break;						\
+> -		heap_swap(h, i, p);					\
+> -		i = p;							\
+> -	}								\
+> -} while (0)
+> -
+> -#define heap_add(h, d, cmp)						\
+> -({									\
+> -	bool _r = !heap_full(h);					\
+> -	if (_r) {							\
+> -		size_t _i = (h)->used++;				\
+> -		(h)->data[_i] = d;					\
+> -									\
+> -		heap_sift_down(h, _i, cmp);				\
+> -		heap_sift(h, _i, cmp);					\
+> -	}								\
+> -	_r;								\
+> -})
+> -
+> -#define heap_pop(h, d, cmp)						\
+> -({									\
+> -	bool _r = (h)->used;						\
+> -	if (_r) {							\
+> -		(d) = (h)->data[0];					\
+> -		(h)->used--;						\
+> -		heap_swap(h, 0, (h)->used);				\
+> -		heap_sift(h, 0, cmp);					\
+> -	}								\
+> -	_r;								\
+> -})
+> -
+> -#define heap_peek(h)	((h)->used ? (h)->data[0] : NULL)
+> -
+> -#define heap_full(h)	((h)->used == (h)->size)
+> -
+>  #define DECLARE_FIFO(type, name)					\
+>  	struct {							\
+>  		size_t front, back, size, mask;				\
+> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+> index 8827a6f130ad..c1d28e365910 100644
+> --- a/drivers/md/bcache/writeback.c
+> +++ b/drivers/md/bcache/writeback.c
+> @@ -915,6 +915,7 @@ static int bch_dirty_init_thread(void *arg)
+>  	k = p = NULL;
+>  	prev_idx = 0;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+>  	bch_btree_iter_init(&c->root->keys, &iter, NULL);
+>  	k = bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
+>  	BUG_ON(!k);
+> @@ -984,6 +985,8 @@ void bch_sectors_dirty_init(struct bcache_device *d)
+>  	struct cache_set *c = d->c;
+>  	struct bch_dirty_init_state state;
+>  
+> +	min_heap_init(&iter.heap, NULL, MAX_BSETS);
+> +
+>  retry_lock:
+>  	b = c->root;
+>  	rw_lock(0, b, b->level);
+> -- 
+> 2.34.1
+> 
 
-Yes, exactly
+-- 
+Coly Li
 
-
-
+-- 
+Coly Li
 
