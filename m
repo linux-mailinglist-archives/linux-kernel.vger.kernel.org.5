@@ -1,185 +1,98 @@
-Return-Path: <linux-kernel+bounces-137252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9771489DF86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:46:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5CB89DF88
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:46:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E1831F25F87
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:46:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE9F294213
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7496B1369AA;
-	Tue,  9 Apr 2024 15:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5FBC13B590;
+	Tue,  9 Apr 2024 15:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jSfv7kwU"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ME3/PhR/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B8613698F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D0513667F;
+	Tue,  9 Apr 2024 15:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677574; cv=none; b=qLXk+b9iHScQoa9QpJsVk2nciRgn1HHmbDa3vJGn0pYBDTA78EhPFE2GOJJBR+vqvy1JTRaAtC1W008j8XpworwXiofJfisNZNdrzlC3azHeASOLlGD/AuBJpqlHEdUcEFKI12HOqvmjHj5lE7BIPN0VwuXhi4Ufmf6Lez3Jbtc=
+	t=1712677581; cv=none; b=IdC+H4IznzkpYbTLgRo53AfgI0HQrBdmaVmJ9wiaDywZ89nngeVoeqWnJxq72YKtDLRTwHaXE/0QtAGyrq2g4V4kTTItyif8JCy3P8SKm5brR4Pm+vzpW6r4KDuJ576rdK8+J1sC15DTo2dJFCj6nWI3OfgsMk5gK2RLbvKVZJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677574; c=relaxed/simple;
-	bh=4YNynUGh8NwIznE4z7XpT8p/m3+R1fGobPIeDJ73050=;
+	s=arc-20240116; t=1712677581; c=relaxed/simple;
+	bh=AMqXgBQum094kgOVcj2SwYkBLHwOfKK/allxjYwE3+o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RJCbwJSkUCzgbqOPFMlhS3SEG89824WPtCucxp0qaIFRrSt6T9ndrQho9UYx7yGHk1UwekrvXXnQA2LuzLIzjTfY2mUNgrJcLDPF26hSrx9f13cFbjJIZKzdWJham359ZSVZh+l2eQp3cjKgCGj+G8IkEbDh50aibhDEjMPJivI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jSfv7kwU; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ecf1bb7f38so3828219b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712677572; x=1713282372; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TZb3iRMe5mVHNLzHciI0SO6cgHqSkIE7M20XVfQvi74=;
-        b=jSfv7kwUb9qEcmOVZWd4NNQ8kkcqpjc5RLqEtWEv9ORulGYOipNAK4T9N6HKEy5lNk
-         pK+tHn0sgT0Cnv2RxvM26AzXwkqoH+YnSi7FnjNNCYo50bzdpV5NJ5N3+T+OUo3PlaGR
-         dSYGvwAio9iV2XG+ndFKn2I1VvnMpgc4AaKvY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712677572; x=1713282372;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TZb3iRMe5mVHNLzHciI0SO6cgHqSkIE7M20XVfQvi74=;
-        b=n1N9LhB89MPJPJNcpkCP+qtAHJixwK8hwhsuyFjWppdKtz9VVksRNGYBpQyWwGSDpt
-         9XpaER6GrGcbbNgcICOf1LFBHoFVKFFFwiVIapkH6PqfCOD1jSGRCjYPI+e04rgy0CH3
-         ZFX0Qszi0+3N/ld0FsSKOIcxvr0A2m7CoJXwDO9yfJUh0oMm0Xq7dMmYrduDaaNlwEdK
-         KpFLr5h7dgswe4R4q0SavmhLU+It+BE46jpMSKrbe6ReSFmJVrQW9qi3AEAYuzsgW0xN
-         xFIIYtCdbxg2RU3kowBv2qg1weTXoh0LZqPZd07+1M3jzaW5x+RxIYfWcvaNLwOwsQ5q
-         BJ3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVWfvTO9nOVKo+JltbbpsOIi5VM8CyOkfGyPviXKrUDEUQMhQxsSMrQXcA3asK5wQ6Zqr+OKRk9a4oxaQa+iW7IbAfEfUqxLuuVhRCS
-X-Gm-Message-State: AOJu0Yzlj4OZaZsmjU4I0lyoco/qOnOJZMyuOl8UaQA63xirYvw28mr7
-	wVFCe5iTE8BO9t98He69m7q4W2tZO5lQQmlr0JdUYFDP8u5GVBsVQE8VR6BT7A==
-X-Google-Smtp-Source: AGHT+IFY4YnmxxIgxT9REWRm8+8QvKZDpcEh61QeY1CTDZRblqm40N34Vq/Eeh+kF58mWnqkXyrA8A==
-X-Received: by 2002:a05:6a00:2355:b0:6ec:da6c:fc2d with SMTP id j21-20020a056a00235500b006ecda6cfc2dmr13723474pfj.23.1712677571643;
-        Tue, 09 Apr 2024 08:46:11 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 27-20020a630f5b000000b005dc5289c4edsm8296124pgp.64.2024.04.09.08.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 08:46:11 -0700 (PDT)
-Date: Tue, 9 Apr 2024 08:46:10 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Marco Elver <elver@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH] tracing: Add new_exec tracepoint
-Message-ID: <202404090840.E09789B66@keescook>
-References: <20240408090205.3714934-1-elver@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JKaMJjK3fP6WYtx1RWh22Qo8u1b2vLe3RD1H5EHTQOg3aNR2FQJ5aNL4pdma35njoeMWa/yEnchWq1jwvuuCYM2vHVArl9axSr03eRaOF2FOuIhE2TfZyumXbN7cGOEEzdoSpKLJdBqefjDiJ9wyZcBUhvSsdUx+wwHHUKuvTzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ME3/PhR/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C1CFC433C7;
+	Tue,  9 Apr 2024 15:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712677580;
+	bh=AMqXgBQum094kgOVcj2SwYkBLHwOfKK/allxjYwE3+o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ME3/PhR/h55ot5LNZCP2rRlhgrTbr7UeqHe86M6NdUn7tNhxqz/Mi2YYEB2Mltvor
+	 0m4tTNuT0NyzxdWBgK12nxsp8ciAmeXE4OcDbQzXHWhs1xOXsMMzsIxr+Ne2lTuopm
+	 EP3DZ4x5P3Ka6J+iAKOpG/6CJ/nYE90Ovc2Ad8CaTHU6JzLvdKlJhCqqmmeKp7LOoe
+	 igV529SqxDWzS/u05SxAnloc1kPd45fhO5+iyK895NLzMnT/jBCf4wnHtERY0aEcNe
+	 ksLoqmqaJU5YWGOC5kqX+Rc/iis2gKZdbpGGnf4XfITqON1zOtbDcF9eqVCgn56w0i
+	 o0BHFC5i6Ruqg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1ruDfr-0000000038F-1wBX;
+	Tue, 09 Apr 2024 17:46:16 +0200
+Date: Tue, 9 Apr 2024 17:46:15 +0200
+From: Johan Hovold <johan@kernel.org>
+To: =?utf-8?Q?=C5=81ukasz?= Majczak <lma@chromium.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>
+Subject: Re: [PATCH v2] HID: i2c-hid: wait for i2c touchpad deep-sleep to
+ power-up transition
+Message-ID: <ZhVix-HJrqQbiPrB@hovoldconsulting.com>
+References: <20240405102436.3479210-1-lma@chromium.org>
+ <ZhOccGFkTFkUkRUI@hovoldconsulting.com>
+ <CAE5UKNqufWZfKLAXLcpBYKQpJEVt6jPD4Xtr=Nesh34VkNOETg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240408090205.3714934-1-elver@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE5UKNqufWZfKLAXLcpBYKQpJEVt6jPD4Xtr=Nesh34VkNOETg@mail.gmail.com>
 
-On Mon, Apr 08, 2024 at 11:01:54AM +0200, Marco Elver wrote:
-> Add "new_exec" tracepoint, which is run right after the point of no
-> return but before the current task assumes its new exec identity.
+On Tue, Apr 09, 2024 at 12:53:43PM +0200, Łukasz Majczak wrote:
+
+> > Can you please explain why this would not a problem for all future
+> > transactions as well?
+
+> The problem is that the probe function calling i2c_smbus_read_byte()
+> is not aware that
+> uC on the other end is in a deep sleep state so the first read will
+> fail and so the whole probe.
 > 
-> Unlike the tracepoint "sched_process_exec", the "new_exec" tracepoint
-> runs before flushing the old exec, i.e. while the task still has the
-> original state (such as original MM), but when the new exec either
-> succeeds or crashes (but never returns to the original exec).
-> 
-> Being able to trace this event can be helpful in a number of use cases:
-> 
->   * allowing tracing eBPF programs access to the original MM on exec,
->     before current->mm is replaced;
->   * counting exec in the original task (via perf event);
->   * profiling flush time ("new_exec" to "sched_process_exec").
-> 
-> Example of tracing output ("new_exec" and "sched_process_exec"):
-> 
->   $ cat /sys/kernel/debug/tracing/trace_pipe
->       <...>-379     [003] .....   179.626921: new_exec: filename=/usr/bin/sshd pid=379 comm=sshd
->       <...>-379     [003] .....   179.629131: sched_process_exec: filename=/usr/bin/sshd pid=379 old_pid=379
->       <...>-381     [002] .....   180.048580: new_exec: filename=/bin/bash pid=381 comm=sshd
->       <...>-381     [002] .....   180.053122: sched_process_exec: filename=/bin/bash pid=381 old_pid=381
->       <...>-385     [001] .....   180.068277: new_exec: filename=/usr/bin/tty pid=385 comm=bash
->       <...>-385     [001] .....   180.069485: sched_process_exec: filename=/usr/bin/tty pid=385 old_pid=385
->       <...>-389     [006] .....   192.020147: new_exec: filename=/usr/bin/dmesg pid=389 comm=bash
->        bash-389     [006] .....   192.021377: sched_process_exec: filename=/usr/bin/dmesg pid=389 old_pid=389
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  fs/exec.c                   |  2 ++
->  include/trace/events/task.h | 30 ++++++++++++++++++++++++++++++
->  2 files changed, 32 insertions(+)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 38bf71cbdf5e..ab778ae1fc06 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1268,6 +1268,8 @@ int begin_new_exec(struct linux_binprm * bprm)
->  	if (retval)
->  		return retval;
->  
-> +	trace_new_exec(current, bprm);
-> +
+> In a normal scenario, when a user touches the touchpad (when it is in
+> a deep sleep), the touch will first wake up the uC and
+> then generate an interrupt to AP, so in this case the touchpad is
+> fully awake and operational.
 
-All other steps in this function have explicit comments about
-what/why/etc. Please add some kind of comment describing why the
-tracepoint is where it is, etc.
+Sure, but what about other transactions that are initiated by the host
+(e.g. SET_POWER)?
 
-For example, maybe something like:
+Perhaps this hack at probe is enough for your use case, but is an
+incomplete hack and at a minimum you'd need to add a comment explaining
+why it is there.
 
-/*
- * Before any changes to 'current', report that the exec is about to
- * happen (since we made it to the point of no return). On a successful
- * exec, the 'sched_process_exec' tracepoint will also fire. On failure,
- * ... [something else]
- */
-
-> +TRACE_EVENT(new_exec,
-> +
-> +	TP_PROTO(struct task_struct *task, struct linux_binprm *bprm),
-> +
-> +	TP_ARGS(task, bprm),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(	filename,	bprm->filename	)
-> +		__field(	pid_t,		pid		)
-> +		__string(	comm,		task->comm	)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(filename, bprm->filename);
-
-What about binfmt_misc, and binfmt_script? You may want bprm->interp
-too?
-
--Kees
-
-> +		__entry->pid = task->pid;
-> +		__assign_str(comm, task->comm);
-> +	),
-> +
-> +	TP_printk("filename=%s pid=%d comm=%s",
-> +		  __get_str(filename), __entry->pid, __get_str(comm))
-> +);
-> +
->  #endif
->  
->  /* This part must be outside protection */
-> -- 
-> 2.44.0.478.gd926399ef9-goog
-> 
-
--- 
-Kees Cook
+Johan
 
