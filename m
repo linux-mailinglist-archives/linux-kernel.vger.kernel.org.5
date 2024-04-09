@@ -1,167 +1,99 @@
-Return-Path: <linux-kernel+bounces-136321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A4989D2A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:46:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6989D2A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E60B2845A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:46:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7201F2361B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 06:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07267EEF0;
-	Tue,  9 Apr 2024 06:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E495D7F489;
+	Tue,  9 Apr 2024 06:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="TvHxiaBb"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HWwH4lfy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FDC7C090;
-	Tue,  9 Apr 2024 06:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCA87F469
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 06:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712645093; cv=none; b=FdV7v9ciEEdMRsKy65WL1On2c4EbjF1j/0/TNgCleZ1IHe/SuNPQh/6aUbseinpGfk0XObkKARJD4s5n4i1N1zOnEkhRmKgJtcxUWGa7X3AVA8GWfyBdGOjtLOMSpFAL/M6IlkPhGOGFvQ+J/SK7qkSZQZXtj7tDJJSUfouC9CM=
+	t=1712645096; cv=none; b=DFluW0J/hJ8PwP2obuNyGlLeQByI1Ap1CEaZmnv09N5bEfmyn4E7R4ITsMDhV++TOevTfNpKQb76OqDScv/LhWpi2dJN7ShVs+upL1rLrzM7WxIFC6sjKmT95tEKiY9EURChMj5aanHRhhlXubpbIt723NCtHF8h2kr0QGMfROw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712645093; c=relaxed/simple;
-	bh=sPbXPWvg5+mZ/6oQLlNfovqlH0U3jK5wpCleZwSaPXw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZBt79RHuJOoUJqTHxNNlDRR/QqNSKMdlWpD98yM0q4wUzySAPnqUVH7TgKBFFwCc0wLEAEk+8XXIzsXeVVq/ZnJRhKmNEFAMaK41Ig4ZWDz0gmfFS00j2cp0V7LOsNajtV5RoNO1FZ8rCxbYX3W8NkqyXRxYbkUy/b/miJerne4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=TvHxiaBb; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: a406fb0ef63c11ee935d6952f98a51a9-20240409
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=MZosmWHxYSHcRW0nI04JC77u+V6QJPuWaadF+FdFu+s=;
-	b=TvHxiaBbAj7mB/fuGZ8+7OKidmp29p5fII3uUIpoEOg2S8tG8pVigtiYJzfCxf+uvw+TR6aqOo+sMiUKre5NELBfEhins30Fb8u3mxEscnTb7mfF3OUfKNzZjHO59oHiyySM9ceKStOR0FzQVvRhPIlI44K6NDaLp4wnomQuTJk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:2dc70a6e-aff6-47d8-ae24-97788bb88c13,IP:0,U
-	RL:0,TC:0,Content:39,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:9
-X-CID-META: VersionHash:6f543d0,CLOUDID:754a7482-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:4,EDM:2,IP:nil,UR
-	L:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,S
-	PR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: a406fb0ef63c11ee935d6952f98a51a9-20240409
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-	(envelope-from <yunfei.dong@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1778975413; Tue, 09 Apr 2024 14:44:40 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 9 Apr 2024 14:44:37 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 9 Apr 2024 14:44:36 +0800
-From: Yunfei Dong <yunfei.dong@mediatek.com>
-To: =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
-	<nfraprado@collabora.com>, Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>,
-	Sebastian Fricke <sebastian.fricke@collabora.com>
-CC: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, "Yunfei
- Dong" <yunfei.dong@mediatek.com>, <linux-media@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v2,5/5] media: mediatek: vcodec: fix incorrect sizeimage for 10bit bitstream
-Date: Tue, 9 Apr 2024 14:44:31 +0800
-Message-ID: <20240409064431.16909-6-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240409064431.16909-1-yunfei.dong@mediatek.com>
-References: <20240409064431.16909-1-yunfei.dong@mediatek.com>
+	s=arc-20240116; t=1712645096; c=relaxed/simple;
+	bh=Y4fwionJ7MA0g8amtT8EkR/ZIt4iZAGfM7Xnpv+YETc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=aNQtNQy++1s6S9bCsy9u9vkmY9nT05VRmCvGggCbFKNisWgSG6CO1PsepM1v/2mI1/YsUzipOKHibs+j5p9mV3GxlZaSrwzkvk1FseC67WUvS09our33tUY2kYmQzDRh6ddSUi7kR6VcaSJLmiHgZw6iuAO8rmiIx/ubM7g+bmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HWwH4lfy; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712645095; x=1744181095;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Y4fwionJ7MA0g8amtT8EkR/ZIt4iZAGfM7Xnpv+YETc=;
+  b=HWwH4lfyYcfNdtNx+/Ohcy4XhCxsJYSnJ2YLmmqxsNdWq9uVKjGHjM1U
+   kZg2IGr+1Pq98f2uBbIc+ltBszXOOYt6IW0xDV9vT8zyPWH6O8fyyPujj
+   u2yJh3+Jqb2FOl5Qf5wRIrKvg4zUMl3Xb+eHjOmWLgzEMnQuOmUZax0Fl
+   vhbFysSw1tVhD9z3KL3vZnwd49GGTSBJvE/NwIlAJNFxuCElfHtZs6ciO
+   Xqem7Kb8uxYYG0BbH1we4XQl20WDnlGqPvX8+CteiuSgm0ca8sVzDKo8L
+   F8xWQUHNwbs6r2sZtmYl6D+0fFv9GY9uHMNyzYCjHP4lQ05rvll/ZWr6z
+   Q==;
+X-CSE-ConnectionGUID: yGZrqdOaQROnl1O/gzR14Q==
+X-CSE-MsgGUID: IktXC+gkRc2AD3SZjCmCPA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="33352668"
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="33352668"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:44:54 -0700
+X-CSE-ConnectionGUID: PZk59RutSwSzxReBV5OLsQ==
+X-CSE-MsgGUID: 7KZAMXh/TM2aKU6LPvFOWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="20698153"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 08 Apr 2024 23:44:53 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ru5Du-0005pw-0b;
+	Tue, 09 Apr 2024 06:44:50 +0000
+Date: Tue, 9 Apr 2024 14:44:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2024.04.04b 59/65] controller.c:undefined reference
+ to `cmpxchg_emu_u8'
+Message-ID: <202404091402.CYa0g4R6-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--3.412300-8.000000
-X-TMASE-MatchedRID: uGd8VeYUEEWhmMaez4U1AFz+axQLnAVBTI0NfY99MMnfUZT83lbkEEtH
-	ojrK13E4Xbw7dgf/8HlAA7ZKGvXdAC1Wsi+5O6Jcsyw+ZJnFumQcZd/OW4yvKkYx760ONDcW9Gb
-	SSaq0f4Oh3i6rZZP9+lCkJPtKWaaNDPIzF4wRfrAURSScn+QSXt0H8LFZNFG7CKFCmhdu5cWqtb
-	6GDxXi6iofexNkV7fbMknYdva+C6W5yj/z7E7qhyhZ9FGlWWy3Z1gP/jdV4D1SjXz3n1GYt9lEd
-	4EsQOBGa8q+62VkyTppp55fZDlsr34cY/B7JqXaYZ1R7NXn0MdBmmCXcKyFFJ6oP1a0mRIj
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.412300-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 8939B90B9B248E41F954A5A918956B972837D3BCB544E7A6922A45827A39B2232000:8
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The sizeimage of each plane is calculated the same way for 8bit and
-10bit bitstream. Using v4l2 common interface v4l2_fill_pixfmt_mp to
-separate.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.04.04b
+head:   e2a520f3f3921cb5d3c9631917fccf8c215991ce
+commit: 5ce37a62e3d207bd20d4c850c4547816c0dd9c22 [59/65] EXP arch/x86: Test one-byte cmpxchg emulation
+config: i386-buildonly-randconfig-006-20240409 (https://download.01.org/0day-ci/archive/20240409/202404091402.CYa0g4R6-lkp@intel.com/config)
+compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240409/202404091402.CYa0g4R6-lkp@intel.com/reproduce)
 
-Fixes: 9d86be9bda6c ("media: mediatek: vcodec: Add driver to support 10bit")
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
- .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 28 ++++++-------------
- 1 file changed, 8 insertions(+), 20 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404091402.CYa0g4R6-lkp@intel.com/
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-index 9107707de6c4..fbfba69682ea 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-@@ -262,40 +262,28 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *ctx, struct v4l2_format *f,
- 		int tmp_w, tmp_h;
- 
- 		/*
--		 * Find next closer width align 64, height align 64, size align
--		 * 64 rectangle
-+		 * Find next closer width align 64, heign align 64, size align 64 rectangle
- 		 * Note: This only get default value, the real HW needed value
- 		 *       only available when ctx in MTK_STATE_HEADER state
- 		 */
- 		tmp_w = pix_fmt_mp->width;
- 		tmp_h = pix_fmt_mp->height;
-+
- 		v4l_bound_align_image(&pix_fmt_mp->width, MTK_VDEC_MIN_W, frmsize->max_width, 6,
- 				      &pix_fmt_mp->height, MTK_VDEC_MIN_H, frmsize->max_height, 6,
- 				      9);
- 
--		if (pix_fmt_mp->width < tmp_w &&
--		    (pix_fmt_mp->width + 64) <= frmsize->max_width)
-+		if (pix_fmt_mp->width < tmp_w && (pix_fmt_mp->width + 64) <= frmsize->max_width)
- 			pix_fmt_mp->width += 64;
--		if (pix_fmt_mp->height < tmp_h &&
--		    (pix_fmt_mp->height + 64) <= frmsize->max_height)
-+		if (pix_fmt_mp->height < tmp_h && (pix_fmt_mp->height + 64) <= frmsize->max_height)
- 			pix_fmt_mp->height += 64;
- 
-+		v4l2_fill_pixfmt_mp(pix_fmt_mp, fmt->fourcc, pix_fmt_mp->width, pix_fmt_mp->height);
- 		mtk_v4l2_vdec_dbg(0, ctx,
--				  "before resize wxh=%dx%d, after resize wxh=%dx%d, sizeimage=%d",
-+				  "before resize:%dx%d, after resize:%dx%d, sizeimage=0x%x_0x%x",
- 				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
--				  pix_fmt_mp->width * pix_fmt_mp->height);
--
--		pix_fmt_mp->num_planes = fmt->num_planes;
--		pix_fmt_mp->plane_fmt[0].sizeimage =
--				pix_fmt_mp->width * pix_fmt_mp->height;
--		pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
--
--		if (pix_fmt_mp->num_planes == 2) {
--			pix_fmt_mp->plane_fmt[1].sizeimage =
--				(pix_fmt_mp->width * pix_fmt_mp->height) / 2;
--			pix_fmt_mp->plane_fmt[1].bytesperline =
--				pix_fmt_mp->width;
--		}
-+				  pix_fmt_mp->plane_fmt[0].sizeimage,
-+				  pix_fmt_mp->plane_fmt[1].sizeimage);
- 	}
- 
- 	pix_fmt_mp->flags = 0;
+All errors (new ones prefixed by >>):
+
+   ld: drivers/platform/surface/aggregator/controller.o: in function `ssam_request_write_data':
+>> controller.c:(.text+0xcdf): undefined reference to `cmpxchg_emu_u8'
+
 -- 
-2.18.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
