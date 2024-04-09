@@ -1,118 +1,99 @@
-Return-Path: <linux-kernel+bounces-136914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D5889D9CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:08:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE9989D9CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A9EB1C228CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5A111F2268B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8FB12F381;
-	Tue,  9 Apr 2024 13:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDE912F599;
+	Tue,  9 Apr 2024 13:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kJuO/K7/"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEUwV5u/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418D8129E7A;
-	Tue,  9 Apr 2024 13:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A7F12E1F0;
+	Tue,  9 Apr 2024 13:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712668066; cv=none; b=gWiQttspZRLNLMvIlOEU3Uttru78keRRH/wQNzpOurxcn8qFtU5mFxdeO3+eJV0xDEIWkwx+BjvKCDh1ifMVmcN9E233GRJrRWeTTvvdCz5xlH+bBmgmrBUqIM7TwP8HcIVnnCxrG5Nw9ff9j3Bn1hYSArblEpYXIJYpV2av4d4=
+	t=1712668073; cv=none; b=t35JGuB4g17+QzGq0i4A4F+H+pa/j3DORaACAYBaPNm0ytzsxrxUHmpyzKKq9oVfIf7z1L2EtIOfnLb7yLw9/M4soBjS7yhl46LvFmfH6SrQ7Z3lFTo3jASlCSbMHNO4tZdG2gQyO0kLOGpkXIG2HkLBSE3V0dG/v8tarOqwjL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712668066; c=relaxed/simple;
-	bh=JN/xRVfnG75kasVUTn1o2Nlnh37spjVebvIOlAwrxH0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E0hnZk+MMRk/lrhesxyEffQas72ZSE787RhyLXseNfDI/q6SBs/hv8EKMVpuVE+FTSVyEvCwCVliuw0BsipD+Iu5bQCfW2fY0QWIsMWh2UaVNSoPCzWccvbxzEuEsLaXc6/L0W7z9i3XSmEqI4xkyT1/6hLpt8TfAfn1WQl6Hzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kJuO/K7/; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-343cb97e7f5so958908f8f.0;
-        Tue, 09 Apr 2024 06:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712668064; x=1713272864; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JN/xRVfnG75kasVUTn1o2Nlnh37spjVebvIOlAwrxH0=;
-        b=kJuO/K7/szUnYQsQNShZu7idzfdbc+Lrc/gPdS6Mmi7zeWdIkRzJax5b8ob98biInU
-         YVmrtdBlyo2iX4AsAop0MOC5nmdY+H9hA82S279QYNoSb7+eOr341ABX7sMopE/vWbFE
-         40S8dXZ/toRJhZxTfqxTD/bzK5IBXldghxV31BiNLzmeXP7Y/vgUmDj6arjqLzgKUtwV
-         0fDXgtOhnPIZPy1EvuPPC10ihz8hMNW+Hi13Ip15jCOWRCbam5x1UAnAEHtk3r1C7ReH
-         8RWtu9QLZdC2yoL+4OY6PUYI5y6ms399DN6Bid1+apgXI0BiDPdjR9Osu2weAUI0LTVX
-         n+ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712668064; x=1713272864;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JN/xRVfnG75kasVUTn1o2Nlnh37spjVebvIOlAwrxH0=;
-        b=ToYArFEk/dmX1xh/UWgDUK+SwTT1s5yzi10IEyIpwE2j0oUAOyyXiKf0Yo2Vlgl+rM
-         HmcAicYVB/xSogOz4PW4Nt2zoZlGfugd8mhO9vCTUhukpYskxIQ6MBFVFPCa0T8cRuRL
-         Bg47DTpy2y4H1wJSx6it5rz/B0WRUC/JnXWr7jX0wxafliAaE6mKn7hs5CJPTps6FLgA
-         Q8s4jdzcMmFNpqbu1uSUExjjE3fwdLW3ALQbePWGegYATJp7YMn5um/WDY4nqEDFVxmF
-         bMLR+rBq0MPZ4WQDUrWKvCp5REYbN4ZVrPPOXxqdwkEVMe2u9jzPxQUO450WV9vHUuQd
-         Ly5A==
-X-Forwarded-Encrypted: i=1; AJvYcCX5kJBe11mxogpLVnU+ubWUYUni6AjA4B3aYtpvfeJ7ZVTlj4uLMRSbD7IYR9Mg2VJsaQEwbk9eY7h5QaT+ERpdxqDz2P8kIrE7YoDgF9druYJa0kCuhIlqPZE8+LUMuAn3pM1+Ngy2UjTs45l+
-X-Gm-Message-State: AOJu0YwCn4ITO/MjvLXx97NGbAhrOsflkRzk/HR0hVTopRv78mSyLeFu
-	VawRT+sYZCquz7PbSaJmVDAfC9ePuwn58SAfzN0ix2Kw+zojT5TV
-X-Google-Smtp-Source: AGHT+IEJ4LqPNVe5bdubUNjQU1zcwKWQfnQH+JHUZHlf6Tzq5XQT1zxrBbrh2JKSy2BHLndJQoK9EA==
-X-Received: by 2002:a5d:628f:0:b0:343:760d:29c8 with SMTP id k15-20020a5d628f000000b00343760d29c8mr8067527wru.1.1712668063342;
-        Tue, 09 Apr 2024 06:07:43 -0700 (PDT)
-Received: from [10.0.0.4] ([37.170.252.166])
-        by smtp.gmail.com with ESMTPSA id dm14-20020a0560000bce00b003437a76565asm11409760wrb.25.2024.04.09.06.07.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 06:07:42 -0700 (PDT)
-Message-ID: <7cf0848b-f44c-42ad-848a-369a249bff77@gmail.com>
-Date: Tue, 9 Apr 2024 15:07:41 +0200
+	s=arc-20240116; t=1712668073; c=relaxed/simple;
+	bh=ouy2Y6x2V5/uoESyJnNA235PE5cU8gwdY/QEcC9jK9Q=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=EE/X0h0p5ji8I2AzMRveXJmNfE0yJmrqn3Vvki3iop1wUPq2Yve4v0lWgBpxBqhz7rp34eJTKhOctiTcLshynXfMFStPL08h84Y/iDzT5F9oCIJCdVYROVTQoB2I+V/5s4f0ln9N8eG0y5O0QmVvNiZ7Pf8FJNqLut4Jc8KgM6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEUwV5u/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E36BC433F1;
+	Tue,  9 Apr 2024 13:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712668073;
+	bh=ouy2Y6x2V5/uoESyJnNA235PE5cU8gwdY/QEcC9jK9Q=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=jEUwV5u/RKtUi7ai+UUBmn1fKwYn+9jGR2SXBlyansUuEsQgR8HXXtm31IPJtost4
+	 QfA5GafyjBNcPOXqu+NrYi77jpsDrC+ZuPMcgFZjTNJ+6ARc7lsuGc+VDs3KHokycl
+	 sjHX+BV6Xn0IZ6E58P/whNgejKdwbqyK/FHtL0JhYcEYQJ/ZPhUYN/Mag1ER44pINz
+	 iYhCsEWtBBeCdWMpB+Ps65LDRILWcvdXg+bv4ZuENQJ92eGqXeL8GqUGSixfQTnUGJ
+	 oERhOfzi6CyWML3nUoZ3EoWjnwuaFCYcfFNquEqpZiDWcaCVocaTD01T/liOD92UYh
+	 ejo3unZrpJgIg==
+From: Mark Brown <broonie@kernel.org>
+To: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, 
+ Sameer Pujar <spujar@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ lgirdwood@gmail.com, thierry.reding@gmail.com, jonathanh@nvidia.com, 
+ mkumard@nvidia.com, stable@vger.kernel.org
+In-Reply-To: <20240405104306.551036-1-spujar@nvidia.com>
+References: <20240405104306.551036-1-spujar@nvidia.com>
+Subject: Re: [RESEND PATCH v2] ASoC: tegra: Fix DSPK 16-bit playback
+Message-Id: <171266807089.28088.2212378797581391571.b4-ty@kernel.org>
+Date: Tue, 09 Apr 2024 14:07:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/socket: Ensure length of input socket option param >=
- sizeof(int)
-To: Edward Adam Davis <eadavis@qq.com>, pmenzel@molgen.mpg.de,
- edumazet@google.com
-Cc: netdev@vger.kernel.org, johan.hedberg@gmail.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- luiz.dentz@gmail.com, marcel@holtmann.org,
- syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com
-References: <234da60a-709f-4430-b594-386b7c2b65f5@molgen.mpg.de>
- <tencent_15CA920ADD9ADDCA19654FBE8DB5A5B88D07@qq.com>
-Content-Language: en-US
-From: Eric Dumazet <eric.dumazet@gmail.com>
-In-Reply-To: <tencent_15CA920ADD9ADDCA19654FBE8DB5A5B88D07@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
+On Fri, 05 Apr 2024 10:43:06 +0000, Sameer Pujar wrote:
+> DSPK configuration is wrong for 16-bit playback and this happens because
+> the client config is always fixed at 24-bit in hw_params(). Fix this by
+> updating the client config to 16-bit for the respective playback.
+> 
+> 
 
-On 4/9/24 14:15, Edward Adam Davis wrote:
-> The optlen value passed by syzbot to _sys_setsockopt() is 2, which results in
-> only 2 bytes being allocated when allocating memory to kernel_optval, and the
-> optval size passed when calling the function copy_from_sockptr() is 4 bytes.
-> Here, optlen is determined uniformly in the entry function __sys_setsockopt().
-> If its value is less than 4, the parameter is considered invalid.
->
-> Reported-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
-> Reported-by: syzbot+b71011ec0a23f4d15625@syzkaller.appspotmail.com
-> Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I think I gave my feedback already.
+Thanks!
 
-Please do not ignore maintainers feedback.
+[1/1] ASoC: tegra: Fix DSPK 16-bit playback
+      commit: 2e93a29b48a017c777d4fcbfcc51aba4e6a90d38
 
-This patch is absolutely wrong.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Some setsockopt() deal with optlen == 1 just fine, thank you very much.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
