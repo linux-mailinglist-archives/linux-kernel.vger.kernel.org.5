@@ -1,119 +1,216 @@
-Return-Path: <linux-kernel+bounces-136864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 427B989D929
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:23:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1C089D92B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD8A728A000
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A25C1C21E82
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A5912D212;
-	Tue,  9 Apr 2024 12:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F5712D20E;
+	Tue,  9 Apr 2024 12:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mBDTJIn2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BMz7Vtzq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BNBi7We/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5D7129A7B;
-	Tue,  9 Apr 2024 12:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D410112C7E8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665401; cv=none; b=OqPOggGGEeXUffdn2e/h4E5wS/0uZNA0tdSPB7817aeHjxp1qNdu6Xz0K6vJ2vHn792hB41vNL2IgtMmdRbSSWaNw+gNxpezLS3GpVLDmGvcaDichDwyAeqOU4wr4vTI2z2sfJotgKOTsbFSVs8/5t2/5ay6QPBvALWVxVhKers=
+	t=1712665538; cv=none; b=VVg77l6Cf/SbVeEDImam+sCJ+8pHoto1FR/lM5HqkH5mZfL/wTFJEceqnBKX+opCm3DCRJ6Ny40bYzXGqz9PPF1iBL4ws34pC9F0JL+4DAhktlpa1uD1nV5z0vKgoBpW1GkT9pV+cF9UXhIxEGtZOQyRj/f7lmPdEQEXfMjqOwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665401; c=relaxed/simple;
-	bh=NycTO7793+mfVmUiuwrixveuDF/iXTzH2p2ZKDi6sAQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UhkB/pSPtBbYqtpU86Hm/fFSAvXunpIaxRKV9qJZYY5qhhxzxorff0WEfuZIud2Qdn43GgnisKUa/ECNkPBYj7gTJqioFRiHmU4xTS0hlJYqvQ07x0nnPKZhhxlpqpMcpahw2Lyu7QutSaZpF9bcSBqs1mQJ1RbPqhIf32KUexo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=mBDTJIn2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6503AC433F1;
-	Tue,  9 Apr 2024 12:23:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712665401;
-	bh=NycTO7793+mfVmUiuwrixveuDF/iXTzH2p2ZKDi6sAQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mBDTJIn2guxxOb42ddF31Oq2kE55NEuY/9V60CA49z/+O5gBZv67yiKLkQ79YyR9O
-	 AdX1eMhyhsEQXS0RbqtTTQyTognxO/i4ASDA20yS3fcstV5VNeRPbg+z/jwLbshR2h
-	 7tU0Su+ms1z0nXKmc9bYuqKlK+d+Qoe92YYcXlQc=
-Date: Tue, 9 Apr 2024 14:23:17 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, broonie@kernel.org,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/690] 5.15.154-rc1 review
-Message-ID: <2024040953-eclipse-recount-dda9@gregkh>
-References: <20240408125359.506372836@linuxfoundation.org>
- <04151fac-3bf6-4199-a822-2fbaaef8b77b@nvidia.com>
+	s=arc-20240116; t=1712665538; c=relaxed/simple;
+	bh=TgYVwxUaN7W/0/J228omEQaBSEXn7kj3mU8IA4nEz/w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FsLgx4c2A9hrbTBBEvolWV34k4uJeyBNrtKnzR+UX+sVRV4YlzyIyS+a0F8cnHkdscE87saSIbjvs2fIuTWDFbe6sSNti4wN6v4DYTubeTcWEwckGSp+EypjmPTPs9aNQxElzg6ZgAZ5/QWk31qjVXjrxrkQTVQCg5NWV6oXxXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BMz7Vtzq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BNBi7We/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712665535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e4cb/lg7L2LLjelwouGfPsEX0svE8jil8IXco8Gx6oM=;
+	b=BMz7Vtzq0s1E25+mY1AS9phnPNZfwCmgFuQBAzFvz3mtY7phMMsPoK32ZKEDI0hDaN1Abj
+	FA9fKj/Qq/s/kih8cVq2mUCaMUtEAmN4yHlyNkavTgZe62SFrKsBGIN272tzipxoMVXOo8
+	SAQFgFqcxORMstGxaU9Y8eNrjUH6kwAJvBF1VKaYYcB3S03/s81E8C2KnCzooZLrKMVAm6
+	HPNG/4yXiwtvru1LC86zRs2CPV/IWRg1EFjYvXQL1cnvEqgYIEoEz0ySBOuBVIkmI5AMDn
+	OwsmfSY+qCwu/BAkcETYdniQfF64wb4ezdsyfelrHm5ubHO67YdPWSnrm6ewlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712665535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e4cb/lg7L2LLjelwouGfPsEX0svE8jil8IXco8Gx6oM=;
+	b=BNBi7We/WCdEtlPe2M+AZeJILRlT2ug3N4TO6p6L3fbYwSH6GB6HSy0fO5Esa/0W7lkzyT
+	/iXC93bnHSarFLDw==
+To: Laura Nao <laura.nao@collabora.com>
+Cc: kernel@collabora.com, laura.nao@collabora.com,
+ linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+ regressions@lists.linux.dev, x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+In-Reply-To: <20240409100736.139489-1-laura.nao@collabora.com>
+References: <87r0fg6ioe.ffs@tglx>
+ <20240409100736.139489-1-laura.nao@collabora.com>
+Date: Tue, 09 Apr 2024 14:25:34 +0200
+Message-ID: <874jca7mf5.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04151fac-3bf6-4199-a822-2fbaaef8b77b@nvidia.com>
+Content-Type: text/plain
 
-On Tue, Apr 09, 2024 at 07:53:14AM +0100, Jon Hunter wrote:
-> Hi Greg,
-> 
-> On 08/04/2024 13:47, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.15.154 release.
-> > There are 690 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.154-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> I am seeing a suspend regression on Tegra186 and Tegra194 ...
-> 
-> Test results for stable-v5.15:
->     10 builds:	10 pass, 0 fail
->     26 boots:	26 pass, 0 fail
->     102 tests:	100 pass, 2 fail
-> 
-> Linux version:	5.15.154-rc1-gbfeab055fa43
-> Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
->                 tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
->                 tegra20-ventana, tegra210-p2371-2180,
->                 tegra210-p3450-0000, tegra30-cardhu-a04
-> 
-> Test failures:	tegra186-p2771-0000: pm-system-suspend.sh
->                 tegra194-p2972-0000: pm-system-suspend.sh
-> 
-> 
-> Bisect is pointing to the following commit and reverting this fixes it ...
-> 
-> > NeilBrown <neilb@suse.de>
-> >      nfsd: don't allow nfsd threads to be signalled.
-> 
-> 
-> When suspend fails, I see the following error message ...
-> 
->  Freezing of tasks failed after 20.006 seconds (1 tasks refusing to
->  freeze, wq_busy=0):
+Laura!
 
-Odd.  I'll go drop this commit now, thanks for testing and bisecting!
+On Tue, Apr 09 2024 at 12:07, Laura Nao wrote:
+> On 4/8/24 16:19, Thomas Gleixner wrote:
+>> That's the commit right before switching over and according to your
+>> bisect it works. Now apply the patch below, which just runs the new
+>> topology scan function but discards the result.
+>
+> The ace278e7eca6 revision with the patch you provided boots correctly.
 
-greg k-h
+Progress :)
+
+Can you please replace that patch with the one below?
+
+Thanks,
+
+        tglx
+---
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1616,6 +1616,13 @@ void __init early_cpu_init(void)
+ #endif
+ 	}
+ 	early_identify_cpu(&boot_cpu_data);
++
++	pr_info("Max cores: %u\n", boot_cpu_data.x86_max_cores);
++	pr_info("pkg %u die %u core %u nid %u\n", boot_cpu_data.topo.pkg_id,
++		boot_cpu_data.topo.die_id, boot_cpu_data.topo.core_id,
++		boot_cpu_data.topo.amd_node_id);
++	pr_info("SNS %u\n", smp_num_siblings);
++	pr_info("NPP %u MDPP %u\n", __amd_nodes_per_pkg, __max_die_per_package);
+ }
+ 
+ static bool detect_null_seg_behavior(void)
+--- a/arch/x86/kernel/cpu/topology_amd.c
++++ b/arch/x86/kernel/cpu/topology_amd.c
+@@ -29,7 +29,17 @@ static bool parse_8000_0008(struct topo_
+ 	if (!sft)
+ 		sft = get_count_order(ecx.cpu_nthreads + 1);
+ 
+-	topology_set_dom(tscan, TOPO_SMT_DOMAIN, sft, ecx.cpu_nthreads + 1);
++	/*
++	 * cpu_nthreads describes the number of threads in the package
++	 * sft is the number of APIC ID bits per package
++	 *
++	 * As the number of actual threads per core is not described in
++	 * this leaf, just set the CORE domain shift and let the later
++	 * parsers set SMT shift. Assume one thread per core by default
++	 * which is correct if there are no other CPUID leafs to parse.
++	 */
++	topology_update_dom(tscan, TOPO_SMT_DOMAIN, 0, 1);
++	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.cpu_nthreads + 1);
+ 	return true;
+ }
+ 
+@@ -73,12 +83,14 @@ static bool parse_8000_001e(struct topo_
+ 	tscan->c->topo.initial_apicid = leaf.ext_apic_id;
+ 
+ 	/*
+-	 * If leaf 0xb is available, then SMT shift is set already. If not
+-	 * take it from ecx.threads_per_core and use topo_update_dom() -
+-	 * topology_set_dom() would propagate and overwrite the already
+-	 * propagated CORE level.
++	 * If leaf 0xb is available, then the domain shifts are set
++	 * already and nothing to do here.
+ 	 */
+ 	if (!has_0xb) {
++		/*
++		 * Leaf 0x80000008 set the CORE domain shift already.
++		 * Update the SMT domain, but do not propagate it.
++		 */
+ 		unsigned int nthreads = leaf.core_nthreads + 1;
+ 
+ 		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(nthreads), nthreads);
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -133,6 +133,10 @@ static void parse_topology(struct topo_s
+ 	tscan->ebx1_nproc_shift = get_count_order(ebx.nproc);
+ 
+ 	switch (c->x86_vendor) {
++	case X86_VENDOR_AMD:
++		if (IS_ENABLED(CONFIG_CPU_SUP_AMD))
++			cpu_parse_topology_amd(tscan);
++		break;
+ 	case X86_VENDOR_CENTAUR:
+ 	case X86_VENDOR_ZHAOXIN:
+ 		parse_legacy(tscan);
+@@ -162,6 +166,9 @@ static void topo_set_ids(struct topo_sca
+ 
+ 	if (c->x86_vendor == X86_VENDOR_AMD)
+ 		cpu_topology_fixup_amd(tscan);
++
++	pr_info("pkg %u die %u core %u nid %u\n", c->topo.pkg_id, c->topo.die_id,
++		c->topo.core_id, c->topo.amd_node_id);
+ }
+ 
+ static void topo_set_max_cores(struct topo_scan *tscan)
+@@ -175,6 +182,7 @@ static void topo_set_max_cores(struct to
+ 	 */
+ 	tscan->c->x86_max_cores = tscan->dom_ncpus[TOPO_DIEGRP_DOMAIN] >>
+ 		x86_topo_system.dom_shifts[TOPO_SMT_DOMAIN];
++	pr_info("Max cores: %u\n", tscan->c->x86_max_cores);
+ }
+ 
+ void cpu_parse_topology(struct cpuinfo_x86 *c)
+@@ -215,18 +223,19 @@ void __init cpu_init_topology(struct cpu
+ 
+ 	parse_topology(&tscan, true);
+ 
+-	if (!topo_is_converted(c))
+-		return;
+-
+ 	/* Copy the shift values and calculate the unit sizes. */
+ 	memcpy(x86_topo_system.dom_shifts, tscan.dom_shifts, sizeof(x86_topo_system.dom_shifts));
+ 
+ 	dom = TOPO_SMT_DOMAIN;
+ 	x86_topo_system.dom_size[dom] = 1U << x86_topo_system.dom_shifts[dom];
++	pr_info("Dom %u Sft: %u Sz: %u\n", dom, x86_topo_system.dom_size[dom],
++		x86_topo_system.dom_shifts[dom]);
+ 
+ 	for (dom++; dom < TOPO_MAX_DOMAIN; dom++) {
+ 		sft = x86_topo_system.dom_shifts[dom] - x86_topo_system.dom_shifts[dom - 1];
+ 		x86_topo_system.dom_size[dom] = 1U << sft;
++		pr_info("Dom %u Sft: %u Sz: %u\n", dom, x86_topo_system.dom_size[dom],
++			x86_topo_system.dom_shifts[dom]);
+ 	}
+ 
+ 	topo_set_ids(&tscan);
+@@ -238,6 +247,7 @@ void __init cpu_init_topology(struct cpu
+ 	 * changes further down the road to get it right during early boot.
+ 	 */
+ 	smp_num_siblings = tscan.dom_ncpus[TOPO_SMT_DOMAIN];
++	pr_info("SNS %u\n", smp_num_siblings);
+ 
+ 	/*
+ 	 * Neither it's clear whether there are as many dies as the APIC
+@@ -252,4 +262,6 @@ void __init cpu_init_topology(struct cpu
+ 	 */
+ 	if (c->x86_vendor == X86_VENDOR_AMD || c->x86_vendor == X86_VENDOR_HYGON)
+ 		__amd_nodes_per_pkg = __max_die_per_package = tscan.amd_nodes_per_pkg;
++
++	pr_info("NPP %u MDPP %u\n", __amd_nodes_per_pkg, __max_die_per_package);
+ }
 
