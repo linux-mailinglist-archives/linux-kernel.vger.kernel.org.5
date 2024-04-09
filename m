@@ -1,124 +1,215 @@
-Return-Path: <linux-kernel+bounces-137704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200F289E634
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:41:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF2689E650
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 433FF1C21508
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:41:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C4E51F22DA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3990F158DD2;
-	Tue,  9 Apr 2024 23:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C555158DD2;
+	Tue,  9 Apr 2024 23:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hqexQfx3"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nAcjPDAW"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2091.outbound.protection.outlook.com [40.107.237.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40635158D6F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706088; cv=none; b=OxgWYYVgGrYuk3UYkfyGHUs3rLvwPIHSCQIEoFrx/GLUVgBFyTnHmP0cflkJTc8lCA7nOOgBjHRlpkzdBuH+e1eMa7r/r8DvxMZWhf73BJF49X02AExB39JBaImFw7WyPY6/stvExKu5xKxAF4RPw1TXmgXi8VkMHptBbcfUcwM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706088; c=relaxed/simple;
-	bh=PNy0mBQjw8E74b5RpE2uI+eSralfxKJ9opohJxEN5zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AR1DLcAJBR0rjIw/iOx3lEYAgc48lt4GhE1ZzJmRjrHIYKhYUuBI9AB6oQbnWUfkXEELmwbYK88G1FHDeTZhy2yj+Kat+gpij5pFQdNFN2uIC2/4BrpArGYsEYQI69JdISfu40lkwWOv+UdEtTgc6L1czkDxuCKU96nDZ3pgrnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hqexQfx3; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e419d203bdso19137825ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 16:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712706085; x=1713310885; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=az80y3cRpLeKTQubgh3fpGGNWsXUAJ+YmKoEHWsOqi0=;
-        b=hqexQfx3TXWIybb0PG+TlGC4BL56oWeQxCwLNoaRJrD358ZJ+3Dg+rn3/l2g0wGHT3
-         VaJ2nI6OucpsafkPcxU9dQb912NbDVISiC6YWdcvhFwsHK4mRXWuVPXv/0fnjxklBUEh
-         z/Xn5agxzzBNh29ohDarnfTFTm/D4/25nUGwU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712706085; x=1713310885;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=az80y3cRpLeKTQubgh3fpGGNWsXUAJ+YmKoEHWsOqi0=;
-        b=JuyRAE5In3lQXQ4Ix+gb5DyjUWvQ6C0eatMIkBKsar9JxHkap/NvvRpkO+rzzn2vEJ
-         LcPZef0Tr8pyKcl+P/yJMu07451WO0+TuIYabJuHru69kVWPPJLm+paMDCHM8QI9sKK/
-         J+01B6NSaBUMdPk4ABn/oFvlynhmpkr1CLfg3o9hsqZvUGk3vOMvpfjOdhybybSeTr2o
-         L25cu4u1MMRe7r/FP8StmC7GQHk1fBT+JYgbI8ppLO3L+vrgoJIEqwxtQd9z0d4Nuz4F
-         Ciyq/TyEUMDpZ+2A/FoA48PFiH7/ASBjx/ngTT6hThvL2YvNKWcLEmvv/35uudjIRJg7
-         5wwg==
-X-Gm-Message-State: AOJu0YzElpE4cVMW/6dsi5VoqZDv4qs8l2GTW/brqPaw7kmfg7PBZRtK
-	qjgDSVyqEXiA/L+WSsLGfAjz853cwqsntcrNmmI0tIwQiIpVOw6kFKDKxZvJ/g==
-X-Google-Smtp-Source: AGHT+IHGg8Oq0FNDCNnUG12+MIKam5JOLm5lHVx4R8foCcBX//m7saHYLKuLVznN3ilAFFW+PI4EXA==
-X-Received: by 2002:a17:903:98d:b0:1e1:214:1b7d with SMTP id mb13-20020a170903098d00b001e102141b7dmr1718191plb.61.1712706085513;
-        Tue, 09 Apr 2024 16:41:25 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e6-20020a17090301c600b001e43a00ee07sm4255351plh.211.2024.04.09.16.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 16:41:25 -0700 (PDT)
-Date: Tue, 9 Apr 2024 16:41:24 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA17F158D6E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712706242; cv=fail; b=AUSbam2hIKe9jj82vfSec1OhwjVMWTJ0zTPQNF9Z/SMqk1Rf5xDVaTPVGbhmArud+J3TF+fA2K/5BFXRX7pl3FlNLxju3Ybu8KvjPeAsVUd28pv2ZbwLxKzhR+JnwUik+B2i/tTf2Isyt1/epa4nljlI5R38/KjVC51Sn5+lak8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712706242; c=relaxed/simple;
+	bh=t6LM5vAiMkZIQB3y1ybar1uwWUn4IT7dPJvV0Zr+kJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=NngFebhX8K6cFLgADqY4I6wz3G1zRYX6hDrTZ8oB7QtXjGaf8vpcD0F+wNduYdZxOsWiEZOYOI8GSB+SSp+90KJPDl/tKonJfKK+rE5XadqLxkijtcg6yBfeFCJci1DOGcavAtHNkZe4cQgav8sMID4CPsTjzFv0AX+YjFfPT4c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nAcjPDAW; arc=fail smtp.client-ip=40.107.237.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xi+3pvDvOVxI5yXfdGGEQhgvZpb+NKDP96OnbU3lTPZxmfFJxuI72YaIEktEJdLDtS8dTtF5+dxEgaFKn9dpdjO0dGfgBdUOa0iRMybTAJeVRfTAu723wxZN6FbbR4/fv+4hjZHbdXrfr1wrOMiJgn62bIjnIYoHRGhsvcmWOZ0DUh1EMKip5LvYZSK8qCwlhCKukGFl9bPmD+CvaL6AGhFIXo6KD3cYeAz8rIprwihx3zLcPjOxaDtoLn2x8POp/Lj/0Ql5pUS4O3awxM4iUwrezebj4mEm0SO6zVxKCbAffkwddfFN9XfdJvllRi4M4vv9rl0tWRjlaERwjN/UOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZtYTOEh4QaWorr43L3gIXx64bhliZyCJB+XpBOpnfnY=;
+ b=acpbnNMFSjuW2F/GF7XDJ2VI4xwM9sVYi7kcXFseCy5rM6Bser2UxfQtZHDM5PgFXLLakEAzgJOeLqARrZer0PydIAZh8YGsGIAzp8+sf40tFPy7EQMAcY+XRWEyfBrUJJyVZUbsz7GqvpmeQP7j4u6YnNB/c5B5w7g8tUWxQEljmAXWmaMTBFehxY+yfm4wZoDG4A9WvvE6ClJn3JlxB8HILipb0XM3QdU/s0OIosMVePW52tGx75UHawEnHdT3da11Wi0iqWS4x+SFGWTm5x0lyqUScllgEdZjWgL0jm3qISuW/mNiSZ0B87Z2iTqDAsMoajACRXBI2/r2UPpoiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZtYTOEh4QaWorr43L3gIXx64bhliZyCJB+XpBOpnfnY=;
+ b=nAcjPDAW0kACTUv5lj0Y/8tRiH/b3l1rt3VC8DswdR/Y9x2JskqMcO5yof+yx1xoRzs+RhlUszlFJMCKFqKyGM/j3Z9wb53p6NMN3vUnPidrWJp8kWBmWhsqbEv05qZSU5gy8xb6InpN6aX8Jwi3muJRcFYzks21wyEutN1UQCgGFkrObwsw4KRhQyTuc72hx3p57wOaubPe21ByEu9vigKyRRkTW5xHDP/i7Xhz+6MMX/7z3FVNi1iMZkv6ZQTS6wX7tBsYQBNN8qqx5EPXlYxlBTm3L3Gnii4tQ8ort7+34j5WkmL0/JgoscbdAbCqcco4TbKwwTTrFdM3JxTocQ==
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by CY5PR12MB6371.namprd12.prod.outlook.com (2603:10b6:930:f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Tue, 9 Apr
+ 2024 23:43:57 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.053; Tue, 9 Apr 2024
+ 23:43:57 +0000
+Date: Tue, 9 Apr 2024 20:43:55 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rik van Riel <riel@surriel.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-	Ross Zwisler <zwisler@google.com>, wklin@google.com,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Linus Torvalds <torvalds@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [POC][RFC][PATCH 1/2] mm/x86: Add wildcard * option as
- memmap=nn*align:name
-Message-ID: <202404091638.2F98764A41@keescook>
-References: <20240409210254.660888920@goodmis.org>
- <20240409211351.075320273@goodmis.org>
- <202404091521.B63E85D@keescook>
- <20240409191156.5f92a15c@gandalf.local.home>
+	Muchun Song <muchun.song@linux.dev>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-riscv@lists.infradead.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
+Message-ID: <20240409234355.GJ5383@nvidia.com>
+References: <20240321220802.679544-1-peterx@redhat.com>
+ <20240322161000.GJ159172@nvidia.com>
+ <ZgHJaJSpoeJVEccN@x1n>
+ <20240326140252.GH6245@nvidia.com>
+ <Zg8gEyE4o_VJsTmx@x1n>
+ <20240405181633.GH5383@nvidia.com>
+ <ZhBwVLyHr8WEKSx2@x1n>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhBwVLyHr8WEKSx2@x1n>
+X-ClientProxiedBy: BL1PR13CA0252.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::17) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409191156.5f92a15c@gandalf.local.home>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CY5PR12MB6371:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iXQTxovTY807gc9Dbk5H0zd9d0njVbKMhGDXOQQ6ZTfgqyaFPOgiRx4Mm4bl0xB8/31350HIhR084ItECUUS9eEcpvJqW3JxtpmM59l+Nu2rQCGLcq4OISstEP3jYYHjaDUN8g5XVvgfMUvzafeYWdwIrDNHzODw8jTGuwRjiYTmswad9tTkbQmFH8XKGqebBpVt/IcchePxCyZcJ6YmacEx5O4zWVPpkfj3gBLD8YVroioVW8QUWelKirZsM3CD6Kml3GZsn5G6nNUhqMG88wk/GJRjfobkkcxRAGqR0BsiyBXIA6j95P7wnfrNs07dGJbcKq51rcL3V6CjHtoEJRIIKQGqVMyvHKxdb1ikHXTH7dmFZA+uWT3b8biLb0OfshoICsnk0pZLix2Q8FALh1vvX/Y6OB61pAR2koybkQimnh5CCHlf/RmEfnTxIYkeUQIe2CoBvUnmsfTJEQ8H2Olwuijj2tn0a7t26qisAnGPCwrBOrP0RZGSz7czl0awcF4UB4aH4Ba02cVp/JkguACxwR2bRXlWx1VStVtu52JNseiF73W3+DGuGK5BXNlooS3TDobd+CE4AgVZlKDeLiYr9rGDnhWKgjts2A/J2Wb2BH8XY81uonrjBpgM/v5lL6OzW9Hch0PRZqIzzcx9cburqln0VWUxWN25AOVSMnI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?LsbAex/tFaOhbX5oXZtD2xnKSHaLeub2PpPUmpl9Y4EinNTpaBVG8vnUJOWG?=
+ =?us-ascii?Q?e/y7V8hJtgWVDC0rkXlLnKpc4TtC+9zKlae4wCl+pXU85lIFDQP9seYfJLYF?=
+ =?us-ascii?Q?oEANW1pktsvHbr6OZlSh8TkvzUGe6e/jJG6J6c9OJQjl3yAZKkRj2KAmAGuC?=
+ =?us-ascii?Q?7DWJR4SyjRGOln34+eJDGyo8OkRjSfnSmjkvn9UnXoTMqdzh8c08s1CVxqin?=
+ =?us-ascii?Q?piyxmajEGbJ8xSYtlc0qHVZZT9r4PqnZazYJUu3h2sFb8WULeXkEcjRn+2/T?=
+ =?us-ascii?Q?CL+wwDvuFk6ycyTyatRwdWkvZoR0xMP+3nqLp/aiLN1nJxiRf4EKH5BK0F5K?=
+ =?us-ascii?Q?+O7CmocJ4fIGpWNwXj/2sDYpUykq58u2jZGwxFlvEpxy3/Fg95YGadeOowqC?=
+ =?us-ascii?Q?J+RRMpxr0mF3gqyrSxQ6lu/QEgIMXeedjrl4a0tO6kmQqs+93a3I2lKgHdGw?=
+ =?us-ascii?Q?tHUTHInOH6556qlhkMptj5KeK2r92pPeG1U5+zY0NlgaGexxpnT7/GJWW6TR?=
+ =?us-ascii?Q?q+3WGX1ffFsk2yQAXMuvYVBDewEWi+zUKnHdxpxa1CMK0hqJyqdzUb3K7VrJ?=
+ =?us-ascii?Q?aWW/9BqXWMPBJT/7M4mNzozLBLiKipDlaQ4C4nq/UJuj8XfMWsvUf4O+Styo?=
+ =?us-ascii?Q?aEM9YwlIG4AzxxV65ZXH5BFJ0mSMo/rQpd++4tWJth8cLrfMwhUvgTl+exbk?=
+ =?us-ascii?Q?SjKlTW7yGaKIIIUAM35bfS7SVK4W7J4l+D5ymCFCH8M6QIgEM5ZlTU7hwL/m?=
+ =?us-ascii?Q?E++4/wtyRULEQd04V1YCuUZYMEX1+8NzhrE2eOuOoNMle0O3+c/qPvXv125V?=
+ =?us-ascii?Q?niP47nXoiMGXvSd9+GyYUnNkuwfiiXa9bqEXTRdwtAp2zNerQslFSA9j48yO?=
+ =?us-ascii?Q?0iWeN6EroSDCvRyhpTrj5HFTtpwjaCCglGLgXYe68aOxiDLqmXHuw/1f7NzZ?=
+ =?us-ascii?Q?ER4NULBHpqZW/H77fQLVa3KpkFueTW0qCMAaxz+2zEMC/WZwzSJnh6cc6wpg?=
+ =?us-ascii?Q?n2iVCPxpVhLcNm6LNkPBKDpcaemM65as+I39xolAOodWS0sVi02NmxWG95KC?=
+ =?us-ascii?Q?J48e5+W/77mvgrt8p/1edxo10TGzDdBSUj6fqojnZaDjGVeaQa5j/l7mRIgT?=
+ =?us-ascii?Q?YtW5amIZHFu1ScXv7QvJ8JUMuLKNyznJPJdNikPmoFc9Z3FKoAuwRo5FFkzA?=
+ =?us-ascii?Q?iziyqOneDlKtDUTooHdz+6xef+7poKlK1II4pe4VCX0xj9/3U/8XwSMNRKlX?=
+ =?us-ascii?Q?TcaQNtPGsdwlAcj9ZqrZq+7V9FS5MBHoN3oHgIPv4X1pi531SZUmJEAiMuvP?=
+ =?us-ascii?Q?laDiXae2IQ1TM1+QqUu/Taey/VgL0nJya/bbhVQu6XU1p4NiIOZ8BitSojst?=
+ =?us-ascii?Q?iXuUC1TEBRedIsRztPhmsrARqVSkLxjmuJrEvbnGHPVMDfkXz26fvgLAtSPr?=
+ =?us-ascii?Q?yKaQLoVnWrBmbcqfaf1OF4dse5IietzKQddHb/62jAYx/USjB0FD7vL/PMBH?=
+ =?us-ascii?Q?DT2+xLhhAtDQE4+/Ho/512dmzC9N4te2pdMA4wHNbAXfSISUOsAxb9UM/m8S?=
+ =?us-ascii?Q?ihV6z0q3kuX/QAwP5flrKN0tCFCiLbrObP4TA0aC?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85e3d269-d78b-41b7-d9ce-08dc58eeec68
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 23:43:57.2831
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W8tC1X3VQ0gDilRgFzcj7VTWoVsSZCmOuOX+sy3uB0ahEU1M7HHxIrKg+VfaSHQA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6371
 
-On Tue, Apr 09, 2024 at 07:11:56PM -0400, Steven Rostedt wrote:
-> On Tue, 9 Apr 2024 15:23:07 -0700
-> Kees Cook <keescook@chromium.org> wrote:
+On Fri, Apr 05, 2024 at 05:42:44PM -0400, Peter Xu wrote:
+> In short, hugetlb mappings shouldn't be special comparing to other huge pXd
+> and large folio (cont-pXd) mappings for most of the walkers in my mind, if
+> not all.  I need to look at all the walkers and there can be some tricky
+> ones, but I believe that applies in general.  It's actually similar to what
+> I did with slow gup here.
+
+I think that is the big question, I also haven't done the research to
+know the answer.
+
+At this point focusing on moving what is reasonable to the pXX_* API
+makes sense to me. Then reviewing what remains and making some
+decision.
+
+> Like this series, for cont-pXd we'll need multiple walks comparing to
+> before (when with hugetlb_entry()), but for that part I'll provide some
+> performance tests too, and we also have a fallback plan, which is to detect
+> cont-pXd existance, which will also work for large folios.
+
+I think we can optimize this pretty easy.
+ 
+> > I think if you do the easy places for pXX conversion you will have a
+> > good idea about what is needed for the hard places.
 > 
-> > Do we need to involve e820 at all? I think it might be possible to just
-> > have pstore call request_mem_region() very early? Or does KASLR make
-> > that unstable?
+> Here IMHO we don't need to understand "what is the size of this hugetlb
+> vma"
+
+Yeh, I never really understood why hugetlb was linked to the VMA.. The
+page table is self describing, obviously.
+
+> or "which level of pgtable does this hugetlb vma pages locate",
+
+Ditto
+
+> because we may not need that, e.g., when we only want to collect some smaps
+> statistics.  "whether it's hugetlb" may matter, though. E.g. in the mm
+> walker we see a huge pmd, it can be a thp, it can be a hugetlb (when
+> hugetlb_entry removed), we may need extra check later to put things into
+> the right bucket, but for the walker itself it doesn't necessarily need
+> hugetlb_entry().
+
+Right, places may still need to know it is part of a huge VMA because we
+have special stuff linked to that.
+
+> > But then again we come back to power and its big list of page sizes
+> > and variety :( Looks like some there have huge sizes at the pgd level
+> > at least.
 > 
-> Yeah, would that give the same physical memory each boot, and can we
-> guarantee that KASLR will not map the kernel over the previous location?
+> Yeah this is something I want to be super clear, because I may miss
+> something: we don't have real pgd pages, right?  Powerpc doesn't even
+> define p4d_leaf(), AFAICT.
 
-Hm, no, for physical memory it needs to get excluded very early, which
-means e820. So, yeah, your proposal makes sense. I'm not super excited
-about this be x86-only though. What does arm64 for for memmap?
+AFAICT it is because it hides it all in hugepd.
 
--- 
-Kees Cook
+If the goal is to purge hugepd then some of the options might turn out
+to convert hugepd into huge p4d/pgd, as I understand it. It would be
+nice to have certainty on this at least.
+
+We have effectively three APIs to parse a single page table and
+currently none of the APIs can return 100% of the data for power.
+
+Jason
 
