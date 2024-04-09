@@ -1,130 +1,96 @@
-Return-Path: <linux-kernel+bounces-136159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114EA89D0A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C49489D0BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:10:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34F451C229DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:06:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E14D1C238BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975C8548E8;
-	Tue,  9 Apr 2024 03:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="kCNnYBLC"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30E780633;
+	Tue,  9 Apr 2024 03:09:27 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA22B54756
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F212978276
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712631967; cv=none; b=uYCzs9C5otkltGBdkYbfXKwMFXq6QTkNeHPM1DDMnUadmfp2cXOopN/fCqKKvNsXD2y5uicCt3Kwy7wRGa081gJCY0TkNafeHCTser9zR7HmA5Lez72aiqRGdQIlxUiwYDee0vX9iBdb8EjzsMN/QU0ohY6roOyEhK8wJE3qfmk=
+	t=1712632167; cv=none; b=L6OUmf+b6R23HArsVDKNhSWB4p6itI1WxgbAuFENlMziLhl+UKPckZO4Y/hZvqfmFfXJdvI+MoBKBBeCEb3Q05fktxamLt9jqXMCuRt4if+D5Lp1sL4ZO2TlEvsTH33/cu1jXgtdkBTC8231dKcDjFY8bSoF3+aG5PAja4fYDRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712631967; c=relaxed/simple;
-	bh=1srLlaBb3CAzh3pzmayB0vpkQzdmZufUE/0AuPJvYDU=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=cMAJ9VHqBvEO8vTqCeVP4m2h6rylElBb1YiTcCE5pgp5fW2IIC7oYY9++77MilmwVsYXHrlFYf4Ml5icOyZSB7m1Nm4rywtRD8qN98/w4cn0N0L/iNZqxPWRxRRrIvKCjoJdRac8VayfYQZ8EG/WfEawyGJMFl6VQNijgoVMiAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=kCNnYBLC; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
-	by cmsmtp with ESMTPS
-	id trB4rWblkl9dRu1o6rgWJg; Tue, 09 Apr 2024 03:05:58 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id u1o5rUSAjWqfju1o5rJE7H; Tue, 09 Apr 2024 03:05:57 +0000
-X-Authority-Analysis: v=2.4 cv=GsNE+F1C c=1 sm=1 tr=0 ts=6614b095
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XWcTseHqe1p+jkUCD0kibrWZ3BesheZRIkkGQoLOgE0=; b=kCNnYBLCy0jt/LUZHKq6Ryckum
-	E8i2LroEsBUmgZnPJr/lirozzfwjcjEzqxSA49k9WrXsDaJVVRN7Ikx/6FFTsRVsy4Ms6XALM46rB
-	napalRZUoE155BAyg3dNQr/Wd/oAOZFDizpgr2Z0cQ1H10BrdvWw7jteLHIHueU6H4jEbUMAWcUv2
-	WjnQgyI2UlwsvDhffzF6g9397Iql0s5YC9LUmCHnZNQTfmF6EVtUy0QSOj8JTXZco2Cie/MmpeP8O
-	p+UTU7hRCwOy9ohXAzvdDNCgGUSF/3h525VHsKQDaK5P9ltbB7gambhQJmPKP2IRFacnvzZKLpoBg
-	Wy4NM6TQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:56496 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1ru1o2-0034h7-2r;
-	Mon, 08 Apr 2024 21:05:54 -0600
-Subject: Re: [PATCH 6.8 000/273] 6.8.5-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240408125309.280181634@linuxfoundation.org>
-In-Reply-To: <20240408125309.280181634@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <4a2197b8-ba0e-75d4-f81b-b84f5fa439ec@w6rz.net>
-Date: Mon, 8 Apr 2024 20:05:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1712632167; c=relaxed/simple;
+	bh=X+VO8HuoE5bRkZC0Q5GftJUm0IIW+qqgbmKJteybXgI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eM/yeWBEHXgzpqFMtDA31hJtNrm4Np9ovCvSkUZKqwpcjzpaVmOMcEFjI3XVIRln5zBd+v2r05uwaOGo7zGR5J+Lgvrvb8z0iDXR2qIHsP46GyungVnVLarmaqe+MQ6GPsgqXAktrHJRrxuKCDuujKlNYcbh5e6oGiW/RP0+T2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowADn7gJNsRRm0pFZAg--.12456S2;
+	Tue, 09 Apr 2024 11:09:02 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: qiang.zhao@nxp.com,
+	leoyang.li@nxp.com,
+	saravanak@google.com,
+	fido_max@inbox.ru
+Cc: linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] soc: fsl: qe: Add check for platform_driver_register
+Date: Tue,  9 Apr 2024 03:08:40 +0000
+Message-Id: <20240409030840.666703-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1ru1o2-0034h7-2r
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:56496
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfP9f/T8+H4rjcpCAWzOMmyiwdn3GvPIG1nKLeFaAiXNwaAKXcCz3j3sQuFhcXamau3rYgqicernDJx3I+EGnTp/K2RMC0wPuoFFkPOGgMVCjGd30iwof
- qk+WslC8Kkg+59PJewzEBC9KnM09UOfecC8oTQIvioHCUywWhsGgHMzH+z5BweFuh0ozoe6EPNXq+z+cQ1ehkLd/XPakf9ZBAeI=
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowADn7gJNsRRm0pFZAg--.12456S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF4xAw45Ww1ftF1UZr13urg_yoW3Crc_Cr
+	4rW3W7Xr48ur9akF17tw43Zr929FWavrsaqF40qasxta4xtw17X3y5Zr13AF1kXr4rXFyU
+	Kr9rZrySkw13WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbz8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On 4/8/24 5:54 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.8.5 release.
-> There are 273 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Return platform_driver_register() in order to transfer the error if
+it fails.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Fixes: be7ecbd240b2 ("soc: fsl: qe: convert QE interrupt controller to platform_device")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/soc/fsl/qe/qe_ic.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Tested-by: Ron Economos <re@w6rz.net>
+diff --git a/drivers/soc/fsl/qe/qe_ic.c b/drivers/soc/fsl/qe/qe_ic.c
+index bbae3d39c7be..f17de6000ff2 100644
+--- a/drivers/soc/fsl/qe/qe_ic.c
++++ b/drivers/soc/fsl/qe/qe_ic.c
+@@ -481,7 +481,6 @@ static struct platform_driver qe_ic_driver =
+ 
+ static int __init qe_ic_of_init(void)
+ {
+-	platform_driver_register(&qe_ic_driver);
+-	return 0;
++	return platform_driver_register(&qe_ic_driver);
+ }
+ subsys_initcall(qe_ic_of_init);
+-- 
+2.25.1
 
 
