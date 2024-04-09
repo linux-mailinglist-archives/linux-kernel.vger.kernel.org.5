@@ -1,205 +1,168 @@
-Return-Path: <linux-kernel+bounces-136897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB2B89D984
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:56:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFC189D98A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EBFEB240F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:56:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C264A1C22E43
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33EA12E1E0;
-	Tue,  9 Apr 2024 12:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aYWLMihC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BBD12EBD4;
+	Tue,  9 Apr 2024 12:58:25 +0000 (UTC)
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D24B127B5A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0047172F;
+	Tue,  9 Apr 2024 12:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667396; cv=none; b=XlHmRpYu9JiNEVNrBVW1prv75BtWLDOOZ/GycMXDnEY2CYqbggrWd34A+x1ptSyfpqZPC75skZOWSNjgeWMLy5E+IdrX9mTYyk6mexzyXaOzCDHVn/QPE7lSl4ZljsnLUpcyaEHAG5vSp+pXh/HCgL61qZUJtA/DQg4Ua/cD410=
+	t=1712667504; cv=none; b=QrQmI6XwTsBwD5ylH5YNcWpqfeo17LG6ZJbidEv3G1EaxL9MSU1rt3zIby8TGpxyCW3cVv56ckn9me3QR0xXH6nkgbeUmQwOzC7xuUjDHHEoD+UYn8qlKXXsQqEbC2rxSJPQj0hWH59VrNcLSsSktvrrsx+puf0v3mTcXUI2iuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667396; c=relaxed/simple;
-	bh=qFjj8gprOyy5QG3PDpMwH5OS6JMEOPGugaUWv8+tRvg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kSs78YvI8WwCrDgPHEyt1GiPY6AtXTiaE0Sk4APM5r4pU5nrws8Ar7YTrtSNK9GscVZk/KQfWzY15IYCV4uIZR60f9YCGPU/6RwWmvarQe8nfsccoM/1MHpdv4RYuyWM9imp8yYk5Km2Cgft0LPVg1jo4dnqD1Vt7bxVlTnQxdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aYWLMihC; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712667393;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pt0N3bL5TJP0v672v3Z/C/6PTX4AkZIvzQAggKI+KTY=;
-	b=aYWLMihC9IAoQBWj2TWh3OwXNP5uprJNlrSK7JJywxjWPurFIFdW4Il0thBRorPjZNHg4M
-	TXuEzhY97akUtz4GWHInYgjWGRrJQBY2JrSuXubPiz2CxEjBAZECURuA9DzY1MxI8iH+XK
-	ANt8IdEJRBCPWsXChCtS29QdWsUIiZM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-60-beEtrhAwOPaB2IwdBgpTvA-1; Tue, 09 Apr 2024 08:56:31 -0400
-X-MC-Unique: beEtrhAwOPaB2IwdBgpTvA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51cf34d476so106573266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:56:31 -0700 (PDT)
+	s=arc-20240116; t=1712667504; c=relaxed/simple;
+	bh=sXW5qAwjO0ptd2u/oyzCh/TK3jJ88gKM9HgSZ3UYqsA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EBlLRBHcqt+vgxvFteYJHi3ta45+QHQfFWPl802ycMO1W4a0obpERJtSYAQoTZT541FCDCsTOmgaaMaLWVrukT9b4IIuk18I8TVVD64a/s4rTqRZUkUkLsi3GxWRSmZw1g2pn7zhVO5r7AXlxLozT3gxKrmuLHDjBWt2lDUQ/zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-343e70dd405so3603923f8f.3;
+        Tue, 09 Apr 2024 05:58:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712667391; x=1713272191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pt0N3bL5TJP0v672v3Z/C/6PTX4AkZIvzQAggKI+KTY=;
-        b=O9t0eRb2g80rkP+yOYH52BFs5h3AIaXYXnhUzj86cPyvYq3sMFkJ1W7/uzEEOMr71A
-         tSPvY9t+PqQ5kdxp5v2qNtc04dqgteimJYNvbjJG+qGB+qwobZnVWn4eau9yxbvw/NMc
-         gTOTAILEW7d3v91IsUOAxFg5UoIvRkxZ573g+bYdXpVDEe+YdZIxAa3IJhAYJ+ear/fY
-         HHXYZ5MaJONpd66PH1r9KQVxwsjAs/QdLauN5YjvUJD34r7fPLrsLipoyuSrNA8HdixT
-         TDLyG+VZawUUr+op41VT0wx1vjKHKkWxeWvlh+f6AjooXegboYqzljFJJf60KA107COD
-         5w/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWovMwml+bh0hr2HRE5UAdHLuIISIfrPjroorVQEwZNT2hHyteARZe6EXwE+4SnNZTnFHJIPtocFbmAwdps360f2wnbwVpxvmer5dtF
-X-Gm-Message-State: AOJu0YwQb5xij5Pds1JMOje9IWKElO2nauuw4wfVWwcvJGcdkpfgZxSR
-	NTZF2ye8dYsyZqMb+Qu4mbY2iA1z6z/RBT4rDhj08DpMaMROLXiccNSQvGc5ndh8yjEQMSlx2JS
-	PkQDsaK5F7MkkwcEli+aFh7ZBvK0qAOQZq5XPpXlOmIXB5QyJsyPfOHSZLO9Fj5Y4hn7bHR1KTA
-	0kEUWi9aop36GYAMjIqO0dwnzr8IorNGVrc+CA
-X-Received: by 2002:a17:906:6889:b0:a51:a688:3e9c with SMTP id n9-20020a170906688900b00a51a6883e9cmr6917337ejr.35.1712667390826;
-        Tue, 09 Apr 2024 05:56:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEoJWDaZk2RdQUZFsUUYdQeQjnpvYmMrAlJni0v8Qmi8hoHGlbaqGBCHz7xfsMA25ZelFLfveAk8CK5Iy6mxH0=
-X-Received: by 2002:a17:906:6889:b0:a51:a688:3e9c with SMTP id
- n9-20020a170906688900b00a51a6883e9cmr6916714ejr.35.1712667365422; Tue, 09 Apr
- 2024 05:56:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712667501; x=1713272301;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uFDdytT0v09rWVgCaqJM24d+bAkOK5uzvp9jq8SPpic=;
+        b=VLSMc4NmcOwbH0/fRUgrbjW00HF3X2KY8+zYs88IS4nQEemIIbaPWlh9TOuRwTgIkr
+         vhDTUExfsZJoXnuzl59ci7xfKZJLYUJGYQAdcZ/pIu0kXss7/CLWuqLkCRO4G7+ZCe4V
+         BwL/8KopP2+6xXQXFmMX9rmDbnSnMdF5ucVi5crqpf+VM05Rd67W9EUymIlEooPn/Uje
+         u3V9/ZGLVkQUBFu+cHbOvedBJ9ik5WMHTeLmI9LfbM1Lm3BQjceK01pDWdiLhaRBF6aD
+         6qu0IS0lDX3cvLI4TmnruYnU6OCgFTvtjH7FgiMQkMIOWMOhl/DjbIla+NNraU1LQnHh
+         8G+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXi10y7CUvDmyL3k2/VyjZz8HGNQg5wW7k6GzGzpYHjkiUw+Ism16KzfM6hgj1uwPSHXHLfhMuYDnbT0lUm+S1RZLiP2/qBvig/BlFGPDeEREHrXN3FShNIc/znSL8vMcK60pV4Ultxs9/HE6b0SJ0XbaV4JJgwsLNVELYGRS9aKZeolWe4ll7Uz4c8Pj/4C3LR//rB+krpD8o=
+X-Gm-Message-State: AOJu0YzCyCbRr46rTtXHn6pXanhBPDYh9JvhOOk3WutL3OS8aONZoPGo
+	R2l0N0JuXVe6fRH7InzlEXuroVoI7H/Plwdnk3mzIqCknJt7DHH6
+X-Google-Smtp-Source: AGHT+IF5sJSCYs5v+qNFkqjxztOrDHFXX8CMXk5zRc/0XtJPRH8TOBlSdoo+czWfsit+YhsaIA7hyA==
+X-Received: by 2002:a5d:438f:0:b0:33e:ca28:bb59 with SMTP id i15-20020a5d438f000000b0033eca28bb59mr10807960wrq.57.1712667500650;
+        Tue, 09 Apr 2024 05:58:20 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-118.fbsv.net. [2a03:2880:30ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z13-20020a170906270d00b00a4e98679e7dsm5644168ejc.87.2024.04.09.05.58.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 05:58:20 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: aleksander.lobakin@intel.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	geomatsi@gmail.com,
+	kvalo@kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: quic_jjohnson@quicinc.com,
+	leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v4 0/9] allocate dummy device dynamically
+Date: Tue,  9 Apr 2024 05:57:14 -0700
+Message-ID: <20240409125738.1824983-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404055635.316259-1-lulu@redhat.com> <20240408033804-mutt-send-email-mst@kernel.org>
- <CACLfguUL=Kteorvyn=wRUWFJFvhvgRyp+V7GNBp2R33hK1vnSw@mail.gmail.com> <20240408085008-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240408085008-mutt-send-email-mst@kernel.org>
-From: Cindy Lu <lulu@redhat.com>
-Date: Tue, 9 Apr 2024 20:55:23 +0800
-Message-ID: <CACLfguWC3LruVfLndc4vzpzOuomEz-+nHY0KENZ6iiXNB728eg@mail.gmail.com>
-Subject: Re: [PATCH v3] Documentation: Add reconnect process for VDUSE
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: jasowang@redhat.com, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 8, 2024 at 8:50=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com> =
-wrote:
->
-> On Mon, Apr 08, 2024 at 08:39:21PM +0800, Cindy Lu wrote:
-> > On Mon, Apr 8, 2024 at 3:40=E2=80=AFPM Michael S. Tsirkin <mst@redhat.c=
-om> wrote:
-> > >
-> > > On Thu, Apr 04, 2024 at 01:56:31PM +0800, Cindy Lu wrote:
-> > > > Add a document explaining the reconnect process, including what the
-> > > > Userspace App needs to do and how it works with the kernel.
-> > > >
-> > > > Signed-off-by: Cindy Lu <lulu@redhat.com>
-> > > > ---
-> > > >  Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++=
-++++
-> > > >  1 file changed, 41 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/=
-userspace-api/vduse.rst
-> > > > index bdb880e01132..7faa83462e78 100644
-> > > > --- a/Documentation/userspace-api/vduse.rst
-> > > > +++ b/Documentation/userspace-api/vduse.rst
-> > > > @@ -231,3 +231,44 @@ able to start the dataplane processing as foll=
-ows:
-> > > >     after the used ring is filled.
-> > > >
-> > > >  For more details on the uAPI, please see include/uapi/linux/vduse.=
-h.
-> > > > +
-> > > > +HOW VDUSE devices reconnection works
-> > > > +------------------------------------
-> > > > +1. What is reconnection?
-> > > > +
-> > > > +   When the userspace application loads, it should establish a con=
-nection
-> > > > +   to the vduse kernel device. Sometimes,the userspace application=
- exists,
-> > > > +   and we want to support its restart and connect to the kernel de=
-vice again
-> > > > +
-> > > > +2. How can I support reconnection in a userspace application?
-> > > > +
-> > > > +2.1 During initialization, the userspace application should first =
-verify the
-> > > > +    existence of the device "/dev/vduse/vduse_name".
-> > > > +    If it doesn't exist, it means this is the first-time for conne=
-ction. goto step 2.2
-> > > > +    If it exists, it means this is a reconnection, and we should g=
-oto step 2.3
-> > > > +
-> > > > +2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-> > > > +    /dev/vduse/control.
-> > > > +    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memor=
-y for
-> > > > +    the reconnect information. The total memory size is PAGE_SIZE*=
-vq_mumber.
-> > >
-> > > Confused. Where is that allocation, in code?
-> > >
-> > > Thanks!
-> > >
-> > this should allocated in function vduse_create_dev(),
->
-> I mean, it's not allocated there ATM right? This is just doc patch
-> to become part of a larger patchset?
->
-Got it, thanks Michael I will send the whole patchset soon
-thanks
-Cindy
+struct net_device shouldn't be embedded into any structure, instead,
+the owner should use the private space to embed their state into
+net_device.
 
-> > I will rewrite
-> > this part  to make it more clearer
-> > will send a new version soon
-> > Thanks
-> > cindy
-> >
-> > > > +2.3 Check if the information is suitable for reconnect
-> > > > +    If this is reconnection :
-> > > > +    Before attempting to reconnect, The userspace application need=
-s to use the
-> > > > +    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GE=
-T_FEATURES...)
-> > > > +    to get the information from kernel.
-> > > > +    Please review the information and confirm if it is suitable to=
- reconnect.
-> > > > +
-> > > > +2.4 Userspace application needs to mmap the memory to userspace
-> > > > +    The userspace application requires mapping one page for every =
-vq. These pages
-> > > > +    should be used to save vq-related information during system ru=
-nning. Additionally,
-> > > > +    the application must define its own structure to store informa=
-tion for reconnection.
-> > > > +
-> > > > +2.5 Completed the initialization and running the application.
-> > > > +    While the application is running, it is important to store rel=
-evant information
-> > > > +    about reconnections in mapped pages. When calling the ioctl VD=
-USE_VQ_GET_INFO to
-> > > > +    get vq information, it's necessary to check whether it's a rec=
-onnection. If it is
-> > > > +    a reconnection, the vq-related information must be get from th=
-e mapped pages.
-> > > > +
-> > > > +2.6 When the Userspace application exits, it is necessary to unmap=
- all the
-> > > > +    pages for reconnection
-> > > > --
-> > > > 2.43.0
-> > >
->
+But, in some cases the net_device is embedded inside the private
+structure, which blocks the usage of zero-length arrays inside
+net_device.
+
+Create a helper to allocate a dummy device at dynamically runtime, and
+move the Ethernet devices to use it, instead of embedding the dummy
+device inside the private structure.
+
+This fixes all the network cases plus some wireless drivers.
+
+PS: Due to lack of hardware, unfortunately most these patches are
+compiled tested only, except ath11k that was kindly tested by Kalle Valo.
+
+---
+Changelog:
+
+v1:
+	* https://lore.kernel.org/all/20240327200809.512867-1-leitao@debian.org/
+
+v2:
+	* Patch 1: Use a pre-defined name ("dummy#") for the dummy
+	  net_devices.
+	* Patch 2-5: Added users for the new helper.
+v3:
+	* Use free_netdev() instead of kfree() as suggested by Jakub.
+	* Change the free_netdev() place in ipa driver, as suggested by
+	  Alex Elder.
+	* Set err in the error path in the Marvell driver, as suggested
+	  by Simon Horman.
+v4:
+	* Added a new patch to add dummy device at free_netdev(), as suggested
+	  by Jakub.
+	* Added support for some wireless driver.
+	* Added some Acked-by and Reviewed-by.
+
+
+Breno Leitao (9):
+  net: free_netdev: exit earlier if dummy
+  net: create a dummy net_device allocator
+  net: marvell: prestera: allocate dummy net_device dynamically
+  net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+  net: ipa: allocate dummy net_device dynamically
+  net: ibm/emac: allocate dummy net_device dynamically
+  wifi: qtnfmac: Use netdev dummy allocator helper
+  wifi: ath10k: allocate dummy net_device dynamically
+  wifi: ath11k: allocate dummy net_device dynamically
+
+ drivers/net/ethernet/ibm/emac/mal.c           | 14 ++++-
+ drivers/net/ethernet/ibm/emac/mal.h           |  2 +-
+ .../ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 17 ++++--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   |  2 +-
+ drivers/net/ipa/gsi.c                         | 12 ++--
+ drivers/net/ipa/gsi.h                         |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c        |  9 ++-
+ drivers/net/wireless/ath/ath10k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath10k/pci.c         |  2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |  4 +-
+ drivers/net/wireless/ath/ath10k/usb.c         |  2 +-
+ drivers/net/wireless/ath/ath11k/ahb.c         |  9 ++-
+ drivers/net/wireless/ath/ath11k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath11k/pcic.c        | 21 +++++--
+ .../wireless/quantenna/qtnfmac/pcie/pcie.c    |  3 +-
+ include/linux/netdevice.h                     |  3 +
+ net/core/dev.c                                | 57 ++++++++++++-------
+ 19 files changed, 127 insertions(+), 53 deletions(-)
+
+-- 
+2.43.0
 
 
