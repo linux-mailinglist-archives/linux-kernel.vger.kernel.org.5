@@ -1,146 +1,131 @@
-Return-Path: <linux-kernel+bounces-136886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8D7989D963
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:50:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4B2E89D967
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34C1A28995C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:50:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FC3228A134
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A62012D772;
-	Tue,  9 Apr 2024 12:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E2912DDB8;
+	Tue,  9 Apr 2024 12:51:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+HTgcql"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QoGEWQbo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E95A12D744
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4C61A5A2;
+	Tue,  9 Apr 2024 12:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667034; cv=none; b=GM/eoMvTnVmPtPCAXkU/XoQkjYkqITEurXKoe6mFcE58m6WY8JmiHr8tgZcIvIRj51WB8x07EdxdT736mUM5GBbmoXRlyPw9SZzJeexoC8QjwFO9b/Fm6oUD+jSHC47ueF2lWYkXFOFWzzd7HObr8r1IuyvXfEZqXj2Ydt75OzY=
+	t=1712667074; cv=none; b=LWGwAT6JPaxBisnp0yz7NMHL0gug9AmPDQkQ5nEz+svyIAgF3TMm4UIEwG8NWffI0qBujmi223rRtvNbkiVRq8QlmSucZEqbRCmurojIeEI7W6ihr8rCTrlJgAi5tvtimOUEGoo0FyquW+GSngvIrXvbFICApBqGAuGpEQloJq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667034; c=relaxed/simple;
-	bh=kkrJls9AZ6P6TC/PK3zxI8CWQsctApJC6bIKDV6tTHw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tQxN/nFPOTxFE6Pqiv8JDwUYBTfV0z7Mbwqk22LQt0daPdIpsGNMKBhsrUxeI8jSV1DE8QkPYszuBUq6E2y0aRJwL/FR5zyRyiJZfOYzG8z9l2tIuACiPFb4KptiWLqtBkQRPWvlxtl1o51rpXUcESZplEjEIXLUqw93Q6EXizg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V+HTgcql; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d715638540so66532101fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712667031; x=1713271831; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e/TqT7biLre9+WjLuYwGEFT96KO4NUZqoOC5JGcGMdE=;
-        b=V+HTgcqlCxzsDhMtzZIAN69mABY8VCmlO3i9n+uvvYLjvpRRSpR4lQ3LORFd83+5iM
-         BqUsmU8wHR+52RcZqHcjU7wPToaeWzGEFU8nXx9Hkowx3AEKCg85iFligjrV+zJQBN+Q
-         9ZOZ4XrsUH+ywfOQ/9xfGRB9iVhd2QzkHPhmu07Rh3S3MIPB5XJSE08gyJvftV4WGEkr
-         LfHJqGXHGwRTtJxMjFMOoecCAP4+FrHlO3PdjWj1y4c+pQbiJvKkvpdHjiQ+sX1XhPvI
-         pIweJWruStNSJgjjj3PefzXTB8idHQmrUon/fCheNvC81l3hQY/iEwbVAZwQ26GovgzT
-         BXfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712667031; x=1713271831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e/TqT7biLre9+WjLuYwGEFT96KO4NUZqoOC5JGcGMdE=;
-        b=vp2nItd5RfRNQYdN/ppsDhrK2CjZGiU87dGzafJFHyxxiNJRKRgCTbYcv+UIVgUoiS
-         ONZHG9AN8ICJYjXYIQT0Nbm9VOgqRmySw+ZzTDt7c3j/MpHA2mbe6Isqh//XUEIN8GwS
-         2HnAdeGb9RNFD4KB3Kc9pi1Kf/LbuQdoZ/OPMbvDnJCO2GG5je/cWA3RZLoFcuJ/44YG
-         SGSNhIsxXKJyNim0p/EtlUL3RuQMK+qhIYLxJuYCHAtHqUhZKpP9wBisc0RayZL4xxX0
-         0n+iF4Oqlr0fThXhQs3Fz7UJzsO4FLFUpM92QGOrUamn8fCGeXuOEgflJkt/6PUy9fbd
-         +5Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCV0Uhaa89gsJWTXF3TWN4h4ueUxbATqt0BIzG3VzoCRgxsGG2Dl5B/fQ3TvrGtuL0E5DS21avyQBAQR/7bRqAgIVQkncIwTcXeNRsCD
-X-Gm-Message-State: AOJu0Yw7yeYAK9xyZQVAY/7B6V4yCVMedYBBGTltuxv95Roa1Hl3XCP/
-	aymmUESvC+sSP1foYaAYO9A5sGiDhbaQxuSC1yqZWrmTifm9jKv2Uk02cn7Lyi9oxMyuZzjI/Fk
-	J/15mhFADY9SzhI75AXmt3nkULU8=
-X-Google-Smtp-Source: AGHT+IFnHPHGhhtmBWFzgQa45pnjSJu9pSpTY4EwgrmLyruVQ4LHSmn3LYuKCy/4jrXeS3HGxC41DkRNRE9zOvMFHsU=
-X-Received: by 2002:a2e:878d:0:b0:2d7:7c0:b077 with SMTP id
- n13-20020a2e878d000000b002d707c0b077mr7681756lji.43.1712667031256; Tue, 09
- Apr 2024 05:50:31 -0700 (PDT)
+	s=arc-20240116; t=1712667074; c=relaxed/simple;
+	bh=qLaR1T3JCwD+pcaCnaUzLtRoSUp8R3ZkvQx5FcERa6E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWXq9VGaUlbdfMSYeYzApuqEl8vXBDuh1giCuUCUCG4tP54QEtF/rR0oIyhKSkMzACoovuMrZZXMoY8TKMFZ8FHOmu7FEeV7tzZc/6ubPXlLsIuEJQyzkMWEI2J+WsF6jPoICwpMXbGkgnn9XZ9VgWdjE+wnLzMScW+JiYmKY4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QoGEWQbo; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712667073; x=1744203073;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=qLaR1T3JCwD+pcaCnaUzLtRoSUp8R3ZkvQx5FcERa6E=;
+  b=QoGEWQbom5g8+IpDR1YEFyhxlPB2224xElM/kkaiFxCds6yP2vDFKGNw
+   OgFSDsjKZ45NRQ6nFEYr+1tCo5qbo37f34GiT5hYLqG6YZQSUt+sl+yqm
+   iv3nVrCRAsGFZ0qfMmyYaJg+RFT2Vjl0vayFfcham3cGOSgm7uJqZRRLQ
+   +GFm/hnbZz1mpMdVJk2Gah0qyfhSMrBtFtWMW1MvlKUqgGbACYhSssM6I
+   sP2bY0Pb/zixokc1hDMbZ1VGn6l27iHP3qXYPB+TNuLhs2LCq19m2jzkE
+   yvdAROnAluU1kq+qgDibI2x5rUuABxfUIPpwti+tLeXSwl5wLeUTzTrNJ
+   g==;
+X-CSE-ConnectionGUID: pJXgfUAETemAJHQp8KMYbw==
+X-CSE-MsgGUID: Z9T7qQTRT4Stmnx6g9itNw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8080657"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="8080657"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:51:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915399074"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915399074"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:51:07 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruAwL-00000002o6H-0JxC;
+	Tue, 09 Apr 2024 15:51:05 +0300
+Date: Tue, 9 Apr 2024 15:51:04 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] gpiolib: Fix a mess with the GPIO_* flags
+Message-ID: <ZhU5uDJk_M_TtKH2@smile.fi.intel.com>
+References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
+ <20240408231727.396452-2-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mf73fFHo83gNvDXGy9BosB1MNz_=8kt56hLA12bPBb8CA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409100503.274629-1-ubizjak@gmail.com> <20240409100503.274629-3-ubizjak@gmail.com>
- <ZhUixk5I_n53dbBb@FVFF77S0Q05N> <CAFULd4bBmQ85UsPOOEA+5dj-_JOBNWeyM-jipM7Zov2V484quQ@mail.gmail.com>
-In-Reply-To: <CAFULd4bBmQ85UsPOOEA+5dj-_JOBNWeyM-jipM7Zov2V484quQ@mail.gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Tue, 9 Apr 2024 14:50:19 +0200
-Message-ID: <CAFULd4Z8JTc_5p8apO680es0fYO5ke9yYPpPUfp=15XrRbKESQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] locking/atomic/x86: Rewrite x86_32
- arch_atomic64_{,fetch}_{and,or,xor}() functions
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mf73fFHo83gNvDXGy9BosB1MNz_=8kt56hLA12bPBb8CA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Apr 9, 2024 at 2:03=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wrot=
-e:
->
-> On Tue, Apr 9, 2024 at 1:13=E2=80=AFPM Mark Rutland <mark.rutland@arm.com=
-> wrote:
->
-> > >  static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
-> > >  {
-> > > -     s64 old, c =3D 0;
-> > > +     s64 val =3D __READ_ONCE(v->counter);
+On Tue, Apr 09, 2024 at 11:42:37AM +0200, Bartosz Golaszewski wrote:
+> On Tue, Apr 9, 2024 at 1:17 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > I reckon it's worth placing this in a helper with a big comment, e.g.
+> > The GPIO_* flag definitions are *almost* duplicated in two files
+> > (with unmatches OPEN_SOURCE / OPEN_DRAIN). Moreover, some code relies
+> > on one set of definitions while the rest is on the other. Clean up
+> > this mess by providing only one source of the definitions to all.
 > >
-> > static __always_inline s64 arch_atomic64_read_tearable(atomic64_t *v)
-> > {
-> >         /*
-> >          * TODO: explain that this might be torn, but it occurs *once*,=
- and can
-> >          * safely be consumed by atomic64_try_cmpxchg().
-> >          *
-> >          * TODO: point to the existing commentary regarding why we use
-> >          * __READ_ONCE() for KASAN reasons.
-> >          */
-> >         return __READ_ONCE(v->counter);
-> > }
-> >
-> > ... and then use that in each of the instances below.
-> >
-> > That way the subtlety is clearly documented, and it'd more clearly alig=
-n with
-> > the x86_64 verions.
->
-> This is an excellent idea. The separate definitions needs to be placed
-> in atomic64_32.h and atomic_64_64.h (due to use of atomic64_t
-> typedef), but it will allow the same unification of functions between
-> x64_32 and x64_64 as the approach with __READ_ONCE().
+> > Fixes: b424808115cb ("brcm80211: brcmsmac: Move LEDs to GPIO descriptors")
+> > Fixes: 5923ea6c2ce6 ("gpio: pass lookup and descriptor flags to request_own")
+> > Fixes: fed7026adc7c ("gpiolib: Make use of enum gpio_lookup_flags consistent")
+> > Fixes: 4c0facddb7d8 ("gpio: core: Decouple open drain/source flag with active low/high")
+> > Fixes: 69d301fdd196 ("gpio: add DT bindings for existing consumer flags")
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >  drivers/gpio/gpiolib-of.c                     |  5 ++---
+> >  drivers/gpio/gpiolib.c                        |  8 +++-----
+> >  .../broadcom/brcm80211/brcmsmac/led.c         |  2 +-
+> >  include/linux/gpio/driver.h                   |  3 +--
+> >  include/linux/gpio/machine.h                  | 20 +++++--------------
+> >  5 files changed, 12 insertions(+), 26 deletions(-)
+> 
+> I don't think ./dt-bindings/gpio/gpio.h is the right source of these
+> defines for everyone - including non-OF systems. I would prefer the
+> ones in include/linux/gpio/machine.h be the upstream source but then
+> headers in include/dt-bindings/ cannot include them so my second-best
+> suggestion is to rename the ones in include/linux/gpio/machine.h and
+> treewide too. In general values from ./dt-bindings/gpio/gpio.h should
+> only be used in DTS sources and gpiolib-of code.
 
-Something like this:
+Then, please fix that your way. It's quite annoying issue.
 
---cut here--
-/*
- * This function is intended to preload the value from atomic64_t
- * location in a non-atomic way. The read might be torn, but can
- * safely be consumed by the compare-and-swap loop.
- */
-static __always_inline s64 arch_atomic64_read_tearable(atomic64_t *v)
-{
-    /*
-     * See the comment in arch_atomic_read() on why we use
-     * __READ_ONCE() instead of READ_ONCE_NOCHECK() here.
-     */
-    return __READ_ONCE(v->counter);
-}
---cut here--
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Uros.
+
 
