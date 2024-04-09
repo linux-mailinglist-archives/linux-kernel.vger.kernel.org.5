@@ -1,84 +1,86 @@
-Return-Path: <linux-kernel+bounces-137645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4901089E4EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:29:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B41EC89E4F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:30:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E74282820D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:29:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACD81F2295B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9D9158A29;
-	Tue,  9 Apr 2024 21:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81083158A06;
+	Tue,  9 Apr 2024 21:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GkNdKHWp"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="VJCJkhDg"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20FC158878
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C58158867
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698142; cv=none; b=SIwagr/B0APoMFSMe9RWkq8qQUGkQYw17kSj6X+qt2GxcV3tK02RsgEemQkgnEBjv5gqdGXKHnU+9hftZAv3WSUtYXDIqSjsBUu4Kc3o3OZVxJvmihxWx/8IpNvFbDW20Jth5Mh4odHNOkVRL7KPUB3Fwu1+yPue7s/27kQ+6os=
+	t=1712698193; cv=none; b=itpZl0Z5XdhIEYNSXNpzLqf0a2W7FLast9j5wi3uHk9qy/rmx/OXUNMP02hSSOzcToDnYPrYhTYHVEAWly2ls294pvu+nSg6O59BPnZa/SwZzEY+LIuFfSCIJgSukH70J5L1pbEZCLGS//nAHu2pVDnJ12r41HHduk3ahjJUrXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698142; c=relaxed/simple;
-	bh=cpqL+Hl6DXpr8zMLQSAXCRUte3LWhQQIiqBnOCk+8q0=;
+	s=arc-20240116; t=1712698193; c=relaxed/simple;
+	bh=Ubqqm63lKdnzIJduqL2oJ1Vi2+iIgr/cKwTszXup7q0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LKki1t9Vcjsgi8+Sg/508YuXSrl97fGN487g8LLKKyoSVEXgOayrLRD3mNHNGaXveyUgMyf+0H/KYC5T1VCkcA9RBMXVjGKta/OXGqf58DClel24gw24Pe0vIH6q++tptTAmSFe4ZETbKPPMU59w+hARKhCUlVo+OIQhFvvwOx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GkNdKHWp; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3f6f03594so18847345ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 14:29:00 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XL/SnQ6WrBb2nChEmSa/iQsZpHVczpJrkyKqu0ZKunaapHmWwcpKtoPoJ/ZRr7x/8t8G5SDYvmwe7CKhrws3rBiFitWRHJ+F4a8lMhZ7J8e/hZzAgcSWSql5y6QCOhG/PE7TKfTDosuicH7w94TqjR2sWC1+iXQPmP6CaurJoRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=VJCJkhDg; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed112c64beso2757953b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712698140; x=1713302940; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1712698191; x=1713302991; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1EckUdhv2S0vsLHXrSpPAoBKrsnqtVxE+FzPaDR/vQ=;
-        b=GkNdKHWpHzVRjHUHYaa4Dz17qLR3IeF9Tm3SDpo2v/aWhb7gJnJGowGCG4ac0B+LJ4
-         YYpujhGFRCPEt/Mmc3jdRKWklWg1gtLO+oOS9PNMAfUmAetioAxVQN7FesJtnQQ8Vx4v
-         ochJCC9jTAVkYqqudrXye+NxGkAK0vkfJyqpE=
+        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
+        b=VJCJkhDga/OfKWeKbdrV+Saj9YmigCMLGWF6BfgnQH3eH/S5yBIWflk+OPpwtREuOe
+         sCZzrABd56f1+kvK3UE8lUjqkbdw9/DIVfraZRmuWWGFbeUgR5nF1Jggriy2kyc8BiT3
+         WG0uqYH+QFP3PCBjxaLWrN9sbyBXT4g4Gjvx+s2sjOqCW92mtMNHWnyE+tbS9iOmvjtL
+         83ocso+vIOzA3YcvmGz8c5BsZDEQZ1yPXn1dlslF78q4D70zvWDphBajBYEfoPJVIDLd
+         tOuVrVGhru5QLUAMuspZ6FEnkvqGtKz1qHoqCWn6fMtLS5aODbw1gspxqRiPljuVMG94
+         tlxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712698140; x=1713302940;
+        d=1e100.net; s=20230601; t=1712698191; x=1713302991;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I1EckUdhv2S0vsLHXrSpPAoBKrsnqtVxE+FzPaDR/vQ=;
-        b=C1KnVEPwDdXpGLEBHbEA21AbB1rgehnQYuoYX7MaTYc9VkV+FatYWCKO5NDiTUQAe/
-         SomMZHTgD2w5SpDWdomUj8nv9lyIdBfKazx+vjvGgkkk/2kCbPniNCO+PbICahung318
-         8BCqVz/wr/NTjoYRPx7Byb6vxosDZamja04dsO84MYZx2ngCa4sv4YRabsqc2eDJ1Lz3
-         xMKOOhiq4t4bg2PVWeErNn1ubkIy4t3fW1ogikok61slauKzePMuFZBzZLZmtC90/P/x
-         BujtE6p9i+usLzhFQcV9EKPWLs2MDxo1HI66rXk/jri0hhe8TZQe4JBsYraHuZ14ZMtV
-         hsew==
-X-Forwarded-Encrypted: i=1; AJvYcCW3mHi7/o7Yyvr0v8AgY2MPAvzysimp0FToPeF189AIODSuxdPxF3Z6+nv/H1b+6Oxfl5P+Rt3w4PnVTGZFx7H2H32yi3GTjsi8HPum
-X-Gm-Message-State: AOJu0YxmNAUxLs1uBBdz3utXctbVODsVMGbnVtmWauyAT3JrlewGltbo
-	pe8BKzAqEpCCkqmy2Yap16VWbMpBhRLSlpihf60KkbvA5v7rFNJCTAPqaQjU2w==
-X-Google-Smtp-Source: AGHT+IGp1vHyVN9Of3ONnBmhGBURnZ2ozCtASZrjhYok6bINm0BBVqQzRg5525pvfv09CAPY6RG2ng==
-X-Received: by 2002:a17:902:a5cb:b0:1e2:adad:75f4 with SMTP id t11-20020a170902a5cb00b001e2adad75f4mr907671plq.28.1712698139910;
-        Tue, 09 Apr 2024 14:28:59 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p18-20020a170902e35200b001e2461c52c6sm9401985plc.149.2024.04.09.14.28.59
+        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
+        b=CXv99yS4rDByTsD3FUi99+iOc9gM8kRoozl4dyjC979mfukQ5aC5sSQDyYwcS+NRzN
+         7sD38Un3mcyxUwJZ9ce2lQfq5t9ULvnej0tSujBuZsGDPyzqUGzWB94iGzAK0NNJ3VKZ
+         YLpZX1HLwR+OqTMDCTLdSrSwI53cxE2FGb5dhawMlIg4mpbu2byC5wKHcBIPGUbDVOYI
+         gdqhZI4wEJiS8zkZQJ2fgplIllFhCLOGx4BUBfsxdNNwMDFKUR5jvYJEkuIhmGDItr4F
+         kJiuxbWTGfGtYuAEV0+ulOtVUa+lSsqtwsQrh8ETFIqlEFGvDjopRmiD0oXG6N/jdI2o
+         WLmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW57HjT2Vex4SUqGp4O0s5TFfHcn6AZxFTPqiY61X+3b/fx+/x8TlY8NFytSvfOe8p3UjOsHaKRIU8prP4ut98W1hLG0ntspymjukiS
+X-Gm-Message-State: AOJu0YzdkRYl26XW+nHtNmoSVJzd7J3dcD9PzT2FSXTXfwEx8VZsrQTB
+	f3pztmrvUHNtB/8cCwcTGtFcVgxh19g/WrtwE0k5aa6dm0+4Up1qAjAN3YnSn+8=
+X-Google-Smtp-Source: AGHT+IFvOqPyH50nuc2JACoXyF6q2DKJ9ivcnsRna4tGd1/cjZ8p4v7GhrD65qleDU/qtwwIyhj4CQ==
+X-Received: by 2002:a05:6a00:14d1:b0:6ec:faef:dd28 with SMTP id w17-20020a056a0014d100b006ecfaefdd28mr932086pfu.23.1712698191116;
+        Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
+        by smtp.gmail.com with ESMTPSA id x12-20020a056a00270c00b006ed048a7323sm8006356pfv.86.2024.04.09.14.29.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 14:28:59 -0700 (PDT)
-Date: Tue, 9 Apr 2024 14:28:58 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Marco Elver <elver@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH] tracing: Add new_exec tracepoint
-Message-ID: <202404091428.B95127B72@keescook>
-References: <20240408090205.3714934-1-elver@google.com>
- <202404090840.E09789B66@keescook>
- <ZhWIKeZuWfPOU91D@elver.google.com>
+        Tue, 09 Apr 2024 14:29:50 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1ruJ2J-009xO3-3A;
+	Wed, 10 Apr 2024 07:29:47 +1000
+Date: Wed, 10 Apr 2024 07:29:47 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: syzbot <syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com>
+Cc: chandan.babu@oracle.com, dwmw2@infradead.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org, richard@nod.at,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] [jffs2?] [xfs?] kernel BUG in
+ unrefer_xattr_datum
+Message-ID: <ZhWzS47ZvqF2WriS@dread.disaster.area>
+References: <0000000000002444e20615a20456@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,90 +89,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhWIKeZuWfPOU91D@elver.google.com>
+In-Reply-To: <0000000000002444e20615a20456@google.com>
 
-On Tue, Apr 09, 2024 at 08:25:45PM +0200, Marco Elver wrote:
-> On Tue, Apr 09, 2024 at 08:46AM -0700, Kees Cook wrote:
-> [...]
-> > > +	trace_new_exec(current, bprm);
-> > > +
-> > 
-> > All other steps in this function have explicit comments about
-> > what/why/etc. Please add some kind of comment describing why the
-> > tracepoint is where it is, etc.
+On Mon, Apr 08, 2024 at 09:04:18PM -0700, syzbot wrote:
+> Hello,
 > 
-> I beefed up the tracepoint documentation, and wrote a little paragraph
-> above where it's called to reinforce what we want.
+> syzbot found the following issue on:
 > 
-> [...]
-> > What about binfmt_misc, and binfmt_script? You may want bprm->interp
-> > too?
+> HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1562c52d180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b417f0468b73945887f0
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e74805180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1613cca9180000
 > 
-> Good points. I'll make the below changes for v2:
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
+> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f039597bec42/mount_0.gz
+> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/b3fe5cff7c96/mount_4.gz
 > 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index ab778ae1fc06..472b9f7b40e8 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1268,6 +1268,12 @@ int begin_new_exec(struct linux_binprm * bprm)
->  	if (retval)
->  		return retval;
->  
-> +	/*
-> +	 * This tracepoint marks the point before flushing the old exec where
-> +	 * the current task is still unchanged, but errors are fatal (point of
-> +	 * no return). The later "sched_process_exec" tracepoint is called after
-> +	 * the current task has successfully switched to the new exec.
-> +	 */
->  	trace_new_exec(current, bprm);
->  
->  	/*
-> diff --git a/include/trace/events/task.h b/include/trace/events/task.h
-> index 8853dc44783d..623d9af777c1 100644
-> --- a/include/trace/events/task.h
-> +++ b/include/trace/events/task.h
-> @@ -61,8 +61,11 @@ TRACE_EVENT(task_rename,
->   * @task:	pointer to the current task
->   * @bprm:	pointer to linux_binprm used for new exec
->   *
-> - * Called before flushing the old exec, but at the point of no return during
-> - * switching to the new exec.
-> + * Called before flushing the old exec, where @task is still unchanged, but at
-> + * the point of no return during switching to the new exec. At the point it is
-> + * called the exec will either succeed, or on failure terminate the task. Also
-> + * see the "sched_process_exec" tracepoint, which is called right after @task
-> + * has successfully switched to the new exec.
->   */
->  TRACE_EVENT(new_exec,
->  
-> @@ -71,19 +74,22 @@ TRACE_EVENT(new_exec,
->  	TP_ARGS(task, bprm),
->  
->  	TP_STRUCT__entry(
-> +		__string(	interp,		bprm->interp	)
->  		__string(	filename,	bprm->filename	)
->  		__field(	pid_t,		pid		)
->  		__string(	comm,		task->comm	)
->  	),
->  
->  	TP_fast_assign(
-> +		__assign_str(interp, bprm->interp);
->  		__assign_str(filename, bprm->filename);
->  		__entry->pid = task->pid;
->  		__assign_str(comm, task->comm);
->  	),
->  
-> -	TP_printk("filename=%s pid=%d comm=%s",
-> -		  __get_str(filename), __entry->pid, __get_str(comm))
-> +	TP_printk("interp=%s filename=%s pid=%d comm=%s",
-> +		  __get_str(interp), __get_str(filename),
-> +		  __entry->pid, __get_str(comm))
->  );
->  
->  #endif
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com
+> 
+> jffs2: nextblock 0x0001d000, expected at 0001f000
+> jffs2: argh. node added in wrong place at 0x0001e03c(2)
+> jffs2: nextblock 0x0001d000, expected at 0001f000
 
-Looks good; I await v2, and Steven's Ack. :)
+Nothing to do with XFS or ext4 - they are simply being mounted with
+invalid mount options at the same time.
+
+#syz set subsystems: jffs2
 
 -- 
-Kees Cook
+Dave Chinner
+david@fromorbit.com
 
