@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-136624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713A389D641
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293BE89D642
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C001C2116C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C801F224CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B27D86242;
-	Tue,  9 Apr 2024 10:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B6D1272C4;
+	Tue,  9 Apr 2024 10:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HLSCgrRX"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QQtTZ1jY"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1118173B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A293482865
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657113; cv=none; b=tOilzj3V/WMNTckbPqqyCuO45BBSn9O2jquoVZJpngguJCg3LyJNWOr3X+MbTr5ZQa38LZ8sOrsAONG5cLix8pd+GPy2qHeI7QSDvkolticLIOJ969y9EE9lu+CRJ0jdezg8CbOAceCxy/HBLcQdp/wofs7E12jKskoI+Gd3Z4M=
+	t=1712657115; cv=none; b=ew6C4/NiOmra8mst3xeDWPc02DXMAKND9mXuZCs2+bUzxsWgryTZDU4/ocXg1euxEs+1F7aCapl1qHmJ805++9/enQ2M1jasbnqOsdPicmdlZqu267q8/Xu+m7AcndhzTREdszmnFSrH+ktJ18Htp7HubPiUGn4k2JD2zo9g0Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657113; c=relaxed/simple;
-	bh=/Nb0syoqXrLtiMCAaNUxknKwFQ8hydCC1BIHa4Sg4cw=;
+	s=arc-20240116; t=1712657115; c=relaxed/simple;
+	bh=ugA08uXqoEwEn8GuKopyp1EqHtpqnUKd/PxDao6nDlI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gf9kNY2yrXSpZpcN4s8dQ59FveX4qqbAkDT3r6TMeV4t3IoL3kUXu7ZEAOjc6URBTVJU9bh87zdSrmIL3vCcDQCtLcZArTL13C9+5EIUqg+J072ftDPRSV9n8uelnTyWZkJyEa6rOhIkIg531fb/bXebLjDe4DNU7QQUD31UmCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HLSCgrRX; arc=none smtp.client-ip=209.85.208.47
+	 MIME-Version; b=jj2WhN7Esqah4F8kNR2xNCtzos1xw3IQDKEXrLlqXY+ZxVU/EsSthNWZtSWyV+afepLekc9JJSF2B9zw0aEHCOaT8Y2sa0nce7G9BFYSjWeQnTNHHxwq/4I9pPq/hWxXvRO8ejYdcZiSV4eNh47xQj24SFpOfRHTmAr3LZnjtT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QQtTZ1jY; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e6282dd72so2287572a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:05:11 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d82713f473so92622761fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:05:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712657110; x=1713261910; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712657112; x=1713261912; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4JAl2q7pGidcLS0wjbtFM6lZo9cgP3O7vC63sSwKbiE=;
-        b=HLSCgrRXtL1hIEWKXr21MfMw29kTtEHXLvuwDhTfXyr+wwPX/q31lLV/2PJ+dAQX5F
-         Srfd/evLdmEMyZDBCbOS8vXlkODT2ozpjJSb77uNGUfJfxH93xAX4hsOOipFphyAWRHV
-         WcWpLQ0BNPPo12EXNLpDYyyri1XCo9e0yhjuslue7GQHfWZA+5UB0jUh6gsWmc8Mqkf1
-         I4I0xD0dLevbOeffFQBEV93C9pTB0vqjJtyrf3tTkLro/stdIXrtCMwblmJ57V7pA83l
-         2HnUlQyjY98XeYebwvO2BjFeGqPsA/PZV3+2SMydx78Hyj+k+Hb3G51DWb811+Od4puY
-         45yA==
+        bh=hew6IrPXucrn4SI3v5T6ztETy+bvxdIyXI1Ro/bitzY=;
+        b=QQtTZ1jYd3Dx0XGXbriuS03LiCZi47ythiq4Sda7uHQQ5nrCnXNqyn5vlL2xKn/Hx7
+         sm7E4qXj68SyCw12ote1EO9wt5Y0pQkJqbmx1wjSXKO8ChpQ38ovgMa4wL0FmBJ1gtJN
+         HaXh04uiq31kCmPwRAV4UQZAd5BvEE03PNEzCgUtznmHedVtbypZPSdtRGElLMa+CK1r
+         uX4n88NnUg3iIRUigN10ZwpLGCZYU+5rELi7WupWR3Z7bglnojlUkaLSv8BWgCzOzCdH
+         sBYyNrlVnG+Aioy7icIYD0HHPeGJPshqsGzB6/PCcPw2gwNseJnNa7VRejYmLc0s5pux
+         OIpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712657110; x=1713261910;
+        d=1e100.net; s=20230601; t=1712657112; x=1713261912;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4JAl2q7pGidcLS0wjbtFM6lZo9cgP3O7vC63sSwKbiE=;
-        b=Zz5a6qZ+SOfUnr9nHuNvg0EpWarOn2H4QiXhfQM9V+x5IKadkBe8o40RpxWJsIN+Gc
-         cK5JtV7Zi6dtlP1Cv4pIHXEeON7PNRXs/TdDJ470kCMnjFOEjb1C0QpxyeahyScxQCln
-         aWOwXjaHzQl12tA1kCX8FrtbzPpzPOF7gyUV1GbWBo6MBqeaOmb2hzdp9kR8T1nfeGuv
-         UPrXS7xoFg4ZSLfAjGiWWadHWAlKpLZzPdNrrXzm+/Zca4ZLm2n/WuFhS3HgOaDBOMq8
-         Kgq9nZVzORvnH92QwppUlbZOzA/c9YtK7hAp5bd+o6mC7Mgclr4dcj3aZmf0pkgL04HG
-         b0sA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFbIxkTJnQr8UsZCbeOOkETYfJjb0EDkNd4gNNQyy458KTyp6BFbmkFOjyTjbo0D6L6QdbdWtFcw3ejzPVUHft7OJg2CKqbkLuB/fg
-X-Gm-Message-State: AOJu0YzLY8zWfizfN+Yjtkwl93Eb7VRWB3q6LMSH28k6JwWHmLSPKInP
-	e3DyE7FLIcC/eKD7mkq9AkC5zo18+HJ2DVqKceDeVo16yEECCfXl
-X-Google-Smtp-Source: AGHT+IHKyj6j3YIALqLzvD/zqxAze4Rcqk7nzqdEyINEKyYh9fT9ZqY6Cq+bHIiHeEm4EtqxwV3QGw==
-X-Received: by 2002:a17:906:558d:b0:a51:a09c:16a5 with SMTP id y13-20020a170906558d00b00a51a09c16a5mr6174552ejp.23.1712657109732;
-        Tue, 09 Apr 2024 03:05:09 -0700 (PDT)
+        bh=hew6IrPXucrn4SI3v5T6ztETy+bvxdIyXI1Ro/bitzY=;
+        b=bTOzL/wGfZaBUQBv722+GhpY8IIaPa8Shws51Gvw4IpugKRqhC919T5V0wsLichnHK
+         UEhjsEb+1QZyDtUUwkiFISgqMDCs0XizxtBkreve5EDM+sc3ThXWYPUpePVZuPpgtV9d
+         XYsgYCQsDEnneP3TAVmZP+Mb5jLYRJygMxzqgT2Fe29zg8AFodg8bEzBx8kbkEZsRsBf
+         on7krtVr3/A7POEiQBl5rRfJDP31XNycLWwLKaAMUkl3Yf+M8JodZUqXw0CX5wQAYcUj
+         REiyDkczN+NQxg3KKYX1t56unjZTV+a82j10fK31L2PqDVA7uWyz8MpJ30Ux74q5ImBW
+         Q6uw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJRXKYn95SzoVZmSiaA7Rdga2jvmlhg4xRYEkPz0ZP7+5oDHrBveRVKz0TtTvxn22UgjyQ2wD8QBBROes//zTMTS20h1LRsb9cxdqh
+X-Gm-Message-State: AOJu0YyTntkoK2KtXtukTw+2fit0H5e9FFsxABdByoT5eZGusvJmGrX7
+	2eQ28TvUlkbNSNr0mRK2csNtWsuzZF60E+6+DQjSFi4SoNlShNVn
+X-Google-Smtp-Source: AGHT+IF/CiW5guZCr3itYqmfESeOATzJU7bpKqf1oFcMCzYNzUgGvRPQ6FqKK7h0BUTghiHIvY5nKg==
+X-Received: by 2002:a2e:2e11:0:b0:2d4:5370:5e8a with SMTP id u17-20020a2e2e11000000b002d453705e8amr9333404lju.22.1712657111401;
+        Tue, 09 Apr 2024 03:05:11 -0700 (PDT)
 Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5496681ejc.0.2024.04.09.03.05.07
+        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5496681ejc.0.2024.04.09.03.05.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 03:05:08 -0700 (PDT)
+        Tue, 09 Apr 2024 03:05:10 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -76,9 +76,9 @@ Cc: Uros Bizjak <ubizjak@gmail.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>,
 	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 2/6] locking/atomic/x86: Rewrite x86_32 arch_atomic64_{,fetch}_{and,or,xor}() functions
-Date: Tue,  9 Apr 2024 12:03:53 +0200
-Message-ID: <20240409100503.274629-3-ubizjak@gmail.com>
+Subject: [PATCH 3/6] locking/atomic/x86: Use READ_ONCE before atomic{,64}_try_cmpxchg loops
+Date: Tue,  9 Apr 2024 12:03:54 +0200
+Message-ID: <20240409100503.274629-4-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409100503.274629-1-ubizjak@gmail.com>
 References: <20240409100503.274629-1-ubizjak@gmail.com>
@@ -90,63 +90,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rewrite x86_32 arch_atomic64_{,fetch}_{and,or,xor}() functions to
-use arch_atomic64_try_cmpxchg.  This implementation avoids one extra
-trip through the cmpxchg loop.
-
 The value preload before the cmpxchg loop does not need to be atomic,
 but should use READ_ONCE to prevent compiler from merging, refetching
 or reordering the read.
 
-The generated code improves from:
+This patch unifies arch_atomic{,64}_{,fetch}_{and,or,xor}() macros
+between x86_32 and x86_64 targets.
 
-  1917d5:	31 c9                	xor    %ecx,%ecx
-  1917d7:	31 db                	xor    %ebx,%ebx
-  1917d9:	89 4c 24 3c          	mov    %ecx,0x3c(%esp)
-  1917dd:	8b 74 24 24          	mov    0x24(%esp),%esi
-  1917e1:	89 c8                	mov    %ecx,%eax
-  1917e3:	89 5c 24 34          	mov    %ebx,0x34(%esp)
-  1917e7:	8b 7c 24 28          	mov    0x28(%esp),%edi
-  1917eb:	21 ce                	and    %ecx,%esi
-  1917ed:	89 74 24 4c          	mov    %esi,0x4c(%esp)
-  1917f1:	21 df                	and    %ebx,%edi
-  1917f3:	89 de                	mov    %ebx,%esi
-  1917f5:	89 7c 24 50          	mov    %edi,0x50(%esp)
-  1917f9:	8b 54 24 4c          	mov    0x4c(%esp),%edx
-  1917fd:	8b 7c 24 2c          	mov    0x2c(%esp),%edi
-  191801:	8b 4c 24 50          	mov    0x50(%esp),%ecx
-  191805:	89 d3                	mov    %edx,%ebx
-  191807:	89 f2                	mov    %esi,%edx
-  191809:	f0 0f c7 0f          	lock cmpxchg8b (%edi)
-  19180d:	89 c1                	mov    %eax,%ecx
-  19180f:	8b 74 24 34          	mov    0x34(%esp),%esi
-  191813:	89 d3                	mov    %edx,%ebx
-  191815:	89 44 24 4c          	mov    %eax,0x4c(%esp)
-  191819:	8b 44 24 3c          	mov    0x3c(%esp),%eax
-  19181d:	89 df                	mov    %ebx,%edi
-  19181f:	89 54 24 44          	mov    %edx,0x44(%esp)
-  191823:	89 ca                	mov    %ecx,%edx
-  191825:	31 de                	xor    %ebx,%esi
-  191827:	31 c8                	xor    %ecx,%eax
-  191829:	09 f0                	or     %esi,%eax
-  19182b:	75 ac                	jne    1917d9 <...>
-
-to:
-
-  1912ba:	8b 06                	mov    (%esi),%eax
-  1912bc:	8b 56 04             	mov    0x4(%esi),%edx
-  1912bf:	89 44 24 3c          	mov    %eax,0x3c(%esp)
-  1912c3:	89 c1                	mov    %eax,%ecx
-  1912c5:	23 4c 24 34          	and    0x34(%esp),%ecx
-  1912c9:	89 d3                	mov    %edx,%ebx
-  1912cb:	23 5c 24 38          	and    0x38(%esp),%ebx
-  1912cf:	89 54 24 40          	mov    %edx,0x40(%esp)
-  1912d3:	89 4c 24 2c          	mov    %ecx,0x2c(%esp)
-  1912d7:	89 5c 24 30          	mov    %ebx,0x30(%esp)
-  1912db:	8b 5c 24 2c          	mov    0x2c(%esp),%ebx
-  1912df:	8b 4c 24 30          	mov    0x30(%esp),%ecx
-  1912e3:	f0 0f c7 0e          	lock cmpxchg8b (%esi)
-  1912e7:	0f 85 f3 02 00 00    	jne    1915e0 <...>
+No functional changes intended.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -156,101 +107,105 @@ Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- arch/x86/include/asm/atomic64_32.h | 44 ++++++++++++------------------
- 1 file changed, 18 insertions(+), 26 deletions(-)
+ arch/x86/include/asm/atomic.h      |  8 ++++----
+ arch/x86/include/asm/atomic64_64.h | 20 ++++++++++----------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
-index 11e817dab44a..84affd7a5d1c 100644
---- a/arch/x86/include/asm/atomic64_32.h
-+++ b/arch/x86/include/asm/atomic64_32.h
-@@ -201,69 +201,61 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
- 
- static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
- {
--	s64 old, c = 0;
-+	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c & i)) != c)
--		c = old;
-+	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
+diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
+index 55a55ec04350..b166da21ee98 100644
+--- a/arch/x86/include/asm/atomic.h
++++ b/arch/x86/include/asm/atomic.h
+@@ -20,7 +20,7 @@ static __always_inline int arch_atomic_read(const atomic_t *v)
+ 	 * Note for KASAN: we deliberately don't use READ_ONCE_NOCHECK() here,
+ 	 * it's non-inlined function that increases binary size and stack usage.
+ 	 */
+-	return __READ_ONCE((v)->counter);
++	return __READ_ONCE(v->counter);
  }
+ 
+ static __always_inline void arch_atomic_set(atomic_t *v, int i)
+@@ -132,7 +132,7 @@ static __always_inline void arch_atomic_and(int i, atomic_t *v)
+ 
+ static __always_inline int arch_atomic_fetch_and(int i, atomic_t *v)
+ {
+-	int val = arch_atomic_read(v);
++	int val = __READ_ONCE(v->counter);
+ 
+ 	do { } while (!arch_atomic_try_cmpxchg(v, &val, val & i));
+ 
+@@ -150,7 +150,7 @@ static __always_inline void arch_atomic_or(int i, atomic_t *v)
+ 
+ static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
+ {
+-	int val = arch_atomic_read(v);
++	int val = __READ_ONCE(v->counter);
+ 
+ 	do { } while (!arch_atomic_try_cmpxchg(v, &val, val | i));
+ 
+@@ -168,7 +168,7 @@ static __always_inline void arch_atomic_xor(int i, atomic_t *v)
+ 
+ static __always_inline int arch_atomic_fetch_xor(int i, atomic_t *v)
+ {
+-	int val = arch_atomic_read(v);
++	int val = __READ_ONCE(v->counter);
+ 
+ 	do { } while (!arch_atomic_try_cmpxchg(v, &val, val ^ i));
+ 
+diff --git a/arch/x86/include/asm/atomic64_64.h b/arch/x86/include/asm/atomic64_64.h
+index 3165c0feedf7..e7b12a48fecb 100644
+--- a/arch/x86/include/asm/atomic64_64.h
++++ b/arch/x86/include/asm/atomic64_64.h
+@@ -12,7 +12,7 @@
+ 
+ static __always_inline s64 arch_atomic64_read(const atomic64_t *v)
+ {
+-	return __READ_ONCE((v)->counter);
++	return __READ_ONCE(v->counter);
+ }
+ 
+ static __always_inline void arch_atomic64_set(atomic64_t *v, s64 i)
+@@ -126,10 +126,10 @@ static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
  
  static __always_inline s64 arch_atomic64_fetch_and(s64 i, atomic64_t *v)
  {
--	s64 old, c = 0;
+-	s64 val = arch_atomic64_read(v);
 +	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c & i)) != c)
--		c = old;
++
 +	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
  
--	return old;
-+	return val;
+-	do {
+-	} while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
+ 	return val;
  }
  #define arch_atomic64_fetch_and arch_atomic64_fetch_and
- 
- static __always_inline void arch_atomic64_or(s64 i, atomic64_t *v)
- {
--	s64 old, c = 0;
-+	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c | i)) != c)
--		c = old;
-+	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val | i));
- }
+@@ -144,10 +144,10 @@ static __always_inline void arch_atomic64_or(s64 i, atomic64_t *v)
  
  static __always_inline s64 arch_atomic64_fetch_or(s64 i, atomic64_t *v)
  {
--	s64 old, c = 0;
+-	s64 val = arch_atomic64_read(v);
 +	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c | i)) != c)
--		c = old;
++
 +	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val | i));
  
--	return old;
-+	return val;
+-	do {
+-	} while (!arch_atomic64_try_cmpxchg(v, &val, val | i));
+ 	return val;
  }
  #define arch_atomic64_fetch_or arch_atomic64_fetch_or
- 
- static __always_inline void arch_atomic64_xor(s64 i, atomic64_t *v)
- {
--	s64 old, c = 0;
-+	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c ^ i)) != c)
--		c = old;
-+	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
- }
+@@ -162,10 +162,10 @@ static __always_inline void arch_atomic64_xor(s64 i, atomic64_t *v)
  
  static __always_inline s64 arch_atomic64_fetch_xor(s64 i, atomic64_t *v)
  {
--	s64 old, c = 0;
+-	s64 val = arch_atomic64_read(v);
 +	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c ^ i)) != c)
--		c = old;
++
 +	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
  
--	return old;
-+	return val;
+-	do {
+-	} while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
+ 	return val;
  }
  #define arch_atomic64_fetch_xor arch_atomic64_fetch_xor
- 
- static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
- {
--	s64 old, c = 0;
-+	s64 val = __READ_ONCE(v->counter);
- 
--	while ((old = arch_atomic64_cmpxchg(v, c, c + i)) != c)
--		c = old;
--
--	return old;
-+	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val + i));
-+	return val;
- }
- #define arch_atomic64_fetch_add arch_atomic64_fetch_add
- 
 -- 
 2.44.0
 
