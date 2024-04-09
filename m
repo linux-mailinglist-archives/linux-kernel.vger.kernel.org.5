@@ -1,95 +1,126 @@
-Return-Path: <linux-kernel+bounces-137440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D338F89E22D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:08:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD24789E22F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:08:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6B1286EF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:08:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A74BB259E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C182156C5F;
-	Tue,  9 Apr 2024 18:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF94156982;
+	Tue,  9 Apr 2024 18:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSqvynlO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWFfObJa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87515156C4A;
-	Tue,  9 Apr 2024 18:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51837156870;
+	Tue,  9 Apr 2024 18:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712686100; cv=none; b=sBaNzQ+0fZuU0B9IkQ50VUh3WKBb67kKGBnxihbPBFYmLjW/6LroFvvDOZiYj+hZgii09k6g5BRPZbi7eAOXxHON6DzFA3LZDSWnlWgfsVI6WxgXNu/CgXNREzOYjtTJLqbSwKOtBkWE3T9RNOxPuRsfTKIbFjWWQDEkzMx+7d0=
+	t=1712686126; cv=none; b=OrMQZ6XFtoHtWx1/sYUZcruQozG4xYpuPggGaRQ+cjtWeIJLOIPAxPvQcbEPr8UO4AJ0LzZl+pslJ7U5GtcwyNDPtmueRqK9gUtMeH97y6qcG+9S5cYz3ToCg8jX+TPh3BOGJ4QBPBOazMyq/LoopSKwGoDI9d18d3dXMlFAhak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712686100; c=relaxed/simple;
-	bh=HHFNJYwTjbYiNwN7KBQiqaYMGmiWrEeJk4tI3/073Ic=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=CBtPB0s4KwPhebo6vdtr6OPbIYy1tw+gcVh6LaPpkqyecTNkXJiGE5u55TUP9f+gBRo2TNZ2tu7ZyyRtq8gwxxrdKlcH0C1B8HkYMLRFN4tV7jwPQhXrOckB4KXmfEL+VYvQKdfBI69hTigBHeUNo+SevpxeQ1iQ2EAv5Gx7H5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSqvynlO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B251DC433C7;
-	Tue,  9 Apr 2024 18:08:18 +0000 (UTC)
+	s=arc-20240116; t=1712686126; c=relaxed/simple;
+	bh=85j4q3S1t04tNE6JB8FUGp/zM0rF5jeGqXukKGZIwB8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kSv31NlaFkPY4wwnT1sa63MNVoKICfaTPcYiCyST6ZHovu0o8dGw9HlJsbUdLmsgNQn/qBsdCl/DRyEU8Lk+p/Ju6ctkbAlq7tWhxUHWl6YGy06Fh2Ky/NiICrCiaMU5mbsDbn9pNQspKaBhBeOvXT7EhHoTuvODbFwmuZq2/L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XWFfObJa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7BE7C433F1;
+	Tue,  9 Apr 2024 18:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712686100;
-	bh=HHFNJYwTjbYiNwN7KBQiqaYMGmiWrEeJk4tI3/073Ic=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MSqvynlO7AdmpCHYtNqlRDUVkxeAXpv3n8J3df1XEOeOwanWEi24e/T+VZ0xXbqAt
-	 SHdffs9CYQkkZW3ZLvputSyTwOzxpjRvriydwoqFoHxvIpTbH5V4StELvg8HVqKi3o
-	 Vb1Z5BBv7MSzg2L4NouiBqsC+f/Ug4hiZ0eGnFjcgrh85QJsl9TsM8Bc8tjZL8LQ8B
-	 H4LS9NjV45+kUHwD1M6Ig+rh/hQgshizEutTDc/RSc1k1It34zkqXKVotOCkBB4IXP
-	 0m80G1R5HKfcltGtpQEuzvcQllPpgAC2khZ0NqdWky+GJaZRNm8oEqSr4ex3FZg5FO
-	 UWWsQdNex29KQ==
-From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "end.to.start" <end.to.start@mail.ru>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-In-Reply-To: <20240408152454.45532-1-end.to.start@mail.ru>
-References: <20240408152454.45532-1-end.to.start@mail.ru>
-Subject: Re: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
-Message-Id: <171268609844.62778.6340689132993321193.b4-ty@kernel.org>
-Date: Tue, 09 Apr 2024 19:08:18 +0100
+	s=k20201202; t=1712686125;
+	bh=85j4q3S1t04tNE6JB8FUGp/zM0rF5jeGqXukKGZIwB8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XWFfObJahR4l3e3uA+Um8HE6AygMEhnv4bCi5uqEYCNZZTVj1BkO+ics7yp5isjRu
+	 XTl9VJ1Heemw0EVSXQkbkn1uRpKtweJ5JFUrs0RXOJFWHGdpX3tZYHsKdYNSB3kTGv
+	 ZMHv+9y9VRcVLo0XE7iXYmKnajbPaEPNDBEtixTqVk4jV/sMenodN9fpWaHLkJ/gQq
+	 UC3KtaGxT0XvrIo2fZtkYmYqG5SkjGo9JbpT907wczYKK7ZTOArqIclMG8/2riLh38
+	 WLfS1Ccke+e/PTlNnhm5K+mCbKyqLcefYmbnqk3v+mVa3j1K7IZNlMReiHqywDZ8Px
+	 hNfJbVuwqV9qg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8815FCE2D22; Tue,  9 Apr 2024 11:08:45 -0700 (PDT)
+Date: Tue, 9 Apr 2024 11:08:45 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	elver@google.com, akpm@linux-foundation.org, tglx@linutronix.de,
+	peterz@infradead.org, dianders@chromium.org, pmladek@suse.com,
+	torvalds@linux-foundation.org, Arnd Bergmann <arnd@arndb.de>,
+	Yujie Liu <yujie.liu@intel.com>,
+	Andi Shyti <andi.shyti@linux.intel.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	linux-riscv@lists.infradead.org,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: [PATCH cmpxchg 14/14] riscv: Emulate one-byte cmpxchg
+Message-ID: <bb4e43b1-21dc-4e82-87c9-0ce4c5791d7d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7b3646e0-667c-48e2-8f09-e493c43c30cb@paulmck-laptop>
+ <20240408174944.907695-14-paulmck@kernel.org>
+ <ZhV8a+pWAnJQ3Ljp@andrea>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhV8a+pWAnJQ3Ljp@andrea>
 
-On Mon, 08 Apr 2024 18:24:54 +0300, end.to.start wrote:
-> This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
+On Tue, Apr 09, 2024 at 07:35:39PM +0200, Andrea Parri wrote:
+> Hi Paul,
 > 
+> > @@ -170,6 +171,9 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, (uintptr_t)__old, (uintptr_t)__new); \
+> > +		break;							\
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
+> > @@ -214,6 +218,9 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
+> > @@ -260,6 +267,9 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			RISCV_RELEASE_BARRIER				\
+> > @@ -306,6 +316,9 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = (__typeof__(*(ptr)))cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
 > 
+> Seems the last three are missing uintptr_t casts?
 
-Applied to
+Indeed they are, and good eyes!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+However, Liu, Yujie beat you to it, and this commit contains the fix:
 
-Thanks!
+4d5c72a34948 ("riscv: Emulate one-byte cmpxchg")
 
-[1/1] sound: Support microphone from device Acer 315-24p
-      commit: 4b9a474c7c820391c0913d64431ae9e1f52a5143
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+							Thanx, Paul
 
