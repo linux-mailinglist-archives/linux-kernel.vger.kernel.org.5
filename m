@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-137727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B84689E668
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:50:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DD289E667
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D39B1C20FD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:50:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0EA21F230DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA05615921B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87232159213;
 	Tue,  9 Apr 2024 23:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naEbYt79"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Aj0F8qkP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1521C1591F8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90894158DDE;
 	Tue,  9 Apr 2024 23:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706603; cv=none; b=B9RoCtpW79tplCJXtV1YKOjNpIziaPcvAgDCpFdUsWfPISSC4KzYzAL6SX3mnDSoUMtfAFsdXuHZk2U70PJPlZiGq0NSuH+7iuZ36M9IxzIEe8peeHkaaTDOsSPlAfO3yXTOohtdRxouhVjzMqpbDwqIIfjjDpM3lmtBwLTslP4=
+	t=1712706602; cv=none; b=GTko/Z+Rj1AFxlJVwXpdoNGvWWzEx7JdVos34FFBTZxMsBtCH6dIZXrZvrVdKvbtd24Z9SgCXNL3iu/4MZbwgMix9M8mCLAsrEf87DUg/Q0o4Ds+quOC71+vSkEyfH2KQLYgN/lWYfMj3Rh2MU5m+DNzYtBPHakAohU1hsi2bP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706603; c=relaxed/simple;
-	bh=JniUIOtymtPSjR4nX8r1BDesYexwAvEo2n0TNtIdZes=;
+	s=arc-20240116; t=1712706602; c=relaxed/simple;
+	bh=0pW5q6KpdAEgOCgzS+L1xZu25Btzvfo5clIFIMC4pqI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oYgND4sLw2RKbPuuEdNP2dik0UrCez+kkeURDJLlohcFO3K5hBHB+a1tZj9BcPPsxRiAbtICu2B1CWxlSOZu78ASBlV6PDr6J4Fa7Iv4N+vG9PR4eV790KOKp2xoggK58ZQeLV6fG8Ve1Rsu1TJEewV7wqk74Bf8yx/SeEUhwuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=naEbYt79; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98072C433A6;
-	Tue,  9 Apr 2024 23:50:01 +0000 (UTC)
+	 MIME-Version; b=fncOZKetiW6Eb+zcAAU44H9b/H3GCyiJtSyrDGgHM7jymz84Fx/BoAVQQ+sXADvNNOgrkM7h8OXmQt2T9QmDwI3BXpjwVulc1mckOAC3ucPLPvvU5LRtXgjla/+pnFN5N2JTQFTQ/d75OwZMKP/nWPGobBtJsyeMSwgsFJqMtqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Aj0F8qkP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EBE5C433C7;
+	Tue,  9 Apr 2024 23:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712706602;
-	bh=JniUIOtymtPSjR4nX8r1BDesYexwAvEo2n0TNtIdZes=;
+	bh=0pW5q6KpdAEgOCgzS+L1xZu25Btzvfo5clIFIMC4pqI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=naEbYt79Rt3g+TLI52IaGdEmcyGYXtoC3tux39xgok/DKT0JRk9AsU/EJiSfgsf8f
-	 dLDPzD3kT4Zu9NdsSl7sYptIJqE4qk6nXoSNgbG66fDxk89d6FOqJKdQ2lrQSvuHr2
-	 bkRsB0Apd7JM56BwCcN6dy0cGQcecWRx03iKx3AfBEDMmGW5xriF+170uyIwqVpHQJ
-	 tZmxGsvToTbmNEg5QpLrWU1vJUEZuGyWNNL5xKT8pr2dgWNvoN56lnSQo5D5eTArGn
-	 +XaMwlnm9L805riHlSjQKwns5fg5WVzLxQOh478yW/FbeuFs0VWX/DORDaV0/juA8b
-	 edRe0U70D/BPw==
+	b=Aj0F8qkP2y8wgqW1A0sAym5sAakKe/AgnNE8eLapmiw/QkUFNiDHciLu8kvRp8Lzu
+	 ig5wEcX0Bim+FFMnMeKTxVBmiIlpT5aZQyYxDr7T9fDu0jv5UQuGzFxOJW4wOWG6qf
+	 j3pLwfD1lb4GYyHPRurRYcGuosxQhiFKTuSXYbqT5NaXbQQENr0rmLUccNo+3Avjf9
+	 MsLsRBFUUVJdK4kYvj3/v/lFBhKiE9Cd5Sei4yjrreYYEiIE1Ai5mgqQGeAdCejEdT
+	 afrTRuMUz3sxy6oDpURIOd3tS3jkRBQBNfpJ0PeDASnzzxZ2081lcOQe/9s1bqL/F0
+	 k/CFSyeZNjGGg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 1/6] perf annotate: Show progress of sample processing
-Date: Tue,  9 Apr 2024 16:49:55 -0700
-Message-ID: <20240409235000.1893969-2-namhyung@kernel.org>
+Subject: [PATCH 2/6] perf annotate-data: Add hist_entry__annotate_data_tty()
+Date: Tue,  9 Apr 2024 16:49:56 -0700
+Message-ID: <20240409235000.1893969-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240409235000.1893969-1-namhyung@kernel.org>
 References: <20240409235000.1893969-1-namhyung@kernel.org>
@@ -64,52 +64,285 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Like perf report, it can take a while to process samples.  Show the
-progress window to inform users how long it'll take.
+And move the related code into util/annotate-data.c file.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-annotate.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ tools/perf/builtin-annotate.c   | 106 +-----------------------------
+ tools/perf/util/annotate-data.c | 110 ++++++++++++++++++++++++++++++++
+ tools/perf/util/annotate-data.h |   3 +
+ 3 files changed, 114 insertions(+), 105 deletions(-)
 
 diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index 16e1581207c9..332e1ddcacbd 100644
+index 332e1ddcacbd..0812664faa54 100644
 --- a/tools/perf/builtin-annotate.c
 +++ b/tools/perf/builtin-annotate.c
-@@ -37,6 +37,7 @@
- #include "util/map_symbol.h"
- #include "util/branch.h"
- #include "util/util.h"
-+#include "ui/progress.h"
+@@ -329,108 +329,6 @@ static int hist_entry__tty_annotate(struct hist_entry *he,
+ 	return symbol__tty_annotate2(&he->ms, evsel);
+ }
  
- #include <dlfcn.h>
- #include <errno.h>
-@@ -665,13 +666,23 @@ static int __cmd_annotate(struct perf_annotate *ann)
- 	evlist__for_each_entry(session->evlist, pos) {
- 		struct hists *hists = evsel__hists(pos);
- 		u32 nr_samples = hists->stats.nr_samples;
-+		struct ui_progress prog;
+-static void print_annotated_data_header(struct hist_entry *he, struct evsel *evsel)
+-{
+-	struct dso *dso = map__dso(he->ms.map);
+-	int nr_members = 1;
+-	int nr_samples = he->stat.nr_events;
+-	int width = 7;
+-	const char *val_hdr = "Percent";
+-
+-	if (evsel__is_group_event(evsel)) {
+-		struct hist_entry *pair;
+-
+-		list_for_each_entry(pair, &he->pairs.head, pairs.node)
+-			nr_samples += pair->stat.nr_events;
+-	}
+-
+-	printf("Annotate type: '%s' in %s (%d samples):\n",
+-	       he->mem_type->self.type_name, dso->name, nr_samples);
+-
+-	if (evsel__is_group_event(evsel)) {
+-		struct evsel *pos;
+-		int i = 0;
+-
+-		for_each_group_evsel(pos, evsel)
+-			printf(" event[%d] = %s\n", i++, pos->name);
+-
+-		nr_members = evsel->core.nr_members;
+-	}
+-
+-	if (symbol_conf.show_total_period) {
+-		width = 11;
+-		val_hdr = "Period";
+-	} else if (symbol_conf.show_nr_samples) {
+-		width = 7;
+-		val_hdr = "Samples";
+-	}
+-
+-	printf("============================================================================\n");
+-	printf("%*s %10s %10s  %s\n", (width + 1) * nr_members, val_hdr,
+-	       "offset", "size", "field");
+-}
+-
+-static void print_annotated_data_value(struct type_hist *h, u64 period, int nr_samples)
+-{
+-	double percent = h->period ? (100.0 * period / h->period) : 0;
+-	const char *color = get_percent_color(percent);
+-
+-	if (symbol_conf.show_total_period)
+-		color_fprintf(stdout, color, " %11" PRIu64, period);
+-	else if (symbol_conf.show_nr_samples)
+-		color_fprintf(stdout, color, " %7d", nr_samples);
+-	else
+-		color_fprintf(stdout, color, " %7.2f", percent);
+-}
+-
+-static void print_annotated_data_type(struct annotated_data_type *mem_type,
+-				      struct annotated_member *member,
+-				      struct evsel *evsel, int indent)
+-{
+-	struct annotated_member *child;
+-	struct type_hist *h = mem_type->histograms[evsel->core.idx];
+-	int i, nr_events = 1, samples = 0;
+-	u64 period = 0;
+-	int width = symbol_conf.show_total_period ? 11 : 7;
+-
+-	for (i = 0; i < member->size; i++) {
+-		samples += h->addr[member->offset + i].nr_samples;
+-		period += h->addr[member->offset + i].period;
+-	}
+-	print_annotated_data_value(h, period, samples);
+-
+-	if (evsel__is_group_event(evsel)) {
+-		struct evsel *pos;
+-
+-		for_each_group_member(pos, evsel) {
+-			h = mem_type->histograms[pos->core.idx];
+-
+-			samples = 0;
+-			period = 0;
+-			for (i = 0; i < member->size; i++) {
+-				samples += h->addr[member->offset + i].nr_samples;
+-				period += h->addr[member->offset + i].period;
+-			}
+-			print_annotated_data_value(h, period, samples);
+-		}
+-		nr_events = evsel->core.nr_members;
+-	}
+-
+-	printf(" %10d %10d  %*s%s\t%s",
+-	       member->offset, member->size, indent, "", member->type_name,
+-	       member->var_name ?: "");
+-
+-	if (!list_empty(&member->children))
+-		printf(" {\n");
+-
+-	list_for_each_entry(child, &member->children, node)
+-		print_annotated_data_type(mem_type, child, evsel, indent + 4);
+-
+-	if (!list_empty(&member->children))
+-		printf("%*s}", (width + 1) * nr_events + 24 + indent, "");
+-	printf(";\n");
+-}
+-
+ static void print_annotate_data_stat(struct annotated_data_stat *s)
+ {
+ #define PRINT_STAT(fld) if (s->fld) printf("%10d : %s\n", s->fld, #fld)
+@@ -571,9 +469,7 @@ static void hists__find_annotations(struct hists *hists,
+ 					goto find_next;
+ 			}
  
- 		if (nr_samples > 0) {
- 			total_nr_samples += nr_samples;
--			hists__collapse_resort(hists, NULL);
-+
-+			ui_progress__init(&prog, nr_samples,
-+					  "Merging related events...");
-+			hists__collapse_resort(hists, &prog);
-+			ui_progress__finish();
-+
- 			/* Don't sort callchain */
- 			evsel__reset_sample_bit(pos, CALLCHAIN);
--			evsel__output_resort(pos, NULL);
-+
-+			ui_progress__init(&prog, nr_samples,
-+					  "Sorting events for output...");
-+			evsel__output_resort(pos, &prog);
-+			ui_progress__finish();
+-			print_annotated_data_header(he, evsel);
+-			print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
+-			printf("\n");
++			hist_entry__annotate_data_tty(he, evsel);
+ 			goto find_next;
+ 		}
  
- 			/*
- 			 * An event group needs to display other events too.
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index b69a1cd1577a..99c5dcdfc9df 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -19,6 +19,7 @@
+ #include "evlist.h"
+ #include "map.h"
+ #include "map_symbol.h"
++#include "sort.h"
+ #include "strbuf.h"
+ #include "symbol.h"
+ #include "symbol_conf.h"
+@@ -1710,3 +1711,112 @@ int annotated_data_type__update_samples(struct annotated_data_type *adt,
+ 	h->addr[offset].period += period;
+ 	return 0;
+ }
++
++static void print_annotated_data_header(struct hist_entry *he, struct evsel *evsel)
++{
++	struct dso *dso = map__dso(he->ms.map);
++	int nr_members = 1;
++	int nr_samples = he->stat.nr_events;
++	int width = 7;
++	const char *val_hdr = "Percent";
++
++	if (evsel__is_group_event(evsel)) {
++		struct hist_entry *pair;
++
++		list_for_each_entry(pair, &he->pairs.head, pairs.node)
++			nr_samples += pair->stat.nr_events;
++	}
++
++	printf("Annotate type: '%s' in %s (%d samples):\n",
++	       he->mem_type->self.type_name, dso->name, nr_samples);
++
++	if (evsel__is_group_event(evsel)) {
++		struct evsel *pos;
++		int i = 0;
++
++		for_each_group_evsel(pos, evsel)
++			printf(" event[%d] = %s\n", i++, pos->name);
++
++		nr_members = evsel->core.nr_members;
++	}
++
++	if (symbol_conf.show_total_period) {
++		width = 11;
++		val_hdr = "Period";
++	} else if (symbol_conf.show_nr_samples) {
++		width = 7;
++		val_hdr = "Samples";
++	}
++
++	printf("============================================================================\n");
++	printf("%*s %10s %10s  %s\n", (width + 1) * nr_members, val_hdr,
++	       "offset", "size", "field");
++}
++
++static void print_annotated_data_value(struct type_hist *h, u64 period, int nr_samples)
++{
++	double percent = h->period ? (100.0 * period / h->period) : 0;
++	const char *color = get_percent_color(percent);
++
++	if (symbol_conf.show_total_period)
++		color_fprintf(stdout, color, " %11" PRIu64, period);
++	else if (symbol_conf.show_nr_samples)
++		color_fprintf(stdout, color, " %7d", nr_samples);
++	else
++		color_fprintf(stdout, color, " %7.2f", percent);
++}
++
++static void print_annotated_data_type(struct annotated_data_type *mem_type,
++				      struct annotated_member *member,
++				      struct evsel *evsel, int indent)
++{
++	struct annotated_member *child;
++	struct type_hist *h = mem_type->histograms[evsel->core.idx];
++	int i, nr_events = 1, samples = 0;
++	u64 period = 0;
++	int width = symbol_conf.show_total_period ? 11 : 7;
++
++	for (i = 0; i < member->size; i++) {
++		samples += h->addr[member->offset + i].nr_samples;
++		period += h->addr[member->offset + i].period;
++	}
++	print_annotated_data_value(h, period, samples);
++
++	if (evsel__is_group_event(evsel)) {
++		struct evsel *pos;
++
++		for_each_group_member(pos, evsel) {
++			h = mem_type->histograms[pos->core.idx];
++
++			samples = 0;
++			period = 0;
++			for (i = 0; i < member->size; i++) {
++				samples += h->addr[member->offset + i].nr_samples;
++				period += h->addr[member->offset + i].period;
++			}
++			print_annotated_data_value(h, period, samples);
++		}
++		nr_events = evsel->core.nr_members;
++	}
++
++	printf(" %10d %10d  %*s%s\t%s",
++	       member->offset, member->size, indent, "", member->type_name,
++	       member->var_name ?: "");
++
++	if (!list_empty(&member->children))
++		printf(" {\n");
++
++	list_for_each_entry(child, &member->children, node)
++		print_annotated_data_type(mem_type, child, evsel, indent + 4);
++
++	if (!list_empty(&member->children))
++		printf("%*s}", (width + 1) * nr_events + 24 + indent, "");
++	printf(";\n");
++}
++
++void hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel)
++{
++	print_annotated_data_header(he, evsel);
++	print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
++	printf("\n");
++}
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+index fe1e53d6e8c7..037e2622b7a3 100644
+--- a/tools/perf/util/annotate-data.h
++++ b/tools/perf/util/annotate-data.h
+@@ -10,6 +10,7 @@
+ struct annotated_op_loc;
+ struct debuginfo;
+ struct evsel;
++struct hist_entry;
+ struct map_symbol;
+ struct thread;
+ 
+@@ -140,6 +141,8 @@ struct annotated_data_stat {
+ };
+ extern struct annotated_data_stat ann_data_stat;
+ 
++void hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel);
++
+ #ifdef HAVE_DWARF_SUPPORT
+ 
+ /* Returns data type at the location (ip, reg, offset) */
 -- 
 2.44.0.478.gd926399ef9-goog
 
