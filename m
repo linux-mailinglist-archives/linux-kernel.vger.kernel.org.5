@@ -1,133 +1,160 @@
-Return-Path: <linux-kernel+bounces-136807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4698389D86A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:46:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A69389D85B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F214528713A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:46:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF6A1F21BB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C762C12DDB5;
-	Tue,  9 Apr 2024 11:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F54128387;
+	Tue,  9 Apr 2024 11:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Re2MZHX5"
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FtwpSfcR"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3284B127B4E;
-	Tue,  9 Apr 2024 11:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5581380629
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712663153; cv=none; b=njl/IZizOHf9Oy2AvUpkEgQLImugWOneEnneYLjndQlNeObg/eiCozv7bhqOyYEBjt+QMCAXbclZhfJaiwmb+P7Yr70WZ/zYkJ5QyUw7rPf7X8hobtFPj/0935KPeCmBDhCU98C4x2T950AlV69bSUdyUXqP7ClOFme8nHd/+FM=
+	t=1712663144; cv=none; b=OLjGUrSRYBPychrqbM3GHjTARazRparZGF2BrR+pT29WORst596vwxcocH8rytVH5DO4NB3HtRdcl/D368GNjGm5fyQkNxtPP4zbsoc4nPO1xZ4GFt8KsJ+ucxvbO9qYUt28wVf5METEyBKL2XrsOodQJwXTCPSMUxNmXEnZoGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712663153; c=relaxed/simple;
-	bh=GFjr+qUI/xJlRfC49pDYbbQ+5mOHCUk/2gN5wZX0VPA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lBIR1ZzgNFAiDhBZgiwFTJ1Hjbtgxh5r2XlqjC9uK91LBmTo0zonDD0RFLMilwlSPXoKVCFuu7RFValzVMoe7lSmHU/wR3KLx2txQVIah3cPmVakFvodIiyvfOU99UkKhMWn7HIsMlQWeYtdowO9yUrUIx5A89DElmMUefkbEi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Re2MZHX5; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+	s=arc-20240116; t=1712663144; c=relaxed/simple;
+	bh=lB9SkxiER1Va36w0Sjtn8mKx8w/76n4SXUDde9QyjsM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fWNJIkb3FC7nTWXGmRPsDYtUyk7/95wMBWH+1KP3CEMJUHlosFo/m75IsDXUq7H6cDnHUsixptTHUnQMMmryLju/whf2j+LqkF98/DyO3dZyD92n0OOMg8+lHMb1nUmjALMr7xB4VWW2Z1l9J4ik534nsUkCDgphctCeP359SZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FtwpSfcR; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41641a889ccso55855e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712663151; x=1744199151;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=GFjr+qUI/xJlRfC49pDYbbQ+5mOHCUk/2gN5wZX0VPA=;
-  b=Re2MZHX5GydCM8B6KilkbcXlSGPSLv0DHVNAFcmqvWsd0IZ1NH+wl46p
-   jp+rvzqYg9VvAX9wn3JpJghaHuXQWE2yPEhE8P08rq+2tVNxto7uD3tbV
-   QrLFtsNiMvuJGKG0kOuG7Rz2NIhkvDaaqqVhKqvF/2RhKVIbglEWBhS4x
-   g=;
-X-IronPort-AV: E=Sophos;i="6.07,189,1708387200"; 
-   d="scan'208";a="650727234"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:45:43 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:49900]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.169:2525] with esmtp (Farcaster)
- id 3f52ccb2-10c8-4639-a2de-4651f9e21034; Tue, 9 Apr 2024 11:45:42 +0000 (UTC)
-X-Farcaster-Flow-ID: 3f52ccb2-10c8-4639-a2de-4651f9e21034
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 9 Apr 2024 11:45:38 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Tue, 9 Apr
- 2024 11:45:22 +0000
-Message-ID: <7c82670e-6063-4b0f-9bbf-805a0d949d84@amazon.com>
-Date: Tue, 9 Apr 2024 13:45:18 +0200
+        d=google.com; s=20230601; t=1712663141; x=1713267941; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XdtnM0pMYunPj+eUYeM0gH2TJdeUBrC57PV1HZeV+xE=;
+        b=FtwpSfcRjTd8rIlxBDYJ/C9ma++M/t7gpFHfYO0QCE5mnu9tSBinUzoCVDqlsJCotu
+         +Ep+cvWKtscri+DqQDCAOrwQu0pobO0KVeqeIIT+9mq71mNYPI58JyLkdbQAi4ZkxcCf
+         cMt7PJzoxyv8yrdtmOB1XLx+XIidrrFPK7ENDK7ZV/l4Ji88SGX/6JW5wdyDMMHIkUXC
+         aVm6ZZx0dtfNrCJaRd0JnBry7Mx2quvJN5p6dfL8/cByV+FHZUqdSMDfkdlxf26uNPVH
+         ao63CUUwL6yPu1AYzLMRHCkhF0fZPXwFFHtRax1OPedcez+3vgUvbffIDr9G9zmA/5/c
+         YtbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712663141; x=1713267941;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XdtnM0pMYunPj+eUYeM0gH2TJdeUBrC57PV1HZeV+xE=;
+        b=uoqYEX3B5mWNFnhD2s5nv/eSDH3sM5J+LJOq/wWm5/z79nI62kMLRUP1zlZ/8aXe+n
+         xi5RyvvDvTxxQDx8nIaF71y072C6V9ne0jZLjNAhRkBWyqjeiNphwenVRORuQjIifp27
+         jpbQ3K0+T/pFSuo/lPGbym3KVUjpSGT9uxbBmn6hM6KvzveE+SpXUBGZJP7052DpkPgk
+         1BWLDsVfic7PzWFV/EDR7UHAIhF7++nEqX8VXrLBCjI7Q38mBokk7rzYXCEIdOeNnVsa
+         y1JPD0zjN50YEkxblf+ZLuhKlpySI1oo9c/tolCxPJ+xEyjefcY65JkioanOOFHpmKuJ
+         mmlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+CcOa+iFiObwvuEAzTMBlcw1acm9616MqvwWR80mnBHMn9VHpbHE4HWcdGj6LNZwmKgH9FRMI3iaNetdByUYrgiRiV3ZFbPnlxdXG
+X-Gm-Message-State: AOJu0YyHqk16vObePSZfreHM++atCWs9z5XXTuUcHqn1S081njp4udfz
+	LbFdG3LFPa7sqWQgamxC/Z+dhguf+SI6YXazFV0Orvhify15Hc6Bqa1ovaQVSMCTCWYD3DUcGOD
+	S2XVrq/f57CSNriVQn8SA8SdX9kvI3rorH061
+X-Google-Smtp-Source: AGHT+IFk2eCxUClDlHllVGYfhicaZlD8wiHkH34x8yIkk8F4QLS2RHAaCO/kSbDi3dS4EpxrPHmqIS3ZTgbTGQMKE1U=
+X-Received: by 2002:a05:600c:314c:b0:416:7f8a:c6ea with SMTP id
+ h12-20020a05600c314c00b004167f8ac6eamr120300wmo.1.1712663140470; Tue, 09 Apr
+ 2024 04:45:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 15/25] misc: nsm: drop owner assignment
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Xuan Zhuo
-	<xuanzhuo@linux.alibaba.com>, Jonathan Corbet <corbet@lwn.net>, "David
- Hildenbrand" <david@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, "Richard
- Weinberger" <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>, Paolo Bonzini
-	<pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe
-	<axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>, "Luiz Augusto von
- Dentz" <luiz.dentz@gmail.com>, Olivia Mackall <olivia@selenic.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>, Arnd Bergmann
-	<arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei
-	<arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>, "Sudeep
- Holla" <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter
-	<daniel@ffwll.ch>, Jean-Philippe Brucker <jean-philippe@linaro.org>, "Joerg
- Roedel" <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
-	<robin.murphy@arm.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen
-	<ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet
-	<asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Ira Weiny
-	<ira.weiny@intel.com>, "Pankaj Gupta" <pankaj.gupta.linux@gmail.com>, Bjorn
- Andersson <andersson@kernel.org>, Mathieu Poirier
-	<mathieu.poirier@linaro.org>, "James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Vivek Goyal
-	<vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, "Anton Yakovlev"
-	<anton.yakovlev@opensynergy.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>
-CC: <virtualization@lists.linux.dev>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
-	<linux-block@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
-	<linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-gpio@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<iommu@lists.linux.dev>, <netdev@vger.kernel.org>, <v9fs@lists.linux.dev>,
-	<kvm@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <linux-remoteproc@vger.kernel.org>,
-	<linux-scsi@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <20240331-module-owner-virtio-v2-15-98f04bfaf46a@linaro.org>
-From: Alexander Graf <graf@amazon.com>
-In-Reply-To: <20240331-module-owner-virtio-v2-15-98f04bfaf46a@linaro.org>
-X-ClientProxiedBy: EX19D035UWA002.ant.amazon.com (10.13.139.60) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
+ <87frw2axv0.ffs@tglx> <20240404145408.GD7153@redhat.com> <87le5t9f14.ffs@tglx>
+ <20240406150950.GA3060@redhat.com> <20240406151057.GB3060@redhat.com>
+ <CACT4Y+Ych4+pdpcTk=yWYUOJcceL5RYoE_B9djX_pwrgOcGmFA@mail.gmail.com>
+ <20240408102639.GA25058@redhat.com> <20240408184957.GD25058@redhat.com>
+ <87il0r7b4k.ffs@tglx> <20240409111051.GB29396@redhat.com>
+In-Reply-To: <20240409111051.GB29396@redhat.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Tue, 9 Apr 2024 13:45:24 +0200
+Message-ID: <CACT4Y+ZOn3n+NL=JH-=yNWOv8RWOg_idGqQz10fD-F-FW27M+g@mail.gmail.com>
+Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement check_timer_distribution()
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, 
+	Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kasan-dev@googlegroups.com, 
+	Edward Liaw <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Ck9uIDMxLjAzLjI0IDEwOjQ0LCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOgo+IHZpcnRpbyBj
-b3JlIGFscmVhZHkgc2V0cyB0aGUgLm93bmVyLCBzbyBkcml2ZXIgZG9lcyBub3QgbmVlZCB0by4K
-Pgo+IFNpZ25lZC1vZmYtYnk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dz
-a2lAbGluYXJvLm9yZz4KCgpSZXZpZXdlZC1ieTogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9u
-LmNvbT4KCgpBbGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApL
-cmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4g
-U2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFy
-bG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5
-IDIzNyA4NzkKCgo=
+On Tue, 9 Apr 2024 at 13:12, Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> On 04/09, Thomas Gleixner wrote:
+> >
+> > The discussion started about running new tests on older kernels. As this
+> > is a feature and not a bug fix that obviously fails on older kernels.
+>
+> OK, I see... please see below.
+>
+> > So something like the uncompiled below should work.
+>
+> Hmm... this patch doesn't apply to Linus's tree...
+>
+> It seems that this is because in your tree check_timer_distribution() does
+>
+>         if (timer_delete(id)) {
+>                 ksft_perror("Can't delete timer");
+>                 return 0;
+>         }
+>
+> while in Linus's tree it returns -1 if timer_delete() fails. Nevermind.
+>
+> Thomas, I am almost shy to continue this discussion and waste your time ;)
+> But ...
+>
+> > +static bool check_kernel_version(unsigned int min_major, unsigned int min_minor)
+> > +{
+> > +     unsigned int major, minor;
+> > +     struct utsname info;
+> > +
+> > +     uname(&info);
+> > +     if (sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+> > +             ksft_exit_fail();
+> > +     return major > min_major || (major == min_major && minor >= min_minor);
+> > +}
+>
+> this looks useful regardless. Perhaps it should be moved into
+> tools/testing/selftests/kselftest.h as ksft_ck_kernel_version() ?
+>
+> > +static int check_timer_distribution(void)
+> > +{
+> > +     const char *errmsg;
+> > +
+> > +     if (!check_kernel_version(6, 3)) {
+> > +             ksft_test_result_skip("check signal distribution (old kernel)\n");
+> >               return 0;
+>
+> ...
+>
+> > +     ksft_test_result(!ctd_failed, "check signal distribution\n");
+>
+> Perhaps
+>
+>         if (!ctd_failed)
+>                 ksft_test_result_pass("check signal distribution\n");
+>         else if (check_kernel_version(6, 3))
+>                 ksft_test_result_fail("check signal distribution\n");
+>         else
+>                 ksft_test_result_skip("check signal distribution (old kernel)\n");
+>
+> makes more sense?
 
+This looks even better!
+
+> This way it can be used on the older kernels with bcb7ee79029d backported.
+>
+> Oleg.
+>
 
