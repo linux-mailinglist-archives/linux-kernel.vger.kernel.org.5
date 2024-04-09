@@ -1,216 +1,88 @@
-Return-Path: <linux-kernel+bounces-136566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44C689D592
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0877989D57B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5873D1F2244C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:28:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B17671F235EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABED80028;
-	Tue,  9 Apr 2024 09:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CA27FBB3;
+	Tue,  9 Apr 2024 09:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PgaVIP8j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJek0EN9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333DA7FBC0;
-	Tue,  9 Apr 2024 09:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3CB7F7F8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654892; cv=none; b=Eb84yXfxZ5ifqboxHDYHdqy5OAu/HUFVo9jIt0WYyfq7hxRjVwcEqpNdsn7OWuISmi9P36EGR8vGBEmZVTfNmxO3fqisvUVqIxrIYktSurquSM2lZ4vwiGx3draqEU4851JIDJCkuM/N02AkeR+eEH/z4Z1jotZproktrkzSCkA=
+	t=1712654714; cv=none; b=Eq421KnDMcArita+MSftV1S2cM+YBvpxadpTLdbnZOxsJL71D6V0tkH3NnLkUXnZ+W64NV+qsiP1IOmKW4xGPokv+5Z7UvRP/djgVbTKrNqT8oNbGegQM6fzNV+ghvabirnDjXEWl1nFpwgj18GK2qZ2gKCIXpDmJwXIJKFF9wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654892; c=relaxed/simple;
-	bh=VoJ8ZdxNnf5Ly4hU62H933il+lzRT2qk2o5pp6nco08=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HItvsnXn85XdmdHOuGQJ3n3iKtQ4VAbGnZWZgYacWSAGLU6U6xySGY7KoB34xo4GF+XoZn4neB3QExocFHZUwedsHo2R0E75ONwCF8VeDtNbODcvIGH/0jJGODzGGNUpOGjGk20VhnEkUlOUj/rPhimvjK/YsfKJdVJ6gZqbkjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PgaVIP8j; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712654892; x=1744190892;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VoJ8ZdxNnf5Ly4hU62H933il+lzRT2qk2o5pp6nco08=;
-  b=PgaVIP8j7ki9ztOmoUp1ARBDBSXATO4xWyu15qdqd8rK/7JL7hBWNcJY
-   XBf7fZvdc04Sap1TEo0eoHPb/qgUGtsPWcCGMSY6YJByJTcYmhn1kznBf
-   Y9ipztmo7rUE+eYJRfXXld7XMrNfDJ+EZtJvf54UAI27yd7PP1Wxu2cIc
-   PC8x12ouFqzjcFqL92ynGycfa76GZMlcTl/eb0cJq0c7b7I23v2wwYFLd
-   tINM8AE9NnwqEO7eM60Y6tZJYzDg5M9HPyufLfhjtgDrCqor6zcB+gGCg
-   0iFjSOdb6ovLocYnrXIqakY+Zds5UDPl5CjjK8LFv7Bypc1ROw/ZAui4w
-   w==;
-X-CSE-ConnectionGUID: vukaHeYmSJCZIWyhGkHzMQ==
-X-CSE-MsgGUID: 0SOzjeTFQxyBrzN4A8ILEg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="18527311"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="18527311"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 02:28:11 -0700
-X-CSE-ConnectionGUID: 5xCYZL8qSFe11zSgyHZzqA==
-X-CSE-MsgGUID: KCrSgwiSTGyTyUrYeTITkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="20121992"
-Received: from unknown (HELO [10.238.9.252]) ([10.238.9.252])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 02:28:07 -0700
-Message-ID: <73394dea-81d9-469c-b94f-6d58bfca186a@linux.intel.com>
-Date: Tue, 9 Apr 2024 17:28:05 +0800
+	s=arc-20240116; t=1712654714; c=relaxed/simple;
+	bh=2xDuSu2bZaFbHQfV9u0Wk7X0lwP1q8Cg/dxX29fvekw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jWx324BsHeSP9WWnHSdM1jTP16xbDixOVv4fgs5leVa/BbWyRYORR+BtFVm02r/8vNsv/h9a2PJ3dz5LlheCG7OA5nzlG82/SFpDSEu0ZYGEmehxR667zryGPVMZeoKdPM1FAAv8ajEUZugjdWHbaMjQvCsouifoXY+YedI7w4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJek0EN9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCB9C433F1;
+	Tue,  9 Apr 2024 09:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712654714;
+	bh=2xDuSu2bZaFbHQfV9u0Wk7X0lwP1q8Cg/dxX29fvekw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MJek0EN91l7r5UXMfQ2gaY/SfZ++QWsTWhwAKvlwbJlC/yB8r1Hk0jR4i4ftKjb7y
+	 1wl3UPPxcyEJzXhTBG8UJozzZRuc84XFgfyIReAUrbGJzalyfVnNHhaDzV7mFGUfOF
+	 xDXwokd9YPgfIHdcG0w3HqqB2jik7zjpPNuegaG5j6s69HAfT3GKi6R3/aFl4F8t8x
+	 3fc55kQl78et94d09S9b+R3Diq9SuxKnAIGYZ08V+B/mDpBcqakjI0ud5CbzZcmumy
+	 GJsrvntx1L51oi+/d64vt9MsloCI2wxe7CMD2U2ZwObAEqJQldYu7gdbTsevzuxCdn
+	 A5cS4lJg476ow==
+From: alexs@kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: "Alex Shi (tencent)" <alexs@kernel.org>
+Subject: [PATCH v4 0/9] transfer page to folio in KSM 
+Date: Tue,  9 Apr 2024 17:28:15 +0800
+Message-ID: <20240409092826.1733637-1-alexs@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 097/130] KVM: x86: Split core of hypercall emulation
- to helper function
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <d6547bd0c1eccdfb4a4908e330cc56ad39535f5e.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <d6547bd0c1eccdfb4a4908e330cc56ad39535f5e.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: "Alex Shi (tencent)" <alexs@kernel.org>
 
+This is the first part of page to folio transfer on KSM. Since only
+single page could be stored in KSM, we could safely transfer stable tree
+pages to folios. 
+This patchset could reduce ksm.o 57kbytes from 2541776 bytes on latest
+akpm/mm-stable branch with CONFIG_DEBUG_VM enabled. It pass the KSM testing
+in LTP and kernel selftest.
 
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> By necessity, TDX will use a different register ABI for hypercalls.
-> Break out the core functionality so that it may be reused for TDX.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/include/asm/kvm_host.h |  4 +++
->   arch/x86/kvm/x86.c              | 56 ++++++++++++++++++++++-----------
->   2 files changed, 42 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index e0ffef1d377d..bb8be091f996 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -2177,6 +2177,10 @@ static inline void kvm_clear_apicv_inhibit(struct kvm *kvm,
->   	kvm_set_or_clear_apicv_inhibit(kvm, reason, false);
->   }
->   
-> +unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
-> +				      unsigned long a0, unsigned long a1,
-> +				      unsigned long a2, unsigned long a3,
-> +				      int op_64_bit, int cpl);
->   int kvm_emulate_hypercall(struct kvm_vcpu *vcpu);
->   
->   int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index fb7597c22f31..03950368d8db 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10073,26 +10073,15 @@ static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
->   	return kvm_skip_emulated_instruction(vcpu);
->   }
->   
-> -int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> +unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
-> +				      unsigned long a0, unsigned long a1,
-> +				      unsigned long a2, unsigned long a3,
-> +				      int op_64_bit, int cpl)
->   {
-> -	unsigned long nr, a0, a1, a2, a3, ret;
-> -	int op_64_bit;
-> -
-> -	if (kvm_xen_hypercall_enabled(vcpu->kvm))
-> -		return kvm_xen_hypercall(vcpu);
-> -
-> -	if (kvm_hv_hypercall_enabled(vcpu))
-> -		return kvm_hv_hypercall(vcpu);
-> -
-> -	nr = kvm_rax_read(vcpu);
-> -	a0 = kvm_rbx_read(vcpu);
-> -	a1 = kvm_rcx_read(vcpu);
-> -	a2 = kvm_rdx_read(vcpu);
-> -	a3 = kvm_rsi_read(vcpu);
-> +	unsigned long ret;
->   
->   	trace_kvm_hypercall(nr, a0, a1, a2, a3);
->   
-> -	op_64_bit = is_64_bit_hypercall(vcpu);
->   	if (!op_64_bit) {
->   		nr &= 0xFFFFFFFF;
->   		a0 &= 0xFFFFFFFF;
-> @@ -10101,7 +10090,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->   		a3 &= 0xFFFFFFFF;
->   	}
->   
-> -	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
-> +	if (cpl) {
->   		ret = -KVM_EPERM;
->   		goto out;
->   	}
-> @@ -10162,18 +10151,49 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->   
->   		WARN_ON_ONCE(vcpu->run->hypercall.flags & KVM_EXIT_HYPERCALL_MBZ);
->   		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
-> +		/* stat is incremented on completion. */
->   		return 0;
->   	}
->   	default:
->   		ret = -KVM_ENOSYS;
->   		break;
->   	}
-> +
->   out:
-> +	++vcpu->stat.hypercalls;
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(__kvm_emulate_hypercall);
-> +
-> +int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> +{
-> +	unsigned long nr, a0, a1, a2, a3, ret;
-> +	int op_64_bit;
+Thanks for Matthew Wilcox and David Hildenbrand's suggestions and comments!
 
-Can it be opportunistically changed to bool type, as well as the 
-argument type of "op_64_bit" in __kvm_emulate_hypercall()?
+Alex Shi (tencent) (9):
+  mm/ksm: add ksm_get_folio
+  mm/ksm: use folio in remove_rmap_item_from_tree
+  mm/ksm: add folio_set_stable_node
+  mm/ksm: use folio in remove_stable_node
+  mm/ksm: use folio in stable_node_dup
+  mm/ksm: use ksm_get_folio in scan_get_next_rmap_item
+  mm/ksm: use folio in write_protect_page
+  mm/ksm: Convert chain series funcs to use and return folios
+  mm/ksm: replace set_page_stable_node by folio_set_stable_node
 
-> +	int cpl;
-> +
-> +	if (kvm_xen_hypercall_enabled(vcpu->kvm))
-> +		return kvm_xen_hypercall(vcpu);
-> +
-> +	if (kvm_hv_hypercall_enabled(vcpu))
-> +		return kvm_hv_hypercall(vcpu);
-> +
-> +	nr = kvm_rax_read(vcpu);
-> +	a0 = kvm_rbx_read(vcpu);
-> +	a1 = kvm_rcx_read(vcpu);
-> +	a2 = kvm_rdx_read(vcpu);
-> +	a3 = kvm_rsi_read(vcpu);
-> +	op_64_bit = is_64_bit_hypercall(vcpu);
-> +	cpl = static_call(kvm_x86_get_cpl)(vcpu);
-> +
-> +	ret = __kvm_emulate_hypercall(vcpu, nr, a0, a1, a2, a3, op_64_bit, cpl);
-> +	if (nr == KVM_HC_MAP_GPA_RANGE && !ret)
-> +		/* MAP_GPA tosses the request to the user space. */
-> +		return 0;
-> +
->   	if (!op_64_bit)
->   		ret = (u32)ret;
->   	kvm_rax_write(vcpu, ret);
->   
-> -	++vcpu->stat.hypercalls;
->   	return kvm_skip_emulated_instruction(vcpu);
->   }
->   EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
+ mm/ksm.c     | 263 ++++++++++++++++++++++++++-------------------------
+ mm/migrate.c |   2 +-
+ 2 files changed, 134 insertions(+), 131 deletions(-)
+
+-- 
+2.43.0
 
 
