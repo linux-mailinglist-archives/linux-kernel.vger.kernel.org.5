@@ -1,99 +1,107 @@
-Return-Path: <linux-kernel+bounces-136608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF56E89D61D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:58:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C24389D622
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:58:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644461F2440D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA29D285F00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8FD85631;
-	Tue,  9 Apr 2024 09:57:08 +0000 (UTC)
-Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5304380C11;
+	Tue,  9 Apr 2024 09:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yUJNjNeK";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RudeqC4D"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A5F81727;
-	Tue,  9 Apr 2024 09:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.14.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240BC8004F;
+	Tue,  9 Apr 2024 09:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712656627; cv=none; b=nUiVB8sc7HwWO2Yeq3JzYs1HwOcRGXn3Kbm5KYo6RceJuhpLrDtLlh8/N1ryDlvEplNgEusz+J+gZDxBfvgAX70Jwynj1h23XA7RuCM7WD1qVr6DKq6BRjZYMI/67gOhcTjJjb/zwRJSHkWVgWt3H5FxUOQNvdieb+26YY5ItMc=
+	t=1712656718; cv=none; b=Tj+nnyQVusnGWRNpgmu+U+0WJblWge8sG6wUpzbfX6X6YEiDqLhq+Qnv6lml0lc5iANrf1ILf5VNvIHjMcJzAqz2pekFBqMAkRMoru8QoFkq3h63HJanyFIi/ERp0np9XbWfy6sedXqk9xWD3t0Gie8RIwDJTJEsxn2+sSTI8vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712656627; c=relaxed/simple;
-	bh=Nev6clutsLuoZ3tdEcecuIJhvQs7KonqvYFmWzWrYno=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VihqYpVVtyOTKtv89JMyGJ9oueK5rtViTVOibys4PaKQtK63OlwU42lmO6JAXju+nFqC/u4larHc9B9IAMwSusmuiNxBAsUdze98IMHSnXLsWT+qybV7Nisk59qJ3o1qTU3CCkJLhbyCNNu8rjAUWRUZ51rnOoeS6cdI0Go7SA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org; spf=pass smtp.mailfrom=gpxsee.org; arc=none smtp.client-ip=37.205.14.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gpxsee.org
-Received: from [192.168.4.14] (unknown [62.77.71.229])
-	by mx.gpxsee.org (Postfix) with ESMTPSA id 4A437440C7;
-	Tue,  9 Apr 2024 11:57:02 +0200 (CEST)
-Message-ID: <36d9063f-0133-4a88-8120-f41e5fd85d89@gpxsee.org>
-Date: Tue, 9 Apr 2024 11:57:02 +0200
+	s=arc-20240116; t=1712656718; c=relaxed/simple;
+	bh=TDWicARIPMuMDq2ra9wZntrVl26yeJtNleDsR89JkN0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QHrRECpUkFfY7O+Gg+UHd6DzKZJbI698cwnWnzbwz2mO3RgkvjPBKyOSmWreNRna7FRxfgl6FPtgi83g9rH9sbxPzKxfiLvQVlpTDqJDvKyOMePmxiqQBvHVxCXsJ166BqpKHWbHFjD6qRNGKGqPzFr2Krbd0OxwYNIUFVN9hRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yUJNjNeK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RudeqC4D; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712656715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qKspgdo2jemqpn3T00b+Xa65C9dMoGtY4Dq7FXO0Tyg=;
+	b=yUJNjNeKDiThpVYIfc/hToqHg6dkX3L/HoTYvzbPfhlp1m8uKGs2XlnA7L8y5fI5N4cOFQ
+	dQ32nytZ/3UjhNV3dbTOO3Jfj16arUKQd3ugTeQbmVrxaxteUt94atCZh9WNssL7HPPxr3
+	pCn1ZaCza7yC716aaOz0E9ElJsPiAsyL6aSGwchk4R4+heV6rolxLRbt3rqpDlNbHV0Zsg
+	LM1od7FRSc1KMmptgN9TzUpAkmHkOtD8w6Z/GiQIOQr0nIuvqpNqMb/4UrsnnroGwkCm8s
+	MZ283Al2wq+ZdOXvpPy3OWQoVsoJT3sajNpnJ3c4lnq/exiGmnSga1uqUzT3tA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712656715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qKspgdo2jemqpn3T00b+Xa65C9dMoGtY4Dq7FXO0Tyg=;
+	b=RudeqC4DlrksEdfkH3Xkz8ONgur7Wdpdnh1N4nAB5MWJHlWx6HGF7wJP3MPuxDdcYmBaf0
+	oxZPsIOLB3/qZhBw==
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ yaoma@linux.alibaba.com
+Subject: Re: [PATCHv12 1/4] genirq: Provide a snapshot mechanism for
+ interrupt statistics
+In-Reply-To: <20240306125208.71803-2-yaoma@linux.alibaba.com>
+References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
+ <20240306125208.71803-2-yaoma@linux.alibaba.com>
+Date: Tue, 09 Apr 2024 11:58:34 +0200
+Message-ID: <87frvu7t85.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] media: mgb4: Fixed signal frame rate limit
- handling
-To: Hans Verkuil <hverkuil@xs4all.nl>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
-References: <20240322151005.3499-1-tumic@gpxsee.org>
- <20240322151005.3499-4-tumic@gpxsee.org>
- <8a0cf515-e450-41b8-950c-4356f2fb9879@xs4all.nl>
-Content-Language: en-US
-From: =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>
-In-Reply-To: <8a0cf515-e450-41b8-950c-4356f2fb9879@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 08. 04. 24 12:47, Hans Verkuil wrote:
+On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
+> The soft lockup detector lacks a mechanism to identify interrupt storms
+> as root cause of a lockup. To enable this the detector needs a
+> mechanism to snapshot the interrupt count statistics on a CPU when the
+> detector observes a potential lockup scenario and compare that against
+> the interrupt count when it warns about the lockup later on. The number
+> of interrupts in that period give a hint whether the lockup might be
+> caused by an interrupt storm.
+>
+> Instead of having extra storage in the lockup detector and accessing
+> the internals of the interrupt descriptor directly, convert the per CPU
+> irq_desc::kstat_irq member to a data structure which contains the
+> counter plus a snapshot member and provide interfaces to take a
+> snapshot of all interrupts on the current CPU and to retrieve the delta
+> of a specific interrupt later on.
+>
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> Reviewed-by: Liu Song <liusong@linux.alibaba.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
->> diff --git a/Documentation/admin-guide/media/mgb4.rst b/Documentation/admin-guide/media/mgb4.rst
->> index 2977f74d7e26..6fff886003e2 100644
->> --- a/Documentation/admin-guide/media/mgb4.rst
->> +++ b/Documentation/admin-guide/media/mgb4.rst
->> @@ -228,8 +228,12 @@ Common FPDL3/GMSL output parameters
->>       open.*
->>   
->>   **frame_rate** (RW):
->> -    Output video frame rate in frames per second. The default frame rate is
->> -    60Hz.
->> +    Output video signal frame rate limit in frames per second. Due to
->> +    the limited output pixel clock steps, the card can not always generate
->> +    a frame rate perfectly matching the value required by the connected display.
->> +    Using this parameter one can limit the frame rate by "crippling" the signal
->> +    so that the lines are not equal but the signal appears like having the exact
->> +    frame rate to the connected display. The default frame rate limit is 60Hz.
-> 
-> It's not clear what is meant with 'crippling'. Normally when dealing with video
-> framerates the driver will pick the closest video timing to the requested framerate.
-> It is understood that you can't always get the exact framerate, so drivers can
-> make adjustments.
-> 
+This does not apply anymore.
 
-By "crippling" I mean the signal is modified in a obscure way so that a 
-frame has not all lines equal. The HW somehow (the exact way is not 
-known to me, the documentation is very sparse on this - before my 
-investigation it stated only "frames per second" which was very 
-confusing and the reason this patch exists) modifies the last 
-line(lines?) so that the overall clock ticks per frame is the desired 
-value. Some blanking stuff (the porches?) you have set are not equal for 
-all the frame lines.
+Also can you please split this apart to convert kstat_irqs to a struct
+with just the count in it and then add the snapshot mechanics on top.
 
-What I'm trying to do is to change the original documentation which is 
-definitely wrong (the users are confused how you can set the timings AND 
-the frame rate with different values at the same time) without saying 
-too much about the exact algorithm as it is not exactly known and may 
-even slightly change in different FW versions.
+Thanks,
 
-Does that all make sense to you now?
+        tglx
+
 
