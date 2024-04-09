@@ -1,149 +1,126 @@
-Return-Path: <linux-kernel+bounces-137585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE2389E449
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:19:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B948189E44A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:21:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7BD1F23219
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:19:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44062B22074
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 20:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7C115820F;
-	Tue,  9 Apr 2024 20:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YpNgss1Q"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22219158205;
+	Tue,  9 Apr 2024 20:21:03 +0000 (UTC)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3CBF4436;
-	Tue,  9 Apr 2024 20:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B952770C
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 20:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712693954; cv=none; b=YI9Hr6TGJnDtb9b5C71O60cSaq0X+iDJXvLf/1jcmAUYawrObu0dcHAfiXFFt1IgCW0X1vbQUB+u0tC0rQwlBs2RkG3bMtOw5obLvE7Ss3bmgvQUpZxSAdAyMSLbIeBwOKb25Uv2yg0VrXkeBSdxChUq85eF0AEgyLryxM1vLoM=
+	t=1712694062; cv=none; b=CqgmI2tavugbYZUaH8BlEPEsU5aMCwyQ1y9k8LsZaHlVD0+NYLszln+fbP/lQIsy2GhyBJuOQgxTw14zXQwzrbfzHwckVxX+V1eh00AHRGXe+upZMDQtJtwS6uMQqO/q6IauyBVs55YmeGHC7YS3zur5HuHWLsEYrfTPZyIHsbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712693954; c=relaxed/simple;
-	bh=ToYr3o6+mLV92Xi6A7D0WqypWAMc28DaNSTm+5qtVZw=;
+	s=arc-20240116; t=1712694062; c=relaxed/simple;
+	bh=GNpOiMu5hZbOwN8H7l3gt0aUIAcdwQoMsbK2Mat4wlE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OVyfbajWemou8chwaHlIaNrnrvi2haK+eFvVL8PME678x/Ij/4nB66Juk//bdZWgvuFidnS5iSugC4ozWXfl9RiBabtkW5ycAoaY9tcG/C9tcZmbu5PZ+l/nMdvkRMJDT3vphAaPW3GPYNB9xFfl0CMQZAkWgnW9ys65SaWaZ1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YpNgss1Q; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 In-Reply-To:Content-Type; b=QgfXpIiJcsCzj9f4C/Y6zI7MOgrdclSnzAb3qzpEFUPYuUaYObvU5YMwXFThWiGBhV0hXfMc5Gtb8h+FitrAO2/eYLdhtrFtO5NN32CO0JT7GVwbJqGNnsSJTA+4UcBDEEJyVp9cb2cRd2LG/56w9kVss5WLFnXr/AspfIcVZ6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c5f6b33f1bso512659b6e.1;
-        Tue, 09 Apr 2024 13:19:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712693952; x=1713298752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S/qH8NItVOVq4Bt+ZHLr1TJQobJtozwRWOASECxFFK4=;
-        b=YpNgss1QXtHtq048zWaslF9bFr6gHkcWt/8nu8AWWjtEbKyNjzG5QtMjexKSj2QyZc
-         GbpRnrAiKSyBwt2LPU5v6XWL8lee8kGc8FNMeKQg449KGq4RcQjrA35X7w6VWOfcYdY4
-         Oxr/7CeHhMKQUMGJj2fL+ZNYKLus5FXqWknBnbHjUXPOSdzAgGX3CpcCo0tDlpsfhOe/
-         thXYauKCDJO8YsSp1EtaKNdR10tfQ6GHFtdULEtrohaDCDIElon7OEVKkrNJs4TYAvdH
-         TcEsekLvhGdrXdio2zliVUVnVhaMyiks7e843sVIcuTHhsQq0K8XKlGNCPVjNF5Lggkl
-         ORdQ==
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-34602c11302so229375f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 13:21:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712693952; x=1713298752;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1712694059; x=1713298859;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S/qH8NItVOVq4Bt+ZHLr1TJQobJtozwRWOASECxFFK4=;
-        b=TGAMUcYjhCjiaqm7wPT480gX3YDni8DoWc3LP9HpYjirYMPJ3bWLv2yJ3IJcPxkayy
-         vTi7wvZzwRkloFC8brvuzD0kEdPHDm0rvm3iL51jOfbDD1CyjuVNaH93iElqWK5subz4
-         At+klaRD3zmul6pZmTRn5ADEihti9Yb+SLNI5rbh0h6EoB9bn4LphIy3j3NFmODx0o8c
-         aoX/f77bWLLpkZ3YTjv4javJNhlvQBtPAkUkByaTfagc4uNYBxV1iE/3ETOasx7YOX++
-         kGWariXLN4xmM9//fiaMO4ACBxZc7KxRi7buTT+9xrEKYp5eidNZUfZMuRWRzFQMMrEK
-         LsGw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0PCTiC+5xSJrFL1IYlnAiN728eBGw2T1lbVn6sCWfCyePRiPbzu+ICWIvbh3yhKlb0RiQSqvQJg2TU5ZYnVNi0T4Wwmm1SAObdryx+RN0DX3wwHr8Uul7lHBbhYsomXOte+Whxd5SWw==
-X-Gm-Message-State: AOJu0YzzWd2TqM5pLll5u6R6MRb3Duf/dpmXSz0hfbt7AHFVrYPMXjUY
-	c9E2HUbUY7qCBou2y5UiuIgLhRuMGodMvkwodK1yECf6X8fDGPSwq1GlrEfJScGaiA==
-X-Google-Smtp-Source: AGHT+IEaPDVryrV9ov98iA3AwPMOsXh9L8jN+mfbgZ96uWTQB5vVI9XX1DxRaywPeCcUYq4A7VCIaA==
-X-Received: by 2002:a05:6808:bd2:b0:3c3:dcb9:118a with SMTP id o18-20020a0568080bd200b003c3dcb9118amr1519524oik.28.1712693951843;
-        Tue, 09 Apr 2024 13:19:11 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id b14-20020a056808010e00b003c5edda8526sm1083722oie.31.2024.04.09.13.19.10
+        bh=lULEqVs4tWshiKYsjKkDxlfPSKjepcgNdZDCa3C6hZk=;
+        b=u8AmsVlZk0QzZwNQftWWPA/Gzen7DOfBru3iHnwLvDPsHY145coUtU1rcNvPmmTrbL
+         P/NZwdowS60t/inDaV+CJYEswiswj3ySPX/umgXKjOQYp+TTWz8Qa3UoKL1/Buo+hMau
+         R76QYt1ab0FUp65l/2cV/0d24J3CI/BlieFAz/yF4sZOO4sXO4+hcTrv5aR84uZZOpCe
+         SaNaustlTyyNr3E0fCxJGpvAcPrilGoJ1o8uhndvZzJmwNGYd/X2lPW85cEjp+GfnkiX
+         Uq1sGR2mQ1YDVpPxowP+JZzVEtQnEGXjo8ydaix1FZKvYmp40EyJhavy83okXk8pl7mQ
+         wxyw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQRUZ6TyDvDPEtx3RUpnNEKlcmjfnDxqz24lIgFnnqKV4Q/vdDp0iUHjOOH6+Yz/x1EhRVVaCYylpPedaO+5KFmqy80GzQXHSXIR2V
+X-Gm-Message-State: AOJu0YyWytXi4ZA/ml+5HMqWkCdUGTTc5/5+pt5AmOTTDJ18T54ux5UW
+	h/9wMUKX794zZ1MRda6DzqhI7poHNAhGkstF3LbWPXTVzdFkYAQQ
+X-Google-Smtp-Source: AGHT+IG6MNaAyXXodTjWqghpCkWIqtkZEu+r8y5gb0akf8pgLPLriB5ARN54fPl8PnsCGmXRXU2QBQ==
+X-Received: by 2002:a5d:4a4e:0:b0:343:c3b0:ee39 with SMTP id v14-20020a5d4a4e000000b00343c3b0ee39mr439936wrs.5.1712694058954;
+        Tue, 09 Apr 2024 13:20:58 -0700 (PDT)
+Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
+        by smtp.gmail.com with ESMTPSA id e8-20020a5d4e88000000b003438cc1d2b4sm12253228wru.59.2024.04.09.13.20.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 13:19:11 -0700 (PDT)
-Message-ID: <33461c22-21a3-023b-4750-c69304471ea8@gmail.com>
-Date: Tue, 9 Apr 2024 15:19:10 -0500
+        Tue, 09 Apr 2024 13:20:58 -0700 (PDT)
+Message-ID: <e73b73af-a8c6-49f2-b47a-126fab4836b2@grimberg.me>
+Date: Tue, 9 Apr 2024 23:20:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 5/7] dt-bindings: phy: qcom,ipq8074-qmp-pcie: add
- ipq9574 gen3x2 PHY
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
- <20240409190833.3485824-6-mr.nuke.me@gmail.com>
- <019180df-67b9-438b-a10d-f92fd4ddec03@linaro.org>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <019180df-67b9-438b-a10d-f92fd4ddec03@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] nvme-tcp: short-circuit reconnect retries
+To: Daniel Wagner <dwagner@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc: Keith Busch <kbusch@kernel.org>, James Smart <james.smart@broadcom.com>,
+ Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240409093510.12321-1-dwagner@suse.de>
+ <20240409093510.12321-4-dwagner@suse.de>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240409093510.12321-4-dwagner@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 4/9/24 15:09, Krzysztof Kozlowski wrote:
-> On 09/04/2024 21:08, Alexandru Gagniuc wrote:
->> The IPQ9574 gen3x2 PHY is very similar to IPQ6018. It requires two
->> extra clocks named "anoc" and "snoc". Document this, and add a
->> new compatible string for this PHY.
->>
->> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->> ---
->>   .../phy/qcom,ipq8074-qmp-pcie-phy.yaml        | 31 ++++++++++++++++++-
->>   1 file changed, 30 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq8074-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq8074-qmp-pcie-phy.yaml
->> index 634cec5d57ea..017ad65a9a3c 100644
->> --- a/Documentation/devicetree/bindings/phy/qcom,ipq8074-qmp-pcie-phy.yaml
->> +++ b/Documentation/devicetree/bindings/phy/qcom,ipq8074-qmp-pcie-phy.yaml
->> @@ -19,19 +19,22 @@ properties:
->>         - qcom,ipq6018-qmp-pcie-phy
->>         - qcom,ipq8074-qmp-gen3-pcie-phy
->>         - qcom,ipq8074-qmp-pcie-phy
->> +      - qcom,ipq9574-qmp-gen3x2-pcie-phy
->>   
->>     reg:
->>       items:
->>         - description: serdes
->>   
->>     clocks:
->> -    maxItems: 3
->> +    minItems: 3
-> 
-> Which binding inspired you to such change? No, you need maxItems. See
-> your previous patches here how it is done.
-> 
-> 
->>   
->>     clock-names:
->>       items:
->>         - const: aux
->>         - const: cfg_ahb
->>         - const: pipe
->> +      - const: anoc
->> +      - const: snoc
-> 
-> OK, you did not test it. Neither this, nor DTS. I stop review, please
-> test first.
+On 09/04/2024 12:35, Daniel Wagner wrote:
+> From: Hannes Reinecke <hare@suse.de>
+>
+> Returning an nvme status from nvme_tcp_setup_ctrl() indicates that the
+> association was established and we have received a status from the
+> controller; consequently we should honour the DNR bit. If not any future
+> reconnect attempts will just return the same error, so we can
+> short-circuit the reconnect attempts and fail the connection directly.
+>
+> Signed-off-by: Hannes Reinecke <hare@suse.de>
+> [dwagner: add helper to decide to reconnect]
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>   drivers/nvme/host/nvme.h | 24 ++++++++++++++++++++++++
+>   drivers/nvme/host/tcp.c  | 23 +++++++++++++++--------
+>   2 files changed, 39 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+> index 9b8904a476b8..dfe103283a3d 100644
+> --- a/drivers/nvme/host/nvme.h
+> +++ b/drivers/nvme/host/nvme.h
+> @@ -701,6 +701,30 @@ static inline bool nvme_is_path_error(u16 status)
+>   	return (status & 0x700) == 0x300;
+>   }
+>   
+> +/*
+> + * Evaluate the status information returned by the LLDD in order to
+> + * decided if a reconnect attempt should be scheduled.
+> + *
+> + * There are two cases where no reconnect attempt should be attempted:
+> + *
+> + * 1) The LLDD reports an negative status. There was an error (e.g. no
+> + *    memory) on the host side and thus abort the operation.
+> + *    Note, there are exception such as ENOTCONN which is
+> + *    not an internal driver error, thus we filter these errors
+> + *    out and retry later.
+> + * 2) The DNR bit is set and the specification states no further
+> + *    connect attempts with the same set of paramenters should be
+> + *    attempted.
+> + */
+> +static inline bool nvme_ctrl_reconnect(int status)
+> +{
+> +	if (status < 0 && status != -ENOTCONN)
+> +		return false;
 
-I ran both `checkpatch.pl` and `make dt_binding_check`. What in this 
-patch makes you say I "did not test it", and what test or tests did I miss?
-
-Alex
+So if the host failed to allocate a buffer it will never attempt
+another reconnect? doesn't sound right to me..,
 
