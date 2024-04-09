@@ -1,96 +1,114 @@
-Return-Path: <linux-kernel+bounces-136036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDFF89CF37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:11:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E47689CF3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:13:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 488132822CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:11:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEC94282AAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D26E320B;
-	Tue,  9 Apr 2024 00:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB4B818;
+	Tue,  9 Apr 2024 00:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LlkLyyHX"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CBgUIW4k"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DF92570
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 00:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E753219A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 00:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712621461; cv=none; b=Et6pz03HnyZN+RGLJVIHozLQhhuDwnYGfR/9HP6rEIQOSTgdL1/Rk0EqIR2MdKA1VEBhS2b3ey5W2kY/4nyEAQdAnPAY1Pu1lMDk9FPty8fIrX1WuWGWfkc0NWRDee+llNofHJ/9rVMDPIB9bXZRYf46d9nzPGi5/v875aa+Rbc=
+	t=1712621573; cv=none; b=hfejzVLTxiMWOpWqfKPAG9PIZPT31EA2KILyY4qLCDd7KYw/qVSs9JW8OLDiS+BS9rokl7l8kciKVbPaCMK6LJxVCPEubMSgoePELkyqd72Qv0/DaJKI5bniASrxiwMwB++elXp9e2LhiNi86Z80wkaqyZv/WJfUOxn+enQ/ivw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712621461; c=relaxed/simple;
-	bh=jHhcISfvM5hw7cGoH7GmgOSBwsHp6ACYR2aJyOjpY8g=;
+	s=arc-20240116; t=1712621573; c=relaxed/simple;
+	bh=rA42DVPIz8tTwXvz9KosnbYvthn+MzPB6Blbd4aKlmM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fa+DvZkVa3BtGL1YliOQKlCGjEfXGjkMddSB2MgNbdfIA3iiZXNnX+MDN+9yJwnn0qvtLp+1Wcbdrj76hQR1Ep/26eAz1TLIUfdyHSLMt8uSJDZM5wVvpNOOblbdof3vjT9HnOiU3LISlbVw3Zpd0n9OzVR6VyY41HFVtTdro74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LlkLyyHX; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <737ae55d-3cd0-40fb-b3e9-3b676f1f735f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712621457;
+	 In-Reply-To:Content-Type; b=M9lMZNfhWCUKpJJZ8xZHL2GRgLxWGOqkj6yAtjSfLZE1ZaEH7tfBvTB3UDk9IG8mIlU2opUUQjKzmoPJV1BtnKx/EleoIkBq728wfhsClwGLhBNWiML52swtxqNZFUbEdA2hB4FmYZ1jaj/HYOcOwAc7WW+JZpnliQ/upMSyKa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CBgUIW4k; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712621571;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Sjp5f9oGLEoLkHdn8mA9hv760wrE2Mtc0mHWY7INqz8=;
-	b=LlkLyyHXayvJ2oLUWrzshr7bf5ZTEEuDnUEiflTdRU6YK2A8fJZjfrRUB941Uh3Kbm7m8d
-	Mr0BddGphdRLxPPg0PvAWC5py9I3f4EJ27htGz7irp1grKnHhVR2ILg1xXbsg0rJvvjT+J
-	26y6vC662TUE6I6neMclRoL6ja/jbm4=
-Date: Mon, 8 Apr 2024 17:10:48 -0700
+	bh=EZMDqLk/ajYnQzQR/K3NrKQIpgpLukxRoVqcEZWTdt4=;
+	b=CBgUIW4kd54nQZWRDPtcMqRyjk3VK3VbHDeMJGRoM8CMOUgY6RmI46qBtYeoxHGxOwGzKB
+	pldW0Gg+PaEwBlkcMnF3+oyCSDoQxS3V/5t/BDeQqNFefLvt/eFFuACeg6ACbtta/TYj/Q
+	AFRY6TmQPBSEy1Hf7xuuH73TqlEIpdM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-YqHu-p8-MzCfFmqjip8zgg-1; Mon, 08 Apr 2024 20:12:45 -0400
+X-MC-Unique: YqHu-p8-MzCfFmqjip8zgg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D880802A6F;
+	Tue,  9 Apr 2024 00:12:44 +0000 (UTC)
+Received: from [10.22.34.20] (unknown [10.22.34.20])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 77F11C09A05;
+	Tue,  9 Apr 2024 00:12:43 +0000 (UTC)
+Message-ID: <ec74bc9f-8e63-44b9-b3a6-ca7d6d366c69@redhat.com>
+Date: Mon, 8 Apr 2024 20:12:43 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: dereference of null in __cgroup_bpf_query() function
-To: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Song Liu <song@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240406151457.4774-1-m.lobanov@rosalinux.ru>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 6/9] selftests: cgroup: Add basic tests for pids
+ controller
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240406151457.4774-1-m.lobanov@rosalinux.ru>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <shuah@kernel.org>
+References: <20240405170548.15234-1-mkoutny@suse.com>
+ <20240405170548.15234-7-mkoutny@suse.com>
+ <a45c2ece-acb4-4cff-9d53-f5c007c9b905@collabora.com>
+ <qweowkm4wlfzovp3qhtkzbybeampodtwmpbp2kbtiqcrhmjtdt@syk4itfkpmfr>
+ <41dd9c5a-0e07-4b98-9dfb-fb57eaa74fa2@collabora.com>
+ <oosadt3f5i3qsvisrxe6hrs46ryfqbyxyk3a6jimd7cqczjtcw@dvlsm7eh3b6r>
+ <4bae7682-801e-498f-88c9-9c9d45364bfc@collabora.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <4bae7682-801e-498f-88c9-9c9d45364bfc@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On 4/6/24 8:14 AM, Mikhail Lobanov wrote:
-> In the __cgroup_bpf_query() function, it is possible to dereference
-> the null pointer in the line id = prog->aux->id; since there is no
-> check for a non-zero value of the variable prog.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-> ---
->   kernel/bpf/cgroup.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 491d20038cbe..7f2db96f0c6a 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1092,6 +1092,8 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
->   			i = 0;
->   			hlist_for_each_entry(pl, progs, node) {
->   				prog = prog_list_prog(pl);
-> +               	       	if (!prog_list_prog(pl))
 
-prog cannot be null. It is under cgroup_lock().
+On 4/8/24 08:04, Muhammad Usama Anjum wrote:
+> On 4/8/24 5:01 PM, Michal Koutný wrote:
+>> On Mon, Apr 08, 2024 at 04:53:11PM +0500, Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+>>> ksft_test_result_report(tests[i].fn(root), tests[i].name)
+>> $ git grep ksft_test_result_report v6.9-rc3 --
+>> (empty result)
+>>
+>> I can't find that helper. Is that in some devel repositories?
+> Sorry, I always do development on next. So it has been added recently. Try
+> searching it on next:
+>
+> git grep ksft_test_result_report next-20240404 --
 
-> +				continue;
->   				id = prog->aux->id;
->   				if (copy_to_user(prog_ids + i, &id, sizeof(id)))
->   					return -EFAULT;
+I don't believe it is a good idea to make this patch having a dependency 
+on another set of patches in -next because the test won't run in a 
+non-next environment. We can always have additional patches later on to 
+modify the tests to use the newly available APIs.
+
+Cheers,
+Longman
+
+>
+>> Michal
 
 
