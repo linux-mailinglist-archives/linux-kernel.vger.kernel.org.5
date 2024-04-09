@@ -1,210 +1,324 @@
-Return-Path: <linux-kernel+bounces-136745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 111BB89D7D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:28:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B255489D7D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:29:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA75628542B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:28:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EA2B1F21C67
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E918686AC8;
-	Tue,  9 Apr 2024 11:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6B386643;
+	Tue,  9 Apr 2024 11:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="A0hiCMyN"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2059.outbound.protection.outlook.com [40.107.104.59])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iScgx1iI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79828594B;
-	Tue,  9 Apr 2024 11:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662115; cv=fail; b=uTR8ukDmPlPqEGd98be+jM3bh6XkRMYA+q80itLCsLmvECl+1G204tbIInEQ3l/jlNnJXvLOMZ6Fi0QTxz+mw8juICWKysx+GkaWfjPEgu7Q7YWN8YTsTSaHuZZV+LJhYhc1wIS2zERjEheAip0hKijt7KJ9SuAEO0+jsVa6hWQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662115; c=relaxed/simple;
-	bh=yXpZl4ly39Pl3RIdpY7PymAWGqwILuqkqTLH2SzJy1M=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kk8bJqflzDLu2mt43MqT4HRuiQ00e5yvzkqugzx7Xqe90+c1zInuLT0tzdRxD1xasf7IQQbg/lMS9h85yVzo63JZyqFHCkrZQZzkynbROjswmLW54eXy2rDQsVTOjDJb3d3ICrNq10TchvNeiQfVWFdvmzWo/A2aUvRa0pWdQ70=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=A0hiCMyN; arc=fail smtp.client-ip=40.107.104.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MLc+Khyr7JQAwtrnm/IJ/ngHP+rwm5cfcfOcgNlaIJ7Nj9o46C1BdreYbhbA09AZPctDoTUA/LXKr1mDyo9CcQwFIV2sS5i2Edd7OKab57BfqULyGq3UpPvmOod/rRF6ovhz9jj7cZdLnFe7Gi/OfjCVdAEMFyBCjKr1O3XbCLhEN3krZ4jxdHANFYg3H6Y2FvEwyoQ4tFLinElwbLpYCDMPa9N4mdA9/Vo3oj3Ch+SuWQNWo8B+dnzRPj5jqerkbVN3GhLmH+Pw7s/KPv1i2aZCodS7oYfb9abyW1+9ViPqHZBjWjzNr8y30eVpkkAN6kYpvelzY6FyTGrvGmoflw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LRsOuexl/4ugi6f4C0zbXuU59b/WKBFh4W4iRr7Vk94=;
- b=K9ZGrrTK6JfdyeLmFT5aVZZ+uT4F4/Vvy4zQSda0PrUiyjyOkFdDiwgPWbLsvRt/wtdPYgzChONTPwYS/W+exG3BqU83Q1WGKtlNk4xQVrURRjIxFDlkBaO59cry1HyCwub2O6d42B4dHLAoA9KVW4kjjTgPNSMcwDfrjtEkwsGaESQ5JZEn63KgabK4q0NHcsF47O2BbJxbXSX0OUUg9E4G0kn+UlyA/DfbOH4wKbDba+wGMhoJvqgZ2OIi+fY61Dkt0mNu/WoGMP4JBduVTGpwVX9QV9bl7v4z5LsvWYtVN0p7kb4uGYJ4N6YXRftuI0VGuWwExar0kFdkhuezmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 195.60.68.100) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=axis.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LRsOuexl/4ugi6f4C0zbXuU59b/WKBFh4W4iRr7Vk94=;
- b=A0hiCMyNfsq9EdmB7nbHX2PSq5SnhPLV1nPVVl/sAoBqVTC3XOkSyHQTJSYlNla73YcVQp//IHu0xdPr202VL/LMd9wcLF3QojsNu/8TQOPQyL1IVnQy8/9PtBfTAKKTo8wWIGkYnQnpyLAdQBH0dQHKFRu5hh9SeFRaVSiYLbY=
-Received: from AS4P191CA0036.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:657::18)
- by DB9PR02MB7161.eurprd02.prod.outlook.com (2603:10a6:10:1fc::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Tue, 9 Apr
- 2024 11:28:29 +0000
-Received: from AM3PEPF0000A79A.eurprd04.prod.outlook.com
- (2603:10a6:20b:657:cafe::66) by AS4P191CA0036.outlook.office365.com
- (2603:10a6:20b:657::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.30 via Frontend
- Transport; Tue, 9 Apr 2024 11:28:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=axis.com;
-Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
- 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com; pr=C
-Received: from mail.axis.com (195.60.68.100) by
- AM3PEPF0000A79A.mail.protection.outlook.com (10.167.16.105) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Tue, 9 Apr 2024 11:28:29 +0000
-Received: from pc50632-2232.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 9 Apr
- 2024 13:28:28 +0200
-From: Rickard Andersson <rickaran@axis.com>
-To: <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
-	<sfrench@samba.org>, <pc@manguebit.com>, <ronniesahlberg@gmail.com>,
-	<sprasad@microsoft.com>, <tom@talpey.com>
-CC: <linux-kernel@vger.kernel.org>, <rickaran@axis.com>,
-	<rickard314.andersson@gmail.com>, <kernel@axis.com>
-Subject: [PATCH v2 1/1] smb: client: Fix hang in smb2_reconnect
-Date: Tue, 9 Apr 2024 13:27:58 +0200
-Message-ID: <20240409112758.467112-2-rickaran@axis.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240409112758.467112-1-rickaran@axis.com>
-References: <20240409112758.467112-1-rickaran@axis.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453158594B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712662179; cv=none; b=fH0t5D4mWXcv6W0Xcy0TcLX3KbU18qRbtGjbqp/d0mCfDIexbcf2+S/8aPryxZ5jfei5Dvj9LNm25g/Rbbi9+q6GHHhPy9QmjIH/lwqhx1hQsyGYaq6zuE+YJEzbBn4dUTUsjeCEEgvnXg69MCNGy2Jvp8jhjbd1ElMQBAeXejU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712662179; c=relaxed/simple;
+	bh=q3N9FxAz7AmxGWzk/PEXjnzm8i7y+7IFLUXlabsfZsk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YPS+jSV1xeLuGEYEntRnevrETiTVoSQdYMddxSApPxO+OWvd+SNHqLMR/yu8MmFqst91clc0cQemYlf2BsNEJ/WaSSULBopD+PAy1VhGKiIwBHnYiC7jg6cD6OLJOoEgCapAu82tLhUzQA31UeGSpU+paZTjNn9flNAX6wvqvmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iScgx1iI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712662176;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Ukj5XpQhbbnI72RJsdPHuhyyK4ArpEUkQAD+BTpMjIU=;
+	b=iScgx1iIPDWezNIeGQV35/LdknG7wVlHIv70Z5ijh8sta5/Z7RLtBsiLInNv/+E6o7Asxy
+	3bp3+xdBXFnlSEu14K6fCYRiO0v4/hZm9bzlUnX/uOkUAwL9QKNwkm/pM09bpBBIynkkHC
+	RK92YnF+sp9UmlA8RlysilqOSQXCH3w=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-cURhclSIPb6_KFtuv17mxw-1; Tue, 09 Apr 2024 07:29:34 -0400
+X-MC-Unique: cURhclSIPb6_KFtuv17mxw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41663c713b7so10570985e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:29:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712662173; x=1713266973;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:from:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ukj5XpQhbbnI72RJsdPHuhyyK4ArpEUkQAD+BTpMjIU=;
+        b=IV6dq1ULDjJ6rWn0Wms8cplx9Hw/5j2rx/QMgyAjXmreoXDv2EfiwCjnAOmOv86vf1
+         cSiteDQaKxjdHFp/+qWjsDKuSOEKLABTXmXFVY3db50DddKSbELD/+gU0mdlZddKgzbE
+         Nd4Q5T/CV2KHZAC0g/Y5IvJJekMbF7w6L+Va7RfQW/X3eKrTAJilIonFXEZpdq3zNnNL
+         ej6S4hq2pBdYz4S+rsHWgpkPLPLosloLZFZRbG7dmRixF5YVZSmWmFg0KX0W4p5CVhU+
+         CFLcUOpzkP43yGJgPuVjDdALx3qk+XZyuflWE5nHhwCuoatLtUjRHg/914WdR0XOmAf3
+         iLBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcFLA5GQkqmry9T3nm3TyeIF7tpjyygIGerQB8XiMAhDWYnd7TuKJ46F82RZRMrOhsHP+L10cBX2DVkCbPVuBxvf7Ixm0chT8/l/nC
+X-Gm-Message-State: AOJu0Ywdn/YQ134AFURsxJBETBbp+fzvORXx9bGCIZ915p1mxNUkQZqD
+	V1ntT/37svUHwWMcQ5WTK601KOsDEs93DHchUB5xdA2At6fbcQmPh9LttqltcuGKu+umpg/W8Lj
+	ZOaxoD4xB3P04m6jc3IdwGI7BVZWQDGrRkiDAFoYKHaNMzpcxUfMAiXOFnZ5A6A==
+X-Received: by 2002:a05:600c:1c08:b0:416:89bc:dec6 with SMTP id j8-20020a05600c1c0800b0041689bcdec6mr2210483wms.11.1712662173369;
+        Tue, 09 Apr 2024 04:29:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuXqMiQTPxog9ClhpLtvVqDlnjWWvOJGEGURMO92w6OgpG807qMLJ/GiSIMVJ3U70YXIQZzA==
+X-Received: by 2002:a05:600c:1c08:b0:416:89bc:dec6 with SMTP id j8-20020a05600c1c0800b0041689bcdec6mr2210468wms.11.1712662172850;
+        Tue, 09 Apr 2024 04:29:32 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
+        by smtp.gmail.com with ESMTPSA id b3-20020a05600c4e0300b00416920ca56csm4445574wmq.42.2024.04.09.04.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 04:29:32 -0700 (PDT)
+Message-ID: <d02959bc-84d8-4c74-a0da-9ad1159502e1@redhat.com>
+Date: Tue, 9 Apr 2024 13:29:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] Speed up boot with faster linear map creation
+From: David Hildenbrand <david@redhat.com>
+To: Itaru Kitayama <itaru.kitayama@linux.dev>,
+ Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <Catalin.Marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <Mark.Rutland@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <Zg+qwooaWFNL7KIg@vm3> <fd4aed3a-42be-44e0-b3bb-12f77c5911a1@arm.com>
+ <ZhEkif45F0aVvKPx@vm3> <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
+ <FCDCBCEE-7D97-4769-AB95-7294A9CE18E0@linux.dev>
+ <1d5abb48-08a8-4d83-a681-6915bc7b6907@arm.com>
+ <268FBD1C-B102-4726-A7F4-1125123BDA7A@linux.dev>
+ <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
- (10.20.40.7)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM3PEPF0000A79A:EE_|DB9PR02MB7161:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5b119189-2ebb-41f0-cd14-08dc58882e69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	RBi7hoXLlw6IvBjlPqNb6Q3ogW8t2cOr6G3Ktr4cbPWE4tmilltuuGXkMX72zVsF1UWy6NGvAaxurDEisFn2wXONRY4qCz1FLLTtKQ1rUV+34bZI33xT0TMwwm3evbfzRzYBdK/Imdafj70FhH08w2UwzzLwvuCNrSapgHTp2dYucKasLvSmMPgVTin5vFiDlifZrjfNswJ7sIIV+RZtdlbs6i2nWa21+T7YuqpnT89rz+lhQ0ewY0TXe0YHI8r0yZgyhj9tzjsmVd4i1tT6FpP3ykEpTE1eJz9/rSSPUNm0R+hkVE5+OxdRHncyOdRAmntmK0HXpAFkg5aCBwZi78ub5X8YYuoK/kHvKQFgurzkSrBdf1kdcjvmoikhviNU322qvadt5jlMc35mVTMyWrWkbgoygqMRhQFvpx+qsR6/jdYn9LAZOm3FmXSPSF+q1R0V/4PT1K6yjmBBBZX3yC1E195hGpy/pJCLR70GHljrrqIQgZV47mGvL6WTuXroUzBOf/YerfWyc5fD838cbkok85SlYutgNQkmCaYfWYIhq6/Yqz0k2m5TrFlnIz/x87M2xt/oywZno3YZjjqMbB4svU7rooadb5DESLniQcXwkVwM922b9GSjgVHqljUT3ehEHyLBmHdDvBboA5nQYAksu3yb3PcCIBCIAiB5PgE8ygtyirVQB6LHIwf14ezX7BjeW7cmGk/ZvkHrSCdCVzxktBAnbC8Z8sy6pB28yFuXTt3rXyGSgiIuYl7+IPfp
-X-Forefront-Antispam-Report:
-	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(82310400014)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 11:28:29.6937
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b119189-2ebb-41f0-cd14-08dc58882e69
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AM3PEPF0000A79A.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7161
 
-From: Rickard x Andersson <rickaran@axis.com>
+On 09.04.24 13:22, David Hildenbrand wrote:
+> On 09.04.24 12:13, Itaru Kitayama wrote:
+>>
+>>
+>>> On Apr 9, 2024, at 19:04, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>
+>>> On 09/04/2024 01:10, Itaru Kitayama wrote:
+>>>> Hi Ryan,
+>>>>
+>>>>> On Apr 8, 2024, at 16:30, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>
+>>>>> On 06/04/2024 11:31, Itaru Kitayama wrote:
+>>>>>> Hi Ryan,
+>>>>>>
+>>>>>> On Sat, Apr 06, 2024 at 09:32:34AM +0100, Ryan Roberts wrote:
+>>>>>>> Hi Itaru,
+>>>>>>>
+>>>>>>> On 05/04/2024 08:39, Itaru Kitayama wrote:
+>>>>>>>> On Thu, Apr 04, 2024 at 03:33:04PM +0100, Ryan Roberts wrote:
+>>>>>>>>> Hi All,
+>>>>>>>>>
+>>>>>>>>> It turns out that creating the linear map can take a significant proportion of
+>>>>>>>>> the total boot time, especially when rodata=full. And most of the time is spent
+>>>>>>>>> waiting on superfluous tlb invalidation and memory barriers. This series reworks
+>>>>>>>>> the kernel pgtable generation code to significantly reduce the number of those
+>>>>>>>>> TLBIs, ISBs and DSBs. See each patch for details.
+>>>>>>>>>
+>>>>>>>>> The below shows the execution time of map_mem() across a couple of different
+>>>>>>>>> systems with different RAM configurations. We measure after applying each patch
+>>>>>>>>> and show the improvement relative to base (v6.9-rc2):
+>>>>>>>>>
+>>>>>>>>>                  | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
+>>>>>>>>>                  | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
+>>>>>>>>> ---------------|-------------|-------------|-------------|-------------
+>>>>>>>>>                  |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
+>>>>>>>>> ---------------|-------------|-------------|-------------|-------------
+>>>>>>>>> base           |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   (0%)
+>>>>>>>>> no-cont-remap  |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 (-78%)
+>>>>>>>>> batch-barriers |   13 (-92%) |  162 (-93%) |  655 (-93%) |  1656 (-91%)
+>>>>>>>>> no-alloc-remap |   11 (-93%) |  109 (-95%) |  449 (-95%) |  1257 (-93%)
+>>>>>>>>> lazy-unmap     |    6 (-96%) |   61 (-97%) |  257 (-97%) |   838 (-95%)
+>>>>>>>>>
+>>>>>>>>> This series applies on top of v6.9-rc2. All mm selftests pass. I've compile and
+>>>>>>>>> boot tested various PAGE_SIZE and VA size configs.
+>>>>>>>>>
+>>>>>>>>> ---
+>>>>>>>>>
+>>>>>>>>> Changes since v1 [1]
+>>>>>>>>> ====================
+>>>>>>>>>
+>>>>>>>>>     - Added Tested-by tags (thanks to Eric and Itaru)
+>>>>>>>>>     - Renamed ___set_pte() -> __set_pte_nosync() (per Ard)
+>>>>>>>>>     - Reordered patches (biggest impact & least controversial first)
+>>>>>>>>>     - Reordered alloc/map/unmap functions in mmu.c to aid reader
+>>>>>>>>>     - pte_clear() -> __pte_clear() in clear_fixmap_nosync()
+>>>>>>>>>     - Reverted generic p4d_index() which caused x86 build error. Replaced with
+>>>>>>>>>       unconditional p4d_index() define under arm64.
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> [1] https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/<https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/>
+>>>>>>>>>
+>>>>>>>>> Thanks,
+>>>>>>>>> Ryan
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Ryan Roberts (4):
+>>>>>>>>>     arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
+>>>>>>>>>     arm64: mm: Batch dsb and isb when populating pgtables
+>>>>>>>>>     arm64: mm: Don't remap pgtables for allocate vs populate
+>>>>>>>>>     arm64: mm: Lazily clear pte table mappings from fixmap
+>>>>>>>>>
+>>>>>>>>> arch/arm64/include/asm/fixmap.h  |   5 +-
+>>>>>>>>> arch/arm64/include/asm/mmu.h     |   8 +
+>>>>>>>>> arch/arm64/include/asm/pgtable.h |  13 +-
+>>>>>>>>> arch/arm64/kernel/cpufeature.c   |  10 +-
+>>>>>>>>> arch/arm64/mm/fixmap.c           |  11 +
+>>>>>>>>> arch/arm64/mm/mmu.c              | 377 +++++++++++++++++++++++--------
+>>>>>>>>> 6 files changed, 319 insertions(+), 105 deletions(-)
+>>>>>>>>>
+>>>>>>>>> --
+>>>>>>>>> 2.25.1
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> I've build and boot tested the v2 on FVP, base is taken from your
+>>>>>>>> linux-rr repo. Running run_vmtests.sh on v2 left some gup longterm not oks, would you take a look at it? The mm ksefltests used is from your linux-rr repo too.
+>>>>>>>
+>>>>>>> Thanks for taking a look at this.
+>>>>>>>
+>>>>>>> I can't reproduce your issue unfortunately; steps as follows on Apple M2 VM:
+>>>>>>>
+>>>>>>> Config: arm64 defconfig + the following:
+>>>>>>>
+>>>>>>> # Squashfs for snaps, xfs for large file folios.
+>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZ4
+>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZO
+>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_XZ
+>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
+>>>>>>> ./scripts/config --enable CONFIG_XFS_FS
+>>>>>>>
+>>>>>>> # For general mm debug.
+>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM
+>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
+>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_RB
+>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
+>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
+>>>>>>> ./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
+>>>>>>>
+>>>>>>> # For mm selftests.
+>>>>>>> ./scripts/config --enable CONFIG_USERFAULTFD
+>>>>>>> ./scripts/config --enable CONFIG_TEST_VMALLOC
+>>>>>>> ./scripts/config --enable CONFIG_GUP_TEST
+>>>>>>>
+>>>>>>> Running on VM with 12G memory, split across 2 (emulated) NUMA nodes (needed by
+>>>>>>> some mm selftests), with kernel command line to reserve hugetlbs and other
+>>>>>>> features required by some mm selftests:
+>>>>>>>
+>>>>>>> "
+>>>>>>> transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
+>>>>>>> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
+>>>>>>> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2
+>>>>>>> "
+>>>>>>>
+>>>>>>> Ubuntu userspace running off XFS rootfs. Build and run mm selftests from same
+>>>>>>> git tree.
+>>>>>>>
+>>>>>>>
+>>>>>>> Although I don't think any of this config should make a difference to gup_longterm.
+>>>>>>>
+>>>>>>> Looks like your errors are all "ftruncate() failed". I've seen this problem on
+>>>>>>> our CI system. There it is due to running the tests from NFS file system. What
+>>>>>>> filesystem are you using? Perhaps you are sharing into the FVP using 9p? That
+>>>>>>> might also be problematic.
+>>>>>>
+>>>>>> That was it. This time I booted up the kernel including your series on
+>>>>>> QEMU on my M1 and executed the gup_longterm program without the ftruncate
+>>>>>> failures. When testing your kernel on FVP, I was executing the script from the FVP's host filesystem using 9p.
+>>>>>
+>>>>> I'm not sure exactly what the root cause is. Perhaps there isn't enough space on
+>>>>> the disk? It might be worth enhancing the error log to provide the errno in
+>>>>> tools/testing/selftests/mm/gup_longterm.c.
+>>>>>
+>>>>
+>>>> Attached is the strace’d gup_longterm executiong log on your
+>>>> pgtable-boot-speedup-v2 kernel.
+>>>
+>>> Sorry are you saying that it only fails with the pgtable-boot-speedup-v2 patch
+>>> set applied? I thought we previously concluded that it was independent of that?
+>>> I was under the impression that it was filesystem related and not something that
+>>> I was planning to investigate.
+>>
+>> No, irrespective of the kernel, if using 9p on FVP the test program fails.
+>> It is indeed 9p filesystem related, as I switched to using NFS all the issues are gone.
+> 
+> Did it never work on 9p? If so, we might have to SKIP that test.
+> 
+> openat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+> unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", 0) = 0
+> fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
+> ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
 
-Test case:
-mount -t cifs //192.168.0.1/test y -o
-  port=19999,ro,vers=2.1,sec=none,echo_interval=1
-kill smbd with SIGSTOP
-umount /tmp/y
+Note: I'm wondering if the unlinkat here is the problem that makes 
+ftruncate() with 9p result in weird errors (e.g., the hypervisor 
+unlinked the file and cannot reopen it for the fstatfs/ftruncate. ... 
+which gives us weird errors here).
 
-Gives the following error:
- INFO: task umount:466 blocked for more than 122 seconds.
-       Not tainted 6.8.2-axis9-devel #1
- "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
- message.
- task:umount state:D stack:0 pid:466 tgid:466 ppid:464 flags:0x00000004
-  __schedule from schedule+0x34/0x108
-  schedule from schedule_preempt_disabled+0x24/0x34
-  schedule_preempt_disabled from __mutex_lock.constprop.0+0x330/0x8b0
-  __mutex_lock.constprop.0 from smb2_reconnect+0x278/0x8fc [cifs]
-  smb2_reconnect [cifs] from SMB2_open_init+0x54/0x9f4 [cifs]
-  SMB2_open_init [cifs] from smb2_query_info_compound+0x1a0/0x500[cifs]
-  smb2_query_info_compound [cifs] from smb2_queryfs+0x64/0x134 [cifs]
-  smb2_queryfs [cifs] from cifs_statfs+0xc8/0x318 [cifs]
-  cifs_statfs [cifs] from statfs_by_dentry+0x60/0x84
-  statfs_by_dentry from fd_statfs+0x30/0x74
-  fd_statfs from sys_fstatfs64+0x40/0x6c
-  sys_fstatfs64 from ret_fast_syscall+0x0/0x54
+Then, we should lookup the fs type in run_with_local_tmpfile() before 
+the unlink() and simply skip the test if it is 9p.
 
-The umount task is blocked waiting on the session mutex. The reason it
-never gets the session mutex is because 'kworker/0:3' is holding the
-mutex and is waiting for response (see line 1209 in
-fs/smb/client/smb2pdu.c.
-
-Stack trace of 'kworker/0:3' just before calling wait_for_response:
- CPU: 0 PID: 220 Comm: kworker/0:3 Not tainted 6.8.2-axis9-devel #1
- Hardware name: Freescale i.MX6 SoloX (Device Tree)
- Workqueue: cifsiod smb2_reconnect_server [cifs]
-  unwind_backtrace from show_stack+0x18/0x1c
-  show_stack from dump_stack_lvl+0x24/0x2c
-  dump_stack_lvl from compound_send_recv+0x7bc/0xac8 [cifs]
-  compound_send_recv [cifs] from cifs_send_recv+0x34/0x3c [cifs]
-  cifs_send_recv [cifs] from SMB2_negotiate+0x410/0x13dc [cifs]
-  SMB2_negotiate [cifs] from smb2_negotiate+0x4c/0x58 [cifs]
-  smb2_negotiate [cifs] from cifs_negotiate_protocol+0x9c/0x100 [cifs]
-  cifs_negotiate_protocol [cifs] from smb2_reconnect+0x418/0x8fc [cifs]
-  smb2_reconnect [cifs] from smb2_reconnect_server+0x1dc/0x514 [cifs]
-  smb2_reconnect_server [cifs] from process_one_work+0x188/0x3ec
-  process_one_work from worker_thread+0x1fc/0x430
-  worker_thread from kthread+0x110/0x130
-  kthread from ret_from_fork+0x14/0x28
-
-Change-Id: I53439ffb007c9c51d77ce40fb655a34e5ca291ec
-Signed-off-by: Rickard x Andersson <rickaran@axis.com>
----
- fs/smb/client/transport.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/fs/smb/client/transport.c b/fs/smb/client/transport.c
-index 994d70193432..96b8f8757ddc 100644
---- a/fs/smb/client/transport.c
-+++ b/fs/smb/client/transport.c
-@@ -32,6 +32,8 @@
- /* Max number of iovectors we can use off the stack when sending requests. */
- #define CIFS_MAX_IOV_SIZE 8
- 
-+#define RESPONSE_TIMEOUT_SECS 50
-+
- void
- cifs_wake_up_task(struct mid_q_entry *mid)
- {
-@@ -735,13 +737,14 @@ static int allocate_mid(struct cifs_ses *ses, struct smb_hdr *in_buf,
- static int
- wait_for_response(struct TCP_Server_Info *server, struct mid_q_entry *midQ)
- {
--	int error;
-+	int ret;
-+
-+	ret = wait_event_killable_timeout(server->response_q,
-+					  midQ->mid_state != MID_REQUEST_SUBMITTED &&
-+					  midQ->mid_state != MID_RESPONSE_RECEIVED,
-+					  RESPONSE_TIMEOUT_SECS*HZ);
- 
--	error = wait_event_state(server->response_q,
--				 midQ->mid_state != MID_REQUEST_SUBMITTED &&
--				 midQ->mid_state != MID_RESPONSE_RECEIVED,
--				 (TASK_KILLABLE|TASK_FREEZABLE_UNSAFE));
--	if (error < 0)
-+	if ((ret < 0) || (ret == 0))
- 		return -ERESTARTSYS;
- 
- 	return 0;
 -- 
-2.30.2
+Cheers,
+
+David / dhildenb
 
 
