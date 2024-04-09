@@ -1,125 +1,172 @@
-Return-Path: <linux-kernel+bounces-136833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8294A89D8CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:04:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80B489D8D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B37401C2132C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:04:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791C21F2385D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A285812B176;
-	Tue,  9 Apr 2024 12:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1083C12BE8B;
+	Tue,  9 Apr 2024 12:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jU3cqb3N"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtE+LG9C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5782486651
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E3012AAD3
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664237; cv=none; b=Zu2aXvFT+gddzXQcwpVV0vkAn3bDkCnQBehtvrUSLsvWIDmgZY2tVLXvFVBclxygIVLf1X8DekOm9R6n6cv0BUd6uBgE4bpEdjKTPJH0NlRi7HvFkXEwacc8975eU4mgQX6rvd/aR6tC1mWL5nQZf9DexYscjM6fvRKGkyiT2C4=
+	t=1712664277; cv=none; b=ShYDSCs+NsMsCfYVKPNc5tZW8T5C9zhN2AFWLctIvT28tAQjUDZ3ErenopAJtkVXM5M0aCDrdUCBTrLjxF5zr5NMhwG0X04+Wvfr6U1f2MOcVebpt2jU2d01bieASQWdwwZ8V9qMkrSlYWEYt5ckOpeD9Vx+62JpoZMsXSKY984=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664237; c=relaxed/simple;
-	bh=GrDawK9B0IciTy7FWKqIbYXHR4sDP+8uNllB3M6fIxM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h6QJAdC4NOXnkP6cMrWVLR2/j/4KEwJTtktayLUwHzryKXUU/KTBF0cvkWmXj7wuKs+U0gVTHQy3y7bRydNM7FFfpEH18KtIXHhHaYUJUwTWDhYqJ3nmcRmaYyVlCWb/z7bk+wKTRV2+WwOXipneNnTsjRnYi9CLwqChtfIcSvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jU3cqb3N; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d718ee7344so63939411fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 05:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712664233; x=1713269033; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MF2job4/C9B1St24aO713B9KmDVXokaRVhMy4cDlD1o=;
-        b=jU3cqb3NO3RrJWSLeQJHmSsauQcv8epd+4Mc9fKA14qpW+DaGZQCmPxhwEq4YG+aSc
-         RJWK6Cii/rwh7CMvghxOcW3oxgIamoh0TeIuGnIBD5Q8AlaOorcy4c42sUbUJWurSMGR
-         OMx3+n9ltwXfZZlvHsI/95IdL5WouSRDeZbAaj2aXC4W7bAYSNZDN9aQeHqyJBnmQtka
-         yyqPOFHzQqoagXGU1nTs6iWAFyc5+g76GsvrFjv/gbJOK12GQpIGgxz6HgUDgodER8kJ
-         NLuIah+ytP8KVSDN0reYh1L5bdVEk0NcXudrlrCQSwdNKR2GxhBiO+r7BP5w2nUH2pIY
-         Osdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712664233; x=1713269033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MF2job4/C9B1St24aO713B9KmDVXokaRVhMy4cDlD1o=;
-        b=q5N7SHdrLfB/HWi9+3KWDlWO3Vth4o6YxKxcBeCqAiBPhqmnaHo3CES6s4H+AsD2Ib
-         9/hGkjsbcJg2Dty5+sfXOtC1Hu+6TXt9dYPPFOy9kBVLA4//XHSA1CFCr3wfy3DVuu4R
-         lvj4dFQlha4gs5fSKq40D1Ux6lGxrXYsqEj5NAvOntFr0a585WJVGOLN4G1W8YllqoUV
-         FwPHjhYzelE2hQeM2WxPEO5pIFhF5SUDUH71CpCUcOfMWs4v3AyXZlLGMqq4j+rw7LYn
-         TKrJbJOIIb5rCvFXGY15sAaZfAC0x8l7T719OXDti3uYgqRBxvkI73xt21BzM4l282Ec
-         vt+A==
-X-Forwarded-Encrypted: i=1; AJvYcCVx5GDRWAzlm/KxSFG8+uKNxSvc42Mebg6yJGlJl6f8cSTrnE8ka36utAnLrkPjNC8rC2hWHPD9YiJB9iUHMZKbRY+7eg/lv5ga6jn5
-X-Gm-Message-State: AOJu0YxCX2gVxbn3jUVVURVBdOI1ygMfHecyJfQdWKnJCRuJTsBLx4xF
-	vgtNUKJ8D4LWXWI5rzVZs0wCZ95y35nN3tUhXFL+EzYUP/BbZqI6K2h9r+loLLt2rIVwkZqSlWc
-	Agh6ZX9tLDwl2ZBsi3FbDfMCGVHM=
-X-Google-Smtp-Source: AGHT+IHh9Keq7de9rRaU3EGoXhkV9bdB/C0+EoZSceMO+toKNxeuaArYa3cxqNmEfc/m0ESERNHRNlSpUlyc6GKBBH8=
-X-Received: by 2002:a2e:9107:0:b0:2d7:b78:4109 with SMTP id
- m7-20020a2e9107000000b002d70b784109mr7911834ljg.53.1712664233278; Tue, 09 Apr
- 2024 05:03:53 -0700 (PDT)
+	s=arc-20240116; t=1712664277; c=relaxed/simple;
+	bh=SJnZkNPc1CXXzqQ0bnkucXbJjyQtreGgabj+zHnZfmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SnU4Egbwn4YSbd4UWmJf/3Ee9YdkNBztI8iwIhByVIu+jhZ41tAiskOq5HNqLt5y+s5UhBrqeookwKOlqPeLT2K+4n5YN5sqnD/6MAsn3sSVs3OF/JFStLx1pZHwdWyRHa7AVXcbSGpyiQ08yNeVSO2FPJysY/RLT65SqM58+kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtE+LG9C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EEB0C433C7;
+	Tue,  9 Apr 2024 12:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712664276;
+	bh=SJnZkNPc1CXXzqQ0bnkucXbJjyQtreGgabj+zHnZfmk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FtE+LG9CkOx2xLxiqPOWytg9pLYD8qjJahvq/7IX0a6gelLa1wBVa/NJHUXgi82sa
+	 IfAFs7FgqGH8OeAPv/7c6baKyZUGLHR/htlHdTbT0FzRCKzhF1rqDYp4eKYI59rikv
+	 r9S+xT3top5i5VVpuyESAj0bMzw8Nq1YUPXCfDsEinsFe7kU2+/LV/iwcRPWO3vCU6
+	 hUnFMmpT3Njs3Pdy3BPpjeFg39Es8fMX80pA0Fy33x2qNk2qPbkbTJOfnvfnz6EM89
+	 fSQ9wFDuRDyTqbmCKVwhVxJrV65cWQil2qM5heE0xgwhYm0cjcD4MK9jXQohVFNL/o
+	 hyTA3yfKZaeZA==
+Date: Tue, 9 Apr 2024 14:04:34 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Nick Piggin <npiggin@gmail.com>, Tejun Heo <tj@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: Re: Nohz_full on boot CPU is broken (was: Re: [PATCH v2 1/1] wq:
+ Avoid using isolated cpus' timers on queue_delayed_work)
+Message-ID: <ZhUu0uQxPgcXmQes@localhost.localdomain>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <Zg2qFinSkAOmRHcM@slm.duckdns.org>
+ <20240403203814.GD31764@redhat.com>
+ <20240405140449.GB22839@redhat.com>
+ <ZhByg-xQv6_PC3Pd@localhost.localdomain>
+ <20240407130914.GA10796@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409100503.274629-1-ubizjak@gmail.com> <20240409100503.274629-3-ubizjak@gmail.com>
- <ZhUixk5I_n53dbBb@FVFF77S0Q05N>
-In-Reply-To: <ZhUixk5I_n53dbBb@FVFF77S0Q05N>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Tue, 9 Apr 2024 14:03:42 +0200
-Message-ID: <CAFULd4bBmQ85UsPOOEA+5dj-_JOBNWeyM-jipM7Zov2V484quQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] locking/atomic/x86: Rewrite x86_32
- arch_atomic64_{,fetch}_{and,or,xor}() functions
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240407130914.GA10796@redhat.com>
 
-On Tue, Apr 9, 2024 at 1:13=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
-wrote:
+Le Sun, Apr 07, 2024 at 03:09:14PM +0200, Oleg Nesterov a écrit :
+> On 04/05, Frederic Weisbecker wrote:
+> >
+> > +Cc Nick
+> >
+> > Le Fri, Apr 05, 2024 at 04:04:49PM +0200, Oleg Nesterov a écrit :
+> > > On 04/03, Oleg Nesterov wrote:
+> > > >
+> > > > > > OTOH, Documentation/timers/no_hz.rst says
+> > > > > >
+> > > > > > 	Therefore, the
+> > > > > > 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
+> > > > > > 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
+> > > > > > 	error message, and the boot CPU will be removed from the mask.
+> > > > > >
+> > > > > > and this doesn't match the reality.
+> > > > >
+> > > > > Don't some archs allow the boot CPU to go down too tho? If so, this doesn't
+> > > > > really solve the problem, right?
+> > > >
+> > > > I do not know. But I thought about this too.
+> > > >
+> > > > In the context of this discussion we do not care if the boot CPU goes down.
+> > > > But we need at least one housekeeping CPU after cpu_down(). The comment in
+> > > > cpu_down_maps_locked() says
+> > > >
+> > > > 	Also keep at least one housekeeping cpu onlined
+> > > >
+> > > > but it checks HK_TYPE_DOMAIN, and I do not know (and it is too late for me
+> > > > to try to read the code ;) if housekeeping.cpumasks[HK_TYPE_TIMER] can get
+> > > > empty or not.
+> > >
+> > > This nearly killed me, but I managed to convince myself we shouldn't worry
+> > > about cpu_down().
+> > >
+> > > HK_FLAG_TIMER implies HK_FLAG_TICK.
+> > >
+> > > HK_FLAG_TICK implies tick_nohz_full_setup() which sets
+> > > tick_nohz_full_mask = non_housekeeping_mask.
+> > >
+> > > When tick_setup_device() is called on a housekeeping CPU it does
+> > >
+> > > 	else if (tick_do_timer_boot_cpu != -1 &&
+> > > 					!tick_nohz_full_cpu(cpu)) {
+> > > 		tick_take_do_timer_from_boot();
+> > > 		tick_do_timer_boot_cpu = -1;
+> > >
+> > >
+> > > 	and this sets tick_do_timer_cpu = first-housekeeping-cpu.
+> > >
+> > > cpu_down(tick_do_timer_cpu) will fail, tick_nohz_cpu_down() will nack it.
+> > >
+> > > So cpu_down() can't make housekeeping.cpumasks[HK_FLAG_TIMER] empty and I
+> > > still think that the change below is the right approach.
+> > >
+> > > But probably WARN_ON() in housekeeping_any_cpu() makes sense anyway.
+> > >
+> > > What do you think?
+> >
+> > Good analysis on this nasty housekeeping VS tick code. I promised so many
+> > times to cleanup this mess but things keep piling up.
+> >
+> > It is indeed possible for the boot CPU to be a nohz_full CPU and as
+> > you can see, it's only half-working. This is so ever since:
+> >
+> >     08ae95f4fd3b (nohz_full: Allow the boot CPU to be nohz_full)
+> 
+> Thanks... So this is intentional. I was confused by
+> 
+> 	Therefore, the
+> 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
+> 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
+> 	error message, and the boot CPU will be removed from the mask.
+> 
+> from Documentation/timers/no_hz.rst
+> 
+> > I would love
+> > to revert that now but I don't know if anyone uses this and have it working
+> > by chance somewhere... Should we continue to support a broken feature? Can we
+> > break user ABI if it's already half-broken?
+> 
+> Well, the changelog says
+> 
+>     nohz_full has been trialed at a large supercomputer site and found to
+>     significantly reduce jitter. In order to deploy it in production, they
+>     need CPU0 to be nohz_full
+> 
+> so I guess this feature has users.
+> 
+> But after the commit aae17ebb53cd3da ("workqueue: Avoid using isolated cpus'
+> timers on queue_delayed_work") the kernel will crash at boot time if the boot
+> CPU is nohz_full.
 
-> >  static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
-> >  {
-> > -     s64 old, c =3D 0;
-> > +     s64 val =3D __READ_ONCE(v->counter);
->
-> I reckon it's worth placing this in a helper with a big comment, e.g.
->
-> static __always_inline s64 arch_atomic64_read_tearable(atomic64_t *v)
-> {
->         /*
->          * TODO: explain that this might be torn, but it occurs *once*, a=
-nd can
->          * safely be consumed by atomic64_try_cmpxchg().
->          *
->          * TODO: point to the existing commentary regarding why we use
->          * __READ_ONCE() for KASAN reasons.
->          */
->         return __READ_ONCE(v->counter);
-> }
->
-> ... and then use that in each of the instances below.
->
-> That way the subtlety is clearly documented, and it'd more clearly align =
-with
-> the x86_64 verions.
+Right but there are many possible calls to housekeeping on boot before the
+first housekeeper becomes online.
 
-This is an excellent idea. The separate definitions needs to be placed
-in atomic64_32.h and atomic_64_64.h (due to use of atomic64_t
-typedef), but it will allow the same unification of functions between
-x64_32 and x64_64 as the approach with __READ_ONCE().
-
-Thanks,
-Uros.
+Thanks.
 
