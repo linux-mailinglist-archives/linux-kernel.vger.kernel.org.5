@@ -1,126 +1,140 @@
-Return-Path: <linux-kernel+bounces-137323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2CF489E0A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:39:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A190D89E078
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BE4FB29EFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:31:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BB1028E309
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F013B14D458;
-	Tue,  9 Apr 2024 16:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="L7qfT7V4"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDB2153586;
+	Tue,  9 Apr 2024 16:32:52 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BE514D281
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7611509B4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712680297; cv=none; b=G7Ux37cqK+R+YYF51UhrBUzqpKa3pEFHY1gqhkER6R8ib/UxElOfggxtdKI9ydR08iANFWS4bdpZbssE+u7KFW8PranpCRKxK4oVLr+S19k1UZwNgf+igkj2suMRxToGMpFrxHfCOX3KBv1gmdA+anXzzE5QaNHSIjIfhMjjQXA=
+	t=1712680372; cv=none; b=LU51yPCWCsduSyj4wJXFJaKJ5iBt3+eUWS4Nxh+T04Kwz9BZHjD/gHlGsHB0nl2xNtNgqHCpyyZCZlFkqUSxCncCZsYnQv0LgZchlJutCrJ/3PcsnF9NS4vb7Gxva83Q54FDNVPrq/fo4a0NCvIzCeIumJ6cwFIBOz2DvKQ6tfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712680297; c=relaxed/simple;
-	bh=ApwdW8JBFGi6r1KB3HXNvgP7VIEHAah5RIdbQPP76EA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V1OtyfMxMD8GyxpJnBNz6J+t/WpSIkrUw2kqJgNL1x6akfVFpxzjRODr9CRExFsctcwfqeJJyFFqaY+jyVRH6ppzwhsMQ1GYIw07YDc/P6+0ni9eMiYFHQp2KhP4MrdiYx7hHGJGTE7nvNIeAMyXQpTx+dj+iYAR/UFLiiM2VVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=L7qfT7V4; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so72271331fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:31:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712680293; x=1713285093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MGaWIK6Rz0jcvvBzmUvZymJLZNxNC0Jm+nT1TGr/ewQ=;
-        b=L7qfT7V4YiDItzOmMbHhuWQgypt+58s3ZohIduCFs3V6jCuKgMB5PzUsZ3oShAp5ol
-         bWV2eVaQzC2h/jR+OBbcJ1AwarGI+ka7vBakh4LBdlnQlT5YVNklDdomTirWp4jT7lMJ
-         GbYhsoLUlkYRL5Vo6RKzh2oypG/nb8nC6T6k26ZJdZXFwmRchBPQN+e157jPb1p296ow
-         rykbjs4YcqZHlZDNTzxn7TjrDBcFu93gPBR7ZzwnQU7FPezxTYiRKBda+preEMPSE0MU
-         eSH1SXRiP8LC8YYkKPrtcu+u9BCCFhZ+gUf8w+/lz5fjX7pjzPRbBLjia37TtYb/Jzld
-         4EPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712680293; x=1713285093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MGaWIK6Rz0jcvvBzmUvZymJLZNxNC0Jm+nT1TGr/ewQ=;
-        b=iHgH12OiTn8SSt2Op25CfKeLKYyf9+lGuzNL4TySWvMQh/EY6/AH9IsX0PynEcDeNg
-         3d/tHGDx99vo4HFtLS/2JmdCbkvjN2Dl0c6I3N2CR7jFlfDsm1N589cYlcn4+rpQVoUS
-         jQqvJhFnLhJ1bmIPg84XakgEFcD9kxT5nD22T4zYwfOPbOWch8HoZjxC8b8mKMsnvRdE
-         iwPj9z3kSSWjwu+Xm3ei2aIihMWvWXQtNNVD1WjUKY2uxVk8GrpJoQ1Vbmp9bUQe1B9q
-         9ZUuCOfQHZlsVsKP5gqJVj5/04W6PzGfNl5ZS4SXyzJAXAlvBbfCDkNqv7H6dVpaDRDO
-         R1wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWB17QABUrSa5Zw0Eqbyyfa9j9nqE/iQ6avu4IXaIH2cXwnwNvpQBcofdQN8zyhWkTWh7Z2MRG/d2sgXx1n7m5MpXyVbnbReF5Ii/aB
-X-Gm-Message-State: AOJu0YzkSEpvkjz0ab0YCvKFor5Buyk7x43sbF/wH7daCVsKzMXSFT4v
-	JnON1MREjiWlKrt8tpSCknQLEfFQBQdnd5EzCnxFkvDgeYWy98xHYaojPObbBKMhh3utFEl1w4g
-	4V8hfREY0mc4qlydDGH/y3NHeUqi+gL83pMHpUw==
-X-Google-Smtp-Source: AGHT+IF3Rz2KQSrmOgUW+wAwlyAXsvBQbr+RQcLNjG/BGKAP1GIQB7pfKVDpaGJttOGNhyw7HwMY32/9aVBhxt+JTjI=
-X-Received: by 2002:a2e:9912:0:b0:2d8:5859:ee7 with SMTP id
- v18-20020a2e9912000000b002d858590ee7mr215843lji.49.1712680292607; Tue, 09 Apr
- 2024 09:31:32 -0700 (PDT)
+	s=arc-20240116; t=1712680372; c=relaxed/simple;
+	bh=kGNiOYgEjXV6OIDTsWw1Tx2jDfOc/VCR7k2qJc3X5js=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZtW1bIVvQ+ZYS9I3DkpXoGhW9iU/1cmwOgisdsxN8JoqMRGuYbHDFkc+2+vTbG0qCwuG4yAn6VFVKXDm5BM2ZurPTs8HNnIaXZ1qrFuMYHuotje7FJwMXe/+6vFd9ocUCGUxL/Ii7pqM18kjKICjsyarTWPFuZP2fbDChx95yp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruEOo-0004dv-Sf; Tue, 09 Apr 2024 18:32:42 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruEOn-00BKtc-Sb; Tue, 09 Apr 2024 18:32:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruEOn-00H464-2a;
+	Tue, 09 Apr 2024 18:32:41 +0200
+Date: Tue, 9 Apr 2024 18:32:41 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Yangtao Li <frank.li@vivo.com>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpuidle: kirkwood: Convert to platform remove callback
+ returning void
+Message-ID: <fgmvwuzy34cruggah2z7fau4nnfzopuylsgjs6zzdypp26boya@ekrj5myjef5f>
+References: <20230712094014.41787-1-frank.li@vivo.com>
+ <20231204115517.zxjgi6ateobjj52d@pengutronix.de>
+ <h2sjdrgs7hwmbucr3rxlpusnkpj5tgq2fx27gijtrglr5ffhs6@s63cp4isu4mx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712585500.git.marcelo.schmitt@analog.com>
- <CAMknhBFoX9mC3F43GSmYZyET9oQvHEB+AAsesZv-aEgFPZPA_w@mail.gmail.com> <ZhVX76dVt-TrC0NX@debian-BULLSEYE-live-builder-AMD64>
-In-Reply-To: <ZhVX76dVt-TrC0NX@debian-BULLSEYE-live-builder-AMD64>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 9 Apr 2024 11:31:21 -0500
-Message-ID: <CAMknhBHRuZRkDh5hy1+oaSDWAOakpJ+eOd+a5p1jC4g+WRENLg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Add support for AD4000 series
-To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de, 
-	Michael.Hennerich@analog.com, jic23@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yudkqucvkn2t7jnw"
+Content-Disposition: inline
+In-Reply-To: <h2sjdrgs7hwmbucr3rxlpusnkpj5tgq2fx27gijtrglr5ffhs6@s63cp4isu4mx>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--yudkqucvkn2t7jnw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 9:59=E2=80=AFAM Marcelo Schmitt
-<marcelo.schmitt1@gmail.com> wrote:
->
-> On 04/08, David Lechner wrote:
-> > On Mon, Apr 8, 2024 at 9:31=E2=80=AFAM Marcelo Schmitt
-> > <marcelo.schmitt@analog.com> wrote:
-> > >
+Hello,
 
-..
+On Wed, Mar 06, 2024 at 10:33:06PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Mon, Dec 04, 2023 at 12:55:17PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Wed, Jul 12, 2023 at 05:40:13PM +0800, Yangtao Li wrote:
+> > > The .remove() callback for a platform driver returns an int which mak=
+es
+> > > many driver authors wrongly assume it's possible to do error handling=
+ by
+> > > returning an error code. However the value returned is (mostly) ignor=
+ed
+> > > and this typically results in resource leaks. To improve here there i=
+s a
+> > > quest to make the remove callback return void. In the first step of t=
+his
+> > > quest all drivers are converted to .remove_new() which already returns
+> > > void.
+> > >=20
+> > > Trivially convert this driver from always returning zero in the remove
+> > > callback to the void returning variant.
+> > >=20
+> > > Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > > Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> >=20
+> > Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >=20
+> > Can you pick this up?
+>=20
+> This patch isn't in next yet. Is this still on someone's radar for
+> application? Would be great if this patch made it into the mainline
+> during the upcomming merge window.
 
-> > >
-> > > - Why did not make vref regulator optional?
-> > > Other SAR ADCs I've seen needed a voltage reference otherwise they si=
-mply
-> > > could not provide any reasonable readings. Isn't it preferable to fai=
-l rather
-> > > than having a device that can't provide reliable data?
-> >
-> > In the device tree bindings, making vref-supply required makes sense
-> > since there is no internal reference.  In the driver, as discussed in
-> > V1, it will fail if vref-supply in regulator_get_voltage() if
-> > vref-supply is missing and we use devm_regulator_get() instead of
-> > devm_regulator_get_optional(). So leaving it as-is is fine. We have a
-> > plan to clean this up later anyway.
-> >
->
-> Not sure I understand the idea here. Should the driver use
-> devm_regulator_get_optional() instead of devm_regulator_get() because
-> the optional call would fail immediately if no vref-supply while the regu=
-lar
-> call would only fail at regulator_get_voltage()? Why? This looks very cou=
-nter
-> intuitive to me.
+It didn't made it into the merge window leading to 6.9-rc1. What are
+the chances to get it into v6.10-rc1?
 
-Right. I'm saying just leave it the way it is for now.
+I just checked, the patch was submitted when Linus's tree was just after
+v6.5-rc1. So it already missed four merge windows without any maintainer
+feedback :-\
 
-(I have a plan to simplify it later, but still working on that.)
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yudkqucvkn2t7jnw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYVbagACgkQj4D7WH0S
+/k6KuAf/bT1XmaN2Cba7EVDNiZ//oKiFV0fhRs5/Rr5ue/m8zzAVYdq4vvPluEoT
+TxlpEv/dCM2SPexO4qV0WbdGYyiw0LE7eAA1M2I5P0y4GqpUxV935kmzr0Qr47eo
+FzpJMCker7SS4DxMH8f9cub97KN79AZycI00s3VmVMkytFy7COBkWbnFOSYfWmdw
+KNeEJg6xVc2iblfpjCY25LEAhQn7u+JrnmNZ9DY28OENH+oz4xQjH1O/T+zoLYip
+Kul19p3gctyaXhdNYc0HZD7aQX26mEvpD0O7E4pM1Xh8Ps6DI81ppcrsRZFMVgFi
+EbiNNMjLiKJWmNsZc3DPZJPma8ydlQ==
+=FFjN
+-----END PGP SIGNATURE-----
+
+--yudkqucvkn2t7jnw--
 
