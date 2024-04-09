@@ -1,228 +1,143 @@
-Return-Path: <linux-kernel+bounces-137671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6B689E5B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:38:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1946189E5B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E49A28361B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:38:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B9E1F222A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E4112B14F;
-	Tue,  9 Apr 2024 22:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FB61586D5;
+	Tue,  9 Apr 2024 22:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="zwpwAJFc"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="le6yobmN"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F15453AC
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D4433A6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712702332; cv=none; b=uPwkAs485fay2D7Y49UD+uDJ8MgOWRmSz4trpsZp8ie7xXJLnggXTrdd+Gy9DY6no1+OC2mZqIO/8PBTKCgjDK/Bu0qOUuckifctG2rfC/RTdjK/V6NqQVJ5m2Qw+pQ258SiLgflLxZt+6LUnu1/IEDMrcqQKyx4Tw82nwI4maA=
+	t=1712702481; cv=none; b=FBA+QuAMlR17S/yc5rbeR5lP62icY44CPGBetJA7gM+AiQZTwGFMZOXR1RBFOeIOV6+t0zyONY1YY4757JDlq7nwTyIsunAMjKrRsmSXAwbxM29DFx1/Myc1qpoMFQz5Jv/hYOsJSFoWJxOxz7YUZ9s0G8rjt0jBGpibbMZDD+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712702332; c=relaxed/simple;
-	bh=1nTpHcFG7TaTN4UKuMWoGMUhSmjP455yY+NbNgC/vzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OoSkUIwzaGb3ysdQxRTvfL9abWu86fcIFQvkvJuR6rX7zpnjKvXgtrY9AJrfJ/mZVjFAq3mhfRGEumNu2greiiXFC71VanEeBqYi12qBDWdpVHJjfq4qfcXoUBOh8X3oHyFu/niaJFz4HycYPkrScoQsS0Eb60hfnkIYdy/NMVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=zwpwAJFc; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4daa91c0344so2089339e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:38:50 -0700 (PDT)
+	s=arc-20240116; t=1712702481; c=relaxed/simple;
+	bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=mWIj0dmfklLTGwsoV2k3eFwCyWQdvCTcRK/DqAJBG5xqb84IJvWRdYLGAr13h1TPXCufKy+h7HHXIk3DK5AjNltO7y7VeEjld8lzIT2Eth1hfy0vyloAx0bnrewQoDOd08SOCX31DffCThYBFbPUJbMyO3ajD6BrAAUc9KBhkiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=le6yobmN; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso5127135b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:41:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1712702329; x=1713307129; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=89EL/EjdotA4u7WdksJrZLtkwceVa9rml4RSMBb+ZaA=;
-        b=zwpwAJFcMLCzSU/WM0JueVy6zmM1XhGflsb9SIenLtxujZg50UJZqTJWqmulmQkrRE
-         /T2lqcSLDjtUhwyiuhmWo3IxZsD4TLNCUFCtfT15ZOs/dU1rSQls5bPzJvchclI0GIHG
-         fsrCYiQxyQNMBL0zb1idu6F9AX8w57R6OmvafNmqSojHzBSRr+eXDAw1D0oyWOpSEpbH
-         HbEoQZ+txZYwQaFkRuflIXWV67qnfmqJJOlzYQYmmNqPxnofKhM/J8G60WqPwTSTisxe
-         Gz00gIdlWFGtg1RVugJ0H09Vp58+UaAc+IBM7/QPdxamJczEs8JvFuCM/J0EYh/UZ0zc
-         UCrQ==
+        d=joelfernandes.org; s=google; t=1712702479; x=1713307279; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
+        b=le6yobmNKIk7IcTrMR7Yh1AwzfvsJdsn82Viz0c1EC3SmHM/Rx+55n58Ug4HFiHvP+
+         mvLXPVPbToE1zLeMe7C1+f/FOd9XTiMtbuVNSEvBLoed+MtHbbtgyIThSBoEWKXyGwVF
+         K7zRAWYmoqkOjBvgpPSaPytSO9wvKW7kAwOeA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712702329; x=1713307129;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=89EL/EjdotA4u7WdksJrZLtkwceVa9rml4RSMBb+ZaA=;
-        b=QwZyJHAYoHwoelgMJg2sX0rgStpr/tyk0UZI4uZ4bkerJ8h+ra6ROKE2kGhiuUwyPZ
-         9XOX11jG8fNQYSzdK0BelRdkDRE06Mi2YN/cSVG0hXFLXZSRCPE+4Vg2AJ0skF1Nyxy1
-         rGwuWcfeghIN0wJXq4HE3HrPJpfSYhTl6ve0EwEQxD/Dn/STVe06Aacl5dHgy9aA20+D
-         bqupkzgpd3N5S7baT3CVWDMm5wnSBZ3L2KRG7ytkZstVkAFx2hX7aFBYkPYykvLwDSvt
-         JtHmCa8DkUPb04sq0gfwbz5ua7Qp42w4ExC9O16/HdlZL3qz4wHZMzrkaN6drHfD1WI7
-         59DA==
-X-Gm-Message-State: AOJu0Yxow87kp/rlzik0f03R78EW/CIrM/9tj1Ow4wlg1VaPvmIm3URb
-	RRlhXl3G6vLZ9ScwKegA65Dnr7KvU2I9Wn1EmNOPs4GQXHwK3qHWBgWxN9j1yrQ=
-X-Google-Smtp-Source: AGHT+IGiZK+tmHaywYrZ55RN5iwQnBxvHwVHGKo5oFf2/SFzKqBJnLN3XfIMJ9ECDpwW6+5kM+ErpQ==
-X-Received: by 2002:a05:6122:2005:b0:4c8:e5a0:4222 with SMTP id l5-20020a056122200500b004c8e5a04222mr1351787vkd.12.1712702329298;
-        Tue, 09 Apr 2024 15:38:49 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:6db8])
-        by smtp.gmail.com with ESMTPSA id s12-20020a0cdc0c000000b0069b10f48ecbsm2922036qvk.47.2024.04.09.15.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 15:38:48 -0700 (PDT)
-Date: Tue, 9 Apr 2024 18:38:47 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Tvrtko Ursulin <tursulin@igalia.com>
-Cc: linux-kernel@vger.kernel.org, Tvrtko Ursulin <tursulin@ursulin.net>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Peter Ziljstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, kernel-dev@igalia.com
-Subject: Re: [PATCH] sched/psi: Optimise psi_group_change a bit
-Message-ID: <20240409223847.GE1057805@cmpxchg.org>
-References: <20240329160648.86999-1-tursulin@igalia.com>
- <20240329185147.GA877460@cmpxchg.org>
+        d=1e100.net; s=20230601; t=1712702479; x=1713307279;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3NhGzvOWJu8inKax2x217roNis9rN/Ham5KfaPA0/Q4=;
+        b=Sv0b9Tw2ddHTASuApWZYTswSReN7a+DBdj/ACks1saQhzLr/NKvBDtoU1rAhgthR1x
+         alghdP5r+rMa+jDG5J4Tem8CP50bqDhk5/63AJWZvjR5lxYp7szGSOA3RPbofN0ym12T
+         T0YfEUV+3ldYfiCWyUwinvKIcyoAs9srPrl2Xw4lBA1lCk9oc/o+M4gcA8K9NbWupTsM
+         VxF8e3nvA926rfggh5cLSEasyYB8Yo/wQHcL60dA5dJhZKbG0GV6RsPX3dkuteOLY5OX
+         5cKa78Xtr7feEbrEwvhkgx+Bs5UwTk/CTCGab8zocAZAd4G2A1y4k5xyPgKY7mFCMOuj
+         zkKA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+2C/ysZ1Cbgdd2t/w0stimUPMSrYPANw/964Wyk2s/xnWZegWB6YQ2oEFhL4G0DtoGFPbS9+E6hUKesfQ6wDCEe9uGcffQ9S9mE/q
+X-Gm-Message-State: AOJu0YzDqvWeO4GScYbNs4zmO5Er5npUep57xbbT/tXFcOye4iB7TE2B
+	J/c9VTT1d8XasXYKMwgedXo3sC1WHBXwqtx0COPQv89/C1opPPB7TEZsw73D3nw=
+X-Google-Smtp-Source: AGHT+IGf7AyQcGgtDnxdEc6zeyqopRNu0tZWpw/6iFI0a7xHNGrXDfFFZjth8bXqtf7pRwJfL78atg==
+X-Received: by 2002:a05:6a21:1a9:b0:1a3:ae75:d6f5 with SMTP id le41-20020a056a2101a900b001a3ae75d6f5mr1505619pzb.20.1712702479019;
+        Tue, 09 Apr 2024 15:41:19 -0700 (PDT)
+Received: from smtpclient.apple ([103.98.78.154])
+        by smtp.gmail.com with ESMTPSA id g26-20020aa79f1a000000b006ecee8c8c0fsm7200440pfr.176.2024.04.09.15.41.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 15:41:18 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joel Fernandes <joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329185147.GA877460@cmpxchg.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map pstore consistently
+Date: Wed, 10 Apr 2024 04:11:05 +0530
+Message-Id: <9F1B6537-F0BF-46E1-92A2-92C082DDB573@joelfernandes.org>
+References: <SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Cc: Kees Cook <keescook@chromium.org>,
+ Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+ Ross Zwisler <zwisler@google.com>, wklin@google.com,
+ Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+ Suleiman Souhlal <suleiman@google.com>,
+ Linus Torvalds <torvalds@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+In-Reply-To: <SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
+To: "Luck, Tony" <tony.luck@intel.com>
+X-Mailer: iPhone Mail (21D61)
 
-[ Oops, I still had an old mutt alias for Ingo's address. ]
 
-Ingo, would you mind taking this through the scheduler tree?
 
-On Fri, Mar 29, 2024 at 02:51:53PM -0400, Johannes Weiner wrote:
-> On Fri, Mar 29, 2024 at 04:06:48PM +0000, Tvrtko Ursulin wrote:
-> > From: Tvrtko Ursulin <tursulin@ursulin.net>
-> > 
-> > The current code loops over the psi_states only to call a helper which
-> > then resolves back to the action needed for each state using a switch
-> > statement. That is effectively creating a double indirection of a kind
-> > which, given how all the states need to be explicitly listed and handled
-> > anyway, we can simply remove. Both the for loop and the switch statement
-> > that is.
-> > 
-> > The benefit is both in the code size and CPU time spent in this function.
-> > YMMV but on my Steam Deck, while in a game, the patch makes the CPU usage
-> > go from ~2.4% down to ~1.2%. Text size at the same time went from 0x323 to
-> > 0x2c1.
-> > 
-> > Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Suren Baghdasaryan <surenb@google.com>
-> > Cc: Peter Ziljstra <peterz@infradead.org>
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: kernel-dev@igalia.com
-> 
-> This is great.
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Ingo, would you mind please taking this through the scheduler tree? I
-> think Peter is still out.
-> 
-> Remaining quote below.
-> 
-> Thanks
-> 
-> > ---
-> >  kernel/sched/psi.c | 54 +++++++++++++++++++++++-----------------------
-> >  1 file changed, 27 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> > index 7b4aa5809c0f..55720ecf420e 100644
-> > --- a/kernel/sched/psi.c
-> > +++ b/kernel/sched/psi.c
-> > @@ -218,28 +218,32 @@ void __init psi_init(void)
-> >  	group_init(&psi_system);
-> >  }
-> >  
-> > -static bool test_state(unsigned int *tasks, enum psi_states state, bool oncpu)
-> > +static u32 test_states(unsigned int *tasks, u32 state_mask)
-> >  {
-> > -	switch (state) {
-> > -	case PSI_IO_SOME:
-> > -		return unlikely(tasks[NR_IOWAIT]);
-> > -	case PSI_IO_FULL:
-> > -		return unlikely(tasks[NR_IOWAIT] && !tasks[NR_RUNNING]);
-> > -	case PSI_MEM_SOME:
-> > -		return unlikely(tasks[NR_MEMSTALL]);
-> > -	case PSI_MEM_FULL:
-> > -		return unlikely(tasks[NR_MEMSTALL] &&
-> > -			tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING]);
-> > -	case PSI_CPU_SOME:
-> > -		return unlikely(tasks[NR_RUNNING] > oncpu);
-> > -	case PSI_CPU_FULL:
-> > -		return unlikely(tasks[NR_RUNNING] && !oncpu);
-> > -	case PSI_NONIDLE:
-> > -		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
-> > -			tasks[NR_RUNNING];
-> > -	default:
-> > -		return false;
-> > +	const bool oncpu = state_mask & PSI_ONCPU;
-> > +
-> > +	if (tasks[NR_IOWAIT]) {
-> > +		state_mask |= BIT(PSI_IO_SOME);
-> > +		if (!tasks[NR_RUNNING])
-> > +			state_mask |= BIT(PSI_IO_FULL);
-> >  	}
-> > +
-> > +	if (tasks[NR_MEMSTALL]) {
-> > +		state_mask |= BIT(PSI_MEM_SOME);
-> > +		if (tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING])
-> > +			state_mask |= BIT(PSI_MEM_FULL);
-> > +	}
-> > +
-> > +	if (tasks[NR_RUNNING] > oncpu)
-> > +		state_mask |= BIT(PSI_CPU_SOME);
-> > +
-> > +	if (tasks[NR_RUNNING] && !oncpu)
-> > +		state_mask |= BIT(PSI_CPU_FULL);
-> > +
-> > +	if (tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] || tasks[NR_RUNNING])
-> > +		state_mask |= BIT(PSI_NONIDLE);
-> > +
-> > +	return state_mask;
-> >  }
-> >  
-> >  static void get_recent_times(struct psi_group *group, int cpu,
-> > @@ -770,7 +774,6 @@ static void psi_group_change(struct psi_group *group, int cpu,
-> >  {
-> >  	struct psi_group_cpu *groupc;
-> >  	unsigned int t, m;
-> > -	enum psi_states s;
-> >  	u32 state_mask;
-> >  
-> >  	groupc = per_cpu_ptr(group->pcpu, cpu);
-> > @@ -841,10 +844,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
-> >  		return;
-> >  	}
-> >  
-> > -	for (s = 0; s < NR_PSI_STATES; s++) {
-> > -		if (test_state(groupc->tasks, s, state_mask & PSI_ONCPU))
-> > -			state_mask |= (1 << s);
-> > -	}
-> > +	state_mask = test_states(groupc->tasks, state_mask);
-> >  
-> >  	/*
-> >  	 * Since we care about lost potential, a memstall is FULL
-> > @@ -1194,7 +1194,7 @@ void psi_cgroup_restart(struct psi_group *group)
-> >  	/*
-> >  	 * After we disable psi_group->enabled, we don't actually
-> >  	 * stop percpu tasks accounting in each psi_group_cpu,
-> > -	 * instead only stop test_state() loop, record_times()
-> > +	 * instead only stop test_states() loop, record_times()
-> >  	 * and averaging worker, see psi_group_change() for details.
-> >  	 *
-> >  	 * When disable cgroup PSI, this function has nothing to sync
-> > @@ -1202,7 +1202,7 @@ void psi_cgroup_restart(struct psi_group *group)
-> >  	 * would see !psi_group->enabled and only do task accounting.
-> >  	 *
-> >  	 * When re-enable cgroup PSI, this function use psi_group_change()
-> > -	 * to get correct state mask from test_state() loop on tasks[],
-> > +	 * to get correct state mask from test_states() loop on tasks[],
-> >  	 * and restart groupc->state_start from now, use .clear = .set = 0
-> >  	 * here since no task status really changed.
-> >  	 */
-> > -- 
-> > 2.44.0
-> > 
+> On Apr 10, 2024, at 3:55=E2=80=AFAM, Luck, Tony <tony.luck@intel.com> wrot=
+e:
+>=20
+> =EF=BB=BF
+>>=20
+>>> I forgot to mention that this makes it trivial for any machine that does=
+n't
+>>> clear memory on soft-reboot, to enable console ramoops (to have access t=
+o
+>>> the last boot dmesg without needing serial).
+>>>=20
+>>> I tested this on a couple of my test boxes and on QEMU, and it works rat=
+her
+>>> well.
+>>=20
+>> I've long wanted a "stable for this machine and kernel" memory region
+>> like this for pstore. It would make testing much easier.
+>=20
+> Which systems does this work on? I'd assume that servers (and anything
+> else with ECC memory) would nuke contents while resetting ECC to clean
+> state.
+
+If that were the case universally, then ramoops pstore backend would not wor=
+k either?
+
+And yet we get the last kernel logs via the pstore for many years now, on em=
+bedded-ish devices.
+
+=46rom my reading, ECC-enabled DRAM is not present on lots of systems and II=
+RC, pstore ramoops has its own ECC.
+
+Or did I miss a recent trend with ECC-enabled DRAM?
+
+- Joel
+
+
+
+>=20
+> -Tony
 
