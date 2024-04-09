@@ -1,328 +1,250 @@
-Return-Path: <linux-kernel+bounces-136740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F028089D7C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:23:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B780A89D7C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC4891C2153F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0D7284ADB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC0A8614B;
-	Tue,  9 Apr 2024 11:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LZFX6OW2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF0786130;
+	Tue,  9 Apr 2024 11:23:07 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9FF84D02
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE17285C66
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712661777; cv=none; b=HJmfQQZWYzhy+N3lYxBBOlMl7Ral9YihiJ4Udwm2dxkRn98G5BR5Zvbnv9IzE+m0c9KubDeETe+2WwPYh6X/8Tcemg9F47PVB5cqMuy2ZZgJ3VZ8LqAxcOx+ux9eEqFiTeDMuEZpjX/L/Gxn6bXeHZeuyMEEMc2CjgV7zYksz80=
+	t=1712661786; cv=none; b=TVcWbtn6T6xj4phX0hYlA4dFCTvEVV1W8C3QCP1yxbsPmN6KlKMadGVUBlX3yzqic9wOCTMaEa4ze4BJSLerrC/jo3sI5pUWl0W3hA9V9ULCtvH7RjiQFrwavsBE5k56INEbzXr4gSI7sE64ZzcWtLgxyjwAW1YNfYymo8gaAEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712661777; c=relaxed/simple;
-	bh=dXdAtdLJTsMbcj8b5RKGfKckk6Hgfi4xPdUVO7+bqUM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B4wBCHx0YMungie7XN0DnhSxaojB3Xc3LDxFSoUQ6aGyRPsWib3DphrC7htNs0J+ApepikQbCtreAAW+2J1KKu/HlDmoTTaxiXL95DNb/fhv2BClnwmF16xViYbKCYNOh1PsQRVfhgxu6DYnDR1Fw64jDzmbLP+FvBkrcE6S9hI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LZFX6OW2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712661774;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ot2G8lLFEHVBcliGx6FsM/cbXiAJ7R9Jrzplr8rmCj0=;
-	b=LZFX6OW2w8SUkZBFwRuBCeUrbI01dSLfgIzjCxPg3lyV0FD/PahJPjlRW2JrlsfTjhRxJQ
-	nXdZGpLIcK1Y4STD8xpz69uJw0G4rCz3ZsAPADC9hH+FqqmmUkWniJx6BpWD3O8ggzjopI
-	W94/PGd7Twevv1k5eyoOLhXvTnn6HRc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-448-5xC0Yn9yNQ-tLWZ8EYSp-w-1; Tue, 09 Apr 2024 07:22:53 -0400
-X-MC-Unique: 5xC0Yn9yNQ-tLWZ8EYSp-w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343c6a990dbso2280868f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:22:53 -0700 (PDT)
+	s=arc-20240116; t=1712661786; c=relaxed/simple;
+	bh=5ROrTILwgwtu1eXXfrHz9C0PXdud03zposetsXGc5ak=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WXEl/pUECtoD2+4BAhemJCjgdBp6tHtwk7zq+CqO5t0refDMgWS9C7qcDxmKkJNVsVXoMJLv72tpCRZ5GezapB07rPE9bHOEuJc2dfp7wFAoYWglVAA4S6TO887qevG2n1ltaxs7nfyY7n/lLqrwfsGWfQQfundWVafmWBF65F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d096c4d663so718191139f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:23:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712661772; x=1713266572;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ot2G8lLFEHVBcliGx6FsM/cbXiAJ7R9Jrzplr8rmCj0=;
-        b=McGx2GdX3aHi082Gshbu5qBFMX9wc/JNvOFisR3K/AKjDM/h31OERKdfD06SSXUq4E
-         PyeffAU5Rf4buMkBuhSX0Aoyy1AOva4pO4RkBz0ggWi28uIkCmCkxe/2m6vVDkunIEWj
-         hjKlAxtBIL84ZJeACyMDblMSsENG5/eNEEuaCK1gtGid3CM7ZKIHwqCQIY7uoPThgeY6
-         tCNNLsRcYADgJCjPrWQzsA/ofGET8g0J2y1w1BXRangZmZOapi4sKRE88/209GX4Q2Tb
-         Vcd1eeKxmDYfSSmKzOGXFcZ7zxhiDOTd+LSLOSxAZHHtjALI7w43avSIsaHb/H8DWd7w
-         u7Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCXd9Jv8DuwP++7Ikcu6+6Kx6ABqgmldepsUmw/9im0THQ/g1M9K7+ry624KMDiQqf5Nr6Wau+0DjPhndHvs7IA1janXGMSBY+9gGNkp
-X-Gm-Message-State: AOJu0YxqvF1koboafzgpdZFkuo2XUoaVkVOQnRgaMioPbs8Yv6T5SDlS
-	AclOwUC4TUK5CwNlDI0R2N6ZMYTYFA5NS1Stvl2qPmpI0ffm2ovsbj5LCYrFJ495mn+48gzgjYl
-	M5AxMZWuvDFeIbdhxkEdswXv/SKZFfj1PAPYreJP+lRJRsNVU140cgDuAsZh3uQ==
-X-Received: by 2002:adf:fcc7:0:b0:343:70cd:48e6 with SMTP id f7-20020adffcc7000000b0034370cd48e6mr2308582wrs.33.1712661772182;
-        Tue, 09 Apr 2024 04:22:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFjDFHM7dchce0ebi6w1+F+RimJ5D/eNxG3emNSCTWWmksQ0eTUl27Gblku/lcUaOzuz859oA==
-X-Received: by 2002:adf:fcc7:0:b0:343:70cd:48e6 with SMTP id f7-20020adffcc7000000b0034370cd48e6mr2308556wrs.33.1712661771642;
-        Tue, 09 Apr 2024 04:22:51 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
-        by smtp.gmail.com with ESMTPSA id d4-20020adfa344000000b003462374f350sm1330201wrb.26.2024.04.09.04.22.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 04:22:51 -0700 (PDT)
-Message-ID: <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
-Date: Tue, 9 Apr 2024 13:22:49 +0200
+        d=1e100.net; s=20230601; t=1712661784; x=1713266584;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XB80314w848NyGVGFY4b6hjNT5h98IQxWV7Umez7X3Q=;
+        b=qbDFvQLJF83L/fzxscCE5RT2EtmHKusGrcqPYI36q+fYuuAIItLXkoOga3Eyn7jmKy
+         kIi8fC17ALw87kwvxD3Ro4MCpXUq7MuQuMcs+2/hFxTJZxzwfCVSQtrg3Myz/VrRdIBc
+         3zXbliS2SVfd4RkT6wObXMqOxIbBjeNRmvDHHlcW+Qu6Yn7v/5HYUYbaR7TBylP0DLSH
+         P6/MUpa5LrzTSAqLAlU5/a7vnnyiiJBnkMcSgBYPDWqGSzkpmnnxN/YkyPlcSJPA6mL8
+         z/CJw/udaY1cjGLCJQSFYZJMTbyiYH+V/udpO1IvfC9Znd1Lke72Eu+bDt1qjgDpQM9W
+         NpPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXt2Ypq5LHtCIjz8dWOuM5Pe6XmgiexXsjcc8aF8W5TZ/pp2zLCPSe+R/svtZEzXRxnLh5ZTSCgvTVy6AmyrvipPAnNVkHvcH20eX9P
+X-Gm-Message-State: AOJu0Yzzw53P3ChAY8FN5pQv1Oa9/ooH2xTIVCJOWJ2dysFRSvoUkdq6
+	4g8qlcqfPcDgbUdH89XgWeu2hXhBySFb4WqBglgaR55huf1eMazVkCFz9DZoVRjR4chVF3uIeKe
+	QZkF7joBVR1XOiu44MachPVX04LmWJ3YfU68q+CT4+cdp6GVpOLLywkA=
+X-Google-Smtp-Source: AGHT+IHr18O2m/tzwk1iXt7dCCE48nS0UEL87GUWrTVOq5kDDDpdnf+wWM1vRkG92aePc2Vtonr8qPfHLlxx/2kPpJ0pEodBMWQ0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] Speed up boot with faster linear map creation
-To: Itaru Kitayama <itaru.kitayama@linux.dev>,
- Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <Catalin.Marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <Mark.Rutland@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240404143308.2224141-1-ryan.roberts@arm.com>
- <Zg+qwooaWFNL7KIg@vm3> <fd4aed3a-42be-44e0-b3bb-12f77c5911a1@arm.com>
- <ZhEkif45F0aVvKPx@vm3> <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
- <FCDCBCEE-7D97-4769-AB95-7294A9CE18E0@linux.dev>
- <1d5abb48-08a8-4d83-a681-6915bc7b6907@arm.com>
- <268FBD1C-B102-4726-A7F4-1125123BDA7A@linux.dev>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <268FBD1C-B102-4726-A7F4-1125123BDA7A@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:3792:b0:47e:e557:ba45 with SMTP id
+ w18-20020a056638379200b0047ee557ba45mr411925jal.0.1712661784225; Tue, 09 Apr
+ 2024 04:23:04 -0700 (PDT)
+Date: Tue, 09 Apr 2024 04:23:04 -0700
+In-Reply-To: <mb61p7ch6yetx.fsf@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044fca50615a82595@google.com>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+From: syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, alexei.starovoitov@gmail.com, 
+	andrii.nakryiko@gmail.com, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux@armlinux.org.uk, mark.rutland@arm.com, 
+	puranjay12@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 09.04.24 12:13, Itaru Kitayama wrote:
-> 
-> 
->> On Apr 9, 2024, at 19:04, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 09/04/2024 01:10, Itaru Kitayama wrote:
->>> Hi Ryan,
->>>
->>>> On Apr 8, 2024, at 16:30, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 06/04/2024 11:31, Itaru Kitayama wrote:
->>>>> Hi Ryan,
->>>>>
->>>>> On Sat, Apr 06, 2024 at 09:32:34AM +0100, Ryan Roberts wrote:
->>>>>> Hi Itaru,
->>>>>>
->>>>>> On 05/04/2024 08:39, Itaru Kitayama wrote:
->>>>>>> On Thu, Apr 04, 2024 at 03:33:04PM +0100, Ryan Roberts wrote:
->>>>>>>> Hi All,
->>>>>>>>
->>>>>>>> It turns out that creating the linear map can take a significant proportion of
->>>>>>>> the total boot time, especially when rodata=full. And most of the time is spent
->>>>>>>> waiting on superfluous tlb invalidation and memory barriers. This series reworks
->>>>>>>> the kernel pgtable generation code to significantly reduce the number of those
->>>>>>>> TLBIs, ISBs and DSBs. See each patch for details.
->>>>>>>>
->>>>>>>> The below shows the execution time of map_mem() across a couple of different
->>>>>>>> systems with different RAM configurations. We measure after applying each patch
->>>>>>>> and show the improvement relative to base (v6.9-rc2):
->>>>>>>>
->>>>>>>>                 | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
->>>>>>>>                 | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
->>>>>>>> ---------------|-------------|-------------|-------------|-------------
->>>>>>>>                 |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
->>>>>>>> ---------------|-------------|-------------|-------------|-------------
->>>>>>>> base           |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   (0%)
->>>>>>>> no-cont-remap  |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 (-78%)
->>>>>>>> batch-barriers |   13 (-92%) |  162 (-93%) |  655 (-93%) |  1656 (-91%)
->>>>>>>> no-alloc-remap |   11 (-93%) |  109 (-95%) |  449 (-95%) |  1257 (-93%)
->>>>>>>> lazy-unmap     |    6 (-96%) |   61 (-97%) |  257 (-97%) |   838 (-95%)
->>>>>>>>
->>>>>>>> This series applies on top of v6.9-rc2. All mm selftests pass. I've compile and
->>>>>>>> boot tested various PAGE_SIZE and VA size configs.
->>>>>>>>
->>>>>>>> ---
->>>>>>>>
->>>>>>>> Changes since v1 [1]
->>>>>>>> ====================
->>>>>>>>
->>>>>>>>    - Added Tested-by tags (thanks to Eric and Itaru)
->>>>>>>>    - Renamed ___set_pte() -> __set_pte_nosync() (per Ard)
->>>>>>>>    - Reordered patches (biggest impact & least controversial first)
->>>>>>>>    - Reordered alloc/map/unmap functions in mmu.c to aid reader
->>>>>>>>    - pte_clear() -> __pte_clear() in clear_fixmap_nosync()
->>>>>>>>    - Reverted generic p4d_index() which caused x86 build error. Replaced with
->>>>>>>>      unconditional p4d_index() define under arm64.
->>>>>>>>
->>>>>>>>
->>>>>>>> [1] https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/<https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/>
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Ryan
->>>>>>>>
->>>>>>>>
->>>>>>>> Ryan Roberts (4):
->>>>>>>>    arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
->>>>>>>>    arm64: mm: Batch dsb and isb when populating pgtables
->>>>>>>>    arm64: mm: Don't remap pgtables for allocate vs populate
->>>>>>>>    arm64: mm: Lazily clear pte table mappings from fixmap
->>>>>>>>
->>>>>>>> arch/arm64/include/asm/fixmap.h  |   5 +-
->>>>>>>> arch/arm64/include/asm/mmu.h     |   8 +
->>>>>>>> arch/arm64/include/asm/pgtable.h |  13 +-
->>>>>>>> arch/arm64/kernel/cpufeature.c   |  10 +-
->>>>>>>> arch/arm64/mm/fixmap.c           |  11 +
->>>>>>>> arch/arm64/mm/mmu.c              | 377 +++++++++++++++++++++++--------
->>>>>>>> 6 files changed, 319 insertions(+), 105 deletions(-)
->>>>>>>>
->>>>>>>> --
->>>>>>>> 2.25.1
->>>>>>>>
->>>>>>>
->>>>>>> I've build and boot tested the v2 on FVP, base is taken from your
->>>>>>> linux-rr repo. Running run_vmtests.sh on v2 left some gup longterm not oks, would you take a look at it? The mm ksefltests used is from your linux-rr repo too.
->>>>>>
->>>>>> Thanks for taking a look at this.
->>>>>>
->>>>>> I can't reproduce your issue unfortunately; steps as follows on Apple M2 VM:
->>>>>>
->>>>>> Config: arm64 defconfig + the following:
->>>>>>
->>>>>> # Squashfs for snaps, xfs for large file folios.
->>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZ4
->>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZO
->>>>>> ./scripts/config --enable CONFIG_SQUASHFS_XZ
->>>>>> ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
->>>>>> ./scripts/config --enable CONFIG_XFS_FS
->>>>>>
->>>>>> # For general mm debug.
->>>>>> ./scripts/config --enable CONFIG_DEBUG_VM
->>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
->>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_RB
->>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
->>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
->>>>>> ./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
->>>>>>
->>>>>> # For mm selftests.
->>>>>> ./scripts/config --enable CONFIG_USERFAULTFD
->>>>>> ./scripts/config --enable CONFIG_TEST_VMALLOC
->>>>>> ./scripts/config --enable CONFIG_GUP_TEST
->>>>>>
->>>>>> Running on VM with 12G memory, split across 2 (emulated) NUMA nodes (needed by
->>>>>> some mm selftests), with kernel command line to reserve hugetlbs and other
->>>>>> features required by some mm selftests:
->>>>>>
->>>>>> "
->>>>>> transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
->>>>>> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
->>>>>> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2
->>>>>> "
->>>>>>
->>>>>> Ubuntu userspace running off XFS rootfs. Build and run mm selftests from same
->>>>>> git tree.
->>>>>>
->>>>>>
->>>>>> Although I don't think any of this config should make a difference to gup_longterm.
->>>>>>
->>>>>> Looks like your errors are all "ftruncate() failed". I've seen this problem on
->>>>>> our CI system. There it is due to running the tests from NFS file system. What
->>>>>> filesystem are you using? Perhaps you are sharing into the FVP using 9p? That
->>>>>> might also be problematic.
->>>>>
->>>>> That was it. This time I booted up the kernel including your series on
->>>>> QEMU on my M1 and executed the gup_longterm program without the ftruncate
->>>>> failures. When testing your kernel on FVP, I was executing the script from the FVP's host filesystem using 9p.
->>>>
->>>> I'm not sure exactly what the root cause is. Perhaps there isn't enough space on
->>>> the disk? It might be worth enhancing the error log to provide the errno in
->>>> tools/testing/selftests/mm/gup_longterm.c.
->>>>
->>>
->>> Attached is the strace’d gup_longterm executiong log on your
->>> pgtable-boot-speedup-v2 kernel.
->>
->> Sorry are you saying that it only fails with the pgtable-boot-speedup-v2 patch
->> set applied? I thought we previously concluded that it was independent of that?
->> I was under the impression that it was filesystem related and not something that
->> I was planning to investigate.
-> 
-> No, irrespective of the kernel, if using 9p on FVP the test program fails.
-> It is indeed 9p filesystem related, as I switched to using NFS all the issues are gone.
+Hello,
 
-Did it never work on 9p? If so, we might have to SKIP that test.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in _vm_unmap_aliases
 
-openat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
-unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", 0) = 0
-fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
-ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+INFO: task kworker/0:41:4201 blocked for more than 430 seconds.
+      Not tainted 6.9.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:41    state:D stack:0     pid:4201  tgid:4201  ppid:2      flags:0x00000000
+Workqueue: events bpf_prog_free_deferred
+Call trace: 
+[<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+[<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+ r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfd0dd94 r5:84dd1800
+ r4:84dd1800
+[<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+ r5:84dd1800 r4:82714be4
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+[<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+ r10:82c16005 r9:dfd0de20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+ r4:00000000
+[<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+[<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+ r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+ r4:00000000
+[<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+ r9:84dd1800 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f055000
+[<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+ r5:00001000 r4:dfe91000
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+[<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+ r5:845b0754 r4:845b0400
+[<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r7:dddd00c0 r6:82c16000 r5:845b0754 r4:84d7cb00
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:84dd1800 r9:84d7cb2c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
+ r4:84d7cb00
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:dfa55e90 r8:845d8e80 r7:84d7cb00 r6:802672c4 r5:84dd1800
+ r4:84c66500
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdfd0dfb0 to 0xdfd0dff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66500
+INFO: task kworker/1:55:4229 blocked for more than 430 seconds.
+      Not tainted 6.9.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:55    state:D stack:0     pid:4229  tgid:4229  ppid:2      flags:0x00000000
+Workqueue: events bpf_prog_free_deferred
+Call trace: 
+[<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+[<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+ r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dfe39d94 r5:84e83c00
+ r4:84e83c00
+[<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+ r5:84e83c00 r4:82714be4
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+[<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+ r10:82c16205 r9:dfe39e20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+ r4:00000000
+[<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+[<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+ r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+ r4:00000000
+[<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+ r9:84e83c00 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f053000
+[<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+ r5:00001000 r4:dfe73000
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+[<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+ r5:845b2b54 r4:845b2800
+[<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r7:ddde40c0 r6:82c16200 r5:845b2b54 r4:845d9f80
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:84e83c00 r9:845d9fac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+ r4:845d9f80
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:dfde5e90 r8:84640600 r7:845d9f80 r6:802672c4 r5:84e83c00
+ r4:84c66300
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdfe39fb0 to 0xdfe39ff8)
+9fa0:                                     00000000 00000000 00000000 00000000
+9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66300
+NMI backtrace for cpu 0
+CPU: 0 PID: 31 Comm: khungtaskd Not tainted 6.9.0-rc1-syzkaller #0
+Hardware name: ARM-Versatile Express
+Call trace: 
+[<818795bc>] (dump_backtrace) from [<818796b8>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
+ r7:00000000 r6:00000113 r5:60000193 r4:81fc4768
+[<818796a0>] (show_stack) from [<81896e70>] (__dump_stack lib/dump_stack.c:88 [inline])
+[<818796a0>] (show_stack) from [<81896e70>] (dump_stack_lvl+0x70/0x7c lib/dump_stack.c:114)
+[<81896e00>] (dump_stack_lvl) from [<81896e94>] (dump_stack+0x18/0x1c lib/dump_stack.c:123)
+ r5:00000000 r4:00000001
+[<81896e7c>] (dump_stack) from [<81866994>] (nmi_cpu_backtrace+0x160/0x17c lib/nmi_backtrace.c:113)
+[<81866834>] (nmi_cpu_backtrace) from [<81866ae0>] (nmi_trigger_cpumask_backtrace+0x130/0x1d8 lib/nmi_backtrace.c:62)
+ r7:00000000 r6:8260c590 r5:8261a88c r4:ffffffff
+[<818669b0>] (nmi_trigger_cpumask_backtrace) from [<802105b4>] (arch_trigger_cpumask_backtrace+0x18/0x1c arch/arm/kernel/smp.c:851)
+ r9:8260c6f4 r8:00007b4d r7:8289dfe0 r6:00007d59 r5:8500ee04 r4:850d4b24
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline])
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline])
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (watchdog+0x480/0x594 kernel/hung_task.c:380)
+[<8034e7c8>] (watchdog) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:df819e58 r8:82e98440 r7:00000000 r6:8034e7c8 r5:82ee8c00
+ r4:82f42100
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdf8ddfb0 to 0xdf8ddff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:82f42100
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 5655 Comm: kworker/1:259 Not tainted 6.9.0-rc1-syzkaller #0
+Hardware name: ARM-Versatile Express
+Workqueue: wg-crypt-wg0 wg_packet_encrypt_worker
+PC is at poly1305_final_arch+0x0/0x80 arch/arm/crypto/poly1305-glue.c:189
+LR is at poly1305_final include/crypto/poly1305.h:94 [inline]
+LR is at chacha20poly1305_crypt_sg_inplace+0x43c/0x4b4 lib/crypto/chacha20poly1305.c:320
+pc : [<80232f80>]    lr : [<807fa0e4>]    psr: 60000113
+sp : eafa1990  ip : eafa1990  fp : eafa1bb4
+r10: 00000000  r9 : 00000000  r8 : 00000000
+r7 : eafa19e0  r6 : 00000000  r5 : 00000000  r4 : eafa19f0
+r3 : 00000000  r2 : 00000000  r1 : eafa19f0  r0 : eafa1a68
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 30c5387d  Table: 8461dec0  DAC: 00000000
+Call trace: 
+[<807f9ca8>] (chacha20poly1305_crypt_sg_inplace) from [<807fa188>] (chacha20poly1305_encrypt_sg_inplace+0x2c/0x34 lib/crypto/chacha20poly1305.c:338)
+ r10:00000000 r9:00000000 r8:00000074 r7:00000001 r6:84dca018 r5:00000000
+ r4:00000074
+[<807fa15c>] (chacha20poly1305_encrypt_sg_inplace) from [<80bfb0f8>] (encrypt_packet+0x194/0x230 drivers/net/wireguard/send.c:216)
+ r5:00000000 r4:00000074
+[<80bfaf64>] (encrypt_packet) from [<80bfb8d0>] (wg_packet_encrypt_worker+0xbc/0x270 drivers/net/wireguard/send.c:297)
+ r10:846c86e8 r9:82f2a540 r8:00000000 r7:846c86a0 r6:8260eea8 r5:00000000
+ r4:82f2a540
+[<80bfb814>] (wg_packet_encrypt_worker) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r10:84032e05 r9:85156000 r8:00000180 r7:ddde40c0 r6:84032e00 r5:ff7ffcf4
+ r4:8505ff00
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:85156000 r9:8505ff2c r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+ r4:8505ff00
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:eaeb1e90 r8:84ed1a40 r7:8505ff00 r6:802672c4 r5:85156000
+ r4:847e7040
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xeafa1fb0 to 0xeafa1ff8)
+1fa0:                                     00000000 00000000 00000000 00000000
+1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:847e7040
 
 
-fstatfs() fails and makes get_fs_type() simply say "0" -- IOW "I don't know",
-which should be fine here, as it will make fs_is_unknown() trigger for relevant
-cases where the type matters.
+Tested on:
 
-ftruncate() failing with ENOENT seems to be the problem.
+commit:         7deb8d88 arm32, bpf: Fix sign-extension mov instruction
+git tree:       https://github.com/puranjaymohan/linux.git arm32_movsx_fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=175200cb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=43f1e0cbdb852271
+dashboard link: https://syzkaller.appspot.com/bug?extid=186522670e6722692d86
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
 
-But that error is a bit weird.
-
-The man page says "ENOENT The named file does not exist.", which should only apply to
-truncate() but not ftruncate().
-
-Sound weird, but maybe that's the way to say here "not supported" ?
-
--- 
-Cheers,
-
-David / dhildenb
-
+Note: no patches were applied.
 
