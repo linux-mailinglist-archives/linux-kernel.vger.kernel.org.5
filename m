@@ -1,50 +1,61 @@
-Return-Path: <linux-kernel+bounces-136793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF5189D838
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:41:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE5EA89D83E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E99A288F61
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:41:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9697B21833
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC8912E1C2;
-	Tue,  9 Apr 2024 11:38:59 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557AD12EBE3;
+	Tue,  9 Apr 2024 11:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cNNsbZnK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E40812DDA1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EE386AF4;
+	Tue,  9 Apr 2024 11:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662739; cv=none; b=i/XSTXD8QuqqfFElBa3LuUEqirgR+Q2e3+o/oGwXUbokgJLWsV3MA1iIsOX1SaSN21059a0kWVac+sT1kZAHLIrDbTCoaoYEi9D33AVHmhEth4s3Z6QygZNo2gH5nJyiJlX1vZwLA/HA/kFGrJ3AOR0d2+9jSqGupEunCUCjHf4=
+	t=1712662814; cv=none; b=LI4lb5I8zbTncJ7JOdI1Fts/3ZW1LEK75AiZK3VGwHUSD2uQ23r8Jz1wWsPgp7FGsagTYijZl66BShXnahF3uCIeyBYItpNxGSw4mQT8t+9HkLd7fVyKZWiLCBqLFfzwHIODr1dAlxFmBNtvfTg7YVZzHyLwmHoBtHUzb5pZLjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662739; c=relaxed/simple;
-	bh=Zr6aCdpoCKG0P7Z6ungADoq81IHnDx/2r+SXS7k/pMM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=poUj6azz0QrT/ef9Hzf9L4z1NckgzNvmrh+egzo0FfJEtUceAj33wb200InzjWVhH3u+cGfUu4+ED4NO3hEVQHlAF2l5hm1/FxjTYb012LBROX6ETHeXeJVOg+vvHK8GRLRavNFbaWPERXa26lvH3rDrheZ7evkDIo6RBVqn2qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VDP6P2mznz1hwNh;
-	Tue,  9 Apr 2024 19:35:57 +0800 (CST)
-Received: from kwepemm600014.china.huawei.com (unknown [7.193.23.54])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3B27118002D;
-	Tue,  9 Apr 2024 19:38:48 +0800 (CST)
-Received: from Linux-SUSE12SP5.huawei.com (10.67.136.233) by
- kwepemm600014.china.huawei.com (7.193.23.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 19:38:47 +0800
-From: zhuqiuer <zhuqiuer1@huawei.com>
-To: <linux@armlinux.org.uk>, <nathan@kernel.org>, <ndesaulniers@google.com>,
-	<morbo@google.com>, <justinstitt@google.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ARM: Add a memory clobber to the fmrx instruction
-Date: Tue, 9 Apr 2024 19:38:44 +0800
-Message-ID: <20240409113844.4813-1-zhuqiuer1@huawei.com>
-X-Mailer: git-send-email 2.12.3
+	s=arc-20240116; t=1712662814; c=relaxed/simple;
+	bh=RW86VgmMfAcJkSsLpIIwkE6YL29bSdtmFPZKlRKZqL0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=P8YQ8uGKNbWW/sng04lZfeP08D5Hyg62ftfnlnh9UtR0/w+g5KTYQUKN4HTXadZOwkIkapV9IXfp3/fz5VsnFcBgvNTUic3qQzSch6lQ2IM4IleW5JqKwUTnVzBsBQTIrAGzhn2U95tKOElK8plqBWiJhW7Qc1+PTorDiEm/mO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cNNsbZnK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C080C433C7;
+	Tue,  9 Apr 2024 11:40:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712662814;
+	bh=RW86VgmMfAcJkSsLpIIwkE6YL29bSdtmFPZKlRKZqL0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=cNNsbZnKiwP9ciyhq95bqBZiXTBTVFFgYSa0BH8/TOyoMtYsUYDOM8eGjT5kpXOyc
+	 +WV5ZDL9ZbB6xUc9X/VydgYqxgFyGzi/W4wvyfn1o4Pf4sYEEc6LNpQn/wIr8z8+yL
+	 yAUZPgv/kCrsUFZvNvgmsCsXJcUT5dlXakXCx3g7OW15HMdj5h1VRj4xo/PPkaXMKi
+	 dxL2qEkqWFsd5aEhhRi5WCJEvDMlID4FvN7eMcvQ61i9uiAxgo2M3uGhfYgAcG+y7W
+	 m9SolINR2DOwFgtfq079+zgmxQkVg1Y7DS3zIjow9jE+CweF+L3zZ7ExVChXTPfLqW
+	 MElB5W1pVMrsA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org,  ath11k@lists.infradead.org,
+  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
+  imitsyanko@quantenna.com,  geomatsi@gmail.com,
+  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org
+Subject: Re: [PATCH 0/3] wifi: Un-embed ath10k and ath11k dummy netdev
+References: <20240405122123.4156104-1-leitao@debian.org>
+	<87y19r264m.fsf@kernel.org> <ZhPyRHHlVot+a8Xq@gmail.com>
+	<87pluz24ap.fsf@kernel.org> <ZhRGo3I57rXxsMV/@gmail.com>
+	<87edbe26qe.fsf@kernel.org> <ZhUdxpnC+nMkNp+U@gmail.com>
+Date: Tue, 09 Apr 2024 14:40:10 +0300
+In-Reply-To: <ZhUdxpnC+nMkNp+U@gmail.com> (Breno Leitao's message of "Tue, 9
+	Apr 2024 03:51:50 -0700")
+Message-ID: <875xwq2291.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,56 +63,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600014.china.huawei.com (7.193.23.54)
 
-The instruction fmrx is used throughout the kernel,
-where it is sometimes expected to be skipped
-by incrementing the program counter, such as in vfpmodule.c:vfp_init().
-Therefore, the instruction should not be reordered when it is not intended.
-Adding a barrier() instruction before and after this call cannot prevent
-reordering by the compiler, as the fmrx instruction is constrained
-by '=r', meaning it works on the general register but not on memory.
-To ensure the order of the instruction after compiling,
-adding a memory clobber is necessary.
+Breno Leitao <leitao@debian.org> writes:
 
-Below is the code snippet disassembled from the method:
-vfpmodule.c:vfp_init(), compiled by LLVM.
+> On Tue, Apr 09, 2024 at 01:03:21PM +0300, Kalle Valo wrote:
+>
+>> Breno Leitao <leitao@debian.org> writes:
+>> 
+>> >> > Reading the issue, I am afraid that freeing netdev explicitly
+>> >> > (free_netdev()) might not be the best approach at the exit path.
+>> >> >
+>> >> > I would like to try to leverage the ->needs_free_netdev netdev
+>> >> > mechanism to do the clean-up, if that makes sense. I've updated the
+>> >> > ath11k patch, and I am curious if that is what we want.
+>> >> >
+>> >> > Would you mind testing a net patch I have, please?
+>> >> >
+>> >> >   https://github.com/leitao/linux/tree/wireless-dummy_v2
+>> >> 
+>> >> I tested this again with my WCN6855 hw2.0 x86 test box on this commit:
+>> >> 
+>> >> a87674ac820e wifi: ath11k: allocate dummy net_device dynamically
+>> >> 
+>> >> It passes my tests and doesn't crash, but I see this kmemleak warning a
+>> >> lot:
+>> >
+>> > Thanks Kalle, that was helpful. The device is not being clean-up
+>> > automatically.
+>> >
+>> > Chatting with Jakub, he suggested coming back to the original approach,
+>> > but, adding a additional patch, at the free_netdev().
+>> >
+>> > Would you mind running another test, please?
+>> >
+>> > 	https://github.com/leitao/linux/tree/wireless-dummy_v3
+>> >
+>> > The branch above is basically the original branch (as in this patch
+>> > series), with this additional patch:
+>> >
+>> > 	Author: Breno Leitao <leitao@debian.org>
+>> > 	Date:   Mon Apr 8 11:37:32 2024 -0700
+>> >
+>> > 	    net: free_netdev: exit earlier if dummy
+>> 
+>> I tested with the same ath11k hardware and this one passes all my
+>> (simple) ath11k tests, no issues found. I used this commit:
+>> 
+>> 1c10aebaa8ce net: free_netdev: exit earlier if dummy
+>
+> Thank you so much for the test.
+>
+> I will respin a v2 of this patchset with the additional patch included.
 
-Before the patching:
-xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
-xxxxx:   xxxxx    mov r0, r4
-xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
-..
-xxxxx:   xxxxx    bl  c0791c8c <printk>
-xxxxx:   xxxxx    movw    r5, #23132  ; 0x5a5c
-xxxxx:   xxxxx    vmrs    r4, fpsid  <- this is the fmrx instruction
+Sounds good. Feel free to add:
 
-After the patching:
-xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
-xxxxx:   xxxxx    mov r0, r4
-xxxxx:   xxxxx    vmrs    r5, fpsid  <- this is the fmrx instruction
-xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
+Tested-by: Kalle Valo <kvalo@kernel.org>
 
-Signed-off-by: zhuqiuer <zhuqiuer1@huawei.com>
----
- arch/arm/vfp/vfpinstr.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/vfp/vfpinstr.h b/arch/arm/vfp/vfpinstr.h
-index 3c7938fd40aa..e70129e10b8e 100644
---- a/arch/arm/vfp/vfpinstr.h
-+++ b/arch/arm/vfp/vfpinstr.h
-@@ -68,7 +68,7 @@
- 	u32 __v;			\
- 	asm(".fpu	vfpv2\n"	\
- 	    "vmrs	%0, " #_vfp_	\
--	    : "=r" (__v) : : "cc");	\
-+	    : "=r" (__v) : : "memory", "cc");	\
- 	__v;				\
-  })
- 
 -- 
-2.12.3
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
