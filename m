@@ -1,63 +1,70 @@
-Return-Path: <linux-kernel+bounces-136791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7896789D833
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:40:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A1689D846
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3023B2883A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:40:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1AA228ABDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB49E12BEAC;
-	Tue,  9 Apr 2024 11:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F31486269;
+	Tue,  9 Apr 2024 11:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Mep8RMYk"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="qZ3hsfop"
+Received: from out203-205-251-82.mail.qq.com (out203-205-251-82.mail.qq.com [203.205.251.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6769128362;
-	Tue,  9 Apr 2024 11:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCE68004E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.82
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662613; cv=none; b=L56vpUjIjHqpOcUXvMlWmil/4ob64+b61JDVk2IhIOu3zKypWSf4N/7BN9rN7yZkuLq8rlmUjHd3q7UBZQPuJzN1CCTxPJCqxKwe9C+UTNSWs89bGrwS0KQ5hJf5TIihEo0PkSI/ANy8toOyx7UoLSTvgbxWrIFW8pCedfzrC/U=
+	t=1712662938; cv=none; b=WcEbJJMcKez4+ICg+eykWgzoB+ys3+CJ1B0e6RLs4+vy+1g/9fTbXGTHtD8doJoMiXbIVU1btr3zd53CzAzcSnkqsLCsC2q2lBibMLCHrQkkomwNdmfE++tdjvJDwcsfNuSS3XUmxNMEEAwlLBMGO1KkxSg74hRpZepfaPJu2t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662613; c=relaxed/simple;
-	bh=qiUfa1Nb3MNGOeFN+5SAcHIbFBa6b14g3LCj9WcfGYY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bTyfc+2JyxRlinUP1qk1bSb8NSKza3jJjPakqtvXpmaxltKpLg0kOvxi/uiulsFaScmOYCuPFaHZ6+8nEfdcxgyDduE0fiGfiv5viAqzKRtnCSPc2Y2ixRuaFbrYIZm0P6OL3yXMxPJXIS8T54GRstw3yRZubTjtMbpzHeu5vNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Mep8RMYk; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712662610;
-	bh=qiUfa1Nb3MNGOeFN+5SAcHIbFBa6b14g3LCj9WcfGYY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Mep8RMYkVlOpYMgMdWwjPtOKDv+586xQEH0KaEtOWtrk5FtIwj6khBk+KYPa6I8yl
-	 r8XyrLDcLYHNFRej+tc57p7sgZVWVFclMJPgRqlH1OxbHzcp73vn8P6Ijy5ntzRnlt
-	 TgpgZ8faEyXkebBmm4TPlM0QV1QRWTsP6cC0SiH8KIzc1jbgQ49+J+5qdjXxFuej2V
-	 TLMKz15ZmkCaNW57iTkJFpEvEjnxTsyN8vGyBHZPbJkLU4Um4H2+EyC++YB4yFMVwM
-	 hS0E3jCsrTwTrUe4mUOsIevgv46NqwxTueT0naTlTu77RodIeta+1ur/IPC8X8Jifx
-	 1S1vb8MndbUTw==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8AD6537820F5;
-	Tue,  9 Apr 2024 11:36:49 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: heikki.krogerus@linux.intel.com
-Cc: gregkh@linuxfoundation.org,
-	angelogioacchino.delregno@collabora.com,
-	dmitry.baryshkov@linaro.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH] usb: typec: mux: it5205: Fix ChipID value typo
-Date: Tue,  9 Apr 2024 13:36:46 +0200
-Message-ID: <20240409113646.305105-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712662938; c=relaxed/simple;
+	bh=w28AhVJdaf28gczTEC/743XeuXFRjTt+LY/KGqEIw+M=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=aM7YTFuYTdqSRda1TDwumSla7Z2jJFT27+FYt+yKmhhaAoHEqueR+4R5VwgiLGPSw5Hg1E5wRbiFE1e9R1IOA75QHZcjiPZjS3hOVmnexLVGWXnFXgx1GTinaYHtWsgwBNscoAgwh65ak80HsLQbcLFhA1NwatAfqAL5ckgisdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=qZ3hsfop; arc=none smtp.client-ip=203.205.251.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712662627; bh=Zpzsx2iCV/8x6AGSzYws7eooAgEtLnw86Ev2U3APbH4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=qZ3hsfopsbBYAD+SHz7hqsv3PlAhAyjlmXZbIvFWp7NxxQE61BDDDJrufVLqF6cW8
+	 NjII4jWh1yTtjD+pTl8y6Qm8faa+tpkfeHoK8saFZVvtI/5Q1QkpgEJJ9Juw9ALLc8
+	 aav3239okgZwz5iKFAR5Q0LkcgtA5R73OLgJh0YQ=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 945BD8ED; Tue, 09 Apr 2024 19:37:05 +0800
+X-QQ-mid: xmsmtpt1712662625t2a1uvbbr
+Message-ID: <tencent_4DCD347A366F802CB96D5095B8EAA6ED7E0A@qq.com>
+X-QQ-XMAILINFO: MBjwNRQMz5zU6FmzQCNFwtLz8gWpg/n77NbsNuATmSx1a+KyglPMJ1EpbbA3ir
+	 awEM0qdTDy5VXVSaAXxMiI9M30wMaeVpm440NHQkERT04DWS60aqwq3kmpGkGMqxeeHlVAZcWlD5
+	 pZcNwMPYjn9Y94Y1LjCs86cgy70Sr6fHiI+J75q3FKAIm8qsFc+CG8PEdnNI+u2qL3NBrZO3+x7E
+	 IwDxx5bYNVCA2O2P2W2RATdfmKzlzVhhRD274ZFBWutUq/IK53KGQ5EDP2L0WAcby9RHwDu3afDM
+	 s9LkCIFYCWi+lilLesDiPq0UQN5Ki9pH+ACr3Wbz4m4AQ1oFzSXQjp4SH8XCEPtJ/WVsH8rwLEqA
+	 ANJ8wTvrz/YPut3ue0UVgvq0+Z7kXWJnQLHHSCnz4yZSSF8AjPVvfFpWq/sctuemExAM99hoRbSO
+	 zdTuGbT3PMi+c8VOyJOXkI8E7Np43A6lrzVw6eXhh+2S8o54d01lbbDDvK4Ug4Hr8DrVaHFIGoh2
+	 uUVkuGSoTFagiMSC+RGxUUGoTSGA01QKKqMYgYi10fEp7C4YWXr0JNGUoh6hZ2YZjULCfLy+387V
+	 tbNT/NFepM/REbyGIH3+Holm7VtXFDo8+Lxfp+ctLjMDD9M4XHXJKFwiaOk4DwCuzi/SePJyz3TX
+	 pISZkVRHO/5PD2VUV3Brw4j35dDF2UHEJdEP233aGyvxz87d+JuDF9azriml42iFQFcV3xadOBI4
+	 HSWRyoVSIfrnWxluzPu6/N+EdEsjB9i6XQkO1xYtIhFgzC1YXEyxeF/EGL6mVjgTmaqN0P6jQ2JM
+	 HGf5S9o/WsV4DSCRh8yCdeGbb2ul9jPjNW95PFdZ2PnK/XVq6L8SfWi85g3KOGJ2AVZ2bxBPDW5e
+	 WCskSsqGauLeH4TnbyzaTXUyVwtInkhx1ZOIgrJiaClOuKv/DZE++5GG7ELWy+03f96Cgo+ahx
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in strnchr
+Date: Tue,  9 Apr 2024 19:37:06 +0800
+X-OQ-MSGID: <20240409113705.4054825-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000009e2ff406130de279@google.com>
+References: <0000000000009e2ff406130de279@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,29 +73,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The ChipID bytes are read in inverse order: invert the ChipID value
-defined as IT5205FN_CHIP_ID and used for validating the same.
+please test uini in strnchr
 
-Fixes: 41fe9ea1696c ("usb: typec: mux: Add ITE IT5205 Alternate Mode Passive MUX driver")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/usb/typec/mux/it5205.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 04b8076df253
 
-diff --git a/drivers/usb/typec/mux/it5205.c b/drivers/usb/typec/mux/it5205.c
-index 5535932e42cd..4357cc67a867 100644
---- a/drivers/usb/typec/mux/it5205.c
-+++ b/drivers/usb/typec/mux/it5205.c
-@@ -22,7 +22,7 @@
- #include <linux/usb/typec_mux.h>
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 449b9a5d3fe3..07490eba24fe 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 	u64 cur_arg;
+ 	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
  
- #define IT5205_REG_CHIP_ID(x)	(0x4 + (x))
--#define IT5205FN_CHIP_ID	0x35323035 /* "5205" */
-+#define IT5205FN_CHIP_ID	0x35303235 /* "5025" -> "5205" */
- 
- /* MUX power down register */
- #define IT5205_REG_MUXPDR        0x10
--- 
-2.44.0
+-	fmt_end = strnchr(fmt, fmt_size, 0);
++	fmt_end = strnchrnul(fmt, fmt_size, 0);
+ 	if (!fmt_end)
+ 		return -EINVAL;
+ 	fmt_size = fmt_end - fmt;
 
 
