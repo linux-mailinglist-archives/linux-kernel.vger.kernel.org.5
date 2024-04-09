@@ -1,155 +1,215 @@
-Return-Path: <linux-kernel+bounces-137699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8B489E625
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:36:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD8A389E658
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B511C211AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:36:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C194C1C22792
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100A5158DCD;
-	Tue,  9 Apr 2024 23:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C691591FB;
+	Tue,  9 Apr 2024 23:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="cJRCcfum"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xVuQzfCE"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2064.outbound.protection.outlook.com [40.107.101.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A01158DC8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712705797; cv=none; b=N88GEinRUP+zYjOS1rfZ3QP5+Sy2XGpuO4TZ2Jrn8oFv+lmWNQLrmF5bnIwTrovJusocfs/BBoxxb1W3fz1p3NP9AlejjPSjtNmOcg+2Doc/moDfZHy/LtcMWKdrHsKdJDge3mx6JRSH19eYbDGICsC2F9iCArjuX3q6Bb9dzNQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712705797; c=relaxed/simple;
-	bh=IlVT+CK85bAJ4tLIN8z5XGMo3ERuJieslEjyAXxqFr0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RZVAcXqNYCG8EOneIHcuFIFHc4CEoyIV1hJpgbGKnxTAV0p5i8GaQUjQpy29QxDwPQCDuoS89tB5kvegD+MnryCCOkLQOHinVxnw5SCcO189GUTfhejcEkjeieFpCboj0uihhjLax1J8IK4eib9O1M8FsfLzCQrmUn0heWOhkY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=cJRCcfum; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 439NZfZJ3912505
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Tue, 9 Apr 2024 16:35:41 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 439NZfZJ3912505
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024031401; t=1712705742;
-	bh=YwyJn5+UQi9e8+unJOLQ85S4qwF8g699KG/AuSqGLuQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cJRCcfumoNHYR8DpvZeyZUuaV1y3mRjVB5t1r0mKDNuDTDDnLhDDzF12Cfh+bTBrb
-	 94JxDBL6VRHvaM1KL4qBegUnHX2FvO83KYV0icxoDdxywNWXlUyUc4l08LQiSqLfU8
-	 qrQSCQSmTKEis3uPVKWhtNiQ0mdo8EjEXt1RIfxNeMSym3LdEhXn4hPseylhXAML3F
-	 WF+nEBrpJYv7PfYz6utNtwskkD5iOIfgF9ay1UmSz70QaUaJqmZd/y6+5FWjPob2ei
-	 p3dSJn9V50RbANsaBmZ+JrpjX+eI1ZWfA8xRS6XCtq+QalgsdsbgNnoCQQglCuSo+T
-	 b7kcWxA4BNz8w==
-Message-ID: <56cbf1f0-0867-44c2-a9fd-712bf3549cbb@zytor.com>
-Date: Tue, 9 Apr 2024 16:35:35 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597D9158DAA;
+	Tue,  9 Apr 2024 23:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712706412; cv=fail; b=YOwG1suzvteZqo8aQK6y7NzShk9g7mKfzLTnlpgdkepLIvNzmwwdlAwHNEe6NRyAlQHKIqTPQ0GjyBPX0WMVqDCnZUl8P9czK3/7a9cUIxQJJtvrJmqP9z9/tuDqnjSQwQLSoLibGKMlCOsru3GuKMrnLDff3XO1WPEOLqmQbyc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712706412; c=relaxed/simple;
+	bh=uij4znCTQR9kMW4quQQZ2MHqAUIDszgrxafUxYVpQLI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JsTB0rHVSHDceTfQMTL+7o85jbNnFYx/odTxcpz7d2NnSs2FKr13enTV2U0tqRIJWTdgPx0ZT4o/Bm1mzU6qIO8Sn0wAP2Qg53s3zWnDzrCJxfQEMWGZP1uIcZTncUjRQ/650UZFKX57rOLY1XDP+NxFAVyvyaC02gX2QT3WwRE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xVuQzfCE; arc=fail smtp.client-ip=40.107.101.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I2wf2cPT4yP27gLHWEMVuJ9tgjOtFqQCSIjCbabqcUiqdjhRY0WenSIFZCu8XLIJGsdnSjOVXvtem+7/XOQi1YudWqHebtvKL997WcdDbVrSznCbAR1cIzmYbddkLNm34W5zpVX9zSBgZgOgS0Vjt5fFRzwnyb8KG1s5W2DNVZKxeDwI9m3oScSeTpF+9CdAAB4H4OkbXYKX4qqwTyiSkJyFdoACWedWosNjcnaCVaZbaA9QPzuoAA5MGW2c4yNW850JhounmH3+GviENwTC8spLno/Lp/0FN0864c6/PZvzhoN6TkK8FXrMIYLJCkaumJwHfZzkasCEyW17NVJ4Xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WN/BJdzXy76+BDeOTlQn2RuppyJHceidGxubrrPPX8U=;
+ b=b4XCliZ32bc4py0UhU+9EV4nBg0On+3CUQh9hTWD00f+zPoSpXEVuKWVEyk1mMGmvc7AIh7gfyXOthWOc9Sn8FswDZikaX4OC0WS0Rry2Kl9aAZhuzefRxMboK9tt7OWS0HH961bE2OlM8FXqgrrGnciEVOjWjXtcDm+oluMVtrtcDHtVgrg+oE4OtWV0oYVNsQhzPSpY0fzPszMRNs5zDRWIde4o2WjgKk0XP959X2kEh1nSUr95tjj9zBFfnDc2rRR2Wulm39/59fvn05PEggJGeders/dcESI2yDB+canU2eyURFeZKvPdHTK/uKpvtcx/NjgwaYcDSxt4fg7Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WN/BJdzXy76+BDeOTlQn2RuppyJHceidGxubrrPPX8U=;
+ b=xVuQzfCEQM795GL+wasW4EQngYjljbA4YjhQm0aGFyn4qDNR5yZjMuukBRw72mGANclCo4vHK9x48KztW7F0RN6ZrFyTIQf7rOwxi9bh7x+iGngNythR9qbZMC8BIJqs8S6k3Ci4mTw1RtVx7vEOp0Ua2hlgKyw0Gxd+8clcMCY=
+Received: from MN2PR20CA0037.namprd20.prod.outlook.com (2603:10b6:208:235::6)
+ by CY8PR12MB7753.namprd12.prod.outlook.com (2603:10b6:930:93::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
+ 2024 23:46:48 +0000
+Received: from BL6PEPF0001AB55.namprd02.prod.outlook.com
+ (2603:10b6:208:235:cafe::e6) by MN2PR20CA0037.outlook.office365.com
+ (2603:10b6:208:235::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.34 via Frontend
+ Transport; Tue, 9 Apr 2024 23:46:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB55.mail.protection.outlook.com (10.167.241.7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Tue, 9 Apr 2024 23:46:47 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Apr
+ 2024 18:46:47 -0500
+Date: Tue, 9 Apr 2024 18:35:42 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<seanjc@google.com>, <isaku.yamahata@intel.com>
+Subject: Re: [PATCH 07/11] KVM: guest_memfd: extract __kvm_gmem_get_pfn()
+Message-ID: <20240409233542.aapmef7mkztgbnv2@amd.com>
+References: <20240404185034.3184582-1-pbonzini@redhat.com>
+ <20240404185034.3184582-8-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] x86/entry/64: Skip SYSRET validation tests when
- FRED is enabled
-Content-Language: en-US
-To: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org
-Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, brgerst@gmail.com
-References: <20240403062404.2956240-1-xin@zytor.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20240403062404.2956240-1-xin@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240404185034.3184582-8-pbonzini@redhat.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB55:EE_|CY8PR12MB7753:EE_
+X-MS-Office365-Filtering-Correlation-Id: debaadf2-6467-44fa-9acd-08dc58ef5243
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cNlry1k166MXclMw8RLqn62jsMKQc3QZ1TmFmcI6o3NO1YkKsl4Wq61KXcXz6qb3mUCZzAXulLnUDt7pMYReuTcdoo0wHaJzxhkBz+0PFQLHm7TghssvIC/+neRTcpQscOUMYmC70CELhAK8MY6etz5hORCEuS/RWwvW8xgoJTXGoyDS9MY1DSWD2M81SNaCPdUTm+hRtI9HkBX9lr5RWF8sfmOdd9tuXyR07wvsLFvzswEPVYYHwmJxg6iQ0gkt5nz30mLPfk2AZu9MIay2DuQx0HhtoAhczeosLOyZUpGwUBjnVfvpQXvPls5Z7aR3iQBJuCSt86CbidCR2FkZNmbNY85Hz8EjX7tEMRyMY+59pItXtP17a9hcIGJP/dgD8FD8B+PZjFMGi+eKr79CAMgDhNzLfWski9W4X+t3mnAtfMMjiVWanW3SDtLtGBQQwqMLJJkZ7zf+iCKfBq1HhIkmpix/Kdn81LxgLcVVwflXDiejzNv7Qn7kH8am5hXz5MFFDPaid8jgji41R0ehsmLVpSQkduuecV0dHQeGnTFp3aepxfXsEg5ya96lt+4eaYGh83ByGaIgvLFuOlMMmryq2NCvPMq1u9FHGW24foCdZsKcPyIxN5Q6a198aNoDZ0fYH/+bY/1/e5NBOFCMwhvrvHunuQ2QBnSKLncwEVvPgIWPg3+56FRaPwtXkiWio4Yu69ztFnKrx/BXfj36Yfv1CRVDx3nDzNzzevUfYjMcg3qkbskv+KEl9IOOhVN2
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 23:46:47.9889
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: debaadf2-6467-44fa-9acd-08dc58ef5243
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB55.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7753
 
-Now, for a FRED system the return value is ignored anyway, so the only 
-benefit of this is skipping the test, correct?
-
-I do observe than what is left of do_fast_syscall_32 is a single 
-assignment followed by __do_fast_syscall_32(), which could be turned 
-into a tailcall.
-
-Another thing that has been added lately is a bunch of tests on the int 
-$0x80 path. This is a slow path *on legacy hardware*, but on FRED 
-systems it is the *fast* path for IA32 emulation. These tests are also 
-totally unnecessary *AND IN FACT, WRONG* on a FRED system, as FRED 
-distinguishes external interrupts from software interrupts.
-
-Furthermore, under FRED interrupt 0x80 is available as a hardware 
-interrupt (since there is no reason to block it out.) Therefore, going 
-and poking the APIC as in int80_is_external() is INCORRECT and possibly 
-fatal.
-
-Again, the easiest way to fix that is to follow what XenPV does in 
-int80_is_external(), but there is more unnecessary stuff: 
-!user_mode(regs) cannot happen on FRED, and the stuff in the 
-int80_emulation assembly function should, if it is needed at all on any 
-FRED-compatible hardware (I don't believe so) should be done in the FRED 
-user mode assembly entry stub.
-
-Thus, it might be better to strip down do_int80_emulation() to a lean 
-fred_int80_emulation().
-
-	-hpa
-
-On 4/2/24 23:24, Xin Li (Intel) wrote:
-> Don't do SYSRET validation tests when FRED is enabled, since ERETU is
-> the only legit instruction to return to user level.
+On Thu, Apr 04, 2024 at 02:50:29PM -0400, Paolo Bonzini wrote:
+> In preparation for adding a function that walks a set of pages
+> provided by userspace and populates them in a guest_memfd,
+> add a version of kvm_gmem_get_pfn() that has a "bool prepare"
+> argument and passes it down to kvm_gmem_get_folio().
 > 
-> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+> Populating guest memory has to call repeatedly __kvm_gmem_get_pfn()
+> on the same file, so make the new function take struct file*.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->   arch/x86/entry/common.c | 12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
+>  virt/kvm/guest_memfd.c | 38 +++++++++++++++++++++++---------------
+>  1 file changed, 23 insertions(+), 15 deletions(-)
 > 
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index 6356060caaf3..1c3944eb9901 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -72,7 +72,7 @@ static __always_inline bool do_syscall_x32(struct pt_regs *regs, int nr)
->   	return false;
->   }
->   
-> -/* Returns true to return using SYSRET, or false to use IRET */
-> +/* Returns true to return using SYSRET, or false to use IRET/ERETU */
->   __visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
->   {
->   	add_random_kstack_offset();
-> @@ -88,6 +88,10 @@ __visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
->   	instrumentation_end();
->   	syscall_exit_to_user_mode(regs);
->   
-> +	/* No test for FRED, which returns to user level with ERETU only */
-> +	if (cpu_feature_enabled(X86_FEATURE_FRED))
-> +		return false;
+> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> index 486748e65f36..a537a7e63ab5 100644
+> --- a/virt/kvm/guest_memfd.c
+> +++ b/virt/kvm/guest_memfd.c
+> @@ -540,33 +540,29 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
+>  	fput(file);
+>  }
+>  
+> -int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+> -		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
+> +static int __kvm_gmem_get_pfn(struct file *file, struct kvm_memory_slot *slot,
+> +		       gfn_t gfn, kvm_pfn_t *pfn, int *max_order, bool prepare)
+>  {
+>  	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
+> -	struct kvm_gmem *gmem;
+> +	struct kvm_gmem *gmem = file->private_data;
+>  	struct folio *folio;
+>  	struct page *page;
+> -	struct file *file;
+>  	int r;
+>  
+> -	file = kvm_gmem_get_file(slot);
+> -	if (!file)
+> +	if (file != slot->gmem.file) {
+> +		WARN_ON_ONCE(slot->gmem.file);
+>  		return -EFAULT;
+> +	}
+>  
+>  	gmem = file->private_data;
+> -
+>  	if (xa_load(&gmem->bindings, index) != slot) {
+>  		WARN_ON_ONCE(xa_load(&gmem->bindings, index));
+> -		r = -EIO;
+> -		goto out_fput;
+> +		return -EIO;
+>  	}
+>  
+>  	folio = kvm_gmem_get_folio(file_inode(file), index, true);
+
+This should be:
+
+  folio = kvm_gmem_get_folio(file_inode(file), index, prepare);
+
+Otherwise:
+
+Reviewed-by: Michael Roth <michael.roth@amd.com>
+
+-Mike
+
+> -	if (!folio) {
+> -		r = -ENOMEM;
+> -		goto out_fput;
+> -	}
+> +	if (!folio)
+> +		return -ENOMEM;
+>  
+>  	if (folio_test_hwpoison(folio)) {
+>  		r = -EHWPOISON;
+> @@ -583,9 +579,21 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>  
+>  out_unlock:
+>  	folio_unlock(folio);
+> -out_fput:
+> -	fput(file);
+>  
+>  	return r;
+>  }
 > +
->   	/*
->   	 * Check that the register state is valid for using SYSRET to exit
->   	 * to userspace.  Otherwise use the slower but fully capable IRET
-> @@ -325,7 +329,7 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
->   	return true;
->   }
->   
-> -/* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
-> +/* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET/ERETU */
->   __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
->   {
->   	/*
-> @@ -346,6 +350,10 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
->   	if (!__do_fast_syscall_32(regs))
->   		return false;
->   
-> +	/* No test for FRED, which returns to user level with ERETU only */
-> +	if (cpu_feature_enabled(X86_FEATURE_FRED))
-> +		return false;
+> +int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+> +		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
+> +{
+> +	struct file *file = kvm_gmem_get_file(slot);
+> +	int r;
 > +
->   	/*
->   	 * Check that the register state is valid for using SYSRETL/SYSEXIT
->   	 * to exit to userspace.  Otherwise use the slower but fully capable
+> +	if (!file)
+> +		return -EFAULT;
+> +
+> +	r = __kvm_gmem_get_pfn(file, slot, gfn, pfn, max_order, true);
+> +	fput(file);
+> +	return r;
+> +}
+>  EXPORT_SYMBOL_GPL(kvm_gmem_get_pfn);
+> -- 
+> 2.43.0
 > 
-> base-commit: 65d1240b6728b38e4d2068d6738a17e4ee4351f5
+> 
 
