@@ -1,139 +1,96 @@
-Return-Path: <linux-kernel+bounces-136611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CCF89D627
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:00:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F29B89D629
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:02:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831031C2342F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:00:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 785A6283DB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E93D80620;
-	Tue,  9 Apr 2024 10:00:09 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09397E774;
-	Tue,  9 Apr 2024 10:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C946980BF0;
+	Tue,  9 Apr 2024 10:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QAG70yXI"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEB85339A;
+	Tue,  9 Apr 2024 10:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712656808; cv=none; b=Tj7Dgtlq/UGiRW9xRKmnsa3vMLk/z8jK5UwkoedVGaW5PrtM6+uOByhVa9zmkj9ibVCJG1+tPHRj6iryH2v5L1gyPmI/Db+cdM8/dPe+9WMyA9QsowuAUAS0zogXCmLU18mLcZK/phnccLy4xZnpaz/SEZEGBZYC1ZfV24enRNw=
+	t=1712656935; cv=none; b=AkOCN2T93PZtTpahEom1ecsWdquYgRx/7RkMClgDgKsXOxR1f03yzjAxHRUSZqbsHBf+/iYbfNn84NEKsknq1t+pBpWCPtOVJq5hYIIt3Ev7m2msczV6XbLOnOTvZKFSmK6E3uYxWN+Wj7LqJGfAwYF3GKF3GqqYPRsVrJNgZ/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712656808; c=relaxed/simple;
-	bh=PWHWpU3HfxEIvM1NEYrjRyi00N8E+szL532KiAT9qu8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CbEXQFeFLPH78y+5ge6xzMdWZoYYcCFzww0Oex5ov5ukYmBVp4htF6W5/X10HVjyqtMVUdW/p55K18YhUAcR8QY9kUKieSjAO/gO24MGmfs8V7CimKiP4VCVUMXXTwvCQursXq0yZedN6UJMkL7Il4Q40bi90gwsQO0zIjOuaoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-01-661511a3ac4d
-From: Honggyu Kim <honggyu.kim@sk.com>
-To: Honggyu Kim <honggyu.kim@sk.com>
-Cc: sj@kernel.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	dave.jiang@intel.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	42.hyeyoo@gmail.com,
-	art.jeongseob@gmail.com,
-	Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/7] DAMON based tiered memory management for CXL
-Date: Tue,  9 Apr 2024 18:59:38 +0900
-Message-ID: <20240409095958.3067-1-honggyu.kim@sk.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20240408134108.2970-1-honggyu.kim@sk.com>
-References: 
+	s=arc-20240116; t=1712656935; c=relaxed/simple;
+	bh=fMMPR+Yh9gYVL2djxLycCTl77gxWuXN3esxhzd6/Pb0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=seuQzkNIbspZJIoGav7DxarJNIE21BLq1oQOXu4e6X6iL6RmEpsavMP2VZqv3ieqBmoqtlJJJ5bUILRiHVglxg0oEyVeATm8gakk71MWrrx3jrEo/QLh8WaTN1SvpjKDILYVOHDwxJ1oZtkpGRuygOq/6ohI3uvPUaLQpngyONo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QAG70yXI; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a2f2cd61cdso1398814a91.1;
+        Tue, 09 Apr 2024 03:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712656933; x=1713261733; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fMMPR+Yh9gYVL2djxLycCTl77gxWuXN3esxhzd6/Pb0=;
+        b=QAG70yXIdRaabEOkaV7rt3xO2LRwIqTORXZUBQ6qhdYfKFgBig8KNk1H2mzAyitV5D
+         Xsq+6KFowF3wR41pEdX95l52Bbf/wvf0uYcixNegDHH7f6KUBKF+9fGWt9t1Z0YDvaiU
+         ZVpg70uAkLWBSDUvMiM8xcA0V6plIubNuofvdYPWuqfkGK3xgzcuonPmxub9CF2MPmS1
+         dOYid5x3W6vFneJXYNJFEn2sBb0XUHEWgtYIXjj4QV+MnEbno22Ebi0UdyiaTkIxXhj3
+         ojVSCstSGSpzkQBGcnzVPFpyi16IRaNDxPqq6q4C1VHukGzgsi2XduL3FwxXrcUnX6Fp
+         EjKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712656933; x=1713261733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fMMPR+Yh9gYVL2djxLycCTl77gxWuXN3esxhzd6/Pb0=;
+        b=xNCUhRkLn9PIgrTJFuMTpU6LyiKR4wXZvLtPQ5KTS4ra3KkAS5BdVW+IfNNQIevqyv
+         SYNCU3uE0bl8H6pKTENI/Ld/6WJMsKNEaz6uMtaUVYgDs6O8iH4FY9eckAhsJubHsyUH
+         1FS5+do60QAGhtFHESiABDfroHDpRvZseHl6apPCluSN5o1ViPBQ13siB+kGyf/ixqY4
+         O1S5HiMgQZeydSg9lcwF4mQKVhkDipAuT2pdb1wSS/ameKjkvDM9CpjTWy2itydDm1iw
+         qixaMGxF0u9gldLvczUzll59sddG3urZHsbEAXz/su6P95jhyT2dbYbuuWxtY9eBlgz0
+         z3fw==
+X-Forwarded-Encrypted: i=1; AJvYcCXcEXxvhN8F7lKnhE2OTyIdhUcy5CeVM1cse222212VoHDoNH3IoAviyIgWNlSPx0j67BTtWjImfdcHXOVmFnSxr9/jlXUu0ic6wyZRYU6t8L4gye7/u900dH4wffxqcSRu75nk5Xw2ZcflSktUcdyq6D4Wm2eJJdiz6xxQyCNmVzBnMgu/
+X-Gm-Message-State: AOJu0YwmVIXwnRd8QvZFsNpcZG+OzE6jMiS/1a2oq66jXMiigV1IYjue
+	J9jPNOJcGJFCpLa16AZ1TWrzDHTOUcd1C5UX0f0j04IfvJ26S6k6hXB6JSaMTeiTm799dLwWHF/
+	nij0rbZ6G+gq/PX4QDisgY+9LfBU=
+X-Google-Smtp-Source: AGHT+IELrW9fVmzx05lKtSDUmKkTXNduR8F/EVQ4MLLoyqDY44OGDV7EXL3DQXLowx47WFC00/A9tFArob5eyFuseLA=
+X-Received: by 2002:a17:90b:211:b0:2a5:2b1c:90f4 with SMTP id
+ fy17-20020a17090b021100b002a52b1c90f4mr4238430pjb.3.1712656933108; Tue, 09
+ Apr 2024 03:02:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsXC9ZZnoe5iQdE0g6UT9Swm9hhYzFm/hs1i
-	140Qi/sPXrNb/N97jNHiyf/frBYnbjayWTQ0PWKx6Py+lMXi8q45bBb31vxntTiy/iyLxeaz
-	Z5gtFi9Xs9jX8YDJ4vDXN0wWky8tYLN4MeUMo8XJWZNZLGYfvcfuIOKx9PQbNo8NTUBi56y7
-	7B4t+26xeyzYVOrRcuQtq8fiPS+ZPDat6mTz2PRpErvHiRm/WTx2PrT0eLF5JqPHxo//2T16
-	m9+xeXzeJBfAH8Vlk5Kak1mWWqRvl8CVcejOTJaCe3wVS19eYWtgXM7dxcjJISFgIrHm4SV2
-	GLv3VR8jiM0moCZx5eUkJhBbREBFYu3BKWxdjFwczALXWSRWT7gBlhAW8JGYMqcDqJmDg0VA
-	VeLoNjmQMK+AmcSkJYuYIGZqSjze/hNsPqeAucT265vB5gsJ8Ei82rCfEaJeUOLkzCcsIDaz
-	gLxE89bZzCC7JASusUv0zZnOBjFIUuLgihssExj5ZyHpmYWkZwEj0ypGocy8stzEzBwTvYzK
-	vMwKveT83E2MwFhcVvsnegfjpwvBhxgFOBiVeHgtrgqnCbEmlhVX5h5ilOBgVhLhDTYVTBPi
-	TUmsrEotyo8vKs1JLT7EKM3BoiTOa/StPEVIID2xJDU7NbUgtQgmy8TBKdXA6M/sueVy0H/5
-	+y9maaefid82gePI9o0ceV9k/86e3bBiYahKuPJTg+OBHu1CE3bMzGBIdVne4b9P5u2THz5X
-	I6VuN7MHFC0p+Mn/Qjxqf0vNFtafPK9v8PC9mfi/d13TxrjoaZHT76rqzzvhw/6ny3BST19C
-	wnL5N36mzsFLXyV0/CsT2PWQW4mlOCPRUIu5qDgRAPb8mdPBAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsXCNUNLT3exoGiawYtDMhYTewws5qxfw2ax
-	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLBqaHrFYfH72mtmi88l3RovDc0+yWnR+X8picXnX
-	HDaLe2v+s1ocWX+WxWLz2TPMFouXq1kcuvac1WJfxwMmi8Nf3zBZTL60gM3ixZQzjBYnZ01m
-	sZh99B67g4TH0tNv2Dw2NAGJnbPusnu07LvF7rFgU6lHy5G3rB6L97xk8ti0qpPNY9OnSewe
-	J2b8ZvHY+dDS48XmmYweGz/+Z/fobX7H5vHttofH4hcfmAIEo7hsUlJzMstSi/TtErgyDt2Z
-	yVJwj69i6csrbA2My7m7GDk5JARMJHpf9TGC2GwCahJXXk5iArFFBFQk1h6cwtbFyMXBLHCd
-	RWL1hBtgCWEBH4kpczrYuxg5OFgEVCWObpMDCfMKmElMWrKICWKmpsTj7T/ZQWxOAXOJ7dc3
-	g80XEuCReLVhPyNEvaDEyZlPWEBsZgF5ieats5knMPLMQpKahSS1gJFpFaNIZl5ZbmJmjqle
-	cXZGZV5mhV5yfu4mRmDcLav9M3EH45fL7ocYBTgYlXh4He4IpwmxJpYVV+YeYpTgYFYS4Q02
-	FUwT4k1JrKxKLcqPLyrNSS0+xCjNwaIkzusVnpogJJCeWJKanZpakFoEk2Xi4JRqYIxWmBC2
-	MSDafAX3Y9vnLOHHf5boPnvueKjxppyrz4kzro8NGue6cdZvvmG8uNpw5x7uWWsuc+41Un8f
-	+ds67/GkDLWwB93z/tbMEb++0PJHv1vOLmO7a77Lr6cx3r5zjTsv8FLpnuqdja8Xt8gssWj4
-	N7vrn9o0y3jhd5uLf3DYdPAICG+NclViKc5INNRiLipOBAAVrgmltwIAAA==
-X-CFilter-Loop: Reflected
+References: <1712652644-28887-1-git-send-email-shengjiu.wang@nxp.com> <1712652644-28887-3-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1712652644-28887-3-git-send-email-shengjiu.wang@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 9 Apr 2024 07:02:00 -0300
+Message-ID: <CAOMZO5Cku1kifsnWJOr0Zd-5+49j-KB67iHZDcvUsKwrhVPtLA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ARM: dts: imx6: exchange fallback and specific
+ compatible string
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, shawnguo@kernel.org, 
+	s.hauer@pengutronix.de, kernel@pengutronix.de, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon,  8 Apr 2024 22:41:04 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
-[...]
-> To explain this, I better share more test results.  In the section of
-> "Evaluation Workload", the test sequence can be summarized as follows.
-> 
->   *. "Turn on DAMON."
->   1. Allocate cold memory(mmap+memset) at DRAM node, then make the
->      process sleep.
->   2. Launch redis-server and load prebaked snapshot image, dump.rdb.
->      (85GB consumed: 52GB for anon and 33GB for file cache)
->   3. Run YCSB to make zipfian distribution of memory accesses to
->      redis-server, then measure execution time.
->   4. Repeat 4 over 50 times to measure the average execution time for
->      each run.
+On Tue, Apr 9, 2024 at 6:08=E2=80=AFAM Shengjiu Wang <shengjiu.wang@nxp.com=
+> wrote:
+>
+> exchange fallback and specific compatible string for spdif sound card.
 
-Sorry, "Repeat 4 over 50 times" is incorrect.  This should be "Repeat 3
-over 50 times".
-
->   5. Increase the cold memory size then repeat goes to 2.
-> 
-> I didn't want to make the evaluation too long in the cover letter, but
-> I have also evaluated another senario, which lazyly enabled DAMON just
-> before YCSB run at step 4.  I will call this test as "DAMON lazy".  This
-> is missing part from the cover letter.
-> 
->   1. Allocate cold memory(mmap+memset) at DRAM node, then make the
->      process sleep.
->   2. Launch redis-server and load prebaked snapshot image, dump.rdb.
->      (85GB consumed: 52GB for anon and 33GB for file cache)
->   *. "Turn on DAMON."
->   4. Run YCSB to make zipfian distribution of memory accesses to
->      redis-server, then measure execution time.
->   5. Repeat 4 over 50 times to measure the average execution time for
->      each run.
->   6. Increase the cold memory size then repeat goes to 2.
-> 
-> In the "DAMON lazy" senario, DAMON started monitoring late so the
-> initial redis-server placement is same as "default", but started to
-> demote cold data and promote redis data just before YCSB run.
-[...]
-
-Thanks,
-Honggyu
+Ok, but please explain the reason.
 
