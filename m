@@ -1,267 +1,169 @@
-Return-Path: <linux-kernel+bounces-137659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF6789E592
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 987E189E597
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:18:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16C131C2209B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:12:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9BFB1C21ED1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 22:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB42158D88;
-	Tue,  9 Apr 2024 22:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB51158D87;
+	Tue,  9 Apr 2024 22:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="RhnzFJav"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OquFZMZg"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CF2158D71
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180D615884B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 22:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712700711; cv=none; b=F+aVx0+FUeuvDf0BRGV9oAEeialJ7dcknGxIvD+3ZLunImGYDoTokmq780c8Li30H4CsVa1UNXk5uCibBJX4U9HbMDToc/imaDsumcA7eEbJsBzCdr0bC/d3zrjzt4OrspoLf840J2EdAuqW9f1D4IhyADqI84IUF+qkR8KNv2g=
+	t=1712701129; cv=none; b=SAqAfReWjxWRuEk8V4NwVxSO5tflic0muNi4wCzhqWfuqRdAML7k1N4d0AAWZ/6/6elDTkNOHC8gFoUALMIkSe06galDSpRlw71W0gBUVwWea7F4G9xkeopT+LwBnRk3WGrCV0fNh7OnoHrEbewyj6oND1ul6vVaxdnKIyLsvxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712700711; c=relaxed/simple;
-	bh=uMpfpNZT/JircILPCLdeo5TrXY5VRv3On2Rb7xVenag=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kCv/6W06ZJsQce5zROg5hbXjGoNU+K1coiap3/EUj3AmqqlzcQA5Qp9u5eOU2ykDVe4Pxp8WlDOI7kHKA1h0tt1vnvUEkZ/iKEa16WXvdMuqjcGfOXTGCuYdim+0dRLJQiyfUOYhv+23W763fg49RStktzweWF44OImfydSB7Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=RhnzFJav; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516dc51bb72so4448526e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:11:49 -0700 (PDT)
+	s=arc-20240116; t=1712701129; c=relaxed/simple;
+	bh=kQp/hvyGHh1SkSZ5gklhCTfn7rhxx+OeQkDZRYp1Nug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MXdoCzzigtftYoI5moU3hk7hImQq3k0CxHd/uxt1YCou1gBH9c2lQgxv/sd2Bd+ecGDLT6xJ3o5uOqA1gFBKcep4LwRzyDAh7mEXZyQuIOSbJsv/tv+ZCagwXKiLu7jsL9cflewHOCQrFA8pKggRh/B+axnMj/cURtvDMun0eLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OquFZMZg; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e2232e30f4so54076985ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 15:18:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712700707; x=1713305507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cl1aEg9ZkKTDAHIndPvHsR0jY5Vb252ppSopDvYPPc0=;
-        b=RhnzFJavAW22HzyhcV/Gy4v2dytOK6WXyYGaaavpe4bm1F3DBPuUVWEl9YyJDglq02
-         hz20n5XkmPKvl64MrlD07li95V5W7X4keJtztYRcKbcZIOYocJG9230XSzaLgKiMPT/m
-         qvwgolJ2761GdbMaRrVRoD0NEfiNqQxXFsle/Wn3P+BSBiPv0smTZfNileY6pKzKwdY8
-         3TMcJhI+lTjd42dIcPZJ3PMHloCzp0Qt5nT0+g8anlfZvUpvnD+G9PgwlaEHKtc91uXg
-         6limkaC8xel9vjq9BNB6qVct2X/s+fTSY26SxwXoGXU0+59t1evcss6Xx3+rh39Lz6GI
-         xGxw==
+        d=chromium.org; s=google; t=1712701127; x=1713305927; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F+JyR7XVHoRHZc6sojXb4+4iOMxV4P55AJcvcX75Hlk=;
+        b=OquFZMZgTvKCVYELZbko8eqib+KvBGjts8jqA9LaDx87nJ2YlobYqxdYlxzsKAG5ze
+         8UbeUbiV8s7AIJ+n0O3HVeeBpGD+xiMDRHkXdaTIqndXq0uH3itZu1/WFBi9TfiuTv9n
+         fBG9TYqEliAZDgHjxtrvoK2BzHb/P0Z5b9hI8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712700707; x=1713305507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cl1aEg9ZkKTDAHIndPvHsR0jY5Vb252ppSopDvYPPc0=;
-        b=JOGeUuO11oNMP2jZgEGMp1knngprhnE33dLzdRdD3GZ2DkiJwlEOdjJNv7NzAMo/aa
-         yqV6XLAdBxpJ6kP7bLULwDsmWT4HqGx50NPQngKJjiGS/C/NnVWLTHLBrZx5Cx/W8rox
-         6JnzQUEWU1Qi6L0NOoRex61qo0wxk2NAKv5pFM7fe+Xm711MsAInybEtWX/v0NAQ+orJ
-         7z2kuIvd6qRdoZ1Um7dKEC/ngvxY8//zb9N4bzfTqsGnj6qX4DQ/9i4uIgm1Nt/yXCSd
-         WClKgSE5mrDBC3hSbypKFWiMsaTWj/4CQmIBn8prqjzinI0X6WmXtcu2n3DrXnXSBlVH
-         jTyg==
-X-Gm-Message-State: AOJu0Yxqz6gPE92nwq+8uN3qKg9igY1MxEizhebTHT/JzM5L5wGoLJKP
-	acPmRbM21lOCKhFSsyjZkH/OvDeock+8yAB7YRGG8a8Wex1GaS4+OoJS78CkxnVjNj/DRGOOFfy
-	hjaUtZ0Gf4QAerzsyFzhgkfHnRWx63qS9rkAL8g==
-X-Google-Smtp-Source: AGHT+IFTUPK3REgvGdMgOwGApDJXWXHwEqfkXjMrnKsgvS0JKy+X2AS1/dTWFN/mLB8J3aVxZ0Rh0sVUHLgSm3wYrPg=
-X-Received: by 2002:a19:f70b:0:b0:513:b90f:f4dd with SMTP id
- z11-20020a19f70b000000b00513b90ff4ddmr352775lfe.49.1712700707477; Tue, 09 Apr
- 2024 15:11:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712701127; x=1713305927;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F+JyR7XVHoRHZc6sojXb4+4iOMxV4P55AJcvcX75Hlk=;
+        b=KuiiBjDAm0mLRpTU0+193EdnjciFvPrRYDLuw29FvkvkExGXr8YWHqKEzIdjd4vJzQ
+         ptw3SademoeW6xjC8tQB6X4NGfAw/SjGqILzvNmG6I9PIfrUWkPgJ3J5X7N7Nm6Khzgq
+         T5q7Y68Ur/SGFtyli0csp2NjL4gZvnTsuC6p2upkM8ZgxPd2qsL90k7Azgqwvt/fYlAJ
+         Tb/IN+ZhAeTWqhGa+QIzJAhOICNp0nm0VtU9Lu9yjZGNDdbZEAhOfhPwE/S6KTJPPSdF
+         k2yrXNSIq4ImzgvOKMUVmu27XExncS/J9/03foD2G+7EC9/gd/nFrPjxkCKi/+3Djf2F
+         ohnw==
+X-Gm-Message-State: AOJu0Yy4aStAj24vfs4dBH4EuqSYzu2I9IR5yAwi4OikVr6ZTopTEJsF
+	FWXvaHBTsSWh5NijwSGze+b8eerD9XbYhN5RRc9T/rLcMxcoNOajjN/51zGFUw==
+X-Google-Smtp-Source: AGHT+IENZctdg8MkUuUiVzh50tzQyi+yJOAszWlX5nLtc5XoQbPa9E+CgbKpF8Y3/gmyeJNYOs1OWw==
+X-Received: by 2002:a17:902:d4c1:b0:1e4:1873:843c with SMTP id o1-20020a170902d4c100b001e41873843cmr1191665plg.62.1712701127333;
+        Tue, 09 Apr 2024 15:18:47 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q12-20020a17090311cc00b001e223b9eb25sm9416376plh.153.2024.04.09.15.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 15:18:46 -0700 (PDT)
+Date: Tue, 9 Apr 2024 15:18:45 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+	Ross Zwisler <zwisler@google.com>, wklin@google.com,
+	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Linus Torvalds <torvalds@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [POC][RFC][PATCH 2/2] pstore/ramoops: Add ramoops.mem_name=
+ command line option
+Message-ID: <202404091514.B97720B8@keescook>
+References: <20240409210254.660888920@goodmis.org>
+ <20240409211351.234897475@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403080452.1007601-1-atishp@rivosinc.com> <20240403080452.1007601-21-atishp@rivosinc.com>
- <20240405-d1a4cb9a441a05a9d2f8b1c8@orel> <976411ab-6ddf-4b10-8e13-1575928415ce@rivosinc.com>
- <20240409-dd055c3d08e027cf2a5cb4dc@orel>
-In-Reply-To: <20240409-dd055c3d08e027cf2a5cb4dc@orel>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Tue, 9 Apr 2024 15:11:36 -0700
-Message-ID: <CAHBxVyEh0K5b0SdN-asrOuuggBztZ-mjCoOR=EC067pURRg3aA@mail.gmail.com>
-Subject: Re: [PATCH v5 20/22] KVM: riscv: selftests: Add SBI PMU selftest
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Alexey Makhalov <amakhalov@vmware.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409211351.234897475@goodmis.org>
 
-On Tue, Apr 9, 2024 at 1:01=E2=80=AFAM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
->
-> On Mon, Apr 08, 2024 at 05:37:19PM -0700, Atish Patra wrote:
-> > On 4/5/24 05:50, Andrew Jones wrote:
-> > > On Wed, Apr 03, 2024 at 01:04:49AM -0700, Atish Patra wrote:
-> > > ...
-> > > > +static void test_pmu_basic_sanity(void)
-> > > > +{
-> > > > + long out_val =3D 0;
-> > > > + bool probe;
-> > > > + struct sbiret ret;
-> > > > + int num_counters =3D 0, i;
-> > > > + union sbi_pmu_ctr_info ctrinfo;
-> > > > +
-> > > > + probe =3D guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
-> > > > + GUEST_ASSERT(probe && out_val =3D=3D 1);
-> > > > +
-> > > > + num_counters =3D get_num_counters();
-> > > > +
-> > > > + for (i =3D 0; i < num_counters; i++) {
-> > > > +         ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_GET_IN=
-FO, i,
-> > > > +                         0, 0, 0, 0, 0);
-> > > > +
-> > > > +         /* There can be gaps in logical counter indicies*/
-> > > > +         if (ret.error)
-> > > > +                 continue;
-> > > > +         GUEST_ASSERT_NE(ret.value, 0);
-> > > > +
-> > > > +         ctrinfo.value =3D ret.value;
-> > > > +
-> > > > +         /**
-> > > > +          * Accesibillity check of hardware and read capability of=
- firmware counters.
-> > >
-> > > Accessibility
-> > >
-> >
-> > Fixed it.
-> >
-> > > > +          * The spec doesn't mandate any initial value. No need to=
- check any value.
-> > > > +          */
-> > > > +         read_counter(i, ctrinfo);
-> > > > + }
-> > > > +
-> > > > + GUEST_DONE();
-> > > > +}
-> > > > +
-> > > > +static void run_vcpu(struct kvm_vcpu *vcpu)
-> > > > +{
-> > > > + struct ucall uc;
-> > > > +
-> > > > + vcpu_run(vcpu);
-> > > > + switch (get_ucall(vcpu, &uc)) {
-> > > > + case UCALL_ABORT:
-> > > > +         REPORT_GUEST_ASSERT(uc);
-> > > > +         break;
-> > > > + case UCALL_DONE:
-> > > > + case UCALL_SYNC:
-> > > > +         break;
-> > > > + default:
-> > > > +         TEST_FAIL("Unknown ucall %lu", uc.cmd);
-> > > > +         break;
-> > > > + }
-> > > > +}
-> > > > +
-> > > > +void test_vm_destroy(struct kvm_vm *vm)
-> > > > +{
-> > > > + memset(ctrinfo_arr, 0, sizeof(union sbi_pmu_ctr_info) * RISCV_MAX=
-_PMU_COUNTERS);
-> > > > + counter_mask_available =3D 0;
-> > > > + kvm_vm_free(vm);
-> > > > +}
-> > > > +
-> > > > +static void test_vm_basic_test(void *guest_code)
-> > > > +{
-> > > > + struct kvm_vm *vm;
-> > > > + struct kvm_vcpu *vcpu;
-> > > > +
-> > > > + vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
-> > > > + __TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
-> > > > +                            "SBI PMU not available, skipping test"=
-);
-> > > > + vm_init_vector_tables(vm);
-> > > > + /* Illegal instruction handler is required to verify read access =
-without configuration */
-> > > > + vm_install_exception_handler(vm, EXC_INST_ILLEGAL, guest_illegal_=
-exception_handler);
-> > >
-> > > I still don't see where the "verify" part is. The handler doesn't rec=
-ord
-> > > that it had to handle anything.
-> > >
-> >
-> > The objective of the test is to ensure that we get an illegal instructi=
-on
-> > without configuration.
->
-> This part I guessed.
->
-> > The presence of the registered exception handler is
-> > sufficient for that.
->
-> This part I disagree with. The handler may not be necessary and not run i=
-f
-> we don't get the ILL. Usually when I write tests like these I set a
-> boolean in the handler and check it after the instruction which should
-> have sent us there to make sure we did indeed go there.
->
+On Tue, Apr 09, 2024 at 05:02:56PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Add a method to find a region specified by memmap=nn*align:name for
+> ramoops. Adding a kernel command line parameter:
+> 
+>   memmap=12M*4096:oops ramoops.mem_name=oops
+> 
+> Will use the size and location defined by the memmap parameter where it
+> finds the memory and labels it "oops". The "oops" in the ramoops option
+> is used to search for it.
+> 
+> This allows for arbitrary RAM to be used for ramoops if it is known that
+> the memory is not cleared on kernel crashes or soft reboots.
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  fs/pstore/ram.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index b1a455f42e93..c200388399fb 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -50,6 +50,11 @@ module_param_hw(mem_address, ullong, other, 0400);
+>  MODULE_PARM_DESC(mem_address,
+>  		"start of reserved RAM used to store oops/panic logs");
+>  
+> +static char *mem_name;
+> +module_param_named(mem_name, mem_name, charp, 0400);
+> +MODULE_PARM_DESC(mem_name,
+> +		"name of kernel param that holds addr (builtin only)");
+> +
+>  static ulong mem_size;
+>  module_param(mem_size, ulong, 0400);
+>  MODULE_PARM_DESC(mem_size,
+> @@ -914,6 +919,19 @@ static void __init ramoops_register_dummy(void)
+>  {
+>  	struct ramoops_platform_data pdata;
+>  
+> +#ifndef MODULE
+> +	/* Only allowed when builtin */
 
-Ahh I got your point now. That makes sense. Since it was just a sanity test=
-,
-I hadn't put the boolean check earlier. But you are correct about bugs
-in kvm code which wouldn't
-generate an expected ILL .
+Why only when builtin?
 
-I have added it. Thanks for the suggestion :)
+> +	if (mem_name) {
+> +		u64 start;
+> +		u64 size;
+> +
+> +		if (memmap_named(mem_name, &start, &size)) {
+> +			mem_address = start;
+> +			mem_size = size;
+> +		}
+> +	}
+> +#endif
 
-> >
-> > The verify part is that the test doesn't end up in a illegal instructio=
-n
-> > exception when you try to access a counter without configuring.
-> >
-> > Let me know if you think we should more verbose comment to explain the
-> > scenario.
-> >
->
-> With a boolean the test code will be mostly self documenting, but a short
-> comment saying why we expect the boolean to be set would be good too.
->
-> Thanks,
-> drew
->
-> >
-> > > > +
-> > > > + vcpu_init_vector_tables(vcpu);
-> > > > + run_vcpu(vcpu);
-> > > > +
-> > > > + test_vm_destroy(vm);
-> > > > +}
-> > > > +
-> > > > +static void test_vm_events_test(void *guest_code)
-> > > > +{
-> > > > + struct kvm_vm *vm =3D NULL;
-> > > > + struct kvm_vcpu *vcpu =3D NULL;
-> > > > +
-> > > > + vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
-> > > > + __TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
-> > > > +                            "SBI PMU not available, skipping test"=
-);
-> > > > + run_vcpu(vcpu);
-> > > > +
-> > > > + test_vm_destroy(vm);
-> > > > +}
-> > > > +
-> > > > +int main(void)
-> > > > +{
-> > > > + test_vm_basic_test(test_pmu_basic_sanity);
-> > > > + pr_info("SBI PMU basic test : PASS\n");
-> > > > +
-> > > > + test_vm_events_test(test_pmu_events);
-> > > > + pr_info("SBI PMU event verification test : PASS\n");
-> > > > +
-> > > > + return 0;
-> > > > +}
-> > > > --
-> > > > 2.34.1
-> > > >
-> > >
-> > > Thanks,
-> > > drew
-> >
+Otherwise this looks good, though I'd prefer some comments about what's
+happening here.
+
+(And in retrospect, separately, I probably need to rename "dummy" to
+"commandline" or something, since it's gathering valid settings here...)
+
+-- 
+Kees Cook
 
