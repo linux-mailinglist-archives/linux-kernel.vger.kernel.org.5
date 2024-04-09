@@ -1,230 +1,135 @@
-Return-Path: <linux-kernel+bounces-136381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26BA689D374
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:41:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC22A89D377
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:42:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C4C7B23725
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:41:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 855ECB24288
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD6C7D09A;
-	Tue,  9 Apr 2024 07:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E2D7D07F;
+	Tue,  9 Apr 2024 07:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IVYYXrvP"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="m9Q7JlBV"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B997C08C;
-	Tue,  9 Apr 2024 07:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37587BB11;
+	Tue,  9 Apr 2024 07:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712648491; cv=none; b=fHZhOItXbtT1/DcLvHeLoAe/VzkuCRtHZPZ1+8l1leaIZcHKcugzEjCpP3hmc3IE++aSg9f2Mlc5ouNWAwG4VWn9JWCh+jtrqL9sEe/rGrVGJR/hSSKN/LUaoGUWFFJl+02sM0DpQck2FuIaoyKHHB2KnBdh2q2eMYXkCpZ79Pc=
+	t=1712648558; cv=none; b=Su1ybohCiw1etMMHz8iM0XpZ7CA2ZuUGR3StYfcxus1B+Ux7BjLUH8D6l8DiEPvZG56DoK0yDDf9EcbT2qt+lq3wvHFpn5rUBY3OQvLRJwhP+y/HasdpkzNOBWNVTqUw8hoSz4MP14Ie66gVhSz8LAnFcie/rAUgx1PgQN7ryok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712648491; c=relaxed/simple;
-	bh=qMNrYLcuTY0pcgmZ0oT4n3METKTvJFHYohP4nDiM5ho=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XGIZG4ujOmL97hRpFKE9RKslhcpzw3Gb8IJTdr75+hRLk7u/XLYeSTxtzXZn71aXOP6iY5fT0tcYhKA+nO0tIbf9L11QC1tBaQJFqC+gmv99PYeF7gvr36V1JfOOqXpHkcVLx3vwhzb0hEMORQZ34Gg4Wc0BRi73E0HMLZWqpxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IVYYXrvP; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4395v44J015779;
-	Tue, 9 Apr 2024 07:41:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=i7mg2+0qg5EYWIcF/cedn
-	xPv4Hbi1GnnfcsddO0JF3M=; b=IVYYXrvPToDfiYMqlQ8MV7lIFzzYYt1v9sWEY
-	M+csaggOosSIJoGWvwXBiIvRn6yry4fESuFQkuFLp5LnoE4W2cQd2n0Us/whgxEg
-	LDOKtAc2a0MRXpT1OgtAXO1x875ml2xe0i+JL2JpVBPrDhCvjgFOE2s9Tq4hg7vs
-	rdORL/6L/zLIsRDdd/C1tqkHk9F8izQYDVmNYdWkfOwu/HQ49ZsFZxI9XKFzrPPD
-	Y0N6Rbxx6RrTBrTktwLIFjDx2OfvOK+t+DC94Y2uj0RuyxxqME4Cngx4cklpFaK4
-	yiSb/78QfXqRMPwN/TyhoLb+q34rurFbUcpvxW28J4oteMWCw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xctku0mpy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 07:41:19 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4397fI58008865
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Apr 2024 07:41:18 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 9 Apr 2024 00:41:13 -0700
-Date: Tue, 9 Apr 2024 13:11:09 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
-        <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <djakov@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_anusha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v7 1/5] dt-bindings: interconnect: Add Qualcomm IPQ9574
- support
-Message-ID: <ZhTxFVDH0xTSkw7r@hu-varada-blr.qualcomm.com>
-References: <20240403104220.1092431-1-quic_varada@quicinc.com>
- <20240403104220.1092431-2-quic_varada@quicinc.com>
- <58c9b754-b9a7-444d-9545-9e6648010630@kernel.org>
- <Zg5q6mnWtK6hmPBT@hu-varada-blr.qualcomm.com>
+	s=arc-20240116; t=1712648558; c=relaxed/simple;
+	bh=wWWDqi7kssbzxmlTz22Wcp6yLPhzsSk+wfMK0IOEF7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UGK/jpJscxYxk45yegAij+PkuvozTV8zngZ/yC71i7GqJMBfv/9502+nKNSAQygxr62YtajQtABeCdvf7i2+667HzIgnK1b6NcgcyiRrs91zDdwEGU14M6lt9PxovqqcDvnzyJUftOlTFybiC7hQMxr9Jv5tOzd/gl9B0TIMX4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=m9Q7JlBV; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712648554;
+	bh=wWWDqi7kssbzxmlTz22Wcp6yLPhzsSk+wfMK0IOEF7E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=m9Q7JlBVy54nlghxML/6BzlBi3raVoxAFHWjN2noJmfj35j7mWVTwia/5YsAKP1Z1
+	 hJ9emT5k3cSIRRpKFe9jk1GD8DErPOqsDWdhs7lPoKSwlNmVRQccyV9J6oO1KaLXEF
+	 F6PZIDmBm+eQCPBN91gRocBv+BWkYL5pAFl8ZPEpxVvbOwxQNEJH1HYK5gQjYK1qVY
+	 /qmtak97nDUMhHtz8q0Y+UxI7zX+NR6J7S463vy1OHT+sT0rdN4YlJUbfBc4IH3h5s
+	 vbuld1lxrjglZ9opGQP7rbVBBZwnLPop+KVCHyox21xxNFFoSd+0kOrh5a4Hh4W4ME
+	 bRKHX2tayIPkg==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0C48B37820CD;
+	Tue,  9 Apr 2024 07:42:33 +0000 (UTC)
+Message-ID: <9012f8d5-302a-4840-815a-22b1e85fda5c@collabora.com>
+Date: Tue, 9 Apr 2024 10:42:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Zg5q6mnWtK6hmPBT@hu-varada-blr.qualcomm.com>
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: X0oE9rg-_pP8JjZ2Qo1L9J-UbrPQ4iuz
-X-Proofpoint-GUID: X0oE9rg-_pP8JjZ2Qo1L9J-UbrPQ4iuz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_04,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404090047
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Steam Deck OLED 6.8.2 nau8821-max fails
+To: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Bagas Sanjaya <bagasdotme@gmail.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Daniel <dmanlfc@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Sound System <linux-sound@vger.kernel.org>
+References: <ZhFJZoful6nEFskW@archie.me>
+ <4d231dc4-0183-47e1-8bfa-3dd225bf8ea3@leemhuis.info>
+ <904ffa11-592a-4336-aed2-d6370bb01896@collabora.com>
+ <b99e51de-3622-4360-b69d-0fd911ea2a7d@leemhuis.info>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Content-Language: en-US
+In-Reply-To: <b99e51de-3622-4360-b69d-0fd911ea2a7d@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 02:25:06PM +0530, Varadarajan Narayanan wrote:
-> On Wed, Apr 03, 2024 at 04:59:40PM +0200, Krzysztof Kozlowski wrote:
-> > On 03/04/2024 12:42, Varadarajan Narayanan wrote:
-> > > Add interconnect-cells to clock provider so that it can be
-> > > used as icc provider.
-> > >
-> > > Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
-> > > interfaces. This will be used by the gcc-ipq9574 driver
-> > > that will for providing interconnect services using the
-> > > icc-clk framework.
-> > >
-> > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > > ---
-> > > v7:
-> > > Fix macro names to be consistent with other bindings
-> > > v6:
-> > > Removed Reviewed-by: Krzysztof Kozlowski
-> > > Redefine the bindings such that driver and DT can share them
-> > >
-> > > v3:
-> > > Squash Documentation/ and include/ changes into same patch
-> > >
-> > > qcom,ipq9574.h
-> > > 	Move 'first id' to clock driver
-> > >
-> > > ---
-> > >  .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
-> > >  .../dt-bindings/interconnect/qcom,ipq9574.h   | 87 +++++++++++++++++++
-> > >  2 files changed, 90 insertions(+)
-> > >  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> > > index 944a0ea79cd6..824781cbdf34 100644
-> > > --- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> > > +++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-> > > @@ -33,6 +33,9 @@ properties:
-> > >        - description: PCIE30 PHY3 pipe clock source
-> > >        - description: USB3 PHY pipe clock source
-> > >
-> > > +  '#interconnect-cells':
-> > > +    const: 1
-> > > +
-> > >  required:
-> > >    - compatible
-> > >    - clocks
-> > > diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> > > new file mode 100644
-> > > index 000000000000..0b076b0cf880
-> > > --- /dev/null
-> > > +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> > > @@ -0,0 +1,87 @@
-> > > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> > > +#ifndef INTERCONNECT_QCOM_IPQ9574_H
-> > > +#define INTERCONNECT_QCOM_IPQ9574_H
-> > > +
-> > > +#define ICC_ANOC_PCIE0		0
-> > > +#define ICC_SNOC_PCIE0		1
-> > > +#define ICC_ANOC_PCIE1		2
-> > > +#define ICC_SNOC_PCIE1		3
-> > > +#define ICC_ANOC_PCIE2		4
-> > > +#define ICC_SNOC_PCIE2		5
-> > > +#define ICC_ANOC_PCIE3		6
-> > > +#define ICC_SNOC_PCIE3		7
-> > > +#define ICC_SNOC_USB		8
-> > > +#define ICC_ANOC_USB_AXI	9
-> > > +#define ICC_NSSNOC_NSSCC	10
-> > > +#define ICC_NSSNOC_SNOC_0	11
-> > > +#define ICC_NSSNOC_SNOC_1	12
-> > > +#define ICC_NSSNOC_PCNOC_1	13
-> > > +#define ICC_NSSNOC_QOSGEN_REF	14
-> > > +#define ICC_NSSNOC_TIMEOUT_REF	15
-> > > +#define ICC_NSSNOC_XO_DCD	16
-> > > +#define ICC_NSSNOC_ATB		17
-> > > +#define ICC_MEM_NOC_NSSNOC	18
-> > > +#define ICC_NSSNOC_MEMNOC	19
-> > > +#define ICC_NSSNOC_MEM_NOC_1	20
-> > > +
-> > > +#define ICC_NSSNOC_PPE		0
-> > > +#define ICC_NSSNOC_PPE_CFG	1
-> > > +#define ICC_NSSNOC_NSS_CSR	2
-> > > +#define ICC_NSSNOC_IMEM_QSB	3
-> > > +#define ICC_NSSNOC_IMEM_AHB	4
-> > > +
-> > > +#define MASTER_ANOC_PCIE0		(ICC_ANOC_PCIE0 * 2)
-> > > +#define SLAVE_ANOC_PCIE0		((ICC_ANOC_PCIE0 * 2) + 1)
-> >
-> > Which existing Qualcomm platform has such code?
->
-> Existing Qualcomm platforms don't use icc-clk. They use icc-rpm
-> or icc-rpmh. clk-cbf-msm8996.c is the only driver that uses icc-clk.
->
-> The icc_clk_register automatically creates master & slave nodes
-> for each clk entry provided as input with the node-ids 'n' and
-> 'n+1'. Since clk-cbf-msm8996.c has only one entry, it could just
-> define MASTER_CBF_M4M and SLAVE_CBF_M4M with 0 and 1 and avoid these
-> calculations.
->
-> However, ipq9574 gives an array of clock entries as input to
-> icc_clk_register. To tie the order/sequence of these clock
-> entries correctly with the node-ids, this calculation is needed.
->
-> > This is the third time I am asking for consistent headers. Open
-> > existing, recently added headers and look how it is done there. Why?
-> > Because I am against such calculations and see no reason for them.
->
-> Apologies. Regret that I have to trouble you.
->
-> In this ipq9574 case, have to reconcile between the following
-> feedbacks.
->
-> 1. https://lore.kernel.org/linux-arm-msm/fe40b307-26d0-4b2a-869b-5d093415b9d1@linaro.org/
->    We could probably use indexed identifiers here to avoid confusion:
->    [ICC_BINDING_NAME] = CLK_BINDING_NAME
->
-> 2. https://lore.kernel.org/linux-arm-msm/95f4e99a60cc97770fc3cee850b62faf.sboyd@kernel.org/
->    Are these supposed to be in a dt-binding header?
->
-> 3. https://lore.kernel.org/linux-arm-msm/031d0a35-b192-4161-beef-97b89d5d1da6@linaro.org/
->    Do you use them as well in the DTS?
->
-> Having the defines (with the calculations) seemed to to comply
-> with the above three feedbacks.
->
-> Please let me know if this can be handled in a different way that
-> would be consistent with other Qualcomm platforms.
+On 4/9/24 7:44 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 09.04.24 01:44, Cristian Ciocaltea wrote:
+>> On 4/7/24 10:47 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>> On 06.04.24 15:08, Bagas Sanjaya wrote:
+>>>>
+>>>> On Bugzilla, Daniel <dmanlfc@gmail.com> reported topology regression
+>>>> on Steam Deck OLED [1]. He wrote:
+>>
+>>>>> I'm adding this here, I hope it's the correct place.
+>>>>>
+>>>>> Currently the Steam Deck OLED fails with Kernel 6.8.2 when trying to initialise the topology for the device.
+>>>>> I'm using the `sof-vangogh-nau8821-max.tplg` file from the Steam Deck OLED and associated firmware.
+>>>>
+>>>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218677
+>>>
+>>> A quick search made me find these posts/threads that foreshadow the problem:
+>>>
+>>> https://lore.kernel.org/lkml/20231219030728.2431640-1-cristian.ciocaltea@collabora.com/
+>>> https://lore.kernel.org/all/a3357e1f-f354-4d4b-9751-6b2182dceea6@amd.com/
+>>>
+>>> From a quick look at the second discussion it seems a bit like we are
+>>> screwed, as iiutc topology files are out in the wild for one or the
+>>> other approach. So we might have to bite a bullet there and accept the
+>>> regression -- but I might easily be totally mistaken here. Would be good
+>>> in one of the experts (Venkata Prasad Potturu maybe?) could quickly
+>>> explain what's up here.
+>>
+>> The problem here is that Steam Deck OLED provides a topology file which
+>> uses an incorrect DAI link ID for BT codec. 
+>>
+>> Patch [1] moves BT_BE_ID to position 2 in the enum, as expected by the
+>> topology, but this is not a change that can be accepted upstream as it
+>> would break other devices which rely on BT_BE_ID set to 3.  
+>>
+>> The proper solution would be to update the topology file on Steam Deck,
+>> but this is probably not straightforward to be accomplished as it would
+>> break the compatibility with the currently released (downstream)
+>> kernels.
+>>
+>> Hopefully, this sheds some more light on the matter.
+>>
+>> [1]: https://lore.kernel.org/all/20231209205351.880797-11-cristian.ciocaltea@collabora.com/
+> 
+> Many thx, yes, this sheds some light on the matter. But there is one
+> remaining question: can we make both camps happy somehow? E.g. something
+> along the lines of "first detect if the topology file has BT_BE_ID in
+> position 2 or 3 and then act accordingly?
 
-Krzysztof,
+Right, I have this on my TODOs list but haven't managed to dig into it
+yet. However, that would be most likely just another hack to be carried
+on until the transition to a fixed topology is completed.
 
-Is this ok? Can I post a new version addressing other review comments?
-
-Thanks
-Varada
+Regards,
+Cristian
 
