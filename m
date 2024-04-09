@@ -1,131 +1,135 @@
-Return-Path: <linux-kernel+bounces-137646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41EC89E4F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:30:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A52B89E4F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:30:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACD81F2295B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:30:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D87A3281D30
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81083158A06;
-	Tue,  9 Apr 2024 21:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF07158A1B;
+	Tue,  9 Apr 2024 21:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="VJCJkhDg"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="imq1dgdM"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C58158867
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40078158878;
+	Tue,  9 Apr 2024 21:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698193; cv=none; b=itpZl0Z5XdhIEYNSXNpzLqf0a2W7FLast9j5wi3uHk9qy/rmx/OXUNMP02hSSOzcToDnYPrYhTYHVEAWly2ls294pvu+nSg6O59BPnZa/SwZzEY+LIuFfSCIJgSukH70J5L1pbEZCLGS//nAHu2pVDnJ12r41HHduk3ahjJUrXM=
+	t=1712698224; cv=none; b=umUqxK/JImevp6oV6Z+HT02T+rbeynaC0fvQMT3W8i7BL4Q9YUgKW4A+fFuktPbeM3SNXECOP/qcAOSuO5Wz6IT2G/1lbOfpztqQoSq8p7v168iT8JaRBdRUuilkHAcK36W0R8yuNIxukubBwrQJcgXKEASTdTQoWqS+TvmbZ5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698193; c=relaxed/simple;
-	bh=Ubqqm63lKdnzIJduqL2oJ1Vi2+iIgr/cKwTszXup7q0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XL/SnQ6WrBb2nChEmSa/iQsZpHVczpJrkyKqu0ZKunaapHmWwcpKtoPoJ/ZRr7x/8t8G5SDYvmwe7CKhrws3rBiFitWRHJ+F4a8lMhZ7J8e/hZzAgcSWSql5y6QCOhG/PE7TKfTDosuicH7w94TqjR2sWC1+iXQPmP6CaurJoRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=VJCJkhDg; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed112c64beso2757953b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1712698191; x=1713302991; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=VJCJkhDga/OfKWeKbdrV+Saj9YmigCMLGWF6BfgnQH3eH/S5yBIWflk+OPpwtREuOe
-         sCZzrABd56f1+kvK3UE8lUjqkbdw9/DIVfraZRmuWWGFbeUgR5nF1Jggriy2kyc8BiT3
-         WG0uqYH+QFP3PCBjxaLWrN9sbyBXT4g4Gjvx+s2sjOqCW92mtMNHWnyE+tbS9iOmvjtL
-         83ocso+vIOzA3YcvmGz8c5BsZDEQZ1yPXn1dlslF78q4D70zvWDphBajBYEfoPJVIDLd
-         tOuVrVGhru5QLUAMuspZ6FEnkvqGtKz1qHoqCWn6fMtLS5aODbw1gspxqRiPljuVMG94
-         tlxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712698191; x=1713302991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=CXv99yS4rDByTsD3FUi99+iOc9gM8kRoozl4dyjC979mfukQ5aC5sSQDyYwcS+NRzN
-         7sD38Un3mcyxUwJZ9ce2lQfq5t9ULvnej0tSujBuZsGDPyzqUGzWB94iGzAK0NNJ3VKZ
-         YLpZX1HLwR+OqTMDCTLdSrSwI53cxE2FGb5dhawMlIg4mpbu2byC5wKHcBIPGUbDVOYI
-         gdqhZI4wEJiS8zkZQJ2fgplIllFhCLOGx4BUBfsxdNNwMDFKUR5jvYJEkuIhmGDItr4F
-         kJiuxbWTGfGtYuAEV0+ulOtVUa+lSsqtwsQrh8ETFIqlEFGvDjopRmiD0oXG6N/jdI2o
-         WLmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW57HjT2Vex4SUqGp4O0s5TFfHcn6AZxFTPqiY61X+3b/fx+/x8TlY8NFytSvfOe8p3UjOsHaKRIU8prP4ut98W1hLG0ntspymjukiS
-X-Gm-Message-State: AOJu0YzdkRYl26XW+nHtNmoSVJzd7J3dcD9PzT2FSXTXfwEx8VZsrQTB
-	f3pztmrvUHNtB/8cCwcTGtFcVgxh19g/WrtwE0k5aa6dm0+4Up1qAjAN3YnSn+8=
-X-Google-Smtp-Source: AGHT+IFvOqPyH50nuc2JACoXyF6q2DKJ9ivcnsRna4tGd1/cjZ8p4v7GhrD65qleDU/qtwwIyhj4CQ==
-X-Received: by 2002:a05:6a00:14d1:b0:6ec:faef:dd28 with SMTP id w17-20020a056a0014d100b006ecfaefdd28mr932086pfu.23.1712698191116;
-        Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056a00270c00b006ed048a7323sm8006356pfv.86.2024.04.09.14.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 14:29:50 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1ruJ2J-009xO3-3A;
-	Wed, 10 Apr 2024 07:29:47 +1000
-Date: Wed, 10 Apr 2024 07:29:47 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com>
-Cc: chandan.babu@oracle.com, dwmw2@infradead.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org, richard@nod.at,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ext4?] [jffs2?] [xfs?] kernel BUG in
- unrefer_xattr_datum
-Message-ID: <ZhWzS47ZvqF2WriS@dread.disaster.area>
-References: <0000000000002444e20615a20456@google.com>
+	s=arc-20240116; t=1712698224; c=relaxed/simple;
+	bh=QRV/Zb+ly7i9pgKEj1ZMeVmuwUAc36lVzMrvbf+R6ZQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dasIRRmbzcKVsL40+fpLnQDQQZVTQasYRQmKUm+P6+zLMGElM4Aaqe3mIF4p0Whg927A/9trCBxSAEhJAmAfXtd2bi998LdhpA/IlDB0Ti2nhAGVqSioh0i+8669Dt2s8SN4lHETSu3eGdX17HXjnlNmMlcYIcVXJtQG5ugPT9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=imq1dgdM; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 439LOJGS018910;
+	Tue, 9 Apr 2024 21:29:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=96pJxP6pETz15iq1+bZgYkpINBYsGWNv4yDJqnirgIs=;
+ b=imq1dgdMuYZU3TREMdr+qzdKlhWLMjPW3E8qWs3JXiNnfDW/i6a4bUgAHwzHWo1cx8MJ
+ EhID8TVhjNQ7MULkGQU4sBnC/YjB22D6bycJfSViSwbhrqhQ03A5VtL8p6Jxvkl2DKsl
+ KlDpozZmT8WJERc0FlcUl+IaiIQvQan3YvGcq+BOG3zNWVMKFjW17wZ0FP1VT7/LO3vy
+ FFpgP1y+/tNG+YXZ8lxSjvUhEQG/87KDNUt1oh9JDL2CJeGaLU8zzWtH0mdZkL+LsJ5u
+ TiqqnkRnRpTXdXcEXFOAIP/0wqG6mYivSe3+pwtS/CGOkoMTiZyHy/cMebCz/bnDhT5G rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdc9jg5bu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 21:29:58 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 439LTvv4027805;
+	Tue, 9 Apr 2024 21:29:57 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdc9jg5bt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 21:29:57 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 439KIUFt022564;
+	Tue, 9 Apr 2024 21:29:56 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqp0vht-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Apr 2024 21:29:56 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 439LTrBk38535542
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Apr 2024 21:29:55 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5BFCA58063;
+	Tue,  9 Apr 2024 21:29:53 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 923FA58056;
+	Tue,  9 Apr 2024 21:29:52 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.188.131])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Apr 2024 21:29:52 +0000 (GMT)
+Message-ID: <da46b1105f294df78535f1f5b6833cd8e2a4262e.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 00/10] evm: Support signatures on stacked filesystem
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-unionfs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, roberto.sassu@huawei.com, amir73il@gmail.com,
+        brauner@kernel.org, miklos@szeredi.hu
+Date: Tue, 09 Apr 2024 17:29:52 -0400
+In-Reply-To: <20240223172513.4049959-1-stefanb@linux.ibm.com>
+References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4OPDvHSEV7UuX3UR8ykomoVFtY88C32A
+X-Proofpoint-GUID: NTCCHltqIjanuGsxaH9U6_zCXoa4C0V0
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002444e20615a20456@google.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-09_12,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404090145
 
-On Mon, Apr 08, 2024 at 09:04:18PM -0700, syzbot wrote:
-> Hello,
+On Fri, 2024-02-23 at 12:25 -0500, Stefan Berger wrote:
+> EVM signature verification on stacked filesystem has recently been
+> completely disabled by declaring some filesystems as unsupported
+> (only overlayfs). This series now enables copy-up of "portable
+> and immutable" signatures on those filesystems and enables the
+> enforcement of "portable and immultable" as well as the "original"
+> signatures on previously unsupported filesystem when evm is enabled
+> with EVM_INIT_X509. HMAC verification and generation remains disabled.
 > 
-> syzbot found the following issue on:
+> "Portable and immutable" signatures can be copied up since they are
+> not created over file-specific metadata, such as UUID or generation.
+> Instead, they are only covering file metadata such as mode bits, uid, and
+> gid, that will all be preserved during a copy-up of the file metadata.
 > 
-> HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1562c52d180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b417f0468b73945887f0
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e74805180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1613cca9180000
+> This series is now based on the 'next' branch of Paul Moore's LSM tree and
+> requires the following two commits from the vfs.misc branch of the vfs git
+> repo at https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f039597bec42/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/b3fe5cff7c96/mount_4.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com
-> 
-> jffs2: nextblock 0x0001d000, expected at 0001f000
-> jffs2: argh. node added in wrong place at 0x0001e03c(2)
-> jffs2: nextblock 0x0001d000, expected at 0001f000
+> commit 2109cc619e73 ("fs: remove the inode argument to ->d_real() method")
+> commit c6c14f926fbe ("fs: make file_dentry() a simple accessor")
 
-Nothing to do with XFS or ext4 - they are simply being mounted with
-invalid mount options at the same time.
+Thanks, Stefan.  The patch set is now queued in the next-integrity branch.
+https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/
 
-#syz set subsystems: jffs2
+Mimi
 
--- 
-Dave Chinner
-david@fromorbit.com
 
