@@ -1,253 +1,159 @@
-Return-Path: <linux-kernel+bounces-136826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08D989D8B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:02:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C2589D8B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:02:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25698B239FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:02:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D80E1F24A4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F9912A171;
-	Tue,  9 Apr 2024 12:01:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A622129E81;
-	Tue,  9 Apr 2024 12:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B19712AADF;
+	Tue,  9 Apr 2024 12:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SHru1cAr"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D622586651;
+	Tue,  9 Apr 2024 12:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712664112; cv=none; b=kj0Nj8OCXaHwfl1LyZ8D6ecOjin3AmhxAkbA0cDThTv5oggHRZPRLii3xUDtpdagytSgQtUVv9cGRQZ2+M+3PSvRsYW0RFWp5roh4dcLulmmYxOn9L/hZFBS+P7Mtz8EiVW+TR/t/eLuuDsUbgl38CHCIJKqWUTMDoxg31yXfwo=
+	t=1712664139; cv=none; b=i07vILc588raZh7nHHqUv/Zzv29XReyKlgkD8n57Shh9YbQJuXHPk8WZMeXjgBdEURHOOrywYPPNrM5jynqZXGtB6+UJzvL+kY+ObWOUfZsD3v8MGMeavgn1qorZ+zvdX0OYQZjiu/41ZBgCNqWQ8w7eAB7wugLBFHGalYW6avs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712664112; c=relaxed/simple;
-	bh=9xIZi0QpnO1RKIMpvzvyKziMtxWWeU7GiJ1MO/7yK/M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iDwmnmPP/qSCHh71AC5Afl9Jxh6T8UB1swlYLLvQkp3CW99a8LY1Aavprry0xSx42wrST9QjxlnzEBs3EwAL2EXHXvDF/ytaJDbpQ2qif921MN8yJ2OlRgDjn6a1AAmaW2BtrJjbJ+ObJ853dbpuINFlb+pNEn5kRi8v9Vt9JUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9BB4139F;
-	Tue,  9 Apr 2024 05:02:19 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9A323F766;
-	Tue,  9 Apr 2024 05:01:47 -0700 (PDT)
-Date: Tue, 9 Apr 2024 13:01:45 +0100
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
- additionalProperties to true
-Message-ID: <ZhUuKajQbce2AI9f@pluto>
-References: <DU0PR04MB9417932A6208128FBBB22C4188012@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <09f6b752-6b72-49d7-b248-6faba2fd13a7@kernel.org>
- <DU0PR04MB9417C5B9BDD9E0B47E7494C088012@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <5b9e0e44-0b9c-44fc-9d18-21c47b46dc63@kernel.org>
- <DU0PR04MB9417839C42681F57366003EF88012@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <ba4c9f20-0391-4ac2-a236-d6930285cd7e@kernel.org>
- <DU0PR04MB94176D02B90528913842B76A88002@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <e6333665-8051-43b1-9e98-f76262ddbc35@kernel.org>
- <DU0PR04MB9417C8C5013C72AB1F61F1C588002@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <AS1PR04MB9431BE4B2BFE05507A2D93F288072@AS1PR04MB9431.eurprd04.prod.outlook.com>
+	s=arc-20240116; t=1712664139; c=relaxed/simple;
+	bh=A30b6H9AYPzyaHHgfAGSsr5txXIHLXEVbKj6/zaklYc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GwDguFc2QhIqYuDviFoH41ZqLv0zbH2nqMlft0tYCTev9e5qBDBghYHhoNeb4MeIYWWCczCwZViFHm/IMWPPLAfPsEp2hXsfjVlnWx3duW/mkBR1gB75Nl/S75VDzVZkkRowP/NcjSj+e+wkiGw69ZOJgdD+2eITtiPXysV7kD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SHru1cAr; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712664135;
+	bh=A30b6H9AYPzyaHHgfAGSsr5txXIHLXEVbKj6/zaklYc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SHru1cArVCnQ/zxM6iuhiD07AQRBK71kKFQqA8mrCyF2dmu1tdUkO8B0t3HtdtC0i
+	 /hiJ5xbxboJSb8lVgaEyLJWiBVcpWMFSPYAJzP5SjZ4spTDXNQc5zQUDa0yf3peFcV
+	 bbdGrXXjOz+XoqHkRN4YZzy22znr1do1v8kiMlNY9H2bVHhftjMk9zgXugo7lI8gJR
+	 EbYG7pJGFIwN0TbPDhviVBKf7J260VnV3KYVD98uQz0I+wRvnf8mJ8Gl3C0uSQM2+I
+	 5GRR0TwZ0GS/2Up+tNz6dRixUCLxViBMMDczNHLrWB81xJuA2nTHrH2vkzzngAAC5o
+	 CviYSZt9rCuHQ==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3DB1037820F5;
+	Tue,  9 Apr 2024 12:02:14 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: chunkuang.hu@kernel.org
+Cc: robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	shawn.sung@mediatek.com,
+	yu-chang.lee@mediatek.com,
+	ck.hu@mediatek.com,
+	jitao.shi@mediatek.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	wenst@chromium.org,
+	kernel@collabora.com
+Subject: [PATCH v2 0/3] drm/mediatek: Add support for OF graphs
+Date: Tue,  9 Apr 2024 14:02:08 +0200
+Message-ID: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS1PR04MB9431BE4B2BFE05507A2D93F288072@AS1PR04MB9431.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 09, 2024 at 09:25:10AM +0000, Peng Fan wrote:
-> Hi Krzysztof,
-> 
-> > Subject: RE: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
-> > additionalProperties to true
-> > 
-> > > Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
-> > > additionalProperties to true
-> > >
-> > > On 08/04/2024 08:08, Peng Fan wrote:
-> > > >> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
-> > > >> additionalProperties to true
-> > > >>
-> > > >> On 08/04/2024 01:50, Peng Fan wrote:
-> > > >>>> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
-> > > >>>> additionalProperties to true
-> > > >>>>
-> > > >>>> On 07/04/2024 12:04, Peng Fan wrote:
-> > > >>>>>> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi:
-> > > >>>>>> set additionalProperties to true
-> > > >>>>>>
-> > > >>>>>> On 07/04/2024 02:37, Peng Fan wrote:
-> > > >>>>>>>> Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi:
-> > > >>>>>>>> set additionalProperties to true
-> > > >>>>>>>>
-> > > >>>>>>>> On 05/04/2024 14:39, Peng Fan (OSS) wrote:
-> > > >>>>>>>>> From: Peng Fan <peng.fan@nxp.com>
-> > > >>>>>>>>>
-> > > >>>>>>>>> When adding vendor extension protocols, there is dt-schema
-> > > >> warning:
-> > > >>>>>>>>> "
-> > > >>>>>>>>> imx,scmi.example.dtb: scmi: 'protocol@81', 'protocol@84' do
-> > > >>>>>>>>> not match any of the regexes: 'pinctrl-[0-9]+'
-> > > >>>>>>>>> "
-> > > >>>>>>>>>
-> > > >>>>>>>>> Set additionalProperties to true to address the issue.
-> > > >>>>>>>>
-> > > >>>>>>>> I do not see anything addressed here, except making the
-> > > >>>>>>>> binding accepting anything anywhere...
-> > > >>>>>>>
-> > > >>>>>>> I not wanna add vendor protocols in arm,scmi.yaml, so will
-> > > >>>>>>> introduce a new yaml imx.scmi.yaml which add i.MX SCMI
-> > > >>>>>>> protocol
-> > > >> extension.
-> > > >>>>>>>
-> > > >>>>>>> With additionalProperties set to false, I not know how, please
-> > > suggest.
-> > > >>>>>>
-> > > >>>>>> First of all, you cannot affect negatively existing devices
-> > > >>>>>> (their
-> > > >>>>>> bindings) and your patch does exactly that. This should make
-> > > >>>>>> you thing what is the correct approach...
-> > > >>>>>>
-> > > >>>>>> Rob gave you the comment about missing compatible - you still
-> > > >>>>>> did not address that.
-> > > >>>>>
-> > > >>>>> I added the compatible in patch 2/6 in the examples "compatible
-> > > >>>>> =
-> > > >>>> "arm,scmi";"
-> > > >>>>
-> > > >>>> So you claim that your vendor extensions are the same or fully
-> > > >>>> compatible with arm,scmi and you add nothing... Are your
-> > > >>>> extensions/protocol valid for arm,scmi?
-> > > >>>
-> > > >>> Yes. They are valid for arm,scmi.
-> > > >>>
-> > > >>>  If yes, why is this in separate binding. If no, why you use
-> > > >>> someone
-> > > >>>> else's compatible?
-> > > >>>
-> > > >>> Per SCMI Spec
-> > > >>> 0x80-0xFF: Reserved for vendor or platform-specific extensions to
-> > > >>> this interface
-> > > >>>
-> > > >>> i.MX use 0x81 for BBM, 0x84 for MISC. But other vendors will use
-> > > >>> the id for their own protocol.
-> > > >>
-> > > >> So how are they valid for arm,scmi? I don't understand.
-> > > >
-> > > > arm,scmi is a firmware compatible string. The protocol node is a sub-node.
-> > > > I think the arm,scmi is that saying the firmware following SCMI spec
-> > > > to implement the protocols.
-> > > >
-> > > > For vendor reserved ID, firmware also follow the SCMI spec to
-> > > > implement their own usage, so from firmware level, it is ARM SCMI
-> > > > spec
-> > > compatible.
-> > >
-> > > That's not the point. It is obvious that your firmware is compatible
-> > > with arm,scmi, but what you try to say in this and revised patch is
-> > > that every arm,scmi is compatible with your implementation. What you
-> > > are saying is that 0x84 is MISC protocol for every firmware, Qualcomm,
-> > > NXP, Samsung, TI, Mediatek etc.
-> > >
-> > > I claim it is not true. 0x84 is not MISC for Qualcomm, for example.
-> > 
-> > You are right. I am lost now on how to add vendor ID support, using
-> > arm,scmi.yaml or adding a new imx,scmi.yaml or else.
-> 
-
-Hi Peng,
-
-I dont think in the following you will find the solution to the problem,
-it is just to recap the situation and constraints around vendor protocol
-bindings.
-
-Describing SCMI vendors protocols is tricky because while on one side
-the protocol node has to be rooted under the main scmi fw DT node (like
-all the standard protocols) and be 'derived' from the arm,scmi.yaml
-protocol-node definition, the optional additional properties of the a specific
-vendor protocol nodes can be customized by each single vendor, and since,
-as you said, you can have multiple protocols from different vendors sharing the
-same protocol number, you could have multiple disjoint sets of valid properties
-allowed under that same protocol node number; so on one side you have to stick
-to some basic protocol-node defs and be rooted under the SCMI node, while on
-the other side you will have multiple possibly allowed sets of additional
-properties to check against, so IOW you cannot anyway just set
-additionalProperties to false since that will result in no checks at all.
-
-As a consequence, at runtime, in the final DTB shipped with a specific
-platform you should have only one of the possible vendor nodes for each
-of these overlapping protocols, and the SCMI core at probe time will
-pick the proper protocol implementation based on the vendor/sub_vendor
-IDs gathered from the running SCMI fw platform at init: this way you
-can just build the usual "all-inclusive" defconfig without worrying
-about vendor protocol clashes since the SCMI core can pick the right
-protocol implementation, you should just had taken care to provide the
-proper DTB for your protocol; BUT this also means that it is not possible
-to add multiple DT bindings based on a 'if vendor' condition since the
-vendor itself is NOT defined and not needed in the bindings since it is
-discoverable at runtime.
-
-So, after all of this blabbing of mine about this, I am wondering if it
-is not possible that the solution is to handle each and every vendor
-protocol node that appears with a block of addtional properties that
-are picked via a oneOf statement from some external vendor specific
-yaml.
-(...in a similar way to how pinctrl additional properties are added...)
+Changes in v2:
+ - Fixed wrong `required` block indentation in commit [2/3]
 
 
-NOTE THAT the following is just an example of what I mean, it is certainly
-wrong, incomplete annd maybe just not acceptable (and could cause DT
-maintainers eyes to bleed :P)...
+The display IPs in MediaTek SoCs are *VERY* flexible and those support
+being interconnected with different instances of DDP IPs (for example,
+merge0 or merge1) and/or with different DDP IPs (for example, rdma can
+be connected with either color, dpi, dsi, merge, etc), forming a full
+Display Data Path that ends with an actual display.
 
-..so it is just fr the sake of explaining what I mean...
+This series was born because of an issue that I've found while enabling
+support for MT8195/MT8395 boards with DSI output as main display: the
+current mtk_drm_route variations would not work as currently, the driver
+hardcodes a display path for Chromebooks, which have a DisplayPort panel
+with DSC support, instead of a DSI panel without DSC support.
 
-diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-index e9d3f043c4ed..3c38a1e3ffed 100644
---- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-+++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-@@ -278,6 +278,22 @@ properties:
-     required:
-       - reg
- 
-+  protocol@81:
-+    $ref: '#/$defs/protocol-node'
-+    unevaluatedProperties: false
-+
-+    properties:
-+      reg:
-+        const: 0x81
-+
-+    patternProperties:
-+      '$':
-+        type: object
-+        oneOf:
-+          - $ref: /schemas/vendor-A/scmi-protos.yaml#
-+          - $ref: /schemas/vendor-B/protos.yaml#
-+        unevaluatedProperties: false
-+
- additionalProperties: false
- 
-..with each new Vendor coming to the party adding a line under
-oneOf...which would mean probably also having a protocol@NN for each new
-protocol that appears...
+There are other reasons for which I wrote this series, and I find that
+hardcoding those paths - when a HW path is clearly board-specific - is
+highly suboptimal. Also, let's not forget about keeping this driver from
+becoming a huge list of paths for each combination of SoC->board->disp
+and... this and that.
 
-Thanks,
-Cristian
+For more information, please look at the commit description for each of
+the commits included in this series.
+
+Please don't mind about the missing OVL_ADAPTOR support for OF graphs
+in this series: that needs a bit more thinking and a bit more work, and
+will come in a second series that will go on top of this a bit later,
+as the OF graph support for *at least* the primary display is essential
+*right now* to enable support for the MT8195/8395 EVK, Kontron SoM,
+Radxa NIO-12L and all of the other non-Chromebook boards to co-exist
+with Chromebooks.
+
+Besides, this is also a valid option for MT8188 Chromebooks which might
+have different DSI-or-eDP displays depending on the model (as far as I
+can see from the mtk_drm_route attempt for this SoC that is already
+present in this driver).
+
+This series was tested on MT8195 Cherry Tomato and on MT8395 Radxa
+NIO-12L with both hardcoded paths, OF graph support and partially
+hardcoded paths (meaning main display through OF graph and external
+display hardcoded, because of OVL_ADAPTOR).
+
+AngeloGioacchino Del Regno (3):
+  dt-bindings: display: mediatek: Add OF graph support for board path
+  dt-bindings: arm: mediatek: mmsys: Add OF graph support for board path
+  drm/mediatek: Implement OF graphs support for display paths
+
+ .../bindings/arm/mediatek/mediatek,mmsys.yaml |  23 ++
+ .../display/mediatek/mediatek,aal.yaml        |  40 +++
+ .../display/mediatek/mediatek,ccorr.yaml      |  21 ++
+ .../display/mediatek/mediatek,color.yaml      |  22 ++
+ .../display/mediatek/mediatek,dither.yaml     |  22 ++
+ .../display/mediatek/mediatek,dpi.yaml        |  25 +-
+ .../display/mediatek/mediatek,dsc.yaml        |  24 ++
+ .../display/mediatek/mediatek,dsi.yaml        |  27 +-
+ .../display/mediatek/mediatek,ethdr.yaml      |  22 ++
+ .../display/mediatek/mediatek,gamma.yaml      |  19 ++
+ .../display/mediatek/mediatek,merge.yaml      |  23 ++
+ .../display/mediatek/mediatek,od.yaml         |  22 ++
+ .../display/mediatek/mediatek,ovl-2l.yaml     |  22 ++
+ .../display/mediatek/mediatek,ovl.yaml        |  22 ++
+ .../display/mediatek/mediatek,postmask.yaml   |  21 ++
+ .../display/mediatek/mediatek,rdma.yaml       |  22 ++
+ .../display/mediatek/mediatek,ufoe.yaml       |  21 ++
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |  16 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        | 255 ++++++++++++++++--
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   2 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |  10 +-
+ 21 files changed, 645 insertions(+), 36 deletions(-)
+
+-- 
+2.44.0
 
 
