@@ -1,157 +1,173 @@
-Return-Path: <linux-kernel+bounces-136925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 032D489D9F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:16:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF75689D9F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:17:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD1B628202F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E3D71C22747
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310C27F47E;
-	Tue,  9 Apr 2024 13:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0F412EBF7;
+	Tue,  9 Apr 2024 13:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VEIiwGvH"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i265qu+a";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D9bum+q/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i265qu+a";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D9bum+q/"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2419686AC2
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4887F47E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712668597; cv=none; b=C8dl7b/FB5RtKJns3jWFz4QKHVUDG5o3mt5qBzOWwE+euG2jX3s2CUEFjVxpwjJk+6N8FMYk8xj4ZWySO3CcgoQzwcfrUr74ktbGYjHsBy9JQcaONgOr2GzunpDOg01YdE3qehb6ZshdPmuOGR3twYYtohllPL9TYp+FuU7gW2o=
+	t=1712668664; cv=none; b=OHo5qBfiMNk+F64oqKOtE4ny0cj04HU0pDO9bI0hGFwqvvbRb50S2mN3k/zlA5+aO2U8h8/N7uxtUhmLxfLxAY3/6SSJrJIXAf+SPHS2t+EQIGHh3ofndiyZblVxPKCOA4Mn9rHTQeUf2DI8c3jrqOJLRAMIxSDlBv5pJdeGB/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712668597; c=relaxed/simple;
-	bh=phJMhIBVDBaqGVfRsivP2R4+eY5Tic9quqiYD1cmeAU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SeBKIlrq4gBWjYBw66bXlWrQGiZovB22jOfwx3rCyS3iNVh13IJwu0u2uX4Eyt3E8VUQyyU84k5KIcH8x4DVQWGtCY3F6tnjSmN5Wocsk+q8cUVIeppNNclWZia57xXka+0sVe2VdNXjJ96MO/ptupmldpmT2PCsc7Y1fpWj178=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VEIiwGvH; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d6fc3adaacso69732011fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 06:16:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712668593; x=1713273393; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=89DtCtFIzkBOcJ+3ntnvcyi+RWzHywHNe0Lj3QwBK9k=;
-        b=VEIiwGvHUVoimdcz4mUhrpHCZjB3uarOoHxPo6+OFnaJnVovmUwxG8PfYLIdG01sNM
-         rbkMnfabSDLiR1FA+0qU93HVEKUwmo+MpUKNq27ZFYNw6o/qjkxMR6siJbQykKxSiEMr
-         2k3sHQAE1m0g+pKSfW5FdWM7SiNJfZdCvoeDNJR4ZrmEBCqaMv3Re/FfZNrPJ9++N/IP
-         JK4YnyON2da1nOmqI6eYpPyF/sDn+5NsT3N1sJE+7Rl17K+BeOzKM7PaM2HNRCF4lfeb
-         +NpRb/aQVzt2J7q8eC1eRBY4pUmXMpSI6BN70k3eRzSj8BjvzvYB1YqDNLpCnURJUbyp
-         wx0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712668593; x=1713273393;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=89DtCtFIzkBOcJ+3ntnvcyi+RWzHywHNe0Lj3QwBK9k=;
-        b=wf1NV8ARrBTXPUS3GgDp84aCioYS3upNIzK3brOTVS7zBY2JdL3+DlFXDFf2nvcaXR
-         BBbiy5GIQ47RbKcYpGWQur+jV6AY2ctieHoKsMIaED1zbsZn7oy+tiAqRjS4GYzwodWc
-         VYqUQPpu2QcFHN/lgTUeTZfzACdk/Ghr4B/Hr1fei/yaGUKlfFgsvGob1vIOH7sH8nT5
-         jorH3RmsefcOC5JFKoatT3OwNeQ+temGYTB9IeRifKhv/gm1MOmKVGAVwtvELtf0xJPa
-         0L7M+mg/ka3eAjaWCEwM8oLvl8uu6LbJIpKF6RkmiU2LuQe5TgIf7iOpv/UKFHRLFuYr
-         +sJg==
-X-Forwarded-Encrypted: i=1; AJvYcCURKwo4kAVktJAqoFenk8ejXdbTG5mzT6aknexMz04ytaK+2FyRKRMOHO029Q51k7Ms+9Y3L/2BcERQmUWUd5+LIKejNviZOzObXJby
-X-Gm-Message-State: AOJu0YzfY9GGOLbzTr9Qgf5vOfa3fyXgpSqbvdhFjKojUFs18MirPmZ8
-	SeCp37/6NCaOa9xoHFFcUCDUmI9gjCcN8j0fOVgizg8uhLrm1a8Ka1ZdeFSJm98=
-X-Google-Smtp-Source: AGHT+IGulCp4NlG8KcyE9McFUHzx4Q3D8Qsy7LPmUzRrPbECg/4e0lX3+xLH3VjehoL+x/qj1UHHkw==
-X-Received: by 2002:a2e:b0fc:0:b0:2d8:87e2:3a4a with SMTP id h28-20020a2eb0fc000000b002d887e23a4amr4120399ljl.27.1712668593203;
-        Tue, 09 Apr 2024 06:16:33 -0700 (PDT)
-Received: from u94a (2001-b011-fa04-1643-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:1643:b2dc:efff:fee8:7e7a])
-        by smtp.gmail.com with ESMTPSA id z14-20020aa7990e000000b006e664031f10sm8204339pff.51.2024.04.09.06.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 06:16:32 -0700 (PDT)
-Date: Tue, 9 Apr 2024 21:16:23 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Edward Cree <ecree@amd.com>
-Cc: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>, 
-	ast@kernel.org, harishankar.vishwanathan@rutgers.edu, paul@isovalent.com, 
-	Matan Shachnai <m.shachnai@rutgers.edu>, Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
-	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Edward Cree <ecree.xilinx@gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
- value tracking
-Message-ID: <hjovxjcwishjy6mwqxz42ek5qhs626udfmmnnasmbj3mlb7mlr@fjbedhdsetjc>
-References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
- <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
- <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
+	s=arc-20240116; t=1712668664; c=relaxed/simple;
+	bh=Nbg7IhySZ2mZvLsOPV5r5pssg1OdIlXn9aDI3w8jiiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H3cwV8L+QjkBw5y46ClLUFPT8R4e+/1y8087Gs2as3YEbZCI3YjFLDqwExkRbk774xlmyfPLS/hlJLBPM/Ll4T1ii64CAYLB4NEvKwuBCcf7d6UiKqJ0chKtptjOXGiUTcntl3J3kWGPWBibyOh+pTnp9/NiOoc1y0cLWaijFjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=i265qu+a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=D9bum+q/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=i265qu+a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=D9bum+q/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6D57F209F7;
+	Tue,  9 Apr 2024 13:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712668661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v+QD8xLLYiM91+p4bVXmhbF/tnURmCnNpg59cARc7EI=;
+	b=i265qu+aRIFb8KG038+Pd6xik78ieaPX8kr5wdypC2eNBCscCOig7uGOPAItRQbxri27JY
+	ujuL//wZZmj86ntCpsv7qsOJtzZC0ECNU+htSfLLLdohUldP44aU0O7WI7Suv3HPFOHno9
+	+yhAgZSaswTUyiGN+Q+rslFIVtFUwoE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712668661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v+QD8xLLYiM91+p4bVXmhbF/tnURmCnNpg59cARc7EI=;
+	b=D9bum+q/8VzRGSTGX1UmjRXPIXxZRMZQ/Pzsq4vmnYjWbdD/2mop3ktmgz03R1xmZlrxNy
+	c37w/ZiWhjEeMWBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712668661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v+QD8xLLYiM91+p4bVXmhbF/tnURmCnNpg59cARc7EI=;
+	b=i265qu+aRIFb8KG038+Pd6xik78ieaPX8kr5wdypC2eNBCscCOig7uGOPAItRQbxri27JY
+	ujuL//wZZmj86ntCpsv7qsOJtzZC0ECNU+htSfLLLdohUldP44aU0O7WI7Suv3HPFOHno9
+	+yhAgZSaswTUyiGN+Q+rslFIVtFUwoE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712668661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v+QD8xLLYiM91+p4bVXmhbF/tnURmCnNpg59cARc7EI=;
+	b=D9bum+q/8VzRGSTGX1UmjRXPIXxZRMZQ/Pzsq4vmnYjWbdD/2mop3ktmgz03R1xmZlrxNy
+	c37w/ZiWhjEeMWBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D4D01332F;
+	Tue,  9 Apr 2024 13:17:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id qJJdO/Q/FWY0egAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Tue, 09 Apr 2024 13:17:40 +0000
+From: Oscar Salvador <osalvador@suse.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH] mm,page_owner: Defer enablement of static branch
+Date: Tue,  9 Apr 2024 15:17:15 +0200
+Message-ID: <20240409131715.13632-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:email];
+	RCVD_TLS_ALL(0.00)[]
 
-On Wed, Apr 03, 2024 at 10:40:23PM -0400, Harishankar Vishwanathan wrote:
-> On Wed, Apr 3, 2024 at 9:25 AM Edward Cree <ecree@amd.com> wrote:
-> > On 4/2/24 22:20, Harishankar Vishwanathan wrote:
-> > > Previous works [1, 2] have discovered and reported this issue. Our tool
-> > > Agni [2, 3] consideres it a false positive. This is because, during the
-> > > verification of the abstract operator scalar_min_max_and(), Agni restricts
-> > > its inputs to those passing through reg_bounds_sync(). This mimics
-> > > real-world verifier behavior, as reg_bounds_sync() is invariably executed
-> > > at the tail of every abstract operator. Therefore, such behavior is
-> > > unlikely in an actual verifier execution.
-> > >
-> > > However, it is still unsound for an abstract operator to set signed bounds
-> > > such that smin_value > smax_value. This patch fixes it, making the abstract
-> > > operator sound for all (well-formed) inputs.
-> >
-> > Just to check I'm understanding correctly: you're saying that the existing
-> >  code has an undocumented precondition, that's currently maintained by the
-> >  callers, and your patch removes the precondition in case a future patch
-> >  (or cosmic rays?) makes a call without satisfying it?
-> > Or is it in principle possible (just "unlikely") for a program to induce
-> >  the current verifier to call scalar_min_max_foo() on a register that
-> >  hasn't been through reg_bounds_sync()?
-> > If the former, I think Fixes: is inappropriate here as there is no need to
-> >  backport this change to stable kernels, although I agree the change is
-> >  worth making in -next.
-> 
-> You are kind of right on both counts.
-> 
-> The existing code contains an undocumented precondition. When violated,
-> scalar_min_max_and() can produce unsound s64 bounds (where smin > smax).
-> Certain well-formed register state inputs can violate this precondition,
-> resulting in eventual unsoundness. However, register states that have
-> passed through reg_bounds_sync() -- or those that are completely known or
-> completely unknown -- satisfy the precondition, preventing unsoundness.
-> 
-> Since we haven’t examined all possible paths through the verifier, and we
-> cannot guarantee that every instruction preceding a BPF_AND in an eBPF
-> program will maintain the precondition, we cannot definitively say that
-> register state inputs to scalar_min_max_and() will always meet the
-> precondition. There is a potential for an invocation of
-> scalar_min_max_and() on a register state that hasn’t undergone
-> reg_bounds_sync(). The patch indeed removes the precondition.
-> 
-> Given the above, please advise if we should backport this patch to older
-> kernels (and whether I should use the fixes tag).
+Kefeng Wang reported that he was seeing some memory leaks with kmemleak
+with page_owner enabled.
+The reason behind is that we enable the page_owner_inited static branch
+and then proceed with the linking of stack_list struct to dummy_stack,
+which means that exists a race window between these two steps where we
+can have pages already being allocated calling add_stack_record_to_list(),
+allocating objects and linking them to stack_list, but then we set
+stack_list pointing to dummy_stack in init_page_owner.
+Which means that the objects that have been allocated during that time
+window are unreferenced and lost.
 
-I suggested the fixes tag to Harishankar in the v1 patchset, admittedly
-without a thorough understanding at the same level of above.
+Fix this by deferring the enablement of the branch until we have properly
+set up the list.
 
-However, given smin_value > smax_value is something we check in
-reg_bounds_sanity_check(), I would still vote to have the patch
-backported to stable (with "Cc: stable@vger.kernel.org"?) even if the
-fixes tag is dropped. The overall change should be rather well contained
-and isolated for relatively ease of backport; and probably save some
-head scratching over the difference of behavior between mainline and
-stable.
+Reported-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Closes: https://lore.kernel.org/linux-mm/74b147b0-718d-4d50-be75-d6afc801cd24@huawei.com/
+Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Fixes: 4bedfb314bdd ("mm,page_owner: maintain own list of stack_records structs")
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+---
+Special thanks and kudos go to Kefeng Wang for helping me out chasing
+down this bug, as I could not reproduce it with any of my machines, and
+to Vlastimil to bring another pair of eyes, which was very helpful.
 
-> [...]
+ mm/page_owner.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index 9bef0b442863..742f432e5bf0 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -118,7 +118,6 @@ static __init void init_page_owner(void)
+ 	register_dummy_stack();
+ 	register_failure_stack();
+ 	register_early_stack();
+-	static_branch_enable(&page_owner_inited);
+ 	init_early_allocated_pages();
+ 	/* Initialize dummy and failure stacks and link them to stack_list */
+ 	dummy_stack.stack_record = __stack_depot_get_stack_record(dummy_handle);
+@@ -129,6 +128,7 @@ static __init void init_page_owner(void)
+ 		refcount_set(&failure_stack.stack_record->count, 1);
+ 	dummy_stack.next = &failure_stack;
+ 	stack_list = &dummy_stack;
++	static_branch_enable(&page_owner_inited);
+ }
+ 
+ struct page_ext_operations page_owner_ops = {
+-- 
+2.44.0
+
 
