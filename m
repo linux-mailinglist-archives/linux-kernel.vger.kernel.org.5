@@ -1,184 +1,97 @@
-Return-Path: <linux-kernel+bounces-136066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D170989CFAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:14:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C5589CFB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0E1AB22002
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:14:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0260628570C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 01:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EF06FB2;
-	Tue,  9 Apr 2024 01:14:43 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A289C63B9;
+	Tue,  9 Apr 2024 01:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="CoNRVvzQ"
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDA26FA7;
-	Tue,  9 Apr 2024 01:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD0F64B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 01:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712625283; cv=none; b=ETUnHXGonVUQc32wbNSVNomo6YMm8nYPgkE9Do6DQRx/1QfvIwp+jK2iAkuHoRjBE9idvdO5ga5h7+RlaZzHoJLWSbQSGb1m6E+eVa2yc00kF2pwpmfxeuMxqLaOFIzswvNPbjWYnCAfbrIEqzLRDS5wiOmyarGTfV9GvIxjGd4=
+	t=1712625394; cv=none; b=gE0c3bk+osSvWoL1wmTAGHJu6OGm17J0FWa7mcv0ayA9rDGe21efT7ZwyTAwq/MPWdepnZyyxd8l/qHl1xCGnH47UKhSYazUGes8hzk1JiSokFPT+aFT5l91RwLcL81Q99r5gxHdntn5c6IUOmw7Q2u0BYV7fW3lLB1aaHpN3vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712625283; c=relaxed/simple;
-	bh=x6qPd8VeMbrl8tqohLNQ3poVzzQN5QmHRJgD+RxVN74=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IYg7WG8wqT532qvsT9rSLPHszQZpf9+4zMyEcZ+NDP+mqVmjwJNOTKqNC5mesVmv2INC2ODDtNjeYmw2fMHk3y9Eo++yuYwD1pP8TSigdfIecEIWKmtj60ReqZT5pjbEFk1OzQL2V1LyeH5frbyP7mMOn1DVQzUxkR1zavReZcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VD7GN5fL9ztRxV;
-	Tue,  9 Apr 2024 09:11:56 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6A71614059C;
-	Tue,  9 Apr 2024 09:14:38 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 09:14:37 +0800
-Subject: Re: [PATCH v2 2/2] jbd2: add prefix 'jbd2' for 'shrink_type'
-To: Ye Bin <yebin10@huawei.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<linux-ext4@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-References: <20240407065355.1528580-1-yebin10@huawei.com>
- <20240407065355.1528580-3-yebin10@huawei.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <2a665a23-7684-a719-4a1c-08136e2f6c46@huawei.com>
-Date: Tue, 9 Apr 2024 09:14:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1712625394; c=relaxed/simple;
+	bh=G91tSLM8pM+/C8VZJvDCyOlNemRmdVzykjJeKQl2Y7Q=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=CftR517fKVYk4bN7AazylX/ZZoiS79qby7KR7yLrELo9UoaF2gR9Zx4nxE+0oVQUdmeSdNmn3qDFSs//9f99Z+XXtclVmrAe5AzKH5BwwN5W0QUGWfX5JQLlA3NhWkB3uE80oz+KbmtvH2eHqF4eti2jOEW97TNf6SEKa306dAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=CoNRVvzQ; arc=none smtp.client-ip=203.205.221.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712625382; bh=wcmpugXpfqEgnKAK4si+cf4yNM1bZAjI3/SR1gfTx+E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=CoNRVvzQb4kvqGpzWxFM7Y4FUpOWGtT6h4IbSMTso41lacckdzrRYT3Yxry3SysvA
+	 G9O+cUUP5GjDrRBfTmmI+ImOMNpVtgJrKijXM8rfUadwrgYV940ok/9SJm8zT0nXHn
+	 j0E5rjbP+u9Wz0yuDOwx4uh/zbuKcCw4hE+yFgck=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 4140CEF2; Tue, 09 Apr 2024 09:16:20 +0800
+X-QQ-mid: xmsmtpt1712625380trbqxn46h
+Message-ID: <tencent_12296C83BC04535760577A26D4336AA36005@qq.com>
+X-QQ-XMAILINFO: M58CI+QHpTsk+p8j1J7qr7E1MQWMCS2P/ozjh92fNn4QkLGKe4I3PJIsqOt4su
+	 DKWl4nCp7waHOL/ar3EFDD/vs8pO0CGBPDBNuihbFVk9d7IMuMCghIAfmndconKd93Z3bkcvF2JD
+	 ofWhMRCvDxsnV+bnrqsJF1MYlHkPT4DHmSIDDSjb3fxIskMS5rjEWu0OYC+QxUGmQT69MnCOkxkg
+	 0saQ+gBH0QrX6osKvoyppJCXforBd0tV+FgUF4u7/rV1H1tafnE8Iw+Y9S4LYLgswz/tHVLLhX5b
+	 0xALn9is0zDAI1fWfJ//OzAseGrS3Z1efCxB1ikIJwGWBC01Vx4jBt3OOJNjZIEGCDzGdkeSc68O
+	 eNs1uE3aHoldoQIQvK+zaIZewwNPdxCztOFUV5oat6m4N20DFUp6LC++85/cPq++xlF13+v3U7cl
+	 TXEmqyv8aw2OE12ORHR4/A8tbmmBllzCQNFfUQ5yLJkEEtpyrm5pEYjRLM68+rCwT4EErxuWggEC
+	 m7mInI/Q9VIxrbVuiWQtCewnDhKgEuzQg87K6tCYT5F5XacWW8CPK7ejlTALFYWhI0U0iIBiM39o
+	 JTiS1ctw1Io0kAwXVV4cLNidb+Udn/9UOMAGCElSztr2cqNbZ5jM5a64gm7TJnn/9GBNsOs7FBcU
+	 eZlArARFz3pG2zqY9CV+oHFgos0PPAMlU6PFmev1XyFhquqe0PscQgn+1zYwRhohUwwJNm9+ggTq
+	 1Nd2SSD1RASbuWNm6ImPYCKoGHTwwIj5MmSMYPwI63BxQKwyTYohyy1a1LlZlCZjrv/qpHXMhlhs
+	 Y1yxQujW+/mDlrXZRClR8PH+5yZAiL16P+x+0AoEhCK0SUZ3Etsr9uIp4H7jSkjHiUbUXR/or7ua
+	 mIv6uTxXDjJn0vz9YxZXOHbRwAtUa4UQSgklLB2fyLKYNEVOyIpiTi+vZq6w3Tdg==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+27cc650ef45b379dfe5a@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [syzbot] [erofs?] BUG: using smp_processor_id() in preemptible code in z_erofs_get_gbuf
+Date: Tue,  9 Apr 2024 09:16:21 +0800
+X-OQ-MSGID: <20240409011620.3427776-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000084b9dd061599e789@google.com>
+References: <00000000000084b9dd061599e789@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240407065355.1528580-3-yebin10@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500005.china.huawei.com (7.192.104.229)
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/7 14:53, Ye Bin wrote:
-> As 'shrink_type' is exported. The module prefix 'jbd2' is added to
-> distinguish from memory reclamation.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+please test wrong context using smp_processor_id
 
-Looks nice.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2b3d5988ae2c
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
+index 9687cad8be96..0a3d9eecbf16 100644
+--- a/fs/erofs/zutil.c
++++ b/fs/erofs/zutil.c
+@@ -35,8 +35,11 @@ void *z_erofs_get_gbuf(unsigned int requiredpages)
+ 	__acquires(gbuf->lock)
+ {
+ 	struct z_erofs_gbuf *gbuf;
++	unsigned long flags;
+ 
++	local_irq_save(flags);
+ 	gbuf = &z_erofs_gbufpool[z_erofs_gbuf_id()];
++	local_irq_restore(flags);
+ 	spin_lock(&gbuf->lock);
+ 	/* check if the buffer is too small */
+ 	if (requiredpages > gbuf->nrpages) {
 
-> ---
->  fs/jbd2/checkpoint.c | 22 +++++++++++-----------
->  fs/jbd2/commit.c     |  2 +-
->  include/linux/jbd2.h |  4 ++--
->  3 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index 80c0ab98bc63..951f78634adf 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -348,7 +348,7 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
->   * Called with j_list_lock held.
->   */
->  static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
-> -						enum shrink_type type,
-> +						enum jbd2_shrink_type type,
->  						bool *released)
->  {
->  	struct journal_head *last_jh;
-> @@ -365,12 +365,12 @@ static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
->  		jh = next_jh;
->  		next_jh = jh->b_cpnext;
->  
-> -		if (type == SHRINK_DESTROY) {
-> +		if (type == JBD2_SHRINK_DESTROY) {
->  			ret = __jbd2_journal_remove_checkpoint(jh);
->  		} else {
->  			ret = jbd2_journal_try_remove_checkpoint(jh);
->  			if (ret < 0) {
-> -				if (type == SHRINK_BUSY_SKIP)
-> +				if (type == JBD2_SHRINK_BUSY_SKIP)
->  					continue;
->  				break;
->  			}
-> @@ -437,7 +437,7 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
->  		tid = transaction->t_tid;
->  
->  		freed = journal_shrink_one_cp_list(transaction->t_checkpoint_list,
-> -						   SHRINK_BUSY_SKIP, &released);
-> +						   JBD2_SHRINK_BUSY_SKIP, &released);
->  		nr_freed += freed;
->  		(*nr_to_scan) -= min(*nr_to_scan, freed);
->  		if (*nr_to_scan == 0)
-> @@ -470,20 +470,20 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
->   * journal_clean_checkpoint_list
->   *
->   * Find all the written-back checkpoint buffers in the journal and release them.
-> - * If 'type' is SHRINK_DESTROY, release all buffers unconditionally. If 'type'
-> - * is SHRINK_BUSY_STOP, will stop release buffers if encounters a busy buffer.
-> - * To avoid wasting CPU cycles scanning the buffer list in some cases, don't
-> - * pass SHRINK_BUSY_SKIP 'type' for this function.
-> + * If 'type' is JBD2_SHRINK_DESTROY, release all buffers unconditionally. If
-> + * 'type' is JBD2_SHRINK_BUSY_STOP, will stop release buffers if encounters a
-> + * busy buffer. To avoid wasting CPU cycles scanning the buffer list in some
-> + * cases, don't pass JBD2_SHRINK_BUSY_SKIP 'type' for this function.
->   *
->   * Called with j_list_lock held.
->   */
->  void __jbd2_journal_clean_checkpoint_list(journal_t *journal,
-> -					  enum shrink_type type)
-> +					  enum jbd2_shrink_type type)
->  {
->  	transaction_t *transaction, *last_transaction, *next_transaction;
->  	bool released;
->  
-> -	WARN_ON_ONCE(type == SHRINK_BUSY_SKIP);
-> +	WARN_ON_ONCE(type == JBD2_SHRINK_BUSY_SKIP);
->  
->  	transaction = journal->j_checkpoint_transactions;
->  	if (!transaction)
-> @@ -529,7 +529,7 @@ void jbd2_journal_destroy_checkpoint(journal_t *journal)
->  			spin_unlock(&journal->j_list_lock);
->  			break;
->  		}
-> -		__jbd2_journal_clean_checkpoint_list(journal, SHRINK_DESTROY);
-> +		__jbd2_journal_clean_checkpoint_list(journal, JBD2_SHRINK_DESTROY);
->  		spin_unlock(&journal->j_list_lock);
->  		cond_resched();
->  	}
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 78ebd04ac97d..65c857ab49ec 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -501,7 +501,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->  	 * frees some memory
->  	 */
->  	spin_lock(&journal->j_list_lock);
-> -	__jbd2_journal_clean_checkpoint_list(journal, SHRINK_BUSY_STOP);
-> +	__jbd2_journal_clean_checkpoint_list(journal, JBD2_SHRINK_BUSY_STOP);
->  	spin_unlock(&journal->j_list_lock);
->  
->  	jbd2_debug(3, "JBD2: commit phase 1\n");
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 58a961999d70..7479f64c0939 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1434,9 +1434,9 @@ void jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
->  extern void jbd2_journal_commit_transaction(journal_t *);
->  
->  /* Checkpoint list management */
-> -enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
-> +enum jbd2_shrink_type {JBD2_SHRINK_DESTROY, JBD2_SHRINK_BUSY_STOP, JBD2_SHRINK_BUSY_SKIP};
->  
-> -void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum shrink_type type);
-> +void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum jbd2_shrink_type type);
->  unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal, unsigned long *nr_to_scan);
->  int __jbd2_journal_remove_checkpoint(struct journal_head *);
->  int jbd2_journal_try_remove_checkpoint(struct journal_head *jh);
-> 
 
