@@ -1,76 +1,64 @@
-Return-Path: <linux-kernel+bounces-137311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C2189E03E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:22:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4496C89E046
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:23:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557AF1C21D65
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:22:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22611F24ACF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF66513E05C;
-	Tue,  9 Apr 2024 16:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A052213E88D;
+	Tue,  9 Apr 2024 16:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z7SCVjTW"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOf15R97"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4E213E058
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34F013E3EF;
+	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679737; cv=none; b=HrtaXJwiYiOfYctBoLoAiMXxzROpHTm4+3FjFafB5ZXJt7eMHsf5P8KP2BsLrY2qz4q0ODchQ5RlfQuZg6cvd8c+sAXWBgVjN9UuskpY8AfPR8PJeorJ071/msNlkGyRLA3WBZNdB1DM3lbkgTqfgHaTLiY6X8Tg5Qz4dCt0Dec=
+	t=1712679753; cv=none; b=GVIDf/Rau8FvjBI5wDdXtGAhsiQQN3hTcIGgB5toGTb+HqSmKtCTKD7Eq+zl/XclKExfkRH1qR6Juo+RO5Ggssa9nflCG2zYIsTA0mG/noQIss1IVpiwtdpB001wEIxOcOzONo0p/oqXoCN929ioc0LIeOE37ACMuPGHck1Fq58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679737; c=relaxed/simple;
-	bh=oFFzmkQFjem8Slp5pGsd7lw06I6XKAmgxLiAx7XwO9o=;
+	s=arc-20240116; t=1712679753; c=relaxed/simple;
+	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Omq9jjelIj5586mciaehsVpeQa5lvNMwrGuhrkhxw1kw9cQwGSmOcDkdIdi5QG39w3lDqGoZJnXi43yRL1OS6p+yI0MgSK/e/udhyPlLlh+4Ol83dBvfOE9BNgLnkYxdSoJnKbo9x3l8UoWbjeOZ6bNTA8ynP30W9iIqO7wvBQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z7SCVjTW; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5aa17c69cf7so2152492eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712679734; x=1713284534; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ESgWP/mXe1bk3eSSg55Zmh/raASjeDKKtmwp4/lqxgE=;
-        b=Z7SCVjTWzGrLp5pMAf1WmKQdPO3YNr7lEywWo4dLGTELvYTyKBHINF8tPQvsZpOneQ
-         dJmTZE5k6/o39v+fD0DzQt5fa8pFnQu3D81wfIC7vPxP37hKrexK8ifWm6irzOLM6yvB
-         qAXnlsWPT3O4A2W26fuBW2YcZHv86di57MteE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712679734; x=1713284534;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ESgWP/mXe1bk3eSSg55Zmh/raASjeDKKtmwp4/lqxgE=;
-        b=unk+EAngF+ZESEUsi3aIncbaLoKuMEgJcd8ywd3jJGqf7/fF/qFu3ja2o/XBo4EfLO
-         h6XJBIbiFBBdk7TTzWitO1wtY0RVeEckrR2Nw3IpUCMiFTSxcx9OC2t7onBSFRS8AKkx
-         Q917tvXYjGxH7a2YJ8emxhBHYjI2OQrDgqG/K/oPdELYKveXBW9C9+L46QaHHZEmQH+5
-         /JIgzxQO21qzT/KuuAgbQRbyzo8fJnuCI9Ss6RWFRRFB0YtP0h60N7lZ0L9uQ31FFbvB
-         cVqU2DnXJaBKab5AITG1ZqCgy3lQAc7dhHqe9c6xWoLfBT8dfTRNHZvMztRxF7pOKh7K
-         d3Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUV8zOkpgteuSJbbWMwcevAfaOFPTvB5ymMPGJOACUYqPl0Hb9q9QuF4m8celf5AqAZBmhqu1vMMcOjomZJcAGN8ZokxIL1twx5DVq
-X-Gm-Message-State: AOJu0YzJkmRlBcBXzlLGEjEmPv/3AmeJQRmhp/JJ0axTMbOqw/X0of5Q
-	4vfNksuXM/hOnwN8vukLHgbbHeYh89iYMX1vbVe5FSYhmotcD1TXEds/5Qg/pA==
-X-Google-Smtp-Source: AGHT+IH+ThkTK2969Ez6Dj2+W99kQzkH7mmsmVKS7EpvhvBpgbL/Drf9WpykDBO7NmDp/3SLAhuS4w==
-X-Received: by 2002:a05:6358:5bd4:b0:183:f636:8a46 with SMTP id i20-20020a0563585bd400b00183f6368a46mr350390rwf.27.1712679734649;
-        Tue, 09 Apr 2024 09:22:14 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h11-20020a63210b000000b005dcc8a3b26esm8129675pgh.16.2024.04.09.09.22.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:22:14 -0700 (PDT)
-Date: Tue, 9 Apr 2024 09:22:13 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] xfs: replace deprecated strncpy with strscpy_pad
-Message-ID: <202404090921.A203626A@keescook>
-References: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UIbPt3n29SPe3OM1HQr4vEBpyYGCfPIVdAkE2fllySvx4PYg/zapleLTCLHq9O7WUlasVq0hkEbOVJZCGnYCs3cXVHb4znHD7OQ39zHRu6eps8Xu2KwO2XeI2ZpU2jZjG1lXChXjVEliMPJoBvpapLfa3TBbf3yG/h6F22g5P5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOf15R97; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 783B4C433F1;
+	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712679753;
+	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uOf15R97CfO4NRrpGlR+ut/EZaH8gJePsx76fVYZ2CwpkY6p2z9oJg8boVPOdOoce
+	 WETlWuf5gfSinxoonTC04g5Kc3Sj2wZe9v17KvknHY3kunNrQaSO0L6nThQ5p/8nRJ
+	 nKKPh7+OV5XuHOCgKUobpVWsMEUosqNN+Oy7MtOavp44t3NaOWktoHNU3flF3rj12P
+	 bxvOmVWzXpwkP+BPmdlgreV35svfYgm5TTPVIxw45uz3NeIFb27nURTpm/B4vJffGz
+	 rHBMtsPRwqA5Of0yoDXPSPXCbiEUfKL6dAA1Ko3ghM2b9lkhjl0APrqbDbXL3wc/MZ
+	 nHjQ03z4Hsjsg==
+Date: Tue, 9 Apr 2024 09:22:32 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 01/13] fs: fiemap: add physical_length field to extents
+Message-ID: <20240409162232.GA6367@frogsfrogsfrogs>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,75 +67,157 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
+In-Reply-To: <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 
-On Fri, Apr 05, 2024 at 07:52:27PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Wed, Apr 03, 2024 at 03:22:42AM -0400, Sweet Tea Dorminy wrote:
+> Some filesystems support compressed extents which have a larger logical
+> size than physical, and for those filesystems, it can be useful for
+> userspace to know how much space those extents actually use. For
+> instance, the compsize [1] tool for btrfs currently uses btrfs-internal,
+> root-only ioctl to find the actual disk space used by a file; it would
+> be better and more useful for this information to require fewer
+> privileges and to be usable on more filesystems. Therefore, use one of
+> the padding u64s in the fiemap extent structure to return the actual
+> physical length; and, for now, return this as equal to the logical
+> length.
 > 
-> The current code has taken care of NUL-termination by memset()'ing
-> @label. This is followed by a strncpy() to perform the string copy.
+> [1] https://github.com/kilobyte/compsize
 > 
-> Instead, use strscpy_pad() to get both 1) NUL-termination and 2)
-> NUL-padding which is needed as this is copied out to userspace.
-> 
-> Note that this patch uses the new 2-argument version of strscpy_pad
-> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
-> strscpy()").
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 > ---
-> Split from https://lore.kernel.org/all/20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com/
-> with feedback from Christoph H.
-> ---
->  fs/xfs/xfs_ioctl.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  Documentation/filesystems/fiemap.rst | 28 +++++++++++++++++-------
+>  fs/ioctl.c                           |  3 ++-
+>  include/uapi/linux/fiemap.h          | 32 ++++++++++++++++++++++------
+>  3 files changed, 47 insertions(+), 16 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> index d0e2cec6210d..a1156a8b1e15 100644
-> --- a/fs/xfs/xfs_ioctl.c
-> +++ b/fs/xfs/xfs_ioctl.c
-> @@ -1750,15 +1750,14 @@ xfs_ioc_getlabel(
->  	char			__user *user_label)
->  {
->  	struct xfs_sb		*sbp = &mp->m_sb;
-> +	/* 1 larger than sb_fname, for a trailing NUL char */
->  	char			label[XFSLABEL_MAX + 1];
+> diff --git a/Documentation/filesystems/fiemap.rst b/Documentation/filesystems/fiemap.rst
+> index 93fc96f760aa..c2bfa107c8d7 100644
+> --- a/Documentation/filesystems/fiemap.rst
+> +++ b/Documentation/filesystems/fiemap.rst
+> @@ -80,14 +80,24 @@ Each extent is described by a single fiemap_extent structure as
+>  returned in fm_extents::
 >  
->  	/* Paranoia */
->  	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+>      struct fiemap_extent {
+> -	    __u64	fe_logical;  /* logical offset in bytes for the start of
+> -				* the extent */
+> -	    __u64	fe_physical; /* physical offset in bytes for the start
+> -				* of the extent */
+> -	    __u64	fe_length;   /* length in bytes for the extent */
+> -	    __u64	fe_reserved64[2];
+> -	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> -	    __u32	fe_reserved[3];
+> +            /*
+> +             * logical offset in bytes for the start of
+> +             * the extent from the beginning of the file
+> +             */
+> +            __u64 fe_logical;
+> +            /*
+> +             * physical offset in bytes for the start
+> +             * of the extent from the beginning of the disk
+> +             */
+> +            __u64 fe_physical;
+> +            /* logical length in bytes for this extent */
+> +            __u64 fe_logical_length;
+> +            /* physical length in bytes for this extent */
+> +            __u64 fe_physical_length;
+> +            __u64 fe_reserved64[1];
+> +            /* FIEMAP_EXTENT_* flags for this extent */
+> +            __u32 fe_flags;
+> +            __u32 fe_reserved[3];
+>      };
 >  
-> -	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
-> -	memset(label, 0, sizeof(label));
->  	spin_lock(&mp->m_sb_lock);
-> -	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
-> +	strscpy_pad(label, sbp->sb_fname);
-
-Is sbp->sb_fname itself NUL-terminated? This looks like another case of
-needing the memtostr() helper?
-
--Kees
-
->  	spin_unlock(&mp->m_sb_lock);
+>  All offsets and lengths are in bytes and mirror those on disk.  It is valid
+> @@ -175,6 +185,8 @@ FIEMAP_EXTENT_MERGED
+>    userspace would be highly inefficient, the kernel will try to merge most
+>    adjacent blocks into 'extents'.
 >  
->  	if (copy_to_user(user_label, label, sizeof(label)))
-> 
-> ---
-> base-commit: c85af715cac0a951eea97393378e84bb49384734
-> change-id: 20240405-strncpy-xfs-split1-a2c408b934c6
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
+> +FIEMAP_EXTENT_HAS_PHYS_LEN
+> +  This will be set if the file system populated the physical length field.
 
--- 
-Kees Cook
+Just out of curiosity, should filesystems set this flag and
+fe_physical_length if fe_physical_length == fe_logical_length?
+Or just leave both blank?
+
+>  VFS -> File System Implementation
+>  ---------------------------------
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 661b46125669..8afd32e1a27a 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -138,7 +138,8 @@ int fiemap_fill_next_extent(struct fiemap_extent_info *fieinfo, u64 logical,
+>  	memset(&extent, 0, sizeof(extent));
+>  	extent.fe_logical = logical;
+>  	extent.fe_physical = phys;
+> -	extent.fe_length = len;
+> +	extent.fe_logical_length = len;
+> +	extent.fe_physical_length = len;
+>  	extent.fe_flags = flags;
+>  
+>  	dest += fieinfo->fi_extents_mapped;
+> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
+> index 24ca0c00cae3..3079159b8e94 100644
+> --- a/include/uapi/linux/fiemap.h
+> +++ b/include/uapi/linux/fiemap.h
+> @@ -14,14 +14,30 @@
+>  
+>  #include <linux/types.h>
+>  
+> +/*
+> + * For backward compatibility, where the member of the struct was called
+> + * fe_length instead of fe_logical_length.
+> + */
+> +#define fe_length fe_logical_length
+
+This #define has global scope; are you sure this isn't going to cause a
+weird build problem downstream with some program that declares an
+unrelated fe_length symbol?
+
+> +
+>  struct fiemap_extent {
+> -	__u64 fe_logical;  /* logical offset in bytes for the start of
+> -			    * the extent from the beginning of the file */
+> -	__u64 fe_physical; /* physical offset in bytes for the start
+> -			    * of the extent from the beginning of the disk */
+> -	__u64 fe_length;   /* length in bytes for this extent */
+> -	__u64 fe_reserved64[2];
+> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> +	/*
+> +	 * logical offset in bytes for the start of
+> +	 * the extent from the beginning of the file
+> +	 */
+> +	__u64 fe_logical;
+> +	/*
+> +	 * physical offset in bytes for the start
+> +	 * of the extent from the beginning of the disk
+> +	 */
+> +	__u64 fe_physical;
+> +	/* logical length in bytes for this extent */
+> +	__u64 fe_logical_length;
+
+Or why not just leave the field name the same since the "logical length
+in bytes" comment is present both here in the header and again in the
+documentation?
+
+--D
+
+> +	/* physical length in bytes for this extent */
+> +	__u64 fe_physical_length;
+> +	__u64 fe_reserved64[1];
+> +	/* FIEMAP_EXTENT_* flags for this extent */
+> +	__u32 fe_flags;
+>  	__u32 fe_reserved[3];
+>  };
+>  
+> @@ -66,5 +82,7 @@ struct fiemap {
+>  						    * merged for efficiency. */
+>  #define FIEMAP_EXTENT_SHARED		0x00002000 /* Space shared with other
+>  						    * files. */
+> +#define FIEMAP_EXTENT_HAS_PHYS_LEN	0x00004000 /* Physical length is valid
+> +						    * and set by FS. */
+>  
+>  #endif /* _UAPI_LINUX_FIEMAP_H */
+> -- 
+> 2.43.0
+> 
+> 
 
