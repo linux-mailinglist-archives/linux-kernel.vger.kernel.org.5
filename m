@@ -1,181 +1,206 @@
-Return-Path: <linux-kernel+bounces-137219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2899589DF0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:29:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B543289DF0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584691C215E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:29:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5C921C21BDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6C313D526;
-	Tue,  9 Apr 2024 15:26:08 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBE713D612;
+	Tue,  9 Apr 2024 15:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OtaEz9bN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96E91304BD;
-	Tue,  9 Apr 2024 15:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3656813D608
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712676367; cv=none; b=FsxMj3UO/MsJ6zXhA2CGjMLbi+juNV9Yt2apQUIIC+sTYxN23Z45d1qG7gR2FACq3IbbWoCaIeXALYO1uok79yyBdxEuf9GLNHCWGsE49XYsY9X+4pzxouiA0lYmd4R+/mJMukb2f662uaMFPrYf7HmSPkkMmXpi8lLLSSYFN7U=
+	t=1712676377; cv=none; b=q8iEJR0hBlwjrNIpNwSPStb6wPY/nB7KECGhnScvY5bGOjJ6C4gib/3AmYp8Y9LSbxwT+TNdYyLgYNjuDP8kVDFDPaST/M8OWr8aWn+oJmwVczrjuLnCNjP0HLAluGK7raSMng9wxAbU9IXMZRFy7xNnoI0cryBulwcI1RBSRPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712676367; c=relaxed/simple;
-	bh=0fxbGGIiNUaC/dR/YHRBXb6QVrd16hg3xxCX4EJwZ+o=;
+	s=arc-20240116; t=1712676377; c=relaxed/simple;
+	bh=jzHlRPxbj4n++6c1Y7jC5HhgzBvQwRs0eWR4xEuQY1c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dFe98IxXLcPVt++BVInhx15l5LcffBCMXkOr3b5QWz/nz8WSS8jtrgCiBn/U9k2d5964gxMA5PWAsD1ZVx8MJwcCsSuLKNM64d372JjH9eadgxNPVCXei2na0WEleEN7KeCfr8k79PyStvjY6H0QcCj90GElh6s+EyuoYk3e/M8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3FD3840E0187;
-	Tue,  9 Apr 2024 15:26:02 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id EUXTHOs9geXO; Tue,  9 Apr 2024 15:25:55 +0000 (UTC)
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4F52640E00B2;
-	Tue,  9 Apr 2024 15:25:48 +0000 (UTC)
-Date: Tue, 9 Apr 2024 17:25:41 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: x86-ml <x86@kernel.org>, linux-tip-commits@vger.kernel.org,
-	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
-	Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/setup: Warn when option parsing is done too early
-Message-ID: <20240409152541.GCZhVd9XIPXyTNd9vc@fat_crate.local>
-References: <171169867308.10875.15117897441999380027.tip-bot2@tip-bot2>
- <20240408181732.GCZhQ0vGSfP3Gf8tDW@fat_crate.local>
- <ZhQ3JSXT05Kv/RpM@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dGsyKcdRawNs1XUMRjVSbzsXQ6IbEwtA3noVuHs4SAXY4iTZ71sxgebeynswqbBd/tjVXDJjC+inmkMSP/eejjJSTm/yLZ5U431OSwMuMjEjzdf7xK3K8vansJ0LEmK4PAIBAV3yjh7d4pyeKWhyr1ZHvKPoyswCxd0T4ztFEhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OtaEz9bN; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712676375; x=1744212375;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jzHlRPxbj4n++6c1Y7jC5HhgzBvQwRs0eWR4xEuQY1c=;
+  b=OtaEz9bNUAdHKC5UQLFN/gpBB9Rz83X4wbn6ooLvSz0Nfi2o62xkOjjK
+   yuCUcq6k7cDBikWbXtRnmc3NyG9ObxqQsnPqW3p8V+xa7vUpqaLkHIIXq
+   0eT1CUeQHuZqUopWHZVwyw6A996W21WJFDcNVNg3FLcOlsopebJkAUieC
+   lpFIItakFE3kYPjV+97lyuvr06nsmJPgJfC0bxmIYSnuEmV1OdiiMFmE7
+   KL+5iYmCvIgOFgc2MevPJRy6uUlNBIMDc/jpsF7yeDJWPjEP5kwfx1xhB
+   Ox04Fhko+KT9v02j4yWRE1YOeWUCnpYkTzItje+oP/9OtewQInB+wvT4b
+   g==;
+X-CSE-ConnectionGUID: 2fo4+wKvQYSPaw19WkR9Rw==
+X-CSE-MsgGUID: 6Vp2/dwtTleKiwyVM8+96A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8119654"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="8119654"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 08:26:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937093549"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="937093549"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 08:26:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id BBE70279; Tue,  9 Apr 2024 18:26:05 +0300 (EEST)
+Date: Tue, 9 Apr 2024 18:26:05 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
+	Kai Huang <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
+ TDX guest
+Message-ID: <3q6jv3g4tezybmd667mqxio7ty22akxv7okrznmzx3tju2u4qo@2alzjkbgm2lh>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
+ <ZhVPIDDLkjOB96fI@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhQ3JSXT05Kv/RpM@gmail.com>
+In-Reply-To: <ZhVPIDDLkjOB96fI@google.com>
 
-On Mon, Apr 08, 2024 at 08:27:49PM +0200, Ingo Molnar wrote:
-> > So that thing. Should we do something like the silly thing below so that 
-> > it catches potential issues with parsing builtin cmdline stuff too early?
+On Tue, Apr 09, 2024 at 07:22:24AM -0700, Sean Christopherson wrote:
+> On Tue, Apr 09, 2024, Kirill A. Shutemov wrote:
+> > Depending on setup, TDX guests might be allowed to clear CR4.MCE.
+> > Attempt to clear it leads to #VE.
+> > 
+> > Use alternatives to keep the flag during kexec for TDX guests.
+> > 
+> > The change doesn't affect non-TDX-guest environments.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  arch/x86/kernel/relocate_kernel_64.S | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+> > index 56cab1bb25f5..8e2037d78a1f 100644
+> > --- a/arch/x86/kernel/relocate_kernel_64.S
+> > +++ b/arch/x86/kernel/relocate_kernel_64.S
+> > @@ -5,6 +5,8 @@
+> >   */
+> >  
+> >  #include <linux/linkage.h>
+> > +#include <linux/stringify.h>
+> > +#include <asm/alternative.h>
+> >  #include <asm/page_types.h>
+> >  #include <asm/kexec.h>
+> >  #include <asm/processor-flags.h>
+> > @@ -145,11 +147,17 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+> >  	 * Set cr4 to a known state:
+> >  	 *  - physical address extension enabled
+> >  	 *  - 5-level paging, if it was enabled before
+> > +	 *  - Machine check exception on TDX guest, if it was enabled before.
+> > +	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
+> >  	 */
+> >  	movl	$X86_CR4_PAE, %eax
+> >  	testq	$X86_CR4_LA57, %r13
+> >  	jz	1f
+> >  	orl	$X86_CR4_LA57, %eax
+> > +1:
+> > +	testq	$X86_CR4_MCE, %r13
+> > +	jz	1f
+> > +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
 > 
-> Yep, that's a good idea.
+> The TEST+Jcc+OR sequences are rather odd, and require way more instructions and
+> thus way more copy+paste than is necessary.
 > 
-> Acked-by: Ingo Molnar <mingo@kernel.org>
+> 	movl	$X86_CR4_LA57, %eax
+> 	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+> 	andl	%r13d, %eax
+> 	orl	$X86_CR4_PAE, %eax
+> 	movq	%rax, %cr4
+> 
+> Then preserving new bits unconditionally only requires adding the flag to the
+> initial move, and feature-dependent bits only need a single ALTERNATIVE line.
 
+Thanks! It is much better.
+
+> And there's no branches, blazing fast kexec! ;-)
+
+kexec/sec STONKS! :D
+
+Updated patch is below.
+
+From 6be428e3b1c6fb494b2c48ba6a7c133514a0b2b4 Mon Sep 17 00:00:00 2001
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Date: Fri, 10 Feb 2023 12:53:11 +0300
+Subject: [PATCHv10.1 05/18] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+
+Depending on setup, TDX guests might be allowed to clear CR4.MCE.
+Attempt to clear it leads to #VE.
+
+Use alternatives to keep the flag during kexec for TDX guests.
+
+The change doesn't affect non-TDX-guest environments.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Mon, 8 Apr 2024 19:46:03 +0200
+ arch/x86/kernel/relocate_kernel_64.S | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Commit
-
-  4faa0e5d6d79 ("x86/boot: Move kernel cmdline setup earlier in the boot process (again)")
-
-fixed and issue where cmdline parsing would happen before the final
-boot_command_line string has been built from the builtin and boot
-cmdlines and thus cmdline arguments would get lost.
-
-Add a check to catch any future wrong use ordering so that such issues
-can be caught in time.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/include/asm/setup.h | 8 ++++++++
- arch/x86/kernel/setup.c      | 2 ++
- arch/x86/lib/cmdline.c       | 6 ++++++
- 3 files changed, 16 insertions(+)
-
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index e61e68d71cba..0667b2a88614 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -28,6 +28,8 @@
- #define NEW_CL_POINTER		0x228	/* Relative to real mode data */
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..90246d544eb1 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -5,6 +5,8 @@
+  */
  
- #ifndef __ASSEMBLY__
-+#include <linux/cache.h>
-+
- #include <asm/bootparam.h>
- #include <asm/x86_init.h>
+ #include <linux/linkage.h>
++#include <linux/stringify.h>
++#include <asm/alternative.h>
+ #include <asm/page_types.h>
+ #include <asm/kexec.h>
+ #include <asm/processor-flags.h>
+@@ -143,14 +145,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
  
-@@ -133,6 +135,12 @@ asmlinkage void __init __noreturn x86_64_start_reservations(char *real_mode_data
- #endif /* __i386__ */
- #endif /* _SETUP */
+ 	/*
+ 	 * Set cr4 to a known state:
+-	 *  - physical address extension enabled
+ 	 *  - 5-level paging, if it was enabled before
++	 *  - Machine check exception on TDX guest, if it was enabled before.
++	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
++	 *  - physical address extension enabled
+ 	 */
+-	movl	$X86_CR4_PAE, %eax
+-	testq	$X86_CR4_LA57, %r13
+-	jz	1f
+-	orl	$X86_CR4_LA57, %eax
+-1:
++	movl	$X86_CR4_LA57, %eax
++	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
++	andl	%r13d, %eax
++	orl	$X86_CR4_PAE, %eax
+ 	movq	%rax, %cr4
  
-+#ifdef CONFIG_CMDLINE_BOOL
-+extern bool builtin_cmdline_added __ro_after_init;
-+#else
-+#define builtin_cmdline_added 0
-+#endif
-+
- #else  /* __ASSEMBLY */
- 
- .macro __RESERVE_BRK name, size
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index e125e059e2c4..7260bf57fe46 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -164,6 +164,7 @@ unsigned long saved_video_mode;
- static char __initdata command_line[COMMAND_LINE_SIZE];
- #ifdef CONFIG_CMDLINE_BOOL
- static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
-+bool builtin_cmdline_added __ro_after_init;
- #endif
- 
- #if defined(CONFIG_EDD) || defined(CONFIG_EDD_MODULE)
-@@ -843,6 +844,7 @@ void __init setup_arch(char **cmdline_p)
- 		strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
- 	}
- #endif
-+	builtin_cmdline_added = true;
- #endif
- 
- 	strscpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
-diff --git a/arch/x86/lib/cmdline.c b/arch/x86/lib/cmdline.c
-index 80570eb3c89b..e0a6dfc663b4 100644
---- a/arch/x86/lib/cmdline.c
-+++ b/arch/x86/lib/cmdline.c
-@@ -6,8 +6,10 @@
- #include <linux/kernel.h>
- #include <linux/string.h>
- #include <linux/ctype.h>
-+
- #include <asm/setup.h>
- #include <asm/cmdline.h>
-+#include <asm/bug.h>
- 
- static inline int myisspace(u8 c)
- {
-@@ -205,12 +207,16 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
- 
- int cmdline_find_option_bool(const char *cmdline, const char *option)
- {
-+	WARN_ON_ONCE(!builtin_cmdline_added);
-+
- 	return __cmdline_find_option_bool(cmdline, COMMAND_LINE_SIZE, option);
- }
- 
- int cmdline_find_option(const char *cmdline, const char *option, char *buffer,
- 			int bufsize)
- {
-+	WARN_ON_ONCE(!builtin_cmdline_added);
-+
- 	return __cmdline_find_option(cmdline, COMMAND_LINE_SIZE, option,
- 				     buffer, bufsize);
- }
+ 	jmp 1f
 -- 
-2.43.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+  Kiryl Shutsemau / Kirill A. Shutemov
 
