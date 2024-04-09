@@ -1,90 +1,65 @@
-Return-Path: <linux-kernel+bounces-136698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0821B89D735
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:43:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8591589D737
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:45:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6C5A284784
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:43:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8509C1C22417
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E41982D7F;
-	Tue,  9 Apr 2024 10:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D7181725;
+	Tue,  9 Apr 2024 10:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efYu5bVZ"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oeyVf0/D"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3877580603;
-	Tue,  9 Apr 2024 10:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5ED574297
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712659417; cv=none; b=BQtt2jbEHOF7fXqlnes588eyJxqIx7zE+OuY4w/Qwp/czr4wY9MxvvXFCqq1qPf6dZ2U2eTq/r19b0IMgBxH9lw88ru0XDZH3bQKLFV2cT9kG9KEnwvWbfCdZfQRBI1bssQFnlZaTkjKmAaOzgFBtnFSdJKFXTPZ0EX5DJ0T+4c=
+	t=1712659553; cv=none; b=EAEebu0hGeM6o37AszPOGoGiwlvk3SZR/fwrDV/6AszlQqZl2skCnVgxPSNAsVSBprXGNmy9Hzvq9lGvqpOvcBilksxoZ1AIgFnQwrviZ6IF+GGNbOoyJmGOr9tjchiL52CG1hRrOF4UdhQFTi1h75RxVa4wAWDSSdL5JF8N+jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712659417; c=relaxed/simple;
-	bh=gjE+I+A0HeyP2PKHxiDJDFFd+6zMneQwATAwAgoiiJE=;
+	s=arc-20240116; t=1712659553; c=relaxed/simple;
+	bh=kz4QEQGLnaTtmAdU23voim6CEsajFJQHvrUTNojptU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3giiZ63tUWSmNDKRQKCDok8jC+9N+Pjn6z8mDP3KIC/h4Rc5AzAHD9XltAMwVc6ab/C1tqrHjqbttItfVXuSwPuB9QtIYWZWGf57rtZfgyRgCIqJdoanOIMPMcQ2ads2Pxc/r9rZtaI2zuYjXqpiGujumjbjbZqij2Z/2dNYJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efYu5bVZ; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51fd94c0bfso48298966b.2;
-        Tue, 09 Apr 2024 03:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712659414; x=1713264214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OCxhJzgdq7JvJJLvU/sGXpXvWKxyivmCeUQolgjSiVk=;
-        b=efYu5bVZfSSgDEVn/SZJv/ezaHCVKWZwV3rQjl7lxqWROToS+1E9FlscMFN/X9py/K
-         Dn3vkvnpOXqdVBXT4WaiIqBJ9jnBXdSOd3soFZJ5qEJJdYlqiqAh4XC+a1GSbKZuOlUP
-         mlMDcp14AsDGO0RJaUwARhxHn83dv32ayleVXI6HSkxgsVB69RYLUIV4BlmV1SjGStry
-         5d7L7rRoREVaANSwRosuO0WObWRBmvlnwJ24L/Ih+HbOKVju/xAI7NsU9TVfEXFtGMDG
-         hd6bx2wbqjizYA8QOwdmFp58nsyLDdoj421lgl+1CqYyLiqWloozz+STEO09PjuKGQ9w
-         oitw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712659414; x=1713264214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OCxhJzgdq7JvJJLvU/sGXpXvWKxyivmCeUQolgjSiVk=;
-        b=MiTNTIWeniuhF/Y8d5k3Jc7hMf09p9RiJXdi1WfTsjTeYh0ysWJtnYbU9aVz4+tHmZ
-         R/1K7Z3VQYpuryCvv11VWAZHWGJ+6yF5d1O7tCp0lowEYH7bwKLgkxK9gRTvWDXqsUmV
-         9T8MK1rtaW5pMCWAAP78yAOAwCNgLzCJAwjWzRmNUnK2G2XUhRO8ysrrkVD5xHVnU1WS
-         HzjojyuBz9vcLH2+z/UMUlVMXoV8dIZRGZYExK+4CQuYlkUESsmn7UF4JR89a2cXoUxq
-         fWjgA7MhJungPEs9O+RElApHN1M5fwfms9liiDY8yVY5GogbZ7J9IWNw8bAPjd3twX8e
-         iqZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXa4tMm98CshDdjNNl4lWHCzMEh0bmmPApixTYq84ZEefXTnX8hZYumAbCSSz5T4xHryau2+FiUiIgC3FJS580YIOYO+MpOZ4N9adVdbl30BghReBM68wiJzkEqZWJ2i2gYbeEC8w==
-X-Gm-Message-State: AOJu0Yx1Ma5zJ1dpSeKyFFbVyeGM2LmbYW8uCGS8IoJ6zsMq9QCTM0Tc
-	4dT1ihjYKi8Zj6xX7+Eu2TL2cGqFc8ijMyCgkwgWt+2S6oplMoA/fNzrGQboQWM=
-X-Google-Smtp-Source: AGHT+IG+aE6wNBav4To09hfvAh5ZkM+dypL331ghgPVgQvN/+5HFswTVM4ecAkY9pRjlPWE16lW81g==
-X-Received: by 2002:a17:906:7949:b0:a51:d4fa:cf8f with SMTP id l9-20020a170906794900b00a51d4facf8fmr5027000ejo.6.1712659414226;
-        Tue, 09 Apr 2024 03:43:34 -0700 (PDT)
-Received: from andrea ([31.189.89.249])
-        by smtp.gmail.com with ESMTPSA id nb33-20020a1709071ca100b00a4628cacad4sm5520411ejc.195.2024.04.09.03.43.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 03:43:33 -0700 (PDT)
-Date: Tue, 9 Apr 2024 12:43:29 +0200
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	kernel-team@meta.com, mingo@kernel.org, stern@rowland.harvard.edu,
-	will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-	npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-	luc.maranget@inria.fr, akiyks@gmail.com,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH memory-model 2/3] Documentation/litmus-tests: Demonstrate
- unordered failing cmpxchg
-Message-ID: <ZhUb0eWvaoogbeaS@andrea>
-References: <8550daf1-4bfd-4607-8325-bfb7c1e2d8c7@paulmck-laptop>
- <20240404192649.531112-2-paulmck@kernel.org>
- <Zg/M141yzwnwPbCi@andrea>
- <88b71a34-3d50-40a8-b4b6-c2d29a5d93a5@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cQ8ud6EAQhpp3p12KjcsuWrKj6wEv/rRGE+Wm/a5ZmFt6XnvmQ7uf8OxqY7TNwXCjDMU5Ls2I+kYnwRbhv35p9+ebOp6OdmGqkVUZSg0qaJ5EUO65e2tS9ENMvAlmlbFiEV1siosJx7ItcIC16xB0xag8WaZMufjffGVGCXGGRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oeyVf0/D; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1CfiDre3glGgbUafmq0aj30+LgqY9W5fCVFvwgyph6E=; b=oeyVf0/DYPwlJ/nS8v+YP7Bgq7
+	NFDzt5W3FCdI9onQ1a3Wlo5sD9Cd5GLGOBSMY6htjtXI7Zf1KJwuDBPQutbF1Mrr2hkwrL+GZWrrQ
+	uA8I3EAvRJxNHKd5S4Q8pO8phz1jDqL/6zq4ltSA7u3rQZ14sK2+5L5VblKE3OwK3sesYixKzwdHM
+	874c8kqqHPIFt8RmGcKWAsaL9sQP1EoNbL0Q6K0QLkU1Iz6eoskZPxYBxb7mDYL+AMuE67swYUiQ+
+	jdTxRd4/rSYh4tua/vQk1XTGcTOBdS3Olb3Bp/5zOY4TE26XbdC3Ksc6VhXFySTGVV7qq/BHCzpsv
+	P9PB3HdA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ru8yy-00000007Z53-3gmD;
+	Tue, 09 Apr 2024 10:45:41 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7620A30040C; Tue,  9 Apr 2024 12:45:40 +0200 (CEST)
+Date: Tue, 9 Apr 2024 12:45:40 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Peter Anvin <hpa@zytor.com>,
+	the arch/x86 maintainers <x86@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: More annoying code generation by clang
+Message-ID: <20240409104540.GB21779@noisy.programming.kicks-ass.net>
+References: <CAHk-=whHWjKK1TOMT1XvxFj8e-_uctJnXPxM=SyWHmW63B_EDw@mail.gmail.com>
+ <20240408084934.GC21904@noisy.programming.kicks-ass.net>
+ <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
+ <CAHk-=wg=Wdct5f9W2-tvwfRefv3xmw1-9Ko+RG+6=xjLu4ndFg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,13 +68,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <88b71a34-3d50-40a8-b4b6-c2d29a5d93a5@paulmck-laptop>
+In-Reply-To: <CAHk-=wg=Wdct5f9W2-tvwfRefv3xmw1-9Ko+RG+6=xjLu4ndFg@mail.gmail.com>
 
-> Good catch in all four tests, thank you!
+On Mon, Apr 08, 2024 at 12:42:31PM -0700, Linus Torvalds wrote:
+
+> Actually, one of the github issues pages has more of an explanation
+> (and yes, it's tied to impedance issues between the inline asm syntax
+> and how clang works):
 > 
-> Does the patch shown at the end of this email clear things up for you?
+>       https://github.com/llvm/llvm-project/issues/20571#issuecomment-980933442
+> 
 
-Yes, that'll do it.
+So that same issue seems to suggest Nick is actually working on this and
+got stuff merged. Nick, what is the status of your efforts and should we
+indeed do the below as Linus suggests or should he upgrade his compiler?
 
-  Andrea
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index 49feac0162a5..0dee061fd7a6 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -118,3 +118,15 @@
+>  
+>  #define __diag_ignore_all(option, comment) \
+>  	__diag_clang(13, ignore, option)
+> +
+> +/*
+> + * clang has horrible behavior with "g" or "rm" constraints for asm
+> + * inputs, turning them into something worse than "m". Avoid using
+> + * constraints with multiple possible uses (but "ir" seems to be ok):
+> + *
+> + *	https://github.com/llvm/llvm-project/issues/20571
+> + *	https://github.com/llvm/llvm-project/issues/30873
+> + *	https://github.com/llvm/llvm-project/issues/34837
+> + */
+> +#define ASM_INPUT_G "ir"
+> +#define ASM_INPUT_RM "r"
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 2abaa3a825a9..e53acd310545 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -380,6 +380,15 @@ struct ftrace_likely_data {
+>  #define asm_goto_output(x...) asm volatile goto(x)
+>  #endif
+>  
+> +/*
+> + * Clang has trouble with constraints with multiple
+> + * alternative behaviors (mainly "g" and "rm").
+> + */
+> +#ifndef ASM_INPUT_G
+> +  #define ASM_INPUT_G "g"
+> +  #define ASM_INPUT_RM "rm"
+> +#endif
+> +
+>  #ifdef CONFIG_CC_HAS_ASM_INLINE
+>  #define asm_inline asm __inline
+>  #else
+> -- 
+> 2.44.0.330.g4d18c88175
+> 
+
 
