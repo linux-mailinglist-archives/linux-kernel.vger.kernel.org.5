@@ -1,58 +1,79 @@
-Return-Path: <linux-kernel+bounces-137682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0CB89E5DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:05:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402F089E5E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AEDD1F22A9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:05:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70A511C21986
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBE4158DBD;
-	Tue,  9 Apr 2024 23:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E06E158DB9;
+	Tue,  9 Apr 2024 23:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRYkmkzu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kSRMeQoU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876CE158D9C;
-	Tue,  9 Apr 2024 23:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42DA158DB0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 23:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712703913; cv=none; b=uAHKNR9+Ta99QhvtFZBgW0pwG6iQB5FcPx0y8HrKxFiO/MPEnfMTvlUgXFN51uyxW3j/hl2zgPXy4+2TGsj6Ez/KPEaqG5eHBRCjTWnwAy1zrS0XtP6BoqTiE3QyhS9htaY5Mu87kCltT6WZ9kIXrH15YG1ppb6hTMd22e92eEI=
+	t=1712704097; cv=none; b=bgsiGMnLbycBJ+V+U8ZnXsaMCP0vRhcYsFztxwLA/caqnnOfUTPJi8JJWPXRK/VlL+p8lijQvki0flwl9KnB1sWdVLjYbv55zncLgDEPFkP2s3X0Us9SeHQ6Ckyk8+MC86KcAN5rIPkDc1c8wBUe57KsUmm2xVsR9th2WHsf8a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712703913; c=relaxed/simple;
-	bh=JpiDdYF+w6gmwqQJ37NKkF9DXGvg/Cm8SjNiCArVRFg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lqz5gai/l4Zd9ZbC+/bEQxxjcX2kL6rImaf/w6VLdJy9StQKg7wxQppDFxR2j5WCHD3wDaIeEWoHFY2Ujo/qK/Z7UVn1ohRtEEOvhgLQVmRjkKVCdicwUA9YrW6r/8wGt9AxuMLFqA+iNMR+b6lzPbPc6dH0yJIdQ92PVKoVHrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZRYkmkzu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DBE3C433C7;
-	Tue,  9 Apr 2024 23:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712703913;
-	bh=JpiDdYF+w6gmwqQJ37NKkF9DXGvg/Cm8SjNiCArVRFg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZRYkmkzu0SpZIT3Cmp7T6WKaPrI47XIfmURZ7LbmhFv8BUzR+Tt/au4Kwder3xPBB
-	 wWCins93lPAjUPblcvKZdc41f+Uk2omSqvNFLJKI4HoPFnu/fqiifxfYLPuP48DFKN
-	 sY93h3H4HoMBwYH0ZfjhsnAfCCLDg1gEhCBiJ0VGuOhEYfK3dqlUZ93ygd91eg9xjJ
-	 +9bpNRvmzzn5QefWTZqY/q1PQCnagkWEnUxrbyW9KoLsAYsV/ErCxLUhoN4I5suWnQ
-	 JEOd/jxNakMq5zIkLtAWNMdgViQ8d/9qxLBk6AlF47nYIYruxTe7v/tu/7RSgRro/0
-	 NRh1vru6unBhA==
-From: SeongJae Park <sj@kernel.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: damon@lists.linux.dev,
-	linux-damon@amazon.com,
-	linux-damon-trial@amazon.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: DAMON Beer/Coffee/Tea chat series
-Date: Tue,  9 Apr 2024 16:05:10 -0700
-Message-Id: <20240409230510.74265-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20220810225102.124459-1-sj@kernel.org>
-References: 
+	s=arc-20240116; t=1712704097; c=relaxed/simple;
+	bh=bE/hIdyAlZdQeLhR3fmMMG7I2XnJCRfk8VGKhousyJs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=suSUBu7oit8GkcnzttVVYQ/0ds++YhCTPHCXU6JI41HoT1MVftXCck0GkD+FeQTQZmcMG2KRWw0e0wk+8PZE3FaNMwx/fuCElqEOqp7btT78ZOr/mDunQOe6QyMTITtTjOvVGrxAQEcNSS/inRAXzsvuFvgky0S0QbRjlMQAe9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kSRMeQoU; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712704096; x=1744240096;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bE/hIdyAlZdQeLhR3fmMMG7I2XnJCRfk8VGKhousyJs=;
+  b=kSRMeQoUrNtDEjJpdY0BFm57uWhO9CkchIr99aRqh4bV3RIFb7JNY9YH
+   /IafvXjFq25g+bLS3xtLPlW7I9gAG0fWjDVVCXmRBNk4aJIrXimdcuptA
+   G7U6ioyLUePN13UeOQKBGbHxvhmS6W+XVc04qp4uZ2MmsAhOP0yuLlD/p
+   0f/1kaU9Kc8vC63CrI8olp5ca0ta8PQCHNfrvnNvO8SvD/enfA6AAVgMa
+   2/6sHnZ1N0IKkf87wzhGRN3RR/YJ4/tm8rMwdom67ZDT/2+3MLNbusupK
+   7aZp7z08bpJG12wccdkjrHHTGDME8u/P63O4p2qCcHwkDBK+9Bk2m1ulu
+   w==;
+X-CSE-ConnectionGUID: Ft1LuY6SQx6JTZAfePmouw==
+X-CSE-MsgGUID: O7iNs5mfThayExjgJMtPAw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7959626"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7959626"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:08:16 -0700
+X-CSE-ConnectionGUID: JN2XrYyxRSCJYvtz9sLdLw==
+X-CSE-MsgGUID: 6KLXRYpxQkCBWi3qq7uD7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="51345967"
+Received: from kmarkley-mobl1.amr.corp.intel.com (HELO dsneddon-desk.sneddon.lan) ([10.125.17.174])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 16:08:15 -0700
+From: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH] x86/bugs: Fix return type of spectre_bhi_state()
+Date: Tue,  9 Apr 2024 16:08:05 -0700
+Message-Id: <20240409230806.1545822-1-daniel.sneddon@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,42 +82,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello community,
+The definition of spectre_bhi_state() incorrectly returns a const char
+* const.  This causes the a compiler warning when building with W=1.
 
-On Wed, 10 Aug 2022 22:51:02 +0000 SeongJae Park <sj@kernel.org> wrote:
+ warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+ 2812 | static const char * const spectre_bhi_state(void)
 
-> Hello,
-> 
-> 
-> In short, I'd like to start an open, regular, and informal virtual bi-weekly
-> meeting series for DAMON community.
-> 
-> Important links and dates
-> -------------------------
-> 
-> Location: https://meet.google.com/ndx-evoc-gbu
-> Agenda: https://docs.google.com/document/d/1v43Kcj3ly4CYqmAkMaZzLiM2GEnWfgdGbZAH3mi2vpM/edit?usp=sharing
+Remove the const qualifier from the pointer.
 
-If you tried to join today's meeting and if you were unable to join, it's all
-my fault.  Sorry, I again missed my alarm.
+Fixes: ec9404e40e8f ("x86/bhi: Add BHI mitigation knob")
+Reported-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+---
+ arch/x86/kernel/cpu/bugs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I was about to schedule another meeting instance for this on next Tuesday, but
-I realized that it will conflict with OpenSource Summit NA
-(https://events.linuxfoundation.org/open-source-summit-north-america/).
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index e1775debeafe..7e4a706cad80 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2809,7 +2809,7 @@ static char *pbrsb_eibrs_state(void)
+ 	}
+ }
+ 
+-static const char * const spectre_bhi_state(void)
++static const char *spectre_bhi_state(void)
+ {
+ 	if (!boot_cpu_has_bug(X86_BUG_BHI))
+ 		return "; BHI: Not affected";
+-- 
+2.25.1
 
-So let's have yet another meeting on a week after that.  That is, 2024-04-23
-Tuesday, 09:30 PT.  My apology again for anyone who were unable to join the
-meeting due to my fault, and looking forward to chat with you on the meeting.
-I also updated the agenda doc
-(https://docs.google.com/document/d/1v43Kcj3ly4CYqmAkMaZzLiM2GEnWfgdGbZAH3mi2vpM/edit?usp=sharing).
-
-FYI, I will also attend the OSSummit next week in person, and DAMON will again
-be presented there (https://sched.co/1aBOg).  Looking forward to meet you in
-person if possible!
-
-
-Thanks,
-SJ
-
-[...]
 
