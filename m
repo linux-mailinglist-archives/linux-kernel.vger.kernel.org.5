@@ -1,128 +1,160 @@
-Return-Path: <linux-kernel+bounces-136543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF72789D568
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:22:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100F689D56D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:23:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA76C281EAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:22:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 417971C226C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557B085631;
-	Tue,  9 Apr 2024 09:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741888002E;
+	Tue,  9 Apr 2024 09:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EvT9N+/+"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ot9OcfQo"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45EE98063B;
-	Tue,  9 Apr 2024 09:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FC47FBC2;
+	Tue,  9 Apr 2024 09:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712654485; cv=none; b=gTMpb8O1ea0Tvk8d2NPDAH6kxDHhnQcDRgLfKO5WqebmWPemjXUe8ujrfNbNJUpiC81oS+D3k9qeyHMGVPZh5DydkbsWLRHg9+WQ4jKjMthddKZLW+M5NSfgZMZbL7c/QJTbOw4ocENXa5/RcpKox1RER3oREovqRHJt86SQYZw=
+	t=1712654528; cv=none; b=pAjW+Pc9H5+e448keDPDs30VNhrcoRL/PCX6BlIIaYgyuf4L0AfhES32JV3GaF0wiMVC7mVA+s4zp0lnASqaKaE6EqxbSAdqsF0ytdgXu9Dlpu/sygpJTwPF3XHLI25lxX6k3VhjgGUAHwJ1dJNqbi1GhGwfVFKCB6IA2Gu2/w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712654485; c=relaxed/simple;
-	bh=C7wvbq7Dl7vRv/z7yWDMGXVmSzEb8Uka7KOqvcx6I1I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jAJYKbU9SDECcOy6wiaZLwB4RcG5e+CFybZa1s1KzfbOaX3kYe7slIYa70iQhBX9vuL8D/LcMlgeBfUBSMU0+EUxdFXfG3liCMmDfAO2WtmPchsnlzlwkwPpr5TGeFq+gqJ3nmpP1Pf90uZNWvgzpnRWS5b90tUaWrfo02W65tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EvT9N+/+; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 731251BF206;
-	Tue,  9 Apr 2024 09:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712654476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MxX4gGO1cf6dYcz+BOp+BvU3IyOz8Kkdye9gsRIK7QY=;
-	b=EvT9N+/+7ILUTywV2Nhw36YQ3yVnZcKQtU+7IS1lfhBz9fkx+/3MDQMX4/pK2jTmgTVrDg
-	FiITDLcJ5oqh/5pTYCa8DWKnjiDMzVpqegyrFpycEFLB+g4gO2o6cCLtYaRGs+8LnS+tfs
-	pMY99Vqa19fRXQvaMcUd//WHRf7/KVR2gjR9EC7SoJKdA+gWNIj3fF8XgmcLXGju0wHBQk
-	yG3A4ZOAiZnrJDYeoKxxCCN36UWRUXw4P0uvrPR0XAt2pvMibDGVjAMK4Xc+kllcTgpc3e
-	OBfiMB31z2NBmFdwdfL9BSa1ZPZJ49o7b199aZN4s4ewu9KYXDa63rnY06Ip6w==
-From: Romain Gantois <romain.gantois@bootlin.com>
-Date: Tue, 09 Apr 2024 11:21:48 +0200
-Subject: [PATCH net-next v2 5/5] ARM: dts: r9a06g032: describe GMAC1
+	s=arc-20240116; t=1712654528; c=relaxed/simple;
+	bh=wgxmF8dF0t1OLiFgF5yhMNxV6zA389z8dZjRNqQbiDc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a2VfMIOw0uGo5dxumnOAxX/Y0JiNLbyPybSBvZ96oH5WhmV+YY35cHgyDoZXMiKfIb/5bMeia88ENRtcUIusi1Qa7kaUcmX6A6yKDrPeUcHyf79Sc7BDcS/Csuq6sBqCSXD+iF0SQ9DM9QX6jFkS6oshKerCMj8yFSwWvJ3yY/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ot9OcfQo; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d700beb60bso87034001fa.1;
+        Tue, 09 Apr 2024 02:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712654525; x=1713259325; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r1YI1LD16aBiZ7GIogy/yUsyhydLDw6SsonapHKI3FE=;
+        b=Ot9OcfQokp9OQcmmKoNNyCBgkRKRPZkzMkBM1hAPJZzgRgPMxvFyjQ3O0G4IEXELCU
+         tRNppEQJWqSlvWmm4BSQLjaZa3VpTnfaGt9cpRmG8AnTG7U95TUcCmXXmD0RwyiqfDNz
+         jM2ckfvPW6o2jkaNMh7RMn2rCdRpi2cMEDUYDYjjRBeanHH3Nv0/SMLecNuLej1ICZB1
+         mFpA6IThmfK2J+Rfgyj889O4t1dr4IqB6/uGG5UiD0L056vEymm3sw5sk4Fsm5SA8R97
+         FeP9GB7ZkE/YW3N7ArDiuFbrvnCuaD9Cy6AXNiTztEcWwVYW2jvoPxJLzjb4AkRnLMpG
+         Wz6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712654525; x=1713259325;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r1YI1LD16aBiZ7GIogy/yUsyhydLDw6SsonapHKI3FE=;
+        b=OaCYE4iNgaCaAGqgpuRujd7KvdL41PE86wRZf0htDmuJiIfArXRJmE6JDpeaOOKwI5
+         E8FQFbiheir4Ei7tCuRKQbGyg+wWG1v93oAKguWNItBBzW25RqPWZoJP+5aMnDruYXZE
+         y4pU03VURWxkzpNYcXMdQBeAL1De11cbPta/6DnuUGEdP6duUEYSErgYWfamFq8nkIdP
+         +hqDI5rOkjCGuFmQ4IY5G7DdsKsucQWBIoy3qsLccLmvzdeuW+xIITmKB7WGl1ysdacH
+         zP/ap4zBiPDHx3Z9xHcGMTkofpX4e/046XR2gQG7j3jQZdLnau49+HGLJiFsZ2gdGNN/
+         7VaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVmaDFNuoChLQhzzZh57p/AEx5xRYQWzL3yj7h/HEDy1bC53DZvXMJnbna0e9gznV+ab2tnpWgy4tIc91WuyuPaSzG87h9ngSzbUn7gcSYU+9xXtGqeCMZifPp/UseLEN3XsiJZpI5afg==
+X-Gm-Message-State: AOJu0YzDvIPJkpR0tTAVIkP7IsZ65/7Bnjs+bYMwytA3MP4vGUfKjNzk
+	/md/ubFysnkN4MWjHIgSjALO691/8nJF3dEYgcJzOvhz1ixUFrvr
+X-Google-Smtp-Source: AGHT+IEd5fPYAVXM4XxUF+C21LNjRVh8lxcxzN8JGvpeWnZKVlON9QdWZ6IU7KdQRBRKVpgj6S6efw==
+X-Received: by 2002:a2e:854c:0:b0:2d6:f5c6:e5a1 with SMTP id u12-20020a2e854c000000b002d6f5c6e5a1mr8870002ljj.12.1712654524793;
+        Tue, 09 Apr 2024 02:22:04 -0700 (PDT)
+Received: from [192.168.0.31] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
+        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5454291ejc.0.2024.04.09.02.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 02:22:04 -0700 (PDT)
+Message-ID: <89e7db2d-1de0-4e2e-a2d2-f00d45399b11@gmail.com>
+Date: Tue, 9 Apr 2024 11:22:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240409-rzn1-gmac1-v2-5-79ca45f2fc79@bootlin.com>
-References: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
-In-Reply-To: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Magnus Damm <magnus.damm@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <clement.leger@bootlin.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, 
- Romain Gantois <romain.gantois@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: romain.gantois@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/9] dt-bindings: rtc: stmp3xxx-rtc: convert to dtschema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com>
+ <20240408-rtc_dtschema-v1-8-c447542fc362@gmail.com>
+ <f0467c4f-45e2-4cae-b1b5-3867e5b9bf08@linaro.org>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <f0467c4f-45e2-4cae-b1b5-3867e5b9bf08@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Clément Léger <clement.leger@bootlin.com>
+On 4/9/24 09:40, Krzysztof Kozlowski wrote:
+> On 08/04/2024 17:53, Javier Carrasco wrote:
+>> Convert existing binding to dtschema to support validation.
+>>
+>> The 'fsl,imx28-rtc' compatible is currently not supported, and it is
+>> only referenced in this binding and in nxp/mxs/imx28.dtsi. Therefore,
+>> that compatible has been dropped, which triggers a warning when testing
+>> the DT against the new binding.
+> 
+> Instead document missing compatibles and mention this in commit msg.
+> 
 
-The r9a06g032 SoC of the RZ/N1 family features two GMAC devices named
-GMAC1/2, that are based on Synopsys cores. GMAC1 is connected to a
-RGMII/RMII converter that is already described in this device tree.
 
-Signed-off-by: "Clément Léger" <clement.leger@bootlin.com>
-[rgantois: commit log]
-Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
----
- arch/arm/boot/dts/renesas/r9a06g032.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+There is no driver that will match 'fsl,imx28-rtc', only
+'fsl,stmp3xxx-rtc', so I am not sure how to document the missing
+compatible in a sensible way. My first suggestion to account for
+undocumented strings would be:
 
-diff --git a/arch/arm/boot/dts/renesas/r9a06g032.dtsi b/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-index fa63e1afc4ef..cab7a641f95b 100644
---- a/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-+++ b/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-@@ -316,6 +316,25 @@ dma1: dma-controller@40105000 {
- 			data-width = <8>;
- 		};
- 
-+		gmac1: ethernet@44000000 {
-+			compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
-+			reg = <0x44000000 0x2000>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq", "eth_wake_irq", "eth_lpi";
-+			clocks = <&sysctrl R9A06G032_HCLK_GMAC0>;
-+			clock-names = "stmmaceth";
-+			power-domains = <&sysctrl>;
-+			snps,multicast-filter-bins = <256>;
-+			snps,perfect-filter-entries = <128>;
-+			tx-fifo-depth = <2048>;
-+			rx-fifo-depth = <4096>;
-+			pcs-handle = <&mii_conv1>;
-+			status = "disabled";
-+		};
-+
- 		gmac2: ethernet@44002000 {
- 			compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
- 			reg = <0x44002000 0x2000>;
+  compatible:
+    oneOf:
+      - items:
+          - enum:
+              - fsl,imx23-rtc
+              - fsl,imx28-rtc
+          - const: fsl,stmp3xxx-rtc
+      - const: fsl,stmp3xxx-rtc
 
--- 
-2.44.0
+Any suggestions or improvements?
 
+>>
+>> There is another reference to fsl,stmp3xxx-rtc in nxp/mxs/imx23.dtsi,
+>> where another unsupported compatible 'fsl,imx23-rtc' is used, and the
+>> same problem would arise when testing the file against the new binding.
+> 
+> Please write concise messages... you have to paragraphs about the same?
+> What is the difference here?
+> 
+The difference is that 'fsl,imx23-rtc' was not even mentioned in any
+binding, and it can only be found in imx23.dtsi. 'fsl,imx28-rtc' was
+indeed mentioned in the txt binding.
+
+My understanding after your comment is that we should gather
+undocumented compatibles and add them to the bindings they would belong
+to,no matter if they are used anywhere or not. I added this one to the
+suggestion above as well.
+
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> ---
+>>  .../devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml  | 45 ++++++++++++++++++++++
+>>  .../devicetree/bindings/rtc/stmp3xxx-rtc.txt       | 21 ----------
+>>  2 files changed, 45 insertions(+), 21 deletions(-)
+>>
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Best regards,
+Javier Carrasco
 
