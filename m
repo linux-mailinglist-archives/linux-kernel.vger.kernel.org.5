@@ -1,250 +1,242 @@
-Return-Path: <linux-kernel+bounces-137643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D9089E4EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:26:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C37589E4EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 23:29:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EFF1C21CC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:26:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6040282AAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 21:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688B7158A09;
-	Tue,  9 Apr 2024 21:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EE1158867;
+	Tue,  9 Apr 2024 21:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e83aJcZs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P5jzyBH5"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57775158878
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E19158851
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 21:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712697970; cv=none; b=k3Od/3dOt1Dmyug2UuOTfjgLESCtc7SYbo2gl+5CgwVkIAgikUAF2Cln0ooJBRrRe+doGsIiY4junzn+74nfQflbDBHd7IPTNrlQfxJCmWPIjiyWgDw73lO/vrYEe4LcViNKvdVmMYHVbJ46cCCWV9H5F3s6eUoH3ZFBavzQlQY=
+	t=1712698142; cv=none; b=Uf++wUF05onhS4bR1cf0d4nyOTR0923lsCrKsZIKe1kd1z5mjL1pw+H8nrwFoOWZHIp5JjFoE1wiT1loRxyEAdHsWajxm2dWFbEqxEceRnNCnCtl2RlPwNrlDlyBPGYJXICKIcVyvS/YyS+7a/XIskluCuvIQHmSmopM7DRU3jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712697970; c=relaxed/simple;
-	bh=MFUk7Q9DxQTw0mb3PytFtmo806xH8/pvPs/dX/4GHK4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q+sE9Gvi/7UWuATLIdZE1A8ey4YdqW2X0/hjMmts8CpxWoVNyXlUanzlNm51cFwWnSiwqx1/Df/ZVLmtC7uh/SfnfMQHajpR8aafhC5h5vG+0O9v4TL6kjjznotWimSF2jpF190GYhptLq76HAQhoq/WHWAPoVR5VLkQGe7kQw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e83aJcZs; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712697968; x=1744233968;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MFUk7Q9DxQTw0mb3PytFtmo806xH8/pvPs/dX/4GHK4=;
-  b=e83aJcZsIN+obney+phJav3yQpt5E2vsGLp0/MyQVaivDRGJCIbaiEqj
-   p27RHwRj6FHw46prdq2bGWdLX/tfvCCKjeGQQaTO+UopnVbe+t3g418QC
-   NiuO5pUoMxe09RZxRW9vJG+rBOqeoqIt4trr0eVNLLrXJ3LqCTs7IEfBz
-   +tkTy0HMLGIe4mLBIcKPTR3AcQZlCqfeLOkcJ7wQmmSITV4k4m1mtkUlm
-   +TsqF1zkG/jKfVTzaqk/W8ZOfLYxL7PJ7g80YaA33aCLnL34m8MS7Yz9G
-   cCoy/zmp0kdHEAn8igxYN8d1YlEV318wafYhxgNd6a8aDJnTQi+YaxnM8
-   Q==;
-X-CSE-ConnectionGUID: c/60H8L9SN6tSZp9IhGNyw==
-X-CSE-MsgGUID: jW2kDvZNSwKKWOzbdnqFtw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8263512"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="8263512"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 14:26:07 -0700
-X-CSE-ConnectionGUID: 3fcwSMP5SCCrJQ5i+fjp0g==
-X-CSE-MsgGUID: 4dkKLevxRam9bt9qC4DHcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25146249"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 09 Apr 2024 14:26:04 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ruIye-0006WY-2h;
-	Tue, 09 Apr 2024 21:26:00 +0000
-Date: Wed, 10 Apr 2024 05:25:14 +0800
-From: kernel test robot <lkp@intel.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, vbabka@suse.cz
-Cc: oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-	baolin.wang@linux.alibaba.com, david@redhat.com, hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	mgorman@techsingularity.net, ying.huang@intel.com, ziy@nvidia.com
-Subject: Re: [PATCH] mm: page_alloc: consolidate free page accounting fix 3
-Message-ID: <202404100551.aq0YQFuT-lkp@intel.com>
-References: <a2a48baca69f103aa431fd201f8a06e3b95e203d.1712648441.git.baolin.wang@linux.alibaba.com>
+	s=arc-20240116; t=1712698142; c=relaxed/simple;
+	bh=8hahaSlpUCuWs5ErEu7Vn6rWT9MWMKsz31mT4yVZ8DM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i5DqHgF3iWBWSYP7fpMzTdphxwJxDxQs406iXLOVCTtCvX+tgkmqLPGywOIW2ltEWQv7oGwoU65nlT++3UDmD+WtkWYekMRp1oOz43zDRqGhq8EPVRm4pxu8hXklxwmbruqQrU8+qDdpGWkYiQRkpx/Yd0b5BI8EtwgfPbQLTNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P5jzyBH5; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-36a3a4c9d11so14045ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 14:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712698139; x=1713302939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TlpIKC9YdW3AY0kdbg2B0nJR6pLjcYcStssU1/0Zjls=;
+        b=P5jzyBH5+nCOxSWDphqokJ3FYil/RinNmtIhBDV7XEV2iXnhR/ygjYgXf7L5wKoZa7
+         H585douqHIB3rRkmSuneNjIuC9LS/gClMD3janzqHBiBsLxqmRy1Ad/QtbwuEJR7PERg
+         qLNI8iL8LOduNI1RET2Rit00+cXMK0kKNI8eC+gPikFDPDyKQkFbkNX87At8QJ7jFeLl
+         iq7Qu4yWDomlVdtiUvcRfgmh65hvIOmhwtBPrMLYXQF9JOzLtndjdBHNClaLV53vIQaG
+         kzxFAyD5PHSEaXWRGM8XazsLT0h93Z4bBwYJ7X3ziuuQkB2RQAc9ewuO2BULQuVc+UMG
+         Us1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712698139; x=1713302939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TlpIKC9YdW3AY0kdbg2B0nJR6pLjcYcStssU1/0Zjls=;
+        b=Ym4xkgDPlhrYd5HfCvN2SUkyINLyW5mroEfu5+DX/bS8wb+GWR0LyhDvaNXnSP9t86
+         /EFlsi6sZpyBHjXe7XEz2XMOu17kWU+yNJ1xBOP49wrv+aosipeXS0ex5p55c1TF3GnC
+         bR7Ff+IuZZ9ALQB5Hii/1Q953heqeMwtxwCKwoZMAYxtnMMKYzcfaVBd2vNFiJUoflvq
+         lGPeo89vNgl1irTT8Mc3Mam/lIWmfLYRKh6o9IDmVakrmmFmq+cJP4sXjk7K826TbYzf
+         lbcLKiY4lCCwhiXEhKvkzFOnEcYq9+6s6iS4CQy6zwZz9B2m0R89ia6t1gT2f9YhfPgp
+         fS9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWA8ZxPVn9WEDoyLsI23uUYZvK333f7YS0hTaaGGiqdpxbc/Om5z2i8/xtscXITMm03yjXTKa3sHCsVmiPy8DLWwq4+Patj2VyXDJFI
+X-Gm-Message-State: AOJu0YxtTW4QZaIFhZ/3CXy7mc65zFjsV89RgZwjyVGuLtkRkeYX3ubA
+	hWgOVSXy3UF/ZBAoGbX94b3xwt1+xfnpACKgDtU17lIElItvLNccDSpnWdB9T7sHnzrOWLgU5Hm
+	UsRMR/mlX62wlKZYdDFkuXT9y6fa5ReW0dX6g
+X-Google-Smtp-Source: AGHT+IE1zKKybQi1Lfs3RAG8qynsc0HXtJ1BtoUXE6F+s0GlQP9B2DXUSp/JCFIP41AdV1QhhpyXAR/usmUi3Lk2bF8=
+X-Received: by 2002:a05:6e02:1d1a:b0:36a:2a78:1c38 with SMTP id
+ i26-20020a056e021d1a00b0036a2a781c38mr19233ila.13.1712698139335; Tue, 09 Apr
+ 2024 14:28:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2a48baca69f103aa431fd201f8a06e3b95e203d.1712648441.git.baolin.wang@linux.alibaba.com>
+References: <ZhWTIuyB9p1ORbQH@x1>
+In-Reply-To: <ZhWTIuyB9p1ORbQH@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 9 Apr 2024 14:28:43 -0700
+Message-ID: <CAP-5=fXR0HmxUBvTbPN4GPdqFftYAGsgYHm81+TgmGY7Yh4gww@mail.gmail.com>
+Subject: Re: BISECTED: perf test -v "Test data symbol" failing on Intel Hybrid systems
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Jiri Olsa <jolsa@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Baolin,
+On Tue, Apr 9, 2024 at 12:12=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> root@x1:~# grep -m1 "model name" /proc/cpuinfo
+> model name      : 13th Gen Intel(R) Core(TM) i7-1365U
+> root@x1:~# uname -a
+> Linux x1 6.7.11-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Mar 27 16:50:3=
+9 UTC 2024 x86_64 GNU/Linux
+> root@x1:~#
+>
+> Bisected down to:
+>
+> commit 5752c20f3787c9bc9ff9411a70b3d41add85518c
+> Author: Ravi Bangoria <ravi.bangoria@amd.com>
+> Date:   Thu Jun 15 10:47:00 2023 +0530
+>
+>     perf mem: Scan all PMUs instead of just core ones
+>
+>     Scanning only core PMUs is not sufficient on platforms like AMD since
+>     perf mem on AMD uses IBS OP PMU, which is independent of core PMU.
+>     Scan all PMUs instead of just core PMUs. There should be negligible
+>     performance overhead because of scanning all PMUs, so we should be ok=
+ay.
+>
+>     Reviewed-by: Ian Rogers <irogers@google.com>
+>     Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+>
+> root@x1:~# perf -v ; perf test -v "Test data symbol"
+> perf version 6.4.rc3.g5752c20f3787
+> 111: Test data symbol                                                :
+> --- start ---
+> test child forked, pid 522202
+> Recording workload...
+> malloc_consolidate(): invalid chunk size
+> /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 60: 52=
+2208 Aborted                 (core dumped) perf mem record --all-user -o ${=
+PERF_DATA} -- $TEST_PROGRAM
+> /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 62: ki=
+ll: (522208) - No such process
+> Cleaning up files...
+> test child finished with -1
+> ---- end ----
+> Test data symbol: FAILED!
+> root@x1:~# perf -v ; perf test -v "Test data symbol"
+> perf version 6.8.g63c22868714b
+> 116: Test data symbol:
+> --- start ---
+> test child forked, pid 526540
+>  954300-954339 l buf1
+> perf does have symbol 'buf1'
+> Recording workload...
+> Waiting for "perf record has started" message
+> OK
+> Cleaning up files...
+> ---- end(-1) ----
+> 116: Test data symbol                                                : FA=
+ILED!
+> root@x1:~#
+>
+> Further details:
+>
+> (gdb) run mem record --all-user sleep 1
+> Starting program: /root/bin/perf mem record --all-user sleep 1
+>
+>
+> This GDB supports auto-downloading debuginfo from the following URLs:
+>   <https://debuginfod.fedoraproject.org/>
+> Enable debuginfod for this session? (y or [n]) y
+> Debuginfod has been enabled.
+> To make this setting permanent, add 'set debuginfod enabled on' to .gdbin=
+it.
+> [Thread debugging using libthread_db enabled]
+> Using host libthread_db library "/lib64/libthread_db.so.1".
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0000000000611860 in perf_mem_events__record_args (rec_argv=3D0xea8280, =
+argv_nr=3D0x7fffffffd6bc, rec_tmp=3D0xebbda0, tmp_nr=3D0x7fffffffd6c0) at u=
+til/mem-events.c:213
+> 213                                     s =3D perf_mem_events__name(j, pm=
+u->name);
+> (gdb) bt
+> #0  0x0000000000611860 in perf_mem_events__record_args (rec_argv=3D0xea82=
+80, argv_nr=3D0x7fffffffd6bc, rec_tmp=3D0xebbda0, tmp_nr=3D0x7fffffffd6c0) =
+at util/mem-events.c:213
+> #1  0x000000000045c47f in __cmd_record (argc=3D2, argv=3D0x7fffffffe420, =
+mem=3D0x7fffffffda20) at builtin-mem.c:152
+> #2  0x000000000045d69b in cmd_mem (argc=3D4, argv=3D0x7fffffffe420) at bu=
+iltin-mem.c:514
+> #3  0x00000000004ffe38 in run_builtin (p=3D0xe08aa0 <commands+672>, argc=
+=3D5, argv=3D0x7fffffffe420) at perf.c:323
+> #4  0x00000000005000ac in handle_internal_command (argc=3D5, argv=3D0x7ff=
+fffffe420) at perf.c:377
+> #5  0x00000000005001fb in run_argv (argcp=3D0x7fffffffe23c, argv=3D0x7fff=
+ffffe230) at perf.c:421
+> #6  0x00000000005004e8 in main (argc=3D5, argv=3D0x7fffffffe420) at perf.=
+c:537
+> (gdb) list -5
+> file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
+> Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
+> (gdb)
+>
+>
+>
+> (gdb) list -5
+> file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
+> Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
+> (gdb) p j
+> $1 =3D 0
+> (gdb) p pmu->name
+> Cannot access memory at address 0x64ffffff9c
+> (gdb)
+>
+> 183 int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+> 184                                  char **rec_tmp, int *tmp_nr)
+> 185 {
+> 186         int i =3D *argv_nr, k =3D 0;
+> 187         struct perf_mem_event *e;
+> 188         struct perf_pmu *pmu;
+> 189         char *s;
+> 190
+> 191         for (int j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> 192                 e =3D perf_mem_events__ptr(j);
+> 193                 if (!e->record)
+> 194                         continue;
+> 195
+> 196                 if (perf_pmus__num_mem_pmus() =3D=3D 1) {
+> 197                         if (!e->supported) {
+> 198                                 pr_err("failed: event '%s' not suppor=
+ted\n",
+> 199                                        perf_mem_events__name(j, NULL)=
+);
+> 200                                 return -1;
+> 201                         }
+> 202
+> 203                         rec_argv[i++] =3D "-e";
+> 204                         rec_argv[i++] =3D perf_mem_events__name(j, NU=
+LL);
+> 205                 } else {
+> 206                         if (!e->supported) {
+> 207                                 perf_mem_events__print_unsupport_hybr=
+id(e, j);
+> 208                                 return -1;
+> 209                         }
+> 210
+> 211                         while ((pmu =3D perf_pmus__scan(pmu)) !=3D NU=
+LL) {
+> 212                                 rec_argv[i++] =3D "-e";
+> 213                                 s =3D perf_mem_events__name(j, pmu->n=
+ame);
+> 214                                 if (s) {
+> 215                                         s =3D strdup(s);
 
-kernel test robot noticed the following build errors:
+This looks like something that address/memory sanitizers could help with.
 
-
-
-url:    https://github.com/intel-lab-lkp/linux/commits/UPDATE-20240409-154935/Johannes-Weiner/mm-page_alloc-remove-pcppage-migratetype-caching/20240321-020814
-base:   the 10th patch of https://lore.kernel.org/r/20240320180429.678181-11-hannes%40cmpxchg.org
-patch link:    https://lore.kernel.org/r/a2a48baca69f103aa431fd201f8a06e3b95e203d.1712648441.git.baolin.wang%40linux.alibaba.com
-patch subject: [PATCH] mm: page_alloc: consolidate free page accounting fix 3
-config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240410/202404100551.aq0YQFuT-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240410/202404100551.aq0YQFuT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404100551.aq0YQFuT-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   mm/page_alloc.c: In function '__free_one_page':
->> mm/page_alloc.c:808:43: error: passing argument 1 of 'account_freepages' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     808 |                         account_freepages(zone, -(1 << order), migratetype);
-         |                                           ^~~~
-         |                                           |
-         |                                           struct zone *
-   mm/page_alloc.c:645:51: note: expected 'struct page *' but argument is of type 'struct zone *'
-     645 | static inline void account_freepages(struct page *page, struct zone *zone,
-         |                                      ~~~~~~~~~~~~~^~~~
->> mm/page_alloc.c:808:49: warning: passing argument 2 of 'account_freepages' makes pointer from integer without a cast [-Wint-conversion]
-     808 |                         account_freepages(zone, -(1 << order), migratetype);
-         |                                                 ^~~~~~~~~~~~~
-         |                                                 |
-         |                                                 int
-   mm/page_alloc.c:645:70: note: expected 'struct zone *' but argument is of type 'int'
-     645 | static inline void account_freepages(struct page *page, struct zone *zone,
-         |                                                         ~~~~~~~~~~~~~^~~~
->> mm/page_alloc.c:808:25: error: too few arguments to function 'account_freepages'
-     808 |                         account_freepages(zone, -(1 << order), migratetype);
-         |                         ^~~~~~~~~~~~~~~~~
-   mm/page_alloc.c:645:20: note: declared here
-     645 | static inline void account_freepages(struct page *page, struct zone *zone,
-         |                    ^~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/account_freepages +808 mm/page_alloc.c
-
-   759	
-   760	/*
-   761	 * Freeing function for a buddy system allocator.
-   762	 *
-   763	 * The concept of a buddy system is to maintain direct-mapped table
-   764	 * (containing bit values) for memory blocks of various "orders".
-   765	 * The bottom level table contains the map for the smallest allocatable
-   766	 * units of memory (here, pages), and each level above it describes
-   767	 * pairs of units from the levels below, hence, "buddies".
-   768	 * At a high level, all that happens here is marking the table entry
-   769	 * at the bottom level available, and propagating the changes upward
-   770	 * as necessary, plus some accounting needed to play nicely with other
-   771	 * parts of the VM system.
-   772	 * At each level, we keep a list of pages, which are heads of continuous
-   773	 * free pages of length of (1 << order) and marked with PageBuddy.
-   774	 * Page's order is recorded in page_private(page) field.
-   775	 * So when we are allocating or freeing one, we can derive the state of the
-   776	 * other.  That is, if we allocate a small block, and both were
-   777	 * free, the remainder of the region must be split into blocks.
-   778	 * If a block is freed, and its buddy is also free, then this
-   779	 * triggers coalescing into a block of larger size.
-   780	 *
-   781	 * -- nyc
-   782	 */
-   783	
-   784	static inline void __free_one_page(struct page *page,
-   785			unsigned long pfn,
-   786			struct zone *zone, unsigned int order,
-   787			int migratetype, fpi_t fpi_flags)
-   788	{
-   789		struct capture_control *capc = task_capc(zone);
-   790		unsigned long buddy_pfn = 0;
-   791		unsigned long combined_pfn;
-   792		struct page *buddy;
-   793		bool to_tail;
-   794	
-   795		VM_BUG_ON(!zone_is_initialized(zone));
-   796		VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
-   797	
-   798		VM_BUG_ON(migratetype == -1);
-   799		VM_BUG_ON_PAGE(pfn & ((1 << order) - 1), page);
-   800		VM_BUG_ON_PAGE(bad_range(zone, page), page);
-   801	
-   802		account_freepages(page, zone, 1 << order, migratetype);
-   803	
-   804		while (order < MAX_PAGE_ORDER) {
-   805			int buddy_mt = migratetype;
-   806	
-   807			if (compaction_capture(capc, page, order, migratetype)) {
- > 808				account_freepages(zone, -(1 << order), migratetype);
-   809				return;
-   810			}
-   811	
-   812			buddy = find_buddy_page_pfn(page, pfn, order, &buddy_pfn);
-   813			if (!buddy)
-   814				goto done_merging;
-   815	
-   816			if (unlikely(order >= pageblock_order)) {
-   817				/*
-   818				 * We want to prevent merge between freepages on pageblock
-   819				 * without fallbacks and normal pageblock. Without this,
-   820				 * pageblock isolation could cause incorrect freepage or CMA
-   821				 * accounting or HIGHATOMIC accounting.
-   822				 */
-   823				buddy_mt = get_pfnblock_migratetype(buddy, buddy_pfn);
-   824	
-   825				if (migratetype != buddy_mt &&
-   826				    (!migratetype_is_mergeable(migratetype) ||
-   827				     !migratetype_is_mergeable(buddy_mt)))
-   828					goto done_merging;
-   829			}
-   830	
-   831			/*
-   832			 * Our buddy is free or it is CONFIG_DEBUG_PAGEALLOC guard page,
-   833			 * merge with it and move up one order.
-   834			 */
-   835			if (page_is_guard(buddy))
-   836				clear_page_guard(zone, buddy, order);
-   837			else
-   838				__del_page_from_free_list(buddy, zone, order, buddy_mt);
-   839	
-   840			if (unlikely(buddy_mt != migratetype)) {
-   841				/*
-   842				 * Match buddy type. This ensures that an
-   843				 * expand() down the line puts the sub-blocks
-   844				 * on the right freelists.
-   845				 */
-   846				set_pageblock_migratetype(buddy, migratetype);
-   847			}
-   848	
-   849			combined_pfn = buddy_pfn & pfn;
-   850			page = page + (combined_pfn - pfn);
-   851			pfn = combined_pfn;
-   852			order++;
-   853		}
-   854	
-   855	done_merging:
-   856		set_buddy_order(page, order);
-   857	
-   858		if (fpi_flags & FPI_TO_TAIL)
-   859			to_tail = true;
-   860		else if (is_shuffle_order(order))
-   861			to_tail = shuffle_pick_tail();
-   862		else
-   863			to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
-   864	
-   865		__add_to_free_list(page, zone, order, migratetype, to_tail);
-   866	
-   867		/* Notify page reporting subsystem of freed page */
-   868		if (!(fpi_flags & FPI_SKIP_REPORT_NOTIFY))
-   869			page_reporting_notify_free(order);
-   870	}
-   871	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Ian
 
