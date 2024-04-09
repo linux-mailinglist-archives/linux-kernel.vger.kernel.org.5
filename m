@@ -1,324 +1,235 @@
-Return-Path: <linux-kernel+bounces-136746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B255489D7D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B330A89D7D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EA2B1F21C67
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:29:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D3561F227F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6B386643;
-	Tue,  9 Apr 2024 11:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBFE1272A7;
+	Tue,  9 Apr 2024 11:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iScgx1iI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J+QUgv9a"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453158594B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25328614B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 11:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712662179; cv=none; b=fH0t5D4mWXcv6W0Xcy0TcLX3KbU18qRbtGjbqp/d0mCfDIexbcf2+S/8aPryxZ5jfei5Dvj9LNm25g/Rbbi9+q6GHHhPy9QmjIH/lwqhx1hQsyGYaq6zuE+YJEzbBn4dUTUsjeCEEgvnXg69MCNGy2Jvp8jhjbd1ElMQBAeXejU=
+	t=1712662226; cv=none; b=fduW252R0cyMxSCY090agaEqywobMkjgLk/nokYHdb1I89d7aqApMTxbxf/4KQ9E8RR8278CN1EuoceNLrjyyVkZNr0mxx+8VfUoGGt6/jfyorKD+3APNCq9NfobbkafUMAV4RgKnBIQRwaNgwBX0sYjhaFwQr6/ipgZvCt9bKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712662179; c=relaxed/simple;
-	bh=q3N9FxAz7AmxGWzk/PEXjnzm8i7y+7IFLUXlabsfZsk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=YPS+jSV1xeLuGEYEntRnevrETiTVoSQdYMddxSApPxO+OWvd+SNHqLMR/yu8MmFqst91clc0cQemYlf2BsNEJ/WaSSULBopD+PAy1VhGKiIwBHnYiC7jg6cD6OLJOoEgCapAu82tLhUzQA31UeGSpU+paZTjNn9flNAX6wvqvmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iScgx1iI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712662176;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ukj5XpQhbbnI72RJsdPHuhyyK4ArpEUkQAD+BTpMjIU=;
-	b=iScgx1iIPDWezNIeGQV35/LdknG7wVlHIv70Z5ijh8sta5/Z7RLtBsiLInNv/+E6o7Asxy
-	3bp3+xdBXFnlSEu14K6fCYRiO0v4/hZm9bzlUnX/uOkUAwL9QKNwkm/pM09bpBBIynkkHC
-	RK92YnF+sp9UmlA8RlysilqOSQXCH3w=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-439-cURhclSIPb6_KFtuv17mxw-1; Tue, 09 Apr 2024 07:29:34 -0400
-X-MC-Unique: cURhclSIPb6_KFtuv17mxw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41663c713b7so10570985e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 04:29:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712662173; x=1713266973;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:from:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ukj5XpQhbbnI72RJsdPHuhyyK4ArpEUkQAD+BTpMjIU=;
-        b=IV6dq1ULDjJ6rWn0Wms8cplx9Hw/5j2rx/QMgyAjXmreoXDv2EfiwCjnAOmOv86vf1
-         cSiteDQaKxjdHFp/+qWjsDKuSOEKLABTXmXFVY3db50DddKSbELD/+gU0mdlZddKgzbE
-         Nd4Q5T/CV2KHZAC0g/Y5IvJJekMbF7w6L+Va7RfQW/X3eKrTAJilIonFXEZpdq3zNnNL
-         ej6S4hq2pBdYz4S+rsHWgpkPLPLosloLZFZRbG7dmRixF5YVZSmWmFg0KX0W4p5CVhU+
-         CFLcUOpzkP43yGJgPuVjDdALx3qk+XZyuflWE5nHhwCuoatLtUjRHg/914WdR0XOmAf3
-         iLBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcFLA5GQkqmry9T3nm3TyeIF7tpjyygIGerQB8XiMAhDWYnd7TuKJ46F82RZRMrOhsHP+L10cBX2DVkCbPVuBxvf7Ixm0chT8/l/nC
-X-Gm-Message-State: AOJu0Ywdn/YQ134AFURsxJBETBbp+fzvORXx9bGCIZ915p1mxNUkQZqD
-	V1ntT/37svUHwWMcQ5WTK601KOsDEs93DHchUB5xdA2At6fbcQmPh9LttqltcuGKu+umpg/W8Lj
-	ZOaxoD4xB3P04m6jc3IdwGI7BVZWQDGrRkiDAFoYKHaNMzpcxUfMAiXOFnZ5A6A==
-X-Received: by 2002:a05:600c:1c08:b0:416:89bc:dec6 with SMTP id j8-20020a05600c1c0800b0041689bcdec6mr2210483wms.11.1712662173369;
-        Tue, 09 Apr 2024 04:29:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuXqMiQTPxog9ClhpLtvVqDlnjWWvOJGEGURMO92w6OgpG807qMLJ/GiSIMVJ3U70YXIQZzA==
-X-Received: by 2002:a05:600c:1c08:b0:416:89bc:dec6 with SMTP id j8-20020a05600c1c0800b0041689bcdec6mr2210468wms.11.1712662172850;
-        Tue, 09 Apr 2024 04:29:32 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:be00:a285:bc76:307d:4eaa? (p200300cbc70abe00a285bc76307d4eaa.dip0.t-ipconnect.de. [2003:cb:c70a:be00:a285:bc76:307d:4eaa])
-        by smtp.gmail.com with ESMTPSA id b3-20020a05600c4e0300b00416920ca56csm4445574wmq.42.2024.04.09.04.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 04:29:32 -0700 (PDT)
-Message-ID: <d02959bc-84d8-4c74-a0da-9ad1159502e1@redhat.com>
-Date: Tue, 9 Apr 2024 13:29:31 +0200
+	s=arc-20240116; t=1712662226; c=relaxed/simple;
+	bh=IDa3envTHOnulh029/D21ynQZplWDJZkPWSMkU9EkVI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YVs0F6M0tnqlDaIZqyHyetAiclsGRCA6/lTyGCP1epjcVxWrysBih4s9QqI5ZSxhJoLmPammwwPW8R7BRAwdvp7ZOqzWZzWd5LX8mou5t3hryrzfASxukKX1nIRtKhj1BUqCNtL58/j4CA3YBS4Fg919KwIsH/BnGt8tbACu7TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J+QUgv9a; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712662224; x=1744198224;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IDa3envTHOnulh029/D21ynQZplWDJZkPWSMkU9EkVI=;
+  b=J+QUgv9aH2hOOlUClyqTqucdNLfCe7CPTcJk8/POx4YhwB78lyP7nIk4
+   d0zqMUgETrrU8wYa1mz5VEK4oPmFTcrAirvbPUL5h2IR00sVGEO0OJ/xE
+   NwyuVf57BbxJkA/8xOdLO96wda9qLOILU9aL67UnZBibB8/sb5xPcE+EB
+   at6FhinZ54ClujeXRhtIIeCQdSGhWV7UgEFsXXe3MwQ/fqMr1YgPpBXV2
+   4cH6bU5zklu2wIzofSCjR54HP7N70Syu5vWSS/IQ4/VO8lYRR4ybuYTpZ
+   DRhgY2BecFtiFfF7tU35QpSW2i8/bB/oUt8ciLAzxC8eQ6re0xp1EfGYA
+   A==;
+X-CSE-ConnectionGUID: GYrSr3b2SlWp7NnpQX0JTQ==
+X-CSE-MsgGUID: +kjP3xaiTI+/4Wqkyqcy/g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="30460303"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="30460303"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 04:30:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="937093307"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="937093307"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2024 04:30:18 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 61B8B279; Tue,  9 Apr 2024 14:30:17 +0300 (EEST)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe  <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv10 00/18] x86/tdx: Add kexec support
+Date: Tue,  9 Apr 2024 14:29:52 +0300
+Message-ID: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] Speed up boot with faster linear map creation
-From: David Hildenbrand <david@redhat.com>
-To: Itaru Kitayama <itaru.kitayama@linux.dev>,
- Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <Catalin.Marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <Mark.Rutland@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240404143308.2224141-1-ryan.roberts@arm.com>
- <Zg+qwooaWFNL7KIg@vm3> <fd4aed3a-42be-44e0-b3bb-12f77c5911a1@arm.com>
- <ZhEkif45F0aVvKPx@vm3> <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
- <FCDCBCEE-7D97-4769-AB95-7294A9CE18E0@linux.dev>
- <1d5abb48-08a8-4d83-a681-6915bc7b6907@arm.com>
- <268FBD1C-B102-4726-A7F4-1125123BDA7A@linux.dev>
- <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 09.04.24 13:22, David Hildenbrand wrote:
-> On 09.04.24 12:13, Itaru Kitayama wrote:
->>
->>
->>> On Apr 9, 2024, at 19:04, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>
->>> On 09/04/2024 01:10, Itaru Kitayama wrote:
->>>> Hi Ryan,
->>>>
->>>>> On Apr 8, 2024, at 16:30, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>
->>>>> On 06/04/2024 11:31, Itaru Kitayama wrote:
->>>>>> Hi Ryan,
->>>>>>
->>>>>> On Sat, Apr 06, 2024 at 09:32:34AM +0100, Ryan Roberts wrote:
->>>>>>> Hi Itaru,
->>>>>>>
->>>>>>> On 05/04/2024 08:39, Itaru Kitayama wrote:
->>>>>>>> On Thu, Apr 04, 2024 at 03:33:04PM +0100, Ryan Roberts wrote:
->>>>>>>>> Hi All,
->>>>>>>>>
->>>>>>>>> It turns out that creating the linear map can take a significant proportion of
->>>>>>>>> the total boot time, especially when rodata=full. And most of the time is spent
->>>>>>>>> waiting on superfluous tlb invalidation and memory barriers. This series reworks
->>>>>>>>> the kernel pgtable generation code to significantly reduce the number of those
->>>>>>>>> TLBIs, ISBs and DSBs. See each patch for details.
->>>>>>>>>
->>>>>>>>> The below shows the execution time of map_mem() across a couple of different
->>>>>>>>> systems with different RAM configurations. We measure after applying each patch
->>>>>>>>> and show the improvement relative to base (v6.9-rc2):
->>>>>>>>>
->>>>>>>>>                  | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
->>>>>>>>>                  | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
->>>>>>>>> ---------------|-------------|-------------|-------------|-------------
->>>>>>>>>                  |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
->>>>>>>>> ---------------|-------------|-------------|-------------|-------------
->>>>>>>>> base           |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   (0%)
->>>>>>>>> no-cont-remap  |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 (-78%)
->>>>>>>>> batch-barriers |   13 (-92%) |  162 (-93%) |  655 (-93%) |  1656 (-91%)
->>>>>>>>> no-alloc-remap |   11 (-93%) |  109 (-95%) |  449 (-95%) |  1257 (-93%)
->>>>>>>>> lazy-unmap     |    6 (-96%) |   61 (-97%) |  257 (-97%) |   838 (-95%)
->>>>>>>>>
->>>>>>>>> This series applies on top of v6.9-rc2. All mm selftests pass. I've compile and
->>>>>>>>> boot tested various PAGE_SIZE and VA size configs.
->>>>>>>>>
->>>>>>>>> ---
->>>>>>>>>
->>>>>>>>> Changes since v1 [1]
->>>>>>>>> ====================
->>>>>>>>>
->>>>>>>>>     - Added Tested-by tags (thanks to Eric and Itaru)
->>>>>>>>>     - Renamed ___set_pte() -> __set_pte_nosync() (per Ard)
->>>>>>>>>     - Reordered patches (biggest impact & least controversial first)
->>>>>>>>>     - Reordered alloc/map/unmap functions in mmu.c to aid reader
->>>>>>>>>     - pte_clear() -> __pte_clear() in clear_fixmap_nosync()
->>>>>>>>>     - Reverted generic p4d_index() which caused x86 build error. Replaced with
->>>>>>>>>       unconditional p4d_index() define under arm64.
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> [1] https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/<https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/>
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>> Ryan
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Ryan Roberts (4):
->>>>>>>>>     arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
->>>>>>>>>     arm64: mm: Batch dsb and isb when populating pgtables
->>>>>>>>>     arm64: mm: Don't remap pgtables for allocate vs populate
->>>>>>>>>     arm64: mm: Lazily clear pte table mappings from fixmap
->>>>>>>>>
->>>>>>>>> arch/arm64/include/asm/fixmap.h  |   5 +-
->>>>>>>>> arch/arm64/include/asm/mmu.h     |   8 +
->>>>>>>>> arch/arm64/include/asm/pgtable.h |  13 +-
->>>>>>>>> arch/arm64/kernel/cpufeature.c   |  10 +-
->>>>>>>>> arch/arm64/mm/fixmap.c           |  11 +
->>>>>>>>> arch/arm64/mm/mmu.c              | 377 +++++++++++++++++++++++--------
->>>>>>>>> 6 files changed, 319 insertions(+), 105 deletions(-)
->>>>>>>>>
->>>>>>>>> --
->>>>>>>>> 2.25.1
->>>>>>>>>
->>>>>>>>
->>>>>>>> I've build and boot tested the v2 on FVP, base is taken from your
->>>>>>>> linux-rr repo. Running run_vmtests.sh on v2 left some gup longterm not oks, would you take a look at it? The mm ksefltests used is from your linux-rr repo too.
->>>>>>>
->>>>>>> Thanks for taking a look at this.
->>>>>>>
->>>>>>> I can't reproduce your issue unfortunately; steps as follows on Apple M2 VM:
->>>>>>>
->>>>>>> Config: arm64 defconfig + the following:
->>>>>>>
->>>>>>> # Squashfs for snaps, xfs for large file folios.
->>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZ4
->>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZO
->>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_XZ
->>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
->>>>>>> ./scripts/config --enable CONFIG_XFS_FS
->>>>>>>
->>>>>>> # For general mm debug.
->>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM
->>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
->>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_RB
->>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
->>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
->>>>>>> ./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
->>>>>>>
->>>>>>> # For mm selftests.
->>>>>>> ./scripts/config --enable CONFIG_USERFAULTFD
->>>>>>> ./scripts/config --enable CONFIG_TEST_VMALLOC
->>>>>>> ./scripts/config --enable CONFIG_GUP_TEST
->>>>>>>
->>>>>>> Running on VM with 12G memory, split across 2 (emulated) NUMA nodes (needed by
->>>>>>> some mm selftests), with kernel command line to reserve hugetlbs and other
->>>>>>> features required by some mm selftests:
->>>>>>>
->>>>>>> "
->>>>>>> transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
->>>>>>> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
->>>>>>> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2
->>>>>>> "
->>>>>>>
->>>>>>> Ubuntu userspace running off XFS rootfs. Build and run mm selftests from same
->>>>>>> git tree.
->>>>>>>
->>>>>>>
->>>>>>> Although I don't think any of this config should make a difference to gup_longterm.
->>>>>>>
->>>>>>> Looks like your errors are all "ftruncate() failed". I've seen this problem on
->>>>>>> our CI system. There it is due to running the tests from NFS file system. What
->>>>>>> filesystem are you using? Perhaps you are sharing into the FVP using 9p? That
->>>>>>> might also be problematic.
->>>>>>
->>>>>> That was it. This time I booted up the kernel including your series on
->>>>>> QEMU on my M1 and executed the gup_longterm program without the ftruncate
->>>>>> failures. When testing your kernel on FVP, I was executing the script from the FVP's host filesystem using 9p.
->>>>>
->>>>> I'm not sure exactly what the root cause is. Perhaps there isn't enough space on
->>>>> the disk? It might be worth enhancing the error log to provide the errno in
->>>>> tools/testing/selftests/mm/gup_longterm.c.
->>>>>
->>>>
->>>> Attached is the strace’d gup_longterm executiong log on your
->>>> pgtable-boot-speedup-v2 kernel.
->>>
->>> Sorry are you saying that it only fails with the pgtable-boot-speedup-v2 patch
->>> set applied? I thought we previously concluded that it was independent of that?
->>> I was under the impression that it was filesystem related and not something that
->>> I was planning to investigate.
->>
->> No, irrespective of the kernel, if using 9p on FVP the test program fails.
->> It is indeed 9p filesystem related, as I switched to using NFS all the issues are gone.
-> 
-> Did it never work on 9p? If so, we might have to SKIP that test.
-> 
-> openat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
-> unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", 0) = 0
-> fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not supported)
-> ftruncate(3, 4096)                      = -1 ENOENT (No such file or directory)
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+TDX guest.
 
-Note: I'm wondering if the unlinkat here is the problem that makes 
-ftruncate() with 9p result in weird errors (e.g., the hypervisor 
-unlinked the file and cannot reopen it for the fstatfs/ftruncate. ... 
-which gives us weird errors here).
+The last patch implements CPU offlining according to the approved ACPI
+spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+2nd kernel with single CPU.
 
-Then, we should lookup the fs type in run_with_local_tmpfile() before 
-the unlink() and simply skip the test if it is 9p.
+Please review. I would be glad for any feedback.
+
+[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
+
+v10:
+  - Rebased to current tip/master;
+  - Preserve CR4.MCE instead of setting it unconditionally;
+  - Fix build error in Hyper-V code after rebase;
+  - Include Ashish's patch for real;
+v9:
+  - Rebased;
+  - Keep page tables that maps E820_TYPE_ACPI (Ashish);
+  - Ack/Reviewed/Tested-bys from Sathya, Kai, Tao;
+  - Minor printk() message adjustments;
+v8:
+  - Rework serialization of around conversion memory back to private;
+  - Print ACPI_MADT_TYPE_MULTIPROC_WAKEUP in acpi_table_print_madt_entry();
+  - Drop debugfs interface to dump info on shared memory;
+  - Adjust comments and commit messages;
+  - Reviewed-bys by Baoquan, Dave and Thomas;
+v7:
+  - Call enc_kexec_stop_conversion() and enc_kexec_unshare_mem() after shutting
+    down IO-APIC, lapic and hpet. It meets AMD requirements.
+  - Minor style changes;
+  - Add Acked/Reviewed-bys;
+v6:
+  - Rebased to v6.8-rc1;
+  - Provide default noop callbacks from .enc_kexec_stop_conversion and
+    .enc_kexec_unshare_mem;
+  - Split off patch that introduces .enc_kexec_* callbacks;
+  - asm_acpi_mp_play_dead(): program CR3 directly from RSI, no MOV to RAX
+    required;
+  - Restructure how smp_ops.stop_this_cpu() hooked up in crash_nmi_callback();
+  - kvmclock patch got merged via KVM tree;
+v5:
+  - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
+    stop_this_cpu();
+  - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
+  - Introduce kernel_ident_mapping_free();
+  - Add explicit include for alternatives and stringify.
+  - Add barrier() after setting conversion_allowed to false;
+  - Mark cpu_hotplug_offline_disabled __ro_after_init;
+  - Print error if failed to hand over CPU to BIOS;
+  - Update comments and commit messages;
+v4:
+  - Fix build for !KEXEC_CORE;
+  - Cleaner ATLERNATIVE use;
+  - Update commit messages and comments;
+  - Add Reviewed-bys;
+v3:
+  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
+    machine;
+  - Free page tables if reset vector setup failed;
+  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
+  - Mark acpi_mp_* variables as static and __ro_after_init;
+  - Use u32 for apicid;
+  - Disable CPU offlining if reset vector setup failed;
+  - Rename madt.S -> madt_playdead.S;
+  - Mark tdx_kexec_unshare_mem() as static;
+  - Rebase onto up-to-date tip/master;
+  - Whitespace fixes;
+  - Reorder patches;
+  - Add Reviewed-bys;
+  - Update comments and commit messages;
+v2:
+  - Rework how unsharing hook ups into kexec codepath;
+  - Rework kvmclock_disable() fix based on Sean's;
+  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
+  - use play_dead_common() to implement acpi_mp_play_dead();
+  - cond_resched() in tdx_shared_memory_show();
+  - s/target kernel/second kernel/;
+  - Update commit messages and comments;
+
+Ashish Kalra (1):
+  x86/mm: Do not zap page table entries mapping unaccepted memory table
+    during kdump.
+
+Kirill A. Shutemov (17):
+  x86/acpi: Extract ACPI MADT wakeup code into a separate file
+  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
+  cpu/hotplug: Add support for declaring CPU offlining not supported
+  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
+  x86/mm: Return correct level from lookup_address() if pte is none
+  x86/tdx: Account shared memory
+  x86/mm: Adding callbacks to prepare encrypted memory for kexec
+  x86/tdx: Convert shared memory back to private on kexec
+  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
+  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
+  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
+  x86/smp: Add smp_ops.stop_this_cpu() callback
+  x86/mm: Introduce kernel_ident_mapping_free()
+  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
+  ACPI: tables: Print MULTIPROC_WAKEUP when MADT is parsed
+
+ arch/x86/Kconfig                     |   7 +
+ arch/x86/coco/core.c                 |   1 -
+ arch/x86/coco/tdx/tdx.c              |  99 ++++++++-
+ arch/x86/hyperv/ivm.c                |  22 +-
+ arch/x86/include/asm/acpi.h          |   7 +
+ arch/x86/include/asm/init.h          |   3 +
+ arch/x86/include/asm/pgtable.h       |   5 +
+ arch/x86/include/asm/pgtable_types.h |   1 +
+ arch/x86/include/asm/set_memory.h    |   3 +
+ arch/x86/include/asm/smp.h           |   1 +
+ arch/x86/include/asm/x86_init.h      |   6 +-
+ arch/x86/kernel/acpi/Makefile        |  11 +-
+ arch/x86/kernel/acpi/boot.c          |  86 +-------
+ arch/x86/kernel/acpi/madt_playdead.S |  28 +++
+ arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c              |   6 +
+ arch/x86/kernel/e820.c               |   9 +-
+ arch/x86/kernel/process.c            |   7 +
+ arch/x86/kernel/reboot.c             |  18 ++
+ arch/x86/kernel/relocate_kernel_64.S |   8 +
+ arch/x86/kernel/x86_init.c           |   8 +-
+ arch/x86/mm/ident_map.c              |  73 +++++++
+ arch/x86/mm/init_64.c                |  16 +-
+ arch/x86/mm/mem_encrypt_amd.c        |   8 +-
+ arch/x86/mm/pat/set_memory.c         |  59 ++++--
+ drivers/acpi/tables.c                |  14 ++
+ include/acpi/actbl2.h                |  19 +-
+ include/linux/cc_platform.h          |  10 -
+ include/linux/cpu.h                  |   2 +
+ kernel/cpu.c                         |  12 +-
+ 30 files changed, 685 insertions(+), 156 deletions(-)
+ create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+ create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
 
 -- 
-Cheers,
-
-David / dhildenb
+2.43.0
 
 
