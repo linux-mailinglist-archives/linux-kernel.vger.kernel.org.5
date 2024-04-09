@@ -1,143 +1,108 @@
-Return-Path: <linux-kernel+bounces-136970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 993DD89DA75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:38:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B002689DA66
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:37:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4DF71C21DFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B6D828CF8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB035132814;
-	Tue,  9 Apr 2024 13:35:21 +0000 (UTC)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D2E12F5AD;
+	Tue,  9 Apr 2024 13:33:14 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2D712F376;
-	Tue,  9 Apr 2024 13:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7423412EBF7;
+	Tue,  9 Apr 2024 13:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669721; cv=none; b=bTIkRmSL6uyIzcAPzKhiy5WBLM88fdCzwZ/MBr03kgE7j+ohBl9on56I0YZDfhQVLxsJPigfdeWhm2uRggglP0ZL/5Z6hp+dLHYeGUL5jx5Yu/Eni073tDuKVuafwFx3NuE1r/mr+p5RpePAq4Udh7RySMiFaZbm6SLBssuGd9c=
+	t=1712669594; cv=none; b=QC3Yr2v0hp85a0OOkvVDpsRcmtPWG0VZYrwK4exsxNespWyAGLXJfwIVpPjPQ4IGNoSNX8Oee39Oo/SQOHhfpTuvm3hWudceTVkfYc6zJXBxpJ962LCamvKF+n8jdqi9uEJSaj68Q0OAMv+rHd/MBF6sclIw5y+kcvTOUzDc5wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669721; c=relaxed/simple;
-	bh=f9nTh0EfACiC5uRI99Wmu8UneIV2W1Qj3qTkTY7pT+w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ay/qFASev01rOsV4gzGj+DonaYrd8l1VfAT61li2RCwMjU3yPw3L//y97nvOurLn/8JYnHCE8FJcc+VL6dYIfMQQDzHuFUc8KftFQIdPIQmuoTYFJAo7F2m2IZj9zwMzINBWVF8bWoVuL67ve2cE/SOR+DpZPUn5UR+I7T8AEdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso6298157a12.0;
-        Tue, 09 Apr 2024 06:35:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712669718; x=1713274518;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O6lqza+y20jmgL1FUPxo6ruPEO/LBvmrDYaeR7EHG0c=;
-        b=kMI6byNhrmySNkJU/VxQedIEhwmjRpfTqBXbkipVlQh8zogrry3xfd1M403xJ7s2l4
-         +QILkVK4WrkrmaNIcQPrQfdL5qs6zTcHaVFqfW1DzCHe7IhaDhrZ3i5Ff7XVqaRoS378
-         kgiu8CszkCfr/mXPbZjYtwqOAgEGptsF9uB8ZoLv1gG2c9lo6Fl2ikX/y9pxh8X8bHGs
-         z0fqI5OCCIGA6gVJTYAKxHVgdzjn8fBPbdPH5Fbd6RwQNA88HTfPlh81p9VhGNohQ9a2
-         jmEnibFW/FAj3810L0BrKDgAxg2OMHeIWnpnGTdq1ENmfXdxzhaR4y3x7mMgkq0RwJ70
-         9XlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWCWuVk9mkAg3h3gvl37cAFLGYfrLBhrrgkK5eQNK3rOqoLr1cKpmIlk9OvCU8oU4OhP+prCXtKbV/iLCkFpAMDhipKkuNj2mQxfTxMMmLAStyrLwS9G5RCjHtN8Ml4G9yf
-X-Gm-Message-State: AOJu0Ywa9hzETCsr8O9J7HS0Vwtt6ep/NP3BKLC6pBQeyuf/IhFGCBtW
-	opxietGiNBp4xgYCsKety08PjZ+qNLqni+LlHXjHppnZCHY/TaDG9MEwVYn3
-X-Google-Smtp-Source: AGHT+IF4N0TpR/1q5j5evnyE0GihgQz26tXPuy2DErdFrHORTKmYrFyu8s8q3bMATTb1WkDayA2P9Q==
-X-Received: by 2002:a17:906:694f:b0:a51:b228:9282 with SMTP id c15-20020a170906694f00b00a51b2289282mr5964031ejs.44.1712669717916;
-        Tue, 09 Apr 2024 06:35:17 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170906830500b00a4734125fd2sm5704159ejx.31.2024.04.09.06.35.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 06:35:17 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	=?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-	Oliver Neukum <oneukum@suse.com>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org (open list:USB NETWORKING DRIVERS)
-Subject: [PATCH net-next 1/2] net: usb: qmi_wwan: Leverage core stats allocator
-Date: Tue,  9 Apr 2024 06:33:05 -0700
-Message-ID: <20240409133307.2058099-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712669594; c=relaxed/simple;
+	bh=dIMLKmF8QMvsWVI+FEoCYWgHq7jZ/1UVqaTJ39fpZHU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A66wcOSPuDyW2jJRXGBY1Heq5YN/ziu94NYPCjOxOiOOlo9xtLf3Ple7M738uafkaM23Vh0WKIQ1CqM2wmVyorETmPPYzqXfMF8KeAeD7nZ0LaUYUBU428RCTT9GuBhYnElYcaBLlEPFSsquTJaQ6+lUv8DSrqGwmsBRdDRCQQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-CSE-ConnectionGUID: DHXifDb1StaVzDuwMDjTAg==
+X-CSE-MsgGUID: qT7JqERoS+CCJ8vil5uI4g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="25424037"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="25424037"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 06:33:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915399959"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="915399959"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 06:33:08 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1ruBaz-00000002od9-1FNV;
+	Tue, 09 Apr 2024 16:33:05 +0300
+Date: Tue, 9 Apr 2024 16:33:05 +0300
+From: Andy Shevchenko <andy@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+	Gregor Riepl <onitake@gmail.com>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: In kernel virtual HID devices (was Future handling of complex
+ RGB devices on Linux v3)
+Message-ID: <ZhVDkf0P6vRLy-Ql@smile.fi.intel.com>
+References: <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
+ <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
+ <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+ <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
+ <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
+ <aec1d22d-9e59-4dfc-b108-5ba339b0e76a@redhat.com>
+ <CANiq72kPXsTjzptK7tSC=RygEpWHJHz1-QXuZv8qPHfGLyzrDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72kPXsTjzptK7tSC=RygEpWHJHz1-QXuZv8qPHfGLyzrDw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+On Mon, Mar 25, 2024 at 07:38:46PM +0100, Miguel Ojeda wrote:
+> On Mon, Mar 25, 2024 at 3:25 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> >
+> > +Cc: Bentiss, Jiri
+> 
+> Cc'ing Andy and Geert as well who recently became the
+> maintainers/reviewers of auxdisplay, in case they are interested in
+> these threads (one of the initial solutions discussed in a past thread
+> a while ago was to extend auxdisplay).
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
+Without diving into this, just sharing my view on auxdisplay subsystem:
+I consider it _mostly_ (like lim->100% mathematically speaking) as for
+7-segment and alike displays, not any comples RGB or so devices. If
+those devices are capable of representing characters/digits in similar
+way, we may export linedisp library for them to utilise.
 
-Remove the allocation in the qmi_wwan driver and leverage the network
-core allocation instead.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
-PS: This was compiled-tested only due to lack of hardware.
----
- drivers/net/usb/qmi_wwan.c | 8 +-------
- drivers/net/usb/usbnet.c   | 1 +
- 2 files changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index e2e181378f41..5528a9c2b9d6 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -133,6 +133,7 @@ static void qmimux_setup(struct net_device *dev)
- 	dev->flags           = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
- 	dev->netdev_ops      = &qmimux_netdev_ops;
- 	dev->mtu             = 1500;
-+	dev->pcpu_stat_type  = NETDEV_PCPU_STAT_TSTATS;
- 	dev->needs_free_netdev = true;
- }
- 
-@@ -257,12 +258,6 @@ static int qmimux_register_device(struct net_device *real_dev, u8 mux_id)
- 	priv->mux_id = mux_id;
- 	priv->real_dev = real_dev;
- 
--	new_dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!new_dev->tstats) {
--		err = -ENOBUFS;
--		goto out_free_newdev;
--	}
--
- 	new_dev->sysfs_groups[0] = &qmi_wwan_sysfs_qmimux_attr_group;
- 
- 	err = register_netdevice(new_dev);
-@@ -295,7 +290,6 @@ static void qmimux_unregister_device(struct net_device *dev,
- 	struct qmimux_priv *priv = netdev_priv(dev);
- 	struct net_device *real_dev = priv->real_dev;
- 
--	free_percpu(dev->tstats);
- 	netdev_upper_dev_unlink(real_dev, dev);
- 	unregister_netdevice_queue(dev, head);
- 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index e84efa661589..f3f7f686fe9c 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1733,6 +1733,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	dev->hard_mtu = net->mtu + net->hard_header_len;
- 	net->min_mtu = 0;
- 	net->max_mtu = ETH_MAX_MTU;
-+	net->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 
- 	net->netdev_ops = &usbnet_netdev_ops;
- 	net->watchdog_timeo = TX_TIMEOUT_JIFFIES;
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
+
 
 
