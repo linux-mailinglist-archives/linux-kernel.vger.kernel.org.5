@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-136954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 041CB89DA44
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:33:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7144789DA48
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:33:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945501F2253A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:33:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6D4BB217C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 13:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A33D1327EC;
-	Tue,  9 Apr 2024 13:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD04713281C;
+	Tue,  9 Apr 2024 13:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HZk0uG4t"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lRa+fbQb"
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCC8131BCB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA69D131E34
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 13:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712669165; cv=none; b=vGaNTrd23IW2TzYtGeo5meMecUDF3KSRg86tbABgpIkjF/GjigJJBeN3MFa1qHyw7UCdDM2nmvGGIUCvGBWjYL8xBD4dRAL/IMDueT+qr8N1FU2Mo6+Z5VXPNBsnMLj0vPFdftuLat/t6y5xkzP7KGgQZ9GJshqZ1kkFHTke430=
+	t=1712669166; cv=none; b=Gf3MJrNW/0L8jY2GuiMKdlx96ujr42ZOb4+IKDVPXiXXnzbBhc2s2o76TVMXlF2bBQ74bJNYSkvbyabmamRE1mYMGm+2J5jQOwnfortpQ4GErejtYn/HZpCMAxD4Q8jVEx1O88I4u7VsxgAywjKU/12Gj3CeLrJSujzcss+ulgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712669165; c=relaxed/simple;
-	bh=Dap23lUACnoJxX+/EWpT/enfYH0mEU+7fwoVnAZoAcw=;
+	s=arc-20240116; t=1712669166; c=relaxed/simple;
+	bh=iFX/kDaK9uqUiX85yO7iy5cASmjIam5Hn5owEa5VUUc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HrFM2UITwknsZNS/Xht9t8irLuvaaSKcpSm+qm7LyUkYHvujfX2hulcMNmp1fsyGYfVxg3XlDVynA5HLd5oR/MnyAKAA4tcTwVhiK1B6UMFDIxZCyKhxLKqoMOBZxqcqojvOraOdp6S+6lhHIyJuPvOvGpxZv+cRQSC75Ehq+MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HZk0uG4t; arc=none smtp.client-ip=217.70.183.193
+	 In-Reply-To:To:Cc; b=Xdkbh2CzHYVDDQXMVp25CFuKC/AXeMMGMz9kVMg/KqYBJnZqLPmHKjW7JO6klQ9hVmerIb22vNdTFZYmFC5avffuvv2V+TUhjdDav1qFDk/sk10aPRb51rkVVDEGKwAi1ot3HNknINTJJbUYS0l1K1s8a2RoFGOSBuut5AjqQDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lRa+fbQb; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 561B6240008;
-	Tue,  9 Apr 2024 13:26:01 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 65232240009;
+	Tue,  9 Apr 2024 13:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712669162;
+	t=1712669163;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8vk8BNwGJAqLAVQ9fBvlyUPWgU+vNkf+DhOlg0zqa0Y=;
-	b=HZk0uG4ti889oBfCdvCY1MxTUwOlSf/9ZUP2j5SU3IoAvZZDEupUSmVuU3dpKqyJyNKkE5
-	+Zl5gz2P3W/MAs6qCJy2DBanyX+opk/f4gdvAhlMI2UpQhZnNcO+gsy3Gvp1CVU3CBDxgC
-	tgEy1FUMfdEycuhGJfPucJNwuDn7XJ0rL+3dRzy+cz+nyZzGrWp2xPhFFJnin3HqCevKDp
-	C+cNxtfbynlqLtt37JwkwGlmxGxigVj5wKyOHsPRFDz+9/eWD6m+Vw6tEx9Ar9Hp1FPX+U
-	W5aWoMYkR1NA/mKXLJxPT166+T2AW9jiyg6nhQbe6eF6roIjIhIxuyPE8ngdJw==
+	bh=/5y7cEADgJR1FrJhDqhCbiuvpO5e8sfvTGUsiJEPc5I=;
+	b=lRa+fbQb+Labjf5gpNtFPKXIyntOd1SvvYRJ8bZiE9MMgzF9Be1T5v8heL2qBj0unxzfGC
+	VGYAApd5BMUwRXfzm9ERpZPcYb/OkK7lLhgrTY4BSUMmJLyIxJ8IKFoJ9bdSTpXvwPEuSK
+	3ptnJVCGyBqmanssMpSujFyGtlnA5143VnqT3s8Gj1aG9M5kTdBqWiY8bXkAQnvHDVOl1h
+	r4NYrZIRI1oRp3skhVoWNz3LE4vyB1aBBg/Z02Ot+d0G5zP+zRN5cvXgOtLuey6po4v8DG
+	3IjDNJ5ftXp6xDD+oe2D+TrQjtPjircrHVcr8SymXiePwcq5y6Emwh46K4nc4A==
 From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Tue, 09 Apr 2024 15:25:34 +0200
-Subject: [PATCH v6 16/17] drm/vkms: Add how to run the Kunit tests
+Date: Tue, 09 Apr 2024 15:25:35 +0200
+Subject: [PATCH v6 17/17] drm/vkms: Add support for DRM_FORMAT_R*
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240409-yuv-v6-16-de1c5728fd70@bootlin.com>
+Message-Id: <20240409-yuv-v6-17-de1c5728fd70@bootlin.com>
 References: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
 In-Reply-To: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
 To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
@@ -72,57 +72,180 @@ Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
  thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
  nicolejadeyee@google.com, Louis Chauvet <louis.chauvet@bootlin.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1115;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5425;
  i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=jNe6Bg7KTpSpUer0keg/YQY7YaZCbb33mwHbW/nyqss=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmFUHTMLf4/jCJUHnHT+Fa6Naia0FVWTgBVdY/R
- WVGrT779H+JAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZhVB0wAKCRAgrS7GWxAs
- 4gigEADYRmbR0OEQ2q8wVP/YVMKRdQzaQGbLpuwp2ZSY5c0rnsIdrEbcSL/ljP8Bhi7yvGp5L9N
- C6PJu8hhe6MJRWHolg5ah6CfB0ckL7KR+0oxdGUbVsGaYlvbMyjVIz/Z0vMoQ2OHRIX2s4S9LBO
- H9kuvAq7M6mnF0DCEIb4TeZCJxtAT/S1XBV3izXHzwguAND5PBlnCeRedCETea4DGjwk6Do1xgH
- VeDUpmh3+AgT4omzQDNZEzRjo5siLDS59gjCmJOWFM1fN0eK+mWCk9jEfpK9cZwy4qG8S8w1ldQ
- 28OnlhY25qWozgisQkM27IvukZQUtEMhVfsPXeCDGbsEfyLdT4jvKH6fHdejxNR5Wg+yYdmdIgV
- 52jFT4UUCda0zDsM+dDufAs0X+XH/RvQAPIu/fg6Nkmguz3z3oVl+oIaihmFEDk+KIsvpJaXI3s
- MQ0al+SSDqB9WYWOQoPny6M1sF9J45Gh7m6LqxTzz0p5v4wWtZ//8cx36N4mJx3w4zYvOp82ths
- AiHeBA4GEjjJ2TLUmvq2tOXXPMh9z6gv7VFuHAGpona7j55hw7R8X2PZw66h11HthHeZ63NsmZ0
- 5Gr3nGLQHflUO5dZ6MfaDSPRbnJsfGLBV0N7wqPZuom5y8FPpKjo6mLLEQ1kfkkn+SQ62pkNiAM
- xTxSHObriauBylQ==
+ bh=iFX/kDaK9uqUiX85yO7iy5cASmjIam5Hn5owEa5VUUc=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmFUHUkwcowQGm/PfTR2bdUt4cq74nbLc5jeYX/
+ vRcUuf1WaaJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZhVB1AAKCRAgrS7GWxAs
+ 4qIRD/99A6U72HS1NntwwJjUFS5m/94kekCIgsGmI3mcLS3ofZVt4cqo6TUToG59jAwOiB0W8GM
+ wjafDy6boZh8p4E+wWT+z9U0eh2crRi0kv2zhUHX/JQzIwHiZiMWoXCp30x8qVK6HavB+TOZNzi
+ qZy24YaygqBxG7S8zsPhev6eIjw/S1oysruG4ihKlqgVDRE2aK0c0OCUSc3UFtEzZ/uRuiZZE21
+ XYXKWTNNK69NMZg9sqzA/o824BWyfMJwOOfBzWsQHNTStMFXwz3Jo//v2QeoVRk2bfQq6IG/2+A
+ Hx8yUVaD+GuqCmUuwSIZJGlY3DUhbranBTyri6NUPC4hfDMB2g2kHuzKggbriPYBCFgWT08kT2X
+ Byzqz1/5zJs5bEuiFe/f0tqt9MhLOvrDeayZ/MFLWri/TQg9piiq8WjfIq4R/KjsPpDJU3NeSR+
+ E+FH55fS1YKf6jWdkiLgeDPj0Cl6P/SEiSHMloA7SR16l+oTMHnj/znIjdWlkQK13oh667FX8BF
+ uk4fER4nA69i8bCYPI+GI9+T4LsTBZYTYf1NpdfR8ulF/Q31Il8xSPqVPgC6iWTRhjgQOHp3U1j
+ TzyflzhriHxoVqlIMdJoBRec0YUJUinvkxAXqybb1HKAxW3i42NTcuOEjB8xDqTrqk+OTyDz8Cs
+ FvR76faSH0SUcKA==
 X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
  fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
 X-GND-Sasl: louis.chauvet@bootlin.com
 
-From: Arthur Grillo <arthurgrillo@riseup.net>
+This add the support for:
+- R1/R2/R4/R8
 
-Now that we have KUnit tests, add instructions on how to run them.
+R1 format was tested with [1] and [2].
 
-Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+[1]: https://lore.kernel.org/r/20240313-new_rotation-v2-0-6230fd5cae59@bootlin.com
+[2]: https://lore.kernel.org/igt-dev/20240306-b4-kms_tests-v1-0-8fe451efd2ac@bootlin.com/
+
 Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 ---
- Documentation/gpu/vkms.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/gpu/drm/vkms/vkms_formats.c | 101 ++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/vkms/vkms_plane.c   |   4 ++
+ 2 files changed, 105 insertions(+)
 
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index 13b866c3617c..5ef5ef2e6a21 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -89,6 +89,17 @@ You can also run subtests if you do not want to run the entire test::
-   sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "sys:/sys/devices/platform/vkms"
-   sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_flip --run-subtest basic-plain-flip
+diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+index ca9028c1ef1a..7f49995686fd 100644
+--- a/drivers/gpu/drm/vkms/vkms_formats.c
++++ b/drivers/gpu/drm/vkms/vkms_formats.c
+@@ -237,6 +237,11 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(const u16 *pixel)
+ 	return out_pixel;
+ }
  
-+Testing With KUnit
-+==================
++static struct pixel_argb_u16 argb_u16_from_gray8(u8 gray)
++{
++	return argb_u16_from_u8888(255, gray, gray, gray);
++}
 +
-+KUnit (Kernel unit testing framework) provides a common framework for unit tests
-+within the Linux kernel.
-+More information in ../dev-tools/kunit/index.rst .
-+
-+To run the VKMS KUnit tests::
-+
-+  tools/testing/kunit/kunit.py run --kunitconfig=drivers/gpu/drm/vkms/tests
-+
- TODO
- ====
+ VISIBLE_IF_KUNIT struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 channel_1, u8 channel_2,
+ 							   const struct conversion_matrix *matrix)
+ {
+@@ -302,6 +307,94 @@ static void magenta_to_argb_u16(const struct vkms_plane_state *plane, int x_star
+ 	}
+ }
  
++static void Rx_read_line(const struct vkms_plane_state *plane, int x_start,
++			 int y_start, enum pixel_read_direction direction, int count,
++			 struct pixel_argb_u16 out_pixel[], u8 bit_per_pixel, u8 lum_per_level)
++{
++	struct pixel_argb_u16 *end = out_pixel + count;
++	u8 *src_pixels;
++	int rem_x, rem_y;
++
++	WARN_ONCE(drm_format_info_block_height(plane->frame_info->fb->format, 0) != 1,
++		  "%s() only support formats with block_h == 1", __func__);
++
++	packed_pixels_addr(plane->frame_info, x_start, y_start, 0, &src_pixels, &rem_x, &rem_y);
++	int bit_offset = (8-bit_per_pixel) - rem_x * bit_per_pixel;
++	int step = get_block_step_byte(plane->frame_info->fb, direction, 0);
++	int mask = (0x1 << bit_per_pixel) - 1;
++
++	if (direction == READ_LEFT_TO_RIGHT || direction == READ_RIGHT_TO_LEFT) {
++		int restart_bit_offset;
++		int step_bit_offset;
++
++		if (direction == READ_LEFT_TO_RIGHT) {
++			restart_bit_offset = 8 - bit_per_pixel;
++			step_bit_offset = -bit_per_pixel;
++		} else {
++			restart_bit_offset = 0;
++			step_bit_offset = bit_per_pixel;
++		}
++
++		while (out_pixel < end) {
++			u8 val = ((*src_pixels) >> bit_offset) & mask;
++
++			*out_pixel = argb_u16_from_gray8(val * lum_per_level);
++
++			bit_offset += step_bit_offset;
++			if (bit_offset < 0 || 8 <= bit_offset) {
++				bit_offset = restart_bit_offset;
++				src_pixels += step;
++			}
++			out_pixel += 1;
++		}
++	} else if (direction == READ_TOP_TO_BOTTOM || direction == READ_BOTTOM_TO_TOP) {
++		while (out_pixel < end) {
++			u8 val = (*src_pixels >> bit_offset) & mask;
++			*out_pixel = argb_u16_from_gray8(val * lum_per_level);
++			src_pixels += step;
++			out_pixel += 1;
++		}
++	}
++}
++
++static void R1_read_line(const struct vkms_plane_state *plane, int x_start,
++			 int y_start, enum pixel_read_direction direction, int count,
++			 struct pixel_argb_u16 out_pixel[])
++{
++	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 1, 0xFF);
++}
++
++static void R2_read_line(const struct vkms_plane_state *plane, int x_start,
++			 int y_start, enum pixel_read_direction direction, int count,
++			 struct pixel_argb_u16 out_pixel[])
++{
++	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 2, 0x55);
++}
++
++static void R4_read_line(const struct vkms_plane_state *plane, int x_start,
++			 int y_start, enum pixel_read_direction direction, int count,
++			 struct pixel_argb_u16 out_pixel[])
++{
++	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 4, 0x11);
++}
++
++static void R8_read_line(const struct vkms_plane_state *plane, int x_start,
++			 int y_start, enum pixel_read_direction direction, int count,
++			 struct pixel_argb_u16 out_pixel[])
++{
++	struct pixel_argb_u16 *end = out_pixel + count;
++	u8 *src_pixels;
++	int step = get_block_step_byte(plane->frame_info->fb, direction, 0);
++
++	packed_pixels_addr_1x1(plane->frame_info, x_start, y_start, 0, &src_pixels);
++
++	while (out_pixel < end) {
++		*out_pixel = argb_u16_from_gray8(*src_pixels);
++		src_pixels += step;
++		out_pixel += 1;
++	}
++}
++
+ static void ARGB8888_read_line(const struct vkms_plane_state *plane, int x_start, int y_start,
+ 			       enum pixel_read_direction direction, int count,
+ 			       struct pixel_argb_u16 out_pixel[])
+@@ -625,6 +718,14 @@ pixel_read_line_t get_pixel_read_line_function(u32 format)
+ 	case DRM_FORMAT_YVU422:
+ 	case DRM_FORMAT_YVU444:
+ 		return &planar_yuv_read_line;
++	case DRM_FORMAT_R1:
++		return &R1_read_line;
++	case DRM_FORMAT_R2:
++		return &R2_read_line;
++	case DRM_FORMAT_R4:
++		return &R4_read_line;
++	case DRM_FORMAT_R8:
++		return &R8_read_line;
+ 	default:
+ 		/*
+ 		 * This is a bug in vkms_plane_atomic_check(). All the supported
+diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+index 8f764a108b00..67f891e7ac58 100644
+--- a/drivers/gpu/drm/vkms/vkms_plane.c
++++ b/drivers/gpu/drm/vkms/vkms_plane.c
+@@ -30,6 +30,10 @@ static const u32 vkms_formats[] = {
+ 	DRM_FORMAT_YVU420,
+ 	DRM_FORMAT_YVU422,
+ 	DRM_FORMAT_YVU444,
++	DRM_FORMAT_R1,
++	DRM_FORMAT_R2,
++	DRM_FORMAT_R4,
++	DRM_FORMAT_R8,
+ };
+ 
+ static struct drm_plane_state *
 
 -- 
 2.43.0
