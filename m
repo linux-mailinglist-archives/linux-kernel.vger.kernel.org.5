@@ -1,124 +1,132 @@
-Return-Path: <linux-kernel+bounces-136513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1958989D504
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:00:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887EE89D50D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 11:02:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D28B28391B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:59:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45AE6B22A5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 09:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BB67E78F;
-	Tue,  9 Apr 2024 08:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E427EF04;
+	Tue,  9 Apr 2024 09:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="vH8VJKBV"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KpQFxEST"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21527E580;
-	Tue,  9 Apr 2024 08:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7F87E580
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 09:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712653189; cv=none; b=i+7zl/xnMZRrNzs6/gzQagqHBcqHrOXw4lo/vXyHObWOIw0L/YFHF+UiaZsC5ZD4Jf0T3GC2YeEk3y4hAa7r3b4+5U9h0HhfCCRsbdumjPwWRLGSDOeZZOIurOSwRNmiXMSKGkqlKef2z6TIaU491qVwGX6uFYyz3C1iwPmJosU=
+	t=1712653337; cv=none; b=Q876RKp6wTOabJlzEMy70fZufzqx8jqjGcGFzJgyuFVAJ1sVAKtdPeR05Hdkx4qdVhsWZ55ENgZmKkzkUwcBUbzOXvERRP2bd/2sGfWN6DJPX8ThcGmV/JgtCp5ewN/burfkoOeN6/rdrt7LBSJEkzveyB8VXcNaAjTdLU7WB5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712653189; c=relaxed/simple;
-	bh=Ji9qU29b0LOvBoHZAKGFxAoA21Xv44MATWXua9pnMVk=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kxRVYJz1crO2Od3Tp/oeh2zQBSYG1kcIy5KiwYO/xxj4g44dgkV7vOgWon+Hcyups6dgeLxQgg5ONrIeZ7GU7BrQTBH4iMF0fOX+rssAoA+SO/jd122JT6cYeWg4LSlCmeGnVkCbItpm2ZoAUs51YCj9u9fzC7lCcAxdAk3xwvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=vH8VJKBV; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=q64bAyl+Qg6fQaVjCQKqO/8qybmHcNNCXqZE2H37A1A=;
-	t=1712653187; x=1713862787; b=vH8VJKBVhh9f70N0wksw9vwHlD+oMRxRxsA5JMV6duo/PY9
-	mBQ9RnONVPltUJrzI8c/sj7fN3PlaUkwgTRAh+B6zTwEXeJoUSFSevPDYemtrVJ27WfgKJ/RFQxKp
-	hqRmjUjlIVryoyF7fdRA5/hUuj79zSYvxZa6yvJNV0QK8tsyCHr8vQjZxC4u4D00L9XVf4FamO22S
-	8vPqbnqCGGVsd23wKWx1MlGx8qULg1SJuXdKuw8EtmisqKTROZugy0fD1UpoFcvp2I90Vr4wJNCzu
-	nRjBKmWWqd9Z96PWdrePBPJm7tGDGxZtQP9/0kXSMT0Uybl1sgzDKSIt7vcL4Luw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1ru7KS-0000000HUKi-05fi;
-	Tue, 09 Apr 2024 10:59:44 +0200
-Message-ID: <157c703381624d331c7de4aeb2b2802789239456.camel@sipsolutions.net>
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Linux regressions mailing list <regressions@lists.linux.dev>, Ben Greear
-	 <greearb@candelatech.com>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-leds@vger.kernel.org
-Date: Tue, 09 Apr 2024 10:59:42 +0200
-In-Reply-To: <93494f0b-ad05-4566-b454-fa36a7dac248@leemhuis.info>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
-	 <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
-	 <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
-	 <05545ecdd2b05223b9204131b0ce9ba33460f44c.camel@sipsolutions.net>
-	 <93494f0b-ad05-4566-b454-fa36a7dac248@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712653337; c=relaxed/simple;
+	bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
+	h=From:To:Cc:Subject:In-Reply-To:MIME-Version:Content-Type:
+	 References:Date:Message-ID; b=Y5E+rl1jw/u75KA0Wnr2c1fDZbXUwzym81GJqefUCSiputFPBzF9PDsLAqX3rmSyo562A4JKbQA7RiFmj6ZtigikWMdCqNTytQxJCrdcvlrjOIrH3elUuPjwQI3Nd5w6oIHjdUkIXu5wLkLNvUp6nG6qNlRb5eINXJnAKb5CKXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KpQFxEST; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712653335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
+	b=KpQFxEST1MCnVLCSyly/XAxCsNUpnTs2CPXMKqFo4q83hy1A0QgReJY/wklwqGYqFDeuyE
+	MTEKNSii8HspAk6j3HdSc1M4c69DgXbbajeFMpTa4X2/iPR8EZ8C6gCpyaYmLELklgOg+Y
+	rdw4WryVTm5KOVY4B3+vge7HWWS7oUA=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-JHQrmNZINiyN_VYSu5uIpQ-1; Tue, 09 Apr 2024 05:02:14 -0400
+X-MC-Unique: JHQrmNZINiyN_VYSu5uIpQ-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78d3352237cso770250885a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712653333; x=1713258133;
+        h=message-id:date:references:mime-version:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=euhpq35wFK9rmemS5feCCQzrNuJRo+rAgFPHnTkC0AQ=;
+        b=TvxI/sVaQ0rAC+wK5AB9nlfpHEO4yj12qNqgodJVPea0Y+yQuKNKq2QQSyL3paW4IW
+         dN+4soKM28GS3lSZFNqTH+kEnYXT8A/w4hS8ezQcjhkbVFbocR9YkAQTQErU58LRnqEh
+         Wgmkk09A36w7LrQpayr6r/uuZqOjH5aL4euBsFF2+bnCw2bcXsmfVVQDL9M8olYTD4B7
+         yKtXFnKV5YkOXJx6OGrxr6X8IfXmDtNkIraUjJ13HtxLCVHKHKgU6L8suuF0ssUZl3FF
+         9VgyfsCZNmk2zSahIuuKDM6MV4PuDxSH/1dnpKJCspzDL7VMuetCdYvFoxrp324QNxOT
+         I4Cw==
+X-Gm-Message-State: AOJu0YwWzLLhkwcKBWgGlvHcNgHzDiVv8Vdmk5O7m1MDhuOpbCLy8XeF
+	WmLCMd8rGtGs1yugHCpMBodmFgj/vj7s/3tXaszb/EFiHxwhI8+cHEryKhuDEh44nwncume/B28
+	MHSDfK5fBcmqsK2DMz/r4nXk7ga2gbQDqP14d6d4QEQIMH83cC1+qQZu8HmQ8ng==
+X-Received: by 2002:a05:620a:198e:b0:78b:b0c2:17b6 with SMTP id bm14-20020a05620a198e00b0078bb0c217b6mr3047966qkb.11.1712653333507;
+        Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfJ9YI9fXu3bzCu+1ZKDrEFWqdCINgH4B4WK2Fj7Lg7ZxEGYh8Q7hvW22usdjnP1/pni2urA==
+X-Received: by 2002:a05:620a:198e:b0:78b:b0c2:17b6 with SMTP id bm14-20020a05620a198e00b0078bb0c217b6mr3047929qkb.11.1712653333008;
+        Tue, 09 Apr 2024 02:02:13 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id h6-20020ac85486000000b004347d76f43csm2678126qtq.79.2024.04.09.02.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 02:02:12 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>,
+ Luis Chamberlain <mcgrof@kernel.org>, josh@joshtriplett.org, Kees Cook
+ <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
+ Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
+ Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Petr
+ Mladek <pmladek@suse.com>, John Ogness <john.ogness@linutronix.de>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>, "Naveen N. Rao"
+ <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v3 06/10] scheduler: Remove the now superfluous sentinel
+ elements from ctl_table array
+In-Reply-To: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-6-285d273912fe@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain
+References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
+ <20240328-jag-sysctl_remove_empty_elem_kernel-v3-6-285d273912fe@samsung.com>
+Date: Tue, 09 Apr 2024 11:02:04 +0200
+Message-ID: <xhsmhil0qaoz7.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On Tue, 2024-04-09 at 10:47 +0200, Linux regression tracking (Thorsten
-Leemhuis) wrote:
-> On 08.04.24 18:35, Johannes Berg wrote:
-> > On Wed, 2024-04-03 at 12:35 -0700, Ben Greear wrote:
-> > > >=20
-> > > > So, deadlock I guess....
-> > > >=20
-> > > >  =C2=A0INFO: task kworker/5:13:648 blocked for more than 180 second=
-s.
-> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Not tainted 6.9.0-rc2+ #23
-> > > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this me=
-ssage.
-> > > > task:kworker/5:13=C2=A0=C2=A0=C2=A0 state:D stack:0=C2=A0=C2=A0=C2=
-=A0=C2=A0 pid:648=C2=A0=C2=A0 tgid:648=C2=A0=C2=A0 ppid:2=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 flags:0x00004000
-> > > > Workqueue: events deferred_probe_timeout_work_func
-> > > > Call Trace:
-> > > >  =C2=A0<TASK>
-> > > >  =C2=A0__schedule+0x43d/0xe20
-> > > >  =C2=A0schedule+0x31/0x130
-> > > >  =C2=A0schedule_timeout+0x1b9/0x1d0
-> > > >  =C2=A0? mark_held_locks+0x49/0x70
-> > > >  =C2=A0? lockdep_hardirqs_on_prepare+0xd6/0x170
-> > > >  =C2=A0__wait_for_common+0xb9/0x1d0
-> > > >  =C2=A0? usleep_range_state+0xb0/0xb0
-> > > >  =C2=A0? __flush_work+0x1ff/0x460
-> > > >  =C2=A0__flush_work+0x287/0x460
-> > > >  =C2=A0? flush_workqueue_prep_pwqs+0x120/0x120
-> > > >  =C2=A0deferred_probe_timeout_work_func+0x2b/0xa0
-> >=20
-> > This seems ... complex.
-> >=20
-> > Does changing iwlwifi's request_module() to request_module_nowait() in
-> > iwl_req_fw_callback() (only) fix it? I think we can do that, we don't
-> > really care at that point, and the issue here seems to be waiting for i=
-t
-> > while also other modules are loading and due to the hashing in
-> > idempotent() (kernel/module/main.c) it can't make progress.
->=20
-> Not my area of expertise, so listening to me my send you off-track.
->=20
-> Might this be related to the issue discussed here:
-> https://lore.kernel.org/all/ZhRD3cOtz5i-61PB@mail-itl/
->=20
-> See also:
-> https://lore.kernel.org/all/2695e9db-a5a0-4564-9812-a50b91fb1b46@gmail.co=
-m/
+On 28/03/24 16:44, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
+>
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+>
+> rm sentinel element from ctl_table arrays
+>
+> Acked-by: "Peter Zijlstra (Intel)" <peterz@infradead.org>
 
-Don't think so, that was related to devm and module unload, neither
-seems to be the case here.
+Tested-by: Valentin Schneider <vschneid@redhat.com>
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-johannes
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+
 
