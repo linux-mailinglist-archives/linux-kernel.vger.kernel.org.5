@@ -1,78 +1,81 @@
-Return-Path: <linux-kernel+bounces-136861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9EC989D921
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6C789D90E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:17:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9103E281ED5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:21:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA6D628A691
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F3012D744;
-	Tue,  9 Apr 2024 12:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D8712D77B;
+	Tue,  9 Apr 2024 12:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="TED4AZaz"
-Received: from out203-205-251-36.mail.qq.com (out203-205-251-36.mail.qq.com [203.205.251.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lt5fXBfk"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7C512A14A;
-	Tue,  9 Apr 2024 12:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19074F883;
+	Tue,  9 Apr 2024 12:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665270; cv=none; b=jBy7s7ECE3lmwFx2FQrcK63/szidOfA53bK8wVht6wWuEnwTPIxwvtcB4UtGn5KUAA2nqZGFqcrwQCk0TX41ATMc4If6nrCFMDcXeqi+1fD7VLmQHPuU6ruom7GXdLfP5c7sufhTBQ9tLaISowlsuf2xUR2tqbpxpCc/al/o0to=
+	t=1712665061; cv=none; b=d2OHnBbt64FZy+2Y3Oti7GA2xiAWHn4KG0oMxXHCC/qUA/H2XczStoeVmkD5lLf0lpsEqY9qYTEwIREeBrE+AeVNreNnrCZzoHaFQ4kSqJHL2TW3Gm2SrMr+6mcovfiOV3YH4tOu/ZpNfvjllg6YkdfirDqaSOWeqABetgo4gaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665270; c=relaxed/simple;
-	bh=jrEVmurNChR635/98zUzfrOEmqHwm6pz2Gs4BB4fM/U=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=awbG4Oshwxl7s0iU8L4+Zxrc7HRkSlgaZ0TR+eSWqs07nSReEXauQul+2WKQM9HoI9SAoLrgxC1o0h5xrdC3QTfzBz2V35Z3pZA8rkGkStICp3/NRW+ynQRl/vpXEDcnIThR2o4qhpWZcvzD7w7sz8V8UKmPA/nNXhuqYymQCVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=TED4AZaz; arc=none smtp.client-ip=203.205.251.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712664955; bh=m7LPkZgpaLXkeV+NlINHfY4LTk6VgwNuhgIGOECBU/Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TED4AZazadVmz02KoBj9mLpeTYvnEHFfTP8iTBVACg688gtmXlteo8M91K0WkE+1Q
-	 HWJcFy6mPs5O4JW98HZ3BMbR/ipDkp6DCjlFF9pbDzaHxqcToYINQvLGeaMC6jQyoE
-	 qYUmdJoqByqDc3557fBAie9tqG3UxI1SlqsNIxyk=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 3F42CEE6; Tue, 09 Apr 2024 20:15:52 +0800
-X-QQ-mid: xmsmtpt1712664952t56msp9an
-Message-ID: <tencent_15CA920ADD9ADDCA19654FBE8DB5A5B88D07@qq.com>
-X-QQ-XMAILINFO: M/NR0wiIuy70cja9QE9nCnfHiWUrmFrx6SyJ6zXMlwqNTeLWeP3YgIknp56w7q
-	 JaCfxar0ZIijJg+R38JDABsQpREo2ny8FmA++eunPiHn3wd1f9X+DN8NieKe4181Uwdrv7STZfCx
-	 mUySDtHLdAAJS5IWMVWyrgJCKOwL7Kz5liwDAjE2t9lleBP39qER6ARP9Z2JUnQ1moUl5IrGyMs6
-	 VRk1ZSyJ0iZJyBD/YSKnyH+1HgHN2XSOvn3lDh2BLVWhSMLq2WlNnKaBZgwQ0wy/yVxK3nFFbGZa
-	 CcF0VY0Siw7kGhHQunsrWl+nM+60zyXMuMaHSC9sPLVGO5qjKJpqhQZmCBoXqqSKJaQH3kT5ZTHH
-	 m5Gx2u3MTuG8pSQ3Zp9DObbouzrPBO9Yz+uFFPcn01lywH3f6WCNnHMfyIx0IsF+A1oHthWKi3oq
-	 53gYYu5kSTJfZG7C+3vtkn4eLKzpWj2Adt/si0TLhweklUBDS5CN0RyBVPa1Z6ZmcVuFbmJpb0MT
-	 FL5tsQylDQ3F6mI1Sw6fQhFpT1GgUR66E5KA68Z2rPXFYRDM0TjGDu/CEm80Ld21reoYvT1g4vS+
-	 qMM0QJz2vD7omVG3R/rfud8vZ7UqpbN++6/+bS3bV1v17oGN1Kb1XkxmP1svc8J0iFH6oxNgEc9c
-	 zLtcMEK4rd34V6ATnDbgkUz1YRXxJVhRwPwMyxetq/eW458H84yXR5x70J6cr0D5fnmR3/c6Mv2r
-	 opl4LEHypk/XtdvCAaQIUDq/BM/Afqk+38Y1JsJyq9+r/8oWxbIy+Raqrt1o3HynpC9wsaH9tgfK
-	 83TiVjxXNbURyLp1ilnPGyWm8Yw1slm8si/t18J0M/GU4Bo9/FZxYG9w/uv5p6PHCNOYNEgKd7/T
-	 vImOuyCNyJrgmBRDiX/UZBTE62Pk1RYBDuMPDFlG154/z0la5/K85nJIs1KDkqp0+qzRBO8t5yKJ
-	 NEQVpHh+MzkQ5CzIgRSU7666VU04hT0suaGsGCCZ4QJGe5GwvdKj74yd6JoDxcz4Dkw7VG6lw=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: pmenzel@molgen.mpg.de
-Cc: netdev@vger.kernel.org,
-	eadavis@qq.com,
-	johan.hedberg@gmail.com,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	luiz.dentz@gmail.com,
-	marcel@holtmann.org,
-	syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] net/socket: Ensure length of input socket option param >= sizeof(int)
-Date: Tue,  9 Apr 2024 20:15:53 +0800
-X-OQ-MSGID: <20240409121552.4098965-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <234da60a-709f-4430-b594-386b7c2b65f5@molgen.mpg.de>
-References: <234da60a-709f-4430-b594-386b7c2b65f5@molgen.mpg.de>
+	s=arc-20240116; t=1712665061; c=relaxed/simple;
+	bh=yTpd+BWqGy/dzKhGoAtCV3M5u9DuLZOaQnFsBurj/hA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hHsjUWJnCSY+DOf0Img3ZJCicWX6HFSMwxq7Mkd89gow0x4xxTr3PKUFy21EtG/PlH7Xf10MMwDMGHI5JdGvMA/OwIq+iPjwWHcMqOfx2A2MN/BpTtO/RZxFfX/q+mq4OH8DDpOYbdM53G6iOGSo4d3KU/UlhCHfC/pJEnmKV/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lt5fXBfk; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so2055943a12.1;
+        Tue, 09 Apr 2024 05:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712665058; x=1713269858; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Jqx/icbU3jj6O8zCfgxgC+Ni+cIZc9toLFwd7zueOI=;
+        b=Lt5fXBfkl+IKU/4tqZJITFwW69YkKlbg7OzveqkA5DfFCC2EG9BFxoiBATNjwnK3wu
+         28FTc5XArVAaLNByI1+j2iH3gruMGLAn9oicdlOdSCsmU9kkbmgXrpBHbedovK4PTAv5
+         wkl2aefTS7MBCJN2M4/Wtp0lXiBGjK62JOTsBlU47kQ4s92aOJkk0JCoBACkB40ltFXQ
+         ZxeZAwGKl9o2htl/YBkqFpkj55s6Xi9pvC5bdA5GQMrWUbPum+IjStT97ZIwWI4k/WbY
+         /+GAG1rJSQZgsawdiEfUM62HcS5B8GNHo6MJtp2gMXDAFLMTPcCFZDqE9cOC/vJ62BMQ
+         m8Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712665058; x=1713269858;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/Jqx/icbU3jj6O8zCfgxgC+Ni+cIZc9toLFwd7zueOI=;
+        b=nryobRCXbJ8ANXL7iV3noYzk0w89X1js6X5kqjo5l+6SLsn0zia7onexGQeayalcsv
+         15HY8xWlx0cpQyPnMWFwCqJZ2LwRUtRtts1EMMySajulE0b4KgBLJkoWiOWGO+Zj81/j
+         kiLoBEXIarGQMmk5pqQeyf7mNKJo2Y9DcbaubENSU2cD9t/ZIStOM1uajle46uIbh1B3
+         OftSeYYVdka5ORSql66jIfjDtY0KfnbXJTboLdHUOJCsXhPu/wdmyJ2sS9fiFJrZae/w
+         K76IMjsprcvPgygQq7xFgu1223zihNUTtRL1Upevq/Sj6uA0f+p7k4JwvZQvjzIh6j5A
+         nhvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEpg+R10/baIOst3Jl3RFXbtFDQHLbjNiqchFk7tV92hBUl0OKHLWgnZK7VbRQxjVYCWzXAHVTbuiRESJmisRQzvdtUAt6rRJj/FdP
+X-Gm-Message-State: AOJu0Yxe0FB/IWjygRZ0HNK1jgBn4tpWSPq+KC19p9et6rya9Cn9u59Q
+	t2EqMyDzMZ3Mh+DAnCi+6Ju83Y/iO0F0QDPT4jZVrPvmXsovPc2JWRTpJbuIZH0=
+X-Google-Smtp-Source: AGHT+IHb0aiM6x4hHUXi5dInTdRuPrj0DpsSGhZ+3F8jUx7rtLw7EPUKxknUPhwEqWysDtEgwfQacg==
+X-Received: by 2002:a17:906:e0cd:b0:a51:ae52:19d8 with SMTP id gl13-20020a170906e0cd00b00a51ae5219d8mr6615237ejb.6.1712665057395;
+        Tue, 09 Apr 2024 05:17:37 -0700 (PDT)
+Received: from andrejs-nb.int.toradex.com (77-59-154-235.dclient.hispeed.ch. [77.59.154.235])
+        by smtp.gmail.com with ESMTPSA id en1-20020a17090728c100b00a51adace6ebsm5030412ejc.79.2024.04.09.05.17.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 05:17:36 -0700 (PDT)
+From: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
+To: linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+Subject: [PATCH v1 0/2] ASoC: nau8822: add MCLK support
+Date: Tue,  9 Apr 2024 14:17:17 +0200
+Message-Id: <20240409121719.337709-1-andrejs.cainikovs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,35 +84,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The optlen value passed by syzbot to _sys_setsockopt() is 2, which results in
-only 2 bytes being allocated when allocating memory to kernel_optval, and the
-optval size passed when calling the function copy_from_sockptr() is 4 bytes.
-Here, optlen is determined uniformly in the entry function __sys_setsockopt(). 
-If its value is less than 4, the parameter is considered invalid.
+From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 
-Reported-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
-Reported-by: syzbot+b71011ec0a23f4d15625@syzkaller.appspotmail.com
-Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/socket.c | 3 +++
- 1 file changed, 3 insertions(+)
+This change adds local MCLK handling, which would cover a case when a
+reference audio clock is present in a system, but is not allowed to be
+changed, see [1].
 
-diff --git a/net/socket.c b/net/socket.c
-index e5f3af49a8b6..ac8fd4f6ebfe 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2327,6 +2327,9 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 	int err, fput_needed;
- 	struct socket *sock;
- 
-+	if (optlen < sizeof(int))
-+		return -EINVAL;
-+
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
- 		return err;
+[1]: https://lore.kernel.org/all/ZfBdxrzX3EnPuGOn@ediswmail9.ad.cirrus.com/
+
+Andrejs Cainikovs (2):
+  ASoC: nau8822: move nau8822_set_dai_sysclk()
+  ASoC: nau8822: add MCLK support
+
+ sound/soc/codecs/nau8822.c | 69 ++++++++++++++++++++++++++++----------
+ sound/soc/codecs/nau8822.h |  1 +
+ 2 files changed, 53 insertions(+), 17 deletions(-)
+
 -- 
-2.43.0
+2.34.1
 
 
