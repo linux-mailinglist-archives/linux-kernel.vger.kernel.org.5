@@ -1,113 +1,124 @@
-Return-Path: <linux-kernel+bounces-136614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA33F89D62D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:03:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEBF89D63D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBB9C1C2341C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C4951F21B51
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3172B81724;
-	Tue,  9 Apr 2024 10:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898D88172D;
+	Tue,  9 Apr 2024 10:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaS3hDVH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="apNOILVl"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2A280619;
-	Tue,  9 Apr 2024 10:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321FB1272A7
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657005; cv=none; b=VkpINaxxZtVlpwfjAFQ0GTfwo8+FLwcl61QUJ0p9lJIB9KoQsZ11gIRmr+6lUVx0/EQGhm38UPR8uc77OIjSRwfXuoT/7YAxCszrHA4/QPrBrvzM4RU/c7l+cKr/wyGpyu9deJX71k3s2AiF/4Vgnx7ywVsQOs9quMOXPSX8dJc=
+	t=1712657110; cv=none; b=Y/d+Q7ZvaTxQz/rLaxTBTj2r5pbY5cgKfgLrD8uadTTOavLTfLgLvRqLqnjttsBXk0Y9kUZ5R1fMPs/HLgupdlYqL5Lbkhu/DQhqLiQNK9O2fPoqd1xttzR08M1P1mkhOdzARFVovWQou7FobDQddhsjKdsJvWnfmJdCW1XCDD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657005; c=relaxed/simple;
-	bh=iTNCMmIBrqKAd1ZLJrqU0oi+mUhYpPEw/iRl1+vEJFM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=n+iwzPZ9ZbwZ42WbYs2tOxg4e2oHqf/zz/aXUMNJEIZSF45NfY+pJMEqLWlEk16FuSRQeS84pSh/F2BHiYBBAZTwVMLXcCsj7MrrqwoKGfwYONxXJg+JG406KNxmVhk/adNxwMR3b3V/0HphebSfwIYITdGF6hgNaYtTl4pp/OY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaS3hDVH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04C6CC433F1;
-	Tue,  9 Apr 2024 10:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712657004;
-	bh=iTNCMmIBrqKAd1ZLJrqU0oi+mUhYpPEw/iRl1+vEJFM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=CaS3hDVH0ZSF6klcFqrO4Ey1bc/QKOA07ywyZGABJzEipRFSqFG8Lp9ZluAu+PVYW
-	 msvEMtYrfeQIiDeSGp3iL/bvKf8pFCOh3gI2sz1/perPxta+N1ubLmp/MHXJH2EzZC
-	 TlFDXjJ5KwjWkWEpA0HM7cMk7jywfJ8Ir0R4UuAOAQCshGgdg0HImae39J7aqZMxNG
-	 MuGh0G5azU7jBbpQ2dRXDUXvrVKy16FCZXv18+ZR7Dh/vz3+0s9cOdzyTu1mENJ70C
-	 EpwTbekjNbVRLfdBDrXml9uXi8G2zauJCrkdjYaI4qe5j0pvKeiZPcQUeSJ5vZ+xWH
-	 LctGFMmx4zI9A==
-From: Kalle Valo <kvalo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org,  ath11k@lists.infradead.org,
-  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
-  imitsyanko@quantenna.com,  geomatsi@gmail.com,
-  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] wifi: Un-embed ath10k and ath11k dummy netdev
-References: <20240405122123.4156104-1-leitao@debian.org>
-	<87y19r264m.fsf@kernel.org> <ZhPyRHHlVot+a8Xq@gmail.com>
-	<87pluz24ap.fsf@kernel.org> <ZhRGo3I57rXxsMV/@gmail.com>
-Date: Tue, 09 Apr 2024 13:03:21 +0300
-In-Reply-To: <ZhRGo3I57rXxsMV/@gmail.com> (Breno Leitao's message of "Mon, 8
-	Apr 2024 12:33:55 -0700")
-Message-ID: <87edbe26qe.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1712657110; c=relaxed/simple;
+	bh=gwLvLFd0MMGWfdLzPnwLoZ10qVGdHNimIcL5XjfxALo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q/z2EI1wWLqrG1HLJJhRnmgakGUtMl55fCDlerFHt8LDIT0uZu5kLNxFPH1JsyXsQTs8luCJpv46QX2+QVAv8rF+A7g+CSP4w4a8BCSLTbz9j2UsKCDxQRXcIXZOr6AOW9KwuhRVgAxSaNCH18mF1BM2cuHrkJKMvgLHaFYdJFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=apNOILVl; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516c403cc46so9882277e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712657107; x=1713261907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PXxs/Ql+oc0xYZASgCwylM08ISKpd1PCbAaMTA3JecA=;
+        b=apNOILVlczF5mu2rlzuDkA22dZq34+KhW+VCa70to20egjGXmPO4MYBeaHRrd38VfM
+         UH7HrqFrwVvDD2jjR3LtQmoqdFPVmJc7fo0WnkA0pkaFrfWmGW2BNsbZJgE/5JZnkHd6
+         4Ap7b590h2qEJxRwjlzghxnhEO/hVivAzcLb3kfkFYJ9qATm9DFYbAdKjUQMk0K0iLOd
+         xfc6Y3PMJSGdCm5lubnj58g5lW3YJh3ncWZmCcl+FNeX93KuTXratPL8nv6eumgj4oEo
+         1n1zV1tBTObDZkxec699/6T/KQpynfzwxNypcgHemFbe0p5NS6k0joUJPY2IojoWkMWz
+         zGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712657107; x=1713261907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PXxs/Ql+oc0xYZASgCwylM08ISKpd1PCbAaMTA3JecA=;
+        b=evwfCc0q2rFluv74w9FaZXX29UJ1EuQmr6CpcRcHnSTHnR1KT1lvlH2mXVD3ECCk8K
+         NvZEsXkTrVkdShhXoAS68eOzXrWvkEpVG2ib4pc1D8UGHxGvN/P/5cEL0QnIBV9pibwU
+         hwVMcRbelUmMKkWc18QjhG/guc1Tn3SLJYsmTp0FrI/vUHOcT6WWDvb0c30UM9l5Tmc1
+         E5dR/HyZHJLQDTv2XSMS8ex7Dn20gzFsCmCdjXxlAmmk7uT13JBO9FL9pwHnCaKcy45d
+         pbd9I4Nj5UWiy+dDqqbjVlb0/fe5++37agEcTQllFX34WQq9yWJh41tMs2H0WY8N5Ejw
+         Wvbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpzQlu0YtnlCBNbar1kz9/QPe6gShExECZLTGHhfpXFVQuiBlnkXAmB9uLFBg3Y+R8TepRmPJZPHFKrpdwxQ0yMb8lNXqj91rjGGqK
+X-Gm-Message-State: AOJu0Yxc5jCO5OS2j5Nl4uarZlZY45inrIWz1XL85Fn3zLk4IWxGxAvU
+	SKRcXBe+k981XxrnFhUYlu3MyPNDu+rcDZmX7WuqOKfs1ku2+rgi
+X-Google-Smtp-Source: AGHT+IHiShZZFYnaU6RfBf4Sv081zS+Y/tNycmSdq/qOEexL/e0yWa05idMYnTICjPoH7ZYOmlIqZQ==
+X-Received: by 2002:a05:6512:2387:b0:515:d176:dfd1 with SMTP id c7-20020a056512238700b00515d176dfd1mr11744378lfv.56.1712657106947;
+        Tue, 09 Apr 2024 03:05:06 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id qs1-20020a170906458100b00a4e6626ae21sm5496681ejc.0.2024.04.09.03.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 03:05:06 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/6] locking/atomic/x86: Improve arch_atomic*() family of functions
+Date: Tue,  9 Apr 2024 12:03:51 +0200
+Message-ID: <20240409100503.274629-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Breno Leitao <leitao@debian.org> writes:
+The following patch series improves x86 arch_atomic*()
+family of functions and merges x86_32 and x86_64
+arch_atomic64_fetch_{and,or,xor}() functions.
 
->> > Reading the issue, I am afraid that freeing netdev explicitly
->> > (free_netdev()) might not be the best approach at the exit path.
->> >
->> > I would like to try to leverage the ->needs_free_netdev netdev
->> > mechanism to do the clean-up, if that makes sense. I've updated the
->> > ath11k patch, and I am curious if that is what we want.
->> >
->> > Would you mind testing a net patch I have, please?
->> >
->> >   https://github.com/leitao/linux/tree/wireless-dummy_v2
->> 
->> I tested this again with my WCN6855 hw2.0 x86 test box on this commit:
->> 
->> a87674ac820e wifi: ath11k: allocate dummy net_device dynamically
->> 
->> It passes my tests and doesn't crash, but I see this kmemleak warning a
->> lot:
->
-> Thanks Kalle, that was helpful. The device is not being clean-up
-> automatically.
->
-> Chatting with Jakub, he suggested coming back to the original approach,
-> but, adding a additional patch, at the free_netdev().
->
-> Would you mind running another test, please?
->
-> 	https://github.com/leitao/linux/tree/wireless-dummy_v3
->
-> The branch above is basically the original branch (as in this patch
-> series), with this additional patch:
->
-> 	Author: Breno Leitao <leitao@debian.org>
-> 	Date:   Mon Apr 8 11:37:32 2024 -0700
->
-> 	    net: free_netdev: exit earlier if dummy
+The patch series enables impressive assembly code
+reductions for x86_32 target and lowers future maintenace
+burden and technical debt of the source code by unifying
+several functions between x86_32 and x86_32 targets.
 
-I tested with the same ath11k hardware and this one passes all my
-(simple) ath11k tests, no issues found. I used this commit:
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 
-1c10aebaa8ce net: free_netdev: exit earlier if dummy
+Uros Bizjak (6):
+  locking/atomic/x86: Introduce arch_atomic64_try_cmpxchg to x86_32
+  locking/atomic/x86: Rewrite x86_32
+    arch_atomic64_{,fetch}_{and,or,xor}() functions
+  locking/atomic/x86: Use READ_ONCE before atomic{,64}_try_cmpxchg loops
+  locking/atomic/x86: Merge x86_32 and x86_64
+    arch_atomic64_fetch_{and,or,xor}() functions
+  locking/atomic/x86: Define arch_atomic_sub() family using
+    arch_atomic_add() functions
+  locking/atomic/x86: Reorder a couple of arch_atomic64 functions
+
+ arch/x86/include/asm/atomic.h      |  50 ++++++++++----
+ arch/x86/include/asm/atomic64_32.h | 103 ++++++++++-------------------
+ arch/x86/include/asm/atomic64_64.h |  44 +-----------
+ 3 files changed, 75 insertions(+), 122 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.44.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
