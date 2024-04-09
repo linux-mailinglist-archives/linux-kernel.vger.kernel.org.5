@@ -1,153 +1,130 @@
-Return-Path: <linux-kernel+bounces-136174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C3A89D0C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:13:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C076189D0C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:13:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86431F2503B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:13:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B2C6284D14
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 03:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1959B54BCA;
-	Tue,  9 Apr 2024 03:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01313548E8;
+	Tue,  9 Apr 2024 03:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TdlTELSu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="QFoHTJ4Z"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B242A54BCB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8DC54773
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 03:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712632413; cv=none; b=GKXxdnDjuUx3/ONjp8OX/3Bi0LR1bZTNq3xuD0oQpDF3fFiHm7qGyG8e09hAzVvQdFpXP0O5vBZ45AGYsEgsSfrWchjmnb36ox3yRZUabvm6VuCUjbDPjs9TOQYZ+G5bbDf0aiTyXEHvrUs3mGiswDDS6nlvWB1jLgOIZ6gPx6c=
+	t=1712632398; cv=none; b=kpN/T/3z5CTnLaCZ4fERMJfIVAg5SYzTAsZvKW9HnYSZ+kzEMv+dKGHWO+edvHd0KNpVquvYI9PJieFT97mmjJ6b0/nz+l0mw0e+IyRoMYpauEd4Lrq8+QI9dTYUe0akrVSl4X3Kjhfzk3jd8jEacJQksCpdLst5eqr8qepo8FY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712632413; c=relaxed/simple;
-	bh=1kaSOndBlWdCwwnNgxhFKJd0Bhrm4rCSDmsluZI84SA=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XiBSsMkqlem3BYDV2efSxwGyMVKxbxrP7mA5fWNwD4ybYbR8XeTVyfFcsZU7IKQRovgNU9uy5TyMF3/kUFQsN4z0LJsPc75//nHn70VX/FinALmlbQfFHZPIYN6/xKNSwqix9C3+raXwdgPPM/RokMcQdiZCLmQaV9wQ6OSZ4kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TdlTELSu; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712632412; x=1744168412;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1kaSOndBlWdCwwnNgxhFKJd0Bhrm4rCSDmsluZI84SA=;
-  b=TdlTELSuB3B3Op7j6XMPXFXrzqgrTEFRdVlJmZey3Xb50UneMd7uYWyu
-   sbzo4ab2diRqiefzb3At4NJzvSS1+T5k45SoT2E3obj899DtZ8szjPQGO
-   vCoBncxuJAnpG31Im53MYOEgl6qBSUBC1sE9R+BcPQ81Iiy3Dscyr8xtD
-   qXyXTHsB0NGH1Yg3NZHTzuj9WRrzoAi1mG6G6SgPLvSv6ajwwq8hNGVYo
-   89wKhPXyqmk8YJPDOMqJKIRKnZFYXG1b+mcOBC3g3I6nLQzrPKeS3Mz+G
-   AHMW7WNlH0zQ+xhorxBGXdzDJM1MlFbGYQaF0uWxozLu/c2QASNOV9uQ0
-   w==;
-X-CSE-ConnectionGUID: 6Am8o/1WQQu6gdwBvCvA1Q==
-X-CSE-MsgGUID: eQWUasGhTXSe2m3jA47HjQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="25435315"
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="25435315"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 20:13:31 -0700
-X-CSE-ConnectionGUID: GPF679Y3QhS8iAKBJWA5CA==
-X-CSE-MsgGUID: wMtsLq4JRoy9HRUFM4lBEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="24575021"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 08 Apr 2024 20:13:28 -0700
-Message-ID: <aff42b8f-b757-4422-9ebe-741a4b894b6c@linux.intel.com>
-Date: Tue, 9 Apr 2024 11:12:20 +0800
+	s=arc-20240116; t=1712632398; c=relaxed/simple;
+	bh=AGjNixSGJ5QwggZtom6Ug2ISD2eoh19CLxKOzqIHrRM=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=lW0n4nO4DetgpycxRH/fvmcHm7UAzTBs1RV5UEnApM+2ZIiHgnWHxzQU8E4V0iDYCBhdjD2hXYnXajs0xh4rrSikDf0Lte/N0PfOCXY4CKVAiYmqxqx/xusAIcojY/kJ6Sz09gysgr/EXwloeA//+RezWDLpC7D3qGhSmuS1R/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=QFoHTJ4Z; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
+	by cmsmtp with ESMTPS
+	id tr5lrID6Xuh6su1v3ru8Ge; Tue, 09 Apr 2024 03:13:09 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id u1v2ropZuELAWu1v3rTbHu; Tue, 09 Apr 2024 03:13:09 +0000
+X-Authority-Analysis: v=2.4 cv=EfzOQumC c=1 sm=1 tr=0 ts=6614b245
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=1fi7cYYhOkV2FiaOiItVm/B3uVfPOHQmO8hDnH3nrqI=; b=QFoHTJ4Zp4MrGnF6VLVdHNBNJx
+	AOWLfasXQdswhlrNGXazPmL0xr9eVUmLoR9+bfBhBvbU4Znd6p7Gxy6ro+oFrXA6dnrk229Z5Ks96
+	MAfBFN1GMUkg+Cnb3rmYh4X+42E1nRzeXP7/W2JnGdGl250C8l8R23uaTYBRk0ot65rR2eMmgCZ6W
+	crODtTJRtY6AxjmV1vBMQ6VJirANz378daNJWnWR3tAwQy/u1H08DR5R+RCmx+RPlGsa6mOdQv3Vu
+	cHIG6uxmcBDtpnCzT+OoSZOdsd1WYk/Y4MTSx5Hh2dN0vqq8mRrIuH1RsRNobHm8yZ3PsMLTgOHy6
+	lycTjuuA==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:56502 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1ru1v0-003CRV-3B;
+	Mon, 08 Apr 2024 21:13:07 -0600
+Subject: Re: [PATCH 6.6 000/252] 6.6.26-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240408125306.643546457@linuxfoundation.org>
+In-Reply-To: <20240408125306.643546457@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <9715c616-e1db-7da4-8f5b-22def173735e@w6rz.net>
+Date: Mon, 8 Apr 2024 20:13:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, iommu@lists.linux.dev,
- Kevin Tian <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iommu/vt-d: Remove caching mode check before devtlb
- flush
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-References: <20240407144232.190355-1-baolu.lu@linux.intel.com>
- <20240407144232.190355-2-baolu.lu@linux.intel.com>
- <20240408140329.6290377f@jacob-builder>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240408140329.6290377f@jacob-builder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1ru1v0-003CRV-3B
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:56502
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 23
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfEmuDe6lpTyTQmJ4MyPFdOfv0Or9gwpatfOu+1V8pTY3N0ZsbM9dZU76IkWAPl9xaEtsvdERkAIj+4J83/9IHagecnFETavJTDkdfoyJyoE04nEihk76
+ EMDTIxBsW+wSQKw9YROsIIqyQM08U3QreVGi/fkklxiXAsYFWNBz1Ly+1eWgZQLrx7JjYf90JzlgfcfCFuL2ud30jzRcmW4zqZM=
 
-On 4/9/24 5:03 AM, Jacob Pan wrote:
-> Hi Lu,
+On 4/8/24 5:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.26 release.
+> There are 252 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Apr 2024 12:52:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.26-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi Jacob,
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-> 
-> On Sun,  7 Apr 2024 22:42:32 +0800, Lu Baolu<baolu.lu@linux.intel.com>
-> wrote:
-> 
->> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
->> implementation caches not-present or erroneous translation-structure
->> entries except the first-stage translation. The caching mode is
->> unrelated to the device TLB , therefore there is no need to check
->> it before a device TLB invalidation operation.
->>
->> Before the scalable mode is introduced, caching mode is treated as
->> an indication that the driver is running in a VM guest. This is just
->> a software contract as shadow page table is the only way to implement
->> a virtual IOMMU. But the VT-d spec doesn't state this anywhere. After
->> the scalable mode is introduced, this doesn't stand for anymore, as
->> caching mode is not relevant for the first-stage translation. A virtual
->> IOMMU implementation is free to support first-stage translation only
->> with caching mode cleared.
->>
->> Remove the caching mode check before device TLB invalidation to ensure
->> compatibility with the scalable mode use cases.
->>
-> I agree with the changes below, what about this CM check:
-> 
-> /* Notification for newly created mappings */
-> static void __mapping_notify_one(struct intel_iommu *iommu, struct dmar_domain *domain,
-> 				 unsigned long pfn, unsigned int pages)
-> {
-> 	/*
-> 	 * It's a non-present to present mapping. Only flush if caching mode
-> 	 * and second level.
-> 	 */
-> 	if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
-> 		iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
-> 
-> We are still tying devTLB flush to CM=1, no?
+Tested-by: Ron Economos <re@w6rz.net>
 
-__mapping_notify_one() is called in the path where some PTEs are changed
-from non-present to present.
-
-In this scenario,
-
-- if CM is set and first-stage translation is not used, the IOTLB caches
-   are required to be explicitly flushed.
-- else if hardware requires write buffer flushing, do it.
-- Otherwise, no op.
-- devtlb invalidation is irrelevant to this path.
-
-The code after the fix appears to do the right thing. devTLB is not
-invalidated in iommu_flush_iotlb_psi() since it's a map (map == 1).
-
-Or perhaps I overlooked anything?
-
-> 
-> If we are running in the guest with second level page table (shadowed), can
-> we decide if devTLB flush is needed based on ATS enable just as the rest of
-> the cases?
-
-I think the ATS check should be consistent. It's generic no matter how
-the IOMMU is implemented (in hardware or emulated in software).
-
-Best regards,
-baolu
 
