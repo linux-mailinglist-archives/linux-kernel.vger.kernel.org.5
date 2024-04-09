@@ -1,106 +1,115 @@
-Return-Path: <linux-kernel+bounces-136893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9625389D977
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:53:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FD189D978
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6FBA1C21FDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:53:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FE9828BB5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0FF12DDB8;
-	Tue,  9 Apr 2024 12:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j0MUDyz6"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C00384;
-	Tue,  9 Apr 2024 12:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9FE12DDAD;
+	Tue,  9 Apr 2024 12:53:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AD6384
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 12:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712667202; cv=none; b=BNqc9CPLLtSYO5sp3txx4FaOsHWVtiAcOV/PKcBrCUY3Ke07L9pbb8Nq977wnAg5xJRsmz8M26ieQ40F+2fxLHUJiQDQ1IbOHel3yvayUuBXvjad6zBhJ1wDvRC6msafkRPzYsUUWnIOkkeudIh9CAPj0IWtkv9PWB+ydNSAUxw=
+	t=1712667229; cv=none; b=Zyw2iY10k3k8dU8DlP+oyfeGSrMvHWwrLRskc+to/66mH50sVFDc4/w6NAXtqBVvjIJ+zl4XyB38Wkk8DtlIz8by9nYad98NJakqEjBuSc+ClNe3PyX1rJp1dkh8y99MTGXFrNscGxA+lg9mtF7u5F5hOBIRoci8W5v5CsLWgQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712667202; c=relaxed/simple;
-	bh=yN5k7M3r1PSoxM2xUNoYNXh8X2U0F8GkRzTPqDQwUUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dx+QmENHCfTVL7FT/WvHWl0IczLL78dy/bWDPtl69omJtKfdDSnQnFAwTVielSgk+58Ry0IkTdUCSlvzsui0QAmGtiO0hX3yEotUQ0LwlQGFz3jgSh+8xUoIDGiHADjBiyY0WjI+xRGNXtzS4qs2+QZP5h/PIVjTLzGfMOp6ssM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j0MUDyz6; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712667201; x=1744203201;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yN5k7M3r1PSoxM2xUNoYNXh8X2U0F8GkRzTPqDQwUUA=;
-  b=j0MUDyz6+sBYaYTtnRQkcE0V/2S5SFYty5dFcAIQKSAPAkhzifj4+AYS
-   /tHY6aIwl9xvVHGxshXX8JK3vSFcC5znSNRPQpW65avXSyMLLPYAAtG/i
-   hX/jPteQiTK7jfEv6BLGE6taDMIapgISJF1S4HxAXkGz8tYvQ28q+22Wr
-   yrWxsTareGNiUWXpvNT1Hjv6SHj+5vlykCAp+9kN0zDGCO2PaTVKkkBYV
-   eTRkwRBmzbjXd/LErg90iACk2swu8kIF5shekdp0CtZsDMsU673TAIVfF
-   83gwX6P2Lz1UitW4Q1q8/+bTfQStBPFbAXhZq5XW/7mpO0wqfLmBmTgiQ
-   w==;
-X-CSE-ConnectionGUID: R0Ikmpx1Rku/9eR02l2piQ==
-X-CSE-MsgGUID: XV7ISzFbST+bzCxCzkX05g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="8080805"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="8080805"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:53:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915399115"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="915399115"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 05:53:17 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1ruAyQ-00000002o7p-130G;
-	Tue, 09 Apr 2024 15:53:14 +0300
-Date: Tue, 9 Apr 2024 15:53:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Guanbing Huang <albanhuang0@gmail.com>
-Cc: gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
-	linux-acpi@vger.kernel.org, tony@atomide.com,
-	john.ogness@linutronix.de, yangyicong@hisilicon.com,
-	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, lvjianmin@loongson.cn,
-	albanhuang@tencent.com, tombinfan@tencent.com
-Subject: Re: [PATCH v6 0/3] serial: 8250_pnp: Support configurable reg shift
- property
-Message-ID: <ZhU6Or3hTziarHZo@smile.fi.intel.com>
-References: <cover.1712646750.git.albanhuang@tencent.com>
+	s=arc-20240116; t=1712667229; c=relaxed/simple;
+	bh=9aeQ+agCGwtYdf3BbxbVPlScwQwTRPj98UxQNe7am5I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V0hThAF1CeqAh2Wg9SLg9Ol5x/TXJEjXowtPeXOOecPvZfJcXKyh6LG6judpcN2TFzs3jK5RaDdMs+FHfrBU/m26gRObc01Y2BpldYu2zFMaNrj0xBHhlface3DwghjjviwUBNUTlIu8GC2IfOOJNDpr8CuYsU/bLeILcNJ8R7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3035139F;
+	Tue,  9 Apr 2024 05:54:17 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E4F23F766;
+	Tue,  9 Apr 2024 05:53:46 -0700 (PDT)
+Message-ID: <726d6946-6fc8-4c53-86ad-385ab24fa4c7@arm.com>
+Date: Tue, 9 Apr 2024 13:53:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1712646750.git.albanhuang@tencent.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf: arm_cspmu: Don't touch interrupt registers if no
+ interrupt was assigned
+To: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc: Besar Wicaksono <bwicaksono@nvidia.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Raag Jadav <raag.jadav@intel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240307193104.58302-1-ilkka@os.amperecomputing.com>
+ <042bbb32-481e-40d8-a46a-472b724ec33f@arm.com>
+ <89d7ff41-ce2a-fd95-ebfc-4df914efd4c8@os.amperecomputing.com>
+ <c2e3e77c-ba50-4228-9eb8-c8fbcc84edfb@arm.com>
+ <8fdfceb2-90b3-a1a9-fa88-a45ece30c0bb@os.amperecomputing.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <8fdfceb2-90b3-a1a9-fa88-a45ece30c0bb@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 09, 2024 at 03:43:20PM +0800, Guanbing Huang wrote:
-> From: Guanbing Huang <albanhuang@tencent.com>
+On 09/04/2024 2:05 am, Ilkka Koskinen wrote:
 > 
-> The 16550a serial port based on the ACPI table requires obtaining the
-> reg-shift attribute. In the ACPI scenario, If the reg-shift property
-> is not configured like in DTS, the 16550a serial driver cannot read or
-> write controller registers properly during initialization.
+> On Mon, 8 Apr 2024, Robin Murphy wrote:
+>> On 2024-04-05 11:33 pm, Ilkka Koskinen wrote:
+>>>
+>>> On Fri, 5 Apr 2024, Robin Murphy wrote:
+>>>> On 2024-03-07 7:31 pm, Ilkka Koskinen wrote:
+>>>>> The driver enabled and disabled interrupts even if no interrupt was
+>>>>> assigned to the device.
+>>>>
+>>>> Why's that a concern - if the interrupt isn't routed anywhere, 
+>>>> surely it makes no difference what happens at the source end?
+>>>
+>>> The issue is that we have two PMUs attached to the same interrupt line.
+>>> Unfortunately, I just don't seem to find time to add support for 
+>>> shared interrupts to the cspmu driver. Meanwhile, I assigned the 
+>>> interrupt to one of the PMUs while the other one has zero in the APMT 
+>>> table.
+>>
+>> I suspected something like that ;)
+>>
+>>> Without the patch, I can trigger "ghost interrupt" in the latter PMU.
+>>
+>> An occasional spurious interrupt should be no big deal. If it ends up 
+>> as a screaming spurious interrupt because we never handle the overflow 
+>> condition on the "other" PMU, then what matters most is that we never 
+>> handle the overflow, thus the "other" PMU is still useless since you 
+>> can't assume the user is going to read it frequently enough to avoid 
+>> losing information and getting nonsense counts back. So this hack 
+>> really isn't a viable solution for anything.
 > 
-> To address the issue of configuring the reg-shift property, the 
-> __uart_read_properties() universal interface is called to implement it.
-> Adaptation of PNP devices is done in the __uart_read_properties() function.
+> IIRC, what happens is that kernel will disable the interrupt eventually 
+> due to unhandled spurious interrupts making the "working" PMU also useless.
 
-You either forgot or deliberately not added my tag. Can you elaborate?
+Indeed, but if having one inaccurate PMU is fine, having more than one 
+is no big deal either, right? The moral of the story is that hacking the 
+firmware to lie about the hardware is just not a great idea.
 
--- 
-With Best Regards,
-Andy Shevchenko
+TBH it's always seemed a bit broken that we allow probing without an IRQ 
+but then have no accommodation for overflow if so. Fixing that would be 
+a good thing in itself, and would at least have the side-effect of 
+allowing your hack to work, however much I may disapprove of that :)
 
+FWIW it is still lingering some way down my to-do list to factor out the 
+fiddly IRQ-sharing/migration code into at least a helper library (if not 
+further into perf core itself) before it gets copy-pasted much more, and 
+it occurs to me that I could then easily factor the IRQ-substitute timer 
+approach from e.g. arm-ccn into that as well... The more I think about 
+it the more I might just convince myself that I want it for the driver 
+I'm currently working on and justify bumping it up the list, let's see...
 
+Cheers,
+Robin.
 
