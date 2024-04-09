@@ -1,73 +1,64 @@
-Return-Path: <linux-kernel+bounces-136507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 779FA89D4E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:53:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7081F89D4EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:53:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9997B1C2155A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:53:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2192E282364
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 08:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DFF7E58D;
-	Tue,  9 Apr 2024 08:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00E57F46C;
+	Tue,  9 Apr 2024 08:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+z2DPkb"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PZNOtIG0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1735F1EA90;
-	Tue,  9 Apr 2024 08:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17427E794;
+	Tue,  9 Apr 2024 08:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712652780; cv=none; b=XfISqqyKanlvtdIJ2d8fEn6UKGQiU3NqBVoYiSyc2V5TkTvSNpuKu0XKM8bXehrieLx3GdUA+MXMMNOA6+Vf6yUvo5Br6ZR8Vj4JI6pmaof4hTj5D88s0kK7Rh0Lcr+lTpVv9Ha9wzl8K6E5QDcB9znRRAhOdikbK1NA0IxjQvs=
+	t=1712652784; cv=none; b=ljQT2V1oEWfpTAMHettgKVnc6dpIRA3GhH9P+91PpiS2oFgii9Z6+RpMyFv8LPL8S7e7TjNYWo7WR/8RTCXXdL1C7SnfGc/pz6kLw6tQO2ST2BjG30ZeTlZoU+NzoeLuilghqxpfpbo7s2jF5pPel7klMiuE6HL/7BHwTHKDJTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712652780; c=relaxed/simple;
-	bh=x+c/zqnc1Z85ooz0Ode42DcXG6xxK0T6y0d+nbFikTI=;
+	s=arc-20240116; t=1712652784; c=relaxed/simple;
+	bh=LXkNVlRuW9flSn9i9Am3TH+MFAtd0G+t2OWUcoL9zg8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YR0GGdMLHjPaYfBF40WPU9rB9kokUqLiurrhXBsDaqMqkNk5wb8NK1CpaFQQIb1ps8e88qeglg08znvE+he+InmpW8djHhFMn6EW/JmosgESS19/HUoD6calYx0fR4TZutZzpnrPoM3+26p6/hU0mYESCYSmw/DA2lja3eKYAQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+z2DPkb; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e6e08d328so1052550a12.2;
-        Tue, 09 Apr 2024 01:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712652777; x=1713257577; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a0jIR2OL0GyuZ7AB0nPnmYn4Ft44qzFta5fRUBXkOno=;
-        b=A+z2DPkbqWWmpGqeHauvej32rI7d0/+9RzNxl0lgxO939UYwQu6Km7bbG4HtXJmiBo
-         teqCQ/X5EXpQj/3vcwA/6oBqol/RIB209/IoNgEv8Vg9GfaCPQT+yPNuRCrFuvP01TK4
-         XJaKDgPcKMDgGiZHDMFLwBnGPbeMSXnfXZHvnz9HKTFMsp49cp2E1o7KNpwTWxb899Xe
-         BOYjziSmJ/4rECAxN9TevjJvJZxH5FVMfab/jDfpZ+bOcTw1fKzDGHGvSkAW5xALASQK
-         bnkPD22A+06xUOFWpDwpsu+LRRZ+SvqMO5AiAfjMYsQFRoKSLEYaiVSEI5MtaCgxsolY
-         zo8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712652777; x=1713257577;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a0jIR2OL0GyuZ7AB0nPnmYn4Ft44qzFta5fRUBXkOno=;
-        b=xKeVJFExppRwpoRpgvAFM7HHu7woWOMCU3u2qMSrXVrxc3HuKBX48zTp0GO4sNZqnG
-         zF8KBIahyrp/lmRPvqhKyrwJO1IFg/2ficvpg2E9IQOV+hnNgl3RtvMi4e5BKTg9ouBt
-         ogrZftWKHAYGNEv5bry0VW60q9hzb2NRe6acB1AeOMUXVqwwf3/fdBMGq50D23m5op3x
-         Ec/zS9dp7f8pX+P3KPIFFH0t4qqr14ZUHrzZkwyZKDD1S1EiNeXYFOwZx4a4f9xUTTmw
-         dXj5CZKfXNq9KKxT+rBHTGFZAFvc720CY6rx5PVTqpQEjjgMO9Z5H/R8jX2MfpjhZn7M
-         DiOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXs1rcWL1cOAsVTawoFXy3CI87TF05kXjezPlNEsss2eX0pK2B06T3Yk8tO1HRpVAKLtymqmzQeTmGZ7I2+rxD63S+zH31JGqdGi1WiXeW/00PWA1srLXTbJFxl0qRrsGehGYpHfRu1zA==
-X-Gm-Message-State: AOJu0YzserxPwiMKDTxkLhocmF5SVresqKCp04BQ9p4vME9n5noPJiEC
-	Iae+vmQC3KyVxZQCxydUyZuXhK9KdSYptpSipw8x+/pnrEGf7oGL
-X-Google-Smtp-Source: AGHT+IEAFHw1NjWQVbVzBzYATvddUlqkzBcIRzHxlgvPpMiPiCZOtlevHR5EjAtm+ZEjmL4iwtsgFA==
-X-Received: by 2002:a17:906:6c97:b0:a51:88e5:5451 with SMTP id s23-20020a1709066c9700b00a5188e55451mr5956856ejr.29.1712652777110;
-        Tue, 09 Apr 2024 01:52:57 -0700 (PDT)
-Received: from [192.168.0.31] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
-        by smtp.gmail.com with ESMTPSA id ak2-20020a170906888200b00a51dccd16d9sm1836588ejc.99.2024.04.09.01.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 01:52:56 -0700 (PDT)
-Message-ID: <6dc808bf-682f-4e91-aac7-7ce6f05a0ab4@gmail.com>
-Date: Tue, 9 Apr 2024 10:52:54 +0200
+	 In-Reply-To:Content-Type; b=iYHBiK6I4OQx+G2tIWM7rQDIc8hWSylEO38xVsXyCDfL8kxVmEgei/34qpV+2hCYYT0qgXko4F9QR4SCJgmzIFxRrtMZms3KyAyBv5UyGfkNoiznkn+E3t6EJgWmW40W8Rc83romlG/zBaxzxAst5PODztrjCNX8/lAT3anhTgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PZNOtIG0; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712652783; x=1744188783;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LXkNVlRuW9flSn9i9Am3TH+MFAtd0G+t2OWUcoL9zg8=;
+  b=PZNOtIG0bYb8RwdkHnHtDuJHqJuSc1NsffEanhru/kA+rz6UjtNaFCjb
+   TYP38UUcXXU9x9fMLLRuTu13AQByji82eXzO9LKkj4m+ZJS7DcrYSffDI
+   EBH4Xvks/Yth6bxgaWvWbAWR7FVkoTn6nQCMd16d9Sos/eQC2q2hIOORP
+   WzDjfYccnHGpSeJO9Np+gPVajPZSi1euB2f7Vo5PoZ0lm/4C98XrUm54q
+   BqD7NYQgMHP+HAS2a+oIOUWV+5MHQAy/9xZmsGDBcENP8uLrWi/gv0pq7
+   HBbE0Xh64a6MxXV9FPSShZ3EWSsxtLTt3EOeT8jyMAKwPJfUcLcB305RX
+   A==;
+X-CSE-ConnectionGUID: rFSTUaXaShKf8o9y3HgyIQ==
+X-CSE-MsgGUID: E24n8qbPTiuyZtc+RQar9g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="18563303"
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="18563303"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 01:53:02 -0700
+X-CSE-ConnectionGUID: 89x2+YlKRTaKym0zn3MeNQ==
+X-CSE-MsgGUID: kXKIZc6NS7iIB7ucFUO7IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
+   d="scan'208";a="24898864"
+Received: from unknown (HELO [10.238.9.252]) ([10.238.9.252])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 01:52:58 -0700
+Message-ID: <bb05156c-a143-4257-b5a3-4af05429e07f@linux.intel.com>
+Date: Tue, 9 Apr 2024 16:52:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,68 +66,234 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/9] dt-bindings: rtc: lpc32xx-rtc: move to trivial-rtc
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com>
- <20240408-rtc_dtschema-v1-3-c447542fc362@gmail.com>
- <dd5e9837-0dcf-4b0e-8d11-f8bed868cdf2@linaro.org>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <dd5e9837-0dcf-4b0e-8d11-f8bed868cdf2@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v19 096/130] KVM: VMX: Move NMI/exception handler to
+ common helper
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b709dc92da98e6bd0ba15c80c1f291beafc9dada.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <b709dc92da98e6bd0ba15c80c1f291beafc9dada.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/9/24 09:34, Krzysztof Kozlowski wrote:
-> On 08/04/2024 17:53, Javier Carrasco wrote:
->> This RTC requires a compatible, a reg and a single interrupt,
->> which makes it suitable for a direct conversion into trivial-rtc.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> ---
->>  Documentation/devicetree/bindings/rtc/lpc32xx-rtc.txt  | 15 ---------------
->>  Documentation/devicetree/bindings/rtc/trivial-rtc.yaml |  2 ++
->>  2 files changed, 2 insertions(+), 15 deletions(-)
-> 
-> This one no... and if you tested DTS you would see errors, although you
-> need to test specific lpc config, not multi_v7.
-> 
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> for instructions).
-> 
-> Anyway, you *must* check all DTS before moving anything to trivial.
-> 
-> Does it mean all other bindings were not checked against DTS at all?
-> 
-> Best regards,
-> Krzysztof
-> 
-Hi,
 
-I did check the conversion against nxp/lpc/lpc3250-phy3250.dts, which
-throws a message about the 'clocks' property.
 
-That property is not documented in the original binding, and even though
-it could be missing, I could not find any function to get a clock (i.e.
-any form of clk_get()) in rtc-lpc32xx.c, which is the only file where
-the compatible can be found.
+On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> TDX mostly handles NMI/exception exit mostly the same to VMX case.  The
+> difference is how to retrieve exit qualification.  To share the code with
+> TDX, move NMI/exception to a common header, common.h.
 
-Is therefore the property not useless in the dts? My apologies if I am
-missing something here.
+Suggest to add "No functional change intended." in the changelog.
 
-Thanks and best regards,
-Javier Carrasco
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/common.h | 59 +++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/vmx.c    | 68 +++++----------------------------------
+>   2 files changed, 67 insertions(+), 60 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
+> index 6f21d0d48809..632af7a76d0a 100644
+> --- a/arch/x86/kvm/vmx/common.h
+> +++ b/arch/x86/kvm/vmx/common.h
+> @@ -4,8 +4,67 @@
+>   
+>   #include <linux/kvm_host.h>
+>   
+> +#include <asm/traps.h>
+> +
+>   #include "posted_intr.h"
+>   #include "mmu.h"
+> +#include "vmcs.h"
+> +#include "x86.h"
+> +
+> +extern unsigned long vmx_host_idt_base;
+> +void vmx_do_interrupt_irqoff(unsigned long entry);
+> +void vmx_do_nmi_irqoff(void);
+> +
+> +static inline void vmx_handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
+> +{
+> +	/*
+> +	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
+> +	 * MSR value is not clobbered by the host activity before the guest
+> +	 * has chance to consume it.
+> +	 *
+> +	 * Do not blindly read xfd_err here, since this exception might
+> +	 * be caused by L1 interception on a platform which doesn't
+> +	 * support xfd at all.
+> +	 *
+> +	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
+> +	 * only when xfd contains a non-zero value.
+> +	 *
+> +	 * Queuing exception is done in vmx_handle_exit. See comment there.
+> +	 */
+> +	if (vcpu->arch.guest_fpu.fpstate->xfd)
+> +		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
+> +}
+> +
+> +static inline void vmx_handle_exception_irqoff(struct kvm_vcpu *vcpu,
+> +					       u32 intr_info)
+> +{
+> +	/* if exit due to PF check for async PF */
+> +	if (is_page_fault(intr_info))
+> +		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
+> +	/* if exit due to NM, handle before interrupts are enabled */
+> +	else if (is_nm_fault(intr_info))
+> +		vmx_handle_nm_fault_irqoff(vcpu);
+> +	/* Handle machine checks before interrupts are enabled */
+> +	else if (is_machine_check(intr_info))
+> +		kvm_machine_check();
+> +}
+> +
+> +static inline void vmx_handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
+> +							u32 intr_info)
+> +{
+> +	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
+> +	gate_desc *desc = (gate_desc *)vmx_host_idt_base + vector;
+> +
+> +	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
+> +	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
+> +		return;
+> +
+> +	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
+> +	vmx_do_interrupt_irqoff(gate_offset(desc));
+> +	kvm_after_interrupt(vcpu);
+> +
+> +	vcpu->arch.at_instruction_boundary = true;
+> +}
+>   
+>   static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
+>   					     unsigned long exit_qualification)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 29d891e0795e..f8a00a766c40 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -518,7 +518,7 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
+>   	vmx->segment_cache.bitmask = 0;
+>   }
+>   
+> -static unsigned long host_idt_base;
+> +unsigned long vmx_host_idt_base;
+>   
+>   #if IS_ENABLED(CONFIG_HYPERV)
+>   static bool __read_mostly enlightened_vmcs = true;
+> @@ -4273,7 +4273,7 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
+>   	vmcs_write16(HOST_SS_SELECTOR, __KERNEL_DS);  /* 22.2.4 */
+>   	vmcs_write16(HOST_TR_SELECTOR, GDT_ENTRY_TSS*8);  /* 22.2.4 */
+>   
+> -	vmcs_writel(HOST_IDTR_BASE, host_idt_base);   /* 22.2.4 */
+> +	vmcs_writel(HOST_IDTR_BASE, vmx_host_idt_base);   /* 22.2.4 */
+>   
+>   	vmcs_writel(HOST_RIP, (unsigned long)vmx_vmexit); /* 22.2.5 */
+>   
+> @@ -5166,7 +5166,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>   	intr_info = vmx_get_intr_info(vcpu);
+>   
+>   	/*
+> -	 * Machine checks are handled by handle_exception_irqoff(), or by
+> +	 * Machine checks are handled by vmx_handle_exception_irqoff(), or by
+>   	 * vmx_vcpu_run() if a #MC occurs on VM-Entry.  NMIs are handled by
+>   	 * vmx_vcpu_enter_exit().
+>   	 */
+> @@ -5174,7 +5174,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>   		return 1;
+>   
+>   	/*
+> -	 * Queue the exception here instead of in handle_nm_fault_irqoff().
+> +	 * Queue the exception here instead of in vmx_handle_nm_fault_irqoff().
+>   	 * This ensures the nested_vmx check is not skipped so vmexit can
+>   	 * be reflected to L1 (when it intercepts #NM) before reaching this
+>   	 * point.
+> @@ -6889,59 +6889,6 @@ void vmx_load_eoi_exitmap(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap)
+>   	vmcs_write64(EOI_EXIT_BITMAP3, eoi_exit_bitmap[3]);
+>   }
+>   
+> -void vmx_do_interrupt_irqoff(unsigned long entry);
+> -void vmx_do_nmi_irqoff(void);
+> -
+> -static void handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
+> -{
+> -	/*
+> -	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
+> -	 * MSR value is not clobbered by the host activity before the guest
+> -	 * has chance to consume it.
+> -	 *
+> -	 * Do not blindly read xfd_err here, since this exception might
+> -	 * be caused by L1 interception on a platform which doesn't
+> -	 * support xfd at all.
+> -	 *
+> -	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
+> -	 * only when xfd contains a non-zero value.
+> -	 *
+> -	 * Queuing exception is done in vmx_handle_exit. See comment there.
+> -	 */
+> -	if (vcpu->arch.guest_fpu.fpstate->xfd)
+> -		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
+> -}
+> -
+> -static void handle_exception_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
+> -{
+> -	/* if exit due to PF check for async PF */
+> -	if (is_page_fault(intr_info))
+> -		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
+> -	/* if exit due to NM, handle before interrupts are enabled */
+> -	else if (is_nm_fault(intr_info))
+> -		handle_nm_fault_irqoff(vcpu);
+> -	/* Handle machine checks before interrupts are enabled */
+> -	else if (is_machine_check(intr_info))
+> -		kvm_machine_check();
+> -}
+> -
+> -static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
+> -					     u32 intr_info)
+> -{
+> -	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
+> -	gate_desc *desc = (gate_desc *)host_idt_base + vector;
+> -
+> -	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
+> -	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
+> -		return;
+> -
+> -	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
+> -	vmx_do_interrupt_irqoff(gate_offset(desc));
+> -	kvm_after_interrupt(vcpu);
+> -
+> -	vcpu->arch.at_instruction_boundary = true;
+> -}
+> -
+>   void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> @@ -6950,9 +6897,10 @@ void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+>   		return;
+>   
+>   	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
+> -		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
+> +		vmx_handle_external_interrupt_irqoff(vcpu,
+> +						     vmx_get_intr_info(vcpu));
+>   	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
+> -		handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
+> +		vmx_handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
+>   }
+>   
+>   /*
+> @@ -8284,7 +8232,7 @@ __init int vmx_hardware_setup(void)
+>   	int r;
+>   
+>   	store_idt(&dt);
+> -	host_idt_base = dt.address;
+> +	vmx_host_idt_base = dt.address;
+>   
+>   	vmx_setup_user_return_msrs();
+>   
+
 
