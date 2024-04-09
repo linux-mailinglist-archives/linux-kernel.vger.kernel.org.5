@@ -1,105 +1,383 @@
-Return-Path: <linux-kernel+bounces-139632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C048A0593
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:32:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63A489D6EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78DB41F22760
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:32:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B4C1C214ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3BA60EF9;
-	Thu, 11 Apr 2024 01:32:21 +0000 (UTC)
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D259261694
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.130.44.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E88C82D62;
+	Tue,  9 Apr 2024 10:24:18 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF6280617;
+	Tue,  9 Apr 2024 10:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712799140; cv=none; b=PqWl4D7qtwiCAC6833VulDupa9dEJ9rZx/3cKaoicVVgz/LYtZbH1MH1qmgosTUGRxFFmnlG8pTZVUqvPKkYdF7DK2aqnQ7upiusWKsu/tO8RdGA0v0bApr0Xafc6ndCHlmOjxGaSi6luUmBraePJesJPvEBCNIBAuIU7Cpcol4=
+	t=1712658257; cv=none; b=oYNlGj/WEF0tv8wiXizHTGY/znz0GQUQa01L0LZUudTtCwifBAkzMLpfEZ3PZwh59S8sCl0cX6kCVvP1+slWNoUZD/V00LTMe2o3T92a80jjYxfYG6Ax72hfwAUH8uNoNg/CmfQFPGUDlWhbL6o2RazEdoT9laXGet7ZZFbUJT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712799140; c=relaxed/simple;
-	bh=jXkinlrC/O0981KfQ2xDFNxGIg5ef9XA4gIIMPm+uOg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZI5QBzymge9W1mk/qnkYeEkK+29wAuOX5r2aZ9INppLr4wqQhINHWQ7PUODtQBI9CryMKXhlydHHoB1W/VLNa0MDm3ZO9JcBaw23jlY9ogF9ySMdb4omdl2D4p/K6l9pQfQYk0zBVHItDkgxl0L84SbgDd7YqVI601Gghlmq0NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com; spf=pass smtp.mailfrom=richtek.com; arc=none smtp.client-ip=220.130.44.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=richtek.com
-Received: By OpenMail Mailer;Thu, 11 Apr 2024 09:32:08 +0800 (CST)
-X-MGFlag: HAM
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(744429:0:AUTH_RELAY)
-	(envelope-from <chiaen_wu@richtek.com>)
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Tue, 09 Apr 2024 18:21:58 +0800 (CST)
-Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 9 Apr 2024
- 18:21:58 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex3.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 9 Apr 2024 18:21:58 +0800
-From: ChiaEn Wu <chiaen_wu@richtek.com>
-To: <pavel@ucw.cz>, <lee@kernel.org>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<peterwu.pub@gmail.com>, <cy_huang@richtek.com>, ChiaEn Wu
-	<chiaen_wu@richtek.com>
-Subject: [PATCH] leds: mt6360: Fix the second LED can not enable torch mode by V4L2
-Date: Tue, 9 Apr 2024 18:21:54 +0800
-Message-ID: <28FE6F1712799128001.chiaen_wu@richtek.com>
-X-MG-ORIG-MSGID: <d1d1419bb322e2b0f40d34edd3a66979015b668c.1712657386.git.chiaen_wu@richtek.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1712658257; c=relaxed/simple;
+	bh=FhZKi+CxyjFce8fDO6D8WspLyAWEgiejTD+k11QIiv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a5Vvs4OyRnvR+d47jZ01JP7S7x2wW1i0myn5QqUX/esVz1cknAxvJqUsLaPFEa/yJNHbwSqAX0HPnYTl5DeEfr3V2kGHNqDdYinoaN9YCiaFUEmvgPbtKMAntG3IfHXcHu3uSDKVg6dHixgiXQgWF5z8sAF/ix3f9gx/SVJm1IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9925640E0187;
+	Tue,  9 Apr 2024 10:24:12 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 6BbwgN_kBiqb; Tue,  9 Apr 2024 10:24:06 +0000 (UTC)
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A87940E01C5;
+	Tue,  9 Apr 2024 10:23:54 +0000 (UTC)
+Date: Tue, 9 Apr 2024 12:23:48 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Nikunj A Dadhania <nikunj@amd.com>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
+	pbonzini@redhat.com
+Subject: Re: [PATCH v8 04/16] virt: sev-guest: Add vmpck_id to snp_guest_dev
+ struct
+Message-ID: <20240409102348.GBZhUXND0CDk7tGv8a@fat_crate.local>
+References: <20240215113128.275608-1-nikunj@amd.com>
+ <20240215113128.275608-5-nikunj@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240215113128.275608-5-nikunj@amd.com>
 
-V4L2 will disable strobe mode of the LED device when enable torch mode,
-but this logic will conflict with the "priv->fled_torch_used"
-in "mt6360_strobe_set()". So after enabling torch mode of the first
-LED, the second LED will not be able to enable torch mode correctly.
+On Thu, Feb 15, 2024 at 05:01:16PM +0530, Nikunj A Dadhania wrote:
+> Drop vmpck and os_area_msg_seqno pointers so that secret page layout
+> does not need to be exposed to the sev-guest driver after the rework.
+> Instead, add helper APIs to access vmpck and os_area_msg_seqno when
+> needed. Added define for maximum supported VMPCK.
 
-Therefore, at the beginning of "mt6360_strobe_set()", check whether the
-state of the upcoming change and the current LED device state are the
-same, so as to avoid the above problem.
+Do not talk about *what* the patch is doing in the commit message - that
+should be obvious from the diff itself. Rather, concentrate on the *why*
+it needs to be done.
 
-Signed-off-by: ChiaEn Wu <chiaen_wu@richtek.com>
----
- drivers/leds/flash/leds-mt6360.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Imagine one fine day you're doing git archeology, you find the place in
+the code about which you want to find out why it was changed the way it
+is now.
 
-diff --git a/drivers/leds/flash/leds-mt6360.c b/drivers/leds/flash/leds-mt6360.c
-index a90de82f4568..1b75b4d36834 100644
---- a/drivers/leds/flash/leds-mt6360.c
-+++ b/drivers/leds/flash/leds-mt6360.c
-@@ -241,10 +241,20 @@ static int mt6360_strobe_set(struct led_classdev_flash *fl_cdev, bool state)
- 	u32 enable_mask = MT6360_STROBEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
- 	u32 val = state ? MT6360_FLCSEN_MASK(led->led_no) : 0;
- 	u32 prev = priv->fled_strobe_used, curr;
--	int ret;
-+	int ret = 0;
- 
- 	mutex_lock(&priv->lock);
- 
-+	/*
-+	 * If the state of the upcoming change is the same as the current LED
-+	 * device state, then skip the subsequent code to avoid conflict
-+	 * with the flow of turning on LED torch mode in V4L2.
-+	 */
-+	if (state == !!(BIT(led->led_no) & prev)) {
-+		dev_info(lcdev->dev, "No change in strobe state [0x%x]\n", prev);
-+		goto unlock;
-+	}
-+
- 	/*
- 	 * Only one set of flash control logic, use the flag to avoid torch is
- 	 * currently used
+You do git annotate <filename> ... find the line, see the commit id and
+you do:
+
+git show <commit id>
+
+You read the commit message and there's just gibberish and nothing's
+explaining *why* that change was done. And you start scratching your
+head, trying to figure out why...
+
+I'm sure you're getting the idea.
+
+> Also, change function is_vmpck_empty() to snp_is_vmpck_empty() in
+> preparation for moving to sev.c.
+> 
+> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Tested-by: Peter Gonda <pgonda@google.com>
+> ---
+>  arch/x86/include/asm/sev.h              |  1 +
+>  drivers/virt/coco/sev-guest/sev-guest.c | 95 ++++++++++++-------------
+>  2 files changed, 48 insertions(+), 48 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index 0c0b11af9f89..e4f52a606487 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -135,6 +135,7 @@ struct secrets_os_area {
+>  } __packed;
+>  
+>  #define VMPCK_KEY_LEN		32
+> +#define VMPCK_MAX_NUM		4
+>  
+>  /* See the SNP spec version 0.9 for secrets page format */
+>  struct snp_secrets_page_layout {
+> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
+> index 596cec03f9eb..646eb215f3c7 100644
+> --- a/drivers/virt/coco/sev-guest/sev-guest.c
+> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
+> @@ -55,8 +55,7 @@ struct snp_guest_dev {
+>  		struct snp_derived_key_req derived_key;
+>  		struct snp_ext_report_req ext_report;
+>  	} req;
+> -	u32 *os_area_msg_seqno;
+> -	u8 *vmpck;
+> +	unsigned int vmpck_id;
+>  };
+>  
+>  static u32 vmpck_id;
+> @@ -66,14 +65,22 @@ MODULE_PARM_DESC(vmpck_id, "The VMPCK ID to use when communicating with the PSP.
+>  /* Mutex to serialize the shared buffer access and command handling. */
+>  static DEFINE_MUTEX(snp_cmd_mutex);
+>  
+> -static bool is_vmpck_empty(struct snp_guest_dev *snp_dev)
+> +static inline u8 *snp_get_vmpck(struct snp_guest_dev *snp_dev)
+
+static functions don't need a prefix like "snp_".
+
+>  {
+> -	char zero_key[VMPCK_KEY_LEN] = {0};
+> +	return snp_dev->layout->vmpck0 + snp_dev->vmpck_id * VMPCK_KEY_LEN;
+> +}
+>  
+> -	if (snp_dev->vmpck)
+> -		return !memcmp(snp_dev->vmpck, zero_key, VMPCK_KEY_LEN);
+> +static inline u32 *snp_get_os_area_msg_seqno(struct snp_guest_dev *snp_dev)
+
+Ditto.
+
+> +{
+> +	return &snp_dev->layout->os_area.msg_seqno_0 + snp_dev->vmpck_id;
+> +}
+>  
+> -	return true;
+> +static bool snp_is_vmpck_empty(struct snp_guest_dev *snp_dev)
+> +{
+> +	char zero_key[VMPCK_KEY_LEN] = {0};
+> +	u8 *key = snp_get_vmpck(snp_dev);
+> +
+> +	return !memcmp(key, zero_key, VMPCK_KEY_LEN);
+>  }
+>  
+>  /*
+> @@ -95,20 +102,22 @@ static bool is_vmpck_empty(struct snp_guest_dev *snp_dev)
+>   */
+>  static void snp_disable_vmpck(struct snp_guest_dev *snp_dev)
+>  {
+> -	dev_alert(snp_dev->dev, "Disabling vmpck_id %d to prevent IV reuse.\n",
+> -		  vmpck_id);
+> -	memzero_explicit(snp_dev->vmpck, VMPCK_KEY_LEN);
+> -	snp_dev->vmpck = NULL;
+> +	u8 *key = snp_get_vmpck(snp_dev);
+
+Check whether is_vmpck_empty before you disable?
+
+> +
+> +	dev_alert(snp_dev->dev, "Disabling vmpck_id %u to prevent IV reuse.\n",
+> +		  snp_dev->vmpck_id);
+> +	memzero_explicit(key, VMPCK_KEY_LEN);
+>  }
+>  
+>  static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
+>  {
+> +	u32 *os_area_msg_seqno = snp_get_os_area_msg_seqno(snp_dev);
+>  	u64 count;
+>  
+>  	lockdep_assert_held(&snp_cmd_mutex);
+>  
+>  	/* Read the current message sequence counter from secrets pages */
+> -	count = *snp_dev->os_area_msg_seqno;
+> +	count = *os_area_msg_seqno;
+
+Why does that snp_get_os_area_msg_seqno() returns a pointer when you
+deref it here again?
+
+A function which returns a sequence number should return that number
+- not a pointer to it.
+
+Which then makes that u32 *os_area_msg_seqno redundant and you can use
+the function directly.
+
+IOW:
+
+static inline u32 snp_get_os_area_msg_seqno(struct snp_guest_dev *snp_dev)
+{
+        return snp_dev->layout->os_area.msg_seqno_0 + snp_dev->vmpck_id;
+}
+
+Simple.
+
+>  
+>  	return count + 1;
+>  }
+> @@ -136,11 +145,13 @@ static u64 snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
+>  
+>  static void snp_inc_msg_seqno(struct snp_guest_dev *snp_dev)
+>  {
+> +	u32 *os_area_msg_seqno = snp_get_os_area_msg_seqno(snp_dev);
+> +
+>  	/*
+>  	 * The counter is also incremented by the PSP, so increment it by 2
+>  	 * and save in secrets page.
+>  	 */
+> -	*snp_dev->os_area_msg_seqno += 2;
+> +	*os_area_msg_seqno += 2;
+
+Yah, you have a getter but not a setter. You're setting it through the
+pointer. Do you see the imbalance in the APIs?
+
+>  }
+>  
+>  static inline struct snp_guest_dev *to_snp_dev(struct file *file)
+> @@ -150,15 +161,22 @@ static inline struct snp_guest_dev *to_snp_dev(struct file *file)
+>  	return container_of(dev, struct snp_guest_dev, misc);
+>  }
+>  
+> -static struct aesgcm_ctx *snp_init_crypto(u8 *key, size_t keylen)
+> +static struct aesgcm_ctx *snp_init_crypto(struct snp_guest_dev *snp_dev)
+>  {
+>  	struct aesgcm_ctx *ctx;
+> +	u8 *key;
+> +
+> +	if (snp_is_vmpck_empty(snp_dev)) {
+> +		pr_err("VM communication key VMPCK%u is null\n", vmpck_id);
+
+		      "Empty/invalid VMPCK%u communication key"
+
+or so.
+
+In a pre-patch, fix all your user-visible strings to say "VMPCK"
+- capitalized as it is an abbreviation.
+
+> +		return NULL;
+> +	}
+>  
+>  	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL_ACCOUNT);
+>  	if (!ctx)
+>  		return NULL;
+>  
+> -	if (aesgcm_expandkey(ctx, key, keylen, AUTHTAG_LEN)) {
+> +	key = snp_get_vmpck(snp_dev);
+> +	if (aesgcm_expandkey(ctx, key, VMPCK_KEY_LEN, AUTHTAG_LEN)) {
+>  		pr_err("Crypto context initialization failed\n");
+>  		kfree(ctx);
+>  		return NULL;
+> @@ -590,7 +608,7 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+>  	mutex_lock(&snp_cmd_mutex);
+>  
+>  	/* Check if the VMPCK is not empty */
+> -	if (is_vmpck_empty(snp_dev)) {
+> +	if (snp_is_vmpck_empty(snp_dev)) {
+>  		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
+>  		mutex_unlock(&snp_cmd_mutex);
+>  		return -ENOTTY;
+> @@ -667,32 +685,14 @@ static const struct file_operations snp_guest_fops = {
+>  	.unlocked_ioctl = snp_guest_ioctl,
+>  };
+>  
+> -static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno)
+> +static bool snp_assign_vmpck(struct snp_guest_dev *dev, unsigned int vmpck_id)
+>  {
+> -	u8 *key = NULL;
+> +	if (WARN_ON((vmpck_id + 1) > VMPCK_MAX_NUM))
+> +		return false;
+
+So this will warn *and*, at the call site too. Let's tone that down.
+
+>  
+> -	switch (id) {
+> -	case 0:
+> -		*seqno = &layout->os_area.msg_seqno_0;
+> -		key = layout->vmpck0;
+> -		break;
+> -	case 1:
+> -		*seqno = &layout->os_area.msg_seqno_1;
+> -		key = layout->vmpck1;
+> -		break;
+> -	case 2:
+> -		*seqno = &layout->os_area.msg_seqno_2;
+> -		key = layout->vmpck2;
+> -		break;
+> -	case 3:
+> -		*seqno = &layout->os_area.msg_seqno_3;
+> -		key = layout->vmpck3;
+> -		break;
+> -	default:
+> -		break;
+> -	}
+
+Your commit message could explain why this is not needed, all of
+a sudden.
+
+> +	dev->vmpck_id = vmpck_id;
+>  
+> -	return key;
+> +	return true;
+>  }
+>  
+>  struct snp_msg_report_resp_hdr {
+> @@ -728,7 +728,7 @@ static int sev_report_new(struct tsm_report *report, void *data)
+>  	guard(mutex)(&snp_cmd_mutex);
+>  
+>  	/* Check if the VMPCK is not empty */
+> -	if (is_vmpck_empty(snp_dev)) {
+> +	if (snp_is_vmpck_empty(snp_dev)) {
+>  		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
+>  		return -ENOTTY;
+>  	}
+> @@ -848,21 +848,20 @@ static int __init sev_guest_probe(struct platform_device *pdev)
+>  		goto e_unmap;
+>  
+>  	ret = -EINVAL;
+> -	snp_dev->vmpck = get_vmpck(vmpck_id, layout, &snp_dev->os_area_msg_seqno);
+> -	if (!snp_dev->vmpck) {
+> -		dev_err(dev, "invalid vmpck id %d\n", vmpck_id);
+> +	snp_dev->layout = layout;
+> +	if (!snp_assign_vmpck(snp_dev, vmpck_id)) {
+> +		dev_err(dev, "invalid vmpck id %u\n", vmpck_id);
+>  		goto e_unmap;
+>  	}
+>  
+>  	/* Verify that VMPCK is not zero. */
+> -	if (is_vmpck_empty(snp_dev)) {
+> -		dev_err(dev, "vmpck id %d is null\n", vmpck_id);
+> +	if (snp_is_vmpck_empty(snp_dev)) {
+> +		dev_err(dev, "vmpck id %u is null\n", vmpck_id);
+
+s!null!Invalid/Empty!
+
+>  		goto e_unmap;
+>  	}
+>  
+>  	platform_set_drvdata(pdev, snp_dev);
+>  	snp_dev->dev = dev;
+> -	snp_dev->layout = layout;
+>  
+>  	/* Allocate the shared page used for the request and response message. */
+>  	snp_dev->request = alloc_shared_pages(dev, sizeof(struct snp_guest_msg));
+> @@ -878,7 +877,7 @@ static int __init sev_guest_probe(struct platform_device *pdev)
+>  		goto e_free_response;
+>  
+>  	ret = -EIO;
+> -	snp_dev->ctx = snp_init_crypto(snp_dev->vmpck, VMPCK_KEY_LEN);
+> +	snp_dev->ctx = snp_init_crypto(snp_dev);
+>  	if (!snp_dev->ctx)
+>  		goto e_free_cert_data;
+>  
+> @@ -903,7 +902,7 @@ static int __init sev_guest_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto e_free_ctx;
+>  
+> -	dev_info(dev, "Initialized SEV guest driver (using vmpck_id %d)\n", vmpck_id);
+> +	dev_info(dev, "Initialized SEV guest driver (using vmpck_id %u)\n", vmpck_id);
+
+Yet another spelling: "vmpck_id". Unify all those in a pre-patch pls
+because it looks stupid.
+
+Thx.
+
 -- 
-2.42.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
