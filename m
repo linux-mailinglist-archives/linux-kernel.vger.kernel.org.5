@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-137049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3080989DB9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:03:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68F7389DB9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61AFF1C21111
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7C87B272D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BED912FB26;
-	Tue,  9 Apr 2024 14:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E80B132C28;
+	Tue,  9 Apr 2024 14:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="seYFDBBN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kROJxz2H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3D41311B9;
-	Tue,  9 Apr 2024 14:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6551311B9;
+	Tue,  9 Apr 2024 14:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671283; cv=none; b=UCM1Vd5/tKR/jkD3QxamFkrGDgf9RRQyk17NWint7ykWeBCCwRr0IZ4rfvsHOyVM8X+pAxZQuaydphuD9W27xY3z0XbQl9H3j2GLF32d7oOunOvIKw1nA2xgxzSTlAaytTqNTYRxMJ9KnYCWKsGrHoCxZzP0tMgRSP0Fpaeax3o=
+	t=1712671288; cv=none; b=pvQFcG8Bf6egaWtiHSbYfIaOtEiE74K54QyPfN+SY1ToQ3ZY0aKLnOFBrJfiXdMJBauFjO0xQSxjOSGFp/Q+vcWAZou9rdppscriwelBFT8IweUJ8Nth8ykaL6h4eTFAptAtQVntsrsXFuax6zFt7l1vtqxSfq96hnulINbyo78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671283; c=relaxed/simple;
-	bh=+6XHH0IKbKZJZfLuR8UiLY5DybHOF/uJqvg3k5VIrYY=;
+	s=arc-20240116; t=1712671288; c=relaxed/simple;
+	bh=pzK3De1dss+tVtAMUbtIdEjmw37wYh3hyKahO2Wukx4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Rd+fBWDsoEzUeYIgDJlqM1CRLCiazXSa6efWCLSO5Jofx0eR22avpH2ekLvuehnLfNiKziu02BL6lYqmAuvYnImN2nlV9aZvVAAyRiapLVn9iSSfowWAH3/82Y1bwZrergV1P9yV09SqAozTSswS7mmfUCp4SEd6SE0tKrxon9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=seYFDBBN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB531C43601;
-	Tue,  9 Apr 2024 14:01:18 +0000 (UTC)
+	 MIME-Version; b=K8Ya5jHkE2TEDUcs4dF2eOgVrp1d/e+4IQxQaeT234MgMEJU+6zRGRH8bXKQhoB/v+hs4WYA5GmyDIntR75lF4gZMBa80bl6QyqSe//YxXWIAHQuk2HKTXICcoibRpu4Ce7ty81o19THA+oSZmp1oKF65GSKaDAdUX78gdc+8mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kROJxz2H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7EB6C433C7;
+	Tue,  9 Apr 2024 14:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712671283;
-	bh=+6XHH0IKbKZJZfLuR8UiLY5DybHOF/uJqvg3k5VIrYY=;
+	s=k20201202; t=1712671288;
+	bh=pzK3De1dss+tVtAMUbtIdEjmw37wYh3hyKahO2Wukx4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=seYFDBBNQDwm3rbyua/v8J3aR2fdaXaheTfVVTdXR7eE7sMrmz3miSMjwS+ALRTjO
-	 3keDS7/WA23UgDKScxs2qbPxAnxQq5cKW2mqPPIzRmx4q+oajuSJYMhsI8NPbxIyDe
-	 r8JSc6Wgt3n9s+H0fYI8xAqv0qbNj5HjUi/CceuFaOYrBzwSHYdlvQtFE7HpZT7Icf
-	 Jg9mP/RwmYcvzfeiTgsNl/sQ7NDJHRRJBuPTy7r8unNf7A3LnopNDxu/rlBnjOOKP+
-	 U7BAgVieDFa+2RczYDaBt0X77ALDKlU+jKCIDGhyluyaj9mTJOimEu/sG7GQGhji7S
-	 y15jJwN/Osm5Q==
+	b=kROJxz2HYgYmtGzuLOF1DPUe3tsYi9DEJ86893KsN4RG8ZJ2ez8cLLlpXAt1q+/Kl
+	 qsw9cy559op7Gxv7hDeh2gK/p4ba26iuHzPTC7VRjy8fdJqsEeWuiV5tQ46ZllP7S9
+	 ZbUqQqTcngs3Ytvsbwu6cLLEvXW7Nxt/JPx3GQl+ZFB1AvwyGc2YMLAo/hvg8tvBen
+	 9+cEIqTiHYc4GkmUn3bcMfpPwm+rwip2PT02QzrvVG9nPIOB5mO9PSmbiNRWl9VXLs
+	 FleNYGV2Q6GW30vC1shIToVxt1l6zXaHmiQ47V5iFp8JJYeekoGWzq1qZ5bqNjGgJK
+	 yhlh3nw+JpfcQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -62,11 +62,10 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
-	linux-trace-kernel@vger.kernel.org,
-	Justin Stitt <justinstitt@google.com>
-Subject: [PATCH 3/5] [v2] block/partitions/ldm: convert strncpy() to strscpy()
-Date: Tue,  9 Apr 2024 16:00:56 +0200
-Message-Id: <20240409140059.3806717-4-arnd@kernel.org>
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 4/5] [v2] blktrace: convert strncpy() to strscpy_pad()
+Date: Tue,  9 Apr 2024 16:00:57 +0200
+Message-Id: <20240409140059.3806717-5-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240409140059.3806717-1-arnd@kernel.org>
 References: <20240409140059.3806717-1-arnd@kernel.org>
@@ -80,56 +79,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The strncpy() here can cause a non-terminated string, which older gcc
-versions such as gcc-9 warn about:
+gcc-9 warns about a possibly non-terminated string copy:
 
-In function 'ldm_parse_tocblock',
-    inlined from 'ldm_validate_tocblocks' at block/partitions/ldm.c:386:7,
-    inlined from 'ldm_partition' at block/partitions/ldm.c:1457:7:
-block/partitions/ldm.c:134:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
-  134 |  strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-block/partitions/ldm.c:145:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
-  145 |  strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kernel/trace/blktrace.c: In function 'do_blk_trace_setup':
+kernel/trace/blktrace.c:527:2: error: 'strncpy' specified bound 32 equals destination size [-Werror=stringop-truncation]
 
-New versions notice that the code is correct after all because of the
-following termination, but replacing the strncpy() with strscpy_pad()
-or strcpy() avoids the warning and simplifies the code at the same time.
+Newer versions are fine here because they see the following explicit
+nul-termination. Using strscpy_pad() avoids the warning and
+simplifies the code a little. The padding helps  give a clean
+buffer to userspace.
 
-Use the padding version here to keep the existing behavior, in case
-the code relies on not including uninitialized data.
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- block/partitions/ldm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+v2: actually use padding version of strscpy.
+---
+ kernel/trace/blktrace.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
-index 38e58960ae03..2bd42fedb907 100644
---- a/block/partitions/ldm.c
-+++ b/block/partitions/ldm.c
-@@ -131,8 +131,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
- 		ldm_crit ("Cannot find TOCBLOCK, database may be corrupt.");
- 		return false;
- 	}
--	strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
--	toc->bitmap1_name[sizeof (toc->bitmap1_name) - 1] = 0;
-+	strscpy_pad(toc->bitmap1_name, data + 0x24, sizeof(toc->bitmap1_name));
- 	toc->bitmap1_start = get_unaligned_be64(data + 0x2E);
- 	toc->bitmap1_size  = get_unaligned_be64(data + 0x36);
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..8fd292d34d89 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -524,8 +524,7 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
+ 	if (!buts->buf_size || !buts->buf_nr)
+ 		return -EINVAL;
  
-@@ -142,8 +141,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
- 				TOC_BITMAP1, toc->bitmap1_name);
- 		return false;
- 	}
--	strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
--	toc->bitmap2_name[sizeof (toc->bitmap2_name) - 1] = 0;
-+	strscpy_pad(toc->bitmap2_name, data + 0x46, sizeof(toc->bitmap2_name));
- 	toc->bitmap2_start = get_unaligned_be64(data + 0x50);
- 	toc->bitmap2_size  = get_unaligned_be64(data + 0x58);
- 	if (strncmp (toc->bitmap2_name, TOC_BITMAP2,
+-	strncpy(buts->name, name, BLKTRACE_BDEV_SIZE);
+-	buts->name[BLKTRACE_BDEV_SIZE - 1] = '\0';
++	strscpy_pad(buts->name, name, BLKTRACE_BDEV_SIZE);
+ 
+ 	/*
+ 	 * some device names have larger paths - convert the slashes
 -- 
 2.39.2
 
