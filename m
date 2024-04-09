@@ -1,110 +1,154 @@
-Return-Path: <linux-kernel+bounces-137396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC8289E175
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:22:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B24589E17D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:25:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997E81C2281F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:22:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E4931F23C1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AD3155A3D;
-	Tue,  9 Apr 2024 17:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01CB156229;
+	Tue,  9 Apr 2024 17:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="HL1a5/OJ"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtJpo53N"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A093153BD2;
-	Tue,  9 Apr 2024 17:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0039015539C;
+	Tue,  9 Apr 2024 17:25:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712683334; cv=none; b=Qgx76LMlMRgCMjNXfHjLnC4zE2ipxxq0xQpKtWHizviB4zebj/QnjwpP6LT6UyVc7puryI0nH2gA59Xol6H6l9bfyAf4v3c6//PtdzqYQNVGtbkxv7c//cxU/i3nRXuErf/ajJVzxcIJwf7QqWcsKjUIcJIFoZQOsFWocu+rnmU=
+	t=1712683523; cv=none; b=Grjw7cVjP9G5cigW+z0b6FhOA4k2wIiElafH3vRM9QKReS/N+YuLo0Gr1tPDgALt3+5MZkcBXb3UUH7JKGLV/WgdMD7nS2kmOkvL8/Njh+vMfvvITw+xR/usuv90S7q1WSA8OgylhFhXqJ+i4fC6jUvrqkqJGf7lbD7RvhgAh3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712683334; c=relaxed/simple;
-	bh=FV8T5ZxL0VBdZ1fdF5/j1pGUzTmlXKhQ8ugt2RX6Zg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=RAgwIviN48LiUN2otqfii1p1Gns7wbDc+D2b8dYSDsoLksdYRp9aJPAJeI3lDtvm+j1/MaUQQJMDQKT+/9VC9VfR4dFHtsaVYI+XuelT5RDWVNyEoQawcYQgcdC9ln5UjJEPaPiY5MlY207wWrRsLWhOBWsijUGWq//sfKNeS+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=HL1a5/OJ; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VDXnp0mvzz6Cnk8s;
-	Tue,  9 Apr 2024 17:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1712683320; x=1715275321; bh=BmiyWVLUgBdQ3Xc8G+8c67Tu
-	AAXUVgBLzSiNGT/ygcg=; b=HL1a5/OJfAWe2ZSrZjpdwgD0xChks8N0+uSfVYeK
-	PbBlFE7LKjx4z7MkRPw11p50qXiK2/rZKN+9uUNnfDiDtrlVdgkNehUd4NP+I04q
-	TdNVQA9swVyvKDg1/avtelf6Ad2tHSD8xgc03XfLkeSVG/WQQiY5GJJzDECvdjrG
-	frfzkz6SkHBZFgs8IHHba7dg3MHbNel8OYwZsssRwL+f5okoj45ehVv19ILeeTmS
-	WgxUwaOhCNoInn85Uw4Bd2lpQeHC9/flBEj8PY0yzC4L4euz/e6ZNZFogX0L+m+B
-	ETjuqZxaVdlrsSPiytR6W1Vebf6tPZpF8Xx04Pv2hL5wqA==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id TdnRVpxAjYXN; Tue,  9 Apr 2024 17:22:00 +0000 (UTC)
-Received: from [100.125.77.89] (unknown [104.132.0.89])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VDXng36pdz6Cnk8m;
-	Tue,  9 Apr 2024 17:21:59 +0000 (UTC)
-Message-ID: <7b22b4b5-ddf9-42e3-9603-4f2422c31333@acm.org>
-Date: Tue, 9 Apr 2024 10:21:58 -0700
+	s=arc-20240116; t=1712683523; c=relaxed/simple;
+	bh=Z7G26vJ7drjhQBqY768GVlza2RGDKJV6xJzSOxOV+Ac=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kX2gZ4xSL2bW/H4rLFPZw/DVt5NeII/X3Rm2t+Ox4aUZX1h+M6rJGXOMNeMX5Qy5Rybc8UF8lPwx95gt70XgZC+EvR65MvT3nvy7e7tCCPlN8Bc/AJT7jPYMGxFhAdiK5nQVD01t12thuKrIiLLLCZHHD8RcpvYYhRQjL5g1eeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtJpo53N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1450CC433F1;
+	Tue,  9 Apr 2024 17:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712683522;
+	bh=Z7G26vJ7drjhQBqY768GVlza2RGDKJV6xJzSOxOV+Ac=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FtJpo53NtrsGi0x7/1DjifT6PbQ15bJ7LWhF0g/Hx+vT8eKEcS/ZCx2Cmb6mVgzja
+	 lg3s6b0HjfMK0I0K4/ZtBW1quMJTMna+WqxR1MYR2SHNTn22vT8g3flWIUHSZANvoo
+	 oxhp32sdJ1ETlfK+9F3s2LgUX3Ma5N0sF4yvXLyiteN/CJ08MyYSHQXX+3AioLSs9l
+	 YAnf84ILVJr6jsi0v9CUycXXvcJRIUdY670pH4cZPAJe4cA9tQ1HRgVLR9bksHmQJE
+	 ONVIS5XbnArcoDXpnGjALyOIgJapzffN9acXMW4Jj9CccObKivFpP18BqHp7L2yvz1
+	 hK9TMdkBLarDw==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	rust-for-linux@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH v3 0/1] RISC-V: enable rust
+Date: Tue,  9 Apr 2024 18:25:15 +0100
+Message-ID: <20240409-unsaddle-skittle-c93eb77732bb@spud>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] scsi: ufs: core: changing the status to check inflight
-Content-Language: en-US
-To: SEO HOYOUNG <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, beanhuo@micron.com,
- kwangwon.min@samsung.com, kwmad.kim@samsung.com, sh425.lee@samsung.com,
- quic_nguyenb@quicinc.com, cpgs@samsung.com, h10.kim@samsung.com
-References: <CGME20240409062901epcas2p3eb8f13336c2dbf978db1ce980a75b3cb@epcas2p3.samsung.com>
- <20240409063254.145363-1-hy50.seo@samsung.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240409063254.145363-1-hy50.seo@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2917; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=jBURk0m47eQdKCm4nsBSeG1Pgaujx2S3yr8amWAalEA=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGmilb/fpZtkTudRfTNRPWJyUuKBlfHWbe1qz/7HOzzr+ vWEQXprRykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACbSz8Dw38UquCjqvY73ndsO zGF/f/u//lDq2+rdPOmcC8OpKLXYCob/aa1ad8KXBRkkiD6OjTqRZCgS/Wy3hI6AxpPb937Uusz gBgA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 4/8/24 23:32, SEO HOYOUNG wrote:
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index 21429eec1b82..c940f52d9003 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -3082,16 +3082,7 @@ static int ufshcd_compose_dev_cmd(struct ufs_hba *hba,
->    */
->   bool ufshcd_cmd_inflight(struct scsi_cmnd *cmd)
->   {
-> -	struct request *rq;
-> -
-> -	if (!cmd)
-> -		return false;
-> -
-> -	rq = scsi_cmd_to_rq(cmd);
-> -	if (!blk_mq_request_started(rq))
-> -		return false;
-> -
-> -	return true;
-> +	return cmd && (blk_mq_rq_state(scsi_cmd_to_rq(cmd)) == MQ_RQ_IN_FLIGHT);
->   }
+From: Conor Dooley <conor.dooley@microchip.com>
 
-There are superfluous parentheses in the above return statement. It is
-unusual in Linux kernel code to surround equality tests with
-parentheses.
+I've intentionally not turned on the gcc support, as discussed on
+v1. I've also switched over to using the target, but it is a bit heavier
+than the one arm64 seems to be using. RISC-V has fewer targets available
+and this was the closest. I preserved the redzone disabling, just moved
+into the Makefile. Any comment from Gary or the LLVM lads on the target
+would be great I think:
+https://github.com/rust-lang/rust/blob/master/compiler/rustc_target/src/spec/targets/riscv64imac_unknown_none_elf.rs
+arm64 is using:
+https://github.com/rust-lang/rust/blob/master/compiler/rustc_target/src/spec/targets/aarch64_unknown_none.rs
 
-Anyway:
+I was gonna send this yesterday, but found out last minute I had invalid
+code in the target generation script. The kernel test robot had given my
+branch the global all-clear - the rust coverage with all the
+"depends on !FOO" must really limit the build coverage. I built for x86
+with rust enabled locally this time to make sure..
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+As this as lifted from the state of the Rust-for-Linux tree, the commit
+messages from there cannot be preserved, so these patches have commit
+messages that I wrote.
+
+I've tested this on Icicle, and the modules seem to work as expected.
+Unfortunately there appear to be implicit 32-bit divisions (or similar)
+in core Rust code, so, as in the downstream Rust-for-Linux tree, Rust is
+only enabled for 64-bit.
+
+Thanks,
+Conor.
+
+Changes in v3:
+- Use a builtin target and modify it in kbuild
+- Drop the kCFI patch, that's been merged independently
+
+Changes in v2:
+- Rebase, since a good bit of time has passed!
+- Add the extra patch, disabling when CFI_CLANG is enabled.
+
+Changes in v1:
+- rebase on v6.3-rc1
+- resort the `um` entry in the arch-support table while adding RISC-V
+  to it
+- drop 32-bit bits
+- have another crack at assigning authorship
+
+Changes in RFC-RESEND:
+- fix the asymmetrical additions in the Makefile bits
+- add cc-cover to my git send-email command...
+
+CC: Miguel Ojeda <ojeda@kernel.org>
+CC: Alex Gaynor <alex.gaynor@gmail.com>
+CC: Wedson Almeida Filho <wedsonaf@gmail.com>
+CC: Boqun Feng <boqun.feng@gmail.com>
+CC: Gary Guo <gary@garyguo.net>
+CC: Björn Roy Baron <bjorn3_gh@protonmail.com>
+CC: Jonathan Corbet <corbet@lwn.net>
+CC: Paul Walmsley <paul.walmsley@sifive.com>
+CC: Palmer Dabbelt <palmer@dabbelt.com>
+CC: Nathan Chancellor <nathan@kernel.org>
+CC: Nick Desaulniers <ndesaulniers@google.com>
+CC: rust-for-linux@vger.kernel.org
+CC: linux-doc@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-riscv@lists.infradead.org
+CC: llvm@lists.linux.dev
+
+Miguel Ojeda (1):
+  RISC-V: enable building 64-bit kernels with rust support
+
+ Documentation/rust/arch-support.rst | 1 +
+ arch/riscv/Kconfig                  | 1 +
+ arch/riscv/Makefile                 | 7 +++++++
+ scripts/generate_rust_target.rs     | 6 ++++++
+ 4 files changed, 15 insertions(+)
+
+-- 
+2.43.0
+
 
