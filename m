@@ -1,155 +1,248 @@
-Return-Path: <linux-kernel+bounces-136029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A4A689CF23
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5983689CF25
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 02:02:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40CC11C23C8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:01:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FF7E1C21EC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 00:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9B61FBB;
-	Tue,  9 Apr 2024 00:01:37 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21AB818;
+	Tue,  9 Apr 2024 00:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ficKkfdm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C3D383
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 00:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E07382;
+	Tue,  9 Apr 2024 00:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712620897; cv=none; b=Sofg+7sHRfhFm4eVXuFk/bMB1OqUfuLwVqofk68GeiZKJNpuvuH5dfJ+lqo95TTaYSYIPUlsr8SbwtC3WgfcRI/TZFKfcqVdPzwuOHtFoOMRfy5FgsYE9oaMJ5YaExPaa6f8z8Xk6i51gEe2JWLvDQwEu/VHRdcCCn7Q4NG89UY=
+	t=1712620935; cv=none; b=F5s2Ywha8qHHrawQlT15NuxhMeZmoN84UIDuX8aod9gsfTndeNRVi6HRITrRq6klDw/mYgCgvBN8zJ+ON3wv2zqq0H6wKDu7Kw/lFq8lH1b6574kYGPH6l1qCvqy8qsVd5EMMsaF6n4rfr5iztw+404f0qxJHvmYOZsA+fYNXSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712620897; c=relaxed/simple;
-	bh=3voE6CPaxkY+iWi5FLW6Jx+FisQflngU8sSDOJcMLF0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=iWwOjq81he6Qs2uG+0H/0TqohKoONKVfhGkOOUNE05eCjA/2EgNGaXOQqyXoHuLzpQuzmDLRLRCfdXjaKBdsEJH/jHsYv9Lsh3DIzfQDsibejE9H8fKWieg07fvHX3R6k2k9BSwBaG5Ri69jUhsJHkz3f+KMMMyLrqc3k69Yc74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5db4db531so223806639f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Apr 2024 17:01:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712620894; x=1713225694;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pyYAqFUZdXsMjhaAEjBagjDEFe+wEMpPEHgURXo3AOU=;
-        b=D1dxygvMzj/jkE68KN8mpa7FBAlrV6qzqq7kjPpDHzcQLqva+g541m+3vyp0dd5FPW
-         uTc6vTWv8/G/N1QwbFfRrT9IjYpNbIB0wA3ViWyPhM1F7sAtFnir6M0S2iHbl6Au4mbN
-         0nCArrrLsnrVGmRhPZnsZ7L5RkTzd96mlkPx0USeWHZGx3xmD5A/GgKQO8b2kAcw9ZfK
-         i3RArBKfc4vwVO6vFdaV8xrvIvufjRNa3f5or8mFt7pYy2IUAF+frYpqvOW+1qbF6Umi
-         AIEhTatrd9MCkoMLZVGN1UBmX537tj3tVBiAIWZevbJv7FAmoHC/u15nC0huaePVVHn5
-         3weQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ3Ccuhqp9Ldyjm5Trsr/5kGtpMoRWcDOGEhD96JEKDckvafu3R8BxvE6BIC48MnhJ7inyRk7nCib1ifM/HEF/mmXA6e1ll1L9uxxH
-X-Gm-Message-State: AOJu0YzYa6ZjbBXE9ilWLtX/KhUQi9KQNrShsq6B8aSaF892ExUepo6J
-	L7UtXL0UGig40xXQ00v2o+PHh6hcPA7lEF59d34hYily7MbDbHJhZJrOoqDBUV2t7WJTzQH7bwn
-	eYIGwI7wre6nmDY4INaqi8lsNkEcTKsXpIgjdGyBeSSqPfDKeDLt9StQ=
-X-Google-Smtp-Source: AGHT+IGQYzW6ougw4l1ajcrWrIuF2lFcE+k6qVPMRd3DcXGN34DcVGdqKFrXq+QUy3hk/Z/+IJiAsRJueSiCRpc6qdPLu1dqsibA
+	s=arc-20240116; t=1712620935; c=relaxed/simple;
+	bh=yhXntb+BygzkvYcAgq9T0aPC7O5Ntbn9Mam2SrrYtK0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RPR2TDbm5KOHxGbgSR5qUWa9S+bggx8anSdT/ve83hMobSAc2bQcOyifuH8Thvzeub7Xukth3/D+4ksK72YR0ZGT9cplpHESs0DOpmOeKhDaXzOk9jXVH+KqbYxqG/BZGIWBMMN7NdhQmUjAw4Osb2FjRr8OpwAl00Lcoo50XAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ficKkfdm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E332FC433F1;
+	Tue,  9 Apr 2024 00:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712620935;
+	bh=yhXntb+BygzkvYcAgq9T0aPC7O5Ntbn9Mam2SrrYtK0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ficKkfdmWW7fW5iH/R4pSHL3wZ2VRnCZp89hyZnIYfLB/gmUKf1mLgQABghp6ooBM
+	 6Krko6sTeTGm2UmygE2nsMXK6W90v874yJUcZOa2LBS4yiF7UdE2RVikAxEu4bzd26
+	 6op3BjXxYA4twN9tjHy/9s4pAW8uHhZGAAzIn++anYV6FvC8o4nnFq10sFgmunzaJs
+	 i5i99HGS8J3VWRYksLaZn+4/h4APD1Z5+VtXJkqInEVWI8BcjxDZlPmUxDjYsC2jDq
+	 FeA9ykObzh3bwUYFmwtdZ95/qsJEBb3FTlRYUEGTpfTpcoP1ar8+hXnT63d+i36Sbw
+	 QYBy3HYPZrhcw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org,
+	x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	"Chang S . Bae" <chang.seok.bae@intel.com>,
+	Stefan Kanthak <stefan.kanthak@nexgo.de>
+Subject: [PATCH] crypto: x86/aes-xts - access round keys using single-byte offsets
+Date: Mon,  8 Apr 2024 20:01:54 -0400
+Message-ID: <20240409000154.29799-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a89:b0:369:f750:5bf1 with SMTP id
- k9-20020a056e021a8900b00369f7505bf1mr604446ilv.5.1712620894604; Mon, 08 Apr
- 2024 17:01:34 -0700 (PDT)
-Date: Mon, 08 Apr 2024 17:01:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000ee21406159ea06a@google.com>
-Subject: [syzbot] [bpf?] [net?] WARNING in sock_map_close
-From: syzbot <syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Eric Biggers <ebiggers@google.com>
 
-syzbot found the following issue on:
+Access the AES round keys using offsets -7*16 through 7*16, instead of
+0*16 through 14*16.  This allows VEX-encoded instructions to address all
+round keys using 1-byte offsets, whereas before some needed 4-byte
+offsets.  This decreases the code size of aes-xts-avx-x86_64.o by 4.2%.
 
-HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=164811f6180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=07a2e4a1a57118ef7355
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1600ac05180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150ac5a1180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5259 at net/core/sock_map.c:1654 sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1654
-Modules linked in:
-CPU: 0 PID: 5259 Comm: syz-executor257 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1654
-Code: df e8 52 4d 98 f8 48 8b 1b 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 39 4d 98 f8 4c 8b 23 eb 89 e8 af 05 35 f8 90 <0f> 0b 90 48 83 c4 08 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc
-RSP: 0018:ffffc90004c5fda8 EFLAGS: 00010293
-RAX: ffffffff895feac1 RBX: ffffffff948b2be0 RCX: ffff888023278000
-RDX: 0000000000000000 RSI: ffffffff8baac220 RDI: ffffffff8bfec6e0
-RBP: 0000000000000000 R08: ffffffff92cc759f R09: 1ffffffff2598eb3
-R10: dffffc0000000000 R11: fffffbfff2598eb4 R12: ffffffff895fe820
-R13: ffff8880222bc000 R14: ffff8880222bc000 R15: ffffffff895fe850
-FS:  0000555569b3e380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000007dc22000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- unix_release+0x85/0xc0 net/unix/af_unix.c:1048
- __sock_release net/socket.c:659 [inline]
- sock_close+0xbc/0x240 net/socket.c:1421
- __fput+0x429/0x8a0 fs/file_table.c:423
- __do_sys_close fs/open.c:1557 [inline]
- __se_sys_close fs/open.c:1542 [inline]
- __x64_sys_close+0x7f/0x110 fs/open.c:1542
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f3e539366a0
-Code: ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 80 3d 01 8a 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
-RSP: 002b:00007ffc63195558 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f3e539366a0
-RDX: 0000000000000010 RSI: 0000000020000f40 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000069b3f610 R09: 0000000069b3f610
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/crypto/aes-xts-avx-x86_64.S | 81 +++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 37 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/x86/crypto/aes-xts-avx-x86_64.S b/arch/x86/crypto/aes-xts-avx-x86_64.S
+index fcaf64a2f8c6..95e412e7601d 100644
+--- a/arch/x86/crypto/aes-xts-avx-x86_64.S
++++ b/arch/x86/crypto/aes-xts-avx-x86_64.S
+@@ -80,11 +80,11 @@
+ 	.byte	0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80
+ .text
+ 
+ // Function parameters
+ .set	KEY,		%rdi	// Initially points to crypto_aes_ctx, then is
+-				// advanced to point directly to the round keys
++				// advanced to point directly to 7th round key
+ .set	SRC,		%rsi	// Pointer to next source data
+ .set	DST,		%rdx	// Pointer to next destination data
+ .set	LEN,		%rcx	// Remaining length in bytes
+ .set	TWEAK,		%r8	// Pointer to next tweak
+ 
+@@ -406,28 +406,28 @@
+ .endif
+ .endm
+ 
+ // Load the round keys: just the first one if !USE_AVX10, otherwise all of them.
+ .macro	_load_round_keys
+-	_vbroadcast128	0*16(KEY), KEY0
++	_vbroadcast128	-7*16(KEY), KEY0
+ .if USE_AVX10
+-	_vbroadcast128	1*16(KEY), KEY1
+-	_vbroadcast128	2*16(KEY), KEY2
+-	_vbroadcast128	3*16(KEY), KEY3
+-	_vbroadcast128	4*16(KEY), KEY4
+-	_vbroadcast128	5*16(KEY), KEY5
+-	_vbroadcast128	6*16(KEY), KEY6
+-	_vbroadcast128	7*16(KEY), KEY7
+-	_vbroadcast128	8*16(KEY), KEY8
+-	_vbroadcast128	9*16(KEY), KEY9
+-	_vbroadcast128	10*16(KEY), KEY10
++	_vbroadcast128	-6*16(KEY), KEY1
++	_vbroadcast128	-5*16(KEY), KEY2
++	_vbroadcast128	-4*16(KEY), KEY3
++	_vbroadcast128	-3*16(KEY), KEY4
++	_vbroadcast128	-2*16(KEY), KEY5
++	_vbroadcast128	-1*16(KEY), KEY6
++	_vbroadcast128	0*16(KEY), KEY7
++	_vbroadcast128	1*16(KEY), KEY8
++	_vbroadcast128	2*16(KEY), KEY9
++	_vbroadcast128	3*16(KEY), KEY10
+ 	// Note: if it's AES-128 or AES-192, the last several round keys won't
+ 	// be used.  We do the loads anyway to save a conditional jump.
+-	_vbroadcast128	11*16(KEY), KEY11
+-	_vbroadcast128	12*16(KEY), KEY12
+-	_vbroadcast128	13*16(KEY), KEY13
+-	_vbroadcast128	14*16(KEY), KEY14
++	_vbroadcast128	4*16(KEY), KEY11
++	_vbroadcast128	5*16(KEY), KEY12
++	_vbroadcast128	6*16(KEY), KEY13
++	_vbroadcast128	7*16(KEY), KEY14
+ .endif
+ .endm
+ 
+ // Do a single round of AES encryption (if \enc==1) or decryption (if \enc==0)
+ // on the block(s) in \data using the round key(s) in \key.  The register length
+@@ -454,13 +454,13 @@
+ .macro _vaes_1x		enc, last, i, xmm_suffix, data
+ .if USE_AVX10
+ 	_vaes		\enc, \last, KEY\i\xmm_suffix, \data
+ .else
+ .ifnb \xmm_suffix
+-	_vaes		\enc, \last, \i*16(KEY), \data
++	_vaes		\enc, \last, (\i-7)*16(KEY), \data
+ .else
+-	_vbroadcast128	\i*16(KEY), V4
++	_vbroadcast128	(\i-7)*16(KEY), V4
+ 	_vaes		\enc, \last, V4, \data
+ .endif
+ .endif
+ .endm
+ 
+@@ -475,11 +475,11 @@
+ 	_vaes		\enc, \last, KEY\i, V1
+ 	_tweak_step	(2*(\i-1) + 1)
+ 	_vaes		\enc, \last, KEY\i, V2
+ 	_vaes		\enc, \last, KEY\i, V3
+ .else
+-	_vbroadcast128	\i*16(KEY), V4
++	_vbroadcast128	(\i-7)*16(KEY), V4
+ 	_tweak_step	(2*(\i-1))
+ 	_vaes		\enc, \last, V4, V0
+ 	_vaes		\enc, \last, V4, V1
+ 	_tweak_step	(2*(\i-1) + 1)
+ 	_vaes		\enc, \last, V4, V2
+@@ -526,13 +526,19 @@
+ 	_define_aliases
+ 
+ 	// Load the AES key length: 16 (AES-128), 24 (AES-192), or 32 (AES-256).
+ 	movl		480(KEY), KEYLEN
+ 
+-	// If decrypting, advance KEY to the decryption round keys.
+-.if !\enc
+-	add		$240, KEY
++	// Advance KEY to point to the 7th encryption round key (if encrypting)
++	// or the 7th decryption round key (if decrypting).  This makes the
++	// offset to any round key be in the range [-112, 112], fitting in a
++	// signed byte.  This shortens VEX-encoded instructions that access the
++	// 8th and later round keys which otherwise would need 4-byte offsets.
++.if \enc
++	add		$7*16, KEY
++.else
++	add		$(15+7)*16, KEY
+ .endif
+ 
+ 	// Check whether the data length is a multiple of the AES block length.
+ 	test		$15, LEN
+ 	jnz		.Lneed_cts\@
+@@ -751,40 +757,41 @@
+ 
+ // void aes_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
+ //			   u8 iv[AES_BLOCK_SIZE]);
+ SYM_TYPED_FUNC_START(aes_xts_encrypt_iv)
+ 	vmovdqu		(%rsi), %xmm0
+-	vpxor		0*16(%rdi), %xmm0, %xmm0
++	add		$7*16, %rdi
++	vpxor		-7*16(%rdi), %xmm0, %xmm0
++	vaesenc		-6*16(%rdi), %xmm0, %xmm0
++	vaesenc		-5*16(%rdi), %xmm0, %xmm0
++	vaesenc		-4*16(%rdi), %xmm0, %xmm0
++	vaesenc		-3*16(%rdi), %xmm0, %xmm0
++	vaesenc		-2*16(%rdi), %xmm0, %xmm0
++	vaesenc		-1*16(%rdi), %xmm0, %xmm0
++	vaesenc		0*16(%rdi), %xmm0, %xmm0
+ 	vaesenc		1*16(%rdi), %xmm0, %xmm0
+ 	vaesenc		2*16(%rdi), %xmm0, %xmm0
++	cmpl		$24, 480-(7*16)(%rdi)
++	jle		.Lencrypt_iv_aes_128_or_192
+ 	vaesenc		3*16(%rdi), %xmm0, %xmm0
+ 	vaesenc		4*16(%rdi), %xmm0, %xmm0
+ 	vaesenc		5*16(%rdi), %xmm0, %xmm0
+ 	vaesenc		6*16(%rdi), %xmm0, %xmm0
+-	vaesenc		7*16(%rdi), %xmm0, %xmm0
+-	vaesenc		8*16(%rdi), %xmm0, %xmm0
+-	vaesenc		9*16(%rdi), %xmm0, %xmm0
+-	cmpl		$24, 480(%rdi)
+-	jle		.Lencrypt_iv_aes_128_or_192
+-	vaesenc		10*16(%rdi), %xmm0, %xmm0
+-	vaesenc		11*16(%rdi), %xmm0, %xmm0
+-	vaesenc		12*16(%rdi), %xmm0, %xmm0
+-	vaesenc		13*16(%rdi), %xmm0, %xmm0
+-	vaesenclast	14*16(%rdi), %xmm0, %xmm0
++	vaesenclast	7*16(%rdi), %xmm0, %xmm0
+ .Lencrypt_iv_done:
+ 	vmovdqu		%xmm0, (%rsi)
+ 	RET
+ 
+ 	// Out-of-line handling of AES-128 and AES-192
+ .Lencrypt_iv_aes_128_or_192:
+ 	jz		.Lencrypt_iv_aes_192
+-	vaesenclast	10*16(%rdi), %xmm0, %xmm0
++	vaesenclast	3*16(%rdi), %xmm0, %xmm0
+ 	jmp		.Lencrypt_iv_done
+ .Lencrypt_iv_aes_192:
+-	vaesenc		10*16(%rdi), %xmm0, %xmm0
+-	vaesenc		11*16(%rdi), %xmm0, %xmm0
+-	vaesenclast	12*16(%rdi), %xmm0, %xmm0
++	vaesenc		3*16(%rdi), %xmm0, %xmm0
++	vaesenc		4*16(%rdi), %xmm0, %xmm0
++	vaesenclast	5*16(%rdi), %xmm0, %xmm0
+ 	jmp		.Lencrypt_iv_done
+ SYM_FUNC_END(aes_xts_encrypt_iv)
+ 
+ // Below are the actual AES-XTS encryption and decryption functions,
+ // instantiated from the above macro.  They all have the following prototype:
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+base-commit: 4ad27a8be9dbefd4820da0f60da879d512b2f659
+prerequisite-patch-id: 8d09ed747039f5e718ac7267e2a15e22504aa7f3
+-- 
+2.44.0
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
