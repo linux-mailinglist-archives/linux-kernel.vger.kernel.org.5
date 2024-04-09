@@ -1,144 +1,124 @@
-Return-Path: <linux-kernel+bounces-137341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC7089E0D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:52:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A3C89E0D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 18:54:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CF9D284504
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:52:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEDA7B24204
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9812C15380D;
-	Tue,  9 Apr 2024 16:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBD415381F;
+	Tue,  9 Apr 2024 16:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WE/VmO/l"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZcNb3Oo"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B5013A267
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA46F6FCB
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 16:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712681567; cv=none; b=QWv3p0I9uBAF5xmY82R3GarECf8Lt/jsg0R7+5TcnjiDy2u5ANP1+Y2j65jpFnOB2WzyR9IV9re3qXY9ekT72Z99JLwS0wBk5IUi1ckFuWXdrJ21oFdx4KwnWnWf5dU3QVvtWVban/PXg8iPhImoz4gS7AhwkFAJm2KGumRdRPA=
+	t=1712681625; cv=none; b=VfjEewxXePNaM6nGcimEjuy/6DA/xZRefdV9jUg7E6dXwl72kl3kB6o7yX/kEXS6ta73yz6jECTinu4vLi0DtpuiQqNRoHCWwdQQd4aZqdKNbSBS8L/+07bLx2h/uAPTerMcqAbXbjxqF7FOkmD1/WudOlq3k6cieXDo3hvhf4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712681567; c=relaxed/simple;
-	bh=j2Y+94KbsbY7acQxdTX6z539hRaKkg/fO5uMKEch7SU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=o0OJF6+9isDR+H5hTUmVsZilXcJVFMlGIWgZk3Okq9RjaJioxYBJY+7Nm2bw+Xw3NNnik/f/fzA5rGMHog5JxRxulWeqcGHQXsxPhvwQeFPa/gmxzqfgSVzGu4sO7gaDbq4yVWQ+gHskYjiwfM5PvnQGwRDiM4r+UIIQ/FET1EI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WE/VmO/l; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712681565;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+NKidzKW/DTvBc1tQ8E4kYeb8ojdS1p5BOYrq1bKV6k=;
-	b=WE/VmO/lSgEB8sVWrgRnbqY+oMv95WvOVRD7Jt52twwg4sPiPbN9eXhp+pa9mj78nIZYGO
-	9Go4efK6gXuA8mvvvBjo5DAEV0TWctW1GaWWJKr2kQ0kEF9PFkS3f06VmYTH3jU8oEEd95
-	hAQ1G1FeZH+PYMSmd45otwjlTCZFSkc=
-Received: from mail-vk1-f200.google.com (mail-vk1-f200.google.com
- [209.85.221.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-Omczv-P3MNKVA1LM5H_T3Q-1; Tue, 09 Apr 2024 12:52:43 -0400
-X-MC-Unique: Omczv-P3MNKVA1LM5H_T3Q-1
-Received: by mail-vk1-f200.google.com with SMTP id 71dfb90a1353d-4d40305ddb3so1289282e0c.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:52:43 -0700 (PDT)
+	s=arc-20240116; t=1712681625; c=relaxed/simple;
+	bh=Z5UrXYx7JFbheXSytyRul38kZzlkgMZgaLmQNOp0J+E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b8hSa0mshlHMW0bXTS7s7SOZX3XiMpxO+PR26qiznJxDjj03egZu4quGt2YIhAJ81e4FLUUrhuMNuZ4RvHM4da3yZmBc6vStatR2PaIyGZaeGsQ19XokmWDmrOR2G6WLzOxPhzEAkH2V/KrT5PyxHym+z/g1/y3fdY8+IJeNKIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZcNb3Oo; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d886f17740so27435711fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 09:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712681622; x=1713286422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K94SiKIbCJp8SM00bpnKqldx2icgrR1O8gIbHUFQzuM=;
+        b=LZcNb3OoDs3PdGzmToQHEnQe+A2dSh0L87Q/KFXSBCHyP2ui00kq089/P4BK03eN7Y
+         2xMSpHAw7AUVg89MufSk4JE3OXDHu/bdvrkeiVAbk3eDBf5FxRoTHCTgGxipsYD2lCyK
+         kLYfiQLh1HwqnwE0pn6VVhR5yfN8qWClOISyGgaBdLfakiE3JmGAlWzmpnAjK7sA/Zv+
+         1QJIlm4AZenByJatezzIbd4/k24iFiZcm2JHu+HWTWykANUcLfqsKmYWvu6V1Qu6Ab8S
+         42I/Px/ddaJzxXFGp0S6fF+ABGSNwW2KKyMZZ56Tk9COj4k87/8j2O7hrpvzbb9CsdeI
+         /CEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712681563; x=1713286363;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+NKidzKW/DTvBc1tQ8E4kYeb8ojdS1p5BOYrq1bKV6k=;
-        b=YqFPAJoSOWKpT1CoN4F8NoI1cZHlYULpgmC/XqMzSUhu4oZk8r/0cZtoAtKKb6MtXk
-         tTPINaxrktibOPABkNos0ryHKWLIA8MaEtYjOUTKbnObgijTjge42doDV0aHs3AsfbQy
-         W4nnSJ4dDJUtiqpl/ZUsThUeaegu2wnNDi4sV50kTJp95ZIUECofeLA3szS6HOEBO/hq
-         fL8XCUDvVQx52WoIiCMy82x4Nvj90YQubqDg6/kmXCmiuZxw6vIOnoKHKWDeRr+b/0kT
-         SUpkVRk7w8qpz9tO42SMJJG5xMjSUzSeu1eJJomGOYE/k9RDGEzMldFsSKNSvtX3xWG5
-         jabg==
-X-Forwarded-Encrypted: i=1; AJvYcCVu8cZo3II0goE6COaaHDMqhKzRyyWPzS+YwzhOQY8tS+yFPbIe5PIRAlAKI0GZx6EQW1DQL0BNkHQ4em+aMLLrBFwmxxxC2PENP81A
-X-Gm-Message-State: AOJu0YxdHrOXjv2Smq7qI3ji6D0lF5jifoaWzitUOUjI+ET9PkXIQb/r
-	/hYPvAjHgRoZkynmJiNRBzhzMMCf1TavCty2j4taebzKDdfwFgpOs57Nt8I4wdllj0lemRlm2j2
-	iBBxn53MZ1gh5DmbHPM6KHc+SKpicAgz0G8b2I4dqV230sGsduhesl9QmUk04Jg==
-X-Received: by 2002:a05:6122:90c:b0:4d3:4ac2:29f4 with SMTP id j12-20020a056122090c00b004d34ac229f4mr484247vka.2.1712681563217;
-        Tue, 09 Apr 2024 09:52:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE40zvLEF0ZBb59hoel0B1fp7t336yp12pBAvKmKmGFQvM2VaoTV61WKM8Kbw1z3qCiHsrz9Q==
-X-Received: by 2002:a05:6122:90c:b0:4d3:4ac2:29f4 with SMTP id j12-20020a056122090c00b004d34ac229f4mr484208vka.2.1712681562863;
-        Tue, 09 Apr 2024 09:52:42 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id fe4-20020a0562140b8400b00698facb19d5sm4093118qvb.106.2024.04.09.09.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:52:41 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Connor O'Brien <connoro@google.com>, Joel Fernandes <joelaf@google.com>,
- Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, Youssef
- Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
- Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul
- E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, Xuewen
- Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
- Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, John Stultz
- <jstultz@google.com>
-Subject: Re: [RESEND][PATCH v9 5/7] sched: Consolidate pick_*_task to
- task_is_pushable helper
-In-Reply-To: <20240401234439.834544-6-jstultz@google.com>
-References: <20240401234439.834544-1-jstultz@google.com>
- <20240401234439.834544-6-jstultz@google.com>
-Date: Tue, 09 Apr 2024 18:52:36 +0200
-Message-ID: <xhsmh34rua36z.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1712681622; x=1713286422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K94SiKIbCJp8SM00bpnKqldx2icgrR1O8gIbHUFQzuM=;
+        b=iINIuRXgLk9G/yispJ50trr8eHW8gHUKkJURreVAEt3+cvACS+tX6ZnNQZBejxzWOO
+         P2+Y15ApRflhhzb5ZsxqMj8EjBowjd3DwnHMi8LTmRkScOp1WchiqYBIwGpkm+Ihs5k6
+         TsABUCFD17mLlbQx+9JayaOU41NKdAn0l3Gbopy7fqvxqloJxk/kSRwYn9aK0d5fQBS8
+         xWsIP1rUm70AE99VB2S6H8OCzZXx/DXUEg9nweKgjC5VxtRoYbXtpQDAzSTNiZw9Rked
+         lknTnm6wn8NMDwd9TWp04WfReml7+8GiqXfRBnbfa7c0BDZBoqcZeCiBUvzAsQ4noOkv
+         /uvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnY3AbjPftYnNDFx7CFcrkufW/pBciR/sJ1Izi7t0ZehcTgkg9j6HD7t5tk5SAakUbhdT9XSkEb0qiAOBBJ9qFhgqt7OM717rIzRA8
+X-Gm-Message-State: AOJu0YwwMOXQL9QvLmjhWUbctC/XITWbdGzJE1JVRi1x4aO0kcqUiWn+
+	x5FbRxnaut3KIEthSna+3KwgBpYaE6uvf/qgD5AjgKTizWED61GMfhEFU9vB66hCorDS9BTZFKz
+	jHpMG148GcjyI0xMUGRio6C2fOFY=
+X-Google-Smtp-Source: AGHT+IF2PQIT2bxI672nMn4SqqrQ5MsS2tt5NKrHuFiJK3CS2DA9nuDdSX6TCSRsxN5afjaUDqTr9TJb3sgz/d4PPUo=
+X-Received: by 2002:a05:651c:1050:b0:2d8:606d:c797 with SMTP id
+ x16-20020a05651c105000b002d8606dc797mr68765ljm.10.1712681622023; Tue, 09 Apr
+ 2024 09:53:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240409100503.274629-1-ubizjak@gmail.com> <20240409100503.274629-3-ubizjak@gmail.com>
+ <ZhUixk5I_n53dbBb@FVFF77S0Q05N> <CAFULd4bBmQ85UsPOOEA+5dj-_JOBNWeyM-jipM7Zov2V484quQ@mail.gmail.com>
+ <CAFULd4Z8JTc_5p8apO680es0fYO5ke9yYPpPUfp=15XrRbKESQ@mail.gmail.com> <ZhVuG4J7aocGvd0-@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZhVuG4J7aocGvd0-@FVFF77S0Q05N.cambridge.arm.com>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Tue, 9 Apr 2024 18:53:30 +0200
+Message-ID: <CAFULd4YM3ukFUst5ofMP8oz2gw8Spo_9A8UrAKHw_-dSyAwS7w@mail.gmail.com>
+Subject: Re: [PATCH 2/6] locking/atomic/x86: Rewrite x86_32
+ arch_atomic64_{,fetch}_{and,or,xor}() functions
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01/04/24 16:44, John Stultz wrote:
-> From: Connor O'Brien <connoro@google.com>
+On Tue, Apr 9, 2024 at 6:34=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
+wrote:
+
+> > Something like this:
+> >
+> > --cut here--
+> > /*
+> >  * This function is intended to preload the value from atomic64_t
+> >  * location in a non-atomic way. The read might be torn, but can
+> >  * safely be consumed by the compare-and-swap loop.
+> >  */
+> > static __always_inline s64 arch_atomic64_read_tearable(atomic64_t *v)
+> > {
+> >     /*
+> >      * See the comment in arch_atomic_read() on why we use
+> >      * __READ_ONCE() instead of READ_ONCE_NOCHECK() here.
+> >      */
+> >     return __READ_ONCE(v->counter);
+> > }
+> > --cut here--
 >
-> This patch consolidates rt and deadline pick_*_task functions to
-> a task_is_pushable() helper
+> Yeah, something of that shape.
 >
-> This patch was broken out from a larger chain migration
-> patch originally by Connor O'Brien.
->
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+> Having thought for a bit longer, it's probably better to use '_torn' rath=
+er
+> than '_tearable' (i.e. name this arch_atomic64_read_torn()).
 
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+How about we simply name the function
 
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> [jstultz: split out from larger chain migration patch,
->  renamed helper function]
-> Signed-off-by: John Stultz <jstultz@google.com>
+arch_atomic64_read_nonatomic()
 
+in the sense that it reads atomic64_t variables in a non-atomic way?
+
+Uros.
 
