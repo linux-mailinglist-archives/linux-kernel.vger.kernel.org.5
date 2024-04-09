@@ -1,64 +1,76 @@
-Return-Path: <linux-kernel+bounces-136662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E35A89D6CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:21:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4CE489D66E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:14:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFF21B24BB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:21:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7AE91C216D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 10:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4B8135A6D;
-	Tue,  9 Apr 2024 10:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B4D83A09;
+	Tue,  9 Apr 2024 10:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Dc/2OmoF"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="SQy1QZF0"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AA88593B;
-	Tue,  9 Apr 2024 10:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3379B8175E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 10:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712657675; cv=none; b=pHI0CMjlA052z9j6QmspTJ/bJuiISqm53ev9qWSorZj+wPr0TfvCbLZ2i3jLV3nrhDko8MWQ+i8Q3/Q3mDHWiXvW8Bp7GLznr7Kk/0DKUG0E8oEvP2ii7vUglEWGJ5heM4QX3GKnFBrcvu54R2byeegQEZLIlNbWVycb3a6xRus=
+	t=1712657626; cv=none; b=uGDS5+5pqrUceEoNGVAGcC4QVOZuLQ9FNazLCpEZ5jLeugeItN0Fssq/+2Wln2tCy/TXU8Yyp6QX36OvTwE8Y1QOjJxqyBlerZFDAnktYfThZxaK2b/5OIk1Cvze3fp4UkOmlNYY+cRhJzj8yBZ/vwRxtwesYDDsBpNJqUgF3gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712657675; c=relaxed/simple;
-	bh=quBqk4ZSPz0FlL5a0iOeYJ8NmNEZAtsqWwFqLvmMzvY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=HXDHCR2f5xPgzKP9qnkYCMSNF8bsZ43O40gtZzNe3rObym86M60t7GzEBcnVtpYhlEsvJMJ5id07wtmwzeW/ErFoomRz4R9PIpYsp99Brb9CdPyoj+To81je0UHdGJIVjPPOrrzBVpuUeRGp7UtZYOKVqvAtzn+Lvnt+l2xOQPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Dc/2OmoF; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 439A1XJl008201;
-	Tue, 9 Apr 2024 10:14:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=JXYjc+7LNB6PlcHPEpdjQ2BZ2YBrmlJcYbOjIA+Vhdg
-	=; b=Dc/2OmoFMO8K6y6DZ4I8Om3JRTgqAGhHqlXqB7ctS/Fr2pADxafa4SsY3WE
-	XNY8NH9brb0BBvkh0v4+wjtm5yXD6T4utm2AwJtwPt4gs55FV96Wn0M8YpgGOBw/
-	bn/FPToO1urHiFrbxnzrb5fIdIzjwbCV+7PuTIYfo4cYpBo961SomryNfOxIUEso
-	paLGTO07U6GKL7XvpG+I30474/DQevNN+Dwcg38+vMXkQditM9AhjWPTmv38vf+K
-	defvzkoifaqUcEoZcaAYwuUYstKb3nX65yej1wKcirNG3GxE8nxZk0sEPwP4X+KP
-	5qXMeAepu1trB7QtkqHBTlTJrfw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xd3bsg1bc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Apr 2024 10:14:04 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 439AE2T3026981
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Apr 2024 10:14:02 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 9 Apr 2024 03:13:55 -0700
-From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date: Tue, 9 Apr 2024 15:43:22 +0530
-Subject: [PATCH v10 4/6] arm64: dts: qcom: sm8450: Add OPP table support to
- PCIe
+	s=arc-20240116; t=1712657626; c=relaxed/simple;
+	bh=6yP2PSTtW/6RtQgKkMZffCd+b5diqb9RzbFiRrSwUQ0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=l1Kw8k7F3X6iqTQsGN9VE2r2b4AmrjbTXCwA6tXiv/cyo0dWWeMBTvs5Pr3fFtZ9Z6URhkIa+Mzql5C/iCKTsXwPBjUSthBmsxF3pGpLtUky9yi3wFL3x6/MqOpWRt1AL2DBxoRw44vQchcfXoQu8TPdHueR/jbaWqMEnZdJ/NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=SQy1QZF0; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41634598125so22309415e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 03:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712657622; x=1713262422; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vstY9Zznkfygwg0NsHtg7aqDXceNRwx7wPOtr1MNxN0=;
+        b=SQy1QZF0nw5B9nufOfx8jVXx6T40gu1Ed6Tod1HrkQ9TKJKnrs4PY/JZMGJMFMaD9o
+         8O2N6FzYi16nqeP+/A2an//rwMp/yptYwW3LJVpCpBzRTsnHey05dXySz1G5gkmw2W8X
+         vjAhqihdOuJS/6aSlSmF+uP6y02VZsB1N2pJiu9G+CFEmj4aprCEYlyIc4asTM+QQCil
+         JzV32HoDmUfK6eelxgtLjUbpmU5eZnxMO35bpHH8P/509bfA+EIIuscr+f0g9ZxLlKHY
+         gKs30tJOSL4MQd6FflopX1cmrzx4UmQpaG8okhXV96ZPv4+mPrQhYYwTCO2Hd9+twzGw
+         MKOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712657622; x=1713262422;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vstY9Zznkfygwg0NsHtg7aqDXceNRwx7wPOtr1MNxN0=;
+        b=lKM6F1qQiZIgkDK3W3VoVd8JEKi/EI1eYH3896Jkv/co6UnTbQDg+BoBFwdXxxNKrX
+         ERSPzEKShk4x3I9IFX/4FB8X9rhzy7Ray6Z7fLFmCHAIw+GT5EBZ+pilDLN3HEgiAUid
+         MZ5Vt++6YCgIx0AtxfoKh7smEMMY9rPi2Z6QlSPW2etJiLKUyAxpL8/NTDs+2DPLaJXm
+         IIxbTUhAkgwHBxahKN3um1+9I70RrTpU1WSnF0t40odJo+kpQ2AdfSklE24aR0Aznmxh
+         G1UvxOWAx4b+f+l+JvC6C/SOjJvYgmDn1ndun78wandtvCV/xWZvRfEIwOaEhauTpn9J
+         XlAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWysUj9nNfJikipAqFqaoSd9WkPU4GwB8IlD78we+19iORm30mCoHo+y7yAOzergVP2OmTnT+5T71ktf/0gdOSyUHStjsXm+S6Wy/WT
+X-Gm-Message-State: AOJu0YzmAwQGwkOrg6/FzHsTPl+Z2Tje2ii8pGrRMZu/Tl6oMqKoIVEl
+	va6f/IS6g6umz/8bwr3wTZwobheg8InRt2tRh92afqniF8ISFdfcyiDLgOzyI2gprR1o6pdxMfv
+	EYZ0=
+X-Google-Smtp-Source: AGHT+IHqrZDTpg9fb5GQH0DhI4jx2HY2qdWx0GVAnjcLi1UXF9vEhHArn9ciUPZ9dzVCo8vSXIPiog==
+X-Received: by 2002:a05:600c:3509:b0:414:6a1b:819 with SMTP id h9-20020a05600c350900b004146a1b0819mr7911487wmq.13.1712657622311;
+        Tue, 09 Apr 2024 03:13:42 -0700 (PDT)
+Received: from [127.0.1.1] ([93.5.22.158])
+        by smtp.googlemail.com with ESMTPSA id r7-20020a05600c458700b00416b035c2d8sm1124149wmo.3.2024.04.09.03.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 03:13:41 -0700 (PDT)
+From: Alexandre Mergnat <amergnat@baylibre.com>
+Date: Tue, 09 Apr 2024 12:13:22 +0200
+Subject: [PATCH v2 01/18] ASoC: dt-bindings: mediatek,mt8365-afe: Add audio
+ afe document
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,168 +79,194 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240409-opp_support-v10-4-1956e6be343f@quicinc.com>
-References: <20240409-opp_support-v10-0-1956e6be343f@quicinc.com>
-In-Reply-To: <20240409-opp_support-v10-0-1956e6be343f@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?=
-	<kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, <johan+linaro@kernel.org>,
-        <bmasney@redhat.com>, <djakov@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>, <quic_krichai@quicinc.com>,
-        <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712657608; l=3084;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=quBqk4ZSPz0FlL5a0iOeYJ8NmNEZAtsqWwFqLvmMzvY=;
- b=lBNEanD8Y+bBSfjy5A/JsH89qVM1T4FpZRqY6Sh6uX0Y8e/4xH3t+mOLBFTRZ1HFD1eCKK5ye
- 8uL10Ihghk4AY6SQOQWphxqiH9flTLiveJLGED/NVbDadpYZNzM19Tb
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VmIvBdeiu8JgtMtHA6Uq9lO0uOyh64KN
-X-Proofpoint-ORIG-GUID: VmIvBdeiu8JgtMtHA6Uq9lO0uOyh64KN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_06,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404090065
+Message-Id: <20240226-audio-i350-v2-1-3043d483de0d@baylibre.com>
+References: <20240226-audio-i350-v2-0-3043d483de0d@baylibre.com>
+In-Reply-To: <20240226-audio-i350-v2-0-3043d483de0d@baylibre.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+ Alexandre Mergnat <amergnat@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4760; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=6yP2PSTtW/6RtQgKkMZffCd+b5diqb9RzbFiRrSwUQ0=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmFRTT1RZ83NnSZXFR+xtetcg3ocLkN87pn3rt8lvM
+ Bw3SBMeJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZhUU0wAKCRArRkmdfjHURU8cD/
+ 9+eYbJh7Z1C/HPcwCIRFa4iJqRud2TZmORRiL5znL6VLbAcmasJM5woFlHIBVSYTfVeRBojFBXQYVu
+ KvPJokhiDYNFgPKkVxN4VssP/Ie4lZv/MuySDZWV1vYxpmASA8aAG7JTxxrI2HcBDZroWSEDqtefqc
+ MNLvOY6UtAgII7YRXchKGhnNNkAt4FdkNS/i4Z/Whs6p8v49GGUscdm3rkJBmswDqiWF+zGWdTr8fg
+ Ai36j4e8dnCaNGujXh4Zyh8mUfZccYvDlc8vGB5XLnh3MV1nXS6pExc1K6ef4HA9oonfv9YwbcT+B7
+ H+Z8P+EXmPHzJ7huHtpZ2Ef4Ua6Bu3nt/paAJptBl/Jzc/iCG5yk+hD5JrCS+rYUznWJbfXsbikfiN
+ zgOaX8vPMP4k2A8RJUH8uqa3lR3kEUWnzq3xWPPdoEpV5Z8lSBx1uOPh/m8mFSt9MJjRgpFT0POGOp
+ mO+0W39uoIpKYhgmeF+BTOO+iCHAkeyVfTfw8Kr57K0JMlHL/BvT70N+C/waciP3FNR+kTZkZl/1Hg
+ s77OelmvsvaxF/Jlwd7TRDjl143YApZO4wCThKelYcQxoeJJrvCbH5AGY0tBrK0Z6XbsSMg3tzvpOK
+ zfNN7s6B6lj1WhLc1Gkr182cNsggrj1Fnd0dlmMdfqqdVrQ7MLN++zk1wyLg==
+X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
+ fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 
-PCIe needs to choose the appropriate performance state of RPMh power
-domain and interconnect bandwidth based up on the PCIe data rate.
+Add MT8365 audio front-end bindings
 
-Add the OPP table support to specify RPMh performance states and
-interconnect peak bandwidth.
-
-Different link configurations may share the same aggregate bandwidth,
-e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
-and share the same OPP entry.
-
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- arch/arm64/boot/dts/qcom/sm8450.dtsi | 77 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ .../bindings/sound/mediatek,mt8365-afe.yaml        | 136 +++++++++++++++++++++
+ 1 file changed, 136 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-index 615296e13c43..9dfe16012726 100644
---- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-@@ -1855,7 +1855,35 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pcie0_default_state>;
- 
-+			operating-points-v2 = <&pcie0_opp_table>;
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8365-afe.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8365-afe.yaml
+new file mode 100644
+index 000000000000..d0759898b9c5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt8365-afe.yaml
+@@ -0,0 +1,136 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mediatek,mt8365-afe.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 			status = "disabled";
++title: MediaTek AFE PCM controller for MT8365
 +
-+			pcie0_opp_table: opp-table {
-+				compatible = "operating-points-v2";
++maintainers:
++  - Alexandre Mergnat <amergnat@baylibre.com>
 +
-+				/* GEN 1 x1 */
-+				opp-2500000 {
-+					opp-hz = /bits/ 64 <2500000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+					opp-peak-kBps = <250000 1>;
-+				};
++properties:
++  compatible:
++    const: mediatek,mt8365-afe-pcm
 +
-+				/* GEN 2 x1 */
-+				opp-5000000 {
-+					opp-hz = /bits/ 64 <5000000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+					opp-peak-kBps = <500000 1>;
-+				};
++  reg:
++    maxItems: 1
 +
-+				/* GEN 3 x1 */
-+				opp-8000000 {
-+					opp-hz = /bits/ 64 <8000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+					opp-peak-kBps = <984500 1>;
-+				};
-+			};
++  "#sound-dai-cells":
++    const: 0
 +
- 		};
- 
- 		pcie0_phy: phy@1c06000 {
-@@ -1982,7 +2010,56 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pcie1_default_state>;
- 
-+			operating-points-v2 = <&pcie1_opp_table>;
++  clocks:
++    items:
++      - description: 26M clock
++      - description: mux for audio clock
++      - description: audio i2s0 mck
++      - description: audio i2s1 mck
++      - description: audio i2s2 mck
++      - description: audio i2s3 mck
++      - description: engen 1 clock
++      - description: engen 2 clock
++      - description: audio 1 clock
++      - description: audio 2 clock
++      - description: mux for i2s0
++      - description: mux for i2s1
++      - description: mux for i2s2
++      - description: mux for i2s3
 +
- 			status = "disabled";
++  clock-names:
++    items:
++      - const: top_clk26m_clk
++      - const: top_audio_sel
++      - const: audio_i2s0_m
++      - const: audio_i2s1_m
++      - const: audio_i2s2_m
++      - const: audio_i2s3_m
++      - const: engen1
++      - const: engen2
++      - const: aud1
++      - const: aud2
++      - const: i2s0_m_sel
++      - const: i2s1_m_sel
++      - const: i2s2_m_sel
++      - const: i2s3_m_sel
 +
-+			pcie1_opp_table: opp-table {
-+				compatible = "operating-points-v2";
++  interrupts:
++    maxItems: 1
 +
-+				/* GEN 1 x1 */
-+				opp-2500000 {
-+					opp-hz = /bits/ 64 <2500000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+					opp-peak-kBps = <250000 1>;
-+				};
++  power-domains:
++    maxItems: 1
 +
-+				/* GEN 1 x2 GEN 2 x1 */
-+				opp-5000000 {
-+					opp-hz = /bits/ 64 <5000000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+					opp-peak-kBps = <500000 1>;
-+				};
++  mediatek,dmic-mode:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Indicates how many data pins are used to transmit two channels of PDM
++      signal. 1 means two wires, 0 means one wire. Default value is 0.
++    enum:
++      - 0 # one wire
++      - 1 # two wires
 +
-+				/* GEN 2 x2 */
-+				opp-10000000 {
-+					opp-hz = /bits/ 64 <10000000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+					opp-peak-kBps = <1000000 1>;
-+				};
++  mediatek,topckgen:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the mediatek topckgen controller
 +
-+				/* GEN 3 x1 */
-+				opp-8000000 {
-+					opp-hz = /bits/ 64 <8000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+					opp-peak-kBps = <984500 1>;
-+				};
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - power-domains
++  - mediatek,topckgen
 +
-+				/* GEN 3 x2 GEN 4 x1 */
-+				opp-16000000 {
-+					opp-hz = /bits/ 64 <16000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+					opp-peak-kBps = <1969000 1>;
-+				};
++additionalProperties: false
 +
-+				/* GEN 4 x2 */
-+				opp-32000000 {
-+					opp-hz = /bits/ 64 <32000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+					opp-peak-kBps = <3938000 1>;
-+				};
-+			};
++examples:
++  - |
++    #include <dt-bindings/clock/mediatek,mt8365-clk.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/power/mediatek,mt8365-power.h>
 +
- 		};
- 
- 		pcie1_phy: phy@1c0e000 {
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        afe@11220000 {
++            compatible = "mediatek,mt8365-afe-pcm";
++            reg = <0 0x11220000 0 0x1000>;
++            #sound-dai-cells = <0>;
++            clocks = <&clk26m>,
++                     <&topckgen CLK_TOP_AUDIO_SEL>,
++                     <&topckgen CLK_TOP_AUD_I2S0_M>,
++                     <&topckgen CLK_TOP_AUD_I2S1_M>,
++                     <&topckgen CLK_TOP_AUD_I2S2_M>,
++                     <&topckgen CLK_TOP_AUD_I2S3_M>,
++                     <&topckgen CLK_TOP_AUD_ENGEN1_SEL>,
++                     <&topckgen CLK_TOP_AUD_ENGEN2_SEL>,
++                     <&topckgen CLK_TOP_AUD_1_SEL>,
++                     <&topckgen CLK_TOP_AUD_2_SEL>,
++                     <&topckgen CLK_TOP_APLL_I2S0_SEL>,
++                     <&topckgen CLK_TOP_APLL_I2S1_SEL>,
++                     <&topckgen CLK_TOP_APLL_I2S2_SEL>,
++                     <&topckgen CLK_TOP_APLL_I2S3_SEL>;
++            clock-names = "top_clk26m_clk",
++                          "top_audio_sel",
++                          "audio_i2s0_m",
++                          "audio_i2s1_m",
++                          "audio_i2s2_m",
++                          "audio_i2s3_m",
++                          "engen1",
++                          "engen2",
++                          "aud1",
++                          "aud2",
++                          "i2s0_m_sel",
++                          "i2s1_m_sel",
++                          "i2s2_m_sel",
++                          "i2s3_m_sel";
++            interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
++            power-domains = <&spm MT8365_POWER_DOMAIN_AUDIO>;
++            mediatek,dmic-mode = <1>;
++            mediatek,topckgen = <&topckgen>;
++        };
++    };
++
++...
 
 -- 
-2.42.0
+2.25.1
 
 
