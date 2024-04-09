@@ -1,184 +1,161 @@
-Return-Path: <linux-kernel+bounces-137103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0628A89DD09
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:42:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B29B89DD0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF18D289517
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:42:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EF341C2110A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F1D130E20;
-	Tue,  9 Apr 2024 14:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28816131740;
+	Tue,  9 Apr 2024 14:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IIWFznCp"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CvrAYalZ"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031008F77;
-	Tue,  9 Apr 2024 14:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837C850260
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712673569; cv=none; b=eATvGXoGIU0qY4q7Hr2N6T0gnhXZuDF/hqtFE8PLtuHXCBi8k3xmA96CzKtiGQs/5J/pH6J5SR9gyqTZxdkx7oEVxgtfNy6FcZtXpehiLLdwqI6m3EiRFKsVe6Q+nHpqGleBd2SeyHfoq9xhjD/KJ2Z6W5qwUtqqYam83CYJ9LA=
+	t=1712673583; cv=none; b=sU9u2shb/i/+1aSU195Njn6OOtbnow5YizKGc3qrek2eK0Vlqp4w1jBfCx3yLlnT/eV4szqaJg8WaAB1wWryD3HzfcD2nBczQznzHcwPGj5XMqRIT88rQrWDzy8PvcCzvODsZ48P38EIROYz+J6dDD8F139otX5Ds3IWdgKkeng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712673569; c=relaxed/simple;
-	bh=VsIhIpo9XbPHMfhPqNlNwCHGDoqMfYE2kWZHJaXVHvw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cge/6AJxLzbbwZqo0ynqyX3WzodxoEEZdjrXNlxvA2UB+pN7AsgI3u/2q136Wd4DN3ydIBCKDpTinksQ6SeOF4pL25eZxbiZ0oNGsZHN9xy307IbNKD6vm+EcnfccrNJ/WI8vN+ktUKV2iTxVAv58q3pNEZsRUl8zpu5OT0VSYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IIWFznCp; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51381021af1so9200204e87.0;
-        Tue, 09 Apr 2024 07:39:27 -0700 (PDT)
+	s=arc-20240116; t=1712673583; c=relaxed/simple;
+	bh=rYRdF5eSZvDHg6P/v4LaA4shStXXiArZZpKdGUCyTq8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D9n4LeJshxLPs6/pqdJmuHyhFx2ZvBWclBV0N28unSN/9iWWqXKzoe1FiwWJog1Qxc9dW6J6U8XQXPUqZxDSfT5x8ITwJjtGQ1wxEH/CXwOtZKr2gFfp4fW2rOcxUMJY6DI16MEEU4fWS4haE2Fsz5WaN8Sbj1KB8yJ7vkJyESM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CvrAYalZ; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516dd07d373so2289716e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 07:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712673566; x=1713278366; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YKneFpmrGWPkDYn40mrK/8lEAAuKeHF1X4WijCDVMIA=;
-        b=IIWFznCpURG66mpAy25tpJPS85vue2XNm1N7lv/7WcuI9aaFvn2DvQ1zTYzCkpG3XM
-         NbmXUS19evI1OGD3hLtDiJ4GekKbWepD4E//ZDBY8f63zyBuuuiJAjA85O5fS6Nh+h93
-         0X8uTW0seg+JSK84T48xAx5+oTtVVQ9ktkKL7MA0zs0mCdduj0EOnYDqojFlGkdU97YL
-         jzyFfwY2bUq9/pCNSJ4yxF2tESIB6v/+omBk1c73k2l2Y/KPAIFT+rMeuu+J1jHdRfek
-         ptNQz1BhStLU3PUFHQU3BcLWfer+1vvTBaAYFZdLX0Pp57AK9lhXkrDgoccc/7pakJQU
-         JTvg==
+        d=linaro.org; s=google; t=1712673580; x=1713278380; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sr9qt0BbADGa89YCYwT+Bbk+dGM/AHSN1tyvYdeWW7E=;
+        b=CvrAYalZ7tKWU+Xa7Lmfm7mkZmwJpyAkx1B/SBNTWIm/8HqvppMWwhg37j3mZ8DenL
+         KfFnyMpw/gDbHkc9K4aY9snbI+30RqNdM5C9sN/Y9G06DTAW6sWHIJ1oQU2TVbIVc1AU
+         MoPNFStgk3GF/rG6k97JR0bSBxI6C56EYjMft8vO1THw/h+6HAAdfh85Z1zywVmU4mZq
+         icz8VA8P46qYN2xI+jmKRvbWUDrJCHTvexQv3d33Zq3P4m9R/TOsrSajdSGWOLFES5a6
+         t4KMVHBPMg08qsbCf3LdiH68z/vWSUJrYQ+7i9XkH2oZrj1JG6KsAcsKUqLjLHPGsxn7
+         qVOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712673566; x=1713278366;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YKneFpmrGWPkDYn40mrK/8lEAAuKeHF1X4WijCDVMIA=;
-        b=UaC5SRR0sDPP6bJIf5qwMgZ5J6lOgV03qTDRqAvPOTBrRpQt757SyO2+Tsp0l2Q5Nn
-         LAFPKs9bX5xRYLKO0Rf4CVEWdlcgQW7napLzFyaag4sT+pu4MkmsKcmKzjxOnmDNQRfm
-         Ho4r6XXdPiDUrK9SWqSc+dAcmS+LOKWj44ML/T/o0rCBgIRHkjjl7rVmHQ9XYen6N0k8
-         FOw0hJoZClryCyWTjQrA3FGbqVVWYoo+FuaP5cG0V527R1NWKfWsFkKbZVFyCuhnVcel
-         75btBTnPyTo8DOuB7lA55w0XlJvkSnrRbKH2nGzRalSXp1In7VLil4cKmLAIrP3pbQAI
-         cCgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUiX0oeuiqPkyUM8KKOjf8mESPaanaRJ1VX5thDmy1JJYO3HiUIPGP3A3D1PB4DAHBs/ujZQ9ioL/oNA0oiNpfqCe4Pt2P+Mn/1XUKcp8kx5W4UFpf7dO+LC/35Oc7rRPscehaFyPluWw==
-X-Gm-Message-State: AOJu0Yy+vJimRWCJtLx24UeAz/TTy0aZmZDe4JasVHUq92R4Jac64vnN
-	QMO+qJgXAJ+JUFvznQRjkZgZkec5c9S0e5c9WQdeTZbDFSjkva3q
-X-Google-Smtp-Source: AGHT+IFNvQ/ssefNKErjmnIGx6yZ1F9nt1Qiw7IcOB3RIUN0vBkaXWO1MGpGc6B7hXDExOz5QM8pow==
-X-Received: by 2002:a05:6512:1188:b0:515:af1f:5bad with SMTP id g8-20020a056512118800b00515af1f5badmr12034231lfr.28.1712673565917;
-        Tue, 09 Apr 2024 07:39:25 -0700 (PDT)
-Received: from ?IPV6:2001:999:588:88e2:b205:90f0:e68f:63c6? ([2001:999:588:88e2:b205:90f0:e68f:63c6])
-        by smtp.gmail.com with ESMTPSA id a22-20020a195f56000000b00516d0aecc5esm1594774lfj.141.2024.04.09.07.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 07:39:25 -0700 (PDT)
-Message-ID: <e15d8d41-c4ad-4cfb-b10a-89e06a4ece11@gmail.com>
-Date: Tue, 9 Apr 2024 17:39:31 +0300
+        d=1e100.net; s=20230601; t=1712673580; x=1713278380;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sr9qt0BbADGa89YCYwT+Bbk+dGM/AHSN1tyvYdeWW7E=;
+        b=BRN1IehtkV1JaIoKYHyoTEKLWDE4m2bu5aBTWuq62Vh3wcK/R8u234/lWNos41Pf4C
+         fFov6azbpZZWusoAN5nYeAAYYXLp29+FFjAgdHXZSeI+KXtaOkBhA34Rv/VX5AS10mLg
+         VCtz1KZY3m9+nfeLv2a/IzmKfcCtn1r0W4tWqaXHDo3u8etpfikB+gsGNIIlimgSHOVg
+         m4Qnjwpo2+F4UyAyC7+hZlLS2vjy93P0jWo9Ogyi2F2nzllgNbSSnS2v3EvL8AH+pcU3
+         22Tey3Ti2fHqFAYpcIoNKBzJGcIeIKojmJXgt+D8pJ8rjugwhajUAb8wZT8K8j4D18LC
+         WcHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUo9XmOXNc6rBGbvh1LN9bzm6az8ZipLUVtdA1Y5K3Z8Z3Ejm89RZTTgyLNMCeCpDMSar8LdvbPMCWlpbgcS1ap/nBX+/eq7fWr3/oc
+X-Gm-Message-State: AOJu0YzMIKRIL/ulOSKbqf2X9UP37EMuVViKY9kLUDdj4x0inWoGGv6i
+	x6GDIaDXKDSeVZErTzCVJbG+n4EfFxGyR+k0ebmPqSMSzyTsqzfHZT3BMAWuoZA=
+X-Google-Smtp-Source: AGHT+IFhmq1jH49fs/wNDP2DWefgXDYDOHbmwLUoOSnTyawe10DQy5StJWx9djPeA8rjMN8setjnjA==
+X-Received: by 2002:ac2:59d0:0:b0:516:cd83:71ce with SMTP id x16-20020ac259d0000000b00516cd8371cemr7651841lfn.31.1712673579685;
+        Tue, 09 Apr 2024 07:39:39 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id i16-20020ac25230000000b00513d13ede82sm1561676lfl.147.2024.04.09.07.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 07:39:39 -0700 (PDT)
+Date: Tue, 9 Apr 2024 17:39:37 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
+	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+Message-ID: <d4gcj4dg5vv5wd72kj7lpzs5cy7b2a4gh4t4lixuigwfkpwt3s@4toc3fpqycwi>
+References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
+ <ale6wbwzkfagcg2q6glb4vsxu3pthhkk3tquv2ixlatbdryqvh@xscsq2h6emho>
+ <01cb1c0d-a801-37f9-2f55-2bbd8d3a68b9@quicinc.com>
+ <CAA8EJprzH0LiWNx9Udt6og3G063odY6ccvaAgsNS1r3zG8TmdA@mail.gmail.com>
+ <905222ad-612a-3eaf-d966-23c89c99e1f0@quicinc.com>
+ <CAA8EJpp6Lc7sc5fnKp+O8TYdaywiE+dZ=YJin351s=r5rxi+Kw@mail.gmail.com>
+ <covjipaso7bhgiifb62vdh24dpadr7kdypl2dleg7a2vc4jwjd@s4ci5xc6qpa3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/13] ASoC: ti: davinci-i2s: Add features to McBSP
- driver
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <covjipaso7bhgiifb62vdh24dpadr7kdypl2dleg7a2vc4jwjd@s4ci5xc6qpa3>
 
-Hi Bastien,
-
-On 02/04/2024 10:12, Bastien Curutchet wrote:
-> This series aims to add some features to McBSP driver.
+On Mon, Apr 08, 2024 at 09:33:01PM -0500, Bjorn Andersson wrote:
+> On Tue, Apr 09, 2024 at 01:07:57AM +0300, Dmitry Baryshkov wrote:
+> > On Tue, 9 Apr 2024 at 00:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> > > On 4/8/2024 2:12 PM, Dmitry Baryshkov wrote:
+> > > > On Mon, 8 Apr 2024 at 22:43, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> > > >> On 4/7/2024 11:48 AM, Bjorn Andersson wrote:
+> > > >>> On Fri, Apr 05, 2024 at 08:15:47PM -0700, Abhinav Kumar wrote:
+> > > >>>> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> > > >>> [..]
+> > > >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> [..]
+> > > >>
+> > > >> I will need sometime to address that use-case as I need to see if we can
+> > > >> handle that better and then drop the the DISCONNECT_PENDING state to
+> > > >> address this fully. But it needs more testing.
+> > > >>
+> > > >> But, we will need this patch anyway because without this we will not be
+> > > >> able to fix even the most regular and commonly seen case of basic
+> > > >> connect/disconnect receiving complementary events.
+> > > >
+> > > > Hmm, no. We need to drop the HPD state machine, not to patch it. Once
+> > > > the driver has proper detect() callback, there will be no
+> > > > complementary events. That is a proper way to fix the code, not these
+> > > > kinds of band-aids patches.
+> > > >
+> > >
+> > > I had discussed this part too :)
+> > >
+> > > I totally agree we should fix .detect()'s behavior to just match cable
+> > > connect/disconnect and not link_ready status.
+> > >
+> > > But that alone would not have fixed this issue. If HPD thread does not
+> > > get scheduled and plug_handle() was not executed, .detect() would have
+> > > still returned old status as we will update the cable status only in
+> > > plug_handle() / unplug_handle() to have a common API between internal
+> > > and external hpd execution.
+> > 
+> > I think there should be just hpd_notify, which if the HPD is up,
+> > attempts to read the DPCD. No need for separate plug/unplug_handle.
+> > The detect() can be as simple as !drm_dp_is_branch() || sink_count != 0.
+> > 
 > 
-> Convert bindings from .txt to .yaml.
-> Add possibility to use an external clock as sample rate generator's
-> input.
-> Add handling of new formats (TDM, S24_LE, BP_FC).
-> Enable the detection of unexpected frame pulses.
-> Set the clock free-running mode according to SND_SOC_DAIFMT_[GATED/CONT]
-> configuration in DAI format.
-> Add ti,T1-framing[tx/rx] properties in DT. They allow to set the data
-> delay to two bit-clock periods.
-> 
-> This has been tested on a platform designed off of the DAVINCI/OMAP-L138
-> connected to 3 daisy-chained AD7767. An external clock drives the
-> sample rate generator through the CLKS pin.
-> The hardware I have only allowed me to test acquisition side of McBSP.
-> It is connected to a 6 channels TDM and acts as Bit clock provider and
-> Frame clock consumer.
+> What is detect() supposed to return in the event that we have external
+> HPD handler? The link state? While the external HPD bridge would return
+> the HPD state?
 
-Nice and clean, thank you for the updates!
+It should return the same: there is a sensible display attached. Other
+drivers (and drm/msm/dp internally) use !branch || (sink_count > 0).
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> If a driver only drives the link inbetween atomic_enable() and
+> atomic_disable() will the "connected state" then ever be reported as
+> "connected"? (I'm sure I'm still missing pieces of this puzzle).
 
-PS: sorry for the delay.
+I don't probably get the question. Nothing stops the driver from
+accessing the AUX bus outside of the atomic_enable/disable() brackets.
 
 > 
-> Change log v1 -> v2:
->   PATCH 1 (bindings):
->      * Drop power-domains property's description
->      * Drop the unused label 'mcbsp0' in example
->      * Add <> around each entry of the 'dmas' property
->      * Add 'Reviewed-by: Rob Herring <robh@kernel.org>'
->   PATCH 2 (bindings):
->      * Drop the 'ti,enable-sync-err' flag
->      * Drop the 'ti,disable-free-run' flag
->      * Add 'Reviewed-by: Rob Herring <robh@kernel.org>'
->   PATCH 4:
->      * In probe() use dev_err for fixed error
->   PATCH 7 (TDM):
->      * set playback.max_channels to 128
->      * Add a check on tx_mask as the one done for rx_mask
->      * Allow TDM with BP_FP format
->   PATCH 9:
->      * Detection of unexpected frame pulses is enabled by default
->   PATCH 10:
->      * Free-running mode is selected by the DAI format through
->        SND_SOC_DAIFMT_[CONT/GATED]
->   PATCH 12:
->      * drop the 'ti,drive-dx' property
->      * add 'ti,T1-framing-[rx/tx]' properties
->   PATCH 13:
->      * Drop the drive_dx part
->      * Add support for 'T1 framing' with data delay set to 2 bit-clock
->        periods
-> Bastien Curutchet (13):
->   ASoC: dt-bindings: davinci-mcbsp: convert McBSP bindings to yaml
->     schema
->   ASoC: dt-bindings: davinci-mcbsp: Add optional clock
->   ASoC: ti: davinci-i2s: Remove the unused clk_input_pin attribute
->   ASoC: ti: davinci-i2s: Replace dev_err with dev_err_probe
->   ASoC: ti: davinci-i2s: Use external clock to drive sample rate
->     generator
->   ASoC: ti: davinci-i2s: Delete unnecessary assignment
->   ASoC: ti: davinci-i2s: Add TDM support
->   ASoC: ti: davinci-i2s: Add handling of BP_FC format
->   ASoC: ti: davinci-i2s: Enable unexpected frame pulses detection
->   ASoC: ti: davinci-i2s: Link free-run mode to
->     SND_SOC_DAIFMT_[GATED/CONT]
->   ASoC: ti: davinci-i2s: Add S24_LE to supported formats
->   ASoC: dt-bindings: davinci-mcbsp: Add the 'ti,T1-framing-{rx/tx}'
->     flags
->   ASoC: ti: davinci-i2s: Add T1 framing support
-> 
->  .../bindings/sound/davinci-mcbsp.txt          |  50 ----
->  .../bindings/sound/davinci-mcbsp.yaml         | 113 +++++++
->  include/linux/platform_data/davinci_asp.h     |  15 -
->  sound/soc/ti/davinci-i2s.c                    | 278 ++++++++++++++----
->  4 files changed, 333 insertions(+), 123 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-> 
+> Regards,
+> Bjorn
 
 -- 
-Péter
+With best wishes
+Dmitry
 
