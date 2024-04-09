@@ -1,128 +1,95 @@
-Return-Path: <linux-kernel+bounces-136862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E8689D924
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:21:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD3D89D927
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C64B28B43F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:21:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EE591F22BA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 12:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F7712A14A;
-	Tue,  9 Apr 2024 12:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF8512D20C;
+	Tue,  9 Apr 2024 12:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uClhXOda"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U41Zr9xa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCFE12DDAF;
-	Tue,  9 Apr 2024 12:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF10129E81;
+	Tue,  9 Apr 2024 12:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712665273; cv=none; b=ovu96pdgclrdax8vwcqsvmu7q2c7aA3pUylvb+YPzCjp6f7ZzO9/aLrrcjIyY0s/8mb/aE+VjlLmovP8A1Izfk36vZHrjimqzdYWFAaHP+/g0KjboG6/Kx0jxDV7z1EO0H8G5HJ427qpH3oDNd56/MhfPfE/T0bcNwqOyKA7frs=
+	t=1712665314; cv=none; b=iCVM7x3mBj/B/YYkY7x6qNjqMqld3GSGBAWirLVpdfspU1XpcZDNkUN5/45Mme8TKCPaiqRnSDkPpwEwQOffGyp88oP/8RSgpsSF9i7gyN8vD4bQaTyBIezqDFx9kb0Dqrt0+LPSkzfnIm3OdRcSXntnmqMeLeeHvkF3lnBKq8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712665273; c=relaxed/simple;
-	bh=MgxcztGT1ua4xy6Vw6FKSF7WrOC9Pr1td6Va0VORPNc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gzvN8PX5DqPuOzKN/2iV8vAheosEmDmDh9DsYqDNmkwJqIjyU1e+2gAN9L6bifvJmVgqseI84ab51KBKj/i87TXfhNwR7AW/wl+5LG1FO9EFPUQljdwY+/EbbxBjR4cX8brIAfpEKXxZBdxZ4XsaUE23wLp7HFoIIOMXpSZgY5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uClhXOda; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7FCCC433C7;
-	Tue,  9 Apr 2024 12:21:06 +0000 (UTC)
+	s=arc-20240116; t=1712665314; c=relaxed/simple;
+	bh=09iqk1eid762w6SImvv9WIm/kS3GJGBK/Tkc31Kv1LQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KQkkf05Q7fwGisO8i5a8TuK8VpJ8oEvmcdTDhqdjcV4SWExuRfeMR0cK3LTc6PTDUhJdeLh7GGAZj7cSlNCObn3Md8RaFjv/04KfgdKl4pzepr+YLYp0cbBu7q/Kb7/Htt3IzT2BQkhrcvyVVmiPX9s5gMurbFrNPVHbuDpu5Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U41Zr9xa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02FDBC433C7;
+	Tue,  9 Apr 2024 12:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712665272;
-	bh=MgxcztGT1ua4xy6Vw6FKSF7WrOC9Pr1td6Va0VORPNc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uClhXOda7JLRiZ4W1sTPS8hV3sZINTjANv1boJSmY3wzoZ8OhG4VQCnoTVVpmvtCT
-	 KFAo0O81FIStRXxBz710ZkYVtWqdeDkSCLkPRWeLzNw0JS2ZSodxnzFURwcV8vbT9N
-	 5O6byorQwWmKPw+4+tgLI6KTW2uC1d+NDuInNwKTmlYP2i5o8xwONmW0usKkzqxAwg
-	 yaqjKsyIlzV5magmJNpidSLJSSeX1F1LCgyEJBKroLZZ7z5Efu2ZX53Jj1YJoA3ok9
-	 oZ8P7VJfJB3RM3pQTHBBvESJ1tglSPT8ro2o70yq2H9pKHmcpOFQOR+P9Ibm4dtyNm
-	 1d+mh0WsOOGhA==
-Message-ID: <b34cd491-a536-4b06-91d2-4de105eae922@kernel.org>
-Date: Tue, 9 Apr 2024 14:21:04 +0200
+	s=k20201202; t=1712665313;
+	bh=09iqk1eid762w6SImvv9WIm/kS3GJGBK/Tkc31Kv1LQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U41Zr9xagq6OVBE93Vv1dl4RetfSKpJK30cDRfu1Rl0SjOLMl0Lo5EeXTh/QfJ2vi
+	 Q3IOLDfN53T64BCQz+QoJNnHg3kIjoC1F282B3wQovBRKDm551ixFr4qPJVIWR1SSS
+	 MrpAe4MgOlZoDGh8yEdYrXJ62GonhSEsU+vCzNEudM7s4kbb3co6S/wk81oRMay8a6
+	 E+SdppW+J/zQfkDCS0xZtOBuOasPsFBHh2M700qyf+aj5NBs4bi5ak+hIUBigm/nRO
+	 cxRZOmetsybnhqgs8T+RtISksWEdZSur59aLqvzWdAaaNrLCqN0wwZEYPWwCXuC9LR
+	 fN5DDn7s3fKqw==
+Date: Tue, 9 Apr 2024 13:21:47 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 6.1 000/138] 6.1.85-rc1 review
+Message-ID: <20240409-unhelpful-huntsman-25e264e68251@spud>
+References: <20240408125256.218368873@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: msm8974: Use proper compatible for
- APCS syscon
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240408-msm8974-apcs-v1-0-90cb7368836e@z3ntu.xyz>
- <20240408-msm8974-apcs-v1-2-90cb7368836e@z3ntu.xyz>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240408-msm8974-apcs-v1-2-90cb7368836e@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 08/04/2024 21:32, Luca Weiss wrote:
-> Use the apcs-kpss-global compatible for the APCS global mailbox block
-> found on this SoC.
-> 
-> This also resolves a dt-binding checker warning:
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cGk9BMXf4prOg65w"
+Content-Disposition: inline
+In-Reply-To: <20240408125256.218368873@linuxfoundation.org>
 
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+--cGk9BMXf4prOg65w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
-Krzysztof
+On Mon, Apr 08, 2024 at 02:56:54PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.85 release.
+> There are 138 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--cGk9BMXf4prOg65w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhUy2wAKCRB4tDGHoIJi
+0h3bAQDWbaFTfPQqfVroVzcs1csrU8HpiOAQNZVfmxnsk7/BKgD/b9wsTmT87o8B
+E6oR3y+Iz/qshaOmG9KdGPBM4bqFIQU=
+=vEkp
+-----END PGP SIGNATURE-----
+
+--cGk9BMXf4prOg65w--
 
