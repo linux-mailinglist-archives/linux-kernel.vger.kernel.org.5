@@ -1,281 +1,144 @@
-Return-Path: <linux-kernel+bounces-137427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B663B89E1E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C43D89E1E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 19:53:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A156B1C21AF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:52:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 692891C21C7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A94156878;
-	Tue,  9 Apr 2024 17:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F257C156870;
+	Tue,  9 Apr 2024 17:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2QIEf/L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9+PZ5Wn"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48697F499;
-	Tue,  9 Apr 2024 17:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8488156861
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 17:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712685153; cv=none; b=iL4S6qnIhlAEpAYvhaiZX7K1pNEnZQy8fWFl/CeVNIjOfZ1QrNPXI51p+S2C22R/P7JxkcO7Tg9ML/gh0x0fiirNAqkYE6SwWMa126gcJij357gLi0wh+TkWSTzlMNcrYoqTlokoyuhzVve5ZUvCMMNXK26exXPlD0JeFZiyeao=
+	t=1712685176; cv=none; b=JY/TgaJMIA5iVHz5nT4EsCnTw+/xk4wZCQ86yWKqZMUbfjH27ycjTBgaL3h5rOvj9jMPDjaidP41oEzmlFFEgk3xFffbsuH537UNn1Q+9wfMnlDnnak53TBtBlIIgqOrAyE6Z51RwcQW48nnqsmCfyn4TaT1Fgd981Uh/q/5SvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712685153; c=relaxed/simple;
-	bh=xnkwmAjY3BJsaOzhvXl8086aBz/Ibaph3nfxo9G40vU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpMU24vb1Z2EFU5MQNHu9sQtfOmqawbI1fY0MHEZ2HK+eRx9UpEKeYu88YpsoQDeHuZZc1pzZ8mYLsRtaMTrvMRlpEO3+3oCw85PSRkXomTk11WNvUgWBvaK+2C+XX7yTJvDSLt4JPaVbJn8OtRkl4KNnCKISVmEDMqdOh3jaMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2QIEf/L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDB2C433C7;
-	Tue,  9 Apr 2024 17:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712685153;
-	bh=xnkwmAjY3BJsaOzhvXl8086aBz/Ibaph3nfxo9G40vU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M2QIEf/Lw46CGLmUECQznNMcDHbCnzXlTi6haF8sa5xA94PDutlnHWyWyUbTLwx9t
-	 jgEYQwQ1w1QIvLTSmBuOgaUEJZDHAsLDpQkH1gB1tnwUzKl8V1cDDfEqsCTG8Kusce
-	 QX6/GfMbchvUTC9Bdf5pgHP2+/vmjBVnFNKouM9KHewLinQ+r2uvRrtebyN472BOfY
-	 Re9p3fmJGKaOXw97snsL2lDk371zC+NQ4WYDv0+kqvPtodMmqJ8gBLTn+iNrYyy4tI
-	 p1uRhy1XywLmbZapGHFdwIQxDcIBOhxd5dTvINZCA9RmWVHMW319OZfKkgEV+oH262
-	 addSIMujGgRyg==
-Date: Tue, 9 Apr 2024 18:52:28 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	Houlong Wei =?utf-8?B?KOmtj+WOmum+mSk=?= <houlong.wei@mediatek.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	Shawn Sung =?utf-8?B?KOWui+WtneismSk=?= <Shawn.Sung@mediatek.com>,
-	CK Hu =?utf-8?B?KOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"robh@kernel.org" <robh@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v5 02/10] dt-bindings: mailbox: Add mboxes property for
- CMDQ secure driver
-Message-ID: <20240409-scratch-rift-41f0967c2dc4@spud>
-References: <20240403102602.32155-1-shawn.sung@mediatek.com>
- <20240403102602.32155-3-shawn.sung@mediatek.com>
- <20240403-conflict-detest-717b4175a00c@spud>
- <9b9707a4a0e285a12741fe4140680ad2578d8d2b.camel@mediatek.com>
- <20240404-lankiness-devouring-d4d012b22cb9@spud>
- <e6a30feb1e4bb41c90df5e0272385d0f47a7dcab.camel@mediatek.com>
- <20240405-remindful-galley-2dee9eec4f34@spud>
- <f2476233528e18f78cdfa4eb7bc4c5ae91f70db8.camel@mediatek.com>
+	s=arc-20240116; t=1712685176; c=relaxed/simple;
+	bh=ZsyYig0PaMc8HcrxjeZOEp/0JhWbVPIWnJIvpcmLMl4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F/t2rCIpx8+6VvRmhWaRhcvBcNQKbET72tz/NIaff+MEhHeqHDQuzSTOJ1jASheFSYYfH1n512EoD74JciA3ZugRhCu0lH5g2BTN+pOR9RVp4O7c7yuahgSK5h+5tvRE1IaIPZ9OGPVtSAfpXrGm1W+nfWccQ66urMczAdWoFek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9+PZ5Wn; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-696609f5cf2so35021756d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 10:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712685174; x=1713289974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c0UtiPwH4SFRIAuAC2vMy9rB9n5VoLufAj1o9dzRWAs=;
+        b=L9+PZ5WnwrxA2c36LeKU0S1YBYLo1Mc0qXulrFFFtd3jb0K2efaWa65ZmXSD+AGeoo
+         uONpvB6KC121xKDO6VuaQKz052JI8DF6uym5+q73A7dcuYnut8HQkYx8pBuBjpJ8dJ3M
+         SyBWkVlh2SwmQREJvwTgQj4V1sozf8+uveyVPaLKmc5Vx7+B3KxcFZdB8uyterYd3lFk
+         2iwLi5kg9S1C+D9amTXaBHm7T+kuDn4/Z9GRyrcOFqpL9iLrhPZMQ8qFQibeA5Pxsc0H
+         KjlZxEdZGSeWz355o2fclcT5kn6qvaDzLb9ncmv3GWH8XAxmPNIXOoLqZuK9l8rsLA6v
+         fu9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712685174; x=1713289974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c0UtiPwH4SFRIAuAC2vMy9rB9n5VoLufAj1o9dzRWAs=;
+        b=rJRCnSsRBKOZLf6yFWmejcf57c5/Ab7ApEWIJ7H6hkkDELITB2p+Usx+t/2BZUdEac
+         DEQtJJdTW5h6nkafwKelLblsPxaxzW+3YmYxm5ew2WEu6WzA2Zn0sqfm8g7Lm+fWj0p/
+         SaIWljLsc96McB1lx8/VbRQv6RYD41GTbKngUY6bBLso1zQJeaX/q8cXW1oiI23/DX18
+         3bJuoD3uNXa4D8M5GaMQw7qaq21nv2qjvLIZvPUlciCAWaZPARfY+AMT62oZ7uO7lpZj
+         CKGVWI3BBMixwzy1ZzLwo1Z2lQiEeXTHY1Bi7VSZWAQ2sarNeFpK8M+/xxScbCdiIp9L
+         0m2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUZOBx6sx3zZCdsI4zrNeovXdG9rXKdCZe7M+zz3YCbRYBqJV8UG584soEJKCE2HgRpU2wyYYLgdXObuCFJFm1GEhI7kZ2uAzLnRXfb
+X-Gm-Message-State: AOJu0YyDngxiye8vsMLtiUOG39cR01wbaVHkG/by8jQIAREQEBJeRF4o
+	Rxt6M65ePRdIozBaRrZ9EMSNJC0Lb0DwmYOZpc1/4II0rb5CvuB7eb6WB7PGZfeiFBJzAkINz3D
+	K3g6iN+pKNGjiJIqjGphTHQw3ot4=
+X-Google-Smtp-Source: AGHT+IGFs6yv191iHz8RHo2VsrFlPtqJhQu+dOoGF/nUI4+kzFnOm73MMsuoSQdS9Ksd4j2lP8tfif1Pf1RhzwxGTfU=
+X-Received: by 2002:a05:6214:da1:b0:69b:2aa8:dc66 with SMTP id
+ h1-20020a0562140da100b0069b2aa8dc66mr335535qvh.28.1712685173688; Tue, 09 Apr
+ 2024 10:52:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vZkNg9zy1YA11/rh"
-Content-Disposition: inline
-In-Reply-To: <f2476233528e18f78cdfa4eb7bc4c5ae91f70db8.camel@mediatek.com>
-
-
---vZkNg9zy1YA11/rh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240408121439.GA252652@bytedance> <20240408132704.f966adc8d3928df4d3b8c0a9@linux-foundation.org>
+ <87edbf8hta.fsf@yhuang6-desk2.ccr.corp.intel.com> <20240409145740.GA543696@bytedance>
+In-Reply-To: <20240409145740.GA543696@bytedance>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 9 Apr 2024 10:52:40 -0700
+Message-ID: <CAKEwX=MBts2mGgTE__VP-ZVMrMFTzQnbTAkMPTJs3KNRQ2QDjg@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: swap: prejudgement swap_has_cache to avoid page allocation
+To: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>, ryncsn@gmail.com, 
+	songmuchun@bytedance.com, david@redhat.com, chrisl@kernel.org, 
+	guo.ziliang@zte.com.cn, yosryahmed@google.com, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 06, 2024 at 04:15:51PM +0000, Jason-JH Lin (=E6=9E=97=E7=9D=BF=
-=E7=A5=A5) wrote:
-> On Fri, 2024-04-05 at 17:13 +0100, Conor Dooley wrote:
-> > On Fri, Apr 05, 2024 at 02:33:14PM +0000, Jason-JH Lin (=E6=9E=97=E7=9D=
-=BF=E7=A5=A5) wrote:
-> > > On Thu, 2024-04-04 at 15:52 +0100, Conor Dooley wrote:
-> > > > On Thu, Apr 04, 2024 at 04:31:06AM +0000, Jason-JH Lin (=E6=9E=97=
-=E7=9D=BF=E7=A5=A5)
-> > > > wrote:
-> > > > > Hi Conor,
-> > > > >=20
-> > > > > Thanks for the reviews.
-> > > > >=20
-> > > > > On Wed, 2024-04-03 at 16:46 +0100, Conor Dooley wrote:
-> > > > > > On Wed, Apr 03, 2024 at 06:25:54PM +0800, Shawn Sung wrote:
-> > > > > > > From: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-> > > > > > >=20
-> > > > > > > Add mboxes to define a GCE loopping thread as a secure irq
-> > > > > > > handler.
-> > > > > > > This property is only required if CMDQ secure driver is
-> > > > > > > supported.
-> > > > > > >=20
-> > > > > > > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> > > > > > > Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> > > > > > > ---
-> > > > > > >  .../bindings/mailbox/mediatek,gce-mailbox.yaml         |
-> > > > > > > 10
-> > > > > > > ++++++++++
-> > > > > > >  1 file changed, 10 insertions(+)
-> > > > > > >=20
-> > > > > > > diff --git
-> > > > > > > a/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > > > > > mailbox.yaml
-> > > > > > > b/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > > > > > mailbox.yaml
-> > > > > > > index cef9d76013985..c0d80cc770899 100644
-> > > > > > > ---
-> > > > > > > a/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > > > > > mailbox.yaml
-> > > > > > > +++
-> > > > > > > b/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > > > > > mailbox.yaml
-> > > > > > > @@ -49,6 +49,16 @@ properties:
-> > > > > > >      items:
-> > > > > > >        - const: gce
-> > > > > > > =20
-> > > > > > > +  mediatek,gce-events:
-> > > > > > > +    description:
-> > > > > > > +      The event id which is mapping to the specific
-> > > > > > > hardware
-> > > > > > > event
-> > > > > > > signal
-> > > > > > > +      to gce. The event id is defined in the gce header
-> > > > > > > +      include/dt-bindings/gce/<chip>-gce.h of each chips.
-> > > > > >=20
-> > > > > > Missing any info here about when this should be used, hint -
-> > > > > > you
-> > > > > > have
-> > > > > > it
-> > > > > > in the commit message.
-> > > > > >=20
-> > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-arrayi
-> > > > > >=20
-> > > > > > Why is the ID used by the CMDQ service not fixed for each
-> > > > > > SoC?
-> > > > > >=20
-> > > > >=20
-> > > > > I forgot to sync with Shawn about this:
-> > > > > https://lore.kernel.org/all/20240124011459.12204-1-jason-
-> > > > > jh.lin@mediatek.com
-> > > > >=20
-> > > > > I'll fix it at the next version.
-> > > >=20
-> > > > When I say "fixed" I don't mean "this is wrong, please fix it", I
-> > > > mean
-> > > > "why is the value not static for a particular SoC". This needs to
-> > > > be
-> > > > explained in the patch (and the description for the event here
-> > > > needs
-> > > > to
-> > > > explain what the gce-mailbox is reserving an event for).
-> > > >=20
-> > >=20
-> > > Oh, I see. Thanks for noticing me.
-> > >=20
-> > > We do want to reserve a static event ID for gce-mailbox to
-> > > different
-> > > SoCs. There are 2 mainly reasons to why we set it in DTS:
-> > > 1. There are 1024 events IDs for GCE to use to execute instructions
-> > > in
-> > > the specific event happened. These events could be signaled by HW
-> > > or SW
-> > > and their value would be different in different SoC because of HW
-> > > event
-> > > IDs distribution range from 0 to 1023.
-> > > If we set a static event ID: 855 for mt8188, it might be conflict
-> > > the
-> > > event ID original set in mt8195.
-> >=20
-> > That's not a problem, we have compatibles for this purpose.
->=20
-> I agree that compatibles can do the same things.
->=20
-> >=20
-> > > 2. If we defined the event ID in DTS, we might know how many SW or
-> > > HW
-> > > event IDs are used.
-> > > If someone wants to use a new event ID for a new feature, they
-> > > could
-> > > find out the used event IDs in DTS easily and avoid the event ID
-> > > conflicting.
-> >=20
-> > Are the event IDs not documented in the reference manual for the SoC
-> > in
-> > question? Or in documentation for the secure world for these devices?
-> > A
-> > DTS should not be the authoritive source for this information for
-> > developers.
-> >=20
-> The event IDs were defined in:
-> inculde/dt-bindings/mailbox/mediatek,mt8188-gce.h.
->=20
-> > Additionally, the driver could very easily detect if someone does
-> > happen
-> > to put in the reserved ID. That could be generically useful (IOW,
-> > check
-> > all of them for re-use) if the ID are to not allowed to be shared.
-> >=20
-> > > The reason why we define a event ID is we want to get a SW signal
-> > > from
-> > > secure world. We design a GCE looping thread in gce-mailbox driver
-> > > to
-> > > wait for the GCE execute done event for each cmdq secure packets
-> > > from
-> > > secure world.
-> >=20
-> > This sort of information needs to be in the commit message, but I
-> > don't
-> > think this property is needed at all since it seems to be something
-> > detectable from the compatible.
->=20
-> I think put this event ID in driver data and distinguish them by
-> different compatibles can achieve the same thing.
->=20
-> However, I originally thought that align to the existing way like
-> MUTEX, CCORR, WDMA in=20
-> https://lore.kernel.org/all/20240124011459.12204-4-jason-jh.lin@mediatek.=
-com
->  would be better choice.
-> I think their usage of gce-events are the same.=20
->=20
-> What do you think?
+On Tue, Apr 9, 2024 at 7:57=E2=80=AFAM Zhaoyu Liu
+<liuzhaoyu.zackary@bytedance.com> wrote:
+>
+> On Tue, Apr 09, 2024 at 09:07:29AM +0800, Huang, Ying wrote:
+> > Andrew Morton <akpm@linux-foundation.org> writes:
+> >
+> > > On Mon, 8 Apr 2024 20:14:39 +0800 Zhaoyu Liu <liuzhaoyu.zackary@byted=
+ance.com> wrote:
+> > >
+> > >> Based on qemu arm64 - latest kernel + 100M memory + 1024M swapfile.
+> > >> Create 1G anon mmap and set it to shared, and has two processes
+> > >> randomly access the shared memory. When they are racing on swap cach=
+e,
+> > >> on average, each "alloc_pages_mpol + swapcache_prepare + folio_put"
+> > >> took about 1475 us.
+> > >
+> > > And what effect does this patch have upon the measured time?  ANd upo=
+n
+> > > overall runtime?
+> >
+> > And the patch will cause increased lock contention, please test with
+> > more processes and perhaps HDD swap device too.
+>
+> Hi Ying,
+>
+> Thank you for your suggestion.
+> It may indeed cause some lock contention, as mentioned by Kairui before.
+>
+> If so, is it recommended?
+> ---
+>   unsigned char swap_map, mapcount, hascache;
+>   ...
+>   /* Return raw data of the si->swap_map[offset] */
+>   swap_map =3D __swap_map(si, entry);
+>   mapcount =3D swap_map & ~SWAP_HAS_CACHE;
+>   if (!mapcount && swap_slot_cache_enabled)
+>   ...
+>   hascache =3D swap_map & SWAP_HAS_CACHE;
+>   /* Could judge that it's being added to swap cache with high probabilit=
+y */
+>   if (mapcount && hascache)
+>     goto skip_alloc;
+>   ...
+> ---
+> In doing so, there is no additional use of locks.
+>
 
-To me it comes down to whether the IDs are fixed on a particular SoC (in
-which case they can be deduced by the compatible) or not. I don't really
-see how this is actually a fixed property of the SoC though, if you came
-along tomorrow with a "gce-2.0" you could totally end up with different
-numbering because (as far as I can tell) this numbering is actually a
-property of the os-firmware interface, not actually a property of the
-SoC itself. I was expecting you to say "no" when I asked if the IDs were
-fixed for a given SoC because changing the firmware /could/ change the IDs.
-Although, I think you'd likely not ever want to change them, because
-that'd just be an annoying ABI break to deal with.
+Hmm so is this a lockless check now? Ummmm... Could someone with more
+expertise in the Linux kernel memory model double check that this is
+even a valid state we're observing here? Looks like we're performing
+an unguarded, unsynchronized, non-atomic read with the possibility of
+concurrent write - is there a chance we might see partial/invalid
+results?
 
-What I think is that you need to write a property description that
-explains what the mailbox is using the gce channel for so that someone
-can populate the property correctly. The commit message also needs to
-explain why this is not a fixed value for a given SoC.
-
-And yes, as you pointed out earlier in this thread, Shawn needs to
-update this to have a reference to the gce-events binding which has a
-great description in it of what a gce event is.
-
-> I think their usage of gce-events are the same.=20
-
-Also, just because a property got introduced doesn't mean that it is
-correct and adding new instances can definitely by required to provide
-justification, not just saying "it's used by xyz too".
-
-Cheers,
-Conor.
-
---vZkNg9zy1YA11/rh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhWAXAAKCRB4tDGHoIJi
-0peJAQDRpouQcRKXRTWVtItkP6RZ/zBoHCZSrUD4MXBRoiwnEwEAksJS0Bw7sRQN
-OfP/eLUv+cpcNIn3e3s1OpvUjnH9pwM=
-=4L7L
------END PGP SIGNATURE-----
-
---vZkNg9zy1YA11/rh--
+Could you also test with zswap enabled (and perhaps with zswap
+shrinker enabled)?
 
