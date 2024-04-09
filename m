@@ -1,140 +1,126 @@
-Return-Path: <linux-kernel+bounces-136258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-136255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4303E89D205
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:37:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FDA289D1F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 07:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF10E286377
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:37:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D19E71C2294C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 05:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A5277F3E;
-	Tue,  9 Apr 2024 05:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC43D6A8AD;
+	Tue,  9 Apr 2024 05:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Tv2aY7QQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ohMa2R79"
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JYA5zrFI"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE9974438
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4356A00B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 05:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712641039; cv=none; b=U7b2ll42Ndh+ynFTIguxmhHIX+3qFl64dM6Q7rjm8V0FBzoDs6E/skagjOv6VgnK49kk6G9awccRkRZjmdJo/pCg2JivI7AyClztt5hsmhWl0cW6+AEHefs539psGU+iao6nJ88I4+wf/NmaCIS9PlhY+vqt4y85Itb7XsSKz1o=
+	t=1712640926; cv=none; b=mqOyfrgF1VnBEaSXxXf0LvboQmay6nEGdEShEUVZhBDlx1+LnNKme2pkqztBGI1OZ3Z3j9OxmkO+Kd/twxoNqDQDDgAbjanUqH1tplmu2wCFWuHbVdt3/WjFDspDmbWpVZVgQczn4afqZ1i/labYhxEB7fwV7oMCrlqkOdrDB1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712641039; c=relaxed/simple;
-	bh=lTCSNVlJ6eROconCklf0lUttHmQ5Wtcp6EAz241j66g=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EVZhpvaD7rOGZS7S1UNqN/ELqjpDVEIqV/oSPXcIn8AXWGOH67U2mAOY3WXhgT4/x5+u/pVGdVup8Ieyu4vtgZtrfc0F85TTPa/XuRUABmm4zcVDzJdBSI/iqm1VMjX8p3O+/GUa9NAxRSQag/UCH9GzZ60Bz68Sebo/21vTFgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Tv2aY7QQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ohMa2R79; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 13BFB1C000CF;
-	Tue,  9 Apr 2024 01:37:15 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 09 Apr 2024 01:37:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1712641035; x=1712727435; bh=N2u6h8moDB
-	/fTrACtRe+4SheoESaX066xDK/8RKTrfw=; b=Tv2aY7QQAm99/pz2q0eveh7JGm
-	EfuSYzJeR2QJa0vb6P9iDs/oHdeTyb9Uuy8oyOyVuT0a9TSV4dyHIwYSImGxUmmj
-	Ui8Rpk6S1W2zaVzAZAspGRz6HBlGQCGjh05+kDjVSxpa13UlZDVNWQjnkS/cXhNx
-	QIq7n8JB3QZdtsDVYIFAewpZXEX5H8w6ZWK2dUbvP9cNA+6C+XS2wQwkLjOcChni
-	mooq3eElINOpKJl7xCxmkRiYKPYzkIyqvi9lQzP0pnhk0k9nb0mqnuUnd2AFat+f
-	vBJb8Zxbg5Euo7f4POuAZotU3tUkAbWamJ/D8BsUl3MgSGugtqbcfiegXSTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712641035; x=1712727435; bh=N2u6h8moDB/fTrACtRe+4SheoESa
-	X066xDK/8RKTrfw=; b=ohMa2R79u15cVtS+Hp9UcT9qCYwDCzkdSZwD64PHuxLL
-	ogfPbSzwStwmmxM//S/G2juvf5lWvwnAiWTGPUyF58LgwDxXagQ+6teWjMMgreAH
-	81Wf0T5OGNV5+N6kxifl7hF7kc9pkSS5pqvpDzxqhaFWUduPi72YNzY62BGJRyd7
-	vujMGnTL6XUnJi1gzKXywDTqLbHwRygNJwLx+QjaA/lrguWL1NLORZvOkB8MIM5L
-	RhM6urcMsOQ3DpdJRBAgQi7yhMcteT9O7WnrQBxXyqSQj2e2dNEp8UDOOKr4xjyT
-	VymgXEXID6/wtD4YUl5G6TXQiY6geTb1A1NXrkfLqQ==
-X-ME-Sender: <xms:CtQUZsFfSUICkWocoB5zC5-PrQnhTJahJ5iiY4tMAfy_fZ2-uRlRlw>
-    <xme:CtQUZlVHJxGjeCMy1KEcuEUnYiervNbI-1IGG4NdDtnHwfsydE1xjT-vRYM6MiBFs
-    sicN3teljXe8Rq6Vms>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegkedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:C9QUZmIVjAcut8WPutq21WbfrWS5g59akM0KpCDBxcR4f1j_WwHDuQ>
-    <xmx:C9QUZuGSFgkVo1yMG-B7uF4Z3at6sW-0rUUrfZv7_il-cF5ktOreYw>
-    <xmx:C9QUZiV0Qui6M0VVg7sG5z5eBwPqb_qGfmtGfDq0kAZpuY0DwdPGeA>
-    <xmx:C9QUZhNOp0EPBYCG-SsWcla1g_pZ_qgOaCHD3toiynA_CaWONsQHCg>
-    <xmx:C9QUZkdeeGcEaKfoj5sJUbzxdTjNanxBMunWJ02EKKoa2dTxParFfkPj>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id DDC0AB6008D; Tue,  9 Apr 2024 01:37:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1712640926; c=relaxed/simple;
+	bh=XhHRctfVaCz2w502f+LjDY2L6sQ4gi2VmzK4Ei0Fet4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=t43IluVM3zBw4Gn9TpIYaMhaQeuihbSPAJgDSuqNGkmWMbuh7378de9nti+VfEg1FjmMKTFLDg3m4dTtAq6jJEBdiOydY5Qg4p/Hc7LovToAST9DgX3jU+DK16uwqiGnmixArMYpTJTU+zyG1TBSlb46UOswfyOyWfGupZr9s/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JYA5zrFI; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b85ed24e-e7ed-49b8-b93a-cb0f9e32540c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712640922;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vf1j7wSZq2M24p6/dNYg1VPX+BthblGI9d+1+yhGlLs=;
+	b=JYA5zrFIXZLzwBtix3jjPqkEJWf87TXyh6PC2Of0d4GEnhH0Yyblvm3Q+Yre7UacBl0R4k
+	lh55o/ib/QDTNxCIbpK4Irhw18qt+1rlM2rJqG79ZjST5NIs6DKL30/B//uxnRxQKhUOQr
+	GHwx5yKlLdXeKcRByeEIYxJpELpbHQA=
+Date: Mon, 8 Apr 2024 22:35:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b5740321-455e-4939-8a94-72c01e4c09f3@app.fastmail.com>
-In-Reply-To: 
- <wb5h2syqmxpoxmajwiiyqvlkyojjsjql5xpfmris6djegtqzya@6xfio4dmqjdp>
-References: <20240408194821.3183462-1-arnd@kernel.org>
- <wb5h2syqmxpoxmajwiiyqvlkyojjsjql5xpfmris6djegtqzya@6xfio4dmqjdp>
-Date: Tue, 09 Apr 2024 07:34:41 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Justin Stitt" <justinstitt@google.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] [v2] staging: rts5208: replace weird strncpy() with memcpy()
-Content-Type: text/plain
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in bpf_bprintf_prepare
+To: syzbot <syzbot+c2dc95f7d0825a145992@syzkaller.appspotmail.com>
+References: <000000000000a1a6990611ea8b4d@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com,
+ yonghong.song@linux.dev
+In-Reply-To: <000000000000a1a6990611ea8b4d@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 8, 2024, at 22:28, Justin Stitt wrote:
-> On Mon, Apr 08, 2024 at 09:48:09PM +0200, Arnd Bergmann wrote:
+On 2/21/24 12:55 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c1ca10ceffbb Merge tag 'scsi-fixes' of git://git.kernel.or..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1364db0c180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3dd779fba027968
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c2dc95f7d0825a145992
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/83d019f0ac47/disk-c1ca10ce.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/49e05dd7a23d/vmlinux-c1ca10ce.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/68ec9fa2d33d/bzImage-c1ca10ce.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c2dc95f7d0825a145992@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in bpf_bprintf_prepare+0x20d7/0x23b0 kernel/bpf/helpers.c:904
+>   bpf_bprintf_prepare+0x20d7/0x23b0 kernel/bpf/helpers.c:904
+>   ____bpf_snprintf kernel/bpf/helpers.c:1060 [inline]
+>   bpf_snprintf+0x141/0x360 kernel/bpf/helpers.c:1044
+>   ___bpf_prog_run+0x2180/0xdb80 kernel/bpf/core.c:1986
+>   __bpf_prog_run288+0xb5/0xe0 kernel/bpf/core.c:2226
 
->> @@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
->>  
->>  	if (sendbytes > 8) {
->>  		memcpy(buf, inquiry_buf, 8);
->> -		strncpy(buf + 8, inquiry_string, sendbytes - 8);
->> +		memcpy(buf + 8, inquiry_string, min(sendbytes, 36) - 8);
->
-> I must say I am not the biggest fan of manual string management with raw
-> pointer offsets. I wonder if scnprintf() could achieve your goal here of
-> combining inquiry_buf with inquiry_string into buf (perhaps utilizing
-> %.*s format specifier).
+#syz dup: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
 
-scnprintf() would be wrong here, since it's not actually a string
-but a SCSI HW data structure with both binary and ASCII members
-and no NUL termination. It's supposed to be padded with spaces.
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+>   __bpf_prog_run include/linux/filter.h:651 [inline]
+>   bpf_prog_run include/linux/filter.h:658 [inline]
+>   bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+>   bpf_flow_dissect+0x127/0x470 net/core/flow_dissector.c:991
+>   bpf_prog_test_run_flow_dissector+0x6f4/0xa20 net/bpf/test_run.c:1359
+>   bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
+>   __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
+>   __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+>   __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
+>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>   do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Local variable stack created at:
+>   __bpf_prog_run288+0x45/0xe0 kernel/bpf/core.c:2226
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+>   __bpf_prog_run include/linux/filter.h:651 [inline]
+>   bpf_prog_run include/linux/filter.h:658 [inline]
+>   bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+>   bpf_flow_dissect+0x127/0x470 net/core/flow_dissector.c:991
+> 
+> CPU: 0 PID: 6318 Comm: syz-executor.2 Not tainted 6.8.0-rc4-syzkaller-00331-gc1ca10ceffbb #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> =====================================================
 
-> With that being said, I am just a casual reader of this code and I
-> really don't know much about the expected behavior of `buf`
-> (NUL-terminated, NUL-padded, etc) or even what the next line buf[4]=0x33
-> does.
-
-I believe this sets the length of the buffer to 51 bytes when
-pro_formatter_flag is set, overriding the 0x1f (31 bytes) for the
-normal length.
-
-The root of the problem here is that the driver emulates a SCSI
-command set on a card reader for both SD cards and memory sticks
-instead of using the existing abstractions from
-drivers/{mmc,memstick}.
-
-Apparently drivers/misc/cardreader/rtsx_pcr.c does this the
-right way for all later devices (rts5209 and up) but is
-not compatible with this variant of the hardware.
-
-    Arnd
 
