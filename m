@@ -1,141 +1,106 @@
-Return-Path: <linux-kernel+bounces-137142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2A889DD7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:00:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50C7989DD7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 911361F21834
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:00:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 814571C21DE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BE2129A7B;
-	Tue,  9 Apr 2024 15:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D25131185;
+	Tue,  9 Apr 2024 15:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wCxTkCOw"
-Received: from out203-205-221-247.mail.qq.com (out203-205-221-247.mail.qq.com [203.205.221.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SGD/92gL"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3847412D210;
-	Tue,  9 Apr 2024 15:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.247
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA989130ACF
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674829; cv=none; b=j+HDub4TSI38HKwcPtqwseT9Z4kD8XWK0MNyqUfiBjkoq4D3WoQ+acS6eQXgPtTasu0bS8OvsbVYHadh00Dw3EtMWRaLjyktWzabmVaVxCRGgwQAQwAFo74CqvIVhfAqM43BfUYVeUrhDVgDuHqi1DC4IEY0HBxrsskHA17v11Y=
+	t=1712674839; cv=none; b=QR4goWoceS67iKcv3ENyzvsnVFUWFoz8bXjV/fs9xRENXaVQNb9Uc+lO0wi/mHxXyPw2OGlT7WwJUfKjGqt/FCqcN0S9hTjG1frMRq09X0MTIxyrur7ng1fsoGoLbS2R/nBNZsKQ/VSxfkMTA9/CzfulgWm68ivfYrkjY3GqA5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674829; c=relaxed/simple;
-	bh=YB//Tq6wM/z9gKF0PBPXJVyM/iHmWsiSPKvVappUl5c=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=aG3psfr0x7G3He1Rqo7TXYQ9BG2Q+EPP0L5A23a9OIp1/y7VeAamwi1JbsstIZMng2yFoEP7hjIvbeJZw2C2aHsargshOc1KvIRXeOoN4Gv5O6h2a6V5pFpE4idFUWx/320HLJg67ig5G57m45W7h6YaU++xKH+/KyY24gipEyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=wCxTkCOw; arc=none smtp.client-ip=203.205.221.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712674823; bh=vEWu+zKNuvca7K9GIraXbCpF0vuCLymzA/DWW38bFQc=;
-	h=From:To:Cc:Subject:Date;
-	b=wCxTkCOwTt7hpXDKLSjwpmoOyaIq7OfYo/mu0YyeTAxfDxb6DYmTSXDOSnzIpiItd
-	 35lhOFUpiG7jUIUuvZAOSralpNLb5y90o/Nwcz0bE73ephW8WPjKo0CgZY81dRlct+
-	 o0SIwZNjCEfzHT5IGRuXA7JSpE3N8DO8Hql11uxE=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 138A83D; Tue, 09 Apr 2024 23:00:19 +0800
-X-QQ-mid: xmsmtpt1712674819tuzuqrsdf
-Message-ID: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
-X-QQ-XMAILINFO: MvM61XSVXCtDdv1SITtT8hAktV/o6o2zYsSdURuOE1QbOLls3zYWW1azlMUrm2
-	 SqLKHU0ww4xFUuH7y9UNa2sJtXJlV/YJ6hs/eVJgCqJnUihW8D39DqxU4WCWQmJmw5g4XrJc30Qv
-	 9miTMG27sSxjF3kFGwx4lUk7r8Phua5oHSZaaam6j/M5aabDT3nJ8tFj0REloDSYgXqFWjHCjR09
-	 70FvzDMCxX8gRdd2DY64GRzm6U1VzTD9m5rfuSLl0IB6uKTsAuyTxfiV1OC4cz9kO1Yy7dJkLj/a
-	 O5IWDxVVhylIJAeZSbhAcjN9jP6yyOMhJDNAa+/bH7+GKgcqeX1QHdFzO4z4CSh45AP0T/ZQSnGt
-	 CGUIxE0LvRDKVs+ljw2NsqR/GqugI6PyufvFYV3liKzG02X8nuCaw3jSCFMwE5R9WLtmXQp7jInX
-	 63tR1W6WkDq2G55xSPsuDaqW2urIQX6Ozish561B+SD9c7H1BWK4Qs78cg9Zan3bdq4nMfdvjk5r
-	 FO8kT0SPM7Pgl/rbvL7AQU90fK+2yCzN41JIUpUtUnTiJH4V4Nh+0FFsyCZIaQdxmJqkKKc7nxVN
-	 LULCYL8pa2nil/pCDii0cnIB73hYCZgU1THK5cYXl+I6WvJu+9viw/quMsrvOE1losG9G52rplyK
-	 vjJvJru5kJOCiy8Z2kR08OvvHf2OjbH1RSsLW95TzoQdy7wXj6eZjPm656grWUO5qVi3K1BjTwUP
-	 YuSnVl1ZuxxNtPGODJvndKfr20nPbWIEnTn31M0pDVWnrqzA+J+wnMyYb+InmmzRslzHmGlz1W/Y
-	 5F7OxN8nAkcqHEzIOj+fGkxZ4v7xLFtQLW4jdoYsNT41VahDhOmDQY8unI4PBfy51oQCxNaIvQIi
-	 jczRKa8OA5Y6rtD8hdjyoqUwwl+bnYtWm3OpRd6QN6BVy0MeSom8BzOrjEcxV2MYyX026hqh8MKG
-	 aV4R5lWXuPYd3GEVJs0w==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: netdev@vger.kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH] netfilter: x_tables: fix incorrect parameter length before call copy_from_sockptr
-Date: Tue,  9 Apr 2024 23:00:20 +0800
-X-OQ-MSGID: <20240409150019.95430-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712674839; c=relaxed/simple;
+	bh=qItj2QD9lAb71zQHuCbigKkildQRgrro60WwdGPxFY8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BDMSmM/iGzitUkqOfoQvRSZ6347/zznLdKGxonc/uM5/BsB9q1e9CzlOFaTMUPkinwZJM4+Avs+cRkAGJKSBFAh8FfgmbyebTS7Ur0StczEfEkY4hfJMHY9AiAX/43axzPCy2zpOSygVvtRR2t/irSk3wQ4tHg0W1oJFI/ocQ1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SGD/92gL; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516b6e75dc3so7252476e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712674836; x=1713279636; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=crTB/gy+FeOZ86NhZBPcpLgT33Zu4oRIi6sok1xfkbU=;
+        b=SGD/92gL+364sAt+iJpFPMIBwsaV2erLYnNkfT6rBgH1UaPEgWfb2ZHzCq2fnaTD/E
+         JokkWRCDiyRRfGw0lFyyt2DMQ3C2j/RR/tFm4F3uUg2dDWCAoTpi5CJeg8UKyzUpBSDe
+         yddsgOMT7CzMJtnLPvrXK8Mc0G3ozVmTsfR2fOy5VIuHP3t+2PxWnu3+IZCcklW/WFGJ
+         uJUYJcGQCG1sBnyxwF+35ewD+x1yY2FCVRSZ0iq+Yn++vVkt5YIGFFMC0Oid2k7XZycD
+         ZzgOWNUGQB/Ho64ICKC1V5tJh0AlEwU2KIC1iUXwf+Bx5kO3JkOKuHRkJYd3nRo2ZXs7
+         VWBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712674836; x=1713279636;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=crTB/gy+FeOZ86NhZBPcpLgT33Zu4oRIi6sok1xfkbU=;
+        b=LA2t2uAM02DW2BR3gXdSyZ+0JLTL2FL1WVkWcjAc1cW0rALREl3LRgHu5vzy4CZnk+
+         N6jT9mQpqQSnLnjM9SJbewvXc/aM9T/Y29wlS4vWdDRGoRla/+K6ucJ+bkKWMDrthtbT
+         oaPAyX9Ok02bSEquE7fcMdQVclLPmzUNu592c+Rf9vAlJPiaY66/ffin0SzkZfwPNhBn
+         c1UDWl6AVvUPy32fkIUz5bfdMCYw37Ay8u3EnVfcRIjcNwlr8CuNpYcVVYbWFOuiBa83
+         oTxRfLmUTUNlTPH3WQzJE5qXMVKHbSIGGUh8Y3YAtf6Kr5linlSMNtIlVKPEAFzgLcmI
+         v4Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCUwApcDFQZZqTJdp+tclLw/xa5KF2GYIKIwJO6DPASoVNp9m1oDEFI/0t98PbI2SbdCeJoPtWR7efiiRHTOCeBFeCLKxRLCmwOaoouC
+X-Gm-Message-State: AOJu0Yw640c4fIiU1xpd8xsPUIOlkQnWtvUyJZVGJGensIm9SZ2bPJLL
+	QSUWzfrYeKlD9WXZ3c8a0B6UgYgqvEqgi8ucvX9AExLVKCFmr8AA5J5Qid1sU3U8Zu8jn0tMOC9
+	w1HE=
+X-Google-Smtp-Source: AGHT+IEmRv/Pa2RYL2i3ImdZiqU+iEXqagtRJ1iqSlGE6rpYrqyXkdCbHIxXJWw5YwmiVjfoN9DeHQ==
+X-Received: by 2002:ac2:539c:0:b0:515:9185:652f with SMTP id g28-20020ac2539c000000b005159185652fmr7371004lfh.33.1712674836028;
+        Tue, 09 Apr 2024 08:00:36 -0700 (PDT)
+Received: from [172.30.205.99] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f9-20020a193809000000b00516aff23fc1sm1607617lfa.138.2024.04.09.08.00.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 08:00:35 -0700 (PDT)
+Message-ID: <d9b2abe9-0a9f-459a-a91d-2377866fb826@linaro.org>
+Date: Tue, 9 Apr 2024 17:00:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] arm64: dts: qcom: sm8450-hdk: add USB-C
+ orientation GPIO
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org>
+ <20240409-hdk-orientation-gpios-v2-3-658efd993987@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240409-hdk-orientation-gpios-v2-3-658efd993987@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-If len < sizeof(tmp) it will trigger oob, so take the min of them.
 
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/ipv4/netfilter/arp_tables.c | 4 ++--
- net/ipv4/netfilter/ip_tables.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 2407066b0fec..dc9166b48069 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -956,7 +956,7 @@ static int do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct arpt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-@@ -1254,7 +1254,7 @@ static int compat_do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct arpt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 7da1df4997d0..94a0afd8f94f 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1108,7 +1108,7 @@ do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct ipt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-@@ -1492,7 +1492,7 @@ compat_do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct ipt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
--- 
-2.43.0
+On 4/9/24 16:28, Dmitry Baryshkov wrote:
+> Define the USB-C orientation GPIO so that the USB-C port orientation is
+> known without having to resort to the altmode notifications.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
 
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
 
