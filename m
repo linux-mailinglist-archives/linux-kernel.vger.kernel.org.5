@@ -1,66 +1,119 @@
-Return-Path: <linux-kernel+bounces-137042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2270589DB84
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:01:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 184E689DB95
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 16:03:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37E231C2274E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:01:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93084B2668F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 14:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A8012FF60;
-	Tue,  9 Apr 2024 14:00:59 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F22C13175E;
+	Tue,  9 Apr 2024 14:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSSa5z1S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3B112F58C
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 14:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB061311B9;
+	Tue,  9 Apr 2024 14:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671259; cv=none; b=D7D3/hgt0V6+aXk/h3zVtsndh0Lp1btkD3wadp4YgiV+TQ4N6PY1eLIj1xkRtAqZD+ZdRULL6eepLpKBYW7uhwXvRZ3mP51h0s8IgM7TuqUpDNS4mLfd3qJAqpBkIzONi6YL2fpODCeKlWW3FjmYGP3dceKI+I4aAw3xl+BofJ4=
+	t=1712671278; cv=none; b=Vmv8bmuu7pOlNIa+PJck2V6glqOf7ucQ77BewfMtr+umtBuU5O+D1q9F57HgcJ0WdLZqa5P/0egdYdnboK2xC+vuORBFgiYcS2fNVJHH5H2ZyTD+xE9kTvJ2IscmzBx9HIJsJHD+s31A/8DZ6yimTiRhMK0lbHrXt6EUixdMppY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671259; c=relaxed/simple;
-	bh=ronNM7eHHbMgozldHtmyQ8+LOdltNvBq/DzQX5wuWgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aG/zB21JMZlabfSMl0XjtTEchBuZoFl5cJXKXTN+GAKYqDJIiy79jRHxxwR2CFmFhuvn/HnqTfBCLF76ia8/WYtUwtJkPlSw8Fp+j2jyqd/m1CGtlkIzDnBzKXQJkCLF/AUv8KFP3gRJKC/CT13KwuvwAKhJsyBkbFp1VX4hwsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 9CE6468B05; Tue,  9 Apr 2024 16:00:54 +0200 (CEST)
-Date: Tue, 9 Apr 2024 16:00:54 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Daniel Wagner <dwagner@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	James Smart <james.smart@broadcom.com>,
-	Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v5 4/6] nvme-rdma: short-circuit reconnect retries
-Message-ID: <20240409140054.GC20883@lst.de>
-References: <20240409093510.12321-1-dwagner@suse.de> <20240409093510.12321-5-dwagner@suse.de>
+	s=arc-20240116; t=1712671278; c=relaxed/simple;
+	bh=apx3gbxkYNqe3VpAmpZgPTdGN3/2cOQjfTIRYJyoYL8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZrLuoZAmzLwDtERMC71+W/24VHTwqAPWZJJUqR6HeAjfOQx5Pwe1XFwakes2cd0aJ2aB1d692yV5NGp1OV2y9M72TVMLlPvpuSdSOHkN3dXC0yV5MLaFrHo7H7IxBJCQgyVr2rt2yi0ZX7NGVoPqOaexs3iFur1QyWnyYwg6fEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSSa5z1S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD480C43142;
+	Tue,  9 Apr 2024 14:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712671278;
+	bh=apx3gbxkYNqe3VpAmpZgPTdGN3/2cOQjfTIRYJyoYL8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MSSa5z1S9ryJwrH6rhZwsfZ+WYHqk+DUN6umSYaSz9+PInQkEmLLg9HxlScb7SB66
+	 INAABa+8rjj1c4bradO8L6DkDBPNDU7qPWK7URSSmUPTxK+4hefFZn2CZXuFgBrngb
+	 QdlQN775GdzBYwFXCsuI8v5PtJCTjL+tCs3wkzvRFaW5ly10uQ3/gpx0iQk6QTCQNL
+	 x3PysVOlaDEUIoyLnkd+Jm0Vi30mdh9slrYCeOOucTVTqixQKDXisg4oPy8r6K1xlD
+	 BcBWJB4mfLTtXNA4AAKEknHbTNgkfQrMFIZi1WJwSfYfbs/hZovigEojcExc6eLrtw
+	 S96r3fjZf4spg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"Richard Russon" <ldm@flatcap.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Lin Ming <ming.m.lin@intel.com>,
+	Alexey Starikovskiy <astarikovskiy@suse.de>,
+	linux-ntfs-dev@lists.sourceforge.net,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
+Date: Tue,  9 Apr 2024 16:00:55 +0200
+Message-Id: <20240409140059.3806717-3-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240409140059.3806717-1-arnd@kernel.org>
+References: <20240409140059.3806717-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409093510.12321-5-dwagner@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 09, 2024 at 11:35:08AM +0200, Daniel Wagner wrote:
-> From: Hannes Reinecke <hare@suse.de>
-> 
-> Returning an nvme status from nvme_rdma_setup_ctrl() indicates that the
+From: Arnd Bergmann <arnd@arndb.de>
 
-Shouldn't this an be an a based on my highschool english.  Or does
-Eeenvme count as a vowel?
+gcc -Wstringop-truncation warns about copying a string that results in a
+missing nul termination:
 
-Otherwise looks good:
+drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
+drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
+   60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
+   61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+The code works as intended, and the warning could be addressed by using
+a memcpy(), but turning the warning off for this file works equally well
+and may be easir to merge.
+
+Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
+Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com/#t
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/acpi/acpica/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
+index 30f3fc13c29d..8d18af396de9 100644
+--- a/drivers/acpi/acpica/Makefile
++++ b/drivers/acpi/acpica/Makefile
+@@ -5,6 +5,7 @@
+ 
+ ccflags-y			:= -D_LINUX -DBUILDING_ACPICA
+ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
++CFLAGS_tbfind.o 		+= $(call cc-disable-warning, stringop-truncation)
+ 
+ # use acpi.o to put all files here into acpi.o modparam namespace
+ obj-y	+= acpi.o
+-- 
+2.39.2
+
 
