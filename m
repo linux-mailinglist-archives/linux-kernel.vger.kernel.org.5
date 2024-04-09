@@ -1,170 +1,219 @@
-Return-Path: <linux-kernel+bounces-137245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C61589DF67
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:40:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A380E89DF7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 17:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2981F215F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:40:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10C65B372C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Apr 2024 15:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD90A13AD3F;
-	Tue,  9 Apr 2024 15:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46ACC13BC15;
+	Tue,  9 Apr 2024 15:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gmiOk1oY"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IsZIV8Lq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7135913AD17
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8418A13B5B2
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Apr 2024 15:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677048; cv=none; b=TDPBRoGn+xLgvAqql46R4tKL9NNTohl9DyofjK1r/AMJiHJ10kN6QitNieY5bewcUe1pa1m9CsSyC3x1U4febVEJtOWp2tITJQf16WqUyfTllXoUKqDPHiDbNrRtsHJES4e4afZF2RP5HQfVJ0xh6n9TAzLpOYW7I+d/a8FpOTE=
+	t=1712677060; cv=none; b=jQihNRHyFbojdiT8t+rnapCDddD5g4Xp8d50jTAE6W3WUnEycIBajtN0AAN8pA7PQ/fzplmMd77S/l33Au0LXzzFlmXMnly65vs3gs6Tqi7zQwug1r8ZcoXwC+GlPi1Cx5yvq0C85MhnkKsHAbDrlKqLqXWR4R1vIoo7d926wS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677048; c=relaxed/simple;
-	bh=Aqminu13BA5RfzICIWKV4tMcJYaOt32oW1/5Ll0JWxk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rrzaF4gIyCRBrNRF2LX5dkBollPPAaOdOfvb0NswQRyHhvLT2TVSVzR3hrMKQ6UkSXzxnv9nru+HHsrXnNIY0qBF1l9Qiy2a/doPWxQ3ErxzSLbt7geHcVu0VGSgCIefDbSkOZ31ntfUUilHtscfdBH9NTph1Av56E1o+U/jc20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gmiOk1oY; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34641b7c49aso344006f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 08:37:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712677045; x=1713281845; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O3wHvYb+xH1G7TOL58ej8375ZusY8e96JWmR5Aw1tE4=;
-        b=gmiOk1oYSBunqK3ErTTHgzFtPqAjq1VzuV3RShmBJNsj5JMsyqqfi1tOU5EVF6zVtb
-         B7kOnT9nlSc6xdLpAfwM1XE07m2yr3xMKrazayG+ZTdw5TBmgRsSYq/HUbH1l0pM1MZX
-         dQjHK58SvJgP2BubR5/0mya3hylLzINvF2yNBUpUQJ1MCUaZk4U+y0R6D5ybf7Bbr1mU
-         SGDNcWUyMcV1PUJGlHMWY0mqigE8d/9uC8uNTvp6sgmh8+oD+J0m9bkRLnWDcOjV36J5
-         j+iUaG5/7/AUDWhZRXI4rlExegyiRUsv9saMhbO0reki/hZl/SaP+45qb7SHncRfpAG/
-         6uew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712677045; x=1713281845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O3wHvYb+xH1G7TOL58ej8375ZusY8e96JWmR5Aw1tE4=;
-        b=I6EEINP8B0bMoy5JrR8sY1FPCshyxeSuq4G4hTwpI7YFtSw8N3RTPnZ9GxHVct+D97
-         s2JB410/kF9b94lbgeIJH5xE/bjxzeqCsHmRoCtzMN/XErr+HEBioYNrboa650Ub1rZ3
-         cLfZXNBKQ0Iss+m/zVP0cxjDjFB0xz6J7zy9GHpoxcVWezsoQxtDW0LqmOHQ9nInD5FV
-         wqgoDcailkiWJrQcZmKny8wycgoMSkx5lbrt/Umgx2oNUiRppimmJrJqvHvWIjrdi4q3
-         SPbgZH+e2JBXB/xZFs0Bs+bZuWUSA/j8lsSuDTuLo6vRBWmeonFgkbEUSynbCfkl/i9E
-         P3jA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfM/o6cvvIj6tQEWcIAViDr52dNFc85ZigMgh+IWe0bCTyzufvvOkZEqoqqvLjFlvHw4sebCQ6NOoBV3W1NYhd7xKmJ7X7adElyFtA
-X-Gm-Message-State: AOJu0YxP8VyRBwYw4c4xAfd3+EbIvNk5AG7i90KnCWc/zKPo857shJxc
-	CPnqrD9s03UsEYxGuYLiQVhLTBUTi7IFjkjefYY62mpj13KjfmqO/O1eKHZiQy2f+f1/c45vOLN
-	9gSF73Kuarww9MrFiT7SiUBLD6AwQivfRPsyw
-X-Google-Smtp-Source: AGHT+IEATApo3o8XfWViXxHA3nBf59pbXIp4qO5W17tsNOoEx8kff/kEukGenu4hXqklT5aG6y50jY3+j+NZ6v/SAgs=
-X-Received: by 2002:adf:ec50:0:b0:33e:8aba:cd0a with SMTP id
- w16-20020adfec50000000b0033e8abacd0amr75524wrn.9.1712677044575; Tue, 09 Apr
- 2024 08:37:24 -0700 (PDT)
+	s=arc-20240116; t=1712677060; c=relaxed/simple;
+	bh=FiYua9qt5cyPKbD5gkueRzUtbADCS1A0G5W11GlLtqo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TCAtnRz57rWLz6gLhKq5Z3RcreBW5vFhC8xCnRAJcYBrAC8r2Yd0Xrvmcte7K8SfVwpiObF9N2aPLAOnfOfnscVAd8ttvwEXE7vGRCsmru4OIDW9i3iupPrkGgUB0UONC4D5wWriADFqtehc1YVKyDmGVwmMNKA3DjE4osuDTLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IsZIV8Lq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712677057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A3Hwu2ip+GHzxQ0LRYtJWTGCmx4DOpmKRqbnqLq7zeM=;
+	b=IsZIV8LqeXK7PYrMCSwWI2V/9EN2AhF0VRqGigofrK46M3r4gdb27RR+P23IRyeSUQrij/
+	EtSRgn5XOkWRlsgQ/4HMTYKmufn5Pc3dUkVbMa4qwzqKlS4Nlk5f5VqnY3EyGv8Wh/Bojg
+	a6EZ1op0kjlJ2fU31EWDZbjaY8oJbH4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-86-J_fxg3y_Mgi_b_A_o-ulDA-1; Tue, 09 Apr 2024 11:37:35 -0400
+X-MC-Unique: J_fxg3y_Mgi_b_A_o-ulDA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C11061807ACD;
+	Tue,  9 Apr 2024 15:37:34 +0000 (UTC)
+Received: from [10.22.10.13] (unknown [10.22.10.13])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8AE001C06666;
+	Tue,  9 Apr 2024 15:37:33 +0000 (UTC)
+Message-ID: <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+Date: Tue, 9 Apr 2024 11:37:31 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=whHWjKK1TOMT1XvxFj8e-_uctJnXPxM=SyWHmW63B_EDw@mail.gmail.com>
- <20240408084934.GC21904@noisy.programming.kicks-ass.net> <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
- <CAHk-=wg=Wdct5f9W2-tvwfRefv3xmw1-9Ko+RG+6=xjLu4ndFg@mail.gmail.com> <20240409104540.GB21779@noisy.programming.kicks-ass.net>
-In-Reply-To: <20240409104540.GB21779@noisy.programming.kicks-ass.net>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 9 Apr 2024 08:37:10 -0700
-Message-ID: <CAKwvOdktV5vnKwET1PhM8x0urK+LUhAC=uc28RXHUsvq-7_vbA@mail.gmail.com>
-Subject: Re: More annoying code generation by clang
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Peter Anvin <hpa@zytor.com>, 
-	"the arch/x86 maintainers" <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Advice on cgroup rstat lock
+Content-Language: en-US
+To: Jesper Dangaard Brouer <hawk@kernel.org>,
+ Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>, Jesper Dangaard Brouer
+ <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Shakeel Butt <shakeelb@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
+ Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Ivan Babrou <ivan@cloudflare.com>
+References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
+ <20240319154437.GA144716@cmpxchg.org>
+ <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
+ <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
+ <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
+ <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Tue, Apr 9, 2024 at 3:45=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
-> wrote:
+On 4/9/24 07:08, Jesper Dangaard Brouer wrote:
+> Let move this discussion upstream.
 >
-> On Mon, Apr 08, 2024 at 12:42:31PM -0700, Linus Torvalds wrote:
+> On 22/03/2024 19.32, Yosry Ahmed wrote:
+>> [..]
+>>>> There was a couple of series that made all calls to
+>>>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
+>>>> (and IRQs enabled) in between CPU iterations. This fixed a similar
+>>>> problem that we used to face (except in our case, we saw hard lockups
+>>>> in extreme scenarios):
+>>>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/ 
+>>>>
+>>>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@google.com/ 
+>>>>
+>>>
+>>> I've only done the 6.6 backport, and these were in 6.5/6.6.
 >
-> > Actually, one of the github issues pages has more of an explanation
-> > (and yes, it's tied to impedance issues between the inline asm syntax
-> > and how clang works):
-> >
-> >       https://github.com/llvm/llvm-project/issues/20571#issuecomment-98=
-0933442
-> >
+> Given I have these in my 6.6 kernel. You are basically saying I should
+> be able to avoid IRQ-disable for the lock, right?
 >
-> So that same issue seems to suggest Nick is actually working on this and
-> got stuff merged. Nick, what is the status of your efforts and should we
-> indeed do the below as Linus suggests or should he upgrade his compiler?
-
-Sorry, I'm no longer working on the issue.  I should mark that as such.
-
-The feature got hung up on rewriting one of the register allocation
-frameworks in llvm.
-https://github.com/llvm/llvm-project/pull/74344
-
-I have a new set of responsibilities at work so I probably wont be
-working on that issue any time soon.
-
+> My main problem with the global cgroup_rstat_lock[3] is it disables IRQs
+> and (thereby also) BH/softirq (spin_lock_irq).  This cause production
+> issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
+> latency issues (debug via softirq_net_latency.bt [5]).
 >
-> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-cl=
-ang.h
-> > index 49feac0162a5..0dee061fd7a6 100644
-> > --- a/include/linux/compiler-clang.h
-> > +++ b/include/linux/compiler-clang.h
-> > @@ -118,3 +118,15 @@
-> >
-> >  #define __diag_ignore_all(option, comment) \
-> >       __diag_clang(13, ignore, option)
-> > +
-> > +/*
-> > + * clang has horrible behavior with "g" or "rm" constraints for asm
-> > + * inputs, turning them into something worse than "m". Avoid using
-> > + * constraints with multiple possible uses (but "ir" seems to be ok):
-> > + *
-> > + *   https://github.com/llvm/llvm-project/issues/20571
-> > + *   https://github.com/llvm/llvm-project/issues/30873
-> > + *   https://github.com/llvm/llvm-project/issues/34837
-
-20571 is the cannonical bug for this.
-
-> > + */
-> > +#define ASM_INPUT_G "ir"
-> > +#define ASM_INPUT_RM "r"
-> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_ty=
-pes.h
-> > index 2abaa3a825a9..e53acd310545 100644
-> > --- a/include/linux/compiler_types.h
-> > +++ b/include/linux/compiler_types.h
-> > @@ -380,6 +380,15 @@ struct ftrace_likely_data {
-> >  #define asm_goto_output(x...) asm volatile goto(x)
-> >  #endif
-> >
-> > +/*
-> > + * Clang has trouble with constraints with multiple
-> > + * alternative behaviors (mainly "g" and "rm").
-> > + */
-> > +#ifndef ASM_INPUT_G
-> > +  #define ASM_INPUT_G "g"
-> > +  #define ASM_INPUT_RM "rm"
-> > +#endif
-> > +
-> >  #ifdef CONFIG_CC_HAS_ASM_INLINE
-> >  #define asm_inline asm __inline
-> >  #else
-> > --
-> > 2.44.0.330.g4d18c88175
-> >
+>   [3] 
+> https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
+>   [5] 
+> https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
 >
+>
+>>> And between 6.1 to 6.6 we did observe an improvement in this area.
+>>> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan 
+>>> progress)
+>>>
+>>> I've had a chance to get running in prod for 6.6 backport.
+>>> As you can see in attached grafana heatmap pictures, we do observe an
+>>> improved/reduced softirq wait time.
+>>> These softirq "not-able-to-run" outliers is *one* of the prod issues we
+>>> observed.  As you can see, I still have other areas to improve/fix.
+>>
+>> I am not very familiar with such heatmaps, but I am glad there is an
+>> improvement with 6.6 and the backports. Let me know if there is
+>> anything I could do to help with your effort.
+>
+> The heatmaps give me an overview, but I needed a debugging tool, so I
+> developed some bpftrace scripts [1][2] I'm running on production.
+> To measure how long time we hold the cgroup rstat lock (results below).
+> Adding ACME and Daniel as I hope there is an easier way to measure lock
+> hold time and congestion. Notice tricky release/yield in
+> cgroup_rstat_flush_locked[4].
+>
+> My production results on 6.6 with backported patches (below signature)
+> vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
+> shows how long time the lock+IRQs were disabled (taking into account it
+> can be released in the loop [4]).
+>
+> Patched kernel:
+>
+> 21:49:02  time elapsed: 43200 sec
+> @lock_time_hist_ns:
+> [2K, 4K)              61 |      |
+> [4K, 8K)             734 |      |
+> [8K, 16K)         121500 |@@@@@@@@@@@@@@@@      |
+> [16K, 32K)        385714 
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@      |
+> [64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@      |
+> [128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+> [256K, 512K)      291986 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> [512K, 1M)        101859 |@@@@@@@@@@@@@      |
+> [1M, 2M)           19866 |@@      |
+> [2M, 4M)           10146 |@      |
+> [4M, 8M)           30633 |@@@@      |
+> [8M, 16M)          40365 |@@@@@      |
+> [16M, 32M)         21650 |@@      |
+> [32M, 64M)          5842 |      |
+> [64M, 128M)            8 |      |
+>
+> And normal 6.6 kernel:
+>
+> 21:48:32  time elapsed: 43200 sec
+> @lock_time_hist_ns:
+> [1K, 2K)              25 |      |
+> [2K, 4K)            1146 |      |
+> [4K, 8K)           59397 |@@@@      |
+> [8K, 16K)         571528 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> [16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> [32K, 64K)        202810 |@@@@@@@@@@@@@      |
+> [64K, 128K)       134564 |@@@@@@@@@      |
+> [128K, 256K)       72870 |@@@@@      |
+> [256K, 512K)       56914 |@@@      |
+> [512K, 1M)         83140 |@@@@@      |
+> [1M, 2M)          170514 |@@@@@@@@@@@      |
+> [2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+> [4M, 8M)          755537 
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [8M, 16M)         231222 |@@@@@@@@@@@@@@@      |
+> [16M, 32M)         76370 |@@@@@      |
+> [32M, 64M)          1043 |      |
+> [64M, 128M)           12 |      |
+>
+>
+> For the unpatched kernel we see more events in 4ms to 8ms bucket than
+> any other bucket.
+> For patched kernel, we clearly see a significant reduction of events in
+> the 4 ms to 64 ms area, but we still have some events in this area.  I'm
+> very happy to see these patches improves the situation.  But for network
+> processing I'm not happy to see events in area 16ms to 128ms area.  If
+> we can just avoid disabling IRQs/softirq for the lock, I would be happy.
+>
+> How far can we go... could cgroup_rstat_lock be converted to a mutex?
+
+The cgroup_rstat_lock was originally a mutex. It was converted to a 
+spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex with 
+a spinlock"). Irq was disabled to enable calling from atomic context. 
+Since commit 0a2dc6ac3329 ("cgroup: remove 
+cgroup_rstat_flush_atomic()"), the rstat API hadn't been called from 
+atomic context anymore. Theoretically, we could change it back to a 
+mutex or not disabling interrupt. That will require that the API cannot 
+be called from atomic context going forward.
+
+Cheers,
+Longman
 
 
---=20
-Thanks,
-~Nick Desaulniers
 
