@@ -1,254 +1,284 @@
-Return-Path: <linux-kernel+bounces-138423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAEC89F107
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:42:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6B3589F10F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99C34B22551
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:42:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CE312891C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9465515AACF;
-	Wed, 10 Apr 2024 11:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B1215AAA3;
+	Wed, 10 Apr 2024 11:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gwV8VI9P"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Irffg5GU"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA05159571;
-	Wed, 10 Apr 2024 11:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E41815957C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712749320; cv=none; b=XvSwARhR0U/wCT4qxTcmlmPD98qlSEfqPUzYmWrjt6N7oSAeL+93ra7XmVqLo1TRPMBjpkAZ7gyuEN7mE5HKsevUcSi/zjX4Bu1vtPEZlgSHGRJll7VM+SwRTEhCrF2xEwbUKP6Wu5amtD+NWvagZyF+GzHQACUJ+aaAYUe24Bs=
+	t=1712749378; cv=none; b=gMHS8OsLgunr0DCI9ftEyeg//7OI1IzzPNH1RNXcZz/XFuA30WrG22ZqlUFe2+NdkIysld82367xXcKMuCmci0pX0l6yHdnEYPhhZ3TkbW5LIedSqHbqd+eLStK7mTTfwmFURBID+VvNhIYx4HxALd841EISmBJy8qnGSpvRXWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712749320; c=relaxed/simple;
-	bh=yG0zg+oeG65EEgQu+xIv2yDk0f6ytD4/gZuu43Ic4NM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G4pMlFHhzUkeZPQnYI3QM9xbao2WcEyNuOVXRVs43JW07+Y5T1/w3/QTe5Xidyj+t8t1Z8I1UOZ73EabLnIaWvfEf8QJNLJGIUzNxqb5rlhATMc4AhLdX0UuVPydyZHHuZrdew1w2b5LEL/9fA5jOdXNLeH/VeLd8iJolWfXF7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gwV8VI9P; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712749319; x=1744285319;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yG0zg+oeG65EEgQu+xIv2yDk0f6ytD4/gZuu43Ic4NM=;
-  b=gwV8VI9PnVRpSydYKE0oX/eIE+Sl9/Qw3OBhX1iHQm54BU2STpf+Ogl5
-   FQuIVe12Yr28IWlWNdx171xq0vxbZsv3cV3kjBh9eZ5yGtnum8o/au6O7
-   TwyDQ53LexCQ9j+cyNkyy5HnhASD7R413uBAYlHAj4ad+QScFYdLFYXrY
-   6J1gtKeEXCtrQB7Ds4cqGIT/97d5DwnpyHoVA26xalrgxEfNmDwLFTUBG
-   qxZVj91bsQT1lDk5kJCyHyeZV5/dDfQyeLYX3jH/bn+cpv2qUyUq73pn2
-   zHgdEDiqJwUkbY4BZkKmAQP6QumZimyrabILL2NxmVwkySfJvzWyuOgdN
-   g==;
-X-CSE-ConnectionGUID: 8NC5PeXxQJGULsCwIm1Aww==
-X-CSE-MsgGUID: AzMUE8oARhOXVfAxW/EJ4w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11896320"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11896320"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:41:59 -0700
-X-CSE-ConnectionGUID: ttzm7WJaR6W2mHtBRovH1Q==
-X-CSE-MsgGUID: qfAhKikZTKGbSVdCdieoTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20417691"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:41:52 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 93BBD1203E6;
-	Wed, 10 Apr 2024 14:41:49 +0300 (EEST)
-Date: Wed, 10 Apr 2024 11:41:49 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Zhi Mao <zhi.mao@mediatek.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, shengnan.wang@mediatek.com,
-	yaya.chang@mediatek.com, yunkec@chromium.org, 10572168@qq.com
-Subject: Re: [PATCH 1/2] media: dt-bindings: i2c: add Giantec GT97xx VCM
- driver
-Message-ID: <ZhZ6_WXfCdwGBdC-@kekkonen.localdomain>
-References: <20240410104002.1197-1-zhi.mao@mediatek.com>
- <20240410104002.1197-2-zhi.mao@mediatek.com>
- <20240410-rice-fringe-4ae992217a2f@spud>
+	s=arc-20240116; t=1712749378; c=relaxed/simple;
+	bh=U6JdwqaccJyIBc8d1EGruAonoz/SMcqtAoxEhtehO7g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=a1uM/B1nCFgR69bNJi2jCdn9/xqCcVMuqXrKOQ1tpo5tFNSNRr1WKrScsTN3YwQXWyMHapCRCZEIMKDwHhKYpap7CzxZxB+Xc+XUy+IxKmmfT47h+AHkSM0zeFsUxZ0gmF/pkqmbaGyGg0rdsmjzUQBV/RA9ZcgFTMIpg7UA61o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Irffg5GU; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43ABgb77088904;
+	Wed, 10 Apr 2024 06:42:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712749357;
+	bh=Orwcw5Ia2AB+nDmlojgten3vjJ8b47E/GgQ/goc3VCs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Irffg5GUmt1x5SB5XAssmEXglhk4JTfwjhwxNUahC4Jt/FU0S0ptXlDoVgqqoVWnN
+	 sYpSHpHIkFZnTHjliZuxwo8ZrCoTqBUTTRTacWGNCzCou7fn49W8jYh0V2rxd/HF3t
+	 bgh5SJ6O5Ig6fIGTo4U7EtpSbjPlDQ1gRfHQnnMQ=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43ABgbCK022407
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 10 Apr 2024 06:42:37 -0500
+Received: from flwvowa02.ent.ti.com (10.64.41.53) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
+ Apr 2024 06:42:36 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by flwvowa02.ent.ti.com
+ (10.64.41.53) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2507.34; Wed, 10 Apr
+ 2024 06:42:36 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 10 Apr 2024 06:42:36 -0500
+Received: from [172.24.227.252] (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.252])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43ABgVU9078615;
+	Wed, 10 Apr 2024 06:42:32 -0500
+Message-ID: <279a1467-9ba4-449c-9076-9b2acef9336c@ti.com>
+Date: Wed, 10 Apr 2024 17:12:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410-rice-fringe-4ae992217a2f@spud>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Fix ti_sn_bridge_set_dsi_rate
+ function
+To: Doug Anderson <dianders@chromium.org>
+CC: <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
+        <Laurent.pinchart@ideasonboard.com>, <mripard@kernel.org>,
+        <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>, <andersson@kernel.org>,
+        <robdclark@gmail.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240408073623.186489-1-j-choudhary@ti.com>
+ <CAD=FV=V6vUgcPn0zhA+9k4cHVpqqeSVCSJG23XEE5KMAHUCCoQ@mail.gmail.com>
+Content-Language: en-US
+From: Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <CAD=FV=V6vUgcPn0zhA+9k4cHVpqqeSVCSJG23XEE5KMAHUCCoQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Conor, Zhi,
+Hello Doug,
 
-On Wed, Apr 10, 2024 at 12:27:07PM +0100, Conor Dooley wrote:
-> Hey,
-> 
-> On Wed, Apr 10, 2024 at 06:40:01PM +0800, Zhi Mao wrote:
-> > Add YAML device tree binding for GT97xx VCM driver,
-> 
-> Please don't mention drivers here, bindings are for hardware.
-> 
-> > and the relevant MAINTAINERS entries.
-> > 
-> > Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
-> > ---
-> >  .../bindings/media/i2c/giantec,gt97xx.yaml    | 91 +++++++++++++++++++
-> >  1 file changed, 91 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml b/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > new file mode 100644
-> > index 000000000000..8c9f1eb4dac8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > @@ -0,0 +1,91 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright (c) 2020 MediaTek Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/giantec,gt97xx.yaml#
-> 
-> Filename patching compatible please.
-> 
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Giantec Semiconductor, Crop. GT97xx Voice Coil Motor (VCM)
-> > +
-> > +maintainers:
-> > +  - Zhi Mao <zhi.mao@mediatek.com>
-> > +
-> > +description: |-
-> > +  The Giantec GT97xx is a 10-bit DAC with current sink capability.
-> > +  The DAC is controlled via I2C bus that operates at clock rates up to 1MHz.
-> > +  This chip integrates Advanced Actuator Control (AAC) technology
-> > +  and is intended for driving voice coil lens in camera modules.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - giantec,gt9768 # for GT9768 VCM
-> > +      - giantec,gt9769 # for GT9769 VCM
-> 
-> I don't think these comments are needed, they should be clear from the
-> compatibles, no?
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  vin-supply: true
-> > +
-> > +  vdd-supply: true
-> > +
-> > +  giantec,aac-mode:
-> > +    description:
-> > +      Indication of AAC mode select.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum:
-> > +      - 1    #  AAC2 mode(operation time# 0.48 x Tvib)
-> > +      - 2    #  AAC3 mode(operation time# 0.70 x Tvib)
-> > +      - 3    #  AAC4 mode(operation time# 0.75 x Tvib)
-> > +      - 5    #  AAC8 mode(operation time# 1.13 x Tvib)
-> 
-> I dislike these enum based properties and I would rather this either be
-> the values themselves (0.48, 0.70 etc).
-> 
-> > +    default: 2
-> > +
-> > +  giantec,aac-timing:
-> > +    description:
-> > +      Number of AAC Timing count that controlled by one 6-bit period of
-> > +      vibration register AACT[5:0], the unit of which is 100 us.
-> 
-> Then the property should be in a standard unit of time, not "random" hex
-> numbers that correspond to register values.
-> 
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    default: 0x20
-> > +    minimum: 0x00
-> > +    maximum: 0x3f
-> > +
-> > +  giantec,clock-presc:
-> > +    description:
-> > +      Indication of VCM internal clock dividing rate select, as one multiple
-> > +      factor to calculate VCM ring periodic time Tvib.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum:
-> > +      - 0    #  Dividing Rate -  2
-> > +      - 1    #  Dividing Rate -  1
-> > +      - 2    #  Dividing Rate -  1/2
-> > +      - 3    #  Dividing Rate -  1/4
-> > +      - 4    #  Dividing Rate -  8
-> > +      - 5    #  Dividing Rate -  4
-> 
-> Same here, you should not need these comments explaining the values, use
-> an enum with meaningful values please. 
-> 
-> > +    default: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - vin-supply
-> > +  - vdd-supply
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        vcm@c {
-> 
-> "vcm" is not a generic node-name, can you use one please?
-> Look around similar bindings or at the dt spec for generic node-names.
+Thanks for the review.
 
-"camera-lens" would seem to be widely used. I can post patches to change
-some of the rest out there that aren't aligned.
+On 08/04/24 14:33, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Apr 8, 2024 at 12:36 AM Jayesh Choudhary <j-choudhary@ti.com> wrote:
+>>
+>> Due to integer calculations, the rounding off can cause errors in the final
+>> value propagated in the registers.
+>> Considering the example of 1080p (very common resolution), the mode->clock
+>> is 148500, dsi->lanes = 4, and bpp = 24, with the previous logic, the DSI
+>> clock frequency would come as 444 when we are expecting the value 445.5
+>> which would reflect in SN_DSIA_CLK_FREQ_REG.
+>> So move the division to be the last operation where rounding off will not
+>> impact the register value.
+> 
+> Given that this driver is used on a whole pile of shipping Chromebooks
+> and those devices have been working just fine (with 1080p resolution)
+> for years, I'm curious how you noticed this. Was it actually causing
+> real problems for you, or did you notice it just from code inspection?
+> You should include this information in the commit message.
+
+I am trying to add display support for TI SoC which uses this particular
+bridge. While debugging, I was trying to get all the register value in
+sync with the datasheet and it was then that I observed this issue while
+inspecting the code.
+Maybe Chromebooks are using different set of parameters which does not
+expose this issue. Since parameters for my display (mentioned in commit
+message) yields the frequency at the border, I saw this issue. My debug
+is still ongoing but since the value is not in sync with the
+documentation, I sent out this patch.
 
 > 
-> Thanks,
-> Conor.
+> I'm travelling for the next two weeks so I can't actually check on a
+> device to see if your patch makes any difference on hardware I have,
+> but I'd presume that things were working "well enough" with the old
+> value and they'll still work with the new value?
 > 
-> > +            compatible = "giantec,gt9768";
-> > +            reg = <0x0c>;
-> > +
-> > +            vin-supply = <&gt97xx_vin>;
-> > +            vdd-supply = <&gt97xx_vdd>;
-> > +            giantec,aac-timing = <0x20>;
-> > +        };
-> > +    };
-> > +
-> > +...
+> 
 
--- 
-Kind regards,
+Yes, ideally they should still work well with this change.
 
-Sakari Ailus
+>> Also according to the SN65DSI86 datasheet[0], the minimum value for that
+>> reg is 0x08 (inclusive) and the maximum value is 0x97 (exclusive). So add
+>> check for that.
+> 
+> Maybe the range checking should be a separate patch?
+
+Check should be done before propagating the register value so I added it
+in the same function and hence in the same patch.
+
+> 
+> 
+>> [0]: <https://www.ti.com/lit/gpn/sn65dsi86>
+>>
+>> Fixes: ca1b885cbe9e ("drm/bridge: ti-sn65dsi86: Split the setting of the dp and dsi rates")
+> 
+> Are you sure that's the commit you're fixing? In the commit text of
+> that commit I wrote that it was supposed to "have zero functional
+> change". Looking back at the change I still believe it had zero
+> functional change. The rounding error looks like it predates the
+> patch.
+> 
+> As far as I can tell the rounding error has been there since commit
+> a095f15c00e2 ("drm/bridge: add support for sn65dsi86 bridge driver").
+> 
+
+Yes. Now I see that it fixes the initial support patch.
+I will fix that.
+
+> 
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> 
+> It's great to see a TI engineer contributing to this driver! Awesome!
+> 
+> 
+>> ---
+>>   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 48 +++++++++++++++++++++------
+>>   1 file changed, 37 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+>> index 84698a0b27a8..f9cf6b14d85e 100644
+>> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+>> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+>> @@ -111,7 +111,14 @@
+>>   #define  AUX_IRQ_STATUS_AUX_SHORT              BIT(5)
+>>   #define  AUX_IRQ_STATUS_NAT_I2C_FAIL           BIT(6)
+>>
+>> -#define MIN_DSI_CLK_FREQ_MHZ   40
+>> +/*
+>> + * NOTE: DSI clock frequency range: [40MHz,755MHz)
+>> + * DSI clock frequency range is in 5-MHz increments
+>> + * So minimum frequency 40MHz translates to 0x08
+>> + * And maximum frequency 755MHz translates to 0x97
+>> + */
+>> +#define MIN_DSI_CLK_RANGE      0x8
+>> +#define MAX_DSI_CLK_RANGE      0x97
+> 
+> It's a little weird to call this min/max and have one be inclusive and
+> one be exclusive. Be consistent and say that this is the minimum legal
+> value and the maximum legal value. I think that means the MAX should
+> be 0x96.
+
+The comment above does specify the inclusive/exclusive behavior.
+Since a value corresponds to 5MHz range, associating the value with
+the range makes more sense if I keep it 0x97 (0x97 * 5 -> 755MHz)
+0x96 corresponds to the range of [750Mz,755MHz).
+
+If this argument does not make sense, I can change it to 0x96 and handle
+it with the inequalities in the function call.
+
+> 
+> 
+>>   /* fudge factor required to account for 8b/10b encoding */
+>>   #define DP_CLK_FUDGE_NUM       10
+>> @@ -820,22 +827,37 @@ static void ti_sn_bridge_atomic_disable(struct drm_bridge *bridge,
+>>          regmap_update_bits(pdata->regmap, SN_ENH_FRAME_REG, VSTREAM_ENABLE, 0);
+>>   }
+>>
+>> -static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
+>> +static int ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
+>>   {
+>> -       unsigned int bit_rate_mhz, clk_freq_mhz;
+>> +       unsigned int bit_rate_khz;
+>>          unsigned int val;
+>>          struct drm_display_mode *mode =
+>>                  &pdata->bridge.encoder->crtc->state->adjusted_mode;
+>>
+>> -       /* set DSIA clk frequency */
+>> -       bit_rate_mhz = (mode->clock / 1000) *
+>> -                       mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
+>> -       clk_freq_mhz = bit_rate_mhz / (pdata->dsi->lanes * 2);
+>> +       /*
+>> +        * Set DSIA clk frequency
+>> +        * Maximum supported value of bit_rate_khz turns out to be
+>> +        * 6040000 which can be put in 32-bit variable so no overflow
+>> +        * possible in this calculation.
+> 
+> The way you've written this comment makes me worried. You're saying
+> that the only supported result of the math has to fit in 32-bits so
+> we're OK. ...and then _after_ you do the math you check to see if the
+> clock rate is within the supported range. It makes me feel like you
+> could still overflow.
+
+I did use reverse calculation for the value that I used in comments. xD
+
+> 
+> I think your comment here should say something like:
+> 
+> The maximum value returned by mipi_dsi_pixel_format_to_bpp() is 24.
+> That means that as long as "mode->clock" is less than 178,956,971 kHz
+> then the calculation can't overflow and can fit in 32-bits.
+> 
+> If you wanted to be really good you could even put a check earlier in
+> the function to make sure that mode->clock wasn't something totally
+> crazy (could confirm it's < 100GHz maybe?) so you absolutely knew it
+> couldn't overflow.
+
+Okay. This makes sense. Will take this into account for v2.
+
+
+> 
+>> +        */
+>> +       bit_rate_khz = mode->clock *
+>> +                      mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
+>> +
+>> +       /*
+>> +        * For each increment in val, frequency increases by 5MHz
+>> +        * and the factor of 1000 comes from kHz to MHz conversion
+>> +        */
+>> +       val = (bit_rate_khz / (pdata->dsi->lanes * 2 * 1000 * 5)) & 0xFF;
+>> +
+>> +       if (val >= MAX_DSI_CLK_RANGE || val < MIN_DSI_CLK_RANGE) {
+>> +               drm_err(pdata->bridge.dev,
+>> +                       "DSI clock frequency not in the supported range\n");
+>> +               return -EINVAL;
+>> +       }
+> 
+> Shouldn't the above be in atomic_check()? There's a reason why
+> atomic_enable() can't return error codes.
+
+Oops.
+I will handle it how we are handling errors in case of link_training:
+https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridge/ti-sn65dsi86.c#L1152
+
+That should be okay I guess?
+
+Warm Regards,
+Jayesh
+
+> 
+> -Doug
 
