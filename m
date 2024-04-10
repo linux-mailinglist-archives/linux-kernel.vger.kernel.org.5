@@ -1,151 +1,88 @@
-Return-Path: <linux-kernel+bounces-137810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3AD089E7EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF09189E7EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:46:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E57FB21A88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:48:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42511B2223F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781AD1C2D;
-	Wed, 10 Apr 2024 01:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C51653BE;
+	Wed, 10 Apr 2024 01:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HlIgxZYv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/78VjWd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D45522E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85D015A4;
+	Wed, 10 Apr 2024 01:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712713696; cv=none; b=aPY+T/k1Frh+ewk1PeZR3dH4FIPl+UrFTJiD3W9ikeBifEWgxlufSxl0ryTtiJWdbFJN8wq0JtnggKaGpd0Y4MpA6nF7MrU6SCFTL+3c3RBn6lmpDu+FK4fzS21JI7w58lxDQ6UMZXsAq8Hz4bFVhhjZynzbvialFVsSHsK0bqI=
+	t=1712713587; cv=none; b=HtDsmNuBJIvdW0Y+Lhencar1OsY8m3YP3kaZ5lp0CL2h3iwXaFwpfCaZQvEOlVAuPohPlOp6UTohO4YMdp9/z/32EKhpKoo/nQYtEHzW5LHQ6toedp/R7qXvMW8LLvPXGx2LQwWC4z8U3Ws3aS7WbZkhtQIfJ6hbQj2To5MhGW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712713696; c=relaxed/simple;
-	bh=NcKvOkrCzR342U93keVujN6cdA/17UZMHK43RsPTVsY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ffzw51MTcDqNW665wvpUXwJmw/gRyopZ5t4dvccoQSHrFwLg/oWmlI9JT4EzOctIZO7HptHVOO7DAIhz7P3qMLP0GIp231zW5UhVvfKZJmbF0Mgg32S82lXZQUOboWhOKe/2LOA3g5hZt6iELMn6kVy/s89+8riKzAO15zyF+RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HlIgxZYv; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712713695; x=1744249695;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=NcKvOkrCzR342U93keVujN6cdA/17UZMHK43RsPTVsY=;
-  b=HlIgxZYvXi2i4Vb5GYZrnB0ky+LozNowwJBBsue58PxcvCtUmqv57nR2
-   0XlFL/wQyxOIpXxZ559UwWdbcboJ6ulptaNyLE05wLfV8P6+w+dLUqPXd
-   NUDwgHcArwgpaf+Jw3UeZ9qGsAGJWlkPdF7DmpfwXuVYuD/C4ZHF8cjB7
-   p+el9lDsQzNEbDChM4NG6ON2eJbps9D2lgUwRsjlokjRAm8lOKzHnVYv0
-   wxi3jNOng6lhM4JuKkf2djdufqkLyn4f9k/u5gL3sEXYwOLn1DKxTuABa
-   Lq9PI0cxTaGj9w4on1nbX2mkaFfbUHhvwabnqtSISQI37ocO304P44SUT
-   g==;
-X-CSE-ConnectionGUID: j/8AGrDYRLS5ZQHs+THlFA==
-X-CSE-MsgGUID: cq5v/Ww0S6WwtmtV3VDtHQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8235325"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="8235325"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 18:48:15 -0700
-X-CSE-ConnectionGUID: M1tPkJiaQKOyDTqRm15LIA==
-X-CSE-MsgGUID: 2XzmfPgPR7C2Qhk1Wl87ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="24903108"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 18:48:11 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  ryncsn@gmail.com,  songmuchun@bytedance.com,
-  david@redhat.com,  chrisl@kernel.org,  guo.ziliang@zte.com.cn,
-  yosryahmed@google.com,  linux-kernel@vger.kernel.org,  linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm: swap: prejudgement swap_has_cache to avoid page
- allocation
-In-Reply-To: <CAKEwX=MBts2mGgTE__VP-ZVMrMFTzQnbTAkMPTJs3KNRQ2QDjg@mail.gmail.com>
-	(Nhat Pham's message of "Tue, 9 Apr 2024 10:52:40 -0700")
-References: <20240408121439.GA252652@bytedance>
-	<20240408132704.f966adc8d3928df4d3b8c0a9@linux-foundation.org>
-	<87edbf8hta.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240409145740.GA543696@bytedance>
-	<CAKEwX=MBts2mGgTE__VP-ZVMrMFTzQnbTAkMPTJs3KNRQ2QDjg@mail.gmail.com>
-Date: Wed, 10 Apr 2024 09:46:18 +0800
-Message-ID: <8734ru6lcl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712713587; c=relaxed/simple;
+	bh=1YgFdUcBOKesTaua31ZEyD1c9Gpgvfr0heHVZed0Enk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FAbalXxZN1JpQBl13Anor0GjbmosIr42lIDoS9VaMG0iSzT1sbkVaG200g0tsj46N23w30h4d5CL3x1JkQnQuL5sEgobJUpGgTwwLQiuAeOHENnm9CMhT1khM2awZR8rmrtuiMlThjZsxqd7bucw32IVMah3cQ+irbzd8p46Apc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/78VjWd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0D42C433F1;
+	Wed, 10 Apr 2024 01:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712713587;
+	bh=1YgFdUcBOKesTaua31ZEyD1c9Gpgvfr0heHVZed0Enk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=I/78VjWdo/c0F0Ap07gI5asrS7PrsOu2M02J+DbxVjLWDvzFOCQj0or2QN13AWozE
+	 I69cMnaM1ljMIhs/0Lp84+zGGrKjGK+/CXANY3BLrmNxLBhq4kaduZjuEReLaCWWCM
+	 rte8M4SlHEUagzJtAXFK0rggGoLFQZvYFbNsor1v1NzuoQK/a4YRotlvV3NLP6fos1
+	 5WsKk0K30sTsNVRZti9VcJ00BcNP1yTZV7kxZYXi4/yHOzNi43F1A9xC8vq4CFQg0l
+	 rwcAwaw4bJhCi9poeYvELIrMuEt8FcP5FKz1pc4TBZxdLGNQelNbfUOj7E91vbTg6q
+	 dEzc8Cp+Z0Vvg==
+Date: Tue, 9 Apr 2024 18:46:25 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, davem@davemloft.net, pabeni@redhat.com,
+ edumazet@google.com, elder@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ nbd@nbd.name, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+ lorenzo@kernel.org, taras.chornyi@plvision.eu, ath11k@lists.infradead.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ geomatsi@gmail.com, kvalo@kernel.org, quic_jjohnson@quicinc.com,
+ leon@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>
+Subject: Re: [PATCH net-next v4 1/9] net: free_netdev: exit earlier if dummy
+Message-ID: <20240409184625.301e4bc0@kernel.org>
+In-Reply-To: <20240409125738.1824983-2-leitao@debian.org>
+References: <20240409125738.1824983-1-leitao@debian.org>
+	<20240409125738.1824983-2-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Nhat Pham <nphamcs@gmail.com> writes:
+On Tue,  9 Apr 2024 05:57:15 -0700 Breno Leitao wrote:
+> For dummy devices, exit earlier at free_netdev() instead of executing
+> the whole function. This is necessary, because dummy devices are
+> special, and shouldn't have the second part of the function executed.
+> 
+> Otherwise reg_state, which is NETREG_DUMMY for dummy devices, will be
+> overwritten and there will be no way to identify that this is a dummy
+> device. Also, this device do not need the final put_device(), since
+> dummy devices are not registered (through register_netdevice()), where
+> the device reference is increased (at netdev_register_kobject() ->
+> device_add()).
 
-> On Tue, Apr 9, 2024 at 7:57=E2=80=AFAM Zhaoyu Liu
-> <liuzhaoyu.zackary@bytedance.com> wrote:
->>
->> On Tue, Apr 09, 2024 at 09:07:29AM +0800, Huang, Ying wrote:
->> > Andrew Morton <akpm@linux-foundation.org> writes:
->> >
->> > > On Mon, 8 Apr 2024 20:14:39 +0800 Zhaoyu Liu <liuzhaoyu.zackary@byte=
-dance.com> wrote:
->> > >
->> > >> Based on qemu arm64 - latest kernel + 100M memory + 1024M swapfile.
->> > >> Create 1G anon mmap and set it to shared, and has two processes
->> > >> randomly access the shared memory. When they are racing on swap cac=
-he,
->> > >> on average, each "alloc_pages_mpol + swapcache_prepare + folio_put"
->> > >> took about 1475 us.
->> > >
->> > > And what effect does this patch have upon the measured time?  ANd up=
-on
->> > > overall runtime?
->> >
->> > And the patch will cause increased lock contention, please test with
->> > more processes and perhaps HDD swap device too.
->>
->> Hi Ying,
->>
->> Thank you for your suggestion.
->> It may indeed cause some lock contention, as mentioned by Kairui before.
->>
->> If so, is it recommended?
->> ---
->>   unsigned char swap_map, mapcount, hascache;
->>   ...
->>   /* Return raw data of the si->swap_map[offset] */
->>   swap_map =3D __swap_map(si, entry);
->>   mapcount =3D swap_map & ~SWAP_HAS_CACHE;
->>   if (!mapcount && swap_slot_cache_enabled)
->>   ...
->>   hascache =3D swap_map & SWAP_HAS_CACHE;
->>   /* Could judge that it's being added to swap cache with high probabili=
-ty */
->>   if (mapcount && hascache)
->>     goto skip_alloc;
->>   ...
->> ---
->> In doing so, there is no additional use of locks.
->>
->
-> Hmm so is this a lockless check now? Ummmm... Could someone with more
-> expertise in the Linux kernel memory model double check that this is
-> even a valid state we're observing here? Looks like we're performing
-> an unguarded, unsynchronized, non-atomic read with the possibility of
-> concurrent write - is there a chance we might see partial/invalid
-> results?
->
-> Could you also test with zswap enabled (and perhaps with zswap
-> shrinker enabled)?
-
-READ_ONCE() will save us from partial/invalid results.
-
---
-Best Regards,
-Huang, Ying
+There's a small fuzz when applying due to the phy topo changes
+landing, please rebase, the CI didn't ingest it right.
+-- 
+pw-bot: cr
 
