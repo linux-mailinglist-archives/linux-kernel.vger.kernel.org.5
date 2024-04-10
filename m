@@ -1,139 +1,112 @@
-Return-Path: <linux-kernel+bounces-138498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF4989F24B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:31:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6FAA89F24E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57E31F23E74
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:31:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51CCDB248B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47D1158D6B;
-	Wed, 10 Apr 2024 12:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A19158D6B;
+	Wed, 10 Apr 2024 12:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aCd+86oo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="k2nAbddA"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD2969DF4
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F6969DF4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712752285; cv=none; b=SRcue9dnub76tgjq8i1VdUNMqyrvLGxEEdB/9fjVQdaZmRXSj2wrdu0PbwQI7MqVPU7aFxXZ3EpCaS83GXlQLzqD6owBhqk9WGwUD4f+DAY6gxU53bQ2wDa/1xY/TCvHTBLCSXbXOoQ5z3w0Q2uIzPH/VUj5gldQzcjfX2p38m8=
+	t=1712752314; cv=none; b=IkHxbtloS7Z+/ku+bcPSi7RAJELDzlCzhZSnQ45hQ8hSEJb4LmX/i80CeFQYycrjDJX8N1T386K0XqRQMhNGePag7SLob8lAnMJymyneWszEDmEGggUPXMdNhNnUSDlC96ky0dxxq+B+VcvdtNfkK7w823v28QsdPaIPOishdU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712752285; c=relaxed/simple;
-	bh=wJyBXBGOmxn34WjhWjROYKPAED2bzb6ynZPSkMqqr1o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hv+tl8zm4H/9HZK36oY6Mh1UEwRFCqksFkfZQ1iejVZB2pbNGl23/j8OAtCpIwwjnUgWsFl6xRsWgYpzhAxpV3eOq09fIoY6FYycorFA72nszafFko2nJbqOxUegC+i+Yj7MhW1qa/UJXtlogbOYamZ4uvn3X4RJQFSuRJNzZq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCd+86oo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C84C433C7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712752284;
-	bh=wJyBXBGOmxn34WjhWjROYKPAED2bzb6ynZPSkMqqr1o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aCd+86oo/rrOZZ5LDNvj/aQ2bXBFtSyGhIL/8yUg3Xv98vjhjY6/jzIuzmL/6Kw6n
-	 6/QxUtJnQUTqO2eVMjnRln31RLHun0WmgfU9cvI2hdWrRUG3xt6DECNOC2dkqY/Kbn
-	 VNmdFmOOXy1S6fpr1DyjW06hg4nhR0h2aw1SsvC3yJ8P07PwtCZtHHMM0bmhW2D0ay
-	 bVV/aqSDQHJgUjPtxOx+f2l/1X3ounRNgDhyFgjtvHv4/aFMeLRHMTuWuXyJyjxCnZ
-	 CKUbRR9xMUTAXw8J3yW+qbQ/PbHu5ba7xSxRmclSC2457x8Hf7UyyMfLaIkpPGd5vX
-	 FLM1T8z41/R7w==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d6c9678cbdso86737381fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:31:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXHDoN8GRWgauZF/ARRmUd1t0zsIrDvWoW9YUvZ0cL6X7xLocOeiyHBJeqscwjSjfb5ahDcZqNEiBhn0Ugw0yo3+bRQk+db53GWPT5B
-X-Gm-Message-State: AOJu0Yxw2XoytuDFQ1tFgaPkZAFK1dibDFrjdO9r6CmfOU2c4hFbzgZJ
-	5KWOkz831bAOpTPQExvZKCc6wVMb+K0M4U95/V5O941BBhNNGPgBF4O69PSqcahNmI4mBbE15gY
-	G57h48zkxok5nBP53BazOAW/ikTw=
-X-Google-Smtp-Source: AGHT+IHuT+XFJeaCh2hGEm5AckPvyGrE/Qv7aBbddDEfGsyOioWKVti/1UfUWWfzQXrhcXJDtYUrnzGBIVAch+SaVvU=
-X-Received: by 2002:a05:651c:21c:b0:2d8:84a0:357a with SMTP id
- y28-20020a05651c021c00b002d884a0357amr1761988ljn.33.1712752283038; Wed, 10
- Apr 2024 05:31:23 -0700 (PDT)
+	s=arc-20240116; t=1712752314; c=relaxed/simple;
+	bh=zZX4qRuSQT4Ixzjk9d+eFBFt6tNhfr6P6XBUzfTBakI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E1/o5dx4LrM47wG3gPhUj01MshHf2579TlWfVXY16vDG6K36QxrI1s0f3nENmuNeDYqV5noDCx7mW0SNZNWGFIQtp0AlLbh86UqrKivE24SYeib9ANAmWBICnxpFT+VepgtuvWPX1DTgzLlb1rRfl2ht7RAPhbEa2DiSkGpeN2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=k2nAbddA; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516c403c2e4so5785741e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712752311; x=1713357111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4RQ5efwtF91P/NXm4zP+Bn3Bw1Shjn+65DFZgweTfHo=;
+        b=k2nAbddAqlSj4ayOjUK6eeQoU5iV0RcN+LQx/X08d30nKoebg1WdK1t+ENbnL1rIDf
+         00Qru8fzi1ERw9ry4/ZHG637m9DZA+xfbgVAUzaU7/ZSjoUxaizvnndih/JTVJi69pdF
+         naGKHMJyyCAV2BrTWkizLLzV1F2Mljrx84gX3/cZG0JWkUxoOLO21Ry8hX6IJUPVws3/
+         oPM5bKbdb/3nFlegTqqqJg2lMN9l5CjowNrvj1FJ/lr5rcyA76T498tg+oEQuUDimc9e
+         sxjDsa+P8carCzxgJHv/Zfi2XC5evYGJvVqjs4Uhj22KlibC6VOeZBTTHrQhhZQ4lI+w
+         UkYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712752311; x=1713357111;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4RQ5efwtF91P/NXm4zP+Bn3Bw1Shjn+65DFZgweTfHo=;
+        b=W9ovCXh1JFrNxG3Kv6fQ/5h9tSNTWnALClRpuG2lksvoSIUmlGSOyWOeZXE3oHgEIf
+         /E+U9BdVvIqtQEbequQ0nC1qRd1AfQEU8IMan7HyZOr913bGmgSwNWT+aPQaDEPUH2BM
+         6Cte570tEQMzgTMmcymFmd3GNQEuJ5HPIoQ1lh8QDKBozZCCEeEG2fgboOT7gmdMiLPz
+         MLj7JFrYfe2pggkyDzwmxnHr25LEzJi/tLqkp2j9OLNZc/XO13G7S8T7BytHilzzj9C0
+         UkqLTWo6j7dBffathw/SqknzOsJyGcrTghPLM04ivHshQ03ho4p3OUUPKtkru+Br30n0
+         1Kxw==
+X-Forwarded-Encrypted: i=1; AJvYcCXnnmlqh4nrL05f6MLyNvfpV4Pkww4Xoty5emiMfI0SLK3ipUdKMYrkwJkMAKBCwyGhU5dSOTG9lf5gHzB+EZAVzJJpvQwZXxztlM5R
+X-Gm-Message-State: AOJu0YygOWcYBFIFBE4BIPYH0+WyJW8trUp/ABgXEWNIYtVdHlo1cX/9
+	YGLAPOoTtjD7ZuQz3q1Qzuj5zXhMQ+ldMBZpvs5D1s6ahZL6GdrW+1jKUawzeX4=
+X-Google-Smtp-Source: AGHT+IGUBEm3kV7zksxLS/PxGZXtv2FBFfpwUJ+HG5kWCLXfREoERBZay5F1WVN0+sfAAXr9iBMlTQ==
+X-Received: by 2002:ac2:5471:0:b0:516:c3b2:d65c with SMTP id e17-20020ac25471000000b00516c3b2d65cmr1834705lfn.7.1712752310540;
+        Wed, 10 Apr 2024 05:31:50 -0700 (PDT)
+Received: from [172.30.204.89] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t16-20020a192d50000000b005114a0c56afsm1835819lft.279.2024.04.10.05.31.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:31:50 -0700 (PDT)
+Message-ID: <41cd0ac3-bef8-4a0f-8ee0-beb2378a74ef@linaro.org>
+Date: Wed, 10 Apr 2024 14:31:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409164641.GC3219862@dev-arch.thelio-3990X>
- <20240410024126.21589-1-zhuqiuer1@huawei.com> <20240410024126.21589-2-zhuqiuer1@huawei.com>
-In-Reply-To: <20240410024126.21589-2-zhuqiuer1@huawei.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 10 Apr 2024 14:31:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFdR49n2Je5jYSdbWRZbMGoZenfaqDX3iCQFVZUecrCmw@mail.gmail.com>
-Message-ID: <CAMj1kXFdR49n2Je5jYSdbWRZbMGoZenfaqDX3iCQFVZUecrCmw@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: Add a memory clobber to the fmrx instruction
-To: zhuqiuer <zhuqiuer1@huawei.com>
-Cc: nathan@kernel.org, justinstitt@google.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux@armlinux.org.uk, llvm@lists.linux.dev, morbo@google.com, 
-	ndesaulniers@google.com
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, 10 Apr 2024 at 04:41, zhuqiuer <zhuqiuer1@huawei.com> wrote:
->
-> The instruction fmrx is used throughout the kernel,
-> where it is sometimes expected to be skipped
-> by incrementing the program counter, such as in vfpmodule.c:vfp_init().
-> Therefore, the instruction should not be reordered when it is not intended.
-> Adding a barrier() instruction before and after this call cannot prevent
-> reordering by the compiler, as the fmrx instruction is constrained
-> by '=r', meaning it works on the general register but not on memory.
-> To ensure the order of the instruction after compiling,
-> adding a memory clobber is necessary.
->
-> Below is the code snippet disassembled from the method:
-> vfpmodule.c:vfp_init(), compiled by LLVM.
->
-> Before the patching:
-> xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
-> xxxxx:   xxxxx    mov r0, r4
-> xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
-> ...
-> xxxxx:   xxxxx    bl  c0791c8c <printk>
-> xxxxx:   xxxxx    movw    r5, #23132  ; 0x5a5c
-> xxxxx:   xxxxx    vmrs    r4, fpsid  <- this is the fmrx instruction
->
-> After the patching:
-> xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
-> xxxxx:   xxxxx    mov r0, r4
-> xxxxx:   xxxxx    vmrs    r5, fpsid  <- this is the fmrx instruction
-> xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
->
-> Signed-off-by: zhuqiuer <zhuqiuer1@huawei.com>
-
-This also fixes the issue I observed so
-
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/9] arm64: dts: qcom: sc8180x: correct dispcc clocks
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+References: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
+ <20240401-typec-fix-sm8250-v3-2-604dce3ad103@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240401-typec-fix-sm8250-v3-2-604dce3ad103@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
+
+On 4/1/24 22:33, Dmitry Baryshkov wrote:
+> Correct the clocks being used by the display clock controller on the
+> SC8180X platform (to match the schema):
+> - Drop the sleep clock
+> - Add DSI clocks
+> - Reorder eDP / DP clocks
+> 
+> This changes the order of clocks, however it should be noted that the
+> clock list was neither correct nor followed the schema beforehand.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  arch/arm/vfp/vfpinstr.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm/vfp/vfpinstr.h b/arch/arm/vfp/vfpinstr.h
-> index 3c7938fd40aa..ae2c9b9b7701 100644
-> --- a/arch/arm/vfp/vfpinstr.h
-> +++ b/arch/arm/vfp/vfpinstr.h
-> @@ -68,14 +68,14 @@
->         u32 __v;                        \
->         asm(".fpu       vfpv2\n"        \
->             "vmrs       %0, " #_vfp_    \
-> -           : "=r" (__v) : : "cc");     \
-> +           : "=r" (__v) : : "memory", "cc");   \
->         __v;                            \
->   })
->
->  #define fmxr(_vfp_,_var_)              \
->         asm(".fpu       vfpv2\n"        \
->             "vmsr       " #_vfp_ ", %0" \
-> -          : : "r" (_var_) : "cc")
-> +          : : "r" (_var_) : "memory", "cc")
->
->  #else
->
-> --
-> 2.12.3
->
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
 
