@@ -1,215 +1,103 @@
-Return-Path: <linux-kernel+bounces-139033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6FC789FDAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:04:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF0D89FDB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:05:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D23A2869EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:04:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4AC71F212D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4391802B2;
-	Wed, 10 Apr 2024 17:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cMBEOvam"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDA517BB1A;
+	Wed, 10 Apr 2024 17:04:17 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C803F17F384;
-	Wed, 10 Apr 2024 17:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79C817BB01
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712768610; cv=none; b=YCrF7tiKZWp8AAGvnkIz1CUQNHL4PBEXfjVnvudkyS3S/7p+zxzy7XRmw640ND9j6Yher2s/jAYvmywZPLl7f3T6n8HeKqAl4+M9Ljl6tX3vjRlPkvGA5kz1h3d8UkxVUzsOadTwUwwt8h+KkcSL4Sh4qValBzQfT5FbJlDOhh0=
+	t=1712768656; cv=none; b=n76ZLih+Ael1JqAHseRt9+uDxTZtjxicMI9h1LYmx28EvcrlMpTpxtHuUC+u4Irq+kRzjP93LfmXUlPeprLYJuaLNLPXNa0lmrKxEfO2zEjcA7Klx5Pt8QsA1o74E4aRVI5HjBDmsXeNapfVZv/l/1XaTBwGM0jqbRfOiecnGbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712768610; c=relaxed/simple;
-	bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=icHVsB4dC+x2VHCW0O5AIHToA2BIXkmYRbB86jE3Jotm6S1IM2npSuObXmqaOvWhbdylXeFIxQLpjHCtxmLB9/h3+mvuvlnIhQyAdvmBeIBeX2YBWrthxNYVmed+zX22gc6JxfmoeINnN/ZqBcVqZvxrlPpkUr64RfBxREXMFD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cMBEOvam; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712768608; x=1744304608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
-  b=cMBEOvam8Esy8E8e1JEScBcYnr1dOfvIuqNnhQ7fXyuDiYWchoeK4ha4
-   BJWdZ/I7MRVIQlLr2f57Do7nJT07mEKpgPwW2834PH2Ld4nEAp2nt6fpq
-   zXYSQLNGaGb79b7FCBJNWNgd4GGUMKBFSo+FgxmaU9nSN+3YQpEC5PdVa
-   oMwosMjNrxIGUiTZq9EkNoCJMwJkkJkMN1P5ScP4L1nuM/1fqL+NfD/ND
-   uIyCRhHRfekPAmIvkoR7fX+F753W4eOwB2o6q1VJK0+ee36p7RXOAV4s1
-   vLM5yz72HeTDTJY3/jjnCXAUToJGSyMnsqOqBCPndG3sDt2IWqB3xRT+I
-   g==;
-X-CSE-ConnectionGUID: utnWHNjwQVOBkmhXcIKUAA==
-X-CSE-MsgGUID: iWPcOT2US1qbHxY9XSxKZA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18858507"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="18858507"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:27 -0700
-X-CSE-ConnectionGUID: wlfn6evvSG6s0Um4MA+UeQ==
-X-CSE-MsgGUID: tAWPm7jcSmSkDcpua7cm3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25111440"
-Received: from rsterlin-mobl.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:26 -0700
-Date: Wed, 10 Apr 2024 10:03:24 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 23/26] cxl/mem: Trace Dynamic capacity Event Record
-Message-ID: <ZhbGXMh4q3+7ymKS@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
+	s=arc-20240116; t=1712768656; c=relaxed/simple;
+	bh=SQ4K/v5QQTv+vk6IVu/x6ynSF4jikLHPm3kjTu9TLvw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CuG90RgBlEIpxJg2gXf8T5Z48sEmKrPft2yR5fuianVbT9otLFtnXk2a/LJHV6GrkA8eOKHwuH5lc+NW4y+o9WAmrDAP5wPv3cglZpA6TM9L7Y5yAktKRx38uwOAOXOJUC62OvcoFq21QhQ/bC0dDRRiXsQ6o2Yg4L1D95WAJqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF8Jc2Hbqz6JBTr;
+	Thu, 11 Apr 2024 01:02:24 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id AA6751404FC;
+	Thu, 11 Apr 2024 01:04:04 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 18:04:04 +0100
+Date: Wed, 10 Apr 2024 18:04:03 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Robin Murphy <robin.murphy@arm.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf/arm-cmn: Set PMU device parent
+Message-ID: <20240410180403.00004cff@Huawei.com>
+In-Reply-To: <25d4428df1ddad966c74a3ed60171cd3ca6c8b66.1712682917.git.robin.murphy@arm.com>
+References: <25d4428df1ddad966c74a3ed60171cd3ca6c8b66.1712682917.git.robin.murphy@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, Mar 24, 2024 at 04:18:26PM -0700, Ira Weiny wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On Tue,  9 Apr 2024 18:15:17 +0100
+Robin Murphy <robin.murphy@arm.com> wrote:
+
+> Now that perf supports giving the PMU device a parent, we can use our
+> platform device to make the relationship between CMN instances and PMU
+> IDs trivially discoverable, from either nominal direction:
 > 
-> CXL rev 3.1 section 8.2.9.2.1 adds the Dynamic Capacity Event Records.
-> Notify the host of extents being added or removed.  User space has
-> little use for these events other than for debugging.
-
-Is there really any 'Notify' going on here?
-
-Can you state the usage in the positive, rather than saying it has
-little use. Is this the only method for users to track this activity.
-
-If it were just for your kernel debugging, I'd guess you'd just throw
-in more dev_dbg() messages.
-
-I see 'dpa_start'. Will we need to do any dpa->hpa translation work
-here?
-
---Alison
-
-
+> root@crazy-taxi:~# ls /sys/devices/platform/ARMHC600:00 | grep cmn
+> arm_cmn_0
+> root@crazy-taxi:~# realpath /sys/bus/event_source/devices/arm_cmn_0/..
+> /sys/devices/platform/ARMHC600:00
 > 
-> Add DC trace points to the trace log for debugging purposes.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Nice.  I'd forgotten all about this :( 
+
+https://lore.kernel.org/all/20230404134225.13408-1-Jonathan.Cameron@huawei.com/
+still has a bunch of these + there were many I never looked into.
+
+Guess I should respin that series though probably 50% at least still apply.
+
+J
+
+
 > ---
-> Changes for v1
-> [iweiny: Adjust to new trace code]
-> ---
->  drivers/cxl/core/mbox.c  |  4 +++
->  drivers/cxl/core/trace.h | 65 ++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+)
+>  drivers/perf/arm-cmn.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 7babac2d1c95..cb4576890187 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -978,6 +978,10 @@ static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  		ev_type = CXL_CPER_EVENT_DRAM;
->  	else if (uuid_equal(uuid, &CXL_EVENT_MEM_MODULE_UUID))
->  		ev_type = CXL_CPER_EVENT_MEM_MODULE;
-> +	else if (uuid_equal(uuid, &CXL_EVENT_DC_EVENT_UUID)) {
-> +		trace_cxl_dynamic_capacity(cxlmd, type, &record->event.dcd);
-> +		return;
-> +	}
->  
->  	cxl_event_trace_record(cxlmd, type, ev_type, uuid, &record->event);
->  }
-> diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
-> index bdf117a33744..7646fdd9aee3 100644
-> --- a/drivers/cxl/core/trace.h
-> +++ b/drivers/cxl/core/trace.h
-> @@ -707,6 +707,71 @@ TRACE_EVENT(cxl_poison,
->  	)
->  );
->  
-> +/*
-> + * DYNAMIC CAPACITY Event Record - DER
-> + *
-> + * CXL rev 3.0 section 8.2.9.2.1.5 Table 8-47
-> + */
-> +
-> +#define CXL_DC_ADD_CAPACITY			0x00
-> +#define CXL_DC_REL_CAPACITY			0x01
-> +#define CXL_DC_FORCED_REL_CAPACITY		0x02
-> +#define CXL_DC_REG_CONF_UPDATED			0x03
-> +#define show_dc_evt_type(type)	__print_symbolic(type,		\
-> +	{ CXL_DC_ADD_CAPACITY,	"Add capacity"},		\
-> +	{ CXL_DC_REL_CAPACITY,	"Release capacity"},		\
-> +	{ CXL_DC_FORCED_REL_CAPACITY,	"Forced capacity release"},	\
-> +	{ CXL_DC_REG_CONF_UPDATED,	"Region Configuration Updated"	} \
-> +)
-> +
-> +TRACE_EVENT(cxl_dynamic_capacity,
-> +
-> +	TP_PROTO(const struct cxl_memdev *cxlmd, enum cxl_event_log_type log,
-> +		 struct cxl_event_dcd *rec),
-> +
-> +	TP_ARGS(cxlmd, log, rec),
-> +
-> +	TP_STRUCT__entry(
-> +		CXL_EVT_TP_entry
-> +
-> +		/* Dynamic capacity Event */
-> +		__field(u8, event_type)
-> +		__field(u16, hostid)
-> +		__field(u8, region_id)
-> +		__field(u64, dpa_start)
-> +		__field(u64, length)
-> +		__array(u8, tag, CXL_DC_EXTENT_TAG_LEN)
-> +		__field(u16, sh_extent_seq)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
-> +
-> +		/* Dynamic_capacity Event */
-> +		__entry->event_type = rec->event_type;
-> +
-> +		/* DCD event record data */
-> +		__entry->hostid = le16_to_cpu(rec->host_id);
-> +		__entry->region_id = rec->region_index;
-> +		__entry->dpa_start = le64_to_cpu(rec->extent.start_dpa);
-> +		__entry->length = le64_to_cpu(rec->extent.length);
-> +		memcpy(__entry->tag, &rec->extent.tag, CXL_DC_EXTENT_TAG_LEN);
-> +		__entry->sh_extent_seq = le16_to_cpu(rec->extent.shared_extn_seq);
-> +	),
-> +
-> +	CXL_EVT_TP_printk("event_type='%s' host_id='%d' region_id='%d' " \
-> +		"starting_dpa=%llx length=%llx tag=%s " \
-> +		"shared_extent_sequence=%d",
-> +		show_dc_evt_type(__entry->event_type),
-> +		__entry->hostid,
-> +		__entry->region_id,
-> +		__entry->dpa_start,
-> +		__entry->length,
-> +		__print_hex(__entry->tag, CXL_DC_EXTENT_TAG_LEN),
-> +		__entry->sh_extent_seq
-> +	)
-> +);
-> +
->  #endif /* _CXL_EVENTS_H */
->  
->  #define TRACE_INCLUDE_FILE trace
-> 
-> -- 
-> 2.44.0
-> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index 7ef9c7e4836b..b2c607cf3ad7 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -2482,6 +2482,7 @@ static int arm_cmn_probe(struct platform_device *pdev)
+>  	cmn->cpu = cpumask_local_spread(0, dev_to_node(cmn->dev));
+>  	cmn->pmu = (struct pmu) {
+>  		.module = THIS_MODULE,
+> +		.parent = cmn->dev,
+>  		.attr_groups = arm_cmn_attr_groups,
+>  		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
+>  		.task_ctx_nr = perf_invalid_context,
+
 
