@@ -1,153 +1,178 @@
-Return-Path: <linux-kernel+bounces-138108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89B789ECB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:53:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A194A89ECC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:55:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BB871F21C76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:53:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2682B23B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B9213D296;
-	Wed, 10 Apr 2024 07:53:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EDA913D2B9;
+	Wed, 10 Apr 2024 07:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sO/eDirm"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="h1g6Sn7v"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2129413A405
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5DEC2D6
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712735612; cv=none; b=P3PkCFstYBbNUISWt60BDHwVvWXb7EgPUIRP+hTzdTK1u/l5H5CBJIQ7F0shE0i0jxQcEwlSEdO3NM3eBGZz1Dl+aENXr7S/dYIcDb7CFkDhkLBqVCBBjmcZnsaEe5TASORrW/XmrrAck7ciyPY6Og0+Qt7P3RFmBptuOhqJ6Cs=
+	t=1712735685; cv=none; b=fSncI+20BnSpPRcn9D96Q+Y+rmLfNUvVpgYtJMSOFyxP1g9GCFxf9Zt58YH+w2RFK+GHbfwx6mq557oSF0TcvOxq713nGgTT8zvamQPVsvrOWsJNnaDbuod/1qlHdiZu3JU1YrtJEr1bns3Evfx+MALlMNU0+lVQwDQRg169uGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712735612; c=relaxed/simple;
-	bh=QVG4evRg8W5VO8NJdh62Fh0biVN6yJlwvqrMftGCzVw=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=AWPy9IXX54I8mY1DKOhtDXSG8WJwScQGl0kqFWQDW5oaE3M6bi0EsIVVpcUD+CGmiHZD+8qmRgGEr/f5ez0Cl1NH/RNcUHMoMvSf6Zwm5BJZp1/KYFpxjr330QTS8Yd1PZ53eNP63Ys3NCY9PKwf1MWjdvu6e2gVaSKBaMhXNLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sO/eDirm; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343f1957ffcso2742187f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:53:30 -0700 (PDT)
+	s=arc-20240116; t=1712735685; c=relaxed/simple;
+	bh=Jd2c0Gd5Zw/HS1VgNj6UNoKrZsDEbPpFbAV2PSqqRvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KA1gm+o7bVv0vF2L20izi6AGDb/82VLUCsC5sv+c+qfS+A6zEWTVm3U/QO1vnsZ0FpVHFB0io2bXpBQTRbpLdDdDCVK2AaIVDU2UO7CnNiQw29UKKWd7YnB5hBFyimDzMnuc0M0IcdNETt0b2zbH2YE8PndQWZVTxNBP88++yRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=h1g6Sn7v; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso8521207a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:54:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712735609; x=1713340409; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mqeWpXq7iVkwpLCfNMJQ1hkeTu7GIqakLNWFUZcYNR8=;
-        b=sO/eDirmSN3fGEb5iPJAk6clUQAd70548sqz9Eve+fW8a5c3ID80KIK85pUJyVYZk3
-         F3smHfzcis+46tpUiF+nBMyOEip3VM79ElbrvL9ERl0BpkDhm8O9xPJUg7T5LZdNgrSv
-         kN/6zNgkZ0tmk8J0XCABcPJ3pfSI+hgt3ATmocBb5rour4Mtb7hj6rf+oG5S/4ZeLyzE
-         TbHdoxzR1B2Vgkhbx3/cn11MP6D52TKo1ORo6ujt+eBNioRHlfM8r52Z9WA1IabbHMIO
-         M5H/tWkGfRiBOF3BL8ZUMDpr6ulrk/MBHjxSw1IZ4PwYpJmPsozmJa7gJf985ewe2e9d
-         M8Jg==
+        d=ventanamicro.com; s=google; t=1712735682; x=1713340482; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xT4TfO1sl44M/nt04uaJynnbnIHdAjwI3dACDF2EjZU=;
+        b=h1g6Sn7vovUYnFftOWYNTLp1UEaxGsxEGF70w9VdgXaQ31EktSCxeEsgiHXMQMeSfW
+         c5MBTI3xKWvIMDH48XoSSpIcNJzvXSGEOEQuNy5LLAxUyCGWR7xRSw/dN57Y3vg3kMYy
+         4Y/eI8s1fVqmDnlJ3sGg75ZRDBxGX/0COguZAu3ateC6VxKFCO1CDk720UExuSVrdZ/C
+         TqFNk7pSgp5Z7a31LPjSW5UFtFEAAjIxD4zKCrWFllw8FNTY2f6blVnGlaEAkpEgbznE
+         nhgaLAoiNFwn6z4iqF5Ew517ahVdmdra1iM2IsuHHyfqAUMEQ29m4d6c9k6OEeU4OxX4
+         IUWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712735609; x=1713340409;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mqeWpXq7iVkwpLCfNMJQ1hkeTu7GIqakLNWFUZcYNR8=;
-        b=Q21mmfy7WW2krA+r8wH/y0QCJhHKE2rqfPoClTdLYL3Ns8R6wzxjcKbLFi4FyRIjSF
-         UtwrtoFglfK37DUKgk9A0EtWsoTzvbQasF20GB1b5l1FjdvCGcrQt6Cjnthe/OEDK71t
-         ajLs99FdjpVj8mAq8z5orZqRVORTzQKTZc/bGzZwQJx/9TaZJLigoV3/WbLWVlEfCvHy
-         y8Lwtki9vArDOLLd+a8xQiNNj5wxiX12PIR09LVdSwWBn/DehplUxOhHLhivXdC1L1n3
-         6C80t4rQtrZH5ZvsogJfBMBftUy8L0jHYUpLyotvwpZ/utWgdWl2cokNv7izvPqo+IGj
-         WpHg==
-X-Forwarded-Encrypted: i=1; AJvYcCX2fD8g3adwQy96qudFnaY164bUYf4UgVHHLEpjTLrtYjG+AbWjQgN+P/m/wFhB1l4/phM3CPmlE3ef5d+WgUguJqHwpRsoLaBXX1r7
-X-Gm-Message-State: AOJu0Ywhjx/ATMWtvJ59jkDDZ1HGi/k3UH1E+sbKIGYXs08XYek3u1nH
-	eOG2Jkov6fWs8KEfmr5ZXyDgOBQ2D+JpS7O9GfaeQxIerVARGXbM8flxXHkkIzU=
-X-Google-Smtp-Source: AGHT+IH6iDnO+uP8H0cIbAAG8d0vXfntJz0LonCnjcAsVy4AbjB4lxfmj6mpbR9+Z686JLFAOkSYzw==
-X-Received: by 2002:adf:f2c6:0:b0:33e:c91b:9083 with SMTP id d6-20020adff2c6000000b0033ec91b9083mr4069681wrp.16.1712735609399;
-        Wed, 10 Apr 2024 00:53:29 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:7b0c:6cd:4afa:674b? ([2a01:e0a:982:cbb0:7b0c:6cd:4afa:674b])
-        by smtp.gmail.com with ESMTPSA id h8-20020a05600c314800b00416b8da335esm1441821wmo.48.2024.04.10.00.53.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 00:53:29 -0700 (PDT)
-Message-ID: <6ac4e36b-91b8-4324-874d-9b90c79451a1@linaro.org>
-Date: Wed, 10 Apr 2024 09:53:27 +0200
+        d=1e100.net; s=20230601; t=1712735682; x=1713340482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xT4TfO1sl44M/nt04uaJynnbnIHdAjwI3dACDF2EjZU=;
+        b=hC8NFAR4w2tjVYndKfaiaSX/BHyj+tcNIixeXXvJLK4TV8d1T4hRl4wi7FiH3Wdhf+
+         SEcakcg2SnnNKrTeo8Z7/EYBsNFCbDqwOeTpYfgB0DRSqIn6VwlH7BRH1QfmB8Sa0pFY
+         5tF83cC3SzvuvXrCTmc7aI11KLv9+3YyQ2JBNOQSmO4U3BOFxFWw/HmIJB0mTOgbiDle
+         slE9S3rwOYVoSLBoYr+FDjxwZRdfkGurOKuhjSqWGx7+gTIdEofq4ONlMPNtctOiYlBJ
+         a0RnMvcffXER9eWFz13UIHGPA0w84YfmDftZnnNgeWvKPoTtHAc/9qmovqAs52X8cNrw
+         GUeQ==
+X-Gm-Message-State: AOJu0Yyh/WZU6hTQftBZZAuf7eUoDCgP0kYFssZgn6KoFcTS7bIIBcbM
+	KmQTNC49R+vSr0WabAUhmvIfiX0LITKfE2GxY1ORB+NT18XybXxaORERsPbOCZ0=
+X-Google-Smtp-Source: AGHT+IHRLBNWYp5osm4g2tE72KL50pB81DvbKh3OKFJcV5WdtGMoowG4LIJqFVgVawpLvyMudGgyRg==
+X-Received: by 2002:a50:8e54:0:b0:56e:3293:3772 with SMTP id 20-20020a508e54000000b0056e32933772mr1082442edx.29.1712735682410;
+        Wed, 10 Apr 2024 00:54:42 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id x1-20020a056402414100b0056e307db93dsm6132199eda.86.2024.04.10.00.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 00:54:41 -0700 (PDT)
+Date: Wed, 10 Apr 2024 09:54:41 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Alexey Makhalov <amakhalov@vmware.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v5 21/22] KVM: riscv: selftests: Add a test for PMU
+ snapshot functionality
+Message-ID: <20240410-f46f91518afc0e151f375a62@orel>
+References: <20240403080452.1007601-1-atishp@rivosinc.com>
+ <20240403080452.1007601-22-atishp@rivosinc.com>
+ <20240405-4e840120e8117c286cb593f9@orel>
+ <8748dbed-d105-4f26-a808-667c3b56c8ec@rivosinc.com>
+ <20240410-2a41e43624596a442d6a95cd@orel>
+ <4a428500-4e37-4e7d-968d-3da20dd822af@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 0/5] arm64: dts: qcom: add USB-C orientation GPIOs
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a428500-4e37-4e7d-968d-3da20dd822af@rivosinc.com>
 
-On 09/04/2024 16:28, Dmitry Baryshkov wrote:
-> Populate orientation GPIOs for some of the PMIC-GLINK-based devices.
-> This leaves only FairPhone5, RB3Gen2, SC8180X Primus and SC8280XP CRD
-> without the orientation GPIOs declared.
+On Wed, Apr 10, 2024 at 12:28:08AM -0700, Atish Patra wrote:
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
-> Changes in v2:
-> - Relax schema restriction for orientation-gpios property (Luca Weiss)
-> - Link to v1: https://lore.kernel.org/r/20240408-hdk-orientation-gpios-v1-0-8064ba43e52a@linaro.org
+> On 4/10/24 00:10, Andrew Jones wrote:
+> > On Tue, Apr 09, 2024 at 03:52:40PM -0700, Atish Patra wrote:
+> > > On 4/5/24 06:11, Andrew Jones wrote:
+> > > > On Wed, Apr 03, 2024 at 01:04:50AM -0700, Atish Patra wrote:
+> > ...
+> > > > > +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
+> > > > > +	GUEST_ASSERT(probe && out_val == 1);
+> > > > > +
+> > > > > +	if (get_host_sbi_spec_version() < sbi_mk_version(2, 0))
+> > > > > +		__GUEST_ASSERT(0, "SBI implementation version doesn't support PMU Snapshot");
+> > > > > +}
+> > > > It's a pity we can't check the SBI spec version that KVM is advertising
+> > > > from KVM userspace. Normally we'd want to check something like this at
+> > > > the start of the test with TEST_REQUIRE() before running a VCPU in order
+> > > > to generate a skip exit.
+> > > > 
+> > > Agreed. I will send a separate series for that as it is an ABI change.
+> > > 
+> > > > (We probably should allow reading and even writing the SBI spec version
+> > > > from the VMM in order to better support migration.)
+> > > > 
+> > > How that would work for SBI spec version write use case ? For migraiton, you
+> > > can't go back to older SBI versions in the host. Isn't it ?
+> > > 
+> > > Considering this case your VM is running with PMU snapshot as the host has
+> > > SBI v2.0. It can't be migrated to v1.0 and expecting it work. Correct ?
+> > > 
+> > We can start a VM on a host with SBI v2.0, but tell KVM to tell the VM
+> > that it has v1.0. Then, the guest shouldn't use any features from SBI
+> > that appear after v1.0 and it should be safe to migrate to a host with
+> > v1.0.
 > 
-> ---
-> Dmitry Baryshkov (5):
->        dt-bindings: soc: qcom: pmic-glink: allow orientation-gpios
->        arm64: dts: qcom: sm8350-hdk: add USB-C orientation GPIO
->        arm64: dts: qcom: sm8450-hdk: add USB-C orientation GPIO
->        arm64: dts: qcom: sc8280xp-lenovo-thinkpad-x13s: add USB-C orientation GPIOs
->        arm64: dts: qcom: sc8180x-lenovo-flex-5g: add USB-C orientation GPIOs
-> 
->   .../devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml      | 14 --------------
->   arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts        |  2 ++
->   arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts |  2 ++
->   arch/arm64/boot/dts/qcom/sm8350-hdk.dts                    |  1 +
->   arch/arm64/boot/dts/qcom/sm8450-hdk.dts                    |  1 +
->   5 files changed, 6 insertions(+), 14 deletions(-)
-> ---
-> base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
-> change-id: 20240408-hdk-orientation-gpios-141bc7fd247d
-> 
-> Best regards,
+> That depends on when the VMM request to KVM to change the version.
+> Most of SBI implementation checks the SBI version at the boot and
+> enable/disable
+> feature based on the SBI version available. If the SBI version supported by
+> KVM changes
+> to an older one, the calls from VM will fail unexpectedly.
 
-You forgot to pick it on the v1:
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+We have to configure KVM's SBI version before the first run of VCPUs,
+just like we should make sure ISA/SBI extensions are configured first.
+
+> 
+> > A more likely scenario might be this though:
+> > 
+> >   1. KVM userspace checks and captures the SBI version of the host where
+> >      the VM is first being launched, e.g. v2.0
+> >   2. The VM gets migrated to another host which supports something later,
+> >      e.g. v3.0, but to
+> >      - avoid possibly confusing the guest we tell the destination host
+> >        that it should expose v2.0 as the SBI version
+> >      - allow rollback to the source host without concern that the guest
+> >        has already seen v3.0 and started to use something that the
+> >        source can't provide
+> 
+> This makes sense though. As per my understanding, we should not allow
+> modifying
+> the SBI version that is less that the version VM already boot with.
+> However, we can allow modifying the SBI version that is higher or same as
+> the VM booted with.
+
+Mostly only 'the same as'. Higher might work, but it's also risky since
+there could be guests out there which capture the version on boot and
+then for whatever reason do sanity checks against that later on and
+freak out when there's a change, even if the change went higher.
+
+> 
+> I can't think of a use case for the higher version though.
+
+Maybe only for a coordinated update which uses kexec rather than
+a full shutdown+boot cycle, but I'm reaching...
+
+Regarding a full shutdown+boot cycle, in those cases, we're usually
+free to make changes as that's the same as a host kernel being shutdown
+and then being boot again after a firmware update.
+
+Thanks,
+drew
 
