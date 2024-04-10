@@ -1,169 +1,133 @@
-Return-Path: <linux-kernel+bounces-139436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FFD78A0353
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:28:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7218A0356
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:28:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696471C222DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69D401F25D28
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E9D184133;
-	Wed, 10 Apr 2024 22:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0B119066E;
+	Wed, 10 Apr 2024 22:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Ol9zF6j8"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2090.outbound.protection.outlook.com [40.107.236.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dxe512Aq"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BC3184119;
-	Wed, 10 Apr 2024 22:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712788058; cv=fail; b=PcgERLcQ/GUCO99EksB2UCesTqwkNwmR44GOMxDjedZNf/GP5qvQyEIpLAFk8bmSyvNAvC68zus12mvvGjilG7C1IVZeKUZKJIBtYVw1nZJELHlEyd/UnOVV8uk8KjXBgdiVcbRNwTL4ycfxuUbGC1KaDE31nN2lgl4VQ50qVgw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712788058; c=relaxed/simple;
-	bh=Ca60QUxrNqJ8iQhICfg5JbaKQO/MO0L4IG7qX43Hor0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=XGVH9o5AaSyqUsie9JbQL75aFMUWiRlCSlyQRollNJ9dVH8oGJJ2XnLZMjKxBGL1gKLSwJH2W010I4pY1O5+cA+mIhlnFGu8q+jxEBEUSEsRxBrPiB6i4fMGhYYZotBr9Hs0DoJSEotqEmetxh0uGBbxh7Z1jCNq4qOfcaQu1l0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Ol9zF6j8; arc=fail smtp.client-ip=40.107.236.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m8H3twUeSsF4/C3WuLbanKHvYNBScX5EfNL7am8HVNbABloFk4LWx2fJdRbwA/dfoPYBiBfl4BOYMj6e09nLN8f/MTyKXf5e5p7CJbQZhi1cmaCfmkZNfkzj6dQ7cU7ydAQ84la0V7+C5BwtwPwRl5VQogOPPNpOH/v4g1oByPLROeGGxA4m3YSgW1bUvbmZpoNtgvCjY9/kmvw3ZO6dP6ULZ4A5nM2qkXXS1rAurV2qlu+G2bLubE2iQRjVuhMb110YE2tvY/GM3gUkN4F23dbycbHRufCXVJ1kxn3ArP01GnDXuodJ/aSwByVHvvjhCBHP42Pmp/VjfOM3cEaqZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WexGFk06xrVYbL2+xke+5W+/6/DWshicySwm/UQwIdg=;
- b=etaOvjibSYNbIp/4mq+br2gTn4976TWRfs9L/Qm4+ZKuE5xNdu06ToF8OVRg9Cp+NtH4jFJBcFXUW069ikRUwA5EDJEZ7rFF76mTIaR+7BCeZczYDYE2WodTiKgJDYoAQPqTp49PsnoEDBsiOQHROoJ6zZN23fW+JOeG138SUZilC886PdYSxKFPD/8Qq4j6VSHopDG9eu3hJTEMctfdScpVXIVWFpEqJ7+atNWCzvy2BrzDLxyJARICOi49+hF6wx7cWJg1crLWCvfXglzN+76cp8rZqhR1VtHxsRFqNjrH8A8GV7jFYZ/TwcopQuu4oibdylpHpPpWIdNrZFnepw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WexGFk06xrVYbL2+xke+5W+/6/DWshicySwm/UQwIdg=;
- b=Ol9zF6j8010bISzA351eU/2jnNuwSla3/c+XAJ/+AUuqLMZYKoLk0mAdshO6ecvZNqRO3yVww1ZbfOnNOvnR9XH9RT5ulB5kvbWvW3B/+A7we6mYM41I+3x3UYwbEFvw6oO6f5fQP4x2vsL/KXbwth0K9rDInUs0uB9OGCaOfkM=
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 22:27:32 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::1032:4da5:7572:508]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::1032:4da5:7572:508%6]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 22:27:32 +0000
-Message-ID: <5f8fbdae-6c43-e332-1ddf-daaac42f381c@amd.com>
-Date: Wed, 10 Apr 2024 17:27:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v12 28/29] crypto: ccp: Add the
- SNP_{PAUSE,RESUME}_ATTESTATION commands
-Content-Language: en-US
-To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, hpa@zytor.com,
- ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
- vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
- dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
- peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
- rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-29-michael.roth@amd.com>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20240329225835.400662-29-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0217.namprd04.prod.outlook.com
- (2603:10b6:806:127::12) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E841B1836E1
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712788102; cv=none; b=VWsk8m3nf5a+F6FlktrC78IHCjdwOFt/lPksj4txu6gJdjK7fNoFIgTl+maS6ZUMOsg4wBFAjci3keofF6ho8PRn7WVOG+LY/1+lZj9fZtd/AWoGkHvEbkaZ2+AJcqAgiy5GIcnBV3HgT6XImyW0kn+IwfCnY9FzN9h6575Du50=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712788102; c=relaxed/simple;
+	bh=YH+YCK0TtaM4xpNLgp7r4l7WLrbNv3kRu3yjDoe624s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b7lQ/EwhRxBSvjOuEQwlRUcKJCXCLY31Smd07fkQbT4nDKQjS57RZzMBPaV729mSlxFEuUlHUldzAlnddrWQzEm7dm8OvPHsZdA157RWUjz7Umo1dlz6WSZ4AmuKxQ1oiKeSrWPuNrQS2jOvJ+qdwELJa5hn5Tr2teXCkR52R30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dxe512Aq; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7e128b1ba75so2532738241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712788100; x=1713392900; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BB3ccNjO9MqZA0XBab5NYc/mwf8q7S7CIiocRg95hpo=;
+        b=dxe512Aq9/lATeSjgr2uPgr0MfleTkvvlpIbJkcbLJVX0pm163yovwpLg0xo89CkM2
+         rg4ifL+po9DRJPuK+G9fMI38El9Bg1w3mBG4Xa+/n1esuW0JvsbM6cAONzrKG9Yuf0ev
+         +H3st5tH61oy0BClSHycBl6YLTBk1Rq9JwI5U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712788100; x=1713392900;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BB3ccNjO9MqZA0XBab5NYc/mwf8q7S7CIiocRg95hpo=;
+        b=QXKU4cxpmsShVZvvsCUz3nWDtdcc2cZTDP/4vNsWbpNgmTIHSuzPkrAKtHWm4vct84
+         k1ZBwIoMsBcX3NB4vzEzgWfplgE/F33woCsm6kgU6HTWfmxuU7klY6qs42UTdx8HhRV5
+         mkhvES9+7dGvDO8M8WZsr712cQKw5VUovMAXbbOi6cwD8jJTq2GzYehD/HrzrxAHueLy
+         Svvb0bE/EqRtVdtkfgY5riXC4cduIsCc+BftY2Zv3Zx0qwsz+eAcGfKdG2bwCJyhI5J1
+         R/3ucKWVyMlFvwj/oTzwVKamJsTygD2KBi3fmXrRhN/CyEsGTxmECayaBgOmNDwnKtr/
+         nxig==
+X-Forwarded-Encrypted: i=1; AJvYcCUXfNJqWhuvFE4GaGcgPM93H3b7eEWSuCHXSv9n1Tj2Uc+YhNF5g6KW+J0nPMSNlb/RCYG0D1QOqfjLwB0Ika1o2NTLJlBH5uxaz9E4
+X-Gm-Message-State: AOJu0Yx6PE+gCZvS5oZ/o/hwuaOFpxbbrmxzuT7Nl/FCqu2NvY8AAR6T
+	W5YGPL2EUR4NEyfPqaI8R2zs+JHsj6qrfvqfyXa5QCNwui7v/UMq9QeD9hMdSr6fCoYUqnSVNL0
+	ojR7jzQwAqD0b5EpbdLSe/z+Ugo05NL8GBHlw
+X-Google-Smtp-Source: AGHT+IG0DYJSZA6M/0G7T2aTS2ZJ/iILrEXt6TniERHXXkQOUOrG3LvxlW3P/tXtGQZaaYSu1vjHu2wxuT1qlaAsDFc=
+X-Received: by 2002:a05:6102:2092:b0:47a:23bb:5302 with SMTP id
+ h18-20020a056102209200b0047a23bb5302mr3103418vsr.11.1712788099606; Wed, 10
+ Apr 2024 15:28:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|MW3PR12MB4379:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7HHqcbelOae+9p74+8WI0X5BuaJSmYBu6mK9sAaUdHlJYFMuI+PbQBpA02AkgL4FqT+Ij2scRHuERalD2Eh6mH8wYXzLtSCcpuMIvcdrJ0YCK+wTQ3r2UpyCLvUhW/yHmDUOIcrjGKJSmquK4Jnldni7OVPVW8oz4rLeibWqD8GfO0hNaCbu3cpZJlbkPiMo4hNh5wG9r2dSP/TxXpwZPb/k/5DGTKmh5tc/dgpqPcPoATP9dHAtEFpwB6qsqpZtT/vYeMdotQrz6LUDZyZFGnab+FJT6zPrmZXH19kpD2ey3OYkvfET9MMORhaQ7DxRgejpC6Nj5J1qUiyyLA/SXVmJHEktCiRQJ04S6rQfXODiYC8ZUznwDwmuTSr12j/y76nNt1GlCTf9vkLCaN8LQ75Jux23IYPBofaleOVQB3ysFF/HBUi0SoI1ddhm6I/6X4KZ6QO3hHD9oFyHDbDDFaVtShKF+ncb6eLBicNajiwVwrU5Ogg3MVSv3wTT3oPHBmGGHDv7V/fIf/26nZJtcMH7DbMY9sqlOvz74G4CyFosTJn2qf1C+W2oXw7QLMgh2+SfOc0V4JB4LdXXNHZGmYT8BPvpHvTgYNGHEQ1daXpBoWvptnnyRdAF+ZIOgZjgtFP8fSEfml0qpXvW19czPL13vIzMHYsdTHIH1LQa6ng=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cU8ybGFNNGJ5YTRWeFhkbmlvRmtGQmF0TzRuZFpoUDZ5aDJ6dXhvWldIQmNJ?=
- =?utf-8?B?UkpmWHpyV3pQV0tyVHFFYnUzZGRtNmZGN0huTldnaUNaRmFKWlZKczZtc2wv?=
- =?utf-8?B?KzVVOXh4bGtWaTNqU3lONkZZektIWEZZdVVWeS9YUzBQbUhjTVZUZ0xHdXVz?=
- =?utf-8?B?ZDM4WEtta3JFUkh3U2pVN0s3WU5ISGxzdm1MSGlMNTI1eUlSOFFxQ2l4aEhD?=
- =?utf-8?B?MHlTTEZUY0tSWmtVcC9zZFhibEVwZXFqckpJOG5BTTU0UlFNNWt6ZlErdTB1?=
- =?utf-8?B?YXFGaVY4V0NSR1FvWjkwcGJBYUhKeGRFellSVmxOdEE2dGZuOU5ZY3BvMU9n?=
- =?utf-8?B?VjBUZUtIc3Jqa2k1UEFGZzc5TStHU25rbm93LytSN3N5VnZjdjZiZnZmV3pT?=
- =?utf-8?B?bFlEbE1BNDk5eFZKRzdrTkk5ekwvKzBMSVF0d0V2aW9TYWZ3cWQrUGdyOG94?=
- =?utf-8?B?b0s4anMzVmQrU2NNT21kcUVsK2ljTCtjby9MSGNTMk9qM3J2N0xTY1lQMktx?=
- =?utf-8?B?M0Vrby9QMTNJV1NCN1pEc0hNdzJDWUVvcis2aDVIU1YyaU9JUDRTMko3SS9D?=
- =?utf-8?B?amJXQVo1MFMrQVZtZ3NOT0l2bXQ2MW5IeWdWM292Z0QrOExxOTJvaWtBWUYr?=
- =?utf-8?B?L0FsMnNjOGh6cUIrc1ZscWNucHFLcFNXYTJDUThXdHViOURYZS9KOXZiNjZr?=
- =?utf-8?B?TzA0ZE8vL0VpSjBRalRlbWNWUTd0NnUwV0xYNWRza0lXNHdxRzlMeVBYcE9n?=
- =?utf-8?B?dndPSFNvZHBQcGNEWGFiMWRseDJDRDVQSEgrN1JNenF5b292SVNVS1o5V0ZC?=
- =?utf-8?B?Ukt1N1gyZGFvdWxvQWxIbW8xajhSVndZMWFvQytBZkYyY0JXSnNCV01Yd3RF?=
- =?utf-8?B?R0sxR0R4emFLL3hxMm4weE54NEs4WVdMRVdEa1B4eGxoajIwc3hBeU9kQndI?=
- =?utf-8?B?UjNSVXltK09EM0gzb01NNHJyNjZvcERxRWRuT1h2VksrQ1pleVVGVzgyVThn?=
- =?utf-8?B?MVh2M1ZTOXo2cHRRNE9IVkZoeWNoalRkTzMyL0RoMHIwSkg3WW8waHhvUkdj?=
- =?utf-8?B?YWx5VVl6b09RamFlODJvTHVPODNqS0tYYnBzSC83YnhkMFFZNldmeWxGMC9N?=
- =?utf-8?B?U2NaK3puNTZaaFcyQ3A2N1BsU09kb2QwN29hMkNBMjFyUCsvdENhK3BhQzRO?=
- =?utf-8?B?TVpOU282bzNjc29BS2FHQm0wazU0S3RRZnVlZHNEaWN3VjRpdjVHckNzazFp?=
- =?utf-8?B?NVV4eWt1T1JhLzE0SW9KWjhhVDVpYzF4ZXNPY3dTWlNEeHVwYXduaHBlRDRs?=
- =?utf-8?B?SzhrN1ZPREMyTmZabW15Q0xQaWtaQUdQNmJJOUtydW9UTjFzRkVWVXNqOEl0?=
- =?utf-8?B?R3NjSDBRRnUwdzljY0Y1RW9LeTFaa0N2bjFSM2VSOEhmNXB4dnBibndqQkFE?=
- =?utf-8?B?Z1F2WEJjTGo0OTZwOFFPbGwrWk9QL05LdG9GUEw2S05jRStxazllS09JdFhi?=
- =?utf-8?B?ZW4zenptb3A2ay84SGZ6WFV1YUtnRTJDeDczck0zdzhwMmE3Wm1NWHl2UHNS?=
- =?utf-8?B?SjVBVHRqY0ozNkNwZDNZTHJ2dTFOS25nbzhEZkVkSTV1QjloM01MczlXZ2xy?=
- =?utf-8?B?OGdSQUd5dEFSUmFOaDV2M0JSWGZPc3Bpc1hxZVdOS0JWQXdqR1hMQ0Q3bGhx?=
- =?utf-8?B?aW5scitrWUJZNG5NbE5BTHpTMEV1NXJyWWluUHI5NEVjOXZrMWRpdWF3UE9i?=
- =?utf-8?B?c3NPWk1vaUNlbm5MVUx2TTh1WVhsaW1RUkJxeVlwOGU5U0RRaUtRV291UkpV?=
- =?utf-8?B?RFBJRktRNzFJNG1qSmpXazZ5WGx1UVNQMHhSY0ErdUxzSXl4RVdFZHdQTmR3?=
- =?utf-8?B?bjZWMjdYVjlOZEtobnBjREpvTG05YlZVK0hMblpkS2JpdUtQbVZROWhJSFpw?=
- =?utf-8?B?dHZVS1Z5SDArb2RjSExyS0hMWjlGTnpISjRNQkRVSzdIUkhaYXFReGlMRWp6?=
- =?utf-8?B?TFNTcjN4WkZNNUxHaThxd2s2NXNRQUlJVFdMcDI1RnpheU5TUC8rZzE5Z2JT?=
- =?utf-8?B?MjBzQ3JQTGpqRjNVT0JUQk1lcUZrSksvYmkxWHVnQzlxZGxwd0o2K1JBcC9R?=
- =?utf-8?Q?zc0Hf4ouC35MRBxuAxrv+tUOd?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43314198-f2d1-41aa-67d5-08dc59ad6a32
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 22:27:32.7127
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PDqwEUhPnRGay1z/OELjzknHHLGBfUTdOfIZBEKPYjDnqvwIHb8Dgeq3FNs21so/Z73Z8Q26ufyo+YKnW+Z4WA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4379
+References: <20240409-public-ucsi-h-v4-0-e770735222a2@chromium.org>
+ <20240409-public-ucsi-h-v4-2-e770735222a2@chromium.org> <2024040916-kleenex-machinist-4858@gregkh>
+In-Reply-To: <2024040916-kleenex-machinist-4858@gregkh>
+From: Pavan Holla <pholla@chromium.org>
+Date: Wed, 10 Apr 2024 15:27:43 -0700
+Message-ID: <CAB2FV=6We88NrvN8NZYt8NkMFH9N_ZBGyUWVUpGwPdja2X_+NA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] usb: typec: ucsi: Implement ChromeOS UCSI driver
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, 
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/29/24 17:58, Michael Roth wrote:
-> These commands can be used to pause servicing of guest attestation
-> requests. This useful when updating the reported TCB or signing key with
-> commands such as SNP_SET_CONFIG/SNP_COMMIT/SNP_VLEK_LOAD, since they may
-> in turn require updates to userspace-supplied certificates, and if an
-> attestation request happens to be in-flight at the time those updates
-> are occurring there is potential for a guest to receive a certificate
-> blob that is out of sync with the effective signing key for the
-> attestation report.
-> 
-> These interfaces also provide some versatility with how similar
-> firmware/certificate update activities can be handled in the future.
-> 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
+I plan to upload the next version after related EC changes land on
+ChromeOS. That might take a few weeks.
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+On Tue, Apr 9, 2024 at 8:16=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Apr 09, 2024 at 02:27:37AM +0000, Pavan Holla wrote:
+> > +#define DRV_NAME "cros-ec-ucsi"
+>
+> KBUILD_MODNAME?
 
-> ---
+Will replace DRV_NAME with KBUILD_MODNAME.
 
+> > +
+> > +#define MAX_EC_DATA_SIZE 256
+> > +#define WRITE_TMO_MS 500
+>
+> What are these and why these values?  And tabs perhaps?
+
+MAX_EC_DATA_SIZE is the number of bytes that can be read or written to in t=
+he
+UCSI data structure using a single host command to the EC.
+WRITE_TMO_MS is the time within which a cmd complete or ack notification mu=
+st
+arrive after a command is sent to the PPM.
+
+Will add comments and tabs.
+
+> > +     uint8_t ec_buffer[MAX_EC_DATA_SIZE + sizeof(struct ec_params_ucsi=
+_ppm_set)];
+>
+> That's a lot of data on the stack, are you sure you want to do that?
+>
+> And are you sure you are allowed to have this data on the stack?  It
+> never ends up being sent using DMA?
+
+I confirmed that this data isn't DMA'ed. However, I don't mind putting
+it on the heap, and will do so in the next version.
+
+> And please, don't use non-kernel types like "uint8_t", use "u8" like
+> intended.  This isn't userspace (yes, I know a lot of kernel code uses
+> these, but as you are going to change this, might as well change that
+> too.)
+
+Ack.
+
+Thanks,
+Pavan
 
