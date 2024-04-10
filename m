@@ -1,127 +1,193 @@
-Return-Path: <linux-kernel+bounces-139512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E61B88A03DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7931B8A03DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:06:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 750F9B21CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:03:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA79DB2165D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9957822085;
-	Wed, 10 Apr 2024 23:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8201DFC6;
+	Wed, 10 Apr 2024 23:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PLPWVthE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ThWRElSG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0260138E;
-	Wed, 10 Apr 2024 23:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAD8138E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712790175; cv=none; b=f1lSWfKekXhnD6RGjZ5eOH9sNzzToyaIJO02UxqrJOl6sTeOnYffLWkOQjqVMMMuRl/kaWEvW1GhgrZ+OPB6bWv6kOipTNPr1H+z86aRvey7l6bxoyNhc8PvLmAM05LSAY02+aYomUyHv2Cz2GeWqxY+2muzJOtaLfuNjOejBUI=
+	t=1712790354; cv=none; b=kLyiMBmBt5/weH4L+H2/8ICMMfvO295YkrQJnhNKD9+kGntQhwbDvQet2qMUCmWq7QuUNlyBhsm0NtEsZvgEVbWn1yVct7BlsyXyGQuCCTxaKknkJX/G3YjaOqD//HepJ2BeyGTnnk3Qj+MnwQmdyKeqGh7zTLBtvYl4U6N47bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712790175; c=relaxed/simple;
-	bh=sFhWM211YDpR7/XHJA9rb31Qejl1CNxXKFja7LXZLGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SIw8Z6CO3yN6L+YxrR9bLlEpFNs6ZHcDX8xYxi4Msl1eM2ukhObGTIxz+1b7v1XAZfPYxOUd6aREfHc3DX+o4LbnC+iF5g/SzC/xPbvQ2ZDURhJ72GR08IKx7jfRx+52Vqf+mK8hPDN9Y0tbSiNfEOHjLlH2cMYlAq5vQ3Qt1n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PLPWVthE; arc=none smtp.client-ip=198.175.65.10
+	s=arc-20240116; t=1712790354; c=relaxed/simple;
+	bh=2bu610YQYpTjByau9vg7/MQ9WKXVxxQoLxE3fc0Zqro=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=PJ7ZUf2/5m+PqNKj3NmJE7w90iENKuETeoAyDxz6s5PjSEznXExC2PJEVtYMyIPs1slC9jirXHoj9onas8V75GMdlsODf0wsK1etq24l39T1CnfzrOM/etMlpHWcpckb3fAcNe1IvbiMoHPKfzpG1EeQUC3YLatdBbghY0gVhe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ThWRElSG; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712790174; x=1744326174;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sFhWM211YDpR7/XHJA9rb31Qejl1CNxXKFja7LXZLGo=;
-  b=PLPWVthEHYCnFcTrzztlC0nvBjzIHDkPTl83zzqw1WDpy+qCfmzjLPDO
-   EUkn5TbTFCGChUENGKU7ME+W70hnyqBbfNKh7i2/JHBUlqrQkx/FyiCln
-   tFblrGbZNziHGT+S/Zp2bhPh1vzDbnBfPqMz0N5kCIwHd1g6gYlBz7yoB
-   IXmB7Fhmvq68dbi3J6VEZXEQS9bD14esN2roJUlijBdmWTkDqACzvYOWf
-   IohF0TM9FYBmMTBJbdhBmpylXhPw56WhVn8czvnoVlrUC+RhIA63GNlT8
-   EBRG8YzjdM6FT6/xVxl60vOxfQdStApqTic2QB30pTNe7c/gwi/rH7LTX
+  t=1712790353; x=1744326353;
+  h=date:from:to:cc:subject:message-id;
+  bh=2bu610YQYpTjByau9vg7/MQ9WKXVxxQoLxE3fc0Zqro=;
+  b=ThWRElSGgbpIuLGupnpHjGXiWhtvGUrCL2La/ImjcZs39+TrmzFhhl1I
+   1DjxfV2TfRHEPQHx29qFPcDLLauHMHR2lsN731vs/cjouWWqbJ+oK6VD8
+   Qwe2PxvNWQGMUzP8YMG53SJ1rAoXLr0IJLjQVL1sFTpv5R4rgKihgmUjn
+   6Bd0sDr75Dny8JwrM9xEw2oGBzMnSzZfoFn1lIIdnjdk25G57L+yGj1AF
+   okibzppwt7+06SdZDpb9+XZtY6RAHmlrCn9rbWxtB4dtL/IlZJ1QMPmvW
+   cHVQ+m/rmaA3+mlErCTjTEkyOtH/qyxHIIYYxyguWQAiNeEdTnfCMRStM
    w==;
-X-CSE-ConnectionGUID: oy9cikOvSs2uAsRQrhNEXw==
-X-CSE-MsgGUID: 5kWZbGbKRwyxW9YY6OIf3w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="25636369"
+X-CSE-ConnectionGUID: l3rfpPVqQpCIq4Nvlj48fQ==
+X-CSE-MsgGUID: fXWF+CF4TOKyO5WRPluVCw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11145080"
 X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="25636369"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 16:02:53 -0700
-X-CSE-ConnectionGUID: XtnfMNwWR2+2gigAO3WCFA==
-X-CSE-MsgGUID: WCXFSRYVSSCjJ3fW95mSuQ==
+   d="scan'208";a="11145080"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 16:05:52 -0700
+X-CSE-ConnectionGUID: dheaDrHhTUid4TR1Czsazw==
+X-CSE-MsgGUID: fy3J6MkRREixUEsGjTx6DQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="20774467"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 16:02:52 -0700
-Date: Wed, 10 Apr 2024 16:02:48 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 21/26] dax/region: Prevent range mapping allocation on
- sparse regions
-Message-ID: <ZhcamPGpT50GUdz6@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-21-b7b00d623625@intel.com>
+   d="scan'208";a="51685511"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 10 Apr 2024 16:05:52 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ruh0m-0007vO-2s;
+	Wed, 10 Apr 2024 23:05:48 +0000
+Date: Thu, 11 Apr 2024 07:05:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ f72ec8989cd1591b1c567b336e0bb4a78536ce39
+Message-ID: <202404110718.b64GzeMx-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-21-b7b00d623625@intel.com>
 
-On Sun, Mar 24, 2024 at 04:18:24PM -0700, Ira Weiny wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: f72ec8989cd1591b1c567b336e0bb4a78536ce39  Merge branch 'x86/cleanups' into x86/merge, to resolve conflict
 
-Perhaps lead w some words from prior patch to provide context:
+elapsed time: 1127m
 
-"DAX regions mapping dynamic capacity partitions introduce a requirement
-for the memory backing the region to come and go as required.  This
-results in a DAX region with sparse areas of memory backing."
+configs tested: 101
+configs skipped: 138
 
-Or should this fold into: 
-dax/region: Create extent resources on DAX region driver load
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Sparse regions are not fully populated with memory and this complicates
-> range mapping of dax devices on those regions.  There is no use case for
-> range mapping on sparse regions.
-> 
-> Avoid the complication by prevent range mapping of dax devices on sparse
-> regions.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240410   gcc  
+i386         buildonly-randconfig-001-20240411   clang
+i386         buildonly-randconfig-002-20240411   clang
+i386         buildonly-randconfig-003-20240411   clang
+i386         buildonly-randconfig-004-20240410   clang
+i386         buildonly-randconfig-004-20240411   clang
+i386         buildonly-randconfig-005-20240410   gcc  
+i386         buildonly-randconfig-005-20240411   clang
+i386         buildonly-randconfig-006-20240410   gcc  
+i386         buildonly-randconfig-006-20240411   clang
+i386                                defconfig   clang
+i386                  randconfig-002-20240410   clang
+i386                  randconfig-003-20240410   gcc  
+i386                  randconfig-003-20240411   clang
+i386                  randconfig-004-20240410   gcc  
+i386                  randconfig-004-20240411   clang
+i386                  randconfig-005-20240410   gcc  
+i386                  randconfig-006-20240410   clang
+i386                  randconfig-006-20240411   clang
+i386                  randconfig-011-20240410   clang
+i386                  randconfig-011-20240411   clang
+i386                  randconfig-012-20240410   clang
+i386                  randconfig-013-20240410   gcc  
+i386                  randconfig-014-20240410   clang
+i386                  randconfig-015-20240410   gcc  
+i386                  randconfig-015-20240411   clang
+i386                  randconfig-016-20240410   gcc  
+i386                  randconfig-016-20240411   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          sun3x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1830-neo_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                 mpc832x_rdb_defconfig   gcc  
+powerpc                    mvme5100_defconfig   gcc  
+powerpc                 xes_mpc85xx_defconfig   gcc  
+riscv                             allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          alldefconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allyesconfig   gcc  
+um                             i386_defconfig   gcc  
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  drivers/dax/bus.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index bab19fc578d0..56dddaceeccb 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -1452,6 +1452,8 @@ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
->  		return 0;
->  	if (a == &dev_attr_mapping.attr && is_static(dax_region))
->  		return 0;
-> +	if (a == &dev_attr_mapping.attr && is_sparse(dax_region))
-> +		return 0;
->  	if ((a == &dev_attr_align.attr ||
->  	     a == &dev_attr_size.attr) && is_static(dax_region))
->  		return 0444;
-> 
-> -- 
-> 2.44.0
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
