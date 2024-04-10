@@ -1,177 +1,144 @@
-Return-Path: <linux-kernel+bounces-138188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8130489EDDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:44:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D06789EDE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 215041F21B47
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:44:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF261C20F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABF2159218;
-	Wed, 10 Apr 2024 08:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7C31552F2;
+	Wed, 10 Apr 2024 08:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="K+kTBMS3"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942331552EA;
-	Wed, 10 Apr 2024 08:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fB0n+DJw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA21154C15
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712738561; cv=none; b=mhi2bddFSHNhCfSqrG+peRgDusRZ3RTT6epyqhC34P04GEe8xKIb+lF292Bpf9drB+2Pg8PzF4qVagKUuGK8qi++YdAuIDbMZY/1G+og3hihL+7BkzjMkwce5PdWiDsGJSdYiVmDh2QDZxpQS9dZDg5GCx48cAWkt23B4V4FO0c=
+	t=1712738649; cv=none; b=OeOHakt7iQUvfblwB/Ex37fqJYIBTpoeuAS26D+GRquOn7cDPkV7uDpXL7gi5iO+sL3RrvDWazidUWZW6fALZ4zrhBsqq9PcdeCvpBUGULkjar80M6RryN9rc7SZwigDE6b3NMGhPP0l9h0b6rtifKOxd1PwuQQMhdu4xFgt1vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712738561; c=relaxed/simple;
-	bh=bpEMSbOhGwJ4ebh+ByubSi0fOfI2vj2F9MNrLXSvGr4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Um/T8qUFTRpr7dWx0SYNsds/QaTZVrhzsEiAlLujXWJHnlE8kMc4P9RZiIvWEeUDuoy+0D96IrZ/c3GgslNZkGkBV45hHw1VWMohT44zHAZ7PxF2rW5thC25vQCNEM9PifOL9gL7xnHQxErkZSEvebD5ThBCaYVQLlyGfiiqAvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=K+kTBMS3; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 052FD20EB213;
-	Wed, 10 Apr 2024 01:42:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 052FD20EB213
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712738558;
-	bh=eb1JefW9L7KFUIuFQo6xEjsUyZIid9JjmJQnZTvCJZk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K+kTBMS3GdAdj8HoJJA2TwQ41p7B3xEptEz7k4wC3SjNpsP+1wMRlsl0W6mugMsb9
-	 tuRuhbsx0fIw+KPC0i1TXvGbcUkJGKu7PpS9wYLIFScQBG4qrRAlOs+Vrsq3lbR5uh
-	 hF4MQrj5Y+Cz1NhoDe2f2VT6ShbBTagmwKxwcByw=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 6/6] RDMA/mana_ib: Configure mac address in RNIC
-Date: Wed, 10 Apr 2024 01:42:31 -0700
-Message-Id: <1712738551-22075-7-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1712738551-22075-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1712738551-22075-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1712738649; c=relaxed/simple;
+	bh=pZU/9L9pIBcm+gJ2VeSziov6XOhPFwUwPxGpBchtOaw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dmv+owItorK+/bCWX6G2aGW2aJtl325NpJOZ7FuCZxGaeTV6lKQRWQ6V9T+Z5IhSqKiAMYZ0Sw47m1bnznHzporBV9bwAEze9diNOw2pxtC4sWWnIYhJT3LloJsZN9+5Ed5MTPm38xJ+vFVI8BjMLWI4xKB7BuvOxBXC3elGnow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fB0n+DJw; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712738646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R/8u8RiACrjH0Ov6QIh5KlQeJMTBnHt53gJzaMO3RSU=;
+	b=fB0n+DJwJ8hbRNIKgHxGASCRnAqB7x1S2fkZhhzhFW17NP8I/vysXWc55fzTV1rGP4djDU
+	7mgj8xm3PFzeHtq3A02LUnpm6xGp4ED2/uWL/okf7bKozd1yiqAiOId9wxA+z61lXcFwwT
+	iZb/wCUwA9nr1CXx1RPxZ3saR8+IgnE=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-670-aH8WnQUyOQu-_p1o0tHZ5w-1; Wed, 10 Apr 2024 04:44:00 -0400
+X-MC-Unique: aH8WnQUyOQu-_p1o0tHZ5w-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e50208ebe6so716845ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:43:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712738639; x=1713343439;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R/8u8RiACrjH0Ov6QIh5KlQeJMTBnHt53gJzaMO3RSU=;
+        b=ogk2zGyGnPfr8jclQW7223HOMXyXPZQmJ+z3DT926+5FoQCsDlbtxhP/Izl9VekyLz
+         pXGUzfzRmVx51cp9ulKqFVGzQ/5HggAGtwV6tqfqJctflO0EGTDs389VlJgKaDTd75CZ
+         KKMPXY/h8esxPTqPCEDeA7s1cjFgOKYq0FKoEN1T1o77andpSrT9TYDDvq8rFw0ae6NO
+         C4sgwRkVFue/GmG8Z4pt3xugy64mfQqurSPIRsyzuNyKTBVg06OPtV5/0Zm2aG8iAl14
+         8jJ8tirwZuOlF15fEWDXSJG/Zo2Iet/N5LutYEbAIPgbrJiiDuT7VssnojY+6iJooEZe
+         APTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZXPTJ+hHyHCcqjBwLYavWGYM7wemM/8z3L0VqImGVtu/Ro2InjulzRRgbrP2FPDIrkg2mCXWpEAQnMpvCGBrzsaqxsoOoduQxyTyo
+X-Gm-Message-State: AOJu0YwNbssBlemO5nYYQHGNC00taWrAaTsHlqEwJZzuffwqPj1KbaLE
+	OC9mZVjLoU2+U+YyZx5ziHR7yeALLV4FU16swziQcIpoq/d9ipCC4DNKAfZFX4OpgvVzs2yjwwB
+	NQ1lRlUzBr+bd1ygnC64Z4+JibhaJ82V67KjaBjZXOGVHMVUivhTo8SsmjrhLMg==
+X-Received: by 2002:a05:6a20:12c4:b0:1a8:2d22:2025 with SMTP id v4-20020a056a2012c400b001a82d222025mr2338666pzg.0.1712738638915;
+        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHwC+8hP4eRdQdzrRF5bUoyS6m0uCyKGnyeK7ZzH2kCnq17IDQmsibqG2jjTB0pS4pE6MLXUA==
+X-Received: by 2002:a05:6a20:12c4:b0:1a8:2d22:2025 with SMTP id v4-20020a056a2012c400b001a82d222025mr2338643pzg.0.1712738638521;
+        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d8-20020a170902cec800b001e41e968a61sm5696540plg.223.2024.04.10.01.43.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
+Message-ID: <25764b88-d1a5-4b9f-b2a1-2923f1adb979@redhat.com>
+Date: Wed, 10 Apr 2024 16:43:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] arm64: tlb: Fix TLBI RANGE operand
+To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
+ maz@kernel.org, oliver.upton@linux.dev, ryan.roberts@arm.com,
+ apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com,
+ v-songbaohua@oppo.com, yangyicong@hisilicon.com, yihyu@redhat.com,
+ shan.gavin@gmail.com
+References: <20240405035852.1532010-1-gshan@redhat.com>
+Content-Language: en-US
+From: Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20240405035852.1532010-1-gshan@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Set local mac address in RNIC, which is required by the HW.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  9 +++++++++
- drivers/infiniband/hw/mana/main.c    | 22 ++++++++++++++++++++++
- drivers/infiniband/hw/mana/mana_ib.h | 15 +++++++++++++++
- 3 files changed, 46 insertions(+)
+On 4/5/24 11:58, Gavin Shan wrote:
+> A kernel crash on the destination VM after the live migration was
+> reported by Yihuang Yu. The issue is only reproducible on NVidia's
+> grace-hopper where TLBI RANGE feature is available. The kernel crash
+> is caused by incomplete TLB flush and missed dirty page. For the
+> root cause and analysis, please refer to PATCH[v3 1/3]'s commit log.
+> 
+> Thanks to Marc Zyngier who proposed all the code changes.
+> 
+> PATCH[1] fixes the kernel crash by extending __TLBI_RANGE_NUM() so that
+>           the TLBI RANGE on the area with MAX_TLBI_RANGE_PAGES pages can
+>           be supported
+> PATCH[2] improves __TLBI_VADDR_RANGE() with masks and FIELD_PREP()
+> PATCH[3] allows TLBI RANGE operation on the area with MAX_TLBI_RANGE_PAGES
+>           pages in __flush_tlb_range_nosync()
+> 
+> v2: https://lists.infradead.org/pipermail/linux-arm-kernel/2024-April/917432.html
+> v1: https://lists.infradead.org/pipermail/linux-arm-kernel/2024-April/916972.html
+> 
+> Changelog
+> =========
+> v3:
+>    Improve __TLBI_RANGE_NUM() and its comments. Added patches
+>    to improve __TLBI_VADDR_RANGE() and __flush_tlb_range_nosync() (Marc)
+> v2:
+>    Improve __TLBI_RANGE_NUM()                                     (Marc)
+> 
+> Gavin Shan (3):
+>    arm64: tlb: Fix TLBI RANGE operand
+>    arm64: tlb: Improve __TLBI_VADDR_RANGE()
+>    arm64: tlb: Allow range operation for MAX_TLBI_RANGE_PAGES
+> 
+>   arch/arm64/include/asm/tlbflush.h | 53 ++++++++++++++++++-------------
+>   1 file changed, 31 insertions(+), 22 deletions(-)
+> 
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 71923e5d0570..97a9f7a2d185 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -58,6 +58,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	struct net_device *upper_ndev;
- 	struct mana_context *mc;
- 	struct mana_ib_dev *dev;
-+	u8 mac_addr[ETH_ALEN];
- 	int ret;
- 
- 	mc = mdev->driver_data;
-@@ -89,6 +90,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		ibdev_err(&dev->ib_dev, "Failed to get master netdev");
- 		goto free_ib_device;
- 	}
-+	ether_addr_copy(mac_addr, upper_ndev->dev_addr);
- 	ret = ib_device_set_netdev(&dev->ib_dev, upper_ndev, 1);
- 	rcu_read_unlock();
- 	if (ret) {
-@@ -121,6 +123,13 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		goto destroy_eqs;
- 
-+	ret = mana_ib_gd_config_mac(dev, ADDR_OP_ADD, mac_addr);
-+	if (ret) {
-+		ibdev_err(&dev->ib_dev, "Failed to add Mac address, ret %d",
-+			  ret);
-+		goto destroy_rnic;
-+	}
-+
- 	ret = ib_register_device(&dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 09d29cf538dc..5e037603d130 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -784,3 +784,25 @@ int mana_ib_gd_del_gid(const struct ib_gid_attr *attr, void **context)
- 
- 	return 0;
- }
-+
-+int mana_ib_gd_config_mac(struct mana_ib_dev *mdev, enum mana_ib_addr_op op, u8 *mac)
-+{
-+	struct mana_rnic_config_mac_addr_resp resp = {};
-+	struct mana_rnic_config_mac_addr_req req = {};
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CONFIG_MAC_ADDR, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.op = op;
-+	copy_in_reverse(req.mac_addr, mac, ETH_ALEN);
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed to config Mac addr err %d", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 89ac5b39dbce..4c1240da0c5f 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -117,6 +117,7 @@ enum mana_ib_command_code {
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
- 	MANA_IB_CONFIG_IP_ADDR	= 0x30004,
-+	MANA_IB_CONFIG_MAC_ADDR	= 0x30005,
- };
- 
- struct mana_ib_query_adapter_caps_req {
-@@ -188,6 +189,18 @@ struct mana_rnic_config_addr_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_rnic_config_mac_addr_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	enum mana_ib_addr_op op;
-+	u8 mac_addr[ETH_ALEN];
-+	u8 reserved[6];
-+}; /* HW Data */
-+
-+struct mana_rnic_config_mac_addr_resp {
-+	struct gdma_resp_hdr hdr;
-+}; /* HW Data */
-+
- static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
- {
- 	return mdev->gdma_dev->gdma_context;
-@@ -305,4 +318,6 @@ enum rdma_link_layer mana_ib_get_link_layer(struct ib_device *device, u32 port_n
- int mana_ib_gd_add_gid(const struct ib_gid_attr *attr, void **context);
- 
- int mana_ib_gd_del_gid(const struct ib_gid_attr *attr, void **context);
-+
-+int mana_ib_gd_config_mac(struct mana_ib_dev *mdev, enum mana_ib_addr_op op, u8 *mac);
- #endif
+For the series.
+
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+
 -- 
-2.43.0
+Shaoqin
 
 
