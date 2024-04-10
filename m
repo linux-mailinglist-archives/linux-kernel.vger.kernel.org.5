@@ -1,162 +1,147 @@
-Return-Path: <linux-kernel+bounces-138663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CB8289F8CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:51:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E37A89F8B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:49:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E11B1C2741A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A31FB2DD49
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F510181326;
-	Wed, 10 Apr 2024 13:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BCF16131C;
+	Wed, 10 Apr 2024 13:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Lf0sUxq4"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rrwJUMSq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tXtZWY5N"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06117180A7D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EF415ECFD;
+	Wed, 10 Apr 2024 13:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756485; cv=none; b=envp6JwtRpkOfw0AFKHl9c7JOZm66mYw1IOXC2SZOnyYxSpOR7kZ/e12m+LOCSqLC8kXCJjWdzlMct2PufjYDnSLL2py6hUtz/jXFbUhmdXckLiEA8FnaYIgI4gBxeIu95Ims7Z/i8PBp/o76ywIKGKhaG+PLkU0uuwm4nzQtZ8=
+	t=1712756448; cv=none; b=IYGZPgpZsSHrjuCSaDg+wVsbpWi04g7RVuPxVjeCM8BGyWnkX0VQ24By8a/E+Seat3Rt+gDA2tyfPgbIheUWQhegvZ9UAUjMcQxZDNnMfHDGHEW7P3WF1ffpT1cEDSFv7nshaYK/9luPi1Hez+7QDvc1gN4oYfyo11fsOxNHJCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756485; c=relaxed/simple;
-	bh=CJ5Yg4Su25upi9PiRBilKHZBgxfV1yi9eo8lCkVdx7g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a+ay+SeBWHRMg2zYjfYGFTQ5v8YgHYNcvAyIg33+7hAsvGjGk7l5PvHLLVtkIMCYnWM7+ujclFTSBH9LIPRlQ8HyKGnfoguhNV81Hsf+PU9kCOEsXBLyhJpfEv8UmmqhnOX4y3GNYfHDSF7Cjx1+NNTVzPnfV/7zf20YPDD9ZDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Lf0sUxq4; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4155819f710so53278055e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1712756482; x=1713361282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bfpDELhZMXS3a+UUIPdr1Q+y0EuPmA52WesKgXwm+Ms=;
-        b=Lf0sUxq4UOs3C7KQX9/jUbg4WWL0HxKQYtHJ0eVFePeuWxpcTGK3pjOSU9ihvt0xds
-         IDvkGrSrzp4kcU0hbrEOlf2b3FkX+F4MBaEFz/Jo1EQU5pxHJpoA5TKi54fq79ooxF5t
-         F6EUNFUCUZY5V0j+Q6546Fv9smaI9MAbA8tMFNZUsHUrvq2Y4dmdOH1P8nRiHDXBtzXp
-         iEOb6a4+Vz3kZ3mzEYge9GcWqJljpC1ZJBZnzWXvnYnlAKcDDHUs38vrx+39zcSPRbaF
-         mPg2p3RfZm9XtIxYT4lbx2XOiohQ8ViDok2YHvedZWWo6M7aC25cTz3AjGKQoiTfZegC
-         a1gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712756482; x=1713361282;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bfpDELhZMXS3a+UUIPdr1Q+y0EuPmA52WesKgXwm+Ms=;
-        b=vHYDYImtj9qS3nwEnrLQa5269GCp6iRGCYfAC99dYupLmJcnjuDpdfeYVRUBC/jsCB
-         l+6A+JwdNJQ0/FNu6uW87g3r7h0zAQcwXln/2a7Ty4TA4gotJ3btX7GZs9GEWRi9Wuqd
-         QrsEaJcHavliOsly6qF+2JNHqst4EEd2fxL7fkYApx+ZxI9mAE3eZWW1Rxr2zEjMJ0Te
-         kAggOWeN475RQe0yDiDBzO57Np8Di2+iNR6270MmXZNcVAFAGKWExMejeY5mOQQ1qqxG
-         bmZ7nP+L0ggk71mz779IvjElLJpbCf5/ti7e6Gpd2pMLq5fGk+6GR1tSVVXeyqMaclnU
-         MzGg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6pLVIAO0/kQMT/1GdGh30cSY7pb1tOtZ8iRDdu0PUVBskUDTx9goWK+SFpFqQCFUI3TvZfv3k3ZstC3vLKVZelcdOh4fuq/eubyTH
-X-Gm-Message-State: AOJu0YwDYP5h4OvwWmQf83jqBOMc3JVWyNzC7b37onc16yS7bBU0eaC0
-	wMjuHSp3Jbh7vvUAyIiPHXe5LCHrp5piaCcGkQQSiF7Tb1Kb/S1hxbHRHkZTlvM=
-X-Google-Smtp-Source: AGHT+IE/n16DpYEO2qqbI73ni/tWCneu2SaQzav7O3neyS/HYU4MN+sPx87irigmMT5RkxaFWg9p4Q==
-X-Received: by 2002:a05:600c:1914:b0:415:6d51:8e2d with SMTP id j20-20020a05600c191400b004156d518e2dmr2247721wmq.13.1712756482533;
-        Wed, 10 Apr 2024 06:41:22 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.8])
-        by smtp.gmail.com with ESMTPSA id n15-20020a05600c500f00b00417c0fa4b82sm872528wmr.25.2024.04.10.06.41.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 06:41:22 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: wim@linux-watchdog.org,
-	linux@roeck-us.net,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	p.zabel@pengutronix.de,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	biju.das.jz@bp.renesas.com
-Cc: linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH RESEND v8 09/10] watchdog: rzg2l_wdt: Power on the PM domain in rzg2l_wdt_restart()
-Date: Wed, 10 Apr 2024 16:40:43 +0300
-Message-Id: <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
+	s=arc-20240116; t=1712756448; c=relaxed/simple;
+	bh=Uka8o22NlM8PwJyIfHYqHnihMi8oLfrnhZ2gZYikHTM=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=STr5UX7nA1SRqAk4ILgxW4YgfUsYzp3/3kx9b5iUvsdSzZc55g1H4ZEMdFKWA6k2R8JT7FCPV7foTrljV4mqiot+sgrQF1x21BSs7rlvCEbbCIAxrzv56QGf1ECLFWQi1BKd7iZBKo7PGsohjAL9CiG3OJ3iiBom4XtAnqkgsr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rrwJUMSq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tXtZWY5N; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 10 Apr 2024 13:40:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712756444;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMhJgy48U8xArHHRNmuKI/ZW03PB0fR9F3j3M9Dq+KA=;
+	b=rrwJUMSqbnHL54uFzz01AcpqOoJaArgGFWf0a/M4vYqj72eXcHjzoVJzCpP1GOg+cg50Yt
+	Oe5+ZYlCdLQv2UbH5Vgjjfh27C49vrD/kDsUWdu8XuoMFwJSn4RgRIDaMq9HrB3gKgGNkZ
+	jf27GYh2lIkIkdp2fX4XN4Dh3QUgDYIJ/pnCh+UvImGt+0WbRtMZ/SjcTCOFzH6+bP02gQ
+	XoCWskXgC0Sq6W2qScHfyfbzxohYkBp4/e35hNv3Sgu4Wlao/+2qOKZ5uYQIPKP7tOtPwP
+	4yaS6+gC5NTpPAWbnhXMoGCpmsFUQuI4r+8V3l3JasgrEHWGd8mrfpBDRqkwCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712756444;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMhJgy48U8xArHHRNmuKI/ZW03PB0fR9F3j3M9Dq+KA=;
+	b=tXtZWY5NzlYFawxwLZdw5ZoU/DKsaCq/A3x7DJUeVa089M08QmvuyFnfjSvUR57+9Ts4bo
+	nWyCWn63Gh6Sr+DQ==
+From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/atomic/x86: Introduce
+ arch_atomic64_read_nonatomic() to x86_32
+Cc: Mark Rutland <mark.rutland@arm.com>, Uros Bizjak <ubizjak@gmail.com>,
+ Ingo Molnar <mingo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240410062957.322614-2-ubizjak@gmail.com>
+References: <20240410062957.322614-2-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <171275644380.10875.3875613605552134894.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+The following commit has been merged into the locking/core branch of tip:
 
-The rzg2l_wdt_restart() is called from atomic context. Calling
-pm_runtime_{get_sync, resume_and_get}() or any other runtime PM resume
-APIs is not an option as it may lead to issues as described in commit
-e4cf89596c1f ("watchdog: rzg2l_wdt: Fix 'BUG: Invalid wait context'")
-that removed the pm_runtime_get_sync() and used directly the
-clk_prepare_enable() APIs.
+Commit-ID:     e73c4e34a0e9e3dfcb4e5ee4ccd3039a7b603218
+Gitweb:        https://git.kernel.org/tip/e73c4e34a0e9e3dfcb4e5ee4ccd3039a7b603218
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Wed, 10 Apr 2024 08:29:34 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 10 Apr 2024 15:04:54 +02:00
 
-Starting with RZ/G3S the watchdog could be part of its own software
-controlled power domain (see the initial implementation in Link section).
-In case the watchdog is not used the power domain is off and accessing
-watchdog registers leads to aborts.
+locking/atomic/x86: Introduce arch_atomic64_read_nonatomic() to x86_32
 
-To solve this the patch powers on the power domain using
-dev_pm_genpd_resume() API before enabling its clock. This is not
-sleeping or taking any other locks as the power domain will not be
-registered with GENPD_FLAG_IRQ_SAFE flags.
+Introduce arch_atomic64_read_nonatomic() for 32-bit targets to load
+the value from atomic64_t location in a non-atomic way. This
+function is intended to be used in cases where a subsequent atomic
+operation will handle the torn value, and can be used to prime the
+first iteration of unconditional try_cmpxchg() loops.
 
-Link: https://lore.kernel.org/all/20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20240410062957.322614-2-ubizjak@gmail.com
 ---
+ arch/x86/include/asm/atomic64_32.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-Changes in v8:
-- none, this patch is new
-
- drivers/watchdog/rzg2l_wdt.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
-index c8c20cfb97a3..98e5e9914a5d 100644
---- a/drivers/watchdog/rzg2l_wdt.c
-+++ b/drivers/watchdog/rzg2l_wdt.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- #include <linux/units.h>
-@@ -164,6 +165,17 @@ static int rzg2l_wdt_restart(struct watchdog_device *wdev,
- 	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
- 	int ret;
+diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
+index ec217aa..bbdf174 100644
+--- a/arch/x86/include/asm/atomic64_32.h
++++ b/arch/x86/include/asm/atomic64_32.h
+@@ -14,6 +14,32 @@ typedef struct {
  
-+	/*
-+	 * The device may be part of a power domain that is currently
-+	 * powered off. We need to power it up before accessing registers.
-+	 * We don't undo the dev_pm_genpd_resume() as the device need to
-+	 * be up for the reboot to happen. Also, as we are in atomic context
-+	 * here there is no need to increment PM runtime usage counter
-+	 * (to make sure pm_runtime_active() doesn't return wrong code).
-+	 */
-+	if (!pm_runtime_active(wdev->parent))
-+		dev_pm_genpd_resume(wdev->parent);
+ #define ATOMIC64_INIT(val)	{ (val) }
+ 
++/*
++ * Read an atomic64_t non-atomically.
++ *
++ * This is intended to be used in cases where a subsequent atomic operation
++ * will handle the torn value, and can be used to prime the first iteration
++ * of unconditional try_cmpxchg() loops, e.g.:
++ *
++ * 	s64 val = arch_atomic64_read_nonatomic(v);
++ * 	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val OP i);
++ *
++ * This is NOT safe to use where the value is not always checked by a
++ * subsequent atomic operation, such as in conditional try_cmpxchg() loops
++ * that can break before the atomic operation, e.g.:
++ *
++ * 	s64 val = arch_atomic64_read_nonatomic(v);
++ * 	do {
++ * 		if (condition(val))
++ * 			break;
++ * 	} while (!arch_atomic64_try_cmpxchg(v, &val, val OP i);
++ */
++static __always_inline s64 arch_atomic64_read_nonatomic(const atomic64_t *v)
++{
++	/* See comment in arch_atomic_read(). */
++	return __READ_ONCE(v->counter);
++}
 +
- 	clk_prepare_enable(priv->pclk);
- 	clk_prepare_enable(priv->osc_clk);
- 
--- 
-2.39.2
-
+ #define __ATOMIC64_DECL(sym) void atomic64_##sym(atomic64_t *, ...)
+ #ifndef ATOMIC64_EXPORT
+ #define ATOMIC64_DECL_ONE __ATOMIC64_DECL
 
