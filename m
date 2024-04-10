@@ -1,137 +1,137 @@
-Return-Path: <linux-kernel+bounces-139284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC08B8A00EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:56:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87648A00EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:58:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F7B2285F92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:56:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06A731C22520
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1969181B83;
-	Wed, 10 Apr 2024 19:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A6B181B88;
+	Wed, 10 Apr 2024 19:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tbb4NYiF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QylYHhYI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B76F180A96;
-	Wed, 10 Apr 2024 19:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D9D18133A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712778984; cv=none; b=bUByOkjYUqPc/4Fn4sUoYMV4DMumr+/xff72WhEkdIRUnDTwAakAYR6VKAvuLrFYFxkLwQQAt/9APK/R0TIAfVPlSbo3o2mwe/VYrztVrkmdsmZ7dj9+RW8xKiAnXzkdpQOZSV1lK2aS0gg83jxjP+eUOIB9Gefwj6Bfi+Lkfo0=
+	t=1712779114; cv=none; b=k6Q9TV1F5VERXYHUPj2U+LBkAd6gXycDlUL/qx9OiGSw+Mg38vZuolC8ByxaoHpXeodX2crrs35zQWeFvdZCq7VIHafyfQdm8jJj3RrMQpMhUbMw1S7M78VQMHZfsIiqCYJM1sGxu4Tf6lqRNXVC58UVPyQaqWMrSbuX9ncfWeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712778984; c=relaxed/simple;
-	bh=HDmfIFwQ+hlYZsGIqivrXso2mlG5zsDbTcZEPsSPLno=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ngZy9IGTL+uEr+1CY5wDXExnTHrmedg3/YmgfileMxzE6JfEU2WK7BPn5afnPD8Pzalsjfkt/Ra9IOnf2CYasUoA0FRSJCc+/bxElBYgA1poYgiXLGHi2cVHzne1TUAr4uWWwwpMHd3rcVrjzt3v6B8B9HuWNH+N5O09Dke5oKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tbb4NYiF; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712779114; c=relaxed/simple;
+	bh=zLwmqMV4AThUNLY2C0AJAwuOIliylAKYtQ0vTEe64Gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XVVhiXwneEhhNjRDGC831HZgXxq/tBFJQMvdc714fB9WerFml+x4U7IzVNDMY8OVKvOHQLweLxBejoETpPExR0SHoW4MQkiLFtPAcjJeCA6JRiBhuhHzZE/lJpTaaaGuMSCxJPQ9pNOtXVU2QRnWcEuTYZ0c9+VOyFDahkn1v6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QylYHhYI; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712778983; x=1744314983;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HDmfIFwQ+hlYZsGIqivrXso2mlG5zsDbTcZEPsSPLno=;
-  b=Tbb4NYiFwZ11rFWHzffEI3lt5Q1WAo7GzuYI1ulMl/qPPlArHo2qfyTo
-   PS/iPTiC5p83Lebhbj+RHmj4AjdRMZWYXoNsCA7rY0QF4R//MDYDN0B2N
-   3Xd3YWbYkKyQJLEG5H7Qooi+ol1GdI+FASns16CsBvNIeRfTSEBElJrdv
-   ri2eOZMJQ1tXxhCotNd8Hb/J8izfUgNRkViprj0vUfsREE5eRX6iG6jCs
-   JkqN+WVxneVlwgNzQNmtT7sUA1OXkbLOMoDEDxUsA0fNV9t/YThXDxcWY
-   oWUHlw6HOaw0yPmjH87aAsHZn5y4pZhwHci1gKQ53Hha5XX2+DgfBeX8j
-   w==;
-X-CSE-ConnectionGUID: OW3iufsWQdu/KKRkIshi3A==
-X-CSE-MsgGUID: TLrQVCd4RuKU2tXnl0DWhQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8729375"
+  t=1712779113; x=1744315113;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zLwmqMV4AThUNLY2C0AJAwuOIliylAKYtQ0vTEe64Gg=;
+  b=QylYHhYIzrCwkNlxYtL+AM1zsD3VdFFrPfN8mUlESsv2OueT+IAiVtZk
+   PBGeLwoxSbHkl73nbgmP3Sx3NVTFV8pKSIP0aUveS/Fcq+TL+6EEflnX4
+   4d/mOpzBacDXuhmoZrY/kRQj9Cs3XPOB2HD4JS12sMA06IYzUUUtVlhBi
+   2ltsewgxhz8SrjoBpuIPYflW1PDnR1v1Z4+/vmjL4k/jOxAmOTZMRxrm9
+   7ocT7LBxIySfkbYGXRPDBukMimCF8yfleRSWE5qPREx18rzC/MQl9sJGf
+   rBiLDsa8LdWmImp27xjOxrpoIV4hkdt8RaKFiXrciuaR30wLLSEDCGfyN
+   Q==;
+X-CSE-ConnectionGUID: zyv23Df7RdaUyqrw1Egp8w==
+X-CSE-MsgGUID: K4JrVTalRLG8CnBLmofSpg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8026704"
 X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="8729375"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 12:56:22 -0700
+   d="scan'208";a="8026704"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 12:58:31 -0700
+X-CSE-ConnectionGUID: 81dFEfzJTEm0/J5lUQyriA==
+X-CSE-MsgGUID: f1p2tR/CRuyjiSt/lZUEyQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937095424"
 X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="937095424"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Apr 2024 12:56:20 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C1D312A4; Wed, 10 Apr 2024 22:56:19 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v1 1/1] mmc: slot-gpio: Use irq_handler_t type
-Date: Wed, 10 Apr 2024 22:56:18 +0300
-Message-ID: <20240410195618.1632778-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+   d="scan'208";a="20753180"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 10 Apr 2024 12:58:29 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rue5S-0007kO-26;
+	Wed, 10 Apr 2024 19:58:26 +0000
+Date: Thu, 11 Apr 2024 03:57:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jinglin Wen <jinglin.wen@shingroup.cn>, palmer@dabbelt.com
+Cc: oe-kbuild-all@lists.linux.dev, paul.walmsley@sifive.com,
+	aou@eecs.berkeley.edu, gregkh@linuxfoundation.org,
+	atishp@rivosinc.com, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Jinglin Wen <jinglin.wen@shingroup.cn>
+Subject: Re: [PATCH 1/3] riscv: Support for early console.
+Message-ID: <202404110326.Qa9YV4bV-lkp@intel.com>
+References: <20240410063432.23058-2-jinglin.wen@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410063432.23058-2-jinglin.wen@shingroup.cn>
 
-The irq_handler_t is already defined globally, let's use it
-in slot-gpio code.
+Hi Jinglin,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/core/slot-gpio.c  | 5 ++---
- include/linux/mmc/slot-gpio.h | 5 ++---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
-index 39f45c2b6de8..8e4750558101 100644
---- a/drivers/mmc/core/slot-gpio.c
-+++ b/drivers/mmc/core/slot-gpio.c
-@@ -19,7 +19,7 @@
- struct mmc_gpio {
- 	struct gpio_desc *ro_gpio;
- 	struct gpio_desc *cd_gpio;
--	irqreturn_t (*cd_gpio_isr)(int irq, void *dev_id);
-+	irq_handler_t cd_gpio_isr;
- 	char *ro_label;
- 	char *cd_label;
- 	u32 cd_debounce_delay_ms;
-@@ -162,8 +162,7 @@ EXPORT_SYMBOL(mmc_gpio_set_cd_wake);
- /* Register an alternate interrupt service routine for
-  * the card-detect GPIO.
-  */
--void mmc_gpio_set_cd_isr(struct mmc_host *host,
--			 irqreturn_t (*isr)(int irq, void *dev_id))
-+void mmc_gpio_set_cd_isr(struct mmc_host *host, irq_handler_t isr)
- {
- 	struct mmc_gpio *ctx = host->slot.handler_priv;
- 
-diff --git a/include/linux/mmc/slot-gpio.h b/include/linux/mmc/slot-gpio.h
-index 5d3d15e97868..3e4d4836a2bb 100644
---- a/include/linux/mmc/slot-gpio.h
-+++ b/include/linux/mmc/slot-gpio.h
-@@ -8,8 +8,8 @@
- #ifndef MMC_SLOT_GPIO_H
- #define MMC_SLOT_GPIO_H
- 
-+#include <linux/interrupt.h>
- #include <linux/types.h>
--#include <linux/irqreturn.h>
- 
- struct mmc_host;
- 
-@@ -21,8 +21,7 @@ int mmc_gpiod_request_cd(struct mmc_host *host, const char *con_id,
- 			 unsigned int debounce);
- int mmc_gpiod_request_ro(struct mmc_host *host, const char *con_id,
- 			 unsigned int idx, unsigned int debounce);
--void mmc_gpio_set_cd_isr(struct mmc_host *host,
--			 irqreturn_t (*isr)(int irq, void *dev_id));
-+void mmc_gpio_set_cd_isr(struct mmc_host *host, irq_handler_t isr);
- int mmc_gpio_set_cd_wake(struct mmc_host *host, bool on);
- void mmc_gpiod_request_cd_irq(struct mmc_host *host);
- bool mmc_can_gpio_cd(struct mmc_host *host);
+[auto build test WARNING on tty/tty-testing]
+[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.9-rc3 next-20240410]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Jinglin-Wen/riscv-Support-for-early-console/20240410-143840
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20240410063432.23058-2-jinglin.wen%40shingroup.cn
+patch subject: [PATCH 1/3] riscv: Support for early console.
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20240411/202404110326.Qa9YV4bV-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240411/202404110326.Qa9YV4bV-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404110326.Qa9YV4bV-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   arch/riscv/kernel/early_console.c: In function 'early_console_printf':
+>> arch/riscv/kernel/early_console.c:51:17: warning: function 'early_console_printf' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+      51 |                 vsnprintf(buf, EARLY_CONSOLE_BUFSIZE, fmt, args);
+         |                 ^~~~~~~~~
+
+
+vim +51 arch/riscv/kernel/early_console.c
+
+    42	
+    43	#define EARLY_CONSOLE_BUFSIZE 256
+    44	void early_console_printf(const char *fmt, ...)
+    45	{
+    46		if (riscv_early_console_putc) {
+    47			char buf[EARLY_CONSOLE_BUFSIZE];
+    48			va_list args;
+    49	
+    50			va_start(args, fmt);
+  > 51			vsnprintf(buf, EARLY_CONSOLE_BUFSIZE, fmt, args);
+    52			early_console_puts(buf);
+    53			va_end(args);
+    54		}
+    55	}
+    56	
+
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
