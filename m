@@ -1,229 +1,258 @@
-Return-Path: <linux-kernel+bounces-139252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BF2B8A0088
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:23:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76F28A008A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70EC5B23514
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:23:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4EB1F27911
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF68181304;
-	Wed, 10 Apr 2024 19:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED32181311;
+	Wed, 10 Apr 2024 19:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E92qv500"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="C/NpLJAW";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qvb3j6nU"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9048B17F370
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712776992; cv=none; b=dUGBVy1SilZBorUA4a6shBRouy8gzdUuCd0Ekm3JgdqOJMakCHmLon0bNRoAdkSGVplr7F/4+601auXrb8s/OmXcvFjHGlM3xOx/wp7arlH4/deNMdnW5l9jBD1PdHg6sFlflwl0I+CHrwHTxTWpAhMG7qLSxws04Q48p5pvcFo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712776992; c=relaxed/simple;
-	bh=KIKKA6Hcj7j4sB9R2gmnBeE9kkzXSDQYIfa9ZbHULD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jyKNgjGN4lsQLvwVjrafKzy19wr6+W7RlkHxPskWymkmsssSUUUqq8LP8J7uCpXN7rSQ1eWCtK+xcfMAb79W4CiKdxVrMv5vdMoiQzR7iyO4lLxFG84yfHBQy0gf74g1KtVU75RKTkJ4lpNtWBnMvWm55soSYhhDGgg3q9l5VAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E92qv500; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3462178fbf9so1061751f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:23:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890EC13C9BB
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:24:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712777086; cv=fail; b=o24E8TCkf4eaXgMfnhatqJFPRsVFT7pwshtlevQGwmzdq2D4v1jloiBfu6snBoBkGef7a6QtY5B7wPZnWsX91aYGshHa3/xisQQxU+olcb+sphK/vobrBzFplyHlqCmZSGCYX0USIUrpaljxa4/X/iEyYgx5jVGSTAsEoCK/C5I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712777086; c=relaxed/simple;
+	bh=6JLrrSp1jpobQmNL6n+hDi70eUyZJuc8ccYCiS6m4Ng=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=dn8+9V3QR2Zq8O9TLjXQ6ySDH1xMYY9UQ3JXH1lkyqifAGf/gjzJgbn4VAKnZB4hrC0VEIvsvieOalVRRzqspEmLLysf3eEnmarGWNCc4LUB1HUf44pTWhsOxwU4DTXaM6cVMaTlcaVvOGy3n7ZkdUfZXLIavRcIQ54dlHBLjxQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=C/NpLJAW; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qvb3j6nU; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AJ4IFa026485;
+	Wed, 10 Apr 2024 19:24:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=27yhbqYm3R7y/sAr63tMLArq09dSljIiqHdplYXEBOk=;
+ b=C/NpLJAW1iWyZjq0kERXYfhJdltVc7kQLtOFkTIfxTPbYyRERxXyc4ftc1HZ7Jm2x3JH
+ l0U4vxMic4344NqvzCxVdzOYwwT4jUg1NnV/xAkjNEdBitXkA2XTZkuQZQozHrrrU5+2
+ qRxAyQuw3xDSnKXzyTXXMjm8BlN3ULCY9x3GrUjZvVXBBSFpILhR1XM0HuOlOExiOycy
+ F1+a/kgWwccolYiAe3AXkUWJ7qYlWMMURI92ZLK02CDXX20/hWynuBXd6EDnz+zFQ8XQ
+ f7pn/JLTB9LsGJx9J24yb5vUOOEObMy95Ef3Lpdy/dq96wzFlWYWL/fuu1HHlrWu6cuh tQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xawacr5gu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 19:24:21 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43AIBwEv026464;
+	Wed, 10 Apr 2024 19:24:19 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xdrsrprpy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 19:24:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rm3zNRiCcZqibJT4OsahIu+pE8cTv1GFimoJsOB26pnF/SYUaIO774P/juuQlO02eQ6HfiR6jNFHfLAQdjkw1PNHh+B6LVWN676W+pYhtdO3rvD5VCKwNV9VL4kF2dQbD+LM404wTaPk9pPQ1fbsgeErcnnpPPGv3p6QABKAFQHRPzFpqXvSO/8ZER8CZ+Hd4HY1uR69KpwnjH4/Hv7sSdJ6FRZdDLbHFBPs+zq8x1+0xWvRhtPAvLscgm7xhrpTxiWHUwcuToxD10wF42HA5aJfVF3ZkY1Z3aA3JQ89CyW/bW/1AseeIHTaiyKzEjx5CA4h4BchpKFhhyyHgYmfqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=27yhbqYm3R7y/sAr63tMLArq09dSljIiqHdplYXEBOk=;
+ b=RSaSug2Whb7Joo645H3PqaeTdiPVo7dMJOS11nxk1HCYCFrI2F2LWWZ7TrRH+SdW2aqauk36r1/XgIymUUFwjsiwmvxDm3eEoKz/eswfEOHKrUC9YNYJDYmCPfyrLRiRFkneHIeHFBHRVcGauWm/7x6AR6mxEGKyfYe1LdSWindb65xslCLVs5Xgyf+wxmGti8Gcxjl4xewuEPtOuWigAHWh7QaqVmYzpkIMgvaDbNqgZyCoFa6hudHTuA8oflcoNfqUdfIo9PktLc7CwATsCrmay2x09rEAz9ACo/Zr12AYuxi0gXlUlrUtyhp2TLzbYJpbZK3eyw/FAHs79OxzxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712776989; x=1713381789; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=znrjsGL5C+KjaLJ4d7djZKSZEjO8u83UZVncMVhpCco=;
-        b=E92qv500ORrW53IdGB8YMp+ijUmeY734VYgWIW1Ea0g2K+VqFnEZpO4d4BAWSuNfD0
-         uQbDr+5bTwljIAP6MysLtR5BvfupFKNZ5W8vfNMCdl/gsAs17r+ekyQ/pjponTDOYwZl
-         DAu8i+T2SquD+XSNYQwTaif+abaEdZMVliPUcn+HXcs8A/OeHTZMWt/NcGV61P1dfLph
-         ZGm9YMP4SM8ZEP5FKxdH5d80biNEw67XmCXuIXJfMHi+jM8r7U7AVwF8ETf6coJS5FMo
-         8kngQkgr0UqNCSiJNzHyOEJSOjaSY6x0/m8TsGBT7Uj4/hhJA5izk42x7p7CH8g5u76s
-         ZESg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712776989; x=1713381789;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=znrjsGL5C+KjaLJ4d7djZKSZEjO8u83UZVncMVhpCco=;
-        b=Xr5RxaPQKAQn1U7038zWHQ8snZunyVdRI+uFvgpYx4RreYubQXO2Iie79EhaqDNjRr
-         +h9FavvJI4C5HMaIbcrH1LoKHVuMNoVVicD2FPEQljj/70TVWiyugCXWMHD5rgumhivM
-         lhxAr5u4v40ZVDlXaj/1oZXcsRETNszF34u3ORlGN55vvoCJKJ5x7frz48Mjcrz3hTxN
-         FDv5jivIQ5n/m/jhHqpKuKbgCU9K1ZIkTA76vILCZWAU+YKQfWDwzVhh8yjrmlbOXTKq
-         ZYqCZ9ZkQOosvGlKCg58aevvt/wsGnffhiNetyqJxP0RtuWMcLjw4SYFdeMJAfyesb9C
-         Cikw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOH9tk2V6DYF+IKzkYhltePkrhIpvGt7MofQcc/oWaKFkefe8ts7lfGjYQm/YkuJgSVnZumcBKQz9K1fhGChEYkiA+YoT6Zgy3NYWm
-X-Gm-Message-State: AOJu0YxweFVz3z3s8iAM5lY3xKL3AIl5ygwkk5CJhu2na8Z2RDmdLKPn
-	m3Psl+zHJQzmrb52P+1QqKsSM1Wnb474Tl/SbhbkL085jr4LpPCyGk0wHNkj7Sk=
-X-Google-Smtp-Source: AGHT+IEX7550cBHUcy/0/2zwmjA2HA5+ybi+x+c0lyy/72b2nYn5cD9QRdR+1lYfMfjPMgPARX8cbQ==
-X-Received: by 2002:adf:f209:0:b0:343:420a:c70b with SMTP id p9-20020adff209000000b00343420ac70bmr3378939wro.62.1712776988905;
-        Wed, 10 Apr 2024 12:23:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id e38-20020a5d5966000000b003437ad152f9sm14382647wri.105.2024.04.10.12.23.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 12:23:08 -0700 (PDT)
-Message-ID: <27d755b5-dd26-4bef-9d92-1633409e14fb@linaro.org>
-Date: Wed, 10 Apr 2024 21:23:06 +0200
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27yhbqYm3R7y/sAr63tMLArq09dSljIiqHdplYXEBOk=;
+ b=qvb3j6nU/hVOJBPR5kE8j3FKmnoDhi1Pk9XE/y4i6WfRvRJnieiAKewR+JRmXbQZLlqzsOJ63xwWvsA5y6bKxGiyM9EQTibnTEMxH2BbtZi2DJCh7QljDyoSwZrThpE1m0NOlbuHeUoF7Yz0C5Yj6IUOsoGMhawxyJND+YoZJ6I=
+Received: from MW5PR10MB5738.namprd10.prod.outlook.com (2603:10b6:303:19b::14)
+ by IA1PR10MB6244.namprd10.prod.outlook.com (2603:10b6:208:3a0::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Wed, 10 Apr
+ 2024 19:24:16 +0000
+Received: from MW5PR10MB5738.namprd10.prod.outlook.com
+ ([fe80::1bae:2a6c:1de2:3856]) by MW5PR10MB5738.namprd10.prod.outlook.com
+ ([fe80::1bae:2a6c:1de2:3856%6]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 19:24:16 +0000
+Message-ID: <8c7b1d37-758a-46b2-b8aa-afd333140bf4@oracle.com>
+Date: Wed, 10 Apr 2024 14:24:13 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/jfs: fix order of kfree() and mutex_unlock() within
+ lmLogOpen() in jfs_logmgr.c
+To: Divyaank Tiwari <dtiwari@cs.stonybrook.edu>, shaggy@kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        brauner@kernel.org, jack@suse.cz, axboe@kernel.dk,
+        jinpu.wang@ionos.com, dchinner@redhat.com, lizhi.xu@windriver.com,
+        johannes.thumshirn@wdc.com
+Cc: Yifei Liu <yifeliu@cs.stonybrook.edu>, Erez Zadok
+ <ezk@cs.stonybrook.edu>,
+        Scott Smolka <sas@cs.stonybrook.edu>,
+        Geoff Kuenning <geoff@cs.hmc.edu>
+References: <20240410184857.42754-1-dtiwari@cs.stonybrook.edu>
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+Content-Language: en-US
+In-Reply-To: <20240410184857.42754-1-dtiwari@cs.stonybrook.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH5PR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:610:1f1::9) To MW5PR10MB5738.namprd10.prod.outlook.com
+ (2603:10b6:303:19b::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/1] dt-bindings: ptp: Add device tree binding
- for IDT FemtoClock
-To: Min Li <lnimi@hotmail.com>, richardcochran@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
-References: <LV3P220MB1202BACF71E85F949FC09A29A0062@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <LV3P220MB1202BACF71E85F949FC09A29A0062@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR10MB5738:EE_|IA1PR10MB6244:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	/ZjWid02l4+MRomyqnUPY+rGsLP032f8GFMv2ruubG9t7lXa4YQUlr4AzGWARHqPzwT3ueoZFF05Z/Yez2AcCLpnTIFD48l141gZfSlSJpA290RcmQqsLKzypyVmzChPRLc3I3iC32vfReMIXSwb4cCjGzG+1BElI/cjx9Kapm1URaHzp2D/ybPJ9ABp3JRboqcNzllk6HqHj++OkHu5HcYQ7OSy0TXrnDrVWu6AefsLvJmdCcMyzQ9aDTu65iJXooqgcxrz1rsJ8le4/51iBgXvhm6JuCnjTr3T5yoaXQw7+D/dun7SwCnah1y/VJ+NITRrscBqbgzJlVNogPKRbGumOEAbCASc6GaVK2PgyQ/BPBoLYDDGf7QKnWYI9fGRlvlJFVbPB7wrDvCqdn4c5Rr/WjapnIizp4GdAdtpZLbWB8Kwkt2lPShpLiZ2bF9Aj9PcODgvSi+F6vSWQPR7jvmrw4cBtbGMWUJiU30MvkQFoCTPkHlPQX1Ot3Ei5d1DAqYTCB6y35FgqdWgat67K0v2cdadquH/jJby/oSNzXsPRoKPYvtuRI1Mq5ScrK7vo1ZGe8hpcM8JWs55CZsmcL2C7gg1pidKqmYGHu2mSB98Zf5lA+TS2uYqFXBoaeBtEPKy7Onz9bUr33alIQBX/L47LJPIG1vjLGsRaKJVbWuCdemh2uNAdbg8WiOD9++GX5URYl7zgocZX0NzBnhZkA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR10MB5738.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?bS85eVVrMjY5ZGJ0V3RFRnhaczdJd0xQWEk0ZjRsdVZVVnF2V3BGdUN5QmFt?=
+ =?utf-8?B?TVJKWVZBRm9QckVpampSbGpsaDA0U25WWlFHRFNFdmdhR0E1K0lpNlNpQTlt?=
+ =?utf-8?B?QTkyeC95NlI5bkFSRWRYVU5pclBWRHNDQUlKY09aaHlMMEVsU1FQaDJXYnZi?=
+ =?utf-8?B?SnJ6MEc1THVyWWYwUEhJS0Q3a1oyZjFhekd6OXcvWVU2algxS20vSjJkbVRo?=
+ =?utf-8?B?ZXFxRXJxMlpaeW95NXNnaHhrVmZYekJDY1R5K1lxL3ZXdENCS1Rhb0lnVHA4?=
+ =?utf-8?B?TTVTZWJKMFR0aU9XZFVlK3lDRWpGOVFNbVlaMWI2WFRpNnFrK21jTVJ6QlQ5?=
+ =?utf-8?B?Zk9BUWR3OWlQdjJJbm9weWU3VDdxblovN3lMRHVhWEFlcU1TMXgzdytvRlJ3?=
+ =?utf-8?B?bGxHRnBDOEpGbzZXYU1lakV2QmJNYkZBV2JHdWk4OWQ0dUJZS0RCb3NPa2s5?=
+ =?utf-8?B?VFBSL054UFo0TCtDaHgyRjV4NnpYaUltQVhJYUtNK01weW5TZmdmMGNCU1p6?=
+ =?utf-8?B?dTUwc21VNkNuVWRnNnhodWMzOEdxcnJ3Qlc4dE1MTEdBVTdwWVp5SXBveS9F?=
+ =?utf-8?B?RmJNc2VpTkc3WmUvSFV6czkwQ0ltMXkxWVBxM3J5VEZGZ0p2QmhHM3JsZ0Nl?=
+ =?utf-8?B?bENTNjJUOVVzSWx3L3kveUZzY0o2L0V0VzJmd3NiRmkwM3pVR0R5UUdMbXVl?=
+ =?utf-8?B?WHR1MWxSQUZGTnh6WHk3M0lkKzRpVXRhM1Z4dHdnSWVFZUlvdUZheTVRN3BL?=
+ =?utf-8?B?SGJuOVZubk9keC9udHdjQ2VwV3JzNGRTbXpFRU1xaTNoblprdG1sM29VUWFr?=
+ =?utf-8?B?RDZaYVJQa00yT1ZKaUd0aGd0WnBlczliVy9iSUEybG9RWnZsZUNGT3FJZTl6?=
+ =?utf-8?B?QUJIRllCWEsyVW5MYTRVaWVhRThaVnY0Vnk1TUdhMEh0RkkybXdmazRQMkRy?=
+ =?utf-8?B?Und5em5LVFh3Ym05Wlk0b05WalVFN0p0WFJCcXBhcjN4QjU0M29iNlptMVpV?=
+ =?utf-8?B?ZVdMc1RIbSswTXRaZ0NyaU9DU2pPOGxXWHJ4bktLNHcxdEVzaWRHVWc5VXlO?=
+ =?utf-8?B?dFJJZVF1OXlacmM4VklKeUZ3aFhWTlB5M0lYZmJDSGhLY2tDSjRQcTJ0aUxK?=
+ =?utf-8?B?TllOdmNqSDZybnJ4U0t5SnBmZHRZVzdlTkdWSXp2aXpCNHNBaVFXbVgxckky?=
+ =?utf-8?B?UTVaeE92S2JsQitlcXVHS2RGL0ZMcng5M3J5eTRURnZZMWhnRzZ5UUhxUDh6?=
+ =?utf-8?B?eTBQaTlhMUgrOTJKTStrN3BLNzJoTWMrV2ZtWmx0bFdvRnMrL25mRFU3d3Zz?=
+ =?utf-8?B?cURQWnBTcEprc0NRd0daVFN0ajJGejNCUDMrQnRQbHJsRWZEMVp1VDExNndl?=
+ =?utf-8?B?UFpxYmptaTFpWkg0VGlwNDBHWnBSeWYwT0JNWHZFbkI0YThLd0ZjamUvS0xH?=
+ =?utf-8?B?S0RBRmwyTUNCVGFFdkdtdGRwUXMxTjk1THlmSDJ4blMrd05YR1NxTkV5N0Jt?=
+ =?utf-8?B?bDdKZUdJVDYvTGRUVDZ6ZkRjSEVZWTVBWXZ0T0pwUlNRa3dmaDNndVUvN3Fz?=
+ =?utf-8?B?cEt3K0wzclVRV2xyS1paR3Z0TXJhNitjMktQL3FxTW5UK3F3SEp2bTFxRlFm?=
+ =?utf-8?B?UncrMUNmc2lFYVJhRFZuMmo0WmFXRnNBMkluY2JqaTdmUWRabWlOUitsMmJj?=
+ =?utf-8?B?eEMyRXBwVXhwdmpZRnBUVCtzL1VFdlN6M0xzQThxbnFuWDJuNFRBL2crUTRI?=
+ =?utf-8?B?NTFHR2ZEKy9BWWY2RVVJdHhHV2kzVDJEd0h6RzRQcTZTeUoyVDdTWkhldVd5?=
+ =?utf-8?B?d3FFKzVkUHJkNHNHdkpaK2RIWkhmNXB6d0NiM09JVGF4ZHpveTNPL0x4NTg1?=
+ =?utf-8?B?OU8zNWdxb2RYVm0zOFF6aGYrMTZtUzFaeGNUWHhtcFo0SC8yKzFJZEYzS0Z2?=
+ =?utf-8?B?QUxxVm1ra0xLaXovL0pOdDZMZHFTVEpsVDR3QnVJUUUxemlkZVpaQmMwV2pC?=
+ =?utf-8?B?Y3VNODdEaWtzOVpML1VHSE1Dd0lJaUpwYmM2SDJmSGVoWVpzd0tGTGJseFht?=
+ =?utf-8?B?WVJKWmhRU2N4ajNCRHE5QldyRHk4UEVxZ0lNbEJPZFo3anlFR1UrUnpqN0VD?=
+ =?utf-8?B?UEVOYVB6MGV6UkRXbUNlS0haVHdXWDdLQ3ZuaUx6NEdFSmlJNitpOUZNQ1c5?=
+ =?utf-8?B?bnc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	t9FWf55MbA43TKDvigRH3icPTneFfE0mQCT3T76vJZgtsBuFxG2XaYEsj1wpDaBtEiIK4x2evg93JWg/sqLl/MMP3z56TzeLnCq+DUmTLxoprOlK7+EMhhRjyykaA3Nvo7tpq7z/8E963Sukk4yirK7E3gB1PgAcmfoiFl6jtBTyG9WliLe0uanbOHImZQFqfMC30qMJ68qyCKE4qLpeDEhw5WfDuTrWP5CpO9gOlJdqBb977OZGOcmfytmji99hR7q7GqmktX7A/NPQ53+zGSVhGnh+tuiFjh3IryDGg4IAVgS08S74eVGCjTEx4W9GzDCOXODm/v8rngEkmevDdtnBubCqM12Ipzqnij+i3YyhFUJEwoJ1wji/BF7gEj/zI/VKO9T+Ar7jokTvN3dUEdl2D4RpHo/f3Z9DRN0bQ9vlQQxMzgNi1sfDmZ4NYtoc5wk4rTGOvfRiBwY0NCNAKcArQxelQUeCEuh++Dbqy955QXlo1Ix3nWkgz8NUKN2BL3GikzsFnksozIrHO/gx4LX1LkHDDJoUZt4FrHpwjXDtWNKICttcE8mW0oUTN+ep295htVTD+nezWwaNszAIhVlgHUlTig768KWHSRLvDp8=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be2917f9-0d97-4676-c462-08dc5993cfe1
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR10MB5738.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 19:24:16.3700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s+tiTF1uX2rnJihwZAFn1jorlav7DyPDhfFckc0Mn+Ta8zXlThT2Ad2AMGRdKDRE34C3VsBR0D7wDGBpHsXKTg9BevIaeOzzfruRdcIPhPY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6244
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
+ phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404100142
+X-Proofpoint-GUID: x1_ddx8G05bttP1Ujz844jAWCPmORajz
+X-Proofpoint-ORIG-GUID: x1_ddx8G05bttP1Ujz844jAWCPmORajz
 
-On 10/04/2024 20:41, Min Li wrote:
-> From: Min Li <min.li.xe@renesas.com>
+On 4/10/24 1:48PM, Divyaank Tiwari wrote:
+> In the jfs_logmgr.c file, within lmLogOpen() under the “free” label,
+> mutex_unlock(&jfs_log_mutex) is called before kfree(log). Through our
+> model-checking tool Metis, we found that this is one of the potential
+> causes for nondeterministic kernel-hang bugs in JFS. Specifically, this
+> indirectly results in the “log” variable being NULL dereferenced in the
+> function txEnd() in jfs_txnmgr.c.
 > 
-> Add device tree binding doc for the IDT FemtoClock Frequency
-> Clock Synthesizers.
+> Fix: Swap the order of mutex_unlock(&jfs_log_mutex) and kfree(log).
+> 
+> We checked the entire JFS codebase, especially the file jfs_logmgr.c where
+> log is allocated and kfree’d multiple times, and found that every time,
+> except this buggy case, a call to kfree() was followed by a mutex_unlock().
+> This ensures that any shared log resources are protected by the
+> jfs_log_mutex lock.
+> 
+> The small patch given below fixes this bug and we are reasonably certain
+> that it is the correct fix.  Before this fix, we were able to trigger the
+> kernel hang bug fairly quickly through Metis. Through multiple experiments,
+> we found that we were able to cause the kernel to hang mostly within a few
+> minutes of execution. While we are fairly certain that the patch below
+> fixes *a* bug, we believe there’s another race/bug somewhere else that we
+> have yet to identify.  With this small fix, when we run Metis, we can still
+> trigger a NULL ptr deref of “log” in function txEnd() in jfs_txnmgr.c,
+> but now it takes anywhere from 6 to 137 hours (almost 6 days). We are
+> hoping that this fix will also help some of the JFS maintainers identify
+> other potential races.
 
-A nit, subject: drop second/last, redundant "device tree binding for"
-The "dt-bindings" prefix is already stating that these are bindings.
-See also:
-https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+I'm really not sure how this fixes anything. When the lock is released, 
+nothing should be referencing the data structure. Also, calling kfree() 
+doesn't have anything to do with the value of sbi->log, which would be 
+the cause of the NULL dereference. It may only affect the timing by 
+holding the lock a little longer.
+
+Can you briefly explain the test case? It seems you are using an 
+external journal. (I don't think that's very common, which could help 
+explain why it hasn't been discovered.) Are more than one file system 
+sharing a journal? (I don't know if anyone actually does that, but this 
+was designed in from the beginning.)
+
+That said, the patch looks completely safe. I'm not sure if it is 
+necessary since nothing should be referencing log any more and a 
+use-after-free is just as likely whether or not we hold the lock while 
+calling kfree().
+
+Thanks,
+Shaggy
 
 > 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> Note: All of our experiments were performed on Linux kernel v6.6.1.
+> 
+> Signed-off-by: Divyaank Tiwari <dtiwari@cs.stonybrook.edu>
+> Signed-off-by: Yifei Liu <yifeliu@cs.stonybrook.edu>
+> Signed-off-by: Erez Zadok <ezk@cs.stonybrook.edu>
+> Signed-off-by: Scott Smolka <sas@cs.stonybrook.edu>
+> Signed-off-by: Geoff Kuenning <geoff@cs.hmc.edu>
 > ---
->  .../devicetree/bindings/ptp/ptp-idtfc3.yaml   | 47 +++++++++++++++++++
-
-Filename based on compatible, e.g. idt,rc38xxx.yaml
-
->  1 file changed, 47 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
+>   fs/jfs/jfs_logmgr.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml b/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
-> new file mode 100644
-> index 000000000000..3e1c3135df5a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/ptp/ptp-idtfc3.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RENESAS FemtoClock (TM) Frequency Clock Synthesizers
-> +
-> +maintainers:
-> +  - Min Li <min.li.xe@renesas.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      # For System Synchronizer
-> +      - idt,rc38xxx0
-> +      - idt,rc38xxx1
-> +      - idt,rc38xxx2
-> +      - idt,rc38xxx3
-> +      - idt,rc38xxx4
-> +      - idt,rc38xxx5
-> +      - idt,rc38xxx6
-> +      - idt,rc38xxx7
-> +      - idt,rc38xxx8
-> +      - idt,rc38xxx9
-
-What are the "xxx"? Wild-cards? Are these compatible? Please read
-writing-bindings.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description:
-> +      I2C slave address of the device.
-
-Drop description, it is redundant.
-
-This looks quite incomplete. Why it cannot be part of existing idt binding?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +	phc@9 { /* FemtoClock3 */
-
-You have totally messed indentation. What's more, this was not tested.
-
-What is "FemtoClock3" doing here? What is it exactly?
-
-> +		compatible = "idt,rc38xxx0";
-> +		reg = <0x9>;
-
-What's more, where is any user of it? What's the point of adding binding
-without any users? Please read submitting patches in DT bindings directory.
-
-Best regards,
-Krzysztof
-
+> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+> index 9609349e92e5..ce9af4ef1e41 100644
+> --- a/fs/jfs/jfs_logmgr.c
+> +++ b/fs/jfs/jfs_logmgr.c
+> @@ -1144,8 +1144,8 @@ int lmLogOpen(struct super_block *sb)
+>   	bdev_fput(bdev_file);
+>   
+>         free:		/* free log descriptor */
+> -	mutex_unlock(&jfs_log_mutex);
+>   	kfree(log);
+> +	mutex_unlock(&jfs_log_mutex);
+>   
+>   	jfs_warn("lmLogOpen: exit(%d)", rc);
+>   	return rc;
+> 
+> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
 
