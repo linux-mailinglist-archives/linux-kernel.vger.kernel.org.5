@@ -1,117 +1,101 @@
-Return-Path: <linux-kernel+bounces-139340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8097C8A0196
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:59:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3408A0199
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C861C21B92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:59:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60136B269B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7940B181D06;
-	Wed, 10 Apr 2024 20:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225DB181D05;
+	Wed, 10 Apr 2024 21:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RRrjZkxA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="kAw7RbSv"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F9C181BBC;
-	Wed, 10 Apr 2024 20:59:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B904C181BBC;
+	Wed, 10 Apr 2024 21:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712782763; cv=none; b=kBwfS/C8zmJumtCthnKBJHSIwm3+wtfR2HB0tvH54xd7VMJOlcc4SySHTUYE8aAVMNdbqyoUFRwDTdzOnjZlzRkZbsaA0prYnbnMY4ImdCicU43QzUjbTRs6jGMpl2E/LoTvBrxydtbCYCOxFlotD1eXvI2P0XJWoXF70OZqSBM=
+	t=1712782808; cv=none; b=AifLbD02DtnLKpFbbkbdXUuqm91uQYFvp0B40zy55XDplXbs7vQapNmCPSMrD2gT72gpw2Uaimo1yxO9LRzb/dI75pNrPrYLZu5F5+lNibhf0kzAhhwASLVoiiNmxSmxokigYMa21lEPiaQWuHwE6eJ77a3uUlxWMDOUFOdWFys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712782763; c=relaxed/simple;
-	bh=zGAh4ICKgST7UhxvjpeVE4w+WnC0LVCFrEni6OL7qNI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=CvNJ29JrN8l/W+y43T/P0n4qo7BIDHTzTDjqepaqa6ZsXv3BrlEHgWkPyzwvu4wN4cjdRV75TwDODltNZ7zB9ZWyqFgK/spf/kjc8cWsetrb8PDY95gtmLsjQKpMU6qEmqqWIWUU3V2cqxlh6c4lv8qcomzopFFIl9+gMfZBBb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RRrjZkxA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D0D2C433F1;
-	Wed, 10 Apr 2024 20:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712782763;
-	bh=zGAh4ICKgST7UhxvjpeVE4w+WnC0LVCFrEni6OL7qNI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=RRrjZkxAzgBqCzAqbahkK2QhXFqCH5r83Fxt9TbKx8//6Qtfqln3qBWMyyUPRq0Sj
-	 +e29zeARUs6Lqc9bcLAro54EJ4/2/E6ahXlsyk9h5qKTeHCz0qo4V5Abr7H8UcYYYp
-	 v1QgQNd9W1ZaxOVzFzuw+bPIKW3NkCZTX9NtQocnhpsYR5kA3nQ/dmqPk2H/b8+0xN
-	 9tXAjwjVPKuVMpRWYhjC0UkRcxXGTE0VxgL/szUoWMKc/4z0ZbMi5sihaMnfdcys/s
-	 gLR4qlFHAFmJE59iyHPbm/xt8AzVuLV7gorDESfkYvsfsGil+/tLCzPUdeGWkKJpPF
-	 tLg2WOtQvD3IA==
-Date: Wed, 10 Apr 2024 15:59:21 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Linux NVMe <linux-nvme@lists.infradead.org>,
-	linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-	gloriouseggroll@gmail.com, Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Hannes Reinecke <hare@suse.de>
-Subject: Re: Fwd: Regression: Kernel 6.4 rc1 and higher causes Steam Deck to
- fail to wake from suspend (bisected)
-Message-ID: <20240410205921.GA2156865@bhelgaas>
+	s=arc-20240116; t=1712782808; c=relaxed/simple;
+	bh=NZxSmvOIrL+98WYQwIqbcfn2nyl5N/8M638PLwCqKpk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BVPk8x6HiH4lYRPCQiVs2hYgw7fOJ+kDBCd9+g4hkOZD1W+S5ECSn2tu4bOoTHRS1com671jgSoxY7yFzjtRyJrMKJQ2xcN6rv431dEAM5cJ2/UWUoXTfhWnpPDdZas7TOf0JtWqqVpRW0qieR1Go0wdACL1+Q0Wqf7ND82JH7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=kAw7RbSv; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 08CCF47C3E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1712782804; bh=bBiHyQknYVefwGowYX8X98+sWwdYwknbIEfcbgt8MVY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=kAw7RbSv9BcBu6s7oRnasuRvyvN9sgglhE1xceLaBCStyIXPzVUEfEV1mN3h3GNnP
+	 pnS8SsZgOyt+cSOYYrcYdAKSkRHX1HD87wvo9F91Rsf2fQ/NSTATSyTNhXlk/SGq0B
+	 w321qbDUaYD6BdSycet+3dSY6ICKDwILgCTyOdZ8Wjinrk5/f9gaI/TLMFRAluTySB
+	 GKUlHGc+tW77Tnd+G5eOG+Egrt1cfv4buCTF7D/aA7EAYc9RgylsZSvls4p7sCObX9
+	 XVtROmBWJ9sAlqheyJEsfJzkmxddRDvymDxOV/TdYTUwrszJ+3JjVj86yGoHs2P8sr
+	 B0Xej9WywdOWg==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625:67c:16ff:fe81:5f9b])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 08CCF47C3E;
+	Wed, 10 Apr 2024 21:00:03 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Subject: Re: [RFC PATCH v1 2/2] docs: reporting-issue: rework the TLDR
+In-Reply-To: <2f5a78745cbe0a99a4592612d6ffd57a17619fb4.1711455295.git.linux@leemhuis.info>
+References: <cover.1711455295.git.linux@leemhuis.info>
+ <2f5a78745cbe0a99a4592612d6ffd57a17619fb4.1711455295.git.linux@leemhuis.info>
+Date: Wed, 10 Apr 2024 15:00:03 -0600
+Message-ID: <878r1lszl8.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p6hH1=pchRidgMg2Go21tG=nJz+nz+6w++9hGSgFOcVgQ@mail.gmail.com>
+Content-Type: text/plain
 
-On Wed, Apr 10, 2024 at 02:20:31PM +0800, Kai-Heng Feng wrote:
-> On Sat, Mar 30, 2024 at 9:47 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Wed, Nov 01, 2023 at 06:45:41AM -0500, Bjorn Helgaas wrote:
-> > > On Tue, Oct 31, 2023 at 03:21:20PM +0700, Bagas Sanjaya wrote:
-> > > > I notice a regression report on Bugzilla [1]. Quoting from it:
-> > > >
-> > > > > On Kernel 6.4 rc1 and higher if you put the Steam Deck into
-> > > > > suspend then press the power button again it will not wake up.
-> > > > >
-> > > > > I don't have a clue as to -why- this commit breaks wake from
-> > > > > suspend on steam deck, but it does. Bisected to:
-> > > > >
-> > > > > ```
-> > > > > 1ad11eafc63ac16e667853bee4273879226d2d1b is the first bad commit
-> > > > > commit 1ad11eafc63ac16e667853bee4273879226d2d1b
-> > > > > Author: Bjorn Helgaas <bhelgaas@google.com>
-> ...
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-> > silverspring attached lspci output and a dmesg log from v6.8 to the
-> > bugzilla and also noted that "pci=noaer" works around the problem.
-> >
-> > The problem commit is 1ad11eafc63a ("nvme-pci: drop redundant
-> > pci_enable_pcie_error_reporting()")
-> > (https://git.kernel.org/linus/1ad11eafc63a)
-> >
-> > 1ad11eafc63a removed pci_disable_pcie_error_reporting() from the
-> > nvme_suspend() path, so we now leave the PCIe Device Control error
-> > enables set when we didn't before.  My theory is that the PCIe link
-> > goes down during suspend, which causes an error interrupt, and the
-> > interrupt causes a problem on Steam Deck.  Maybe there's some BIOS
-> > connection.
-> >
-> > "pci=noaer" would work around this because those error enables would
-> > never be set in the first place.
-> >
-> > I asked reporters to test the debug patches below to disable those
-> > error interrupts during suspend.
-> >
-> > I don't think this would be the *right* fix; if we need to do this, I
-> > think it should be done by the PCI core, not by individual drivers.
-> > Kai-Heng has been suggesting this for a while for a different
-> > scenario.
-> 
-> Should I send the patch to mailing list again to stir more discussion?
+> Rework the TLDR (aka the short guide) for various reasons:
+>
+> * People had to read it entirely and then act upon what they learned,
+>   which from feedback I got was apparently somewhat hard and confusing
+>   given everything we expect from bug reporters; this partly was because
+>   the first paragraph covered a special case (regression in
+>   stable/longterm kernel) and not the main aspect most people cared
+>   about when they came to the document.
+>
+>   Use a step-by-step approach to avoid this.
+>
+> * Make use of
+>   Documentation/admin-guide/verify-bugs-and-bisect-regressions.rst
+>
+> * The 'quickly report a stable regression to the stable team' approach
+>   hardly worked out: most of the time the regression was not known yet.
+>   Try a different approach using the regressions list.
+>
+> * Reports about stable/longterm regressions most of the time were
+>   greeted with a brief reply along the lines of 'Is mainline affected as
+>   well?'; this is needed to determine who is responsible, so it might as
+>   well make the reporter check that before sending the report (which
+>   verify-bugs-and-bisect-regressions.rst already tells them to do, too).
+>
+> Not-signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> ---
+>  .../admin-guide/reporting-issues.rst          | 104 +++++++++++-------
+>  1 file changed, 62 insertions(+), 42 deletions(-)
 
-Yes, please.  Include the folks from this thread, too, and the Steam
-Deck bugzilla link since we have more more problem reports now.
+From a quick read, no objections here.
 
-Bjorn
+jon
 
