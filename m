@@ -1,120 +1,138 @@
-Return-Path: <linux-kernel+bounces-138834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852C289FAE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:01:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DFEC89FAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:02:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F0F628908B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:01:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40B5A1C20CAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E044D16F0D8;
-	Wed, 10 Apr 2024 14:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B668F16C848;
+	Wed, 10 Apr 2024 15:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="B98UCzIO"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="d1DEagI4"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D957416E883
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439DC16D9CD;
+	Wed, 10 Apr 2024 15:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761177; cv=none; b=b/dkgdP0yYCmRmQSNUBhoWCLwGGXLaTvsVmUF4jtrbhSMxfPc+yk5M8wH5X0MVIpOLLc26VgQybNUoRQSCgDvtrmo2zW89OfiBxHon87EvvepOkFjjKed6wL4IOQgq6drNibFqTMF1lVf/jGtq+gv1eABCZfCXz3D5ckbLJjH08=
+	t=1712761249; cv=none; b=DdMAEjrdVIKD4UgryHt5x0vOKgWsQXTPmy341FKyKxCqVXW2O/tk387BI/wvM/VQMqrBF2zCcGD5NmMweqP/hAJBm+/r23d+bXS+0TriU+zGLyJJEayoPMvBmklrRC5BY3L8ti84+6pu010Ig5P8gPgV/4cBPnIQ2phX33KPe1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761177; c=relaxed/simple;
-	bh=eEElfM7ms0vW3GITIqHnuPQ0BbQKAd12SZvcqVWQgcY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Um2GBR69gXfJCQPsvqFdxXk35Pf7UlIpNesjZuso+hhbVr1dS0uNJdH8J48poEXgawvwkX6o9gNugwdqPOVMATg3GfRt97F+bhyVwIBzzIPSFUcJOSIXHiINaqjL+jCWs1M2LcZrC66yHxtACtdtIA/UGOO2TMX7O3/zSJRPKr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=B98UCzIO; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-343d6b55c42so4883737f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712761173; x=1713365973; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sZZ8Qzl07ggsrvxvKNXqPw1lCm8hvKS1T4p91mFK23k=;
-        b=B98UCzIOwOGQs9TaK90e1Bh2v6JOYoDtbvPHtBvxt8filiL5jMo/CYuQIdMEpLgRxx
-         ouf2WkTFBtf5Z54tK4zGw7/qMLZ7RZWjQ5Ubyp806gUPi9iKfKap3r8Klu8x//GoAI9e
-         u8cw9UvelhNIhEhc1WOnTQNTX85OAtaxF4DtPfRtNVBLuiNXFfNPWKzC7QJX0WXopedI
-         8ClnLpiX+WE2PcwbOqJCB88hjug7/BCSDLlaXETkgNsmhhNuF1q7NWln0HaDAs2tPNix
-         iePr99+HmELXvWFhk0pI9BnYr/PccO7swB8DIcHUpjapeE1QXZk/zrIxSXL+Lv3XOJXP
-         YjVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712761173; x=1713365973;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sZZ8Qzl07ggsrvxvKNXqPw1lCm8hvKS1T4p91mFK23k=;
-        b=N2pSjDQ4tvup9EWegIB4WpSoPCT3C1GTnBBCDjmIwH+B3mlgB+2ZOPbbfCwrrwL5j2
-         snUdW6ESvU7Se7IUH0xHcQR8vOaAHEZxII3JYJDisU1bvmS+ySuiEhJwlHxGzXNGlYzq
-         ZM9wHRUu9TE7wKNygbByvfvD6l09/AguypU7IZNMpb3lglmIUmwM7hNtPAISI12GXOu1
-         brrV9F1RCQQroal75TS+NHkfMn7zUGixPhERkCBCv25Icdi1r47B6G99fwgKBEqFguPd
-         n+yH8KLTnNdONVdg45ZdjmnSG71TJV7RVPGoIgxg/SM6SkmLBMigzpu2juncJEz6Ivf/
-         ipCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU95d7QJNBJc0C9423+WgttO8BaOT3Jxir7pt0RsfZ9UhaVN720Z6Xk8gv01TNgyjDVRJsPU0QX1JVnIFwkbokLxnBLlT74Z28YQtkp
-X-Gm-Message-State: AOJu0YyQfHVgp2SBuve28USZ0w6/AVUCHt6UyjKvAr0nA0OEWstiANGd
-	68jPG3f18zB8XFv2JSlJ5ISrRv+CgiKCDw9qAeHM47yEhlk4AnOLCPBK7b7zDIQ=
-X-Google-Smtp-Source: AGHT+IHUHFWXIPMwpItWqkGkjM5+39g7zm1g+XQ63hnRVbmyCLE+0EbyeQst1gtlWHG95EtoCBLyhA==
-X-Received: by 2002:a05:6000:2c2:b0:343:ef1b:9f68 with SMTP id o2-20020a05600002c200b00343ef1b9f68mr3933554wry.50.1712761172805;
-        Wed, 10 Apr 2024 07:59:32 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170906134100b00a519ec0a965sm6978557ejb.49.2024.04.10.07.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 07:59:32 -0700 (PDT)
-Date: Wed, 10 Apr 2024 16:59:30 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jijie Shao <shaojijie@huawei.com>
-Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, rkannoth@marvell.com, shenjian15@huawei.com,
-	wangjie125@huawei.com, liuyonglong@huawei.com,
-	chenhao418@huawei.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 net-next 4/4] net: hns3: add support to query scc
- version by devlink info
-Message-ID: <ZhapUja4xXiJe4Q2@nanopsycho>
-References: <20240410125354.2177067-1-shaojijie@huawei.com>
- <20240410125354.2177067-5-shaojijie@huawei.com>
+	s=arc-20240116; t=1712761249; c=relaxed/simple;
+	bh=TS++rJeV2yp4ppxLNZ4aJCxbh0/MWI8RIQHG9a9vms8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pZp6eYyML7Tnj099WTwPU4y6G6x0BxFoe2DDgbBVifrCn+OpPoq8bRcxahPxZ0vJCuIf5tcMZ4rnLXnv+d6x13P5OBOSKNgLixlt0/f/Yqzc0w8ElWezbJnW3ZoO8BSorudJexH1A/80Vy8aV/aoqa/IEJK/1PndcX7cgyTKA0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=d1DEagI4; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2F6841C0005;
+	Wed, 10 Apr 2024 15:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712761244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TzMYDMLGBpPQNMah2gckIeh3UT0WgV6HR8G+ppovp+Y=;
+	b=d1DEagI4nb/ol0AaR0vfyiD500UagvM8aAw43x9dEhNl7sPQT3uoUpQgrcfWJl9sYEOjFs
+	KfqwYvvH8RQ/BYupRm3yMeB8xxy6oYtewm5pEmdBjwClHnZOJUAY8xwLmHZcDkpRPM5806
+	xSWAkfYYlhtIWeDgSqYZp1iGAEtxVgd3p5ayB55jQTChqmU08f1qJhrJ7Fsgc1YAokCcmn
+	3edZuXvPg6HZNGNk/oXjDNbiNsmQxGQRLM+sBUIub2sCJmW77hqcsz0jylJuBSYwZyiJCO
+	LkymfrG2MQ5I1FrT8yih+eDtbj1LDRoSl37311ZVUoa/AVRDk/bWRvdRn5Y99g==
+Date: Wed, 10 Apr 2024 17:00:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
+ <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <oxffffaa@gmail.com>, <kernel@sberdevices.ru>
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: amlogic,meson-nand: support
+ fields for boot ROM code
+Message-ID: <20240410170040.37a59ff6@xps-13>
+In-Reply-To: <588551c9-3426-e623-e2aa-70b040c9324a@salutedevices.com>
+References: <20240409181025.55504-1-avkrasnov@salutedevices.com>
+	<20240409181025.55504-2-avkrasnov@salutedevices.com>
+	<20240410122356.30852b3c@xps-13>
+	<588551c9-3426-e623-e2aa-70b040c9324a@salutedevices.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410125354.2177067-5-shaojijie@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Wed, Apr 10, 2024 at 02:53:54PM CEST, shaojijie@huawei.com wrote:
->From: Hao Chen <chenhao418@huawei.com>
->
->Add support to query scc version by devlink info for device V3.
->
->Signed-off-by: Hao Chen <chenhao418@huawei.com>
->Signed-off-by: Jijie Shao <shaojijie@huawei.com>
->---
-> Documentation/networking/devlink/hns3.rst     |  3 ++
-> drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  9 ++++
-> .../hns3/hns3_common/hclge_comm_cmd.h         |  8 ++++
-> .../hisilicon/hns3/hns3pf/hclge_devlink.c     | 44 +++++++++++++++++--
-> .../hisilicon/hns3/hns3pf/hclge_devlink.h     |  2 +
-> .../hisilicon/hns3/hns3pf/hclge_main.c        | 18 ++++++++
-> .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 +
-> 7 files changed, 82 insertions(+), 3 deletions(-)
->
->diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
->index 4562a6e4782f..e19dea8ef924 100644
->--- a/Documentation/networking/devlink/hns3.rst
->+++ b/Documentation/networking/devlink/hns3.rst
->@@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
->    * - ``fw``
->      - running
->      - Used to represent the firmware version.
->+   * - ``fw.scc``
+Hi Arseniy,
 
-What's scc? I don't see it described anywhere.
+avkrasnov@salutedevices.com wrote on Wed, 10 Apr 2024 17:48:02 +0300:
+
+> Hi,
+>=20
+> On 10.04.2024 13:23, Miquel Raynal wrote:
+> > Hi Arseniy,
+> >=20
+> > avkrasnov@salutedevices.com wrote on Tue, 9 Apr 2024 21:10:24 +0300:
+> >  =20
+> >> Boot ROM code on Meson requires that some pages on NAND must be written
+> >> in special mode: "short" ECC mode where each block is 384 bytes and
+> >> scrambling mode is on. Such pages located with the specified interval
+> >> within specified offset. Both interval and offset are located in the
+> >> device tree and used by driver if 'nand-is-boot-medium' is set for
+> >> NAND chip.
+> >>
+> >> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> >> ---
+> >>  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
+> >>  1 file changed, 14 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.=
+yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> >> index 57b6957c8415..b86a1953056b 100644
+> >> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> >> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> >> @@ -64,11 +64,25 @@ patternProperties:
+> >>          items:
+> >>            maximum: 0
+> >> =20
+> >> +      amlogic,boot-page-last:
+> >> +        $ref: /schemas/types.yaml#/definitions/uint32
+> >> +        description:
+> >> +          The NFC driver needs this information to select ECC
+> >> +          algorithms supported by the boot ROM. =20
+> >=20
+> > Shall we have a length rather than the last page? =20
+>=20
+> You mean rename it to "amlogic,boot-pages-length" or something like that =
+? But I think
+> length in bytes is useless here:
+> 1) boot rom needs that only some single pages are written in special mode=
+ (and as I see in
+>    vendor's driver it also works in pages).
+> 2) NAND driver operates in pages during write/read such pages.
+>=20
+> So length in bytes will be converted to pages anyway.
+>=20
+> What do You think ?
+
+I didn't talk about units :-)
+
+Maybe: amlogic,boot-pages would make sense? But pointing at the last
+page seems weird.
+
+Miqu=C3=A8l
 
