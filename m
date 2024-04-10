@@ -1,214 +1,232 @@
-Return-Path: <linux-kernel+bounces-138282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15C3689EF35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:51:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 288CF89EF39
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:52:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF092282341
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CD911C20F7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39CD158D95;
-	Wed, 10 Apr 2024 09:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C017157E98;
+	Wed, 10 Apr 2024 09:52:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y4Yds2T8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="eI0+fOVg"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CA9154C0F;
-	Wed, 10 Apr 2024 09:50:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9690C125CD;
+	Wed, 10 Apr 2024 09:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712742645; cv=none; b=lQyceuGAEwi8zS7viCwMpqTZ58akq7MvNLgWynY8LtEI46cCz3N5/L2925XqHztUJd7eKNlDsjFOgt0RGt3Bs4sgtd4xsDHLpn0OrTpL6FphPLJ6RdXj/Vhk4j0QPaYTQCbkoM1ajAXVYX1hwu+G3L7HK7+E8Tt6miqhyrCTeT0=
+	t=1712742765; cv=none; b=F41aGtnBoNNs8/MwMw9Jw7nvo25myuy9A9EQ/QK/gFopeQ6HN9Giouuyl8QzpCMCE+gnaieVYfbN3GQ6fcJHCiEZB5/eJYBgCZ59RteoJsNXVuAffrbHJ4ZmLYwU9xJwPQszCQsR07GioXu5vOrSAMJX9/6WeYm6bOpSYT8oG2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712742645; c=relaxed/simple;
-	bh=9yBCOfKgxlkwBGNHOhriLBVSumh7h9MF0OaGeGig5vI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ob1hUupQ8UmnwklLE6VFXs3J/ZHZBwA6lzTWkxezZN+cKvHcWVfVeEZP8sLA7VfWJ+1HNn2DdGDG1hbOMoaCSu82/DsIB8dVrNcY9PpGJ7GJIWFM66n16YPLSIMvoP/Zzw38x5AHEAA8/8lTE0am3ayhk4ACuCbF+nDmQaOfoVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y4Yds2T8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F951C43390;
-	Wed, 10 Apr 2024 09:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712742644;
-	bh=9yBCOfKgxlkwBGNHOhriLBVSumh7h9MF0OaGeGig5vI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y4Yds2T8BK59a1fZOyIHq1m+QNmg+YCXS5+MbFdrDGQQLIcneYVQuh6c25cHUkq0E
-	 QAnywJxznFvHUL3K77yRQZptAgxjvI07nAWiBPIQcKwMyk2oK9NUHG9JhypFPnWXMI
-	 tcjMRLZt2ymd0prVd6bre59nuTxghQPFTOXT8ZJuTRrI8No8kTIRZn7DcEKVYoItfU
-	 mtQxH17+LWIX7AIOTqsrBI0elMYeaRDplU6A5Ec0LoDy86lQigC8wRaC2TFoxErR7Q
-	 CaMBhHNgh4ivvm5mym6uDc1W3vhLwJP7ZrcinkZniQB3x5YBvMOsYCPE1AvQjDFahR
-	 0hU9T9VkftnOg==
-Date: Wed, 10 Apr 2024 10:50:39 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v2 1/5] clk: meson: axg: move reset controller's code
- to separate module
-Message-ID: <20240410-supremacy-importer-9b5ac1957479@spud>
-References: <20240328010831.884487-1-jan.dakinevich@salutedevices.com>
- <20240328010831.884487-2-jan.dakinevich@salutedevices.com>
- <1j7chfiz8e.fsf@starbuckisacylon.baylibre.com>
- <e3a85852b911fdf16dd9ae158f42b3ef.sboyd@kernel.org>
- <f01cdd910ab35316b8012795f73fd2b34c8e6f8e.camel@pengutronix.de>
- <13617b7a892424d2b024c725505a6f4f.sboyd@kernel.org>
- <20240408-numerator-escargot-a642507a598e@spud>
- <20240409-shallow-voice-c84ed791bc7d@spud>
- <dde59dd2ef4da81528e31f65844e0b3f.sboyd@kernel.org>
+	s=arc-20240116; t=1712742765; c=relaxed/simple;
+	bh=A4SQWAoLTl1trJBjvVe+szcFLe+EAdNIB9cPeBqzuDg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N0BpGlzZgOclQ1iwbJxoURzf1mao4x6FLURtENQjiurcza8E6EkzNF5SektU2qFWG5zWrYOpKWq5iCiOfrGbYj+T8plETQM1dxj/6woykSWmZw9U5SG3EU0IbDo0anTdJm1Z3xiJ1o10h3PJFWDGM5B8T2pDEA6/zlJaj1d5ePU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=eI0+fOVg; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 73943600A2;
+	Wed, 10 Apr 2024 09:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1712742759;
+	bh=A4SQWAoLTl1trJBjvVe+szcFLe+EAdNIB9cPeBqzuDg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eI0+fOVggcZc7WNQ/m1KCUdUH7wDPdHE1nD+kVl0KFnmjjE1LqJu62Xs4yCV4pTAf
+	 Ktnn5KdaxmdtwIABs0VRdvn3DLMlWRmw2JUvXErX8QRxVw8DFGwpNS3jn9YEHCWYqP
+	 XFJDD+ql//6KIeIuLWaeeso92NXpxHebXuEgAz//Q5v9ha/6+beKebk+aFw+RR1Ak+
+	 qzJBLrl2jkSt6juOf3cJprOHbtj6zwBmE9Awia+mWN9BcLoFK1YLsyIiPuPqwVAmbE
+	 s40KOtKJQrflr+9qyt6nv7+J7kbLmkvwiDW3V8NR7Iwi0cy2UMqMuxx0p//wugJAk9
+	 avsXySNcW876A==
+Received: by x201s (Postfix, from userid 1000)
+	id A78D5200D78; Wed, 10 Apr 2024 09:52:33 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: netdev@vger.kernel.org
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	UNGLinuxDriver@microchip.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] net: sparx5: flower: fix fragment flags handling
+Date: Wed, 10 Apr 2024 09:52:19 +0000
+Message-ID: <20240410095224.6372-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JPgr6dKZxpVy8iT7"
-Content-Disposition: inline
-In-Reply-To: <dde59dd2ef4da81528e31f65844e0b3f.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+I noticed that only 3 out of the 4 input bits were used,
+mt.key->flags & FLOW_DIS_IS_FRAGMENT was never checked.
 
---JPgr6dKZxpVy8iT7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In order to avoid a complicated maze, I converted it to
+use a 16 byte mapping table.
 
-On Tue, Apr 09, 2024 at 07:27:36PM -0700, Stephen Boyd wrote:
-> Quoting Conor Dooley (2024-04-09 05:05:37)
-> > On Mon, Apr 08, 2024 at 06:05:51PM +0100, Conor Dooley wrote:
-> >=20
-> > > > > Seconded, the clk-mpfs/reset-mpfs and clk-starfive-jh7110-sys/res=
-et-
-> > > > > starfive-jh7110 drivers are examples of this.
-> > > > >=20
-> > > > > > The auxiliary device creation function can also be in the
-> > > > > > drivers/reset/ directory so that the clk driver calls some func=
-tion
-> > > > > > to create and register the device.
-> > > > >=20
-> > > > > I'm undecided about this, do you think mpfs_reset_controller_regi=
-ster()
-> > > > > and jh7110_reset_controller_register() should rather live with the
-> > > > > reset aux drivers in drivers/reset/ ?
-> > > >=20
-> > > > Yes, and also mpfs_reset_read() and friends. We should pass the base
-> > > > iomem pointer and parent device to mpfs_reset_adev_alloc() instead =
-and
-> > > > then move all that code into drivers/reset with some header file
-> > > > exported function to call. That way the clk driver hands over the d=
-ata
-> > > > without having to implement half the implementation.
-> > >=20
-> > > I'll todo list that :)
-> >=20
-> > Something like the below?
-> >=20
-> > -- >8 --
-> > From a12f281d2cb869bcd9a6ffc45d0c6a0d3aa2e9e2 Mon Sep 17 00:00:00 2001
-> > From: Conor Dooley <conor.dooley@microchip.com>
-> > Date: Tue, 9 Apr 2024 11:54:34 +0100
-> > Subject: [PATCH] clock, reset: microchip: move all mpfs reset code to t=
-he
-> >  reset subsystem
-> >=20
-> > <insert something here>
-> >=20
-> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
->=20
-> Looks pretty good.
->=20
-> >  static const struct of_device_id mpfs_clk_of_match_table[] =3D {
-> > diff --git a/drivers/reset/reset-mpfs.c b/drivers/reset/reset-mpfs.c
-> > index 7f3fb2d472f4..27cd68b4ee81 100644
-> > --- a/drivers/reset/reset-mpfs.c
-> > +++ b/drivers/reset/reset-mpfs.c
-> > @@ -137,9 +139,67 @@ static int mpfs_reset_probe(struct auxiliary_devic=
-e *adev,
-> >         return devm_reset_controller_register(dev, rcdev);
-> >  }
-> > =20
-> > +static void mpfs_reset_unregister_adev(void *_adev)
-> > +{
-> > +       struct auxiliary_device *adev =3D _adev;
-> > +
-> > +       auxiliary_device_delete(adev);
-> > +       auxiliary_device_uninit(adev);
-> > +}
-> > +
-> > +static void mpfs_reset_adev_release(struct device *dev)
-> > +{
-> > +       struct auxiliary_device *adev =3D to_auxiliary_dev(dev);
-> > +
-> > +       kfree(adev);
-> > +}
-> > +
-> > +static struct auxiliary_device *mpfs_reset_adev_alloc(struct device *c=
-lk_dev)
-> > +{
-> > +       struct auxiliary_device *adev;
-> > +       int ret;
-> > +
-> > +       adev =3D kzalloc(sizeof(*adev), GFP_KERNEL);
-> > +       if (!adev)
-> > +               return ERR_PTR(-ENOMEM);
-> > +
-> > +       adev->name =3D "reset-mpfs";
-> > +       adev->dev.parent =3D clk_dev;
-> > +       adev->dev.release =3D mpfs_reset_adev_release;
-> > +       adev->id =3D 666u;
-> > +
-> > +       ret =3D auxiliary_device_init(adev);
-> > +       if (ret) {
-> > +               kfree(adev);
-> > +               return ERR_PTR(ret);
-> > +       }
-> > +
-> > +       return adev;
-> > +}
-> > +
-> > +int mpfs_reset_controller_register(struct device *clk_dev, void __iome=
-m *base)
-> > +{
-> > +       struct auxiliary_device *adev;
-> > +       int ret;
-> > +
-> > +       mpfs_reset_addr =3D base;
->=20
-> Instead of a global this can be stashed in adev->dev.platform_data and
-> grabbed in the driver probe?
+As shown in the table below the old heuristics doesn't
+always do the right thing, ie. when FLOW_DIS_IS_FRAGMENT=1/1
+then it used to only match follow-up fragment packets.
 
-I suppose, really I was just being "lazy" here and creating a global
-rather than a `struct mpfs_reset` containing only the base address.
+Here are all the combinations, and their resulting new/old
+VCAP key/mask filter:
 
-The test robot reported some issues with hexagon & COMPILE_TEST, so I'll
-push it out again with this change and the fixes for the reported issues
-and send the patch ones it gets the all clear.
+  /- FLOW_DIS_IS_FRAGMENT (key/mask)
+  |    /- FLOW_DIS_FIRST_FRAG (key/mask)
+  |    |    /-- new VCAP fragment (key/mask)
+  v    v    v    v- old VCAP fragment (key/mask)
 
-Cheers,
-Conor.
+ 0/0  0/0  -/-  -/-     impossible (due to entry cond. on mask)
+ 0/0  0/1  -/-  0/3 !!  invalid (can't match non-fragment + follow-up frag)
+ 0/0  1/0  -/-  -/-     impossible (key > mask)
+ 0/0  1/1  1/3  1/3     first fragment
 
---JPgr6dKZxpVy8iT7
-Content-Type: application/pgp-signature; name="signature.asc"
+ 0/1  0/0  0/3  3/3 !!  not fragmented
+ 0/1  0/1  0/3  3/3 !!  not fragmented (+ not first fragment)
+ 0/1  1/0  -/-  -/-     impossible (key > mask)
+ 0/1  1/1  -/-  1/3 !!  invalid (non-fragment and first frag)
 
------BEGIN PGP SIGNATURE-----
+ 1/0  0/0  -/-  -/-     impossible (key > mask)
+ 1/0  0/1  -/-  -/-     impossible (key > mask)
+ 1/0  1/0  -/-  -/-     impossible (key > mask)
+ 1/0  1/1  -/-  -/-     impossible (key > mask)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhZg7wAKCRB4tDGHoIJi
-0hveAPwNpL7h191WykV2UuzkJO3pu772z/AWkwlY/yHmXJVsuwEApGRz5bEryU3C
-JZ94q3AIj7Df4J7rHqDC1re2X9bNwwA=
-=pOIQ
------END PGP SIGNATURE-----
+ 1/1  0/0  1/1  3/3 !!  some fragment
+ 1/1  0/1  3/3  3/3     follow-up fragment
+ 1/1  1/0  -/-  -/-     impossible (key > mask)
+ 1/1  1/1  1/3  1/3     first fragment
 
---JPgr6dKZxpVy8iT7--
+In the datasheet the VCAP fragment values are documented as:
+ 0 = no fragment
+ 1 = initial fragment
+ 2 = suspicious fragment
+ 3 = valid follow-up fragment
+
+Result: 3 combinations match the old behavior,
+        3 combinations have been corrected,
+        2 combinations are now invalid, and fail,
+        8 combinations are impossible.
+
+It should now be aligned with how FLOW_DIS_IS_FRAGMENT
+and FLOW_DIS_FIRST_FRAG is set in __skb_flow_dissect() in
+net/core/flow_dissector.c
+
+Since the VCAP fragment values are not a bitfield, we have
+to ignore the suspicious fragment value, eg. when matching
+on any kind of fragment with FLOW_DIS_IS_FRAGMENT=1/1.
+
+Only compile tested, and logic tested in userspace, as I
+unfortunately don't have access to this switch chip (yet).
+
+v2:
+- Improved in-line documentation of mapping table (requested by Steen)
+- Relocated enum and mapping table (requested by Steen)
+- Added Reviewed-by from Steen Hegelund
+- Added Tested-by from Daniel Machon
+
+v1: https://lore.kernel.org/netdev/20240408172738.96447-1-ast@fiberby.net/
+
+Fixes: d6c2964db3fe ("net: microchip: sparx5: Adding more tc flower keys for the IS2 VCAP")
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+Tested-by: Daniel Machon <daniel.machon@microchip.com>
+---
+ .../microchip/sparx5/sparx5_tc_flower.c       | 61 ++++++++++++-------
+ 1 file changed, 40 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+index 523e0c470894f..f986850efdcc7 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+@@ -36,6 +36,27 @@ struct sparx5_tc_flower_template {
+ 	u16 l3_proto; /* protocol specified in the template */
+ };
+ 
++/* SparX-5 VCAP fragment types:
++ * 0 = no fragment, 1 = initial fragment,
++ * 2 = suspicious fragment, 3 = valid follow-up fragment
++ */
++enum {                   /* key / mask */
++	FRAG_NOT   = 0x03, /* 0 / 3 */
++	FRAG_SOME  = 0x11, /* 1 / 1 */
++	FRAG_FIRST = 0x13, /* 1 / 3 */
++	FRAG_LATER = 0x33, /* 3 / 3 */
++	FRAG_INVAL = 0xff, /* invalid */
++};
++
++/* Flower fragment flag to VCAP fragment type mapping */
++static const u8 sparx5_vcap_frag_map[4][4] = {		  /* is_frag */
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_FIRST }, /* 0/0 */
++	{ FRAG_NOT,   FRAG_NOT,   FRAG_INVAL, FRAG_INVAL }, /* 0/1 */
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_INVAL }, /* 1/0 */
++	{ FRAG_SOME,  FRAG_LATER, FRAG_INVAL, FRAG_FIRST }  /* 1/1 */
++	/* 0/0	      0/1	  1/0	      1/1 <-- first_frag */
++};
++
+ static int
+ sparx5_tc_flower_es0_tpid(struct vcap_tc_flower_parse_usage *st)
+ {
+@@ -145,29 +166,27 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
+ 	flow_rule_match_control(st->frule, &mt);
+ 
+ 	if (mt.mask->flags) {
+-		if (mt.mask->flags & FLOW_DIS_FIRST_FRAG) {
+-			if (mt.key->flags & FLOW_DIS_FIRST_FRAG) {
+-				value = 1; /* initial fragment */
+-				mask = 0x3;
+-			} else {
+-				if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-					value = 3; /* follow up fragment */
+-					mask = 0x3;
+-				} else {
+-					value = 0; /* no fragment */
+-					mask = 0x3;
+-				}
+-			}
+-		} else {
+-			if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-				value = 3; /* follow up fragment */
+-				mask = 0x3;
+-			} else {
+-				value = 0; /* no fragment */
+-				mask = 0x3;
+-			}
++		u8 is_frag_key = !!(mt.key->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_mask = !!(mt.mask->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_idx = (is_frag_key << 1) | is_frag_mask;
++
++		u8 first_frag_key = !!(mt.key->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_mask = !!(mt.mask->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_idx = (first_frag_key << 1) | first_frag_mask;
++
++		/* lookup verdict based on the 2 + 2 input bits */
++		u8 vdt = sparx5_vcap_frag_map[is_frag_idx][first_frag_idx];
++
++		if (vdt == FRAG_INVAL) {
++			NL_SET_ERR_MSG_MOD(st->fco->common.extack,
++					   "match on invalid fragment flag combination");
++			return -EINVAL;
+ 		}
+ 
++		/* extract VCAP fragment key and mask from verdict */
++		value = (vdt >> 4) & 0x3;
++		mask = vdt & 0x3;
++
+ 		err = vcap_rule_add_key_u32(st->vrule,
+ 					    VCAP_KF_L3_FRAGMENT_TYPE,
+ 					    value, mask);
+-- 
+2.43.0
+
 
