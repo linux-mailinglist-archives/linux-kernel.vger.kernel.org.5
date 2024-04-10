@@ -1,101 +1,120 @@
-Return-Path: <linux-kernel+bounces-138472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 757A689F1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C083E89F1CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:13:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1573B1F238ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:11:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 614A21F2522F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2020215B123;
-	Wed, 10 Apr 2024 12:11:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC0315B130;
+	Wed, 10 Apr 2024 12:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UETbghUH"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOMDK3vF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F87155395;
-	Wed, 10 Apr 2024 12:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264A615957F;
+	Wed, 10 Apr 2024 12:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712751068; cv=none; b=O3bMdiosGDFXmJc+bQI/ajaQWZiOYKnGdnr5a63aj/MllHggM9gtLzFww2ABMViqKNiyQLNjVCxVRJpGtPDcL6IwuK7MXTwkEH2Um/BrYUfUyVffF8QzNLBY6ip3xuTN2BtWd3DTOuhu8KGg4k0AelOAGFvhij1bULyA3XkBeKY=
+	t=1712751180; cv=none; b=gFn+/qMpnTEtf4n0WXB+CT6otXXxc/eh57FIBoFqJf7stY+dRx5e4Hj3Y7zX/PXoEbz+Z24rCU3Rv3zCnl7s4IOP8ROh7WOn1XdV5IM0nNor8vYTQ3u13IYnTjJPrhOj3jsB5k5NSTrbM1UxT7gW4ryG7UGPCYzHkBVLklqKWcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712751068; c=relaxed/simple;
-	bh=fCXmHu/sj1xLLBtmb9MsJcANXl0QSG8UGKO3OOLOI5U=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=ZwQWy4IsNZuF6gpYv+Rh5hnVzHIIBQSR6Fp+PdSvcmHit89OJlTj9qg7NXywjzazMtyZ2MNAkIcXIQW3x3SyVou6wKiwJkVM3+VSW4VO5CU9LmOaj9PN7Veyfp+4+8Ecq+n5M2sCGv1bdtySnI0pWl7Mtyulr2XoBDhBIFMKFqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UETbghUH; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=T3LuN1qZGAG1mn2CrH18sNzVhvy7sMk/dlTCxB4L9Uo=; b=UETbghUHyLxMARcTyfFfhvaPM2
-	/FF5w/vKOvU0qHFs1OGAhixNnPiOLHtJqaho3k4Pn125svSZA81JdZrnQP2IJR+K4qGRcgTj6CWLj
-	37Fagij1sLWAuVblPNMlKMc9MmyM5P56iCPsNTWaaJNrbt7qs3YyO9CXd3n4U8iZPwysQqZWsKVrs
-	p8fbVIyicXMTL+FWrCbDCW/21eqejyQ5VUfvrmnE9nCQnGOC1kw8aN7ZOKDXyMLOpBR2XwdwSyeXd
-	3FXLfFxd6fnTkuVLV7pN0l+DbwMXvfMIuL85owAzkaxs4zGghDeCvcjFkkfC51QULrDv4sK/+jg9P
-	DmUAOGeA==;
-Received: from [2a00:23ee:1400:1bb8:e7d6:9885:5536:57d8] (helo=[IPv6:::1])
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruWmu-00000004Psm-0dXv;
-	Wed, 10 Apr 2024 12:10:50 +0000
-Date: Wed, 10 Apr 2024 13:09:45 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
- Jack Allister <jalliste@amazon.com>
-CC: bp@alien8.de, corbet@lwn.net, dave.hansen@linux.intel.com, hpa@zytor.com,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de,
- x86@kernel.org, Dongli Zhang <dongli.zhang@oracle.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_1/2=5D_KVM?=
- =?US-ASCII?Q?=3A_x86=3A_Add_KVM=5F=5BGS=5DET=5F?=
- =?US-ASCII?Q?CLOCK=5FGUEST_for_accurate_KVM_clock_migration?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <005911c5-7f9d-4397-8145-a1ad4494484d@xen.org>
-References: <20240408220705.7637-1-jalliste@amazon.com> <20240410095244.77109-1-jalliste@amazon.com> <20240410095244.77109-2-jalliste@amazon.com> <005911c5-7f9d-4397-8145-a1ad4494484d@xen.org>
-Message-ID: <ED45576F-F1F4-452F-80CF-AACC723BFE7E@infradead.org>
+	s=arc-20240116; t=1712751180; c=relaxed/simple;
+	bh=I+uJ1g7ySn5pqQmYvDmMibVK1q6lbK+Bix95dorw6lU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eLEACflXpnChF2LYzocD6/FrWbRCd/RJ/fcbrHXE3WdV5EDYEqfbjXCJkiv/ocouddTThT1h+EhHfAUUyJBu13OCXraW6GH3rb4JdeYkDuj6ocTJiEgEPIWyFk/hHeC0hcZMKQ4amGXD+9WQQLwVDSMHqn21msH9xxJI2UQQ3rU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOMDK3vF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CEC7C433F1;
+	Wed, 10 Apr 2024 12:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712751179;
+	bh=I+uJ1g7ySn5pqQmYvDmMibVK1q6lbK+Bix95dorw6lU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kOMDK3vFckM481hPOtZFhyKikOF3E4sh/IDM/dHw7maAVbf24YzaX16PZz1lHCKkE
+	 yQLUyvsY6KbqzOEajn838MLjoKGk82wWjSvTJ8KpF6qo31BiVsd7vOlWQKWIAYW0/N
+	 rFTo6GtFKmziqfgF56pI5TdOhpbR74Wt8t3ypDAHgm2fXuorpLjpdyB7IH9cesq7ro
+	 BUlOqMHrA3Xf8jFiYJEZg59QKGILaQ7SKd0Rtp4sbANhYFtFjgDpGbLMb74tZINAfK
+	 SSVUaBALP0ZpgOIfCNghzgGmu/7SJ9TtQgJL63wk1Epjv1PzciMgOzGbRQ4hicMWO5
+	 ceWsnnaXb0l3A==
+Date: Wed, 10 Apr 2024 07:12:57 -0500
+From: Rob Herring <robh@kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	linux-ide@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-pci@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	David Airlie <airlied@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Anup Patel <apatel@ventanamicro.com>, linux-serial@vger.kernel.org,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Lee Jones <lee@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	devicetree@vger.kernel.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Stephen Boyd <sboyd@kernel.org>, Jacky Huang <ychuang3@nuvoton.com>,
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
+	Damien Le Moal <dlemoal@kernel.org>, Rich Felker <dalias@libc.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Arnd Bergmann <arnd@arndb.de>, David Rientjes <rientjes@google.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	dri-devel@lists.freedesktop.org,
+	Michael Turquette <mturquette@baylibre.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Helge Deller <deller@gmx.de>, Guo Ren <guoren@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-fbdev@vger.kernel.org
+Subject: Re: [RESEND v7 09/37] dt-binding: Add compatible SH7750 SoC
+Message-ID: <171275117279.4069088.5374906172942938203.robh@kernel.org>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp>
+ <4ac65d0f311e890c1ca92bf057c70954ec7ac351.1712207606.git.ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ac65d0f311e890c1ca92bf057c70954ec7ac351.1712207606.git.ysato@users.sourceforge.jp>
 
-On 10 April 2024 11:29:13 BST, Paul Durrant <xadimgnik@gmail=2Ecom> wrote:
->On 10/04/2024 10:52, Jack Allister wrote:
->> +	 * It's possible that this vCPU doesn't have a HVCLOCK configured
->> +	 * but the other vCPUs may=2E If this is the case calculate based
->> +	 * upon the time gathered in the seqcount but do not update the
->> +	 * vCPU specific PVTI=2E If we have one, then use that=2E
->
->Given this is a per-vCPU ioctl, why not fail in the case the vCPU doesn't=
- have HVCLOCK configured? Or is your intention that a GET/SET should always=
- work if TSC is stable?
 
-It definitely needs to work for SET even when the vCPU hasn't been run yet=
- (and doesn't have a hvclock in vcpu->arch=2Ehv_clock)=2E
+On Thu, 04 Apr 2024 14:14:20 +0900, Yoshinori Sato wrote:
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ---
+>  Documentation/devicetree/bindings/timer/renesas,tmu.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-I think it should ideally work for GET too=2E I did try arguing that if th=
-e vCPU hasn't set up its pvclock then why would it care if it's inaccurate?=
- But there's a pathological case of AMP where one vCPU is dedicated to an R=
-TOS or something, and only the *other* vCPUs bring up their pvclock=2E
-
-This of course brings you to the question of why we have it as a per-vCPU =
-ioctl at all? It only needs to be done *once* to get/set the KVM-wide clock
- And a function of *this* vCPU's TSC=2E And the point is that if we're in =
-use_master_clock mode, that's consistent across *all* vCPUs=2E There would =
-be a bunch of additional complexity in making it a VM ioctl though, especia=
-lly around the question of what to do if userspace tries to restore it when=
- there *aren't* any vCPUs yet=2E So we didn't do that=2E
-
+Acked-by: Rob Herring <robh@kernel.org>
 
 
