@@ -1,125 +1,163 @@
-Return-Path: <linux-kernel+bounces-139258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807A08A009B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:31:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC258A009D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A776E1C22D32
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:31:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4FD628611E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BC6181B89;
-	Wed, 10 Apr 2024 19:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10700181335;
+	Wed, 10 Apr 2024 19:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdXy5fwM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f07Bjwb7"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC55B181304;
-	Wed, 10 Apr 2024 19:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03DA172BBA;
+	Wed, 10 Apr 2024 19:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712777481; cv=none; b=sPR/m7zhlm7CsG5XLXftj46yPB2Jhd2lXSoJr7OjfWLteoff5gorMoHPNHFgsLNO+KKh0gGPmhPZ3SEeEOhQcNHgwVwkBOBNOwQNHu5IOV1GR+wQmSzuz5kbUm3g0ENHQsP2ZbiZQCr2NtYOIYIbIKQxxiVSsOlzLg34aVvLEbI=
+	t=1712777519; cv=none; b=jhDT5guajPadXGr6gvk91S6ZwAjHUUf4Hl1uuw+nteRKDyFHdHbFutehfI80vqEIGOlxKBmiMDzzxSxpbz8ETslHH06uIVsdCUuBQchtQ13BoJKZRLtl51gNyMg3zHAdRR43xihF21EkmPffuEAEJ+2+Q7bkkYJEJwbJ2GHdl0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712777481; c=relaxed/simple;
-	bh=6eTM4VhuvsbQDeuHbmODMEl94GKSafraflDKlk7n/uA=;
+	s=arc-20240116; t=1712777519; c=relaxed/simple;
+	bh=affGpGfenMt3WZroBCjBwcF6ti3VyPoji9ShXHx5Efo=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=h2Y1Nz/pccOjg/WjjlWOFsA/YKLU38jz9hzzPLaxZnyk6ZrqAqbyo4/bo3OblKeeBFYi3FGwbY6wclrMMV2WZV9jo1nMNriFBz1208wgUj7pY9RViUdV9TtT6CwRIQBWXeOqff9Qwoxmq/9L5il7vXnw0tsuw7f4iusoNDuKyWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdXy5fwM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A468C433C7;
-	Wed, 10 Apr 2024 19:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712777480;
-	bh=6eTM4VhuvsbQDeuHbmODMEl94GKSafraflDKlk7n/uA=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=NdXy5fwM+jtpqevCmddiKZLa5yybOo5x9HWwxeR/MqYO53Efrlny2lRqVrVUYCSsT
-	 GX1CEhVDJU8tffKJ98vOVxrstRm/Dml59u2xMwABxL7eeTq9uQo3xEekIjFHVRaEz5
-	 5Wn1jzukHs6ovFG1bWE3ttXFtXcEY6dD/MXf71wwaraSGfC4Ro+4CiIfX0BrMzvlhK
-	 yCPPczxi38O67YqwVFw9Uart+LfCkcE4eB7OULeESyZCOwXXearkwbnANY7yHKDFrA
-	 NQXmfCRLT6rQVb0SwHhVnWU3tqwKHp46MykV/xzmsWVFkX7Iv4/NZ5HdKRmMJnpFLI
-	 qDIFsETpgipNA==
-Date: Wed, 10 Apr 2024 21:31:13 +0200 (GMT+02:00)
-From: Matthieu Baerts <matttbe@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Geliang Tang <tanggeliang@kylinos.cn>
-Message-ID: <b8c14751-37a9-4a3d-b9af-a5c697d34781@kernel.org>
-In-Reply-To: <20240410113452.56f156f4@kernel.org>
-References: <20240410-upstream-net-next-20240405-mptcp-last-time-info-v2-0-f95bd6b33e51@kernel.org> <20240410113452.56f156f4@kernel.org>
-Subject: Re: [PATCH net-next v2 0/2] mptcp: add last time fields in
- mptcp_info
+	 Mime-Version:Content-Type; b=ipLmByWOCws7pcbw5qbu/DbSU5G6YbI5Ftl2IhTbcErpocoyBsUwcdaOmtHs4/xK/OYyul/nTUCTn7SyrN5hRvDpd/9WKguAOgl0eMDPEMq0AHSfKmQjX4rNHwonHaYd3g4Ub/HPfrfX62E1dbOohAp7kUhp/YR302GY5jugCMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f07Bjwb7; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78ebc7e1586so17629685a.1;
+        Wed, 10 Apr 2024 12:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712777516; x=1713382316; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vRad0l69ZdTLBrwskwW40rKN+aCOPQ7/4HlpEGp2GHg=;
+        b=f07Bjwb7ZswT+UfGBv3blNim4B+DOGbOhfz7OotZZvVVmDKGeW+gA3lQ+4u9gQY74n
+         XmbTpVARwql4Nqv5YQMsqgl0wMUU7CHly/2poUCpll5mHaDILRhbvsacgMXQBEU0cBnd
+         U3FKdP9N5wrp7nSMtw/LuUasY7HEdOxSkodTsw1GgQHTZM48x9LHz2f4WBdOFwSZ5peA
+         fhfJnQu11m3M5qXw1ZZKBevqU+CLo53MdOODYyChhQ1FTCcvXs7BCkp5T9MxVrB7Qq5k
+         fvxeaEBrEwOfY3ZHfBH9odXrUnKzEg3u+TisQ2PbbV5mTsaihvOanVM3RMhBhbDxx8zC
+         jizA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712777516; x=1713382316;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vRad0l69ZdTLBrwskwW40rKN+aCOPQ7/4HlpEGp2GHg=;
+        b=LoOELvQOyKRIgdPRApYDbUjdkIqasB8m1HsTWdBbx3n1prTZ0whXxe0ySlxMa7HLjz
+         IaD9wu7QwrRZqAjCvukROrpi3sOO8e6PmI4EcezN0gMUpJywuXkSaC1Dtbj2rrtqopRZ
+         t6+Sazwz+KoaIYfO/NpymdLZknhSA+tUmARs3uPf3tU5i0KIfZ4ufFlZReYWfPWGhUqO
+         dA0x3FXi2paq/CDqqWOs3s9k9BhYgtBB6NH0ImZvaudcUFQ5/3VQDtMaWRnKJQbWyeda
+         e/0tzA9EsiTqPmO4WdrYWlBf1RY+pthEGwhCvMpNIi1lHAqG590MEfc17SdLmLcxEXNF
+         rCJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUynTieedC1MFNaRSOiIS4k290gifQNdQyCN43k01UvRjTrRldhuclV3hOJLj4UoFRZ9WfgaxrzUkjt0FkDwn1nG9uFuzcGRAyC7ItuHWoPu3iar+Hb5syaHfrtJ1lv/+gsMQ5O
+X-Gm-Message-State: AOJu0Yw+YUms5zkfc+QSRZDxn4xNe2oIIuio1/AezwxuBRpDD/kEy2d4
+	6B2wsM2nJqnPT1uRrLP9QQg01NFE0sEltajxYKlbzrPcVDUqHiw7
+X-Google-Smtp-Source: AGHT+IHokfeWRwBPEGPxbbrpu6y71Sgk54duSGrxuVrM5UgHwWMzilpw5lVpfZ5v/1RNSLy2qu0hfg==
+X-Received: by 2002:a05:6214:287:b0:699:2dc0:8561 with SMTP id l7-20020a056214028700b006992dc08561mr1107698qvv.20.1712777516518;
+        Wed, 10 Apr 2024 12:31:56 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id qh9-20020a0562144c0900b006969f5d3159sm5447445qvb.50.2024.04.10.12.31.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 12:31:56 -0700 (PDT)
+Date: Wed, 10 Apr 2024 15:31:56 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>, 
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ John Fraker <jfraker@google.com>, 
+ netdev@vger.kernel.org, 
+ Praveen  Kaligineedi <pkaligineedi@google.com>, 
+ Harshitha Ramamurthy <hramamurthy@google.com>, 
+ Shailend Chand <shailend@google.com>, 
+ Willem de  Bruijn <willemb@google.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Junfeng Guo <junfeng.guo@intel.com>, 
+ Ziwei Xiao <ziweixiao@google.com>, 
+ Jeroen de Borst <jeroendb@google.com>, 
+ linux-kernel@vger.kernel.org, 
+ kory.maincent@bootlin.com, 
+ andrew@lunn.ch, 
+ richardcochran@gmail.com
+Message-ID: <6616e92cbcca_2bfabf294c5@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240410061928.712ff9a3@kernel.org>
+References: <20240408180918.2773238-1-jfraker@google.com>
+ <661550e348224_23a2b2294f7@willemb.c.googlers.com.notmuch>
+ <20240409172838.247738f3@kernel.org>
+ <87jzl5akh5.fsf@nvidia.com>
+ <20240410061928.712ff9a3@kernel.org>
+Subject: Re: [PATCH net-next] gve: Correctly report software timestamping
+ capabilities
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <b8c14751-37a9-4a3d-b9af-a5c697d34781@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hi Jakub,
+Jakub Kicinski wrote:
+> On Tue, 09 Apr 2024 21:40:46 -0700 Rahul Rameshbabu wrote:
+> > > My gut tells me we force drivers to set the ethtool op because
+> > > while at it they will probably also implement tx stamping.  
+> > 
+> > I think the logic should be the other way (in terms of the
+> > relationship). A call to skb_tx_timestamp should throw a warning if the
+> > driver does not advertise its timestamping capabilities. This way, a
+> > naive netdev driver for some lightweight device does not need to worry
+> > about this. I agree that anyone implementing tx timestamping should have
+> > this operation defined. An skb does not contain any mechanism to
+> > reference the driver's ethtool callback. Maybe the right choice is to
+> > have a ts capability function registered for each netdev that can be
+> > used by the core stack and that powers the ethtool operation as well
+> > instead of the existing callback for ethtool?
+> 
+> Adding a check which only need to runs once in the lifetime of
+> the driver to the fastpath may be a little awkward. Another option
+> would be a sufficiently intelligent grep, which would understand
+> which files constitute a driver. At which point grepping for 
+> the ethtool op and skb_tx_timestamp would be trivial?
 
-Thank you for your email!
+Many may not define the flags themselves, but defer this to
+ethtool_op_get_ts_info.
 
-10 Apr 2024 20:34:54 Jakub Kicinski <kuba@kernel.org>:
+A not so much intelligent, but sufficiently ugly, grep indicates
+not a a massive amount of many missing entries among ethernet
+drivers. But this first attempt is definitely lossy.
 
-> On Wed, 10 Apr 2024 11:48:23 +0200 Matthieu Baerts (NGI0) wrote:
->> These patches from Geliang add support for the "last time" field in
->> MPTCP Info, and verify that the counters look valid.
->>
->> Patch 1 adds these counters: last_data_sent, last_data_recv and
->> last_ack_recv. They are available in the MPTCP Info, so exposed via
->> getsockopt(MPTCP_INFO) and the Netlink Diag interface.
->>
->> Patch 2 adds a test in diag.sh MPTCP selftest, to check that the
->> counters have moved by at least 250ms, after having waited twice that
->> time.
->
-> Hi Mat, is this causing skips in selftests by any chance?
->
-> # 07 ....chk last_data_sent=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably not supp=
-orted
-> # 08 ....chk last_data_recv=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably not supp=
-orted
-> # 09 ....chk last_ack_recv=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably no=
-t supported
+$ for symbol in skb_tx_timestamp get_ts_info SOF_TIMESTAMPING_TX_SOFTWARE ethtool_op_get_ts_info "(SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info)"; do
+    echo -n "$symbol: ";
+    for i in `grep -nrIE "$symbol" drivers/net/ethernet/ | awk '{print $1}' | xargs dirname | uniq`; do echo $i; done | wc -l;
+  done
 
-Yes it does, I should have added a note about that, sorry: that's because
-SS needs to be patched as well to display the new counters.
+skb_tx_timestamp: 69
+get_ts_info: 66
+SOF_TIMESTAMPING_TX_SOFTWARE: 33
+ethtool_op_get_ts_info: 40
+(SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info): 59
 
-https://patchwork.kernel.org/project/mptcp/patch/fd9e850f1e00691204f1dfebc6=
-3c01c6a4318c10.1711705327.git.geliang@kernel.org/
+This does not add up, but that's because some drivers share prefixes,
+and some drivers have different paths where one open codes and the
+other calls ethtool_op_get_ts_info. Marvell is a good example of both:
 
-This patch will be sent when the kernel one will be accepted.
+$ grep -nrIE '(SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info)' drivers/net/ethernet
+/marvell
+drivers/net/ethernet/marvell/pxa168_eth.c:1367: .get_ts_info    = ethtool_op_get_ts_info,
+drivers/net/ethernet/marvell/mv643xx_eth.c:1756:        .get_ts_info            = ethtool_op_get_ts_info,
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:5266:   info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE |
+drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:962:          return ethtool_op_get_ts_info(netdev, info);
+drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:964:  info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE |
 
-Is it an issue? The modification of the selftests can be applied later
-if you prefer.
-
-Earlier today, I was looking at changing NIPA not to mark the whole
-selftest as "SKIP" but I saw it was not a bug: a check is there to
-mark everything as skipped if one subtest is marked as skipped
-from what I understood. So I guess we don't want to change that :)
-
-> I'll "hide it" from patchwork for now..
-> --
-> pw-bot: defer
-
-Thank you! Do you prefer if I resend only patch 1/2 for now?
-
-Cheers,
-Matt
+One more aside, no driver should have to advertise
+SOF_TIMESTAMPING_SOFTWARE or SOF_TIMESTAMPING_RAW_HARDWARE. Per
+Documentation/networking/timestamping.rst these are reporting flags,
+not recording flags. Devices only optionall record a timestamp.
 
