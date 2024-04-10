@@ -1,135 +1,183 @@
-Return-Path: <linux-kernel+bounces-138686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA5A89F909
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:59:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C13289F916
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668B51C27CB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:59:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BC61F2EDCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD086171654;
-	Wed, 10 Apr 2024 13:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE851607B5;
+	Wed, 10 Apr 2024 13:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="IzDMXIcE"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KqUHMNVf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552EF16F0C9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CE6158D76
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712757263; cv=none; b=VVoPTqa6VHonQKTol3a0+KNvndEPQNbqy2SHIV6hXRmfuNNliBxqBVwUsOdxH6m0YpFNsuIey25RE8CHlfTzlz7wchfcuz32yFdofWm9gj95Oe7f/DSuj5GSvt4hKbOosJbIVXiOSA97NA/R90GR7rthp78jxBDZYGGWw72TJi8=
+	t=1712757419; cv=none; b=DvOm/mpnbw1ey/eWW6Z99kEG0UH8zvQ66e4AV/aDbN8mz5CJsSH5UgAiMiHAXlRFZe83xAli7TGDC2hxbAXnbGgdV4u9Tc4RzsMclEvqsktxGDShDuKpKxS+naYDso2jDiDHWZUAPxTq8AXKMrupOzevinF1d02xCue6xBsGKw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712757263; c=relaxed/simple;
-	bh=FA/JdKZlZ4wileZrc4xp1llDql17/NQkyQ+ez5FGdwI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f0wzj7O8Mhz63F/TUhXp5qTKJB+lsjVKrNqdOsju9sWe1l5KJ5UoJbw4/wAfmjDmKPUWCjYXJwvyMvXzkUUN3NxphLERZjk/+lelqSZApEdmYgDZAfCM5oXrb06cFu0BDhdztDrjyRkkoy9OrBee6Q+3+B10cRK/tskJ/dHRvYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=IzDMXIcE; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a51d05c50b2so443478766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1712757259; x=1713362059; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=om0OP/V4nCTPs4aw/OiE4dwxH9wZZxHeDC9s7eqLnZs=;
-        b=IzDMXIcESBv5IrpIpcW0X1lmc+XKu6Zt15PO4BYAj+k6KhlUY+rEaJ2/xfD5Zex8J9
-         Va4A3MCsgWm6x+k5DyJrWn9mK9XN2mDe0UYfTnwAwmkwtkBv9zg/oLFtjokWoigLaDjJ
-         8eSDhOAeLObXl6TgaUyNBC2iQCVOyt3bv/supk4Qiyvxq0DKhJLu/f2sh15iyplApeEl
-         7FgAP7qMzVEWSY6ooCLvZuxnVLNcORaaj5F+x7d/5dgo/3N4IiXp+51vXXwwq/NZUY7p
-         ATSIgp5RaLQvVU7RUmAPy8dM1qo9bIF/9XOliLIFyIfl4IJCgCiZ9AAtmVJ9uBRDpQBD
-         9BnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712757259; x=1713362059;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=om0OP/V4nCTPs4aw/OiE4dwxH9wZZxHeDC9s7eqLnZs=;
-        b=lcTD6P+3nDkFxWmuaOuz0EHFBOcAwVMm2cTMg8QW27Ngz6gg5Zak5U03PEMdv3F8Vf
-         4zzpM0aWt7uaj3XrxnFmA+jPmq+LYGXFakf8egkWJc/KIFOtHR+D30LStCiKDPBghNuD
-         xquGNtJC/MRTZbb/pGYlY64jntdYLhCfzmI/pYjkLVItwGrr5MynSVzicEK7pd4k7pOU
-         FhRcvh3tAgaT6TcleYCktCFHQjVg7+DP5dHRcMRUVM/BrTGIFB4tSk2XrNFGVsGRGeoW
-         TOYQdY7RNJ2pV6M5/OMgfaueGZbj8xYm20dmCJL/bl/QfyBJNKzSsPBYwuaUbekcmg8T
-         +iiw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFBSm9pUlkzU2cnl4SkPpfM5hJ8pnHnQWOCnkJw4VhlB6r2zg2DaNYNYF+MeYm8MrnrBdiGkR+YBC+pUlQfWAiMkDf9gl1JzDL9TSG
-X-Gm-Message-State: AOJu0YxPSrGChbyEIpgfR8MS2SCMFPL5ePCL+E8Al0IAifm9jM5vorbn
-	3W7o83dhPYBzQVX6hEwzVwegQe7WXww7s1aiMSRzAxlvFNjfLsAPmoqiOvJFF4xNNqMRA0YEAJZ
-	M
-X-Google-Smtp-Source: AGHT+IGFaK7YauW3aftv+Qevb50NofJrq4hZ5pzMklC6FKomV3FAiFrZZzWTPk+ZoftKIoNvunVBHg==
-X-Received: by 2002:a17:906:4a54:b0:a51:d1a7:ad6 with SMTP id a20-20020a1709064a5400b00a51d1a70ad6mr1598346ejv.76.1712757259608;
-        Wed, 10 Apr 2024 06:54:19 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.8])
-        by smtp.gmail.com with ESMTPSA id j24-20020a17090643d800b00a51d46c684csm3979691ejn.89.2024.04.10.06.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 06:54:19 -0700 (PDT)
-From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-To: wsa+renesas@sang-engineering.com,
-	ulf.hansson@linaro.org
-Cc: linux-mmc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Hien Huynh <hien.huynh.px@renesas.com>
-Subject: [PATCH v2] mmc: renesas_sdhi: Set the SDBUF after reset
-Date: Wed, 10 Apr 2024 16:54:16 +0300
-Message-Id: <20240410135416.2139173-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712757419; c=relaxed/simple;
+	bh=a/6fPJB+6sGt2baLsQ7SF9JR4r2ue+Tbv6yypaQjgaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XGbl0bomwd5gK46jEciZn3t7R1FTKTvk8L/rfYFgkaOjgTgdMPJJGQduTqiyzIsZdONMLCeIZfBivH8YcI0qKvKfZSAZM/nHqXmHdAkBUHDKu6mUF5k99ld9PTAbD9+XFsuQgKpb3t1koLSdcUQ1yASygp5z+8vCKDwhMy4bkpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KqUHMNVf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712757417;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zFdmNMDYQQLVXYS/kWQ3R+qYUh/fOYpQJWGMU6aElHc=;
+	b=KqUHMNVfPThlKi/IbZcevsou13qFnYa+heUIUjUb3d4/t/iz+cba04ZM4dcgKIL7nXa6mY
+	PAbT/mEND9+qVsxAchKmXqebz6LwdO2rlNjqlWfZiefu4RQAvmTAyoJhYphbmdP1LaGgnz
+	bmz6pzcE4+iruaWH47ZjtRUFPA1+ADM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-621-Yd4TuNPJPj-_4e2NFH8VpA-1; Wed, 10 Apr 2024 09:56:53 -0400
+X-MC-Unique: Yd4TuNPJPj-_4e2NFH8VpA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 297C38007BA;
+	Wed, 10 Apr 2024 13:56:53 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.47])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 459032166B34;
+	Wed, 10 Apr 2024 13:56:50 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 10 Apr 2024 15:55:27 +0200 (CEST)
+Date: Wed, 10 Apr 2024 15:55:19 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Nicholas Piggin <npiggin@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: Re: Nohz_full on boot CPU is broken (was: Re: [PATCH v2 1/1] wq:
+ Avoid using isolated cpus' timers on queue_delayed_work)
+Message-ID: <20240410135518.GA25421@redhat.com>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <Zg2qFinSkAOmRHcM@slm.duckdns.org>
+ <20240403203814.GD31764@redhat.com>
+ <20240405140449.GB22839@redhat.com>
+ <ZhByg-xQv6_PC3Pd@localhost.localdomain>
+ <20240407130914.GA10796@redhat.com>
+ <ZhUu0uQxPgcXmQes@localhost.localdomain>
+ <20240409130727.GC29396@redhat.com>
+ <D0G5OX8W9NH9.1HE33RVAROAJK@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D0G5OX8W9NH9.1HE33RVAROAJK@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-For development purpose, renesas_sdhi_probe() could be called w/
-dma_ops = NULL to force the usage of PIO mode. In this case the
-renesas_sdhi_enable_dma() will not be called before transferring data.
+Hi Nicholas,
 
-If renesas_sdhi_enable_dma() is not called, renesas_sdhi_clk_enable()
-call from renesas_sdhi_probe() will configure SDBUF by calling the
-renesas_sdhi_sdbuf_width() function, but then SDBUF will be reset in
-tmio_mmc_host_probe() when calling tmio_mmc_reset() though host->reset().
-If SDBUF is zero the data transfer will not work in PIO mode for RZ/G3S.
+On 04/10, Nicholas Piggin wrote:
+>
+> Thanks for this. Taking a while to page this back in, the intention is
+> for housekeeping to be done by boot CPU until house keeper is awake, so
+> returning smp_processor_id() seems like the right thing to do here for
+> ephemeral jobs like timers and work, provided that CPU / mask is not
+> stored somewhere long term by the caller.
+>
+> For things that set an affinity like kthread, sched, maybe managed
+> irqs, and such.
+>
+> There are not many callers of housekeeping_any_cpu() so that's easy
+> enough to verify. But similar like housekeeping_cpumask() and others
+> could be an issue or at least a foot-gun, I'm not sure how well I
+> convinced myself of those.
+>
+> Could you test like this?
+>
+>   WARN_ON_ONCE(system_state == SYSTEM_RUNNING ||
+>                type != HK_TYPE_TIMER);
+>
+> With a comment to say other ephemeral mask types could be exempted if
+> needed.
 
-To fix this call again the renesas_sdhi_sdbuf_width(host, 16) in
-renesas_sdhi_reset(). The call of renesas_sdhi_sdbuf_width() was not
-removed from renesas_sdhi_clk_enable() as the host->reset() is optional.
+Sorry, I don't understand... Let me repeat, I know absolutely nothing
+about nonhz/etc. I didn't even try to really fix the problem(s), I am
+only trying to find a minimal/simple workaround to fix the problem we
+hit in Red Hat.
 
-Co-developed-by: Hien Huynh <hien.huynh.px@renesas.com>
-Signed-off-by: Hien Huynh <hien.huynh.px@renesas.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
+This is what I was going to send:
 
-Changes in v2:
-- fixed typos in commit description
-- limit the comment lines to 80 chars
+	--- a/kernel/sched/isolation.c
+	+++ b/kernel/sched/isolation.c
+	@@ -46,7 +46,15 @@ int housekeeping_any_cpu(enum hk_type type)
+				if (cpu < nr_cpu_ids)
+					return cpu;
+	 
+	-			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
+	+			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
+	+			if (likely(cpu < nr_cpu_ids))
+	+				return cpu;
+	+			/*
+	+			 * Unless we have another problem this can only happen
+	+			 * at boot time before start_secondary() brings the 1st
+	+			 * housekeeping CPU up.
+	+			 */
+	+			WARN_ON_ONCE(system_state == SYSTEM_RUNNING);
+			}
+		}
+		return smp_processor_id();
 
- drivers/mmc/host/renesas_sdhi_core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Yes, this fixes the symptom, not the problem. And yes, "another problem"
+mentioned in the comment is very possible, say "maxcpus" kernel-parameter
+can be less than the first housekeeping cpu. But in this case the user
+should blame himself (and I am not sure the kernel will boot).
 
-diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
-index f84f60139bcf..5233731a94c4 100644
---- a/drivers/mmc/host/renesas_sdhi_core.c
-+++ b/drivers/mmc/host/renesas_sdhi_core.c
-@@ -589,6 +589,12 @@ static void renesas_sdhi_reset(struct tmio_mmc_host *host, bool preserve)
- 			sd_ctrl_write16(host, CTL_RESET_SD, 0x0001);
- 			priv->needs_adjust_hs400 = false;
- 			renesas_sdhi_set_clock(host, host->clk_cache);
-+
-+			/*
-+			 * In case the controller works in PIO mode the SDBUF
-+			 * needs to be set as its reset value is zero.
-+			 */
-+			renesas_sdhi_sdbuf_width(host, 16);
- 		} else if (priv->scc_ctl) {
- 			renesas_sdhi_scc_reset(host, priv);
- 		}
--- 
-2.39.2
+I don't understand why do you suggest to add "|| type != HK_TYPE_TIMER",
+currently all the callers of housekeeping_any_cpu() use type == HK_TIMER.
+But OK, I can add this check. I guess for the case it finds another user
+with type != HK_TYPE_TIMER which can't use smp_processor_id() even at
+boot time or stores the returned CPU for the long term.
+
+Will you agree with the change above or what do you suggest instead as
+a simple workaround?
+
+
+> It would also be nice to warn for cases that would be bugs if the boot
+> CPU was not in the HK mask. Could that be done by having a
+> housekeepers_online() call after smp_init() (maybe at the start of
+> sched_init_smp()) that could verify there is at least one online, and
+> set a flag that could be used to create warnings.
+
+Again, I am not sure I understand, but I too thought that something like
+
+	housekeeping_check(void)
+	{
+		for_each_set_bit(type, &housekeeping.flags, HK_TYPE_MAX) {
+			if (!cpumask_intersects(cpu_online, housekeeping.cpumasks[type]))
+				panic();
+		}
+
+after bringup_nonboot_cpus(setup_max_cpus).
+
+But I am not sure this is correct and this is another (although related) issue.
+
+Oleg.
 
 
