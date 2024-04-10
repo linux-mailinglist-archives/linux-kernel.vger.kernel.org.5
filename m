@@ -1,129 +1,119 @@
-Return-Path: <linux-kernel+bounces-138546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4C589F336
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:59:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B59089F338
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B3631C26C20
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:59:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5DAE1F2B018
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4889E15B136;
-	Wed, 10 Apr 2024 12:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB6015E1E2;
+	Wed, 10 Apr 2024 12:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MiKRZFQA"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Qo/aNGXx"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27EB156F23
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445A315D5DB
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753886; cv=none; b=e8POVtQAJ3aYEv0UgeGGCp5aC6yo1FqrQhac41kFTTbyXq5A3VtmrLRBUanP2iUXH+GoQoI/LV/vhcQIWP2UqmvRRqQEKy4B2pwIYtY+Ns1MlO/z5N+XjQ5Tn0lkAb9kAjR5Xxpy5tQQu9HATwvCwaHJFHAdF2/kaOPbQks8ylg=
+	t=1712753896; cv=none; b=L/hpQpJAhm+8BWUN/g5TKNWZNd6UQGEg5MKn7PXXzm4ZnE0gCqt438giW9foMVtZXnuecC45yHv/Qjz81QDpKl20JDdvlVjaR4adYLzD2dUxwi1lreNeV1jeB2aJp9YkfPg4jzkF3PEhq4Z4Oas9+BrlmstqbDulHgU9B8OG4UM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753886; c=relaxed/simple;
-	bh=nJUi9rPZej+h44WRD6Xh/z4m8frw/jvIQlcyirl031g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fIEbf+ca0UIV7N4vK5QMYlMCVU5xD+C4D/84m08Y3K9npnyFwXvCHSiO20KfT8I2onK7pFr62tlwuLF0l69UioChkVcd1uNXyrz68Db7Em+AmibYJx66fJdTl4EtlQItDh3CFnPtyp6Z3gZgZQ382/od0bh8V4V5vsxOBInMlZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MiKRZFQA; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51c6e91793so613803566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:58:04 -0700 (PDT)
+	s=arc-20240116; t=1712753896; c=relaxed/simple;
+	bh=XvD5fOS/hQ7HPF9KYvW4fabBNiId/tBgRPWvKt02DhA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CO+FRkstnIlMZh/8ze0LBjHKNFkQpJnJ2pzvhaHNevSkkbEnV2mJJsWqJdnygg2wtIePR3kPC2oDglb5N1fTNsj7B/GZXHy+/4CleJyWx3jUc9oc4E4CNJE8YaWlOLPNbJlhdJLxCi5Zgo6AO+a+jhfksckO5nX23DINei/iI1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Qo/aNGXx; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-34665dd7610so329509f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712753883; x=1713358683; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ERc0Mc3295DMpduY6C379p9vkt2xRGs6pLrBozDiTnc=;
-        b=MiKRZFQAfLCl2D9mmdJoMaWxpfVG1dfILPb3AaIfhZxHwVdbONiJN1wiuNnxtJJKH9
-         0y38ozzdxCkQpNR/Cp3/nBKUzLCMicTxJfZIptit+L3placcTAee/hTFCFd82fh0JCbp
-         Yz73HFlO5M9DouUmmNre89bk638qSkX92dUH/aGcw9qyZcqSa+XiAvKoxoYtcrOeKVYd
-         9exJLDyqOJfhAW3VzA5S9xdU8P5vPlDy9czClTzrhUtSlBzkgNLqmmmcep5e+5CuBAd/
-         SKNd2/dwYj0QUELXqYV7XUy8kkKB1NqTCQwlNe7t+W8Yzn/ANkFdKZdIQrX/jASltMrJ
-         lFNQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712753892; x=1713358692; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SAPCyLKBSHRTWSRRoqdJH1JxTgNtm+xffvG0gyEDWQ8=;
+        b=Qo/aNGXxjrUKSLafOFe4kqGTXdywcDhIyb+D2RJoIL8MoP7akMSk1Mge0BuVmQQrpE
+         KwRQAWfrHVtVfWFINSlOgPAhA4f9Vfq3os839cFuU0aSfvRx6Eg4hxippPBgbyudFq6x
+         IDCyhs/jxVUs0IVXIOuTcfzwyzcsD6+zACc8BeYmW2rB4H/bdfkcnn1S39SnU7dlIMuI
+         1TtQ1lRl/1cys3h25u5vJJtceF4PxApK+6BQMdyDlJLwkti/hKf7DBXCtM6coIFk8AXl
+         VswfYJd1FxYFhUXinHRZ1VpcHd1eOzT+heN+JdkEeUkWh0tzUoKBLhixy+yRkjM5kjfV
+         fqCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712753883; x=1713358683;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ERc0Mc3295DMpduY6C379p9vkt2xRGs6pLrBozDiTnc=;
-        b=IRGbuJ/+GlHDoOc8bEeNItw4jRzvUra+9fEcFlirYGsC84xT5mdG9DnCzV/CM53FeE
-         M5ESYnAkha5PcI+Js17A/f/CCXrFsZVhXaIOA0li59UlaKHihHpLzCOZxizRSZVNNEWJ
-         OTbVAye0AAe65VyW0dZ/VNQap5I2MKyENKWgEyPi8O5m0+LXbBIcr9U7neXyPTnnGoXy
-         oLA6GZj06mXUzPjHZZ/gb3TCKcEINClmmL5swKMIGQ1rtvIGwn2w4Owz8i4hUcC2+Kwo
-         J8Lq/V6+rDC55vnfXZf9x4kzX+/dbTCppl73L//iowyI4Oy1KPN0ZrS5wddGw62Di18G
-         JXlA==
-X-Gm-Message-State: AOJu0YzkdUsTKf60gZ+dl1NbZUcniPkd4uDyFFskHWEqJsOTPGkxNoa/
-	DwntrBmleRbPsUCOFMpuIX11+25beEuSszrKJZIEaqpFLDFGOd1ncKZwteqaUxtWGw==
-X-Google-Smtp-Source: AGHT+IG0BPNBEFTKAfB0H0Zu/fSg3ECNuPRVpK4VhqxdwzkPz4eA4nBzPl2mnc36IMRVR/eE3FxPQA==
-X-Received: by 2002:a17:907:86a7:b0:a52:176c:15f with SMTP id qa39-20020a17090786a700b00a52176c015fmr223791ejc.15.1712753882634;
-        Wed, 10 Apr 2024 05:58:02 -0700 (PDT)
-Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
-        by smtp.gmail.com with ESMTPSA id q18-20020aa7d452000000b0056e247de8e3sm6418852edr.1.2024.04.10.05.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 05:58:02 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Apr 2024 14:58:00 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Conrad Grobler <grobler@google.com>,
-	Kevin Loughlin <kevinloughlin@google.com>
-Subject: Re: [PATCH] x86/boot/64: Clear CR4.PGE to disable global 1:1 mappings
-Message-ID: <ZhaM2N3EONa7tNgl@gmail.com>
-References: <20240410102520.348017-2-ardb+git@google.com>
+        d=1e100.net; s=20230601; t=1712753892; x=1713358692;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SAPCyLKBSHRTWSRRoqdJH1JxTgNtm+xffvG0gyEDWQ8=;
+        b=iBn89xW6Cutqlr91Qm05N8xtVR62mGy8uhXx7toGYtWF4q54OJHNd+mQTS/bq0uFm8
+         M0g4KekYtVho43j1rSUQmWYP5trPTbc/uMxyzdwHGE6PRMs66K0jr+ZGaxB+HjkpA+wv
+         7F2HHBx00s0LoNovht75vjieTm+QWNukzuFYIem/d7GQB9w6n0D07WNA8GmMUKk5coWk
+         hgaW+3eB2OfrMLyAc9haihvB5EKCqy3YYWa2FeQiGtyX2G59PWeB/8c/W5O12berF5EO
+         Q2xwQQhrn2qiy1VZS+2sWOw+R4MVOUPEULDPQJy1mK50wfQHEpFGWkRPVzFcV4E2AD09
+         EvSg==
+X-Forwarded-Encrypted: i=1; AJvYcCU9RLeoxZqMeGIMR0jtpqMX44EHfQOiJp46RRZTEsnDK5OjrdvP6yul0flp/Xl8AGTjGS+dqo/as79SooIq7Viq9+3TI8pIrr8WJXyV
+X-Gm-Message-State: AOJu0YzqZYUbff20amRREyk7bovWlLm8Nkjy8ZbHF/yB5MVvDowRZghD
+	ytEoWaqejk0TtB1jBuGZbOdfY6Q8BhvXsvHckzDXUFP6JEbaQU0L8pYpi2IuPac=
+X-Google-Smtp-Source: AGHT+IHfa120qRAfspKcAyRMy5PXxHlCGJzmW0vlTzwyQGnoeYFwCg8fQKa0TokP1NrBdWntPAlpFg==
+X-Received: by 2002:adf:ee8c:0:b0:346:47d6:5d17 with SMTP id b12-20020adfee8c000000b0034647d65d17mr1758280wro.57.1712753891611;
+        Wed, 10 Apr 2024 05:58:11 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id l4-20020a5d4104000000b00343e392829dsm13404941wrp.97.2024.04.10.05.58.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:58:11 -0700 (PDT)
+Message-ID: <4c43eafe-f173-4a35-962f-a5f5f020a587@baylibre.com>
+Date: Wed, 10 Apr 2024 14:58:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410102520.348017-2-ardb+git@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 03/18] ASoC: mediatek: mt8188: Migrate to
+ mtk_soundcard_common_probe
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-4-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409113310.303261-4-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Similar changes has been done for mt8365, it works.
 
-* Ard Biesheuvel <ardb+git@google.com> wrote:
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> The early 64-bit boot code must be entered with a 1:1 mapping of the
-> bootable image, but it cannot operate without a 1:1 mapping of all the
-> assets in memory that it accesses, and therefore, it creates such
-> mappings for all known assets upfront, and additional ones on demand
-> when a page fault happens on a memory address.
-> 
-> These mappings are created with the global bit G set, as the flags used
-> to create page table descriptors are based on __PAGE_KERNEL_LARGE_EXEC
-> defined by the core kernel, even though the context where these mappings
-> are used is very different.
-> 
-> This means that the TLB maintenance carried out by the decompressor is
-> not sufficient if it is entered with CR4.PGE enabled, which has been
-> observed to happen with the stage0 bootloader of project Oak. While this
-> is a dubious practice if no global mappings are being used to begin
-> with, the decompressor is clearly at fault here for creating global
-> mappings and not performing the appropriate TLB maintenance.
-> 
-> Since commit
-> 
->   f97b67a773cd84b ("x86/decompressor: Only call the trampoline when changing paging levels")
-> 
-> CR4 is no longer modified by the decompressor if no change in the number
-> of paging levels is needed. Before that, CR4 would always be set to a
-> known value with PGE cleared.
+On 09/04/2024 13:32, AngeloGioacchino Del Regno wrote:
+> Add mtk_soundcard_pdata platform data for the MediaTek common sound card
+> probe mechanism, including a driver/soc-specific probe extension (used
+> for bits that cannot be commonized  hence specific to this driver), and
+> change the probe function to mtk_soundcard_common_probe.
 
-So if we do this for robustness & historical pre-f97b67a773cd84b 
-quirk-reliance's sake, I'd prefer if we loaded a known CR4 value again, 
-instead of just turning off the PGE bit.
-
-It's probably also a tiny bit faster, as no CR4 read has to be performed.
-
-Thanks,
-
-	Ingo
+-- 
+Regards,
+Alexandre
 
