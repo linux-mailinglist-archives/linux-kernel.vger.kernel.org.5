@@ -1,135 +1,118 @@
-Return-Path: <linux-kernel+bounces-139132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38F3389FEF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:47:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0B389FC82
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E36FC1F24697
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:47:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7127D1C219AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A9F18410C;
-	Wed, 10 Apr 2024 17:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B1117921F;
+	Wed, 10 Apr 2024 16:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="vTXNDlrQ"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="WH8YFB8k"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F4D180A70;
-	Wed, 10 Apr 2024 17:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949F8178CF4;
+	Wed, 10 Apr 2024 16:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771102; cv=none; b=oa5ZjTH7gFpovmjxb8LKjY5Vy9ryBfMCawef3rn6kp1MLQpz/I1fA6F4JPVqKPN+Qf2Jr9qUzA9/XYyo8Ni69lVqf6QzxC5zS3r70ZuFgpEZPZDieWfmgoZDXWq69pAq/wG1sc/4hlePIEY3vw2S9GTtHpMz8ifIf/Es0/ly8BM=
+	t=1712765332; cv=none; b=KfJaoOz7x1Z//5XG0kv6hYrfwkotuOD8htafZhzM+fm2mcEnlIc9ZGT9IVi5VuNqFAnhZfBf7fQtfDPwshJn7vfeXPBvIINcpRTZu7t5m7z/BejJ0dxBafSpYJC409PMiphz6MxgAoDpubt6nojWDwhsbKCdVvODPjmnb62QI8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771102; c=relaxed/simple;
-	bh=B5J+m5y9UQ7/XO42/yL80vp+siK13YMOr1jwCBLtv20=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RjldZiuiPQyCX47x4tgUbQP/o8T73dRkw9IACd37vqUIlErLg+lCaIXyctK0z0oQC0Pa/BezMFapCuW3EFKUyn0WFk9Jl3dVTLfvcyuP5dtlOkDf7Eu91YqP0/Lm/2IZJJPSjIPLM+jUHMgEqYO4q/3ogWlqngCzVBx+jFAZU6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=vTXNDlrQ reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 8e9c8fcf2b46ca6d; Wed, 10 Apr 2024 19:44:58 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id B120C66C66F;
-	Wed, 10 Apr 2024 19:44:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712771098;
-	bh=B5J+m5y9UQ7/XO42/yL80vp+siK13YMOr1jwCBLtv20=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=vTXNDlrQrLZLZ+DIPbKXtKFERmXMFd/BKaq5iY/ptj3X5BHn0QHbPpvRYPdZ042Or
-	 R8kwjnhzNUQODnlTH1/7uXBZG3QiUOrKQMOSSdnjKT8u7ieiCKnYmEzIDBS+ru/v7I
-	 C84N3nrZAXrrwHEQ8pLQyo3Ggidt0UTNb8MjQZPGO+EnmhRl2Z+xEQCBcnjsVpiOVG
-	 c48sE/eb0GbsbhYaW4gmnEbPwxUxe6lYXAAzILyMS5baK7h/EbJbyAO1mc7QUhLYLY
-	 QX5Cjlq6rPlRCx9IeCHSXT9z0FnKhXtnatGu2K1nIZrqM3x1ce7cMNl2rpxhNbBy1s
-	 5MzUjy64bhK+w==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 05/16] thermal: core: Introduce .manage() callback for thermal
- governors
-Date: Wed, 10 Apr 2024 18:08:12 +0200
-Message-ID: <3242862.5fSG56mABF@kreacher>
-In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
-References: <13515747.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1712765332; c=relaxed/simple;
+	bh=uIp+Ly6NhCx68e61qpQZ5cWRk4j7iTO0QltCVLYEnfY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fQ0OSBOTAWzYZyg4hr9taUnT6JEw9VgOYDFoP/RDj0RKRpMWyn5T8JA7oTAZEhmdwwf4KkZ/a+RHs40ifQyRx/eRe/GqOdLBfiK/SQl0Onpm5qhj8FBM3oVJ04GG+yksVaozvOSjZ4/D8EtnXK+6mnwM9rT8+Dvwl+a0lqLXxsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=WH8YFB8k; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43AAVPBH003230;
+	Wed, 10 Apr 2024 11:08:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=O
+	CzWokGvgPVgqbKJreriPnsCx85RwRyagqB/QJQ8/vI=; b=WH8YFB8kpbw2FOPVK
+	wqKtZfOfJwamIjjmbrH78vmjCngoOQmuH9js5Z3KcCr5tjkWdbrTYM7wbYG8TfwJ
+	FngR/S+2R7ag6YQuKiJlHccKktGxSGNtZbofUgJoW+s2pLjPZW0l4D7F8Cv1j81b
+	1IjP7PQzMNl7dy3mEMk+/NpIE8+/cFvOB4HgXSRuwxLBwOaBeF5QrVsJ/3gVtjf7
+	2r8Ta6n/L+HDjsXJIiIgAJPGwJVpFBkNtFcj5MeFk4qvD9MuOeO/pMcXJoeF8sq2
+	Nh1/Bp+8r+J4DNM0P8Pbhsp19/u9uw/qNqYimfgBDtm/SH9RgTVEttfe5Hkl+3sE
+	JI95w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxn7k0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 11:08:39 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 10 Apr
+ 2024 17:08:37 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Wed, 10 Apr 2024 17:08:37 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.213])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C104682024A;
+	Wed, 10 Apr 2024 16:08:36 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Include array_size.h
+Date: Wed, 10 Apr 2024 17:08:33 +0100
+Message-ID: <20240410160833.20837-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddufecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Itkn7BXLBpQp6x6Z1s9Jn7mBqLTJXMsw
+X-Proofpoint-GUID: Itkn7BXLBpQp6x6Z1s9Jn7mBqLTJXMsw
+X-Proofpoint-Spam-Reason: safe
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Explicitly #include array_size.h for the source files that use
+ARRAY_SIZE().
 
-Introduce a new thermal governor callback called .manage() that will be
-invoked once per thermal zone update after processing all of the trip
-points in the core.
-
-This will allow governors that look at multiple trip points together
-to check all of them in a consistent configuration, so they don't need
-to play tricks with skipping .throttle() invocations that they are not
-interested in and they can avoid carrying out the same computations for
-multiple times in one cycle.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/thermal/thermal_core.c |    3 +++
- drivers/thermal/thermal_core.h |    2 ++
- 2 files changed, 5 insertions(+)
+ sound/soc/codecs/cs35l56-shared.c | 1 +
+ sound/soc/codecs/cs35l56.c        | 1 +
+ 2 files changed, 2 insertions(+)
 
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -516,6 +516,9 @@ void __thermal_zone_device_update(struct
- 			governor->trip_crossed(tz, &td->trip, false);
- 	}
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index ec1d95e57061..3aa39f5923eb 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -5,6 +5,7 @@
+ // Copyright (C) 2023 Cirrus Logic, Inc. and
+ //                    Cirrus Logic International Semiconductor Ltd.
  
-+	if (governor->manage)
-+		governor->manage(tz);
-+
- 	monitor_thermal_zone(tz);
- }
++#include <linux/array_size.h>
+ #include <linux/firmware/cirrus/wmfw.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 6331b8c6136e..dfd703d9e12f 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -6,6 +6,7 @@
+ //                    Cirrus Logic International Semiconductor Ltd.
  
-Index: linux-pm/drivers/thermal/thermal_core.h
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -31,6 +31,7 @@ struct thermal_trip_desc {
-  * @unbind_from_tz:	callback called when a governor is unbound from a
-  *			thermal zone.
-  * @trip_crossed:	called for trip points that have just been crossed
-+ * @manage:	called on thermal zone temperature updates
-  * @throttle:	callback called for every trip point even if temperature is
-  *		below the trip point temperature
-  * @update_tz:	callback called when thermal zone internals have changed, e.g.
-@@ -44,6 +45,7 @@ struct thermal_governor {
- 	void (*trip_crossed)(struct thermal_zone_device *tz,
- 			     const struct thermal_trip *trip,
- 			     bool crossed_up);
-+	void (*manage)(struct thermal_zone_device *tz);
- 	int (*throttle)(struct thermal_zone_device *tz,
- 			const struct thermal_trip *trip);
- 	void (*update_tz)(struct thermal_zone_device *tz,
-
-
+ #include <linux/acpi.h>
++#include <linux/array_size.h>
+ #include <linux/completion.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+-- 
+2.39.2
 
 
