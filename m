@@ -1,73 +1,39 @@
-Return-Path: <linux-kernel+bounces-138119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E570189ECD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:57:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF18289ECD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:58:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C202283C7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:57:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7D51F234EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770B613D2AA;
-	Wed, 10 Apr 2024 07:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kaeV3UOY"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF4B13D26E;
-	Wed, 10 Apr 2024 07:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E7313D506;
+	Wed, 10 Apr 2024 07:57:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B029613D2BC
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712735833; cv=none; b=SN5TNyru/QN+4DIcJfGJVr1mIt+kqd0wNPkkRqptSvQXZh7juJ7jQBhbg8laUInUHByd1sOwUVPh8fzx3s1UzTHDvXiljExYszMeiERXbK9s37FV3lcN+T3uNDfJZZlp6FrhQUvKodhc964GIW9uuZQdLJxoVOPZLr3wJuYioBg=
+	t=1712735870; cv=none; b=S+4PNKnT8vgD3WbqkFByWnqboS7c2thCDwjjZXpwEwThh+0iH/k8O/bUX+zCWe/2/JlrdcWtLjv5DQYEbaD8JXezZalModSltuDus13hkK8bkpb/1j1gsyJteHinSg4yT9h4yQCm6hvTxwk8srciDOL+0TcyWUMu314J05kD9H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712735833; c=relaxed/simple;
-	bh=N8vrAP5uFQOixMvkqZwjkipHkwliYmWjkU6FwbXfrGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=oRHWWQ9bBZs+a38JjX3TUMaag7nE698uov+El3xcwBmzbGhDifuuVdLtt+G154Olp1fa//hY0dw5yZfnfbieNDVQAm/YYHlFF/G4PB7d+RJC98Hb9Pc/Bp10M3vSwnBODaFMbVvneyvCCiNMNF/1/h3JWrPZFjzp3YwRjqPrxXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kaeV3UOY; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d04fc04bso9926964e87.2;
-        Wed, 10 Apr 2024 00:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712735830; x=1713340630; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kLwE5KUr5O6m0SoJrIs5Ku904XnsinbX3SC9qeup24Q=;
-        b=kaeV3UOY1bJtIR0750dqY2KbZ66jt+jr7nm2sRw6dOtwqfygTpZyLhW7XtuMkkBhYj
-         NZNCsp9D49ffMeIBw2fyGaSNnwBs+yi/9Ft1AUpHqOFEOzPVwYBlOrO4P3vRqZCOXEwN
-         aFsR0/bqZ2Hg6uFJP3pZnHia2C65vPg4As044DJNs2Y/d9YYH+JZIveraIqB0Xqo6gGe
-         NsfYLXtgvQ2t6OvRyQjRdWsD3vqufI97NS7CQYtOuqadBnoGoWLLJa1WPlVCkwloDvoz
-         Q1RkGbif+eFeqrosF1zkOhJqXe0/zEgS0CCp4kq2sAia8bIGjCxRJjcZZGuvxyHNpWsV
-         +7vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712735830; x=1713340630;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kLwE5KUr5O6m0SoJrIs5Ku904XnsinbX3SC9qeup24Q=;
-        b=WTnQK8cVB30Uj6jqxyMZ/aDErImNiP67Plcjs6wGQCINgNqdDVbNCZR6Oh7t42ndRu
-         huiyN9m22a8lCx9xru4pDSfFKqz67P/HOqbTWGloy2kDwVWUCOYRKMJFjiKwkmQ4Ypg1
-         aSjvFgET2OSrDQmuYIReWZ2A0rX5CVnAxAWfbL2YAiXsrAyvyQUxroDM+CU+QpvuFCef
-         T1Yk+lH6FOTCG8ehL1xO2JUIyKqX7AqYQNy2UpdhBQWg2lwzRBKEQeULLWP2uAt7tx2q
-         BKsRXvHi+qSfWE9F+yaU1x3e2rD2/AwNBbljuDz+F0IdN8DMUvIoz1kXrctBcQMaKbFT
-         bl6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVIObGWNXMJe/wGNKNg/pn+uwknVyCsaToKfh/4zsRFg19jj6S7SOkoPXeAVPsFfsAoEwxOFEDXe78eWXUTTflV4FjyoEoDdNwofR62p4oAVWgQa9W6QSqQfqEK1UHdkjSKwWbaKGT30Q==
-X-Gm-Message-State: AOJu0YztGt/F3VyN3d8AmADgny1V2NFLwdzAXmAm7yHN1CRfsnNExG0A
-	dqNDxTOa+nOCWXW+Rib4P24lYBrZGDtEcdvto7N+azhcQ/TR6fVp
-X-Google-Smtp-Source: AGHT+IFyDZF1Bpt3awxQX1aOPYdX18UGVvC4teyJcPtJCZVsBciUu8dC7lhcnyap2ZII4AGmyuWEhg==
-X-Received: by 2002:a19:9114:0:b0:516:a686:8ae1 with SMTP id t20-20020a199114000000b00516a6868ae1mr1228867lfd.62.1712735830172;
-        Wed, 10 Apr 2024 00:57:10 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id x20-20020ac24894000000b00516a01d2f44sm1760191lfc.240.2024.04.10.00.57.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 00:57:09 -0700 (PDT)
-Message-ID: <3d5df067-ec94-42c6-bbd0-43ce8cd53e40@gmail.com>
-Date: Wed, 10 Apr 2024 10:57:08 +0300
+	s=arc-20240116; t=1712735870; c=relaxed/simple;
+	bh=zSqtZOr6T9tpCLOf2qNdLQbDEt4yULfVFFG7OBHKU5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gCg70VFnO3kVWFlxlwktcoQXAl6LYqgoF/kPtk/IfX0GcGHefXBjYnsLIaP/94GJwdfqTFhowCN9L4eWyxsrRKTp4uDWCADyQbJLm3fWlLRWEajSgsUlmnecX42F1tOnmyY7uUf57NxXFsROrCm2oBffpXW3WbmCFWeYE9W9uAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D915B1480;
+	Wed, 10 Apr 2024 00:58:17 -0700 (PDT)
+Received: from [10.162.43.6] (a077893.blr.arm.com [10.162.43.6])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81A413F766;
+	Wed, 10 Apr 2024 00:57:42 -0700 (PDT)
+Message-ID: <32ddd2a6-22c6-49d2-aebb-da5a2e99748d@arm.com>
+Date: Wed, 10 Apr 2024 13:27:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,63 +41,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: mfd: Add ROHM BD71879
-Content-Language: en-US, en-GB
-To: Andreas Kemnade <andreas@kemnade.info>, lee@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240404195423.666446-1-andreas@kemnade.info>
- <20240404195423.666446-2-andreas@kemnade.info>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240404195423.666446-2-andreas@kemnade.info>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v3 2/3] arm64: tlb: Improve __TLBI_VADDR_RANGE()
+Content-Language: en-US
+To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
+ maz@kernel.org, oliver.upton@linux.dev, ryan.roberts@arm.com,
+ apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com,
+ v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com,
+ yihyu@redhat.com, shan.gavin@gmail.com
+References: <20240405035852.1532010-1-gshan@redhat.com>
+ <20240405035852.1532010-3-gshan@redhat.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240405035852.1532010-3-gshan@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/4/24 22:54, Andreas Kemnade wrote:
-> As this chip was seen in several devices in the wild, add it.
+
+
+On 4/5/24 09:28, Gavin Shan wrote:
+> The macro returns the operand of TLBI RANGE instruction. A mask needs
+> to be applied to each individual field upon producing the operand, to
+> avoid the adjacent fields can interfere with each other when invalid
+> arguments have been provided. The code looks more tidy at least with
+> a mask and FIELD_PREP().
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> Suggested-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+
+This looks much better.
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
 > ---
->   .../devicetree/bindings/mfd/rohm,bd71828-pmic.yaml         | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
+>  arch/arm64/include/asm/tlbflush.h | 29 ++++++++++++++++++-----------
+>  1 file changed, 18 insertions(+), 11 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-> index 0b62f854bf6b..07f99738fcf6 100644
-> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-> @@ -17,7 +17,12 @@ description: |
->   
->   properties:
->     compatible:
-> -    const: rohm,bd71828
-> +    oneOf:
-> +      - const: rohm,bd71828
+> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> index a75de2665d84..243d71f7bc1f 100644
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -142,17 +142,24 @@ static inline unsigned long get_trans_granule(void)
+>   * EL1, Inner Shareable".
+>   *
+>   */
+> -#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)			\
+> -	({									\
+> -		unsigned long __ta = (baddr);					\
+> -		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;		\
+> -		__ta &= GENMASK_ULL(36, 0);					\
+> -		__ta |= __ttl << 37;						\
+> -		__ta |= (unsigned long)(num) << 39;				\
+> -		__ta |= (unsigned long)(scale) << 44;				\
+> -		__ta |= get_trans_granule() << 46;				\
+> -		__ta |= (unsigned long)(asid) << 48;				\
+> -		__ta;								\
+> +#define TLBIR_ASID_MASK		GENMASK_ULL(63, 48)
+> +#define TLBIR_TG_MASK		GENMASK_ULL(47, 46)
+> +#define TLBIR_SCALE_MASK	GENMASK_ULL(45, 44)
+> +#define TLBIR_NUM_MASK		GENMASK_ULL(43, 39)
+> +#define TLBIR_TTL_MASK		GENMASK_ULL(38, 37)
+> +#define TLBIR_BADDR_MASK	GENMASK_ULL(36,  0)
 > +
-> +      - items:
-> +          - const: rohm,bd71879
-> +          - const: rohm,bd71828
->   
->     reg:
->       description:
-
-Am I correct, this reads as:
-
-Either
-	compatible = rohm,bd71828
-or
-	compatible = rohm,bd71879, rohm,bd71828
-
-but not compatible = rohm,bd71879?
-
-If so, this looks ok to me. :)
-	
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+> +#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)		\
+> +	({								\
+> +		unsigned long __ta = 0;					\
+> +		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;	\
+> +		__ta |= FIELD_PREP(TLBIR_BADDR_MASK, baddr);		\
+> +		__ta |= FIELD_PREP(TLBIR_TTL_MASK, __ttl);		\
+> +		__ta |= FIELD_PREP(TLBIR_NUM_MASK, num);		\
+> +		__ta |= FIELD_PREP(TLBIR_SCALE_MASK, scale);		\
+> +		__ta |= FIELD_PREP(TLBIR_TG_MASK, get_trans_granule());	\
+> +		__ta |= FIELD_PREP(TLBIR_ASID_MASK, asid);		\
+> +		__ta;							\
+>  	})
+>  
+>  /* These macros are used by the TLBI RANGE feature. */
 
