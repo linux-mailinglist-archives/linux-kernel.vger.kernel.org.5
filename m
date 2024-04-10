@@ -1,274 +1,121 @@
-Return-Path: <linux-kernel+bounces-137946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F2089EA14
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:50:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B224889EA1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:51:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E121C220AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:50:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FD651F23E33
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FACF1CAA9;
-	Wed, 10 Apr 2024 05:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC552030A;
+	Wed, 10 Apr 2024 05:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mSF6LNcr"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="jczkZAbk";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iVTyHwPI"
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C18C129;
-	Wed, 10 Apr 2024 05:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE39B17745;
+	Wed, 10 Apr 2024 05:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712728220; cv=none; b=KeXLSpJlNX+VXGOtIX+BipIjqtwJqdIjipowMpbYKXYeFka9hmrLCibufJD3bv/VUGVZd/eWgm1OfYyR3SFbBW0l9H4rjQusHT6IesEg2gE2mtWySh52U7rLsDyEJWgcdSs06zmBNYHHVp4sxAXIfrm8vZy8mfwD/Jw1aEEkMVI=
+	t=1712728270; cv=none; b=dtqrVXSI0s/5oYhOrflZUaRC5rAJO0ZvctQg7qzhCKFA8kBhR3u2VfeVsdu8Z0UnOOWD5Gy4pSltejei0Ma2CpZsFSts7DRNkI757qIoMuVrtCQfPVB2woY+eOdG1/7ikLFP4EuIZqzyMakfhWdyQcicsMFLXs5KrkxCaL62uk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712728220; c=relaxed/simple;
-	bh=mE3wdc1DOkb50uwVNeVO674CYQlqQLZ0mb5S9QHj+Bs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=U9hJm+H0nVjUqD/eOLOTrHHZIaPTGU+kl0gsA5GoOKoiw14lc1M+m+3XNAGDpaI8GcGiC6HHSKnk6uMWBlT97INoV55uRWXkg92Q0+XnLWmtlZBcfIXLoqVV6NJsi9cpzM8pIzxkfi1kmp+PfYilIKT4AeOSBMXQGaQq6ClNl1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=mSF6LNcr; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43A5oCUd021652;
-	Wed, 10 Apr 2024 00:50:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712728212;
-	bh=oZkn8d2j4nmaOqVBuP3zIFxdTKj6xmAUtvy/+QTiZVk=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=mSF6LNcryQUBdCoVJuAb6B60dLEdTdu1QcHNgoaZ7k6skrKkH/p3UV/DVagVvJSR8
-	 0ikBd7/LT6sGz/HTCUrB/wMYawFGvO2Mm6PzL4baQONt7jRaqk9V6YAWMuH44y/Ebl
-	 +hoX6KgZlak/a1tM6hNTNBj+DhKWJDk1iLRQ25bw=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43A5oC7v005475
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 10 Apr 2024 00:50:12 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- Apr 2024 00:50:11 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 10 Apr 2024 00:50:11 -0500
-Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43A5o8YX031933;
-	Wed, 10 Apr 2024 00:50:09 -0500
-Message-ID: <6eae9461-53aa-4d37-9829-3f8176c328bb@ti.com>
-Date: Wed, 10 Apr 2024 11:20:07 +0530
+	s=arc-20240116; t=1712728270; c=relaxed/simple;
+	bh=5BdpXbBttgdr9xHrq7HGP6qq62gxDtv0CQ9h2KVbysM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QbP6G6tR7ODcKrxmgOsLCdkkRGoRd4VPlR16C9I7IKnVgXvG4kcvbHh8vUrKyZrCj4TALo2UnhD21KyQ0n1ke/uiwX7kRvV2NG5oPx3gMUyHqb19GGGVMudTvzRN1LLVT6CeaUsUXg6RL+IvFt3b9W4JB+rlZmXU3zO59glGzlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=jczkZAbk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iVTyHwPI; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id BCC1F180012B;
+	Wed, 10 Apr 2024 01:51:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 10 Apr 2024 01:51:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1712728263; x=1712814663; bh=jkV1acoxnY
+	ywWAbyLpFFbxibsnS9FadsdDiyYpzzDxk=; b=jczkZAbk92xGf0Xqh24S6UOXDx
+	6mWpFKM7iEtc3EmA/g2HgtYZdgqvcjp41BGt2/QuZtbfVz0H4yzz8Q4VqHCPyYXN
+	lJ0MM27ZHuSHiNT70Jpr1ZbzkS0mwv8jea2u0RbafaF2YBv+DNfupLIAdh4p6h6F
+	tw0HsfiLiXQdIRWxxu7KVwmsnCUr8G2p8bWBtkTQJv9K8QpzzkrqukznCIejj7cy
+	z1qXERSh4Z5udof+EkOkdRZWpL6exkZnw7Sf3N0uVb6IIENL2jjxvP8DIFlZ5aKN
+	Qk74h9JWe2goAP6r9lyge7R+MkrLz4YG2tJ8fPj0U+VSGCifjrYRuXLw0NUw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712728263; x=1712814663; bh=jkV1acoxnYywWAbyLpFFbxibsnS9
+	FadsdDiyYpzzDxk=; b=iVTyHwPIwh0ly2XTO1+EF/KzMiRyC1a0dwayOi4VUWLz
+	GzV1Crd4p6w3URzwVce3c61l14IsHiJF/8pJ0t/Ay4xsbKsbnUwZm5f3nuvQkZ82
+	uj23sK7rV3C7Sr3qorfLp4c6Z08XR8PfoeM6Pu4NziZELbb2dpTaTtbtAmb+K0D9
+	m3ntlfnQSJUy8mp/IXbAyWkGV5ss9rkW++oO3ZtpaVutlmTGluhbuTvYKb+kqDnE
+	EqwBZjd3uS+SjFIXkXzs0Fan4rUYHyjYB/E3g7aEV10f3xZYAEIMcdYDTyaPSVUS
+	O0dwZ2cISrQHnJE8L/L0jMsJpx3PAoi5oSuVMxX/eg==
+X-ME-Sender: <xms:xigWZkQP8fQpUI9xVmDhPfhOQI8zA5xhQMDj6kjxR-7O1aaTEN8wQg>
+    <xme:xigWZhy0ADFA6_RYST46q3_04xGJ3fQm9g9CUpDTyBmGBZaGYRKTKjg0Ho7tPoM5Z
+    UR_ykvU5kvIaA>
+X-ME-Received: <xmr:xigWZh0wTsiGX9a37v3ALWH-cKZJ9OHLzUBP7j1Ti3JuQl5eOZENfVB0cB9G1EH2WwKKdKqHk0XlX9WMO57TWvfBbJln8xSoRRdueA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehhedgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:xigWZoD2I06NQv1BWObpTgk4vuMlFuZBAM9aYD6-A1DVKKadHLv_Xw>
+    <xmx:xigWZti4Cg9dVHHbFZfGHR7505wJraCFinfLaJ10-654I3XWEH25EQ>
+    <xmx:xigWZkpgqUEmoKeeTQ6DlkUrJj7vX0hzvGXpOaJaaCDTecdEUKg4AQ>
+    <xmx:xigWZggNdoQ7P-Y8i-IFkRli4LHSIDBwBGzv38xqAYqspUjS8Tvg8A>
+    <xmx:xygWZt4AfMhr7p7nNAaEa37w0qGSjEDWPRI68s4R3WeI7YIeVi0O3xw->
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Apr 2024 01:51:01 -0400 (EDT)
+Date: Wed, 10 Apr 2024 07:50:59 +0200
+From: Greg KH <greg@kroah.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Networking <netdev@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the usb.current tree
+Message-ID: <2024041043-sprain-stank-10af@gregkh>
+References: <20240410090500.4018b9a0@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] arm64: dts: ti: k3-j721e-main: Add the MAIN domain
- watchdog instances
-To: "Kumar, Udit" <u-kumar1@ti.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kristo@kernel.org>
-References: <20240326122723.2329402-1-n-francis@ti.com>
- <20240326122723.2329402-4-n-francis@ti.com>
- <a329fc6b-561c-4300-8778-c90ca97b70f3@ti.com>
-Content-Language: en-US
-From: Neha Malcom Francis <n-francis@ti.com>
-In-Reply-To: <a329fc6b-561c-4300-8778-c90ca97b70f3@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410090500.4018b9a0@canb.auug.org.au>
 
-Hi Udit,
+On Wed, Apr 10, 2024 at 09:05:00AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commit is also in the net tree as a different commit
+> (but the same patch):
+> 
+>   fbdd90334a62 ("MAINTAINERS: Drop Li Yang as their email address stopped working")
+> 
+> This is commit
+> 
+>   eaac25d026a1 ("MAINTAINERS: Drop Li Yang as their email address stopped working")
+> 
+> in the net tree.
 
-On 10/04/24 11:06, Kumar, Udit wrote:
-> Hi Neha
-> 
-> On 3/26/2024 5:57 PM, Neha Malcom Francis wrote:
->> There are 10 watchdog instances in the MAIN domain:
->>     * one each for the 2 A72 cores
->>     * one for the GPU core
->>     * one for the C7x core
->>     * one each for the 2 C66x cores
->>     * one each for the 4 R5F cores
->>
->> Currently, the devicetree only describes watchdog instances for the A72
->> cores and enables them. Describe the remaining but reserve them as they
->> will be used by their respective firmware.
->>
->> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 93 +++++++++++++++++++++++
->>   1 file changed, 93 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> index c7eafbc862f9..d8930b8ea8ec 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> @@ -2157,6 +2157,99 @@ watchdog1: watchdog@2210000 {
->>           assigned-clock-parents = <&k3_clks 253 5>;
->>       };
-> 
-> Looking at TRM, SPRUIJ7*3–December 2018–Revised March 2019,
-> 
-> Table 12-22646. RTI Instances, says There is gap in numbering
-> 
-> RTI0, RTI1, RTI15 and so on
-> 
-> IMO, labels for watchdog should be as per TRM.
-> 
-> eg watchdog2 to watchdog15, But I don't have strong opinion on either .
-> 
-> Let maintainer suggest on this
-> 
+That's fine, this should merge without an issue.
 
-Yes, perhaps sticking to the TRM numbering with gaps will improve readability. I 
-can change that in next version if no objections.
-> 
-> 
->> +    /*
->> +     * The following RTI instances are coupled with MCU R5Fs, c7x and
->> +     * GPU so keeping them reserved as these will be used by their
->> +     * respective firmware
->> +     */
->> +    watchdog2: watchdog@22f0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x22f0000 0x00 0x100>;
->> +        clocks = <&k3_clks 257 1>;
->> +        power-domains = <&k3_pds 257 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 257 1>;
->> +        assigned-clock-parents = <&k3_clks 257 5>;
->> +        /* reserved for GPU */
->> +        status = "reserved";
->> +    };
-> 
-> Please help me to understand, where from you got it for GPU,
-> 
-> May be I am looking at wrong data, Again above TRM
-> 
-> Table 12-22645. RTI Hardware Requests. RTI-15 says esm0
-> 
+thanks for letting us know.
 
-The table you are looking at mentions where the interrupt from the watchdog is 
-routed to.
-
-In the TRM, in sub-section 12.10.2 Windowed Watchdog Timer (WWDT) > 12.19.2.1 
-RTI Overview; it is mentioned that RTI15 is dedicated to the GPU.
-
-
->> +
->> +    watchdog3: watchdog@2300000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2300000 0x00 0x100>;
->> +        clocks = <&k3_clks 256 1>;
->> +        power-domains = <&k3_pds 256 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 256 1>;
->> +        assigned-clock-parents = <&k3_clks 256 5>;
->> +        /* reserved for C7X */
->> +        status = "reserved";
-> 
-> This I see in above table for Compute Cluster
-> 
-> 
->> +    };
->> +
->> +    watchdog4: watchdog@2380000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2380000 0x00 0x100>;
->> +        clocks = <&k3_clks 254 1>;
->> +        power-domains = <&k3_pds 254 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 254 1>;
->> +        assigned-clock-parents = <&k3_clks 254 5>;
->> +        /* reserved for C66X_0 */
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog5: watchdog@2390000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2390000 0x00 0x100>;
->> +        clocks = <&k3_clks 255 1>;
->> +        power-domains = <&k3_pds 255 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 255 1>;
->> +        assigned-clock-parents = <&k3_clks 255 5>;
->> +        /* reserved for C66X_1 */
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog6: watchdog@23c0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23c0000 0x00 0x100>;
->> +        clocks = <&k3_clks 258 1>;
->> +        power-domains = <&k3_pds 258 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 258 1>;
->> +        assigned-clock-parents = <&k3_clks 258 5>;
->> +        /* reserved for MAIN_R5F0_0 */
-> 
-> TRM says, this covers both MAIN_R5F0_0 and MAIN_R5F0_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog7: watchdog@23d0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23d0000 0x00 0x100>;
->> +        clocks = <&k3_clks 259 1>;
->> +        power-domains = <&k3_pds 259 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 259 1>;
->> +        assigned-clock-parents = <&k3_clks 259 5>;
->> +        /* reserved for MAIN_R5F0_1 */
->> +        status = "reserved";
-> 
-> TRM says, this covers both MAIN_R5F0_0 and MAIN_R5F0_1.
-> 
-> Suggest , if split is done at fw level
-
-I didn't quite understand, these watchdogs are mentioned only for DTS 
-completeness sake.
-> 
->> +    };
->> +
->> +    watchdog8: watchdog@23e0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23e0000 0x00 0x100>;
->> +        clocks = <&k3_clks 260 1>;
->> +        power-domains = <&k3_pds 260 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 260 1>;
->> +        assigned-clock-parents = <&k3_clks 260 5>;
->> +        /* reserved for MAIN_R5F1_0 */
->> +        status = "reserved";
->> +    };
-> 
-> 
-> TRM says, this covers both MAIN_R5F1_0 and MAIN_R5F1_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +
->> +    watchdog9: watchdog@23f0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23f0000 0x00 0x100>;
->> +        clocks = <&k3_clks 261 1>;
->> +        power-domains = <&k3_pds 261 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 261 1>;
->> +        assigned-clock-parents = <&k3_clks 261 5>;
->> +        /* reserved for MAIN_R5F1_1 */
-> 
-> TRM says, this covers both MAIN_R5F1_0 and MAIN_R5F1_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +        status = "reserved";
->> +    };
->> +
->>       main_r5fss0: r5fss@5c00000 {
->>           compatible = "ti,j721e-r5fss";
->>           ti,cluster-mode = <1>;
-
--- 
-Thanking You
-Neha Malcom Francis
+greg k-h
 
