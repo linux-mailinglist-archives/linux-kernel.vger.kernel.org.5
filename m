@@ -1,111 +1,131 @@
-Return-Path: <linux-kernel+bounces-138553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22DF89F347
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:00:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E325B89F34C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:02:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7378E1F2B239
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:00:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FE4A1C24B4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E91B15D5D8;
-	Wed, 10 Apr 2024 13:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A380A15B562;
+	Wed, 10 Apr 2024 13:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DSF6Sy1r"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OR0qcMun"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FA515B54E;
-	Wed, 10 Apr 2024 13:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9956415AAAE;
+	Wed, 10 Apr 2024 13:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712754045; cv=none; b=UD3MPaqOe5Onpn6pUUKFBBwioVWb/RyXdxPH5f8WaG3LVauQ4YRYK1bqiE7bIAy6/vqPeVayDyh+XotBdIRA6ucjzAuaDRvf9cyajQk5u8wPAyR20mLLmG6GD3zCiqHzntaxMQoxLdHBoq90RJ9w8m25UcngAYpbqdgP3eLLOko=
+	t=1712754138; cv=none; b=i6nIgoVuVo6Igcmixi781sg4eBL8r78qrMr5ZMl+HOHt9TifmxmRU7dWgaZy7lhfHujxNwJSr/z1RYUWoFoIDO1GNcFgLCYpklLUXwq5npDoLOqn+8RJPPTxqdxpce93TQmbFDaNryDxtFa5Yu359i6WOM28y1/aB5S61dfixHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712754045; c=relaxed/simple;
-	bh=afp/OXy3gbHhpEYeHB4atoJP4NSlNN7pMmtnAW7wats=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Rea0yVDjdiBj9iYnTqYrSFJh2xRrzKYSN7Cxq2foQcbqUTRHt37fvYF9kJZnRFSzufm5yuRQZhOqKAQETyUyoCR5ZdsxcRvQuYmK5Jt8bpAUieaR/CM60kpjTPmp5UbetedDfoep5nYueqE156ADALDrWvJxMGYkGuSq5odQV8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DSF6Sy1r; arc=none smtp.client-ip=209.85.208.171
+	s=arc-20240116; t=1712754138; c=relaxed/simple;
+	bh=cCynkWA1egzt6idfM5NgSo+yPlJqqy2bQBgW20A3KJE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pneMNC6caUhpEoKaX8rOYdw6LHoR/Bp3zQTO87eWicoUQFGmJuj5fUo1E90si5C9/mRwX1TwhJI5XDXP3I0MWIKLZ9fHqqO100cwjRe6BZOXiyO9naGHy8Qv1mbqV5iuI9AVy1xG0bcroYjKpF1J1pI90b1sqknFhWWFsHtsxSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OR0qcMun; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d886dd4f18so40060311fa.1;
-        Wed, 10 Apr 2024 06:00:43 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e3ff14f249so24483855ad.1;
+        Wed, 10 Apr 2024 06:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712754042; x=1713358842; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+x36lgqp6z1pBeBFjnhpxv5ynJ12zvmBrpJ19/NtY8c=;
-        b=DSF6Sy1rOHttUE1dKV9P5zV+r0yqM4nHSugzN1+iQ6XFESmafpgIEtXWm10vGiRtOQ
-         +v6f5H7E+a8rzn/0LjdRbNMUedqq9BpSaz7MnfhGlBbL5dd8SRU1Qag0P2EVUsjIsKt5
-         IFlEWOeDqpMXZbeTm8ayKVkYhUxt1y0qxxD9Siw+tMbHaKc7nuZWXCgvemE0oNxsf+Al
-         vrJLhi8U5iEQIGAlN9BA/tSkvmBcmyt3CEqfK08mXjFum8yBaNPfpJmvI1Wx1GWYO8F4
-         Ou1vM9V7lmTmqVekClXZWtlr+RwEEeYjx831yLY9M99Ov4bSmWSnkP4c66MjSmimq10y
-         5iOQ==
+        d=gmail.com; s=20230601; t=1712754135; x=1713358935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wfEkXHqcrSslp75yT8Es7LWtgthY82aZjWT+8xGzxlw=;
+        b=OR0qcMunOhpxHttX5FqWnjaI2a29LdlvUEDXhRhZbOI3lL8UX9CeIawKcF2qmRL2XM
+         xKNIaVpXwxLredZCE5H1PedzVAvVlhaxeJEOxp7gv9nSGSRdTrui3ZDDvwXO4FyIFs9K
+         K/vIBiuiGGNbETuM6lFWHQoDlZTEaJ8TeG0jcHjyXtJaFH+Fuz2TssHhFW41EiHwYOBF
+         Ce/peJYimi+YXvmHtRUN/J4mI6YUM7UMyku4uyE3nbfgOaEwzQH/fxK/5Nz3+dguUK2y
+         iToz7tdnw8NFc7gebD95DkdEvdDD6I8NNkxrXbDOs9kCOBwpk5hmS+Hik1y57ebvzfsK
+         ax4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712754042; x=1713358842;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+x36lgqp6z1pBeBFjnhpxv5ynJ12zvmBrpJ19/NtY8c=;
-        b=q+XZ1XjTywHfvDWeokVqy8GQZnEmmAlT308GFVBFG0o+Xltx+R184GzQLw2UMZ+l8H
-         2AKHJMIImsTHgt1aTyUJUzENy45efSz8owhxkxN9M29ZpkEDHgZShVhzMHi/UJMV99mj
-         nWx3QNNOT/D39pYDb9ow94z7Mmyjg0P45iKZRYUo+ztZgjHqDR7QEQRbgDknGyiYTu8g
-         sVP0MQPAiS3Gql65BaIQ7AksIXEVBtXmA4nSo8mfgaTlWXGGuPmZoF9ez+FKNpZb93SN
-         48wazlp8shOO3dFTyIYdF4XGSRFZmi5RhhLAvTIa8XgMG4LiVppNAG+8rTW65uBHasAf
-         H4mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAhBxEPKnY2ay+4NKSSeSbn+kf0C04xUMB1YdZwsP6Cfhw4ehVREtDvt8Pvn/ZdsonbTHEF1XlbFmGzh2vp680IMtyJovFdCCUtAZpJIo5l5MJ8Cp38WTEpgG/eiHZnOhX3tvedOMa/uQz1DA4uylkElvT5UJUVroWrPN5olazsNScDHuB
-X-Gm-Message-State: AOJu0Yw3DAnWkT/lvpGuJazDsYiSZ8OkgOF7dZrX45/F8PhFev9M3yYa
-	fhZdgXO89+uF4LmA+r5mYxudaqmOB5wCuaTB/TN552EK0KnIKjw3
-X-Google-Smtp-Source: AGHT+IHbTq1KuDH6/N8fl6smCCFwnnPEme/PtU9YQkckJQaHUs+scxBUYvQdqY1YZdeRq/jQtrazJw==
-X-Received: by 2002:a05:651c:623:b0:2d7:61ac:b392 with SMTP id k35-20020a05651c062300b002d761acb392mr1784478lje.29.1712754041953;
-        Wed, 10 Apr 2024 06:00:41 -0700 (PDT)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id fj11-20020a05600c0c8b00b00417c2558c85sm626833wmb.45.2024.04.10.06.00.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 06:00:41 -0700 (PDT)
-Message-ID: <365ac7cd-7a93-4e48-a2b7-9db3a6432ff4@gmail.com>
-Date: Wed, 10 Apr 2024 15:00:29 +0200
+        d=1e100.net; s=20230601; t=1712754135; x=1713358935;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wfEkXHqcrSslp75yT8Es7LWtgthY82aZjWT+8xGzxlw=;
+        b=tTWZC1FykeLcx4BCGVHC7Rn53S0aGT/zRi80x26/TetkiDzzLK063efYYqlXOx7xK3
+         5gx9WAkcCfdanmOV9c/82lt2vkwYqHCs8y4e8dErbndje9mwggLRHVuV9ZK623Dja1r1
+         k/7C7+yprG4NdqJq+/xw+2sVu3MOPRJBIY6YPZUWaOj9xLDvnrPO9eOn+X3Ji4X/M+MP
+         csnKinlYcwFwZ7yEJgL4K5Orc+cFr9zJHF/teMoWWTD8ANcoFwNqSFdw8QBnO7IBPICm
+         nn5GXTjtd61vo/9pZpA54Wv0y/66hsdObmGk5cAdgkbSvIm7oAA44m+s/mwKvw9EpE+w
+         zwGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWKgRyU1GQKLOnKoF0ZGJ7yNs4hF71aqYRJWjh7mQrPR4N3x6Ha6A5HF/Da0BlByLjw8fc0wWWqKaqb8OOGlQ/oBWvrDs5u4y9bac8/
+X-Gm-Message-State: AOJu0YyyZJ09YP5E2dXGeYUy8ftuQMbTdXbRSDqtWnRoJiIQE8CybHZU
+	amGx/2PjmgpHzgyD7TP66shinpEubRCVkb4BekO8+B6qPQf0gHHM8AdUQrz2
+X-Google-Smtp-Source: AGHT+IF/cJ6s5X7FwDxg61oaVso/YmK8UKpzLf5sIgkOvGvwW5GS5KcpnfKOsMZEpyBDBV1OVM9e3g==
+X-Received: by 2002:a17:902:ee8d:b0:1e2:a5db:30d1 with SMTP id a13-20020a170902ee8d00b001e2a5db30d1mr3042367pld.13.1712754135238;
+        Wed, 10 Apr 2024 06:02:15 -0700 (PDT)
+Received: from kousik.local ([2405:201:c006:31f8:d197:ecac:84d7:f484])
+        by smtp.gmail.com with ESMTPSA id e6-20020a17090301c600b001e43a00ee07sm5445375plh.211.2024.04.10.06.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 06:02:14 -0700 (PDT)
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Julia Lawall <julia.lawall@inria.fr>,
+	Kousik Sanagavarapu <five231003@gmail.com>
+Subject: [PATCH] spi: cadence-xspi: use for_each_available_child_of_node_scoped()
+Date: Wed, 10 Apr 2024 18:31:16 +0530
+Message-ID: <20240410130205.179069-1-five231003@gmail.com>
+X-Mailer: git-send-email 2.44.0.548.g91ec36f2cc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v5 4/6] net: gro: add {inner_}network_offset to
- napi_gro_cb
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240408141720.98832-1-richardbgobert@gmail.com>
- <20240408141720.98832-5-richardbgobert@gmail.com>
- <6615594ab06f2_23a2b22945@willemb.c.googlers.com.notmuch>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <6615594ab06f2_23a2b22945@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Willem de Bruijn wrote:
-> Richard Gobert wrote:
->> This patch adds network_offset and inner_network_offset to napi_gro_cb, and
->> makes sure both are set correctly. In the common path there's only one
->> write (skb_gro_reset_offset).
->>
->> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
->> ---
->>  include/net/gro.h      | 18 ++++++++++++++++--
->>  net/8021q/vlan_core.c  |  2 ++
->>  net/core/gro.c         |  1 +
->>  net/ethernet/eth.c     |  1 +
->>  net/ipv4/af_inet.c     |  5 +----
->>  net/ipv4/gre_offload.c |  1 +
->>  net/ipv6/ip6_offload.c |  8 ++++----
-> 
-> Should this cover more protocols, like geneve, ipsec?
+Refactor code for "is the node's child available?" check by using the
+corresponding macro instead, which reads more clearly.
 
-Yes, my bad. It should be added to geneve, ipsec and vxlan too. I'll
-double-check and post v6.
+While at it, use scope-based cleanup instead of manual of_node_put()
+calls when getting platform data through cdns_xspi_of_get_plat_data().
+
+This removes the unnecessary "node_child" declaration out of the loop's
+scope and auto cleans up "node_child" when it goes out of scope, even
+when we return early due to error.
+
+Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+---
+ drivers/spi/spi-cadence-xspi.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
+index 8648b8eb080d..2209e9fc378f 100644
+--- a/drivers/spi/spi-cadence-xspi.c
++++ b/drivers/spi/spi-cadence-xspi.c
+@@ -486,20 +486,14 @@ static irqreturn_t cdns_xspi_irq_handler(int this_irq, void *dev)
+ static int cdns_xspi_of_get_plat_data(struct platform_device *pdev)
+ {
+ 	struct device_node *node_prop = pdev->dev.of_node;
+-	struct device_node *node_child;
+ 	unsigned int cs;
+ 
+-	for_each_child_of_node(node_prop, node_child) {
+-		if (!of_device_is_available(node_child))
+-			continue;
+-
++	for_each_available_child_of_node_scoped(node_prop, node_child) {
+ 		if (of_property_read_u32(node_child, "reg", &cs)) {
+ 			dev_err(&pdev->dev, "Couldn't get memory chip select\n");
+-			of_node_put(node_child);
+ 			return -ENXIO;
+ 		} else if (cs >= CDNS_XSPI_MAX_BANKS) {
+ 			dev_err(&pdev->dev, "reg (cs) parameter value too large\n");
+-			of_node_put(node_child);
+ 			return -ENXIO;
+ 		}
+ 	}
+-- 
+2.44.0.548.g91ec36f2cc
+
 
