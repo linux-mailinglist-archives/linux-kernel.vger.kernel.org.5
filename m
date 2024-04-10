@@ -1,621 +1,477 @@
-Return-Path: <linux-kernel+bounces-139408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4D0A8A02EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:11:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE2988A02F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:12:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ADAB282CF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:11:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AF91F21543
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BC21A38F2;
-	Wed, 10 Apr 2024 22:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA1F19069C;
+	Wed, 10 Apr 2024 22:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BpQq5G6D"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PqolnPgC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6E9199EB5;
-	Wed, 10 Apr 2024 22:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C64A190691
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712786883; cv=none; b=UTo9okvtAprV0UHf8QZDM7oU1QUUbAbDgX2zR/zmX3zQpYKWG6HZjSw1BJblgrBcaleqTH93gywqDf++aZqKYOQ6ReAfVksVWXRsg75dvH0d9DLHVOUknjqF0hItSH3et7NqDSw3+cEKCfCnpCgnS3ZEtKXQor394adP9fz7tzY=
+	t=1712787089; cv=none; b=RUhBN3mQ4U4F+2nxYiUjOKNxqZGZJkps4x9KPsRsw9hv22Ruafu4IuBGBYpaqlOE5RsDF0qml47t9QzY4QKkkAOLnlSYlC23D4g43Xm+5884PRnGd+Vi6YN9h8U5xXnHM+5bcJKMTuXQXCly5a6+HGGTVVtC+VOf+AzAGhSwRfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712786883; c=relaxed/simple;
-	bh=xiqSchLKUGvT4Pg7trp63x+D9biwzzQVpK0rEXgPkZE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oIIEH6Om8cwsNqCR0gnsPqeFqLUagnrxUKGXnZjcSVJzC1HQvOQ7YDaf/nma8nJPWDPpQq02LIQNuJQb9zLuEZZ6gcbKA6Zt5MWPlDTMj+lGc9QR8dLB6UaDjB5crkPtH1Ia9Qg20gqSY6aGXp1+Zy5cUPS3ItB3BIBVKFU85DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BpQq5G6D; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712786881; x=1744322881;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xiqSchLKUGvT4Pg7trp63x+D9biwzzQVpK0rEXgPkZE=;
-  b=BpQq5G6DC7EPKxEFHkTmEXit5uuudvg3+MmLrBVDDzTOM75NATj+UBxK
-   hWKcgpHAART9U4QjYu5MY+g1iZULsLXhPFT6OTKJ3HOHRBtlzTdyX6HyA
-   9Gd20mjEpyHd4TImAtpdRvq2qQSYIfK26+FHusQ3n4swmoMAwZtZ3VvEm
-   IcAkZ52wOlg2DijhTvInV+6OAgAG1A37hGw3NxCwJtXB4T5bsz9gQSR36
-   JkSVwtDKLtA/zxYAe2rDjlF4ecKSAteD/amXUAgPNivERMkG2jc3V0389
-   GqYleeSaTXjVs4l4Gvn9RY/MhH3e//5zwtlsltuckjN1sZn1sUfb7hag9
-   A==;
-X-CSE-ConnectionGUID: uTgpQImxSvyzO0DlXWoL+A==
-X-CSE-MsgGUID: qWiimKMySqqqiDzMtbmH/w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8041160"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="8041160"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 15:07:59 -0700
-X-CSE-ConnectionGUID: MKlNuO+tR+S5qiNhUcI9VQ==
-X-CSE-MsgGUID: qr8pHCQgRICCdo9EoSj7xw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="25476330"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 15:07:59 -0700
-From: isaku.yamahata@intel.com
-To: kvm@vger.kernel.org
-Cc: isaku.yamahata@intel.com,
-	isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	David Matlack <dmatlack@google.com>,
-	Federico Parola <federico.parola@polito.it>,
-	Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v2 10/10] KVM: selftests: x86: Add test for KVM_MAP_MEMORY
-Date: Wed, 10 Apr 2024 15:07:36 -0700
-Message-ID: <32427791ef42e5efaafb05d2ac37fa4372715f47.1712785629.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1712785629.git.isaku.yamahata@intel.com>
-References: <cover.1712785629.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1712787089; c=relaxed/simple;
+	bh=rk3Y/hV4O3MGFGXpBEK2ctrlDUHH3NOCfzel06outQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQ4h7cqFvR5Mbc0W3K+9QGCiWA/zWO4TB/4YGPT/GX1sVJFWTtEUnE4huv0BYzN5UHPv/o5x4Y4q0cSgwJi1Z2wbA5oeEenAU6ZVGk6fTKJAqpxp2470wZ+VALSvBN7hd7s2Y/YgQkcxlJvo8ttSSa9+ycTjDe8Y/syW2oiTgL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PqolnPgC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712787086;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9ZaDdsvv6WC5wTEQulDSBBsBWUVx4JFTYwinWsVjD0=;
+	b=PqolnPgC4D+X5xrQibxf9IDcppdeOc7YOLhdX6F5Q93RS1NdIs58BjhlKQyiNzuRzCkOnp
+	XHDV2C7NORvgp+DtHKlD1zyztpYgrLnpNOFpzi8ZD2EAuSOei7TxwyQCim1q/+Um2B0lBj
+	EXz7jSUevaCWI6dAPigGCMjG/kmEups=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-358-MWQDbPZmMoCvYFopXFnvFw-1; Wed, 10 Apr 2024 18:11:24 -0400
+X-MC-Unique: MWQDbPZmMoCvYFopXFnvFw-1
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a179df9fdso49154275ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:11:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712787084; x=1713391884;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/9ZaDdsvv6WC5wTEQulDSBBsBWUVx4JFTYwinWsVjD0=;
+        b=KSAqQCK/CR/70pJgVQV//4TE9UxEDGedZefJa8CBDqTQHDq8ul4kJA8dzNpopp83QV
+         JS9sqLN0ev4TKOt/MT/xI57Y7dnToFVQGVc0c3t/9Q4ToXeYxD3cmzC+E3Uavv2e0FrI
+         BJdFzT4PYBYD78H+AfM4vM9ZRNntxqzuYwtZkLz0HWFMl3OYCZsGm13DzXIZrHlRB6kC
+         zKil1vW/ppQYMxvinyAyRxSMk+Y/6uN+ZvH5Dkhciw5GoAX3UCHKs4mbosTa5CG+V6tJ
+         80v6BVk4obPiXv5QOVnM8nGbWGB9gkxEIy4DcLSrsiylxvNKmj8hQD72AI0i6aZ9kyOR
+         wD8w==
+X-Forwarded-Encrypted: i=1; AJvYcCWyxe59YARio31nl6M7zxssqaXxBeqm3ADbGFnrMs1Te6sQcTPKpBM/oWtEyK6DzT57oEAD5yJMpuQXwNVVHz5DjUCqAQJalp8Qrhpt
+X-Gm-Message-State: AOJu0Yx14Xo+onI8SLAVDSEkvscrZfKpFb+tgfAn+G+XRDVaN9eZJJ1e
+	vh0qGFwm6Sswxpfj9lbOcalCqs2qsgi8hoXSLA36j/yGNuFIJwT6kCCF3MvX/vBWyjYkxfYT+sw
+	o9JRc4bJxHEaTHzDcRzIp539DcFJ6g+Sh6De6M1YBsqFdXDX/evrBHYmQOgpfFg==
+X-Received: by 2002:a05:6e02:2184:b0:369:f74f:bbe8 with SMTP id j4-20020a056e02218400b00369f74fbbe8mr4414896ila.14.1712787083837;
+        Wed, 10 Apr 2024 15:11:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5CdIhx3hEVeM8v+W7ezlD4mg6TH6+8ByQq5pRvr8stk4BYb74HRPa8nDJXZLAMSTxH4SmhA==
+X-Received: by 2002:a05:6e02:2184:b0:369:f74f:bbe8 with SMTP id j4-20020a056e02218400b00369f74fbbe8mr4414872ila.14.1712787083369;
+        Wed, 10 Apr 2024 15:11:23 -0700 (PDT)
+Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
+        by smtp.gmail.com with ESMTPSA id t184-20020a632dc1000000b005f410b67e60sm37103pgt.22.2024.04.10.15.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 15:11:22 -0700 (PDT)
+Date: Wed, 10 Apr 2024 17:11:19 -0500
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm: Drop msm_read/writel
+Message-ID: <s5i4sgt7xbtjkfa6d7whjmuwdpe643uvgdefq7lhsu2wrchfin@eb6csf2mh4g6>
+References: <20240410-topic-msm_rw-v1-1-e1fede9ffaba@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410-topic-msm_rw-v1-1-e1fede9ffaba@linaro.org>
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Wed, Apr 10, 2024 at 11:52:52PM +0200, Konrad Dybcio wrote:
+> Totally useless.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Add a test case to exercise KVM_MAP_MEMORY and run the guest to access the
-pre-populated area.  It tests KVM_MAP_MEMORY ioctl for KVM_X86_DEFAULT_VM
-and KVM_X86_SW_PROTECTED_VM.
+A few more words in the description mentioning this just wraps readl/writel
+with no, but that's a minor nit and is easy to find when you finally see
+the removal in the end of the diff.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
-v2:
-- Catch up for uAPI change.
-- Added smm mode test case.
-- Added guest mode test case.
----
- tools/include/uapi/linux/kvm.h                |   8 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/map_memory_test.c    | 479 ++++++++++++++++++
- 3 files changed, 488 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/map_memory_test.c
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
-diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
-index c3308536482b..c742c403256a 100644
---- a/tools/include/uapi/linux/kvm.h
-+++ b/tools/include/uapi/linux/kvm.h
-@@ -2227,4 +2227,12 @@ struct kvm_create_guest_memfd {
- 	__u64 reserved[6];
- };
- 
-+#define KVM_MAP_MEMORY	_IOWR(KVMIO, 0xd5, struct kvm_memory_mapping)
-+
-+struct kvm_memory_mapping {
-+	__u64 base_address;
-+	__u64 size;
-+	__u64 flags;
-+};
-+
- #endif /* __LINUX_KVM_H */
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 871e2de3eb05..2b097b6ec267 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -144,6 +144,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
- TEST_GEN_PROGS_x86_64 += steal_time
- TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
- TEST_GEN_PROGS_x86_64 += system_counter_offset_test
-+TEST_GEN_PROGS_x86_64 += x86_64/map_memory_test
- 
- # Compiled outputs used by test targets
- TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
-diff --git a/tools/testing/selftests/kvm/x86_64/map_memory_test.c b/tools/testing/selftests/kvm/x86_64/map_memory_test.c
-new file mode 100644
-index 000000000000..d5728439542e
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/map_memory_test.c
-@@ -0,0 +1,479 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Intel, Inc
-+ *
-+ * Author:
-+ * Isaku Yamahata <isaku.yamahata at gmail.com>
-+ */
-+#include <linux/sizes.h>
-+
-+#include <test_util.h>
-+#include <kvm_util.h>
-+#include <processor.h>
-+
-+/* Arbitrarily chosen value. Pick 3G */
-+#define TEST_GVA		0xc0000000
-+#define TEST_GPA		TEST_GVA
-+#define TEST_SIZE		(SZ_2M + PAGE_SIZE)
-+#define TEST_NPAGES		(TEST_SIZE / PAGE_SIZE)
-+#define TEST_SLOT		10
-+
-+/* Nested: VMXON and VMCS12 for VMX or VMCB for XVM */
-+/* Arbitrarily chosen value. Pick 128MB after TEST_GVA. */
-+#define NESTED_GVA		(TEST_GVA + 128 * 1024 * 1024)
-+#define NESTED_GPA		(TEST_GPA + 128 * 1024 * 1024)
-+#define NESTED_NPAGES		2
-+#define NESTED_SIZE		(NESTED_NPAGES * PAGE_SIZE)
-+#define NESTED_SLOT		11
-+
-+static void guest_code(uint64_t base_gpa)
-+{
-+	volatile uint64_t val __used;
-+	int i;
-+
-+	for (i = 0; i < TEST_NPAGES; i++) {
-+		uint64_t *src = (uint64_t *)(base_gpa + i * PAGE_SIZE);
-+
-+		val = *src;
-+	}
-+
-+	GUEST_DONE();
-+}
-+
-+static void map_memory(struct kvm_vcpu *vcpu, u64 base_address, u64 size,
-+		       bool should_success)
-+{
-+	struct kvm_memory_mapping mapping = {
-+		.base_address = base_address,
-+		.size = size,
-+		.flags = 0,
-+	};
-+	int ret;
-+
-+	do {
-+		ret = __vcpu_ioctl(vcpu, KVM_MAP_MEMORY, &mapping);
-+	} while (ret && (errno == EAGAIN || errno == EINTR));
-+
-+	if (should_success)
-+		__TEST_ASSERT_VM_VCPU_IOCTL(!ret, "KVM_MAP_MEMORY", ret, vcpu->vm);
-+	else
-+		/* No memory slot causes RET_PF_EMULATE. it results in -EINVAL. */
-+		__TEST_ASSERT_VM_VCPU_IOCTL(ret && errno == EINVAL,
-+					    "KVM_MAP_MEMORY", ret, vcpu->vm);
-+}
-+
-+static void set_smm(struct kvm_vcpu *vcpu, bool enter_or_leave)
-+{
-+	struct kvm_vcpu_events events;
-+
-+	vcpu_events_get(vcpu, &events);
-+
-+	events.smi.smm = !!enter_or_leave;
-+	events.smi.pending = 0;
-+	events.flags |= KVM_VCPUEVENT_VALID_SMM;
-+
-+	vcpu_events_set(vcpu, &events);
-+}
-+
-+/* Copied from arch/x86/kvm/vmx/vmcs12.h */
-+#define VMCS12_REVISION	0x11e57ed0
-+
-+struct vmcs_hdr {
-+	u32 revision_id:31;
-+	u32 shadow_vmcs:1;
-+};
-+
-+typedef u64 natural_width;
-+
-+struct __packed vmcs12 {
-+	struct vmcs_hdr hdr;
-+	u32 abort;
-+
-+	u32 launch_state;
-+	u32 padding[7];
-+
-+	u64 io_bitmap_a;
-+	u64 io_bitmap_b;
-+	u64 msr_bitmap;
-+	u64 vm_exit_msr_store_addr;
-+	u64 vm_exit_msr_load_addr;
-+	u64 vm_entry_msr_load_addr;
-+	u64 tsc_offset;
-+	u64 virtual_apic_page_addr;
-+	u64 apic_access_addr;
-+	u64 posted_intr_desc_addr;
-+	u64 ept_pointer;
-+	u64 eoi_exit_bitmap0;
-+	u64 eoi_exit_bitmap1;
-+	u64 eoi_exit_bitmap2;
-+	u64 eoi_exit_bitmap3;
-+	u64 xss_exit_bitmap;
-+	u64 guest_physical_address;
-+	u64 vmcs_link_pointer;
-+	u64 guest_ia32_debugctl;
-+	u64 guest_ia32_pat;
-+	u64 guest_ia32_efer;
-+	u64 guest_ia32_perf_global_ctrl;
-+	u64 guest_pdptr0;
-+	u64 guest_pdptr1;
-+	u64 guest_pdptr2;
-+	u64 guest_pdptr3;
-+	u64 guest_bndcfgs;
-+	u64 host_ia32_pat;
-+	u64 host_ia32_efer;
-+	u64 host_ia32_perf_global_ctrl;
-+	u64 vmread_bitmap;
-+	u64 vmwrite_bitmap;
-+	u64 vm_function_control;
-+	u64 eptp_list_address;
-+	u64 pml_address;
-+	u64 encls_exiting_bitmap;
-+	u64 tsc_multiplier;
-+	u64 padding64[1];
-+
-+	natural_width cr0_guest_host_mask;
-+	natural_width cr4_guest_host_mask;
-+	natural_width cr0_read_shadow;
-+	natural_width cr4_read_shadow;
-+	natural_width dead_space[4];
-+	natural_width exit_qualification;
-+	natural_width guest_linear_address;
-+	natural_width guest_cr0;
-+	natural_width guest_cr3;
-+	natural_width guest_cr4;
-+	natural_width guest_es_base;
-+	natural_width guest_cs_base;
-+	natural_width guest_ss_base;
-+	natural_width guest_ds_base;
-+	natural_width guest_fs_base;
-+	natural_width guest_gs_base;
-+	natural_width guest_ldtr_base;
-+	natural_width guest_tr_base;
-+	natural_width guest_gdtr_base;
-+	natural_width guest_idtr_base;
-+	natural_width guest_dr7;
-+	natural_width guest_rsp;
-+	natural_width guest_rip;
-+	natural_width guest_rflags;
-+	natural_width guest_pending_dbg_exceptions;
-+	natural_width guest_sysenter_esp;
-+	natural_width guest_sysenter_eip;
-+	natural_width host_cr0;
-+	natural_width host_cr3;
-+	natural_width host_cr4;
-+	natural_width host_fs_base;
-+	natural_width host_gs_base;
-+	natural_width host_tr_base;
-+	natural_width host_gdtr_base;
-+	natural_width host_idtr_base;
-+	natural_width host_ia32_sysenter_esp;
-+	natural_width host_ia32_sysenter_eip;
-+	natural_width host_rsp;
-+	natural_width host_rip;
-+	natural_width paddingl[8];
-+
-+	u32 pin_based_vm_exec_control;
-+	u32 cpu_based_vm_exec_control;
-+	u32 exception_bitmap;
-+	u32 page_fault_error_code_mask;
-+	u32 page_fault_error_code_match;
-+	u32 cr3_target_count;
-+	u32 vm_exit_controls;
-+	u32 vm_exit_msr_store_count;
-+	u32 vm_exit_msr_load_count;
-+	u32 vm_entry_controls;
-+	u32 vm_entry_msr_load_count;
-+	u32 vm_entry_intr_info_field;
-+	u32 vm_entry_exception_error_code;
-+	u32 vm_entry_instruction_len;
-+	u32 tpr_threshold;
-+	u32 secondary_vm_exec_control;
-+	u32 vm_instruction_error;
-+	u32 vm_exit_reason;
-+	u32 vm_exit_intr_info;
-+	u32 vm_exit_intr_error_code;
-+	u32 idt_vectoring_info_field;
-+	u32 idt_vectoring_error_code;
-+	u32 vm_exit_instruction_len;
-+	u32 vmx_instruction_info;
-+	u32 guest_es_limit;
-+	u32 guest_cs_limit;
-+	u32 guest_ss_limit;
-+	u32 guest_ds_limit;
-+	u32 guest_fs_limit;
-+	u32 guest_gs_limit;
-+	u32 guest_ldtr_limit;
-+	u32 guest_tr_limit;
-+	u32 guest_gdtr_limit;
-+	u32 guest_idtr_limit;
-+	u32 guest_es_ar_bytes;
-+	u32 guest_cs_ar_bytes;
-+	u32 guest_ss_ar_bytes;
-+	u32 guest_ds_ar_bytes;
-+	u32 guest_fs_ar_bytes;
-+	u32 guest_gs_ar_bytes;
-+	u32 guest_ldtr_ar_bytes;
-+	u32 guest_tr_ar_bytes;
-+	u32 guest_interruptibility_info;
-+	u32 guest_activity_state;
-+	u32 guest_sysenter_cs;
-+	u32 host_ia32_sysenter_cs;
-+	u32 vmx_preemption_timer_value;
-+	u32 padding32[7];
-+
-+	u16 virtual_processor_id;
-+	u16 posted_intr_nv;
-+	u16 guest_es_selector;
-+	u16 guest_cs_selector;
-+	u16 guest_ss_selector;
-+	u16 guest_ds_selector;
-+	u16 guest_fs_selector;
-+	u16 guest_gs_selector;
-+	u16 guest_ldtr_selector;
-+	u16 guest_tr_selector;
-+	u16 guest_intr_status;
-+	u16 host_es_selector;
-+	u16 host_cs_selector;
-+	u16 host_ss_selector;
-+	u16 host_ds_selector;
-+	u16 host_fs_selector;
-+	u16 host_gs_selector;
-+	u16 host_tr_selector;
-+	u16 guest_pml_index;
-+};
-+
-+/* Fill values to make KVM vmx_set_nested_state() pass. */
-+void vmx_vmcs12_init(struct vmcs12 *vmcs12)
-+{
-+	*(__u32*)(vmcs12) = VMCS12_REVISION;
-+
-+	vmcs12->vmcs_link_pointer = -1;
-+
-+#define PIN_BASED_ALWAYSON_WITHOUT_TRUE_MSR	0x00000016
-+	vmcs12->pin_based_vm_exec_control = PIN_BASED_ALWAYSON_WITHOUT_TRUE_MSR;
-+
-+#define CPU_BASED_ALWAYSON_WITHOUT_TRUE_MSR	0x0401e172
-+	vmcs12->cpu_based_vm_exec_control = CPU_BASED_ALWAYSON_WITHOUT_TRUE_MSR;
-+
-+	vmcs12->secondary_vm_exec_control = 0;
-+
-+#define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
-+	vmcs12->vm_exit_controls = VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR;
-+
-+#define VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR	0x000011ff
-+	vmcs12->vm_entry_controls = VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR;
-+
-+#define VMXON_CR0_ALWAYSON     (X86_CR0_PE | X86_CR0_PG | X86_CR0_NE)
-+#define VMXON_CR4_ALWAYSON     X86_CR4_VMXE
-+
-+	/* host */
-+	vmcs12->host_cr0 = VMXON_CR0_ALWAYSON;
-+	vmcs12->host_cr3 = TEST_GPA;
-+	vmcs12->host_cr4 = VMXON_CR4_ALWAYSON;;
-+
-+	/* Non-zero to make KVM vmx check pass */
-+	vmcs12->host_cs_selector = 8;
-+	vmcs12->host_ss_selector = 8;
-+	vmcs12->host_ds_selector = 8;
-+	vmcs12->host_es_selector = 8;
-+	vmcs12->host_fs_selector = 8;
-+	vmcs12->host_gs_selector = 8;
-+	vmcs12->host_tr_selector = 8;
-+
-+	/* guest */
-+	vmcs12->guest_cr0 = VMXON_CR0_ALWAYSON;
-+	vmcs12->guest_cr4 = VMXON_CR4_ALWAYSON;
-+
-+	vmcs12->guest_cs_selector = 0xf000;
-+	vmcs12->guest_cs_base = 0xffff0000UL;
-+	vmcs12->guest_cs_limit = 0xffff;
-+	vmcs12->guest_cs_ar_bytes = 0x93 | 0x08;
-+
-+	vmcs12->guest_ds_selector = 0;
-+	vmcs12->guest_ds_base = 0;
-+	vmcs12->guest_ds_limit = 0xffff;
-+	vmcs12->guest_ds_ar_bytes = 0x93;
-+
-+	vmcs12->guest_es_selector = 0;
-+	vmcs12->guest_es_base = 0;
-+	vmcs12->guest_es_limit = 0xffff;
-+	vmcs12->guest_es_ar_bytes = 0x93;
-+
-+	vmcs12->guest_fs_selector = 0;
-+	vmcs12->guest_fs_base = 0;
-+	vmcs12->guest_fs_limit = 0xffff;
-+	vmcs12->guest_fs_ar_bytes = 0x93;
-+
-+	vmcs12->guest_gs_selector = 0;
-+	vmcs12->guest_gs_base = 0;
-+	vmcs12->guest_gs_limit = 0xffff;
-+	vmcs12->guest_gs_ar_bytes = 0x93;
-+
-+	vmcs12->guest_ss_selector = 0;
-+	vmcs12->guest_ss_base = 0;
-+	vmcs12->guest_ss_limit = 0xffff;
-+	vmcs12->guest_ss_ar_bytes = 0x93;
-+
-+	vmcs12->guest_ldtr_selector = 0;
-+	vmcs12->guest_ldtr_base = 0;
-+	vmcs12->guest_ldtr_limit = 0xfff;
-+	vmcs12->guest_ldtr_ar_bytes = 0x008b;
-+
-+	vmcs12->guest_gdtr_base = 0;
-+	vmcs12->guest_gdtr_limit = 0xffff;
-+
-+	vmcs12->guest_idtr_base = 0;
-+	vmcs12->guest_idtr_limit = 0xffff;
-+
-+	/* ACTIVE = 0 */
-+	vmcs12->guest_activity_state = 0;
-+
-+	vmcs12->guest_interruptibility_info = 0;
-+	vmcs12->guest_pending_dbg_exceptions = 0;
-+
-+	vmcs12->vm_entry_intr_info_field = 0;
-+}
-+
-+void vmx_state_set(struct kvm_vcpu *vcpu, struct kvm_nested_state *state,
-+		   __u16 flags, __u64 vmxon_pa, __u64 vmcs12_pa)
-+{
-+	struct vmcs12 *vmcs12 = (struct vmcs12 *)state->data.vmx->vmcs12;
-+
-+	memset(state, 0, sizeof(*state) + KVM_STATE_NESTED_VMX_VMCS_SIZE);
-+
-+	state->flags = flags;
-+	state->format = KVM_STATE_NESTED_FORMAT_VMX;
-+	state->size = KVM_STATE_NESTED_VMX_VMCS_SIZE;
-+
-+	state->hdr.vmx.vmxon_pa = vmxon_pa;
-+	state->hdr.vmx.vmcs12_pa = vmcs12_pa;
-+	state->hdr.vmx.smm.flags = 0;
-+	state->hdr.vmx.pad = 0;
-+	state->hdr.vmx.flags = 0;
-+	state->hdr.vmx.preemption_timer_deadline = 0;
-+
-+	vmx_vmcs12_init(vmcs12);
-+
-+	vcpu_nested_state_set(vcpu, state);
-+}
-+
-+static void __test_map_memory(unsigned long vm_type, bool private,
-+			      bool smm, bool nested)
-+{
-+	struct kvm_nested_state *state = NULL;
-+	const struct vm_shape shape = {
-+		.mode = VM_MODE_DEFAULT,
-+		.type = vm_type,
-+	};
-+	struct kvm_sregs sregs;
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_regs regs;
-+	struct kvm_run *run;
-+	struct kvm_vm *vm;
-+	struct ucall uc;
-+
-+	vm = vm_create_shape_with_one_vcpu(shape, &vcpu, guest_code);
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+				    TEST_GPA, TEST_SLOT, TEST_NPAGES,
-+				    private ? KVM_MEM_GUEST_MEMFD : 0);
-+	virt_map(vm, TEST_GVA, TEST_GPA, TEST_NPAGES);
-+
-+	if (private)
-+		vm_mem_set_private(vm, TEST_GPA, TEST_SIZE);
-+	if (nested) {
-+		size_t size = sizeof(*state);
-+
-+		if (kvm_cpu_has(X86_FEATURE_VMX)) {
-+			size += KVM_STATE_NESTED_VMX_VMCS_SIZE;
-+			vcpu_set_cpuid_feature(vcpu, X86_FEATURE_VMX);
-+		}
-+
-+		state = malloc(size);
-+		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, NESTED_GPA,
-+					    NESTED_SLOT, NESTED_NPAGES, 0);
-+		virt_map(vm, NESTED_GVA, NESTED_GPA, NESTED_NPAGES);
-+	}
-+
-+	if (smm)
-+		set_smm(vcpu, true);
-+	if (nested) {
-+		vcpu_regs_get(vcpu, &regs);
-+		vcpu_sregs_get(vcpu, &sregs);
-+		vmx_state_set(vcpu, state, KVM_STATE_NESTED_RUN_PENDING |
-+			      KVM_STATE_NESTED_GUEST_MODE,
-+			      NESTED_GPA, NESTED_GPA + PAGE_SIZE);
-+	}
-+	map_memory(vcpu, TEST_GPA, SZ_2M, true);
-+	map_memory(vcpu, TEST_GPA + SZ_2M, PAGE_SIZE, true);
-+	map_memory(vcpu, TEST_GPA + TEST_SIZE, PAGE_SIZE, false);
-+	if (nested) {
-+		vmx_state_set(vcpu, state, 0, -1, -1);
-+		free(state);
-+		vcpu_sregs_set(vcpu, &sregs);
-+		vcpu_regs_set(vcpu, &regs);
-+	}
-+	if (smm)
-+		set_smm(vcpu, false);
-+
-+	vcpu_args_set(vcpu, 1, TEST_GVA);
-+	vcpu_run(vcpu);
-+
-+	run = vcpu->run;
-+	TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-+		    "Wanted KVM_EXIT_IO, got exit reason: %u (%s)",
-+		    run->exit_reason, exit_reason_str(run->exit_reason));
-+
-+	switch (get_ucall(vcpu, &uc)) {
-+	case UCALL_ABORT:
-+		REPORT_GUEST_ASSERT(uc);
-+		break;
-+	case UCALL_DONE:
-+		break;
-+	default:
-+		TEST_FAIL("Unknown ucall 0x%lx.", uc.cmd);
-+		break;
-+	}
-+
-+	kvm_vm_free(vm);
-+}
-+
-+static void test_map_memory(unsigned long vm_type, bool private)
-+{
-+	if (!(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(vm_type))) {
-+		pr_info("Skipping tests for vm_type 0x%lx\n", vm_type);
-+		return;
-+	}
-+
-+	__test_map_memory(vm_type, private, false, false);
-+
-+	if (kvm_has_cap(KVM_CAP_VCPU_EVENTS) && kvm_has_cap(KVM_CAP_X86_SMM))
-+		__test_map_memory(vm_type, private, true, false);
-+	else
-+		pr_info("skipping test for vm_type 0x%lx with smm\n", vm_type);
-+
-+	if (!kvm_has_cap(KVM_CAP_NESTED_STATE)) {
-+		pr_info("Skipping test for vm_type 0x%lx with nesting\n", vm_type);
-+		return;
-+	}
-+
-+	if (kvm_cpu_has(X86_FEATURE_SVM)) {
-+		pr_info("Implement nested SVM case\n");
-+		return;
-+	}
-+	if (!kvm_cpu_has(X86_FEATURE_VMX)) {
-+		pr_info("Skipping test for vm_type 0x%lx with nested VMX\n",
-+			vm_type);
-+		return;
-+	}
-+	__test_map_memory(vm_type, private, false, true);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	TEST_REQUIRE(kvm_check_cap(KVM_CAP_MAP_MEMORY));
-+
-+	test_map_memory(KVM_X86_DEFAULT_VM, false);
-+	test_map_memory(KVM_X86_SW_PROTECTED_VM, false);
-+	test_map_memory(KVM_X86_SW_PROTECTED_VM, true);
-+	return 0;
-+}
--- 
-2.43.2
+> ---
+> only compile-tested
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c       |  2 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.h       | 12 ++++++------
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.h       |  4 ++--
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c |  4 ++--
+>  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.h    |  4 ++--
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.h    |  4 ++--
+>  drivers/gpu/drm/msm/dsi/dsi_host.c          | 10 +++++-----
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy.h       |  8 ++++----
+>  drivers/gpu/drm/msm/hdmi/hdmi.h             | 10 +++++-----
+>  drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c    |  6 +++---
+>  drivers/gpu/drm/msm/hdmi/hdmi_pll_8960.c    |  4 ++--
+>  drivers/gpu/drm/msm/msm_drv.h               |  7 ++-----
+>  drivers/gpu/drm/msm/msm_gpu.h               | 12 ++++++------
+>  13 files changed, 42 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 8bea8ef26f77..0e3dfd4c2bc8 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -507,7 +507,7 @@ static void a6xx_rpmh_stop(struct a6xx_gmu *gmu)
+>  
+>  static inline void pdc_write(void __iomem *ptr, u32 offset, u32 value)
+>  {
+> -	msm_writel(value, ptr + (offset << 2));
+> +	writel(value, ptr + (offset << 2));
+>  }
+>  
+>  static void __iomem *a6xx_gmu_get_mmio(struct platform_device *pdev,
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> index 592b296aab22..94b6c5cab6f4 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> @@ -103,12 +103,12 @@ struct a6xx_gmu {
+>  
+>  static inline u32 gmu_read(struct a6xx_gmu *gmu, u32 offset)
+>  {
+> -	return msm_readl(gmu->mmio + (offset << 2));
+> +	return readl(gmu->mmio + (offset << 2));
+>  }
+>  
+>  static inline void gmu_write(struct a6xx_gmu *gmu, u32 offset, u32 value)
+>  {
+> -	msm_writel(value, gmu->mmio + (offset << 2));
+> +	writel(value, gmu->mmio + (offset << 2));
+>  }
+>  
+>  static inline void
+> @@ -131,8 +131,8 @@ static inline u64 gmu_read64(struct a6xx_gmu *gmu, u32 lo, u32 hi)
+>  {
+>  	u64 val;
+>  
+> -	val = (u64) msm_readl(gmu->mmio + (lo << 2));
+> -	val |= ((u64) msm_readl(gmu->mmio + (hi << 2)) << 32);
+> +	val = (u64) readl(gmu->mmio + (lo << 2));
+> +	val |= ((u64) readl(gmu->mmio + (hi << 2)) << 32);
+>  
+>  	return val;
+>  }
+> @@ -143,12 +143,12 @@ static inline u64 gmu_read64(struct a6xx_gmu *gmu, u32 lo, u32 hi)
+>  
+>  static inline u32 gmu_read_rscc(struct a6xx_gmu *gmu, u32 offset)
+>  {
+> -	return msm_readl(gmu->rscc + (offset << 2));
+> +	return readl(gmu->rscc + (offset << 2));
+>  }
+>  
+>  static inline void gmu_write_rscc(struct a6xx_gmu *gmu, u32 offset, u32 value)
+>  {
+> -	msm_writel(value, gmu->rscc + (offset << 2));
+> +	writel(value, gmu->rscc + (offset << 2));
+>  }
+>  
+>  #define gmu_poll_timeout_rscc(gmu, addr, val, cond, interval, timeout) \
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> index 34822b080759..8917032b7515 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> @@ -69,12 +69,12 @@ static inline void a6xx_llc_rmw(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 mask, u3
+>  
+>  static inline u32 a6xx_llc_read(struct a6xx_gpu *a6xx_gpu, u32 reg)
+>  {
+> -	return msm_readl(a6xx_gpu->llc_mmio + (reg << 2));
+> +	return readl(a6xx_gpu->llc_mmio + (reg << 2));
+>  }
+>  
+>  static inline void a6xx_llc_write(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 value)
+>  {
+> -	msm_writel(value, a6xx_gpu->llc_mmio + (reg << 2));
+> +	writel(value, a6xx_gpu->llc_mmio + (reg << 2));
+>  }
+>  
+>  #define shadowptr(_a6xx_gpu, _ring) ((_a6xx_gpu)->shadow_iova + \
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> index a847a0f7a73c..83d7ee01c944 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> @@ -192,10 +192,10 @@ static int debugbus_read(struct msm_gpu *gpu, u32 block, u32 offset,
+>  }
+>  
+>  #define cxdbg_write(ptr, offset, val) \
+> -	msm_writel((val), (ptr) + ((offset) << 2))
+> +	writel((val), (ptr) + ((offset) << 2))
+>  
+>  #define cxdbg_read(ptr, offset) \
+> -	msm_readl((ptr) + ((offset) << 2))
+> +	readl((ptr) + ((offset) << 2))
+>  
+>  /* read a value from the CX debug bus */
+>  static int cx_debugbus_read(void __iomem *cxdbg, u32 block, u32 offset,
+> diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.h b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.h
+> index 01179e764a29..94b1ba92785f 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.h
+> +++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.h
+> @@ -44,12 +44,12 @@ struct mdp4_kms {
+>  
+>  static inline void mdp4_write(struct mdp4_kms *mdp4_kms, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, mdp4_kms->mmio + reg);
+> +	writel(data, mdp4_kms->mmio + reg);
+>  }
+>  
+>  static inline u32 mdp4_read(struct mdp4_kms *mdp4_kms, u32 reg)
+>  {
+> -	return msm_readl(mdp4_kms->mmio + reg);
+> +	return readl(mdp4_kms->mmio + reg);
+>  }
+>  
+>  static inline uint32_t pipe2flush(enum mdp4_pipe pipe)
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.h b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.h
+> index fac9f05aa639..36b6842dfc9c 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.h
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.h
+> @@ -171,13 +171,13 @@ struct mdp5_encoder {
+>  static inline void mdp5_write(struct mdp5_kms *mdp5_kms, u32 reg, u32 data)
+>  {
+>  	WARN_ON(mdp5_kms->enable_count <= 0);
+> -	msm_writel(data, mdp5_kms->mmio + reg);
+> +	writel(data, mdp5_kms->mmio + reg);
+>  }
+>  
+>  static inline u32 mdp5_read(struct mdp5_kms *mdp5_kms, u32 reg)
+>  {
+>  	WARN_ON(mdp5_kms->enable_count <= 0);
+> -	return msm_readl(mdp5_kms->mmio + reg);
+> +	return readl(mdp5_kms->mmio + reg);
+>  }
+>  
+>  static inline const char *stage2name(enum mdp_mixer_stage_id stage)
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 9d86a6aca6f2..77bd5ff330d7 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -55,7 +55,7 @@ static int dsi_get_version(const void __iomem *base, u32 *major, u32 *minor)
+>  	 * scratch register which we never touch)
+>  	 */
+>  
+> -	ver = msm_readl(base + REG_DSI_VERSION);
+> +	ver = readl(base + REG_DSI_VERSION);
+>  	if (ver) {
+>  		/* older dsi host, there is no register shift */
+>  		ver = FIELD(ver, DSI_VERSION_MAJOR);
+> @@ -73,12 +73,12 @@ static int dsi_get_version(const void __iomem *base, u32 *major, u32 *minor)
+>  		 * registers are shifted down, read DSI_VERSION again with
+>  		 * the shifted offset
+>  		 */
+> -		ver = msm_readl(base + DSI_6G_REG_SHIFT + REG_DSI_VERSION);
+> +		ver = readl(base + DSI_6G_REG_SHIFT + REG_DSI_VERSION);
+>  		ver = FIELD(ver, DSI_VERSION_MAJOR);
+>  		if (ver == MSM_DSI_VER_MAJOR_6G) {
+>  			/* 6G version */
+>  			*major = ver;
+> -			*minor = msm_readl(base + REG_DSI_6G_HW_VERSION);
+> +			*minor = readl(base + REG_DSI_6G_HW_VERSION);
+>  			return 0;
+>  		} else {
+>  			return -EINVAL;
+> @@ -186,11 +186,11 @@ struct msm_dsi_host {
+>  
+>  static inline u32 dsi_read(struct msm_dsi_host *msm_host, u32 reg)
+>  {
+> -	return msm_readl(msm_host->ctrl_base + reg);
+> +	return readl(msm_host->ctrl_base + reg);
+>  }
+>  static inline void dsi_write(struct msm_dsi_host *msm_host, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, msm_host->ctrl_base + reg);
+> +	writel(data, msm_host->ctrl_base + reg);
+>  }
+>  
+>  static const struct msm_dsi_cfg_handler *dsi_get_config(
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> index e4275d3ad581..5a5dc3faa971 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> @@ -12,10 +12,10 @@
+>  
+>  #include "dsi.h"
+>  
+> -#define dsi_phy_read(offset) msm_readl((offset))
+> -#define dsi_phy_write(offset, data) msm_writel((data), (offset))
+> -#define dsi_phy_write_udelay(offset, data, delay_us) { msm_writel((data), (offset)); udelay(delay_us); }
+> -#define dsi_phy_write_ndelay(offset, data, delay_ns) { msm_writel((data), (offset)); ndelay(delay_ns); }
+> +#define dsi_phy_read(offset) readl((offset))
+> +#define dsi_phy_write(offset, data) writel((data), (offset))
+> +#define dsi_phy_write_udelay(offset, data, delay_us) { writel((data), (offset)); udelay(delay_us); }
+> +#define dsi_phy_write_ndelay(offset, data, delay_ns) { writel((data), (offset)); ndelay(delay_ns); }
+>  
+>  struct msm_dsi_phy_ops {
+>  	int (*pll_init)(struct msm_dsi_phy *phy);
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.h b/drivers/gpu/drm/msm/hdmi/hdmi.h
+> index ec5786440391..4586baf36415 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi.h
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi.h
+> @@ -115,17 +115,17 @@ void msm_hdmi_set_mode(struct hdmi *hdmi, bool power_on);
+>  
+>  static inline void hdmi_write(struct hdmi *hdmi, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, hdmi->mmio + reg);
+> +	writel(data, hdmi->mmio + reg);
+>  }
+>  
+>  static inline u32 hdmi_read(struct hdmi *hdmi, u32 reg)
+>  {
+> -	return msm_readl(hdmi->mmio + reg);
+> +	return readl(hdmi->mmio + reg);
+>  }
+>  
+>  static inline u32 hdmi_qfprom_read(struct hdmi *hdmi, u32 reg)
+>  {
+> -	return msm_readl(hdmi->qfprom_mmio + reg);
+> +	return readl(hdmi->qfprom_mmio + reg);
+>  }
+>  
+>  /*
+> @@ -166,12 +166,12 @@ struct hdmi_phy {
+>  
+>  static inline void hdmi_phy_write(struct hdmi_phy *phy, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, phy->mmio + reg);
+> +	writel(data, phy->mmio + reg);
+>  }
+>  
+>  static inline u32 hdmi_phy_read(struct hdmi_phy *phy, u32 reg)
+>  {
+> -	return msm_readl(phy->mmio + reg);
+> +	return readl(phy->mmio + reg);
+>  }
+>  
+>  int msm_hdmi_phy_resource_enable(struct hdmi_phy *phy);
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> index 4dd055416620..8c8d80b59573 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> @@ -86,18 +86,18 @@ static inline struct hdmi_phy *pll_get_phy(struct hdmi_pll_8996 *pll)
+>  static inline void hdmi_pll_write(struct hdmi_pll_8996 *pll, int offset,
+>  				  u32 data)
+>  {
+> -	msm_writel(data, pll->mmio_qserdes_com + offset);
+> +	writel(data, pll->mmio_qserdes_com + offset);
+>  }
+>  
+>  static inline u32 hdmi_pll_read(struct hdmi_pll_8996 *pll, int offset)
+>  {
+> -	return msm_readl(pll->mmio_qserdes_com + offset);
+> +	return readl(pll->mmio_qserdes_com + offset);
+>  }
+>  
+>  static inline void hdmi_tx_chan_write(struct hdmi_pll_8996 *pll, int channel,
+>  				      int offset, int data)
+>  {
+> -	 msm_writel(data, pll->mmio_qserdes_tx[channel] + offset);
+> +	 writel(data, pll->mmio_qserdes_tx[channel] + offset);
+>  }
+>  
+>  static inline u32 pll_get_cpctrl(u64 frac_start, unsigned long ref_clk,
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_pll_8960.c b/drivers/gpu/drm/msm/hdmi/hdmi_pll_8960.c
+> index cb35a297afbd..83c8781fcc3f 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi_pll_8960.c
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi_pll_8960.c
+> @@ -236,12 +236,12 @@ static const struct pll_rate freqtbl[] = {
+>  
+>  static inline void pll_write(struct hdmi_pll_8960 *pll, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, pll->mmio + reg);
+> +	writel(data, pll->mmio + reg);
+>  }
+>  
+>  static inline u32 pll_read(struct hdmi_pll_8960 *pll, u32 reg)
+>  {
+> -	return msm_readl(pll->mmio + reg);
+> +	return readl(pll->mmio + reg);
+>  }
+>  
+>  static inline struct hdmi_phy *pll_get_phy(struct hdmi_pll_8960 *pll)
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 65f213660452..0659459c0b15 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -488,15 +488,12 @@ void __iomem *msm_ioremap_mdss(struct platform_device *mdss_pdev,
+>  
+>  struct icc_path *msm_icc_get(struct device *dev, const char *name);
+>  
+> -#define msm_writel(data, addr) writel((data), (addr))
+> -#define msm_readl(addr) readl((addr))
+> -
+>  static inline void msm_rmw(void __iomem *addr, u32 mask, u32 or)
+>  {
+> -	u32 val = msm_readl(addr);
+> +	u32 val = readl(addr);
+>  
+>  	val &= ~mask;
+> -	msm_writel(val | or, addr);
+> +	writel(val | or, addr);
+>  }
+>  
+>  /**
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 2bfcb222e353..a0c1bd6d1d5b 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -555,12 +555,12 @@ struct msm_gpu_state {
+>  
+>  static inline void gpu_write(struct msm_gpu *gpu, u32 reg, u32 data)
+>  {
+> -	msm_writel(data, gpu->mmio + (reg << 2));
+> +	writel(data, gpu->mmio + (reg << 2));
+>  }
+>  
+>  static inline u32 gpu_read(struct msm_gpu *gpu, u32 reg)
+>  {
+> -	return msm_readl(gpu->mmio + (reg << 2));
+> +	return readl(gpu->mmio + (reg << 2));
+>  }
+>  
+>  static inline void gpu_rmw(struct msm_gpu *gpu, u32 reg, u32 mask, u32 or)
+> @@ -586,8 +586,8 @@ static inline u64 gpu_read64(struct msm_gpu *gpu, u32 reg)
+>  	 * when the lo is read, so make sure to read the lo first to trigger
+>  	 * that
+>  	 */
+> -	val = (u64) msm_readl(gpu->mmio + (reg << 2));
+> -	val |= ((u64) msm_readl(gpu->mmio + ((reg + 1) << 2)) << 32);
+> +	val = (u64) readl(gpu->mmio + (reg << 2));
+> +	val |= ((u64) readl(gpu->mmio + ((reg + 1) << 2)) << 32);
+>  
+>  	return val;
+>  }
+> @@ -595,8 +595,8 @@ static inline u64 gpu_read64(struct msm_gpu *gpu, u32 reg)
+>  static inline void gpu_write64(struct msm_gpu *gpu, u32 reg, u64 val)
+>  {
+>  	/* Why not a writeq here? Read the screed above */
+> -	msm_writel(lower_32_bits(val), gpu->mmio + (reg << 2));
+> -	msm_writel(upper_32_bits(val), gpu->mmio + ((reg + 1) << 2));
+> +	writel(lower_32_bits(val), gpu->mmio + (reg << 2));
+> +	writel(upper_32_bits(val), gpu->mmio + ((reg + 1) << 2));
+>  }
+>  
+>  int msm_gpu_pm_suspend(struct msm_gpu *gpu);
+> 
+> ---
+> base-commit: 6ebf211bb11dfc004a2ff73a9de5386fa309c430
+> change-id: 20240410-topic-msm_rw-cdc1d85b2ece
+> 
+> Best regards,
+> -- 
+> Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+> 
 
 
