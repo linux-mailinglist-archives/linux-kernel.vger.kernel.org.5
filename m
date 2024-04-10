@@ -1,185 +1,311 @@
-Return-Path: <linux-kernel+bounces-138949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FA789FC77
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:07:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C44389FC78
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:08:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A071B276BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:07:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02A4F28E48B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCCF1791E4;
-	Wed, 10 Apr 2024 16:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE541791FB;
+	Wed, 10 Apr 2024 16:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hZW1SVJx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G55rm0Mp"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE0F178CE3
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AFA1791E8
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765220; cv=none; b=eSmiV8CoxfWsCkGmQwrBwDHlZ/QBAaRIaWpbMtdrhlSMuVplDPXUQLF5j9vGZivDpRV2CQqVopiJUlAEtXrdoQt0FmMG0kx+GxouvDLBJ++ljuVaeyCdQI2iEOKBxr6DUuawRrkjwu1XfUjD9UUPsYQUlXNpL5BY06meXKFA/SI=
+	t=1712765280; cv=none; b=h/MDR7Ovp1/R/JH/F6P9Xffkn36Be9mfGWdvTkmA5eM2fIc0PX7azLK+/thjWCTlYe+30pzKPTzPk19kEbY+4+xmpMjKKeRLaAjBldIBzkBioqpwZn5HYdPAj8J8rOfl/PHMSon1j5Rb4vNaN/wMRcexmT2ZdRsRvgCqBsZgP1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765220; c=relaxed/simple;
-	bh=nvWl1bZewKIPWTM6J2d58Pmrr0Mymh7RKdxUjQRSwBY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JD+Igy0Bxu3VM7qqmrdCBiQKrCsk4licAh2foO8BnVESSqzXFVsfKgcrf7mfIVhRh6EW2AQIPiDaQrayc7jSjqS+8qsP9v1agVHztiN+G/+STSQvm9gFZZ/1rGS6H1W9E7R4glfLUsX+HNe4Z/oK7dxcHTDOx9yw0q3sRKWsmS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hZW1SVJx; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712765217;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=N6kKTqXMZNlUBawwTh4IwJfauVu20nj9TB2zdIeMmjI=;
-	b=hZW1SVJxHL3Z9l2E+WObqQ6586KSpEG9Fv75HSHE8iRfw8jt/tG6B2rgIUgmaF+GgZ3qNT
-	g4Quhxq9rleo3PTR24npiMJ0AS8jBs5wivgdJ24YRQhJqt6uGPCzg1ONRIJl0hzJPP/1R3
-	8cY3ZXiV0f+YeOZLFk/JqW1xz0wzlsM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-179-cPtVyGO6MP2dB43dm0to9Q-1; Wed, 10 Apr 2024 12:06:55 -0400
-X-MC-Unique: cPtVyGO6MP2dB43dm0to9Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416b91d1328so8090235e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:06:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712765214; x=1713370014;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1712765280; c=relaxed/simple;
+	bh=O9vyfiYW4qJ4aR4aUCNu5ffJRmKK3JS+Eqhztirud48=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TT3Cozil6ne6yKlwZFajtlvMvE16N69z8uIzDBGhGzYQbuiCGVlrMm2ga8qbkXFqETY5fMVHy6EYg1MyIXYmu6NQF+0gv5w+PTQ4RyIYr6p+CJlDJ6oo4sKKLe0F8/Zv23LOzSTCaCdVcHl5NPnQqB6JxehN5JhQyAxT4+UBRpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G55rm0Mp; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e062f3a47bso176935ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712765278; x=1713370078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N6kKTqXMZNlUBawwTh4IwJfauVu20nj9TB2zdIeMmjI=;
-        b=jFrVuSLP0f8JWAaaaFhMg9Y07EyyHyBMLpYILKGP1OTeA8DxmVEYXCjJolhcuZpvdj
-         vFwD3nYEk8fyxyCJbMdnxrRliTus21UmsJeklTGYeHbOFO+rUlyViZCZpueEYOHLclp3
-         lMjISeFZW4N2PrvEXPa8+T5ouA4LBM2EKbr3jEqtwE79co/GPGe4PEsVZrrhmqKJtuMi
-         PBmHfEoAIyg2hI35f1a06JgzGuB6BS9gXTrY7tDC7g2On2/dxbDNNsatGlVNP/rlcanR
-         FOSbWK6qTAXRgzcdzkgAyC1wjfDaEIqotlKjxpyIiL4kOMNBPi5FoIXyTLfsMlr+7uHf
-         Zi+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXVFJmK0OAc5IjOusIirydh+FDx6liNPnq7kq5TJ4xaPcMRpJ9eV/0akajL6cj36cQKSX3BjUOUUR99UmsZ0/3u/P1RqVTiu7g2lM9t
-X-Gm-Message-State: AOJu0YybSGR/PS4+DbrJyewO91BgTz5hkmmGs3iyNFZZosQ2kYwegA7j
-	E/C8XrnN7dsFKHo44FQfpDLUwqgJVpw7VVdAVkt6rvaxnx0kKNRAjNjTAmsEWpNvE3aZ18o9/ae
-	pH91LFbpAA4mfS65iG0udP5ou7r2mWvB+csGSohkWv5JBeDvQDwYgQdpkomkKRA==
-X-Received: by 2002:adf:cc0a:0:b0:33d:a944:54c0 with SMTP id x10-20020adfcc0a000000b0033da94454c0mr2083154wrh.22.1712765214166;
-        Wed, 10 Apr 2024 09:06:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhlL13uLX3EZ0GsQxiY91L+XTbJxZjq4cVS06NgpPLCSNK6zwU3kFelw3sKKHLjU7Xf5werA==
-X-Received: by 2002:adf:cc0a:0:b0:33d:a944:54c0 with SMTP id x10-20020adfcc0a000000b0033da94454c0mr2083137wrh.22.1712765213783;
-        Wed, 10 Apr 2024 09:06:53 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c712:fa00:38eb:93ad:be38:d469? (p200300cbc712fa0038eb93adbe38d469.dip0.t-ipconnect.de. [2003:cb:c712:fa00:38eb:93ad:be38:d469])
-        by smtp.gmail.com with ESMTPSA id g12-20020a5d540c000000b00343f662327bsm12907344wrv.77.2024.04.10.09.06.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 09:06:53 -0700 (PDT)
-Message-ID: <6517b5ae-e302-4cbe-8a4c-716e604822ce@redhat.com>
-Date: Wed, 10 Apr 2024 18:06:51 +0200
+        bh=jQntAKieGT0i/s8HiScw2bDeUzaEYfiblRtqNRVHdc4=;
+        b=G55rm0MpB+CuWSLQ4HA9r/JG8GQ2mmtobGvRzbxtVwHW6XaU+jfhREkJzBKApFwt3z
+         IeiMfaZOWuY8LeJ9rqc/sUCi/nkpm831h7BrnXdOit7EtV8tjxvWIP7LjvPKqxp0uJKw
+         mCkyBTmhfJLh+lqBaPwWZQ+4DAsevlyapaGbx57g6FMWS3SuobM6F3QZczsrbODUgROD
+         6EMYa8pGYbh7vhT/6n+g7nPUUSBMBXtWHtcv5hM+/w1StyVaLEzL7yte8VwuL1LN5PSA
+         AUgBLfyjojBL/nyg/vC3u2a5Uz5Llag/LozY6rpb18zLb7cgS8KI7YzKdP5c+JAXRV6/
+         lOBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712765278; x=1713370078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jQntAKieGT0i/s8HiScw2bDeUzaEYfiblRtqNRVHdc4=;
+        b=elsejRUvPxjjWI/uv9vH6PTi1GygOu6VP2L3IcOEBuOUpoJ12R5ZVrDoG6y1SQrVGI
+         CduITttjbDWlsFybyzvlqmEcKZitkoqb5mEADSYlbpLL+kkY9tri6rSXeZLrEZkiO5Xi
+         QkhqiVpeqzgZYDTytwGvtub2TObUaKofas/Ur1cWzYZzoCPEMUg3LbaPZnuDg5RfWPIt
+         c33VHeisD8eNwZiighMp3tcWTKe1b325FjS8CxtmWMIWZ1/+H38CGLVklbzT4cwC8ABO
+         HvoYj26W6zHkJIgiRI6rhrA3urjmGV+9OiLK4EtFPKMK3ARL6L+jBI6wY+VozjE+VqPE
+         eU1A==
+X-Forwarded-Encrypted: i=1; AJvYcCV2I/YlZPQsyxCvXpUpAwdV10EKX9b6CHnQkFJiFimeoHsZAwuCH/Gis66xNAsIJJe6hyLgy/kSzSE/0dov2MpINKgGZZOgCsiOaZm9
+X-Gm-Message-State: AOJu0Yw5b5UMBAhSPMdXmkO/I+f1+cdFJZA0KQo6KlMHjfkmPZ3HlllR
+	Tv4gR7knb0yZof6ny46YefbiQdogsGgg+GnU/4BDrNS/3IJ3BzhmwqFipsnAPi+eKdjop7i8rdV
+	9Ygfx8sUWx5ijEjg+duDhVugsImK6d5r+EXJY
+X-Google-Smtp-Source: AGHT+IGJstmEj1XUFY34LSDgFUBaClLQ/9p78uMzbyL2cRc7G5dE+yDawDKh0XUCAv7+t9BJLvl36zI/jgsD4Ixi/Zs=
+X-Received: by 2002:a17:902:e842:b0:1e2:3991:9e9 with SMTP id
+ t2-20020a170902e84200b001e2399109e9mr261613plg.0.1712765278065; Wed, 10 Apr
+ 2024 09:07:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v1 12/12] mm: page_frag: update documentation and
- maintainer for page_frag
-To: Alexander Duyck <alexander.duyck@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
- linux-mm@kvack.org, linux-doc@vger.kernel.org
-References: <20240407130850.19625-1-linyunsheng@huawei.com>
- <20240407130850.19625-13-linyunsheng@huawei.com>
- <b5c5866e626f6c90657a32b5e9adff724d5896db.camel@gmail.com>
- <c1f5a78a-3040-0cc7-f113-d5ec82c6010f@huawei.com>
- <CAKgT0UfZBGEVJa1O7cdNt6zy_EEPoGo=aW6ugRKy8a44qg0j8w@mail.gmail.com>
- <09d7d59b-9da3-52f7-b039-acd0344c88c8@huawei.com>
- <20240409062504.26cfcdde@kernel.org>
- <CAKgT0UfqDRxhUyfQhwsDrRhQmCw4qNw_7Jwq+xN1Z4f6_1Bthg@mail.gmail.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAKgT0UfqDRxhUyfQhwsDrRhQmCw4qNw_7Jwq+xN1Z4f6_1Bthg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240410104450.15602-1-adrian.hunter@intel.com>
+In-Reply-To: <20240410104450.15602-1-adrian.hunter@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 10 Apr 2024 09:07:42 -0700
+Message-ID: <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
+Subject: Re: [PATCH] perf tools: Simplify is_event_supported()
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09.04.24 17:11, Alexander Duyck wrote:
-> On Tue, Apr 9, 2024 at 6:25 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Tue, 9 Apr 2024 15:59:58 +0800 Yunsheng Lin wrote:
->>>> Just to be clear this isn't an Ack, but if you are going to list
->>>> maintainers for this my name should be on the list so this is the
->>>> preferred format. There are still some things to be cleaned up in this
->>>> patch.
->>>
->>> Sure, I was talking about "Alexander seems to be the orginal author for
->>> page_frag, we can add him to the MAINTAINERS later if we have an ack from
->>> him." in the commit log.
->>
->> Do we have to have a MAINTAINERS entry for every 1000 lines of code?
->> It really feels forced :/
-> 
-> I don't disagree. However, if nothing else I think it gets used as a
-> part of get_maintainers.pl that tells you who to email about changes
-> doesn't it? It might make sense in my case since I am still
-> maintaining it using my gmail account, but I think the commits for
-> that were mostly from my Intel account weren't they? So if nothing
-> else it might be a way to provide a trail of breadcrumbs on how to
-> find a maintainer who changed employers..
+On Wed, Apr 10, 2024 at 3:45=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> Simplify is_event_supported by using sys_perf_event_open() directly like
+> other perf API probe functions and move it into perf_api_probe.c where
+> other perf API probe functions reside.
+>
+> A side effect is that the probed events do not appear when debug prints
+> are enabled, which is beneficial because otherwise they can be confused
+> with selected events.
+>
+> This also affects "Test per-thread recording" in
+> "Miscellaneous Intel PT testing" which expects the debug prints of
+> only selected events to appear between the debug prints:
+> "perf record opening and mmapping events" and
+> "perf record done opening and mmapping events"
+>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Would a .mailmap entry also help for your case, such that the mail 
-address might get mapped to the new one? (note, I never edited .mailmap 
-myself)
+nit:
+Closes: https://lore.kernel.org/lkml/ZhVfc5jYLarnGzKa@x1/
 
--- 
-Cheers,
+> ---
+>  tools/perf/util/perf_api_probe.c | 40 +++++++++++++++++++++++++
+>  tools/perf/util/perf_api_probe.h |  2 ++
+>  tools/perf/util/pmus.c           |  1 +
+>  tools/perf/util/print-events.c   | 50 +-------------------------------
+>  tools/perf/util/print-events.h   |  1 -
+>  5 files changed, 44 insertions(+), 50 deletions(-)
+>
+> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_=
+probe.c
+> index 1de3b69cdf4a..13acb34a4e1c 100644
+> --- a/tools/perf/util/perf_api_probe.c
+> +++ b/tools/perf/util/perf_api_probe.c
+> @@ -195,3 +195,43 @@ bool perf_can_record_cgroup(void)
+>  {
+>         return perf_probe_api(perf_probe_cgroup);
+>  }
+> +
+> +bool is_event_supported(u8 type, u64 config)
+> +{
+> +       struct perf_event_attr attr =3D {
+> +               .type =3D type,
+> +               .config =3D config,
+> +               .disabled =3D 1,
+> +       };
+> +       int fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
 
-David / dhildenb
+It looks like this is a change to the actual perf_event_open
+arguments, I don't think it is an issue but wanted to flag it.
 
+> +
+> +       if (fd < 0) {
+> +               /*
+> +                * The event may fail to open if the paranoid value
+> +                * /proc/sys/kernel/perf_event_paranoid is set to 2
+> +                * Re-run with exclude_kernel set; we don't do that by
+> +                * default as some ARM machines do not support it.
+> +                */
+> +               attr.exclude_kernel =3D 1;
+
+I worry about the duplicated fallback logic getting out of sync,
+perhaps we could have a quiet option for evsel__open option, or better
+delineate the particular log entries. I don't really have a good
+alternative idea and kind of like that detecting an event is available
+loses the evsel baggage. I would kind of like event parsing just to
+give 1 or more perf_event_attr for similar reasons.
+
+Assuming there are no better ideas on how to approach this:
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+> +               fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
+> +       }
+> +
+> +       if (fd < 0) {
+> +               /*
+> +                * The event may fail to open if the PMU requires
+> +                * exclude_guest to be set (e.g. as the Apple M1 PMU
+> +                * requires).
+> +                * Re-run with exclude_guest set; we don't do that by
+> +                * default as it's equally legitimate for another PMU
+> +                * driver to require that exclude_guest is clear.
+> +                */
+> +               attr.exclude_guest =3D 1;
+> +               fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
+> +       }
+> +
+> +       if (fd < 0)
+> +               return false;
+> +
+> +       close(fd);
+> +       return true;
+> +}
+> diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_=
+probe.h
+> index b104168efb15..820f6a03221a 100644
+> --- a/tools/perf/util/perf_api_probe.h
+> +++ b/tools/perf/util/perf_api_probe.h
+> @@ -4,6 +4,7 @@
+>  #define __PERF_API_PROBE_H
+>
+>  #include <stdbool.h>
+> +#include <linux/types.h>
+>
+>  bool perf_can_aux_sample(void);
+>  bool perf_can_comm_exec(void);
+> @@ -13,5 +14,6 @@ bool perf_can_record_text_poke_events(void);
+>  bool perf_can_sample_identifier(void);
+>  bool perf_can_record_build_id(void);
+>  bool perf_can_record_cgroup(void);
+> +bool is_event_supported(u8 type, u64 config);
+>
+>  #endif // __PERF_API_PROBE_H
+> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> index 2fd369e45832..5442442e0508 100644
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -13,6 +13,7 @@
+>  #include "cpumap.h"
+>  #include "debug.h"
+>  #include "evsel.h"
+> +#include "perf_api_probe.h"
+>  #include "pmus.h"
+>  #include "pmu.h"
+>  #include "print-events.h"
+> diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-event=
+s.c
+> index 3f38c27f0157..a25be2b2c774 100644
+> --- a/tools/perf/util/print-events.c
+> +++ b/tools/perf/util/print-events.c
+> @@ -20,6 +20,7 @@
+>  #include "evsel.h"
+>  #include "metricgroup.h"
+>  #include "parse-events.h"
+> +#include "perf_api_probe.h"
+>  #include "pmu.h"
+>  #include "pmus.h"
+>  #include "print-events.h"
+> @@ -239,55 +240,6 @@ void print_sdt_events(const struct print_callbacks *=
+print_cb, void *print_state)
+>         strlist__delete(sdtlist);
+>  }
+>
+> -bool is_event_supported(u8 type, u64 config)
+> -{
+> -       bool ret =3D true;
+> -       struct evsel *evsel;
+> -       struct perf_event_attr attr =3D {
+> -               .type =3D type,
+> -               .config =3D config,
+> -               .disabled =3D 1,
+> -       };
+> -       struct perf_thread_map *tmap =3D thread_map__new_by_tid(0);
+> -
+> -       if (tmap =3D=3D NULL)
+> -               return false;
+> -
+> -       evsel =3D evsel__new(&attr);
+> -       if (evsel) {
+> -               ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> -
+> -               if (!ret) {
+> -                       /*
+> -                        * The event may fail to open if the paranoid val=
+ue
+> -                        * /proc/sys/kernel/perf_event_paranoid is set to=
+ 2
+> -                        * Re-run with exclude_kernel set; we don't do th=
+at by
+> -                        * default as some ARM machines do not support it=
+.
+> -                        */
+> -                       evsel->core.attr.exclude_kernel =3D 1;
+> -                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> -               }
+> -
+> -               if (!ret) {
+> -                       /*
+> -                        * The event may fail to open if the PMU requires
+> -                        * exclude_guest to be set (e.g. as the Apple M1 =
+PMU
+> -                        * requires).
+> -                        * Re-run with exclude_guest set; we don't do tha=
+t by
+> -                        * default as it's equally legitimate for another=
+ PMU
+> -                        * driver to require that exclude_guest is clear.
+> -                        */
+> -                       evsel->core.attr.exclude_guest =3D 1;
+> -                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> -               }
+> -
+> -               evsel__delete(evsel);
+> -       }
+> -
+> -       perf_thread_map__put(tmap);
+> -       return ret;
+> -}
+> -
+>  int print_hwcache_events(const struct print_callbacks *print_cb, void *p=
+rint_state)
+>  {
+>         struct perf_pmu *pmu =3D NULL;
+> diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-event=
+s.h
+> index bf4290bef0cd..5d241b33b5a3 100644
+> --- a/tools/perf/util/print-events.h
+> +++ b/tools/perf/util/print-events.h
+> @@ -38,6 +38,5 @@ void print_symbol_events(const struct print_callbacks *=
+print_cb, void *print_sta
+>                          unsigned int max);
+>  void print_tool_events(const struct print_callbacks *print_cb, void *pri=
+nt_state);
+>  void print_tracepoint_events(const struct print_callbacks *print_cb, voi=
+d *print_state);
+> -bool is_event_supported(u8 type, u64 config);
+>
+>  #endif /* __PERF_PRINT_EVENTS_H */
+> --
+> 2.34.1
+>
 
