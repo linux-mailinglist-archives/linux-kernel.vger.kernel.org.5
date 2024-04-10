@@ -1,185 +1,131 @@
-Return-Path: <linux-kernel+bounces-138131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A84789ED18
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:04:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD49E89ECF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:02:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00354284A53
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:04:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B096B23A77
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB0213DDD8;
-	Wed, 10 Apr 2024 08:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4825113D2BA;
+	Wed, 10 Apr 2024 08:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pk97KuT/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I7Y7/4ub"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6642413D2B3
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0218F13D293
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712736168; cv=none; b=chlwZjn2Xrj00RZTm7erAnEKE8C2kKI8HBUkpNEWf3iAIRkj7SPNXbVYFYiSCY0JcW7R6TqBhPue2e6tB3d7XiP7QpemJWE2ASBEbOK/4Np7oQZUW3te6Cs1c23/0ZIT1Iai8VAIks9XieadRkYFGMC/Wbfq9kENURBVqeErUHc=
+	t=1712736155; cv=none; b=UICVldD7olZZdJvY3agmOwU5XQAifYOrl5QcajTR/VCjYuR3IM2GCWvLgAEILVpxk/TH9LUgjhlx6Ipgns07AXN6G0s1BXkzFTYmaeQp7aUms003h7BLzPkl3y80brsEadxaKO4V27BLQhy55B6OAdUUTH8uy8Zrjj4+uvEUY8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712736168; c=relaxed/simple;
-	bh=d1PN1Hm45NhCEHeS1enwZRk3BBE6Kbx5SrWseLrZK54=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JUpY3a487p4TCwCINW/b7NJCuEQ1J0MT7EBpVaj+z+pNVurYE6daKPODLac1ToDeOGVkL4b6GpSKsPMqMOpcxfOhKhXCZFdHEfjBlgfE7+R0B1SzbTDhYdZv72f6930fSYq9PQpcOfgSnrO7eVEUUzZ6KgiZLG0Yv9nXGs0+M0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pk97KuT/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712736165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DXu5GyWFLRYVVgKT/xx47xxPPvyqqTS3jJA/xlCkkm0=;
-	b=Pk97KuT/mE9r5AWVFdqO6INc6z4HesNnp8Eydu2oWb9B1SKZTBktWULMTV6CAv5WHqzYfb
-	lEV3l0VSl46VIecpkz+PButrh4dcw0SGAOKtlkkT+cdzv/cTu9TaijbzP+0LS2xbwPCKPq
-	mqsjrSmvjJQcMxrmicBH/NKgjbxKZms=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-PA5EDDd6PUudcx3d0OM2FA-1; Wed, 10 Apr 2024 04:02:41 -0400
-X-MC-Unique: PA5EDDd6PUudcx3d0OM2FA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4162b9b1702so30268335e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:02:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712736160; x=1713340960;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DXu5GyWFLRYVVgKT/xx47xxPPvyqqTS3jJA/xlCkkm0=;
-        b=BqXG8Ll21D8Phfzs1gVb7QmLX+cCaa0YhvdvI9G+Bc/48PIMQ+li1yYjxI5wSkt3Lh
-         97AcY0oFrk3oOAU0SI2IkSbQzqUcN/IfH7SL7J0m3fZ3mkp+ZkwK8J68m87Rdl48BSTl
-         zfBqzaFKYA+JfJT5Pb++usQq+BUv/kX6paws51lIm4sKpBPwcbyvE78bbqWP9j31Wr8X
-         h5ZEzB5d+ejjTVi1Vfz74EUmQx2ybFh7ML0WgF8JJ4fW3EYs0jkvWqob3Q9ZF7CkiEL+
-         SPchvHiTlmE3Rn+S/974EhmtOWP0AVUhSfBTG8MbsQ/jPKCYRNq8qyqHc80Fvr/uEIAu
-         geTg==
-X-Forwarded-Encrypted: i=1; AJvYcCX5cUvy2mJgoOjYu0MyuXTDAdePtWh5uNml+xXLUi/T1FpU0iqKJlA0ZTRwHoQllclsAq10igxKUbxnaqlDqZ/jaMFpCWjINtdn5QdN
-X-Gm-Message-State: AOJu0YyzE/1jKDSPSiRNnWJmmy+BaDlKsMXvRQF/5p2cAyC5BLSslKRN
-	LQhy2I04lY7VLukWqq+ZRqevDEb74hS2W0knj+LQH3/DCdg/v+rVur2BQAyOHJJ4CCiW5W0HcLe
-	ytwAwy+3poYI+RSQtPqznBdFMaqNE/aI8jlF+nfB31Gm38qlx9+4zU8gQuZhkXw==
-X-Received: by 2002:a05:600c:1e05:b0:416:6eaa:6179 with SMTP id ay5-20020a05600c1e0500b004166eaa6179mr1616335wmb.6.1712736160211;
-        Wed, 10 Apr 2024 01:02:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFmI+bK+Bmn5+2XukodBdn2GXQ92haKG6VohgZt2mHVdjYtyJPyqjLehKUQ4vb5gN6ueySe/w==
-X-Received: by 2002:a05:600c:1e05:b0:416:6eaa:6179 with SMTP id ay5-20020a05600c1e0500b004166eaa6179mr1616221wmb.6.1712736159530;
-        Wed, 10 Apr 2024 01:02:39 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:179:8bde:8cd:63ff:6fae:3872])
-        by smtp.gmail.com with ESMTPSA id t7-20020a05600c198700b00416c160ff88sm1491111wmq.1.2024.04.10.01.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 01:02:38 -0700 (PDT)
-Date: Wed, 10 Apr 2024 04:02:23 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2 00/25] virtio: store owner from modules with
- register_virtio_driver()
-Message-ID: <20240410040140-mutt-send-email-mst@kernel.org>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <285be63c-8939-495c-8411-ce2a68e25b2b@linaro.org>
+	s=arc-20240116; t=1712736155; c=relaxed/simple;
+	bh=ns5iFXaPS2mOe7i63bnwPeaQB9a+vK/75Dv/SXu4kPo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=B9ZeF2FDOBmV5d+OV0Xjh99QYoaN0hNluLPg4t0ISXVFKxt0NnPDJ/L4X3OnPfduEt6bQu2eHqv4oU92ZlR3Zb2D2rZMvUyqOXOaMcjAJCwFO0okx6tcukp3RV157Z8Lml4shES9mTn6UNclKDgWc9tHP7pv86oZIlFkCRIKk4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I7Y7/4ub; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712736154; x=1744272154;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ns5iFXaPS2mOe7i63bnwPeaQB9a+vK/75Dv/SXu4kPo=;
+  b=I7Y7/4ubG+sDu72IG62CBW5aQnTbAS+3xxKDUnRCHvptSlt0TTvnO4RG
+   2fdttizQvh3An7L2hQ+a8cAzIPMR3kbpRXyQ6R7QgrT91Pyg1adv8Ir5r
+   FvOidMiJaLObw4Yd7wN+bnCXdhNK7QYhIV06pviaYfIrXaBcKZQdoIASH
+   zYtB6VR0hKd0qnObKSD0bI8lQH20Pp8yJ8QzNJpYXf06W7awNCAvsagDb
+   vKxkj477XeDOfznvy/S/LLn+PBpM+TmQP5YYJX0NO8gAGiDgvWv0YHKQH
+   Cn93rJHxGnh9X47CFIW3t3goqSMw7sLg70QCBqOyA/BlA8mUU4aAM8hvf
+   Q==;
+X-CSE-ConnectionGUID: 2UgSiUJCQW+6vCDGcCSmQQ==
+X-CSE-MsgGUID: Z4snNm6/T7uXvEssBAR8og==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33488836"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="33488836"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 01:02:29 -0700
+X-CSE-ConnectionGUID: YatJKCZ1SROZ0ZlY2uIrig==
+X-CSE-MsgGUID: b4Gf+aVbTmeChF1ZQ+xihg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="20365966"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 01:02:27 -0700
+Message-ID: <0231631b-44ca-45ee-adf9-0a5c8852cc27@linux.intel.com>
+Date: Wed, 10 Apr 2024 16:02:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <285be63c-8939-495c-8411-ce2a68e25b2b@linaro.org>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] iommu/vt-d: Remove caching mode check before
+ device TLB flush
+To: Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev
+References: <20240410055823.264501-1-baolu.lu@linux.intel.com>
+ <7e78917f-f84c-4e98-a612-73b8013ae367@intel.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <7e78917f-f84c-4e98-a612-73b8013ae367@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 09:41:57AM +0200, Krzysztof Kozlowski wrote:
-> On 31/03/2024 10:43, Krzysztof Kozlowski wrote:
-> > Changes in v2:
-> > - Three new patches: virtio mem+input+balloon
-> > - Minor commit msg adjustments
-> > - Add tags
-> > - Link to v1: https://lore.kernel.org/r/20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org
-> > 
-> > Merging
-> > =======
-> > All further patches depend on the first virtio patch, therefore please ack
-> > and this should go via one tree: maybe virtio?
+On 2024/4/10 14:30, Yi Liu wrote:
+> On 2024/4/10 13:58, Lu Baolu wrote:
+>> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
+>> implementation caches not-present or erroneous translation-structure
+>> entries except the first-stage translation. The caching mode is
+>> irrelevant to the device TLB , therefore there is no need to check
+>> it before a device TLB invalidation operation.
+>>
+>> iommu_flush_iotlb_psi() is called in map and unmap paths. The caching
+>> mode check before device TLB invalidation will cause device TLB
+>> invalidation always issued if IOMMU is not running in caching mode.
+>> This is wrong and causes unnecessary performance overhead.
 > 
-> Michael, Jason, Xuan,
-> 
-> Will you be able to take the entire patchset through virtio?
-> 
-> Best regards,
-> Krzysztof
+> I don't think the original code is wrong. As I replied before, if CM==0,
+> the iommu_flush_iotlb_psi() is only called in unmap path, in which the
+> @map is false. [1] The reason to make the change is to make the logic
+> simpler. 🙂
 
+Oh, I see. There is a magic
 
-Hello!
-Yes I intend to take it for the next merge window.
-I am also merging the 1st patch for this release (it's a bugfix).
+         if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
+                 iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
 
--- 
-MST
+in __mapping_notify_one().
 
+So if it's caching mode, then
+
+  - iommu_flush_iotlb_psi() will be called with @map=1 from
+    __mapping_notify_one(), "!cap_caching_mode(iommu->cap) || !map" is
+    not true, and device TLB is not invalidated.
+  - iommu_flush_iotlb_psi() will also be called with @map=0 from
+    intel_iommu_tlb_sync(), device TLB is issued there.
+
+That's the expected behavior for caching mode.
+
+If it's not the caching mode, then
+
+  - iommu_flush_iotlb_psi() will be called with @map=0 from
+    intel_iommu_tlb_sync(), device TLB is issued there.
+
+That's also the expected behavior.
+
+So the existing code is correct but obscure and difficult to understand,
+right? If so, we should make this patch as a cleanup rather than a fix.
+
+Best regards,
+baolu
 
