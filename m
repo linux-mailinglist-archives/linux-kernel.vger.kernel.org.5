@@ -1,163 +1,138 @@
-Return-Path: <linux-kernel+bounces-138605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D3989F8CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:51:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACA5789F452
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E408B2EB52
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:30:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC4681C203F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D78715EFC7;
-	Wed, 10 Apr 2024 13:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2U5wc37"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4A915ECEB;
+	Wed, 10 Apr 2024 13:31:08 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4634015EFA3
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1F7158D76;
+	Wed, 10 Apr 2024 13:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755819; cv=none; b=ifY4vdas2gNR+MVp371YZy8YwaJ9sPJ8D0m0uP5YtBK1r15N0CmtqvZF30K/wt5krnieD8lKXH3R30RkLUg1Ytl7TcFMxJ1ixtoya9Frjq1PEZkajDJNVds+pakOttGJgVSOTt6gNYkH/+OWjIP2P0iXIhIU3jwSM8h0zU26S7A=
+	t=1712755868; cv=none; b=ue7gTIxzsXlJVNTj4yz5R1JS8tYvyDlLUM2CxVvMpIYtyYUBfLGL23WqGlRUP97D+mbkuBUm4syxDyBTlB44NK7WoSomIugJIqpAQUuGaNlQmXoxrQoUScAD1HBCAsXVB+ZFKo1ddF3LiJytNbiH98auNs6M/Ngh3l5KFI4OR+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755819; c=relaxed/simple;
-	bh=bPjjFNOuVqj8uTs7HSVmg7oHVdZXttYF/pCsKDF4NiM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FX7GIawwQG9htEcIV66SCV4ICe/Qs+viPw4MbSUafKWhY6mttRWd8xkESf7SbcioYV1OGvyqN8LPbCtHwqn1DBLy/7K2BU5W7DbqYasyBrqL1fjIYCkaV1RVYRUEO0Ym+bw8+41AMKDojyqsFJEfeaa6sba14Ee52wpgSD9UtiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2U5wc37; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516dd07d373so3214194e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712755815; x=1713360615; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6huWT3pIf2LggD24RYO6XCPDGs7IwM/cm9Lv9S51+pc=;
-        b=G2U5wc37MfXKlpyXItRqxOx9Y6nslVQ3S8kqQZlFVNdaS0vgiRGlGUeUaC/rcN/FiR
-         XvsfcJRw63TV67aL8FuEtodTxEBrT97/LQCouGTQ+B2R6SPodEBPeEalWwW/4AZuDfaU
-         Dox0FDxB+SRRzl/LdAzYkYosncsMKq0/B7vc5UJS7ASXNODRZSrr8bgBmpg2IaHAJe/H
-         CovaGlk7EcggdBPYWmlNmgx9kA4bYZhJ1vSVFobsad3Tty0YViedtEeAj0nQR9+kDwFq
-         sAIgytpGDSiwSdoCh/f7Yyfe1NM9jfsajgJ99UYS2IP69heghzBJt67An+Pwmy/EO826
-         1F+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712755815; x=1713360615;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6huWT3pIf2LggD24RYO6XCPDGs7IwM/cm9Lv9S51+pc=;
-        b=HY+qrKko75AV05kS9FS9BSaK2IRSfOk2hS80ydEbORHOTlRmpyIN7WETGZyFm7w14P
-         N+EpbpEkExM9OG5ok8VzZyRQsAKNtMGEzO/lHJu5sEMS54hr/YXYZ2PsloeW8XZYjCVt
-         CHp/OVmDqCIzYThvk6kP3MztVmZebIFq0BQJi5FMfRxQP9EcxpzuqGZvUPfsl4DkA9b6
-         MRgy65VHkXnz+6OZnESk5yBmCFPFltBMFU9CNzPnvBLEWLkO3/wc1g3JeerFIbBlcJUL
-         a9FwpbHVLG0LndyPC28fviBUTY7l5O1Qv4pb576n6JHZI4XclPJjDwOZzZFZlTwo+82J
-         FgGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJIJEyG8CJi8bEbbCcsgmLKijupePZTRvfEfHxil4EG5UhKrZHD89HPk5w1KFs8cZewJ75Q4OtcZbrzqdKjwgeFnGzP0uiyXxNRXwJ
-X-Gm-Message-State: AOJu0YwToD0VqKOozkSuJVmSpUzjlnweLbKxpPGSfRCxlScg1cMkbIx1
-	Dbabh7XJN6DT2C/EnQYDWjfhE8pMhaS1SrG4DNEgwpmg7yB1Xppw
-X-Google-Smtp-Source: AGHT+IGdMEkTcnCwwLp9NweuLi3rHBrnXqxoZtVHGn23tRdfHE++3CUoyuU1cgBxItKyluZnNWoTHg==
-X-Received: by 2002:ac2:548e:0:b0:516:c8cb:6642 with SMTP id t14-20020ac2548e000000b00516c8cb6642mr1515786lfk.19.1712755814923;
-        Wed, 10 Apr 2024 06:30:14 -0700 (PDT)
-Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
-        by smtp.gmail.com with ESMTPSA id q18-20020aa7d452000000b0056e247de8e3sm6444905edr.1.2024.04.10.06.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 06:30:14 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Apr 2024 15:30:12 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ashok Raj <ashok.raj@intel.com>,
-	David Woodhouse <dwmw@amazon.co.uk>, linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH] x86/smpboot: Add map vars allocation check in
- smp_prepare_cpus_common
-Message-ID: <ZhaUZFY5MUyy6hWK@gmail.com>
-References: <20240409182940.664482-1-kiryushin@ancud.ru>
+	s=arc-20240116; t=1712755868; c=relaxed/simple;
+	bh=T81nWrifqkrF1jPgKRiL81vtI/6DX3N2s7ITSs9oN0s=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gwweA1rqUuIWdkUGO8NMREGxSv/3cIguqtnzkxyXl3etN89OnYVQCJYVyGQPUdDXGHx7CHDdZJejZEgZGpw7/ZcCIlR8Ahzy+KPCupARGz1c1UMOYnPYTcQZoqg8uvY5vdXM5YTyie8END4GeYgVQGhqts8ppsE2vYmdEDeD4KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF3WC2Z6Bz6K7FW;
+	Wed, 10 Apr 2024 21:26:15 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B9E091400CA;
+	Wed, 10 Apr 2024 21:31:02 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 14:31:02 +0100
+Date: Wed, 10 Apr 2024 14:31:01 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Miguel Luis <miguel.luis@oracle.com>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<rmk+kernel@armlinux.org.uk>
+Subject: Re: [RFC PATCH 4/4] ACPI: processor: refactor
+ acpi_processor_remove: isolate acpi_unmap_cpu under CONFIG_ACPI_HOTPLUG_CPU
+Message-ID: <20240410143101.00001f5a@Huawei.com>
+In-Reply-To: <20240409150536.9933-5-miguel.luis@oracle.com>
+References: <20240409150536.9933-1-miguel.luis@oracle.com>
+	<20240409150536.9933-5-miguel.luis@oracle.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409182940.664482-1-kiryushin@ancud.ru>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Tue,  9 Apr 2024 15:05:33 +0000
+Miguel Luis <miguel.luis@oracle.com> wrote:
 
-* Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+> acpi_unmap_cpu is architecture dependent. Isolate it.
+> The pre-processor guard for detach may now be restricted to
+> cpu unmap.
+> 
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+Again the why question isn't answered by the patch description.
 
-> As of now, zalloc_cpumask_var for various maps in smp_prepare_cpus_common
-> is not checked.
-> 
-> If allocation fails, it will not be known, unless the not-allocated map
-> will be accessed. The situation seems not very realistic now, but could
-> get more relevant in the future, as number of cores (and amount of
-> allocated resources) grows.
-> 
-> Add a cumulative status for all zalloc_cpumask_var() calls in
-> smp_prepare_cpus_common() and error message in case the status signals
-> that any of the map var allocations failed (per cpu).
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+I assume this is to try and resolve the remove question of releasing
+resources that was outstanding on vCPU HP v4 series Russell posted.
+
+I've not looked as closely at the remove path as the add one yet, but
+my gut feeling is same issue applies.
+This code that runs in here should not be dependent on whether
+CONFIG_ACPI_HOTPLUG_CPU is enabled or not.  What we do for the
+make disabled flow should not run a few of the steps in 
+acpi_processor_remove() we should make that clear by calling
+a different function that doesn't have those steps.
+
 > ---
->  arch/x86/kernel/smpboot.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+>  drivers/acpi/acpi_processor.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index 76bb65045c64..3b24c2e1fa3b 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1042,11 +1042,16 @@ void __init smp_prepare_cpus_common(void)
->  	}
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index c6e2f64a056b..edcd6a8d4735 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -492,6 +492,14 @@ static int acpi_processor_add(struct acpi_device *device,
+>  }
 >  
->  	for_each_possible_cpu(i) {
-> -		zalloc_cpumask_var(&per_cpu(cpu_sibling_map, i), GFP_KERNEL);
-> -		zalloc_cpumask_var(&per_cpu(cpu_core_map, i), GFP_KERNEL);
-> -		zalloc_cpumask_var(&per_cpu(cpu_die_map, i), GFP_KERNEL);
-> -		zalloc_cpumask_var(&per_cpu(cpu_llc_shared_map, i), GFP_KERNEL);
-> -		zalloc_cpumask_var(&per_cpu(cpu_l2c_shared_map, i), GFP_KERNEL);
-> +		bool ret = true;
+>  #ifdef CONFIG_ACPI_HOTPLUG_CPU
+> +static void acpi_processor_hotunplug_unmap_cpu(struct acpi_processor *pr)
+> +{
+> +	acpi_unmap_cpu(pr->id);
+> +}
+> +#else
+> +static void acpi_processor_hotunplug_unmap_cpu(struct acpi_processor *pr) {}
+> +#endif /* CONFIG_ACPI_HOTPLUG_CPU */
 > +
-> +		ret &= zalloc_cpumask_var(&per_cpu(cpu_sibling_map, i), GFP_KERNEL);
-> +		ret &= zalloc_cpumask_var(&per_cpu(cpu_core_map, i), GFP_KERNEL);
-> +		ret &= zalloc_cpumask_var(&per_cpu(cpu_die_map, i), GFP_KERNEL);
-> +		ret &= zalloc_cpumask_var(&per_cpu(cpu_llc_shared_map, i), GFP_KERNEL);
-> +		ret &= zalloc_cpumask_var(&per_cpu(cpu_l2c_shared_map, i), GFP_KERNEL);
-> +
-> +		if (!ret)
-> +			pr_err("Failed to allocate map for CPU%u\n", i);
+>  /* Removal */
+>  static void acpi_processor_remove(struct acpi_device *device)
+>  {
+> @@ -524,7 +532,7 @@ static void acpi_processor_remove(struct acpi_device *device)
+>  
+>  	/* Remove the CPU. */
+>  	arch_unregister_cpu(pr->id);
+> -	acpi_unmap_cpu(pr->id);
+> +	acpi_processor_hotunplug_unmap_cpu(pr);
+>  
+>  	cpus_write_unlock();
+>  	cpu_maps_update_done();
+> @@ -535,7 +543,6 @@ static void acpi_processor_remove(struct acpi_device *device)
+>  	free_cpumask_var(pr->throttling.shared_cpu_map);
+>  	kfree(pr);
+>  }
+> -#endif /* CONFIG_ACPI_HOTPLUG_CPU */
+>  
+>  #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
+>  bool __init processor_physically_present(acpi_handle handle)
+> @@ -660,9 +667,7 @@ static const struct acpi_device_id processor_device_ids[] = {
+>  static struct acpi_scan_handler processor_handler = {
+>  	.ids = processor_device_ids,
+>  	.attach = acpi_processor_add,
+> -#ifdef CONFIG_ACPI_HOTPLUG_CPU
+>  	.detach = acpi_processor_remove,
+> -#endif
+>  	.hotplug = {
+>  		.enabled = true,
+>  	},
 
-So:
-
- - That doesn't really solve anything, nor does it propagate the error 
-   further up. Plus memory allocation failures within __init functions for 
-   key CPU data structures are invariably fatal. While there might be
-   more cores in the future - but there will be even more RAM. This error 
-   condition will never be realistic.
-
- - The canonical arch behavior for __init functions is to return -ENOMEM 
-   and not printk anything. But that's not really an option for 
-   smp_prepare_cpus_common(), which feeds back into the 
-   ::smp_prepare_cpus() callback that doesn't really expect failure either.
-
-My suggestion would be to simply pass in __GFP_NOFAIL to document that 
-there's no reasonable allocation failure policy here. That's better than 
-needlessly complicating this code.
-
-Also note that this code has changed in the latest x86 tree (tip:master).
-
-Thanks,
-
-	Ingo
 
