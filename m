@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-138507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC6B789F266
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:37:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10B7D89F268
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:37:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26913286A91
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:37:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFFCF2869F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0972115DBB9;
-	Wed, 10 Apr 2024 12:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7628515E5CD;
+	Wed, 10 Apr 2024 12:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OassZM3m"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="nbh5FgLR"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D856315B990;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D851F15B98E;
 	Wed, 10 Apr 2024 12:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712752617; cv=none; b=bjgUX4ioUbk/8PBvbgu+4Rdao4sg2HwJaSljCd8YVJni8v/EFIkXQz8ue1EScGXG9qZNio06Yp5kKcHf1OfWCUHEJh0m/xnFvrKb+N6FJTtqzXjFMNZrHTL/yw1dVghN/qcjGTaaFWwd/nR47UZc6XawU6mH4yMtY51CY+OabNE=
+	t=1712752618; cv=none; b=EydZ04+S2864K1conbfbEYRKWLODJWDQ7kSv8DfwLcXScB1n3uWfCncv1NuFiil8G8kEFuufED8gQTR/IDhVSkAnL7BJtc72tj0pjcc5Tu/6vpuxj01ylAQqS5jY+6cUL9ICJXf0cxxMmJO7TMueCOBrc27nfUGWhx3qJbHjulE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712752617; c=relaxed/simple;
-	bh=PIKaSKIrL14+cT0YwZSzOzP7fwNqRc3dWyIMQBcnsdU=;
+	s=arc-20240116; t=1712752618; c=relaxed/simple;
+	bh=zlbes/C+mMf8GVzxf6IqNj9dh4TQOHZqYOjhpSbRxJU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ND1UaUvPy0WQm/su3Dqhp6diMr+Ys1moJnFy0XTwxKsyPqaoHiQv6831E9oz84NuJW0jo6hk22d60lWR1IZZw4a6er/apiWdx1up8Gng8I0GThJPMGGedMYDTlLNVGYfxn4O0qgGb/mXFbjUygZAQbxr/ro3cX/1ntq13javsGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=OassZM3m; arc=none smtp.client-ip=213.167.242.64
+	 In-Reply-To:To:Cc; b=HUq7/tBntvokTmEvjd6HYHRG7J+CanPtJ3EMJrh4BldnR62gQPQnyLGmkCItVysuhzZeprCpnnnPIqdMzpsaimI4KSpTh24M/48bAaUoafbrTMLPAUk8DmhxYIIBk5zn3ZOcik+jIgrCVLGS3gZzJc3MT8MUMql8RyGeGXYI0R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=nbh5FgLR; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 14832BD1;
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 97AE0EF2;
 	Wed, 10 Apr 2024 14:36:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712752569;
-	bh=PIKaSKIrL14+cT0YwZSzOzP7fwNqRc3dWyIMQBcnsdU=;
+	s=mail; t=1712752570;
+	bh=zlbes/C+mMf8GVzxf6IqNj9dh4TQOHZqYOjhpSbRxJU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=OassZM3msmzoMCuZ3q0y6x2nwPWB0Cm5mVYkb7OXNu18aT3lyY9VrePhPTc4vOeNF
-	 FEoRZiW1vplY9qJeVB9ltFZGxrIs+hpZhqV8yPWgmYcepPMkSPtsZ09ODo3wVzCG9a
-	 3HErywfgjdMPVX7+TRRLgHOZW5VwfxQRR8PB3CyI=
+	b=nbh5FgLRr9QgO529JPOx8bcbulDPKSVrCfYqsTb+ZZG+sdDP/mLgNDoYC2f7dBdiH
+	 SbPSFclUn7YVJrW71n9t4XYh4S0n3Z5QYBoZ688jD1iicY4T6TZ4MfH05mj7m8Irol
+	 rAi3yXkxZxBtn9ePNa+wIZIavXZLqgbqdGQlbmNw=
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date: Wed, 10 Apr 2024 15:35:49 +0300
-Subject: [PATCH v3 2/9] media: subdev: Use v4l2_subdev_has_op() in
- v4l2_subdev_enable/disable_streams()
+Date: Wed, 10 Apr 2024 15:35:50 +0300
+Subject: [PATCH v3 3/9] media: subdev: Add checks for subdev features
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-enable-streams-impro-v3-2-e5e7a5da7420@ideasonboard.com>
+Message-Id: <20240410-enable-streams-impro-v3-3-e5e7a5da7420@ideasonboard.com>
 References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
 In-Reply-To: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
@@ -63,53 +62,84 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
 Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1222;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2128;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=PIKaSKIrL14+cT0YwZSzOzP7fwNqRc3dWyIMQBcnsdU=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmFofe6DFtY8373avyY5sSM3N06UyAbApTjpJg4
- P5EgU40fdqJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZhaH3gAKCRD6PaqMvJYe
- 9e1ZD/wM6HRBNvozCkMRZ94pXuBR/ZK++ubSj1Tj2wpED87gpdMTtvt3sqP3ZoQx6vKLtHtZqHg
- iUTN4Ffabg1D9AtnoJ/2Lyxa/uEWqNGtEmSG6U2GIzfBAr3F1BdQQvcwg1ByibrXoOUJ1tkM4N5
- ZukGiqa3XczAlfm0VHiM6A+j3+/7PPMMa++c1Z668SwqN/W3dqqWYu8uEN6cF3Z9cR7LPeTHWWD
- ZYsPeAmAccxAxpmoMJ9DJ7eyIBYuo1NnEB0uJlPGjkGPJBmQkijrotKhZPiqQ1QiK/nwIw2TG5s
- JxkMIqE/zmnXqlySRRaws1buBjNWL6jmkL8bU/7PGPrvQO+tAkge+pZ8MKhn2hK0UM6p+CrAjUF
- YjcWxP3gmhf0W5U34xbAdpgNlm2AhLaYnriQaw23LaI/Q6q3vk+HHVYnpol1zi5g1V5xZzS7OP+
- WHiJNU01wv/p3nE+e7dupic18rxUTeXfHUDxMH9+fR9a/g7LSvw6hGxpGyMb8KHLN0aXTO70Ui8
- XXo/ZuTVPHdYs8MalHm9NwFgAg5CzLp6O4pKQXx4TnrcHnksewHWMg6LrAaeubvwSB4CklcSMS9
- sPPlm3D3Gh2GAfs8EaIZqxWd3gF/x8kThoftd0ICKSXAW/oUTAppNm6CyF84516QerXLnXaESjM
- GfEo1KCIbCEI03A==
+ bh=zlbes/C+mMf8GVzxf6IqNj9dh4TQOHZqYOjhpSbRxJU=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmFoff/kjTBbtOZhZkZ3momcOP54yqy22hpg5Hv
+ TYksusK13iJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZhaH3wAKCRD6PaqMvJYe
+ 9VxSD/9zspXhDGeS1SdhDaYQWjDLce1/O61zShRpW1xFDP0C6tVczRWN5t+gUblnTeObzZPVi4D
+ /b0ZZjxs4hdzbR68eNIdjco6gYasupjRKt30N4NGi0pa5DKfCr2QLGPisKQOXB1fuRMZDzF05K4
+ RJCpdlUsZCidhnTsn7z5e04tVisGPGsRtu4OZyp5fNgOyGW/8Ey2lJ4mhsf43+KmNwtSabB2fwF
+ bASHhaOZ6j2vcwE/SC7QA1g5Jph9/9gkr4QZWPv88whKj+3gY9CV6DoPAt9diA9Xa11hJdmtN5E
+ vp7zJaTkxez0Vk/FzFZIUjWMVukZ0A5RIxpjpbeOCmPwC1FFUDRnqAqGVefdbUkINDHatjoS4MV
+ 50OfBVEvY938855szvySdgNiAw+jpa4nnz/+AAVb2t1NKNgFXUQi3CarnBcD4phquIlHQ2QMbxV
+ +2+behqbVRw6IYN5AJ3OfOiODd3vhbDrNnCwBxVEfry33Y5qr0KSyDMcRgJRoij/bcNR14Ldxjz
+ Y6lh0/vTWzP2wxboWuP+KzJe+s/inLPfC/w60dWRDC+zYXT4SHONf+XjzqZfepnFlxdTa0wcZF0
+ 1FcxaOBiDkSzcgUP8EnYZ7zCQOleWrnT2Zjad8b6FSmPQdP3vLa28CxsO7mPZTeCTCVdpAr6q7z
+ Z/q1nGDdr8CfDTA==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-Use v4l2_subdev_has_op() in v4l2_subdev_enable/disable_streams().
+Add some checks to verify that the subdev driver implements required
+features.
+
+A subdevice that supports streams (V4L2_SUBDEV_FL_STREAMS) must do one
+of the following:
+
+- Implement neither .enable/disable_streams() nor .s_stream(), if the
+  subdev is part of a video driver that uses an internal method to
+  enable the subdev.
+- Implement only .enable/disable_streams(), if support for legacy
+  sink-side subdevices is not needed.
+- Implement .enable/disable_streams() and .s_stream(), if support for
+  legacy sink-side subdevices is needed.
+
+At the moment the framework doesn't check this requirement. Add the
+check.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/media/v4l2-core/v4l2-subdev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/v4l2-core/v4l2-subdev.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index 13957543d153..4a531c2b16c4 100644
+index 4a531c2b16c4..606a909cd778 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -2133,7 +2133,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
- 		return 0;
+@@ -1533,6 +1533,33 @@ int __v4l2_subdev_init_finalize(struct v4l2_subdev *sd, const char *name,
+ 				struct lock_class_key *key)
+ {
+ 	struct v4l2_subdev_state *state;
++	struct device *dev = sd->dev;
++	bool has_disable_streams;
++	bool has_enable_streams;
++	bool has_s_stream;
++
++	/* Check that the subdevice implements the required features */
++
++	has_s_stream = v4l2_subdev_has_op(sd, video, s_stream);
++	has_enable_streams = v4l2_subdev_has_op(sd, pad, enable_streams);
++	has_disable_streams = v4l2_subdev_has_op(sd, pad, disable_streams);
++
++	if (has_enable_streams != has_disable_streams) {
++		dev_err(dev,
++			"subdev '%s' must implement both or neither of .enable_streams() and .disable_streams()\n",
++			sd->name);
++		return -EINVAL;
++	}
++
++	if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
++		if (has_s_stream && !has_enable_streams) {
++			dev_err(dev,
++				"subdev '%s' must implement .enable/disable_streams()\n",
++				sd->name);
++
++			return -EINVAL;
++		}
++	}
  
- 	/* Fallback on .s_stream() if .enable_streams() isn't available. */
--	if (!sd->ops->pad || !sd->ops->pad->enable_streams)
-+	if (!v4l2_subdev_has_op(sd, pad, enable_streams))
- 		return v4l2_subdev_enable_streams_fallback(sd, pad,
- 							   streams_mask);
- 
-@@ -2250,7 +2250,7 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
- 		return 0;
- 
- 	/* Fallback on .s_stream() if .disable_streams() isn't available. */
--	if (!sd->ops->pad || !sd->ops->pad->disable_streams)
-+	if (!v4l2_subdev_has_op(sd, pad, disable_streams))
- 		return v4l2_subdev_disable_streams_fallback(sd, pad,
- 							    streams_mask);
- 
+ 	state = __v4l2_subdev_state_alloc(sd, name, key);
+ 	if (IS_ERR(state))
 
 -- 
 2.34.1
