@@ -1,164 +1,125 @@
-Return-Path: <linux-kernel+bounces-141293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0598A1C38
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:41:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BE389E841
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:41:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FB751F260C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:41:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4EC71C241BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79ED415ADBF;
-	Thu, 11 Apr 2024 16:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XKhyR30J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3E6947A;
+	Wed, 10 Apr 2024 02:41:41 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436F171B6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0528C5CB5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851924; cv=none; b=SOlPJL3h9zPIZapyR8rRjtgdYK84lNWAAumj/jmf7bb049iVj1MIVB0xMwXKnb3ypJnh/wdEXyUh2hlbYi2m3/XqMbLtrC5ISMSgeNeMmb02spgF3gsdjCr8BOnYDNhwIQHQS+z5EMsXQvZ5LAQS3n/IVRY9FL1GT4acNdcf+Iw=
+	t=1712716901; cv=none; b=nCyAWqkS+mENFte6ZpJeASl92Q71QNwoWgUB/QDJ9NVbDeG5ODjk/CONAfylC1D2wEdkvDYnhxiIOGH164AtZCEobyq4SHiXQKSignOKflW2rkLDrZODDq7YdRBHNbA7tZTHYP5CoWrUh1SXbyRfDO7z9yulNONkQVlzJ5WSrSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712851924; c=relaxed/simple;
-	bh=iZJ65E4jwpdPJWy55MJCZoVveyH46gJ2hl1C21236H4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSdBfZUUZTL09Lqv6M645tFr8GK91VOdzkFNtNhtfGkAcL4Nc4HsBZXjW6b1jLSFiIkDPta7BIq464u2YUQ/1v8QylvL+Cz98iNREx/avvRU58Ed3EquTX0SIt8Y0ntNkjRlZOik9fLY/6Wti501t7nzJMF/qXTacL588Atm/J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XKhyR30J; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712851922;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WMYXluZdka6NWHeIT5ZbQJbQ6V8bbh3I4kjosa1hc3E=;
-	b=XKhyR30J5aF+2fyV2VG8xOTn+MbR+q7eUFNdRzopaqyqarw66+t06o7Op4aX8VM0/WLn72
-	PAQZPn/o4pqKS6eyhXPkiz4kNTd1WA58XQQ4vMi7i6GHVee9M1DSkFAXhedemWUfis9kL3
-	Dv3J71mL+7j6fxX8rFWHOikngzUAQDY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-178-CUvC8KVAOeeiiVXbQ2VcNQ-1; Thu, 11 Apr 2024 12:11:56 -0400
-X-MC-Unique: CUvC8KVAOeeiiVXbQ2VcNQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE1C61887318;
-	Thu, 11 Apr 2024 16:11:54 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.7])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9657490E8;
-	Thu, 11 Apr 2024 16:11:53 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 439A1400DCB1A; Tue,  9 Apr 2024 23:39:16 -0300 (-03)
-Date: Tue, 9 Apr 2024 23:39:16 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <ZhX71JRK0W+BaeXR@tpad>
-References: <20240328171949.743211-1-leobras@redhat.com>
- <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
+	s=arc-20240116; t=1712716901; c=relaxed/simple;
+	bh=WQE/DcVn0z+Dwqhu6TGO6zO3ltOLL30++8D0WS2ug+I=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hkv5rLwvGBCcJeX0p4Ci3RTyNtqyK49VQOyFeiNP/KQsMNQ80tZ//80uQAsAbHyx49vSVPyeLjYaeMxUVy/Wv1UjnPcq/Ui2/Hiivneg95tC9PYglupVp8y5UMLV4ZFR/Bxff7qVG/0/5drtXgg6iopmw00+D/f6d12ucdpxf/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VDnBV3Vjxz1GGgC;
+	Wed, 10 Apr 2024 10:40:50 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (unknown [7.193.23.54])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3204D18002D;
+	Wed, 10 Apr 2024 10:41:36 +0800 (CST)
+Received: from Linux-SUSE12SP5.huawei.com (10.67.136.233) by
+ kwepemm600014.china.huawei.com (7.193.23.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 10:41:35 +0800
+From: zhuqiuer <zhuqiuer1@huawei.com>
+To: <nathan@kernel.org>
+CC: <ardb@kernel.org>, <justinstitt@google.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux@armlinux.org.uk>, <llvm@lists.linux.dev>, <morbo@google.com>,
+	<ndesaulniers@google.com>, <zhuqiuer1@huawei.com>
+Subject: Re: [PATCH] ARM: Add a memory clobber to the fmrx instruction
+Date: Wed, 10 Apr 2024 10:41:25 +0800
+Message-ID: <20240410024126.21589-1-zhuqiuer1@huawei.com>
+X-Mailer: git-send-email 2.12.3
+In-Reply-To: <20240409164641.GC3219862@dev-arch.thelio-3990X>
+References: <20240409164641.GC3219862@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhQmaEXPCqmx1rTW@google.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
 
-On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
-> On Fri, Apr 05, 2024, Paul E. McKenney wrote:
-> > On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
-> > > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
-> > > > rcuc wakes up (which might exceed the allowed latency threshold
-> > > > for certain realtime apps).
-> > > 
-> > > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
-> > > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
-> > > enter a guest, but the CPU never does (at least, not in the immediate future).
-> > > 
-> > > Or am I just not understanding how RCU's kthreads work?
+> > Instruction fmrx is used throughout the kernel,
+> > where it is sometimes expected to be skipped
+> > by incrementing the program counter, such as in vfpmodule.c:vfp_init().
+> > Therefore, the instruction should not be reordered when it is not intended.
+> > Adding a barrier() instruction before and after this call cannot prevent
+> > reordering by the compiler, as the fmrx instruction is constrained
+> > by '=r', meaning it works on the general register but not on memory.
+> > To ensure the order of the instruction after compiling,
+> > adding a memory clobber is necessary.
 > > 
-> > It is quite possible that the current rcu_pending() code needs help,
-> > given the possibility of vCPU preemption.  I have heard of people doing
-> > nested KVM virtualization -- or is that no longer a thing?
-> 
-> Nested virtualization is still very much a thing, but I don't see how it is at
-> all unique with respect to RCU grace periods and quiescent states.  More below.
-> 
-> > But the help might well involve RCU telling the hypervisor that a given
-> > vCPU needs to run.  Not sure how that would go over, though it has been
-> > prototyped a couple times in the context of RCU priority boosting.
-> >
-> > > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> > > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> > > > > >     grace period started over than a second ago. If this value is bad,
-> > > > > >     I have no issue changing it.
-> > > > > 
-> > > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> > > > > of what magic time threshold is used.  
-> > > > 
-> > > > Why? It works for this particular purpose.
-> > > 
-> > > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
-> > > against edge cases, and I'm pretty sure we can do better with about the same amount
-> > > of effort/churn.
+> > Below is the code snippet disassembled from the method:
+> > vfpmodule.c:vfp_init(), compiled by LLVM.
 > > 
-> > Beyond a certain point, we have no choice.  How long should RCU let
-> > a CPU run with preemption disabled before complaining?  We choose 21
-> > seconds in mainline and some distros choose 60 seconds.  Android chooses
-> > 20 milliseconds for synchronize_rcu_expedited() grace periods.
+> > Before the patching:
+> > xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
+> > xxxxx:   xxxxx    mov r0, r4
+> > xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
+> > ...
+> > xxxxx:   xxxxx    bl  c0791c8c <printk>
+> > xxxxx:   xxxxx    movw    r5, #23132  ; 0x5a5c
+> > xxxxx:   xxxxx    vmrs    r4, fpsid  <- this is the fmrx instruction
+> > 
+> > After the patching:
+> > xxxxx:   xxxxx    bl  c010c688 <register_undef_hook>
+> > xxxxx:   xxxxx    mov r0, r4
+> > xxxxx:   xxxxx    vmrs    r5, fpsid  <- this is the fmrx instruction
+> > xxxxx:   xxxxx    bl  c010c6e4 <unregister_undef_hook>
+> > 
+> > Signed-off-by: zhuqiuer <zhuqiuer1@huawei.com>
+> > ---
+> >  arch/arm/vfp/vfpinstr.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/vfp/vfpinstr.h b/arch/arm/vfp/vfpinstr.h
+> > index 3c7938fd40aa..e70129e10b8e 100644
+> > --- a/arch/arm/vfp/vfpinstr.h
+> > +++ b/arch/arm/vfp/vfpinstr.h
+> > @@ -68,7 +68,7 @@
+> >  	u32 __v;			\
+> >  	asm(".fpu	vfpv2\n"	\
+> >  	    "vmrs	%0, " #_vfp_	\
+> > -	    : "=r" (__v) : : "cc");	\
+> > +	    : "=r" (__v) : : "memory", "cc");	\
+> >  	__v;				\
+> >   })
+> >  
+> > -- 
+> > 2.12.3
+> > 
 > 
-> Issuing a warning based on an arbitrary time limit is wildly different than using
-> an arbitrary time window to make functional decisions.  My objection to the "assume
-> the CPU will enter a quiescent state if it exited a KVM guest in the last second"
-> is that there are plenty of scenarios where that assumption falls apart, i.e. where
-> _that_ physical CPU will not re-enter the guest.
-> 
-> Off the top of my head:
-> 
->  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
->    will get false positives, and the *new* pCPU will get false negatives (though
->    the false negatives aren't all that problematic since the pCPU will enter a
->    quiescent state on the next VM-Enter.
-> 
->  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
->    won't re-enter the guest.  And so the pCPU will get false positives until the
->    vCPU gets a wake event or the 1 second window expires.
-> 
->  - If the VM terminates, the pCPU will get false positives until the 1 second
->    window expires.
-> 
-> The false positives are solvable problems, by hooking vcpu_put() to reset
-> kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
-> scheduled in on a different pCPU, KVM would hook vcpu_load().
+> This seems like the same issue that Ard was addressing with this patch
+> at https://lore.kernel.org/20240318093004.117153-2-ardb+git@google.com/,
+> does that change work for your situation as well? I do not really have a
+> strong preference between the two approaches, Ard also mentioned using
+> *current in the asm constraints as another option.
 
-Sean,
+Sorry for not reading Ard's thread at first. 
+Yes, using "asm volatile" also worked for our case, and it was our previous solution. 
+But we later switched to the memory clobber due to the same reason that you mentioned in Ard's thread. 
+We believe that a memory clobber is robust enough to prevent the reordering situation mentioned.
 
-It seems that fixing the problems you pointed out above is a way to go.
-
+v1 -> v2: Adding a memory clobber the fmxr instruction.
 
