@@ -1,131 +1,153 @@
-Return-Path: <linux-kernel+bounces-138667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6444F89F9C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:21:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83BD89F8DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B45A4B225DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:53:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CE1C285ED6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD572177994;
-	Wed, 10 Apr 2024 13:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C69815EFB1;
+	Wed, 10 Apr 2024 13:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="NPrA4equ"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UD/OUHuE"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624FB15EFAD;
-	Wed, 10 Apr 2024 13:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDCB1779A0
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756617; cv=none; b=KouNOimLM8IlEy9itFzFKq/+mBHaAJjtlE0Z0XS/s0uz/urONw79gwrv2lBx0OSp1dhCugEDwdpCB8ksk6yRd6l08xwg7lLzejYxnfBFmGL1qXW6LlgXeM+EYR1tKqh2Zfppp8Y17bMxSXEWid/s3W8uniFecZTmWpaH9KtxIic=
+	t=1712756677; cv=none; b=RigxyqsqeUEg8K+A9VLi7jC1GJB7hhqD+9PBPIBbmZiQXCP4kzRTLn5Ubl1JoREKfwhcNwcEKOC8OhJIWXDS6NRgKJZAgJI75dQm4l+8sDJNt2naRFkcvhgoX7lpoY2uRkvyLqfWuP+EapVKiP59byCNYpl+bjfmRQFfcbbTt10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756617; c=relaxed/simple;
-	bh=XiPRziEWRhIzlEfs7eO5aDDMDS4PjF7n1KvdNGZEerQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gHvqR3PRqMuFVH5coyMnr+Jd3/Y0+zBA9b9sVR3I3NBYiCJnh8Fq14++vAJiezvLhjkg1REhMCpyG22IVOhc6xZ0AP4aHdwvQOzLas70vJfV3eUF2YkISn1EEnrsMdSUNkxqLen0XP0Xa8ZXXw0wuuabESrV3LX28svJ0ZrVK9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=NPrA4equ; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 89CD3600A2;
-	Wed, 10 Apr 2024 13:43:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1712756610;
-	bh=XiPRziEWRhIzlEfs7eO5aDDMDS4PjF7n1KvdNGZEerQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NPrA4equ/TMpR0q6+Yituygvav46aTdDa8B2kaKZjNOVKTtNVH/dVGDuT2u3rDTD3
-	 djiLop+Vu9z9nCp+t381RUOL/BC0iIHDfG4SvMl1S4XURG1RuwSTpaKGJunRGbKCEX
-	 dHJ9AD/n0aH3ESMcAIOpCzov23dYW+p6mTmqfd5jr1VgwOUGKRy/OnGJPr3np3CE1z
-	 0ZBykyAPQAGJtTEVluccEHnSHZeYZRoQSkpP+L/kKkkEL66TuqjMMFQFyFAYsfjDAp
-	 NCrFw+cIQUmkhyKQVOHCBZ6aSKLv6bpNzl1NsqgN8ciZIEr+h8zw3bmWfm8CBN0HLQ
-	 6hSUCSOr5kf9w==
-Received: by x201s (Postfix, from userid 1000)
-	id C1DB02010E6; Wed, 10 Apr 2024 13:43:04 +0000 (UTC)
-From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
-To: netdev@vger.kernel.org,
-	Suman Ghosh <sumang@marvell.com>
-Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
-	linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>
-Subject: [PATCH net] octeontx2-pf: fix FLOW_DIS_IS_FRAGMENT implementation
-Date: Wed, 10 Apr 2024 13:43:01 +0000
-Message-ID: <20240410134303.21560-1-ast@fiberby.net>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712756677; c=relaxed/simple;
+	bh=BIt4MPjIq1JK5mJtXN3KrTrhpfKhXIqx+/uqe7UuWx8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ihnapc+PVML3GMOTpl+8+BO89XI0y/OEhg5k3La+OigR0HXWTo92Bm1f5asZxaWTlXD2Clc9Po0xAGBWl5zT4npXv0kG5Qqu/sadohe85fp7txhDFnMQz/4+9Ko6stRgzhkXLRSWfiwZyFbCrXcPDhUeUQz2+RtXvd6z1dcsk7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UD/OUHuE; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d89346eb45so41359351fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712756673; x=1713361473; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=KDBLK+tVd9A1OeTdM0G1pnfddQWjC0yq/wyZH0BB0iQ=;
+        b=UD/OUHuEe5CLJtYkq7W15ehzc8LvdhOfTomYZx56g9AsNq8iUqE7fDhQIoDEiXnqiY
+         dMpc27MuHwGJlF3XzKWxhcQdLWdWZXld5TY7ny+YtaHcwfVLOZ3MkIVi1VySOs+041O+
+         69R0In7a1uieVYchAlB1WIRy68fC0pWq4/8EPivRBXBwJ6RI+uHtZuWJ/9BolM8K5msL
+         l6gFhCcSuH72cIGL+Dvg1Fp5VKsYpMHcG7LvgvAscWSquh0EtVvcRehZDyZGVnJH4p7T
+         3nSl+uiwZfs6QKQhh8yslkVJY+mbqB41SkvFnOfQSHzWiZ9JEXxvjCuzjdZ8bS0IsNFW
+         fZAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712756673; x=1713361473;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KDBLK+tVd9A1OeTdM0G1pnfddQWjC0yq/wyZH0BB0iQ=;
+        b=BV6wALOjv02Ka0YQnue84ytt3elntxOBDUiZRGhkuj+9QbaRVKmBExr53Ady0aSCmv
+         FwtqVcOndPeWt/wX2w7kRXdx9X9bVqI/ZU+kWSeWhhtCYT9BcCCGEXJTlGzWsAEJyXEH
+         6KHyqDHRgdrt1TeBiWCthVd4GgE5JpS/NJqlszaHGjYjpy85azXown1p5h68+AdqSxuJ
+         ekutuIa+elZx0cEHw63BYCarm/w5HK7Y+TSSyI+ZhrLDRikir5a2kbNnEgQY7lbw+9R6
+         QpVu/rvkLDbt9OrymQxtfD8ldO1myS2fz++uuG2VtCkA9LpSg0eaGU24cgAdI5KiPSOh
+         5/7g==
+X-Forwarded-Encrypted: i=1; AJvYcCVUflZW5iyKoteOn5eOggD1kLrQaXZa6yHQetss5Lc5ZhvaoyDfDmlpBzQt3gAYNlEZA4kqrSWpXnmc0OOYNA4p2TmcaK5AK3tnUT1w
+X-Gm-Message-State: AOJu0Yx/6nTTBKZ3ZYQkecrzuI1uZVUCK+8mArJWnPrTStEUuHDrd6L3
+	f6wQxmjHAbc4OmE6A+9zc9DVl/z22xr3M2T1eSJBaBYjYCaNxbRII5rgWlDnra4=
+X-Google-Smtp-Source: AGHT+IHQQr0uGnIAskGDWgJVCLGUT5fK3mpdueF4KQnMvyjMCIU2hd755uGgdSjVchXCaKxtIqzYmA==
+X-Received: by 2002:a2e:850f:0:b0:2d4:6a34:97bf with SMTP id j15-20020a2e850f000000b002d46a3497bfmr2410334lji.49.1712756673143;
+        Wed, 10 Apr 2024 06:44:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id qq18-20020a17090720d200b00a51cdf560b9sm4536799ejb.37.2024.04.10.06.44.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 06:44:32 -0700 (PDT)
+Message-ID: <8927d1c6-73b8-4f6a-815c-aaa6da8ea90b@linaro.org>
+Date: Wed, 10 Apr 2024 15:44:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sa8155p-adp: use correct gpio for SDHC2
+ CD
+To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Upon reviewing the flower control flags handling in
-this driver, I notice that the key wasn't being used,
-only the mask.
+On 10/04/2024 15:41, Volodymyr Babchuk wrote:
+> Card Detect pin for SHDC2 on SA8155P-ADP is connected to GPIO4 of
+> PMM8155AU_1, not to internal TLMM. This change fixes two issues at
+> once: not working ethernet (because GPIO4 is used for MAC TX) and SD
+> detection.
+> 
+> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
 
-Ie. `tc flower ... ip_flags nofrag` was hardware
-offloaded as `... ip_flags frag`.
+Please provide Fixes tag.
 
-Only compile tested, no access to HW.
-
-Fixes: c672e3727989 ("octeontx2-pf: Add support to filter packet based on IP fragment")
-Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
----
-
-This is a best guess on a fix, I don't know if it will work,
-but hopefully someone at Marvell can test it.
-
-The more certain alternative would be to set an error msg.
-and return -EOPNOTSUPP, when `tc flower ip_flags nofrag`
-is used.
-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 87bdb93cb066e..f4655a8c0705d 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -688,22 +688,25 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	}
- 
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CONTROL)) {
- 		struct flow_match_control match;
-+		u32 val;
- 
- 		flow_rule_match_control(rule, &match);
- 		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
- 			NL_SET_ERR_MSG_MOD(extack, "HW doesn't support frag first/later");
- 			return -EOPNOTSUPP;
- 		}
- 
- 		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
-+			val = match.key->flags & FLOW_DIS_IS_FRAGMENT;
- 			if (ntohs(flow_spec->etype) == ETH_P_IP) {
--				flow_spec->ip_flag = IPV4_FLAG_MORE;
-+				flow_spec->ip_flag = val ? IPV4_FLAG_MORE : 0;
- 				flow_mask->ip_flag = IPV4_FLAG_MORE;
- 				req->features |= BIT_ULL(NPC_IPFRAG_IPV4);
- 			} else if (ntohs(flow_spec->etype) == ETH_P_IPV6) {
--				flow_spec->next_header = IPPROTO_FRAGMENT;
-+				flow_spec->next_header = val ?
-+							 IPPROTO_FRAGMENT : 0;
- 				flow_mask->next_header = 0xff;
- 				req->features |= BIT_ULL(NPC_IPFRAG_IPV6);
- 			} else {
- 				NL_SET_ERR_MSG_MOD(extack, "flow-type should be either IPv4 and IPv6");
--- 
-2.43.0
+Best regards,
+Krzysztof
 
 
