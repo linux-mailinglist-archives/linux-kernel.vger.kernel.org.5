@@ -1,197 +1,270 @@
-Return-Path: <linux-kernel+bounces-139180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A00E89FF99
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5BB89FFA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F65C283AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:16:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99221F22BFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C597417B517;
-	Wed, 10 Apr 2024 18:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9CD51802CC;
+	Wed, 10 Apr 2024 18:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="K2t/6UA1"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KcaHvXNU"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2090.outbound.protection.outlook.com [40.107.20.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1BF180A97
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712772942; cv=none; b=qb1JSLYdkLTynDyMEWYbm6xSXWM32xpWll3rqScoVOap6l4K01y1i6JW9K3TiqwPAJ3a7db2twGyUb4Rq/vxYYcQik7aX+jAhVwu+Vf2LSLHBonJ3o2Sg4zwzWDPlNzRjJTFnaENG//G0B7CtCrq/SpH7cOhHDRgW89Bjh+zsFE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712772942; c=relaxed/simple;
-	bh=I7w75JKCRyKbAmEW3pStOguyIrdpPPhkqLTig6UY8/8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rj1YRYbTG4XpKpDfgDCndgMeB6vJ0Bi/qb6dc0ELdjYa0OWO5LJIIIQRdrKvYz7kcRjH7puKEo7bad++RBqlhNuiWQs1b26ZgGc6j+RX4MgmxQb4mE9GLrneiM0rNdT1YDuudK4yKL1He5AIEtKF+lp11/NOCJec5U71W0ijTBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=K2t/6UA1; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso4960257b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1712772939; x=1713377739; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UCu3vAa+tXcoFNa1tysLxOJ5zWMnnTVGFp6Jd0UonFc=;
-        b=K2t/6UA10SQIPe3bYIl6dzI/OdAncXmidrYgpsEJf8x9WH/bdYlVLh2/dutIuNUB3I
-         8ofirz+72by3iYq3Ffn3qkRT+gIR1+oxNvHnGxXG5G3Fi+/Myyx3MEfIybsHCfoapa/l
-         /uS2olH/gKal27COqaLPjl9jQ84AZjZWM0EHeZZWnyx3Gnl1BRIaE5SWKRrewbPV15S4
-         1F8/FAb6STLt8seijc2/oWS5KwTgtabDUde7559Bsx/hAV7BtIvXNeBz8jeUkdp27U2I
-         hDgKgkJefZj7QoIgUX5yrkQw0kPLrU8bKNwSMAin3URbfrKgNquPeNEIQzPNlMIRCbiF
-         4NQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712772939; x=1713377739;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UCu3vAa+tXcoFNa1tysLxOJ5zWMnnTVGFp6Jd0UonFc=;
-        b=Z4C2CsFCxnRQ7CRFz/kWf+NOcMfFaxU+MLfVd1FmoBeazpX5ckvapJIaXe6ObFO2tR
-         Ene7vL71sbz4JWne3sR57Lr+EnkoTHSOmIsuLCpsacMq5Q+7nuXnjN119/uzRUAPgPGp
-         Dcr2XVRd/WBEcqr2YVbYroTY94bTmnQkl7sgFHtDxZQYV7+15GdIgX9lfs10v36GQ5Fx
-         9229jT/ZVJsUBdn65exnKgZp1lfdFtdwcsrjEMNGGoEwR2zkoeahgjeGTaFqjdw3MerA
-         tfjsQMSfstcHfx4BiWoPkl1+pFsjlSJKQI98VFU+AUE/BTdsi/XSJMTzaYnYCIc0lWCa
-         yf9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXSvIOecrw0asMgA5UPxxTMOBvUzwvhEALRezAb2PtrfRFlA9r95XVf3v1z7a8fT/lj4f1y9FJFdW+8Y9U9yalkNa8Urk9QyViWdisM
-X-Gm-Message-State: AOJu0Yw/RSp9k6htdHt23flFzvjJH6XhzQv4DDXiQP+zuZ7Rxk3BKtQ9
-	cJ+SXDN3xevuzW5cF8lp8EKN8CL+j6x4F0mJQOuRyuFW/oHdVJQj6jXkTjDaGo0=
-X-Google-Smtp-Source: AGHT+IEYs1FkUZ/HZ0wZiL1iLIrRzC0Z3BEge6bs6qjHNR5sPLQMAjNa7/usFj5Mm9nVIbWuqhT+Fw==
-X-Received: by 2002:a05:6a20:4391:b0:1a1:878d:d3f6 with SMTP id i17-20020a056a20439100b001a1878dd3f6mr4316748pzl.26.1712772939458;
-        Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
-Received: from airbuntu ([104.132.0.101])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006ecca2f2a32sm10322177pfp.168.2024.04.10.11.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
-Date: Wed, 10 Apr 2024 19:15:37 +0100
-From: Qais Yousef <qyousef@layalina.io>
-To: John Stultz <jstultz@google.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting
- prio
-Message-ID: <20240410181537.fqpix44uo43jvwct@airbuntu>
-References: <20240404220500.dmfl2krll37znbi5@airbuntu>
- <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu>
- <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
- <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
- <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
- <20240409061909.tb3vxc27h2eawiwg@airbuntu>
- <CAKfTPtC4hdbBhn+-hkK9i4vkjO5fBGfsxjESkBrvyOwN6oHCdA@mail.gmail.com>
- <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
- <CANDhNCr=S8b5MyDa9xp9D08FcsG6VGrHQjkj5CW3iFzuFO-4Xg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E0E17F38F;
+	Wed, 10 Apr 2024 18:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712773026; cv=fail; b=ZkY72tT9ozMte5UAUjaJxK/zRsT8QVW8B4lB4emMOBvQgwOjzt1aE0velLuNYeM96Y6I91U1dAFtwARfVkqeC3S9RVykpLt6XJ3Qjqmj25/PGGpuGzFT3wIRzoO68eQ2yeZa2HnkTVELRFpSg7ozk+jIec3lUTo19BGfIIjZQTI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712773026; c=relaxed/simple;
+	bh=4cjnBjJKSA1Auiyf2l+MRzcamZB1f+/yk19D8X9NHAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=IP2zqGOgi3Cu7KAXFTnHEk0ZnJMulhWCqQvZ94Wpb8mgSPaWsL8dRwu7dkGLsuarcY16g97Q6juW7/DSaOtSWajTSVaPLk86pLw14t/Gcw3DeZ65oloV0MeEZMLOKlxiC2ZIa52qbXmdwmOM6en7tJf/X3EHy8tn8GdviKx41yI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=KcaHvXNU; arc=fail smtp.client-ip=40.107.20.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G2+aFXDlrnHUcMD13qy8yc1hvQhJxEFf0r7Ha6NxHc+/Yu/PcvKsMTj/U/VjAoaVSfvPKLLlq1wQWru01Z6mUtdXXL9WC3tKfMxUSWwEb7ZkvmQFl5DFuJ/nmH+DzFZ5upwPEknfDeGIEPx53hHfrfKLcqYsV5T47qTAekWq/b5HfddZAWjc8LWbA96ph1wBASN5RgGnfeFQcjj6JXGQkcTxxMIvL+a7Yq5GUNwMNmFblH/ANWjTX6xpkqiQaWfp6FXN+8JY4dkYVxrMOHVDIsuzhJSlgNcFdVJnKcODN3REDnUvYKGfAn3XjsUDG6zBHq4LgPfWUOQ3WuBvD690fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mrZEQyeUzGiD5v6bVrqP/r9BrfhmxL0Z9F9kw/IcXW8=;
+ b=FwmxBUOrT0AzTLLh21Z1T8GPZ1E2DhMLXbHxeovdHl9X4j+SUuW3OBCntPZK9f4XkEePl6hzD+bCcfZ9/87bc9AQggApS8+hTSauYYNq8rEMCZkcdPWMwlpD58bXqaGMe4okkoPcrNqXZYClB7Vbzh6gonG0KuRUrUiRFoyWMGkgeyG/JcODcOP2pJ0c6a9F49rSzLIe9tbHrelEZxCT5H25g7rsKFO038FxaB5MqYXMfoEvSQHKusBiIFfwtUHg8jbRk3sv5K6xI/pkWqJwO6fUoZfQCLwImw7mU72YozXQ5NMzGpqhkYRdZ9dBksawsUjqpd23qBPW39C38fX5bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mrZEQyeUzGiD5v6bVrqP/r9BrfhmxL0Z9F9kw/IcXW8=;
+ b=KcaHvXNU9g0Yh92/S1QTr5S8+0IJSt5MAzhAmd9AM9XteV+XFqJZeKaAQClmJ+SrkNdr7bprDJpJJV/v0u1htOGDw/K4g/QBml0e8sC9a6yxBvpFPid6uiB+LIURHnilCYcmWvlRiIAPWojhRoSDcoNTceFU7uCq1kwWQIMElgc=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DB9PR04MB8090.eurprd04.prod.outlook.com (2603:10a6:10:240::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.53; Wed, 10 Apr
+ 2024 18:17:01 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 18:17:00 +0000
+Date: Wed, 10 Apr 2024 14:16:52 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Niklas Cassel <cassel@kernel.org>, helgaas@kernel.org,
+	bhelgaas@google.com, gustavo.pimentel@synopsys.com,
+	imx@lists.linux.dev, jdmason@kudzu.us, jingoohan1@gmail.com,
+	kw@linux.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org, robh@kernel.org
+Subject: Re: [PATCH v3 1/1] PCI: dwc: Fix index 0 incorrectly being
+ interpreted as a free ATU slot
+Message-ID: <ZhbXlOMNxc2nMIW8@lizhi-Precision-Tower-5810>
+References: <20240326193540.3610570-1-Frank.Li@nxp.com>
+ <ZhPFmFYorWa-sfLp@ryzen>
+ <20240410180341.GF16629@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410180341.GF16629@thinkpad>
+X-ClientProxiedBy: SJ2PR07CA0010.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::27) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANDhNCr=S8b5MyDa9xp9D08FcsG6VGrHQjkj5CW3iFzuFO-4Xg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB8090:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZVxQajRLxY+B3TQYkngHz+KwjHsxKmiEFaCk0ihDzA0Q9wpwEa9gUaLw/M5R5XtR0z4UpYUnZj6r8YvniseH3wwYEdnxnw0j641z+XXjAuMxQO26+7RgydS+l1Se00SQmy1EBC2aEYAjI73RFC6E0U0wG+J0ov1e/pawo/nZ54BDSdZ4xzuIMxLNc6wzdfx0HIB1Rl7IOuJT89rmFr3qtBiFUfketKlUGW/CNrKKeO51w3EjEX0H3AhywN7MyRjLs/oG8kCp9Zk77fHnhqT6NbLhcIZrqBuFAO6BiDofUbER19iugLGlesGuTUw6f58K2k1+py2kUd3KTe4WqxmZoPBfXhrpsjZ5AKTcE+LXgKxB5nIVoItEQ2sggAmqYsTUevCHwMIwDdF0iwtgqbk8WuJL4jKihHKOSr2VMS71Sp8zvI3rsNybFJbhDeZbflWtM6+W2OA9Wml62tCUgzyM9YsMRTjZsvsOydvqOaSNBH50gqZPENPhA00wRpw7HzVD9l2TS0/xFIOTyf67lwcDq+2JZc5o/HP5byVXPlYrmBy7nw4r4FTFKMveQw3q/jhYBDO6ZHQuFjnc+0SjbedEU60YmQvd0o3//Uw3rZ90FfCDhaMjKBsqFSKKHkgg+B6AuQrESpz77lhKQjwby5F8Q15BQufZoyX9oFTycJyisnI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(7416005)(1800799015)(376005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UHAvYUZLd0hWZ2lra1Bjb1pzTHZNekNKZkN2aXRoVkdIK211bytGRVdmamdM?=
+ =?utf-8?B?SVczSTJzQURaenc2YVhud1grVkxJcCtWVlN6UzgvVXZYeWFyNDhlTW1WM2Jj?=
+ =?utf-8?B?UlFUMVpteXhpRGdYUnZMakF6SCtVazNWSm1HUUkwL000V3IrakFRbEczYTlS?=
+ =?utf-8?B?OURQZXZ1Y1NZMlNPZlhrZllWWi9WRjFoRWRjWHZDcDh3Ui9HVFEyQm1UbFR1?=
+ =?utf-8?B?cUowYU1GQXFybHFSeDEzNjlWb2JQZFZXb05rOFZ2TTVzUHliWkRXWlFJZjY0?=
+ =?utf-8?B?VndFcFFQcVNoZzVFcDZrdjJqSGlpbnpsV2JCT2lrOS9raDU1YmU0d0xRdks3?=
+ =?utf-8?B?Vjd1SUl4cDZ0SUlqZ0xURHlsb2N2Mnd3ZnAzdlBnSU0yZ1BJTHNGNXR3K1JC?=
+ =?utf-8?B?alJoRXRKOTV2NHlYNm9RbkFESlJjR2tIbTBHMHhpYjV3akZ5UnJ3UzArU2RR?=
+ =?utf-8?B?ak8vcVhWcjd6d3VqeDhSMmhzQklZUmV0WHZsMjAwbXV6SDlIWjh5VGdiYkxm?=
+ =?utf-8?B?MDBOU3B1TmhuZjlYblpmT0RVMVdnTW5oT1J2RG5UNmFLZWZUYXR3MlgvWmJG?=
+ =?utf-8?B?TGsyOTRIL1JqblFrZE1KOXdtaTFXMmdDT3pTYjBmMHI4bmU1TmVLN2dkMHZR?=
+ =?utf-8?B?VEZ0K0VaWTdDNnYyUVVxOE5FemlXa2FRc2N0YS9WKzA4ZWw0a0tzTkNDeWZN?=
+ =?utf-8?B?TXhXWTVqanJmVk1SVGJ1WFg0d1V5QVBCKzZ0cjN6MVR5WTRUaExqTjJZTlNt?=
+ =?utf-8?B?WHpTblRQNGt1SDN3Vitqd0FXWFlYbzZvbkYxTDZsZkwyMWJRaXV1Ylo0MDdm?=
+ =?utf-8?B?OTdzWDJwU2lWVTM2VnZjbFNUTXFNcUc1TlhKY3Qyb2c4RGdSc2pBUjZtSnlp?=
+ =?utf-8?B?L1pNTmd6dll4dFY3WHVXV20yRW1BTUpjZnBLSEgzY1o3dEhNSjRReUlrM2pD?=
+ =?utf-8?B?ZVlZV1FxZTFuZzdXU0JCUXBXalM4NEdUMWhmVDM5STFzNXVna25md3UvdDJj?=
+ =?utf-8?B?REUrVXhMWi9OOCtrNWliT2REdHJKYnBlOTczNmJpVDBMTXdQTzFqZ01LU3Jq?=
+ =?utf-8?B?RFNneUM4NWVOS0JwdUVacEVDd09DTVRvNWRUMGJKUk90TU9kUHh3MHJpOHN4?=
+ =?utf-8?B?MFFxQXZ0WkI4cEZxeG5ZVi9PTENKTUFZVS9EN1FUakdpaVpPTGxVbTJaOThy?=
+ =?utf-8?B?K3JpMWxiUE9rZEhWSEF2QlpoSzE5eXArclZmRXpyM1FJSUt0R2VHNjBJdDE0?=
+ =?utf-8?B?aHhidjRHTC95SFpwdXd3bVlOeFZjV29SUEo4elY4eEI2TTB3dnZoL2JYd1pp?=
+ =?utf-8?B?b2lHb213S2VsTk56eTA1ak13QmNaVmhOZ0tvajc4Q2hoRFM3Y0ZETnI4cGZS?=
+ =?utf-8?B?RHVaYXhjS0twd2IrL3owckgrVTdLaDJ1R21EZ2VJcmhKcHdodFJZL0tkYzFr?=
+ =?utf-8?B?R3llTXRScmFlU0JpSjVYQTcxL3dwckNxQWp4cEl2WTd6elBnRktDeUtwUFlM?=
+ =?utf-8?B?Y1A5VWdUaVBuenMzeHZpTG1JZjdETk4vc2RiTXlEWVFIWFY2Vko2U0NTOXp0?=
+ =?utf-8?B?ci9JUkc5aml3TWFBQjNrWmdnK0p6dm56WFE1ZHZvOCtMN3REVDY0dE1QMVU5?=
+ =?utf-8?B?Vzg0SnZ6dm1HVGVlN1dKd2pqbjREV1dIUkZVRXdiNFc2N051ZXk3N3JkRTM5?=
+ =?utf-8?B?ZnQzb1pVNHNockJ4WEQ1SHlxQ0JGSXNrRW9ZQ09qWE9IeGk4VDNWUkNya0lo?=
+ =?utf-8?B?SXIvOExDY3JBT0lkS0Rlc0tTQnlpRnI5cGJBbW56RWxRNEloVkN5TUdzaC9G?=
+ =?utf-8?B?RzJWNWhOOC9YQUtldm1QMTZPYUpUY1RXY2oxK2RLRHRxZDNWdER1NkJ4NExk?=
+ =?utf-8?B?Q2o3cHV1Qy9mSlg1SzhzUEU2Q2xCNm1TZUFYSTFNa3NuOFVVT21ZMDdzeTVX?=
+ =?utf-8?B?QzBLdzVrZGlVMXFzSkVWcHhwU29FVUZuY2x2S2taVXkvYW55am83b1ZYUHRB?=
+ =?utf-8?B?d3NqQ25WMEV2c1pxek9oRUVvS2xKMnNiVHVJV0RkV2syWHg0VSt3WXRSK2NN?=
+ =?utf-8?B?Lys4VlJHVWRDQ2pWeDZJOXEwdWpnWHVYR3NhZVJOaC9IblpEeVhvOXdTS2o0?=
+ =?utf-8?Q?o1tAbSKusS8ajc+Eox4tn6WB8?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fac13af-7abe-42fa-61d8-08dc598a6a8f
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 18:17:00.8877
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eIWHLQcv/Ajh7txHr3DR1Gh6OWQ2qhIdr02UXhyiStRBsK//kHEWXIDK+kVY9F/cJXAIk0k8tCr8sw9FYyPtfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8090
 
-On 04/10/24 10:30, John Stultz wrote:
-> On Tue, Apr 9, 2024 at 11:59 PM Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > On 04/09/24 14:35, Vincent Guittot wrote:
-> > > On Tue, 9 Apr 2024 at 08:19, Qais Yousef <qyousef@layalina.io> wrote:
-> > > >
-> > > > On 04/08/24 12:51, John Stultz wrote:
-> > > > > On Mon, Apr 8, 2024 at 12:17 AM Vincent Guittot
-> > > > > <vincent.guittot@linaro.org> wrote:
-> > > > > >
-> > > > > > On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wrote:
-> > > > > > >
-> > > > > > > On 04/05/24 18:16, Qais Yousef wrote:
-> > > > > > >
-> > > > > > > > >
-> > > > > > > > > All that to say that I think the weight is not applied on purpose.
-> > > > > > > > > This might work for your particular case but there are more changes to
-> > > > > > > > > be done if you want to apply prio inheritance between cfs tasks.
-> > > > > > > > >
-> > > > > > > > > As an example, what about the impact of cgroup on the actual weight
-> > > > > > > > > and the inherited priority of a task ? If the owner and the waiter
-> > > > > > > > > don't belong to the same cgroup their own prio is meaningless... task
-> > > > > > > > > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
-> > > > > > > > > in a group with a weight equals to nice -20
-> > > > > > > >
-> > > > > > > > That is on my mind actually. But I thought it's a separate problem. That has to
-> > > > > > > > do with how we calculate the effective priority of the pi_task. And probably
-> > > > > > > > the sorting order to if we agree we need to revert the above. If that is done
-> > > > > > >
-> > > > > > > Thinking more about it the revert is not the right thing to do. We want fair
-> > > > > > > tasks to stay ordered in FIFO for better fairness and avoid potential
-> > > > > > > starvation issues. It's just the logic for searching the top_waiter need to be
-> > > > > > > different. If the top_waiter is fair, then we need to traverse the tree to find
-> > > > > > > the highest nice value. We probably can keep track of this while adding items
-> > > > > > > to the tree to avoid the search.
-> > > > > > >
-> > > > > > > For cgroup; is it reasonable (loosely speaking) to keep track of pi_cfs_rq and
-> > > > > > > detach_attach_task_cfs_rq() before the reweight? This seems the most
-> > > > > > > straightforward solution and will contain the complexity to keeping track of
-> > > > > > > cfs_rq. But it'll have similar issue to proxy execution where a task that
-> > > > > > > doesn't belong to the cgroup will consume its share..
-> > > > > >
-> > > > > > That's a good point, Would proxy execution be the simplest way to fix all this ?
-> > > >
-> > > > Is it? Over 4.5 years ago Unity reported to me about performance inversion
-> > > > problem and that's when proxy execution work was revived as simplest way to fix
-> > > > all of this. But still no end in sight from what I see. I was and still think
-> > > > an interim solution in rt_mutex could help a lot of use cases already without
-> > > > being too complex. Not as elegant and comprehensive like proxy execution, but
-> > > > given the impact on both userspace and out of tree kernel hacks are growing
-> > > > waiting for this to be ready, the cost of waiting is high IMHO.
-> > > >
-> > > > FWIW, I already heard several feedbacks that PTHREAD_PRIO_INHERIT does nothing.
-> > > > I think this reweight issue is more serious problem and likely why I heard this
-> > > > feedback. I could be underestimating the complexity of the fix though. So I'll
-> > >
-> > > Without cgroup, the solution could be straightforward but android uses
-> > > extensively cgroup AFAICT and update_cfs_group() makes impossible to
-> > > track the top cfs waiter and its "prio"
-> >
-> > :(
-> >
-> > IIUC the issue is that we can't easily come up with a single number of
-> > 'effective prio' for N level hierarchy and compare it with another M level
-> > hierarchy..
-> >
-> > Does proxy execution fix this problem then? If we can't find the top waiter,
-> > I can't see how proxy execution would work here too. To my understanding it's
-> > more about how we apply inheritance (by donating execution context of the top
-> > waiter) instead of manually applying inheritance like we're doing now.
+On Wed, Apr 10, 2024 at 11:33:41PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Apr 08, 2024 at 12:23:20PM +0200, Niklas Cassel wrote:
+> > On Tue, Mar 26, 2024 at 03:35:40PM -0400, Frank Li wrote:
+> > > When PERST# assert and deassert happens on the PERST# supported platforms,
+> > > the both iATU0 and iATU6 will map inbound window to BAR0. DMA will access
+> > > to the area that was previously allocated (iATU0) for BAR0, instead of the
+> > > new area (iATU6) for BAR0.
+> > 
+> > Nit: If we want additional clarity, we could also add:
+> > ""
+> > Right now, we dodge the bullet because both iATU0 and iATU6 should currently
+> > translate inbound accesses to BAR0 to the same allocated memory area. However,
+> > having two separate inbound mappings for the same BAR is a disaster waiting to
+> > happen.
+> > ""
 > 
-> So, while proxy provides a sort of generalized inheritance, it isn't
-> deep enough in the class scheduler logic to need to really think about
-> priority/cgroups.
+> Since Bjorn asked for the above info, it should get added.
 > 
-> It just looks at what gets selected to run. That's the most important
-> task at that moment. It doesn't really need to care about how/why,
-> that's left to pick_next_task().
+> With that,
 > 
-> Since it leaves mutex blocked tasks on the RQ, it allows the class
-> scheduler logic to pick the most important task (mutex-blocked or not)
-> to run. Then if a mutex-blocked task gets selected, we will then find
-> the mutex owner and run it instead so it can release the lock.  When
-> locks are released, if the owner has a "donor" task, the lock is
-> handed off to the donor.  So, this basically uses the
-> pick_next_task()'s evaluation of what it wanted to run to effectively
-> provide the "top waiter".
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks John. So there's no top waiter and all tasks are left runnable, makes
-sense.
+Mani:
+
+Do you need me rework patch? Or you can handle it by yourself when apply?
+
+Frank
+
+> 
+> - Mani
+> 
+> > 
+> > If the maintainers feel like this additional information is important, I think
+> > it could be added while applying. (But I also think that the existing commit
+> > message is detailed enough to be applied as is.)
+> > 
+> > 
+> > > 
+> > > The mapping between PCI BAR and iATU inbound window are maintained in the
+> > > dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for
+> > > a BAR, dw_pcie_ep_inbound_atu() API will first check for the availability
+> > > of the existing mapping in the array and if it is not found (i.e., value in
+> > > the array indexed by the BAR is found to be 0), then it will allocate a new
+> > > map value using find_first_zero_bit().
+> > > 
+> > > The issue here is, the existing logic failed to consider the fact that the
+> > > map value '0' is a valid value for BAR0. Because, find_first_zero_bit()
+> > > will return '0' as the map value for BAR0 (note that it returns the first
+> > > zero bit position).
+> > > 
+> > > Due to this, when PERST# assert + deassert happens on the PERST# supported
+> > > platforms, the inbound window allocation restarts from BAR0 and the
+> > > existing logic to find the BAR mapping will return '6' for BAR0 instead of
+> > > '0' due to the fact that it considers '0' as an invalid map value.
+> > > 
+> > > So fix this issue by always incrementing the map value before assigning to
+> > > bar_to_atu[] array and then decrementing it while fetching. This will make
+> > > sure that the map value '0' always represents the invalid mapping."
+> > > 
+> > > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
+> > > Closes: https://lore.kernel.org/linux-pci/ZXsRp+Lzg3x%2Fnhk3@x1-carbon/
+> > > Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
+> > > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
+> > > Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > > 
+> > > Notes:
+> > >     Change from v2 to v3
+> > >     - Add impact in commit message
+> > >     - Add mani's detail description
+> > >     - Fix Closes link
+> > >     
+> > >     Change from v1 to v2
+> > >     - update subject
+> > >     - use free_win + 1 solution
+> > >     - still leave MAX_IATU_IN as 256. I am not sure if there are platfrom have
+> > >     256 ATU. Suppose it only use max 6 in current EP framework.
+> > >     - @Niklas, can you help test it. My platform become unstable today.
+> > > 
+> > >  drivers/pci/controller/dwc/pcie-designware-ep.c | 13 ++++++++++---
+> > >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > index 5befed2dc02b7..ba932bafdb230 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > @@ -139,7 +139,7 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
+> > >  	if (!ep->bar_to_atu[bar])
+> > >  		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > >  	else
+> > > -		free_win = ep->bar_to_atu[bar];
+> > > +		free_win = ep->bar_to_atu[bar] - 1;
+> > >  
+> > >  	if (free_win >= pci->num_ib_windows) {
+> > >  		dev_err(pci->dev, "No free inbound window\n");
+> > > @@ -153,7 +153,11 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
+> > >  		return ret;
+> > >  	}
+> > >  
+> > > -	ep->bar_to_atu[bar] = free_win;
+> > > +	/*
+> > > +	 * Always increment free_win before assignment, since value 0 is used to identify
+> > > +	 * unallocated mapping.
+> > > +	 */
+> > > +	ep->bar_to_atu[bar] = free_win + 1;
+> > >  	set_bit(free_win, ep->ib_window_map);
+> > >  
+> > >  	return 0;
+> > > @@ -190,7 +194,10 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
+> > >  	struct dw_pcie_ep *ep = epc_get_drvdata(epc);
+> > >  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> > >  	enum pci_barno bar = epf_bar->barno;
+> > > -	u32 atu_index = ep->bar_to_atu[bar];
+> > > +	u32 atu_index = ep->bar_to_atu[bar] - 1;
+> > > +
+> > > +	if (!ep->bar_to_atu[bar])
+> > > +		return;
+> > >  
+> > >  	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
+> > >  
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
