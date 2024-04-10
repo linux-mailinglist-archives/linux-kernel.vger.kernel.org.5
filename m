@@ -1,100 +1,187 @@
-Return-Path: <linux-kernel+bounces-138195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F58E89EDF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:46:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA1E089EDF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92205B20E53
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:46:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22A7C1F235AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0AA15920C;
-	Wed, 10 Apr 2024 08:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223FD1552E1;
+	Wed, 10 Apr 2024 08:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="SoozskmI"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nZnkn8Hr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D478154BF4
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B98154C0F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712738679; cv=none; b=TaZkydPwCco1m0yGfnwdChnU4lkPQBa1VeWYCS2ORBSfqixdMuZLPBtE6/F7BeizXBo6J2Mu0r9xdQYqIDG8bSAuGPFw4cYr7jDwGg9/yFlNW0rQvlEOhMqPdRTgecBoC057TdAIVoiNePZgaenYx8sqJ1FVxckzpPKZHyCccBM=
+	t=1712738740; cv=none; b=LpmmQuQ8jT7ezBTBpTlXNtpNkwiwjyB7zDLrmBZ6gIrgqdjCMv5uDr1bCDZju088Tbt26jgTetrVRB5jTkHPk3vCVrIzEQl+zLoYUFP/q9IRxhEt+tDxxo1AWNp81XtACJNgjrwXxm5CR5g7uHTtpbm14/moTiClV1ns3uTunCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712738679; c=relaxed/simple;
-	bh=HLM+siIzI9gfsMuMCjbFCwclreaT8/ySNQbMMaZri2I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=bJUIrv1e1brADjEGjgXwg3P5YT/ry1TIvobclbLh7buZA6RUcLZ/zijVvQo1sjMjWQqYSxlkILvrW0CzK1NpcXND6tLPzv/8kP9cropCax1K5L1CYt836iE1i14A7Ywexlkua34/he5mLAcuhnDP0mjQourRxwM7gEAWxlp0qZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=SoozskmI; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d0c004b1so7664910e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712738676; x=1713343476; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tL/hejvPD3PbqYhLtjIKj09ojZVksO+lKOONb6rjF+Y=;
-        b=SoozskmIwmd0XLG1Yzd0so5rVJekNiA8f+RjH31FwytRx3kAH1deufV/w4iD8VURt8
-         RXX3xHc2QYdXDQ1Ff+ajJ2j/v8XlKyblI/IKE76ovcMOsdj+0PzOnIWs79bm5WcemUfv
-         uKo5gd1Pxesj8ftB6eTDKxFn8lDP9khlRolh9UK5GtXGaIRvDl7DX6gyKb8N1li/MjKm
-         7lRHZqdt+6HkmqfFiNYhFbHOmMFohaR+VoAylsfHYQ0SPkNPtblAKiIlgYqLBrfrZ7Ci
-         tjShVNQLuQUHQpDnWFURaW7Wi1rVkLPVdNU4bMMJC3rInfG5kL2ZCpCnrt5WEtOaLM/m
-         uqNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712738676; x=1713343476;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tL/hejvPD3PbqYhLtjIKj09ojZVksO+lKOONb6rjF+Y=;
-        b=YfTLTEdHNcURh2y1c06Ak0gqGJk7g8Llx/pWH0YB9zZrxa1+TJO1UfFUCZRDSpvj3v
-         kp0HTI3ier5FfpbPofWlwyAVG6NXkehgBZsrhx6X6ns+i9pCkjcNlaXRmRe11Xdo2eTG
-         SQlulTIQ/Nmi42+gXa5W5upNmuQlRjU3ydDSaDAhX+VsGEGeHj6ZYyASgR6JNq6AIVUs
-         6Uc1qaqSFZkqUHiYlOAwQ20UMv7vC1Nj5D78pct7Lw3Q9CqSwiXilYWsdrntwherWm9/
-         JOXA1SwUFnQX9IWImkv+xvuDkkwuBseG6prle3HdO/uz+6wLAUJyKH+DWdQJTveYkLlY
-         5jmw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQlea7QJQXex1uf0vp1GY3Jrz4RcxDtSyDHiqgLnyoXcYuMbye0kVHwpxYj5TdmnsqtmJmzmRY0mNNSB6UUPXU0opdhvn79COSnNWT
-X-Gm-Message-State: AOJu0YwHExErNEREHlGJ5+V8FDTmwC6YOnphavmDwjZepHUZgVfNQh1t
-	VSYOL+DJGMWnGms+AD7vRsydUqtelDxzxb5pY19C0ACymDepOjiwu9Q6ro3JEas=
-X-Google-Smtp-Source: AGHT+IF0JtJINjE07BONPobTqgkLaueGpS6HMGL8AwC9YGgwC7b9srjrGwJa1zSxM101ClsmVsldRA==
-X-Received: by 2002:a19:751a:0:b0:513:c757:33d9 with SMTP id y26-20020a19751a000000b00513c75733d9mr1507262lfe.53.1712738676249;
-        Wed, 10 Apr 2024 01:44:36 -0700 (PDT)
-Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:49de:129e:d25e:c803])
-        by smtp.googlemail.com with ESMTPSA id t1-20020a05600c41c100b00416b5e6d75dsm2066078wmh.1.2024.04.10.01.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 01:44:35 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org>
-References: <20240408-amlogic-v6-9-upstream-fix-clk-module-license-v1-1-366ddc0f3db9@linaro.org>
-Subject: Re: [PATCH] clk: meson: fix module license to GPL only
-Message-Id: <171273867547.2243434.4736877056369076935.b4-ty@baylibre.com>
-Date: Wed, 10 Apr 2024 10:44:35 +0200
+	s=arc-20240116; t=1712738740; c=relaxed/simple;
+	bh=rjpJ/B0jBLfP6NqGowlaRPiXpWGZqILHxap2uCmUq7E=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gv6lq//iiArTBPjbROeNbqQQslg/u81sbj0WoR4I4tXxotAzpGXTUnBDAcq3m01B2Em25GA/2kFv+RQWHz6z0vyNH/mUS83ltjakKlvfeIqRdMqOcfNZvdYQ4Vz+jw+u2VVR3bpj5a7u50uEYXPCPwippxfzfeMSZ4BYLESeQA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nZnkn8Hr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D033EC433C7;
+	Wed, 10 Apr 2024 08:45:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712738739;
+	bh=rjpJ/B0jBLfP6NqGowlaRPiXpWGZqILHxap2uCmUq7E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nZnkn8HrApjPn+iBhw/Z53N0bB5DkavtqggzdJ1FKc6z1KIgt0UcANOWxTPYTfGOd
+	 b9mtO7drDcTBlWti/u/3DvjOkvxj5wYBbafkNTnrgekkExcrFU7dx7o2mATD9GZnNS
+	 iLWh1Th97DjMhQdxJ6h1Ve+tuxUIRjwM+UiRFcSbriQN4RK2cutC6Gfa772FQQdzCi
+	 Rp8IRo65oXNhaMrn0C12M4J//fX5ggxoWjij075NKo1+RkQ8si6QmEBR753jNfEPR6
+	 PCJxjwLBozu7H4wLtaxJ1xEY2Edtl00qQ+bsW8x0oEwpRWeYDW2cpbQUA9kB1LWABC
+	 y/B88RqarDZzQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1ruTaL-0034tA-JX;
+	Wed, 10 Apr 2024 09:45:37 +0100
+Date: Wed, 10 Apr 2024 09:45:37 +0100
+Message-ID: <86wmp5sj0u.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Gavin Shan <gshan@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	akpm@linux-foundation.org,
+	oliver.upton@linux.dev,
+	apopple@nvidia.com,
+	rananta@google.com,
+	mark.rutland@arm.com,
+	v-songbaohua@oppo.com,
+	yangyicong@hisilicon.com,
+	shahuang@redhat.com,
+	yihyu@redhat.com,
+	shan.gavin@gmail.com
+Subject: Re: [PATCH v3 1/3] arm64: tlb: Fix TLBI RANGE operand
+In-Reply-To: <7a929104-5f09-4ff6-8792-4a9e93bc0894@arm.com>
+References: <20240405035852.1532010-1-gshan@redhat.com>
+	<20240405035852.1532010-2-gshan@redhat.com>
+	<7a929104-5f09-4ff6-8792-4a9e93bc0894@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: ryan.roberts@arm.com, gshan@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org, oliver.upton@linux.dev, apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com, v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com, shan.gavin@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Applied to clk-meson (v6.10/drivers), thanks!
+On Mon, 08 Apr 2024 09:29:31 +0100,
+Ryan Roberts <ryan.roberts@arm.com> wrote:
+> 
+> On 05/04/2024 04:58, Gavin Shan wrote:
+> > KVM/arm64 relies on TLBI RANGE feature to flush TLBs when the dirty
+> > pages are collected by VMM and the page table entries become write
+> > protected during live migration. Unfortunately, the operand passed
+> > to the TLBI RANGE instruction isn't correctly sorted out due to the
+> > commit 117940aa6e5f ("KVM: arm64: Define kvm_tlb_flush_vmid_range()").
+> > It leads to crash on the destination VM after live migration because
+> > TLBs aren't flushed completely and some of the dirty pages are missed.
+> > 
+> > For example, I have a VM where 8GB memory is assigned, starting from
+> > 0x40000000 (1GB). Note that the host has 4KB as the base page size.
+> > In the middile of migration, kvm_tlb_flush_vmid_range() is executed
+> > to flush TLBs. It passes MAX_TLBI_RANGE_PAGES as the argument to
+> > __kvm_tlb_flush_vmid_range() and __flush_s2_tlb_range_op(). SCALE#3
+> > and NUM#31, corresponding to MAX_TLBI_RANGE_PAGES, isn't supported
+> > by __TLBI_RANGE_NUM(). In this specific case, -1 has been returned
+> > from __TLBI_RANGE_NUM() for SCALE#3/2/1/0 and rejected by the loop
+> > in the __flush_tlb_range_op() until the variable @scale underflows
+> > and becomes -9, 0xffff708000040000 is set as the operand. The operand
+> > is wrong since it's sorted out by __TLBI_VADDR_RANGE() according to
+> > invalid @scale and @num.
+> > 
+> > Fix it by extending __TLBI_RANGE_NUM() to support the combination of
+> > SCALE#3 and NUM#31. With the changes, [-1 31] instead of [-1 30] can
+> > be returned from the macro, meaning the TLBs for 0x200000 pages in the
+> > above example can be flushed in one shoot with SCALE#3 and NUM#31. The
+> > macro TLBI_RANGE_MASK is dropped since no one uses it any more. The
+> > comments are also adjusted accordingly.
+> 
+> Perhaps I'm being overly pedantic, but I don't think the bug is
+> __TLBI_RANGE_NUM() not being able to return 31; It is clearly documented that it
+> can only return in the range [-1, 30] and a maximum of (MAX_TLBI_RANGE_PAGES -
+> 1) pages are supported.
 
-[1/1] clk: meson: fix module license to GPL only
-      https://github.com/BayLibre/clk-meson/commit/e0892cb47351
+I guess "clearly" is pretty relative. I find it misleading that we
+don't support the full range of what the architecture offers and have
+these odd limitations.
 
-Best regards,
---
-Jerome
+> The bug is in the kvm caller, which tries to call __flush_tlb_range_op() with
+> MAX_TLBI_RANGE_PAGES; clearly out-of-bounds.
 
+Nobody disputes that point, hence the Fixes: tag pointing to the KVM
+patch. But there are two ways to fix it: either reduce the amount KVM
+can use for range invalidation, or fix the helper to allow the full
+range offered by the architecture.
+
+> So personally, I would prefer to fix the bug first. Then separately
+> enhance the infrastructure to support NUM=31.
+
+I don't think this buys us much, apart from making it harder for
+people to know what they need/want/randomly-elect to backport.
+
+> > Fixes: 117940aa6e5f ("KVM: arm64: Define kvm_tlb_flush_vmid_range()")
+> 
+> I would argue that the bug was actually introduced by commit 360839027a6e
+> ("arm64: tlb: Refactor the core flush algorithm of __flush_tlb_range"), which
+> separated the tlbi loop from the range size validation in __flush_tlb_range().
+> Before this, all calls would have to go through __flush_tlb_range() and
+> therefore anything bigger than (MAX_TLBI_RANGE_PAGES - 1) pages would cause the
+> whole mm to be flushed. Although I get that bisect will lead to this one, so
+> that's probably the right one to highlight.
+
+I haven't tried to bisect it, only picked this as the obviously
+culprit.
+
+To your point, using __flush_tlb_range() made little sense for KVM --
+what would be the vma here? Splitting the helper out was, I think the
+correct decision. But we of course lost sight of the __TLBI_RANGE_NUM
+limitation in the process.
+
+> I get why it was split, but perhaps it should have been split at a higher level;
+> If tlbi range is not supported, then KVM will flush the whole vmid. Would it be
+> better for KVM to follow the same pattern as __flush_tlb_range_nosync() and
+> issue per-block tlbis upto a max of MAX_DVM_OPS before falling back to the whole
+> vmid? And if tlbi range is supported, KVM uses it regardless of the size of the
+> range, whereas __flush_tlb_range_nosync() falls back to flush_tlb_mm() at a
+> certain size. It's not clear why this divergence is useful?
+
+That'd be a definitive improvement indeed, and would bring back some
+much needed consistency.
+
+> > Cc: stable@kernel.org # v6.6+
+> > Reported-by: Yihuang Yu <yihyu@redhat.com>
+> > Suggested-by: Marc Zyngier <maz@kernel.org>
+> > Signed-off-by: Gavin Shan <gshan@redhat.com>
+> 
+> Anyway, the implementation looks correct, so:
+> 
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+Thanks for that!
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
