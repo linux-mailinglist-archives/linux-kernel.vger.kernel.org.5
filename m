@@ -1,151 +1,138 @@
-Return-Path: <linux-kernel+bounces-138649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8051789F8A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:47:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E675389F8A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:48:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 201C51F31B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:47:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA84A284751
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B9816C6BE;
-	Wed, 10 Apr 2024 13:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4364316DEBE;
+	Wed, 10 Apr 2024 13:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XeZ9MEUL";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZR4q1wq/"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WWwjUk8v"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8BE160794;
-	Wed, 10 Apr 2024 13:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6809F16D9D4;
+	Wed, 10 Apr 2024 13:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756448; cv=none; b=J8uanHfxyZehGP8Bmt01XmJFlOlPc3gDeKfKXgLZyfkPF7YZp/pHRhgOkqgE+9itcgrNFiQZKCliyQYvZoMPFBm0y94vCgPcx0s0oRLgXsA5l+aTFOA6HJtaCir2/dKNTc98vQgHQ//UMte4QvE5NqKYz66yOfLyp+55n4jeLHI=
+	t=1712756453; cv=none; b=fw0moWmcPDHo8AEhjPcrXPWW+lL3rM0xazd4vX52ZBDkuC9Y/uoGVlfszt5OmGRQC62SQOXzQSWDMTQFIhWhHYZxN1y/YeRZjEx3SDETiZQ/wFAjmzXvVj+O1jqiQyFOwv3XeGkSazjzLxhGjaUDliFiO+pLqkQVbiW1vnqJ8as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756448; c=relaxed/simple;
-	bh=lS2wAJlv9vHs26aEAM5WtMattKCVBOHwOMNqQcFbpM0=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=vD3WwryTnQxDR0xFzbP9cjKbbuYC+8Er2HRzcyAlyR4WaC0Otxm2Tg1I62ZSfrl8J4IGIBbzCewu2Qf+Ub/spCNNv9jqtTeO6EosxGZyotseTRqVvLFCJVRBF18UFUwAO3O8q3Y7W2hFIehdeYtyx/HWdQ82jtbIJ6j33rSfKJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XeZ9MEUL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZR4q1wq/; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 13:40:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712756445;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yv26R+87wEE+nKst0Y+g1S8z9zoX2tfido4QcbH1Ep4=;
-	b=XeZ9MEULrBTyjQoSiBU+LkkgP8uZSEfyWaDK2wtLH5WkX2BWqIEn9l5jY/gqy8XWqYoSd1
-	FMf3gK2rG9HLM9WWZ+vohB4TDyDB7IJ4o4WVq5HwBvwH4GJYgoCFzItlJxRuGKRaAiAWjX
-	uK8wIxonEghWQlmvrKlwULA9l+Az+kYejri7+vaHBUlLjSSh/J/ZDtdz0QzHdgYgXNsdnk
-	Y/AnboJBRiCRci+NjGdhOxaoon47ghQtiKUE6zFKiC4LcM2OrlhA0EjQUkkUg44RIKT0Vw
-	tA6IvYQl99g0hPd4wm3G1L39eg5STCigVFK57zSAjmkDch9hPYxASnfi3H2Juw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712756445;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yv26R+87wEE+nKst0Y+g1S8z9zoX2tfido4QcbH1Ep4=;
-	b=ZR4q1wq/xt6lSIdlemcavFI5H9f9N1YnZQwjbyvVlWDI4bRyIzIA1z58eVdcfYQvWIWNjB
-	+hnnVQRNWVrPL9Dw==
-From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/atomic/x86: Introduce
- arch_atomic64_try_cmpxchg() to x86_32
-Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240410062957.322614-1-ubizjak@gmail.com>
-References: <20240410062957.322614-1-ubizjak@gmail.com>
+	s=arc-20240116; t=1712756453; c=relaxed/simple;
+	bh=2FUZKmDC3uXV6lRtnmgMR3WBQZOamgU9l6hJ9YWMlsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UwJcH+RMAji3aXbCRaywWl2rbCNpViWwzeoMrhbqTmJWYVHjZk+/sQ4BpLmRRd8ZyXJ+vpbEtciF6R/AL/6c+K5bq0q3oI1Xq2HoyGrz8gDWNRXBfgldga4Q5SwQv0cxiKeTxlnipNAhDcE6l79Wu+Bi7YMxj9GD+zXLSCgO9to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WWwjUk8v; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712756452; x=1744292452;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=2FUZKmDC3uXV6lRtnmgMR3WBQZOamgU9l6hJ9YWMlsw=;
+  b=WWwjUk8v3LNWtBaigWnCnU64h1F45shPvccb2E6tGvTIIe0GLHDP3GKl
+   WaUx8vzj84gHyak3DvWHFPLf37+GdZLCXGjh2Z9wXdqH7PKhS2YtWUpEy
+   ESTPBjjNjdn/Fg6drgO7J4Ou1aIeIrDx5zUxGdm/lUjR3OQfyTfoGxDtw
+   Xaqpfa6jc1Pa6ThOA+ez3/+eJ2Kr7huOkKsmtB0XEgPMi8+AqOg5BodJl
+   6vnBNjj3d9LGQSuHc2RFLrqnr73BsyUPna045+Nrui2vsbRwnODXi9QWd
+   6kEpDavFpWtIjLHQWOtyT3meap66kmTNuZi2NWvkSUow0A/PwurVZoXn9
+   Q==;
+X-CSE-ConnectionGUID: Ad1oVmFiSa2Z/oGaLxFp/g==
+X-CSE-MsgGUID: FX+jqJ92Te+opPcajXWSrw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7991582"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7991582"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:40:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915433375"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="915433375"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:40:47 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1ruYBw-00000003516-3Ty5;
+	Wed, 10 Apr 2024 16:40:44 +0300
+Date: Wed, 10 Apr 2024 16:40:44 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: albanhuang <albanhuang0@gmail.com>
+Cc: gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
+	linux-acpi@vger.kernel.org, tony@atomide.com,
+	john.ogness@linutronix.de, yangyicong@hisilicon.com,
+	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, lvjianmin@loongson.cn,
+	albanhuang@tencent.com, tombinfan@tencent.com
+Subject: Re: [PATCH v6 0/3] serial: 8250_pnp: Support configurable reg shift
+ property
+Message-ID: <ZhaW3PM3TccV5t3w@smile.fi.intel.com>
+References: <cover.1712646750.git.albanhuang@tencent.com>
+ <ZhU6Or3hTziarHZo@smile.fi.intel.com>
+ <4f0950f8-e0e1-4b26-85b9-385c97c39cf6@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171275644458.10875.1545164334846847591.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4f0950f8-e0e1-4b26-85b9-385c97c39cf6@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The following commit has been merged into the locking/core branch of tip:
+On Wed, Apr 10, 2024 at 10:49:29AM +0800, albanhuang wrote:
+> 在 2024/4/9 20:53, Andy Shevchenko 写道:
+> > On Tue, Apr 09, 2024 at 03:43:20PM +0800, Guanbing Huang wrote:
+> > > From: Guanbing Huang <albanhuang@tencent.com>
+> > > 
+> > > The 16550a serial port based on the ACPI table requires obtaining the
+> > > reg-shift attribute. In the ACPI scenario, If the reg-shift property
+> > > is not configured like in DTS, the 16550a serial driver cannot read or
+> > > write controller registers properly during initialization.
+> > > 
+> > > To address the issue of configuring the reg-shift property, the
+> > > __uart_read_properties() universal interface is called to implement it.
+> > > Adaptation of PNP devices is done in the __uart_read_properties() function.
+> > You either forgot or deliberately not added my tag. Can you elaborate?
+> 
+> I'm very sorry, this is my first time submitting a kernel patch. My
+> understanding
+> 
+> of the submission specification is not comprehensive and profound enough,
+> 
+> and I didn't intentionally not add tags. I hope you can forgive my
+> operational mistake.
+> 
+> Should I just add a "Reviewed-by tag", or do I need any other tags? Thanks.
 
-Commit-ID:     276b893049e4cdc2f33c009706a75ec18a114485
-Gitweb:        https://git.kernel.org/tip/276b893049e4cdc2f33c009706a75ec18a114485
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Wed, 10 Apr 2024 08:29:33 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 10 Apr 2024 15:04:54 +02:00
+Understood. So if you are is one who is sending a new version, you should take
+care about any given tags (such as Reviewed-by) and carry them, in case the
+code is not drastically changed. I.o.w. if you don't, you have to explain why.
 
-locking/atomic/x86: Introduce arch_atomic64_try_cmpxchg() to x86_32
+Anyways, it seems the patch still has a flaw as per LKP, so fix that by
+providing probably two macros in the pnp.h header for both cases
+(CONFIG_PNP=y/n), and I will review it again.
 
-Introduce arch_atomic64_try_cmpxchg() for 32-bit targets to use
-optimized target specific implementation instead of a generic one.
-This implementation eliminates dual-word compare after
-cmpxchg8b instruction and improves generated asm code from:
+	#ifdef CONFIG_PNP
+	...
+	#define dev_is_pnp(...) ...
+	...
+	#else
+	...
+	#define dev_is_pnp(...)		false
+	...
+	#endif
 
-    2273:	f0 0f c7 0f          	lock cmpxchg8b (%edi)
-    2277:	8b 74 24 2c          	mov    0x2c(%esp),%esi
-    227b:	89 d3                	mov    %edx,%ebx
-    227d:	89 c2                	mov    %eax,%edx
-    227f:	89 5c 24 10          	mov    %ebx,0x10(%esp)
-    2283:	8b 7c 24 30          	mov    0x30(%esp),%edi
-    2287:	89 44 24 1c          	mov    %eax,0x1c(%esp)
-    228b:	31 f2                	xor    %esi,%edx
-    228d:	89 d0                	mov    %edx,%eax
-    228f:	89 da                	mov    %ebx,%edx
-    2291:	31 fa                	xor    %edi,%edx
-    2293:	09 d0                	or     %edx,%eax
-    2295:	0f 85 a5 00 00 00    	jne    2340 <...>
+-- 
+With Best Regards,
+Andy Shevchenko
 
-to:
 
-    2270:	f0 0f c7 0f          	lock cmpxchg8b (%edi)
-    2274:	0f 85 a6 00 00 00    	jne    2320 <...>
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20240410062957.322614-1-ubizjak@gmail.com
----
- arch/x86/include/asm/atomic64_32.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
-index 3486d91..ec217aa 100644
---- a/arch/x86/include/asm/atomic64_32.h
-+++ b/arch/x86/include/asm/atomic64_32.h
-@@ -61,12 +61,18 @@ ATOMIC64_DECL(add_unless);
- #undef __ATOMIC64_DECL
- #undef ATOMIC64_EXPORT
- 
--static __always_inline s64 arch_atomic64_cmpxchg(atomic64_t *v, s64 o, s64 n)
-+static __always_inline s64 arch_atomic64_cmpxchg(atomic64_t *v, s64 old, s64 new)
- {
--	return arch_cmpxchg64(&v->counter, o, n);
-+	return arch_cmpxchg64(&v->counter, old, new);
- }
- #define arch_atomic64_cmpxchg arch_atomic64_cmpxchg
- 
-+static __always_inline bool arch_atomic64_try_cmpxchg(atomic64_t *v, s64 *old, s64 new)
-+{
-+	return arch_try_cmpxchg64(&v->counter, old, new);
-+}
-+#define arch_atomic64_try_cmpxchg arch_atomic64_try_cmpxchg
-+
- static __always_inline s64 arch_atomic64_xchg(atomic64_t *v, s64 n)
- {
- 	s64 o;
 
