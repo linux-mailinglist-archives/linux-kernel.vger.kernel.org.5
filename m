@@ -1,242 +1,116 @@
-Return-Path: <linux-kernel+bounces-138691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0841F89F918
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:00:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B399C89F919
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 739361F2DE12
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:00:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F512289931
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45EC16131C;
-	Wed, 10 Apr 2024 13:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4757616D309;
+	Wed, 10 Apr 2024 13:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aHe0Mik0";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nbM713Pd"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQ5HWuEv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F4A1607BA
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856B515CD4B;
+	Wed, 10 Apr 2024 13:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712757448; cv=none; b=DaWBfxxfgKMM4tqkE4QNDTllxdodsLW5wUqRFLs6Zv4kLztqC23+3rno5UtB8OxSv0elRKYnx1l/QUFy3wUIY/oqX9eP6dWayo1wyXM/+m110muk/y2KWn+LcUXiz17sHrBRTLLdyq29nm/jRmip58rPgwZmjGqxOfNjp4oxMTk=
+	t=1712757523; cv=none; b=iHzf78Ktbcna9XapkbAOkKhn/Hvn2XwhaTVnNveIik6+v0J1USCCVSMT0F7/iMIfwxTaODAI7ULFdxprr+UTTWAtFiVqpKqMOwLm5WbspTlYvYRHVCbV4cWPig0p9tt+g5dBfXG8P3nmfb6UKpCRNn1qM+hhWXq27AsMEI/KC9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712757448; c=relaxed/simple;
-	bh=Vmjd766pnJwxCEOaOVeQ65Zc8wLnDzncLTsJ92dltjI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PgpejmSncUd4DBgT6PGE+YGQBYFyw5gs5kUv62DwiDGT8+xYPxXbhaRDHvYQhw5on/GmJVvlztXgVQ1SBtQJ4mxIxWXQdwx2tsvfC5YDgP2u+ikn+pg6KhSrDgYyrN2Y8E58CO+TbOMf9ViS5XYK6j2v6tn9EUwnMyZWzJXEvd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aHe0Mik0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nbM713Pd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712757444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+P1h6K8iE4a/JK1Qad/ycomagIWrt5AkDlmzvXSjKOU=;
-	b=aHe0Mik0mHJ4NZy71o1JcFMIe5C7EyIOotG8gK8uyHepoziWm+NM85J9dxPxXdNrSnDVyA
-	UeK5tZlLbuyzWBaWH7BhilfR7DYfw2MhawAVF2A7Dohmlp6TbFlHgA2R7PdEgB/w2bBFe/
-	nXSo88Ab1Xe8CGJnm7Cq6xVYEIJza73fhJziA1yRCYE9S/usuGPN9qvUpihgj3OVjdlXUD
-	WkfeWdpgvcsgTyQQ/Kr8Po7kN2YuN6QQKTgtlaYiIYs+lCHJl48+WsskDaPI/oFHZ1Iqda
-	WhURSlcH/HutzyFfyA76PG3y2r2W7YGTb0XO/ri1s5DhzKqPO5pmSBsdvkLzLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712757444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+P1h6K8iE4a/JK1Qad/ycomagIWrt5AkDlmzvXSjKOU=;
-	b=nbM713Pdkdh6qCTA1ARJTxTvUambndETBO6CKQdRTaWxMBZi07+quI7rT4qowvCwQirQDJ
-	iI79PsdTbnBS+6BA==
-To: Laura Nao <laura.nao@collabora.com>
-Cc: kernel@collabora.com, laura.nao@collabora.com,
- linux-kernel@vger.kernel.org, regressions@leemhuis.info,
- regressions@lists.linux.dev, x86@kernel.org
-Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
- Chromebooks
-In-Reply-To: <20240410081529.126363-1-laura.nao@collabora.com>
-References: <874jca7mf5.ffs@tglx>
- <20240410081529.126363-1-laura.nao@collabora.com>
-Date: Wed, 10 Apr 2024 15:57:24 +0200
-Message-ID: <878r1l48xn.ffs@tglx>
+	s=arc-20240116; t=1712757523; c=relaxed/simple;
+	bh=CteGrLp21p90H//plZVTRArhoHufEhyzcxklfO2rDtk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fXHIB+QwN+ccjjin5PE3+WJ2s9piNYsXYMyUJyzAc0wOHUIYjdQ7BZG0lUcRV233gZ1sz336NkV7HMOqgZCajZCH9qRKfkOnJ0znznr8hOO/0Gv3nBI9IWIo9FQqdNgK9pmUqDLM9n0TM0M66zWRd6ld95e19+XEfJvJWdTeGig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IQ5HWuEv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BABF5C433F1;
+	Wed, 10 Apr 2024 13:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712757523;
+	bh=CteGrLp21p90H//plZVTRArhoHufEhyzcxklfO2rDtk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IQ5HWuEviNHm1qAE+YQNb3OQsWEmGjHsMyckLuumeCpTAF5uQiCn/i7I85js2B5S4
+	 KCSnBcl0DscAqrV2hvDLsXgE4+x9UfNnYH0QCU1G2dBDTdlwMDXbPRWphK1rk31m6W
+	 DPDNMOOjVuKynkZh4cimbDorssZ86nAhRUkolMbHmgeni28RBLS4pKCmuklVqwlIOv
+	 N7217bKyaDQfrhLSL6HweYfz7M6c4U0coXLvc68iuTuGq15hIdr86v3UaCYgZgarS9
+	 usd7jU2TuBt4Tqr6O+gF/F5Q5FT819Fs61KxgShir0g2PC3zFnt5HQopQVQMucXSKV
+	 AeZdEqe6YyWpA==
+Date: Wed, 10 Apr 2024 15:58:40 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 3/4] perf: Remove perf_swevent_get_recursion_context()
+ from perf_pending_task().
+Message-ID: <ZhabEORWtSsdSq9x@localhost.localdomain>
+References: <20240322065208.60456-1-bigeasy@linutronix.de>
+ <20240322065208.60456-4-bigeasy@linutronix.de>
+ <ZhRqSEbyd1rqVwfN@pavilion.home>
+ <20240409062501.h4rA_ck4@linutronix.de>
+ <ZhUaAjhQXN6ahtpS@localhost.localdomain>
+ <20240409105405.TXUU--_W@linutronix.de>
+ <ZhUt8XMndGSwNuwx@localhost.localdomain>
+ <20240409133336.Y4Io-16-@linutronix.de>
+ <ZhZsOvM3uTP6nTnZ@localhost.localdomain>
+ <20240410125126.X26tR8tM@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410125126.X26tR8tM@linutronix.de>
 
-Laura!
+Le Wed, Apr 10, 2024 at 02:51:26PM +0200, Sebastian Andrzej Siewior a écrit :
+> On 2024-04-10 12:38:50 [+0200], Frederic Weisbecker wrote:
+> > Some alternatives:
+> > 
+> > _ Clear event->pending_work = 0 after perf_sigtrap(), preventing an
+> > event in there from adding a new task work. We may miss a signal though...
+> > 
+> > _ Make the recursion context per task on -RT...
+> 
+> The per-task counter would be indeed the easiest thing to do. But then
+> only for task context, right?
 
-On Wed, Apr 10 2024 at 10:15, Laura Nao wrote:
-> On 4/9/24 14:25, Thomas Gleixner wrote:
->> Can you please replace that patch with the one below?
->
-> So, with this patch applied on top of ace278e7eca6 the kernel doesn't
-> boot anymore - reference test job: 
-> https://lava.collabora.dev/scheduler/job/13324010
->
-> I see the only change between the second and third patch you provided,
-> besides the debug prints, is:
->
-> -	if (!topo_is_converted(c))
-> -		return;
-> -
+It should work for CPU context as well. A context switch shouldn't be
+considered as recursion. Hopefully...
 
-Right. So this limits the area to search significantly.
+> 
+> But why would we miss a signal if we clean event->pending_work late?
+> Isn't cleaning late same as clearing in
+> perf_swevent_put_recursion_context()?
 
-> Printing the debug information without this probably doesn't really help, 
-> but just in case it's useful: I tried excluding the change above from the
-> patch while leaving everything else unchanged - reference test job:
-> https://lava.collabora.dev/scheduler/job/13324298 (also pasted the
-> kernel log here for easier consultation:
-> https://pastebin.com/raw/TQBDvCah)
->
-> Hope this helps,
+Not exactly. perf_swevent_get_recursion_context() avoids a new software event
+altogether from being recorded. It is completely ignored. Whereas clearing late
+event->pending_work records new software events but ignores the signal.
 
-It does. Good idea!
+> If clearing pending_work late works, I would prefer to avoid yet another
+> per-task counter if possible.
 
-I just moved the exit check a bit so we should see the scan info. That
-should tell me what goes south.
+Yeah I know :-/
 
-Thanks,
+Thanks.
 
-        tglx
----
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1616,6 +1616,13 @@ void __init early_cpu_init(void)
- #endif
- 	}
- 	early_identify_cpu(&boot_cpu_data);
-+
-+	pr_info("Max cores: %u\n", boot_cpu_data.x86_max_cores);
-+	pr_info("pkg %u die %u core %u nid %u\n", boot_cpu_data.topo.pkg_id,
-+		boot_cpu_data.topo.die_id, boot_cpu_data.topo.core_id,
-+		boot_cpu_data.topo.amd_node_id);
-+	pr_info("SNS %u\n", smp_num_siblings);
-+	pr_info("NPP %u MDPP %u\n", __amd_nodes_per_pkg, __max_die_per_package);
- }
- 
- static bool detect_null_seg_behavior(void)
---- a/arch/x86/kernel/cpu/topology_amd.c
-+++ b/arch/x86/kernel/cpu/topology_amd.c
-@@ -29,7 +29,17 @@ static bool parse_8000_0008(struct topo_
- 	if (!sft)
- 		sft = get_count_order(ecx.cpu_nthreads + 1);
- 
--	topology_set_dom(tscan, TOPO_SMT_DOMAIN, sft, ecx.cpu_nthreads + 1);
-+	/*
-+	 * cpu_nthreads describes the number of threads in the package
-+	 * sft is the number of APIC ID bits per package
-+	 *
-+	 * As the number of actual threads per core is not described in
-+	 * this leaf, just set the CORE domain shift and let the later
-+	 * parsers set SMT shift. Assume one thread per core by default
-+	 * which is correct if there are no other CPUID leafs to parse.
-+	 */
-+	topology_update_dom(tscan, TOPO_SMT_DOMAIN, 0, 1);
-+	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.cpu_nthreads + 1);
- 	return true;
- }
- 
-@@ -73,12 +83,14 @@ static bool parse_8000_001e(struct topo_
- 	tscan->c->topo.initial_apicid = leaf.ext_apic_id;
- 
- 	/*
--	 * If leaf 0xb is available, then SMT shift is set already. If not
--	 * take it from ecx.threads_per_core and use topo_update_dom() -
--	 * topology_set_dom() would propagate and overwrite the already
--	 * propagated CORE level.
-+	 * If leaf 0xb is available, then the domain shifts are set
-+	 * already and nothing to do here.
- 	 */
- 	if (!has_0xb) {
-+		/*
-+		 * Leaf 0x80000008 set the CORE domain shift already.
-+		 * Update the SMT domain, but do not propagate it.
-+		 */
- 		unsigned int nthreads = leaf.core_nthreads + 1;
- 
- 		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(nthreads), nthreads);
---- a/arch/x86/kernel/cpu/topology_common.c
-+++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -133,6 +133,10 @@ static void parse_topology(struct topo_s
- 	tscan->ebx1_nproc_shift = get_count_order(ebx.nproc);
- 
- 	switch (c->x86_vendor) {
-+	case X86_VENDOR_AMD:
-+		if (IS_ENABLED(CONFIG_CPU_SUP_AMD))
-+			cpu_parse_topology_amd(tscan);
-+		break;
- 	case X86_VENDOR_CENTAUR:
- 	case X86_VENDOR_ZHAOXIN:
- 		parse_legacy(tscan);
-@@ -162,6 +166,9 @@ static void topo_set_ids(struct topo_sca
- 
- 	if (c->x86_vendor == X86_VENDOR_AMD)
- 		cpu_topology_fixup_amd(tscan);
-+
-+	pr_info("pkg %u die %u core %u nid %u\n", c->topo.pkg_id, c->topo.die_id,
-+		c->topo.core_id, c->topo.amd_node_id);
- }
- 
- static void topo_set_max_cores(struct topo_scan *tscan)
-@@ -175,6 +182,7 @@ static void topo_set_max_cores(struct to
- 	 */
- 	tscan->c->x86_max_cores = tscan->dom_ncpus[TOPO_DIEGRP_DOMAIN] >>
- 		x86_topo_system.dom_shifts[TOPO_SMT_DOMAIN];
-+	pr_info("Max cores: %u\n", tscan->c->x86_max_cores);
- }
- 
- void cpu_parse_topology(struct cpuinfo_x86 *c)
-@@ -215,20 +223,26 @@ void __init cpu_init_topology(struct cpu
- 
- 	parse_topology(&tscan, true);
- 
--	if (!topo_is_converted(c))
--		return;
--
- 	/* Copy the shift values and calculate the unit sizes. */
- 	memcpy(x86_topo_system.dom_shifts, tscan.dom_shifts, sizeof(x86_topo_system.dom_shifts));
- 
- 	dom = TOPO_SMT_DOMAIN;
- 	x86_topo_system.dom_size[dom] = 1U << x86_topo_system.dom_shifts[dom];
-+	pr_info("Dom %u Sft: %u Sz: %u\n", dom, x86_topo_system.dom_size[dom],
-+		x86_topo_system.dom_shifts[dom]);
- 
- 	for (dom++; dom < TOPO_MAX_DOMAIN; dom++) {
- 		sft = x86_topo_system.dom_shifts[dom] - x86_topo_system.dom_shifts[dom - 1];
- 		x86_topo_system.dom_size[dom] = 1U << sft;
-+		pr_info("Dom %u Sft: %u Sz: %u\n", dom, x86_topo_system.dom_size[dom],
-+			x86_topo_system.dom_shifts[dom]);
- 	}
- 
-+	pr_info("NPP %u\n", tscan.amd_nodes_per_pkg);
-+
-+	if (!topo_is_converted(c))
-+		return;
-+
- 	topo_set_ids(&tscan);
- 	topo_set_max_cores(&tscan);
- 
-@@ -238,6 +252,7 @@ void __init cpu_init_topology(struct cpu
- 	 * changes further down the road to get it right during early boot.
- 	 */
- 	smp_num_siblings = tscan.dom_ncpus[TOPO_SMT_DOMAIN];
-+	pr_info("SNS %u\n", smp_num_siblings);
- 
- 	/*
- 	 * Neither it's clear whether there are as many dies as the APIC
-@@ -252,4 +267,6 @@ void __init cpu_init_topology(struct cpu
- 	 */
- 	if (c->x86_vendor == X86_VENDOR_AMD || c->x86_vendor == X86_VENDOR_HYGON)
- 		__amd_nodes_per_pkg = __max_die_per_package = tscan.amd_nodes_per_pkg;
-+
-+	pr_info("NPP %u MDPP %u\n", __amd_nodes_per_pkg, __max_die_per_package);
- }
+> 
+> > > > Thanks.
+> 
+> Sebastian
 
