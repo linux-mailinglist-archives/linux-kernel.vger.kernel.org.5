@@ -1,144 +1,208 @@
-Return-Path: <linux-kernel+bounces-138271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AA0789EF0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:42:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A712589EF0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2AFB283B3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:42:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 621CC283B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B82F155A33;
-	Wed, 10 Apr 2024 09:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C901C15573D;
+	Wed, 10 Apr 2024 09:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="udK/rG0n"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="StHDVKfD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D27155389
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479E9155733
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712742130; cv=none; b=i0BahlUVCPhv12/5mblS8v7kS1drtmtI5jJvrWEWjoOSP0h3kV5SHuqkglOYghkmQ4Xc1SFDLmaMi1THzYcUc7L6lrBBeF8OxcW+PnC1tGZwwXT/zl+t9rB8PV2AS4YuOby1xK2BGQfgjlFHhVwnWogEVew2DOTDkeoEhD56DaM=
+	t=1712742154; cv=none; b=rwzN71DBwdbj/HSwJKH/n/jDFoNYQcGywoSr3P/9o4wZGF31z0UyDu7sWARi6r3t0DCB+Q53J578CMcHpKjjN1WApSd5klgTlQvFSXLDBChgnkvfvcbF1uUdZHO3suaiJZVAqLcmpwrltdedvxGSF+S4GXiHG/bWPMO6PZ0qq3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712742130; c=relaxed/simple;
-	bh=SlWlS7H0aUQSC4n6ZXDLoMoSWHoI0l2KPMobmU3Wrpg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RzckCcWO+Ed77cbPLKBBL5hDOUEPm9Dns18sHKCX607wkrLJyYYrn0VzSjLGGnMhlr4OqdugS/vci3d+P9RQRB9Rj6saYn9dlfP6q6VLuhjEucrgTn1OSD9ZMaO+somdp3+8cAI/eEgtAYEDOLV8us7a2NBB7m+vtFP938NPFCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=udK/rG0n; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2a526803fccso1949742a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712742127; x=1713346927; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d6mq+XWVQezektM76wlJCZqJNDL7tm6/6S+c5eJ1L7E=;
-        b=udK/rG0nj7QyF3Yfwm3RA26LrsvQJVY/lWpB7VO0zSO5EnixwuKoKJkVvw1gOTBXgx
-         4ExME/D8yXDYfycr6xhSMKFgaefa4yQmXraYL5yENqyGl/EukMMOqGmpy1xeaP+iUo4/
-         juvEhWXRiMAwYSi36ArNTwf3aK7UxcmFfcmXybd1ZxvubPnX9ENfULIDIIr7QyeS9ndT
-         mtnwCraKqFD0t/TNJAZG/I+I9Us+S9SgYrUjR4UqjKf06zAxi0vb2l18n3mUMKl7lKv9
-         s2YioLZACBdo2twjYB7slUjNDjQF8+7Ym3MijhEi1hB70pKlFkIa5NWmhxzxCadi2BoF
-         vNdQ==
+	s=arc-20240116; t=1712742154; c=relaxed/simple;
+	bh=iDurjAgFGrlhlEIPBAKii1dr+5SSgiTReOphZSWtcwE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hh4LqzDQmDoncejkzfnmk1UEM/NsQVxsFCmW6uXeyVGYhh15a5CG2ogmyp0CREPnnK9lIVNwebQcUPVk3qeKdp3fgAg1SKCFI1fIUdZDOwMppV+/qhAx8yNsurE4Qpc1E/TrhWyVyC5f6lmvo4AQe7yQloFnwsp164Ejhf9W/zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=StHDVKfD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712742151;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3bgi29jmYNkPTs9PQtxTcWx3C/WwQCp+NvBv8CYqpsw=;
+	b=StHDVKfDSL51yLckbf/ZJ3GZ2RPLU++9Uh6wTtYiYd3wDmcfiWGO1++T/MmAMVPknj0pMJ
+	DK2JiInHh1kTs18yGhQiywPLymyaL/aTzl4jSibhHDrLGMuDiZEl5TgR2asquS+RYN1e7X
+	KJKMmtBGqXbt+zQ8FT6sFudTWsgHYRU=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-356-na2mHG0bOCyAf5OeYSJR6w-1; Wed, 10 Apr 2024 05:42:30 -0400
+X-MC-Unique: na2mHG0bOCyAf5OeYSJR6w-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78d475004b6so784864685a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:42:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712742127; x=1713346927;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d6mq+XWVQezektM76wlJCZqJNDL7tm6/6S+c5eJ1L7E=;
-        b=Z4c6boeKJ24l7DfqclAaaK+Ii1mS36ahBD9o4MUCgjW/g+QINv05n2YTLTgBLu8LyG
-         9HTw7J/q6yHssB3ZgdN5a/CjthqleIsA1dZjtUOyMwOa8EK8KBMhCseenosa8JEeHCGM
-         i50nk34X1rIZ0w5abmuwmoZLT12x54/XDUJNfL5F5TJy5c3ibKpoLloK1K65f1EbxX5T
-         tT68E078TlR/GRWgrcjokZFpnpvkQfJDRLVLQ0ShMd+ngtlIeDcDfVPiRnrJ+/m1cAZT
-         96fiega0JyZzX5oCWX9X0DjDCb9uU2+sDMijvG/8buS/iqn316lsEtqpxA7Beu/9aVkW
-         SIdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWM98zFkVjKHvFkIG67GN/TqPpcgwhzz9Yp3YDvQsYey1H6SVZarnO5c4aUF4BXlky0hEBDBKp/IGtwcBZyFdKIrxsbSYoSOLobC3Z6
-X-Gm-Message-State: AOJu0YzSI8ucClNQ5l29CX8Kx8QzSzJ7depoGdNDazcJ3lgnIwgzHz/M
-	R9EN41Yj170vjbX/KNXSJ0iVzUuMaArEjZh/nFG24wCaHrx/CdfV5Y0aA1xZ0Nl/LO+LF5q95lm
-	/G5VEQrevMnNFCjVw7iHKenoo21jd0IhiviihCw==
-X-Google-Smtp-Source: AGHT+IGxW+1SQOW/hjBi7o8UbjyT2DcaFkvuNfI2f6FK1ZRsStq18tyXZyZ9KYXHh22zEmmhmUKOswcUmQ4A1Q7/6qI=
-X-Received: by 2002:a17:90b:3b87:b0:2a0:4495:1f3d with SMTP id
- pc7-20020a17090b3b8700b002a044951f3dmr2595254pjb.0.1712742127619; Wed, 10 Apr
- 2024 02:42:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712742149; x=1713346949;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3bgi29jmYNkPTs9PQtxTcWx3C/WwQCp+NvBv8CYqpsw=;
+        b=Z8ycMfCZIhHerHaPpgPw+zbbBMnVfpjIv4myYxPu6AawkTahMi6EqI4ciUZ/I7EtNi
+         N/9HYPhPKDyT9tupR7/0N8xTzmHhFcYhjleQ9pTPINrcp4fodToWdUk41Fg5qCZu3J63
+         ANql+0pTcH71t6RMDqQsxgf7frv7FesyA70ICthUMIUTnOG7ZmHQ9bYcg7rFSeVF57bY
+         +n1LqHdr6/X4HYg1lJH465IMmHqpNfMOJWqZ0Pmd0d0h22pnonj5QWCy/vrjGpl9lJSO
+         ZD3ucG3OXfm4BwsTj/io9DIQQJbQz1QiEMklGyoIxMhPmH1CtEtGzAHvW0odlSdP2lUf
+         2Sew==
+X-Forwarded-Encrypted: i=1; AJvYcCXJaOzTDyREN5FaBcDXobLM2Uc599mBsTGe0EspxYC+bnGy35Tmkd4WXAOlZij120q/JzYemhp1cQ0oX8+zNsoYsjsDdTJBQF3KUCwZ
+X-Gm-Message-State: AOJu0YwowwXF8/YN6GgKzLqd+xZsVeHvyYGh5wIx1UAw0vGIbtjGnAmX
+	mTlwkrUqfyt5r8q+sSNKqcn8sDMV9PCccTJQcZ1KjUhjFZpSe7PkbG08D07Rmb1Gs5HX3P8JVX/
+	95/2Dtxgi7c3ArhI1EgcCtoOZgTOa4wYz3KIifz83jycf0NVW3+t8gGQchjC2
+X-Received: by 2002:a05:620a:f97:b0:78d:607e:2194 with SMTP id b23-20020a05620a0f9700b0078d607e2194mr1911321qkn.3.1712742149543;
+        Wed, 10 Apr 2024 02:42:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG5BDTvXis2tHGPFgQN21Tpeh6ejkg3dj6ba9+xOWtzffuVwnJkjsQ+WKOsJO2bxNjBBYZk+A==
+X-Received: by 2002:a05:620a:f97:b0:78d:607e:2194 with SMTP id b23-20020a05620a0f9700b0078d607e2194mr1911283qkn.3.1712742147977;
+        Wed, 10 Apr 2024 02:42:27 -0700 (PDT)
+Received: from [192.168.9.29] (net-2-34-25-239.cust.vodafonedsl.it. [2.34.25.239])
+        by smtp.gmail.com with ESMTPSA id de14-20020a05620a370e00b0078d73533196sm1269317qkb.76.2024.04.10.02.42.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 02:42:27 -0700 (PDT)
+Message-ID: <9d016f83-8e7f-4bdf-8610-e3d0b49f7097@redhat.com>
+Date: Wed, 10 Apr 2024 11:42:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
- <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-4-99ecdfdc87fc@linaro.org>
-In-Reply-To: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-4-99ecdfdc87fc@linaro.org>
-From: Nicolas Belin <nbelin@baylibre.com>
-Date: Wed, 10 Apr 2024 11:41:56 +0200
-Message-ID: <CAJZgTGE10CZiHvahxDu2mf8C0JS9UgQ_x-XCH-G8Vvjfp3CUCg@mail.gmail.com>
-Subject: Re: [PATCH v12 4/7] drm/meson: gate px_clk when setting rate
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Kevin Hilman <khilman@baylibre.com>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jagan Teki <jagan@amarulasolutions.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, 
-	linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] fpga: region: add owner module and take its refcount
+To: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+ Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alan Tull <atull@opensource.altera.com>, linux-fpga@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240327160022.202934-1-marpagan@redhat.com>
+ <Zgp/jNst2yuXEbpU@yilunxu-OptiPlex-7050>
+ <64c1685a-b544-408e-97e4-8c3cff6aca6c@redhat.com>
+ <ZhS/M6pa9AHyvb0y@yilunxu-OptiPlex-7050>
+Content-Language: en-US
+From: Marco Pagani <marpagan@redhat.com>
+In-Reply-To: <ZhS/M6pa9AHyvb0y@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Le mer. 3 avr. 2024 =C3=A0 09:46, Neil Armstrong
-<neil.armstrong@linaro.org> a =C3=A9crit :
->
-> Disable the px_clk when setting the rate to recover a fully
-> configured and correctly reset VCLK clock tree after the rate
-> is set.
->
-> Fixes: 77d9e1e6b846 ("drm/meson: add support for MIPI-DSI transceiver")
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  drivers/gpu/drm/meson/meson_dw_mipi_dsi.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c b/drivers/gpu/drm/=
-meson/meson_dw_mipi_dsi.c
-> index a6bc1bdb3d0d..a10cff3ca1fe 100644
-> --- a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
-> +++ b/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
-> @@ -95,6 +95,7 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
->                 return ret;
->         }
->
-> +       clk_disable_unprepare(mipi_dsi->px_clk);
->         ret =3D clk_set_rate(mipi_dsi->px_clk, mipi_dsi->mode->clock * 10=
-00);
->
->         if (ret) {
-> @@ -103,6 +104,12 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
->                 return ret;
->         }
->
-> +       ret =3D clk_prepare_enable(mipi_dsi->px_clk);
-> +       if (ret) {
-> +               dev_err(mipi_dsi->dev, "Failed to enable DSI Pixel clock =
-(ret %d)\n", ret);
-> +               return ret;
-> +       }
-> +
->         switch (mipi_dsi->dsi_device->format) {
->         case MIPI_DSI_FMT_RGB888:
->                 dpi_data_format =3D DPI_COLOR_24BIT;
->
-> --
-> 2.34.1
->
 
-Looks good to me
 
-Reviewed-by: Nicolas Belin <nbelin@baylibre.com>
+On 2024-04-09 06:08, Xu Yilun wrote:
+> On Wed, Apr 03, 2024 at 03:34:22PM +0200, Marco Pagani wrote:
+>>
+>>
+>> On 2024-04-01 11:34, Xu Yilun wrote:
+>>> On Wed, Mar 27, 2024 at 05:00:20PM +0100, Marco Pagani wrote:
+>>>> The current implementation of the fpga region assumes that the low-level
+>>>> module registers a driver for the parent device and uses its owner pointer
+>>>> to take the module's refcount. This approach is problematic since it can
+>>>> lead to a null pointer dereference while attempting to get the region
+>>>> during programming if the parent device does not have a driver.
+>>>>
+>>>> To address this problem, add a module owner pointer to the fpga_region
+>>>> struct and use it to take the module's refcount. Modify the functions for
+>>>> registering a region to take an additional owner module parameter and
+>>>> rename them to avoid conflicts. Use the old function names for helper
+>>>> macros that automatically set the module that registers the region as the
+>>>> owner. This ensures compatibility with existing low-level control modules
+>>>> and reduces the chances of registering a region without setting the owner.
+>>>>
+>>>> Also, update the documentation to keep it consistent with the new interface
+>>>> for registering an fpga region.
+>>>>
+>>>> Other changes: unlock the mutex before calling put_device() in
+>>>> fpga_region_put() to avoid potential use after release issues.
+>>>
+>>> Please try not to mix different changes in one patch, especially for
+>>> a "bug fix" as you said.
+>>
+>> You are right. I'll split out the change and eventually send it as a
+>> separate patch.
+>>
+>>> And I do have concern about the fix, see below.
+>>>
+>>> [...]
+>>>
+>>>> @@ -53,7 +53,7 @@ static struct fpga_region *fpga_region_get(struct fpga_region *region)
+>>>>  	}
+>>>>  
+>>>>  	get_device(dev);
+>>>> -	if (!try_module_get(dev->parent->driver->owner)) {
+>>>> +	if (!try_module_get(region->br_owner)) {
+>>>>  		put_device(dev);
+>>>>  		mutex_unlock(&region->mutex);
+>>>>  		return ERR_PTR(-ENODEV);
+>>>> @@ -75,9 +75,9 @@ static void fpga_region_put(struct fpga_region *region)
+>>>>  
+>>>>  	dev_dbg(dev, "put\n");
+>>>>  
+>>>> -	module_put(dev->parent->driver->owner);
+>>>> -	put_device(dev);
+>>>> +	module_put(region->br_owner);
+>>>>  	mutex_unlock(&region->mutex);
+>>>
+>>> If there is concern the region would be freed after put_device(), then
+>>> why still keep the sequence in fpga_region_get()?
+>>
+>> Ouch, sorry, I forgot to make the change also in fpga_region_get().
+>>
+>>> And is it possible region is freed before get_device() in
+>>> fpga_region_get()?
+>>
+>> If the user follows the usual pattern (i.e., waiting for
+> 
+> I can see the only safe way is fpga_region_program_fpga() or fpga_region_get()
+> should be included in:
+> 
+>   region = fpga_region_class_find();
+>   ...
+>   put_device(&region->dev);
+> 
+> That is to say, fpga_region_get() should not be called when there is no
+> region dev reference hold beforehand. In this case, no use after release
+> risk. That's why I was thinking about some documentation.
+> 
+> Another concern is we'd better keep the get/put operations symmetrical
+> for easy maintaining, as long as it doesn't cause problem.
+
+Now I see your point. So, you suggest changing only the docs to clarify
+that the region must be taken with fpga_region_class_find() before
+programming it with fpga_region_program_fpga()?
+
+That's fine by me. However, this made me wonder why we need to take the
+region dev with get_device() in fpga_region_program_fpga()->fpga_region_get().
+If we assume that the user must always call fpga_region_class_find()
+before programming with fpga_region_program_fpga(), why do we need the
+double get?
+
+Thanks,
+Marco
+ 
+>> fpga_region_program_fpga() to complete before calling
+>> fpga_region_unregister()) there should be no problem. However, I think
+>> releasing the device before unlocking the mutex contained in the context
+>> associated with the device makes the code brittle and more prone to
+>> problems.
+>>
+>>> Or we should clearly document how/when to use these functions?
+>>  
+>> I think it is not necessary to change the documentation since the
+>> in-kernel programming API will not be affected by the change.
+>>
+[...]
+
 
