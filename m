@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-139495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525198A03B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:55:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5F58A03B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AFE1F29550
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:55:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B4128B6CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525311327F3;
-	Wed, 10 Apr 2024 22:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D0B134CE3;
+	Wed, 10 Apr 2024 22:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rJvDVrTE";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qylp4H7x"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SIHbGenp";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lUXOrPoD"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A40E40843
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E850A13248B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712789249; cv=none; b=N1t2TwbMQtzbvDRycRx1VCgKPVacS8T2G8Z5qKpzMcOdMuX8x8XKVLIDqW5vjCAvX/8LV8PPOmwlml21hVATbtG8dV0UO4PZ0OG9Pu9IDN2d13KPZKLqHiNFeb9jlwXnkUUcykQVzlwODIUkef+Y1BeMs0ewfuHSIdaFpwOLJSs=
+	t=1712789251; cv=none; b=BFZkKHGkgG48gpNev/rwJTF3/L4jymuaKNPtGxiRjpuR1bRahcUejMqMbb0BMnIPag7ybpFGSk6FVjQeujlanOpcNq1OGCuLI2YteJU4UnSo3S+PBc5sZP1zYgdRyBZVgqfp1YNbKbo4QOeDlMdqHqWtwwPFrLEDegoNKJUGCJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712789249; c=relaxed/simple;
-	bh=NFKqTJ9ShtyiYAgy+AdG3Zbk7Do+0qFmxaGilWT4BiI=;
+	s=arc-20240116; t=1712789251; c=relaxed/simple;
+	bh=H8C4ae3qB9pJTAhYrEUW6UIkzelbDNrIyM/SxoxcYVc=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=UKstWOUTEeGccqdFQTRyi0ME8knCmelYlGrWD0+x01+UI7sr7Nl1RerWulbG0O1nqfGf64+r9HSbVRm6qRbuI1kwrWCyblcEmV7jalIDWLvjHMAMDiD1pEFlO/eF+9lIQSAe8EPtYX2X97tP5bfgZr3ekKnYUA6oulvDdnszeF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rJvDVrTE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qylp4H7x; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=Ms2m+6btisAVZ5j2KUp1HijTjKVJRMdBV0SvHIu4mIl4K8YZo9vyxvJ/SJSJXfKilz79NcP7kVAy2e+98N0ukcCYTQBfB1lpcO1SjVl6KTnHjmmQYBJSkWqBsqNRmghYTSsaUU1B+dpBjrAie7F4lf5lbhNbgvZwPQ9gIUHcO2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SIHbGenp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lUXOrPoD; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240410165553.575951796@linutronix.de>
+Message-ID: <20240410165553.636753630@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712789246;
+	s=2020; t=1712789248;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=DxPffv+7izSrJC7n0/k0QCEO3R4CfssBq8UJE3DdsrY=;
-	b=rJvDVrTE+1ky0Yq0jWNVPhG+ArTg8A5L41Kqlyxk0d0qD6f9k6O8EsKOm+VYp+1XtOS1Ch
-	WQx2Iudy9ve1/LrgseDKPxvsCYXRoLXdoJnBIav+XhFSCL2uB8cIm7Zs+uGnDj++hsvmK0
-	kpOz0WgEjpoWn5nTxUDlc3DTddxw6nBWUpUULlmPLS2+VYtJi8aFpm6Y4aEMHKDcDPqXQc
-	6s7lTpveHoJhj5EiTJs5sAgkl1WUZtetzQ5gvS+7JtWgtbv4rI5At3PszZ/Z+sWTwVCOjO
-	sKAyj9yrowz5uA5mOH2OhdJKnT4iqbAS9ealmdx0S4A9I/Gdh/hsKZ6OmbqaOw==
+	 references:references; bh=gS0GunzjJF0mIhSZ9sJXDkEdhMOznUExWpmLyjVDd8s=;
+	b=SIHbGenp76SOLVBs2dAVyy4fAMu+LZLTM/FfoCydWnvcOyeVcs0e2Ctnjy6Y3/oIYFsoHp
+	mrVNV4oTcW8ky86GK0kmy7K3qFC9zlG46RxpYdZW8NlJGpp0ubRHiocrJXiC3Xn/y+gcFA
+	OcBNNZhUfevnKD2S33f0OhFo3NQGgy7gRXVQJ+PF9CoTGszsQNp6eycRPcHTLDWik39P4g
+	NRJoEPEguuLlfD5qgVkRTnhfqcUjJpyVvJ6RM/DOET2BEyFBEzBqOdvhP0oeEbF5ZqiOl8
+	eIalQiEhI3gvxVJspxs4rq+Vl9lEiJ77YGLjK+wpv98S5Hdnnzai8XsoCwcY7A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712789246;
+	s=2020e; t=1712789248;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=DxPffv+7izSrJC7n0/k0QCEO3R4CfssBq8UJE3DdsrY=;
-	b=qylp4H7xxjolIyCzjsq4MKgXTom4k1nfJrOwjGKjSI5UBPMIfyP1du3PNwwl6GwrGnr2EG
-	Rqq9wBTx+UE8bVBg==
+	 references:references; bh=gS0GunzjJF0mIhSZ9sJXDkEdhMOznUExWpmLyjVDd8s=;
+	b=lUXOrPoD+iJthx03iSV1MRAA+nF/RxjZnoJ9yWD7k+5odTGsMjLbHg9bA3O3ehohvd+mkR
+	38HzHIdZlHcR+uDQ==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
@@ -59,7 +59,7 @@ Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
  Stephen Boyd <sboyd@kernel.org>,
  Eric Biederman <ebiederm@xmission.com>,
  Oleg Nesterov <oleg@redhat.com>
-Subject: [patch V2 42/50] signal: Cleanup unused posix-timer leftovers
+Subject: [patch V2 43/50] signal: Add task argument to flush_sigqueue_mask()
 References: <20240410164558.316665885@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,105 +68,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Apr 2024 00:47:26 +0200 (CEST)
+Date: Thu, 11 Apr 2024 00:47:27 +0200 (CEST)
 
-Remove the leftovers of sigqueue preallocation as it's not longer used.
+To prepare for handling posix timer signals on sigaction(SIG_IGN) properly,
+add a task argument to flush_sigqueue_mask() and fixup all call sites.
+
+This argument will be used in a later step to enqueue posix timers on an
+ignored list, so their signal can be requeued when SIG_IGN is lifted later
+on.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/sched/signal.h |    2 --
- kernel/signal.c              |   43 +++++++------------------------------------
- 2 files changed, 7 insertions(+), 38 deletions(-)
+ kernel/signal.c |   19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -337,8 +337,6 @@ extern void force_fatal_sig(int);
- extern void force_exit_sig(int);
- extern int send_sig(int, struct task_struct *, int);
- extern int zap_other_threads(struct task_struct *p);
--extern struct sigqueue *sigqueue_alloc(void);
--extern void sigqueue_free(struct sigqueue *);
- extern int do_sigaction(int, struct k_sigaction *, struct k_sigaction *);
- 
- static inline void clear_notify_signal(void)
 --- a/kernel/signal.c
 +++ b/kernel/signal.c
-@@ -439,8 +439,8 @@ static void __sigqueue_init(struct sigqu
-  * - this may be called without locks if and only if t == current, otherwise an
-  *   appropriate lock must be held to stop the target task from exiting
+@@ -724,11 +724,10 @@ void signal_wake_up_state(struct task_st
+ 
+ /*
+  * Remove signals in mask from the pending set and queue.
+- * Returns 1 if any signals were found.
+  *
+  * All callers must be holding the siglock.
   */
--static struct sigqueue *__sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
--					 int override_rlimit, const unsigned int sigqueue_flags)
-+static struct sigqueue *sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
-+				       int override_rlimit)
+-static void flush_sigqueue_mask(sigset_t *mask, struct sigpending *s)
++static void flush_sigqueue_mask(sigset_t *mask, struct sigpending *s, struct task_struct *ptmr_tsk)
  {
- 	struct ucounts *ucounts = sig_get_ucounts(t, sig, override_rlimit);
- 	struct sigqueue *q;
-@@ -454,14 +454,16 @@ static struct sigqueue *__sigqueue_alloc
- 		return NULL;
+ 	struct sigqueue *q, *n;
+ 	sigset_t m;
+@@ -866,18 +865,18 @@ static bool prepare_signal(int sig, stru
+ 		 * This is a stop signal.  Remove SIGCONT from all queues.
+ 		 */
+ 		siginitset(&flush, sigmask(SIGCONT));
+-		flush_sigqueue_mask(&flush, &signal->shared_pending);
++		flush_sigqueue_mask(&flush, &signal->shared_pending, NULL);
+ 		for_each_thread(p, t)
+-			flush_sigqueue_mask(&flush, &t->pending);
++			flush_sigqueue_mask(&flush, &t->pending, NULL);
+ 	} else if (sig == SIGCONT) {
+ 		unsigned int why;
+ 		/*
+ 		 * Remove all stop signals from all queues, wake all threads.
+ 		 */
+ 		siginitset(&flush, SIG_KERNEL_STOP_MASK);
+-		flush_sigqueue_mask(&flush, &signal->shared_pending);
++		flush_sigqueue_mask(&flush, &signal->shared_pending, NULL);
+ 		for_each_thread(p, t) {
+-			flush_sigqueue_mask(&flush, &t->pending);
++			flush_sigqueue_mask(&flush, &t->pending, NULL);
+ 			task_clear_jobctl_pending(t, JOBCTL_STOP_PENDING);
+ 			if (likely(!(t->ptrace & PT_SEIZED))) {
+ 				t->jobctl &= ~JOBCTL_STOPPED;
+@@ -4155,8 +4154,8 @@ void kernel_sigaction(int sig, __sighand
+ 		sigemptyset(&mask);
+ 		sigaddset(&mask, sig);
+ 
+-		flush_sigqueue_mask(&mask, &current->signal->shared_pending);
+-		flush_sigqueue_mask(&mask, &current->pending);
++		flush_sigqueue_mask(&mask, &current->signal->shared_pending, NULL);
++		flush_sigqueue_mask(&mask, &current->pending, NULL);
+ 		recalc_sigpending();
+ 	}
+ 	spin_unlock_irq(&current->sighand->siglock);
+@@ -4223,9 +4222,9 @@ int do_sigaction(int sig, struct k_sigac
+ 		if (sig_handler_ignored(sig_handler(p, sig), sig)) {
+ 			sigemptyset(&mask);
+ 			sigaddset(&mask, sig);
+-			flush_sigqueue_mask(&mask, &p->signal->shared_pending);
++			flush_sigqueue_mask(&mask, &p->signal->shared_pending, NULL);
+ 			for_each_thread(p, t)
+-				flush_sigqueue_mask(&mask, &t->pending);
++				flush_sigqueue_mask(&mask, &t->pending, NULL);
+ 		}
  	}
  
--	__sigqueue_init(q, ucounts, sigqueue_flags);
-+	__sigqueue_init(q, ucounts, 0);
- 	return q;
- }
- 
- static void __sigqueue_free(struct sigqueue *q)
- {
--	if (q->flags & SIGQUEUE_PREALLOC)
-+	if (q->flags & SIGQUEUE_PREALLOC) {
-+		posixtimer_sigqueue_putref(q);
- 		return;
-+	}
- 	if (q->ucounts) {
- 		dec_rlimit_put_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING);
- 		q->ucounts = NULL;
-@@ -1065,7 +1067,7 @@ static int __send_signal_locked(int sig,
- 	else
- 		override_rlimit = 0;
- 
--	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit, 0);
-+	q = sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit);
- 
- 	if (q) {
- 		list_add_tail(&q->list, &pending->list);
-@@ -1925,37 +1927,6 @@ bool posixtimer_init_sigqueue(struct sig
- 	return true;
- }
- 
--struct sigqueue *sigqueue_alloc(void)
--{
--	return __sigqueue_alloc(-1, current, GFP_KERNEL, 0, SIGQUEUE_PREALLOC);
--}
--
--void sigqueue_free(struct sigqueue *q)
--{
--	spinlock_t *lock = &current->sighand->siglock;
--	unsigned long flags;
--
--	if (WARN_ON_ONCE(!(q->flags & SIGQUEUE_PREALLOC)))
--		return;
--	/*
--	 * We must hold ->siglock while testing q->list
--	 * to serialize with collect_signal() or with
--	 * __exit_signal()->flush_sigqueue().
--	 */
--	spin_lock_irqsave(lock, flags);
--	q->flags &= ~SIGQUEUE_PREALLOC;
--	/*
--	 * If it is queued it will be freed when dequeued,
--	 * like the "regular" sigqueue.
--	 */
--	if (!list_empty(&q->list))
--		q = NULL;
--	spin_unlock_irqrestore(lock, flags);
--
--	if (q)
--		__sigqueue_free(q);
--}
--
- static void posixtimer_queue_sigqueue(struct sigqueue *q, struct task_struct *t, enum pid_type type)
- {
- 	struct sigpending *pending;
 
 
