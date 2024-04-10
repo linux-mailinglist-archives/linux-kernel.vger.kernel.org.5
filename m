@@ -1,230 +1,168 @@
-Return-Path: <linux-kernel+bounces-137783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E449489E788
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:05:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D5789E794
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:07:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1664283ED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:05:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9B41C2126F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975A610F1;
-	Wed, 10 Apr 2024 01:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762551FB4;
+	Wed, 10 Apr 2024 01:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWmgbbQo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j+KtM6pv"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3952E621;
-	Wed, 10 Apr 2024 01:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712711126; cv=fail; b=t52RNQHvhgF4TkHGS3TakxLOl/EGLqJJbOIJu0GyL98D7GjfOkg3mh0Q0fKSWgCFi+gl7bfuRO9GUlHsKyl8llt42j7UY35Rxcl8muJGFoCH4XT85jsCKHS4yZ/JgV1htvfPYA3XL5N9fLSilPbZcio55zTAMn3LGCvlxHClDhY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712711126; c=relaxed/simple;
-	bh=a1OjSKAekNqLU2NnIADQxMHnCyZT1ggZVpZRb6fpJO8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mi0dA2pYGvOkzVT9UDDE5Vp90DeNQt717cdUH/lvHaPCFlNkPzri+c52dzi4lICKLG47Y0U6It7eVbUa93hCT07zUHvO2RtKd2JWcnG/lpwtO6435CKGys9QpFyZL3MBqIjQE1gbHczXWKSBPXsmL9avk0mCz9ktb9EcxNZ1/Mo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWmgbbQo; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712711124; x=1744247124;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=a1OjSKAekNqLU2NnIADQxMHnCyZT1ggZVpZRb6fpJO8=;
-  b=hWmgbbQoQwhBZAYykUBmXkR50F5fuyjk8TOooa3vYJnY6Uid1IVjuDPz
-   bNjuwuR/QTL619NJpLOJ/6UazVd9qyX1o+C7ef16C78LijgyhbeBvUWih
-   io4aQtv0NAnIIx3HgCvAPjJ4S0QmV9+3EM0uqxIt4cy1lkG9wgcoVhnOd
-   0uTldD3Fgd4N74b5celKRX4gDOn3ILHcqpr2AosabBpAlt30x2SapNm03
-   XPLc5tvDJX709aMQFMRzvoU9S7kVrTS96lIHU0ajXjvltWEO05M+wL1CB
-   iZ09i4afsZioPgfw7sicrDc5KKxLFKHCjv7s0xO5Vk1ZYJlGXD/mQVtm8
-   w==;
-X-CSE-ConnectionGUID: mqhbX/8bSbygkq52d/rIlQ==
-X-CSE-MsgGUID: GrXDEnZPRLKrZ2YLqQJlzQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11844218"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11844218"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 18:05:22 -0700
-X-CSE-ConnectionGUID: Nwl62qToRBanWvtwjrlkTA==
-X-CSE-MsgGUID: ZllNyA4aTr+Uv+DylqfovA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20280379"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Apr 2024 18:05:23 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Apr 2024 18:05:21 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Apr 2024 18:05:21 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 9 Apr 2024 18:05:21 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 18:05:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ffhwT4w2MAb8stCUnpaLqLztIQFsb2XN3FAEZLRdKe0tpWm6bY7CD/dDIXmouQlK5XMbJ/I6odUvrmFKLbGugY1AV0kHWsprdxXw8UYWGztE6j9NaoTXFIPOCBJQ+aDSI0Kebhci+Gnlaml/aPaRUI9yFeYMd8G4S7aU43OJwlWtzCBbFH9Z60leMsBf/xVOVrMT+v4ClUWJcxZdtq85V8qILb1oqqFAJtVKWNt65ApfQyaBGLcl+6CZUt0rcbgclWtsEEFHI+JUjIixwIMe1vZp/1LgVX6v0rKqYfSWwLdYluSy5ANlzwZWxcuP14pA6cZPFMfSWD8msyrfC4gmEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YzehTvPX+XkGWq8heLjUgxIoVQCOjdmMj+0U1Qg7rKk=;
- b=I1DoUIa5MbZ+G9GC2v0bVLIhq0CQMM9IoWfbWTpXcLTOZcET9aaQgyp5n1orQWfWyNYwsofI8DsD/O87hONihO4+ZDJ1+H/VqYaDTgAdg6aDVn0kAM84Qud7gTnhz6O9u4/FWgHJ7EHFYyXzJGmaKj9n+kdZ/5DY3EWLjoBKCHKrmhgwg9DrIqQ1UGETXombwYJQ5KS1eEYOwENebPrD+TT7hhuEBxCaJg4sFsY7BMpVvfCzFJ6dr2lcvHDlMrjSzKeYNfDsg2CFP2hkGSv1f5EoVtf2onXIxOaD7CJFg0rNalALZN89VdPApxpxwp/28QRlXWtJASSCGzt/0cWwVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DS0PR11MB6469.namprd11.prod.outlook.com (2603:10b6:8:c3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Wed, 10 Apr
- 2024 01:05:12 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7452.019; Wed, 10 Apr 2024
- 01:05:12 +0000
-Message-ID: <2d65584b-8811-4760-bd6f-600ed170b418@intel.com>
-Date: Wed, 10 Apr 2024 13:05:01 +1200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-To: Xiaoyao Li <xiaoyao.li@intel.com>, "Edgecombe, Rick P"
-	<rick.p.edgecombe@intel.com>, "seanjc@google.com" <seanjc@google.com>
-CC: "davidskidmore@google.com" <davidskidmore@google.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"srutherford@google.com" <srutherford@google.com>, "pankaj.gupta@amd.com"
-	<pankaj.gupta@amd.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>, "Wang, Wei W"
-	<wei.w.wang@intel.com>
-References: <20240405165844.1018872-1-seanjc@google.com>
- <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
- <ZhQZYzkDPMxXe2RN@google.com>
- <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
- <ZhQ8UCf40UeGyfE_@google.com>
- <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
- <ZhRxWxRLbnrqwQYw@google.com>
- <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
- <ZhSb28hHoyJ55-ga@google.com>
- <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
- <ZhVdh4afvTPq5ssx@google.com>
- <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
- <44af8014-f73c-4ef0-9692-07e8df18fe24@intel.com>
- <99144e08-7852-4aef-addf-2c031b6cc62a@intel.com>
-Content-Language: en-US
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <99144e08-7852-4aef-addf-2c031b6cc62a@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0346.namprd03.prod.outlook.com
- (2603:10b6:303:dc::21) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AECBA5F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712711235; cv=none; b=OAb8DRgCRFNzlNVbj3klLwBzHQ7lrIYKj3X/fuJLImTuk0eeLn5xgS0oFTqVODCaOrdS9E+NA+qoqZiwYM5cFWPIaJSN8Shn2u+a9iYCdzLdObGlX95eUfXiG0sQieuFQDnODYHVxcWW3sw3Fj1RxsHiCuzLh5d9gJdCwKr/2kM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712711235; c=relaxed/simple;
+	bh=qLm+VnepHhI+0yQ/tu/mdPDhXXh30RnD3IF2V76MbZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hMRNqhV2TIS1+xqsbRMdMnLPOhgEEPTF31QYVO9GWHblBEYJEQZZC3h/BpfhX/MM8vt1n9FzB7ADBiCXMHJDDc50NnxsiHe4pQYaijVXp+gr0Z4UZa14ucWRwzqodIlz9GXXf4uQgjiccqH6nosHTImvqr9+BRSf5WSsCWrqMDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j+KtM6pv; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43477091797so90951cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 18:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712711233; x=1713316033; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OnUy9Dgxuu/dnE4qVLvSmNOrCGCLASYP8tq9YkPoGpw=;
+        b=j+KtM6pvp+EHNopINMD2RJAGceIlIoI0FdTMk772kYHAizd0+R9dNEMM0LwpwieEjf
+         j7ZN14mjgh69kNoGQJ/WApv7N//BaIIxsOez/nlX4QNS4SGAIH6r90Cn+WR8JsxqHlu7
+         TFuBRS4AxSPV48tTsHwVpSptISB2WCtyHctDYYcS3/UkvHTzPZKXLWog9dJ96DQgzGch
+         9bT7rR3dRKOcDN40aGeb7xFydQSt6FmHdzDuLVBtwQqLqAcfILGdz7KVMIVtKZvkaZq6
+         MVe+HvHFnfJJvCLDSRu+b9th4T3aJ9dRG91+xREQpyuxivkDbOZg4KhnpbBjf3XAU5WZ
+         FcXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712711233; x=1713316033;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OnUy9Dgxuu/dnE4qVLvSmNOrCGCLASYP8tq9YkPoGpw=;
+        b=WcgBQVK+Xs+qMdZCojF2MfPKdjzelu4Kc6zaN1oM4hXgJEGGlqfy5N4zOUxwZ79U7I
+         5tm480xIRY/LMJiDYbBlSVZ5t1UK0PVrLC1oQgqvpMDSxcMe/iW6vRXZaZCkacRBrQYq
+         cwU5pPkg+y14IbabA+NB5Q1eLoRlt/42aXzR9ARpx3Cu/PIZPwhOmIko+KosXjb6+X1d
+         qbnfvGkxlTDJVKVxJNLNhNuPvDdQ/OWxvo+ts4d6O3i8b6N0zxxH8Ns4Nu96iFpoeXiT
+         fYYOof6Hzb3JZuJu1/JbaKpMrlg9HTB+JgbB78waq7E9LWpc+SIT+hP5SphpjQjvVnl8
+         Occg==
+X-Forwarded-Encrypted: i=1; AJvYcCVaSLmoL+kkej8t5+ve4SNnPXqAN+YfG18fckyibJCBK5K8YGkHij3jyi8lOI2+b/LFMV6C2oenGftjcdTfNMwz4CTcZy1ITklw6kbP
+X-Gm-Message-State: AOJu0Yz1y0/Ly6+L7UjEKRFYdO7qQvOyXKdk144s/77ZPe0r9O/BSqRX
+	kirVo6ZZAva/WaI7oSE49hE8qxZCJnca8pZnhdx2BWxKLU/XAVEbsuqrVeuFPvCaoXCz1ZX5Zce
+	54/bfCdyNS9eDIVEwcwcnvpiNN0oROYOxpnX7
+X-Google-Smtp-Source: AGHT+IEnYGYE7m3kixf85CnlpYGzZvRPhp8krudkLaSycG1wisGydnCUIvWGp+zYdJGwFxhq8++4pWL/y3KX54K3Dyo=
+X-Received: by 2002:a05:622a:22a8:b0:434:a690:e328 with SMTP id
+ ay40-20020a05622a22a800b00434a690e328mr77260qtb.17.1712711232788; Tue, 09 Apr
+ 2024 18:07:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DS0PR11MB6469:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bptPQ088GqLs6nYaWYQrvEoxeF4nNykcfmrqckOgCFFSZc5mNb79rOSgHUxuG94FrqOdf1JUVdU+JeyZm5G3eTThz7Op1VPu1u61iJxq9jDAqUfddCHwOIDX663kHT36RTeGLw3BpU+JnIng6Y419uWr1CIuoW2VDDSQ9t7X//RP9C+FxZ5veFIZDXSrI/fKdT+o3ITzbMl3GsahbNQK1Vz7dSVkx2yNyRFjqMWOcBBYXvX2Oe7ZNWYQ70yfEPXz0Cd50SgOyolduvq/zsfSgvvb7i9nIBOjgGtGCm8Ar1mUYzcLUYZ6wsxGMOcW84sqS1cLMiYo0LxK5mIOzYJzAtUDDZVvw+SRhmt/Rd9tCZLMB9DrvBpJG5QlGMQ9lich6Y+VsbY6qAYa3qDKJEQYMAgjMbcpJBXVOp5bRLDw/0xqpWJc60a62b5/aLf3R6FOoC8rTeV6bHG8JZAXZI7pOCAViEcenAy3+qYWpwusMYVPczxqMh9SuCjfzBO1iq3Rx5WX72vmsxP1O6DdZ7bhY8SsgWwl80Yjv8epqDuulMXmT7dHfE4gN8qibqAtEQcE+5mEmeoU7vX8K0XwhYXZxxb/stSxzU69ewKD8duCp4ngrvMuC8+RfVrcKPSigjl5BCXFuoZ38jfx82xcd1RSomcJ/TVrK50Qehg8wGPCS3I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Yy9maFZMRDRxUFE4ODlRdE9GbDZ4N3lha2phWkMwQXI1cGxZbVVjTUJna1Bv?=
- =?utf-8?B?Q1FRWEpQZ2crQUFpNnBvblQ2Q094TC9RVGFKZEJjUmN6R1pxVUErUkhSSjg0?=
- =?utf-8?B?MUF3N2dsMW83MncrcGJGSUhobUFjUCt1UkhJMlNrdEozSHdBUFpNZjMvWmJI?=
- =?utf-8?B?SzJaUmxpRXIxSmRvR1JrR1BLSmdkZi94QWF3U2JRWnEvcUhqRUg1N1d6TjZo?=
- =?utf-8?B?dWp5SzZMdWQ4SG1RSzZuYlpxdTA0V0lXUkRKSUhiTncvdCtDQjMyUGQ4YVZC?=
- =?utf-8?B?Z1pxV3ErZVgwL3pWWEJneEFoTUVtaHdYWHlvZTBIQlhJMURCVENZMS9OS2RK?=
- =?utf-8?B?Y3BidllZRFhuTFFrck1UQXRubzg5Uk1sdXFtS2xHMEcwMTVHK25Ia2t5SllY?=
- =?utf-8?B?ZDZMUWwxaFBoUFBtMy9kMDBhZlNHZjhiTEdkd2s5ZG95cStUN05sOGdyRTly?=
- =?utf-8?B?eUdkeDY2TU9zK3U5UFk3bVd4NC9lRER0Y1dPVDVDNGlabFNqUGdyaUVzY1Nn?=
- =?utf-8?B?OGs0T3FDU2tBcVEyaGo5aEFpVmwwQmx6M1hRdFR6K0x6dHhkZjNGK1FGZXYx?=
- =?utf-8?B?SG1YcXVoUnk0YTN6cnFYdnQrazBsOFVTSWZoK0NHL204eDIxckZjYzlCQnQw?=
- =?utf-8?B?aWRzdWJ4d3c0VU00dzhNYk1LUWM4TDg4bGRVR1hsSWJwTWV4ZExpaDZEVnRB?=
- =?utf-8?B?OXNydUtXVjFUcUY5aDhSVXRMT2ZZVGhkVVVubUpkZzdUOGxNK3hnK3d6Z1J0?=
- =?utf-8?B?c2JUNC9jTGVGaDVRVzBlZ2xFeDM5VHljRVV3dUY3UDFnTlB5OGRtdTRVYXZn?=
- =?utf-8?B?RER4UjJKaDNEZWlVMDlqMDh6SjdRNXJqcmJlQVhBamFwK1VNSW5WaS9VWFdm?=
- =?utf-8?B?djZubTVVcHRmMUt1eWZUS1Z3V0haUXZqanB2U2hkd2JEQUo5YTRmaUQ2dFRM?=
- =?utf-8?B?RVovY25ld2lUcVlWS3V4WGFZSklJcHQxR3lqdVRmU2wvL2lYN2FPMXRJVll1?=
- =?utf-8?B?TWFRTlAxNDVzMmdlbnovQnhTR2VjbVcrajRoaHYvb1RHcVNiOUExS0s3bXFQ?=
- =?utf-8?B?ZE9PVEtPaE42VEEzVEU3RW5aVmVmUnB2SzAwL0htbGZrNHVNT1RFNE9pZURn?=
- =?utf-8?B?Z2NxWVc2N25NTytORkphaUEwUHltZXdLREkyVTJSKzBtcENoaENuSkIvc1Z6?=
- =?utf-8?B?eXNieFJkQzdXTHNSQS81RnpPNUZ6OFNnS1R1RkdUdlJ0Z2FWZDVub21yeFpW?=
- =?utf-8?B?RGNzY3pVWWJBOUtiNjRheWZSQU9pVWIrTExXeXhUSk90MzJzVXc5d3JmOEd0?=
- =?utf-8?B?N3FkQzJ1bHVCczRKa1huWHIxVkdHRlJhcnhOcU1sN3R4aWh2VkNYS05DR1ZN?=
- =?utf-8?B?cnlpZ2dtc1REN0dyamFFbExjK1RicHNnT3pNUmlad1pnWTJtUkhkaHB5QlVx?=
- =?utf-8?B?VHZVYnVtTkZDMmdCYmxZNmFYd0hZN3BjckNPUERFckk1SitNRnNSSlcwTEdZ?=
- =?utf-8?B?MlFnWmJoeFhqV2RWOGtKY2crM3ZMOHJ5a2RJbW5KdStYS1JSNnpVSWRzYitH?=
- =?utf-8?B?Q1lDN2dlL2R6a1l3ZjZ0cS9pcDJacC9DSTNGOFpoWXgrM3JMSVFCM3hKTFFy?=
- =?utf-8?B?blIvc2JpRzZDYndCMVBzVnN1SmJTUnBaMEFWVTROVzdia2V4Mlc5ODJHMkh2?=
- =?utf-8?B?TXVEZ0U1LzY1eHFxb2pmTWo3a3dSZm51VEoyRzdPYXF2c2c4N0pxMHRFOWRh?=
- =?utf-8?B?UnR5L3M3WkllS3NDcE9FSmRlL2ZYR2Z3QUJKb2FQNi9zY0NSZEx6UjZjbDFo?=
- =?utf-8?B?a2hqNmpxelNKWXNyWHBneFRSbFVXRGZETXFuUkxYazlYOVltZWxrc1lBQnlS?=
- =?utf-8?B?cXFOT3kxRVV5WjFYZ3BTZm9WOEt0Qkt5Ri9ZdVh2dFR1MHc4UUtqSUpPbmZT?=
- =?utf-8?B?eW40UnpKK2hLWTU3WVhRTlMrMk9DUFlKL05tNS9DMHZ4VUNxWFIvbWNtNDVP?=
- =?utf-8?B?Q3VJY0xpVUFQMVZpSld4MzBubDQ4VVB3UnFzNFFqUGNDOEwwaU9iNHNiTHhF?=
- =?utf-8?B?Y0hEeFdDQ1NEUFVjOENMTGsvenkwZkxJVmJNV2o0MmFhWExWcXdFaFlHTmVr?=
- =?utf-8?Q?UIWlyNP/PFJPHRgo22IReVY1U?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3a047b8-899e-42b8-b27d-08dc58fa464f
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 01:05:12.5417
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9daG6cE0Slss856hYc4p+AZl1DZYyCL7y3OQMJtS1S4P0TLAEj8piaqLI6oL7TZ6zNh0AvqkC7xtKgDtwdGvFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6469
-X-OriginatorOrg: intel.com
+References: <20240409053704.428336-1-saravanak@google.com> <20240409150247.61e30a86@bootlin.com>
+In-Reply-To: <20240409150247.61e30a86@bootlin.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 9 Apr 2024 18:06:33 -0700
+Message-ID: <CAGETcx-Yxtkdfytsota3AciS6M9UeOaKSRtaHfH5pm60KWVmJA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/2] fw_devlink overlay fix
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-spi@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 9, 2024 at 6:02=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
+om> wrote:
+>
+> Hi Saravana,
+>
+> +CC Luca and Thomas
+>
+> On Mon,  8 Apr 2024 22:37:01 -0700
+> Saravana Kannan <saravanak@google.com> wrote:
+>
+> > Don't bother reviewing this patch. It needs to be tested and possibly
+> > refactored first.
+> >
+> > Geert and Herve,
+> >
+> > This patch serious should hopefully fix both of your use cases
+> > [1][2][3]. Can you please check to make sure the device links created
+> > to/from the overlay devices are to/from the right ones?
+> >
+> > I've only compile tested it. If I made some obvious mistake, feel free
+> > to fix it and give it a shot.
+> >
+> > Cc: Rob Herring <robh@kernel.org>
+> >
+> > [1] - https://lore.kernel.org/lkml/CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8=
+x6=3D9F9rZ+-KzjOg@mail.gmail.com/
+> > [2] - https://lore.kernel.org/all/20240221095137.616d2aaa@bootlin.com/
+> > [3] - https://lore.kernel.org/lkml/20240312151835.29ef62a0@bootlin.com/
+> >
+>
+> I tested your patches.
+>
+> Concerning my use cases, they fix the issue described in
+>   https://lore.kernel.org/all/20240221095137.616d2aaa@bootlin.com/
 
+I went back and looked at the example. I'm not even sure I understand
+that example. In that example at the link above, are you saying
+without any changes to upstream reg_dock_sys_3v3 was listing it's
+supplier as i2c5 instead of tca6424_dock_1? Why wasn't Geert's
+existing changes in of_i2c_notify not sufficient? Looking at it, it
+does:
+rd->dn->fwnode.flags &=3D ~FWNODE_FLAG_NOT_DEVICE;
 
-On 10/04/2024 4:18 am, Xiaoyao Li wrote:
-> On 4/10/2024 12:13 AM, Xiaoyao Li wrote:
->> On 4/9/2024 11:49 PM, Edgecombe, Rick P wrote:
->>>> I don't want JSON.  I want a data payload that is easily consumable 
->>>> in C code,
->>>> which contains (a) the bits that are fixed and (b) their values.  If 
->>>> a value
->>>> can
->>>> change at runtime, it's not fixed.
->>> Right. The fixed values have to come in a reasonable format from the 
->>> TDX module
->>> at runtime, or require an opt-in for any CPUID bits to change in 
->>> future TDX
->>> modules.
->>
->> I have a thought for current situation that TDX module doesn't report 
->> fixed CPUID bits via SEAMCALL interface but defines them in docs. VMM 
->> (KVM or userspace) can maintain a hardcoded array of fixed CPUID bits 
->> and their values according to TDX docs.  And VMM needs to update the 
->> fixed array by striping out the bits that are reported in 
->> TDSYSINFO.CPUID_CONFIG[], which are configurable.
->>
->> If the newer TDX module changes some fixed bits to configurable bits, 
->> They will show up in TDSYSINFO.CPUID_CONFIG[]. So VMM can update fixed 
->> array correctly.
->>
->> In fact, this is how TDX QEMU series current implements.
->>
->> However, it requires TDX module to follow the rule that if any bit 
->> becomes not fixed, it needs to be reported in TDSYSINFO.CPUID_CONFIG[] 
->> as configurable.
-> 
-> If TDX module flips the bit between fixed0 and fixed1. It doesn't work 
-> neither. :(
+Which should clear the flag for tca6424_dock_1. Can you help me
+understand why it's not getting cleared?
 
-Exactly.  I think we need to ask TDX module to report such information 
-rather than depending on some JASON file.
+> But not the one described in
+>   https://lore.kernel.org/lkml/20240312151835.29ef62a0@bootlin.com/
+> A link is still present between the i2c@600 and the PCI device.
+> instead of the i2c@600 and the pci-ep-bus.
+
+What do you mean by PCI device here? You say the same thing in the
+link, but I don't understand what you mean. Can you clarify what
+exactly gets added by the overlay? Please use the fwnode name in all
+the descriptions, even when talking about device links. That should
+help avoid the confusion.
+
+Also, if you can show what the target node of the overlay looks like,
+that'd help too.
+
+> Adding the patch clearing the FWNODE_FLAG_NOT_DEVICE in device_add() avai=
+lable
+> at [1] on top of your patches fixes the link issue.
+> With this additional patch applied, the link is present between the i2c@6=
+00
+> and the pci-ep-bus.
+
+I know the problem with this patch series. But to fix it properly, I
+need to understand the root of the overlay node in your examples and
+the target it's applied to.
+
+-Saravana
+
+>
+> [1] https://lore.kernel.org/lkml/20240220111044.133776-2-herve.codina@boo=
+tlin.com/
+>
+> Best regards,
+> Herv=C3=A9
 
