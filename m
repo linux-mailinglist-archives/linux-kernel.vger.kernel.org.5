@@ -1,190 +1,268 @@
-Return-Path: <linux-kernel+bounces-138870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D571789FB76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:26:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7296D89FB88
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0490C1C229E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:26:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01DCC1F268DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C9C16E889;
-	Wed, 10 Apr 2024 15:25:48 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819D416EC11;
+	Wed, 10 Apr 2024 15:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fKfXx6da"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B95416E878;
-	Wed, 10 Apr 2024 15:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62351E878
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762748; cv=none; b=uPwaDEWyFi1isjHGv10w0NB1c3pkI78rDXLmG74/9d3XRmof1E5LQlvpCCwcUlRU7Z7Vj6cMo66l6pm1jNeYDs1QGagOCS0GxDxeBKKs3c7ycJRYeKrt1LAWXAIPARWxweu5eTQejArS3/eDIMKc3Q2gum4VqAUHhrOVFsuaBrM=
+	t=1712762928; cv=none; b=SitxkNcsMUAlQFvUp8ylwyhtMF6wRlTgfx1lJxpoa+HgYOCNksaHX0ri1ZjCN6F51MHQIeT2a4R9KORDs/j+/k1eixe26zYE3FmmbKNKlSGY6bo+k0EfBo5nXaxJGa2kzp8kdA8+t0mVi5g3n5R3pu0zMl62rjEPXQNNsE9YAYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762748; c=relaxed/simple;
-	bh=Pk0thEfc+DKwTeAkAv2HFqvGA8+fNmNFZy9Fw5oWnfU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u1SCwxMHNd6eWvwF+sklaMbhiPGIQbhF0oNp2of8oR1SEKuBxJ++fHSe1xkFiISXmaKezFKXphuonpUKFdCg4kUxIOKw1dStzBr0tt1FD6oy3YJ44FIFYOoLGxQYoerTkE7ikwnuFGhx7Bz1BwaQvPKpXr4tAXJrH0QmG6V56Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F05C433F1;
-	Wed, 10 Apr 2024 15:25:47 +0000 (UTC)
-Date: Wed, 10 Apr 2024 11:28:23 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Zheng Yejian <zhengyejian1@huawei.com>
-Cc: <mhiramat@kernel.org>, <mark.rutland@arm.com>,
- <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
- <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ftrace: Fix use-after-free issue in ftrace_location()
-Message-ID: <20240410112823.1d084c8f@gandalf.local.home>
-In-Reply-To: <20240401125543.1282845-1-zhengyejian1@huawei.com>
-References: <20240401125543.1282845-1-zhengyejian1@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712762928; c=relaxed/simple;
+	bh=lSxDCqVmS49joX+KK2vOQBOuXPAF5oXxcuK+9LJdVFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=grDD1CxGAM7qCUxDf1o4Bkzi6pZ+imRnS8sd3MpeYqDsxqoFHOwCueN3VDqzIeGNkRmddEuZOVsC+k8TaDJY0NbTSbDAtQ1lzHuLGmHq3aeBJa0oQCcmcAzwEBLwp6hgtLselaNT/6AgJbRcF+M++b/VxRmQjW89x6k4Jh2hqa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fKfXx6da; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712762925;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ci1baLlwDbOm6Wup8/nHleUUTbOV/R7CG6mxApYjz0M=;
+	b=fKfXx6daHhl5PrK4E9aFrZnlTgfulS/1gTixVI5lppIUn4QLmTYyjG7U4WgxMei2HJbxBT
+	7SVDXcWl22mWqiKidMiB7KG1dnUUDPhhg9qCiyxMp65QfNZ8hvoqNH50JXwt6dWgt5YVGi
+	M08HmR8HVH0LI9O+xUtY7i/e5LucBTw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-390-AfH0EcHqMXSmp7c7iAiAdQ-1; Wed, 10 Apr 2024 11:28:44 -0400
+X-MC-Unique: AfH0EcHqMXSmp7c7iAiAdQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-69627b26a51so2057506d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:28:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712762923; x=1713367723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ci1baLlwDbOm6Wup8/nHleUUTbOV/R7CG6mxApYjz0M=;
+        b=FVZ6uatgI+RSHU74x81lbNnQOh5a6EPBshQednr3olXMRH7RphuWAyIHRdimiSistw
+         Lw+wxQOiHxq1y05W42/6MZ9759NF+X4oWDzx7F/jM70X87E3kT/Z/PmNTRlMSph5IhNf
+         eHLAwe9DBD/sDAXGaHsT8v0bgwmF5qYW7pk66PZp1HkPMHmfvwdvZVUFKEtyK/QLWe7M
+         l5HHD0CITqE3VFW5npEiBmAUSa8gPipLT9ylrBwUdKLewUVPmQjWnf+TxlirccY0v+AG
+         4UmrMBVJ1Q86yXGgXkA4lOw+Ia9hvqt/OYpHDRJ+NIn1Un390UorGEXPXxqlIbF3OksS
+         Kxpw==
+X-Forwarded-Encrypted: i=1; AJvYcCVcVad48PgObdzYQx+jkIuiqP+Onor1J4LZrvAIUgAie3XAyERXVdeJ/VndoIYZRd2/0p7YWlPVunPSC+AxaNate0brYdPSMi3/OfB+
+X-Gm-Message-State: AOJu0YytSlGfBtIq77tNDDYaek4oPno3FlaPmPEnZuohxOU8Pc8yPD5i
+	VlllKKvVn07I7fXWPOERSQRVqjD/IYGd8oOZHGatiZ9gzk1p4owC+ecxYnGUyeE1jg1gV3BQzUf
+	kRHFWDgcYK/Qb6QEDS6rvPzNtJKLQW7UXLHKvOjvOTgRtfi4o+JIT1Z5dDiOrWA==
+X-Received: by 2002:a05:6214:5090:b0:69b:ce6:271b with SMTP id kk16-20020a056214509000b0069b0ce6271bmr3168089qvb.2.1712762923251;
+        Wed, 10 Apr 2024 08:28:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGZs5MCkL0IJwntJvXwMvElTS5kl/yk1ExPO6tDqr2NK62DfB6pdbW0p2/DjTaMvJz9lDcKPw==
+X-Received: by 2002:a05:6214:5090:b0:69b:ce6:271b with SMTP id kk16-20020a056214509000b0069b0ce6271bmr3168047qvb.2.1712762922544;
+        Wed, 10 Apr 2024 08:28:42 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id ek1-20020ad45981000000b00699032e555bsm5208543qvb.127.2024.04.10.08.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 08:28:42 -0700 (PDT)
+Date: Wed, 10 Apr 2024 11:28:39 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rik van Riel <riel@surriel.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-riscv@lists.infradead.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
+Message-ID: <ZhawJ-VD6DtLZ2Zm@x1n>
+References: <20240321220802.679544-1-peterx@redhat.com>
+ <20240322161000.GJ159172@nvidia.com>
+ <ZgHJaJSpoeJVEccN@x1n>
+ <20240326140252.GH6245@nvidia.com>
+ <Zg8gEyE4o_VJsTmx@x1n>
+ <20240405181633.GH5383@nvidia.com>
+ <ZhBwVLyHr8WEKSx2@x1n>
+ <20240409234355.GJ5383@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240409234355.GJ5383@nvidia.com>
 
-On Mon, 1 Apr 2024 20:55:43 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
-
-> KASAN reports a bug:
+On Tue, Apr 09, 2024 at 08:43:55PM -0300, Jason Gunthorpe wrote:
+> On Fri, Apr 05, 2024 at 05:42:44PM -0400, Peter Xu wrote:
+> > In short, hugetlb mappings shouldn't be special comparing to other huge pXd
+> > and large folio (cont-pXd) mappings for most of the walkers in my mind, if
+> > not all.  I need to look at all the walkers and there can be some tricky
+> > ones, but I believe that applies in general.  It's actually similar to what
+> > I did with slow gup here.
 > 
->   BUG: KASAN: use-after-free in ftrace_location+0x90/0x120
->   Read of size 8 at addr ffff888141d40010 by task insmod/424
->   CPU: 8 PID: 424 Comm: insmod Tainted: G        W          6.9.0-rc2+ #213
->   [...]
->   Call Trace:
->    <TASK>
->    dump_stack_lvl+0x68/0xa0
->    print_report+0xcf/0x610
->    kasan_report+0xb5/0xe0
->    ftrace_location+0x90/0x120
->    register_kprobe+0x14b/0xa40
->    kprobe_init+0x2d/0xff0 [kprobe_example]
->    do_one_initcall+0x8f/0x2d0
->    do_init_module+0x13a/0x3c0
->    load_module+0x3082/0x33d0
->    init_module_from_file+0xd2/0x130
->    __x64_sys_finit_module+0x306/0x440
->    do_syscall_64+0x68/0x140
->    entry_SYSCALL_64_after_hwframe+0x71/0x79
+> I think that is the big question, I also haven't done the research to
+> know the answer.
 > 
-> The root cause is that when lookup_rec() is lookuping ftrace record of
-> an address in some module, and at the same time in ftrace_release_mod(),
-> the memory that saving ftrace records has been freed as that module is
-> being deleted.
+> At this point focusing on moving what is reasonable to the pXX_* API
+> makes sense to me. Then reviewing what remains and making some
+> decision.
 > 
->   register_kprobes() {
->     check_kprobe_address_safe() {
->       arch_check_ftrace_location() {
->         ftrace_location() {
->           lookup_rec()  // access memory that has been freed by
->                         // ftrace_release_mod() !!!
+> > Like this series, for cont-pXd we'll need multiple walks comparing to
+> > before (when with hugetlb_entry()), but for that part I'll provide some
+> > performance tests too, and we also have a fallback plan, which is to detect
+> > cont-pXd existance, which will also work for large folios.
 > 
-> It seems that the ftrace_lock is required when lookuping records in
-> ftrace_location(), so is ftrace_location_range().
+> I think we can optimize this pretty easy.
+>  
+> > > I think if you do the easy places for pXX conversion you will have a
+> > > good idea about what is needed for the hard places.
+> > 
+> > Here IMHO we don't need to understand "what is the size of this hugetlb
+> > vma"
 > 
-> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> ---
->  kernel/trace/ftrace.c | 28 ++++++++++++++++++----------
->  1 file changed, 18 insertions(+), 10 deletions(-)
+> Yeh, I never really understood why hugetlb was linked to the VMA.. The
+> page table is self describing, obviously.
+
+Attaching to vma still makes sense to me, where we should definitely avoid
+a mixture of hugetlb and !hugetlb pages in a single vma - hugetlb pages are
+allocated, managed, ...  totally differently.
+
+And since hugetlb is designed as file-based (which also makes sense to me,
+at least for now), it's also natural that it's vma-attached.
+
 > 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index da1710499698..838d175709c1 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -1581,7 +1581,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
->  }
->  
->  /**
-> - * ftrace_location_range - return the first address of a traced location
-> + * ftrace_location_range_locked - return the first address of a traced location
->   *	if it touches the given ip range
->   * @start: start of range to search.
->   * @end: end of range to search (inclusive). @end points to the last byte
-> @@ -1592,7 +1592,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
->   * that is either a NOP or call to the function tracer. It checks the ftrace
->   * internal tables to determine if the address belongs or not.
->   */
-> -unsigned long ftrace_location_range(unsigned long start, unsigned long end)
-> +static unsigned long ftrace_location_range_locked(unsigned long start, unsigned long end)
->  {
->  	struct dyn_ftrace *rec;
->  
-> @@ -1603,6 +1603,17 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
->  	return 0;
->  }
->  
-> +unsigned long ftrace_location_range(unsigned long start, unsigned long end)
-> +{
-> +	unsigned long loc;
-> +
-> +	mutex_lock(&ftrace_lock);
-> +	loc = ftrace_location_range_locked(start, end);
-> +	mutex_unlock(&ftrace_lock);
+> > or "which level of pgtable does this hugetlb vma pages locate",
+> 
+> Ditto
+> 
+> > because we may not need that, e.g., when we only want to collect some smaps
+> > statistics.  "whether it's hugetlb" may matter, though. E.g. in the mm
+> > walker we see a huge pmd, it can be a thp, it can be a hugetlb (when
+> > hugetlb_entry removed), we may need extra check later to put things into
+> > the right bucket, but for the walker itself it doesn't necessarily need
+> > hugetlb_entry().
+> 
+> Right, places may still need to know it is part of a huge VMA because we
+> have special stuff linked to that.
+> 
+> > > But then again we come back to power and its big list of page sizes
+> > > and variety :( Looks like some there have huge sizes at the pgd level
+> > > at least.
+> > 
+> > Yeah this is something I want to be super clear, because I may miss
+> > something: we don't have real pgd pages, right?  Powerpc doesn't even
+> > define p4d_leaf(), AFAICT.
+> 
+> AFAICT it is because it hides it all in hugepd.
 
-I'm not so sure we can take a mutex in all places that call this function.
+IMHO one thing we can benefit from such hugepd rework is, if we can squash
+all the hugepds like what Christophe does, then we push it one more layer
+down, and we have a good chance all things should just work.
 
-What about using RCU?
+So again my Power brain is close to zero, but now I'm referring to what
+Christophe shared in the other thread:
 
-	rcu_read_lock();
-	loc = ftrace_location_range_rcu(start, end);
-	rcu_read_unlock();
+https://github.com/linuxppc/wiki/wiki/Huge-pages
 
-Then in ftrace_release_mod() we can have:
+Together with:
 
- out_unlock:
-	mutex_unlock();
+https://lore.kernel.org/r/288f26f487648d21fd9590e40b390934eaa5d24a.1711377230.git.christophe.leroy@csgroup.eu
 
-	/* Need to synchronize with ftrace_location() */
-	if (tmp_pages)
-		synchronize_rcu();
+Where it has:
 
--- Steve
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -98,6 +98,7 @@ config PPC_BOOK3S_64
+        select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+        select ARCH_ENABLE_SPLIT_PMD_PTLOCK
+        select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
++       select ARCH_HAS_HUGEPD if HUGETLB_PAGE
+        select ARCH_SUPPORTS_HUGETLBFS
+        select ARCH_SUPPORTS_NUMA_BALANCING
+        select HAVE_MOVE_PMD
+@@ -290,6 +291,7 @@ config PPC_BOOK3S
+ config PPC_E500
+        select FSL_EMB_PERFMON
+        bool
++       select ARCH_HAS_HUGEPD if HUGETLB_PAGE
+        select ARCH_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
+        select PPC_SMP_MUXED_IPI
+        select PPC_DOORBELL
 
+So I think it means we have three PowerPC systems that supports hugepd
+right now (besides the 8xx which Christophe is trying to drop support
+there), besides 8xx we still have book3s_64 and E500.
 
-> +
-> +	return loc;
-> +}
-> +
->  /**
->   * ftrace_location - return the ftrace location
->   * @ip: the instruction pointer to check
-> @@ -1614,25 +1625,22 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
->   */
->  unsigned long ftrace_location(unsigned long ip)
->  {
-> -	struct dyn_ftrace *rec;
-> +	unsigned long loc;
->  	unsigned long offset;
->  	unsigned long size;
->  
-> -	rec = lookup_rec(ip, ip);
-> -	if (!rec) {
-> +	loc = ftrace_location_range(ip, ip);
-> +	if (!loc) {
->  		if (!kallsyms_lookup_size_offset(ip, &size, &offset))
->  			goto out;
->  
->  		/* map sym+0 to __fentry__ */
->  		if (!offset)
-> -			rec = lookup_rec(ip, ip + size - 1);
-> +			loc = ftrace_location_range(ip, ip + size - 1);
->  	}
->  
-> -	if (rec)
-> -		return rec->ip;
-> -
->  out:
-> -	return 0;
-> +	return loc;
->  }
->  
->  /**
+Let's check one by one:
+
+  - book3s_64
+
+    - hash
+
+      - 64K: p4d is not used, largest pgsize pgd 16G @pud level.  It
+        means after squashing it'll be a bunch of cont-pmd, all good.
+
+      - 4K: p4d also not used, largest pgsize pgd 128G, after squashed
+        it'll be cont-pud. all good.
+
+    - radix
+
+      - 64K: largest 1G @pud, then cont-pmd after squashed. all good.
+
+      - 4K: largest 1G @pud, then cont-pmd, all good.
+
+  - e500 & 8xx
+
+    - both of them use 2-level pgtables (pgd + pte), after squashed hugepd
+      @pgd level they become cont-pte. all good.
+
+I think the trick here is there'll be no pgd leaves after hugepd squashing
+to lower levels, then since PowerPC seems to never have p4d, then all
+things fall into pud or lower.  We seem to be all good there?
+
+> 
+> If the goal is to purge hugepd then some of the options might turn out
+> to convert hugepd into huge p4d/pgd, as I understand it. It would be
+> nice to have certainty on this at least.
+
+Right.  I hope the pmd/pud plan I proposed above can already work too with
+such ambicious goal too.  But review very welcomed from either you or
+Christophe.
+
+PS: I think I'll also have a closer look at Christophe's series this week
+or next.
+
+> 
+> We have effectively three APIs to parse a single page table and
+> currently none of the APIs can return 100% of the data for power.
+
+Thanks,
+
+-- 
+Peter Xu
 
 
