@@ -1,143 +1,93 @@
-Return-Path: <linux-kernel+bounces-137765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35AA89E6D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:28:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5755289E6D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:28:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF35283B5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87ECD1C2112F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33553625;
-	Wed, 10 Apr 2024 00:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6060663E;
+	Wed, 10 Apr 2024 00:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s43aOJgZ"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ISrXgCPK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DDE19F;
-	Wed, 10 Apr 2024 00:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEBF37C;
+	Wed, 10 Apr 2024 00:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712708894; cv=none; b=jP0ER3w5cUO7ONRZLMgJXkq0R1xjj8y4ifjLJb/bxKdFkz4PgIDWYy7w9zRJut3pJl4F3wHpvoAJJffy+udIf6/8i1Tv82103jniN90kXMf8l45ScLGKD64BwkoU9Vav2PorrJN0OI5z5Te6xJVRjnF9T0RFZd9GHCbpjM220Kk=
+	t=1712708920; cv=none; b=rg+ABBFyzFrn1XzjZsFQ7oza6xR+10n4VYfUhZtx+5xbb8x2A6EV6jlxlF+/+mjQXjbhIFwzC8V1cBtMIQ9iMZmmCPtu/zmjbttcPHSG6Lyf5E5ITBlJnakh8fMFutrUWGlrrD6Jdah98LmPFT+0TxqsB1ZBdzBoEc6z9j5YLx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712708894; c=relaxed/simple;
-	bh=W+pYLXuRXB0jH5q5NK82XfEzLZKFNQRH5v63Njz4D2o=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Zg1/EPrpdmxBKoeLRaSiEPll6NVL2pE9Zc95jEbLMm6jIAVdAf3msvpDaCt3yBrv+r9FyRUB/mubvmxQK7qBPTKNXTP1lZ4JvAntbqoGa9btwaiJdGjpEhPGBmemEzwVJZB1vCFzV7pLvjPPEq+5MrPfpcaeFXe8xb0cvptYxCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=s43aOJgZ; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712708885; bh=ovDthVW7r0uBySIExmKxz78q0JYqkQ5bKXWaw7WizAg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=s43aOJgZZE5lccYurgJjlLZrnGsonBdCd6x1V9v9PM+pcMuc4zj7hnomuzngN4Xaz
-	 rn3WF7lm18QD9TBDPEa265RJRyO5vRG38X2kRoh7TzLk9CeirGyAYk25flr4xifqA9
-	 riRoVm7trSsARxUOP0z4gqtDmxOiA6cxFhk9z0R0=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 701004C9; Wed, 10 Apr 2024 08:28:01 +0800
-X-QQ-mid: xmsmtpt1712708881ta4aorxgu
-Message-ID: <tencent_FB85678A3DC136BE969236344B0A74177709@qq.com>
-X-QQ-XMAILINFO: N5sfBKY/oC4kM+iGSm6/9VCLVz8SGTECWfptp5OikjMSRFNCCQNfxKXST3r33W
-	 DUPiklFjqBdyQutO5oxysWrhjgBej1LJjDMWS8LRdP7P8NF+U3+gOOCRxd3ul1RIj6fyGaDLAUWJ
-	 Cyw6qH5JBlfQcJhcychPjL7LB1dyqJbq9t39TK2mooK3ycFVzt1LFCi6m9LYbYmSuJV64tpbMBfl
-	 H2Jhwz0UisNyNfKavN8h2oz56RGgzk4GoyqKqZ8eh7Zt3yCsHE/VmIFq2FdI7YyhGDjGtFZkOT4r
-	 tGL/tBnLlx8ttq8CFkrJJadd4KypmeZe59v7wErxdJ+91h/S2su4ypgeNeflhCIh7rJ/Kuhw5B6P
-	 Ly9nW62wG61vrwHQGYpV3DJqziJpKChqLH8AkparwEm0DMlsZ9FKtAEG7MaTfAYXdYJLEvQQU183
-	 yH0jnZPw3bj/d2gau3MZUXy3EPtsKAxF0N1h/IeKc4N9r6KTP2jT4CiCY9aD097qMPlYA/BiuP1J
-	 h8dTgeF1f6VJ2TvcRHkTTFXr/3fhDPVcAHn32PB8MmpYzkjjtc6Ey5M0eLU9nwH67ZZHFG916ntY
-	 d5rlqEA5xBoJ3iCMX0bjHnO8EfNvqOnTAt5LU7BRBjBrsxz7vIXbt420Zqbu8GywWAHwCtrtEeb7
-	 Zw3e38wHADGvZyI9LE+Dz+irtAUsLMsPhzMetrI4QWUThiMXX0odv6fSj6eSzRndE4ozLvjKunyu
-	 MJl9k/whTFP9yAuG2NcyGPFiXQe9UoLndaGbK1ji/7rGeIajCPKU/11ho7+7fkCVUQs6MdcMkMih
-	 qTyuSi1w6d/4pRchxLOgtltkh9McWO8cNGSIC06k+qas4i+LJ4KJigbNx7xfdwB+GttQXYFwlq/0
-	 IY3Z6TEzAJ4MfQ2AcrOO78x6WlMDUkNX49BP5LzdJsqO3cQpKGdzPACVb60Vjemsh8eG5+W8fDSt
-	 Y4+q9EIUs=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: martin.lau@linux.dev
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eadavis@qq.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	sdf@google.com,
-	song@kernel.org,
-	syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH] bpf: fix uninit-value in strnchr
-Date: Wed, 10 Apr 2024 08:28:01 +0800
-X-OQ-MSGID: <20240410002800.176768-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
-References: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
+	s=arc-20240116; t=1712708920; c=relaxed/simple;
+	bh=VSxgUq61kUsWcaZWrEgm3dkEBvUqhH37KU47deGe+AU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kzA/cku44c5QznBCbSPqtghZR7CVrLSllHusvCj12NGoEGWJaku4im5IROFGW8vmg94mPq6SczBipHmq0AFn/Yv4W7jMYiP4+i75DnodnU6Tgw87BNsc7tVZTRiV2vqSwLOyIKwoIZx8F9fxwTCBCe7776q0b5hGWPxFpBkGzAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ISrXgCPK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6735C433F1;
+	Wed, 10 Apr 2024 00:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712708920;
+	bh=VSxgUq61kUsWcaZWrEgm3dkEBvUqhH37KU47deGe+AU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ISrXgCPKLpqKRgiS//7EoTZzE9qjUj8g7mz3ovtn182yhRaNMrNxz9Q6wu+d9rY/9
+	 pnTvcXPnMSeYW+SopTgfHOxUP1ZxtwZshdr+ue6cDN69ZMlU6jD/RchFgZR0ttEria
+	 l67+ArarCX8Oa1YC7tvUrG26BK9cTYo3EAoL/4/5E9MnrZ6RVNLU1ABFFnWNacojsN
+	 l28iSlBxesUsbs2nLiZ1GdkA5TsbvOH1n8wTwYUwotkexUq0U5nLq4Q6/B1JEVlePB
+	 yFz2+nluQpceH3+Q8t2oEa/UsvyHS/xthh4wNhQsLF0vEVBO+VmcA7nF+S2ShUJi8A
+	 BQQBkzvgIJr4w==
+Date: Tue, 9 Apr 2024 17:28:38 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: John Fraker <jfraker@google.com>, netdev@vger.kernel.org, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Harshitha Ramamurthy
+ <hramamurthy@google.com>, Shailend Chand <shailend@google.com>, Willem de
+ Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>,
+ Junfeng Guo <junfeng.guo@intel.com>, Ziwei Xiao <ziweixiao@google.com>,
+ Jeroen de Borst <jeroendb@google.com>, linux-kernel@vger.kernel.org,
+ kory.maincent@bootlin.com, andrew@lunn.ch, richardcochran@gmail.com
+Subject: Re: [PATCH net-next] gve: Correctly report software timestamping
+ capabilities
+Message-ID: <20240409172838.247738f3@kernel.org>
+In-Reply-To: <661550e348224_23a2b2294f7@willemb.c.googlers.com.notmuch>
+References: <20240408180918.2773238-1-jfraker@google.com>
+	<661550e348224_23a2b2294f7@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, 9 Apr 2024 10:59:17 -0700, Martin KaFai Lau wrote:
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 449b9a5d3fe3..07490eba24fe 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-> >   	u64 cur_arg;
-> >   	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
-> >
-> > -	fmt_end = strnchr(fmt, fmt_size, 0);
-> > +	fmt_end = strnchrnul(fmt, fmt_size, 0);
+On Tue, 09 Apr 2024 10:29:55 -0400 Willem de Bruijn wrote:
+> This device calls skb_tx_timestamp in its ndo_start_xmit: the
+> prerequisite for SOF_TIMESTAMPING_TX_SOFTWARE.
 > 
-> I don't think it is correct either.
+> All devices support SOF_TIMESTAMPING_RX_SOFTWARE by virtue of
+> net_timestamp_check being called in the device independent code.
 > 
-> >   	if (!fmt_end)
+> To ethtool timestamping maintainers: It's quite unnecessary to have
+> each device advertise SOF_TIMESTAMPING_RX_SOFTWARE |
+> SOF_TIMESTAMPING_SOFTWARE. In __ethtool_get_ts_info we could just
+> always add those flags to the result from the callees.
 > 
-> e.g. what will strnchrnul return if fmt is not NULL terminated?
+>         if (phy_has_tsinfo(phydev))
+>                 return phy_ts_info(phydev, info);
+>         if (ops->get_ts_info)
+>                 return ops->get_ts_info(dev, info);
 > 
-> The current code is correct as is. Comment snippet from strnchr:
-> 
-> /*
->   * ...
->   *
->   * Note that the %NUL-terminator is considered part of the string, and can
->   * be searched for.
->   */
-> char *strnchr(const char *s, size_t count, int c)
-lib/string.c
-  9 /**
-  8  * strnchr - Find a character in a length limited string
-  7  * @s: The string to be searched
-  6  * @count: The number of characters to be searched
-  5  * @c: The character to search for
-  4  *
-  3  * Note that the %NUL-terminator is considered part of the string, and can
-  2  * be searched for.
-  1  */
-384 char *strnchr(const char *s, size_t count, int c) 
-  1 {
-  2         while (count--) {
-  3                 if (*s == (char)c)           // Only when the length of s is 1, can NUL char be obtained
-  4                         return (char *)s;
-  5                 if (*s++ == '\0')            // When the length of s is greater than 1, the loop will terminate and return NULL, without obtaining a pointer to a NUL char
-  6                         break;
-  7         }
-  8         return NULL;
-  9 }
-> 
-> 
-> >   		return -EINVAL;
-> >   	fmt_size = fmt_end - fmt;
+>         info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
+>                                 SOF_TIMESTAMPING_SOFTWARE;
 
+My gut tells me we force drivers to set the ethtool op because
+while at it they will probably also implement tx stamping.
 
+Even more unhelpful point I'll risk making is that we could 
+add a test and make people who submit new drivers run it :)
 
