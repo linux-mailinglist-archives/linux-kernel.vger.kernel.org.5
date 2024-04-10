@@ -1,112 +1,133 @@
-Return-Path: <linux-kernel+bounces-138671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A048089F8E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:54:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721E089F97D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A1B6285F3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:54:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD7F6B2F45C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47012179217;
-	Wed, 10 Apr 2024 13:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3915D179647;
+	Wed, 10 Apr 2024 13:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="My09kEbP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="kosRFtIz"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3C0179211
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C7917920E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756777; cv=none; b=aTi67dqKFedCFffHVWwE9e27RNds3iRYpZp4W0gTt9DdnBzQot7CGzyXT4LVd6eH4Y90tubjNt13KGVG1nXl7aoxmBAtaIy0jKrtKE/6CCHQ34yIgDdSZhx3lheJyKZA+Am61TMMOgwd8Cg4VZUxaazb7HEEeYB5fn7e9OrMoss=
+	t=1712756778; cv=none; b=P8/cqM45Qg6kqv6eU19HEOXulrNg+oJ5j4Ew4hMKDE7hFbvOewjftNpQ0AATQu+0DnNvpePF/G2OZVy8vo3EFU/yiEBBkQw84WeYpFndLnRFjNEx9w48UFs2GNHR7Wc2OSH9Pn4oQ17Qi5OI9rWBJdy6N/OmflxEvXfG3hBHY5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756777; c=relaxed/simple;
-	bh=HK7tzglHO1mGwIZMuKVgNT3TKyVNovyIlNjN9sB7whY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XvTZehGQ97usqrnhC1mANJV0OkT2PnxqSVrAIO0JUsVpqPk9vr5aklITYRC6RCnkorfdUJXGnl15V8ND3hugv1m9R7TJWED6tqoD4wLrClcpHpfWlxzkQ6S2CxM2R+SiNNtf96Wa9unYt0aYrvYPqYUEVwcAcTMYzg1lWnNnMlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=My09kEbP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F14C43394
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:46:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712756777;
-	bh=HK7tzglHO1mGwIZMuKVgNT3TKyVNovyIlNjN9sB7whY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=My09kEbPVhjDZl664qcsJdW7gXUIQGFFMH21A6dwQPmEyesveeIR2zVScqK7XE/Bg
-	 qYXak0758dSpAIqRMbuzB6ZC+mmWM3ZUauwr0VUg5heYigk4DyAhpgngiJg9gVgfYH
-	 Rl00wiBsn6+CkTDGWrFJiOFlROPlLIArEkDmLKDk6MIdBRv5njVA+7usp9OV+VcmB2
-	 JDVtFJxp9PdY//dnOejt1azVl8cMukZO+ZBQR23cgjzXZa1f/a1RzIvWr9Er6/iMxl
-	 ofO4b7JeB3xCYKJGfIDHloo34zW/djIwCDnm+F8NO14i7SBoP1erbRUb3Ectdj9vbH
-	 41yN2IQFAMg/A==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d700beb6beso73299771fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:46:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUerSdqOiNyxlawlQYanT7vKpF+6+dQHOA9p3WH6O+OmvHIFo9X2Lusv1JHqqKQrUTF97wjJC6E2gg5Jmk0lJiNSc895kvDWHYUyVZH
-X-Gm-Message-State: AOJu0YwyRF6mufl6bQIYUqTLWSYwN3uFTW6jeXzZZW4GiemhKVF0oC1U
-	gCdF7uPzDskTsPUm1NUeAOZw3P9HnDu27S3nixptZlF6AtWK1Xec2nnPWvac/KZrn/JDbGIqMcE
-	26c0GTaid5rIwtWrall9FmbtX2hc=
-X-Google-Smtp-Source: AGHT+IECfMOOCBUWoptINFic3uCpGr5MyHFQaRahfPJbLZOaTa7xSLsUVlW89HW8gnyyTqi72/VszCj46hLgKLeFh6E=
-X-Received: by 2002:a2e:91cd:0:b0:2d6:b0b5:bb12 with SMTP id
- u13-20020a2e91cd000000b002d6b0b5bb12mr2025156ljg.18.1712756775490; Wed, 10
- Apr 2024 06:46:15 -0700 (PDT)
+	s=arc-20240116; t=1712756778; c=relaxed/simple;
+	bh=QvOn6cvji9QTSJm7bpuEUbJNN7acKTTuonvs3yRgL0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EJaYGiDJU6WazOjL7txh4OR36PM5z+G3Up0UvwqNM+Vm+sYBwYWWpSmEBjaGW5R6iJLG7j4NAs4HvU7Rs1isl7tc3IBqTbieKvrXRKytBWTOop9vHIgyUNSJGsn/tNmwG3N0WrFhPKh0839XRxlhgNWU5RofeTCRu5nBD8fUIug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=kosRFtIz; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-416a208d496so13798185e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712756774; x=1713361574; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QNwy39mEHd5CSC3eirYZIbXLLfL+/dRw/DVFAe0gv+k=;
+        b=kosRFtIzXWMOjy6UyvSE09lRqzPywlytuBuK9KZsw+HUecFw3ulP8T4Hj1atCemzXp
+         fMELPqqsbOi1Oi4qEJUBGAIP/gpLrRL8oEOFfk6m3ep4wFj8laHEFqkAUQdXRNgRUhXP
+         P9Kt1satLlxq1NcEE3KUZX8sQvijWC4GZ+RaoqZy+oQCJNhaYx4ARlTEc2fWy8JEBWPw
+         60cTE9y2b7Ufmy06uXwZdOlv0g/J+V+f8RcHNmXnNYSNXPKLQ2QZtWjPfkwEv8++n0wd
+         Ku7EhaErnD3W+KowFxvKYCdstb4uL8Arpvrd9uzVPqoxw8nhAmyITzYyDGQhin6J5akF
+         vJoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712756774; x=1713361574;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QNwy39mEHd5CSC3eirYZIbXLLfL+/dRw/DVFAe0gv+k=;
+        b=w51cx3+ebVmbYeyPFSd1fMVlc7C6tSkh/Xzl63ARr7Q4bMcnxRerM3fScSnx5Dek11
+         igikali+Adej0qcD6kKiwtJ6cb7+rDVkqsKKFN77kTzUFoIvnKwSKDbd0DVroUeLdlbY
+         5WX20bgTJgmUSefmwBx0gBL1oWdsnbxAuUcfrCCOUwLTpuuwpxHHmZOQOEwlY8XHqAnM
+         SWWbfk0Hya760OkB/coxJ1L99CJa0pKmWdB/2IGoIcFvds4VyQHP3QEQpsMq/MYHOySv
+         IqrlXRzek7FJBElJEmShaUqOTIBOzYUE1ZfetRXnIXMV+Pmy9jUnULHvLE8r8Sit4jso
+         OxXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYG2CXAmyrP10H36jShHCVDmKN0qCGe/OSYXlGVoV5Z8/HEeYFFIBu2AhVF8GITByzGcyS16DLxuAlsOgMKh+cVPaakV+W2FTsckt2
+X-Gm-Message-State: AOJu0Yyu00RJtO2fS5jM7U/Ic4XjmnmApWQ9fbO5eMXGuhcf91H/7mcu
+	JElBX1/tVJQn5ReXAeyvOayhNMXOmZ169PX8EhBDzxkOLTpytgdZTCfUM41WTlo=
+X-Google-Smtp-Source: AGHT+IGxsQggXycRi+dm4Bw4Xi8pQLO4aefRSNITx/omDNTFi8n4uULRx1pb1qcEcpuljXdkWzOSMA==
+X-Received: by 2002:a05:600c:4446:b0:416:c990:d668 with SMTP id v6-20020a05600c444600b00416c990d668mr1409845wmn.8.1712756774480;
+        Wed, 10 Apr 2024 06:46:14 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id o4-20020a05600c4fc400b004170e0aff7asm1931574wmq.35.2024.04.10.06.46.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 06:46:14 -0700 (PDT)
+Message-ID: <dba5a3d3-97ba-491a-9290-35ffd42c740b@baylibre.com>
+Date: Wed, 10 Apr 2024 15:46:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410102520.348017-2-ardb+git@google.com> <ZhaM2N3EONa7tNgl@gmail.com>
-In-Reply-To: <ZhaM2N3EONa7tNgl@gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 10 Apr 2024 15:46:03 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEFDqaHa-St+3k3N+Ngxn=u7ovf4wfYnPdL8xzJSoiibw@mail.gmail.com>
-Message-ID: <CAMj1kXEFDqaHa-St+3k3N+Ngxn=u7ovf4wfYnPdL8xzJSoiibw@mail.gmail.com>
-Subject: Re: [PATCH] x86/boot/64: Clear CR4.PGE to disable global 1:1 mappings
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Conrad Grobler <grobler@google.com>, Kevin Loughlin <kevinloughlin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 04/18] ASoC: mediatek: mt8195: Migrate to
+ mtk_soundcard_common_probe
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-5-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409113310.303261-5-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 10 Apr 2024 at 14:58, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ard Biesheuvel <ardb+git@google.com> wrote:
->
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > The early 64-bit boot code must be entered with a 1:1 mapping of the
-> > bootable image, but it cannot operate without a 1:1 mapping of all the
-> > assets in memory that it accesses, and therefore, it creates such
-> > mappings for all known assets upfront, and additional ones on demand
-> > when a page fault happens on a memory address.
-> >
-> > These mappings are created with the global bit G set, as the flags used
-> > to create page table descriptors are based on __PAGE_KERNEL_LARGE_EXEC
-> > defined by the core kernel, even though the context where these mappings
-> > are used is very different.
-> >
-> > This means that the TLB maintenance carried out by the decompressor is
-> > not sufficient if it is entered with CR4.PGE enabled, which has been
-> > observed to happen with the stage0 bootloader of project Oak. While this
-> > is a dubious practice if no global mappings are being used to begin
-> > with, the decompressor is clearly at fault here for creating global
-> > mappings and not performing the appropriate TLB maintenance.
-> >
-> > Since commit
-> >
-> >   f97b67a773cd84b ("x86/decompressor: Only call the trampoline when changing paging levels")
-> >
-> > CR4 is no longer modified by the decompressor if no change in the number
-> > of paging levels is needed. Before that, CR4 would always be set to a
-> > known value with PGE cleared.
->
-> So if we do this for robustness & historical pre-f97b67a773cd84b
-> quirk-reliance's sake, I'd prefer if we loaded a known CR4 value again,
-> instead of just turning off the PGE bit.
->
-> It's probably also a tiny bit faster, as no CR4 read has to be performed.
->
 
-Fair enough. I'll go and change that.
+
+On 09/04/2024 13:32, AngeloGioacchino Del Regno wrote:
+> @@ -29,6 +30,13 @@
+>   #define RT1019_SPEAKER_AMP_PRESENT		BIT(1)
+>   #define MAX98390_SPEAKER_AMP_PRESENT		BIT(2)
+>   
+> +#define DUMB_CODEC_INIT				BIT(0)
+> +#define MT6359_CODEC_INIT			BIT(1)
+> +#define RT1011_CODEC_INIT			BIT(2)
+> +#define RT1019_CODEC_INIT			BIT(3)
+> +#define MAX98390_CODEC_INIT			BIT(4)
+> +#define RT5682_CODEC_INIT			BIT(5)
+> +
+
+Why are you using defines+single variable to track inited parts in the 
+probe function but do it in the different way for legacy_probe using 
+bool: is5682s, init6359 ? AFAII, both can use the same method with the 
+defines above.
+
+>   #define RT1011_CODEC_DAI	"rt1011-aif"
+>   #define RT1011_DEV0_NAME	"rt1011.2-0038"
+>   #define RT1011_DEV1_NAME	"rt1011.2-0039"
+
+-- 
+Regards,
+Alexandre
 
