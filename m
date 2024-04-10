@@ -1,150 +1,136 @@
-Return-Path: <linux-kernel+bounces-138236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F3489EE93
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:18:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6210D89EE96
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:18:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD3C0288868
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:18:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9451E1C2042B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B15E1607AB;
-	Wed, 10 Apr 2024 09:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="H0S06gwr"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32C5156C65;
+	Wed, 10 Apr 2024 09:12:22 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7926B15EFCA
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C29154C0F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740288; cv=none; b=uxFUApKTvCaKmkUI7ZCli7/OmGcGHfULDN8A+mMFoAaLTE18Yxc5esmv7LoD/s37sKfXvi9EqSv16ykdtqrjopPB/V/qWy0YA0y3Ny7j4H+XPKd4WMq9JKdDvgVNSJtB43HTepVfPscf/F6J6wcN1Jhf1pijBsR8DpMNeJUXehc=
+	t=1712740342; cv=none; b=D60PCFazUrGU6u5Z4cBFYMQeOGsM0m4f5W6wUza0D2cumQerlQUy9PZ3rt3naemeUIgaApu44efoo+lJS1bkzKC2CxdHLXTsZ7redypub3xASJwuw9JsEJ/WYA/K9/VDwLplqh5tYzU1sAEHnB3z0VeAdr3NcEIGQwg/JVQmboQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740288; c=relaxed/simple;
-	bh=dIKOQ7+8Gx69BlGHAWDa8bC1hIUZKhgNODc1wgGNviA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pSNmKcWfiEom0uTJIHIOXlxFu+pdu1eBH0wAdv63CSTZ/o6lTIWTdcdy+RqD3R0yiiVY5AbSaunHyacem+h52jaxORoupOV1lkr9L7+wk6EJ2sU8OeOx9okbo5QlL8/R34EccYS8CYHYYKM9sI/F8f6VFlQ6iUoU/LZl4Hd899U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=H0S06gwr; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d585c60bso1576424e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:11:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712740283; x=1713345083; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OKIlCd7jL5ol5qvLgWGPfJLjgIu96MFC3958FRvJI8w=;
-        b=H0S06gwrd6ANiW4jrbHvPyJjGiOIaqcVz4LTDzaaXw9vRTwJxBwCfRaGBDPwmq4Yh1
-         cBUW/u2wEhyEo9Jjf0PG0vUrX5/JP9IR8f0e77aLywkf6tipp3gm0/Neyknnz1mRcygn
-         wcW7z1Jt5Moi45dYyMjMdMIP5X4jTjC6YrgUu9d2Wbv4MJgq+GRzDQ7RQ1p0GBl5sFbN
-         HYLFNUl/oZWw3kGA35H0eIAj4ljEzRdZHtyEKD8UnuU2xUBtxUuddWs+BoSNp4XZFUXt
-         GrHm/05lsIvlPjaczukw+t6PGpG8GRwJGms9l/cS+ioiUrohW8mvEjAnZybyHId1GbdJ
-         5/4g==
+	s=arc-20240116; t=1712740342; c=relaxed/simple;
+	bh=QcukFNtg5QPlNnHP9AsxjrF6vrT5yIws1Xddfjv3EA0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=D8Nj6vqenN7lQzasYmTEDtIbfUWoKPMNn0H3STawcvL4DPNOGlYPSZFdJsvJFFbtpg0AxTyvjrlgKCy+cUfyabEOlfpz4K8CsFkU4nUe2n2qT411Z6ZXH0GBV8UpRyjRi7hyuEbHuBjj5m2FFyFdDa3Wa5EuB5JS01s7AClbOeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc78077032so723256139f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:12:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712740283; x=1713345083;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OKIlCd7jL5ol5qvLgWGPfJLjgIu96MFC3958FRvJI8w=;
-        b=nSw8gC9PM6bdu6DMK83c7VkxqeoNJ4yppI2mYIXkLAAB70bvP1tDnZBc1sYj9/GD6c
-         iKp46LJedaKwo/zOX8852z81Us8ZZupb0u0b2Pc7F1OwId3DuRcZYSsaSlc3/byPPnC9
-         X6OkGKMw30qisUkz3zuRrtQiJTjG+1KZbXNLlckTHhNZgjzrlkZid4D+dzmLGE68k3m0
-         WcYc2QaBnKFgOmbcoa3H+n0BtIHwhcL3Qr0LkN7BlAnK632XbbBJRLCqU4niphye8N8C
-         yewaqkc9TFNRkCkGtjdcLcSgNX4r0zUjyZGljEeHfjIyFVyus//EuMaU/v0ZBhHMMesO
-         i1xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzcM4+/io/sKfbomKG5Nl/ewsCXkDADz0QBadAN1x+68lFFlysfbQlPF/GA691yytJT7xcqlES4dLI1Dre7glxySlI55Ilb77sk5g5
-X-Gm-Message-State: AOJu0YxuNBItdkXy0hqjWQlEO9BJKxmofMhk3RRy1S4fPfoSbGvCST+W
-	j5cVTBAsjgDgVzeNwgNdqy0Ad5O/efb/p9jVSGU5Bf5IcUUERGda8IDHPQcMhXo=
-X-Google-Smtp-Source: AGHT+IGArQ/ya3SIwEsTsgk2V3XdyzaxCK6c7Q9P5Y6CwIgF+pnuGurqpRxGE7Q7fP5In4aquwsCLQ==
-X-Received: by 2002:ac2:484a:0:b0:513:c1b0:dcb2 with SMTP id 10-20020ac2484a000000b00513c1b0dcb2mr1173103lfy.3.1712740283581;
-        Wed, 10 Apr 2024 02:11:23 -0700 (PDT)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:d4a6:5856:3e6c:3dff])
-        by smtp.gmail.com with ESMTPSA id d6-20020a056000114600b003456c693fa4sm9079086wrx.93.2024.04.10.02.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 02:11:22 -0700 (PDT)
-From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Anup Patel <anup@brainfault.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH 10/10] KVM: riscv: selftests: Add Zcmop extension to get-reg-list test
-Date: Wed, 10 Apr 2024 11:11:03 +0200
-Message-ID: <20240410091106.749233-11-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240410091106.749233-1-cleger@rivosinc.com>
-References: <20240410091106.749233-1-cleger@rivosinc.com>
+        d=1e100.net; s=20230601; t=1712740340; x=1713345140;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ptX73Altic4ESP22V471d3eL5ZC6YV95jnK4Zt2ndWk=;
+        b=qIrr9wnjnbUzI2Cd4VrKMbjclvCzXxQHJGAVQfWSt4i+POeeam35MHRSEk4qTa1E9+
+         pnpZC83YQegqNjeWEz/VtPFWJvXCIFl0p2xaxEgHY2LDD33fAZ2iPjcI/39/N35kyVf7
+         zA6cmrP125hqNBDHs75m4aeSqZFnH+SodhE68xJkJTGdEpdCiC9R33t3pLDrWM/F5lJh
+         z3VJzMTiSAfqUOeMJobLBhc3HtgKcsY/NjqB1LePQf58VAtY8ixz/Wn8OU2Gf/+GUWkq
+         dSgFadmMDFdJph2cWAB0rKVXeFRMOI4bOb0fk+HqvZ7nnWIvzHgK8HCW4Jgay6hUW4Jc
+         OwsA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7B9qHvFj9neRq8dqcPD9vF1FJ0fjYXcguz3nKep5LdIzLZQT0kUgaYu8GWn9/j5575ZNzbky+1SqtSSNvmTBexXqj0vHP0/GRHktA
+X-Gm-Message-State: AOJu0YxoRXA+PMZlDp1/peDwrPO1CYGDsm/Th6gFY4r0u4sapEB4/8rR
+	fWU88gH7d14HdITXbcJa/kJ7QCDXuf6s1dB5Qm+z0PmcgWCJuWqLmBaFEbiaasDTIDFPod5MMrQ
+	6P0RrRSOr90EPssHpxXHVLfyBtw7mHxnnQsGPSTWtbN+oOe9q3E+EVZY=
+X-Google-Smtp-Source: AGHT+IH+fLNhTgFccZWmDpFaQNa9DnEv0TR8EzZNtkzbFjySzaWKISJXMWkH/yNO0UtlVZvsTM7tVl1NkZs4VDdLZ/SRQPCTZRgZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:628e:b0:482:97e2:9b7a with SMTP id
+ fh14-20020a056638628e00b0048297e29b7amr72316jab.2.1712740339466; Wed, 10 Apr
+ 2024 02:12:19 -0700 (PDT)
+Date: Wed, 10 Apr 2024 02:12:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000086d83c0615ba6f9a@google.com>
+Subject: [syzbot] [kernel?] KMSAN: uninit-value in __schedule (5)
+From: syzbot <syzbot+28bdcfc1dab2ffa279a5@syzkaller.appspotmail.com>
+To: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
+	linux-kernel@vger.kernel.org, mingo@redhat.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The KVM RISC-V allows Zcmop extension for Guest/VM so add this
-extension to get-reg-list test.
+Hello,
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    e8b0ccb2a787 Merge tag '9p-for-6.9-rc3' of https://github...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14c4529d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=28bdcfc1dab2ffa279a5
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cf4b0d1e3b2d/disk-e8b0ccb2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/422cac6cc940/vmlinux-e8b0ccb2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9a4df48e199b/bzImage-e8b0ccb2.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+28bdcfc1dab2ffa279a5@syzkaller.appspotmail.com
+
+Dead loop on virtual device ipvlan1, fix it urgently!
+=====================================================
+BUG: KMSAN: uninit-value in schedule_debug kernel/sched/core.c:5962 [inline]
+BUG: KMSAN: uninit-value in __schedule+0x816/0x6bc0 kernel/sched/core.c:6629
+ schedule_debug kernel/sched/core.c:5962 [inline]
+ __schedule+0x816/0x6bc0 kernel/sched/core.c:6629
+ preempt_schedule_common kernel/sched/core.c:6925 [inline]
+ __cond_resched+0x49/0xc0 kernel/sched/core.c:8590
+ _cond_resched include/linux/sched.h:1988 [inline]
+ process_one_work kernel/workqueue.c:3287 [inline]
+ process_scheduled_works+0xc19/0x1bd0 kernel/workqueue.c:3335
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+Local variable _addrs created at:
+ nf_ct_get_tuple+0x56/0x7d0 net/netfilter/nf_conntrack_core.c:277
+ resolve_normal_ct net/netfilter/nf_conntrack_core.c:1822 [inline]
+ nf_conntrack_in+0x5cd/0x30d0 net/netfilter/nf_conntrack_core.c:1996
+
+CPU: 0 PID: 5088 Comm: kworker/0:4 Tainted: G        W          6.9.0-rc2-syzkaller-00207-ge8b0ccb2a787 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: mld mld_ifc_work
+=====================================================
+
+
 ---
- tools/testing/selftests/kvm/riscv/get-reg-list.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index 61cad4514197..9604c8ece787 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -59,6 +59,7 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZCB:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZCD:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZCF:
-+	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZCMOP:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZFA:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZFH:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZFHMIN:
-@@ -429,6 +430,7 @@ static const char *isa_ext_single_id_to_str(__u64 reg_off)
- 		KVM_ISA_EXT_ARR(ZCB),
- 		KVM_ISA_EXT_ARR(ZCD),
- 		KVM_ISA_EXT_ARR(ZCF),
-+		KVM_ISA_EXT_ARR(ZCMOP),
- 		KVM_ISA_EXT_ARR(ZFA),
- 		KVM_ISA_EXT_ARR(ZFH),
- 		KVM_ISA_EXT_ARR(ZFHMIN),
-@@ -957,6 +959,7 @@ KVM_ISA_EXT_SIMPLE_CONFIG(zca, ZCA),
- KVM_ISA_EXT_SIMPLE_CONFIG(zcb, ZCB),
- KVM_ISA_EXT_SIMPLE_CONFIG(zcd, ZCD),
- KVM_ISA_EXT_SIMPLE_CONFIG(zcf, ZCF),
-+KVM_ISA_EXT_SIMPLE_CONFIG(zcmop, ZCMOP);
- KVM_ISA_EXT_SIMPLE_CONFIG(zfa, ZFA);
- KVM_ISA_EXT_SIMPLE_CONFIG(zfh, ZFH);
- KVM_ISA_EXT_SIMPLE_CONFIG(zfhmin, ZFHMIN);
-@@ -1017,6 +1020,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
- 	&config_zcb,
- 	&config_zcd,
- 	&config_zcf,
-+	&config_zcmop,
- 	&config_zfa,
- 	&config_zfh,
- 	&config_zfhmin,
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
