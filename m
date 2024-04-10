@@ -1,86 +1,109 @@
-Return-Path: <linux-kernel+bounces-137844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419EC89E835
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:33:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49ACE89E839
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:34:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D59DC1F23543
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1F3B1F218D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0552C28DC0;
-	Wed, 10 Apr 2024 02:32:07 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E00944E;
+	Wed, 10 Apr 2024 02:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W0JRq96X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E313219F9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC6D38C;
+	Wed, 10 Apr 2024 02:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712716326; cv=none; b=l1jpsw/UF0hTFwZ+McUilD53d14UCMY4A3DFofie8UUyyAwNg+3BbMsV3MGStJIynLmpUsAdtcm+QwcNjJrRjLP7GB+S1jj2P/7XvYED1fuKYp45/VBAUDkn3dy8OdrlR8K3HPzIde9e6lvezca8s7nWiCmfklL5OdKHwQ+Yo9s=
+	t=1712716486; cv=none; b=FMHkuNbfW67Jkg6Fcn+dL2LYR/Y94jDuN9lUzSMFVTrGdyB/hOuUKQmEVdky/hGQJFF/x6FdK4K/oMrvZxUab+gfJufYS2l2hmUYPstPwK7JyIRa4lDwKRf/yqQ4DYQUVmqPtAd+zBbUDg2UIWe/hsniELtjoazq4CX5/nryTGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712716326; c=relaxed/simple;
-	bh=GQIcsAEx/daRpeuwEh/AM6G+AM+13bbAyN6SGBk7DyY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=MA8P0fuwvl7jcMXRzzzgN/M6UMu+m/jc8URS/PDyXjd9saq2HoAGLvb/sD9vvHfY7u5IWfGvhyak8atLd/xM7XDqTF8YbgEvg/wVgymrhxhOAY17VMi17+pXgkTaNjSbKZTopTBWT8r/Mczd5isa6AiFrhGzw+4OmLEl7o+qD2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36849578ac4so59903125ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 19:32:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712716324; x=1713321124;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EFGWvLt9g+hWMy01EyX9UgHO431lxOqyljfqGnYCtRg=;
-        b=EAtY/+gOlnFaC1UgxwJ+ihpJgGnEYPjDffd/j4dmAaSbUX9BAtbGIwuXYzPSTVSAHe
-         pqVKXKAEdveUVQgmlUWiJLk4nILii7mLaTv1CllfYnUhwvHo9HsD2wUjGrgt7WWyxr4k
-         D769bdXmk1SiNQTpaJnExeMkan/FYXzphayKzD/+Z/efQ/OSdSbKOzOQht1YlvuL3MO2
-         ddTI4eunSvBQdnRuNbNs7Ez7h354vaHcXNoIZODQHnCTWqizsCBE1EFQiQmp2yu8cc15
-         qMT8b+puX2x04MlgoRp6T6avcy3rj0yO3BCVGvsAOZJJwrn8/TqAmwayKvIe3RupwFy/
-         uvfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW7k6AnwYgSF8TYpUAKWfINd7+k2F/Hhypj1svJWQMf+dL4p6CHoEwhKzdZyWSoUUA2+u5OX8WfM2ebXhnQb+ag1RtsaFejFL/IH09/
-X-Gm-Message-State: AOJu0YxiPGBY+jD1PJJBJLRw0DDRMwJijh2PMK9BAGToL+RvdM623HlD
-	DhNy/RPNKccFFdVzb7OsKApTzwaWPAsNvHphXqmZ/jeEgDsfqbkUanN4mUmAgdxQoCk8OlFlYvD
-	xmyGnvx9uhIxsJfXzGtrSEH2jnMRiCpyILPrQahORJi+z4ak5XkiZiuU=
-X-Google-Smtp-Source: AGHT+IERHtnS87pg7WJglv4qdjNiW9YJKFawC8tyAxtiQBBk0VDOd+DOJZM8X496v+n/1+Krn+d5jbIMkmAWXbehXYRK3X+GqaoZ
+	s=arc-20240116; t=1712716486; c=relaxed/simple;
+	bh=R6VBlim+71tEDZXZtiIuonlIPFwYuazstmsGh4YD41w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=C80wCVeYncZlEiZS+UXpuGeV/eAcgmkCJu8gzg7ryBZPrpUAeFy1U3qd7ANxbpm1+GgwNe0t63qXr62Z6yP8QdFsgsLOsllBOMbfVLKvReL4ha3SpjRQ8G1mzQTs84Z5z6ilOtQ+DOR7m+7DUU4VcG1YNVYDWfjSAk6kNVsPbh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W0JRq96X; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712716485; x=1744252485;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=R6VBlim+71tEDZXZtiIuonlIPFwYuazstmsGh4YD41w=;
+  b=W0JRq96XkAGWdt50j/56l20BGkMg7/74S81Cn0XZuuOEyn9CAEOnRq7s
+   q5BsqwsKE14J03bp9nZ0AP752jmQSS8J//kri747vYS3R4xlHS4XEMr0H
+   vYO5t7yZbH6CUfwa+V1btSOTv8TcrjJRVTh+ukPYHIunY4LPxuiso+Q8Z
+   X1uyH3d9S8FkcSv14vBkbsLboqqV4pR+DQZ2/4lnoG82f5IOkJgWxA0dW
+   B4GEulE/j3juLv5hh0MU0+Aaeakyx1Glukk+s7tkCVnyXWwwHVdVJdC+Z
+   iOhvATXVXspHADx3kDpHwFHlq89pkRGJEXm3FsCOd83dlpjTjVdk1FFba
+   A==;
+X-CSE-ConnectionGUID: Ng21Uu6NTBOhnIxCJ9c0gQ==
+X-CSE-MsgGUID: IcSk7HhrQoGdxDGXujZRvg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11900164"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="11900164"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:34:44 -0700
+X-CSE-ConnectionGUID: fwEU+C8lRgCtj1ll65RtFQ==
+X-CSE-MsgGUID: ROv5VnFdRka2SXDHB7Do5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="43658571"
+Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:34:43 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: linux-sound@vger.kernel.org,
+	vkoul@kernel.org,
+	broonie@kernel.org,
+	tiwai@suse.de
+Cc: vinod.koul@linaro.org,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com
+Subject: [PATCH 0/4] ASoC/soundwire: fix race conditions on remove
+Date: Wed, 10 Apr 2024 02:34:34 +0000
+Message-Id: <20240410023438.487017-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fe9:b0:368:c9e2:b372 with SMTP id
- dt9-20020a056e021fe900b00368c9e2b372mr106541ilb.0.1712716324155; Tue, 09 Apr
- 2024 19:32:04 -0700 (PDT)
-Date: Tue, 09 Apr 2024 19:32:04 -0700
-In-Reply-To: <tencent_66764A0C74FD776567343C4D36D6971A3609@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001a48d90615b4d8a9@google.com>
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in strnchr
-From: syzbot <syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+There is a possible rate condition when removing the soundwire driver.
+When the manager becomes pm_runtime active in the remove procedure,
+peripherals will become attached, and do the initialization process.
+We have to wait until all the devices are fully resumed before the
+cleanup, otherwise there is a possible race condition where asynchronous
+workqueues initiate transfers on the bus that cannot complete. This
+patchset fixes the issue by ensuring all devices are fully resumed and
+SoundWire interrupt is disabled after all jobs are done.
+The change is mainly on SoundWire. It would be better to go through
+SoundWire tree.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Bard Liao (3):
+  soundwire: intel_auxdevice: use pm_runtime_resume() instead of
+    pm_request_resume()
+  soundwire: intel: export intel_resume_child_device
+  soundwire: intel_init: resume all devices on exit.
 
-Reported-and-tested-by: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
+Pierre-Louis Bossart (1):
+  ASoC: SOF: Intel: hda: disable SoundWire interrupt later
 
-Tested on:
+ drivers/soundwire/intel_auxdevice.c | 10 +++++-----
+ drivers/soundwire/intel_auxdevice.h |  1 +
+ drivers/soundwire/intel_init.c      | 14 ++++++++++++++
+ sound/soc/sof/intel/hda.c           |  4 ++--
+ 4 files changed, 22 insertions(+), 7 deletions(-)
 
-commit:         04b8076d Merge tag 'firewire-fixes-6.8-rc7' of git://g..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1499545d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b8be5e35747291236c8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13b200cb180000
+-- 
+2.34.1
 
-Note: testing is done by a robot and is best-effort only.
 
