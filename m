@@ -1,102 +1,531 @@
-Return-Path: <linux-kernel+bounces-139302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF338A0126
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:18:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F16C8A012E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:21:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CFAD1C24173
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:18:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B290A1C2284F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1577181B88;
-	Wed, 10 Apr 2024 20:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E8E18133A;
+	Wed, 10 Apr 2024 20:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="H/RMv6Th"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aKaqfThl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0163B17B4FA
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D751E877;
+	Wed, 10 Apr 2024 20:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712780302; cv=none; b=ssZZkv4nBwRuvIOK0C9RcgiAoRiBruYWVyFTkRRtQhDyf4608kc1nmvGuKTqlD9X8YWzbMrtO0wWjCbP42nCDTjczA+QsaySizF82kVGL5OSx/1U/ROk+sDfK8fX6LYlSTFANeYvVV9wduy2MZ1k9tCI3OBmlJjdaArvQubwfKA=
+	t=1712780464; cv=none; b=JF6F6gnS8YvNeswz7zbEo3vXSvDONiA1PfrZyWZvIZRy8j27Qvr0bnPOrHoZr+65tVkYzhxjvDqCm9eZf083SK30y0YklwaT28wkW+DEXDO3Aj38wAmz9F6LLyXTAGeJIa7Nk117oWEJOS9FGoz5NXjkZF9aZDt8CtvZAHkbkxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712780302; c=relaxed/simple;
-	bh=0QmAEO9gx6lEuCEFA6L/n80e1g8oAxeOfd6kHXLpqyA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tiP4TGrK9WMQMpJ/4/ffIfmO8B584e7qIYxVZeGBYDGg5zCoD8lIjtJc3RyVUfVEH6pMdW9C3vDBvPcoweN7qn4awkno1jwAisb9B6fmUoD3xjBStJg23m5boJAlspOWCSUfVGYOd7D1YZFxqwKUISTmDkk1KHhoF7vK1TFQo8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=H/RMv6Th; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso42404991fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712780298; x=1713385098; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrCW3DHTcZwfmublVXY2qPJR7NVLmg9fl0riAP8CR10=;
-        b=H/RMv6Th/2sbroktS5xFRhDp4fYlAplzCRpQq1FkN3UkdLh0eUElCDulc7kXo0EuWv
-         NrOX8wfmbCcNEMTil71D3joPJhux+Loxe96j1dPmjjWPYqhaX1cNz+8Qjs4yYW5le4Ld
-         a+EPlfuRowOh7dSV+zVfCd7mWJxKY/ZQ4NTQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712780298; x=1713385098;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NrCW3DHTcZwfmublVXY2qPJR7NVLmg9fl0riAP8CR10=;
-        b=iiKK6GGFaFzQ2s7qKb4EQzrBp9QNfR6Bh7NQqU7GM7Je6glNIVcls5Sa29/gADRLiZ
-         p9IxmFdyIMyTB529o5B4Mci6CJd2gdHDUDciTfKK9/h2HH5TZRuqymjB3LYaODEW4TMV
-         wzicyqXFKf9Ub3cCBfWp/m9+WMjImpu3tqD8eO9rmPIgpJPhg7tn8Nzz0a1M2IhkhI6i
-         YE1wDoe/Xnveupp4JNeUfQGIS0CIb6qKI8vgoCmoggQ4UqBwLh0VcLunA9tojfAK7Qth
-         g0MK8FbfkAnWVaM0cuVV/NxNIoz2o41nt4gUMdgIpWKIyBx91BfTpGoZqhkwgJqztjzh
-         MDaw==
-X-Forwarded-Encrypted: i=1; AJvYcCXG3z0ZsEFBhNyYqWKFCBMgXoWFta9E+NSFLnr6Vip85AX4VVPAW18pZsV57Ya5bRvgLugSArNUXK1N73e8kqxQEjqyyuVslbmIdjX8
-X-Gm-Message-State: AOJu0Yw49/BoB23Ak6Ld2DXDZ9OLHKStX0FMwI9tOIHyf6Te+i7cwkcs
-	h+eIFInEueC/uWS/CdfgrJBX4aeJKHSsZldIkRkbmafsCt9Fz1dub/jd2iEMs0OB8J2A3OTwLeo
-	MtdXfFw==
-X-Google-Smtp-Source: AGHT+IHBeuzU2PNQqhW0GOwh3QaMGnE4JN5A8zeKN/3HgGFGUlNWqDtiV1d0RGxTrlCbOFBnb9Inyg==
-X-Received: by 2002:a2e:7304:0:b0:2d8:68ad:1e87 with SMTP id o4-20020a2e7304000000b002d868ad1e87mr2640336ljc.18.1712780297861;
-        Wed, 10 Apr 2024 13:18:17 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e8100b005682a0e915fsm6767667eda.76.2024.04.10.13.18.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 13:18:17 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51beae2f13so531215166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:18:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVw/QciN6mOj2bUzZU+IApieJDZ8oX6YhbbyVNaqgUKu4Xp66DvPIcVTG4McXvBOdUwkcI6OOGbPkXZAA9H6ysPGoYzzvaZWuLuQ/ew
-X-Received: by 2002:a17:907:b9d3:b0:a4d:f5d4:fb02 with SMTP id
- xa19-20020a170907b9d300b00a4df5d4fb02mr2295400ejc.51.1712780296715; Wed, 10
- Apr 2024 13:18:16 -0700 (PDT)
+	s=arc-20240116; t=1712780464; c=relaxed/simple;
+	bh=nwj/ym2BMb/ls5M/c2QwWdyrTcQXD+wxxpng485Us40=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TPf1JfwopvUBJnvtjLuZvHmTh/Ul5AZEYbOqmqt58Ja43jOzP2sF8sEGyjJUOlHoxF/uwIRvrrgZ7rQWh84BAk2fXMqL1yvXp2yV28NISQJh1uNHBmP/Wvo/l989Rj1qgUYXxa0Dfmo1S0Zy1837zsPhUHy2G9q2md5nMbzphBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aKaqfThl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53EE1C433C7;
+	Wed, 10 Apr 2024 20:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712780464;
+	bh=nwj/ym2BMb/ls5M/c2QwWdyrTcQXD+wxxpng485Us40=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aKaqfThlAWGOcFBS000v8BhmfUly6R4SDLGf6MW/M1NmemrRf9zQTHpnR4J7h8Hsp
+	 kiHWAX8zLatMUdpdSJAqYlRx1xQILXxrII3TwABagq/JXrHg63Wxu1JtGJ2bY0jP2g
+	 COjvxSrzeObglnOanP7R3W+QrSwT+brPQje9CrS1MVRCCSxBaM29Lzt5fs4914R9e1
+	 FPwM7QWzOSsOilzATyA7F+QIzQLmC1KDIJrSTrD20fWgLS1gHGcyVRe2ENwLjr3wp6
+	 vO6MNOsGb7grHLxPy3B7Czb3ktQXwrhVURR48LK3867RFb7oiDUTN04WAF0vD4bn51
+	 Y6P+KBOTcppgA==
+Date: Wed, 10 Apr 2024 17:21:01 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 3/6] perf annotate-data: Add
+ hist_entry__annotate_data_tui()
+Message-ID: <Zhb0raj1yW8JhuFW@x1>
+References: <20240409235000.1893969-1-namhyung@kernel.org>
+ <20240409235000.1893969-4-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJvTdKmK_U7nChpm=MzaDyw3T9V6hSua-6C89WCjo828vxm+yw@mail.gmail.com>
-In-Reply-To: <CAJvTdKmK_U7nChpm=MzaDyw3T9V6hSua-6C89WCjo828vxm+yw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 10 Apr 2024 13:18:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgaTzpJssX2z7OiQOLL0BZzHGAfJn0MYPhuN9oU0R2f-Q@mail.gmail.com>
-Message-ID: <CAHk-=wgaTzpJssX2z7OiQOLL0BZzHGAfJn0MYPhuN9oU0R2f-Q@mail.gmail.com>
-Subject: Re: [GIT PULL] turbostat 2024.04.10
-To: Len Brown <lenb@kernel.org>
-Cc: Linux PM list <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409235000.1893969-4-namhyung@kernel.org>
 
-On Wed, 10 Apr 2024 at 06:24, Len Brown <lenb@kernel.org> wrote:
->
-> Turbostat version 2024.04.10
+On Tue, Apr 09, 2024 at 04:49:57PM -0700, Namhyung Kim wrote:
+> Support data type profiling output on TUI.
 
-Tssk. Things like this should still come in during the merge window
-and preferably be in linux-next.
+Added the follow to the commit log message, to make reviewing easier.
 
-I have pulled this, since it's obviously just tooling (and the
-maintainer file pattern update), but stil...
+As followup patches I think having the DSO name together with the type
+is important, also I think we could have a first menu with all the pairs
+of DSO/type, sorted top down by the types with most samples, wdyt?
 
-                Linus
+Applied.
+
+- Arnaldo
+
+Committer testing:
+
+First make sure that the debug information for your workload binaries
+in embedded in them by building it with '-g' or install the debuginfo
+packages, since our workload is 'find':
+
+  root@number:~# type find
+  find is hashed (/usr/bin/find)
+  root@number:~# rpm -qf /usr/bin/find
+  findutils-4.9.0-5.fc39.x86_64
+  root@number:~# dnf debuginfo-install findutils
+  <SNIP>
+  root@number:~#
+
+Then collect some data:
+
+  root@number:~# echo 1 > /proc/sys/vm/drop_caches
+  root@number:~# perf mem record find / > /dev/null
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.331 MB perf.data (3982 samples) ]
+  root@number:~#
+
+Finally do data-type annotation with the following command, that will
+default, as 'perf report' to the --tui mode, with lines colored to
+highlight the hotspots, etc.
+
+  root@number:~# perf annotate --data-type
+  Annotate type: 'struct predicate' (58 samples)
+      Percent     Offset       Size  Field annotate --data-type
+       100.00          0        312  struct predicate {
+         0.00          0          8      PRED_FUNC        pred_func;
+         0.00          8          8      char*    p_name;
+         0.00         16          4      enum predicate_type      p_type;
+         0.00         20          4      enum predicate_precedence        p_prec;
+         0.00         24          1      _Bool    side_effects;
+         0.00         25          1      _Bool    no_default_print;
+         0.00         26          1      _Bool    need_stat;
+         0.00         27          1      _Bool    need_type;
+         0.00         28          1      _Bool    need_inum;
+         0.00         32          4      enum EvaluationCost      p_cost;
+         0.00         36          4      float    est_success_rate;
+         0.00         40          1      _Bool    literal_control_chars;
+         0.00         41          1      _Bool    artificial;
+         0.00         48          8      char*    arg_text;
+  <SNIP>
+
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/builtin-annotate.c          |  30 ++-
+>  tools/perf/ui/browsers/Build           |   1 +
+>  tools/perf/ui/browsers/annotate-data.c | 282 +++++++++++++++++++++++++
+>  tools/perf/util/annotate-data.c        |   5 +-
+>  tools/perf/util/annotate-data.h        |   5 +-
+>  5 files changed, 317 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/perf/ui/browsers/annotate-data.c
+> 
+> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+> index 0812664faa54..6f7104f06c42 100644
+> --- a/tools/perf/builtin-annotate.c
+> +++ b/tools/perf/builtin-annotate.c
+> @@ -469,8 +469,32 @@ static void hists__find_annotations(struct hists *hists,
+>  					goto find_next;
+>  			}
+>  
+> -			hist_entry__annotate_data_tty(he, evsel);
+> -			goto find_next;
+> +			if (use_browser == 1)
+> +				key = hist_entry__annotate_data_tui(he, evsel, NULL);
+> +			else
+> +				key = hist_entry__annotate_data_tty(he, evsel);
+> +
+> +			switch (key) {
+> +			case -1:
+> +				if (!ann->skip_missing)
+> +					return;
+> +				/* fall through */
+> +			case K_RIGHT:
+> +			case '>':
+> +				next = rb_next(nd);
+> +				break;
+> +			case K_LEFT:
+> +			case '<':
+> +				next = rb_prev(nd);
+> +				break;
+> +			default:
+> +				return;
+> +			}
+> +
+> +			if (next != NULL)
+> +				nd = next;
+> +
+> +			continue;
+>  		}
+>  
+>  		if (use_browser == 2) {
+> @@ -873,9 +897,7 @@ int cmd_annotate(int argc, const char **argv)
+>  		use_browser = 2;
+>  #endif
+>  
+> -	/* FIXME: only support stdio for now */
+>  	if (annotate.data_type) {
+> -		use_browser = 0;
+>  		annotate_opts.annotate_src = false;
+>  		symbol_conf.annotate_data_member = true;
+>  		symbol_conf.annotate_data_sample = true;
+> diff --git a/tools/perf/ui/browsers/Build b/tools/perf/ui/browsers/Build
+> index 7a1d5ddaf688..2608b5da3167 100644
+> --- a/tools/perf/ui/browsers/Build
+> +++ b/tools/perf/ui/browsers/Build
+> @@ -1,4 +1,5 @@
+>  perf-y += annotate.o
+> +perf-y += annotate-data.o
+>  perf-y += hists.o
+>  perf-y += map.o
+>  perf-y += scripts.o
+> diff --git a/tools/perf/ui/browsers/annotate-data.c b/tools/perf/ui/browsers/annotate-data.c
+> new file mode 100644
+> index 000000000000..fefacaaf16db
+> --- /dev/null
+> +++ b/tools/perf/ui/browsers/annotate-data.c
+> @@ -0,0 +1,282 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <inttypes.h>
+> +#include <string.h>
+> +#include <sys/ttydefaults.h>
+> +
+> +#include "ui/browser.h"
+> +#include "ui/helpline.h"
+> +#include "ui/keysyms.h"
+> +#include "ui/ui.h"
+> +#include "util/annotate.h"
+> +#include "util/annotate-data.h"
+> +#include "util/evsel.h"
+> +#include "util/sort.h"
+> +
+> +struct annotated_data_browser {
+> +	struct ui_browser b;
+> +	struct list_head entries;
+> +};
+> +
+> +struct browser_entry {
+> +	struct list_head node;
+> +	struct annotated_member *data;
+> +	struct type_hist_entry hists;
+> +	int indent;
+> +};
+> +
+> +static void update_hist_entry(struct type_hist_entry *dst,
+> +			      struct type_hist_entry *src)
+> +{
+> +	dst->nr_samples += src->nr_samples;
+> +	dst->period += src->period;
+> +}
+> +
+> +static int get_member_overhead(struct annotated_data_type *adt,
+> +			       struct browser_entry *entry,
+> +			       struct evsel *evsel)
+> +{
+> +	struct annotated_member *member = entry->data;
+> +	int i;
+> +
+> +	for (i = 0; i < member->size; i++) {
+> +		struct type_hist *h;
+> +		int offset = member->offset + i;
+> +
+> +		h = adt->histograms[evsel->core.idx];
+> +		update_hist_entry(&entry->hists, &h->addr[offset]);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int add_child_entries(struct annotated_data_browser *browser,
+> +			     struct annotated_data_type *adt,
+> +			     struct annotated_member *member,
+> +			     struct evsel *evsel, int indent)
+> +{
+> +	struct annotated_member *pos;
+> +	struct browser_entry *entry;
+> +	int nr_entries = 0;
+> +
+> +	entry = zalloc(sizeof(*entry));
+> +	if (entry == NULL)
+> +		return -1;
+> +
+> +	entry->data = member;
+> +	entry->indent = indent;
+> +	if (get_member_overhead(adt, entry, evsel) < 0) {
+> +		free(entry);
+> +		return -1;
+> +	}
+> +
+> +	list_add_tail(&entry->node, &browser->entries);
+> +	nr_entries++;
+> +
+> +	list_for_each_entry(pos, &member->children, node) {
+> +		int nr = add_child_entries(browser, adt, pos, evsel, indent + 1);
+> +
+> +		if (nr < 0)
+> +			return nr;
+> +
+> +		nr_entries += nr;
+> +	}
+> +
+> +	/* add an entry for the closing bracket ("}") */
+> +	if (!list_empty(&member->children)) {
+> +		entry = zalloc(sizeof(*entry));
+> +		if (entry == NULL)
+> +			return -1;
+> +
+> +		entry->indent = indent;
+> +		list_add_tail(&entry->node, &browser->entries);
+> +		nr_entries++;
+> +	}
+> +
+> +	return nr_entries;
+> +}
+> +
+> +static int annotated_data_browser__collect_entries(struct annotated_data_browser *browser)
+> +{
+> +	struct hist_entry *he = browser->b.priv;
+> +	struct annotated_data_type *adt = he->mem_type;
+> +	struct evsel *evsel = hists_to_evsel(he->hists);
+> +
+> +	INIT_LIST_HEAD(&browser->entries);
+> +	browser->b.entries = &browser->entries;
+> +	browser->b.nr_entries = add_child_entries(browser, adt, &adt->self,
+> +						  evsel, /*indent=*/0);
+> +	return 0;
+> +}
+> +
+> +static void annotated_data_browser__delete_entries(struct annotated_data_browser *browser)
+> +{
+> +	struct browser_entry *pos, *tmp;
+> +
+> +	list_for_each_entry_safe(pos, tmp, &browser->entries, node) {
+> +		list_del_init(&pos->node);
+> +		free(pos);
+> +	}
+> +}
+> +
+> +static unsigned int browser__refresh(struct ui_browser *uib)
+> +{
+> +	return ui_browser__list_head_refresh(uib);
+> +}
+> +
+> +static int browser__show(struct ui_browser *uib)
+> +{
+> +	struct hist_entry *he = uib->priv;
+> +	struct annotated_data_type *adt = he->mem_type;
+> +	const char *help = "Press 'h' for help on key bindings";
+> +	char title[256];
+> +
+> +	snprintf(title, sizeof(title), "Annotate type: '%s' (%d samples)",
+> +		 adt->self.type_name, he->stat.nr_events);
+> +
+> +	if (ui_browser__show(uib, title, help) < 0)
+> +		return -1;
+> +
+> +	/* second line header */
+> +	ui_browser__gotorc_title(uib, 0, 0);
+> +	ui_browser__set_color(uib, HE_COLORSET_ROOT);
+> +
+> +	if (symbol_conf.show_total_period)
+> +		strcpy(title, "Period");
+> +	else if (symbol_conf.show_nr_samples)
+> +		strcpy(title, "Samples");
+> +	else
+> +		strcpy(title, "Percent");
+> +
+> +	ui_browser__printf(uib, " %10s %10s %10s  %s",
+> +			   title, "Offset", "Size", "Field");
+> +	ui_browser__write_nstring(uib, "", uib->width);
+> +	return 0;
+> +}
+> +
+> +static void browser__write_overhead(struct ui_browser *uib,
+> +				    struct type_hist *total,
+> +				    struct type_hist_entry *hist, int row)
+> +{
+> +	u64 period = hist->period;
+> +	double percent = total->period ? (100.0 * period / total->period) : 0;
+> +	bool current = ui_browser__is_current_entry(uib, row);
+> +	int nr_samples = 0;
+> +
+> +	ui_browser__set_percent_color(uib, percent, current);
+> +
+> +	if (symbol_conf.show_total_period)
+> +		ui_browser__printf(uib, " %10" PRIu64, period);
+> +	else if (symbol_conf.show_nr_samples)
+> +		ui_browser__printf(uib, " %10d", nr_samples);
+> +	else
+> +		ui_browser__printf(uib, " %10.2f", percent);
+> +
+> +	ui_browser__set_percent_color(uib, 0, current);
+> +}
+> +
+> +static void browser__write(struct ui_browser *uib, void *entry, int row)
+> +{
+> +	struct browser_entry *be = entry;
+> +	struct annotated_member *member = be->data;
+> +	struct hist_entry *he = uib->priv;
+> +	struct annotated_data_type *adt = he->mem_type;
+> +	struct evsel *evsel = hists_to_evsel(he->hists);
+> +
+> +	if (member == NULL) {
+> +		bool current = ui_browser__is_current_entry(uib, row);
+> +
+> +		/* print the closing bracket */
+> +		ui_browser__set_percent_color(uib, 0, current);
+> +		ui_browser__write_nstring(uib, "", 11);
+> +		ui_browser__printf(uib, " %10s %10s  %*s};",
+> +				   "", "", be->indent * 4, "");
+> +		ui_browser__write_nstring(uib, "", uib->width);
+> +		return;
+> +	}
+> +
+> +	/* print the number */
+> +	browser__write_overhead(uib, adt->histograms[evsel->core.idx],
+> +				&be->hists, row);
+> +
+> +	/* print type info */
+> +	if (be->indent == 0 && !member->var_name) {
+> +		ui_browser__printf(uib, " %10d %10d  %s%s",
+> +				   member->offset, member->size,
+> +				   member->type_name,
+> +				   list_empty(&member->children) ? ";" : " {");
+> +	} else {
+> +		ui_browser__printf(uib, " %10d %10d  %*s%s\t%s%s",
+> +				   member->offset, member->size,
+> +				   be->indent * 4, "", member->type_name,
+> +				   member->var_name ?: "",
+> +				   list_empty(&member->children) ? ";" : " {");
+> +	}
+> +	/* fill the rest */
+> +	ui_browser__write_nstring(uib, "", uib->width);
+> +}
+> +
+> +static int annotated_data_browser__run(struct annotated_data_browser *browser,
+> +				       struct evsel *evsel __maybe_unused,
+> +				       struct hist_browser_timer *hbt)
+> +{
+> +	int delay_secs = hbt ? hbt->refresh : 0;
+> +	int key;
+> +
+> +	if (browser__show(&browser->b) < 0)
+> +		return -1;
+> +
+> +	while (1) {
+> +		key = ui_browser__run(&browser->b, delay_secs);
+> +
+> +		switch (key) {
+> +		case K_TIMER:
+> +			if (hbt)
+> +				hbt->timer(hbt->arg);
+> +			continue;
+> +		case K_F1:
+> +		case 'h':
+> +			ui_browser__help_window(&browser->b,
+> +		"UP/DOWN/PGUP\n"
+> +		"PGDN/SPACE    Navigate\n"
+> +		"</>           Move to prev/next symbol\n"
+> +		"q/ESC/CTRL+C  Exit\n\n");
+> +			continue;
+> +		case K_LEFT:
+> +		case '<':
+> +		case '>':
+> +		case K_ESC:
+> +		case 'q':
+> +		case CTRL('c'):
+> +			goto out;
+> +		default:
+> +			continue;
+> +		}
+> +	}
+> +out:
+> +	ui_browser__hide(&browser->b);
+> +	return key;
+> +}
+> +
+> +int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
+> +				  struct hist_browser_timer *hbt)
+> +{
+> +	struct annotated_data_browser browser = {
+> +		.b = {
+> +			.refresh = browser__refresh,
+> +			.seek	 = ui_browser__list_head_seek,
+> +			.write	 = browser__write,
+> +			.priv	 = he,
+> +			.extra_title_lines = 1,
+> +		},
+> +	};
+> +	int ret;
+> +
+> +	ui_helpline__push("Press ESC to exit");
+> +
+> +	ret = annotated_data_browser__collect_entries(&browser);
+> +	if (ret == 0)
+> +		ret = annotated_data_browser__run(&browser, evsel, hbt);
+> +
+> +	annotated_data_browser__delete_entries(&browser);
+> +
+> +	return ret;
+> +}
+> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+> index 99c5dcdfc9df..1cd857400038 100644
+> --- a/tools/perf/util/annotate-data.c
+> +++ b/tools/perf/util/annotate-data.c
+> @@ -1814,9 +1814,12 @@ static void print_annotated_data_type(struct annotated_data_type *mem_type,
+>  	printf(";\n");
+>  }
+>  
+> -void hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel)
+> +int hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel)
+>  {
+>  	print_annotated_data_header(he, evsel);
+>  	print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
+>  	printf("\n");
+> +
+> +	/* move to the next entry */
+> +	return '>';
+>  }
+> diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+> index 037e2622b7a3..9a6d9b519724 100644
+> --- a/tools/perf/util/annotate-data.h
+> +++ b/tools/perf/util/annotate-data.h
+> @@ -11,6 +11,7 @@ struct annotated_op_loc;
+>  struct debuginfo;
+>  struct evsel;
+>  struct hist_entry;
+> +struct hist_browser_timer;
+>  struct map_symbol;
+>  struct thread;
+>  
+> @@ -141,7 +142,9 @@ struct annotated_data_stat {
+>  };
+>  extern struct annotated_data_stat ann_data_stat;
+>  
+> -void hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel);
+> +int hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel);
+> +int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
+> +				  struct hist_browser_timer *hbt);
+>  
+>  #ifdef HAVE_DWARF_SUPPORT
+>  
+> -- 
+> 2.44.0.478.gd926399ef9-goog
+> 
 
