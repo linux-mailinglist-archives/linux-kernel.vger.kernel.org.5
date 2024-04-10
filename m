@@ -1,62 +1,58 @@
-Return-Path: <linux-kernel+bounces-138392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CF889F0A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:25:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3809489F0A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:26:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E91E1F22AFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:25:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10B70B2204C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124CA15B126;
-	Wed, 10 Apr 2024 11:25:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E4915B159;
+	Wed, 10 Apr 2024 11:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="QphoD0Ic"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="a6oVtxBh"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DEE81598EE
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D0C15ADBD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712748313; cv=none; b=jBpmxnAauGwwhcMVEOuEFrEASpivJVEgVBr+y0B7PDbfJekp0oHNm1NmWQSqjr7wq8hF2oN8qoNOOXSXwUhvd30o/Bn+5PjYW3mrYYh+33jd4di9bpk6Glq4IvevVuI0QvwxcgyHKcMdwVZIQjUCOvEq1ObudOW5c91sUjD8qlw=
+	t=1712748314; cv=none; b=H6TmAn0hlQ3tJKOFUj2AOK8LsXYns/sXFOLYOar0FWJCBrI8WgrAfEPqbWwuREoLoSUnDi4nojJipt25QR56gBxL05N1oZKM4Mz2TdpPFWbarWbSLc5hDZZRmCm3FO0qZOO3+yeofsUyVPxfmMe22rOi9If/kVOyZwOBmS2rgjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712748313; c=relaxed/simple;
-	bh=dVv3yCapRGHqaKbd/raKqVqecjajjR0ihwDqpWezJvg=;
+	s=arc-20240116; t=1712748314; c=relaxed/simple;
+	bh=EEUfTeoa9Foy7qAXuzOsrCEqiYrisx6cg3y/4vq3/C8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eUeLiDugAOjYkZh2KVdk1qTnJkoKsafOzto0f0y7sXvIXIfQ5s1XaIB0gz43STGufiBbEpfuTG+n/6KlcvnePv5qe3V64lmZ9TfigCof4/2TweaWlUMHeogM8fT/b9zDiOfND/RYSiLhKM/FWz5d80VUlUH8UfTK+E0nuRyEC6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=QphoD0Ic; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=IBioNdEYNJJH5/me3e7pkzgiDZh8IpXVU+CX4FVx3yWSt7cmaslwiQWl9BfDi5Cef5jTK9P0C4qt2J8p03C9or6czg8NQYG9AEfClUIkOCpI5VPi4n0xyW5RGhl7XLY0SovAyRtLuIh/TKljbmeegQ0NzPmLpTOBKEfZTn3zS3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=a6oVtxBh; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=4EUSyGzomATeNIcG8P0cZgKgvqo4WHF+lzVzVLKSadU=; b=QphoD0
-	IcmvSEdfsDJaszWGUfYISArnr7pFEh3iVuEliuWPXsaTgp99s+8UAb1PeiQ2J4Gu
-	YVzkQFx3QKuRWskt4wncxwHVmjHKjJzyR7pgQVM3JZumJ3aMUasyuyrdbjPI09MX
-	orqntkK7cBII9SSeznWLuksgjiYzPM25iII9cciqsLVPmcQPgblgN2v6WFy+xDAR
-	GYaOcP6HHNAsj3qUD8mkxKXUqEpyl8BtH28WnzKa1Tn7BnuTR3JmA+ZZr0FdXKwq
-	nFtZzB+Yb9qVvDlZJkJ2v7nmQEJW9ryYrinepeH7aZSYWbDr2HyBE0CLJiGG1swO
-	lMVX3FG5Sbd7o0jw==
-Received: (qmail 521447 invoked from network); 10 Apr 2024 13:25:01 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 10 Apr 2024 13:25:01 +0200
-X-UD-Smtp-Session: l3s3148p1@AQUNSrwVyC5tKPEL
+	 s=k1; bh=hD8uz8cN1ScOd8WPchdst4mxCACdD20Wmh45ImGI/X8=; b=a6oVtx
+	Bh1gvv6bITBD1Cz3DUhfELjmFMxhEhR+AHoeksfm5KrUSRVeoTQikoU/us2SJR36
+	rqhzW6yJBUHl7MfBms5eST+3Y5CC5UJ1MuHezo3gp8VXpRwwjOOg/8rhgsMCskuF
+	4kgy7RaL4OCO2tK/P8srJT2kFViURleSD/lh+JjCUqSVLQCTDpHLB0ve+pzwFifE
+	Pyz8EWOzPRxhwJj0gt3aNTVOi+tPxvtNMLR9t/vS/RZmprV/kWIG/G7cE4I5fTp5
+	gzwrWLO2uV0sO78yYo2yAFoG6TXLqyFhb2BMuq7eorRE5aoF/PYcKhXZzZXokYVg
+	61UO01t9i8Cf5lpQ==
+Received: (qmail 521473 invoked from network); 10 Apr 2024 13:25:02 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 10 Apr 2024 13:25:02 +0200
+X-UD-Smtp-Session: l3s3148p1@iO4iSrwVDyBtKPEL
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Michal Simek <michal.simek@amd.com>,
 	Andi Shyti <andi.shyti@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	linux-rpi-kernel@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 03/18] i2c: bcm2835: remove printout on handled timeouts
-Date: Wed, 10 Apr 2024 13:24:17 +0200
-Message-ID: <20240410112418.6400-23-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 04/18] i2c: cadence: remove printout on handled timeouts
+Date: Wed, 10 Apr 2024 13:24:18 +0200
+Message-ID: <20240410112418.6400-24-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
 References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
@@ -75,18 +71,19 @@ should just pass this information upwards. Remove the printout.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-bcm2835.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/i2c/busses/i2c-cadence.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bcm2835.c
-index b92de1944221..3045ba82380d 100644
---- a/drivers/i2c/busses/i2c-bcm2835.c
-+++ b/drivers/i2c/busses/i2c-bcm2835.c
-@@ -370,7 +370,6 @@ static int bcm2835_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
- 	if (!time_left) {
- 		bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_C,
- 				   BCM2835_I2C_C_CLEAR);
--		dev_err(i2c_dev->dev, "i2c transfer timed out\n");
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 4bb7d6756947..1b0006e3b95c 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -789,8 +789,6 @@ static int cdns_i2c_process_msg(struct cdns_i2c *id, struct i2c_msg *msg,
+ 	time_left = wait_for_completion_timeout(&id->xfer_done, msg_timeout);
+ 	if (time_left == 0) {
+ 		cdns_i2c_master_reset(adap);
+-		dev_err(id->adap.dev.parent,
+-				"timeout waiting on completion\n");
  		return -ETIMEDOUT;
  	}
  
