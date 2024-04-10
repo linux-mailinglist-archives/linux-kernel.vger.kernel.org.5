@@ -1,116 +1,135 @@
-Return-Path: <linux-kernel+bounces-138163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B80989ED82
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:24:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5295689ED90
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:28:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC02B1C20B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:24:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE8A9B22094
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB17B13D605;
-	Wed, 10 Apr 2024 08:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2315D13D63B;
+	Wed, 10 Apr 2024 08:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uylqAdnI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UQcxQHxv"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0537E13CFA1;
-	Wed, 10 Apr 2024 08:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E1E5CB5;
+	Wed, 10 Apr 2024 08:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712737481; cv=none; b=eRju3rEnOmO7Ai2tEWlAJzK9QzNdWQ+W3os60/lANWsHkZmwd41LKVQhjymma1e0RJnGZFPCLoMR81jqLplsLGE4daim0U8WUy8gY8DEB4huWM/Kwg6Sjp3YLMBXqaqIyfEga2XPA1TgmM7W0FP66fHDLG1k/Za0+oRSI1vb1h4=
+	t=1712737683; cv=none; b=qZsGL0dU3X6hp/iIw8F1hjCqxUARs5FZlXrP42tybRp2DmC7ByYTbCHaDXgZyzDp0/fnjLODSHzfsYeRJbaJo6eDTI3+A1Ew9oNsc1onMn7gYxX//5pUKt1k9SuYNoH5/B/GEniE8CZMSRQkzLfGYAuAlyQAHFPd/RieWbHqaNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712737481; c=relaxed/simple;
-	bh=kHw62uWAIH9xVgzosFJdAHEiAM9foucIVnPx0iW+bEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hsViYueoKZxLPHv1xrN6P+LnEhOn2Kh5FWsdi/Sz1x2kugpVKMJ6m2Yauwfz0VncdHZ/mT9XKcxe+mmYWFbypi2SJ4VDAiDOyaeZD8sMf6G7rdg3rMQfjPsiQfDY3ZMbyyWTvgU9VOncCQ79yJBo+SbqC6EmFHEbMaMoSJqEkAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uylqAdnI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC710C433C7;
-	Wed, 10 Apr 2024 08:24:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712737480;
-	bh=kHw62uWAIH9xVgzosFJdAHEiAM9foucIVnPx0iW+bEk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uylqAdnIIwZqjIaaS86WJ3YQSmqVYxMIAWLIMPG5xNLG8NrPCeZw1zm1jIzR5vKsL
-	 /Y4oYPGk2/TiofuPBM7m2TdHICVpdGkS0mV9v73j4DDk6/JCJEzObRVMCZ1gEQQnbU
-	 7EmGb8RRTa0mMAw2WGdDW1m7LRFPg/hyDb/8SnOY=
-Date: Wed, 10 Apr 2024 10:24:36 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Liuye <liu.yeC@h3c.com>
-Cc: "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-	"daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
-	"dianders@chromium.org" <dianders@chromium.org>,
-	"jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-	"jirislaby@kernel.org" <jirislaby@kernel.org>,
-	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlA==?= =?utf-8?B?5aSN?=
- =?utf-8?Q?=3A?= [PATCH V10] kdb: Fix the deadlock issue in KDB debugging.
-Message-ID: <2024041007-busload-equipment-b673@gregkh>
-References: <20240409020326.2125332-1-liu.yec@h3c.com>
- <20240410020615.2885000-1-liu.yec@h3c.com>
- <2024041014-padlock-aggregate-4705@gregkh>
- <0c004dd44ad5478eba9451186f4ec962@h3c.com>
- <2024041001-retaliate-cork-1fe5@gregkh>
- <5c659d5f41ff4cf69ea9467b62d74e9b@h3c.com>
- <2024041022-electable-unblock-5077@gregkh>
- <567857bab013409ca53fa7c36292f4b0@h3c.com>
+	s=arc-20240116; t=1712737683; c=relaxed/simple;
+	bh=XRHqC8M4WcYxGw4UW+wSnCTQwqqdUopRSB4qtBBiwvw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZR6qUW79/WwetfGYx5YrNW6MMUXdJcG3qu1gB1zV3hXFrfq6xdYrTFM7u4Sw0mT9zhu485RdScEbYAjgveqImSY0xK58zYSbM3NVazZvBYFxWb9RgVfpGaXk6hIxlXW/VNKPJ38Hk7cAF8ol1kBCUB4vIKuXpNg5o94a9shpGeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UQcxQHxv; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43A8MXuF018972;
+	Wed, 10 Apr 2024 08:27:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=IXHrgXA8ZjJgNFdLGHmP+gSPoVZzMGaz6Ta83jbqg0I=;
+ b=UQcxQHxv3AULKl355I/K7MfEMdVTptplxHLwcD7IES02iq7WbxqvVbgOJofnfylxFiGJ
+ rw4Xr3lMLlbd+m0PuBfBZeKYrhlHNx/7cF7YXA4DF46SYMslCqx4hA437FUYzfRu8Meg
+ 8aVQYS9IkTiNyDbMG7swuuN0A9zMae8g0I5ZE9pFu2zcQXCjViFe1M+AEdAJ8RpMdxtl
+ 90TFply083b76B4PV8Sc441JKTFPHg8tPAbWHOkdZ1VTKMuvROAx8UUpf1RwyqFlCjgL
+ WlzXI6/J6buSeW0aQEnboHfRgop7Bd3DaS3FsKF1AkvAVcr9zJlWtt/qQbilGsQnzU98 ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdq7080dm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 08:27:50 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43A8RoYf025476;
+	Wed, 10 Apr 2024 08:27:50 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdq7080de-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 08:27:50 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43A74ELq022564;
+	Wed, 10 Apr 2024 08:27:49 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqp3kj7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 08:27:48 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43A8Rh5M33358276
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 08:27:45 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5730C2004B;
+	Wed, 10 Apr 2024 08:27:43 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3884120040;
+	Wed, 10 Apr 2024 08:27:43 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 08:27:43 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] fbdev: Handle HAS_IOPORT dependencies
+Date: Wed, 10 Apr 2024 10:27:42 +0200
+Message-Id: <20240410082743.1425538-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 75fL8BX6Ll_n5_VBrrowMgbxICsHsTWZ
+X-Proofpoint-ORIG-GUID: 5S_8_kmohfv8nZ990FzJT7ouHsGUTToS
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <567857bab013409ca53fa7c36292f4b0@h3c.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_03,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100061
 
-On Wed, Apr 10, 2024 at 06:30:59AM +0000, Liuye wrote:
-> >On Wed, Apr 10, 2024 at 06:10:10AM +0000, Liuye wrote:
-> >> >On Wed, Apr 10, 2024 at 05:54:08AM +0000, Liuye wrote:
-> >> >> >> Signed-off-by: Greg KH <gregkh@linuxfoundation.org>
-> >> >> >
-> >> >> >I have NOT signed off on this commit.  You just said that I made a legal statement about this commit without that actually being true???
-> >> >> >
-> >> >> >Sorry, but that is flat out not acceptable at all.  Please go work with your company lawyers to figure out what you did and come back with an explaination of exactly what this is and how it will not happen again.
-> >> >> >
-> >> >> 
-> >> >> >> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >> >> >
-> >> >> >> V9 -> V10 : Add Signed-off-by of Greg KH and Andy Shevchenko, 
-> >> >> >> Acked-by of Daniel Thompson
-> >> >> >
-> >> >> >Huh?!
-> >> >> 
-> >> >> @greg k-h ：
-> >> >> @Andy Shevchenko ：
-> >> >> 
-> >> >> Sorry, it was my mistake. I misunderstood the meaning of "signed-off-by", which led to usage issues.
-> >> >> 
-> >> >> I want to express my gratitude for the suggestions on the patch from the two of you. 
-> >> >> 
-> >> >> What do I need to do now? Release PATCH V11 and delete these two signatures in it ?
-> >> >
-> >> >As I said, go work with your corporate lawyers on this to understand what just happened and have them let us know how it will not happen again.
-> >> 
-> >> I'm very sorry, this is my first time submitting a patch and I made a significant mistake in using "Signed-off-by". I now understand the meaning of this field and will not make the same mistake again in the future.
-> >
-> >Understood, but you still need to go work with your corporate legal group so that you all ensure this does not happen again for any other developer in your company, as I am sure they will want to know about this.
-> 
-> Ok, I will report this to the company. At the same time, I will add an audit mechanism to the patch submission process. Thanks again for your reminder.
-> 
-> I will remove this part in PATCH V11.
+Hi Helge,
 
-No, you will need to do this before we can accept your change.  And some
-sort of verification that this is now in place properly for obvious
-reasons.
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-thanks,
+The current state of the full series with changes to the remaining subsystems
+and the aforementioned final patch can be found for your convenience on my
+git.kernel.org tree in the has_ioport branch[1]. As for compile-time vs runtime
+see Linus' reply to my first attempt[2].
 
-greg k-h
+Thanks,
+Niklas
+
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+
+Niklas Schnelle (1):
+  fbdev: add HAS_IOPORT dependencies
+
+ drivers/video/fbdev/Kconfig | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+-- 
+2.40.1
+
 
