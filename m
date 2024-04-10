@@ -1,100 +1,101 @@
-Return-Path: <linux-kernel+bounces-139537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06D648A0414
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:34:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6208A0419
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:36:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60F928478C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:34:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B23F9B214E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66AC63FB3B;
-	Wed, 10 Apr 2024 23:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54623E497;
+	Wed, 10 Apr 2024 23:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JE2fo2vX"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XwdQRoX2"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CAF3BB43;
-	Wed, 10 Apr 2024 23:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CFE3BB43;
+	Wed, 10 Apr 2024 23:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712792069; cv=none; b=IO6YmtdnzC0O1EEdaWy5VZp7427gTTOSu+wo+4HuZ2iWmVdJxZRAWRgdFBNGdttieJNJvDddOyLowKhqIr/GXTAdTu3TMjXQhELC4ziuwGnT+YvJv4Br1NccbN4hiUki+k2Wy1K4+6GC3E7dpr1hCgDSbdnMkFoagyfx76nqrbo=
+	t=1712792178; cv=none; b=Mc0qVVlS08z3wL+UY3cqjQG+fNL2gIxqWa0HJM4VaDPiMC28o7SydL31mhEFPHgIlBNiWEY1bh2orG4oZV/wDXFBs/slnXbSWgXooT6k77Vt2opt9Q1AUwxH0LEPWeiHCCdZmn8rmre2ZjDrtBMj6sZ2ukyY1LuVR0K0E21Q2u8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712792069; c=relaxed/simple;
-	bh=uqzNxqrBph2PlRsjh6hC900ySu85OHtjJiS7mW6FX+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljUZ65MQLt0UejX/zHvA6Dr0tpSyhPPYF3sKHOtHrLtc8rpFxwb40MJ3f2qJbRBiz8jMy4BYOdOh6wKb+Ecs4SNoLiUhuKORQRuYeVUHKTrXacqBNCDTuGd98hXXR8VA3ZAIvgpgebdLz2ubF+u0+37Z9o6ghBcIFeqmHX8+PVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JE2fo2vX; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FXmAKscTbgNJ1p29Two6+cxbrIyx3G8HLoeSBvRIChc=; b=JE2fo2vXsHYBjNsZu7z66/oeOy
-	TmDFDhmMWI9DAzYzarLq47L936opk3bRPR+HQRcRAPsrypIYPj5IBH+1d79t1LK+AnBA+5NqwzAXv
-	TNWkEFAYnKtYuy0h5tNyXJoPw6mPA/ZLGwkw/Vn/jRQml7vmt1L232DP97jJ5uLt2PaI8tFK42Rre
-	a1JqxOrlDlkYEwwZOATQlvCzzPoVitwEw5sALBZYIINr8eL0SYCToM8rS1J4KPxntH2tebwotXZtC
-	7VN7jbR6LjOg1f1PqKaNoltS7oh8wdYpnuu9FXnUjmMvryJcahiQgKb2l/KRMQpv94xvskr6zJLmZ
-	jPffkkNw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruhSN-00000009Tii-29zF;
-	Wed, 10 Apr 2024 23:34:19 +0000
-Date: Wed, 10 Apr 2024 16:34:19 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com, willy@infradead.org,
-	Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: Re: [PATCH v6 05/10] block: Add core atomic write support
-Message-ID: <Zhch-6XSPYxM4ku3@bombadil.infradead.org>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <20240326133813.3224593-6-john.g.garry@oracle.com>
- <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
+	s=arc-20240116; t=1712792178; c=relaxed/simple;
+	bh=3dPS/Dr7Mm5ktn4AhoyjpMG4l7lmd7uF0848jNlQCkw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QXW7gzf0YqPC+TA6ElV9fp/x9DvZUVy7/AL7lX8GKqHSPAUpI/OMYrDDQ9C0jIg+ZBJKz/RBTrCIkwlbQfubsl5yCURvTkUH9V9LSoElolR5+BORwItbYxCC/vjzl8EYql9qLz03oRxvMN4UHSIM/abEAK5LVYdljuAqiSYp+C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XwdQRoX2; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a2bcc0c075so1899335a91.0;
+        Wed, 10 Apr 2024 16:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712792176; x=1713396976; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCiwuhJlcdVymL9iabF0uqiMDb2CibrCH2dP3vtwOxM=;
+        b=XwdQRoX2nJhz5YFyD4qmPJzSfgyO+jq7NXyevXyWPbEWfQXrsTwKnYqjHpW+2hARwX
+         6WmeKDYDVhM8UVxbcSCYV1fNKZ6UTdk+JZ8XeFvIySNmLXij12EoNRpgzlXghIiSHuKn
+         6XFNDeRXgWDLIESD/qlmhUAiPzMqioH3AsdXQJojZylsfJaYdJiHSVMDHGZZJW2eAvW0
+         Oza2chM4ox/iEc+ifAleDmjktIUt6mXwXKIVAabFkbkxY00uYfQzQe/q9hdZNaD8F3KN
+         uhWGN5il/m9p8Pp/B3iqgxvgeRN39def4WD1cBEXUr0zuaPPbrGDYq5WAmcyAX3Q/79r
+         d/FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712792176; x=1713396976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RCiwuhJlcdVymL9iabF0uqiMDb2CibrCH2dP3vtwOxM=;
+        b=qJFei6NLsnv27MkOtz4igZqeBPLEJ9lQFRbyZtE7PWHm9jReIROUWlRVGWZQ6/F2DF
+         z9XHZ/DGuS2HfKOd+FEIL2nkFJdbZqfdBJ0J3oIM/8kBqajEU+YRIWyRP4PZolRIhmZJ
+         eOQ/8Bsp6BnI7Eu9MftYuCowuf5moI5Ctm56qn7TD18HDHHq8Pa4NPsnmubc/k4g9ssF
+         bFdYo58k7tph5Zp5jJYphik0kLQXGNfOZysWBfZC8A66n27LsAmaniPNFICko7BJpoAL
+         fao4Gu37tqcAz24h+GNtvBLtYNc8KLkZOGGrw3hfLpbuMHAsyFYgYKCZWJwfrhC+TuvM
+         9uUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWM1bCPkdqzYAhqXTpIJUlFSZg3GRaSoO0Vta4NVU4vjqBS1FM0A1WbRVgZQF9eBgF2MeUePzvtwSoBueIXHQGXa2vaucyUU/AmmG2cAAXMn9CI4+0dF6A+kch1U1vlXaA3xuLdiRFcR5ntCqF1Ev6qvM1nUCNsmiKg6/bHIuBr1TrPrY0aehY=
+X-Gm-Message-State: AOJu0YwYGtbTyN7TzJNswh36E+7tDPy0GUnB3TqIH/FDJ46Pp62zNY4U
+	yezZ2OD4jyFMp060hnjlhD6sa1P4ejpYdJmhgG+G/FVv/J645rpb3/0Pwjt5OQN5suK/WdKSP1P
+	apA6htHWbGTp9rwImuoGUlr6bt7Y=
+X-Google-Smtp-Source: AGHT+IHvxfBW1enUR1DnNYuaYxnKs9tO+hdbg0i47Qw9mY6cM7ho7vYbzxgiD/vaxzb1WdMzDzxpTGcfy4AZCrqiLA0=
+X-Received: by 2002:a17:90a:4688:b0:2a2:6757:1de0 with SMTP id
+ z8-20020a17090a468800b002a267571de0mr4070054pjf.4.1712792176144; Wed, 10 Apr
+ 2024 16:36:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20240410170150.248428-1-krzk@kernel.org> <20240410170150.248428-5-krzk@kernel.org>
+In-Reply-To: <20240410170150.248428-5-krzk@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 10 Apr 2024 20:36:04 -0300
+Message-ID: <CAOMZO5DFr8uhVRq8X+ZURCCAw4bLM4Ueaerr-gw554sFr+KLKw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] pinctrl: realtek: fix module autoloading
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Dong Aisheng <aisheng.dong@nxp.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Jacky Bai <ping.bai@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Linus Walleij <linus.walleij@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	zhanghongchen <zhanghongchen@loongson.cn>, Yinbo Zhu <zhuyinbo@loongson.cn>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-gpio@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 10:11:50AM -0700, Randy Dunlap wrote:
-> Hi,
-> 
-> On 3/26/24 06:38, John Garry wrote:
-> > diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
-> > index 1fe9a553c37b..4c775f4bdefe 100644
-> > --- a/Documentation/ABI/stable/sysfs-block
-> > +++ b/Documentation/ABI/stable/sysfs-block
-> > +What:		/sys/block/<disk>/atomic_write_boundary_bytes
-> > +Date:		February 2024
-> > +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
-> > +Description:
-> > +		[RO] A device may need to internally split I/Os which
-> > +		straddle a given logical block address boundary. In that
-> > +		case a single atomic write operation will be processed as
-> > +		one of more sub-operations which each complete atomically.
-> 
-> 		    or
+On Wed, Apr 10, 2024 at 2:02=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+>
+> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
+> based on the alias from of_device_id table.  Pin controllers are
+> considered core components, so usually they are built-in, however these
 
-If *or* was meant, wouldn't it be better just to say one or more
-operations may be processed as one atomically in this situation?
-
-  Luis
+You forgot to complete the sentence.
 
