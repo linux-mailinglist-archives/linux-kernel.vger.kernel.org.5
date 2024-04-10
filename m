@@ -1,92 +1,76 @@
-Return-Path: <linux-kernel+bounces-139370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E61B48A021B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:29:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4417D8A021F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50EBCB25418
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:29:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5EF1B25F3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3511836F5;
-	Wed, 10 Apr 2024 21:29:31 +0000 (UTC)
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6108618410D;
+	Wed, 10 Apr 2024 21:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JFp1xYoQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116E01836CC;
-	Wed, 10 Apr 2024 21:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAB6181D19;
+	Wed, 10 Apr 2024 21:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784571; cv=none; b=Q+WjR7BWuAFO9y4vajm0VmzEdwQdqPgHsNsVuaSu+Z9llAbB/ENHghHQRCiLsU2DfrogqKxFzdnEbvbqYu2Q6j3cAGuxZzPpHRKZ/JO2AP1uYiqsk6hU2H55CETViQr/6G/2z49G4NgH6JqJv1TMrvawW9hdW8ePiebE+X6LLxE=
+	t=1712784622; cv=none; b=lTLgg42KzFAluHZid+Rnm+BAuLydkteZUiLtOgWEsgNkc7RWHvBmYWvQxp0e9HqS7PEvvFOv03XVjJcP5EhYd5wliLoQ9l3H+f4/XukV21+I0unlW1ANLeOfedgqNb33YiXvTZeosuz9fEDGsXjHoscuixJ6SqX2Z0WvSut/Dtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784571; c=relaxed/simple;
-	bh=M2o6cMnM6nNccjw9LvHkRSGksxMfQg0bMf35FBJLDdE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AsLe3tS2CbPW37EbroCkuxBUESjmAmR4YPq5kcTSMYYZp6sMUNOoYTbJhOESb2RpQGJM+shrRp3o2DS2q5e2fDe3lTWidBRMjl7Q/xyBG+Kgkdooh3D6/TNfcAykrkzMxOZjWORwHD+ecWRc7xtioNIqTdj6+WLh70C9oj+jDGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e3f17c6491so34977245ad.2;
-        Wed, 10 Apr 2024 14:29:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712784569; x=1713389369;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y6EaonafyjDQr9SviaAlUYtrZbN5OOCyY+aDjZUNocc=;
-        b=D2jdli0Vt51kB42VAlTXi6vTNRBnEWIWaW3IvF97M8X39y99aLbtjxs3Ii0ifNgClh
-         zxQoVLReAjvh5EnHPjyIXfOrdUoUXMhaaDg9fmXkVxKmh9xDK+2DDll8NvD4k47NsIRo
-         eh+A+KDQOaq8cNU78FgWmW7MWz5R5ggctYOcneT13CmlL2sOrEaTChT0vOAdDdB3T4v6
-         HCjs0rbo+1KzkqDzSBcWqAYxvIuoI1L42lEgZaEWJ5szxty01aXiJY+snCH+fm4xBZtw
-         3974ehEv961CjmiJ8p8vUgSNUYbrhmmkUe1LQDIvJsuNEQzdC3wYciMBF+ErPWFX1Eop
-         hg2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWbT9tQD9JxtuV0KcBSM9BxUYMA2EgeyN3rrg3xf/dm9kyJcvUUTFeFmOrbR1TKyujNQCl745ZosfJ0nHa+lBfBlJ89NMvM0MczQX7+IKT5dw4/UUFWF0QL3TqvQTUwy1ybMW52pZxzymHN
-X-Gm-Message-State: AOJu0Yx//06y93KY/0WqNs3q3z6nd4INrHQoagxpBWkLqXaeoGLtJvMu
-	/ceKHgadAerKW7nC6Hw364VXegLi2K3WfzvjhYwqVhypI23/NQxC
-X-Google-Smtp-Source: AGHT+IF54sYTekrt+L4azV8csngPC/DPwaQhKRwxPTSbmEzd4jdxr29xO2uAZ5xGCPCaGJoyRm/MZg==
-X-Received: by 2002:a17:903:2284:b0:1e4:17e4:3a30 with SMTP id b4-20020a170903228400b001e417e43a30mr4879017plh.31.1712784569275;
-        Wed, 10 Apr 2024 14:29:29 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id mp3-20020a170902fd0300b001e4028c9d60sm1411plb.212.2024.04.10.14.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 14:29:28 -0700 (PDT)
-Date: Wed, 10 Apr 2024 21:29:20 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Aditya Nagesh <adityanagesh@linux.microsoft.com>
-Cc: adityanagesh@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com,
-	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Drivers: hv: Cosmetic changes for hv.c and balloon.c
-Message-ID: <ZhcEsPZu7QZxr7DL@liuwe-devbox-debian-v2>
-References: <1712030781-4310-1-git-send-email-adityanagesh@linux.microsoft.com>
+	s=arc-20240116; t=1712784622; c=relaxed/simple;
+	bh=14ZzdB+5ZJ89hfQO2P/iVaITshCuwOTD8j6Uc+CSv9s=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=RVKIiybVTk8YzfeObd1QnAs+wgJbs2i4F7jdHJK59qK6ZQOu+vlq6iPQjlcyUDhVpxNj2WqOY6mgZ48+FQ/QYL7HnTw5GVE1+m+AsljUvDIsV+E5Oj/hLSNdHsuEw59IobOB/5q+4m3sA5L6mS0L2MIwWPv54WGRomc59NV1QMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JFp1xYoQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D19C433F1;
+	Wed, 10 Apr 2024 21:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1712784622;
+	bh=14ZzdB+5ZJ89hfQO2P/iVaITshCuwOTD8j6Uc+CSv9s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JFp1xYoQBbQ39g+uTbt4JLn3SBzgRbjqJ31eyFQf9/KYKQPg93LaIEw4AqO9qBCBd
+	 IaZLQJEvG3vUqIKZSLW207ouLZUCv3OzXKGTpgCVOAXkPkkakvzfiiajTuIeyu76gy
+	 L/McdS+iJHvTrIxiRy4HiJClm2JWS4c9rS0J95ME=
+Date: Wed, 10 Apr 2024 14:30:20 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, Marc Zyngier
+ <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, Tianrui Zhao
+ <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin
+ <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>, Atish Patra
+ <atishp@atishpatra.org>, Sean Christopherson <seanjc@google.com>, David
+ Hildenbrand <david@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ kvm-riscv@lists.infradead.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/4] KVM, mm: remove the .change_pte() MMU notifier and
+ set_pte_at_notify()
+Message-Id: <20240410143020.420cafd47bf8af257b2e647a@linux-foundation.org>
+In-Reply-To: <20240405115815.3226315-1-pbonzini@redhat.com>
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1712030781-4310-1-git-send-email-adityanagesh@linux.microsoft.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 01, 2024 at 09:06:21PM -0700, Aditya Nagesh wrote:
-> Fix issues reported by checkpatch.pl script in hv.c and
-> balloon.c
->  - Remove unnecessary parentheses
->  - Remove extra newlines
->  - Remove extra spaces
->  - Add spaces between comparison operators
->  - Remove comparison with NULL in if statements
-> 
-> No functional changes intended
-> 
-> Signed-off-by: Aditya Nagesh <adityanagesh@linux.microsoft.com>
+On Fri,  5 Apr 2024 07:58:11 -0400 Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-Aditya, for the avoidance of doubt, I'm waiting for the comments to be
-addressed before taking further actions.
+> Please review!  Also feel free to take the KVM patches through the mm
+> tree, as I don't expect any conflicts.
 
-Thanks,
-Wei.
+It's mainly a KVM thing and the MM changes are small and simple.
+I'd say that the KVM tree would be a better home?
 
