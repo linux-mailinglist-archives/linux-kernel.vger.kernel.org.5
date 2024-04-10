@@ -1,228 +1,111 @@
-Return-Path: <linux-kernel+bounces-137977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A7189EAB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:21:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E213689EABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:21:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489FD1C22AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:21:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65320B22E3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18708381B9;
-	Wed, 10 Apr 2024 06:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C796A29CE5;
+	Wed, 10 Apr 2024 06:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DRH5op6+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0jV/eoo4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DRH5op6+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0jV/eoo4"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vF+OcpfN"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668ED20304;
-	Wed, 10 Apr 2024 06:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E8F28374
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712730044; cv=none; b=O9Mp0poj9kWHym7tiVHOLGZlTwmcqgS/NyAqeVfHRiOUP+NcK4+pLXbKi2i48A73Fv6AUhj2Aty/8beISjwEwfpbbdmLdrBV2jmd2gbvpsxIg9l1YQzxkVWTLD1lU7ohqwuuW5rsdUYi1E74VvozmIHXKeakYwGJrVl10DnvfGQ=
+	t=1712730096; cv=none; b=K6dq8X4lFPu0mVPclQB1Z13BcGgPCjNs/HH6Ic8hy3d60ZPCFKJe5RT186qrnQJH2tlSdQFYTxj9Cy/22b1W1LryMe9Hvnnog2w/IWjUSXupEZYc1L6dM/PDLC3M76OvBALp675HaqWY1odfHstUx1Ogwa3lFhHpHpDtRn8mQ4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712730044; c=relaxed/simple;
-	bh=SVgnyvJn4+dftj5N9qiNFUfNLaC+N6iSxocInF85y/8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JpTyfPXzWkiF/JUek0khNCnccF2tIkjLKMedKyK21Csq42rDMlIuzkHLrm3KmMT01PRftCn1sIFFcOABCnED/r3bhHHAkgXQ5thCR0cnqJjqgwb8NknwuBQYuk48kFIqqAI7XzICE7Pm3jDXN6/w1I4UGF2Qeuiep8Rez8OQopk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DRH5op6+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0jV/eoo4; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DRH5op6+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0jV/eoo4; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A4D3349E5;
-	Wed, 10 Apr 2024 06:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712730040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yJIujaH3RXIktcRv88URJI4c3MW1XPtMbHZWqI5VmXc=;
-	b=DRH5op6+qgu/ZbeaZUaYpnIYWqjeWpHK8OW0+kwvqDCMEwaguq5aqaXafgAjwJ6zywhusF
-	tsgFsWgaCMMY4NaTEaGk3lDtHCR73mjQ4SRA1LnqLj9EF0l+PnSJ2BlijBLHcS98VKUP8t
-	Vf4bNVGD5TMPNXoHOH52Hod45ruzXX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712730040;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yJIujaH3RXIktcRv88URJI4c3MW1XPtMbHZWqI5VmXc=;
-	b=0jV/eoo4drBjtHKjxE/GtnE1W1+NVg3WllILQl+VLv9gNYfTXrOGjwpUFYpLOwg0GRsGjF
-	4Wxv4HCZCDpVodDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712730040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yJIujaH3RXIktcRv88URJI4c3MW1XPtMbHZWqI5VmXc=;
-	b=DRH5op6+qgu/ZbeaZUaYpnIYWqjeWpHK8OW0+kwvqDCMEwaguq5aqaXafgAjwJ6zywhusF
-	tsgFsWgaCMMY4NaTEaGk3lDtHCR73mjQ4SRA1LnqLj9EF0l+PnSJ2BlijBLHcS98VKUP8t
-	Vf4bNVGD5TMPNXoHOH52Hod45ruzXX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712730040;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yJIujaH3RXIktcRv88URJI4c3MW1XPtMbHZWqI5VmXc=;
-	b=0jV/eoo4drBjtHKjxE/GtnE1W1+NVg3WllILQl+VLv9gNYfTXrOGjwpUFYpLOwg0GRsGjF
-	4Wxv4HCZCDpVodDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CECBE13691;
-	Wed, 10 Apr 2024 06:20:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id InaALLYvFmaJGQAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 10 Apr 2024 06:20:38 +0000
-Message-ID: <94d6d88b-b0e7-491d-94e8-dc9e5fba5620@suse.de>
-Date: Wed, 10 Apr 2024 08:20:37 +0200
+	s=arc-20240116; t=1712730096; c=relaxed/simple;
+	bh=v4e8o14myh7wf61QZuVMQrKqTrmnQbZDF24k8mFtbYQ=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=mKECQv0gv896h+sHYaMg4mohrH6wMlk+URiS+SeaTx54E5E5A2DfZRPAgKkdBw9dbZSRkMZMB9HIGVq95KcHSvX7oismu6MIlK4yPv3k68MG82I4RCeORjf3r+7jWa5JzIYvSUVxUX64rvNfUVG0MorYlV6GHjkiGSPhkcjPJB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vF+OcpfN; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d6fd3cfaa6so79524741fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 23:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712730092; x=1713334892; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HaLNjF69LAH3JwIuB5L2Epv4qMXG9JbH2p/HGQZ2ao8=;
+        b=vF+OcpfN38JdMY8SWvVQEakK4CQ88voseQEzTHnyq2l7b4+y6wMVPSrm+WM2QeJM0k
+         hIsoW48DZyOpsujh/zG3O7JwVP6po8OzCiRfe+aDdVahHXHGmmnEDG3N4gGT9wMBHUc7
+         RVNc9ZF2VE9Mi/oY6cUCiZpEolGpHRP4qGf+exZr1Ds22rz/PG7R3Ytm4Ir0wgKWbZOu
+         dz1UUm8NKztaahyQ6ZCJOekhX1y4ygt5hTDIqGOM3dSxHUfrYHhHMfMwURpHsf0yMVrv
+         v1ko81Tkn6c3iqO42k6Zxiab/l8w/7u2bqD5jbUWqOtGtgmUror8otUHwBu2zonhqO/T
+         y22A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712730092; x=1713334892;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HaLNjF69LAH3JwIuB5L2Epv4qMXG9JbH2p/HGQZ2ao8=;
+        b=vtUcudvm5nP2uFugOSex5ko4UazGnUovutuyaptra3LVIpKhKJriv4orUfypb/RmN6
+         CQB7hjh2AuuV91eMNXX/mfj6RaXq9iQtmjbCN+zReYCpV93E57S1eAIkChAjB1oEHVpZ
+         TyUMCceBZCtkHZ7w3Y4XH+exspeQqhee/iDC8pnYEQycrcKa847rNEp5SEZnL3q5Njhr
+         fdRYJQfVIVzWclBCYh7jzV6ZAsIE5ukN29i/D1+KrAA4buy/JJMNSegCofJFgX+W9/fg
+         Akwn8XZ90K4QwMVTxZQfpUAyj9eazIjBy6fX21h7+FoxN/NkZ/EG3sgHU9Y8dYIiswdP
+         v4mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWBjIodWkgloeiZL231whOMwnTU8n7B2htRFXOCFRZIQmMjWL3C/B2tOwULKQq+P2Tt5non9rSDFi+ngCCvCDUd1c6o8mVZcLswTMAP
+X-Gm-Message-State: AOJu0YyU3Yi6wRb2l6uFeY9EyezgM1FXEgRs+aKLlNb4c1LyYgnZ44nq
+	lV3NXwKSHUQSUzB2socJ17oeADipUc46u7Q5A1jnBuaRktqzALW7yscgdyzFuas=
+X-Google-Smtp-Source: AGHT+IGkWQid6R5S/wUjG4+J87Xg+G2EL2/Pxg8AVQEkeKGXBH35sE4CI3h7dddtFSUPD3GVzb/Rrg==
+X-Received: by 2002:a05:651c:10a4:b0:2d8:1267:320e with SMTP id k4-20020a05651c10a400b002d81267320emr1128115ljn.5.1712730092442;
+        Tue, 09 Apr 2024 23:21:32 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id m28-20020adfa3dc000000b003435e1c0b78sm13179938wrb.28.2024.04.09.23.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 23:21:31 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: =?utf-8?q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>, 
+ Tony Lindgren <tony@atomide.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208105146.128645-2-krzysztof.kozlowski@linaro.org>
+References: <20240208105146.128645-1-krzysztof.kozlowski@linaro.org>
+ <20240208105146.128645-2-krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 2/2] ARM: dts: ti: omap: minor whitespace
+ cleanup
+Message-Id: <171273009074.5833.11343122189258141028.b4-ty@linaro.org>
+Date: Wed, 10 Apr 2024 08:21:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/10] block atomic writes
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>, Luis Chamberlain <mcgrof@kernel.org>
-Cc: John Garry <john.g.garry@oracle.com>, Pankaj Raghav
- <p.raghav@samsung.com>, Daniel Gomez <da.gomez@samsung.com>,
- =?UTF-8?Q?Javier_Gonz=C3=A1lez?= <javier.gonz@samsung.com>, axboe@kernel.dk,
- kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
- martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
- brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
- ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org, nilay@linux.ibm.com, ritesh.list@gmail.com
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <ZgOXb_oZjsUU12YL@casper.infradead.org>
- <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
- <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
- <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
- <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
- <ZhYQANQATz82ytl1@casper.infradead.org>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <ZhYQANQATz82ytl1@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	R_RATELIMIT(0.00)[to_ip_from(RLusjj3u5c53i6g8q6enupwtij)];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,samsung.com,kernel.dk,kernel.org,lst.de,grimberg.me,linux.ibm.com,zeniv.linux.org.uk,redhat.com,suse.cz,vger.kernel.org,lists.infradead.org,mit.edu,google.com,kvack.org,gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email]
-X-Spam-Score: -2.79
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-On 4/10/24 06:05, Matthew Wilcox wrote:
-> On Mon, Apr 08, 2024 at 10:50:47AM -0700, Luis Chamberlain wrote:
->> On Fri, Apr 05, 2024 at 11:06:00AM +0100, John Garry wrote:
->>> On 04/04/2024 17:48, Matthew Wilcox wrote:
->>>>>> The thing is that there's no requirement for an interface as complex as
->>>>>> the one you're proposing here.  I've talked to a few database people
->>>>>> and all they want is to increase the untorn write boundary from "one
->>>>>> disc block" to one database block, typically 8kB or 16kB.
->>>>>>
->>>>>> So they would be quite happy with a much simpler interface where they
->>>>>> set the inode block size at inode creation time,
->>>>> We want to support untorn writes for bdev file operations - how can we set
->>>>> the inode block size there? Currently it is based on logical block size.
->>>> ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
->>>> think we can remove that limitation with the bs>PS patches.
->>
->> I can say a bit more on this, as I explored that. Essentially Matthew,
->> yes, I got that to work but it requires a set of different patches. We have
->> what we tried and then based on feedback from Chinner we have a
->> direction on what to try next. The last effort on that front was having the
->> iomap aops for bdev be used and lifting the PAGE_SIZE limit up to the
->> page cache limits. The crux on that front was that we end requiring
->> disabling BUFFER_HEAD and that is pretty limitting, so my old
->> implementation had dynamic aops so to let us use the buffer-head aops
->> only when using filesystems which require it and use iomap aops
->> otherwise. But as Chinner noted we learned through the DAX experience
->> that's not a route we want to again try, so the real solution is to
->> extend iomap bdev aops code with buffer-head compatibility.
-> 
-> Have you tried just using the buffer_head code?  I think you heard bad
-> advice at last LSFMM.  Since then I've landed a bunch of patches which
-> remove PAGE_SIZE assumptions throughout the buffer_head code, and while
-> I haven't tried it, it might work.  And it might be easier to make work
-> than adding more BH hacks to the iomap code.
-> 
-> A quick audit for problems ...
-> 
-> __getblk_slow:
->         if (unlikely(size & (bdev_logical_block_size(bdev)-1) ||
->                          (size < 512 || size > PAGE_SIZE))) {
-> 
-> cont_expand_zero (not used by bdev code)
-> cont_write_begin (ditto)
-> 
-> That's all I spot from a quick grep for PAGE, offset_in_page() and kmap.
-> 
-> You can't do a lot of buffer_heads per folio, because you'll overrun
->          struct buffer_head *bh, *head, *arr[MAX_BUF_PER_PAGE];
-> in block_read_full_folio(), but you can certainly do _one_ buffer_head
-> per folio, and that's all you need for bs>PS.
-> 
-Indeed; I got a patch here to just restart the submission loop if one
-reaches the end of the array. But maybe submitting one bh at a time and
-using plugging should achieve that same thing. Let's see.
 
->> I suspect this is a use case where perhaps the max folio order could be
->> set for the bdev in the future, the logical block size the min order,
->> and max order the large atomic.
+On Thu, 08 Feb 2024 11:51:46 +0100, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before '{'
+> character.
 > 
-> No, that's not what we want to do at all!  Minimum writeback size needs
-> to be the atomic size, otherwise we have to keep track of which writes
-> are atomic and which ones aren't.  So, just set the logical block size
-> to the atomic size, and we're done.
 > 
-+1. My thoughts all along.
 
-Cheers,
+Applied, thanks!
 
-Hannes
+[2/2] ARM: dts: ti: omap: minor whitespace cleanup
+      https://git.kernel.org/krzk/linux-dt/c/71413bcb66e018e54afec47a9ce1199130d6fa38
+
+Best regards,
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
