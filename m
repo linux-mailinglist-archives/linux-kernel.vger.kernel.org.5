@@ -1,126 +1,133 @@
-Return-Path: <linux-kernel+bounces-138479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C94589F1ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:22:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B989189F1F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:24:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF9281F219D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:22:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75C0A281D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C20D15B13B;
-	Wed, 10 Apr 2024 12:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C015415B14A;
+	Wed, 10 Apr 2024 12:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcSuHPiZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ggI7H0Ba"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7234501D;
-	Wed, 10 Apr 2024 12:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC2215530C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712751723; cv=none; b=XCELeRQPmS3hXpVXNNNimvW5I8zD33Yn0kaKAj2Qqt24YhDPq3dYIA4r9nmIHqZ/J9DCfiCtygpElBNp7PoIet9KJLrOCYQE198Whi0YA58gyGxVwEjw5M9GuaUlqUHOq7rnHosWU8MHiC8Pqc3NOCOdijpvfBcqYr4FshI0wd8=
+	t=1712751861; cv=none; b=UdKIRArTqjX+Xecd5muLPVZ6iiqVb2OUaUaFI0F3CslD/vFjWVbg/s9gwR7QDuREq8hk0H8aORevJPtn8yDfTECZeaMzTZGEYqvggiU6wjpU0xthVRL8kMM5YEKynQsxt0VRsDMGKMXX/5uGDklsKwsLh47nIZNTkyclHfJ2Aho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712751723; c=relaxed/simple;
-	bh=fhCS1XykDjhuWUw28ZSsJwT4DsrmC4F3xhQAUnzXjjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KZRR4+7k/7sGKHEOfyjMw8/bdTNr2GC1Vy8cIiX9UNNTVj+SBBJ9ABC+FJ8LpvAgKyKphXZEWvDEiFSpl7X0DQopHht+Vk62YD5ctXyTqhz/YWF9bxXH8C8HQ8rfiDYWsg9ZQgdZq1/sceznLPJVTWBzjppFp0vZKM0wEpwvpYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EcSuHPiZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAF14C433C7;
-	Wed, 10 Apr 2024 12:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712751722;
-	bh=fhCS1XykDjhuWUw28ZSsJwT4DsrmC4F3xhQAUnzXjjk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EcSuHPiZOHBuNUmt1rR8ndwr/eCwbc3+2nDisVYpPu97NHt+i3fkdSVrhZPTL8Dpu
-	 nuHQJcbzhLTReWBGJpLUMn8eymab9QKBcKRKNqdK9XcY5d058yanCg7mkvlGT+ApXB
-	 jXCYvCUtW3JSvJj0ZPWbPE9SszsQ50qgIQATaa/JxdPcNEHzglGLkZ5t5l9oTzTpYZ
-	 NpQbZRePDV2LuDAwAlcOnngz44Ps8PKxXwi6B1w3DODBBXaEwfgPIdXIkWS7NqZbfi
-	 E3l4UlAAhgAj267kZQKmGfT8j4IiHA91xsPiqmybr8KrOtsKnIqimQYCRJ7m+uGxru
-	 CkTbAoozlfgzA==
-Date: Wed, 10 Apr 2024 14:21:58 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/18] i2c: i801: remove printout on handled timeouts
-Message-ID: <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1712751861; c=relaxed/simple;
+	bh=UnmOqMZXlkkNhcT1d85UwBRUeAne0HW/X8tfs2LcQb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pW5LomplDkX00AJNc7hKv9HE3mF6GybQn98LjBDoHG5CciD9IxO2mhcn5qqBDs8KNpmk1ekREKvDHRWCEOcl6/IvodT6qAkO57hhASD/I+VDcqlCXhZLCifsUXZnP75VxP4NL4anMIviruBNKl66FO4EUg9i9FCPwzJOzrNv/vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ggI7H0Ba; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712751858;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prnpMYvGmfBZVhuyy9WAFJxzoO03O3wrk1EmdwlswVQ=;
+	b=ggI7H0BaSu8KAbGrZutxhpQsBcsgDIDgxGe/nyP0AqLOFaMd6vgDiPVq8BreKI/J0Y9laV
+	8jnL8k7HkBIeQh1cQGWYijmPUEaHqrr+UFgz1xP8kQIPic23F24oXNkHjpSnT0gPjEsTUq
+	xfwvnwb6S7okYSBhW2DZxW9S7lFOF7k=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-688-j4-sejf3OEyI6FBQLNadfg-1; Wed, 10 Apr 2024 08:24:17 -0400
+X-MC-Unique: j4-sejf3OEyI6FBQLNadfg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a46bae02169so706113666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:24:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712751856; x=1713356656;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=prnpMYvGmfBZVhuyy9WAFJxzoO03O3wrk1EmdwlswVQ=;
+        b=bpLqxJsU400iu1Bd/wynt+S8cQlB59bXIMDKOwIW3u6+64TGDa28r+s3o8u3v4jcpq
+         ODub/gkNIRRKY2oGUyyHhy4vIX/p+fwKqnHeiVGB2ePORGo+L54Ry4MpgQwy8zAaY8g0
+         EwvCUlGaaHcZRsb0zk8qssm8tdEGuIkNou/wy9dzMPkozAHzL3ZcStIJv9S4UD2MMmm3
+         22k6qeejq4qVLDPe+daFnlz60AmnBV9qhKPDsyDBBIGUGuHhj78bzwVAfPErqROsASL6
+         7onkuSx8LYJOPJ9BKaHvpuHtFV2NZAo3vEwmtwLc5Ve+fVng0nUozsmHz+K5qguD1fAC
+         O3GA==
+X-Forwarded-Encrypted: i=1; AJvYcCUyH5wI8fpauIisaj6qSu9fZy+w5fP4lAV1YcPXN4HO6C7lOEeiM3Cy1d9leFZfNxQUm/B5ND1HL02Y0h+4c0X57C/7wBdCR6KoCjiA
+X-Gm-Message-State: AOJu0YwWEWnp0g9mKS0tOeM7Ee5fh9xD5wRZ2uPed+TgeA34TfpS9SkW
+	soCVt81s7LKh2LB6OLuZtnlI14MNRSEmyGoPoSOOb8RBkm8/T2NGHXd726Ln46Mz5cdijQHSKQT
+	1jHjYsnhogo0+qk3CiwN2qcYhfQvcTPokgF+U1BDzkgxluZg7ouRzwh5rQadPAg==
+X-Received: by 2002:a17:906:4899:b0:a51:b49e:473e with SMTP id v25-20020a170906489900b00a51b49e473emr2092179ejq.19.1712751856428;
+        Wed, 10 Apr 2024 05:24:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+NCPZWeCOkmRpbzUy9LzzQApNIuXHHEWpmzVLAMZf1BHGFYXbO6mOeHd02i/UMhSes9ABoA==
+X-Received: by 2002:a17:906:4899:b0:a51:b49e:473e with SMTP id v25-20020a170906489900b00a51b49e473emr2092152ejq.19.1712751856107;
+        Wed, 10 Apr 2024 05:24:16 -0700 (PDT)
+Received: from [192.168.0.182] (host-79-51-196-100.retail.telecomitalia.it. [79.51.196.100])
+        by smtp.gmail.com with ESMTPSA id w19-20020a1709061f1300b00a4e03823107sm6925730ejj.210.2024.04.10.05.24.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:24:15 -0700 (PDT)
+Message-ID: <88144494-33f1-4f43-88c0-885ea6b87e07@redhat.com>
+Date: Wed, 10 Apr 2024 14:24:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] Disable RT-throttling for idle-inject threads
+Content-Language: en-US, pt-BR, it-IT
+To: Peter Zijlstra <peterz@infradead.org>,
+ Atul Kumar Pant <quic_atulpant@quicinc.com>
+Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, vschneid@redhat.com, rafael@kernel.org,
+ daniel.lezcano@linaro.org, kernel@quicinc.com, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20240410045417.3048209-1-quic_atulpant@quicinc.com>
+ <20240410085441.GA21455@noisy.programming.kicks-ass.net>
+ <20240410112933.GA3190796@hu-atulpant-hyd.qualcomm.com>
+ <20240410114609.GA40213@noisy.programming.kicks-ass.net>
+From: Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20240410114609.GA40213@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Wolfram,
+On 4/10/24 13:46, Peter Zijlstra wrote:
+> Also, we'll be replacing the throttling code with DL servers 'soonish'
+> at which point all this will stop working anyway, since DL will preempt
+> anything FIFO, including your idle injection crud.
 
-On Wed, Apr 10, 2024 at 01:24:20PM +0200, Wolfram Sang wrote:
-> I2C and SMBus timeouts are not something the user needs to be informed
-> about on controller level. The client driver may know if that really is
-> a problem and give more detailed information to the user. The controller
-> should just pass this information upwards. Turn all timeout related
-> printouts to debug level.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> 
-> Here, I did not delete the printout to support checking the termination
-> process. The other drivers in this series do not have this SMBus
-> specific termination step.
-> 
->  drivers/i2c/busses/i2c-i801.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index 4294c0c63cef..a42b5152f9bd 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -400,7 +400,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
->  	 * If the SMBus is still busy, we give up
->  	 */
->  	if (unlikely(status < 0)) {
-> -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
-> +		dev_dbg(&priv->pci_dev->dev, "Transaction timeout\n");
++1
 
-why after 5 patches of removing dev_err's, here you are changing
-them to dev_dbg?
+also, given that the code spins with preempt disabled, with dl server it could
+even become a non-rt thread...
 
-It's still good, but if we want to be strict, errors should
-print errors: as we are returning -ETIMEDOUT, then we are
-treating the case as an error and we should print error.
+FIFO RUNNING
+	DL_SERVER activates
+		their loop
+			disables preemption()
+			run()
+			enable preemption()
+	DL_SERVE throttled
+FIFO BACK
 
-Upwards, then, we can put some more logic and decide whether
--ETIMEDOUT is a real error or not and consequently print a debug
-or an error message.
+So, there will be no need for this busy loop to be RT.
 
-As you did before, I would just remove the printout here.
+Anyways, it breaks RT and DL if it keeps running for too long... It can
+also cause complaints like RCU stalls and loong wait on locks, e.g., on
+kworkers...
 
-I will wait a bit for more comments and take patches 1 to 5 so
-that I can unburden you a little from them.
+-- Daniel
 
-Thanks,
-Andi
 
->  		/* try to stop the current command */
->  		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
->  		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
-> @@ -411,7 +411,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
->  		status = inb_p(SMBHSTSTS(priv));
->  		if ((status & SMBHSTSTS_HOST_BUSY) ||
->  		    !(status & SMBHSTSTS_FAILED))
-> -			dev_err(&priv->pci_dev->dev,
-> +			dev_dbg(&priv->pci_dev->dev,
->  				"Failed terminating the transaction\n");
->  		return -ETIMEDOUT;
->  	}
-> -- 
-> 2.43.0
-> 
+
+
+
 
