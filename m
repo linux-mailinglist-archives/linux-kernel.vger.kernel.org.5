@@ -1,301 +1,255 @@
-Return-Path: <linux-kernel+bounces-138905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22F989FBE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:44:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F077A89FBE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4780B3046E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:39:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5EC7281BC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F0916EC19;
-	Wed, 10 Apr 2024 15:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997CD16F0EF;
+	Wed, 10 Apr 2024 15:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ADeYPqI8"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="AMi+XUev";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="r7JpEFAp"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8274516F0C8
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763586; cv=none; b=TxW1JK4ZNTKa83JvstI3jle3mx1kBgqM3sA4apoN9meUgUO4iOqQdGTrtDTrMq6dYq6C60bObagKpAzhYZ+xatxkX5QHp0lYrj2naCgj2I8oeS9DcmCAhLcFZzaijFjOVFgBsSEAEHgzMBNGdVlKocZ8SoduuXF6nrnX4hXLfB0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763586; c=relaxed/simple;
-	bh=f3GHd6QNvPmRJrTFu3PXrrq17seSZz+8VF3s+UCv4Xw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=mb21/Nz/ziElUtWsKwyMSVbcrGuV9SESNRGAC/BGey4/j9wXAk4om1eJtCKbCg0Iy2fXqfKta0oFonze8xjnJudqG+k63tTmxWi97ZT7ripFBZqlMDOlqECMM3vHFIdGWfko77n2i8V9dBKyWdQKC0dt85YDTAGNlP1lx7+6/c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ADeYPqI8; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-343b92e54f5so5057799f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:39:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B091E878;
+	Wed, 10 Apr 2024 15:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712763719; cv=fail; b=ONkxvSpjiMwVZdOcC5eM133Pei49iGyyNwxbHmbcS7thu31wKdtBkn/R3Z8fDuMJbkD3bJwlNlvUYDheURKURtx0sm5hkrhWTugpkceMxPVxaiEodJ10tbbpdshmrKTec8vTZcnI7ZSKhsnMmmeGP8jep58NqeJ9vx6bBc8sWmw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712763719; c=relaxed/simple;
+	bh=hy9xLJCQOUi2chQPoywiO17DCGGssOgeWdHhz8TJV/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=LjvaE9y5aYpFJR3TlDOiErKGxH9orxxE+Es/NKkQI/oreW+CVH3Sr70P+w+XHuVwY/tYv/GvEvkDBo9/ezo0BME3HQaZYs1pYtlNtgOafimrt7JNkSRPjS6ldv+f7PN+U47DNTi0pLLfCcaUuDquScraFI9masbxus39LFphn6g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=AMi+XUev; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=r7JpEFAp; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AFD83B012700;
+	Wed, 10 Apr 2024 15:41:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=SfF+fIg4jHj7ATRN+iMhcc+g337etoLymmk/LAPnT4E=;
+ b=AMi+XUevMNmQGrTq13HL91r9PmIeTjvnn5xRpMqQHWctYwXJ1Diy3rv1uq3aiMaZahEC
+ Yi9GCD2LIP5xcJ7qw3GnoJGJqk/CM9No0Tdg4bftELYp08HZZ71eBQ39o13w/lFAh4Y4
+ 9Ycc0BWR7N/mnEUUITZwYxt88CGHN2erHwk8LNX6+RpnKMMhwdesHNZLwRQv/y4lUDSS
+ xbzWncZqbxZIaRrkR+6czPC/AnRyp0QJOeMoJhoZtP30Juv9F0M1Y6kyb4uVNIoSL2uZ
+ OsvbKrdiyKgB4TPcuaEu8Oj1YlTJCJMQd61WSK/cuOQp4vu49i4FerlfH5Vy8Pw8/XkH 3Q== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xax0uqn6g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 15:41:27 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43AF2w6o026448;
+	Wed, 10 Apr 2024 15:41:26 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xdrsrd1we-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 15:41:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jzLkmAf0lFngTHIMZ0wkF8AVrEJVCqiu+AAy2AtXyjjMtGgRfQGuJhDJLT2WEN/zghj4L0RILY0mwAjQA11BBoRhwmlt8s834wBrDKpPU/99AbfCST5fPRxHYob8RWQgesHWFFYCcuJ2bxa3eaAwe2iB9yeRoABgUo/Q/fNUvAlXEIBxVc1k76zhV55OlSPNvlbOUldewmWhkI3Gw561DI1JmINBOtH8cakCPLbLJYVEBoD6QmpEkj0+1XRmY4zqHtzbTSo4fdE3oI7nGxNx1zGPlAtIaS3XPIs8GVqO6SWW8G1fenNV5sdx/fq23XYrqru+yeOBK7IgIwt8eA9ZkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SfF+fIg4jHj7ATRN+iMhcc+g337etoLymmk/LAPnT4E=;
+ b=YZikBkeVntPRl8k+ye4miSyxVdwF7y/bFaWn63ufAv/6kQAkgv0rwGAPQJrah5s/3+Ldxo9lYLnkgcLWgmUpY9F5Arf0mns7Y7VGQ5L96WKYCYFxhK05+9BCOhiSFW8BsFrBxPf/B2LYqiTL0gcvb+YI2CLXA4XhMxyvmj3sMnbvO3uQN/Aae/bkLITmfNUxVwQSDLwF514pBmenb8ySspzgZ9wzB4/K1cAa9+JA+o3X9kJYY5N/zbaMl82DJB1yKmaKWGj5Mw9ksFWQIY5y5o5TNNuuvi3XSSJb4ve6XyiNericdm5ElhvgNAhC2TEp7lKuFlEthBCmU8ki6jlKFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712763583; x=1713368383; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d53vYczkCVTwIJoyWEVHYrjviB2cJtuYV4baa1qAm7s=;
-        b=ADeYPqI8p6ulXLxybgtj0GPU5QtVEOnzGjrlsmJNHl1GNJNVj8W34ckPl2Cnd4T7EH
-         kOGJ9c6USmTkiIxc9lfqBSK0WM9RRB0GMhq7A1Mj77bb2NVfmptsRwjqUqetVcjDPkYA
-         dvCsEBLQnXmkeD/KQnvfG7IcLIv3D3ueKRyFDFbFR8CQQ87gtv1Z6okFX5c1zo7s82qR
-         sESc6KjOjsUgiYqHxIBshk2xSUKj1kmazmxgBDVCG/NKPCh3yha7C2Y77wicyCkD0IUG
-         PvN7YnZhDqMvsRAuDE8KrgeR/SVH85nbQLr0PaK6DwOchpZ/9mpoK4gk3X4Wsmdq57VV
-         9gbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712763583; x=1713368383;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d53vYczkCVTwIJoyWEVHYrjviB2cJtuYV4baa1qAm7s=;
-        b=MZyU3BZoTHERkv/z2hIRsmStp32ERYVPLu/jTxSl6kA4c1wFAiJniagY7YnVIdOC6V
-         XhIlXFlW51x1iLh7IW6FlxGuiGUoJrxu6T1NxNyTnozl0rEfhLkTFC9drgQJxuE00pEe
-         EzMWvMWSuZ7xjTz7K62T25UOiDcaquIvTvV8ipR/ozLQiiyS/u06nw7Irs/QSuy30W7J
-         4tFwCGvvT+CQRi2+8uv4NULdcpeuZZGlN9Ubq6cgr/xFphtdiZP8e8NF73N5tnsHiUWM
-         wf0WEJVWF7CHRneftQ77zph1hiq3DOZJyIR7uH4RmsbarSTwENps6/I45RvazAiwlkSI
-         jx8A==
-X-Forwarded-Encrypted: i=1; AJvYcCVIJc2ofFVw6NZGwwvSAzcDJGxFJ6K2Eiqr1qQostCHqeoveYlEFjKr2/T0ZY6UaALjru781bNLdXd9MNx/mlUpvYqj9B+nCK2hS4gb
-X-Gm-Message-State: AOJu0YzvwE6HjfIQrAJSY5SCn9AxgTWcRVczhblBJkK3IcbUlQPAWYDK
-	/pv/Lnh4LUrMgpy44IkAsWOxj1wd4M0iMmm2DwN805W/sZzb4YTW1Q5u+FjpuCs=
-X-Google-Smtp-Source: AGHT+IHyfSVJpENtYwkcw5XEx41O5hbrKOhJxBfU+FCySBe7Hl7lIlIJ09wsi+hxLDs0K1PUsib3zg==
-X-Received: by 2002:a05:6000:1ac8:b0:343:c58f:7af4 with SMTP id i8-20020a0560001ac800b00343c58f7af4mr2121310wry.59.1712763582629;
-        Wed, 10 Apr 2024 08:39:42 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id o14-20020adfe80e000000b003436a3cae6dsm13970910wrm.98.2024.04.10.08.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:39:42 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Wed, 10 Apr 2024 17:39:40 +0200
-Subject: [PATCH] phy: qcom: qmp-ufs: update SM8650 tables for Gear 4 & 5
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SfF+fIg4jHj7ATRN+iMhcc+g337etoLymmk/LAPnT4E=;
+ b=r7JpEFApL0NKmczCj7R6KBCEobaTCoZyt3+FaSGidjThOf1/yQyoBVJdL+jj9Wy78O5ZRntDIAqv9ZAQpdmnx1mbFv0wF6aGI0Al2TEqOScCDXTzAXidN14mxrZ0KRRbwJBVOqzGn7KTrK7+1ne9Q7F7u5zbS6TZKxrMHOUJ2hE=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by PH0PR10MB4709.namprd10.prod.outlook.com (2603:10b6:510:3d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
+ 2024 15:41:22 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 15:41:22 +0000
+Date: Wed, 10 Apr 2024 11:41:18 -0400
+From: Chuck Lever <chuck.lever@oracle.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Justin Stitt <justinstitt@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+        Tom Talpey <tom@talpey.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] trace: events: cleanup deprecated strncpy uses
+Message-ID: <ZhazHrz4SxBs+BFD@tissot.1015granger.net>
+References: <20240401-strncpy-include-trace-events-mdio-h-v1-1-9cb5a4cda116@google.com>
+ <20240410113614.39b61b0d@gandalf.local.home>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410113614.39b61b0d@gandalf.local.home>
+X-ClientProxiedBy: CH0PR04CA0091.namprd04.prod.outlook.com
+ (2603:10b6:610:75::6) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-topic-sm8650-upstream-ufs-g5-v1-1-5527c44b37e6@linaro.org>
-X-B4-Tracking: v=1; b=H4sIALuyFmYC/x3MQQqEMAwAwK9IzgbSotL1K+KhW1M3B7U0KoL49
- y0e5zI3KGdhhb66IfMpKttaYOoKws+vM6NMxWDJNtQYwn1LElAX17WER9I9s1/wiIpzi1/zsez
- Id8FFKEXKHOV6+2F8nj8D/+qUbgAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9822;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=f3GHd6QNvPmRJrTFu3PXrrq17seSZz+8VF3s+UCv4Xw=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmFrK9aBTyXRcKLmIAW28QRwwXeXvz6SXD6sD27iUI
- A6zFoYKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZhayvQAKCRB33NvayMhJ0bTHD/
- 41ZTP/9yjEQXAuO8ob1sjTxSLTgMFEH0IVXWsMK5eNirPhHdqDAH4gynZ851we2G31KcuopSKQLvLE
- FF33KluyzUp2NprhXITfqLFFkYgEFAohzEohwmBsJMu87I/nX299BxwNYe7DTht6ApPPgmBe60Bnik
- BbVE30n+U65BZ8BzolCZDo4Dtn8n+uBVPgvfWGmbpC9rEuVxN8bmB72Jo785yspa/hHja4GXGQtpiK
- cxV2vFmPACvOZJC8O662QgKkNfliCjo2TCr8sKMGvMUG7p5Hdidqhj2bXl5zzOWAzFpLzp88a0Hnew
- MJWT1VLMPmAe/vVVl8TaFRw394gF9+CYzcBi+2ecGXrbMty2qUCdJIZQRVUbq9ifuVT2ugN47AzuhS
- RoJRWvbYRutlLYgnsIAaJTCFpJ3yLY1SM89j/Ji2nZglEiJMyKa7GIDrqlg8V/e8YJscVCoql36+g4
- r1Gzp30G5IwIsxMeHoIEH6AS/B2pDehvIiX438T8SQaeganJhr09dfFKmYUikFtYcAU4gjn46tdpCe
- bsQHiQpVQnaxt+5n7m8RshRLO+JZQcPwswHKjH5rEKFt9hZ3ybcnA26kyCT0DczxxddLNx62dZSyXy
- /q6GaZDjnFjFvtZYe1mCrr8Hv2vm1Pa3e7+gg2zd+X1gjSaxheD0mVondjTA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|PH0PR10MB4709:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	YjqA9oFPl7fjnBOlqMszpHCn+vbSZujqYNgxhKiYuuBWpVuIZDtaWEf2Vo3qR1yD2pvt36aAIa2DlKTZG711HF/qEM5VmdRfc5iqeOA70X0FXvY1zwg0BLghzp2Vd60M6LrsKVFTBh4ebcsWYMCmuYXs2sAzf7N/iDHlCaypT24sov7JRjaVXEIPFhI7de0tsjVlIls4139AI0RDhYFAD2AGxX7OgSqq0dCDIHyIVQ9WhykXb5bX/Rwf/UJNByFhZd1V4mMj1oIyXKpLG+WwFHzwh+rIVGojOFeKLKvn+H+ebc03tSJgJuE6JElNwkLNUzZSN77b1dSIIYkDgKWumjnnPhO/PsIXv1AddiNA6Ppqle3qTgRRdiquLPQ2TqHRG9XHfkv43odiH2RAkexF6hvr+twBwRVhFlr3BuHHaH+dO9sgPlTojfG/TltRZ6UMSC1qSHV6jicgOMN0UKG20XmCAOZ7E70qgHI0pMBrq8PNiTg8tMaxK0vKeWYp4FxIWvQ2sguQDaEbqsCqMcYroQt6ubc2avecBDTDRfH30nS1rjsoqU1VYDlAKRZx60yQ6wKdFr0MGzoaByeigIqfACI0+Yz+vVg7hR0gvRFGHJjOTlD5JxTJUGdnJwwTOxI3n/dLFTxR9n/6Ix/fZpSBaiGKLePQg+6ZA5dnNJzinNI=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?+HxlQiuvGaKtde7yq1JJVtxQuu43qPzL+R0OaPa08lnPnkTYv5Q5elB/bm2h?=
+ =?us-ascii?Q?zQcucD30deVLYL7/ZsT93q9c6U4EW9O12EAhs4Sln5QIBF67NjzmUZMiCura?=
+ =?us-ascii?Q?obLoylwzT0F3Es+7X8cy8QJj9U6WAHmmm11GnTRR4MrI1fG5BEb2borccrAw?=
+ =?us-ascii?Q?XUmfvAp0NGbaD4AbQmGL6o8FB4O926gPGDEszFZuJoA8U35weRDN1nOlkSD4?=
+ =?us-ascii?Q?8MjY02rEXdFKFmOhDxEt+m1QH9Si0Qmf6o71xLFJNBpGeSklRf1awydj8cM8?=
+ =?us-ascii?Q?iWOkkq0zIzfZ6r6AGxWSdzeu3Q1DkRz9zWvSHV3fdYOgoNNZ4A811DOruXWX?=
+ =?us-ascii?Q?bQIScGsXHeXvIQ/OQy9crAlOaWJ8dLYGfGCnLPL22COzGTfrKIGldOjVz/tc?=
+ =?us-ascii?Q?IQRU4xgFZkVI33TVORlG39tUBeHdke8l7F/96Z86YZaYCBHoyE/+FgDMYQc2?=
+ =?us-ascii?Q?gMJJAa0HArNrpCLywnZ8Ocua1UvXsIvyiubi92CwMV8k7YRyIgglshVjZ2MG?=
+ =?us-ascii?Q?ACDQ2vQV7oT7ASnndf6L/7NAOpGv+zNbr7y3zNd4tj7DuRZOnSbiI6YaxMuJ?=
+ =?us-ascii?Q?GINxFIbGLM6vJI0ykb+HoDTjIQKV/GDK9okFadIC4J/CE1MOt94e4JfRKJjM?=
+ =?us-ascii?Q?tKQjPkT/l9xmYdorHlorpQmfrTOPSbTZGNpHgYeblQpnIgeF+mBkcGCqOp9/?=
+ =?us-ascii?Q?SDz9Zfu2JaUJj95bP6MivZJh30ZWMQ82NsZ29DAkx1iW9rrXaBm+KGZoQaRQ?=
+ =?us-ascii?Q?2ZL4AmplYScXDnkhEobk5Y1FK8eFkNsYzBluKwLZNq5Vbh5P8iRknK9qsGI8?=
+ =?us-ascii?Q?WNq9AI83+rxW6P6d11lPzOIlrDzAwyAbzwuPrDnfozOQnd//wV44rNMKZPvL?=
+ =?us-ascii?Q?dUovaRnynDtGGx7m1lncGFkKhWXEDPOl4oduG+w8g1qqvwiAUdNVLoRkDaYc?=
+ =?us-ascii?Q?bYHgQBEVSURNSwYdOZHtNnH1cAazn5TNNmqzHylsCQnn7ZvTubvIsym7wWD6?=
+ =?us-ascii?Q?+85EwdUItUpkLmTD3cUbpow1mqf7Ii8D7v/P3loSe4047lvmOWlQFm0oggTo?=
+ =?us-ascii?Q?yUmZyeCQ8mv0Ls27w/N6mKcphDZxpZxTyMogUJp5JKUSGlAK5/XWYcVJsWsI?=
+ =?us-ascii?Q?MMF5EiG+WQw/Qa2g+PUvohLSRklmAoLkGzPRgCMldYnHjCDxcT0U1K55ddZ8?=
+ =?us-ascii?Q?9eTWx3mDDwYW5Ihw0mRaUUB9K6zW2baAfOWY3xWKrYuDJk9g44s7yjITmCaF?=
+ =?us-ascii?Q?/1LL61nN3xV5GT9RPMAfW76hNDlzFyouxIf7KV35NlbIYd6ab6HkXJq64TmT?=
+ =?us-ascii?Q?ldW+NGPkfOHQGdpO3tAW01/Q5ud7ewIovlSX9r6L1Pb80Ruix28eL8UdbQBc?=
+ =?us-ascii?Q?2d00IFw/0QwblBh80yNGqoAV3hpZZxQmpD62NJemwfH0PTCTX58WVObqnoWf?=
+ =?us-ascii?Q?n4mAINgHNjaKni/FA7/qRzGVyNdYqmDFWpPnIyjsqeMi+rapxeh38x+X1Cys?=
+ =?us-ascii?Q?G7jUSP/nHdCCun3P6OLTGZ0PXv2iixIQ8Ykkmpds9HWHVUo01aIMg8SpefeK?=
+ =?us-ascii?Q?E8j80tIa0PWkhOKkKTM+JpJ3ZgDLkZtzzpjD7lsCxiOM7pvEgzaqgn6XkhY/?=
+ =?us-ascii?Q?6Q=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	juELbf0R+gjJHB6pRHNYpRUzR++yURXYP84hsE7KUWe+zGljK6a8YTZN/YfxfgVnV+RQpQq9gmT50D8Hsgqaz5tOIpQqKiFY/80JPypu6Jm1aEcgJU7Nfjr+XRf5urlofxXp2RmtSLo7IyKyud5GEim6cwd4I6SgJwgoBGCAv1Qe0Q/QVo0qWfZ3UcYOX2iQOZnX1FhKLd2ww5npuv742OqDySF0PddSd5qqzKeQfvXYgadrBZR7nsTpb6AOt8Mj5v3fwhcem7nOLjK4QCbjPjvsL+V2uFTrNrx8xwW3XEAyPARAnY3tFAOKH0e27UTqrUZP6gcjkdF/E1LrHtmvHwOjyQUU/GSwYQQsTfRvgBd8wbVrdsvXTKUZVzyGbxIhc9T6arRQK+llB396oxGHWHk5Gtv/+ZnasvgPVttMWXJCa7hG8kNgTHADVj8PFO9UuqPRt5hQsT3gjf6gBJ6AbMiDcG/HagNW3t/o/jAEdEY4Ro9YbpIlPemJ9cTPFnkfq/3ZLUkDBP+M7zRAfRRT2AZSHaVYVKvedleRTGkYK4w/JqmSIvQb5tJlaiKM1kkk2oY/FoRV8IjVrxx6DWi6z1qZ89fCSplqhiQgYrEk39U=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7768daf5-ba1f-40d0-4cf6-08dc5974abad
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 15:41:22.1891
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yDu+Rpo3cQh8/uqft770gVjXP6ET2QZWUUsggpw16ALYSAne2ym+P79OM/vIHZSWymt+sxo+9IFQd+RGX7enjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4709
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
+ phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404100114
+X-Proofpoint-GUID: DC8y-Z9N4BiXGJ-z__Jb2IpokFtmM6fg
+X-Proofpoint-ORIG-GUID: DC8y-Z9N4BiXGJ-z__Jb2IpokFtmM6fg
 
-Update the SM8650 UFS PHY init tables to support Gear 4 and Gear 5
-using the overlays setup (only supported Gear 5 before), and sync
-back with the latest Qualcomm recommended values.
+On Wed, Apr 10, 2024 at 11:36:14AM -0400, Steven Rostedt wrote:
+> On Mon, 01 Apr 2024 23:48:52 +0000
+> Justin Stitt <justinstitt@google.com> wrote:
+> 
+> > diff --git a/include/trace/events/rpcgss.h b/include/trace/events/rpcgss.h
+> > index ba2d96a1bc2f..274c297f1b15 100644
+> > --- a/include/trace/events/rpcgss.h
+> > +++ b/include/trace/events/rpcgss.h
+> > @@ -618,7 +618,7 @@ TRACE_EVENT(rpcgss_context,
+> >  		__entry->timeout = timeout;
+> >  		__entry->window_size = window_size;
+> >  		__entry->len = len;
+> > -		strncpy(__get_str(acceptor), data, len);
+> > +		memcpy(__get_str(acceptor), data, len);
+> >  	),
+> >  
+> >  	TP_printk("win_size=%u expiry=%lu now=%lu timeout=%u acceptor=%.*s",
+> 
+> WTF, that code is just buggy. Looking at the rpcgss_context event we have:
+> 
+> > TRACE_EVENT(rpcgss_context,
+> >         TP_PROTO(
+> >                 u32 window_size,
+> >                 unsigned long expiry,
+> >                 unsigned long now,
+> >                 unsigned int timeout,
+> >                 unsigned int len,
+> >                 const u8 *data
+> >         ),
+> > 
+> >         TP_ARGS(window_size, expiry, now, timeout, len, data),
+> > 
+> >         TP_STRUCT__entry(
+> >                 __field(unsigned long, expiry)
+> >                 __field(unsigned long, now)
+> >                 __field(unsigned int, timeout)
+> >                 __field(u32, window_size)
+> >                 __field(int, len)
+> >                 __string(acceptor, data)
+> 
+> The __string() macro expects "data" to be a string and does *not* check
+> length when copying.
+> 
+> If anything, it needs to be:
+> 
+> 		__string_len(acceptor, data, len)
+> 
+> as the macro code has changed recently, and the current code will crash!
 
-The new recommended values allow a solid 50% bump in sequential
-read/write benchmarks on the SM8650 QRD & HDK reference boards.
+A general question:
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |  4 ++
- .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  6 ++
- drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 73 +++++++++++++++++-----
- 3 files changed, 68 insertions(+), 15 deletions(-)
+Is there a test suite we should run regularly to build some
+confidence in the kernel's observability apparatus? We're building
+a menagerie of tests around kdevops, and one area where we know
+there is a testing gap is the tracepoints in NFSD and SunRPC.
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
-index 970cc0667809..f19f9892ed7b 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
-@@ -30,5 +30,9 @@
- #define QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1		0x1f4
- #define QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1		0x1fc
- #define QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME		0x220
-+#define QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S4		0x240
-+#define QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S5		0x244
-+#define QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S6		0x248
-+#define QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S7		0x24c
- 
- #endif
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
-index d9a87bd95590..d17a52357965 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
-@@ -25,12 +25,15 @@
- #define QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4			0xf0
- #define QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS			0xf4
- #define QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL			0x178
-+#define QSERDES_UFS_V6_RX_RX_EQU_ADAPTOR_CNTRL4			0x1ac
- #define QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1		0x1bc
- #define QSERDES_UFS_V6_RX_INTERFACE_MODE			0x1e0
- #define QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3			0x1c4
- #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0			0x208
- #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1			0x20c
-+#define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B2			0x210
- #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B3			0x214
-+#define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B4			0x218
- #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B6			0x220
- #define QSERDES_UFS_V6_RX_MODE_RATE2_B3				0x238
- #define QSERDES_UFS_V6_RX_MODE_RATE2_B6				0x244
-@@ -38,6 +41,9 @@
- #define QSERDES_UFS_V6_RX_MODE_RATE3_B4				0x260
- #define QSERDES_UFS_V6_RX_MODE_RATE3_B5				0x264
- #define QSERDES_UFS_V6_RX_MODE_RATE3_B8				0x270
-+#define QSERDES_UFS_V6_RX_MODE_RATE4_B0				0x274
-+#define QSERDES_UFS_V6_RX_MODE_RATE4_B1				0x278
-+#define QSERDES_UFS_V6_RX_MODE_RATE4_B2				0x27c
- #define QSERDES_UFS_V6_RX_MODE_RATE4_B3				0x280
- #define QSERDES_UFS_V6_RX_MODE_RATE4_B4				0x284
- #define QSERDES_UFS_V6_RX_MODE_RATE4_B6				0x28c
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-index 590432d581f9..1b78c1330a12 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-@@ -830,17 +830,20 @@ static const struct qmp_phy_init_tbl sm8650_ufsphy_serdes[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x11),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_HS_SWITCH_SEL_1, 0x00),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_EN, 0x01),
--	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
--	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x44),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO_MODE1, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IETRIM, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IPTRIM, 0x17),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_INITVAL2, 0x00),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x41),
--	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x06),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x7f),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x06),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x4c),
--	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x06),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x18),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x14),
- 	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x99),
-@@ -848,17 +851,28 @@ static const struct qmp_phy_init_tbl sm8650_ufsphy_serdes[] = {
- };
- 
- static const struct qmp_phy_init_tbl sm8650_ufsphy_tx[] = {
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_LANE_MODE_1, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_LANE_MODE_1, 0x01),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_RX, 0x0e),
- };
- 
- static const struct qmp_phy_init_tbl sm8650_ufsphy_rx[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2, 0x0c),
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4, 0x0f),
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x0e),
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0, 0xc2),
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1, 0xc2),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3, 0x0e),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4, 0x1c),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x3e),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0, 0xce),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1, 0xce),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B2, 0x18),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B3, 0x1a),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B4, 0x0f),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B6, 0x60),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE2_B3, 0x9e),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE2_B6, 0x60),
-@@ -866,23 +880,41 @@ static const struct qmp_phy_init_tbl sm8650_ufsphy_rx[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE3_B4, 0x0e),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE3_B5, 0x36),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE3_B8, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B0, 0x24),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B1, 0x24),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B2, 0x20),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B3, 0xb9),
--	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B6, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B4, 0x4f),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_SO_SATURATION, 0x1f),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_PI_CTRL1, 0x94),
- 	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_RX_TERM_BW_CTRL0, 0xfa),
-+	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL, 0x30),
- };
- 
- static const struct qmp_phy_init_tbl sm8650_ufsphy_pcs[] = {
--	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
- 	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1, 0x43),
- 	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PCS_CTRL1, 0xc1),
--	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x33),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0f),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_SIGDET_CTRL2, 0x68),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S4, 0x0e),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S5, 0x12),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S6, 0x15),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_POST_EMP_LVL_S7, 0x19),
-+};
-+
-+static const struct qmp_phy_init_tbl sm8650_ufsphy_g4_pcs[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x13),
- 	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY, 0x04),
- 	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY, 0x04),
--	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0f),
--	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_SIGDET_CTRL2, 0x69),
--	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
-+};
-+
-+static const struct qmp_phy_init_tbl sm8650_ufsphy_g5_pcs[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x33),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY, 0x05),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY, 0x05),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY, 0x4d),
-+	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME, 0x9e),
- };
- 
- struct qmp_ufs_offsets {
-@@ -1407,6 +1439,17 @@ static const struct qmp_phy_cfg sm8650_ufsphy_cfg = {
- 		.pcs		= sm8650_ufsphy_pcs,
- 		.pcs_num	= ARRAY_SIZE(sm8650_ufsphy_pcs),
- 	},
-+	.tbls_hs_overlay[0] = {
-+		.pcs		= sm8650_ufsphy_g4_pcs,
-+		.pcs_num	= ARRAY_SIZE(sm8650_ufsphy_g4_pcs),
-+		.max_gear	= UFS_HS_G4,
-+	},
-+	.tbls_hs_overlay[1] = {
-+		.pcs		= sm8650_ufsphy_g5_pcs,
-+		.pcs_num	= ARRAY_SIZE(sm8650_ufsphy_g5_pcs),
-+		.max_gear	= UFS_HS_G5,
-+	},
-+
- 	.vreg_list		= qmp_phy_vreg_l,
- 	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
- 	.regs			= ufsphy_v6_regs_layout,
 
----
-base-commit: 0112ca4447c2969b8106377a614f010ba85e4c9b
-change-id: 20240410-topic-sm8650-upstream-ufs-g5-b192e80a6c8f
+> >         ),
+> > 
+> >         TP_fast_assign(
+> >                 __entry->expiry = expiry;
+> >                 __entry->now = now;
+> >                 __entry->timeout = timeout;
+> >                 __entry->window_size = window_size;
+> >                 __entry->len = len;
+> >                 strncpy(__get_str(acceptor), data, len);
+> 
+> Then this needs to be:
+> 
+> 		__assign_str(acceptor, data);
+> 
+> Note, the length is now saved via __string_len() and not needed here.
+> 
+> I'll go send a patch to fix this.
+> 
+> -- Steve
+> 
+> 
+> >         ),
 
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
-
+Chuck Lever
 
