@@ -1,293 +1,236 @@
-Return-Path: <linux-kernel+bounces-139280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2CD58A00E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:50:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ADC28A00E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:52:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B63B2605A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:50:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0191F24C5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FFC184105;
-	Wed, 10 Apr 2024 19:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA8A18133F;
+	Wed, 10 Apr 2024 19:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WzpIdH2Z"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2060.outbound.protection.outlook.com [40.107.223.60])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/tyxoTy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B886E1836FD
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712778555; cv=fail; b=G69YrioFae+B77kMJRZd0y5Xgq9dB+vltmQU0baV7HQag2gJTI8Uix148hmM9nf4GLSz08ibSkOQNvAXX2C8tqSA/UpDKYabTUNcQKO0DI2S25dqEgw6bz7zIeYoL2cpgA82SQIUnAV6fx1Mhv6kZftEin8O7tCBz9vETmvBkXU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712778555; c=relaxed/simple;
-	bh=Ci7haoYRr8687r9aOJ7Q6dVen6tkZHVaVnv4Defj3dQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rlNp9WYRlOv7G0q5PiJ/JaYhGJEvB3dGfsCJV+zJe+OGO200XYPfUBFoejfdgoT+IP7XThJSUB/0RLG7ON2PvUAXKwIGvTEAGRW2dtHSB8CIQkSs2/Yr2hqSAQRKAXHy7C9qypc2qOe24NQL56KSwMdvCbXuHTDwJJ5uB/7cE2c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WzpIdH2Z; arc=fail smtp.client-ip=40.107.223.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HeXhF0Gq8r5kfAGnxVhbsDAsPXAiEhZ3WOCglTzGxMVBt7IUnbgrGoE59QLOTuWVBOfk9P5iyJTyIECkn5SN6eXqVEBOi/9OqY8oqIwCrQvPc1s9Z3CQaPRe2ulOWO3GekTaZiqzqNUNLmWRIHQahY+lUrg7UBCHnCPCWDNXjjSaMFGef7LVCeyli4pn0W5yhB9aEol45zE0AlKAqcsOw+ooWNAsv10Tl09kOH2Yp8Lh6vPwGIQprto+c7zglPbDb2J8uvl/dbzoxgJOwTW84c/ifuoUQ6zTObslfYLzjPJ1FryNuW/i6MGwlZF97AelwYua0ifgR8P5V7r81O3Kww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NJcvBdWX17XntXG7nnPBUo+yiX3g7hqZkIUkQ22tiy8=;
- b=ZPrAw+Qyj83DqJhQ1xW44DUWMnn6+/1hcXhx90u02/lO5kCNFgbLVODdx5LS3oVyh65O3EcYL97TGNiuZ8ur7NrdYQF5VkaqZaRS/tOhcLvek0mXEkTPtx51aDRB49UDPezCmFTVm0RJurcqEcNFBAuvtIlPO7o6f4922qPaW/Fu5gHsykCq/gcFaSDAt+dC0REYrLGXpFuGMS/qvTMYWXHpsPV0n3l5FadEK8IFVAnCw2k5JIhaS/Z+tRonny7WYXDoE9rPl4ljwWf0yfD+xa3YeugILLjNV+R9rue3dliKvxwkG+D69eCArUqpL5trPndWqbLSgQYRd+2szA9WHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=suse.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NJcvBdWX17XntXG7nnPBUo+yiX3g7hqZkIUkQ22tiy8=;
- b=WzpIdH2Z3wBMrgtb52wZ+6MJNT76sDX58kBQB9y8ak/ShILVBAeJiHExU0343Z/uQq7E7Go9otCJKaEq8hIChUtTqY1OjySaocJ8yFiyC25gLkYBhwIes/Q9Y5YinyRNJGauBNuyubVdZ8ZpYdfPvmMQjXVrHUd8lzrLdnVxXz8=
-Received: from SN7PR04CA0214.namprd04.prod.outlook.com (2603:10b6:806:127::9)
- by BL1PR12MB5780.namprd12.prod.outlook.com (2603:10b6:208:393::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 19:49:10 +0000
-Received: from SN1PEPF0002636E.namprd02.prod.outlook.com
- (2603:10b6:806:127:cafe::fe) by SN7PR04CA0214.outlook.office365.com
- (2603:10b6:806:127::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.19 via Frontend
- Transport; Wed, 10 Apr 2024 19:49:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002636E.mail.protection.outlook.com (10.167.241.139) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Wed, 10 Apr 2024 19:49:10 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Apr
- 2024 14:49:09 -0500
-Received: from fedora.mshome.net (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Wed, 10 Apr 2024 14:49:07 -0500
-From: Jason Andryuk <jason.andryuk@amd.com>
-To: Juergen Gross <jgross@suse.com>, Boris Ostrovsky
-	<boris.ostrovsky@oracle.com>, Thomas Gleixner <tglx@linutronix.de>, "Ingo
- Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Stefano Stabellini <sstabellini@kernel.org>, "Oleksandr
- Tyshchenko" <oleksandr_tyshchenko@epam.com>, Paolo Bonzini
-	<pbonzini@redhat.com>
-CC: <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>, "Jason
- Andryuk" <jason.andryuk@amd.com>
-Subject: [PATCH 5/5] x86/pvh: Add 64bit relocation page tables
-Date: Wed, 10 Apr 2024 15:48:50 -0400
-Message-ID: <20240410194850.39994-6-jason.andryuk@amd.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240410194850.39994-1-jason.andryuk@amd.com>
-References: <20240410194850.39994-1-jason.andryuk@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B477828FD;
+	Wed, 10 Apr 2024 19:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712778763; cv=none; b=dCZrMORbmyW+JGyY900zv/juCAwRYOM5IFUm4/lz0/wjeZTMjzI7r14REM3n4xpCmwXkoIH42usjUWmYun099tEUDsuW4jLu+Ry1tXo1dfg33OdQ77UB9sLtujwkwHyFuxNUaucjCXMat7wa4Yzk+p7Eq0O0Ct71wEAQc2YReVk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712778763; c=relaxed/simple;
+	bh=HmV0bjsSlKEC99Ik9DKscFRJxpEuP1+26uWiLWV86jE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L1OXK0mXevcfHFQH0pklayi+MCULiPCXzgo26Sks+CGJtLKlwMVgfrvGkTztemaqPhvDpTxXVPmmueITNOYzZ3k9tkGOFP+N2R8LKJH4le9zX3qwXVGMhqEhZc9oqJuXzCZPQ0KSNaE9K2sIRjoad1dl88FQLOCUkETUxC8AV4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/tyxoTy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C26F5C433C7;
+	Wed, 10 Apr 2024 19:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712778763;
+	bh=HmV0bjsSlKEC99Ik9DKscFRJxpEuP1+26uWiLWV86jE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m/tyxoTy/wuuYMKP78XeK61XHpz9pROlv6nWW9vTKwTHvf1DS88n6UIxf0OMt8S5R
+	 jLU0JkE0nfbSjxFqtXDW/9hP+yq1A2HP9iyi0rc6EyQR33e+ETOcat1uP94YUU9+rm
+	 cXpAsO2b+czJCIm2sojByH4QjLw/N+phz1WYVo5DsgthysWkNb2wwQPdoF6agtJ1a+
+	 jMr+Zj1y3f6uD05OZRRpeN5B7ueMW1Hl+tLpD4s/IYxAdFBVsus8zaNLXDLI1whaJU
+	 K7L5W/xUlRFdy6EBazve70BsqgVQ3ZdXx2B8g+EUAJ4BMYI0n3RJskmO3+1L6j+5Ko
+	 vB/ePzX/EKBZQ==
+Date: Wed, 10 Apr 2024 16:52:39 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 4/6] perf annotate-data: Support event group display in
+ TUI
+Message-ID: <ZhbuB43qQXzfUT14@x1>
+References: <20240409235000.1893969-1-namhyung@kernel.org>
+ <20240409235000.1893969-5-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB04.amd.com: jason.andryuk@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636E:EE_|BL1PR12MB5780:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d54aceb-29a4-4713-b9f4-08dc59974a6b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7pezkZQ//Se4v0JvD3x4hLYAlIKS3Bh/TWtA8kWmz8yBAAX9Ehu0NYlbuUwnwGyu45WGKNbu4xrGE2nOFjuxmulLWFL2wfwIBrUmYzJZj8Ou4xQuqSmBHo6ut4k1jJkp7VIyKAcLqGYJIwIw8o+6DlGTNuwatYdhnzUI2mRXVCOtYeS/9xHXrnJ91uAKygIrx2NWq2/Y30FSI6gFKjvPv+PjPw6zqff2+0GvGpVxIYvWrqKD0CdASF4gfPzGeFW9rlA6n4Y494lRdvxfj211AQENQ0t+NnAP4/GHiHodSnXWNeEgaAD8cwFa7nh126jhhZaZtvPqyHvpGh8wlmiM/g8qyKgQpCwJQtu/txNg+l7ATuqPu0KmzhqFNANYR9j1Sc/c2g2T6Bg9GVyP8QDXRTXm9aR64yI7mXyANnghBopD0zfIcmBKUPgfG6FjL6RTyzxhtbL7UmMPEJqy821hFIiVqiFqQlRqAirbLnYgLgUwoczspEdfhiD8zPRXRl0jzzsYygy+p8Ns+v/9HcqWJXNctEbSEyN8gxfEqJgOfwYdv8KzWbu85WtYJrBA+p4jARwVO2RxpSBRn3xdqwolJs7SNMg303x8S6eFA4IY3xQdbFTbyVBh0sLYK7JDXEvJgoJz/S5cKGa3e+EGo3SfAYXlnu9d4avPOVoBOPii4667QBVo6KKM+HZ38Xq01wx7JuVe1lEzJodH5sLKdW6/7GXTQDITQ4xHbloT8lxasBfw7Gglx69jUgEnfBjsFOS6DIAPJyPNg2N2r7sUmL6w6Q==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(82310400014)(36860700004)(376005)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 19:49:10.2650
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d54aceb-29a4-4713-b9f4-08dc59974a6b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636E.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5780
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409235000.1893969-5-namhyung@kernel.org>
 
-The PVH entry point is 32bit.  For a 64bit kernel, the entry point must
-switch to 64bit mode, which requires a set of page tables.  In the past,
-PVH used init_top_pgt.
+On Tue, Apr 09, 2024 at 04:49:58PM -0700, Namhyung Kim wrote:
+> Like in stdio, it should print all events in a group together.
 
-This works fine when the kernel is loaded at LOAD_PHYSICAL_ADDR, as the
-page tables are prebuilt for this address.  If the kernel is loaded at a
-different address, they need to be adjusted.
+Please provide the desired output, i.e. the "like in stdio", together
+with the 'perf record' that creates a perf.data file that will then be
+used with 'perf annotate' to produce the old output and then the new,
+I'm trying to do that now to review the patch.
 
-__startup_64() adjusts the prebuilt page tables for the physical load
-address, but it is 64bit code.  The 32bit PVH entry code can't call it
-to adjust the page tables, so it can't readily be re-used.
-
-64bit PVH entry needs page tables set up for identity map, the kernel
-high map and the direct map.  pvh_start_xen() enters identity mapped.
-Inside xen_prepare_pvh(), it jumps through a pv_ops function pointer
-into the highmap.  The direct map is used for __va() on the initramfs
-and other guest physical addresses.
-
-Add a dedicated set of prebuild page tables for PVH entry.  They are
-adjusted in assembly before loading.
-
-Add XEN_ELFNOTE_PHYS32_RELOC to indicate support for relocation
-along with the kernel's loading constraints.  The maximum load address,
-KERNEL_IMAGE_SIZE - 1, is determined by a single pvh_level2_ident_pgt
-page.  It could be larger with more pages.
-
-Signed-off-by: Jason Andryuk <jason.andryuk@amd.com>
----
-Instead of adding 5 pages of prebuilt page tables, they could be
-contructed dynamically in the .bss area.  They are then only used for
-PVH entry and until transitioning to init_top_pgt.  The .bss is later
-cleared.  It's safer to add the dedicated pages, so that is done here.
----
- arch/x86/platform/pvh/head.S | 105 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 104 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index c08d08d8cc92..4af3cfbcf2f8 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -21,6 +21,8 @@
- #include <asm/nospec-branch.h>
- #include <xen/interface/elfnote.h>
+- Arnaldo
  
-+#include "../kernel/pgtable_64_helpers.h"
-+
- 	__HEAD
- 
- /*
-@@ -102,8 +104,47 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
- 	btsl $_EFER_LME, %eax
- 	wrmsr
- 
-+	mov %ebp, %ebx
-+	subl $LOAD_PHYSICAL_ADDR, %ebx /* offset */
-+	jz .Lpagetable_done
-+
-+	/* Fixup page-tables for relocation. */
-+	leal rva(pvh_init_top_pgt)(%ebp), %edi
-+	movl $512, %ecx
-+2:
-+	testl $_PAGE_PRESENT, 0x00(%edi)
-+	jz 1f
-+	addl %ebx, 0x00(%edi)
-+1:
-+	addl $8, %edi
-+	decl %ecx
-+	jnz 2b
-+
-+	/* L3 ident has a single entry. */
-+	leal rva(pvh_level3_ident_pgt)(%ebp), %edi
-+	addl %ebx, 0x00(%edi)
-+
-+	leal rva(pvh_level3_kernel_pgt)(%ebp), %edi
-+	addl %ebx, (4096 - 16)(%edi)
-+	addl %ebx, (4096 - 8)(%edi)
-+
-+	/* pvh_level2_ident_pgt is fine - large pages */
-+
-+	/* pvh_level2_kernel_pgt needs adjustment - large pages */
-+	leal rva(pvh_level2_kernel_pgt)(%ebp), %edi
-+	movl $512, %ecx
-+2:
-+	testl $_PAGE_PRESENT, 0x00(%edi)
-+	jz 1f
-+	addl %ebx, 0x00(%edi)
-+1:
-+	addl $8, %edi
-+	decl %ecx
-+	jnz 2b
-+
-+.Lpagetable_done:
- 	/* Enable pre-constructed page tables. */
--	leal rva(init_top_pgt)(%ebp), %eax
-+	leal rva(pvh_init_top_pgt)(%ebp), %eax
- 	mov %eax, %cr3
- 	mov $(X86_CR0_PG | X86_CR0_PE), %eax
- 	mov %eax, %cr0
-@@ -197,5 +238,67 @@ SYM_DATA_START_LOCAL(early_stack)
- 	.fill BOOT_STACK_SIZE, 1, 0
- SYM_DATA_END_LABEL(early_stack, SYM_L_LOCAL, early_stack_end)
- 
-+#ifdef CONFIG_X86_64
-+/*
-+ * Xen PVH needs a set of identity mapped and kernel high mapping
-+ * page tables.  pvh_start_xen starts running on the identity mapped
-+ * page tables, but xen_prepare_pvh calls into the high mapping.
-+ * These page tables need to be relocatable and are only used until
-+ * startup_64 transitions to init_top_pgt.
-+ */
-+SYM_DATA_START_PAGE_ALIGNED(pvh_init_top_pgt)
-+	.quad   pvh_level3_ident_pgt - __START_KERNEL_map + _KERNPG_TABLE_NOENC
-+	.org    pvh_init_top_pgt + L4_PAGE_OFFSET*8, 0
-+	.quad   pvh_level3_ident_pgt - __START_KERNEL_map + _KERNPG_TABLE_NOENC
-+	.org    pvh_init_top_pgt + L4_START_KERNEL*8, 0
-+	/* (2^48-(2*1024*1024*1024))/(2^39) = 511 */
-+	.quad   pvh_level3_kernel_pgt - __START_KERNEL_map + _PAGE_TABLE_NOENC
-+SYM_DATA_END(pvh_init_top_pgt)
-+
-+SYM_DATA_START_PAGE_ALIGNED(pvh_level3_ident_pgt)
-+	.quad	pvh_level2_ident_pgt - __START_KERNEL_map + _KERNPG_TABLE_NOENC
-+	.fill	511, 8, 0
-+SYM_DATA_END(pvh_level3_ident_pgt)
-+SYM_DATA_START_PAGE_ALIGNED(pvh_level2_ident_pgt)
-+	/*
-+	 * Since I easily can, map the first 1G.
-+	 * Don't set NX because code runs from these pages.
-+	 *
-+	 * Note: This sets _PAGE_GLOBAL despite whether
-+	 * the CPU supports it or it is enabled.  But,
-+	 * the CPU should ignore the bit.
-+	 */
-+	PMDS(0, __PAGE_KERNEL_IDENT_LARGE_EXEC, PTRS_PER_PMD)
-+SYM_DATA_END(pvh_level2_ident_pgt)
-+SYM_DATA_START_PAGE_ALIGNED(pvh_level3_kernel_pgt)
-+	.fill	L3_START_KERNEL,8,0
-+	/* (2^48-(2*1024*1024*1024)-((2^39)*511))/(2^30) = 510 */
-+	.quad	pvh_level2_kernel_pgt - __START_KERNEL_map + _KERNPG_TABLE_NOENC
-+	.quad	0 /* no fixmap */
-+SYM_DATA_END(pvh_level3_kernel_pgt)
-+
-+SYM_DATA_START_PAGE_ALIGNED(pvh_level2_kernel_pgt)
-+	/*
-+	 * Kernel high mapping.
-+	 *
-+	 * The kernel code+data+bss must be located below KERNEL_IMAGE_SIZE in
-+	 * virtual address space, which is 1 GiB if RANDOMIZE_BASE is enabled,
-+	 * 512 MiB otherwise.
-+	 *
-+	 * (NOTE: after that starts the module area, see MODULES_VADDR.)
-+	 *
-+	 * This table is eventually used by the kernel during normal runtime.
-+	 * Care must be taken to clear out undesired bits later, like _PAGE_RW
-+	 * or _PAGE_GLOBAL in some cases.
-+	 */
-+	PMDS(0, __PAGE_KERNEL_LARGE_EXEC, KERNEL_IMAGE_SIZE/PMD_SIZE)
-+SYM_DATA_END(pvh_level2_kernel_pgt)
-+
-+	ELFNOTE(Xen, XEN_ELFNOTE_PHYS32_RELOC,
-+		     .long CONFIG_PHYSICAL_ALIGN;
-+		     .long LOAD_PHYSICAL_ADDR;
-+		     .long KERNEL_IMAGE_SIZE - 1)
-+#endif
-+
- 	ELFNOTE(Xen, XEN_ELFNOTE_PHYS32_ENTRY,
- 	             _ASM_PTR (pvh_start_xen - __START_KERNEL_map))
--- 
-2.44.0
-
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/ui/browsers/annotate-data.c | 50 ++++++++++++++++++++------
+>  1 file changed, 40 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/perf/ui/browsers/annotate-data.c b/tools/perf/ui/browsers/annotate-data.c
+> index fefacaaf16db..a4a0f042f201 100644
+> --- a/tools/perf/ui/browsers/annotate-data.c
+> +++ b/tools/perf/ui/browsers/annotate-data.c
+> @@ -10,20 +10,27 @@
+>  #include "util/annotate.h"
+>  #include "util/annotate-data.h"
+>  #include "util/evsel.h"
+> +#include "util/evlist.h"
+>  #include "util/sort.h"
+>  
+>  struct annotated_data_browser {
+>  	struct ui_browser b;
+>  	struct list_head entries;
+> +	int nr_events;
+>  };
+>  
+>  struct browser_entry {
+>  	struct list_head node;
+>  	struct annotated_member *data;
+> -	struct type_hist_entry hists;
+> +	struct type_hist_entry *hists;
+>  	int indent;
+>  };
+>  
+> +static struct annotated_data_browser *get_browser(struct ui_browser *uib)
+> +{
+> +	return container_of(uib, struct annotated_data_browser, b);
+> +}
+> +
+>  static void update_hist_entry(struct type_hist_entry *dst,
+>  			      struct type_hist_entry *src)
+>  {
+> @@ -33,17 +40,21 @@ static void update_hist_entry(struct type_hist_entry *dst,
+>  
+>  static int get_member_overhead(struct annotated_data_type *adt,
+>  			       struct browser_entry *entry,
+> -			       struct evsel *evsel)
+> +			       struct evsel *leader)
+>  {
+>  	struct annotated_member *member = entry->data;
+> -	int i;
+> +	int i, k;
+>  
+>  	for (i = 0; i < member->size; i++) {
+>  		struct type_hist *h;
+> +		struct evsel *evsel;
+>  		int offset = member->offset + i;
+>  
+> -		h = adt->histograms[evsel->core.idx];
+> -		update_hist_entry(&entry->hists, &h->addr[offset]);
+> +		for_each_group_evsel(evsel, leader) {
+> +			h = adt->histograms[evsel->core.idx];
+> +			k = evsel__group_idx(evsel);
+> +			update_hist_entry(&entry->hists[k], &h->addr[offset]);
+> +		}
+>  	}
+>  	return 0;
+>  }
+> @@ -61,6 +72,12 @@ static int add_child_entries(struct annotated_data_browser *browser,
+>  	if (entry == NULL)
+>  		return -1;
+>  
+> +	entry->hists = calloc(browser->nr_events, sizeof(*entry->hists));
+> +	if (entry->hists == NULL) {
+> +		free(entry);
+> +		return -1;
+> +	}
+> +
+>  	entry->data = member;
+>  	entry->indent = indent;
+>  	if (get_member_overhead(adt, entry, evsel) < 0) {
+> @@ -113,6 +130,7 @@ static void annotated_data_browser__delete_entries(struct annotated_data_browser
+>  
+>  	list_for_each_entry_safe(pos, tmp, &browser->entries, node) {
+>  		list_del_init(&pos->node);
+> +		free(pos->hists);
+>  		free(pos);
+>  	}
+>  }
+> @@ -126,6 +144,7 @@ static int browser__show(struct ui_browser *uib)
+>  {
+>  	struct hist_entry *he = uib->priv;
+>  	struct annotated_data_type *adt = he->mem_type;
+> +	struct annotated_data_browser *browser = get_browser(uib);
+>  	const char *help = "Press 'h' for help on key bindings";
+>  	char title[256];
+>  
+> @@ -146,7 +165,8 @@ static int browser__show(struct ui_browser *uib)
+>  	else
+>  		strcpy(title, "Percent");
+>  
+> -	ui_browser__printf(uib, " %10s %10s %10s  %s",
+> +	ui_browser__printf(uib, "%*s %10s %10s %10s  %s",
+> +			   11 * (browser->nr_events - 1), "",
+>  			   title, "Offset", "Size", "Field");
+>  	ui_browser__write_nstring(uib, "", uib->width);
+>  	return 0;
+> @@ -175,18 +195,20 @@ static void browser__write_overhead(struct ui_browser *uib,
+>  
+>  static void browser__write(struct ui_browser *uib, void *entry, int row)
+>  {
+> +	struct annotated_data_browser *browser = get_browser(uib);
+>  	struct browser_entry *be = entry;
+>  	struct annotated_member *member = be->data;
+>  	struct hist_entry *he = uib->priv;
+>  	struct annotated_data_type *adt = he->mem_type;
+> -	struct evsel *evsel = hists_to_evsel(he->hists);
+> +	struct evsel *leader = hists_to_evsel(he->hists);
+> +	struct evsel *evsel;
+>  
+>  	if (member == NULL) {
+>  		bool current = ui_browser__is_current_entry(uib, row);
+>  
+>  		/* print the closing bracket */
+>  		ui_browser__set_percent_color(uib, 0, current);
+> -		ui_browser__write_nstring(uib, "", 11);
+> +		ui_browser__write_nstring(uib, "", 11 * browser->nr_events);
+>  		ui_browser__printf(uib, " %10s %10s  %*s};",
+>  				   "", "", be->indent * 4, "");
+>  		ui_browser__write_nstring(uib, "", uib->width);
+> @@ -194,8 +216,12 @@ static void browser__write(struct ui_browser *uib, void *entry, int row)
+>  	}
+>  
+>  	/* print the number */
+> -	browser__write_overhead(uib, adt->histograms[evsel->core.idx],
+> -				&be->hists, row);
+> +	for_each_group_evsel(evsel, leader) {
+> +		struct type_hist *h = adt->histograms[evsel->core.idx];
+> +		int idx = evsel__group_idx(evsel);
+> +
+> +		browser__write_overhead(uib, h, &be->hists[idx], row);
+> +	}
+>  
+>  	/* print type info */
+>  	if (be->indent == 0 && !member->var_name) {
+> @@ -267,11 +293,15 @@ int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
+>  			.priv	 = he,
+>  			.extra_title_lines = 1,
+>  		},
+> +		.nr_events = 1,
+>  	};
+>  	int ret;
+>  
+>  	ui_helpline__push("Press ESC to exit");
+>  
+> +	if (evsel__is_group_event(evsel))
+> +		browser.nr_events = evsel->core.nr_members;
+> +
+>  	ret = annotated_data_browser__collect_entries(&browser);
+>  	if (ret == 0)
+>  		ret = annotated_data_browser__run(&browser, evsel, hbt);
+> -- 
+> 2.44.0.478.gd926399ef9-goog
 
