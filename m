@@ -1,67 +1,87 @@
-Return-Path: <linux-kernel+bounces-139351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6158A01BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:10:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3348A01C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89FE92859CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:10:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B17D1F23BE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441B41836EB;
-	Wed, 10 Apr 2024 21:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5431836FE;
+	Wed, 10 Apr 2024 21:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kq7zG0h5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WNqDt/ie"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6350D15AAD6;
-	Wed, 10 Apr 2024 21:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A911836CD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 21:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712783407; cv=none; b=gAgOmrBUaMDifRh1wcZiA9f1ToqWr9kOIfxP/CC/aAsHbgMFvF23JFclFYle+wlG93nBcv3+bXWf+D2M02RJiAjFBzNdwoJbdmh8E1ZYcDKpG6RrKyFiR74jO6rJjN62KticPnMWZ8tMJSToWskt+0g7Ue6R4lg4ApPtGA7y/Tk=
+	t=1712783408; cv=none; b=Vvq0TmvafTjBWz4lgZeZWZxr9ch5PtKC12Ew2iuLcbWCv2050K0WtXWN6OyAdfjt4RY6aTwYGhePUhEP4zCRVPf7UqRhMFGYVb7C+AfUU7NTO9ohsCUW3TzdLmCYMszvp+rtrxfSzfUBuzucMHqgJTJnIZqE9A1tZj7AdmCndgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712783407; c=relaxed/simple;
-	bh=epqxiRJJT06ouxXsQ6dNk3Sxe1Z+04pN0RBFaN6a68g=;
+	s=arc-20240116; t=1712783408; c=relaxed/simple;
+	bh=bFyrIcuDs7nmErevy2zekDsqStQqLe+bXtd72c5CLDU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a1vV/cKp86XsE+TJGaMGhCAhQEcaj59JFa4Xp33aNtWmwrT0D0zsvVuq9e/vU9ZKE0YutSYyoyCyf1E+uCY4kaMxM2CDVXZnfcxckqDtGgb1NJDPQx/7htFFX9l7UO8ynEQPxnHJxZgXcKOZzCtFxbhKjz/BQtICUcVY4YCTNB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kq7zG0h5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26899C433F1;
-	Wed, 10 Apr 2024 21:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712783407;
-	bh=epqxiRJJT06ouxXsQ6dNk3Sxe1Z+04pN0RBFaN6a68g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kq7zG0h5SrekrSqAIw+NC6D2j3BaZVhgpOgUGupokoJKCz/HQPs1FjTM9YwwSddb5
-	 3Lf/9jM6lYOXCaDYAEJKz6nOJaRNxrLdgjXk4KLULbnOkSbYPPAgmFjuc/+ubF3/Wt
-	 2tkB62Sfl43fSMYh1TsFufYeJE8pF8RFLEfCInX/FkEzajdkwrXY/4ocd9fdIynrbk
-	 ERYPKG7lYMb402h1QoFDUrswFeo3Z1NZ+1Vx4Nef3xRjot+Id3mXxPe/IS4xOwTQvg
-	 typpy3hFMCPinD6ZUiNAkUkjkqyk6LRQhGLDHnoIEUoX0Hlql4VWpK6cDJz0FMfBeo
-	 xkVxny7zNWdeQ==
-Date: Wed, 10 Apr 2024 23:10:01 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
- properly reset the endpoint devices
-Message-ID: <ZhcAKSJCQag6AX09@ryzen>
-References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
- <20240401-pci-epf-rework-v2-10-970dbe90b99d@linaro.org>
- <ZgvpnqdjQ39JMRiV@ryzen>
- <20240403133217.GK25309@thinkpad>
- <Zg22Dhi2c7U5oqoz@ryzen>
- <20240410105410.GC2903@thinkpad>
- <Zhanol2xi_E2Ypv3@ryzen>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pBZoCHx9MaPuVa16jXYOc3d09oZdmL6ks0vUAYlD+UOZIoekWmA41CAUqT5Nrc8sbPb3SKaK+rjexS/Y0INJz4vKLXz9ooJBA+vMyV6K68wMb4qu22D686LXRy/DOPqRMx2T2NixI7kyrrQiIy0Mhtm3Rvk3YK39KSLMJs5GHb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WNqDt/ie; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e782e955adso6711020b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712783406; x=1713388206; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bv/V2BDcZ6BXQvfxxNM1w/X7hHGQqyp9bJFqKpeVUk0=;
+        b=WNqDt/ieiDDCpUgP6O6kSxj5PVgwLbF1THE0dpO5cAhGSYnAcLyFM2h2ZYM73cjp0m
+         sW3KlsnS0pwbtBZhVVv73zk25Y0cma1sfOSxSDXZjW8xp6gh7uWH5Rxow3wQRZ9dbNJB
+         Fy8vnzyzSN7dwz3UMG4hcZ58Xd3P38YsKWKC1A7f18tnPQWS2WZqmzT56wN06oAvqma9
+         cTzcZwExSvVWPPlfX3xOIffdLSDk2ARnk0fJh0vpd2W5nfwp+JZ1QQXiNvKmqMyBS/+P
+         GiYzSObqpgC9DuLrrjKCk99Ryh62B9+9aXtkm9cFQHqIAt3AlvBVzT4S12QiE4IRp5aA
+         SFJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712783406; x=1713388206;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bv/V2BDcZ6BXQvfxxNM1w/X7hHGQqyp9bJFqKpeVUk0=;
+        b=swF9I2LqF692YpFTYG50gc4hPCFaWgiE/OMP3rYuEbjaDLOWtut4eh+pKWIBOZJfvs
+         nngk1uL69B0ON7AdzIrQtPsp7L8wuSyNwUGuyibD2WJvvDj4jlwZDRXOoujMgRbKHI+m
+         5dTXT3tcxqRmmuDXj4XGQvB90ZvGvr5S1Pl50ItE5YXDyZZ/r5f5f6z57mb6uXrvMDdV
+         jy23BKR2idgRAURLv8Hp56a/WKI5dI3c6ssTxZ0tTk7e1pB9Zy81M8+5+tV0y7EyYxGi
+         DM2lXLYnQfSy9zb0L/vy87l3rcTbK1SkRRvcTSqlI21xt90mkx4gvE1EfkAbBLl6WiG4
+         zjJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXc1rYpSuBZv+WtEX0rCv3TbX8m+3MISkrLaDy2QZNxosPLcFSmn6LsorRsfeZcEd3AKr7tTMQ0qUNlwuu2vq0Mb7T4gEeycs2/+KY2
+X-Gm-Message-State: AOJu0YyjW4hVIfUUGuIbeRHwX9bjXHznPDSXMQU9mijbbTOAbjIruA2i
+	5w2hWpoVdb7MGgCg1F8dQGGu2v2PEMfFCxD/K5CbzOQiVKjOPT+Ip7BYHy75XQ==
+X-Google-Smtp-Source: AGHT+IFcUUpsX3kBlOD2hO0EgX46DmOztzcA2srIGWOFuvp0m6/PaSUmCl09aWhXL/OfU4fhOLSkSg==
+X-Received: by 2002:a05:6a00:3d42:b0:6ed:21bc:ed8c with SMTP id lp2-20020a056a003d4200b006ed21bced8cmr4678360pfb.18.1712783405518;
+        Wed, 10 Apr 2024 14:10:05 -0700 (PDT)
+Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
+        by smtp.gmail.com with ESMTPSA id w22-20020a634756000000b005dc4da2121fsm10368167pgk.6.2024.04.10.14.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 14:10:04 -0700 (PDT)
+Date: Wed, 10 Apr 2024 21:10:01 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Len Brown <lenb@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Lin Ming <ming.m.lin@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
+	linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
+Message-ID: <b5ijucc7vbamdivt5o36zqleunihy6j62u3ecg6p4jgqmajao6@xatdncyyp6jv>
+References: <20240409140059.3806717-1-arnd@kernel.org>
+ <20240409140059.3806717-3-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,77 +90,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zhanol2xi_E2Ypv3@ryzen>
+In-Reply-To: <20240409140059.3806717-3-arnd@kernel.org>
 
-On Wed, Apr 10, 2024 at 04:52:18PM +0200, Niklas Cassel wrote:
-> On Wed, Apr 10, 2024 at 04:24:10PM +0530, Manivannan Sadhasivam wrote:
-> > 
-> > Well, we could prevent the register access during PERST# assert time in the
-> > endpoint, but my worry is that we will end up with 2 version of the cleanup
-> > APIs. Lets take an example of dw_pcie_edma_remove() API which gets called
-> > during deinit and it touches some eDMA registers.
-> > 
-> > So should we introduce another API which just clears the sw data structure and
-> > not touching the registers? And this may be needed for other generic APIs as
-> > well.
+Hi,
+
+On Tue, Apr 09, 2024 at 04:00:55PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> I agree that it will be hard to come up with an elegant solution to this
-> problem.
+> gcc -Wstringop-truncation warns about copying a string that results in a
+> missing nul termination:
 > 
-> These endpoint controllers that cannot do register accesses to their own
-> controllers' DBI/register space without the RC providing a refclock are
-> really becoming a pain... and the design and complexity of the PCI endpoint
-> APIs is what suffers as a result.
+> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
+> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
+>    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
+>    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> PERST could be asserted at any time.
-> So for your system to not crash/hang by accessing registers in the controller,
-> an EPF driver must be designed with great care to never do any register access
-> when it is not safe...
+> The code works as intended, and the warning could be addressed by using
+> a memcpy(), but turning the warning off for this file works equally well
+> and may be easir to merge.
+
+Dang, I would've really liked to see these strncpy()'s dealt with [1]!
+
+The warning is there because that specific usage of strncpy is plain
+wrong. strncpy() is a string api and this usage looks like it has
+arguments and results not resembling C-strings.
+
+Not sure if turning off correct warnings is the right call.
+
+Link: https://github.com/KSPP/linux/issues/90 [1]
+
 > 
-> Perhaps the the EPF core should set the state (i.e. init_complete = false,
-> even before calling the deinit callback in EPF driver, and perhaps even add
-> safe-guards against init_complete in some APIs, so that e.g. a set_bar() call
-> cannot trigger a crash because PERST# is asserted.. but even then, it could
-> still be asserted in the middle of set_bar()'s execution.)
+> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
+> Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com/#t
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/acpi/acpica/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 > 
+> diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
+> index 30f3fc13c29d..8d18af396de9 100644
+> --- a/drivers/acpi/acpica/Makefile
+> +++ b/drivers/acpi/acpica/Makefile
+> @@ -5,6 +5,7 @@
+>  
+>  ccflags-y			:= -D_LINUX -DBUILDING_ACPICA
+>  ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+> +CFLAGS_tbfind.o 		+= $(call cc-disable-warning, stringop-truncation)
+>  
+>  # use acpi.o to put all files here into acpi.o modparam namespace
+>  obj-y	+= acpi.o
+> -- 
+> 2.39.2
 > 
-> Looking at the databook, it looks like core_clk is derived from pipe_clk
-> output of the PHY. The PHY will either use external clock or internal clock.
-> 
-> 4.6.2 DBI Protocol Transactions
-> it looks like core_clk must be active to read/write the DBI.
-> 
-> I really wish those controllers could e.g. change the clock temporarily
-> using a mux, so that it could still perform DBI read/writes when there is
-> not external refclk... Something like pm_sel_aux_clk selecting to use the
-> aux clk instead of core_clk when in low power states.
-> But I don't know the hardware well enough to know if that is possible for
-> the DBI, so that might just be wishful thinking...
 
-
-Looking at the rock5b SBC (rockchip rk3588), the PHY refclk can either
-be taken from
--a PLL internally from the SoC.
-or
--an external clock on the SBC.
-
-There does not seem to be an option to get the refclk as an input from
-the PCIe slot. (The refclk can only be output to the PCIe slot.)
-
-So when running two rock5b SBC, you cannot use a common clock for the RC
-and the EP side, you have to use a separate reference clock scheme,
-either SRNS or SRIS.
-
-Since I assume that you use two qcom platforms of the same model
-(I remember that you wrote that you usually test with
-qcom,sdx55-pcie-ep somewhere.)
-Surely this board must be able to supply a reference clock?
-(How else does it send this clock to the EP side?)
-
-So... why can't you run in SRNS or SRIS mode, where the EP provides
-it's own clock?
-
-
-Kind regards,
-Niklas
+Thanks
+Justin
 
