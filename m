@@ -1,189 +1,165 @@
-Return-Path: <linux-kernel+bounces-139181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF6B89FF9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDA789FF92
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A1241F22940
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:16:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A873283AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A984181B94;
-	Wed, 10 Apr 2024 18:15:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99B0180A83;
+	Wed, 10 Apr 2024 18:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lrRW0a0F"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l5kT48PE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2A5181316
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC4F1802C9;
+	Wed, 10 Apr 2024 18:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712772945; cv=none; b=V5ljPxuh5MlYV9NBIhFC64s8+I+i3lkxZ3ZaNZVDjzrFUq70O80/q/gIwrWGNqu/z2ZmTc4uVfd9+PG7XD039H/XbEwAbrtN1doF9tajp64PTuHfQH7XxbSd6Hyt9SHNJPYRvkW+I7uc1tli+yuRIDpgqvP5o7hvCkrQcdkghfU=
+	t=1712772938; cv=none; b=RQw1+B6xaNQt+MdyOVBBhoBc71s57UpSxUfLP7xPgCGxRSO7DZmq3SnXfGTwimHTsIBdzF9iQA43WLgj4Bq1NKaSyRJjZEKpfiopjd+t5pjkf5JL0aIvjvrtmppKNYE2sLLKkRQTwD7NsLYcowsd0ewmKOsRd+IwDbOZSw0Qi+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712772945; c=relaxed/simple;
-	bh=Q2qHTZspSdWtX9XB3A8ImC1CW2zPPcnl5BCkVvkisr4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IGysqf4Y0lurHWkdLvCmKfdjdPpDbrw0xVBhy0m/WNcFuMqo+wR3aZL4mq86JoKi/18QlQdI4x8Sq1P2ChEDV0hRyj2GofTHnWNDbNtCnc9LgfLZrOcuX5MjszAwK/HrUFFzbw5CJvpgU4oD1BPeETGuqjGDZWnZQpdLpc2tS68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lrRW0a0F; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-417c3296643so3555105e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712772940; x=1713377740; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZTWafwAOSteWZK+IF8K+ySu+NLy3Zj+VooWrs6puuRE=;
-        b=lrRW0a0F5OIK6cx/Uktin3Vb43i9YY53hzg4Hj3AC2A4mWCg1dFqX+/DhBBJUmx8al
-         G4zrfREF/oyikrlsCoS5jrfToMDL1T2yMkMIEenzflJ1mGdOQrotzE0elG3g/7vI6Q2h
-         BvuBu7Bx5VVePyFyGWOgOoGsjmtUrIudLOdLBrpX1XlQjr/LyrSxa7NE3PPzNflcfkV9
-         30RARpS4maYm7FDUiCxoQrDLSgG0r0yYJGetYn39uLU+u+qR2DUXenVcFzvWtLeGHMW/
-         4OeYgNubQlhNU/M4aIfMoY0SJo7C3CaUAlFpZ1rQU+6F6Aa4LW/SGkk5B8ngYZdIxVu5
-         mKJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712772940; x=1713377740;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZTWafwAOSteWZK+IF8K+ySu+NLy3Zj+VooWrs6puuRE=;
-        b=I8/1le1RwiBHbDuilY1zaSVAJdDYDSJJNsocyP3jMJaX8byMLPkjeELJD0y2KiiozA
-         5uM+rpz8rFdKK8kejDgk4SrjFNibrjSi8INVgy6LGbN3Gajt+jYtuqx5paVIqW+7Pj/+
-         0fppd0ad1LdP2Xad4+Bjr24eWCtV2HS7n7W99ZyvRDbjSDsmI9nzVJbP4IU8nTEF9P5l
-         MDTLNWbV3IxWo5+elrgqBJa4AVxna3FjxGIm6n28e/9qRvKvyFvxJm9ED42wAsDAhfBc
-         Lz62bXe6QPPZqtTe1ohNJkKz0HkKItFN0ki4JJ6owbs4mbKPp0ZdWywZkr6d3qN0Ozha
-         2Jow==
-X-Forwarded-Encrypted: i=1; AJvYcCU7C44/2/xfdviIAzVLdM+9cN+IbEnEVH7qQa/W1/VGsoj1b/0EqRJSEXsACjvKOgclQ47JmZL5eRv4o3vLc9kg8GS2LhrTUdhFUESL
-X-Gm-Message-State: AOJu0YxVyDAIhlWL1KmlEhu+kzavrwO1NGr4Zqe6YVzEma67egOsTeT1
-	/6D6dCdb2/P9OGij0E4MlFGoAKV85X6w36NuM4YaEzjRDevZcQssMUkEdu6AJ9s=
-X-Google-Smtp-Source: AGHT+IF48RGmHk8pl2ow/KjC14k8yrkxBwd5xymh3LOhP56MyaRgm1/Xm1jdP8c96wTN/A1i8OYwaw==
-X-Received: by 2002:a05:600c:3b98:b0:416:2629:bbaf with SMTP id n24-20020a05600c3b9800b004162629bbafmr2751097wms.29.1712772940126;
-        Wed, 10 Apr 2024 11:15:40 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id d13-20020a05600c3acd00b004161bffa48csm3026487wms.40.2024.04.10.11.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hector Martin <marcan@marcan.st>,
-	Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jim Quinlan <jim2101024@gmail.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Ryder Lee <ryder.lee@mediatek.com>,
-	Jianjun Wang <jianjun.wang@mediatek.com>,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Mark Kettenis <kettenis@openbsd.org>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	asahi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 4/4] dt-bindings: PCI: mediatek,mt7621-pcie: switch from deprecated pci-bus.yaml
-Date: Wed, 10 Apr 2024 20:15:21 +0200
-Message-Id: <20240410181521.269431-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410181521.269431-1-krzysztof.kozlowski@linaro.org>
-References: <20240410181521.269431-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1712772938; c=relaxed/simple;
+	bh=f8a/TLwsLee1zdQDc56/1tetJJOm12AaYUksCA+5quQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F3uHZaIzInQOoZVgAH1NL6WdPn/gzR9zDrkvBuXZe6OWrYVteQxbxKYRdQttET1USm+2Tu6Eh+5dFtjoSplU3ltJPxv2GwZaGU0pGJBELGg5s+Dbs59Fv+3xNurjcdZd7sg0PcP4gNV/GZPwG7Q65LtPztf1dCX+/YaJWrNHJi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l5kT48PE; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712772935; x=1744308935;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f8a/TLwsLee1zdQDc56/1tetJJOm12AaYUksCA+5quQ=;
+  b=l5kT48PEFSzMc84ohP762sEtE2L7iB7euMTsJe/psGLuimzNjWDoHaee
+   TlZ83QlMVkxAuCzWZNzlXwLh+tEidjH5Z2lm6OydmHh6ETzrLiB7MoeeM
+   kxjTxo3fJglsrbYoK+uDvwnnIFTiIegXW4LO2OPIHDO/rpndWDxp7Lfsj
+   NUKZi/1PJqWe+wODSh827sW4Bd+v1O3p1vXjQoiAVhHVtCZA4go8XZ5yy
+   KQUZmxTEVTRCDkViUiWJI6/tyUBoprXenAwy5GlZyjQefGCINBqbcxWaZ
+   0/zkYvXC0Rpj8nnr1rV16m7ljOTqGZ+SfSchUai3V2BQ/QS3J05DrLRCT
+   g==;
+X-CSE-ConnectionGUID: keUz0/w5Qmaf6deUCocCTQ==
+X-CSE-MsgGUID: SwNsv0N3SJCFZ2oxhTyZpw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18759298"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="18759298"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:15:34 -0700
+X-CSE-ConnectionGUID: jZZoytjVS6mnXiysOWcfNg==
+X-CSE-MsgGUID: GAuSsfWBRg2/hfigVtzpKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="58070512"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:15:34 -0700
+Date: Wed, 10 Apr 2024 11:15:32 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity
+ Devices (DCD)
+Message-ID: <ZhbXRL16cneVXxpw@aschofie-mobl2>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
 
-dtschema package with core schemas deprecated pci-bus.yaml schema in
-favor of individual schemas per host, device and pci-pci.
+On Sun, Mar 24, 2024 at 04:18:04PM -0700, Ira Weiny wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Per the CXL 3.1 specification software must check the Command Effects
+> Log (CEL) to know if a device supports dynamic capacity (DC).  If the
+> device does support DC the specifics of the DC Regions (0-7) are read
+> through the mailbox.
 
-Switch Mediatek MT7621 PCIe host bridge binding to this new schema.
+Do I need to know this 'If the device...' piece to understand this
+patch?  I like that below you say 'Subsequent patches will...'
+That seems enough to set the scene.
 
-This requires dtschema package newer than v2024.02 to work fully.
-v2024.02 will partially work: with a warning.
+> 
+> Flag DC Device (DCD) commands in a device if they are supported.
+Why be vague w 'Flag'. How about 'Add a bitmap of DCD enabled
+commands to the driver device state structure.'
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Subsequent patches will key off these bits to configure DCD.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+> Changes for v1
+> [iweiny: update to latest master]
+> [iweiny: update commit message]
+> [iweiny: Based on the fix:
+> 	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
+> [jonathan: remove unneeded format change]
+> [jonathan: don't split security code in mbox.c]
+> ---
+>  drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
+>  drivers/cxl/cxlmem.h    | 15 +++++++++++++++
+>  2 files changed, 48 insertions(+)
+> 
 
----
+snip
 
-Important: v2024.03 (said dtschema newer than v2024.02) was not yet
-released, therefore this patch probably should wait a bit. Previous
-patches do not depend anyhow on future release, so they can be taken as
-is.
 
-Changes in v2:
-1. New patch
-2. Split mediatek,mt7621-pcie to separate patch as it uses
-   pci-pci-bridge schema.
----
- .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml         | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>  /* Device enabled poison commands */
+>  enum poison_cmd_enabled_bits {
+>  	CXL_POISON_ENABLED_LIST,
+> @@ -454,6 +463,7 @@ struct cxl_dev_state {
+>   *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
+>   * @mbox_mutex: Mutex to synchronize mailbox access.
+>   * @firmware_version: Firmware version for the memory device.
+> + * @dcd_cmds: List of DCD commands implemented by memory device
+>   * @enabled_cmds: Hardware commands found enabled in CEL.
+>   * @exclusive_cmds: Commands that are kernel-internal only
 
-diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-index 61d027239910..6fba42156db6 100644
---- a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-@@ -14,7 +14,7 @@ description: |+
-   with 3 Root Ports. Each Root Port supports a Gen1 1-lane Link
- 
- allOf:
--  - $ref: /schemas/pci/pci-bus.yaml#
-+  - $ref: /schemas/pci/pci-host-bridge.yaml#
- 
- properties:
-   compatible:
-@@ -33,7 +33,7 @@ properties:
- patternProperties:
-   '^pcie@[0-2],0$':
-     type: object
--    $ref: /schemas/pci/pci-bus.yaml#
-+    $ref: /schemas/pci/pci-pci-bridge.yaml#
- 
-     properties:
-       reg:
--- 
-2.34.1
+It's not a 'List' it's a bitmap. How about mimicing 'enabled_cmds' 
+description:
 
+* @dcd_cmds: DCD commands found enabled in CEL
+
+>   * @total_bytes: sum of all possible capacities
+> @@ -481,6 +491,7 @@ struct cxl_memdev_state {
+>  	size_t lsa_size;
+>  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+>  	char firmware_version[0x10];
+> +	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
+>  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	u64 total_bytes;
+> @@ -551,6 +562,10 @@ enum cxl_opcode {
+>  	CXL_MBOX_OP_UNLOCK		= 0x4503,
+>  	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
+>  	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
+> +	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
+> +	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
+> +	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
+> +	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
+>  	CXL_MBOX_OP_MAX			= 0x10000
+>  };
+>  
+> 
+> -- 
+> 2.44.0
+> 
 
