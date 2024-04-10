@@ -1,131 +1,126 @@
-Return-Path: <linux-kernel+bounces-138478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B649989F1E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:20:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C94589F1ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:22:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FFA92825AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:20:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF9281F219D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB47615B13B;
-	Wed, 10 Apr 2024 12:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C20D15B13B;
+	Wed, 10 Apr 2024 12:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RK+hBT71"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcSuHPiZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C50B13D607
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7234501D;
+	Wed, 10 Apr 2024 12:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712751615; cv=none; b=ARYy2flZwSvZeFdLVisjze69RXazC5nVJdbwE/FVpzmQGaivRwHtjg962gBSomlA9/cgqT96T4QzU6nViDSWmjOnr/ZmrA7iYaBe9PapoCH0N8aDtB3MTHGfyioJvLbP2wdeb/4d/JlaCOOHsNqDqjs7JPMLWTpA4tNOtIuBFqg=
+	t=1712751723; cv=none; b=XCELeRQPmS3hXpVXNNNimvW5I8zD33Yn0kaKAj2Qqt24YhDPq3dYIA4r9nmIHqZ/J9DCfiCtygpElBNp7PoIet9KJLrOCYQE198Whi0YA58gyGxVwEjw5M9GuaUlqUHOq7rnHosWU8MHiC8Pqc3NOCOdijpvfBcqYr4FshI0wd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712751615; c=relaxed/simple;
-	bh=WSpt8xkQ7FZzxGK2ztd6X59nvbk86bjDxsC7WRIdaw0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rLzg/1HOqlg5OieQ3XV2AeVHtLuDYvwrHmYWjt5S9GXYogRiKUCZjKJp9Q9aAJNYCRwlJDp3lMlBt/eNXbfboAJiCsSmjG7ku736yOeVlvwkW0yQjbiM0cOm8xWs+RmDIneiI5Ilp9KLbxo7kJQuhSKQDyWo0T4B/d5EL2XRuG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RK+hBT71; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712751612;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=cJwZCdGn/12kQ3EbOPpSAbOJTYEctOWbdv/HkZkwxS0=;
-	b=RK+hBT71G2gr1qQ3mjumZIGVvesheQHA38/uV9DQHNwh5sOp00rUlz9LzmKfg1DG4YgrLC
-	oMmch/RKyNDQV26V1Kk7mQeDWXubUqrVIoqBZce6UHINqjFPgVPRV4aMRJJ1dqGmvs4C4H
-	Vl/i3Z6W4NZ8wNXLygI75e8rcmzFsFM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-ucDAiadNOb6VkYoZwMs24A-1; Wed, 10 Apr 2024 08:20:10 -0400
-X-MC-Unique: ucDAiadNOb6VkYoZwMs24A-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343f1064acaso2350846f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:20:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712751609; x=1713356409;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cJwZCdGn/12kQ3EbOPpSAbOJTYEctOWbdv/HkZkwxS0=;
-        b=T346J0mhQpG38KdntW5ycZLTp7bekbGh3Nh3j644B4JXIQSr8PXeuFw73VFmzGYu0C
-         vQIRLhkMQD7N5YmppUMujiBL1dGao2Zn+MlMAvbGNvWHBu4f3hAOla1KR8T56LVA5QJp
-         2VPI2i/8bbAViRa3XGZe/NZTLLU79jIPpsKc0AKDUKWfdellMUUWyPN5h0kdCRNHHYRa
-         rNYlunvSzoGSYcjFx5Sutgz0oqZiScg7z7wtstlXaPvvwqsrhUZf35Dn2okMPO07fuNq
-         dyLlWMMdHjbzzguiPWJZ9JbvHdfxRqNta2Fcr5O6oK3zDiqz9EVzH68J4L74POYykdKN
-         tuYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVaKbV2CmBE/QN+N7pekrb/O95bdViUJSbEti0ivSFNYw3HdRH8JQuGDiECxmfwZR0AmlG3kQwQRCP+lTpcJw8HsSC3kftzlYvOesgp
-X-Gm-Message-State: AOJu0Yzxq+0ztH5sf04zB7k7dLqRuazUYGXuA2P+UIX2ESiPYtnAMjA/
-	tkxcL25VRo0RwKfdTi5u1LZefAYnL2XJmxE0Ma0X3SuUa2VGA+gTM0PYQcXXRH4Uo6G0e/HtCdH
-	ZKc1ZH7VoQcpAzb/1cchjlvrMRhm3UJ2dp2yu10aIbCHg1QeVxh+4/PDN/1bOhA==
-X-Received: by 2002:adf:e7c6:0:b0:343:96b2:c121 with SMTP id e6-20020adfe7c6000000b0034396b2c121mr1792552wrn.63.1712751609495;
-        Wed, 10 Apr 2024 05:20:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaEsfMBRsLWsO8CaeP+0eZlxRSkArpY8F3KRxzPp8gsPyxbWZ3n+PeTBB4gyznMOHXT2ieZQ==
-X-Received: by 2002:adf:e7c6:0:b0:343:96b2:c121 with SMTP id e6-20020adfe7c6000000b0034396b2c121mr1792531wrn.63.1712751609137;
-        Wed, 10 Apr 2024 05:20:09 -0700 (PDT)
-Received: from toolbox.fritz.box ([2001:9e8:89a5:e800:aa3c:ae70:b589:bfe8])
-        by smtp.gmail.com with ESMTPSA id m12-20020a056000180c00b00341de3abb0esm13678098wrh.20.2024.04.10.05.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 05:20:08 -0700 (PDT)
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH v2] drm: Document requirements for driver-specific KMS props in new drivers
-Date: Wed, 10 Apr 2024 14:20:06 +0200
-Message-ID: <20240410122008.38207-1-sebastian.wick@redhat.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712751723; c=relaxed/simple;
+	bh=fhCS1XykDjhuWUw28ZSsJwT4DsrmC4F3xhQAUnzXjjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KZRR4+7k/7sGKHEOfyjMw8/bdTNr2GC1Vy8cIiX9UNNTVj+SBBJ9ABC+FJ8LpvAgKyKphXZEWvDEiFSpl7X0DQopHht+Vk62YD5ctXyTqhz/YWF9bxXH8C8HQ8rfiDYWsg9ZQgdZq1/sceznLPJVTWBzjppFp0vZKM0wEpwvpYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EcSuHPiZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAF14C433C7;
+	Wed, 10 Apr 2024 12:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712751722;
+	bh=fhCS1XykDjhuWUw28ZSsJwT4DsrmC4F3xhQAUnzXjjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EcSuHPiZOHBuNUmt1rR8ndwr/eCwbc3+2nDisVYpPu97NHt+i3fkdSVrhZPTL8Dpu
+	 nuHQJcbzhLTReWBGJpLUMn8eymab9QKBcKRKNqdK9XcY5d058yanCg7mkvlGT+ApXB
+	 jXCYvCUtW3JSvJj0ZPWbPE9SszsQ50qgIQATaa/JxdPcNEHzglGLkZ5t5l9oTzTpYZ
+	 NpQbZRePDV2LuDAwAlcOnngz44Ps8PKxXwi6B1w3DODBBXaEwfgPIdXIkWS7NqZbfi
+	 E3l4UlAAhgAj267kZQKmGfT8j4IiHA91xsPiqmybr8KrOtsKnIqimQYCRJ7m+uGxru
+	 CkTbAoozlfgzA==
+Date: Wed, 10 Apr 2024 14:21:58 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/18] i2c: i801: remove printout on handled timeouts
+Message-ID: <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
 
+Hi Wolfram,
 
-When extending support for a driver-specific KMS property to additional
-drivers, we should apply all the requirements for new properties and
-make sure the semantics are the same and documented.
+On Wed, Apr 10, 2024 at 01:24:20PM +0200, Wolfram Sang wrote:
+> I2C and SMBus timeouts are not something the user needs to be informed
+> about on controller level. The client driver may know if that really is
+> a problem and give more detailed information to the user. The controller
+> should just pass this information upwards. Turn all timeout related
+> printouts to debug level.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+> 
+> Here, I did not delete the printout to support checking the termination
+> process. The other drivers in this series do not have this SMBus
+> specific termination step.
+> 
+>  drivers/i2c/busses/i2c-i801.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+> index 4294c0c63cef..a42b5152f9bd 100644
+> --- a/drivers/i2c/busses/i2c-i801.c
+> +++ b/drivers/i2c/busses/i2c-i801.c
+> @@ -400,7 +400,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
+>  	 * If the SMBus is still busy, we give up
+>  	 */
+>  	if (unlikely(status < 0)) {
+> -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
+> +		dev_dbg(&priv->pci_dev->dev, "Transaction timeout\n");
 
-v2: devs of the driver which introduced property shall help and ack
+why after 5 patches of removing dev_err's, here you are changing
+them to dev_dbg?
 
-Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
----
- Documentation/gpu/drm-kms.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
+It's still good, but if we want to be strict, errors should
+print errors: as we are returning -ETIMEDOUT, then we are
+treating the case as an error and we should print error.
 
-diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
-index 13d3627d8bc0..b98b98359c90 100644
---- a/Documentation/gpu/drm-kms.rst
-+++ b/Documentation/gpu/drm-kms.rst
-@@ -496,6 +496,13 @@ addition to the one mentioned above:
- 
- * An IGT test must be submitted where reasonable.
- 
-+For historical reasons, non-standard, driver-specific properties exist. If a KMS
-+driver wants to add support for one of those properties, the requirements for
-+new properties apply where possible. Additionally, the documented behavior must
-+match the de facto semantics of the existing property to ensure compatibility.
-+Developers of the driver that first added the property should help with those
-+tasks and must ACK the documented behavior if possible.
-+
- Property Types and Blob Property Support
- ----------------------------------------
- 
--- 
-2.44.0
+Upwards, then, we can put some more logic and decide whether
+-ETIMEDOUT is a real error or not and consequently print a debug
+or an error message.
 
+As you did before, I would just remove the printout here.
+
+I will wait a bit for more comments and take patches 1 to 5 so
+that I can unburden you a little from them.
+
+Thanks,
+Andi
+
+>  		/* try to stop the current command */
+>  		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
+>  		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
+> @@ -411,7 +411,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
+>  		status = inb_p(SMBHSTSTS(priv));
+>  		if ((status & SMBHSTSTS_HOST_BUSY) ||
+>  		    !(status & SMBHSTSTS_FAILED))
+> -			dev_err(&priv->pci_dev->dev,
+> +			dev_dbg(&priv->pci_dev->dev,
+>  				"Failed terminating the transaction\n");
+>  		return -ETIMEDOUT;
+>  	}
+> -- 
+> 2.43.0
+> 
 
