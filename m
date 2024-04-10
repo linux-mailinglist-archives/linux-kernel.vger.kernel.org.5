@@ -1,96 +1,116 @@
-Return-Path: <linux-kernel+bounces-139343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DBAE8A019B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:00:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6CBE8A019E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0298A1F23586
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:00:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049151C21AEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F871836E0;
-	Wed, 10 Apr 2024 21:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448161836DB;
+	Wed, 10 Apr 2024 21:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MtFu6LwY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+GJ0ywW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A02181CFF;
-	Wed, 10 Apr 2024 21:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EB5181CFD;
+	Wed, 10 Apr 2024 21:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712782827; cv=none; b=eXC8ONhbUq1eLQjNrcX9t9Mi5N0/tZC5HVUKgV1UZbjH3glI0wEZTpfmxp1ZamT6Zrg3Q/6jDvAVgg8/pNSayBF/0el8zDl1Bu3hg2IggoI6gGJ1gfi39SOpmpIMfR2FJzptD27vhwrlZYVAU//BZJ8h4jPJ6ZuI8Rx0Q7PdW8c=
+	t=1712782865; cv=none; b=W0Zbid/xIpbxyd3tFGSsHtg3Ho7hma8fJlIublxEq+KBSm5Mi+AUqT84BZbyiwRIvE4govrUZo5csYEllEJy5LyhQk/ySxNJaJgH7GiCNnBnG530MjqwFzkFHYhlwh3Fl2g2lZw+iAuam9BCYy3DMxBm+S9F0kcAOARirOnYtcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712782827; c=relaxed/simple;
-	bh=xJZ6Dd9iWj7YtydFi/8FqoYMITmH16JTKtZaGi8eKhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DIjpJctqP3SnHl8RfQUcdyvunMQ+J1dotBPJbx/IGTlMLy6al75+RNjoQTKgYWWNJz0TcuX+2C66cNogG8Av0/Ci0W6vfX4uYNvLpnB07ucvDd0NmZzCyUd9/ZRb1wgEaTaQ/aZ4wd/rjX8tQr0/JBlJdMsZtiMOE33VMSAJUHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MtFu6LwY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2092BC43394;
-	Wed, 10 Apr 2024 21:00:25 +0000 (UTC)
+	s=arc-20240116; t=1712782865; c=relaxed/simple;
+	bh=0mbDdh1VgA0HikjDit6mP3k8bIiQefAVr44m4J85reE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aNj30zJKasVALuR6SUaUpZIZVw1aRGysnajMpXS+BKSzHgOOAIG718dSFrJfe/Khv/L2O7jGcZnFNEavHI/xlyWiFC8vMjWArwNPgbE1xeB3EZI/cpzlkmnesK7TZUd3P20Yf3E9tYj5avDtz4j4PMj6Dld8lr4CqkdbRSEkEEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+GJ0ywW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF2EEC433F1;
+	Wed, 10 Apr 2024 21:01:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712782826;
-	bh=xJZ6Dd9iWj7YtydFi/8FqoYMITmH16JTKtZaGi8eKhE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MtFu6LwYciP/an1N3sZcbtVGMLzJ2mhFv5y3exZizAs2kt3imUVcm4p0FLMDeJ9bu
-	 srBmJHKcwjYwXS073ngcVP1HKaXzlJb8X88xxWudfztH2c60slua3PEIiYdPiLtbpF
-	 uzxxU2x92YFQP7WY+SctjWurFsHPnFffshlAZcp8Je4SJEmu9Lxi+Ek/bx6VDjWZVg
-	 Porh6MAZzeLJ1OqHzDc6NfWkNWwgzpNIZY+e3X2m845JhFgAh3B7jKsKLx6XM9EX3B
-	 iiaCh6YT/82GhDV/k5azsJ3DvrBlX9inWuds8QKAxd8UucarMvg7xLgfltGYFYLINs
-	 nz99W2cXd27jw==
-Date: Wed, 10 Apr 2024 18:00:23 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: James Clark <james.clark@arm.com>, Ian Rogers <irogers@google.com>
-Cc: linux-perf-users@vger.kernel.org, namhyung@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Spoorthy S <spoorts2@in.ibm.com>, Leo Yan <leo.yan@linux.dev>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] perf test: "object code reading" test fixes
-Message-ID: <Zhb95zKXvVDtUljY@x1>
-References: <20240410103458.813656-1-james.clark@arm.com>
- <CAP-5=fVgf3cOgbV1KGGLd5gykxT+BzuX1=XUsp+2BNUahGn6QQ@mail.gmail.com>
+	s=k20201202; t=1712782865;
+	bh=0mbDdh1VgA0HikjDit6mP3k8bIiQefAVr44m4J85reE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e+GJ0ywWdumna/ZzmdZUmItZZPy9+Qb5dfzVzmby505VF7JHvfE0p9/Pg7GqiST/N
+	 q2GgNQi3zta//NkVx3XszQofIrcGLZlqcrd20crUFGYRaTxyHMjurSuYyRBxPeP6bM
+	 VkyDkakOxWus1QB+Gqox/ulKLT+CIq/rw40xs29yyJmFqR7fke3LD8R/aKIs+diXR0
+	 JZVgCCtzpOhASrdLu8hDKIvwLu0VXyqw/OfcjetUwkJNEfPyaKnpIOV+ICwf1VJvrg
+	 ySVxFy+ezHWqtjmB0ZDKRxLYNH7BT4AS9qnmfw6SzrjCejvU7qT6I4OHWxDWhxKdC1
+	 A2cqYGZ8Oejag==
+Date: Wed, 10 Apr 2024 14:01:03 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, Geliang
+ Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
+ <shuah@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Geliang Tang <tanggeliang@kylinos.cn>
+Subject: Re: [PATCH net-next v2 0/2] mptcp: add last time fields in
+ mptcp_info
+Message-ID: <20240410140103.37b94193@kernel.org>
+In-Reply-To: <b8c14751-37a9-4a3d-b9af-a5c697d34781@kernel.org>
+References: <20240410-upstream-net-next-20240405-mptcp-last-time-info-v2-0-f95bd6b33e51@kernel.org>
+	<20240410113452.56f156f4@kernel.org>
+	<b8c14751-37a9-4a3d-b9af-a5c697d34781@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVgf3cOgbV1KGGLd5gykxT+BzuX1=XUsp+2BNUahGn6QQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 10, 2024 at 09:17:04AM -0700, Ian Rogers wrote:
-> On Wed, Apr 10, 2024 at 3:35 AM James Clark <james.clark@arm.com> wrote:
+On Wed, 10 Apr 2024 21:31:13 +0200 (GMT+02:00) Matthieu Baerts wrote:
+> > Hi Mat, is this causing skips in selftests by any chance?
 > >
-> > A few fixes around the object code reading test. The first patch
-> > appears to be unrelated, but in this case the data symbol test is
-> > broken on Arm N1 by the second commit.
-> >
-> > Changes since V1:
-> >   * Put data symbol test fix first so that bisecting still works on N1
-> >   * Instead of skipping "test data symbol" on N1, add some noise into
-> >     the loop.
-> >   * Add a commit to replace the only usage of lscpu in the tests with
-> >     uname
-> >
-> > James Clark (4):
-> >   perf tests: Make "test data symbol" more robust on Neoverse N1
-> >   perf tests: Apply attributes to all events in object code reading test
-> >   perf map: Remove kernel map before updating start and end addresses
-> >   perf tests: Remove dependency on lscpu
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
+> > # 07 ....chk last_data_sent=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably not s=
+upported
+> > # 08 ....chk last_data_recv=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably not s=
+upported
+> > # 09 ....chk last_ack_recv=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [SKIP] Feature probably no=
+t supported =20
+>=20
+> Yes it does, I should have added a note about that, sorry: that's because
+> SS needs to be patched as well to display the new counters.
+>=20
+> https://patchwork.kernel.org/project/mptcp/patch/fd9e850f1e00691204f1dfeb=
+c63c01c6a4318c10.1711705327.git.geliang@kernel.org/
+>=20
+> This patch will be sent when the kernel one will be accepted.
 
-Thanks, applied to perf-tools-next,
+I see, applied locally now, thanks!
 
-- Arnaldo
+> Is it an issue? The modification of the selftests can be applied later
+> if you prefer.
+
+Not sure. If it doesn't happen super often maybe co-post the iproute2
+patch as described:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#co-post=
+ing-changes-to-user-space-components
+and I'll apply it on the worker machines manually.
+
+> Earlier today, I was looking at changing NIPA not to mark the whole
+> selftest as "SKIP" but I saw it was not a bug: a check is there to
+> mark everything as skipped if one subtest is marked as skipped
+> from what I understood. So I guess we don't want to change that :)
+
+Correct :) It's working as intended :)
+
+> > I'll "hide it" from patchwork for now..
+> > --
+> > pw-bot: defer =20
+>=20
+> Thank you! Do you prefer if I resend only patch 1/2 for now?
+
+No need, restored the patches back, let's see if next run is clean.
 
