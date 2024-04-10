@@ -1,100 +1,97 @@
-Return-Path: <linux-kernel+bounces-137952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89DE789EA3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:59:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A26AA89EA42
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45471283692
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:59:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56EF41F23C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49501CD22;
-	Wed, 10 Apr 2024 05:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DFF20304;
+	Wed, 10 Apr 2024 06:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="nYKgVMAM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ldx8Rly/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7B9171BA;
-	Wed, 10 Apr 2024 05:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A341BF3D;
+	Wed, 10 Apr 2024 06:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712728777; cv=none; b=rQAPUsnOeDIk74/N/n/50qNE+B4xm/jcrhQ1GsvZoyJb/t+TlsJfk0OStBbRpaOYFbL0MID2AyY0uGrUN4jC54OMg/UwzlzE3IObO5l+HcKo6n2cQf3pG8PDtY7UTcRH0d+RI2er2JSEs58Xv2Od08Oep4KSsF1mlvWmgpnF3UM=
+	t=1712728837; cv=none; b=QMWRS+nPKrXK8ijJLnAnJrcZOWnJcYgbrFN9HQZVFCNRZtcbRyEeWRjNaUSvnmhal7VrE9GNlJ51BbVnchBTjNuoePRVpaeQT4Pu3i9iH3j9ZfwF4JOgOBIqzu4CfRtuGEwdR4zyOx0W/02SBYvaYuSprvJKzBdeiJU7l/UXCiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712728777; c=relaxed/simple;
-	bh=ukxMVPAJ/AkosAmnVzWG0as7OY6SvL0J05596JAPvK4=;
+	s=arc-20240116; t=1712728837; c=relaxed/simple;
+	bh=lS08xQB5+dfJ13UYeFRd5tnUYpoDHhzEWxLWJIVAq3w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jU9a94cE5NUMzNOgWPbeF2OSBYVxYZpC6WSzS/O3Z9acCmC5xZ2qaap8SzrqW91oLFpV3wMKrYAnIy6A2FDYgZgo5m1z7ceBuqTf9m3aW8cYpeesRzkwEEWdXD8lcn+Vn5f/ttCOybA9c0hZ7OPxMk1Rd/gees4RneGsTsGA/kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=nYKgVMAM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D509BC433C7;
-	Wed, 10 Apr 2024 05:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712728776;
-	bh=ukxMVPAJ/AkosAmnVzWG0as7OY6SvL0J05596JAPvK4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nYKgVMAMlBfHB848hHBR7S+eB8r3weqJvCRq33/TTgMMD93HCsm9//plbMy5w02Yd
-	 SfNmkOhq+JO6iYOFZfNvAHmz97Tg2feCLTVbibUZrE4zyil3vQCNN61cG+sWMUnhmT
-	 UETYje6KKLFzTGGbdhaN9wVt5uwdbK59i0S8jiO0=
-Date: Wed, 10 Apr 2024 07:59:32 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Liuye <liu.yeC@h3c.com>
-Cc: "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-	"daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
-	"dianders@chromium.org" <dianders@chromium.org>,
-	"jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-	"jirislaby@kernel.org" <jirislaby@kernel.org>,
-	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH V10] kdb: Fix the
- deadlock issue in KDB debugging.
-Message-ID: <2024041001-retaliate-cork-1fe5@gregkh>
-References: <20240409020326.2125332-1-liu.yec@h3c.com>
- <20240410020615.2885000-1-liu.yec@h3c.com>
- <2024041014-padlock-aggregate-4705@gregkh>
- <0c004dd44ad5478eba9451186f4ec962@h3c.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZpUcXwvDtHOBXm0XeM12TUIyD5Nll068d+02PHY+JVibxRvq325C8v/F12wMR1E7eNtj7asLllTwGGuQaI0u0ajMnkMF6+hLMMi5+nSSI7/MlpNfqe/8Lq5hX96PRDrmmN++Pqm7w2N710LCyHpvRJMxy2tMchZrtCRGCFWurJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ldx8Rly/; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712728834; x=1744264834;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lS08xQB5+dfJ13UYeFRd5tnUYpoDHhzEWxLWJIVAq3w=;
+  b=Ldx8Rly/4Scf6JyWnoW/7fPPr939waRqk/9pjcCyqWqzJ4U/C3HJN4WB
+   C5smzXGiiUXmyFfWB1Uqe1X4emRXQpl3ce9P/xt4F4vBfKCOv2xBzQf2S
+   8QMjJxhoRdgEcYVIXPMvkPVAbF9H9RzC/Xfmf5ACnxghAydmB21jMLvSp
+   9ebzjMOTlt5rJeEIkVYlse3EnHmLOIgS/J/jLUbWp1fiuMTkeqzqL2GM1
+   2MjFtn4sZgKwti/TdDKNIiG6qqrK+9De3AagoPC/AQ6aXuRZ3otP/DUPf
+   bvxMXMrguG4NjZO1E2flnvildXibHzbHYNnLFPuoroPLVWVMmeUYeedmB
+   A==;
+X-CSE-ConnectionGUID: H6G2pFEuSXS2aGKgU0UjxQ==
+X-CSE-MsgGUID: LlSxPT6YT3iXczubOO53Vg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11039203"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="11039203"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 23:00:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937094562"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="937094562"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 23:00:30 -0700
+Date: Wed, 10 Apr 2024 09:00:28 +0300
+From: Raag Jadav <raag.jadav@intel.com>
+To: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] ACPI: bus: allow _UID matching for integer zero
+Message-ID: <ZhYq_HDwAi4B49Zz@black.fi.intel.com>
+References: <20240328035540.13194-1-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c004dd44ad5478eba9451186f4ec962@h3c.com>
+In-Reply-To: <20240328035540.13194-1-raag.jadav@intel.com>
 
-On Wed, Apr 10, 2024 at 05:54:08AM +0000, Liuye wrote:
-> >> Signed-off-by: Greg KH <gregkh@linuxfoundation.org>
-> >
-> >I have NOT signed off on this commit.  You just said that I made a legal statement about this commit without that actually being true???
-> >
-> >Sorry, but that is flat out not acceptable at all.  Please go work with your company lawyers to figure out what you did and come back with an explaination of exactly what this is and how it will not happen again.
-> >
+On Thu, Mar 28, 2024 at 09:25:40AM +0530, Raag Jadav wrote:
+> Commit b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to
+> support multiple types") added _UID matching support for both integer
+> and string types, which satisfies NULL @uid2 argument for string types
+> using inversion, but this logic prevents _UID comparision in case the
+> argument is integer 0, which may result in false positives.
 > 
-> >> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >
-> >> V9 -> V10 : Add Signed-off-by of Greg KH and Andy Shevchenko, Acked-by 
-> >> of Daniel Thompson
-> >
-> >Huh?!
+> Fix this using _Generic(), which will allow NULL @uid2 argument for
+> string types as well as _UID matching for all possible integer values.
 > 
-> @greg k-h ：
-> @Andy Shevchenko ：
-> 
-> Sorry, it was my mistake. I misunderstood the meaning of "signed-off-by", which led to usage issues.
-> 
-> I want to express my gratitude for the suggestions on the patch from the two of you. 
-> 
-> What do I need to do now? Release PATCH V11 and delete these two signatures in it ?
+> Fixes: b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types")
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
-As I said, go work with your corporate lawyers on this to understand
-what just happened and have them let us know how it will not happen
-again.
+Bump.
 
-thanks,
+Anything I can do to move this forward?
 
-greg k-h
+Raag
 
