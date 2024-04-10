@@ -1,103 +1,132 @@
-Return-Path: <linux-kernel+bounces-138673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A755889F99F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:13:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE7F89F8E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:55:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15878B31D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 515A01C2275F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527C615EFD6;
-	Wed, 10 Apr 2024 13:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA8515F3ED;
+	Wed, 10 Apr 2024 13:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Riu6LYCO";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="09FWCbA5"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZqHAAXon"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1391854;
-	Wed, 10 Apr 2024 13:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DF01854
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756827; cv=none; b=BuXz9uJqk49qZMhfR/DeDlZYNapPJ9DmUHopOlBJv9MbqcSNuHeVq3xLvPuGG0OFNiznqkOhEel7HNogEGgSn3MMaQYhX5RfaRuW+Ix1V4zX3EvyjBtcIKekFCbx4ULIF3gW29P4yOJ58OKSMxg5vhSpMCLe/nJPzismxHi/j8Q=
+	t=1712756834; cv=none; b=ia2ApgrEb8fUNS4D3d/6frqwFbykuHb8Rto4yCdGBBDeywZr/frSloT7ksvIcONL6jEV3/l0vIYDuhT59gUHR0XvRI+zuSkcy2of7jbvTKRMtKQ13OBxOlpZv50vaBn6Vo4YhyNK6D1rip+bGJT0LX1mTy6rA4XTFAkU6u/NCZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756827; c=relaxed/simple;
-	bh=9ai/S2RKppG6/QBUvnM1yQb2xUplPv+uZ4oIw+16Bus=;
+	s=arc-20240116; t=1712756834; c=relaxed/simple;
+	bh=MYZA0qDXcZni1G28gmsIVy0hqO6YvW9POyiKmiOgpXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lzKPn/emKf6uUMprV1LkvnR9jZItlNGeO16N65hy8LHrx8xRg1JbIpp3+lFk19zLO87DaXLQLIO27mLPHIYsZcCcLAakPt7oP5lRwZlmlcNPaljHk5X82GENaPxxXiJYpwLNEyYOrAS9cbqEUo/qOTln8elIQ1iWR6wZ7BablnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Riu6LYCO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=09FWCbA5; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 15:47:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712756824;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhPMkf0CnmtshBlL7f3oui1BPAffLvF7f43OGucaSdU=;
-	b=Riu6LYCOxJAkNl00u5Bj3HXspqVWVG8Ca0CkgDTEEZdAXPg+FqRORQt7OVj/m2G/OHAx1L
-	i7P/0rTdHxhgdlPN/SIs1X+Xi42IVCNdem15ynQyHGWdywtcCJNTtl9nNKLOzHnFM+QK6w
-	vQe/d9++1fx1E7jXFHgKOpQ4Mz+6FJyw64nLx4Cd8CsRJfasMJx++Tj0OPOe3g7/ixH6x7
-	OZcbWQtmHgPds9NhAr+SodvnCBdXpXbsdN9xLtXKquna6/Ok8h5azRkL7q0IvG5v8Mk+ge
-	8YJpyOEnnOYVd+VdrawJvzDV+F/HWIrqdWqIllcYMp1lIwSrOy7a+w6Fd342dA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712756824;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhPMkf0CnmtshBlL7f3oui1BPAffLvF7f43OGucaSdU=;
-	b=09FWCbA5NEKVjftJWaJb8Fqv88LdWfqW+AD4/9Dpfxi4KOIBw6/ksIx75cNeLY5EdYE5Ca
-	GAil9/8NDHFboaDw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 2/4] perf: Enqueue SIGTRAP always via task_work.
-Message-ID: <20240410134702.dcWYciZB@linutronix.de>
-References: <20240322065208.60456-1-bigeasy@linutronix.de>
- <20240322065208.60456-3-bigeasy@linutronix.de>
- <ZhRhn1B0rMSNv6mV@pavilion.home>
- <20240409085732.FBItbOSO@linutronix.de>
- <ZhU2YwettB6i6AMp@localhost.localdomain>
- <20240409134729.JpcBYOsK@linutronix.de>
- <ZhZ54XAcBt50WEnE@localhost.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jm2sH/XCQ1mzpugcLbw2q5dJBLx4Uj78zgVIezNJeY49oNvrXUB+6wQ35wLfdt5JUuFMeIy54oxfI9n3gtQOdxygN5eA6PcQa1K8gainRtPpGnJM3x86bkEtBpXzn372gBzXVJjwm6HvwP0m2QFRdW3u9OmZ54K32Rcc6UdPdBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZqHAAXon; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712756833; x=1744292833;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MYZA0qDXcZni1G28gmsIVy0hqO6YvW9POyiKmiOgpXI=;
+  b=ZqHAAXon2CXkDl6/1QjhJ016tYqn2Ck/wx2i02Ak4Rnzw5pGyhOA0NLe
+   bg/VcNlHcXmz4goyWCeJs0vIjNKpnnysA7Aik4NiewG8vYYYn7TCnpYqM
+   8XfOT2SrpXL6w8Ua5Zu6jGDKQlA/nm6AayTeuOwr1MJlZnDJmyE7yrFGZ
+   NP4J4taFnAH/MtID1duxqQcCLj2EQzMWQS2SwO9LK5aHclEA70KH5UO1+
+   BDe+CLStqYKYCEKsYm6tGzc334fUh+X8DvPP5R7zJ3WB87qdKd4n0lqyP
+   LVpOn+tOUaQIEeHV+4ZPjmqfvvuXuktmj6GLvbrhhO2gekeQGhnozRvSk
+   w==;
+X-CSE-ConnectionGUID: aFFAyVmkRnugmwNSOAYDCg==
+X-CSE-MsgGUID: mWsdMTscS2menzMuBG244g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7992166"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7992166"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:47:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915433492"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="915433492"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:47:08 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruYI4-0000000355d-47BL;
+	Wed, 10 Apr 2024 16:47:04 +0300
+Date: Wed, 10 Apr 2024 16:47:04 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: linux-kernel@vger.kernel.org, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH 2/2 RESEND] sched/topology: Optimize topology_span_sane()
+Message-ID: <ZhaYWOIec55l7Tsg@smile.fi.intel.com>
+References: <20240409155250.3660517-1-kyle.meyer@hpe.com>
+ <20240409155250.3660517-3-kyle.meyer@hpe.com>
+ <ZhVr4i5F1uWyrJ15@smile.fi.intel.com>
+ <ZhWXBSMDPKThcLsY@DESKTOP-IR8JFSN.>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhZ54XAcBt50WEnE@localhost.localdomain>
+In-Reply-To: <ZhWXBSMDPKThcLsY@DESKTOP-IR8JFSN.>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 2024-04-10 13:37:05 [+0200], Frederic Weisbecker wrote:
-> > Couldn't we either flush _or_ remove the task_work in perf_release()?
+On Tue, Apr 09, 2024 at 02:29:09PM -0500, Kyle Meyer wrote:
+> On Tue, Apr 09, 2024 at 07:25:06PM +0300, Andy Shevchenko wrote:
+> > On Tue, Apr 09, 2024 at 10:52:50AM -0500, Kyle Meyer wrote:
+> > > Optimize topology_span_sane() by removing duplicate comparisons.
+> > > 
+> > > The total number of comparisons is reduced from N * (N - 1) to
+> > > N * (N - 1) / 2 (per non-NUMA scheduling domain level).
+
+..
+
+> > > -	for_each_cpu(i, cpu_map) {
+> > > -		if (i == cpu)
+> > > -			continue;
+> > > +	for_each_cpu_from(i, cpu_map) {
+> > 
+> > Hmm... I'm not familiar with the for_each_cpu*(), but from the above
+> > it seems only a single comparison? Or i.o.w. can i ever repeat the value?
 > 
-> Right so the problem in perf_release() is that we may be dealing with task works
-> of other tasks than current. In that case, task_work_cancel() is fine if it
-> successes. But if it fails, you don't have the guarantee that the task work
-> isn't concurrently running or about to run. And you have no way to know about
-> that. So then you need some sort of flushing indeed.
-
-Since perf_release() preemptible, a wait/sleep for completion would be
-best (instead of flushing).
-
-> Thanks.
+> for_each_cpu() is a macro around for_each_set_bit() which iterates over each set
+> bit in a bitmap starting at zero.
 > 
-> > > Thanks.
+> for_each_cpu_from() is a macro around for_each_set_bit_from() which iterates
+> over each set bit in a bitmap starting at the specified bit.
+> 
+> The above (topology_span_sane()) currently does a "single comparison" for each
+> CPU in cpu_map, but it's called for each CPU in cpu_map and for each scheduling
+> domain level (please see build_sched_domains() in kernel/sched/topology.c).
+> 
+> > And what about i < cpu cases?
+> 
+> Those values have already been passed to topology_span_sane(). This patch uses
+> for_each_cpu_from() starting at cpu + 1 to prevent those duplicate comparisons.
 
-Sebastian
+So, it appears to me that commit message has a room to improve / elaborate based
+on what you explained to me above.
+
+Thanks!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
