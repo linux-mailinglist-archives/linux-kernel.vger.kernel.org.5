@@ -1,200 +1,157 @@
-Return-Path: <linux-kernel+bounces-138641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04BF89F894
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:45:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED75989F443
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:28:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CE0289D62
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:45:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EE5F28C890
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3531A17F389;
-	Wed, 10 Apr 2024 13:37:13 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA4C15EFA4;
+	Wed, 10 Apr 2024 13:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iubVYXfK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E85179964;
-	Wed, 10 Apr 2024 13:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9744315ADA2;
+	Wed, 10 Apr 2024 13:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756232; cv=none; b=e4+HBMZ+UbsgpL9mxycZOKJIs6vv5/arVPlSKPUAsgKskUeS4CA4wLK8uQpIVkPnKn2/8JsR0zvMrwuK3YlLfP7j9pPs2KDQICZ2HzTHssBlRiWByH1dEqo2oTfpYxmcbhin5Vy632S32cllRa8ndnj1ItBOfxtskdyHh7fD22M=
+	t=1712755711; cv=none; b=O/M9uf7vji4Ave9amjru6NyNlQA3EDkla8qZGZQMb5iUwoYIS3kUat4RrLUZEijh9HdvxrA/LdSZgn2tH7vqus6dGqpPXt4P02Eyehr3pADBkNVuDeUszF9ijQAWDIco1g6FE4DMuhXZbTvqTB7wBzfykeUFwjGGbrIJoOn0f5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756232; c=relaxed/simple;
-	bh=e380bcGvC+0GXftRaUh0mc9IjrgCk3wJCKvPfnu6cRE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p/NPBk+fTeEZjS7yvgt1aI8Kh8PbjQnqTTt5KVGtTvEqLKEB1lFiwMEKuLwZAgEHH83YPuxzk51kR137ZURzU3F3tM39HcuTSk+j5ys5ih9zlbcEZXyqeycHmgI7o59s2idhSqyhh0VJo+E2LFrO3UW9AQk59JhnVcGAij2IcbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VF3lf15QNz4f3k5n;
-	Wed, 10 Apr 2024 21:37:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8CEFA1A0BE9;
-	Wed, 10 Apr 2024 21:37:06 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RHolRZmeCl4Jg--.8806S34;
-	Wed, 10 Apr 2024 21:37:06 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	willy@infradead.org,
-	zokeefe@google.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	wangkefeng.wang@huawei.com
-Subject: [RFC PATCH v4 30/34] ext4: partial enable iomap for regular file's buffered IO path
-Date: Wed, 10 Apr 2024 21:28:14 +0800
-Message-Id: <20240410132818.2812377-31-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240410132818.2812377-1-yi.zhang@huaweicloud.com>
-References: <20240410132818.2812377-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1712755711; c=relaxed/simple;
+	bh=vG/etX9uFWDRMQyM96dxgcCHcoWyYgwQIb4SGb4iHUc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Milf5EHTOqdLYwAyKHZTQlTSuq938u+2iRPrWIp907ZhHSVBK8dudVj1Ln19aZDvvyYa7+i72OuVNnl2wLWHHZL+tiYq1XRNemPygq2JXgu1G8ozB9f3Rx3KDIjB5uUiQEr8zuA7y8qvqkrPk63fp5tWLo3F6n6w7d5ORUSu9g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iubVYXfK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 420B6C43390;
+	Wed, 10 Apr 2024 13:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712755711;
+	bh=vG/etX9uFWDRMQyM96dxgcCHcoWyYgwQIb4SGb4iHUc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iubVYXfK6JPDhhN9TmRS0x6QzxNaToPZCeVJnHP93bzsfQkb7YaWzUGU5fvosdVlK
+	 1iYtCJ+3WmeWgXErCaKKoO8GwwKCAVsPQSeaDEZwvjhLCuOC89oo5gQpo6M/afAEAy
+	 4yeMyJV1phaU5H/syWUh2fS6hJ6AmMPbK9BuOo+0TU6FA/S11ekIIS3LR1gsLiMZaG
+	 mJvEUbFS4EnjHWHw0mmkVeePQ3ozflixNW+Mf7PgkbFPaNxs5zDRXrhRsUvsJ6qIwh
+	 nvaEhh/w7672EUsnJyENttVNo1/Exy/MsDqmdMXp6iyLxGelAPVwHWr0EhfXbeuCBH
+	 DtboMbnFmvheg==
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-22f0429c1ebso185206fac.0;
+        Wed, 10 Apr 2024 06:28:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUUcst/lEX0TrGqaZcggeqiPU+99cGmB4KLjRYNj6ZHx6CvmX/0iux/PHrv9BkgPQhexl4/cAYo0E0X+DFH2SO8qCqp2crdxsi365sCWaHER2kck0+6g38wJ68p4wvsVU4wZT2We0W5OpCOLe1es/4Y0h+vrO6jFdicgDUpj+xm3oC4hjBUAvc8D3wJav6dc5iwuiE/ycdF7RYhFpQjNAnJYiIh0S3CkHKextzPzsYbdHoQT1k7ZVZ9F50NXJiTN65baYuCYKMgUrhNTHSCxxLDlmL7vtAhwlgXEi7p0zvSAxOgh7W85X18LeMstJ2xREHVhvyR5CjdsUHC9hNm/xV5hPn9JnO0Bu5osE2rLGHH
+X-Gm-Message-State: AOJu0YzEIW7zi+uQ3p6nnF2pVZwTJrnvJ+NcJT5qcWoP830PtPnIukE+
+	MFAibq2RZZXmrqB0AcDGutcTJsd2vyDnkNo9oEkBzx7IKMfLSyj18pTebcrb5MZhaaedunYN+o3
+	kUeOk+d8GCg4/+1GbCQBzvGyTeUs=
+X-Google-Smtp-Source: AGHT+IFL5SftybRh1r8JWNftMLn5Ll2W8+pkIYo7YlzdluWnaIUYaO6UpMp9mGVfMWaTjUBfbyWqBLpc+8TxlkLduX4=
+X-Received: by 2002:a05:6871:a00a:b0:22d:fb4b:9d11 with SMTP id
+ vp10-20020a056871a00a00b0022dfb4b9d11mr2534660oab.4.1712755710509; Wed, 10
+ Apr 2024 06:28:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+RHolRZmeCl4Jg--.8806S34
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw1kKrWrCw1DtF43GFW7Jwb_yoWrGr4UpF
-	ZIkryrJr4Y93s29a1ftF48Zr1Sv3WxKw4UG3yS9wn5XFy8J34SqF1jyF15A3WrJrZ5ua4S
-	qF4jkr1Uuw43urDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-	xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVWxJr0_GcWlIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0JUArcfU
-	UUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+ <20240322185327.00002416@Huawei.com> <20240410134318.0000193c@huawei.com>
+In-Reply-To: <20240410134318.0000193c@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 10 Apr 2024 15:28:18 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
+Message-ID: <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>, 
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Wed, Apr 10, 2024 at 2:43=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> > >
+> > > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> > > > index 47de0f140ba6..13d052bf13f4 100644
+> > > > --- a/drivers/base/cpu.c
+> > > > +++ b/drivers/base/cpu.c
+> > > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(vo=
+id)
+> > > >  {
+> > > >         int i, ret;
+> > > >
+> > > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
+> > > > +       /*
+> > > > +        * When ACPI is enabled, CPUs are registered via
+> > > > +        * acpi_processor_get_info().
+> > > > +        */
+> > > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabl=
+ed)
+> > > >                 return;
+> > >
+> > > Honestly, this looks like a quick hack to me and it absolutely
+> > > requires an ACK from the x86 maintainers to go anywhere.
+> > Will address this separately.
+> >
+>
+> So do people prefer this hack, or something along lines of the following?
+>
+> static int __init cpu_dev_register_generic(void)
+> {
+>         int i, ret =3D 0;
+>
+>         for_each_online_cpu(i) {
+>                 if (!get_cpu_device(i)) {
+>                         ret =3D arch_register_cpu(i);
+>                         if (ret)
+>                                 pr_warn("register_cpu %d failed (%d)\n", =
+i, ret);
+>                 }
+>         }
+>         //Probably just eat the error.
+>         return 0;
+> }
+> subsys_initcall_sync(cpu_dev_register_generic);
 
-Partial enable iomap for regular file's buffered IO path on default
-mount option, support default filesystem features and bigalloc feature,
-doesn't support inline data, fs_verity, fs_crypt, defrag and
-data=journal mode yet (these would be supported gradually in the
-future). ext4 will fallback to buffered_head path automatically if these
-options or features are enable.
+I would prefer something like the above.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ext4.h   |  1 +
- fs/ext4/ialloc.c |  3 +++
- fs/ext4/inode.c  | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 36 insertions(+)
+I actually thought that arch_register_cpu() might return something
+like -EPROBE_DEFER when it cannot determine whether or not the CPU is
+really available.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 2ec6c7884e9a..4e7667b21c2f 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2972,6 +2972,7 @@ int ext4_walk_page_buffers(handle_t *handle,
- 				     struct buffer_head *bh));
- int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh);
-+bool ext4_should_use_buffered_iomap(struct inode *inode);
- int ext4_nonda_switch(struct super_block *sb);
- #define FALL_BACK_TO_NONDELALLOC 1
- #define CONVERT_INLINE_DATA	 2
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index e9bbb1da2d0a..956b9d69c559 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1336,6 +1336,9 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
- 
-+	if (ext4_should_use_buffered_iomap(inode))
-+		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+
- 	if (ext4_handle_valid(handle)) {
- 		ei->i_sync_tid = handle->h_transaction->t_tid;
- 		ei->i_datasync_tid = handle->h_transaction->t_tid;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5af3b8acf1b9..624eac0cc705 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -770,6 +770,8 @@ static int _ext4_get_block(struct inode *inode, sector_t iblock,
- 
- 	if (ext4_has_inline_data(inode))
- 		return -ERANGE;
-+	if (WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP)))
-+		return -EINVAL;
- 
- 	map.m_lblk = iblock;
- 	map.m_len = bh->b_size >> inode->i_blkbits;
-@@ -2567,6 +2569,9 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
- 
- 	trace_ext4_writepages(inode, wbc);
- 
-+	if (WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP)))
-+		return -EINVAL;
-+
- 	/*
- 	 * No pages to write? This is mainly a kludge to avoid starting
- 	 * a transaction for special inodes like journal inode on last iput()
-@@ -5107,6 +5112,30 @@ static const char *check_igot_inode(struct inode *inode, ext4_iget_flags flags)
- 	return NULL;
- }
- 
-+bool ext4_should_use_buffered_iomap(struct inode *inode)
-+{
-+	struct super_block *sb = inode->i_sb;
-+
-+	if (ext4_has_feature_inline_data(sb))
-+		return false;
-+	if (ext4_has_feature_verity(sb))
-+		return false;
-+	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-+		return false;
-+	if (!S_ISREG(inode->i_mode))
-+		return false;
-+	if (IS_DAX(inode))
-+		return false;
-+	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
-+		return false;
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE))
-+		return false;
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT))
-+		return false;
-+
-+	return true;
-+}
-+
- struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 			  ext4_iget_flags flags, const char *function,
- 			  unsigned int line)
-@@ -5371,6 +5400,9 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	if (ret)
- 		goto bad_inode;
- 
-+	if (ext4_should_use_buffered_iomap(inode))
-+		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+
- 	if (S_ISREG(inode->i_mode)) {
- 		inode->i_op = &ext4_file_inode_operations;
- 		inode->i_fop = &ext4_file_operations;
--- 
-2.39.2
+Then, the ACPI processor enumeration path may take care of registering
+CPU that have not been registered so far and in the more-or-less the
+same way regardless of the architecture (modulo some arch-specific
+stuff).
 
+In the end, it should be possible to avoid changing the behavior of
+x86 and loongarch in this series.
+
+> Which may look familiar at it's effectively patch 3 from v3 which was dea=
+ling
+> with CPUs missing from DSDT (something we think doesn't happen).
+>
+> It might be possible to elide the arch_register_cpu() in
+> make_present() but that will mean we use different flows in this patch se=
+t
+> for the hotplug and initially present cases which is a bit messy.
+>
+> I've tested this lightly on arm64 and x86 ACPI + DT booting and it "seems=
+" fine.
+
+Sounds promising.
+
+Thanks!
 
