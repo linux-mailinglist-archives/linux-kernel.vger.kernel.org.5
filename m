@@ -1,137 +1,116 @@
-Return-Path: <linux-kernel+bounces-138518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAD489F287
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:43:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2FD689F289
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DC251C210D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:43:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53CE11F21222
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A539915B568;
-	Wed, 10 Apr 2024 12:43:27 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C5D15D5CF;
+	Wed, 10 Apr 2024 12:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Np/w1Nmi"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8237412EBEF;
-	Wed, 10 Apr 2024 12:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C052912EBEF;
+	Wed, 10 Apr 2024 12:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753007; cv=none; b=Z5HSWlGl97YtCfHtJCmYRzyFaWcqDt58uurGSJFN+F1W3aKtjAlISuRgzjZy6958PcsrLFsoGUoEvt3xIwVKkOLyTxi/gm9t06jDgz37oB6xJV6Zz5Qs57dAXcndPqghLV1UiyZjx3vmuTv72uhP2lc0Q0f8clXaTLpBaFzMaRg=
+	t=1712753011; cv=none; b=NdTenrI6Y2LyaDsEZGd2mP2/J3hbV57QHNrYaKEMgSvZRQGY1CTmXYQaEl5J1o3KtnxW2N0EtJsLmp0yK5Ba00p7UMEweea1PQGHX+Rsc0s4caWeWvw0aNgjsfdbPLLB2HNVkHiTp3/93yJJ9IWsUBJX1otnsnpBT9ZqRC//ops=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753007; c=relaxed/simple;
-	bh=oNXkmJLZw0UUlzScvUERB+oZiwnYTzIkRhGzopuv6w0=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OLcJmoohYh4zMuEfFMNApVZR8SGv9dkwP1SUPucNozgW4cC4qrPBKcAyFQ3eDuyjUj2oUuZtFdIw9Lydc7UcZSjtIVqVFUPtyJldlL7G1wuZX82OsEMgW5JqsPePevzbLjo2fA8yXumyFdvwCQMBMcPwzUoWUCJu2UYnCL9NoRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF2Wn6z5Vz6K6Cs;
-	Wed, 10 Apr 2024 20:41:41 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id AB478140DD4;
-	Wed, 10 Apr 2024 20:43:19 +0800 (CST)
-Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
- 2024 13:43:19 +0100
-Date: Wed, 10 Apr 2024 13:43:18 +0100
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
-	<justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <20240410134318.0000193c@huawei.com>
-In-Reply-To: <20240322185327.00002416@Huawei.com>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
-	<20240322185327.00002416@Huawei.com>
-Organization: Huawei Technologies R&D (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712753011; c=relaxed/simple;
+	bh=ZIAOmvrnl59E0qA8D129ku06QXp/t0U+yZH7OIQvevA=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=KwXu6epO1LlSL7VqUZUZk73pX537lJcF3DZud60UWpgOfX1tA0VGvxFkPa7RwARuGoJd9l3Qy1e+myyVYn06najZ0FUYe9VtwkFkwNM0hSsQErIZWuAbgQfhVwqTaT7QjQFTSbQKI5OEvWg4dcN/Zul4gtKSONwj35MdwQzZg/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Np/w1Nmi; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4166d6dab3dso23328025e9.0;
+        Wed, 10 Apr 2024 05:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712753008; x=1713357808; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s6W3q2bOeGE0BrRwL1fG865Gcw8RNsxpT6lmBauL/5w=;
+        b=Np/w1NmirFF4XcdCjJTrl8BuE1EdJXqSEaXVeczwbIjKJcbdHTm/E9RSXswwqi3qCm
+         RL18G3TKu0ntrPGZbKgpEet/RrZ3p+v8ja/juMHKx4njL2TsXnOAvvtpcGUM7GIbZwtf
+         7nq0RYshnvYftaRuUy4zTZ4X7iRBX9N0x22rD4tuWahJ82390wknPcMSjj+vGDBP9jCT
+         ueIwvL8xcdclm/i1Po9R8aC932VIETd5tg3CGpoWpMEAd0TYssxazcskL/L+XrslCB5l
+         +HXMSiJ/54EM8EBKxWAxFRh9802HLj0a94iAzZTrUTw0crUkYx0OQbC/F/52CnrCTSAD
+         eJeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712753008; x=1713357808;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s6W3q2bOeGE0BrRwL1fG865Gcw8RNsxpT6lmBauL/5w=;
+        b=nSVe2+T3aHMlO2b2mWeCZWCJQw+C5gLLzYXmILzHHJ6vXotoOrFXU6jShq/+jogclD
+         vw+IaUQoDMsggkvtI5phGOWTGcTV+unaDUatyQpdhZUTPhjcpKe3z/K2LGt0XwEqmSJK
+         xQNzgw6+nYY6PNqN9CKRlgUI6SbPHjSlGf3xBzS4gD00A4QQP7IfAg5NV5Yn7LMJoYFo
+         Ffz388bLToszsaChNac99e1iIy/SyCACI+RACpXMWefdNcCvI/H2yQdF93pSNkPrl06q
+         vEVzNNhUGNfUcEqyUziYon2q2umlOztmwL7cPSt0dS+MZRmCtbzAAA2+l1t7337wzlOO
+         JTSw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3cNxS7QwEkgey7RsRzAIL6eYtP4c12E7MwUbgb41ZZaYb74ltrfadVj4x0eqKU1OOnGGRHugfg3wSfriG5tk59x+Av6+7QaSBsqU384ln2GB/+5qSrjBU9Gs9N/9wpr8ridF/b+jwANhb6UxpD+F2Ws9W/3Yh1vI3i/bX
+X-Gm-Message-State: AOJu0YzUtKPTB4rv5KVCWRgOwnvzuk6X7XN9I7KC8aFV1QQeVyFSOxhB
+	eGZL5JmvumgvwceoqAnPdWB4pa1OhiPQMyluIYrXXViN5LholQoN
+X-Google-Smtp-Source: AGHT+IHcugzE8vzXE8HPH/lzuP1bY5ylrSJUYCanSNtur6lnkBf2UVBphkiKUJzhXqy7mwr2gZBryg==
+X-Received: by 2002:a05:600c:4e88:b0:414:93df:bef1 with SMTP id f8-20020a05600c4e8800b0041493dfbef1mr1751654wmq.39.1712753007855;
+        Wed, 10 Apr 2024 05:43:27 -0700 (PDT)
+Received: from [192.168.12.203] (54-240-197-228.amazon.com. [54.240.197.228])
+        by smtp.gmail.com with ESMTPSA id n15-20020a05600c500f00b00417c0fa4b82sm729506wmr.25.2024.04.10.05.43.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:43:27 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <26bfe5ec-e583-458d-8e43-e5ecdc5883cc@xen.org>
+Date: Wed, 10 Apr 2024 13:43:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v2 1/2] KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate
+ KVM clock migration
+To: David Woodhouse <dwmw2@infradead.org>, Paul Durrant
+ <xadimgnik@gmail.com>, Jack Allister <jalliste@amazon.com>
+Cc: bp@alien8.de, corbet@lwn.net, dave.hansen@linux.intel.com, hpa@zytor.com,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+ seanjc@google.com, tglx@linutronix.de, x86@kernel.org,
+ Dongli Zhang <dongli.zhang@oracle.com>
+References: <20240408220705.7637-1-jalliste@amazon.com>
+ <20240410095244.77109-1-jalliste@amazon.com>
+ <20240410095244.77109-2-jalliste@amazon.com>
+ <005911c5-7f9d-4397-8145-a1ad4494484d@xen.org>
+ <ED45576F-F1F4-452F-80CF-AACC723BFE7E@infradead.org>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <ED45576F-F1F4-452F-80CF-AACC723BFE7E@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-> >   
-> > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> > > index 47de0f140ba6..13d052bf13f4 100644
-> > > --- a/drivers/base/cpu.c
-> > > +++ b/drivers/base/cpu.c
-> > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(void)
-> > >  {
-> > >         int i, ret;
-> > >
-> > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> > > +       /*
-> > > +        * When ACPI is enabled, CPUs are registered via
-> > > +        * acpi_processor_get_info().
-> > > +        */
-> > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
-> > >                 return;    
-> > 
-> > Honestly, this looks like a quick hack to me and it absolutely
-> > requires an ACK from the x86 maintainers to go anywhere.  
-> Will address this separately.
+On 10/04/2024 13:09, David Woodhouse wrote:
+> On 10 April 2024 11:29:13 BST, Paul Durrant <xadimgnik@gmail.com> wrote:
+>> On 10/04/2024 10:52, Jack Allister wrote:
+>>> +	 * It's possible that this vCPU doesn't have a HVCLOCK configured
+>>> +	 * but the other vCPUs may. If this is the case calculate based
+>>> +	 * upon the time gathered in the seqcount but do not update the
+>>> +	 * vCPU specific PVTI. If we have one, then use that.
+>>
+>> Given this is a per-vCPU ioctl, why not fail in the case the vCPU doesn't have HVCLOCK configured? Or is your intention that a GET/SET should always work if TSC is stable?
 > 
+> It definitely needs to work for SET even when the vCPU hasn't been run yet (and doesn't have a hvclock in vcpu->arch.hv_clock).
 
-So do people prefer this hack, or something along lines of the following?
-
-static int __init cpu_dev_register_generic(void)
-{
-        int i, ret = 0;
-
-        for_each_online_cpu(i) {
-                if (!get_cpu_device(i)) {
-                        ret = arch_register_cpu(i);
-                        if (ret)
-                                pr_warn("register_cpu %d failed (%d)\n", i, ret);
-                }
-        }
-	//Probably just eat the error.
-        return 0;
-}
-subsys_initcall_sync(cpu_dev_register_generic);
-
-Which may look familiar at it's effectively patch 3 from v3 which was dealing
-with CPUs missing from DSDT (something we think doesn't happen).
-
-It might be possible to elide the arch_register_cpu() in
-make_present() but that will mean we use different flows in this patch set
-for the hotplug and initially present cases which is a bit messy.
-
-I've tested this lightly on arm64 and x86 ACPI + DT booting and it "seems" fine.
-
-Jonathan
-
-> >   
-> > >
-> > >         for_each_present_cpu(i) {
-> > > --    
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+So would it make sense to set up hvclock earlier?
 
 
