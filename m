@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-138442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DD989F157
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:51:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D333A89F15B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 470D5B24EA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71DA51F2107B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AA115ECF3;
-	Wed, 10 Apr 2024 11:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8B315EFB8;
+	Wed, 10 Apr 2024 11:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GU1QgR52"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iX5tj+g1"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51DF15B136;
-	Wed, 10 Apr 2024 11:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F59915B130;
+	Wed, 10 Apr 2024 11:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712749758; cv=none; b=ZEognYycxyIL9zF9oVvROm+AgwD1E5tGd2d84fjQ14E0Y6keb+fIXkBkpv+9diBO2P28CqS6FKQNQdPmElOhnhje0i3kX29g9XuBetPy+v97PJopI93pUKv/rwXCWEf9Y6CAQOaPlFDFQlXZKr4JVKLqZ0tKTVoSFa98Y2Bxf8s=
+	t=1712749765; cv=none; b=YljAdd1N7Cy5++p2QcnISaPCyN+ClIGfj9BgY/N/lDF51f7CnBLzTRHZVad6vqE9YFdHrcuAcspz4BamLmODOvz4WJy4ud+idlZ1pgnGc4v37FxNUyCCcSudTQJtG5KmDVGYHgCzLbor4HPIKSOYVtu0ce3dKE6JohoR8eik8ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712749758; c=relaxed/simple;
-	bh=rZDLfhfpSZ9NfdEthCrn4EePA9THWzFIkSeNAaXhRPI=;
+	s=arc-20240116; t=1712749765; c=relaxed/simple;
+	bh=KlV5CDUrB1wYm3hhtjGk3UkaNzeKBnXpOQYydmU3iM4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fWgpFjdQgfJuKINAjz82siHaN/rur9Ifw0bwlj9w83pgJNuuW1vu9ZL2D/pOZhAQLQYh5pkiE4ZMzV+yWYu66b8jApWYdwDboNOsEBdFJkXBAij2xT8nc9CoUtHzL+kUQQ4dm/4lrn2c6gu8p+BQCiAuJKkPflgq1yMlZ8/vrH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GU1QgR52; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=dmCrfV3cLe3RxqStayBzjHsC/odqRtMW95hiemHs7WK7QObZrwTmvbE1wg8HptHtktcGczW098Ar/7Xq+cMJrAZZkRYIr5OK8VOoI1YvnwYvvT0zHGcj6DhHvEY1JhYiW0ZVx8aRDuYw8etepQWVbp1TVTxyJNyWBZ7ZRqoFL8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iX5tj+g1; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712749757; x=1744285757;
+  t=1712749764; x=1744285764;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=rZDLfhfpSZ9NfdEthCrn4EePA9THWzFIkSeNAaXhRPI=;
-  b=GU1QgR521/4pg3dnT3B2eR5tICQpC4lzxLy8IeUqX/W3B+t1AlxB2Yjs
-   U93hgmf0N5iAmhPUw33U7n4iZUmvnqHkNK9UiUhtMf0jYEKHVlkC+fI4p
-   DmfgapoITIOxH9kpqUtz1i/Ds8j9wlWJufpoRo+NbTBeKsEKHpU+2hcux
-   FPCvno0E60fDP1AMUgU+Z1UcNc0iXMmM6jRNc3+fVXUZvS6FpYwh2QnUh
-   58kAXeAi2tANx76GCeilvrOfBv0E6Ng+tAzgxgW9V/W6px/UygxYwWFcc
-   eHhw7MdvD8Uvp08qw8rR4RXqgnq40yGAult1Xq+ICYVh0W/agd2+acEXT
-   A==;
-X-CSE-ConnectionGUID: Oh0yr7ZSSGGq152EIGQQvQ==
-X-CSE-MsgGUID: F/oJmOQFRGibQJAD4iCPBQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11944150"
+  bh=KlV5CDUrB1wYm3hhtjGk3UkaNzeKBnXpOQYydmU3iM4=;
+  b=iX5tj+g1Y2FijdFGL5awdfEZseN0kJ9wApq1WxUK/MrbtUrBMidrTeLF
+   I4NK7UJIJQ/L9yoIdxOsU7avHj9pC2pyYudDQ/1LR69rZuF19F30BHaWF
+   LEfgd0FUF1SbdwJHozMdqtGN+VecJ/nmIq5wWmUOncXTu6B2kWSqAk9L4
+   pTSszC8Iu5Euz5TUPlrcZJMVlv81NLGAjZKS6pug7Kk76VPewiNrIgdaL
+   PKb/W68/kCu6m/fcE9EDIVhvK5WhW3AZOnyuf5kDFa8m14UUpHCwh43Jg
+   3DYWRzzo8nhYpVuFdTinjI7i2vS+oHHaIa+oku0bOrRCnhjny6rDFyV3u
+   w==;
+X-CSE-ConnectionGUID: Ky6CU8xjQZmUqkoJUup4vQ==
+X-CSE-MsgGUID: GJPCrKjERuO8adeN30uY0w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11944167"
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11944150"
+   d="scan'208";a="11944167"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:49:17 -0700
-X-CSE-ConnectionGUID: 5A3mY6mfRr2dgbpjguUwgw==
-X-CSE-MsgGUID: q9o9df5xRVG7+JFItyOufg==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:49:23 -0700
+X-CSE-ConnectionGUID: ECWwyE1WS4ymir9lvVJPHA==
+X-CSE-MsgGUID: X/WnJFf1QXe0ShB8ecEl8w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="43769273"
+   d="scan'208";a="43769278"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmviesa002.fm.intel.com with ESMTP; 10 Apr 2024 04:49:09 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 10 Apr 2024 04:49:16 -0700
 From: lakshmi.sowjanya.d@intel.com
 To: tglx@linutronix.de,
 	jstultz@google.com,
@@ -83,9 +83,9 @@ Cc: x86@kernel.org,
 	subramanian.mohan@intel.com,
 	thejesh.reddy.t.r@intel.com,
 	lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v6 06/11] ice/ptp: remove convert_art_to_tsc()
-Date: Wed, 10 Apr 2024 17:18:23 +0530
-Message-Id: <20240410114828.25581-7-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v6 07/11] x86/tsc: Remove art to tsc conversion functions which are obsolete
+Date: Wed, 10 Apr 2024 17:18:24 +0530
+Message-Id: <20240410114828.25581-8-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240410114828.25581-1-lakshmi.sowjanya.d@intel.com>
 References: <20240410114828.25581-1-lakshmi.sowjanya.d@intel.com>
@@ -97,31 +97,103 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-Remove convert_art_to_tsc() function call, Pass system clock cycles and
-clocksource ID as input to get_device_system_crosststamp().
+The convert_art_to_tsc() and convert_art_ns_to_tsc() interfaces are no
+longer required. This conversion is internally done in
+get_device_system_crosststamp() using convert_base_to_cs().
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_ptp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/tsc.h |  3 --
+ arch/x86/kernel/tsc.c      | 60 --------------------------------------
+ 2 files changed, 63 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c b/drivers/net/ethernet/intel/ice/ice_ptp.c
-index c11eba07283c..c416dd2e6622 100644
---- a/drivers/net/ethernet/intel/ice/ice_ptp.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
-@@ -2116,7 +2116,8 @@ ice_ptp_get_syncdevicetime(ktime_t *device,
- 			hh_ts_lo = rd32(hw, GLHH_ART_TIME_L);
- 			hh_ts_hi = rd32(hw, GLHH_ART_TIME_H);
- 			hh_ts = ((u64)hh_ts_hi << 32) | hh_ts_lo;
--			*system = convert_art_ns_to_tsc(hh_ts);
-+			system->cycles = hh_ts;
-+			system->cs_id = CSID_X86_ART;
- 			/* Read Device source clock time */
- 			hh_ts_lo = rd32(hw, GLTSYN_HHTIME_L(tmr_idx));
- 			hh_ts_hi = rd32(hw, GLTSYN_HHTIME_H(tmr_idx));
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 405efb3e4996..94408a784c8e 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -28,9 +28,6 @@ static inline cycles_t get_cycles(void)
+ }
+ #define get_cycles get_cycles
+ 
+-extern struct system_counterval_t convert_art_to_tsc(u64 art);
+-extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
+-
+ extern void tsc_early_init(void);
+ extern void tsc_init(void);
+ extern void mark_tsc_unstable(char *reason);
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 45bf2f6d0ffa..5f0bd441ed4d 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1297,66 +1297,6 @@ int unsynchronized_tsc(void)
+ 	return 0;
+ }
+ 
+-/*
+- * Convert ART to TSC given numerator/denominator found in detect_art()
+- */
+-struct system_counterval_t convert_art_to_tsc(u64 art)
+-{
+-	u64 tmp, res, rem;
+-
+-	rem = do_div(art, art_base_clk.denominator);
+-
+-	res = art * art_base_clk.numerator;
+-	tmp = rem * art_base_clk.numerator;
+-
+-	do_div(tmp, art_base_clk.denominator);
+-	res += tmp + art_base_clk.offset;
+-
+-	return (struct system_counterval_t) {
+-		.cs_id	= have_art ? CSID_X86_TSC : CSID_GENERIC,
+-		.cycles	= res,
+-	};
+-}
+-EXPORT_SYMBOL(convert_art_to_tsc);
+-
+-/**
+- * convert_art_ns_to_tsc() - Convert ART in nanoseconds to TSC.
+- * @art_ns: ART (Always Running Timer) in unit of nanoseconds
+- *
+- * PTM requires all timestamps to be in units of nanoseconds. When user
+- * software requests a cross-timestamp, this function converts system timestamp
+- * to TSC.
+- *
+- * This is valid when CPU feature flag X86_FEATURE_TSC_KNOWN_FREQ is set
+- * indicating the tsc_khz is derived from CPUID[15H]. Drivers should check
+- * that this flag is set before conversion to TSC is attempted.
+- *
+- * Return:
+- * struct system_counterval_t - system counter value with the ID of the
+- *	corresponding clocksource:
+- *	cycles:		System counter value
+- *	cs_id:		The clocksource ID for validating comparability
+- */
+-
+-struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
+-{
+-	u64 tmp, res, rem;
+-
+-	rem = do_div(art_ns, USEC_PER_SEC);
+-
+-	res = art_ns * tsc_khz;
+-	tmp = rem * tsc_khz;
+-
+-	do_div(tmp, USEC_PER_SEC);
+-	res += tmp;
+-
+-	return (struct system_counterval_t) {
+-		.cs_id	= have_art ? CSID_X86_TSC : CSID_GENERIC,
+-		.cycles	= res,
+-	};
+-}
+-EXPORT_SYMBOL(convert_art_ns_to_tsc);
+-
+ static void tsc_refine_calibration_work(struct work_struct *work);
+ static DECLARE_DELAYED_WORK(tsc_irqwork, tsc_refine_calibration_work);
+ /**
 -- 
 2.35.3
 
