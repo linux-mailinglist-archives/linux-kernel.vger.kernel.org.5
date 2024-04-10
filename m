@@ -1,166 +1,137 @@
-Return-Path: <linux-kernel+bounces-139377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 437028A0233
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:35:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A14D08A0238
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:35:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE3692856EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:34:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AE6B1F2118E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B5118411E;
-	Wed, 10 Apr 2024 21:34:39 +0000 (UTC)
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE200190674;
+	Wed, 10 Apr 2024 21:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="kJe1cU1i"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6876184111;
-	Wed, 10 Apr 2024 21:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD60118412B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 21:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784879; cv=none; b=B4Y6y5/xPcWaSABbn5PTW28OrWmRrRcy3zDAZbQ8BmLLaxPOTUn/YS7riLb5KvUAsUyKbFYXWrBkzez2rrFkqleafhe8P/3xWM0nLMD64srmEWLWErLxLBDX6C4cUiVnqExe1W8Jy5LoxSHEsFJQEq9DWZSBMoIkqwjCqoR6gaY=
+	t=1712784889; cv=none; b=jizJZ8hR+ez3VArqg/wvO6iU7FMBE2o/ELfL2CxO70mqOf6PAd6MCl1CTCLJPj7Twi8y6ohqBc+WMrWm46eL5mbRrMcA9mPHlrKUW2W72B7Dus1zwORj7ZSIPdS+24zDXgBwUgxFwh03ybV8BflfZ4KE0rRd9msu49KgcCuGGWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784879; c=relaxed/simple;
-	bh=VBmhZuhy9OiQHnd1DGErAQ0jyjLmeXi8kVR0g4eoQ4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MpSy8ZeuCwLHxwaKVaQOhy3RZrUe9+YPQbkIZ5D9ZfTNtDflH5rlL7xaj2hP0HJqisZ4weOE7AfpVhmw+QsU8unUVrwmk2T1x9dgpN0Gr8RUZnDjDGTjfZTocGB7xuUfUWo0BY3ZObrScyAlRrslUPwGTgsZ62OU39OmAkzVbvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a06a409caso29867765ab.3;
-        Wed, 10 Apr 2024 14:34:37 -0700 (PDT)
+	s=arc-20240116; t=1712784889; c=relaxed/simple;
+	bh=+Zl2pAaKAA2HzyDnhWshXv9VyS5payJIT/fbySA2d9A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fPDo9A2vxNvEnZwuuNpN9fBWr52YiQ0jKFGMdqNijyUnYMHdPhi1DI4WNgHUDoLyBm6aBIZOkw1+kQhAMfsGR5goxKq1CCuzuBw4bn1rBywTUEa7nRpuWpxOnWJ4rApN1OMlr5uKKGCzLOILdlm9x/rKuNRWQNZHOVyvNMPKa70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=kJe1cU1i; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-61587aa9f4cso73822017b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712784887; x=1713389687; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FCWiTOuyXFMcE85DuFu420bVCS/UPVrh/Hb5YvaLOl8=;
+        b=kJe1cU1ikx4LojZpQfBUuxfP/ItKGXMjdEMO09nx+OWzWfUQOJh3h2KQpJKNMdMWqp
+         8CJoXoCUzG/HvAVkcHes2ASfIiOlxsX1R/7X4hmP6mSdgVlx2a2XTaP1TqGbE7bf1AWO
+         P0KuS97pMWGKTggW1KZjGLnknZyB4wcWaxyd8cawzsS55nwn0rQw0EZDdqNJCEdEkt9Y
+         Z5bx5F9SyZHLjZRnX1TsMUMF9fTOg6OEGFXUmN2/f+qYE+MikMSIdGvo3D8i22lHgrVX
+         RjwzTPN0Gd21NBgTKTqYRvA5/z0995MByw/4F8OF8ZME0Z24xFciNqclNGcjZdDdVEvG
+         ZO7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712784877; x=1713389677;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bG7sCu17jkSV6yBnpltEJ7rJachKjyYSICFCQUTjj7o=;
-        b=vhVBSR0iFUNbNPvzUxO1CB/btukJbaHXT5f7j2mAcu93UrASMQtgYvrMrUoVzjYVUM
-         hnc49iN5Oa/+tYOGU1wmEm8rQqZa7HPrJm55LA7wvetb31CgFsmObEknA/fHRRMkBRrh
-         UmhNGYsQBZFIpCXjePOaIDzKGTUB3ojpwjdgxo3+DUtAvs+gld9aiXbz1dyzLrRjekjg
-         dKyrisUSo7qr+us+AeyLuDUOnmghij6MULu0fczxCZvyz+1mwnFykS6ZAziqKQUOkU8d
-         53hhF/jUkb0fdp4suAU5r99b4sxbB429fmMHoAtQW5tl0cMJzyquPWZlI2d8gaZ9Y5eh
-         mVLA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhJFCVwt53JpTUBt10yI4IDzKHSJr7ZMA+l8RmK6oHoMxZo5KW4iAqwhoEGLVXaDI0GJVZa3zQgidRCqDr5Fl+/uVSCyseQtGa4E+efnFFC2xkYnDf20d3z+/eDzh8DxtN4GV6rD9NkLZK1SUbVzPTk0zuCMm4RydFcUpc2PiDelL6
-X-Gm-Message-State: AOJu0YyDhpcNVMTBn4fmLFSdpQU4HsOm2/yV9le95JQbdXqX/uNNloJE
-	yz16+Td7X7wceLG8Sgl8oyFc/d0FnAF9QcGQYvuwmD7MTqbU+wrs
-X-Google-Smtp-Source: AGHT+IGygycenL7WG6EoKl2az0kNMkHo2YmNsYnvLqzVt/ufhtiQR7jXbASbhbWPWL0cnqC+N+eTDw==
-X-Received: by 2002:a05:6e02:1aa8:b0:36a:e011:15ba with SMTP id l8-20020a056e021aa800b0036ae01115bamr1460926ilv.9.1712784876707;
-        Wed, 10 Apr 2024 14:34:36 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id e14-20020a65648e000000b005dc98d9114bsm5526pgv.43.2024.04.10.14.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 14:34:36 -0700 (PDT)
-Date: Wed, 10 Apr 2024 21:34:27 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: mhklinux@outlook.com
-Cc: rick.p.edgecombe@intel.com, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, gregkh@linuxfoundation.org,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, kirill.shutemov@linux.intel.com,
-	dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-coco@lists.linux.dev,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	elena.reshetova@intel.com
-Subject: Re: [PATCH 0/5] Handle set_memory_XXcrypted() errors in Hyper-V
-Message-ID: <ZhcF44AEkKy0Z0HR@liuwe-devbox-debian-v2>
-References: <20240311161558.1310-1-mhklinux@outlook.com>
+        d=1e100.net; s=20230601; t=1712784887; x=1713389687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FCWiTOuyXFMcE85DuFu420bVCS/UPVrh/Hb5YvaLOl8=;
+        b=mfhP2SXAiVzuh9dy3o/HsTG0A7pVgvIHOw5yL4dadMVt75XHYI/cH2YJcvAI5d/nok
+         CPe85Bza7ZqnEhi3mh9VO/c2FEu2EBInLGi37N91NuScYTv3xqZwVHFhp7j5DLyyG6Du
+         CWjMfaMQISmfmxqO6XSRO95/taZCYQu1rRuwDu5puACWEiLY5+lMEQOF+el07BHSjv4z
+         saP21KaCtpeG4mE9hdUnc135CI3BErf8xlnIU3HMowOmQK1OicG4SKvnh9+CzVlZzlrf
+         fxfgFYC7TrDPruClFlzbqqpFFeREnyYyrS5RnKmYY3RUNWZ3Xagx9GQPLtr+VhnonfhU
+         /N9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVY+zFcEF33GulDzn421WYg/DhiqTUhcFPeM7ZPV87uNUYPBiuDviXERkYIN1FcBl8ra0OlmXPcWNTtzFmDBi18Y2kE4qhniu/YwAXG
+X-Gm-Message-State: AOJu0YyEGjiS6DUgF/TA/g9luJohvtqeOCRH/4U9/KCl7dKTeawxq2Fr
+	PnDdGYpdt5+GPmJXm+tk97jfX/nwfJUzvTx2cn/SwHJxWAqq5oQDA7h8FZ0/IIH1yWx4hmfRcP3
+	CYh+ZR0SwNdLMqZM2vCgwYT8NyNlT4Q2ZWLVbGw==
+X-Google-Smtp-Source: AGHT+IEJg6eBXgbrMvBxZrqHkCbyEafHccYY//puWMRuRRJPxivVjKGGtxP4Mzjd2PLpKtGs9YHHsRYFuI2P7eGObSs=
+X-Received: by 2002:a81:e946:0:b0:609:fff2:3bbc with SMTP id
+ e6-20020a81e946000000b00609fff23bbcmr3613852ywm.49.1712784886891; Wed, 10 Apr
+ 2024 14:34:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240311161558.1310-1-mhklinux@outlook.com>
+References: <20240410091106.749233-1-cleger@rivosinc.com>
+In-Reply-To: <20240410091106.749233-1-cleger@rivosinc.com>
+From: Deepak Gupta <debug@rivosinc.com>
+Date: Wed, 10 Apr 2024 14:34:33 -0700
+Message-ID: <CAKC1njRJRnxj8XjwJ-Yx6Guu=9kSEdaFnxF1e+gXq9ij_j=atA@mail.gmail.com>
+Subject: Re: [PATCH 00/10] Add support for a few Zc* extensions as well as Zcmop
+To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Anup Patel <anup@brainfault.org>, 
+	Shuah Khan <shuah@kernel.org>, Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 09:15:53AM -0700, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> Shared (decrypted) pages should never be returned to the page allocator,
-> lest future usage of the pages store data that should not be exposed to
-> the host. They may also cause the guest to crash if the page is used in
-> a way disallowed by HW (i.e. for executable code or as a page table).
-> 
-> Normally set_memory() call failures are rare. But in CoCo VMs
-> set_memory_XXcrypted() may involve calls to the untrusted host, and an
-> attacker could fail these calls such that:
->  1. set_memory_encrypted() returns an error and leaves the pages fully
->     shared.
->  2. set_memory_decrypted() returns an error, but the pages are actually
->     full converted to shared.
-> 
-> This means that patterns like the below can cause problems:
-> void *addr = alloc();
-> int fail = set_memory_decrypted(addr, 1);
-> if (fail)
-> 	free_pages(addr, 0);
-> 
-> And:
-> void *addr = alloc();
-> int fail = set_memory_decrypted(addr, 1);
-> if (fail) {
-> 	set_memory_encrypted(addr, 1);
-> 	free_pages(addr, 0);
-> }
-> 
-> Unfortunately these patterns appear in the kernel. And what the
-> set_memory() callers should do in this situation is not clear either. They
-> shouldn’t use them as shared because something clearly went wrong, but
-> they also need to fully reset the pages to private to free them. But, the
-> kernel needs the host's help to do this and the host is already being
-> uncooperative around the needed operations. So this isn't guaranteed to
-> succeed and the caller is kind of stuck with unusable pages.
-> 
-> The only choice is to panic or leak the pages. The kernel tries not to
-> panic if at all possible, so just leak the pages at the call sites.
-> Separately there is a patch[1] to warn if the guest detects strange host
-> behavior around this. It is stalled, so in the mean time I’m proceeding
-> with fixing the callers to leak the pages. No additional warnings are
-> added, because the plan is to warn in a single place in x86 set_memory()
-> code.
-> 
-> This series fixes the cases in the Hyper-V code.
-> 
-> This is the non-RFC/RFT version of Rick Edgecombe's previous series.[2]
-> Rick asked me to do this version based on my comments and the testing
-> I did. I've tested most of the error paths by hacking
-> set_memory_encrypted() to fail, and observing /proc/vmallocinfo and
-> /proc/buddyinfo to confirm that the memory is leaked as expected
-> instead of freed.
-> 
-> Changes in this version:
-> * Expanded commit message references to "TDX" to be "CoCo VMs" since
->   set_memory_encrypted() could fail in other configurations, such as
->   Hyper-V CoCo guests running with a paravisor on SEV-SNP processors.
-> * Changed "Subject:" prefixes to match historical practice in Hyper-V
->   related source files
-> * Patch 1: Added handling of set_memory_decrypted() failure
-> * Patch 2: Changed where the "decrypted" flag is set so that
->   error cases not related to set_memory_encrypted() are handled
->   correctly
-> * Patch 2: Fixed the polarity of the test for set_memory_encrypted()
->   failing
-> * Added Patch 5 to the series to properly handle free'ing of
->   ring buffer memory
-> * Fixed a few typos throughout
-> 
-> [1] https://lore.kernel.org/lkml/20240122184003.129104-1-rick.p.edgecombe@intel.com/
-> [2] https://lore.kernel.org/linux-hyperv/20240222021006.2279329-1-rick.p.edgecombe@intel.com/
-> 
-> Michael Kelley (1):
->   Drivers: hv: vmbus: Don't free ring buffers that couldn't be
->     re-encrypted
-> 
-> Rick Edgecombe (4):
->   Drivers: hv: vmbus: Leak pages if set_memory_encrypted() fails
->   Drivers: hv: vmbus: Track decrypted status in vmbus_gpadl
->   hv_netvsc: Don't free decrypted memory
->   uio_hv_generic: Don't free decrypted memory
+For the series:
 
-Applied to hyperv-fixes. Thanks.
+Reviewed-by: Deepak Gupta <debug@rivosinc.com>
+
+On Wed, Apr 10, 2024 at 2:13=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
+osinc.com> wrote:
+>
+> Add support for (yet again) more RVA23U64 missing extensions. Add
+> support for Zcmop, Zca, Zcf, Zcd and Zcb extensions isa string parsing,
+> hwprobe and kvm support. Zce, Zcmt and Zcmp extensions have been left
+> out since they target microcontrollers/embedded CPUs and are not needed
+> by RVA23U64
+>
+> This series is based on the Zimop one [1].
+>
+> Link: https://lore.kernel.org/linux-riscv/20240404103254.1752834-1-cleger=
+@rivosinc.com/ [1]
+>
+> Cl=C3=A9ment L=C3=A9ger (10):
+>   dt-bindings: riscv: add Zca, Zcf, Zcd and Zcb ISA extension
+>     description
+>   riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+>   riscv: hwprobe: export Zca, Zcf, Zcd and Zcb ISA extensions
+>   RISC-V: KVM: Allow Zca, Zcf, Zcd and Zcb extensions for Guest/VM
+>   KVM: riscv: selftests: Add some Zc* extensions to get-reg-list test
+>   dt-bindings: riscv: add Zcmop ISA extension description
+>   riscv: add ISA extension parsing for Zcmop
+>   riscv: hwprobe: export Zcmop ISA extension
+>   RISC-V: KVM: Allow Zcmop extension for Guest/VM
+>   KVM: riscv: selftests: Add Zcmop extension to get-reg-list test
+>
+>  Documentation/arch/riscv/hwprobe.rst          | 24 ++++++++++++
+>  .../devicetree/bindings/riscv/extensions.yaml | 37 +++++++++++++++++++
+>  arch/riscv/include/asm/hwcap.h                |  5 +++
+>  arch/riscv/include/uapi/asm/hwprobe.h         |  5 +++
+>  arch/riscv/include/uapi/asm/kvm.h             |  5 +++
+>  arch/riscv/kernel/cpufeature.c                |  5 +++
+>  arch/riscv/kernel/sys_hwprobe.c               |  5 +++
+>  arch/riscv/kvm/vcpu_onereg.c                  | 10 +++++
+>  .../selftests/kvm/riscv/get-reg-list.c        | 20 ++++++++++
+>  9 files changed, 116 insertions(+)
+>
+> --
+> 2.43.0
+>
+>
 
