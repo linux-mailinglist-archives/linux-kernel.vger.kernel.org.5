@@ -1,264 +1,190 @@
-Return-Path: <linux-kernel+bounces-137788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E90989E7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:14:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB3DB89E7AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:20:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32CBC284157
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:14:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70208283B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4EA524C;
-	Wed, 10 Apr 2024 01:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E6710F1;
+	Wed, 10 Apr 2024 01:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HPmLMzBb"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Wtt9ebvT"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2064.outbound.protection.outlook.com [40.92.22.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4DCA5F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712711632; cv=none; b=sRCu5muiHRiFT1v1jHwC0Ok7p2Dwijm/IzINc7ECsRbl1aYyVmD/ynxI7SOomQELbJXW2ctbTl3UMAhlN8LkOIIQmQhOZimMSmZ+Sxo2eWC50S4UM3cVm5JhPhPw1bm5LNFFhedLSKPzPQlDtyFpKHegmmEH3myzN15MlDx/F+c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712711632; c=relaxed/simple;
-	bh=3gZCR/oI52h5oQWn/HwEs5tiS4Zkp/wa/QiF4W4R/qM=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=lDLCDht3M4fLg+AQPjp7qRFigcJc8XX3Eoge+oyg9ZwWi4Gf60xrwt03dj+BCMKeykPom6jwlWZn3ZQNTMpwo7jUxgUIs2yx7L4EQze06r/TAK0s/QBoW6+ZTjR63BjVkfW5trtL8K9mvff9mvi2id+7w1WrU3MwoXD8X/UcX4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HPmLMzBb; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dced704f17cso10808131276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 18:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712711629; x=1713316429; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1cn09GYr5ta/Z+upjf7mxVRyOt2fkI4BgGzEZQrJxdg=;
-        b=HPmLMzBbITQdJqBLtK3zeM5Ut90LU8zVllLcZ+7QJUOUFBLiEWUzGcS7a2vUpcJhh2
-         dZdMnwU3Y4OLo2kB+R9q5w0pCv0DLOrqmy4TxnXJa4EQExK+6kPAgSXTONnXkAGjmcvU
-         kAItwzSW4YR6y0r77d67a92jyIcvGPpUTq3phFJoL1LsAK3VZWBHki8iYcfalQxmjS3t
-         HKTaeYL0sNnTU8z6f15E6C99MjST3GT1DxVOUlpGeJpb53wNHDblLEXi/hg6O+/8CvL5
-         KnTrQdYlrIp5xY41f/1Htpk+GZRjExSjVdRUpbDtGo2w8Sbe1vxFlxd8Keo243tRZTIY
-         xAzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712711629; x=1713316429;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cn09GYr5ta/Z+upjf7mxVRyOt2fkI4BgGzEZQrJxdg=;
-        b=WF7lrFB1xNGU+QlEVmmyCHxk1vKhQ5JUVF/dQhbmIArpgz4S8Mo1zmkJB7PFKaYRAF
-         FW7LrVOXqTFUSE+6GjwH3H4pGbkDeNCcIt0OhiH/eTDSTklSjMSkjsBeCaxcmS1HaFU7
-         sCbZa81D8MQiwZH+/m+hHwXoDEzbSaKbUaoe16nD8v0rivz/6GTNb/osmiWSeeYfd9m3
-         qRE/Fmzz3iM2YkOQ/4cL6BpgQY0vGVYBP6dnfIIN5Utz+Jxgpo9jddWOT5dOOpp/b92h
-         9r9/MGKEMLc0a7IzAR/JT+IK7NCSfUh48xb3jXXlP7yneb88DdC/b8cq8EbfiDO+Soe+
-         616A==
-X-Forwarded-Encrypted: i=1; AJvYcCXpR7OQ80cSOATEmZIIz25G90i4MaxXLMFmt2AKzWvvHOkZBjXXZVQS23135SBac0j/S+HBEoXBIyR0VYuuceM0KLqrRKzu+nPeWe75
-X-Gm-Message-State: AOJu0YzpjlRKuxTzXBXlrSS6qUXTBce9tlm4DoEOOBqy0huWHaFV5lk5
-	c5OYJtgNgStXgcolkgv3KpXtb9Lkkk5euRv3+mowUuqUO88/YaywzGWNSqtAykYD3tblsUnQu2d
-	nBU66fQ==
-X-Google-Smtp-Source: AGHT+IF3vVs0WTI0FKPFI7X5BHCZFvn1C4F3fCW2CxNBg+rtZ0F7OpXEraenZ1kq02SwwGiFkVUbeIiRvbvR
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:18c5:d9c6:d1d6:a3ec])
- (user=irogers job=sendgmr) by 2002:a05:6902:10c3:b0:de1:21b4:76a5 with SMTP
- id w3-20020a05690210c300b00de121b476a5mr116447ybu.13.1712711629664; Tue, 09
- Apr 2024 18:13:49 -0700 (PDT)
-Date: Tue,  9 Apr 2024 18:13:13 -0700
-In-Reply-To: <20240410011313.2556848-1-irogers@google.com>
-Message-Id: <20240410011313.2556848-2-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3078623;
+	Wed, 10 Apr 2024 01:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712712021; cv=fail; b=KWMbW2aVbcct+c85ZQoaDrhk33viyEBTPQtOcpOFN+n8VnUZfQESF3k6Z1jYxRIRanny08yl9RZCjenQl7TlYkkQTU3Csl6SfKfZM0sT1MYRGYrmGbjsORLg9thf2a1ezFWOUrsvcON0MoSv4mxnGhy+HRTofc5gvEgK1y7VQFI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712712021; c=relaxed/simple;
+	bh=ZpLV4Ton9ka/Qndq59aANPstPc+FXuZ4R4scvgQ+8ds=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=dTNMyiIfYjPTkJ+84mykili2fC8qQme574kPcWAVvXOctDR4x4iSK9YE0AaVKKBb0l0nIAJuLhSdBV/d3Vi4BNAzNG/mgsq3TDdpebPDX2uI9y+YHi1fXyMvOEKDXhvRpoZyWb2vVhroT3V4bElDcsNusTIilqKgO8nLjckslBk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Wtt9ebvT; arc=fail smtp.client-ip=40.92.22.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nR6QuVbG/8UPTce68t7PCMV46zYHfILLApMxy5mL2aBi3+KVhdquB5xYR4mIYMA8un9DI46KPYADMwACoLxnoUwjZpaPK1VzRFPAL+cGExekBE4Vh7eLSsvXrEtGCciR0fV84o2j2iNRhfjiP/3ANK99cnnqSueK/Hfg9T9g7PJ0cOAydINaJ4OK32FNO0ww1cXc5cfb1rtpkmWmrKOS27ikAlkSCQxQIcBeMEqq5pP3MqqARwCGs8p8sxF2HQJtk7FVXVPAftrTEmo1t1MNY/pvvqNkdNAr/BSISwYaaJbM0+If+fy1Xf+tCgP+wG8QeRMoULtEmqYm7cdryFJOqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ibs8iOze464yYWMklmHSVYesiAGssNFJihBxVCmIszw=;
+ b=db++iqB2cz1NMWs7be8gIY1zBMVP5KS5cycmUtZt35/cGeQ7wjoPyX0XBjzprzZDDc1rfyAhTHKhh8/l2LQIQj/O2ZVwwT2FX6pELRWXPNfqQOWVRaqMurzKffFFEMti+yMpRL63e7u1DW9CGbsVFNAL2yjFd9igaTwhinKHWids1qnsW5S3+JZ7Bqh+FGQf0zQqHbYdKTJLGtHtX0nxTYWEsJD/aWyD6GMR25YSgIckO3GM0nSYAPavW/iifhb4dcjzBv0NAw9Qgw1gf64EKj9Y6vq4fct3enIolmI+qOZCNwxyzRgYHrUu89OpBOAEtpGl29r3Jy3jk7uQUKlzig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ibs8iOze464yYWMklmHSVYesiAGssNFJihBxVCmIszw=;
+ b=Wtt9ebvTfcj+tM0chQ25uPzVhPRW4uTDrr7mmYnL+HXP0BozMhg/7p16OguZedWJbj8XA5adn8wC5SzxRY0L1GhxC9yjKyjbi7Y5MQ+j9gJ/YGj0pIzfqTAxYCmr8t4rLUEmCXct5CXUmQ/VPD8uhJhfipNG/jn/ZBoP46gIKc6sYRZf0ugBu+iMkZ6RN7fH9oQe+Z+aDT+O/xpIpwZaBs8tTqlJhOAHuuwOACqA0jPK1b4ROYvyXwiJAFB39JpRNgELqkR3ZELDWRLTbcXvvnljKqajgiE9FzCeRYi77gifvgF3NlexmlQW+tH6jgXV9vfT+LMVbT7DQyUmsqy8eQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by CYYPR20MB6833.namprd20.prod.outlook.com (2603:10b6:930:c6::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
+ 2024 01:20:17 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 01:20:16 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Inochi Amaoto <inochiama@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v7 0/3] riscv: sophgo: add dmamux support for Sophgo CV1800/SG2000 SoCs
+Date: Wed, 10 Apr 2024 09:20:30 +0800
+Message-ID:
+ <IA1PR20MB49538A66B7AAE7801C5A7C04BB062@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [tQf6glBFyMjo2sGxYaXX+u0tL0lAnx5Ut4s7nC75tZw=]
+X-ClientProxiedBy: TYCP286CA0288.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3c8::16) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240410012031.165284-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240410011313.2556848-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v2 2/2] perf tests: Add a pmus core functionality test suite
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, James Clark <james.clark@arm.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Bharat Bhushan <bbhushan2@marvell.com>, Bhaskara Budiredla <bbudiredla@marvell.com>, 
-	Will Deacon <will@kernel.org>, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CYYPR20MB6833:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3204baf8-0ee5-4e67-99f4-08dc58fc60cf
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ThnLXL0NYu+4vvwHHDPLmv1c1NhZR6jfpnFgd1ooLZhrlu3uLLfnfx124AB02BoleuqdCxBtkKEInFaVWr27J570bB0R91OaOGqCSjJPN7LHvpcPhRXip8Hr+m48Wq+YitcWOESSoDI4odZm3fLhbQT23Ci2AXvUr8r29iiKO3V/0prbrY5gwYHpqGGFvzSV1llRaQGTW7wBhLKuUVIqwYFyRnmEbsPG3EvYsnJHIwG1pFDSO3meJukZPj4UcWXGZQ+ebluo1GNw4whSGEvnQkKH4We4onZ1MfpaQTUSPZuUhgd3MROEB/IGq5NbS/c9HDi7h9z54uISPeSDHafyVERrErbPihV5/0rr3/DQ4O9UEebnAgQ6QZ631WUWWaf40Y15TJc5zaQn7xbLYzhELvdi5J15oYnYW80DmpejUDJrK6B2JMqb+NWqD8PDF/l/gJyt197Q+m5fiDxtD/OArEDSDhuZTQAroHhX56fBdAa3Ru8/jHQxRsHzbCCiZkDP4SKvEcM+xLhrLoEkuILxl+YI/M718WCXM6BExt6t3ofPRCzEb4eh2VHBLTd43aMWMT1pP9wIiwyqW0Zx058QVaSAy/C8nlrBOFufLWxLfEs=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?HhPkcOXW2TzHbPrY08t19HoAAckxjNuKjxif5xh6jMuGf6zBa2pSC5/cBe3f?=
+ =?us-ascii?Q?oX/ZJdrYZePNi3b6GLe+pGyVpwyDhZ+U6SS8By2386HtJnJ794Fq8vUKdkKy?=
+ =?us-ascii?Q?H/qww2gtITEYa47yX4Uzs2hsMPcbXIDaxXd5zyMU4eRmDwl2QFVCM6ew743l?=
+ =?us-ascii?Q?pg6F6nT6oIGKj6So/F5/ab2GfB+js2D90AdpRwUPVWVfDPu6/4ETPtY86vTn?=
+ =?us-ascii?Q?qbiXIcGHKS1X1JsdXGun9cPMGRVojc18B6GEDhKmIZ5OoirfRptQsdGnLIby?=
+ =?us-ascii?Q?7t4PKZEFJ5xBqyX2+cs4EQXgIOuYHDn/LXkbhwDtYgzcwLXNecYzuTkt+v4o?=
+ =?us-ascii?Q?BPR3Pv8oSeqJgYRjw5cf1ZZUywt9xo2WeiqjFhsoWtJCXts7qroQQwcS324q?=
+ =?us-ascii?Q?WQMCa9eR17U83SO3rTn/Dg4ByydP/uWSD+UakIFNiZBnoeKkynmAeD42Pzln?=
+ =?us-ascii?Q?GG1jFbSjuHug7yUMuSjjdadhzVsJTTGYvISGrrHDiDstfuuc6/kbd1pTO3wF?=
+ =?us-ascii?Q?trxW2aS+1J1oFZhFHtNuIIBGWzkgKmYxv8KrJZbktf/tLyW6mOPuEvGagf7c?=
+ =?us-ascii?Q?8xuxgEGb9JZ8diViZj2+DQPlL9DckCOyGAJvL1y+iniPBF6zFotQ7Tt1+LKr?=
+ =?us-ascii?Q?VgCkxwbzNJ8GIfKPRCmYi+6n+ycPj/8pyVEyBGwsOrPLS5ZHHKNZzzikT6x9?=
+ =?us-ascii?Q?0TC+K4LXPkRnkYvnCK/nK4DL3CFKvNORVGD8K0RCnDnqhlPUudPC1FWIdPql?=
+ =?us-ascii?Q?6hoa8R194OD6B6X6t57XDbQlZdV0BwE+LqiFGOXCaBEpaYE7QS0IfcrszrSS?=
+ =?us-ascii?Q?KdNC0/TSd/bwVPzH7mcBMCuAjX10KGez+GTj7gwrnZlg9wN9GemAf5xhBS1v?=
+ =?us-ascii?Q?+CFLoqCQzS/Ide5zhQ7y7ErFBmY0aJfTgVPuvRxBODrQNy+0nyXrR2KevzVX?=
+ =?us-ascii?Q?OiAWANGBrlUBchw7OxpOnCxhBhy3k4gqDeZ0siKf0q7Z5AAWo2jqsTfTiBhA?=
+ =?us-ascii?Q?U/Ju/8GBsawN8E4yUkx9yYJkTTmDiAfAcjinovbiB5/uvx29uNkUOp9GHGPg?=
+ =?us-ascii?Q?6c4Iem0REIlp8WSmf9r30+BApBRHQnFlIUJMbvgkQs5mSk7zqY+mBhAKCpeI?=
+ =?us-ascii?Q?4ii+7f/bA81RWFPqJb1G0NM5pH/Bgzo5qUKJq73ammoMzWiODl+qsU1GFXuW?=
+ =?us-ascii?Q?rE4VCXmD3PxJUICJKgzmejjr1RzKjtGMCEBBaaTo6K3qKqItJkDhE10fIJrI?=
+ =?us-ascii?Q?+TDhne895ibnrIPftVdu?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3204baf8-0ee5-4e67-99f4-08dc58fc60cf
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 01:20:16.3809
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR20MB6833
 
-Test behavior of PMU names and comparisons wrt suffixes using Intel
-uncore_cha and marvell mrvl_ddr_pmu as examples.
+Add dma multiplexer support for the Sophgo CV1800/SG2000 SoCs.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/Build          |   1 +
- tools/perf/tests/builtin-test.c |   1 +
- tools/perf/tests/pmus.c         | 108 ++++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h        |   2 +
- 4 files changed, 112 insertions(+)
- create mode 100644 tools/perf/tests/pmus.c
+As the syscon device of CV1800 have a usb phy subdevices. The
+binding of the syscon can not be complete without the usb phy
+is finished. As a result, the binding of syscon is removed
+and will be evolved in its original series after the usb phy
+binding is fully explored.
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index c7f9d9676095..a7bab6e9300f 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -14,6 +14,7 @@ perf-y += perf-record.o
- perf-y += evsel-roundtrip-name.o
- perf-$(CONFIG_LIBTRACEEVENT) += evsel-tp-sched.o
- perf-y += fdarray.o
-+perf-y += pmus.o
- perf-y += pmu.o
- perf-y += pmu-events.o
- perf-y += hists_common.o
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index d13ee7683d9d..c90f270a469a 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -68,6 +68,7 @@ static struct test_suite *generic_tests[] = {
- 	&suite__parse_events,
- 	&suite__expr,
- 	&suite__PERF_RECORD,
-+	&suite__pmus,
- 	&suite__pmu,
- 	&suite__pmu_events,
- 	&suite__dso_data,
-diff --git a/tools/perf/tests/pmus.c b/tools/perf/tests/pmus.c
-new file mode 100644
-index 000000000000..6279c925e689
---- /dev/null
-+++ b/tools/perf/tests/pmus.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+#include "pmus.h"
-+#include "tests.h"
-+#include <string.h>
-+#include <linux/kernel.h>
-+
-+static const char * const uncore_chas[] = {
-+	"uncore_cha_0",
-+	"uncore_cha_1",
-+	"uncore_cha_2",
-+	"uncore_cha_3",
-+	"uncore_cha_4",
-+	"uncore_cha_5",
-+	"uncore_cha_6",
-+	"uncore_cha_7",
-+	"uncore_cha_8",
-+	"uncore_cha_9",
-+	"uncore_cha_10",
-+	"uncore_cha_11",
-+	"uncore_cha_12",
-+	"uncore_cha_13",
-+	"uncore_cha_14",
-+	"uncore_cha_15",
-+	"uncore_cha_16",
-+	"uncore_cha_17",
-+	"uncore_cha_18",
-+	"uncore_cha_19",
-+	"uncore_cha_20",
-+	"uncore_cha_21",
-+	"uncore_cha_22",
-+	"uncore_cha_23",
-+	"uncore_cha_24",
-+	"uncore_cha_25",
-+	"uncore_cha_26",
-+	"uncore_cha_27",
-+	"uncore_cha_28",
-+	"uncore_cha_29",
-+	"uncore_cha_30",
-+	"uncore_cha_31",
-+};
-+
-+static const char * const mrvl_ddrs[] = {
-+	"mrvl_ddr_pmu_87e1b0000000",
-+	"mrvl_ddr_pmu_87e1b1000000",
-+	"mrvl_ddr_pmu_87e1b2000000",
-+	"mrvl_ddr_pmu_87e1b3000000",
-+	"mrvl_ddr_pmu_87e1b4000000",
-+	"mrvl_ddr_pmu_87e1b5000000",
-+	"mrvl_ddr_pmu_87e1b6000000",
-+	"mrvl_ddr_pmu_87e1b7000000",
-+	"mrvl_ddr_pmu_87e1b8000000",
-+	"mrvl_ddr_pmu_87e1b9000000",
-+	"mrvl_ddr_pmu_87e1ba000000",
-+	"mrvl_ddr_pmu_87e1bb000000",
-+	"mrvl_ddr_pmu_87e1bc000000",
-+	"mrvl_ddr_pmu_87e1bd000000",
-+	"mrvl_ddr_pmu_87e1be000000",
-+	"mrvl_ddr_pmu_87e1bf000000",
-+};
-+
-+static int test__name_len(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	TEST_ASSERT_EQUAL("cpu", pmu_name_len_no_suffix("cpu"), (int)strlen("cpu"));
-+	TEST_ASSERT_EQUAL("i915", pmu_name_len_no_suffix("i915"), (int)strlen("i915"));
-+	for (size_t i = 0; i < ARRAY_SIZE(uncore_chas); i++) {
-+		TEST_ASSERT_EQUAL("Strips uncore_cha suffix",
-+				pmu_name_len_no_suffix(uncore_chas[i]),
-+				(int)strlen("uncore_cha"));
-+	}
-+	for (size_t i = 0; i < ARRAY_SIZE(mrvl_ddrs); i++) {
-+		TEST_ASSERT_EQUAL("Strips mrvl_ddr_pmu suffix",
-+				pmu_name_len_no_suffix(mrvl_ddrs[i]),
-+				(int)strlen("mrvl_ddr_pmu"));
-+	}
-+	return TEST_OK;
-+}
-+
-+static int test__name_cmp(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	TEST_ASSERT_EQUAL("cpu", pmu_name_cmp("cpu", "cpu"), 0);
-+	TEST_ASSERT_EQUAL("i915", pmu_name_cmp("i915", "i915"), 0);
-+	TEST_ASSERT_VAL("i915", pmu_name_cmp("cpu", "i915") < 0);
-+	TEST_ASSERT_VAL("i915", pmu_name_cmp("i915", "cpu") > 0);
-+	for (size_t i = 1; i < ARRAY_SIZE(uncore_chas); i++) {
-+		TEST_ASSERT_VAL("uncore_cha suffixes ordered lt",
-+				pmu_name_cmp(uncore_chas[i-1], uncore_chas[i]) < 0);
-+		TEST_ASSERT_VAL("uncore_cha suffixes ordered gt",
-+				pmu_name_cmp(uncore_chas[i], uncore_chas[i-1]) > 0);
-+	}
-+	for (size_t i = 1; i < ARRAY_SIZE(mrvl_ddrs); i++) {
-+		TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered lt",
-+				pmu_name_cmp(mrvl_ddrs[i-1], mrvl_ddrs[i]) < 0);
-+		TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered gt",
-+				pmu_name_cmp(mrvl_ddrs[i], mrvl_ddrs[i-1]) > 0);
-+	}
-+	return TEST_OK;
-+}
-+
-+static struct test_case tests__pmus[] = {
-+	TEST_CASE("PMU name combining", name_len),
-+	TEST_CASE("PMU name comparison", name_cmp),
-+	{	.name = NULL, }
-+};
-+
-+struct test_suite suite__pmus = {
-+	.desc = "PMUs test",
-+	.test_cases = tests__pmus,
-+};
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 3aa7701ee0e9..03278f0f7698 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -3,6 +3,7 @@
- #define TESTS_H
- 
- #include <stdbool.h>
-+#include <debug.h>
- 
- enum {
- 	TEST_OK   =  0,
-@@ -81,6 +82,7 @@ DECLARE_SUITE(PERF_RECORD);
- DECLARE_SUITE(perf_evsel__roundtrip_name_test);
- DECLARE_SUITE(perf_evsel__tp_sched_test);
- DECLARE_SUITE(syscall_openat_tp_fields);
-+DECLARE_SUITE(pmus);
- DECLARE_SUITE(pmu);
- DECLARE_SUITE(pmu_events);
- DECLARE_SUITE(attr);
--- 
-2.44.0.478.gd926399ef9-goog
+Changed from v6:
+1. fix copyright time.
+2. driver only output mapping info in when debugging.
+3. remove dma-master check in the driver init since the binding
+always require it.
+
+Changed from v5:
+1. remove dead binding header.
+2. make "reg" required so the syscon binding can have the same
+example node of the dmamux binding.
+
+Changed from v4:
+1. remove the syscon binding since it can not be complete (still
+lack some subdevices)
+2. add reg description for the binding,
+3. remove the fixed channel assign for dmamux binding
+3. driver adopt to the binding change. Now the driver allocates all the
+channel when initing and maps the request chan to the channel dynamicly.
+
+Changed from v3:
+1. fix dt-binding address issue.
+
+Changed from v2:
+1. add reg property of dmamux node in the binding of patch 2
+
+Changed from v1:
+1. fix wrong title of patch 2.
+
+Inochi Amaoto (3):
+  dt-bindings: dmaengine: Add dma multiplexer for CV18XX/SG200X series
+    SoC
+  soc/sophgo: add top sysctrl layout file for CV18XX/SG200X
+  dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
+
+ .../bindings/dma/sophgo,cv1800-dmamux.yaml    |  51 ++++
+ drivers/dma/Kconfig                           |   9 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/cv1800-dmamux.c                   | 260 ++++++++++++++++++
+ include/soc/sophgo/cv1800-sysctl.h            |  30 ++
+ 5 files changed, 351 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
+ create mode 100644 drivers/dma/cv1800-dmamux.c
+ create mode 100644 include/soc/sophgo/cv1800-sysctl.h
+
+--
+2.44.0
 
 
