@@ -1,78 +1,79 @@
-Return-Path: <linux-kernel+bounces-137863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84C0789E872
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:31:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558D489E87E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E82FBB23580
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788F41C216C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F2DBA49;
-	Wed, 10 Apr 2024 03:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b="QAEFnawA"
-Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazon11020003.outbound.protection.outlook.com [52.101.128.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED148C122;
+	Wed, 10 Apr 2024 03:46:39 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2133.outbound.protection.partner.outlook.cn [139.219.17.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD7A523A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D59DBA41;
+	Wed, 10 Apr 2024 03:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.133
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712719867; cv=fail; b=QV4VDzz7RRKI0WfyNqo+fjaJmj6EsjG1Wg8RyTagmk/pSwBi4Hk2oZd9kl9TsVa7UjweXos4fDZ2aTBFrzyBYr9aWyccl02btJUx4know+Hk34pXVCptWd8XCFZjNXU79wAb6flTKb8KGrK+JpQ/hZ2mzBIVreDndaNZ7z9+yJE=
+	t=1712720799; cv=fail; b=UJ3TOwQZjxTELgLiwaqyjOwwf45j2HLz+zF/olqcUwqdXtQjl5yjhMAsqBTnztiUNBhHIO2KG8FWvKuxhY1x2vyP14WvQASV3MjEL/dO5bFg8zdft3+u2mldJW26ouCzSmY/PepbCwYYxmmkLGVDbD/bI73s1Z/bnYdkgVJAOcg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712719867; c=relaxed/simple;
-	bh=4eCZpl8guytdOw6rc3xM9zmUKlqxXfvoCr39gkz4cWM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BLBSRVFBIf7zBGa+2BZmfIkEaW3D2BRCg9r4MS8PxtPl4Ou9KoWzSVJtENh1QdioorEWWcKkvffbI3ZWjxOh0KCfMWeiUqzQYqtOeQvpXBNcZHIGCMGpaIPS5sLe1ESUknhUavEOWkxauhKE3ZG9+odqKwZx//b+tH+Gxmx5mEA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com; spf=pass smtp.mailfrom=jaguarmicro.com; dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b=QAEFnawA; arc=fail smtp.client-ip=52.101.128.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jaguarmicro.com
+	s=arc-20240116; t=1712720799; c=relaxed/simple;
+	bh=OHCssj6P9836bxBkW9i3I+ExmBMlSFBu8UzczJgWy1k=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=cUFHJdqSpC6XxuiUiPeEOTiZjNfRrIm69hCY2Ba/Ncphxv9W+oEf2VFLNxFIUohXFBOA9nSx+qiNz2LupMr4lZYL+y/CEDa8HPqlFXGk54hqJC1oT9t8/aqLngS3skBQvrNoEE3gKSSCR89nRPZ2xebkNt+X+F5Q4wc2gfeRtW0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OKCAU3S40EuhrMPxRv8lvThlqxWyBe7N4xSGcPsAeq63LqUTSSbXN9gkJeK2QtF/BfCoPlfhnzm3jM1fZQ0V6PLVhsqknNov8cZFi0cVVoEaZefOT5gCitrbDZuIbqqKlQvGWGjuzxo2cy1xTi6y9FisM8n111KqiWR54EmLk0vF4m+LdalEVGtyj7SBDEIUhjfcrjqdKxj8JLkUBbDV1qj+X9FG/HLJSW7g5+0Y5YeWA59V0qZHZdir+yJynxpHA0vDw8ds86d0m8zV5LezG3tUYVrSz5AvGy98z1+apHlJ09UheD0vRC0L0oeLrTd4MxkxxM/CjVFiHThA6bGOUQ==
+ b=I1//TsHPYbRhvzg40MUBvtqzmBZOYIqH2bRw6dEwPnPgafTu1GxeTOwJhRytC5V7alxlXDeZHEGSc06rHoQSVlY5wHMP/c38dqVyIPo+S3iNpy/waY556tt/o/r40rbfHY03VAneO0hsSrebG6bI7l+o7qUScXmM2CYAHMGUki6/cDlFxBr4MPFwuI2Ji3IcJ5AYKjdolRGmSBig3VAVkwZmOgTcGuemZR5AZK7hxc2TOkuL+zPAsilm7LQR9mAWkw4Y0q1AlBnt/l4HHveF9ezJdc3zYm/3YE2VodPT5/HZcpvGlqDin9PaUQuxGdyCMQta1NdWz1kf5DC5aEBXuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y5R+7w7Oz0u730ykQmhihBzpF1xVeY6DZkfSJCKpn8g=;
- b=I9lmtTv/R4GBYoCpyOZW//sRKYQPKY7p0YKUZ0tNIoMJpxqrLQLtEqiRWLDnMbXa9YM+1ZVi2pJ1jA56VQN6gUyaWN0WDAlopNTwAnxhcn76ByU1WIYbGTpBZ0ikMxM8O6wshvCKp6j5HEDe97jHxL9o/wP4A3u2PK/mX7STQ0157wnkvxj7Am4dnaCxJ0Ki/VQkO89tHajYFmqyXnI0iCzGD+ajCRywIHRyIB9QIiHbtzRk920V7qt9dyP0Z7K3P6HIFgs8CXLHX3+NXAcLD8DDLj62d5Dq+Uqynrguj16l6VNb8P58gn/fDXluuPBgnyjJ7fT1dW9HTFol3/DcDw==
+ bh=/OyzaIpuYkm7hUH6I2Tsyav8LQgUQuoSS7RWMmfsqVw=;
+ b=d4payKHQxR2v6AoFuut3aDgw+ELZhNLi9p/4gqiRPsjjuiv2e13uMeYUYcxPeZ3nNhDr2cMx0tC8M2pAiB+bojWizNt0VHW0VBFFEJwuMMKflojcO39Mur0HhSPvnowc4fVjK3yvo8L5pzoi1V4xb7jrb5QRp0E1nV0H6Auxto+jkq1rfGasFKVsQD+DQRhXUYdMipj1pCx6fMMBAqfmyJTEiDTkmHL27AvF2i90hIwFO29ovNb2G16nk8mL9R3F71aBX5OSMaIYZJCvJEmwAcIKJGE3tA9HEUsZJehO8w1F+zLaq7xc0yHNYaIlSpJP+fVM3vBzQzLH4+lf0HjmrA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
- header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y5R+7w7Oz0u730ykQmhihBzpF1xVeY6DZkfSJCKpn8g=;
- b=QAEFnawAL4NIUdTzQ6rH1l8bCd4MwAD+jfQ0puzmw1J250DwBQPC0qecfIu/GygaIGiAt33PESDRBHJqQYx+xOYyMN00thg3vWBViaiaYjR8Ze6+gDi1RMd96ekLhdrdGMv89FdDfnCDr5AqeixucxPpAjyinVbO4nCrYvW5ZaJw/Dp0btk1UwuhsgqQpsDlu7zpOyFhlm/YPXedUmnJAbyZjRb3v5zw1JrBHUH3/g+iImuDQxg+uPXQSaGlQmOU134PwRDuVGzzA7gnUBF4I6uDH9Qh20ZHYGZDS8AHB5mclx23kz+klc4tu9sbVms6HCdcsuMMEp2Sp2bBTYzo2A==
-Received: from SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
- by TYSPR06MB7099.apcprd06.prod.outlook.com (2603:1096:405:88::9) with
- Microsoft SMTP Server (version=TLS1_2,
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10) by NTZPR01MB1132.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 03:30:59 +0000
-Received: from SEYPR06MB6756.apcprd06.prod.outlook.com
- ([fe80::922f:a649:adbf:6634]) by SEYPR06MB6756.apcprd06.prod.outlook.com
- ([fe80::922f:a649:adbf:6634%6]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 03:30:59 +0000
-From: lyx634449800 <yuxue.liu@jaguarmicro.com>
-To: mst@redhat.com,
-	jasowang@redhat.com
-Cc: angus.chen@jaguarmicro.com,
-	virtualization@lists.linux.dev,
-	xuanzhuo@linux.alibaba.com,
-	yuxue.liu@jaguarmicro.com,
+ 2024 03:31:55 +0000
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ ([fe80::6174:711d:d93:87c9]) by NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ ([fe80::6174:711d:d93:87c9%4]) with mapi id 15.20.7409.053; Wed, 10 Apr 2024
+ 03:31:55 +0000
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Emil Renner Berthing <kernel@esmil.dk>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>,
 	linux-kernel@vger.kernel.org,
-	Heng Qi <hengqi@linux.alibaba.com>
-Subject: [PATCH v5] vp_vdpa: don't allocate unused msix vectors
-Date: Wed, 10 Apr 2024 11:30:20 +0800
-Message-Id: <20240410033020.1310-1-yuxue.liu@jaguarmicro.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <ffab38f0-2ec6-4ed2-b0f8-398f2829b71d@linux.alibaba.com>
-References: <ffab38f0-2ec6-4ed2-b0f8-398f2829b71d@linux.alibaba.com>
+	linux-clk@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v4 0/2] Add notifier for PLL0 clock and set it 1.5GHz on
+Date: Wed, 10 Apr 2024 11:31:46 +0800
+Message-Id: <20240410033148.213991-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0045.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::14)
- To SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
+X-ClientProxiedBy: NT0PR01CA0002.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510::23) To NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,171 +81,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR06MB6756:EE_|TYSPR06MB7099:EE_
+X-MS-TrafficTypeDiagnostic: NTZPR01MB0956:EE_|NTZPR01MB1132:EE_
+X-MS-Office365-Filtering-Correlation-Id: ba8bb759-87f9-45c2-71b5-08dc590ec4f6
 X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	7Pnvyr28Zjp1LappWqkXnYmzdh7ARXZt8IGl6MBnFRLN7gUUcY6mZmidj/cjhUDtDxAkGHbMzmDXD/coib7P0yR5Jyl3eFHFuXElb9GPSUct/guhRJgTycqRx+M1ZRg8SggSgDBdgL97YXmrKtI1lnTcGCEZ4Fz5EUA86BhzPIs88T7A8IP7YMZwSjzaW17GgSR8FeAngyNHSNxp/zPAH7Nd9XLcSblT6rgBT5InbsO5KeePkKf6dYBhsT0klCPXsbbSEwq9ndRx9OkuiEP+2u4Fk/EMYs5+hTStlRgwwUqvgXfEUm8qEjcNxRpKMq68OKEgpu3CnZqj1o8Eok19tvDBscU8MA11A9rH/MCTISrJk0cfv5KPWHG8ZJj7WSPyk+qQbtCMbNnfOJZTVcGYblJ1WVkOXUF/mflqRvvkQP+8HMvOWXUqx47QRDu36S2j3XEiirmlHs/zkOgceSzc5afaqYU1Qzgl4XBHIWXVMA6nPJImfywUua1EFUO8POOqKhfJljfcCBzucntq1ANjtXuqM9T4+6Ae6MYNlQvu0mBbZJGI0mjskZ55ct33z8CnliwBYVt+xhl/yWSsoAIjCu/+6PP7T7LPog513JbUZSR2MBnWzR++baDKPHH1LL568CYd6a8vfykeDCEfkNVNClIB46ehPxykzMtk+W/0wFR9u//ft1GooMwRGqmFOE5PxM3N5U6G/SSTVETXg+BuaKQXeLJDm/qKnAxwEUzI4nlEt4XU0svMdzNKu1sOJHJT
+	v1BGuvOV2m3yd99T/nTPZ9raXRx/dhnbiuQP9bQC2SnpBydmzFvvcYFRyF3NckAPF2Ph+GSAWtFyEZPeYlv44WESJ10Zt0QDv4TrE5wUPblbrpd4jYuwBlcJNUt553CCReKt3fqC54Hp0ujGIINKvARyEuXjJZ2yelzso3C0RDGJ4woWNYWE8skW9Rui1YEbKVGLMyJsnb3Huq+7aOl5WGmjGU0cObWDyYJMaZ3JymNnI1kUKVkF54tUhQoOcYalPmNdJ8BqOg7MdDOs4kK9eeAtr3jKxju3GM5p4E1f8OGfunTQWZqQgcqYd8Z12g5aLpMwidSdFNcY0HMtjdBoA9enYk1SfQzhAfiGw9tH67YVK/Dv+h232LNBYQSPwb89uTjr9KHeM//7wC6WqB0zoqmamYBckGsdCNm62R98t40UiFYNyBqxV6MVn+g8MC4qMaf1B+5YWKyrdhwC6DQVa0ixy5sPFXc6JyPpiZjAl6zQqVhn3i2jVgbqKogQi/mT65yMbg+8GW1mTJ/ppJSH/zS++zwSr0MxtWMl/tCuBwgqoVCu5avW524fOYbV42AXekLgSCQcvu2HCrqCq+cs8B599ny5YsdIe7tZLUZyDs6j47reAmes97N/PzOkHFou
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6756.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(366007)(38350700005)(43062008);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(41320700004)(366007)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FHT6r2LItzC/5fOQgur7HwGWeLe5063W8sAU42VNyIBSUW/E4+cyMaV7zXX8?=
- =?us-ascii?Q?tHi4adxmzgWf0oizg3z7BD+/uDQi2zpC4ACNPs8nN14AZEO6pLLNQNX6L7xB?=
- =?us-ascii?Q?a+adMhmzpvDxSIa8PXi/cJTg46ptX9NebDJd+vR4EMcphQqBkYHydR3TTAvU?=
- =?us-ascii?Q?PLHHm4gm6I+l8wqjxf9AUgt1v+E+A7Hvwvhmue04UaA94f37DjAM/AcsQngD?=
- =?us-ascii?Q?eqzYgB0aFyLDFYnttBvobVFU8zqmrcYgFOZys4dRYgt2SVMzE+wDAfTwwq/t?=
- =?us-ascii?Q?rjCKSGUI+nZQpUZuSh0TJN6nRFFokRki8kUWjwJ1RKQ1Nuheo2gw3s87VP36?=
- =?us-ascii?Q?tdZYbhD64lO4wPn2HK45d3O25IkYzB6GW4YQOm+mUN8g7a4Hbt9qMIKoAgif?=
- =?us-ascii?Q?9oTtoY4IU1uqI7Ckttk2dnDkfwdSVTwviPTxER7h7CjpcJXQebqzNSZa7Ed9?=
- =?us-ascii?Q?nBzrO3YBFOezdwd7SMPmZHzMw5QWeOz6llMQJIQ+gOcMk4QAYhRt0L8PkSgx?=
- =?us-ascii?Q?Cqzf/KwBK8Sb7tmH/3CTkeYaNhWYSOyxIM0gQk3PYMDFBqNCBLZNGo1vfs5e?=
- =?us-ascii?Q?scRzkTTurr0dTozRKrlv9ssdaoomNCjhHwHTY/0EBUSedE9OU8AU9iLMuNK2?=
- =?us-ascii?Q?tCONk8ZGCmqXpBtwBhVNakG5pYnnFruxQsiAGfrNmnoWeP4W5UD11WZpFg/6?=
- =?us-ascii?Q?UKdK8WDmUNeM4q9M9YqnjOqSALY4VmUWXejkq8Pt2cGZQ8G/PjpnHBlPrSNt?=
- =?us-ascii?Q?bIhwwwQ3fn+qmrAIZ4MZZ9sh6kX/CoAAp5fB8lAN0zagsk8cksvoQ6u3hacJ?=
- =?us-ascii?Q?kxmYiFe8hrZruweuAnfpTlgPUf1deveEMuBxtlZvv/bPqioqshRohlvic3sK?=
- =?us-ascii?Q?5Pz84ebCqNbttwbmqv4wBfKJ//afhZbr1FfloEsc2F/ZzKJ4F4pCfYvR1nxz?=
- =?us-ascii?Q?+7oSkorhHPqwuA0+EDM9a25fL0xDlvlz1Ms5zNWE2Uct37k3gXr9c9PAtCnJ?=
- =?us-ascii?Q?XHLJPNpMAcYg5ED0PVgvZEpJUFTJjX5u5XfUIeU1jZh+1CqPQfr861JFvgDH?=
- =?us-ascii?Q?oVXx5eNDOkLfCqxkQLQLEdaHLBZ8ai37nSgrTIoHq3QX7tC94N8E3Mu7IqFS?=
- =?us-ascii?Q?/MjK8X1uKh6Nt+UfOEeaOrjvhQT7DMQ0aRVdFAgXfcD2bTKNYCCBXvsjM9An?=
- =?us-ascii?Q?coOTicTWqBwY5JkEMCxcIp2tDM52HlwMX/oi4qXhv/7kgxzUYrRiygG5vMwj?=
- =?us-ascii?Q?ygaFCJfPj86BQ4JLw8Tnipq5zGvKYkZJDVEXsbu3fhc3Ll08SZUWr72vvAHj?=
- =?us-ascii?Q?/Ud3szrbDWYFMXClSum77see5ljGI4dl4E5/P1mPOgkA11MwAnRJ0lT/Uy37?=
- =?us-ascii?Q?AETK47TyQ14aja33qkptBqq9Iub6RasUD3S3KR+Fjj5TDguFX97d6glCnSsu?=
- =?us-ascii?Q?bA5C+7ybGARjegWN5cOm3jSvYv2W8L0xCtjQZWXU91jIUu1n1rihYvM2HZyV?=
- =?us-ascii?Q?0jgKkYdWtO5YkXPYIHW9DQ+rDio3GgDxEqD6JM/O+IzhvmsbJU0ahOEDUkIv?=
- =?us-ascii?Q?9LPVvXUzA7uu/tMA/mw25eLIJ90ReFMR2Tt+UCD8hfaZJDZ3RR5nAdSmfa2+?=
- =?us-ascii?Q?uA=3D=3D?=
-X-OriginatorOrg: jaguarmicro.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30741ee0-3a67-49b4-f9ee-08dc590ea3a7
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6756.apcprd06.prod.outlook.com
+	=?us-ascii?Q?3B5iQuNSYOGb29ylvKxQ9eqztyQrNrv29G4Q3YkG5PuUZwrAE/XlLQjw5+rv?=
+ =?us-ascii?Q?cbw1c5kFuEeQVxrEZvwY4OXIvEkuALMFrFhd1MfRH84yV3AnmPrc/RtX94Ni?=
+ =?us-ascii?Q?J8rxMRAEIep3MDo9k6I5Jh5foeqsYUdTTv38bKQHcs6DoDClVahhLGbFYuoI?=
+ =?us-ascii?Q?CZrU/dfzVC/nV/ujL9Wi/yH6WGFiLFqRzB1LBNp6yPt3XwmzfhwDVMP7I/qh?=
+ =?us-ascii?Q?dSpBs/oe8nx2RCcNGzolfzYtrq9H3RuYHRnSPvMNrLN2QIqnKpyAlCkA9ZPI?=
+ =?us-ascii?Q?zMRwJGAVaspHsjezgG3dNTOcJmsmNZSSRRVrLQPw0JrQff6haEQqPJdhRP46?=
+ =?us-ascii?Q?KIgkJCAB/IGjEHzlYxxDqo7U57wgKpUyx+VC5ODHs9eItn7hKDSIJNykgNGX?=
+ =?us-ascii?Q?iou0CbsfgQpAl//OU1Aake9Nt3meXFtB+UqEt12LAecWcGB4NBnbLMMfNmco?=
+ =?us-ascii?Q?zwVr8LICD/jGuUew2Akw/Pc5HxYU+Q3DAIBqXZUVLGAR3aym7jnY5FMGGDop?=
+ =?us-ascii?Q?tCE+yk/BUrLcu+rreyjXP8UJYdUTQggcoTxKKh9Qzo1+irZ9hZwCef/IxP77?=
+ =?us-ascii?Q?uckm9Y9dXrbdb5V2E4qK39SielyT/XOsmQhJqaR5vVORVpQJ+qkQxhmHd2pJ?=
+ =?us-ascii?Q?iGQ7YHRD3VRkCkyRzvliQhQk4HZak0+XU3r6/HOwE7OfrmZUdN5BbgA7Hdm2?=
+ =?us-ascii?Q?azqPShinIHSCIEBc1QIA/rkNg6uDWej9pYPFV2cUYYkH60RBAtE5NUU/8M6D?=
+ =?us-ascii?Q?ijTBUHPsMoMhhWPKketZF7hw1HfyrKnUHS5LAtEf9VUObA3hSR9v7dVxA5ov?=
+ =?us-ascii?Q?Q0i9MiFUeV+xJSuPac7OZteQRYQHuVT+RqfEX0ab0I4Pl+nVRsBrMmgSm69y?=
+ =?us-ascii?Q?03UWwLuRjij+Rv/IJTqZtnQW9ijEstaE7uciUIYPqjrE1OUfNmtB3pE8NXVM?=
+ =?us-ascii?Q?va3eOBL/hO0/V0ossOch15+iA35dFm9jUnaURA4h3hH79NfC9W0yYMHcm1e9?=
+ =?us-ascii?Q?Nc6+CpM8GyLy6Ch6ApYtGiwJVia296bP95boVvaIXd4O31qioPeAHHeb1Bs+?=
+ =?us-ascii?Q?xtdzOlgQQqoKQUWKJ+7Tnu1A+82k5SIL2wPhY4jQZ26DoK6tgctL0FRJekVc?=
+ =?us-ascii?Q?lQPuJnTkBdIHhrWTV8DgPC6TQlqqLjbqL27De4EAeqPZRZb46MyZvTZgHQsW?=
+ =?us-ascii?Q?xBlVoxiC+RP7BQRJGCR6ThGN7MRJeGBVhJTZqqwVWEgkqJz4M9xrULDLEMmN?=
+ =?us-ascii?Q?mIXACkPywLbQdk1KWPnrTRlloeMaqAc0Dy6We8+JOTamzPF6zLg2o91VyQ+4?=
+ =?us-ascii?Q?fswrGhrLsOLcRF2GZnC33hrbIWsELeMkJNvFiDmeGydANubs4ApQiUfUd5YD?=
+ =?us-ascii?Q?ps9wT5D71x/XjNOzewBjJti2zYaseZY+/80qFsTiYdkYDbvlH3IITJpj5BTz?=
+ =?us-ascii?Q?rF/7LjqIDAt6Pt6GiKWnWgiOPssao06iNxjLUs8TqhyVsrkkXUPw9nJ24im8?=
+ =?us-ascii?Q?y9qw97Dzra0b+J0+PhlvqiRqc6zam/J8vqztPk+OSgS4uSUlOVr5d4csGyrj?=
+ =?us-ascii?Q?4ubXpRU5d6A1NoKNOxlRUVL31C27k4USl8SpbYLRtt8GdfKNYPTiRmkq1H7o?=
+ =?us-ascii?Q?Pg=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba8bb759-87f9-45c2-71b5-08dc590ec4f6
+X-MS-Exchange-CrossTenant-AuthSource: NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 03:30:59.2619
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 03:31:54.9810
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Li7rndGAZ7YQu0J0rACN4u4vGBBsr7PEG1JPAKFUXpqk4GStr61wBhc5rxjPgBUikos7q59iIGgIqzDf1pL0y4P6sNNKTUPJ35ou/+dQqVo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB7099
+X-MS-Exchange-CrossTenant-UserPrincipalName: i753RIXX+9pTsfJt81JCT5tsXo+5EyUUzX/T0C73pPLydFZKbsTbDy5s00ULq9sMhea4q+IfmTtKNE5lH7KoQpLww34VaHUF7j/n/P6q3sk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NTZPR01MB1132
 
-From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+This patch is to add the notifier for PLL0 clock and set the PLL0 rate
+to 1.5GHz to fix the lower rate of CPUfreq on the JH7110 SoC.
 
-When there is a ctlq and it doesn't require interrupt
-callbacks,the original method of calculating vectors
-wastes hardware msi or msix resources as well as system
-IRQ resources.
+The first patch is to add the notifier for PLL0 clock. Setting the PLL0
+rate need the son clock (cpu_root) to switch its parent clock to OSC
+clock and switch it back after setting PLL0 rate. It need to use the
+cpu_root clock from SYSCRG and register the notifier in the SYSCRG
+driver.
 
-When conducting performance testing using testpmd in the
-guest os, it was found that the performance was lower compared
-to directly using vfio-pci to passthrough the device
+The second patch is to set cpu_core rate to 500MHz and PLL0 rate to
+1.5GHz to fix the problem about the lower rate of CPUfreq on the
+visionfive board. The cpu_core clock rate is set to 500MHz first to
+ensure that the cpu frequency will not suddenly become high and the cpu
+voltage is not enough to cause a crash when the PLL0 is set to 1.5GHz.
+The cpu voltage and frequency are then adjusted together by CPUfreq.
 
-In scenarios where the virtio device in the guest os does
-not utilize interrupts, the vdpa driver still configures
-the hardware's msix vector. Therefore, the hardware still
-sends interrupts to the host os. Because of this unnecessary
-action by the hardware, hardware performance decreases, and
-it also affects the performance of the host os.
+Changes since v3:
+- Added the notifier for PLL0 clock.
+- Set cpu_core rate in DTS
 
-Before modification:(interrupt mode)
- 32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
- 33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
- 34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
- 35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+v3: https://lore.kernel.org/all/20240402090920.11627-1-xingyu.wu@starfivetech.com/
 
-After modification:(interrupt mode)
- 32:  0  0  1  7   PCI-MSI 32768-edge  vp-vdpa[0000:00:02.0]-0
- 33: 36  0  3  0   PCI-MSI 32769-edge  vp-vdpa[0000:00:02.0]-1
- 34:  0  0  0  0   PCI-MSI 32770-edge  vp-vdpa[0000:00:02.0]-config
+Changes since v2:
+- Made the steps into the process into the process of setting PLL0 rate
 
-Before modification:(virtio pmd mode for guest os)
- 32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
- 33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
- 34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
- 35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+v2: https://lore.kernel.org/all/20230821152915.208366-1-xingyu.wu@starfivetech.com/
 
-After modification:(virtio pmd mode for guest os)
- 32: 0  0  0   0   PCI-MSI 32768-edge   vp-vdpa[0000:00:02.0]-config
+Changes since v1:
+- Added the fixes tag in the commit.
 
-To verify the use of the virtio PMD mode in the guest operating
-system, the following patch needs to be applied to QEMU:
-https://lore.kernel.org/all/20240408073311.2049-1-yuxue.liu@jaguarmicro.com
+v1: https://lore.kernel.org/all/20230811033631.160912-1-xingyu.wu@starfivetech.com/
 
-Signed-off-by: Yuxue Liu <yuxue.liu@jaguarmicro.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
----
-V5: modify the description of the printout when an exception occurs
-V4: update the title and assign values to uninitialized variables
-V3: delete unused variables and add validation records
-V2: fix when allocating IRQs, scan all queues
+Xingyu Wu (2):
+  clk: starfive: jh7110-sys: Add notifier for PLL clock
+  riscv: dts: starfive: visionfive-2: Fix lower rate of CPUfreq by
+    setting PLL0 rate to 1.5GHz
 
- drivers/vdpa/virtio_pci/vp_vdpa.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ .../jh7110-starfive-visionfive-2.dtsi         |  6 ++++
+ .../clk/starfive/clk-starfive-jh7110-sys.c    | 31 ++++++++++++++++++-
+ drivers/clk/starfive/clk-starfive-jh71x0.h    |  2 ++
+ 3 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
-index df5f4a3bccb5..8de0224e9ec2 100644
---- a/drivers/vdpa/virtio_pci/vp_vdpa.c
-+++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
-@@ -160,7 +160,13 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
- 	struct pci_dev *pdev = mdev->pci_dev;
- 	int i, ret, irq;
- 	int queues = vp_vdpa->queues;
--	int vectors = queues + 1;
-+	int vectors = 1;
-+	int msix_vec = 0;
-+
-+	for (i = 0; i < queues; i++) {
-+		if (vp_vdpa->vring[i].cb.callback)
-+			vectors++;
-+	}
- 
- 	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
- 	if (ret != vectors) {
-@@ -173,9 +179,12 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
- 	vp_vdpa->vectors = vectors;
- 
- 	for (i = 0; i < queues; i++) {
-+		if (!vp_vdpa->vring[i].cb.callback)
-+			continue;
-+
- 		snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
- 			"vp-vdpa[%s]-%d\n", pci_name(pdev), i);
--		irq = pci_irq_vector(pdev, i);
-+		irq = pci_irq_vector(pdev, msix_vec);
- 		ret = devm_request_irq(&pdev->dev, irq,
- 				       vp_vdpa_vq_handler,
- 				       0, vp_vdpa->vring[i].msix_name,
-@@ -185,21 +194,22 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
- 				"vp_vdpa: fail to request irq for vq %d\n", i);
- 			goto err;
- 		}
--		vp_modern_queue_vector(mdev, i, i);
-+		vp_modern_queue_vector(mdev, i, msix_vec);
- 		vp_vdpa->vring[i].irq = irq;
-+		msix_vec++;
- 	}
- 
- 	snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-config\n",
- 		 pci_name(pdev));
--	irq = pci_irq_vector(pdev, queues);
-+	irq = pci_irq_vector(pdev, msix_vec);
- 	ret = devm_request_irq(&pdev->dev, irq,	vp_vdpa_config_handler, 0,
- 			       vp_vdpa->msix_name, vp_vdpa);
- 	if (ret) {
- 		dev_err(&pdev->dev,
--			"vp_vdpa: fail to request irq for vq %d\n", i);
-+			"vp_vdpa: fail to request irq for config: %d\n", ret);
- 			goto err;
- 	}
--	vp_modern_config_vector(mdev, queues);
-+	vp_modern_config_vector(mdev, msix_vec);
- 	vp_vdpa->config_irq = irq;
- 
- 	return 0;
 -- 
-2.43.0
+2.25.1
 
 
