@@ -1,59 +1,83 @@
-Return-Path: <linux-kernel+bounces-139282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADC28A00E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:52:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D5E8A00E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0191F24C5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D001F2130D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA8A18133F;
-	Wed, 10 Apr 2024 19:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872DC181B8B;
+	Wed, 10 Apr 2024 19:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/tyxoTy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yxgoha2k"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B477828FD;
-	Wed, 10 Apr 2024 19:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C54428FD;
+	Wed, 10 Apr 2024 19:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712778763; cv=none; b=dCZrMORbmyW+JGyY900zv/juCAwRYOM5IFUm4/lz0/wjeZTMjzI7r14REM3n4xpCmwXkoIH42usjUWmYun099tEUDsuW4jLu+Ry1tXo1dfg33OdQ77UB9sLtujwkwHyFuxNUaucjCXMat7wa4Yzk+p7Eq0O0Ct71wEAQc2YReVk=
+	t=1712778836; cv=none; b=iz07hoVR9Bp692Jm/F8e92CQiBaY5YeqbuNn1/SI1ATxP7mzPtQjx8IYh2Z2tfuIXflY84mWGJopFKcDDJZDfIxSFeq8pU+ksG5piZpha1ortoLzpIRFDVSiP2uSmYpie5SWVNe4rj1NcHxw7zOxKgqQ5wR187qWNnuzFCwIcpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712778763; c=relaxed/simple;
-	bh=HmV0bjsSlKEC99Ik9DKscFRJxpEuP1+26uWiLWV86jE=;
+	s=arc-20240116; t=1712778836; c=relaxed/simple;
+	bh=/gzrab9sjjLCDQ6VDRJrkCIVoiCcc5F44HEM5Lx1Wxs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L1OXK0mXevcfHFQH0pklayi+MCULiPCXzgo26Sks+CGJtLKlwMVgfrvGkTztemaqPhvDpTxXVPmmueITNOYzZ3k9tkGOFP+N2R8LKJH4le9zX3qwXVGMhqEhZc9oqJuXzCZPQ0KSNaE9K2sIRjoad1dl88FQLOCUkETUxC8AV4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/tyxoTy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C26F5C433C7;
-	Wed, 10 Apr 2024 19:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712778763;
-	bh=HmV0bjsSlKEC99Ik9DKscFRJxpEuP1+26uWiLWV86jE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m/tyxoTy/wuuYMKP78XeK61XHpz9pROlv6nWW9vTKwTHvf1DS88n6UIxf0OMt8S5R
-	 jLU0JkE0nfbSjxFqtXDW/9hP+yq1A2HP9iyi0rc6EyQR33e+ETOcat1uP94YUU9+rm
-	 cXpAsO2b+czJCIm2sojByH4QjLw/N+phz1WYVo5DsgthysWkNb2wwQPdoF6agtJ1a+
-	 jMr+Zj1y3f6uD05OZRRpeN5B7ueMW1Hl+tLpD4s/IYxAdFBVsus8zaNLXDLI1whaJU
-	 K7L5W/xUlRFdy6EBazve70BsqgVQ3ZdXx2B8g+EUAJ4BMYI0n3RJskmO3+1L6j+5Ko
-	 vB/ePzX/EKBZQ==
-Date: Wed, 10 Apr 2024 16:52:39 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 4/6] perf annotate-data: Support event group display in
- TUI
-Message-ID: <ZhbuB43qQXzfUT14@x1>
-References: <20240409235000.1893969-1-namhyung@kernel.org>
- <20240409235000.1893969-5-namhyung@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fCcCaZgX8u5YKO7tXhbY62NEGQoQPC8vv2H5pA7AHXVMRZLVDSqBrqRjdL2t0oZwdPcb0/cNPcM+0Iuc8C+/vaUWBM6WZQ/jatxp93kQdPqEbAS+s+kRrEMj+w2wcvuv8s1M+nyZTigyhbmo34fSNd1VIhmBjoN0FpIM5ZMpEMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yxgoha2k; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed20fb620fso3372588b3a.2;
+        Wed, 10 Apr 2024 12:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712778835; x=1713383635; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9LLpYn6RY+9fmh/DEGHkQYLiUAYafku1LckmK98WH34=;
+        b=Yxgoha2kL19hmet5BgDig0Jsj/o9EeLXC5tei1ccue5csVlagoDOoM72hTr667GyWh
+         +0y0epT3YSYL/TQWTCwO7l8cO0+77qXkSljm2MznB4yxlLJ1SCIhr4YjCfxoNYmyTpCb
+         p24Y4qXaZ3iCdg0kLT+9Uayad0sf3jJyUd5V1/tzVaPAIzXk+o4xsg/PmhI+d632mnHB
+         QnJJqSYMTQzfAUoF8iw3MGvjOJLbc1yoDY2DzVl61J6QRq3WpIECX3Ymxp/GsGpJsGG+
+         lHEYkvn7jhVcncwrgsPnetvn/cZIJqN8HXEUETuKbW/aRgfq0m7G5MoiXrbxUhQeR4ZL
+         P8ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712778835; x=1713383635;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9LLpYn6RY+9fmh/DEGHkQYLiUAYafku1LckmK98WH34=;
+        b=SECTIYH5Zo9gKnIVn2A+1+h0sSODWODnc9HYJ3LvTOlM8wUPIBuJcs9y/xIy9jwcl7
+         XXFsxPHw0Oi00J7ZPaUMhkwKiDMxwM3agnO/pP0YLNSVn4pwoMWQwqKot3uu4jWMj8Kd
+         JfBF74lhvnjUMdRhRfG6gFcJ5pSMBbxNpNoeBBUDIOwms+o9tFYnhlBExAjrb9K16X0Q
+         TLYXJTj6Y60rYv6olJHIwq7vpNMryABjNM7Tq1tsYSpAbQyZizeZXmLtTqWDflLy2mBP
+         0ehTnuxjbJtEFbVWbt9qx1SdpVDZoI3WKQUxN4ge6m4eM5QG1l/39DsrKYOnRt/1PlYy
+         rB+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV0PhQ/i/CQ+Qqhs/N2EuRZtehGm7Slzii3i/aN4NJvy7mfYtrDpgzF6r/entqenHXu2dcrstIn6jvj7SppWARUVMp1NWmhSMK2TOlMip/ca4ftf0FhcltyX8ELrBePNmyDifqB81OgvbIy/o2mAfqNsbpOYg+SK2Ggm9lv09JVv5OI
+X-Gm-Message-State: AOJu0YxCl1sUJktteu4HJa8I+5BKu/YDSjrQ9wnGOhATfqZxzDRbaZEu
+	Ety9PMPJzzYEnaGvwOJJZbfn8zu2Ly53eRjRsY/2tYu640wij70J
+X-Google-Smtp-Source: AGHT+IHuPW954ptixzpDzELZzOQ7XNdbd+B9en0dSzEz+zcbSgQ6uda+APwZYb4XeW5oP6FiMtuJxA==
+X-Received: by 2002:a05:6a21:3e0c:b0:1a7:11bf:7b74 with SMTP id bk12-20020a056a213e0c00b001a711bf7b74mr3495432pzc.62.1712778834624;
+        Wed, 10 Apr 2024 12:53:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:a5f4])
+        by smtp.gmail.com with ESMTPSA id gx15-20020a056a001e0f00b006e71aec34a8sm15295pfb.167.2024.04.10.12.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 12:53:54 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 10 Apr 2024 09:53:52 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+	leit@meta.com,
+	"open list:CONTROL GROUP - BLOCK IO CONTROLLER (BLKIO)" <cgroups@vger.kernel.org>,
+	"open list:CONTROL GROUP - BLOCK IO CONTROLLER (BLKIO)" <linux-block@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] blk-iocost: Fix shift-out-of-bounds in iocg_kick_delay()
+Message-ID: <ZhbuUKXQwBwye1_r@slm.duckdns.org>
+References: <20240410193642.1303741-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,175 +86,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240409235000.1893969-5-namhyung@kernel.org>
+In-Reply-To: <20240410193642.1303741-1-leitao@debian.org>
 
-On Tue, Apr 09, 2024 at 04:49:58PM -0700, Namhyung Kim wrote:
-> Like in stdio, it should print all events in a group together.
+Hello, Breno.
 
-Please provide the desired output, i.e. the "like in stdio", together
-with the 'perf record' that creates a perf.data file that will then be
-used with 'perf annotate' to produce the old output and then the new,
-I'm trying to do that now to review the patch.
-
-- Arnaldo
- 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/ui/browsers/annotate-data.c | 50 ++++++++++++++++++++------
->  1 file changed, 40 insertions(+), 10 deletions(-)
+On Wed, Apr 10, 2024 at 12:36:41PM -0700, Breno Leitao wrote:
+> When running iocg_kick_delay(), iocg->delay_at could be way behind "now",
+> which causes a huge tdelta difference.
 > 
-> diff --git a/tools/perf/ui/browsers/annotate-data.c b/tools/perf/ui/browsers/annotate-data.c
-> index fefacaaf16db..a4a0f042f201 100644
-> --- a/tools/perf/ui/browsers/annotate-data.c
-> +++ b/tools/perf/ui/browsers/annotate-data.c
-> @@ -10,20 +10,27 @@
->  #include "util/annotate.h"
->  #include "util/annotate-data.h"
->  #include "util/evsel.h"
-> +#include "util/evlist.h"
->  #include "util/sort.h"
->  
->  struct annotated_data_browser {
->  	struct ui_browser b;
->  	struct list_head entries;
-> +	int nr_events;
->  };
->  
->  struct browser_entry {
->  	struct list_head node;
->  	struct annotated_member *data;
-> -	struct type_hist_entry hists;
-> +	struct type_hist_entry *hists;
->  	int indent;
->  };
->  
-> +static struct annotated_data_browser *get_browser(struct ui_browser *uib)
-> +{
-> +	return container_of(uib, struct annotated_data_browser, b);
-> +}
-> +
->  static void update_hist_entry(struct type_hist_entry *dst,
->  			      struct type_hist_entry *src)
->  {
-> @@ -33,17 +40,21 @@ static void update_hist_entry(struct type_hist_entry *dst,
->  
->  static int get_member_overhead(struct annotated_data_type *adt,
->  			       struct browser_entry *entry,
-> -			       struct evsel *evsel)
-> +			       struct evsel *leader)
->  {
->  	struct annotated_member *member = entry->data;
-> -	int i;
-> +	int i, k;
->  
->  	for (i = 0; i < member->size; i++) {
->  		struct type_hist *h;
-> +		struct evsel *evsel;
->  		int offset = member->offset + i;
->  
-> -		h = adt->histograms[evsel->core.idx];
-> -		update_hist_entry(&entry->hists, &h->addr[offset]);
-> +		for_each_group_evsel(evsel, leader) {
-> +			h = adt->histograms[evsel->core.idx];
-> +			k = evsel__group_idx(evsel);
-> +			update_hist_entry(&entry->hists[k], &h->addr[offset]);
-> +		}
->  	}
->  	return 0;
->  }
-> @@ -61,6 +72,12 @@ static int add_child_entries(struct annotated_data_browser *browser,
->  	if (entry == NULL)
->  		return -1;
->  
-> +	entry->hists = calloc(browser->nr_events, sizeof(*entry->hists));
-> +	if (entry->hists == NULL) {
-> +		free(entry);
-> +		return -1;
-> +	}
-> +
->  	entry->data = member;
->  	entry->indent = indent;
->  	if (get_member_overhead(adt, entry, evsel) < 0) {
-> @@ -113,6 +130,7 @@ static void annotated_data_browser__delete_entries(struct annotated_data_browser
->  
->  	list_for_each_entry_safe(pos, tmp, &browser->entries, node) {
->  		list_del_init(&pos->node);
-> +		free(pos->hists);
->  		free(pos);
->  	}
->  }
-> @@ -126,6 +144,7 @@ static int browser__show(struct ui_browser *uib)
->  {
->  	struct hist_entry *he = uib->priv;
->  	struct annotated_data_type *adt = he->mem_type;
-> +	struct annotated_data_browser *browser = get_browser(uib);
->  	const char *help = "Press 'h' for help on key bindings";
->  	char title[256];
->  
-> @@ -146,7 +165,8 @@ static int browser__show(struct ui_browser *uib)
->  	else
->  		strcpy(title, "Percent");
->  
-> -	ui_browser__printf(uib, " %10s %10s %10s  %s",
-> +	ui_browser__printf(uib, "%*s %10s %10s %10s  %s",
-> +			   11 * (browser->nr_events - 1), "",
->  			   title, "Offset", "Size", "Field");
->  	ui_browser__write_nstring(uib, "", uib->width);
->  	return 0;
-> @@ -175,18 +195,20 @@ static void browser__write_overhead(struct ui_browser *uib,
->  
->  static void browser__write(struct ui_browser *uib, void *entry, int row)
->  {
-> +	struct annotated_data_browser *browser = get_browser(uib);
->  	struct browser_entry *be = entry;
->  	struct annotated_member *member = be->data;
->  	struct hist_entry *he = uib->priv;
->  	struct annotated_data_type *adt = he->mem_type;
-> -	struct evsel *evsel = hists_to_evsel(he->hists);
-> +	struct evsel *leader = hists_to_evsel(he->hists);
-> +	struct evsel *evsel;
->  
->  	if (member == NULL) {
->  		bool current = ui_browser__is_current_entry(uib, row);
->  
->  		/* print the closing bracket */
->  		ui_browser__set_percent_color(uib, 0, current);
-> -		ui_browser__write_nstring(uib, "", 11);
-> +		ui_browser__write_nstring(uib, "", 11 * browser->nr_events);
->  		ui_browser__printf(uib, " %10s %10s  %*s};",
->  				   "", "", be->indent * 4, "");
->  		ui_browser__write_nstring(uib, "", uib->width);
-> @@ -194,8 +216,12 @@ static void browser__write(struct ui_browser *uib, void *entry, int row)
->  	}
->  
->  	/* print the number */
-> -	browser__write_overhead(uib, adt->histograms[evsel->core.idx],
-> -				&be->hists, row);
-> +	for_each_group_evsel(evsel, leader) {
-> +		struct type_hist *h = adt->histograms[evsel->core.idx];
-> +		int idx = evsel__group_idx(evsel);
-> +
-> +		browser__write_overhead(uib, h, &be->hists[idx], row);
-> +	}
->  
->  	/* print type info */
->  	if (be->indent == 0 && !member->var_name) {
-> @@ -267,11 +293,15 @@ int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
->  			.priv	 = he,
->  			.extra_title_lines = 1,
->  		},
-> +		.nr_events = 1,
->  	};
->  	int ret;
->  
->  	ui_helpline__push("Press ESC to exit");
->  
-> +	if (evsel__is_group_event(evsel))
-> +		browser.nr_events = evsel->core.nr_members;
-> +
->  	ret = annotated_data_browser__collect_entries(&browser);
->  	if (ret == 0)
->  		ret = annotated_data_browser__run(&browser, evsel, hbt);
-> -- 
-> 2.44.0.478.gd926399ef9-goog
+> The tdelta value is used to shift some bits around, raising the
+> following UBSAN splat:
+> 
+> 	UBSAN: shift-out-of-bounds in block/blk-iocost.c:1366:23
+> 
+> Debugging this, these are some values I got in my machine with 6.9-rc3.
+> 
+>  now = 3626064295
+>  iocg->delay_at = 3275794093
+> 
+> Fix this by validating that the shift if valid, otherwise bail out,
+> similarly to commit 2a427b49d029 ("blk-iocost: Fix an UBSAN
+> shift-out-of-bounds warning")
+
+Rik alreaady sent a fix:
+
+  http://lkml.kernel.org/r/20240404123253.0f58010f@imladris.surriel.com
+
+which got commited as beaa51b36012fad5a4d3c18b88a617aea7a9b96d.
+
+Thanks.
+
+-- 
+tejun
 
