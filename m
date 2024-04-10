@@ -1,161 +1,155 @@
-Return-Path: <linux-kernel+bounces-138308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A6BA89EF9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:09:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4594289EF9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:11:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26122285091
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:09:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF2732851DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0EF3158210;
-	Wed, 10 Apr 2024 10:08:53 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28305158A3A;
+	Wed, 10 Apr 2024 10:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FfKwwXjd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D661156C74
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D810C158204;
+	Wed, 10 Apr 2024 10:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712743733; cv=none; b=o141ixQnpSqDxak26wsxHHCFL6Ke00zxqMfkZJk6ThgP3Gh3ynU/MD4tM7OMdvoZ3ZULfWtJq6nHAAdNaqlWaoS3geZ/0Yd/OGPYD4Jd639gBeYg1bST868K6AWS6rnS6xTeCN2tToudaM5oP9tPF+rXriCIdM4+bhO924TwFuk=
+	t=1712743896; cv=none; b=sGc4RFLehVuwHMGQkv1T32l0SBI4GH3m94SO0kjwb3Et8Gq3MSrhyT55685qJeRrg+uZpmbjjMTQmVLlHN56nqrEYJpcyr9tA1aA4jjktdt/3CfraTdfnWHyRcu8j8X6nQtFZpjxSujijSptIemYBZy5/BkTsFiHzmh3jkVQiF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712743733; c=relaxed/simple;
-	bh=/qghVTLfrf8HPy/M0jrfUmQd5I0uDEoyupkpfqvkVHE=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=p8CCFCfqy51vLQmbckf71e52c0GTutyf3etgIgNj08+N6VXrZJhSpXaeany5kDqBFl+yxu1++h613Tun6B+9pqwJeIPhia5lU4cXu+x5C0GpvYeSt0jIaiftalOIGps7gta6Dwl5sMC5+fgvKsCCSouSMgCsVOpNp8S/rLv64dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VDz6K4H9Bz21kdn;
-	Wed, 10 Apr 2024 18:07:53 +0800 (CST)
-Received: from kwepemd200014.china.huawei.com (unknown [7.221.188.8])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0819114037E;
-	Wed, 10 Apr 2024 18:08:49 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- kwepemd200014.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 10 Apr 2024 18:08:48 +0800
-CC: <yangyicong@hisilicon.com>, <mark.rutland@arm.com>,
-	<catalin.marinas@arm.com>, <broonie@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
-	<linuxarm@huawei.com>
-Subject: Re: [PATCH] arm64: arm_pmuv3: Correctly extract and check the PMUVer
-To: Will Deacon <will@kernel.org>
-References: <20240408081158.15291-1-yangyicong@huawei.com>
- <20240409160915.GA24004@willie-the-truck>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <19b6e749-15d7-e522-95ad-b1ae42f032df@huawei.com>
-Date: Wed, 10 Apr 2024 18:08:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1712743896; c=relaxed/simple;
+	bh=QzeJL5gMeLtcySlknYL+kljOGPy2dP5ClNu55TRB8ug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lcd4B9JFucfBKnyeGP8CxUEtfC7ZjwYhUMkJ7KJx9qWulh3MQ3rM03RXC9MWMNFDCi4ZEw9YPKO2cNDsgHhxmQGIPEfK6/SGBskV4NV86T6UodzAEqdBPfjtzzSZrezimiRSBwVNglV9wsLRy6dj1saC4pAAsCU9/OEje40Lxho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FfKwwXjd; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712743895; x=1744279895;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QzeJL5gMeLtcySlknYL+kljOGPy2dP5ClNu55TRB8ug=;
+  b=FfKwwXjdmm4HiQbCNe9GgNr2PkdWSI40hSjGB0btVHRsXS35UAoIjWkC
+   0WvrecgEL1X8wgfm4BJX/BT9qbdk0tfWTU/cbjweHqksT265NsXuF55oR
+   rdPJJSANgtUIvW7VcHiKFHbJAaNraSZheyBJivsN+i5BHRkmEAQjTO7j2
+   IMgr3Q/R0TjpxXaoUd+eqVVwQc0JUb1IDwos3lW6SmTSO/aRa9l1VaqNG
+   ZjQvRqjwAM3xOnWuhTDoynYMxKqHlztjDSRwD9sQfFzZeU5gLaBB9rPMr
+   6Q4NhKtVEtj+uLaCgpz2IGKKJE5m3JZb9rd96qvtq+Yl25G939pkDmqJT
+   Q==;
+X-CSE-ConnectionGUID: Nd0DQowhQdq+O+DW9hJ5xw==
+X-CSE-MsgGUID: JI7Ua+dfRp+BBEhy2SO/6g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7953803"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7953803"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:11:34 -0700
+X-CSE-ConnectionGUID: 0xmUzNqoQTm00E91gMT8lQ==
+X-CSE-MsgGUID: vtg0z1SmTBGjaRgfHcQwpQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="25287426"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:11:32 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 0DFFB11FC46;
+	Wed, 10 Apr 2024 13:11:29 +0300 (EEST)
+Date: Wed, 10 Apr 2024 10:11:29 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/9] media: subdev: Support privacy led in
+ v4l2_subdev_enable/disable_streams()
+Message-ID: <ZhZl0Se7I5eeQfW8@kekkonen.localdomain>
+References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
+ <20240405-enable-streams-impro-v2-7-22bca967665d@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240409160915.GA24004@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd200014.china.huawei.com (7.221.188.8)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-enable-streams-impro-v2-7-22bca967665d@ideasonboard.com>
 
-On 2024/4/10 0:09, Will Deacon wrote:
-> On Mon, Apr 08, 2024 at 04:11:58PM +0800, Yicong Yang wrote:
->> From: Yicong Yang <yangyicong@hisilicon.com>
->>
->> Currently we're using "sbfx" to extract the PMUVer from ID_AA64DFR0_EL1
->> and skip the init/reset if no PMU present when the extracted PMUVer is
->> negative or is zero. However for PMUv3p8 the PMUVer will be 0b1000 and
->> PMUVer extracted by "sbfx" will always be negative and we'll skip the
->> init/reset in __init_el2_debug/reset_pmuserenr_el0 unexpectedly.
->>
->> So this patch use "ubfx" instead of "sbfx" to extract the PMUVer. If
->> the PMUVer is implementation defined (0b1111) then reset it to zero
->> and skip the reset/init. Previously we'll also skip the init/reset
->> if the PMUVer is higher than the version we known (currently PMUv3p9),
->> with this patch we'll only skip if the PMU is not implemented or
->> implementation defined. This keeps consistence with how we probe
->> the PMU in the driver with pmuv3_implemented().
->>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->> ---
->>  arch/arm64/include/asm/assembler.h | 5 ++++-
->>  arch/arm64/include/asm/el2_setup.h | 5 ++++-
->>  2 files changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
->> index ab8b396428da..3b7373d6c565 100644
->> --- a/arch/arm64/include/asm/assembler.h
->> +++ b/arch/arm64/include/asm/assembler.h
->> @@ -480,7 +480,10 @@ alternative_endif
->>   */
->>  	.macro	reset_pmuserenr_el0, tmpreg
->>  	mrs	\tmpreg, id_aa64dfr0_el1
->> -	sbfx	\tmpreg, \tmpreg, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
->> +	ubfx	\tmpreg, \tmpreg, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
->> +	cmp	\tmpreg, #ID_AA64DFR0_EL1_PMUVer_IMP_DEF
->> +	csel	\tmpreg, xzr, \tmpreg, eq	// If PMU's IMP_DEF, regard it
->> +						// as not implemented and skip
->>  	cmp	\tmpreg, #1			// Skip if no PMU present
->>  	b.lt	9000f
->>  	msr	pmuserenr_el0, xzr		// Disable PMU access from EL0
+Moi,
+
+On Fri, Apr 05, 2024 at 12:14:25PM +0300, Tomi Valkeinen wrote:
+> We support camera privacy leds with the .s_stream, in call_s_stream, but
+> we don't have that support when the subdevice implements
+> .enable/disable_streams.
 > 
-> I think the cmp/csel/cmp/b.lt sequence might be a little tidier if you
-> reworked it to use ccmp. For example, something like (totally untested):
+> Add the support by enabling the led when the first stream for a
+> subdevice is enabled, and disabling the led then the last stream is
+> disabled.
 > 
-> 	cmp	\tmpreg, ID_AA64DFR0_EL1_PMUVer_NI
-> 	ccmp	\tmpreg, ID_AA64DFR0_EL1_PMUVer_IMP_DEF, #4, ne
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-subdev.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> would then, I think, mean we could just b.eq 9000f. But please check
-> this because encoding nzcv as an immediate always catches me out.
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index b4981447961a..015f2fb423c9 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -2149,6 +2149,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+>  {
+>  	struct device *dev = sd->entity.graph_obj.mdev->dev;
+>  	struct v4l2_subdev_state *state;
+> +	bool already_streaming;
+>  	u64 found_streams = 0;
+>  	unsigned int i;
+>  	int ret;
+> @@ -2197,6 +2198,11 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+>  
+>  	dev_dbg(dev, "enable streams %u:%#llx\n", pad, streams_mask);
+>  
+> +	already_streaming = v4l2_subdev_is_streaming(sd);
+> +
+> +	if (!already_streaming)
+> +		v4l2_subdev_enable_privacy_led(sd);
+> +
+>  	/* Call the .enable_streams() operation. */
+>  	ret = v4l2_subdev_call(sd, pad, enable_streams, state, pad,
+>  			       streams_mask);
+> @@ -2216,6 +2222,9 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+>  	}
+>  
+>  done:
+> +	if (ret && !already_streaming)
+> +		v4l2_subdev_disable_privacy_led(sd);
+
+I think you could also lit the LED only if enabling streaming succeeds.
+
+> +
+>  	v4l2_subdev_unlock_state(state);
+>  
+>  	return ret;
+> @@ -2339,6 +2348,9 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+>  	}
+>  
+>  done:
+> +	if (!v4l2_subdev_is_streaming(sd))
+> +		v4l2_subdev_disable_privacy_led(sd);
+> +
+>  	v4l2_subdev_unlock_state(state);
+>  
+>  	return ret;
 > 
 
-ok. will have a test on my boards. Wrote a small demo for checking all the available
-versions with suggested code and seems work fine.
+-- 
+Terveisin,
 
->> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
->> index b7afaa026842..2438e12b60c5 100644
->> --- a/arch/arm64/include/asm/el2_setup.h
->> +++ b/arch/arm64/include/asm/el2_setup.h
->> @@ -59,7 +59,10 @@
->>  
->>  .macro __init_el2_debug
->>  	mrs	x1, id_aa64dfr0_el1
->> -	sbfx	x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
->> +	ubfx	x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
->> +	cmp	x0, #ID_AA64DFR0_EL1_PMUVer_IMP_DEF
->> +	csel	x0, xzr, x0, eq			// If PMU's IMP_DEF, regard it
->> +						// as not implemented and skip
->>  	cmp	x0, #1
->>  	b.lt	.Lskip_pmu_\@			// Skip if no PMU present
->>  	mrs	x0, pmcr_el0			// Disable debug access traps
-> 
-> Similar sort of thing here.
-
-will also need to change the cond after the .Lskip_pmu_\@ like below:
-
- .macro __init_el2_debug
-        mrs     x1, id_aa64dfr0_el1
--       sbfx    x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
--       cmp     x0, #1
--       b.lt    .Lskip_pmu_\@                   // Skip if no PMU present
-+       ubfx    x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
-+       cmp     x0, #ID_AA64DFR0_EL1_PMUVer_NI
-+       ccmp    x0, #ID_AA64DFR0_EL1_PMUVer_IMP_DEF, #4, ne
-+       b.eq    .Lskip_pmu_\@                   // Skip if no PMU present or IMP_DEF
-        mrs     x0, pmcr_el0                    // Disable debug access traps
-        ubfx    x0, x0, #11, #5                 // to EL2 and allow access to
- .Lskip_pmu_\@:
--       csel    x2, xzr, x0, lt                 // all PMU counters from EL1
-+       csel    x2, xzr, x0, eq                 // all PMU counters from EL1
-
-Will respin a v2 after tests.
-
-Thanks.
-
+Sakari Ailus
 
