@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-139093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB41C89FE72
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:26:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DA889FE94
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:33:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A0261F24D21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27E0FB2BD72
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18C917BB20;
-	Wed, 10 Apr 2024 17:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7038717F36C;
+	Wed, 10 Apr 2024 17:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEysqtGN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kXmi1ZgJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E8817BB03;
-	Wed, 10 Apr 2024 17:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38C117BB2D;
+	Wed, 10 Apr 2024 17:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712769985; cv=none; b=kANAicr74bLPVmW3CCeNNZdOvub0jg6/5hoz4BuL4Uh831A4KXuDJb5C33loRNyTJrWolkewK+HGYl9iTPc6WhsEny9epGsOVsMebQPbYn53QiBUFfbCgMnJftLL51eFHZQ4D14aYMV1Ep/AumiiG0aYSW6LKfVRqIFSIXgeUtQ=
+	t=1712769986; cv=none; b=hrE2gKd186dqFfMpaQjRKIOog9sQhOIn0X+3odoGRRD8AegWclv02kjyPPaKkf817mwvcC1JpkCXb/KEK2cXRslFbXzra/HnGY0WMvCpF/OswqQWbGurF/Uak9mFSEjwMaVs0fcUXCs0/H66jhbvfpdHQz84TSkhIhPHEbcuJvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712769985; c=relaxed/simple;
-	bh=zIgG0P2RDfvyJWTx4AwOqHCkNM6cYKWlhMdnl65tn24=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sR3fVrRueHkfyxMFHfjEk3X1ASwkE4WnekqZLQDLhLe0zOLGoTOviOJgOlADpiC/BZzXlyseKZELQVp+tepx0ekl2YJk1Ol4VXJ1An8k7XuuhsCbJPlLZ/cHE2r1lQtJtXvPuAnbWt0ZWpnlYryM/ThHrNnwByocjCJwIIjtWiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEysqtGN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000CAC433F1;
-	Wed, 10 Apr 2024 17:26:20 +0000 (UTC)
+	s=arc-20240116; t=1712769986; c=relaxed/simple;
+	bh=7oHK6s4i3cvHhuJkFOrbb9FT3TDWKEOZ2hlMIcUo2wA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=eQmq7PPkYLbQgTitMPq4Rfjbu6aNdC+MgTYcNCIMNEQidclUz/mo2V9EBdahKVPUVGk4q90RTiwGIMmqQ3164GJs/MosL5JhY0C1HnEzKl8HjlbAAUUfFC2WINqaTYkK8SD39Tyo8sKGDA45dL+t4KTC8OyGKlkxE4aI9ngKTnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kXmi1ZgJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20792C43394;
+	Wed, 10 Apr 2024 17:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712769983;
-	bh=zIgG0P2RDfvyJWTx4AwOqHCkNM6cYKWlhMdnl65tn24=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jEysqtGN8wFSyrbP6OivUS/LZQTbyj1AGSdI5tBWZD1lT0fMR72SG8iUAZvn/SKyD
-	 OszsETuG2xMJ8BZeRKQixIGZ+BV3vBNzjW+zxl9/3PMurWdMwmL83GfqRQpY4x5RUh
-	 hmcbcK925B5CnkFBSf1f71slmM5lWLEneIGUg0BLwSOLn7mhPqRAg30xOk2QxCSqub
-	 8M3J3bcTlvh6FLrWkESICq6CCim9a+WIfB8UR9wX4rcR7sX3MYlYuuRN0X+ev+vRHw
-	 njD1eadKBJyxhQcW97rOYqGD2f1+unSGjesMwgU85RV/72/L7t6LGiu37X0onEEdtO
-	 1mWHZhwmNdyMQ==
+	s=k20201202; t=1712769986;
+	bh=7oHK6s4i3cvHhuJkFOrbb9FT3TDWKEOZ2hlMIcUo2wA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kXmi1ZgJ5nPVxrt7kA/96YNgUb7yik+VKaJT4mt9gXfM6fii/V3dryu5y2Mm8xmsw
+	 rIbNCWR/nJBhDhxsIqQK1vQ0Gpa4hzoHwZBr6FHbZvV5jA96dJHE32FuoAK1kwKbuM
+	 BYnI4Ol9q1y55WAqhN8AKocoFHUHFPZsOtMLwb+azF2ZPEmmWoiLkI3s2me/ot/U/r
+	 dakoV8Q+96B+VSrx1/VqgqCJCGpbTCRbju+NdcizzL2qPJWxBKV1le4p4diG0VU3zC
+	 gM9eoNfWGUHOSweTemZRx78hLZd0LKrIfXqwMTQnwTlW3D8ErP+TSvZ9EeCeNXP+D3
+	 ZGaWkaxhdJFZg==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -49,10 +50,12 @@ To: Bjorn Andersson <andersson@kernel.org>,
 	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 1/2] regulator: qcom-refgen: fix module autoloading
-Date: Wed, 10 Apr 2024 19:26:14 +0200
-Message-Id: <20240410172615.255424-1-krzk@kernel.org>
+Subject: [PATCH 2/2] regulator: vqmmc-ipq4019: fix module autoloading
+Date: Wed, 10 Apr 2024 19:26:15 +0200
+Message-Id: <20240410172615.255424-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240410172615.255424-1-krzk@kernel.org>
+References: <20240410172615.255424-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,21 +69,21 @@ based on the alias from of_device_id table.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/regulator/qcom-refgen-regulator.c | 1 +
+ drivers/regulator/vqmmc-ipq4019-regulator.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/qcom-refgen-regulator.c b/drivers/regulator/qcom-refgen-regulator.c
-index 656fe330d38f..063e12c08e75 100644
---- a/drivers/regulator/qcom-refgen-regulator.c
-+++ b/drivers/regulator/qcom-refgen-regulator.c
-@@ -140,6 +140,7 @@ static const struct of_device_id qcom_refgen_match_table[] = {
- 	{ .compatible = "qcom,sm8250-refgen-regulator", .data = &sm8250_refgen_desc },
- 	{ }
+diff --git a/drivers/regulator/vqmmc-ipq4019-regulator.c b/drivers/regulator/vqmmc-ipq4019-regulator.c
+index 086da36abc0b..4955616517ce 100644
+--- a/drivers/regulator/vqmmc-ipq4019-regulator.c
++++ b/drivers/regulator/vqmmc-ipq4019-regulator.c
+@@ -84,6 +84,7 @@ static const struct of_device_id regulator_ipq4019_of_match[] = {
+ 	{ .compatible = "qcom,vqmmc-ipq4019-regulator", },
+ 	{},
  };
-+MODULE_DEVICE_TABLE(of, qcom_refgen_match_table);
++MODULE_DEVICE_TABLE(of, regulator_ipq4019_of_match);
  
- static struct platform_driver qcom_refgen_driver = {
- 	.probe = qcom_refgen_probe,
+ static struct platform_driver ipq4019_regulator_driver = {
+ 	.probe = ipq4019_regulator_probe,
 -- 
 2.34.1
 
