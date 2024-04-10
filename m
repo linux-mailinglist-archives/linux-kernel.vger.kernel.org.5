@@ -1,104 +1,46 @@
-Return-Path: <linux-kernel+bounces-139126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C07D89FEF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BDD889FECE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:41:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 867F628AA3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:46:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1787E28595A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E881836C9;
-	Wed, 10 Apr 2024 17:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cQyhRkTI"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DB017F36D;
+	Wed, 10 Apr 2024 17:41:17 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4873A17F379;
-	Wed, 10 Apr 2024 17:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF62817994F;
+	Wed, 10 Apr 2024 17:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771100; cv=none; b=gNtlKRSa1DqrVxxYYxgSm6YWkHnap30JuBQYtQ2h6bWYtNOEuqqPtMzF33WlNMYgVY9Y4mVsPVILpD+zM9KQEUxm0pnbJeq+OrpNR/JbsfB7gs6ROdqFgRz8YU/gcNKdGa28+VwziS+PmqQSaQ9S91FSwciVUlXjrBKPGtvkTdo=
+	t=1712770877; cv=none; b=LOQvebVVnbeD8ZpHiTs0qzDnGfuI6QmuJm1Y2nK7Bz1eGQqYNb0Zcv2l34Jokrpn2p8u5ctqXfXMVHySaKEsk7VGylFd8w6tFaP+oBqgleFDslna3fGWeRXbHi6Jet9caM0KKDdNISeVMFpM7S3gx8EVnEsZ29kl2FLQh79y7mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771100; c=relaxed/simple;
-	bh=tU0llIrllZGBRBSavOUUBkfUfb8QI63nj9aOBMcJOj4=;
+	s=arc-20240116; t=1712770877; c=relaxed/simple;
+	bh=0aKNApkH5cxJA6D2c8OOUEoVR19/Bs8/LdW506TRGlM=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JOvkR3AJ14DlHeGHnmZULlMY+3ohoFvydYKrUbkX1/oQA6+j4Tu4vdTxK6/VxZSBjcm9Hj/QbM6MgQfdh4SsVU46I1tx8zaSFl3n+47zZFYpiuFHWrbHbUG6dpiJMqjKDhzw7zXKMVaxt7xdyDfngqQs0NPj88CXOmtxwDJcmps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=cQyhRkTI; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AHVgZG007470;
-	Wed, 10 Apr 2024 17:44:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=isCwm2VVj9IIusgK5+U+9pg2r2c/kDAQFXY6w8ShkCo=;
- b=cQyhRkTIl4/qjhddQzjTxEMo4+0zNfE/pYfoBe4duwiQM3YX0MM3wh4+fX3V2x4G2sGk
- rI5sq25FyKI/19HBz9K4CxvOHy8HTyW4DMcl0QroHMJfRi/+dxRfusOKHwGEiyCS5Dqh
- cWgRC/xIyRmRY1G6dDXwx8HbmsBiPYl094ARqFspKKeKPKXHat6tlY/3lz51tQYlThGk
- p6ZAFpiO0EC4dVcVRkvYivrcWjEKSjz6noBSleZi084mMoTS/pOvz2gB6kZPUzN/Nhts
- XA4RBIagt349h3W3X1jfaeq1fyoo2Cmtgb+MFo2nCwM6JHr6L1WFpBfCHniycPphxx8l og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy1tr1xs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:44 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AHii2d029421;
-	Wed, 10 Apr 2024 17:44:44 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy1tr1xn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:44 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AFK6e1017031;
-	Wed, 10 Apr 2024 17:44:43 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbke2nuf3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:43 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AHibNo53150022
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Apr 2024 17:44:40 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D948620043;
-	Wed, 10 Apr 2024 17:44:37 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AAFD920040;
-	Wed, 10 Apr 2024 17:44:37 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 10 Apr 2024 17:44:37 +0000 (GMT)
-Date: Wed, 10 Apr 2024 19:42:36 +0200
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        Matthew Wilcox
- <willy@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian
- Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle
- <svens@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Gerald
- Schaefer <gerald.schaefer@linux.ibm.com>,
-        Thomas Huth <thuth@redhat.com>
-Subject: Re: [PATCH v1 3/5] s390/uv: convert PG_arch_1 users to only work on
- small folios
-Message-ID: <20240410194236.1c89eb7d@p-imbrenda>
-In-Reply-To: <20240404163642.1125529-4-david@redhat.com>
-References: <20240404163642.1125529-1-david@redhat.com>
-	<20240404163642.1125529-4-david@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	 MIME-Version:Content-Type; b=s3MBThtk9OJdI9XDAPtA1+vmPDeEjjFT/QLJ88VCQKGdnvtaLCz5mdMhbYPhH5PNzWAUW2RchUZt1Q3R1ZVLr74nb1AemWdyi9XYgwUls/ow+wluUwCbgx/zLdaky45dv52vxy/MRmn73I8U28e7/UXWDh6Gzrp7LDscFLXr6mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCB65C433F1;
+	Wed, 10 Apr 2024 17:41:15 +0000 (UTC)
+Date: Wed, 10 Apr 2024 13:43:52 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com, rdunlap@infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH v20 2/5] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <20240410134352.66d35fbc@gandalf.local.home>
+In-Reply-To: <20240406173649.3210836-3-vdonnefort@google.com>
+References: <20240406173649.3210836-1-vdonnefort@google.com>
+	<20240406173649.3210836-3-vdonnefort@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,147 +49,170 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hz7Bxbv-xN-ZtiKpIDAhRT2UsI1w_po4
-X-Proofpoint-ORIG-GUID: -P0lAWXIohdv_lozvSe4QhK7TZVjsEOR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501 suspectscore=0
- mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404100130
 
-On Thu,  4 Apr 2024 18:36:40 +0200
-David Hildenbrand <david@redhat.com> wrote:
+On Sat,  6 Apr 2024 18:36:46 +0100
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-> Now that make_folio_secure() may only set PG_arch_1 for small folios,
-> let's convert relevant remaining UV code to only work on (small) folios
-> and simply reject large folios early. This way, we'll never end up
-> touching PG_arch_1 on tail pages of a large folio in UV code.
-> 
-> The folio_get()/folio_put() for functions that are documented to already
-> hold a folio reference look weird and it should probably be removed.
-> Similarly, uv_destroy_owned_page() and uv_convert_owned_from_secure()
-> should really consume a folio reference instead. But these are cleanups for
-> another day.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/s390/include/asm/page.h |  1 +
->  arch/s390/kernel/uv.c        | 39 +++++++++++++++++++++---------------
->  2 files changed, 24 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-> index 54d015bcd8e3..b64384872c0f 100644
-> --- a/arch/s390/include/asm/page.h
-> +++ b/arch/s390/include/asm/page.h
-> @@ -214,6 +214,7 @@ static inline unsigned long __phys_addr(unsigned long x, bool is_31bit)
->  #define pfn_to_phys(pfn)	((pfn) << PAGE_SHIFT)
->  
->  #define phys_to_page(phys)	pfn_to_page(phys_to_pfn(phys))
-> +#define phys_to_folio(phys)	page_folio(phys_to_page(phys))
->  #define page_to_phys(page)	pfn_to_phys(page_to_pfn(page))
->  #define folio_to_phys(page)	pfn_to_phys(folio_pfn(folio))
->  
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index adcbd4b13035..9c0113b26735 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -134,14 +134,17 @@ static int uv_destroy_page(unsigned long paddr)
->   */
->  int uv_destroy_owned_page(unsigned long paddr)
->  {
-> -	struct page *page = phys_to_page(paddr);
-> +	struct folio *folio = phys_to_folio(paddr);
->  	int rc;
->  
-> -	get_page(page);
-> +	if (unlikely(folio_test_large(folio)))
-> +		return 0;
-
-please add a comment here to explain why it's ok to just return 0
-here...
-
+> +int ring_buffer_map(struct trace_buffer *buffer, int cpu,
+> +		    struct vm_area_struct *vma)
+> +{
+> +	struct ring_buffer_per_cpu *cpu_buffer;
+> +	unsigned long flags, *subbuf_ids;
+> +	int err = 0;
 > +
-> +	folio_get(folio);
->  	rc = uv_destroy_page(paddr);
->  	if (!rc)
-> -		clear_bit(PG_arch_1, &page->flags);
-> -	put_page(page);
-> +		clear_bit(PG_arch_1, &folio->flags);
-> +	folio_put(folio);
->  	return rc;
->  }
->  
-> @@ -169,14 +172,17 @@ int uv_convert_from_secure(unsigned long paddr)
->   */
->  int uv_convert_owned_from_secure(unsigned long paddr)
->  {
-> -	struct page *page = phys_to_page(paddr);
-> +	struct folio *folio = phys_to_folio(paddr);
->  	int rc;
->  
-> -	get_page(page);
-> +	if (unlikely(folio_test_large(folio)))
-> +		return 0;
-
-.. and here
-
+> +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+> +		return -EINVAL;
 > +
-> +	folio_get(folio);
->  	rc = uv_convert_from_secure(paddr);
->  	if (!rc)
-> -		clear_bit(PG_arch_1, &page->flags);
-> -	put_page(page);
-> +		clear_bit(PG_arch_1, &folio->flags);
-> +	folio_put(folio);
->  	return rc;
->  }
->  
-> @@ -457,33 +463,34 @@ EXPORT_SYMBOL_GPL(gmap_destroy_page);
->   */
->  int arch_make_page_accessible(struct page *page)
->  {
-> +	struct folio *folio = page_folio(page);
->  	int rc = 0;
->  
-> -	/* Hugepage cannot be protected, so nothing to do */
-> -	if (PageHuge(page))
-> +	/* Large folios cannot be protected, so nothing to do */
-> +	if (unlikely(folio_test_large(folio)))
->  		return 0;
->  
->  	/*
->  	 * PG_arch_1 is used in 3 places:
->  	 * 1. for kernel page tables during early boot
->  	 * 2. for storage keys of huge pages and KVM
-> -	 * 3. As an indication that this page might be secure. This can
-> +	 * 3. As an indication that this small folio might be secure. This can
->  	 *    overindicate, e.g. we set the bit before calling
->  	 *    convert_to_secure.
->  	 * As secure pages are never huge, all 3 variants can co-exists.
->  	 */
-> -	if (!test_bit(PG_arch_1, &page->flags))
-> +	if (!test_bit(PG_arch_1, &folio->flags))
->  		return 0;
->  
-> -	rc = uv_pin_shared(page_to_phys(page));
-> +	rc = uv_pin_shared(folio_to_phys(folio));
->  	if (!rc) {
-> -		clear_bit(PG_arch_1, &page->flags);
-> +		clear_bit(PG_arch_1, &folio->flags);
->  		return 0;
->  	}
->  
-> -	rc = uv_convert_from_secure(page_to_phys(page));
-> +	rc = uv_convert_from_secure(folio_to_phys(folio));
->  	if (!rc) {
-> -		clear_bit(PG_arch_1, &page->flags);
-> +		clear_bit(PG_arch_1, &folio->flags);
->  		return 0;
->  	}
->  
+> +	cpu_buffer = buffer->buffers[cpu];
+> +
+> +	mutex_lock(&cpu_buffer->mapping_lock);
+> +
+> +	if (cpu_buffer->mapped) {
+> +		err = __rb_map_vma(cpu_buffer, vma);
+> +		if (!err)
+> +			err = __rb_inc_dec_mapped(cpu_buffer, true);
+> +		mutex_unlock(&cpu_buffer->mapping_lock);
+> +		return err;
+> +	}
+> +
+> +	/* prevent another thread from changing buffer/sub-buffer sizes */
+> +	mutex_lock(&buffer->mutex);
+> +
+> +	err = rb_alloc_meta_page(cpu_buffer);
+> +	if (err)
+> +		goto unlock;
+> +
+> +	/* subbuf_ids include the reader while nr_pages does not */
+> +	subbuf_ids = kcalloc(cpu_buffer->nr_pages + 1, sizeof(*subbuf_ids), GFP_KERNEL);
+> +	if (!subbuf_ids) {
+> +		rb_free_meta_page(cpu_buffer);
+> +		err = -ENOMEM;
+> +		goto unlock;
+> +	}
+> +
+> +	atomic_inc(&cpu_buffer->resize_disabled);
+> +
+> +	/*
+> +	 * Lock all readers to block any subbuf swap until the subbuf IDs are
+> +	 * assigned.
+> +	 */
+> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+> +	rb_setup_ids_meta_page(cpu_buffer, subbuf_ids);
+> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+> +
+> +	err = __rb_map_vma(cpu_buffer, vma);
+> +	if (!err) {
+> +		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+> +		cpu_buffer->mapped = 1;
+> +		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+> +	} else {
+> +		kfree(cpu_buffer->subbuf_ids);
+> +		cpu_buffer->subbuf_ids = NULL;
+> +		rb_free_meta_page(cpu_buffer);
+> +	}
+> +unlock:
+
+Nit: For all labels, please add a space before them. Otherwise, diffs will
+show "unlock" as the function and not "ring_buffer_map", making it harder
+to find where the change is.
+
+Same for the labels below.
+
+-- Steve
+
+
+> +	mutex_unlock(&buffer->mutex);
+> +	mutex_unlock(&cpu_buffer->mapping_lock);
+> +
+> +	return err;
+> +}
+> +
+> +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu)
+> +{
+> +	struct ring_buffer_per_cpu *cpu_buffer;
+> +	unsigned long flags;
+> +	int err = 0;
+> +
+> +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+> +		return -EINVAL;
+> +
+> +	cpu_buffer = buffer->buffers[cpu];
+> +
+> +	mutex_lock(&cpu_buffer->mapping_lock);
+> +
+> +	if (!cpu_buffer->mapped) {
+> +		err = -ENODEV;
+> +		goto out;
+> +	} else if (cpu_buffer->mapped > 1) {
+> +		__rb_inc_dec_mapped(cpu_buffer, false);
+> +		goto out;
+> +	}
+> +
+> +	mutex_lock(&buffer->mutex);
+> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+> +
+> +	cpu_buffer->mapped = 0;
+> +
+> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+> +
+> +	kfree(cpu_buffer->subbuf_ids);
+> +	cpu_buffer->subbuf_ids = NULL;
+> +	rb_free_meta_page(cpu_buffer);
+> +	atomic_dec(&cpu_buffer->resize_disabled);
+> +
+> +	mutex_unlock(&buffer->mutex);
+> +out:
+> +	mutex_unlock(&cpu_buffer->mapping_lock);
+> +
+> +	return err;
+> +}
+> +
+> +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu)
+> +{
+> +	struct ring_buffer_per_cpu *cpu_buffer;
+> +	unsigned long reader_size;
+> +	unsigned long flags;
+> +
+> +	cpu_buffer = rb_get_mapped_buffer(buffer, cpu);
+> +	if (IS_ERR(cpu_buffer))
+> +		return (int)PTR_ERR(cpu_buffer);
+> +
+> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+> +consume:
+> +	if (rb_per_cpu_empty(cpu_buffer))
+> +		goto out;
+> +
+> +	reader_size = rb_page_size(cpu_buffer->reader_page);
+> +
+> +	/*
+> +	 * There are data to be read on the current reader page, we can
+> +	 * return to the caller. But before that, we assume the latter will read
+> +	 * everything. Let's update the kernel reader accordingly.
+> +	 */
+> +	if (cpu_buffer->reader_page->read < reader_size) {
+> +		while (cpu_buffer->reader_page->read < reader_size)
+> +			rb_advance_reader(cpu_buffer);
+> +		goto out;
+> +	}
+> +
+> +	if (WARN_ON(!rb_get_reader_page(cpu_buffer)))
+> +		goto out;
+> +
+> +	goto consume;
+> +out:
+> +	/* Some archs do not have data cache coherency between kernel and user-space */
+> +	flush_dcache_folio(virt_to_folio(cpu_buffer->reader_page->page));
+> +
+> +	rb_update_meta_page(cpu_buffer);
+> +
+> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+> +	rb_put_mapped_buffer(cpu_buffer);
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * We only allocate new buffers, never free them if the CPU goes down.
+>   * If we were to free the buffer, then the user would lose any trace that was in
 
 
