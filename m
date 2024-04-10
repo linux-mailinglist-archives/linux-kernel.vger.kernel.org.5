@@ -1,174 +1,138 @@
-Return-Path: <linux-kernel+bounces-139203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74BAB89FFD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:29:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BFD89FFD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:30:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65A81C2532F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:29:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D507B2A299
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE51D180A80;
-	Wed, 10 Apr 2024 18:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBE9181302;
+	Wed, 10 Apr 2024 18:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GgK8ySu+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAk82lcO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A731802BC;
-	Wed, 10 Apr 2024 18:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3872E1802BF;
+	Wed, 10 Apr 2024 18:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712773692; cv=none; b=oAIlpUoxZm+jTlMjBv36jm53ZaZRJ5UCl8p3AQ5NokynIq14jHNhSrX7NEVljQCCOHJEsRzMrDiHfPrGWbjU1NIrDsP35+bntrgxksTuHxTkDYYJwX9loHNWCP0ECddurMvLyx2sUxqly0KF7JwVN/rZBr8IUk32j78yKDewJvc=
+	t=1712773727; cv=none; b=Uc1t6bbAlsMzwE+NJUVRFmAHyPJvu5u5py7iaGm+r5Ej0xUEKkpHfam1IuRdPN1mjy98q5NtvQU1o6MUy6fznjU8u5FuX0cR2Zmd1v6YsQfkqSEUDKeSUcXANjIkzYR1yhw5aKses++pbI9xvrg85fkawFhlqI/ZAdEX2umEMUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712773692; c=relaxed/simple;
-	bh=UZ42VS9dtADlg2+VEy0SyUfnbOwQEK+dXac4rGfc8xg=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=BwCp5vdMLnXQAaDGzK9jp8PozT5U///Xtiza6/CFbHfFhB5RJWejuuGUan4ESfnISgkZx0ODDtYg3s4hJQjd7dWWBXL3B8d28Xb3m63wCgrDnz1x/k+wLN9vF/0jgIDKQ6XhUetRqLD35OMefHlj12DPLuoK0bBK/mOGjJtXmHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GgK8ySu+; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712773691; x=1744309691;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=UZ42VS9dtADlg2+VEy0SyUfnbOwQEK+dXac4rGfc8xg=;
-  b=GgK8ySu+LmK/AZndZkqBPgI3jjofqrk+Z6V/SxgFMtQhHpk8Sk1W/zAX
-   BLLEJHC+yeKLxh2WRpjNSTi73+UimWzIlJHs+MG2am41tJaADX18rXrFW
-   Hulp7k62CBHxkJXvSCFy/37ky3wbZZ2K8g9CNEBQLFQ3UhtNSEblsKq3O
-   lD7MsPTBnQcWdnNz0hnp2XodZA/o03zE7BSgpWnUgPLqrJ2XqdvPFb85C
-   2xfBJVLz8Pcr78mWJQZIGOuiecMeruynspPIiLPbjYJ5fC4hde7GEbl5S
-   Pv6dLiA8c9fvdiLdcgH9vMLVUFoYHnm+ZpL5n9843i1nAIB1nYBPsOF0M
-   w==;
-X-CSE-ConnectionGUID: e7AW/aTUQ1K2nBtc9bVW3Q==
-X-CSE-MsgGUID: xKrdm88KSMO/9Tli1OxfgQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18869346"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="18869346"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:28:10 -0700
-X-CSE-ConnectionGUID: x+/R/9nSQg6TSrvNc6m2cw==
-X-CSE-MsgGUID: zStVy4rMR+S1RH81HMv71g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="20682448"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 10 Apr 2024 11:28:07 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>, "Haitao Huang"
- <haitao.huang@linux.intel.com>
-Cc: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "Mehta, Sohil" <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>,
- "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang,
- Kai" <kai.huang@intel.com>, "mikko.ylinen@linux.intel.com"
- <mikko.ylinen@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>,
- "anakrish@microsoft.com" <anakrish@microsoft.com>, "Zhang, Bo"
- <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
- <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: Re: [PATCH v10 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
- <20240328002229.30264-13-haitao.huang@linux.intel.com>
- <d25dbe76d48a0b6c74fa09b06f1ca3fdf234a190.camel@intel.com>
- <op.2lw8gfg2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
- <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <imqjuxgmm5updfnl75molzixlq52ttlufd6sn2vpcevaby5l7f@22j23whlbvux>
- <op.2lyv641jwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date: Wed, 10 Apr 2024 13:28:06 -0500
+	s=arc-20240116; t=1712773727; c=relaxed/simple;
+	bh=aIvegxIwbMj6/MAqgtGgSgJk65LlTqgxYpHoBrkDAdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VVRC89w2PVA0ytwJlI0sTLcvunu4Una9pDJ282jsERus+N//yL68HIBZMF/6shuELHrRRTVWHhyn6uGp2bX0FtdcCqKvLal5t7o/0j1pFb+PsYAU5bPmqG79ZeLRY6hnDFvdNx4CbXLTFIDYwqpHwbUMbD06u8U8dzFvg+YTg2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAk82lcO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD387C433C7;
+	Wed, 10 Apr 2024 18:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712773725;
+	bh=aIvegxIwbMj6/MAqgtGgSgJk65LlTqgxYpHoBrkDAdc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eAk82lcOEg9ZbneOAZHkRYOPj9yUVokbKNeshaLGSmhmrdNoHSR9QgtkVFd0QeUgM
+	 8p5t1z3MV6KpBkqwnF/UNrGs447f1FBfJVjeiN0sofHP9TmYdPBPV7kUqdph3jSFgV
+	 g1yBzcFM7/qzGmqQgz4ViRrJbckEw1ShR7blHXZYfCzYAot8j23aFFolOpw69Zyfmq
+	 4R5A7ZZMveun7zBhn4iCzMDo8F5KpVLQDVQXWWjEZnLwQf4eup42gSrTz6sJOejDBL
+	 DDZTI1ZLkGa4syzQRoKgo2fuqS7h/kc5HTuIYkBmoykHvKSVsV+TSqiGu6wmtRkBkn
+	 pm27PNykA4D7g==
+Message-ID: <689f6a74-185d-4f2f-8c31-e6502b7e6060@kernel.org>
+Date: Wed, 10 Apr 2024 20:28:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2l0yw4vnwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2lyv641jwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: fix module autoloading
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240410164045.233198-1-krzk@kernel.org>
+ <22f5eb76-8f81-46ea-b0a7-5f1d231e7833@linaro.org>
+ <ZhbWU0lk4mNBv1OE@hu-bjorande-lv.qualcomm.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <ZhbWU0lk4mNBv1OE@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 09 Apr 2024 10:34:06 -0500, Haitao Huang  =
-
-<haitao.huang@linux.intel.com> wrote:
-
-> On Tue, 09 Apr 2024 04:03:22 -0500, Michal Koutn=FD <mkoutny@suse.com>=
-  =
-
-> wrote:
->
->> On Mon, Apr 08, 2024 at 11:23:21PM -0500, Haitao Huang  =
-
->> <haitao.huang@linux.intel.com> wrote:
->>> It's always non-NULL based on testing.
+On 10/04/2024 20:11, Bjorn Andersson wrote:
+> On Wed, Apr 10, 2024 at 07:53:32PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 4/10/24 18:40, Krzysztof Kozlowski wrote:
+>>> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
+>>> based on the alias from of_device_id table.
 >>>
->>> It's hard for me to say definitely by reading the code. But IIUC
->>> cgroup_disable command-line only blocks operations in /sys/fs/cgroup=
-  =
-
->>> so user
->>> space can't set up controllers and config limits, etc., for the  =
-
->>> diasabled
->>> ones. Each task->cgroups would still have a non-NULL pointer to the =
- =
-
->>> static
->>> root object for each cgroup that is enabled by KConfig, so
->>> get_current_misc_cg() thus  sgx_get_current_cg() should not return N=
-ULL
->>> regardless 'cgroup_disable=3Dmisc'.
->>>
->>> Maybe @Michal or @tj can confirm?
+>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>> ---
 >>
->> The current implementation creates root css object (see cgroup_init()=
-,
->> cgroup_ssid_enabled() check is after cgroup_init_subsys()).
->> I.e. it will look like all tasks are members of root cgroup wrt given=
-
->> controller permanently and controller attribute files won't exist.
+>> These were omitted intentionally, as these are both debug drivers.
 >>
->> (It is up to the controller implementation to do further optimization=
-
->> based on the boot-time disablement (e.g. see uses of
->> mem_cgroup_disabled()). Not sure if this is useful for misc controlle=
-r.)
+> 
+> Makes sense to me, could we have a comment added that clarifies this
+> intention?
+> 
+>> Perhaps we could mkdir drivers/soc/qcom/debug to make this clearer
 >>
->> As for the WARN_ON(1), taking example from memcg -- NULL is best
->> synonymous with root. It's a judgement call which of the values to st=
-ore
->> and when to intepret it.
->>
->> HTH,
->> Michal
-> Thanks for the info.
->
-> The way I see it, misc does not have special handling like memcg so  =
+> 
+> Not sure if that is necessary, and IMO it wouldn't convey that
+> MODULE_DEVICE_TABLE() was omitted intentionally.
 
-> every task at least belong to the root(default) group even if it's  =
+I think this deserves a comment, so no one will be doing my same again
+(it's part of bigger effort).
 
-> disabled by command line parameter. So we would not get NULL from  =
+Best regards,
+Krzysztof
 
-> get_current_misc_cg(). I think I'll keep the WARN_ON_ONCE for now as a=
-  =
-
-> reminder in case misc do have custom support for disabling in future.
->
-Actually I think it makes more sense just add some comments instead of  =
-
-WARN.
-That's what I did in v11 now.
-
-Thanks
-Haitao
 
