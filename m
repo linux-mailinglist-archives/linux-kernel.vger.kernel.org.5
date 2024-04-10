@@ -1,114 +1,153 @@
-Return-Path: <linux-kernel+bounces-138939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF92C89FC45
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:58:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E40C89FC51
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:59:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C9A728E249
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:58:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EED01C216F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CCE172782;
-	Wed, 10 Apr 2024 15:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B3017798A;
+	Wed, 10 Apr 2024 15:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9p+IExG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HREO9ktn"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199B316F0CC;
-	Wed, 10 Apr 2024 15:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29111171659;
+	Wed, 10 Apr 2024 15:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764613; cv=none; b=Aq5bsPEywXBLbs9f47yYN2vFqJH/IDeV0ePr/gsKvaVNcwn6E5fw6OqxV590AqVj4nJyYJBfpij8329vvgBGuaBveHPzlnRZ2Y5/DQih1b5aJDtLmhXCwUUkvWC4Ot8NU+dvW9zqYYKkIqbouuqYBn0Qo6OTHuX+62ufxwjDKbM=
+	t=1712764679; cv=none; b=eghJnFG6YoV2w9xlyt/deV6Uw9Qqq9mwFWFLP7tcj0F/JXgXN+kvzMUVpkbiVllmjKUtXGbbAJgGPVQvmc5oxPtM+gVdH/VFeeRNPXy+7oDOKef6Zy/t5pkyS5x8H3OBykQ6xt5fOhF+TnlkER99OHOvXpw7wS55TDuwo0q24hM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764613; c=relaxed/simple;
-	bh=m7g6XZOrWOR+xcsLIDtcAQGvtbAoitEl0jd9B9aOIXk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KaI391Z3QwTBpVn32BkDzXAE2dal5YlqjUTGpT7BFTx5eaPCFuuNBvwIWOdcabryfL4F/l/mW3WeTrBdWTeEot+GHy+GtXaSO3CQIeBPntLC72UQfa9pPPUbDQa0cs13hzYksV+4Q2efLKr112DzrrlsOs76cIUiENuajxLRTiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9p+IExG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86243C43330;
-	Wed, 10 Apr 2024 15:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712764612;
-	bh=m7g6XZOrWOR+xcsLIDtcAQGvtbAoitEl0jd9B9aOIXk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=f9p+IExGH7UoaoR1PSv63C7vdJqaK5ru2svSWjFdQwWMYeQ6STdnvVgq+ikK5NP/b
-	 ZRubXqjRGCEfmhpu0dpbdozQyXfbvsFfnu3jfsBcJf/UTd4K/j/xA5a+eZkEApgDkv
-	 +R25+I6lWvIIcFOatq1a9+tjHoSEy0/VG17oS9i5JruFNP4+B6j+CYs+NGgYg3clBf
-	 Y5fyz3MtgSkNKNWjLL5FilryhpmyAA0VFKLHBhLF29HojS+FOqlYn3fmHGRkWD1IRV
-	 4GaSuJ5JAgVWuniBE6rljwnmB1oQAXFOJm6PywLMneQ8ajPuczYKGdUKOuhLEq+URr
-	 fr7t6v7CVGnFQ==
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-22ec8db3803so572224fac.1;
-        Wed, 10 Apr 2024 08:56:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXQnjYA3NCb1nP4zE9LG4fXohbqQNsCl5VvCRhAIPx7OfMd4Y25SRCSLwcQtFA+Va7Q4bquGUITm6j0qb78rvPfu7eEfZQwb1bu5PaolUfOM8UPG9jKamfFOeMyhhTpDAVV1JlCmPY=
-X-Gm-Message-State: AOJu0YzRczUtrKupCLo0ZQpYvukA3/pjue2tcbaSCpiNTtZQVoIUQmGg
-	/Rv9mfAxV5kWqeEMC5lfZzH952YloGIjM9W9NQ9y8+fTG5mQLg7q4CGaVKg2agLGoYYRtc0oVPe
-	aVnEUrL76QjHyLIMzrSp+Bq+0Vv0=
-X-Google-Smtp-Source: AGHT+IECNxT89pwXBuDiC1lb4DCnKCL9XHtAMEbbetodKgUXGTo6d+Ez8YVfs76P9PNoGSP20m33a6GsouMJn5/tm88=
-X-Received: by 2002:a05:6870:7183:b0:222:81cc:ac9c with SMTP id
- d3-20020a056870718300b0022281ccac9cmr3023708oah.5.1712764611654; Wed, 10 Apr
- 2024 08:56:51 -0700 (PDT)
+	s=arc-20240116; t=1712764679; c=relaxed/simple;
+	bh=158o41P2FOBJVftCLhVbau3btyhldhHWhOVhDa5UebY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dvgCr5YI/S/8pZVDWNnKenfkTo7sRsNzDkwXw83+LNndmApW3dtg+B0hgYsxb1ZTdyEIma9DzeSPUmYWd8kb2Aoo+A0h98ozokCcqhgsn/LA6FrpfkZd28quheVYKJV1EVCD03v5CQEnXnSunqyi5VRqXlyuIpFOsTNuH0Zi05c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HREO9ktn; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43AF0ClY000446;
+	Wed, 10 Apr 2024 15:57:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=5aUBuklUBGSU6oQ9ct3EHBYDelFvRczJm6cBGAEe6Gc=; b=HR
+	EO9ktnalsEAReLS3NbmAK7tHz6cgXKCg3PSIiktdljMVABHYLhLHbhDkghtaDotK
+	rmy4j29uhWo74jKA1RIiFZr06/oPdhwaqmbc1RymOY7SDK3zD7UvnDlZnjT9erXI
+	uRhU1ZDI7HhfzTTlPcsXcJdP8WeDTfjeZE0hFbDKj6OXC/qh2b7IfhcpzVgIBNvm
+	uR5J5yKxLpUZ2F855cjNT/ES6kPrlxDUZLQ78JEKGFvuCGLwW9dnJGrYv9S0ZXyD
+	jZJqk42M+t8p4vvJamPZvZk2c6XryMwmxRqnY4KFwYLxgUsvfAIK0W9CnOgUcI6W
+	Hrw0ljAA9NjMIQra4lFw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdskjh8vg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:57:28 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AFvQeM014775
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:57:26 GMT
+Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
+ 2024 08:57:25 -0700
+Message-ID: <c47bfa2d-42d9-4765-b6ea-c76a15fa994f@quicinc.com>
+Date: Wed, 10 Apr 2024 08:57:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <4558251.LvFx2qVVIh@kreacher> <3556878.iIbC2pHGDl@kreacher>
- <CAJZ5v0j0jKi9=w_RiYqSZuQtveskcE8jKZHDwaP1EmNOxLk-RQ@mail.gmail.com> <a4e421d2-7279-4b03-9113-db0776dd5355@arm.com>
-In-Reply-To: <a4e421d2-7279-4b03-9113-db0776dd5355@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 10 Apr 2024 17:56:40 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0igWeyW=x0DOeUVAvgUp4O+_QrXfwy=o3nj1+KAQ+B8pw@mail.gmail.com>
-Message-ID: <CAJZ5v0igWeyW=x0DOeUVAvgUp4O+_QrXfwy=o3nj1+KAQ+B8pw@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] thermal: core: Relocate critical and hot trip handling
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 14/16] power: pwrseq: add a driver for the PMU module
+ on the QCom WCN chipsets
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David
+ S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Catalin
+ Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Bjorn
+ Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Neil
+ Armstrong <neil.armstrong@linaro.org>,
+        Marek Szyprowski
+	<m.szyprowski@samsung.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Manivannan
+ Sadhasivam <mani@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Dmitry
+ Baryshkov <dmitry.baryshkov@linaro.org>,
+        Amit Pundir
+	<amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
+CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>
+References: <20240410124628.171783-1-brgl@bgdev.pl>
+ <20240410124628.171783-15-brgl@bgdev.pl>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240410124628.171783-15-brgl@bgdev.pl>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: EfQl4YuLzXuLVNYx9EwXY-G2mjg3Jw8I
+X-Proofpoint-ORIG-GUID: EfQl4YuLzXuLVNYx9EwXY-G2mjg3Jw8I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404100116
 
-Hi Lukasz,
+On 4/10/2024 5:46 AM, Bartosz Golaszewski wrote:
+[...]
+> +if POWER_SEQUENCING
+> +
+> +config POWER_SEQUENCING_QCOM_WCN
+> +	tristate "Qualcomm WCN family PMU driver"
+> +	default m if ARCH_QCOM
+> +	help
+> +	  Say U here to enable the power sequencing driver for Qualcomm
 
-On Fri, Apr 5, 2024 at 9:35=E2=80=AFAM Lukasz Luba <lukasz.luba@arm.com> wr=
-ote:
->
-> Hi Rafael,
->
-> On 4/4/24 10:03, Rafael J. Wysocki wrote:
-> > On Tue, Apr 2, 2024 at 9:04=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki=
-net> wrote:
-> >>
-> >> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >>
-> >> Modify handle_thermal_trip() to call handle_critical_trips() only afte=
-r
-> >> finding that the trip temperature has been crossed on the way up and
-> >> remove the redundant temperature check from the latter.
-> >>
-> >> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > This change is premature, as it will cause handle_non_critical_trips()
-> > to be called for hot/critical trips which is questionable, so I'm
-> > withdrawing it for now.
-> >
-> > The rest of the series is still applicable, though.
-> >
-> >
->
-> Could you explain your concerns about this, please?
-> Is about the extra execution time for the non-critical trip,
-> while we are in section of handling critical ASAP?
-> (also it would require that extra sorting there IMO)
+did you mean: Say Y here?
 
-No, it is mostly about exposing the critical and hot trips to the
-governor code that may not be ready for seeing them and get somewhat
-surprised.  In particular, this would cause the User Space governor to
-send uevents regarding critical and hot trip points which it has not
-been doing so far and so user space may get confused.
+> +	  WCN Bluetooth/WLAN chipsets.
+
 
