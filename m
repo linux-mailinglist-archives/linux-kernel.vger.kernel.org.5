@@ -1,172 +1,274 @@
-Return-Path: <linux-kernel+bounces-138347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD11F89F001
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D17CA89F003
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:39:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2310D1F211E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:39:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 492331F23AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F160F159570;
-	Wed, 10 Apr 2024 10:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A00F15991D;
+	Wed, 10 Apr 2024 10:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pg4maN/N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cub5Yho1"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546A91591F4
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781FD1598E3;
+	Wed, 10 Apr 2024 10:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745491; cv=none; b=YIf91LsQHzA0lnCiOmgOvqfg1R88hiPGIBHNkqbwnR8uXpk7Wk3q7dG0vm2XgdobYmXaxHjexCfodQkGLCASAfQGmQwgT3zhYtrHOEf1pcN2TJLPkL8MWp3TLnnK7K+ky+fPcZfMMvA5wnPB5P79M23EQXfIwQJIOlDsd9iQjN8=
+	t=1712745499; cv=none; b=SKsmZ9PmFBsXiguF140GK5V6cRH1Iu8zliw2bt/MN7DT9N6CcRw6hRNiZI1zWnr8uVa21cuwtrGXS4/ZfYbQM9I5O+ouqesBpn9tI4AFf3zL+Hb1QTOk9M/01HhGEaohkgATfOJmfnl96hm4KEFLj0YB4aDcSapQHQi3xY7wwrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745491; c=relaxed/simple;
-	bh=mBpMkwijDdLKp6zgkHLkxY2Lt4gRI+DEFEErvrmmbQ4=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jJCCQqwHOfNDRHYv7Aw+7es/sX0yl3ciC9DzKWPwwdysGlgaBJDwirMVngwpksikl4jkzl/3T1iyT4+slW8vh/FvmnIyrrlMCS7R/xW4WuAM1baHv3b4I2CfR47lI0HGsN31HBeheZkoZVshiw0YGCyrdsXdpGeHJVS/vgdUrpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pg4maN/N; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712745489; x=1744281489;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mBpMkwijDdLKp6zgkHLkxY2Lt4gRI+DEFEErvrmmbQ4=;
-  b=Pg4maN/NUSVl//bRwgJg31Z0MIGYlRrKdLY0vd92G9MV8s9D+F6Mw5IR
-   Xbe6MJQAV+7fEnIHGAM7en3e0Y7YVHT8vLEW/2AgjcJp0fxpkm6CzpLlm
-   WBbq1np9fQD+oClYcJH8VKQ0icD/HptvqpJF70a4iTcivct7bMOdpMnfG
-   yHw7Ozdwth9HdFFKm/f25lqzFfPd1gEYDe274iIq2T7tM3TEOaNIeFh7M
-   Z0K5+LXKBUoGFV9YC6+MiTW6tog7Qi9LzpqTZqohXPvYaCDInXGj01Dz6
-   OIAXEcTaruGTg3Js5pxXLraxKjbOS0QKJd73x6kXarCbOlxNelNq6ggks
-   g==;
-X-CSE-ConnectionGUID: 0hLwObf5RRmcjMMiZAKz9A==
-X-CSE-MsgGUID: wYlXspviSbGik+n+xD2x9A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="33505954"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="33505954"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:38:09 -0700
-X-CSE-ConnectionGUID: ByMdd/tAQwq+2COY48b6SA==
-X-CSE-MsgGUID: hYre0rH7R42ONS8FG65ZkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25204498"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:38:05 -0700
-Message-ID: <776ef2f1-747d-46f0-94be-747c6fca8ce0@linux.intel.com>
-Date: Wed, 10 Apr 2024 18:38:00 +0800
+	s=arc-20240116; t=1712745499; c=relaxed/simple;
+	bh=MU97HWzzufib2i+BTEe30Fyq72OAe6GNJD9wg7v4RMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CtfGbvh0J8zk9/IqUEosTW6tWtMKURcSXBIu3R0Hjy10v2CgOmXnWgMW09VaD9H6nwzceW71RLnYaYByZM7tQiA+x1DtHbEZyStgSAWh90NQSyq9DD/LPdecYglEODsXmWmRt3Zcsx1RofJBnYePX378myXaxFRw1nvtVrf5Cws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cub5Yho1; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so1087646966b.1;
+        Wed, 10 Apr 2024 03:38:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712745496; x=1713350296; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U50Al2xpMhqhfVIBtuFt5jjA3qV5pu0Q+vEvtqqKYBA=;
+        b=Cub5Yho138qWP13ChK40+3DqWO3aJsDva/Jz/scBjoYLmz83k9miUYIZM40EO1E7WY
+         jMnSfaH2SRwS0NH6O9+5+tLbhpP/5C2C7Wa8w5mV5a2VYGkDbR74C/BEHARIVbNNALt2
+         sT9Ko1YzYs/Gw8xj7Pc4zEci2Zf7BNOhlSmoL1QPp48lV7HNn6eCgroiJhQdVveS84kg
+         ZQQXFbnSeyOMoaBys8DWzLi+hjs/kUdj0che7L2iykQAC0iK8sUkod1ROUbkxu6R/Jql
+         cm9GJlC5bqEK3X8BBIH3+8ME8DeUe25clENaND/AG6XD60aO3VdYjRk3GQe4BCMOi3qy
+         046Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712745496; x=1713350296;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U50Al2xpMhqhfVIBtuFt5jjA3qV5pu0Q+vEvtqqKYBA=;
+        b=r49RMxBlLiPLsvZRWerxZDKEMGxhvPV/5eQZeLSV66+qntWP+DDx8syNeKN5fpwRW4
+         Pg3QkfrB3cK+yIvrc4ZhrjxQbT3Yet+r6xgFuYyrcDsN74skPqvh5OwwHCGo3REoeNyp
+         vRkaBdOPpWHQd23IN6PDd6kTvjorFm+UO574UhNd5//SQkGJmktHZxtLLz21pTAl4aRD
+         k7wDfolORj5LmymXYsd6RsruOfl9FriVXaxQAzTXJUd4BnqK57rVkq5ltE3gjdXWP7La
+         Ki1MX7KCpe0v39Q7H7AxaWl/swAGzaecjrUPv5BdxVq0mVS01+D4DQ4kGckCSy9aFE/X
+         IteA==
+X-Forwarded-Encrypted: i=1; AJvYcCU7vF68sCxLN7BJSe6FRul43LX+kGj4Ls7xrNBbTxk+SILm0UWP2o5hF4kh95iAG+MNgSYZ/2H5Sd/lEHvWb2B2ZMO51AMHAo77maDyY4LBRCgCLl7BenQkNhstE1HYYD59mHD1viZAZShbJ2Fb+KlMEDJGD2r0wCxZIJRLlTyCnmB4TvMF6VpFiSQ715jMn57/wdZPQ+dB8dsJgLDNA5WpZ6KgxSZWlw==
+X-Gm-Message-State: AOJu0Yxob5PBSnOPlhVX6v4XdPBmlmwBqAt98CMv7Z1CXdDHsACZB4/T
+	99O6vQtS9hnIVTa8Nk3Eq9rBLbc255hzIP3kH5+Ex7FfP2DwsJXZ/tAqohJgogI=
+X-Google-Smtp-Source: AGHT+IFwLjKjWVfy1fTAk3eO+Dlpfj9SGsTOE9DETZJW8nYLdZEvisol9IihxQ+jq8jG7jUIa6NRyw==
+X-Received: by 2002:a17:907:7d8f:b0:a52:68f:d141 with SMTP id oz15-20020a1709077d8f00b00a52068fd141mr2419289ejc.4.1712745495515;
+        Wed, 10 Apr 2024 03:38:15 -0700 (PDT)
+Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:500::5:e0d6])
+        by smtp.gmail.com with ESMTPSA id se1-20020a170906ce4100b00a51a9d87570sm6530946ejb.17.2024.04.10.03.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 03:38:14 -0700 (PDT)
+Date: Wed, 10 Apr 2024 11:38:11 +0100
+From: Jonthan Haslam <jonathan.haslam@gmail.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
+Message-ID: <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
+References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
+ <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
+ <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
+ <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
+ <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
+ <20240328091841.ce9cc613db375536de843cfb@kernel.org>
+ <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
+ <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
+ <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] iommu/vt-d: Remove caching mode check before
- device TLB flush
-To: Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev
-References: <20240410055823.264501-1-baolu.lu@linux.intel.com>
- <7e78917f-f84c-4e98-a612-73b8013ae367@intel.com>
- <0231631b-44ca-45ee-adf9-0a5c8852cc27@linux.intel.com>
- <be0b254d-d6c0-4a94-8234-936f40538bbc@intel.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <be0b254d-d6c0-4a94-8234-936f40538bbc@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
 
-On 2024/4/10 17:14, Yi Liu wrote:
-> 
-> 
-> On 2024/4/10 16:02, Baolu Lu wrote:
->> On 2024/4/10 14:30, Yi Liu wrote:
->>> On 2024/4/10 13:58, Lu Baolu wrote:
->>>> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
->>>> implementation caches not-present or erroneous translation-structure
->>>> entries except the first-stage translation. The caching mode is
->>>> irrelevant to the device TLB , therefore there is no need to check
->>>> it before a device TLB invalidation operation.
->>>>
->>>> iommu_flush_iotlb_psi() is called in map and unmap paths. The caching
->>>> mode check before device TLB invalidation will cause device TLB
->>>> invalidation always issued if IOMMU is not running in caching mode.
->>>> This is wrong and causes unnecessary performance overhead.
->>>
->>> I don't think the original code is wrong. As I replied before, if CM==0,
->>> the iommu_flush_iotlb_psi() is only called in unmap path, in which the
->>> @map is false. [1] The reason to make the change is to make the logic
->>> simpler. 🙂
->>
->> Oh, I see. There is a magic
->>
->>          if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
->>                  iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
->>
->> in __mapping_notify_one().
->>
->> So if it's caching mode, then
->>
->>   - iommu_flush_iotlb_psi() will be called with @map=1 from
->>     __mapping_notify_one(), "!cap_caching_mode(iommu->cap) || !map" is
->>     not true, and device TLB is not invalidated.
->>   - iommu_flush_iotlb_psi() will also be called with @map=0 from
->>     intel_iommu_tlb_sync(), device TLB is issued there.
->>
->> That's the expected behavior for caching mode.
->>
->> If it's not the caching mode, then
->>
->>   - iommu_flush_iotlb_psi() will be called with @map=0 from
->>     intel_iommu_tlb_sync(), device TLB is issued there.
->>
->> That's also the expected behavior.
->>
->> So the existing code is correct but obscure and difficult to understand,
->> right? If so, we should make this patch as a cleanup rather than a fix.
-> 
-> aha, yes. As the below table, iommu_flush_iotlb_psi() does flush device TLB
-> as expected. But there is a NA case. When CM==0, it should not be possible
-> to call iommu_flush_iotlb_psi() with @map==1 as cache invalidation is not
-> required when CM==0. So the existing code logic is really confusing,
-> checking @map is enough and clearer. Since the old code works, so perhaps
-> no fix tag is needed. :)
-> 
-> +----+------+-----------+------------+
-> |  \       |            |            |
-> |   \ @map |            |            |
-> | CM \     |      0     |     1      |
-> |     \    |            |            |
-> +------+---+------------+------------+
-> |          |            |            |
-> |     0    |      Y     |     NA     |
-> +----------+------------+------------+
-> |          |            |            |
-> |     1    |      Y     |     N      |
-> +----------+------------+------------+
-> 
-> Y means flush dev-TLB please
-> N means no need to flush dev-TLB
-> NA means not applied
+Hi Masami,
 
-Yes. We have the same understanding now. :-)
+> > > Which is why I was asking to land this patch as is, as it relieves the
+> > > scalability pains in production and is easy to backport to old
+> > > kernels. And then we can work on batched APIs and switch to per-CPU rw
+> > > semaphore.
+> 
+> OK, then I'll push this to for-next at this moment.
+> Please share if you have a good idea for the batch interface which can be
+> backported. I guess it should involve updating userspace changes too.
+
+Did you (or anyone else) need anything more from me on this one so that it
+can be pushed? I provided some benchmark numbers but happy to provide
+anything else that may be required.
+
+Thanks!
+
+Jon.
 
 > 
-> BTW. I think it is better to have the below change in a separate patch.
-> The below change does fix a improper dev-TLB flushing behavior. Also
-> how about Kevin's concern in the end of [1]. I didn't see your respond
-> about it.
-
-I had an offline discussion with him and I included the conclusion in
-the commit message of this patch.
-
-Best regards,
-baolu
+> Thank you!
+> 
+> > >
+> > > So I hope you can reconsider and accept improvements in this patch,
+> > > while Jonathan will keep working on even better final solution.
+> > > Thanks!
+> > >
+> > > > I look forward to your formalized results :)
+> > > >
+> > 
+> > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
+> > and USDTs, reporting attach/detach timings:
+> > $ sudo ./test_progs -v -t uprobe_multi_test/bench
+> > bpf_testmod.ko is already unloaded.
+> > Loading bpf_testmod.ko...
+> > Successfully loaded bpf_testmod.ko.
+> > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
+> > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
+> > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
+> > test_bench_attach_uprobe: attached in   0.120s
+> > test_bench_attach_uprobe: detached in   0.092s
+> > #400/5   uprobe_multi_test/bench_uprobe:OK
+> > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
+> > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
+> > test_bench_attach_usdt:PASS:usdt_count 0 nsec
+> > test_bench_attach_usdt: attached in   0.124s
+> > test_bench_attach_usdt: detached in   0.064s
+> > #400/6   uprobe_multi_test/bench_usdt:OK
+> > #400     uprobe_multi_test:OK
+> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > Successfully unloaded bpf_testmod.ko.
+> > 
+> > So it should be easy for Jonathan to validate his changes with this.
+> > 
+> > > > Thank you,
+> > > >
+> > > > >
+> > > > > Jon.
+> > > > >
+> > > > > >
+> > > > > > Thank you,
+> > > > > >
+> > > > > > >
+> > > > > > > >
+> > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
+> > > > > > > > will depend on how much lock contention happens.
+> > > > > > > >
+> > > > > > > > Thank you,
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> > > > > > > > > ---
+> > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
+> > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
+> > > > > > > > > --- a/kernel/events/uprobes.c
+> > > > > > > > > +++ b/kernel/events/uprobes.c
+> > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
+> > > > > > > > >   */
+> > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
+> > > > > > > > >
+> > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
+> > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
+> > > > > > > > >
+> > > > > > > > >  #define UPROBES_HASH_SZ      13
+> > > > > > > > >  /* serialize uprobe->pending_list */
+> > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+> > > > > > > > >  {
+> > > > > > > > >       struct uprobe *uprobe;
+> > > > > > > > >
+> > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > >       uprobe = __find_uprobe(inode, offset);
+> > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > >
+> > > > > > > > >       return uprobe;
+> > > > > > > > >  }
+> > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+> > > > > > > > >  {
+> > > > > > > > >       struct uprobe *u;
+> > > > > > > > >
+> > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > +     write_lock(&uprobes_treelock);
+> > > > > > > > >       u = __insert_uprobe(uprobe);
+> > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > +     write_unlock(&uprobes_treelock);
+> > > > > > > > >
+> > > > > > > > >       return u;
+> > > > > > > > >  }
+> > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+> > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
+> > > > > > > > >               return;
+> > > > > > > > >
+> > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > +     write_lock(&uprobes_treelock);
+> > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
+> > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > +     write_unlock(&uprobes_treelock);
+> > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+> > > > > > > > >       put_uprobe(uprobe);
+> > > > > > > > >  }
+> > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+> > > > > > > > >       min = vaddr_to_offset(vma, start);
+> > > > > > > > >       max = min + (end - start) - 1;
+> > > > > > > > >
+> > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > >       n = find_node_in_range(inode, min, max);
+> > > > > > > > >       if (n) {
+> > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
+> > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+> > > > > > > > >                       get_uprobe(u);
+> > > > > > > > >               }
+> > > > > > > > >       }
+> > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
+> > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
+> > > > > > > > >       min = vaddr_to_offset(vma, start);
+> > > > > > > > >       max = min + (end - start) - 1;
+> > > > > > > > >
+> > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > >       n = find_node_in_range(inode, min, max);
+> > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > >
+> > > > > > > > >       return !!n;
+> > > > > > > > >  }
+> > > > > > > > > --
+> > > > > > > > > 2.43.0
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > --
+> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > > >
+> > > > > >
+> > > > > > --
+> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > >
+> > > >
+> > > > --
+> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
