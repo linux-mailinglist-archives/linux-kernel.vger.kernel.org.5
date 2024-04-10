@@ -1,162 +1,135 @@
-Return-Path: <linux-kernel+bounces-139529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D26328A03FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:24:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D778A03FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 874962880ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:24:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4DB1C21B3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE433335DB;
-	Wed, 10 Apr 2024 23:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B722374C1;
+	Wed, 10 Apr 2024 23:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yfvkk3tt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Va+Qlm+5"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D88F39FEF;
-	Wed, 10 Apr 2024 23:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B5C2C695
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791481; cv=none; b=W9e9KDviiKJ1zXDR4FFVByBWGVhbFxsizPPnRxA7dcsSPGkIZ+NVwrouBSj62KW/OQ246LZZvbFUC4EfHGL3Jcf3DmqYIdcX2RjVkYDX1DYwITZx6cFOPb9fEC3n8jtnqVV0vi0BjVKCbHAeXj5cX/iCNQA2PUNj8crEdWcUuAE=
+	t=1712791570; cv=none; b=q9X1q+H6fifCH207U+gfam2Xh/OflgjTtlWtp2cotF+2Pvp37RVIc04Jw/0nB+4GJngZvdU9FXtqj/nGpX5wSXlIKrcRUjRoCFrx+nZUPUo1mGipi+mpirJOIr/JDJWfrBZ4QAeMUISMO0gEyNPyEgxySVIphysJvJp3T7tCxP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791481; c=relaxed/simple;
-	bh=VSMecFXyAePUCgsz3RR9EcSrH9KxBkZyQT9d7RkgPQw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OXL6VO74CvnrCnNNHvGKac4cD7ZQ2GH1UnE/3QedjS4EX2tVWKWeuOX6Ffqgi8DX1jMc9K946haj8j/YDGLV3h4U1urXzC1vOi4dzFn18AqpfjPXxN9YmyYE0cJHEPlOh3jwJsSpKtVYQ9a2TZWjDLamrWJ3UgHuYBKfygNFhpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yfvkk3tt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AFA8DC433F1;
-	Wed, 10 Apr 2024 23:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712791480;
-	bh=VSMecFXyAePUCgsz3RR9EcSrH9KxBkZyQT9d7RkgPQw=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=Yfvkk3ttkevWKhpWjnk5GUGu1t24eMxzcURqrCguTdfq5JV+aI3NxM3bmw2FNdLIQ
-	 J8sp/IgJqS3yQ5vicxx7zMcLR56cBPPuvx591BPIP4ZreB9vs2YGp9JG5lXG1wyzD1
-	 cldfHM3nM0FI/IQOfijlM0eWeT9BDhyDTeeEJM24SgdAN1ca7iI/Xy19Sw9Cla7YUx
-	 QN0nV2A0DFAnN/7h7JHY16SnKHayp7MSqvIUHHA4mT02PEk0FoJjW6HnRUw69l9N5/
-	 hOTxVA7NiTMZoi9DVlUdVAtR18nceI0r1mZtgZ/EqM6ugraah2ks3FCbi4Ca/407x0
-	 bVoGYVpW1uedA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C67DCD128A;
-	Wed, 10 Apr 2024 23:24:40 +0000 (UTC)
-From: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>
-Date: Thu, 11 Apr 2024 00:24:19 +0100
-Subject: [PATCH] kbuild/x86: Use $(KBUILD_AFLAGS) in Kbuild's version of
- $(as-instr)
+	s=arc-20240116; t=1712791570; c=relaxed/simple;
+	bh=6bECfZivveGXwjc0wz2UlMqxN5Fu6aMgKDLIjMEVkeI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vhi3UFezYOIlUSwfWxXBSOooiXAXne+r5opSSEt3ZCMCanQh7TTSXFYxuKoteNkn+OUjIh0+uR4ut2GZHoZgF4TPsa9K8XTQCiGcu8Qs6pUhV2Mq/WFYqEnIynxVhF8AIpWx78n7gfASgF5DcSoKDlHiEkYrKML+pqaUAiGrZ9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Va+Qlm+5; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fcdf6dc6-81ff-48b8-822b-80c097efc07d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712791564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tRA6/DFmK/DJmNTAFNW2xE1W38sOhbq7XMudIRt8ihs=;
+	b=Va+Qlm+515KjcFBzYljKyDI9a7OtxhslpQ7SCXUQrXWPNmJ2MeRhfsO4Y1YG9QWHJwkl5T
+	YjvrFFXb5n5JQj/wScwLuRr7vpe9OqGLs2TdrTzYZkxU5LECaqHEzoNuOqXIbjBjKdLFav
+	DnKEyl/TQyRlVIkVNoRbmSsz9FOINjM=
+Date: Wed, 10 Apr 2024 16:25:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [RFC PATCH bpf-next v1 3/3] net: Add additional bit to support
+ userspace timestamp type
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+ kernel@quicinc.com
+References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
+ <20240409210547.3815806-4-quic_abchauha@quicinc.com>
+ <6616b3587520_2a98a5294db@willemb.c.googlers.com.notmuch>
+ <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240411-as-instr-opt-wrussq-v1-1-99b1a1a99f93@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAKIfF2YC/x3MwQ6CMAyA4VchPdtkjEWIr2I8lFGhBwa2Q00I7
- +7w+B3+fwdjFTa4VTsov8VkSQX1pYI4URoZZSgG73xwoXZIhpIsKy5rxo9uZi8MHcem5ebqXYB
- SrspP+f6v90dxT8bYK6U4na+ZLLPCcfwA/OQD3n4AAAA=
-To: Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, 
- "H. Peter Anvin" <hpa@zytor.com>, Masahiro Yamada <masahiroy@kernel.org>, 
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
- Dmitry Safonov <0x7f454c46@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712791479; l=3696;
- i=0x7f454c46@gmail.com; s=20240410; h=from:subject:message-id;
- bh=+llTpAM1iXzBXWQE4E3YCDwpY226FU9sEdHRM+0QVpA=;
- b=8Y1dDthNatE9Xo7kK5BBVgBX5fExnKyrSVxyAhLa+w7TzV95A+BV7gNVUNoKRliO6m+acwj3rYt4
- kenCR8tzAX9gMGMTbmRDQllZ2+0SgDhz3Kcz3A1eOdUDCXljlqae
-X-Developer-Key: i=0x7f454c46@gmail.com; a=ed25519;
- pk=cFSWovqtkx0HrT5O9jFCEC/Cef4DY8a2FPeqP4THeZQ=
-X-Endpoint-Received: by B4 Relay for 0x7f454c46@gmail.com/20240410 with
- auth_id=152
-X-Original-From: Dmitry Safonov <0x7f454c46@gmail.com>
-Reply-To: 0x7f454c46@gmail.com
+X-Migadu-Flow: FLOW_OUT
 
-From: Dmitry Safonov <0x7f454c46@gmail.com>
+On 4/10/24 1:25 PM, Abhishek Chauhan (ABC) wrote:
+>>> @@ -830,6 +833,9 @@ enum skb_tstamp_type {
+>>>    *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>>    *		skb->tstamp has the (rcv) timestamp at ingress and
+>>>    *		delivery_time at egress.
+>>> + *		delivery_time in mono clock base (i.e., EDT) or a clock base chosen
+>>> + *		by SO_TXTIME. If zero, skb->tstamp has the (rcv) timestamp at
+>>> + *		ingress.
+>>>    *	@napi_id: id of the NAPI struct this skb came from
+>>>    *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>>>    *	@alloc_cpu: CPU which did the skb allocation.
+>>> @@ -960,7 +966,7 @@ struct sk_buff {
+>>>   	/* private: */
+>>>   	__u8			__mono_tc_offset[0];
+>>>   	/* public: */
+>>> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+>>> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+>>>   #ifdef CONFIG_NET_XGRESS
+>>>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
 
-At Arista some products use compatible 32-bit userspace running on x86.
-As a part of disto build for ia32 it also compiles the 64-bit kernel.
-While the toolchain for the kernel build is yet the same, with 64-bit gcc:
-> / @Bru-na-Boinne% file /usr/bin/gcc-11
-> /usr/bin/gcc-11: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=6571ad50d8f12eece053f1bac7a95a2c767f32c9, for GNU/Linux 3.2.0, stripped
+The above "tstamp_type:2" change shifted the tc_at_ingress bit.
+TC_AT_INGRESS_MASK needs to be adjusted.
 
-It seems that gcc is being smart and detects that it's running in
-a 32-bit container (personality flag? 32-bit mmap base? something else
-inherited post-exec?  haven't yet figured it out) and by default tries
-to build 32-bit binaries.
+>>>   	__u8			tc_skip_classify:1;
+>>
+>> With pahole, does this have an effect on sk_buff layout?
+>>
+> I think it does and it also impacts BPF testing. Hence in my cover letter i have mentioned that these
+> changes will impact BPF. My level of expertise is very limited to BPF hence the reason for RFC.
+> That being said i am actually trying to understand/learn BPF instructions to know things better.
+> I think we need to also change the offset SKB_MONO_DELIVERY_TIME_MASK and TC_AT_INGRESS_MASK
+> 
+> 
+> #ifdef __BIG_ENDIAN_BITFIELD
+> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7) //Suspecting changes here too
+> #define TC_AT_INGRESS_MASK		(1 << 6) // and here
+> #else
+> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+> #define TC_AT_INGRESS_MASK		(1 << 1) (this might have to change to 1<<2 )
 
-That results in a failing toolchain check:
-> / @Bru-na-Boinne% printf "%b\n" "wrussq %rax, (%rbx)" | /usr/bin/gcc-11 -Wa,--fatal-warnings -c -x assembler-with-cpp -o /dev/null -
-> <stdin>: Assembler messages:
-> <stdin>:1: Error: `wrussq' is only supported in 64-bit mode
+This should be (1 << 2) now. Similar adjustment for the big endian.
 
-Which passes when -m64 is directly specify for the build check:
-> / @Bru-na-Boinne% printf "%b\n" "wrussq %rax, (%rbx)" | /usr/bin/gcc-11 -m64 -Wa,--fatal-warnings -c -x assembler-with-cpp -o /dev/null -
-> / @Bru-na-Boinne% echo $?
-> 0
+> #endif
+> #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+> 
+> Also i suspect i change in /selftests/bpf/prog_tests/ctx_rewrite.c
 
-As a result, kbuild produces different value for CONFIG_AS_WRUSS
-for native 64-bit containers and ia32 containers with 64-bit gcc,
-which produces different kernels with enabled/disabled
-CONFIG_X86_USER_SHADOW_STACK.
+ctx_rewrite.c tests the bpf ctx rewrite code. In this particular case, it tests
+the bpf_convert_tstamp_read() and bpf_convert_tstamp_write() generate the
+correct bpf instructions.
+e.g. "w11 &= 3;" is testing the following in bpf_convert_tstamp_read():
+		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+	 				TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
 
-arch/x86/Makefile already properly defines KBUILD_AFLAGS += -m64,
-which is luckly already available at the point of toolchain check
-in arch/x86/Kconfig.assembler
+The existing "TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK" is 0x3
+and it should become 0x5 if my hand counts correctly.
 
-By hacking around Kbuild variable the following way:
-> --- a/scripts/Kconfig.include
-> +++ b/scripts/Kconfig.include
-> @@ -13,7 +13,8 @@ left_paren  := (
->
->  # $(if-success,<command>,<then>,<else>)
->  # Return <then> if <command> exits with 0, <else> otherwise.
-> -if-success = $(shell,{ $(1); } >/dev/null 2>&1 && echo "$(2)" || echo "$(3)")
-> +if-success = $(shell,echo '$(1)' 1>&2;{ $(1); } >/dev/null 2>&1 && echo "$(2)" || echo "$(3)")
-
-I got the following output for the toolchain check, before:
-> linux @Bru-na-Boinne% make ARCH=x86_64 oldconfig V=1 2>&1 | grep wrus
-> printf "%b\n" "wrussq %rax,(%rbx)" | gcc  -c -x assembler-with-cpp -o /dev/null -
-
-and after:
-> linux @Bru-na-Boinne% make ARCH=x86_64 oldconfig V=1 2>&1 | grep wrus
-> printf "%b\n" "wrussq %rax,(%rbx)" | gcc -D__ASSEMBLY__ -fno-PIE -m64 -c -x assembler-with-cpp -o /dev/null -
-
-Which seems appropriate to me.
-This also reflects the existing definition in scripts/Makefile.compiler
-for $(as-instr) that already has $(KBUILD_AFLAGS).
-
-Signed-off-by: Dmitry Safonov <0x7f454c46@gmail.com>
----
- scripts/Kconfig.include | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-index 3ee8ecfb8c04..d8574c1faf2d 100644
---- a/scripts/Kconfig.include
-+++ b/scripts/Kconfig.include
-@@ -33,7 +33,7 @@ ld-option = $(success,$(LD) -v $(1))
- 
- # $(as-instr,<instr>)
- # Return y if the assembler supports <instr>, n otherwise
--as-instr = $(success,printf "%b\n" "$(1)" | $(CC) $(CLANG_FLAGS) -Wa$(comma)--fatal-warnings -c -x assembler-with-cpp -o /dev/null -)
-+as-instr = $(success,printf "%b\n" "$(1)" | $(CC) $(CLANG_FLAGS) $(KBUILD_AFLAGS) -Wa$(comma)--fatal-warnings -c -x assembler-with-cpp -o /dev/null -)
- 
- # check if $(CC) and $(LD) exist
- $(error-if,$(failure,command -v $(CC)),C compiler '$(CC)' not found)
-
----
-base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
-change-id: 20240410-as-instr-opt-wrussq-48ec37e36204
-
-Best regards,
--- 
-Dmitry Safonov <0x7f454c46@gmail.com>
-
+The patch set cannot be applied to the bpf-next:
+https://patchwork.kernel.org/project/netdevbpf/patch/20240409210547.3815806-4-quic_abchauha@quicinc.com/
+, so bpf CI cannot run to reproduce the issue.
 
 
