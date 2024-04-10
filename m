@@ -1,109 +1,117 @@
-Return-Path: <linux-kernel+bounces-138820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F2489FAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:57:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F82E89FAC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AAE11F311C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:57:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C50361F2819E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCC5171E6B;
-	Wed, 10 Apr 2024 14:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393A9175546;
+	Wed, 10 Apr 2024 14:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6DrME/l"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="1DX2RzVs"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F77016D9D0;
-	Wed, 10 Apr 2024 14:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B43174EE4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712760912; cv=none; b=Fo4dCiHYSyMs5meEJyRtZBYgdbUUOkdParPG6Xyd1MHV7hoEgpg/wLB2yw/K6CXKBf1YnLyPdyaqXrgg00HDfSbXf+dUj31Rfx0b6I1ci/3ov7opOLXl+mT1FGQBo887yFeB10JHR0EC3dVZ6W3ssJARijV4ErzL+dVij8HR78I=
+	t=1712760947; cv=none; b=Vn9LsBGWKQ23P2+ML+6x84bejSh86jWloexhoVbUn/UBArPaKeOo0ING7m0qxKxgdHD+ENbueiBnIA0vv9pzah+GO7IVNkXbOQdQyDNUdia826MtnyCVxXFhU++7JZV2yOWd7yUuljYkQjymL7CAtoq7Q1D/tN8LejKpr6WsPL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712760912; c=relaxed/simple;
-	bh=7fAQgpTMDVPYKudJ06RE2pyN1k0PYQWs65V2L6UE7Sc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tI6yR5eHfFNMfX35SKNl3f+kEWUcl5alrWyEPdKh6DSNEjOvpo0h/wO9ZEhhX10iTTYSW2bThqnq5q6FGD9eUz7VIZfHYHPwR1KZjmUoRx6G72KMZr+F6zp+KhRjiGg5IE5DiRbgJ5WAsIdAK4kJRTk7JjRdpKzitz+PDKehfI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6DrME/l; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e40042c13eso24443145ad.2;
-        Wed, 10 Apr 2024 07:55:10 -0700 (PDT)
+	s=arc-20240116; t=1712760947; c=relaxed/simple;
+	bh=UKOOA8/7HQj4e+/LtfW4BZ4tyj66iZmzmBjEbudutfI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CJNwHCorMs4XSj0g3H8ihPVZIGHsNXGrecOuI9SxWcI0q1HAeWHcS38nix3/LNYKShpSAB+419b4rZDMOsKMUkw7EFdJdUUtoci0lFqqS8i3surJz6SttMKDaASLkeCNafz4GrweVR5VEpZrQTZWcydmdm00VinZ0T7GA5buOj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=1DX2RzVs; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41745acb8f4so4438815e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712760910; x=1713365710; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rnPf8H9ChUNgME1R8Li6tCFhCJLrI7NwVEWBeOwG24w=;
-        b=R6DrME/lmH/fU9bli/fg2+PfCDCPr52bjjJuSC4cLLZ+1KO112Eg6YtL/crVShZA4U
-         xLdOiYChoCm7fLSeVk+CjGnYrzzxnOydk6FGnQ4eA+wlAqVK8d5Apu5Hpzy6rWG64DO7
-         /uaP46iq4qdR/PNvGCGC02LYL7Sh3/wD7C9y4i3Gy6OZfI6T1ovAajsgEYcXFs3mBG1i
-         YJC0H/CFQmQ+GGarSrSO5lrJjz6mLiIdOlGesMccSejUryG3XmiN5iFDh8oBzIuI+qb8
-         eHQCwyaKVGcax4hW+9tyqoQ4Ujym2oC5VaNR7IkZvQ98tfcKNv4Zl8sc1F2l9+zb/q6i
-         Wj3A==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712760943; x=1713365743; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qkM79gW6w0NVDaaTQoSffcdoou57mwLCTgADK37diJ0=;
+        b=1DX2RzVshblQ96T0M9228b6U7oj5m0wslbjMdhsS8VzclEzlK/XXI1LSvnFv5BjESF
+         cB7CRok4aFWDyB23YFA61iZIzTx8lA2TecHfZzCIMpi+vvIy/FFW7AHXetURShSodPp6
+         lVV6WoLof2QYVNFAU4VqjWRxXv0MdRfGrHlEEDUi1vFyLCsOVXNsxR6dx9xpWntz+dnv
+         /tRhezyeFWQBmK3irrjPWxuM9o1TPQcN6vBK+K4StsfZPAiCWpHZ5173A5E9pKAift4S
+         pOac36TY7FtrdBIpRVBfy7Rb344t5t4bHgNcW8lIUCZmjonesbQPOn8mPw+ZtoB8vr3J
+         78Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712760910; x=1713365710;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rnPf8H9ChUNgME1R8Li6tCFhCJLrI7NwVEWBeOwG24w=;
-        b=pqCHRWHJu/12iekTMCSEu0p2agc/qM1eEDCvyWcizU6XNYL8WLktNUigLP0fGcRKm9
-         zBrAaYd8piki4Xx+CMCF+/sDxAqrOBqvNTkfbZOxMNqbziEcn6KVEnDn6drW9tPhLbKc
-         pnwPf3GJpwfw2If3a3mwXBtsoJRoB9LTz3o4eFzhz3+UjW/SeoUdHaRAk7BWrcErE8z2
-         AAqz4ZDPj6pG/TS2QSnwdKkOkemlOyaSgAPvpG0gabw3997xI6wKLGj3A/pGptVlFKGC
-         Ykof1PNJFKifH9mHwc2m9vHYrM5/qv6KWTTlIrPiYMU3dxtD23+tLxeFUb9RHtD2mbGq
-         E5Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9MZ3x13A6EpIhJfGcvP9LUimRRmjhSPaUjHHDwjlKFvTIc+hLFEJcx2EScr0ooOE0ENwHHJI0rpmvLncx9SHX23LqL9VuV3XCRIAj0/n3twunbSdPN6bqwzvkQLoxGvNjaVGeF34o7z2rrtI=
-X-Gm-Message-State: AOJu0YzkFzu2RkqHWTcJvKUHv8D15hIVb+aob30/pAVEGrPwNporp9EC
-	whax8Z8rAXNG9Oy0IZxfykXYcCBQPsHG52AIAv2n5V/+d3hKjoBh7MvOiBR3
-X-Google-Smtp-Source: AGHT+IFN/kZoObXcJJMFpnGS3H/KmNdrXTgYpzW2WtpE5Ti3/TE/96kfaAUMrC+QAZGPBEobCDBWng==
-X-Received: by 2002:a17:902:ed15:b0:1e4:8c64:33c6 with SMTP id b21-20020a170902ed1500b001e48c6433c6mr2711740pld.59.1712760909711;
-        Wed, 10 Apr 2024 07:55:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m12-20020a170902f20c00b001e2a4ac7bf9sm10863971plc.111.2024.04.10.07.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 07:55:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Apr 2024 07:55:08 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
-	linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] watchdog: add HAS_IOPORT dependencies
-Message-ID: <13ef0edf-e923-4139-8c6e-91bcb8193a9e@roeck-us.net>
-References: <20240410084201.1481930-1-schnelle@linux.ibm.com>
- <20240410084201.1481930-2-schnelle@linux.ibm.com>
+        d=1e100.net; s=20230601; t=1712760943; x=1713365743;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkM79gW6w0NVDaaTQoSffcdoou57mwLCTgADK37diJ0=;
+        b=deu9iIJKFDQ2diSeO0xsHwc54NXPF1AZKhuyfPRng69PGyCNrnMPwRpNDgwXWo9x43
+         1u5I9ijHUV+r7Whd+Hxi0gHYt1SU5+gjMzAn8LNs7Qr7nnYrIpRl8srszYL5Qs3xL0Wo
+         3kfqL7Zrm/QcD2JqvDoxw/RDBGlTdFjtQPpR5nutsjKQqqqj+BKlQsBjxIDrcSCAJRJp
+         LwaG9izv/vC/Uhn4lmksHKCe093p7ea7dm1LTP3N/zdD+EFkR7LbPxP/KwHOV1INpLG+
+         0ePtOOT/D5V5ge0bY8WdswX0J6NV5A6gEZrONXuFe4w5586yKZpgSJCsTxe4YyLjK9tj
+         xw+g==
+X-Forwarded-Encrypted: i=1; AJvYcCUufz+kq9YMmQLnIfJDxCW5OfgFXIcTNo0H3RKb6Pq9DU2/5F6GiEI2WUoQTRJHGMr26+3IRDOO2RlKrO9AjCp4DVP3/VBdPoOnjH76
+X-Gm-Message-State: AOJu0YzgVPl4hKR2BgEJKIJXfU/pUPpiQS5udcRlY0vcBC7halbYymoy
+	u0Eli5xEM5XGulAkRcS36V1mMmjIbqshQSRpjFTmT0i61ZMDqUF1uQM7u3RRIdk=
+X-Google-Smtp-Source: AGHT+IGNeLxOaiscREzifrbAz46PPEQrwOJh5pOyr0RZ/5W5R5nlpeialGLWcsM4T9o9oxKaQqjncg==
+X-Received: by 2002:a05:600c:4511:b0:415:8651:9b8e with SMTP id t17-20020a05600c451100b0041586519b8emr2356050wmo.39.1712760943089;
+        Wed, 10 Apr 2024 07:55:43 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id bg25-20020a05600c3c9900b004162d06768bsm2523860wmb.21.2024.04.10.07.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 07:55:42 -0700 (PDT)
+Message-ID: <c86fb571-fc66-4549-9592-9ea984f3e49b@baylibre.com>
+Date: Wed, 10 Apr 2024 16:55:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410084201.1481930-2-schnelle@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 09/18] ASoC: mediatek: mt8192: Migrate to the common
+ mtk_soundcard_startup
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-10-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409113310.303261-10-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 10:42:01AM +0200, Niklas Schnelle wrote:
-> In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-> compile time. We thus need to add HAS_IOPORT as dependency for those
-> drivers using them.
-> 
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
-> and may be merged via subsystem specific trees at your earliest
-> convenience.
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Seems like the COMPILE_TEST / HAS_IOPORT problem is watchdog and
-hwmon specific, so I'll just let it go.
+On 09/04/2024 13:33, AngeloGioacchino Del Regno wrote:
+> Add a const mtk_pcm_constraints_data struct array with all of the
+> (again, constant) constraints for all of the supported usecases,
+> remove the duplicated functions and call mtk_soundcard_startup()
+> instead in all of the .startup() callbacks.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+-- 
+Regards,
+Alexandre
 
