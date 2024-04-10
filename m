@@ -1,130 +1,130 @@
-Return-Path: <linux-kernel+bounces-138154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBD389ED63
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A0DF89ED66
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:16:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A33284AC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:16:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E36D2849E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6B513D607;
-	Wed, 10 Apr 2024 08:16:16 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34EBE13D604;
+	Wed, 10 Apr 2024 08:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LPzcYQt3"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A53101C5;
-	Wed, 10 Apr 2024 08:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FE913D535;
+	Wed, 10 Apr 2024 08:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712736976; cv=none; b=eJQ8cHxoNcZMfVFY2bUM1gucXK91Rfa2Txb4xM4v1AcxQts42j2PBuorwaGz1gXqWSiA6kRXfcFSx32WThHmcTtc8XILUskyya0wySl205ppCcwOv2qycWGFVzSK4N6EbYKTsDHazWS3+caaHCPwSgalmEfgltdeL+b/wAZK/UA=
+	t=1712737000; cv=none; b=B+nytPUtFCoo0TZ1i6Tp1a/DzKuF+LNIUuFCgvf6U0DMLCP0CtVemkcALrkeyzlALQeJoxKnE2q2604J/KpURw9d+VUkLXK72NxwN7rChhVD51hotQ+qbDyWl3Th5ZJJFCard8vio73s3IcW+FXT1lKDEWLrZc2nN7JDIakz2ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712736976; c=relaxed/simple;
-	bh=+BMKLZOsQbr0VOgMzU++BDRC6fIbczsfsXJLxYo5OFw=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=eS54BDt3UArSQ9IjaZntkon6PI0EqH6CkHF5YvYnLfFPVfHRlJJgsdbL+1avDXBUpDEWaWGu7e3u2hdCbQeQ5mQVYgwjOMO7lQxF90RBmeZlUxD0HBiGTQZHN+DrmP05BwtTSAjXnsHz8x9ckzckVnQPTTV0a3oekEdmJGbEK1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VDwYq151qzWmjq;
-	Wed, 10 Apr 2024 16:13:03 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3EE1C14044F;
-	Wed, 10 Apr 2024 16:16:11 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 10 Apr 2024 16:16:10 +0800
-Subject: Re: [PATCH] mm,swapops: Update check in is_pfn_swap_entry for
- hwpoison entries
-To: Oscar Salvador <osalvador@suse.de>, Peter Xu <peterx@redhat.com>
-CC: Andrew Morton <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, David Hildenbrand <david@redhat.com>,
-	<stable@vger.kernel.org>, Tony Luck <tony.luck@intel.com>, Naoya Horiguchi
-	<naoya.horiguchi@nec.com>
-References: <20240407130537.16977-1-osalvador@suse.de>
- <ZhKmAecilbb2oSD9@localhost.localdomain> <ZhLx3fwzQNPDbBei@x1n>
- <ZhMCvynFUDr-8DpX@localhost.localdomain>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <5b730a9c-440d-6527-a761-e15c9670af83@huawei.com>
-Date: Wed, 10 Apr 2024 16:16:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1712737000; c=relaxed/simple;
+	bh=FDNF2wmT8OB0NT6HpCnZmJIyMluRORrD+x/eYATX778=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jbvqJvnLoXT6Q8BGkTwPVzQj+oylAA2p89BhiQKtB2++c5A+l5GsZUqanChUVIKxnxrG2WWn5JZwMXmbA4R1mrQb8mjpf+LALva3FDuWxdPcrwmJyjysVlM+4fULlRCRISwed1V5+MqvM9LbeCPWUZXqNCNF//KcjcnrU5JCN6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LPzcYQt3; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 48B761C0008;
+	Wed, 10 Apr 2024 08:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712736990;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3l7juaQsm3ZOw7R2jPwEJbaXnMdcb15KGyFHILQn1mM=;
+	b=LPzcYQt3F3CRP5FNuubXlTCOOeIhU6rNVeViLrj2rA2IKiwd3hegTuRV9upZpPJrMptNEm
+	o2zyb21HQuMeiWf1YqFSgcdSm8s1r5Mtx2BGBkEXGlgkL3gVfhI9PimvovPqypXOOdA4lq
+	byMHz9ECpXcdz725MF87wMOaQYAJnhVRXQoyNJRjEziHZ+/m2U5wqChBq3hyCfqbEObozS
+	Jen47TlIGqMpGskw1BDGurn//AB5oxQWInw36qXxsYIFlje14LMHeaokHx7O4L5LgxiDJ0
+	4e4dKi7/EoQqfrtuqD0MJWJakBRedyDdULFm1AqA0hYxOMDu2T9SZvisLhu8cA==
+Date: Wed, 10 Apr 2024 10:16:27 +0200
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
+ <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Herve Codina
+ <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v11 01/13] net: phy: Introduce ethernet link
+ topology representation
+Message-ID: <20240410101627.53bfdebf@device-28.home>
+In-Reply-To: <20240409201553.GA4124869@dev-arch.thelio-3990X>
+References: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
+	<20240404093004.2552221-2-maxime.chevallier@bootlin.com>
+	<20240409201553.GA4124869@dev-arch.thelio-3990X>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZhMCvynFUDr-8DpX@localhost.localdomain>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On 2024/4/8 4:31, Oscar Salvador wrote:
->> Totally unexpected, as this commit even removed hwpoison_entry_to_pfn().
->> Obviously even until now I assumed hwpoison is accounted as pfn swap entry
->> but it's just missing..
->>
->> Since this commit didn't really change is_pfn_swap_entry() itself, I was
->> thinking maybe an older fix tag would apply, but then I noticed the old
->> code indeed should work well even if hwpoison entry is missing.  For
->> example, it's a grey area on whether a hwpoisoned page should be accounted
->> in smaps.  So I think the Fixes tag is correct, and thanks for fixing this.
->>
->> Reviewed-by: Peter Xu <peterx@redhat.com>
-> 
-> Thanks Peter
+Hello Nathan,
 
-Thanks both.
+On Tue, 9 Apr 2024 13:15:53 -0700
+Nathan Chancellor <nathan@kernel.org> wrote:
 
+> Hi Maxime,
 > 
->> Fedora stopped having DEBUG_VM for some time, but not sure about when it's
->> still in the 6.1 trees.  It looks like cc stable is still reasonable from
->> that regard.
-> 
-> Good to know, thanks for the info.
-> 
->> A side note is that when I'm looking at this, I went back and see why in
->> some cases we need the pfn maintained for the poisoned, then I saw the only
->> user is check_hwpoisoned_entry() who wants to do fast kills in some
->> contexts and that includes a double check on the pfns in a poisoned entry.
->> Then afaict this path is just too rarely used and buggy.
-> 
-> Yes, unfortunately memory-failure code does not get exercised that much,
-> and so there might be subtly bugs lurking in there for quite some time.
+> On Thu, Apr 04, 2024 at 11:29:51AM +0200, Maxime Chevallier wrote:
 
-There're many memory-failure testcases but some code paths still didn't get
-exercised. That's a pity. :(
+[...]
 
-> 
->> A few things we may need fixing, maybe someone in the loop would have time
->> to have a look:
->>
->> - check_hwpoisoned_entry()
->>   - pte_none check is missing
->>   - all the rest swap types are missing (e.g., we want to kill the proc too
->>     if the page is during migration)
+> I bisected a crash that I see on one of my test devices to this change
+> in -next as commit 6916e461e793 ("net: phy: Introduce ethernet link
+> topology representation"). Here is the stack trace passed through
+> scripts/decode_stacktrace.sh:
 
-Firstly, I thought rest swap types just won't exist in this code path. But after second thought,
-it seems it's possible. For example, when page is being isolated for migration, memory_failure
-will fails to isolate it. And the second MCE event will goes to kill_accessing_process() and
-see a migrate swap entry.
+[...]
 
->> - check_hwpoisoned_pmd_entry()
->>   - need similar care like above (pmd_none is covered not others)
-> 
-> I will have a look and see what needs fixing, thanks for bringing it up.
+> [    5.626535] ? phy_link_topo_add_phy (drivers/net/phy/phy_link_topology.c:46) libphy
+> [    5.627954] ? _raw_spin_lock (arch/x86/include/asm/atomic.h:115 (discriminator 4) include/linux/atomic/atomic-arch-fallback.h:2170 (discriminator 4) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 4) include/asm-generic/qspinlock.h:111 (discriminator 4) include/linux/spinlock.h:187 (discriminator 4) include/linux/spinlock_api_smp.h:134 (discriminator 4) kernel/locking/spinlock.c:154 (discriminator 4)) 
+> [    5.627963] phy_link_topo_add_phy (include/linux/xarray.h:977 drivers/net/phy/phy_link_topology.c:80) libphy
+> [    5.629462] phy_attach_direct (drivers/net/phy/phy_device.c:1516) libphy
+> [    5.629504] phylink_connect_phy (drivers/net/phy/phylink.c:1983) phylink
+> [    5.631030] ax88772_bind (drivers/net/usb/asix_devices.c:710 drivers/net/usb/asix_devices.c:919) asix
+> [    5.631049] usbnet_probe (drivers/net/usb/usbnet.c:1745) usbnet
 
-Thanks for your time.
-.
+I've run some tests on an arm64 board using an USB to Ethernet adapter
+that uses the same driver (It also goes through ax88772_bind() ) but I
+don't reproduce the error.
 
-> 
-> 
+> If there is any additional information I can provide or patches I can
+> test, I am more than happy to do so.
+
+The next step for me would be to try on an x86_64 box to get closer to
+the config you used, however could you give me the .config that was used
+when the bug was triggered ? I'd like to make sure I didn't miss
+anything related to some of the parts being build as modules for
+example.
+
+Thanks a lot,
+
+Maxime
+
+> Cheers,
+> Nathan
+
 
 
