@@ -1,63 +1,55 @@
-Return-Path: <linux-kernel+bounces-138002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D46489EAFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:37:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CA7B89EAF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:36:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4B81C2152D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:37:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17963282EA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D757B3F8F0;
-	Wed, 10 Apr 2024 06:36:27 +0000 (UTC)
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A0722618;
+	Wed, 10 Apr 2024 06:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Qft2KHiF"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055663F8FB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32531427B;
+	Wed, 10 Apr 2024 06:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712730987; cv=none; b=pNd8/VENSJ1XeLE5KEKXkGyQLY/jYh8as09FatrSfcuYGumOQunqaDIcBAAbOqMBIabIzdxB5B/ZfXcKqUUx80RmM5/uQ8Y9ECdT64GFPEo63bMl1W7uEZj63cpydmqrd5DQigBvUWfj7YZqFyL782+dqkiPqgBQRdjq/OfBfes=
+	t=1712730977; cv=none; b=Bi8Vg9k1HYCs/aZZLh5H9hIeFWY7UpuPwuqfsFZvMOTZGwJp/kD1VDKNJlPThPj5kYXFhWUn6vBKc7JBqiPFg7aXc4oYlFX+Hv9SjWs3trRbmQFzonkzgQvpZHNEXXmTyneQMYRZXCQiGW5L313M2jRSDxS+NcUtMVLmivVulCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712730987; c=relaxed/simple;
-	bh=xs83s6oIEPW4cMhg8wwW1AMRm0+CYAxYP4GtGXNydqk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kXQFquEK4TSrqBwXi2eNwSsV0FjgMW5xT77F0AQW1hgLKoIJCSIx9yApOP/86rumelO8cO02UXcZ399LEDcXWn85CBeqG2qLxlkyHrgcqqc8bzbJfiuVbNw8VAJ6j/MKoFX58WeHclG0qBx7EKOf+pPnHVmk313Tmi7sx3HroG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.254.200.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp86t1712730902t5w2xg72
-X-QQ-Originating-IP: 11WQUV0r5zeVO1AoN22iVtolLSL58diAT6MAVG6NtKQ=
-Received: from HX01040082.powercore.com.cn ( [14.19.197.107])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 10 Apr 2024 14:34:58 +0800 (CST)
-X-QQ-SSF: 01400000000000B09000000A0000000
-X-QQ-FEAT: 5x8Sgf4S6/ibmGyV3WobG9KCGSh3CfJOt5MS70mBYmRNDkCu/CLpXhQakp5Oe
-	foHkHFQ1Xb62EDUYBvSRqWRKlrXc7moIGe8iNUnjxQKslMyV8YQCBcaGCOiKN72aLhnkb9s
-	qNBcKElaSgGw8eK1Nbg9TW54oX0kJKLmJ8SyGcJiZc7LN/WMbDkysH3TowkGKuVqHU6AJf1
-	TYjI62P5c24MuSiQtir9YxixB4NvUopOkYEibXf8t3Lt0uc0GN87tZogJaE3W1IdwghmFxk
-	hhxcKuRf8YDztHPEySvI6UzYdBhu4PwrfPMQ4CCuDkJtK0XQKTnFDDQtDD8ypNIj5YhN0mH
-	9WhpuUyxrla5J1CssyEBPGPLczjMHHJFTsvpxDbDMOwE687rH6VyqHNv4N19U5fyff5++lE
-	P0eZmeeSJvRVNpBLaMYAgGZSpm8ogdtr
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 4090882819559728776
-From: Jinglin Wen <jinglin.wen@shingroup.cn>
-To: palmer@dabbelt.com
-Cc: paul.walmsley@sifive.com,
-	aou@eecs.berkeley.edu,
-	gregkh@linuxfoundation.org,
-	atishp@rivosinc.com,
+	s=arc-20240116; t=1712730977; c=relaxed/simple;
+	bh=Ev47tvx7JfofKBhk6oSCIjZTqrZBBLZvAPDIHTSABL8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pV76STRekTzt75YGpGUK7JAsIikkFmYPjkBhL9JDR6gDZOXMy2bvUUPVWeq5iXHgUqDsqaGDJJ2g6pSiWWAZFdVaXTa60613JkekphAURw6/UTBMTxEvd6ZcOKD/QJNrpI1bf6+DFgnY2GUkzanGOBP/lLZlysEyQQuKuV1vtls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Qft2KHiF; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712730972; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=PvEQZq7/sWs0gwfpV9IvtL45iTzbI63TfJE3CNaP/so=;
+	b=Qft2KHiF32qbuFabGERo7wtzg/Hkf4dqBUzrosC9I6tCmEt/gmovf8i8Sfw0npDkCghBf2NfXPRRwrpC2/kUxeHP7yEj8LRGmADul6Gc+FdseLEvHMSboVwRehx08+s9mcXvutKJKrwlqdvzpzk8YrHNRVoaqXirk6ULv3alSck=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4Gt47I_1712730970;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4Gt47I_1712730970)
+          by smtp.aliyun-inc.com;
+          Wed, 10 Apr 2024 14:36:12 +0800
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Jinglin Wen <jinglin.wen@shingroup.cn>
-Subject: [PATCH 3/3] riscv: Add information for MAINTAINERS
-Date: Wed, 10 Apr 2024 14:34:32 +0800
-Message-Id: <20240410063432.23058-4-jinglin.wen@shingroup.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240410063432.23058-1-jinglin.wen@shingroup.cn>
-References: <20240410063432.23058-1-jinglin.wen@shingroup.cn>
+	tianruidong@linux.alibaba.com
+Subject: [PATCH v2 0/2] ACPICA: AEST: Support AEST V2
+Date: Wed, 10 Apr 2024 14:36:00 +0800
+Message-Id: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
+X-Mailer: git-send-email 2.33.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,35 +57,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-2
 
-Add the description of the RISC-V early console to
-MAINTAINERS.
+AEST V2 was published[1], add V2 support based on AEST V1.
 
-Signed-off-by: Jinglin Wen <jinglin.wen@shingroup.cn>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Fix some code styling issues as well.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa3b947fb080..bdc013ac4e75 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18936,6 +18936,12 @@ F:	arch/riscv/
- N:	riscv
- K:	riscv
- 
-+RISC-V EARLY CONSOLE SUPPORT
-+M:	Jinglin Wen <jinglin.wen@shingroup.cn>
-+S:	Supported
-+F:	arch/riscv/include/asm/early_console.h
-+F:	arch/riscv/kernel/early_console.c
-+
- RISC-V MICROCHIP FPGA SUPPORT
- M:	Conor Dooley <conor.dooley@microchip.com>
- M:	Daire McNamara <daire.mcnamara@microchip.com>
+Change from v1:
+- fix error variable name in struct acpi_aest_node_interface_64k. 
+
+[1]: https://developer.arm.com/documentation/den0085/latest/
+
+Ruidong Tian (2):
+  ACPICA: AEST: Fix coding style at struct definition
+  ACPICA: AEST: Add support for the AEST V2 table
+
+ include/acpi/actbl2.h | 132 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 99 insertions(+), 33 deletions(-)
+
 -- 
-2.25.1
+2.33.1
 
 
