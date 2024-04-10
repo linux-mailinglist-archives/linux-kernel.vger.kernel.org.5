@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-138713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FD689F9A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:14:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD7489F973
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:08:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C63E2B31A34
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:07:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44A4228CD45
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF81178CF4;
-	Wed, 10 Apr 2024 14:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D4117965E;
+	Wed, 10 Apr 2024 14:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="BGd3q1gL"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Bxm8SVkL"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E544416E878
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610EF179206
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712757727; cv=none; b=VsxU3K4feL3iEVgyskOtRV5ncaFi+pk/H1Hft6q9qvzJdMXOIgy6xBM0p6Eenm5AJygyLohKnsNkObONto54HW6SBB6WZdq53xRjE/1sAZbZH1ayQ1WKCUHoWRb2JuuJAw302mITDAYmonQi7pCxQxNQCeDfUNOEI68eKsY8Bf8=
+	t=1712757740; cv=none; b=OMII60e5wQ9ahGGhEZrpZm1cXf02cpKiZHWIrxpkxpcUplAHUvqLknT191TdmJWLzoYyjlVNwwqKEP/JtoiK30ULTsHq0QO4DzjDhGKwgiXMtl09RrGKICjUaEVu/qkOSkERF0AmjTrT9Ca80uL92aDvyj2i6agOIw2faMUVdm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712757727; c=relaxed/simple;
-	bh=KvnLaO2vh9JKCCC44F3x8MRuznqiG8mlc5GYk8UjGJg=;
+	s=arc-20240116; t=1712757740; c=relaxed/simple;
+	bh=rJB6/4cV26EW5syN+P1RUCaw8vdLd265D4NK23+6Ks8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WPmgF7nAQA87E6PRWRR5bPUvU2pPQH4eP4W2Ra+B7phaDjJP/8ynk7d++sTpiVEyBIN8XY4oZOBXP39J0Ee+H+A1aEFGKvuKgGBJIrs4Y3zVtTSZqMMeeGY8jjMsJiOG19yqq57dp5AckOVLawKuk2LuotaZwOSEOvIN3+8GSn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=BGd3q1gL; arc=none smtp.client-ip=209.85.208.170
+	 In-Reply-To:Content-Type; b=Uf8dyeQS4f/IU4GdkzE9LYrhfZNUXZjrrqTEOtHaeh/VPpcOtYeZXQSdCqDJUdNk6oWy0PG2BiXv2U9jOMq2vfxsQ/H/IU0q5pmYBcOlagL7pJHLzU4ArCOT9AiRbCGE/tq1ikRTehRdy8tnRHK7w6SRSi18Flb5pnaIXRSEoAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Bxm8SVkL; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d895138d0eso28892881fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:02:05 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-416c4767ae6so5342175e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712757724; x=1713362524; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712757737; x=1713362537; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=U2BLuV2TaoJubB+i1BbXKPJs9YF+spnADheAPSMmIQo=;
-        b=BGd3q1gL58C1Sgbyp8sRkLt5rnoS1GJiDbAQ2zMUHqTxTl5gzvv8gDGrVGCCLR/fz4
-         NxwjQ0FELDcbIkCpyACsY3afM3J5vkHccw9k4Ja3j9Gp7fni4yPrHMXwrw13Yyk4UzyB
-         VhpS5zW8flhsDRzV0CO12pkHBb+YUyBocd+VHS5TsvScmv17M2ms5spW0zLH+jFf4BOS
-         o7iy+JRUDv6DuUBfUSYr8cP/R8UzOKoBnkREoUQipVpbFOmSfMwzcoAUgPiVcGCZKwLQ
-         ZBSo001KQFaoWGYBvvkTO2FgAVE3Iu++k+wsZ6CqMtaYLiMY2/o8BhomTHFWnBPfb3rO
-         duhg==
+        bh=VMjbesMdn+qtLdaftXdet62uuV9p5A/VNrKt/cHgu0g=;
+        b=Bxm8SVkLt8V36Vy+qPdCoVsGbq9onluD++i9UlC0k2P8w4r/FFGDMPR+ClIR0LkDDl
+         15G4ToDULozD/4YGdYw63Q+nTRwlKR0/n/1rDVP4qphIPOhNbT+zdVOAgL8Of7Y3X5VJ
+         ggE4Kd3s9sTtOs91uYPdcBNi1yWqQF+DEgTXvmUZjbBXC30PF3UvvfcAQdFF7eMtgGGV
+         mbDgI27FZuFdV4w3IOY/brgHrlDYqzE5AmuYcXxnDpNFjGzfmx79Yl2P6gNVXd5W9VQ1
+         xXGURW257FRpiY8gmwgBC79tXJMlFYDzamYePmwxa1IU9Id3GnhHX85b2eggQAukIKMJ
+         c/4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712757724; x=1713362524;
+        d=1e100.net; s=20230601; t=1712757737; x=1713362537;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U2BLuV2TaoJubB+i1BbXKPJs9YF+spnADheAPSMmIQo=;
-        b=l8ZWEJWe1mcE5T3aDVME/dr/RpKtAtRnrpG2B4GIZRJAgFAGdcSNF9TzeSnHyyI3Sg
-         aTnBj2nU9+RwitnX9sciSF8J52cO53k1c/whlw+Zti6ADn+sktHnO/20AYjk7r56Z2XN
-         2hbCIa/SBWGt0RcrwvqenzrOJ2Dzb2Ci9myT2ZYHpKFqS2R8qvQnO4t2db83bb+Lm326
-         C9YorusN1joXjlOruiVpJ9hIWlpxg8xxWkf0oCtzrIg8maDHZFmXbifENPdO+HRcwDw6
-         uBhEugelGDJcqzuWc+piYOgDvl4kT2sjuZHZSzOCNU7LkutvNN4j79qUZeWdNNkzpFMv
-         qmQg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1NH5LVG194y8YfoYo8+hp3wSckwe5Ceo0OxbZ/z7wNu0TNGLfuF1v6jIaviN31uQINlyeL7lvllgSZ+Nsc/q1iU8IP/W9b7gcLS90
-X-Gm-Message-State: AOJu0YyNV9PNDYUNYFXaDqkOaWuYabGT1A1pV3sjdK6wI9TTk+RIziUR
-	uI8yInY/i4sNhYWwei84IMNekZQOcq4L7t5OWGLSklKi7hcrzlVnLSRthG5tbno=
-X-Google-Smtp-Source: AGHT+IHDued1BgxOQepma0f2LhqTqT7GeyNGendravbhe/f3zWxtfonddLPg0YjH5l/Vd7JY0K220Q==
-X-Received: by 2002:a05:651c:19a9:b0:2d8:3fc1:3b20 with SMTP id bx41-20020a05651c19a900b002d83fc13b20mr2155380ljb.31.1712757723799;
-        Wed, 10 Apr 2024 07:02:03 -0700 (PDT)
-Received: from [192.168.1.70] ([84.102.31.74])
-        by smtp.gmail.com with ESMTPSA id g8-20020a05600c310800b00416a6340025sm2350977wmo.6.2024.04.10.07.02.01
+        bh=VMjbesMdn+qtLdaftXdet62uuV9p5A/VNrKt/cHgu0g=;
+        b=sgPexaD5ZUGEWDmcV04J0r3Af+sdT4FGfoN2sydKjzDKAJTV1T5JjUePB4KrV3NcTx
+         95gHPBhCVlClmxFL0he0mGnXuymnQYvqAiIVcsiY9rV85EkN5uWadYOk1WpE4nGidRtF
+         KFOaFhiW3JhY8X9Kg3JjIOFmNA4x/QPuQiQuIX0JcPYYL1avoSnxsTJcPrE6BLEf1AfZ
+         9qXYr4s+3yvtwvCW0WBk6WQvsorBKLB+FeQxvep7dXZI9REf/zo+pNfj8lq1/1JObblX
+         wQ4H/COJb1+7w022HEefqECiStp7IFl/4/3z2d93DXIPeJOYrX+9y27sYOPE7Z8yi0rA
+         Ztgg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOHoVCNU0fKYy4U/mT1rQdquU5tc3Q0pk3obtMrGuHt0vRpDyRs/xwOV3qjkeRY3+5uRH0/V4pVk9beorLf2c2QoCtmYQX42DJUgp9
+X-Gm-Message-State: AOJu0Yyyqry0vdOInd0lL5R2EeI3wZ3ghy3Xk4VCMABrxr9lo5wy1xY8
+	5mZw6euRkpDQkRSjhjDB2gp6oKKu8+9SnnRzDrgblCS3alECMPu8169ycEQ4MMc=
+X-Google-Smtp-Source: AGHT+IHDRsDMr0SXIA1BZFJa3MxdxnnQmiYZftYqYOsfFpe40vWDa1uC6IrsGh3VJIa1HBNRB3jl0Q==
+X-Received: by 2002:a5d:628d:0:b0:343:bccb:dbbb with SMTP id k13-20020a5d628d000000b00343bccbdbbbmr1888712wru.12.1712757736649;
+        Wed, 10 Apr 2024 07:02:16 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id w5-20020a5d5445000000b003439d2a5f99sm13761613wrv.55.2024.04.10.07.02.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 07:02:03 -0700 (PDT)
-Message-ID: <9cb903df-3e83-409a-aa4b-218742804cc6@baylibre.com>
-Date: Wed, 10 Apr 2024 16:02:00 +0200
+        Wed, 10 Apr 2024 07:02:16 -0700 (PDT)
+Message-ID: <50bf4fb6-7ad8-40b7-ad95-c1fc5e292149@baylibre.com>
+Date: Wed, 10 Apr 2024 16:02:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,67 +75,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 3/3] net: ethernet: ti: am65-cpsw: Add minimal
- XDP support
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Ratheesh Kannoth <rkannoth@marvell.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>, danishanwar@ti.com,
- yuehaibing@huawei.com, rogerq@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240223-am65-cpsw-xdp-basic-v8-0-f3421b58da09@baylibre.com>
- <20240223-am65-cpsw-xdp-basic-v8-3-f3421b58da09@baylibre.com>
- <20240409174928.58a7c3f0@kernel.org>
+Subject: Re: [PATCH v4 06/18] ASoC: mediatek: mt8186: Migrate to
+ mtk_soundcard_common_probe
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-7-angelogioacchino.delregno@collabora.com>
 Content-Language: en-US
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240409174928.58a7c3f0@kernel.org>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409113310.303261-7-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/10/24 02:49, Jakub Kicinski wrote:
-> On Mon, 08 Apr 2024 11:38:04 +0200 Julien Panis wrote:
->> +static struct sk_buff *am65_cpsw_alloc_skb(struct am65_cpsw_rx_chn *rx_chn,
->> +					   struct net_device *ndev,
->> +					   unsigned int len,
->> +					   int desc_idx,
->> +					   bool allow_direct)
->> +{
->> +	struct sk_buff *skb;
->> +	struct page *page;
->> +
->> +	page = page_pool_dev_alloc_pages(rx_chn->page_pool);
->> +	if (unlikely(!page))
->> +		return NULL;
->> +
->> +	len += AM65_CPSW_HEADROOM;
->> +
->> +	skb = build_skb(page_address(page), len);
-> You shouldn't build the skb upfront any more. Give the page to the HW,
-> once HW sends you a completion - build the skbs. If build fails
-> (allocation failure) just give the page back to HW. If it succeeds,
-> however, you'll get a skb which is far more likely to be cache hot.
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Not sure I get this point.
+On 09/04/2024 13:32, AngeloGioacchino Del Regno wrote:
+> Add mtk_soundcard_pdata platform data for the MediaTek common sound card
+> probe mechanism, including a driver/soc-specific probe extension (used
+> for bits that cannot be commonized  hence specific to this driver), and
+> change the probe function to mtk_soundcard_common_probe.
+> 
+> This is also adding the possibility of specifying the links and routing
+> with the audio-routing property and (x)-dai-link nodes in device trees
+> to stop hardcoding machine specific links in the card driver assupported
+> by the common probe function, but support for legacy device trees is
+> retained with a legacy_probe function, which is used only in case the
+> new properties are not found.
 
-"Give the page to the HW" = Do you mean that I should dma_map_single()
-a full page (|PAGE_SIZE|) in am65_cpsw_nuss_rx_push() ?
-
-
->
->> +	if (unlikely(!skb)) {
->> +		page_pool_put_full_page(rx_chn->page_pool, page, allow_direct);
->> +		rx_chn->pages[desc_idx] = NULL;
->> +		return NULL;
->> +	}
-
+-- 
+Regards,
+Alexandre
 
