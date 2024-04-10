@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-138016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9524989EB1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:43:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D9D89EB21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:44:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE17FB24879
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:43:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB57D1F2295B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E2940BE0;
-	Wed, 10 Apr 2024 06:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F10F23D3A2;
+	Wed, 10 Apr 2024 06:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZnoOY4Xl"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YNeI3q9r"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447B53F9C5
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B2E3FE58
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712731354; cv=none; b=ac5T8RBzZyf+HQvrqXcEbZnAzDc86zjb4S0JdvxcH+gFbjTSm0w0FP4GUMlEKQsTD6gXZuZXh+U6pkBNZWe2MKe6/kZKNW/VTXxHqbs02OK9NsplOv+HkqwnB4wKzJuWNtg1mR2ZE/19Nj/aqvr/yi34bVtt+zIyOqTSlOFMQO8=
+	t=1712731355; cv=none; b=s1VMv27WBN+68QOy0upPr8fSxFqRKb3pWLpmr+9aOJCw3xqh/STkWFIumOl43lhvJ5a/hmBT0j0Upf9hEpbI089/1x5nKVPH/60f4C18BA2ONQSqBc7mQS3N9NW+uMcGm37dVPu+MUgJTzJqpyXMOW57P++VHI1+3UVeXkZuZdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712731354; c=relaxed/simple;
-	bh=mAnPFVdlaWL/tFApwYeeagh4y1+c8q5INRTVB6MPKOs=;
+	s=arc-20240116; t=1712731355; c=relaxed/simple;
+	bh=e1YUUejiusVat3XMXvqtrs14UAbZ3WoEh7Z0sHyraVo=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=hyVj9J7jFBnX8ibd6jWCwxGoFdVa2HVThIwhLypr/R6FBMtKow49jCmA8MeH2xupNPbk+JSpLVLUOdzXwqzdj+uZjnDujmE0xPa8HGlWmsm/F4dKyfLGuWCWttUv/Dw7nonkOYXgEEcaW60fp3cjyaYuSsX4BnCbCHBYZ61TSf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZnoOY4Xl; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=GaBiYJYerGxo9B9DFj2XuhRAOMKFb9DnriboJh+6nYYMkak89sqHfmsnlMxj455WSIyoWQX4xwQA9vr2JHJZo8Mm0OORbvs/ULMGSE7hW/e3baEcHBYAXBQ0cu+rCyztSJrK8tV9hvOkydpkteywF1H11W1U9hkE+m8d2mNwoKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YNeI3q9r; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6180514a5ffso29682577b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 23:42:31 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6ceade361so10517631276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 23:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712731350; x=1713336150; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712731352; x=1713336152; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LfDRhS4iVAGbl5UNPK+Y2BwcdlYkvyvjTNethl/uYBs=;
-        b=ZnoOY4XlOa760KyxZffeazDvqKPPTRiOyRHiMi3tVQvyawiMXa7F0IwsUgBPqVQU36
-         aay056mPk7WCE0BvF2gtt7BjI8RQ3W/vIZiIT7sYpinmPCA8G+fqV5tjc6AT5ed9vC3Y
-         cNmegPFW9cq0oe5LW17UTZHp6Ina6+Lk00bGZLtdl2o/DaOYNtcm4ygGAkYVX1jlKvif
-         Dbc6u+rodx23qAwTgqw8GTGn+E4dvEDSuoJtXLIso/BdLa5Do3LKJ+BOgVmFtfUFfnK+
-         vSxrT2Nh5qNx8KBKUQa/gpalrbG/SbcydeGuvDY+HUVYGSD8wYuFQvTfqq9WWfwkQcV1
-         H9Eg==
+        bh=5MO1SBzoLVYnp/UnDv3WwObTAHG1l6EeAxtxRfqdEQ8=;
+        b=YNeI3q9rUCW6EjE5sUAKmG1BnOAbP3pZzc9wveppAeQ0txsfByeDt2DeBES/6S2K2s
+         umH56alxLm2nwh1t33YFks5jpQgCmxbUclkzokryC9r7drW8GEypZbbBybWTG1x20nnL
+         TtULmg6yQ4RVN/cYur+ahceaFSy8DwvlHEn37MUQRY0W0RULgcEoLe1QX9VH4GtqADoE
+         sBn97//H2T9qTsf1LkICr3TfqqPyHLxWn0j1mpeNLcLnnByePUwDYN0bOVkYpL4cS1JW
+         D6/exLrltOGvQBu5rCSCh03UZrwFlFns7d+jxFWGzkaW7Ko36pkSV+r/l0BKbg+BdtWn
+         WOYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712731350; x=1713336150;
+        d=1e100.net; s=20230601; t=1712731352; x=1713336152;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LfDRhS4iVAGbl5UNPK+Y2BwcdlYkvyvjTNethl/uYBs=;
-        b=XxP//H7VcmvJ7ZpkM3idsCohKF7cue2XD3EBY2crcM/MlGN8nuKE0V3utSKCAPY/Uk
-         V2ezlQN2WfyEJw224i4S305MAHA7BLBiLnBfq4Yc2pOqpMz1McN2BwVoFiZ2FCcTEH8R
-         Fk/mK2mdGjkQPitNyQzjZ+9n1ACIPTG958KqrK3dTIYlBRSFM0c9gwEYhjm5OoaNKR3+
-         MWLZtiBVNZWZgjdrf4ssCcNWELJKbg+O9YpdoRbVj7pDDuW8094UsgygsISzx4EfPC0Z
-         kS6og+Ej1/RcZH/PS5MQKBJAdVU6fzdQV5X5iPgvPxvIr8PQMFIIH1QKJcmYYLUuJ6+K
-         spLA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1iF1ZdV2tTlZl2xvOQuRj/lqTA5de/uD6CYfCD7rp+1VWZ4aQtO2ULimVniKzFERN9R0IEthVuWFt/AOGSC7BM4Tqh0sDOC0oZC1+
-X-Gm-Message-State: AOJu0Yy0L5ioM6USDaA/E+23gHE63QIYN3XE2Gvu33e1tKu45/kGXqVH
-	SFwhLzxTahT58ybG1Z8F8aAxFCAaTNqbiMaFHtLb62xjqe9o4k31haR269F++rZPsaMXA7P9e2L
-	zkEWFvg==
-X-Google-Smtp-Source: AGHT+IHIQuO6GXANAbFhDK4hK1bML6XNxeMNvLF+7KpKn9WoubdbMQqUEGaJu6Jnq6h9i1d883Pi2AS2t0UL
+        bh=5MO1SBzoLVYnp/UnDv3WwObTAHG1l6EeAxtxRfqdEQ8=;
+        b=covmalI+mkedNiMb0K2Sv/nIidYq5of+540xusndBojo7a7tKk0lBtnMbAWppIVD/B
+         u1BkUezGfHixouHxY7J9UWFe/UudOFIp5Bktqagiuxs4+jYFjYatUpCt5ultZeFlDGj7
+         k37xo3JWM6+1W5Hq/3vpOKHUx3xjn7kuaEbVvNjU5nAH3EwPMVzZsj0Ls5VpEEpOFEcg
+         zKB+DUMtSaCmgrhPVCj+HcgTaS1hlPYOgmqgNc535p4s77zF36B87eG35i9tzF64H7od
+         fZEm+5TDu9mk1bWaX71fNKEUqHTzI+x1PDXfwOT10EPzYqBG8xdhLMMxVXMAIQupajlx
+         mWfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiE0xdCjGgBrPwbYFkdnhX7V4Hl6bKiJJ/G+ZupSTbh0m8mkWYVaXYfHR8dLO/O9LtobTjOR+M7QpH7e29/wWIuPo0N6q2X/clf61D
+X-Gm-Message-State: AOJu0YyQNoakTTqRa92zZoxgSjeCuLg3cDzQ0Q7qPvu5sspLDssLyTmJ
+	BqqKk1XJffW5cUEPuPvEEX2qwJHHrEGOyWgWJefDOlwJa/joRBruhSUDe23hRRA5aX3rhCy4sJt
+	XtvEnWQ==
+X-Google-Smtp-Source: AGHT+IESSBFGm8ITdmnnoU13Ib3pWnEdV2wt3usZSyJMSGoKT4TZi4e1A9BMwuaHwiKdcQIGMfYLG3nnc9As
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:18c5:d9c6:d1d6:a3ec])
- (user=irogers job=sendgmr) by 2002:a0d:cb81:0:b0:618:29dd:b96b with SMTP id
- n123-20020a0dcb81000000b0061829ddb96bmr503841ywd.3.1712731350299; Tue, 09 Apr
- 2024 23:42:30 -0700 (PDT)
-Date: Tue,  9 Apr 2024 23:42:06 -0700
+ (user=irogers job=sendgmr) by 2002:a25:9985:0:b0:dda:eee6:8e52 with SMTP id
+ p5-20020a259985000000b00ddaeee68e52mr554033ybo.7.1712731352532; Tue, 09 Apr
+ 2024 23:42:32 -0700 (PDT)
+Date: Tue,  9 Apr 2024 23:42:07 -0700
 In-Reply-To: <20240410064214.2755936-1-irogers@google.com>
-Message-Id: <20240410064214.2755936-5-irogers@google.com>
+Message-Id: <20240410064214.2755936-6-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240410064214.2755936-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v3 04/12] perf dso: Move dso functions out of dsos
+Subject: [PATCH v3 05/12] perf dsos: Switch more loops to dsos__for_each_dso
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -97,182 +97,421 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Move dso and dso_id functions to dso.c to match the struct
-declarations.
+Switch loops within dsos.c, add a version that isn't locked. Switch
+some unlocked loops to hold the read lock.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/dso.c  | 61 ++++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/dso.h  |  4 +++
- tools/perf/util/dsos.c | 61 ------------------------------------------
- 3 files changed, 65 insertions(+), 61 deletions(-)
+ tools/perf/util/build-id.c |   2 +-
+ tools/perf/util/dsos.c     | 258 ++++++++++++++++++++++++-------------
+ tools/perf/util/dsos.h     |   8 +-
+ tools/perf/util/machine.c  |   8 +-
+ 4 files changed, 174 insertions(+), 102 deletions(-)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 6e2a7198b382..ad562743d769 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1269,6 +1269,67 @@ static void dso__set_long_name_id(struct dso *dso, const char *name, struct dso_
- 		__dsos__findnew_link_by_longname_id(root, dso, NULL, id);
- }
+diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+index a6d3c253f19f..864bc26b6b46 100644
+--- a/tools/perf/util/build-id.c
++++ b/tools/perf/util/build-id.c
+@@ -964,7 +964,7 @@ int perf_session__cache_build_ids(struct perf_session *session)
  
-+static int __dso_id__cmp(struct dso_id *a, struct dso_id *b)
-+{
-+	if (a->maj > b->maj) return -1;
-+	if (a->maj < b->maj) return 1;
-+
-+	if (a->min > b->min) return -1;
-+	if (a->min < b->min) return 1;
-+
-+	if (a->ino > b->ino) return -1;
-+	if (a->ino < b->ino) return 1;
-+
-+	/*
-+	 * Synthesized MMAP events have zero ino_generation, avoid comparing
-+	 * them with MMAP events with actual ino_generation.
-+	 *
-+	 * I found it harmful because the mismatch resulted in a new
-+	 * dso that did not have a build ID whereas the original dso did have a
-+	 * build ID. The build ID was essential because the object was not found
-+	 * otherwise. - Adrian
-+	 */
-+	if (a->ino_generation && b->ino_generation) {
-+		if (a->ino_generation > b->ino_generation) return -1;
-+		if (a->ino_generation < b->ino_generation) return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+bool dso_id__empty(struct dso_id *id)
-+{
-+	if (!id)
-+		return true;
-+
-+	return !id->maj && !id->min && !id->ino && !id->ino_generation;
-+}
-+
-+void dso__inject_id(struct dso *dso, struct dso_id *id)
-+{
-+	dso->id.maj = id->maj;
-+	dso->id.min = id->min;
-+	dso->id.ino = id->ino;
-+	dso->id.ino_generation = id->ino_generation;
-+}
-+
-+int dso_id__cmp(struct dso_id *a, struct dso_id *b)
-+{
-+	/*
-+	 * The second is always dso->id, so zeroes if not set, assume passing
-+	 * NULL for a means a zeroed id
-+	 */
-+	if (dso_id__empty(a) || dso_id__empty(b))
-+		return 0;
-+
-+	return __dso_id__cmp(a, b);
-+}
-+
-+int dso__cmp_id(struct dso *a, struct dso *b)
-+{
-+	return __dso_id__cmp(&a->id, &b->id);
-+}
-+
- void dso__set_long_name(struct dso *dso, const char *name, bool name_allocated)
+ static bool machine__read_build_ids(struct machine *machine, bool with_hits)
  {
- 	dso__set_long_name_id(dso, name, NULL, name_allocated);
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 3d4faad8d5dc..2c295438226d 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -238,6 +238,9 @@ static inline void dso__set_loaded(struct dso *dso)
- 	dso->loaded = true;
+-	return __dsos__read_build_ids(&machine->dsos, with_hits);
++	return dsos__read_build_ids(&machine->dsos, with_hits);
  }
  
-+int dso_id__cmp(struct dso_id *a, struct dso_id *b);
-+bool dso_id__empty(struct dso_id *id);
-+
- struct dso *dso__new_id(const char *name, struct dso_id *id);
- struct dso *dso__new(const char *name);
- void dso__delete(struct dso *dso);
-@@ -245,6 +248,7 @@ void dso__delete(struct dso *dso);
- int dso__cmp_id(struct dso *a, struct dso *b);
- void dso__set_short_name(struct dso *dso, const char *name, bool name_allocated);
- void dso__set_long_name(struct dso *dso, const char *name, bool name_allocated);
-+void dso__inject_id(struct dso *dso, struct dso_id *id);
- 
- int dso__name_len(const struct dso *dso);
- 
+ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits)
 diff --git a/tools/perf/util/dsos.c b/tools/perf/util/dsos.c
-index d43f64939b12..f816927a21ff 100644
+index f816927a21ff..b7fbfb877ae3 100644
 --- a/tools/perf/util/dsos.c
 +++ b/tools/perf/util/dsos.c
-@@ -41,67 +41,6 @@ void dsos__exit(struct dsos *dsos)
+@@ -41,38 +41,65 @@ void dsos__exit(struct dsos *dsos)
  	exit_rwsem(&dsos->lock);
  }
  
--static int __dso_id__cmp(struct dso_id *a, struct dso_id *b)
--{
--	if (a->maj > b->maj) return -1;
--	if (a->maj < b->maj) return 1;
--
--	if (a->min > b->min) return -1;
--	if (a->min < b->min) return 1;
--
--	if (a->ino > b->ino) return -1;
--	if (a->ino < b->ino) return 1;
--
--	/*
--	 * Synthesized MMAP events have zero ino_generation, avoid comparing
--	 * them with MMAP events with actual ino_generation.
--	 *
--	 * I found it harmful because the mismatch resulted in a new
--	 * dso that did not have a build ID whereas the original dso did have a
--	 * build ID. The build ID was essential because the object was not found
--	 * otherwise. - Adrian
--	 */
--	if (a->ino_generation && b->ino_generation) {
--		if (a->ino_generation > b->ino_generation) return -1;
--		if (a->ino_generation < b->ino_generation) return 1;
--	}
--
--	return 0;
--}
--
--static bool dso_id__empty(struct dso_id *id)
--{
--	if (!id)
--		return true;
--
--	return !id->maj && !id->min && !id->ino && !id->ino_generation;
--}
--
--static void dso__inject_id(struct dso *dso, struct dso_id *id)
--{
--	dso->id.maj = id->maj;
--	dso->id.min = id->min;
--	dso->id.ino = id->ino;
--	dso->id.ino_generation = id->ino_generation;
--}
--
--static int dso_id__cmp(struct dso_id *a, struct dso_id *b)
--{
--	/*
--	 * The second is always dso->id, so zeroes if not set, assume passing
--	 * NULL for a means a zeroed id
--	 */
--	if (dso_id__empty(a) || dso_id__empty(b))
--		return 0;
--
--	return __dso_id__cmp(a, b);
--}
--
--int dso__cmp_id(struct dso *a, struct dso *b)
--{
--	return __dso_id__cmp(&a->id, &b->id);
--}
--
- bool __dsos__read_build_ids(struct dsos *dsos, bool with_hits)
+-bool __dsos__read_build_ids(struct dsos *dsos, bool with_hits)
++
++static int __dsos__for_each_dso(struct dsos *dsos,
++				int (*cb)(struct dso *dso, void *data),
++				void *data)
++{
++	struct dso *dso;
++
++	list_for_each_entry(dso, &dsos->head, node) {
++		int err;
++
++		err = cb(dso, data);
++		if (err)
++			return err;
++	}
++	return 0;
++}
++
++struct dsos__read_build_ids_cb_args {
++	bool with_hits;
++	bool have_build_id;
++};
++
++static int dsos__read_build_ids_cb(struct dso *dso, void *data)
  {
- 	struct list_head *head = &dsos->head;
+-	struct list_head *head = &dsos->head;
+-	bool have_build_id = false;
+-	struct dso *pos;
++	struct dsos__read_build_ids_cb_args *args = data;
+ 	struct nscookie nsc;
+ 
+-	list_for_each_entry(pos, head, node) {
+-		if (with_hits && !pos->hit && !dso__is_vdso(pos))
+-			continue;
+-		if (pos->has_build_id) {
+-			have_build_id = true;
+-			continue;
+-		}
+-		nsinfo__mountns_enter(pos->nsinfo, &nsc);
+-		if (filename__read_build_id(pos->long_name, &pos->bid) > 0) {
+-			have_build_id	  = true;
+-			pos->has_build_id = true;
+-		} else if (errno == ENOENT && pos->nsinfo) {
+-			char *new_name = dso__filename_with_chroot(pos, pos->long_name);
+-
+-			if (new_name && filename__read_build_id(new_name,
+-								&pos->bid) > 0) {
+-				have_build_id = true;
+-				pos->has_build_id = true;
+-			}
+-			free(new_name);
++	if (args->with_hits && !dso->hit && !dso__is_vdso(dso))
++		return 0;
++	if (dso->has_build_id) {
++		args->have_build_id = true;
++		return 0;
++	}
++	nsinfo__mountns_enter(dso->nsinfo, &nsc);
++	if (filename__read_build_id(dso->long_name, &dso->bid) > 0) {
++		args->have_build_id = true;
++		dso->has_build_id = true;
++	} else if (errno == ENOENT && dso->nsinfo) {
++		char *new_name = dso__filename_with_chroot(dso, dso->long_name);
++
++		if (new_name && filename__read_build_id(new_name, &dso->bid) > 0) {
++			args->have_build_id = true;
++			dso->has_build_id = true;
+ 		}
+-		nsinfo__mountns_exit(&nsc);
++		free(new_name);
+ 	}
++	nsinfo__mountns_exit(&nsc);
++	return 0;
++}
+ 
+-	return have_build_id;
++bool dsos__read_build_ids(struct dsos *dsos, bool with_hits)
++{
++	struct dsos__read_build_ids_cb_args args = {
++		.with_hits = with_hits,
++		.have_build_id = false,
++	};
++
++	dsos__for_each_dso(dsos, dsos__read_build_ids_cb, &args);
++	return args.have_build_id;
+ }
+ 
+ static int __dso__cmp_long_name(const char *long_name, struct dso_id *id, struct dso *b)
+@@ -105,6 +132,7 @@ struct dso *__dsos__findnew_link_by_longname_id(struct rb_root *root, struct dso
+ 
+ 	if (!name)
+ 		name = dso->long_name;
++
+ 	/*
+ 	 * Find node with the matching name
+ 	 */
+@@ -185,17 +213,40 @@ static struct dso *__dsos__findnew_by_longname_id(struct rb_root *root, const ch
+ 	return __dsos__findnew_link_by_longname_id(root, NULL, name, id);
+ }
+ 
++struct dsos__find_id_cb_args {
++	const char *name;
++	struct dso_id *id;
++	struct dso *res;
++};
++
++static int dsos__find_id_cb(struct dso *dso, void *data)
++{
++	struct dsos__find_id_cb_args *args = data;
++
++	if (__dso__cmp_short_name(args->name, args->id, dso) == 0) {
++		args->res = dso__get(dso);
++		return 1;
++	}
++	return 0;
++
++}
++
+ static struct dso *__dsos__find_id(struct dsos *dsos, const char *name, struct dso_id *id, bool cmp_short)
+ {
+-	struct dso *pos;
++	struct dso *res;
+ 
+ 	if (cmp_short) {
+-		list_for_each_entry(pos, &dsos->head, node)
+-			if (__dso__cmp_short_name(name, id, pos) == 0)
+-				return dso__get(pos);
+-		return NULL;
++		struct dsos__find_id_cb_args args = {
++			.name = name,
++			.id = id,
++			.res = NULL,
++		};
++
++		__dsos__for_each_dso(dsos, dsos__find_id_cb, &args);
++		return args.res;
+ 	}
+-	return __dsos__findnew_by_longname_id(&dsos->root, name, id);
++	res = __dsos__findnew_by_longname_id(&dsos->root, name, id);
++	return res;
+ }
+ 
+ struct dso *dsos__find(struct dsos *dsos, const char *name, bool cmp_short)
+@@ -275,48 +326,74 @@ struct dso *dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id
+ 	return dso;
+ }
+ 
+-size_t __dsos__fprintf_buildid(struct dsos *dsos, FILE *fp,
+-			       bool (skip)(struct dso *dso, int parm), int parm)
+-{
+-	struct list_head *head = &dsos->head;
+-	struct dso *pos;
+-	size_t ret = 0;
++struct dsos__fprintf_buildid_cb_args {
++	FILE *fp;
++	bool (*skip)(struct dso *dso, int parm);
++	int parm;
++	size_t ret;
++};
+ 
+-	list_for_each_entry(pos, head, node) {
+-		char sbuild_id[SBUILD_ID_SIZE];
++static int dsos__fprintf_buildid_cb(struct dso *dso, void *data)
++{
++	struct dsos__fprintf_buildid_cb_args *args = data;
++	char sbuild_id[SBUILD_ID_SIZE];
+ 
+-		if (skip && skip(pos, parm))
+-			continue;
+-		build_id__sprintf(&pos->bid, sbuild_id);
+-		ret += fprintf(fp, "%-40s %s\n", sbuild_id, pos->long_name);
+-	}
+-	return ret;
++	if (args->skip && args->skip(dso, args->parm))
++		return 0;
++	build_id__sprintf(&dso->bid, sbuild_id);
++	args->ret += fprintf(args->fp, "%-40s %s\n", sbuild_id, dso->long_name);
++	return 0;
+ }
+ 
+-size_t __dsos__fprintf(struct dsos *dsos, FILE *fp)
++size_t dsos__fprintf_buildid(struct dsos *dsos, FILE *fp,
++			       bool (*skip)(struct dso *dso, int parm), int parm)
+ {
+-	struct list_head *head = &dsos->head;
+-	struct dso *pos;
+-	size_t ret = 0;
++	struct dsos__fprintf_buildid_cb_args args = {
++		.fp = fp,
++		.skip = skip,
++		.parm = parm,
++		.ret = 0,
++	};
++
++	dsos__for_each_dso(dsos, dsos__fprintf_buildid_cb, &args);
++	return args.ret;
++}
+ 
+-	list_for_each_entry(pos, head, node) {
+-		ret += dso__fprintf(pos, fp);
+-	}
++struct dsos__fprintf_cb_args {
++	FILE *fp;
++	size_t ret;
++};
+ 
+-	return ret;
++static int dsos__fprintf_cb(struct dso *dso, void *data)
++{
++	struct dsos__fprintf_cb_args *args = data;
++
++	args->ret += dso__fprintf(dso, args->fp);
++	return 0;
+ }
+ 
+-int __dsos__hit_all(struct dsos *dsos)
++size_t dsos__fprintf(struct dsos *dsos, FILE *fp)
+ {
+-	struct list_head *head = &dsos->head;
+-	struct dso *pos;
++	struct dsos__fprintf_cb_args args = {
++		.fp = fp,
++		.ret = 0,
++	};
+ 
+-	list_for_each_entry(pos, head, node)
+-		pos->hit = true;
++	dsos__for_each_dso(dsos, dsos__fprintf_cb, &args);
++	return args.ret;
++}
+ 
++static int dsos__hit_all_cb(struct dso *dso, void *data __maybe_unused)
++{
++	dso->hit = true;
+ 	return 0;
+ }
+ 
++int dsos__hit_all(struct dsos *dsos)
++{
++	return dsos__for_each_dso(dsos, dsos__hit_all_cb, NULL);
++}
++
+ struct dso *dsos__findnew_module_dso(struct dsos *dsos,
+ 				     struct machine *machine,
+ 				     struct kmod_path *m,
+@@ -342,49 +419,44 @@ struct dso *dsos__findnew_module_dso(struct dsos *dsos,
+ 	return dso;
+ }
+ 
+-struct dso *dsos__find_kernel_dso(struct dsos *dsos)
++static int dsos__find_kernel_dso_cb(struct dso *dso, void *data)
+ {
+-	struct dso *dso, *res = NULL;
++	struct dso **res = data;
++	/*
++	 * The cpumode passed to is_kernel_module is not the cpumode of *this*
++	 * event. If we insist on passing correct cpumode to is_kernel_module,
++	 * we should record the cpumode when we adding this dso to the linked
++	 * list.
++	 *
++	 * However we don't really need passing correct cpumode.  We know the
++	 * correct cpumode must be kernel mode (if not, we should not link it
++	 * onto kernel_dsos list).
++	 *
++	 * Therefore, we pass PERF_RECORD_MISC_CPUMODE_UNKNOWN.
++	 * is_kernel_module() treats it as a kernel cpumode.
++	 */
++	if (!dso->kernel ||
++	    is_kernel_module(dso->long_name, PERF_RECORD_MISC_CPUMODE_UNKNOWN))
++		return 0;
+ 
+-	down_read(&dsos->lock);
+-	list_for_each_entry(dso, &dsos->head, node) {
+-		/*
+-		 * The cpumode passed to is_kernel_module is not the cpumode of
+-		 * *this* event. If we insist on passing correct cpumode to
+-		 * is_kernel_module, we should record the cpumode when we adding
+-		 * this dso to the linked list.
+-		 *
+-		 * However we don't really need passing correct cpumode.  We
+-		 * know the correct cpumode must be kernel mode (if not, we
+-		 * should not link it onto kernel_dsos list).
+-		 *
+-		 * Therefore, we pass PERF_RECORD_MISC_CPUMODE_UNKNOWN.
+-		 * is_kernel_module() treats it as a kernel cpumode.
+-		 */
+-		if (!dso->kernel ||
+-		    is_kernel_module(dso->long_name,
+-				     PERF_RECORD_MISC_CPUMODE_UNKNOWN))
+-			continue;
++	*res = dso__get(dso);
++	return 1;
++}
+ 
+-		res = dso__get(dso);
+-		break;
+-	}
+-	up_read(&dsos->lock);
++struct dso *dsos__find_kernel_dso(struct dsos *dsos)
++{
++	struct dso *res = NULL;
++
++	dsos__for_each_dso(dsos, dsos__find_kernel_dso_cb, &res);
+ 	return res;
+ }
+ 
+ int dsos__for_each_dso(struct dsos *dsos, int (*cb)(struct dso *dso, void *data), void *data)
+ {
+-	struct dso *dso;
++	int err;
+ 
+ 	down_read(&dsos->lock);
+-	list_for_each_entry(dso, &dsos->head, node) {
+-		int err;
+-
+-		err = cb(dso, data);
+-		if (err)
+-			return err;
+-	}
++	err = __dsos__for_each_dso(dsos, cb, data);
+ 	up_read(&dsos->lock);
+-	return 0;
++	return err;
+ }
+diff --git a/tools/perf/util/dsos.h b/tools/perf/util/dsos.h
+index 317a263f0e37..50bd51523475 100644
+--- a/tools/perf/util/dsos.h
++++ b/tools/perf/util/dsos.h
+@@ -33,16 +33,16 @@ struct dso *dsos__find(struct dsos *dsos, const char *name, bool cmp_short);
+ 
+ struct dso *dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id *id);
+  
+-bool __dsos__read_build_ids(struct dsos *dsos, bool with_hits);
++bool dsos__read_build_ids(struct dsos *dsos, bool with_hits);
+ 
+ struct dso *__dsos__findnew_link_by_longname_id(struct rb_root *root, struct dso *dso,
+ 						const char *name, struct dso_id *id);
+ 
+-size_t __dsos__fprintf_buildid(struct dsos *dsos, FILE *fp,
++size_t dsos__fprintf_buildid(struct dsos *dsos, FILE *fp,
+ 			       bool (skip)(struct dso *dso, int parm), int parm);
+-size_t __dsos__fprintf(struct dsos *dsos, FILE *fp);
++size_t dsos__fprintf(struct dsos *dsos, FILE *fp);
+ 
+-int __dsos__hit_all(struct dsos *dsos);
++int dsos__hit_all(struct dsos *dsos);
+ 
+ struct dso *dsos__findnew_module_dso(struct dsos *dsos, struct machine *machine,
+ 				     struct kmod_path *m, const char *filename);
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 35b32a82bf0d..79225a6a499f 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -853,11 +853,11 @@ static struct map *machine__addnew_module_map(struct machine *machine, u64 start
+ size_t machines__fprintf_dsos(struct machines *machines, FILE *fp)
+ {
+ 	struct rb_node *nd;
+-	size_t ret = __dsos__fprintf(&machines->host.dsos, fp);
++	size_t ret = dsos__fprintf(&machines->host.dsos, fp);
+ 
+ 	for (nd = rb_first_cached(&machines->guests); nd; nd = rb_next(nd)) {
+ 		struct machine *pos = rb_entry(nd, struct machine, rb_node);
+-		ret += __dsos__fprintf(&pos->dsos, fp);
++		ret += dsos__fprintf(&pos->dsos, fp);
+ 	}
+ 
+ 	return ret;
+@@ -866,7 +866,7 @@ size_t machines__fprintf_dsos(struct machines *machines, FILE *fp)
+ size_t machine__fprintf_dsos_buildid(struct machine *m, FILE *fp,
+ 				     bool (skip)(struct dso *dso, int parm), int parm)
+ {
+-	return __dsos__fprintf_buildid(&m->dsos, fp, skip, parm);
++	return dsos__fprintf_buildid(&m->dsos, fp, skip, parm);
+ }
+ 
+ size_t machines__fprintf_dsos_buildid(struct machines *machines, FILE *fp,
+@@ -3232,5 +3232,5 @@ bool machine__is_lock_function(struct machine *machine, u64 addr)
+ 
+ int machine__hit_all_dsos(struct machine *machine)
+ {
+-	return __dsos__hit_all(&machine->dsos);
++	return dsos__hit_all(&machine->dsos);
+ }
 -- 
 2.44.0.478.gd926399ef9-goog
 
