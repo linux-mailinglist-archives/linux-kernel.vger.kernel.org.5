@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-138440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DADD889F151
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:50:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6DA989F154
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:51:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 951142863AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D67BBB236C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A7515E7F8;
-	Wed, 10 Apr 2024 11:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCD515ECCB;
+	Wed, 10 Apr 2024 11:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UMt+PzZ5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hqMCVXwZ"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343FF2837B;
-	Wed, 10 Apr 2024 11:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84D615B118;
+	Wed, 10 Apr 2024 11:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712749745; cv=none; b=IJCrXaF3rX6pzct3xwsO69M+3QShCqq16OT1/XhFh5tUFP2Qnu7XsKNBQocq4p2yzRxAfjCrSc+WjF00QXUtX34KEKwzmspjjtDrxgaVSlEETtsrVAUhkihdTJyfsAmUpAS/LO6nCewIpAhKwCKmQBU3dAqCuBN/IUk2hKcjSrI=
+	t=1712749752; cv=none; b=K4rm22i3WnjDsb7FuuwT96xw2Ysq+1ZLm/oG2H5Cub+XZn+HujzV6waszOcmlzzc9vd/XhphsOXak8k7dwI2m90ODmGW3N64ocZQKi8Wlo7efoUchUwxGapQsB0pF7JrKy3av1ULrovjLDFV3fx1s0SizD8Tbdu/nD4g2mFFUuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712749745; c=relaxed/simple;
-	bh=uUU6Aeoh21pgVprRQuKox95GRqR5aTWn9mMsl4N1jcQ=;
+	s=arc-20240116; t=1712749752; c=relaxed/simple;
+	bh=lrwNQNbX+WXy0lfMMpmVqKt2xS86UNsIcJDE0QsIpSg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ided5zd4d2wwtOZmSPsUlvJ74nAX3IPkWKQpieY9K7iV12ZoABz5qmuGo4vZXmhf9Y6to+oAiZGI9SK6PTPbSY6WiXarPXscwmz7OEHo0TjduJA8tt59Y9RyyeyoGUlXxzZesCS8BxAYG9eWIGhYenbV6xZ6UoNAkZ10S8xlPgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UMt+PzZ5; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=Ft1OMIMUHL69OicyelnY5GqN1y2Yk0oy/veS53IDicwuSNRu6aXE6SL7pcgHHZBnAXL4pHOskGcFtQZ7aaz5oqsmKS2iC1nkz5bpHonEnQF219SvHRDtzASDWVotQQWgsdZS96iy4CryGS4wYSlmTO2mOC9vAjJwFH8B38dsR5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hqMCVXwZ; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712749745; x=1744285745;
+  t=1712749751; x=1744285751;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uUU6Aeoh21pgVprRQuKox95GRqR5aTWn9mMsl4N1jcQ=;
-  b=UMt+PzZ5Yg92347IskMfWqSv/DmNElkJmWp+eI8jgKu8+Tkvdo+ycQao
-   jDDIRXRwN1uunQFL/Jv9fP8OjvQkBbP2UOJHqHRcETwNoEUJVG0Uu3EQS
-   rfnP39PUWJ+U8Y92mO4lkLDyOc7M0DMXiT4bNJ6du6Ds9jZCGrnLADC1Q
-   KI0b6c+59q3bHxAl7ALe/h4yx6keo2ytBBWcek40yW3lAy8if27lWNK3j
-   dcutxVTHFwJVN60oKXRq7qfDERUMgYhQjr0b7lnsFVb0Bk4mkvB4UOKWm
-   RTKEuuI3jVDjNS/4l8mzBuWKUIU5NApYUdK+QEbAUTO0a07stdofokq+f
-   Q==;
-X-CSE-ConnectionGUID: p2BVQlLsRyOmL0+m8Cozzw==
-X-CSE-MsgGUID: ZeRtggcRRbeT8Gw9f/LRdg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11944126"
+  bh=lrwNQNbX+WXy0lfMMpmVqKt2xS86UNsIcJDE0QsIpSg=;
+  b=hqMCVXwZ2uY+bZAj684qoED1ViXgU2UUD+Q4FC1810hMzFsQXrrH1qbl
+   4VNlTvpxRwbhx1PewaabYRYIsP48Jdoib4/4LOHaM1E4p/4VDf9feScK6
+   3hdlXpNInKbeBT9Rnw6MkrPlKCipAxiZBg1MO6S+hRKJ5CNO0Nsr5lG76
+   Y087cG3Rlmf86e+bzbyLZuMQ5ByMggUlzg8EIgHhjFh5Pqu52aicvLsUy
+   slAZJy6uWWxzwe8DgQFFmp4eJ8UimURTRxSh+P07gVmpQzKwgr+7Wodbf
+   tK8+zP+yLHKi1NUsXM6q1WGLB3vFFUy2NzXK/PasqmA5m6nxNJU/pMF5O
+   A==;
+X-CSE-ConnectionGUID: 2q7NO7ZzSK6WS41cJ0U5lw==
+X-CSE-MsgGUID: eRpzKH5ZRMu5wJS94N0ndw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11944134"
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11944126"
+   d="scan'208";a="11944134"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:49:04 -0700
-X-CSE-ConnectionGUID: 2sd2LHP7T+edIE8vXy0AsQ==
-X-CSE-MsgGUID: Ny+GLE0lSNe4FDyWiFPTxw==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:49:10 -0700
+X-CSE-ConnectionGUID: CPy+j/t/T/aJT9389dDQcA==
+X-CSE-MsgGUID: 7d+OO9KrQT21fLhg+OKhiw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="43769255"
+   d="scan'208";a="43769266"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmviesa002.fm.intel.com with ESMTP; 10 Apr 2024 04:48:56 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 10 Apr 2024 04:49:03 -0700
 From: lakshmi.sowjanya.d@intel.com
 To: tglx@linutronix.de,
 	jstultz@google.com,
@@ -83,9 +83,9 @@ Cc: x86@kernel.org,
 	subramanian.mohan@intel.com,
 	thejesh.reddy.t.r@intel.com,
 	lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v6 04/11] stmmac: intel: remove convert_art_to_tsc()
-Date: Wed, 10 Apr 2024 17:18:21 +0530
-Message-Id: <20240410114828.25581-5-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v6 05/11] ALSA: hda: remove convert_art_to_tsc()
+Date: Wed, 10 Apr 2024 17:18:22 +0530
+Message-Id: <20240410114828.25581-6-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240410114828.25581-1-lakshmi.sowjanya.d@intel.com>
 References: <20240410114828.25581-1-lakshmi.sowjanya.d@intel.com>
@@ -105,26 +105,23 @@ clocksource ID as input to get_device_system_crosststamp().
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 3 ++-
+ sound/pci/hda/hda_controller.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 60283543ffc8..e73fa34237d3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -390,10 +390,11 @@ static int intel_crosststamp(ktime_t *device,
- 		*device = ns_to_ktime(ptp_time);
- 		read_unlock_irqrestore(&priv->ptp_lock, flags);
- 		get_arttime(priv->mii, intel_priv->mdio_adhoc_addr, &art_time);
--		*system = convert_art_to_tsc(art_time);
-+		system->cycles = art_time;
- 	}
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 206306a0eb82..6f648fae7a7b 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -463,7 +463,8 @@ static int azx_get_sync_time(ktime_t *device,
+ 	*device = ktime_add_ns(*device, (wallclk_cycles * NSEC_PER_SEC) /
+ 			       ((HDA_MAX_CYCLE_VALUE + 1) * runtime->rate));
  
- 	system->cycles *= intel_priv->crossts_adj;
+-	*system = convert_art_to_tsc(tsc_counter);
++	system->cycles = tsc_counter;
 +	system->cs_id = CSID_X86_ART;
- 	priv->plat->flags &= ~STMMAC_FLAG_INT_SNAPSHOT_EN;
  
  	return 0;
+ }
 -- 
 2.35.3
 
