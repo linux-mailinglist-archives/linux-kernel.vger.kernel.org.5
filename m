@@ -1,111 +1,104 @@
-Return-Path: <linux-kernel+bounces-137979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E213689EABC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:21:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC15589EAC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:23:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65320B22E3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:21:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AE45B23063
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C796A29CE5;
-	Wed, 10 Apr 2024 06:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3526228399;
+	Wed, 10 Apr 2024 06:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vF+OcpfN"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Chnr7IK4"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E8F28374
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FFE20304;
+	Wed, 10 Apr 2024 06:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712730096; cv=none; b=K6dq8X4lFPu0mVPclQB1Z13BcGgPCjNs/HH6Ic8hy3d60ZPCFKJe5RT186qrnQJH2tlSdQFYTxj9Cy/22b1W1LryMe9Hvnnog2w/IWjUSXupEZYc1L6dM/PDLC3M76OvBALp675HaqWY1odfHstUx1Ogwa3lFhHpHpDtRn8mQ4U=
+	t=1712730197; cv=none; b=Han6ef+ZI0i04sOqUB5cPuBU0maFnxmmYQqaJRj0wmGaNH15sPrR8nxuM7d+k1NH0VailHB5jO39pklfdXBm3Yxc0etTf5RCRBX+8QGYo3qTzZFmnDv21msj70hI/7ZmuQBMyY3piUlQTM+nXuHNxVSrxRCnVKIbxrVQfb6mxBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712730096; c=relaxed/simple;
-	bh=v4e8o14myh7wf61QZuVMQrKqTrmnQbZDF24k8mFtbYQ=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=mKECQv0gv896h+sHYaMg4mohrH6wMlk+URiS+SeaTx54E5E5A2DfZRPAgKkdBw9dbZSRkMZMB9HIGVq95KcHSvX7oismu6MIlK4yPv3k68MG82I4RCeORjf3r+7jWa5JzIYvSUVxUX64rvNfUVG0MorYlV6GHjkiGSPhkcjPJB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vF+OcpfN; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d6fd3cfaa6so79524741fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 23:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712730092; x=1713334892; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HaLNjF69LAH3JwIuB5L2Epv4qMXG9JbH2p/HGQZ2ao8=;
-        b=vF+OcpfN38JdMY8SWvVQEakK4CQ88voseQEzTHnyq2l7b4+y6wMVPSrm+WM2QeJM0k
-         hIsoW48DZyOpsujh/zG3O7JwVP6po8OzCiRfe+aDdVahHXHGmmnEDG3N4gGT9wMBHUc7
-         RVNc9ZF2VE9Mi/oY6cUCiZpEolGpHRP4qGf+exZr1Ds22rz/PG7R3Ytm4Ir0wgKWbZOu
-         dz1UUm8NKztaahyQ6ZCJOekhX1y4ygt5hTDIqGOM3dSxHUfrYHhHMfMwURpHsf0yMVrv
-         v1ko81Tkn6c3iqO42k6Zxiab/l8w/7u2bqD5jbUWqOtGtgmUror8otUHwBu2zonhqO/T
-         y22A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712730092; x=1713334892;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HaLNjF69LAH3JwIuB5L2Epv4qMXG9JbH2p/HGQZ2ao8=;
-        b=vtUcudvm5nP2uFugOSex5ko4UazGnUovutuyaptra3LVIpKhKJriv4orUfypb/RmN6
-         CQB7hjh2AuuV91eMNXX/mfj6RaXq9iQtmjbCN+zReYCpV93E57S1eAIkChAjB1oEHVpZ
-         TyUMCceBZCtkHZ7w3Y4XH+exspeQqhee/iDC8pnYEQycrcKa847rNEp5SEZnL3q5Njhr
-         fdRYJQfVIVzWclBCYh7jzV6ZAsIE5ukN29i/D1+KrAA4buy/JJMNSegCofJFgX+W9/fg
-         Akwn8XZ90K4QwMVTxZQfpUAyj9eazIjBy6fX21h7+FoxN/NkZ/EG3sgHU9Y8dYIiswdP
-         v4mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBjIodWkgloeiZL231whOMwnTU8n7B2htRFXOCFRZIQmMjWL3C/B2tOwULKQq+P2Tt5non9rSDFi+ngCCvCDUd1c6o8mVZcLswTMAP
-X-Gm-Message-State: AOJu0YyU3Yi6wRb2l6uFeY9EyezgM1FXEgRs+aKLlNb4c1LyYgnZ44nq
-	lV3NXwKSHUQSUzB2socJ17oeADipUc46u7Q5A1jnBuaRktqzALW7yscgdyzFuas=
-X-Google-Smtp-Source: AGHT+IGkWQid6R5S/wUjG4+J87Xg+G2EL2/Pxg8AVQEkeKGXBH35sE4CI3h7dddtFSUPD3GVzb/Rrg==
-X-Received: by 2002:a05:651c:10a4:b0:2d8:1267:320e with SMTP id k4-20020a05651c10a400b002d81267320emr1128115ljn.5.1712730092442;
-        Tue, 09 Apr 2024 23:21:32 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id m28-20020adfa3dc000000b003435e1c0b78sm13179938wrb.28.2024.04.09.23.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 23:21:31 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: =?utf-8?q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>, 
- Tony Lindgren <tony@atomide.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240208105146.128645-2-krzysztof.kozlowski@linaro.org>
-References: <20240208105146.128645-1-krzysztof.kozlowski@linaro.org>
- <20240208105146.128645-2-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 2/2] ARM: dts: ti: omap: minor whitespace
- cleanup
-Message-Id: <171273009074.5833.11343122189258141028.b4-ty@linaro.org>
-Date: Wed, 10 Apr 2024 08:21:30 +0200
+	s=arc-20240116; t=1712730197; c=relaxed/simple;
+	bh=tcmTB/yqTm0azekw8XuAVwpuhHRZ7bX8pdPX3I4AKCA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=p7XU2+xHE4zl6pb1xiIE8AR/60ofKq81emAeo55B/mOCbE6imO7MVNwGzpXGGXDEdg+jYP4qSeJBzJPixlGYbfsWo92mRPOcUpnYPUo3NUXIKPkef+/V7mrp/b91k/K+gph2msDYqk4wIYnWYo1M4k1PiYuhVv9fzPiQJSK8bok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Chnr7IK4; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0DA0120003;
+	Wed, 10 Apr 2024 06:23:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712730192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C56Ut6AwxxgRCtKAR2dRDxFR3VgYxqC56KrmxNaKKpk=;
+	b=Chnr7IK4+kllupfl7AHpVPsMSnPrf78TSiya9/6gf/9kgwr3JvG4+GD0YGvC9oXV2XYO7s
+	ii01PbfYbs+MWzHDkHo5G3QzprIYqqxnyeavEn6uwGg098mlCn3ppcx1XnzduLyMHQdwPz
+	aNavdha0P/zIFf/idKL/RyDetAfsH3n+YM8rLIZmAGCFJ2bY368sDyPWZT/nZ9oNe08Ib3
+	hxvxxKw9kSGrAC8SqtxNu/WQKXlkDCRj4WgRbBA7j5WAAAdVEjgZp8X96JksJ7XzNyYklX
+	BjfN6mFprTaeyNVJPgHjKLTn6VJccTpSXUSpkT3HeUyWBYsMlltcSfNbznJ5QA==
+From: michael.opdenacker@bootlin.com
+To: Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Inochi Amaoto <inochiama@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Chao Wei <chao.wei@sophgo.com>
+Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: riscv: add Milk-V Duo S board compatibles
+Date: Wed, 10 Apr 2024 08:22:53 +0200
+Message-Id: <20240410062254.2955647-2-michael.opdenacker@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240410062254.2955647-1-michael.opdenacker@bootlin.com>
+References: <20240410062254.2955647-1-michael.opdenacker@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: michael.opdenacker@bootlin.com
 
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
 
-On Thu, 08 Feb 2024 11:51:46 +0100, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before '{'
-> character.
-> 
-> 
+Document the compatible strings for the Milk-V Duo S board[1] which uses
+the SOPHGO SG2000 SoC, compatible with the SOPHGO CV1800B SoC[2].
 
-Applied, thanks!
+Link: https://milkv.io/duo-s [1]
+Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
 
-[2/2] ARM: dts: ti: omap: minor whitespace cleanup
-      https://git.kernel.org/krzk/linux-dt/c/71413bcb66e018e54afec47a9ce1199130d6fa38
+Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+---
+ Documentation/devicetree/bindings/riscv/sophgo.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Best regards,
+diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+index 9bc813dad098..1837bc550056 100644
+--- a/Documentation/devicetree/bindings/riscv/sophgo.yaml
++++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+@@ -21,6 +21,7 @@ properties:
+       - items:
+           - enum:
+               - milkv,duo
++              - milkv,duos
+           - const: sophgo,cv1800b
+       - items:
+           - enum:
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+2.34.1
 
 
