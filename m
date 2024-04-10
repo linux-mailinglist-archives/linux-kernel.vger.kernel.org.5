@@ -1,72 +1,91 @@
-Return-Path: <linux-kernel+bounces-137888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51BB289E8F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:36:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F3D789E8EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74C871C22C1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:36:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A2C286E1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E8F1CA80;
-	Wed, 10 Apr 2024 04:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFBCD515;
+	Wed, 10 Apr 2024 04:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TErnlSW2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="R7ohwTgC"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1FEBA2B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D48E7460
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712723730; cv=none; b=TZPuK1AVRxSKyz3MwKGZSpjlRu4MC+mgKRbZtn1chweXAERzzzXlpe1CzCICV20nfuJyclm7ygGNL0DVLJAEaRgUXJKPnmSo8HIpFdmlFySmTbbbACuhBtckM+LrVgDMthZoG3OvXR+NPZbroQoq8/GGUFdc+eWwqu9A5I20uQI=
+	t=1712723687; cv=none; b=namMnNe0exLbKcTCajx/ON8Ng5Hn2u+z599AFJrrARD7V6TaLNk8pyLgmnedNl/HU/X6UK7KLj8OB/LUkdckGG2Ki9zoZlyUv0QHhnx0OOZobbcC/1o1fMnv/pPnMNdGMRmIoLz6UkkSgUuTbwfr+MUXEsRL+JXYghinQOch6GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712723730; c=relaxed/simple;
-	bh=sDnn+yYCBm7ElRQy1ycc5UvcLwyRTYy3YNE8uqqDjiU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q7UmX1V+HcaK7Xmsg1GK5Do91DyH/jVKsu1kEUmoAnjZX508AOxLlYZL86pUMS5/PYds3/CJADU47bcKNG5n6eL8w0nzSkVxvj8kQHDzrYQBQ5DITAP6am8c7WrTW6eIIDR5mvfUGzMM2vxUtObEOx3GvcVbTM3A2/DnDrAC3fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TErnlSW2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712723727;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5YBPkm0MVsrY4P8NrGpgwej+RiZZMRPoIxqpdijnhXw=;
-	b=TErnlSW2f0Oc9yiz/wnhFWoQ+8oi/FQAHZF5R+pB28ts9a+1PFGCKyza0MPwuVuxssIlxG
-	bzldCy+DsQY0UoSNisngTAtahu1cyTBMybNTFJ8up4TqZ35JrNgb9DdL30AMyEovR+GevK
-	eqJAL/T8dS6yNvN/hkzVoI/NOJGfnSY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-588-X0r9GjBfMNO4VACzome34A-1; Wed,
- 10 Apr 2024 00:35:22 -0400
-X-MC-Unique: X0r9GjBfMNO4VACzome34A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60CDF3C025C3;
-	Wed, 10 Apr 2024 04:35:22 +0000 (UTC)
-Received: from server.redhat.com (unknown [10.72.112.217])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6BF15490F9;
-	Wed, 10 Apr 2024 04:35:19 +0000 (UTC)
-From: Cindy Lu <lulu@redhat.com>
-To: lulu@redhat.com,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	kvm@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] virtio-pci: Fix the crash that the vector was used after released.
-Date: Wed, 10 Apr 2024 12:33:15 +0800
-Message-ID: <20240410043450.416752-2-lulu@redhat.com>
-In-Reply-To: <20240410043450.416752-1-lulu@redhat.com>
-References: <20240410043450.416752-1-lulu@redhat.com>
+	s=arc-20240116; t=1712723687; c=relaxed/simple;
+	bh=EwGSVi8tsIBhQGwWzz1I/qZviamVBkcZz6+GbYrdYmk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ViCTaijU22Cpd6JSfGrlqrTRK60reChfeysqMjNvSzwxkQtBOI6CZvchUc5I5tkaYwsTg7n5dD2A3movh+Bw7UaGjy5MbTSkDU/aAF2JxqFWcb28RaL3RD4bijR45EW7pgQidNbtE9FDZs4oVWsFtqwSicSXGeBVP8ybsEekU7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=R7ohwTgC; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netflix.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36a205e0f16so12294455ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 21:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netflix.com; s=google; t=1712723685; x=1713328485; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a/JPFUxV2ArWkhwNnn1v7zuWOs9XoBJjsryMcg9Mcoo=;
+        b=R7ohwTgCEg/QJQ8V7LMvmWQTuOLEBRgNpllbR4GDO7T5CaJMfUeK1/41c+FR32Ivxk
+         juiY1IZ6qPKDSLRYoJevxJ1JW4nzviRSSvvTm4TB34B7jlttE0qKamwkN3pxslxyHkvk
+         yj3gxdGRW6qRJLin03IKxXtVt/rxHDow0Tsv8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712723685; x=1713328485;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a/JPFUxV2ArWkhwNnn1v7zuWOs9XoBJjsryMcg9Mcoo=;
+        b=PSfyrYn5rhuJ4ib7X38fDDy6tgLRDgA4R/wbtpYZlppI9MI2Y2/AI7TmCY4Kk00q7f
+         NZ6jyWNPoGwcGHOoULmKuB3RYtVTiJPumCxj4NHa84oTQqwpsjg21gMnDbYu3J2408JA
+         8ipdPcVE4nC/+pvYsgEONtscPHmYf8MivMY9b9H7WRg3Pur+eF+3xfef30AawvJ9n6zL
+         jFAh4run15zZCa69XK+zNTBXuGgp/c6TxaCveluJB70qXi7rvO5pMDAwGDcUEk535PIq
+         5Zmkj6H5T/QSFHP3nCCvMIYcXPdKt8s9I7OQ5hsiHVYKW7/OUWo4dX6xdncYcKNr8o2y
+         IU6w==
+X-Gm-Message-State: AOJu0YxLQlBHJzHoPydqQtUR9gCeVmGC3CSi53xrK+paIB/KQfYwmbgn
+	+fxVKmUdrCdtBwtokXp9M3CKePW+iudhGGPRGS68GVeq9Lp78TBKuLa2JWmMOG4=
+X-Google-Smtp-Source: AGHT+IFILeN96Xd9wtsGDWKumJLAOJAbRVY+isMe2Tofq8xMm3T+C68RphVpIWdR/vNbrvujRnChCQ==
+X-Received: by 2002:a05:6e02:1607:b0:369:ed5b:dd56 with SMTP id t7-20020a056e02160700b00369ed5bdd56mr2350659ilu.17.1712723685172;
+        Tue, 09 Apr 2024 21:34:45 -0700 (PDT)
+Received: from localhost ([2601:285:8700:8f20:fa81:e682:614d:196f])
+        by smtp.gmail.com with UTF8SMTPSA id hb2-20020a0566386c0200b0048290482c7bsm2023528jab.54.2024.04.09.21.34.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 21:34:44 -0700 (PDT)
+From: Jose Fernandez <josef@netflix.com>
+To: Harry Wentland <harry.wentland@amd.com>,
+	Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Wenjing Liu <wenjing.liu@amd.com>,
+	Alan Liu <haoping.liu@amd.com>,
+	George Shen <george.shen@amd.com>,
+	Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+	Ilya Bakoulin <ilya.bakoulin@amd.com>,
+	Nasir Osman <nasir.osman@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Fangzhi Zuo <jerry.zuo@amd.com>,
+	Leo Ma <hanghong.ma@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org,
+	Jose Fernandez <josef@netflix.com>
+Subject: [PATCH] drm/amd/display: Fix division by zero in setup_dsc_config
+Date: Tue,  9 Apr 2024 22:34:33 -0600
+Message-Id: <20240410043433.12854-1-josef@netflix.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,142 +93,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-When the guest triggers vhost_stop and then virtio_reset, the vector will the
-IRQFD for this vector will be released and change to VIRTIO_NO_VECTOR.
-After that, the guest called vhost_net_start,  (at this time, the configure
-vector is still VIRTIO_NO_VECTOR),  vector 0 still was not "init".
-The guest system continued to boot, set the vector back to 0, and then met the crash.
+When slice_height is 0, the division by slice_height in the calculation
+of the number of slices will cause a division by zero driver crash. This
+leaves the kernel in a state that requires a reboot. This patch adds a
+check to avoid the division by zero.
 
-To fix this, we need to call the function "kvm_virtio_pci_vector_use_one()"
-when the vector changes back from VIRTIO_NO_VECTOR
+The stack trace below is for the 6.8.4 Kernel. I reproduced the issue on
+a Z16 Gen 2 Lenovo Thinkpad with a Apple Studio Display monitor
+connected via Thunderbolt. The amdgpu driver crashed with this exception
+when I rebooted the system with the monitor connected.
 
-(gdb) bt
-0  __pthread_kill_implementation (threadid=<optimized out>, signo=signo@entry=6, no_tid=no_tid@entry=0)
-    at pthread_kill.c:44
-1  0x00007fc87148ec53 in __pthread_kill_internal (signo=6, threadid=<optimized out>) at pthread_kill.c:78
-2  0x00007fc87143e956 in __GI_raise (sig=sig@entry=6) at ../sysdeps/posix/raise.c:26
-3  0x00007fc8714287f4 in __GI_abort () at abort.c:79
-4  0x00007fc87142871b in __assert_fail_base
-    (fmt=0x7fc8715bbde0 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x5606413efd53 "ret == 0", file=0x5606413ef87d "../accel/kvm/kvm-all.c", line=1837, function=<optimized out>) at assert.c:92
-5  0x00007fc871437536 in __GI___assert_fail
-    (assertion=0x5606413efd53 "ret == 0", file=0x5606413ef87d "../accel/kvm/kvm-all.c", line=1837, function=0x5606413f06f0 <__PRETTY_FUNCTION__.19> "kvm_irqchip_commit_routes") at assert.c:101
-6  0x0000560640f884b5 in kvm_irqchip_commit_routes (s=0x560642cae1f0) at ../accel/kvm/kvm-all.c:1837
-7  0x0000560640c98f8e in virtio_pci_one_vector_unmask
-    (proxy=0x560643c65f00, queue_no=4294967295, vector=0, msg=..., n=0x560643c6e4c8)
-    at ../hw/virtio/virtio-pci.c:1005
-8  0x0000560640c99201 in virtio_pci_vector_unmask (dev=0x560643c65f00, vector=0, msg=...)
-    at ../hw/virtio/virtio-pci.c:1070
-9  0x0000560640bc402e in msix_fire_vector_notifier (dev=0x560643c65f00, vector=0, is_masked=false)
-    at ../hw/pci/msix.c:120
-10 0x0000560640bc40f1 in msix_handle_mask_update (dev=0x560643c65f00, vector=0, was_masked=true)
-    at ../hw/pci/msix.c:140
-11 0x0000560640bc4503 in msix_table_mmio_write (opaque=0x560643c65f00, addr=12, val=0, size=4)
-    at ../hw/pci/msix.c:231
-12 0x0000560640f26d83 in memory_region_write_accessor
-    (mr=0x560643c66540, addr=12, value=0x7fc86b7bc628, size=4, shift=0, mask=4294967295, attrs=...)
-    at ../system/memory.c:497
-13 0x0000560640f270a6 in access_with_adjusted_size
+kernel: ? die (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:434 arch/x86/kernel/dumpstack.c:447)
+kernel: ? do_trap (arch/x86/kernel/traps.c:113 arch/x86/kernel/traps.c:154)
+kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
+kernel: ? do_error_trap (./arch/x86/include/asm/traps.h:58 arch/x86/kernel/traps.c:175)
+kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
+kernel: ? exc_divide_error (arch/x86/kernel/traps.c:194 (discriminator 2))
+kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
+kernel: ? asm_exc_divide_error (./arch/x86/include/asm/idtentry.h:548)
+kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
+kernel: dc_dsc_compute_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1109) amdgpu
 
-     (addr=12, value=0x7fc86b7bc628, size=4, access_size_min=1, access_size_max=4, access_fn=0x560640f26c8d <memory_region_write_accessor>, mr=0x560643c66540, attrs=...) at ../system/memory.c:573
-14 0x0000560640f2a2b5 in memory_region_dispatch_write (mr=0x560643c66540, addr=12, data=0, op=MO_32, attrs=...)
-    at ../system/memory.c:1521
-15 0x0000560640f37bac in flatview_write_continue
-    (fv=0x7fc65805e0b0, addr=4273803276, attrs=..., ptr=0x7fc871e9c028, len=4, addr1=12, l=4, mr=0x560643c66540)
-    at ../system/physmem.c:2714
-16 0x0000560640f37d0f in flatview_write
-    (fv=0x7fc65805e0b0, addr=4273803276, attrs=..., buf=0x7fc871e9c028, len=4) at ../system/physmem.c:2756
-17 0x0000560640f380bf in address_space_write
-    (as=0x560642161ae0 <address_space_memory>, addr=4273803276, attrs=..., buf=0x7fc871e9c028, len=4)
-    at ../system/physmem.c:2863
-18 0x0000560640f3812c in address_space_rw
-    (as=0x560642161ae0 <address_space_memory>, addr=4273803276, attrs=..., buf=0x7fc871e9c028, len=4, is_write=true) at ../system/physmem.c:2873
---Type <RET> for more, q to quit, c to continue without paging--
-19 0x0000560640f8aa55 in kvm_cpu_exec (cpu=0x560642f205e0) at ../accel/kvm/kvm-all.c:2915
-20 0x0000560640f8d731 in kvm_vcpu_thread_fn (arg=0x560642f205e0) at ../accel/kvm/kvm-accel-ops.c:51
-21 0x00005606411949f4 in qemu_thread_start (args=0x560642f292b0) at ../util/qemu-thread-posix.c:541
-22 0x00007fc87148cdcd in start_thread (arg=<optimized out>) at pthread_create.c:442
-23 0x00007fc871512630 in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:81
-(gdb)
-Signed-off-by: Cindy Lu <lulu@redhat.com>
+After applying this patch, the driver no longer crashes when the monitor
+is connected and the system is rebooted. I believe this is the same
+issue reported for 3113.
+
+Signed-off-by: Jose Fernandez <josef@netflix.com>
+Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3113
 ---
- hw/virtio/virtio-pci.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/hw/virtio/virtio-pci.c b/hw/virtio/virtio-pci.c
-index 1a7039fb0c..344f4fb844 100644
---- a/hw/virtio/virtio-pci.c
-+++ b/hw/virtio/virtio-pci.c
-@@ -880,6 +880,7 @@ static int kvm_virtio_pci_vector_use_one(VirtIOPCIProxy *proxy, int queue_no)
-     int ret;
-     EventNotifier *n;
-     PCIDevice *dev = &proxy->pci_dev;
-+    VirtIOIRQFD *irqfd;
-     VirtIODevice *vdev = virtio_bus_get_device(&proxy->bus);
-     VirtioDeviceClass *k = VIRTIO_DEVICE_GET_CLASS(vdev);
+diff --git a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
+index ac41f9c0a283..597d5425d6cb 100644
+--- a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
++++ b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
+@@ -1055,7 +1055,12 @@ static bool setup_dsc_config(
+ 	if (!is_dsc_possible)
+ 		goto done;
  
-@@ -890,10 +891,19 @@ static int kvm_virtio_pci_vector_use_one(VirtIOPCIProxy *proxy, int queue_no)
-     if (vector >= msix_nr_vectors_allocated(dev)) {
-         return 0;
-     }
-+    /*
-+     * if the irqfd still in use, means the irqfd was not
-+     * release before and don't need to set up
-+     */
-+    irqfd = &proxy->vector_irqfd[vector];
-+    if (irqfd->users != 0) {
-+        return 0;
-+    }
-     ret = kvm_virtio_pci_vq_vector_use(proxy, vector);
-     if (ret < 0) {
-         goto undo;
-     }
-+
-     /*
-      * If guest supports masking, set up irqfd now.
-      * Otherwise, delay until unmasked in the frontend.
-@@ -1570,7 +1580,19 @@ static void virtio_pci_common_write(void *opaque, hwaddr addr,
-         } else {
-             val = VIRTIO_NO_VECTOR;
-         }
-+        vector = vdev->config_vector;
-         vdev->config_vector = val;
-+        /*
-+         *if the val was change from NO_VECTOR, this means the vector maybe
-+         * release before, need to check if need to set up
-+         */
-+        if ((val != VIRTIO_NO_VECTOR) && (vector == VIRTIO_NO_VECTOR) &&
-+            (vdev->status & VIRTIO_CONFIG_S_DRIVER_OK)) {
-+            /* check if use irqfd*/
-+            if (msix_enabled(&proxy->pci_dev) && kvm_msi_via_irqfd_enabled()) {
-+                kvm_virtio_pci_vector_use_one(proxy, VIRTIO_CONFIG_IRQ_IDX);
-+            }
-+        }
-         break;
-     case VIRTIO_PCI_COMMON_STATUS:
-         if (!(val & VIRTIO_CONFIG_S_DRIVER_OK)) {
-@@ -1611,6 +1633,19 @@ static void virtio_pci_common_write(void *opaque, hwaddr addr,
-             val = VIRTIO_NO_VECTOR;
-         }
-         virtio_queue_set_vector(vdev, vdev->queue_sel, val);
-+
-+        /*
-+         *if the val was change from NO_VECTOR, this means the vector maybe
-+         * release before, need to check if need to set up
-+         */
-+
-+        if ((val != VIRTIO_NO_VECTOR) && (vector == VIRTIO_NO_VECTOR) &&
-+            (vdev->status & VIRTIO_CONFIG_S_DRIVER_OK)) {
-+            /* check if use irqfd*/
-+            if (msix_enabled(&proxy->pci_dev) && kvm_msi_via_irqfd_enabled()) {
-+                kvm_virtio_pci_vector_use_one(proxy, vdev->queue_sel);
-+            }
-+        }
-         break;
-     case VIRTIO_PCI_COMMON_Q_ENABLE:
-         if (val == 1) {
+-	dsc_cfg->num_slices_v = pic_height/slice_height;
++	if (slice_height > 0)
++		dsc_cfg->num_slices_v = pic_height/slice_height;
++	else {
++		is_dsc_possible = false;
++		goto done;
++	}
+ 
+ 	if (target_bandwidth_kbps > 0) {
+ 		is_dsc_possible = decide_dsc_target_bpp_x16(
 -- 
-2.43.0
+2.44.0
 
 
