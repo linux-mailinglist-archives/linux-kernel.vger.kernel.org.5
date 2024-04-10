@@ -1,81 +1,96 @@
-Return-Path: <linux-kernel+bounces-139506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351B98A03C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6538A03CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:59:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D474A1F2B1E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D01AD1F2B743
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95C13E49C;
-	Wed, 10 Apr 2024 22:53:21 +0000 (UTC)
-Received: from mail115-118.sinamail.sina.com.cn (mail115-118.sinamail.sina.com.cn [218.30.115.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5090E446A2;
+	Wed, 10 Apr 2024 22:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GJtMIjNj"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CDB10A1D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52A13E497;
+	Wed, 10 Apr 2024 22:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712789601; cv=none; b=j8R+8+da5556utb+tm+hIJ1n1d6qd1WiAp2K0lNvtwK5VTYCgJST/ytBrCm2sTvNfu8wxD8yfGfXyUz691B57I2cSMVgjck5qSFdgxrDiYG7wYhlILVImBIjNRqkzGbUYW5NXaP4X/6kuhY4egGCzNnXT/h3gFDoJ3CsBtqcv/c=
+	t=1712789630; cv=none; b=WMFjsvfmAz3mkQuuf0gAYiAwbccdIKbfhw59oD0ebmKRM1HXCfKehGrzup8EaGId7usS+UOrErUilUn7vqZUCg6/SUyzM+p5L6aac5pHxJEq8mBiX8EogRog/jXI/BTKJS/vhNHtBd6EKBgAo3HfffpcBbWN+ApaXbUqoXZl8i0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712789601; c=relaxed/simple;
-	bh=RDUgMCW7ih6Zd7tHmeamaX5LBVNc3hBRTo2BT+4qARA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nLPulnKp6QzlpOtRKV37BD5wUj3/1szebFePG7T3u4hhs/nfIIS71rKSYtfhwGAy//YCGJGRAQHLLsZBUbbUeyER6hq65Vhtl/wj/R/WmcZf/WdAKYbz+oOQCn0u1s2mzrSuRhbD/oqdr4ZTTM4u6T3Vyke6ZCdtDZr4QDNMYYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.50.59])
-	by sina.com (172.16.235.25) with ESMTP
-	id 6617185000000D76; Wed, 11 Apr 2024 06:53:06 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 75703134210298
-X-SMAIL-UIID: 9EE7AFC8FD6348368857EA04321C0100-20240411-065306-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+38b3aa8cd529958bd27a@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] possible deadlock in unix_notinflight
-Date: Thu, 11 Apr 2024 06:52:58 +0800
-Message-Id: <20240410225258.631-1-hdanton@sina.com>
-In-Reply-To: <0000000000005576ad0615c2710b@google.com>
-References: 
+	s=arc-20240116; t=1712789630; c=relaxed/simple;
+	bh=+SF8fRD5qtMuzpo19NhWUcRSgrgCUtWHLitNvMbRUCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PzH5o2zLqz1Ucxv/KxItPwVC8RO05pgjTiAq+X/C/6knB/DlE/Gmm84uq5cJrtwiMe5+KKdSLZO6F5TLJU94tdX55NNWjAsK8ZuXlzbi9nzwpFkjAdhjYFg1Wzm3ky8zeyFCZ4Vbj9atOwx5f9b5t2oVqoH57qwp6FRWFcGsvQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GJtMIjNj; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+0GBmcwTyMhAOkoLxmQrxueXW3lGrGIZ8d1OHjV7ylM=; b=GJtMIjNjW41SrtG8JRyeUyv1YK
+	3/LJY8P60iIIigbcUK7nRIOG5SAxG9rk+7qqoUeoeruVCBueT9pP2tC+GnYuXFaJs3z9so25cEihh
+	Xo7Gc5b+4nEQcKGzf68LqxzhWau+RLyP2fh/nQ9rV9kFMewdxavcXr90oaxnCSXWYDEKUFwuZIBuA
+	4RewKyRIxhxMa/ug9Fqqj+ecU9DLl6OIIm3wes6nThakVfuKPbIcCZfTOkqViwwdAu4SOk0oZTTXv
+	4pQKbDIKxSS51l/NZa3AZXDpH4pdhSjuxGDTtBUHefUTa2VxgbhtP0jzBsv1wU7ao3k/TI4T9Kwep
+	YEzX5s9w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rugp4-00000009KiJ-11gu;
+	Wed, 10 Apr 2024 22:53:42 +0000
+Date: Wed, 10 Apr 2024 15:53:41 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org
+Subject: Re: [PATCH v6 02/10] block: Call blkdev_dio_unaligned() from
+ blkdev_direct_IO()
+Message-ID: <ZhcYddRtAoMghtvr@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-3-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326133813.3224593-3-john.g.garry@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, 10 Apr 2024 11:45:29 -0700
-> syzbot found the following issue on:
+On Tue, Mar 26, 2024 at 01:38:05PM +0000, John Garry wrote:
+> blkdev_dio_unaligned() is called from __blkdev_direct_IO(),
+> __blkdev_direct_IO_simple(), and __blkdev_direct_IO_async(), and all these
+> are only called from blkdev_direct_IO().
 > 
-> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-> git tree:       bpf
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11aee305180000
+> Move the blkdev_dio_unaligned() call to the common callsite,
+> blkdev_direct_IO().
+> 
+> Pass those functions the bdev pointer from blkdev_direct_IO() as it is non-
+> trivial to calculate.
+> 
+> Reviewed-by: Keith Busch <kbusch@kernel.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git  443574b03387
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
---- x/net/unix/garbage.c
-+++ y/net/unix/garbage.c
-@@ -327,7 +327,7 @@ static void __unix_gc(struct work_struct
- 
- #if IS_ENABLED(CONFIG_AF_UNIX_OOB)
- 		if (u->oob_skb) {
--			kfree_skb(u->oob_skb);
-+			__skb_queue_tail(hitlist, u->oob_skb);
- 			u->oob_skb = NULL;
- 		}
- #endif
---
+I think this patch should just be sent separately already and not part
+of this series.
+
+  Luis
 
