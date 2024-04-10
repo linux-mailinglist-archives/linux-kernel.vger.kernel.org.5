@@ -1,104 +1,101 @@
-Return-Path: <linux-kernel+bounces-139107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B161089FEA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:35:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7771F89FEB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0A11B289C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:34:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32888288BFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9EA17F39F;
-	Wed, 10 Apr 2024 17:33:38 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F87717F36B;
+	Wed, 10 Apr 2024 17:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fakINiiU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DD01802A8;
-	Wed, 10 Apr 2024 17:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10683178CEE;
+	Wed, 10 Apr 2024 17:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770417; cv=none; b=nzzDr8nSq5E7gIWzgUVJO3gd99aBpTmWm457FH9iam2Plknr356XLmk3BxxvpGj9dibC7S/OPYDPy/oBdqAm2MMFwrsa+wsLQbATyVZXfhmxzCr+rUWXDpQAOtWU1lfa5GKpC4zICjUh0LmyrCzh3CiKcSeRFUYM8tCtf+PwYcg=
+	t=1712770603; cv=none; b=XEP7VaDL6IgMZu0rK/L9qX/75YBu944rIwzvbrpdjV+vQ5F93TSRbLwwkfKHov7vydBWwVXbST1quPdtuPMgp6WvmvJwGj7+H5BbtkJeEm0Ftu/z3qmU0achBjBVhyiU/DYnh9GZwr6KKnhuZax5TElu8dsto2fL2ODEWcXdImQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770417; c=relaxed/simple;
-	bh=DmWvcimBV0EwaDRiRQGTmsaNYqsgcCxqJIMpAyeTNcw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i35c1JgwYgp/g2OLJJT+wR+A7ePi7IuFmug2LfdJB9b/fZ3Xts6JSKiOh5e5x2K/8qt0XfC2oQ//L2I939mXiyFKsB6Gaue2oynWz4ku+y9Y7gRGCpe6cUcwhky2yGRhXIwWNAnCL7OXmkBnlBLnuwyLCGxum6kaKuXFn4TIi5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 735B2C433C7;
-	Wed, 10 Apr 2024 17:33:36 +0000 (UTC)
-Date: Wed, 10 Apr 2024 13:36:13 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com, rdunlap@infradead.org
-Subject: Re: [PATCH v20 1/5] ring-buffer: allocate sub-buffers with
- __GFP_COMP
-Message-ID: <20240410133613.0a6bd6fb@gandalf.local.home>
-In-Reply-To: <20240406173649.3210836-2-vdonnefort@google.com>
-References: <20240406173649.3210836-1-vdonnefort@google.com>
-	<20240406173649.3210836-2-vdonnefort@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712770603; c=relaxed/simple;
+	bh=C2Ckdhh6MShRypHTQfGnWVcfvy2wO5tJ+RrOIcXU+GE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ku2fbVdP9tN/myGy5+f1Nvmq2zNPGwrrTxF/Wq0CiWnfVO/1pT4yJNcQrpk6voQSUZiVbdzzPTA+GUhFYvllrnMuJWEsc7h50qHSsibzDv3Se+UysKrXFV3kjKQkXLGKCXFlG5+nMO+tDwgwL7yn+M27psyjg+sMRerMrcH3UnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fakINiiU; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712770602; x=1744306602;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C2Ckdhh6MShRypHTQfGnWVcfvy2wO5tJ+RrOIcXU+GE=;
+  b=fakINiiUCRSw2Y/efrv454Y2guCzBhEsWkxytKQXg8bFw3gm1WRGftkH
+   87jkL0gqVzxXCcM25OxzKyBCKA8Wx9HwO0eGSmcUjsGbE2uBDipzgSOo3
+   gt01cUYDw1+l5enazbsUZlkPlLSsquie/hGMmiwG1XuWw7zcqU9uL4Urr
+   kKs5b9FuPhXGfZEbipOiH8GXjStDUDdAD9MwYaXP4jjtNRwe4rrurxTaP
+   aiKv9/7eP5h2pOJxdPiyqJxjlij3uLTXE7RQyFg9icl2AgPEMs5iznek4
+   1/wSu/z2WHtccpbIQsXiV3v6W8NuPM0Y1yLegI6X8OoD67o6yqtm5Ixnp
+   A==;
+X-CSE-ConnectionGUID: IWfmZtZIT+Owxx28JyCBrw==
+X-CSE-MsgGUID: IITQZQWQSMegjxzMIlpJOA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8328253"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="8328253"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:36:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915438867"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="915438867"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:36:21 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rubru-000000038N0-3OjI;
+	Wed, 10 Apr 2024 20:36:18 +0300
+Date: Wed, 10 Apr 2024 20:36:18 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Felix Fietkau <nbd@nbd.name>, Alexander Couzens <lynxis@fe80.eu>,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Shayne Chen <shayne.chen@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH wireless-next v1 1/1] wifi: mt76: mt7915: Remove unused
+ of_gpio.h
+Message-ID: <ZhbOEqO4BIE4q7Vv@smile.fi.intel.com>
+References: <20240228200321.3607764-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228200321.3607764-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
+On Wed, Feb 28, 2024 at 10:03:21PM +0200, Andy Shevchenko wrote:
+> of_gpio.h is deprecated and subject to remove.
+> The driver doesn't use it, simply remove the unused header.
 
-Hi Vincent,
+What should be done to move this forward?
 
-Thanks for sending this. Nit: Subject should start with a capital:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-  ring-buffer: Allocate sub-buffers with __GFP_COMP
-
--- Steve
-
-
-On Sat,  6 Apr 2024 18:36:45 +0100
-Vincent Donnefort <vdonnefort@google.com> wrote:
-
-> In preparation for the ring-buffer memory mapping, allocate compound
-> pages for the ring-buffer sub-buffers to enable us to map them to
-> user-space with vm_insert_pages().
-> 
-> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> 
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index 25476ead681b..cc9ebe593571 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -1524,7 +1524,7 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
->  		list_add(&bpage->list, pages);
->  
->  		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu),
-> -					mflags | __GFP_ZERO,
-> +					mflags | __GFP_COMP | __GFP_ZERO,
->  					cpu_buffer->buffer->subbuf_order);
->  		if (!page)
->  			goto free_pages;
-> @@ -1609,7 +1609,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
->  
->  	cpu_buffer->reader_page = bpage;
->  
-> -	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_ZERO,
-> +	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_COMP | __GFP_ZERO,
->  				cpu_buffer->buffer->subbuf_order);
->  	if (!page)
->  		goto fail_free_reader;
-> @@ -5579,7 +5579,7 @@ ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
->  		goto out;
->  
->  	page = alloc_pages_node(cpu_to_node(cpu),
-> -				GFP_KERNEL | __GFP_NORETRY | __GFP_ZERO,
-> +				GFP_KERNEL | __GFP_NORETRY | __GFP_COMP | __GFP_ZERO,
->  				cpu_buffer->buffer->subbuf_order);
->  	if (!page) {
->  		kfree(bpage);
 
 
