@@ -1,144 +1,88 @@
-Return-Path: <linux-kernel+bounces-138563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CDD89F3BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE1789F3C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99EB31C23075
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:09:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35CF21C26800
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446C215ECC6;
-	Wed, 10 Apr 2024 13:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36AB215E213;
+	Wed, 10 Apr 2024 13:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lt2CEBeB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ChTsiyYm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YBKzqXDu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB82158D6B;
-	Wed, 10 Apr 2024 13:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7839013D2BC;
+	Wed, 10 Apr 2024 13:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712754550; cv=none; b=ZUpfV6eJ+IaH5zdRfdvS/127i7SmHkZ0QgBTZecxlDSgMI7I4ecSlziQMbEPLMqxQu8EtQksocxRDHPoYOLBtlk+pSdTYRbgPUuJlZ3hor8R6N2QXZTf5wxsBY5Nx5C2ZLd+Zcfugz4F4DedXQYGEqnN53pjNGB6RqW/tzHjxpU=
+	t=1712754690; cv=none; b=EdJH4BmsUM7J9Qi2S+WhJ0UPLrZMQ8zidgBS2GZK+GSfbl9Wx39KmVWf3vWfRJ1yu1aMke8P9nDhAXelgQXEs8MLrFM8PUUS1U3Y4Wm1nmtnfC9VL74c1VZxjOOR1DEb+iz9ZkGOsN/7PEEmMShe+8LEp567xRig72DWNrBNrd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712754550; c=relaxed/simple;
-	bh=DVsyvZznbXxXopBYa+V2X+LKRzPLEQ+gw6dR0qVmBJo=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=CSpDLODZDeX+IrP2qMpHfK2oGamfUs+Rz9xaw1KP6+dtkwcNwvzqL0aCPd4ssaPNmu6ir9SdOAjN+e0CKwfaHZi3dMscZGCiR4ZBwWEszJMfFB6nmiv+P0blCxkviWOzUbdOVLNfvOC5/bLHFb+HSpCPJ3tGoCPzqkA0KGzCqkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lt2CEBeB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ChTsiyYm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 13:09:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712754547;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0w73FUI0UgD5Z87XACzuGpXa+SVzEAPwn4oHcXwVmi0=;
-	b=lt2CEBeBEsUD4jh6IO9nFzFXV3CKLvFuw0VgrcYVcX435bk1czZ0w6xhRNt5ZSBOY6vSh0
-	NM4on6KU3vzfZOV5zcCnzEROJb4OpR/NEM11MLz+X5icyY5DWsH9EQobf5pqTvM9Ul8ySe
-	Do8wFz/V6p5C/o+dvCU7hmItlbtNAykjT9YpCLGcz7iw3VP+Q4p1lRqWOTO6tRa7Ji6IdB
-	M6+2nN72NMZrsfuQR0/Ip04BTcHb2AJxpeDmUr2GToHWxC1bm+EbH02VXCwOzAoqR8hcEz
-	btfjT8rHAhz31uYO6QpwuaLdyrfQLAETkIxIiJBWc/TlXSD2VJ8Xem+Cd3io6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712754547;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0w73FUI0UgD5Z87XACzuGpXa+SVzEAPwn4oHcXwVmi0=;
-	b=ChTsiyYmuC95SSGmWOJiWEA0cGDNY/ZjCvi9ezrEVgtObUss3XkSFsmV8ILV/asvDAcpTg
-	20aBT0WLz1Z7vYCQ==
-From:
- tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/iris: Convert to platform remove
- callback returning void
-Cc: u.kleine-koenig@pengutronix.de, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cadb9b0aca77d7aa8e54d0a664a4ee290834a60a1=2E17127?=
- =?utf-8?q?32665=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
-References: =?utf-8?q?=3Cadb9b0aca77d7aa8e54d0a664a4ee290834a60a1=2E171273?=
- =?utf-8?q?2665=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
+	s=arc-20240116; t=1712754690; c=relaxed/simple;
+	bh=Md4uSOFTpo6URfFRK5OxgLSLUbspD99XvlPf7qjsLWg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bmvPM/lkNL02lAaHZtPd57GDVEmXdSy3/x8PevzkMMwJFVbBItz3RqeLl0PMDXpD11IKBGiSRD5LVugQ7RLl0fDNuIsntVE70vPpLdlPPhCM1JKQgzSw/v6tEyj4CeBzcwflZpw7HSyVM5RTkvW1xjsnGvC+cNS7qqmVxh3tV2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YBKzqXDu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90D68C433C7;
+	Wed, 10 Apr 2024 13:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712754690;
+	bh=Md4uSOFTpo6URfFRK5OxgLSLUbspD99XvlPf7qjsLWg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YBKzqXDuq/ayEedOvudSsWlKvu0+kXM7qR7yvhCIhUXrETVQX1RTkmzW/LQRKwg5V
+	 IcyIfTPJ4O1dYlZG7W2MGHnlRT0CctC45p/gpsTGuxqVRWQ6jBC8v46H92DjscWcPA
+	 S1Me+FWz8DlfPv2OPh9ZTLaMXmQ+eq35vUfx1/ggcz1UGOg7m1kSr+CtmHtp9QSdDl
+	 u2WqaVU9xY/JXsAKfkMsmBSu0kPzHwFI62a6qDChyEFoyUFAv3lpH1Cd76RkOzbPeT
+	 FbxmobA19dnXSkZ7Dl8Xkwzov8h7bDOoUd78+gpwa3z+1OiicGMTfh9OTloV3bBxHS
+	 bAU0luAqv+CKg==
+Date: Wed, 10 Apr 2024 06:11:28 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Pavel Begunkov
+ <asml.silence@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+ kernel@pengutronix.de
+Subject: Re: [PATCH] tls: defer close to kernel task
+Message-ID: <20240410061128.3b337185@kernel.org>
+In-Reply-To: <20240410-ktls-defer-close-v1-1-b59e6626b8e4@pengutronix.de>
+References: <20240410-ktls-defer-close-v1-1-b59e6626b8e4@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171275454670.10875.3993795189807291031.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/platform branch of tip:
+On Wed, 10 Apr 2024 08:33:07 +0200 Sascha Hauer wrote:
+> proto->close is normally called from a userspace task which can be
+> interrupted by signals. When asynchronous encryption is used then KTLS
+> sends out the final data at close time. When a signal comes in during
+> close then it can happen tcp_sendmsg_locked() is interrupted by that
+> signal while waiting for memory in sk_stream_wait_memory() which then
+> returns with -ERSTARTSYS. It is not possible to recover from this situation
+> and the final transmit data is lost.
+> 
+> With this patch we defer the close operation to a kernel task which
+> doesn't get signals.
+> 
+> The described situation happens when KTLS is used in conjunction with
+> io_uring, as io_uring uses task_work_add() to add work to the current
+> userspace task.
+> 
+> The problem is discussed in [1] and [2] and the solution implemented in
+> this patch is suggested by Pavel Begunkov here [3]
 
-Commit-ID:     bcc0403eb4c3f5f79e3bc39bc2d65ddb1c25ffdf
-Gitweb:        https://git.kernel.org/tip/bcc0403eb4c3f5f79e3bc39bc2d65ddb1c2=
-5ffdf
-Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Wed, 10 Apr 2024 09:16:51 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 10 Apr 2024 14:59:30 +02:00
-
-x86/platform/iris: Convert to platform remove callback returning void
-
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
-
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
-
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
-
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/adb9b0aca77d7aa8e54d0a664a4ee290834a60a1.1712=
-732665.git.u.kleine-koenig@pengutronix.de
----
- arch/x86/platform/iris/iris.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/platform/iris/iris.c b/arch/x86/platform/iris/iris.c
-index b42bfda..c5f3bbd 100644
---- a/arch/x86/platform/iris/iris.c
-+++ b/arch/x86/platform/iris/iris.c
-@@ -62,11 +62,10 @@ static int iris_probe(struct platform_device *pdev)
- 	return 0;
- }
-=20
--static int iris_remove(struct platform_device *pdev)
-+static void iris_remove(struct platform_device *pdev)
- {
- 	pm_power_off =3D old_pm_power_off;
- 	printk(KERN_INFO "Iris power_off handler uninstalled.\n");
--	return 0;
- }
-=20
- static struct platform_driver iris_driver =3D {
-@@ -74,7 +73,7 @@ static struct platform_driver iris_driver =3D {
- 		.name   =3D "iris",
- 	},
- 	.probe          =3D iris_probe,
--	.remove         =3D iris_remove,
-+	.remove_new     =3D iris_remove,
- };
-=20
- static struct resource iris_resources[] =3D {
+Appears to crash reliably.
+Please run the tls selftests with KASAN enabled.
+-- 
+pw-bot: cr
 
