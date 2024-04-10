@@ -1,144 +1,124 @@
-Return-Path: <linux-kernel+bounces-138807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0524A89FA97
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:53:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A5189FA9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:54:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C181F30BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:53:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D28741C20908
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4575F178CC7;
-	Wed, 10 Apr 2024 14:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC03A178CE9;
+	Wed, 10 Apr 2024 14:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="k1LB4Rrm"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSFIF/sV"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D432D174ED5;
-	Wed, 10 Apr 2024 14:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA1C178CDC;
+	Wed, 10 Apr 2024 14:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712760475; cv=none; b=tJiXP7DS9ORqJ1KC8J8hRwtAlgPKERI79xrJHfzRA24vTv+rYa6M9mSBoVwrGyfRu+9VtYwsIi/uJ8zdAjQykDyOJTVpy6wazDyeKZPy3Q+j+X1pJluTUx92Okji5TruZXtmTpDTLklyglOft7rstG3fSgg81gqd2TxNQBt3T48=
+	t=1712760487; cv=none; b=QRafj0hzBHk0Xr0Fqu7vmWS/KhSUP5WS3EAJ7BHlt6kxTxBrmhmFsaaOVaP/yJjAbDV52tto/UrgqvWgwCZ041pbYCwT8ePUK5wF0lJAVEM5CYikxq3ryQS4Bowqo950IT6riCz34k5lw0LBYVf/FftpKdvzTmRs/IXH4h2IfgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712760475; c=relaxed/simple;
-	bh=Ba8Muqof+9JBG9pxYvD1gIhVwXrgPfJ0OrHRZY+g3dM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LteO501oSr/DbG6yZzcgRW4/jCX9fyEv9NaTREG6rEeT0f5QM/N99gBzFIz/vOzQV5OSOQwQOChtiRY5BsvBCiG0bbZwiU/IHlJ0kqLAZYXuEpAqW/0TSTJLsVCLeuZCCOUIhwHVa6uwYvVh/l8lxcTCQzOah+DCmTmHld66Hbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=k1LB4Rrm; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43AElkqK083175;
-	Wed, 10 Apr 2024 09:47:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712760467;
-	bh=S3ifYyhWzJGFkrlNiF/gne+4NFe8fCiiNgj29hFN1Ew=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=k1LB4RrmGnZ0IPOFec3L/bEt5pgAycihKKCIBfswywYeMvY1f/6oTQZ85vl4bm8TM
-	 7RsDQ8Xchwzxw5uPI2HAjFnOcUJzorXajUj6kvQPRK7oBGhou4xslltVTMuLPAI+Pu
-	 xF1skHJqasoaBz92DPjj1SS7OaalE7bjpsyxa8KQ=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43AElk0i073289
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 10 Apr 2024 09:47:46 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- Apr 2024 09:47:46 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 10 Apr 2024 09:47:46 -0500
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43AElkhG039070;
-	Wed, 10 Apr 2024 09:47:46 -0500
-Message-ID: <75bb4c75-fa76-49b0-a969-88dca12fb1bf@ti.com>
-Date: Wed, 10 Apr 2024 09:47:46 -0500
+	s=arc-20240116; t=1712760487; c=relaxed/simple;
+	bh=83IlgsIBGdPvvy7KkGpKf6FCNdqnXmoF3sXAeFZbVzc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LHcs1A2eTC4KSjAgwy04wWhiOsPrS4I1ivkutUp8FrYB82HqRj3eR/4yHPkhVhGTPW5ufeTm5pGVJlNYqZu02D4lwMMpSxeCjL7cpEmyzyFTYMN5/vAh1BFierr4iaNsgFXx41/POsGLaVRAGNrgTRlG44noww+r+5I8IUN4iLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSFIF/sV; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e40042c13eso24381135ad.2;
+        Wed, 10 Apr 2024 07:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712760485; x=1713365285; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cJsjVxj31Zb9TXNhUKJteq2QrNcPPYlblcldkHbg4vw=;
+        b=kSFIF/sVSh6sH9YAm+o2S3wb5Hrsj5gVKH3UoWvifLfL7Fj6gfE+60QjAhAApyOVuw
+         WvtWijrsKRii9TAU63n0rJ6ChDIOsHAlilUE4KIhccl1HRyAgVP56yQB9pPC/TLCms0m
+         PM/xf4lJ+dYwq2bl1ui26hMjOhXi6aLHc3IjXRCYjpJUYZpTl3irK9s5/Iw0y9TfTmkC
+         QzijDZsi9y+2+aYZf4n2QIfoguK0zh4tkXd6LySeZZRQIIAkvURnPcJP4swekC8+jd91
+         vWGn8Bx1YnVJ0jarYe8cICbs0K27EglMh3kkxMano36JUtPIwf/5n4TSEtBGYuUNIIOS
+         r9Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712760485; x=1713365285;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cJsjVxj31Zb9TXNhUKJteq2QrNcPPYlblcldkHbg4vw=;
+        b=i6Kz45bfSnrlcA6gD0oJbZQVZW8u5l4jUrkUSz62/cdTSOrikB2m+j33Zz08iEbEi/
+         +W8KKz+C5wf0rbV1cjWzOp7Etv05XdKHaI4L6d4sNfLN9hHLUdpqEA8bJSc5CF+IeA3W
+         uww0Gurryl9KePnb1XThicEui1BneojNos8d3SadTc24Pq2C9hu69YjA2e3/rueYjej2
+         7YklX+vuLTa0xfUn6yelt4dS3w/9+1VaicIkUmtbvY/uhmgt5IyS5zipE81EkIxgFCsT
+         QSUe8hW4S4O7R8mXouuLNT3vgIjZZzGyFbzfWtWjCovHGDE/NPqY16DAHQDfF5blcO6W
+         t/hw==
+X-Forwarded-Encrypted: i=1; AJvYcCX6iiU5r4kCoVPabJH/pGimCMD1SAWutXSz9czRWFq5toIM6v9pT7BDToY5Ku6qaUW0I7QnEhdlOy6oIqhfR/11TqBGLYuy4czcyZyUWxLbFnjPkTwBQm6kMNa9sTvTRZCe/wAlj8kwGrO7sU8=
+X-Gm-Message-State: AOJu0YwYihjMyIYDwoJJplVCe2bcp38fu4it8sUHRorX798Exm3XB8I5
+	IhobYPnMnSGIc9ErFUuDaAZzDEqGsNKU8PxEqZp14n/JYEEzXZGuwOIGjl4q
+X-Google-Smtp-Source: AGHT+IHgUs6DSJo0qANFWn7VNXEYT+7xHCJ+Qx2wGWRLICPDNOrJeaLSkQUdnEu6IEZYPeu6Xe5hCw==
+X-Received: by 2002:a17:902:7c8e:b0:1e0:a4c9:84cd with SMTP id y14-20020a1709027c8e00b001e0a4c984cdmr2450375pll.60.1712760484583;
+        Wed, 10 Apr 2024 07:48:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ky13-20020a170902f98d00b001e0f5034e95sm10875689plb.288.2024.04.10.07.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 07:48:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 10 Apr 2024 07:48:02 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Dawei Li <set_pte_at@outlook.com>
+Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog/wdt-main: Use cpumask_of() to avoid cpumask var
+ on stack
+Message-ID: <8be5a179-df13-4441-8276-504dcb925026@roeck-us.net>
+References: <TYTP286MB3564B037A81DAAE1AC3A16F3CA062@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
-To: Robert Nelson <robertcnelson@gmail.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Kridner
-	<jkridner@beagleboard.org>,
-        Drew Fustini <drew@beagleboard.org>, Tony
- Lindgren <tony@atomide.com>,
-        <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240325210045.153827-1-afd@ti.com>
- <2024032631-excursion-opposing-be36@gregkh>
- <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
- <ZgME0qSL3KXCD07I@chinchilla> <ceb391d3-c7f4-4d46-9f97-b651e1f5451c@ti.com>
- <CAOCHtYhODiMHWA17EQD7YsZ08Uocy5A=kbjH5vjUUaXAopnxeA@mail.gmail.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <CAOCHtYhODiMHWA17EQD7YsZ08Uocy5A=kbjH5vjUUaXAopnxeA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYTP286MB3564B037A81DAAE1AC3A16F3CA062@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
 
-On 4/5/24 10:39 AM, Robert Nelson wrote:
-> On Tue, Mar 26, 2024 at 12:36 PM Andrew Davis <afd@ti.com> wrote:
->>
->> On 3/26/24 12:24 PM, Matthijs van Duin wrote:
->>> I'll write a more in-depth reply when I have a moment, but right now I'd
->>> like to point out that the uio-pruss driver in mainline linux is for the
->>> pru subsystem on the freon/primus family of ARM9-based SoCs (OMAP-L1xx /
->>> AM17xx / AM18xx / TMS320C674x / DA8xx), which is not currently supported
->>> by remoteproc-pru.
->>>
->>
->> I'll wait for your full reply, but a quick note, for those devices listed
->> this driver isn't usable either after they all moved to DT. As this driver
->> never got a DT port and relies on platform data (which is gone for those
->> couple devices).
->>
->> Andrew
+On Wed, Apr 10, 2024 at 09:13:59PM +0800, Dawei Li wrote:
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
 > 
-> Andrew, I think we are okay with nuking the whole uio driver in
-> mainline, I'll ack it..
+> Use cpumask_of() to avoid the need for a temporary cpumask on the stack
 > 
+> Signed-off-by: Dawei Li <set_pte_at@outlook.com>
 
-Okay, will send that patch.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
->   I figured we'd have more community response..  We gave them a chance..
+> ---
+>  drivers/watchdog/octeon-wdt-main.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> The only issue I personally have with supporting remoteproc-pruss
-> 
-> We have a few users on 4.19.x-ti, 5.10.x-ti (remoteproc_pruss) can we
-> please make sure this project:
-> 
-> https://git.ti.com/gitweb?p=pru-software-support-package/pru-software-support-package.git;a=summary
-> 
-> actually works on mainline remoteproc_pruss ?
-> 
-> Watching the shortlog, it must break on every single TI LTS release:
-> 
-
-Yeah, before we got the remoteproc driver upstream we managed
-to break it just about every LTS, it *should* be a bit more
-stable now that it is upstream..
-
-> https://git.ti.com/gitweb?p=pru-software-support-package/pru-software-support-package.git;a=shortlog
-> 
-> Whereas uio... well same firmware from 3.8.x ;)
-> 
-
-That is one benefit of the microkernel style "just expose raw memory
-to userspace as a driver", it sure looks simple :)
-
-Andrew
-
-> (i will keep our uio fork alive, but we just use an overlay to switch
-> to between remoteproc_pruss and uio)
-> 
-> Regards,
+> diff --git a/drivers/watchdog/octeon-wdt-main.c b/drivers/watchdog/octeon-wdt-main.c
+> index 0fe71f7e66d5..52d49e4e35a0 100644
+> --- a/drivers/watchdog/octeon-wdt-main.c
+> +++ b/drivers/watchdog/octeon-wdt-main.c
+> @@ -381,11 +381,7 @@ static int octeon_wdt_cpu_online(unsigned int cpu)
+>  
+>  	/* Must set the irq affinity here */
+>  	if (octeon_has_feature(OCTEON_FEATURE_CIU3)) {
+> -		cpumask_t mask;
+> -
+> -		cpumask_clear(&mask);
+> -		cpumask_set_cpu(cpu, &mask);
+> -		irq_set_affinity(irq, &mask);
+> +		irq_set_affinity(irq, cpumask_of(cpu));
+>  	}
+>  
+>  	cpumask_set_cpu(cpu, &irq_enabled_cpus);
+> -- 
+> 2.25.1
 > 
 
