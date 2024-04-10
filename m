@@ -1,204 +1,192 @@
-Return-Path: <linux-kernel+bounces-139325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C508A0170
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:46:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1339E8A0171
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D86FB23C65
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:46:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443A51C2466D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B04A181CE9;
-	Wed, 10 Apr 2024 20:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6735C181CEF;
+	Wed, 10 Apr 2024 20:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFYX6sFV"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLggDbpN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312D6181CE0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA8217F37A;
+	Wed, 10 Apr 2024 20:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712781957; cv=none; b=Rcn5PDRFNYHQnfLE63ORROjAlT6mp6qnlMdlcBG8YTPuYduIBRjMhE766+4EzD+xuAi6KzM30p18L1Ze4pgO0Te771HvvFWFjmP6JfHv9nFZGJybAwLjBapbo11Jr+ChZUPaHFWHjn1NcbhlLFa4CUDt+8vJALDaagJpitMEfBY=
+	t=1712781967; cv=none; b=B1Pxtmtp6FCRYp4pRupjdmK9R4tbjOSygwQO25VblvM8VPe0vSjloknfh7YZKokpgnygzNw1G/+Xz1gIbksV+zdN7wdQX78BPsb38SmvGLoitt2/G9GRX5WYZb1H5Ib9LvJKkIzKfVI3J8gBPiCAeqY6ZZLOSinEQegdpWtvAM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712781957; c=relaxed/simple;
-	bh=bMzjQWQMtB75ExL7Mufx5SJbm3fyIcSyleJcxUjqv6A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=DjT1ChVY3NngCgAI419dVn3D/863kdz/cMCWHWLL7fE2ubB6RY+QnIkL+Z/0gXV/Vc0oO/6PXwoZvtApsErVk4ju+IF1fyPShZp5Yl5/Nje2v75Wnw6EndNvAzXfy51WMA1InbTu/49bWm1XPVJiB728z7Hd9XGpVR3i6iyh0XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFYX6sFV; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d700beb60bso116030961fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712781951; x=1713386751; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qsGqX3KEMe0tMFWNo37D5kyKHEthzUhLzdIDt7eGccA=;
-        b=eFYX6sFV8WfupG0a+ZXUu5zJvPPuPPHoiv/WGKDgR6SeAg+D+Sk0foS6tS9CbIN0wC
-         8lneYp7IoGcaDnUYQ+mbYUaQQCIc2usPopA2s4FiS9+c866Jt9uaOo9A5C+5wgXH6p1n
-         UAX3qqUs9KICxBO+LNSKWb4TNrseccySs7EMXyzGexiX+REy0abut2fEmy6d5zOmC7g2
-         SVGAfpcTPrK1xQskfWuvkxvh3kUe4dXjcpex3Ly5eRFzhUKzlUwzw6MAA2PDjG8uUAZD
-         jaI1HmEWHhQzUVNtt1eCW/OnkLuQgaUUPa381CW3FQXCYh6HEMFICX5Zigg07th/Yzvr
-         7m+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712781951; x=1713386751;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qsGqX3KEMe0tMFWNo37D5kyKHEthzUhLzdIDt7eGccA=;
-        b=SMy5713SXyX6tGVbveEvMMULnLHHnOhfcGS6aA4wDRsEkplPXqqv53Z73jf6I8g6pY
-         UORg25I4WThjQMHbJNntRc2GlfRT2Oj8qs/2hKilFevKNycfHIWJp80Fiqb8pXz8tm+W
-         Q1F87l0f4yOQKlClIJ0cSDiHjw9tZrWrPCYHsptLRUi7T58B74qy5i37y++waaBuLmdQ
-         KwkqH6sKxpVQJ/AzKAEzlK1mZilmqQ3mO4puhAeZ4pfMBihxP15Fh8d0qtY+QDmxByuh
-         jWckVjSEIQcF3B/aRdj5I6wgkudsB+6Ksd3D1NjeNtrWfc1U4lW430T/GNzbmTo339zB
-         ElWA==
-X-Forwarded-Encrypted: i=1; AJvYcCWo9zTImDzfAgQMiSU9htl7ct1NHugQIGHA+Bms+tsOX42E3MlvqEIyNVISRRfIIkC2ueoCenx9N1DAgsfPXlDFTAgmvqSGcJJL6KES
-X-Gm-Message-State: AOJu0YzU3dQgTewrR2gEgeyRsWo4w+uRaggwXqBY8MCXbC6joHt2nRJm
-	pG7yUZ/5j/ttJ1Q0iJcRKDFQ+pqypAX17rqwzBLOYp377erMp1Fv
-X-Google-Smtp-Source: AGHT+IH3QYbCsvLH7JDF0/52kyHq3vwRp8DboQ3O3yhv+yJaWJs1M0Qq+jeH4ZaKHY74WkJWalcKnw==
-X-Received: by 2002:a2e:9645:0:b0:2d8:8fb6:a53d with SMTP id z5-20020a2e9645000000b002d88fb6a53dmr3057039ljh.42.1712781951058;
-        Wed, 10 Apr 2024 13:45:51 -0700 (PDT)
-Received: from [127.0.1.1] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
-        by smtp.gmail.com with ESMTPSA id jo12-20020a170906f6cc00b00a51e004de4asm43200ejb.11.2024.04.10.13.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 13:45:50 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 10 Apr 2024 22:45:43 +0200
-Subject: [PATCH] drm/kmb: Replace of_node_put() with automatic cleanup
- handler
+	s=arc-20240116; t=1712781967; c=relaxed/simple;
+	bh=0QSCL/hvtLmpjs+qXUf272DGb1S3kZzbWCaWKPOZaIU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pVZa+RGlV5hipmrkAl2CPeFssGIphcl76546dD0zepD0iTIiRohfjpLg64T1rfww9rhLjhMNnYbwQfs3kY96/YBboDfPOjl8X91ljcDYmxuTT7WoGc2s6wWrOU2HNGWrou/jtAIPG8SpfWO/VXQM4MtdjrYvTIWxkG+/t5TfRCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLggDbpN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92181C433F1;
+	Wed, 10 Apr 2024 20:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712781967;
+	bh=0QSCL/hvtLmpjs+qXUf272DGb1S3kZzbWCaWKPOZaIU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lLggDbpN2wo5Za26GyXDFPLOx+lCzdCEKofCRFCr5iXTlB0rCLS6EY1hnnlmpcL55
+	 vbubcMbdKpB/D/HPWMnyNAqfPhnZ3CT6zTrTWWF1ZMCWKx5qoS1IEFy7sF/we7LNSp
+	 jBLQW3R7cymmVILjfG54rZ5qHRdzHvPTt+LbPOnWXexpAKFJArlC+aCDAf+ajhXiSQ
+	 L3QrEPhLQQhG67lJnhADcfJLePucmAn9P4tUwGRYwGpPp0ZBWry2PWFZyZpNLDLBXr
+	 uPcWypVYPOjjDqq++cOL+w4nCv6ux5FrmAly1gCry3FPeARaOg9H3pTxFjr3xJzF3C
+	 yADTLxqgSLrUA==
+Date: Wed, 10 Apr 2024 17:46:04 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 5/6] perf report: Add a menu item to annotate data type
+ in TUI
+Message-ID: <Zhb6jJneP36Z-or0@x1>
+References: <20240409235000.1893969-1-namhyung@kernel.org>
+ <20240409235000.1893969-6-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-kmb_of_node_put-v1-1-4d802add6a89@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAHb6FmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0MD3ezcpPj8tPi8/JTU+ILSEt3ExDTDZHPzFEszQwMloK6CotS0zAq
- widGxtbUATO4l52EAAAA=
-To: Anitha Chrisanthus <anitha.chrisanthus@intel.com>, 
- Edmund Dea <edmund.j.dea@intel.com>, David Airlie <airlied@gmail.com>, 
- Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Julia Lawall <julia.lawall@inria.fr>, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712781949; l=3721;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=bMzjQWQMtB75ExL7Mufx5SJbm3fyIcSyleJcxUjqv6A=;
- b=4x42bRafiDixZIvr/1GV+80+RHyrDLGKz29TWe8GX6b0FFhb0v8RSSPpd7pYQWtKbR4sh1t58
- +Olbpp/kpnqBnbdraSQpOzSQURkqny+9MH7QKG9qU0kRfSUtrmPgrzJ
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409235000.1893969-6-namhyung@kernel.org>
 
-Make use of the __free() cleanup handler to automatically free nodes
-when they get out of scope.
+On Tue, Apr 09, 2024 at 04:49:59PM -0700, Namhyung Kim wrote:
+> When the hist entry has the type info, it should be able to display the
+> annotation browser for the type like in `perf annotate --data-type`.
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
-The patch is based on the latest linux-next tag (next-20240410).
----
- drivers/gpu/drm/kmb/kmb_drv.c | 13 ++++---------
- drivers/gpu/drm/kmb/kmb_dsi.c | 11 ++++-------
- 2 files changed, 8 insertions(+), 16 deletions(-)
+Trying to test this with:
 
-diff --git a/drivers/gpu/drm/kmb/kmb_drv.c b/drivers/gpu/drm/kmb/kmb_drv.c
-index 169b83987ce2..1a743840688a 100644
---- a/drivers/gpu/drm/kmb/kmb_drv.c
-+++ b/drivers/gpu/drm/kmb/kmb_drv.c
-@@ -480,8 +480,8 @@ static int kmb_probe(struct platform_device *pdev)
- 	struct device *dev = get_device(&pdev->dev);
- 	struct kmb_drm_private *kmb;
- 	int ret = 0;
--	struct device_node *dsi_in;
--	struct device_node *dsi_node;
-+	struct device_node *dsi_in __free(device_node) =
-+		of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
- 	struct platform_device *dsi_pdev;
- 
- 	/* The bridge (ADV 7535) will return -EPROBE_DEFER until it
-@@ -491,28 +491,23 @@ static int kmb_probe(struct platform_device *pdev)
- 	 *  and then the rest of the driver initialization can proceed
- 	 *  afterwards and the bridge can be successfully attached.
- 	 */
--	dsi_in = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
- 	if (!dsi_in) {
- 		DRM_ERROR("Failed to get dsi_in node info from DT");
- 		return -EINVAL;
- 	}
--	dsi_node = of_graph_get_remote_port_parent(dsi_in);
-+	struct device_node *dsi_node __free(device_node) =
-+		of_graph_get_remote_port_parent(dsi_in);
- 	if (!dsi_node) {
--		of_node_put(dsi_in);
- 		DRM_ERROR("Failed to get dsi node from DT\n");
- 		return -EINVAL;
- 	}
- 
- 	dsi_pdev = of_find_device_by_node(dsi_node);
- 	if (!dsi_pdev) {
--		of_node_put(dsi_in);
--		of_node_put(dsi_node);
- 		DRM_ERROR("Failed to get dsi platform device\n");
- 		return -EINVAL;
- 	}
- 
--	of_node_put(dsi_in);
--	of_node_put(dsi_node);
- 	ret = kmb_dsi_host_bridge_init(get_device(&dsi_pdev->dev));
- 
- 	if (ret == -EPROBE_DEFER) {
-diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
-index cf7cf0b07541..61f02462b778 100644
---- a/drivers/gpu/drm/kmb/kmb_dsi.c
-+++ b/drivers/gpu/drm/kmb/kmb_dsi.c
-@@ -216,8 +216,6 @@ static const struct mipi_dsi_host_ops kmb_dsi_host_ops = {
- 
- int kmb_dsi_host_bridge_init(struct device *dev)
- {
--	struct device_node *encoder_node, *dsi_out;
--
- 	/* Create and register MIPI DSI host */
- 	if (!dsi_host) {
- 		dsi_host = kzalloc(sizeof(*dsi_host), GFP_KERNEL);
-@@ -239,21 +237,20 @@ int kmb_dsi_host_bridge_init(struct device *dev)
- 	}
- 
- 	/* Find ADV7535 node and initialize it */
--	dsi_out = of_graph_get_endpoint_by_regs(dev->of_node, 0, 1);
-+	struct device_node *dsi_out __free(device_node) =
-+		of_graph_get_endpoint_by_regs(dev->of_node, 0, 1);
- 	if (!dsi_out) {
- 		DRM_ERROR("Failed to get dsi_out node info from DT\n");
- 		return -EINVAL;
- 	}
--	encoder_node = of_graph_get_remote_port_parent(dsi_out);
-+	struct device_node *encoder_node __free(device_node) =
-+		of_graph_get_remote_port_parent(dsi_out);
- 	if (!encoder_node) {
--		of_node_put(dsi_out);
- 		DRM_ERROR("Failed to get bridge info from DT\n");
- 		return -EINVAL;
- 	}
- 	/* Locate drm bridge from the hdmi encoder DT node */
- 	adv_bridge = of_drm_find_bridge(encoder_node);
--	of_node_put(dsi_out);
--	of_node_put(encoder_node);
- 	if (!adv_bridge) {
- 		DRM_DEBUG("Wait for external bridge driver DT\n");
- 		return -EPROBE_DEFER;
+root@number:~# perf report --header-only |& grep "perf record"
+# cmdline : /home/acme/bin/perf record -a -e {cpu_core/mem-loads,ldlat=30/P,cpu_core/mem-stores/P} 
+root@number:~# perf evlist -v
+cpu_core/mem-loads,ldlat=30/P: type: 4 (cpu_core), size: 136, config: 0x1cd (mem-loads), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD|IDENTIFIER, read_format: ID|LOST, disabled: 1, inherit: 1, freq: 1, precise_ip: 2, sample_id_all: 1, { bp_addr, config1 }: 0x1f
+cpu_core/mem-stores/P: type: 4 (cpu_core), size: 136, config: 0x2cd (mem-stores), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD|IDENTIFIER, read_format: ID|LOST, inherit: 1, freq: 1, precise_ip: 3, sample_id_all: 1
+dummy:u: type: 1 (software), size: 136, config: 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU|IDENTIFIER, read_format: ID|LOST, inherit: 1, exclude_kernel: 1, exclude_hv: 1, mmap: 1, comm: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
+root@number:~# perf report -s type
 
----
-base-commit: 6ebf211bb11dfc004a2ff73a9de5386fa309c430
-change-id: 20240410-kmb_of_node_put-aaf1c77d9610
+And when I press ESC to exit:
 
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+root@number:~# perf report -s type
+perf: Segmentation fault
+-------- backtrace --------
+perf[0x61326b]
+/lib64/libc.so.6(+0x3e9a0)[0x7f7173a5c9a0]
+/lib64/libc.so.6(free+0x25)[0x7f7173abd385]
+perf[0x5d5002]
+perf[0x4fd007]
+perf[0x523ce0]
+perf[0x525ad4]
+perf[0x503f43]
+perf[0x557ad4]
+perf[0x557eeb]
+perf[0x4e5355]
+perf[0x4dea42]
+perf[0x528aad]
+perf[0x42b559]
+perf[0x4c39e9]
+perf[0x4c3cf9]
+perf[0x410e47]
+/lib64/libc.so.6(+0x2814a)[0x7f7173a4614a]
+/lib64/libc.so.6(__libc_start_main+0x8b)[0x7f7173a4620b]
+perf[0x4113e5]
+root@number:~#
 
+Trying to build with debug info...
+
+- Arnaldo
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/builtin-report.c    |  5 +++++
+>  tools/perf/ui/browsers/hists.c | 31 +++++++++++++++++++++++++++++++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index dcd93ee5fc24..aaa6427a1224 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -1694,6 +1694,11 @@ int cmd_report(int argc, const char **argv)
+>  	else
+>  		use_browser = 0;
+>  
+> +	if (report.data_type && use_browser == 1) {
+> +		symbol_conf.annotate_data_member = true;
+> +		symbol_conf.annotate_data_sample = true;
+> +	}
+> +
+>  	if (sort_order && strstr(sort_order, "ipc")) {
+>  		parse_options_usage(report_usage, options, "s", 1);
+>  		goto error;
+> diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
+> index 0c02b3a8e121..71b32591d61a 100644
+> --- a/tools/perf/ui/browsers/hists.c
+> +++ b/tools/perf/ui/browsers/hists.c
+> @@ -38,6 +38,7 @@
+>  #include "../ui.h"
+>  #include "map.h"
+>  #include "annotate.h"
+> +#include "annotate-data.h"
+>  #include "srcline.h"
+>  #include "string2.h"
+>  #include "units.h"
+> @@ -2505,6 +2506,32 @@ add_annotate_opt(struct hist_browser *browser __maybe_unused,
+>  	return 1;
+>  }
+>  
+> +static int
+> +do_annotate_type(struct hist_browser *browser, struct popup_action *act)
+> +{
+> +	struct hist_entry *he = browser->he_selection;
+> +
+> +	hist_entry__annotate_data_tui(he, act->evsel, browser->hbt);
+> +	ui_browser__handle_resize(&browser->b);
+> +	return 0;
+> +}
+> +
+> +static int
+> +add_annotate_type_opt(struct hist_browser *browser,
+> +		      struct popup_action *act, char **optstr,
+> +		      struct hist_entry *he)
+> +{
+> +	if (he == NULL || he->mem_type == NULL || he->mem_type->histograms == NULL)
+> +		return 0;
+> +
+> +	if (asprintf(optstr, "Annotate type %s", he->mem_type->self.type_name) < 0)
+> +		return 0;
+> +
+> +	act->evsel = hists_to_evsel(browser->hists);
+> +	act->fn = do_annotate_type;
+> +	return 1;
+> +}
+> +
+>  static int
+>  do_zoom_thread(struct hist_browser *browser, struct popup_action *act)
+>  {
+> @@ -3307,6 +3334,10 @@ static int evsel__hists_browse(struct evsel *evsel, int nr_events, const char *h
+>  						       browser->he_selection->ip);
+>  		}
+>  skip_annotation:
+> +		nr_options += add_annotate_type_opt(browser,
+> +						    &actions[nr_options],
+> +						    &options[nr_options],
+> +						    browser->he_selection);
+>  		nr_options += add_thread_opt(browser, &actions[nr_options],
+>  					     &options[nr_options], thread);
+>  		nr_options += add_dso_opt(browser, &actions[nr_options],
+> -- 
+> 2.44.0.478.gd926399ef9-goog
 
