@@ -1,126 +1,201 @@
-Return-Path: <linux-kernel+bounces-139009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBCFF89FD68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:49:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 698F589FD6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A369B2674A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:46:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7B21C21733
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59EB17B50C;
-	Wed, 10 Apr 2024 16:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rrlISI/1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677DD17B515;
+	Wed, 10 Apr 2024 16:51:22 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EA73C38;
-	Wed, 10 Apr 2024 16:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7CB15B151;
+	Wed, 10 Apr 2024 16:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712767602; cv=none; b=KzqU9GhrvLV3kD8ebFIYNQ4+3Knn9rj/AYZ2IC7sMCj436VvSISOt4eV64Fcw22N3suX4zKSoqp6EK+kKceg115tqYJvg+T5NOKJwh2+tXcp33wt5iwtb7nrDQ39ZqQlJa2lVR06/EChGmFzfENoqrY0b8t7tATXJALMq7knai8=
+	t=1712767881; cv=none; b=apGlwHuUM3auw55Tk07ym0HxxDUXhlmSi4Xseps8xuvQqM1PhOXV0WidVb+KTKanOB0Na3LlB7FXYS3fVXwrbiXweiS3xRr03yoctrbe7gw9J5YJczTfNnvZqcOVjRRMFeCuH9Gzm1pQT1Bul1PZmtJGAjkzJh8Xc7B54+l7PTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712767602; c=relaxed/simple;
-	bh=qii5UQvff+KsRQSbgkC2NNYV6wkpNnpnheroe4v9t/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=JqUVJTSNBfUDi7iQYK2SzUAPNriyCWeHXFr4Q9WJSqwpQEtv3fs9BYfnpIAuEBAZrDLCFD8NcrSReFf6lgTqPwMMxArIomJTyZQC6IRqgo5jZaYjFuBN243y1kXFz1AvfV4CzWb9qxzNw/n1rOdyJ8aDlP6OKGzrAz/kNIcQ8I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rrlISI/1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B60AC433C7;
-	Wed, 10 Apr 2024 16:46:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712767601;
-	bh=qii5UQvff+KsRQSbgkC2NNYV6wkpNnpnheroe4v9t/w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=rrlISI/1hPx3IK1LGSir1GMuUTLKufF2CXZlbXUh8V3HTisTyPo/IdycxxKaDl5Sl
-	 YNca5UxKCfT6KMSIaF389cW7WNDhKt4WD2Ebkne3OzYkvLkJUTIG9/rvoHYzGFzdd9
-	 66E4j2QaPDntzVWR39GfbQSw3AEjHLhTc9ZgwcEDYzv3Bybv5gy8RpS7AxbaefoeWe
-	 EYv0mkkgmKazPoD6f1tM954DWU8fGndLL/dyhlUfHu7y1ZW0UNIgX7HmziGLEeo0kL
-	 cE+xC9JOoQYcwVaJC7JLE45R4W1loTLRhedDrHdpPrP6FCeRFuIcbFx9RiSRKuVpfv
-	 OgS+je+X/CZrg==
-Date: Wed, 10 Apr 2024 11:46:39 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Eric Heintzmann <heintzmann.eric@free.fr>
-Subject: Re: [PATCH] PCI: Add a quirk for preventing D3 on a bridge
-Message-ID: <20240410164639.GA2145972@bhelgaas>
+	s=arc-20240116; t=1712767881; c=relaxed/simple;
+	bh=p/646cMVu7KtWUM17r8JJF8y7OE4P2ZrKN9h0pvE8TA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Vk6yXIXqKt0ZEf0AlYLRYXfS1ur9cZZ1QxH2IMgyLaLmNhpXbo/LbI4PfoZ0ZaHbFftQgi7TBjFlo24z7cVsQ3IM1pJIEtbDLSJg3lGEWuFlQtdrsouN8CyfsurUnXMzSyRlv4Q70BiI86zH56CbJ6KgZ5PyDRdUcBsaDrGjO9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF81s3HTwz67fw4;
+	Thu, 11 Apr 2024 00:49:37 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id AAC89140D26;
+	Thu, 11 Apr 2024 00:51:15 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 17:51:15 +0100
+Date: Wed, 10 Apr 2024 17:51:14 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+CC: "Huang, Ying" <ying.huang@intel.com>, Gregory Price
+	<gourry.memverge@gmail.com>, <aneesh.kumar@linux.ibm.com>, <mhocko@suse.com>,
+	<tj@kernel.org>, <john@jagalactic.com>, Eishan Mirakhur
+	<emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
+	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, Alistair Popple
+	<apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, SeongJae
+ Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Andrew
+ Morton" <akpm@linux-foundation.org>, <nvdimm@lists.linux.dev>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Linux Memory
+ Management List" <linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang"
+	<horenc@vt.edu>, "Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
+	<qemu-devel@nongnu.org>, Hao Xiang <hao.xiang@bytedance.com>
+Subject: Re: [External] Re: [PATCH v11 2/2] memory tier: create CPUless
+ memory tiers after obtaining HMAT info
+Message-ID: <20240410175114.00001e1e@Huawei.com>
+In-Reply-To: <CAKPbEqry55fc51hQ8oUC8so=PD_wWoJMEPiR-eq03BgB5q86Yw@mail.gmail.com>
+References: <20240405000707.2670063-1-horenchuang@bytedance.com>
+	<20240405000707.2670063-3-horenchuang@bytedance.com>
+	<20240405150244.00004b49@Huawei.com>
+	<CAKPbEqpGM_nR+LKbsoFTviBZaKUKYqJ3zbJp9EOCJAGvuPy6aQ@mail.gmail.com>
+	<20240409171204.00001710@Huawei.com>
+	<CAKPbEqry55fc51hQ8oUC8so=PD_wWoJMEPiR-eq03BgB5q86Yw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307163709.323-1-mario.limonciello@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Mar 07, 2024 at 10:37:09AM -0600, Mario Limonciello wrote:
-> Hewlett-Packard HP Pavilion 17 Notebook PC/1972 is an Intel Ivy Bridge
-> system with a muxless AMD Radeon dGPU.  Attempting to use the dGPU fails
-> with the following sequence:
-> 
-> ```
-> ACPI Error: Aborting method \AMD3._ON due to previous error (AE_AML_LOOP_TIMEOUT) (20230628/psparse-529)
-> radeon 0000:01:00.0: not ready 1023ms after resume; waiting
-> radeon 0000:01:00.0: not ready 2047ms after resume; waiting
-> radeon 0000:01:00.0: not ready 4095ms after resume; waiting
-> radeon 0000:01:00.0: not ready 8191ms after resume; waiting
-> radeon 0000:01:00.0: not ready 16383ms after resume; waiting
-> radeon 0000:01:00.0: not ready 32767ms after resume; waiting
-> radeon 0000:01:00.0: not ready 65535ms after resume; giving up
-> radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
-> radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
-> ```
-> 
-> The issue is that the root port the dGPU is connected to can't handle
-> the transition from D3cold to D0 so the dGPU can't properly exit runpm.
-> 
-> The existing logic in pci_bridge_d3_possible() checks for systems that
-> are newer than 2015 to decide that D3 is safe.  This would nominally work
-> for an Ivy Bridge system (which was discontinued in 2015), but this system
-> appears to have continued to receive BIOS updates until 2017 and so this
-> existing logic doesn't appropriately capture it.
-> 
-> Add the system to bridge_d3_blacklist to prevent port pm from being used.
-> 
-> Reported-and-tested-by: Eric Heintzmann <heintzmann.eric@free.fr>
-> Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3229
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+On Tue, 9 Apr 2024 12:02:31 -0700
+"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
 
-Applied to pci/pm for v6.10, thanks!
+> Hi Jonathan,
+>=20
+> On Tue, Apr 9, 2024 at 9:12=E2=80=AFAM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Fri, 5 Apr 2024 15:43:47 -0700
+> > "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
+> > =20
+> > > On Fri, Apr 5, 2024 at 7:03=E2=80=AFAM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote: =20
+> > > >
+> > > > On Fri,  5 Apr 2024 00:07:06 +0000
+> > > > "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
+> > > > =20
+> > > > > The current implementation treats emulated memory devices, such as
+> > > > > CXL1.1 type3 memory, as normal DRAM when they are emulated as nor=
+mal memory
+> > > > > (E820_TYPE_RAM). However, these emulated devices have different
+> > > > > characteristics than traditional DRAM, making it important to
+> > > > > distinguish them. Thus, we modify the tiered memory initializatio=
+n process
+> > > > > to introduce a delay specifically for CPUless NUMA nodes. This de=
+lay
+> > > > > ensures that the memory tier initialization for these nodes is de=
+ferred
+> > > > > until HMAT information is obtained during the boot process. Final=
+ly,
+> > > > > demotion tables are recalculated at the end.
+> > > > >
+> > > > > * late_initcall(memory_tier_late_init);
+> > > > > Some device drivers may have initialized memory tiers between
+> > > > > `memory_tier_init()` and `memory_tier_late_init()`, potentially b=
+ringing
+> > > > > online memory nodes and configuring memory tiers. They should be =
+excluded
+> > > > > in the late init.
+> > > > >
+> > > > > * Handle cases where there is no HMAT when creating memory tiers
+> > > > > There is a scenario where a CPUless node does not provide HMAT in=
+formation.
+> > > > > If no HMAT is specified, it falls back to using the default DRAM =
+tier.
+> > > > >
+> > > > > * Introduce another new lock `default_dram_perf_lock` for adist c=
+alculation
+> > > > > In the current implementation, iterating through CPUlist nodes re=
+quires
+> > > > > holding the `memory_tier_lock`. However, `mt_calc_adistance()` wi=
+ll end up
+> > > > > trying to acquire the same lock, leading to a potential deadlock.
+> > > > > Therefore, we propose introducing a standalone `default_dram_perf=
+_lock` to
+> > > > > protect `default_dram_perf_*`. This approach not only avoids dead=
+lock
+> > > > > but also prevents holding a large lock simultaneously.
+> > > > >
+> > > > > * Upgrade `set_node_memory_tier` to support additional cases, inc=
+luding
+> > > > >   default DRAM, late CPUless, and hot-plugged initializations.
+> > > > > To cover hot-plugged memory nodes, `mt_calc_adistance()` and
+> > > > > `mt_find_alloc_memory_type()` are moved into `set_node_memory_tie=
+r()` to
+> > > > > handle cases where memtype is not initialized and where HMAT info=
+rmation is
+> > > > > available.
+> > > > >
+> > > > > * Introduce `default_memory_types` for those memory types that ar=
+e not
+> > > > >   initialized by device drivers.
+> > > > > Because late initialized memory and default DRAM memory need to b=
+e managed,
+> > > > > a default memory type is created for storing all memory types tha=
+t are
+> > > > > not initialized by device drivers and as a fallback.
+> > > > >
+> > > > > Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+> > > > > Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
+> > > > > Reviewed-by: "Huang, Ying" <ying.huang@intel.com> =20
+> > > >
+> > > > Hi - one remaining question. Why can't we delay init for all nodes
+> > > > to either drivers or your fallback late_initcall code.
+> > > > It would be nice to reduce possible code paths. =20
+> > >
+> > > I try not to change too much of the existing code structure in
+> > > this patchset.
+> > >
+> > > To me, postponing/moving all memory tier registrations to
+> > > late_initcall() is another possible action item for the next patchset.
+> > >
+> > > After tier_mem(), hmat_init() is called, which requires registering
+> > > `default_dram_type` info. This is when `default_dram_type` is needed.
+> > > However, it is indeed possible to postpone the latter part,
+> > > set_node_memory_tier(), to `late_init(). So, memory_tier_init() can
+> > > indeed be split into two parts, and the latter part can be moved to
+> > > late_initcall() to be processed together.
+> > >
+> > > Doing this all memory-type drivers have to call late_initcall() to
+> > > register a memory tier. I=E2=80=99m not sure how many they are?
+> > >
+> > > What do you guys think? =20
+> >
+> > Gut feeling - if you are going to move it for some cases, move it for
+> > all of them.  Then we only have to test once ;)
+> >
+> > J =20
+>=20
+> Thank you for your reminder! I agree~ That's why I'm considering
+> changing them in the next patchset because of the amount of changes.
+> And also, this patchset already contains too many things.
 
-> ---
->  drivers/pci/pci.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index c3585229c12a..9d5d08a420f1 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3102,6 +3102,18 @@ static const struct dmi_system_id bridge_d3_blacklist[] = {
->  			DMI_MATCH(DMI_BOARD_VERSION, "Continental Z2"),
->  		},
->  	},
-> +	{
-> +		/*
-> +		 * Changing power state of root port dGPU is connected fails
-> +		 * https://gitlab.freedesktop.org/drm/amd/-/issues/3229
-> +		 */
-> +		.ident = "Hewlett-Packard HP Pavilion 17 Notebook PC/1972",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Hewlett-Packard"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "1972"),
-> +			DMI_MATCH(DMI_BOARD_VERSION, "95.33"),
-> +		},
-> +	},
->  #endif
->  	{ }
->  };
-> -- 
-> 2.34.1
-> 
+Makes sense.  (Interestingly we are reaching the same conclusion
+for the thread that motivated suggesting bringing them all together
+in the first place!)
+
+Get things work in a clean fashion, then consider moving everything to
+happen at the same time to simplify testing etc.
+
+Jonathan
 
