@@ -1,218 +1,281 @@
-Return-Path: <linux-kernel+bounces-139116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BDD889FECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:41:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D9489FED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:44:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1787E28595A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:41:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 357A1284119
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DB017F36D;
-	Wed, 10 Apr 2024 17:41:17 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA6317F37B;
+	Wed, 10 Apr 2024 17:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S9KsUZZ1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF62817994F;
-	Wed, 10 Apr 2024 17:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BA231A60;
+	Wed, 10 Apr 2024 17:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770877; cv=none; b=LOQvebVVnbeD8ZpHiTs0qzDnGfuI6QmuJm1Y2nK7Bz1eGQqYNb0Zcv2l34Jokrpn2p8u5ctqXfXMVHySaKEsk7VGylFd8w6tFaP+oBqgleFDslna3fGWeRXbHi6Jet9caM0KKDdNISeVMFpM7S3gx8EVnEsZ29kl2FLQh79y7mE=
+	t=1712771048; cv=none; b=U9WFtDT7oXiI+E1FY4BgoGrSPshprsfLipzqUYn4qvSTNk/TqrVnqDvUWVOJHbWvUeDxQFTAvqONBEXWERf18R6GO8v7SzHv1cf7lt2nU9vHdDj9c9SmRO+7vGwFFOiIsxaq5Xd54oHdfHiKcadRihUNjpOOPds2+csu+6Iy+BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770877; c=relaxed/simple;
-	bh=0aKNApkH5cxJA6D2c8OOUEoVR19/Bs8/LdW506TRGlM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s3MBThtk9OJdI9XDAPtA1+vmPDeEjjFT/QLJ88VCQKGdnvtaLCz5mdMhbYPhH5PNzWAUW2RchUZt1Q3R1ZVLr74nb1AemWdyi9XYgwUls/ow+wluUwCbgx/zLdaky45dv52vxy/MRmn73I8U28e7/UXWDh6Gzrp7LDscFLXr6mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCB65C433F1;
-	Wed, 10 Apr 2024 17:41:15 +0000 (UTC)
-Date: Wed, 10 Apr 2024 13:43:52 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com, rdunlap@infradead.org, linux-mm@kvack.org
-Subject: Re: [PATCH v20 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <20240410134352.66d35fbc@gandalf.local.home>
-In-Reply-To: <20240406173649.3210836-3-vdonnefort@google.com>
-References: <20240406173649.3210836-1-vdonnefort@google.com>
-	<20240406173649.3210836-3-vdonnefort@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712771048; c=relaxed/simple;
+	bh=mFAnz9GU98lP3BxM5VrgUDFGq/NcdcLR4hVTVHGEi+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EEk47c1c+2XXa//GTBdbQKTz1w2Ven0NBd9FPbzhwHLEIiZx8j7xv9u9x4r1vvKgvVcI2J4OqID5mGbruDvnFkGs4qlrs3ZBsMRFli4FKOt+V9o2njzgBoMUKPn8iGNqt2VVbv4cQZZQbjOF0H0FrW2WBjhHZLocebG4hDOnc24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S9KsUZZ1; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712771046; x=1744307046;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mFAnz9GU98lP3BxM5VrgUDFGq/NcdcLR4hVTVHGEi+s=;
+  b=S9KsUZZ14Yw8pPawKcrykYK12/Kkv9cd5tGc6jP/09tW5fFlXovo8snk
+   8m7d+9bj5phYhN9blit+RK3kpmCI9lCDgdylMn863PI0sKD2pXXOCLDgk
+   WfSvHx33w1IRRhdW4QRrtZPLrjTsLmbibFYh79WRA+A7KVVn65poEkL1Z
+   LuBuubLNSaUrUya+tFz9ptMK6b0xLx0nVcTV1zSp6b/oQbwg4Q6z2vt79
+   3rNkHWmkdmqEsy8Bn+Gvnx5e3O4e8dYCeF2634Ln9EJP9vMPLHRRZGu2e
+   V7ObUDgX48YHyBkSF+2EjpLfIEwkmE1Il3agJVInxKNUhatcRUKPN1RtU
+   Q==;
+X-CSE-ConnectionGUID: YlqNmV8OSsGdqvb7nhjqbw==
+X-CSE-MsgGUID: Ad64L4WoSXyWZR3SEfkC2A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="19541750"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="19541750"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:44:05 -0700
+X-CSE-ConnectionGUID: 5lBF0UlbR/yN5YAg1QfU+w==
+X-CSE-MsgGUID: 9qcLi33VSbSb+aRG0FBuWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="20701283"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:44:05 -0700
+Date: Wed, 10 Apr 2024 10:44:03 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
+ creation
+Message-ID: <ZhbP4yMTxkLRiCSp@aschofie-mobl2>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
 
-On Sat,  6 Apr 2024 18:36:46 +0100
-Vincent Donnefort <vdonnefort@google.com> wrote:
+On Sun, Mar 24, 2024 at 04:18:17PM -0700, Ira Weiny wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Dynamic capacity device extents may be left in an accepted state on a
+> device due to an unexpected host crash.  In this case creation of a new
+> region on top of the DC partition (region) is expected to expose those
+> extents for continued use.
+> 
+> Once all endpoint decoders are part of a region and the region is being
+> realized read the device extent list.  For ease of review, this patch
+> stops after reading the extent list and leaves realization of the region
+> extents to a future patch.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1:
+> [iweiny: remove extent list xarray]
+> [iweiny: Update spec references to 3.1]
+> [iweiny: use struct range in extents]
+> [iweiny: remove all reference tracking and let regions track extents
+> 	 through the extent devices.]
+> [djbw/Jonathan/Fan: move extent tracking to endpoint decoders]
+> ---
+>  drivers/cxl/core/core.h   |   9 +++
+>  drivers/cxl/core/mbox.c   | 192 ++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/cxl/core/region.c |  29 +++++++
+>  drivers/cxl/cxlmem.h      |  49 ++++++++++++
+>  4 files changed, 279 insertions(+)
 
-> +int ring_buffer_map(struct trace_buffer *buffer, int cpu,
-> +		    struct vm_area_struct *vma)
+snip
+
+> 
+> +static int cxl_validate_extent(struct cxl_memdev_state *mds,
+> +			       struct cxl_dc_extent *dc_extent)
 > +{
-> +	struct ring_buffer_per_cpu *cpu_buffer;
-> +	unsigned long flags, *subbuf_ids;
-> +	int err = 0;
+> +	struct device *dev = mds->cxlds.dev;
+> +	uint64_t start, len;
 > +
-> +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-> +		return -EINVAL;
+> +	start = le64_to_cpu(dc_extent->start_dpa);
+> +	len = le64_to_cpu(dc_extent->length);
 > +
-> +	cpu_buffer = buffer->buffers[cpu];
+> +	/* Extents must not cross region boundary's */
+> +	for (int i = 0; i < mds->nr_dc_region; i++) {
+> +		struct cxl_dc_region_info *dcr = &mds->dc_region[i];
 > +
-> +	mutex_lock(&cpu_buffer->mapping_lock);
-> +
-> +	if (cpu_buffer->mapped) {
-> +		err = __rb_map_vma(cpu_buffer, vma);
-> +		if (!err)
-> +			err = __rb_inc_dec_mapped(cpu_buffer, true);
-> +		mutex_unlock(&cpu_buffer->mapping_lock);
-> +		return err;
+
+I think you already got range_contains suggestion
+
+> +		if (dcr->base <= start &&
+> +		    (start + len) <= (dcr->base + dcr->decode_len)) {
+> +			dev_dbg(dev, "DC extent DPA %#llx - %#llx (DCR:%d:%#llx)\n",
+> +				start, start + len - 1, i, start - dcr->base);
+> +			return 0;
+> +		}
 > +	}
 > +
-> +	/* prevent another thread from changing buffer/sub-buffer sizes */
-> +	mutex_lock(&buffer->mutex);
-> +
-> +	err = rb_alloc_meta_page(cpu_buffer);
-> +	if (err)
-> +		goto unlock;
-> +
-> +	/* subbuf_ids include the reader while nr_pages does not */
-> +	subbuf_ids = kcalloc(cpu_buffer->nr_pages + 1, sizeof(*subbuf_ids), GFP_KERNEL);
-> +	if (!subbuf_ids) {
-> +		rb_free_meta_page(cpu_buffer);
-> +		err = -ENOMEM;
-> +		goto unlock;
-> +	}
-> +
-> +	atomic_inc(&cpu_buffer->resize_disabled);
-> +
-> +	/*
-> +	 * Lock all readers to block any subbuf swap until the subbuf IDs are
-> +	 * assigned.
-> +	 */
-> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +	rb_setup_ids_meta_page(cpu_buffer, subbuf_ids);
-> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +
-> +	err = __rb_map_vma(cpu_buffer, vma);
-> +	if (!err) {
-> +		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +		cpu_buffer->mapped = 1;
-> +		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +	} else {
-> +		kfree(cpu_buffer->subbuf_ids);
-> +		cpu_buffer->subbuf_ids = NULL;
-> +		rb_free_meta_page(cpu_buffer);
-> +	}
-> +unlock:
+> +	dev_err_ratelimited(dev,
+> +			    "DC extent DPA %#llx - %#llx is not in any DC region\n",
+> +			    start, start + len - 1);
 
-Nit: For all labels, please add a space before them. Otherwise, diffs will
-show "unlock" as the function and not "ring_buffer_map", making it harder
-to find where the change is.
+Need some clarification.
+Isn't this checking that the extent is fully contained within a region?
+And then, it dev_err's if not fully contained. There is not actually
+a check and an error message about crossing region boundary's as the
+comment suggests.  Maybe update the comment to reflect the work.. like:
 
-Same for the labels below.
-
--- Steve
+/* Extent must be fully contained in a region */
 
 
-> +	mutex_unlock(&buffer->mutex);
-> +	mutex_unlock(&cpu_buffer->mapping_lock);
-> +
-> +	return err;
+> +	return -EINVAL;
 > +}
 > +
-> +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu)
+> +static bool cxl_dc_extent_in_ed(struct cxl_endpoint_decoder *cxled,
+> +				struct cxl_dc_extent *extent)
 > +{
-> +	struct ring_buffer_per_cpu *cpu_buffer;
-> +	unsigned long flags;
-> +	int err = 0;
+> +	uint64_t start = le64_to_cpu(extent->start_dpa);
+> +	uint64_t length = le64_to_cpu(extent->length);
+
+u64 here (and in other places too)
+
+
+> +	struct range ext_range = (struct range){
+> +		.start = start,
+> +		.end = start + length - 1,
+> +	};
+> +	struct range ed_range = (struct range) {
+> +		.start = cxled->dpa_res->start,
+> +		.end = cxled->dpa_res->end,
+> +	};
 > +
-> +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-> +		return -EINVAL;
+> +	dev_dbg(&cxled->cxld.dev, "Checking ED (%pr) for extent DPA:%#llx LEN:%#llx\n",
+> +		cxled->dpa_res, start, length);
 > +
-> +	cpu_buffer = buffer->buffers[cpu];
-> +
-> +	mutex_lock(&cpu_buffer->mapping_lock);
-> +
-> +	if (!cpu_buffer->mapped) {
-> +		err = -ENODEV;
-> +		goto out;
-> +	} else if (cpu_buffer->mapped > 1) {
-> +		__rb_inc_dec_mapped(cpu_buffer, false);
-> +		goto out;
-> +	}
-> +
-> +	mutex_lock(&buffer->mutex);
-> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +
-> +	cpu_buffer->mapped = 0;
-> +
-> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +
-> +	kfree(cpu_buffer->subbuf_ids);
-> +	cpu_buffer->subbuf_ids = NULL;
-> +	rb_free_meta_page(cpu_buffer);
-> +	atomic_dec(&cpu_buffer->resize_disabled);
-> +
-> +	mutex_unlock(&buffer->mutex);
-> +out:
-> +	mutex_unlock(&cpu_buffer->mapping_lock);
-> +
-> +	return err;
+> +	return range_contains(&ed_range, &ext_range);
 > +}
 > +
-> +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu)
+>  void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+>  			    enum cxl_event_log_type type,
+>  			    enum cxl_event_type event_type,
+> @@ -973,6 +1020,15 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
+>  	return rc;
+>  }
+>  
+> +static struct cxl_memdev_state *
+> +cxled_to_mds(struct cxl_endpoint_decoder *cxled)
 > +{
-> +	struct ring_buffer_per_cpu *cpu_buffer;
-> +	unsigned long reader_size;
-> +	unsigned long flags;
+> +	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
+> +	struct cxl_dev_state *cxlds = cxlmd->cxlds;
 > +
-> +	cpu_buffer = rb_get_mapped_buffer(buffer, cpu);
-> +	if (IS_ERR(cpu_buffer))
-> +		return (int)PTR_ERR(cpu_buffer);
+> +	return container_of(cxlds, struct cxl_memdev_state, cxlds);
+> +}
 > +
-> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +consume:
-> +	if (rb_per_cpu_empty(cpu_buffer))
-> +		goto out;
+
+That's nice!
+
+
+>  static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
+>  				    enum cxl_event_log_type type)
+>  {
+> @@ -1406,6 +1462,142 @@ int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
+>  
+> +static int cxl_dev_get_dc_extent_cnt(struct cxl_memdev_state *mds,
+
+Perhaps drop the _dev_ from this (and other, like below) function names.
+
+> +static int cxl_dev_get_dc_extents(struct cxl_endpoint_decoder *cxled,
+
+
+snip
+
+> +/**
+> + * cxl_read_dc_extents() - Read any existing extents
+> + * @cxled: Endpoint decoder which is part of a region
+> + *
+> + * Issue the Get Dynamic Capacity Extent List command to the device
+> + * and add any existing extents found which belong to this decoder.
+> + *
+> + * Return: 0 if command was executed successfully, -ERRNO on error.
+> + */
+> +int cxl_read_dc_extents(struct cxl_endpoint_decoder *cxled)
+> +{
+> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
+> +	struct device *dev = mds->cxlds.dev;
+> +	unsigned int extent_gen_num;
+> +	int rc;
 > +
-> +	reader_size = rb_page_size(cpu_buffer->reader_page);
-> +
-> +	/*
-> +	 * There are data to be read on the current reader page, we can
-> +	 * return to the caller. But before that, we assume the latter will read
-> +	 * everything. Let's update the kernel reader accordingly.
-> +	 */
-> +	if (cpu_buffer->reader_page->read < reader_size) {
-> +		while (cpu_buffer->reader_page->read < reader_size)
-> +			rb_advance_reader(cpu_buffer);
-> +		goto out;
+> +	if (!cxl_dcd_supported(mds)) {
+> +		dev_dbg(dev, "DCD unsupported\n");
+> +		return 0;
 > +	}
 > +
-> +	if (WARN_ON(!rb_get_reader_page(cpu_buffer)))
-> +		goto out;
+> +	rc = cxl_dev_get_dc_extent_cnt(mds, &extent_gen_num);
+> +	dev_dbg(mds->cxlds.dev, "Extent count: %d Generation Num: %d\n",
+
+Either use the *dev defined in both dev_dbg()'s or get rid of it use mds->cxlds.dev.
+
+> +		rc, extent_gen_num);
+> +	if (rc <= 0) /* 0 == no records found */
+> +		return rc;
 > +
-> +	goto consume;
-> +out:
-> +	/* Some archs do not have data cache coherency between kernel and user-space */
-> +	flush_dcache_folio(virt_to_folio(cpu_buffer->reader_page->page));
+> +	return cxl_dev_get_dc_extents(cxled, extent_gen_num, rc);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_read_dc_extents, CXL);
 > +
-> +	rb_update_meta_page(cpu_buffer);
+
+snip
+
+>  
+> +static int cxl_region_read_extents(struct cxl_region *cxlr)
+> +{
+
+How about:
+static int cxl_region_read_extents(struct cxl_region_params *p)
+
+
+> +	struct cxl_region_params *p = &cxlr->params;
+> +	int i;
 > +
-> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +	rb_put_mapped_buffer(cpu_buffer);
+> +	for (i = 0; i < p->nr_targets; i++) {
+> +		int rc;
+> +
+> +		rc = cxl_read_dc_extents(p->targets[i]);
+> +		if (rc)
+> +			return rc;
+> +	}
 > +
 > +	return 0;
 > +}
-> +
->  /*
->   * We only allocate new buffers, never free them if the CPU goes down.
->   * If we were to free the buffer, then the user would lose any trace that was in
 
+snip to end
 
