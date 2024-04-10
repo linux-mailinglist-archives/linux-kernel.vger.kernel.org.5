@@ -1,189 +1,154 @@
-Return-Path: <linux-kernel+bounces-138844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B846F89FB58
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:18:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2B789FB2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3D49B2ABA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:07:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12BBA1F2EB22
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1E916E873;
-	Wed, 10 Apr 2024 15:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 442C516EC18;
+	Wed, 10 Apr 2024 15:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="rUfT5de2"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RBNh+tqa"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A22216D4DB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB50816EBF3;
+	Wed, 10 Apr 2024 15:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761662; cv=none; b=VK3hKo+wlf8904HufqpEAptb/AJk2GrAN/vutxliLBZ+PNgk52zmM78s0w3Q2waBeMR1qkmQ9EIoD8hjv1e3etQAIFHEq9bMnwyj4UVLSivWJiZ8yWeIZOd0uIDhbRL8Bo2Hucz7xVgwB8eDGIyCTqepbB/uKQxAagvBvx1bwuc=
+	t=1712761849; cv=none; b=YHRsLiURS34CaQDbMvNNKRRhie53JdPiBwulGC97N0wrKdzg58ujAKyyLuD3YogM1RZWfWB1yiP7loSdqIpN7dDGnsJNxWkhWm1M9HgxmAUCWjeSVOp9RhdtXdsb5/z5ufC5gFUUOZ04N9DmNc5yTXiWRvjC8tomU/Vm9CezDUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761662; c=relaxed/simple;
-	bh=uahkF1VOEWvbo4wDDrFwOjLhjLjNoYbSCjv9ymH8OPg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C/zN2X43UnMX0NFn6LZP632tPURFmd3bQeHwVuK+qQjr1mJkm88ufRMmZaGdAL3OzJIgCfUPWTZJnKDEYlJlxLkCKlaZhz1erjfzglRTo887dRm0SawEPiN1269ZD++epDlvARAvUrPyAHRWfTz26jjIOx7C51h9QToIr4aqO+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=rUfT5de2; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-346359c8785so1108389f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712761657; x=1713366457; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+P+72Hlq99kFNnxAOkF8xNKRqdp0Nj1rk4leGd6q+bQ=;
-        b=rUfT5de2xpcVvd0Qjs4/cQiBCc7lcADNRcqjK02yAvZN6/LGBSJ5jfEAwu+yG+4VKf
-         6fd/StcMagj2tILBeaeecaKRnPekGP5yN3OL68ufh2ULHCuzS9VyzNUozxhyVf7Nnv1N
-         6iyMRcVXrEZcRVQW5wkF4jlgDN+gx14aUeKNwHa3UwwBnRcjgLYC+aJxZh68f7GTGAuR
-         6s7fNU9T0Y5YHFxl1CCtDvpCVlGlkH5zdvINZG0UzTxsv2u17oFRcnx7RWIw5pNyj+df
-         uv5OvIrc1JZqV6TgZKgtoO1tKDQsmXky0JfHwgUdvFXEGSQxyg3CWmsnk2abs+V4FNSw
-         XrQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712761657; x=1713366457;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+P+72Hlq99kFNnxAOkF8xNKRqdp0Nj1rk4leGd6q+bQ=;
-        b=ClFrbpXkfTCSY5HgCLq/7cfb84LdlDL59Nj5Xkm6UMJxg6nsL9TFtbdyk41iEzmbZf
-         LRabtNNgljhmyQ5fTKH/bpxzFRKws5HxyNAhHK5lTgX/nkjMJMMN+qiu2ixAs77dnnQ1
-         cKbtwHNO8LvINabHSXTCc8VJgC68tv2ZAvCCayY2EKnmmVWxM6dMxLGhuFASf25ZsEfO
-         Y2ZepnqndF8QTowmgLOTGBns23nzx8mjMOu0LpoWEoulHMOTgl/hTPW3cvXCy8M+LrwT
-         Ao5cerYRppYmvhU2IwIAIDwIRjW9vMB1GdUsHoaIjxmFUk4Dad+Z5utMi/BToOf2tASE
-         tkgg==
-X-Forwarded-Encrypted: i=1; AJvYcCXr1hv6ucIRTmOhfgQrw1+HcbtPlhsAydsAtZhhz2Gl4w5X3o3Ebq0ZN1tfYSerMSw09J/ljuoGCh0oz3nEjESS1kWDYombzNdN458G
-X-Gm-Message-State: AOJu0YwUPkDwM/OEjftm1rNocYumSf7RfNUPXkZpDAIkPjdAZJwAJFFS
-	hM+HgevVzHgobeSUnFUPqc77eUK4K8/Di8ztOPt0Xjl+nvfEQje0RdYxRtRkn/I=
-X-Google-Smtp-Source: AGHT+IFhnB0gsdOm+IB5xuyR92fHk4A/RRmX5WG9qW/Rsc9kuPzli806ObV+/wdLIouJrwCNwH1GSA==
-X-Received: by 2002:a5d:47a7:0:b0:343:bb25:82f0 with SMTP id 7-20020a5d47a7000000b00343bb2582f0mr2577063wrb.11.1712761657374;
-        Wed, 10 Apr 2024 08:07:37 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id c8-20020adfe748000000b00343a0e2375esm13906254wrn.27.2024.04.10.08.07.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 08:07:37 -0700 (PDT)
-Message-ID: <65b3ec7e-e753-4692-b778-a9246e9e6664@baylibre.com>
-Date: Wed, 10 Apr 2024 17:07:34 +0200
+	s=arc-20240116; t=1712761849; c=relaxed/simple;
+	bh=m8eE0AcwzEs5wRNkzi5ro5vJAfqsbE5UexQ/HfZKWAY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jns02tMeOqB73+l9lpNUjwm2ky9HJ2PG76VLJxDFTwahKN1pNM/rhGdoFz7OekiUYo+lyR4LviWzQvafv1SMFnyvNz5i9kcVWMB5jgPZU91GsOF4kG2VhTFvhMVcuZWCrIdqHO45dLCQZN3PD0V6w1Yss5cLPX8askGy5PptN74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RBNh+tqa; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AF76LJ019812;
+	Wed, 10 Apr 2024 15:09:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=S7Sh61Dwbw08Hj8QqXjKFpfPZZqM0K8Q6t/Sk/b6f4Y=;
+ b=RBNh+tqaPKTIhKRa+KG5KVN8s36DSZb74fobi7BHt6HaQooIAqn/PnkXtM8BFDHjTW+T
+ 9Oe7e3W0pDJfG2AND0nSgmRwdo8D2aLCqQefluGkBM4m60b/Xvjk9mbd9+jKsgyYV2+w
+ 5FkVXCrQYAWjxIPBhKwF0Q+sSUwCop+qt7zi3kJBvvqlHJQa3qBjPZXmiolZNWRbKcdN
+ T4+N/BMWsK/adOJnp3scBxfQIr7K/XywKizk6fCJK6s6IB0XFLJFRl51fxKxttjZ+OaV
+ WT5jo+MQ6BycbKjoYZrj6u2Q5HzOZNrsemRJBGbHnfW8VAeGmLgM/M1pFcVm00xc6GuC GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdw4n806d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:09:56 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AF9uAj023241;
+	Wed, 10 Apr 2024 15:09:56 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdw4n806a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:09:56 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43ACSJid016982;
+	Wed, 10 Apr 2024 15:09:55 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbke2n0jm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:09:54 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AF9nam48562646
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 15:09:51 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 265842004F;
+	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 125DF2004B;
+	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+	id CA30CE0301; Wed, 10 Apr 2024 17:09:48 +0200 (CEST)
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH v2 RESEND 0/5] sched/vtime: vtime.h headers cleanup
+Date: Wed, 10 Apr 2024 17:09:43 +0200
+Message-Id: <cover.1712760275.git.agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/18] ASoC: mediatek: mt8186-rt1019: Migrate to the
- common mtk_soundcard_startup
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- broonie@kernel.org
-Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
- trevor.wu@mediatek.com, maso.huang@mediatek.com,
- xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
- kuninori.morimoto.gx@renesas.com, shraash@google.com,
- nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
- dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
- eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
- jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
- ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
- nfraprado@collabora.com, alsa-devel@alsa-project.org,
- shane.chien@mediatek.com, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
- <20240409113310.303261-11-angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20240409113310.303261-11-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 43tJPVhQ1qfmHz2XICzEeDqIzqiN8NXK
+X-Proofpoint-ORIG-GUID: iPRydWYHzjU6SLaIr79RnupfQ4DzWgiA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ adultscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=787 bulkscore=0 impostorscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100109
 
-What is the purpose of these change ? I don't see the link with the 
-migration to the common mtk_soundcard_startup.
+Hi All,
 
-On 09/04/2024 13:33, AngeloGioacchino Del Regno wrote:
-> diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c b/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
-> index bfcfc68ac64d..dbe5afa0e9ee 100644
-> --- a/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
-> +++ b/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
-> @@ -2729,7 +2729,7 @@ static int mt8186_afe_runtime_resume(struct device *dev)
->   	struct mtk_base_afe *afe = dev_get_drvdata(dev);
->   	struct mt8186_afe_private *afe_priv = afe->platform_priv;
->   	int ret;
-> -
-> +pr_err("mt8186 afe runtime_resume\n");
+There are no changes since the last post, just a re-send.
 
-Forgot to remove this print ?
+v2:
+- patch 4: commit message reworded (Heiko)
+- patch 5: vtime.h is removed from Kbuild scripts (PowerPC only) (Heiko)
 
->   	ret = mt8186_afe_enable_clock(afe);
->   	if (ret)
->   		return ret;
-> @@ -2739,7 +2739,7 @@ static int mt8186_afe_runtime_resume(struct device *dev)
->   		return ret;
->   
->   	if (!afe->regmap || afe_priv->pm_runtime_bypass_reg_ctl)
-> -		goto skip_regmap;
-> +		return 0;
->   
->   	regcache_cache_only(afe->regmap, false);
->   	regcache_sync(afe->regmap);
-> @@ -2758,13 +2758,20 @@ static int mt8186_afe_runtime_resume(struct device *dev)
->   	/* enable AFE */
->   	regmap_update_bits(afe->regmap, AFE_DAC_CON0, AUDIO_AFE_ON_MASK_SFT, BIT(0));
->   
-> -skip_regmap:
->   	return 0;
->   }
->   
->   static int mt8186_afe_component_probe(struct snd_soc_component *component)
->   {
-> -	mtk_afe_add_sub_dai_control(component);
-> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-> +	int ret;
-> +
-> +	snd_soc_component_init_regmap(component, afe->regmap);
-> +
-> +	ret = mtk_afe_add_sub_dai_control(component);
-> +	if (ret)
-> +		return ret;
-> +
->   	mt8186_add_misc_control(component);
->   
->   	return 0;
-> @@ -2929,6 +2936,10 @@ static int mt8186_afe_pcm_dev_probe(struct platform_device *pdev)
->   		goto err_pm_disable;
->   	}
->   
-> +	ret = regmap_reinit_cache(afe->regmap, &mt8186_afe_regmap_config);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "regmap_reinit_cache fail\n");
-> +
->   	/* others */
->   	afe->mtk_afe_hardware = &mt8186_afe_hardware;
->   	afe->memif_fs = mt8186_memif_fs;
-> diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> index dbd157d1a1ea..b87b04928678 100644
-> --- a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> +++ b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> @@ -413,7 +413,7 @@ static const struct snd_soc_dapm_widget mtk_dai_adda_widgets[] = {
->   			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
->   
->   	SND_SOC_DAPM_SUPPLY_S("AUD_PAD_TOP", SUPPLY_SEQ_ADDA_AUD_PAD_TOP,
-> -			      AFE_AUD_PAD_TOP, RG_RX_FIFO_ON_SFT, 0,
-> +			      SND_SOC_NOPM, 0, 0,
+v1:
+Please find a small cleanup to vtime_task_switch() wiring.
+I split it into smaller patches to allow separate PowerPC
+vs s390 reviews. Otherwise patches 2+3 and 4+5 could have
+been merged.
 
-Is it related to the regmap init function added in the AFE PCM probe ?
+I tested it on s390 and compile-tested it on 32- and 64-bit
+PowerPC and few other major architectures only, but it is
+only of concern for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE-capable
+ones (AFAICT).
 
->   			      mtk_adda_pad_top_event,
->   			      SND_SOC_DAPM_PRE_PMU),
->   	SND_SOC_DAPM_SUPPLY_S("ADDA_MTKAIF_CFG", SUPPLY_SEQ_ADDA_MTKAIF_CFG,
+Thanks!
+
+
+Alexander Gordeev (5):
+  sched/vtime: remove confusing arch_vtime_task_switch() declaration
+  sched/vtime: get rid of generic vtime_task_switch() implementation
+  s390/vtime: remove unused __ARCH_HAS_VTIME_TASK_SWITCH leftover
+  s390/irq,nmi: include <asm/vtime.h> header directly
+  sched/vtime: do not include <asm/vtime.h> header
+
+ arch/powerpc/include/asm/Kbuild    |  1 -
+ arch/powerpc/include/asm/cputime.h | 13 -------------
+ arch/powerpc/kernel/time.c         | 22 ++++++++++++++++++++++
+ arch/s390/include/asm/vtime.h      |  2 --
+ arch/s390/kernel/irq.c             |  1 +
+ arch/s390/kernel/nmi.c             |  1 +
+ include/asm-generic/vtime.h        |  1 -
+ include/linux/vtime.h              |  5 -----
+ kernel/sched/cputime.c             | 13 -------------
+ 9 files changed, 24 insertions(+), 35 deletions(-)
+ delete mode 100644 include/asm-generic/vtime.h
 
 -- 
-Regards,
-Alexandre
+2.40.1
+
 
