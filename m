@@ -1,79 +1,56 @@
-Return-Path: <linux-kernel+bounces-138434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E434689F12D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:48:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E5289F179
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9E11C21B3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:48:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6AD9B24B74
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331E815ADAA;
-	Wed, 10 Apr 2024 11:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE5415ADBF;
+	Wed, 10 Apr 2024 11:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V77AW2D6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="RQliOMsu"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D882837B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8790C159909;
+	Wed, 10 Apr 2024 11:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712749717; cv=none; b=lYdZsmkN2oI6LmzuMI2GAqqZwa35BVL2cW/02POPEvUj3RPayu08vAVSpCzIcC9USUK79ZQfJiRTkReeMm8aRdtJzCVKV+b+PB/VRDCAmZrfxu3bTExYs8P6MQgN5cbQYusMF9Dt4Cv0k/5t/05zWbGfkPywxFmdZISbircreJ4=
+	t=1712749989; cv=none; b=tMxe1UZtoRCPsvm8lJX8aO/E7IGBxOOa0LVeWHQtUlRrkhJvNk8PcS/6GrGFITaNRcwZTwMCSbH1/nUEVNotxExYDsqVOZbmmNoI+5EI+IF+wWhmbndderTmnj4V1x8qMqnSb7c3udeKUUWA4IjwZNKAEsPLaRz85cwDbFwSN8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712749717; c=relaxed/simple;
-	bh=KSk84KldP3i/N39dUMXd2SrMF4EJlh8o6xnwO4yPJHA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TM+P3s8iGT0SuibVZfho+hmm/I7wbzhITN6+vjYlK+t5w01ikPcqLH48xS/397HdHAleWpi81ryPJBpLvUl6lGxOgafEarlJBDLOow60QCTWOxGM1vcoL1paG/YomG3V46YmPwq6OPqHHBDz0Bf6+i2fD14mCIqLw7OTJ8/9r5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V77AW2D6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712749714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Hgz+WKKNpX8kuTtB/qmB4UwO1pKBtPOgiyiwsLQlcQ=;
-	b=V77AW2D6feltAtJSGG4LXacn4rpPiFJ7Rx3WrMuWcMYpdBInwqcPBlMGiSDgIZNWr5qp+J
-	vZCbaXuJOndaMl/m1rzBcApsVBr7kCe4I5IXuvg0BOJBccw9WO8x5KD1nXhO3rsGIsYxcw
-	PkRK3kCZNlmZWGFsZRLpA4i0clrH8RU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-178-zCzRxK9UPZq2FsMWa5qBhQ-1; Wed, 10 Apr 2024 07:48:33 -0400
-X-MC-Unique: zCzRxK9UPZq2FsMWa5qBhQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51b00fc137so303296366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:48:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712749712; x=1713354512;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Hgz+WKKNpX8kuTtB/qmB4UwO1pKBtPOgiyiwsLQlcQ=;
-        b=UxtwOiZi8Ycdx2AszCnvMtDYCRACF8xVLdF7INu9uESyUXq/I8ezijxh0ShuunmgDx
-         iJq5hanUjciooCYz+SZ4mKjrsl44ZdfzApl94b7eh6Nd3xkfkk+hYNyqQSMRMVVWV/zD
-         OhWrh2ctQgFHXRJdQtQldLEuhjiXc0BalQcBLjhHjPVMrM8zc50BkFShcSa8mI8aJzoP
-         d7TcP+2C058udhTXzv2kTaQ0Ga55EBB+Id4CvWG2JgJz7teU0Gqmk33ALvg2jn03iF+1
-         ejnIETt3sGlPlLhJkOm2AI4wLeXskMlP84ZUqnTxCF7gy8LKQmpkfnfAD70tGbn5804H
-         JfCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUFpsCm2+AZpmLXXtm6vw4HlA27rZ2/I3t1sM3sg4rSNq69CG9z+LceabtegsnqzduLQaTGNW5EuoIYGP+RAMkg6BiYxNedGSL/WGmy
-X-Gm-Message-State: AOJu0YwtQrEAgDteg62Zri+dSBGJm/BmtNAbWd2JTMAh034PgvADLi+E
-	yRpJ7qdm2sEMJjfKBqiMeT5m0omDDRFx0f5vpHcSK25NlktANPBYga6aYaeU7ojgQFZAvEieGm0
-	TUoZVgoeaKHrCznrd7uU8Zbtj9gOKsMz/7K/25LTuxnrFO2/pERCzqmJUxDGDmw==
-X-Received: by 2002:a17:906:66c8:b0:a4e:4e76:5fc7 with SMTP id k8-20020a17090666c800b00a4e4e765fc7mr1634794ejp.65.1712749712021;
-        Wed, 10 Apr 2024 04:48:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkcmmuuLNmbHAa9veWZrKrdL2BsI5D3agKppJCjJD/xmaktuasqemf2nxiHYY8y1tBaQo+9g==
-X-Received: by 2002:a17:906:66c8:b0:a4e:4e76:5fc7 with SMTP id k8-20020a17090666c800b00a4e4e765fc7mr1634772ejp.65.1712749711612;
-        Wed, 10 Apr 2024 04:48:31 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id qq18-20020a17090720d200b00a51cdf560b9sm4433981ejb.37.2024.04.10.04.48.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 04:48:31 -0700 (PDT)
-Message-ID: <d330e0fa-fc50-4920-9000-c6343f5f101b@redhat.com>
-Date: Wed, 10 Apr 2024 13:48:30 +0200
+	s=arc-20240116; t=1712749989; c=relaxed/simple;
+	bh=N84XgSg1KHPNSkXpmcgoVPYP9AWL9ZJCU/gwTzWn3Bo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lOB6iQQdicq6FnHF8kRyH4tVrIp/aUpV7VJoXc3hlFHBEzZDBj5XvEtq3XSbVxgc1NnJGwzXpOHz7gktqYMJnvimkt3oghoudJXE84U+dvsA4QO2klH1x0AxIQ/wvb9ggRj4i0F7qpelBWAFYiginfxEuf9m8vYCxciHWxUTjYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=RQliOMsu; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id EE41D100002;
+	Wed, 10 Apr 2024 14:52:47 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1712749968; bh=WJUH5RzBi6ThGn7KLoC7JkfiYKeYqyZ7xZhKdtRWAfI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	b=RQliOMsu1CsL31rk+zQjPobaWvn+7OwssPGXLDAJ+1nrXH73GfJMiDa40pyBFnRgX
+	 VxOKnIToEshOUVnEKsNPRAp0Mn3NshZS8btJeySsDzHwq/aB/9qbr7GnBmnxg0BE8x
+	 kFiKKS5PAoSbjPpqGWmO0wU1NPII/F6aIJK1glUeZXWXb/9OeBjYjD8RgcjUlk5bJA
+	 poHWEuPxI90WUuhK1z7Sk987Qw5HhcY84iVNmX1gpBQimVp6jV+OUlAB34cQ8mNCyV
+	 1KFcLby75BVoh6OUZQjHDgTMwrkLcMW+xdSf3dOTjKLpuaX5tw3C9VCtZVRUixszSN
+	 yjJxeVhcGyngQ==
+Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 14:51:29 +0300 (MSK)
+Received: from [172.17.214.6] (172.17.214.6) by ta-mail-02 (172.17.13.212)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 10 Apr
+ 2024 14:51:09 +0300
+Message-ID: <2b06e6b2-6fa0-48fa-800b-7aad6735daa6@t-argos.ru>
+Date: Wed, 10 Apr 2024 14:48:41 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,84 +58,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] media: v4l: Don't turn on privacy LED if streamon
- fails
-To: Sakari Ailus <sakari.ailus@linux.intel.com>, linux-media@vger.kernel.org
-Cc: tomi.valkeinen@ideasonboard.com,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
- <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Umang Jain <umang.jain@ideasonboard.com>, linux-kernel@vger.kernel.org
-References: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] drm/msm/dpu: Add callback function pointer check before
+ its call
+Content-Language: ru
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Abhinav Kumar
+	<quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, Marijn Suijten
+	<marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Neil Armstrong <neil.armstrong@linaro.org>, Stephen
+ Boyd <swboyd@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+References: <20240408085523.12231-1-amishin@t-argos.ru>
+ <CAA8EJppTM4tpsFaZKupPe=0Oc9qDp7dBqHyHGP4E5bTHKT=hSw@mail.gmail.com>
+From: Aleksandr Mishin <amishin@t-argos.ru>
+In-Reply-To: <CAA8EJppTM4tpsFaZKupPe=0Oc9qDp7dBqHyHGP4E5bTHKT=hSw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184651 [Apr 10 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1;git.kernel.org:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/10 07:25:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/10 08:25:00 #24735279
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Hi,
 
-On 4/10/24 1:47 PM, Sakari Ailus wrote:
-> Turn on the privacy LED only if streamon succeeds. This can be done after
-> enabling streaming on the sensor.
+
+On 08.04.2024 12:03, Dmitry Baryshkov wrote:
+> On Mon, 8 Apr 2024 at 11:57, Aleksandr Mishin <amishin@t-argos.ru> wrote:
+>>
+>> In dpu_core_irq_callback_handler() callback function pointer is compared to NULL,
+>> but then callback function is unconditionally called by this pointer.
+>> Fix this bug by adding conditional return.
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
-> Fixes: b6e10ff6c23d ("media: v4l2-core: Make the v4l2-core code enable/disable the privacy LED if present")
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/media/v4l2-core/v4l2-subdev.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+> This should be converted to a proper Reported-by: trailer.
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 4c6198c48dd6..012b757eac9f 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -412,15 +412,6 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->  	if (WARN_ON(!!sd->enabled_streams == !!enable))
->  		return 0;
->  
-> -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> -		if (enable)
-> -			led_set_brightness(sd->privacy_led,
-> -					   sd->privacy_led->max_brightness);
-> -		else
-> -			led_set_brightness(sd->privacy_led, 0);
-> -	}
-> -#endif
->  	ret = sd->ops->video->s_stream(sd, enable);
->  
->  	if (!enable && ret < 0) {
-> @@ -428,9 +419,20 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->  		ret = 0;
->  	}
->  
-> -	if (!ret)
-> +	if (!ret) {
->  		sd->enabled_streams = enable ? BIT(0) : 0;
->  
-> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> +		if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> +			if (enable)
-> +				led_set_brightness(sd->privacy_led,
-> +						   sd->privacy_led->max_brightness);
-> +			else
-> +				led_set_brightness(sd->privacy_led, 0);
-> +		}
-> +#endif
-> +	}
-> +
->  	return ret;
->  }
->  
 
+It is an established practice for our project, you can find 700+ applied
+patches with similar line:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=linuxtesting.org
+
+>>
+>> Fixes: c929ac60b3ed ("drm/msm/dpu: allow just single IRQ callback")
+>> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+>> index 946dd0135dff..03a16fbd4c99 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+>> @@ -223,9 +223,11 @@ static void dpu_core_irq_callback_handler(struct dpu_kms *dpu_kms, unsigned int
+>>
+>>          VERB("IRQ=[%d, %d]\n", DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
+>>
+>> -       if (!irq_entry->cb)
+>> +       if (!irq_entry->cb) {
+>>                  DRM_ERROR("no registered cb, IRQ=[%d, %d]\n",
+>>                            DPU_IRQ_REG(irq_idx), DPU_IRQ_BIT(irq_idx));
+>> +               return;
+>> +       }
+>>
+>>          atomic_inc(&irq_entry->count);
+>>
+>> --
+>> 2.30.2
+>>
+>>
+> 
+> 
+
+-- 
+Kind regards
+Aleksandr
 
