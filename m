@@ -1,644 +1,144 @@
-Return-Path: <linux-kernel+bounces-138877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A16C789FB92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:30:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B9A989FB98
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EBBE1F2B8E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4A41C21920
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9361516F0FE;
-	Wed, 10 Apr 2024 15:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0522C16F0D4;
+	Wed, 10 Apr 2024 15:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A6YCxTVC"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3DGe+Pxl"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461ED16E881
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A3A15EFAE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762987; cv=none; b=PjRMhun1N8Og1+pYJjGNC5/63lQHYNz+lrMgEwgWcbY/QU8xoQaMBRC85hOsNT9ZIaCJbv2PdWaXhw5RIgoTL726oP5NHVPBprsrZSoAwiJ6KwQw22MQQAI3+7l2yO4gLK1s1eu/CyaUdDY5tTxZKCZ14GL8OleMjcd6Z0J0LxI=
+	t=1712763059; cv=none; b=YjIL9wQr1fhmq1uC8xpHWe6Fe6PhIQWMHt75cemPoWCbDVns3JqsNCmW9W1Wj5FHQAjPGpAnizJff3olAUWvLe/ZBzCOaiWqJZhMBPZhLdEHmOpqpianE4Mp1heiO1OANCVEbAIKBWAEoaDZcNw50uOsEOlXElELGU503u1upro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762987; c=relaxed/simple;
-	bh=9Ck3yjbExq7NVwB5EOwZbFqQZVdq3xajB4KdGxdmA2w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=K2cUm0JfncgvBEHtzMUNWlP8ABjDTvmXmfRdKY9F3KtUeNwcsNTHT+OPjvvKXKaIenuC+XAPoVZifr6wjwoASjHzrhs3f/zl/Bn1ZmCFU0iV3u34AEJ8ds6NA6DScx9h2NzdIvOJcf4sFOb8ECYJiasF2ht6l3uZbkpVhtSFLWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A6YCxTVC; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-ddaf165a8d9so10773978276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:29:45 -0700 (PDT)
+	s=arc-20240116; t=1712763059; c=relaxed/simple;
+	bh=u1eWAA/ThURkbCchsyub5PAfU1Ae5xWgAQKecjdCMoc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FUQZQxqG/EI9IZ5si7EVOWZFrP9yzSPQuhz98AQmz6ODHUBcqLH2WSbakBeRrhK6Oqv7MUd2OvhMc7cIdXvS7vSBr5dVZqDTXOIFa7hs6WbGCW6MCMIjuAE3J3uoN1SoekbqaozQWRwxSQt/IyexwGJIJj9/7QTwQbaiLqeSgDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=3DGe+Pxl; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346407b8c9aso678515f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712762984; x=1713367784; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5QJS+hf/CkboPkW6WCH/UH9ORqThP7/RoLAc/tezyA=;
-        b=A6YCxTVCzmNf17+9o/FfFdXnNGwJYww9xZHAS/IdiayjmV221wrT6luh4tcusg22c5
-         ZrfWLqfwfPvOKS+YBE3zd/tBol98qf4A7BAdQEyn7e6u1NyCCW7noksFQyTYPCh1MP8g
-         VCNWXNgqGxKucJ31mxZjNEHENp8HHj/D0YdQB3l3zaFX3NavT9OgEglpb29QLFrezj9E
-         yn96DaqinLnrbh5c1+ni0S7WYf0ZjqrQ0/Yo9mPkTqqUDzf7BG3aPB7O5h5TfnCSmtYm
-         EL3Q4S19LfhW99+4QZeHf6t2+mCFE4dkT1YIKdFXfegvA1ea6mv6ehNf9nazj9+7HPrL
-         ODKg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712763056; x=1713367856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OWBh7JXEUeIzo5KgJAd3zKBhqX2eLt0rOguALy1M0Kk=;
+        b=3DGe+PxlpcfHZknuci25H9JJ8XxKvRKUkr4G8+KGuK+bB4qPFRq2dbCRe2h6O2idIP
+         syOjYu0V0SI3s3T34XiQcPedAwPi2qj5sBrrFgX4/PzDoIJCu7TXtO4qgMmyv66LVZvX
+         16jPI9ZOLPWaKiW+paMrPmumMz3IKjqowyNVm7RqZ8e7/rOeSqCtDxBFeu734pi9Vko3
+         3Cf0J1B1eA4/eTCGza0f2dbKLEEaUCG9rM159fJr2GuyzpFlebzqr5H3ssHACw4s06DO
+         QVO0mQY4iSqtoNJfJM/rd//eZ1mSP9gXdlB5+o2EIkRAnn7KfxT73qfsTRjqgQUjey6j
+         b1PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712762984; x=1713367784;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5QJS+hf/CkboPkW6WCH/UH9ORqThP7/RoLAc/tezyA=;
-        b=VRDUGCsg3Yb3VtOAUPhzSY76IgGVbw98SDI7UoJWk5jVdTRXH1K90Ix6aZuwGDImai
-         lEWBGL2ez602xRHDqIbHIcCamSGbRKgDOo49IGxK5Y7jKJjGN2E+o8CpOrFYgviJ8o7l
-         Z2KESVg/ssUzMhNJ5y9tNHLzOFY/sXyle4VbO5FlLNxVQJeUaXt1dSqUVoq199WhnGTP
-         2P6TTclbt9QBmJjfZo23Ug4Mo0knjLiUiZb4ljaeNKU0fHXTTdsAe/rAKBKPVsmN5fXQ
-         0v+7ufnf1PnC8ozSNJhsx+5eS2dEcds7yH+soOFdGJhDiszErGl+0Z9QKWASVJ76lpR0
-         UNpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrgu6NDRX2LGM0ZJUFBWy560Kp7n9qdQrgEz6uIqzg7fAZ8Dz1Wo+SotU0HJYcDO7HJT+wPiYVOqYaZK8XLtv0OL5PpMSsMBRANPrw
-X-Gm-Message-State: AOJu0YxaLizuZ+M3pW7MmZ4sxmK8+c6ydea7xskNLnFXsRv4+wLAUjb/
-	e0M/x9ZufwzyImM8rBpr1U8Oi/8lroe2jozKWDeEmO9fKm+lIDyGm+X6wSRnrxq8+E2wtyd3zQD
-	8Gw==
-X-Google-Smtp-Source: AGHT+IFvGpuruN+ZlcstMNClwy0EGUVl5OwTMMLL+LgGv/EuPs4YA1k9Cttw6O0mYzgiYTuPBiV/Z1Dw2HM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:15c7:0:b0:dc6:e823:9edb with SMTP id
- 190-20020a2515c7000000b00dc6e8239edbmr193436ybv.12.1712762984372; Wed, 10 Apr
- 2024 08:29:44 -0700 (PDT)
-Date: Wed, 10 Apr 2024 08:29:42 -0700
-In-Reply-To: <461b78c38ffb3e59229caa806b6ed22e2c847b77.camel@intel.com>
+        d=1e100.net; s=20230601; t=1712763056; x=1713367856;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OWBh7JXEUeIzo5KgJAd3zKBhqX2eLt0rOguALy1M0Kk=;
+        b=pImCaPeur2bMDfSpAZILINuudRql50rDoFyZmamiip3Vz+0oyhAYUDvIzNpxjI9koI
+         65bBIvrmXpe1cixVyBtJxFPy8rjo/GHcG3AqmZhw7Mr7sPqd9oXUQWcr+SJouxGDDo/m
+         ZsZqLG/ZwIeIvebXypXH6xpZlXfhqYtDs7yWMHXL23Pb+fE79dVMcomy9TUo+BCtpFSC
+         vpO0oIGZolYA66D8rrFdv69M0qDwUOat0etZgnP0FJ0Zxln3Fs0rXwG0jwhfaXsKuy6d
+         1ToHK39gtHmcw3wzzDc3O5TjAusSGoBB+pe2NG6zx2oz5s+sOBtWvl38+Z4q7NWi0Bgw
+         e5tw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1QYYl0mucH1LstDBR0c3gokUjdAB8dWucippK4TsfnVpktGRdjunZz6TwVVTd1KyRj2M/u203Cit/q3d99t/BnFhSzuykoa+nyvcb
+X-Gm-Message-State: AOJu0YzoYdmK6ZsryHZF5cU4ALmmYVAGu4N+7B3SaGJBisBpkrDzyUQf
+	08epPYkfH6qAC55iZJaGS+wC8dYM/NDptrckqe4x7jTvihaX+gDDkfelKGNjk0U=
+X-Google-Smtp-Source: AGHT+IGM+tKVXZHv9j2QFP6knh6WFNV2lFvfGgCYRQglQNtraXDOdyw8VxBYrHku61VtDa7HjL9l/w==
+X-Received: by 2002:a5d:64e3:0:b0:343:ba58:1297 with SMTP id g3-20020a5d64e3000000b00343ba581297mr2445689wri.3.1712763055716;
+        Wed, 10 Apr 2024 08:30:55 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:d4a6:5856:3e6c:3dff? ([2a01:e0a:999:a3a0:d4a6:5856:3e6c:3dff])
+        by smtp.gmail.com with ESMTPSA id p19-20020a05600c1d9300b00416bf7b68f6sm2604986wms.31.2024.04.10.08.30.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 08:30:55 -0700 (PDT)
+Message-ID: <ce7b7413-31ac-4c93-8970-e7cf0d6902cc@rivosinc.com>
+Date: Wed, 10 Apr 2024 17:30:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
- <d45bb93fb5fc18e7cda97d587dad4a1c987496a1.camel@intel.com>
- <20240322212321.GA1994522@ls.amr.corp.intel.com> <461b78c38ffb3e59229caa806b6ed22e2c847b77.camel@intel.com>
-Message-ID: <ZhawUG0BduPVvVhN@google.com>
-Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, Tina Zhang <tina.zhang@intel.com>, 
-	Hang Yuan <hang.yuan@intel.com>, Bo Chen <chen.bo@intel.com>, 
-	"sagis@google.com" <sagis@google.com>, "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] riscv: nommu: remove PAGE_OFFSET hardcoding
+To: Jisheng Zhang <jszhang@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Samuel Holland <samuel.holland@sifive.com>, Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240410142347.964-1-jszhang@kernel.org>
+ <20240410142347.964-2-jszhang@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240410142347.964-2-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024, Kai Huang wrote:
-> On Fri, 2024-03-22 at 14:23 -0700, Isaku Yamahata wrote:
-> > > > +	r = atomic_read(&enable.err);
-> > > > +	if (!r)
-> > > > +		r = tdx_module_setup();
-> > > > +	else
-> > > > +		r = -EIO;
-> > > > +	on_each_cpu(vmx_off, &enable.enabled, true);
-> > > > +	cpus_read_unlock();
-> > > > +	free_cpumask_var(enable.enabled);
-> > > > +
-> > > > +out:
-> > > > +	return r;
-> > > > +}
-> > > 
-> > > At last, I think there's one problem here:
-> > > 
-> > > KVM actually only registers CPU hotplug callback in kvm_init(), which happens
-> > > way after tdx_hardware_setup().
-> > > 
-> > > What happens if any CPU goes online *BETWEEN* tdx_hardware_setup() and
-> > > kvm_init()?
-> > > 
-> > > Looks we have two options:
-> > > 
-> > > 1) move registering CPU hotplug callback before tdx_hardware_setup(), or
-> > > 2) we need to disable CPU hotplug until callbacks have been registered.
 
-This is all so dumb (not TDX, the current state of KVM).  All of the hardware
-enabling crud is pointless complex inherited from misguided, decade old paranoia
-that led to the decision to enable VMX if and only if VMs are running.  Enabling
-VMX doesn't make the system less secure, and the insane dances we are doing to
-do VMXON on-demand makes everything *more* fragile.
 
-And all of this complexity really was driven by VMX, enabling virtualization for
-every other vendor, including AMD/SVM, is completely uninteresting.  Forcing other
-architectures/vendors to take on yet more complexity doesn't make any sense.
+On 10/04/2024 16:23, Jisheng Zhang wrote:
+> Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
+> there's only one nommu platform in the mainline. However, there are
+> many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
+> the hardcoding value, and introduce DRAM_BASE which will be set by
 
-Barely tested, and other architectures would need to be converted, but I don't
-see any obvious reasons why we can't simply enable virtualization when the module
-is loaded.
+Hi Jisheng,
 
-The diffstat pretty much says it all.
+Typo: s/harcoding/hardcoded
 
----
- Documentation/virt/kvm/locking.rst |   4 -
- arch/x86/include/asm/kvm_host.h    |   3 +
- arch/x86/kvm/svm/svm.c             |   5 +-
- arch/x86/kvm/vmx/vmx.c             |  18 ++-
- arch/x86/kvm/x86.c                 |  22 ++--
- include/linux/kvm_host.h           |   2 +
- virt/kvm/kvm_main.c                | 181 +++++++----------------------
- 7 files changed, 67 insertions(+), 168 deletions(-)
+> users during configuring. DRAM_BASE is 0x8000_0000 by default.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/Kconfig | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 7895c77545f1..b4af1df86352 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -247,10 +247,16 @@ config MMU
+>  	  Select if you want MMU-based virtualised addressing space
+>  	  support by paged memory management. If unsure, say 'Y'.
+>  
+> +if !MMU
+> +config DRAM_BASE
+> +	hex '(S)DRAM Base Address'
+> +	default 0x80000000
+> +endif
 
-diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-index 02880d5552d5..0d6eff13fd46 100644
---- a/Documentation/virt/kvm/locking.rst
-+++ b/Documentation/virt/kvm/locking.rst
-@@ -227,10 +227,6 @@ time it will be set using the Dirty tracking mechanism described above.
- :Type:		mutex
- :Arch:		any
- :Protects:	- vm_list
--		- kvm_usage_count
--		- hardware virtualization enable/disable
--:Comment:	KVM also disables CPU hotplug via cpus_read_lock() during
--		enable/disable.
- 
- ``kvm->mn_invalidate_lock``
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 73740d698ebe..7422239987d8 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -36,6 +36,7 @@
- #include <asm/kvm_page_track.h>
- #include <asm/kvm_vcpu_regs.h>
- #include <asm/hyperv-tlfs.h>
-+#include <asm/reboot.h>
- 
- #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
- 
-@@ -1605,6 +1606,8 @@ struct kvm_x86_ops {
- 
- 	int (*hardware_enable)(void);
- 	void (*hardware_disable)(void);
-+	cpu_emergency_virt_cb *emergency_disable;
-+
- 	void (*hardware_unsetup)(void);
- 	bool (*has_emulated_msr)(struct kvm *kvm, u32 index);
- 	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9aaf83c8d57d..7e118284934c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4917,6 +4917,7 @@ static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
- static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.name = KBUILD_MODNAME,
- 
-+	.emergency_disable = svm_emergency_disable,
- 	.check_processor_compatibility = svm_check_processor_compat,
- 
- 	.hardware_unsetup = svm_hardware_unsetup,
-@@ -5348,8 +5349,6 @@ static struct kvm_x86_init_ops svm_init_ops __initdata = {
- static void __svm_exit(void)
- {
- 	kvm_x86_vendor_exit();
--
--	cpu_emergency_unregister_virt_callback(svm_emergency_disable);
- }
- 
- static int __init svm_init(void)
-@@ -5365,8 +5364,6 @@ static int __init svm_init(void)
- 	if (r)
- 		return r;
- 
--	cpu_emergency_register_virt_callback(svm_emergency_disable);
--
- 	/*
- 	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
- 	 * exposed to userspace!
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index d18dcb1e11a6..0dbe74da7ee3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -8320,6 +8320,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 
- 	.hardware_enable = vmx_hardware_enable,
- 	.hardware_disable = vmx_hardware_disable,
-+	.emergency_disable = vmx_emergency_disable,
-+
- 	.has_emulated_msr = vmx_has_emulated_msr,
- 
- 	.vm_size = sizeof(struct kvm_vmx),
-@@ -8733,8 +8735,6 @@ static void __vmx_exit(void)
- {
- 	allow_smaller_maxphyaddr = false;
- 
--	cpu_emergency_unregister_virt_callback(vmx_emergency_disable);
--
- 	vmx_cleanup_l1d_flush();
- }
- 
-@@ -8760,6 +8760,12 @@ static int __init vmx_init(void)
- 	 */
- 	hv_init_evmcs();
- 
-+	for_each_possible_cpu(cpu) {
-+		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-+
-+		pi_init_cpu(cpu);
-+	}
-+
- 	r = kvm_x86_vendor_init(&vmx_init_ops);
- 	if (r)
- 		return r;
-@@ -8775,14 +8781,6 @@ static int __init vmx_init(void)
- 	if (r)
- 		goto err_l1d_flush;
- 
--	for_each_possible_cpu(cpu) {
--		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
--
--		pi_init_cpu(cpu);
--	}
--
--	cpu_emergency_register_virt_callback(vmx_emergency_disable);
--
- 	vmx_check_vmcs12_offsets();
- 
- 	/*
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 26288ca05364..41d3e4e32e20 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9687,15 +9687,10 @@ static int kvm_x86_check_processor_compatibility(void)
- 	return static_call(kvm_x86_check_processor_compatibility)();
- }
- 
--static void kvm_x86_check_cpu_compat(void *ret)
--{
--	*(int *)ret = kvm_x86_check_processor_compatibility();
--}
--
- int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- {
- 	u64 host_pat;
--	int r, cpu;
-+	int r;
- 
- 	guard(mutex)(&vendor_module_lock);
- 
-@@ -9771,11 +9766,11 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- 
- 	kvm_ops_update(ops);
- 
--	for_each_online_cpu(cpu) {
--		smp_call_function_single(cpu, kvm_x86_check_cpu_compat, &r, 1);
--		if (r < 0)
--			goto out_unwind_ops;
--	}
-+	cpu_emergency_register_virt_callback(kvm_x86_ops.emergency_disable);
-+
-+	r = kvm_enable_virtualization();
-+	if (r)
-+		goto out_unwind_ops;
- 
- 	/*
- 	 * Point of no return!  DO NOT add error paths below this point unless
-@@ -9818,6 +9813,7 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- 	return 0;
- 
- out_unwind_ops:
-+	cpu_emergency_unregister_virt_callback(kvm_x86_ops.emergency_disable);
- 	kvm_x86_ops.hardware_enable = NULL;
- 	static_call(kvm_x86_hardware_unsetup)();
- out_mmu_exit:
-@@ -9858,6 +9854,10 @@ void kvm_x86_vendor_exit(void)
- 	static_key_deferred_flush(&kvm_xen_enabled);
- 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
- #endif
-+
-+	kvm_disable_virtualization();
-+	cpu_emergency_unregister_virt_callback(kvm_x86_ops.emergency_disable);
-+
- 	mutex_lock(&vendor_module_lock);
- 	kvm_x86_ops.hardware_enable = NULL;
- 	mutex_unlock(&vendor_module_lock);
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 48f31dcd318a..92da2eee7448 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1518,6 +1518,8 @@ static inline void kvm_create_vcpu_debugfs(struct kvm_vcpu *vcpu) {}
- #endif
- 
- #ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
-+int kvm_enable_virtualization(void);
-+void kvm_disable_virtualization(void);
- int kvm_arch_hardware_enable(void);
- void kvm_arch_hardware_disable(void);
- #endif
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index f345dc15854f..326e3225c052 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -139,8 +139,6 @@ static int kvm_no_compat_open(struct inode *inode, struct file *file)
- #define KVM_COMPAT(c)	.compat_ioctl	= kvm_no_compat_ioctl,	\
- 			.open		= kvm_no_compat_open
- #endif
--static int hardware_enable_all(void);
--static void hardware_disable_all(void);
- 
- static void kvm_io_bus_destroy(struct kvm_io_bus *bus);
- 
-@@ -1261,10 +1259,6 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
- 	if (r)
- 		goto out_err_no_arch_destroy_vm;
- 
--	r = hardware_enable_all();
--	if (r)
--		goto out_err_no_disable;
--
- #ifdef CONFIG_HAVE_KVM_IRQCHIP
- 	INIT_HLIST_HEAD(&kvm->irq_ack_notifier_list);
- #endif
-@@ -1304,8 +1298,6 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
- 		mmu_notifier_unregister(&kvm->mmu_notifier, current->mm);
- #endif
- out_err_no_mmu_notifier:
--	hardware_disable_all();
--out_err_no_disable:
- 	kvm_arch_destroy_vm(kvm);
- out_err_no_arch_destroy_vm:
- 	WARN_ON_ONCE(!refcount_dec_and_test(&kvm->users_count));
-@@ -1393,7 +1385,6 @@ static void kvm_destroy_vm(struct kvm *kvm)
- #endif
- 	kvm_arch_free_vm(kvm);
- 	preempt_notifier_dec();
--	hardware_disable_all();
- 	mmdrop(mm);
- }
- 
-@@ -5536,9 +5527,8 @@ __visible bool kvm_rebooting;
- EXPORT_SYMBOL_GPL(kvm_rebooting);
- 
- static DEFINE_PER_CPU(bool, hardware_enabled);
--static int kvm_usage_count;
- 
--static int __hardware_enable_nolock(void)
-+static int __kvm_enable_virtualization(void)
- {
- 	if (__this_cpu_read(hardware_enabled))
- 		return 0;
-@@ -5553,34 +5543,18 @@ static int __hardware_enable_nolock(void)
- 	return 0;
- }
- 
--static void hardware_enable_nolock(void *failed)
--{
--	if (__hardware_enable_nolock())
--		atomic_inc(failed);
--}
--
- static int kvm_online_cpu(unsigned int cpu)
- {
--	int ret = 0;
--
- 	/*
- 	 * Abort the CPU online process if hardware virtualization cannot
- 	 * be enabled. Otherwise running VMs would encounter unrecoverable
- 	 * errors when scheduled to this CPU.
- 	 */
--	mutex_lock(&kvm_lock);
--	if (kvm_usage_count)
--		ret = __hardware_enable_nolock();
--	mutex_unlock(&kvm_lock);
--	return ret;
-+	return __kvm_enable_virtualization();
- }
- 
--static void hardware_disable_nolock(void *junk)
-+static void __kvm_disable_virtualization(void *ign)
- {
--	/*
--	 * Note, hardware_disable_all_nolock() tells all online CPUs to disable
--	 * hardware, not just CPUs that successfully enabled hardware!
--	 */
- 	if (!__this_cpu_read(hardware_enabled))
- 		return;
- 
-@@ -5591,78 +5565,10 @@ static void hardware_disable_nolock(void *junk)
- 
- static int kvm_offline_cpu(unsigned int cpu)
- {
--	mutex_lock(&kvm_lock);
--	if (kvm_usage_count)
--		hardware_disable_nolock(NULL);
--	mutex_unlock(&kvm_lock);
-+	__kvm_disable_virtualization(NULL);
- 	return 0;
- }
- 
--static void hardware_disable_all_nolock(void)
--{
--	BUG_ON(!kvm_usage_count);
--
--	kvm_usage_count--;
--	if (!kvm_usage_count)
--		on_each_cpu(hardware_disable_nolock, NULL, 1);
--}
--
--static void hardware_disable_all(void)
--{
--	cpus_read_lock();
--	mutex_lock(&kvm_lock);
--	hardware_disable_all_nolock();
--	mutex_unlock(&kvm_lock);
--	cpus_read_unlock();
--}
--
--static int hardware_enable_all(void)
--{
--	atomic_t failed = ATOMIC_INIT(0);
--	int r;
--
--	/*
--	 * Do not enable hardware virtualization if the system is going down.
--	 * If userspace initiated a forced reboot, e.g. reboot -f, then it's
--	 * possible for an in-flight KVM_CREATE_VM to trigger hardware enabling
--	 * after kvm_reboot() is called.  Note, this relies on system_state
--	 * being set _before_ kvm_reboot(), which is why KVM uses a syscore ops
--	 * hook instead of registering a dedicated reboot notifier (the latter
--	 * runs before system_state is updated).
--	 */
--	if (system_state == SYSTEM_HALT || system_state == SYSTEM_POWER_OFF ||
--	    system_state == SYSTEM_RESTART)
--		return -EBUSY;
--
--	/*
--	 * When onlining a CPU, cpu_online_mask is set before kvm_online_cpu()
--	 * is called, and so on_each_cpu() between them includes the CPU that
--	 * is being onlined.  As a result, hardware_enable_nolock() may get
--	 * invoked before kvm_online_cpu(), which also enables hardware if the
--	 * usage count is non-zero.  Disable CPU hotplug to avoid attempting to
--	 * enable hardware multiple times.
--	 */
--	cpus_read_lock();
--	mutex_lock(&kvm_lock);
--
--	r = 0;
--
--	kvm_usage_count++;
--	if (kvm_usage_count == 1) {
--		on_each_cpu(hardware_enable_nolock, &failed, 1);
--
--		if (atomic_read(&failed)) {
--			hardware_disable_all_nolock();
--			r = -EBUSY;
--		}
--	}
--
--	mutex_unlock(&kvm_lock);
--	cpus_read_unlock();
--
--	return r;
--}
--
- static void kvm_shutdown(void)
- {
- 	/*
-@@ -5678,34 +5584,22 @@ static void kvm_shutdown(void)
- 	 */
- 	pr_info("kvm: exiting hardware virtualization\n");
- 	kvm_rebooting = true;
--	on_each_cpu(hardware_disable_nolock, NULL, 1);
-+	on_each_cpu(__kvm_disable_virtualization, NULL, 1);
- }
- 
- static int kvm_suspend(void)
- {
--	/*
--	 * Secondary CPUs and CPU hotplug are disabled across the suspend/resume
--	 * callbacks, i.e. no need to acquire kvm_lock to ensure the usage count
--	 * is stable.  Assert that kvm_lock is not held to ensure the system
--	 * isn't suspended while KVM is enabling hardware.  Hardware enabling
--	 * can be preempted, but the task cannot be frozen until it has dropped
--	 * all locks (userspace tasks are frozen via a fake signal).
--	 */
--	lockdep_assert_not_held(&kvm_lock);
- 	lockdep_assert_irqs_disabled();
- 
--	if (kvm_usage_count)
--		hardware_disable_nolock(NULL);
-+	__kvm_disable_virtualization(NULL);
- 	return 0;
- }
- 
- static void kvm_resume(void)
- {
--	lockdep_assert_not_held(&kvm_lock);
- 	lockdep_assert_irqs_disabled();
- 
--	if (kvm_usage_count)
--		WARN_ON_ONCE(__hardware_enable_nolock());
-+	WARN_ON_ONCE(__kvm_enable_virtualization());
- }
- 
- static struct syscore_ops kvm_syscore_ops = {
-@@ -5713,16 +5607,45 @@ static struct syscore_ops kvm_syscore_ops = {
- 	.resume = kvm_resume,
- 	.shutdown = kvm_shutdown,
- };
--#else /* CONFIG_KVM_GENERIC_HARDWARE_ENABLING */
--static int hardware_enable_all(void)
-+
-+int kvm_enable_virtualization(void)
- {
-+	int r;
-+
-+	r = cpuhp_setup_state(CPUHP_AP_KVM_ONLINE, "kvm/cpu:online",
-+			      kvm_online_cpu, kvm_offline_cpu);
-+	if (r)
-+		return r;
-+
-+	register_syscore_ops(&kvm_syscore_ops);
-+
-+	/*
-+	 * Manually undo virtualization enabling if the system is going down.
-+	 * If userspace initiated a forced reboot, e.g. reboot -f, then it's
-+	 * possible for an in-flight module load to enable virtualization
-+	 * after syscore_shutdown() is called, i.e. without kvm_shutdown()
-+	 * being invoked.  Note, this relies on system_state being set _before_
-+	 * kvm_shutdown(), e.g. to ensure either kvm_shutdown() is invoked
-+	 * or this CPU observes the impedning shutdown.  Which is why KVM uses
-+	 * a syscore ops hook instead of registering a dedicated reboot
-+	 * notifier (the latter runs before system_state is updated).
-+	 */
-+	if (system_state == SYSTEM_HALT || system_state == SYSTEM_POWER_OFF ||
-+	    system_state == SYSTEM_RESTART) {
-+		unregister_syscore_ops(&kvm_syscore_ops);
-+		cpuhp_remove_state(CPUHP_AP_KVM_ONLINE);
-+		return -EBUSY;
-+	}
-+
- 	return 0;
- }
- 
--static void hardware_disable_all(void)
-+void kvm_disable_virtualization(void)
- {
--
-+	unregister_syscore_ops(&kvm_syscore_ops);
-+	cpuhp_remove_state(CPUHP_AP_KVM_ONLINE);
- }
-+
- #endif /* CONFIG_KVM_GENERIC_HARDWARE_ENABLING */
- 
- static void kvm_iodevice_destructor(struct kvm_io_device *dev)
-@@ -6418,15 +6341,6 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
- 	int r;
- 	int cpu;
- 
--#ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
--	r = cpuhp_setup_state_nocalls(CPUHP_AP_KVM_ONLINE, "kvm/cpu:online",
--				      kvm_online_cpu, kvm_offline_cpu);
--	if (r)
--		return r;
--
--	register_syscore_ops(&kvm_syscore_ops);
--#endif
--
- 	/* A kmem cache lets us meet the alignment requirements of fx_save. */
- 	if (!vcpu_align)
- 		vcpu_align = __alignof__(struct kvm_vcpu);
-@@ -6437,10 +6351,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
- 					   offsetofend(struct kvm_vcpu, stats_id)
- 					   - offsetof(struct kvm_vcpu, arch),
- 					   NULL);
--	if (!kvm_vcpu_cache) {
--		r = -ENOMEM;
--		goto err_vcpu_cache;
--	}
-+	if (!kvm_vcpu_cache)
-+		return -ENOMEM;
- 
- 	for_each_possible_cpu(cpu) {
- 		if (!alloc_cpumask_var_node(&per_cpu(cpu_kick_mask, cpu),
-@@ -6497,11 +6409,6 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
- 	for_each_possible_cpu(cpu)
- 		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
- 	kmem_cache_destroy(kvm_vcpu_cache);
--err_vcpu_cache:
--#ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
--	unregister_syscore_ops(&kvm_syscore_ops);
--	cpuhp_remove_state_nocalls(CPUHP_AP_KVM_ONLINE);
--#endif
- 	return r;
- }
- EXPORT_SYMBOL_GPL(kvm_init);
-@@ -6523,10 +6430,6 @@ void kvm_exit(void)
- 	kmem_cache_destroy(kvm_vcpu_cache);
- 	kvm_vfio_ops_exit();
- 	kvm_async_pf_deinit();
--#ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
--	unregister_syscore_ops(&kvm_syscore_ops);
--	cpuhp_remove_state_nocalls(CPUHP_AP_KVM_ONLINE);
--#endif
- 	kvm_irqfd_exit();
- }
- EXPORT_SYMBOL_GPL(kvm_exit);
+I'm not sure but it feels odd to have this at top level config menu.
+Maybe it would make more sense for this to be located under the
+"Platform Type" section ?
 
-base-commit: f10f3621ad80f008c218dbbc13a05c893766a7d2
--- 
+Thanks,
 
+Clément
+
+> +
+>  config PAGE_OFFSET
+>  	hex
+>  	default 0xC0000000 if 32BIT && MMU
+> -	default 0x80000000 if !MMU
+> +	default DRAM_BASE if !MMU
+>  	default 0xff60000000000000 if 64BIT
+>  
+>  config KASAN_SHADOW_OFFSET
 
