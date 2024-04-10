@@ -1,135 +1,142 @@
-Return-Path: <linux-kernel+bounces-138883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E914C89FB9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:32:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA4CA89FBA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18D091C22A91
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:32:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8403A2818DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8317016F0D2;
-	Wed, 10 Apr 2024 15:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313FA16EC11;
+	Wed, 10 Apr 2024 15:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HCEe7uhe"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iWCZQnVb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FCB16F0D1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFA216F0DE;
+	Wed, 10 Apr 2024 15:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763121; cv=none; b=gTW3KRUoJQq284Xh/yYmdgS/MFY+bMH6TJBucMZ1JiMm7al4uqu5S/Gjoa5dxNpj1M/k2ZzNGratAmKTmAVMbJ6Q2vVWFUeKN98p3yBUOlVb2TJ105yT+x1myKUWU96MVcT1EAoXpdUjqjB96YAhnvKyogQbvORJvK6FCRoYPWE=
+	t=1712763155; cv=none; b=MikozRnuxq0TRnHxnl6L9PBwj9bj/7GLW/PWnk7dSuNPaKEiDAuyR2ilgDmhVntjmxmRP+RppONo1D53zgxbj4/PObNJNdgh+w9qGaJuZ/jFu55O6bDZIMBH9W+Jaj5Wk78jaQyFY5UbatRV10MhZ3yGotJxGxYaYkz6je4NClk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763121; c=relaxed/simple;
-	bh=6Vog+dAt2cAMqsPI+yh28GngocmuMJI+7wvR2qyxv7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tQyrtuH3S8YHLV4lX7vyR7AaESAB4piY59TzGpR2ynM15NWKpgMXiODOLoBWbVC+5J+U5ug8jKFGXdIq5NvQDL1W4Gehwg97Z0RFh+oCHICnmSdJAP7x9rn6jhlvLSNJQyNXmUhoV3t4AfjHn1Vs7DxSJuB5rMJzEHHgOVtxKWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HCEe7uhe; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso5336787a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712763118; x=1713367918; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cTPhvP3A5r7MS8UL1VvzFtK1xJvz3SKxBGHHR0/FSwI=;
-        b=HCEe7uhet4O578NU7bREoB9lnXlswazrADXaijHRHIiiM43eEhpFQ2SmslgWH1lYXz
-         36jEE735iRRtHxBb2PPWYQ80tE1r45Bu/lnxOYuC4d3aKTtK+/5twZhPSkmADwafhsSo
-         zPWlRupNwHoy5osC92zpb+u363TsErKxqbWAH3BkwLLIR+Gl2wLc1jEccldxV0yaMLNj
-         mCBQ89Nz2oHyyrQMI6ljL1GY9zsdZa/WSU0quaEGMoMAqQrgaN4yB9rp62h4R/re7g7k
-         KTlXKjF7t0KXaNt/eV+Y9L3tcwvyZYBCPTdfF1IAwGuoFBYuU8cMenla6uOG74aDVAqU
-         4yPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712763118; x=1713367918;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cTPhvP3A5r7MS8UL1VvzFtK1xJvz3SKxBGHHR0/FSwI=;
-        b=wo0Fyky7DOftZ8sWbUBJNOMjOo4WxbPV8r1ilMOLWp+psXxuwefElMlNIEC1zMNAeD
-         W/OujhdAdhYvk+UP0TLllNfIloqUHrI4ttbFQAsnDD8KFRJfI4i4LNpes/fHTJm0ZKQ+
-         alPP1hsrTbQWMohOQJoTmmhsmfqPNNEc6loblhSMsiQtT5qhQaK9Xs8+IpWnjl8TbAbQ
-         oMsKLyCq1WxYlKwZA719UVlXg/ljYUsbInNRPU4TqkbqYVTbY9qdPRfkXfK0Trkyh2vH
-         hFlukIWxRTDEo9wBVqsLKyZiXgThsDf6owI1VNN2ZkHPTkdEyKH6B8Q74h7FNWJSGsKQ
-         pkpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNi9uoCgNzH4xcuQ0fGk+198bL2i5TXdt8kou1m6PLmxdJneNWhAQ3jeH78kcNNw6y0Q7P6g6VwWs/OzU6gtRmaRQseunNtMuG0R4D
-X-Gm-Message-State: AOJu0Yxuu2GqDDoXcoF6ZmPdl4u+5kZgn9Pz2ELdphaZ12FbcehweFeG
-	gpFEEAEATVXcO6i5X+BggtxYfNMXjWOfdSLxZPzEXafGZ+RzNEJZF82yfXSdfxk=
-X-Google-Smtp-Source: AGHT+IHI2Ekpl25h0Yy4yKCuyZYB9KuHYXbJc3VeE6shatg6Hicrdayi5+NJC9iLQkC8NWx5z+JrZw==
-X-Received: by 2002:a50:a6d2:0:b0:56d:fdb3:bcc5 with SMTP id f18-20020a50a6d2000000b0056dfdb3bcc5mr2136474edc.12.1712763118023;
-        Wed, 10 Apr 2024 08:31:58 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id et6-20020a056402378600b0056b8dcdaca5sm6501104edb.73.2024.04.10.08.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:31:56 -0700 (PDT)
-Date: Wed, 10 Apr 2024 18:31:51 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: soc-card: soc-card-test: Fix some error
- handling in probe()
-Message-ID: <6aaca4c3-46c4-475a-aecd-cf471370e97c@moroto.mountain>
-References: <2db68591-64e2-4f43-a5e1-cb8849f0a296@moroto.mountain>
- <c8e9a7a0-6fcf-4bbe-a659-b2360f5980d8@opensource.cirrus.com>
+	s=arc-20240116; t=1712763155; c=relaxed/simple;
+	bh=dEgjPQZVrrL7vqI7IKViUp1qmoIOfEl5s9dyPS1YBmo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=cLYmwuBBgUHZp4kmjMRVHHswntlSVxzHqeV4/JYWt0qD2kaxfj/K+5jyuJamf3KlxCpGtS5rzF/EoXCOYsPcqv8uWkvKwsgZq7dvUgyrsYUtkvsj5rHxrmhAPNivBMhXsWlPX8GJ9nVLYHpJj/DgD3oqnlI8NNeHIIGVrYzXPWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iWCZQnVb; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712763153; x=1744299153;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dEgjPQZVrrL7vqI7IKViUp1qmoIOfEl5s9dyPS1YBmo=;
+  b=iWCZQnVbXhhwoJgU9P8mSUi0d7N3zO4INJQTJsrwa6qu12P95EaAG7cG
+   38hhQbvgU4EA848mMPQ2aaDIq8Hi2+6/05nwCxkpnrg2++OjsWeKzA6rF
+   mddIB+QQq1Txy68tVYKKore5ysVS5A8ADBVkKOKPbIUIkqmgNaP82h4gk
+   stQQiU+n/8+ts2sL9AJgy7gQftRQwYZ7lz/wPKmu/5oxICHoZ1daCTF9q
+   13RsPQkqhkR1XUa1F4Orf9DrlQt0QS3WiSJpaah7EAIU+nkcsOv4Jt2k5
+   nGgi+4d7cgxIKGYIOcXJ26LYRbRXTTNDOwUBAkkQ/A2T0tO5a1Md7+4D+
+   g==;
+X-CSE-ConnectionGUID: q2C80GErSLWIl5FV1BB36Q==
+X-CSE-MsgGUID: RalOf9Y1Sv6SpUSjJoatFQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8260339"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="8260339"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 08:32:32 -0700
+X-CSE-ConnectionGUID: m+bpUFx2Q5yIztOqKC/y2g==
+X-CSE-MsgGUID: eZS9QWdnQA+wEYN3JBJnXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="51568789"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.214.234])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 08:32:25 -0700
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	John Stultz <jstultz@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
+Date: Wed, 10 Apr 2024 18:32:12 +0300
+Message-Id: <20240410153212.127477-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8e9a7a0-6fcf-4bbe-a659-b2360f5980d8@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 03:43:45PM +0100, Richard Fitzgerald wrote:
-> On 10/4/24 15:22, Dan Carpenter wrote:
-> > Fix this reversed if statement and call put_device() before returning
-> > the error code.
-> > 
-> > Fixes: ef7784e41db7 ("ASoC: soc-card: Add KUnit test case for snd_soc_card_get_kcontrol")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > ---
-> > v2: call put_device()
-> > 
-> >   sound/soc/soc-card-test.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/soc-card-test.c b/sound/soc/soc-card-test.c
-> > index 075c52fe82e5..faf9a3d46884 100644
-> > --- a/sound/soc/soc-card-test.c
-> > +++ b/sound/soc/soc-card-test.c
-> > @@ -148,8 +148,10 @@ static int soc_card_test_case_init(struct kunit *test)
-> >   	priv->card->owner = THIS_MODULE;
-> >   	ret = snd_soc_register_card(priv->card);
-> > -	if (!ret)
-> > +	if (ret) {
-> > +		put_device(priv->card_dev);
-> >   		return ret;
-> > +	}
-> >   	return 0;
-> >   }
-> 
-> Thanks.
-> Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> 
-> I can see that put_device() is also missing earlier in the
-> function:
-> 
-> 	if (!priv->card)
-> 		return -ENOMEM;
-> 
-> I can send a fix for that.
+BUG() does not return, and arch implementations of BUG() use unreachable()
+or other non-returning code. However with !CONFIG_BUG, the default
+implementation is often used instead, and that does not do that. x86 always
+uses its own implementation, but powerpc with !CONFIG_BUG gives a build
+error:
 
-No.  Let me resend.  I'm sorry, this patch has not been up to proper
-standards.  Also I should fix Smatch to warn about missing put_device()
-calls to prevent this sort of thing going forward.
+  kernel/time/timekeeping.c: In function ‘timekeeping_debug_get_ns’:
+  kernel/time/timekeeping.c:286:1: error: no return statement in function
+  returning non-void [-Werror=return-type]
 
-regards,
-dan carpenter
+Add unreachable() to default !CONFIG_BUG BUG() implementation.
+
+Fixes: e8e9d21a5df6 ("timekeeping: Refactor timekeeping helpers")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Closes: https://lore.kernel.org/all/CA+G9fYvjdZCW=7ZGxS6A_3bysjQ56YF7S-+PNLQ_8a4DKh1Bhg@mail.gmail.com/
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ include/asm-generic/bug.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index 6e794420bd39..b7de3a4eade1 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -156,7 +156,10 @@ extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
+ 
+ #else /* !CONFIG_BUG */
+ #ifndef HAVE_ARCH_BUG
+-#define BUG() do {} while (1)
++#define BUG() do {		\
++	do {} while (1);	\
++	unreachable();		\
++} while (0)
+ #endif
+ 
+ #ifndef HAVE_ARCH_BUG_ON
+-- 
+2.34.1
+
 
