@@ -1,87 +1,161 @@
-Return-Path: <linux-kernel+bounces-139550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18CCF8A0447
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:56:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B4C68A044C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:58:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60833B21166
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FC7288F6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4F03FB94;
-	Wed, 10 Apr 2024 23:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB4D3FE46;
+	Wed, 10 Apr 2024 23:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="eNNBNOCV"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ul8dGcy7"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B75622085;
-	Wed, 10 Apr 2024 23:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7553FB31
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712793376; cv=none; b=O2yNfftSwKwtf9HRAcbrKSFAY4d1tTd+G/9uHtmViotp8lr/jsAqKbL/jF0yG5yPgxYo2K7xudA2DnpWnNpi7ddF3+zrXtdkrnr5nOYNd2Rijtp9NJBPZuUGAF+D8hPbi4CAKhmXSMfkbzCj09yna0+l9vQpuoOT82n9GFb6Wts=
+	t=1712793510; cv=none; b=OWUhKg1s+mM2/E3mf/wwinIYOy9lT9K2Q2J0I1vBEMnbH0TOJmvl6NuVwS/5ZK2XFsZI3ZvSHXtDa+oR9W9bZoFVke6nEMlBFFGyH6pVkjUQPKy0WbzBYRxiWTdefT7f/e/IOJdUgQzimsN9eOhJKgtKnI3y1I+pti4NvPBX4fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712793376; c=relaxed/simple;
-	bh=YdxX0RS+h6nnSZiOcpAQraGy37X8lj1yr1mlmdxdFNo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jMiSuVwvlbxfyk2/GFjXm+6mCUl2kM6riDD7Jegje6ZHsmpQnqmW/iX4GbcyHSeGYdMeyF3GS2l7uXGl8Ne0yE1+0//znH8xB5SvKVCXh4bZI8cDYFmYjW4AiAY0RA5ocn5O7xwZLkFnwIO36Vc/yg4kul3jOg287fsaAclJCIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=eNNBNOCV; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id A6E062013B;
-	Thu, 11 Apr 2024 07:56:00 +0800 (AWST)
+	s=arc-20240116; t=1712793510; c=relaxed/simple;
+	bh=bXItv4HYzVSIBt+RUD5HDA9HqlJYzm+XsjCsyrirxEM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=FubVfCGPB/Xcuu3EXrvWs0OdRYcNuWzx1pj5UBK+lERms1feolcqO7pYKDAuh+GLbfI6sw7AYqbUTAWGC11OKp6/PUkpmHQNVXjZmwYLxB+min0u4Mmt2d7Rbo/Dok5eEzagVgJr1DcsHKhsdfhoDk1LWrACyKPQQxUHAuiMo6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ul8dGcy7; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e42a6158d5so36955ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1712793365;
-	bh=YdxX0RS+h6nnSZiOcpAQraGy37X8lj1yr1mlmdxdFNo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=eNNBNOCVIBdeD6MA602CoeG+fv9TZcwoHIND3RU9f2n7kGCuger+yYTZok3wq2C36
-	 liHerJ2SOwUnHsI6TRvmCea/DyDOba2R/+WURTKua5t7Q0zg0FJ3iWaY4xkJAVHnRg
-	 /QTFDkuarqYPx3oSFOV5HGr4ITEqSwxj+P5mh5YaFZsjNrlVvuIVUAYSRlA0H8r0Cs
-	 zCNMclRDoOd1PCOA3eqbLvX17FoqRPc2S73GGtB6nLuyQ9zSWiVHv32Xk70EujLQJI
-	 409aUYNElt5WrWmrT1UwNrKA3vJYnYMGeDHhgfHeFGlx5jA2FdO48pSxfcL30OA/3s
-	 DSmyNjBO/vJBQ==
-Message-ID: <6de98551118955bf68f4835b888730222a9ae015.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v2 1/4] dt-bindings: rtc: convert trivial devices into
- dtschema
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 11 Apr 2024 09:25:54 +0930
-In-Reply-To: <20240410-rtc_dtschema-v2-1-d32a11ab0745@gmail.com>
-References: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
-	 <20240410-rtc_dtschema-v2-1-d32a11ab0745@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=google.com; s=20230601; t=1712793508; x=1713398308; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ZXB+0PtaF+vG2Eqe2ku2kHYSPF78NFZHwzDIf6uFVo=;
+        b=ul8dGcy7CrJ4QlBF847S23xeeYmdr1uFniE4EssnJuF9uVlt7XlFWP/5saKY3aGGW6
+         R/q84JQjdLY84gy2Yu+ZQ6zCcbXvw21T5S/DGqsB8NpeuJXPW59MsqZjy/XzAygRg3FO
+         DBBcBNWAd4ELo87Pj02kig4gcrMCTCo+FYBKF7n6m8I1/hq8MFyInnBIGKI437o+MHRF
+         Gnd16K0fGkceV/fcAMhxNA84MifHHBUF3AQe6/KoL1V4r0IS8vl8ts7kJVWiL8sCrkSy
+         LRhk5QIGmrXzoSMDm5WRzQs+21LKt/dozqUiJjUDTaEeKPpjutitrYmpRn0UFk88ARtF
+         jVKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712793508; x=1713398308;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ZXB+0PtaF+vG2Eqe2ku2kHYSPF78NFZHwzDIf6uFVo=;
+        b=kkdJdsEMDojP1suzmNizqP0PdEyD/HqBaVeuguB56sidGCBAZKMLFAqYhwmYAr2Ek6
+         7ePgkHiq6bghTOA2BIzpaBJZFOhrJOjQUBfP2j2mHtmJUs5n6cVRPw9vSpmHWWpGB0e9
+         +6ZLDE+xj/pxlOVmiUXQ5ApbO/tY7cYCnjPtbSaPIAgnaB96VYMtWLlcIXMsoox5u735
+         tB64CHNNE81V71F4TfrMkV1z1+hGtNEC52Ps+8Xh9uPV8GJelgaLT/F9pIBqD3B099y6
+         7SeK2qnPfSsuY41dWp7+jblw1/uz6iuFMBNxxKBXNdyagOc7YnbGaaSCHG9gIOveEf0a
+         IAXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAkjMH+fq3qskVlz6fm9V++b0/edXgvDoEwfu1wqywUM45KeVafkQPe+vgLLNBxBDl7BR3Us+jaZiy9gKrqa+21xjifk5skAOMutJ8
+X-Gm-Message-State: AOJu0YyIYP1Ugtd1GFQv0PdMF6kjU6qmMg4yPjUBHxwdCECixiuNgF+D
+	X5+kpAmbP6stP+36ddIKCAjllBJ4PMUOHmdBvsZmn1DmFSJR3wDoSOua1WM7vw==
+X-Google-Smtp-Source: AGHT+IGd+QI2KOJ5c/8/pTyKY+Y+N0EZgS87fvMttED3Ds2Pyg5DEehZ91bfZhC4ZUFBKIIxCloFUA==
+X-Received: by 2002:a17:902:e743:b0:1e3:c01d:fb17 with SMTP id p3-20020a170902e74300b001e3c01dfb17mr55118plf.11.1712793508162;
+        Wed, 10 Apr 2024 16:58:28 -0700 (PDT)
+Received: from [2620:0:1008:15:2d0b:3c67:e0d1:ea8] ([2620:0:1008:15:2d0b:3c67:e0d1:ea8])
+        by smtp.gmail.com with ESMTPSA id ga18-20020a056a00621200b006edcf5533cesm214863pfb.79.2024.04.10.16.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 16:58:27 -0700 (PDT)
+Date: Wed, 10 Apr 2024 16:58:26 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+cc: Sourav Panda <souravpanda@google.com>, corbet@lwn.net, 
+    gregkh@linuxfoundation.org, rafael@kernel.org, mike.kravetz@oracle.com, 
+    muchun.song@linux.dev, rppt@kernel.org, david@redhat.com, 
+    rdunlap@infradead.org, chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, 
+    tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
+    pasha.tatashin@soleen.com, yosryahmed@google.com, hannes@cmpxchg.org, 
+    shakeelb@google.com, kirill.shutemov@linux.intel.com, 
+    wangkefeng.wang@huawei.com, adobriyan@gmail.com, 
+    Vlastimil Babka <vbabka@suse.cz>, 
+    "Liam R. Howlett" <Liam.Howlett@oracle.com>, surenb@google.com, 
+    linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+    linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+    Matthew Wilcox <willy@infradead.org>, weixugc@google.com
+Subject: Re: [PATCH v9 1/1] mm: report per-page metadata information
+In-Reply-To: <20240319143320.d1b1ef7f6fa77b748579ba59@linux-foundation.org>
+Message-ID: <65b77d3e-d683-1e90-ebb0-5c7758143048@google.com>
+References: <20240220214558.3377482-1-souravpanda@google.com> <20240220214558.3377482-2-souravpanda@google.com> <20240319143320.d1b1ef7f6fa77b748579ba59@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, 2024-04-10 at 17:55 +0200, Javier Carrasco wrote:
-> These RTCs meet the requirements for a direct conversion into
-> trivial-rtc:
->=20
-> - orion-rtc
-> - google,goldfish-rtc
-> - maxim,ds1742
-> - rtc-aspped
+On Tue, 19 Mar 2024, Andrew Morton wrote:
 
-Nit: s/aspped/aspeed/, but otherwise it still looks fine for the Aspeed
-bits and you can keep my R-b tag.
+> On Tue, 20 Feb 2024 13:45:58 -0800 Sourav Panda <souravpanda@google.com> wrote:
+> 
+> > Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
+> > to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
+> > to /proc/meminfo. This information can be used by users to see how
+> > much memory is being used by per-page metadata, which can vary
+> > depending on build configuration, machine architecture, and system
+> > use.
+> 
+> I yield to no man in my admiration of changelogging but boy, that's a
+> lot of changelogging.  Would it be possible to consolidate the [0/N]
+> coverletter and the [1/N] changelog into a single thing please?
+> 
+> >  Documentation/filesystems/proc.rst |  3 +++
+> >  fs/proc/meminfo.c                  |  4 ++++
+> >  include/linux/mmzone.h             |  4 ++++
+> >  include/linux/vmstat.h             |  4 ++++
+> >  mm/hugetlb_vmemmap.c               | 17 ++++++++++++----
+> >  mm/mm_init.c                       |  3 +++
+> >  mm/page_alloc.c                    |  1 +
+> >  mm/page_ext.c                      | 32 +++++++++++++++++++++---------
+> >  mm/sparse-vmemmap.c                |  8 ++++++++
+> >  mm/sparse.c                        |  7 ++++++-
+> >  mm/vmstat.c                        | 26 +++++++++++++++++++++++-
+> >  11 files changed, 94 insertions(+), 15 deletions(-)
+> 
+> And yet we offer the users basically no documentation.  The new sysfs
+> file should be documented under Documentation/ABI somewhere and
+> perhaps we could prepare some more expansive user-facing documentation
+> elsewhere?
+> 
 
-Andrew
+Sourav, is it possible to refresh this series into a v10 on top of the 
+latest upstream kernel with a single condensed changelog that details the 
+current behavior, what extension this is adding, and how it is generally 
+useful?
+
+As noted here, the cover letter has great material that discusses the 
+rationale for this change but would be lost if only this patch is merged.  
+So typically the cover letter material gets concatenated into the 
+changelog, but in this case there's a lot of overlap.
+
+A single patch that includes a succinct changelog would be awesome.
+
+And then the requested documentation in Documentation/ABI either included 
+in the same patch or as a second patch in the series?
+
+I don't think the resulting patch series will actually need a cover letter 
+after that, it will be able to stand on its own.
+
+> I'd like to hear others' views on the overall usefulness/utility of this
+> change, please?
+> 
+
+Likely true for all hyperscalers, the immediate use case that this could 
+be applied to is to track boot memory overhead and any regression over 
+time (across kernel upgrades, firmware upgrades, etc) that may change the 
+amount of total memory available.  We'd want to subtract out the boot 
+overhead that we know about (like struct page here) and then alert on any 
+regression where we're losing memory from reboot to reboot for any reason.
+
+This increased visibility into boot memory overhead allows us to create a 
+mechanism to track changes over time when otherwise that attribution of 
+that memory is not available.
 
