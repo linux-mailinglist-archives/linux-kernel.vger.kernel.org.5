@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-138764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2DC889FA11
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:39:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592AA89FA15
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 144541C2143B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DC691F2A3A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6963916D9B2;
-	Wed, 10 Apr 2024 14:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DF416E871;
+	Wed, 10 Apr 2024 14:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7n5Jgf2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FAber0OZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97E715ADB0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5011F16D9D7
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712759831; cv=none; b=ZITuAaBQd7GktaPU1yAEaFKxSOKB4Tu5igtLDozFJMDzH7/Gvl7gib6kEwbpZPsILb/eaccX+IOo/R/Wfg6HuSXQzctRldfbNPnsmFbdDlgbv6Dw3hjjZXbT3ZFhbHQTiJa14HTk1KFSzLpV7RkDzP3jYOzMcqPjF2DV63XaU94=
+	t=1712759834; cv=none; b=BdGOKi7n5npEwWldJDlYdj1uSK4cSdv42/7IIozME+d6QhX6FFQ4s9pmL3alu+z6lNMBfbBIXsqFw6m+sNWkKt+O0zrsJJVyeRMBfZTs4NYvMFNeshEDAmK6te8+nyZCWJg/OgKb2NyqQ9wnSbIWXx88yOjYYFGMNazD9d7IL2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712759831; c=relaxed/simple;
-	bh=zr37AZ5P+Jsxgb/Gyxa03cQqGoKMeaJhEq3JPY4Fv7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e8d6blclmO4sbzocXZfdCO+76NIyL1SO4ClTt+scH4S1iFfmRVxzMrEwUYLSkZcjtwpyc+BDTULFEgHTnU0qGF/IRw9gWIb1Jy7dLkLMGFkX9/Fkjx9xnRnB5c333PuDCisBQph3scDtXHl2IxnVyNwqcbrwxzI9N9nisxUGoeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7n5Jgf2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 164F7C43399;
-	Wed, 10 Apr 2024 14:37:08 +0000 (UTC)
+	s=arc-20240116; t=1712759834; c=relaxed/simple;
+	bh=pFynrsYJOJ+5eJpGClthQv/4eVfcqNbrm44H7lrcyi4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=L4iZ405hkqvpBB5RX0OcNwF1Z4PmN66ULQduKkII2XLbZbUlwXzI1sleFF2bWRV/SWhcTkPtMSZ22brCGNh3243XyqwB0Y1xWyWI2T9Jfq9pkkvA8X6de5T//3idu9inWV1ON6aZip7nkbbm98E21N+l2UbAWn1ptjHymtFJWHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FAber0OZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14443C433F1;
+	Wed, 10 Apr 2024 14:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712759831;
-	bh=zr37AZ5P+Jsxgb/Gyxa03cQqGoKMeaJhEq3JPY4Fv7U=;
-	h=From:To:Cc:Subject:Date:From;
-	b=O7n5Jgf2lmc+U1ygdgCX+qRuGy1Y3+qW8hGz8Ub4A5eOdTbw00TpmssfAOwTSXy1y
-	 dVa/2yAMhIWsq2bEfs9HtNnnN0uxiK/Hn3f+lIUigthhLJARcpWNoWBNV0g7Nhr815
-	 I/xsOw2WJo5N/c0Bmw/O6qfCNwnKNhPRbV3XiC7iDW6j887tZ7Nl+dKaHMSyFuzZ+6
-	 DkwTXzFZaHe+LL6H8LVeerY75mNvAkW9KTbELBIzTaknOHWt2pHhBqmRTlIT79LgRe
-	 iIew2SZrURVtgmlyB0jqctrDZ2mzpXvVcHm7GcNVrcTLtebJsVbTSnFgtq8FvOdLMX
-	 AVuM5Yl43yZvQ==
+	s=k20201202; t=1712759833;
+	bh=pFynrsYJOJ+5eJpGClthQv/4eVfcqNbrm44H7lrcyi4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FAber0OZ+baRX6voEIYTgtB2eFPc3Y+1fQEr016XnTykIihv9Xr4GP3QBkkIYIgk7
+	 AXXXzylli3I3oLJ52+0TJwbskZxkamEaymffPo6EnUU+baUR45FKXgzg3ADs5fmysU
+	 a2BYjLWvxTRHCZVGsyUiEBJIVN6zYEZ09VJ36ePLxymvrN7kWOML7MtmPsrtyH3v/N
+	 CXPT4ZbWKfJ4XApVf7+m64kFV/TPasLCiaA676XRjGdugxALST5LpywebwkDnn1aSY
+	 1i7uLEoel5O662a5xf06e1y/YiedfZxOrsyaEhUdOAsxhOAhq7iN+kY8L2n/tlf+dM
+	 qUSoMB72mfokg==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -49,10 +50,12 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Conor Dooley <conor@kernel.org>
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] riscv: improve nommu and timer-clint
-Date: Wed, 10 Apr 2024 22:23:45 +0800
-Message-ID: <20240410142347.964-1-jszhang@kernel.org>
+Subject: [PATCH v3 1/2] riscv: nommu: remove PAGE_OFFSET hardcoding
+Date: Wed, 10 Apr 2024 22:23:46 +0800
+Message-ID: <20240410142347.964-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240410142347.964-1-jszhang@kernel.org>
+References: <20240410142347.964-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,66 +64,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As is known, the sophgo CV1800B contains so called little core, which
-is C906 w/o MMU, so I want to run nommu linux on it. This series is
-the result of the bring up. After this series, w/ proper dts, we can
-run nommu linux on milkv duo's little core.
+Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
+there's only one nommu platform in the mainline. However, there are
+many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
+the hardcoding value, and introduce DRAM_BASE which will be set by
+users during configuring. DRAM_BASE is 0x8000_0000 by default.
 
-First of all, patch1 removes the PAGE_OFFSET hardcoding by introducing
-DRAM_BASE Kconfig option.
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/Kconfig | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Secondly, to use the T-HEAD C9xx clint in RISCV-M NOMMU env, we need
-to take care two points:
-
-1.The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
-implement such support.
-
-2. As pointed out by commit ca7810aecdba ("lib: utils/timer: mtimer:
-add a quirk for lacking mtime register") of opensbi:
-
-"T-Head developers surely have a different understanding of time CSR and
-CLINT's mtime register with SiFive ones, that they did not implement
-the mtime register at all -- as shown in openC906 source code, their
-time CSR value is just exposed at the top of their processor IP block
-and expects an external continous counter, which makes it not
-overrideable, and thus mtime register is not implemented, even not for
-reading. However, if CLINTEE is not enabled in T-Head's MXSTATUS
-extended CSR, these systems still rely on the mtimecmp registers to
-generate timer interrupts. This makes it necessary to implement T-Head
-C9xx CLINT support in OpenSBI MTIMER driver, which skips implementing
-reading mtime register and falls back to default code that reads time
-CSR."
-
-So, we need to fall back to read time CSR instead of mtime register.
-Add riscv_csr_time_available static key for this purpose.
-
-The second patch adds T-Head C9xxx clint support to timer-clint driver
-by taking care of above two points.
-
-Since v2:
-  - drop CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME, instead we use runtime
-    code patch to dynamically enable CSR TIME code path or MTIME code
-    path.
-
-Since v1:
-  - fix c900_clint_timer_init_dt() defined but not used build warning
-  - add option CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME instead of removing
-    mtime usage for all platforms, since not all platforms implement the
-    time CSR in HW in M mode.
-  - rebase on the timer-clint improvement series
-https://lore.kernel.org/linux-riscv/20240406111757.1597-1-jszhang@kernel.org/T/#t
-
-
-Jisheng Zhang (2):
-  riscv: nommu: remove PAGE_OFFSET hardcoding
-  clocksource/drivers/timer-clint: Add T-Head C9xx clint
-
- arch/riscv/Kconfig                |  8 +++++-
- arch/riscv/include/asm/clint.h    |  2 ++
- arch/riscv/include/asm/timex.h    | 18 +++++++++---
- drivers/clocksource/timer-clint.c | 48 +++++++++++++++++++++++++++----
- 4 files changed, 66 insertions(+), 10 deletions(-)
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 7895c77545f1..b4af1df86352 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -247,10 +247,16 @@ config MMU
+ 	  Select if you want MMU-based virtualised addressing space
+ 	  support by paged memory management. If unsure, say 'Y'.
+ 
++if !MMU
++config DRAM_BASE
++	hex '(S)DRAM Base Address'
++	default 0x80000000
++endif
++
+ config PAGE_OFFSET
+ 	hex
+ 	default 0xC0000000 if 32BIT && MMU
+-	default 0x80000000 if !MMU
++	default DRAM_BASE if !MMU
+ 	default 0xff60000000000000 if 64BIT
+ 
+ config KASAN_SHADOW_OFFSET
 -- 
 2.43.0
 
