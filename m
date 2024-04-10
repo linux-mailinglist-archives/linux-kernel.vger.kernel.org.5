@@ -1,117 +1,157 @@
-Return-Path: <linux-kernel+bounces-138898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7EE89FBCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971C289FBC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:37:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CA971C23DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:37:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8DA71C23037
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781B91779A6;
-	Wed, 10 Apr 2024 15:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FD3176FB4;
+	Wed, 10 Apr 2024 15:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="bHLB/6cn"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47254177995;
-	Wed, 10 Apr 2024 15:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAKuFDPy"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED43C17557C;
+	Wed, 10 Apr 2024 15:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763353; cv=none; b=KddNQ+ZX9bnYAPWjftFKOcQ4DY64p7tHndhQU8bMQW69uiKr9LRJNW6VgW9Muv/mmyctjGwdE4I5WvSC5ZUeBcCZ4JFuTqIwpvduSqcCCXamPE1EfwoG4aMK7+epzW/5yiRkP10x2+drQpMBUzbdfudPAV0s3M0ql5/aMZ2Hu3Q=
+	t=1712763346; cv=none; b=TYGgyU8c1XBAIWVaIOQllysR11N50q0QQe5nsT7fq/UOS+EsP6amp6suXFu7bWHxfda/q0H385hLZujqETJFTDezhIUjxM6vOHwwjjUh5RwJyxj4tVj+4pDIwBPyps3fPpVY6ohGXi2X144+tGRqAXd3c57ayR7279bk1BQkkAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763353; c=relaxed/simple;
-	bh=Gdwx8yZRZj6Xj145JSccLxJSMCvweFeMJVNpP4sRXA0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OQXWM1kOyZwyL3UdgIn9ms3pQ5fb6EyrXF4wn053Ch8kn6mPLEirfhji6WILKqew1EW8oiPU5c4bEpegsVR3eoqVLzrS1nN9EtLr+8Y0NJTtuhz/l0UtXcg92cf/Ap9iD+srOqFokc+vDIkJx4uoQvgR+jyK/9j6aOYBxD/+lV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=bHLB/6cn; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8F6E820EB20C;
-	Wed, 10 Apr 2024 08:35:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8F6E820EB20C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712763346;
-	bh=tPtZMeNBCte4wE3bMMofWj0DqzQpX7MSpdwNaHx0eso=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bHLB/6cnRnj8aYZfK4ctoYoRwHFeLbTtFypvxLI60VvmvXAUUzb8jdijCDwuY9cTw
-	 uDNFajMA2ijDgaD6x2yiZIG2S9IPgO2KPbq32Cbx7CqYm532M40HeBGjE5fXnywVqF
-	 NVJAAMC3Ir8Tz3SbFL/St7YelIZS9UO1ASwg8y0w=
-Date: Wed, 10 Apr 2024 08:35:42 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Copying TLS/user register data per perf-sample?
-Message-ID: <20240410153542.GA460-beaub@linux.microsoft.com>
-References: <20240404192641.GA2628-beaub@linux.microsoft.com>
- <20240410220628.609188857f8c93e33e48d12a@kernel.org>
+	s=arc-20240116; t=1712763346; c=relaxed/simple;
+	bh=nQU/EW6RN6xfr3NljZXvjKCH5hp48r1P1JR1902wK0o=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=YohXIlUjbLlVL89LwtcTwozrTIqsRQDbZFfyw+RPsnqXp/TB5W2uSHQCZhO6PVS1GT7q3Cg/vrg7lIdrR6vmw7CywsuIuZ47aY1FBVs7RhSJKs7/Ok9K/dCinHQ8gAk1m1ICC+dqsHz6vBV4a9S/eRyn4alX/ASPfjGsMSVtFOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AAKuFDPy; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78d57bd577dso325162685a.2;
+        Wed, 10 Apr 2024 08:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712763344; x=1713368144; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FZzk1CbrJpsoJwc1KhYCyX8ST/kypCtDUY7G+Mt0LwQ=;
+        b=AAKuFDPy94YBHZcr+b2HDxj1nlzT957uN4U6JTv5yEZPhs8amQvT30SzghQASa8mPS
+         KXs+yytMbytFdG1vKFzUGbpzShAwye2Uyw6VZsvb6xr7G71hf3GLr6R8b0bd4hxbuFxq
+         y46qYCssnvCjsYDbR31QpzhnUn4OuXSJCEZjPefzXAAfeQZGMoT5SQyICW3xNOIHBiXW
+         X4eTP3A6JaCD/qINRqZiuUqHe35g2ZHHoVVI5T9T73mL6Pymvbr4g5q4Sl5U1ppNUKRi
+         TEaa2PqdFODExvwFRNoxw6OlFEKCR/yzG4fLVML/y+epHN/OYhUHqU33MDSgWaD0l4LE
+         8j1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712763344; x=1713368144;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FZzk1CbrJpsoJwc1KhYCyX8ST/kypCtDUY7G+Mt0LwQ=;
+        b=sBAp+Cl8v56J/tpDiGkuFnyggX3eMoRD/efT2bD1aYipitzMUpV2cI8APIi5Av0NT9
+         vt9NPlG1+FmZMDkTX+Qei6/gQ159w4JhPicG6YtKLcJWhH4SBzAmEHUsKTm05+PDb3CD
+         /Q92kdEqrdwfqNM5Kk1HolSZWFfSfW+0BP6e++ca5NgmwybTPQmtct8teC6/yK4LFenH
+         ZlFrfVZa2uMUKyvqZFvZSJMsatC8bOAKdP3W3NCPR6s2JYP65cU6Nbr23C2gYXFt9tzt
+         /F7kTN+hw3+llcVIrFcdgJYV9YgWtB+6DjvmFDR+YP/84I76Ddoogt6bmvLRvz/q9FR/
+         muTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOqNDca3LTe375gNa7ghNwA7cEukVa91u0qhpx/XJsVMeXYgKwBt1gEIJhnQUolPOQwjjvU71BVXE9+qpOpLU9V3aAQJJsQuzwdUEvDyRjoz0vh9BmoWKLwJxAzh2JjXK9BzAStT9G7+QKumKR8SJ1693wVhVUnYvn
+X-Gm-Message-State: AOJu0Yw8W8q5l+paifq9PgQ+77Kuyjbj7TIeaUwicPJFhnWwzaqjOS8+
+	yu39OeAl6UPpjKVPA6TZSU71EW7PkGQi6b5RfBe+NXKZkFxE4YGJ
+X-Google-Smtp-Source: AGHT+IF4g21EZhMDy0RUgZgR2yA7BgTgDfggYa84U5aEPdrO1Rt7qPokIgxGiAhqsrp75GIxm7hU+Q==
+X-Received: by 2002:a05:620a:27cd:b0:78e:b9ab:c823 with SMTP id i13-20020a05620a27cd00b0078eb9abc823mr1676656qkp.34.1712763343752;
+        Wed, 10 Apr 2024 08:35:43 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id i5-20020a05620a248500b0078d66d66d82sm3070614qkn.30.2024.04.10.08.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 08:35:43 -0700 (PDT)
+Date: Wed, 10 Apr 2024 11:35:42 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <6616b1ceeecad_2a98a529472@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240409210547.3815806-3-quic_abchauha@quicinc.com>
+References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
+ <20240409210547.3815806-3-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v1 2/3] net: assign enum to skb->tstamp_type
+ to distinguish between tstamp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410220628.609188857f8c93e33e48d12a@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 10:06:28PM +0900, Masami Hiramatsu wrote:
-> On Thu, 4 Apr 2024 12:26:41 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Abhishek Chauhan wrote:
+> As we are renaming the mono_delivery_time to tstamp_type, it makes
+> sense to start assigning tstamp_type based out if enum defined as
+> part of this commit
 > 
-> > Hello,
-> > 
-> > I'm looking into the possibility of capturing user data that is pointed
-> > to by a user register (IE: fs/gs for TLS on x86/64) for each sample via
-> > perf_events.
-> > 
-> > I was hoping to find a way to do this similar to PERF_SAMPLE_STACK_USER.
-> > I think it could even use roughly the same ABI in the perf ring buffer.
-> > Or it may be possible by some kprobe linked to the perf sample function.
-> > 
-> > This would allow a profiler to collect TLS (or other values) on x64. In
-> > the Open Telemetry profiling SIG [1], we are trying to find a fast way
-> > to grab a tracing association quickly on a per-thread basis. The team
-> > at Elastic has a bespoke way to do this [2], however, I'd like to see a
-> > more general way to achieve this. The folks I've been talking with seem
-> > open to the idea of just having a TLS value for this we could capture
-> > upon each sample. We could then just state, Open Telemetry SDKs should
-> > have a TLS value for span correlation. However, we need a way to sample
-> > the TLS value(s) when a sampling event is generated.
-> > 
-> > Is this already possible via some other means? It'd be great to be able
-> > to do this directly at the perf_event sample via the ABI or a probe.
-> > 
+> Earlier we used bool arg flag to check if the tstamp is mono in
+> function skb_set_delivery_time, Now the signature of the functions
+> accepts enum to distinguish between mono and real time.
 > 
-> Have you tried to use uprobes? It should be able to access user-space
-> registers including fs/gs.
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> ---
+>  include/linux/skbuff.h                     | 13 +++++++++----
+>  net/bridge/netfilter/nf_conntrack_bridge.c |  2 +-
+>  net/core/dev.c                             |  2 +-
+>  net/core/filter.c                          |  4 ++--
+>  net/ipv4/ip_output.c                       |  2 +-
+>  net/ipv4/tcp_output.c                      | 14 +++++++-------
+>  net/ipv6/ip6_output.c                      |  2 +-
+>  net/ipv6/tcp_ipv6.c                        |  2 +-
+>  net/sched/act_bpf.c                        |  2 +-
+>  net/sched/cls_bpf.c                        |  2 +-
+>  10 files changed, 25 insertions(+), 20 deletions(-)
 > 
-
-We need to get fs/gs during a sample interrupt from perf. If the sample
-interrupt lands during kernel code (IE: syscall) we would also like to
-get these TLS values when in process context.
-
-I have some patches into the kernel to make this possible via
-perf_events that works well, however, I don't want to reinvent the wheel
-if there is some way to get these via perf samples already.
-
-In OTel, we are trying to attribute samples to transactions that are
-occurring. So the TLS fetch has to be aligned exactly with the sample.
-You can do this via eBPF when it's available, however, we have
-environments where eBPF is not available.
-
-It's sounding like to do this properly without eBPF a new feature would
-be required. If so, I do have some patches I can share in a bit as an
-RFC.
-
-Thanks,
--Beau
-
-> Thank you,
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 8210d699d8e9..6160185f0fe0 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -701,6 +701,11 @@ typedef unsigned int sk_buff_data_t;
+>  #else
+>  typedef unsigned char *sk_buff_data_t;
+>  #endif
+> +
 > 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> +enum skb_tstamp_type {
+> +	SKB_TSTAMP_TYPE_RX_REAL = 0,    /* A RX (receive) time in real */
+> +	SKB_TSTAMP_TYPE_TX_MONO = 1,    /* A TX (delivery) time in mono */
+> +};
+
+I'd drop the RX_/TX_. This is just a version of clockid_t, compressed
+to minimize space taken in sk_buff. Simpler to keep to the CLOCK_..
+types. Where a clock was set (TX vs RX) is not relevant to the code
+that later references skb->tstamp.
+
+>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+> -					 bool mono)
+> +					enum skb_tstamp_type tstamp_type)
+>  {
+>  	skb->tstamp = kt;
+> -	skb->tstamp_type = kt && mono;
+> +	skb->tstamp_type = kt && tstamp_type;
+
+Already introduce a switch here?
+
+
 
