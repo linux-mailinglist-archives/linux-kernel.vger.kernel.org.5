@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-138000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B24389EAF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AABC89EAFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:37:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9BF51F21529
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:37:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E141F21BD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633993A29B;
-	Wed, 10 Apr 2024 06:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21ADA3F9C0;
+	Wed, 10 Apr 2024 06:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bssWlidK"
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PtjTscJa"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106CA28370;
-	Wed, 10 Apr 2024 06:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A663A8CE;
+	Wed, 10 Apr 2024 06:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712730981; cv=none; b=qh4oC2IVqn+qhAPGL6Va4vZEFDlj+ZHchvWkYF+6LdFSTtxRkkgTcbEmrpz1GRl3vQP+fpgMmejr6eaif2RQ9cnT4nn3C/lMAkEZiXI/TPIn2fr2Zg920tun0XZGGYPhuaPYOtgo3yYaZhuPrmXsSe1vPStp4BjpdhGbhiw2GJk=
+	t=1712730983; cv=none; b=Wew+DG7sy8OFSmKkJSZssZtwq9yklFonSU3biVJU8JgZ6N8K1W8/tQGyaIwb+R3D0a8Y1Uq7Uq4Xk6LsuOxXWMTcKvzC5NwCqjX7gsPIdLM63UPlPD1g2xXSUn8oWkcMF/zOH1XuJI3X7VWaFQUYSq+pe9fP4cxmaAin6mz1P84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712730981; c=relaxed/simple;
-	bh=WeaqZzn7oUQvOtMGOO/T8nOZBMyxUgnAl7tXB0ABHeo=;
+	s=arc-20240116; t=1712730983; c=relaxed/simple;
+	bh=AsiiiP04FPes6cxdClrpGjzK6prhK+TOOFv0CR5RDd4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jPj9unFjVbv8DvZQ6pfJHTTeOlAT8+kEyQHVlTREnuN9AIZNTaUipZ2wiz601t3KqVUAD7zB9oAG3VuGr28z2leB7bqeOMy3E22v6VqyfJz74VjVjLdJinLmlw+FAxSfj8iS2voylGffBlrKh7XbTmBnLNvv0+6GdU4UM0eRnXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bssWlidK; arc=none smtp.client-ip=115.124.30.112
+	 MIME-Version; b=btdkVOS80vCIAC+DR0HK4zyU7J6TeIXTROsyL9iTFjfkWoSotvkTNW+gZKyXTB7ZJFk7tYl2eNXQGcK5yrQZcLkfpBkTsj1MYgbt34m18lVZ5b41Ynh5H5czUkYqdqHo7pCFS/veruWTat+fiR2Y60lkHj0Qa9/WthPWc9uD0pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PtjTscJa; arc=none smtp.client-ip=115.124.30.99
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1712730975; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=jh2BrX7/cmi+9OhfJLQBIO/Try21wS3X87KwHZzLpJ0=;
-	b=bssWlidK4cKjQoNGL/TFa66ZbaXKkP0Ng1yu8dxVEL96PV1b7F58kja9lg0GGxz8rGgy7ookRkY4GDj0hptnRqDJnHvU7HckqFr4KursK1dvlApCxp6mlkJo9PD6lUnHf/ivJ6mPdJkaDQkSwoD53dNKJpzTViqhNGakF2wnR1s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4Gs1zM_1712730973;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4Gs1zM_1712730973)
+	t=1712730978; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=hNt0SA+GEv1YPmjD1jZRbxCxc2xNlWyHdFP22xhUFMs=;
+	b=PtjTscJafIsTkVEkpnNpgkOdHNiqRCR0qIWzWzggoKNMrZ5J9RCR6RN2hI5adAQ8MrVukvzQPqiOH0PXTHNZrVS7ONi4/lIDZdd3UVz9zEOd4jDhC3RYLMJmDLJIru7hgVhRelR/6G6yNx/RxLhkI+Q1bAvWen61OeQD6tU6t8k=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4GpRUK_1712730976;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4GpRUK_1712730976)
           by smtp.aliyun-inc.com;
-          Wed, 10 Apr 2024 14:36:15 +0800
+          Wed, 10 Apr 2024 14:36:18 +0800
 From: Ruidong Tian <tianruidong@linux.alibaba.com>
 To: robert.moore@intel.com,
 	rafael.j.wysocki@intel.com,
@@ -47,9 +47,9 @@ Cc: linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	tianruidong@linux.alibaba.com
-Subject: [PATCH v2 1/2] ACPICA: AEST: Fix coding style at struct definition
-Date: Wed, 10 Apr 2024 14:36:01 +0800
-Message-Id: <20240410063602.41540-2-tianruidong@linux.alibaba.com>
+Subject: [PATCH v2 2/2] ACPICA: AEST: Add support for the AEST V2 table
+Date: Wed, 10 Apr 2024 14:36:02 +0800
+Message-Id: <20240410063602.41540-3-tianruidong@linux.alibaba.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
 References: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
@@ -61,150 +61,154 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Delete unnecessary blank lines and typedef to follow Kernel coding
-style.
+ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
 
+AEST V2 was published[1], add V2 support based on AEST V1.
+
+[1]: https://developer.arm.com/documentation/den0085/latest/
+
+Link: https://github.com/acpica/acpica/commit/ebb4979
 Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
 ---
- include/acpi/actbl2.h | 50 +++++++++++++++++--------------------------
- 1 file changed, 20 insertions(+), 30 deletions(-)
+ include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 82 insertions(+), 6 deletions(-)
 
 diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index f237269bd1cb..f89b23b3d2aa 100644
+index f89b23b3d2aa..d1670ab93fc6 100644
 --- a/include/acpi/actbl2.h
 +++ b/include/acpi/actbl2.h
-@@ -116,15 +116,14 @@ struct acpi_aest_hdr {
+@@ -77,8 +77,8 @@
+  *
+  * AEST - Arm Error Source Table
+  *
+- * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Document
+- * September 2020.
++ * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
++ * 2.0(May 2023) Platform Design Document.
+  *
+  ******************************************************************************/
  
- /* 0: Processor Error */
+@@ -108,7 +108,9 @@ struct acpi_aest_hdr {
+ #define ACPI_AEST_SMMU_ERROR_NODE           2
+ #define ACPI_AEST_VENDOR_ERROR_NODE         3
+ #define ACPI_AEST_GIC_ERROR_NODE            4
+-#define ACPI_AEST_NODE_TYPE_RESERVED        5	/* 5 and above are reserved */
++#define ACPI_AEST_PCIE_ERROR_NODE           5
++#define ACPI_AEST_PROXY_ERROR_NODE          6
++#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserved */
  
--typedef struct acpi_aest_processor {
-+struct acpi_aest_processor {
- 	u32 processor_id;
- 	u8 resource_type;
- 	u8 reserved;
- 	u8 flags;
- 	u8 revision;
- 	u64 processor_affinity;
--
--} acpi_aest_processor;
-+};
- 
- /* Values for resource_type above, related structs below */
- 
-@@ -135,11 +134,10 @@ typedef struct acpi_aest_processor {
- 
- /* 0R: Processor Cache Resource Substructure */
- 
--typedef struct acpi_aest_processor_cache {
-+struct acpi_aest_processor_cache {
- 	u32 cache_reference;
- 	u32 reserved;
--
--} acpi_aest_processor_cache;
-+};
- 
- /* Values for cache_type above */
- 
-@@ -150,50 +148,44 @@ typedef struct acpi_aest_processor_cache {
- 
- /* 1R: Processor TLB Resource Substructure */
- 
--typedef struct acpi_aest_processor_tlb {
-+struct acpi_aest_processor_tlb {
- 	u32 tlb_level;
- 	u32 reserved;
--
--} acpi_aest_processor_tlb;
-+};
- 
- /* 2R: Processor Generic Resource Substructure */
- 
--typedef struct acpi_aest_processor_generic {
-+struct acpi_aest_processor_generic {
- 	u32 resource;
--
--} acpi_aest_processor_generic;
-+};
- 
- /* 1: Memory Error */
- 
--typedef struct acpi_aest_memory {
-+struct acpi_aest_memory {
- 	u32 srat_proximity_domain;
--
--} acpi_aest_memory;
-+};
- 
- /* 2: Smmu Error */
- 
--typedef struct acpi_aest_smmu {
-+struct acpi_aest_smmu {
- 	u32 iort_node_reference;
- 	u32 subcomponent_reference;
--
--} acpi_aest_smmu;
-+};
- 
- /* 3: Vendor Defined */
- 
--typedef struct acpi_aest_vendor {
-+struct acpi_aest_vendor {
- 	u32 acpi_hid;
- 	u32 acpi_uid;
+ /*
+  * AEST subtables (Error nodes)
+@@ -180,6 +182,12 @@ struct acpi_aest_vendor {
  	u8 vendor_specific_data[16];
--
--} acpi_aest_vendor;
-+};
+ };
  
++struct acpi_aest_vendor_v2 {
++	char acpi_hid[8];
++	u32 acpi_uid;
++	u8 vendor_specific_data[16];
++};
++
  /* 4: Gic Error */
  
--typedef struct acpi_aest_gic {
-+struct acpi_aest_gic {
- 	u32 interface_type;
- 	u32 instance_id;
--
--} acpi_aest_gic;
+ struct acpi_aest_gic {
+@@ -195,6 +203,18 @@ struct acpi_aest_gic {
+ #define ACPI_AEST_GIC_ITS                   3
+ #define ACPI_AEST_GIC_RESERVED              4	/* 4 and above are reserved */
+ 
++/* 5: PCIe Error */
++
++struct acpi_aest_pcie {
++	u32 iort_node_reference;
 +};
- 
- /* Values for interface_type above */
- 
-@@ -205,7 +197,7 @@ typedef struct acpi_aest_gic {
- 
++
++/* 6: Proxy Error */
++
++struct acpi_aest_proxy {
++	u64 node_address;
++};
++
  /* Node Interface Structure */
  
--typedef struct acpi_aest_node_interface {
-+struct acpi_aest_node_interface {
- 	u8 type;
- 	u8 reserved[3];
- 	u32 flags;
-@@ -215,8 +207,7 @@ typedef struct acpi_aest_node_interface {
- 	u64 error_record_implemented;
- 	u64 error_status_reporting;
+ struct acpi_aest_node_interface {
+@@ -209,11 +229,57 @@ struct acpi_aest_node_interface {
  	u64 addressing_mode;
--
--} acpi_aest_node_interface;
-+};
+ };
  
++/* Node Interface Structure V2 */
++
++struct acpi_aest_node_interface_header {
++	u8 type;
++	u8 group_format;
++	u8 reserved[2];
++	u32 flags;
++	u64 address;
++	u32 error_record_index;
++	u32 error_record_count;
++};
++
++#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
++#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
++#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
++
++struct acpi_aest_node_interface_common {
++	u32 error_node_device;
++	u32 processor_affinity;
++	u64 error_group_register_base;
++	u64 fault_inject_register_base;
++	u64 interrupt_config_register_base;
++};
++
++struct acpi_aest_node_interface_4k {
++	u64 error_record_implemented;
++	u64 error_status_reporting;
++	u64 addressing_mode;
++	struct acpi_aest_node_interface_common common;
++};
++
++struct acpi_aest_node_interface_16k {
++	u64 error_record_implemented[4];
++	u64 error_status_reporting[4];
++	u64 addressing_mode[4];
++	struct acpi_aest_node_interface_common common;
++};
++
++struct acpi_aest_node_interface_64k {
++	u64 error_record_implemented[14];
++	u64 error_status_reporting[14];
++	u64 addressing_mode[14];
++	struct acpi_aest_node_interface_common common;
++};
++
  /* Values for Type field above */
  
-@@ -226,15 +217,14 @@ typedef struct acpi_aest_node_interface {
+-#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
+-#define ACPI_AEST_NODE_MEMORY_MAPPED        1
+-#define ACPI_AEST_XFACE_RESERVED            2	/* 2 and above are reserved */
++#define ACPI_AEST_NODE_SYSTEM_REGISTER			0
++#define ACPI_AEST_NODE_MEMORY_MAPPED			1
++#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED	2
++#define ACPI_AEST_XFACE_RESERVED			3   /* 2 and above are reserved */
  
  /* Node Interrupt Structure */
  
--typedef struct acpi_aest_node_interrupt {
-+struct acpi_aest_node_interrupt {
- 	u8 type;
- 	u8 reserved[2];
- 	u8 flags;
- 	u32 gsiv;
- 	u8 iort_id;
+@@ -226,6 +292,16 @@ struct acpi_aest_node_interrupt {
  	u8 reserved1[3];
--
--} acpi_aest_node_interrupt;
-+};
+ };
  
++/* Node Interrupt Structure V2 */
++
++struct acpi_aest_node_interrupt_v2 {
++	u8 type;
++	u8 reserved[2];
++	u8 flags;
++	u32 gsiv;
++	u8 reserved1[4];
++};
++
  /* Values for Type field above */
  
+ #define ACPI_AEST_NODE_FAULT_HANDLING       0
 -- 
 2.33.1
 
