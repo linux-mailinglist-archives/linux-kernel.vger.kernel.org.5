@@ -1,150 +1,317 @@
-Return-Path: <linux-kernel+bounces-139142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7445989FF08
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:50:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238B289FF09
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:50:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EFD928AEFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:50:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4EFE1F24A32
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB201802C3;
-	Wed, 10 Apr 2024 17:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07DF180A68;
+	Wed, 10 Apr 2024 17:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C4wyUNXm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uCwffH8w"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04458172BBA;
-	Wed, 10 Apr 2024 17:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C1B1779B4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771144; cv=none; b=EkDBqPFbs2vk/G7O5vdONeMapbfNJKeeNNAqPk9akzd1ZhRRpctjmYRqMbCOq1AKTa1vpCuw6k23SuOTf4DA/lAIPS/5Qph2josBCo2UHuyhMlgffYO4QJrIPOzSkwW815RAlgzkDnYTHhLYnfrzxClG1FA+Jvk640s7QdbtyL0=
+	t=1712771246; cv=none; b=XSlbif+Re8cjvaS1ACSTZcK8ZP+V8fPbnOPR5t8zHWHthM5fe4YmUed43vx/mlQ515ZRdAi5/ClQLt8QqKxTRSnYb2a/iMiHQpxvVmUOBV38IcQs6Z7yULjIxYms3oKXvZaR7jF1+KMid4ny3KrVSmrk7ZrrkrceYIvSLnzPefc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771144; c=relaxed/simple;
-	bh=4HxhIxz1qnINsE/eh0Ei4JK0lPO3IXgG3NuSYv/yN/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ht8IEE5m+TZQjXyNzjr4k0jyXlh4okyHJxjgciPuKZ5YTw3jYRcqS1Gz609W6lh2D8BBpjti1ZNGIwV4trOdLbim6uIay0vhftxckeZ638fJI1yqtuD5AEradC5xdtxoPh2mJWQySO6/zDx/Z60lcBMzCRsNNmslj9SpW0uqBKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C4wyUNXm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B40BC43390;
-	Wed, 10 Apr 2024 17:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712771143;
-	bh=4HxhIxz1qnINsE/eh0Ei4JK0lPO3IXgG3NuSYv/yN/k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C4wyUNXmswTj1u4BA484bIuNcklHmB5TA7wajGIIF5plKdO5YRWUkPJ4Rup+ZHnqy
-	 XybJK/pACKZnuE1+5WgMB0IRo2mV1yZP7zlpX+stj/1qLkyQQeUTrBL3xEzqb7cIt9
-	 0yjBj0J0q+OcVE3sms6PBJWbHoQurnU52TFHjkJC5jGNOvCwRZQTre1+S4IPDd6P48
-	 jludvrK3Es+chz4K4FHHx02VQWGCcKE9exDExTEm427EGo+26QbJMOOIH8mh8pAbKZ
-	 a00r61yZb+4rK37PpYXWb9MkAWIBmPVzZxXSNu0fY5HBAhLK/ipy1D0tnVaZU6Vh/A
-	 rXMF/ilP6JHiw==
-Date: Wed, 10 Apr 2024 10:45:40 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>, Lin Ma <linma@zju.edu.cn>,
-	Simon Horman <horms@kernel.org>, Breno Leitao <leitao@debian.org>,
-	Tobias Brunner <tobias@strongswan.org>,
-	Raed Salem <raeds@nvidia.com>, Netdev <netdev@vger.kernel.org>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string
- false-positive
-Message-ID: <20240410174540.GB3649628@dev-arch.thelio-3990X>
-References: <20240216202657.2493685-1-arnd@kernel.org>
- <202402161301.BBFA14EE@keescook>
- <763214eb-20eb-4627-8d4b-2e7f29db829a@app.fastmail.com>
- <20240409161517.GA3219862@dev-arch.thelio-3990X>
- <f94c6943-eb93-4533-8e4d-3645ef38b990@app.fastmail.com>
+	s=arc-20240116; t=1712771246; c=relaxed/simple;
+	bh=U2pZnP1konvnQhB/8ukCXwjpY2KiZnevOUsD5Sl3zFo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZI2vgoaJhgijD/mKtdp8JdOUD2bqp+4Id1sWi7+48uM3Zu3LOHcczbxh+W3w2XJHDR19ud13yiE4KbgABG8Dew5dfWr9z2N1/ppy706Tkl2XQmvbNZI3eCfcCDmXgjW7VkMzDQGsjZ8yu7o7wgYrYNbfwL9NjcQGfcCz3CnWHCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uCwffH8w; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-36a0c8c5f18so14475ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712771244; x=1713376044; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M8JBr66IYQPbEWB8lMmmv3b0L51hsKTke/Sa3zBljZA=;
+        b=uCwffH8wGLg5SQVLHPhLu0l8cwC8AoGbNP5OAAZDSljmD0PMzbMzI3G4Xp9qZDgI/L
+         IOf7Z9T40zJz2EQCgX6kQFdLhU/GWECLuXzenHWrjKkTvHuX/yMIqw6wylWBcWXzRpLP
+         WCREJiRQh3BeWA1GXc0sTcKbQWE5CnfhIBQisTU4KH6b1BtpO/m7HQqKisTarCLBAvuZ
+         VjgHxa8qPr/BezZR4+XYXwM2SKD4z6XkyYLaHWSA/UQdscsTMvsjZtTPxQdGOd6E4oJg
+         3ayplhTclJ4lpHtXJnFRGNMBV/+/CFGyk4peT7MEk57ikSzAQZ+ifRlD/KuMcdAFp/P6
+         sjGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712771244; x=1713376044;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M8JBr66IYQPbEWB8lMmmv3b0L51hsKTke/Sa3zBljZA=;
+        b=qeICz/7tEeYGxZ2B3AeN5iRGVPNU43X9sqfmwAlJNw7zqESWYzq0wMBDHOEW7FPtcd
+         K2W7Z+jdn5qwP3vgLQtogOOF9u2bcXiDzOyPjWXHZQkJogRmr9ffkMw54SfPT7RLCopJ
+         1TTjVFBO4TvPloTJVlvtJQLZP2PB/n0gvh2fhZfYUUKBNbPPIjucSY0/T3WqIgaz8Q5c
+         LofsUAsWbRvWE6aAifX2Am/LDfma12Q8KblxL27tlnxgONJJPOqahmMwBxrWEo+y7wz9
+         L4cYuqLDqovwHTN11EzWGL3ScO2zAFFCE92poM7pp6YFBHzfk2WbUq6eIVDZbjU5+k5c
+         cQug==
+X-Forwarded-Encrypted: i=1; AJvYcCWLtBeUFfprqujBKDh7tTrHfJlOsxb8FZJ0fXxjDn0pp3n9Wk+bC7KN2ocls75sCteeshxO8XGB+kVzGR+AdKLAZWgbAOC6wLkoL4hd
+X-Gm-Message-State: AOJu0Yyns1cAoZ4ZIG5w8zo1mWWtkiNl3aznJdDIwlyDEQYmJVRsPcCR
+	vXLorg7ScZ99ZHUPP17JgwhLcFYo03ZlwYP954zcux95j/xPcrxTNCLltqG4DE9kDoAEcy0wMoq
+	kCecuMcQv6PfWJmXpfLovbSRhpfaP1wgg9U5F
+X-Google-Smtp-Source: AGHT+IEwyeH/uTKd6vE5FT7EZV1m93yRVgWhpRUWKwhkTvRVpwZ3B7d44wWKlovjHjyWZoB3QtTzSrMZh/Q2PW7McPE=
+X-Received: by 2002:a05:6e02:18c7:b0:369:e18b:bda2 with SMTP id
+ s7-20020a056e0218c700b00369e18bbda2mr14021ilu.6.1712771243877; Wed, 10 Apr
+ 2024 10:47:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f94c6943-eb93-4533-8e4d-3645ef38b990@app.fastmail.com>
+References: <20240209031441.943012-1-weilin.wang@intel.com>
+ <20240209031441.943012-15-weilin.wang@intel.com> <CAP-5=fU1R7QYKCWPrrZ_wA1RCfat+BqiA12=UG2a-GrBLPL0BA@mail.gmail.com>
+ <CO6PR11MB56358253F9CE3C3772A665EEEE072@CO6PR11MB5635.namprd11.prod.outlook.com>
+In-Reply-To: <CO6PR11MB56358253F9CE3C3772A665EEEE072@CO6PR11MB5635.namprd11.prod.outlook.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 10 Apr 2024 10:47:12 -0700
+Message-ID: <CAP-5=fVtLbRva9KLMdDPNMkF-F9LDp-3C10RymC-QbYdtwEbQA@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 14/15] perf stat: Add tool events support in hardware-grouping
+To: "Wang, Weilin" <weilin.wang@intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"Hunter, Adrian" <adrian.hunter@intel.com>, 
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Taylor, Perry" <perry.taylor@intel.com>, 
+	"Alt, Samantha" <samantha.alt@intel.com>, "Biggers, Caleb" <caleb.biggers@intel.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 09, 2024 at 09:41:09PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 9, 2024, at 18:15, Nathan Chancellor wrote:
-> > On Mon, Apr 08, 2024 at 09:06:21AM +0200, Arnd Bergmann wrote:
-> >> >
-> >> > The shorter fix (in the issue) is to explicitly range-check before
-> >> > the loop:
-> >> >
-> >> >        if (xp->xfrm_nr > XFRM_MAX_DEPTH)
-> >> >                return -ENOBUFS;
-> >> 
-> >> I ran into this issue again and I see that Nathan's fix has
-> >> made it into mainline and backports, but it's apparently
-> >> not sufficient.
-> >> 
-> >> I don't see the warning with my patch from this thread, but
-> >> there may still be a better fix.
+On Tue, Apr 9, 2024 at 1:51=E2=80=AFPM Wang, Weilin <weilin.wang@intel.com>=
+ wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Ian Rogers <irogers@google.com>
+> > Sent: Saturday, March 23, 2024 10:56 PM
+> > To: Wang, Weilin <weilin.wang@intel.com>
+> > Cc: Kan Liang <kan.liang@linux.intel.com>; Namhyung Kim
+> > <namhyung@kernel.org>; Arnaldo Carvalho de Melo <acme@kernel.org>;
+> > Peter Zijlstra <peterz@infradead.org>; Ingo Molnar <mingo@redhat.com>;
+> > Alexander Shishkin <alexander.shishkin@linux.intel.com>; Jiri Olsa
+> > <jolsa@kernel.org>; Hunter, Adrian <adrian.hunter@intel.com>; linux-per=
+f-
+> > users@vger.kernel.org; linux-kernel@vger.kernel.org; Taylor, Perry
+> > <perry.taylor@intel.com>; Alt, Samantha <samantha.alt@intel.com>; Bigge=
+rs,
+> > Caleb <caleb.biggers@intel.com>; Mark Rutland <mark.rutland@arm.com>
+> > Subject: Re: [RFC PATCH v4 14/15] perf stat: Add tool events support in
+> > hardware-grouping
 > >
-> > Is it the exact same warning? clang-19 or older?
-> > What > architecture/configuration? If my change is not sufficient then maybe
-> > there are two separate issues here? I have not seen this warning appear
-> > in our CI since my change was applied.
-> 
-> I only see it with clang-19. I've never seen it with arm32 and
-> currently only see it with arm64, though I had seen it with x86-64
-> as well in February before your patch.
+> > On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+> > >
+> > > From: Weilin Wang <weilin.wang@intel.com>
+> > >
+> > > Add tool events into default_core grouping strings if find tool event=
+s so
+> > > that metrics use tool events could be correctly calculated. Need this=
+ step
+> > > to support TopdownL4-L5.
+> > >
+> > > Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> > > ---
+> > >  tools/perf/util/metricgroup.c | 49
+> > ++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 48 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgr=
+oup.c
+> > > index cfdbb5f7fb77..e5b8456d0405 100644
+> > > --- a/tools/perf/util/metricgroup.c
+> > > +++ b/tools/perf/util/metricgroup.c
+> > > @@ -1486,6 +1486,35 @@ static void find_tool_events(const struct
+> > list_head *metric_list,
+> > >         }
+> > >  }
+> > >
+> > > +/**
+> > > + * get_tool_event_str - Generate and return a string with all the us=
+ed tool
+> > > + * event names.
+> > > + */
+> > > +static int get_tool_event_str(struct strbuf *events,
+> > > +                             const bool tool_events[PERF_TOOL_MAX],
+> > > +                             bool *has_tool_event)
+> > > +{
+> > > +       int i =3D 0;
+> > > +       int ret;
+> > > +
+> > > +       perf_tool_event__for_each_event(i) {
+> > > +               if (tool_events[i]) {
+> > > +                       const char *tmp =3D strdup(perf_tool_event__t=
+o_str(i));
+> > > +
+> > > +                       if (!tmp)
+> > > +                               return -ENOMEM;
+> > > +                       *has_tool_event =3D true;
+> > > +                       ret =3D strbuf_addstr(events, ",");
+> > > +                       if (ret)
+> > > +                               return ret;
+> > > +                       ret =3D strbuf_addstr(events, tmp);
+> > > +                       if (ret)
+> > > +                               return ret;
+> > > +               }
+> > > +       }
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  /**
+> > >   * build_combined_expr_ctx - Make an expr_parse_ctx with
+> > all !group_events
+> > >   *                           metric IDs, as the IDs are held in a se=
+t,
+> > > @@ -2049,6 +2078,7 @@ static int assign_event_grouping(struct
+> > metricgroup__event_info *e,
+> > >
+> > >  static int hw_aware_metricgroup__build_event_string(struct list_head
+> > *group_strs,
+> > >                                            const char *modifier,
+> > > +                                          const bool tool_events[PER=
+F_TOOL_MAX],
+> > >                                            struct list_head *groups)
+> > >  {
+> > >         struct metricgroup__pmu_group_list *p;
+> > > @@ -2056,8 +2086,12 @@ static int
+> > hw_aware_metricgroup__build_event_string(struct list_head *group_strs
+> > >         struct metricgroup__group_events *ge;
+> > >         bool no_group =3D true;
+> > >         int ret =3D 0;
+> > > +       struct strbuf tool_event_str =3D STRBUF_INIT;
+> > > +       bool has_tool_event =3D false;
+> > >
+> > >  #define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
+> > > +       ret =3D get_tool_event_str(&tool_event_str, tool_events,
+> > &has_tool_event);
+> >
+> > Does metricgroup__build_event_string need updating to use this helper
+> > function too?
+>
+> Hi Ian,
+>
+> In parse_ids, tool events are inserted to the ids that passed to
+> metricgroup__build_event_string. If we want to use this function here, I =
+think
+> we also need to update the code in parse_ids to not insert tool events.
+>
+> I could add this change if you think we should do this update.
 
-That seems to line up with my prior experience.
+I like code-reuse and sharing logic whenever possible, it seems
+potentially messy though. I'll leave it up to your judgement as to
+whether it is worth cleaning up. Perhaps there should be a TODO if
+not.
 
-> The warning is the same as before aside from the line number,
-> which which is now include/linux/fortify-string.h:462:4
-> where it was line 420, but I think that is just a context
-> change.
-> 
-> I have a number of configs that reproduce this bug, see
-> https://pastebin.com/tMgfD7cu for an example with current
-> linux-next.
+Thanks,
+Ian
 
-Thanks for that. I was able to reproduce this on next-20240410 as well
-and I reduced the necessary configurations needed to reproduce this on
-top of just defconfig:
-
-  $ echo 'CONFIG_FORTIFY_SOURCE=y
-  CONFIG_KASAN=y
-  CONFIG_XFRM_USER=y' >arch/arm64/configs/repro.config
-
-  $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 {def,repro.}config net/xfrm/xfrm_user.o
-  In file included from net/xfrm/xfrm_user.c:14:
-  In file included from include/linux/compat.h:10:
-  In file included from include/linux/time.h:60:
-  In file included from include/linux/time32.h:13:
-  In file included from include/linux/timex.h:67:
-  In file included from arch/arm64/include/asm/timex.h:8:
-  In file included from arch/arm64/include/asm/arch_timer.h:12:
-  In file included from arch/arm64/include/asm/hwcap.h:9:
-  In file included from arch/arm64/include/asm/cpufeature.h:27:
-  In file included from include/linux/cpumask.h:13:
-  In file included from include/linux/bitmap.h:13:
-  In file included from include/linux/string.h:371:
-  include/linux/fortify-string.h:462:4: warning: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
-    462 |                         __write_overflow_field(p_size_field, size);
-        |                         ^
-  1 warning generated.
-
-Unfortunately, I have no idea why it is complaining nor why your patch
-resolves it but the combination of FORTIFY_SOURCE and KASAN certainly
-seems like a reasonable place to start looking. I will see if I can come
-up with a smaller reproducer to see if it becomes more obvious why this
-code triggers this warning.
-
-Cheers,
-Nathan
+> Thanks,
+> Weilin
+>
+> >
+> > Thanks,
+> > Ian
+> >
+> > > +       RETURN_IF_NON_ZERO(ret);
+> > >
+> > >         list_for_each_entry(p, groups, nd) {
+> > >                 list_for_each_entry(g, &p->group_head, nd) {
+> > > @@ -2129,6 +2163,12 @@ static int
+> > hw_aware_metricgroup__build_event_string(struct list_head *group_strs
+> > >                         }
+> > >                         ret =3D strbuf_addf(events, "}:W");
+> > >                         RETURN_IF_NON_ZERO(ret);
+> > > +
+> > > +                       if (!strcmp(p->pmu_name, "default_core") && h=
+as_tool_event)
+> > {
+> > > +                               ret =3D strbuf_addstr(events, tool_ev=
+ent_str.buf);
+> > > +                               RETURN_IF_NON_ZERO(ret);
+> > > +                       }
+> > > +
+> > >                         pr_debug("events-buf: %s\n", events->buf);
+> > >                         list_add_tail(&new_group_str->nd, group_strs)=
+;
+> > >                 }
+> > > @@ -2214,6 +2254,7 @@ static int hw_aware_build_grouping(struct
+> > expr_parse_ctx *ctx,
+> > >                 if (ret)
+> > >                         goto err_out;
+> > >         }
+> > > +
+> > >         ret =3D get_pmu_counter_layouts(&pmu_info_list, ltable);
+> > >         if (ret)
+> > >                 goto err_out;
+> > > @@ -2259,6 +2300,7 @@ static void
+> > metricgroup__free_grouping_strs(struct list_head
+> > >   */
+> > >  static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+> > >                              struct expr_parse_ctx *ids, const char *=
+modifier,
+> > > +                            const bool tool_events[PERF_TOOL_MAX],
+> > >                              struct evlist **out_evlist)
+> > >  {
+> > >         struct parse_events_error parse_error;
+> > > @@ -2272,7 +2314,8 @@ static int hw_aware_parse_ids(struct perf_pmu
+> > *fake_pmu,
+> > >         ret =3D hw_aware_build_grouping(ids, &grouping);
+> > >         if (ret)
+> > >                 goto out;
+> > > -       ret =3D hw_aware_metricgroup__build_event_string(&grouping_st=
+r,
+> > modifier, &grouping);
+> > > +       ret =3D hw_aware_metricgroup__build_event_string(&grouping_st=
+r,
+> > modifier,
+> > > +                                                     tool_events, &g=
+rouping);
+> > >         if (ret)
+> > >                 goto out;
+> > >
+> > > @@ -2407,6 +2450,7 @@ static int hw_aware_parse_groups(struct evlist
+> > *perf_evlist,
+> > >         struct evlist *combined_evlist =3D NULL;
+> > >         LIST_HEAD(metric_list);
+> > >         struct metric *m;
+> > > +       bool tool_events[PERF_TOOL_MAX] =3D {false};
+> > >         int ret;
+> > >         bool metric_no_group =3D false;
+> > >         bool metric_no_merge =3D false;
+> > > @@ -2425,11 +2469,14 @@ static int hw_aware_parse_groups(struct evlis=
+t
+> > *perf_evlist,
+> > >         if (!metric_no_merge) {
+> > >                 struct expr_parse_ctx *combined =3D NULL;
+> > >
+> > > +               find_tool_events(&metric_list, tool_events);
+> > > +
+> > >                 ret =3D hw_aware_build_combined_expr_ctx(&metric_list=
+,
+> > &combined);
+> > >
+> > >                 if (!ret && combined && hashmap__size(combined->ids))=
+ {
+> > >                         ret =3D hw_aware_parse_ids(fake_pmu, combined=
+,
+> > >                                                 /*modifier=3D*/NULL,
+> > > +                                               tool_events,
+> > >                                                 &combined_evlist);
+> > >                 }
+> > >
+> > > --
+> > > 2.42.0
+> > >
 
