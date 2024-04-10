@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-138253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6CA489EED2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:29:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E84F189EED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:30:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7C211C20297
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:29:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39C89B24418
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AED158A28;
-	Wed, 10 Apr 2024 09:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D43D1591F8;
+	Wed, 10 Apr 2024 09:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pFRsG+H4"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KOU4JR8F"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B0813D2BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACBE15531D;
 	Wed, 10 Apr 2024 09:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712741357; cv=none; b=F9iyg++h3gZXlRM6njqulEuT1ZAX9L+mmbvwAikb9RJG+IkHZLoXEXFWe91HndfoFiSzOHrccv7Xu38uiAe8xafUUJM/fgOMQw84Fihh1GfsZunPySruVAeQW3fdEcPaLM/qMrvxIRgrOB+pHTmg78/tKg7avEIC7S4cRVw9ImM=
+	t=1712741357; cv=none; b=g5p4o1Xd3DO4jnVilDGBDxj25UrivxLc6aLnBMeZmvIjnZ4FIwAGxGdIiM5PSvcaqUhEjXzLMZSjHzBCrKgPztysIBlUA1oDXgpgcKtCnvD6NaKcZH5vuGGa7nG3L4fC7NywXf/cLr5E0dJgKsKB7r2I18pSDkuTmVE1FsrNI3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712741357; c=relaxed/simple;
-	bh=XllhvdNXULIE3CImgSBufNbbReemMbchd9h8L7I837A=;
+	bh=yknB+7qTEVSApo7twiMZf9uswY1p1QPEpYLKQmR+whs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bhyquqH4OiUKY8HeYGlzhFjQvm2PgsGP7EeAfkQOIJH8DYCqfGj7rl5hcSrW0YTGCmGxnD8RjpH4jc+KZ1caNYiun71bM1KhC/wVCViYRSdl4XiVFnn2GaIkq5fL3Rv+BTs+8qlasVr4shGmhrxOa6CxIL1SOLtn/UIUUMJYWok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pFRsG+H4; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=j6QoNPt8g+RMbaAEDIvRQfg/1BsnLlUTVXxIkPhnaKKPUbzNYTWIEOqMbDNINa+cxLz+OslEYponvRbw0KRtD3cvhpcT0z39r89R9DjEZokvpScs1zGxaEvK+pNiY2yGGJaO7PY8/AiJD3mIjjaGEdayQlLl/+U3n644rzjqS18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KOU4JR8F; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E23BC0002;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D3354C0010;
 	Wed, 10 Apr 2024 09:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712741352;
+	t=1712741353;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qT2L9De8YkW05zivGysH06k/sTuQS9j+DtTxCa88wj8=;
-	b=pFRsG+H4vyr+tpo0uK0Zr/biVUnYkP/DFrU7kPN2jIbW5xI2MdNCCxYkvLdd1214/RIcrO
-	50bd/l53bmuI+S0wJiYq4cImG4DxKD436/AiWYKNxhPbCBg+IEehr9YUc5Je/VhcNBQ5+X
-	EH5OItp5myteh3tIVOh7Zv03X9E0SJovHZ0F0VyU5SPDoY+T4qLKacRAYwBLF3OBjriuW6
-	zlM/jAGZJuoWbIZt12raR0yC5OXKIe2MRoCU5kMI00KE7k67t3nMuEVNo6GQizs35Kz2Fv
-	dOk4d80RpdPemEbmM+GKAxhu0RVXpnW2xu5XSD/jAa1Dwa9cLVw5fn2tat2yzg==
+	bh=Oqn8emte3xu2XqiT6+4r45XXMdjD8s3EgYSdiWO/wSE=;
+	b=KOU4JR8Fv1K2+w6GWVB0nXsk81F1XTXMY5fPJUgAAb2xvaeqnv16riK98g/vCcReurUCgk
+	d0z7LvSlRqBuHAB7i4lmcJNnsqedCSJ52ug57vVhBxyMSvLwodMbgCCdG42D7VLQjdlTRI
+	QxlsDnfjtaraXnyg7UaL4JSNgUhsFpI1KACnTg5Bru+C4OXdkk1OubbIHxg+W8mB8mcSKr
+	9YM+efhdrVHSKS1tX+YT/OXxfED8F9op8P4cepmRtspa80hB+q70PlWNBkRmlTFjgGOrjo
+	eyAz7ZRWqVAivIedZ3epFWI+1kA2m9h6B2gfHM8l8vKayh/KpqK+fBrS18oLQA==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 10 Apr 2024 11:29:08 +0200
-Subject: [PATCH v3 5/9] spi: cadence-qspi: add no-IRQ mode to indirect
- reads
+Date: Wed, 10 Apr 2024 11:29:09 +0200
+Subject: [PATCH v3 6/9] spi: cadence-qspi: add early busywait to
+ cqspi_wait_for_bit()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240410-cdns-qspi-mbly-v3-5-7b7053449cf7@bootlin.com>
+Message-Id: <20240410-cdns-qspi-mbly-v3-6-7b7053449cf7@bootlin.com>
 References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
 In-Reply-To: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -74,78 +74,93 @@ Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Support reads through polling, without any IRQ. The main reason is
-performance; profiling shows that the first IRQ comes quickly on our
-specific hardware. Once this IRQ arrives, we poll until all data is
-retrieved. Avoid initial sleep to reduce IRQ count.
+Call readl_relaxed_poll_timeout() with no sleep at the start of
+cqspi_wait_for_bit(). If its short timeout expires, a sleeping
+readl_relaxed_poll_timeout() call takes the relay.
 
-Hide this behavior behind a quirk flag.
-
-This is confirmed through micro-benchmarks, but also end-to-end
-performance tests. Mobileye EyeQ5, octal flash, reading 235M on a UBIFS
-filesystem:
- - No optimizations, ~10.34s, ~22.7 MB/s, 199230 IRQs
- - CQSPI_SLOW_SRAM,  ~10.34s, ~22.7 MB/s,  70284 IRQs
- - CQSPI_RD_NO_IRQ,   ~9.37s, ~25.1 MB/s,    521 IRQs
+The reason is to avoid hrtimer interrupts on the system. All read
+operations are expected to take less than 100µs.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/spi/spi-cadence-quadspi.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/spi/spi-cadence-quadspi.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index b499f2e5ec87..cde84d10678e 100644
+index cde84d10678e..fecb76cfb932 100644
 --- a/drivers/spi/spi-cadence-quadspi.c
 +++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -42,6 +42,7 @@ static_assert(CQSPI_MAX_CHIPSELECT <= SPI_CS_CNT_MAX);
- #define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
- #define CQSPI_SLOW_SRAM		BIT(4)
- #define CQSPI_NEEDS_APB_AHB_HAZARD_WAR	BIT(5)
-+#define CQSPI_RD_NO_IRQ			BIT(6)
+@@ -120,6 +120,7 @@ struct cqspi_driver_platdata {
+ /* Operation timeout value */
+ #define CQSPI_TIMEOUT_MS			500
+ #define CQSPI_READ_TIMEOUT_MS			10
++#define CQSPI_BUSYWAIT_TIMEOUT_US		500
  
- /* Capabilities */
- #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-@@ -702,6 +703,7 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
- 				       const size_t n_rx)
+ /* Runtime_pm autosuspend delay */
+ #define CQSPI_AUTOSUSPEND_TIMEOUT		2000
+@@ -298,13 +299,27 @@ struct cqspi_driver_platdata {
+ 
+ #define CQSPI_REG_VERSAL_DMA_VAL		0x602
+ 
+-static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clr)
++static int cqspi_wait_for_bit(const struct cqspi_driver_platdata *ddata,
++			      void __iomem *reg, const u32 mask, bool clr,
++			      bool busywait)
  {
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
-+	bool use_irq = !(cqspi->ddata && cqspi->ddata->quirks & CQSPI_RD_NO_IRQ);
- 	struct device *dev = &cqspi->pdev->dev;
- 	void __iomem *reg_base = cqspi->iobase;
- 	void __iomem *ahb_base = cqspi->ahb_base;
-@@ -725,17 +727,20 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
- 	 * all the read interrupts disabled for max performance.
- 	 */
++	u64 timeout_us = CQSPI_TIMEOUT_MS * USEC_PER_MSEC;
+ 	u32 val;
  
--	if (!cqspi->slow_sram)
-+	if (use_irq && cqspi->slow_sram)
-+		writel(CQSPI_REG_IRQ_WATERMARK, reg_base + CQSPI_REG_IRQMASK);
-+	else if (use_irq)
- 		writel(CQSPI_IRQ_MASK_RD, reg_base + CQSPI_REG_IRQMASK);
- 	else
--		writel(CQSPI_REG_IRQ_WATERMARK, reg_base + CQSPI_REG_IRQMASK);
-+		writel(0, reg_base + CQSPI_REG_IRQMASK);
++	if (busywait) {
++		int ret = readl_relaxed_poll_timeout(reg, val,
++						     (((clr ? ~val : val) & mask) == mask),
++						     0, CQSPI_BUSYWAIT_TIMEOUT_US);
++
++		if (ret != -ETIMEDOUT)
++			return ret;
++
++		timeout_us -= CQSPI_BUSYWAIT_TIMEOUT_US;
++	}
++
+ 	return readl_relaxed_poll_timeout(reg, val,
+ 					  (((clr ? ~val : val) & mask) == mask),
+-					  10, CQSPI_TIMEOUT_MS * 1000);
++					  10, timeout_us);
+ }
  
- 	reinit_completion(&cqspi->transfer_complete);
- 	writel(CQSPI_REG_INDIRECTRD_START_MASK,
- 	       reg_base + CQSPI_REG_INDIRECTRD);
+ static bool cqspi_is_idle(struct cqspi_st *cqspi)
+@@ -434,8 +449,8 @@ static int cqspi_exec_flash_cmd(struct cqspi_st *cqspi, unsigned int reg)
+ 	writel(reg, reg_base + CQSPI_REG_CMDCTRL);
  
- 	while (remaining > 0) {
--		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
-+		if (use_irq &&
-+		    !wait_for_completion_timeout(&cqspi->transfer_complete,
- 						 msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
- 			ret = -ETIMEDOUT;
+ 	/* Polling for completion. */
+-	ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_CMDCTRL,
+-				 CQSPI_REG_CMDCTRL_INPROGRESS_MASK, 1);
++	ret = cqspi_wait_for_bit(cqspi->ddata, reg_base + CQSPI_REG_CMDCTRL,
++				 CQSPI_REG_CMDCTRL_INPROGRESS_MASK, 1, true);
+ 	if (ret) {
+ 		dev_err(&cqspi->pdev->dev,
+ 			"Flash command execution timed out.\n");
+@@ -790,8 +805,8 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
+ 	}
  
-@@ -777,7 +782,7 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
- 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
- 		}
+ 	/* Check indirect done status */
+-	ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
+-				 CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
++	ret = cqspi_wait_for_bit(cqspi->ddata, reg_base + CQSPI_REG_INDIRECTRD,
++				 CQSPI_REG_INDIRECTRD_DONE_MASK, 0, true);
+ 	if (ret) {
+ 		dev_err(dev, "Indirect read completion error (%i)\n", ret);
+ 		goto failrd;
+@@ -1091,8 +1106,8 @@ static int cqspi_indirect_write_execute(struct cqspi_flash_pdata *f_pdata,
+ 	}
  
--		if (remaining > 0) {
-+		if (use_irq && remaining > 0) {
- 			reinit_completion(&cqspi->transfer_complete);
- 			if (cqspi->slow_sram)
- 				writel(CQSPI_REG_IRQ_WATERMARK, reg_base + CQSPI_REG_IRQMASK);
+ 	/* Check indirect done status */
+-	ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTWR,
+-				 CQSPI_REG_INDIRECTWR_DONE_MASK, 0);
++	ret = cqspi_wait_for_bit(cqspi->ddata, reg_base + CQSPI_REG_INDIRECTWR,
++				 CQSPI_REG_INDIRECTWR_DONE_MASK, 0, false);
+ 	if (ret) {
+ 		dev_err(dev, "Indirect write completion error (%i)\n", ret);
+ 		goto failwr;
 
 -- 
 2.44.0
