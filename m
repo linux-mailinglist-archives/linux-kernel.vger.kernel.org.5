@@ -1,124 +1,108 @@
-Return-Path: <linux-kernel+bounces-138963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C265A89FCB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 811A989FCB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:20:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74505284794
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:17:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CB2C28705E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0881117A93A;
-	Wed, 10 Apr 2024 16:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B644317A92F;
+	Wed, 10 Apr 2024 16:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dmb7HOSC"
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZJXYmqS2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B79B17A93E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83737179211
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765840; cv=none; b=MYCnagNJn4AtKGuw4XgM9FOXnsSAgb2UMWjm45GQQsV1H0kAO+p2QYg6deljbjzLQYgYKgJ0Wtafis5AH/PNXK+EOfNvJV1WS7AKkcR0yAFRkZOASzrikk2EhUEmCDWwOvsZtlq+2ouKKIVjq4shmpXXX9wrftwn4CB+TX2Gve0=
+	t=1712766000; cv=none; b=YIOhQeD3XOLNOCVBLS4w/aeea19fWVFDQkCslQCc45IuZOTz+PXjVa66NFRwpSwe7TqLNwUiIubdCBvwdz5NULWXUJczMLwplAMzwhhA9ewonetWyqAvmnc4BXXyLg4RDxWJvGQCbVQGnWoHmo/0ssDHZ5WbVY7GcKTRPa5bQQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765840; c=relaxed/simple;
-	bh=z6IKR3JAhKYZVwCJuBfAEGi31YQCyS3o5wJrNYaVLZw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BA+DftqLq6ohcpPmsxq8LTK/KTC6zTn7+Ii3+EXPl21BarLsX/5j5y348j5d+GjYvgMrfz20WUN1tsR+y5sg1e9hbde8E6dQOTY+n6fN16N1oxuhs3MkIDYfbdgu3yIa2KFfgNrtTtUIKMyqRqxAkrOtrk1suOdKt3YordPH6eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dmb7HOSC; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-36a3a4c9d11so174835ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712765836; x=1713370636; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S59M5ErJ4ghJIk0WuQtKw5Oah+bXQHt5R+GLddM1KKg=;
-        b=dmb7HOSCx0aOaxYV/MYcS7ebcCA2nJ6wfPnfA29+V0tO7yUB6hGVEUq/lQJJf4fH8F
-         7NhnoEhDs/HZjML4Xx/G3qDa9C+PhO8OnkgtKnrHiatAgWTGtnL2KK/Q3lJ4JeFigltA
-         rnUDPjHIFmxJ+9qY7qdxerxPGlfCG3SUGTdEhQ/sgy//elfQQFQPkzU/MhjbqiC888xQ
-         hzvQFEG2B7/3l7CwdSYkacIRHYLszG0F2FPGWXA1j76JWMsjozffKf8jMvIiuUOMovyr
-         DlNC8DA6YSddrBGBVn+V6rQgsMppY/YSEKMHcfn2Qn6Eu29etcm+sxbRgoFLjU/6Istf
-         Uh/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712765836; x=1713370636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S59M5ErJ4ghJIk0WuQtKw5Oah+bXQHt5R+GLddM1KKg=;
-        b=rrnQZCmoFFh4oX7eeOlgqLYyJSdV/qqv0AZkf2rB7vkWsB4BRNK2AL7hG/Nm7q8Lgm
-         GyMPSKemqVseRE2NP4PqU71B+rv/hf4lHEmKvOf+jWiEvsFvWSI+acxSgMGFQGQ+UKrJ
-         RgSJDM0EPbZBYWF3Cu26YQyWJTveU9nrBQFlALjj4IhPcaDGpt23XPJKTVSg4IaRm9wA
-         7M3qoMxlZc8R+bWp1nu35l9qwdU2HaZR4JU/0hZAE9COFV0/pKEBDoWRHttV6vDOVkka
-         Cm49HzIuSf6KPLuv+f4Fn+4tdqm1pRw/IqjjYphlJ6VdaEXBwBo4JbwOPFKOs3NQDVzg
-         3V6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUhCVZmKRBYwZV3KFeFo6TZ0HuSNIKFCFmlZwzUYCL4KCd40WkWtiSOjLfsYGcj5tlrpmFmnxZ+XusRrwVlwCTEMvOODd6cf+p9DYey
-X-Gm-Message-State: AOJu0YxvGf0nDwJcku44X2vaUY5QWs3lkFjU5xUP1za/V6Mla/Ty1whx
-	ygd1aUfFNowWDC22/n7SXt68HQG7FxIWePyeo8flanttBHgApNHKDRmMw4XldnAWaVeFrDJmSa1
-	dRh7Y8Y8wXwUJrlJR95NsghJW9HD55cn4iGLt
-X-Google-Smtp-Source: AGHT+IFSvH09coKrJ0WxqpOywmBxAI87YC290XDstCLKVDm1m1WDtulWPdOHHiub4CKMpx0EF/LCtFf+rgqg4r4N370=
-X-Received: by 2002:a05:6e02:ee3:b0:36a:3d5f:e269 with SMTP id
- j3-20020a056e020ee300b0036a3d5fe269mr131406ilk.13.1712765835647; Wed, 10 Apr
- 2024 09:17:15 -0700 (PDT)
+	s=arc-20240116; t=1712766000; c=relaxed/simple;
+	bh=nkV9cGAED/z/VIex+b/PSuJe4lylFvXK/ooyXd9u+WY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=axB4edE1ImxMdFSP+kipqnwbWPj0zOkQBxMlzv7mxqMjY/csJ+AG2uBeAXWJuDHI4djYvKdDGdKeZ84rqiDlKkpUKxMIMdkrZX8NYxr7qmnamFZjPiBV9b+qABa647FEgwkYJlEZpM2WxyTM2huHYNAnFOaAhgzbPDdO3RaTpKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZJXYmqS2; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712765998; x=1744301998;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=nkV9cGAED/z/VIex+b/PSuJe4lylFvXK/ooyXd9u+WY=;
+  b=ZJXYmqS2DxPorsv2MqSAXZ8xfEEtk7S5CVDihJLU04xkReyo8VIQpLEO
+   BR3YYXlxVQ/TuTesiYyc9jN4ILYFnMdjQ+CnsES7F5pqV/QB0V/P4MbIM
+   zlZMrHWUjPny7rGSK917n3xxiZUG+5Bt3HpM0waxRkVP9NDdPDsJDhLbW
+   cuNeD4iwm1WEQE23bEzZ88tzw0inlXAT8+TFT54CtB2jYQbXhWdmuNPU+
+   GtIlkD4C0kJTvQ9ImKRt6kGqsWYxVhV06yOybb30ThqZt5m3mJZlgnvii
+   BwUTIAzXsfEQWbi5UD6gpIuEplJ1P6/YtXJprvh4QLwz/tPb1Bm9nhF/n
+   Q==;
+X-CSE-ConnectionGUID: qUvY5rB/TxipkbOd3248wA==
+X-CSE-MsgGUID: Op++Am38Qbuu6eBy2j4jhA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8316628"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="8316628"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 09:15:26 -0700
+X-CSE-ConnectionGUID: bYm3/WcVRy6UqtcJM8vh6g==
+X-CSE-MsgGUID: lJv4/ogSSgGrN2eFG8qM4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="20570377"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 09:15:25 -0700
+Date: Wed, 10 Apr 2024 09:19:55 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Baolu Lu <baolu.lu@linux.intel.com>, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>, "Liu, Yi L" <yi.l.liu@intel.com>, Joerg Roedel
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+ <robin.murphy@arm.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/2] iommu/vt-d: Remove caching mode check before devtlb
+ flush
+Message-ID: <20240410091955.5c00e411@jacob-builder>
+In-Reply-To: <BN9PR11MB52763F42ED6719E6D03D0D308C062@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240407144232.190355-1-baolu.lu@linux.intel.com>
+	<20240407144232.190355-2-baolu.lu@linux.intel.com>
+	<20240408140329.6290377f@jacob-builder>
+	<aff42b8f-b757-4422-9ebe-741a4b894b6c@linux.intel.com>
+	<20240409103146.0d155e45@jacob-builder>
+	<BN9PR11MB52763F42ED6719E6D03D0D308C062@BN9PR11MB5276.namprd11.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410103458.813656-1-james.clark@arm.com>
-In-Reply-To: <20240410103458.813656-1-james.clark@arm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 10 Apr 2024 09:17:04 -0700
-Message-ID: <CAP-5=fVgf3cOgbV1KGGLd5gykxT+BzuX1=XUsp+2BNUahGn6QQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] perf test: "object code reading" test fixes
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, namhyung@kernel.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Spoorthy S <spoorts2@in.ibm.com>, 
-	Leo Yan <leo.yan@linux.dev>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 3:35=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
-> A few fixes around the object code reading test. The first patch
-> appears to be unrelated, but in this case the data symbol test is
-> broken on Arm N1 by the second commit.
->
-> Changes since V1:
->   * Put data symbol test fix first so that bisecting still works on N1
->   * Instead of skipping "test data symbol" on N1, add some noise into
->     the loop.
->   * Add a commit to replace the only usage of lscpu in the tests with
->     uname
->
-> James Clark (4):
->   perf tests: Make "test data symbol" more robust on Neoverse N1
->   perf tests: Apply attributes to all events in object code reading test
->   perf map: Remove kernel map before updating start and end addresses
->   perf tests: Remove dependency on lscpu
+Hi Kevin,
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+On Wed, 10 Apr 2024 00:32:06 +0000, "Tian, Kevin" <kevin.tian@intel.com>
+wrote:
+
+> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > Sent: Wednesday, April 10, 2024 1:32 AM
+> > 
+> > If the guest uses SL page tables in vIOMMU, we don;t expose ATS to the
+> > guest. So ATS is not relevant here, does't matter map or unmap.
+> >   
+> 
+> ATS is orthogonal to SL vs. FL. Where is this restriction coming from?
+For practical purposes, what would be the usage to have SL in the guest and
+ATS enabled. i.e. shadowing SL but directly expose ATS? 
 
 Thanks,
-Ian
 
->  tools/perf/tests/code-reading.c                 | 10 +++++-----
->  tools/perf/tests/shell/test_arm_callgraph_fp.sh |  4 +++-
->  tools/perf/tests/workloads/datasym.c            | 16 ++++++++++++++++
->  tools/perf/util/machine.c                       |  2 +-
->  4 files changed, 25 insertions(+), 7 deletions(-)
->
-> --
-> 2.34.1
->
+Jacob
 
