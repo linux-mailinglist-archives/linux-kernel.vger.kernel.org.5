@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-138400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4716089F0B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:27:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE75B89F0B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 786401C21817
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FD0C1F21697
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E3B15ECFA;
-	Wed, 10 Apr 2024 11:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16ECE15EFBA;
+	Wed, 10 Apr 2024 11:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="O35o9sA/"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="jGE3GHSr"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7386915E5D0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781ED15ECC3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712748320; cv=none; b=KpKnbuYU/yxDm3T3xGBLYawYCUoYLJIvxNwBgyokqxXUTJUOU/BMfgffJpFU7JP+YsvYskegwy3HlzDrvDixyWg4jZJY9nvUykTORTCVCGfr6u/Zdth2VrJZm9L1C6yq0SuzATQsNCtoBvFOXEPeK4x3pSwmQhKu0q77Pz7CA8U=
+	t=1712748321; cv=none; b=C9t8ccR+Z2FZ8zkKnOyp672wqe0yxpAYz0melEYmWdyixp6fJLydw/yHB9wXFA3yhfG5V9Hr0NIkqRk0gLvwXCWcEIMP464KTZjOQPAqPtpRD4qefJwKBVpTJ4ZkDla6EBuBZ0PwOu4EE4vNVAOiMheC56ieBpbLOa8efG2yJtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712748320; c=relaxed/simple;
-	bh=+pdjM1s6Ki6mrvtt2IV5vM61l9m948tojzNqs2Jkx7I=;
+	s=arc-20240116; t=1712748321; c=relaxed/simple;
+	bh=sxi3WEpwgXQI9JfKHETzDTiVADUhdiDC54vmSGW+gcE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sfcXxeO+TZRFIXSjBaShoVn3PpNcZ61GWYNmu2djzmdpSUkLjXh+/+spK61GlqYloZkGBnHOVqekDv+4oRFhnlE2292NKR8pvjGnqZQcG3o0Y0OVceH5b8tGdbIQjGoljRLPSGHqUDUnqODxWMOMJDdw2PhAXUV5g+ZFZQRvf1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=O35o9sA/; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=fYubh6+ipDVqnoY94fTIZd/SRwghP2rZmLoeSSiSefgzcwS6PTvTMPrfFGJJvuALaCRp/NEbQeTtIbA/2emgQDdD4W3rBioVzrwXckaLbyO2yfcMWQZ9/RGetHRwvmitTYDNOTFWsCtvndlWZS+DvnFgvEqb5ZDVmuqdfm8tiLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=jGE3GHSr; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=MIh2Te8HRB16dLWCZQy/u503SxPLZR4I/XrMPIptOnE=; b=O35o9s
-	A/QrxQdnKtCJc5CK2Acr3z8X5R8hpnyPciX8LmYASeqN1ZEpbMmFbgFXvLwgE7YN
-	kH6BRRwlzqFFXmQwHItosHjSMm/ZqdZXrBq/lG1SckthpkilUm2XBK1MJtP+q/2x
-	qXfy62rIR+sHfUj65K7+0R83adECJYhroq9Llm1isGbk3b+0gaM1dKkOORdPbN5a
-	05o2Zb78BVnIfGCC/gZIa84AhHuTdo23+0FgxYAsqigAklFoWVFR9IWAn9Hb/tQE
-	YUx8UctlUXT1kj5xY5Dcyw0WU8bxD4vZ8yEE41Tg2cbQhrhWGbZg/QZcq7toT0uW
-	aVcRr7QRkCZdT/1g==
-Received: (qmail 521651 invoked from network); 10 Apr 2024 13:25:10 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 10 Apr 2024 13:25:10 +0200
-X-UD-Smtp-Session: l3s3148p1@A06eSrwVZz1tKPEL
+	 s=k1; bh=k+7gyTeoVGWoiQtUP2kx99lHQC+xHgNqfgabFZlIt1A=; b=jGE3GH
+	SrEt72iicQl3z+Wma4LyoJbEUhwq4GtkhjTCBT86qz3m3dKyZqNgvIgN9ulyjctM
+	zLhTn30TwyJBvhhIIPmbV4hAa3R87lCupIZ3t+oD4PkwDA99PKFuG94FDI+dyrEz
+	ZUA9x3+ENczhqRVFL1LWAb2IO9vnpQtip4k1s7DJu7RmyGmF6K8hhuMVpjV5zb5U
+	y9zMdP26ZYjAvSqATF2aJ0iL7nOBFQgKWflgArrd4gQCViSeqV0NtV23+NkihG3F
+	y32+rxjyjiMR+WFFmsSFDKxyeRRt6pzWF0PMRg88Zya8AKgv9km7NUci+W1GKuVo
+	5+K/SLLwioe8w7jQ==
+Received: (qmail 521729 invoked from network); 10 Apr 2024 13:25:12 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 10 Apr 2024 13:25:12 +0200
+X-UD-Smtp-Session: l3s3148p1@5xq1SrwVmi1tKPEL
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
@@ -51,9 +51,9 @@ Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Andi Shyti <andi.shyti@kernel.org>,
 	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 11/18] i2c: qcom-geni: remove printout on handled timeouts
-Date: Wed, 10 Apr 2024 13:24:25 +0200
-Message-ID: <20240410112418.6400-31-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 12/18] i2c: qup: remove printout on handled timeouts
+Date: Wed, 10 Apr 2024 13:24:26 +0200
+Message-ID: <20240410112418.6400-32-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
 References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
@@ -72,26 +72,25 @@ should just pass this information upwards. Remove the printout.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-qcom-geni.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-qup.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 11dcfcf13d8b..6054c62cd2ff 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -642,11 +642,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
- 		dma_async_issue_pending(gi2c->tx_c);
+diff --git a/drivers/i2c/busses/i2c-qup.c b/drivers/i2c/busses/i2c-qup.c
+index 598102d16677..c9b43a3c4bd3 100644
+--- a/drivers/i2c/busses/i2c-qup.c
++++ b/drivers/i2c/busses/i2c-qup.c
+@@ -793,10 +793,8 @@ static int qup_i2c_bam_schedule_desc(struct qup_i2c_dev *qup)
+ 		dma_async_issue_pending(qup->brx.dma);
+ 	}
  
- 		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
--		if (!timeout) {
--			dev_err(gi2c->se.dev, "I2C timeout gpi flags:%d addr:0x%x\n",
--				gi2c->cur->flags, gi2c->cur->addr);
-+		if (!timeout)
- 			gi2c->err = -ETIMEDOUT;
--		}
+-	if (!wait_for_completion_timeout(&qup->xfer, qup->xfer_timeout)) {
+-		dev_err(qup->dev, "normal trans timed out\n");
++	if (!wait_for_completion_timeout(&qup->xfer, qup->xfer_timeout))
+ 		ret = -ETIMEDOUT;
+-	}
  
- 		if (gi2c->err) {
- 			ret = gi2c->err;
+ 	if (ret || qup->bus_err || qup->qup_err) {
+ 		reinit_completion(&qup->xfer);
 -- 
 2.43.0
 
