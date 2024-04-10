@@ -1,163 +1,172 @@
-Return-Path: <linux-kernel+bounces-138645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0DC689F89C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B1889F8A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:48:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 953B91F31AE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:47:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA0E71F23A1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0108615FA80;
-	Wed, 10 Apr 2024 13:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A752B16E874;
+	Wed, 10 Apr 2024 13:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C+wgZR98"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="KYHzQ4Pk"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D0A15B14C;
-	Wed, 10 Apr 2024 13:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617B916D9D4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756408; cv=none; b=CfKA1OoapHNMKTl2mFb4c1eJQqzZNr/53BjkMCPJETAA6zId9AJZOISM9/ks2KLk/d6jGAKeFsL0fW33Qq5l9TIxHJH1k/D8RvR+6r8pK3wG/x5eQf3T4WcMEK3hq7G5ORkrPaD2E3JOaFylgSmyGfusswH4rjKqESRJm8OjdMM=
+	t=1712756467; cv=none; b=i0pXh+IXArI4MxBBuFvHG394Xk1UbCxdHwq5Rp5km1P0Xa7aEpgIwoTOh77kbY6Epcc4Bp7/wzWyDX33NvSNk1O69fDjosIe4Pqlww8Est1LFXKbbSBPBXI3urC5ijVa++H9HvloIR3gGRDaD0XfWqbE4hV5/yf2m4SWQScELQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756408; c=relaxed/simple;
-	bh=g5GZtmMc/oxPQ/MUhPM0fv4b39WzxMIrkEvxhBmKbec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NEvkBvfDA9kHIvIG6X5wQgkEqeUW/pl8LR85SCGYkLdlBn2f9IBkbpr2K57t5EXCghcTq085VPGiHTZsFUUdXCFcxLpU5Jv63svLahHedLElh1R48+sHeq/Fmzw5WNLyViK2O877h39OrqOxmpn1NpMqx++N+54qMdNdbZnVZCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C+wgZR98; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712756406; x=1744292406;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=g5GZtmMc/oxPQ/MUhPM0fv4b39WzxMIrkEvxhBmKbec=;
-  b=C+wgZR98yGi3CI1s7YyPwutahdUQ4v5fYHQoXY86DZKtkyf5hvHRcvNm
-   GvRlTPjybKEEDZB4accCdVpqFBqtObcSLDt/eHln8otdvqjOp6joD+2WG
-   0c6Unu02/uypKOq0WQpH2qvoCpfndkDP8TAQUqeGoNWDNXmy2+vUmruED
-   9i5PEgj2OW83n+ioW6wSVrCXzeqEb7UMKfX8wjPbkEsZWXZfnK2RYHWnl
-   TgYTKDMvku/elmwYUbDkS5yZNcEa546J2Pr8HpdD2Vy1zTpxSTlaLugB0
-   wX+2Yo8bjV/EvTINu2cxYRpjIY3RrVwotwrpKDZ86gefHHZS4k9CqB2PS
-   A==;
-X-CSE-ConnectionGUID: 9K8VR/JlRWyLEB200Ab+aA==
-X-CSE-MsgGUID: 8KEsxZ36SZq/im7+aibTxg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11894475"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11894475"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:40:06 -0700
-X-CSE-ConnectionGUID: lTKryyL+QPazrXmhATpbOg==
-X-CSE-MsgGUID: ph2/+d14RHCfHJrgZeR6OA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="43796591"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:40:05 -0700
-Received: from [10.212.84.148] (kliang2-mobl1.ccr.corp.intel.com [10.212.84.148])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id E533820B573A;
-	Wed, 10 Apr 2024 06:40:03 -0700 (PDT)
-Message-ID: <014e70fb-e49a-4d5c-9daf-a080e0f12b11@linux.intel.com>
-Date: Wed, 10 Apr 2024 09:40:02 -0400
+	s=arc-20240116; t=1712756467; c=relaxed/simple;
+	bh=w1yxUr+e94JNiQhyApXQzG14kOfbhJO7Nrggm3f4iz4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MmFNOH7E0rxDL19oBpHDuEFYt6XES0vjn7w7cP5lxpAITg0auLBfZX7e54f5PkJZkfNE+RnzCgJMLtoEou8sQPsIRn68sUKyWb/ZprolI1qbNatVuP4iZBl5niB4NOvWAfaeACFxsXwn0yQAcTIu4dnGBHUSBg11LQ64YLnKS9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=KYHzQ4Pk; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-417c5aa361cso923245e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1712756463; x=1713361263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgPnM0yPd3XkLtMCMzEU9ADT5EI0Xg/1xBhNwZOIrjI=;
+        b=KYHzQ4PkeM3/nE08Z8ZT2FFaH2PPHn5tnP8IID0p9+ZBAIrMBGIObzHw/nCycwlxdd
+         IEkaLWP4wuadKxJR33cZOp/Y9UwOhAQ4kfTCTNsTZElyuvTbBWGi0gmwb4VnHkCVa7qD
+         dGhSImrZCP+/CtSkZVG3KSsIpcD1hbC0ZiSFDqzdpPpQQF71NcZR/6bYibqkwNh0VzXX
+         wRpO/TwKFAmJFrvrglmLBUe+Zi8AcayguNlFkydZovPZzhFZtbT1Q1wjADKVfLQUVs1L
+         q0bH/O5pESqyW55VbchWyTtJ1nrheynA8igjWJ3sT2gqJzeLWOpqe3YjetICeRMBqulO
+         RBfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712756463; x=1713361263;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OgPnM0yPd3XkLtMCMzEU9ADT5EI0Xg/1xBhNwZOIrjI=;
+        b=c8IKLYcCs0vgOOgYiWA7nIZQiQjcEPyqsn9u1ak4urHyktEkf1WekUmU0vf7U5rmqw
+         nEGJxK4vtn9URcj+xCcSowiyXh4/s7uvOfCX2wX4TPV4YfzPwPQko+PU9tEYqzmw4XcT
+         2rs0WSSveTgMsxuXK4sWu9ZQYY1FVFpUbeVdlBXps8L2s8WQLzmn6HWtkmsesxkmM6i9
+         VPHPu5QQn189dgRmj/2elGyr3yFYedYJ0bi3teFu9bg92k+haJLpqysm/iTXrsReiRr5
+         Y7/KdyMtq6zcCTGl0tIEnV0oTdIX91ZO1YuSZJ81fN7i2Fm4OejevWiSQT3JIKtmR2k7
+         oeqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTVg75XP3FuA4rnPyXbd9VuauH4lqVf+mh7QEu3GFoVxBaOtL0tENvzsNdchF8Yz6R8l6XRM36pqxmm+UwdCI1NC/OxSP/qYSakU7J
+X-Gm-Message-State: AOJu0YyHSRMVKRme7ww+gq0XObLGs2uSTWuKV0QDQ9/TgfWn04gRh0gR
+	alcuLEhmhMvU8cthmZeLVs0IqE/Urml8fSz7lRkdnK0Fe2Sc+ZKp92RoJL9SfnM=
+X-Google-Smtp-Source: AGHT+IH6UhzKqls5jFfJx0V6zACCsECFizHKBE462Q3yuyDJDifrfACAWokgDHsk+oJkkHbGFJL4Xg==
+X-Received: by 2002:a05:600c:3b9c:b0:416:b099:7878 with SMTP id n28-20020a05600c3b9c00b00416b0997878mr1854806wms.4.1712756463431;
+        Wed, 10 Apr 2024 06:41:03 -0700 (PDT)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.8])
+        by smtp.gmail.com with ESMTPSA id n15-20020a05600c500f00b00417c0fa4b82sm872528wmr.25.2024.04.10.06.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 06:41:02 -0700 (PDT)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: wim@linux-watchdog.org,
+	linux@roeck-us.net,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH RESEND v8 00/10] watchdog: rzg2l_wdt: Add support for RZ/G3S
+Date: Wed, 10 Apr 2024 16:40:34 +0300
+Message-Id: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] perf report: Add weight[123] output fields
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org,
- Stephane Eranian <eranian@google.com>, Andi Kleen <ak@linux.intel.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-References: <20240409000659.1727785-1-namhyung@kernel.org>
- <20240409000659.1727785-3-namhyung@kernel.org>
- <0ec1328a-0731-42a6-b953-163ac5a56deb@linux.intel.com>
- <CAM9d7cizZLMNa82VxuuvEWEY3vwdbs_iTG9jsogJQBoWMLP7Fw@mail.gmail.com>
- <16587efd-ab12-463a-bd87-7721adfc731d@linux.intel.com>
- <CAM9d7cg65=Hr2Utuuh=8EC7v80y-n1iZ-dyCfDU=kreuovLjfQ@mail.gmail.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAM9d7cg65=Hr2Utuuh=8EC7v80y-n1iZ-dyCfDU=kreuovLjfQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
+Hi,
 
-On 2024-04-09 3:27 p.m., Namhyung Kim wrote:
->>>>> weight value and use the default 'comm,dso,sym' sort keys).
->>>>>
->>>>>   $ perf report -n -F +weight | grep -e Weight -e noploop
->>>>>   # Overhead  Samples  Weight1  Command  Shared Object  Symbol
->>>>>        1.23%        7     42.4  perf     perf           [.] noploop
->>>> I think the current +weight shows the sum of weight1 of all samples,
->>>> (global weight). With this patch, it becomes an average (local_weight).
->>>> The definition change may break the existing user script.
->>>>
->>>> Ideally, I think we should keep the meaning of the weight and
->>>> local_weight as is.
->>> Hmm.. then we may add 'avg_weight' or something.
->>>
->>> But note that there's a subtle difference in the usage.  If you use
->>> 'weight' as a sort key (-s weight) it'd keep the existing behavior
->>> that shows the sum (global_weight).  It'd show average only if
->>> you use it as an output field (-F weight).
->>>
->> As my understanding, the -F weight is implicitly replaced by the -F
->> weight1 with this patch. There is no way to get the sum of weight with
->> -F anymore.
-> Right.
-> 
->> I think that's a user visible behavior change. At least, we have to warn
->> the end user with a message, e.g., "weight is not supported with -F
->> anymore. Using weight1 to instead". Only updating the doc may not be enough.
-> I understand your concern.  I can add the warning.
-> 
->>> The issue of the sort key is that it cannot have the total sum
->>> of weights for a function.  It'll have separate entries for each
->>> weight for each function like in the above example.
->>>
->> That seems to be a different issue. If the total sum of weights for a
->> function is required, we should fix the existing "weight".
-> Yeah, I guess that's more reasonable behavior.  But I'm not sure
-> how we can fix it without breaking the existing behavior.
->
+Series adds watchdog support for Renesas RZ/G3S (R9A08G045) SoC.
 
-I did some experiments and found that with the -F weight option, the
-hist_entry__cmp() compares the newly added field, weight, as well.
-That may not the behavior we want.
+Patches do the following:
+- patch 1/10 makes the driver depend on ARCH_RZG2L || ARCH_R9A09G011
+- patch 2/10 makes the driver depend on PM
+- patches 3-7/10 adds fixes and cleanups for the watchdog driver
+- patch 8/10 adds suspend to RAM to the watchdog driver (to be used by
+  RZ/G3S)
+- patch 9/10 adapt for power domain support
+- patch 10/10 documents the RZ/G3S support
 
-I think the expected behavior is that all the samples still be sorted by
-symbol, but just add a new field to show the sum of the weight.
-So perf probably should not cmp any newly added field.
+Thank you,
+Claudiu Beznea
 
-Another issue is that the current code will only use the weight from the
-first sample. If perf can avoid the cmp of the weight, it still needs to
-save all the weights and add them up.
+Changes in v8:
+- added patch 9
+- collected tags
 
-I'm not sure how hard the fix is or maybe it's too ugly. Just for your
-reference.
+Changes in v7:
+- updated the dependency on patch 2/9
 
-> Actually this is my approach to keep the behavior for the "sort" key.
-> I think users are more familiar with -s (--sort) rather than the -F
-> (--fields) option.  That's why I'd like to "break" that part only.
-> 
+Changes in v6:
+- update patch 2/9 description
+- fixed the dependency on COMPILE_TEST previously introduced in patch
+  2/9
 
-Yes, if we have to "break" something, it should be -F.
-I'm OK with it as long as there are proper warnings that can tell users
-that it's broken.
+Changes in v5:
+- updated description of patch 2/9
+- simplify the code in patch 2/9 by using on a new line:
+  depends on PM || COMPILE_TEST
 
-Thanks,
-Kan
+Changes in v4:
+- added patch "watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+  ARCH_R9A09G011"
+- collected tags
+
+Changes in v3:
+- make driver depend on PM not select it
+- drop patches already accepted (patches 1, 10, 11 from v2)
+- re-arranged the tags in patch 8/8 as they were messed by b4 am/shazam
+
+Changes in v2:
+- added patch "watchdog: rzg2l_wdt: Select PM"
+- propagate the return status of rzg2l_wdt_start() to it's callers
+  in patch "watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()" 
+- propagate the return status of rzg2l_wdt_stop() to it's callers
+  in patch "watchdog: rzg2l_wdt: Check return status of pm_runtime_put()" 
+- removed pm_ptr() from patch "watchdog: rzg2l_wdt: Add suspend/resume support"
+- s/G2UL/G2L in patch "dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support"
+- collected tags
+
+Claudiu Beznea (10):
+  watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+    ARCH_R9A09G011
+  watchdog: rzg2l_wdt: Make the driver depend on PM
+  watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()
+  watchdog: rzg2l_wdt: Check return status of pm_runtime_put()
+  watchdog: rzg2l_wdt: Remove reset de-assert from probe
+  watchdog: rzg2l_wdt: Remove comparison with zero
+  watchdog: rzg2l_wdt: Rely on the reset driver for doing proper reset
+  watchdog: rzg2l_wdt: Add suspend/resume support
+  watchdog: rzg2l_wdt: Power on the PM domain in rzg2l_wdt_restart()
+  dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support
+
+ .../bindings/watchdog/renesas,wdt.yaml        |   1 +
+ drivers/watchdog/Kconfig                      |   3 +-
+ drivers/watchdog/rzg2l_wdt.c                  | 123 +++++++++++-------
+ 3 files changed, 76 insertions(+), 51 deletions(-)
+
+-- 
+2.39.2
+
 
