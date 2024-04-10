@@ -1,138 +1,103 @@
-Return-Path: <linux-kernel+bounces-138244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0DB89EEA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:21:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED5189EEAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:21:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E921F2801B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:21:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 791ED289280
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD12B155385;
-	Wed, 10 Apr 2024 09:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 044BC156C6C;
+	Wed, 10 Apr 2024 09:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="V5y6Vue/"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lOZwytox"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65AB15444A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A88155306
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740782; cv=none; b=tmoSA/ni2bRuZ7SRwNxj5p/INw8Em8IC0AgE0h/vn8BIkMF/3BvJ50Bmzr2HqsPU1PyFCUhMNLBEHyfcuizRXUkClF89QM+uFTvz+B0JPi57qOfPLvwvhOkj7g2kIIUKg4WGHo0F3Vnjrgii/t2rlnvoWDmLX3lKHUHqvLTZMRI=
+	t=1712740860; cv=none; b=VGQTLJ22ZR3PPArqVjPCm/nir4Rz60ap2XvYB6aNuJiEUtkjrf+i7UJyeC0pWbeSrUm6SqD3Zp/nZVaYf8bXWNO6ZF5xbbbRL1mNZMVpNWOFhbulzat/0nq34U0XjGqi3rNFsH2dt1HMWDaCug4tZqBq+kt6x52/dtsmiIvq+98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740782; c=relaxed/simple;
-	bh=evTv8De6lv1FsnypG6LZMsXywDGeAc/aRB/nBLtcl6E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jS1wpHRCXC8Yv9FRTFCwj/TZMawPiGnFGK13psh1gtbYu2bTQRXaTlBc3oujpjk4BHcIkn1xHs83jFDMWopkLQjv9yVF22PPEY8Ooo0Y/wBK4rjtNiq4mXRjp0pQ19sRbv9R2rgOWAPCSFovBjrNWCgfJ5aTJXENSQE/I3cP6tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org; spf=pass smtp.mailfrom=cknow.org; dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b=V5y6Vue/; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
-	t=1712740777;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Fxnre8bEBsAfmvV59wTcaDrSTm/YPKF5xn8HG3MyBk=;
-	b=V5y6Vue/obAOV3r4CISyivKtBvFKMyxFE4KpcmotuE6QwDVZmrS5Jhc6DgbTDt8Pb3PCE+
-	Ywt7zJzqzRr3BTKhw9xHEC0tfIl7IFwcNc606f3EonourjaKvIvuA9kr+UQnIlE8viG+18
-	GBs6R4uZgTK/LW2aiGYe9tpnNPnwnax2B630P+vong0+Ez3gb+3gehUuOQ3/rt7o4OEUxC
-	pecGhfSEaFkdCGSxA+u6RUr2pviXPsZXP0qrgqLY5CHhnqiar5PVVzoOD5jBVWGHyCWllp
-	/qbWAe0VGY38OEgHEu+XkJIMP9FGhY8JyzqmTkNRPuxgwt5A99GDkE0HqpweJA==
-From: Diederik de Haas <didi.debian@cknow.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
- Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, Alexey Charkov <alchark@gmail.com>
-Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal,
- OPP and fan
-Date: Wed, 10 Apr 2024 11:19:24 +0200
-Message-ID: <66689051.MzlzmSNrL9@bagend>
-Organization: Connecting Knowledge
-In-Reply-To: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+	s=arc-20240116; t=1712740860; c=relaxed/simple;
+	bh=O6XERnHnMwc1UPkJwA7M4dMe8kK/+Z7/oP46jzawayI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eB07NVk1VA8YfEDcFuYMKmkf6cNuABxLJbhNcQlOl7sXf+97REDCpFFdE1lo0Uxuxtq94AK70kq7g20Dw5428ZJIiAZW97dni8lHiCaQF3PS6IT4FKEiXQH6ThHa1WclVheNW9igbNYUaVQcFlEJaTYClYeq0Q3ofhbRiiSWVPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lOZwytox; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d4886a1cb4so77584461fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712740857; x=1713345657; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O6XERnHnMwc1UPkJwA7M4dMe8kK/+Z7/oP46jzawayI=;
+        b=lOZwytoxyU/pUArKN0fsqC4w3VprMSwPRtA+1E3nCcqB9vASpxZg9ZjMAc9sycmCE+
+         CyGqHi0R9pEbPYlNwJ1mP0K3f421voB6BD3sBBUYkHgA82eaeKk/Lh2rbD1+MmW1HKu3
+         ABwWcQBSPeNQLgb8Jxt+uPtzGbgU2D2Cv1HdU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712740857; x=1713345657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O6XERnHnMwc1UPkJwA7M4dMe8kK/+Z7/oP46jzawayI=;
+        b=NcolE/urRlOk9HE8BnhynmfIdj0ccswde+DDtUANgYb3Jzo44VgT5gPLtavp4/cXDU
+         G6Z6nwRZfbHTDrF2eUI0/dZd9uCGhN1xxAuLFaPqHbYpSgE1Lw9ahfBbJFr1AEqQmgBh
+         7LMLQry03PWAudoyqCe+9AT3c+bf/nOq2B62P/kAl6klc/RAsmfDFCGvJBTLDTBHc6UT
+         0wWpYKBDaqmA59KdWKKKNHjNV9qSq0P45CttHyPcb1/tRC+tFTudRX6s6t/v2tl4uM+M
+         rAl8/jNEO32Vc5VaI0wijADi4p95ppJ8nX1jDcsx1TRbhEZLgpdX30kc8kzrusjMQoGW
+         My8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUx2FpGqwFBrUgL7bXWDpINS61Osyo8vnD1EZOqaGsQWodLPrAw+E35yS8qfwWxufTcTzJalUfl9jVYZP/P/fuRBagadiHjt58ErADZ
+X-Gm-Message-State: AOJu0YxAKA+rFajeeL4vnZjIdFbkE3FvfItBl8ToThbP5oOaVg+RetAY
+	PzYZifGql0rJ5I3R7pCAwR3eEBbvOKqQL+TrZqEOM19xPQ+ldHvFSw+UFrgjwk29wuM98Nq1XlU
+	rx8j0beD572Xjapwk7v4bSQLLvMdH3uEIXrT8Ml3RvoA5Z1FAwQ==
+X-Google-Smtp-Source: AGHT+IFL6KPS7uL0x/EtSSqM+BxaTQB6YKxFAO4dVgt7h/JSlGs8pTFg9ELkmasVKscLtesWpTkQnSz+ws7ho1rA6oM=
+X-Received: by 2002:a2e:9913:0:b0:2d8:2fea:2e4d with SMTP id
+ v19-20020a2e9913000000b002d82fea2e4dmr1821870lji.2.1712740856858; Wed, 10 Apr
+ 2024 02:20:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart7134483.Nosjqafpsc";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Migadu-Flow: FLOW_OUT
+References: <20240410084405.1389378-1-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240410084405.1389378-1-angelogioacchino.delregno@collabora.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Wed, 10 Apr 2024 17:20:45 +0800
+Message-ID: <CAGXv+5FJM2_yr0dwD=FhaDi4FJzYn50=jY6fJsFnder2q7TKrw@mail.gmail.com>
+Subject: Re: [PATCH] power: supply: mt6360_charger: Fix of_match for
+ usb-otg-vbus regulator
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: sre@kernel.org, matthias.bgg@gmail.com, mazziesaccount@gmail.com, 
+	gene_chen@richtek.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---nextPart7134483.Nosjqafpsc
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Diederik de Haas <didi.debian@cknow.org>
-To: Alexey Charkov <alchark@gmail.com>
-Date: Wed, 10 Apr 2024 11:19:24 +0200
-Message-ID: <66689051.MzlzmSNrL9@bagend>
-Organization: Connecting Knowledge
-In-Reply-To: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
-MIME-Version: 1.0
+On Wed, Apr 10, 2024 at 4:44=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> The of_match shall correspond to the name of the regulator subnode,
+> or the deprecated `regulator-compatible` property must be used:
+> failing to do so, the regulator won't probe (and the driver will
+> as well not probe).
+>
+> Since the devicetree binding for this driver is actually correct
+> and wants DTs to use the "usb-otg-vbus-regulator" subnode name,
+> fix this driver by aligning the `of_match` string to what the DT
+> binding wants.
+>
+> Fixes: 0402e8ebb8b8 ("power: supply: mt6360_charger: add MT6360 charger s=
+upport")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
 
-On Thursday, 29 February 2024 20:26:31 CEST Alexey Charkov wrote:
-> This enables thermal monitoring and CPU DVFS on RK3588(s), as well as
-> active cooling on Radxa Rock 5B via the provided PWM fan.
-> 
-> Some RK3588 boards use separate regulators to supply CPUs and their
-> respective memory interfaces, so this is handled by coupling those
-> regulators in affected boards' device trees to ensure that their
-> voltage is adjusted in step.
-> 
-> 
-> Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> ---
-> Alexey Charkov (5):
->       arm64: dts: rockchip: enable built-in thermal monitoring on RK3588
->       arm64: dts: rockchip: enable automatic active cooling on Rock 5B
->       arm64: dts: rockchip: Add CPU/memory regulator coupling for RK3588
->       arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
->       arm64: dts: rockchip: Add further granularity in RK3588 CPU OPPs
-> 
->  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts   |  12 +
->  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts |  12 +
->  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |  30 +-
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi          | 385
-> ++++++++++++++++++++- 4 files changed, 437 insertions(+), 2 deletions(-)
-> ---
-> base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
-> change-id: 20240124-rk-dts-additions-a6d7b52787b9
-
-Can you rebase this patch set on Heiko's for-next branch [1]?
-And then also fix the ordering of the nodes and the elements within
-those nodes so that they match the current conventions?
-
-Cheers,
-  Diederik
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next
---nextPart7134483.Nosjqafpsc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZhZZnAAKCRDXblvOeH7b
-brL0AP96KiehZ6mo0z6uX/FZeBYHChb+2/he7oAjmljWIz3ohQEAg/5R9SFlnLo0
-oT2M2B5cvMWaS/9RDlqmca2ZFO7w1wE=
-=KWnH
------END PGP SIGNATURE-----
-
---nextPart7134483.Nosjqafpsc--
-
-
-
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
