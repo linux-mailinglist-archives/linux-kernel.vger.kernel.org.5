@@ -1,71 +1,99 @@
-Return-Path: <linux-kernel+bounces-139364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA78B8A01ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1E08A01F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7692844DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B20F11C21D5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6471836E3;
-	Wed, 10 Apr 2024 21:26:28 +0000 (UTC)
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD721836FC;
+	Wed, 10 Apr 2024 21:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7uw442U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7B428FD;
-	Wed, 10 Apr 2024 21:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32AE1836CE;
+	Wed, 10 Apr 2024 21:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784387; cv=none; b=kGeJqHo4iUgLDp3dfO8sBngyu5MDy15mMVsabkvvU6cHvchzw9svVS3eINkwA9gGFvn01azHTqay59u/D+ki/7DmuWKiTrYDDHAW/t97frBxCdH1uvZYzwbI32P4b4NgcmTfm0lMYadeaT+HKDsIaI22FVkHcT7e2yBnX/mfJzM=
+	t=1712784401; cv=none; b=AdoObEr7Di2ZtUF4ipPNja3TUCdUKDfndtH1GaRgAYCVQEQ2QflGuB6L3fN3YeK2LJVNJPekEneyncpLsRNEmblHp7LKdMS19gaB+3DyUlNznBhgmOSGapaWr2w6q7UDf5Rw2qlcZpywRlOByfAMkOAkqTeM2WyQDqYSKDOSuDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784387; c=relaxed/simple;
-	bh=08PnHTmoFjVS0jlauVqPE5m5O6Gpq9uPAIfvA5nIff4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h6/+LNpUR6nHLXRAM+G34WzQaQgN4UMPWfK+fKYLyl0vIkCtRkTS4Ax0sbhuV0jDA/f4UZ7LchC+s/gMev3u7mpRygKnw1kquNRwj7bRFpFlw2iBWRXSpOPVRCU9xrkwmDx6NIwO2jSN53af8d7yFN+bSr1Vxs+5bCLgp4X3dmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso6444950b3a.2;
-        Wed, 10 Apr 2024 14:26:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712784386; x=1713389186;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHYBoAuG9Ulh100IdFDToigwRpMmG8N/QPRwV2fsKV8=;
-        b=LiAv8qniH33yMNtmCiheFzNIhvlanNhSm2LfijaGTG/z90ncV2MOafK4yoigizGw31
-         Aa0ZtymHmrv2/BdVMRPa4GXBSdoA4hutu0vbRrazImwSt0O/rQC5AaHy61mZ+XMDlnPs
-         MI+m7+s43TbFDfFpCt4DpZp1MYanwVfoWky/T5A+64i6bUzvoREVifKRFbFx7vYFOxNA
-         XceCHppWv4mjYF5T06wqfT5/4aUk2VcLwYOH6YMnZXUK9mX0EU1gHL/M10WuGf4V4zM2
-         zmoUg5CMRlHL5M4GjfPIcbRFbNuGRvw5QOvCOl0XE2BUVUWFzXTVuXvzlWPhw0nFiPP3
-         9zXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWFGESLn+4Z9oXhRm/f64R8fOjFpzXAbZgQOPuDVauI4GuWYSOf6hFYD9lMFnr65MeBGrEtQVScSrFAqqiiucA1+4xXcnLhoIpa9tZ4
-X-Gm-Message-State: AOJu0YwuOu3qf73wTmBziqGynGRaqsSyeDN3ewNOSgqhtz8Vzh7I8JmA
-	wBify58Jt2xWu+e6fZ+qQeLEusVcweYUQzbm0SNCIDol069O+i/M
-X-Google-Smtp-Source: AGHT+IH5VL2a530HRuWElepuAePCA6LOgeT7Ow24WI7nKi3lLcAM3iNhWibNJV9EC7NSeYPLlOiMQA==
-X-Received: by 2002:a05:6a21:3482:b0:1a7:1df5:c329 with SMTP id yo2-20020a056a21348200b001a71df5c329mr4763123pzb.0.1712784385884;
-        Wed, 10 Apr 2024 14:26:25 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id g21-20020aa78755000000b006ead618c010sm93243pfo.192.2024.04.10.14.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 14:26:25 -0700 (PDT)
-Date: Wed, 10 Apr 2024 21:26:16 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Olaf Hering <olaf@aepfle.de>,
-	Ani Sinha <anisinha@redhat.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v5] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
- for keyfile format
-Message-ID: <ZhcD-HPMsghnJs3X@liuwe-devbox-debian-v2>
-References: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
+	s=arc-20240116; t=1712784401; c=relaxed/simple;
+	bh=ZHY0Qb2p6hZj2F9UUpHFyF1+cCJBE7U8HaVGMIWgfJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=gSC5sLKRCxDYWJbmzE9UalWM1Zp8qkjhwaoUoMR0dVba0Axb001SaEuyt0SZGt7AywHsJsMyJjmbA8YXGjiZeBIxHzwZubESgLCcMVGSnQDZtBhwNzEIbMwFM3zZXEG1zdM4qHtjp1Q5iplJRPLCbg0o1lJVrDCvnpahd+OPvc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7uw442U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D5B8C433F1;
+	Wed, 10 Apr 2024 21:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712784400;
+	bh=ZHY0Qb2p6hZj2F9UUpHFyF1+cCJBE7U8HaVGMIWgfJQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=X7uw442UbgIpqeMvt0lGFcXg86xEWI2esbZmYrlcuSZ0IHUAEfYztCnABCY3OWfcN
+	 qha3LHFaAPenRfxa13l39CP+7GGIX0nvuojS+bJEjDEo/05E+SEw4/981rCoRB7mZ8
+	 AiCC0TmbExTNmCkcQyOEEymnER7zgHtneM1Ex3ay5q4H0OOK9cRxPP9m9yKRxq/6Zo
+	 Kd9xqDj2EzKSRE0wcXWJAeACN6Slg9b5ZPc42hYpHHJ/9g/3XlaGWpH6fKTo1jFdGv
+	 wtWzLc4tD0iN1BOu/0zmhzyFLK8qGFJjMIMUEWb18MkFUt8L+lqhYbq+ugp0UKiIGb
+	 RxRImDtJqxM1w==
+Date: Wed, 10 Apr 2024 16:26:38 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
+ child node reg
+Message-ID: <20240410212638.GA2159326@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,23 +102,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
+In-Reply-To: <20240410181521.269431-2-krzysztof.kozlowski@linaro.org>
 
-On Fri, Mar 22, 2024 at 06:46:02AM -0700, Shradha Gupta wrote:
-> If the network configuration strings are passed as a combination of IPv4
-> and IPv6 addresses, the current KVP daemon does not handle processing for
-> the keyfile configuration format.
-> With these changes, the keyfile config generation logic scans through the
-> list twice to generate IPv4 and IPv6 sections for the configuration files
-> to handle this support.
-> 
-> Testcases ran:Rhel 9, Hyper-V VMs
->               (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> 
-> Co-developed-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
+> MT7621 PCI host bridge has children which apparently are also PCI host
+> bridges, at least that's what the binding suggest.
 
-Applied to hyperv-fixes. Thanks.
+What does it even mean for a PCI host bridge to have a child that is
+also a PCI host bridge?
+
+Does this mean a driver binds to the "parent" host bridge, enumerates
+the PCI devices below it, and finds a "child" host bridge?
+
+> The children have
+> "reg" property, but do not explicitly define it.  Instead they rely on
+> pci-bus.yaml schema, but that one has "reg" without any constraints.
+> 
+> Define the "reg" for the children, so the binding will be more specific
+> and later will allow dropping reference to deprecated pci-bus.yaml
+> schema.
+> 
+> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Changes in v2:
+> 1. Add tags.
+> ---
+>  .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml          | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+> index e63e6458cea8..61d027239910 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+> @@ -36,6 +36,9 @@ patternProperties:
+>      $ref: /schemas/pci/pci-bus.yaml#
+>  
+>      properties:
+> +      reg:
+> +        maxItems: 1
+> +
+>        resets:
+>          maxItems: 1
+>  
+> -- 
+> 2.34.1
+> 
 
