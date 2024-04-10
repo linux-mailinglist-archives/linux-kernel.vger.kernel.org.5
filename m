@@ -1,138 +1,161 @@
-Return-Path: <linux-kernel+bounces-139124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B370989FEED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:46:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3697689FD57
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4A6E1C23213
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E28E8282FCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0A7181CEB;
-	Wed, 10 Apr 2024 17:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BED17B513;
+	Wed, 10 Apr 2024 16:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="M3OuAZmo"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZtEVqli"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32EDC17F36B;
-	Wed, 10 Apr 2024 17:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC0E53361;
+	Wed, 10 Apr 2024 16:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771099; cv=none; b=iOeydLCTZefl58A4PGBDmXy45fl4kUm361XR7WMNtS24vys6Xg1rAM5ekr948WBGKPfHNCCiG9jG9n0GA7rboSF+6CNnfR+kaPX19eahHhp65IRnknIJnxbRUfSK55YR6GjhnFtsgpfcUarDYALieo2AP+bYvPX1mCVbhaxnRUA=
+	t=1712767398; cv=none; b=dHbB5cJ48TVnk10EMydktnPFWwCtcP5TsF7nBtc9/xn1a8WmMd5UBzEgH1di+gUwbUuBVMbUAF7rZ1N+TT5QWrjjY0jvxgUEQRwzhMGaymYbJ9PuuOZ2urYN5N75SPCzZXKFbwx9eoumEAe/Pbm5siy+MdawCNIesi3vlLaGFb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771099; c=relaxed/simple;
-	bh=6ytj9DA2mXccOWmIrWdStZbef+qLEGZrkbosfSivSz4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NvggQ9cggfeuO7AcstDT53D+2iQNX9eMP8+4JjKWilLZCeDPDOgoXLNs0hAqOli2xW5w8UvepyMX6dz0zwct1hnz+A/d8iayLEEZEsBsAOWIrH9k7SIuAmsJ4WJOla3Yw2yYJN7Nzjia3jHFy/EyOmuL9Wj4oAvvRJS6LduTyQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=M3OuAZmo reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 08b050b7cb17d430; Wed, 10 Apr 2024 19:44:54 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A09E766C66F;
-	Wed, 10 Apr 2024 19:44:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712771094;
-	bh=6ytj9DA2mXccOWmIrWdStZbef+qLEGZrkbosfSivSz4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=M3OuAZmoCwrUIRv+om+PU5ix93rnpCxQlpPugkVbZBrFRtX9/lyou8hi4JdbsoV0B
-	 mD0keTs2qWvAXT8IkhXNuCsFtTKVLLWYAi9U6Iur1lCqyAEbaq9MDqeCveryPOVB/y
-	 ps3KHMKQ1TAQEEUoh9t5KNozVIMwsR8nb0gPw05hu3PQ/PVfKQhOKIiiYZS5sMPTqg
-	 x2hEwbaBkFx1yFhD2sRkwyrOrBo4mQZsSBfSLsWfsd1LQIdiOWvfK8cceYsQlzlNa+
-	 yVq0Q2aiPEzn3ZqeZHgKi+SVnX6BIP2LsFS4ETjTW1Ft7pobSHP7nv7siVcDY41p4m
-	 j9GYYFx6nb8WA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 09/16] thermal: gov_step_wise: Use trip thresholds instead of trip
- temperatures
-Date: Wed, 10 Apr 2024 18:43:07 +0200
-Message-ID: <3769085.MHq7AAxBmi@kreacher>
-In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
-References: <13515747.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1712767398; c=relaxed/simple;
+	bh=ukV/hLhJkpZsUA3IiTrMj3G+2iNcPFjRiHi6vvKPDKc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cpkC930lxEs/mqdA+YHt7Shhg3EWHXJvgrR6A4M3gALBVrqzmcKw7jdnVXtSloxqDpf3i1sxpPWbG9ydr5ozrZveK1ISI36bPhbvlC2KP4YPn8KS2qYh9h1yyIAPCP1o713KZPRY9g6a7M7J5ZCb+iROkL63x7jPxC66Mpyj0sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZtEVqli; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so2769644b3a.0;
+        Wed, 10 Apr 2024 09:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712767396; x=1713372196; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=87hVoX9g0Y/MEsZ2Zy8Ew+OoM1271M72lcJZUtmLxw4=;
+        b=hZtEVqlit4pBK143QLpZ5tFFjHodWR5qrr90TAeZAmF4bWk7BEbsFzX3biDO5YIKpo
+         EROZs9pzZjeRIb7LyE2rtGlQ3JO5WRt1NDCwUelcxB7lVo/znwUGUQkj6DeXTVA1pr7w
+         b6Ezg8GSUqCo6pgidNbj6VeYDRLZFZTJF/lLq6CPaBoGQZGV5g5e3+8vRtK5JSuQlLfP
+         mX0ejnaKW4GaBECWaBXjsjYhrCISbXHIuhuBydH35alkQiLYc4DfazQfJdNEjhm11bY+
+         O/48fzIRSqdCdCGImH5rQKa6NJXPJAqU1VVKbpwOrUIdbu9e7qEomYTpkNHX7EkAZ5U6
+         k4uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712767396; x=1713372196;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=87hVoX9g0Y/MEsZ2Zy8Ew+OoM1271M72lcJZUtmLxw4=;
+        b=aZ8Yrs9WjEXptnK4P4zQBshU0JCAIIWUsFVFiJZYg6m8WCcxHgEurXzGDbg/UsnAX4
+         5IM8a6m4OvazLygGzdsp3JU9dhZygOZNzfQ0ARqe/AvQVVGF8a0G0MzyQ+/xk+AnH8BZ
+         DKcoGnJk/VUgSjTQV4bz274FLZkWQqoRzyryg40NkXIG4E1BFyvp7PYZRV4w/uH8kOgb
+         Tn3fk75IHSOXuFmp04eiB/VmimSAMfoYnK+CniGKbtqKP3jDFazI/p0HUpeWWOVEL1/f
+         LtrbmoJo8NHOse96+wOP3pykh8lE90FoEuE/dijuJh8ux38cviI2UM5dQZNjh/HUendW
+         Y5Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGnMK4/UdlNEs0dlmoXUgD1KPylNIuRIg9NTmujJS3u8nxfgcyTY/O1Cj17xNGyvkiexIuAIwAHoINj/vFdeL/V/iO/NJHrDyJWwM1ZbM4kgPaSImO3NipsvB+ivhcAYYi+pgUmJ61mULnBf6YzU7wtGv3WdcjqaXtYtdCWTDppjce9C4O69gl8Z8FUn8hdTxKV7DgpTAMLWWkydW4lVyI/8TQWwcoV3pdQjM=
+X-Gm-Message-State: AOJu0YyEeP85nMYrNm6GUiSxVPpAAYrcD3hpyiEIOGTgca/AyQGv0Aek
+	Hy2RzPZfQMNpEXU/8fZABrwQuY4kNG8deLtu4gflcQMwD20qVzgI
+X-Google-Smtp-Source: AGHT+IHWGUPoGc7XnH6otGmYV1T27EH6PiCTYFI+MrYJlN1/GpvTfupHfzSdYA64tdoiNLbViNp9ug==
+X-Received: by 2002:a05:6a21:a109:b0:1a9:6cdd:6907 with SMTP id aq9-20020a056a21a10900b001a96cdd6907mr1530098pzc.29.1712767395793;
+        Wed, 10 Apr 2024 09:43:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q12-20020a170902dacc00b001e0fcf995easm10880841plx.202.2024.04.10.09.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 09:43:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 10 Apr 2024 09:43:14 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: wim@linux-watchdog.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, p.zabel@pengutronix.de,
+	geert+renesas@glider.be, magnus.damm@gmail.com,
+	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH RESEND v8 09/10] watchdog: rzg2l_wdt: Power on the PM
+ domain in rzg2l_wdt_restart()
+Message-ID: <e25784ad-fc4b-4b5f-a67c-e93880293b01@roeck-us.net>
+References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Apr 10, 2024 at 04:40:43PM +0300, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> The rzg2l_wdt_restart() is called from atomic context. Calling
+> pm_runtime_{get_sync, resume_and_get}() or any other runtime PM resume
+> APIs is not an option as it may lead to issues as described in commit
+> e4cf89596c1f ("watchdog: rzg2l_wdt: Fix 'BUG: Invalid wait context'")
+> that removed the pm_runtime_get_sync() and used directly the
+> clk_prepare_enable() APIs.
+> 
+> Starting with RZ/G3S the watchdog could be part of its own software
+> controlled power domain (see the initial implementation in Link section).
+> In case the watchdog is not used the power domain is off and accessing
+> watchdog registers leads to aborts.
+> 
+> To solve this the patch powers on the power domain using
+> dev_pm_genpd_resume() API before enabling its clock. This is not
+> sleeping or taking any other locks as the power domain will not be
+> registered with GENPD_FLAG_IRQ_SAFE flags.
+> 
+> Link: https://lore.kernel.org/all/20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-In principle, the Step-Wise governor should take trip hystereses into
-account.  After all, once a trip has been crossed on the way up,
-mitigation is still needed until it is crossed on the way down.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-For this reason, make it use trip thresholds that are computed by
-the core when trips are crossed, so as to apply mitigations in the
-hysteresis rages of trips that were crossed on the way up, but have
-not been crossed on the way down yet.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_step_wise.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-Index: linux-pm/drivers/thermal/gov_step_wise.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_step_wise.c
-+++ linux-pm/drivers/thermal/gov_step_wise.c
-@@ -62,7 +62,8 @@ static unsigned long get_target_state(st
- }
- 
- static void thermal_zone_trip_update(struct thermal_zone_device *tz,
--				     const struct thermal_trip *trip)
-+				     const struct thermal_trip *trip,
-+				     int trip_threshold)
- {
- 	int trip_id = thermal_zone_trip_id(tz, trip);
- 	enum thermal_trend trend;
-@@ -72,13 +73,13 @@ static void thermal_zone_trip_update(str
- 
- 	trend = get_tz_trend(tz, trip);
- 
--	if (tz->temperature >= trip->temperature) {
-+	if (tz->temperature >= trip_threshold) {
- 		throttle = true;
- 		trace_thermal_zone_trip(tz, trip_id, trip->type);
- 	}
- 
- 	dev_dbg(&tz->device, "Trip%d[type=%d,temp=%d]:trend=%d,throttle=%d\n",
--		trip_id, trip->type, trip->temperature, trend, throttle);
-+		trip_id, trip->type, trip_threshold, trend, throttle);
- 
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
- 		if (instance->trip != trip)
-@@ -131,7 +132,7 @@ static void step_wise_manage(struct ther
- 		    trip->type == THERMAL_TRIP_HOT)
- 			continue;
- 
--		thermal_zone_trip_update(tz, trip);
-+		thermal_zone_trip_update(tz, trip, td->threshold);
- 	}
- 
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
-
-
-
+> ---
+> 
+> Changes in v8:
+> - none, this patch is new
+> 
+>  drivers/watchdog/rzg2l_wdt.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+> index c8c20cfb97a3..98e5e9914a5d 100644
+> --- a/drivers/watchdog/rzg2l_wdt.c
+> +++ b/drivers/watchdog/rzg2l_wdt.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/units.h>
+> @@ -164,6 +165,17 @@ static int rzg2l_wdt_restart(struct watchdog_device *wdev,
+>  	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+>  	int ret;
+>  
+> +	/*
+> +	 * The device may be part of a power domain that is currently
+> +	 * powered off. We need to power it up before accessing registers.
+> +	 * We don't undo the dev_pm_genpd_resume() as the device need to
+> +	 * be up for the reboot to happen. Also, as we are in atomic context
+> +	 * here there is no need to increment PM runtime usage counter
+> +	 * (to make sure pm_runtime_active() doesn't return wrong code).
+> +	 */
+> +	if (!pm_runtime_active(wdev->parent))
+> +		dev_pm_genpd_resume(wdev->parent);
+> +
+>  	clk_prepare_enable(priv->pclk);
+>  	clk_prepare_enable(priv->osc_clk);
+>  
+> -- 
+> 2.39.2
+> 
 
