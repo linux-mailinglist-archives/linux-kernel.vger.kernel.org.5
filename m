@@ -1,224 +1,72 @@
-Return-Path: <linux-kernel+bounces-138043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0344489EB76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:10:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D62389EB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 828811F22444
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:10:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EF9B1C21706
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7756513C915;
-	Wed, 10 Apr 2024 07:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD113C90F;
+	Wed, 10 Apr 2024 07:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="a4OSspiz"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2116.outbound.protection.outlook.com [40.107.255.116])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8wgi6wm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC62513C902;
-	Wed, 10 Apr 2024 07:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.116
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712732993; cv=fail; b=u3DLus6eWVrrjPGoNQOx51cW9UYDhErgl/EEjBc503nHn6ZGT1x+mTszcu+s+fGmptQsUIWpCve10BAaLshVpo2c8jmF2KH760ZK8OzWcxci6T6aKV76Yp5w1hJPczlu69nfXAOjZLKuRHZzhe0FyDGL+HUzl0jFgA85D6wIzxk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712732993; c=relaxed/simple;
-	bh=cQRRZqq49q7TQfOVgGAgxmqxm1oduj4uMtaCTJM5RJ0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=NEikXMPbBVXkGH6vUdRmSCsJdOeFD4mXDY/ClO4U0CkyOYzuCGpef6WXDhUZ428LKf1C8/6XAuwhWQbmv7x4g5H0zkeaZ/No8uYYlE7QQ/2CpszAvP53Z5NS7Pp2i+infgC5nGzWrgOqZILQDrE0pDjcTTpiAihd+LpCQniKyp0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=a4OSspiz; arc=fail smtp.client-ip=40.107.255.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cC5vtpGZFYZ1kkWQ0HCf/2+f9/MA/eqqHPQmR3GlCTh2hBXNOq10n91Xun6WSEv4HYr0nesP2jFoJNj06rQYcxi6LZwl+lts6CCRW8i5E0JILC13WOisBtaMRqIlviqAJsWOa3RgA083DyaYe2nQgRCsUlW+043L9aQavv1VAnnsDmhD17kyZA0yeAjdAYa8WkGTWNLXq16fuYA/QwaWk1Oy3qCYHlIjfs/n46XxVMc8kZJ+RkxmqZSPeYEIn+brbpl+oYORB1I73wawr+NRM3tU2OmIR/M6VvLmXV+D/GgGP8XN3OCRvCjfrBmMJ1PkwXpxpPtnDMbPpOBbeXY8lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7rBU8aBuE2ebgA6JoRVv4jqNfVXKoKJ+4MnJgFTrftI=;
- b=MUVss23A+Yzk5zxu3S0E6IsDqHh5L3UvpzfnUyc+qW+gbYc8kMval7JWMOFHuTiWEHmjNTECX1WQuC+hJNLcRXjI2nBiTYVuEgoDJCFC9RE9/Te+4yYBBTrv9Qq/8+UPxPaaexMPktUr0c2d1jlsSZKII63bxxuta5F9hGt7BYNBicB3JdoO00VIUrevfDuOiECgYap12uxBj+CLpmrp5FVg3qw1OPHaAOlUz4fTMarPOd/qM3Kx06foV4sRGf/HOwJTA6IVpFsK+2k0Z5T1AFu2DFuJl5Oiif1O/xxJB7BkG2k8oRE8kNFTQ8NVIpHh9jkNePriNI7cSLMBoSE8KQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7rBU8aBuE2ebgA6JoRVv4jqNfVXKoKJ+4MnJgFTrftI=;
- b=a4OSspizi/IDYZiTGlctZCRAAlkwrZ/i5XaHten6i1SucFFc0JoH7ORZIQXiLCW/YtEyvtglnxsrB4Vg+lCTWprbwQ6qpWdyto2aM10CbBWT34wTRau5tSg8hwgnaK3QvBihIFLSsBcJjZXMhgOKiHuJFKxclZzZp/mXnMIobJ+lxOm11v5yZ3SjSpy0YxzjNC45P9tWFqxBpURGgg3YM1F9CPyRiL0S3YxMSCvocXQXxO+SZmqjEBiWuNASM9SRI7C1J/arR31IlUMGT6f5mce/lNva9PqJkEao8CGhojfiQ2kz/SvKlCIG+ILt0AFeCdJaDDETRYhr5sIInVq5qw==
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
- KL1PR06MB7366.apcprd06.prod.outlook.com (2603:1096:820:146::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Wed, 10 Apr
- 2024 07:09:45 +0000
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1]) by SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1%3]) with mapi id 15.20.7409.053; Wed, 10 Apr 2024
- 07:09:45 +0000
-Message-ID: <603470e5-3310-47c4-854e-d6fc36366699@vivo.com>
-Date: Wed, 10 Apr 2024 15:09:42 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: add DMA_BUF_IOCTL_SYNC_PARTIAL support
-Content-Language: en-US
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Rong Qianfeng <rongqianfeng@vivo.com>, Jianqun Xu <jay.xu@rock-chips.com>,
- sumit.semwal@linaro.org
-Cc: pekka.paalanen@collabora.com, daniel.vetter@ffwll.ch,
- jason@jlekstrand.net, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <20211113062222.3743909-1-jay.xu@rock-chips.com>
- <1da5cdf0-ccb8-3740-cf96-794c4d5b2eb4@amd.com>
- <3175d41a-fc44-4741-91ac-005c8f21abb8@vivo.com>
- <9e6f1f52-db49-43bb-a0c2-b0ad12c28aa1@amd.com>
- <5c7ac24c-79fa-45fc-a4fd-5b8fc77a741b@vivo.com>
- <42aea61f-52d7-4cea-9944-7130ffcf9c15@amd.com>
-From: Rong Qianfeng <11065417@vivo.com>
-In-Reply-To: <42aea61f-52d7-4cea-9944-7130ffcf9c15@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
- (2603:1096:4:14::18) To SI2PR06MB5140.apcprd06.prod.outlook.com
- (2603:1096:4:1af::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3C913C902
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712733010; cv=none; b=ncNazf4WdTk2OTzfNU9CzonZ0/Fn1193DdIm6dE+ITDy5XI8wK20/+QpQ4Ea2WXpBI6MhQGCe+fGreZ0Rkr3XxNliYSfR/mXM0JCelGA17WWnKk163+dGS/yc1zAVeIoVQdW0IVcP1YO1lECI7B5xv/YKw79WANl1ojXZI3O5gw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712733010; c=relaxed/simple;
+	bh=AM9KaNBpxNWCQi5LL7cIKKG7N80lhLsstQXI2gkti8c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AFTMw4ddweqINHvahXjGe6AWZYqC7XVGR4lR3V78NAXDHV02eMxthi7GZLksn1IwephCoeB3/8uUG6/ykP9sL28BuTa13AmE2xB/Cs5x0+ldh/TtXBgoxqBTQfvWqdRtHfEh/8VpzLxQ7w1f/DZq2/PsFlBYaEiMcxeHD2ftg3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8wgi6wm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0972C433C7;
+	Wed, 10 Apr 2024 07:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712733010;
+	bh=AM9KaNBpxNWCQi5LL7cIKKG7N80lhLsstQXI2gkti8c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=c8wgi6wmHDXESGTtZC/cO3KnmYd6HPNqyYrasrkycLYVdA7+oeHKqvIcNJZ4frXHV
+	 jXDt4cHr3HLCklwbOQyds2OfLpNeOoy5sc63PBJysMK/yqrHiR4tqv5h6cqvZTNIjt
+	 y3zd+F+as/SphdnWuME4Z13GM10UUTX+6heJpF9INfHoS1ZpbzBYECVzoZc3rWARc5
+	 etZ4gU/zA8GwJGWI7Wi9fDIdSokfnF7ex8VNkAb04HF5pYQaC62JxIknDSHrXkSvS2
+	 8v+7KIUHDHOFpiV4paKHqt3eyKidC7UhgiYKGIVpMVz/T3Q3qPinYt5fzsNjHJ4vkS
+	 NrCj+O1ywtt1Q==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Jinglin Wen <jinglin.wen@shingroup.cn>, palmer@dabbelt.com
+Cc: paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+ gregkh@linuxfoundation.org, atishp@rivosinc.com,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, Jinglin Wen
+ <jinglin.wen@shingroup.cn>
+Subject: Re: [PATCH 0/3] Add early console functionality
+In-Reply-To: <20240410063432.23058-1-jinglin.wen@shingroup.cn>
+References: <20240410063432.23058-1-jinglin.wen@shingroup.cn>
+Date: Wed, 10 Apr 2024 09:10:06 +0200
+Message-ID: <87y19lpub5.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|KL1PR06MB7366:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	71ZU/joFeQPoLJHuURvJq1RpdD5qfNMKce6SVrWu0l1DIqih2eZi6PuWxfNhqKd9ImO78JlwXCOxTx3XZ8S0zvYRGg1JD03F4DfcPBRnNhNQZ9dZXSIaCIvI3Wtp5JGGNTBtspmpMd9Dng8G9RRWAyjuKDmU210ZwLGdcmnhfDl7xRGxABz29ruHyCzTZlfj2bCBVUWLteaPmIjILmlHBxvik3cU457o+FYomUKUUpQL5+bfcsflRh0/kx6giYK5bXCEpPLRwuZmOgmZ2WlXZ+5/u49LYiF6BuPRJBlG5GE5oznitQXnzQWGr3ecYqizLNTYRw2xf9p5v8ZKw+M62wi79VKoTz9s1jkixbMskdXwV7jZLqjBzwdq0JvbySuEuUpaun6JWDQoy8dLFaWvDO/sbbQmgc0WGPPTa8ExSaJ3j8dEsV4DZXgJS0EuRxyMca1g0HN1MM1/cZZFD4+hLnGdjzUxnoRJDlGb5JJL3aQmFDdpk8SUxSJzr/EwZYP7ZZZ7hTUE4wdBzlg+AII94jXS2MvMqH8gAdvmmaDX2PjZvNM1PV9TyAUZzgblaia2BQDzlC9X5tyr3eqRtJLjz8itrUy8ovZ+51Zykvl7eAJY1Y/g87dhKxUlXTvvc5UkMAdIbDakpoDvQ3vk2yuQyVCUSVd2vBRDeNQExKbi1gqSyV59gs2n4MJaaEqNvBJe2B/lc9xh1LxknfpzZ+MVBrhAOpLA2gmyRBigVDyAqof1zbW9kgMjauc6LeWcdy+G
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(52116005)(376005)(38350700005)(81742002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eGZ6SUlqTU9oU0VkSWJLUm85R28zSFpIUUU0NHZIeDVJaDFXKzFxSWFmajds?=
- =?utf-8?B?MlNYTjV2RWY0RGNxTUNIVzVLNkVweGkyQ2ZtNGhZZ29jYmVRNHZNWGdpejlm?=
- =?utf-8?B?YksxWVpQenZoVVlCRlF4WXV3SWhteFhPaXJSSk5aOFpVdENFcVFMS0c1OXRk?=
- =?utf-8?B?LzVkeDZmTDE4b0tUVlZwcm5XU0FEMVVjS3ZXd1l0U2V4TXdzYmxmQ1huVXE2?=
- =?utf-8?B?dXR6Ty95bHMwamJpOWlVcmNKM3JNSnZ0alR2WkR3OHYzUWY5NEZhWjJ0bWJX?=
- =?utf-8?B?a3JMRExPNytLSTdkQktHSDQ5a2p5UlN1ZlJYL0V5NHViaUw2TVFseGJmMDZ1?=
- =?utf-8?B?aXR2U0Voa2lvWlJpL1d2SXJBcjhHWGhFdUJNWHg1ckFoOWxnY1d4OGNTQ0NN?=
- =?utf-8?B?VUt3N0NEbGJFNjJtdmhXajdFT0NuaGlIZldsSVQyVkMyYWVJRDZOemdvMncw?=
- =?utf-8?B?N1A1VlN5S3FiNDZZRHZTTytBamJwUk5jZDAwRzR5cWVmZGl1eUdmNkRWcTJl?=
- =?utf-8?B?NUc3YThqOTY4aEhTa0p6cVpCRWdHNUozMnJMSG1LbmZLb2N1aXFFR1dBRFBw?=
- =?utf-8?B?MjJ0aVdYTjJrSkFSU1JkdkZ1cisybkJlaHVxTzVVUUxrS1F4SHEvUisxRFdn?=
- =?utf-8?B?WENrMVpDUEI4MmJpNXhmeWYvTHBiK0I1Y0JRMktWSTFwbnBnK1JkTW9sUlMx?=
- =?utf-8?B?RExnbCs2T3ovS3M5WmtNOXIxc3dHaGI4UHMyYis2SWl3VGo4a1RWWXF4eEg1?=
- =?utf-8?B?L2hCSUY5MmY5VTY2eHE2RnpVRTRoeDRlZ3BJSlNUZktKaXRWNTlQU0V1YjN3?=
- =?utf-8?B?dVRGNEhMZW5wM1YxM1h5U2RLaVBPUURtRlQxcU1UMFM5RkFrOHozYS9RemRu?=
- =?utf-8?B?LzFIWk56alNmYkg3NEhTKzBhMWROQkxCeVBYYXdOZURWVFF2TU1RbnVHVVRT?=
- =?utf-8?B?cGdXdDJYVGlmWjQ3VHZOSThieVlZWVJHKytEUG4waStMUXVVRmNpdEY0WVlv?=
- =?utf-8?B?amwyOEhTdHFKOGlSNUNvSFd4YnRBUDJkM1pRVkZ1TUg5dGJsTHlQTTYxOFZY?=
- =?utf-8?B?RXpSY0E1dE9ZcVRzM2F0RVdEdjlMTHZaR2JCNS9jTjdDTTEvb2Z4OWRLa0RW?=
- =?utf-8?B?V2orbjRlUkx6VUdvNXM2NHkvREducy94Zkd0Rkxhc3Nhb0hPV3BVdmQ1WnVS?=
- =?utf-8?B?OUhBY01mUmtydjdycm0zMEpiR3B4bFlQZmc2T0V3WWlraVM4VnprVU05bVZy?=
- =?utf-8?B?ZWpKbllYemdKNUIzakFNTEdpc3F6ay9TWU1VY2NIUTVkdU4xeS83WW1PcElT?=
- =?utf-8?B?ZEdZWXl2R2lHeXd1OG93UFlTcWU0M2dwZUlUa2NRRUNrVE5WRTIxTWpNVVd0?=
- =?utf-8?B?SHlabmh1dEl5R2Y0bU1EU29lYTQyS1NuZnNvQWZjaWo0WngvckFlWUxHb09a?=
- =?utf-8?B?SExSWFRkajhyRmQzUTU5TGIrWmpqQ3BzK0QvMEFUa2V4dTIvbHFMOCtBYy9y?=
- =?utf-8?B?TnlPWk1oamJveEpBNG5JVm5EZGpYVmhlK0dMeHhmNWhxMU9BU3V4RVlNYXNL?=
- =?utf-8?B?VXZDb281VUUvSFhHUzBrVjJmM01WSFFicGlmVGU3dVhrdmZiWitWeGVoRzVV?=
- =?utf-8?B?VFJzNUZaVVZqWTlBcDVjV040cis1TG1GVVVUY1lxbUhhMDRycWdlWnJjQWU1?=
- =?utf-8?B?M2pvVThBWWtHUUl1TlpwZ2VCYnEvcm5sQnNNNXpOdFdTWGsybE1OWmdqS0Nw?=
- =?utf-8?B?dE5nc3g3enJxWUQ4SHpBemNGT1kzdUhkeXAvaUd3WVBZTm45SXBSK3FvRXdZ?=
- =?utf-8?B?NWN2Z0VJK3hWNllpMytrbndoY3FhdHlwVFVMczB4bmRJTVpzVkozMVlvdy84?=
- =?utf-8?B?enZxS0RTZkZrMklWTE80MFY4SzBxbHhHZXJDVGRxT21OSitjTDY3VmFFRWhF?=
- =?utf-8?B?TFRSRWRZMlljM3A2TGZocCtxRGJsRUdIWEcwL0ZQdE5Ram51K0tpZDJUNXJ4?=
- =?utf-8?B?R0hTV2dGaDhaS3VDK0ttc29nRy9VczFOdll6eHNaT2J3RWdmOWo3SitBeDBr?=
- =?utf-8?B?MXlaK1JnMmZrcVpkMFV0aFpXbU1LYklwM2szN2pIMjJpVUNWdm96VTVwWkti?=
- =?utf-8?Q?g/zEwmMgSJY/3+TJNmmnQUqRM?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce586b1e-e438-4b7f-3563-08dc592d335f
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 07:09:45.1415
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r0Yqi+9nlFzCBkkc1/XSH8CeeMuHrgluBSK92rOWnXxKs40oWc3ZVShOgLt2ALui518OKRKSWcHiz6kzYmKkeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB7366
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Jinglin Wen <jinglin.wen@shingroup.cn> writes:
+
+> The following patch series implements support for the early
+> console on the RISC-V platform.
+
+I fail to see how this is different from earlycon=3Dsbi?
 
 
-在 2024/4/9 23:34, Christian König 写道:
-> Am 09.04.24 um 09:32 schrieb Rong Qianfeng:
->>
->> 在 2024/4/8 15:58, Christian König 写道:
->>> Am 07.04.24 um 09:50 schrieb Rong Qianfeng:
->>>> [SNIP]
->>>>> Am 13.11.21 um 07:22 schrieb Jianqun Xu:
->>>>>> Add DMA_BUF_IOCTL_SYNC_PARTIAL support for user to sync dma-buf with
->>>>>> offset and len.
->>>>>
->>>>> You have not given an use case for this so it is a bit hard to 
->>>>> review. And from the existing use cases I don't see why this 
->>>>> should be necessary.
->>>>>
->>>>> Even worse from the existing backend implementation I don't even 
->>>>> see how drivers should be able to fulfill this semantics.
->>>>>
->>>>> Please explain further,
->>>>> Christian.
->>>> Here is a practical case:
->>>> The user space can allocate a large chunk of dma-buf for 
->>>> self-management, used as a shared memory pool.
->>>> Small dma-buf can be allocated from this shared memory pool and 
->>>> released back to it after use, thus improving the speed of dma-buf 
->>>> allocation and release.
->>>> Additionally, custom functionalities such as memory statistics and 
->>>> boundary checking can be implemented in the user space.
->>>> Of course, the above-mentioned functionalities require the 
->>>> implementation of a partial cache sync interface.
->>>
->>> Well that is obvious, but where is the code doing that?
->>>
->>> You can't send out code without an actual user of it. That will 
->>> obviously be rejected.
->>>
->>> Regards,
->>> Christian.
->>
->> In fact, we have already used the user-level dma-buf memory pool in 
->> the camera shooting scenario on the phone.
->>
->> From the test results, The execution time of the photo shooting 
->> algorithm has been reduced from 3.8s to 3s.
->>
->> To be honest, I didn't understand your concern "...how drivers should 
->> be able to fulfill this semantics." Can you please help explain it in 
->> more detail?
->
-> Well you don't give any upstream driver code which actually uses this 
-> interface.
->
-> If you want to suggest some changes to the core Linux kernel your 
-> driver actually needs to be upstream.
->
-> As long as that isn't the case this approach here is a completely no-go.
-
-Ok, I get it now, thanks!
-
-Regards,
-
-Rong Qianfeng.
-
->
-> Regards,
-> Christian.
->
->>
->> Thanks,
->>
->> Rong Qianfeng.
->>
->>>
->>>>
->>>> Thanks
->>>> Rong Qianfeng.
->>>
->
+Bj=C3=B6rn
 
