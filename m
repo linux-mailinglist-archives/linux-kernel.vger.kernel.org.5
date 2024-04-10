@@ -1,184 +1,187 @@
-Return-Path: <linux-kernel+bounces-138468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B53D89F1AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:05:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A226E89F1AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:06:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942E11C22E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591762824BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4026915B54E;
-	Wed, 10 Apr 2024 12:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E815215B120;
+	Wed, 10 Apr 2024 12:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gi+aUPFr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="L8GpkAD0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gi+aUPFr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="L8GpkAD0"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MWvIQLTw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LcV4U1kh";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MWvIQLTw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LcV4U1kh"
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC6015B130;
-	Wed, 10 Apr 2024 12:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6829115B101
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712750732; cv=none; b=k2J6YTAkEhjokAOU/zC/KRDaNljyQVlOir3t8WtEQNOmvdKMkvVYZnvXSD1MIeOOjwY2AojGtlAWk8QEESswhfHaMsQAKWYXwiHIKqyFC6hhngf0yY6eZ6g0H2ur4Uw65dmQSmqMhRp2NR5OQwh5SD5hy+WlSisdidNHnx70rcA=
+	t=1712750751; cv=none; b=T0vmofa/YfUy1SZARpEHKhukl55zjM716/3L8J94fjOIqJQiHssANGxS6jsGK/moH9d+oXI79x/tdo0TF6G1/HvQ3dFqfUrsnbEJ5hiwJxzdOIkDRDVHRD7fu9cAFAbKfzbLWcjabOMPNtcFkMMS+grvt6xz/AV4Xd8sW5toMHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712750732; c=relaxed/simple;
-	bh=BUBDmIoEG33TRM8dUlpufq0UNJhZ+19dYpk7y2R9Q+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M4MXH+b3lxMDz0ZQWC8IzX091xtibdieW3xg0y/8jQE/WxD9wV6XYyy1lzbyhHYhUKsUZGVrcynJ8R2t6fxreO3MLRQDLOrVm8rM+76QkS+wd8/89HP+8vz/Y9LVi75VHG0bBZeGkrd2LznWHEN6CcJAbb+TObjYxOVCFKK5nm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gi+aUPFr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=L8GpkAD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gi+aUPFr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=L8GpkAD0; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1712750751; c=relaxed/simple;
+	bh=IRoQxzWCLqtj/7lhYO8vSucfMlHPAp/f+Ht5jdThyU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KWTbhaTC9qeBc4aoc6izd/DPNxdk6DBIGUbCt3rG1/4TKTH0F6PBMjJJ4Ud3VNMECSv4AZPWY0omBFP9Ie+1vZkqCKHUJC+n76gOHxJ8uTjqX5CxTGjovDs9fjZt7I1c0hVHdLnzx6bs7NYvAR+4Vzw6usQ/mOwAuhsgChUDTCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MWvIQLTw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LcV4U1kh; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MWvIQLTw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LcV4U1kh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E659350AA;
-	Wed, 10 Apr 2024 12:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712750727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A3FF350AF;
+	Wed, 10 Apr 2024 12:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712750747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nilFxSt4AAqE2lRCUBz3PtSSaWDM5UjMiq7TLWAkpuI=;
-	b=gi+aUPFrLBBLpuiLHhY1c5QoQjWfa/8gl/uJ2Lxub8UX39xPS3ndjRn2f9OUtKngbeGtin
-	TrqpWkfgX1ZHylP1if3IbuL8igqmWPoJWyWIxqqVeydY0LtwjTa5Kt53VX2GCpuBmBmlE4
-	NBKeJf7R0CSddWwtd83VNyH9nBMB0qk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712750727;
+	bh=JgokGGCMRQZ2/pQzN/0fCVBWcbfteqrOIQNsSM08sgQ=;
+	b=MWvIQLTwbXcgNFmRvHLmwIeXh898YX/cEHNWnqllD3GJUwCXNDFoDWltNUogOkQwRQTmQp
+	4tLsWFihoU9rnG79zun4pj458HCjHZjAqGoNcmkH1YhkWFE3BviTl9spP9PcaSnRUQHyct
+	R/nPE/2O40QqXJ+BU9Z75RZsadwejk0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712750747;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nilFxSt4AAqE2lRCUBz3PtSSaWDM5UjMiq7TLWAkpuI=;
-	b=L8GpkAD078iLHJ85nZsCTBf/Tb3vwgOEoGLhPtiv55bSzc0rXH+pn8HGUvkSF9CMdah69g
-	giFUQNhL41C9Q8Dw==
+	bh=JgokGGCMRQZ2/pQzN/0fCVBWcbfteqrOIQNsSM08sgQ=;
+	b=LcV4U1khzrJcHGDdKsndPqNQnNpqBGsbCVkr5UDh0rOhPkhLhWt4BV6MpZ92iDSxejYgEI
+	8N0vNLoQ5X9VFlAg==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gi+aUPFr;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=L8GpkAD0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712750727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712750747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nilFxSt4AAqE2lRCUBz3PtSSaWDM5UjMiq7TLWAkpuI=;
-	b=gi+aUPFrLBBLpuiLHhY1c5QoQjWfa/8gl/uJ2Lxub8UX39xPS3ndjRn2f9OUtKngbeGtin
-	TrqpWkfgX1ZHylP1if3IbuL8igqmWPoJWyWIxqqVeydY0LtwjTa5Kt53VX2GCpuBmBmlE4
-	NBKeJf7R0CSddWwtd83VNyH9nBMB0qk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712750727;
+	bh=JgokGGCMRQZ2/pQzN/0fCVBWcbfteqrOIQNsSM08sgQ=;
+	b=MWvIQLTwbXcgNFmRvHLmwIeXh898YX/cEHNWnqllD3GJUwCXNDFoDWltNUogOkQwRQTmQp
+	4tLsWFihoU9rnG79zun4pj458HCjHZjAqGoNcmkH1YhkWFE3BviTl9spP9PcaSnRUQHyct
+	R/nPE/2O40QqXJ+BU9Z75RZsadwejk0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712750747;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nilFxSt4AAqE2lRCUBz3PtSSaWDM5UjMiq7TLWAkpuI=;
-	b=L8GpkAD078iLHJ85nZsCTBf/Tb3vwgOEoGLhPtiv55bSzc0rXH+pn8HGUvkSF9CMdah69g
-	giFUQNhL41C9Q8Dw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=JgokGGCMRQZ2/pQzN/0fCVBWcbfteqrOIQNsSM08sgQ=;
+	b=LcV4U1khzrJcHGDdKsndPqNQnNpqBGsbCVkr5UDh0rOhPkhLhWt4BV6MpZ92iDSxejYgEI
+	8N0vNLoQ5X9VFlAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7453B13A92;
-	Wed, 10 Apr 2024 12:05:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 611D513691;
+	Wed, 10 Apr 2024 12:05:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id gmRjHIeAFmZcBAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 10 Apr 2024 12:05:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 222A1A06D8; Wed, 10 Apr 2024 14:05:27 +0200 (CEST)
-Date: Wed, 10 Apr 2024 14:05:27 +0200
-From: Jan Kara <jack@suse.cz>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-	linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] jbd2: remove redundant assignement to variable err
-Message-ID: <20240410120527.i5mfitfnik2jywgw@quack3>
-References: <20240410112803.232993-1-colin.i.king@gmail.com>
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hbs0FJuAFmawdwAAD6G6ig
+	(envelope-from <hare@suse.de>); Wed, 10 Apr 2024 12:05:47 +0000
+Message-ID: <03370383-d8d1-4b43-89f4-e9a3985c96e9@suse.de>
+Date: Wed, 10 Apr 2024 14:05:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410112803.232993-1-colin.i.king@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/6] nvme: authentication error are always
+ non-retryable
+Content-Language: en-US
+To: Sagi Grimberg <sagi@grimberg.me>, Daniel Wagner <dwagner@suse.de>
+Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+ James Smart <james.smart@broadcom.com>, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240409093510.12321-1-dwagner@suse.de>
+ <20240409093510.12321-2-dwagner@suse.de>
+ <ac48d955-8169-467d-962c-e7f55854ba06@grimberg.me>
+ <7jqbhmskuzfvpjlavk7oqefmc72m5j2wj7525c7y2vlsfnaajx@57pfbmfvf4kt>
+ <8c9a980f-4885-479c-9078-7f87dc92175c@grimberg.me>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <8c9a980f-4885-479c-9078-7f87dc92175c@grimberg.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.29
 X-Spam-Level: 
-X-Spamd-Result: default: False [-0.11 / 50.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.60)[81.72%];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
-X-Spam-Flag: NO
-X-Spam-Score: -0.11
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 7E659350AA
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
 
-On Wed 10-04-24 12:28:03, Colin Ian King wrote:
-> The variable err is being assigned a value that is never read, it
-> is being re-assigned inside the following while loop and also
-> after the while loop. The assignment is redundant and can be
-> removed.
+On 4/10/24 12:21, Sagi Grimberg wrote:
 > 
-> Cleans up clang scan build warning:
-> fs/jbd2/commit.c:574:2: warning: Value stored to 'err' is never
-> read [deadcode.DeadStores]
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-
-OK, this assignment indeed looks redundant and is not even making code
-easier to reason about. So feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/jbd2/commit.c | 1 -
->  1 file changed, 1 deletion(-)
+> On 10/04/2024 9:52, Daniel Wagner wrote:
+>> On Tue, Apr 09, 2024 at 11:26:00PM +0300, Sagi Grimberg wrote:
+>>>
+>>> On 09/04/2024 12:35, Daniel Wagner wrote:
+>>>> From: Hannes Reinecke <hare@suse.de>
+>>>>
+>>>> Any authentication errors which are generated internally are always
+>>>> non-retryable, so use negative error codes to ensure they are not
+>>>> retried.
+>>> The patch title says that any authentication error is not retryable, and
+>>> the patch body says "authentication errors which are generated locally
+>>> are non-retryable" so which one is it?
+>> Forgot to update the commit message. What about:
+>>
+>>    All authentication errors are non-retryable, so use negative error
+>>    codes to ensure they are not retried.
+>>
+>> ?
 > 
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 5e122586e06e..78a9d08ae9f8 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -571,7 +571,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->  	J_ASSERT(commit_transaction->t_nr_buffers <=
->  		 atomic_read(&commit_transaction->t_outstanding_credits));
->  
-> -	err = 0;
->  	bufs = 0;
->  	descriptor = NULL;
->  	while (commit_transaction->t_buffers) {
-> -- 
-> 2.39.2
+> I have a question, what happens if nvmet updated its credentials (by the 
+> admin) and in the period until the host got his credentials updated, it
+> happens to disconnect/reconnect. It will see an authentication
+> error, so it will not retry and remove the controller altogether?
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Sounds like an issue to me.
+
+Usual thing: we cannot differentiate (on the host side) whether the
+current PSK is _about_ to be replaced; how should the kernel
+know that the admin will replace the PSK in the next minutes?
+
+But that really is an issue with the standard. Currently there is no
+way how a target could inform the initiator that the credentials have
+been updated.
+
+We would need to define a new status code for this.
+In the meantime the safe operations model is to set a lifetime
+for each PSK, and ensure that the PSK is updated on both sides
+during the lifetime. With that there is a timeframe during which
+both PSKs are available (on the target), and the older will expire
+automatically once the lifetime limit is reached.
+
+Cheers,
+
+Hannes
+
 
