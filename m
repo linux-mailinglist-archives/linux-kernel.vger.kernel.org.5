@@ -1,120 +1,184 @@
-Return-Path: <linux-kernel+bounces-138679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8964489F8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:56:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBC4289F8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:57:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E012281BCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:56:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32511C210C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D62F16D4DB;
-	Wed, 10 Apr 2024 13:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="igrRdy6u"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40BA16DECC;
+	Wed, 10 Apr 2024 13:50:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF70161330;
-	Wed, 10 Apr 2024 13:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F010116D9C7;
+	Wed, 10 Apr 2024 13:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712757000; cv=none; b=m3KfZTiPND4U7fhYic7cdzWhG9T3hBt42r3S9kfepuTF8XMideitciiwBd0v1ln0UA/0PKo1pQ6fwgDB0mJaKn1h+U36Wy8qzW6wiBaHj2vP0zwcS515HXpL2K7FHzlcng84WYHdXi0sRPwVRwK9QEq8CiHHHGuI7wHavJ5TuM8=
+	t=1712757012; cv=none; b=Yqjo+u/NhNZ7czDrtUbUBnTiYMsnt3xqKo+Y/g4qe9DIsfa0NVO8S+7e7lGgYxGlxl8KU5PAl3Gi9BfoIM4Asz9bJWspHvD22k4sHprduvQ26cD+PrMEU2ahXgGo9SEeXScJ1Z8vEJds86jS+o/7xhW1tJ+AR53EzA+eSYupn54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712757000; c=relaxed/simple;
-	bh=W4+YbNUqKogJXfDDJSCYKuOrE+ecQbdSDpvdWU+QHYI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fz1rrw9FIHb0vonDWIUZDqSfQfZJjriQ0+pKqNMEeKZgTL6bWaDfD+i5a+43hSY8fZM5S5tCRMMW4wxH157wyiF9pkiwDl24hX0+2Yy4gVDN/1XY/JEV8mg6I+XNiFwqy3vg8n0o6IFiimQmtgtFpfoon/q5Aia6N0+LIV5UMhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=igrRdy6u; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712756999; x=1744292999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=W4+YbNUqKogJXfDDJSCYKuOrE+ecQbdSDpvdWU+QHYI=;
-  b=igrRdy6u1h6IRBnxzbF22t+SGdXgJ02C7CbbILpaVmk3U40OwQpY24sh
-   UEoEDVGVsH4+ZtDTR7TMBJQlhqRzfuzSTgOcZkOl9v1RFHgx0KvsQ4TEf
-   6UKQN2S5pRvmfjRFnGo247s/SyPSLBngJvM1ovpgSZHsTf5j/XYaOXtpz
-   U7SREIa2fi36/7/QVDZ4zxHZ7FDJLCeTL+eYg1NQRDUA9eL9lnz3Tz/Fv
-   mYjEY+UJEbUoDsHgcUW+8RmAz2lCpiJCbZnbxYWhYLehIx2MrLaeuWhQ9
-   VoOCzUQOcouWWZT4WesdBJk8Jtg1ihefRtz3Beui6xTO2j/RPhAwOlKva
-   Q==;
-X-CSE-ConnectionGUID: wqPbS27zROKCmyqFrG71yA==
-X-CSE-MsgGUID: 1VdtrMQwSAK4dAm1DboUig==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7992403"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7992403"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:49:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915433555"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="915433555"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:49:56 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ruYKo-0000000357e-0ywy;
-	Wed, 10 Apr 2024 16:49:54 +0300
-Date: Wed, 10 Apr 2024 16:49:53 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 2/2] media: atomisp: Replace open-coded
- i2c_find_device_by_fwnode()
-Message-ID: <ZhaZAdUdAwL80Tza@smile.fi.intel.com>
-References: <20240326202813.1425431-1-andriy.shevchenko@linux.intel.com>
- <20240326202813.1425431-3-andriy.shevchenko@linux.intel.com>
- <c9741df0-6c12-4ff5-90b4-5a13f0bd9b51@redhat.com>
- <ZhaVnYtFoTaFOKD-@smile.fi.intel.com>
- <911d84a7-cb3b-4ca5-86a1-334e7b3f85c6@redhat.com>
+	s=arc-20240116; t=1712757012; c=relaxed/simple;
+	bh=9zjC72oMJYYHMUAUwT5oG2XaeuDan+dzKqCHcr5RWWs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SuFNw84ei2T2SgqjUOQvTBMJcUA4pLXaz10ODwTnCkhFmn9cs7rrOgHha8ujJBRJy/mI3oZ6vrmWgYbtOm4OlWwp1tc+GBk6Ezmiu8Yd0nbn2s1tAeB/PJg77risgo7Weq/bsAKsm/+2uKIYYi3ydNEPBQmWA8OJYji1MGxJdao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF3xC2BRXz6K6f2;
+	Wed, 10 Apr 2024 21:45:19 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B565C1400CA;
+	Wed, 10 Apr 2024 21:50:06 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 14:50:06 +0100
+Date: Wed, 10 Apr 2024 14:50:05 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
+ acpi_processor_get_info()
+Message-ID: <20240410145005.00003050@Huawei.com>
+In-Reply-To: <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
+	<E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+	<20240322185327.00002416@Huawei.com>
+	<20240410134318.0000193c@huawei.com>
+	<CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <911d84a7-cb3b-4ca5-86a1-334e7b3f85c6@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Apr 10, 2024 at 03:41:15PM +0200, Hans de Goede wrote:
-> On 4/10/24 3:35 PM, Andy Shevchenko wrote:
-> > On Wed, Apr 10, 2024 at 12:35:29PM +0200, Hans de Goede wrote:
-> >> On 3/26/24 9:27 PM, Andy Shevchenko wrote:
+On Wed, 10 Apr 2024 15:28:18 +0200
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-..
+> On Wed, Apr 10, 2024 at 2:43=E2=80=AFPM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> > =20
+> > > > =20
+> > > > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> > > > > index 47de0f140ba6..13d052bf13f4 100644
+> > > > > --- a/drivers/base/cpu.c
+> > > > > +++ b/drivers/base/cpu.c
+> > > > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(=
+void)
+> > > > >  {
+> > > > >         int i, ret;
+> > > > >
+> > > > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
+> > > > > +       /*
+> > > > > +        * When ACPI is enabled, CPUs are registered via
+> > > > > +        * acpi_processor_get_info().
+> > > > > +        */
+> > > > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disa=
+bled)
+> > > > >                 return; =20
+> > > >
+> > > > Honestly, this looks like a quick hack to me and it absolutely
+> > > > requires an ACK from the x86 maintainers to go anywhere. =20
+> > > Will address this separately.
+> > > =20
+> >
+> > So do people prefer this hack, or something along lines of the followin=
+g?
+> >
+> > static int __init cpu_dev_register_generic(void)
+> > {
+> >         int i, ret =3D 0;
+> >
+> >         for_each_online_cpu(i) {
+> >                 if (!get_cpu_device(i)) {
+> >                         ret =3D arch_register_cpu(i);
+> >                         if (ret)
+> >                                 pr_warn("register_cpu %d failed (%d)\n"=
+, i, ret);
+> >                 }
+> >         }
+> >         //Probably just eat the error.
+> >         return 0;
+> > }
+> > subsys_initcall_sync(cpu_dev_register_generic); =20
+>=20
+> I would prefer something like the above.
+>=20
+> I actually thought that arch_register_cpu() might return something
+> like -EPROBE_DEFER when it cannot determine whether or not the CPU is
+> really available.
 
-> >> I'm going to merge this variant into my media-atomisp branch
-> >> instead of the orignal.
-> > 
-> > Thanks!
-> > 
-> > This explains why changelog made the commit message.
-> > Was it done deliberately?
-> 
-> Oops, no that was by accident. I normally git send-email
-> + git am my patches and then git am cuts it off...
-> 
-> I just send out a pull-request with this minor wart in it
-> (after testing), so unless there are other reasons to respin
-> I guess we'll have to live with it.
+Ok. That would end up looking much more like the original code I think.
+So we wouldn't have this late registration at all, or keep it for DT
+on arm64?  I'm not sure that's a clean solution though leaves
+the x86 path alone.
 
-You might check the linux-next scripts or ask Stephen if this is an issue.
-In any case we will know sooner or later :-)
+If we get rid of this catch all, solution would be to move the
+!acpi_disabled check into the arm64 version of arch_cpu_register()
+because we would only want the delayed registration path to be
+used on ACPI cases where the question of CPU availability can't
+yet be resolved.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>=20
+> Then, the ACPI processor enumeration path may take care of registering
+> CPU that have not been registered so far and in the more-or-less the
+> same way regardless of the architecture (modulo some arch-specific
+> stuff).
 
+If I understand correctly, in acpi_processor_get_info() we'd end up
+with a similar check on whether it was already registered (the x86 path)
+or had be deferred (arm64 / acpi).
+=20
+>=20
+> In the end, it should be possible to avoid changing the behavior of
+> x86 and loongarch in this series.
+
+Possible, yes, but result if I understand correctly is we end up with
+very different flows and replication of functionality between the
+early registration and the late one. I'm fine with that if you prefer it!
+
+>=20
+> > Which may look familiar at it's effectively patch 3 from v3 which was d=
+ealing
+> > with CPUs missing from DSDT (something we think doesn't happen).
+> >
+> > It might be possible to elide the arch_register_cpu() in
+> > make_present() but that will mean we use different flows in this patch =
+set
+> > for the hotplug and initially present cases which is a bit messy.
+> >
+> > I've tested this lightly on arm64 and x86 ACPI + DT booting and it "see=
+ms" fine. =20
+>=20
+> Sounds promising.
+
+Possibly not that relevant though if proposal is to drop this approach. :(
+At least I now have test setups!
+
+Jonathan
+>=20
+> Thanks!
 
 
