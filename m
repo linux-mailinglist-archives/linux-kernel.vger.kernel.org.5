@@ -1,123 +1,183 @@
-Return-Path: <linux-kernel+bounces-139051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5753F89FDD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:12:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF3F89FDE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CC0028D7FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:12:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AEC71F22BCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1225717BB0D;
-	Wed, 10 Apr 2024 17:12:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9BB17F371;
+	Wed, 10 Apr 2024 17:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="AxOGyNET"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1652117BB05
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A068D17BB05;
+	Wed, 10 Apr 2024 17:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712769152; cv=none; b=JP517FQ0aol+klkh1fN8NOeFXUzTQHZxkSM/WUgK71k367vy1Axbto47dOKlwTihIYQq4KZLGeGn7gp5VtE2nqpuatj58zA8nATyw/f15MYxlgv9XIXCdEN18TAnx8HcAL+zCQzyv/wbKE0Vx1DckJQ887i7GZisfqbpnk1BCp8=
+	t=1712769157; cv=none; b=qqZj3XkRY6ird6BJSKcbEAABNVodvHxfXKurZSvOmvMnTupyY/tY+vxo57q4BdKPvAvpgF3PWYcyW1SYxwmbZrJBan/lU9kQMsQmANslS/bmnu1dYlEdFnxM0E/QewZGMXofhWFx3lQDyLx2EHpZXkCcV590+MV5z8sYWU6oNHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712769152; c=relaxed/simple;
-	bh=EOTo2RqiITH0j5nR8vNeTQXVXsztHoLuLmr01MLLq/c=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X+L6AOBy2j2TwIhdB3FtX4bIB8rNv/OMpVQC1jx5cW2jmTebt+iJ2AyxYpYjeZ3O4/x20LvIDnjWbuucf0eyln1YHx5YuO4qeTP1MOMzSTxVi3zPkocNyS/jzlFS8a8pRWdOFCqOzJ4JfFH98JQ5Pr9ihS7bSyz9T55fGQkzRgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF8Qg369qz6K9MB;
-	Thu, 11 Apr 2024 01:07:39 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0FC8A1402C7;
-	Thu, 11 Apr 2024 01:12:27 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
- 2024 18:12:26 +0100
-Date: Wed, 10 Apr 2024 18:12:26 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Robin Murphy <robin.murphy@arm.com>
-CC: <will@kernel.org>, <mark.rutland@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf/arm-cmn: Set PMU device parent
-Message-ID: <20240410181226.000068eb@Huawei.com>
-In-Reply-To: <20240410180403.00004cff@Huawei.com>
-References: <25d4428df1ddad966c74a3ed60171cd3ca6c8b66.1712682917.git.robin.murphy@arm.com>
-	<20240410180403.00004cff@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712769157; c=relaxed/simple;
+	bh=UZN6bZ/VOXpFVmBzCZFb4rCBgwKePZT8MRaqGDGNeJc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EZRfgsGpz+2iz1BS4P0uvFo+9VhlZjn4VOVySF61cSGyx9+o7LRo8umVDJ9OhoINVD/WQfGR44IYv+Z+ZZ6A4M9t+SYHXwZTC1/3eapHphnMPpvAAqWDhyY46352+XfQHaG7X4i24hkISenyih6pcNVfqLcVNea71SVg+nnLTNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=AxOGyNET; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 316DC1C0007;
+	Wed, 10 Apr 2024 17:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712769153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dqccYW4TTVMR245oWOMT2QE+v65GZJhVyqPmQez5YqY=;
+	b=AxOGyNET4LG1HW8fSstIXz09u4haS/irmvIXJwE+egN4x7TBc7ozRAEpcDcq+Ho1M4zbdQ
+	9ApaXNMtozqImA5//vRRIIfJ9bBnadcfrS6ylMxAFTP7BK92xLEFslIW/VakwDZZBerra7
+	9vQ2DEp6kLggGdis0ULzAQJGitGq3Wl8xYIaJPq3syuIcBl9TYFW2lQHfaHfu7VkbTMB+T
+	F15GVbK2S2jcX7ZcjC8sAozClZZYmP6E2BFSijilbI2YyLLHPrJZz3xkLAqdDvbiH4KFEG
+	X7fal4duV454FlGG14edLIRRkblyevjDN0ERjeB6sQyw9DUW+y7E4qR477aPNg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH 00/11] Add Mobileye EyeQ system controller support (clk,
+ reset, pinctrl)
+Date: Wed, 10 Apr 2024 19:12:29 +0200
+Message-Id: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAH3IFmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDEwML3dyknErd/JwkXXPTRAvTNNPktJRUYyWg8oKi1LTMCrBR0bG1tQD
+ bvinJWgAAAA==
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Wed, 10 Apr 2024 18:04:03 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+Hello,
 
-> On Tue,  9 Apr 2024 18:15:17 +0100
-> Robin Murphy <robin.murphy@arm.com> wrote:
-> 
-> > Now that perf supports giving the PMU device a parent, we can use our
-> > platform device to make the relationship between CMN instances and PMU
-> > IDs trivially discoverable, from either nominal direction:
-> > 
-> > root@crazy-taxi:~# ls /sys/devices/platform/ARMHC600:00 | grep cmn
-> > arm_cmn_0
-> > root@crazy-taxi:~# realpath /sys/bus/event_source/devices/arm_cmn_0/..
-> > /sys/devices/platform/ARMHC600:00
-> > 
-> > Signed-off-by: Robin Murphy <robin.murphy@arm.com>  
-> Nice.  I'd forgotten all about this :( 
-> 
-> https://lore.kernel.org/all/20230404134225.13408-1-Jonathan.Cameron@huawei.com/
-> still has a bunch of these + there were many I never looked into.
-> 
-> Guess I should respin that series though probably 50% at least still apply.
+This builds on previous EyeQ5 system-controller revisions [0] and adds
+EyeQ6L + EyeQ6H support. Pinctrl is not affected because it is not
+handled in the same manner on those new platforms; it will be dealt
+with with pinctrl-single. Only clk and reset expand to support those
+new platform.
 
-Ironically other than this one, almost the only ones that didn't go in cleanly
-are the hisilicon drivers where there was some churn.
+Changes in drivers are pretty massive, which explains why I started a
+new revision count.
 
-Will, if you 'want' to pick any of those up directly feel free, if not I'll sent
-them out again in a few days time (and check there weren't any requests for
-changes buried in that rather extensive thread!)
+EyeQ6H is particular in that it has not one but seven OLB instances.
+All seven host a (different) clock controller. Three host a reset
+controller.
 
-Jonathan
+Patches are targeting MIPS, clk, reset and pinctrl trees independently.
 
-> 
-> J
-> 
-> 
-> > ---
-> >  drivers/perf/arm-cmn.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-> > index 7ef9c7e4836b..b2c607cf3ad7 100644
-> > --- a/drivers/perf/arm-cmn.c
-> > +++ b/drivers/perf/arm-cmn.c
-> > @@ -2482,6 +2482,7 @@ static int arm_cmn_probe(struct platform_device *pdev)
-> >  	cmn->cpu = cpumask_local_spread(0, dev_to_node(cmn->dev));
-> >  	cmn->pmu = (struct pmu) {
-> >  		.module = THIS_MODULE,
-> > +		.parent = cmn->dev,
-> >  		.attr_groups = arm_cmn_attr_groups,
-> >  		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
-> >  		.task_ctx_nr = perf_invalid_context,  
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+ - dt-bindings: soc: mobileye: add EyeQ5 OLB system controller
+ - MIPS: mobileye: eyeq5: add OLB syscon node
+ - MIPS: mobileye: eyeq5: use OLB clocks controller node
+ - MIPS: mobileye: eyeq5: add OLB reset controller node
+ - MIPS: mobileye: eyeq5: add pinctrl node & pinmux function nodes
+
+   Patches have no dependencies on this series. All required devicetrees
+   and bindings got in the last release. Bindings changes below are
+   only related to EyeQ6L/EyeQ6H.
+
+ - dt-bindings: clock: mobileye,eyeq5-clk: add EyeQ6L and EyeQ6H
+ - clk: divider: Introduce CLK_DIVIDER_EVEN_INTEGERS flag
+ - clk: eyeq: add driver
+
+   Clocks on all three platforms are rather similar. We have a bunch of
+   PLLs children to the main crystal, some being required early
+   (at of_clk_init(), before platform bus init).
+
+   We have a few divider clocks in some instances. A custom clk-divider
+   flag is introduced for the divisor because one clk would have a 256
+   entries table otherwise.
+
+   Compatible match data stores it all, nothing is declared in DT. Match
+   data has three arrays for the three types of clocks: early PLLs,
+   standard PLLs and divider clks.
+
+ - dt-bindings: reset: mobileye,eyeq5-reset: add EyeQ6L and EyeQ6H
+ - reset: eyeq: add platform driver
+
+   Resets on all three platforms are rather similar. We therefore
+   declare reset domain types and assign compatibles to an array of
+   domains, with types and valid masks associated. The rest is pretty
+   similar to previous code.
+
+   EyeQ6H west and east OLB each host an instance of the same compat.
+
+ - pinctrl: eyeq5: add platform driver
+
+   Not affected by EyeQ6L/EyeQ6H additions. It has not changed.
+
+Have a nice day,
+Théo
+
+[0]: https://lore.kernel.org/lkml/20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com/
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Théo Lebrun (11):
+      dt-bindings: soc: mobileye: add EyeQ5 OLB system controller
+      dt-bindings: clock: mobileye,eyeq5-clk: add EyeQ6L and EyeQ6H
+      dt-bindings: reset: mobileye,eyeq5-reset: add EyeQ6L and EyeQ6H
+      clk: divider: Introduce CLK_DIVIDER_EVEN_INTEGERS flag
+      clk: eyeq: add driver
+      reset: eyeq: add platform driver
+      pinctrl: eyeq5: add platform driver
+      MIPS: mobileye: eyeq5: add OLB syscon node
+      MIPS: mobileye: eyeq5: use OLB clocks controller node
+      MIPS: mobileye: eyeq5: add OLB reset controller node
+      MIPS: mobileye: eyeq5: add pinctrl node & pinmux function nodes
+
+ .../bindings/clock/mobileye,eyeq5-clk.yaml         | 103 +++-
+ .../bindings/reset/mobileye,eyeq5-reset.yaml       |  88 ++-
+ .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 125 ++++
+ MAINTAINERS                                        |   8 +
+ .../{eyeq5-fixed-clocks.dtsi => eyeq5-clocks.dtsi} |  54 +-
+ arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi        | 125 ++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  42 +-
+ drivers/clk/Kconfig                                |  11 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/clk-divider.c                          |  12 +-
+ drivers/clk/clk-eyeq.c                             | 644 +++++++++++++++++++++
+ drivers/pinctrl/Kconfig                            |  14 +
+ drivers/pinctrl/Makefile                           |   1 +
+ drivers/pinctrl/pinctrl-eyeq5.c                    | 579 ++++++++++++++++++
+ drivers/reset/Kconfig                              |  13 +
+ drivers/reset/Makefile                             |   1 +
+ drivers/reset/reset-eyeq.c                         | 543 +++++++++++++++++
+ include/dt-bindings/clock/mobileye,eyeq5-clk.h     |  21 +
+ include/linux/clk-provider.h                       |  11 +-
+ 19 files changed, 2322 insertions(+), 74 deletions(-)
+---
+base-commit: c8e31f416e99bd460f6f8847709bf69c72a3e146
+change-id: 20240408-mbly-olb-75a85f5cfde3
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
 
 
