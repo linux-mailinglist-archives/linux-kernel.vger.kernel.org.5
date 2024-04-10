@@ -1,108 +1,141 @@
-Return-Path: <linux-kernel+bounces-143415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D04E8A38A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:44:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B553B89F33A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:59:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DF431F232D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:44:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E728A1C2700B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB6C1482FA;
-	Fri, 12 Apr 2024 22:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S9p6DXVR"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C89915DBC4;
+	Wed, 10 Apr 2024 12:58:56 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F97F225D7
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C444A15B568;
+	Wed, 10 Apr 2024 12:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712961881; cv=none; b=ibocq9HvsjZa+vL35eMqfGujya4bHkMnEDTvokzZ1cdarVZmEgZGb7RPz2crM1X5VhvvVl5c151hDLVe1M2tsTqH2Q7VC61HdF3wd71yRBGHolihTMKRqv9uGQ14wsyA2s/58sGq/qGxF9YS1XyKdyJ7xAFZ2PxCuw1uG6KhUhc=
+	t=1712753936; cv=none; b=hPv2Mw6zPJI4ONXDjKJCKMbsTsWMd8qSdJbOlt/lm5ovDAQA4SynOeo8GRw2XAprjw7SSGdQYPQeVmktFpKRJLSj7oadvEzamv62kXq67qBngi1steJxh/++lnSqUT+1M5CCLTt9qIk4aMyQrEVSDf2i8MDh8/HMo2VmKJEY+JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712961881; c=relaxed/simple;
-	bh=2/G8pva0QKXdcG7pAlRPcQQaEkGLUnJpeXwjjOIqChY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i/xGacUho4Eu1q3lFEI1kVQnRN9Ri6knlooKyPgh54ogcF97+D+Rk02239ZgSkP4p/z7CBwjbFAZlVH9/RplrB5ThTVqyD259YxvM0/LIj5tNPPk46Z6x1fT+yOOOkcYHM+1/BBi0Uc68gXXp/nKDd+SZLt88TcTXKetdR9448M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S9p6DXVR; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 10 Apr 2024 21:53:41 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712961877;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bK7KfBMPyOIucwDtN0e7NfhXAX7dIzQN2rgbT78Breo=;
-	b=S9p6DXVRqT4Q3RBVm7Uq9aPDAJOOzIiSGngKqvRMvNWI8kHldgoRu+I3oxpRc8RPeCTXYE
-	rNPpTaRupbgiEaYYO+Wb9MdGx5CS1G/ZS+NpHFGPZgs4dI7FECqKaBUKjvrNuPLzlwPpCm
-	KonJVHhiEGrZwSX6WL6pvVmUyuIlROA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Itaru Kitayama <itaru.kitayama@linux.dev>
-To: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, kernel-team@android.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Speed up boot with faster linear map creation
-Message-ID: <ZhaL1TABj0Qf7UKR@vm3>
-References: <20240412131908.433043-1-ryan.roberts@arm.com>
- <171293670589.3659902.6442840474459477952.b4-ty@kernel.org>
+	s=arc-20240116; t=1712753936; c=relaxed/simple;
+	bh=8bg/UKTj63VR5ARRukpLFgqe0WkB1c2fnEwn5KliV/4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uQGO+AOEE6SK7YI7250MOEbx16kotXluviQgMknBv5ww331Jo8F8iwntcz7LQy6pG/w8PxGIeKgAQ+zRRuVMIjigeNbPHB/MvNpOk1lKhhjDbxFILmL5IMbjAjmWYoufQc+YCfgJsD9qzB41xB/WJYB18XRDEKNR77uoDf/MV8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VF2tV2vG2z21kdT;
+	Wed, 10 Apr 2024 20:57:54 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id D85871A0172;
+	Wed, 10 Apr 2024 20:58:49 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 20:58:49 +0800
+From: Jijie Shao <shaojijie@huawei.com>
+To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <jiri@resnulli.us>, <horms@kernel.org>,
+	<rkannoth@marvell.com>
+CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH V7 net-next 0/4] Support some features for the HNS3 ethernet driver
+Date: Wed, 10 Apr 2024 20:53:50 +0800
+Message-ID: <20240410125354.2177067-1-shaojijie@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171293670589.3659902.6442840474459477952.b4-ty@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-On Fri, Apr 12, 2024 at 05:06:41PM +0100, Will Deacon wrote:
-> On Fri, 12 Apr 2024 14:19:05 +0100, Ryan Roberts wrote:
-> > It turns out that creating the linear map can take a significant proportion of
-> > the total boot time, especially when rodata=full. And most of the time is spent
-> > waiting on superfluous tlb invalidation and memory barriers. This series reworks
-> > the kernel pgtable generation code to significantly reduce the number of those
-> > TLBIs, ISBs and DSBs. See each patch for details.
-> > 
-> > The below shows the execution time of map_mem() across a couple of different
-> > systems with different RAM configurations. We measure after applying each patch
-> > and show the improvement relative to base (v6.9-rc2):
-> > 
-> > [...]
-> 
-> Applied to arm64 (for-next/mm), thanks!
-> 
-> [1/3] arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
->       https://git.kernel.org/arm64/c/5c63db59c5f8
-> [2/3] arm64: mm: Batch dsb and isb when populating pgtables
->       https://git.kernel.org/arm64/c/1fcb7cea8a5f
-> [3/3] arm64: mm: Don't remap pgtables for allocate vs populate
->       https://git.kernel.org/arm64/c/0e9df1c905d8
+Currently, the hns3 driver does not have the trace
+of the command queue. As a result, it is difficult to
+locate the communication between the driver and firmware.
+Therefore, the trace function of the command queue is
+added in this patch set to facilitate the locating of
+communication problems between the driver and firmware.
 
-I confirm this series boots the system on FVP (with my .config and my
-buildroot rootfs using Shrinkwrap).
+If a RAS occurs, the driver will automatically reset to attempt
+to recover the RAS. Therefore, to locate the cause of the RAS,
+it is necessary to save the values of some RAS-related registers
+before the reset. So we added a patch in this patch set to
+print these information.
 
-Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
+---
+changeLog:
+v6 -> v7:
+  - Add document the meaning of scc, suggested by Jakub Kicinski
+  - Added more description about dump more reg info based on ras mod,
+    suggested by Jakub Kicinski
+  v6: https://lore.kernel.org/all/20240327114330.1826631-1-shaojijie@huawei.com/
+v5 -> v6:
+  - Delete the redundant operation of adding '\0' after scnprintf,
+    suggested by Ratheesh Kannoth
+  v5: https://lore.kernel.org/all/20240309100044.2351166-1-shaojijie@huawei.com/
+v4 -> v5:
+  - Delete a patch about dump pfc frame statistics in tx timeout log by dmesg,
+    suggested by Jiri Pirko
+  - Rewrite the log message of patch about command queue trace, suggested by Jiri Pirko
+  - Add a new patch about querying scc version by devlink info
+  v4: https://lore.kernel.org/all/20240105010119.2619873-1-shaojijie@huawei.com/
+v3 -> v4:
+  - Adjuste the patches sequence in this patch set, suggested by Simon Horman
+  v3: https://lore.kernel.org/all/20231216070018.222798-1-shaojijie@huawei.com/
+v2 -> v3:
+  - Fix the incorrect use of byte order in patch
+    "net: hns3: add command queue trace for hns3" suggested by Simon Horman
+  - Add a new patch to move constants from hclge_debugfs.h
+    to hclge_debugfs.c suggested by Simon Horman
+  v2: https://lore.kernel.org/all/20231214141135.613485-1-shaojijie@huawei.com/
+v1 -> v2:
+  - Delete a patch for ethtool -S to dump page pool statistics, suggested by Jakub Kicinski
+  - Delete two patches about CMIS transceiver modules because
+    ethtool get_module_eeprom_by_page op is not implemented, suggested by Jakub Kicinski
+  v1: https://lore.kernel.org/all/20231211020816.69434-1-shaojijie@huawei.com/
+---
 
-Thanks,
-Itaru.
+Hao Chen (1):
+  net: hns3: add support to query scc version by devlink info
 
-> 
-> Cheers,
-> -- 
-> Will
-> 
-> https://fixes.arm64.dev
-> https://next.arm64.dev
-> https://will.arm64.dev
+Hao Lan (1):
+  net: hns3: add command queue trace for hns3
+
+Jijie Shao (1):
+  net: hns3: move constants from hclge_debugfs.h to hclge_debugfs.c
+
+Peiyang Wang (1):
+  net: hns3: dump more reg info based on ras mod
+
+ Documentation/networking/devlink/hns3.rst     |   3 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  13 +
+ .../hns3/hns3_common/hclge_comm_cmd.c         |  19 +
+ .../hns3/hns3_common/hclge_comm_cmd.h         |  24 +-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 646 +++++++++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.h     | 643 +----------------
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |  44 +-
+ .../hisilicon/hns3/hns3pf/hclge_devlink.h     |   2 +
+ .../hisilicon/hns3/hns3pf/hclge_err.c         | 433 +++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_err.h         |  36 +
+ .../hisilicon/hns3/hns3pf/hclge_main.c        |  63 ++
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |   1 +
+ .../hisilicon/hns3/hns3pf/hclge_trace.h       |  94 +++
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  40 ++
+ .../hisilicon/hns3/hns3vf/hclgevf_trace.h     |  50 ++
+ 15 files changed, 1459 insertions(+), 652 deletions(-)
+
+-- 
+2.30.0
+
 
