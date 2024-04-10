@@ -1,152 +1,235 @@
-Return-Path: <linux-kernel+bounces-138911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31C2889FBF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:50:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D040B89FBF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 535411C21F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:50:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 855D928933C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E363B16F0EF;
-	Wed, 10 Apr 2024 15:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6950716F0F7;
+	Wed, 10 Apr 2024 15:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kIZaAumj"
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oHsAoTPK";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ECoKpZFI";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="a2AYrdSz";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="n+1c2hTh"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798C416F0DC
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABAD016F0D3;
+	Wed, 10 Apr 2024 15:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764195; cv=none; b=Kz0QHB/7CRLz86zvSma2WP56IlE7h3uol2YX4KKH+hx7Iq2/5XLHt38J0vjfju3qFdw7RqIH4MEvNwXdacqk6Dkc7dosbpDZfiudSq66lHy5HZg9TYzi7h8vRatPie7JJ1nspyXrPn9oFabBHm7OfsTj05u3hwdgS0U0FwKW4FY=
+	t=1712764259; cv=none; b=dJda54f0LJvk/1AqNymVaMJbKhn0/aP15XlghW0w6bc8slsrwHB3Z/54l9BOoP5S1XRwJxZFvXWJIvkhqWnLpSCauuDap0bLYduozVfupzK2EIFahLAeusAs/O/b6oh/GHSwePX9yMwXH2GNOLGUjQ7jCqFBxmGw7UkFJS5nqQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764195; c=relaxed/simple;
-	bh=AxHwz8VF1NhYu3Vp1CovFU8cr9PNL/8I3H9tcZr+m74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lc+76Rvny/y6jmrL/PSqiNPHkr3tf4ykwaJvhomGRw53kH9xaJU/dqRwVCEzMS6C5MVLWR6+wEIJNlRiK+/+7WSICaYUsoCBF4yOSdbFod62ZklSmZTJ7ZR48mZYJ3vZXg8+f5nMo9Q3AzaS5z6fWkWEa9jF/rV7gY0ssGNs3Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kIZaAumj; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-479f50bcd7bso1080857137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1712764192; x=1713368992; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tvi4RlGA0eUYMMXxvrO6LGP3KPA96p3DhN0FfsCggYI=;
-        b=kIZaAumjpkFRXQoZN4xkEAENcU9uyNJYmy6Nvew4vkoRGLiU+Z5BeXMuHlGVSYo0Gy
-         UptRMWObL9UVDOI/MsgfNU+7T6HVqsjkYPYCNhvlSJHleBu+JIfahS8j1Y4cyCP9zvzP
-         5Zx32DDPeo1Epu+DRcWyhK8S5MfCKgiKabjoJbejFh325vYbxMXCQHVP3u9PiQDceNQ2
-         OCdwNptfM9P+SebNWRcu6KexNrje7lOWZGHwXJSlH7qaoTNkfFDxjaHVlgHbXiO/RMeh
-         ScNGlqpbIQdsO0Ao+SqkVHaGcijNf4b79fR+TGB4ImF9Ck2Y3gwFj5nxr8mQQXCu392g
-         qXvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712764192; x=1713368992;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tvi4RlGA0eUYMMXxvrO6LGP3KPA96p3DhN0FfsCggYI=;
-        b=DjQjFRTZGWXw0FDQnYqXTBWpJ1/BiJBExovwzc3E0EdHmL6ZIGXYt68uVxClvF1fBd
-         Eh0YKSdx1kGTqDIUmLiMlphg0+JYycr+4QVw1Brc7Gksm4W2qH42cMapqk/ryhpsT7E7
-         wWiuA23TWhBidBCRzDUEoQYQNRHSErJmLew2OQ8c1RnjTJVbLrbwM0BjrHRQJBfdTG1D
-         ep3Rr6e2dvcbkTcmxYm2nFlruw05NuWdexnh7KkHP7uUgU8QFEH0PsFWItnznTHP5OcR
-         SjEcWRH59ec7OA/IbBVxhi562y81EV6hNkqSa2LEu/r+D/220KZV1fl4oJAbUlZNQZuk
-         MRKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVR1AOq2Z/cSuKNU2obhfNwKyFQmCYBN5WVBuhJS4D3okd4ckOJomUH7SwKNVh/bUHAdpW3aY0vTD9tM+4WZmIpq0YNblf36dtVOJ3e
-X-Gm-Message-State: AOJu0Yz0hwMMx5Z0mRYshzYtacmPjA3nm8ukntYyBhjqA6a+xGH8GYLo
-	mcjlwsCG1TNTG9cpjFfotdZMV14MzqAZ4qAtrJDJmsKrZxEDbS/AG5qP98gWg1McPBS2f4fgfmM
-	+
-X-Google-Smtp-Source: AGHT+IG4NexykQhPgIIYvHrAfQVQv1FqWNxA12xQmlbTS3BHAvY4jbcX/T8MwL9NLO8gOHdRAeeO6g==
-X-Received: by 2002:a05:6102:38cc:b0:47a:2577:a366 with SMTP id k12-20020a05610238cc00b0047a2577a366mr2319777vst.12.1712764192407;
-        Wed, 10 Apr 2024 08:49:52 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id b14-20020a0cfb4e000000b0069b17d0f07esm3273815qvq.96.2024.04.10.08.49.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:49:51 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ruaCt-008FEK-5Z;
-	Wed, 10 Apr 2024 12:49:51 -0300
-Date: Wed, 10 Apr 2024 12:49:51 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Tina Zhang <tina.zhang@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] iommu/vt-d: Retire struct intel_svm
-Message-ID: <20240410154951.GH223006@ziepe.ca>
-References: <20240410020844.253535-1-baolu.lu@linux.intel.com>
- <20240410020844.253535-13-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1712764259; c=relaxed/simple;
+	bh=zGQjLRmM45xekVuPgxU61HGT3IKhpvxhc6cgzcmWg8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nv5gb1B9O9CYnz0cFeRRUPu4KnhClAotI4BO7Yup7Z2sm1D30qLSRTC30jkyTURq4+TULdgxDivVZnmGe1TJNw1kW5Tpfzyuueg9c+/uBQMVzMzSK7//QRDe6KQRoDZE1ciL+Zh83iDAwXLxCle6+86zoAAfGlR49HMZ2DJrAdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oHsAoTPK; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ECoKpZFI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=a2AYrdSz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=n+1c2hTh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from samweis (unknown [10.149.211.110])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5614C1FD5F;
+	Wed, 10 Apr 2024 15:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712764255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtETN3PS+VSk6rdHRuNMQoI0cUP1QTlqtnnmWlmHTiY=;
+	b=oHsAoTPKc49GOLSh5MHgHbxSfL2JEvifAE4ja+JHBCes/WOCol74PUc9LFlfBpovICPrTa
+	ruo0vhlKqtlJoDRC6maz427mRLGZ43FGYi/kY3b3m9HBLyYzKHFx7zirQZwAgP2WKBWO40
+	Jpk4ovhgKWdM9cG2bTMO/Yd53QDd/Eo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712764255;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtETN3PS+VSk6rdHRuNMQoI0cUP1QTlqtnnmWlmHTiY=;
+	b=ECoKpZFIn2Bp6BR1ZCuL1JmE/DT9FeRbEwNL0t23nB43mH/Zc3Wpv+Bu7v+/+a5FaNNcuN
+	E42cFv2k96r7tWCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712764254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtETN3PS+VSk6rdHRuNMQoI0cUP1QTlqtnnmWlmHTiY=;
+	b=a2AYrdSzkmjxIgf1WZJEqRzc++ZK/p1UkDkls+3xmBYi6O3eU+aMoih0zKbwl1jtUie0Hf
+	5BOFnWHiTyj1cRfGxzVBgMuuDsFK2JvDs2oZP6UXDfoOrM2mtdPH1LlX8wtJjjPDWuSRjh
+	n+4PdbDsikW6p8x3X/zeu01nY+ilhW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712764254;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtETN3PS+VSk6rdHRuNMQoI0cUP1QTlqtnnmWlmHTiY=;
+	b=n+1c2hThd42yPTShdw3o0csV7hK61V4DWeIhaRzklaNJYTvoF1r+Aq3z/BiF0Kf9f2Vq9e
+	7wiVAdO8VM5nz8AQ==
+Date: Wed, 10 Apr 2024 17:50:52 +0200
+From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+To: Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bonding: 802.3ad: Avoid packet loss when switching
+ aggregator
+Message-ID: <20240410175052.25ac7638@samweis>
+In-Reply-To: <21529.1712592371@famine>
+References: <20240404114908.134034-1-tbogendoerfer@suse.de>
+	<21529.1712592371@famine>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410020844.253535-13-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_COUNT_ZERO(0.00)[0];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[canonical.com:email,samweis:helo,suse.de:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On Wed, Apr 10, 2024 at 10:08:44AM +0800, Lu Baolu wrote:
-> The struct intel_svm was used for keeping attached devices info for sva
-> domain. Since sva domain is a kind of iommu_domain, the struct
-> dmar_domain should centralize all info of a sva domain, including the
-> info of attached devices. Therefore, retire struct intel_svm to clean up
-> the code.
-> 
-> Besides, allocate sva domain in domain_alloc_sva() callback which allows
-> the memory management notifier lifetime to follow the lifetime of the
-> iommu_domain.
-> 
-> Co-developed-by: Tina Zhang <tina.zhang@intel.com>
-> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel/iommu.h | 26 ++++------
->  drivers/iommu/intel/iommu.c |  9 +---
->  drivers/iommu/intel/svm.c   | 94 +++++++++----------------------------
->  3 files changed, 32 insertions(+), 97 deletions(-)
+On Mon, 08 Apr 2024 09:06:11 -0700
+Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
 
-Happy to see the pasid xarray in the driver go away.
+> Thomas Bogendoerfer <tbogendoerfer@suse.de> wrote:
+>=20
+> >If selection logic decides to switch to a new aggregator it disables
+> >all ports of the old aggregator, but doesn't enable ports on
+> >the new aggregator. These ports will eventually be enabled when
+> >the next LACPDU is received, which might take some time and without an
+> >active port transmitted frames are dropped. Avoid this by enabling
+> >already collected ports of the new aggregator immediately.
+> >
+> >Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+> >---
+> > drivers/net/bonding/bond_3ad.c | 7 +++++++
+> > 1 file changed, 7 insertions(+)
+> >
+> >diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond_3=
+ad.c
+> >index c6807e473ab7..529e2a7c51e2 100644
+> >--- a/drivers/net/bonding/bond_3ad.c
+> >+++ b/drivers/net/bonding/bond_3ad.c
+> >@@ -1876,6 +1876,13 @@ static void ad_agg_selection_logic(struct aggrega=
+tor *agg,
+> > 				__disable_port(port);
+> > 			}
+> > 		}
+> >+
+> >+		/* enable ports on new active aggregator */
+> >+		for (port =3D best->lag_ports; port;
+> >+			port =3D port->next_port_in_aggregator) {
+> >+			__enable_port(port);
+> >+		}
+> >+ =20
+>=20
+> 	I think this will do the wrong thing if the port in question is
+> not in a valid state to send or receive (i.e., it is not one of
+> COLLECTING_DISTRIBUTING, COLLECTING, or DISTRIBUTING).
+>=20
+>=20
+> 	As it happens, this situation, except for the case of individual
+> ports, is handled just below this code:
+>=20
+> 	/* if the selected aggregator is of join individuals
+> 	 * (partner_system is NULL), enable their ports
+> 	 */
+> 	active =3D __get_active_agg(origin);
+>=20
+> 	if (active) {
+> 		if (!__agg_has_partner(active)) {
+> 			for (port =3D active->lag_ports; port;
+> 			     port =3D port->next_port_in_aggregator) {
+> 				__enable_port(port);
+> 			}
+> 			*update_slave_arr =3D true;
+> 		}
+> 	}
+>=20
+> 	rcu_read_unlock();
+>=20
+> 	FWIW, looking at it, I'm not sure that "__agg_has_partner" is
+> the proper test for invididual-ness, but I'd have to do a bit of poking
+> to confirm that.  In any event, that's not what you want to change right
+> now.
+>=20
+> 	Instead of adding another block that does more or less the same
+> thing, I'd suggest updating this logic to include tests for C_D, C, or D
+> states, and enabling the ports if that is the case.  Probably something
+> like (I have not tested or compiled this at all):
+>=20
+> 	if (active) {
+> 		if (!__agg_has_partner(active)) {
+> 			[ ... the current !__agg_has_partner() stuff ]
+> 		} else {
 
-> @@ -4388,14 +4386,8 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
->  	WARN_ON_ONCE(!dev_pasid);
->  	spin_unlock_irqrestore(&dmar_domain->lock, flags);
->  
-> -	/*
-> -	 * The SVA implementation needs to handle its own stuffs like the mm
-> -	 * notification. Before consolidating that code into iommu core, let
-> -	 * the intel sva code handle it.
-> -	 */
->  	if (domain->type == IOMMU_DOMAIN_SVA) {
->  		cache_tag_unassign_domain(dmar_domain, FLPT_DEFAULT_DID, dev, pasid);
-> -		intel_svm_remove_dev_pasid(domain);
->  	} else {
->  		did = domain_id_iommu(dmar_domain, iommu);
->  		cache_tag_unassign_domain(dmar_domain, did, dev, pasid);
+moving it here will run this part on every call of ad_agg_selection_logic(),
+but it would be only relevant, if there is a switch to a different aggregat=
+or.
 
-It seems very strange that SVA has a different DID scheme, why is
-this? PASID and SVA should not be different at this layer.
+> 			for (port =3D active->lag_ports; port;
+> 			     port =3D port->next_port_in_aggregator) {
+> 				switch (port->sm_mux_state) {
+> 				case AD_MUX_DISTRIBUTING:
+> 				case AD_MUX_COLLECTING_DISTRIBUTING:
+> 					ad_enable_collecting_distributing(port,
+> 							update_slave_arr);
+> 					port->ntt =3D true;
+> 					break;
+> 				case AD_MUX_COLLECTING:
+> 					ad_enable_collecting(port);
+> 					ad_disable_distributing(port, update_slave_arr);
+> 					port->ntt =3D true;
+> 					break;
+> 				default:
+> 					break;
+> 		}
 
-> @@ -663,7 +596,12 @@ void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
->  
->  static void intel_svm_domain_free(struct iommu_domain *domain)
->  {
-> -	kfree(to_dmar_domain(domain));
-> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-> +
-> +	if (dmar_domain->notifier.ops)
-> +		mmu_notifier_unregister(&dmar_domain->notifier, domain->mm);
+I've tried this in my test environment and it doesn't fixed the issue
+I'm seeing, because the port of the new aggregator is still in AD_MUX_WAITI=
+NG...
 
-This should really use mmu_notifier_put() and a delayed kfree, see my
-part 2 ARM series for how that should look.
+The issue is that after bringing the bond up it happens that the bond link
+is up, but no slave can transmit. This happens exactly when the aggregator
+is changed due to timing of the received lacpdu. So if enabling the port
+in AD_MUX_WAITING is wrong, what are other ways to fix this problem ?
 
-Otherwise I think it looks fine
+Thomas.
 
-Jason
+--=20
+SUSE Software Solutions Germany GmbH
+HRB 36809 (AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Ivo Totev, Andrew McDonald, Werner Knoblich
 
