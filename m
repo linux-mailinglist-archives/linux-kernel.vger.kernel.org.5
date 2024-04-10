@@ -1,93 +1,136 @@
-Return-Path: <linux-kernel+bounces-139164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DCD289FF56
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:01:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1058D89FF60
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:03:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AEE9B270D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:01:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4178D1C23143
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A252B17F396;
-	Wed, 10 Apr 2024 18:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE1017F395;
+	Wed, 10 Apr 2024 18:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eqWu4Yy5"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TPB4I1jH"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2616E17B519;
-	Wed, 10 Apr 2024 18:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD051168DC;
+	Wed, 10 Apr 2024 18:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712772067; cv=none; b=CuQCQpHC7408xeJs23zcPlsfBTK/Eky86rbEc22MYLEPWJwYkeYuTEtbxK+aU4eiQISX0iRvzZ/PL7InduSxIy32DypVnw3DDfPiUJO9mEyXAC7LbI812lNYW2GT1yc+7DbuO8xONIuSxpiljsLTA1U4PnPZl2cchHoghULAvoU=
+	t=1712772206; cv=none; b=U6v48jH5x7wSAVlT0fLidG1CUO49fVTjf26v4X8gLTFX7BKLmhyBOEPmHGCaxJ45+qs3IV3BsmO9w9ihFJZHigkOmFawztgztiVcE4TJQRAP4Hc5FLPUHx3Prvcd2zHnNyjHh3RYR+eaYmpVy+xdvYI828ejNrh9/kIECgrM5N8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712772067; c=relaxed/simple;
-	bh=m7vzr6Xsp6x0UdSPwpx85bTxXCe++bmRp1TOsXgox2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r0sHrCCej9gWB8fWdH5tjzer1kjtToJJzn8VtTZTW4iE69KkAMuxQpcprYo3zfVsyCl73DTuoJXPnIPigJvb0igRGELL5KEz0scmAEUscTGXBD3XQgbirV1zf59VqzLBFocKwE5nbhqMiAv63cY2lqhDaGisJWCzlrlDnyn2CMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eqWu4Yy5; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712772066; x=1744308066;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=m7vzr6Xsp6x0UdSPwpx85bTxXCe++bmRp1TOsXgox2M=;
-  b=eqWu4Yy5/1byCHn4FR0OSXoJTnaEIgqDnhXJXpyqwQvFjGB0Ur3jqCmL
-   NRaYOtCfyD71/JcPcbcfmyZk0WWmYErP4wNjSKnj56V9Zx4jHrG9oKv73
-   phJzU5x42pjvqmtkk/KmhVQW471GUDmo8dI5suOu0YPy72BoXTNMIxfCu
-   Z2UIzsnDlDeAchF3KnWPBrSGYAHsbOzoqDg6KsgficScpOiffceANTjWg
-   7jSyB2lnvKKtZuql3D7RTfLWy4Y6fcqONhGXh8d++0dh6rDSQGdjwRQq8
-   xz2WkOXt8V+1k3FithNN29y9VJMxyslfUo1yT0W+DOwDd1R5W6BrIB3y4
-   w==;
-X-CSE-ConnectionGUID: JMswz/NuT86xCnyPrJOnPQ==
-X-CSE-MsgGUID: q1Dg7c9pTl6/8OSfNURZVg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8376447"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="8376447"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:01:05 -0700
-X-CSE-ConnectionGUID: W367HOkPS7a9fdJV6XUIag==
-X-CSE-MsgGUID: +ZxT0+YlQXS7QmmivLthjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="20589842"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:01:04 -0700
-Date: Wed, 10 Apr 2024 11:01:02 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices (DCD)
-Message-ID: <ZhbT3gXO9fhCfJzF@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	s=arc-20240116; t=1712772206; c=relaxed/simple;
+	bh=wMS4gDZI3WDLgsegzWGhOd6/GvMxbzC3pD//XnWrfc8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d/nP7WVP38f0lVKMS7+MJz18V5VziyrN9ya3H73qUOiEcs9O5pU7qe+N687Gu5kpf8zy+H9QomTxwhWAXIOZyh81b/3LUfw25MoCzsPvfYniwUc2P52dKpjd0f90G4VjK4Yt0AjueHEFfi+0zTtNP8wzB5SPm0vr5EIg3pVDf4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TPB4I1jH; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43AI3K38017451;
+	Wed, 10 Apr 2024 13:03:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712772200;
+	bh=PlFYSUDoFAWZm0R0ly88cvpUbEU2YxPPUdusejymroQ=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=TPB4I1jHY7FjJTbMo6oKZj/ne3Ha/i/YL62locf+H6L/BEAvoLm+fygC5+botuQmz
+	 XbJy9KG5RstWJg+uGVjmVkeHkJ0DvxTrBUdXL/7stwMryof5kD+Id2+u7fUK513Uw2
+	 h+sRRX7bPIfVJliZk+oYgkvnL7xiRfJA9TtAhEoo=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43AI3Kmh021090
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 10 Apr 2024 13:03:20 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
+ Apr 2024 13:03:19 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 10 Apr 2024 13:03:19 -0500
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43AI3IvZ028308;
+	Wed, 10 Apr 2024 13:03:19 -0500
+Date: Wed, 10 Apr 2024 23:33:18 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+CC: <linux-omap@vger.kernel.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/5] bus: ti-sysc: Move check for no-reset-on-init
+Message-ID: <20240410180318.ddpbdlnlss7bqweg@dhruva>
+References: <20240410064010.57142-1-tony@atomide.com>
+ <20240410064010.57142-2-tony@atomide.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+In-Reply-To: <20240410064010.57142-2-tony@atomide.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, Mar 24, 2024 at 04:18:03PM -0700, Ira Weiny wrote:
-> A git tree of this series can be found here:
+On Apr 10, 2024 at 09:40:05 +0300, Tony Lindgren wrote:
+> We are wrongly checking SYSC_QUIRK_NO_RESET_ON_INIT flag in sysc_reset(),
+> it can be called also after init from sysc_reinit_module(). Let's fix the
+> issue by moving the check to the init code.
+
+I am not able to understand exactly the potential bug here, what was the
+issue exactly?
+What I am able to infer is this is more of an improvement than fixing a
+bug? Maybe I am missing some context, can you help me understand the
+potential bug here?
+
 > 
-> 	https://github.com/weiny2/linux-kernel/tree/dcd-2024-03-24
+> Fixes: 6a52bc2b81fa ("bus: ti-sysc: Add quirk handling for reset on re-init")
 
-This would benefit from another checkpatch run and cleanup.
+Fixes tag, you might want to CC stable@vger.kernel.org?
 
---Alison
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/bus/ti-sysc.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+> --- a/drivers/bus/ti-sysc.c
+> +++ b/drivers/bus/ti-sysc.c
+> @@ -2145,8 +2145,7 @@ static int sysc_reset(struct sysc *ddata)
+>  	sysc_offset = ddata->offsets[SYSC_SYSCONFIG];
+>  
+>  	if (ddata->legacy_mode ||
+> -	    ddata->cap->regbits->srst_shift < 0 ||
+> -	    ddata->cfg.quirks & SYSC_QUIRK_NO_RESET_ON_INIT)
+> +	    ddata->cap->regbits->srst_shift < 0)
+>  		return 0;
+>  
+>  	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
+> @@ -2240,12 +2239,14 @@ static int sysc_init_module(struct sysc *ddata)
+>  			goto err_main_clocks;
+>  	}
+>  
+> -	error = sysc_reset(ddata);
+> -	if (error)
+> -		dev_err(ddata->dev, "Reset failed with %d\n", error);
+> +	if (!(ddata->cfg.quirks & SYSC_QUIRK_NO_RESET_ON_INIT)) {
+> +		error = sysc_reset(ddata);
+> +		if (error)
+> +			dev_err(ddata->dev, "Reset failed with %d\n", error);
+>  
+> -	if (error && !ddata->legacy_mode)
+> -		sysc_disable_module(ddata->dev);
+> +		if (error && !ddata->legacy_mode)
+> +			sysc_disable_module(ddata->dev);
+> +	}
+>  
+
+-- 
+Best regards,
+Dhruva
 
