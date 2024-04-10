@@ -1,148 +1,148 @@
-Return-Path: <linux-kernel+bounces-138880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9A989FB99
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B131789FB84
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:28:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1B631F2212A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1991F23850
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3FC16EBED;
-	Wed, 10 Apr 2024 15:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B1F16F0D2;
+	Wed, 10 Apr 2024 15:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qViPEqHI"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QMVx+iIj"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9FB15B137;
-	Wed, 10 Apr 2024 15:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5979D1591E1;
+	Wed, 10 Apr 2024 15:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763076; cv=none; b=dZy5fWsORkYP1p9y2V0qsLysqlHv0HDbMi7oaV5D5fh2/Iq4jAgE0Tu/w4dRMalUVtXicd0VvkIkM5YjQKJgrFw7yQjVXYoRGFCKwkNZwFlSXLBQN17qJDzya+McYjEMPWkxHGyqU8+eWmlEDU5VGwa4BNEwSfPvlaCIfoP4ecg=
+	t=1712762861; cv=none; b=NWidxYlPHSnMdJEFE7OeK2PNFYl7/bjiBIbg8zUdwkqsNe78KwQ0e/D97cOgl+McVAu06xN1wJ5f0pnYXIg38SmQUX2ALY9TCoqiM+IFCHIgH2tQ49756w7tkZFGxkW8etscol5zjjA9Z4jKu5PDm2HTCULw4nlkK9y+VS0z+5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763076; c=relaxed/simple;
-	bh=pH+z7kT+B4G554baL6gQ+2qPvr9hlaRu9zM0ygTBqww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bkHfowmXKOPXoI0lOHPSqwzbmJrMpLbLFjJ1gKQ/G46L+ju7kGdazzF3k6FtQOpoZP8hbjDCNwFaJMGCwhbYwbLc2nHUJaDDLE9rHSEM7+NbHfZkiaq1geVYosumYNUSUs8ciqK96FR+8njsB1iwcik0duza+QmtDOh2rRb6nnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qViPEqHI; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43ADvQvd002584;
-	Wed, 10 Apr 2024 15:31:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=Cbi/eAWd7VhxaqxfaHTml+ueD1AIDaz+ba8OE4CCdvA=;
- b=qViPEqHIuBk9CBux21zCp8UMLj//yBpq37q5ojeITXSi8J/V8GrSYW3oKyFtC8PKQ+S+
- jr0OhNNdhKo+mOCUbqWdK/lNmqCc2cNxhf6ejca2zxlBcdRMMlsNZhh8pbBlSQTJ+cGT
- GJSo67C6hCJT5OzwqYENJ/tcY43p+woUjruAfstycZ5vCHtTWkZO+L/3B8pPB3Qre+1A
- kbCdGBSDon3MT4zO6YL1Ejx0HvY7IVWO2AVHuf7g7Z5i39EUrFtZIIwvsMa8nha9f8kJ
- 1aAEDABtFv13w7dxCcY14UBIuYa+KqH3EXEgAv0JDBI2zgg1TKSAxI54/uxGqSwdt0K6 uQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xds6k8s0y-1
+	s=arc-20240116; t=1712762861; c=relaxed/simple;
+	bh=yaqHM0962MfpM+OFdQda8fXPe0R1wO7c3AlNIHOVwdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cIDr9b+TXaDzq5eq0ksIiA5LVmLWXAL58VAPt8bPBT3w2Lp5ptcZt8K1cJEot2DdXJ3ZHUQemGHmuSecBTA7AXhXPlN0qm0PEMop62C+J9yTcBqnLuD/AvZI5AbjTIKRvXHuWID3lh/GmRj4O/5b3B4A1rcFzaHvSVRZEpjeZtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QMVx+iIj; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43A8bUQZ020430;
+	Wed, 10 Apr 2024 15:27:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SeKInDMchgVr+fW9WAo6YizzoIlylrKBtPkpDrYflGc=; b=QM
+	Vx+iIjNoBxgbQhbk47P1pSkvCBi6kiaSSZFteiH8PqXWUF0Y7UYSWrwJ3USY+xai
+	GpMzaeDLZwM3AoGqxqUV9+ueya3RJGxE95WUHnvgCDFs5MzZP+Djd3mUZ8JzAwe0
+	6S2YEqGQJdphdetr8iOfJZaaPyjM5230lKtCzNV8IrViCObX5p7tH3axnILjKVCn
+	HrHWFKU22mBrjW0gJUsF1fI2uYWOU0hgzhaQSDLoYsE+Jpvut0geIRe/ud4DPPSJ
+	8fggfL5TrmQ7pfWvB/7hPSNjCQTZ3E7PVA4IghTfCh3TrgZ3LycX2IH7oruboSQa
+	QCfwL5e2a4lspc6371dA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdnqtjn3f-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:31:03 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AFV3XD021875;
-	Wed, 10 Apr 2024 15:31:03 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xds6k8s0n-1
+	Wed, 10 Apr 2024 15:27:09 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AFR8Ts012315
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:31:03 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AEXDuU029966;
-	Wed, 10 Apr 2024 15:26:47 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbj7mdf1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:26:47 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AFQf4j30867974
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Apr 2024 15:26:44 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D3E2E20043;
-	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 32FE12004F;
-	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
-Received: from li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com (unknown [9.171.29.198])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
-Date: Wed, 10 Apr 2024 17:26:39 +0200
-From: Sumanth Korikkar <sumanthk@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, hughd@google.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        iii@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/shmem: Inline shmem_is_huge() for disabled
- transparent hugepages
-Message-ID: <Zhavr9NxvayDhU9X@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
-References: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
- <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
+	Wed, 10 Apr 2024 15:27:08 GMT
+Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
+ 2024 08:27:06 -0700
+Message-ID: <d440d38f-f805-4c85-96b3-ae0b5ad2bbdc@quicinc.com>
+Date: Wed, 10 Apr 2024 08:27:05 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: L612PNMowBeXj8vY2YP3t3EszkoVv0Uk
-X-Proofpoint-ORIG-GUID: GxlMHGTjvPmiE1LhuQok0TrbcWFwqCxD
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 05/16] dt-bindings: net: wireless: describe the ath12k
+ PCI module
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David
+ S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Catalin
+ Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Bjorn
+ Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Neil
+ Armstrong <neil.armstrong@linaro.org>,
+        Marek Szyprowski
+	<m.szyprowski@samsung.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Manivannan
+ Sadhasivam <mani@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Dmitry
+ Baryshkov <dmitry.baryshkov@linaro.org>,
+        Amit Pundir
+	<amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
+CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+References: <20240410124628.171783-1-brgl@bgdev.pl>
+ <20240410124628.171783-6-brgl@bgdev.pl>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240410124628.171783-6-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Wx5pfsg1IEL3FNsbq-QxsVprddWodQtT
+X-Proofpoint-GUID: Wx5pfsg1IEL3FNsbq-QxsVprddWodQtT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 clxscore=1015 mlxlogscore=368 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 impostorscore=0 phishscore=0
+ bulkscore=0 priorityscore=1501 malwarescore=0 spamscore=0 mlxlogscore=826
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
  definitions=main-2404100112
 
-On Wed, Apr 10, 2024 at 02:34:35PM +0200, David Hildenbrand wrote:
-> On 09.04.24 17:54, Sumanth Korikkar wrote:
-> > In order to  minimize code size (CONFIG_CC_OPTIMIZE_FOR_SIZE=y),
-> > compiler might choose to make a regular function call (out-of-line) for
-> > shmem_is_huge() instead of inlining it. When transparent hugepages are
-> > disabled (CONFIG_TRANSPARENT_HUGEPAGE=n), it can cause compilation
-> > error.
-> > 
-> > mm/shmem.c: In function ‘shmem_getattr’:
-> > ./include/linux/huge_mm.h:383:27: note: in expansion of macro ‘BUILD_BUG’
-> >    383 | #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
-> >        |                           ^~~~~~~~~
-> > mm/shmem.c:1148:33: note: in expansion of macro ‘HPAGE_PMD_SIZE’
-> >   1148 |                 stat->blksize = HPAGE_PMD_SIZE;
-> > 
-> > To prevent the possible error, always inline shmem_is_huge() when
-> > transparent hugepages are disabled.
-> > 
-> 
-> Do you know which commit introduced that?
-Hi David,
+On 4/10/2024 5:46 AM, Bartosz Golaszewski wrote:
+[...]
+> +description:
+> +  Qualcomm Technologies IEEE 802.11ax PCIe devices.
 
-Currently with CONFIG_CC_OPTIMIZE_FOR_SIZE=y and expirementing with
--fPIC kernel compiler option, I could see this error on s390.
+if you respin, nit: s/11ax/11be/
 
-However, default kernel compiler options doesnt end up with the above
-pattern right now.
-
-I think, shmem_is_huge() for disabled transparent hugepages comes from:
-Commit 5e6e5a12a44c ("huge tmpfs: shmem_is_huge(vma, inode, index)")
-
-However, HPAGE_PMD_SIZE macros for !CONFIG_TRANSPARENT_HUGEPAGE
-originates from:
-Commit d8c37c480678 ("thp: add HPAGE_PMD_* definitions for
-!CONFIG_TRANSPARENT_HUGEPAGE")
-
-Thanks,
-Sumanth
 
